@@ -1,0 +1,159 @@
+#rocket-toolbar {
+    z-index: 50;
+}
+
+/*******************************************************************************
+ * G E N E R A L   L I S T   S T Y L E
+ ******************************************************************************/
+
+ .rocket-draft-nav,
+ .rocket-translation-view-switch,
+ .rocket-selected-locales {
+     display: inline-block;
+     padding: 0;
+     margin: 0;
+     list-style:none;
+     > li {
+         display: inline-block;
+         padding: 0.5rem 1rem;
+         margin-right: 0.5rem;
+         border: 1px solid $color-gray-6;
+         border-top-left-radius: $btn-border-radius;
+         border-top-right-radius: $btn-border-radius;
+         border-bottom: 0;
+         > a {
+             color: $color-gray-3;
+         }
+     }
+ }
+
+/*******************************************************************************
+ * L A N G U A G E   S E L E C T I O N
+ ******************************************************************************/
+
+.rocket-locale-selection {
+    display: inline-block;
+    position: relative;
+    > a {
+        color: $color-gray-3;
+    }
+}
+
+.rocket-translation-view-switch,
+.rocket-selected-locales {
+    > li {
+        // close buttons on language tags
+        > a > i {
+            margin-left: 0.25rem;
+            color: $color-gray-6;
+        }
+        > a:hover > i {
+            color: $color-gray-3;
+        }
+    }
+}
+
+
+.rocket-translation-view-switch {
+    // temporary deselected
+    display: none;
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+
+.rocket-translation-enabler,
+.rocket-not-selected-locales {
+    position: absolute;
+    top: 2.5rem;
+    right: -1px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: $color-bg;
+    border: 1px solid $color-gray-6;
+    width: 15rem;
+    > li {
+        padding: 0.5rem 1rem;
+        border-top: 1px solid $color-gray-6;
+        &:hover {
+            background-color: $color-gray-7;
+        }
+        &:first-child {
+            border-top: none;
+        }
+        > input {
+            margin: 0 0.5rem 0 0;
+        }
+        > label {
+            margin: 0;
+            display: inline;
+            padding: 0;
+        }
+    }
+}
+
+/*******************************************************************************
+ * T R A N S L A T A B L E   C O N T E N T
+ ******************************************************************************/
+
+// .rocket-properties > div is necessary in order to overwrite styles
+.rocket-translatable-content {
+    > .rocket-property {
+        > .rocket-locale-label {
+            display: inline;
+            float: left;
+            width: 70px;
+            font-weight: normal;
+            font-size: $font-size-sm;
+            line-height: 1.5rem;
+            color: $color-gray-3;
+            padding: 0 0.75rem;
+        }
+        .rocket-locale-controls {
+            margin-left: 70px;
+            margin-bottom: 0;
+            width: calc(100% - 70px);
+            > .rocket-entry-form-command {
+                margin: 0;
+            }
+        }
+    }
+    > .rocket-property:first-child {
+        margin-top: -0.5rem;
+    }
+}
+
+// styles only for edit form
+.rocket-properties > div .rocket-editable > .rocket-locale-label {
+    padding-top: 0.375rem;
+}
+
+/*******************************************************************************
+ * TABLE STYLES
+ ******************************************************************************/
+
+td > .rocket-translatable-content {
+    > .rocket-property {
+        margin: 0;
+        > .rocket-locale-label {
+            margin: 0;
+            padding: 0;
+        }
+    }
+}
+
+/*******************************************************************************
+ * Active Translation
+ ******************************************************************************/
+
+.rocket-tool-panel > div .rocket-controls {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.rocket-translation-activator > .rocket-control.rocket-control-full {
+    padding: 0.25rem 0.5rem;
+}

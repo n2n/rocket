@@ -1,0 +1,116 @@
+
+table.rocket-list,
+table.rocket-simple-list {
+    width: 100%;
+    margin-bottom: @line-height-computed;
+    background-color: @color-bg;
+    > thead,
+    > tbody,
+    > tfoot {
+        > tr {
+            th,
+            td {
+                padding: @padding-base-vertical;
+                line-height: @line-height-base;
+                vertical-align: top;
+            }
+        }
+    }
+    > thead > tr > th {
+        vertical-align: bottom;
+    }
+    > tbody > tr {
+        &:nth-child(even) {
+            background-color: @table-color-bg-accent;
+        }
+        &.rocket-tree-level-0 {
+            > td,
+            > th {
+                background-color: @color-gray-7;    
+            }
+        }
+        &.rocket-tree-level-1 {
+            > td:first-child {
+                padding-left: (@padding-base * 2 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-2 {
+            > td:first-child {
+                padding-left: (@padding-base * 4 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-3 {
+            > td:first-child {
+                padding-left: (@padding-base * 6 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-4 {
+            > td:first-child {
+                padding-left: (@padding-base * 8 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-5 {
+            > td:first-child {
+                padding-left: (@padding-base * 10 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-6 {
+            > td:first-child {
+                padding-left: (@padding-base * 12 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-7 {
+            > td:first-child {
+                padding-left: (@padding-base * 14 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-8 {
+            > td:first-child {
+                padding-left: (@padding-base * 16 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-9 {
+            > td:first-child {
+                padding-left: (@padding-base * 18 + @padding-base-vertical)    
+            }
+        }
+        &.rocket-tree-level-10 {
+            > td:first-child {
+                padding-left: (@padding-base * 20 + @padding-base-vertical)    
+            }
+        }
+        
+    }
+    
+    > tbody >tr:hover {
+        background-color: @table-color-bg-hover;
+    }
+    th {
+        background-color: @color-gray-6;
+    }
+}
+
+th {
+    text-align: left
+}
+
+/**
+ * bug fix option lists in table fields
+ */ 
+ 
+table.rocket-list ul {
+    list-style: none;
+    padding: 0;
+}
+table.rocket-list td > ul {
+    margin: 0;
+    > li > label {
+        padding-left: 0;
+    }
+    > li:first-child {
+        padding-top: 0;    
+    }
+    > li:last-child {
+        padding-bottom: 0;
+    }
+}

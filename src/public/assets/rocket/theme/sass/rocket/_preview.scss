@@ -1,0 +1,69 @@
+body.rocket-preview {
+    /**
+     * H E A D E R
+     */
+    #rocket-header {
+        #rocket-conf-nav,
+        #rocket-customer-name {
+            display: none;
+        }
+        #rocket-conf-nav {
+            display: none !important;
+        }
+    }
+    #rocket-branding {
+        top: 7px;
+        img {
+            height: 46px;
+            width: 61px;
+        }
+    }
+    #rocket-global-nav {
+        display: none;
+    }
+
+    /**
+     * C O N T E N T   C O N T A I N E R
+     */
+    #rocket-content-container {
+        left: 0;
+        height: calc(100vh - 112px);
+        overflow: hidden;
+        padding: 0;
+        z-index: 110;
+        > .rocket-main-title {
+            position: fixed;
+            top: 5px;
+            left: 240px;
+            color: white;
+        }
+    }
+
+    #rocket-breadcrumb {
+        position: absolute;
+        top: 8px;
+        left: 240px;
+        z-index: 110;
+    }
+
+    .rocket-panel {
+        border: none;
+    }
+
+    #rocket-toolbar {
+        top: 2px;
+        right: 10px;
+    }
+
+    #rocket-page-controls {
+        left: 0;
+    }
+
+    // bert: the important is not necessary, if js does not set the height!
+    #rocket-preview-content {
+        width: 100%;
+        height: calc(100vh - 148px);
+        min-height: calc(100vh - 148px) !important;
+
+    }
+}

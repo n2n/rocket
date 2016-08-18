@@ -1,0 +1,195 @@
+
+div#rocket-page-controls ul,
+ul.rocket-controls,
+ul.rocket-simple-controls {
+    .list-unstyled();
+}
+
+div#rocket-page-controls ul,
+ul.rocket-controls {
+    > li {
+        margin: 0 @padding-base-horizontal @padding-base-horizontal 0;
+    }
+}
+
+
+a.rocket-control-info,
+a.rocket-control-warning,
+a.rocket-control-danger,
+a.rocket-control-success,
+a.rocket-control,
+button,
+input[type="submit"],
+input[type="button"] {
+    .button();
+     i.fa:after {
+        content: "\00a0";
+    }
+}
+
+
+/*
+ * Color variants of important buttons
+ */ 
+.rocket-control-danger.rocket-important {
+    .button-variant(@color-bg; @color-danger; darken(@color-danger, 10%));
+} 
+.rocket-control-warning.rocket-important {
+    .button-variant(@color-bg; @color-warning; darken(@color-warning, 10%));
+} 
+.rocket-control-success.rocket-important {
+    .button-variant(@color-bg; @color-success; darken(@color-success, 10%));
+} 
+.rocket-control-info.rocket-important {
+    .button-variant(@color-bg; @color-info; darken(@color-info, 10%));
+} 
+
+/*
+ * Simple buttons and their color variants
+ */ 
+.rocket-simple-controls {
+    &.rocket-control-info, 
+    .rocket-control-info {
+        .button-variant(@color-info; @btn-default-bg-color; @btn-default-border-color);
+    }
+    &.rocket-control-warning,
+    .rocket-control-warning {
+        .button-variant(@color-warning; @btn-default-bg-color; @btn-default-border-color);
+    }
+    &.rocket-control-danger,
+    .rocket-control-danger {
+        .button-variant(@color-danger; @btn-default-bg-color; @btn-default-border-color);
+    }
+    &.rocket-control-success,
+    .rocket-control-success {
+        .button-variant(@color-success; @btn-default-bg-color; @btn-default-border-color);
+    }
+    i.fa:after {
+        content: "" !important;
+    }
+    span {
+        display: none;    
+    }
+}
+
+
+// phone only 
+@media (max-width: (@media-bp-tablet - 1)) {
+   td.rocket-entry-commands-area ul.rocket-simple-controls {
+        border: 1px solid @border-color-base;
+        padding: @padding-base-vertical @padding-base-horizontal;
+        background: white;
+        border-radius: @border-radius-base;
+        .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+        > li {
+            padding: @padding-base-vertical 0; 
+        }
+    }
+}
+
+
+.rocket-control-group {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle; // match .btn alignment given font-size hack above
+    > .rocket-control {
+        position: relative;
+        float: left;
+        // Bring the "active" button to the front
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+            z-index: 2;
+        }
+    }
+}
+.rocket-control-group {
+    .rocket-control + .rocket-control,
+    .rocket-control + .rocket-control-group,
+    .rocket-control-group + .rocket-control,
+    .rocket-control-group + .rocket-control-group {
+        margin-left: -1px;
+    }
+}
+
+.rocket-control-group > .rocket-control:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+
+.rocket-control-group > .rocket-control:first-child {
+    margin-left: 0;
+    &:not(:last-child) {
+        .border-right-radius(0);
+    }
+}
+
+.rocket-control-group > .rocket-control:last-child:not(:first-child) {
+    .border-left-radius(0);
+}
+
+.rocket-control-group > .rocket-active {
+    .button-variant(@color-bg; @color-gray-5; @btn-default-border-color);
+    .box-shadow(inset 0px 0px 7px 0px rgba(0, 0, 0, 0.3));
+}
+
+ul.rocket-preview-switch {
+    float: right;
+    > li {
+        margin-right: 0 !important;
+        > a.rocket-control-dataview {
+            border-right: 0;
+            -webkit-border-top-right-radius: 0;
+            -webkit-border-bottom-right-radius: 0;
+            -moz-border-radius-topright: 0;
+            -moz-border-radius-bottomright: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        > a.rocket-control-preview {
+            -webkit-border-top-left-radius: 0;
+            -webkit-border-bottom-left-radius: 0;
+            -moz-border-radius-topleft: 0;
+            -moz-border-radius-bottomleft: 0;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        > a.rocket-active {
+            background: @color-gray-5;
+            color: @color-bg;
+        }
+    }
+}
+
+
+
+// tablet and up
+@media (min-width: @media-bp-tablet) {
+    
+    td.rocket-entry-commands-area {
+        white-space: nowrap;
+    }
+    
+    ul.rocket-simple-controls li a {
+        .button();    
+    }
+    
+    ul.rocket-simple-controls {
+        margin-left: -(@padding-base-horizontal / 4);
+        margin-bottom: 0;
+    
+        > li {
+            display: inline-block;
+            padding-left: (@padding-base-horizontal / 4);
+            padding-right: (@padding-base-horizontal / 4);
+            > a > span,
+            > button > span {
+                display: none;
+            }
+        }
+    }
+    div.rocket-entry-commands-toggle {
+        display: none;
+    }
+}
+

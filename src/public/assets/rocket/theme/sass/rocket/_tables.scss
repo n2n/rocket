@@ -1,0 +1,84 @@
+
+table.rocket-list,
+table.rocket-simple-list {
+    width: 100%;
+    margin-bottom: $spacer;
+    background-color: $color-bg;
+    > thead,
+    > tbody,
+    > tfoot {
+        > tr {
+            th,
+            td {
+                padding: $padding-base-vertical;
+                line-height: $line-height;
+                vertical-align: top;
+            }
+        }
+    }
+    > thead > tr > th {
+        vertical-align: bottom;
+    }
+    > tbody > tr {
+        &:nth-child(even) {
+            background-color: $table-bg-accent;
+        }
+    }
+
+    > tbody > tr:hover {
+        background-color: $color-hover;
+    }
+    > tbody > tr.selected {
+        background-color: $color-gray-7;
+    }
+    th {
+        background-color: $color-gray-6;
+    }
+    td.rocket-entry-selector > input[type="checkbox"] {
+        margin-top: -5px;
+    }
+}
+
+th {
+    text-align: left
+}
+
+/**
+ * PAGINATION - Does not work in chrome: tr.position relativ is ignored...
+ */
+.rocket-overview-page-first-row {
+    position: relative;
+    border-top: 2px solid $color-gray-6;
+    &:after {
+        position: absolute;
+        top: -2px;
+        right: -1px;
+        content: attr(data-page-no);
+        padding: 3px 6px;
+        font-size: $font-size-sm;
+        background-color: $color-gray-6;
+        z-index: 0;
+    }
+}
+
+
+/**
+ * bug fix option lists in table fields
+ */
+
+table.rocket-list ul {
+    list-style: none;
+    padding: 0;
+}
+table.rocket-list td > ul {
+    margin: 0;
+    > li > label {
+        padding-left: 0;
+    }
+    > li:first-child {
+        padding-top: 0;
+    }
+    > li:last-child {
+        padding-bottom: 0;
+    }
+}

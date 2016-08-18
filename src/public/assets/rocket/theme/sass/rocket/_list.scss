@@ -1,0 +1,84 @@
+
+.rocket-tool-panel {
+    position: relative;
+    padding: 0 $padding-base-horizontal;
+    z-index: 1;
+    @include clearfix();
+}
+
+.rocket-tool-panel.rocket-fixed {
+    background-color: $color-gray-8;
+}
+
+.rocket-critmod {
+    padding: 0.75rem 0;
+}
+
+.rocket-panel table {
+    margin-bottom: 0;
+}
+
+.rocket-overview-tools.rocket-fixed {
+    top: 96px;
+    left: 245px;
+    right: 32px;
+    border-left: 1px solid $color-gray-6;
+    border-right: 1px solid $color-gray-6;
+
+    .rocket-list {
+        margin: 0 -11px;
+        width: calc(100% - -22px);
+    }
+}
+
+.rocket-cloned-header {
+    top: 60px;
+    left: 246px;
+    right: 33px;
+}
+
+/*******************************************************************************
+ * E N T R Y   C O N T R O L S
+ ******************************************************************************/
+
+.rocket-overview-entry-controls {
+    padding-bottom: 1rem;
+    float: left;
+    width: 100%;
+}
+
+.rocket-overview-entry-infos,
+.rocket-overview-pagination {
+    width: 50%;
+    float: left;
+    .rocket-control,
+    .rocket-pagination-current {
+        margin-right: 0.5rem;
+    }
+}
+
+.rocket-pagination-current {
+    width: 4rem;
+    text-align: center;
+}
+
+.rocket-overview-pagination {
+    text-align: right;
+    .rocket-control:last-child {
+        margin-right: 0;
+    }
+}
+
+.rocket-pagination-first > span {
+    margin-right: 0.5rem;
+}
+
+// tablet and up
+@include media-breakpoint-up('md') {
+    .rocket-quicksearch {
+        position: absolute;
+        top: $padding-base;
+        right: 0.75rem;
+    }
+
+}

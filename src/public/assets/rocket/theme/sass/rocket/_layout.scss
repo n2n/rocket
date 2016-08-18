@@ -1,0 +1,384 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: $color-bg;
+}
+
+/***********************************************************************************************************************
+ * H E A D E R
+ **********************************************************************************************************************/
+
+#rocket-header {
+    background-color: $header-bg;
+    padding: $padding-base-vertical $padding-base-horizontal;
+}
+
+#rocket-branding {
+    position: absolute;
+    top: $padding-base-vertical;
+    left: $padding-base-horizontal;
+}
+
+#rocket-branding img {
+    width: 62px;
+    height: 46px;
+}
+
+#rocket-customer-name {
+    text-align: center;
+    font-size: $font-size-base;
+    color: $color-bg;
+    font-weight: bold;
+    margin-top: 1.5em;
+}
+
+#rocket-conf-nav-toggle, #rocket-logout {
+    position: absolute;
+    top: ($padding-base * 1.5);
+    right: $padding-base-horizontal;
+    @include button();
+    @include button-variant($color-bg, $color-gray-3, $color-gray-7);
+}
+
+#rocket-conf-nav-toggle {
+    right: 50px;
+}
+
+#rocket-logout span {
+    display: none;
+}
+
+/***********************************************************************************************************************
+ * N A V I G A T I O N
+ **********************************************************************************************************************/
+
+h2 + .rocket-nav-group {
+    border-top: 1px solid $color-gray-4;
+}
+
+.rocket-nav-group > ul,
+#rocket-conf-nav > ul {
+    padding-left: 0;
+    list-style: none;
+    li {
+        a {
+            color: $color-gray-7;
+            text-decoration: none;
+            i {
+                color: $color-gray-4;
+                &:after {
+                    content: "\00a0";
+                }
+            }
+            &:hover {
+                color: $color-bg;
+                i {
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+}
+
+#rocket-conf-nav {
+    margin: 0 -($padding-base-horizontal);
+}
+
+#rocket-global-mobile-nav, #rocket-conf-nav {
+    padding: $padding-base-vertical $padding-base-horizontal;
+    background-color: $nav-bg;
+}
+
+#rocket-global-mobile-nav select {
+    width: 100%;
+}
+
+#rocket-global-nav {
+    display: none;
+}
+
+/***********************************************************************************************************************
+ * C O N T A I N E R
+ **********************************************************************************************************************/
+
+#rocket-content-container,
+.rocket-content-container {
+    padding: 30px 15px 15px;
+    background-color: $color-bg;
+}
+
+.rocket-content-container {
+    background-color: rgba($color-gray-5, 0.8);
+    z-index: 100;
+}
+
+.rocket-content {
+    margin-bottom: 1rem;
+}
+
+.rocket-stacked-content-close {
+    position: fixed;
+    right: 50px;
+    top: 64px;
+    font-size: $font-size-lg;
+    color: $color-bg;
+    z-index: 1;
+}
+
+.rocket-main-title {
+    margin-top: $spacer;
+}
+
+.rocket-panel {
+    position: relative;
+    background: $color-gray-8;
+    border: 1px solid $color-gray-6;
+    margin-bottom: $line-height;
+    > h3,
+    h2 {
+        font-size: $font-size-base;
+        background-color: $color-gray-3;
+        color: $color-bg;
+        padding: $padding-base-horizontal;
+        font-weight: bold;
+        margin: 0;
+    }
+}
+
+.rocket-panel-content {
+    padding: $padding-base-vertical;
+    margin: 0;
+}
+
+.rocket-page-controls,
+#rocket-page-controls {
+    border-top: 1px solid $color-gray-6;
+    margin: $padding-base -($padding-base);
+    padding: $padding-base;
+    background: $color-gray-8;
+    z-index: 100;
+    @include clearfix();
+    > ul > li {
+        display: inline-block;
+        float: left;
+        margin: 0 $padding-base $padding-base 0;
+    }
+}
+
+.rocket-quick-access-panel {
+    padding: $padding-base-vertical $padding-base-horizontal;
+    margin-bottom: $padding-base-vertical;
+}
+
+.rocket-additional-container {
+    background: $color-gray-8;
+    border: 1px solid $color-gray-6;
+}
+
+section {
+    @include clearfix();
+}
+
+/***********************************************************************************************************************
+ * L A N G U A G E
+ **********************************************************************************************************************/
+
+#rocket-toolbar {
+
+    position: absolute;
+    top: -36px;
+    right: 0;
+}
+
+//
+// tablet styles
+//
+@include media-breakpoint-up('sm') {
+    .rocket-page-controls,
+    #rocket-page-controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: $padding-base $padding-base 0 30px;
+        margin: 0;
+        > ul {
+            margin: 0;
+        }
+    }
+}
+
+//
+// desktop styles
+//
+
+@include media-breakpoint-up('lg') {
+
+    // header
+    #rocket-header {
+        position: fixed;
+        left: 0;
+        right: 0;
+        height: 60px;
+        z-index: 105;
+    }
+
+    #rocket-branding {
+        top: ($padding-base-vertical * 2);
+        img {
+            width: 123px;
+            height: 92px;
+        }
+    }
+
+    #rocket-customer-name {
+        text-align: left;
+        margin-left: 230px;
+    }
+
+    // navigation
+
+    #rocket-conf-nav-toggle {
+        display: none;
+    }
+
+    #rocket-logout span {
+        display: inline;
+    }
+
+    #rocket-global-nav {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        top: 60px;
+        left: 0;
+        width: 215px;
+        padding: 60px 0 0 0;
+        background: url(../img/nav-body-bg.png) repeat $nav-bg;
+        overflow-y: auto;
+        z-index: 100;
+    }
+
+    .rocket-nav-group {
+        border-bottom: 1px solid $color-gray-4;
+        h3 {
+            margin: 0;
+            background-color: $color-gray-2;
+            a {
+                color: $color-bg;
+                padding: $padding-base-horizontal $padding-base-horizontal $padding-base-horizontal 28px;
+                font-weight: bold;
+                display: block;
+                text-decoration: none;
+                cursor: pointer;
+                position: relative;
+                i {
+                    position: absolute;
+                    top:  $padding-base-horizontal;
+                    left:  $padding-base-horizontal;
+                    color: $color-gray-4;
+                }
+                &:hover {
+                    i {
+                        color: $color-primary;
+                    }
+                }
+            }
+        }
+        ul {
+            margin: 0;
+            padding-bottom: $padding-base-vertical;
+            border-top: 1px solid $color-gray-4;
+            background-color: $nav-bg;
+            a {
+                padding: $padding-base-vertical $padding-base-vertical $padding-base-vertical 28px;
+                color: $color-gray-6;
+                text-decoration: none;
+                display: block;
+                &:hover {
+                    color: $color-bg;
+                }
+            }
+            li.rocket-nav-group-list-item-active a {
+               color: $color-primary;
+            }
+        }
+    }
+
+    #rocket-conf-nav {
+        display: block !important;
+        left: 30em;
+        top: 17px;
+        position: absolute;
+        z-index: 104;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        ul {
+            padding: ($padding-base-horizontal / 2) 0;
+            li {
+                display: inline;
+                float: left;
+                a {
+                    padding: ($padding-base-horizontal / 2);
+                }
+            }
+            .rocket-level-2 {
+                display: none;
+            }
+        }
+    }
+
+    #rocket-global-mobile-nav {
+        display: none;
+    }
+
+    #rocket-content-container,
+    .rocket-content-container {
+        position: fixed;
+        top: 60px;
+        left: 215px;
+        bottom: 50px;
+        right: 0;
+        overflow-y:scroll;
+        overflow-x: hidden;
+        padding-bottom: 0;
+        padding-left: 30px;
+    }
+
+    .rocket-equal-split-content {
+        margin: 0 -12px;
+        > div,
+        > section {
+            float: left;
+            padding: 0 12px;
+            width: 50%;
+        }
+    }
+
+    .rocket-page-controls,
+    #rocket-page-controls {
+        left: 215px;
+    }
+
+    .rocket-contains-additional {
+        width: calc(80% - 60px);
+        float: left;
+        padding-right: 20px;
+    }
+    #rocket-additional {
+        position: fixed;
+        right: 30px;
+        width: 20%;
+        top: 152px;
+        max-height: calc(100% - 204px);
+    }
+    .rocket-additional-container {
+        overflow: auto;
+        max-height: calc(100% - 42px);
+    }
+
+
+}

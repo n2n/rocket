@@ -1,0 +1,79 @@
+.rocket-filter-root {
+    width: 70%;
+    float: left;
+}
+
+.rocket-filter-commands,
+.rocket-filterable-properties,
+.rocket-sort-items,
+.rocket-filter-groups,
+.rocket-filter-item .n2n-option-collection {
+    .list-unstyled();
+    margin: 0;
+}
+
+.rocket-filter-group {
+    background-color: @color-gray-7;
+    padding: @padding-base-horizontal;
+    margin-bottom: @padding-base-vertical;
+    
+    .rocket-controls {
+        .clearfix();
+        > li {
+            float: left;
+            display: inline-block;
+        }
+    }
+}
+
+.rocket-filter-group.rocket-active {
+    background-color: @table-color-bg-hover;
+}
+
+.rocket-filter-item {
+    float: none !important;
+    display: block !important;
+    .clearfix();
+    padding-bottom: @padding-base-vertical;
+    h4 {
+        float: left;
+        width: 20%;
+    }
+    .n2n-option-collection {
+        li {
+
+            label {
+                display: none;    
+            }
+        }
+    }
+}
+
+.rocket-filter-item .n2n-option-collection,
+.rocket-filter-commands {
+    li {
+        display: inline-block;
+        float: left;
+        margin-right: @padding-base-vertical;   
+    }
+}
+
+.rocket-sort-items {
+    margin-bottom: @padding-base;    
+}
+
+
+.rocket-filterable-properties {
+    float: left;
+    width: 30%;
+    padding: @padding-base-horizontal !important;
+    i {
+        color: @color-success;    
+    }
+}
+
+.rocket-filterable-property {
+    display: inline-block;
+    float: left;
+    margin: 0 @padding-base-horizontal @padding-base-horizontal 0;   
+}

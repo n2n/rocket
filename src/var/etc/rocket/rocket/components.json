@@ -1,0 +1,68 @@
+{
+    "eiFieldClasses": [
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\StringEiField",
+        "rocket\\spec\\ei\\component\\field\\NotManagedObjectPropertyEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\wysiwyg\\WysiwygEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\ManyToOneSelectEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\file\\FileEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\date\\DateTimeEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\l10n\\N2nLocaleEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\bool\\BooleanEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\numeric\\IntegerEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\numeric\\DecimalEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\numeric\\OrderEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\OneToManySelectEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\ManyToManySelectEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\PathPartEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\bool\\OnlineEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\PasswordEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\UrlEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\YoutubeEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\VimeoEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\ci\\ContentItemsEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\enum\\EnumEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\meta\\SubsystemEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\OneToOneEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\date\\CreatedEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\EmbeddedOneToManyEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\EmbeddedOneToOneEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\relation\\IntegratedOneToOneEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\meta\\CreatedByEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\numeric\\IdEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\file\\MultiUploadFileEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\translation\\TranslationEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\StringDisplayEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\PasswordEiField"
+    ],
+    "eiCommandClasses": [
+        "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
+        "rocket\\spec\\ei\\component\\command\\impl\\common\\OverviewEiCommand",
+        "rocket\\spec\\ei\\component\\command\\impl\\common\\DetailEiCommand",
+        "rocket\\spec\\ei\\component\\command\\impl\\common\\EditEiCommand",
+        "rocket\\spec\\ei\\component\\command\\impl\\common\\DeleteEiCommand",
+        "rocket\\spec\\ei\\component\\command\\impl\\tree\\TreeMoveEiCommand"
+    ],
+    "eiCommandGroups": {
+        "List": [
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\OverviewEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\DetailEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\EditEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\DeleteEiCommand"
+        ],
+        "Tree": [
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\OverviewEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\DetailEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\EditEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\DeleteEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\tree\\TreeMoveEiCommand"
+        ]
+    },
+    "eiModificatorClasses": [
+
+    ],
+    "scriptListenerClasses": [
+
+    ]
+}

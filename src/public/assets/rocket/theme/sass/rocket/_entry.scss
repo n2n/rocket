@@ -1,0 +1,282 @@
+.rocket-option-array,
+.rocket-properties {
+    padding: 0;
+    > .rocket-controls {
+        width: 100% !important;
+        margin-left: 0  !important;
+        padding: 0;
+    }
+}
+
+.rocket-properties > .rocket-main-bundle,
+.rocket-properties {
+    @include clearfix();
+}
+
+// add some padding to labels after editable content
+.rocket-property {
+    border: 3px solid transparent;
+    transition: border 0.7s;
+    -webkit-transition: border 0.7s;
+    padding: 0.25rem 0;
+    @include clearfix();
+    > label {
+        padding: 0 0.75rem;
+        font-weight: bold;
+        margin: 0;
+    }
+}
+
+// do not show the border on the table of the list view!
+td.rocket-property {
+    border: none;
+}
+
+.rocket-property.rocket-editable {
+    > label {
+        padding-top: 0.25rem;
+    }
+}
+
+.rocket-script-type-selector {
+    margin-top: $padding-base;
+    > label {
+        float: left;
+    }
+}
+
+.rocket-controls {
+    padding: 0 0.75rem;
+    position: relative;
+//    margin-bottom: 0.5rem;
+    > .rocket-simple-controls {
+        position: absolute;
+        top: 8px;
+        right: $padding-base-horizontal;
+        > li {
+            margin-left: $padding-base-horizontal !important;
+            padding: 0;
+        }
+    }
+    > .rocket-simple-controls + label {
+        display: block;
+        margin-left: $padding-base-horizontal;
+        width: auto !important;
+        float: none !important;
+        padding: $padding-base-vertical $padding-base-horizontal;
+    }
+
+}
+
+// td.rocket-block,
+.rocket-block > .rocket-controls > input {
+    width: 100%;
+}
+
+// highlight on error
+.rocket-highlighted {
+    border-color: $color-danger;
+    // box-shadow: inset 0px 0px 5px 0px rgba($color-danger,0.75);
+}
+
+/*******************************************************************************
+ * I F R A M E S
+ ******************************************************************************/
+iframe {
+    border: 0;
+}
+iframe.rocket-wysiwyg-detail {
+    width: 100%;
+}
+
+/*******************************************************************************
+ * R E L A T I O N S
+ ******************************************************************************/
+
+.rocket-control-group > .rocket-controls {
+    > .rocket-simple-controls {
+        position: abolute;
+        top: 0;
+        right: 0;
+    }
+    .rocket-control-options {
+        position: absolute;
+        top: 30px;
+        right: 10px;
+        padding: 0;
+        list-style: none;
+        background: white;
+        border: 1px solid $color-gray-6;
+        z-index: 100;
+        > li > .rocket-control {
+            border: none;
+            border-bottom: 1px solid $color-gray-6;
+            background: none;
+            display: block;
+            border-radius: 0;
+            text-align: left;
+            margin: 0;
+            font-weight: normal;
+            &:hover {
+                background-color: $color-gray-8;
+            }
+        }
+        > li:last-child > .rocket-control {
+            border-bottom: none;
+        }
+    }
+}
+.rocket-to-one {
+    > .rocket-selector {
+        > .rocket-relation-label-container,
+        > .rocket-to-one-controls {
+            display: inline-block;
+        }
+    }
+
+}
+
+.rocket-to-one,
+.rocket-to-many {
+    .rocket-control {
+        margin-right: 0.5rem;
+    }
+}
+
+.rocket-relation-label-container {
+    > span {
+        margin-right: 0.5rem;
+        position: relative;
+        top: 0.25rem;
+    }
+}
+
+.rocket-to-many {
+    .rocket-to-many-selected-entries {
+        height: 145px;
+        overflow-y: auto;
+        width: 100%;
+        max-width: 40rem;
+        border: 1px solid $color-gray-6;
+        @include border-radius($border-radius);
+        background-color: $color-bg;
+        margin-bottom: 0.5rem;
+        padding: 0;
+        > li {
+            padding: 0.5rem 0.5rem;
+            border-bottom: 1px solid $color-gray-6;
+            .rocket-control {
+                float: right;
+                position: relative;
+                top: -4px;
+                margin: 0;
+            }
+            &:hover {
+                background-color: $color-gray-8;
+            }
+        }
+        > li:last-child {
+            border-bottom: none;
+        }
+    }
+
+    // controls of to-many
+    .rocket-to-many-controls {
+        padding-left: 0;
+        margin: 0;
+        > li {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    .rocket-to-many-selected-entries,
+    .rocket-to-many-controls {
+        list-style: none;
+    }
+}
+
+/*******************************************************************************
+ * F A   S P E C I A L   I C O N S
+ ******************************************************************************/
+
+// shows the star after required labels
+.rocket-required > label::after {
+    content: " \f069";
+    font-family: FontAwesome;
+    color: $color-gray-6;
+    font-size: 0.75rem;
+    position: relative;
+    top: -0.375rem;
+    font-weight: normal;
+}
+
+// shows a turning cog after each .rocket-loading element
+.rocket-loading::after {
+    position: relative;
+    left: 0.5rem;
+    font-weight: normal;
+    margin-right: 0.75rem;
+    content: "\f013";
+    font-family: FontAwesome;
+    display: inline-block;
+    line-height: 1;
+    -webkit-animation: 2s linear 0s normal none infinite running fa-spin;
+    animation: 2s linear 0s normal none infinite running fa-spin;
+}
+
+.rocket-has-error > label:after {
+    content: "\00a0\f071";
+    font-family: Fontawesome;
+    color: $color-danger;
+    font-size: $font-size-base;
+}
+
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+// margin correction
+.rocket-control-group > .rocket-controls > .rocket-to-one,
+.rocket-controls > .rocket-properties,
+.rocket-controls > div.rocket-type-dependent-entry-form {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+}
+
+/*******************************************************************************
+ * Tablet & up
+ ******************************************************************************/
+
+// makes sure, that .rocket-controls are placed to the right of the labels
+@include media-breakpoint-up('md') {
+    .rocket-option-array,
+    .rocket-properties,
+    .rocket-script-type-selector {
+        > div {
+            > label {
+                display: inline;
+                float: left;
+                width: 15%;
+            }
+            .rocket-controls {
+                /* width needed to ensure, empty cells are not filled */
+                margin-left: 15%;
+                min-height: 1.5rem;
+                width: 85%;
+            }
+        }
+    }
+
+    .rocket-property {
+        > label {
+            float: left;
+        }
+    }
+}

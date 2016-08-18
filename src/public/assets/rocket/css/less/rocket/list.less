@@ -1,0 +1,48 @@
+
+.rocket-tool-panel {
+    position: relative;  
+    background-color: @color-gray-8;
+    padding: @padding-base-horizontal @padding-base-horizontal 0 @padding-base-horizontal;
+    .clearfix();
+}
+
+.rocket-quicksearch-selection, 
+.rocket-filter-selection {
+    margin-bottom: @padding-base;
+    dt,
+    dd,
+    dt,
+    dd {
+        display: inline; 
+    }
+}
+
+.rocket-filter-configuration {
+    margin: 0 -(@padding-base-horizontal);
+    padding: 0 @padding-base-horizontal @padding-base-horizontal;
+    background-color: @color-gray-7;
+    position: relative;
+}
+ 
+.rocket-quicksearch-selection {
+    margin-bottom: @padding-base-vertical;
+    ul {
+        display: inline;
+    }    
+}
+
+.rocket-panel table {
+    margin-bottom: 0;    
+}
+
+
+
+// tablet and up
+@media (min-width: @media-bp-tablet) {
+    #rocket-quicksearch {
+        position: absolute;
+        top: @padding-base;
+        right: 0;
+    }
+    
+}

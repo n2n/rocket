@@ -1,0 +1,52 @@
+.rocket-mail {
+    border-top: 1px solid @color-gray-6; 
+
+}
+.rocket-mail-header {
+    padding: @padding-base-vertical @padding-base-horizontal;
+    cursor: pointer;
+    i.fa {
+        color: @color-gray-5;
+    }
+    &:hover {
+        background-color: @color-gray-7;
+        i.fa {
+            color: @color-primary;
+        }
+    }
+
+
+    
+    > h4 {
+        margin: 0;
+        line-height: @line-height-base;
+    }
+    > h4.rocket-mail-subject,
+    > div {
+        width: 50%;
+        float: left;
+    }
+    
+}
+
+.rocket-mail-properties {
+    padding: 0 @padding-base-horizontal;
+    margin-bottom: 0;
+    > dt {
+        float: left;
+        width: 150px;
+    }
+    > dd {
+        margin-left: 180px;  
+        margin-bottom: @padding-base-vertical;
+    }
+    > .rocket-mail-message-label {
+        display: none;
+    }
+    > .rocket-mail-message {
+        background: white;    
+        padding: @padding-base;
+        margin: @padding-base-vertical -@padding-base 0;
+        font-family: @font-family-monospace;
+    }
+}

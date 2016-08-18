@@ -1,0 +1,147 @@
+<?php
+namespace rocket\spec\ei\component\field\impl\relation\model\mag;
+
+use n2n\dispatch\Dispatchable;
+use n2n\reflection\annotation\AnnoInit;
+use n2n\dispatch\annotation\AnnoDispProperties;
+use n2n\dispatch\annotation\AnnoDispObjectArray;
+use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\dispatch\map\val\impl\ValEnum;
+
+class ToManyForm implements Dispatchable {
+	private static function _annos(AnnoInit $ai) {
+		$ai->c(new AnnoDispProperties('entryIdReps'));
+		$ai->p('currentEntryForms', new AnnoDispObjectArray(
+				function (ToManyForm $toManyForm, $key) { 
+					if (isset($toManyForm->currentEntryForms[$key])) {
+						return $toManyForm->currentEntryForms[$key]; 
+					}
+					return null;
+				}));
+		$ai->p('newEntryForms', new AnnoDispObjectArray(
+				function (ToManyForm $toManyForm, $key) {
+					return $toManyForm->createCurrentEntryForm();
+				}));
+	}
+	
+	private $label;
+	private $min;
+	private $max;
+	private $selectionEnabled = false;
+	private $embeddedAddEnabled = false;
+	
+	private $entryIdReps = array();
+	private $currentEntryForms = array();
+	private $newEntryForms = array();
+
+	public function __construct(string $label, int $min, int $max) {
+		$this->label = $label;
+		$this->min = $min;
+		$this->max = $max;
+	}
+	
+	public function getMin(): int {
+		return $this->min;
+	}
+	
+	public function getMax(): int {
+		return $this->max;
+	}
+	
+	public function setSelectionEnabled(bool $selectionEnabled) {
+		$this->selectionEnabled = $selectionEnabled;
+	}
+	
+	public function isSelectionEnabled(): bool {
+		return $this->selectionEnabled;
+	}
+	
+	public function isEmbeddedAddEnabled() {
+		return $this->entryFormFactory !== null;
+	}
+	
+	public function setEntryFormFactory(EntryFormFactory $entryFormFactory = null) {
+		$this->entryFormFactory = $entryFormFactory;
+	}
+	
+	public function getEntryFormFactory() {
+		return $this->entryFormFactory;
+	}
+	
+	public function getEntryIdReps(): array {
+		return $this->entryIdReps;
+	}
+		public function setEntryIdReps(array $entryIdReps) {
+		$this->entryIdReps = $entryIdReps;
+	}
+	
+	public function areEntryFormsAvailable() {
+		return sizeof($this->currentEntryForms) || sizeof($this->newEntryForms);
+	}
+	
+	public function isCurrentUnsetAllowed() {
+		return $this->currentUnsetAllowed;
+	}
+
+	public function hasCurrentEntryForms() {
+		return (boolean) sizeof($this->newEntryForms);
+	}
+	
+	public function setCurrentEntryForms(array $currentEntryForms) { 
+		$this->currentEntryForms = $currentEntryForms;
+	}
+	
+	public function getCurrentEntryForms() {
+		return $this->currentEntryForms;
+	}
+	
+	public function setAvailableNewEntryForms(array $availableNewEntryForms) {
+		$this->newEntryForms = $availableNewEntryForms;
+	}
+	
+	public function getAvailableNewEntryFormNum() {
+		return sizeof($this->newEntryForms);
+	}
+	
+	public function hasNewEntryForms() {
+		return (boolean) sizeof($this->newEntryForms);
+	}
+	
+	public function setNewEntryForms(array $newEntryForms) {
+		$this->newEntryForms = $newEntryForms;
+	}
+	
+	public function getNewEntryForms() {
+		return $this->newEntryForms;
+	}
+	
+	private function _validation(BindingDefinition $bd) {
+		if (sizeof($this->entryIdOptions)) {
+			$bd->val('entryIdReps', new ValEnum(array_keys($this->entryIdOptions)));
+		}
+		
+		$that = $this;
+		
+		if (!$this->currentUnsetAllowed) {
+			$bd->closure(function (array $currentEntryForms, BindingErrors $be) use ($that) {
+				if (sizeof($that->currentEntryForms) != sizeof($currentEntryForms)) {
+					$be->addError('currentEntryForms', new Message('Not allowed to unset current.'));
+				}
+			});
+		}
+		
+		$bd->closure(function (array $entryIdReps, array $currentEntryForms, array $newEntryForms, BindingErrors $be) use ($that) {
+			$num = sizeof($entryIdReps) + sizeof($currentEntryForms) + sizeof($newEntryForms);
+			
+			if ($that->min !== null && $that->min > $num) {
+				$be->addError('newEntryForms', new MessageCode('ei_impl_field_array_size_min_err', 
+						array('field' => $that->label, 'min' => $that->min)));
+			}
+			
+			if ($that->max !== null && $that->max < $num) {
+				$be->addError('newEntryForms', new MessageCode('ei_impl_field_array_size_max_err', 
+						array('field' => $that->label, 'max' => $that->max)));
+			}
+		});
+	}
+}

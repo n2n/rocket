@@ -1,0 +1,143 @@
+.rocket-critmod-configuration {
+    max-height: calc(100vh - 190px);
+    overflow-y: auto;
+    padding-bottom: $padding-base;
+}
+
+.rocket-critmod-commands,
+.rocket-critmod-item .n2n-option-collection {
+    @include list-unstyled();
+    margin: 0;
+}
+
+.rocket-critmod-commands {
+    li {
+        display: inline-block;
+        float: left;
+        margin-right: $padding-base-vertical;
+    }
+}
+
+.rocket-sort,
+.rocket-filter-groups,
+.rocket-filter-group-controls,
+.rocket-filter-field-items,
+.rocket-multi-add-entries {
+    padding: 0;
+    list-style: none;
+
+}
+
+.rocket-filter-groups {
+    @include clearfix();
+}
+
+.rocket-filter-group,
+.rocket-filter-field-item {
+    @include clearfix();
+    position: relative;
+    margin-left: 50px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    // box for the arrow down. see how height is built!
+    &::before {
+        position: absolute;
+        top: 15px;
+        left: -30px;
+        width: 30px;
+        height: calc(100% - -32px);
+        content: ' ';
+        border-left: 1px solid $color-gray-4;
+        border-top: 1px solid $color-gray-4;
+    }
+    // do not display the labels of the first level. deeper labels are shown
+    > div > label {
+        display: none;
+    }
+    // box to display the and/or selection
+    > .rocket-filter-field-text-and-or {
+        position: absolute;
+        top: 30px;
+        left: -50px;
+        background-color: $color-bg;
+        border: 1px solid $color-gray-4;
+        width: 40px;
+        text-align: center;
+        font-size: $font-size-sm;
+    }
+}
+
+.rocket-filter-group:last-child > .rocket-filter-field-text-and-or {
+    display: none;
+}
+
+.rocket-filter-group:last-child {
+    margin-bottom: 16px;
+}
+
+.rocket-filter-group {
+    padding: $padding-base;
+    border-color: $color-gray-4;
+}
+
+.rocket-filter-group-controls {
+    @include clearfix();
+    position: relative;
+    z-index: 10;
+    li {
+        display: inline;
+        float: left;
+        margin-right: $padding-base-vertical;
+    }
+}
+
+.rocket-filter-field-item {
+    > div {
+        display: inline;
+        float: left;
+        margin-right: $spacer;
+        > .rocket-control {
+            display: inline-block;
+        }
+    }
+}
+
+.rocket-filter-field-id {
+    display: inline-block;
+    padding: $padding-base-vertical $padding-base-horizontal;
+    min-width: 120px;
+}
+
+.rocket-multi-add-entries {
+    background-color: $color-bg;
+    border: 1px solid $color-gray-4;
+    > li {
+        border-bottom: 1px solid $color-gray-4;
+        > a {
+            display: block;
+            padding: $padding-base-vertical $padding-base-horizontal;
+            color: $color-text;
+        }
+        > a:hover {
+            background-color: $color-gray-8;
+        }
+    }
+    > li:last-child {
+        border-bottom: none;
+    }
+}
+
+.rocket-sort-container {
+    margin-bottom: $padding-base;
+}
+
+.rocket-empty-sort-constraint {
+    > span {
+        min-width: 100px;
+        display: inline-block;
+    }
+}
+
+.rocket-empty-sort-constraint {
+    margin-bottom: $padding-base;
+}

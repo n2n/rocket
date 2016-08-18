@@ -1,0 +1,74 @@
+// styles for login screen
+
+#rocket-login {
+    background: url("../img/rocket-login-bg-logo-small.png") no-repeat scroll 0 0%, url("../img/rocket-login-bg-small.png") repeat scroll 0 0%, none repeat scroll 0 0 #ECE9E5;
+}
+
+#rocket-login-container {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+}
+
+#rocket-logo-container {
+    position: relative;
+
+    > a {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+}
+
+#rocket-login-form-container {
+    background-color: #FFFFFF;
+    margin: 0 auto;
+    max-width: 320px;
+    overflow: auto;
+    padding: $padding-base;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+}
+
+.rocket-login-form {
+    margin-top: $spacer;
+    input {
+        width: 100%;
+    }
+    > ul {
+        padding: 0;
+        > li {
+            @include list-unstyled();
+            padding: 0;
+            margin-bottom: $spacer;
+            > label {
+                position: absolute;
+                left: 0;
+                right: 0;
+                > i {
+                    position: absolute;
+                    top: $input-height-lg / 3;
+                    right: $spacer * 2;
+                    font-size: $font-size-lg;
+                    color: $color-gray-6;
+                    z-index: 100000;
+                }
+                span {
+                    display: none;
+                }
+                &.rocket-label-active {
+                    > i {
+                         color: $color-primary;
+                    }
+                }
+            }
+            > .rocket-controls {
+                padding: 0;
+            }
+        }
+    }
+}

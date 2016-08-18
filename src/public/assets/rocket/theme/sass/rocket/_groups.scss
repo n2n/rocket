@@ -1,0 +1,64 @@
+.rocket-aside-container {
+    // @include clearfix();
+}
+.rocket-control-group {
+    width: calc(100% - 1.5rem);
+}
+
+.rocket-control-group,
+.rocket-control-group-aside,
+.rocket-control-group-main {
+    margin: 0.75rem;
+    border: 1px solid $color-gray-3;
+    background-color: rgba(79,74,70,0.08);
+    padding: 0;
+    > label {
+        display: block !important;
+        width: auto !important;
+        float: none !important;
+        padding: $padding-base-vertical 0.75rem;
+        margin: 0 !important;
+        background-color: $color-gray-3;
+        color: $color-bg;
+        font-weight: bold;
+    }
+    > .rocket-controls {
+        padding: 0 0.75rem;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    &.rocket-highlighted {
+        border-color: $color-danger;
+        box-shadow: 0px 0px 0px 3px rgba($color-danger,0.75);
+    }
+}
+
+@include media-breakpoint-up('lg') {
+
+    .rocket-main-bundle,
+    .rocket-aside-bundle {
+        float: left;
+        margin: 0 !important;
+    }
+
+    .rocket-main-bundle {
+        width: 70%;
+    }
+
+    .rocket-aside-bundle {
+        width: 30%;
+    }
+
+    .rocket-control-group-aside > .rocket-controls {
+        label {
+            display: block;
+            width: 100%;
+        }
+        .rocket-controls {
+            margin-left: 0;
+            padding: 0 0.75rem;
+            width: 100%;
+        }
+    }
+
+}

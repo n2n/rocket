@@ -1,0 +1,65 @@
+{
+    "specs": {
+        "rocket-content-item": {
+            "type": "entity",
+            "entity": "rocket\\spec\\ei\\component\\field\\impl\\ci\\model\\ContentItem",
+            "dataSourceName": "default",
+            "label": "Content Item",
+            "pluralLabel": "Content Item",
+            "defaultSort": [],
+            "fields": {
+                "panel": {
+                    "class": "rocket\\spec\\ei\\component\\field\\impl\\string\\StringEiField",
+                    "props": {
+                        "displayInOverview": false,
+                        "displayInDetailView": false,
+                        "displayInEditView": false,
+                        "displayInAddView": false,
+                        "helpText": null,
+                        "readOnly": false,
+                        "required": true,
+                        "draft": false,
+                        "translation": false,
+                        "maxlength": null,
+                        "multiline": false
+                    },
+                    "label": "Panel",
+                    "objectProperty": "panel",
+                    "entityProperty": "panel"
+                },
+                "orderIndex": {
+                    "class": "rocket\\spec\\ei\\component\\field\\impl\\numeric\\IntegerEiField",
+                    "props": {
+                        "displayInOverview": false,
+                        "displayInDetailView": false,
+                        "displayInEditView": false,
+                        "displayInAddView": false,
+                        "helpText": null,
+                        "readOnly": false,
+                        "required": true,
+                        "draft": false,
+                        "translation": false,
+                        "maxlength": null,
+                        "multiline": false
+                    },
+                    "label": "Order Index",
+                    "objectProperty": "orderIndex",
+                    "entityProperty": "orderIndex"
+                },
+                "type": {
+                    "class": "rocket\\spec\\ei\\component\\field\\impl\\meta\\TypeEiField",
+                    "props": {
+                        "displayInOverview": false,
+                        "displayInDetailView": true
+                    },
+                    "label": "Type"
+                }
+            },
+            "commands": [],
+            "modificators": [],
+            "defaultMaskId": null
+        }
+    },
+    "commonEiMasks": [],
+    "menuItems": []
+}

@@ -1,0 +1,92 @@
+.rocket-content-item-option > div.rocket-controls,
+.rocket-content-items > div.rocket-controls {
+    background: white !important;    
+}
+
+.rocket-content-item-panel {
+    > label {
+        display: block;
+        padding: 0 @padding-base-horizontal;
+        width: 100% !important;
+        float: none !important;
+        font-size: @font-size-large;
+        background: transparent !important;
+    }
+}
+
+form .rocket-controls .rocket-option-array > .rocket-content-item-panel > label {
+    padding-left: 0 !important;
+}
+
+// last insert button (the one without a content item)
+.rocket-content-item-panel > .rocket-content-item-panel-insert-ci button.rocket-control-full {
+    margin-top: @padding-base-vertical;
+}
+
+.rocket-content-item-panel-insert-ci {
+    padding: 0 @padding-base-horizontal @padding-base-horizontal;
+    > button.rocket-control-full {
+        background-color: @color-bg;
+        padding: @padding-base-horizontal;
+        height: auto;
+        width: 100%;
+        text-align: left;
+        border-style: dashed;
+        color: @color-text-muted;
+        &:hover {
+            color: @color-success;    
+        }
+        &.rocket-command-insert-ci-open {
+            color: @color-success;
+            border-style: solid;
+            border-bottom: 0;
+            border-radius: @border-radius-base @border-radius-base 0 0;
+            margin-bottom: -1px;
+        }
+    }
+}
+
+// fist class for detail screen
+// second class for edit screen
+.rocket-content-items .rocket-controls,
+.rocket-content-item-header {
+     > label {
+        display: block;  
+        margin-left: @padding-base-horizontal;
+        width: auto !important;
+        float: none !important;
+        background: rgba(79,74,70,0.1);
+        padding: @padding-base-vertical @padding-base-horizontal;
+    }   
+}
+
+.rocket-content-item-header {
+    .rocket-simple-controls {
+        position: absolute;
+        top: 2px;
+        right: @padding-base-horizontal;
+        > li {
+            margin-left: @padding-base-horizontal !important;
+            padding: 0;
+        }
+    }
+}
+
+ul.rocket-dd-menu-open {
+    border: 1px solid @color-gray-4;
+    border-radius: 0 0 @border-radius-base @border-radius-base;
+    > li {
+        border-top: 1px solid @color-gray-4;
+        padding: 0;
+        > a {
+            display: block;
+            background-color: @color-gray-8;
+            color: @color-text;
+            padding: @padding-base-vertical @padding-base-horizontal;
+            &:hover {
+                color: @color-primary;
+                background-color: @color-gray-7;
+            }
+        }
+    }
+}

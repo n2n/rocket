@@ -1,0 +1,48 @@
+ul.rocket-fake-input {
+    background: @color-bg;
+    border: 1px solid @input-border;
+    padding: @padding-base-vertical;
+    border-radius: @border-radius-base;
+    .clearfix();
+    li {
+        display: inline;
+        padding: 0;
+        float: left;
+        input[type="text"] {
+            border: none;
+            min-width: 5px;
+            box-shadow: none;
+        }
+        input[type="button"] {
+            padding: 0;
+            min-width: 15px;
+            height: 16px;
+            border: none;
+            background: transparent;
+        }
+        &.rocket-knownStringPattern-placeholder {
+            .button-variant(@btn-default-color, @btn-default-bg-color, @btn-default-border-color);
+            padding: 0 0 0 @padding-base-vertical;
+            border-radius: @border-radius-base;
+            border: 1px solid @btn-default-border-color;
+            font-weight: bold;
+            > button {
+                border: none;
+                background: transparent;
+            }
+        }  
+    } 
+}
+
+ul.rocket-placeholder-tag-list {
+    li {
+        display: inline;
+        float: left;
+        margin-right: @padding-base;
+    }    
+}
+
+ul.rocket-config-list-menu-group {
+    list-style: none;
+    padding: 0;
+}

@@ -1,0 +1,62 @@
+#rocket-breadcrumb {
+    padding: 0;
+    margin: 0 0 $spacer 1px;
+    list-style: none;
+    border-radius: $border-radius;
+    @include clearfix();
+
+    > li {
+        display: inline-block;
+        float: left;
+        margin: 0;
+
+        > a {
+            background-color: $color-bg;
+            color: $color-primary;
+            border: 1px solid $color-gray-6;
+            padding: 5px $padding-base 5px ($padding-base / 2);
+            position: relative;
+            font-size: $font-size-sm;
+            margin-left: -1px;
+            &:after {
+                display: block;
+                width: 0;
+                height: 0;
+                border-top: 12px solid transparent;           /* Go big on the size, and let overflow hide */
+                border-bottom: 12px solid transparent;
+                border-left: 6px solid $color-bg;
+                position: absolute;
+                top: 50%;
+                margin-top: -12px;
+                right: -6px;
+                z-index: 1;
+                content: "\00a0";
+            }
+            &:before {
+            	content: "\00a0";
+            	display: block;
+            	width: 0;
+            	height: 0;
+            	border-top: 12px solid transparent;
+            	border-bottom: 12px solid transparent;
+            	border-left: 6px solid $color-gray-6;
+            	position: absolute;
+            	top: 50%;
+            	margin-top: -12px;
+            	margin-left: 1px;
+            	right: -7px;
+            	z-index: 1;
+            }
+        }
+        + li a {
+            padding-left: $padding-base-horizontal;
+        }
+    }
+    > li.rocket-breadcrumb-active > a {
+        background-color: $color-gray-6;
+        color: $color-text;
+        &:after {
+            border-left-color: $color-gray-6;
+        }
+    }
+}

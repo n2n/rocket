@@ -1,0 +1,70 @@
+
+// background color for root tree
+.rocket-tree-level-0 {
+    > td,
+    > th {
+        background-color: $color-gray-7;
+    }
+}
+
+// intents for treelevels above 0
+.rocket-tree-level-1 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 2 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-2 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 4 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-3 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 6 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-4 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 8 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-5 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 10 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-6 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 12 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-7 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 14 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-8 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 16 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-9 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 18 + $padding-base-vertical)
+    }
+}
+.rocket-tree-level-10 {
+    > .rocket-property:first-child,
+    :not(.rocket-property) + .rocket-property {
+        padding-left: ($padding-base * 20 + $padding-base-vertical)
+    }
+}

@@ -1,0 +1,103 @@
+.rocket-content-items {
+    margin: 0 -0.5rem;
+}
+
+
+.rocket-gui-field-contentItems {
+    > label {
+        width: 100% !important;
+        display: block !important;
+        float: none !important;
+    }
+    > .rocket-controls {
+        margin: 0 !important;
+    }
+
+}
+
+.rocket-content-item-panel {
+    background: $color-bg;
+    padding: 1rem;
+    > h4 {
+        font-size: $font-size-lg;
+    }
+    border: none;
+}
+
+.rocket-entry-form-command {
+    margin: 0.75rem 0;
+    > button.rocket-control-full {
+        background-color: $color-bg;
+        padding: $padding-base-horizontal;
+        height: auto;
+        width: 100%;
+        text-align: left;
+        border-style: dashed;
+        color: $color-text-muted;
+        &:hover {
+            color: $color-success;
+        }
+        &.rocket-command-insert-open {
+            color: $color-success;
+            border-style: solid;
+            border-bottom: 0;
+            border-radius: $border-radius $border-radius 0 0;
+            margin-bottom: -1px;
+        }
+    }
+    > ul {
+        padding: 0;
+        list-style: none;
+    }
+}
+
+
+
+.rocket-embedded {
+    background-color: $color-gray-8;
+    margin-bottom: 1rem;
+    border: 1px solid $color-gray-6;
+}
+
+// fist class for detail screen
+// second class for edit screen
+.rocket-content-items .rocket-controls,
+.rocket-entry-form-header {
+     > label {
+        display: block;
+        width: auto !important;
+        float: none !important;
+        background: rgba(79,74,70,0.1);
+        padding: $padding-base-vertical $padding-base-horizontal;
+    }
+}
+
+.rocket-entry-form-header {
+    .rocket-simple-controls {
+        position: absolute;
+        top: 1px;
+        right: $padding-base-horizontal;
+        > li {
+            padding: 0;
+        }
+    }
+}
+
+ul.rocket-dd-menu-open {
+    border: 1px solid $color-gray-4;
+    border-radius: 0 0 $border-radius $border-radius;
+    > li {
+        border-top: 1px solid $color-gray-4;
+        padding: 0;
+        > a {
+            display: block;
+            background-color: $color-gray-8;
+            color: $color-text;
+            padding: $padding-base-vertical $padding-base-horizontal;
+            &:hover {
+                color: $color-primary;
+                background-color: $color-gray-7;
+            }
+        }
+    }
+}
