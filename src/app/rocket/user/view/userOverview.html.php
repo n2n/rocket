@@ -1,0 +1,71 @@
+<?php 
+	use rocket\user\bo\User;
+use n2n\ui\Raw;
+	
+	$view->useTemplate('core\view\template.html', array('title' => $view->getL10nText('user_title')));
+	
+	$users = $view->getParam('users');
+	$loggedInUser = $view->getParam('loggedInUser');
+	$view->assert($loggedInUser instanceof User);
+?>
+
+<div class="rocket-panel">
+	<h3><?php $html->l10nText('user_title') ?></h3>
+	<table class="rocket-list">
+		<thead>
+			<tr>
+				<th><?php $html->l10nText('common_id_label') ?></th>
+				<th><?php $html->l10nText('user_nick_label') ?></th>
+				<th><?php $html->l10nText('common_name_label') ?></th>
+				<th><?php $html->l10nText('user_email_label') ?></th>
+				<th><?php $html->l10nText('user_access_type_label') ?></th>
+				<th><?php $html->l10nText('common_list_tools_label') ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($users as $user): $view->assert($user instanceof User)?>
+				<tr>
+					<td><?php $html->esc($user->getId()) ?></td>
+					<td><?php $html->esc($user->getNick()) ?></td>
+					<td><?php $html->esc($user->getFirstname()) ?> <?php $html->esc($user->getLastname()) ?></td>
+					<td><?php $html->esc($user->getEmail()) ?></td>
+					<td><?php $html->esc($user->getType()) ?></td>
+					<td>
+						<ul class="rocket-simple-controls">
+							<?php if ($loggedInUser->isSuperAdmin() || $user->equals($loggedInUser)): ?>
+								<li>
+									<?php $html->linkToController(array('edit', $user->getId()), 
+											new n2n\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_label') . '</span>'),
+											array('title' => $view->getL10nText('user_edit_tooltip'),
+													'class' => 'rocket-control-warning')) ?>
+								</li>
+							<?php endif ?>
+							<?php if ($loggedInUser->isSuperAdmin() && !$user->equals($loggedInUser)): ?>
+								<li>
+									<?php $html->linkToController(array('delete', $user->getId()), 
+											new n2n\ui\Raw('<i class="fa fa-times"></i><span>' . $view->getL10nText('user_delete_label') . '</span>'),
+											array('title' => $view->getL10nText('user_delete_tooltip'), 
+													'data-rocket-confirm-msg' => $view->getL10nText('user_delete_confirm', array('user' => $user->getNick())),
+													'data-rocket-confirm-ok-label' => $view->getL10nText('common_yes_label'),
+													'data-rocket-confirm-cancel-label' => $view->getL10nText('common_no_label'),
+													'class' => 'rocket-control-danger')) ?>
+								</li>
+							<?php endif ?>
+						</ul>
+					</td>
+				</tr>
+			<?php endforeach ?>	
+		</tbody>
+	</table>
+</div>
+<?php if ($loggedInUser->isSuperAdmin()): ?>
+	<div id="rocket-page-controls">
+		<ul >
+			<li>
+				<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i><span>' 
+								. $view->getL10nText('user_add_label') . '</span>'), 
+						array('class' => 'rocket-control-success rocket-important')) ?>
+			</li>
+		</ul>
+	</div>
+<?php endif ?>

@@ -1,0 +1,109 @@
+<?php
+namespace rocket\tool\xml;
+
+class MailItem {
+	
+	private $dateTime;
+	private $to = '';
+	private $from = '';
+	private $cc = '';
+	private $bcc = '';
+	private $replyTo = '';
+	private $attachments = array();
+	private $message = '';
+	private $subject = '';
+	/**
+	 *
+	 * @param string $severity
+	 * @param NN6DateTime $dateTime
+	 */
+	public function __construct(\DateTime $dateTime) {
+		$this->dateTime = $dateTime;
+	}
+	/**
+	 *
+	 * @return NN6DateTime
+	 */
+	public function getDateTime() {
+		return $this->dateTime;
+	}
+	public function getTo() {
+		return $this->to;
+	}
+
+	public function setTo($to) {
+		$this->to .= $to;
+	}
+
+	public function getFrom() {
+		return $this->from;
+	}
+
+	public function setFrom($from) {
+		$this->from .= $from;
+	}
+
+	public function getCc() {
+		return $this->cc;
+	}
+
+	public function setCc($cc) {
+		$this->cc .= $cc;
+	}
+
+	public function getBcc() {
+		return $this->bcc;
+	}
+
+	public function setBcc($bcc) {
+		$this->bcc .= $bcc;
+	}
+
+	public function getReplyTo() {
+		return $this->replyTo;
+	}
+
+	public function setReplyTo($replyTo) {
+		$this->replyTo .= $replyTo;
+	}
+	
+	public function hasReplyTo() {
+		return (bool) trim($this->replyTo);
+	}
+
+	public function getAttachments() {
+		return $this->attachments;
+	}
+
+	public function setAttachments($attachments) {
+		$this->attachments = $attachments;
+	}
+
+	public function setDateTime($dateTime) {
+		$this->dateTime = $dateTime;
+	}
+
+	public function addAttachment(MailAttachmentItem $attachment) {
+		$this->attachments[] = $attachment;
+	}
+	
+	public function getMessage() {
+		return $this->message;
+	}
+
+	public function setMessage($message) {
+		$this->message .= $message;
+	}
+
+	public function getSubject() {
+		return $this->subject;
+	}
+
+	public function setSubject($subject) {
+		$this->subject .= $subject;
+	}
+	
+	public function hasAttachments() {
+		return (count($this->attachments) > 0);
+	}
+}

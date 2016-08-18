@@ -1,0 +1,29 @@
+{
+    "menuGroups": {
+        "Tree": {
+            "itusch-treetusch": "Treetusch"
+        },
+        "asdfsaf": {
+            "itusch-itusch": "Itusch",
+            "itusch-category": "Kategorie",
+            "itusch-itusch0": "Item",
+            "itusch-custom": "Custom",
+            "itusch-custom2": "Custom2",
+            "itusch-otusch": "Otusch",
+            "itusch-mtusch": "Mtusch"
+        }
+    },
+    "unsealedScripts": {
+        "1": "itusch-category",
+        "3": "itusch-treetusch",
+        "4": "itusch-itusch",
+        "5": "itusch-itusch0",
+        "6": "itusch-linkitem",
+        "7": "itusch-imageitem",
+        "8": "itusch-boringci",
+        "9": "itusch-boxci",
+        "10": "itusch-otusch",
+        "11": "itusch-mtusch",
+        "12": "itusch-etusch"
+    }
+}
