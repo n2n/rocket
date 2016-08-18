@@ -30,13 +30,13 @@ use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use rocket\spec\ei\component\field\impl\relation\command\RelationAjahEiCommand;
-use n2n\http\Request;
+use n2n\web\http\Request;
 use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahHook;
 use rocket\spec\ei\component\field\impl\relation\command\RelationAjahController;
 use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahController;
 use n2n\util\uri\Url;
 use rocket\spec\ei\EiUtils;
-use n2n\http\HttpContext;
+use n2n\web\http\HttpContext;
 
 class SelectEiFieldRelation extends EiFieldRelation {
 	private $embeddedAddEnabled = false;

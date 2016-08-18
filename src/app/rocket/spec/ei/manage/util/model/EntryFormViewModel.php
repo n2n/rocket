@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\EiState;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
-use n2n\dispatch\map\PropertyPathPart;
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\MappingResult;
+use n2n\web\dispatch\map\PropertyPathPart;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\MappingResult;
 use rocket\spec\ei\manage\EntryGui;
 
 class EntryFormViewModel {

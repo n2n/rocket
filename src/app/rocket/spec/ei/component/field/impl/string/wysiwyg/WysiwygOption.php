@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\PropertyPath;
-use n2n\dispatch\mag\impl\model\StringMag;
-use n2n\ui\UiComponent;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\web\ui\UiComponent;
 
 class WysiwygOption extends StringMag {
 	

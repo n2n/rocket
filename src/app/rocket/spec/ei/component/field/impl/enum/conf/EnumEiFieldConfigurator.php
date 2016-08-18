@@ -22,18 +22,18 @@
 namespace rocket\spec\ei\component\field\impl\enum\conf;
 
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
-use n2n\dispatch\mag\impl\model\ChoicesMapMag;
+use n2n\web\dispatch\mag\impl\model\ChoicesMapMag;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\enum\EnumEiField;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\component\IndependentEiComponent;
 use n2n\util\config\LenientAttributeReader;
-use n2n\dispatch\mag\MagCollection;
-use n2n\dispatch\mag\impl\model\MagCollectionArrayMag;
-use n2n\dispatch\mag\impl\model\StringMag;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\impl\model\MagCollectionArrayMag;
+use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
 
 // @todo validate if attributes are arrays

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\adapter;
 
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 
 interface StatelessEditable extends StatelessDisplayable {

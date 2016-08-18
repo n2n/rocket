@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\field\impl\l10n;
 
 use n2n\l10n\N2nLocale;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\component\field\SortableEiField;
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\EntrySourceInfo; 
@@ -40,11 +40,11 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiState;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use n2n\N2N;
+use n2n\core\N2N;
 use rocket\spec\ei\component\field\GenericEiField;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 

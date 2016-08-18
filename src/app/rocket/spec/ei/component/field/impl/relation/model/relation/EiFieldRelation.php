@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\persistence\orm\property\impl\relation\MappedRelation;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\EiRelation;
-use n2n\http\controller\ControllerContext;
+use n2n\web\http\controller\ControllerContext;
 use n2n\persistence\orm\CascadeType;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiSpec;
@@ -49,7 +49,7 @@ use rocket\spec\ei\EiThing;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
-use n2n\http\HttpContext;
+use n2n\web\http\HttpContext;
 use n2n\l10n\N2nLocale;
 
 abstract class EiFieldRelation {

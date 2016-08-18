@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\spec\ei\manage\EiHtmlBuilder;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	use rocket\spec\ei\component\command\impl\tree\model\TreeListModel;
 	
 	$view = HtmlView::view($this);

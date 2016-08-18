@@ -28,8 +28,8 @@ use rocket\spec\ei\manage\critmod\sort\SortData;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
-use n2n\dispatch\Dispatchable;
-use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\Dispatchable;
+use n2n\web\dispatch\map\bind\BindingDefinition;
 
 class CritmodForm implements Dispatchable {	
 	private $critmodSaveDao;

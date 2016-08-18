@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\ei\component\field\impl\file;
 
-use n2n\ui\view\impl\html\Link;
+use n2n\web\ui\view\impl\html\Link;
 use rocket\spec\ei\manage\control\IconType;
-use n2n\ui\view\impl\html\HtmlElement;
+use n2n\web\ui\view\impl\html\HtmlElement;
 use n2n\l10n\N2nLocale;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\impl\file\command\ThumbEiCommand;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
@@ -39,12 +39,12 @@ use n2n\reflection\CastUtils;
 use n2n\io\managed\File;
 use rocket\spec\ei\component\field\impl\file\conf\FileEiFieldConfigurator;
 use n2n\io\managed\img\impl\ThSt;
-use n2n\dispatch\mag\impl\model\FileMag;
+use n2n\web\dispatch\mag\impl\model\FileMag;
 use rocket\spec\ei\manage\EiObject;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
-use n2n\ui\view\impl\html\HtmlBuilder;
+use n2n\web\ui\view\impl\html\HtmlBuilder;
 
 class FileEiField extends DraftableEiFieldAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';

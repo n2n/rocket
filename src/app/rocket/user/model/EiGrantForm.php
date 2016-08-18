@@ -22,15 +22,15 @@
 namespace rocket\user\model;
 
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\N2nLocale;
 use rocket\user\bo\EiPrivilegeGrant;
 use rocket\user\bo\EiGrant;
 use rocket\spec\security\PrivilegeDefinition;
-use n2n\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
-use n2n\dispatch\map\bind\BindingDefinition;
-use n2n\dispatch\annotation\AnnoDispObjectArray;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 
 class EiGrantForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

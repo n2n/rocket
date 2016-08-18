@@ -22,9 +22,9 @@
 namespace rocket\spec\ei\manage\critmod\filter;
 
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use n2n\l10n\N2nLocale;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 
 interface FilterField {
 	/**
@@ -35,7 +35,7 @@ interface FilterField {
 	/**
 	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\util\config\LenientAttributeReader}
 	 * recommended.
-	 * @return \n2n\dispatch\mag\MagCollection 
+	 * @return \n2n\web\dispatch\mag\MagCollection 
 	 */
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable;
 

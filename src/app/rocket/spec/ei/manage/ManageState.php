@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\http\controller\ControllerContext;
+use n2n\web\http\controller\ControllerContext;
 use n2n\model\RequestScoped;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\EiState;

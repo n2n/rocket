@@ -26,14 +26,14 @@ use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\component\impl\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\MagCollection;
-use n2n\dispatch\mag\impl\model\NumericMag;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\impl\model\NumericMag;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\uri\Path;
 use rocket\spec\ei\component\command\impl\common\controller\OverviewController;
 use rocket\spec\ei\component\EiConfigurator;
-use n2n\dispatch\mag\impl\model\MagForm;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\uri\Url;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {

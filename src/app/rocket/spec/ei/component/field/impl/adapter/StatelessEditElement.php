@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\adapter;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\Editable;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 
 class StatelessEditElement extends StatelessDisplayElement implements Editable {

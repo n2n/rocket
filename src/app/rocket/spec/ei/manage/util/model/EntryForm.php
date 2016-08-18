@@ -22,19 +22,19 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\dispatch\annotation\AnnoDispProperties;
-use n2n\dispatch\map\bind\BindingDefinition;
-use n2n\dispatch\map\bind\MappingDefinition;
-use n2n\dispatch\map\val\impl\ValEnum;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\map\bind\MappingDefinition;
+use n2n\web\dispatch\map\val\impl\ValEnum;
 use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
-use n2n\dispatch\annotation\AnnoDispObjectArray;
-use n2n\dispatch\map\PropertyPathPart;
+use n2n\web\dispatch\annotation\AnnoDispObjectArray;
+use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\spec\ei\manage\EiState;
-use n2n\dispatch\map\MappingResult;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\MappingResult;
+use n2n\web\dispatch\map\PropertyPath;
 
 class EntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

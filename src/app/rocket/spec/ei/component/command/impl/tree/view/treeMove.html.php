@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\spec\ei\component\command\impl\tree\model\TreeMoveModel;
-	use n2n\ui\Raw;
+	use n2n\web\ui\Raw;
 	
 	$treeMoveModel = $view->params['treeMoveModel']; 
 	$view->assert($treeMoveModel instanceof TreeMoveModel);

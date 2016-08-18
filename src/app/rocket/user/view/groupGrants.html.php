@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\user\model\GroupGrantsViewModel;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -60,19 +60,19 @@
 						<ul class="rocket-simple-controls">
 							<li>
 								<?php $html->linkToController(array('fullyeigrant', $groupId, $eiSpecId), 
-										new n2n\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' . $html->getL10nText('user_grant_full_access_label') . '</span>'),
+										new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' . $html->getL10nText('user_grant_full_access_label') . '</span>'),
 										array('title' => $view->getL10nText('user_edit_tooltip'),
 												'class' => 'rocket-control-success')) ?>
 							</li>
 							<li>
 								<?php $html->linkToController(array('restricteigrant', $groupId, $eiSpecId), 
-										new n2n\ui\Raw('<i class="fa fa-wrench"></i><span>' . $html->getL10nText('user_grant_restricted_access_label') . '</span>'),
+										new n2n\web\ui\Raw('<i class="fa fa-wrench"></i><span>' . $html->getL10nText('user_grant_restricted_access_label') . '</span>'),
 										array('title' => $view->getL10nText('user_edit_tooltip'),
 												'class' => 'rocket-control-warning')) ?>
 							</li>
 							<li>
 								<?php $html->linkToController(array('removeeigrant', $groupId, $eiSpecId),
-										new n2n\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' . $view->getL10nText('user_deny_access_label') . '</span>'),
+										new n2n\web\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' . $view->getL10nText('user_deny_access_label') . '</span>'),
 										array('title' => $view->getL10nText('user_edit_tooltip'),
 												'class' => 'rocket-control-danger')) ?>
 							</li>
@@ -94,21 +94,21 @@
 							<ul class="rocket-simple-controls">
 								<li>
 									<?php $html->linkToController(array('fullyeigrant', $groupId, $eiSpecId, $eiMaskItem->getEiMaskId()), 
-											new n2n\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' 
+											new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' 
 													. $html->getL10nText('user_grant_full_access_label') . '</span>'),
 											array('title' => $view->getL10nText('user_edit_tooltip'),
 													'class' => 'rocket-control-success')) ?>
 								</li>
 								<li>
 									<?php $html->linkToController(array('restricteigrant', $groupId, $eiSpecId, $eiMaskItem->getEiMaskId()), 
-											new n2n\ui\Raw('<i class="fa fa-wrench"></i><span>' 
+											new n2n\web\ui\Raw('<i class="fa fa-wrench"></i><span>' 
 													. $html->getL10nText('user_grant_restricted_access_label') . '</span>'),
 											array('title' => $view->getL10nText('user_edit_tooltip'),
 													'class' => 'rocket-control-warning')) ?>
 								</li>
 								<li>
 									<?php $html->linkToController(array('removeeigrant', $groupId, $eiSpecId, $eiMaskItem->getEiMaskId()),
-											new n2n\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' 
+											new n2n\web\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' 
 													. $view->getL10nText('user_deny_access_label') . '</span>'),
 											array('title' => $view->getL10nText('user_edit_tooltip'),
 													'class' => 'rocket-control-danger')) ?>
@@ -133,21 +133,21 @@
 						<ul class="rocket-simple-controls">
 							<li>
 								<?php $html->linkToController(array('fullycustomgrant', $groupId, $customSpecId), 
-										new n2n\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' 
+										new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' 
 												. $html->getL10nText('user_edit_group_label') . '</span>'),
 										array('title' => $html->getL10nText('user_edit_tooltip'),
 												'class' => 'rocket-control-success')) ?>
 							</li>
 							<li>
 								<?php $html->linkToController(array('restrictcustomgrant', $groupId, $customSpecId), 
-										new n2n\ui\Raw('<i class="fa fa-wrench"></i><span>' 
+										new n2n\web\ui\Raw('<i class="fa fa-wrench"></i><span>' 
 												. $html->getL10nText('user_edit_group_label') . '</span>'),
 										array('title' => $html->getL10nText('user_edit_tooltip'),
 												'class' => 'rocket-control-warning')) ?>
 							</li>
 							<li>
 								<?php $html->linkToController(array('removecustomgrant', $groupId, $customSpecId),
-										new n2n\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' 
+										new n2n\web\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' 
 												. $html->getL10nText('user_edit_group_label') . '</span>'),
 										array('title' => $html->getL10nText('user_edit_tooltip'),
 												'class' => 'rocket-control-danger')) ?>

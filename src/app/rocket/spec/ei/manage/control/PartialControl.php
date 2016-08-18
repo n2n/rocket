@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\ei\manage\control;
 
-use n2n\ui\UiComponent;
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\ui\UiComponent;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\PropertyPath;
 
 class PartialControl {
 	private $controlButton;

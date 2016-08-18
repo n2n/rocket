@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\controller;
 
-use n2n\http\controller\ControllerAdapter;
-use n2n\http\controller\impl\ScrController;
-use n2n\http\controller\ParamQuery;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\controller\impl\ScrController;
+use n2n\web\http\controller\ParamQuery;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use rocket\spec\config\UnknownSpecException;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
-use n2n\dispatch\map\InvalidPropertyExpressionException;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\InvalidPropertyExpressionException;
+use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use n2n\ui\view\impl\html\AjahResponse;
+use n2n\web\ui\view\impl\html\AjahResponse;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
@@ -41,7 +41,7 @@ use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\EiState;
 use n2n\util\uri\Url;
-use n2n\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\UnknownFilterFieldException;
@@ -56,7 +56,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\http\controller\impl\ScrController::isValid()
+	 * @see \n2n\web\http\controller\impl\ScrController::isValid()
 	 */
 	public function isValid(): bool {
 		return $this->loginContext->hasCurrentUser()

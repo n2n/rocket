@@ -22,10 +22,10 @@
 namespace rocket\spec\ei\manage\gui;
 
 use n2n\reflection\ArgUtils;
-use n2n\dispatch\map\PropertyPath;
-use n2n\dispatch\mag\MagCollection;
-use n2n\dispatch\map\PropertyPathPart;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\web\dispatch\map\PropertyPathPart;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 use rocket\spec\ei\EiFieldPath;
 
 class GuiElementAssembler {

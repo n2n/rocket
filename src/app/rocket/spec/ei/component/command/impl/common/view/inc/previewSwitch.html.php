@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -51,14 +51,14 @@
 <ul class="rocket-preview-switch">
 	<li>
 		<?php $html->linkToController($detailPathParts,
-				new n2n\ui\Raw('<i class="fa fa-list"></i>' 
+				new n2n\web\ui\Raw('<i class="fa fa-list"></i>' 
 						. $html->getL10nText('ei_impl_entry_info_mode_label')), 
 				array('class' => 'rocket-control rocket-control-dataview' 
 						. ($currentPreviewType === null ? ' rocket-active' : null))) ?>
 	</li>
 	<li>
 		<?php $html->linkToController($previewPathParts, 
-				new n2n\ui\Raw('<i class="fa fa-eye"></i>' 
+				new n2n\web\ui\Raw('<i class="fa fa-eye"></i>' 
 						. $html->getL10nText('ei_impl_entry_preview_mode_label')), 
 				array('class' => 'rocket-control rocket-control-preview' 
 						. ($currentPreviewType !== null ? ' rocket-active' : null))) ?>

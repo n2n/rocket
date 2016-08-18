@@ -67,7 +67,7 @@
 		</li>
 		<li>
 			<?php $html->link($eiState->getOverviewUrl($request),
-					new n2n\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $rocketDtc->translate('common_cancel_label') . '</span>'),
+					new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $rocketDtc->translate('common_cancel_label') . '</span>'),
 							array('class' => 'rocket-control')) ?>
 		</li>
 	</ul>

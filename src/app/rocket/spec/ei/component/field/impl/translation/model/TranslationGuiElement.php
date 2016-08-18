@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\ei\component\field\impl\translation\model;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\manage\gui\ForkedGuiElement;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\Displayable;

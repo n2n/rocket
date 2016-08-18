@@ -24,11 +24,11 @@ namespace rocket\spec\ei\component\field\impl\numeric\component;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
 use rocket\spec\ei\manage\ManageState;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
-use n2n\http\controller\ParamGet;
+use n2n\web\http\controller\ParamGet;
 use rocket\spec\ei\component\command\impl\common\controller\ControllingUtils;
 use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
 

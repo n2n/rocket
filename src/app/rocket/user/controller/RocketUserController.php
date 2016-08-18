@@ -27,11 +27,11 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Breadcrumb;
 use n2n\l10n\MessageContainer;
 use rocket\user\model\RocketUserForm;
-use n2n\http\ForbiddenException;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\ForbiddenException;
+use n2n\web\http\PageNotFoundException;
 use rocket\user\model\LoginContext;
 use rocket\user\model\RocketUserDao;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\user\bo\User;
 use rocket\user\bo\RocketUser;
 

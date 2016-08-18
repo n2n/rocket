@@ -23,17 +23,17 @@ namespace rocket\tool\controller;
 
 use rocket\tool\backup\controller\BackupController;
 
-use n2n\http\controller\ControllerAdapter;
-use n2n\ui\ViewFactory;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\ui\ViewFactory;
 use n2n\l10n\MessageContainer;
 use rocket\tool\mail\controller\MailCenterController;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\core\model\RocketState;
 use rocket\core\model\Breadcrumb;
 use n2n\l10n\DynamicTextCollection;
-use n2n\http\annotation\AnnoPath;
-use n2n\http\ResponseCacheStore;
-use n2n\ui\view\ViewCacheStore;
+use n2n\web\http\annotation\AnnoPath;
+use n2n\web\http\ResponseCacheStore;
+use n2n\web\ui\view\ViewCacheStore;
 
 class ToolController extends ControllerAdapter {
 	private static function _annos(AnnoInit $ai) {

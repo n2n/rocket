@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\meta;
 
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\manage\EiState;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;

@@ -42,9 +42,9 @@ class CustomSpecExtraction extends SpecExtraction {
 		try {
 			$controllerClass = ReflectionUtils::createReflectionClass(
 					$this->getControllerClassName());
-			if (!$controllerClass->implementsInterface('n2n\http\controller\Controller')) {
+			if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
 				throw SpecManager::createInvalidSpecConfigurationException($this->getId(), null, 
-						$constrollerClass->getName() . ' must implement n2n\http\controller\Controller');
+						$constrollerClass->getName() . ' must implement n2n\web\http\controller\Controller');
 			}
 		} catch (TypeNotFoundException $e) {
 			throw SpecManager::createInvalidSpecConfigurationException($this->getId(), $e);

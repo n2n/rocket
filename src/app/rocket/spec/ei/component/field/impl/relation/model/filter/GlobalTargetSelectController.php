@@ -23,11 +23,11 @@ namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
-use n2n\http\controller\impl\ScrController;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\impl\ScrController;
+use n2n\web\http\controller\ControllerAdapter;
 
 class GlobalRelationAjahController extends ControllerAdapter implements ScrController {
 	private $specManager;
@@ -39,7 +39,7 @@ class GlobalRelationAjahController extends ControllerAdapter implements ScrContr
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\http\controller\impl\ScrController::isValid()
+	 * @see \n2n\web\http\controller\impl\ScrController::isValid()
 	 */
 	public function isValid(): bool {
 		return $this->loginContext->hasCurrentUser()

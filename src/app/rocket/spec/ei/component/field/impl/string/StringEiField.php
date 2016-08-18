@@ -22,13 +22,13 @@
 namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\l10n\N2nLocale;
-use n2n\dispatch\mag\impl\model\StringMag;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\field\impl\string\conf\StringEiFieldConfigurator;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiFieldPath;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 

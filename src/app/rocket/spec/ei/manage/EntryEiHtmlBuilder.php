@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\PropertyPath;
-use n2n\ui\view\impl\html\HtmlUtils;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\ui\view\impl\html\HtmlUtils;
 use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
-use n2n\ui\view\impl\html\HtmlElement;
-use n2n\ui\Raw;
+use n2n\web\ui\view\impl\html\HtmlElement;
+use n2n\web\ui\Raw;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\ui\UiComponent;
+use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 

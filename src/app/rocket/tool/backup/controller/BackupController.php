@@ -23,7 +23,7 @@ namespace rocket\tool\backup\controller;
 
 use rocket\tool\backup\BackupManager;
 
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 
 class BackupController extends ControllerAdapter {
 	

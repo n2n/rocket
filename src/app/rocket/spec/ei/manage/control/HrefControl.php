@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\control;
 
-use n2n\ui\UiComponent;
+use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\EiState;
 use n2n\util\uri\Url;
 use rocket\spec\ei\component\command\EiCommand;

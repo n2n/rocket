@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\ui\view\impl\html\HtmlElement;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlElement;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\model\EntryGuiModel;
-use n2n\ui\UiComponent;
+use n2n\web\ui\UiComponent;
 
 class ControlEiHtmlBuilder {
 	private $view;

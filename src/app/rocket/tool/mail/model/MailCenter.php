@@ -26,7 +26,7 @@ use rocket\tool\xml\MailItemSaxHandler;
 use n2n\reflection\ArgUtils;
 use n2n\io\fs\FsPath;
 use rocket\tool\xml\SaxParser;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use rocket\tool\mail\controller\MailArchiveBatchController;

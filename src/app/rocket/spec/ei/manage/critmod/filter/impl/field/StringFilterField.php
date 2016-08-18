@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
-use n2n\dispatch\mag\impl\model\StringMag;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;

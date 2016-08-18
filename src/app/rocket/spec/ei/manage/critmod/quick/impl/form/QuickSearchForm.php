@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\critmod\quick\impl\form;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;

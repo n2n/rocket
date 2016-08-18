@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\spec\ei\manage\draft\Draft;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 
 	$view = HtmlView::view($this);
@@ -45,7 +45,7 @@
 					<p><?php $html->linkToController($entryCommandViewModel->buildPathToDraft($currentDraft), 
 							$html->getL10nText('spec_draft_show_draft_label')) ?></p>
 				</div>
-				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($currentDraft), new n2n\ui\Raw('<i class="fa fa-inbox"></i>'), 
+				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($currentDraft), new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'), 
 						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_load_label'))) ?>
 			</li>
 		</ul>
@@ -58,7 +58,7 @@
 					<p><?php $html->linkToController($entryCommandViewModel->getLiveEntryUrl($request), 
 							$html->getL10nText('spec_draft_show_live_entry_label')) ?></p>
 				</div>
-				<?php $html->link($entryCommandViewModel->getLiveEntryUrl($request), new n2n\ui\Raw('<i class="fa fa-inbox"></i>'),
+				<?php $html->link($entryCommandViewModel->getLiveEntryUrl($request), new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'),
 						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_show_live_entry_label'))) ?>
 		</li>
 	</ul>
@@ -77,7 +77,7 @@
 						<?php // TODO: spec_draft_show_backup_label einbauen ?>
 					</p>
 				</div>
-				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($draft), new n2n\ui\Raw('<i class="fa fa-inbox"></i>'), 
+				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($draft), new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'), 
 						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_load_label'))) ?>
 			</li>
 		<?php endforeach ?>

@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 use n2n\util\ex\IllegalStateException;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
 
 class ContentItemEditable implements Editable {

@@ -26,7 +26,7 @@ use rocket\spec\ei\EiSpec;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\manage\EiState;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiSelection;
@@ -34,7 +34,7 @@ use rocket\spec\config\mask\model\EntryGuiTree;
 use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\model\EntryGuiModel;
-use n2n\ui\view\View;
+use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 
@@ -124,7 +124,7 @@ interface EiMask extends EiThing {
 	/**
 	 * @param EiState $eiState;
 	 * @param EntryListModel $entryListModel
-	 * @return \n2n\ui\view\View
+	 * @return \n2n\web\ui\view\View
 	 */
 	public function createListView(EiState $eiState, array $entryGuis): View;
 
@@ -134,7 +134,7 @@ interface EiMask extends EiThing {
 	/**
 	 * @param EiState $eiState
 	 * @param EntryTreeListModel $entryListModel
-	 * @return \n2n\ui\view\View
+	 * @return \n2n\web\ui\view\View
 	 */
 	public function createTreeView(EiState $eiState, EntryGuiTree $entryGuiTree): View;
 
@@ -150,7 +150,7 @@ interface EiMask extends EiThing {
 	/**
 	 * @param EiState $eiState
 	 * @param EntryModel $entryModel
-	 * @return \n2n\ui\view\View
+	 * @return \n2n\web\ui\view\View
 	 */
 	public function createBulkyView(EiState $eiState, EntryGui $entryGui): View;
 

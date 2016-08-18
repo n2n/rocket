@@ -22,19 +22,19 @@
 namespace rocket\spec\ei\component\command\impl\common\model;
 
 use rocket\spec\ei\manage\critmod\FilterStore;
-use n2n\dispatch\val\ValIsset;
-use n2n\dispatch\map\val\impl\ValEnum;
-use n2n\dispatch\map\BindingConstraints;
+use n2n\web\dispatch\val\ValIsset;
+use n2n\web\dispatch\map\val\impl\ValEnum;
+use n2n\web\dispatch\map\BindingConstraints;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\EiState;
-use n2n\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\l10n\MessageCode;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\MessageContainer;
 use rocket\spec\ei\manage\critmod\FilterForm;
 use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
-use n2n\dispatch\annotation\AnnoDispObject;
+use n2n\web\dispatch\annotation\AnnoDispObject;
 
 class ListFilterForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

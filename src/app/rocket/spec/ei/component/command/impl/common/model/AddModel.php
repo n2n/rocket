@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\model;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\spec\ei\manage\util\model\EntryForm;
 use rocket\spec\ei\manage\util\model\EntryManager;
 use n2n\l10n\MessageContainer;
-use n2n\dispatch\annotation\AnnoDispProperties;
-use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use n2n\persistence\orm\util\NestedSetUtils;

@@ -21,12 +21,12 @@
 	 */
 
 	use n2n\l10n\Message;
-	use n2n\N2N;
-	use n2n\ui\Raw;
+	use n2n\core\N2N;
+	use n2n\web\ui\Raw;
 	use util\jquery\JQueryLibrary;
 	use rocket\core\model\TemplateModel;
-	use n2n\ui\view\impl\html\HtmlView;
-	use n2n\http\nav\Murl;
+	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\web\http\nav\Murl;
 
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($this);

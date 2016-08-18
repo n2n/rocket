@@ -21,16 +21,16 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\controller;
 
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\component\command\impl\common\model\ListModel;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
-use n2n\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterFieldController;
-use n2n\http\controller\ParamQuery;
+use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\command\impl\common\model\DraftListModel;
 

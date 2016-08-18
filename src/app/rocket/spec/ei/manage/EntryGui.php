@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage;
 
 use rocket\spec\ei\manage\model\EntryGuiModel;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
 
 class EntryGui {

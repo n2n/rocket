@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\file;
 
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use rocket\spec\ei\component\field\impl\string\StringEiField;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\impl\file\command\MultiUploadEiCommand;

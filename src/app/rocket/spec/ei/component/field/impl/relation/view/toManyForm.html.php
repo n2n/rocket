@@ -20,15 +20,15 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\dispatch\map\PropertyPath;
+	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyForm;
 
 	/**
-	 * @var \n2n\ui\view\View $view
+	 * @var \n2n\web\ui\view\View $view
 	 */
 	$view = HtmlView::view($view);
 	$html = HtmlView::html($view);

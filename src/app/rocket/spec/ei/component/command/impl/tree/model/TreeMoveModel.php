@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\command\impl\tree\model;
 
 use n2n\persistence\orm\NestedSetUtils;
-use n2n\dispatch\Dispatchable;
-use n2n\dispatch\map\BindingConstraints;
-use n2n\dispatch\map\val\impl\ValEnum;
+use n2n\web\dispatch\Dispatchable;
+use n2n\web\dispatch\map\BindingConstraints;
+use n2n\web\dispatch\map\val\impl\ValEnum;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\DispatchAnnotations;
+use n2n\web\dispatch\DispatchAnnotations;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\EiSelection;
 

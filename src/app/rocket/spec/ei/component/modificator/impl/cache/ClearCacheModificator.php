@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\listener\impl\cache\ClearCacheIndicator;
-use n2n\N2N;
+use n2n\core\N2N;
 
 class ClearCacheModificator extends IndependentEiModificatorAdapter {
 	

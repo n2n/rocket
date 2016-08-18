@@ -22,8 +22,8 @@
 namespace rocket\spec\ei\component\command\impl\tree\controller;
 
 use rocket\spec\ei\manage\ManageState;
-use n2n\http\controller\ControllerAdapter;
-use n2n\http\controller\ParamGet;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ParamGet;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;

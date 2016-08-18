@@ -25,11 +25,11 @@ use rocket\spec\ei\component\IndependentEiComponent;
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\EiSetupProcess;
-use n2n\dispatch\mag\MagDispatchable;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 use rocket\spec\ei\component\EiComponent;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {

@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	use rocket\spec\ei\manage\EiState;
 	use rocket\spec\config\mask\model\GuiSection;
 	use rocket\spec\config\mask\model\GuiFieldOrder;

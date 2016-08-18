@@ -21,7 +21,7 @@
  */
 namespace rocket\user\controller;
 
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Breadcrumb;
 use rocket\user\model\RocketUserGroupListModel;
@@ -30,9 +30,9 @@ use rocket\user\model\RocketUserGroupForm;
 use rocket\core\model\RocketState;
 use rocket\user\model\RocketUserDao;
 use n2n\l10n\MessageContainer;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
-use n2n\N2N;
+use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
 use rocket\user\bo\UserSpecGrant;
 use rocket\spec\config\UnknownSpecException;
@@ -42,7 +42,7 @@ use rocket\spec\ei\component\CritmodFactory;
 use rocket\user\model\EiGrantForm;
 use rocket\spec\ei\component\SecurityFactory;
 use rocket\spec\ei\EiThing;
-use n2n\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 
 class RocketUserGroupController extends ControllerAdapter {

@@ -23,10 +23,10 @@ namespace rocket\spec\ei\component\field\impl\date;
 
 use n2n\persistence\orm\property\impl\DateTimeEntityProperty;
 use n2n\l10n\L10nUtils;
-use n2n\dispatch\mag\impl\model\DateTimeMag;
+use n2n\web\dispatch\mag\impl\model\DateTimeMag;
 use n2n\l10n\DateTimeFormat;
 use n2n\l10n\N2nLocale;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\SortableEiField;
 use n2n\core\container\N2nContext;
@@ -50,7 +50,7 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\manage\EiState;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 

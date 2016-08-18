@@ -22,15 +22,15 @@
 namespace rocket\spec\ei\component\command\impl\common\controller;
 
 use rocket\spec\ei\manage\ManageState;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
-use n2n\http\ParamGet;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\ParamGet;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
-use n2n\http\controller\ParamQuery;
+use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\l10n\MessageContainer;
-use n2n\http\StatusException;
+use n2n\web\http\StatusException;
 
 class DeleteController extends ControllerAdapter {
 	private $dtc;

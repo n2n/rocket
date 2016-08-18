@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\Raw;
+	use n2n\web\ui\Raw;
 	use rocket\tool\controller\ToolController;
 	use rocket\spec\ei\manage\control\IconType;
 	

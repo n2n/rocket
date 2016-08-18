@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\preview\controller;
 
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiSelection;

@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 	use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahHook;
 	use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;

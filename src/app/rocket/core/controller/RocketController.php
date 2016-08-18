@@ -22,23 +22,23 @@
 namespace rocket\core\controller;
 
 use rocket\tool\controller\ToolController;
-use n2n\http\ForbiddenException;
+use n2n\web\http\ForbiddenException;
 use rocket\user\model\LoginContext;
 use rocket\user\controller\RocketUserController;
 use rocket\core\model\RocketState;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use n2n\l10n\N2nLocale;
-use n2n\http\Request;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\Request;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\core\model\DeleteLoginModel;
 use rocket\core\model\Rocket;
 use n2n\core\container\PdoPool;
 use rocket\user\controller\RocketUserGroupController;
-use n2n\http\Response;
+use n2n\web\http\Response;
 use rocket\core\model\UnknownMenuItemException ;
 use n2n\core\config\N2nLocaleConfig;
-use n2n\http\controller\impl\ScrRegistry;
-use n2n\http\controller\impl\ScrBaseController;
+use n2n\web\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrBaseController;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';

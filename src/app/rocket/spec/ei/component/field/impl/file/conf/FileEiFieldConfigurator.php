@@ -25,12 +25,12 @@ use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\impl\file\FileEiField;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\impl\model\StringArrayMag;
-use n2n\dispatch\mag\impl\model\BoolMag;
+use n2n\web\dispatch\mag\impl\model\StringArrayMag;
+use n2n\web\dispatch\mag\impl\model\BoolMag;
 use rocket\spec\ei\component\field\impl\file\command\ThumbEiCommand;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
 

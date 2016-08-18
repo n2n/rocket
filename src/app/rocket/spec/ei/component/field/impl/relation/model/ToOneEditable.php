@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\Editable;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
 
 class ToOneEditable implements Editable {

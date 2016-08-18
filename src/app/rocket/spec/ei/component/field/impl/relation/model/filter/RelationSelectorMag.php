@@ -21,20 +21,20 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 
-use n2n\dispatch\mag\impl\model\MagAdapter;
-use n2n\dispatch\map\PropertyPath;
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\mag\impl\model\MagAdapter;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\reflection\property\AccessProxy;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\util\model\EiUtils;
-use n2n\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use n2n\dispatch\property\impl\ObjectProperty;
+use n2n\web\dispatch\property\impl\ObjectProperty;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\reflection\ArgUtils;
-use n2n\ui\UiComponent;
-use n2n\dispatch\property\ManagedProperty;
+use n2n\web\ui\UiComponent;
+use n2n\web\dispatch\property\ManagedProperty;
 use rocket\spec\ei\component\field\impl\relation\model\mag\EntryLabeler;
 
 class RelationSelectorMag extends MagAdapter  {
@@ -50,7 +50,7 @@ class RelationSelectorMag extends MagAdapter  {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\dispatch\mag\Mag::createManagedProperty($accessProxy)
+	 * @see \n2n\web\dispatch\mag\Mag::createManagedProperty($accessProxy)
 	 */
 	public function createManagedProperty(AccessProxy $accessProxy): ManagedProperty {
 		return new ObjectProperty($accessProxy, false);
@@ -93,7 +93,7 @@ class RelationSelectorMag extends MagAdapter  {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\dispatch\mag\Mag::setupBindingDefinition($bindingDefinition)
+	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition($bindingDefinition)
 	 */
 	public function setupBindingDefinition(BindingDefinition $bindingDefinition) {
 		
@@ -101,7 +101,7 @@ class RelationSelectorMag extends MagAdapter  {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\dispatch\mag\Mag::createUiField($propertyPath, $view)
+	 * @see \n2n\web\dispatch\mag\Mag::createUiField($propertyPath, $view)
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
 		$selectOverviewToolsUrl = $this->targetSelectUrlCallback->__invoke($view->getHttpContext());

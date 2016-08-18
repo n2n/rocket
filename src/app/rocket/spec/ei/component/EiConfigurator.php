@@ -22,9 +22,9 @@
 namespace rocket\spec\ei\component;
 
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 
 interface EiConfigurator {
 

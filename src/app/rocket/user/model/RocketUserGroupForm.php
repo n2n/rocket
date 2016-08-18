@@ -21,17 +21,17 @@
  */
 namespace rocket\user\model;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\config\SpecManager;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\user\bo\RocketUserGroup;
-use n2n\dispatch\map\val\impl\ValNotEmpty;
+use n2n\web\dispatch\map\val\impl\ValNotEmpty;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\map\val\impl\ValArrayKeys;
-use n2n\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\map\val\impl\ValArrayKeys;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
 use rocket\core\model\LayoutManager;
-use n2n\dispatch\map\bind\BindingDefinition;
-use n2n\dispatch\map\bind\MappingDefinition;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\l10n\DynamicTextCollection;
 
 class RocketUserGroupForm implements Dispatchable {

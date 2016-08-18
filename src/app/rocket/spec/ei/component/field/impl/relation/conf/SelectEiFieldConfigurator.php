@@ -22,10 +22,10 @@
 namespace rocket\spec\ei\component\field\impl\relation\conf;
 
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\impl\model\BoolMag;
+use n2n\web\dispatch\mag\impl\model\BoolMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\LenientAttributeReader;
 
 class SelectEiFieldConfigurator extends RelationEiFieldConfigurator {

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\critmod\sort\impl\form;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\critmod\sort\SortData;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use n2n\persistence\orm\criteria\Criteria;

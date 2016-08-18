@@ -22,8 +22,8 @@
 namespace rocket\core\model;
 
 use n2n\core\container\N2nContext;
-use n2n\http\controller\Controller;
-use n2n\http\controller\ControllerContext;
+use n2n\web\http\controller\Controller;
+use n2n\web\http\controller\ControllerContext;
 
 interface MenuItem {
 	

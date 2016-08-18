@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\ei\component\field\impl\file\command\controller;
 
-use n2n\http\controller\ControllerAdapter;
-use n2n\N2N;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\core\N2N;
 use n2n\io\fs\UploadedFileManager;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\RocketState;
 use rocket\spec\ei\manage\EiSelection;

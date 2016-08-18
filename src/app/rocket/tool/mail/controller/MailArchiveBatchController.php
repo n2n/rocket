@@ -24,7 +24,7 @@ namespace rocket\tool\mail\controller;
 use n2n\util\DateUtils;
 use n2n\io\InvalidPathException;
 use rocket\tool\mail\model\MailCenter;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\model\Lookupable;

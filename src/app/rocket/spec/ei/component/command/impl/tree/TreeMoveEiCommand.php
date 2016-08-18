@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\tree;
 
 use rocket\spec\ei\manage\EiState;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\command\impl\tree\controller\TreeMoveController;
 use n2n\l10n\N2nLocale;

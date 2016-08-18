@@ -25,7 +25,7 @@ use rocket\user\bo\RocketUser;
 use n2n\persistence\orm\EntityManager;
 use n2n\model\RequestScoped;
 use rocket\user\bo\Login;
-use n2n\N2N;
+use n2n\core\N2N;
 use rocket\user\bo\RocketUserGroup;
 use rocket\user\bo\UserSpecGrant;
 

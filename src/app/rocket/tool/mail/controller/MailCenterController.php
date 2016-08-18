@@ -21,12 +21,12 @@
  */
 namespace rocket\tool\mail\controller;
 
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\tool\mail\model\MailCenter;
 use n2n\log4php\appender\nn6\AdminMailCenter;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use n2n\io\InvalidPathException;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\l10n\DynamicTextCollection;
 
 class MailCenterController extends ControllerAdapter {

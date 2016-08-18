@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\ei\component\field\impl\enum;
 
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
 use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\component\field\QuickSearchableEiField;
@@ -33,7 +33,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\property\impl\ScalarEntityProperty;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\preview\PreviewModel;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
@@ -46,7 +46,7 @@ use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\manage\EiObject;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\enum\conf\EnumEiFieldConfigurator;

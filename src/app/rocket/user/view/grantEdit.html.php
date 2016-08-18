@@ -20,10 +20,10 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\Raw;
+	use n2n\web\ui\Raw;
 	use rocket\user\model\EiGrantForm;
-	use n2n\ui\view\impl\html\HtmlView;
-	use n2n\ui\view\View;
+	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\View;
 	use rocket\user\view\EiGrantHtmlBuilder;
 	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 

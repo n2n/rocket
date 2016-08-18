@@ -23,14 +23,14 @@ namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahController;
 use rocket\spec\ei\manage\ManageState;
-use n2n\http\controller\ControllerAdapter;
-use n2n\http\controller\ParamQuery;
-use n2n\dispatch\map\PropertyPath;
-use n2n\dispatch\map\InvalidPropertyExpressionException;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ParamQuery;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
-use n2n\http\BadRequestException;
+use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
-use n2n\ui\view\impl\html\AjahResponse;
+use n2n\web\ui\view\impl\html\AjahResponse;
 use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
 
 class RelationAjahController extends ControllerAdapter {

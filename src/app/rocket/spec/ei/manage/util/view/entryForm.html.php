@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\impl\html\HtmlView;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

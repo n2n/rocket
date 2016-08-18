@@ -21,23 +21,23 @@
  */
 namespace rocket\spec\ei\component\field\impl\meta;
 
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\impl\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
 use rocket\spec\ei\component\EiSetupProcess;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\NestedSetUtils;
 use rocket\spec\ei\component\field\impl\string\PathPartEiField;
 use n2n\l10n\DynamicTextCollection;
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\OrmUtils;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\SimpleSelectorConstraint;
 use rocket\spec\ei\manage\gui\Editable;

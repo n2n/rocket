@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\preview\controller;
 
-use n2n\http\controller\Controller;
+use n2n\web\http\controller\Controller;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\EiSelection;

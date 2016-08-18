@@ -23,7 +23,7 @@ namespace rocket\tool\backup;
 
 use n2n\io\fs\FileResourceStream;
 use n2n\core\VarStore;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\io\managed\impl\FileFactory;
 
 class BackupManager {

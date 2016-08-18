@@ -22,14 +22,14 @@
 namespace rocket\spec\security;
 
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 
 interface EiFieldPrivilege {
 	
 	/**
 	 * @param string $propertyName
 	 * @param Attributes $attributes
-	 * @return \n2n\dispatch\mag\Mag
+	 * @return \n2n\web\dispatch\mag\Mag
 	 */
 	public function createMag(string $propertyName, Attributes $attributes): Mag;
 	

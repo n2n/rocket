@@ -33,7 +33,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
-use n2n\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\util\model\GlobalEiUtils;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use rocket\spec\ei\mask\EiMask;

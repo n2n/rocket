@@ -23,13 +23,13 @@ namespace rocket\spec\ei\component\field\impl\date\conf;
 
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use n2n\l10n\DateTimeFormat;
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\field\impl\date\DateTimeEiField;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\EiSetupProcess;
-use n2n\dispatch\mag\MagDispatchable;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 use n2n\util\config\LenientAttributeReader;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;

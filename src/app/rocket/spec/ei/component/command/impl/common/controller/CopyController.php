@@ -24,11 +24,11 @@ namespace rocket\spec\ei\component\command\impl\common\controller;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\ManageState;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use n2n\reflection\ReflectionContext;
 use rocket\spec\ei\EntityChangeEvent;
 use rocket\spec\ei\manage\gui\Editable;
-use n2n\http\NoHttpRefererGivenException;
+use n2n\web\http\NoHttpRefererGivenException;
 use rocket\spec\ei\component\field\ObjectPropertyEiField;
 
 class CopyController extends ControllerAdapter {

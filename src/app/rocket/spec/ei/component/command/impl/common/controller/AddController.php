@@ -23,10 +23,10 @@ namespace rocket\spec\ei\component\command\impl\common\controller;
 
 use rocket\core\model\RocketState;
 use n2n\l10n\DynamicTextCollection;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\component\command\impl\common\model\AddModel;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
-use n2n\http\controller\ParamGet;
+use n2n\web\http\controller\ParamGet;
 
 class AddController extends ControllerAdapter {
 	private $dtc;

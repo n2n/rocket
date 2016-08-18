@@ -22,8 +22,8 @@
 namespace rocket\spec\ei\manage\gui;
 
 use n2n\reflection\ArgUtils;
-use n2n\dispatch\map\PropertyPath;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\Dispatchable;
 
 class EiSelectionGui {
 	private $guiDefinition;
@@ -133,7 +133,7 @@ class EiSelectionGui {
 	}
 	
 	public function setForkMagPropertyPaths(array $forkMagPropertyPaths) {
-		ArgUtils::valArray($forkMagPropertyPaths, 'n2n\dispatch\map\PropertyPath');
+		ArgUtils::valArray($forkMagPropertyPaths, 'n2n\web\dispatch\map\PropertyPath');
 		$this->forkMagPropertyPaths = $forkMagPropertyPaths;
 	}
 

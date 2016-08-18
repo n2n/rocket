@@ -22,7 +22,7 @@
 namespace rocket\tool\backup\controller;
 
 use rocket\tool\backup\BackupManager;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use n2n\util\DateUtils;
 use n2n\util\DateParseException;
 use n2n\model\Lookupable;

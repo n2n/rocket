@@ -23,9 +23,9 @@ namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\EiState;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
-use n2n\http\Request;
+use n2n\web\http\Request;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;

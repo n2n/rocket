@@ -24,7 +24,7 @@ namespace rocket\spec\security;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiFieldPath;
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\AttributesException;
 
 class PrivilegeDefinition {

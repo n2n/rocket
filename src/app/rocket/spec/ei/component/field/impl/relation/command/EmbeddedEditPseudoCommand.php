@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\command;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\ei\manage\EiState;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use n2n\l10n\Lstr;

@@ -22,14 +22,14 @@
 namespace rocket\spec\ei\manage\gui;
 
 use rocket\spec\ei\manage\EiState;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\EiFieldPath;
 use n2n\reflection\ArgUtils;
-use n2n\http\Request;
+use n2n\web\http\Request;
 use n2n\reflection\magic\MagicMethodInvoker;
-use n2n\http\HttpContext;
+use n2n\web\http\HttpContext;
 
 class EntrySourceInfo {
 	private $eiMapping;

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\gui;
 
 use n2n\util\ex\IllegalStateException;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 
 interface Editable extends Savable {
 	/**
@@ -32,7 +32,7 @@ interface Editable extends Savable {
 	
 	/**
 	 * @param string $propertyName
-	 * @return \n2n\dispatch\mag\Mag
+	 * @return \n2n\web\dispatch\mag\Mag
 	 * @throws IllegalStateException if Method has already been called.
 	 */
 	public function createMag(string $propertyName): Mag;

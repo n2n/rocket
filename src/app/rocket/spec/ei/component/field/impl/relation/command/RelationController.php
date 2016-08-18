@@ -23,9 +23,9 @@ namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\RocketState;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\EiSelection;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use rocket\spec\ei\manage\util\model\EiStateUtils;

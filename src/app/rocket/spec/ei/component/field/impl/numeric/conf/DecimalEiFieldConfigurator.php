@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\numeric\conf;
 
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\impl\model\NumericMag;
+use n2n\web\dispatch\mag\impl\model\NumericMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\numeric\DecimalEiField;

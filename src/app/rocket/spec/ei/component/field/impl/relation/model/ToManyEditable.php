@@ -25,7 +25,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
 
 class ToManyEditable implements Editable {

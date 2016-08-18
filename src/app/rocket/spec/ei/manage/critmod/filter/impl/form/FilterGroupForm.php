@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\form;
 
-use n2n\dispatch\Dispatchable;
-use n2n\dispatch\map\bind\MappingDefinition;
+use n2n\web\dispatch\Dispatchable;
+use n2n\web\dispatch\map\bind\MappingDefinition;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use n2n\dispatch\map\bind\BindingErrors;
-use n2n\dispatch\mag\MagDispatchable;
-use n2n\dispatch\map\MappingResult;
-use n2n\dispatch\DispatchContext;
+use n2n\web\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\map\MappingResult;
+use n2n\web\dispatch\DispatchContext;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\annotation\AnnoDispObjectArray;
+use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\util\config\Attributes;
-use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\map\bind\BindingDefinition;
 
 class FilterGroupForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

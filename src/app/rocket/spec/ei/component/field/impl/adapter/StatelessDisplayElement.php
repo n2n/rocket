@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\adapter;
 
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;

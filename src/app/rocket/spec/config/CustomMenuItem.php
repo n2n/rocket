@@ -23,8 +23,8 @@ namespace rocket\spec\config;
 
 use rocket\core\model\MenuItem;
 use n2n\core\container\N2nContext;
-use n2n\http\controller\ControllerContext;
-use n2n\http\controller\Controller;
+use n2n\web\http\controller\ControllerContext;
+use n2n\web\http\controller\Controller;
 
 class CustomMenuItem implements MenuItem {
 	private $id;

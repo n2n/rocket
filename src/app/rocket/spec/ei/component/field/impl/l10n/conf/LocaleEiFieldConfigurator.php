@@ -23,8 +23,8 @@ namespace rocket\spec\ei\component\field\impl\l10n\conf;
 
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\l10n\N2nLocaleEiField;
-use n2n\dispatch\option\impl\model\BoolMag;
-use n2n\dispatch\option\impl\model\StringArrayMag;
+use n2n\web\dispatch\option\impl\model\BoolMag;
+use n2n\web\dispatch\option\impl\model\StringArrayMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\modificator\impl\l10n\N2nLocaleEiModificator;

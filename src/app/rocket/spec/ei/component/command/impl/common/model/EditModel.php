@@ -23,10 +23,10 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 
 use n2n\reflection\annotation\AnnoInit;
 use rocket\spec\ei\manage\util\model\EntryForm;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\MessageContainer;
-use n2n\dispatch\annotation\AnnoDispProperties;
-use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use rocket\spec\ei\manage\mapping\EiMapping;

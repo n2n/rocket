@@ -22,17 +22,17 @@
 namespace rocket\spec\ei\component\field\impl\translation\model;
 
 use n2n\reflection\property\AccessProxy;
-use n2n\dispatch\mag\impl\model\MagAdapter;
-use n2n\dispatch\property\impl\ScalarProperty;
+use n2n\web\dispatch\mag\impl\model\MagAdapter;
+use n2n\web\dispatch\property\impl\ScalarProperty;
 use rocket\spec\ei\manage\gui\Displayable;
-use n2n\dispatch\map\PropertyPath;
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\PropertyPathPart;
-use n2n\dispatch\map\bind\BindingDefinition;
-use n2n\dispatch\property\ManagedProperty;
-use n2n\ui\UiComponent;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\PropertyPathPart;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\property\ManagedProperty;
+use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
-use n2n\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\map\bind\BindingErrors;
 
 class TranslationMag extends MagAdapter {
 	private $displayables = array();
@@ -58,7 +58,7 @@ class TranslationMag extends MagAdapter {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \n2n\dispatch\mag\Mag::setupBindingDefinition()
+	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition()
 	 */
 	public function setupBindingDefinition(BindingDefinition $bd) {
 		$basePropertyPath = $bd->getPropertyPath()->reduced(1);

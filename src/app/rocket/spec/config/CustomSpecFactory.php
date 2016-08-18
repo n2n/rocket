@@ -39,9 +39,9 @@ class CustomSpecFactory {
 			throw $this->createControllerException($customSpecExtraction, null, $e);
 		}
 		
-		if (!$controllerClass->implementsInterface('n2n\http\controller\Controller')) {
+		if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
 			throw self::createControllerException($customSpecExtraction, $constrollerClass->getName()
-					. ' must implement n2n\http\controller\Controller');
+					. ' must implement n2n\web\http\controller\Controller');
 		}
 		
 		return new CustomSpec($customSpecExtraction->getId(), $customSpecExtraction->getModuleNamespace(), $controllerClass);

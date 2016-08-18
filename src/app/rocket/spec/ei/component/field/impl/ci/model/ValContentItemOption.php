@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\ei\component\field\impl\ci\model;
 
-use n2n\dispatch\map\PropertyPathPart;
-use n2n\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\map\PropertyPathPart;
+use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\l10n\MessageCode;
-use n2n\dispatch\map\PropertyPath;
-use n2n\dispatch\map\val\SimplePropertyValidator;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\val\SimplePropertyValidator;
 
 class ValContentItemOption extends SimplePropertyValidator {
 	private $panelConfigs;
@@ -34,7 +34,7 @@ class ValContentItemOption extends SimplePropertyValidator {
 		$this->panelConfigs = $panelConfigs;
 	}
 	/* (non-PHPdoc)
-	 * @see \n2n\dispatch\val\SimplePropertyValidator::validateValue()
+	 * @see \n2n\web\dispatch\val\SimplePropertyValidator::validateValue()
 	 */
 	protected function validateValue($mapValue) {
 		return;	

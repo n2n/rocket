@@ -22,7 +22,7 @@
 namespace rocket\user\model;
 
 use n2n\l10n\MessageContainer;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\model\RequestScoped;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\model\annotation\AnnoSessionScoped;

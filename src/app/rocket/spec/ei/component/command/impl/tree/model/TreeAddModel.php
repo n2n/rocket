@@ -30,7 +30,7 @@ use rocket\spec\ei\manage\util\model\EntryManager;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use n2n\l10n\MessageContainer;
 use n2n\persistence\orm\model\EntityModel;
-use n2n\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
 
 class TreeAddModel extends AddModel {
 	private static function _annos(AnnoInit $ai) {

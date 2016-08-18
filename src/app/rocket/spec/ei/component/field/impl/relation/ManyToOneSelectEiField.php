@@ -51,20 +51,20 @@ use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\field\impl\relation\conf\SelectEiFieldConfigurator;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiMappingFilterField;
-use n2n\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewAjahController;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
-use n2n\http\Request;
+use n2n\web\http\Request;
 use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\persistence\orm\property\impl\ToOneEntityProperty;
 use n2n\persistence\orm\property\impl\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
-use n2n\http\HttpContext;
+use n2n\web\http\HttpContext;
 
 class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 

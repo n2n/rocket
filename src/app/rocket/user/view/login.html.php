@@ -20,12 +20,12 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\Raw;
+	use n2n\web\ui\Raw;
 	use rocket\user\model\LoginContext;
 	use util\jquery\JQueryLibrary;
 	
 	$loginContext = $view->params['loginContext']; $view->assert($loginContext instanceof LoginContext);
-	$html->meta()->addMeta(array('charset' => n2n\N2N::CHARSET));
+	$html->meta()->addMeta(array('charset' => n2n\core\N2N::CHARSET));
 	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
 	$html->meta()->addCss('css/rocket.css');

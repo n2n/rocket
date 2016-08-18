@@ -24,18 +24,18 @@ namespace rocket\spec\ei\component\field\impl\string\conf;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygEiField;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\impl\model\StringMag;
+use n2n\web\dispatch\mag\impl\model\StringMag;
 use rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygHtmlBuilder;
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\EiComponent;
-use n2n\dispatch\mag\impl\model\StringArrayMag;
-use n2n\dispatch\mag\impl\model\BoolMag;
+use n2n\web\dispatch\mag\impl\model\StringArrayMag;
+use n2n\web\dispatch\mag\impl\model\BoolMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use n2n\util\StringUtils;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 
 class WysiwygEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const OPTION_MODE_KEY = 'mode';

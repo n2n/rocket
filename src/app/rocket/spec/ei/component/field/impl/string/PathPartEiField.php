@@ -22,8 +22,8 @@
 namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\l10n\N2nLocale;
-use n2n\dispatch\mag\impl\model\StringMag;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\impl\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
@@ -32,7 +32,7 @@ use rocket\spec\ei\component\field\impl\string\conf\PathPartEiFieldConfigurator;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\EiConfigurator;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;

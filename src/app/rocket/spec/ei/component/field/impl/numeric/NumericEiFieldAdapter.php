@@ -27,7 +27,7 @@ use rocket\spec\ei\component\field\SortableEiField;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\component\field\FilterableEiField;
 use n2n\l10n\N2nLocale;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\impl\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;

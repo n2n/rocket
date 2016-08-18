@@ -22,15 +22,15 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\manage\util\model\EiUtils;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
-use n2n\dispatch\mag\MagDispatchable;
-use n2n\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
@@ -40,7 +40,7 @@ use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 use rocket\spec\ei\component\field\impl\relation\TargetFilterDef;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;

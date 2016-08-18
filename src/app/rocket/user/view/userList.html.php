@@ -20,10 +20,10 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\Raw;
+	use n2n\web\ui\Raw;
 	use rocket\user\bo\RocketUser;
-	use n2n\ui\view\impl\html\HtmlView;
-	use n2n\ui\view\View;
+	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\View;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -62,7 +62,7 @@
 							<?php if ($loggedInUser->isSuperAdmin() || $user->equals($loggedInUser)): ?>
 								<li>
 									<?php $html->linkToController(array('edit', $user->getId()), 
-											new n2n\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_label') . '</span>'),
+											new n2n\web\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_label') . '</span>'),
 											array('title' => $view->getL10nText('user_edit_tooltip'),
 													'class' => 'rocket-control-warning')) ?>
 								</li>
@@ -70,7 +70,7 @@
 							<?php if ($loggedInUser->isSuperAdmin() && !$user->equals($loggedInUser)): ?>
 								<li>
 									<?php $html->linkToController(array('delete', $user->getId()), 
-											new n2n\ui\Raw('<i class="fa fa-times"></i><span>' . $view->getL10nText('user_delete_label') . '</span>'),
+											new n2n\web\ui\Raw('<i class="fa fa-times"></i><span>' . $view->getL10nText('user_delete_label') . '</span>'),
 											array('title' => $view->getL10nText('user_delete_tooltip'), 
 													'data-rocket-confirm-msg' => $view->getL10nText('user_delete_confirm', array('user' => $user->getNick())),
 													'data-rocket-confirm-ok-label' => $view->getL10nText('common_yes_label'),

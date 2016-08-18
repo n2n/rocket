@@ -22,13 +22,13 @@
 namespace rocket\spec\ei\component\field\impl\numeric;
 
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use n2n\dispatch\mag\impl\model\NumericMag;
+use n2n\web\dispatch\mag\impl\model\NumericMag;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\property\impl\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 
 class IntegerEiField extends NumericEiFieldAdapter {

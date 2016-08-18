@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\ei;
 
-use n2n\http\PageNotFoundException;
-use n2n\http\controller\ControllerAdapter;
-use n2n\http\ForbiddenException;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\ForbiddenException;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\spec\ei\security\InaccessibleControlException;

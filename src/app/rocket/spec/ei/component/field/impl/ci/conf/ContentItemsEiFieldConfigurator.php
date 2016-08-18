@@ -27,10 +27,10 @@ use rocket\spec\ei\component\EiSetupProcess;
 use n2n\core\container\N2nContext;
 use n2n\reflection\CastUtils;
 use n2n\reflection\ReflectionUtils;
-use n2n\dispatch\mag\impl\model\MagCollectionArrayMag;
-use n2n\dispatch\mag\MagCollection;
-use n2n\dispatch\mag\impl\model\StringMag;
-use n2n\dispatch\mag\impl\model\EnumArrayMag;
+use n2n\web\dispatch\mag\impl\model\MagCollectionArrayMag;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\web\dispatch\mag\impl\model\EnumArrayMag;
 use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\util\config\Attributes;
@@ -38,14 +38,14 @@ use rocket\spec\ei\component\field\impl\relation\conf\RelationEiFieldConfigurato
 use rocket\spec\ei\component\field\impl\enum\MultiSelectEiField;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItem;
-use n2n\dispatch\mag\impl\model\MultiSelectMag;
+use n2n\web\dispatch\mag\impl\model\MultiSelectMag;
 use rocket\spec\ei\EiSpec;
 use n2n\reflection\property\TypeConstraint;
-use n2n\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\config\UnknownSpecException;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 use n2n\util\config\LenientAttributeReader;
-use n2n\dispatch\mag\impl\model\NumericMag;
+use n2n\web\dispatch\mag\impl\model\NumericMag;
 use n2n\reflection\ArgUtils;
 
 class ContentItemsEiFieldConfigurator extends RelationEiFieldConfigurator {

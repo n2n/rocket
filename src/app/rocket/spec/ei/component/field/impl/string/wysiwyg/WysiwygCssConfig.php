@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 
 interface WysiwygCssConfig {
 	public function getContentCssPaths(HtmlView $view);

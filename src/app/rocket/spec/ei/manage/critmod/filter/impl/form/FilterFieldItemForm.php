@@ -21,17 +21,17 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\form;
 
-use n2n\dispatch\Dispatchable;
-use n2n\dispatch\map\bind\MappingDefinition;
+use n2n\web\dispatch\Dispatchable;
+use n2n\web\dispatch\map\bind\MappingDefinition;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use n2n\dispatch\map\bind\BindingErrors;
-use n2n\dispatch\mag\MagDispatchable;
-use n2n\dispatch\map\MappingResult;
-use n2n\dispatch\DispatchContext;
+use n2n\web\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\map\MappingResult;
+use n2n\web\dispatch\DispatchContext;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
-use n2n\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\mag\impl\model\MagForm;
 
 class FilterFieldItemForm implements Dispatchable {
 	private $filterItemData;

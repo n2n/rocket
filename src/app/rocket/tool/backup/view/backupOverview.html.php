@@ -20,8 +20,8 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\ui\Raw;
-	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\Raw;
+	use n2n\web\ui\view\impl\html\HtmlView;
 	use n2n\io\fs\FsPath;
 
 	$view = HtmlView::view($view);

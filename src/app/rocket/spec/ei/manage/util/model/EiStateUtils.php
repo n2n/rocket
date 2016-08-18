@@ -69,7 +69,7 @@ class EiStateUtils extends EiUtilsAdapter {
 	
 // 	/**
 // 	 * @throws IllegalStateException;
-// 	 * @return \n2n\http\HttpContext
+// 	 * @return \n2n\web\http\HttpContext
 // 	 */
 // 	public function getHttpContext() {
 // 		if ($this->httpContext !== null) {

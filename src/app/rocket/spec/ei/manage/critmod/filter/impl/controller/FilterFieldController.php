@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\controller;
 
-use n2n\http\controller\ControllerAdapter;
-use n2n\http\controller\ParamQuery;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ParamQuery;
 use rocket\core\model\Rocket;
-use n2n\http\PageNotFoundException;
-use n2n\dispatch\map\InvalidPropertyExpressionException;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\dispatch\map\InvalidPropertyExpressionException;
+use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use n2n\ui\view\impl\html\AjahResponse;
+use n2n\web\ui\view\impl\html\AjahResponse;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;

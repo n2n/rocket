@@ -21,15 +21,15 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\ui\view\impl\html\HtmlView;
-use n2n\dispatch\map\PropertyPath;
+use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
-use n2n\ui\view\impl\html\HtmlUtils;
+use n2n\web\ui\view\impl\html\HtmlUtils;
 use rocket\spec\ei\manage\gui\Displayable;
 use n2n\util\ex\IllegalStateException;
-use n2n\ui\Raw;
-use n2n\ui\view\impl\html\HtmlElement;
-use n2n\ui\UiComponent;
+use n2n\web\ui\Raw;
+use n2n\web\ui\view\impl\html\HtmlElement;
+use n2n\web\ui\UiComponent;
 use n2n\l10n\MessageTranslator;
 
 class FieldEiHtmlBuilder {

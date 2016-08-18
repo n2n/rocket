@@ -21,15 +21,15 @@
  */
 namespace rocket\spec\ei\component\field\impl\numeric;
 
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\persistence\orm\property\impl\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use n2n\dispatch\mag\impl\model\NumericMag;
+use n2n\web\dispatch\mag\impl\model\NumericMag;
 use rocket\spec\ei\component\field\impl\numeric\conf\OrderEiFieldConfigurator;
 use rocket\spec\ei\component\EiConfigurator;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;

@@ -216,7 +216,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable::createOutputUiComponent()
 	 */
-	public function createOutputUiComponent(\n2n\ui\view\impl\html\HtmlView $view, \rocket\spec\ei\manage\gui\FieldSourceInfo $entrySourceInfo) {
+	public function createOutputUiComponent(\n2n\web\ui\view\impl\html\HtmlView $view, \rocket\spec\ei\manage\gui\FieldSourceInfo $entrySourceInfo) {
 		return $view->getHtmlBuilder()->getEsc($entrySourceInfo->getValue());
 	}
 }

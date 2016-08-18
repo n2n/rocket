@@ -22,13 +22,13 @@
 namespace rocket\spec\ei\component\field\impl\file\command\model;
 
 use n2n\io\fs\img\ImageDimension;
-use n2n\dispatch\map\val\impl\ValEnum;
-use n2n\dispatch\map\val\impl\ValNumeric;
+use n2n\web\dispatch\map\val\impl\ValEnum;
+use n2n\web\dispatch\map\val\impl\ValNumeric;
 use n2n\io\managed\img\ImageFile;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\io\img\ImageResource;
 use n2n\util\StringUtils;
-use n2n\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\io\managed\File;
 
 class ThumbModel implements Dispatchable{

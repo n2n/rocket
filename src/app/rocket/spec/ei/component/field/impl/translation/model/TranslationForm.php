@@ -21,18 +21,18 @@
  */
 namespace rocket\spec\ei\component\field\impl\translation\model;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\annotation\AnnoDispObjectArray;
-use n2n\dispatch\mag\MagDispatchable;
-use n2n\dispatch\map\PropertyPath;
-use n2n\dispatch\map\bind\BindingDefinition;
-use n2n\dispatch\map\val\impl\ValArrayKeys;
-use n2n\dispatch\map\val\impl\ValMandatoryArrayKeys;
-use n2n\dispatch\mag\MagCollection;
-use n2n\dispatch\mag\impl\model\MagForm;
-use n2n\dispatch\map\bind\MappingDefinition;
-use n2n\dispatch\annotation\AnnoDispObject;
+use n2n\web\dispatch\annotation\AnnoDispObjectArray;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\map\val\impl\ValArrayKeys;
+use n2n\web\dispatch\map\val\impl\ValMandatoryArrayKeys;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\web\dispatch\map\bind\MappingDefinition;
+use n2n\web\dispatch\annotation\AnnoDispObject;
 
 class TranslationForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

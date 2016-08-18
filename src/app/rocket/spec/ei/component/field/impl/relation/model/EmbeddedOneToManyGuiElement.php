@@ -22,12 +22,12 @@
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use rocket\spec\ei\manage\gui\GuiElement;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
-use n2n\ui\view\impl\html\HtmlElement;
+use n2n\web\ui\view\impl\html\HtmlElement;
 
 class EmbeddedOneToManyGuiElement implements GuiElement {
 	private $label;

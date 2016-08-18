@@ -23,12 +23,12 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\EiState;
-use n2n\dispatch\mag\MagCollection;
+use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoCommand;
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedPseudoCommand;
-use n2n\dispatch\mag\impl\model\BoolMag;
+use n2n\web\dispatch\mag\impl\model\BoolMag;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiSpec;

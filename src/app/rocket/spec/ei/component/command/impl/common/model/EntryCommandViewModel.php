@@ -26,7 +26,7 @@ use n2n\util\uri\Url;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EntryGui;
-use n2n\http\HttpContext;
+use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 

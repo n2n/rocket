@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\model;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\CritmodFactory;
 

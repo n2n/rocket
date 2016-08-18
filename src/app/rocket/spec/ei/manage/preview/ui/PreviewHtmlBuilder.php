@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\ei\preview;
 
-use n2n\ui\Raw;
-use n2n\ui\UiUtils;
-use n2n\dispatch\ui\Form;
+use n2n\web\ui\Raw;
+use n2n\web\ui\UiUtils;
+use n2n\web\dispatch\ui\Form;
 use n2n\persistence\orm\OrmUtils;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\l10n\N2nLocale;
 
 use rocket\spec\ei\component\UnknownEiComponentException;

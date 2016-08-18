@@ -23,9 +23,9 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\annotation\AnnoDispObject;
+use n2n\web\dispatch\annotation\AnnoDispObject;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 

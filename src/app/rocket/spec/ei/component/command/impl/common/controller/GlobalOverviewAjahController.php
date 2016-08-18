@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\controller;
 
-use n2n\http\controller\ControllerAdapter;
-use n2n\http\controller\impl\ScrController;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\controller\impl\ScrController;
 use rocket\user\model\LoginContext;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahController;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\mask\EiMask;
-use n2n\http\ForbiddenException;
+use n2n\web\http\ForbiddenException;
 use rocket\spec\ei\EiCommandPath;
-use n2n\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\EiSpec;
 use rocket\core\model\Rocket;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\util\uri\Url;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\config\UnknownSpecException;
@@ -52,7 +52,7 @@ class GlobalOverviewAjahController extends ControllerAdapter implements ScrContr
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\http\controller\impl\ScrController::isValid()
+	 * @see \n2n\web\http\controller\impl\ScrController::isValid()
 	 */
 	public function isValid(): bool {
 		return ($this->loginContext->hasCurrentUser()

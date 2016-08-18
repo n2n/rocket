@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\mapping;
 interface MappableFork {
 	
 	/**
-	 * @return \n2n\dispatch\map\bind\MappingDefinition 
+	 * @return \n2n\web\dispatch\map\bind\MappingDefinition 
 	 */
 	public function getForkMappingDefinition();
 	

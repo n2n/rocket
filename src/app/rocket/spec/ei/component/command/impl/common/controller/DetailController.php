@@ -23,9 +23,9 @@ namespace rocket\spec\ei\component\command\impl\common\controller;
 
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Breadcrumb;
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DateTimeFormat;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\component\command\impl\common\model\DetailModel;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use rocket\spec\ei\manage\EiSelection;

@@ -21,15 +21,15 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\dispatch\annotation\AnnoDispProperties;
+use n2n\web\dispatch\annotation\AnnoDispProperties;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
-use n2n\dispatch\map\bind\BindingDefinition;
-use n2n\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\dispatch\annotation\AnnoDispObjectArray;
+use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
 class ToManyForm implements Dispatchable {

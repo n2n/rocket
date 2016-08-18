@@ -21,9 +21,9 @@
  */
 namespace rocket\core\model;
 
-use n2n\dispatch\Dispatchable;
+use n2n\web\dispatch\Dispatchable;
 use rocket\user\model\RocketUserDao;
-use n2n\N2N;
+use n2n\core\N2N;
 use n2n\core\container\TransactionManager;
 
 class DeleteLoginModel implements Dispatchable {

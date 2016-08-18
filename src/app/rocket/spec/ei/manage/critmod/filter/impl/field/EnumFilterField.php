@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
-use n2n\dispatch\mag\impl\model\EnumMag;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\impl\model\EnumMag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
 class EnumFilterField extends FilterFieldAdapter {

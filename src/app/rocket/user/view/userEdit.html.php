@@ -21,9 +21,9 @@
 	 */
 
 	use rocket\user\model\RocketUserForm;
-	use n2n\ui\Raw;
-	use n2n\ui\view\impl\html\HtmlView;
-	use n2n\ui\view\View;
+	use n2n\web\ui\Raw;
+	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\web\ui\view\View;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

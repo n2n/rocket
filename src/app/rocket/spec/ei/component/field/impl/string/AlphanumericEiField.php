@@ -28,7 +28,7 @@ use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\manage\EiState;
 use n2n\core\container\N2nContext;

@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\util\config\Attributes;
-use n2n\ui\view\impl\html\HtmlView;
+use n2n\web\ui\view\impl\html\HtmlView;
 use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use n2n\dispatch\mag\impl\model\SecretStringMag;
+use n2n\web\dispatch\mag\impl\model\SecretStringMag;
 use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\crypt\hash\HashUtils;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;

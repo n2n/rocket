@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\field\impl\adapter;
 
 use n2n\util\config\Attributes;
-use n2n\dispatch\mag\impl\model\BoolMag;
+use n2n\web\dispatch\mag\impl\model\BoolMag;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use n2n\util\ex\IllegalStateException;
-use n2n\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\mapping\impl\SimpleMappable;

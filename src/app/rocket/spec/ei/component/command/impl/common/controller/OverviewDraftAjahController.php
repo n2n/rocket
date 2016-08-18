@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\controller;
 
-use n2n\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
-use n2n\http\controller\impl\ScrRegistry;
-use n2n\http\controller\ParamGet;
+use n2n\web\http\controller\impl\ScrRegistry;
+use n2n\web\http\controller\ParamGet;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\critmod\sort\SortData;
-use n2n\http\PageNotFoundException;
+use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
-use n2n\ui\view\impl\html\AjahResponse;
-use n2n\http\controller\ParamQuery;
+use n2n\web\ui\view\impl\html\AjahResponse;
+use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use rocket\spec\ei\component\command\impl\common\model\ListModel;
@@ -45,11 +45,11 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\user\model\LoginContext;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\security\InaccessibleControlException;
-use n2n\http\ForbiddenException;
+use n2n\web\http\ForbiddenException;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
-use n2n\http\controller\impl\ScrController;
-use n2n\N2N;
+use n2n\web\http\controller\impl\ScrController;
+use n2n\core\N2N;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 
 class OverviewDraftAjahController extends ControllerAdapter {
