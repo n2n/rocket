@@ -1,87 +1,116 @@
-<?php 
-	use rocket\user\model\UserForm;
-use n2n\ui\Raw;
+<?php
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
+
+	use rocket\user\model\RocketUserForm;
+	use n2n\ui\Raw;
+	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\ui\view\View;
+
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($this);
+	$formHtml = HtmlView::formHtml($this);
 	
 	$userGroupForm = $view->getParam('userForm'); 
-	$view->assert($userGroupForm instanceof UserForm);
+	$view->assert($userGroupForm instanceof RocketUserForm);
 
-	$user = $userGroupForm->getUser();
+	$rocketUser = $userGroupForm->getRocketUser();
 	
-	$view->useTemplate('core\view\template.html', array('title' => ($userGroupForm->isNew() 
+	$view->useTemplate('~\core\view\template.html', array('title' => ($userGroupForm->isNew() 
 			? $view->getL10nText('user_add_title') : $view->getL10nText('user_edit_title', 
-					array('user' => (string) $user)))));
+					array('user' => (string) $rocketUser)))));
 ?>
 
 <?php $formHtml->open($userGroupForm, null, 'post', array('class' => 'rocket-edit-form'))?>
 	<div class="rocket-panel">
 		<h3><?php $html->l10nText('common_properties_title') ?></h3>
+	
+		<?php $formHtml->messageList() ?>
 			
-		<ul class="rocket-properties">
-			<li>
-				<?php $formHtml->label('user.nick', $html->getL10nText('user_nick_label')) ?>
+		<div class="rocket-properties">
+			<div>
+				<?php $formHtml->label('rocketUser.nick') ?>
 				<div class="rocket-controls">
-					<?php $formHtml->inputField('user.nick', array('maxlength' => 128)) ?>
+					<?php $formHtml->input('rocketUser.nick', array('maxlength' => 128)) ?>
 				</div>
-			</li>
-			<li>
-				<?php $formHtml->label('rawPassword', $html->getL10nText('user_password_label')) ?>
+			</div>
+			<div>
+				<?php $formHtml->label('rawPassword') ?>
 				<div class="rocket-controls">
-					<?php $formHtml->inputField('rawPassword', null, 'password', true) ?>
+					<?php $formHtml->input('rawPassword', null, 'password', true) ?>
 				</div>
-			</li>
-			<li>
-				<?php $formHtml->label('rawPassword2', $html->getL10nText('user_password_confirmation_label')) ?>
+			</div>
+			<div>
+				<?php $formHtml->label('rawPassword2') ?>
 				<div class="rocket-controls">
-					<?php $formHtml->inputField('rawPassword2', null, 'password', true) ?>
+					<?php $formHtml->input('rawPassword2', null, 'password', true) ?>
 				</div>
-			</li>
-			<li>
-				<?php $formHtml->label('user.firstname', $html->getL10nText('user_firstname_label')) ?>
+			</div>
+			<div>
+				<?php $formHtml->label('rocketUser.firstname') ?>
 				<div class="rocket-controls">
-					<?php $formHtml->inputField('user.firstname', array('maxlength' => 32)) ?>
+					<?php $formHtml->input('rocketUser.firstname', array('maxlength' => 32)) ?>
 				</div>
-			</li>
-			<li>
-				<?php $formHtml->label('user.lastname', $html->getL10nText('user_lastname_label')) ?>
+			</div>
+			<div>
+				<?php $formHtml->label('rocketUser.lastname') ?>
 				<div class="rocket-controls">
-					<?php $formHtml->inputField('user.lastname', array('maxlength' => 32)) ?>
+					<?php $formHtml->input('rocketUser.lastname', array('maxlength' => 32)) ?>
 				</div>
-			</li>
-			<li>
-				<?php $formHtml->label('user.email', $html->getL10nText('user_email_label')) ?>
+			</div>
+			<div>
+				<?php $formHtml->label('rocketUser.email') ?>
 				<div class="rocket-controls">
-					<?php $formHtml->inputField('user.email', array('maxlength' => 128), 'email') ?>
+					<?php $formHtml->input('rocketUser.email', array('maxlength' => 128), 'email') ?>
 				</div>
-			</li>
+			</div>
 			
-			<?php if ($userGroupForm->isModifyTypeAllowed()): ?>
-				<li>
-					<?php $formHtml->label('type', $html->getL10nText('user_access_type_label')) ?>
+			<?php if (null !== ($powerOptions = $userGroupForm->getPowerOptions())): ?>
+				<div>
+					<?php $formHtml->label('power') ?>
 					<div class="rocket-controls">
-						<?php $formHtml->select('type', $userGroupForm->getTypeOptions()) ?>
+						<?php $formHtml->select('power', $powerOptions) ?>
 					</div>
-				</li>
+				</div>
 			<?php endif ?>
 			
-			<li>
-				<?php $formHtml->label('userGroupIds', $html->getL10nText('user_assigned_groups_label')) ?>
+			<div>
+				<?php $formHtml->label('rocketUserGroupIds') ?>
 				<div class="rocket-controls">
-					<?php if ($userGroupForm->areGroupsReadOnly()): ?>
-						<ul>
-							<?php foreach ($user->getUserGroups() as $userGroup): ?>
+					<?php $availableRocketUserGroups = $userGroupForm->getAvailableRocketUserGroups() ?>
+					<ul>
+						<?php if ($availableRocketUserGroups === null): ?>
+							<?php foreach ($rocketUser->getRocketUserGroups() as $userGroup): ?>
 								<li><?php $html->out($userGroup->getName()) ?></li>
 							<?php endforeach ?>
-						</ul>
-					<?php else: ?>
-						<ul>
-							<?php foreach ($userGroupForm->getAvaialableUserGroups() as $id => $userGroup): ?>
-								<li><?php $formHtml->inputCheckbox('userGroupIds[' . $id . ']', $id, null, $userGroup->getName())?></li>
+						<?php else: ?>
+							<?php foreach ($availableRocketUserGroups as $id => $userGroup): ?>
+								<li><?php $formHtml->inputCheckbox($formHtml->meta()->propPath('rocketUserGroupIds')
+										->fieldExt($id), $id, null, $userGroup->getName())?></li>
 							<?php endforeach ?>
-						</ul>
-					<?php endif ?>
+						<?php endif ?>
+					</ul>
 				</div>
-			</li>
-		</ul>
+			</div>
+		</div>
 	</div>
 	<div id="rocket-page-controls">	
 		<ul>

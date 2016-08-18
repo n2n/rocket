@@ -1,18 +1,42 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\user\model;
 
-use n2n\core\MessageContainer;
-use n2n\dispatch\DispatchAnnotations;
+use n2n\l10n\MessageContainer;
 use n2n\dispatch\Dispatchable;
-use n2n\reflection\annotation\AnnotationSet;
-use n2n\model\SessionScoped;
+use n2n\model\RequestScoped;
+use n2n\reflection\annotation\AnnoInit;
+use n2n\model\annotation\AnnoSessionScoped;
+use n2n\util\crypt\hash\HashUtils;
+use rocket\user\model\security\RocketUserSecurityManager;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\security\SecurityManager;
 
-class LoginContext implements SessionScoped, Dispatchable {
-	const MAX_LOGIN_ATTEMPTIONS = 5;
-	
-	private static function _annotations(AnnotationSet $as) {
-		$as->m('login', DispatchAnnotations::MANAGED_METHOD);
+class LoginContext implements RequestScoped, Dispatchable {
+	private static function _annos(AnnoInit $ai) {
+		$ai->p('currentUserId', new AnnoSessionScoped());
 	}
+	
+	const MAX_LOGIN_ATTEMPTIONS = 5;
 	
 	protected $nick;
 	protected $rawPassword;
@@ -20,7 +44,7 @@ class LoginContext implements SessionScoped, Dispatchable {
 	private $currentUserId;
 	private $userDao;
 	
-	private function _init(UserDao $userDao) {
+	private function _init(RocketUserDao $userDao) {
 		$this->userDao = $userDao;
 	}
 	
@@ -28,7 +52,7 @@ class LoginContext implements SessionScoped, Dispatchable {
 		$this->userDao = null;
 	}
 	
-	private function _onUnserialize(UserDao $userDao) {
+	private function _onUnserialize(RocketUserDao $userDao) {
 		$this->userDao = $userDao;
 	}
 	
@@ -58,13 +82,18 @@ class LoginContext implements SessionScoped, Dispatchable {
 			return false;
 		} 
 		
-		$currentUser = $this->userDao->getUserByNickAndPassword(
-				$this->getNick(), UserDao::buildPassword($this->getRawPassword()));
-		$this->userDao->createLogin($this->getNick(), $this->getRawPassword(), $currentUser);
-		if (is_null($currentUser)) {
+		$currentUser = null;
+		if ($this->nick !== null) {
+			$currentUser = $this->userDao->getUserByNick($this->getNick());
+		}
+		
+		if ($currentUser === null || !HashUtils::compareHash($this->rawPassword, $currentUser->getPassword())) {
+			$this->userDao->createLogin($this->getNick(), $this->getRawPassword(), null);
 			$messageContainer->addErrorCode('user_invalid_login_err');
 			return false;
 		}
+		
+		$this->userDao->createLogin($this->getNick(), $this->getRawPassword(), $currentUser);
 		$this->rawPassword = null;
 		$this->currentUserId = $currentUser->getId();
 		return true;
@@ -79,6 +108,15 @@ class LoginContext implements SessionScoped, Dispatchable {
 	}
 	
 	public function getCurrentUser() {
+		if ($this->currentUserId === null) return null;
 		return $this->userDao->getUserById($this->currentUserId);
+	}
+	
+	public function getSecurityManager(): SecurityManager {
+		if (null !== ($currentUser = $this->getCurrentUser())) {
+			return new RocketUserSecurityManager($currentUser);
+		}
+		
+		throw new IllegalStateException();
 	}
 }

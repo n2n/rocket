@@ -8,6 +8,4 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 	config.extraAllowedContent = 'dl dt dd';
-	CKEDITOR.config.format_small = {element:"small"};
-	CKEDITOR.config.format_cite = {element:"cite"};
 };

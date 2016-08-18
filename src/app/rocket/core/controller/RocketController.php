@@ -1,46 +1,75 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\core\controller;
 
 use rocket\tool\controller\ToolController;
 use n2n\http\ForbiddenException;
 use rocket\user\model\LoginContext;
-use rocket\user\controller\UserConfigController;
+use rocket\user\controller\RocketUserController;
 use rocket\core\model\RocketState;
-use rocket\script\core\ManageState;
 use n2n\http\PageNotFoundException;
-use rocket\module\controller\ModuleController;
-use rocket\script\config\controller\ScriptsConfigController;
-use n2n\l10n\Locale;
+use n2n\l10n\N2nLocale;
 use n2n\http\Request;
-use n2n\N2N;
-use n2n\http\ControllerAdapter;
+use n2n\http\controller\ControllerAdapter;
 use rocket\core\model\DeleteLoginModel;
 use rocket\core\model\Rocket;
-use n2n\http\HttpStatusException;
-use n2n\persistence\DbhPool;
-use rocket\script\entity\EntityScript;
-use rocket\user\controller\UserGroupConfigController;
+use n2n\core\container\PdoPool;
+use rocket\user\controller\RocketUserGroupController;
 use n2n\http\Response;
-use rocket\script\core\UnknownMenuItemException;
+use rocket\core\model\UnknownMenuItemException ;
+use n2n\core\config\N2nLocaleConfig;
+use n2n\http\controller\impl\ScrRegistry;
+use n2n\http\controller\impl\ScrBaseController;
 
 class RocketController extends ControllerAdapter {
+	const NAME = 'rocket';
+	
 	private $loginContext;
 	
-	private function _init(Request $request, LoginContext $loginContext) {
-		$request->setLocale(new Locale(N2N::getAppConfig()->locale()->getAdminLocaleId()));
+	private function _init(LoginContext $loginContext) {
 		$this->loginContext = $loginContext;
+	}
+	
+	public function prepare(Request $request, N2nLocaleConfig $localeConfig, ScrRegistry $scrRegistry) {
+		$request->setN2nLocale($localeConfig->getAdminN2nLocale());
+		$this->getControllerContext()->setName(self::NAME);
+		$scrRegistry->setBaseUrl($this->getHttpContext()->getControllerContextPath($this->getControllerContext())
+				->ext('scr')->toUrl());
 	}
 	
 	private function verifyUser() {
 		if ($this->loginContext->hasCurrentUser()) return true;
-		$tx = N2N::createTransaction();
+		
+		$this->beginTransaction();
+		
 		if ($this->dispatch($this->loginContext, 'login')) {
-			$tx->commit();
+			$this->commit();
 			$this->refresh();
 			return;
 		}
-		$tx->commit();
-		$this->forward('user\view\login.html', array('loginContext' => $this->loginContext));
+		
+		$this->commit();
+		
+		$this->forward('~\user\view\login.html', array('loginContext' => $this->loginContext));
 	}
 	
 	public function doLogout() {
@@ -52,128 +81,75 @@ class RocketController extends ControllerAdapter {
 		if (!$this->verifyUser()) return;
 		$deleteLoginModel = new DeleteLoginModel(); 
 		$this->dispatch($deleteLoginModel, 'delete');
-		$this->forward('core\view\start.html', array('deleteLoginModel' => $deleteLoginModel));
+		$this->forward('..\view\start.html', array('deleteLoginModel' => $deleteLoginModel));
 	}
 	
-	public function doModules(array $contextCmds, array $cmds) {
-		if (!N2N::isDevelopmentModeOn()) throw new ForbiddenException();
+	public function doUsers(array $delegateParams = array(), RocketUserController $delegateController) {
 		if (!$this->verifyUser()) return;
 		
-		array_push($contextCmds, array_shift($cmds));
-		$configController = new ModuleController($this->getRequest(), $this->getResponse());
-		$configController->execute($cmds, $contextCmds, $this->getN2nContext());
+		$this->delegate($delegateController);
 	}
 	
-	public function doScripts(array $contextCmds, array $cmds) {
-		if (!N2N::isDevelopmentModeOn()) throw new ForbiddenException();
-		if (!$this->verifyUser()) return;
-		
-		array_push($contextCmds, array_shift($cmds));
-		$configController = new ScriptsConfigController($this->getRequest(), $this->getResponse());
-		$configController->execute($cmds, $contextCmds, $this->getN2nContext());
-	}
-	
-	public function doUsers(array $contextCmds, array $cmds) {
-		if (!$this->verifyUser()) return;
-		
-		array_push($contextCmds, array_shift($cmds));
-		$configController = new UserConfigController($this->getRequest(), $this->getResponse());
-		$configController->execute($cmds, $contextCmds, $this->getN2nContext());
-	}
-	
-	public function doUserGroups(array $contextCmds, array $cmds) {
+	public function doUserGroups(array $delegateParams = array(), RocketUserGroupController $delegateController) {
 		if (!$this->verifyUser()) return;
 		
 		if (!$this->loginContext->getCurrentUser()->isAdmin()) {
 			throw new ForbiddenException();
 		}
 		
-		array_push($contextCmds, array_shift($cmds));
-		$configController = new UserGroupConfigController();
-		$configController->execute($cmds, $contextCmds, $this->getN2nContext());
+		$this->delegate($delegateController);
 	}
 	
-	public function doManage($navItemId, array $contextCmds, array $cmds, Rocket $rocket, ManageState $manageState, 
-			RocketState $rocketState, Locale $locale, DbhPool $dbhPool) {
+	public function doManage($navItemId, array $delegateParams = array(), Rocket $rocket, RocketState $rocketState, 
+			N2nLocale $n2nLocale, PdoPool $dbhPool) {
 		if (!$this->verifyUser()) return;
-		
-		array_push($contextCmds, array_shift($cmds));
-		array_push($contextCmds, array_shift($cmds));
 		
 		$menuItem = null;
 		try {
-			$menuItem = $rocket->getScriptManager()->getMenuItemById($navItemId);
+			$menuItem = $rocket->getSpecManager()->getMenuItemById($navItemId);
 		} catch (UnknownMenuItemException $e) {
 			throw new PageNotFoundException('navitem not found', 0, $e);
 		}
 		
-		$script = $rocket->getScriptManager()->getScriptById($menuItem->getScriptId());
+		$rocketState->setActiveMenuItem($menuItem);
 		
+		$this->beginTransaction();
 		
+		$delegateControllerContext = $this->createDelegateContext();
+		$delegateControllerContext->setController($menuItem->lookupController($this->getN2nContext(), 
+				$delegateControllerContext));
 		
-		if ($script instanceof EntityScript) {
-			$mask = null;
-			if (null !== ($maskId = $menuItem->getMaskId())) {
-				$mask = $script->getMaskById($maskId);
-			} else {
-				$mask = $script->getOrCreateDefaultMask();
-			}
-			
-			if (!sizeof($cmds) && strlen($pathExt = $mask->getOverviewCommand()->getOverviewPathExt())) {
-				$this->redirectToController(array('manage', $navItemId, $pathExt));
-				return;
-			}
-		}
+		$this->delegateToControllerContext($delegateControllerContext);
 		
-		$controller = $script->createController();
-		$manageState->setSelectedMenuItem($menuItem);
-		
-		$tx = N2N::createTransaction();
-		
-		// @todo remove this instanceof hack
-		if ($script instanceof EntityScript) {
-			$scriptState = $manageState->createScriptState($script, $controller->getControllerContext());
-			$scriptState->setScriptMask($mask);
-			$em = $script->lookupEntityManager($dbhPool);
-			$manageState->setEntityManager($em);
-// 			$scriptState->setDraftManager($rocket->getOrCreateDraftManager($em));
-			$scriptState->setTranslationManager($rocket->getOrCreateTranslationManager($em));
-			$rocket->listen($em);
-			$script->setupScriptState($scriptState);
-		}
-		
-		try {
-			$controller->execute($cmds, $contextCmds, $this->getN2nContext());
-			$tx->commit();
-		} catch (HttpStatusException $e) {
-			$tx->commit();
-
-			throw $e;
-		}
+		$this->commit();
 	}
 	
-	public function doTools(array $contextCmds, array $cmds) {
+	public function doTools(array $delegateParams = array(), ToolController $toolController) {
 		if (!$this->verifyUser()) return;
 
 		if (!$this->loginContext->getCurrentUser()->isAdmin()) {
 			throw new ForbiddenException();
 		}
 		
-		array_push($contextCmds, array_shift($cmds));
-		$toolController = new ToolController($this->getRequest(), $this->getResponse());
-		$toolController->execute($cmds, $contextCmds, $this->getN2nContext());
+		$this->delegate($toolController);
+	}
+	
+	public function doScr(array $delegateParams, ScrBaseController $scrBaseController) {
+		if (!$this->verifyUser()) return;
+		
+		$this->delegate($scrBaseController);
 	}
 	
 	public function notFound() {
 		if (!$this->verifyUser()) return;
 		
 		$this->getResponse()->setStatus(Response::STATUS_404_NOT_FOUND);
-		$this->forward('core\view\notFound.html');
+		$this->forward('..\view\notFound.html');
 	}
 	
 	public function doAbout() {
 		if (!$this->verifyUser()) return;
 		
-		$this->forward('core\view\about.html');
+		$this->forward('..\view\about.html');
 	}
 }

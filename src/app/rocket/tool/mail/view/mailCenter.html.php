@@ -1,10 +1,31 @@
 <?php
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
+
 	use rocket\tool\xml\MailItem;	
 	use rocket\tool\mail\model\MailCenter;
 	use rocket\tool\mail\controller\MailArchiveBatchController;
 	use n2n\log4php\appender\nn6\AdminMailCenter;
 	use rocket\tool\mail\controller\MailCenterController;
-use n2n\mail\MailUtils;
+	use n2n\mail\MailUtils;
 
 	$mailCenter = $view->getParam('mailCenter');
 	
@@ -16,10 +37,10 @@ use n2n\mail\MailUtils;
 	$numItems = $mailCenter->getNumItemsTotal();
 	
 	$currentFileName = $view->getParam('currentFileName');
-	$view->useTemplate('core\view\template.html', 
+	$view->useTemplate('~\core\view\template.html', 
 			array('title' => $view->getL10nText('tool_mail_center_title')));
 	
-	$html->addJs('js\tools.js');
+	$html->meta()->addJs('js/tools.js');
 	
 	$fileNames = MailCenter::getMailFileNames();
 ?>
@@ -62,7 +83,7 @@ use n2n\mail\MailUtils;
 								<?php for ($i = 1; $i <= $numPages; $i++) : ?>
 									<?php $params = ($currentFileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) ? array() : array(MailCenterController::ACTION_ARCHIVE, $currentFileName) ?>
 									<?php $params = ($i == 1) ? $params : array_merge($params, array($i)) ?>
-									<option value="<?php $html->out($request->getCurrentControllerContextPath($params)) ?>" 
+									<option value="<?php $html->out($html->meta()->getControllerUrl($params)) ?>" 
 											<?php $view->out(($i == $currentPageNum) ? 'selected' : null) ?>>
 											<?php $html->out($i) ?>
 									</option>
@@ -109,7 +130,7 @@ use n2n\mail\MailUtils;
 						</dd>
 					<?php endif ?>
 					<dt class="rocket-mail-message-label"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
-					<dd class="rocket-mail-message"><?php $html->escBr($mailItem->getMessage()) ?></dd>
+					<dd class="rocket-mail-message"><pre style="<?php $html->out('font-family: "Courier";') ?>"><?php $html->esc($mailItem->getMessage()) ?></pre></dd>
 				</dl>
 			</article>
 		<?php endforeach ?>

@@ -1,11 +1,39 @@
-<?php 
-	use n2n\core\Message;
+<?php
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
+
+	use n2n\l10n\Message;
 	use n2n\N2N;
 	use n2n\ui\Raw;
 	use util\jquery\JQueryLibrary;
 	use rocket\core\model\TemplateModel;
+	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\http\nav\Murl;
+
+	$view = HtmlView::view($this);
+	$request = HtmlView::request($this);
+	$html = HtmlView::html($this);
+	$httpContext = HtmlView::httpContext($this);
 	
-	$templateModel = $view->lookup('rocket\core\model\TemplateModel'); 
+	$templateModel = $view->lookup(TemplateModel::class); 
 	$view->assert($templateModel instanceof TemplateModel);
 
 // 	$loginContext = $view->lookup('rocket\user\model\LoginContext'); 
@@ -17,40 +45,42 @@
 // 	$rocketState = $view->lookup('rocket\core\model\RocketState'); 
 // 	$view->assert($rocketState instanceof RocketState);
 	
-// 	$manageState = $view->lookup('rocket\script\core\ManageState'); 
+// 	$manageState = $view->lookup('rocket\spec\ei\manage\ManageState'); 
 // 	$view->assert($manageState instanceof ManageState);
+	 
+	$htmlMeta = $html->meta();
 	
-	$rocketControllerContext = $request->getControllerContextByKey('rocket\core\controller\RocketController');
- 
-	$html->addMeta(array('charset' => N2N::CHARSET));
-	$html->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
-	$html->addMeta(array('content' => 'IE=edge,chrome=1', 'http-equiv' => 'X-UA-Compatible'));
-	$html->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
-	$html->addLibrary(new JQueryLibrary());
-	$html->addCss('css/style.css');
-	$html->addCss('css/font-awesome.css');
-	$html->addJs('js/html5.js');
-	$html->addJs('js/respond.src.js');
-// 	$html->addJs('js/jquery-responsive-table.js');
-	$html->addJs('js/rocket.js');
+	$htmlMeta->addMeta(array('charset' => N2N::CHARSET));
+	$htmlMeta->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
+	$htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
+	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
+	$htmlMeta->addLibrary(new JQueryLibrary(false));
+	$htmlMeta->addCss('css/rocket.css');
+	$htmlMeta->addCss('css/font-awesome.css');
+	$htmlMeta->addJs('js/html5.js', null);
+	$htmlMeta->addJs('js/respond.src.js', null);
+// 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
+	$htmlMeta->addJs('js/n2n-dispatch.js', 'n2n');
+	$htmlMeta->addJs('js/rocket-ts.js', null);
 	
-// 	$scriptManager = $rocket->getScriptManager();
+// 	$scriptManager = $rocket->getSpecManager();
 // 	$menuGroups = $scriptManager->getMenuGroups();
 // 	$selectedMenuItem = $manageState->getSelectedMenuItem();
 // 	$breadcrumbs = $rocketState->getBreadcrumbs();
 // 	$activeBreadcrumb = array_pop($breadcrumbs);
-	$html->addLink(array('rel' => 'shortcut icon', 'href' => $request->getAssetsPath('rocket', array('img', 'favicon.ico'))));
-	$html->addLink(array('rel' => 'apple-touch-icon', 'href' => $request->getAssetsPath('rocket', array('img', 'apple-touch-icon.png'))));
+	$htmlMeta->addLink(array('rel' => 'shortcut icon', 'href' => $httpContext->getAssetsUrl('rocket')->ext(array('img', 'favicon.ico'))));
+	$htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->getAssetsUrl('rocket')->ext(array('img', 'apple-touch-icon.png'))));
 ?>
 <!DOCTYPE html>
-<html lang="<?php $html->out($request->getLocale()->getLanguage()->getShort()) ?>"> 
+<html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>"> 
 	<?php $html->headStart() ?>
 	<?php $html->headEnd() ?>
-	<?php $html->bodyStart(array('data-refresh-path' => $request->getControllerContextPath($rocketControllerContext), 
+	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 
 			'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
 		<header id="rocket-header">
-			<?php $html->linkToController(null, $html->getImageAsset('img/nav-logo-05.png', 'logo'), 
-					array('id' => 'rocket-branding'), null, null, $rocketControllerContext) ?>
+			<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
+					array('id' => 'rocket-branding')) ?>
+					
 			<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
 			<a href="#" id="rocket-conf-nav-toggle" title="<?php $html->text('mobile_nav_title') ?>">
 				<i class="fa fa-navicon"></i>
@@ -58,44 +88,39 @@
 			<nav id="rocket-conf-nav">
 				<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
 				<ul class="rocket-level-1">
-					<?php if (N2N::isDevelopmentModeOn()): ?>
-						<li class="rocket-conf-modules"><?php $html->linkToController('modules', new Raw('<i class="fa fa-puzzle-piece"></i>' . $html->getL10nText('module_title')), 
-								null, null, null, 'rocket\core\controller\RocketController') ?>
-							<ul class="rocket-level-2">
-								<li><?php $html->linkToController('modules', $html->getL10nText('module_title'), 
-										null, null, null, 'rocket\core\controller\RocketController') ?></li>
-								<li><?php $html->linkToController('modules', $html->getL10nText('module_title'), 
-										null, null, null, 'rocket\core\controller\RocketController') ?></li>
-							</ul>		
-						</li>
-						<li class="rocket-conf-scripts"><?php $html->linkToController('scripts', 
-								new Raw('<i class="rocket-conf-nav-icon fa fa-gear"></i>' . $html->getL10nText('script_title')), 
-								null, null, null, 'rocket\core\controller\RocketController') ?></li>
-					<?php endif ?>
 					<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
-						<li class="rocket-conf-users"><?php $html->linkToController('users', 
-								new Raw('<i class="fa fa-user"></i>' . $html->getL10nText('user_title')), 
-									null, null, null, 'rocket\core\controller\RocketController') ?></li>
-						<li class="rocket-conf-users"><?php $html->linkToController('usergroups', 
-								new Raw('<i class="fa fa-group"></i>' . $html->getL10nText('user_groups_title')), 
-								null, null, null, 'rocket\core\controller\RocketController') ?></li>
-						<li class="rocket-conf-tools"><?php $html->linkToController('tools', 
-								new Raw('<i class="fa fa-wrench"></i>' . $html->getL10nText('tool_title')), 
-								null, null, null, 'rocket\core\controller\RocketController') ?></li>
+						<li class="rocket-conf-users">
+							<?php $html->linkStart(Murl::controller('rocket')->pathExt('users')) ?>
+								<i class="fa fa-user"></i><?php $html->text('user_title') ?>
+							<?php $html->linkEnd() ?> 
+						</li>
+						<li class="rocket-conf-users">
+							<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups')) ?>
+								<i class="fa fa-group"></i><?php $html->text('user_groups_title') ?>
+							<?php $html->linkEnd() ?> 
+						</li>
+						<li class="rocket-conf-tools">
+							<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools')) ?>
+								<i class="fa fa-wrench"></i><?php $html->text('tool_title') ?>
+							<?php $html->linkEnd() ?>
+						</li>
 					<?php endif ?>
-					<li class="rocket-conf-about"><?php $html->linkToController('about', 
-							new Raw('<i class="fa fa-info-circle"></i>' . $html->getL10nText('about_title')), 
-							null, null, null, 'rocket\core\controller\RocketController') ?></li>
-					<li class="rocket-conf-about"><?php $html->linkToController(
-							array('users', 'edit', $templateModel->getCurrentUser()->getId()), 
-							new Raw('<i class="fa fa-key"></i>' . $html->getL10nText('user_edit_profile_label')), 
-							array(''), null, null, 'rocket\core\controller\RocketController') ?></li>
+					<li class="rocket-conf-about">
+						<?php $html->linkStart(Murl::controller('rocket')->pathExt('about')) ?>
+							<i class="fa fa-wrench"></i><?php $html->text('about_title') ?>
+						<?php $html->linkEnd() ?>
+					</li>
+					<li class="rocket-conf-profile">
+						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile')) ?> 
+							<i class="fa fa-key"></i><?php $html->text('user_profile_title') ?>
+						<?php $html->linkEnd() ?>
+					</li>
 				</ul>
 			</nav>
-			<?php $html->linkToController(array('logout'), new Raw('<i class="fa fa-sign-out"></i><span class="rocket-logout-text">' 
-						. $html->getL10nText('user_logout_label', 
-					array('user' => (string) $templateModel->getCurrentUser())) . '</span>'), 
-					array('id' => 'rocket-logout'), null, null, $rocketControllerContext) ?>
+			<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('id' => 'rocket-logout')) ?>
+				<i class="fa fa-sign-out"></i><span class="rocket-logout-text"><?php $html->text('user_logout_label', 
+						array('user' => (string) $templateModel->getCurrentUser())) ?></span>
+			<?php $html->linkEnd() ?>
 		</header>
 		<nav id="rocket-global-nav">
 			<h2 class="sr-only"><?php $html->l10nText('manage_nav_title') ?></h2>
@@ -105,11 +130,10 @@
 							<?php $html->esc($navArray['label']) ?></a></h3>
 					<ul>
 						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
-							<li<?php $view->out($templateModel->isMenuItemSelected($menuItem) 
+							<li<?php $view->out($templateModel->isMenuItemActive($menuItem) 
 									? ' class="rocket-nav-group-list-item-active"' : null) ?>>
-								<?php $html->linkToController(array('manage', $menuItem->getId()), 
-										new Raw($html->getEsc($menuItem->getLabel()) . '<span></span>'), null, 
-										null, null, $rocketControllerContext) ?></li>
+								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), $menuItem->determinePathExt($view->getN2nContext())), 
+										new Raw($html->getEsc($menuItem->getLabel()) . '<span></span>')) ?></li>
 						<?php endforeach ?>
 					</ul>
 				</div>
@@ -117,13 +141,13 @@
 		</nav>
 		<nav id="rocket-global-mobile-nav">
 			<select onchange="location.href = this.value">
-				<option value="<?php $html->out($request->getControllerContextPath($rocketControllerContext)) ?>">
+				<option value="<?php $html->out($view->buildUrl(Murl::controller('rocket'))) ?>">
 					<?php $html->text('common_select_label') ?>
 				</option>
 				<?php foreach ($templateModel->getNavArray() as $navArray): ?>
 					<optgroup label="<?php $html->out($navArray['label']) ?>">
 						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
-							<option value="<?php $html->out($request->getControllerContextPath($rocketControllerContext, array('manage', $menuItem->getId()))) ?>" 
+							<option value="<?php $html->out($view->buildUrl(Murl::controller('rocket')->pathExt('manage', $menuItem->getId()))) ?>" 
 									<?php $view->out(isset($selectedMenuItem) && $scriptId == $selectedMenuItem->getId() ? 'selected="selected"' : null) ?>>
 								<?php $html->out($menuItem->getLabel())?>
 							</option>
@@ -159,9 +183,11 @@
 			<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
 			<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
 			
-			<div class="<?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>">
+			<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
+					data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
 				<?php $view->importContentView() ?>
 			</div>
+			
 			<?php if ($view->hasPanel('additional')): ?>
 				<div id="rocket-additional">
 					<?php $view->importPanel('additional') ?>

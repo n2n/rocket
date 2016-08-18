@@ -1,9 +1,35 @@
-<?php 
+<?php
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
+
 	use rocket\user\model\LoginContext;
 	use rocket\core\model\ServerInfoExtractor;
 	use rocket\core\model\DeleteLoginModel;
-use n2n\ui\Raw;
-	
+	use n2n\ui\Raw;
+	use n2n\ui\view\View;
+	use n2n\ui\view\impl\html\HtmlView;
+
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($this);
+	$formHtml = HtmlView::formHtml($this);
 	
 	$deleteLoginModel = $view->getParam('deleteLoginModel', true);
 	$view->assert($deleteLoginModel instanceof DeleteLoginModel);
@@ -15,7 +41,7 @@ use n2n\ui\Raw;
 	$view->assert($loginContext instanceof LoginContext);
 ?>
 <?php
-	$view->useTemplate('core\view\template.html',
+	$view->useTemplate('template.html',
 			array('title' => $view->getL10nText('core_start_title', array('user' => $loginContext->getCurrentUser()))));
 ?>
 <?php if ($loginContext->getCurrentUser()->isAdmin()): ?>
@@ -26,13 +52,13 @@ use n2n\ui\Raw;
 				<div>
 					<div class="rocket-panel">
 						<h3><?php $html->l10nText('core_latest_logins_title') ?></h3>
-						<?php $view->import('core\view\inc\loginTable.html', array('useSuccessfull' => true)) ?>
+						<?php $view->import('inc\loginTable.html', array('useSuccessfull' => true)) ?>
 					</div>
 				</div>
 				<div>
 					<div class="rocket-panel">
 						<h3><?php $html->l10nText('core_failed_logins_title') ?></h3>
-						<?php $view->import('core\view\inc\loginTable.html', array('useSuccessfull' => false)) ?>
+						<?php $view->import('inc\loginTable.html', array('useSuccessfull' => false)) ?>
 					</div>
 				</div>
 			</div>
@@ -75,4 +101,3 @@ use n2n\ui\Raw;
 		</ul>
 	</div>
 <?php endif ?>
-

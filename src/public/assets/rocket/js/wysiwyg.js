@@ -1,7 +1,85 @@
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ * 
+ */
 var linkConfigurations = new Object();
 
 jQuery(document).ready(function($) {
-	(function(){
+	
+	(function() {
+		var initDetail = function(jqElems) {
+			jqElems.each(function() {
+				var jqElem = $(this),
+					jqElemContent = jqElem.prev(".rocket-wysiwyg-content:first"),
+					jqElemIFrameBody = jqElem.contents().find("body:first"),
+					bodyId = jqElem.data("body-id") || null,
+					bodyClass = jqElem.data("body-class") || null,
+					contentsCss = jqElem.data("contents-css") || null;
+					
+				if (null !== contentsCss) {
+					contentsCss = $.parseJSON(contentsCss.replace(/'/g, '"'))
+					var jqElemIFrameHead = jqElem.contents().find("head:first");
+					for (var i in contentsCss) {
+						$("<link />", {
+							"href": contentsCss[i],
+							"media": "screen",
+							"rel": "stylesheet"
+						}).appendTo(jqElemIFrameHead);
+					}
+				}
+				
+				if (bodyId != null) {
+					jqElemIFrameBody.attr("id", bodyId);
+				}
+				
+				if (bodyClass != null) {
+					jqElemIFrameBody.addClass(bodyClass);
+				}
+				var html = jqElemContent.html();
+				jqElem.load(function() {
+					jqElem.contents().find("body:first").html(jqElemContent.html());
+					var containerHeight = jqElem.contents().find("html:first").outerHeight(true, true);
+					containerHeight = (containerHeight > 400) ? 400 : containerHeight;
+					jqElem.height(containerHeight);
+				});
+			});
+		};
+		
+		var initFunction = function() {
+			$(".rocket-wysiwyg-detail").each(function() {
+				var jqElem = $(this);
+				if (jqElem.data("initialized.rocket-wysiwyg-detail")) return;
+				
+				jqElem.data("initialized.rocket-wysiwyg-detail", true);
+				initDetail(jqElem);
+			});
+		}
+		
+		if (n2n != null) {
+			n2n.dispatch.registerCallback(initFunction);
+		}
+		
+		initFunction();
+	})();
+	
+	var w = (function(){
 		function initializeInpage(jqElemsInpageWysiwyg) {
 			if (jqElemsInpageWysiwyg.length == 0) {
 				return;
@@ -277,12 +355,10 @@ jQuery(document).ready(function($) {
 			}
 			
 			if (this.type = Wysiwyg.TYPE_NORMAL) {
-				if (!this.jqElem.data('no-autogrow')) {
-					if (options.extraPlugins.length > 0) {
-						options.extraPlugins += ',';
-					}
-					options.extraPlugins += 'autogrow';
+				if (options.extraPlugins.length > 0) {
+					options.extraPlugins += ',';
 				}
+				options.extraPlugins += 'autogrow';
 				options.removePlugins = 'resize';
 				options.autoGrow_maxHeight = $(window).outerHeight() - 250;
 				if (options.autoGrow_maxHeight > 700) {
@@ -298,76 +374,45 @@ jQuery(document).ready(function($) {
 			return options;
 		}
 		
-		var initDetail = function(jqElems) {
-			jqElems.each(function() {
-				var jqElemContent = $(this).prev(".rocket-wysiwyg-content");
-				var jqElemIFrameBody = $(this).contents().find("body").html(jqElemContent.html());
-				var containerHeight = $(this).contents().find("html").outerHeight(true, true);
-				containerHeight = (containerHeight > 400) ? 400 : containerHeight;
-				$(this).height(containerHeight);
-				var contentsCss = null;
-				var contentsCssUnFormatted = $(this).data("contents-css") || null;
-				var bodyId = $(this).data("body-id") || null;
-				var bodyClass = $(this).data("body-class") || null;
-				if (contentsCssUnFormatted) {
-					var contentsCss = $.parseJSON(contentsCssUnFormatted.replace(/'/g, '"'));
-				}
-				if (contentsCss != null) {
-					var jqElemIFrameHead = $(this).contents().find("head");
-					for (var i in contentsCss) {
-						var jqElemLink = $("<link>").attr("href", contentsCss[i]).attr("media", "screen").attr("rel", "stylesheet");
-						jqElemIFrameHead.append(jqElemLink);
-					}
-				}
-				if (bodyId != null || bodyClass != null) {
-					var jqElemIFrameBody = $(this).contents().find("body");
-					if (bodyId != null) {
-						jqElemIFrameBody.attr("id", bodyId);
-					}
-					if (bodyClass != null) {
-						jqElemIFrameBody.addClass(bodyClass);
-					}
-				}
-			});
-		};
-		
-		$(window).load(function() {
-			initDetail($(".rocket-wysiwyg-detail"));
-		});
-		
 		window.Wysiwyg = Wysiwyg;
 		//register Initializer
-		if (window.rocket != null) {
-			window.rocket.core.contentInitializer.registerInitFunction(function(jqElem) {
-				var jqElemsWysiwyg = jqElem.find(".rocket-wysiwyg-detail");
-				if (jqElemsWysiwyg.length === 0) return;
-				initDetail(jqElemsWysiwyg);
+		var initFunction = function() {
+			$(".rocket-preview-inpage-wysiwyg").each(function() {
+				var jqElem = $(this);
+				if (jqElem.data("initialized.rocket-preview-inpage-wysiwyg")) return;
+				
+				jqElem.data("initialized.rocket-preview-inpage-wysiwyg", true);
+				initializeInpage(jqElem);
 			});
-			
-			window.rocket.core.contentInitializer.registerInitFunction(function(jqElem){
-				var jqElemsInpageWysiwyg = jqElem.find(".rocket-preview-inpage-wysiwyg");
-				if (jqElemsInpageWysiwyg.length > 0) {
-					initializeInpage(jqElemsInpageWysiwyg);
-				}
+
+			$(".rocket-wysiwyg").each(function() {
+				var jqElem = $(this);
+				if (jqElem.data("initialized.rocket-wysiwyg")) return;
+				
+				jqElem.data("initialized.rocket-wysiwyg", true);
 				Wysiwyg.ckHack(jqElem, function() {
-					var jqElemsWysiwyg = jqElem.find(".rocket-wysiwyg");
-					if (jqElemsWysiwyg.length > 0) {
-						initializeWysiwyg(jqElemsWysiwyg);
-					}
+					initializeWysiwyg(jqElem);
 				});
 			});
 		}
-		var jqElemsInpageWysiwyg = $(".rocket-preview-inpage-wysiwyg");
-		var jqElemsWysiwyg = $(".rocket-wysiwyg");
-		
-		if ((jqElemsInpageWysiwyg.length == 0) && (jqElemsWysiwyg.length == 0)) {
-			return;
+
+		if (n2n != null) {
+			n2n.dispatch.registerCallback(initFunction);
 		}
 		
-		(function(){
-			initializeInpage(jqElemsInpageWysiwyg);
-			initializeWysiwyg(jqElemsWysiwyg)
-		})();
+		initFunction();
+	});
 	
-	})();
+	var check = function() {
+		if (typeof CKEDITOR === 'undefined') {
+			setTimeout(function() {
+				check();
+			}, 5);
+		} else {
+			w();
+		}
+	};
+	
+	check();
+	
 });

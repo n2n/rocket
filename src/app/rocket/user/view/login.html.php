@@ -1,18 +1,40 @@
-<?php 
-use n2n\ui\Raw;
-use rocket\user\model\LoginContext;
-use util\jquery\JQueryLibrary;
+<?php
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
 
-$loginContext = $view->params['loginContext']; $view->assert($loginContext instanceof LoginContext);
-$html->addMeta(array('charset' => n2n\N2N::CHARSET));
-$html->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
-$html->addMeta(array('name' => 'robots', 'content' => 'noindex'));
-$html->addCss('css/style.css');
-$html->addCss('css/font-awesome.css');
-$html->addJs('js/html5.js');
-$html->addJs('js/respond.src.js');
-$html->addLibrary(new JQueryLibrary());
-$html->addJs('js/rocket.js');
+	use n2n\ui\Raw;
+	use rocket\user\model\LoginContext;
+	use util\jquery\JQueryLibrary;
+	
+	$loginContext = $view->params['loginContext']; $view->assert($loginContext instanceof LoginContext);
+	$html->meta()->addMeta(array('charset' => n2n\N2N::CHARSET));
+	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
+	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
+	$html->meta()->addCss('css/rocket.css');
+	$html->meta()->addCss('css/font-awesome.css');
+	$html->meta()->addJs('js/html5.js');
+	$html->meta()->addJs('js/respond.src.js');
+	$html->meta()->addLibrary(new JQueryLibrary());
+	$html->meta()->addJs('js/n2n-dispatch.js', 'n2n', true);
+	$html->meta()->addJs('js/rocket-ts.js');
 ?>
 <!DOCTYPE html>
 <html> 
@@ -34,7 +56,7 @@ $html->addJs('js/rocket.js');
 								<span><?php $html->l10nText('user_password_label') ?></span>
 							</label>
 							<div class="rocket-controls">
-								<?php $formHtml->inputField('nick', array('placeholder' => $view->getL10nText('user_nick_label'), 'class' => 'rocket-login-input')) ?>
+								<?php $formHtml->input('nick', array('placeholder' => $view->getL10nText('user_nick_label'), 'class' => 'rocket-login-input input-lg')) ?>
 							</div>
 						</li>
 						<li>
@@ -42,13 +64,13 @@ $html->addJs('js/rocket.js');
 								<i class="fa fa-lock"></i>
 								<span><?php $html->l10nText('user_nick_label') ?></span>
 							</label>
-							<div class="rocket-controls">
-								<?php $formHtml->inputField('rawPassword', array('placeholder' => $view->getL10nText('user_password_label'), 'class' => 'rocket-login-input'), 'password', true) ?>
+							<div class="rocket-controls rocket-control-danger">
+								<?php $formHtml->input('rawPassword', array('placeholder' => $view->getL10nText('user_password_label'), 'class' => 'rocket-login-input input-lg'), 'password', true) ?>
 							</div>
 						</li>
 					</ul>
 					<div class="rocket-form-actions">
-						<?php $formHtml->inputSubmit('login', $view->getL10nText('user_login_label')) ?>
+						<?php $formHtml->inputSubmit('login', $view->getL10nText('user_login_label'), array('class' => 'input-lg rocket-control-warning rocket-control-important')) ?>
 					</div>
 				<?php $formHtml->close() ?>
 			</div>

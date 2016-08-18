@@ -1,13 +1,33 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\tool\mail\controller;
 
-use n2n\http\ControllerAdapter;
+use n2n\http\controller\ControllerAdapter;
 use rocket\tool\mail\model\MailCenter;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\http\PageNotFoundException;
 use n2n\io\InvalidPathException;
 use n2n\N2N;
-use n2n\core\DynamicTextCollection;
+use n2n\l10n\DynamicTextCollection;
 
 class MailCenterController extends ControllerAdapter {
 	const ACTION_ARCHIVE = 'archive';
@@ -23,7 +43,7 @@ class MailCenterController extends ControllerAdapter {
 		if (null !== $currentPageNum) {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
-		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 
+		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter, 
 				'currentFileName' => AdminMailCenter::DEFAULT_MAIL_FILE_NAME));
 	}
 	
@@ -65,12 +85,6 @@ class MailCenterController extends ControllerAdapter {
 			return;
 		} 
 		$this->getResponse()->send($attachment);
-	}
-	
-	public function doCreateArchive(array $contextCmds, array $cmds) {
-		$controller = new MailArchiveBatchController();
-		$contextCmds[] = array_shift($cmds);
-		$controller->execute($cmds, $contextCmds, $this->getN2nContext());
 	}
 	
 }

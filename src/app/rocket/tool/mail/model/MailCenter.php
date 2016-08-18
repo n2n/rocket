@@ -1,16 +1,36 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\tool\mail\model;
 
 use rocket\tool\xml\ItemCountSaxHandler;
 use rocket\tool\xml\MailItemSaxHandler;
-use n2n\reflection\ArgumentUtils;
-use n2n\io\fs\AbstractPath;
+use n2n\reflection\ArgUtils;
+use n2n\io\fs\FsPath;
 use rocket\tool\xml\SaxParser;
 use n2n\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use rocket\tool\mail\controller\MailArchiveBatchController;
-use n2n\io\fs\File;
+use n2n\io\managed\File;
 
 class MailCenter {
 	const NUM_MAILS_PER_PAGE = 15;
@@ -23,7 +43,7 @@ class MailCenter {
 	private $numItemsTotal = 0;
 	private $currentItems;
 	
-	public function __construct(AbstractPath $mailXmlFilePath = null) {
+	public function __construct(FsPath $mailXmlFilePath = null) {
 		$this->mailXmlFilePath = $mailXmlFilePath;
 	}
 	
@@ -32,7 +52,7 @@ class MailCenter {
 	}
 	
 	public function setCurrentPageNum($currentPageNum) {
-		ArgumentUtils::assertTrue(is_numeric($currentPageNum) && $currentPageNum > 0 
+		ArgUtils::assertTrue(is_numeric($currentPageNum) && $currentPageNum > 0 
 				&& $currentPageNum <= $this->getNumPages());
 		$this->currentPageNum = $currentPageNum;
 	}
@@ -84,15 +104,15 @@ class MailCenter {
 		return $mailFileNames;
 	}
 	
-	public static function requestMailLogFile($fileName, $required = true) {
-		return N2N::getVarStore()->requestFilePath(VarStore::CATEGORY_LOG, N2N::N2N_NAMESPACE,
-				AdminMailCenter::LOG_FOLDER, $fileName, true, false, $required);
+	public static function requestMailLogFile($fileName) {
+		return N2N::getVarStore()->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
+				AdminMailCenter::LOG_FOLDER, $fileName, true, false);
 	}
 	/**
-	 * @return \n2n\io\fs\AbstractPath
+	 * @return \n2n\io\fs\FsPath
 	 */
 	public static function requestMailLogDir() {
-		return N2N::getVarStore()->requestDirectoryPath(VarStore::CATEGORY_LOG, N2N::N2N_NAMESPACE,
+		return N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, true);
 	}
 	
@@ -100,12 +120,7 @@ class MailCenter {
 		$parser = new SaxParser();
 		$mailItemSaxHandler = new MailItemSaxHandler();
 		$parser->parse($this->mailXmlFilePath, $mailItemSaxHandler);
-		
-		if (count($items = $mailItemSaxHandler->getItems()) > 0) {
-			return array_reverse($items);
-		}
- 		
-		return array();
+		return array_reverse($mailItemSaxHandler->getItems());
 	}
 	
 	private function isFilePathAvailable() {

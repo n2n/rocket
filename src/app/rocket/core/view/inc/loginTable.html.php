@@ -1,7 +1,28 @@
 <?php
-	use rocket\user\model\UserDao;
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
+
+	use rocket\user\model\RocketUserDao;
 	
-	$userDao = $view->lookup('rocket\user\model\UserDao'); $userDao instanceof UserDao;
+	$userDao = $view->lookup('rocket\user\model\RocketUserDao'); $userDao instanceof RocketUserDao;
 	$useSuccessfullLogins = $view->getParam('useSuccessfull', false, true);
 	$logins = array();
 	if ($useSuccessfullLogins) {
@@ -16,7 +37,7 @@
 			<th><?php $html->l10nText('user_nick_label') ?></th>
 			<th><?php $html->l10nText('core_ip_label') ?></th>
 			<?php if ($useSuccessfullLogins) : ?>
-				<th><?php $html->l10nText('user_access_type_label') ?></th>
+				<th><?php $html->l10nText('user_power_label') ?></th>
 			<?php endif ?>
 			<th><?php $html->l10nText('common_date_label') ?></th>
 		</tr>
@@ -27,7 +48,7 @@
 				<td><?php $html->out($login->getNick()) ?></td>
 				<td><?php $html->out($login->getIp()) ?></td>
 				<?php if ($useSuccessfullLogins) : ?>
-					<td><?php $html->out($login->getType()) ?></td>
+					<td><?php $html->out($login->getPower()) ?></td>
 				<?php endif ?>
 				<td><?php $html->out($html->getL10nDateTime($login->getDateTime())) ?></td>
 			</tr>

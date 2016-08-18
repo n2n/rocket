@@ -1,102 +1,122 @@
 <?php
 /*
- * Copyright (c) 2013, Hofmänner New Media. All rights reserved.
+ * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * ROCKET
- * Bert Hofmänner.............: Idea, Frontend UX, Concept
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Thomas Günther.............: Developer, Frontend UI
- * Yves Lüthi.................: Frontend UI/UX
- * Silvan Bauser..............: Frontend UI
+ * This file is part of the n2n module ROCKET.
  *
- * License....................: http://www.n2n.ch/modules/rocket/license
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 namespace rocket\core\model;
 
 use n2n\persistence\orm\EntityManager;
-use n2n\l10n\Locale;
-use n2n\persistence\orm\EntityModelManager;
-use n2n\persistence\orm\Entity;
-use n2n\core\VarStore;
-use n2n\N2N;
-use rocket\script\core\ScriptManager;
+use rocket\spec\config\SpecManager;
 use n2n\model\RequestScoped;
-use n2n\core\config\source\JsonFileConfigSource;
-use n2n\reflection\ReflectionUtils;
-use n2n\persistence\orm\store\EntityStateListener;
-use n2n\persistence\orm\store\EntityFlushEvent;
-use n2n\persistence\orm\EntityModel;
-use rocket\script\core\ScriptElementStore;
-use rocket\script\entity\ScriptTranslationManager;
-use rocket\script\entity\ScriptDraftManager;
-use n2n\persistence\DbhPool;
-use rocket\script\entity\adaptive\translation\TranslationManager;
+use rocket\spec\config\EiComponentStore;
+use n2n\core\container\PdoPool;
+use n2n\core\container\N2nContext;
+use rocket\spec\config\source\N2nContextRocketConfigSource;
+use rocket\spec\config\EiSpecSetupQueue;
+use rocket\spec\ei\manage\draft\DraftManager;
+use rocket\spec\config\extr\SpecExtractionManager;
 
 class Rocket implements RequestScoped {
-	const VERSION = '1.0.0';
-	const ROCKET_NAMESPACE = 'rocket';
-	const ROCKET_CONFIG_FOLDER = 'rocket';
-	const MANAGE_CONFIG_FILE = 'manage.json';
-	const SCRIPT_CONFIG_FILE = 'scripts.json';
-	const COMPONENT_STORAGE_FILE = 'elements.json';
+	const VERSION = '1.1.1';
+	const NS = 'rocket';
 	
-	private $scriptManager;
-	private $scriptElementStore;
-	private $entityModelManager;
-	private $translationModels = array();
-	private $rocketEntityStateListener;
 	private $dbhPool;
+	private $n2nContext;
 	
-	private function _init(DbhPool $dbhPool) {
+	private $rocketConfigSource;
+	private $specManager;
+	private $layoutManager;
+	private $eiComponentStore;
+	
+	private function _init(PdoPool $dbhPool, N2nContext $n2nContext) {
 		$this->dbhPool = $dbhPool;
+		$this->n2nContext = $n2nContext;
 	}
 	
-	public function __construct() {
-		$this->entityModelManager = EntityModelManager::getInstance();
+// 	public function __construct() {
+// 		$this->entityModelManager = EntityModelManager::getInstance();
+// 	}
+
+	public function getRocketConfigSource() {
+		if ($this->rocketConfigSource === null) {  
+			$this->rocketConfigSource = new N2nContextRocketConfigSource($this->n2nContext);
+		}
+		
+		return $this->rocketConfigSource;
 	}
+	
+	public function getLayoutManager(): LayoutManager {
+		if ($this->layoutManager === null) {
+			$rocketConfigSource = $this->getRocketConfigSource();
+			$lcsd = new LayoutConfigSourceDecorator($rocketConfigSource->getLayoutConfigSource());
+			$lcsd->load();
+			$this->layoutManager = new LayoutManager($lcsd, $this->getSpecManager());
+		}
+		
+		return $this->layoutManager;
+	}
+	
 	/**
-	 * @return \rocket\script\core\ScriptManager
+	 * @return \rocket\spec\config\SpecManager
 	 */
-	public function getScriptManager() {
-		if ($this->scriptManager === null) {
-			$rocketFolderName = ReflectionUtils::encodeNamespace(Rocket::ROCKET_NAMESPACE);
+	public function getSpecManager(): SpecManager {
+		if ($this->specManager === null) {
+			$rocketConfigSource = $this->getRocketConfigSource();
 			
-			$this->scriptManager = new ScriptManager(
-					new JsonFileConfigSource(N2N::getVarStore()->requestFilePath(VarStore::CATEGORY_SRV, Rocket::ROCKET_NAMESPACE,
-							null, self::MANAGE_CONFIG_FILE, true, true)),
-					new RocketModuleSeparatedConfigSource(N2N::getVarStore(), Rocket::SCRIPT_CONFIG_FILE), 
-					N2N::getDbhPool(), EntityModelManager::getInstance());
+			$sem = new SpecExtractionManager($rocketConfigSource->getSpecsConfigSource(), 
+					$rocketConfigSource->getModuleNamespaces());
+			$sem->initialize();
+			$this->specManager = new SpecManager($sem, $this->dbhPool->getEntityModelManager());
+			$this->specManager->setEiSpecSetupQueue(new EiSpecSetupQueue($this->specManager, $this->n2nContext));
 		}
 		
-		return $this->scriptManager;
-	}
-	
-	public function getScriptElementStore() {
-		if ($this->scriptElementStore === null) {
-			$this->scriptElementStore = new ScriptElementStore(new RocketModuleSeparatedConfigSource(
-					N2N::getVarStore(), Rocket::COMPONENT_STORAGE_FILE));
-		}
-		
-		return $this->scriptElementStore;
+		return $this->specManager;
 	}
 	/**
-	 * @param EntityManager $em
-	 * @return TranslationManager
+	 * @return \rocket\spec\config\EiComponentStore
 	 */
-	public function getOrCreateTranslationManager(EntityManager $em) {
-		$emObjHash = spl_object_hash($em);
-		if (!isset($this->translationManagers[$emObjHash])) {
-			$this->translationManagers[$emObjHash] = new ScriptTranslationManager($this->getScriptManager(), $em);
+	public function getEiComponentStore() {
+		if ($this->eiComponentStore === null) {
+			$rocketConfigSource = $this->getRocketConfigSource();
+			$this->eiComponentStore = new EiComponentStore($rocketConfigSource->getElementsConfigSource(), 
+					$rocketConfigSource->getModuleNamespaces());
 		}
 		
-		return $this->translationManagers[$emObjHash];
+		return $this->eiComponentStore;
 	}
+// 	/**
+// 	 * @param EntityManager $em
+// 	 * @return TranslationManager
+// 	 */
+// 	public function getOrCreateTranslationManager(EntityManager $em) {
+// 		$emObjHash = spl_object_hash($em);
+// 		if (!isset($this->translationManagers[$emObjHash])) {
+// 			$this->translationManagers[$emObjHash] = new ScriptTranslationManager($this->getSpecManager(), $em);
+// 		}
+		
+// 		return $this->translationManagers[$emObjHash];
+// 	}
 	
 	public function getOrCreateDraftManager(EntityManager $em) {
 		$emObjHash = spl_object_hash($em);
 		if (!isset($this->draftManagers[$emObjHash])) {
-			$this->draftManagers[$emObjHash] = new ScriptDraftManager($this->getScriptManager(), $em);
+			$this->draftManagers[$emObjHash] = new DraftManager($this->getSpecManager(), $em, $this->n2nContext);
 		}
 		
 		return $this->draftManagers[$emObjHash];
@@ -109,12 +129,12 @@ class Rocket implements RequestScoped {
 // 		}
 		
 // 		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
-// 		$entityScript = $this->getScriptManager()->getEntityScriptByClass($entityModel->getClass());
+// 		$eiSpec = $this->getSpecManager()->getEiSpecByClass($entityModel->getClass());
 // 		if ($em === null) {
-// 			$em = $entityScript->lookupEntityManager(N2N::getDbhPool());
+// 			$em = $eiSpec->lookupEntityManager(N2N::getPdoPool());
 // 		}
 		
-// 		$translationModel = TranslationModelFactory::createTranslationModel($em, $entityScript);
+// 		$translationModel = TranslationModelFactory::createTranslationModel($em, $eiSpec);
 // 		if (!isset($this->translationModels[$className])) {
 // 			$this->translationModels[$className] = $translationModel;
 // 		}
@@ -122,34 +142,34 @@ class Rocket implements RequestScoped {
 // 		return $this->translationModels[$className];
 // 	}
 	
-	public function translate(Entity $entity, Locale $locale, EntityManager $em = null) {
-		if (Locale::getDefault()->equals($locale)) {
-			return $entity;
-		}
+// 	public function translate($entity, N2nLocale $n2nLocale, EntityManager $em = null) {
+// 		if (N2nLocale::getDefault()->equals($n2nLocale)) {
+// 			return $entity;
+// 		}
 
-		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
-		$entityScript = $this->getScriptManager()->getEntityScriptByClass($entityModel->getClass());
-		if ($em === null) {
-			$em = $entityScript->lookupEntityManager($this->dbhPool);
-		}
+// 		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
+// 		$eiSpec = $this->getSpecManager()->getEiSpecByClass($entityModel->getClass());
+// 		if ($em === null) {
+// 			$em = $eiSpec->lookupEntityManager($this->dbhPool);
+// 		}
 		
-		$translationManager = $this->getOrCreateTranslationManager($em);
+// 		$translationManager = $this->getOrCreateTranslationManager($em);
 			
-		return $translationManager->find($entity, $locale, true)
-				->getTranslatedEntity();
-	}
+// 		return $translationManager->find($entity, $n2nLocale, true)
+// 				->getTranslatedEntity();
+// 	}
 	
-	public function translateArray($entries, Locale $locale, EntityManager $em = null) {		
-		$translatedEntries = array();
-		if ($entries instanceof \ArrayObject) {
-			$translatedEntries = new \ArrayObject();
-		}
+// 	public function translateArray($entries, N2nLocale $n2nLocale, EntityManager $em = null) {		
+// 		$translatedEntries = array();
+// 		if ($entries instanceof \ArrayObject) {
+// 			$translatedEntries = new \ArrayObject();
+// 		}
 		
-		foreach ($entries as $key => $entry) {
-			$translatedEntries[$key] = $this->translate($entry, $locale, $em);
-		}
-		return $translatedEntries;
-	}
+// 		foreach ($entries as $key => $entry) {
+// 			$translatedEntries[$key] = $this->translate($entry, $n2nLocale, $em);
+// 		}
+// 		return $translatedEntries;
+// 	}
 	
 	public function listen(EntityManager $em) {
 		if ($this->rocketEntityStateListener === null) {
@@ -158,46 +178,4 @@ class Rocket implements RequestScoped {
 		
 		$em->getPersistenceContext()->registerEntityStateListener($this->rocketEntityStateListener);
 	}
-}
-
-class RocketEntityStateListener implements EntityStateListener {
-	private $rocket;
-	
-	public function __construct(Rocket $rocket) {
-		$this->rocket = $rocket;
-	}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\EntityStateListener::entityAdded()
-	 */
-	public function entityAdded(Entity $object) {}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\EntityStateListener::rawDataMapUpdated()
-	 */
-	public function rawDataMapUpdated(Entity $entity, \ArrayObject $rawDataMap) {
-	}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\EntityStateListener::entityIdentified()
-	 */
-	public function entityIdentified(EntityModel $entityModel, $id, Entity $entity) {
-	}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\EntityStateListener::entityDetached()
-	 */
-	public function entityDetached(EntityModel $entityModel, $id, Entity $entity) {
-	}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\EntityStateListener::entityRemoved()
-	 */
-	public function entityRemoved(EntityModel $entityModel, $id, Entity $entity) {
-	}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\EntityStateListener::onEntityFlushEvent()
-	 */
-	public function onEntityFlushEvent(EntityFlushEvent $event) {
-		$scriptManager = $this->rocket->getScriptManager();
-		$class = $event->getEntityModel()->getClass();
-		if ($scriptManager->containsEntityScriptClass($class)) {
-			$scriptManager->getEntityScriptByClass($class)->triggerEntityFlushEvent($event, $this->rocket);
-		}
-	}	
 }

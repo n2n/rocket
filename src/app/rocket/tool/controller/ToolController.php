@@ -1,19 +1,46 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\tool\controller;
 
 use rocket\tool\backup\controller\BackupController;
 
-use n2n\http\ControllerAdapter;
+use n2n\http\controller\ControllerAdapter;
 use n2n\ui\ViewFactory;
-use n2n\core\MessageContainer;
+use n2n\l10n\MessageContainer;
 use rocket\tool\mail\controller\MailCenterController;
-use n2n\reflection\annotation\AnnotationSet;
-use n2n\http\ControllerAnnotations;
+use n2n\reflection\annotation\AnnoInit;
 use rocket\core\model\RocketState;
 use rocket\core\model\Breadcrumb;
-use n2n\core\DynamicTextCollection;
+use n2n\l10n\DynamicTextCollection;
+use n2n\http\annotation\AnnoPath;
+use n2n\http\ResponseCacheStore;
+use n2n\ui\view\ViewCacheStore;
 
 class ToolController extends ControllerAdapter {
+	private static function _annos(AnnoInit $ai) {
+		$ai->m('backupOverview',new AnnoPath(self::ACTION_BACKUP_OVERVIEW . '/params*:*'));
+		$ai->m('mailCenter', new AnnoPath(self::ACTION_MAIL_CENTER . '/params*:*'));
+		$ai->m('clearCache', new AnnoPath(self::ACTION_CLEAR_CACHE));
+	}
 	
 	const ACTION_BACKUP_OVERVIEW = 'backup-overview';
 	const ACTION_MAIL_CENTER = 'mail-center';
@@ -28,50 +55,46 @@ class ToolController extends ControllerAdapter {
 		$this->dtc = $dtc;
 	}
 	
-	private static function _annotations(AnnotationSet $as) {
-		$as->m('backupOverview', ControllerAnnotations::PATH_METHOD, array('pattern' => self::ACTION_BACKUP_OVERVIEW . '/params*:*'));
-		$as->m('mailCenter', ControllerAnnotations::PATH_METHOD, array('pattern' => self::ACTION_MAIL_CENTER . '/params*:*') );
-		$as->m('clearCache', ControllerAnnotations::PATH_METHOD, array('pattern' => self::ACTION_CLEAR_CACHE));
-	}
-	
 	public function index() {
 		$this->applyBreadCrumbs();
-		$this->forward('tool\view\toolsOverview.html');
+		$this->forward('..\view\toolsOverview.html');
 	}
 	
-	public function backupOverview(array $contextCmds, array $cmds, array $params) {
-		array_push($contextCmds, array_shift($cmds));
-		$backupController = new BackupController($this->getRequest(), $this->getResponse());
+	public function backupOverview(array $params = null) {
 		$this->applyBreadCrumbs(self::ACTION_BACKUP_OVERVIEW);
-		$backupController->execute($cmds, $contextCmds, $this->getN2nContext());
+		$this->delegate(new BackupController());
 	}
 	
-	public function mailCenter(array $contextCmds, array $cmds, array $params) {
-		array_push($contextCmds, array_shift($cmds));
-		$mailCenterController = new MailCenterController($this->getRequest(), $this->getResponse());
+	public function mailCenter(MailCenterController $mailCenterController, array $params = null) {
 		$this->applyBreadCrumbs(self::ACTION_MAIL_CENTER);
-		$mailCenterController->execute($cmds, $contextCmds, $this->getN2nContext());
+		
+		$this->delegate($mailCenterController);
 	}
 	
-	public function clearCache(MessageContainer $mc) {
-		ViewFactory::getCacheStore()->clear();
+	public function clearCache(MessageContainer $mc, ResponseCacheStore $responseCacheStore = null) {
+		if ($responseCacheStore !== null) {
+			$responseCacheStore->clear();
+		}
+				
 		$mc->addInfoCode('tool_cache_cleared_info');
 		$this->redirectToController();
 	}
 	
 	private function applyBreadCrumbs($action = null) {
 		$this->rocketState->addBreadcrumb(
-				new Breadcrumb($this->getRequest()->getCurrentControllerContextPath(),
+				new Breadcrumb($this->getHttpContext()->getControllerContextPath($this->getControllerContext()),
 						$this->dtc->translate('tool_title')));
 		switch ($action) {
 			case self::ACTION_MAIL_CENTER:
 				$this->rocketState->addBreadcrumb(
-						new Breadcrumb($this->getRequest()->getCurrentControllerContextPath($action),
+						new Breadcrumb($this->getHttpContext()->getControllerContextPath(
+								$this->getControllerContext())->ext($action),
 								$this->dtc->translate('tool_mail_center_title')));
 				break;
 			case self::ACTION_BACKUP_OVERVIEW:
 				$this->rocketState->addBreadcrumb(
-						new Breadcrumb($this->getRequest()->getCurrentControllerContextPath($action),
+						new Breadcrumb($this->getHttpContext()->getControllerContextPath(
+								$this->getControllerContext())->ext($action),
 								$this->dtc->translate('tool_backup_title')));
 				break;
 		}

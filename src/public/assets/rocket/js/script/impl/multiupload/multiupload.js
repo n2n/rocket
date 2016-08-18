@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ * 
+ */
 jQuery(document).ready(function($){
 	(function() {
 		var jqElemMultiUploadForm = $("#rocket-multi-upload-form");
@@ -10,15 +31,8 @@ jQuery(document).ready(function($){
 			this.jqElemAUpload = null;
 			this.fileData = new Object();
 			this.i = 0;
-			this.uploadNext = null;
 			
 			(function(_obj) {
-				this.uploadNext = function() {
-					for (var i in this.fileData) {
-						this.fileData[i].submit();
-						return;
-					}
-				};
 				this.jqElemFileList = jqElemForm.children("ul:first");
 				this.jqElemDropZone =  jqElemForm.children("#rocket-multi-upload-drop");
 				this.jqElemAUpload = this.jqElemDropZone.children("a").click(function() {
@@ -89,7 +103,6 @@ jQuery(document).ready(function($){
 			                setTimeout(function() {
 			                	_obj.removeElem(data.context);
 			                }, 2000);
-			                _obj.uploadNext();
 			            }
 			        },
 			        fail: function(e, data){
@@ -99,13 +112,13 @@ jQuery(document).ready(function($){
 			            setTimeout(function() {
 			        		_obj.removeElem(data.context);
 			        	}, 2000);
-			        	
-			            _obj.uploadNext();
 			        }
 			    });
 				jqElemASubmit.click(function(e) {
 					e.preventDefault();
-					_obj.uploadNext();
+					for (var i in _obj.fileData) {
+						_obj.fileData[i].submit();
+					}
 				});
 			}).call(this, this);
 			
@@ -127,7 +140,7 @@ jQuery(document).ready(function($){
 	    }
 		
 		MultiUpload.prototype.removeElem = function(jqElem) {
-			jqElem.fadeOut('fast', function(){
+			jqElem.fadeOut(function(){
 				jqElem.remove();
             });
 		};

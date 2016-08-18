@@ -1,30 +1,44 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\core\model;
 
 use rocket\user\model\LoginContext;
-use rocket\script\core\ManageState;
-use rocket\script\core\MenuItem;
-use n2n\model\Usable;
+use n2n\model\Lookupable;
+use n2n\core\container\N2nContext;
 
-class TemplateModel implements Usable {
-	
-	const TOP_PANEL_VIEW_ID = 'paneltop_view';
-	const BOTTOM_PANEL_VIEW_ID = 'panel_bottom_view';
-	const RIGHT_PANEL_VIEW_ID = 'panel_right_view';
-	const LEFT_PANEL_VIEW_ID = 'panel_left_view';
-	
+class TemplateModel implements Lookupable {
 	private $currentUser;
-	private $selectedMenuItemId;
+	private $activeMenuItemId;
 	private $breadcrumbs;
 	private $activeBreadcrumb;
 	private $navArray = array();
 	
-	private function _init(LoginContext $loginContext, ManageState $manageState, Rocket $rocket, RocketState $rocketState) {
+	private function _init(LoginContext $loginContext, Rocket $rocket, RocketState $rocketState, 
+			N2nContext $n2nContext) {
 		$this->currentUser = $loginContext->getCurrentUser();
 				
-		$this->selectedMenuItemId = null;
-		if (null !== ($selectedMenuItem = $manageState->getSelectedMenuItem())) {
-			$this->selectedMenuItemId = $selectedMenuItem->getId();
+		$this->activeMenuItemId = null;
+		if (null !== ($activeMenuItem = $rocketState->getActiveMenuItem())) {
+			$this->activeMenuItemId = $activeMenuItem->getId();
 		}
 		
 		$this->breadcrumbs = $rocketState->getBreadcrumbs()->getArrayCopy();
@@ -32,7 +46,7 @@ class TemplateModel implements Usable {
 			$this->activeBreadcrumb = array_pop($this->breadcrumbs);
 		}
 		
-		$this->initNavArray($rocket);
+		$this->initNavArray($rocket, $n2nContext);
 	}
 	
 	public function getCurrentUser() {
@@ -47,20 +61,24 @@ class TemplateModel implements Usable {
 		return $this->activeBreadcrumb;
 	}
 	
-	private function initNavArray(Rocket $rocket) {
-		$accessableMenuItemIds = $this->getAccesableMenuItemIds();
+	private function initNavArray(Rocket $rocket, N2nContext $n2nContext) {
+		$accessibleMenuItemIds = $this->getAccesableMenuItemIds();
 		$this->navArray = array();
-		foreach ($rocket->getScriptManager()->getMenuGroups() as $menuGroup) {
+		
+		foreach ($rocket->getLayoutManager()->getMenuGroups() as $menuGroup) {
 			$menuItems = $menuGroup->getMenuItems();
-			if ($accessableMenuItemIds !== null) {
+			if ($accessibleMenuItemIds !== null) {
 				foreach ($menuItems as $key => $menuItem) {
-					if (in_array($menuItem->getId(), $accessableMenuItemIds)) continue;
+					if (in_array($menuItem->getId(), $accessibleMenuItemIds)
+							|| !$menuItem->isAccessible($n2nContext)) continue;
 					unset($menuItems[$key]);
 				}
 			}
-				
+			
+			if (empty($menuItems)) continue;
+			
 			$this->navArray[] = array('label' => $menuGroup->getLabel(),
-					'open' => $menuGroup->containsMenuItemId($this->selectedMenuItemId),
+					'open' => $menuGroup->containsMenuItemId($this->activeMenuItemId),
 					'menuItems' => $menuItems);
 		}
 	}
@@ -68,26 +86,26 @@ class TemplateModel implements Usable {
 	private function getAccesableMenuItemIds() {
 		if ($this->currentUser->isSuperAdmin()) return null;
 		
-		$accessableMenuItemIds = null;
-		if (!$this->currentUser->isAdmin()) $accessableMenuItemIds = array();
+		$accessibleMenuItemIds = null;
+		if (!$this->currentUser->isAdmin()) $accessibleMenuItemIds = array();
 		
-		foreach ($this->currentUser->getUserGroups() as $userGroup) {
+		foreach ($this->currentUser->getRocketUserGroups() as $userGroup) {
 			if (!$userGroup->isMenuItemAccessRestricted()) {
 				return null;
 			}
 			
-			$accessableMenuItemIds = array_merge((array) $accessableMenuItemIds, 
-					$userGroup->getAccessableMenuItemIds());
+			$accessibleMenuItemIds = array_merge((array) $accessibleMenuItemIds, 
+					$userGroup->getaccessibleMenuItemIds());
 		}
 		
-		return $accessableMenuItemIds;
+		return $accessibleMenuItemIds;
 	}
 	
 	public function getNavArray() {
 		return $this->navArray;
 	}
 	
-	public function isMenuItemSelected(MenuItem $menuItem) {
-		return $this->selectedMenuItemId === $menuItem->getId();
+	public function isMenuItemActive(MenuItem $menuItem) {
+		return $this->activeMenuItemId === $menuItem->getId();
 	}
 }

@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ * 
+ */
 jQuery(window).ready(function($) {
 	
 	var HnmImageResizingDimension = function(dimensionString, zoomFactor) {
@@ -280,22 +301,17 @@ jQuery(window).ready(function($) {
 			});
 			this.jqElemImg.width(this.imageResizer.jqElemImg.width()).height(this.imageResizer.jqElemImg.height());
 			
-			var resizerDragStartFunc = function ( event ) {
+			this.jqElemDiv.mousedown(function ( event ) {
 				//remember oldPositions
-				$.Event(event).preventDefault();
-				$.Event(event).stopPropagation();
-				
 				_obj.dragStart.positionTop = _obj.jqElemDiv.position().top;
 				_obj.dragStart.positionLeft = _obj.jqElemDiv.position().left;
+				_obj.dragStart.mouseOffsetTop = event.pageY;
+				_obj.dragStart.mouseOffsetLeft = event.pageX;
 				
-				_obj.dragStart.mouseOffsetTop = _obj.determinePageY(event);
-				_obj.dragStart.mouseOffsetLeft = _obj.determinePageX(event);
-				
-				var resizerDragMoveFunc = function( event ) {
-					//var borderWidth = (_obj.jqElemDiv.outerWidth() - _obj.jqElemDiv.innerWidth()) / 2
-					
-					var newTop = _obj.dragStart.positionTop - (_obj.dragStart.mouseOffsetTop - _obj.determinePageY(event));
-					var newLeft = _obj.dragStart.positionLeft - (_obj.dragStart.mouseOffsetLeft - _obj.determinePageX(event));
+				$(document).on('mousemove.drag', function( event ) {
+					//var borderWidth = (_obj.jqElemDiv.outerWidth() - _obj.jqElemDiv.innerWidth()) / 2;
+					var newTop = _obj.dragStart.positionTop - (_obj.dragStart.mouseOffsetTop - event.pageY);
+					var newLeft = _obj.dragStart.positionLeft - (_obj.dragStart.mouseOffsetLeft - event.pageX);
 					var newRight = newLeft + _obj.jqElemDiv.width();
 					var newBottom = newTop + _obj.jqElemDiv.height();
 					
@@ -313,29 +329,15 @@ jQuery(window).ready(function($) {
 						left: newLeft + "px"
 					}).trigger('positionChange');
 					$.Event(event).preventDefault();
-				};
-				
-				var resizerDragEndFunc = function (event) {
-					$(document).off("mousemove.drag").off("touchmove.drag");
-					$(document).off("mouseup.drag").off("touchend.drag");
+				}).on('mouseup.drag', function ( event ) {
+					$(document).off("mousemove.drag");
+					$(document).off("mouseup.drag");
 					_obj.initializeDragStart();
 					_obj.triggerChangeListeners();
 					$.Event(event).preventDefault();
-				};
-				
-				$(document).on({
-					'mousemove.drag': resizerDragMoveFunc, 
-					'touchmove.drag': function(e) {
-						resizerDragMoveFunc(e);
-					},
-					'mouseup.drag': resizerDragEndFunc, 
-					'touchend.drag': resizerDragEndFunc
 				});
-			};
-			
-			this.jqElemDiv.on({
-				"mousedown": resizerDragStartFunc,
-				"touchstart": resizerDragStartFunc
+				$.Event(event).preventDefault();
+				$.Event(event).stopPropagation();
 			}).on('positionChange', function() {
 				_obj.jqElemImg.css({
 					top: (-1 * $(this).position().top) + "px",
@@ -353,19 +355,18 @@ jQuery(window).ready(function($) {
 				
 			});
 			
-			var resizerResizeMoveFunc = function ( event ) {
+			//Resizing span
+			this.jqElemSpan.mousedown(function ( event ) {
 				//remember oldPositions
 				_obj.resizeStart.width = _obj.jqElemDiv.width();
 				_obj.resizeStart.height = _obj.jqElemDiv.height();
-				_obj.resizeStart.mouseOffsetTop = _obj.determinePageY(event);
-				_obj.resizeStart.mouseOffsetLeft = _obj.determinePageX(event);
+				_obj.resizeStart.mouseOffsetTop = event.pageY;
+				_obj.resizeStart.mouseOffsetLeft = event.pageX;
 				
-				event.preventDefault();
-				event.stopPropagation();
-				
-				var resizerResizeMoveFunc = function( event ) {
-					var newWidth = _obj.resizeStart.width - ( _obj.resizeStart.mouseOffsetLeft - _obj.determinePageX(event));
-					var newHeight = _obj.resizeStart.height - ( _obj.resizeStart.mouseOffsetTop - _obj.determinePageY(event));
+				$(document).on('mousemove.resize', function( event ) {
+					
+					var newWidth = _obj.resizeStart.width - ( _obj.resizeStart.mouseOffsetLeft - event.pageX);
+					var newHeight = _obj.resizeStart.height - ( _obj.resizeStart.mouseOffsetTop - event.pageY);
 					
 					if (_obj.fixedRatio) {
 						var heightProportion = newHeight / _obj.resizeStart.height;
@@ -409,27 +410,14 @@ jQuery(window).ready(function($) {
 					
 					_obj.setSelectorDimensions(newWidth, newHeight);
 					event.preventDefault();
-				};
-				
-				var resizerResizeEndFunc = function(e) {
-					$(document).off("mousemove.resize").off("touchmove.resize")
-							.off("mouseup.resize").off("touchend.resize");
+				}).on('mouseup.resize', function ( event ) {
+					$(document).off("mousemove.resize");
+					$(document).off("mouseup.resize");
 					_obj.initializeResizeStart();
 					_obj.triggerChangeListeners();
-				};
-				
-				$(document).on({
-					'mousemove.resize': resizerResizeMoveFunc,
-					'touchmove.resize': resizerResizeMoveFunc,
-					'mouseup.resize': resizerResizeEndFunc, 
-					'touchend.resize': resizerResizeEndFunc
 				});
-			};
-			
-			//Resizing span
-			this.jqElemSpan.on({
-				'mousedown': resizerResizeMoveFunc,
-				'touchstart': resizerResizeMoveFunc
+				event.preventDefault();
+				event.stopPropagation();
 			});
 			this.jqElemDiv.append(this.jqElemSpan);
 			this.initializeMax();
@@ -439,14 +427,6 @@ jQuery(window).ready(function($) {
 			this.jqElemDiv.trigger('positionChange');
 			_obj.triggerChangeListeners();
 		}
-	};
-	
-	HnmImageSizeSelector.prototype.determinePageY = function(event) {
-		return (null != event.pageY) ? event.pageY : event.originalEvent.touches[0].pageY
-	};
-	
-	HnmImageSizeSelector.prototype.determinePageX = function(event) {
-		return (null != event.pageX) ? event.pageX : event.originalEvent.touches[0].pageX
 	};
 	
 	HnmImageSizeSelector.prototype.setSelectorDimensions = function(newWidth, newHeight) {
@@ -670,31 +650,26 @@ jQuery(window).ready(function($) {
 	};
 	
 	HnmImageResizer.prototype.determineCurrentDimensions = function(imageDimension) {
-		var top = 0, 
-			left = 0,
-			width = imageDimension.width,
-			imageWidth = this.jqElemImg.width(),
-			height = imageDimension.height,
-			imageHeight =  this.jqElemImg.height(), 
-			widthExceeded = false,
-			heightExceeded = false;
-		
 		if (typeof(Storage) !== "undefined" && null != localStorage.imageResizer) {
 			imageResizerPositions = JSON.parse(localStorage.imageResizer);
 			if (null != imageResizerPositions[location.href + '/' + imageDimension.dimensionString]) {
 				 var positions = imageResizerPositions[location.href + '/' + imageDimension.dimensionString];
+				 console.log(positions);
 				 for (var i in positions) {
 					 positions[i] = positions[i] * this.zoomFactor;
 				 }
-				 
-				 //check position borders
-				 if (((positions['top'] + positions['height']) < imageHeight) 
-						 && ((positions['left'] + positions['width']) < imageWidth)) {
-					 return positions;
-				 }
+				 return positions;
 			}
 		} 
 		
+		var top = 0, 
+				left = 0,
+				width = imageDimension.width,
+				imageWidth = this.jqElemImg.width(),
+				height = imageDimension.height,
+				imageHeight =  this.jqElemImg.height(), 
+				widthExceeded = false,
+				heightExceeded = false;
 		
 		if (width > imageWidth) {
 			widthExceeded = true;

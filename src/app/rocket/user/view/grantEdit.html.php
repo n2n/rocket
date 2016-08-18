@@ -1,85 +1,119 @@
-<?php 
-	use n2n\ui\Raw;
-	use rocket\user\model\UserScriptGrantForm;
+<?php
+	/*
+	 * Copyright (c) 2012-2016, Hofmänner New Media.
+	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+	 *
+	 * This file is part of the n2n module ROCKET.
+	 *
+	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+	 * GNU Lesser General Public License as published by the Free Software Foundation, either
+	 * version 2.1 of the License, or (at your option) any later version.
+	 *
+	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+	 *
+	 * The following people participated in this project:
+	 *
+	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
+	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+	 */
 
-	$userScriptGrantForm = $view->getParam('userScriptGrantForm'); 
-	$view->assert($userScriptGrantForm instanceof UserScriptGrantForm);
+	use n2n\ui\Raw;
+	use rocket\user\model\EiGrantForm;
+	use n2n\ui\view\impl\html\HtmlView;
+	use n2n\ui\view\View;
+	use rocket\user\view\EiGrantHtmlBuilder;
+	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($this);
+	$formHtml = HtmlView::formHtml($this);
+	
+	$eiGrantForm = $view->getParam('eiGrantForm'); 
+	$view->assert($eiGrantForm instanceof EiGrantForm);
  
-	$view->useTemplate('core\view\template.html', array('title' => $view->getL10nText('user_grant_title')));
+	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('user_grant_title')));
+	
+	$eiGrantHtml = new EiGrantHtmlBuilder($view);
+	
+	$filterAjahHook = $view->getParam('filterAjahHook');
+	$view->assert($filterAjahHook instanceof FilterAjahHook);
 ?>
 
-<?php $formHtml->open($userScriptGrantForm, 'post')?>
+<?php $formHtml->open($eiGrantForm)?>
+	<?php $formHtml->messageList() ?>
+	
 	<div class="rocket-panel">
 		<h3><?php $html->l10nText('common_properties_title') ?></h3>
 		
-		<ul class="rocket-properties">
-							
-			<?php if ($userScriptGrantForm->areAccessOptionsAvailable()): ?>
-				<li>
-					<label><?php $html->l10nText('user_group_access_config_label')?></label>
-					<ul class="rocket-controls">
-						<?php $formHtml->objectProps('accessOptionForm', function() use ($formHtml) { ?>
-							<?php $formHtml->openOption('li', null, array('class' => 'rocket-editable')) ?>
-								<?php $formHtml->optionLabel() ?>
-								<div class="rocket-controls">
-									<?php $formHtml->optionField() ?>
-								</div>
-							<?php $formHtml->closeOption() ?>
-						<?php }) ?>
-					</ul>
-				</li>
-			<?php endif ?>
+		<div class="rocket-properties">
 			
-			<li class="rocket-control-group">
+			<div class="rocket-control-group">
 				<label>Privileges Grants</label>
 				
 				<div class="rocket-controls">
-					<ul class="rocket-option-array">
-						<?php $formHtml->arrayProps('userPrivilegesGrantForms', function () 
-								use ($view, $html, $formHtml, $request) { ?>
-							<li>
-								<ul class="rocket-properties">	
-									<li class="rocket-editable">
+					<?php $formHtml->optionalObjectActivator('eiPrivilegeGrantForms') ?>
+					<div class="rocket-option-array">
+						<?php $formHtml->meta()->arrayProps('eiPrivilegeGrantForms', function () 
+								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterAjahHook) { ?>
+							<div>
+								<div class="rocket-properties">	
+									<div class="rocket-editable">
 										<div class="rocket-controls">
-											<?php $formHtml->objectOptionalCheckbox()  ?>
+											<?php $formHtml->optionalObjectCheckbox()  ?>
 										</div>
-									</li>
+									</div>
 									
-									<li class="rocket-editable">
+									<div class="rocket-editable">
 										<label><?php $html->l10nText('user_group_privileges_label')?></label>
 										<ul class="rocket-controls">
-											<li><input type="checkbox" disabled="disabled" checked="checked" /><label>Read</label></li>
-											<?php foreach ($formHtml->getValue()->getObject()->getPrivilegeOptions($request->getLocale()) as $key => $label): ?>
-												<li>
-													<?php $formHtml->inputCheckbox('privileges[' . $key . ']', $key, null, $label) ?>
-												</li>
-											<?php endforeach ?>
+											<?php $eiGrantHtml->privilegeCheckboxes('eiCommandPathStrs[]', $eiGrantForm->getPrivilegeDefinition()) ?>
 										</ul>
-									</li>
+									</div>
 									
-									<?php if ($formHtml->getValue()->getObject()->areRestrictionsAvailable()): ?>
-										<li class="rocket-editable">
-											<?php $formHtml->label('restricted', $html->getL10nText('user_access_restricted_label')) ?>
+									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiFieldPrivilegeMagFormAvailable()): ?>
+										<div>
+											<label><?php $html->l10nText('user_group_access_config_label')?></label>
+											<?php $view->out('<ul class="rocket-controls">') ?>
+												<?php $formHtml->meta()->objectProps('eiFieldPrivilegeMagForm', function() use ($formHtml) { ?>
+													<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
+														<?php $formHtml->magLabel() ?>
+														<div class="rocket-controls">
+															<?php $formHtml->magField() ?>
+														</div>
+													<?php $formHtml->magClose() ?>
+												<?php }) ?>
+											<?php $view->out('</ul>') ?>
+										</div>
+									<?php endif ?>
+									
+									<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
+										<div class="rocket-editable">
 											<div class="rocket-controls">
-												<?php $formHtml->inputCheckbox('restricted') ?>
+												<?php $formHtml->optionalObjectActivator('restrictionFilterGroupForm') ?>
+												<?php $formHtml->optionalObjectCheckbox('restrictionFilterGroupForm', null, 
+														$html->getL10nText('user_access_restricted_label')) ?>
 											</div>
-										</li>
+										</div>
 									
-										<li>	
+										<div>	
 											<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
 											<div class="rocket-controls">
-												<?php $view->import('script\entity\filter\view\filterForm.html', 
-														array('propertyPath' => $formHtml->createPropertyPath('restrictionFilterForm'))) ?>
+												<?php $view->import('~\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
+														array('propertyPath' => $formHtml->meta()->createPropertyPath('restrictionFilterGroupForm'),
+																'filterAjahHook' => $filterAjahHook)) ?>
 											</div>
-										</li>
+										</div>
 									<?php endif ?>
-								</ul>
-							</li>
-						<?php }, sizeof($formHtml->getValue('userPrivilegesGrantForms')) + 1) ?>
-					</ul>		
+								</div>
+							</div>
+						<?php }, count($formHtml->meta()->getMapValue('eiPrivilegeGrantForms')) + 5) ?>
+					</div>		
 				</div>
-			</li>
-		</ul>
+			</div>
+		</div>
 	</div>
 	<div id="rocket-page-controls">	
 		<ul>
