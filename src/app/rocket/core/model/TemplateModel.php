@@ -22,7 +22,7 @@
 namespace rocket\core\model;
 
 use rocket\user\model\LoginContext;
-use n2n\model\Lookupable;
+use n2n\context\Lookupable;
 use n2n\core\container\N2nContext;
 
 class TemplateModel implements Lookupable {

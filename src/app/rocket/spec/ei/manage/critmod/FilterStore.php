@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\critmod;
 
 use rocket\spec\ei\manage\critmod\Filter;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\OrmUtils;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;

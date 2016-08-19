@@ -21,7 +21,7 @@
  */
 namespace rocket\core\model;
 
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use n2n\util\col\GenericArrayObject;
 
 class RocketState implements RequestScoped {

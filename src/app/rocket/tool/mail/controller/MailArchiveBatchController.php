@@ -27,7 +27,7 @@ use rocket\tool\mail\model\MailCenter;
 use n2n\core\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
-use n2n\model\Lookupable;
+use n2n\context\Lookupable;
 
 class MailArchiveBatchController implements Lookupable {
 		const FILE_NAME_PREFIX = 'mail';

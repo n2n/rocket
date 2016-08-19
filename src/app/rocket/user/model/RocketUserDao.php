@@ -23,7 +23,7 @@ namespace rocket\user\model;
 
 use rocket\user\bo\RocketUser;
 use n2n\persistence\orm\EntityManager;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use rocket\user\bo\Login;
 use n2n\core\N2N;
 use rocket\user\bo\RocketUserGroup;

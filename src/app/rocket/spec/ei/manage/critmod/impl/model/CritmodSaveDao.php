@@ -22,10 +22,10 @@
 namespace rocket\spec\ei\manage\critmod\impl\model;
 
 use rocket\spec\ei\manage\critmod\Filter;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use n2n\persistence\orm\EntityManager;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\model\annotation\AnnoSessionScoped;
+use n2n\context\annotation\AnnoSessionScoped;
 use rocket\user\model\LoginContext;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\critmod\sort\SortData;

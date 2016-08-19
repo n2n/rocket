@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component;
 
-use n2n\model\ThreadScoped;
+use n2n\context\ThreadScoped;
 
 class DefinitionStore implements ThreadScoped {
 	

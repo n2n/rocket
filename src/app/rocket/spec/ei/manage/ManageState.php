@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage;
 
 use n2n\web\http\controller\ControllerContext;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\EiState;
 use rocket\user\model\LoginContext;

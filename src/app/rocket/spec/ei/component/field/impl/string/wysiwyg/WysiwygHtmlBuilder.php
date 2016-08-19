@@ -27,7 +27,7 @@ use rocket\spec\ei\component\field\impl\string\wysiwyg\bbcode\Parser;
 use n2n\web\ui\Raw;
 use n2n\web\ui\view\impl\html\HtmlUtils;
 use n2n\web\ui\view\impl\html\HtmlView;
-use n2n\model\LookupFailedException;
+use n2n\context\LookupFailedException;
 use n2n\l10n\N2nLocale;
 
 class WysiwygHtmlBuilder {

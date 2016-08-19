@@ -23,9 +23,9 @@ namespace rocket\user\model;
 
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\Dispatchable;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\model\annotation\AnnoSessionScoped;
+use n2n\context\annotation\AnnoSessionScoped;
 use n2n\util\crypt\hash\HashUtils;
 use rocket\user\model\security\RocketUserSecurityManager;
 use n2n\util\ex\IllegalStateException;

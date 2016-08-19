@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use n2n\web\http\HttpContext;
 
 interface DynamicUrlBuilder extends RequestScoped {

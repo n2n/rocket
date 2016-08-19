@@ -25,7 +25,7 @@ use rocket\tool\backup\BackupManager;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\util\DateUtils;
 use n2n\util\DateParseException;
-use n2n\model\Lookupable;
+use n2n\context\Lookupable;
 
 class BackupBatchController extends ControllerAdapter implements Lookupable {
 	const SUFFIX_FILE_NAME = 'full-daily.sql';

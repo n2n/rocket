@@ -37,7 +37,7 @@ use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\Breadcrumb;
 use n2n\reflection\ReflectionUtils;
-use n2n\model\Lookupable;
+use n2n\context\Lookupable;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\util\model\EiEntryUtils;

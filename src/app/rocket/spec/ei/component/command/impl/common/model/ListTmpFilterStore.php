@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\common\model;
 
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
-use n2n\model\SessionScoped;
+use n2n\context\SessionScoped;
 
 class ListTmpFilterStore implements SessionScoped {
 	private $filterIds;

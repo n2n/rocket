@@ -23,7 +23,7 @@ namespace rocket\core\model;
 
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\config\SpecManager;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use rocket\spec\config\EiComponentStore;
 use n2n\core\container\PdoPool;
 use n2n\core\container\N2nContext;

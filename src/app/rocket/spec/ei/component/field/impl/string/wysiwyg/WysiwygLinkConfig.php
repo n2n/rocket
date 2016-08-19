@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
 use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\model\RequestScoped;
+use n2n\context\RequestScoped;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 
