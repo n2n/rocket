@@ -60,7 +60,7 @@
 	$htmlMeta->addJs('js/html5.js', null);
 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
-	$htmlMeta->addJs('js/n2n-dispatch.js', 'n2n');
+	$htmlMeta->addJs('js/n2n-dispatch.js', 'n2n\web');
 	$htmlMeta->addJs('js/rocket-ts.js', null);
 	
 // 	$scriptManager = $rocket->getSpecManager();
