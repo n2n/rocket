@@ -30,7 +30,7 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiMappingFilterField;
 use rocket\spec\ei\manage\util\model\GlobalEiUtils;
-use n2n\persistence\orm\property\impl\ToOneEntityProperty;
+use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;

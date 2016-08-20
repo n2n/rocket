@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\string\conf;
 
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use n2n\core\container\N2nContext;
-use n2n\web\dispatch\mag\impl\model\NumericMag;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiField;

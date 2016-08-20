@@ -24,7 +24,7 @@ namespace rocket\user\model;
 use n2n\web\dispatch\Dispatchable;
 use rocket\user\bo\EiPrivilegeGrant;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\web\dispatch\map\val\impl\ValEnum;
+use n2n\impl\web\dispatch\map\val\ValEnum;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\annotation\AnnoDispObject;
@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\EiCommandPath;
-use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\Attributes;
 

@@ -25,7 +25,7 @@
 	use n2n\web\ui\Raw;
 	use util\jquery\JQueryLibrary;
 	use rocket\core\model\TemplateModel;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\http\nav\Murl;
 
 	$view = HtmlView::view($this);
@@ -60,7 +60,7 @@
 	$htmlMeta->addJs('js/html5.js', null);
 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
-	$htmlMeta->addJs('js/n2n-dispatch.js', 'n2n\web');
+	$htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
 	$htmlMeta->addJs('js/rocket-ts.js', null);
 	
 // 	$scriptManager = $rocket->getSpecManager();

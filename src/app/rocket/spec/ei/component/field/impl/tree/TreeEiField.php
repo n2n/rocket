@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\tree;
 
-use n2n\persistence\orm\property\impl\ScalarEntityProperty;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiFieldAdapter;
 use rocket\spec\ei\component\field\FilterableEiField;

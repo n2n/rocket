@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
-use n2n\web\ui\view\impl\html\HtmlUtils;
+use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\spec\ei\manage\gui\Displayable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\ui\Raw;
-use n2n\web\ui\view\impl\html\HtmlElement;
+use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
 use n2n\l10n\MessageTranslator;
 

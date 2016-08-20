@@ -21,13 +21,13 @@
  */
 namespace rocket\user\model;
 
-use n2n\web\dispatch\map\val\impl\ValEnum;
+use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\l10n\MessageCode;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\user\bo\RocketUser;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use n2n\web\dispatch\map\val\impl\ValNotEmpty;
+use n2n\impl\web\dispatch\map\val\ValNotEmpty;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\util\crypt\hash\HashUtils;
 use n2n\l10n\DynamicTextCollection;

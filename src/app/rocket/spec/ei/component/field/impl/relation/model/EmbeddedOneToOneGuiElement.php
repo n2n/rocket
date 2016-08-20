@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\manage\EiState;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 
 class EmbeddedOneToOneGuiElement implements GuiElement {

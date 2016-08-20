@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\EiState;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\MappingResult;
 use rocket\spec\ei\manage\EntryGui;
 

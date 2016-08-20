@@ -28,7 +28,7 @@ use n2n\web\http\PageNotFoundException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use n2n\web\ui\view\impl\html\AjahResponse;
+use n2n\impl\web\ui\view\html\AjahResponse;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;

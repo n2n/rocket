@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\ei\component\field\impl\string;
 
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
-use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;

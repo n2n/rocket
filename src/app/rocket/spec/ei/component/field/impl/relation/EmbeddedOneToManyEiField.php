@@ -46,8 +46,8 @@ use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
-use n2n\persistence\orm\property\impl\ToManyEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements DraftableEiField, Draftable*/ {

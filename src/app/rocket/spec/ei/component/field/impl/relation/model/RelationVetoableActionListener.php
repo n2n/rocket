@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
 use rocket\spec\ei\manage\VetoableActionListener;
 use n2n\reflection\CastUtils;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\l10n\MessageCode;
 use rocket\core\model\Rocket;

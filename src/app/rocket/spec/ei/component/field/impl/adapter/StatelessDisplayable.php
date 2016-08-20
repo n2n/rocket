@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\adapter;
 
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 

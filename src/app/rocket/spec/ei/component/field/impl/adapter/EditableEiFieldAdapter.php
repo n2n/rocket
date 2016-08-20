@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\adapter;
 
 use n2n\util\config\Attributes;
-use n2n\web\dispatch\mag\impl\model\BoolMag;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use n2n\util\ex\IllegalStateException;

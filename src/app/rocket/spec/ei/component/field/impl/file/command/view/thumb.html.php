@@ -21,10 +21,10 @@
 	 */
 
 	use rocket\spec\ei\component\field\impl\file\command\model\ThumbModel;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\ui\view\View;
 	use n2n\io\managed\img\ImageFile;
-	use n2n\web\ui\view\impl\html\UiComponentFactory;
+	use n2n\impl\web\ui\view\html\UiComponentFactory;
 	use n2n\web\ui\Raw;
 
 	$view = HtmlView::view($this);

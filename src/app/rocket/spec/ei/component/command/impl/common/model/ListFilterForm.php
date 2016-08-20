@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 
 use rocket\spec\ei\manage\critmod\FilterStore;
 use n2n\web\dispatch\val\ValIsset;
-use n2n\web\dispatch\map\val\impl\ValEnum;
+use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\web\dispatch\map\BindingConstraints;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\Dispatchable;

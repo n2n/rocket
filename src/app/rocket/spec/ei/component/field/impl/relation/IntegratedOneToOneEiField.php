@@ -38,18 +38,18 @@ use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldR
 use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\reflection\CastUtils;
-use n2n\web\dispatch\mag\impl\model\ObjectMagAdapter;
+use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\ui\Raw;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\Mappable;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
-use n2n\persistence\orm\property\impl\ToOneEntityProperty;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\ToOneEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 
 class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFieldFork {
 

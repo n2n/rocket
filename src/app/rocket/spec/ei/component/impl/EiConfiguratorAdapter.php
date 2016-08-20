@@ -29,7 +29,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\component\EiComponent;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {

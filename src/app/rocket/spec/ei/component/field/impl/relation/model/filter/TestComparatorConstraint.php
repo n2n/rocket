@@ -27,7 +27,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\criteria\compare\ComparatorCriteria;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 
 class TestComparatorConstraint implements ComparatorConstraint {
 	private $entityProperty;

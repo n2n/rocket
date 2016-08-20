@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\web\dispatch\map\PropertyPath;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
 	use n2n\util\uri\Url;
 

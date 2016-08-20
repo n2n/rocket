@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\web\ui\view\impl\html\HtmlView;
-use n2n\web\ui\view\impl\html\HtmlElement;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\ui\UiComponent;

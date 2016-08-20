@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\conf;
 
 use n2n\core\container\N2nContext;
-use n2n\web\dispatch\mag\impl\model\BoolMag;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
 use n2n\web\dispatch\mag\MagDispatchable;

@@ -21,16 +21,16 @@
  */
 namespace rocket\spec\ei\component\field\impl\enum;
 
-use n2n\web\dispatch\mag\impl\model\EnumMag;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
 use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\component\field\QuickSearchableEiField;
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\persistence\orm\property\impl\ScalarEntityProperty;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\preview\PreviewModel;
 use n2n\web\dispatch\map\PropertyPath;

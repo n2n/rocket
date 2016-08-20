@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\control;
 
 use n2n\web\ui\UiComponent;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 
 class PartialControl {

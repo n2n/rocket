@@ -22,9 +22,9 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\reflection\ArgUtils;
-use n2n\persistence\orm\property\impl\ToManyEntityProperty;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 
 class OneToManySelectEiField extends ToManySelectEiFieldAdapter {

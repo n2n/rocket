@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\MappingDefinition;
-use n2n\web\dispatch\map\val\impl\ValEnum;
+use n2n\impl\web\dispatch\map\val\ValEnum;
 use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;

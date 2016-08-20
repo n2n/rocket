@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\string;
 
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
@@ -29,7 +29,7 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\field\impl\string\conf\UrlEiFieldConfigurator;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
-use n2n\web\dispatch\mag\impl\model\UrlMag;
+use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 

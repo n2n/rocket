@@ -27,10 +27,10 @@ use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use n2n\web\dispatch\map\val\impl\ValArrayKeys;
-use n2n\web\dispatch\map\val\impl\ValMandatoryArrayKeys;
+use n2n\impl\web\dispatch\map\val\ValArrayKeys;
+use n2n\impl\web\dispatch\map\val\ValMandatoryArrayKeys;
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 

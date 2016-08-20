@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
 use rocket\core\model\Rocket;
-use n2n\web\dispatch\mag\impl\model\BoolMag;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
@@ -30,7 +30,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\LenientAttributeReader;
-use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;

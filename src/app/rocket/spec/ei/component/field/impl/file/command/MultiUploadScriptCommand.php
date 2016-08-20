@@ -25,7 +25,7 @@ use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\EiState;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\DynamicTextCollection;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;

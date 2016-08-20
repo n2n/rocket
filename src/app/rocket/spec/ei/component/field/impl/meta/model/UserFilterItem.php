@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
-use n2n\web\dispatch\mag\impl\model\EnumMag;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\l10n\DynamicTextCollection;
 
 class UserFilterField extends FilterFieldAdapter {

@@ -22,7 +22,7 @@
 
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneForm;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;

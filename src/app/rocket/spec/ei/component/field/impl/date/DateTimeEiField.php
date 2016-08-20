@@ -21,12 +21,12 @@
  */
 namespace rocket\spec\ei\component\field\impl\date;
 
-use n2n\persistence\orm\property\impl\DateTimeEntityProperty;
+use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\l10n\L10nUtils;
-use n2n\web\dispatch\mag\impl\model\DateTimeMag;
+use n2n\impl\web\dispatch\mag\model\DateTimeMag;
 use n2n\l10n\DateTimeFormat;
 use n2n\l10n\N2nLocale;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\SortableEiField;
 use n2n\core\container\N2nContext;

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 use rocket\spec\ei\manage\CriteriaFactory;
 
 use n2n\persistence\orm\EntityManager;
-use n2n\persistence\orm\property\impl\relation\MappedRelation;
+use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use n2n\persistence\orm\criteria\item\CrIt;
 
 class MappedOneToCriteriaFactory implements CriteriaFactory {

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\numeric\conf;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\core\container\N2nContext;
-use n2n\web\dispatch\mag\impl\model\EnumMag;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\MagDispatchable;

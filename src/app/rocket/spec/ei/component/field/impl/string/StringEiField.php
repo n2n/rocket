@@ -22,8 +22,8 @@
 namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\l10n\N2nLocale;
-use n2n\web\dispatch\mag\impl\model\StringMag;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\dispatch\mag\model\StringMag;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\field\impl\string\conf\StringEiFieldConfigurator;
 use rocket\spec\ei\manage\EiObject;

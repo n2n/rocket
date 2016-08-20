@@ -28,8 +28,8 @@ use rocket\spec\ei\component\modificator\impl\date\LastModEiModificator;
 use rocket\spec\ei\component\field\impl\DisplayableEiFieldAdapter;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\persistence\orm\property\impl\DateTimeEntityProperty;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\DateTimeFormat;
 use n2n\util\config\Attributes;
 

@@ -24,15 +24,15 @@ namespace rocket\spec\ei\component\field\impl\string\conf;
 use n2n\util\StringUtils;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
-use n2n\web\dispatch\mag\impl\model\BoolMag;
-use n2n\web\dispatch\mag\impl\model\StringArrayMag;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
+use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\util\config\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
-use n2n\web\dispatch\mag\impl\model\StringMag;
+use n2n\impl\web\dispatch\mag\model\StringMag;
 
 class UrlEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
 	const MAG_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';

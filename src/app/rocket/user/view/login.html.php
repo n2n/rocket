@@ -33,7 +33,7 @@
 	$html->meta()->addJs('js/html5.js');
 	$html->meta()->addJs('js/respond.src.js');
 	$html->meta()->addLibrary(new JQueryLibrary());
-	$html->meta()->addJs('js/n2n-dispatch.js', 'n2n\web', true);
+	$html->meta()->addJs('js/ajah.js', 'n2n\web', true);
 	$html->meta()->addJs('js/rocket-ts.js');
 ?>
 <!DOCTYPE html>

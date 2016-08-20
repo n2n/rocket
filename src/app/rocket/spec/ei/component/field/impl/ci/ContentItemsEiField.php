@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\field\impl\ci\conf\ContentItemsEiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItem;
 use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
-use n2n\persistence\orm\property\impl\ToManyEntityProperty;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItemGuiElement;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItemEditable;
 use rocket\spec\ei\manage\gui\GuiElement;

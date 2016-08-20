@@ -26,7 +26,7 @@ use rocket\spec\ei\EiSpec;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\manage\EiState;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiSelection;

@@ -25,7 +25,7 @@ use rocket\spec\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\field\impl\string\StringEiField;
-use n2n\web\dispatch\mag\impl\model\BoolMag;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;

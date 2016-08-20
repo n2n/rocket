@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\web\ui\Raw;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\io\fs\FsPath;
 
 	$view = HtmlView::view($view);

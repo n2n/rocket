@@ -27,7 +27,7 @@ use n2n\reflection\ReflectionContext;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\EiState;
 use n2n\web\ui\Raw;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiField;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;

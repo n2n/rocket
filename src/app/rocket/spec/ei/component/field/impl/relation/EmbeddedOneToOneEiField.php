@@ -51,8 +51,8 @@ use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\persistence\orm\property\impl\ToOneEntityProperty;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\ToOneEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {

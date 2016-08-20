@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\component\field\impl\bool;
 
-use n2n\persistence\orm\property\impl\ScalarEntityProperty;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\component\field\FilterableEiField;
-use n2n\web\ui\view\impl\html\HtmlView;
-use n2n\web\dispatch\mag\impl\model\BoolMag;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\spec\ei\manage\EiState;
-use n2n\web\ui\view\impl\html\HtmlElement;
+use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;

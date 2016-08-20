@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\field\impl\ci\model;
 
 use n2n\web\dispatch\mag\Mag;
-use n2n\web\dispatch\mag\impl\model\MagAdapter;
-use n2n\web\dispatch\property\impl\ObjectProperty;
+use n2n\impl\web\dispatch\mag\model\MagAdapter;
+use n2n\impl\web\dispatch\property\ObjectProperty;
 use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
@@ -40,7 +40,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\NotYetImplementedException;
-use n2n\web\dispatch\mag\impl\model\MagForm;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
 
 class ContentItemMag extends MagAdapter {

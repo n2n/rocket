@@ -23,8 +23,8 @@ namespace rocket\spec\ei\component\field\impl\translation;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
-use n2n\persistence\orm\property\impl\ToManyEntityProperty;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiElement;

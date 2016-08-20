@@ -23,12 +23,12 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
 use n2n\util\ex\IllegalStateException;
-use n2n\persistence\orm\property\impl\RelationEntityProperty;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\component\field\impl\relation\command\RelationEiCommand;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\persistence\orm\property\impl\relation\MappedRelation;
+use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\EiRelation;
 use n2n\web\http\controller\ControllerContext;

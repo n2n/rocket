@@ -23,14 +23,14 @@ namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\reflection\ArgUtils;
-use n2n\web\dispatch\mag\impl\model\MagAdapter;
+use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
-use n2n\web\dispatch\property\impl\ObjectProperty;
+use n2n\impl\web\dispatch\property\ObjectProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;

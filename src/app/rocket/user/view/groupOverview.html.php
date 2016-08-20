@@ -24,7 +24,7 @@
 	use rocket\user\model\RocketUserGroupListModel;
 	use n2n\web\ui\Raw;
 	use rocket\user\bo\RocketUser;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

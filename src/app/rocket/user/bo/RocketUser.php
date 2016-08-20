@@ -21,7 +21,7 @@
  */
 namespace rocket\user\bo;
 
-use n2n\web\dispatch\map\val\impl\ValEmail;
+use n2n\impl\web\dispatch\map\val\ValEmail;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\ObjectAdapter;
@@ -35,7 +35,7 @@ use n2n\persistence\orm\annotation\AnnoManyToMany;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use n2n\web\dispatch\map\val\impl\ValNotEmpty;
+use n2n\impl\web\dispatch\map\val\ValNotEmpty;
 
 class RocketUser extends ObjectAdapter implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

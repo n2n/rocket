@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\control;
 
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\model\EntryModel;
 use rocket\spec\ei\manage\EiState;

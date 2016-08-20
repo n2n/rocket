@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\component\field\impl\meta;
 
-use n2n\web\ui\view\impl\html\HtmlView;
-use n2n\persistence\orm\property\impl\ScalarEntityProperty;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\EiState;
@@ -33,7 +33,7 @@ use n2n\util\config\Attributes;
 use n2n\persistence\orm\NestedSetUtils;
 use rocket\spec\ei\component\field\impl\string\PathPartEiField;
 use n2n\l10n\DynamicTextCollection;
-use n2n\web\dispatch\mag\impl\model\EnumMag;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\OrmUtils;

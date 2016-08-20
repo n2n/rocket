@@ -32,7 +32,7 @@ use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
-use n2n\web\ui\view\impl\html\AjahResponse;
+use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;

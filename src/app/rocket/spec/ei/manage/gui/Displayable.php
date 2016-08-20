@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 
 interface Displayable {
 	/**

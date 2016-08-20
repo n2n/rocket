@@ -22,7 +22,7 @@
 
 	use rocket\spec\ei\manage\EiHtmlBuilder;
 	use n2n\web\dispatch\map\PropertyPath;
-	use n2n\web\ui\view\impl\html\HtmlView;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\EiState;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;

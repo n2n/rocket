@@ -22,15 +22,15 @@
 namespace rocket\spec\ei\component\field\impl\l10n;
 
 use n2n\l10n\N2nLocale;
-use n2n\web\ui\view\impl\html\HtmlView;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\component\field\SortableEiField;
-use n2n\web\dispatch\mag\impl\model\EnumMag;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\EntrySourceInfo; 
-use n2n\persistence\orm\property\impl\N2nLocaleEntityProperty;
+use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use n2n\reflection\property\TypeConstraint;

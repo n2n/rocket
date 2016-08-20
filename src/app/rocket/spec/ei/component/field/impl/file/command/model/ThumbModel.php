@@ -22,8 +22,8 @@
 namespace rocket\spec\ei\component\field\impl\file\command\model;
 
 use n2n\io\fs\img\ImageDimension;
-use n2n\web\dispatch\map\val\impl\ValEnum;
-use n2n\web\dispatch\map\val\impl\ValNumeric;
+use n2n\impl\web\dispatch\map\val\ValEnum;
+use n2n\impl\web\dispatch\map\val\ValNumeric;
 use n2n\io\managed\img\ImageFile;
 use n2n\web\dispatch\Dispatchable;
 use n2n\io\img\ImageResource;
