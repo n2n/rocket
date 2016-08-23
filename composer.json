@@ -10,24 +10,30 @@
             "name": "Andreas von Burg",
             "email": "a@von-burg.net",
             "homepage": "http://www.von-burg.net",
-            "role": "Developer"
+            "role": "Architect, Lead Developer, Concept"
         },
         {
             "name": "Bert Hofmänner",
             "email": "hofmaenner@hnm.ch",
-            "role": "Developer"
+            "role": "Idea, Frontend UI, Design, Marketing, Concept"
         },
         {
             "name": "Thomas Günther",
             "email": "guenther@hnm.ch",
-            "role": "Developer"
+            "role": "Developer, Frontend UI, Rocket Capability for Hangar"
         }
     ],
     "require": {
         "php": ">=7.0",
-        "n2n/n2n-module-composer-plugin": "master-dev",
+        "n2n/n2n-composer-module-installer": "master-dev",
         "n2n/n2n": "master-dev",
-        "n2n/n2n-web": "master-dev"
+        "n2n/n2n-batch": "master-dev",
+        "n2n/n2n-context": "master-dev",
+        "n2n/n2n-impl-persistence-meta": "master-dev",
+        "n2n/n2n-impl-persistence-orm": "master-dev",
+        "n2n/n2n-impl-web-dispatch": "master-dev",
+        "n2n/n2n-impl-web-ui": "master-dev",
+        "n2n/n2n-impl-web-dispatch": "master-dev"
     },
     "autoload": {
         "psr-4": {
