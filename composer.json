@@ -33,7 +33,8 @@
         "n2n/n2n-impl-persistence-orm": "master-dev",
         "n2n/n2n-impl-web-dispatch": "master-dev",
         "n2n/n2n-impl-web-ui": "master-dev",
-        "n2n/n2n-impl-web-dispatch": "master-dev"
+        "n2n/n2n-impl-web-dispatch": "master-dev",
+        "n2n/util-jquery": "master-dev"
     },
     "autoload": {
         "psr-4": {
