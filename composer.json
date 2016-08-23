@@ -34,7 +34,7 @@
         "n2n/n2n-impl-web-dispatch": "7.1.x-dev",
         "n2n/n2n-impl-web-ui": "7.1.x-dev",
         "n2n/n2n-impl-web-dispatch": "7.1.x-dev",
-        "n2n/util-jquery": "7.1.x-dev"
+        "n2n/util-jquery": "1.1.x-dev"
     },
     "autoload": {
         "psr-4": {
