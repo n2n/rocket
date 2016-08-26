@@ -43,7 +43,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\reflection\property\TypeConstraint;
-use n2n\core\config\HttpConfig;
+use n2n\core\config\WebConfig;
 
 class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -83,7 +83,7 @@ class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 		$systemN2nLocaleDefsMag = new MagCollectionArrayMag(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 'System locales',
 				$this->createN2nLocaleDefMagClosure());
 		$systemN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue($this->readModN2nLocaleDefs(
-				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(HttpConfig::class)->getSupersystem()->getN2nLocales())));
+				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(WebConfig::class)->getSupersystem()->getN2nLocales())));
 		$magCollection->addMag($systemN2nLocaleDefsMag);
 		
 		$customN2nLocaleDefsMag = new MagCollectionArrayMag(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, 'Custom locales',
@@ -187,7 +187,7 @@ class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 		$n2nLocaleDefs = array();
 		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
 			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
-					$n2nContext->lookup(HttpConfig::class)->getAllN2nLocales());
+					$n2nContext->lookup(WebConfig::class)->getAllN2nLocales());
 		} 
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
