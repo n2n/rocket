@@ -1,24 +1,3 @@
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var ui;
 (function (ui) {
     $ = jQuery;
@@ -404,27 +383,6 @@ var ui;
     }());
     ui.EntryFormCommand = EntryFormCommand;
 })(ui || (ui = {}));
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var ui;
 (function (ui) {
     var Dialog = (function () {
@@ -540,27 +498,6 @@ var ui;
     }());
     ui.StressWindow = StressWindow;
 })(ui || (ui = {}));
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var storage;
 (function (storage) {
     var CookieStorage = (function () {
@@ -595,27 +532,6 @@ var storage;
     }());
     storage.CookieStorage = CookieStorage;
 })(storage || (storage = {}));
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var storage;
 (function (storage_1) {
     var WebStorage = (function () {
@@ -658,27 +574,6 @@ var storage;
 /// <reference path="ui/dialog.ts" />
 /// <reference path="storage/cookie.ts" />
 /// <reference path="storage/web.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var RocketTs = (function () {
     function RocketTs() {
         this.contentStack = null;
@@ -875,27 +770,6 @@ var RocketTs = (function () {
 }());
 var rocketTs = new RocketTs();
 /// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var ui;
 (function (ui) {
     var GlobalNavGroup = (function () {
@@ -1049,27 +923,902 @@ var ui;
         new ConfNav($("#rocket-conf-nav"), $("#rocket-conf-nav-toggle"));
     });
 })(ui || (ui = {}));
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
+/// <reference path="../rocket.ts" />
+var spec;
+(function (spec) {
+    var $ = jQuery;
+    var Error = (function () {
+        function Error(errorList, elemError, elemMessage) {
+            this.elemError = elemError;
+            this.elemLi = $("<li />");
+            this.elemMessage = elemMessage;
+            (function (that) {
+                var elemA = $("<a />", {
+                    "href": "#"
+                }).appendTo(that.elemLi);
+                $("<div />", {
+                    "class": "error-list-label",
+                    "text": elemMessage.text() || "Fehler"
+                }).appendTo(elemA);
+                $("<div />", {
+                    "class": "error-list-path",
+                    "text": errorList.determinePathLabel(that)
+                }).appendTo(elemA);
+                elemA.click(function (e) {
+                    e.preventDefault();
+                    errorList.scrollTo(that);
+                    that.elemLi.find("input[type=text], textarea").first().focus();
+                });
+                elemA.mouseenter(function () {
+                    errorList.highlight(that);
+                }).mouseleave(function () {
+                    errorList.normalize(that);
+                });
+            }).call(this, this);
+        }
+        Error.prototype.getElem = function () {
+            return this.elemError;
+        };
+        Error.prototype.getElemLi = function () {
+            return this.elemLi;
+        };
+        return Error;
+    }());
+    var ErrorList = (function () {
+        function ErrorList() {
+            this.elemFixedContainer = rocketTs.getElemContentContainer();
+            this.elemList = $("<ul />", {
+                "class": "rocket-error-list"
+            });
+        }
+        ErrorList.prototype.hasErrors = function () {
+            return this.elemList.children().length > 0;
+        };
+        ErrorList.prototype.getElemList = function () {
+            return this.elemList;
+        };
+        ErrorList.prototype.determinePathElements = function (elem) {
+            return elem.parents(".rocket-has-error");
+        };
+        ErrorList.prototype.determinePathLabel = function (error) {
+            var elem = error.getElem(), labelParts = [elem.children("label:first").text()];
+            this.determinePathElements(error.getElem()).each(function () {
+                labelParts.unshift($(this).children("label:first").text());
+            });
+            return labelParts.join(" / ");
+        };
+        ErrorList.prototype.highlight = function (error) {
+            var elem = error.getElem().addClass("rocket-highlighted");
+            //			this.determinePathElements(error.getElem()).each(function() {
+            //				$(this).addClass("rocket-highlighted");
+            //			});
+        };
+        ErrorList.prototype.normalize = function (error) {
+            var elem = error.getElem().removeClass("rocket-highlighted");
+            //			this.determinePathElements(error.getElem()).each(function() {
+            //				$(this).removeClass("rocket-highlighted");
+            //			});
+        };
+        ErrorList.prototype.scrollTo = function (error) {
+            this.elemFixedContainer.animate({
+                scrollTop: "+=" + (error.getElem().offset().top - this.elemFixedContainer.offset().top)
+            });
+        };
+        ErrorList.prototype.addError = function (elemError, elemMessage) {
+            var error = new Error(this, elemError, elemMessage);
+            this.elemList.append(error.getElemLi());
+            return error;
+        };
+        return ErrorList;
+    }());
+    rocketTs.ready(function () {
+        var errorList = new ErrorList();
+        $(".rocket-message-error").each(function () {
+            errorList.addError($(this).parents(".rocket-has-error:first"), $(this));
+        });
+        if (errorList.hasErrors()) {
+            var additionalContent = rocketTs.getOrCreateAdditionalContent();
+            additionalContent.createAndPrependEntry(additionalContent.getElemContent().data("error-list-label"), errorList.getElemList());
+        }
+    });
+})(spec || (spec = {}));
+/// <reference path="..\..\rocket.ts" />
+/// <reference path="..\..\ui\dialog.ts" />
+var spec;
+(function (spec) {
+    var edit;
+    (function (edit) {
+        var CriticalInput = (function () {
+            function CriticalInput(elem) {
+                this.dialog = null;
+                this.elem = elem;
+                this.elemLockedContainer = $("<div/>", {
+                    "class": "rocket-critical-input-locked-container"
+                }).insertAfter(elem);
+                this.elemLabel = $("<span/>", {
+                    text: this.determineLabel
+                }).appendTo(this.elemLockedContainer);
+                this.elemUnlock = $("<a/>", {
+                    "class": "rocket-critical-input-unlock rocket-control"
+                }).append($("<i/>", { "class": elem.data("icon-unlock") || "fa fa-pencil" }))
+                    .appendTo(this.elemLockedContainer);
+                elem.hide();
+                (function (that) {
+                    if (elem.data("confirm-message")) {
+                        that.initializeDialog();
+                    }
+                    that.elemUnlock.click(function (e) {
+                        e.preventDefault();
+                        if (null !== that.dialog) {
+                            rocketTs.showDialog(that.dialog);
+                        }
+                        else {
+                            that.showInput();
+                        }
+                    });
+                }).call(this, this);
+            }
+            CriticalInput.prototype.initializeDialog = function () {
+                var that = this;
+                this.dialog = new ui.Dialog(this.elem.data("confirm-message"));
+                this.dialog.addButton(this.elem.data("edit-label"), function () {
+                    that.showInput();
+                });
+                this.dialog.addButton(this.elem.data("cancel-label"), function () {
+                    //defaultbehaviour is to close the dialog
+                });
+            };
+            CriticalInput.prototype.showInput = function () {
+                this.elemLockedContainer.hide();
+                this.elemLockedContainer.show();
+                this.elemUnlock.remove();
+            };
+            ;
+            CriticalInput.prototype.determineLabel = function (elem) {
+                var label = elem.val();
+                if (elem.is("select")) {
+                    var elemOption = elem.find("option[value='" + label + "']");
+                    if (elemOption.length > 0) {
+                        label = elemOption.text();
+                    }
+                }
+                return label;
+            };
+            return CriticalInput;
+        }());
+    })(edit = spec.edit || (spec.edit = {}));
+})(spec || (spec = {}));
+/// <reference path="..\rocket.ts" />
+var l10n;
+(function (l10n) {
+    $ = jQuery;
+    var TranslationViewSwitch = (function () {
+        function TranslationViewSwitch(defaultLabel, translationsOnlyLabel) {
+            this.elemContainer = $("<ul />", {
+                "class": "rocket-translation-view-switch"
+            });
+            this.elemStandard = $("<li />", {
+                "text": defaultLabel
+            }).addClass(TranslationViewSwitch.CLASS_NAME_ACTIVE).appendTo(this.elemContainer);
+            this.elemTranslationOnly = $("<li />", {
+                "text": translationsOnlyLabel
+            }).addClass("rocket-active").appendTo(this.elemContainer);
+            this.elemForClass = $("#rocket-content-container");
+            (function (that) {
+                that.elemStandard.click(function () {
+                    that.elemForClass.removeClass(TranslationViewSwitch.CLASS_NAME_TRANSLATION_ONLY);
+                    that.elemTranslationOnly.removeClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
+                    that.elemStandard.addClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
+                });
+                that.elemTranslationOnly.click(function () {
+                    that.elemForClass.addClass(TranslationViewSwitch.CLASS_NAME_TRANSLATION_ONLY);
+                    that.elemTranslationOnly.addClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
+                    that.elemStandard.removeClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
+                });
+            }).call(this, this);
+        }
+        TranslationViewSwitch.prototype.getElemContainer = function () {
+            return this.elemContainer;
+        };
+        TranslationViewSwitch.CLASS_NAME_TRANSLATION_ONLY = "rocket-translation-only";
+        TranslationViewSwitch.CLASS_NAME_ACTIVE = "rocket-active";
+        return TranslationViewSwitch;
+    }());
+    var TranslationEnabler = (function () {
+        function TranslationEnabler(elem) {
+            this.activationCallbacks = [];
+            this.deactivationCallbacks = [];
+            this.elem = elem;
+            elem.parent(".rocket-controls").prev("label").hide();
+            this.elemToolPanel = elem.parents(".rocket-tool-panel:first");
+            this.elemProperties = this.elemToolPanel.next(".rocket-properties:first");
+            //			if (this.elem.children().length === 1) {
+            //				elem.parents("li:first").hide();
+            //				elem.find("input[type=checkbox]").prop("checked", true);
+            //				return;
+            //			}
+            this.elemContainer = $("<div />").css({
+                "position": "relative"
+            }).insertBefore(elem);
+            this.elemActivator = $("<a />", {
+                "href": "#",
+                "class": "rocket-translation-enabler-activator",
+                "text": elem.data("active-locales-label")
+            }).appendTo(this.elemContainer);
+            this.elem.css({
+                "position": "absolute",
+                "left": "0",
+                "top": this.elemActivator.outerHeight(true)
+            }).appendTo(this.elemContainer).hide();
+            (function (that) {
+                that.elemActivator.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (that.elemActivator.hasClass("rocket-open")) {
+                        that.hide();
+                    }
+                    else {
+                        that.show();
+                    }
+                });
+                that.elem.click(function (e) {
+                    e.stopPropagation();
+                });
+                this.elem.find("[data-locale-id]").each(function () {
+                    var elemLi = $(this), elemCheckbox = elemLi.children("input[type=checkbox]"), localeId = elemLi.data("locale-id");
+                    if (elemLi.data("mandatory")) {
+                        if (!elemCheckbox.prop("checked")) {
+                            elemCheckbox.prop("checked", true);
+                            that.triggerActivationCallbacks(localeId);
+                        }
+                        elemCheckbox.clone().removeAttr("name").insertBefore(elemCheckbox).prop("disabled", true);
+                        elemCheckbox.removeAttr("id").hide();
+                    }
+                    else {
+                        elemCheckbox.change(function () {
+                            if (elemCheckbox.prop("checked")) {
+                                that.triggerActivationCallbacks(localeId);
+                            }
+                            else {
+                                that.triggerDeactivationCallbacks(localeId);
+                            }
+                        });
+                    }
+                });
+                that.elemProperties.addClass("rocket-translation-container")
+                    .data("translation-enabler", this);
+            }).call(this, this);
+        }
+        TranslationEnabler.prototype.hide = function () {
+            this.elem.hide();
+            this.elemActivator.removeClass("rocket-open");
+            $(window).off("click.translationEnabler");
+        };
+        TranslationEnabler.prototype.show = function () {
+            var that = this;
+            this.elem.show();
+            this.elemActivator.addClass("rocket-open");
+            $(window).on("click.translationEnabler", function () {
+                that.hide();
+            });
+        };
+        TranslationEnabler.prototype.activate = function (localeId) {
+            this.elem.find("[data-locale-id=" + localeId + "] > input[type=checkbox]").each(function () {
+                $(this).prop("checked", true).change();
+            });
+        };
+        TranslationEnabler.prototype.isActive = function (localeId) {
+            return this.elem.find("[data-locale-id=" + localeId + "] > input[type=checkbox]").prop("checked");
+        };
+        TranslationEnabler.prototype.triggerActivationCallbacks = function (localeId) {
+            this.activationCallbacks.forEach(function (activationCallback) {
+                activationCallback(localeId);
+            });
+        };
+        TranslationEnabler.prototype.registerActivationCallback = function (activationCallback) {
+            this.activationCallbacks.push(activationCallback);
+        };
+        TranslationEnabler.prototype.registerDeactivationCallback = function (deactivationCallback) {
+            this.deactivationCallbacks.push(deactivationCallback);
+        };
+        TranslationEnabler.prototype.triggerDeactivationCallbacks = function (localeId) {
+            this.deactivationCallbacks.forEach(function (deactivationCallback) {
+                deactivationCallback(localeId);
+            });
+        };
+        TranslationEnabler.prototype.getElem = function () {
+            return this.elem;
+        };
+        return TranslationEnabler;
+    }());
+    var TranslationEnablerManager = (function () {
+        function TranslationEnablerManager() {
+            this.translationEnablers = [];
+        }
+        TranslationEnablerManager.prototype.initializeElement = function (elemTranslationEnabler) {
+            var that = this;
+            elemTranslationEnabler.each(function () {
+                that.translationEnablers.push(new TranslationEnabler($(this)));
+            });
+        };
+        return TranslationEnablerManager;
+    }());
+    var NotSelectedTag = (function () {
+        function NotSelectedTag(localeId, localeSelector) {
+            this.elem = $("<li />", {
+                "class": "rocket-locale-not-selected-" + localeId
+            }).append($("<span />", {
+                text: localeSelector.getLocaleLabel(localeId)
+            }));
+            (function (that) {
+                that.elem.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    localeSelector.selectLocaleWithId(localeId);
+                    that.elem.remove();
+                });
+            }).call(this, this);
+        }
+        NotSelectedTag.prototype.getElem = function () {
+            return this.elem;
+        };
+        return NotSelectedTag;
+    }());
+    var SelectedTag = (function () {
+        function SelectedTag(localeId, localeSelector) {
+            this.elem = $("<li />");
+            this.elemText = $("<span />", {
+                "text": localeSelector.getLocaleLabel(localeId)
+            }).appendTo(this.elem);
+            (function (that) {
+                this.elemRemove = rocketTs.creatControlElem("Text: Remove Language", function () {
+                    that.elem.remove();
+                    localeSelector.removeSelectedLocaleWithId(localeId);
+                }, "fa fa-times").removeClass("rocket-control").appendTo(this.elem);
+                localeSelector.getElemUlSelectedContainer().on("localeChange", function () {
+                    if ($(this).children().length === 1) {
+                        that.elemRemove.hide();
+                    }
+                    else {
+                        that.elemRemove.show();
+                    }
+                });
+            }).call(this, this);
+        }
+        SelectedTag.prototype.getElem = function () {
+            return this.elem;
+        };
+        return SelectedTag;
+    }());
+    var TranslationEntry = (function () {
+        function TranslationEntry(localeSelector, elem) {
+            this.active = true;
+            this.elem = elem;
+            this.localeId = elem.data("locale-id");
+            this.error = elem.hasClass("rocket-has-error");
+            this.translationEnabler = elem.parents(".rocket-translation-container:first").data("translation-enabler") || null;
+            (function (that) {
+                localeSelector.registerSelectionCallback(function (localeId) {
+                    if (localeId !== that.localeId)
+                        return;
+                    that.show();
+                });
+                localeSelector.registerRemoveSelectionCallback(function (localeId) {
+                    if (localeId !== that.localeId)
+                        return;
+                    that.hide();
+                });
+                if (null !== this.translationEnabler) {
+                    that.elemLocaleControls = elem.find(".rocket-locale-controls:first");
+                    var entryFormCommand = new ui.EntryFormCommand("Text: Activate " + localeSelector.getLocaleLabel(that.localeId), function () {
+                        that.translationEnabler.activate(that.localeId);
+                    }, "fa fa-language");
+                    that.elemActivate = entryFormCommand.getElemContainer().addClass("rocket-translation-activator");
+                    if (!that.translationEnabler.isActive(that.localeId)) {
+                        that.deactivate();
+                    }
+                    that.translationEnabler.registerActivationCallback(function (localeId) {
+                        if (localeId !== that.localeId)
+                            return;
+                        that.activate();
+                    });
+                    that.translationEnabler.registerDeactivationCallback(function (localeId) {
+                        if (localeId !== that.localeId)
+                            return;
+                        that.deactivate();
+                    });
+                }
+            }).call(this, this);
+        }
+        TranslationEntry.prototype.hasError = function () {
+            return this.error;
+        };
+        TranslationEntry.prototype.show = function () {
+            this.elem.show();
+            //this.elemActivate.show();
+        };
+        TranslationEntry.prototype.hide = function () {
+            this.elem.hide();
+            //this.elemActivate.hide();
+        };
+        TranslationEntry.prototype.activate = function () {
+            if (this.active)
+                return;
+            this.elemActivate.detach();
+            this.elemLocaleControls.children().show();
+            rocketTs.updateUi();
+            this.active = true;
+        };
+        TranslationEntry.prototype.deactivate = function () {
+            if (!this.active)
+                return;
+            this.elemLocaleControls.children().hide();
+            this.elemActivate.prependTo(this.elemLocaleControls);
+            this.active = false;
+        };
+        return TranslationEntry;
+    }());
+    var LocaleSelector = (function () {
+        function LocaleSelector(tem, languagesLabel, defaultLabel, translationsOnlyLabel) {
+            this.localeLabels = {};
+            this.selectedLocaleIds = [];
+            this.notSelectedLocaleIds = [];
+            this.initialized = false;
+            this.selectionCallbacks = [];
+            this.removeSelectionCallbacks = [];
+            this.tem = tem;
+            this.elemToolbar = $("#rocket-toolbar");
+            if (this.elemToolbar.length === 0) {
+                this.elemToolbar = $("<div />", { "id": "rocket-toolbar" })
+                    .insertAfter($(".rocket-panel:first > h3:first"));
+            }
+            this.elemContainer = $("<div />", {
+                "class": "rocket-locale-selection"
+            }).appendTo(this.elemToolbar);
+            this.elemUlSelectedContainer = $("<ul />", {
+                "class": "rocket-selected-locales"
+            }).appendTo(this.elemContainer);
+            this.elemLabel = $("<a />", {
+                "text": languagesLabel,
+                "href": "#"
+            }).appendTo(this.elemContainer);
+            this.elemUlNotSelectedContainer = $("<ul />", {
+                "class": "rocket-not-selected-locales"
+            }).appendTo(this.elemContainer).hide();
+            (function (that) {
+                that.elemLabel.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (that.elemContainer.hasClass("open")) {
+                        that.close();
+                    }
+                    else {
+                        that.open();
+                    }
+                });
+                var translationSwitch = new TranslationViewSwitch(defaultLabel, translationsOnlyLabel);
+                translationSwitch.getElemContainer().prependTo(this.elemToolbar);
+            }).call(this, this);
+        }
+        LocaleSelector.prototype.initialize = function () {
+            this.initialized = true;
+            this.initSelectedLocales();
+            this.initNotSelectedLocales();
+        };
+        LocaleSelector.prototype.initSelectedLocales = function () {
+            var that = this;
+            this.getSavedLocaleIds().forEach(function (localeId) {
+                that.selectLocaleWithId(localeId);
+            });
+        };
+        LocaleSelector.prototype.initNotSelectedLocales = function () {
+            var selectedLocaleId = null, that = this;
+            this.notSelectedLocaleIds.forEach(function (localeId) {
+                if (that.selectedLocaleIds.length === 0
+                    && null === selectedLocaleId) {
+                    //If no locale is selected then select the first one					
+                    //need to remember it here, if you push it directly, the array 
+                    //will change internaly and the element after will be ignored
+                    selectedLocaleId = localeId;
+                }
+                else {
+                    that.addNotSelectedLocaleWithId(localeId);
+                }
+            });
+            if (null !== selectedLocaleId) {
+                that.selectLocaleWithId(selectedLocaleId);
+            }
+        };
+        LocaleSelector.prototype.hasLocaleId = function (localeId) {
+            return this.isLocaleIdSelected(localeId) || (this.notSelectedLocaleIds.indexOf(localeId) >= 0);
+        };
+        LocaleSelector.prototype.getLocaleLabel = function (localeId) {
+            if (!this.localeLabels.hasOwnProperty(localeId))
+                return localeId;
+            return this.localeLabels[localeId];
+        };
+        LocaleSelector.prototype.initializeLocalizedElems = function (localizedElem) {
+            var that = this;
+            localizedElem.each(function () {
+                var elem = $(this), localeId = elem.data("locale-id");
+                if (!that.hasLocaleId(localeId)) {
+                    that.notSelectedLocaleIds.push(localeId);
+                    that.localeLabels[localeId] = elem.data("pretty-locale-id");
+                }
+                var translationEntry = new TranslationEntry(that, elem);
+                if (!that.isLocaleIdSelected(localeId) && !translationEntry.hasError()) {
+                    translationEntry.hide();
+                }
+                if (that.initialized)
+                    return;
+                that.initSelectedLocales();
+                that.initNotSelectedLocales();
+            });
+            //			if (that.notSelectedLocaleIds.length <= 1) {
+            //				//just one locale is available -> show elements like not translatable 	
+            //				$(".rocket-properties [data-locale-id]").each(function() {
+            //					var elem = $(this).show();	
+            //					//elem.show().children("label:first").remove();
+            //					//elem.parent().replaceWith(elem.children("div.rocket-controls").contents());
+            //				});
+            //				//that.elemContainer.remove();
+            //				if (that.elemToolbar.children().length === 1) {
+            //					this.elemToolbar.remove();	
+            //				}
+            //				return;
+            //			}
+        };
+        LocaleSelector.prototype.open = function () {
+            if (this.notSelectedLocaleIds.length === 0)
+                return;
+            this.elemContainer.addClass("open");
+            this.elemUlNotSelectedContainer.show();
+            var that = this;
+            $(window).off("click.localeSelector").on("click.localeSelector", function () {
+                that.close();
+            });
+        };
+        LocaleSelector.prototype.close = function () {
+            $(window).off("click.localeSelector");
+            this.elemContainer.removeClass("open");
+            this.elemUlNotSelectedContainer.hide();
+        };
+        LocaleSelector.prototype.getElemUlSelectedContainer = function () {
+            return this.elemUlSelectedContainer;
+        };
+        LocaleSelector.prototype.getSavedLocaleIds = function () {
+            var cookieValue = rocketTs.getCookie(LocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS);
+            if (!cookieValue)
+                return [];
+            return cookieValue.split(",");
+        };
+        LocaleSelector.prototype.saveState = function () {
+            var savedLocaleIds = this.getSavedLocaleIds();
+            this.selectedLocaleIds.forEach(function (value) {
+                if (savedLocaleIds.indexOf(value) !== -1)
+                    return;
+                savedLocaleIds.push(value);
+            });
+            this.notSelectedLocaleIds.forEach(function (value) {
+                if (savedLocaleIds.indexOf(value) === -1)
+                    return;
+                savedLocaleIds.splice(savedLocaleIds.indexOf(value), 1);
+            });
+            rocketTs.setCookie(LocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS, savedLocaleIds.join(","));
+            this.elemUlSelectedContainer.trigger("localeChange");
+        };
+        LocaleSelector.prototype.isLocaleIdSelected = function (localeId) {
+            return this.selectedLocaleIds.indexOf(localeId) >= 0;
+        };
+        LocaleSelector.prototype.registerSelectionCallback = function (selectionCallback) {
+            this.selectionCallbacks.push(selectionCallback);
+        };
+        LocaleSelector.prototype.triggerSelectionCallbacks = function (localeId) {
+            this.selectionCallbacks.forEach(function (selectionCallback) {
+                selectionCallback(localeId);
+            });
+        };
+        LocaleSelector.prototype.selectLocaleWithId = function (localeId) {
+            if (this.notSelectedLocaleIds.indexOf(localeId) === -1)
+                return;
+            var selectedTag = new SelectedTag(localeId, this);
+            this.elemUlSelectedContainer.append(selectedTag.getElem());
+            this.selectedLocaleIds.push(localeId);
+            this.notSelectedLocaleIds.splice(this.notSelectedLocaleIds.indexOf(localeId), 1);
+            // this.tem.activate(localeId);
+            this.triggerSelectionCallbacks(localeId);
+            this.saveState();
+            if (this.notSelectedLocaleIds.length === 0) {
+                this.close();
+            }
+        };
+        LocaleSelector.prototype.registerRemoveSelectionCallback = function (removeSelectionCallback) {
+            this.removeSelectionCallbacks.push(removeSelectionCallback);
+        };
+        LocaleSelector.prototype.triggerRemoveSelectionCallbacks = function (localeId) {
+            this.removeSelectionCallbacks.forEach(function (removeSelectionCallback) {
+                removeSelectionCallback(localeId);
+            });
+        };
+        LocaleSelector.prototype.removeSelectedLocaleWithId = function (localeId) {
+            if (this.selectedLocaleIds.indexOf(localeId) === -1)
+                return;
+            this.notSelectedLocaleIds.push(localeId);
+            this.selectedLocaleIds.splice(this.selectedLocaleIds.indexOf(localeId), 1);
+            this.addNotSelectedLocaleWithId(localeId);
+            this.triggerRemoveSelectionCallbacks(localeId);
+            //this.tem.deactivate(localeId);
+            this.saveState();
+        };
+        LocaleSelector.prototype.addNotSelectedLocaleWithId = function (localeId) {
+            if (this.elemUlNotSelectedContainer.children("li.rocket-locale-not-selected-" + localeId).length > 0)
+                return;
+            var selectedTag = new NotSelectedTag(localeId, this);
+            this.elemUlNotSelectedContainer.append(selectedTag.getElem());
+        };
+        LocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS = "selectedLocaleIds";
+        return LocaleSelector;
+    }());
+    rocketTs.ready(function () {
+        var localeSelector = null, tem = new TranslationEnablerManager();
+        rocketTs.registerUiInitFunction(".rocket-translation-enabler", function (elem) {
+            tem.initializeElement(elem);
+        });
+        rocketTs.registerUiInitFunction(".rocket-properties > [data-locale-id]", function (localizedElem) {
+            if (null === localeSelector) {
+                var languagesLabel = null, translationsOnlyLabel = null, defaultLabel = null, elemTranslatableContent = $(".rocket-translatable-content:first");
+                if (elemTranslatableContent.length > 0) {
+                    languagesLabel = elemTranslatableContent.data("languages-label");
+                    defaultLabel = elemTranslatableContent.data("standard-label");
+                    translationsOnlyLabel = elemTranslatableContent.data("translations-only-label");
+                }
+                if (null === languagesLabel) {
+                    var elemTranslationEnabler = $(".rocket-translation-enabler:first");
+                    languagesLabel = elemTranslationEnabler.data("languages-label");
+                    defaultLabel = elemTranslationEnabler.data("standard-label");
+                    translationsOnlyLabel = elemTranslationEnabler.data("translations-only-label");
+                }
+                if (null !== languagesLabel) {
+                    localeSelector = new LocaleSelector(tem, languagesLabel, defaultLabel, translationsOnlyLabel);
+                }
+                else {
+                    throw new Error("no languages label found");
+                }
+            }
+            if (null === localeSelector)
+                return;
+            localeSelector.initializeLocalizedElems(localizedElem);
+        });
+        if (null !== localeSelector) {
+            localeSelector.initialize();
+        }
+    });
+})(l10n || (l10n = {}));
+/// <reference path="..\rocket.ts" />
+var preview;
+(function (preview) {
+    $ = jQuery;
+    var Iframe = (function () {
+        function Iframe(elemIframe) {
+            this.elemIframe = elemIframe;
+            this.elemHeader = $("#rocket-header");
+            this.elemPanelTitle = $(".rocket-panel:first h3:first");
+            this.elemMainCommands = $(".rocket-main-commands:first");
+            (function (that) {
+                $(window).resize(function () {
+                    rocketTs.waitForFinalEvent(function () {
+                        that.adjustIframeHeight();
+                    }, 30, 'preview.resize');
+                });
+                that.adjustIframeHeight();
+            }).call(this, this);
+        }
+        Iframe.prototype.adjustIframeHeight = function () {
+            var iFrameMinHeight = $(window).height() - this.elemHeader.height()
+                - this.elemMainCommands.outerHeight() - this.elemPanelTitle.outerHeight();
+            this.elemIframe.css({
+                "min-height": iFrameMinHeight
+            });
+        };
+        return Iframe;
+    }());
+    rocketTs.ready(function () {
+        var elemIframe = $("#rocket-preview-content");
+        if (elemIframe.length === 0)
+            return;
+        new Iframe(elemIframe);
+    });
+})(preview || (preview = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/// <reference path="..\rocket.ts" />
+var ui;
+(function (ui) {
+    var ConfirmableAdapter = (function () {
+        function ConfirmableAdapter(manager, elem) {
+            this.manager = manager;
+            this.elem = elem;
+            this.msg = this.elem.data("rocket-confirm-msg") || "Are you sure?";
+            this.confirmOkLabel = this.elem.data("rocket-confirm-ok-label") || "Yes";
+            ;
+            this.confirmCancelLabel = this.elem.data("rocket-confirm-cancel-label") || "No";
+        }
+        ConfirmableAdapter.prototype.getMsg = function () {
+            return this.msg;
+        };
+        ConfirmableAdapter.prototype.setMsg = function (msg) {
+            this.msg = msg;
+            ;
+        };
+        ConfirmableAdapter.prototype.getConfirmOkLabel = function () {
+            return this.confirmOkLabel;
+        };
+        ConfirmableAdapter.prototype.setConfirmOkLabel = function (confirmOkLabel) {
+            this.confirmOkLabel = confirmOkLabel;
+        };
+        ConfirmableAdapter.prototype.getConfirmCancelLabel = function () {
+            return this.confirmCancelLabel;
+        };
+        ConfirmableAdapter.prototype.setConfirmCancelLabel = function (confirmCancelLabel) {
+            this.confirmCancelLabel = confirmCancelLabel;
+        };
+        ConfirmableAdapter.prototype.showDialog = function () {
+            this.manager.showDialog(this);
+        };
+        ConfirmableAdapter.prototype.confirmDialog = function () { };
+        ;
+        return ConfirmableAdapter;
+    }());
+    var ConfirmableSubmit = (function (_super) {
+        __extends(ConfirmableSubmit, _super);
+        function ConfirmableSubmit(manager, elemInput) {
+            _super.call(this, manager, elemInput);
+            this.elemForm = elemInput.parents("form:first");
+            (function (that) {
+                elemInput.off("click.form").on("click.formInput", function () {
+                    that.showDialog();
+                });
+            }).call(this, this);
+        }
+        ConfirmableSubmit.prototype.confirmDialog = function () {
+            this.elem.off("click.formInput");
+            if (this.elemForm.length > 0) {
+                var tempInput = $("<input/>", {
+                    "type": "hidden",
+                    "name": this.elem.attr("name"),
+                    "value": this.elem.val()
+                });
+                this.elemForm.append(tempInput);
+                this.elemForm.submit();
+                tempInput.remove();
+            }
+        };
+        return ConfirmableSubmit;
+    }(ConfirmableAdapter));
+    var ConfirmableForm = (function (_super) {
+        __extends(ConfirmableForm, _super);
+        function ConfirmableForm(manager, elemForm) {
+            _super.call(this, manager, elemForm);
+            (function (that) {
+                elemForm.on("click.form", "input[type=submit]", function () {
+                    that.elemSubmit = this;
+                    that.showDialog();
+                    //_obj.jqElemForm.find('input').blur();
+                    return false;
+                });
+            }).call(this, this);
+        }
+        ConfirmableForm.prototype.confirmDialog = function () {
+            this.elem.off("click.form");
+            var tempInput = $("<input />", {
+                "type": "hidden",
+                "name": this.elemSubmit.attr("name"),
+                "value": this.elemSubmit.val()
+            }).appendTo(this.elem);
+            this.elem.submit();
+            tempInput.remove();
+        };
+        return ConfirmableForm;
+    }(ConfirmableAdapter));
+    var ConfirmableLink = (function (_super) {
+        __extends(ConfirmableLink, _super);
+        function ConfirmableLink(manager, elemA) {
+            _super.call(this, manager, elemA);
+            (function (that) {
+                elemA.on("click.confirmable", function (e) {
+                    e.preventDefault();
+                    that.showDialog();
+                });
+            }).call(this, this);
+        }
+        ConfirmableLink.prototype.confirmDialog = function () {
+            window.location.assign(this.elem.attr("href"));
+        };
+        return ConfirmableLink;
+    }(ConfirmableAdapter));
+    var ConfirmableManager = (function () {
+        function ConfirmableManager() {
+        }
+        ConfirmableManager.prototype.initElem = function (elem) {
+            if (elem.is("[type=submit]")) {
+                return new ConfirmableSubmit(this, elem);
+            }
+            if (elem.is("form")) {
+                return new ConfirmableForm(this, elem);
+            }
+            if (elem.is("a")) {
+                return new ConfirmableLink(this, elem);
+            }
+            throw new Error("invalid confirmable");
+        };
+        ConfirmableManager.prototype.showDialog = function (confirmable) {
+            var that = this, dialog = new ui.Dialog(confirmable.getMsg());
+            dialog.addButton(confirmable.getConfirmOkLabel(), function () {
+                confirmable.confirmDialog();
+            });
+            dialog.addButton(confirmable.getConfirmCancelLabel(), function () {
+                //defaultbehaviour is to close the dialog
+            });
+            rocketTs.showDialog(dialog);
+        };
+        return ConfirmableManager;
+    }());
+    ui.ConfirmableManager = ConfirmableManager;
+    rocketTs.ready(function () {
+        rocketTs.registerUiInitFunction("[data-rocket-confirm-msg]", function (elemConfirmable) {
+            rocketTs.getConfirmableManager().initElem(elemConfirmable);
+        });
+    });
+})(ui || (ui = {}));
+/// <reference path="..\..\rocket.ts" />
+var spec;
+(function (spec) {
+    var display;
+    (function (display) {
+        $ = jQuery;
+        var ContentItem = (function () {
+            function ContentItem(elem) {
+                this.elem = elem;
+                this.elemType = elem.find(".rocket-gui-field-type").hide();
+                this.typeLabel = this.elemType.children(".rocket-controls").text();
+                elem.find(".rocket-field-orderIndex").hide();
+                new spec.EntryHeader(this.typeLabel, elem);
+            }
+            return ContentItem;
+        }());
+        var ContentItemPanel = (function () {
+            function ContentItemPanel(elemHeader, elemContent) {
+                this.elemHeader = elemHeader;
+                this.elemContent = elemContent;
+                (function () {
+                    elemContent.children(".rocket-content-item").each(function () {
+                        new ContentItem($(this));
+                    });
+                }).call(this, this);
+            }
+            return ContentItemPanel;
+        }());
+        var ContentItemComposer = (function () {
+            function ContentItemComposer(elem) {
+                this.elem = elem;
+                (function (that) {
+                    elem.children("h4").each(function () {
+                        new ContentItemPanel($(this), $(this).next());
+                    });
+                }).call(this, this);
+            }
+            return ContentItemComposer;
+        }());
+        rocketTs.ready(function () {
+            rocketTs.registerUiInitFunction(".rocket-content-item-composer", function (elemContentItemComposer) {
+                new ContentItemComposer(elemContentItemComposer);
+            });
+        });
+    })(display = spec.display || (spec.display = {}));
+})(spec || (spec = {}));
 var spec;
 (function (spec) {
     var $ = jQuery;
@@ -1109,27 +1858,6 @@ var spec;
 })(spec || (spec = {}));
 /// <reference path="..\..\rocket.ts" />
 /// <reference path="..\common.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var spec;
 (function (spec) {
     var edit;
@@ -1732,27 +2460,6 @@ var spec;
 })(spec || (spec = {}));
 /// <reference path="..\..\rocket.ts" />
 /// <reference path="toMany.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var spec;
 (function (spec) {
     var edit;
@@ -1803,27 +2510,150 @@ var spec;
     })(edit = spec.edit || (spec.edit = {}));
 })(spec || (spec = {}));
 /// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
+var ui;
+(function (ui) {
+    $ = jQuery;
+    var Panel = (function () {
+        function Panel(group, elem) {
+            this.parentPanelGroupId = null;
+            this.group = group;
+            this.elem = elem;
+            this.elemLi = $("<li/>", {
+                "class": "rocket-panel-activator"
+            });
+            this.parentPanelGroupId = null;
+            (function (that) {
+                that.elemLi.append($("<a/>", {
+                    "href": "#",
+                    "text": elem.children(":first").hide().text()
+                }).click(function (e) {
+                    e.preventDefault();
+                }));
+                that.elemLi.click(function () {
+                    that.show();
+                });
+                that.hide();
+            }).call(this, this);
+        }
+        Panel.prototype.getElemLi = function () {
+            return this.elemLi;
+        };
+        Panel.prototype.show = function () {
+            this.elemLi.addClass("rocket-active");
+            if (this.group.hasParentPanelGroup()) {
+                if (null !== this.getId()) {
+                    if (typeof history.pushState !== 'undefined') {
+                        history.pushState(null, null, '#!' + this.getId());
+                    }
+                    else {
+                        window.location.hash = "#!" + this.getId();
+                    }
+                }
+            }
+            this.elem.show();
+        };
+        ;
+        Panel.prototype.hide = function () {
+            this.elemLi.removeClass("rocket-active");
+            this.elem.hide();
+        };
+        ;
+        Panel.prototype.equals = function (obj) {
+            return obj instanceof Panel && this.elemLi.is(obj.getElemLi());
+        };
+        ;
+        Panel.prototype.getId = function () {
+            return this.elem.attr("id") || null;
+        };
+        return Panel;
+    }());
+    var PanelGroup = (function () {
+        function PanelGroup(elem) {
+            this.currentPanel = null;
+            this.elem = elem;
+            this.elemUl = $("<ul/>", {
+                "class": "rocket-grouped-panels-navigation"
+            });
+            (function (that) {
+                var currentPanelId = window.location.hash.substr(2), panelToActivate = null;
+                elem.children().each(function () {
+                    var panel = new Panel(that, $(this));
+                    if (null === panelToActivate || (panel.getId() === currentPanelId)) {
+                        panelToActivate = panel;
+                    }
+                    that.addPanel(panel);
+                });
+                that.activatePanel(panelToActivate);
+                that.elemUl.prependTo(elem);
+            }).call(this, this);
+        }
+        PanelGroup.prototype.addPanel = function (panel) {
+            var that = this;
+            this.elemUl.append(panel.getElemLi().click(function () {
+                that.activatePanel(panel);
+            }));
+        };
+        ;
+        PanelGroup.prototype.hasParentPanelGroup = function () {
+            return this.elem.parents(".rocket-grouped-panels:first").length > 0;
+        };
+        PanelGroup.prototype.activatePanel = function (panel) {
+            if (null !== this.currentPanel) {
+                if (this.currentPanel.equals(panel))
+                    return;
+                this.currentPanel.hide();
+            }
+            else {
+                panel.show();
+            }
+            this.currentPanel = panel;
+        };
+        ;
+        return PanelGroup;
+    }());
+    ui.PanelGroup = PanelGroup;
+    rocketTs.ready(function () {
+        rocketTs.registerUiInitFunction(".rocket-grouped-panels", function (elemPanelGroup) {
+            new PanelGroup(elemPanelGroup);
+        });
+    });
+})(ui || (ui = {}));
+/// <reference path="..\..\rocket.ts" />
+var spec;
+(function (spec) {
+    var edit;
+    (function (edit) {
+        $ = jQuery;
+        var TypeSelection = (function () {
+            function TypeSelection(elemEntryForm) {
+                this.types = {};
+                this.elemCurrentType = null;
+                this.elemEntryForm = elemEntryForm;
+                this.elemSelect = elemEntryForm.find("> .rocket-script-type-selector .rocket-script-type-selection");
+                (function (that) {
+                    that.elemSelect.children().each(function () {
+                        var value = $(this).val();
+                        that.types[value] = elemEntryForm.children(".rocket-script-type-" + value).detach();
+                    });
+                    that.elemSelect.change(function () {
+                        if (null !== that.elemCurrentType) {
+                            that.elemCurrentType.detach();
+                        }
+                        that.elemCurrentType = that.types[that.elemSelect.val()].appendTo(that.elemEntryForm);
+                        rocketTs.updateUi();
+                    }).change();
+                }).call(this, this);
+            }
+            return TypeSelection;
+        }());
+        rocketTs.ready(function ($) {
+            rocketTs.registerUiInitFunction(".rocket-type-dependent-entry-form", function (elemEntryForm) {
+                new TypeSelection(elemEntryForm);
+            });
+        });
+    })(edit = spec.edit || (spec.edit = {}));
+})(spec || (spec = {}));
+/// <reference path="..\rocket.ts" />
 var tools;
 (function (tools) {
     var MailCenter = (function () {
@@ -1847,29 +2677,52 @@ var tools;
         new MailCenter(elemMailCenter);
     });
 })(tools || (tools = {}));
+/// <reference path="../rocket.ts" />
+/// <reference path="../ui/panels.ts" />
+var spec;
+(function (spec) {
+    $ = jQuery;
+    var AsideContainer = (function () {
+        function AsideContainer(elemContainer) {
+            this.elemContainer = elemContainer;
+            this.elemMainContainer = $("<div />", {
+                "class": "rocket-main-bundle"
+            });
+            this.elemAsideContainer = $("<div />", {
+                "class": "rocket-aside-bundle"
+            });
+            this.elemContainer.children(":not(.rocket-control-group-aside)").appendTo(this.elemMainContainer);
+            this.elemContainer.children(".rocket-control-group-aside").appendTo(this.elemAsideContainer);
+            this.elemMainContainer.appendTo(this.elemContainer);
+            this.elemAsideContainer.appendTo(this.elemContainer);
+        }
+        return AsideContainer;
+    }());
+    rocketTs.ready(function () {
+        rocketTs.registerUiInitFunction(".rocket-aside-container", function (elem) {
+            new AsideContainer(elem);
+        });
+        rocketTs.registerUiInitFunction(".rocket-control-group-main", function (elem) {
+            var elemNextMainContainer = elem.next(".rocket-control-group-main");
+            if (elemNextMainContainer.length === 0)
+                return;
+            var elemPanelGroup = $("<div />", {
+                "class": "rocket-grouped-panels"
+            });
+            elemPanelGroup.insertBefore(elem).append(elem);
+            var tmpElemNextMainContainer;
+            do {
+                tmpElemNextMainContainer = elemNextMainContainer.next(".rocket-control-group-main");
+                elemPanelGroup.append(rocketTs.markAsInitialized(".rocket-control-group-main", elemNextMainContainer));
+                elemNextMainContainer = tmpElemNextMainContainer;
+            } while (elemNextMainContainer.length > 0);
+            rocketTs.markAsInitialized(".rocket-grouped-panels", elemPanelGroup);
+            new ui.PanelGroup(elemPanelGroup);
+        });
+    });
+})(spec || (spec = {}));
 /// <reference path="..\..\rocket.ts" />
 /// <reference path="..\common.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var spec;
 (function (spec) {
     var edit;
@@ -2604,1037 +3457,6 @@ var spec;
     })(edit = spec.edit || (spec.edit = {}));
 })(spec || (spec = {}));
 /// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var l10n;
-(function (l10n) {
-    $ = jQuery;
-    var TranslationViewSwitch = (function () {
-        function TranslationViewSwitch(defaultLabel, translationsOnlyLabel) {
-            this.elemContainer = $("<ul />", {
-                "class": "rocket-translation-view-switch"
-            });
-            this.elemStandard = $("<li />", {
-                "text": defaultLabel
-            }).addClass(TranslationViewSwitch.CLASS_NAME_ACTIVE).appendTo(this.elemContainer);
-            this.elemTranslationOnly = $("<li />", {
-                "text": translationsOnlyLabel
-            }).addClass("rocket-active").appendTo(this.elemContainer);
-            this.elemForClass = $("#rocket-content-container");
-            (function (that) {
-                that.elemStandard.click(function () {
-                    that.elemForClass.removeClass(TranslationViewSwitch.CLASS_NAME_TRANSLATION_ONLY);
-                    that.elemTranslationOnly.removeClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
-                    that.elemStandard.addClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
-                });
-                that.elemTranslationOnly.click(function () {
-                    that.elemForClass.addClass(TranslationViewSwitch.CLASS_NAME_TRANSLATION_ONLY);
-                    that.elemTranslationOnly.addClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
-                    that.elemStandard.removeClass(TranslationViewSwitch.CLASS_NAME_ACTIVE);
-                });
-            }).call(this, this);
-        }
-        TranslationViewSwitch.prototype.getElemContainer = function () {
-            return this.elemContainer;
-        };
-        TranslationViewSwitch.CLASS_NAME_TRANSLATION_ONLY = "rocket-translation-only";
-        TranslationViewSwitch.CLASS_NAME_ACTIVE = "rocket-active";
-        return TranslationViewSwitch;
-    }());
-    var TranslationEnabler = (function () {
-        function TranslationEnabler(elem) {
-            this.activationCallbacks = [];
-            this.deactivationCallbacks = [];
-            this.elem = elem;
-            elem.parent(".rocket-controls").prev("label").hide();
-            this.elemToolPanel = elem.parents(".rocket-tool-panel:first");
-            this.elemProperties = this.elemToolPanel.next(".rocket-properties:first");
-            //			if (this.elem.children().length === 1) {
-            //				elem.parents("li:first").hide();
-            //				elem.find("input[type=checkbox]").prop("checked", true);
-            //				return;
-            //			}
-            this.elemContainer = $("<div />").css({
-                "position": "relative"
-            }).insertBefore(elem);
-            this.elemActivator = $("<a />", {
-                "href": "#",
-                "class": "rocket-translation-enabler-activator",
-                "text": elem.data("active-locales-label")
-            }).appendTo(this.elemContainer);
-            this.elem.css({
-                "position": "absolute",
-                "left": "0",
-                "top": this.elemActivator.outerHeight(true)
-            }).appendTo(this.elemContainer).hide();
-            (function (that) {
-                that.elemActivator.click(function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (that.elemActivator.hasClass("rocket-open")) {
-                        that.hide();
-                    }
-                    else {
-                        that.show();
-                    }
-                });
-                that.elem.click(function (e) {
-                    e.stopPropagation();
-                });
-                this.elem.find("[data-locale-id]").each(function () {
-                    var elemLi = $(this), elemCheckbox = elemLi.children("input[type=checkbox]"), localeId = elemLi.data("locale-id");
-                    if (elemLi.data("mandatory")) {
-                        if (!elemCheckbox.prop("checked")) {
-                            elemCheckbox.prop("checked", true);
-                            that.triggerActivationCallbacks(localeId);
-                        }
-                        elemCheckbox.clone().removeAttr("name").insertBefore(elemCheckbox).prop("disabled", true);
-                        elemCheckbox.removeAttr("id").hide();
-                    }
-                    else {
-                        elemCheckbox.change(function () {
-                            if (elemCheckbox.prop("checked")) {
-                                that.triggerActivationCallbacks(localeId);
-                            }
-                            else {
-                                that.triggerDeactivationCallbacks(localeId);
-                            }
-                        });
-                    }
-                });
-                that.elemProperties.addClass("rocket-translation-container")
-                    .data("translation-enabler", this);
-            }).call(this, this);
-        }
-        TranslationEnabler.prototype.hide = function () {
-            this.elem.hide();
-            this.elemActivator.removeClass("rocket-open");
-            $(window).off("click.translationEnabler");
-        };
-        TranslationEnabler.prototype.show = function () {
-            var that = this;
-            this.elem.show();
-            this.elemActivator.addClass("rocket-open");
-            $(window).on("click.translationEnabler", function () {
-                that.hide();
-            });
-        };
-        TranslationEnabler.prototype.activate = function (localeId) {
-            this.elem.find("[data-locale-id=" + localeId + "] > input[type=checkbox]").each(function () {
-                $(this).prop("checked", true).change();
-            });
-        };
-        TranslationEnabler.prototype.isActive = function (localeId) {
-            return this.elem.find("[data-locale-id=" + localeId + "] > input[type=checkbox]").prop("checked");
-        };
-        TranslationEnabler.prototype.triggerActivationCallbacks = function (localeId) {
-            this.activationCallbacks.forEach(function (activationCallback) {
-                activationCallback(localeId);
-            });
-        };
-        TranslationEnabler.prototype.registerActivationCallback = function (activationCallback) {
-            this.activationCallbacks.push(activationCallback);
-        };
-        TranslationEnabler.prototype.registerDeactivationCallback = function (deactivationCallback) {
-            this.deactivationCallbacks.push(deactivationCallback);
-        };
-        TranslationEnabler.prototype.triggerDeactivationCallbacks = function (localeId) {
-            this.deactivationCallbacks.forEach(function (deactivationCallback) {
-                deactivationCallback(localeId);
-            });
-        };
-        TranslationEnabler.prototype.getElem = function () {
-            return this.elem;
-        };
-        return TranslationEnabler;
-    }());
-    var TranslationEnablerManager = (function () {
-        function TranslationEnablerManager() {
-            this.translationEnablers = [];
-        }
-        TranslationEnablerManager.prototype.initializeElement = function (elemTranslationEnabler) {
-            var that = this;
-            elemTranslationEnabler.each(function () {
-                that.translationEnablers.push(new TranslationEnabler($(this)));
-            });
-        };
-        return TranslationEnablerManager;
-    }());
-    var NotSelectedTag = (function () {
-        function NotSelectedTag(localeId, localeSelector) {
-            this.elem = $("<li />", {
-                "class": "rocket-locale-not-selected-" + localeId
-            }).append($("<span />", {
-                text: localeSelector.getN2nLocaleLabel(localeId)
-            }));
-            (function (that) {
-                that.elem.click(function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    localeSelector.selectN2nLocaleWithId(localeId);
-                    that.elem.remove();
-                });
-            }).call(this, this);
-        }
-        NotSelectedTag.prototype.getElem = function () {
-            return this.elem;
-        };
-        return NotSelectedTag;
-    }());
-    var SelectedTag = (function () {
-        function SelectedTag(localeId, localeSelector) {
-            this.elem = $("<li />");
-            this.elemText = $("<span />", {
-                "text": localeSelector.getN2nLocaleLabel(localeId)
-            }).appendTo(this.elem);
-            (function (that) {
-                this.elemRemove = rocketTs.creatControlElem("Text: Remove Language", function () {
-                    that.elem.remove();
-                    localeSelector.removeSelectedN2nLocaleWithId(localeId);
-                }, "fa fa-times").removeClass("rocket-control").appendTo(this.elem);
-                localeSelector.getElemUlSelectedContainer().on("localeChange", function () {
-                    if ($(this).children().length === 1) {
-                        that.elemRemove.hide();
-                    }
-                    else {
-                        that.elemRemove.show();
-                    }
-                });
-            }).call(this, this);
-        }
-        SelectedTag.prototype.getElem = function () {
-            return this.elem;
-        };
-        return SelectedTag;
-    }());
-    var TranslationEntry = (function () {
-        function TranslationEntry(localeSelector, elem) {
-            this.active = true;
-            this.elem = elem;
-            thisHalterDaoId = elem.data("locale-id");
-            this.error = elem.hasClass("rocket-has-error");
-            this.translationEnabler = elem.parents(".rocket-translation-container:first").data("translation-enabler") || null;
-            (function (that) {
-                localeSelector.registerSelectionCallback(function (localeId) {
-                    if (localeId !== thatHalterDaoId)
-                        return;
-                    that.show();
-                });
-                localeSelector.registerRemoveSelectionCallback(function (localeId) {
-                    if (localeId !== thatHalterDaoId)
-                        return;
-                    that.hide();
-                });
-                if (null !== this.translationEnabler) {
-                    that.elemN2nLocaleControls = elem.find(".rocket-locale-controls:first");
-                    var entryFormCommand = new ui.EntryFormCommand("Text: Activate " + localeSelector.getN2nLocaleLabel(thatHalterDaoId), function () {
-                        that.translationEnabler.activate(thatHalterDaoId);
-                    }, "fa fa-language");
-                    that.elemActivate = entryFormCommand.getElemContainer().addClass("rocket-translation-activator");
-                    if (!that.translationEnabler.isActive(thatHalterDaoId)) {
-                        that.deactivate();
-                    }
-                    that.translationEnabler.registerActivationCallback(function (localeId) {
-                        if (localeId !== thatHalterDaoId)
-                            return;
-                        that.activate();
-                    });
-                    that.translationEnabler.registerDeactivationCallback(function (localeId) {
-                        if (localeId !== thatHalterDaoId)
-                            return;
-                        that.deactivate();
-                    });
-                }
-            }).call(this, this);
-        }
-        TranslationEntry.prototype.hasError = function () {
-            return this.error;
-        };
-        TranslationEntry.prototype.show = function () {
-            this.elem.show();
-            //this.elemActivate.show();
-        };
-        TranslationEntry.prototype.hide = function () {
-            this.elem.hide();
-            //this.elemActivate.hide();
-        };
-        TranslationEntry.prototype.activate = function () {
-            if (this.active)
-                return;
-            this.elemActivate.detach();
-            this.elemN2nLocaleControls.children().show();
-            rocketTs.updateUi();
-            this.active = true;
-        };
-        TranslationEntry.prototype.deactivate = function () {
-            if (!this.active)
-                return;
-            this.elemN2nLocaleControls.children().hide();
-            this.elemActivate.prependTo(this.elemN2nLocaleControls);
-            this.active = false;
-        };
-        return TranslationEntry;
-    }());
-    var N2nLocaleSelector = (function () {
-        function N2nLocaleSelector(tem, languagesLabel, defaultLabel, translationsOnlyLabel) {
-            this.localeLabels = {};
-            this.selectedN2nLocaleIds = [];
-            this.notSelectedN2nLocaleIds = [];
-            this.initialized = false;
-            this.selectionCallbacks = [];
-            this.removeSelectionCallbacks = [];
-            this.tem = tem;
-            this.elemToolbar = $("#rocket-toolbar");
-            if (this.elemToolbar.length === 0) {
-                this.elemToolbar = $("<div />", { "id": "rocket-toolbar" })
-                    .insertAfter($(".rocket-panel:first > h3:first"));
-            }
-            this.elemContainer = $("<div />", {
-                "class": "rocket-locale-selection"
-            }).appendTo(this.elemToolbar);
-            this.elemUlSelectedContainer = $("<ul />", {
-                "class": "rocket-selected-locales"
-            }).appendTo(this.elemContainer);
-            this.elemLabel = $("<a />", {
-                "text": languagesLabel,
-                "href": "#"
-            }).appendTo(this.elemContainer);
-            this.elemUlNotSelectedContainer = $("<ul />", {
-                "class": "rocket-not-selected-locales"
-            }).appendTo(this.elemContainer).hide();
-            (function (that) {
-                that.elemLabel.click(function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (that.elemContainer.hasClass("open")) {
-                        that.close();
-                    }
-                    else {
-                        that.open();
-                    }
-                });
-                var translationSwitch = new TranslationViewSwitch(defaultLabel, translationsOnlyLabel);
-                translationSwitch.getElemContainer().prependTo(this.elemToolbar);
-            }).call(this, this);
-        }
-        N2nLocaleSelector.prototype.initialize = function () {
-            this.initialized = true;
-            this.initSelectedN2nLocales();
-            this.initNotSelectedN2nLocales();
-        };
-        N2nLocaleSelector.prototype.initSelectedN2nLocales = function () {
-            var that = this;
-            this.getSavedN2nLocaleIds().forEach(function (localeId) {
-                that.selectN2nLocaleWithId(localeId);
-            });
-        };
-        N2nLocaleSelector.prototype.initNotSelectedN2nLocales = function () {
-            var selectedN2nLocaleId = null, that = this;
-            this.notSelectedN2nLocaleIds.forEach(function (localeId) {
-                if (that.selectedN2nLocaleIds.length === 0
-                    && null === selectedN2nLocaleId) {
-                    //If no locale is selected then select the first one					
-                    //need to remember it here, if you push it directly, the array 
-                    //will change internaly and the element after will be ignored
-                    selectedN2nLocaleId = localeId;
-                }
-                else {
-                    that.addNotSelectedN2nLocaleWithId(localeId);
-                }
-            });
-            if (null !== selectedN2nLocaleId) {
-                that.selectN2nLocaleWithId(selectedN2nLocaleId);
-            }
-        };
-        N2nLocaleSelector.prototype.hasN2nLocaleId = function (localeId) {
-            return this.isN2nLocaleIdSelected(localeId) || (this.notSelectedN2nLocaleIds.indexOf(localeId) >= 0);
-        };
-        N2nLocaleSelector.prototype.getN2nLocaleLabel = function (localeId) {
-            if (!thisHalterDaoLabels.hasOwnProperty(localeId))
-                return localeId;
-            return thisHalterDaoLabels[localeId];
-        };
-        N2nLocaleSelector.prototype.initializeLocalizedElems = function (localizedElem) {
-            var that = this;
-            localizedElem.each(function () {
-                var elem = $(this), localeId = elem.data("locale-id");
-                if (!that.hasN2nLocaleId(localeId)) {
-                    that.notSelectedN2nLocaleIds.push(localeId);
-                    thatHalterDaoLabels[localeId] = elem.data("pretty-locale-id");
-                }
-                var translationEntry = new TranslationEntry(that, elem);
-                if (!that.isN2nLocaleIdSelected(localeId) && !translationEntry.hasError()) {
-                    translationEntry.hide();
-                }
-                if (that.initialized)
-                    return;
-                that.initSelectedN2nLocales();
-                that.initNotSelectedN2nLocales();
-            });
-            //			if (that.notSelectedN2nLocaleIds.length <= 1) {
-            //				//just one locale is available -> show elements like not translatable 	
-            //				$(".rocket-properties [data-locale-id]").each(function() {
-            //					var elem = $(this).show();	
-            //					//elem.show().children("label:first").remove();
-            //					//elem.parent().replaceWith(elem.children("div.rocket-controls").contents());
-            //				});
-            //				//that.elemContainer.remove();
-            //				if (that.elemToolbar.children().length === 1) {
-            //					this.elemToolbar.remove();	
-            //				}
-            //				return;
-            //			}
-        };
-        N2nLocaleSelector.prototype.open = function () {
-            if (this.notSelectedN2nLocaleIds.length === 0)
-                return;
-            this.elemContainer.addClass("open");
-            this.elemUlNotSelectedContainer.show();
-            var that = this;
-            $(window).off("clickHalterDaoSelector").on("clickHalterDaoSelector", function () {
-                that.close();
-            });
-        };
-        N2nLocaleSelector.prototype.close = function () {
-            $(window).off("clickHalterDaoSelector");
-            this.elemContainer.removeClass("open");
-            this.elemUlNotSelectedContainer.hide();
-        };
-        N2nLocaleSelector.prototype.getElemUlSelectedContainer = function () {
-            return this.elemUlSelectedContainer;
-        };
-        N2nLocaleSelector.prototype.getSavedN2nLocaleIds = function () {
-            var cookieValue = rocketTs.getCookie(N2nLocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS);
-            if (!cookieValue)
-                return [];
-            return cookieValue.split(",");
-        };
-        N2nLocaleSelector.prototype.saveState = function () {
-            var savedN2nLocaleIds = this.getSavedN2nLocaleIds();
-            this.selectedN2nLocaleIds.forEach(function (value) {
-                if (savedN2nLocaleIds.indexOf(value) !== -1)
-                    return;
-                savedN2nLocaleIds.push(value);
-            });
-            this.notSelectedN2nLocaleIds.forEach(function (value) {
-                if (savedN2nLocaleIds.indexOf(value) === -1)
-                    return;
-                savedN2nLocaleIds.splice(savedN2nLocaleIds.indexOf(value), 1);
-            });
-            rocketTs.setCookie(N2nLocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS, savedN2nLocaleIds.join(","));
-            this.elemUlSelectedContainer.trigger("localeChange");
-        };
-        N2nLocaleSelector.prototype.isN2nLocaleIdSelected = function (localeId) {
-            return this.selectedN2nLocaleIds.indexOf(localeId) >= 0;
-        };
-        N2nLocaleSelector.prototype.registerSelectionCallback = function (selectionCallback) {
-            this.selectionCallbacks.push(selectionCallback);
-        };
-        N2nLocaleSelector.prototype.triggerSelectionCallbacks = function (localeId) {
-            this.selectionCallbacks.forEach(function (selectionCallback) {
-                selectionCallback(localeId);
-            });
-        };
-        N2nLocaleSelector.prototype.selectN2nLocaleWithId = function (localeId) {
-            if (this.notSelectedN2nLocaleIds.indexOf(localeId) === -1)
-                return;
-            var selectedTag = new SelectedTag(localeId, this);
-            this.elemUlSelectedContainer.append(selectedTag.getElem());
-            this.selectedN2nLocaleIds.push(localeId);
-            this.notSelectedN2nLocaleIds.splice(this.notSelectedN2nLocaleIds.indexOf(localeId), 1);
-            // this.tem.activate(localeId);
-            this.triggerSelectionCallbacks(localeId);
-            this.saveState();
-            if (this.notSelectedN2nLocaleIds.length === 0) {
-                this.close();
-            }
-        };
-        N2nLocaleSelector.prototype.registerRemoveSelectionCallback = function (removeSelectionCallback) {
-            this.removeSelectionCallbacks.push(removeSelectionCallback);
-        };
-        N2nLocaleSelector.prototype.triggerRemoveSelectionCallbacks = function (localeId) {
-            this.removeSelectionCallbacks.forEach(function (removeSelectionCallback) {
-                removeSelectionCallback(localeId);
-            });
-        };
-        N2nLocaleSelector.prototype.removeSelectedN2nLocaleWithId = function (localeId) {
-            if (this.selectedN2nLocaleIds.indexOf(localeId) === -1)
-                return;
-            this.notSelectedN2nLocaleIds.push(localeId);
-            this.selectedN2nLocaleIds.splice(this.selectedN2nLocaleIds.indexOf(localeId), 1);
-            this.addNotSelectedN2nLocaleWithId(localeId);
-            this.triggerRemoveSelectionCallbacks(localeId);
-            //this.tem.deactivate(localeId);
-            this.saveState();
-        };
-        N2nLocaleSelector.prototype.addNotSelectedN2nLocaleWithId = function (localeId) {
-            if (this.elemUlNotSelectedContainer.children("li.rocket-locale-not-selected-" + localeId).length > 0)
-                return;
-            var selectedTag = new NotSelectedTag(localeId, this);
-            this.elemUlNotSelectedContainer.append(selectedTag.getElem());
-        };
-        N2nLocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS = "selectedN2nLocaleIds";
-        return N2nLocaleSelector;
-    }());
-    rocketTs.ready(function () {
-        var localeSelector = null, tem = new TranslationEnablerManager();
-        rocketTs.registerUiInitFunction(".rocket-translation-enabler", function (elem) {
-            tem.initializeElement(elem);
-        });
-        rocketTs.registerUiInitFunction(".rocket-properties > [data-locale-id]", function (localizedElem) {
-            if (null === localeSelector) {
-                var languagesLabel = null, translationsOnlyLabel = null, defaultLabel = null, elemTranslatableContent = $(".rocket-translatable-content:first");
-                if (elemTranslatableContent.length > 0) {
-                    languagesLabel = elemTranslatableContent.data("languages-label");
-                    defaultLabel = elemTranslatableContent.data("standard-label");
-                    translationsOnlyLabel = elemTranslatableContent.data("translations-only-label");
-                }
-                if (null === languagesLabel) {
-                    var elemTranslationEnabler = $(".rocket-translation-enabler:first");
-                    languagesLabel = elemTranslationEnabler.data("languages-label");
-                    defaultLabel = elemTranslationEnabler.data("standard-label");
-                    translationsOnlyLabel = elemTranslationEnabler.data("translations-only-label");
-                }
-                if (null !== languagesLabel) {
-                    localeSelector = new N2nLocaleSelector(tem, languagesLabel, defaultLabel, translationsOnlyLabel);
-                }
-                else {
-                    throw new Error("no languages label found");
-                }
-            }
-            if (null === localeSelector)
-                return;
-            localeSelector.initializeLocalizedElems(localizedElem);
-        });
-        if (null !== localeSelector) {
-            localeSelector.initialize();
-        }
-    });
-})(l10n || (l10n = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var ui;
-(function (ui) {
-    var ConfirmableAdapter = (function () {
-        function ConfirmableAdapter(manager, elem) {
-            this.manager = manager;
-            this.elem = elem;
-            this.msg = this.elem.data("rocket-confirm-msg") || "Are you sure?";
-            this.confirmOkLabel = this.elem.data("rocket-confirm-ok-label") || "Yes";
-            ;
-            this.confirmCancelLabel = this.elem.data("rocket-confirm-cancel-label") || "No";
-        }
-        ConfirmableAdapter.prototype.getMsg = function () {
-            return this.msg;
-        };
-        ConfirmableAdapter.prototype.setMsg = function (msg) {
-            this.msg = msg;
-            ;
-        };
-        ConfirmableAdapter.prototype.getConfirmOkLabel = function () {
-            return this.confirmOkLabel;
-        };
-        ConfirmableAdapter.prototype.setConfirmOkLabel = function (confirmOkLabel) {
-            this.confirmOkLabel = confirmOkLabel;
-        };
-        ConfirmableAdapter.prototype.getConfirmCancelLabel = function () {
-            return this.confirmCancelLabel;
-        };
-        ConfirmableAdapter.prototype.setConfirmCancelLabel = function (confirmCancelLabel) {
-            this.confirmCancelLabel = confirmCancelLabel;
-        };
-        ConfirmableAdapter.prototype.showDialog = function () {
-            this.manager.showDialog(this);
-        };
-        ConfirmableAdapter.prototype.confirmDialog = function () { };
-        ;
-        return ConfirmableAdapter;
-    }());
-    var ConfirmableSubmit = (function (_super) {
-        __extends(ConfirmableSubmit, _super);
-        function ConfirmableSubmit(manager, elemInput) {
-            _super.call(this, manager, elemInput);
-            this.elemForm = elemInput.parents("form:first");
-            (function (that) {
-                elemInput.off("click.form").on("click.formInput", function () {
-                    that.showDialog();
-                });
-            }).call(this, this);
-        }
-        ConfirmableSubmit.prototype.confirmDialog = function () {
-            this.elem.off("click.formInput");
-            if (this.elemForm.length > 0) {
-                var tempInput = $("<input/>", {
-                    "type": "hidden",
-                    "name": this.elem.attr("name"),
-                    "value": this.elem.val()
-                });
-                this.elemForm.append(tempInput);
-                this.elemForm.submit();
-                tempInput.remove();
-            }
-        };
-        return ConfirmableSubmit;
-    }(ConfirmableAdapter));
-    var ConfirmableForm = (function (_super) {
-        __extends(ConfirmableForm, _super);
-        function ConfirmableForm(manager, elemForm) {
-            _super.call(this, manager, elemForm);
-            (function (that) {
-                elemForm.on("click.form", "input[type=submit]", function () {
-                    that.elemSubmit = this;
-                    that.showDialog();
-                    //_obj.jqElemForm.find('input').blur();
-                    return false;
-                });
-            }).call(this, this);
-        }
-        ConfirmableForm.prototype.confirmDialog = function () {
-            this.elem.off("click.form");
-            var tempInput = $("<input />", {
-                "type": "hidden",
-                "name": this.elemSubmit.attr("name"),
-                "value": this.elemSubmit.val()
-            }).appendTo(this.elem);
-            this.elem.submit();
-            tempInput.remove();
-        };
-        return ConfirmableForm;
-    }(ConfirmableAdapter));
-    var ConfirmableLink = (function (_super) {
-        __extends(ConfirmableLink, _super);
-        function ConfirmableLink(manager, elemA) {
-            _super.call(this, manager, elemA);
-            (function (that) {
-                elemA.on("click.confirmable", function (e) {
-                    e.preventDefault();
-                    that.showDialog();
-                });
-            }).call(this, this);
-        }
-        ConfirmableLink.prototype.confirmDialog = function () {
-            window.location.assign(this.elem.attr("href"));
-        };
-        return ConfirmableLink;
-    }(ConfirmableAdapter));
-    var ConfirmableManager = (function () {
-        function ConfirmableManager() {
-        }
-        ConfirmableManager.prototype.initElem = function (elem) {
-            if (elem.is("[type=submit]")) {
-                return new ConfirmableSubmit(this, elem);
-            }
-            if (elem.is("form")) {
-                return new ConfirmableForm(this, elem);
-            }
-            if (elem.is("a")) {
-                return new ConfirmableLink(this, elem);
-            }
-            throw new Error("invalid confirmable");
-        };
-        ConfirmableManager.prototype.showDialog = function (confirmable) {
-            var that = this, dialog = new ui.Dialog(confirmable.getMsg());
-            dialog.addButton(confirmable.getConfirmOkLabel(), function () {
-                confirmable.confirmDialog();
-            });
-            dialog.addButton(confirmable.getConfirmCancelLabel(), function () {
-                //defaultbehaviour is to close the dialog
-            });
-            rocketTs.showDialog(dialog);
-        };
-        return ConfirmableManager;
-    }());
-    ui.ConfirmableManager = ConfirmableManager;
-    rocketTs.ready(function () {
-        rocketTs.registerUiInitFunction("[data-rocket-confirm-msg]", function (elemConfirmable) {
-            rocketTs.getConfirmableManager().initElem(elemConfirmable);
-        });
-    });
-})(ui || (ui = {}));
-/// <reference path="..\..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var display;
-    (function (display) {
-        $ = jQuery;
-        var ContentItem = (function () {
-            function ContentItem(elem) {
-                this.elem = elem;
-                this.elemType = elem.find(".rocket-gui-field-type").hide();
-                this.typeLabel = this.elemType.children(".rocket-controls").text();
-                elem.find(".rocket-field-orderIndex").hide();
-                new spec.EntryHeader(this.typeLabel, elem);
-            }
-            return ContentItem;
-        }());
-        var ContentItemPanel = (function () {
-            function ContentItemPanel(elemHeader, elemContent) {
-                this.elemHeader = elemHeader;
-                this.elemContent = elemContent;
-                (function () {
-                    elemContent.children(".rocket-content-item").each(function () {
-                        new ContentItem($(this));
-                    });
-                }).call(this, this);
-            }
-            return ContentItemPanel;
-        }());
-        var ContentItemComposer = (function () {
-            function ContentItemComposer(elem) {
-                this.elem = elem;
-                (function (that) {
-                    elem.children("h4").each(function () {
-                        new ContentItemPanel($(this), $(this).next());
-                    });
-                }).call(this, this);
-            }
-            return ContentItemComposer;
-        }());
-        rocketTs.ready(function () {
-            rocketTs.registerUiInitFunction(".rocket-content-item-composer", function (elemContentItemComposer) {
-                new ContentItemComposer(elemContentItemComposer);
-            });
-        });
-    })(display = spec.display || (spec.display = {}));
-})(spec || (spec = {}));
-/// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var preview;
-(function (preview) {
-    $ = jQuery;
-    var Iframe = (function () {
-        function Iframe(elemIframe) {
-            this.elemIframe = elemIframe;
-            this.elemHeader = $("#rocket-header");
-            this.elemPanelTitle = $(".rocket-panel:first h3:first");
-            this.elemMainCommands = $(".rocket-main-commands:first");
-            (function (that) {
-                $(window).resize(function () {
-                    rocketTs.waitForFinalEvent(function () {
-                        that.adjustIframeHeight();
-                    }, 30, 'preview.resize');
-                });
-                that.adjustIframeHeight();
-            }).call(this, this);
-        }
-        Iframe.prototype.adjustIframeHeight = function () {
-            var iFrameMinHeight = $(window).height() - this.elemHeader.height()
-                - this.elemMainCommands.outerHeight() - this.elemPanelTitle.outerHeight();
-            this.elemIframe.css({
-                "min-height": iFrameMinHeight
-            });
-        };
-        return Iframe;
-    }());
-    rocketTs.ready(function () {
-        var elemIframe = $("#rocket-preview-content");
-        if (elemIframe.length === 0)
-            return;
-        new Iframe(elemIframe);
-    });
-})(preview || (preview = {}));
-/// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var ui;
-(function (ui) {
-    $ = jQuery;
-    var Panel = (function () {
-        function Panel(group, elem) {
-            this.parentPanelGroupId = null;
-            this.group = group;
-            this.elem = elem;
-            this.elemLi = $("<li/>", {
-                "class": "rocket-panel-activator"
-            });
-            this.parentPanelGroupId = null;
-            (function (that) {
-                that.elemLi.append($("<a/>", {
-                    "href": "#",
-                    "text": elem.children(":first").hide().text()
-                }).click(function (e) {
-                    e.preventDefault();
-                }));
-                that.elemLi.click(function () {
-                    that.show();
-                });
-                that.hide();
-            }).call(this, this);
-        }
-        Panel.prototype.getElemLi = function () {
-            return this.elemLi;
-        };
-        Panel.prototype.show = function () {
-            this.elemLi.addClass("rocket-active");
-            if (this.group.hasParentPanelGroup()) {
-                if (null !== this.getId()) {
-                    if (typeof history.pushState !== 'undefined') {
-                        history.pushState(null, null, '#!' + this.getId());
-                    }
-                    else {
-                        window.location.hash = "#!" + this.getId();
-                    }
-                }
-            }
-            this.elem.show();
-        };
-        ;
-        Panel.prototype.hide = function () {
-            this.elemLi.removeClass("rocket-active");
-            this.elem.hide();
-        };
-        ;
-        Panel.prototype.equals = function (obj) {
-            return obj instanceof Panel && this.elemLi.is(obj.getElemLi());
-        };
-        ;
-        Panel.prototype.getId = function () {
-            return this.elem.attr("id") || null;
-        };
-        return Panel;
-    }());
-    var PanelGroup = (function () {
-        function PanelGroup(elem) {
-            this.currentPanel = null;
-            this.elem = elem;
-            this.elemUl = $("<ul/>", {
-                "class": "rocket-grouped-panels-navigation"
-            });
-            (function (that) {
-                var currentPanelId = window.location.hash.substr(2), panelToActivate = null;
-                elem.children().each(function () {
-                    var panel = new Panel(that, $(this));
-                    if (null === panelToActivate || (panel.getId() === currentPanelId)) {
-                        panelToActivate = panel;
-                    }
-                    that.addPanel(panel);
-                });
-                that.activatePanel(panelToActivate);
-                that.elemUl.prependTo(elem);
-            }).call(this, this);
-        }
-        PanelGroup.prototype.addPanel = function (panel) {
-            var that = this;
-            this.elemUl.append(panel.getElemLi().click(function () {
-                that.activatePanel(panel);
-            }));
-        };
-        ;
-        PanelGroup.prototype.hasParentPanelGroup = function () {
-            return this.elem.parents(".rocket-grouped-panels:first").length > 0;
-        };
-        PanelGroup.prototype.activatePanel = function (panel) {
-            if (null !== this.currentPanel) {
-                if (this.currentPanel.equals(panel))
-                    return;
-                this.currentPanel.hide();
-            }
-            else {
-                panel.show();
-            }
-            this.currentPanel = panel;
-        };
-        ;
-        return PanelGroup;
-    }());
-    ui.PanelGroup = PanelGroup;
-    rocketTs.ready(function () {
-        rocketTs.registerUiInitFunction(".rocket-grouped-panels", function (elemPanelGroup) {
-            new PanelGroup(elemPanelGroup);
-        });
-    });
-})(ui || (ui = {}));
-/// <reference path="../rocket.ts" />
-/// <reference path="../ui/panels.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    $ = jQuery;
-    var AsideContainer = (function () {
-        function AsideContainer(elemContainer) {
-            this.elemContainer = elemContainer;
-            this.elemMainContainer = $("<div />", {
-                "class": "rocket-main-bundle"
-            });
-            this.elemAsideContainer = $("<div />", {
-                "class": "rocket-aside-bundle"
-            });
-            this.elemContainer.children(":not(.rocket-control-group-aside)").appendTo(this.elemMainContainer);
-            this.elemContainer.children(".rocket-control-group-aside").appendTo(this.elemAsideContainer);
-            this.elemMainContainer.appendTo(this.elemContainer);
-            this.elemAsideContainer.appendTo(this.elemContainer);
-        }
-        return AsideContainer;
-    }());
-    rocketTs.ready(function () {
-        rocketTs.registerUiInitFunction(".rocket-aside-container", function (elem) {
-            new AsideContainer(elem);
-        });
-        rocketTs.registerUiInitFunction(".rocket-control-group-main", function (elem) {
-            var elemNextMainContainer = elem.next(".rocket-control-group-main");
-            if (elemNextMainContainer.length === 0)
-                return;
-            var elemPanelGroup = $("<div />", {
-                "class": "rocket-grouped-panels"
-            });
-            elemPanelGroup.insertBefore(elem).append(elem);
-            var tmpElemNextMainContainer;
-            do {
-                tmpElemNextMainContainer = elemNextMainContainer.next(".rocket-control-group-main");
-                elemPanelGroup.append(rocketTs.markAsInitialized(".rocket-control-group-main", elemNextMainContainer));
-                elemNextMainContainer = tmpElemNextMainContainer;
-            } while (elemNextMainContainer.length > 0);
-            rocketTs.markAsInitialized(".rocket-grouped-panels", elemPanelGroup);
-            new ui.PanelGroup(elemPanelGroup);
-        });
-    });
-})(spec || (spec = {}));
-/// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var ui;
 (function (ui) {
     var LoginInput = (function () {
@@ -3657,171 +3479,7 @@ var ui;
         });
     });
 })(ui || (ui = {}));
-/// <reference path="..\..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var edit;
-    (function (edit) {
-        $ = jQuery;
-        var TypeSelection = (function () {
-            function TypeSelection(elemEntryForm) {
-                this.types = {};
-                this.elemCurrentType = null;
-                this.elemEntryForm = elemEntryForm;
-                this.elemSelect = elemEntryForm.find("> .rocket-script-type-selector .rocket-script-type-selection");
-                (function (that) {
-                    that.elemSelect.children().each(function () {
-                        var value = $(this).val();
-                        that.types[value] = elemEntryForm.children(".rocket-script-type-" + value).detach();
-                    });
-                    that.elemSelect.change(function () {
-                        if (null !== that.elemCurrentType) {
-                            that.elemCurrentType.detach();
-                        }
-                        that.elemCurrentType = that.types[that.elemSelect.val()].appendTo(that.elemEntryForm);
-                        rocketTs.updateUi();
-                    }).change();
-                }).call(this, this);
-            }
-            return TypeSelection;
-        }());
-        rocketTs.ready(function ($) {
-            rocketTs.registerUiInitFunction(".rocket-type-dependent-entry-form", function (elemEntryForm) {
-                new TypeSelection(elemEntryForm);
-            });
-        });
-    })(edit = spec.edit || (spec.edit = {}));
-})(spec || (spec = {}));
-/// <reference path="..\..\rocket.ts" />
-/// <reference path="..\..\ui\dialog.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var edit;
-    (function (edit) {
-        var CriticalInput = (function () {
-            function CriticalInput(elem) {
-                this.dialog = null;
-                this.elem = elem;
-                this.elemLockedContainer = $("<div/>", {
-                    "class": "rocket-critical-input-locked-container"
-                }).insertAfter(elem);
-                this.elemLabel = $("<span/>", {
-                    text: this.determineLabel
-                }).appendTo(this.elemLockedContainer);
-                this.elemUnlock = $("<a/>", {
-                    "class": "rocket-critical-input-unlock rocket-control"
-                }).append($("<i/>", { "class": elem.data("icon-unlock") || "fa fa-pencil" }))
-                    .appendTo(this.elemLockedContainer);
-                elem.hide();
-                (function (that) {
-                    if (elem.data("confirm-message")) {
-                        that.initializeDialog();
-                    }
-                    that.elemUnlock.click(function (e) {
-                        e.preventDefault();
-                        if (null !== that.dialog) {
-                            rocketTs.showDialog(that.dialog);
-                        }
-                        else {
-                            that.showInput();
-                        }
-                    });
-                }).call(this, this);
-            }
-            CriticalInput.prototype.initializeDialog = function () {
-                var that = this;
-                this.dialog = new ui.Dialog(this.elem.data("confirm-message"));
-                this.dialog.addButton(this.elem.data("edit-label"), function () {
-                    that.showInput();
-                });
-                this.dialog.addButton(this.elem.data("cancel-label"), function () {
-                    //defaultbehaviour is to close the dialog
-                });
-            };
-            CriticalInput.prototype.showInput = function () {
-                this.elemLockedContainer.hide();
-                this.elemLockedContainer.show();
-                this.elemUnlock.remove();
-            };
-            ;
-            CriticalInput.prototype.determineLabel = function (elem) {
-                var label = elem.val();
-                if (elem.is("select")) {
-                    var elemOption = elem.find("option[value='" + label + "']");
-                    if (elemOption.length > 0) {
-                        label = elemOption.text();
-                    }
-                }
-                return label;
-            };
-            return CriticalInput;
-        }());
-    })(edit = spec.edit || (spec.edit = {}));
-})(spec || (spec = {}));
 /// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
 var spec;
 (function (spec) {
     var $ = jQuery;
@@ -4895,125 +4553,5 @@ var spec;
                 new OverviewTools(elemOverview);
             });
         });
-    });
-})(spec || (spec = {}));
-/// <reference path="../rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var $ = jQuery;
-    var Error = (function () {
-        function Error(errorList, elemError, elemMessage) {
-            this.elemError = elemError;
-            this.elemLi = $("<li />");
-            this.elemMessage = elemMessage;
-            (function (that) {
-                var elemA = $("<a />", {
-                    "href": "#"
-                }).appendTo(that.elemLi);
-                $("<div />", {
-                    "class": "error-list-label",
-                    "text": elemMessage.text() || "Fehler"
-                }).appendTo(elemA);
-                $("<div />", {
-                    "class": "error-list-path",
-                    "text": errorList.determinePathLabel(that)
-                }).appendTo(elemA);
-                elemA.click(function (e) {
-                    e.preventDefault();
-                    errorList.scrollTo(that);
-                    that.elemLi.find("input[type=text], textarea").first().focus();
-                });
-                elemA.mouseenter(function () {
-                    errorList.highlight(that);
-                }).mouseleave(function () {
-                    errorList.normalize(that);
-                });
-            }).call(this, this);
-        }
-        Error.prototype.getElem = function () {
-            return this.elemError;
-        };
-        Error.prototype.getElemLi = function () {
-            return this.elemLi;
-        };
-        return Error;
-    }());
-    var ErrorList = (function () {
-        function ErrorList() {
-            this.elemFixedContainer = rocketTs.getElemContentContainer();
-            this.elemList = $("<ul />", {
-                "class": "rocket-error-list"
-            });
-        }
-        ErrorList.prototype.hasErrors = function () {
-            return this.elemList.children().length > 0;
-        };
-        ErrorList.prototype.getElemList = function () {
-            return this.elemList;
-        };
-        ErrorList.prototype.determinePathElements = function (elem) {
-            return elem.parents(".rocket-has-error");
-        };
-        ErrorList.prototype.determinePathLabel = function (error) {
-            var elem = error.getElem(), labelParts = [elem.children("label:first").text()];
-            this.determinePathElements(error.getElem()).each(function () {
-                labelParts.unshift($(this).children("label:first").text());
-            });
-            return labelParts.join(" / ");
-        };
-        ErrorList.prototype.highlight = function (error) {
-            var elem = error.getElem().addClass("rocket-highlighted");
-            //			this.determinePathElements(error.getElem()).each(function() {
-            //				$(this).addClass("rocket-highlighted");
-            //			});
-        };
-        ErrorList.prototype.normalize = function (error) {
-            var elem = error.getElem().removeClass("rocket-highlighted");
-            //			this.determinePathElements(error.getElem()).each(function() {
-            //				$(this).removeClass("rocket-highlighted");
-            //			});
-        };
-        ErrorList.prototype.scrollTo = function (error) {
-            this.elemFixedContainer.animate({
-                scrollTop: "+=" + (error.getElem().offset().top - this.elemFixedContainer.offset().top)
-            });
-        };
-        ErrorList.prototype.addError = function (elemError, elemMessage) {
-            var error = new Error(this, elemError, elemMessage);
-            this.elemList.append(error.getElemLi());
-            return error;
-        };
-        return ErrorList;
-    }());
-    rocketTs.ready(function () {
-        var errorList = new ErrorList();
-        $(".rocket-message-error").each(function () {
-            errorList.addError($(this).parents(".rocket-has-error:first"), $(this));
-        });
-        if (errorList.hasErrors()) {
-            var additionalContent = rocketTs.getOrCreateAdditionalContent();
-            additionalContent.createAndPrependEntry(additionalContent.getElemContent().data("error-list-label"), errorList.getElemList());
-        }
     });
 })(spec || (spec = {}));
