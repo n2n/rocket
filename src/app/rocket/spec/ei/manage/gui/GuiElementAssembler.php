@@ -162,7 +162,7 @@ class AssembleResult {
 		return $this->magPropertyPath;
 	}
 	
-	public function isMandatory() {
+	public function isMandatory(): bool {
 		return $this->mandatory;
 	}
 }

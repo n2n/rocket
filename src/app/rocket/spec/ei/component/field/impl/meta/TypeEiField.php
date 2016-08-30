@@ -46,7 +46,7 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 		$this->displayDefinition = new DisplayDefinition(DisplayDefinition::READ_VIEW_MODES);
 	}
 	
-	public function getDisplayDefinition() {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 	
@@ -54,7 +54,7 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 		return $this;
 	}
 
-	public function getDisplayLabel() {
+	public function getDisplayLabel(): string {
 		return $this->getLabel();
 	}
 	

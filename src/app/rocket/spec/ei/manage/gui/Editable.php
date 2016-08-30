@@ -25,10 +25,11 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 
 interface Editable extends Savable {
+	
 	/**
 	 * @return boolean
 	 */
-	public function isMandatory();
+	public function isMandatory(): bool;
 	
 	/**
 	 * @param string $propertyName

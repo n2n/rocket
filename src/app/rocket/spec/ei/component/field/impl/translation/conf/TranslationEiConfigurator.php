@@ -252,7 +252,7 @@ class N2nLocaleDef {
 		return $this->n2nLocale;
 	}
 	
-	public function isMandatory() {
+	public function isMandatory(): bool {
 		return $this->mandatory;
 	}
 	

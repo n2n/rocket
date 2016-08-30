@@ -34,9 +34,10 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
-abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implements GuiField, DraftableEiField, DraftProperty {
+abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implements GuiField, DraftableEiField, 
+		DraftProperty {
 
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty);
@@ -47,7 +48,7 @@ abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implemen
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayLabel()
 	 */
-	public function getDisplayLabel() {
+	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}
 	
@@ -55,7 +56,7 @@ abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implemen
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayDefinition()
 	 */
-	public function getDisplayDefinition() {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 	

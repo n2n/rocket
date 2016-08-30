@@ -163,7 +163,7 @@ class EmptyDisplayable implements Displayable {
 		$this->displayable = $displayable;
 	}
 	
-	public function isMandatory() {
+	public function isMandatory(): bool {
 		return $this->displayable->isMandatory();
 	}
 	

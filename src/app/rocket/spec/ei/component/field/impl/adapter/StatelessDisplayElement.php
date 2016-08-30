@@ -52,7 +52,7 @@ class StatelessDisplayElement implements GuiElement {
 		return true;
 	}
 	
-	public function isMandatory() {
+	public function isMandatory(): bool {
 		return false;
 	}
 

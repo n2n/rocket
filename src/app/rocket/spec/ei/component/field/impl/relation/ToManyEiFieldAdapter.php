@@ -28,9 +28,10 @@ use rocket\spec\ei\component\field\DraftableEiField;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
-abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter implements GuiField, DraftableEiField, DraftProperty {
+abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter implements GuiField, DraftableEiField, 
+		DraftProperty {
 	protected $min;
 	protected $max;
 	
@@ -66,7 +67,7 @@ abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter impleme
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayLabel()
 	 */
-	public function getDisplayLabel() {
+	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}
 	
@@ -74,7 +75,7 @@ abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter impleme
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayDefinition()
 	 */
-	public function getDisplayDefinition() {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 	

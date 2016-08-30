@@ -172,7 +172,6 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		}
 	}
 	
-		
 	/**
 	 * @todo remove this everywhere
 	 * @deprecated remove this everywhere

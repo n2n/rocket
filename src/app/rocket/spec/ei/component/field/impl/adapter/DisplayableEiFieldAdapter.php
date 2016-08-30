@@ -48,7 +48,7 @@ abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapte
 		$this->displayDefinition = new DisplayDefinition();
 	}
 	
-	public function getDisplayDefinition() {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 
@@ -102,7 +102,7 @@ abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapte
 		return null;
 	}
 
-	public function getDisplayLabel() {
+	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}
 	

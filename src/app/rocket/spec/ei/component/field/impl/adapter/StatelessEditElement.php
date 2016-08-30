@@ -39,7 +39,7 @@ class StatelessEditElement extends StatelessDisplayElement implements Editable {
 		$this->fieldSourceInfo = $fieldSourceInfo;
 	}
 
-	public function isMandatory() {
+	public function isMandatory(): bool {
 		return $this->statelessEditable->isMandatory($this->fieldSourceInfo);
 	}
 	

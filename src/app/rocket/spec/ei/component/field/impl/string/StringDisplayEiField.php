@@ -55,7 +55,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 		$this->displayDefinition = new DisplayDefinition(DisplayDefinition::READ_VIEW_MODES);
 	}
 	
-	public function getDisplayDefinition() {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 
@@ -168,7 +168,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayLabel()
 	 */
-	public function getDisplayLabel() {
+	public function getDisplayLabel(): string {
 		return (string) $this->labelLstr;
 	}
 
