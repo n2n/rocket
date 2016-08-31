@@ -31,6 +31,8 @@ use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\crypt\hash\HashUtils;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\string\conf\PasswordEiFieldConfigurator;
+use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use n2n\web\dispatch\mag\Mag;
 
 class PasswordEiField extends AlphanumericEiField {
 	const ALGORITHM_SHA1 = 'sha1';
@@ -38,8 +40,7 @@ class PasswordEiField extends AlphanumericEiField {
 	const ALGORITHM_BLOWFISH = 'blowfish';
 	const ALGORITHM_SHA_256 = 'sha-256';
 		
-	public function isMandatory(EiMapping $eiMapping, 
-			EntrySourceInfo $entrySourceInfo) {
+	public function isMandatory(FieldSourceInfo $fieldSourceInfo): bool {
 		return false;
 	}
 	
@@ -47,14 +48,13 @@ class PasswordEiField extends AlphanumericEiField {
 		return new PasswordEiFieldConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(
-			HtmlView $view, EntrySourceInfo $entrySourceInfo)  {
+	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
 		return null;
 	}
 	
 	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
 		return new SecretStringMag($propertyName, $this->getLabelCode(), null,
-				$eiMapping->getEiSelection()->isNew(), $this->getMaxlength(), 
+				$entrySourceInfo->getEiMapping()->getEiSelection()->isNew(), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelCode()));
 	}
 	

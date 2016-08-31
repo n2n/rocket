@@ -184,7 +184,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::isStringRepresentable()
 	 */
-	public function isStringRepresentable() {
+	public function isStringRepresentable(): bool {
 		return true;
 	}
 

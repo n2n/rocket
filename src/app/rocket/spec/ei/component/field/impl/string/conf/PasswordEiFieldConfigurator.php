@@ -27,6 +27,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\field\impl\string\PasswordEiField;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\component\field\impl\string\StringEiField;
+use n2n\web\dispatch\mag\MagDispatchable;
 
 class PasswordEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
 	const OPTION_ALGORITHM_KEY = 'algorithm';

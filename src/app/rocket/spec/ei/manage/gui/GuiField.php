@@ -52,8 +52,4 @@ interface GuiField {
 	 * @return string
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale);
-	
-	public function buildQuickSearchItem() {
-		
-	}
 }
