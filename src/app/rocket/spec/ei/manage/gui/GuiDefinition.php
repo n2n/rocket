@@ -218,6 +218,14 @@ class GuiDefinition {
 		
 		return $guiFields;
 	}
+	
+	public function createGuiDefinition() {
+		
+	}
+}
+
+class QuickSortDefinitionFactory {
+	
 }
 
 class SummarizedStringBuilder {

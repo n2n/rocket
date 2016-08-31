@@ -40,7 +40,8 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 
-abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter implements GuiField, DraftableEiField, DraftProperty, FilterableEiField {
+abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter implements GuiField, DraftableEiField, 
+		DraftProperty, FilterableEiField {
 	protected $displayDefinition;
 	protected $standardEditDefinition;
 
@@ -65,7 +66,7 @@ abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter imple
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayLabel()
 	 */
-	public function getDisplayLabel() {
+	public function getDisplayLabel(): string {
 		return $this->getLabelCode();
 	}
 	
@@ -73,7 +74,7 @@ abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter imple
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayDefinition()
 	 */
-	public function getDisplayDefinition() {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 	

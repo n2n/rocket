@@ -50,6 +50,7 @@ use rocket\spec\config\SpecManager;
 use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
+use n2n\persistence\orm\util\NestedSetUtils;
 
 class EiStateUtils extends EiUtilsAdapter {
 	private $eiState;
@@ -329,8 +330,6 @@ class EiStateUtils extends EiUtilsAdapter {
 		return new EntryModelForm($entryGuiModel);
 	}
 	
-	
-	
 	public function remove(EiSelection $eiSelection): VetoableRemoveAction {
 		if ($eiSelection->isDraft()) {
 			throw new NotYetImplementedException();
@@ -364,7 +363,6 @@ class EiStateUtils extends EiUtilsAdapter {
 		
 		return $vetoableRemoveAction;
 	}
-
 
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
 		$previewModel = new PreviewModel($previewType, $eiSelection, $eiSelection->getLiveObject());

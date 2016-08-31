@@ -29,24 +29,23 @@ interface GuiField {
 	/**
 	 * @return string 
 	 */
-	public function getDisplayLabel();
-
+	public function getDisplayLabel(): string;
 	
 	/**
 	 * @param FieldSourceInfo $entrySourceInfo
-	 * @return \rocket\spec\ei\manage\gui\GuiElement
+	 * @return \rocket\spec\ei\manage\gui\GuiElement|null
 	 */
 	public function buildGuiElement(FieldSourceInfo $entrySourceInfo);
 	
 	/**
 	 * @return DisplayDefinition
 	 */
-	public function getDisplayDefinition();
+	public function getDisplayDefinition(): DisplayDefinition;
 	
 	/**
 	 * @return boolean 
 	 */
-	public function isStringRepresentable();
+	public function isStringRepresentable(): bool;
 	
 	/**
 	 * @param object $entity
