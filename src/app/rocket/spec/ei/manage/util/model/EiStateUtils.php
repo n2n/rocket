@@ -330,8 +330,6 @@ class EiStateUtils extends EiUtilsAdapter {
 		return new EntryModelForm($entryGuiModel);
 	}
 	
-	
-	
 	public function remove(EiSelection $eiSelection): VetoableRemoveAction {
 		if ($eiSelection->isDraft()) {
 			throw new NotYetImplementedException();
@@ -365,7 +363,6 @@ class EiStateUtils extends EiUtilsAdapter {
 		
 		return $vetoableRemoveAction;
 	}
-
 
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
 		$previewModel = new PreviewModel($previewType, $eiSelection, $eiSelection->getLiveObject());
