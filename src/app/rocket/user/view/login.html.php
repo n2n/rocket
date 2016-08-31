@@ -22,7 +22,7 @@
 
 	use n2n\web\ui\Raw;
 	use rocket\user\model\LoginContext;
-	use util\jquery\JQueryLibrary;
+	use n2nutil\jquery\JQueryLibrary;
 	
 	$loginContext = $view->params['loginContext']; $view->assert($loginContext instanceof LoginContext);
 	$html->meta()->addMeta(array('charset' => n2n\core\N2N::CHARSET));
