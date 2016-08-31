@@ -50,6 +50,7 @@ use rocket\spec\config\SpecManager;
 use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
+use n2n\persistence\orm\util\NestedSetUtils;
 
 class EiStateUtils extends EiUtilsAdapter {
 	private $eiState;
