@@ -29,7 +29,6 @@ use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\component\field\FilterableEiField;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\field\MappableEiField;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
@@ -37,9 +36,10 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\component\field\SortableEiFieldFork;
 use rocket\spec\ei\manage\critmod\sort\SortFieldFork;
-use rocket\spec\ei\component\field\EiMappingFilterableEiField;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\spec\ei\component\field\QuickSearchableEiField;
+use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 
 class CritmodFactory {
 	private $eiFieldCollection;
@@ -96,7 +96,8 @@ class CritmodFactory {
 			if (!($eiField instanceof FilterableEiField)) continue;
 			
 			$eiMappingFilterField = $eiField->buildEiMappingFilterField($n2nContext);
-			ArgUtils::valTypeReturn($eiMappingFilterField, EiMappingFilterField::class, $eiField, 'buildEiMappingFilterField', true);
+			ArgUtils::valTypeReturn($eiMappingFilterField, EiMappingFilterField::class, $eiField, 
+					'buildEiMappingFilterField', true);
 
 			if ($eiMappingFilterField !== null) {
 				$mappableFilterDefinition->putEiMappingFilterField(EiFieldPath::from($eiField), $eiMappingFilterField);
@@ -140,18 +141,16 @@ class CritmodFactory {
 		return $sortDefinition;
 	}
 	
-
-
-	public function createQuickSearchDefinition(EiState $eiState): SortDefinition {
-		$sortDefinition = new SortDefinition();
+	public function createQuickSearchDefinition(EiState $eiState) {
+		$quickSearchDefinition = new QuickSearchDefinition();
 	
 		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof SortableEiField)) continue;
+			if (!($eiField instanceof QuickSearchableEiField)) continue;
 				
-			$sortDefinition->putSortField(EiFieldPath::from($eiField), $eiField->buildManagedSortField($eiState));
+			$quickSearchDefinition->putQuickSearchField(EiFieldPath::from($eiField), $eiField->buildQuickSearchField($eiState));
 		}
 	
-		return $sortDefinition;
+		return $quickSearchDefinition;
 	}
 	
 // 	public static function createSortModelFromEiState(EiState $eiState) {

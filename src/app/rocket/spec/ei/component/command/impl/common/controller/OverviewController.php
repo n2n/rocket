@@ -72,11 +72,9 @@ class OverviewController extends ControllerAdapter {
 		
 		$listView = null;
 		if ($listModel->isTree()) {
-			$listView = $eiState->getContextEiMask()->createTreeView($eiState, 
-					$listModel->getEntryGuiTree());
+			$listView = $eiState->getContextEiMask()->createTreeView($eiState, $listModel->getEntryGuiTree());
 		} else {
-			$listView = $eiState->getContextEiMask()->createListView($eiState, 
-					$listModel->getEntryGuis());
+			$listView = $eiState->getContextEiMask()->createListView($eiState, $listModel->getEntryGuis());
 		}
 
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(

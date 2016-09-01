@@ -22,39 +22,62 @@
 namespace rocket\spec\ei\manage\critmod\quick;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\critmod\filter\impl\field\SortItem;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchField;
+use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 
 class QuickSearchDefinition {
 	private $quickSearchFields = array();
 	
-	public function putQuickSearchField(string $id, QuickSearchField $quickSearchField) {
-		$this->quickSearchFields[$id] = $quickSearchField;	
+	public function putQuickSearchField(EiFieldPath $eiFieldPath, QuickSearchField $quickSearchField) {
+		$this->quickSearchFields[(string) $eiFieldPath] = $quickSearchField;	
 	}
 	
 	public function getQuickSearchFields(): array {
 		return $this->quickSearchFields;
 	}
 	
-	public function createCriteriaConstraint(EiState $eiState, array $sortDirections) {
-		$fcc = new FilterCriteriaConstraint();
-		
-		foreach ($sortDirections as $id => $direction) {
-			if (isset($this->quickSearchFields[$id])) {
-				$criteriaConstraint = $this->quickSearchFields[$id]->createSortConstraint($eiState, $direction);
-				ArgUtils::valTypeReturn($criteriaConstraint, 'rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraint',
-						$this->quickSearchFields[$id], 'createSortCriteriaConstraint');
-				$fcc->addCriteriaConstraint($criteriaConstraint);
+	private function filterFields(array $eiFieldPaths) {
+		$quickSearchFields = array();
+		foreach ($eiFieldPaths as $eiFieldPath) {
+			$eiFieldPathStr = (string) $eiFieldPath;
+			if (isset($this->quickSearchFields[$eiFieldPathStr])) {
+				$quickSearchFields[] = $this->quickSearchFields[$eiFieldPathStr];
 			}
 		}
-		
-		if ($fcc->isEmpty()) {
-			return null;
-		}
-		
-		return $fcc;
+		return $quickSearchFields;
 	}
 	
-	
+	public function buildCriteriaConstraint(string $searchStr, array $eiFieldPaths = null) {
+		$quickSearchFields = null;
+		if ($eiFieldPaths === null) {
+			$quickSearchFields = $this->quickSearchFields;
+		} else {
+			ArgUtils::valArray($eiFieldPaths, EiFieldPath::class);
+			$quickSearchFields = $this->filterFields($eiFieldPaths);
+		} 
+		
+		if (empty($quickSearchFields)) return null;
+		
+		$comparatorConstraintGroup = new ComparatorConstraintGroup(true);
+		
+		foreach (preg_split('/\s+/', $searchStr) as $searchStrPart) {
+			$queryStr = trim($searchStrPart);
+			$queryComparatorConstraintGroup = new ComparatorConstraintGroup(false);
+			
+			foreach ($quickSearchFields as $quickSearchField) {
+				$queryComparatorConstraintGroup->addComparatorConstraint(
+						$quickSearchField->createComparatorConstraint($searchStrPart));
+			}
+			
+			$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
+		}
+		
+		if ($comparatorConstraintGroup->isEmpty()) {
+			return null;
+		}
+				
+		return $comparatorConstraintGroup;
+	}
 }

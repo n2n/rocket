@@ -25,6 +25,7 @@ use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
+use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
 class QuickSearchForm implements Dispatchable {
 	private $quickSearchDefinition;
@@ -57,8 +58,12 @@ class QuickSearchForm implements Dispatchable {
 		$this->searchStr = null;
 	}
 
-	public function applyToEiState(EiState $eiState) {
-	
+	public function applyToEiState(EiState $eiState, bool $tmp) {
+		if ($this->searchStr === null) return;
+		
+		$eiState->getCriteriaConstraintCollection()->add(
+				($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
+				$this->quickSearchDefinition->createCriteriaConstraint($this->critmodSave->readFilterGroupData()));
 	}
 	
 	

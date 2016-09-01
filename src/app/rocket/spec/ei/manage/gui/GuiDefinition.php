@@ -31,6 +31,12 @@ class GuiDefinition {
 	private $guiFieldForks = array();
 	private $ids = array();
 	
+	/**
+	 * @param unknown $id
+	 * @param GuiField $guiField
+	 * @param EiFieldPath $eiFieldPath
+	 * @throws GuiException
+	 */
 	public function putGuiField($id, GuiField $guiField, EiFieldPath $eiFieldPath) {
 		if (isset($this->guiFields[$id])) {
 			throw new GuiException('GuiField with id \'' . $id . '\' is already registered');
@@ -41,6 +47,10 @@ class GuiDefinition {
 		$this->ids[$id] = $id;
 	}
 	
+	/**
+	 * @param unknown $id
+	 * @return bool
+	 */
 	public function containsGuiFieldId($id) {
 		return isset($this->guiFields[$id]);
 	}
@@ -57,7 +67,6 @@ class GuiDefinition {
 		
 		return $this->guiFields[$id];
 	}
-	
 
 	/**
 	 * @param string $id
@@ -68,7 +77,6 @@ class GuiDefinition {
 		$this->getGuiFieldById($id);
 		return $this->eiFieldPaths[$id];
 	}
-	
 	
 	/**
 	 * @return GuiField[]

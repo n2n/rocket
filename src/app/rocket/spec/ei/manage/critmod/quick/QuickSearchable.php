@@ -21,10 +21,12 @@
  */
 namespace rocket\spec\ei\manage\critmod\quick;
 
+use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
+
 interface QuickSearchField {
 	/**
 	 * @param string $searchStr
 	 * @return \rocket\spec\ei\manage\critmod\ComparatorConstraint
 	 */
-	public function createQuickSearchComparatorConstraint($searchStr);
+	public function createComparatorConstraint($queryStr): ComparatorConstraint;
 }
