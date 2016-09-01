@@ -23,7 +23,7 @@
 	use n2n\l10n\Message;
 	use n2n\core\N2N;
 	use n2n\web\ui\Raw;
-	use n2nutil\jquery\JQueryLibrary;
+	use n2nn2nutil\jquery\JQueryLibrary;
 	use rocket\core\model\TemplateModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\http\nav\Murl;
