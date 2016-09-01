@@ -33,7 +33,7 @@ class QuickSearchForm implements Dispatchable {
 	protected $searchStr;
 	
 	public function __construct(QuickSearchDefinition $quickSearchDefinition) {
-		$this->querySearchDefinition = $quickSearchDefinition;
+		$this->quickSearchDefinition = $quickSearchDefinition;
 	}
 	
 	public function getSearchStr() {
@@ -61,9 +61,11 @@ class QuickSearchForm implements Dispatchable {
 	public function applyToEiState(EiState $eiState, bool $tmp) {
 		if ($this->searchStr === null) return;
 		
-		$eiState->getCriteriaConstraintCollection()->add(
-				($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
-				$this->quickSearchDefinition->createCriteriaConstraint($this->critmodSave->readFilterGroupData()));
+		if (null !== ($cc = $this->quickSearchDefinition->buildCriteriaConstraint($this->searchStr))) {
+			$eiState->getCriteriaConstraintCollection()->add(
+					($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
+					$cc);
+		}
 	}
 	
 	
