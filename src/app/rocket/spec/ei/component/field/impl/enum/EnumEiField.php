@@ -51,6 +51,7 @@ use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\enum\conf\EnumEiFieldConfigurator;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 
 class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField, 
 		QuickSearchableEiField {
@@ -124,7 +125,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	}
 	
 	public function buildQuickSearchField(EiState $eiState) {
-		return new SimpleComparatorConstraint($this->getEntityProperty()->getName(), '%' . $str . '%', CriteriaComparator::OPERATOR_LIKE);
+		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
 	}
 
 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath, HtmlView $view,\Closure $createCustomUiElementCallback = null) {

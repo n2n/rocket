@@ -138,7 +138,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		$targetRelationEntry = $toOneMappable->getValue();
 		
 		if ($targetRelationEntry === null) {
-			$targetEiSelection = $targetUtils->createEiSelection();
+			$targetEiSelection = $targetUtils->createNewEiSelection();
 			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiSelection));
 		} else if (!$targetRelationEntry->hasEiMapping()) {
 			$targetEiSelection = $targetRelationEntry->getEiSelection();
