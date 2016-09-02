@@ -25,7 +25,7 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\util\config\Attributes;
-use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\l10n\DynamicTextCollection;
 

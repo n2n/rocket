@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\enum;
 
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
-use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\FilterableEiField;

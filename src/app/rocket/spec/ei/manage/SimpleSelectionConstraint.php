@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage;
 
 use n2n\persistence\orm\property\EntityProperty;
 
-use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 
 class SimpleSelectorConstraint extends SimpleComparatorConstraint implements SelectorConstraint {
 	private $entityProperty;

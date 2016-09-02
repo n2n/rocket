@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\l10n;
 
 use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
-use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\l10n\N2nLocale;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
