@@ -47,6 +47,7 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiDefinition;
+use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 
 class EiEngine {
 	private $eiSpec;

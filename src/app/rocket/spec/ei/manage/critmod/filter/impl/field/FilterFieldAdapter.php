@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
-use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
@@ -34,6 +34,8 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
+use n2n\persistence\orm\criteria\item\CrIt;
+use rocket\spec\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
 
 abstract class FilterFieldAdapter implements FilterField {
 	const ATTR_OPERATOR_KEY = 'operator';
@@ -72,9 +74,9 @@ abstract class FilterFieldAdapter implements FilterField {
 	 * @see \rocket\spec\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
-		return new SimpleComparatorConstraint($this->criteriaProperty,
+		return new PropertyValueComparatorConstraint($this->criteriaProperty,
 				$attributes->getEnum(self::ATTR_OPERATOR_KEY, $this->getOperators()),
-				$attributes->get(self::ATTR_VALUE_KEY));
+				CrIt::c($attributes->get(self::ATTR_VALUE_KEY)));
 	}
 	
 	protected function getOperators(): array {

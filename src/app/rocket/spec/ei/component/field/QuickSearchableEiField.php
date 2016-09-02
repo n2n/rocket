@@ -21,5 +21,13 @@
  */
 namespace rocket\spec\ei\component\field;
 
+use rocket\spec\ei\manage\EiState;
+
 interface QuickSearchableEiField extends EiField {
+	
+	/**
+	 * @param EiState $eiState
+	 * @return \rocket\spec\ei\manage\critmod\quick\QuickSearchField
+	 */
+	public function buildQuickSearchField(EiState $eiState);
 }

@@ -19,22 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\field\impl\l10n;
+namespace rocket\spec\ei\manage\critmod\filter\impl\model;
 
-use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
-use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
-use n2n\l10n\N2nLocale;
-use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use n2n\persistence\orm\criteria\compare\CriteriaComparator;
+use n2n\persistence\orm\criteria\item\CriteriaItem;
+use n2n\persistence\orm\criteria\item\CrIt;
 
-class N2nLocaleFilterField extends EnumFilterField {
-
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
+class PropertyValueComparatorConstraint implements ComparatorConstraint {
+	private $cp;
+	private $operator;
+	private $ci;
+	
+	/**
+	 * @param CriteriaItem $ci1
+	 * @param string $operator
+	 * @param CriteriaItem $ci2
 	 */
-	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
-		return new SimpleComparatorConstraint($this->criteriaProperty,
-				$attributes->getEnum(self::OPERATOR_OPTION, $this->getOperators()),
-				N2nLocale::build($attributes->getString(self::ATTR_VALUE_KEY, false, null, true)));
+	public function __construct(CriteriaItem $cp1, string $operator, CriteriaItem $ci) {
+		$this->cp = $cp1;
+		$this->operator = $operator;
+		$this->ci = $ci;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
+	 */
+	public function applyToCriteriaComparator(CriteriaComparator $criteriaComparator, CriteriaProperty $alias) {
+		$criteriaComparator->match(CrIt::p($alias, $this->cp), $this->operator, $this->ci);
 	}
 }

@@ -32,7 +32,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\ei\manage\critmod\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\manage\mapping\MappableConstraint;

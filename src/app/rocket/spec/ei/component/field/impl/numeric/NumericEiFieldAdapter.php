@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\field\impl\numeric;
 use rocket\spec\ei\component\field\QuickSearchableEiField;
 use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
 use rocket\spec\ei\component\field\SortableEiField;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\component\field\FilterableEiField;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -45,6 +44,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 
 abstract class NumericEiFieldAdapter extends DraftableEiFieldAdapter 
 		implements FilterableEiField, SortableEiField, QuickSearchableEiField {
@@ -122,8 +122,8 @@ abstract class NumericEiFieldAdapter extends DraftableEiFieldAdapter
 		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function createQuickSearchComparatorConstraint($str) {
-		return new SimpleComparatorConstraint($this->getEntityProperty()->getName(), '%' . $str . '%', CriteriaComparator::OPERATOR_LIKE);
+	public function buildQuickSearchField(EiState $eiState) {
+		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
 	}
 
 // 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
