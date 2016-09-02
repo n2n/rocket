@@ -68,7 +68,6 @@ class QuickSearchForm implements Dispatchable {
 		}
 	}
 	
-	
 	public static function create(EiState $eiState, CritmodSaveDao $critmodSaveDao, string $stateKey = null) {
 		$eiMask = $eiState->getContextEiMask();
 		
@@ -76,7 +75,8 @@ class QuickSearchForm implements Dispatchable {
 			$stateKey = uniqid();
 		}
 		
-		return new QuickSearchForm(new QuickSearchDefinition(), $critmodSaveDao, $stateKey,
-				CritmodSaveDao::buildCategoryKey($stateKey, $eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask));
+		return new QuickSearchForm($eiMask->getEiEngine()->createQuickSearchDefinition($eiState), $critmodSaveDao, 
+				$stateKey, CritmodSaveDao::buildCategoryKey($stateKey, 
+				$eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask));
 	}
 }

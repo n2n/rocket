@@ -19,15 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\field;
+namespace rocket\spec\ei\manage\critmod\quick;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
 
-interface QuickSearchableEiField extends EiField {
-	
+interface QuickSearchField {
 	/**
-	 * @param EiState $eiState
-	 * @return \rocket\spec\ei\manage\critmod\quick\QuickSearchField
+	 * @param string $searchStr
+	 * @return \rocket\spec\ei\manage\critmod\ComparatorConstraint
 	 */
-	public function buildQuickSearchField(EiState $eiState);
+	public function createComparatorConstraint(string $queryStr): ComparatorConstraint;
 }

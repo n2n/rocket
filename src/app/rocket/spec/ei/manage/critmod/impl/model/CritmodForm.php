@@ -30,6 +30,7 @@ use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\BindingDefinition;
+use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
 class CritmodForm implements Dispatchable {	
 	private $critmodSaveDao;
@@ -158,8 +159,10 @@ class CritmodForm implements Dispatchable {
 			if ($critmodSave === null) return;
 		}
 
-		$eiState->addCriteriaConstraint($this->getFilterGroupForm()->getFilterDefinition()
-				->createCriteriaConstraint($critmodSave->readFilterGroupData(), $tmp));
+		$eiState->getCriteriaConstraintCollection()->add(
+				($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
+				$this->getFilterGroupForm()->getFilterDefinition()
+						->createCriteriaConstraint($critmodSave->readFilterGroupData(), $tmp));
 		
 		$sortCriteriaConstraint = $this->getSortForm()->getSortDefinition()
 				->builCriteriaConstraint($critmodSave->readSortData(), $tmp);

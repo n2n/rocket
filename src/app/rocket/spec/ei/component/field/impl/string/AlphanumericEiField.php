@@ -42,6 +42,7 @@ use rocket\spec\ei\component\field\GenericEiField;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
+use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 
 abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		SortableEiField, QuickSearchableEiField, ScalarEiField, GenericEiField {
@@ -93,9 +94,8 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 		return null;
 	}
 	
-	public function createQuickSearchComparatorConstraint($str) {
-		return new SimpleComparatorConstraint($this->getEntityProperty()->getName(), 
-				'%' . $str . '%', CriteriaComparator::OPERATOR_LIKE);
+	public function buildQuickSearchField(EiState $eiState) {
+		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
 	}
 	
 	public function getGenericEiProperty() {

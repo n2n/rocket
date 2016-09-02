@@ -123,7 +123,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function createQuickSearchComparatorConstraint($str) {
+	public function buildQuickSearchField(EiState $eiState) {
 		return new SimpleComparatorConstraint($this->getEntityProperty()->getName(), '%' . $str . '%', CriteriaComparator::OPERATOR_LIKE);
 	}
 

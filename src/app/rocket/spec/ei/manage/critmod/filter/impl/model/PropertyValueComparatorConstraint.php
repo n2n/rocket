@@ -19,14 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\critmod\quick;
+namespace rocket\spec\ei\manage\critmod\filter\impl\model;
 
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use n2n\persistence\orm\criteria\compare\CriteriaComparator;
+use n2n\persistence\orm\criteria\item\CriteriaItem;
+use n2n\persistence\orm\criteria\item\CrIt;
 
-interface QuickSearchField {
+class PropertyValueComparatorConstraint implements ComparatorConstraint {
+	private $cp;
+	private $operator;
+	private $ci;
+	
 	/**
-	 * @param string $searchStr
-	 * @return \rocket\spec\ei\manage\critmod\ComparatorConstraint
+	 * @param CriteriaItem $ci1
+	 * @param string $operator
+	 * @param CriteriaItem $ci2
 	 */
-	public function createComparatorConstraint($queryStr): ComparatorConstraint;
+	public function __construct(CriteriaItem $cp1, string $operator, CriteriaItem $ci) {
+		$this->cp = $cp1;
+		$this->operator = $operator;
+		$this->ci = $ci;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
+	 */
+	public function applyToCriteriaComparator(CriteriaComparator $criteriaComparator, CriteriaProperty $alias) {
+		$criteriaComparator->match(CrIt::p($alias, $this->cp), $this->operator, $this->ci);
+	}
 }
