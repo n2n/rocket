@@ -75,7 +75,7 @@ class ManyToOneGuiElement implements GuiElement {
 		}
 		
 		return $html->getLink($this->targetEiState->getDetailUrl($view->getHttpContext(), $targetRelationEntry
-						->getEiSelection()->toEntryNavPoint($this->targetEiState->getContextEiMask()->getEiEngine()->getEiSpec())), 
+						->getEiSelection()->toEntryNavPoint()), 
 				$identityString);
 	}
 	

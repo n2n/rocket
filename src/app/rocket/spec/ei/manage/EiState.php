@@ -397,7 +397,7 @@ class EiState {
 
 	public function isDetailUrlAvailable(EntryNavPoint $entryNavPoint) {
 		return $this->detailUrlExt !== null || 
-				(!$this->detailDisabled && null !== $this->getContextEiMask()->getEiEngine()
+				(!$this->detailDisabled && $this->getContextEiMask()->getEiEngine()
 						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
 	}
 	
