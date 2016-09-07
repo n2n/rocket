@@ -88,7 +88,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 			$specManager->getEiSpecSetupQueue()->setVoidModeEnabled(true);
 			$targetEiSpec = $specManager->getEiSpecByClass($targetEntityClass);
 			foreach ($targetEiSpec->getEiMaskCollection() as $eiMask) {
-				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getLabel();
+				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiSpec()->getLabelLstr();
 			}
 		} catch (UnknownEiComponentException $e) {
 		} catch (UnknownSpecException $e) {
