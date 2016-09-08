@@ -319,7 +319,7 @@ class EiState {
 
 	public function isOverviewUrlAvailable() {
 		return $this->overviewUrlExt !== null || (!$this->overviewDisabled
-				&& null !== $this->getContextEiMask()->getEiEngine()->getEiCommandCollection()->hasGenericOverview());
+				&& $this->getContextEiMask()->getEiEngine()->getEiCommandCollection()->hasGenericOverview());
 	}
 	
 	public function getOverviewUrl(HttpContext $httpContext, bool $required = true) {
@@ -397,7 +397,7 @@ class EiState {
 
 	public function isDetailUrlAvailable(EntryNavPoint $entryNavPoint) {
 		return $this->detailUrlExt !== null || 
-				(!$this->detailDisabled && null !== $this->getContextEiMask()->getEiEngine()
+				(!$this->detailDisabled && $this->getContextEiMask()->getEiEngine()
 						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
 	}
 	

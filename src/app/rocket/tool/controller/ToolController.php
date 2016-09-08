@@ -71,9 +71,13 @@ class ToolController extends ControllerAdapter {
 		$this->delegate($mailCenterController);
 	}
 	
-	public function clearCache(MessageContainer $mc, ResponseCacheStore $responseCacheStore = null) {
+	public function clearCache(MessageContainer $mc, ResponseCacheStore $responseCacheStore = null, ViewCacheStore $viewCacheStore = null) {
 		if ($responseCacheStore !== null) {
 			$responseCacheStore->clear();
+		}
+		
+		if ($viewCacheStore !== null) {
+			$viewCacheStore->clear();
 		}
 				
 		$mc->addInfoCode('tool_cache_cleared_info');

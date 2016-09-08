@@ -136,7 +136,7 @@ class RocketUserController extends ControllerAdapter {
 		}
 		
 		$this->commit();
-		$this->forward('user\view\userEdit.html', array('userForm' => $userForm));
+		$this->forward('..\view\userEdit.html', array('userForm' => $userForm));
 	}
 	
 	public function doDelete($userId, MessageContainer $messageContainer) {
