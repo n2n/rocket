@@ -87,11 +87,9 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 	public function completeMagCollection(MagCollection $magCollection) {
 		$dtc = new DynamicTextCollection('rocket');
 		$magCollection->addMag(DraftableEiFieldAdapter::ATTR_DRAFTABLE_KEY,
-				new BoolMag($dtc->translate('ei_impl_draftable_label'), 
-				self::OPTION_DRAFTABLE_DEFAULT));
+				new BoolMag($dtc->translate('ei_impl_draftable_label'), self::OPTION_DRAFTABLE_DEFAULT));
 		$magCollection->addMag(TranslatableEiFieldAdapter::OPTION_TRANSLATION_ENABLED_KEY,
-				new BoolMag($dtc->translate('ei_impl_translatable_label'),
-				self::OPTION_TRANSLATION_ENABLED_DEFAULT));
+				new BoolMag($dtc->translate('ei_impl_translatable_label'), self::OPTION_TRANSLATION_ENABLED_DEFAULT));
 		
 		parent::completeMagCollection($magCollection);
 		return $magCollection;
@@ -145,6 +143,6 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		$targetEiSelection = new EiSelection($targetEiState->getContextEiMask()->getEiEngine()->getEiSpec()
 				->extractId($targetEntity), $targetEntity);
 		
-		return $targetEiSelection;
+		return $EiSelection;
 	}
 }
