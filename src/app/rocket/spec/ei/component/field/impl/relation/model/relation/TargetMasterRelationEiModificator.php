@@ -119,7 +119,7 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 	}
 	
 	private function writeToMaster($entityObj, $targetEntityObj) {
-		$targetAccessProxy = $this->eiFieldRelation->getTargetMasterEiField()->getObjectPropertyAccessProxy();
+		$targetAccessProxy = $this->eiFieldRelation->getTargetMasterAccessProxy();
 	
 		if (!$this->eiFieldRelation->isSourceMany()) {
 			$targetAccessProxy->setValue($targetEntityObj, $entityObj);

@@ -44,7 +44,6 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
-use n2n\impl\web\ui\view\html\HtmlBuilder;
 
 class FileEiField extends DraftableEiFieldAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
