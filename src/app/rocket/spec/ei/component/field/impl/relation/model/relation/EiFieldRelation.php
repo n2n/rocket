@@ -44,18 +44,18 @@ use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\EiUtils;
-use rocket\spec\ei\EiThing;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
-use n2n\l10n\N2nLocale;
+use n2n\reflection\property\PropertiesAnalyzer;
+use n2n\reflection\ReflectionException;
 
 abstract class EiFieldRelation {
 	protected $targetEiSpec;
 	protected $targetEiMask;
 	protected $targetMasterEiField;
+	protected $targetMasterAccessProxy;
 	
 	protected $relationEiField;
 	protected $sourceMany;
@@ -73,18 +73,31 @@ abstract class EiFieldRelation {
 		$this->targetMany = $targetMany;
 	}
 	
+	/**
+	 * @return \rocket\spec\ei\component\field\impl\relation\RelationEiField
+	 */
 	public function getRelationEiField(): RelationEiField {
 		return $this->relationEiField;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isSourceMany(): bool {
 		return $this->sourceMany;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isTargetMany(): bool {
 		return $this->targetMany;
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\spec\ei\EiSpec
+	 */
 	public function getTargetEiSpec(): EiSpec {
 		if ($this->targetEiSpec === null) {
 			throw new IllegalStateException(get_class($this->relationEiField) . ' not set up');
@@ -92,6 +105,10 @@ abstract class EiFieldRelation {
 		return $this->targetEiSpec;
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\spec\ei\mask\EiMask
+	 */
 	public function getTargetEiMask(): EiMask {
 		if ($this->targetEiMask === null) {
 			throw new IllegalStateException(get_class($this->relationEiField) . ' not set up');
@@ -100,6 +117,9 @@ abstract class EiFieldRelation {
 	}
 	
 	
+	/**
+	 * @throws InvalidEiComponentConfigurationException
+	 */
 	private function initTargetMasterEiField() {
 		$entityProperty = $this->getRelationEntityProperty();
 		if ($entityProperty->isMaster()) return;
@@ -113,14 +133,29 @@ abstract class EiFieldRelation {
 			if ($targetEiField instanceof RelationEiField 
 					&& $targetEntityProperty->equals($targetEiField->getEntityProperty())) {
 				$this->targetMasterEiField = $targetEiField;
+				$this->targetMasterAccessProxy = $targetEiField->getObjectPropertyAccessProxy();
 				return;
 			}
 		}
 		
-		throw new InvalidEiComponentConfigurationException('No Target master EiField defined for ' . $targetEntityProperty);
+		if ($this->relationEiField->getStandardEditDefinition()->isReadOnly()) {
+			return;
+		}
 		
+		$targetClass = $targetEntityProperty->getEntityModel()->getClass();
+		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
+		try {
+			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEiField->getEntityProperty()->getName());
+		} catch (ReflectionException $e) {
+			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: ' 
+					. $targetEntityProperty, 0, $e);
+		}
 	}
 	
+	/**
+	 * @param EiSpec $targetEiSpec
+	 * @param EiMask $targetEiMask
+	 */
 	public function init(EiSpec $targetEiSpec, EiMask $targetEiMask) {
 		$this->targetEiSpec = $targetEiSpec;
 		$this->targetEiMask = $targetEiMask;
@@ -136,11 +171,16 @@ abstract class EiFieldRelation {
 		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($this->relationAjahEiCommand);
 	}
 	
-	
+	/**
+	 * @return bool
+	 */
 	public function isFiltered(): bool {
 		return $this->filtered;
 	}
 	
+	/**
+	 * @param bool $filtered
+	 */
 	public function setFiltered(bool $filtered) {
 		$this->filtered = $filtered;
 	}
@@ -170,10 +210,29 @@ abstract class EiFieldRelation {
 				|| ($this->isFiltered() && $eiState->getEiRelation($this->relationEiField->getId()));
 	}
 	
+	/**
+	 * @return \n2n\impl\persistence\orm\property\RelationEntityProperty
+	 */
 	public function getRelationEntityProperty(): RelationEntityProperty {
 		return $this->relationEiField->getEntityProperty();
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \n2n\reflection\property\AccessProxy
+	 */
+	public function getTargetMasterAccessProxy() {
+		if ($this->targetMasterAccessProxy !== null) {
+			return $this->targetMasterAccessProxy;
+		}
+		
+		throw new IllegalStateException('No target master AccessProxy initialized. ' 
+				. get_class($this->relationEiField) . ' is probably not set up.');
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\component\field\impl\relation\RelationEiField|
+	 */
 	public function findTargetEiField() {
 		if ($this->targetMasterEiField !== null) {
 			return $this->targetMasterEiField;
@@ -194,13 +253,6 @@ abstract class EiFieldRelation {
 		}
 	
 		return null;
-	}
-	
-	public function getTargetMasterEiField() {
-		if ($this->targetMasterEiField === null && !$this->getRelationEntityProperty()->isMaster()) {
-			throw new IllegalStateException(get_class($this->relationEiField) . ' not set up');
-		}
-		return $this->targetMasterEiField;
 	}
 	
 // 	public function isMaster() {

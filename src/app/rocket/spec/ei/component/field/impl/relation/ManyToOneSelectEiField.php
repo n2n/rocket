@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\persistence\orm\property\relation\Relation;
