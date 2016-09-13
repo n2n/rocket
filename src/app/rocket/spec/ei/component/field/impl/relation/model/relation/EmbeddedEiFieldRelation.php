@@ -35,7 +35,6 @@ use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\EiUtils;
 
 class EmbeddedEiFieldRelation extends EiFieldRelation {
 	private $embeddedPseudoCommand;
@@ -59,11 +58,7 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		
 		$this->setupEmbeddedEditEiCommand();
 		
-		if (!$this->getRelationEntityProperty()->isMaster()) {
-			$this->relationEiField->getEiEngine()->getEiModificatorCollection()
-					->add(new TargetMasterRelationEiModificator($this, false));
-		}
-		
+			
 // 		$this->embeddedPseudoCommand = new EmbeddedPseudoCommand($this->getTarget());
 // 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedPseudoCommand);
 		

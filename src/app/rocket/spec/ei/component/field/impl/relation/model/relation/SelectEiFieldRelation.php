@@ -50,11 +50,6 @@ class SelectEiFieldRelation extends EiFieldRelation {
 // 		if ($this->isEmbeddedAddEnabled()) {
 			$this->setupEmbeddedEditEiCommand();
 // 		}
-
-		if (!$this->getRelationEntityProperty()->isMaster()) {
-			$this->relationEiField->getEiEngine()->getEiModificatorCollection()
-					->add(new TargetMasterRelationEiModificator($this, true));
-		}
 		
 // 		if ($this->isEmbeddedAddEnabled()) {
 // 			$this->embeddedEditPseudoEiCommand = new EmbeddedEditPseudoCommand(

@@ -169,6 +169,12 @@ abstract class EiFieldRelation {
 				
 		$this->relationAjahEiCommand = new RelationAjahEiCommand($this);
 		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($this->relationAjahEiCommand);
+		
+
+		if (!$this->getRelationEntityProperty()->isMaster()) {
+			$this->relationEiField->getEiEngine()->getEiModificatorCollection()
+					->add(new TargetMasterRelationEiModificator($this));
+		}
 	}
 	
 	/**
