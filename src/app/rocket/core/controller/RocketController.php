@@ -122,6 +122,11 @@ class RocketController extends ControllerAdapter {
 		$this->delegateToControllerContext($delegateControllerContext);
 		
 		$this->commit();
+		
+// 		$bo = $this->getResponse()->fetchBufferedOutput();
+// 		$this->getResponse()->reset();
+// 		echo $bo;
+// 		die('HOLERADIO');
 	}
 	
 	public function doTools(array $delegateParams = array(), ToolController $toolController) {

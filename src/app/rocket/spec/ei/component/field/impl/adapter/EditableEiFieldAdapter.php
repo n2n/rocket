@@ -109,7 +109,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 	
 	public function validateMappableValue(EiObject $eiObject, $mappableValue, FieldErrorInfo $fieldErrorInfo) {
 		if (!$this->checkMandatory($eiObject, $mappableValue)) {
-			$fieldErrorInfo->addError(new MessageCode('ei_impl_mandatory_err', array('field' => $this->label), null, 
+			$fieldErrorInfo->addError(new MessageCode('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
 					Rocket::NS));
 		}
 	}

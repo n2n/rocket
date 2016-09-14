@@ -87,7 +87,7 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 		if ($targetEntityObjs === null) {
 			$targetEntityObjs = array();
 		}
-	
+		
 		foreach ($targetEntityObjs as $targetEntityObj) {
 			$this->writeToMaster($entityObj, $targetEntityObj);
 		}
@@ -99,8 +99,6 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 			$obsoleteTargetEntityObjs = $this->oldValue->getArrayCopy();
 		}
 		
-		test(count($targetEntityObjs));
-		
 		foreach ($targetEntityObjs as $targetEntityObj) {
 			foreach ($obsoleteTargetEntityObjs as $key => $oldTargetEntityObj) {
 				if ($targetEntityObj === $oldTargetEntityObj) {
@@ -110,12 +108,8 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 		}
 	
 		foreach ($obsoleteTargetEntityObjs as $obsoleteTargetEntityObj) {
-			test($obsoleteTargetEntityObj);
 			$this->removeFromMaster($entityObj, $obsoleteTargetEntityObj);
 		}
-		
-
-		die('HUIII');
 	}
 	
 	private function writeToMaster($entityObj, $targetEntityObj) {

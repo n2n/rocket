@@ -34,7 +34,6 @@
 <div class="rocket-filter-items">
 	<?php $formHtml->inputCheckbox($propertyPath->ext('useAnd'), true, 
 			array('class' => 'rocket-filter-and-indicator'))?>
-	<?php $formHtml->optionalObjectActivator($propertyPath->ext('filterFieldItemForms')) ?>
 	<ul	class="rocket-filter-field-items" 
 			data-new-form-array-property-path="<?php $html->out($formHtml->meta()
 					->realPropPath($propertyPath->ext('filterFieldItemForms'))) ?>">
@@ -58,7 +57,6 @@
 	</ul>
 	<ul class="rocket-filter-groups" 
 			data-new-form-array-property-path="<?php $html->out($propertyPath->ext('filterGroupForms')) ?>">
-		<?php $formHtml->optionalObjectActivator($propertyPath->ext('filterGroupForms')) ?>
 		<?php $formHtml->meta()->arrayProps($propertyPath->ext('filterGroupForms'), function () use ($view, $formHtml) { ?>
 			<li class="rocket-filter-group">
 				<?php $view->import('filterGroupForm.html', 

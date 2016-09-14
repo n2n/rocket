@@ -54,7 +54,6 @@
 				<label>Privileges Grants</label>
 				
 				<div class="rocket-controls">
-					<?php $formHtml->optionalObjectActivator('eiPrivilegeGrantForms') ?>
 					<div class="rocket-option-array">
 						<?php $formHtml->meta()->arrayProps('eiPrivilegeGrantForms', function () 
 								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterAjahHook) { ?>
@@ -92,7 +91,6 @@
 									<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
 										<div class="rocket-editable">
 											<div class="rocket-controls">
-												<?php $formHtml->optionalObjectActivator('restrictionFilterGroupForm') ?>
 												<?php $formHtml->optionalObjectCheckbox('restrictionFilterGroupForm', null, 
 														$html->getL10nText('user_access_restricted_label')) ?>
 											</div>

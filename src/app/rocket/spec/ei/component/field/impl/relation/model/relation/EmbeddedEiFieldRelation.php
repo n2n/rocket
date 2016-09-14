@@ -58,6 +58,17 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		
 		$this->setupEmbeddedEditEiCommand();
 		
+		if (!$this->getRelationEntityProperty()->isMaster()) {
+			$entityProperty = $this->getRelationEntityProperty();
+			if (!$entityProperty->getRelation()->isOrphanRemoval()
+					&& (!$this->isSourceMany() && !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull())) {
+				throw new InvalidEiComponentConfigurationException('EiField requires an EntityProperty '
+						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
+						. ' must accept null.');
+			}
+		}
+		
 			
 // 		$this->embeddedPseudoCommand = new EmbeddedPseudoCommand($this->getTarget());
 // 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedPseudoCommand);

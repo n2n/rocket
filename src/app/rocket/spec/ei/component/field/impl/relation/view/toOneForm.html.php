@@ -67,7 +67,6 @@
 		<?php $currentPropertyPath = $propertyPath->ext('currentMappingForm') ?>
 		<?php $currentMappingForm = $formHtml->meta()->getMapValue($currentPropertyPath)->getObject(); ?>
 		<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
-		<?php $formHtml->optionalObjectActivator($currentPropertyPath) ?>
 		
 		<?php if (null === $formHtml->meta()->getMapValue($currentPropertyPath)->getAttrs()): ?>
 			<div class="rocket-current"
@@ -94,7 +93,6 @@
 		<?php endif ?>
 	<?php endif ?>
 
-	<?php $formHtml->optionalObjectActivator($newMappingFormPropertyPath) ?>
 	<?php if ($toOneForm->isNewMappingFormAvailable()): ?>
 		<div class="rocket-new" data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
 				data-property-path="<?php $html->out((string) $formHtml->meta()->createRealPropertyPath($newMappingFormPropertyPath)) ?>"

@@ -54,7 +54,6 @@
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiSpecLabels())) ?>">
 	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
-		<?php $formHtml->optionalObjectActivator($propertyPath->ext('currentMappingForms')) ?>
 			
 		<div class="rocket-option-array rocket-current">
 			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml) { ?>
@@ -103,8 +102,6 @@
 	<?php endif ?>
 	
 	<?php if ($toManyForm->isNewMappingFormAvailable()): ?>
-		<?php $formHtml->optionalObjectActivator($propertyPath->ext('newMappingForms')) ?>
-	
 		<div class="rocket-option-array rocket-new"
 				data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
 				data-property-path="<?php $html->out($formHtml->meta()
