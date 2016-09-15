@@ -162,7 +162,7 @@ class EiEngine {
 	
 	public function createPrivilegeDefinition(N2nContext $n2nContext) {
 		$securityFactory = new SecurityFactory($this->eiFieldCollection, 
-				$this->eiDef->getEiCommandCollection(), $this->eiModificatorCollection);
+				$this->getEiCommandCollection(), $this->eiModificatorCollection);
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	

@@ -69,7 +69,7 @@ class SecurityFactory {
 		foreach ($this->eiFieldCollection->toArray(false) as $eiField) {
 			if (!($eiField instanceof PrivilegedEiField)) continue;
 				
-			$eiFieldPrivilege = $eiField->buildEiFieldPrivilege($n2nContext);
+			$eiFieldPrivilege = $eiField->createEiFieldPrivilege($n2nContext);
 			ArgUtils::valTypeReturn($eiFieldPrivilege, EiFieldPrivilege::class, $eiField, 'buildEiFieldPrivilege');
 			
 			if ($eiFieldPrivilege !== null) {

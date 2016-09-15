@@ -67,13 +67,14 @@ class TemplateModel implements Lookupable {
 		
 		foreach ($rocket->getLayoutManager()->getMenuGroups() as $menuGroup) {
 			$menuItems = $menuGroup->getMenuItems();
-			if ($accessibleMenuItemIds !== null) {
-				foreach ($menuItems as $key => $menuItem) {
-					if (in_array($menuItem->getId(), $accessibleMenuItemIds)
-							|| !$menuItem->isAccessible($n2nContext)) continue;
+			
+			foreach ($menuItems as $key => $menuItem) {
+				if (($accessibleMenuItemIds !== null && !in_array($menuItem->getId(), $accessibleMenuItemIds))
+						|| !$menuItem->isAccessible($n2nContext)) {
 					unset($menuItems[$key]);
 				}
 			}
+			
 			
 			if (empty($menuItems)) continue;
 			

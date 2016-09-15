@@ -175,7 +175,7 @@ class EiMaskItem extends Item {
 	}
 	
 	public function getLabel(): string {
-		return $this->eiMask->getLabel();
+		return $this->eiMask->getLabelLstr();
 	}
 }
 

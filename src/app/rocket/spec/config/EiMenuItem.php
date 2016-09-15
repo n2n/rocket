@@ -86,6 +86,8 @@ class EiMenuItem implements MenuItem {
 		if ($loginContext->getSecurityManager()->getEiPermissionManager()->isEiCommandAccessible($overviewEiCommand)) {
 			return (new Path(array($overviewEiCommand->getId())))->toUrl()->ext($overviewEiCommand->getOverviewUrlExt());
 		}
+		
+		return null;
 	}
 	
 // 	public function isAccessible(N2nContext $n2nContext) {
