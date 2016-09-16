@@ -7,6 +7,8 @@ use n2n\persistence\orm\LifecycleListener;
 use n2n\persistence\orm\LifecycleEvent;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\config\SpecManager;
+use rocket\spec\ei\manage\EiSelection;
+use n2n\util\ex\NotYetImplementedException;
 
 class VetoableRemoveQueue implements LifecycleListener {
 	private $em;
@@ -20,6 +22,14 @@ class VetoableRemoveQueue implements LifecycleListener {
 	
 	public function getEntityManager() {
 		return $this->em;
+	}
+	
+	public function removeEiSelection(EiSelection $eiSelection) {
+		if ($eiSelection->isDraft()) {
+			throw new NotYetImplementedException();
+		}
+		
+		$this->em->remove($eiSelection->getLiveEntry()->getEntityObj());
 	}
 	
 	public function approve() {

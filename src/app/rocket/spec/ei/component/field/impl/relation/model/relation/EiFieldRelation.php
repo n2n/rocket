@@ -50,8 +50,6 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
-use n2n\reflection\property\TypeConstraint;
-use n2n\reflection\ReflectionUtils;
 
 abstract class EiFieldRelation {
 	protected $targetEiSpec;
