@@ -47,7 +47,6 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
-	const ATTR_TARGET_REMOVE_ALLOWED_KEY = 'targetRemoveAllowed';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	
 	private $eiFieldRelation;

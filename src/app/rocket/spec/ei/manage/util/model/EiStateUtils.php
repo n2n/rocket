@@ -335,12 +335,23 @@ class EiStateUtils extends EiUtilsAdapter {
 			throw new NotYetImplementedException();
 		}
 		
-		$eiCascadeOperation = new EiCascadeOperation($this->eiState->getManageState()->getEntityManager()->getEntityModelManager(),
-				$this->eiState->getN2nContext()->lookup(Rocket::class)->getSpecManager(), CascadeType::REMOVE);
-		$eiCascadeOperation->cascade($eiSelection->getLiveObject());
+		$em = $this->eiState->getManageState()->getEntityManager();
+		$nss = $this->getNestedSetStrategy();
+		if (null === $nss) {
+			$em->remove($eiSelection->getLiveObject());
+		} else {
+			$nsu = new NestedSetUtils($em,
+					$this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
+					$nss);
+			$nsu->remove($eiSelection->getLiveObject());
+		}
 		
-		$liveEntries = $eiCascadeOperation->getLiveEntries();
-		$vetoableRemoveAction = new VetoableRemoveAction($liveEntries);
+		$vetoableRemoveQueue = new VetoableRemoveQueue($this->eiState->getManageState()->getEntityManager());
+		if ($vetoableRemoveQueue->approve()) {
+			return;
+		}
+		
+		$this->eiState->getManageState()->rollBackTransaction();
 		
 		foreach ($liveEntries as $liveEntry) {
 			$liveEntry->getEiSpec()->onRemove($liveEntry, $vetoableRemoveAction, $this->eiState->getN2nContext());
@@ -351,15 +362,7 @@ class EiStateUtils extends EiUtilsAdapter {
 			return $vetoableRemoveAction;
 		}
 		
-		$nss = $this->getNestedSetStrategy();
-		if (null === $nss) {
-			$this->eiState->getManageState()->getEntityManager()->remove($eiSelection->getLiveObject());
-		} else {
-			$nsu = new NestedSetUtils($this->eiState->getManageState()->getEntityManager(),
-					$this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
-					$nss);
-			$nsu->remove($eiSelection->getLiveObject());
-		}
+		
 		
 		return $vetoableRemoveAction;
 	}
@@ -409,7 +412,7 @@ class EiCascadeOperation implements CascadeOperation {
 	public function cascade($entityObj) {
 		if (!$this->cascader->markAsCascaded($entityObj)) return;
 
-		$entityModel = $this->entityModelManager->getEntityModelByEntity($entityObj);
+		$entityModel = $this->entityModelManager->getEntityModelByEntityObj($entityObj);
 		
 		$this->liveEntries[] = LiveEntry::createFrom($this->specManager
 				->getEiSpecByClass($entityModel->getClass()), $entityObj);

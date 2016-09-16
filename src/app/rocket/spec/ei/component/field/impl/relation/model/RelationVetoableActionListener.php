@@ -31,7 +31,6 @@ use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\EiUtils;
 use rocket\spec\ei\manage\VetoableRemoveAction;
 use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\ManageState;
@@ -40,6 +39,7 @@ use n2n\core\container\N2nContext;
 class RelationVetoableActionListener implements VetoableActionListener {
 	const STRATEGY_PREVENT = 'prevent';
 	const STRATEGY_UNSET = 'unset';
+	const STRATEGY_SELF_REMOVE = 'selfRemove';
 	
 	private $relationEiField;
 	private $strategy = true;

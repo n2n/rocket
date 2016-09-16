@@ -26,48 +26,6 @@ use n2n\l10n\Message;
 
 interface VetoableActionListener {
 	
-	public function onRemove(LiveEntry $liveEntry, VetoableRemoveAction $vetoableAction,
+	public function onRemove(LiveEntry $liveEntry, VetoableRemoveAction $vetoableRemoveAttempt,
 			N2nContext $n2nContext);
-}
-
-class VetoableRemoveAction {
-	private $liveEntries = array();
-	private $vetoReasonMessages = array();
-	private $whenApprovedClosures = array();
-	
-	public function __construct(array $liveEntries) {
-		foreach ($liveEntries as $liveEntry) {
-			$this->liveEntries[spl_object_hash($liveEntry->getEntityObj())] = $liveEntry;
-		}
-	}
-	
-	public function containsEntityObj($entityObj): bool {
-		return isset($this->liveEntries[spl_object_hash($entityObj)]);
-	}
-	
-	public function registerVeto(Message $reasonMessage) {
-		$this->vetoReasonMessages[] = $reasonMessage;
-	}
-	
-	public function hasVetos(): bool {
-		return !empty($this->vetoReasonMessages);
-	}
-	
-	public function getReasonMessages() {
-		return $this->vetoReasonMessages;
-	}
-	
-	public function executeWhenApproved(\Closure $whenApprovedClosure) {
-		$this->whenApprovedClosures[] = $whenApprovedClosure;
-	}
-	
-	public function approve(): bool {
-		if ($this->hasVetos()) return false;
-	
-		foreach ($this->whenApprovedClosures as $whenApprovedClosure) {
-			$whenApprovedClosure();
-		}
-		
-		return true;
-	}
 }
