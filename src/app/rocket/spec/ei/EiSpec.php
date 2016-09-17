@@ -37,9 +37,9 @@ use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\EiThing;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\spec\ei\manage\VetoableActionListener;
+use rocket\spec\ei\manage\veto\VetoableActionListener;
 use rocket\spec\ei\manage\LiveEntry;
-use rocket\spec\ei\manage\VetoableRemoveAction;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\config\Spec;
 use n2n\l10n\Lstr;
@@ -504,9 +504,9 @@ class EiSpec extends Spec implements EiThing {
 		unset($this->vetoListeners[spl_object_hash($vetoListener)]);
 	}
 	
-	public function onRemove(LiveEntry $liveEntry, VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext) {
+	public function onRemove(VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext) {
 		foreach ($this->vetoListeners as $vetoListener) {
-			$vetoListener->onRemove($liveEntry, $vetoableRemoveAction, $n2nContext);
+			$vetoListener->onRemove($vetoableRemoveAction, $n2nContext);
 		}
 	}
 }

@@ -39,6 +39,7 @@ use rocket\core\model\UnknownMenuItemException ;
 use n2n\core\config\N2nLocaleConfig;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\impl\ScrBaseController;
+use n2n\l10n\MessageContainer;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
@@ -101,7 +102,7 @@ class RocketController extends ControllerAdapter {
 	}
 	
 	public function doManage($navItemId, array $delegateParams = array(), Rocket $rocket, RocketState $rocketState, 
-			N2nLocale $n2nLocale, PdoPool $dbhPool) {
+			N2nLocale $n2nLocale, PdoPool $dbhPool, MessageContainer $mc) {
 		if (!$this->verifyUser()) return;
 		
 		$menuItem = null;
@@ -121,7 +122,16 @@ class RocketController extends ControllerAdapter {
 		
 		$this->delegateToControllerContext($delegateControllerContext);
 		
-		$this->commit();
+		$transactionApproveAttempt = $menuItem->approveTransaction($this->getN2nContext());
+		if ($transactionApproveAttempt->isSuccessful()) {
+			$this->commit();
+			return;
+		}
+		
+		$mc->addAll($transactionApproveAttempt->getReasonMessages());
+		$this->rollBack();
+		
+		
 		
 // 		$bo = $this->getResponse()->fetchBufferedOutput();
 // 		$this->getResponse()->reset();

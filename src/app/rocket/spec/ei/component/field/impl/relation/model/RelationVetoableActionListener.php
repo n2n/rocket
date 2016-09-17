@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
-use rocket\spec\ei\manage\VetoableActionListener;
+use rocket\spec\ei\manage\veto\VetoableActionListener;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -31,7 +31,7 @@ use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\manage\VetoableRemoveAction;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\ManageState;
 use n2n\core\container\N2nContext;
@@ -49,7 +49,7 @@ class RelationVetoableActionListener implements VetoableActionListener {
 		$this->strategy = $strategy;
 	}
 	
-	public function onRemove(LiveEntry $targetLiveEntry, VetoableRemoveAction $vetoableRemoveAction,
+	public function onRemove(VetoableRemoveAction $vetoableRemoveAction,
 			N2nContext $n2nContext) {
 		$vetoCheck = new VetoCheck($this->relationEiField, $targetLiveEntry, $vetoableRemoveAction, $n2nContext);
 		

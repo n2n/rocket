@@ -34,6 +34,8 @@ use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;
 use rocket\spec\ei\EiSpec;
 use n2n\util\uri\Path;
+use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
+use rocket\core\model\TransactionApproveAttempt;
 
 class EiMenuItem implements MenuItem {
 	private $id;
@@ -107,13 +109,25 @@ class EiMenuItem implements MenuItem {
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
+		$rocket = $n2nContext->lookup(Rocket::class);
+		CastUtils::assertTrue($rocket instanceof Rocket);
 				
 		$manageState->createEiState($this->eiMask, $delegateControllerContext);
 		$em = $this->eiSpec->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);
-		$manageState->setDraftManager($n2nContext->lookup(Rocket::class)->getOrCreateDraftManager($em));
+		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->getEiPermissionManager());
+		$vetoableRemoveActionQueue = new VetoableRemoveQueue($rocket->getSpecManager());
+		$vetoableRemoveActionQueue->initialize($manageState->getEntityManager(), $manageState->getDraftManager());
+		$manageState->setVetoableRemoveActionQueue($vetoableRemoveActionQueue);
 		
 		return $n2nContext->lookup(EiSpecController::class);
+	}
+
+	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt {
+		$manageState = $n2nContext->lookup(ManageState::class);
+		CastUtils::assertTrue($manageState instanceof ManageState);
+		
+		return $manageState->getVetoableRemoveActionQueue()->approve();
 	}
 }

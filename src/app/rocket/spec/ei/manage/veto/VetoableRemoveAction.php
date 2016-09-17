@@ -40,7 +40,7 @@ class VetoableRemoveAction {
 		$this->vetoReasonMessage = null;
 	}
 	
-	public function hasVetos(): bool {
+	public function hasVeto(): bool {
 		return null !== $this->vetoReasonMessage;
 	}
 	

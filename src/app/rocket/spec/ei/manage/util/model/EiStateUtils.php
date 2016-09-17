@@ -42,7 +42,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use rocket\spec\ei\manage\VetoableRemoveAction;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\persistence\orm\store\operation\CascadeOperation;
@@ -335,16 +335,7 @@ class EiStateUtils extends EiUtilsAdapter {
 			throw new NotYetImplementedException();
 		}
 		
-		$em = $this->eiState->getManageState()->getEntityManager();
-		$nss = $this->getNestedSetStrategy();
-		if (null === $nss) {
-			$em->remove($eiSelection->getLiveObject());
-		} else {
-			$nsu = new NestedSetUtils($em,
-					$this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
-					$nss);
-			$nsu->remove($eiSelection->getLiveObject());
-		}
+		
 		
 		$vetoableRemoveQueue = new VetoableRemoveQueue($this->eiState->getManageState()->getEntityManager());
 		if ($vetoableRemoveQueue->approve()) {

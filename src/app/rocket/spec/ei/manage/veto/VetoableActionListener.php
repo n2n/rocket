@@ -19,13 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage;
+namespace rocket\spec\ei\manage\veto;
 
 use n2n\core\container\N2nContext;
-use n2n\l10n\Message;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 
 interface VetoableActionListener {
 	
-	public function onRemove(LiveEntry $liveEntry, VetoableRemoveAction $vetoableRemoveAttempt,
-			N2nContext $n2nContext);
+	public function onRemove(VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext);
 }
