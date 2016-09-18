@@ -11,6 +11,7 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\core\model\TransactionApproveAttempt;
 use rocket\spec\ei\manage\draft\DraftManager;
+use n2n\persistence\orm\util\NestedSetUtils;
 
 class VetoableRemoveQueue implements LifecycleListener {
 	private $specManager;
@@ -32,8 +33,16 @@ class VetoableRemoveQueue implements LifecycleListener {
 		if ($eiSelection->isDraft()) {
 			throw new NotYetImplementedException();
 		}
+
+		$eiSpec = $eiSelection->getLiveEntry()->getEiSpec();
+		$nss = $eiSpec->getNestedSetStrategy();
+		if (null === $nss) {
+			$this->em->remove($eiSelection->getLiveEntry()->getEntityObj());
+		} else {
+			$nsu = new NestedSetUtils($this->em, $eiSpec->getEntityModel()->getClass(), $nss); 
+			$nsu->remove($eiSelection->getLiveObject());
+		}
 		
-		$this->em->remove($eiSelection->getLiveEntry()->getEntityObj());
 		$this->createAction($eiSelection);
 	}
 	

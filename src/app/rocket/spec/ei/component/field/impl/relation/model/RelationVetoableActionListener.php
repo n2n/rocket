@@ -114,6 +114,18 @@ class VetoCheck {
 			});
 		}	
 	}
+	
+	public function remove() {
+		foreach ($this->findAll() as $entityObj) {
+			if ($this->vetoableRemoveAction->containsEntityObj($entityObj)) continue;
+				
+			$that = $this;
+			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that) {
+				$that->vetoableRemoveAction->getQueue()->removeEiSelection(LiveEiSelection::create(
+						$that->relationEiField->getEiFieldRelation()->getTargetEiSpec(), $entityObj));
+			});
+		}
+	}
 
 	private function findAll() {
 		$criteria = $this->createCriteria()->select('eo');
