@@ -50,7 +50,7 @@ class TransactionApproveAttempt {
 	 * @return boolean
 	 */
 	public function isSuccessful() {
-		return !empty($this->reasonMessages);
+		return empty($this->reasonMessages);
 	}
 	
 	public function getReasonMessages() {

@@ -33,15 +33,16 @@ class VetoableRemoveAction {
 	public function prevent(Message $reasonMessage) {
 		$this->approved = false;
 		$this->vetoReasonMessage = $reasonMessage;
-		
-		foreach ($this->whenApprovedClosures as $whenApprovedClosure) {
-			$whenApprovedClosure();
-		}
 	}
 	
 	public function approve() {
 		$this->approved = true;
 		$this->vetoReasonMessage = null;
+		
+		foreach ($this->whenApprovedClosures as $whenApprovedClosure) {
+			$whenApprovedClosure();
+		}
+		$this->whenApprovedClosures = array();
 	}
 	
 	public function hasVeto(): bool {

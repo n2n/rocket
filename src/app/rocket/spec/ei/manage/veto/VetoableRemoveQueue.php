@@ -75,18 +75,22 @@ class VetoableRemoveQueue implements LifecycleListener {
 	
 	public function initialize(EntityManager $em, DraftManager $draftManager) {
 		$this->em = $em;
-	}
-	
-	public function approve(N2nContext $n2nContext) {
-		$this->em->getActionQueue()->registerLifecycleListener($this);
 		
 		$persistenceContext = $this->em->getPersistenceContext();
 		foreach ($persistenceContext->getRemovedEntityObjs() as $entityObj) {
 			$this->prepare($persistenceContext->getEntityModelByEntityObj($entityObj), $entityObj);
 		}
 		
+		$this->em->getActionQueue()->registerLifecycleListener($this);
+	}
+	
+	public function approve(N2nContext $n2nContext) {
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
 			$action->getEiSelection()->getLiveEntry()->getEiSpec()->onRemove($action, $n2nContext);
+				
+			if (!$action->hasVeto()) {
+				$action->approve();
+			}
 		}
 		
 		$reasonMessages = array();

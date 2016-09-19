@@ -69,7 +69,8 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$magCollection = $magDispatchable->getMagCollection();
 		
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
-				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY), true), true);
+				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
+				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {

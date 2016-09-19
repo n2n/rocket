@@ -131,8 +131,6 @@ class RocketController extends ControllerAdapter {
 		$mc->addAll($transactionApproveAttempt->getReasonMessages());
 		$this->rollBack();
 		
-		
-		
 // 		$bo = $this->getResponse()->fetchBufferedOutput();
 // 		$this->getResponse()->reset();
 // 		echo $bo;

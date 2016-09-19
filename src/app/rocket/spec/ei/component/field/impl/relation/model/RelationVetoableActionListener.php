@@ -63,11 +63,14 @@ class RelationVetoableActionListener implements VetoableActionListener {
 				break;
 			case self::STRATEGY_UNSET:
 				$vetoCheck->release();
+				break;
+			case self::STRATEGY_SELF_REMOVE:
+				$vetoCheck->remove();
 		}
 	}
 	
 	public static function getStrategies(): array {
-		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET);
+		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET, self::STRATEGY_SELF_REMOVE);
 	}
 }
 
@@ -101,10 +104,10 @@ class VetoCheck {
 				'target_generic_label' => $this->getTargetGenericLabel());
 
 		if ($num === 1) {
-			$this->vetoableRemoveAction->registerVeto(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
+			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
 		} else {
 			$attrs['num_more'] = ($num - 1);
-			$this->vetoableRemoveAction->registerVeto(new MessageCode('ei_impl_relation_remove_veto_one_and_more_err', 
+			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_one_and_more_err', 
 					$attrs));
 		}
 	}
@@ -121,13 +124,14 @@ class VetoCheck {
 	}
 	
 	public function remove() {
+		$queue = $this->vetoableRemoveAction->getQueue();
 		foreach ($this->findAll() as $entityObj) {
-			if ($this->vetoableRemoveAction->containsEntityObj($entityObj)) continue;
+			if ($queue->containsEntityObj($entityObj)) continue;
 				
 			$that = $this;
-			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that) {
-				$that->vetoableRemoveAction->getQueue()->removeEiSelection(LiveEiSelection::create(
-						$that->relationEiField->getEiFieldRelation()->getTargetEiSpec(), $entityObj));
+			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
+				$queue->removeEiSelection(LiveEiSelection::create(
+						$that->relationEiField->getEiEngine()->getEiSpec(), $entityObj));
 			});
 		}
 	}
