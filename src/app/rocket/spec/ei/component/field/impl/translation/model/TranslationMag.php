@@ -76,7 +76,7 @@ class TranslationMag extends MagAdapter {
 				$be->addErrors($that->propertyName, $transDispBd->getMappingResult()
 						->filterErrorMessages($propertyPath->getLast(), true));
 			}
-		});		
+		});
 	}
 
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
