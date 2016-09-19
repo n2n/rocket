@@ -128,6 +128,6 @@ class EiMenuItem implements MenuItem {
 		$manageState = $n2nContext->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		
-		return $manageState->getVetoableRemoveActionQueue()->approve();
+		return $manageState->getVetoableRemoveActionQueue()->approve($n2nContext);
 	}
 }

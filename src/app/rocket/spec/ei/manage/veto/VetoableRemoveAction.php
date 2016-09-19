@@ -22,6 +22,10 @@ class VetoableRemoveAction {
 		return $this->vetoableRemoveQueue;
 	}
 	
+	public function getEiSelection() {
+		return $this->eiSelection;
+	}
+	
 	public function isInitialized() {
 		return $this->approved !== null;
 	}

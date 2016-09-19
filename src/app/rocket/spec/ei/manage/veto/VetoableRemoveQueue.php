@@ -12,6 +12,7 @@ use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\core\model\TransactionApproveAttempt;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\core\container\N2nContext;
 
 class VetoableRemoveQueue implements LifecycleListener {
 	private $specManager;
@@ -76,7 +77,7 @@ class VetoableRemoveQueue implements LifecycleListener {
 		$this->em = $em;
 	}
 	
-	public function approve() {
+	public function approve(N2nContext $n2nContext) {
 		$this->em->getActionQueue()->registerLifecycleListener($this);
 		
 		$persistenceContext = $this->em->getPersistenceContext();
@@ -85,12 +86,12 @@ class VetoableRemoveQueue implements LifecycleListener {
 		}
 		
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
-			$action->getEiSelection()->getLiveEntry()->getEiSpec()->onRemove($action, $this->n2nContext);
+			$action->getEiSelection()->getLiveEntry()->getEiSpec()->onRemove($action, $n2nContext);
 		}
 		
 		$reasonMessages = array();
 		foreach ($this->liveActions as $liveAction) {
-			if ($liveAction->hasVeto()) return;
+			if (!$liveAction->hasVeto()) continue;
 			
 			$reasonMessages[] = $liveAction->getReasonMessage();
 		}

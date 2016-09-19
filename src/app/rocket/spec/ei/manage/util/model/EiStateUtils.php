@@ -330,32 +330,13 @@ class EiStateUtils extends EiUtilsAdapter {
 		return new EntryModelForm($entryGuiModel);
 	}
 	
-	public function remove(EiSelection $eiSelection): VetoableRemoveAction {
+	public function remove(EiSelection $eiSelection) {
 		if ($eiSelection->isDraft()) {
 			throw new NotYetImplementedException();
 		}
 		
 		
-		
-		$vetoableRemoveQueue = new VetoableRemoveQueue($this->eiState->getManageState()->getEntityManager());
-		if ($vetoableRemoveQueue->approve()) {
-			return;
-		}
-		
-		$this->eiState->getManageState()->rollBackTransaction();
-		
-		foreach ($liveEntries as $liveEntry) {
-			$liveEntry->getEiSpec()->onRemove($liveEntry, $vetoableRemoveAction, $this->eiState->getN2nContext());
-			break;
-		}
-			
-		if (!$vetoableRemoveAction->approve()) {
-			return $vetoableRemoveAction;
-		}
-		
-		
-		
-		return $vetoableRemoveAction;
+		$this->eiState->getManageState()->getVetoableRemoveActionQueue()->removeEiSelection($eiSelection);
 	}
 
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {

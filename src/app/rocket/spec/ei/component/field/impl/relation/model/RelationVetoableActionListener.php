@@ -51,7 +51,11 @@ class RelationVetoableActionListener implements VetoableActionListener {
 	
 	public function onRemove(VetoableRemoveAction $vetoableRemoveAction,
 			N2nContext $n2nContext) {
-		$vetoCheck = new VetoCheck($this->relationEiField, $targetLiveEntry, $vetoableRemoveAction, $n2nContext);
+		$eiSelection = $vetoableRemoveAction->getEiSelection();
+		if ($eiSelection->isDraft()) return;
+				
+		$vetoCheck = new VetoCheck($this->relationEiField, $eiSelection->getLiveEntry(), $vetoableRemoveAction, 
+				$n2nContext);
 		
 		switch ($this->strategy) {
 			case self::STRATEGY_PREVENT:
@@ -83,8 +87,9 @@ class VetoCheck {
 	public function prevent() {
 		$num = 0;
 		$entityObj = null;
+		$queue = $this->vetoableRemoveAction->getQueue();
 		foreach ($this->findAll() as $entityObj) {
-			if (!$this->vetoableRemoveAction->containsEntityObj($entityObj)) $num++;
+			if (!$queue->containsEntityObj($entityObj)) $num++;
 		}
 		
 		if ($num === 0) return;
