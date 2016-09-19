@@ -35,15 +35,15 @@ class SpecRawer {
 	// PUT
 	
 	public function rawSpecs(array $specExtractions) {
-		ArgUtils::valArray($specExtractions, EiSpecExtraction::class);
-		
 		$specsRawData = array();
 		foreach ($specExtractions as $specExtraction) {
 			if ($specExtraction instanceof CustomSpecExtraction) {
 				$specsRawData[$specExtraction->getId()] = $this->buildCustomSpecExtractionRawData($specExtraction);
-			} else {
+			} else if ($specExtraction instanceof EiSpecExtraction) {
 				$specsRawData[$specExtraction->getId()] = $this->buildEiSpecExtractionRawData($specExtraction);
-			}	
+			} else {
+				throw new \InvalidArgumentException();
+			}
 		}
 		
 		$this->attributes->set(RawDef::SPECS_KEY, $specsRawData);
