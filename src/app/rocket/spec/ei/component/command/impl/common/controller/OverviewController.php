@@ -93,8 +93,9 @@ class OverviewController extends ControllerAdapter {
 	public function doAjah(array $delegateCmds = array(), OverviewAjahController $ajahOverviewController, 
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
+			$pageNo = $pageNo->toNumericOrReject();
 			$this->eiCtrlUtils->getEiState()->setCurrentUrlExt(
-					$this->getControllerContext()->getCmdContextPath()->ext($pageNo->toNumericOrReject())->toUrl());
+					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
 		}
 				
 		$this->delegate($ajahOverviewController);
