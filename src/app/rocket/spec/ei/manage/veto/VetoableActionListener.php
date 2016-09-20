@@ -19,41 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\core\model;
+namespace rocket\spec\ei\manage\veto;
 
 use n2n\core\container\N2nContext;
-use n2n\web\http\controller\Controller;
-use n2n\web\http\controller\ControllerContext;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 
-interface MenuItem {
+interface VetoableActionListener {
 	
-	public function getId(): string;
-	
-	public function getLabel(): string;
-	
-	public function isAccessible(N2nContext $n2nContext): bool;
-	
-	public function determinePathExt(N2nContext $n2nContext);
-	
-	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller;
-	
-	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt; 
-}
-
-class TransactionApproveAttempt {
-	private $reasonMessages;
-	
-	public function __construct(array $reasonMessages) {
-		$this->reasonMessages = $reasonMessages;
-	}
-	/**
-	 * @return boolean
-	 */
-	public function isSuccessful() {
-		return empty($this->reasonMessages);
-	}
-	
-	public function getReasonMessages() {
-		return $this->reasonMessages;
-	}
+	public function onRemove(VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext);
 }

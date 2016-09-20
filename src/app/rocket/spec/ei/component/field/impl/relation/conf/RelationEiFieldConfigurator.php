@@ -47,7 +47,6 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
-	const ATTR_TARGET_REMOVE_ALLOWED_KEY = 'targetRemoveAllowed';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	
 	private $eiFieldRelation;
@@ -58,7 +57,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		
 		$this->autoRegister();
 		
-		if ($relationEiField instanceof SimpleRelationEiFieldAdapter) {
+		if ($relationEiField instanceof SimpleRelationEiFieldAdapter) {	
 			$this->registerDisplayDefinition($relationEiField->getDisplayDefinition());
 			$this->registerStandardEditDefinition($relationEiField->getStandardEditDefinition());
 		}
@@ -70,7 +69,8 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$magCollection = $magDispatchable->getMagCollection();
 		
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
-				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY), true), true);
+				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
+				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -111,10 +111,11 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 
 		if ($this->eiFieldRelation->getRelationEntityProperty()->isMaster()) {
 			$magCollection->addMag(new EnumMag(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 'Target removal startegy', 
-					array(RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
-							RelationVetoableActionListener::STRATEGY_UNSET => 'Unset target'),
-					$lar->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, array(null, 
-							RelationVetoableActionListener::STRATEGY_PREVENT, RelationVetoableActionListener::STRATEGY_UNSET)),
+					array(RelationVetoableActionListener::STRATEGY_UNSET => 'Unset target',
+							RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
+							RelationVetoableActionListener::STRATEGY_SELF_REMOVE => 'Self remove'),
+					$lar->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, RelationVetoableActionListener::getStrategies(),
+							RelationVetoableActionListener::STRATEGY_UNSET),
 					false));
 		}
 		
@@ -166,14 +167,12 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		}
 		
 		if ($this->eiFieldRelation->getRelationEntityProperty()->isMaster()) {
-			$strategy = $this->attributes->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, array(null,
-					RelationVetoableActionListener::STRATEGY_PREVENT, RelationVetoableActionListener::STRATEGY_UNSET), false,
+			$strategy = $this->attributes->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
+					RelationVetoableActionListener::getStrategies(), false, 
 					RelationVetoableActionListener::STRATEGY_PREVENT);
 			
-			if ($strategy !== null) {
-				$this->eiFieldRelation->getTargetEiSpec()->registerVetoableActionListener(
-						new RelationVetoableActionListener($this->eiFieldRelation->getRelationEiField(), $strategy));		
-			}
+			$this->eiFieldRelation->getTargetEiSpec()->registerVetoableActionListener(
+					new RelationVetoableActionListener($this->eiFieldRelation->getRelationEiField(), $strategy));		
 		}
 	}
 }

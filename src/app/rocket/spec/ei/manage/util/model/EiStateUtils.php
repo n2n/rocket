@@ -42,7 +42,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use rocket\spec\ei\manage\VetoableRemoveAction;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\persistence\orm\store\operation\CascadeOperation;
@@ -330,38 +330,13 @@ class EiStateUtils extends EiUtilsAdapter {
 		return new EntryModelForm($entryGuiModel);
 	}
 	
-	public function remove(EiSelection $eiSelection): VetoableRemoveAction {
+	public function remove(EiSelection $eiSelection) {
 		if ($eiSelection->isDraft()) {
 			throw new NotYetImplementedException();
 		}
 		
-		$eiCascadeOperation = new EiCascadeOperation($this->eiState->getManageState()->getEntityManager()->getEntityModelManager(),
-				$this->eiState->getN2nContext()->lookup(Rocket::class)->getSpecManager(), CascadeType::REMOVE);
-		$eiCascadeOperation->cascade($eiSelection->getLiveObject());
 		
-		$liveEntries = $eiCascadeOperation->getLiveEntries();
-		$vetoableRemoveAction = new VetoableRemoveAction($liveEntries);
-		
-		foreach ($liveEntries as $liveEntry) {
-			$liveEntry->getEiSpec()->onRemove($liveEntry, $vetoableRemoveAction, $this->eiState->getN2nContext());
-			break;
-		}
-			
-		if (!$vetoableRemoveAction->approve()) {
-			return $vetoableRemoveAction;
-		}
-		
-		$nss = $this->getNestedSetStrategy();
-		if (null === $nss) {
-			$this->eiState->getManageState()->getEntityManager()->remove($eiSelection->getLiveObject());
-		} else {
-			$nsu = new NestedSetUtils($this->eiState->getManageState()->getEntityManager(),
-					$this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
-					$nss);
-			$nsu->remove($eiSelection->getLiveObject());
-		}
-		
-		return $vetoableRemoveAction;
+		$this->eiState->getManageState()->getVetoableRemoveActionQueue()->removeEiSelection($eiSelection);
 	}
 
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
@@ -409,7 +384,7 @@ class EiCascadeOperation implements CascadeOperation {
 	public function cascade($entityObj) {
 		if (!$this->cascader->markAsCascaded($entityObj)) return;
 
-		$entityModel = $this->entityModelManager->getEntityModelByEntity($entityObj);
+		$entityModel = $this->entityModelManager->getEntityModelByEntityObj($entityObj);
 		
 		$this->liveEntries[] = LiveEntry::createFrom($this->specManager
 				->getEiSpecByClass($entityModel->getClass()), $entityObj);

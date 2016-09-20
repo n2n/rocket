@@ -35,6 +35,7 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\EiStateFactory;
 use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\ei\security\EiPermissionManager;
+use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -44,6 +45,7 @@ class ManageState implements RequestScoped {
 	private $eiStates = array();
 	private $entityManager;
 	private $draftManager;
+	private $vetoableRemoveQueue;
 	
 	private function _init(N2nContext $n2nContext, LoginContext $loginContext, Rocket $rocket) {
 		$this->n2nContext = $n2nContext;
@@ -115,6 +117,21 @@ class ManageState implements RequestScoped {
 	public function setDraftManager(DraftManager $draftManager) {
 		$this->draftManager = $draftManager;
 	} 
+	
+	/**
+	 * @return \rocket\spec\ei\manage\veto\VetoableRemoveQueue
+	 */
+	public function getVetoableRemoveActionQueue() {
+		if ($this->vetoableRemoveQueue === null) {
+			throw new IllegalStateException('No VetoableRemoveQueue assigned.');
+		}
+		
+		return $this->vetoableRemoveQueue;
+	}
+	
+	public function setVetoableRemoveActionQueue(VetoableRemoveQueue $vetoableRemoveQueue) {
+		$this->vetoableRemoveQueue = $vetoableRemoveQueue;
+	}
 	
 	public function createEiState(EiMask $contextEiMask, ControllerContext $controllerContext) {
 		$eiStateFactory = new EiStateFactory($contextEiMask);

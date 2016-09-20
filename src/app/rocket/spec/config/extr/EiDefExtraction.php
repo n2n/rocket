@@ -129,7 +129,7 @@ class EiDefExtraction {
 		$this->eiFieldExtractions[] = $eiFieldExtraction;
 	}
 	
-	public function setFieldExtractions(array $fieldExtractions) {
+	public function setEiFieldExtractions(array $fieldExtractions) {
 		ArgUtils::valArray($fieldExtractions, EiFieldExtraction::class);
 		$this->eiFieldExtractions = $fieldExtractions;	
 	}

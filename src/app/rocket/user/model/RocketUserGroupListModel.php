@@ -43,6 +43,6 @@ class RocketUserGroupListModel {
 			return $eiSpec->getEiMaskCollection()->getById($eiMaskId)->getLabel();
 		}
 		
-		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->getLabel();
+		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->getLabelLstr();
 	}
 }

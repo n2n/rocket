@@ -23,8 +23,6 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoCommand;
-use rocket\spec\ei\component\field\impl\relation\command\EmbeddedPseudoCommand;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
@@ -50,11 +48,6 @@ class SelectEiFieldRelation extends EiFieldRelation {
 // 		if ($this->isEmbeddedAddEnabled()) {
 			$this->setupEmbeddedEditEiCommand();
 // 		}
-
-		if (!$this->getRelationEntityProperty()->isMaster()) {
-			$this->relationEiField->getEiEngine()->getEiModificatorCollection()
-					->add(new TargetMasterRelationEiModificator($this, true));
-		}
 		
 // 		if ($this->isEmbeddedAddEnabled()) {
 // 			$this->embeddedEditPseudoEiCommand = new EmbeddedEditPseudoCommand(

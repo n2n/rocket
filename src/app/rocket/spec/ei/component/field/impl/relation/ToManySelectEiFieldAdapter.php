@@ -78,12 +78,12 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	 */
 	public function write(EiObject $eiObject, $value) {
 		ArgUtils::valArray($value, EiSelection::class);
-	
+		
 		$targetEntityObjs = new \ArrayObject();
 		foreach ($value as $targetEiSelection) {
 			$targetEntityObjs[] = $targetEiSelection->getLiveObject();
 		}
-	
+		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			throw new NotYetImplementedException();
 			$eiObject->getDraftValueMap()->setValue(EiFieldPath::from($this), $targetEntityObjs);

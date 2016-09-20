@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
-use rocket\spec\ei\manage\VetoableActionListener;
+use rocket\spec\ei\manage\veto\VetoableActionListener;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -31,8 +31,7 @@ use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\EiUtils;
-use rocket\spec\ei\manage\VetoableRemoveAction;
+use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\ManageState;
 use n2n\core\container\N2nContext;
@@ -40,6 +39,7 @@ use n2n\core\container\N2nContext;
 class RelationVetoableActionListener implements VetoableActionListener {
 	const STRATEGY_PREVENT = 'prevent';
 	const STRATEGY_UNSET = 'unset';
+	const STRATEGY_SELF_REMOVE = 'selfRemove';
 	
 	private $relationEiField;
 	private $strategy = true;
@@ -49,9 +49,13 @@ class RelationVetoableActionListener implements VetoableActionListener {
 		$this->strategy = $strategy;
 	}
 	
-	public function onRemove(LiveEntry $targetLiveEntry, VetoableRemoveAction $vetoableRemoveAction,
+	public function onRemove(VetoableRemoveAction $vetoableRemoveAction,
 			N2nContext $n2nContext) {
-		$vetoCheck = new VetoCheck($this->relationEiField, $targetLiveEntry, $vetoableRemoveAction, $n2nContext);
+		$eiSelection = $vetoableRemoveAction->getEiSelection();
+		if ($eiSelection->isDraft()) return;
+				
+		$vetoCheck = new VetoCheck($this->relationEiField, $eiSelection->getLiveEntry(), $vetoableRemoveAction, 
+				$n2nContext);
 		
 		switch ($this->strategy) {
 			case self::STRATEGY_PREVENT:
@@ -59,11 +63,14 @@ class RelationVetoableActionListener implements VetoableActionListener {
 				break;
 			case self::STRATEGY_UNSET:
 				$vetoCheck->release();
+				break;
+			case self::STRATEGY_SELF_REMOVE:
+				$vetoCheck->remove();
 		}
 	}
 	
 	public static function getStrategies(): array {
-		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET);
+		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET, self::STRATEGY_SELF_REMOVE);
 	}
 }
 
@@ -83,8 +90,9 @@ class VetoCheck {
 	public function prevent() {
 		$num = 0;
 		$entityObj = null;
+		$queue = $this->vetoableRemoveAction->getQueue();
 		foreach ($this->findAll() as $entityObj) {
-			if (!$this->vetoableRemoveAction->containsEntityObj($entityObj)) $num++;
+			if (!$queue->containsEntityObj($entityObj)) $num++;
 		}
 		
 		if ($num === 0) return;
@@ -96,10 +104,10 @@ class VetoCheck {
 				'target_generic_label' => $this->getTargetGenericLabel());
 
 		if ($num === 1) {
-			$this->vetoableRemoveAction->registerVeto(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
+			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
 		} else {
 			$attrs['num_more'] = ($num - 1);
-			$this->vetoableRemoveAction->registerVeto(new MessageCode('ei_impl_relation_remove_veto_one_and_more_err', 
+			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_one_and_more_err', 
 					$attrs));
 		}
 	}
@@ -113,6 +121,19 @@ class VetoCheck {
 				$that->releaseEntityObj($entityObj);
 			});
 		}	
+	}
+	
+	public function remove() {
+		$queue = $this->vetoableRemoveAction->getQueue();
+		foreach ($this->findAll() as $entityObj) {
+			if ($queue->containsEntityObj($entityObj)) continue;
+				
+			$that = $this;
+			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
+				$queue->removeEiSelection(LiveEiSelection::create(
+						$that->relationEiField->getEiEngine()->getEiSpec(), $entityObj));
+			});
+		}
 	}
 
 	private function findAll() {

@@ -78,7 +78,7 @@ class DraftManager {
 	}
 	
 	private function getDraftDefinitionByEntityObj($entityObj) {
-		$entityModel = $this->em->getEntityModelManager()->getEntityModelByEntity($entityObj);
+		$entityModel = $this->em->getEntityModelManager()->getEntityModelByEntityObj($entityObj);
 		return $this->specManager->getEiSpecByClass($entityModel->getClass())->getEiMaskCollection()
 				->getOrCreateDefault()->getDraftDefinition();		
 	}

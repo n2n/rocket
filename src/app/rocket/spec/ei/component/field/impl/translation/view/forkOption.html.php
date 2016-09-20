@@ -36,8 +36,6 @@
 	$view->assert(is_array($n2nLocaleDefs));
 ?>
 
-<?php $formHtml->optionalObjectActivator($propertyPath) ?>
-
 <ul class="rocket-translation-enabler" 
 		data-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
 		data-active-locales-label="<?php $html->text('ei_impl_active_locales_label') ?>"

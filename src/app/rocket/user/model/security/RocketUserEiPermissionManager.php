@@ -62,7 +62,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	public function isEiCommandAccessible(EiCommand $eiCommand): bool {
 		if ($this->rocketUser->isAdmin()) return true;
 
-		return null !== $this->findEiGrant($eiCommand->getEiSpec(), $eiCommand->getEiMask());
+		return null !== $this->findEiGrant($eiCommand->getEiEngine()->getEiSpec(), $eiCommand->getEiEngine()->getEiMask());
 	}
 
 	/**
@@ -88,7 +88,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 			return new FullyGrantedEiExecution($eiCommandPath, $eiCommand);
 		}
 		
-		$eiGrant = $this->findEiGrant($eiSpec, $eiMask);
+		$eiGrant = $this->findEiGrant($eiEngine->getEiSpec(), $eiEngine->getEiMask());
 
 		if ($eiGrant === null) {
 			throw new InaccessibleControlException();

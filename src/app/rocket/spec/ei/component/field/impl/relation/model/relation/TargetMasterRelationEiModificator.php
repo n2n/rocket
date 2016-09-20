@@ -31,36 +31,30 @@ use rocket\spec\ei\manage\mapping\MappingListenerAdapter;
 
 class TargetMasterRelationEiModificator extends EiModificatorAdapter {
 	private $eiFieldRelation;
-	private $removeFromMaster;
 
-	public function __construct(EiFieldRelation $eiFieldRelation, bool $removeFromMaster) {
+	public function __construct(EiFieldRelation $eiFieldRelation) {
 		$this->eiFieldRelation = $eiFieldRelation;
-		$this->removeFromMaster = $removeFromMaster;
-	}
-	
-	public function setRemoveFromMaster(bool $removeFromMaster) {
-		$this->removeFromMaster = $removeFromMaster;
 	}
 
 	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
 		if ($eiMapping->getEiSelection()->isDraft()) return;
 		
 		$that = $this;
-		$eiMapping->registerListener(new TargetMasterEiMappingListener($this->eiFieldRelation, $this->removeFromMaster));
+		$eiMapping->registerListener(new TargetMasterEiMappingListener($this->eiFieldRelation));
 	}
 }
 
 class TargetMasterEiMappingListener extends MappingListenerAdapter {
 	private $eiFieldRelation;
-	private $removeFromMaster;
 	private $accessProxy;
+	private $orphanRemoval;
 	
 	private $oldValue;
 	
-	public function __construct(EiFieldRelation $eiFieldRelation, bool $removeFromMaster) {
+	public function __construct(EiFieldRelation $eiFieldRelation) {
 		$this->eiFieldRelation = $eiFieldRelation;
-		$this->removeFromMaster = $removeFromMaster;
 		$this->accessProxy = $this->eiFieldRelation->getRelationEiField()->getObjectPropertyAccessProxy();
+		$this->orphanRemoval = $this->eiFieldRelation->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
 	}
 	
 	public function onWrite(EiMapping $eiMapping) {
@@ -81,8 +75,8 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 		$oldTargetEntityObj = $this->oldValue;
 		$targetEntityObj = $this->accessProxy->getValue($entityObj);
 		
-		if ($this->removeFromMaster && $oldTargetEntityObj !== null && $oldTargetEntityObj !== $targetEntityObj) {
-			$this->removeFromMaster($oldTargetEntityObj);
+		if (!$this->orphanRemoval && $oldTargetEntityObj !== null && $oldTargetEntityObj !== $targetEntityObj) {
+			$this->removeFromMaster($entityObj, $oldTargetEntityObj);
 		}
 		
 		$this->writeToMaster($entityObj, $targetEntityObj);
@@ -93,12 +87,12 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 		if ($targetEntityObjs === null) {
 			$targetEntityObjs = array();
 		}
-	
+		
 		foreach ($targetEntityObjs as $targetEntityObj) {
 			$this->writeToMaster($entityObj, $targetEntityObj);
 		}
 		
-		if (!$this->removeFromMaster) return;
+		if ($this->orphanRemoval) return;
 		
 		$obsoleteTargetEntityObjs = array();
 		if ($this->oldValue !== null) {
@@ -140,7 +134,7 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 	}
 	
 	private function removeFromMaster($entityObj, $targetEntityObj) {
-		$targetAccessProxy = $this->eiFieldRelation->getTargetMasterEiField()->getObjectPropertyAccessProxy();
+		$targetAccessProxy = $this->eiFieldRelation->getTargetMasterAccessProxy();
 	
 		if (!$this->eiFieldRelation->isSourceMany()) {
 			if ($entityObj === $targetAccessProxy->getValue($targetEntityObj)) {
