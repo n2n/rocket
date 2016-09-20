@@ -125,16 +125,16 @@ class RocketController extends ControllerAdapter {
 		$transactionApproveAttempt = $menuItem->approveTransaction($this->getN2nContext());
 		if ($transactionApproveAttempt->isSuccessful()) {
 			$this->commit();
+		
+// 			$bo = $this->getResponse()->fetchBufferedOutput();
+// 			$this->getResponse()->reset();
+// 			echo $bo;
+// 			die('HOLERADIO');
 			return;
 		}
 		
 		$mc->addAll($transactionApproveAttempt->getReasonMessages());
 		$this->rollBack();
-		
-// 		$bo = $this->getResponse()->fetchBufferedOutput();
-// 		$this->getResponse()->reset();
-// 		echo $bo;
-// 		die('HOLERADIO');
 	}
 	
 	public function doTools(array $delegateParams = array(), ToolController $toolController) {
