@@ -46,7 +46,6 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\field\impl\relation\conf\SelectEiFieldConfigurator;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiMappingFilterField;
@@ -56,7 +55,6 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewAjahController;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
-use n2n\web\http\Request;
 use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
@@ -78,10 +76,6 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
-	}
-	
-	public function createEiFieldConfigurator(): EiFieldConfigurator {
-		return new SelectEiFieldConfigurator($this->eiFieldRelation);
 	}
 	
 	/**

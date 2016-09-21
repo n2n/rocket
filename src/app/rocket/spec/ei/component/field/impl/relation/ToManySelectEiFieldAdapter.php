@@ -41,10 +41,6 @@ use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	
-	public function createEiFieldConfigurator(): EiFieldConfigurator {
-		return new SelectEiFieldConfigurator($this->getEiFieldRelation());
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()

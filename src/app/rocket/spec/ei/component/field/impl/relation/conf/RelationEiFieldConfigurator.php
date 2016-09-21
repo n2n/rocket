@@ -41,6 +41,9 @@ use rocket\core\model\Rocket;
 use n2n\util\config\LenientAttributeReader;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\component\field\impl\relation\model\RelationVetoableActionListener;
+use rocket\spec\ei\component\field\impl\relation\ManyToOneSelectEiField;
+use rocket\spec\ei\component\field\impl\relation\ToManySelectEiFieldAdapter;
+use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
 
 class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetMaskId';
@@ -48,6 +51,8 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
+	const OPTION_FILTERED_KEY = 'filtered';
+	const OPTION_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
 	
 	private $eiFieldRelation;
 	
@@ -60,6 +65,10 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		if ($relationEiField instanceof SimpleRelationEiFieldAdapter) {	
 			$this->registerDisplayDefinition($relationEiField->getDisplayDefinition());
 			$this->registerStandardEditDefinition($relationEiField->getStandardEditDefinition());
+		}
+
+		if ($this->eiComponent instanceof ToManyEiFieldAdapter) {
+			$this->addMandatory = false;
 		}
 	}
 	
@@ -107,6 +116,14 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiField) {
 			$magCollection->addMag(new BoolMag(self::ATTR_REPLACEABLE_KEY, 'Replaceable',
 					$lar->getBool(self::ATTR_REPLACEABLE_KEY, $this->eiComponent->isReplaceable())));
+		}
+		
+		if ($this->eiFieldRelation instanceof SelectEiFieldRelation) {
+			$magCollection->addMag(new BoolMag(self::OPTION_FILTERED_KEY, 'Filtered',
+					$lar->getBool(self::OPTION_FILTERED_KEY, $this->eiFieldRelation->isFiltered())));
+			$magCollection->addMag(new BoolMag(self::OPTION_EMBEDDED_ADD_KEY,
+					'Embedded Add Enabled', $lar->getBool(self::OPTION_EMBEDDED_ADD_KEY,
+							$this->eiFieldRelation->isEmbeddedAddEnabled())));
 		}
 
 		if ($this->eiFieldRelation->getRelationEntityProperty()->isMaster()) {
@@ -164,6 +181,21 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiField 
 				&& $this->attributes->contains(self::ATTR_REPLACEABLE_KEY)) {
 			$this->eiComponent->setReplaceable($this->attributes->getBool(self::ATTR_REPLACEABLE_KEY));
+		}
+		
+		if ($this->eiFieldRelation instanceof SelectEiFieldRelation) {
+			if ($this->attributes->contains(self::OPTION_FILTERED_KEY)) {
+				$this->eiFieldRelation->setFiltered($this->attributes->getBool(self::OPTION_FILTERED_KEY));
+			}
+			
+			if ($this->attributes->contains(self::OPTION_EMBEDDED_ADD_KEY)) {
+				$this->eiFieldRelation->setEmbeddedAddEnabled($this->attributes->get(self::OPTION_EMBEDDED_ADD_KEY));
+			}
+			
+			if ($this->eiFieldRelation->isEmbeddedAddEnabled() && !$this->eiFieldRelation->isPersistCascaded()) {
+				throw $eiSetupProcess->createException('Option ' . self::OPTION_EMBEDDED_ADD_KEY
+						. ' requires an EntityProperty which cascades persist.');
+			}
 		}
 		
 		if ($this->eiFieldRelation->getRelationEntityProperty()->isMaster()) {

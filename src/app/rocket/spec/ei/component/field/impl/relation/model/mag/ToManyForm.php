@@ -163,13 +163,18 @@ class ToManyForm implements Dispatchable {
 			$num = count($selectedEntryIdReps) + count($currentMappingForms) + count($newMappingForms);
 				
 			if ($num < $that->min) {
-				$be->addErrorCode('entryIdRep', 'ei_impl_relation_min_err', array('field' => $that->label, 
-						'min' => $that->min, 'num' => $num), Rocket::NS);
+				$be->addErrorCode('entryIdRep', 'ei_impl_relation_min_err', 
+						array('field' => $that->label, 'min' => $that->min, 'num' => $num, 
+								'elements' => ($that->min < 2 ? $that->readUtils->getGenericLabel() 
+										: $that->readUtils->getGenericPluralLabel())), 
+						Rocket::NS);
 			}
 			
 			if ($that->max !== null && $num > $that->max) {
 				$be->addErrorCode('entryIdRep', 'ei_impl_relation_max_err', array('field' => $that->label,
-						'max' => $that->max, 'num' => $num), Rocket::NS);
+						'max' => $that->max, 'num' => $num, 
+								'elements' => ($that->min < 2 ? $that->readUtils->getGenericLabel() 
+										: $that->readUtils->getGenericPluralLabel())), Rocket::NS);
 			}
 		});
 	}
