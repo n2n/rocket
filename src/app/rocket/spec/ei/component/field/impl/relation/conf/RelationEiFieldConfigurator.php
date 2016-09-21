@@ -41,12 +41,10 @@ use rocket\core\model\Rocket;
 use n2n\util\config\LenientAttributeReader;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\component\field\impl\relation\model\RelationVetoableActionListener;
-use rocket\spec\ei\component\field\impl\relation\ManyToOneSelectEiField;
-use rocket\spec\ei\component\field\impl\relation\ToManySelectEiFieldAdapter;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
 
 class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
-	const ATTR_TARGET_MASK_KEY = 'targetMaskId';
+	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
@@ -132,7 +130,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 							RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
 							RelationVetoableActionListener::STRATEGY_SELF_REMOVE => 'Self remove'),
 					$lar->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, RelationVetoableActionListener::getStrategies(),
-							RelationVetoableActionListener::STRATEGY_UNSET),
+							RelationVetoableActionListener::STRATEGY_PREVENT),
 					false));
 		}
 		
