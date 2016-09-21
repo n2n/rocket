@@ -41,6 +41,9 @@ abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter impleme
 	
 	public function setMin(int $min = null) {
 		$this->min = $min;
+		if ($min !== null && $min > 0) {
+			$this->standardEditDefinition->setMandatory(true);
+		}
 	}
 	
 	public function getMax() {
