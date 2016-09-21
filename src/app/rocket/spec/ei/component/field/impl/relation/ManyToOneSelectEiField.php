@@ -46,7 +46,6 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\component\field\impl\relation\conf\SelectEiFieldConfigurator;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiMappingFilterField;
 use n2n\web\http\controller\impl\ScrRegistry;
@@ -60,7 +59,6 @@ use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use n2n\web\http\HttpContext;
 
 class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
