@@ -34,13 +34,24 @@ use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\reflection\ReflectionUtils;
 use rocket\spec\ei\manage\DraftEiSelection;
+use rocket\user\model\LoginContext;
+use n2n\reflection\CastUtils;
+use rocket\spec\ei\manage\draft\DraftValueMap;
 
 abstract class EiUtilsAdapter implements EiUtils {
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getEiSpec()
+	 */
 	public function getEiSpec(): EiSpec {
 		return $this->getEiMask()->getEiEngine()->getEiSpec();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getNestedSetStrategy()
+	 */
 	public function getNestedSetStrategy() {
 		return $this->getEiSpec()->getNestedSetStrategy();
 	}
@@ -52,36 +63,50 @@ abstract class EiUtilsAdapter implements EiUtils {
 		return $this->getEiSpec()->getEntityModel();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getClass()
+	 */
 	public function getClass(): \ReflectionClass {
 		return $this->getEntityModel()->getClass();
 	}
 	
 	/**
-	 * @param unknown $id
-	 * @return string
-	 * @throws \InvalidArgumentException
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idToIdRep()
 	 */
 	public function idToIdRep($id): string {
 		return $this->getEiSpec()->idToIdRep($id);
 	}
 	
 	/**
-	 * @param string $idRep
-	 * @return mixed
-	 * @throws \InvalidArgumentException
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idRepToId()
 	 */
 	public function idRepToId(string $idRep) {
 		return $this->getEiSpec()->idRepToId($idRep);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getGenericLabel()
+	 */
 	public function getGenericLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiEntryObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getGenericPluralLabel()
+	 */
 	public function getGenericPluralLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiEntryObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createIdentityString()
+	 */
 	public function createIdentityString(EiSelection $eiSelection, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string {
 		$eiMask = null;
@@ -94,6 +119,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 		return $eiMask->createIdentityString($eiSelection, $n2nLocale ?? $this->getN2nLocale());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::determineEiSpec()
+	 */
 	public function determineEiSpec($eiEntryObj): EiSpec {
 		if ($eiEntryObj === null) {
 			return $this->getEiSpec();
@@ -120,6 +149,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 		return $this->getEiSpec()->determineAdequateEiSpec(new \ReflectionClass($eiEntryObj));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::determineEiMask()
+	 */
 	public function determineEiMask($eiEntryObj): EiMask {
 		if ($eiEntryObj === null) {
 			return $this->getEiMask();
@@ -136,6 +169,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 		return new LiveEiSelection($this->lookupLiveEntryById($id, $ignoreConstraintTypes));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::isDraftingEnabled()
+	 */
 	public function isDraftingEnabled(): bool {
 		return $this->getEiMask()->isDraftingEnabled();
 	}
@@ -170,12 +207,17 @@ abstract class EiUtilsAdapter implements EiUtils {
 				$this->getEiMask()->getEiEngine()->getDraftDefinition());
 	}
 		
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createEntityObj()
+	 */
 	public function createEntityObj() {
 		return ReflectionUtils::createObject($this->getClass());
 	}
+
 	/**
-	 * @param object $entity
-	 * @return \rocket\spec\ei\manage\EiSelection
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createEiSelectionFromLiveEntry()
 	 */
 	public function createEiSelectionFromLiveEntry($liveEntry): EiSelection {
 		if ($liveEntry instanceof LiveEntry) {
@@ -189,11 +231,18 @@ abstract class EiUtilsAdapter implements EiUtils {
 		return new LiveEiSelection(LiveEntry::createNew($this->getEiSpec()));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createEiSelectionFromDraft()
+	 */
 	public function createEiSelectionFromDraft(Draft $draft): EiSelection {
 		return new DraftEiSelection($draft);
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createNewEiSelection()
+	 */
 	public function createNewEiSelection(bool $draft = false, EiSpec $eiSpec = null): EiSelection {
 		if ($eiSpec === null) {
 			$eiSpec = $this->getEiSpec();
@@ -202,11 +251,18 @@ abstract class EiUtilsAdapter implements EiUtils {
 		if (!$draft) {
 			return new LiveEiSelection(LiveEntry::createNew($eiSpec));
 		}
+		
+		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
+		CastUtils::assertTrue($loginContext instanceof LoginContext);
 	
 		return new DraftEiSelection(new Draft(null, LiveEntry::createNew($eiSpec), new \DateTime(),
-				$this->eiState->getManageState()->getUser()->getId(), new DraftValueMap()));
+				$loginContext->getCurrentUser()->getId(), new DraftValueMap()));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::toEiEntryUtils()
+	 */
 	public function toEiEntryUtils($eiEntryObj): EiEntryUtils {
 		return new EiEntryUtils($eiEntryObj, $this);
 	}

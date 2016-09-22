@@ -109,9 +109,9 @@ class AddController extends ControllerAdapter {
 			return;
 		}
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiState(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title', 
-				array('type' => $this->eiCtrlUtils->getGenericLabel())));
+				array('type' => $this->eiCtrlUtils->getEiStateUtils()->getGenericLabel())));
 		$this->forward('..\view\add.html',
 				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 	}

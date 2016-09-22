@@ -42,7 +42,6 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\persistence\orm\store\operation\CascadeOperation;
@@ -50,7 +49,7 @@ use rocket\spec\config\SpecManager;
 use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
-use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\core\container\N2nContext;
 
 class EiStateUtils extends EiUtilsAdapter {
 	private $eiState;
@@ -86,6 +85,10 @@ class EiStateUtils extends EiUtilsAdapter {
 	
 	public function getEiMask(): EiMask {
 		return $this->eiState->getContextEiMask();
+	}
+	
+	public function getN2nContext(): N2nContext {
+		return $this->eiState->getN2nContext();
 	}
 	
 	public function getN2nLocale(): N2nLocale {
