@@ -63,7 +63,7 @@ class CiConfigUtils {
 		$this->allowedContentItemOptions = array();
 		foreach ($this->ciEiSpec->getAllSubEiSpecs() as $subEiSpec) {
 			$this->allowedContentItemOptions[$subEiSpec->getId()] = $subEiSpec->getEiMaskCollection()
-					->getOrCreateDefault()->getLabel();
+					->getOrCreateDefault()->getLabelLstr();
 		}
 
 		return $this->allowedContentItemOptions;

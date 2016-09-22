@@ -74,7 +74,7 @@ class ContentItemsEiFieldConfigurator extends RelationEiFieldConfigurator {
 		
 		$panelConfigMag = new MagCollectionArrayMag(self::ATTR_PANELS_KEY, 'Panels',
 				function() use ($ciConfigUtils) {
-					return new MagForm($ciConfigUtils->createPanelConfigMagCollection());
+					return new MagForm($ciConfigUtils->createPanelConfigMagCollection(true));
 				});
 		
 		$magCollection->addMag($panelConfigMag);

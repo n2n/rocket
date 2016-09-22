@@ -112,12 +112,17 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 				. '\' found in ' . $this->eiEngine->getEiThing() . '.');
 	}
 	
+	/**
+	 * @param bool $checkInherited
+	 * @return boolean
+	 */
 	public function isEmpty(bool $checkInherited = true): bool {
 		if (!$checkInherited) {
 			return empty($this->elements);
 		}
 		
-		return empty($this->elements) && $this->inheritedCollection->isEmpty();
+		return empty($this->elements) && ($this->inheritedCollection === null 
+				|| $this->inheritedCollection->isEmpty());
 	}
 	
 	/**

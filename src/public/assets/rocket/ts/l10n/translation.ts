@@ -218,18 +218,18 @@ module l10n {
 	class NotSelectedTag {
 		private elem : JQuery;
 		
-		public constructor(localeId, localeSelector: N2nLocaleSelector) {
+		public constructor(localeId, localeSelector: LocaleSelector) {
 			this.elem = $("<li />", {
 				"class": "rocket-locale-not-selected-" + localeId	
 			}).append($("<span />", {
-				text: localeSelector.getN2nLocaleLabel(localeId)	
+				text: localeSelector.getLocaleLabel(localeId)	
 			}));
 			
 			(function(that: NotSelectedTag) {
 				that.elem.click(function(e) {
 					e.preventDefault();
 					e.stopPropagation();
-					localeSelector.selectN2nLocaleWithId(localeId);
+					localeSelector.selectLocaleWithId(localeId);
 					that.elem.remove();
 				});
 			}).call(this, this);
@@ -245,16 +245,16 @@ module l10n {
 		private elemText;
 		private elemRemove;
 		
-		public constructor(localeId, localeSelector: N2nLocaleSelector) {
+		public constructor(localeId, localeSelector: LocaleSelector) {
 			this.elem = $("<li />");
 			this.elemText = $("<span />", {
-				"text": localeSelector.getN2nLocaleLabel(localeId)	
+				"text": localeSelector.getLocaleLabel(localeId)	
 			}).appendTo(this.elem);
 			
 			(function(that: SelectedTag) {
 				this.elemRemove = rocketTs.creatControlElem("Text: Remove Language", function() {
 					that.elem.remove();
-					localeSelector.removeSelectedN2nLocaleWithId(localeId);
+					localeSelector.removeSelectedLocaleWithId(localeId);
 				}, "fa fa-times").removeClass("rocket-control").appendTo(this.elem);
 				
 				localeSelector.getElemUlSelectedContainer().on("localeChange", function() {
@@ -275,48 +275,48 @@ module l10n {
 	class TranslationEntry {
 		private elem: JQuery;
 		private elemActivate: JQuery;
-		private elemN2nLocaleControls: JQuery;
+		private elemLocaleControls: JQuery;
 		private localeId;
 		private translationEnabler: TranslationEnabler;
 		private active: boolean = true;
 		private error: boolean;
 		
-		public constructor(localeSelector: N2nLocaleSelector, elem: JQuery) {
+		public constructor(localeSelector: LocaleSelector, elem: JQuery) {
 			this.elem = elem;
-			thisHalterDaoId = elem.data("locale-id");
+			this.localeId = elem.data("locale-id");
 			this.error = elem.hasClass("rocket-has-error")
 			this.translationEnabler = <TranslationEnabler> elem.parents(".rocket-translation-container:first").data("translation-enabler") || null;
 			
 			(function(that: TranslationEntry) {
 				
 				localeSelector.registerSelectionCallback(function(localeId: string) {
-					if (localeId !== thatHalterDaoId) return;
+					if (localeId !== that.localeId) return;
 					that.show();
 				});
 				
 				localeSelector.registerRemoveSelectionCallback(function(localeId: string) {
-					if (localeId !== thatHalterDaoId) return;
+					if (localeId !== that.localeId) return;
 					that.hide();
 				});
 				
 				if (null !== this.translationEnabler) {
-					that.elemN2nLocaleControls = elem.find(".rocket-locale-controls:first");
-					var entryFormCommand = new ui.EntryFormCommand("Text: Activate " + localeSelector.getN2nLocaleLabel(thatHalterDaoId), function() {
-						that.translationEnabler.activate(thatHalterDaoId);
+					that.elemLocaleControls = elem.find(".rocket-locale-controls:first");
+					var entryFormCommand = new ui.EntryFormCommand("Text: Activate " + localeSelector.getLocaleLabel(that.localeId), function() {
+						that.translationEnabler.activate(that.localeId);
 					}, "fa fa-language");
 					
 					that.elemActivate = entryFormCommand.getElemContainer().addClass("rocket-translation-activator");
-					if (!that.translationEnabler.isActive(thatHalterDaoId)) {
+					if (!that.translationEnabler.isActive(that.localeId)) {
 						that.deactivate();
 					}
 					
 					that.translationEnabler.registerActivationCallback(function(localeId: string) {
-						if (localeId !== thatHalterDaoId) return;
+						if (localeId !== that.localeId) return;
 						that.activate();
 					});
 					
 					that.translationEnabler.registerDeactivationCallback(function(localeId: string) {
-						if (localeId !== thatHalterDaoId) return;
+						if (localeId !== that.localeId) return;
 						that.deactivate();	
 					});
 					
@@ -343,7 +343,7 @@ module l10n {
 			if (this.active) return;
 			
 			this.elemActivate.detach();
-			this.elemN2nLocaleControls.children().show();
+			this.elemLocaleControls.children().show();
 			
 			rocketTs.updateUi();
 			this.active = true; 
@@ -352,19 +352,19 @@ module l10n {
 		private deactivate() {
 			if (!this.active) return;
 			
-			this.elemN2nLocaleControls.children().hide();
-			this.elemActivate.prependTo(this.elemN2nLocaleControls);
+			this.elemLocaleControls.children().hide();
+			this.elemActivate.prependTo(this.elemLocaleControls);
 			this.active = false;
 		}
 	}
 	
-	class N2nLocaleSelector {
-		public static COOKIE_NAME_SELECTED_LOCALE_IDS = "selectedN2nLocaleIds";
+	class LocaleSelector {
+		public static COOKIE_NAME_SELECTED_LOCALE_IDS = "selectedLocaleIds";
 		
 		private elemToolbar: JQuery;
 		private localeLabels = {};
-		private selectedN2nLocaleIds: Array<string> = [];
-		private notSelectedN2nLocaleIds: Array<string> = [];
+		private selectedLocaleIds: Array<string> = [];
+		private notSelectedLocaleIds: Array<string> = [];
 		private elemContainer: JQuery;
 		private elemUlSelectedContainer: JQuery;
 		private elemUlNotSelectedContainer: JQuery;
@@ -403,7 +403,7 @@ module l10n {
 				"class": "rocket-not-selected-locales"	
 			}).appendTo(this.elemContainer).hide();
 			
-			(function(that: N2nLocaleSelector) {
+			(function(that: LocaleSelector) {
 				that.elemLabel.click(function(e) {
 					e.preventDefault();
 					e.stopPropagation();
@@ -421,46 +421,46 @@ module l10n {
 		
 		public initialize() {
 			this.initialized = true;
-			this.initSelectedN2nLocales();
-			this.initNotSelectedN2nLocales();
+			this.initSelectedLocales();
+			this.initNotSelectedLocales();
 		}
 				
-		private initSelectedN2nLocales() {
+		private initSelectedLocales() {
 			var that = this;
-			this.getSavedN2nLocaleIds().forEach(function(localeId) {
-				that.selectN2nLocaleWithId(localeId);
+			this.getSavedLocaleIds().forEach(function(localeId) {
+				that.selectLocaleWithId(localeId);
 			});
 		}
 		
-		private initNotSelectedN2nLocales() {
-			var selectedN2nLocaleId = null, 
+		private initNotSelectedLocales() {
+			var selectedLocaleId = null, 
 				that = this;
-			this.notSelectedN2nLocaleIds.forEach(function(localeId) {
-				if (that.selectedN2nLocaleIds.length === 0 
-						&& null === selectedN2nLocaleId) {
+			this.notSelectedLocaleIds.forEach(function(localeId) {
+				if (that.selectedLocaleIds.length === 0 
+						&& null === selectedLocaleId) {
 					//If no locale is selected then select the first one					
 					
 					//need to remember it here, if you push it directly, the array 
 					//will change internaly and the element after will be ignored
-					selectedN2nLocaleId = localeId;
+					selectedLocaleId = localeId;
 				} else {
-					that.addNotSelectedN2nLocaleWithId(localeId);
+					that.addNotSelectedLocaleWithId(localeId);
 				}
 			});
 			
-			if (null !== selectedN2nLocaleId) {
-				that.selectN2nLocaleWithId(selectedN2nLocaleId);
+			if (null !== selectedLocaleId) {
+				that.selectLocaleWithId(selectedLocaleId);
 			}
 		}
 		
-		public hasN2nLocaleId(localeId) {
-			return this.isN2nLocaleIdSelected(localeId) || (this.notSelectedN2nLocaleIds.indexOf(localeId) >= 0);
+		public hasLocaleId(localeId) {
+			return this.isLocaleIdSelected(localeId) || (this.notSelectedLocaleIds.indexOf(localeId) >= 0);
 		}
 		
-		public getN2nLocaleLabel(localeId: string) {
-			if (!thisHalterDaoLabels.hasOwnProperty(localeId)) return localeId;
+		public getLocaleLabel(localeId: string) {
+			if (!this.localeLabels.hasOwnProperty(localeId)) return localeId;
 			
-			return thisHalterDaoLabels[localeId];
+			return this.localeLabels[localeId];
 		}
 		
 		public initializeLocalizedElems(localizedElem: JQuery) {
@@ -470,23 +470,23 @@ module l10n {
 				var elem = $(this),
 					localeId = elem.data("locale-id");
 				
-				if (!that.hasN2nLocaleId(localeId)) {
-					that.notSelectedN2nLocaleIds.push(localeId);
-					thatHalterDaoLabels[localeId] = elem.data("pretty-locale-id");
+				if (!that.hasLocaleId(localeId)) {
+					that.notSelectedLocaleIds.push(localeId);
+					that.localeLabels[localeId] = elem.data("pretty-locale-id");
 				}
 				var translationEntry = new TranslationEntry(that, elem);
 				
-				if (!that.isN2nLocaleIdSelected(localeId) && !translationEntry.hasError()) {
+				if (!that.isLocaleIdSelected(localeId) && !translationEntry.hasError()) {
 					translationEntry.hide()
 				}
 				
 				if (that.initialized) return;
 				
-				that.initSelectedN2nLocales();
-				that.initNotSelectedN2nLocales();	
+				that.initSelectedLocales();
+				that.initNotSelectedLocales();	
 			});
 			
-//			if (that.notSelectedN2nLocaleIds.length <= 1) {
+//			if (that.notSelectedLocaleIds.length <= 1) {
 //				//just one locale is available -> show elements like not translatable 	
 //				$(".rocket-properties [data-locale-id]").each(function() {
 //					var elem = $(this).show();	
@@ -503,19 +503,19 @@ module l10n {
 		}
 		
 		public open() {
-			if (this.notSelectedN2nLocaleIds.length === 0) return;
+			if (this.notSelectedLocaleIds.length === 0) return;
 			
 			this.elemContainer.addClass("open");
 			this.elemUlNotSelectedContainer.show();
 			
 			var that = this;
-			$(window).off("clickHalterDaoSelector").on("clickHalterDaoSelector", function() {
+			$(window).off("click.localeSelector").on("click.localeSelector", function() {
 				that.close();
 			});
 		}
 		
 		public close() {
-			$(window).off("clickHalterDaoSelector")	
+			$(window).off("click.localeSelector")	
 			this.elemContainer.removeClass("open");
 			this.elemUlNotSelectedContainer.hide();
 		}
@@ -524,33 +524,33 @@ module l10n {
 			return this.elemUlSelectedContainer;	
 		}
 		
-		private getSavedN2nLocaleIds() {
-			var	cookieValue = rocketTs.getCookie(N2nLocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS);
+		private getSavedLocaleIds() {
+			var	cookieValue = rocketTs.getCookie(LocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS);
 			if (!cookieValue) return [];
 			
 			return cookieValue.split(",");
 		}
 		
 		private saveState() {
-			var savedN2nLocaleIds = this.getSavedN2nLocaleIds();
+			var savedLocaleIds = this.getSavedLocaleIds();
 			
-			this.selectedN2nLocaleIds.forEach(function(value) {
-				if (savedN2nLocaleIds.indexOf(value) !== -1) return;
-				savedN2nLocaleIds.push(value);
+			this.selectedLocaleIds.forEach(function(value) {
+				if (savedLocaleIds.indexOf(value) !== -1) return;
+				savedLocaleIds.push(value);
 			});
 			
-			this.notSelectedN2nLocaleIds.forEach(function(value) {
-				if (savedN2nLocaleIds.indexOf(value) === -1) return;
-				savedN2nLocaleIds.splice(savedN2nLocaleIds.indexOf(value), 1);
+			this.notSelectedLocaleIds.forEach(function(value) {
+				if (savedLocaleIds.indexOf(value) === -1) return;
+				savedLocaleIds.splice(savedLocaleIds.indexOf(value), 1);
 			});
 			
-			rocketTs.setCookie(N2nLocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS, savedN2nLocaleIds.join(","));
+			rocketTs.setCookie(LocaleSelector.COOKIE_NAME_SELECTED_LOCALE_IDS, savedLocaleIds.join(","));
 			
 			this.elemUlSelectedContainer.trigger("localeChange");
 		}
 		
-		public isN2nLocaleIdSelected(localeId) {
-			return this.selectedN2nLocaleIds.indexOf(localeId) >= 0;
+		public isLocaleIdSelected(localeId) {
+			return this.selectedLocaleIds.indexOf(localeId) >= 0;
 		}
 		
 		public registerSelectionCallback(selectionCallback: (localId: string) => void) {
@@ -563,20 +563,20 @@ module l10n {
 			});
 		}
 		
-		public selectN2nLocaleWithId(localeId) {
-			if (this.notSelectedN2nLocaleIds.indexOf(localeId) === -1) return;
+		public selectLocaleWithId(localeId) {
+			if (this.notSelectedLocaleIds.indexOf(localeId) === -1) return;
 			
 			var selectedTag = new SelectedTag(localeId, this);
 			this.elemUlSelectedContainer.append(selectedTag.getElem());
-			this.selectedN2nLocaleIds.push(localeId);
-			this.notSelectedN2nLocaleIds.splice(this.notSelectedN2nLocaleIds.indexOf(localeId), 1);
+			this.selectedLocaleIds.push(localeId);
+			this.notSelectedLocaleIds.splice(this.notSelectedLocaleIds.indexOf(localeId), 1);
 			
 			// this.tem.activate(localeId);
 			this.triggerSelectionCallbacks(localeId);
 			
 			
 			this.saveState();
-			if (this.notSelectedN2nLocaleIds.length === 0) {
+			if (this.notSelectedLocaleIds.length === 0) {
 				this.close();	
 			}
 		}
@@ -592,12 +592,12 @@ module l10n {
 			});
 		}
 		
-		public removeSelectedN2nLocaleWithId(localeId) {
-			if (this.selectedN2nLocaleIds.indexOf(localeId) === -1) return;
+		public removeSelectedLocaleWithId(localeId) {
+			if (this.selectedLocaleIds.indexOf(localeId) === -1) return;
 			
-			this.notSelectedN2nLocaleIds.push(localeId);
-			this.selectedN2nLocaleIds.splice(this.selectedN2nLocaleIds.indexOf(localeId), 1);
-			this.addNotSelectedN2nLocaleWithId(localeId);
+			this.notSelectedLocaleIds.push(localeId);
+			this.selectedLocaleIds.splice(this.selectedLocaleIds.indexOf(localeId), 1);
+			this.addNotSelectedLocaleWithId(localeId);
 			
 			this.triggerRemoveSelectionCallbacks(localeId);
 			//this.tem.deactivate(localeId);
@@ -605,7 +605,7 @@ module l10n {
 			this.saveState();
 		}
 		
-		private addNotSelectedN2nLocaleWithId(localeId) {
+		private addNotSelectedLocaleWithId(localeId) {
 			if (this.elemUlNotSelectedContainer.children("li.rocket-locale-not-selected-" + localeId).length > 0) return;
 			
 			var selectedTag = new NotSelectedTag(localeId, this);
@@ -613,7 +613,7 @@ module l10n {
 		}
 	}
 	rocketTs.ready(function() {
-		var localeSelector: N2nLocaleSelector = null,
+		var localeSelector: LocaleSelector = null,
 			tem = new TranslationEnablerManager();
 		
 		rocketTs.registerUiInitFunction(".rocket-translation-enabler", function(elem: JQuery) {
@@ -640,7 +640,7 @@ module l10n {
 				}
 				
 				if (null !== languagesLabel) {
-					localeSelector = new N2nLocaleSelector(tem, languagesLabel, defaultLabel, translationsOnlyLabel);
+					localeSelector = new LocaleSelector(tem, languagesLabel, defaultLabel, translationsOnlyLabel);
 				} else {
 					throw new Error("no languages label found");	
 				}
