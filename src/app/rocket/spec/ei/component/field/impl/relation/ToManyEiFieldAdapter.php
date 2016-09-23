@@ -114,9 +114,4 @@ abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter impleme
 		return $numTargetEiSelections . ' ' . $this->eiFieldRelation->getTargetEiMask()->getPluralLabel();
 		
 	}
-		
-	public function getDraftProperty() {
-		return $this;
-	}
-
 }

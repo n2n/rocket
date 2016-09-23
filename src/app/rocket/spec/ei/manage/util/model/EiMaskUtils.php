@@ -54,6 +54,10 @@ class EiMaskUtils extends EiUtilsAdapter {
 		return $this->eiMask;
 	}
 	
+	public function getN2nContext(): N2nContext {
+		return $this->n2nContext;
+	}
+	
 	public function getDraftManager(): DraftManager {
 		$rocket = $this->n2nContext->lookup(Rocket::class);
 		CastUtils::assertTrue($rocket instanceof Rocket);

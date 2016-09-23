@@ -47,7 +47,7 @@ class DraftDefinitionFactory {
 			if (!($eiField instanceof DraftableEiField && $eiField->isDraftable())) continue;
 			
 			$draftProperty = $eiField->getDraftProperty();
-			ArgUtils::valTypeReturn($draftProperty, DraftProperty::class, $eiField, 'isDraftable', true);
+			ArgUtils::valTypeReturn($draftProperty, DraftProperty::class, $eiField, 'getDraftProperty', true);
 			
 			if ($draftProperty !== null) {
 				$draftDefinition->putDraftProperty($id, $draftProperty);

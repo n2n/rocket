@@ -95,6 +95,7 @@ class DraftDefinition {
 		$draftingContext = $persistDraftAction->getQueue()->getDraftingContext();
 		
 		$empty = false;
+		$draftValuesResult = null;
 		if (!$draft->isNew()) {
 			$draftValuesResult = $draftingContext->getDraftValuesResultByDraft($draft);
 			$empty = $draftValuesResult->getFlag() === $draft->getFlag() 
@@ -114,8 +115,13 @@ class DraftDefinition {
 		$draftValuesMap = $draft->getDraftValueMap();
 		foreach ($this->draftProperties as $id => $draftProperty) {
 			$eiFieldPath = new EiFieldPath(array($id));
+			$oldValue = null;
+			if ($draftValuesResult !== null) {
+				$oldValue = $draftValuesResult->getValue($eiFieldPath);
+			}
+			
 			$draftProperty->supplyPersistDraftStmtBuilder($draftValuesMap->getValue($eiFieldPath), 
-					$draftValuesResult->getValue($eiFieldPath), $stmtBuilder, $persistDraftAction);
+					$oldValue, $stmtBuilder, $persistDraftAction);
 		}
 		
 		if ($empty && $stmtBuilder->hasValues()) {

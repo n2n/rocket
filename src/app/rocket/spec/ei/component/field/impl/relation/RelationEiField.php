@@ -24,8 +24,9 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiField;
 use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiField;
+use rocket\spec\ei\component\field\impl\adapter\ConfDraftableEiField;
 
-interface RelationEiField extends ConfEntityPropertyEiField, ConfObjectPropertyEiField {
+interface RelationEiField extends ConfEntityPropertyEiField, ConfObjectPropertyEiField, ConfDraftableEiField {
 	
 	/**
 	 * @return \rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation

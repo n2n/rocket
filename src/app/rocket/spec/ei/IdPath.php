@@ -103,7 +103,7 @@ abstract class IdPath implements Hashable {
 	
 	public function toDbColumnName() {
 		$this->ensureNotEmpty();
-		return implode('_', $this->ids);
+		return mb_strtolower(implode('_', $this->ids));
 	}
 	
 	public function __toString(): string {

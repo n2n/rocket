@@ -104,16 +104,14 @@ class AddController extends ControllerAdapter {
 		$addModel = new AddModel($eiState, $entryForm);
 		
 		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($eiState->getDetailUrl($this->getHttpContext(), 
-					$eiSelection->toEntryNavPoint($eiState->getContextEiMask()->getEiEngine()->getEiSpec())));
+			$this->redirect($this->eiCtrlUtils->buildRefRedirectUrl($redirectUrl, $eiSelection));
 			return;
 		}
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiState(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title', 
-				array('type' => $this->eiCtrlUtils->getGenericLabel())));
-		$this->forward('..\view\add.html',
-				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
+				array('type' => $this->eiCtrlUtils->getEiStateUtils()->getGenericLabel())));
+		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 	}
 	
 	private function getBreadcrumbLabel() {

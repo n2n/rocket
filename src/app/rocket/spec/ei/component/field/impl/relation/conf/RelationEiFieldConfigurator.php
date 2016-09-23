@@ -64,7 +64,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 			$this->registerDisplayDefinition($relationEiField->getDisplayDefinition());
 			$this->registerStandardEditDefinition($relationEiField->getStandardEditDefinition());
 		}
-
+		
 		if ($this->eiComponent instanceof ToManyEiFieldAdapter) {
 			$this->addMandatory = false;
 		}

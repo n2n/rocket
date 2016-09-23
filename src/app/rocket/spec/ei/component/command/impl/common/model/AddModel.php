@@ -137,6 +137,7 @@ class AddModel implements Dispatchable  {
 				->getDraftDefinition();
 		$draftManager = $this->eiState->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);
+		$draftManager->flush();
 		
 		$identityString = (new EiStateUtils($this->eiState))->createIdentityString($eiSelection);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));

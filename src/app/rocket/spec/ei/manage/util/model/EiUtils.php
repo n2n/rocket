@@ -31,24 +31,45 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\DraftManager;
+use n2n\core\container\N2nContext;
 
 interface EiUtils {
 	
+	/**
+	 * @return EntityManager
+	 */
 	public function em(): EntityManager;
 	
+	/**
+	 * @return N2nContext
+	 */
+	public function getN2nContext(): N2nContext;
+	
+	/**
+	 * @return EiMask
+	 */
 	public function getEiMask(): EiMask;
 	
+	/**
+	 * @return EiSpec
+	 */
 	public function getEiSpec(): EiSpec;
 	
 	/**
-	 * @return NestedSetStrategy or null 
+	 * @return NestedSetStrategy|null 
 	 */
 	public function getNestedSetStrategy();
 
-
+	/**
+	 * @return EntityModel
+	 */
 	public function getEntityModel(): EntityModel;
 	
+	/**
+	 * @return \ReflectionClass
+	 */
 	public function getClass(): \ReflectionClass;
+	
 	/**
 	 * @param mixed $id
 	 * @return scalar
@@ -63,19 +84,51 @@ interface EiUtils {
 	 */
 	public function idRepToId(string $idRep);
 	
+	/**
+	 * @param object $eiEntryObj
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
 	public function getGenericLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string;
 	
+	/**
+	 * @param object $eiEntryObj
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
 	public function getGenericPluralLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string;
 	
+	/**
+	 * @param EiSelection $eiSelection
+	 * @param bool $determineEiMask
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
 	public function createIdentityString(EiSelection $eiSelection, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string;
 	
+	/**
+	 * @param object $eiEntryObj
+	 * @return EiSpec
+	 */
 	public function determineEiSpec($eiEntryObj): EiSpec;
 	
+	/**
+	 * @param object $eiEntryObj
+	 * @return EiMask
+	 */
 	public function determineEiMask($eiEntryObj): EiMask;
 	
+	/**
+	 * @return N2nLocale
+	 */
 	public function getN2nLocale(): N2nLocale;
 	
+	/**
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @return bool
+	 */
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool;
 	
 	/**
@@ -138,7 +191,16 @@ interface EiUtils {
 	 */
 	public function createEiSelectionFromDraft(Draft $draft): EiSelection;
 	
+	/**
+	 * @param bool $draft
+	 * @param EiSpec $eiSpec
+	 * @return EiSelection
+	 */
 	public function createNewEiSelection(bool $draft = false, EiSpec $eiSpec = null): EiSelection;
 	
+	/**
+	 * @param object $eiEntryObj
+	 * @return EiEntryUtils
+	 */
 	public function toEiEntryUtils($eiEntryObj): EiEntryUtils;
 }
