@@ -90,11 +90,7 @@ abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implemen
 		
 		return $this->eiFieldRelation->getTargetEiMask()->createIdentityString($targetEiSelection, $n2nLocale);
 	}
-		
-	public function getDraftProperty() {
-		return $this;
-	}
-	
+			
 	public function isEiMappingFilterable(): bool {
 		return true;
 	}

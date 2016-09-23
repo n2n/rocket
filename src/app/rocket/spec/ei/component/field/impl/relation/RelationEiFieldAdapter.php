@@ -85,6 +85,8 @@ abstract class RelationEiFieldAdapter extends ConfObjectPropertyEiFieldAdapter i
 	}
 
 	public function getDraftProperty() {
-		return $this;
+		if ($this->isDraftable()) return $this;
+		
+		return null;
 	}
 }
