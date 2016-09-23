@@ -149,7 +149,7 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 			N2nContext $n2nContext): DraftValueSelection {
 				
 		return new SimpleToOneDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiFieldPath::from($this)),
-				$dm->getEntityManager(), $this->eiFieldRelation->getTargetEiSpec()->getEntityModel()->getClass());
+				$dm->getEntityManager(), $this->eiFieldRelation->getTargetEiSpec()->getEntityModel());
 	}
 	
 	/**

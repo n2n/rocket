@@ -149,15 +149,17 @@ class DetailController extends ControllerAdapter {
 
 		if ($eiState->isDetailDisabled()) return;
 		
-		$pathParts = null;
-		if ($previewType === null || $eiSelection->isDraft()) {
-			$pathParts = array('live', $eiSelection->getLiveEntry()->getId());
-		} else {
-			$pathParts = array('livepreview', $eiSelection->getLiveEntry()->getId(), $previewType);
+		if ($eiSelection->getLiveEntry()->isPersistent()) {
+			$pathParts = null;
+			if ($previewType === null || $eiSelection->isDraft()) {
+				$pathParts = array('live', $eiSelection->getLiveEntry()->getId());
+			} else {
+				$pathParts = array('livepreview', $eiSelection->getLiveEntry()->getId(), $previewType);
+			}
+			
+			$this->eiCtrlUtils->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
+					$eiState->getDetailBreadcrumbLabel($eiSelection)));
 		}
-		
-		$this->eiCtrlUtils->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
-				$eiState->getDetailBreadcrumbLabel($eiSelection)));
 		
 		if ($eiSelection->isDraft()) {
 			$pathParts = null;
@@ -168,9 +170,20 @@ class DetailController extends ControllerAdapter {
 			}
 				
 			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale());
-			$this->eiCtrlUtils->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts),
-					$this->dtc->translate('ei_impl_detail_draft_breadcrumb',
-							array('last_mod' => $dtf->format($eiSelection->getDraft()->getLastMod())))));
+			
+			$breadcrumb = null;
+			if ($eiSelection->getLiveEntry()->isPersistent()) {
+				$breadcrumb = new Breadcrumb($this->getUrlToController($pathParts),
+						$this->dtc->translate('ei_impl_detail_draft_breadcrumb',
+								array('last_mod' => $dtf->format($eiSelection->getDraft()->getLastMod()))));
+			} else {
+				$breadcrumb = new Breadcrumb($this->getUrlToController($pathParts),
+						$this->dtc->translate('ei_impl_detail_unbound_draft_breadcrumb',
+								array('entry' => $this->eiCtrlUtils->getEiStateUtils()
+										->createIdentityString($eiSelection))));
+			}
+			
+			$this->eiCtrlUtils->applyBreandcrumbs($breadcrumb);
 		}
 	}
 }

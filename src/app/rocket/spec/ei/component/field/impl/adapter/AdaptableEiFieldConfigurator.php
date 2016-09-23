@@ -167,7 +167,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 			$this->registerStandardEditDefinition($this->eiComponent->getStandardEditDefinition());
 		}
 		
-		if ($this->eiComponent instanceof DraftableEiFieldAdapter) {
+		if ($this->eiComponent instanceof ConfDraftableEiField) {
 			$this->registerConfDraftableEiField($this->eiComponent);
 		}
 	}

@@ -23,6 +23,7 @@ namespace rocket\spec\ei\manage\draft;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\draft\stmt\DraftStmtBuilder;
+use n2n\util\ex\NotYetImplementedException;
 
 class CommonModDraftAction extends DraftActionAdapter implements PersistDraftAction, RemoveDraftAction {
 	private $draft;
@@ -35,6 +36,24 @@ class CommonModDraftAction extends DraftActionAdapter implements PersistDraftAct
 		$this->draft = $draft;
 		$this->draftDefinition = $draftDefinition;
 		$this->queue = $queue;
+		
+		if ($draft->isNew()) {
+			$this->idUpdate();
+		}
+	}
+	
+	private function idUpdate() {
+		$pdo = $this->queue->getEntityManager()->getPdo();
+		$dialect = $pdo->getMetaData()->getDialect();
+		
+		if (!$dialect->isLastInsertIdSupported()) {
+			throw new NotYetImplementedException('Drafts for ' . get_class($dialect) . ' not yet supported.');
+		}
+		
+		$that = $this;
+		$this->executeAtEnd(function () use ($that) {
+			$that->getDraft()->setId($that->getDraftStmtBuilder()->getPdo()->lastInsertId());
+		});
 	}
 	
 	public function getDraft(): Draft {
@@ -64,4 +83,5 @@ class CommonModDraftAction extends DraftActionAdapter implements PersistDraftAct
 	
 		throw new IllegalStateException('No DraftStmtBuilder assigned.');
 	}
+	
 }

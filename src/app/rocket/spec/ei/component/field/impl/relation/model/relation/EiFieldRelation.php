@@ -215,6 +215,7 @@ abstract class EiFieldRelation {
 	
 	public function isReadOnly(EiMapping $mapping, EiState $eiState) {
 		return $this->relationEiField->getStandardEditDefinition()->isReadOnly()
+				|| (!$this->relationEiField->isDraftable() && $mapping->getEiSelection()->isDraft())
 				|| ($this->isFiltered() && $eiState->getEiRelation($this->relationEiField->getId()));
 	}
 	

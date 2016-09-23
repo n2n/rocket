@@ -78,6 +78,10 @@ class EiCtrlUtils implements Lookupable {
 		}
 	}
 	
+	/**
+	 * @param string $liveIdRep
+	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 */
 	public function lookupEiMapping(string $liveIdRep) {
 		return $this->eiStateUtils->createEiMapping($this->lookupEiSelection($liveIdRep));
 	}

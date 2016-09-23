@@ -33,11 +33,10 @@ use rocket\spec\ei\component\field\impl\relation\conf\RelationEiFieldConfigurato
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
-use rocket\spec\ei\component\field\impl\adapter\ConfDraftableEiField;
 use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiFieldAdapter;
 
 abstract class RelationEiFieldAdapter extends ConfObjectPropertyEiFieldAdapter implements RelationEiField, GuiEiField, 
-		MappableEiField, Readable, Writable, ConfDraftableEiField {
+		MappableEiField, Readable, Writable {
 	/**
 	 * @var EiFieldRelation
 	 */
