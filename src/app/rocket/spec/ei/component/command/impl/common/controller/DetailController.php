@@ -50,7 +50,7 @@ class DetailController extends ControllerAdapter {
 				=> new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel)));
 	}
 	
-	public function doDraft($draftId = null) { 
+	public function doDraft($draftId) { 
 		$eiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
 
 		$entryGuiModel = $this->eiCtrlUtils->getEiStateUtils()->createBulkyEntryGuiModel($eiMapping, false);
@@ -104,41 +104,39 @@ class DetailController extends ControllerAdapter {
 // 	}
 	
 	public function doDraftPreview($draftId, $previewType = null) {
-		$draftModel = null;
-		if (isset($draftId)) {
-			$detailModel = $this->eiCtrlUtils->createDraftDetailModel($id, $draftId, $httpN2nLocaleId);
-		} else {
-			$detailModel = $this->eiCtrlUtils->createDetailModel($id, $httpN2nLocaleId, false);
+		$eiSelection = $this->eiCtrlUtils->lookupEiSelectionByDraftId($draftId);
+		
+		$eiEntryUtils = $this->eiCtrlUtils->toEiEntryUtils($eiSelection);
+		$previewTypeOptions = $eiEntryUtils->getPreviewTypeOptions();
+		if (empty($previewTypeOptions)) {
+			throw new PageNotFoundException();
 		}
-		$previewController = $this->eiCtrlUtils->createPreviewController($detailModel->getEntryInfo(), 
-				$this->getRequest(), $this->getResponse(), $previewType);
-		$currentPreviewType = $previewController->getPreviewType();
 		
-// 		if (false != ($redirectUrl = $this->dispatchDetailModel($detailModel))) {
-// 			$this->redirect($redirectUrl);
-// 			return;
-// 		}
+		if ($previewType === null) {
+			$this->redirectToController(array('draftpreview', $draftId, key($previewTypeOptions)));
+			return;
+		}
 		
-		$this->applyBreadcrumbs($draftModel->getEiSelection(), $previewType);
+		$previewController = $this->eiCtrlUtils->lookupPreviewController($previewType, $eiSelection);
 		
-		$this->forward('spec\ei\component\command\impl\common\view\detailPreview.html', array(
-				'commandEntryModel' => $detailModel, 
-				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext(), 
-						array('draftpreviewsrc', $currentPreviewType, $id, $draftId, $httpN2nLocaleId)),
-				'entryViewInfo' => new EntryViewInfo($detailModel, $detailModel->getEntryInfo(), $previewController)));
+		$this->applyBreadcrumbs($eiSelection, $previewType);
+		
+		$this->forward('..\view\detailPreview.html', array( 
+				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
+						->ext('draftpreviewsrc', $draftId, $previewType),
+				'currentPreviewType' => $previewType,
+				'previewTypeOptions' => $previewTypeOptions, 
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), 
+						$eiSelection)));
 	}
 	
-	public function doDraftPreviewSrc(array $contextCmds, $previewType, $id, $draftId = null, $httpN2nLocaleId = null) {
-		$draftModel = null;
-		if (isset($draftId)) {
-			$detailModel = $this->eiCtrlUtils->createDraftDetailModel($id, $draftId, $httpN2nLocaleId);
-		} else {
-			$detailModel = $this->eiCtrlUtils->createDetailModel($id, $httpN2nLocaleId, false);
-		}
-		$previewController = $this->eiCtrlUtils->createPreviewController($detailModel->getEntryInfo(), $this->getRequest(), 
-				$this->getResponse(), $previewType);
 	
-		$previewController->execute(array(), $contextCmds, $this->getN2nContext());
+	
+	public function doDraftPreviewSrc($draftId, $previewType, array $delegateCmds = array()) {
+		$eiSelection = $this->eiCtrlUtils->lookupEiSelectionByDraftId($draftId);
+		$previewController = $this->eiCtrlUtils->lookupPreviewController($previewType, $eiSelection);
+		
+		$this->delegate($previewController);
 	}
 	
 	private function applyBreadcrumbs(EiSelection $eiSelection, string $previewType = null) {
