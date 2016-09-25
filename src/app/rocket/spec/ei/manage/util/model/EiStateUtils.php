@@ -343,9 +343,20 @@ class EiStateUtils extends EiUtilsAdapter {
 	}
 
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
-		$previewModel = new PreviewModel($previewType, $eiSelection, $eiSelection->getLiveObject());
+		$entityObj = null;
+		if (!$eiSelection->isDraft()) {
+			$entityObj = $eiSelection->getLiveObject();
+		} else {
+			$eiMapping = $this->createEiMapping($eiSelection);
+			$previewEiMapping = $this->createEiMappingCopy(
+					$this->createNewEiSelection(false, $eiSelection->getLiveEntry()->getEiSpec()),
+					$eiMapping);
+			$previewEiMapping->write();
+			$entityObj = $previewEiMapping->getEiSelection()->getLiveObject();
+		}
 		
-		$previewType = $previewModel->getPreviewType();
+		$previewModel = new PreviewModel($previewType, $eiSelection, $entityObj);
+		
 		return $this->getEiMask()->lookupPreviewController($this->eiState, $previewModel);
 	}
 

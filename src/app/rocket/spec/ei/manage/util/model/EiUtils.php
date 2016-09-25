@@ -203,4 +203,6 @@ interface EiUtils {
 	 * @return EiEntryUtils
 	 */
 	public function toEiEntryUtils($eiEntryObj): EiEntryUtils;
+	
+	public function persist($eiEntryObj, bool $flush = true);
 }

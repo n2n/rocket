@@ -100,7 +100,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 			$label = $view->getL10nText('ei_impl_publish_draft_label');
 			$tooltip = $view->getL10nText('ei_impl_publish_draft_tooltip');
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL));
+					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_CHECK));
 		}
 		
 		return $hrefControls;

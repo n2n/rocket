@@ -25,11 +25,11 @@ namespace rocket\spec\ei\manage\util\model;
 use rocket\spec\ei\manage\EiState;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
+use rocket\spec\ei\manage\util\model\EiEntryObjUtils;
 
 class EiEntryUtils {
 	private $eiSelection;
@@ -37,13 +37,7 @@ class EiEntryUtils {
 	private $eiStateUtils;
 	
 	public function __construct($eiEntryObj, $eiState = null) {
-		if ($eiEntryObj instanceof EiSelection) {
-			$this->eiSelection = $eiEntryObj;
-		} else if ($eiEntryObj instanceof EiMapping) {
-			$this->eiSelection = $eiEntryObj->getEiSelection();
-		} else {
-			ArgUtils::valType($eiEntryObj, array(EiSelection::class, EiMapping::class), false, 'eiEntryObj');
-		}
+		$this->eiSelection = EiEntryObjUtils::determineEiSelection($eiEntryObj);
 		
 		if ($eiState instanceof EiState) {
 			$this->eiUtils = $this->eiStateUtils = new EiStateUtils($eiState);

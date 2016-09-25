@@ -33,6 +33,7 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\draft\Draft;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
@@ -114,8 +115,13 @@ class EditController extends ControllerAdapter {
 		$eiUtils = $this->eiCtrlUtils->getEiStateUtils();
 		$eiSelection = $eiUtils->createEiSelectionFromLiveEntry($draftEiMapping->getEiSelection()->getLiveEntry());
 		$eiMapping = $eiUtils->createEiMappingCopy($eiSelection, $draftEiMapping);
-	
+		
 		if ($eiMapping->save()) {
+			$eiUtils->persist($eiSelection);
+			$draft = $draftEiMapping->getEiSelection()->getDraft();
+			$draft->setFlag(Draft::FLAG_PUBLISHED);
+			$eiUtils->persist($draft);
+			
 			$this->redirect($this->eiCtrlUtils->buildRedirectUrl($eiMapping->getEiSelection()));
 			return;
 		}

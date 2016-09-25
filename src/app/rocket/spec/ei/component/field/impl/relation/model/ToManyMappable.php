@@ -73,7 +73,9 @@ class ToManyMappable extends RwMappable  {
 	 * @see \rocket\spec\ei\manage\mapping\Mappable::copyMappable($eiObject)
 	 */
 	public function copyMappable(EiObject $eiObject) {
-		throw new NotYetImplementedException();
+		$copy = new ToManyMappable($eiObject, $this->readable, $this->writable);
+		$copy->setValue($this->getValue());
+		return $copy;
 	}
 
 }
