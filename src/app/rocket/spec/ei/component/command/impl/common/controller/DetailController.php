@@ -28,25 +28,31 @@ use n2n\l10n\DateTimeFormat;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class DetailController extends ControllerAdapter {
 	private $dtc;
 	private $eiCtrlUtils;
 	
-	public function prepare(DynamicTextCollection $dtc) {
+	public function prepare(DynamicTextCollection $dtc, EiCtrlUtils $eiCtrlUtils) {
 		$this->dtc = $dtc;
-		$this->eiCtrlUtils = EiCtrlUtils::from($this->getHttpContext());
+		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 		
 	public function doLive($idRep) {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 
 		$entryGuiModel = $this->eiCtrlUtils->getEiStateUtils()->createBulkyEntryGuiModel($eiMapping, false);
+		$entryGuiUtils = new EntryGuiUtils($entryGuiModel, $this->eiCtrlUtils);
 
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel);
+		if ($entryGuiUtils->hasLiveId()) {
+			$viewModel->setLatestDrafts($entryGuiUtils->lookupDrafts(0, 30));
+		}
+		
 		$this->applyBreadcrumbs($eiMapping->getEiSelection());
 			
-		$this->forward('..\view\detail.html', array('entryCommandViewModel' 
-				=> new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel)));
+		$this->forward('..\view\detail.html', array('entryCommandViewModel' => $viewModel));
 	}
 	
 	public function doDraft($draftId) { 
