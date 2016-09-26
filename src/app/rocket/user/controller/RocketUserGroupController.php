@@ -201,6 +201,12 @@ class RocketUserGroupController extends ControllerAdapter {
 		$tx->commit();
 	}
 	
+	/**
+	 * @param string $eiSpecId
+	 * @param string $eiMaskId
+	 * @throws PageNotFoundException
+	 * @return EiEngine
+	 */
 	private function lookupEiEngine(string $eiSpecId, string $eiMaskId = null): EiEngine {
 		$eiSpec = null;
 		try {
@@ -220,7 +226,13 @@ class RocketUserGroupController extends ControllerAdapter {
 		return $eiSpec->getEiEngine();
 	}
 	
-	
+	/**
+	 * @param unknown $rocketUserGroupId
+	 * @param string $eiSpecId
+	 * @param string $eiMaskId
+	 * @param ScrRegistry $scrRegistry
+	 * @throws PageNotFoundException
+	 */
 	public function doRestrictEiGrant($rocketUserGroupId, string $eiSpecId, string $eiMaskId = null, ScrRegistry $scrRegistry) {
 		$eiEngine = $this->lookupEiEngine($eiSpecId, $eiMaskId);
 
