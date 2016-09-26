@@ -85,11 +85,16 @@ class EditController extends ControllerAdapter {
 				'entryCommandViewModel' => $this->createEntryCommandViewModel(
 						$editModel->getEntryModel()->getEntryGuiModel(), $redirectUrl)));
 	}
-
-	public function doDraft($draftId = null, ParamQuery $refPath) {
+	
+	public function doDraft($draftId, ParamQuery $refPath) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 		
 		$eiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
+		$entryEiUtils = $this->eiCtrlUtils->toEiEntryUtils($eiMapping);
+		if ($entryEiUtils->getDraft()->isPublished()) {
+			$eiSelection = $entryEiUtils->getEiUtils()->createNewEiSelection(true, $entryEiUtils->getEiSpec());
+			$eiMapping = $this->eiCtrlUtils->getEiStateUtils()->createEiMappingCopy($eiSelection, $eiMapping);
+		}
 		
 		$editModel = new EditModel($this->eiCtrlUtils->getEiStateUtils(), true, true);
 		$editModel->initialize($eiMapping);

@@ -23,6 +23,7 @@
 	use rocket\spec\ei\manage\draft\Draft;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
+use rocket\user\model\RocketUserDao;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -31,25 +32,42 @@
 	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
  
-	$selectedDraft = $entryCommandViewModel->getCurrentDraft();
+	$rocketUserDao = $view->lookup(RocketUserDao::class);
+	$view->assert($rocketUserDao instanceof RocketUserDao);
+	
+	$selectedDraft = $entryCommandViewModel->getSelectedDraft();
 ?>
 <h2><?php $html->l10nText('ei_impl_draft_nav_title') ?></h2>
 <div class="rocket-panel rocket-collapsable rocket-history">
 	
-	<?php if (null !== ($currentDraft = $entryCommandViewModel->getCurrentDraft())): ?>
+	<?php if (null !== ($latestDraft = $entryCommandViewModel->getLatestDraft())): ?>
 		<h3><?php $html->l10nText('ei_impl_draft_current_title') ?></h3>
 		<ul>
-			<li<?php $view->out($currentDraft->equals($selectedDraft) ? ' class="rocket-active"' : '') ?>>
+			<li<?php $view->out($latestDraft->equals($selectedDraft) ? ' class="rocket-active"' : '') ?>>
 				<div class="rocket-history-entry-content">
-					<p><?php $html->l10nDateTime($currentDraft->getLastMod()) ?></p>
-					<p><?php $html->linkToController($entryCommandViewModel->buildPathToDraft($currentDraft), 
-							$html->getL10nText('spec_draft_show_draft_label')) ?></p>
+					<p>
+						<?php $html->l10nDateTime($latestDraft->getLastMod()) ?>
+						<?php if (null !== ($user = $rocketUserDao->getUserById($latestDraft->getId()))): ?> 
+							<?php $html->out($user) ?>
+						<?php endif ?>
+					</p>
+					<?php if ($latestDraft->isNew()): ?>
+						<p>New draft</p>
+					<?php else: ?>
+						<p><?php $html->linkToController($entryCommandViewModel->getPathToDraft($latestDraft),
+								$html->getL10nText('spec_draft_show_draft_label')) ?></p>
+					<?php endif ?>
 				</div>
-				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($currentDraft), new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'), 
-						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_load_label'))) ?>
+				
+				
+				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($latestDraft), 
+						new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'), 
+						array('class' => 'rocket-single-command rocket-control', 
+								'title' => $html->getL10nText('spec_draft_load_label'))) ?>
 			</li>
 		</ul>
 	<?php endif ?>
+	
 	<h3><?php $html->l10nText('ei_impl_draft_live_entry_title') ?></h3>
 	<ul>
 		<li<?php $view->out($selectedDraft === null ? ' class="rocket-active"' : '') ?>>
@@ -62,6 +80,7 @@
 						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_show_live_entry_label'))) ?>
 		</li>
 	</ul>
+	
 	<h3><?php $html->l10nText('ei_impl_draft_history_title') ?></h3>
 	<ul>
 		<?php foreach ($entryCommandViewModel->getHistoricizedDrafts() as $draft): $view->assert($draft instanceof Draft) ?>

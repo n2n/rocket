@@ -27,7 +27,6 @@ use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use n2n\web\ui\Raw;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\model\EntryGuiModel;

@@ -29,7 +29,6 @@ use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\common\controller\EditController;
-use rocket\spec\ei\component\command\impl\common\controller\PathUtils;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\ei\manage\model\EntryGuiModel;
@@ -42,6 +41,7 @@ use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use n2n\util\uri\Path;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'edit';
@@ -68,15 +68,16 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}
 	
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
-		$eiMapping = $entryGuiModel->getEiMapping();
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+		$eiMapping = $entryGuiUtils->getEiMapping();
 		
 		$eiSelection = $eiMapping->getEiSelection();
+		$eiState = $entryGuiUtils->getEiState();
 		if ($eiState->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::from($this))) {
 			return array();
 		}
 		
-		$eiUtils = new EiStateUtils($eiState);
+		$eiUtils = $entryGuiUtils->getEiStateUtils();
 		
 		$hrefControls = array();
 

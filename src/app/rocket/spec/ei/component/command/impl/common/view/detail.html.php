@@ -49,7 +49,7 @@
 
 <?php if ($entryCommandViewModel->hasDraftHistory()): ?>
 	<?php $view->panelStart('additional') ?>
-		<?php $view->import('spec\ei\component\command\impl\common\view\inc\historyNav.html', 
+		<?php $view->import('inc\historyNav.html', 
 				array('entryCommandViewModel' => $entryCommandViewModel)) ?>
 	<?php $view->panelEnd() ?>
 <?php endif ?>

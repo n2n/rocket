@@ -29,7 +29,8 @@ use rocket\spec\ei\manage\EntryGui;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
-
+use rocket\spec\ei\manage\draft\Draft;
+use rocket\user\model\RocketUserDao;
 
 class EntryCommandViewModel {
 	private $title;
@@ -105,27 +106,42 @@ class EntryCommandViewModel {
 		return $this->eiState;
 	}
 	
+	private $latestDraft = null;
 	private $historicizedDrafts = array();
 	
+	public function initializeDrafts() {
+		$entryEiEntryUtils = $this->getEiEntryUtils();
+		if ($entryEiEntryUtils->hasLiveId() && $this->eiStateUtils->isDraftingEnabled()) {
+			$this->historicizedDrafts = $entryEiEntryUtils->lookupDrafts(0, 30);
+		}
+	
+		if (empty($this->historicizedDrafts)) return;
+		
+		$latestDraft = reset($this->historicizedDrafts);
+		if ($latestDraft->getFlag() == Draft::FLAG_PUBLISHED) {
+			$this->latestDraft = $latestDraft;
+			array_shift($this->historicizedDrafts);
+		}
+	}
+	
 	public function hasDraftHistory() {
-		return !empty($this->historicizedDrafts);
+		return $this->latestDraft !== null || !empty($this->historicizedDrafts);
 	}
 	
-	public function setLatestDrafts(array $latestDrafts) {
-		$this->historicizedDrafts = $latestDrafts;
+	public function getSelectedDraft() {
+		if ($this->getEiSelection()->isDraft()) {
+			return $this->getEiSelection()->getDraft();
+		}
+		
+		return null;
 	}
 	
-	public function getCurrentDraft() {
-		return $this->getEiSelection()->getDraft();
+	public function getLatestDraft() {
+		return $this->latestDraft;
 	}
 	
 	public function getHistoricizedDrafts() {
-		$eiSelection = $this->getEiSelection();
-		
-		// @todo limit and num
-		return $this->eiState->getManageState()->getDraftManager()->findByEntityObjId(
-				$eiSelection->getLiveEntityObj(), $eiSelection->getId(), 
-				0, 30, $this->entryGuiModel->getEiMask()->getDraftDefinition());
+		return $this->historicizedDrafts;
 	}
 	
 	public function isPreviewAvailable() {
@@ -166,8 +182,7 @@ class EntryCommandViewModel {
 	}
 	
 	public function getLiveEntryUrl(HttpContext $httpContext) {
-		return $this->eiState->getDetailUrl($httpContext,
-				$this->entryGuiModel->getEiMapping()->toEntryNavPoint());
+		return $this->eiState->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());
 	}
 	
 	public function setCancelUrl(Url $cancelUrl) {
@@ -185,8 +200,7 @@ class EntryCommandViewModel {
 			return $this->eiState->getOverviewUrl($httpContext);
 		}
 		
-		return $this->eiState->getDetailUrl($httpContext, 
-				$this->entryGuiModel->getEiMapping()->toEntryNavPoint());	
+		return $this->eiState->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());	
 	}
 	
 	public function createDetailView() {

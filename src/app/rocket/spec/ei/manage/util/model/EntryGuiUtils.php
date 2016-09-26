@@ -24,17 +24,47 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\mask\EiMask;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EntryGuiUtils extends EiEntryUtils {
-	private $entryGuiModel;
+	private $viewMode;
+// 	protected $eiMask;
+	protected $eiSelectionGui;
 	
-	public function __construct(EntryGuiModel $entryGuiModel, $eiState = null) {
-		parent::__construct($entryGuiModel->getEiMapping(), $eiState);
+	public function __construct(EiMapping $eiMapping, int $viewMode, $eiState = null) {
+		parent::__construct($eiMapping, $eiState);
 		
-		$this->entryGuiModel = $entryGuiModel;
+		$this->viewMode = $viewMode;
 	}
 	
+// 	public function getEiMask() {
+// 		if ($this->eiMask !== null) {
+// 			return $this->eiMask;
+// 		}
+		
+// 		throw new IllegalStateException('No EiMask available.');
+// 	}
+	
+	/**
+	 * @param EntryGuiModel $entryGuiModel
+	 * @param EiState $eiState
+	 * @return EntryGuiUtils
+	 */
+	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
+		$entryGuiUtils = new EntryGuiUtils($entryGuiModel->getEiMapping(), 
+				$entryGuiModel->getEiSelectionGui()->getViewMode(), $eiState);
+		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
+		return $entryGuiUtils;
+	}
+	
+	/**
+	 * @return boolean
+	 */
 	public function isViewModeOverview() {
-		return $this->entryGuiModel->getEiSelectionGui()->isViewModeOverview();
+		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
+				|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
 	}
 }

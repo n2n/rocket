@@ -25,7 +25,6 @@ use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\mask\EiMask;
 
-	
 interface EntryGuiModel {
 	public function getEiMask(): EiMask;
 	/**

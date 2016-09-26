@@ -43,12 +43,10 @@ class DetailController extends ControllerAdapter {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 
 		$entryGuiModel = $this->eiCtrlUtils->getEiStateUtils()->createBulkyEntryGuiModel($eiMapping, false);
-		$entryGuiUtils = new EntryGuiUtils($entryGuiModel, $this->eiCtrlUtils);
+		$entryGuiUtils = EntryGuiUtils::from($entryGuiModel, $this->eiCtrlUtils);
 
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel);
-		if ($entryGuiUtils->hasLiveId()) {
-			$viewModel->setLatestDrafts($entryGuiUtils->lookupDrafts(0, 30));
-		}
+		$viewModel->initializeDrafts();
 		
 		$this->applyBreadcrumbs($eiMapping->getEiSelection());
 			

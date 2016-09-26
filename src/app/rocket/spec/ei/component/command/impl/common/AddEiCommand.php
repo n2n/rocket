@@ -40,6 +40,7 @@ use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent, 
 		PrivilegedEiCommand {
@@ -126,13 +127,13 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 				self::CONTROL_ADD_SIBLING_BRANCH_KEY => $dtc->translate('ei_impl_add_sibling_branch_label'));
 	}
 	
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
 		$nestedSetStrategy = $this->eiEngine->getEiSpec()->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) {
 			return array();
 		}
 		
-		$eiMapping = $entryGuiModel->getEiMapping();
+		$eiMapping = $entryGuiUtils->getEiMapping();
 		$eiSelection = $eiMapping->getEiSelection();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$httpContext = $view->getHttpContext();

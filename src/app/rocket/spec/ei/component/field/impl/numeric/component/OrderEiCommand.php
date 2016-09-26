@@ -60,7 +60,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
 		$eiMapping = $entryGuiModel->getEiMapping();
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());

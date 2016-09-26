@@ -44,6 +44,7 @@ use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
 		PrivilegedEiCommand {
@@ -75,10 +76,12 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryHrefControls()
 	 */
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
-		$eiUtils = new EiStateUtils($eiState);
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+		$eiUtils = $entryGuiUtils->getEiStateUtils();
 		
-		$eiSelection = $entryGuiModel->getEiMapping()->getEiSelection();
+		$eiSelection = $entryGuiUtils->getEiSelection();
+		$eiMapping = $entryGuiUtils->getEiMapping();
+		$eiState = $entryGuiUtils->getEiState();
 		
 		if ($eiState->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::from($this))) {
 			return array();

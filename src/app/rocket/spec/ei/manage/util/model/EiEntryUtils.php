@@ -33,11 +33,12 @@ use rocket\spec\ei\manage\util\model\EiEntryObjUtils;
 
 class EiEntryUtils {
 	private $eiSelection;
+	private $eiMapping;
 	private $eiUtils;
 	private $eiStateUtils;
 	
 	public function __construct($eiEntryObj, $eiState = null) {
-		$this->eiSelection = EiEntryObjUtils::determineEiSelection($eiEntryObj);
+		$this->eiSelection = EiEntryObjUtils::determineEiSelection($eiEntryObj, $this->eiMapping);
 		
 		if ($eiState instanceof EiState) {
 			$this->eiUtils = $this->eiStateUtils = new EiStateUtils($eiState);
@@ -82,6 +83,18 @@ class EiEntryUtils {
 	 */
 	public function getEiState() {
 		return $this->getEiStateUtils()->getEiState();
+	}
+	
+	public function getEiMapping(bool $createIfNotAvaialble = true) {
+		if ($this->eiMapping !== null) {
+			return $this->eiMapping;
+		}
+		
+		if ($createIfNotAvaialble) {
+			return $this->eiMapping = $this->eiUtils->createEiMapping($this->eiSelection);
+		}
+		
+		throw new IllegalStateException('No EiMapping available.');
 	}
 	
 	/**

@@ -34,6 +34,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'tree-move';
@@ -58,14 +59,16 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
-		$eiMapping = $entryGuiModel->getEiMapping();
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+		$eiMapping = $entryGuiUtils->getEiMapping();
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	
-		if (!$entryGuiModel->getEiSelectionGui()->isViewModeOverview()) return array();
+		if (!$entryGuiUtils->isViewModeOverview()) return array();
 	
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
+		
+		$eiState = $entryGuiUtils->getEiState();
 	
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(

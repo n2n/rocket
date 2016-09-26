@@ -34,7 +34,6 @@ use rocket\spec\ei\mask\EiMask;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\MappingFactory;
@@ -71,6 +70,7 @@ use rocket\spec\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\control\UnavailableControlException;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -243,7 +243,7 @@ class CommonEiMask implements EiMask, Identifiable {
 					|| !$eiState->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
 				
 			$hrefControls = $eiCommand->createOverallHrefControls($eiState, $htmlView);
-			ArgUtils::valArrayReturn($hrefControls, $eiCommand, 'createEntryHrefControls', HrefControl::class);
+			ArgUtils::valArrayReturn($hrefControls, $eiCommand, 'createOverallHrefControls', HrefControl::class);
 			foreach ($hrefControls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 			}
@@ -259,15 +259,15 @@ class CommonEiMask implements EiMask, Identifiable {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createEntryHrefControls()
 	 */
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$entryGuiModel->getEiMapping()->isExecutableBy(EiCommandPath::from($eiCommand))) {
+					|| !$entryGuiUtils->getEiMapping()->isExecutableBy(EiCommandPath::from($eiCommand))) {
 				continue;
 			}
 			
-			$entryControls = $eiCommand->createEntryHrefControls($entryGuiModel, $eiState, $view);
+			$entryControls = $eiCommand->createEntryHrefControls($entryGuiUtils, $view);
 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryHrefControls', HrefControl::class);
 			foreach ($entryControls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
