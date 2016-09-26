@@ -193,11 +193,11 @@ class EntryEiHtmlBuilder {
 		return $ul;
 	}
 	
-// 	public function entryControlList($useIcons = false) {
-// 		$this->html->out($this->getEntryControlList($useIcons));
+// 	public function entryGuiControlList($useIcons = false) {
+// 		$this->html->out($this->getEntryGuiControlList($useIcons));
 // 	}
 	
-// 	public function getEntryControlList($useIcons = false) {
+// 	public function getEntryGuiControlList($useIcons = false) {
 // 		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls($this->eiState, 
 // 				$this->meta->getCurrentEntryGuiModel()->getEiMapping(), $this->view);
 	

@@ -24,6 +24,9 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use rocket\user\model\RocketUserDao;
+use rocket\spec\ei\manage\EntryEiHtmlBuilder;
+use rocket\spec\ei\manage\ControlEiHtmlBuilder;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -36,6 +39,8 @@ use rocket\user\model\RocketUserDao;
 	$view->assert($rocketUserDao instanceof RocketUserDao);
 	
 	$selectedDraft = $entryCommandViewModel->getSelectedDraft();
+	
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiState());
 ?>
 <h2><?php $html->l10nText('ei_impl_draft_nav_title') ?></h2>
 <div class="rocket-panel rocket-collapsable rocket-history">
@@ -54,16 +59,9 @@ use rocket\user\model\RocketUserDao;
 					<?php if ($latestDraft->isNew()): ?>
 						<p>New draft</p>
 					<?php else: ?>
-						<p><?php $html->linkToController($entryCommandViewModel->getPathToDraft($latestDraft),
-								$html->getL10nText('spec_draft_show_draft_label')) ?></p>
+						<?php $controlEiHtml->entryControlList($latestDraft, DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
 					<?php endif ?>
 				</div>
-				
-				
-				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($latestDraft), 
-						new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'), 
-						array('class' => 'rocket-single-command rocket-control', 
-								'title' => $html->getL10nText('spec_draft_load_label'))) ?>
 			</li>
 		</ul>
 	<?php endif ?>
@@ -73,11 +71,9 @@ use rocket\user\model\RocketUserDao;
 		<li<?php $view->out($selectedDraft === null ? ' class="rocket-active"' : '') ?>>
 				<div class="rocket-history-entry-content">
 					<p>activation date</p>
-					<p><?php $html->linkToController($entryCommandViewModel->getLiveEntryUrl($request), 
-							$html->getL10nText('spec_draft_show_live_entry_label')) ?></p>
 				</div>
-				<?php $html->link($entryCommandViewModel->getLiveEntryUrl($request), new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'),
-						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_show_live_entry_label'))) ?>
+				<?php $controlEiHtml->entryControlList($entryCommandViewModel->getEiSelection()->getLiveEntry(), 
+						DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
 		</li>
 	</ul>
 	

@@ -55,7 +55,7 @@
 <?php endif ?>
 
 <div id="rocket-page-controls">
-	<?php $controlEiHtml->entryControlList($entryCommandViewModel->getEntryGuiModel()) ?>
+	<?php $controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
 		<?php $view->import('inc\previewSwitch.html') ?>

@@ -72,7 +72,7 @@
 					<?php $entryEiHtml->closeField(); ?>
 				<?php endforeach ?>
 				<td>
-					<?php $controlEiHtml->entryControlList($entryEiHtml->meta()->getCurrentEntryGuiModel(), true) ?>
+					<?php $controlEiHtml->entryGuiControlList($entryEiHtml->meta()->getCurrentEntryGuiModel(), true) ?>
 				</td>
 			</tr>
 		<?php endwhile ?>

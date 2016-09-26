@@ -137,6 +137,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$eiSelection = $eiMapping->getEiSelection();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$httpContext = $view->getHttpContext();
+		$eiState = $entryGuiUtils->getEiState();
 		
 		return array(
 				self::CONTROL_ADD_CHILD_BRANCH_KEY => new HrefControl(

@@ -24,9 +24,6 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EntryGuiUtils extends EiEntryUtils {
@@ -34,8 +31,8 @@ class EntryGuiUtils extends EiEntryUtils {
 // 	protected $eiMask;
 	protected $eiSelectionGui;
 	
-	public function __construct(EiMapping $eiMapping, int $viewMode, $eiState = null) {
-		parent::__construct($eiMapping, $eiState);
+	public function __construct($eiEntryObj, int $viewMode, $eiState = null) {
+		parent::__construct($eiEntryObj, $eiState);
 		
 		$this->viewMode = $viewMode;
 	}

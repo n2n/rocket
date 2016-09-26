@@ -51,17 +51,7 @@ class EditController extends ControllerAdapter {
 	 */
 	private function createEntryCommandViewModel(EntryGuiModel $entryGuiModel, Url $cancelUrl = null) {
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel, $cancelUrl);
-		
-		$entryGuiUtils = new EntryGuiUtils($entryGuiModel, $this->eiCtrlUtils);
-		
-		if (!$entryGuiUtils->getEiUtils()->isDraftingEnabled()) {
-			return $viewModel;
-		}
-		
-		if ($entryGuiUtils->hasLiveId()) {
-			$viewModel->setLatestDrafts($entryGuiUtils->lookupDrafts(0, 30));
-		}
-		
+		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
 

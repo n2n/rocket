@@ -23,9 +23,13 @@ namespace rocket\spec\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\ui\UiComponent;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\config\mask\model\CommonEntryGuiModel;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\mask\EiMask;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class ControlEiHtmlBuilder {
 	private $view;
@@ -49,20 +53,35 @@ class ControlEiHtmlBuilder {
 		return $ul;
 	}
 	
-	public function entryControlList(EntryGuiModel $entryGuiModel, $useIcons = false) {
-		$this->view->getHtmlBuilder()->out($this->getEntryControlList($entryGuiModel, $useIcons));
+	public function entryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
+		$this->view->out($this->getEntryGuiControlList($entryGuiModel, $useIcons));
 	}
 	
-	public function getEntryControlList(EntryGuiModel $entryGuiModel, $useIcons = false) {
-		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls($entryGuiModel, $this->eiState, $this->view);
+	public function getEntryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
+		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls(
+				EntryGuiUtils::from($entryGuiModel, $this->eiState), $this->view);
 	
+		return $this->createControlList($entryControls, $useIcons);
+	}
+	
+	public function entryControlList($eiEntryObj, int $viewMode, bool $useIcons = false) {
+		$this->view->out($this->getEntryControlList($eiEntryObj, $viewMode, $useIcons));
+	}
+	
+	public function getEntryControlList($eiEntryObj, int $viewMode, $useIcons = false) {
+		$entryGuiUtils = new EntryGuiUtils($eiEntryObj, $viewMode, $this->eiState);
+		return $this->createControlList($this->eiState->getContextEiMask()
+				->createEntryHrefControls($entryGuiUtils, $this->view), $useIcons);
+	}
+	
+	private function createControlList(array $entryControls, bool $useIcons) {
 		$ulHtmlElement = new HtmlElement('ul', array('class' => ($useIcons ? 'rocket-simple-controls' : null /* 'rocket-main-controls' */)));
-	
+		
 		foreach ($entryControls as $control) {
 			$liHtmlElement = new HtmlElement('li', null, $control->createUiComponent($useIcons));
 			$ulHtmlElement->appendContent($liHtmlElement);
 		}
-	
+		
 		return $ulHtmlElement;
 	}
 }
