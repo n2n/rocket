@@ -108,9 +108,8 @@ class DateTimeEiField extends DraftableEiFieldAdapter implements SortableEiField
 	}
 	
     public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-        if (null !== ($dateTime = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject()))) {
-            return L10nUtils::formatDateTime($dateTime, $n2nLocale,
-                    $this->getDateStyle(), $this->getTimeStyle());
+        if (null !== ($dateTime = $this->read($eiObject))) {
+            return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
         }
 
         return null;
