@@ -63,9 +63,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return $eiState->getN2nContext()->lookup(DeleteController::class);
 	}
 	
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
-		$entryGuiUtils = new EntryGuiUtils($entryGuiModel, $eiState);
-		
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
 		$pathExt = null;
 		$name = null;
 		$tooltip = null;
@@ -79,11 +77,11 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 		} else {
-			$eiUtils = new EiStateUtils($eiState);
 			$pathExt = new Path(array('live', $entryGuiUtils->getIdRep()));
 			$identityString = $entryGuiUtils->createIdentityString();
 			$name = $view->getL10nText('common_delete_label');
-			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', array('entry' => $eiUtils->getGenericLabel()));
+			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
+					array('entry' => $entryGuiUtils->getEiStateUtils()->getGenericLabel()));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
 		}
 		
@@ -94,10 +92,10 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		
 		$query = array();
 		if ($entryGuiUtils->isViewModeOverview()) {
-			$query['refPath'] = (string) $eiState->getCurrentUrl($view->getHttpContext());
+			$query['refPath'] = (string) $entryGuiUtils->getEiState()->getCurrentUrl($view->getHttpContext());
 		}
 		
-		$hrefControl = HrefControl::create($eiState, $this, $pathExt->toUrl($query), $controlButton);
+		$hrefControl = HrefControl::create($entryGuiUtils->getEiState(), $this, $pathExt->toUrl($query), $controlButton);
 		
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 	}

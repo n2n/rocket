@@ -34,16 +34,14 @@ use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
-use rocket\user\bo\UserSpecGrant;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use rocket\user\bo\EiGrant;
-use rocket\spec\ei\component\CritmodFactory;
 use rocket\user\model\EiGrantForm;
-use rocket\spec\ei\component\SecurityFactory;
 use rocket\spec\ei\EiThing;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\spec\ei\EiEngine;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;
@@ -203,7 +201,13 @@ class RocketUserGroupController extends ControllerAdapter {
 		$tx->commit();
 	}
 	
-	private function lookupEiEngine(string $eiSpecId, string $eiMaskId = null): EiThing {
+	/**
+	 * @param string $eiSpecId
+	 * @param string $eiMaskId
+	 * @throws PageNotFoundException
+	 * @return EiEngine
+	 */
+	private function lookupEiEngine(string $eiSpecId, string $eiMaskId = null): EiEngine {
 		$eiSpec = null;
 		try {
 			$eiSpec = $this->rocket->getSpecManager()->getEiSpecById($eiSpecId);
@@ -222,7 +226,13 @@ class RocketUserGroupController extends ControllerAdapter {
 		return $eiSpec->getEiEngine();
 	}
 	
-	
+	/**
+	 * @param unknown $rocketUserGroupId
+	 * @param string $eiSpecId
+	 * @param string $eiMaskId
+	 * @param ScrRegistry $scrRegistry
+	 * @throws PageNotFoundException
+	 */
 	public function doRestrictEiGrant($rocketUserGroupId, string $eiSpecId, string $eiMaskId = null, ScrRegistry $scrRegistry) {
 		$eiEngine = $this->lookupEiEngine($eiSpecId, $eiMaskId);
 

@@ -37,6 +37,9 @@ use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\user\model\LoginContext;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\draft\DraftValueMap;
+use rocket\spec\ei\manage\util\model\EiEntryObjUtils;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\util\ex\IllegalStateException;
 
 abstract class EiUtilsAdapter implements EiUtils {
 	
@@ -265,5 +268,64 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 */
 	public function toEiEntryUtils($eiEntryObj): EiEntryUtils {
 		return new EiEntryUtils($eiEntryObj, $this);
+	}
+	
+	public function persist($eiEntryObj, bool $flush = true) {
+		if ($eiEntryObj instanceof Draft) {
+			$this->persistDraft($eiEntryObj, $flush);
+			return;
+		}
+		
+		if ($eiEntryObj instanceof LiveEntry) {
+			$this->persistLiveEntry($eiEntryObj, $flush);
+			return;
+		}
+		
+		$eiSelection = EiEntryObjUtils::determineEiSelection($eiEntryObj);
+		
+		if ($eiSelection->isDraft()) {
+			$this->persistDraft($eiSelection->getDraft(), $flush);
+			return;
+		}
+		
+		$this->persistLiveEntry($eiSelection->getLiveEntry(), $flush);
+	}
+	
+	private function persistDraft(Draft $draft, bool $flush) {
+		$draftManager = $this->getDraftManager();
+		
+		if (!$draft->isNew()) {
+			$draftManager->persist($draft);
+		} else {
+			$draftManager->persist($draft, $this->getEiMask()->determineEiMask(
+					$draft->getLiveEntry()->getEiSpec())->getEiEngine()->getDraftDefinition());
+		}
+		
+		if ($flush) {
+			$draftManager->flush();
+		}
+	}
+	
+	private function persistLiveEntry(LiveEntry $liveEntry, bool $flush) {
+		$em = $this->em();
+		$nss = $this->getNestedSetStrategy();
+		if ($nss === null || $liveEntry->isPersistent()) {
+			$em->persist($liveEntry->getEntityObj());
+			if (!$flush) return;
+			$em->flush();
+		} else {
+			if (!$flush) {
+				throw new IllegalStateException(
+						'Flushing is mandatory because LiveEntry is new and has a NestedSetStrategy.');
+			}
+			
+			$nsu = new NestedSetUtils($em, $this->getClass(), $nss);
+			$nsu->insertRoot($liveEntry->getEntityObj());
+		}
+		
+		if (!$liveEntry->isPersistent()) {
+			$liveEntry->refreshId();
+			$liveEntry->setPersistent(true);
+		}
 	}
 }

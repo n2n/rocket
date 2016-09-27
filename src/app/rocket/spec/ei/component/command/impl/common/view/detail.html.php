@@ -49,13 +49,13 @@
 
 <?php if ($entryCommandViewModel->hasDraftHistory()): ?>
 	<?php $view->panelStart('additional') ?>
-		<?php $view->import('spec\ei\component\command\impl\common\view\inc\historyNav.html', 
+		<?php $view->import('inc\historyNav.html', 
 				array('entryCommandViewModel' => $entryCommandViewModel)) ?>
 	<?php $view->panelEnd() ?>
 <?php endif ?>
 
 <div id="rocket-page-controls">
-	<?php $controlEiHtml->entryControlList($entryCommandViewModel->getEntryGuiModel()) ?>
+	<?php $controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
 		<?php $view->import('inc\previewSwitch.html') ?>

@@ -27,7 +27,6 @@ use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use n2n\web\ui\Raw;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\model\EntryGuiModel;
@@ -194,11 +193,11 @@ class EntryEiHtmlBuilder {
 		return $ul;
 	}
 	
-// 	public function entryControlList($useIcons = false) {
-// 		$this->html->out($this->getEntryControlList($useIcons));
+// 	public function entryGuiControlList($useIcons = false) {
+// 		$this->html->out($this->getEntryGuiControlList($useIcons));
 // 	}
 	
-// 	public function getEntryControlList($useIcons = false) {
+// 	public function getEntryGuiControlList($useIcons = false) {
 // 		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls($this->eiState, 
 // 				$this->meta->getCurrentEntryGuiModel()->getEiMapping(), $this->view);
 	

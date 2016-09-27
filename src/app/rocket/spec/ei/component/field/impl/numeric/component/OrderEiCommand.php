@@ -33,6 +33,7 @@ use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
+use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'order';
@@ -60,12 +61,14 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EntryGuiModel $entryGuiModel, EiState $eiState, HtmlView $view): array {
-		$eiMapping = $entryGuiModel->getEiMapping();
+	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+		$eiMapping = $entryGuiUtils->getEiMapping();
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 
-		if (!$entryGuiModel->getEiSelectionGui()->isViewModeOverview()) return array();
+		if (!$entryGuiUtils->isViewModeOverview()) return array();
+		
+		$eiState = $entryGuiUtils->getEiState();
 		
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
 		

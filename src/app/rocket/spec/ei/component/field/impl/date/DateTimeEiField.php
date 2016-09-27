@@ -47,7 +47,6 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\manage\EiState;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
@@ -108,14 +107,13 @@ class DateTimeEiField extends DraftableEiFieldAdapter implements SortableEiField
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-		if (null !== ($dateTime = $this->getPropertyAccessProxy()->getValue($eiObject->getObject()))) {
-			return L10nUtils::formatDateTime($n2nLocale, $dateTime,
-					$this->getDateStyle(), $this->getTimeStyle());
-		}
-		
-		return null;
-	}
+    public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+        if (null !== ($dateTime = $this->read($eiObject))) {
+            return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
+        }
+
+        return null;
+    } 
 	
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 
 			N2nContext $n2nContext): DraftValueSelection {

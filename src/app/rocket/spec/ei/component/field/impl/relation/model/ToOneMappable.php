@@ -66,6 +66,8 @@ class ToOneMappable extends RwMappable {
 	}
 	
 	public function copyMappable(EiObject $eiObject) {
-		throw new NotYetImplementedException();
+		$copy = new ToOneMappable($eiObject, $this->readable, $this->writable);
+		$copy->setValue($this->getValue());
+		return $copy;
 	}
 }

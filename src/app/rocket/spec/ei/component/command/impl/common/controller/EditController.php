@@ -33,6 +33,7 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\draft\Draft;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
@@ -50,17 +51,7 @@ class EditController extends ControllerAdapter {
 	 */
 	private function createEntryCommandViewModel(EntryGuiModel $entryGuiModel, Url $cancelUrl = null) {
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel, $cancelUrl);
-		
-		$entryGuiUtils = new EntryGuiUtils($entryGuiModel, $this->eiCtrlUtils);
-		
-		if (!$entryGuiUtils->getEiUtils()->isDraftingEnabled()) {
-			return $viewModel;
-		}
-		
-		if ($entryGuiUtils->hasLiveId()) {
-			$viewModel->setLatestDrafts($entryGuiUtils->lookupDrafts(0, 30));
-		}
-		
+		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
 
@@ -84,11 +75,16 @@ class EditController extends ControllerAdapter {
 				'entryCommandViewModel' => $this->createEntryCommandViewModel(
 						$editModel->getEntryModel()->getEntryGuiModel(), $redirectUrl)));
 	}
-
-	public function doDraft($draftId = null, ParamQuery $refPath) {
+	
+	public function doDraft($draftId, ParamQuery $refPath) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 		
 		$eiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
+		$entryEiUtils = $this->eiCtrlUtils->toEiEntryUtils($eiMapping);
+		if ($entryEiUtils->getDraft()->isPublished()) {
+			$eiSelection = $entryEiUtils->getEiUtils()->createNewEiSelection(true, $entryEiUtils->getEiSpec());
+			$eiMapping = $this->eiCtrlUtils->getEiStateUtils()->createEiMappingCopy($eiSelection, $eiMapping);
+		}
 		
 		$editModel = new EditModel($this->eiCtrlUtils->getEiStateUtils(), true, true);
 		$editModel->initialize($eiMapping);
@@ -114,8 +110,13 @@ class EditController extends ControllerAdapter {
 		$eiUtils = $this->eiCtrlUtils->getEiStateUtils();
 		$eiSelection = $eiUtils->createEiSelectionFromLiveEntry($draftEiMapping->getEiSelection()->getLiveEntry());
 		$eiMapping = $eiUtils->createEiMappingCopy($eiSelection, $draftEiMapping);
-	
+		
 		if ($eiMapping->save()) {
+			$eiUtils->persist($eiSelection);
+			$draft = $draftEiMapping->getEiSelection()->getDraft();
+			$draft->setFlag(Draft::FLAG_PUBLISHED);
+			$eiUtils->persist($draft);
+			
 			$this->redirect($this->eiCtrlUtils->buildRedirectUrl($eiMapping->getEiSelection()));
 			return;
 		}

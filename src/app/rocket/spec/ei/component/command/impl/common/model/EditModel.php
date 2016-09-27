@@ -97,9 +97,10 @@ class EditModel implements Dispatchable {
 		$eiMapping = $this->entryForm->buildEiMapping();
 		
 		if ($eiMapping->save()) {
+			$this->eiStateUtils->persist($eiMapping);
 			return true;
 		}
-				
+		
 		$messageContainer->addErrorCode('common_form_err', null, null, Rocket::NS);
 		return false;
 	}

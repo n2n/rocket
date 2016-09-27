@@ -69,7 +69,7 @@ use n2n\util\uri\Path;
 </div>
 
 <div id="rocket-page-controls">
-	<?php //$controlEiHtml->entryControlList($entryCommandViewModel->getEntryGuiModel()) ?>
+	<?php //$controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
 		<?php $view->import('inc\previewSwitch.html', array('entryCommandViewModel' => $entryCommandViewModel)) ?>
