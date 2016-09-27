@@ -32,7 +32,6 @@ use rocket\core\model\Breadcrumb;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
 use rocket\spec\ei\manage\model\EntryGuiModel;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 use rocket\spec\ei\manage\draft\Draft;
 
 class EditController extends ControllerAdapter {
