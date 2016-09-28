@@ -33,14 +33,12 @@ use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
@@ -68,6 +66,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		$name = null;
 		$tooltip = null;
 		$confirmMessage = null;
+		$iconType = null;
 		if ($entryGuiUtils->isDraft()) {
 			$draft = $entryGuiUtils->getDraft();
 			$pathExt = new Path(array('draft', $draft->getId()));
@@ -76,6 +75,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
+			$iconType = IconType::ICON_TIMES;
 		} else {
 			$pathExt = new Path(array('live', $entryGuiUtils->getIdRep()));
 			$identityString = $entryGuiUtils->createIdentityString();
@@ -83,9 +83,10 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
 					array('entry' => $entryGuiUtils->getEiStateUtils()->getGenericLabel()));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
+			$iconType = IconType::ICON_TIMES_CIRCLE;
 		}
 		
-		$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_DANGER, IconType::ICON_TIMES);
+		$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_DANGER, $iconType);
 		$controlButton->setConfirmMessage($confirmMessage);
 		$controlButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
 		$controlButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
