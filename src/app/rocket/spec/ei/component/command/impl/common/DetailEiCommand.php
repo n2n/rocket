@@ -34,7 +34,6 @@ use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
@@ -43,7 +42,6 @@ use n2n\l10n\Lstr;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
@@ -88,10 +86,13 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		}
 		
 		$pathExt = null;
+		$iconType = null;
 		if (!$eiSelection->isDraft()) {
 			$pathExt = new Path(array('live', $eiUtils->idToIdRep($eiSelection->getLiveEntry()->getId())));
+			$iconType = IconType::ICON_FILE;
 		} else if (!$eiSelection->getDraft()->isNew()) {
 			$pathExt = new Path(array('draft', $eiSelection->getDraft()->getId()));
+			$iconType = IconType::ICON_FILE_O;
 		} else {
 			return array();
 		}
@@ -99,7 +100,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$controlButton = new ControlButton(
 				$view->getL10nText('ei_impl_detail_label'), $view->getL10nText('ei_impl_detail_tooltip',
 						array('entry' => $eiState->getContextEiMask()->getLabelLstr()->t($view->getN2nLocale()))),
-				true, ControlButton::TYPE_DEFAULT, IconType::ICON_FILE);
+				true, ControlButton::TYPE_DEFAULT, $iconType);
 		
 		$hrefControls = array(self::CONTROL_DETAIL_KEY 
 				=> HrefControl::create($eiState, $this, $pathExt->toUrl(), $controlButton));

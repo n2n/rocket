@@ -79,14 +79,14 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))), 
 						new ControlButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_ARROW_UP, array('class' => 'rocket-order-before-cmd'))),
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiState->getControllerContext())
 								->ext($this->getId(), 'after', $eiMapping->getIdRep())
 								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_ARROW_DOWN, array('class' => 'rocket-order-after-cmd'))));
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-order-after-cmd'))));
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()

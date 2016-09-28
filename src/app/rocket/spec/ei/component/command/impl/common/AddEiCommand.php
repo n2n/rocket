@@ -38,7 +38,6 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
@@ -114,10 +113,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 			$tooltip = $dtc->translate('ei_impl_add_draft_tooltip', array('type' => $eiUtils->getGenericLabel()));
 			
 			$controlButtons[self::CONTROL_ADD_DRAFT_KEY] = new HrefControl($path, new ControlButton($name, $tooltip, true, 
-					ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
+					ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_SQUARE));
 		}
-		
-		
 		return $controlButtons;
 	}
 	
@@ -140,12 +137,6 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$eiState = $entryGuiUtils->getEiState();
 		
 		return array(
-				self::CONTROL_ADD_CHILD_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
-								->ext($this->getId(), 'child', $eiMapping->getIdRep()), 
-						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'), 
-								$dtc->translate('ei_impl_add_child_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE)),
 				self::CONTROL_ADD_BEFORE_BRANCH_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiState->getControllerContext())
 								->ext($this->getId(), 'before', $eiMapping->getIdRep()), 
@@ -157,6 +148,13 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 								->ext($this->getId(), 'after', $eiMapping->getIdRep()),
 						new ControlButton($dtc->translate('ei_impl_add_after_branch_label'),
 								$dtc->translate('ei_impl_add_after_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN)));
+								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN)),
+				self::CONTROL_ADD_CHILD_BRANCH_KEY => new HrefControl(
+						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						->ext($this->getId(), 'child', $eiMapping->getIdRep()),
+						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
+								$dtc->translate('ei_impl_add_child_branch_tooltip'),
+								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT))
+		);
 	}
 }

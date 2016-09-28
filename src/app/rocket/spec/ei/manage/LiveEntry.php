@@ -81,6 +81,10 @@ class LiveEntry {
 		return $this->eiSpec;
 	}
 	
+	public function equals($obj) {
+		return $obj instanceof LiveEntry && $this->getEntityObj() === $obj->getEntityObj();
+	}
+	
 	public static function createFrom(EiSpec $contextEiSpec, $entityObj) {
 		ArgUtils::valObject($entityObj, false, 'entityObj');
 		

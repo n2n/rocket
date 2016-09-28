@@ -114,11 +114,15 @@ class EntryCommandViewModel {
 		if ($entryEiEntryUtils->hasLiveId() && $this->eiStateUtils->isDraftingEnabled()) {
 			$this->historicizedDrafts = $entryEiEntryUtils->lookupDrafts(0, 30);
 		}
+		
+		if ($this->eiSelection->isDraft() && $this->eiSelection->isNew()) {
+			$this->latestDraft = $this->eiSelection->getDraft();
+		}
 	
-		if (empty($this->historicizedDrafts)) return;
+		if (empty($this->historicizedDrafts) || $this->latestDraft !== null) return;
 		
 		$latestDraft = reset($this->historicizedDrafts);
-		if ($latestDraft->getFlag() == Draft::FLAG_PUBLISHED) {
+		if (!$latestDraft->isPublished()) {
 			$this->latestDraft = $latestDraft;
 			array_shift($this->historicizedDrafts);
 		}

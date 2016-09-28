@@ -23,10 +23,9 @@
 	use rocket\spec\ei\manage\draft\Draft;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
-use rocket\user\model\RocketUserDao;
-use rocket\spec\ei\manage\EntryEiHtmlBuilder;
-use rocket\spec\ei\manage\ControlEiHtmlBuilder;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+	use rocket\user\model\RocketUserDao;
+	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
+	use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -83,17 +82,8 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 			<li<?php $view->out($draft->equals($selectedDraft) ? ' class="rocket-active"' : '') ?>>
 				<div class="rocket-history-entry-content">
 					<p><?php $html->l10nDateTime($draft->getLastMod()) ?></p>
-					<p class="rocket-history-status">
-						<?php if ($draft->isPublished()): ?>
-							<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($draft), $html->getL10nText('spec_draft_show_history_label')) ?>
-						<?php else: ?>
-							<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($draft), $html->getL10nText('spec_draft_show_draft_label')) ?>
-						<?php endif ?>
-						<?php // TODO: spec_draft_show_backup_label einbauen ?>
-					</p>
 				</div>
-				<?php $html->linkToController($entryCommandViewModel->buildPathToDraft($draft), new n2n\web\ui\Raw('<i class="fa fa-inbox"></i>'), 
-						array('class' => 'rocket-single-command rocket-control', 'title' => $html->getL10nText('spec_draft_load_label'))) ?>
+				<?php $controlEiHtml->entryControlList($draft, DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
 			</li>
 		<?php endforeach ?>
 	</ul>

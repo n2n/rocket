@@ -35,6 +35,16 @@ class TreeMoveController extends ControllerAdapter {
 		$this->eiCtrlUtils = EiCtrlUtils::from($this->getHttpContext());
 	}
 
+	public function doChild($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
+		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		
+		foreach ($idReps->toStringArrayOrReject() as $idRep) {
+			$this->move($idRep, $targetIdRep);
+		}
+		
+		$this->redirect($refUrl);
+	}
+	
 	public function doBefore($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
 		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 
@@ -55,7 +65,7 @@ class TreeMoveController extends ControllerAdapter {
 		$this->redirect($refUrl);
 	}
 
-	private function move(string $idRep, string $targetIdRep, bool $before) {
+	private function move(string $idRep, string $targetIdRep, bool $before = null) {
 		if ($idRep === $targetIdRep) return;
 
 		$eiUtils = $this->eiCtrlUtils->getEiStateUtils();
@@ -78,10 +88,12 @@ class TreeMoveController extends ControllerAdapter {
 		$nsu = new NestedSetUtils($eiUtils->em(), $eiUtils->getClass());
 		
 		try {
-			if ($before) {
+			if ($before === true) {
 				$nsu->moveBefore($liveEntry->getEntityObj(), $targetLiveEntry->getEntityObj());
-			} else {
+			} else if ($before === false) {
 				$nsu->moveAfter($liveEntry->getEntityObj(), $targetLiveEntry->getEntityObj());
+			} else {
+				$nsu->move($liveEntry->getEntityObj(), $targetLiveEntry->getEntityObj());
 			}
 		} catch (\n2n\util\ex\IllegalStateException $e) {
 		}
