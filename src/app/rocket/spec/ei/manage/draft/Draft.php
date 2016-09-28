@@ -117,6 +117,6 @@ class Draft {
 	public function equals($obj) {
 		if (!($obj instanceof Draft)) return false;
 		
-		return $this->getId() == $obj->getId() && $this->getEntityObjId() == $obj->getEntityObjId();
+		return $this->getId() == $obj->getId() && $this->getLiveEntry()->equals($obj->getLiveEntry());
 	}
 }

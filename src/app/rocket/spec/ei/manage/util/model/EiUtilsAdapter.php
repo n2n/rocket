@@ -258,8 +258,15 @@ abstract class EiUtilsAdapter implements EiUtils {
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 	
-		return new DraftEiSelection(new Draft(null, LiveEntry::createNew($eiSpec), new \DateTime(),
-				$loginContext->getCurrentUser()->getId(), new DraftValueMap()));
+		return new DraftEiSelection($this->createNewDraftFromLiveEntry(LiveEntry::createNew($eiSpec)));
+	}
+	
+	public function createNewDraftFromLiveEntry(LiveEntry $liveEntry) {
+		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
+		CastUtils::assertTrue($loginContext instanceof LoginContext);
+		
+		return new Draft(null, $liveEntry, new \DateTime(),
+				$loginContext->getCurrentUser()->getId(), new DraftValueMap());
 	}
 	
 	/**
