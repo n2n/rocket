@@ -88,20 +88,27 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 			$tooltip = $view->getL10nText('ei_impl_edit_entry_tooltip', array('entry' => $eiUtils->getGenericLabel()));
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
 					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL));
+			
+			$urlExt = (new Path(array('draft')))
+					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
+			$label = $view->getL10nText('common_edit_latest_draft_label');
+			$tooltip = $view->getL10nText('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiUtils->getGenericLabel()));
+			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
+					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
 		} else if (!$eiSelection->getDraft()->isNew()) {
 			$urlExt = (new Path(array('draft', $eiSelection->getDraft()->getId())))
 					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 			$label = $view->getL10nText('ei_impl_edit_draft_label');
 			$tooltip = $view->getL10nText('ei_impl_edit_draft_tooltip');
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL));
+					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
 			
 			$urlExt = (new Path(array('publish', $eiSelection->getDraft()->getId())))
 					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 			$label = $view->getL10nText('ei_impl_publish_draft_label');
 			$tooltip = $view->getL10nText('ei_impl_publish_draft_tooltip');
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_CHECK));
+					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_CHECK_SQUARE));
 		}
 		
 		return $hrefControls;

@@ -31,7 +31,6 @@ use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
@@ -40,6 +39,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 	const ID_BASE = 'tree-move';
 	const CONTROL_INSERT_BEFORE_KEY = 'insertBefore';
 	const CONTROL_INSERT_AFTER_KEY = 'insertAfter';
+	const CONTROL_INSERT_CHILD_KEY = 'insertChild';
 	
 	public function getIdBase() {
 		return self::ID_BASE;
@@ -77,14 +77,21 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_before_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_ARROW_UP, array('class' => 'rocket-order-before-cmd'))),
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiState->getControllerContext())
 								->ext($this->getId(), 'after', $eiMapping->getIdRep())
 								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_after_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_ARROW_DOWN, array('class' => 'rocket-order-after-cmd'))));
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-order-after-cmd'))),
+				self::CONTROL_INSERT_CHILD_KEY => new HrefControl(
+						$httpContext->getControllerContextPath($eiState->getControllerContext())
+								->ext($this->getId(), 'child', $eiMapping->getIdRep())
+								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
+						new ControlButton($dtc->translate('ei_impl_tree_insert_child_label'),
+								$dtc->translate('ei_impl_tree_insert_child_tooltip'),
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_RIGHT, array('class' => 'rocket-order-child-cmd'))));
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()

@@ -114,10 +114,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 			$tooltip = $dtc->translate('ei_impl_add_draft_tooltip', array('type' => $eiUtils->getGenericLabel()));
 			
 			$controlButtons[self::CONTROL_ADD_DRAFT_KEY] = new HrefControl($path, new ControlButton($name, $tooltip, true, 
-					ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
+					ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_SQUARE));
 		}
-		
-		
 		return $controlButtons;
 	}
 	

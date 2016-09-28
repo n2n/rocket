@@ -31,25 +31,30 @@ jQuery(document).ready(function ($) {
 			if ($(this).is(':checked') || 0 < $(".rocket-entry-selector input:checked").size()) {
 				$("a.rocket-order-before-cmd").show();
 				$("a.rocket-order-after-cmd").show();
+				$("a.rocket-order-child-cmd").show();
 			} else {
 				$("a.rocket-order-before-cmd").hide();
 				$("a.rocket-order-after-cmd").hide();
+				$("a.rocket-order-child-cmd").hide();
 			}
 		});
 		
 		var jqBeforeA = null;
 		var jqAfterA = null;
+		var jqChildA = null;
 		do {
 			var jqContainer = jqSelector.parent();
 			if (!jqContainer || 0 == jqContainer.size()) return;
 			
 			jqBeforeA = jqContainer.find("a.rocket-order-before-cmd");
 			jqAfterA = jqContainer.find("a.rocket-order-after-cmd");
+			jqChildA = jqContainer.find("a.rocket-order-child-cmd");
 		} while (jqBeforeA.size() == 0 && jqAfterA.size() > 0);
 		
 		if (!jqSelectorInput.is(':checked') && 0 == $(".rocket-entry-selector input:checked").size()) {
 			jqBeforeA.hide();
 			jqAfterA.hide();
+			jqChildA.hide();
 		}
 		
 		jqBeforeA.click(function (e) {
@@ -60,6 +65,11 @@ jQuery(document).ready(function ($) {
 		jqAfterA.click(function (e) {
 			e.stopPropagation();
 			move(jqAfterA);
+			return false;
+		});
+		jqChildA.click(function (e) {
+			e.stopPropagation();
+			move(jqChildA);
 			return false;
 		});
 	});
