@@ -29,13 +29,13 @@ jQuery(document).ready(function ($) {
 		
 		jqSelectorInput.change(function () {
 			if ($(this).is(':checked') || 0 < $(".rocket-entry-selector input:checked").size()) {
-				$("a.rocket-order-before-cmd").show();
-				$("a.rocket-order-after-cmd").show();
-				$("a.rocket-order-child-cmd").show();
+				$("a.rocket-order-before-cmd").parent().show();
+				$("a.rocket-order-after-cmd").parent().show();
+				$("a.rocket-order-child-cmd").parent().show();
 			} else {
-				$("a.rocket-order-before-cmd").hide();
-				$("a.rocket-order-after-cmd").hide();
-				$("a.rocket-order-child-cmd").hide();
+				$("a.rocket-order-before-cmd").parent().hide();
+				$("a.rocket-order-after-cmd").parent().hide();
+				$("a.rocket-order-child-cmd").parent().hide();
 			}
 		});
 		
@@ -52,9 +52,9 @@ jQuery(document).ready(function ($) {
 		} while (jqBeforeA.size() == 0 && jqAfterA.size() > 0);
 		
 		if (!jqSelectorInput.is(':checked') && 0 == $(".rocket-entry-selector input:checked").size()) {
-			jqBeforeA.hide();
-			jqAfterA.hide();
-			jqChildA.hide();
+			jqBeforeA.parent().hide();
+			jqAfterA.parent().hide();
+			jqChildA.parent().hide();
 		}
 		
 		jqBeforeA.click(function (e) {
