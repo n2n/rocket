@@ -41,6 +41,7 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 	private $pdo;
 	private $idEntityProperty;
 	private $selectBuilder;
+	private $tableName;
 	private $tableAlias;
 	private $aliasBuilder;
 	
@@ -57,11 +58,12 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 	private $boundUserIdRawValue;
 	private $draftValueSelections = array();
 
-	public function __construct(Pdo $pdo, $tableName, BasicEntityProperty $idEntityProperty, string $tableAlias = null) {
+	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, string $tableAlias = null) {
 		$this->pdo = $pdo;
 		$this->idEntityProperty = $idEntityProperty;
 		$this->selectBuilder = $pdo->getMetaData()->createSelectStatementBuilder();
 		$this->selectBuilder->addFrom(new QueryTable($tableName), $tableAlias);
+		$this->tableName = $tableName;
 		$this->tableAlias = $tableAlias;
 		$this->aliasBuilder = new AliasBuilder();
 
@@ -94,6 +96,14 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 	
 	public function createPlaceholderName(): string {
 		return $this->aliasBuilder->createPlaceholderName();
+	}
+	
+	public function getTableName(): string {
+		return $this->tableName;
+	}
+	
+	public function getTableAlias() {
+		return $this->tableAlias;
 	}
 
 	/**

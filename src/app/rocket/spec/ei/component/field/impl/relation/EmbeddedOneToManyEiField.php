@@ -156,6 +156,12 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
 	
+		$selectDraftStmtBuilder->getSelectStatementBuilder()->getTableName();
+		
+		$draftDefinition = $this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->getDraftDefinition();
+		
+	
+				
 		throw new NotYetImplementedException();
 	}
 	
@@ -166,6 +172,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	public function supplyPersistDraftStmtBuilder($targetDraft, $oldTargetDraft,
 			PersistDraftStmtBuilder $persistDraftStmtBuilder, PersistDraftAction $persistDraftAction) {
 		throw new NotYetImplementedException();
+		
 	}
 	
 	/**
