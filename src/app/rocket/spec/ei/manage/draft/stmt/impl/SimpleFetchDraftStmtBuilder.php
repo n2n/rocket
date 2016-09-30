@@ -35,15 +35,13 @@ use n2n\persistence\meta\data\QueryItem;
 use n2n\persistence\meta\data\SelectStatementBuilder;
 use rocket\spec\ei\manage\draft\Draft;
 
-class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
+class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements FetchDraftStmtBuilder {
 	const DRAF_COLUMN_PREFIX = 'd';
 
-	private $pdo;
 	private $idEntityProperty;
 	private $selectBuilder;
 	private $tableName;
 	private $tableAlias;
-	private $aliasBuilder;
 	
 	private $idAlias;
 	private $entityObjIdAlias;
@@ -57,15 +55,15 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 	private $boundFlagRawValue;
 	private $boundUserIdRawValue;
 	private $draftValueSelections = array();
-
+	
 	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, string $tableAlias = null) {
-		$this->pdo = $pdo;
+		parent::__construct($pdo);
+		
 		$this->idEntityProperty = $idEntityProperty;
 		$this->selectBuilder = $pdo->getMetaData()->createSelectStatementBuilder();
 		$this->selectBuilder->addFrom(new QueryTable($tableName), $tableAlias);
 		$this->tableName = $tableName;
 		$this->tableAlias = $tableAlias;
-		$this->aliasBuilder = new AliasBuilder();
 
 		$this->idAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_ID);
 		$this->entityObjIdAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_ENTIY_OBJ_ID);
@@ -92,10 +90,6 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 	 */
 	public function getSelectStatementBuilder(): SelectStatementBuilder {
 		return $this->selectBuilder;
-	}
-	
-	public function createPlaceholderName(): string {
-		return $this->aliasBuilder->createPlaceholderName();
 	}
 	
 	public function getTableName(): string {
@@ -134,8 +128,13 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 			$draftValueSelection->bind($stmt);	
 		}
 		
+		foreach ($this->boundValues as $phName => $value) {
+			$stmt->bindValue($phName, $value);
+		}
+		
 		return $stmt;
 	}
+	
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder::getDraftIdQueryItem()
 	 */
@@ -187,6 +186,11 @@ class SimpleFetchDraftStmtBuilder implements FetchDraftStmtBuilder {
 	public function getUserIdAlias(): string {
 		return $this->userIdAlias;
 	}
+	
+	public function getBoundIdRawValue() {
+		return $this->boundIdRawValue;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder::buildResult()

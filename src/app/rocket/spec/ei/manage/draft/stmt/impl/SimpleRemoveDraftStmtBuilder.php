@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\meta\data\QueryComparator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
-class SimpleRemoveDraftStmtBuilder implements RemoveDraftStmtBuilder {
+class SimpleRemoveDraftStmtBuilder extends DraftStmtBuilderAdapter implements RemoveDraftStmtBuilder {
 	private $pdo;
 	private $tableName;
 	private $draftId;
@@ -47,6 +47,8 @@ class SimpleRemoveDraftStmtBuilder implements RemoveDraftStmtBuilder {
 	}
 	
 	public function buildPdoStatement(): PdoStatement {
-		return $this->pdo->prepare($this->peristStatementBuilder->toSqlString());
+		$stmt = $this->pdo->prepare($this->deleteStatementBuilder->toSqlString());
+		$this->applyBoundValues($stmt);
+		return $stmt;
 	}
 }

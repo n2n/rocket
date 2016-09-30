@@ -30,19 +30,17 @@ use n2n\persistence\meta\data\QueryComparator;
 use rocket\spec\ei\EiFieldPath;
 use n2n\persistence\orm\property\BasicEntityProperty;
 
-class SimplePersistDraftStmtBuilder implements PersistDraftStmtBuilder {
-	private $pdo;
+class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements PersistDraftStmtBuilder {
 	private $tableName;
 	private $idEntityProperty;
-	private $aliasBuilder;
 	private $peristStatementBuilder;
 	
-	private $bindValues = array();
-	private $bindCallbacks = array();
+	private $boundCallbacks = array();
 	
 	
 	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, int $draftId = null) {
-		$this->pdo = $pdo;
+		parent::__construct($pdo);
+
 		$this->tableName = $tableName;
 		$this->idEntityProperty = $idEntityProperty;
 		$this->aliasBuilder = new AliasBuilder();
@@ -51,7 +49,7 @@ class SimplePersistDraftStmtBuilder implements PersistDraftStmtBuilder {
 		} else {
 			$this->peristStatementBuilder = $pdo->getMetaData()->createUpdateStatementBuilder();
 			$placeholderName = $this->aliasBuilder->createPlaceholderName();
-			$this->bindValues[$placeholderName] = $draftId;
+			$this->bindValue($placeholderName, $draftId);
 			$this->peristStatementBuilder->getWhereComparator()->match(new QueryColumn(DraftMetaInfo::COLUMN_ID), 
 					QueryComparator::OPERATOR_EQUAL, new QueryPlaceMarker($placeholderName));
 		}
@@ -90,15 +88,15 @@ class SimplePersistDraftStmtBuilder implements PersistDraftStmtBuilder {
 	}
 	
 	public function hasValues(): bool {
-		return empty($this->bindValues) && empty($this->bindCallbacks);
+		return empty($this->boundValues) && empty($this->boundCallbacks);
 	}
 	
 	private function setRawValue(string $columnName, $rawValue) {
-		$placeholderName = $this->aliasBuilder->createPlaceholderName();
+		$placeholderName = $this->createPlaceholderName();
 		
 		$this->peristStatementBuilder->addColumn(new QueryColumn($columnName),
 				new QueryPlaceMarker($placeholderName));
-		$this->bindValues[$placeholderName] = $rawValue;
+		$this->bindValue($placeholderName, $rawValue);
 		return $placeholderName;
 	}
 	
@@ -110,7 +108,7 @@ class SimplePersistDraftStmtBuilder implements PersistDraftStmtBuilder {
 		$columnName = DraftMetaInfo::buildDraftColumnName($eiFieldPath);
 		$placeholderName = $this->aliasBuilder->createPlaceholderName();
 		$this->peristStatementBuilder->addColumn(new QueryColumn($columnName), new QueryPlaceMarker($placeholderName));
-		$this->bindCallbacks[$placeholderName] = $bindCallback;
+		$this->boundCallbacks[$placeholderName] = $bindCallback;
 		return $placeholderName;
 	}
 	
@@ -118,10 +116,8 @@ class SimplePersistDraftStmtBuilder implements PersistDraftStmtBuilder {
 		if ($this->needless) return null;
 		
 		$stmt = $this->pdo->prepare($this->peristStatementBuilder->toSqlString());
-		foreach ($this->bindValues as $placeholderName => $bindValue) {
-			$stmt->bindValue($placeholderName, $bindValue);
-		}
-		foreach ($this->bindCallbacks as $placeholderName => $bindCallback) {
+		$this->applyBoundValues($stmt);
+		foreach ($this->boundCallbacks as $placeholderName => $bindCallback) {
 			$bindCallback($stmt, $placeholderName);
 		}
 		

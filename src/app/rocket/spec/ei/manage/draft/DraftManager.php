@@ -96,7 +96,6 @@ class DraftManager {
 		$restrictedStmtBuilder->restrictToDraftId($draftId);
 		
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
-		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetchSingle();
 	}
 	
@@ -111,8 +110,45 @@ class DraftManager {
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
-		$restrictedStmtBuilder->restrictToEntityObjId($entityObjId, $limit, $num);
+		$restrictedStmtBuilder->restrictToEntityObjId($entityObjId);
+		$restrictedStmtBuilder->limit($limit, $num);
+		$restrictedStmtBuilder->order();
 	
+		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
+		return $draftFetcher->fetch();
+	}
+	
+	public function findByFilter(\ReflectionClass $class, $entityObjId = null, string $flag = null, bool $listed = null, 
+			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
+		$this->ensureDraftManagerOpen();
+
+		$eiSpec = $this->specManager->getEiSpecByClass($class);
+		if ($draftDefinition === null) {
+			$draftDefinition = $this->getDraftDefinitionByEiSpec($eiSpec);
+		}
+
+		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
+		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
+		if ($entityObjId !== null) {
+			$restrictedStmtBuilder->restrictToEntityObjId($entityObjId);
+		}
+		
+		if ($flag !== null) {
+			$restrictedStmtBuilder->restrictToFlag($limit, $num);
+		}
+		
+		if ($listed !== null) {
+			$restrictedStmtBuilder->restrictToListed($listed);
+		}
+		
+		if ($userId !== null) {
+			$restrictedStmtBuilder->restrictToUserId($userId);
+		}
+		
+		$restrictedStmtBuilder->limit($limit, $num);
+		$restrictedStmtBuilder->order();
+
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
 		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetch();
@@ -128,9 +164,9 @@ class DraftManager {
 		
 		$stmtBuilder = $draftDefinition->createCountDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
-		$restrictedStmtBuilder->restrictToUnbounds();
+		$restrictedStmtBuilder->restrictToUnbound(true);
 
-		$stmt = $restrictedStmtBuilder->buildPdoStatement();
+		$stmt = $stmtBuilder->buildPdoStatement();
 		$stmt->execute();
 		$stmt->fetch(Pdo::FETCH_BOUND);
 		
@@ -147,10 +183,11 @@ class DraftManager {
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
-		$restrictedStmtBuilder->restrictToUnbounds($limit, $num);
+		$restrictedStmtBuilder->restrictToUnbound(true);
+		$restrictedStmtBuilder->limit($limit, $num);
+		$restrictedStmtBuilder->order();
 		
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
-		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetch();
 	}
 	

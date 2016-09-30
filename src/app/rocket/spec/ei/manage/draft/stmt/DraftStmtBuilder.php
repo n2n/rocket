@@ -35,4 +35,15 @@ interface DraftStmtBuilder {
 	 * @return PdoStatement
 	 */
 	public function buildPdoStatement();
+
+	/**
+	 * @return string
+	 */
+	public function createPlaceholderName(): string;
+	
+	/**
+	 * @param string $placeholderName
+	 * @param mixed $value
+	 */
+	public function bindValue(string $placeholderName, $value);
 }

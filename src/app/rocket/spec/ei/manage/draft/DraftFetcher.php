@@ -32,7 +32,7 @@ use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
 
 class DraftFetcher {
-	private $selectDraftStmtBuilder;
+	private $fetchDraftStmtBuilder;
 	private $eiSpec;
 	private $stmt;
 	private $draftDefinition;
@@ -43,11 +43,15 @@ class DraftFetcher {
 	
 	public function __construct(FetchDraftStmtBuilder $selectDraftStmtBuilder, EiSpec $eiSpec, 
 			DraftDefinition $draftDefinition, DraftingContext $draftingContext, EntityManager $em) {
-		$this->selectDraftStmtBuilder = $selectDraftStmtBuilder;
+		$this->fetchDraftStmtBuilder = $selectDraftStmtBuilder;
 		$this->eiSpec = $eiSpec;
 		$this->draftDefinition = $draftDefinition;
 		$this->draftingContext = $draftingContext;
 		$this->em = $em;
+	}
+	
+	public function getFetchDraftStmtBuilder() {
+		return $this->fetchDraftStmtBuilder;
 	}
 
 	public function setStmt(PdoStatement $stmt) {
@@ -92,14 +96,14 @@ class DraftFetcher {
 	 */
 	public function fetch() {
 		if ($this->stmt === null) {
-			$this->stmt = $this->selectDraftStmtBuilder->buildPdoStatement();
+			$this->stmt = $this->fetchDraftStmtBuilder->buildPdoStatement();
 		}
 		
 		$this->stmt->execute();
 		
 		$drafts = array();
 		while ($this->stmt->fetch(Pdo::FETCH_BOUND)) {
-			$draftValuesResult = $this->selectDraftStmtBuilder->buildResult();
+			$draftValuesResult = $this->fetchDraftStmtBuilder->buildResult();
 			if ($this->draftingContext->containsDraftId($this->draftDefinition, $draftValuesResult->getId())) {
 				$drafts[] = $this->draftingContext->getDraftById($this->draftDefinition, $draftValuesResult->getId());
 				continue;

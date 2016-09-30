@@ -43,11 +43,6 @@ interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
 	public function requestColumn(EiFieldPath $eiFieldPath): string;
 	
 	/**
-	 * @return string
-	 */
-	public function createPlaceholderName(): string;
-	
-	/**
 	 * @return string 
 	 */
 	public function getIdAlias(): string;
@@ -71,6 +66,8 @@ interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
 	 * @return string 
 	 */
 	public function getUserIdAlias(): string;
+	
+	public function getBoundIdRawValue();
 	
 	/**
 	 * @return DraftValuesResult

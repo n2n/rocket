@@ -49,6 +49,13 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use n2n\persistence\PdoStatement;
+use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
+use n2n\persistence\meta\data\JoinType;
+use n2n\persistence\meta\data\QueryTable;
+use n2n\persistence\meta\data\QueryColumn;
+use n2n\persistence\meta\data\QueryPlaceMarker;
+use rocket\spec\ei\manage\draft\DraftFetcher;
 
 class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements DraftableEiField, Draftable*/ {
 	
@@ -149,20 +156,36 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiState, $toManyEditable);
 	}
 	
+// 	const T_ALIAS = 't';
+// 	const JT_ALIAS = 'jt';
+	const JT_DRAFT_ID_COLUMN = 'draft_id';
+	const JT_TARGET_DRAFT_ID_COLUMN = 'target_draft_id';
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::createDraftValueSelection()
 	 */
-	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm,
+	public function createDraftValueSelection(FetchDraftStmtBuilder $fetchDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
-	
-		$selectDraftStmtBuilder->getSelectStatementBuilder()->getTableName();
-		
-		$draftDefinition = $this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->getDraftDefinition();
-		
-	
 				
-		throw new NotYetImplementedException();
+		$tableName = $fetchDraftStmtBuilder->getTableName();
+		$joinTableName = DraftMetaInfo::buildTableName($this->getEiEngine()->getEiThing(), EiFieldPath::from($this));
+		
+		$targetDraftDefinition = $this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->getDraftDefinition();
+		$targetFetchDraftStmtBuilder = $targetDraftDefinition->createFetchDraftStmtBuilder($dm, $n2nContext, 't');
+		$targetStmtBuilder = $targetFetchDraftStmtBuilder->getSelectStatementBuilder();
+		
+		$phName = $targetFetchDraftStmtBuilder->createPlaceholderName();
+		$targetStmtBuilder->addJoin(JoinType::INNER, new QueryTable($joinTableName), 't')
+				->match(new QueryColumn(DraftMetaInfo::COLUMN_ID, 't'), '=', 
+						new QueryColumn(self::JT_TARGET_DRAFT_ID_COLUMN, 'jt'));
+				
+		$targetStmtBuilder->getWhereComparator()->match(new QueryColumn(self::JT_DRAFT_ID_COLUMN, 'jt'), 
+				'=', new QueryPlaceMarker($phName));
+		$targetDraftFetcher = $dm->createDraftFetcher($targetFetchDraftStmtBuilder, 
+				$this->getEiFieldRelation()->getTargetEiSpec(), $targetDraftDefinition);
+		
+		return new EmbeddedToManyDraftValueSelection($fetchDraftStmtBuilder, $targetDraftFetcher, $phName);
 	}
 	
 	/**
@@ -186,4 +209,37 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	public function writeDraftValue($object, $value) {
 		throw new NotYetImplementedException();
 	}
+}
+
+class EmbeddedToManyDraftValueSelection implements DraftValueSelection {
+	private $fetchDraftStmtBuilder;
+	private $targetDraftFetcher;
+	private $phName;
+	
+	public function __construct(FetchDraftStmtBuilder $fetchDraftStmtBuilder, DraftFetcher $targetDraftFetcher, 
+			string $phName) {
+		$this->fetchDraftStmtBuilder = $fetchDraftStmtBuilder;
+		$this->targetDraftFetcher = $targetDraftFetcher;
+		$this->phName = $phName;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\draft\DraftValueSelection::bind()
+	 */
+	public function bind(PdoStatement $stmt) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\draft\DraftValueSelection::buildDraftValue()
+	 */
+	public function buildDraftValue() {
+		$this->targetDraftFetcher->getFetchDraftStmtBuilder()->bindValue(
+				$this->phName, $this->fetchDraftStmtBuilder->getBoundIdRawValue());
+		
+		return $this->targetDraftFetcher->fetch();
+	}
+
+	
 }
