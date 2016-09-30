@@ -25,19 +25,16 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\component\field\impl\relation\conf\SelectEiFieldConfigurator;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEditable;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
-use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\ToManySelectGuiElement;
 use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
-use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	

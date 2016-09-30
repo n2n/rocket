@@ -37,7 +37,6 @@ class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements P
 	
 	private $boundCallbacks = array();
 	
-	
 	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, int $draftId = null) {
 		parent::__construct($pdo);
 

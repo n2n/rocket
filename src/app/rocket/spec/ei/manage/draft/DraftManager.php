@@ -115,7 +115,6 @@ class DraftManager {
 		$restrictedStmtBuilder->order();
 	
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
-		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetch();
 	}
 	
