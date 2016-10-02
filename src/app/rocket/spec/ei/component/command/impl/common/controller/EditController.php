@@ -155,7 +155,7 @@ class EditController extends ControllerAdapter {
 		if ($eiMapping->save()) {
 			$eiUtils->persist($eiSelection);
 			$draft = $draftEiMapping->getEiSelection()->getDraft();
-			$draft->setFlag(Draft::TYPE_PUBLISHED);
+			$draft->setType(Draft::TYPE_PUBLISHED);
 			$eiUtils->persist($draft);
 			
 			$this->redirect($this->eiCtrlUtils->buildRedirectUrl($eiMapping->getEiSelection()));

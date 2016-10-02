@@ -78,7 +78,9 @@ class SimpleMappable extends RwMappable {
 		$mappable = new SimpleMappable($eiObject, $this->typeConstraint, $this->readable, $this->writable, 
 				$this->validatable);
 		$mappable->setNullReadAllowed($this->isNullReadAllowed());
-		$mappable->setValue($this->getValue());
+		if ($this->isValueLoaded()) {
+			$mappable->setValue($this->getValue());
+		}
 		return $mappable;
 	}
 }

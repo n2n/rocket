@@ -145,7 +145,7 @@ abstract class EiFieldRelation {
 		$targetClass = $targetEntityProperty->getEntityModel()->getClass();
 		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
 		try {
-			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEiField->getEntityProperty()->getName());
+			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName());
 		} catch (ReflectionException $e) {
 			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: ' 
 					. $targetEntityProperty, 0, $e);
