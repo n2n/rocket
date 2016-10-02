@@ -23,16 +23,18 @@ namespace rocket\spec\ei\manage\draft;
 
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\LiveEntry;
+use n2n\util\ex\IllegalStateException;
 
 class Draft {
-	const FLAG_PUBLISHED = 'published';
-	const FLAG_RECOVERY = 'recovery';
+	const TYPE_NORMAL = 1;
+	const TYPE_PUBLISHED = 2;
+	const TYPE_RECOVERY = 4;
+	const TYPE_UNLISTED = 8;
 	
 	private $id;
 	private $liveEntry;
 	private $lastMod;
-	private $flag;
-	private $listed;
+	private $type = self::TYPE_NORMAL;
 	private $userId;
 	private $draftValueMap = array();
 	
@@ -49,8 +51,12 @@ class Draft {
 		return $this->id === null;
 	}
 	
-	public function getId() {
-		return $this->id;
+	public function getId(bool $required = true) {
+		if ($this->id !== null || !$required) {
+			return $this->id;
+		}
+		
+		throw new IllegalStateException('Draft is new.');
 	}
 	
 	public function setId($id) {
@@ -70,27 +76,31 @@ class Draft {
 	}
 	
 	public function isPublished(): bool {
-		return $this->flag == self::FLAG_PUBLISHED;
+		return $this->type == self::TYPE_PUBLISHED;
 	}
 	
 	public function isRevorery(): bool {
-		return $this->flag == self::FLAG_RECOVERY;
+		return $this->type == self::TYPE_RECOVERY;
 	}
 	
-	public function setFlag(string $flag = null) {
-		ArgUtils::valEnum($flag, self::getFlags(), null, true);
-		$this->flag = $flag;
+	public function isUnlisted() {
+		return $this->type == self::TYPE_UNLISTED;
 	}
 	
-	public function getFlag() {
-		return $this->flag;
+	public function setType(int $type) {
+		ArgUtils::valEnum($type, self::getTypes());
+		$this->type = $type;
+	}
+	
+	public function getType() {
+		return $this->type;
 	}
 	
 	/**
 	 * @return string[]
 	 */
-	public static function getFlags() {
-		return array(self::FLAG_PUBLISHED);
+	public static function getTypes() {
+		return array(self::TYPE_NORMAL, self::TYPE_PUBLISHED, self::TYPE_RECOVERY, self::TYPE_UNLISTED);
 	}
 	
 	public function getUserId(): int {

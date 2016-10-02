@@ -47,7 +47,7 @@ class SimpleCountDraftStmtBuilder extends DraftStmtBuilderAdapter implements Cou
 	private $boundCountRawValue;
 
 	public function __construct(Pdo $pdo, $tableName, BasicEntityProperty $idEntityProperty, $tableAlias = null) {
-		parent::__construct($pdo);
+		parent::__construct($pdo, $tableName);
 		
 		$this->idEntityProperty = $idEntityProperty;
 		$this->selectBuilder = $pdo->getMetaData()->createSelectStatementBuilder();
@@ -95,8 +95,8 @@ class SimpleCountDraftStmtBuilder extends DraftStmtBuilderAdapter implements Cou
 		return new QueryColumn(DraftMetaInfo::COLUMN_ENTIY_OBJ_ID, $this->tableAlias);
 	}
 	
-	public function getFlagQueryItem(): QueryItem {
-		return new QueryColumn(DraftMetaInfo::COLUMN_FLAG, $this->tableAlias);
+	public function getTypeQueryItem(): QueryItem {
+		return new QueryColumn(DraftMetaInfo::COLUMN_TYPE, $this->tableAlias);
 	}
 	
 	/* (non-PHPdoc)

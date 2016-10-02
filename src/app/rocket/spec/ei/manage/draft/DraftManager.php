@@ -33,6 +33,7 @@ use n2n\persistence\orm\TransactionRequiredException;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\Pdo;
 use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 
 class DraftManager {
 	private $specManager;
@@ -94,6 +95,7 @@ class DraftManager {
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
 		$restrictedStmtBuilder->restrictToDraftId($draftId);
+		$restrictedStmtBuilder->restrictToType(Draft::TYPE_UNLISTED, true);
 		
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
 		return $draftFetcher->fetchSingle();
@@ -111,6 +113,7 @@ class DraftManager {
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
 		$restrictedStmtBuilder->restrictToEntityObjId($entityObjId);
+		$restrictedStmtBuilder->restrictToType(Draft::TYPE_UNLISTED, true);
 		$restrictedStmtBuilder->limit($limit, $num);
 		$restrictedStmtBuilder->order();
 	
@@ -118,7 +121,7 @@ class DraftManager {
 		return $draftFetcher->fetch();
 	}
 	
-	public function findByFilter(\ReflectionClass $class, $entityObjId = null, string $flag = null, bool $listed = null, 
+	public function findByFilter(\ReflectionClass $class, $entityObjId = null, int $type = null,
 			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 
@@ -133,12 +136,8 @@ class DraftManager {
 			$restrictedStmtBuilder->restrictToEntityObjId($entityObjId);
 		}
 		
-		if ($flag !== null) {
-			$restrictedStmtBuilder->restrictToFlag($limit, $num);
-		}
-		
-		if ($listed !== null) {
-			$restrictedStmtBuilder->restrictToListed($listed);
+		if ($type !== null) {
+			$restrictedStmtBuilder->restrictToType($type);
 		}
 		
 		if ($userId !== null) {
@@ -188,6 +187,11 @@ class DraftManager {
 		
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
 		return $draftFetcher->fetch();
+	}
+	
+	public function createDraftFetcher(FetchDraftStmtBuilder $fetchDraftStmtBuilder, EiSpec $eiSpec, 
+			DraftDefinition $draftDefinition) {
+		return new DraftFetcher($fetchDraftStmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
 	}
 	
 	public function persist(Draft $draft, DraftDefinition $draftDefinition = null) {

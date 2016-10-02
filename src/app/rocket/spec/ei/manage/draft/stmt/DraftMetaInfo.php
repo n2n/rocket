@@ -30,7 +30,7 @@ class DraftMetaInfo {
 	
 	const COLUMN_ID = 'id';
 	const COLUMN_LAST_MOD = 'last_mod';
-	const COLUMN_FLAG = 'flag';
+	const COLUMN_TYPE = 'type';
 	const COLUMN_USER_ID = 'user_id';
 	const COLUMN_ENTIY_OBJ_ID = 'entity_obj_id';
 	
@@ -52,15 +52,15 @@ class DraftMetaInfo {
 		$tableName = self::TABLE_PREFIX . implode(self::DRAFT_COLUMN_PART_SEPARATOR, $ids);
 		
 		if ($eiFieldPathExt !== null) {
-			$tableName = self::DRAFT_COLUMN_PART_SEPARATOR . $eiFieldPathExt->toDbColumnName();
+			return self::buildFieldTableName($tableName, $eiFieldPathExt->toDbColumnName());
 		}
 		
 		return $tableName;
 	}
 	
-// 	public static function buildFieldTableName(string $draftTableName, EiFieldPath $eiFieldPath) {
-// 		return $draftTableName . $eiFieldPath->toDbColumnName();
-// 	}
+	public static function buildFieldTableName(string $draftTableName, EiFieldPath $eiFieldPath) {
+ 		return $draftTableName . self::DRAFT_COLUMN_PART_SEPARATOR . $eiFieldPath->toDbColumnName();
+ 	}
 	
 	public static function buildDraftColumnName(EiFieldPath $eiFieldPath) {
 		return self::DRAFT_COLUMN_PREFIX . $eiFieldPath->toDbColumnName();

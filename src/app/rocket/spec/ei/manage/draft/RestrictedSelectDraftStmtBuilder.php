@@ -56,15 +56,15 @@ class RestrictedSelectDraftStmtBuilder {
 		$this->selectDraftStmtBuilder->bindValue($entityObjIdPhName, $entityObjId);
 	}
 	
-	public function restrictToFlag(string $flag) {
+	public function restrictToType(int $type, bool $invert = false) {
 		$selectStatementBuilder = $this->selectDraftStmtBuilder->getSelectStatementBuilder();
 		
-		$flagPhName = $this->selectDraftStmtBuilder->createPlaceholderName();
+		$typePhName = $this->selectDraftStmtBuilder->createPlaceholderName();
 		$selectStatementBuilder->getWhereComparator()->andMatch(
-				$this->selectDraftStmtBuilder->getFlagQueryItem(), QueryComparator::OPERATOR_EQUAL, 
-				new QueryPlaceMarker($flagPhName));
+				$this->selectDraftStmtBuilder->getTypeQueryItem(), ($invert ? '!=' : '='), 
+				new QueryPlaceMarker($typePhName));
 		
-		$this->selectDraftStmtBuilder->bindValue($flagPhName, $flag);
+		$this->selectDraftStmtBuilder->bindValue($typePhName, $type);
 	}
 	
 	public function restrictToUnbound(bool $unbound) {

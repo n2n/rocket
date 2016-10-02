@@ -40,40 +40,38 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 
 	private $idEntityProperty;
 	private $selectBuilder;
-	private $tableName;
 	private $tableAlias;
 	
 	private $idAlias;
 	private $entityObjIdAlias;
 	private $lastModAlias;
-	private $flagAlias;	
+	private $typeAlias;	
 	private $userIdAlias;
 	
 	private $boundIdRawValue;
 	private $boundEntityObjIdRawValue;
 	private $boundLastModRawValue;
-	private $boundFlagRawValue;
+	private $boundTypeRawValue;
 	private $boundUserIdRawValue;
 	private $draftValueSelections = array();
 	
 	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, string $tableAlias = null) {
-		parent::__construct($pdo);
+		parent::__construct($pdo, $tableName);
 		
 		$this->idEntityProperty = $idEntityProperty;
 		$this->selectBuilder = $pdo->getMetaData()->createSelectStatementBuilder();
 		$this->selectBuilder->addFrom(new QueryTable($tableName), $tableAlias);
-		$this->tableName = $tableName;
 		$this->tableAlias = $tableAlias;
 
 		$this->idAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_ID);
 		$this->entityObjIdAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_ENTIY_OBJ_ID);
-		$this->flagAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_FLAG);
+		$this->typeAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_TYPE);
 		$this->userIdAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_USER_ID);
 		$this->lastModAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_LAST_MOD);
 
 		$this->selectBuilder->addSelectColumn($this->getDraftIdQueryItem(), $this->idAlias);
 		$this->selectBuilder->addSelectColumn($this->getEntityObjIdQueryItem(), $this->entityObjIdAlias);
-		$this->selectBuilder->addSelectColumn($this->getFlagQueryItem(), $this->flagAlias);
+		$this->selectBuilder->addSelectColumn($this->getTypeQueryItem(), $this->typeAlias);
 		$this->selectBuilder->addSelectColumn($this->getUserIdQueryItem(), $this->userIdAlias);
 		$this->selectBuilder->addSelectColumn($this->getLastModQueryItem(), $this->lastModAlias);
 	}
@@ -121,7 +119,7 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 		$stmt->bindColumn($this->idAlias, $this->boundIdRawValue);
 		$stmt->bindColumn($this->entityObjIdAlias, $this->boundEntityObjIdRawValue);
 		$stmt->bindColumn($this->lastModAlias, $this->boundLastModRawValue);
-		$stmt->bindColumn($this->flagAlias, $this->boundFlagRawValue);
+		$stmt->bindColumn($this->typeAlias, $this->boundTypeRawValue);
 		$stmt->bindColumn($this->userIdAlias, $this->boundUserIdRawValue);
 		
 		foreach ($this->draftValueSelections as $draftValueSelection) {
@@ -156,8 +154,8 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 		return new QueryColumn(DraftMetaInfo::COLUMN_ENTIY_OBJ_ID, $this->tableAlias);
 	}
 	
-	public function getFlagQueryItem(): QueryItem {
-		return new QueryColumn(DraftMetaInfo::COLUMN_FLAG, $this->tableAlias);
+	public function getTypeQueryItem(): QueryItem {
+		return new QueryColumn(DraftMetaInfo::COLUMN_TYPE, $this->tableAlias);
 	}
 	
 	/* (non-PHPdoc)
@@ -175,8 +173,8 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 		return $this->entityObjIdAlias;
 	}
 	
-	public function getFlagAlias(): string {
-		return $this->flagAlias;
+	public function getTypeAlias(): string {
+		return $this->typeAlias;
 	}
 	
 	public function getLastModAlias(): string {
@@ -196,9 +194,9 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 	 * @see \rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder::buildResult()
 	 */
 	public function buildResult(): DraftValuesResult {
-		$flag = null;
-		if (in_array((string) $this->boundFlagRawValue, Draft::getFlags(), true)) {
-			$flag = (string) $this->boundFlagRawValue;
+		$type = Draft::TYPE_NORMAL;
+		if (in_array((int) $this->boundTypeRawValue, Draft::getTypes(), true)) {
+			$type = (int) $this->boundTypeRawValue;
 		}
 		
 		$values = array();
@@ -210,7 +208,7 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 				$this->idEntityProperty->parseValue($this->boundEntityObjIdRawValue, $this->pdo), 
 				$this->pdo->getMetaData()->getDialect()->getOrmDialectConfig()
 						->parseDateTime($this->boundLastModRawValue), 
-				$flag, $this->boundUserIdRawValue, $values);
+				$type, $this->boundUserIdRawValue, $values);
 	}
 
 }

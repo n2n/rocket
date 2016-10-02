@@ -31,16 +31,14 @@ use rocket\spec\ei\EiFieldPath;
 use n2n\persistence\orm\property\BasicEntityProperty;
 
 class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements PersistDraftStmtBuilder {
-	private $tableName;
 	private $idEntityProperty;
 	private $peristStatementBuilder;
 	
 	private $boundCallbacks = array();
 	
 	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, int $draftId = null) {
-		parent::__construct($pdo);
+		parent::__construct($pdo, $tableName);
 
-		$this->tableName = $tableName;
 		$this->idEntityProperty = $idEntityProperty;
 		$this->aliasBuilder = new AliasBuilder();
 		if ($draftId === null) {
@@ -74,8 +72,8 @@ class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements P
 				->getOrmDialectConfig()->buildDateTimeRawValue($dateTime));
 	}
 	
-	public function setFlag(string $flag = null) {
-		$this->setRawValue(DraftMetaInfo::COLUMN_FLAG, $flag);
+	public function setType(string $type = null) {
+		$this->setRawValue(DraftMetaInfo::COLUMN_TYPE, $type);
 	}
 	
 	public function setUserId(int $userId) {

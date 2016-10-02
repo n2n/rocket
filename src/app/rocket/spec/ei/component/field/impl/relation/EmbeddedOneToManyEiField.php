@@ -56,6 +56,13 @@ use n2n\persistence\meta\data\QueryTable;
 use n2n\persistence\meta\data\QueryColumn;
 use n2n\persistence\meta\data\QueryPlaceMarker;
 use rocket\spec\ei\manage\draft\DraftFetcher;
+use rocket\spec\ei\manage\draft\DraftActionQueue;
+use rocket\spec\ei\manage\draft\DraftActionAdapter;
+use n2n\persistence\Pdo;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\draft\stmt\DraftStmtBuilder;
+use rocket\spec\ei\manage\draft\ModDraftAction;
+use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements DraftableEiField, Draftable*/ {
 	
@@ -85,6 +92,8 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			$targetDrafts = $eiObject->getDraftValueMap()->getValue(EiFieldPath::from($this));
+			if ($targetDrafts === null) return $targetEiSelections;
+			
 			foreach ($targetDrafts as $targetDraft) {
 				$targetEiSelections[] = new DraftEiSelection($targetDraft);
 			}
@@ -160,6 +169,11 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 // 	const JT_ALIAS = 'jt';
 	const JT_DRAFT_ID_COLUMN = 'draft_id';
 	const JT_TARGET_DRAFT_ID_COLUMN = 'target_draft_id';
+	const JT_ORDER_INDEX = 'order_index';
+	
+	private function getJoinTableName(DraftStmtBuilder $draftStmtBuilder) {
+		return DraftMetaInfo::buildFieldTableName($draftStmtBuilder->getTableName(), EiFieldPath::from($this));
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -168,42 +182,94 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	public function createDraftValueSelection(FetchDraftStmtBuilder $fetchDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
 				
-		$tableName = $fetchDraftStmtBuilder->getTableName();
-		$joinTableName = DraftMetaInfo::buildTableName($this->getEiEngine()->getEiThing(), EiFieldPath::from($this));
+		$joinTableName = $this->getJoinTableName($fetchDraftStmtBuilder);
 		
 		$targetDraftDefinition = $this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->getDraftDefinition();
 		$targetFetchDraftStmtBuilder = $targetDraftDefinition->createFetchDraftStmtBuilder($dm, $n2nContext, 't');
 		$targetStmtBuilder = $targetFetchDraftStmtBuilder->getSelectStatementBuilder();
 		
 		$phName = $targetFetchDraftStmtBuilder->createPlaceholderName();
-		$targetStmtBuilder->addJoin(JoinType::INNER, new QueryTable($joinTableName), 't')
+		$targetStmtBuilder->addJoin(JoinType::INNER, new QueryTable($joinTableName), 'jt')
 				->match(new QueryColumn(DraftMetaInfo::COLUMN_ID, 't'), '=', 
 						new QueryColumn(self::JT_TARGET_DRAFT_ID_COLUMN, 'jt'));
 				
 		$targetStmtBuilder->getWhereComparator()->match(new QueryColumn(self::JT_DRAFT_ID_COLUMN, 'jt'), 
 				'=', new QueryPlaceMarker($phName));
+		$targetStmtBuilder->addOrderBy(new QueryColumn(self::JT_ORDER_INDEX, 'jt'), 'ASC');
+		
 		$targetDraftFetcher = $dm->createDraftFetcher($targetFetchDraftStmtBuilder, 
 				$this->getEiFieldRelation()->getTargetEiSpec(), $targetDraftDefinition);
 		
 		return new EmbeddedToManyDraftValueSelection($fetchDraftStmtBuilder, $targetDraftFetcher, $phName);
 	}
 	
+	private function createRelationDraftAction(DraftStmtBuilder $draftStmtBuilder, ModDraftAction $modDraftAction) {
+		$relationDraftAction = new EmbeddedToManyDraftAction($draftStmtBuilder->getPdo(), 
+				$this->getJoinTableName($draftStmtBuilder));
+		
+		if (!$modDraftAction->getDraft()->isNew()) {
+		    $relationDraftAction->setDraftId($modDraftAction->getDraft()->getId());
+		} else  {
+		    $relationDraftAction->addDependent($modDraftAction);
+		    $modDraftAction->executeAtEnd(function () use ($modDraftAction, $relationDraftAction) {
+		        $relationDraftAction->setDraftId($modDraftAction->getDraft()->getId());
+		    });
+		}
+		
+		$modDraftAction->getQueue()->addDraftAction($relationDraftAction);
+// 		$modDraftAction->executeWhenDisabled(function () use ($relationDraftAction) {
+// 		    $relationDraftAction->disable();
+// 		});
+
+		return $relationDraftAction;
+	}
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
 	 */
-	public function supplyPersistDraftStmtBuilder($targetDraft, $oldTargetDraft,
+	public function supplyPersistDraftStmtBuilder($targetDrafts, $oldTargetDraft,
 			PersistDraftStmtBuilder $persistDraftStmtBuilder, PersistDraftAction $persistDraftAction) {
-		throw new NotYetImplementedException();
+		$relationDraftAction = $this->createRelationDraftAction($persistDraftStmtBuilder, $persistDraftAction);
 		
+		$draftActionQueue = $persistDraftAction->getQueue();
+		$targetDraftDefinition = $this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->getDraftDefinition();
+		$orderIndex = 0;
+		$targetDraftIds = array();
+		foreach ($targetDrafts as $targetDraft) {
+			$targetAction = $draftActionQueue->persist($targetDraft, $targetDraftDefinition);
+			if (!$targetDraft->isNew()) {
+				$targetDraftId = $targetDraft->getId();
+				$targetDraftIds[$targetDraftId] = $targetDraftId;
+				$relationDraftAction->addTargetDraftId($targetDraft->getId(), $orderIndex++);
+				continue;
+			}
+			
+			$relationDraftAction->addDependent($targetAction);
+			$targetAction->executeAtEnd(function () use ($relationDraftAction, $targetDraft, $orderIndex) {
+				$relationDraftAction->addTargetDraftId($targetDraft->getId(), $orderIndex);
+			});
+			$orderIndex++;
+		}
+		
+		foreach ($oldTargetDraft as $oldTargetDraft) {
+			if (!isset($targetDraftIds[$oldTargetDraft->getId()])) {
+				$persistDraftAction->getQueue()->remove($oldTargetDraft, true);
+			}
+		}
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
 	 */
-	public function supplyRemoveDraftStmtBuilder($targetDraft, $oldTargetDraft, RemoveDraftAction $removeDraftAction) {
-		throw new NotYetImplementedException();
+	public function supplyRemoveDraftStmtBuilder($targetDrafts, $oldTargetDrafts, 
+			RemoveDraftStmtBuilder $removeDraftStmtBuilder, RemoveDraftAction $removeDraftAction) {
+		$draftActionQueue = $removeDraftAction->getQueue();
+		foreach ($oldTargetDrafts as $oldTargetDraft) {
+			$draftActionQueue->remove($oldTargetDraft);
+		}
+		
+		$this->createRelationDraftAction($removeDraftStmtBuilder, $removeDraftAction);
 	}
 	
 	public function writeDraftValue($object, $value) {
@@ -240,6 +306,56 @@ class EmbeddedToManyDraftValueSelection implements DraftValueSelection {
 		
 		return $this->targetDraftFetcher->fetch();
 	}
+}
 
+class EmbeddedToManyDraftAction extends DraftActionAdapter {
+	private $pdo;
+	private $joinTableName;
+	private $draftId;
+	private $targetDraftDefs = array();
 	
+	public function __construct(Pdo $pdo, string $joinTableName) {
+		$this->pdo = $pdo;
+		$this->joinTableName = $joinTableName;
+	}
+	
+	public function setDraftId(int $draftId) {
+		$this->draftId = $draftId;
+	}
+	
+	public function getDraftId() {
+		if ($this->draftId !== null) {
+			return $this->draftId;
+		}
+		
+		throw new IllegalStateException();
+	}
+	
+	public function addTargetDraftId(int $targetDraftId, int $orderIndex) {
+		$this->targetDraftDefs[] = array('targetDraftId' => $targetDraftId, 'orderIndex' => $orderIndex);
+	}
+	
+	protected function exec() {
+		$metaData = $this->pdo->getMetaData();
+		
+		$deleteBuilder = $metaData->createDeleteStatementBuilder();
+		$deleteBuilder->setTable($this->joinTableName);
+		$deleteBuilder->getWhereComparator()->match(new QueryColumn(EmbeddedOneToManyEiField::JT_DRAFT_ID_COLUMN),
+				'=', new QueryPlaceMarker());
+		$deleteStmt = $this->pdo->prepare($deleteBuilder->toSqlString());
+		$deleteStmt->execute(array($this->getDraftId()));
+		
+		if (empty($this->targetDraftDefs)) return;
+		
+		$insertBuilder = $metaData->createInsertStatementBuilder();
+		$insertBuilder->setTable($this->joinTableName);
+		$insertBuilder->addColumn(new QueryColumn(EmbeddedOneToManyEiField::JT_DRAFT_ID_COLUMN), new QueryPlaceMarker());
+		$insertBuilder->addColumn(new QueryColumn(EmbeddedOneToManyEiField::JT_TARGET_DRAFT_ID_COLUMN), new QueryPlaceMarker());
+		$insertBuilder->addColumn(new QueryColumn(EmbeddedOneToManyEiField::JT_ORDER_INDEX), new QueryPlaceMarker());
+		
+		$insertStmt = $this->pdo->prepare($insertBuilder->toSqlString());
+		foreach ($this->targetDraftDefs as $draftDef) {
+			$insertStmt->execute(array($this->draftId, $draftDef['targetDraftId'], $draftDef['orderIndex']));
+		}
+	}
 }

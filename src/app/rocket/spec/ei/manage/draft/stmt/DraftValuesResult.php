@@ -27,16 +27,16 @@ class DraftValuesResult {
 	private $id;
 	private $entityObjId;
 	private $lastMod;
-	private $flag;
+	private $type;
 	private $userId;
 	private $values;
 
-	public function __construct(int $id, $entityObjId, \DateTime $lastMod, string $flag = null, int $userId, 
+	public function __construct(int $id, $entityObjId, \DateTime $lastMod, int $type, int $userId, 
 			array $values) {
 		$this->id = $id;
 		$this->entityObjId = $entityObjId;
 		$this->lastMod = $lastMod;
-		$this->flag = $flag;
+		$this->type = $type;
 		$this->userId = $userId;
 		$this->values = $values;
 	}
@@ -65,8 +65,8 @@ class DraftValuesResult {
 	/**
 	 * @return string
 	 */
-	public function getFlag() {
-		return $this->flag;
+	public function getType() {
+		return $this->type;
 	}
 
 	/**

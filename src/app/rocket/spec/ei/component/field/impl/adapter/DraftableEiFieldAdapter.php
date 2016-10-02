@@ -37,6 +37,7 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 abstract class DraftableEiFieldAdapter extends EditableEiFieldAdapter implements ConfDraftableEiField, DraftProperty {
 	protected $draftable = false;
@@ -119,7 +120,8 @@ abstract class DraftableEiFieldAdapter extends EditableEiFieldAdapter implements
 		}
 	}
 	
-	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftAction $removeDraftAction) {
+	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
+			RemoveDraftAction $removeDraftAction) {
 	}
 	
 	public function writeDraftValue($object, $value) {

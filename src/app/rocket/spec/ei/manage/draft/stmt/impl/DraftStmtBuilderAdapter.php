@@ -9,11 +9,13 @@ use n2n\persistence\Pdo;
 
 abstract class DraftStmtBuilderAdapter implements DraftStmtBuilder {
 	protected $pdo;
+	protected $tableName;
 	protected $boundValues = array();
 	protected $aliasBuilder;
 
-	public function __construct(Pdo $pdo) {
+	public function __construct(Pdo $pdo, string $tableName) {
 		$this->pdo = $pdo;
+		$this->tableName = $tableName;
 		$this->aliasBuilder = new AliasBuilder();
 	}
 	
@@ -25,6 +27,9 @@ abstract class DraftStmtBuilderAdapter implements DraftStmtBuilder {
 		return $this->pdo;
 	}
 
+	public function getTableName(): string {
+		return $this->tableName;
+	}
 	
 	public function createPlaceholderName(): string {
 		return $this->aliasBuilder->createPlaceholderName();

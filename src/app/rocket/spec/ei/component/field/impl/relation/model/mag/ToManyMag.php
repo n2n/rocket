@@ -37,6 +37,7 @@ use n2n\util\uri\Url;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\spec\ei\manage\draft\Draft;
 
 class ToManyMag extends MagAdapter {
 	private $min;
@@ -162,10 +163,10 @@ class ToManyMag extends MagAdapter {
 	public function setFormValue($formValue) {
 		ArgUtils::assertTrue($formValue instanceof ToManyForm);
 
-		$oldTargetRelationEntries = $this->buildLiveIdRepRelationEntryMap();
 		$this->targetRelationEntries = array();
 
 		if ($formValue->isSelectionModeEnabled()) {
+			$oldTargetRelationEntries = $this->buildLiveIdRepRelationEntryMap();
 			foreach ($formValue->getSelectedEntryIdReps() as $idRep) {
 				if (isset($oldTargetRelationEntries[$idRep])) {
 					$this->targetRelationEntries[$idRep] = $oldTargetRelationEntries[$idRep];
@@ -185,6 +186,7 @@ class ToManyMag extends MagAdapter {
 			
 			if ($targetEiMapping->isNew()) {
 				$this->targetRelationEntries[] = RelationEntry::fromM($targetEiMapping);
+				$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
 			} else {
 				$this->targetRelationEntries[$targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			}

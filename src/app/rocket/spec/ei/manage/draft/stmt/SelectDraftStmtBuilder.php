@@ -49,7 +49,7 @@ interface SelectDraftStmtBuilder extends DraftStmtBuilder {
 	/**
 	 * @return \n2n\persistence\meta\data\QueryItem
 	 */
-	public function getFlagQueryItem(): QueryItem;
+	public function getTypeQueryItem(): QueryItem;
 	
 	/**
 	 * @return \n2n\persistence\meta\data\QueryItem

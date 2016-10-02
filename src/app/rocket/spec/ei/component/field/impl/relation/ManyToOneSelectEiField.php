@@ -60,6 +60,7 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
+use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 
@@ -186,7 +187,8 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
 	 */
-	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftAction $draftActionQueue) {
+	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
+			RemoveDraftAction $draftActionQueue) {
 	}
 	
 	public function writeDraftValue($object, $value) {

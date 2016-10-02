@@ -45,15 +45,14 @@ use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\component\field\impl\relation\conf\RelationEiFieldConfigurator;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
-use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	private $replaceable = true;
@@ -199,7 +198,8 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
 	 */
-	public function supplyRemoveDraftStmtBuilder($targetDraft, $oldTargetDraft, RemoveDraftAction $removeDraftAction) {
+	public function supplyRemoveDraftStmtBuilder($targetDraft, $oldTargetDraft, 
+			RemoveDraftStmtBuilder $removeDraftStmtBuilder, RemoveDraftAction $removeDraftAction) {
 		ArgUtils::assertTrue($oldTargetDraft === null || $oldTargetDraft instanceof Draft);
 		
 		if ($oldTargetDraft !== null) {
@@ -213,7 +213,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 			return;
 		}
 		
-		throw new \n2n\util\ex\NotYetImplementedException('BUIL TARGET DRAFTED OBJECT');
+		throw new \n2n\util\ex\NotYetImplementedException('BUILD TARGET DRAFTED OBJECT');
 // 		ArgUtils::assertTrue($value instanceof Draft);
 // 		$this->getPropertyAccessProxy()->setValue($object, $value->);
 	}

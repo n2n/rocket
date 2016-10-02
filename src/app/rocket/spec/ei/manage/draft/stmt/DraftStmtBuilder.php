@@ -31,6 +31,8 @@ interface DraftStmtBuilder {
 	 */
 	public function getPdo(): Pdo;
 	
+	public function getTableName(): string;
+	
 	/**
 	 * @return PdoStatement
 	 */

@@ -35,6 +35,8 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\ToManySelectGuiElement;
 use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\draft\RemoveDraftAction;
+use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	
@@ -135,7 +137,8 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder($value, $oldValue, $removeDraftAction)
 	 */
-	public function supplyRemoveDraftStmtBuilder($value, $oldValue, \rocket\spec\ei\manage\draft\RemoveDraftAction $removeDraftAction) {
+	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
+			RemoveDraftAction $removeDraftAction) {
 		throw new NotYetImplementedException();
 	}
 	

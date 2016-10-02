@@ -23,6 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
 use rocket\spec\ei\manage\util\model\EiStateUtils;
 use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\util\model\EiEntryUtils;
 
 class ToManyDynMappingFormFactory {
 	private $utils;
@@ -39,10 +40,18 @@ class ToManyDynMappingFormFactory {
 		$this->utils = $utils;
 	}
 	
+	private function getKey(EiMapping $eiMapping) {
+		$ei = new EiEntryUtils($eiMapping);
+		if ($ei->isDraft()) {
+			return 'd' . $ei->getDraft()->getId();
+		}
+		
+		return 'c' . $ei->getLiveEntry()->getId();
+	}
+	
 	public function addEiMapping(EiMapping $currentEiMapping) {
 		if (!$currentEiMapping->isAccessible()) {
-			$idRep = $currentEiMapping->getIdRep();
-			$this->currentMappingForms['c'. $idRep] = new MappingForm(
+			$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
 					$this->utils->createIdentityString($currentEiMapping->getEiSelection()),
 					null, $this->nextOrderIndex++);
 			return;
@@ -55,8 +64,7 @@ class ToManyDynMappingFormFactory {
 			return;
 		}
 		
-		$idRep = $currentEiMapping->getIdRep();
-		$this->currentMappingForms['c'. $idRep] = new MappingForm(
+		$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
 				$this->utils->getGenericLabel($currentEiMapping), null, 
 				$this->utils->createEntryFormFromMapping($currentEiMapping), $this->nextOrderIndex++);
 	}

@@ -49,7 +49,8 @@ interface DraftProperty {
 	 * @param RemoveDraftStmtBuilder $removeDraftStmtBuilder
 	 * @param DraftActionQueue $draftActionQueue
 	 */
-	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftAction $removeDraftAction);
+	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
+			RemoveDraftAction $removeDraftAction);
 	
 	/**
 	 * @param object $object

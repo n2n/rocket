@@ -84,4 +84,10 @@ class CommonModDraftAction extends DraftActionAdapter implements PersistDraftAct
 		throw new IllegalStateException('No DraftStmtBuilder assigned.');
 	}
 	
+	protected function exec() {
+		if (null !== ($pdoStatement = $this->getDraftStmtBuilder()->buildPdoStatement())) {
+			$pdoStatement->execute();
+		}
+	}
+	
 }

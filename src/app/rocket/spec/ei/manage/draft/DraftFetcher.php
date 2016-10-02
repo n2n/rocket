@@ -138,7 +138,7 @@ class DraftFetcher {
 		}
 		$draft = new Draft($draftValuesResult->getId(), $liveEntry, $draftValuesResult->getLastMod(),
 				$draftValuesResult->getUserId(), new DraftValueMap($draftValuesResult->getValues()));
-		$draft->setFlag($draftValuesResult->getFlag());
+		$draft->setType($draftValuesResult->getType());
 		
 		return $draft;
 	}

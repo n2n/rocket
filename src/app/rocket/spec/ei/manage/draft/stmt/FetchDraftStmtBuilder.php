@@ -55,7 +55,7 @@ interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
 	/**
 	 * @return string
 	 */
-	public function getFlagAlias(): string;
+	public function getTypeAlias(): string;
 	
 	/**
 	 * @return string 

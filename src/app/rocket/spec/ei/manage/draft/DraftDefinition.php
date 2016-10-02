@@ -85,12 +85,11 @@ class DraftDefinition {
 		return $stmtBuilder;
 	}
 	
-	public function createPersistDraftStmtBuilder(PersistDraftAction $persistDraftAction, 
-			DraftActionQueue $draftActionQueue) {
+	public function createPersistDraftStmtBuilder(PersistDraftAction $persistDraftAction) {
 		$draft = $persistDraftAction->getDraft();
-		$pdo = $draftActionQueue->getEntityManager()->getPdo();
+		$pdo = $persistDraftAction->getQueue()->getEntityManager()->getPdo();
 		$idEntityProperty = $this->entityModel->getIdDef()->getEntityProperty();
-		$stmtBuilder = new SimplePersistDraftStmtBuilder($pdo, $this->tableName, $idEntityProperty, $draft->getId());
+		$stmtBuilder = new SimplePersistDraftStmtBuilder($pdo, $this->tableName, $idEntityProperty, $draft->getId(false));
 		
 		$draftingContext = $persistDraftAction->getQueue()->getDraftingContext();
 		
@@ -98,12 +97,12 @@ class DraftDefinition {
 		$draftValuesResult = null;
 		if (!$draft->isNew()) {
 			$draftValuesResult = $draftingContext->getDraftValuesResultByDraft($draft);
-			$empty = $draftValuesResult->getFlag() === $draft->getFlag() 
+			$empty = $draftValuesResult->getType() === $draft->getType() 
 					&& $draftValuesResult->getLastMod() === $draft->getLastMod()
 					&& $draftValuesResult->getUserId() === $draft->getUserId();
 		}
 		
-		$stmtBuilder->setFlag($draft->getFlag());
+		$stmtBuilder->setType($draft->getType());
 		$stmtBuilder->setUserId($draft->getUserId());
 		$stmtBuilder->setLastMod($draft->getLastMod());
 		
@@ -132,7 +131,7 @@ class DraftDefinition {
 		$persistDraftAction->executeAtEnd(function () use ($draftingContext, $draft) {
 			$newDraftValuesResult = new DraftValuesResult($draft->getId(), 
 					($draft->getLiveEntry()->hasId() ? $draft->getLiveEntry()->getId() : null),
-					$draft->getLastMod(), $draft->getFlag(), $draft->getUserId(), 
+					$draft->getLastMod(), $draft->getType(), $draft->getUserId(), 
 					$draft->getDraftValueMap()->getValues());
 			$draftingContext->setDraftValuesResult($draft, $newDraftValuesResult);
 		});
@@ -140,15 +139,20 @@ class DraftDefinition {
 		return $stmtBuilder;
 	}
 	
-	public function createRemoveDraftStmtBuilder(DraftAction $draftAction, DraftActionQueue $draftActionQueue) {
-		$draft = $draftAction->getDraft();
+	public function createRemoveDraftStmtBuilder(RemoveDraftAction $removeDraftAction, DraftActionQueue $draftActionQueue) {
+		$draft = $removeDraftAction->getDraft();
+		$draftActionQueue = $removeDraftAction->getQueue();
 		$statementBuilder = new SimpleRemoveDraftStmtBuilder($draftActionQueue->getEntityManager()->getPdo(), 
 				$this->tableName, $draft->getId());
 		
-		$draftedEntityObj = $draft->getDraftedEntityObj();
-		foreach ($this->draftProperties as $draftProperty) {
-			$draftProperty->supplyRemoveDraftStmtBuilder($draftProperty->readDraftValue($draftedEntityObj),
-					$statementBuilder, $draftAction, $draftProperty->readDraftValue($draftedEntityObj));
+		$draftValuesMap = $draft->getDraftValueMap();
+		$draftValuesResult = $draftActionQueue->getDraftingContext()->getDraftValuesResultByDraft($draft);		
+		foreach ($this->draftProperties as $id => $draftProperty) {
+			$eiFieldPath = new EiFieldPath(array($id));
+			$oldValue = $draftValuesResult->getValue($eiFieldPath);
+			
+			$draftProperty->supplyRemoveDraftStmtBuilder($draftValuesMap->getValue($eiFieldPath), $oldValue,
+					$statementBuilder, $removeDraftAction);
 		}
 		
 		return $statementBuilder;
