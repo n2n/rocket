@@ -31,13 +31,10 @@ use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\mapping\impl\Validatable;
 
 class ToManyMappable extends RwMappable  {
-	private $embedded;
 	
-	public function __construct(EiObject $eiObject, bool $embedded, Readable $readable = null, Writable $writable = null,
+	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
 			Validatable $validatable = null) {
 		parent::__construct($eiObject, $readable, $writable, $validatable);
-	
-		$this->embedded = $embedded;
 	}	
 	
 	
@@ -86,17 +83,15 @@ class ToManyMappable extends RwMappable  {
 	public function copyMappable(EiObject $eiObject) {
 		$copy = new ToManyMappable($eiObject, $this->readable, $this->writable);
 		if (!$this->isValueLoaded()) return $copy;
-		
-		if (!$this->embedded) {		
-			$copy->setValue($this->getValue());
-			return $copy;
-		}
-		
-		foreach ($this->getValue() as $targetRelationEntry) {
-			$targetRelationEntry->getEiMapping();
-		}
-		
+			
+		$copy->setValue($this->getValue());
 		return $copy;
+		
+// 		foreach ($this->getValue() as $targetRelationEntry) {
+// 			$targetRelationEntry->getEiMapping();
+// 		}
+		
+// 		return $copy;
 	}
 
 }
