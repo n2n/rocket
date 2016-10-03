@@ -227,7 +227,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
 	 */
-	public function supplyPersistDraftStmtBuilder($targetDrafts, $oldTargetDraft,
+	public function supplyPersistDraftStmtBuilder($targetDrafts, $oldTargetDrafts,
 			PersistDraftStmtBuilder $persistDraftStmtBuilder, PersistDraftAction $persistDraftAction) {
 		$relationDraftAction = $this->createRelationDraftAction($persistDraftStmtBuilder, $persistDraftAction);
 		
@@ -235,7 +235,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 		$targetDraftDefinition = $this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->getDraftDefinition();
 		$orderIndex = 0;
 		$targetDraftIds = array();
-		foreach ($targetDrafts as $targetDraft) {
+		foreach ((array) $targetDrafts as $targetDraft) {
 			$targetAction = $draftActionQueue->persist($targetDraft, $targetDraftDefinition);
 			if (!$targetDraft->isNew()) {
 				$targetDraftId = $targetDraft->getId();
@@ -251,9 +251,9 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 			$orderIndex++;
 		}
 		
-		foreach ($oldTargetDraft as $oldTargetDraft) {
-			if (!isset($targetDraftIds[$oldTargetDraft->getId()])) {
-				$persistDraftAction->getQueue()->remove($oldTargetDraft, true);
+		foreach ((array) $oldTargetDrafts as $oldTargetDrafts) {
+			if (!isset($targetDraftIds[$oldTargetDrafts->getId()])) {
+				$persistDraftAction->getQueue()->remove($oldTargetDrafts, true);
 			}
 		}
 	}

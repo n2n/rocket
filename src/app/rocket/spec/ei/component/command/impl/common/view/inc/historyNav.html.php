@@ -51,7 +51,7 @@
 				<div class="rocket-history-entry-content">
 					<p>
 						<?php $html->l10nDateTime($latestDraft->getLastMod()) ?>
-						<?php if (null !== ($user = $rocketUserDao->getUserById($latestDraft->getId()))): ?> 
+						<?php if (null !== ($user = $rocketUserDao->getUserById($latestDraft->getUserId()))): ?> 
 							<?php $html->out($user) ?>
 						<?php endif ?>
 					</p>
