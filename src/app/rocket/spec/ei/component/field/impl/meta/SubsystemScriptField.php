@@ -64,7 +64,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 	
 // 	public function setup(EiSetupProcess $setupProcess) {
 // 		$this->scriptManager = $setupProcess->getSpecManager();
-// 		$subsystemConfigs = N2N::getAppConfig()->http()->getSubystemConfigs();
+// 		$subsystemConfigs = N2N::getAppConfig()->http()->getSubsystemConfigs();
 // 		$this->subsystems = (count($subsystemConfigs) > 0) ? 
 // 				array(null => 'Alle Subsysteme') : array();
 		
