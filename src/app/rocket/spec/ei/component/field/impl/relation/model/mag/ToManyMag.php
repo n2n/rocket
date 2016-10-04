@@ -189,8 +189,10 @@ class ToManyMag extends MagAdapter {
 				if ($targetEiMapping->getEiSelection()->isDraft()) {
 					$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
 				}
+			} else if ($targetEiMapping->getEiSelection()->isDraft()) {
+				$this->targetRelationEntries['d' . $targetEiMapping->getEiSelection()->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			} else {
-				$this->targetRelationEntries[$targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
+				$this->targetRelationEntries['c' . $targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			}
 		}
 	}
