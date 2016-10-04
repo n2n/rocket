@@ -186,7 +186,9 @@ class ToManyMag extends MagAdapter {
 			
 			if ($targetEiMapping->isNew()) {
 				$this->targetRelationEntries[] = RelationEntry::fromM($targetEiMapping);
-				$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
+				if ($targetEiMapping->getEiSelection()->isDraft()) {
+					$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
+				}
 			} else {
 				$this->targetRelationEntries[$targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			}
