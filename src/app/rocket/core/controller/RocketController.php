@@ -134,6 +134,11 @@ class RocketController extends ControllerAdapter {
 		}
 		
 		$mc->addAll($transactionApproveAttempt->getReasonMessages());
+		test($transactionApproveAttempt->getReasonMessages());
+		$bo = $this->getResponse()->fetchBufferedOutput();
+		$this->getResponse()->reset();
+		echo $bo;
+		die('HOLERADIO');
 		$this->rollBack();
 	}
 	

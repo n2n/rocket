@@ -85,6 +85,8 @@ class VetoableRemoveQueue implements LifecycleListener {
 	}
 	
 	public function approve(N2nContext $n2nContext) {
+		$this->em->flush();
+		
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
 			$action->getEiSelection()->getLiveEntry()->getEiSpec()->onRemove($action, $n2nContext);
 				
