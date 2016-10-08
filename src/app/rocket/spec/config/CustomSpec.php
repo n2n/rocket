@@ -29,9 +29,9 @@ use rocket\spec\config\Spec;
 class CustomSpec extends Spec {
 	private $controllerClass;
 	
-	public function __construct(string $id, string $moduleNamespace, \ReflectionClass $controllerClass) {
+	public function __construct(string $id, string $moduleNamespace, string $controllerLookupId) {
 		parent::__construct($id, $moduleNamespace);
-		$this->controllerClass = $controllerClass;
+		$this->controllerClass = $controllerLookupId;
 	}
 	
 	public function getLabel() {

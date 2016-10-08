@@ -31,6 +31,7 @@ use rocket\core\model\UnknownMenuItemException;
 use n2n\reflection\ArgUtils;
 
 class SpecExtractionManager {
+	private $init = false;
 	private $modularConfigSource;
 	private $moduleNamespaces;
 	private $specCsDecs = array();
@@ -44,7 +45,20 @@ class SpecExtractionManager {
 		$this->moduleNamespaces = $moduleNamespaces;
 	}
 	
+	public function getModularConfigSource() {
+		return $this->modularConfigSource;
+	}
+	
+	/**
+	 * 
+	 */
 	public function initialize() {
+		if ($this->init) {
+			throw new IllegalStateException('Already initilized');
+		}
+		
+		$this->init = true;
+		
 		foreach ($this->moduleNamespaces as $moduleNamespace) {
 			$moduleNamespace = (string) $moduleNamespace;
 			
@@ -62,6 +76,13 @@ class SpecExtractionManager {
 		$this->initSpecExtractions();
 		$this->initCommonEiMaskExtractions();
 		$this->initMenuItemExtractions();
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isInitialized() {
+		return $this->init;
 	}
 	
 	private function initSpecExtractions() {
@@ -125,12 +146,12 @@ class SpecExtractionManager {
 	private function initMenuItemExtractions() {
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
-	
+			
 			foreach ($specCsDec->getMenuItemExtractions() as $menuItemId => $menuItemExtraction) {
 				if (isset($this->menuItemExtractions[$menuItemId])) {
 					throw $this->createDuplicatedMenuItemIdException($menuItemId);
 				}
-					
+				
 				$this->menuItemExtractions[$menuItemId] = $menuItemExtraction;
 			}
 		}
@@ -286,7 +307,10 @@ class SpecExtractionManager {
 		unset($this->unboundCommonEiMaskExtractionGroups[$specId]);
 	}
 	
-
+	public function getMenuItemExtractions() {
+		return $this->menuItemExtractions;
+	}
+	
 	public function getMenuItemExtractionById(string $id): MenuItemExtraction {
 		if (isset($this->menuItemExtractions[$id])) {
 			return $this->menuItemExtractions[$id];

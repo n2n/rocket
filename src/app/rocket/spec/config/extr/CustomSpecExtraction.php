@@ -37,21 +37,21 @@ class CustomSpecExtraction extends SpecExtraction {
 		$this->controllerClassName = $customControllerClassName;
 	}
 	
-	public function createScript(SpecManager $scriptManager) {
-		$constrollerClass = null;
-		try {
-			$controllerClass = ReflectionUtils::createReflectionClass(
-					$this->getControllerClassName());
-			if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
-				throw SpecManager::createInvalidSpecConfigurationException($this->getId(), null, 
-						$constrollerClass->getName() . ' must implement n2n\web\http\controller\Controller');
-			}
-		} catch (TypeNotFoundException $e) {
-			throw SpecManager::createInvalidSpecConfigurationException($this->getId(), $e);
-		}
+// 	public function createScript(SpecManager $scriptManager) {
+// 		$constrollerClass = null;
+// 		try {
+// 			$controllerClass = ReflectionUtils::createReflectionClass(
+// 					$this->getControllerClassName());
+// 			if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
+// 				throw SpecManager::createInvalidSpecConfigurationException($this->getId(), null, 
+// 						$constrollerClass->getName() . ' must implement n2n\web\http\controller\Controller');
+// 			}
+// 		} catch (TypeNotFoundException $e) {
+// 			throw SpecManager::createInvalidSpecConfigurationException($this->getId(), $e);
+// 		}
 	
-		return new CustomSpec($this->getId(), $this->getModuleNamespace(), $controllerClass);
-	}
+// 		return new CustomSpec($this->getId(), $this->getModuleNamespace(), $controllerClass);
+// 	}
 	
 	public function toSpecString(): string {
 		return 'CustomSpec (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';

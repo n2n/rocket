@@ -38,7 +38,6 @@ use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\EiThing;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\manage\veto\VetoableActionListener;
-use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\config\Spec;
@@ -65,19 +64,24 @@ class EiSpec extends Spec implements EiThing {
 	 * @param Module $moduleNamespace
 	 * @param EntityModel $entityModel
 	 */
-	public function __construct($id, $moduleNamespace, EntityModel $entityModel) {
+	public function __construct($id, $moduleNamespace) {
 		parent::__construct($id, $moduleNamespace);
-		$this->entityModel = $entityModel;
 		
 		$this->eiDef = new EiDef();
 		$this->eiEngine = new EiEngine($this);
 		$this->eiMaskCollection = new EiMaskCollection($this);
 	}
 	
+	public function setEntityModel(EntityModel $entityModel) {
+		IllegalStateException::assertTrue($this->entityModel === null);
+		$this->entityModel = $entityModel;
+	}
+	
 	/**
 	 * @return \n2n\persistence\orm\model\EntityModel
 	 */
 	public function getEntityModel(): EntityModel {
+		IllegalStateException::assertTrue($this->entityModel !== null);
 		return $this->entityModel;
 	}
 	

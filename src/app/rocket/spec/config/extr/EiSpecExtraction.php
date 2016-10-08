@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\SpecManager;
 use rocket\spec\ei\EiSpec;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiDef;
@@ -120,10 +119,10 @@ class EiSpecExtraction extends SpecExtraction {
 		return $this->commonEiMaskExtractions;
 	}
 	
-	public function createScript(SpecManager $scriptManager) {
-		$factory = new EiSpecFactory($scriptManager->getEntityModelManager(), $scriptManager->getEiSpecSetupQueue());
-		return $factory->create($this);
-	}
+// 	public function createScript(SpecManager $scriptManager) {
+// 		$factory = new EiSpecFactory($scriptManager->getEntityModelManager(), $scriptManager->getEiSpecSetupQueue());
+// 		return $factory->create($this);
+// 	}
 	
 	public static function createFromEiSpec(EiSpec $eiSpec) {
 		$extraction = new EiSpecExtraction($eiSpec->getId(), $eiSpec->getModuleNamespace());

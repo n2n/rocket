@@ -62,4 +62,15 @@ class VarStoreConfigSource implements ModularConfigSource {
 				|| $this->varStore->requestFileFsPath(VarStore::CATEGORY_ETC, $namespace, 
 						$this->folderName, $this->fileName, false, false, false)->exists();
 	}
+	
+	public function hashCode() {
+		$hashCode = '';
+		foreach ($this->configSources as $ns => $configSource) {
+			$csHashCode = $configSource->hashCode();
+			if ($csHashCode === null) return null;
+			
+			$hashCode .=  ':' . $ns . ':' . $csHashCode; 
+		}
+		return md5($hashCode);
+	}
 }

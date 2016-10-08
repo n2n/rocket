@@ -34,7 +34,6 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
-use rocket\spec\config\SpecMenuItem;
 use rocket\spec\config\InvalidMenuItemConfigurationException;
 use rocket\spec\ei\manage\critmod\sort\SortData;
 use n2n\persistence\orm\util\NestedSetStrategy;

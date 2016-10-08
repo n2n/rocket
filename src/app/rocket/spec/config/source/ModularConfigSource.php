@@ -37,4 +37,6 @@ interface ModularConfigSource {
 	 * @return boolean
 	 */
 	public function containsModuleNamespace($moduleNamespace): bool;
+	
+	public function hashCode();
 }
