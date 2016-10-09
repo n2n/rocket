@@ -24,11 +24,8 @@ namespace rocket\spec\ei\component\command\impl\common\controller;
 use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
-use n2n\web\http\ParamGet;
-use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\http\controller\ParamQuery;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\l10n\MessageContainer;
 use n2n\web\http\StatusException;
 
@@ -37,9 +34,9 @@ class DeleteController extends ControllerAdapter {
 	private $utils;
 	private $eiCtrlUtils;
 	
-	public function prepare(ManageState $manageState, DynamicTextCollection $dtc, EiCtrlUtils $eiCtrlUtils) {
+	public function prepare(ManageState $manageState, DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils) {
 		$this->dtc = $dtc;
-		$this->utils = new EiStateUtils($manageState->peakEiState());
+		$this->utils = new EiuFrame($manageState->peakEiState());
 		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 	
@@ -54,7 +51,7 @@ class DeleteController extends ControllerAdapter {
 			return;
 		}
 		
-		$vetoableAction = $this->eiCtrlUtils->getEiStateUtils()->remove($eiSelection);
+		$vetoableAction = $this->eiCtrlUtils->getEiuFrame()->remove($eiSelection);
 // 		if ($vetoableAction->hasVetos()) {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}
@@ -62,18 +59,18 @@ class DeleteController extends ControllerAdapter {
 		$this->redirect($redirectUrl);
 	}
 	
-	public function doDraft($id, $draftId, ParamGet $previewtype = null) {
-		$eiSelection = null;
-		try {
-			$eiSelection = $this->utils->createEiSelectionFromDraftId($id, $draftId);
-		} catch (\InvalidArgumentException $e) {
-			throw new PageNotFoundException();
-		}
+// 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {
+// 		$eiSelection = null;
+// 		try {
+// 			$eiSelection = $this->utils->createEiSelectionFromDraftId($id, $draftId);
+// 		} catch (\InvalidArgumentException $e) {
+// 			throw new PageNotFoundException();
+// 		}
 		
-		$this->utils->removeEiSelection($eiSelection);
+// 		$this->utils->removeEiSelection($eiSelection);
 		
-		$eiState = $this->utils->getEiState();
-		$this->redirect($this->utils->getEiState()->getDetailUrl(
-				$eiSelection->toEntryNavPoint($previewtype)->copy(true)));
-	}
+// 		$eiState = $this->utils->getEiState();
+// 		$this->redirect($this->utils->getEiState()->getDetailUrl(
+// 				$eiSelection->toEntryNavPoint($previewtype)->copy(true)));
+// 	}
 }

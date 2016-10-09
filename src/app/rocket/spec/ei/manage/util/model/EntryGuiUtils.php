@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 
-class EntryGuiUtils extends EiEntryUtils {
+class EntryGuiUtils extends EiuEntry {
 	private $viewMode;
 // 	protected $eiMask;
 	protected $eiSelectionGui;

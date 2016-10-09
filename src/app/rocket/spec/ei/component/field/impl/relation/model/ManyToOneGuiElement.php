@@ -27,7 +27,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\GuiElement;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class ManyToOneGuiElement implements GuiElement {
 	private $label;
@@ -68,8 +68,8 @@ class ManyToOneGuiElement implements GuiElement {
 		
 		if ($targetRelationEntry === null || $targetRelationEntry->isNew()) return null;
 		
-		$targetEiStateUtils = new EiStateUtils($this->targetEiState);
-		$identityString = $targetEiStateUtils->createIdentityString($targetRelationEntry->getEiSelection());
+		$targetEiuFrame = new EiuFrame($this->targetEiState);
+		$identityString = $targetEiuFrame->createIdentityString($targetRelationEntry->getEiSelection());
 		if (!$this->targetEiState->isDetailUrlAvailable($targetRelationEntry->getEiSelection()->toEntryNavPoint())) {
 			return $html->getEsc($identityString);
 		}

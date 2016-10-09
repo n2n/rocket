@@ -26,7 +26,7 @@ use n2n\reflection\annotation\AnnoInit;
 use rocket\spec\ei\manage\util\model\EntryForm;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
@@ -58,7 +58,7 @@ class ToOneForm implements Dispatchable {
 	private $currentMappingForm;
 	private $newMappingForm;
 
-	public function __construct(string $label, bool $mandatory, EiStateUtils $utils) {
+	public function __construct(string $label, bool $mandatory, EiuFrame $utils) {
 		$this->label = $label;
 		$this->mandatory = $mandatory;
 		$this->utils = $utils;

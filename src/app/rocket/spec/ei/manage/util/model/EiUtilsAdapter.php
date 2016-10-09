@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\util\model\EiUtils;
+use rocket\spec\ei\manage\util\model\FrameEiu;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\EiSpec;
@@ -45,7 +45,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getEiSpec()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getEiSpec()
 	 */
 	public function getEiSpec(): EiSpec {
 		return $this->getEiMask()->getEiEngine()->getEiSpec();
@@ -53,7 +53,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getNestedSetStrategy()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getNestedSetStrategy()
 	 */
 	public function getNestedSetStrategy() {
 		return $this->getEiSpec()->getNestedSetStrategy();
@@ -68,7 +68,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getClass()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getClass()
 	 */
 	public function getClass(): \ReflectionClass {
 		return $this->getEntityModel()->getClass();
@@ -76,7 +76,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idToIdRep()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::idToIdRep()
 	 */
 	public function idToIdRep($id): string {
 		return $this->getEiSpec()->idToIdRep($id);
@@ -84,7 +84,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idRepToId()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::idRepToId()
 	 */
 	public function idRepToId(string $idRep) {
 		return $this->getEiSpec()->idRepToId($idRep);
@@ -92,7 +92,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getGenericLabel()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getGenericLabel()
 	 */
 	public function getGenericLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiEntryObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
@@ -100,7 +100,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getGenericPluralLabel()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getGenericPluralLabel()
 	 */
 	public function getGenericPluralLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiEntryObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
@@ -108,7 +108,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createIdentityString()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createIdentityString()
 	 */
 	public function createIdentityString(EiSelection $eiSelection, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string {
@@ -124,7 +124,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::determineEiSpec()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::determineEiSpec()
 	 */
 	public function determineEiSpec($eiEntryObj): EiSpec {
 		if ($eiEntryObj === null) {
@@ -154,7 +154,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::determineEiMask()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::determineEiMask()
 	 */
 	public function determineEiMask($eiEntryObj): EiMask {
 		if ($eiEntryObj === null) {
@@ -166,7 +166,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiSelectionById()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiSelectionById()
 	 */
 	public function lookupEiSelectionById($id, int $ignoreConstraintTypes = 0): EiSelection {
 		return new LiveEiSelection($this->lookupLiveEntryById($id, $ignoreConstraintTypes));
@@ -174,7 +174,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::isDraftingEnabled()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::isDraftingEnabled()
 	 */
 	public function isDraftingEnabled(): bool {
 		return $this->getEiMask()->isDraftingEnabled();
@@ -182,7 +182,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupDraftById()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupDraftById()
 	 */
 	public function lookupDraftById(int $id): Draft {
 		$draft = $this->getDraftManager()->find($this->getClass(), $id, 
@@ -195,7 +195,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiSelectionByDraftId()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiSelectionByDraftId()
 	 */
 	public function lookupEiSelectionByDraftId(int $id): EiSelection {
 		return new DraftEiSelection($this->lookupDraftById($id));
@@ -203,7 +203,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupDraftsByEntityObjId()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupDraftsByEntityObjId()
 	 */
 	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array {
 		return $this->getDraftManager()->findByEntityObjId($this->getClass(), $entityObjId, $limit, $num, 
@@ -212,7 +212,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 		
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createEntityObj()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEntityObj()
 	 */
 	public function createEntityObj() {
 		return ReflectionUtils::createObject($this->getClass());
@@ -220,7 +220,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createEiSelectionFromLiveEntry()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiSelectionFromLiveEntry()
 	 */
 	public function createEiSelectionFromLiveEntry($liveEntry): EiSelection {
 		if ($liveEntry instanceof LiveEntry) {
@@ -236,7 +236,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createEiSelectionFromDraft()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiSelectionFromDraft()
 	 */
 	public function createEiSelectionFromDraft(Draft $draft): EiSelection {
 		return new DraftEiSelection($draft);
@@ -244,7 +244,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::createNewEiSelection()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createNewEiSelection()
 	 */
 	public function createNewEiSelection(bool $draft = false, EiSpec $eiSpec = null): EiSelection {
 		if ($eiSpec === null) {
@@ -271,10 +271,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::toEiEntryUtils()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::toEiuEntry()
 	 */
-	public function toEiEntryUtils($eiEntryObj): EiEntryUtils {
-		return new EiEntryUtils($eiEntryObj, $this);
+	public function toEiuEntry($eiEntryObj): EiuEntry {
+		return new EiuEntry($eiEntryObj, $this);
 	}
 	
 	public function persist($eiEntryObj, bool $flush = true) {

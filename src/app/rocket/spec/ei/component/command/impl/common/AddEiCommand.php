@@ -38,7 +38,7 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent, 
@@ -92,7 +92,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	
 	public function createOverallHrefControls(EiState $eiState, HtmlView $htmlView) {
 		$n2nContext = $eiState->getN2nContext();
-		$eiUtils = new EiStateUtils($eiState);
+		$eiUtils = new EiuFrame($eiState);
 		$httpContext = $n2nContext->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
 		$controllerContextPath = $httpContext->getControllerContextPath($eiState->getControllerContext());

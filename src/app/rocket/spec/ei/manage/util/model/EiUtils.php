@@ -200,9 +200,9 @@ interface EiUtils {
 	
 	/**
 	 * @param object $eiEntryObj
-	 * @return EiEntryUtils
+	 * @return EiuEntry
 	 */
-	public function toEiEntryUtils($eiEntryObj): EiEntryUtils;
+	public function toEiuEntry($eiEntryObj): EiuEntry;
 	
 	public function persist($eiEntryObj, bool $flush = true);
 }

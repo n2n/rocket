@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
 use n2n\web\ui\Raw;
@@ -77,7 +77,7 @@ class ContentItemGuiElement implements GuiElement {
 	}
 
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetUtils = new EiStateUtils($this->targetEiState);
+		$targetUtils = new EiuFrame($this->targetEiState);
 		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
 		
 		$groupedUiComponents = array();

@@ -29,7 +29,7 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -58,8 +58,8 @@ class ToManyMag extends MagAdapter {
 			EiState $targetEditEiState, int $min, int $max = null) {
 		parent::__construct($propertyName, $label);
 	
-		$this->targetReadUtils = new EiStateUtils($targetReadEiState);
-		$this->targetEditUtils = new EiStateUtils($targetEditEiState);
+		$this->targetReadUtils = new EiuFrame($targetReadEiState);
+		$this->targetEditUtils = new EiuFrame($targetEditEiState);
 		$this->min = $min;
 		$this->max = $max;
 		

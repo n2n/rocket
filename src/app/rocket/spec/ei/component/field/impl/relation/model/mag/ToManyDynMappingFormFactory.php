@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\util\model\EiEntryUtils;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ToManyDynMappingFormFactory {
 	private $utils;
@@ -36,12 +36,12 @@ class ToManyDynMappingFormFactory {
 	
 	private $nextOrderIndex = 0;
 	
-	public function __construct(EiStateUtils $utils) {
+	public function __construct(EiuFrame $utils) {
 		$this->utils = $utils;
 	}
 	
 	private function getKey(EiMapping $eiMapping) {
-		$ei = new EiEntryUtils($eiMapping);
+		$ei = new EiuEntry($eiMapping);
 		if ($ei->isDraft()) {
 			return 'd' . $ei->getDraft()->getId();
 		}

@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class EmbeddedOneToOneGuiElement implements GuiElement {
 	private $label;
@@ -75,7 +75,7 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 // 		$target = $this->eiFieldRelation->getTarget();
 // 		$targetEiState = $this->eiFieldRelation->createTargetPseudoEiState(
 // 				$eiState, $eiSelection, false);
-// 		$targetUtils = new EiStateUtils($targetEiState);
+// 		$targetUtils = new EiuFrame($targetEiState);
 
 // 		$targetEiMapping = $targetUtils->createEiMapping($targetEiSelection);
 
@@ -89,7 +89,7 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 		$targetRelationEntry = $this->toOneMappable->getValue();
 		if ($targetRelationEntry === null) return null;
 	
-		$targetUtils = new EiStateUtils($this->targetEiState);
+		$targetUtils = new EiuFrame($this->targetEiState);
 		
 		return $targetUtils->createDetailView($targetRelationEntry->toEiMapping($targetUtils));
 	}

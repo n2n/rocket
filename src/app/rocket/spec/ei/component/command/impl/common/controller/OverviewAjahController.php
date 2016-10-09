@@ -50,7 +50,7 @@ use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use n2n\web\http\controller\impl\ScrController;
 use n2n\core\N2N;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class OverviewAjahController extends ControllerAdapter {
 	private $manageState;
@@ -80,7 +80,7 @@ class OverviewAjahController extends ControllerAdapter {
 				$this->getControllerContext())->toUrl(), $stateKey);
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiState->getContextEiMask());
 		
-		$eiUtils = new EiStateUtils($eiState);
+		$eiUtils = new EiuFrame($eiState);
 		
 		$this->send(new AjahResponse($this->createView(
 				'..\view\inc\overviewTools.html',

@@ -38,7 +38,7 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\util\model\EntryGuiUtils;
 
@@ -76,7 +76,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 			return array();
 		}
 		
-		$eiUtils = $entryGuiUtils->getEiStateUtils();
+		$eiUtils = $entryGuiUtils->getEiuFrame();
 		
 		$hrefControls = array();
 

@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\EiState;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use n2n\web\http\controller\ParamQuery;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;

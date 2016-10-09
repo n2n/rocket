@@ -34,7 +34,7 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class EntryEiHtmlBuilder {
 	private $view;
@@ -55,7 +55,7 @@ class EntryEiHtmlBuilder {
 		$this->fieldEiHtml = new FieldEiHtmlBuilder($view);
 		
 		$this->eiState = $eiState;
-		$this->entryUtils = new EiStateUtils($this->eiState);
+		$this->entryUtils = new EiuFrame($this->eiState);
 		$this->entryGuis = $entryGuis;
 		$this->meta = new EiHtmlBuilderMeta($entryGuis);
 	}

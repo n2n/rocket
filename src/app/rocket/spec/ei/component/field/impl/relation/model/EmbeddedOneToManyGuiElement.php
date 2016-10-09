@@ -26,7 +26,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 
 class EmbeddedOneToManyGuiElement implements GuiElement {
@@ -70,7 +70,7 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 		$targetRelationEntries = $this->toManyMappable->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
-		$targetEiStateUtils = new EiStateUtils($this->targetEiState);
+		$targetEiuFrame = new EiuFrame($this->targetEiState);
 		
 		$detailViews = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
@@ -78,15 +78,15 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 			if ($targetRelationEntry->hasEiMapping()) {
 				$targetEiMapping = $targetRelationEntry->getEiMapping();
 			} else {
-				$targetEiMapping = $targetEiStateUtils->createEiMapping(
+				$targetEiMapping = $targetEiuFrame->createEiMapping(
 						$targetRelationEntry->getEiSelection());
 			}
 			
 			if ($targetEiMapping->isAccessible()) {
-				$detailViews[] = $targetEiStateUtils->createDetailView($targetEiMapping);
+				$detailViews[] = $targetEiuFrame->createDetailView($targetEiMapping);
 			} else {
 				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetEiStateUtils->createIdentityString($targetEiMapping->getEiSelection()));
+						$targetEiuFrame->createIdentityString($targetEiMapping->getEiSelection()));
 			}
 		}
 

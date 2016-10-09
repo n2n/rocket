@@ -75,7 +75,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryHrefControls()
 	 */
 	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
-		$eiUtils = $entryGuiUtils->getEiStateUtils();
+		$eiUtils = $entryGuiUtils->getEiuFrame();
 		
 		$eiSelection = $entryGuiUtils->getEiSelection();
 		$eiMapping = $entryGuiUtils->getEiMapping();
@@ -105,7 +105,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$hrefControls = array(self::CONTROL_DETAIL_KEY 
 				=> HrefControl::create($eiState, $this, $pathExt->toUrl(), $controlButton));
 		
-		$eiEntryUtils = $eiUtils->toEiEntryUtils($eiSelection);
+		$eiEntryUtils = $eiUtils->toEiuEntry($eiSelection);
 		$previewType = $eiEntryUtils->getPreviewType();
 		if ($previewType === null) {
 			return $hrefControls;

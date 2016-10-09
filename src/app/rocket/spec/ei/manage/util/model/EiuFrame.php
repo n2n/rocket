@@ -50,14 +50,13 @@ use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
+use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 
-class EiStateUtils extends EiUtilsAdapter {
+class EiuFrame extends EiUtilsAdapter {
 	private $eiState;
-// 	private $httpContext;
 	
-	public function __construct(EiState $eiState/*, HttpContext $httpContext = null*/) {
+	public function __construct(EiState $eiState) {
 		$this->eiState = $eiState;
-// 		$this->httpContext = $httpContext;
 	}
 	
 	/**
@@ -129,6 +128,38 @@ class EiStateUtils extends EiUtilsAdapter {
 	public function getDraftManager(): DraftManager {
 		return $this->eiState->getManageState()->getDraftManager();
 	}
+	
+	private $assignedEiuEntry;
+	
+	/**
+	 * @param unknown $eiEntryObj
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function assignEiuEntry($eiEntryObj) {
+		if ($this->assignedEiuEntry === null) {
+			return $this->assignedEiuEntry = $this->toEiuEntry($eiEntryObj);
+		}
+		
+		throw new EiuPerimeterException('EiuEntry already assigned');
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function getAssignedEiuEntry(bool $required = true) {
+		if (!$required || $this->assignedEiuEntry !== null) {
+			return $this->assignedEiuEntry;
+		}
+		
+		throw new EiuPerimeterException('EiuEntry already assigned');
+	}
+	
+	
+	
+	
 	
 // 	public function lookupEiSelectionByDraftedEntityObj($draftedEntityObj) {
 // 		$this->eiState->getManageState()->getDraftManager()->asdf();

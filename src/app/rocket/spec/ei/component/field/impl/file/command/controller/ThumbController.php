@@ -35,7 +35,7 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\reflection\CastUtils;
 use n2n\io\managed\File;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class ThumbController extends ControllerAdapter {	
 	private $fileEiField;
@@ -44,7 +44,7 @@ class ThumbController extends ControllerAdapter {
 	private $dtc;
 	
 	public function prepare(ManageState $manageState, RocketState $rocketState, DynamicTextCollection $dtc, 
-			EiCtrlUtils $eiCtrlUtils) {
+			EiuCtrl $eiCtrlUtils) {
 		$this->rocketState = $rocketState;
 		$this->eiCtrlUtils = $eiCtrlUtils;
 		$this->dtc = $dtc;

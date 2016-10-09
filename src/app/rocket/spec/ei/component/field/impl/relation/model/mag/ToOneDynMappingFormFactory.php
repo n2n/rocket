@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 
 class ToOneDynMappingFormFactory {
@@ -33,7 +33,7 @@ class ToOneDynMappingFormFactory {
 	private $newMappingForm;
 	private $draftMode = false;
 	
-	public function __construct(EiStateUtils $eiStateUtils) {
+	public function __construct(EiuFrame $eiStateUtils) {
 		$this->eiStateUtils = $eiStateUtils;
 	}
 	

@@ -37,7 +37,7 @@ class AddController extends ControllerAdapter {
 	private $beforeEiSelection;
 	private $afterEiSelection;
 	
-	public function prepare(DynamicTextCollection $dtc, EiCtrlUtils $eiCtrlUtils, RocketState $rocketState) {
+	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils, RocketState $rocketState) {
 		$this->dtc = $dtc;
 		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
@@ -64,7 +64,7 @@ class AddController extends ControllerAdapter {
 	private function live(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 			
-		$eiStateUtils = $this->eiCtrlUtils->getEiStateUtils();
+		$eiStateUtils = $this->eiCtrlUtils->getEiuFrame();
 		$entryForm = $eiStateUtils->createNewEntryForm(false);
 		
 		$eiState = $this->eiCtrlUtils->getEiState();
@@ -87,7 +87,7 @@ class AddController extends ControllerAdapter {
 		
 		$this->eiCtrlUtils->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
 				'type' => $this->eiCtrlUtils->getEiState()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
@@ -98,7 +98,7 @@ class AddController extends ControllerAdapter {
 	public function doDraft(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 			
-		$entryForm = $this->eiCtrlUtils->getEiStateUtils()->createNewEntryForm(true);
+		$entryForm = $this->eiCtrlUtils->getEiuFrame()->createNewEntryForm(true);
 		
 		$eiState = $this->eiCtrlUtils->getEiState();
 		$addModel = new AddModel($eiState, $entryForm);
@@ -108,14 +108,14 @@ class AddController extends ControllerAdapter {
 			return;
 		}
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title', 
-				array('type' => $this->eiCtrlUtils->getEiStateUtils()->getGenericLabel())));
+				array('type' => $this->eiCtrlUtils->getEiuFrame()->getGenericLabel())));
 		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 	}
 	
 	private function getBreadcrumbLabel() {
-		$eiStateUtils = $this->eiCtrlUtils->getEiStateUtils();
+		$eiStateUtils = $this->eiCtrlUtils->getEiuFrame();
 		
 		if (null === $eiStateUtils->getNestedSetStrategy()) {
 			return $this->dtc->translate('ei_impl_add_breadcrumb');

@@ -156,7 +156,7 @@ class ManageState implements RequestScoped {
 	 */
 	public function peakEiState(EiSpec $eiSpec = null): EiState {
 		if (!sizeof($this->eiStates)) {
-			throw new UnsuitableEiStateException('No EiStates available.');
+			throw new ManageException('No active EiStates found.');
 		}  
 		
 		end($this->eiStates);

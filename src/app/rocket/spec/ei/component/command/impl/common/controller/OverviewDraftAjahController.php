@@ -50,7 +50,7 @@ use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use n2n\web\http\controller\impl\ScrController;
 use n2n\core\N2N;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class OverviewDraftAjahController extends ControllerAdapter {
 	private $manageState;

@@ -25,32 +25,32 @@ namespace rocket\spec\ei\manage\util\model;
 use rocket\spec\ei\manage\EiState;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
 use rocket\spec\ei\manage\util\model\EiEntryObjUtils;
 
-class EiEntryUtils {
+class EiuEntry {
 	private $eiSelection;
 	private $eiMapping;
-	private $eiUtils;
-	private $eiStateUtils;
+	private $eiuFrame;
 	
-	public function __construct($eiEntryObj, $eiState = null) {
+	public function __construct($eiEntryObj, $eiuFrame = null) {
 		$this->eiSelection = EiEntryObjUtils::determineEiSelection($eiEntryObj, $this->eiMapping);
 		
-		if ($eiState instanceof EiState) {
-			$this->eiUtils = $this->eiStateUtils = new EiStateUtils($eiState);
-		} else if ($eiState instanceof EiCtrlUtils) {
-			$this->eiUtils = $this->eiStateUtils = $eiState->getEiStateUtils();
-		} else if ($eiState instanceof EiStateUtils) {
-			$this->eiUtils = $this->eiStateUtils = $eiState;
-		} else if ($eiState instanceof EiUtils) {
-			$this->eiUtils = $eiState;
-		} else if($eiState !== null) {
-			ArgUtils::valType($eiState, array(EiState::class, EiCtrlUtils::class, EiStateUtils::class, EiUtils::class), 
-					true, 'eiState');
+		if ($eiuFrame instanceof EiuFrame) {
+			$this->eiuFrame = $eiuFrame;
+		} else if ($eiuFrame instanceof EiState) {
+			$this->eiuFrame = new EiuFrame($eiuFrame);
+		} else if ($eiuFrame instanceof EiuCtrl) {
+			$this->eiuFrame = $eiuFrame->getEiuFrame();
+		} else if ($eiuFrame instanceof EiuFrame) {
+			$this->eiuFrame = $eiuFrame;
+		} else if ($eiuFrame instanceof EiUtils) {
+			$this->eiUtils = $eiuFrame;
+		} else if ($eiuFrame !== null) {
+			ArgUtils::valType($eiuFrame, array(EiState::class, EiuCtrl::class, EiuFrame::class, EiUtils::class), true, 
+					'eiState');
 		}	
 	}
 	
@@ -59,8 +59,8 @@ class EiEntryUtils {
 	 * @return \rocket\spec\ei\manage\util\model\EiUtils
 	 */
 	public function getEiUtils() {
-		if ($this->eiUtils !== null) {
-			return $this->eiUtils;
+		if ($this->eiuFrame !== null) {
+			return $this->eiuFrame;
 		}
 	
 		throw new IllegalStateException('No EiUtils provided to ' . (new \ReflectionClass($this))->getShortName());
@@ -68,11 +68,11 @@ class EiEntryUtils {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\spec\ei\manage\util\model\EiStateUtils
+	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
-	public function getEiStateUtils() {
-		if ($this->eiStateUtils !== null) {
-			return $this->eiStateUtils;
+	public function getEiuFrame() {
+		if ($this->eiuFrame !== null) {
+			return $this->eiuFrame;
 		}
 		
 		throw new IllegalStateException('No EiState provided to ' . (new \ReflectionClass($this))->getShortName());
@@ -82,7 +82,7 @@ class EiEntryUtils {
 	 * @return \rocket\spec\ei\manage\EiState
 	 */
 	public function getEiState() {
-		return $this->getEiStateUtils()->getEiState();
+		return $this->getEiuFrame()->getEiState();
 	}
 	
 	public function getEiMapping(bool $createIfNotAvaialble = true) {
@@ -91,7 +91,7 @@ class EiEntryUtils {
 		}
 		
 		if ($createIfNotAvaialble) {
-			return $this->eiMapping = $this->eiUtils->createEiMapping($this->eiSelection);
+			return $this->eiMapping = $this->eiuFrame->createEiMapping($this->eiSelection);
 		}
 		
 		throw new IllegalStateException('No EiMapping available.');
@@ -183,7 +183,7 @@ class EiEntryUtils {
 	 * @return string
 	 */
 	public function createIdentityString(bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		return $this->eiStateUtils->createIdentityString($this->eiSelection, $determineEiMask, $n2nLocale);
+		return $this->eiuFrame->createIdentityString($this->eiSelection, $determineEiMask, $n2nLocale);
 	}
 	
 	/**
@@ -192,18 +192,18 @@ class EiEntryUtils {
 	 * @return \rocket\spec\ei\manage\draft\Draft[]
 	 */
 	public function lookupDrafts(int $limit = null, int $num = null) {
-		return $this->eiStateUtils->lookupDraftsByEntityObjId($this->getLiveId(), $limit, $num);
+		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getLiveId(), $limit, $num);
 	}
 	
 	public function isPreviewAvailable() {
-		return !empty($this->eiStateUtils->getPreviewTypeOptions($this->eiSelection));
+		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiSelection));
 	}
 	
 	public function getPreviewType() {
-		return $this->getEiStateUtils()->getPreviewType($this->eiSelection);
+		return $this->getEiuFrame()->getPreviewType($this->eiSelection);
 	}
 	
 	public function getPreviewTypeOptions() {
-		return $this->eiStateUtils->getPreviewTypeOptions($this->eiSelection);
+		return $this->eiuFrame->getPreviewTypeOptions($this->eiSelection);
 	}
 }

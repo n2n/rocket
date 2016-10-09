@@ -26,13 +26,13 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamGet;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class TreeMoveController extends ControllerAdapter {
 	private $eiCtrlUtils;
 
 	public function prepare(ManageState $manageState) {
-		$this->eiCtrlUtils = EiCtrlUtils::from($this->getHttpContext());
+		$this->eiCtrlUtils = EiuCtrl::from($this->getHttpContext());
 	}
 
 	public function doChild($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
@@ -68,7 +68,7 @@ class TreeMoveController extends ControllerAdapter {
 	private function move(string $idRep, string $targetIdRep, bool $before = null) {
 		if ($idRep === $targetIdRep) return;
 
-		$eiUtils = $this->eiCtrlUtils->getEiStateUtils();
+		$eiUtils = $this->eiCtrlUtils->getEiuFrame();
 		
 		$nestedSetStrategy = $eiUtils->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) return;

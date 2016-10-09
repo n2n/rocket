@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\util\model\EiUtils;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class RelationEntry {
 	private $eiSelection;
@@ -55,7 +55,7 @@ class RelationEntry {
 		return $this->eiMapping;
 	}
 	
-	public function toEiMapping(EiStateUtils $utils): EiMapping {
+	public function toEiMapping(EiuFrame $utils): EiMapping {
 		if ($this->eiMapping !== null) {
 			return $this->eiMapping;
 		}
