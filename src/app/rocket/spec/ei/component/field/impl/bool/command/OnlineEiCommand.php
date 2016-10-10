@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const CONTROL_KEY = 'online_status';
@@ -60,7 +60,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, 
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, 
 			HtmlView $view): array {
 		$eiMapping = $entryGuiUtils->getEiMapping();
 		$eiState = $entryGuiUtils->getEiState();

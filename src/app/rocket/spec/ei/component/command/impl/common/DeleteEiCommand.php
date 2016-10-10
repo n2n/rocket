@@ -40,7 +40,7 @@ use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 
 		EntryControlComponent, PrivilegedEiCommand {
@@ -61,7 +61,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return $eiState->getN2nContext()->lookup(DeleteController::class);
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
 		$pathExt = null;
 		$name = null;
 		$tooltip = null;

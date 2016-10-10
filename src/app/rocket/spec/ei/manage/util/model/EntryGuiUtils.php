@@ -19,22 +19,24 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 
-class EntryGuiUtils extends EiuEntry {
+class EiuGui {
 	private $viewMode;
 // 	protected $eiMask;
 	protected $eiSelectionGui;
 	
-	public function __construct($eiEntryObj, int $viewMode, $eiState = null) {
-		parent::__construct($eiEntryObj, $eiState);
-		
+	public function __construct(int $viewMode, $eiEntryObj = null, $eiuFrame = null) {
 		$this->viewMode = $viewMode;
+		
+	}
+	
+	public function getEiuEntry() {
+		
 	}
 	
 // 	public function getEiMask() {
@@ -48,10 +50,10 @@ class EntryGuiUtils extends EiuEntry {
 	/**
 	 * @param EntryGuiModel $entryGuiModel
 	 * @param EiState $eiState
-	 * @return EntryGuiUtils
+	 * @return EiuGui
 	 */
 	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
-		$entryGuiUtils = new EntryGuiUtils($entryGuiModel->getEiMapping(), 
+		$entryGuiUtils = new EiuGui($entryGuiModel->getEiMapping(), 
 				$entryGuiModel->getEiSelectionGui()->getViewMode(), $eiState);
 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
 		return $entryGuiUtils;

@@ -23,12 +23,11 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\EiState;
-use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\util\model\EiEntryObjUtils;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 class EiuEntry {
 	private $eiSelection;
@@ -36,22 +35,12 @@ class EiuEntry {
 	private $eiuFrame;
 	
 	public function __construct($eiEntryObj, $eiuFrame = null) {
-		$this->eiSelection = EiEntryObjUtils::determineEiSelection($eiEntryObj, $this->eiMapping);
+		$this->eiSelection = EiUtilFactory::determineEiSelection($eiEntryObj, $this->eiMapping);
+		$this->eiuFrame = EiUtilFactory::buildEiuFrameFormEiArg($eiuFrame, 'eiuFrame');
+	}
+	
+	public static function create(EiSelection $eiSelection, EiMapping $eiMapping = null, EiuFrame $eiuFrame = null) {
 		
-		if ($eiuFrame instanceof EiuFrame) {
-			$this->eiuFrame = $eiuFrame;
-		} else if ($eiuFrame instanceof EiState) {
-			$this->eiuFrame = new EiuFrame($eiuFrame);
-		} else if ($eiuFrame instanceof EiuCtrl) {
-			$this->eiuFrame = $eiuFrame->getEiuFrame();
-		} else if ($eiuFrame instanceof EiuFrame) {
-			$this->eiuFrame = $eiuFrame;
-		} else if ($eiuFrame instanceof EiUtils) {
-			$this->eiUtils = $eiuFrame;
-		} else if ($eiuFrame !== null) {
-			ArgUtils::valType($eiuFrame, array(EiState::class, EiuCtrl::class, EiuFrame::class, EiUtils::class), true, 
-					'eiState');
-		}	
 	}
 	
 	/**
@@ -66,16 +55,24 @@ class EiuEntry {
 		throw new IllegalStateException('No EiUtils provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
+	public function hasEiuFrame() {
+		return $this->eiuFrame !== null;
+	}
+	
 	/**
 	 * @throws IllegalStateException
 	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
-	public function getEiuFrame() {
-		if ($this->eiuFrame !== null) {
+	public function getEiuFrame(bool $required = true) {
+		if (!$required || $this->eiuFrame !== null) {
 			return $this->eiuFrame;
 		}
 		
-		throw new IllegalStateException('No EiState provided to ' . (new \ReflectionClass($this))->getShortName());
+		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
+	}
+	
+	public function getEiuGui() {
+		
 	}
 	
 	/**

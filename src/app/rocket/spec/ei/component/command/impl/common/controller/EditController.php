@@ -35,12 +35,13 @@ use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\draft\Draft;
 use n2n\util\col\ArrayUtils;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
 	private $eiuCtrl;
 	
-	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiuCtrl) {
+	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiuCtrl, Eiu $eiu) {
 		$this->dtc = $dtc;
 		$this->eiuCtrl = $eiuCtrl;;
 	}

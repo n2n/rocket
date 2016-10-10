@@ -28,7 +28,7 @@ use n2n\l10n\DateTimeFormat;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class DetailController extends ControllerAdapter {
 	private $dtc;
@@ -43,7 +43,7 @@ class DetailController extends ControllerAdapter {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 
 		$entryGuiModel = $this->eiCtrlUtils->getEiuFrame()->createBulkyEntryGuiModel($eiMapping, false);
-		$entryGuiUtils = EntryGuiUtils::from($entryGuiModel, $this->eiCtrlUtils);
+		$entryGuiUtils = EiuGui::from($entryGuiModel, $this->eiCtrlUtils);
 
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), $entryGuiModel);
 		$viewModel->initializeDrafts();

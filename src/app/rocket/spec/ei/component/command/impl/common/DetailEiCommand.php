@@ -42,7 +42,7 @@ use n2n\l10n\Lstr;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
 		PrivilegedEiCommand {
@@ -74,7 +74,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryHrefControls()
 	 */
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
 		$eiUtils = $entryGuiUtils->getEiuFrame();
 		
 		$eiSelection = $entryGuiUtils->getEiSelection();

@@ -8,7 +8,6 @@ use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\LiveEntry;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
@@ -21,17 +20,19 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 
 class Eiu implements Lookupable {
-	private $eiUtilFactory = new EiUtilFactory();
+	private $eiUtilFactory;
 	private $eiFrame;
 	private $eiCtrlUtils;
 	private $eiEntryUtils;
 	private $eiFieldUtils;
 	
 	private function _init(N2nContext $n2nContext) {
+		$this->eiUtilFactory = new EiUtilFactory();
 		$this->eiUtilFactory->applyEiArg($n2nContext);
 	}
 	
 	public function __construct(...$eiArgs) {
+		$this->eiUtilFactory = new EiUtilFactory();
 		foreach ($eiArgs as $eiArg) {
 			$this->eiUtilFactory->applyEiArg($eiArg);
 		}
@@ -80,8 +81,9 @@ class Eiu implements Lookupable {
 
 class EiUtilFactory {
 	const EI_ENTRY_TYPES = array(EiSelection::class, EiMapping::class, LiveEntry::class, Draft::class);
-	const EI_UTIL_TYPES = array(EiState::class, N2nContext::class);
-	const EI_TYPES = array_merge(self::EI_UTIL_TYPES, self::EI_ENTRY_TYPES);
+	const EI_UTIL_TYPES = array(EiState::class, N2nContext::class, EiuFrame::class, EiuCtrl::class, EiuEntry::class);
+	const EI_TYPES = array(EiState::class, N2nContext::class, EiSelection::class, EiMapping::class, LiveEntry::class, 
+			Draft::class);
 	
 	private $eiState;
 	private $n2nContext;
@@ -100,17 +102,14 @@ class EiUtilFactory {
 			return;
 		}
 		
-		if ($eiArg instanceof EntryGuiModel) {
-			$this->entryGuiModel = $eiArg;
-			return;
-		}
-
 		try {
-			$this->eiSelection = self::determineEiSelection($eiArg, $this->eiMapping);
+			$this->eiSelection = self::determineEiSelection($eiArg, $this->eiMapping, $this->viewMode);
 		} catch (\InvalidArgumentException $e) {
 			ArgUtils::valType($eiArg, self::EI_TYPES, false, 'eiArg');
 		}
 	}
+	
+	
 	
 	/**
 	 * @throws EiuPerimeterException
@@ -142,6 +141,58 @@ class EiUtilFactory {
 		}
 	}
 	
+	public function createEiuGui() {
+		
+	}
+	
+	public function createEiuEntry() {
+		
+	}
+	
+	public static function buildEiuFrameFormEiArg($eiArg, string $argName = null, bool $required = false) {
+		if ($eiArg instanceof EiuFrame) {
+			return $eiArg;
+		}
+		
+		if ($eiArg === null && !$required) {
+			return null;
+		}
+		
+		if ($eiArg instanceof EiState) {
+			return new EiuFrame($eiArg);
+		}
+		
+		if ($eiArg instanceof N2nContext) {
+			try {
+				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiState());
+			} catch (ManageException $e) {
+				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
+			}
+		}
+		
+		if ($eiArg instanceof EiuCtrl) {
+			return $eiArg->getEiuFrame();
+		}
+		
+		if ($eiArg instanceof EiuEntry) {
+			return $eiArg->getEiuFrame($required);
+		}
+		
+		ArgUtils::valType($eiArg, self::EI_UTIL_TYPES, !$required, $argName);
+	}
+	
+	public static function buildEiuEntryFromEiArg($eiArg, string $argName = null, bool $required = false) {
+		if ($eiArg instanceof EiuEntry) {
+			return $eiArg;
+		}
+		
+		if ($eiArg === null && !$required) {
+			return null;
+		}
+		
+		
+	}
+	
 	/**
 	 * @param unknown $eiEntryObj
 	 * @return rocket\spec\ei\manage\util\model\EiSelection
@@ -149,14 +200,26 @@ class EiUtilFactory {
 	public static function determineEiSelection($eiEntryObj, &$eiMapping) {
 		if ($eiEntryObj instanceof EiSelection) {
 			return $eiEntryObj;
-		} else if ($eiEntryObj instanceof EiMapping) {
+		} 
+			
+		if ($eiEntryObj instanceof EiMapping) {
+			$eiMapping = $eiEntryObj;
 			return $eiEntryObj->getEiSelection();
-		} else if ($eiEntryObj instanceof LiveEntry) {
-			return new LiveEiSelection($eiEntryObj);
-		} else if ($eiEntryObj instanceof Draft) {
-			return new DraftEiSelection($eiEntryObj);
-		} else {
-			ArgUtils::valType($eiEntryObj, self::EI_ENTRY_TYPES, false, 'eiEntryObj');
 		}
+		
+		if ($eiEntryObj instanceof LiveEntry) {
+			return new LiveEiSelection($eiEntryObj);
+		}
+		
+		if ($eiEntryObj instanceof Draft) {
+			return new DraftEiSelection($eiEntryObj);
+		}
+		
+		if ($eiEntryObj instanceof EntryGuiModel) {
+			$eiMapping = $eiEntryObj->getEiMapping();
+			return $eiMapping->getEiSelection();
+		} 
+			
+		ArgUtils::valType($eiEntryObj, self::EI_ENTRY_TYPES, false, 'eiEntryObj');
 	}
 }

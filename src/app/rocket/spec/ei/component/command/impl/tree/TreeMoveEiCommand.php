@@ -33,7 +33,7 @@ use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'tree-move';
@@ -59,7 +59,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
 		$eiMapping = $entryGuiUtils->getEiMapping();
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());

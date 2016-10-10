@@ -157,118 +157,6 @@ class EiuFrame extends EiUtilsAdapter {
 		throw new EiuPerimeterException('EiuEntry already assigned');
 	}
 	
-	
-	
-	
-	
-// 	public function lookupEiSelectionByDraftedEntityObj($draftedEntityObj) {
-// 		$this->eiState->getManageState()->getDraftManager()->asdf();
-// 	}
-	
-// 	/**
-// 	 * @param EiSelection $eiSelection
-// 	 * @return \rocket\spec\ei\mask\EiMask
-// 	 */
-// 	private function determineEiMask(EiSelection $eiSelection) {
-// 		return $this->eiState->getContextEiMask()->determineEiMask(
-// 					$this->determineEiSpec($eiSelection));
-// 	}
-	
-// 	/**
-// 	 * @param EiSelection $eiSelection
-// 	 * @return \rocket\spec\ei\EiSpec
-// 	 */
-// 	private function determineEiSpec(EiSelection $eiSelection) {
-// 		return $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->determineAdequateEiSpec(
-// 				new \ReflectionClass($eiSelection->getLiveEntry()->getEntityObj()));
-// 	}
-	
-// 	/**
-// 	 * @param mixed $id
-// 	 * @param int $draftId
-// 	 * @throws UnknownEntryException
-// 	 * @return \rocket\spec\ei\manage\EiSelection
-// 	 */
-// 	public function lookupDraftEiSelectionByIdAndDraftId($id, $draftId) {
-// 		$eiSelection = $this->lookupEiSelectionById($id);
-// 		$eiMask = $this->determineEiMask($eiSelection);
-		
-// 		if (!$eiMask->isDraftable()) {
-// 			throw new UnknownEntryException('Drafts for Mask ' . (string) $eiMask . ' are disabled.');
-// 		}
-		
-// 		$draftManager = $this->eiState->getManageState()->getDraftManager();
-	
-// 		$draft = $draftManager->find($eiSelection->getLiveEntityObj(), $draftId, $eiMask->getDraftDefinition());
-// 		if ($draft === null) {
-// 			throw new UnknownEntryException('Unknown draft id \'' . $draftId . '\' (Mask: ' . $eiMask . ')');
-// 		} else if ($draft->getEntityObjId() !== $eiSelection->getId()) {
-// 			throw new UnknownEntryException('Draft with id \'' . $draftId . '\' does not belong to Entity ' 
-// 					. EntityInfo::buildEntityString($this->determineEiSpec($eiSelection)->getEntityModel(), $id));
-// 		}
-		
-// 		$eiSelection->setDraft($draft);
-		
-// 		return $eiSelection;
-// 	}
-	
-// 	/**
-// 	 * @param mixed $id
-// 	 * @throws UnknownEntryException
-// 	 * @return \rocket\spec\ei\manage\EiSelection
-// 	 */
-// 	public function lookupLatestDraftEiSelectionById($id): EiSelection {
-// 		$eiSelection = $this->lookupEiSelectionById($id);
-// 		$eiMask = $this->determineEiMask($eiSelection);
-		
-// 		if (!$eiMask->isDraftingEnabled()) {
-// 			return $eiSelection;
-// 		}
-		
-// 		$draftManager = $this->eiState->getManageState()->getDraftManager();
-		
-// 		$drafts = $draftManager->findByEntityObjId($eiSelection->getLiveEntry()->getEntityObj(), $eiSelection->getLiveEntry()->getId(), 0, 1,
-// 				$eiMask->getDraftDefinition());
-// 		if (empty($drafts)) {
-// 			return $eiSelection;
-// 		}
-		
-// 		$draft = $drafts[0];
-// 		if (!$draft->isPublished()) {
-// 			$eiSelection->setDraft($draft);
-// 		}
-		
-// 		return $eiSelection;
-// 	}
-	
-	
-
-// 	public function createEntityObject() {
-// 		return ReflectionUtils::createObject($this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass());
-// 	}
-		
-// 	public function createEntryManager(EiMapping $eiMapping = null, $applyToEiState = true) {
-// 		$entryManager = new EntryManager($this->eiState, $eiMapping);
-// // 		$entryManager->setDraftModel($this->draftModel);
-// // 		$entryManager->setTranslationModel($this->translationModel);
-// // 		if ($eiMapping !== null) {
-// // 			$this->applyToEiState($eiMapping->getEiSelection());
-// // 		}
-// 		return $entryManager;
-// 	}
-	
-	
-// 	public function createEntryInfo(EiMapping $eiMapping) {
-// 		$context = $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec();
-// 		$eiMask = $this->eiState->getContextEiMask()
-// 				->determineEiMask($eiMapping->getEiSpec());
-		
-// 		$eiSelectionGui = $eiMask->createEiSelectionGui($this->eiState, $eiMapping, DisplayDefinition::VIEW_MODE_BULKY_READ, false);
-		
-// 		return new EntryInfo($eiMask, $eiSelectionGui, $eiMapping);
-// 	}
-
-	
 	/**
 	 * @param EiSelection $eiSelection
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
@@ -292,19 +180,6 @@ class EiuFrame extends EiUtilsAdapter {
 		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($this->eiState, $eiMapping, false);
 		return $eiMask->createBulkyView($this->eiState, new EntryGui($entryGuiModel));
 	}
-	
-// 	public function createNewEiSelection(bool $draft = false) {
-// 		$contextEiSpec = $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec();
-// 		$contextEiMask = $this->eiState->getContextEiMask();
-// 		$eiSpecs = array_merge(array($contextEiSpec->getId() => $contextEiSpec), $contextEiSpec->getAllSubEispecs());
-// 		foreach ($eiSpecs as $subId => $subEiSpec) {
-// 			if ($subEiSpec->isAbstract()) {
-// 				continue;
-// 			}
-			
-// 			return $this->createEiSelectionFromEiSpec($subEiSpec, $draft);
-// 		}
-// 	}
 	
 	public function createNewEntryForm(bool $draft = false): EntryForm {
 		$entryModelForms = array();

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\control;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\model\EntryModel;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 interface EntryControlComponent {
 	/**
@@ -38,5 +38,5 @@ interface EntryControlComponent {
 	 * @param HtmlView $view
 	 * @return \rocket\spec\ei\manage\control\ControlButton[]
 	 */
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array;
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array;
 }

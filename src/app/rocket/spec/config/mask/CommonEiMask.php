@@ -70,7 +70,7 @@ use rocket\spec\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\control\UnavailableControlException;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -259,7 +259,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createEntryHrefControls()
 	 */
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)

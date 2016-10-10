@@ -50,7 +50,7 @@ class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return $copyController;
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
 		
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection('rocket', $request->getN2nLocale());

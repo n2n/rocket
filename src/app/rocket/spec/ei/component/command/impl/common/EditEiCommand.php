@@ -40,7 +40,7 @@ use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'edit';
@@ -67,7 +67,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
 		$eiMapping = $entryGuiUtils->getEiMapping();
 		
 		$eiSelection = $eiMapping->getEiSelection();
