@@ -35,8 +35,8 @@ class EiuEntry {
 	private $eiuFrame;
 	
 	public function __construct($eiEntryObj, $eiuFrame = null) {
-		$this->eiSelection = EiUtilFactory::determineEiSelection($eiEntryObj, $this->eiMapping);
-		$this->eiuFrame = EiUtilFactory::buildEiuFrameFormEiArg($eiuFrame, 'eiuFrame');
+		$this->eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', true, $this->eiMapping);
+		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame, 'eiuFrame');
 	}
 	
 	public static function create(EiSelection $eiSelection, EiMapping $eiMapping = null, EiuFrame $eiuFrame = null) {
@@ -71,9 +71,38 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
-	public function getEiuGui() {
+	private $assignedEiuGui;
+	
+	/**
+	 * @param unknown $eiEntryObj
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function assignEiuGui($viewMode) {
+		if ($this->assignedEiuGui === null) {
+			return $this->assignedEiuGui = $this->toEiuGui($viewMode);
+		}
 		
+		throw new EiuPerimeterException('EiuGui already assigned');
 	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function getAssignedEiuGui(bool $required = true) {
+		if (!$required || $this->assignedEiuGui !== null) {
+			return $this->assignedEiuGui;
+		}
+		
+		throw new EiuPerimeterException('No EiuGui assigned');
+	}
+	
+	public function toEiuGui($viewMode) {
+		return new EiuGui($viewMode, $this);
+	}
+	
 	
 	/**
 	 * @return \rocket\spec\ei\manage\EiState

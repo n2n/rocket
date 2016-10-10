@@ -30,6 +30,7 @@ use rocket\spec\config\mask\model\CommonEntryGuiModel;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ControlEiHtmlBuilder {
 	private $view;
@@ -59,7 +60,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getEntryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
 		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls(
-				EiuGui::from($entryGuiModel, $this->eiState), $this->view);
+				new EiuGui($entryGuiModel, new EiuEntry($entryGuiModel, $this->eiState)), $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);
 	}

@@ -49,8 +49,8 @@ class EiuCtrl implements Lookupable {
 		$this->init($manageState, $httpContext);
 	}
 	
-	protected function init(ManageState $manageState, HttpContext $httpContext) {
-		$this->eiuFrame = new EiuFrame($manageState->peakEiState());
+	protected function init(ManageState $manageState, HttpContext $httpContext, EiuFrame $eiuFrame = null) {
+		$this->eiuFrame = $eiuFrame ?? new EiuFrame($manageState->peakEiState());
 		$this->httpContext = $httpContext;
 	}
 	
@@ -197,13 +197,13 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public static function from(HttpContext $httpContext) {
+	public static function from(HttpContext $httpContext, EiuFrame $eiuFrame = null) {
 		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		
 		
 		$eiCtrlUtils = new EiuCtrl();
-		$eiCtrlUtils->_init($manageState, $httpContext);
+		$eiCtrlUtils->init($manageState, $httpContext, $eiuFrame);
 		return $eiCtrlUtils;
 	}
 	

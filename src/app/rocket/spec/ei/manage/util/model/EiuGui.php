@@ -27,16 +27,34 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EiuGui {
 	private $viewMode;
+	private $eiuEntry;
 // 	protected $eiMask;
 	protected $eiSelectionGui;
 	
-	public function __construct(int $viewMode, $eiEntryObj = null, $eiuFrame = null) {
-		$this->viewMode = $viewMode;
+	public function __construct($viewMode, $eiuEntry = null) {
+		if ($eiuEntry !== null) {
+			$this->eiuEntry = EiuFactory::buildEiuEntryFromEiArg($eiuEntry, null, 'eiuEntry', false);
+		}
 		
+		if (is_numeric($viewMode)) {
+			$this->viewMode = $viewMode;
+			return;
+		}
+		
+		if ($viewMode instanceof EntryGuiModel) {
+			$this->viewMode = $viewMode->getEiSelectionGui()->getViewMode();
+			if ($this->eiuEntry === null) {
+				$this->eiuEntry = EiuFactory::buildEiuEntryFromEiArg($viewMode);
+			}
+		}
 	}
 	
-	public function getEiuEntry() {
+	public function getEiuEntry(bool $required = true) {
+		if (!$required || $this->eiuEntry !== null) {
+			return $this->eiuEntry;
+		}
 		
+		throw new EiuPerimeterException('No EiuGui provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
 // 	public function getEiMask() {

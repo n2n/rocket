@@ -154,7 +154,7 @@ class EiuFrame extends EiUtilsAdapter {
 			return $this->assignedEiuEntry;
 		}
 		
-		throw new EiuPerimeterException('EiuEntry already assigned');
+		throw new EiuPerimeterException('No EiuEntry assigned.');
 	}
 	
 	/**
