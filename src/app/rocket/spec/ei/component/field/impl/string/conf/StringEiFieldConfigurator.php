@@ -46,6 +46,8 @@ class StringEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
 	public function initAutoEiFieldAttributes(Column $column = null) {
+		parent::initAutoEiFieldAttributes($column);
+		
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
 			$this->attributes->set(self::OPTION_MULTILINE_KEY, true);
 		}
