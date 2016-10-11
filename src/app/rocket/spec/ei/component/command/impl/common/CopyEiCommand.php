@@ -25,13 +25,9 @@ use rocket\spec\ei\manage\EiState;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\component\command\impl\common\controller\PathUtils;
-use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\common\controller\CopyController;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
-use rocket\spec\ei\manage\model\EntryModel;
-use rocket\spec\ei\manage\model\EntryGuiModel;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'rocket-copy';
@@ -50,26 +46,15 @@ class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return $copyController;
 	}
 	
-	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		
-		$request = $view->getRequest();
-		$dtc = new DynamicTextCollection('rocket', $request->getN2nLocale());
-		
-		$url = $request->getControllerContextPath($eiState->getControllerContext(), 
-						PathUtils::createDetailPathExtFromEiSelection(self::ID_BASE, 
-								$entryGuiModel->getEiMapping()->getEiSelection(), 
-								$eiState->getPreviewType()));
-		$name = $dtc->translate('ei_impl_copy_label');
-		$tooltip = $dtc->translate('ei_impl_copy_tooltip');
-		
-		return array(self::ID_BASE => new ControlButton($url, $name, $tooltip, true, ControlButton::TYPE_SUCCESS,
-				IconType::ICON_COPY));
+		return array();
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale) {
-		$dtc = new DynamicTextCollection('rocket', $request->getN2nLocale());
+		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::ID_BASE => $dtc->translate('ei_impl_copy_label'));
 	}
 

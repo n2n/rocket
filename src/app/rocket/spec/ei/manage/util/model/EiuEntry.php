@@ -28,6 +28,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\EiCommandPath;
 
 class EiuEntry {
 	private $eiSelection;
@@ -202,6 +203,20 @@ class EiuEntry {
 	public function isDraftNew() {
 		return $this->getDraft()->isNew();
 	}
+
+	/**
+	 * @param bool $required
+	 * @return mixed
+	 */
+	public function getDraftId(bool $required = true) {
+		$draft = $this->getDraft();
+	
+		if (!$required && $draft->isNew()) {
+			return null;
+		}
+	
+		return $draft->getId();
+	}
 	
 	/**
 	 * @param bool $determineEiMask
@@ -231,5 +246,9 @@ class EiuEntry {
 	
 	public function getPreviewTypeOptions() {
 		return $this->eiuFrame->getPreviewTypeOptions($this->eiSelection);
+	}
+	
+	public function isExecutableBy($eiCommandPath) {
+		return $this->getEiMapping()->isExecutableBy(EiCommandPath::create($eiCommandPath));
 	}
 }

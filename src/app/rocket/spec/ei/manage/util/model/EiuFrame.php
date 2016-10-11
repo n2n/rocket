@@ -51,6 +51,7 @@ use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\util\model\EiuPerimeterException;
+use rocket\spec\ei\EiCommandPath;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiState;
@@ -286,6 +287,10 @@ class EiuFrame extends EiUtilsAdapter {
 				array('string', Lstr::class));
 		
 		return $previewTypeOptions;
+	}
+	
+	public function isExecutedBy($eiCommandPath) {
+		return $this->eiState->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::create($eiCommandPath));
 	}
 }
 

@@ -49,6 +49,18 @@ class EiuGui {
 		}
 	}
 	
+	public function getViewMode() {
+		return $this->viewMode;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isViewModeOverview() {
+		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
+		|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
+	}
+	
 	public function getEiuEntry(bool $required = true) {
 		if (!$required || $this->eiuEntry !== null) {
 			return $this->eiuEntry;
@@ -75,13 +87,5 @@ class EiuGui {
 				$entryGuiModel->getEiSelectionGui()->getViewMode(), $eiState);
 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
 		return $entryGuiUtils;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isViewModeOverview() {
-		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
-				|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
 	}
 }

@@ -43,7 +43,7 @@ CREATE TABLE `rocket_ei_grant` (
 
 CREATE TABLE `rocket_login` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `nick` varchar(16) DEFAULT NULL,
+  `nick` varchar(255) DEFAULT NULL,
   `wrong_password` varchar(32) DEFAULT NULL,
   `power` enum('superadmin','admin','none') NULL DEFAULT NULL,
   `successfull` tinyint(1) unsigned NOT NULL,
@@ -55,12 +55,12 @@ CREATE TABLE `rocket_login` (
 
 CREATE TABLE `rocket_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nick` varchar(128) NOT NULL,
-  `firstname` varchar(32) DEFAULT NULL,
-  `lastname` varchar(32) DEFAULT NULL,
-  `email` varchar(128) DEFAULT NULL,
+  `nick` varchar(255) NOT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `lastname` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `power` enum('superadmin','admin','none') NOT NULL DEFAULT 'none',
-  `password` varchar(128) NOT NULL,
+  `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nick` (`nick`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

@@ -25,15 +25,13 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
-use n2n\web\http\Request;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'order';
@@ -61,14 +59,14 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
-		$eiMapping = $entryGuiUtils->getEiMapping();
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 
-		if (!$entryGuiUtils->isViewModeOverview()) return array();
+		if (!$eiu->gui()->isViewModeOverview()) return array();
 		
-		$eiState = $entryGuiUtils->getEiState();
+		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiState = $eiu->frame()->getEiState();
 		
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
 		

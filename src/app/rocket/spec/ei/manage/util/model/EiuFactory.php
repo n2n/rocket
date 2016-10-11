@@ -51,30 +51,30 @@ class EiuFactory {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuFrame) {
-				$this->eiuCtrl = null;
-				$this->eiuFrame = $eiArg;
-				continue;
+			if ($eiArg instanceof EiuGui) {
+				$this->viewMode = $eiArg->getViewMode();
+				$eiArg = $eiArg->getEiuEntry(false);
 			}
 			
 			if ($eiArg instanceof EiuEntry) {
 				$this->eiSelection = $eiArg->getEiSelection();
 				$this->eiMapping = $eiArg->getEiMapping(false);
-				continue;
+				$eiArg = $eiArg->getEiuFrame(false);
 			}
 			
+			if ($eiArg instanceof EiuFrame) {
+				$this->eiuCtrl = null;
+				$this->eiuFrame = $eiArg;
+				continue;
+			}
+
 			if ($eiArg instanceof EiuCtrl) {
 				$this->eiuCtrl = $eiArg;
 				$this->eiuFrame = $eiArg->getEiuFrame();
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuGui) {
-				$this->viewMode = $eiArg->getViewMode();
-				continue;
-			}
-			
-			ArgUtils::valType($eiArg, self::EI_TYPES, false, 'eiArg#' . ($key + 1));
+			ArgUtils::valType($eiArg, self::EI_TYPES, true, 'eiArg#' . ($key + 1));
 		}
 		
 	}

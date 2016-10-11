@@ -65,7 +65,7 @@ namespace rocket\spec\ei\component\command\impl\tree;
 // 		return array(self::ID_BASE => $dtc->translate('ei_impl_delete_branch_label'));
 // 	}
 	
-// 	public function createEntryHrefControls(EiuGui $entryGuiUtils, HtmlView $view): array {
+// 	public function createEntryHrefControls(Eiu $entryGuiUtils, HtmlView $view): array {
 		
 // 		$eiMapping = $entryGuiModel->getEiMapping();
 				
