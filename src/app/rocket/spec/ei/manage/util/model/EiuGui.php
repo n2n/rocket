@@ -83,8 +83,8 @@ class EiuGui {
 	 * @return EiuGui
 	 */
 	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
-		$entryGuiUtils = new EiuGui($entryGuiModel->getEiMapping(), 
-				$entryGuiModel->getEiSelectionGui()->getViewMode(), $eiState);
+		$entryGuiUtils = new EiuGui($entryGuiModel, 
+				new EiuEntry($entryGuiModel, $eiState));
 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
 		return $entryGuiUtils;
 	}

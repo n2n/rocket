@@ -29,6 +29,7 @@ use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class DetailController extends ControllerAdapter {
 	private $dtc;
