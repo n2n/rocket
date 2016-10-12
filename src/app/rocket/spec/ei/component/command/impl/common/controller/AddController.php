@@ -27,6 +27,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\component\command\impl\common\model\AddModel;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class AddController extends ControllerAdapter {
 	private $dtc;
