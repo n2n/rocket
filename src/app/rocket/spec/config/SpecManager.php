@@ -181,6 +181,7 @@ class SpecManager {
 	public function initialize(N2nContext $n2nContext, bool $exclusiveMode = false) {
 		$this->exclusiveMode = $exclusiveMode;
 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(SpecManager::class);
+		$this->specExtractionManager->load();
 		$charcs = null;
 		if (null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
 			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);

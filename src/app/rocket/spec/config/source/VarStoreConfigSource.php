@@ -43,7 +43,7 @@ class VarStoreConfigSource implements ModularConfigSource {
 		$this->fileName = $fileName;
 	}
 	
-	public function getConfigSourceByModuleNamespace($module): WritableConfigSource {
+	public function getOrCreateConfigSourceByModuleNamespace($module): WritableConfigSource {
 		$namespace = (string) $module;
 		
 		if (isset($this->configSources[$namespace])) {

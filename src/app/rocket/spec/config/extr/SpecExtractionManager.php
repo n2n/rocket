@@ -49,6 +49,20 @@ class SpecExtractionManager {
 		return $this->modularConfigSource;
 	}
 	
+	public function load() {
+		foreach ($this->moduleNamespaces as $moduleNamespace) {
+			$moduleNamespace = (string) $moduleNamespace;
+				
+			if (!$this->modularConfigSource->containsModuleNamespace($moduleNamespace)) {
+				$this->specCsDecs[$moduleNamespace] = null;
+				continue;
+			}
+				
+			$this->specCsDecs[$moduleNamespace] = $specCsDec = new SpecConfigSourceDecorator(
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+		}
+	}
+	
 	/**
 	 * 
 	 */
@@ -68,7 +82,7 @@ class SpecExtractionManager {
 			}
 			
 			$this->specCsDecs[$moduleNamespace] = $specCsDec = new SpecConfigSourceDecorator(
-					$this->modularConfigSource->getConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
 			
 			$specCsDec->load();
 		}
@@ -340,7 +354,7 @@ class SpecExtractionManager {
 	
 		if (array_key_exists($moduleNamespace, $this->specCsDecs)) {
 			return $this->specCsDecs[$moduleNamespace] = new SpecConfigSourceDecorator(
-					$this->modularConfigSource->getConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
 		}
 	
 		throw new IllegalStateException('Unknown module namespace: ' . $moduleNamespace);

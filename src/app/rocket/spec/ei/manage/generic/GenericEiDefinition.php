@@ -40,7 +40,7 @@ class GenericEiDefinition {
 	 * @throws UnknownGenericEiPropertyException
 	 * @return GenericEiProperty
 	 */
-	public function getGenericEiPropertyByFieldPath($eiFieldPath) {
+	public function getGenericEiPropertyByEiFieldPath($eiFieldPath) {
 		if (null !== ($genericEiProperty = $this->genericEiProperties
 				->offsetGet(EiFieldPath::create($eiFieldPath)))) {
 			return $genericEiProperty;

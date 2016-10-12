@@ -344,7 +344,6 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 	protected function mandatoryRequired() {
 		$accessProxy = $this->getAssignedObjectPropertyAccessProxy();
 		if (null === $accessProxy) return false;
-		
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
 	

@@ -111,7 +111,7 @@ class PathPartPurifier {
 	
 		
 		if (null !== ($uniquePerGenericEiProperty = $this->pathPartEiField->getUniquePerGenericEiProperty())) {
-			$criteria->where()->match($uniquePerGenericEiProperty->getCriteriaProperty(),
+			$criteria->where()->match($uniquePerGenericEiProperty->buildCriteriaItem(CrIt::p('e')),
 					'=', $uniquePerGenericEiProperty->buildEntityValue($this->eiMapping));
 		}
 	

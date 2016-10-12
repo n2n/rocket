@@ -47,7 +47,7 @@ class EiComponentStore {
 		foreach ($moduleNamespaces as $moduleNamespace) {
 			if ($this->eiComponentConfigSource->containsModuleNamespace($moduleNamespace)) {
 				$this->analyzeModuleRawData($moduleNamespace, $this->eiComponentConfigSource
-						->getConfigSourceByModuleNamespace($moduleNamespace)->readArray());
+						->getOrCreateConfigSourceByModuleNamespace($moduleNamespace)->readArray());
 			}
 		}
 	}

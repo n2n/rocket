@@ -45,7 +45,7 @@ interface EiSetupProcess {
 	
 	public function createException($reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException;
 	
-	public function getGenericEiPropertyByFieldPath($eiFieldPath): GenericEiProperty;
+	public function getGenericEiPropertyByEiFieldPath($eiFieldPath): GenericEiProperty;
 	
 	public function getScalarEiPropertyByFieldPath($eiFieldPath): ScalarEiProperty;
 	
