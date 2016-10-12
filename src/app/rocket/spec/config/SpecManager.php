@@ -131,7 +131,12 @@ class SpecManager {
 	}
 	
 	private function createMenuItem(MenuItemExtraction $menuItemExtraction) {
-		$spec = $this->getSpecById($menuItemExtraction->getSpecId());
+		$specId = $menuItemExtraction->getSpecId();
+		if (!isset($this->specs[$specId])) {
+			throw new UnknownSpecException('MenuItem is assigned to unknown Spec: ' . $specId );
+		}
+		
+		$spec = $this->specs[$specId];
 		$eiMaskId = $menuItemExtraction->getEiMaskId();
 		if ($spec instanceof CustomSpec) {
 			if (null === $eiMaskId) {
