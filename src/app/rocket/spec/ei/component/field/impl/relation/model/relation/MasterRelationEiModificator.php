@@ -29,13 +29,13 @@ use rocket\spec\ei\manage\mapping\WrittenMappingListener;
 
 class MasterRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiState;
-	private $entity;
+	private $entityObj;
 	private $propertyAccessProxy;
 	private $targetMany;
 
-	public function __construct(EiState $targetEiState, $entity, AccessProxy $propertyAccessProxy, $targetMany) {
+	public function __construct(EiState $targetEiState, $entityObj, AccessProxy $propertyAccessProxy, $targetMany) {
 		$this->targetEiState = $targetEiState;
-		$this->entity = $entity;
+		$this->entityObj = $entityObj;
 		$this->propertyAccessProxy = $propertyAccessProxy;
 		$this->targetMany = (boolean) $targetMany;
 	}
@@ -49,19 +49,20 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 		if (!$this->targetMany) {
 			$eiMapping->registerListener(new WrittenMappingListener(
 					function () use ($that, $eiMapping) {
-						$that->propertyAccessProxy->setValue($that->entity, $eiMapping->getEiSelection()->getLiveObject());
+						$that->propertyAccessProxy->setValue($that->entityObj, $eiMapping->getEiSelection()->getLiveObject());
 					}));
 			return;
 		}
 
+		
 		$eiMapping->registerListener(new WrittenMappingListener(
 				function () use ($that, $eiMapping) {
-					$targetEntities = $that->propertyAccessProxy->getValue($that->entity);
+					$targetEntities = $that->propertyAccessProxy->getValue($that->entityObj);
 					if ($targetEntities === null) {
 						$targetEntities = new \ArrayObject();
 					}
 					$targetEntities[] = $eiMapping->getEiSelection()->getLiveObject();
-					$that->propertyAccessProxy->setValue($that->entity, $targetEntities);
+					$that->propertyAccessProxy->setValue($that->entityObj, $targetEntities);
 				}));
 	}
 }
