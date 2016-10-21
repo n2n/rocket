@@ -107,9 +107,9 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
 	}
 	
-	public function getGenericEiPropertyByFieldPath($eiFieldPath): GenericEiProperty {
+	public function getGenericEiPropertyByEiFieldPath($eiFieldPath): GenericEiProperty {
 		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
-				->getGenericEiPropertyByFieldPath($eiFieldPath);
+				->getGenericEiPropertyByEiFieldPath($eiFieldPath);
 	}
 	
 	public function getScalarEiPropertyByFieldPath($eiFieldPath): ScalarEiProperty {

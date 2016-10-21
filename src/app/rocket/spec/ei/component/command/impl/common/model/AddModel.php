@@ -29,7 +29,7 @@ use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
@@ -124,7 +124,7 @@ class AddModel implements Dispatchable  {
 			$liveEntry->refreshId();
 			$liveEntry->setPersistent(false);
 			
-			$identityString = (new EiStateUtils($this->eiState))->createIdentityString($eiSelection);
+			$identityString = (new EiuFrame($this->eiState))->createIdentityString($eiSelection);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
 			return $eiSelection;
@@ -139,7 +139,7 @@ class AddModel implements Dispatchable  {
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiStateUtils($this->eiState))->createIdentityString($eiSelection);
+		$identityString = (new EiuFrame($this->eiState))->createIdentityString($eiSelection);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
 		return $eiSelection;

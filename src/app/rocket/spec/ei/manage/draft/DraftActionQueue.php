@@ -24,12 +24,14 @@ namespace rocket\spec\ei\manage\draft;
 use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\EntityManager;
 use n2n\core\container\N2nContext;
+use n2n\util\ex\IllegalStateException;
 
 class DraftActionQueue {
 	private $draftingContext;
 	private $em;
 	private $persistActions = array();
 	private $removeActions = array();
+	private $draftActions = array();
 	
 	public function __construct(DraftingContext $draftingContext, EntityManager $em, N2nContext $n2nContext) {
 		$this->draftingContext = $draftingContext;
@@ -52,8 +54,9 @@ class DraftActionQueue {
 		}
 		
 		if (isset($this->removeActions[$objHash])) {
-			$this->removeActions[$objHash]->disable();
-			unset($this->removeActions[$objHash]);
+			throw new IllegalStateException('RemoveAction available.');
+// 			$this->removeActions[$objHash]->disable();
+// 			unset($this->removeActions[$objHash]);
 		}
 		
 		if ($draft->isNew()) {
@@ -83,9 +86,10 @@ class DraftActionQueue {
 		
 		if (isset($this->persistActions[$objHash])) {
 			if (!$important) return null;
-			
-			$this->persistActions[$objHash]->disable();
-			unset($this->persistActions[$objHash]);
+
+			throw new IllegalStateException('PersistAction available.');
+// 			$this->persistActions[$objHash]->disable();
+// 			unset($this->persistActions[$objHash]);
 		}
 		
 		$draftDefinition = $this->draftingContext->getDraftDefinitionByDraft($draft);
@@ -95,7 +99,7 @@ class DraftActionQueue {
 			return null;
 		}
 				
-		$this->removeActions[$objHash] = $removeAction = new CommonModDraftAction($draft, $draftDefinition);
+		$this->removeActions[$objHash] = $removeAction = new CommonModDraftAction($draft, $draftDefinition, $this);
 		
 		if (!$draft->isNew()) return $removeAction;
 		
@@ -109,24 +113,35 @@ class DraftActionQueue {
 		return isset($this->persistActions[$objHash]) || isset($this->removeActions[$objHash]);
 	}
 	
-	public function finalize() {
-		foreach ($this->removeActions as $removeAction) {
-			if ($removeAction->isInitialized()) continue;
+	public function initialize() {
+		$newInits = null;
+		do {
+			$newInits = false;
 			
-			$removeAction->setDraftStmtBuilder($removeAction->getDraftDefinition()
-					->createRemoveDraftStmtBuilder($removeAction, $this));
-		}
-		
-		foreach ($this->persistActions as $persistAction) {
-			if ($persistAction->isInitialized()) continue;
+			while (false !== (list($key, $removeAction) = each($this->removeActions))) {
+				if ($removeAction->isInitialized()) continue;
+				
+				$newInits = true;
+				$removeAction->setDraftStmtBuilder($removeAction->getDraftDefinition()
+						->createRemoveDraftStmtBuilder($removeAction, $this));
+			}
 			
-			$persistAction->setDraftStmtBuilder($persistAction->getDraftDefinition()
-					->createPersistDraftStmtBuilder($persistAction, $this));
-		}
+			while (false !== (list($key, $persistAction) = each($this->persistActions))) {
+				if ($persistAction->isInitialized()) continue;
+				
+				$newInits = true;
+				$persistAction->setDraftStmtBuilder($persistAction->getDraftDefinition()
+						->createPersistDraftStmtBuilder($persistAction, $this));
+			}
+		} while($newInits);
+	}
+	
+	public function addDraftAction(DraftAction $draftAction) {
+	    $this->draftActions[spl_object_hash($draftAction)] = $draftAction;
 	}
 	
 	public function execute() {
-		$this->finalize();
+		$this->initialize();
 		
 		while (null !== ($removeAction = array_pop($this->removeActions))) {
 			$removeAction->execute();
@@ -134,6 +149,10 @@ class DraftActionQueue {
 		
 		while (null !== ($persistAction = array_pop($this->persistActions))) {
 			$persistAction->execute();
+		}
+		
+		while (null !== ($draftAction = array_pop($this->draftActions))) {
+		    $draftAction->execute();
 		}
 	}
 }

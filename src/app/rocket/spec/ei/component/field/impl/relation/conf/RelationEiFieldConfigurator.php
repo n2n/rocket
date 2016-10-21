@@ -42,6 +42,7 @@ use n2n\util\config\LenientAttributeReader;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\component\field\impl\relation\model\RelationVetoableActionListener;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
+use n2n\util\config\InvalidConfigurationException;
 
 class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
@@ -91,14 +92,13 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
 			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
-			// @todo think of consquences
-			$specManager->getEiSpecSetupQueue()->setVoidModeEnabled(true);
 			$targetEiSpec = $specManager->getEiSpecByClass($targetEntityClass);
 			foreach ($targetEiSpec->getEiMaskCollection() as $eiMask) {
 				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiSpec()->getLabelLstr();
 			}
 		} catch (UnknownEiComponentException $e) {
 		} catch (UnknownSpecException $e) {
+		} catch (InvalidConfigurationException $e) {
 		}
 		
 		$magCollection->addMag(new EnumMag(self::ATTR_TARGET_MASK_KEY, 'Target Mask', $targetEiMaskOptions,

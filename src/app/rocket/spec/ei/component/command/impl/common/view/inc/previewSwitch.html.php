@@ -29,7 +29,7 @@
 	$entryCommandViewModel = $view->params['entryCommandViewModel']; 
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 	
-	$eiEntryUtils = $entryCommandViewModel->getEiEntryUtils();
+	$eiEntryUtils = $entryCommandViewModel->getEiuEntry();
 	$linkedPreviewType = $currentPreviewType = $view->getParam('currentPreviewType', false);
 	if ($linkedPreviewType === null) {
 		$linkedPreviewType = $eiEntryUtils->getPreviewType();

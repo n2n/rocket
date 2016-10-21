@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 interface EiMask extends EiThing {
 		
@@ -97,7 +97,7 @@ interface EiMask extends EiThing {
 	 * @param EntryModel $entryModel
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array;
+	public function createEntryHrefControls(EiuGui $eiuGui, HtmlView $view): array;
 		
 	/**
 	 * @param EiSelection $eiSelection

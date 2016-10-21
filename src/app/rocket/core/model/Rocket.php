@@ -28,12 +28,11 @@ use rocket\spec\config\EiComponentStore;
 use n2n\core\container\PdoPool;
 use n2n\core\container\N2nContext;
 use rocket\spec\config\source\N2nContextRocketConfigSource;
-use rocket\spec\config\EiSpecSetupQueue;
 use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\config\extr\SpecExtractionManager;
 
 class Rocket implements RequestScoped {
-	const VERSION = '1.1.1';
+	const VERSION = '1.1.2';
 	const NS = 'rocket';
 	
 	private $dbhPool;
@@ -77,13 +76,15 @@ class Rocket implements RequestScoped {
 	 */
 	public function getSpecManager(): SpecManager {
 		if ($this->specManager === null) {
+			
 			$rocketConfigSource = $this->getRocketConfigSource();
 			
 			$sem = new SpecExtractionManager($rocketConfigSource->getSpecsConfigSource(), 
 					$rocketConfigSource->getModuleNamespaces());
-			$sem->initialize();
+// 			$sem->initialize();
 			$this->specManager = new SpecManager($sem, $this->dbhPool->getEntityModelManager());
-			$this->specManager->setEiSpecSetupQueue(new EiSpecSetupQueue($this->specManager, $this->n2nContext));
+			$this->specManager->initialize($this->n2nContext);
+// 			die('HUII');
 		}
 		
 		return $this->specManager;

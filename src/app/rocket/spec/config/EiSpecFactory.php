@@ -69,8 +69,7 @@ class EiSpecFactory {
 	public function create(EiSpecExtraction $eiSpecExtraction) {
 		$eiSpec = null;
 		try {
-			$eiSpec = new EiSpec($eiSpecExtraction->getId(), $eiSpecExtraction->getModuleNamespace(),
-					$this->getEntityModel($eiSpecExtraction->getEntityClassName()));
+			$eiSpec = new EiSpec($eiSpecExtraction->getId(), $eiSpecExtraction->getModuleNamespace());
 			$this->asdf($eiSpecExtraction->getEiDefExtraction(), $eiSpec->getDefaultEiDef(), $eiSpec->getEiEngine(), 
 					$eiSpec, null);
 		} catch (InvalidConfigurationException $e) {
@@ -191,33 +190,40 @@ class EiSpecFactory {
 		IllegalStateException::assertTrue($eiFieldConfigurator instanceof EiFieldConfigurator);
 		$eiFieldConfigurator->setAttributes(new Attributes($eiFieldExtraction->getProps()));
 		
+		$objectPropertyName = $eiFieldExtraction->getObjectPropertyName();
+		$entityPropertyName = $eiFieldExtraction->getEntityPropertyName();
+		
+		$this->setupQueue->addPropIn(new PropIn($eiSpec, $eiFieldConfigurator, $objectPropertyName, $entityPropertyName));
+		
+// 		$this->setupQueue->addClosure(function () use ($eiSpec, $eiFieldConfigurator, $objectPropertyName, $entityPropertyName) {
+// 			$accessProxy = null;
+// 			if (null !== $objectPropertyName) {
+// 				try{
+// 					$propertiesAnalyzer = new PropertiesAnalyzer($eiSpec->getEntityModel()->getClass(), false);
+// 					$accessProxy = $propertiesAnalyzer->analyzeProperty($objectPropertyName, false, true);
+// 					$accessProxy->setNullReturnAllowed(true);
+// 				} catch (ReflectionException $e) {
+// 					throw new InvalidEiComponentConfigurationException('EiField is assigned to unknown property: ' 
+// 							. $objectPropertyName, 0, $e);
+// 				}
+// 			}
+			
+// 			$entityProperty = null;
+// 			if (null !== $entityPropertyName) {
+// 				try {
+// 					$entityProperty = $eiSpec->getEntityModel()->getLevelEntityPropertyByName($entityPropertyName, true);
+// 				} catch (UnknownEntityPropertyException $e) {
+// 					throw new InvalidEiComponentConfigurationException('EiField is assigned to unknown EntityProperty: ' 
+// 							. $entityPropertyName, 0, $e);
+// 				}
+// 			}
+	
+// 			if ($entityProperty !== null || $accessProxy !== null) {
+// 				$eiFieldConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
+// 			}
+// 		});
+		
 		$this->setupQueue->add($eiFieldConfigurator);
-		
-		$accessProxy = null;
-		if (null !== ($objectPropertyName = $eiFieldExtraction->getObjectPropertyName())) {
-			try{
-				$propertiesAnalyzer = new PropertiesAnalyzer($eiSpec->getEntityModel()->getClass(), false);
-				$accessProxy = $propertiesAnalyzer->analyzeProperty($objectPropertyName, false, true);
-				$accessProxy->setNullReturnAllowed(true);
-			} catch (ReflectionException $e) {
-				throw new InvalidEiComponentConfigurationException('EiField is assigned to unknown property: ' 
-						. $objectPropertyName, 0, $e);
-			}
-		}
-		
-		$entityProperty = null;
-		if (null !== ($entityPropertyName = $eiFieldExtraction->getEntityPropertyName())) {
-			try {
-				$entityProperty = $eiSpec->getEntityModel()->getLevelEntityPropertyByName($entityPropertyName, true);
-			} catch (UnknownEntityPropertyException $e) {
-				throw new InvalidEiComponentConfigurationException('EiField is assigned to unknown EntityProperty: ' 
-						. $entityPropertyName, 0, $e);
-			}
-		}
-
-		if ($entityProperty !== null || $accessProxy !== null) {
-			$eiFieldConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
-		}
 		
 		return $eiField;
 	}

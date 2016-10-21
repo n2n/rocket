@@ -25,19 +25,19 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
 use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\web\http\controller\ParamGet;
-use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class OrderController extends ControllerAdapter {	
 	private $orderEiField;
 	private $utils;
 	private $eiCtrlUtils;
 	
-	private function _init(ManageState $manageState, EiCtrlUtils $eiCtrlUtils) {
-		$this->utils = new EiStateUtils($manageState->peakEiState());
+	private function _init(ManageState $manageState, EiuCtrl $eiCtrlUtils) {
+		$this->utils = new EiuFrame($manageState->peakEiState());
 		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 	

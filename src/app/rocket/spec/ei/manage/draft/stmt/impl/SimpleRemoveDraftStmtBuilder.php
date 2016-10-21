@@ -27,26 +27,28 @@ use n2n\persistence\meta\data\QueryPlaceMarker;
 use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\meta\data\QueryComparator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use n2n\persistence\PdoStatement;
 
-class SimpleRemoveDraftStmtBuilder implements RemoveDraftStmtBuilder {
-	private $pdo;
-	private $tableName;
+class SimpleRemoveDraftStmtBuilder extends DraftStmtBuilderAdapter implements RemoveDraftStmtBuilder {
 	private $draftId;
 	private $deleteStatementBuilder;
 	
-	public function __construct(Pdo $pdo, $tableName, $draftId) {
-		$this->pdo = $pdo;
-		$this->tableName = $tableName;
+	public function __construct(Pdo $pdo, string $tableName, int $draftId) {
+		parent::__construct($pdo, $tableName);
 		$this->draftId = $draftId;
 		$this->deleteStatementBuilder = $pdo->getMetaData()->createDeleteStatementBuilder();
+		$this->deleteStatementBuilder->setTable($tableName);
 
 		$aliasBuilder = new AliasBuilder();
 		$placeholderName = $aliasBuilder->createPlaceholderName();
 		$this->deleteStatementBuilder->getWhereComparator()->match(new QueryColumn(DraftMetaInfo::COLUMN_ID), 
 				QueryComparator::OPERATOR_EQUAL, new QueryPlaceMarker($placeholderName));
+		$this->bindValue($placeholderName, $draftId);
 	}
 	
 	public function buildPdoStatement(): PdoStatement {
-		return $this->pdo->prepare($this->peristStatementBuilder->toSqlString());
+		$stmt = $this->pdo->prepare($this->deleteStatementBuilder->toSqlString());
+		$this->applyBoundValues($stmt);
+		return $stmt;
 	}
 }

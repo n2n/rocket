@@ -31,7 +31,7 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class ToManySelectGuiElement implements GuiElement {
 	private $eiField;
@@ -79,7 +79,7 @@ class ToManySelectGuiElement implements GuiElement {
 		$criteria->select('COUNT(e)');
 		$num = $criteria->toQuery()->fetchSingle();
 
-		$targetEiUtils = new EiStateUtils($this->targetEiState);
+		$targetEiUtils = new EiuFrame($this->targetEiState);
 		if ($num == 1) {
 			$label = $num . ' ' . $targetEiUtils->getGenericLabel();
 		} else {

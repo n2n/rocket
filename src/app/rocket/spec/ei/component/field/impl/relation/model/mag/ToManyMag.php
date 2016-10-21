@@ -29,7 +29,7 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -37,6 +37,7 @@ use n2n\util\uri\Url;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\spec\ei\manage\draft\Draft;
 
 class ToManyMag extends MagAdapter {
 	private $min;
@@ -57,8 +58,8 @@ class ToManyMag extends MagAdapter {
 			EiState $targetEditEiState, int $min, int $max = null) {
 		parent::__construct($propertyName, $label);
 	
-		$this->targetReadUtils = new EiStateUtils($targetReadEiState);
-		$this->targetEditUtils = new EiStateUtils($targetEditEiState);
+		$this->targetReadUtils = new EiuFrame($targetReadEiState);
+		$this->targetEditUtils = new EiuFrame($targetEditEiState);
 		$this->min = $min;
 		$this->max = $max;
 		
@@ -162,10 +163,10 @@ class ToManyMag extends MagAdapter {
 	public function setFormValue($formValue) {
 		ArgUtils::assertTrue($formValue instanceof ToManyForm);
 
-		$oldTargetRelationEntries = $this->buildLiveIdRepRelationEntryMap();
 		$this->targetRelationEntries = array();
 
 		if ($formValue->isSelectionModeEnabled()) {
+			$oldTargetRelationEntries = $this->buildLiveIdRepRelationEntryMap();
 			foreach ($formValue->getSelectedEntryIdReps() as $idRep) {
 				if (isset($oldTargetRelationEntries[$idRep])) {
 					$this->targetRelationEntries[$idRep] = $oldTargetRelationEntries[$idRep];
@@ -185,8 +186,13 @@ class ToManyMag extends MagAdapter {
 			
 			if ($targetEiMapping->isNew()) {
 				$this->targetRelationEntries[] = RelationEntry::fromM($targetEiMapping);
+				if ($targetEiMapping->getEiSelection()->isDraft()) {
+					$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
+				}
+			} else if ($targetEiMapping->getEiSelection()->isDraft()) {
+				$this->targetRelationEntries['d' . $targetEiMapping->getEiSelection()->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			} else {
-				$this->targetRelationEntries[$targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
+				$this->targetRelationEntries['c' . $targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			}
 		}
 	}

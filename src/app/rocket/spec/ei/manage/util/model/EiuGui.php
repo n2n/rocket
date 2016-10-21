@@ -19,22 +19,54 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 
-class EntryGuiUtils extends EiEntryUtils {
+class EiuGui {
 	private $viewMode;
+	private $eiuEntry;
 // 	protected $eiMask;
 	protected $eiSelectionGui;
 	
-	public function __construct($eiEntryObj, int $viewMode, $eiState = null) {
-		parent::__construct($eiEntryObj, $eiState);
+	public function __construct($viewMode, $eiuEntry = null) {
+		if ($eiuEntry !== null) {
+			$this->eiuEntry = EiuFactory::buildEiuEntryFromEiArg($eiuEntry, null, 'eiuEntry', false);
+		}
 		
-		$this->viewMode = $viewMode;
+		if (is_numeric($viewMode)) {
+			$this->viewMode = $viewMode;
+			return;
+		}
+		
+		if ($viewMode instanceof EntryGuiModel) {
+			$this->viewMode = $viewMode->getEiSelectionGui()->getViewMode();
+			if ($this->eiuEntry === null) {
+				$this->eiuEntry = EiuFactory::buildEiuEntryFromEiArg($viewMode);
+			}
+		}
+	}
+	
+	public function getViewMode() {
+		return $this->viewMode;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isViewModeOverview() {
+		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
+		|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
+	}
+	
+	public function getEiuEntry(bool $required = true) {
+		if (!$required || $this->eiuEntry !== null) {
+			return $this->eiuEntry;
+		}
+		
+		throw new EiuPerimeterException('No EiuGui provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
 // 	public function getEiMask() {
@@ -48,20 +80,12 @@ class EntryGuiUtils extends EiEntryUtils {
 	/**
 	 * @param EntryGuiModel $entryGuiModel
 	 * @param EiState $eiState
-	 * @return EntryGuiUtils
+	 * @return EiuGui
 	 */
 	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
-		$entryGuiUtils = new EntryGuiUtils($entryGuiModel->getEiMapping(), 
-				$entryGuiModel->getEiSelectionGui()->getViewMode(), $eiState);
+		$entryGuiUtils = new EiuGui($entryGuiModel, 
+				new EiuEntry($entryGuiModel, $eiState));
 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
 		return $entryGuiUtils;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isViewModeOverview() {
-		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
-				|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
 	}
 }

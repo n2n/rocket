@@ -85,6 +85,7 @@ class ToManyEditable implements Editable {
 		$this->toManyMag->setValue($this->toManyMappable->getValue());
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toManyMag->setNewMappingFormUrl($this->newMappingFormUrl);
+		$this->toManyMag->setDraftMode($this->draftMode);
 		return $this->toManyMag;
 	}
 	

@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\EiSelection;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
@@ -50,7 +50,7 @@ class MultiUploadScriptController extends ControllerAdapter {
 	private function _init(ManageState $manageState, RocketState $rocketState) {
 		$this->eiState = $manageState->peakEiState();
 		$this->rocketState = $rocketState;
-		$this->utils = new EiStateUtils($manageState->peakEiState());
+		$this->utils = new EiuFrame($manageState->peakEiState());
 	}
 	
 	public function setEiField(MultiUploadFileEiField $eiField) {

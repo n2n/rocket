@@ -30,7 +30,6 @@ use rocket\spec\config\extr\SpecExtractor;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use n2n\reflection\ArgUtils;
-use rocket\spec\config\SpecException;
 
 class SpecConfigSourceDecorator {
 	private $specRawer;

@@ -37,7 +37,7 @@ use n2n\util\uri\Path;
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));
 	
-	$eiEntryUtils = $entryCommandViewModel->getEiEntryUtils();
+	$eiEntryUtils = $entryCommandViewModel->getEiuEntry();
 	$currentPreviewType = $view->getParam('currentPreviewType');
 	
 	$previewPath = null;

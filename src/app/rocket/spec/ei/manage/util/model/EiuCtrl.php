@@ -19,9 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\command\impl\common\controller;
+namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\security\InaccessibleEntryException;
@@ -38,37 +38,37 @@ use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\Breadcrumb;
 use n2n\reflection\ReflectionUtils;
 use n2n\context\Lookupable;
-use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\spec\ei\manage\util\model\EiEntryUtils;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
-class EiCtrlUtils implements Lookupable {
-	private $eiStateUtils;	
+class EiuCtrl implements Lookupable {
+	private $eiuFrame;	
 	private $httpContext;
 	
 	private function _init(ManageState $manageState, HttpContext $httpContext) {
 		$this->init($manageState, $httpContext);
 	}
 	
-	protected function init(ManageState $manageState, HttpContext $httpContext) {
-		$this->eiStateUtils = new EiStateUtils($manageState->peakEiState());
+	protected function init(ManageState $manageState, HttpContext $httpContext, EiuFrame $eiuFrame = null) {
+		$this->eiuFrame = $eiuFrame ?? new EiuFrame($manageState->peakEiState());
 		$this->httpContext = $httpContext;
 	}
 	
 	/**
-	 * @return EiStateUtils
+	 * @return EiuFrame
 	 */
-	public function getEiStateUtils() {
-		return $this->eiStateUtils;
+	public function getEiuFrame() {
+		return $this->eiuFrame;
 	}
 	
 	public function getEiState() {
-		return $this->eiStateUtils->getEiState();
+		return $this->eiuFrame->getEiState();
 	}
 	
-	public function lookupEiSelection(string $liveIdRep) {
+	public function lookupEiSelection(string $liveIdRep, bool $assignToEiu = false) {
+		$eiSelection = null;
 		try {
-			return $this->eiStateUtils->lookupEiSelectionById($this->eiStateUtils->idRepToId($liveIdRep));
+			$eiSelection = $this->eiuFrame->lookupEiSelectionById($this->eiuFrame->idRepToId($liveIdRep));
 		} catch (UnknownEntryException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -76,37 +76,58 @@ class EiCtrlUtils implements Lookupable {
 		} catch (InaccessibleEntryException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
+		
+		if ($assignToEiu) {
+			$this->eiuFrame->assignEiuEntry($eiSelection);
+		}
+		
+		return $eiSelection;
 	}
 	
 	/**
 	 * @param string $liveIdRep
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 */
-	public function lookupEiMapping(string $liveIdRep) {
-		return $this->eiStateUtils->createEiMapping($this->lookupEiSelection($liveIdRep));
+	public function lookupEiMapping(string $liveIdRep, bool $assignToEiu = false) {
+		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiSelection($liveIdRep, false));
+		if ($assignToEiu) {
+			$this->eiuFrame->assignEiuEntry($eiMapping);
+		}
+		return $eiMapping;
 	}
 	
-	public function lookupEiSelectionByDraftId($draftId) {
+	public function lookupEiSelectionByDraftId($draftId, bool $assignToEiu = false) {
 		if (!is_numeric($draftId)) {
 			throw new PageNotFoundException('Draft id must be numeric. ' . ReflectionUtils::getTypeInfo($draftId) 
 					. ' given');
 		}
 		
+		$eiSelection = null;
 		try {
-			return $this->eiStateUtils->lookupEiSelectionByDraftId((int) $draftId);
+			$eiSelection = $this->eiuFrame->lookupEiSelectionByDraftId((int) $draftId);
 		} catch (UnknownEntryException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (InaccessibleEntryException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
+		
+		if ($assignToEiu) {
+			$this->eiuFrame->assignEiuEntry($eiSelection);	
+		}
+		
+		return $eiSelection;
 	}
 	
-	public function lookupEiMappingByDraftId($draftId) {
-		return $this->eiStateUtils->createEiMapping($this->lookupEiSelectionByDraftId($draftId));
+	public function lookupEiMappingByDraftId($draftId, bool $assignToEiu = false) {
+		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiSelectionByDraftId($draftId, false));
+		if ($assignToEiu) {
+			$this->eiuFrame->assignEiuEntry($eiMapping);
+		}
+		return $eiMapping;
 	}
 
 	public function buildRedirectUrl(EiSelection $eiSelection = null) { 
-		$eiState = $this->eiStateUtils->getEiState();
+		$eiState = $this->eiuFrame->getEiState();
 		
 		if ($eiSelection !== null && !$eiSelection->isNew()) {
 			$entryNavPoint = $eiSelection->toEntryNavPoint();
@@ -140,7 +161,7 @@ class EiCtrlUtils implements Lookupable {
 	}
 	
 	public function applyCommonBreadcrumbs(EiSelection $eiSelection = null, $currentBreadcrumbLabel = null) {
-		$eiState = $this->eiStateUtils->getEiState();
+		$eiState = $this->eiuFrame->getEiState();
 		$rocketState = $eiState->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);
 		
@@ -159,7 +180,7 @@ class EiCtrlUtils implements Lookupable {
 	}
 	
 	public function applyBreandcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
-		$eiState = $this->eiStateUtils->getEiState();
+		$eiState = $this->eiuFrame->getEiState();
 		$rocketState = $eiState->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);
 		
@@ -170,27 +191,27 @@ class EiCtrlUtils implements Lookupable {
 	
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
 		try {
-			return $this->eiStateUtils->lookupPreviewController($previewType, $eiSelection);
+			return $this->eiuFrame->lookupPreviewController($previewType, $eiSelection);
 		} catch (UnavailablePreviewException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}
 	}
 	
-	public static function from(HttpContext $httpContext) {
+	public static function from(HttpContext $httpContext, EiuFrame $eiuFrame = null) {
 		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		
 		
-		$eiCtrlUtils = new EiCtrlUtils();
-		$eiCtrlUtils->_init($manageState, $httpContext);
+		$eiCtrlUtils = new EiuCtrl();
+		$eiCtrlUtils->init($manageState, $httpContext, $eiuFrame);
 		return $eiCtrlUtils;
 	}
 	
 	/**
 	 * @param unknown $eiEntryObj
-	 * @return \rocket\spec\ei\manage\util\model\EiEntryUtils
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function toEiEntryUtils($eiEntryObj) {
-		return new EiEntryUtils($eiEntryObj, $this);
+	public function toEiuEntry($eiEntryObj) {
+		return new EiuEntry($eiEntryObj, $this);
 	}
 }

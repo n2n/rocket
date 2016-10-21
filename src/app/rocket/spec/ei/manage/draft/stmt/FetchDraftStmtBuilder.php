@@ -25,16 +25,22 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
 
 interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
+
+	/**
+	 * @return string
+	 */
+	public function getTableName(): string;
+	
+	/**
+	 * @return string
+	 */
+	public function getTableAlias();
+	
 	/**
 	 * @param EiFieldPath $eiFieldPath
 	 * @return string
 	 */
 	public function requestColumn(EiFieldPath $eiFieldPath): string;
-	
-	/**
-	 * @return string
-	 */
-	public function createPlaceholderName(): string;
 	
 	/**
 	 * @return string 
@@ -49,7 +55,7 @@ interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
 	/**
 	 * @return string
 	 */
-	public function getFlagAlias(): string;
+	public function getTypeAlias(): string;
 	
 	/**
 	 * @return string 
@@ -60,6 +66,8 @@ interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
 	 * @return string 
 	 */
 	public function getUserIdAlias(): string;
+	
+	public function getBoundIdRawValue();
 	
 	/**
 	 * @return DraftValuesResult

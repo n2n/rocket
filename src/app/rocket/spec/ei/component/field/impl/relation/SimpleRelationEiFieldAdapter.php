@@ -35,7 +35,7 @@ use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\util\model\GlobalEiUtils;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
@@ -102,7 +102,7 @@ abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter imple
 		$targetEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState);
 		
 		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-				new EiStateUtils($targetEiState), 
+				new EiuFrame($targetEiState), 
 				new class($targetEiState) implements TargetFilterDef {
 					private $targetEiState;
 					

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
@@ -57,7 +57,7 @@ class ToManyForm implements Dispatchable {
 	private $currentMappingForms;
 	private $newMappingForms;
 
-	public function __construct(string $label, EiStateUtils $readUtils, EiStateUtils $editUtils, 
+	public function __construct(string $label, EiuFrame $readUtils, EiuFrame $editUtils, 
 			int $min, int $max = null) {
 		$this->label = $label;
 		$this->readUtils = $readUtils;

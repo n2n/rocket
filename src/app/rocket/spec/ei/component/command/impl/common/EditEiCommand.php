@@ -38,9 +38,8 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'edit';
@@ -67,42 +66,39 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
-		$eiMapping = $entryGuiUtils->getEiMapping();
-		
-		$eiSelection = $eiMapping->getEiSelection();
-		$eiState = $entryGuiUtils->getEiState();
-		if ($eiState->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::from($this))) {
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+		if ($eiu->frame()->isExecutedBy(EiCommandPath::from($this))) {
 			return array();
 		}
-		
-		$eiUtils = $entryGuiUtils->getEiStateUtils();
-		
+				
 		$hrefControls = array();
 
-		if (!$eiSelection->isDraft()) {
-			$urlExt = (new Path(array('live', $eiUtils->idToIdRep($eiSelection->getLiveEntry()->getId()))))
+		$eiuEntry = $eiu->entry();
+		$eiState = $eiu->frame()->getEiState();
+		if (!$eiuEntry->isDraft()) {
+			$urlExt = (new Path(array('live', $eiuEntry->getIdRep())))
 					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 			$label = $view->getL10nText('common_edit_label');
-			$tooltip = $view->getL10nText('ei_impl_edit_entry_tooltip', array('entry' => $eiUtils->getGenericLabel()));
+			$tooltip = $view->getL10nText('ei_impl_edit_entry_tooltip', array('entry' => $eiu->frame()->getGenericLabel()));
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
 					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL));
-			
-			$urlExt = (new Path(array('latestdraft', $eiUtils->idToIdRep($eiSelection->getLiveEntry()->getId()))))
-					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
-			$label = $view->getL10nText('common_edit_latest_draft_label');
-			$tooltip = $view->getL10nText('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiUtils->getGenericLabel()));
-			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
-		} else if (!$eiSelection->getDraft()->isNew()) {
-			$urlExt = (new Path(array('draft', $eiSelection->getDraft()->getId())))
+			if ($eiu->frame()->isDraftingEnabled()) {
+				$urlExt = (new Path(array('latestdraft', $eiuEntry->getIdRep())))
+						->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
+				$label = $view->getL10nText('common_edit_latest_draft_label');
+				$tooltip = $view->getL10nText('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiu->frame()->getGenericLabel()));
+				$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
+						new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
+			}
+		} else if (!$eiuEntry->isDraftNew()) {
+			$urlExt = (new Path(array('draft', $eiuEntry->getDraftId())))
 					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 			$label = $view->getL10nText('ei_impl_edit_draft_label');
 			$tooltip = $view->getL10nText('ei_impl_edit_draft_tooltip');
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
 					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
 			
-			$urlExt = (new Path(array('publish', $eiSelection->getDraft()->getId())))
+			$urlExt = (new Path(array('publish', $eiuEntry->getDraftId())))
 					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 			$label = $view->getL10nText('ei_impl_publish_draft_label');
 			$tooltip = $view->getL10nText('ei_impl_publish_draft_tooltip');

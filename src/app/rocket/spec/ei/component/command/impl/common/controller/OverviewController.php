@@ -33,6 +33,7 @@ use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterFieldController;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\command\impl\common\model\DraftListModel;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;
@@ -40,7 +41,7 @@ class OverviewController extends ControllerAdapter {
 // 	private $rocketState;
 	private $scrRegistry;
 	
-	private $eiCtrlUtils;
+	private $eiuCtrl;
 	
 	public function __construct(int $listSize) {
 		$this->listSize = $listSize;
@@ -50,11 +51,11 @@ class OverviewController extends ControllerAdapter {
 // 		$this->manageState = $manageState;
 // 		$this->rocketState = $rocketState;
 		$this->scrRegistry = $scrRegistry;
-		$this->eiCtrlUtils = EiCtrlUtils::from($this->getHttpContext());
+		$this->eiuCtrl = EiuCtrl::from($this->getHttpContext());
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
-		$eiState = $this->eiCtrlUtils->getEiState();
+		$eiState = $this->eiuCtrl->getEiState();
 		$stateKey = OverviewAjahController::genStateKey();
 		$critmodForm = CritmodForm::create($eiState, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiState, $critmodSaveDao, $stateKey);
@@ -82,7 +83,7 @@ class OverviewController extends ControllerAdapter {
 		$filterAjahHook = FilterFieldController::buildFilterAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
 		
-		$this->eiCtrlUtils->applyCommonBreadcrumbs();
+		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
 		$this->forward('..\view\overview.html', 
 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
@@ -94,7 +95,7 @@ class OverviewController extends ControllerAdapter {
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$pageNo = $pageNo->toNumericOrReject();
-			$this->eiCtrlUtils->getEiState()->setCurrentUrlExt(
+			$this->eiuCtrl->getEiState()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
 		}
 				
@@ -106,7 +107,7 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
-		$eiState = $this->eiCtrlUtils->getEiState();
+		$eiState = $this->eiuCtrl->getEiState();
 		$draftListModel = new DraftListModel($eiState, $this->listSize);
 		
 		if ($pageNo === null) {
@@ -121,7 +122,7 @@ class OverviewController extends ControllerAdapter {
 		
 		$listView = $eiState->getContextEiMask()->createListView($eiState, $draftListModel->getEntryGuis());
 		
-		$this->eiCtrlUtils->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
+		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
 		
 		$stateKey = OverviewDraftAjahController::genStateKey();
 		$overviewDraftAjahHook = OverviewDraftAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
@@ -135,7 +136,7 @@ class OverviewController extends ControllerAdapter {
 	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftAjahController $overviewDraftAjahController,
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
-			$this->eiCtrlUtils->getEiState()->setCurrentUrlExt(
+			$this->eiuCtrl->getEiState()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
 		}
 

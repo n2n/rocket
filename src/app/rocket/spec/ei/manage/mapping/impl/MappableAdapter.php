@@ -53,6 +53,10 @@ abstract class MappableAdapter implements Mappable {
 		return $this->getOrgValue();
 	}
 
+	public function isOrgValueLoaded() {
+		return $this->orgValueLoaded;
+	}
+	
 	public function getOrgValue() {
 		if ($this->orgValueLoaded) {
 			return $this->orgValue;

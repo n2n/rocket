@@ -27,7 +27,7 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\spec\ei\component\field\impl\tree\TreeUtils;
 use rocket\spec\ei\component\field\impl\tree\NestedSetDef;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\config\mask\model\EntryGuiTree;
@@ -52,7 +52,7 @@ class ListModel implements Dispatchable {
 	
 	public function __construct(EiState $eiState, int $listSize, CritmodForm $critmodForm, 
 			QuickSearchForm $quickSearchForm) {
-		$this->utils = new EiStateUtils($eiState);
+		$this->utils = new EiuFrame($eiState);
 		$this->listSize = $listSize;
 		$this->critmodForm = $critmodForm;
 		$this->quickSearchForm = $quickSearchForm;

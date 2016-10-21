@@ -34,6 +34,17 @@ interface DraftAction {
 	 * @param \Closure $closure
 	 */
 	public function executeAtEnd(\Closure $closure);
+	
+// 	/**
+// 	 * 
+// 	 */
+// 	public function disable();
+	
+// 	/**
+// 	 * @param \Closure $closure
+// 	 */
+// 	public function executeOnDisable(\Closure $closure);
+	
 	/**
 	 * @param Action $draftAction
 	 */

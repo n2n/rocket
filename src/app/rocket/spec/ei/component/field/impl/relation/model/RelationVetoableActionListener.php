@@ -35,6 +35,8 @@ use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\ManageState;
 use n2n\core\container\N2nContext;
+use n2n\l10n\DynamicTextCollection;
+use n2n\l10n\N2nLocale;
 
 class RelationVetoableActionListener implements VetoableActionListener {
 	const STRATEGY_PREVENT = 'prevent';
@@ -93,6 +95,8 @@ class VetoCheck {
 		$queue = $this->vetoableRemoveAction->getQueue();
 		foreach ($this->findAll() as $entityObj) {
 			if (!$queue->containsEntityObj($entityObj)) $num++;
+			
+			test(get_class($entityObj) . ' ' . $entityObj->getId());
 		}
 		
 		if ($num === 0) return;
@@ -102,7 +106,8 @@ class VetoCheck {
 				'field' => $this->relationEiField->getLabelLstr()->t($this->n2nContext->getN2nLocale()),
 				'target_entry' => $this->createTargetIdentityString(),
 				'target_generic_label' => $this->getTargetGenericLabel());
-
+		$dtc = new DynamicTextCollection('rocket', N2nLocale::getAdmin());
+		test($dtc->translate('ei_impl_relation_remove_veto_err', $attrs));
 		if ($num === 1) {
 			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
 		} else {

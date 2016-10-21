@@ -38,7 +38,9 @@ class DraftingContext {
 		$this->draftDefinitions[$objHash] = $draftDefinition;
 		$this->draftValuesResults[$objHash] = $draftValuesResult;
 		
-		$this->identifyDraft($draft);
+		if (!$draft->isNew()) {
+			$this->identifyDraft($draft);
+		}
 	}
 	
 	public function setDraftValuesResult(Draft $draft, DraftValuesResult $draftValuesResult) {
@@ -107,6 +109,8 @@ class DraftingContext {
 	}
 	
 	public function persistContext(DraftActionQueue $draftActionQueue) {
+		$draftActionQueue->initialize();
+		
 		foreach ($this->drafts as $draft) {
 			if ($draftActionQueue->containsDraft($draft)) continue;
 			

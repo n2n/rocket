@@ -31,6 +31,7 @@ use rocket\core\model\UnknownMenuItemException;
 use n2n\reflection\ArgUtils;
 
 class SpecExtractionManager {
+	private $init = false;
 	private $modularConfigSource;
 	private $moduleNamespaces;
 	private $specCsDecs = array();
@@ -44,7 +45,34 @@ class SpecExtractionManager {
 		$this->moduleNamespaces = $moduleNamespaces;
 	}
 	
+	public function getModularConfigSource() {
+		return $this->modularConfigSource;
+	}
+	
+	public function load() {
+		foreach ($this->moduleNamespaces as $moduleNamespace) {
+			$moduleNamespace = (string) $moduleNamespace;
+				
+			if (!$this->modularConfigSource->containsModuleNamespace($moduleNamespace)) {
+				$this->specCsDecs[$moduleNamespace] = null;
+				continue;
+			}
+				
+			$this->specCsDecs[$moduleNamespace] = $specCsDec = new SpecConfigSourceDecorator(
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+		}
+	}
+	
+	/**
+	 * 
+	 */
 	public function initialize() {
+		if ($this->init) {
+			throw new IllegalStateException('Already initilized');
+		}
+		
+		$this->init = true;
+		
 		foreach ($this->moduleNamespaces as $moduleNamespace) {
 			$moduleNamespace = (string) $moduleNamespace;
 			
@@ -54,7 +82,7 @@ class SpecExtractionManager {
 			}
 			
 			$this->specCsDecs[$moduleNamespace] = $specCsDec = new SpecConfigSourceDecorator(
-					$this->modularConfigSource->getConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
 			
 			$specCsDec->load();
 		}
@@ -62,6 +90,13 @@ class SpecExtractionManager {
 		$this->initSpecExtractions();
 		$this->initCommonEiMaskExtractions();
 		$this->initMenuItemExtractions();
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isInitialized() {
+		return $this->init;
 	}
 	
 	private function initSpecExtractions() {
@@ -125,12 +160,12 @@ class SpecExtractionManager {
 	private function initMenuItemExtractions() {
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
-	
+			
 			foreach ($specCsDec->getMenuItemExtractions() as $menuItemId => $menuItemExtraction) {
 				if (isset($this->menuItemExtractions[$menuItemId])) {
 					throw $this->createDuplicatedMenuItemIdException($menuItemId);
 				}
-					
+				
 				$this->menuItemExtractions[$menuItemId] = $menuItemExtraction;
 			}
 		}
@@ -286,7 +321,10 @@ class SpecExtractionManager {
 		unset($this->unboundCommonEiMaskExtractionGroups[$specId]);
 	}
 	
-
+	public function getMenuItemExtractions() {
+		return $this->menuItemExtractions;
+	}
+	
 	public function getMenuItemExtractionById(string $id): MenuItemExtraction {
 		if (isset($this->menuItemExtractions[$id])) {
 			return $this->menuItemExtractions[$id];
@@ -316,7 +354,7 @@ class SpecExtractionManager {
 	
 		if (array_key_exists($moduleNamespace, $this->specCsDecs)) {
 			return $this->specCsDecs[$moduleNamespace] = new SpecConfigSourceDecorator(
-					$this->modularConfigSource->getConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
 		}
 	
 		throw new IllegalStateException('Unknown module namespace: ' . $moduleNamespace);

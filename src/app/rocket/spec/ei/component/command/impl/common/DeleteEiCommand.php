@@ -40,7 +40,7 @@ use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 
 		EntryControlComponent, PrivilegedEiCommand {
@@ -61,14 +61,17 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return $eiState->getN2nContext()->lookup(DeleteController::class);
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+		$eiuEntry = $eiu->entry();
+		$eiuFrame = $eiu->frame();
+		
 		$pathExt = null;
 		$name = null;
 		$tooltip = null;
 		$confirmMessage = null;
 		$iconType = null;
-		if ($entryGuiUtils->isDraft()) {
-			$draft = $entryGuiUtils->getDraft();
+		if ($eiuEntry->isDraft()) {
+			$draft = $eiuEntry->getDraft();
 			$pathExt = new Path(array('draft', $draft->getId()));
 			$name = $view->getL10nText('ei_impl_delete_draft_label');
 			$tooltip = $view->getL10nText('ei_impl_delete_draft_tooltip', 
@@ -77,11 +80,11 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 			$iconType = IconType::ICON_TIMES_CIRCLE;
 		} else {
-			$pathExt = new Path(array('live', $entryGuiUtils->getIdRep()));
-			$identityString = $entryGuiUtils->createIdentityString();
+			$pathExt = new Path(array('live', $eiuEntry->getIdRep()));
+			$identityString = $eiuEntry->createIdentityString();
 			$name = $view->getL10nText('common_delete_label');
 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
-					array('entry' => $entryGuiUtils->getEiStateUtils()->getGenericLabel()));
+					array('entry' => $eiuFrame->getGenericLabel()));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
 			$iconType = IconType::ICON_TIMES;
 		}
@@ -92,11 +95,11 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		$controlButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
 		
 		$query = array();
-		if ($entryGuiUtils->isViewModeOverview()) {
-			$query['refPath'] = (string) $entryGuiUtils->getEiState()->getCurrentUrl($view->getHttpContext());
+		if ($eiu->gui()->isViewModeOverview()) {
+			$query['refPath'] = (string) $eiuFrame->getEiState()->getCurrentUrl($view->getHttpContext());
 		}
 		
-		$hrefControl = HrefControl::create($entryGuiUtils->getEiState(), $this, $pathExt->toUrl($query), $controlButton);
+		$hrefControl = HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl($query), $controlButton);
 		
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 	}

@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\draft;
 
 use n2n\util\ex\IllegalStateException;
 
-class DraftActionAdapter implements DraftAction {
+abstract class DraftActionAdapter implements DraftAction {
 	
 	protected function ensureNotExecuted() {
 		if (!$this->executed) return;
@@ -38,18 +38,18 @@ class DraftActionAdapter implements DraftAction {
 	protected $dependents = array();
 	
 
-	protected $disabled = false;
+// 	protected $disabled = false;
 	
-	public function disable() {
-		$this->ensureNotExecuted();
-		$this->triggerOnDisableClosures();
+// 	public function disable() {
+// 		$this->ensureNotExecuted();
+// 		$this->triggerOnDisableClosures();
 		
-		$this->disabled = true;
-	}
+// 		$this->disabled = true;
+// 	}
 	
-	public function executeOnDisable(\Closure $closure) {
-		$this->onDisableClosures[] = $closure;
-	}
+// 	public function executeOnDisable(\Closure $closure) {
+// 		$this->onDisableClosures[] = $closure;
+// 	}
 	
 	public function executeOnStart(\Closure $closure) {
 		$this->atStartClosures[] = $closure;
@@ -115,9 +115,9 @@ class DraftActionAdapter implements DraftAction {
 			throw new DraftingException('Draft dependend conflict.');
 		}
 	
-		if ($this->disabled) {
-			throw new DraftingException('DraftAction disabled.');
-		}
+// 		if ($this->disabled) {
+// 			throw new DraftingException('DraftAction disabled.');
+// 		}
 		
 		if ($this->executed) return;
 		$this->executed = true;
@@ -128,10 +128,10 @@ class DraftActionAdapter implements DraftAction {
 	
 		$this->triggerAtStartClosures();
 	
-		if (null !== ($pdoStatement = $this->getDraftStmtBuilder()->buildPdoStatement())) {
-			$pdoStatement->execute();
-		}
+		$this->exec();
 	
 		$this->triggerAtEndClosures();
 	}
+
+	protected abstract function exec();
 }

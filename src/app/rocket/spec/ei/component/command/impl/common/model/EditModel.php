@@ -28,7 +28,7 @@ use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
@@ -45,7 +45,7 @@ class EditModel implements Dispatchable {
 	private $entryForm;
 	private $entryModel;
 		
-	public function __construct(EiStateUtils $eiStateUtils, $draftingAllowed, $publishingAllowed) {
+	public function __construct(EiuFrame $eiStateUtils, $draftingAllowed, $publishingAllowed) {
 		$this->eiStateUtils = $eiStateUtils;
 	}
 	

@@ -34,15 +34,16 @@ use n2n\l10n\DateTimeFormat;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\draft\Draft;
 use n2n\util\col\ArrayUtils;
-use n2n\util\uri\Query;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
-	private $eiCtrlUtils;
+	private $eiuCtrl;
 	
-	public function prepare(DynamicTextCollection $dtc) {
+	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiuCtrl, Eiu $eiu) {
 		$this->dtc = $dtc;
-		$this->eiCtrlUtils = EiCtrlUtils::from($this->getHttpContext());
+		$this->eiuCtrl = $eiuCtrl;;
 	}
 	
 	/**
@@ -51,17 +52,17 @@ class EditController extends ControllerAdapter {
 	 * @return \rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel
 	 */
 	private function createEntryCommandViewModel(EntryGuiModel $entryGuiModel, Url $cancelUrl = null) {
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiStateUtils(), $entryGuiModel, $cancelUrl);
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->getEiuFrame(), $entryGuiModel, $cancelUrl);
 		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
 
 	
 	public function doLive($idRep, ParamQuery $refPath) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
-		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
-		$editModel = new EditModel($this->eiCtrlUtils->getEiStateUtils(), true, true);
+		$eiMapping = $this->eiuCtrl->lookupEiMapping($idRep);
+		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
 		$editModel->initialize($eiMapping);
 
 		if ($this->dispatch($editModel, 'save')) {
@@ -69,7 +70,7 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->eiCtrlUtils->applyCommonBreadcrumbs($eiMapping->getEiSelection(), 
+		$this->eiuCtrl->applyCommonBreadcrumbs($eiMapping->getEiSelection(), 
 				$this->dtc->translate('ei_impl_edit_entry_breadcrumb'));
 		
 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -78,10 +79,10 @@ class EditController extends ControllerAdapter {
 	}
 	
 	public function doLatestDraft($idRep, ParamQuery $refPath) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
-		$eiSelection = $this->eiCtrlUtils->lookupEiSelection($idRep);
-		$drafts = $this->eiCtrlUtils->getEiStateUtils()->toEiEntryUtils($eiSelection)->lookupDrafts(0, 1);
+		$eiSelection = $this->eiuCtrl->lookupEiSelection($idRep);
+		$drafts = $this->eiuCtrl->getEiuFrame()->toEiuEntry($eiSelection)->lookupDrafts(0, 1);
 		$draft = ArrayUtils::first($drafts);
 		if ($draft === null || $draft->isPublished()) {
 			$this->redirectToController(array('newdraft', $idRep), array('refPath' => $refPath));
@@ -92,17 +93,17 @@ class EditController extends ControllerAdapter {
 	}
 		
 	public function doNewDraft($idRep, ParamQuery $refPath) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
-		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
-		$entryEiUtils = $this->eiCtrlUtils->toEiEntryUtils($eiMapping);
+		$eiMapping = $this->eiuCtrl->lookupEiMapping($idRep);
+		$entryEiUtils = $this->eiuCtrl->toEiuEntry($eiMapping);
 		
-		$eiUtils = $this->eiCtrlUtils->getEiStateUtils();
+		$eiUtils = $this->eiuCtrl->getEiuFrame();
 		$draftEiSelection = $eiUtils->createEiSelectionFromDraft(
 				$eiUtils->createNewDraftFromLiveEntry($eiMapping->getEiSelection()->getLiveEntry()));
-		$draftEiMapping = $this->eiCtrlUtils->getEiStateUtils()->createEiMappingCopy($draftEiSelection, $eiMapping);
+		$draftEiMapping = $this->eiuCtrl->getEiuFrame()->createEiMappingCopy($draftEiSelection, $eiMapping);
 		
-		$editModel = new EditModel($this->eiCtrlUtils->getEiStateUtils(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
 		$editModel->initialize($draftEiMapping);
 		
 		if ($this->dispatch($editModel, 'save')) {
@@ -110,7 +111,7 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->eiCtrlUtils->applyCommonBreadcrumbs($eiMapping->getEiSelection(),
+		$this->eiuCtrl->applyCommonBreadcrumbs($eiMapping->getEiSelection(),
 				$this->dtc->translate('ei_impl_edit_new_draft_breadcrumb'));
 		
 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -119,16 +120,16 @@ class EditController extends ControllerAdapter {
 	}
 	
 	public function doDraft($draftId, ParamQuery $refPath) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
-		$eiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
-		$entryEiUtils = $this->eiCtrlUtils->toEiEntryUtils($eiMapping);
+		$eiMapping = $this->eiuCtrl->lookupEiMappingByDraftId($draftId);
+		$entryEiUtils = $this->eiuCtrl->toEiuEntry($eiMapping);
 		if ($entryEiUtils->getDraft()->isPublished()) {
 			$eiSelection = $entryEiUtils->getEiUtils()->createNewEiSelection(true, $entryEiUtils->getEiSpec());
-			$eiMapping = $this->eiCtrlUtils->getEiStateUtils()->createEiMappingCopy($eiSelection, $eiMapping);
+			$eiMapping = $this->eiuCtrl->getEiuFrame()->createEiMappingCopy($eiSelection, $eiMapping);
 		}
 		
-		$editModel = new EditModel($this->eiCtrlUtils->getEiStateUtils(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
 		$editModel->initialize($eiMapping);
 	
 		if ($this->dispatch($editModel, 'save')) {
@@ -136,7 +137,7 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 
-		$this->eiCtrlUtils->applyCommonBreadcrumbs($eiMapping->getEiSelection(), 
+		$this->eiuCtrl->applyCommonBreadcrumbs($eiMapping->getEiSelection(), 
 				$this->dtc->translate('ei_impl_edit_draft_breadcrumb'));
 	
 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -145,25 +146,25 @@ class EditController extends ControllerAdapter {
 	}
 	
 	public function doPublish($draftId, ParamQuery $refPath) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
-		$draftEiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
+		$draftEiMapping = $this->eiuCtrl->lookupEiMappingByDraftId($draftId);
 		
-		$eiUtils = $this->eiCtrlUtils->getEiStateUtils();
+		$eiUtils = $this->eiuCtrl->getEiuFrame();
 		$eiSelection = $eiUtils->createEiSelectionFromLiveEntry($draftEiMapping->getEiSelection()->getLiveEntry());
 		$eiMapping = $eiUtils->createEiMappingCopy($eiSelection, $draftEiMapping);
 		
 		if ($eiMapping->save()) {
 			$eiUtils->persist($eiSelection);
 			$draft = $draftEiMapping->getEiSelection()->getDraft();
-			$draft->setFlag(Draft::FLAG_PUBLISHED);
+			$draft->setType(Draft::TYPE_PUBLISHED);
 			$eiUtils->persist($draft);
 			
-			$this->redirect($this->eiCtrlUtils->buildRedirectUrl($eiMapping->getEiSelection()));
+			$this->redirect($this->eiuCtrl->buildRedirectUrl($eiMapping->getEiSelection()));
 			return;
 		}
 		
-		$editModel = new EditModel($this->eiCtrlUtils->getEiStateUtils(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
 		$editModel->initialize($eiMapping);
 		
 		if ($this->dispatch($editModel, 'save')) {
@@ -171,7 +172,7 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->eiCtrlUtils->applyCommonBreadcrumbs($draftEiMapping->getEiSelection(),
+		$this->eiuCtrl->applyCommonBreadcrumbs($draftEiMapping->getEiSelection(),
 				$this->dtc->translate('ei_impl_publish_entry_breadcrumb'));
 		
 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -241,7 +242,7 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 	private function applyBreadcrumbs(EiSelection $eiSelection) {
-		$eiState = $this->eiCtrlUtils->getEiStateUtils()->getEiState();
+		$eiState = $this->eiuCtrl->getEiuFrame()->getEiState();
 		$httpContext = $this->getHttpContext();
 				
 		if (!$eiState->isOverviewDisabled()) {

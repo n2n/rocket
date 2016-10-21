@@ -33,6 +33,7 @@ use n2n\persistence\orm\TransactionRequiredException;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\Pdo;
 use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 
 class DraftManager {
 	private $specManager;
@@ -94,9 +95,9 @@ class DraftManager {
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
 		$restrictedStmtBuilder->restrictToDraftId($draftId);
+		$restrictedStmtBuilder->restrictToType(Draft::TYPE_UNLISTED, true);
 		
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
-		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetchSingle();
 	}
 	
@@ -111,8 +112,41 @@ class DraftManager {
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
-		$restrictedStmtBuilder->restrictToEntityObjId($entityObjId, $limit, $num);
+		$restrictedStmtBuilder->restrictToEntityObjId($entityObjId);
+		$restrictedStmtBuilder->restrictToType(Draft::TYPE_UNLISTED, true);
+		$restrictedStmtBuilder->limit($limit, $num);
+		$restrictedStmtBuilder->order();
 	
+		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		return $draftFetcher->fetch();
+	}
+	
+	public function findByFilter(\ReflectionClass $class, $entityObjId = null, int $type = null,
+			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
+		$this->ensureDraftManagerOpen();
+
+		$eiSpec = $this->specManager->getEiSpecByClass($class);
+		if ($draftDefinition === null) {
+			$draftDefinition = $this->getDraftDefinitionByEiSpec($eiSpec);
+		}
+
+		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
+		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
+		if ($entityObjId !== null) {
+			$restrictedStmtBuilder->restrictToEntityObjId($entityObjId);
+		}
+		
+		if ($type !== null) {
+			$restrictedStmtBuilder->restrictToType($type);
+		}
+		
+		if ($userId !== null) {
+			$restrictedStmtBuilder->restrictToUserId($userId);
+		}
+		
+		$restrictedStmtBuilder->limit($limit, $num);
+		$restrictedStmtBuilder->order();
+
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
 		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetch();
@@ -128,9 +162,9 @@ class DraftManager {
 		
 		$stmtBuilder = $draftDefinition->createCountDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
-		$restrictedStmtBuilder->restrictToUnbounds();
+		$restrictedStmtBuilder->restrictToUnbound(true);
 
-		$stmt = $restrictedStmtBuilder->buildPdoStatement();
+		$stmt = $stmtBuilder->buildPdoStatement();
 		$stmt->execute();
 		$stmt->fetch(Pdo::FETCH_BOUND);
 		
@@ -147,11 +181,17 @@ class DraftManager {
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
 		$restrictedStmtBuilder = new RestrictedSelectDraftStmtBuilder($stmtBuilder);
-		$restrictedStmtBuilder->restrictToUnbounds($limit, $num);
+		$restrictedStmtBuilder->restrictToUnbound(true);
+		$restrictedStmtBuilder->limit($limit, $num);
+		$restrictedStmtBuilder->order();
 		
 		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
-		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetch();
+	}
+	
+	public function createDraftFetcher(FetchDraftStmtBuilder $fetchDraftStmtBuilder, EiSpec $eiSpec, 
+			DraftDefinition $draftDefinition) {
+		return new DraftFetcher($fetchDraftStmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
 	}
 	
 	public function persist(Draft $draft, DraftDefinition $draftDefinition = null) {

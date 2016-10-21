@@ -24,6 +24,7 @@ namespace rocket\spec\config;
 use rocket\spec\config\extr\CustomSpecExtraction;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
+use n2n\web\http\controller\Controller;
 
 class CustomSpecFactory {
 	/**
@@ -39,9 +40,9 @@ class CustomSpecFactory {
 			throw $this->createControllerException($customSpecExtraction, null, $e);
 		}
 		
-		if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
+		if (!$controllerClass->implementsInterface(Controller::class)) {
 			throw self::createControllerException($customSpecExtraction, $constrollerClass->getName()
-					. ' must implement n2n\web\http\controller\Controller');
+					. ' must implement ' . Controller::class);
 		}
 		
 		return new CustomSpec($customSpecExtraction->getId(), $customSpecExtraction->getModuleNamespace(), $controllerClass);

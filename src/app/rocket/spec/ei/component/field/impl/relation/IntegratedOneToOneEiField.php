@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation;
 
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\mapping\MappableSource;
@@ -132,7 +132,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 			$targetEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $eiMapping);
 		}
 		
-		$targetUtils = new EiStateUtils($targetEiState);
+		$targetUtils = new EiuFrame($targetEiState);
 		
 		$toOneMappable = $eiMapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
 		$targetRelationEntry = $toOneMappable->getValue();

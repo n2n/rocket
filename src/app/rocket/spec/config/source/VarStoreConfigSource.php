@@ -43,7 +43,7 @@ class VarStoreConfigSource implements ModularConfigSource {
 		$this->fileName = $fileName;
 	}
 	
-	public function getConfigSourceByModuleNamespace($module): WritableConfigSource {
+	public function getOrCreateConfigSourceByModuleNamespace($module): WritableConfigSource {
 		$namespace = (string) $module;
 		
 		if (isset($this->configSources[$namespace])) {
@@ -61,5 +61,16 @@ class VarStoreConfigSource implements ModularConfigSource {
 		return isset($this->configSources[$namespace]) 
 				|| $this->varStore->requestFileFsPath(VarStore::CATEGORY_ETC, $namespace, 
 						$this->folderName, $this->fileName, false, false, false)->exists();
+	}
+	
+	public function hashCode() {
+		$hashCode = '';
+		foreach ($this->configSources as $ns => $configSource) {
+			$csHashCode = $configSource->hashCode();
+			if ($csHashCode === null) return null;
+			
+			$hashCode .=  ':' . $ns . ':' . $csHashCode; 
+		}
+		return md5($hashCode);
 	}
 }

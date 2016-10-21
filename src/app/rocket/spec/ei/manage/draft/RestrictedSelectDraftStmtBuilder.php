@@ -42,38 +42,46 @@ class RestrictedSelectDraftStmtBuilder {
 				->andMatch($this->selectDraftStmtBuilder->getDraftIdQueryItem(), QueryComparator::OPERATOR_EQUAL,
 						new QueryPlaceMarker($draftIdPhName));
 	
-		$this->bindValues[$draftIdPhName] = $draftId;
+		$this->selectDraftStmtBuilder->bindValue($draftIdPhName, $draftId);
 	}
 	
-	public function restrictToEntityObjId($entityObjId, $limit = null, $num = null) {
+	public function restrictToEntityObjId($entityObjId) {
 		$selectStatementBuilder = $this->selectDraftStmtBuilder->getSelectStatementBuilder();
 	
 		$entityObjIdPhName = $this->selectDraftStmtBuilder->createPlaceholderName();
 		$selectStatementBuilder->getWhereComparator()
 				->andMatch($this->selectDraftStmtBuilder->getEntityObjIdQueryItem(), QueryComparator::OPERATOR_EQUAL,
 						new QueryPlaceMarker($entityObjIdPhName));
-		$this->bindValues[$entityObjIdPhName] = $entityObjId;
 		
-		$selectStatementBuilder->setLimit($limit, $num);
-		
-		$selectStatementBuilder->addOrderBy($this->selectDraftStmtBuilder->getLastModQueryItem(), OrderDirection::DESC);
+		$this->selectDraftStmtBuilder->bindValue($entityObjIdPhName, $entityObjId);
 	}
 	
-	public function restrictToUnbounds($limit = null, $num = null) {
+	public function restrictToType(int $type, bool $invert = false) {
+		$selectStatementBuilder = $this->selectDraftStmtBuilder->getSelectStatementBuilder();
+		
+		$typePhName = $this->selectDraftStmtBuilder->createPlaceholderName();
+		$selectStatementBuilder->getWhereComparator()->andMatch(
+				$this->selectDraftStmtBuilder->getTypeQueryItem(), ($invert ? '!=' : '='), 
+				new QueryPlaceMarker($typePhName));
+		
+		$this->selectDraftStmtBuilder->bindValue($typePhName, $type);
+	}
+	
+	public function restrictToUnbound(bool $unbound) {
 		$selectStatementBuilder = $this->selectDraftStmtBuilder->getSelectStatementBuilder();
 		$selectStatementBuilder->getWhereComparator()->andMatch(
-				$this->selectDraftStmtBuilder->getEntityObjIdQueryItem(), QueryComparator::OPERATOR_IS, new QueryConstant(null));
-		$selectStatementBuilder->setLimit($limit, $num);
-		$selectStatementBuilder->addOrderBy($this->selectDraftStmtBuilder->getLastModQueryItem(), OrderDirection::DESC);
+				$this->selectDraftStmtBuilder->getEntityObjIdQueryItem(), 
+				($unbound ? QueryComparator::OPERATOR_IS : QueryComparator::OPERATOR_IS_NOT), 
+				new QueryConstant(null));
 	}
 	
-	public function buildPdoStatement() {
-		$stmt = $this->selectDraftStmtBuilder->buildPdoStatement();
-		
-		foreach ($this->bindValues as $phName => $value) {
-			$stmt->bindValue($phName, $value);
-		}
-		
-		return $stmt;
+	public function limit($limit = null, $num = null) {
+		$selectStatementBuilder = $this->selectDraftStmtBuilder->getSelectStatementBuilder();
+		$selectStatementBuilder->setLimit($limit, $num);
+	}
+	
+	public function order() {
+		$selectStatementBuilder = $this->selectDraftStmtBuilder->getSelectStatementBuilder();
+		$selectStatementBuilder->addOrderBy($this->selectDraftStmtBuilder->getLastModQueryItem(), OrderDirection::DESC);
 	}
 }

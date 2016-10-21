@@ -35,40 +35,31 @@ use rocket\spec\ei\manage\draft\stmt\CountDraftStmtBuilder;
 use n2n\persistence\meta\data\QueryItem;
 use n2n\persistence\meta\data\SelectStatementBuilder;
 
-class SimpleCountDraftStmtBuilder implements CountDraftStmtBuilder {
+class SimpleCountDraftStmtBuilder extends DraftStmtBuilderAdapter implements CountDraftStmtBuilder {
 	const DRAF_COLUMN_PREFIX = 'd';
 
-	private $pdo;
 	private $idEntityProperty;
 	private $selectBuilder;
 	private $tableAlias;
-	private $aliasBuilder;
 	
 	private $countAlias;
 	
 	private $boundCountRawValue;
 
 	public function __construct(Pdo $pdo, $tableName, BasicEntityProperty $idEntityProperty, $tableAlias = null) {
-		$this->pdo = $pdo;
+		parent::__construct($pdo, $tableName);
+		
 		$this->idEntityProperty = $idEntityProperty;
 		$this->selectBuilder = $pdo->getMetaData()->createSelectStatementBuilder();
 		$this->selectBuilder->addFrom(new QueryTable($tableName), $tableAlias);
 		$this->tableAlias = $tableAlias;
 
-		$this->aliasBuilder = new AliasBuilder();
 		$this->countAlias = $this->aliasBuilder->createColumnAlias(DraftMetaInfo::COLUMN_ID);
 		
 		$this->selectBuilder->addSelectColumn(new QueryFunction('COUNT', new QueryConstant(1)), $this->countAlias);
 		
 	}
-
-	/**
-	 * @return Pdo
-	 */
-	public function getPdo(): Pdo {
-		return $this->pdo;
-	}
-
+	
 	/**
 	 * @return \n2n\persistence\meta\data\SelectStatementBuilder
 	 */
@@ -79,6 +70,7 @@ class SimpleCountDraftStmtBuilder implements CountDraftStmtBuilder {
 	public function buildPdoStatement(): PdoStatement {
 		$stmt = $this->pdo->prepare($this->selectBuilder->toSqlString());
 		$stmt->bindColumn($this->countAlias, $this->boundCountRawValue);
+		$this->applyBoundValues($stmt);
 		return $stmt;
 	}
 	
@@ -103,8 +95,8 @@ class SimpleCountDraftStmtBuilder implements CountDraftStmtBuilder {
 		return new QueryColumn(DraftMetaInfo::COLUMN_ENTIY_OBJ_ID, $this->tableAlias);
 	}
 	
-	public function getFlagQueryItem(): QueryItem {
-		return new QueryColumn(DraftMetaInfo::COLUMN_FLAG, $this->tableAlias);
+	public function getTypeQueryItem(): QueryItem {
+		return new QueryColumn(DraftMetaInfo::COLUMN_TYPE, $this->tableAlias);
 	}
 	
 	/* (non-PHPdoc)

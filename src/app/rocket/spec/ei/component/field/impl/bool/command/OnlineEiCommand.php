@@ -31,10 +31,9 @@ use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const CONTROL_KEY = 'online_status';
@@ -60,10 +59,9 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, 
-			HtmlView $view): array {
-		$eiMapping = $entryGuiUtils->getEiMapping();
-		$eiState = $entryGuiUtils->getEiState();
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiState = $eiu->frame()->getEiState();
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection(Rocket::NS, $request->getN2nLocale());
 		$eiSelection = $eiMapping->getEiSelection();

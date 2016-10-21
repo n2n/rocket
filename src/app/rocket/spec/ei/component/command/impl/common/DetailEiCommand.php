@@ -39,10 +39,9 @@ use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
 		PrivilegedEiCommand {
@@ -74,24 +73,21 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryHrefControls()
 	 */
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
-		$eiUtils = $entryGuiUtils->getEiStateUtils();
-		
-		$eiSelection = $entryGuiUtils->getEiSelection();
-		$eiMapping = $entryGuiUtils->getEiMapping();
-		$eiState = $entryGuiUtils->getEiState();
-		
-		if ($eiState->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::from($this))) {
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+		$eiuFrame = $eiu->frame();
+		if ($eiuFrame->isExecutedBy($this)) {
 			return array();
 		}
 		
+		$eiuEntry = $eiu->entry();
+		
 		$pathExt = null;
 		$iconType = null;
-		if (!$eiSelection->isDraft()) {
-			$pathExt = new Path(array('live', $eiUtils->idToIdRep($eiSelection->getLiveEntry()->getId())));
+		if (!$eiuEntry->isDraft()) {
+			$pathExt = new Path(array('live', $eiuEntry->getIdRep()));
 			$iconType = IconType::ICON_FILE;
-		} else if (!$eiSelection->getDraft()->isNew()) {
-			$pathExt = new Path(array('draft', $eiSelection->getDraft()->getId()));
+		} else if (!$eiuEntry->isDraftNew()) {
+			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
 			$iconType = IconType::ICON_FILE_O;
 		} else {
 			return array();
@@ -99,30 +95,29 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		
 		$controlButton = new ControlButton(
 				$view->getL10nText('ei_impl_detail_label'), $view->getL10nText('ei_impl_detail_tooltip',
-						array('entry' => $eiState->getContextEiMask()->getLabelLstr()->t($view->getN2nLocale()))),
+						array('entry' => $eiuFrame->getGenericLabel())),
 				true, ControlButton::TYPE_DEFAULT, $iconType);
 		
 		$hrefControls = array(self::CONTROL_DETAIL_KEY 
-				=> HrefControl::create($eiState, $this, $pathExt->toUrl(), $controlButton));
+				=> HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl(), $controlButton));
 		
-		$eiEntryUtils = $eiUtils->toEiEntryUtils($eiSelection);
-		$previewType = $eiEntryUtils->getPreviewType();
+		$previewType = $eiuEntry->getPreviewType();
 		if ($previewType === null) {
 			return $hrefControls;
 		}
 		
-		if (!$eiSelection->isDraft()) {
-			$pathExt = new Path(array('livepreview', $eiEntryUtils->getIdRep(), $previewType));
+		if (!$eiuEntry->isDraft()) {
+			$pathExt = new Path(array('livepreview', $eiuEntry->getIdRep(), $previewType));
 		} else {
-			$pathExt = new Path(array('draftpreview', $eiEntryUtils->getDraft()->getId(), $previewType));
+			$pathExt = new Path(array('draftpreview', $eiuEntry->getDraftId(), $previewType));
 		}
 		
 		$controlButton = new ControlButton(
 				$view->getL10nText('ei_impl_detail_preview_label'), $view->getL10nText('ei_impl_detail_preview_tooltip',
-						array('entry' => $eiState->getContextEiMask()->getLabelLstr()->t($view->getN2nLocale()))),
+						array('entry' => $eiuFrame->getGenericLabel())),
 				true, ControlButton::TYPE_DEFAULT, IconType::ICON_EYE);
 		
-		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiState, $this, $pathExt->toUrl(), $controlButton);
+		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl(), $controlButton);
 		return $hrefControls;
 	}
 	

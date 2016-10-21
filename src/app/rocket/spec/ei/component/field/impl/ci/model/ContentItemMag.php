@@ -29,7 +29,7 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -79,7 +79,7 @@ class ContentItemMag extends MagAdapter {
 	}
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
-		$targetEditUtils = new EiStateUtils($this->targetEditEiState);
+		$targetEditUtils = new EiuFrame($this->targetEditEiState);
 		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {

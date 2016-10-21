@@ -70,7 +70,9 @@ use rocket\spec\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\control\UnavailableControlException;
-use rocket\spec\ei\manage\util\model\EntryGuiUtils;
+use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -259,15 +261,23 @@ class CommonEiMask implements EiMask, Identifiable {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createEntryHrefControls()
 	 */
-	public function createEntryHrefControls(EntryGuiUtils $entryGuiUtils, HtmlView $view): array {
+	public function createEntryHrefControls(EiuGui $eiuGui, HtmlView $view): array {
+		try {
+			$eiuGui->getEiuEntry()->getEiuFrame();
+		} catch (EiuPerimeterException $e) {
+			throw new \InvalidArgumentException('Invalid EiuGui passed.', 0, $e);
+		}
+		
+		$eiu = new Eiu($eiuGui);
+		
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$entryGuiUtils->getEiMapping()->isExecutableBy(EiCommandPath::from($eiCommand))) {
+					|| !$eiuGui->getEiuEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
 				continue;
 			}
 			
-			$entryControls = $eiCommand->createEntryHrefControls($entryGuiUtils, $view);
+			$entryControls = $eiCommand->createEntryHrefControls($eiu, $view);
 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryHrefControls', HrefControl::class);
 			foreach ($entryControls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;

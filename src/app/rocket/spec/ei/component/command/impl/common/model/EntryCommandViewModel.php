@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EntryGui;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\user\model\RocketUserDao;
 
@@ -41,7 +41,7 @@ class EntryCommandViewModel {
 	private $cancelUrl;
 	private $eiMask;
 	
-	public function __construct(EiStateUtils $eiStateUtils, $entryGuiModel, Url $cancelUrl = null) {
+	public function __construct(EiuFrame $eiStateUtils, $entryGuiModel, Url $cancelUrl = null) {
 		$this->eiStateUtils = $eiStateUtils;
 		$this->eiState = $eiStateUtils->getEiState();
 		if ($entryGuiModel instanceof EntryGuiModel) {
@@ -70,7 +70,7 @@ class EntryCommandViewModel {
 			
 		$eiSelection = $this->getEiSelection();
 		
-		return $this->title = $this->getEiEntryUtils()->createIdentityString();
+		return $this->title = $this->getEiuEntry()->createIdentityString();
 		
 // 		if ($this->entryGuiModel && !$eiSelection->isNew()) {
 // 			return $this->title = $this->entryGuiModel->getEiMask()
@@ -89,17 +89,17 @@ class EntryCommandViewModel {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\util\model\EiStateUtils
+	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
-	public function getEiStateUtils() {
+	public function getEiuFrame() {
 		return $this->eiStateUtils;
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\util\model\EiEntryUtils
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function getEiEntryUtils() {
-		return $this->eiStateUtils->toEiEntryUtils($this->eiSelection);
+	public function getEiuEntry() {
+		return $this->eiStateUtils->toEiuEntry($this->eiSelection);
 	}
 	
 	public function getEiState() {
@@ -110,9 +110,9 @@ class EntryCommandViewModel {
 	private $historicizedDrafts = array();
 	
 	public function initializeDrafts() {
-		$entryEiEntryUtils = $this->getEiEntryUtils();
-		if ($entryEiEntryUtils->hasLiveId() && $this->eiStateUtils->isDraftingEnabled()) {
-			$this->historicizedDrafts = $entryEiEntryUtils->lookupDrafts(0, 30);
+		$entryEiuEntry = $this->getEiuEntry();
+		if ($entryEiuEntry->hasLiveId() && $this->eiStateUtils->isDraftingEnabled()) {
+			$this->historicizedDrafts = $entryEiuEntry->lookupDrafts(0, 30);
 		}
 		
 		if ($this->eiSelection->isDraft() && $this->eiSelection->isNew()) {
@@ -149,7 +149,7 @@ class EntryCommandViewModel {
 	}
 	
 	public function isPreviewAvailable() {
-		return $this->getEiEntryUtils()->isPreviewAvailable();
+		return $this->getEiuEntry()->isPreviewAvailable();
 	}
 	
 	public function getEntryGuiModel(): EntryGuiModel {

@@ -203,10 +203,12 @@ class EiEngine {
 				&& null !== ($eiThing = $eiThing->getMaskedEiThing()));
 		return $this->draftDefinition = (new DraftDefinitionFactory($this->eiMask->getEntityModel(), 
 						$this->eiFieldCollection, $this->eiModificatorCollection))
-				->create(DraftMetaInfo::buildTableName($id));
+				->create(DraftMetaInfo::buildTableName($eiThing));
 	}
 
-	
+	/**
+	 * @return rocket\spec\ei\manage\generic\GenericEiDefinition
+	 */
 	public function getGenericEiDefinition() {
 		if ($this->genericEiDefinition !== null) {
 			return $this->genericEiDefinition;
@@ -224,7 +226,6 @@ class EiEngine {
 		}
 		return $this->genericEiDefinition;
 	}
-
 	
 	public function getScalarEiDefinition() {
 		if ($this->scalarEiDefinition !== null) {

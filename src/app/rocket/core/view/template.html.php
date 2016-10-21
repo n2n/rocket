@@ -54,7 +54,7 @@
 	$htmlMeta->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
-	$htmlMeta->addLibrary(new JQueryLibrary(false));
+	$htmlMeta->addLibrary(new JQueryLibrary(2, false));
 	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/font-awesome.css');
 	$htmlMeta->addJs('js/html5.js', null);

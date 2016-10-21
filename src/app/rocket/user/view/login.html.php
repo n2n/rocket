@@ -32,7 +32,7 @@
 	$html->meta()->addCss('css/font-awesome.css');
 	$html->meta()->addJs('js/html5.js');
 	$html->meta()->addJs('js/respond.src.js');
-	$html->meta()->addLibrary(new JQueryLibrary());
+	$html->meta()->addLibrary(new JQueryLibrary(2));
 	$html->meta()->addJs('js/ajah.js', 'n2n\web', true);
 	$html->meta()->addJs('js/rocket-ts.js');
 ?>

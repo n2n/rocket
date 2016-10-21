@@ -25,10 +25,18 @@ use rocket\spec\ei\manage\mapping\impl\RwMappable;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\mapping\impl\Readable;
+use rocket\spec\ei\manage\mapping\impl\Writable;
+use rocket\spec\ei\manage\mapping\impl\Validatable;
 
 class ToManyMappable extends RwMappable  {
+	
+	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
+			Validatable $validatable = null) {
+		parent::__construct($eiObject, $readable, $writable, $validatable);
+	}	
+	
 	
 	protected function validateValue($value) {
 		ArgUtils::valArray($value, RelationEntry::class);
@@ -74,8 +82,16 @@ class ToManyMappable extends RwMappable  {
 	 */
 	public function copyMappable(EiObject $eiObject) {
 		$copy = new ToManyMappable($eiObject, $this->readable, $this->writable);
+		if (!$this->isValueLoaded()) return $copy;
+			
 		$copy->setValue($this->getValue());
 		return $copy;
+		
+// 		foreach ($this->getValue() as $targetRelationEntry) {
+// 			$targetRelationEntry->getEiMapping();
+// 		}
+		
+// 		return $copy;
 	}
 
 }

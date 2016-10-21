@@ -31,12 +31,12 @@ use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
 use n2n\impl\web\ui\view\html\AjahResponse;
-use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class RelationAjahController extends ControllerAdapter {
 	private $eiCtrlUtils;	
 	
-	public function prepare(EiCtrlUtils $eiCtrlUtil) {
+	public function prepare(EiuCtrl $eiCtrlUtil) {
 		$this->eiCtrlUtils = $eiCtrlUtil;
 	}
 		
@@ -50,7 +50,7 @@ class RelationAjahController extends ControllerAdapter {
 		} catch (InvalidPropertyExpressionException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
-		$eiStateUtils = $this->eiCtrlUtils->getEiStateUtils();
+		$eiStateUtils = $this->eiCtrlUtils->getEiuFrame();
 		$mappingForm = new MappingForm($eiStateUtils->getGenericLabel(), null, 
 				$eiStateUtils->createNewEntryForm($draft->toBool()));
 		

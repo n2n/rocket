@@ -28,16 +28,14 @@ use rocket\spec\ei\manage\EiSelection;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
-use rocket\spec\ei\component\command\impl\common\controller\ControllingUtils;
 use rocket\spec\ei\EiSpecController;
 use rocket\spec\ei\manage\EiRelation;
-use rocket\spec\ei\component\command\impl\common\controller\EiCtrlUtils;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class RelationController extends ControllerAdapter {
 	private $eiState;
 	private $manageState;
-	private $eiCtrlUtils;
+	private $eiuCtrl;
 	private $rocketState;
 	private $eiFieldRelation;
 	
@@ -45,15 +43,15 @@ class RelationController extends ControllerAdapter {
 		$this->eiFieldRelation = $eifieldRelation;
 	}
 	
-	public function prepare(ManageState $manageState, RocketState $rocketState) {
+	public function prepare(ManageState $manageState, RocketState $rocketState, EiuCtrl $eiuCtrl) {
 		$this->eiState = $manageState->peakEiState();
 		$this->manageState = $manageState;
-		$this->eiCtrlUtils = EiCtrlUtils::from($this->getHttpContext());
+		$this->eiuCtrl = $eiuCtrl;
 		$this->rocketState = $rocketState;
 	}
 		
 	public function doRelEntry($idRep, array $delegateCmds, EiSpecController $eiSpecController) {
-		$eiSelection = $this->eiCtrlUtils->lookupEiSelection($idRep);
+		$eiSelection = $this->eiuCtrl->lookupEiSelection($idRep);
 		
 		// because RelationCommand gets added always on a supreme EiThing
 		if (!$this->eiFieldRelation->getRelationEiField()->getEiEngine()->getEiSpec()

@@ -28,7 +28,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiElement;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\component\field\impl\translation\conf\TranslationEiConfigurator;
@@ -145,7 +145,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		} else {
 			$targetEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState);
 		}
-		$targetUtils = new EiStateUtils($targetEiState);
+		$targetUtils = new EiuFrame($targetEiState);
 		
 		$toManyMappable = $eiMapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
 		

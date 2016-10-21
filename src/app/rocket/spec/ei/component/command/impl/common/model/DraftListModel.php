@@ -25,7 +25,7 @@ use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\EiState;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\manage\util\model\EiStateUtils;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\config\mask\model\EntryGuiTree;
@@ -47,7 +47,7 @@ class DraftListModel implements Dispatchable {
 	private $entryGuiTree;
 		
 	public function __construct(EiState $eiState, int $listSize) {
-		$this->utils = new EiStateUtils($eiState);
+		$this->utils = new EiuFrame($eiState);
 		$this->listSize = $listSize;
 		$this->draftManager = $eiState->getManageState()->getDraftManager();
 		$this->draftDefinition = $eiState->getContextEiMask()->getEiEngine()->getDraftDefinition();

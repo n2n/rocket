@@ -26,7 +26,6 @@ use rocket\spec\ei\manage\mapping\impl\RwMappable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiObject;
-use n2n\util\ex\NotYetImplementedException;
 
 class ToOneMappable extends RwMappable {
 	
