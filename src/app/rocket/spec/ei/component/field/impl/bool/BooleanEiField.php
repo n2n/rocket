@@ -32,7 +32,6 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -42,9 +41,15 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\manage\critmod\filter\impl\field\BoolFilterField;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\component\field\impl\bool\conf\BooleanEiFieldConfigurator;
+use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class BooleanEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField {
 
+	public function createEiFieldConfigurator(): EiFieldConfigurator {
+		return new BooleanEiFieldConfigurator($this);
+	}
+	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;

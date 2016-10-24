@@ -49,6 +49,7 @@ use n2n\persistence\orm\model\UnknownEntityPropertyException;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
 use n2n\util\config\InvalidConfigurationException;
+use n2n\core\N2N;
 
 class SpecManager {	
 	private $rocketConfigSource;	
@@ -183,7 +184,7 @@ class SpecManager {
 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(SpecManager::class);
 		$this->specExtractionManager->load();
 		$charcs = null;
-		if (null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
+		if (!N2N::isDevelopmentModeOn() && null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
 			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);
 		}
 		

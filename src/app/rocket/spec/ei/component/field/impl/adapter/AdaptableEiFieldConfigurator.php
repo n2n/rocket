@@ -364,7 +364,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 				$this->standardEditDefinition->setMandatory($mandatory);
 			}
 			
-			if (!$this->standardEditDefinition->isMandatory() && $this->autoMandatoryCheck 
+			if (!$this->standardEditDefinition->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck 
 					&& $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
 						. $this->getAssignedObjectPropertyAccessProxy() . ' does not allow null value.');
