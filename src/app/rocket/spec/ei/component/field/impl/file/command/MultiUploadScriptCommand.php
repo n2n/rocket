@@ -33,7 +33,6 @@ use rocket\spec\ei\component\field\impl\file\command\controller\MultiUploadScrip
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 
 class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
-
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
 	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
@@ -64,8 +63,8 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		$name = $dtc->translate('ei_impl_multi_upload_label');
 		$tooltip = $dtc->translate('ei_impl_multi_upload_tooltip');
 		
-		return array(self::MULTI_UPLOAD_KEY => new ControlButton($url, $name, $tooltip, true, ControlButton::TYPE_DEFAULT,
-				IconType::ICON_UPLOAD));
+		return array(self::MULTI_UPLOAD_KEY => new ControlButton($url, $name, $tooltip, true, 
+				ControlButton::TYPE_DEFAULT, IconType::ICON_UPLOAD));
 	}
 
 }
