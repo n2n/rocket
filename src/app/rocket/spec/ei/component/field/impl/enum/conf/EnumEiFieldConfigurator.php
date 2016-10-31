@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\enum\conf;
 
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
-use n2n\impl\web\dispatch\mag\model\ChoicesMapMag;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\enum\EnumEiField;
 use rocket\spec\ei\component\EiSetupProcess;
@@ -84,6 +83,8 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	}
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {
+		parent::setup($eiSetupProcess);
+	
 		CastUtils::assertTrue($this->eiComponent instanceof EnumEiField);
 		
 		if ($this->attributes->contains(self::OPTION_OPTIONS_KEY)) {
