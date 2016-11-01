@@ -108,7 +108,7 @@ class EiuFactory {
 		
 		if ($this->n2nContext !== null) {
 			try {
-				return new EiuFrame($this->n2nContext->lookup(ManageState::class)->preakEiState());
+				return new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiState());
 			} catch (ManageException $e) {
 				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
 			}
