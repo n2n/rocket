@@ -184,7 +184,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 		
 		if (!empty($this->extraImageDimensions)) return true;
 		
-		$thumbEngine = $file->getFileSource()->getFileSourceThumbEngine();
+		$thumbEngine = $file->getFileSource()->getThumbManager();
 		switch ($this->imageDimensionsImportMode) {
 			case self::DIM_IMPORT_MODE_ALL:
 				return !empty($thumbEngine->getPossibleImageDimensions());

@@ -95,7 +95,7 @@ class ThumbController extends ControllerAdapter {
 			$imageDimensions[(string) $imageDimension] = $imageDimension;
 		}
 		
-		$thumbEngine = $file->getFileSource()->getFileSourceThumbEngine();
+		$thumbEngine = $file->getFileSource()->getThumbManager();
 		$autoImageDimensions = array();
 		switch ($this->fileEiField->getImageDimensionImportMode()) {
 			case FileEiField::DIM_IMPORT_MODE_ALL:
