@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\field\impl\string;
 use rocket\spec\ei\component\field\QuickSearchableEiField;
 use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
 use rocket\spec\ei\component\field\SortableEiField;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
@@ -40,7 +39,6 @@ use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\ScalarEiField;
 use rocket\spec\ei\component\field\GenericEiField;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
-use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 
@@ -110,5 +108,4 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	public function getScalarEiProperty() {
 		return new CommonScalarEiProperty($this);
 	}
-	
 }
