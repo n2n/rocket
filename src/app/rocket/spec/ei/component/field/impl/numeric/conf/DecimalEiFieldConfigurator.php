@@ -55,7 +55,7 @@ class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 	
 		$magCollection = $magDispatchable->getMagCollection();
-
+	
 		if (null !== ($decimalPlaces = $magCollection->getMagByPropertyName(self::OPTION_DECIMAL_PLACES_KEY)
 				->getValue())) {
 			$this->attributes->set(self::OPTION_DECIMAL_PLACES_KEY, $decimalPlaces);
