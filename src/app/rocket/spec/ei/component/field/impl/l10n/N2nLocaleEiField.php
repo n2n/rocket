@@ -118,7 +118,7 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 	
 	private function buildN2nLocaleArray(N2nLocale $displayN2nLocale) {
 		$n2nLocales = array();
-		foreach (N2N::getAppConfig()->http()->getAllN2nLocales() as $n2nLocale) {
+		foreach (N2N::getAppConfig()->web()->getAllN2nLocales() as $n2nLocale) {
 			$n2nLocales[$n2nLocale->getId()] = $this->generateDisplayNameForN2nLocale($n2nLocale, $displayN2nLocale);
 		}
 		return $n2nLocales;
