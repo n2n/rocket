@@ -32,7 +32,6 @@ use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
-use rocket\spec\security\EiCommandPrivilege;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
@@ -40,6 +39,7 @@ use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\security\EiCommandPrivilege;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent, 
 		PrivilegedEiCommand {
