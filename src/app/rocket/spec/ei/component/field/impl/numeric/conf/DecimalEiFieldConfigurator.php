@@ -27,6 +27,7 @@ use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\numeric\DecimalEiField;
 use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\util\config\LenientAttributeReader;
 
 class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 	const OPTION_DECIMAL_PLACES_KEY = 'decimalPlaces';
@@ -36,9 +37,11 @@ class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
+		$lar = new LenientAttributeReader($this->attributes);
+		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magDispatchable->getMagCollection()->addMag(new NumericMag(self::OPTION_DECIMAL_PLACES_KEY, 
-				'Positions after decimal point', $this->eiComponent->getDecimalPlaces(), true, 0));
+				'Positions after decimal point', $lar->getNumeric(self::OPTION_DECIMAL_PLACES_KEY, 0), true, 0));
 		return $magDispatchable;
 	}
 	
