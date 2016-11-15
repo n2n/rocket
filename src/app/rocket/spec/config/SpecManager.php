@@ -50,6 +50,7 @@ use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
 use n2n\util\config\InvalidConfigurationException;
 use n2n\core\N2N;
+use n2n\core\TypeNotFoundException;
 
 class SpecManager {	
 	private $rocketConfigSource;	
@@ -223,9 +224,21 @@ class SpecManager {
 		}
 		
 		foreach ($this->eiSpecs as $className => $eiSpec) {
-			$class = ReflectionUtils::createReflectionClass($className);
+			$entityModel = null;
+			try {
+				$class = ReflectionUtils::createReflectionClass($className);
+				$entityModel = $this->entityModelManager->getEntityModelByClass($class);
+			} catch (TypeNotFoundException $e) {
+				if ($this->exclusiveMode) continue;
+				
+				throw new InvalidSpecConfigurationException('Invalid EiSpec: ' . $eiSpec, 0, $e);
+			} catch (OrmConfigurationException $e) {
+				if ($this->exclusiveMode) continue;
+				
+				throw new InvalidSpecConfigurationException('Invalid EiSpec: ' . $eiSpec, 0, $e);
+			}
 			
-			$entityModel = $this->entityModelManager->getEntityModelByClass($class);
+			
 			$eiSpec->setEntityModel($entityModel);
 			
 			if ($eiSpec->getEntityModel()->hasSuperEntityModel()) {
