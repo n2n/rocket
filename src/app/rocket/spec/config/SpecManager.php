@@ -28,7 +28,6 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\config\extr\SpecExtraction;
 use rocket\spec\config\source\RocketConfigSource;
-use rocket\spec\core\ManageConfig;
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
