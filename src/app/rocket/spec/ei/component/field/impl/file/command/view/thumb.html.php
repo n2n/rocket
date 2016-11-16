@@ -24,7 +24,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\ui\view\View;
 	use n2n\io\managed\img\ImageFile;
-	use n2n\impl\web\ui\view\html\UiComponentFactory;
+	use n2n\impl\web\ui\view\html\img\UiComponentFactory;
 	use n2n\web\ui\Raw;
 
 	$view = HtmlView::view($this);
@@ -52,7 +52,7 @@
 					array('id' => 'rocket-thumb-dimension-select')) ?>
 					
 			<div id="rocket-image-resizer"
-					data-img-src="<?php $html->esc(UiComponentFactory::buildImgSrc($imageFile)) ?>"
+					data-img-src="<?php $html->esc(UiComponentFactory::createImgSrc($imageFile)) ?>"
 					data-text-fixed-ratio="<?php $html->l10nText('ei_impl_thumb_keep_aspect_ratio_label') ?>"
 					data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" data-text-zoom="Zoom"></div>
 			

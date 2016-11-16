@@ -68,7 +68,7 @@ class ThumbController extends ControllerAdapter {
 		
 		$imageDimensions = null;
 		if ($file === null || !$file->isValid() || !$file->getFileSource()->isImage()
-				|| !$file->getFileSource()->isThumbSupportAvailable()
+				|| !$file->getFileSource()->getVariationEngine()->hasThumbSupport()
 				|| empty($imageDimensions = $this->buildImageDimensions($file))) {
 			
 			$this->redirect($redirectUrl);
@@ -95,7 +95,7 @@ class ThumbController extends ControllerAdapter {
 			$imageDimensions[(string) $imageDimension] = $imageDimension;
 		}
 		
-		$thumbEngine = $file->getFileSource()->getFileSourceThumbEngine();
+		$thumbEngine = $file->getFileSource()->getThumbManager();
 		$autoImageDimensions = array();
 		switch ($this->fileEiField->getImageDimensionImportMode()) {
 			case FileEiField::DIM_IMPORT_MODE_ALL:

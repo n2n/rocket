@@ -128,7 +128,7 @@ abstract class EiFieldRelation {
 		CastUtils::assertTrue($mappedRelation instanceof MappedRelation);
 		
 		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
-		
+
 		foreach ($this->getTargetEiMask()->getEiEngine()->getEiFieldCollection() as $targetEiField) {
 			if ($targetEiField instanceof RelationEiField 
 					&& $targetEntityProperty->equals($targetEiField->getEntityProperty())) {
@@ -138,9 +138,9 @@ abstract class EiFieldRelation {
 			}
 		}
 		
-		if ($this->relationEiField->getStandardEditDefinition()->isReadOnly()) {
-			return;
-		}
+// 		if (!$this->getTargetEiMask()->getEiEngine()->getEiCommandCollection()->hasGenericOverview()) {
+// 			return;
+// 		}
 		
 		$targetClass = $targetEntityProperty->getEntityModel()->getClass();
 		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
@@ -370,6 +370,10 @@ abstract class EiFieldRelation {
 				$targetEiModificatorCollection->add(new MappedRelationEiModificator($targetEiState, 
 						RelationEntry::from($eiSelection), EiFieldPath::from($targetEiField), $this->isSourceMany()));
 			}
+		} else if ($this->targetMasterAccessProxy !== null) {
+			$this->getTargetEiSpec()->getEiEngine()->getEiModificatorCollection()->add(
+					new PlainMappedRelationEiModificator($targetEiState, $eiSelection->getLiveObject(), 
+							$this->targetMasterAccessProxy, $this->isSourceMany()));
 		}
 		
 		if ($this->getRelationEntityProperty()->isMaster() && !$eiSelection->isDraft()) {

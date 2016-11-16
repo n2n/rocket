@@ -26,6 +26,8 @@ use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\numeric\DecimalEiField;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\util\config\LenientAttributeReader;
 
 class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 	const OPTION_DECIMAL_PLACES_KEY = 'decimalPlaces';
@@ -35,9 +37,11 @@ class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagCollection($n2nContext);
+		$lar = new LenientAttributeReader($this->attributes);
+		
+		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magDispatchable->getMagCollection()->addMag(new NumericMag(self::OPTION_DECIMAL_PLACES_KEY, 
-				'Positions after decimal point', $this->optionDecimalPlacesDefault, true, 0));
+				'Positions after decimal point', $lar->getNumeric(self::OPTION_DECIMAL_PLACES_KEY, 0), true, 0));
 		return $magDispatchable;
 	}
 	
@@ -47,6 +51,17 @@ class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 		if ($this->attributes->contains(self::OPTION_DECIMAL_PLACES_KEY)) {
 			CastUtils::assertTrue($this->eiComponent instanceof DecimalEiField);
 			$this->eiComponent->setDecimalPlaces($this->attributes->get(self::OPTION_DECIMAL_PLACES_KEY));
+		}
+	}
+	
+	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+		parent::saveMagDispatchable($magDispatchable, $n2nContext);
+	
+		$magCollection = $magDispatchable->getMagCollection();
+	
+		if (null !== ($decimalPlaces = $magCollection->getMagByPropertyName(self::OPTION_DECIMAL_PLACES_KEY)
+				->getValue())) {
+			$this->attributes->set(self::OPTION_DECIMAL_PLACES_KEY, $decimalPlaces);
 		}
 	}
 }

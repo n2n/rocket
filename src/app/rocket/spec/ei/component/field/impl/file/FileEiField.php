@@ -180,11 +180,11 @@ class FileEiField extends DraftableEiFieldAdapter {
 	
 	private function isThumbCreationEnabled(File $file) {
 		if ($this->thumbEiCommand === null 
-				|| !$file->getFileSource()->isThumbSupportAvailable()) return false;
+				|| !$file->getFileSource()->getVariationEngine()->hasThumbSupport()) return false;
 		
 		if (!empty($this->extraImageDimensions)) return true;
 		
-		$thumbEngine = $file->getFileSource()->getFileSourceThumbEngine();
+		$thumbEngine = $file->getFileSource()->getThumbManager();
 		switch ($this->imageDimensionsImportMode) {
 			case self::DIM_IMPORT_MODE_ALL:
 				return !empty($thumbEngine->getPossibleImageDimensions());

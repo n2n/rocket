@@ -22,21 +22,27 @@
 namespace rocket\spec\ei\component\field\impl\numeric\conf;
 
 use rocket\spec\ei\component\EiSetupProcess;
-use n2n\persistence\orm\criteria\Criteria;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
 use n2n\util\ex\IllegalStateException;
-use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use rocket\spec\ei\component\field\impl\numeric\component\OrderEiCommand;
 use rocket\spec\ei\component\field\impl\numeric\component\OrderEiModificator;
+use n2n\web\dispatch\mag\MagDispatchable;
+use rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiField;
 
 class OrderEiFieldConfigurator extends NumericEiFieldConfigurator {
 
 	const COMMON_ORDER_INDEX_PROP_NAME = 'orderIndex';
 	const OPTION_REFERENCE_FIELD_KEY = 'referenceField';
+	
+	public function __construct(OrderEiField $orderEiField) {
+		parent::__construct($orderEiField);
+	
+		$this->autoMandatoryCheck = false;
+	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);

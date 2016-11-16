@@ -108,7 +108,7 @@ class RocketUserDao implements RequestScoped {
 	
 	public function getRocketUserGroups() {
 		return $this->em->createSimpleCriteria(RocketUserGroup::getClass(), null, array('name' => 'ASC'))
-		->toQuery()->fetchArray();
+				->toQuery()->fetchArray();
 	}
 	
 	public function removeRocketUserGroup(RocketUserGroup $userGroup) {

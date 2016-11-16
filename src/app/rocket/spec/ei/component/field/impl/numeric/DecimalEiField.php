@@ -21,9 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\numeric;
 
-use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
@@ -31,9 +29,15 @@ use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\component\field\impl\numeric\conf\DecimalEiFieldConfigurator;
+use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class DecimalEiField extends NumericEiFieldAdapter {
 	protected $decimalPlaces = 0;
+
+	public function createEiFieldConfigurator(): EiFieldConfigurator {
+		return new DecimalEiFieldConfigurator($this);
+	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);

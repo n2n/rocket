@@ -26,6 +26,8 @@ use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
+use n2n\reflection\property\AccessProxy;
+use rocket\spec\ei\manage\mapping\WrittenMappingListener;
 
 class MappedRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiState;
@@ -33,7 +35,7 @@ class MappedRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiFieldPath;
 	private $sourceMany;
 
-	public function __construct(EiState $targetEiState, RelationEntry $relationEntry, EiFieldPath $targetEiFieldPath, $sourceMany) {
+	public function __construct(EiState $targetEiState, RelationEntry $relationEntry, EiFieldPath $targetEiFieldPath, bool $sourceMany) {
 		$this->targetEiState = $targetEiState;
 		$this->relationEntry = $relationEntry;
 		$this->targetEiFieldPath = $targetEiFieldPath;

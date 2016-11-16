@@ -169,7 +169,9 @@ class CritmodForm implements Dispatchable {
 		$sortCriteriaConstraint = $this->getSortForm()->getSortDefinition()
 				->builCriteriaConstraint($critmodSave->readSortData(), $tmp);
 		if ($sortCriteriaConstraint !== null) {
-			$eiState->addCriteriaConstraint($sortCriteriaConstraint);
+			$eiState->getCriteriaConstraintCollection()->add(
+					($tmp ? CriteriaConstraint::TYPE_TMP_SORT : CriteriaConstraint::TYPE_HARD_SORT),
+					$sortCriteriaConstraint);
 		}
 	}
 	

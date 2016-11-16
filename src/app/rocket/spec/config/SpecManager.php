@@ -28,7 +28,6 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\config\extr\SpecExtraction;
 use rocket\spec\config\source\RocketConfigSource;
-use rocket\spec\core\ManageConfig;
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
@@ -49,6 +48,8 @@ use n2n\persistence\orm\model\UnknownEntityPropertyException;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
 use n2n\util\config\InvalidConfigurationException;
+use n2n\core\N2N;
+use n2n\core\TypeNotFoundException;
 
 class SpecManager {	
 	private $rocketConfigSource;	
@@ -183,7 +184,7 @@ class SpecManager {
 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(SpecManager::class);
 		$this->specExtractionManager->load();
 		$charcs = null;
-		if (null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
+		if (!N2N::isDevelopmentModeOn() && null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
 			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);
 		}
 		
@@ -222,9 +223,21 @@ class SpecManager {
 		}
 		
 		foreach ($this->eiSpecs as $className => $eiSpec) {
-			$class = ReflectionUtils::createReflectionClass($className);
+			$entityModel = null;
+			try {
+				$class = ReflectionUtils::createReflectionClass($className);
+				$entityModel = $this->entityModelManager->getEntityModelByClass($class);
+			} catch (TypeNotFoundException $e) {
+				if ($this->exclusiveMode) continue;
+				
+				throw new InvalidSpecConfigurationException('Invalid EiSpec: ' . $eiSpec, 0, $e);
+			} catch (OrmConfigurationException $e) {
+				if ($this->exclusiveMode) continue;
+				
+				throw new InvalidSpecConfigurationException('Invalid EiSpec: ' . $eiSpec, 0, $e);
+			}
 			
-			$entityModel = $this->entityModelManager->getEntityModelByClass($class);
+			
 			$eiSpec->setEntityModel($entityModel);
 			
 			if ($eiSpec->getEntityModel()->hasSuperEntityModel()) {

@@ -144,8 +144,8 @@ class FieldEiHtmlBuilder {
 		if (isset($eiFieldInfo['propertyPath'])) {
 			return $this->formHtml->getMagField();
 		}
-	
-		return $this->html->getUic($eiFieldInfo['displayable']->createOutputUiComponent($this->view));
+				
+		return $this->html->getOut($eiFieldInfo['displayable']->createOutputUiComponent($this->view));
 	}
 	
 	public function message() {
