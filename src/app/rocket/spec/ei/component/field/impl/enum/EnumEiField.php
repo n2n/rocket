@@ -30,7 +30,6 @@ use rocket\spec\ei\component\field\QuickSearchableEiField;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\spec\ei\manage\EiState;
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
@@ -80,7 +79,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	
 	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
 		$choicesMap = $this->getOptions();
-		foreach ($choicesMap as $value => $label) {
+		foreach (array_values($choicesMap) as $value) {
 			if (!$entrySourceInfo->getEiMapping()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);
 			}
@@ -122,10 +121,6 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	
 	public function buildQuickSearchField(EiState $eiState) {
 		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
-	}
-
-	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath, HtmlView $view,\Closure $createCustomUiElementCallback = null) {
-		return $view->getFormHtmlBuilder()->getSelect($propertyPath, $this->getOptions(), array('class' => 'rocket-preview-inpage-component'));
 	}
 
 	public function isStringRepresentable(): bool {

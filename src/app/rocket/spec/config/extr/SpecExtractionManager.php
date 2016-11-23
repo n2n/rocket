@@ -58,7 +58,7 @@ class SpecExtractionManager {
 				continue;
 			}
 				
-			$this->specCsDecs[$moduleNamespace] = $specCsDec = new SpecConfigSourceDecorator(
+			$this->specCsDecs[$moduleNamespace] = new SpecConfigSourceDecorator(
 					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
 		}
 	}
@@ -329,9 +329,8 @@ class SpecExtractionManager {
 		if (isset($this->menuItemExtractions[$id])) {
 			return $this->menuItemExtractions[$id];
 		}
-	
 		throw new UnknownMenuItemException('No MenuItem with id \'' . $id . '\' defined in: '
-				. $this->buildConfigSourceString());
+				. $this->buildConfigSourceString(), null, null, 2);
 	}
 
 	public function addMenuItem(MenuItemExtraction $menuItemExtraction) {
