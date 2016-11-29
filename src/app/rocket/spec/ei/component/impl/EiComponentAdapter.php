@@ -74,7 +74,9 @@ abstract class EiComponentAdapter implements EiComponent {
 		$detailStrs = array();
 		$detailStrs[] = 'id: ' . ($this->id ?? 'null');
 		$detailStrs[] = $this->eiEngine->getEiSpec() ?? 'no EiSpec';
-		$detailStrs[] = $this->eiEngine->getEiMask() ?? 'no EiMask';
+		if (null !== ($eiMask = $this->eiEngine->getEiMask())) {
+			$detailStrs[] = (string) $eiMask;
+		}
 		return (new \ReflectionClass($this))->getShortName() . ' [' . implode(', ', $detailStrs) . ']';
 	}
 }
