@@ -54,7 +54,7 @@ class EiGrantHtmlBuilder {
 		$ulElement = new HtmlElement('ul');
 		
 		if ($baseEiCommandPath->isEmpty()) {
-			$ulElement->appendNl(new HtmlElement('li', null, new Raw(
+			$ulElement->appendLn(new HtmlElement('li', null, new Raw(
 					'<input type="checkbox" disabled="disabled" checked="checked" /><label>Read</label>')));
 		}
 		

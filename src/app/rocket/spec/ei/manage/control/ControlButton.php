@@ -162,7 +162,7 @@ class ControlButton {
 		$attrs = $inputField->getAttrs();
 		$uiButton = new HtmlElement('button', $this->applyAttrs($attrs));
 		$uiButton->appendContent(new HtmlElement('i', array('class' => $this->iconType), ''));
-// 		$uiButton->appendNl();
+// 		$uiButton->appendLn();
 		$uiButton->appendContent(new HtmlElement('span', null, $this->name));
 		return $uiButton;
 	}
