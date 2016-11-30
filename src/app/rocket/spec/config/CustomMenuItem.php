@@ -47,7 +47,7 @@ class CustomMenuItem implements MenuItem {
 	
 	public function getLabel(): string {
 		if ($this->label === null) {
-			return $this->customSpec->getControllerClass()->getShortName();
+			return $this->customSpec->getControllerClass();
 		}
 		return $this->label;
 	}
