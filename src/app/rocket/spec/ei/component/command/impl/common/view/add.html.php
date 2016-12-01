@@ -58,7 +58,7 @@
 				</li>
 				<li>
 					<?php $formHtml->buttonSubmit('createAndRepeate', new Raw('<i class="fa fa-save"></i><span>' 
-									. $html->getL10nText('ei_impl_save_and_repeate_label') . '</span>'),
+									. $html->getL10nText('ei_impl_save_and_repeat_label') . '</span>'),
 							array('class' => 'rocket-control-warning')) ?>
 				</li>
 				<li>
