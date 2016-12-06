@@ -21,6 +21,8 @@
  */
 namespace rocket\core\model;
 
-class UnknownMenuItemException extends \RuntimeException {
+use n2n\util\ex\DocumentableRuntimeException;
+
+class UnknownMenuItemException extends DocumentableRuntimeException {
 	
 }

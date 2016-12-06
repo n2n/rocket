@@ -441,7 +441,7 @@ class EiSpecSetupQueue {
 		$this->exclusivePropInForEiSpec($eiSpecId, $n2nContext);
 	
 		foreach ($this->eiConfigurators as $key => $eiConfigurator) {
-			if ($eiConfigurator->getEiComponent()->getEiEninge()->getEiSpec()->getId() !== $eiSpecId) {
+			if ($eiConfigurator->getEiComponent()->getEiEngine()->getEiSpec()->getId() !== $eiSpecId) {
 				continue;
 			}
 				

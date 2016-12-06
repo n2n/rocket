@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\string\cke\ui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\Raw;
 
 class CkeHtmlBuilder {
 	private $html;
@@ -33,7 +34,7 @@ class CkeHtmlBuilder {
 	}
 		
 	public function getOut($contentsHtml) {
-		return $this->view->getOut($contentsHtml);
+		return new Raw($contentsHtml);
 	}
 	
 	public function out($contentsHtml) {

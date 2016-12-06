@@ -208,7 +208,7 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 	}
 	
 	public function buildFilterField(N2nContext $n2nContext) {
-		$filterField = parent::createGlobalFilterField($n2nContext);
+		$filterField = parent::buildFilterField($n2nContext);
 		CastUtils::assertTrue($filterField instanceof RelationFilterField);
 		
 		$targetSelectToolsUrl = GlobalOverviewAjahController::buildToolsAjahUrl(
