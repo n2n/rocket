@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\config\extr\SpecExtractionManager;
 
 class Rocket implements RequestScoped {
-	const VERSION = '1.1.2';
+	const VERSION = '1.1.3';
 	const NS = 'rocket';
 	
 	private $dbhPool;
@@ -172,11 +172,11 @@ class Rocket implements RequestScoped {
 // 		return $translatedEntries;
 // 	}
 	
-	public function listen(EntityManager $em) {
-		if ($this->rocketEntityStateListener === null) {
-			$this->rocketEntityStateListener = new RocketEntityStateListener($this);
-		}
+// 	public function listen(EntityManager $em) {
+// 		if ($this->rocketEntityStateListener === null) {
+// 			$this->rocketEntityStateListener = new RocketEntityStateListener($this);
+// 		}
 		
-		$em->getPersistenceContext()->registerEntityStateListener($this->rocketEntityStateListener);
-	}
+// 		$em->getPersistenceContext()->registerEntityStateListener($this->rocketEntityStateListener);
+// 	}
 }
