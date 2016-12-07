@@ -97,8 +97,8 @@ class LayoutManager {
 	public function flush() {
 		throw new NotYetImplementedException();
 		
-		if ($this->startMenuItemLoaded) {
-			$this->scsd->rawStartMenuItemId($bla);
-		}
+// 		if ($this->startMenuItemLoaded) {
+// 			$this->scsd->rawStartMenuItemId($bla);
+// 		}
 	}
 }
