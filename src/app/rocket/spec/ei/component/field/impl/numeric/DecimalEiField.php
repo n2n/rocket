@@ -31,9 +31,14 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use rocket\spec\ei\component\field\impl\numeric\conf\DecimalEiFieldConfigurator;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\UiComponent;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class DecimalEiField extends NumericEiFieldAdapter {
 	protected $decimalPlaces = 0;
+	protected $prefix;
 
 	public function createEiFieldConfigurator(): EiFieldConfigurator {
 		return new DecimalEiFieldConfigurator($this);
@@ -58,13 +63,47 @@ class DecimalEiField extends NumericEiFieldAdapter {
 		$this->decimalPlaces = (int) $decimalPlaces;
 	}
 	
+	public function getPrefix() {
+		return $this->prefix;
+	}
+	
+	public function setPrefix(string $prefix = null) {
+		$this->prefix = $prefix;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessEditable::createMag($propertyName, $entrySourceInfo)
 	 */
 	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
-		return new NumericMag($propertyName, $this->getLabelLstr(), null,
+		$numericMag = new EiDecimalMag($propertyName, $this->getLabelLstr(), null,
 				$this->isMandatory($entrySourceInfo), $this->getMinValue(), $this->getMaxValue(), 
 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));
+		$numericMag->setInputPrefix($this->prefix);
+		return $numericMag;
+	}
+}
+
+
+class EiDecimalMag extends NumericMag {
+	private $inputPrefix;
+	
+	public function getInputPrefix() {
+		return $this->inputPrefix;
+	}
+	
+	public function setInputPrefix(string $inputPrefix = null) {
+		$this->inputPrefix = $inputPrefix;
+	}
+	
+
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+		$input = parent::createUiField($propertyPath, $view);
+	
+		if ($this->inputPrefix === null) return $input;
+		
+		return new HtmlElement('div', array('class' => 'input-group'), array(
+				new HtmlElement('span', array('class' => 'input-group-addon'), $this->inputPrefix),
+				$input));
 	}
 }
