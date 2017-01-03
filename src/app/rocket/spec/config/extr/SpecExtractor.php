@@ -326,7 +326,7 @@ class SpecExtractor {
 			if ($menuItemRawData !== null) {
 				$menuItemAttributes = new Attributes($menuItemRawData);
 			}
-				
+			
 			$menuItemExtractions[$menuItemId] = $this->createMenuItemExtraction($menuItemId, new Attributes($menuItemRawData));
 		}
 		return $menuItemExtractions;
