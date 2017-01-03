@@ -75,10 +75,9 @@ class TemplateModel implements Lookupable {
 				}
 			}
 			
-			
 			if (empty($menuItems)) continue;
 			
-			$this->navArray[] = array('label' => $menuGroup->getLabel(),
+			$this->navArray[] = array('menuGroup' => $menuGroup,
 					'open' => $menuGroup->containsMenuItemId($this->activeMenuItemId),
 					'menuItems' => $menuItems);
 		}

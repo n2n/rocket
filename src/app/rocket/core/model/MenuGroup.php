@@ -23,7 +23,8 @@ namespace rocket\core\model;
 
 class MenuGroup {
 	private $label;
-	private $menuItems;
+	private $menuItems = array();
+	private $labels = array();
 	
 	public function __construct(string $label) {
 		$this->label = $label;
@@ -40,8 +41,9 @@ class MenuGroup {
 		return $this->menuItems;
 	}
 	
-	public function addMenuItem(MenuItem $menuItem) {
+	public function addMenuItem(MenuItem $menuItem, string $label = null) {
 		$this->menuItems[$menuItem->getId()] = $menuItem;
+		$this->labels[$menuItem->getId()] = $label;
 	}
 	
 	public function containsMenuItemId($id): bool {
@@ -58,5 +60,13 @@ class MenuGroup {
 		}
 		
 		throw new UnknownMenuItemException($id);
+	}
+	
+	public function determineLabel(MenuItem $menuItem) {
+		if (isset($this->labels[$menuItem->getId()])) {
+			return $this->labels[$menuItem->getId()];
+		}
+		
+		return $menuItem->getLabel();
 	}
 }

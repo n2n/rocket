@@ -78,7 +78,7 @@ class LayoutManager {
 				
 			try {
 				foreach ($menuGroupExtraction->getMenuItemIds() as $menuItemId => $label) {
-					$menuGroup->addMenuItem($this->specManager->getMenuItemById($menuItemId));
+					$menuGroup->addMenuItem($this->specManager->getMenuItemById($menuItemId), $label);
 				}
 			} catch (UnknownMenuItemException $e) {
 				throw new InvalidMenuConfigurationException('Failed to initialize MenuGroup: '

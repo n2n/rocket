@@ -127,13 +127,13 @@
 			<?php foreach ($templateModel->getNavArray() as $navArray): ?>
 				<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>">
 					<h3><a><i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i> 
-							<?php $html->esc($navArray['label']) ?></a></h3>
+							<?php $html->esc($navArray['menuGroup']->getLabel()) ?></a></h3>
 					<ul>
 						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
 							<li<?php $view->out($templateModel->isMenuItemActive($menuItem) 
 									? ' class="rocket-nav-group-list-item-active"' : null) ?>>
 								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), $menuItem->determinePathExt($view->getN2nContext())), 
-										new Raw($html->getEsc($menuItem->getLabel()) . '<span></span>')) ?></li>
+										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>')) ?></li>
 						<?php endforeach ?>
 					</ul>
 				</div>
@@ -145,11 +145,11 @@
 					<?php $html->text('common_select_label') ?>
 				</option>
 				<?php foreach ($templateModel->getNavArray() as $navArray): ?>
-					<optgroup label="<?php $html->out($navArray['label']) ?>">
+					<optgroup label="<?php $html->out($navArray['menuGroup']->getLabel()) ?>">
 						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
 							<option value="<?php $html->out($view->buildUrl(Murl::controller('rocket')->pathExt('manage', $menuItem->getId()))) ?>" 
-									<?php $view->out(isset($selectedMenuItem) && $scriptId == $selectedMenuItem->getId() ? 'selected="selected"' : null) ?>>
-								<?php $html->out($menuItem->getLabel())?>
+									<?php $view->out($templateModel->isMenuItemActive($menuItem) ? 'selected="selected"' : null) ?>>
+								<?php $html->out($navArray['menuGroup']->determineLabel($menuItem))?>
 							</option>
 						<?php endforeach ?>
 					</optgroup>

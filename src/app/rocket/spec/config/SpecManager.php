@@ -50,6 +50,7 @@ use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
 use n2n\util\config\InvalidConfigurationException;
 use n2n\core\N2N;
 use n2n\core\TypeNotFoundException;
+use n2n\persistence\orm\OrmConfigurationException;
 
 class SpecManager {	
 	private $rocketConfigSource;	
@@ -155,7 +156,7 @@ class SpecManager {
 		} else {
 			$eiMask = $spec->getEiMaskCollection()->getOrCreateDefault();
 		}
-			
+		
 		return new EiMenuItem($menuItemExtraction->getId(), $spec, $eiMask, $menuItemExtraction->getLabel());
 	}
 	
@@ -548,4 +549,3 @@ class PropIn {
 		return new InvalidEiComponentConfigurationException('EiField is invalid configured: ' . $eiComponent, 0, $e);
 	}
 }
-
