@@ -28,9 +28,11 @@ use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\numeric\DecimalEiField;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\LenientAttributeReader;
+use n2n\impl\web\dispatch\mag\model\StringMag;
 
 class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 	const OPTION_DECIMAL_PLACES_KEY = 'decimalPlaces';
+	const OPTION_PREFIX_KEY = 'prefix';
 	
 	public function getTypeName(): string {
 		return 'Decimal';
@@ -40,18 +42,21 @@ class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magDispatchable->getMagCollection()->addMag(new NumericMag(self::OPTION_DECIMAL_PLACES_KEY, 
+		$magCollection = $magDispatchable->getMagCollection();
+		$magCollection->addMag(new NumericMag(self::OPTION_DECIMAL_PLACES_KEY, 
 				'Positions after decimal point', $lar->getNumeric(self::OPTION_DECIMAL_PLACES_KEY, 0), true, 0));
+		$magCollection->addMag(new StringMag(self::OPTION_PREFIX_KEY, 'Prefix',
+				$lar->getString(self::OPTION_PREFIX_KEY, false)));
 		return $magDispatchable;
 	}
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
-		
-		if ($this->attributes->contains(self::OPTION_DECIMAL_PLACES_KEY)) {
-			CastUtils::assertTrue($this->eiComponent instanceof DecimalEiField);
-			$this->eiComponent->setDecimalPlaces($this->attributes->get(self::OPTION_DECIMAL_PLACES_KEY));
-		}
+			
+		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiField);
+
+		$this->eiComponent->setDecimalPlaces($this->attributes->getInt(self::OPTION_DECIMAL_PLACES_KEY, false, 0));
+		$this->eiComponent->setPrefix($this->attributes->getString(self::OPTION_PREFIX_KEY, false));
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
@@ -59,9 +64,7 @@ class DecimalEiFieldConfigurator extends NumericEiFieldConfigurator {
 	
 		$magCollection = $magDispatchable->getMagCollection();
 	
-		if (null !== ($decimalPlaces = $magCollection->getMagByPropertyName(self::OPTION_DECIMAL_PLACES_KEY)
-				->getValue())) {
-			$this->attributes->set(self::OPTION_DECIMAL_PLACES_KEY, $decimalPlaces);
-		}
+		$this->attributes->appendAll($magCollection->readValues(
+				array(self::OPTION_DECIMAL_PLACES_KEY, self::OPTION_PREFIX_KEY), true), true);
 	}
 }
