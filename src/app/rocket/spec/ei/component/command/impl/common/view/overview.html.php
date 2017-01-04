@@ -70,9 +70,11 @@
 		<?php $view->out($listView)?>
 		
 		<div id="rocket-page-controls">
+			<?php /* Bert: do not display UL with no LI contents ?>
 			<ul class="rocket-partial-controls">
-				<li><?php /* partial control components */ ?></li>
+				<li><?php / * partial control components * / ?></li>
 			</ul>
+			<?php */ ?>
 			
 			<?php $controlEiHtml->overallControlList() ?>
 		</div>
