@@ -2,7 +2,7 @@
     "eiFieldClasses": [
         "rocket\\spec\\ei\\component\\field\\impl\\string\\StringEiField",
         "rocket\\spec\\ei\\component\\field\\NotManagedObjectPropertyEiField",
-        "rocket\\spec\\ei\\component\\field\\impl\\string\\wysiwyg\\WysiwygEiField",
+        "rocket\\spec\\ei\\component\\field\\impl\\string\\cke\\CkeEiField",
         "rocket\\spec\\ei\\component\\field\\impl\\relation\\ManyToOneSelectEiField",
         "rocket\\spec\\ei\\component\\field\\impl\\file\\FileEiField",
         "rocket\\spec\\ei\\component\\field\\impl\\date\\DateTimeEiField",
