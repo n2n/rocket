@@ -137,7 +137,7 @@ class RelationSelectorForm implements Dispatchable {
 		$that = $this;
 		$bd->closure(function (array $entryIdReps, BindingErrors $be) use ($that) {
 			foreach ($entryIdReps as $entryIdRep) { 
-				if (!$that->targetUtils->containsId($this->targetUtils->idRepToId($entryIdRep))) continue;
+				if (!$that->entryUtils->containsId($that->entryUtils->idRepToId($entryIdRep))) continue;
 				
 				$be->addErrorCode('entryIdRep', 'ei_impl_relation_unkown_entry_err', 
 						array('id_rep' => $entryIdRep), Rocket::NS);
