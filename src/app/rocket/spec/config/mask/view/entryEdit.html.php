@@ -47,7 +47,8 @@
 	$propertyPath = $entryGui->getEntryPropertyPath();
 ?>
 
-<?php if (!empty($forkMagPropertyPaths = $entryEiHtml->meta()->getForkMagPropertyPaths())): ?>
+<?php if ($view->getParam('renderForkMags', false, true) 
+		&& !empty($forkMagPropertyPaths = $entryEiHtml->meta()->getForkMagPropertyPaths())): ?>
 	<div class="rocket-tool-panel">
 		<?php foreach ($forkMagPropertyPaths as $forkMagPropertyPath): ?>
 			<?php $formHtml->magOpen('div', $propertyPath->ext($forkMagPropertyPath)) ?>
@@ -70,7 +71,7 @@
 				<div class="rocket-controls">
 					<?php $view->import('entryEdit.html', array(
 							'eiState' => $eiState, 'guiFieldOrder' => $guiSection->getGuiFieldOrder(), 
-							'entryGui' => $entryGui)) ?>
+							'entryGui' => $entryGui, 'renderForkMags' => false)) ?>
 				</div>
 			</div>
 		<?php else: ?>
