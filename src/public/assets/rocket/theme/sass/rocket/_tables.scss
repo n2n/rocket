@@ -52,7 +52,7 @@ th {
     &:after {
         position: absolute;
         top: -2px;
-        right: -1px;
+        right: 0;
         content: attr(data-page-no);
         padding: 3px 6px;
         font-size: $font-size-sm;

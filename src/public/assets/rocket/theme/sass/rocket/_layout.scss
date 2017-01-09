@@ -135,7 +135,8 @@ h2 + .rocket-nav-group {
     position: relative;
     background: $color-gray-8;
     border: 1px solid $color-gray-6;
-    margin-bottom: $line-height;
+    margin-bottom: 50px;
+    overflow-x: auto;
     > h3,
     h2 {
         font-size: $font-size-base;
@@ -156,8 +157,8 @@ h2 + .rocket-nav-group {
 #rocket-page-controls {
     border-top: 1px solid $color-gray-6;
     margin: $padding-base -($padding-base);
-    padding: $padding-base;
-    background: $color-gray-8;
+    padding: 0 $padding-base;
+    background: white;
     z-index: 100;
     @include clearfix();
     > ul > li {
@@ -202,7 +203,7 @@ section {
         bottom: 0;
         left: 0;
         right: 0;
-        padding: $padding-base $padding-base 0 30px;
+        padding: $padding-base 0 0;
         margin: 0;
         > ul {
             margin: 0;
@@ -340,11 +341,11 @@ section {
         position: fixed;
         top: 60px;
         left: 215px;
-        bottom: 50px;
+        bottom: 0;
         right: 0;
         overflow-y:scroll;
         overflow-x: hidden;
-        padding-bottom: 0;
+        padding-bottom: 0px;
         padding-left: 30px;
     }
 
@@ -360,7 +361,8 @@ section {
 
     .rocket-page-controls,
     #rocket-page-controls {
-        left: 215px;
+        left: 245px;
+        right: 15px;
     }
 
     .rocket-contains-additional {

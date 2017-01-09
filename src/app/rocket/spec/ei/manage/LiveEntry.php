@@ -88,7 +88,8 @@ class LiveEntry {
 	public static function createFrom(EiSpec $contextEiSpec, $entityObj) {
 		ArgUtils::valObject($entityObj, false, 'entityObj');
 		
-		return new LiveEntry(true, $contextEiSpec->extractId($entityObj), $entityObj, 
+		$id = $contextEiSpec->extractId($entityObj);
+		return new LiveEntry(($id === null ? false : true), $id, $entityObj, 
 				$contextEiSpec->determineAdequateEiSpec(new \ReflectionClass($entityObj)));
 	}
 	

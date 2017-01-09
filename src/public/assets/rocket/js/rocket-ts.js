@@ -1297,7 +1297,7 @@ var spec;
             ToManyEntryForm.prototype.getOrderIndex = function () {
                 if (!this.isOrderable())
                     return 0;
-                return this.elemInputOrderIndex.val();
+                return parseInt(this.elemInputOrderIndex.val());
             };
             ToManyEntryForm.prototype.getElemInputOrderIndex = function () {
                 return this.elemInputOrderIndex;

@@ -224,7 +224,7 @@ module spec.edit {
 		public getOrderIndex() {
 			if (!this.isOrderable()) return 0;
 			
-			return this.elemInputOrderIndex.val();
+			return parseInt(this.elemInputOrderIndex.val());
 		}
 		
 		public getElemInputOrderIndex() {
