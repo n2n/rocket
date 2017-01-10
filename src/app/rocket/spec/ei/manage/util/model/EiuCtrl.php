@@ -40,6 +40,7 @@ use n2n\reflection\ReflectionUtils;
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\util\model\EiuEntry;
+use n2n\web\http\Redirect;
 
 class EiuCtrl implements Lookupable {
 	private $eiuFrame;	
@@ -195,6 +196,11 @@ class EiuCtrl implements Lookupable {
 		} catch (UnavailablePreviewException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}
+	}
+	
+	public function redirectToOverview(int $status = null) {
+		$this->httpContext->getResponse()->send(
+				new Redirect($this->getEiState()->getOverviewUrl($this->httpContext), $status));
 	}
 	
 	public static function from(HttpContext $httpContext, EiuFrame $eiuFrame = null) {
