@@ -34,7 +34,6 @@ use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldContro
 use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\manage\util\model\GlobalEiUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;

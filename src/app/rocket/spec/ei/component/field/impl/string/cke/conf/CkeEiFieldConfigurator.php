@@ -118,7 +118,7 @@ class CkeEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		}
 		
 		$this->ckeEiField->setCkeCssConfig($this->lookupCssConfig(
-				$this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY), $eiSetupProcess));
+				$this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, false), $eiSetupProcess));
 		
 		
 		$this->ckeEiField->setTableSupported($this->attributes->getBool(self::OPTION_TABLES_SUPPORTED_KEY, false,
