@@ -29,19 +29,19 @@ interface FilterableEiField extends EiField {
 	
 	/**
 	 * @param EiState $eiState
-	 * @return \rocket\spec\ei\manage\critmod\FilterField or null
+	 * @return \rocket\spec\ei\manage\critmod\FilterField|null
 	 */
 	public function buildManagedFilterField(EiState $eiState);
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\spec\ei\manage\critmod\FilterField or null
+	 * @return \rocket\spec\ei\manage\critmod\FilterField|null
 	 */
 	public function buildFilterField(N2nContext $n2nContext);
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\spec\ei\manage\critmod\filter\EiMappingFilterField or null
+	 * @return \rocket\spec\ei\manage\critmod\filter\EiMappingFilterField|null
 	 */
 	public function buildEiMappingFilterField(N2nContext $n2nContext);
 	

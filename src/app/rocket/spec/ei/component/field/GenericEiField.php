@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field;
 interface GenericEiField extends MappableEiField {
 	
 	/**
-	 * @return GenericEiProperty
+	 * @return GenericEiProperty|null
 	 */
 	public function getGenericEiProperty();
 }

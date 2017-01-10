@@ -27,12 +27,12 @@ use n2n\l10n\Lstr;
 interface EiField extends EiComponent {
 	
 	/**
-	 * @return EiField or null 
-	 */
-	public function getParentEiField();
-	
-	/**
 	 * @return string
 	 */
 	public function getLabelLstr(): Lstr;
+	
+	/**
+	 * @return EiField|null 
+	 */
+	public function getParentEiField();
 }

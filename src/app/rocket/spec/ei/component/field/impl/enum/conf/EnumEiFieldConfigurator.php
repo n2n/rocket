@@ -34,6 +34,7 @@ use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
+use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 
 // @todo validate if attributes are arrays
 
@@ -58,6 +59,8 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 					$magCollection = new MagCollection();
 					$magCollection->addMag(new StringMag('value', 'Value'));
 					$magCollection->addMag(new StringMag('label', 'Label'));
+					
+// 					$magCollection->addMag(new OptionalMag('guiRestrictions', 'GuiElements', new StringMag('label', 'Label')));
 					return new MagForm($magCollection);
 				});
 		

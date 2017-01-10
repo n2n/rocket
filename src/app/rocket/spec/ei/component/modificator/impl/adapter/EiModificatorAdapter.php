@@ -25,7 +25,6 @@ use rocket\spec\ei\component\modificator\EiModificator;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\impl\EiComponentAdapter;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\mapping\MappingDefinition;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;

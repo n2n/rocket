@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use rocket\spec\ei\manage\mapping\MappableSource;
 use rocket\spec\ei\manage\EiObject;
 
 interface GuiFieldFork {
