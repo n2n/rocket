@@ -3,7 +3,7 @@
 namespace rocket\spec\ei\component\modificator\impl\adapter;
 
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
-use rocket\spec\ei\component\modificator\impl\EiModificatorAdapter;
+use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\component\EiConfigurator;
 
 abstract class IndependentEiFieldAdapter extends EiModificatorAdapter implements IndependentEiModificator {

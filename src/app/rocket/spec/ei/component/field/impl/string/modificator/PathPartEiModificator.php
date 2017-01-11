@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\modificator;
 
-use rocket\spec\ei\component\modificator\impl\EiModificatorAdapter;
+use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\field\impl\string\PathPartEiField;
