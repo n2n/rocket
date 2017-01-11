@@ -100,7 +100,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		if ($this->confEntityPropertyEiField !== null) {
 			try {
 				$this->confEntityPropertyEiField->setEntityProperty(
-						$propertyAssignation->getEntityProperty());
+						$propertyAssignation->getEntityProperty(false));
 			} catch (\InvalidArgumentException $e) {
 				throw $propertyAssignation->createEntityPropertyException(null, $e);
 			}
@@ -109,7 +109,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		if ($this->confObjectPropertyEiField !== null) {
 			try {
 				$this->confObjectPropertyEiField->setObjectPropertyAccessProxy(
-						$propertyAssignation->getObjectPropertyAccessProxy());
+						$propertyAssignation->getObjectPropertyAccessProxy(false));
 			} catch (\InvalidArgumentException $e) {
 				throw $propertyAssignation->createAccessProxyException(null, $e);
 			} catch (ConstraintsConflictException $e) {
