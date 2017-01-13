@@ -53,11 +53,13 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	private $options = array();
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+		ArgUtils::assertTrue($propertyAccessProxy !== null);
+		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
