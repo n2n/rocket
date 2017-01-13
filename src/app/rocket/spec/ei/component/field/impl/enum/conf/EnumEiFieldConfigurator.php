@@ -61,9 +61,9 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 					$magCollection->addMag(new StringMag('value', 'Value'));
 					$magCollection->addMag(new StringMag('label', 'Label'));
 					
-// 					$acMag = new MultiSelectMag('assoicatedGuiFieldPaths', 'Associated Gui Fields', array('huii' => 'hoi', 'ts' => 'kui'));
-// 					$magCollection->addMag(new EnablerMag('associatedGuiFieldPaths', 'Associated Gui Fields', false, array($acMag)));
-// 					$magCollection->addMag($acMag);
+					$acMag = new MultiSelectMag('assoicatedGuiFieldPaths', 'Associated Gui Fields', array('huii' => 'hoi', 'ts' => 'kui'));
+					$magCollection->addMag(new EnablerMag('associatedGuiFieldPaths', 'Associated Gui Fields', false, array($acMag)));
+					$magCollection->addMag($acMag);
 					return new MagForm($magCollection);
 				});
 		
