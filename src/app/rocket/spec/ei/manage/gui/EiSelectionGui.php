@@ -29,7 +29,7 @@ class EiSelectionGui {
 	private $guiDefinition;
 	private $viewMode;
 	private $displayables = array();
-	private $eiFieldPaths = array();
+// 	private $eiFieldPaths = array();
 	private $eiSelectionGuiListeners = array();
 	
 	private $dispatchable;
@@ -70,9 +70,9 @@ class EiSelectionGui {
 		$this->displayables[(string) $guiIdPath] = $displayable;
 	}
 	
-	public function putEiFieldPath(GuiIdPath $guiIdPath, EiFieldPath $eiFieldPath) {
-		$this->eiFieldPaths[(string) $guiIdPath] = $eiFieldPath;
-	}
+// 	public function putEiFieldPath(GuiIdPath $guiIdPath, EiFieldPath $eiFieldPath) {
+// 		$this->eiFieldPaths[(string) $guiIdPath] = $eiFieldPath;
+// 	}
 	
 	public function containsDisplayable(GuiIdPath $guiIdPath) {
 		return isset($this->displayables[(string) $guiIdPath]);

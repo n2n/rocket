@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-interface ForkedGuiElement extends Savable {
+interface GuiElementFork extends Savable {
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
@@ -30,5 +30,10 @@ interface ForkedGuiElement extends Savable {
 	 */
 	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult; 
 	
-	public function createForkOption($propertyName); 
+	/**
+	 * Mag for group toolbar
+	 * @param string $propertyName
+	 * @return Mag|null
+	 */
+	public function buildForkMag(string $propertyName); 
 }

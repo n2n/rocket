@@ -21,7 +21,5 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use rocket\core\bo\RocketRuntimeException;
-
 class GuiException extends \RuntimeException {
 }

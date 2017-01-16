@@ -269,7 +269,7 @@ class SummarizedStringBuilder {
 		foreach ($guiDefinition->getGuiFieldForks() as $id => $guiFieldFork) {
 			$forkedMappableSource = null;
 			if ($eiObject !== null) {
-				$forkedMappableSource = $guiFieldFork->determineForkedMappableSource($eiObject);
+				$forkedMappableSource = $guiFieldFork->determineForkedEiObject($eiObject);
 			}
 			
 			$ids = $baseIds;

@@ -26,19 +26,19 @@ use rocket\spec\ei\manage\EiObject;
 interface GuiFieldFork {
 
 	/**
-	 * @return GuiDefinition or null
+	 * @return GuiDefinition|null
 	 */
 	public function getForkedGuiDefinition();
 	
 	/**
 	 * @param EntrySourceInfo $entrySourceInfo
-	 * @return ForkedGuiElement
+	 * @return GuiElementFork
 	 */
-	public function createForkedGuiElement(EntrySourceInfo $entrySourceInfo, bool $makeEditable): ForkedGuiElement;
+	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork;
 		
 	/**
 	 * @param EiObject $eiObject
-	 * @return EiObject or null if not available
+	 * @return EiObject|null null if not available
 	 */
-	public function determineForkedMappableSource(EiObject $eiObject);
+	public function determineForkedEiObject(EiObject $eiObject);
 }

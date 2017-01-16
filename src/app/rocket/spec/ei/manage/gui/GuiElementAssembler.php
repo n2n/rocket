@@ -93,7 +93,7 @@ class GuiElementAssembler {
 		if (isset($this->forkedGuiElements[$id])) {
 			$forkedGuiElement = $this->forkedGuiElements[$id];
 		} else {
-			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createForkedGuiElement($this->entrySourceInfo, $makeEditable);
+			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->entrySourceInfo, $makeEditable);
 		} 
 		
 		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath, $makeEditable);
@@ -107,7 +107,7 @@ class GuiElementAssembler {
 		if (!isset($this->forkedPropertyPaths[$id])) {
 			$this->savables[$id] = $forkedGuiElement;
 			$this->getOrCreateDispatchable()->getMagCollection()->addMag(
-					$forkedGuiElement->createForkOption($id));
+					$forkedGuiElement->buildForkMag($id));
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		
