@@ -34,7 +34,7 @@ use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
-use n2nutil\jquery\mag\group\EnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 
 // @todo validate if attributes are arrays
@@ -61,9 +61,11 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 					$magCollection->addMag(new StringMag('value', 'Value'));
 					$magCollection->addMag(new StringMag('label', 'Label'));
 					
-					$acMag = new MultiSelectMag('assoicatedGuiFieldPaths', 'Associated Gui Fields', array('huii' => 'hoi', 'ts' => 'kui'));
-					$magCollection->addMag(new EnablerMag('associatedGuiFieldPaths', 'Associated Gui Fields', false, array($acMag)));
-					$magCollection->addMag($acMag);
+					$eMag = new EnablerMag('associatedGuiFieldPaths', 'Associated Gui Fields', false);
+					$magCollection->addMag($eMag);
+					$eMag->setAssociatedMags(array(
+							$magCollection->addMag(new MultiSelectMag('assoicatedGuiFieldPaths', 'Associated Gui Fields', 
+									array('huii' => 'aui', 'ts' => 'kui')))));
 					return new MagForm($magCollection);
 				});
 		
