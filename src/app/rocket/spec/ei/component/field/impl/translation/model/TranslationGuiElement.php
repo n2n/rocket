@@ -129,8 +129,8 @@ class TranslationGuiElement implements GuiElementFork {
 		
 		$this->setupTranslationForm();
 				
-		return new AssembleResult($translationDisplayable, $this->translationForm
-				->registerOption($translationMag), $mandatory);
+		$magInfo = $this->translationForm->registerMag($translationMag);
+		return new AssembleResult($translationDisplayable, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
 	}
 		
 	public function buildForkMag(string $propertyName) {
