@@ -197,7 +197,7 @@ class GuiDefinition {
 				return $guiDefinition->getLevelGuiFieldById($id);
 			}
 			
-			$guiDefinition = $guiDefinition->getGuiFieldForkById($id)->getForkedGuiDefinition();
+			$guiDefinition = $guiDefinition->getLevelGuiFieldForkById($id)->getForkedGuiDefinition();
 		}	
 	}
 	
@@ -209,7 +209,7 @@ class GuiDefinition {
 				return $guiDefinition->getLevelEiFieldPathById($id);
 			}
 				
-			$guiDefinition = $guiDefinition->getGuiFieldForkById($id)->getForkedGuiDefinition();
+			$guiDefinition = $guiDefinition->getLevelGuiFieldForkById($id)->getForkedGuiDefinition();
 		}
 	}
 	

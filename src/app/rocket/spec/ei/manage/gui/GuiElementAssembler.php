@@ -68,7 +68,7 @@ class GuiElementAssembler {
 	}
 	
 	private function assembleGuiField($id, GuiField $guiField, $makeEditable) {
-		$eiFieldPath = $this->guiDefinition->getEiFieldPathById($id);
+		$eiFieldPath = $this->guiDefinition->getLevelEiFieldPathById($id);
 		$guiElement = $guiField->buildGuiElement($this->entrySourceInfo->toFieldSourceInfo($eiFieldPath));
 		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
 		
@@ -121,11 +121,11 @@ class GuiElementAssembler {
 	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable) {
 		if ($guiIdPath->hasMultipleIds()) {
 			return $this->assembleGuiFieldFork($guiIdPath, $this->guiDefinition
-					->getGuiFieldForkById($guiIdPath->getFirstId()), $makeEditable);
+					->getLevelGuiFieldForkById($guiIdPath->getFirstId()), $makeEditable);
 		}
 		
 		return $this->assembleGuiField($guiIdPath->getFirstId(), $this->guiDefinition
-				->getGuiFieldById($guiIdPath->getFirstId()), $makeEditable);
+				->getLevelGuiFieldById($guiIdPath->getFirstId()), $makeEditable);
 	}
 	
 	public function getDispatchable() {
