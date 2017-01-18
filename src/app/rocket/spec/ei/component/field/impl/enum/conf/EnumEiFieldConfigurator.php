@@ -41,6 +41,7 @@ use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 
 class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const OPTION_OPTIONS_KEY = 'options';
+	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiFields';
 	
 	public function __construct(IndependentEiComponent $eiComponent) {
 		parent::__construct($eiComponent);
@@ -55,25 +56,46 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
+		$guiFields = null;
+		try {
+			$guiFields = $this->eiComponent->getEiEngine()->getGuiDefinition()->getGuiFields();
+		} catch (\Throwable $e) {
+			$guiFields = $this->eiComponent->getEiEngine()->getGuiDefinition()->getLevelGuiFields();
+		}
+		
+		$assoicatedGuiFieldOptions = array();
+		foreach ($guiFields as $guiIdPathStr => $guiField) {
+			$assoicatedGuiFieldOptions[$guiIdPathStr] = $guiField->getDisplayLabel();
+		}
+		
 		$optionsMag = new MagCollectionArrayMag(self::OPTION_OPTIONS_KEY, 'Options',
-				function() {
+				function() use ($assoicatedGuiFieldOptions) {
 					$magCollection = new MagCollection();
 					$magCollection->addMag(new StringMag('value', 'Value'));
 					$magCollection->addMag(new StringMag('label', 'Label'));
 					
-					$eMag = new EnablerMag('associatedGuiFieldPaths', 'Associated Gui Fields', false);
+					$eMag = new EnablerMag('bindGuiFieldsToValue', 'Bind GuiFields to value', false);
 					$magCollection->addMag($eMag);
 					$eMag->setAssociatedMags(array(
-							$magCollection->addMag(new MultiSelectMag('assoicatedGuiFieldPaths', 'Associated Gui Fields', 
-									array('huii' => 'aui', 'ts' => 'kui')))));
+							$magCollection->addMag(new MultiSelectMag('assoicatedGuiIdPaths', 'Associated Gui Fields', $assoicatedGuiFieldOptions))));
 					return new MagForm($magCollection);
 				});
 		
 		$valueLabelMap = array();
 		foreach ($lar->getArray(self::OPTION_OPTIONS_KEY, array(), TypeConstraint::createSimple('scalar')) 
 				as $value => $label) {
-			$valueLabelMap[] = array('value' => $value, 'label' => $label);
+			$valueLabelMap[$value] = array('value' => $value, 'label' => $label, 'bindGuiFieldsToValue' => false);
 		}
+		
+		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY, array(), 
+				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar'))) 
+						as $value => $assoicatedGuiIdPaths) {
+			if (array_key_exists($value, $valueLabelMap)) {
+				$valueLabelMap[$value]['bindGuiFieldsToValue'] = true;
+				$valueLabelMap[$value]['assoicatedGuiIdPaths'] = $assoicatedGuiIdPaths;
+			}
+		}
+		
 		$optionsMag->setValue($valueLabelMap);
 		
 		$magDispatchable->getMagCollection()->addMag($optionsMag);
@@ -84,11 +106,17 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
 		$options = array();
+		$guiIdPathMap = array();
 		foreach ($magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_OPTIONS_KEY)->getValue() 
 				as $valueLabelMap) {
 			$options[$valueLabelMap['value']] = $valueLabelMap['label'];
+			
+			if ($valueLabelMap['bindGuiFieldsToValue']) {
+				$guiIdPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiIdPaths'];
+			}
 		}
 		$this->attributes->set(self::OPTION_OPTIONS_KEY, $options);
+		$this->attributes->set(self::ASSOCIATED_GUI_FIELD_KEY, $guiIdPathMap);
 	}
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {

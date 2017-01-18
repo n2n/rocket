@@ -438,7 +438,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		if ($this->confDraftableEiField === null) return;
 	
 		$this->attributes->set(self::ATTR_DRAFTABLE_KEY,
-				$magCollection->getMagByPropertyName(self::ATTR_DRAFTABLE_KEY)->getValue());
+				$magCollection->getMagWrapperByPropertyName(self::ATTR_DRAFTABLE_KEY)->getMag()->getValue());
 	}
 	
 	public static function createFromField(EiField $eiField) {

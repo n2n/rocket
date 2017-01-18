@@ -26,10 +26,10 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiObject;
 
 class GuiDefinition {	
-	private $guiFields = array();
-	private $eiFieldPaths = array();
-	private $guiFieldForks = array();
-	private $ids = array();
+	private $levelGuiFields = array();
+	private $levelEiFieldPaths = array();
+	private $levelGuiFieldForks = array();
+	private $levelIds = array();
 	
 	/**
 	 * @param unknown $id
@@ -37,22 +37,22 @@ class GuiDefinition {
 	 * @param EiFieldPath $eiFieldPath
 	 * @throws GuiException
 	 */
-	public function putGuiField($id, GuiField $guiField, EiFieldPath $eiFieldPath) {
-		if (isset($this->guiFields[$id])) {
+	public function putLevelGuiField(string $id, GuiField $guiField, EiFieldPath $eiFieldPath) {
+		if (isset($this->levelGuiFields[$id])) {
 			throw new GuiException('GuiField with id \'' . $id . '\' is already registered');
 		}
 		
-		$this->guiFields[$id] = $guiField;
-		$this->eiFieldPaths[$id] = $eiFieldPath;
-		$this->ids[$id] = $id;
+		$this->levelGuiFields[$id] = $guiField;
+		$this->levelEiFieldPaths[$id] = $eiFieldPath;
+		$this->levelIds[$id] = $id;
 	}
 	
 	/**
 	 * @param unknown $id
 	 * @return bool
 	 */
-	public function containsGuiFieldId($id) {
-		return isset($this->guiFields[$id]);
+	public function containsLevelGuiFieldId(string $id) {
+		return isset($this->levelGuiFields[$id]);
 	}
 	
 	/**
@@ -60,12 +60,12 @@ class GuiDefinition {
 	 * @throws GuiException
 	 * @return GuiField
 	 */
-	public function getGuiFieldById(string $id) {
-		if (!isset($this->guiFields[$id])) {
+	public function getLevelGuiFieldById(string $id) {
+		if (!isset($this->levelGuiFields[$id])) {
 			throw new GuiException('No GuiField with id \'' . $id . '\' registered');
 		}
 		
-		return $this->guiFields[$id];
+		return $this->levelGuiFields[$id];
 	}
 
 	/**
@@ -73,33 +73,33 @@ class GuiDefinition {
 	 * @throws GuiException
 	 * @return GuiField
 	 */
-	public function getEiFieldPathById($id): EiFieldPath {
-		$this->getGuiFieldById($id);
-		return $this->eiFieldPaths[$id];
+	public function getLevelEiFieldPathById(string $id): EiFieldPath {
+		$this->getLevelGuiFieldById($id);
+		return $this->levelEiFieldPaths[$id];
 	}
 	
 	/**
 	 * @return GuiField[]
 	 */
-	public function getGuiFields() {
-		return $this->guiFields;
+	public function getLevelGuiFields() {
+		return $this->levelGuiFields;
 	}
 	
 	/**
 	 * @param string $id
 	 * @param GuiFieldFork $guiFieldFork
 	 */
-	public function putGuiFieldFork($id, GuiFieldFork $guiFieldFork) {
-		$this->guiFieldForks[$id] = $guiFieldFork;
-		$this->ids[$id] = $id;
+	public function putLevelGuiFieldFork(string $id, GuiFieldFork $guiFieldFork) {
+		$this->levelGuiFieldForks[$id] = $guiFieldFork;
+		$this->levelIds[$id] = $id;
 	}
 	
 	/**
 	 * @param string $id
 	 * @return boolean
 	 */
-	public function containsGuiFieldForkId($id) {
-		return isset($this->guiFieldForks[$id]);
+	public function containsLevelGuiFieldForkId(string $id) {
+		return isset($this->levelGuiFieldForks[$id]);
 	}
 	
 	/**
@@ -107,38 +107,64 @@ class GuiDefinition {
 	 * @throws GuiException
 	 * @return GuiFieldFork
 	 */
-	public function getGuiFieldForkById($id) {
-		if (!isset($this->guiFieldForks[$id])) {
+	public function getLevelGuiFieldForkById(string $id) {
+		if (!isset($this->levelGuiFieldForks[$id])) {
 			throw new GuiException('No GuiFieldFork with id \'' . $id . '\' registered.');
 		}
 		
-		return $this->guiFieldForks[$id];
+		return $this->levelGuiFieldForks[$id];
 	}
 	
 	public function filterGuiIdPaths($viewMode = null) {
 		return $this->buildGuiIdPaths(array(), $viewMode);
 	}
 	
-	public function getAllGuiIdPaths() {
+	public function getGuiFields() {
+		return $this->buildGuiFields(array());
+	}
+	
+	protected function buildGuiFields(array $baseIds) {
+		$guiFields = array();
+		
+		foreach ($this->levelIds as $id) {
+			if (isset($this->levelGuiFields[$id])) {
+				$currentIds = $baseIds;
+				$currentIds[] = $id;
+				$guiFields[(string) new GuiIdPath($currentIds)] = $this->levelGuiFields[$id];
+			}
+				
+			if (isset($this->levelGuiFieldForks[$id])) {
+				$currentIds = $baseIds;
+				$currentIds[] = $id;
+					
+				$guiFields = array_merge($guiFields, $this->levelGuiFieldForks[$id]->getForkedGuiDefinition()
+						->buildGuiFields($currentIds));
+			}
+		}
+		
+		return $guiFields;
+	}
+	
+	public function getGuiIdPaths() {
 		return $this->filterGuiIdPaths(DisplayDefinition::ALL_VIEW_MODES);
 	}
 	
 	protected function buildGuiIdPaths(array $baseIds, $viewMode) {
 		$guiIdPaths = array();
 		
-		foreach ($this->ids as $id) {
-			if (isset($this->guiFields[$id]) && $this->guiFields[$id]->getDisplayDefinition()
+		foreach ($this->levelIds as $id) {
+			if (isset($this->levelGuiFields[$id]) && $this->levelGuiFields[$id]->getDisplayDefinition()
 					->isViewModeDefaultDisplayed($viewMode)) {
 				$currentIds = $baseIds;
 				$currentIds[] = $id;
 				$guiIdPaths[] = new GuiIdPath($currentIds);
 			}
 			
-			if (isset($this->guiFieldForks[$id])) {
+			if (isset($this->levelGuiFieldForks[$id])) {
 				$currentIds = $baseIds;
 				$currentIds[] = $id;
 					
-				$guiIdPaths = array_merge($guiIdPaths, $this->guiFieldForks[$id]->getForkedGuiDefinition()
+				$guiIdPaths = array_merge($guiIdPaths, $this->levelGuiFieldForks[$id]->getForkedGuiDefinition()
 						->buildGuiIdPaths($currentIds, $viewMode));
 			}			
 		}
@@ -168,7 +194,7 @@ class GuiDefinition {
 		$guiDefinition = $this;
 		while (null !== ($id = array_shift($ids))) {
 			if (empty($ids)) {
-				return $guiDefinition->getGuiFieldById($id);
+				return $guiDefinition->getLevelGuiFieldById($id);
 			}
 			
 			$guiDefinition = $guiDefinition->getGuiFieldForkById($id)->getForkedGuiDefinition();
@@ -180,7 +206,7 @@ class GuiDefinition {
 		$guiDefinition = $this;
 		while (null !== ($id = array_shift($ids))) {
 			if (empty($ids)) {
-				return $guiDefinition->getEiFieldPathById($id);
+				return $guiDefinition->getLevelEiFieldPathById($id);
 			}
 				
 			$guiDefinition = $guiDefinition->getGuiFieldForkById($id)->getForkedGuiDefinition();
@@ -188,7 +214,7 @@ class GuiDefinition {
 	}
 	
 	public function getGuiFieldForks() {
-		return $this->guiFieldForks;
+		return $this->levelGuiFieldForks;
 	}
 	
 	/**
@@ -209,7 +235,7 @@ class GuiDefinition {
 	private function filterSummarizableGuiFields(GuiDefinition $guiDefinition, array $baseIds) {
 		$guiFields = array();
 		
-		foreach ($guiDefinition->getGuiFields() as $id => $guiField) {
+		foreach ($guiDefinition->getLevelGuiFields() as $id => $guiField) {
 			if (!$guiField->isStringRepresentable()) continue;
 			
 			$ids = $baseIds;
@@ -252,7 +278,7 @@ class SummarizedStringBuilder {
 	}
 	
 	public function replaceFields(array $baseIds, GuiDefinition $guiDefinition, EiObject $eiObject = null) {
-		foreach ($guiDefinition->getGuiFields() as $id => $guiField) {
+		foreach ($guiDefinition->getLevelGuiFields() as $id => $guiField) {
 			if (!$guiField->isStringRepresentable()) continue;
 
 			$placeholder = $this->buildPlaceholder($baseIds, $id);
