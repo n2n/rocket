@@ -21,23 +21,31 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\cke\model;
 
-use rocket\spec\ei\manage\mapping\EiMapping;
-use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
 use n2n\context\Lookupable;
+use n2n\l10n\N2nLocale;
 
 interface CkeLinkProvider extends Lookupable {
 	
-	public function setup(EiMapping $eiMapping = null, 
-			FieldSourceInfo $fieldSourceInfo = null);
 	/**
 	 * @return string
 	 */
-	public function getTitle();
-	/**
-	 * @return array
-	 */
-	public function getLinkPaths(N2nLocale $n2nLocale);
+	public function getTitle(): string;
 	
-	public function isOpenInNewWindow();
+	/**
+	 * @param N2nLocale If the linked page is available in multiple languages return the url to the language which 
+	 * matches this locale the best. Don't use this locale to translate the label. Use the N2nLocale::getAdmin() or 
+	 * even better the locale from the {@see \n2n\core\container\N2nContext}.  
+	 * @return string[]
+	 */
+	public function getLinkOptions(N2nLocale $n2nLocale): array;
+	
+	/**
+	 * @return string|Url|null 
+	 */
+	public function buildUrl(string $key, N2nLocale $n2nLocale);
+	
+	/**
+	 * @return bool
+	 */
+	public function isOpenInNewWindow(): bool;
 }

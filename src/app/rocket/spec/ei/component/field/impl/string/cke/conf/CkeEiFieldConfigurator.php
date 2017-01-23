@@ -22,12 +22,9 @@
 namespace rocket\spec\ei\component\field\impl\string\cke\conf;
 
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
-use rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygEiField;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\reflection\CastUtils;
-use rocket\spec\ei\component\EiComponent;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\spec\ei\component\EiSetupProcess;
@@ -39,7 +36,7 @@ use rocket\spec\ei\component\field\impl\string\cke\CkeEiField;
 use n2n\util\config\LenientAttributeReader;
 use n2n\reflection\magic\MagicObjectUnavailableException;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
-use rocket\spec\ei\component\field\impl\string\wysiwyg\CkeLinkProvider;
+use rocket\spec\ei\component\field\impl\string\cke\model\CkeLinkProvider;
 
 class CkeEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const OPTION_MODE_KEY = 'mode';
