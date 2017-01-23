@@ -69,7 +69,10 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->dispatch($editModel, 'quicksave');
+		if ($this->dispatch($editModel, 'quicksave')) {
+			$this->refresh();
+			return;
+		}
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs($eiMapping->getEiSelection(), 
 				$this->dtc->translate('ei_impl_edit_entry_breadcrumb'));
