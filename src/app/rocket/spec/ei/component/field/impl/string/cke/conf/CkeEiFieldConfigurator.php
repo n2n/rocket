@@ -37,6 +37,7 @@ use n2n\util\config\LenientAttributeReader;
 use n2n\reflection\magic\MagicObjectUnavailableException;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeLinkProvider;
+use rocket\spec\ei\component\field\impl\string\cke\model\CkeUtils;
 
 class CkeEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const OPTION_MODE_KEY = 'mode';
@@ -110,12 +111,23 @@ class CkeEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$this->ckeEiField->setMode($this->attributes->getEnum(self::OPTION_MODE_KEY, CkeEiField::getModes(),
 				false, $this->ckeEiField->getMode()));
 		
-		foreach ($this->attributes->getScalarArray(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, false) as $lookupId) {
-			$this->ckeEiField->getCkeLinkProviders()->append($this->lookupLinkProvider($lookupId, $eiSetupProcess));
-		}
 		
-		$this->ckeEiField->setCkeCssConfig($this->lookupCssConfig(
-				$this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, false), $eiSetupProcess));
+		$ckeLinkProviderLookupIds = $this->attributes->getScalarArray(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
+		try {
+			CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiSetupProcess->getN2nContext());
+		} catch (\InvalidArgumentException $e) {
+			throw $eiSetupProcess->createException('Invalid css config', $e);
+		}
+		$this->ckeEiField->setCkeLinkProviderLookupIds($ckeLinkProviderLookupIds);
+		
+		
+		$ckeCssConfigLookupId = $this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, false);
+		try {
+			CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
+		} catch (\InvalidArgumentException $e) {
+			throw $eiSetupProcess->createException('Invalid css config', $e);
+		}
+		$this->ckeEiField->setCkeCssConfigLookupId($ckeCssConfigLookupId);
 		
 		
 		$this->ckeEiField->setTableSupported($this->attributes->getBool(self::OPTION_TABLES_SUPPORTED_KEY, false,

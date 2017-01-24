@@ -28,6 +28,9 @@ use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
 use n2n\util\StringUtils;
 use n2n\l10n\N2nLocale;
 use n2n\util\uri\Url;
+use n2n\reflection\ArgUtils;
+use rocket\spec\ei\component\field\impl\string\cke\model\CkeUtils;
+use n2n\core\container\N2nContext;
 
 class CkeHtmlBuilder {
 	const CLASS_NAME_CKE = 'rocket-wysiwyg';
@@ -51,12 +54,9 @@ class CkeHtmlBuilder {
 		$this->html = $view->getHtmlBuilder();
 	}
 		
-	public function getOut($contentsHtml) {
-		return new Raw($contentsHtml);
-	}
 	
-	public function out($contentsHtml) {
-		return $this->view->out($this->getOut($contentsHtml));
+	public function out($contentsHtml, N2nLocale $n2nLocale = null) {
+		return $this->view->out($this->getOut($contentsHtml, $n2nLocale));
 	}
 	
 
@@ -72,9 +72,24 @@ class CkeHtmlBuilder {
 // 		return $this->getWysiwygIframeHtml($html, $cssConfiguration);
 // 	}
 	
-	public function getWysiwygContent($contentsHtml) {
+	private $linkProviders = array();
+	
+	private function lookupLinkProvider($lookupId, N2nContext $n2nContext) {
+		if (array_key_exists($lookupId, $this->linkProviders)) {
+			return $this->linkProviders[$lookupId];
+		}
+		
+		try {
+			return $this->linkProviders[$lookupId] = CkeUtils::lookupCkeLinkProvider($lookupId, $n2nContext);
+		} catch (\InvalidArgumentException $e) {
+			return $this->linkProviders[$lookupId] = null;
+		}
+	}
+	
+	public function getOut($contentsHtml, N2nLocale $n2nLocale = null) {
 		$that = $this;
-		return new Raw(preg_replace_callback('/href\s*=\s*"(ckelink:[^"]+)"/', function($matches) use ($that) {
+		$n2nLocale = $n2nLocale ?? $this->view->getN2nLocale();
+		return new Raw(preg_replace_callback('/href\s*=\s*"(ckelink:[^"]+)"/', function($matches) use ($that, $n2nLocale) {
 			$url = null;
 			try {
 				$url = Url::create(htmlspecialchars_decode($matches[1]), true);
@@ -88,9 +103,8 @@ class CkeHtmlBuilder {
 				return '';
 			}
 			
-			try {
-				$ckeLinkProvider = $that->view->lookup($query['provider']);
-			} catch (\n2n\context\LookupFailedException $e) {
+			$ckeLinkProvider = $that->lookupLinkProvider($query['provider']);
+			if ($ckeLinkProvider === null) {
 				return '';
 			}
 			
@@ -133,9 +147,17 @@ class CkeHtmlBuilder {
 				$linkConfigurations, $cssConfiguration, $attrs, $linkN2nLocale));
 	}
 	
-	public function getEditor($propertyPath = null, $mode = self::MODE_NORMAL, $isBbCode = false,
-			$inline = false, $tableEditing = false, array $linkConfigurations = null,
-			CkeCssConfig $cssConfig = null, array $attrs = null, N2nLocale $linkN2nLocale = null) {
+	public function getEditor($propertyPath = null, string $mode = self::MODE_NORMAL, bool $isBbCode = false,
+			bool $inline = false, $tableEditing = false, array $ckeLinkProviderLookupIds = null,
+			$ckeCssConfig = null, array $attrs = null, N2nLocale $linkN2nLocale = null) {
+		
+		if ($ckeCssConfig !== null && !($ckeCssConfig instanceof CkeCssConfig)) {
+			ArgUtils::valType($ckeCssConfig, array(CkeCssConfig::class, 'string'), true, 'ckeCssConfig');
+			$ckeCssConfig = CkeUtils::lookupCkeCssConfig($ckeCssConfig, $this->view->getN2nContext());
+		}
+		
+		ArgUtils::valArray($ckeLinkProviderLookupIds, 'string', 'ckeLinkProviderCkeLookupIds', true);
+		$ckeLinkProviers = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $this->view->getN2nContext());
 	
 		$this->html->meta()->addLibrary(new CkeLibrary());
 		$ckeClassName = $inline ? self::CLASS_NAME_CKE_INLINE : self::CLASS_NAME_CKE;
@@ -143,19 +165,19 @@ class CkeHtmlBuilder {
 		$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => $ckeClassName, self::ATTRIBUTE_TOOLBAR => $mode,
 				self::ATTRIBUTE_BBCODE => $isBbCode, self::ATTRIBUTE_TABLE_EDITING => $tableEditing));
 
-		if ($cssConfig) {
-			$attrs[self::ATTRIBUTE_BODY_CLASS] = $cssConfig->getBodyClass();
-			$attrs[self::ATTRIBUTE_BODY_ID] = $cssConfig->getBodyId();
-			if (!empty($cssPaths = $this->getCssPaths($cssConfig))) {
+		if ($ckeCssConfig !== null) {
+			$attrs[self::ATTRIBUTE_BODY_CLASS] = $ckeCssConfig->getBodyClass();
+			$attrs[self::ATTRIBUTE_BODY_ID] = $ckeCssConfig->getBodyId();
+			if (!empty($cssPaths = $this->getCssPaths($ckeCssConfig))) {
 				$attrs[self::ATTRIBUTE_CONTENTS_CSS] = str_replace('"', '\'', StringUtils::jsonEncode((array) $cssPaths));
 			}
-			$attrs[self::ATTRIBUTE_ADDITIONAL_STYLES] = StringUtils::jsonEncode($this->prepareAdditionalStyles($cssConfig->getAdditionalStyles()));
-			$attrs[self::ATTRIBUTE_FORMAT_TAGS] = implode(';', (array) $cssConfig->getFormatTags());
+			$attrs[self::ATTRIBUTE_ADDITIONAL_STYLES] = StringUtils::jsonEncode($this->prepareAdditionalStyles($ckeCssConfig->getAdditionalStyles()));
+			$attrs[self::ATTRIBUTE_FORMAT_TAGS] = implode(';', (array) $ckeCssConfig->getFormatTags());
 		}
 
-		if (!empty($linkConfigurations)) {
+		if (!empty($ckeLinkProviers)) {
 			$attrs[self::ATTRIBUTE_LINK_CONFIGURATIONS] = StringUtils::jsonEncode(
-					$this->prepareLinkConfigurations($linkConfigurations, $linkN2nLocale));
+					$this->buildLinkConfigData($ckeLinkProviers, $linkN2nLocale));
 		}
 		
 		$this->html->meta()->addJs('js/wysiwyg.js', 'rocket', true);
@@ -163,20 +185,20 @@ class CkeHtmlBuilder {
 	}
 	
 
-	private function prepareLinkConfigurations($linkConfigurations, N2nLocale $linkN2nLocale = null) {
+	private function buildLinkConfigData($ckeLinkProviers, N2nLocale $linkN2nLocale = null) {
 		$linkN2nLocale = (null !== $linkN2nLocale) ? $linkN2nLocale : $this->view->getN2nLocale();
-		$preparedLinkConfigurations = array();
-		foreach ($linkConfigurations as $providerName => $linkConfiguration) {
-			$title = $linkConfiguration->getTitle();
-			$preparedLinkConfigurations[$title] = array();
-			$preparedLinkConfigurations[$title]['items'] = array();
-			$preparedLinkConfigurations[$title]['open-in-new-window'] = $linkConfiguration->isOpenInNewWindow();
-			foreach ($linkConfiguration->getLinkOptions($linkN2nLocale) as $key => $label) {
+		$linkConfigData = array();
+		foreach ($ckeLinkProviers as $providerName => $ckeLinkProvider) {
+			$title = $ckeLinkProvider->getTitle();
+			$linkConfigData[$title] = array();
+			$linkConfigData[$title]['items'] = array();
+			$linkConfigData[$title]['open-in-new-window'] = $ckeLinkProvider->isOpenInNewWindow();
+			foreach ($ckeLinkProvider->getLinkOptions($linkN2nLocale) as $key => $label) {
 				$url = (new Url('ckelink'))->chQuery(array('provider' => $providerName, 'key' => $key));
-				$preparedLinkConfigurations[$title]['items'][] = array($label, (string) $url);
+				$linkConfigData[$title]['items'][] = array($label, (string) $url);
 			}
 		}
-		return $preparedLinkConfigurations;
+		return $linkConfigData;
 	}
 	
 }
