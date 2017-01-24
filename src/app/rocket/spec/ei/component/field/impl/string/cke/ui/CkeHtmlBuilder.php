@@ -30,7 +30,7 @@ use n2n\l10n\N2nLocale;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeUtils;
-use n2n\core\container\N2nContext;
+use n2n\web\http\nav\UnavailableLinkException;
 
 class CkeHtmlBuilder {
 	const CLASS_NAME_CKE = 'rocket-wysiwyg';
@@ -74,13 +74,13 @@ class CkeHtmlBuilder {
 	
 	private $linkProviders = array();
 	
-	private function lookupLinkProvider($lookupId, N2nContext $n2nContext) {
+	private function lookupLinkProvider($lookupId) {
 		if (array_key_exists($lookupId, $this->linkProviders)) {
 			return $this->linkProviders[$lookupId];
 		}
 		
 		try {
-			return $this->linkProviders[$lookupId] = CkeUtils::lookupCkeLinkProvider($lookupId, $n2nContext);
+			return $this->linkProviders[$lookupId] = CkeUtils::lookupCkeLinkProvider($lookupId, $this->view->getN2nContext());
 		} catch (\InvalidArgumentException $e) {
 			return $this->linkProviders[$lookupId] = null;
 		}
@@ -89,10 +89,10 @@ class CkeHtmlBuilder {
 	public function getOut($contentsHtml, N2nLocale $n2nLocale = null) {
 		$that = $this;
 		$n2nLocale = $n2nLocale ?? $this->view->getN2nLocale();
-		return new Raw(preg_replace_callback('/href\s*=\s*"(ckelink:[^"]+)"/', function($matches) use ($that, $n2nLocale) {
+		return new Raw(preg_replace_callback('/(href\s*=\s*")?\s*(ckelink:\?provider=[^"<]+&amp;key=[^"<]+)(")?/', function($matches) use ($that, $n2nLocale) {
 			$url = null;
 			try {
-				$url = Url::create(htmlspecialchars_decode($matches[1]), true);
+				$url = Url::create(htmlspecialchars_decode($matches[2]), true);
 			} catch (\InvalidArgumentException $e) {
 				return '';
 			}
@@ -108,12 +108,17 @@ class CkeHtmlBuilder {
 				return '';
 			}
 			
-			$url = $ckeLinkProvider->buildUrl($query['key'], $n2nLocale);
+			try {
+				$url = $ckeLinkProvider->buildUrl($query['key'], $that->view, $n2nLocale);
+			} catch (UnavailableLinkException $e) {
+				return '';
+			}
+			
 			if ($url === null) {
 				$url = $query['key'];
 			} 
-
-			return 'href="' . $query['key'] . '"';
+			
+			return $matches[1] .  $url . ($matches[3] ?? '');
 		}, $contentsHtml));
 	}
 	

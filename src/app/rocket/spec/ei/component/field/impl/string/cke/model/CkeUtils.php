@@ -40,7 +40,7 @@ class CkeUtils {
 		
 		$ckeLinkProviders = array();
 		foreach ((array) $ckeLinkProviderLookupIds as $ckeLinkProviderLookupId) {
-			$ckeLinkProviders[] = self::lookupCkeLinkProvider($ckeLinkProviderLookupId, $n2nContext);
+			$ckeLinkProviders[$ckeLinkProviderLookupId] = self::lookupCkeLinkProvider($ckeLinkProviderLookupId, $n2nContext);
 		}
 		return $ckeLinkProviders;
 	}

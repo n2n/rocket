@@ -23,6 +23,7 @@ namespace rocket\spec\ei\component\field\impl\string\cke\model;
 
 use n2n\context\Lookupable;
 use n2n\l10n\N2nLocale;
+use n2n\web\ui\view\View;
 
 interface CkeLinkProvider extends Lookupable {
 	
@@ -41,8 +42,9 @@ interface CkeLinkProvider extends Lookupable {
 	
 	/**
 	 * @return string|Url|null 
+	 * @throws \n2n\web\http\nav\UnavailableUrlException
 	 */
-	public function buildUrl(string $key, N2nLocale $n2nLocale);
+	public function buildUrl(string $key, View $view, N2nLocale $n2nLocale);
 	
 	/**
 	 * @return bool
