@@ -116,6 +116,8 @@ h2 + .rocket-nav-group {
 
 .rocket-content {
     margin-bottom: 1rem;
+    // used for edge --> buttons in edit view not in sight...
+    min-height: calc(100vh - 150px);
 }
 
 .rocket-stacked-content-close {
