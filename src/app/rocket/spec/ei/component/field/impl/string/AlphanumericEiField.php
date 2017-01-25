@@ -62,11 +62,15 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
-			throw new \InvalidArgumentException();
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
+				throw new \InvalidArgumentException();
+			}
+
+			parent::setEntityProperty($entityProperty);
 		}
-		
-		parent::setEntityProperty($entityProperty);
+
+		return null;
 	}
 
 	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
@@ -79,7 +83,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 
 	public function buildFilterField(N2nContext $n2nContext) {
-		return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		}
+
+		return null;
 	}
 	
 	public function buildEiMappingFilterField(N2nContext $n2nContext) {
@@ -91,7 +99,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function buildSortField(N2nContext $n2nContext) {
-		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+		}
+
+		return null;
 	}
 	
 	public function getSortItemFork() {
