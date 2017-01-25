@@ -26,7 +26,6 @@ use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
 use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\manage\EiState;
@@ -111,7 +110,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function buildQuickSearchField(EiState $eiState) {
-		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			return new LikeQuickSearchField(CrIt::p($entityProperty));
+		}
+		
+		return null;
 	}
 	
 	public function getGenericEiProperty() {
