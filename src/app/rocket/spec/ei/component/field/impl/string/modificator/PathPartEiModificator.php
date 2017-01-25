@@ -106,7 +106,7 @@ class PathPartPurifier {
 	private function containsPathPart(string $pathPart): bool {
 		$criteria = $this->eiState->createCriteria('e', CriteriaConstraint::ALL_TYPES);
 		$criteria->select('COUNT(1)')
-				->where()->match(CrIt::p('e', $this->pathPartEiField->getEntityProperty()), '=', $pathPart)
+				->where()->match(CrIt::p('e', $this->pathPartEiField->getEntityProperty(true)), '=', $pathPart)
 				->andMatch(CrIt::p('e', $this->getIdEntityProperty()), '!=', $this->eiMapping->getId());
 	
 		

@@ -57,7 +57,7 @@ class PathPartEiField extends AlphanumericEiField  {
 		parent::__construct();
 		$this->displayDefinition->setDefaultDisplayedViewModes(DisplayDefinition::VIEW_MODE_BULKY_ADD 
 				| DisplayDefinition::VIEW_MODE_LIST_READ);
-
+		$this->entityPropertyRequired = true;
 		$this->getStandardEditDefinition()->setMandatory(false);
 	}
 	
