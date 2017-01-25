@@ -61,15 +61,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
-				throw new \InvalidArgumentException();
-			}
-
-			parent::setEntityProperty($entityProperty);
+		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
+			throw new \InvalidArgumentException();
 		}
 
-		return null;
+		parent::setEntityProperty($entityProperty);
 	}
 
 	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
