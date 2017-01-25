@@ -23,6 +23,7 @@ namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
+use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\web\dispatch\mag\Mag;
@@ -102,5 +103,10 @@ class UrlEiField extends AlphanumericEiField {
 			$value = (string) $value;
 		}
 		$entrySourceInfo->setValue($value);
+	}
+
+	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
+		$value = $entrySourceInfo->getEiMapping()->getValue(EiFieldPath::from($this));
+		return $view->getHtmlBuilder()->getLink($value, $value);
 	}
 }

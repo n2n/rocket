@@ -46,7 +46,13 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 		SortableEiField, QuickSearchableEiField, ScalarEiField, GenericEiField {
 	
 	private $maxlength;
-	
+
+	public  function __construct() {
+		parent::__construct();
+
+		$this->entityPropertyRequired = false;
+	}
+
 	public function getMaxlength() {
 		return $this->maxlength;
 	}
@@ -56,7 +62,7 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		if (!($entityProperty instanceof ScalarEntityProperty)) {
+		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
 			throw new \InvalidArgumentException();
 		}
 		
