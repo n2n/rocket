@@ -29,13 +29,12 @@ class EiSelectionGui {
 	private $guiDefinition;
 	private $viewMode;
 	private $displayables = array();
-	private $eiFieldPaths = array();
+// 	private $eiFieldPaths = array();
 	private $eiSelectionGuiListeners = array();
 	
 	private $dispatchable;
 	private $forkMagPropertyPaths = array();
 	private $savables = array();
-	
 	
 	public function __construct(GuiDefinition $guiDefinition, int $viewMode) {
 		$this->guiDefinition = $guiDefinition;
@@ -70,9 +69,9 @@ class EiSelectionGui {
 		$this->displayables[(string) $guiIdPath] = $displayable;
 	}
 	
-	public function putEiFieldPath(GuiIdPath $guiIdPath, EiFieldPath $eiFieldPath) {
-		$this->eiFieldPaths[(string) $guiIdPath] = $eiFieldPath;
-	}
+// 	public function putEiFieldPath(GuiIdPath $guiIdPath, EiFieldPath $eiFieldPath) {
+// 		$this->eiFieldPaths[(string) $guiIdPath] = $eiFieldPath;
+// 	}
 	
 	public function containsDisplayable(GuiIdPath $guiIdPath) {
 		return isset($this->displayables[(string) $guiIdPath]);
@@ -92,15 +91,15 @@ class EiSelectionGui {
 		return $this->displayables;
 	}
 	
-	public function getEiFieldPathByGuiIdPath(GuiIdPath $guiIdPath) {
-		$guiIdPathStr = (string) $guiIdPath;
+// 	public function getEiFieldPathByGuiIdPath(GuiIdPath $guiIdPath) {
+// 		$guiIdPathStr = (string) $guiIdPath;
 		
-		if (isset($this->eiFieldPaths[$guiIdPathStr])) {
-			return $this->eiFieldPaths[$guiIdPathStr];
-		}
+// 		if (isset($this->eiFieldPaths[$guiIdPathStr])) {
+// 			return $this->eiFieldPaths[$guiIdPathStr];
+// 		}
 		
-		return null;
-	}
+// 		return null;
+// 	}
 
 	public function getDispatchable() {
 		return $this->dispatchable;

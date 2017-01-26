@@ -43,7 +43,7 @@ interface GuiField {
 	public function getDisplayDefinition(): DisplayDefinition;
 	
 	/**
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function isStringRepresentable(): bool;
 	

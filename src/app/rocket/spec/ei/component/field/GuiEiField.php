@@ -23,12 +23,12 @@ namespace rocket\spec\ei\component\field;
 
 interface GuiEiField {
 	/**
-	 * @return \rocket\spec\ei\manage\gui\GuiField null if not displayable
+	 * @return \rocket\spec\ei\manage\gui\GuiField|null null if not displayable
 	 */
 	public function getGuiField();
 	
 	/**
-	 * @return \rocket\spec\ei\manage\gui\GuiFieldFork null if not displayable
+	 * @return \rocket\spec\ei\manage\gui\GuiFieldFork|null null if not displayable
 	 */
 	public function getGuiFieldFork();
 }

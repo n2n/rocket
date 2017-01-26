@@ -63,8 +63,9 @@ class NumericEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$comptibilityLevel = parent::testCompatibility($propertyAssignation);
 		
-		if ($this->eiComponent instanceof IntegerEiField 
-				&& $propertyAssignation->getEntityProperty()->getName() === 'id') {
+		$entityProperty = $propertyAssignation->getEntityProperty(false);
+		if ($this->eiComponent instanceof IntegerEiField
+				&& $entityProperty !== null && $entityProperty->getName() === 'id') {
 			return CompatibilityLevel::COMMON;
 		}
 		

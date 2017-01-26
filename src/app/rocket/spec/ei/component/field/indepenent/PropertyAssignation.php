@@ -48,8 +48,8 @@ class PropertyAssignation {
 	 * @return EntityProperty
 	 * @throws IncompatiblePropertyException
 	 */
-	public function getEntityProperty(): EntityProperty {
-		if ($this->entityProperty === null) {
+	public function getEntityProperty(bool $required = false) {
+		if ($required && $this->entityProperty === null) {
 			throw new IncompatiblePropertyException(
 					'EiField must be assigned to a EntityProperty');
 		}
@@ -68,8 +68,8 @@ class PropertyAssignation {
 	 * @return AccessProxy
 	 * @throws IncompatiblePropertyException
 	 */
-	public function getObjectPropertyAccessProxy(): AccessProxy {
-		if ($this->objectPropertyAccessProxy === null) {
+	public function getObjectPropertyAccessProxy(bool $required = false) {
+		if ($required && $this->objectPropertyAccessProxy === null) {
 			throw new IncompatiblePropertyException(
 					'EiField must be assigned to a accessible object property');
 		}
@@ -79,7 +79,8 @@ class PropertyAssignation {
 		
 	public function createEntityPropertyException($reason = null, \Exception $e = null) {
 		if ($this->entityProperty === null) {
-			throw new IllegalStateException('No EntityProperty available');
+			throw new IncompatiblePropertyException('EiField must be assigned to a EntityProperty'
+					. ($reason ? ' Reason: ' . $reason : ''), 0, $e);
 		}
 		
 		return new IncompatiblePropertyException(
@@ -89,7 +90,8 @@ class PropertyAssignation {
 	
 	public function createAccessProxyException($reason = null, \Exception $e = null) {
 		if ($this->objectPropertyAccessProxy === null) {
-			throw new IllegalStateException('No PropertyAccessProy available');
+			throw new IncompatiblePropertyException(
+					'EiField must be assigned to a accessible object property');
 		}
 		
 		return new IncompatiblePropertyException(

@@ -100,7 +100,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		if ($this->confEntityPropertyEiField !== null) {
 			try {
 				$this->confEntityPropertyEiField->setEntityProperty(
-						$propertyAssignation->getEntityProperty());
+						$propertyAssignation->getEntityProperty(false));
 			} catch (\InvalidArgumentException $e) {
 				throw $propertyAssignation->createEntityPropertyException(null, $e);
 			}
@@ -109,7 +109,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		if ($this->confObjectPropertyEiField !== null) {
 			try {
 				$this->confObjectPropertyEiField->setObjectPropertyAccessProxy(
-						$propertyAssignation->getObjectPropertyAccessProxy());
+						$propertyAssignation->getObjectPropertyAccessProxy(false));
 			} catch (\InvalidArgumentException $e) {
 				throw $propertyAssignation->createAccessProxyException(null, $e);
 			} catch (ConstraintsConflictException $e) {
@@ -438,7 +438,7 @@ class AdaptableEiFieldConfigurator extends EiConfiguratorAdapter implements EiFi
 		if ($this->confDraftableEiField === null) return;
 	
 		$this->attributes->set(self::ATTR_DRAFTABLE_KEY,
-				$magCollection->getMagByPropertyName(self::ATTR_DRAFTABLE_KEY)->getValue());
+				$magCollection->getMagWrapperByPropertyName(self::ATTR_DRAFTABLE_KEY)->getMag()->getValue());
 	}
 	
 	public static function createFromField(EiField $eiField) {

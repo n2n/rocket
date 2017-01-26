@@ -23,8 +23,6 @@ namespace rocket\spec\ei\mask;
 
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiSpec;
-use n2n\util\uri\Path;
-use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\mapping\EiMapping;

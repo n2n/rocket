@@ -92,7 +92,7 @@ class FieldEiHtmlBuilder {
 		}
 	
 		$this->pushGuiFieldInfo($tagName, $fieldErrorInfo, null, $magPropertyPath);
-		return $this->formHtml->getOptionOpen($tagName, $magPropertyPath, $this->buildContainerAttrs(
+		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $this->buildContainerAttrs(
 				(array) $attrs, false, $mandatory));
 	}
 	
@@ -114,7 +114,7 @@ class FieldEiHtmlBuilder {
 	public function getCloseField() {
 		$eiFieldInfo = $this->peakEiFieldInfo(true);
 		if (isset($eiFieldInfo['propertyPath'])) {
-			return $this->formHtml->getOptionClose();
+			return $this->formHtml->getMagClose();
 		}
 	
 		return new Raw('</' . htmlspecialchars($eiFieldInfo['tagName']) . '>');
@@ -128,7 +128,7 @@ class FieldEiHtmlBuilder {
 		$eiFieldInfo = $this->peakEiFieldInfo(false);
 	
 		if (isset($eiFieldInfo['propertyPath'])) {
-			return $this->formHtml->getOptionLabel($attrs, $label);
+			return $this->formHtml->getMagLabel($attrs, $label);
 		}
 	
 		return new HtmlElement('label', $attrs, ($label === null ? $eiFieldInfo['displayable']->getUiOutputLabel() : $label));

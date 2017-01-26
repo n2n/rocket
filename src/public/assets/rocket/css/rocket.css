@@ -711,9 +711,10 @@ h2 + .rocket-nav-group {
 /* line 117, ../theme/sass/rocket/_layout.scss */
 .rocket-content {
   margin-bottom: 1rem;
+  min-height: calc(100vh - 150px);
 }
 
-/* line 121, ../theme/sass/rocket/_layout.scss */
+/* line 123, ../theme/sass/rocket/_layout.scss */
 .rocket-stacked-content-close {
   position: fixed;
   right: 50px;
@@ -723,19 +724,19 @@ h2 + .rocket-nav-group {
   z-index: 1;
 }
 
-/* line 130, ../theme/sass/rocket/_layout.scss */
+/* line 132, ../theme/sass/rocket/_layout.scss */
 .rocket-main-title {
   margin-top: 1rem;
 }
 
-/* line 134, ../theme/sass/rocket/_layout.scss */
+/* line 136, ../theme/sass/rocket/_layout.scss */
 .rocket-panel {
   position: relative;
   background: #F9F8F7;
   border: 1px solid #D3CDC7;
   margin-bottom: 50px;
 }
-/* line 139, ../theme/sass/rocket/_layout.scss */
+/* line 141, ../theme/sass/rocket/_layout.scss */
 .rocket-panel > h3,
 .rocket-panel h2 {
   font-size: 1rem;
@@ -746,13 +747,13 @@ h2 + .rocket-nav-group {
   margin: 0;
 }
 
-/* line 150, ../theme/sass/rocket/_layout.scss */
+/* line 152, ../theme/sass/rocket/_layout.scss */
 .rocket-panel-content {
   padding: 0.375rem;
   margin: 0;
 }
 
-/* line 155, ../theme/sass/rocket/_layout.scss */
+/* line 157, ../theme/sass/rocket/_layout.scss */
 .rocket-page-controls,
 #rocket-page-controls {
   border-top: 1px solid #D3CDC7;
@@ -768,7 +769,7 @@ h2 + .rocket-nav-group {
   display: table;
   clear: both;
 }
-/* line 163, ../theme/sass/rocket/_layout.scss */
+/* line 165, ../theme/sass/rocket/_layout.scss */
 .rocket-page-controls > ul > li,
 #rocket-page-controls > ul > li {
   display: inline-block;
@@ -776,13 +777,13 @@ h2 + .rocket-nav-group {
   margin: 0 0.75rem 0.75rem 0;
 }
 
-/* line 170, ../theme/sass/rocket/_layout.scss */
+/* line 172, ../theme/sass/rocket/_layout.scss */
 .rocket-quick-access-panel {
   padding: 0.375rem 0.75rem;
   margin-bottom: 0.375rem;
 }
 
-/* line 175, ../theme/sass/rocket/_layout.scss */
+/* line 177, ../theme/sass/rocket/_layout.scss */
 .rocket-additional-container {
   background: #F9F8F7;
   border: 1px solid #D3CDC7;
@@ -798,7 +799,7 @@ section::after {
 /***********************************************************************************************************************
  * L A N G U A G E
  **********************************************************************************************************************/
-/* line 188, ../theme/sass/rocket/_layout.scss */
+/* line 190, ../theme/sass/rocket/_layout.scss */
 #rocket-toolbar {
   position: absolute;
   top: -36px;
@@ -806,7 +807,7 @@ section::after {
 }
 
 @media (min-width: 544px) {
-  /* line 199, ../theme/sass/rocket/_layout.scss */
+  /* line 201, ../theme/sass/rocket/_layout.scss */
   .rocket-page-controls,
   #rocket-page-controls {
     position: fixed;
@@ -816,14 +817,14 @@ section::after {
     padding: 0.75rem 0 0;
     margin: 0;
   }
-  /* line 207, ../theme/sass/rocket/_layout.scss */
+  /* line 209, ../theme/sass/rocket/_layout.scss */
   .rocket-page-controls > ul,
   #rocket-page-controls > ul {
     margin: 0;
   }
 }
 @media (min-width: 992px) {
-  /* line 220, ../theme/sass/rocket/_layout.scss */
+  /* line 222, ../theme/sass/rocket/_layout.scss */
   #rocket-header {
     position: fixed;
     left: 0;
@@ -832,33 +833,33 @@ section::after {
     z-index: 105;
   }
 
-  /* line 228, ../theme/sass/rocket/_layout.scss */
+  /* line 230, ../theme/sass/rocket/_layout.scss */
   #rocket-branding {
     top: 0.75rem;
   }
-  /* line 230, ../theme/sass/rocket/_layout.scss */
+  /* line 232, ../theme/sass/rocket/_layout.scss */
   #rocket-branding img {
     width: 123px;
     height: 92px;
   }
 
-  /* line 236, ../theme/sass/rocket/_layout.scss */
+  /* line 238, ../theme/sass/rocket/_layout.scss */
   #rocket-customer-name {
     text-align: left;
     margin-left: 230px;
   }
 
-  /* line 243, ../theme/sass/rocket/_layout.scss */
+  /* line 245, ../theme/sass/rocket/_layout.scss */
   #rocket-conf-nav-toggle {
     display: none;
   }
 
-  /* line 247, ../theme/sass/rocket/_layout.scss */
+  /* line 249, ../theme/sass/rocket/_layout.scss */
   #rocket-logout span {
     display: inline;
   }
 
-  /* line 251, ../theme/sass/rocket/_layout.scss */
+  /* line 253, ../theme/sass/rocket/_layout.scss */
   #rocket-global-nav {
     display: block;
     position: fixed;
@@ -872,16 +873,16 @@ section::after {
     z-index: 100;
   }
 
-  /* line 264, ../theme/sass/rocket/_layout.scss */
+  /* line 266, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group {
     border-bottom: 1px solid #87827C;
   }
-  /* line 266, ../theme/sass/rocket/_layout.scss */
+  /* line 268, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group h3 {
     margin: 0;
     background-color: #4F4A46;
   }
-  /* line 269, ../theme/sass/rocket/_layout.scss */
+  /* line 271, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group h3 a {
     color: #fff;
     padding: 0.75rem 0.75rem 0.75rem 28px;
@@ -891,41 +892,41 @@ section::after {
     cursor: pointer;
     position: relative;
   }
-  /* line 277, ../theme/sass/rocket/_layout.scss */
+  /* line 279, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group h3 a i {
     position: absolute;
     top: 0.75rem;
     left: 0.75rem;
     color: #87827C;
   }
-  /* line 284, ../theme/sass/rocket/_layout.scss */
+  /* line 286, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group h3 a:hover i {
     color: #ED8207;
   }
-  /* line 290, ../theme/sass/rocket/_layout.scss */
+  /* line 292, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group ul {
     margin: 0;
     padding-bottom: 0.375rem;
     border-top: 1px solid #87827C;
     background-color: #66615C;
   }
-  /* line 295, ../theme/sass/rocket/_layout.scss */
+  /* line 297, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group ul a {
     padding: 0.375rem 0.375rem 0.375rem 28px;
     color: #D3CDC7;
     text-decoration: none;
     display: block;
   }
-  /* line 300, ../theme/sass/rocket/_layout.scss */
+  /* line 302, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group ul a:hover {
     color: #fff;
   }
-  /* line 304, ../theme/sass/rocket/_layout.scss */
+  /* line 306, ../theme/sass/rocket/_layout.scss */
   .rocket-nav-group ul li.rocket-nav-group-list-item-active a {
     color: #ED8207;
   }
 
-  /* line 310, ../theme/sass/rocket/_layout.scss */
+  /* line 312, ../theme/sass/rocket/_layout.scss */
   #rocket-conf-nav {
     display: block !important;
     left: 30em;
@@ -936,30 +937,30 @@ section::after {
     padding: 0;
     background: transparent;
   }
-  /* line 319, ../theme/sass/rocket/_layout.scss */
+  /* line 321, ../theme/sass/rocket/_layout.scss */
   #rocket-conf-nav ul {
     padding: 0.375rem 0;
   }
-  /* line 321, ../theme/sass/rocket/_layout.scss */
+  /* line 323, ../theme/sass/rocket/_layout.scss */
   #rocket-conf-nav ul li {
     display: inline;
     float: left;
   }
-  /* line 324, ../theme/sass/rocket/_layout.scss */
+  /* line 326, ../theme/sass/rocket/_layout.scss */
   #rocket-conf-nav ul li a {
     padding: 0.375rem;
   }
-  /* line 328, ../theme/sass/rocket/_layout.scss */
+  /* line 330, ../theme/sass/rocket/_layout.scss */
   #rocket-conf-nav ul .rocket-level-2 {
     display: none;
   }
 
-  /* line 334, ../theme/sass/rocket/_layout.scss */
+  /* line 336, ../theme/sass/rocket/_layout.scss */
   #rocket-global-mobile-nav {
     display: none;
   }
 
-  /* line 338, ../theme/sass/rocket/_layout.scss */
+  /* line 340, ../theme/sass/rocket/_layout.scss */
   #rocket-content-container,
   .rocket-content-container {
     position: fixed;
@@ -973,11 +974,11 @@ section::after {
     padding-left: 30px;
   }
 
-  /* line 351, ../theme/sass/rocket/_layout.scss */
+  /* line 353, ../theme/sass/rocket/_layout.scss */
   .rocket-equal-split-content {
     margin: 0 -12px;
   }
-  /* line 353, ../theme/sass/rocket/_layout.scss */
+  /* line 355, ../theme/sass/rocket/_layout.scss */
   .rocket-equal-split-content > div,
   .rocket-equal-split-content > section {
     float: left;
@@ -985,21 +986,21 @@ section::after {
     width: 50%;
   }
 
-  /* line 361, ../theme/sass/rocket/_layout.scss */
+  /* line 363, ../theme/sass/rocket/_layout.scss */
   .rocket-page-controls,
   #rocket-page-controls {
     left: 245px;
     right: 15px;
   }
 
-  /* line 367, ../theme/sass/rocket/_layout.scss */
+  /* line 369, ../theme/sass/rocket/_layout.scss */
   .rocket-contains-additional {
     width: calc(80% - 60px);
     float: left;
     padding-right: 20px;
   }
 
-  /* line 372, ../theme/sass/rocket/_layout.scss */
+  /* line 374, ../theme/sass/rocket/_layout.scss */
   #rocket-additional {
     position: fixed;
     right: 30px;
@@ -1008,7 +1009,7 @@ section::after {
     max-height: calc(100% - 204px);
   }
 
-  /* line 379, ../theme/sass/rocket/_layout.scss */
+  /* line 381, ../theme/sass/rocket/_layout.scss */
   .rocket-additional-container {
     overflow: auto;
     max-height: calc(100% - 42px);
@@ -4065,7 +4066,7 @@ body.rocket-preview #rocket-global-nav {
 /* line 28, ../theme/sass/rocket/_preview.scss */
 body.rocket-preview #rocket-content-container {
   left: 0;
-  height: calc(100vh - 112px);
+  height: calc(100vh - 62px);
   overflow: hidden;
   padding: 0;
   z-index: 110;

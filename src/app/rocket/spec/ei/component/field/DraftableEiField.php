@@ -23,12 +23,11 @@ namespace rocket\spec\ei\component\field;
 
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\DraftProperty;
-use n2n\util\ex\IllegalStateException;
 
 interface DraftableEiField extends EiField {
 			
 	/**
-	 * @return \rocket\spec\ei\manage\draft\DraftProperty or null
+	 * @return \rocket\spec\ei\manage\draft\DraftProperty|null
 	 */
 	public function getDraftProperty();
 }

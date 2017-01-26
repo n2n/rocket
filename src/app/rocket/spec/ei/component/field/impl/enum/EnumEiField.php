@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\enum;
 
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\component\field\SortableEiField;
@@ -54,11 +53,13 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	private $options = array();
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+		ArgUtils::assertTrue($propertyAccessProxy !== null);
+		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
@@ -103,12 +104,15 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	}
 	
 	public function buildFilterField(N2nContext $n2nContext) {
-		return new EnumFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr(), $this->getOptions());
+		if (null !== ($entityProperty = $this->getEntityProperty())) {
+			return new EnumFilterField(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
+		}
+		
+		return null;
 	}
 
 	public function buildEiMappingFilterField(N2nContext $n2nContext) {
-		return new EnumSelectorItem($this->getEntityProperty()->getName(), $this->getLabelLstr(),
-				FilterFieldAdapter::createOperatorOptions($n2nContext->getN2nLocale()), $this->getOptions());
+		return null;
 	}
 	
 	public function buildManagedSortField(EiState $eiState) {
@@ -116,11 +120,19 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	}
 	
 	public function buildSortField(N2nContext $n2nContext) {
-		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty())) {
+			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+		}
+		
+		return null;
 	}
 	
 	public function buildQuickSearchField(EiState $eiState) {
-		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+		if (null !== ($entityProperty = $this->getEntityProperty())) {
+			return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+		}
+		
+		return null;
 	}
 
 	public function isStringRepresentable(): bool {

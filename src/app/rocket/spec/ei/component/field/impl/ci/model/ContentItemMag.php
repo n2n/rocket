@@ -61,7 +61,7 @@ class ContentItemMag extends MagAdapter {
 		$this->targetReadEiState = $targetReadEiState;
 		$this->targetEditEiState = $targetEditEiState;
 		
-		$this->setContainerAttrs(array('class' => 'rocket-control-group'));
+		$this->setAttrs(array('class' => 'rocket-control-group'));
 	}
 
 	public function setDraftMode(bool $draftMode) {

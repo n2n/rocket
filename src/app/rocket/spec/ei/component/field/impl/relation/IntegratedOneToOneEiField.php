@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\mapping\MappableSource;
-use rocket\spec\ei\manage\gui\ForkedGuiElement;
+use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\AssembleResult;
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
@@ -119,9 +119,9 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	
 	/**
 	 * @param EntrySourceInfo $entrySourceInfo
-	 * @return ForkedGuiElement
+	 * @return GuiElementFork
 	 */
-	public function createForkedGuiElement(EntrySourceInfo $entrySourceInfo, bool $makeEditable): ForkedGuiElement {
+	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork {
 		$eiState = $entrySourceInfo->getEiState();
 		$eiMapping = $entrySourceInfo->getEiMapping();
 		
@@ -148,14 +148,14 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
 				new EntrySourceInfo($targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), $entrySourceInfo->getViewMode()));
 		
-		return new OneToOneForkedGuiElement($toOneMappable, $targetRelationEntry, $targetGuiElementAssembler);
+		return new OneToOneGuiElementFork($toOneMappable, $targetRelationEntry, $targetGuiElementAssembler);
 	}
 	
 	/**
 	 * @param EiObject $eiObject
 	 * @return MappableSource or null if not available
 	 */
-	public function determineForkedMappableSource(EiObject $eiObject) {
+	public function determineForkedEiObject(EiObject $eiObject) {
 		$targetEiSelection = $this->read($eiObject);
 		if ($targetEiSelection === null) {
 			return null;
@@ -181,7 +181,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 
 }
 
-class OneToOneForkedGuiElement implements ForkedGuiElement {
+class OneToOneGuiElementFork implements GuiElementFork {
 	private $toOneMappable;
 	private $targetRelationEntry;
 	private $targetGuiElementAssembler;
@@ -196,7 +196,7 @@ class OneToOneForkedGuiElement implements ForkedGuiElement {
 		return $this->targetGuiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
 	}
 	
-	public function createForkOption($propertyName) {
+	public function buildForkMag(string $propertyName) {
 		$dispatchable = $this->targetGuiElementAssembler->getDispatchable();
 		
 		if ($dispatchable !== null) {

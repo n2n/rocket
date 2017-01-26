@@ -51,11 +51,15 @@ class BooleanEiField extends DraftableEiFieldAdapter implements FilterableEiFiel
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
 		$this->entityProperty = $entityProperty;
 	}
 	
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+		if ($propertyAccessProxy === null) {
+			return;
+		}
+		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;

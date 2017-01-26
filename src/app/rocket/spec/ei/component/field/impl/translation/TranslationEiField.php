@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\component\field\GuiEiField;
 use rocket\spec\ei\component\field\MappableEiField;
-use rocket\spec\ei\manage\gui\ForkedGuiElement;
+use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use n2n\core\container\N2nContext;
@@ -135,7 +135,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		return $this->eiFieldRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	
-	public function createForkedGuiElement(EntrySourceInfo $entrySourceInfo, bool $makeEditable): ForkedGuiElement {
+	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork {
 		$eiState = $entrySourceInfo->getEiState();
 		$eiMapping = $entrySourceInfo->getEiMapping();
 		$eiSelection = $eiMapping->getEiSelection();
@@ -187,7 +187,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		return $translationGuiElement;
 	}
 	
-	public function determineForkedMappableSource(EiObject $eiObject) {
+	public function determineForkedEiObject(EiObject $eiObject) {
 		// @todo access locale and use EiObject with admin locale.
 		return ArrayUtils::first($this->read($eiObject));
 	}

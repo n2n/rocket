@@ -52,13 +52,13 @@ class GuiFactory {
 			if (null !== ($guiField = $eiField->getGuiField())){
 				ArgUtils::valTypeReturn($guiField, GuiField::class, $eiField, 'getGuiField');
 			
-				$guiDefinition->putGuiField($id, $guiField, EiFieldPath::from($eiField));
+				$guiDefinition->putLevelGuiField($id, $guiField, EiFieldPath::from($eiField));
 			}
 			
 			if (null !== ($guiFieldFork = $eiField->getGuiFieldFork())){
 				ArgUtils::valTypeReturn($guiFieldFork, GuiFieldFork::class, $eiField, 'getGuiFieldFork');
 				
-				$guiDefinition->putGuiFieldFork($id, $guiFieldFork);
+				$guiDefinition->putLevelGuiFieldFork($id, $guiFieldFork);
 			}
 		}
 		

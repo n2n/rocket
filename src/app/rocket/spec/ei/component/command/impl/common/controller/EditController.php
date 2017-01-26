@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\controller;
 
-use rocket\core\model\RocketState;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\command\impl\common\model\EditModel;
 use n2n\web\http\controller\ControllerAdapter;
@@ -67,6 +66,11 @@ class EditController extends ControllerAdapter {
 
 		if ($this->dispatch($editModel, 'save')) {
 			$this->redirect($redirectUrl);
+			return;
+		}
+		
+		if ($this->dispatch($editModel, 'quicksave')) {
+			$this->refresh();
 			return;
 		}
 		

@@ -26,7 +26,6 @@ use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
 use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\manage\EiState;
@@ -46,7 +45,13 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 		SortableEiField, QuickSearchableEiField, ScalarEiField, GenericEiField {
 	
 	private $maxlength;
-	
+
+	public  function __construct() {
+		parent::__construct();
+
+		$this->entityPropertyRequired = false;
+	}
+
 	public function getMaxlength() {
 		return $this->maxlength;
 	}
@@ -56,10 +61,10 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		if (!($entityProperty instanceof ScalarEntityProperty)) {
+		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
 			throw new \InvalidArgumentException();
 		}
-		
+
 		parent::setEntityProperty($entityProperty);
 	}
 
@@ -73,7 +78,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 
 	public function buildFilterField(N2nContext $n2nContext) {
-		return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		}
+
+		return null;
 	}
 	
 	public function buildEiMappingFilterField(N2nContext $n2nContext) {
@@ -85,7 +94,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function buildSortField(N2nContext $n2nContext) {
-		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+		}
+
+		return null;
 	}
 	
 	public function getSortItemFork() {
@@ -93,7 +106,11 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 	}
 	
 	public function buildQuickSearchField(EiState $eiState) {
-		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+			return new LikeQuickSearchField(CrIt::p($entityProperty));
+		}
+		
+		return null;
 	}
 	
 	public function getGenericEiProperty() {

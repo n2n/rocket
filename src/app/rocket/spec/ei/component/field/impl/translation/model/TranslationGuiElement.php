@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\translation\model;
 use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\ForkedGuiElement;
+use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\gui\AssembleResult;
@@ -35,7 +35,7 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 
-class TranslationGuiElement implements ForkedGuiElement {
+class TranslationGuiElement implements GuiElementFork {
 	private $toManyMappable;
 	private $guiDefinition;
 	private $label;
@@ -129,11 +129,11 @@ class TranslationGuiElement implements ForkedGuiElement {
 		
 		$this->setupTranslationForm();
 				
-		return new AssembleResult($translationDisplayable, $this->translationForm
-				->registerOption($translationMag), $mandatory);
+		$magInfo = $this->translationForm->registerMag($translationMag);
+		return new AssembleResult($translationDisplayable, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
 	}
 		
-	public function createForkOption($propertyName) {
+	public function buildForkMag(string $propertyName) {
 		if ($this->translationForm === null) {
 			return null;
 		}

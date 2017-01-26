@@ -27,6 +27,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\EiFieldPath;
+use n2n\web\dispatch\mag\MagWrapper;
 
 class GuiElementAssembler {
 	private $guiDefinition;
@@ -38,6 +39,7 @@ class GuiElementAssembler {
 	
 	private $forkedGuiElements = array();
 	private $forkedPropertyPaths = array();
+	private $forkMagWrappers = array();
 	
 	public function __construct(GuiDefinition $guiDefinition, EntrySourceInfo $entrySourceInfo) {
 		$this->guiDefinition = $guiDefinition;
@@ -66,7 +68,7 @@ class GuiElementAssembler {
 	}
 	
 	private function assembleGuiField($id, GuiField $guiField, $makeEditable) {
-		$eiFieldPath = $this->guiDefinition->getEiFieldPathById($id);
+		$eiFieldPath = $this->guiDefinition->getLevelEiFieldPathById($id);
 		$guiElement = $guiField->buildGuiElement($this->entrySourceInfo->toFieldSourceInfo($eiFieldPath));
 		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
 		
@@ -78,11 +80,11 @@ class GuiElementAssembler {
 		
 		$editable = $guiElement->getEditable();
 		ArgUtils::valTypeReturn($editable, 'rocket\spec\ei\manage\gui\Editable', $guiElement, 'createEditable');
-		$this->getOrCreateDispatchable()->getMagCollection()->addMag($editable->createMag($id));
+		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($editable->createMag($id));
 		$this->savables[$id] = $editable;
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));
-		return new AssembleResult($guiElement, $magPropertyPath, $editable->isMandatory());
+		return new AssembleResult($guiElement, $magWrapper, $magPropertyPath, $editable->isMandatory());
 	}
 	
 	private function assembleGuiFieldFork(GuiIdPath $guiIdPath, GuiFieldFork $guiFieldFork, bool $makeEditable) {
@@ -93,7 +95,7 @@ class GuiElementAssembler {
 		if (isset($this->forkedGuiElements[$id])) {
 			$forkedGuiElement = $this->forkedGuiElements[$id];
 		} else {
-			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createForkedGuiElement($this->entrySourceInfo, $makeEditable);
+			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->entrySourceInfo, $makeEditable);
 		} 
 		
 		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath, $makeEditable);
@@ -104,25 +106,26 @@ class GuiElementAssembler {
 			return new AssembleResult($displayable);
 		}
 		
+		$magWrapper = null;
 		if (!isset($this->forkedPropertyPaths[$id])) {
 			$this->savables[$id] = $forkedGuiElement;
-			$this->getOrCreateDispatchable()->getMagCollection()->addMag(
-					$forkedGuiElement->createForkOption($id));
+			$this->forkMagWrappers[$id] = $this->getOrCreateDispatchable()->getMagCollection()->addMag(
+					$forkedGuiElement->buildForkMag($id));
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		
-		return new AssembleResult($displayable, $this->forkedPropertyPaths[$id]->ext($magPropertyPath), 
-				$result->isMandatory());
+		return new AssembleResult($displayable, $this->forkMagWrappers[$id], 
+				$this->forkedPropertyPaths[$id]->ext($magPropertyPath), $result->isMandatory());
 	}
 	
 	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable) {
 		if ($guiIdPath->hasMultipleIds()) {
 			return $this->assembleGuiFieldFork($guiIdPath, $this->guiDefinition
-					->getGuiFieldForkById($guiIdPath->getFirstId()), $makeEditable);
+					->getLevelGuiFieldForkById($guiIdPath->getFirstId()), $makeEditable);
 		}
 		
 		return $this->assembleGuiField($guiIdPath->getFirstId(), $this->guiDefinition
-				->getGuiFieldById($guiIdPath->getFirstId()), $makeEditable);
+				->getLevelGuiFieldById($guiIdPath->getFirstId()), $makeEditable);
 	}
 	
 	public function getDispatchable() {
@@ -140,16 +143,18 @@ class GuiElementAssembler {
 
 class AssembleResult {
 	private $displayable;
-	private $eiFieldPath;
+	private $magWrapper;
 	private $magPropertyPath;
 	private $mandatory;
+// 	private $eiFieldPath;
 	
-	public function __construct(Displayable $displayable, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
+	public function __construct(Displayable $displayable, MagWrapper $magWrapper = null, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
 		$this->displayable = $displayable;
+		$this->magWrapper = $magWrapper;
 		$this->magPropertyPath = $magPropertyPath;
 		$this->mandatory = $mandatory;
 		
-		if ($magPropertyPath !== null && $mandatory === null) {
+		if ($magWrapper !== null && $magPropertyPath === null && $mandatory === null) {
 			throw new \InvalidArgumentException();
 		}
 	}
@@ -158,11 +163,15 @@ class AssembleResult {
 		return $this->displayable;
 	}
 	
+	public function getMagWrapper() {
+		return $this->magWrapper;
+	}
+	
 	public function getMagPropertyPath() {
 		return $this->magPropertyPath;
 	}
 	
-	public function isMandatory(): bool {
+	public function isMandatory() {
 		return $this->mandatory;
 	}
 }

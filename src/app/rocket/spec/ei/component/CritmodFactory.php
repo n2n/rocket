@@ -147,8 +147,9 @@ class CritmodFactory {
 		foreach ($this->eiFieldCollection as $id => $eiField) {
 			if (!($eiField instanceof QuickSearchableEiField)) continue;
 				
-			$quickSearchDefinition->putQuickSearchField(EiFieldPath::from($eiField), 
-					$eiField->buildQuickSearchField($eiState));
+			if (null !== ($quickSearchField = $eiField->buildQuickSearchField($eiState))) {
+				$quickSearchDefinition->putQuickSearchField(EiFieldPath::from($eiField), $quickSearchField);
+			}
 		}
 	
 		return $quickSearchDefinition;

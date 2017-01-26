@@ -44,8 +44,8 @@ class CkeEiField extends AlphanumericEiField {
 	const MODE_ADVANCED = 'advanced';
 	
 	private $mode = self::MODE_SIMPLE;
-	private $ckeLinkProviders;
-	private $cssConfig = null;
+	private $ckeLinkProviderLookupIds;
+	private $cssConfigLookupId = null;
 	private $tableSupported = false;
 	private $bbcodeEnabled = false;
 	
@@ -55,7 +55,7 @@ class CkeEiField extends AlphanumericEiField {
 		$this->displayDefinition->setDefaultDisplayedViewModes(DisplayDefinition::BULKY_VIEW_MODES);
 		$this->standardEditDefinition->setMandatory(false);
 		
-		$this->ckeLinkProviders = new GenericArrayObject(null, CkeLinkProvider::class);
+		$this->ckeLinkProviderLookupIds = new GenericArrayObject(null, CkeLinkProvider::class);
 	}
 	
 	public function createEiFieldConfigurator(): EiFieldConfigurator {
@@ -78,19 +78,24 @@ class CkeEiField extends AlphanumericEiField {
 	/**
 	 * @return \ArrayObject 
 	 */
-	public function getCkeLinkProviders() {
-		return $this->ckeLinkProviders;
+	public function getCkeLinkProviderLookupIds() {
+		return $this->ckeLinkProviderLookupIds;
+	}
+	
+	public function setCkeLinkProviderLookupIds(array $ckeLinkProviderLookupIds) {
+		ArgUtils::valArray($ckeLinkProviderLookupIds, 'string');
+		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
 	}
 		
 	/**
 	 * @return CkeCssConfig
 	 */
-	public function getCkeCssConfig() {
-		return $this->ckeCssConfig;
+	public function getCkeCssConfigLookupId() {
+		return $this->ckeCssConfigLookupId;
 	}
 	
-	public function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
-		$this->ckeCssConfig = $ckeCssConfig;
+	public function setCkeCssConfigLookupId(string $ckeCssConfigLookupId = null) {
+		$this->ckeCssConfigLookupId = $ckeCssConfigLookupId;
 	}
 	
 	/**
@@ -121,15 +126,14 @@ class CkeEiField extends AlphanumericEiField {
 		if ($this->bbcodeEnabled) {
 			return $wysiwygHtml->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
 		}
-		return $wysiwygHtml->getIframe($value, $this->cssConfig);
+		return $wysiwygHtml->getIframe($value, $this->cssConfigLookupId);
 	}
 	
 	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
 		$eiMapping = $entrySourceInfo->getEiMapping();
-		return new CkeMag($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($entrySourceInfo), 
+		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($entrySourceInfo), 
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
-				$this->isTableSupported(), $this->ckeLinkProviders->getArrayCopy(), $this->cssConfig);
+				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->cssConfigLookupId);
 	}
 	
 // 	/**

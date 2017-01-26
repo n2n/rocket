@@ -19,30 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-// namespace rocket\spec\ei\component\modificator\impl\date;
+namespace rocket\spec\ei\manage\gui;
 
-// use rocket\spec\ei\component\modificator\impl\EiModificatorAdapter;
-// use rocket\spec\ei\manage\EiState;
-// use rocket\spec\ei\manage\mapping\EiMapping;
-// use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
-// use rocket\spec\ei\component\field\ObjectPropertyEiField;
-
-// class CreatedEiModificator extends EiModificatorAdapter {
-// 	private $eiField;
+interface GuiElementFork extends Savable {
 	
-// 	public function __construct(ObjectPropertyEiField $eiField) {
-// 		$this->eiField = $eiField;
-// 	}
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param bool $makeEditable
+	 * @return AssembleResult
+	 */
+	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult; 
 	
-// 	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
-// 		$eiSelection = $eiMapping->getEiSelection();
-		
-// 		if (!$eiSelection->isNew()) return;
-// 		$that = $this;
-		
-// 		$eiMapping->registerListener(new OnWriteMappingListener(function() 
-// 				use ($eiState, $eiSelection, $that) {
-// 			$this->eiField->getPropertyAccessProxy()->setValue($eiSelection->getCurrentEntity(), new \DateTime());
-// 		}));
-// 	}
-// }
+	/**
+	 * Mag for group toolbar
+	 * @param string $propertyName
+	 * @return Mag|null
+	 */
+	public function buildForkMag(string $propertyName); 
+}

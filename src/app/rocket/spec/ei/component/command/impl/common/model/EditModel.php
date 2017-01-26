@@ -105,6 +105,12 @@ class EditModel implements Dispatchable {
 		return false;
 	}
 	
+	public function quicksave(MessageContainer $messageContainer) {
+		return $this->save($messageContainer);
+	}
+	
+	
+	
 	public function saveAsNewDraft(MessageContainer $messageContainer) {
 		if (!$this->isDraftable()) return null;
 		

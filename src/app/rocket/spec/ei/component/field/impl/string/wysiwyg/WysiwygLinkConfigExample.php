@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
 use n2n\l10n\N2nLocale;
+
 class WysiwygLinkConfigExample extends WysiwygLinkConfigAdapter {
 	
 	public function getTitle() {
@@ -32,5 +33,4 @@ class WysiwygLinkConfigExample extends WysiwygLinkConfigAdapter {
 		return array('itusch-overwiew' => 'http://127.0.0.1/php-hnm/default/rocket/public/admin/manage/itusch-itusch/overview',
 				'itusch-edit' => 'http://127.0.0.1/php-hnm/default/rocket/public/admin/manage/itusch-itusch/edit/1');
 	}
-	
 }

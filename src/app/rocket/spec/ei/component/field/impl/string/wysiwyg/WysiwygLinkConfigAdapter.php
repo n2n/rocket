@@ -45,5 +45,5 @@ abstract class WysiwygLinkConfigAdapter implements WysiwygLinkConfig {
 	
 	public function isOpenInNewWindow() {
 		return false;
-	}	
+	}
 }
