@@ -22,9 +22,11 @@
 namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\l10n\InvalidDateTimeFormatStyleException;
 use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\web\dispatch\mag\Mag;
@@ -110,6 +112,24 @@ class UrlEiField extends AlphanumericEiField {
 		$value = $entrySourceInfo->getEiMapping()->getValue(EiFieldPath::from($this));
 		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $entrySourceInfo->isViewModeBulky()),
 				array('target' => '_blank'));
+	}
+
+	public function read(EiObject $eiObject) {
+		$urlStr = parent::read($eiObject);
+		if ($urlStr === null) return null;
+
+		try {
+			return Url::create($urlStr, true);
+		} catch (\InvalidArgumentException $e) {
+			return null;
+		}
+	}
+
+	public function write(EiObject $eiObject, $value) {
+		if ($value !== null) {
+			$value = (string) $value;
+		}
+		return parent::write($eiObject, $value);
 	}
 
 	private function buildLabel(Url $url, bool $isBulkyMode) {

@@ -125,9 +125,11 @@ class CiConfigUtils {
 			$panelLabel = StringUtils::pretty($panelName);
 		}
 		
+		$allowedCiIds = $panelAttributes->getArray(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, false, null,
+				TypeConstraint::createSimple('string'), true);
+		
 		return new PanelConfig($panelName, $panelLabel,
-				$panelAttributes->getArray(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, false, null,
-						TypeConstraint::createSimple('string'), true),
+				empty($allowedCiIds) ? null : $allowedCiIds,
 				$panelAttributes->getInt(self::ATTR_MIN_KEY, false, 0),
 				$panelAttributes->getInt(self::ATTR_MAX_KEY, false, null, true));
 	}
