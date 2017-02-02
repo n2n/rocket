@@ -36,6 +36,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 // @todo validate if attributes are arrays
 
@@ -43,8 +44,12 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const OPTION_OPTIONS_KEY = 'options';
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiFields';
 	
-	public function __construct(IndependentEiComponent $eiComponent) {
-		parent::__construct($eiComponent);
+	private $enumEiField;
+	
+	public function __construct(EnumEiField $enumEiField) {
+		parent::__construct($enumEiField);
+		
+		$this->enumEiField = $enumEiField;
 		
 		$this->autoRegister();
 	}
@@ -129,6 +134,20 @@ class EnumEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 					TypeConstraint::createSimple('scalar'));
 			
 			$this->eiComponent->setOptions($options);
+		}
+		
+		if ($this->attributes->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
+			$guiIdPathMap = $this->attributes->getArray(self::ASSOCIATED_GUI_FIELD_KEY, false, array(), 
+					TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar')));
+			foreach ($guiIdPathMap as $value => $guiIdPathStrs) {
+				$guiIdPaths = array();
+				foreach ($guiIdPathStrs as $guiIdPathStr) {
+					$guiIdPaths[] = GuiIdPath::createFromExpression($guiIdPathStr);
+				}
+				$guiIdPathMap[$value] = $guiIdPaths;
+			}
+			
+			$this->enumEiField->setAssociatedGuiIdPathMap($guiIdPathMap);
 		}
 	}
 }

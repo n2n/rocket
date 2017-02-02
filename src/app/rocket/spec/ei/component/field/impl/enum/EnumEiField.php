@@ -46,11 +46,13 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\enum\conf\EnumEiFieldConfigurator;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField, 
 		QuickSearchableEiField {
 	
 	private $options = array();
+	private $associatedGuiIdPathMap = array();
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty);
@@ -141,5 +143,18 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
 		return $this->read($eiObject);
+	}
+	
+	public function setAssociatedGuiIdPathMap(array $associatedGuiIdPathMap) {
+		ArgUtils::valArray($associatedGuiIdPathMap, 
+				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiIdPath::class)));
+		$this->associatedGuiIdPathMap = $associatedGuiIdPathMap;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getAssociatedGuiIdPathMap() {
+		return $this->associatedGuiIdPathMap;
 	}
 }
