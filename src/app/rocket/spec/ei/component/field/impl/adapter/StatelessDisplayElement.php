@@ -31,27 +31,50 @@ class StatelessDisplayElement implements GuiElement {
 	private $statelessDisplayable;
 	private $fieldSourceInfo;
 	
+	/**
+	 * @param StatelessDisplayable $statelessDisplayable
+	 * @param FieldSourceInfo $fieldSourceInfo
+	 */
 	public function __construct(StatelessDisplayable $statelessDisplayable, FieldSourceInfo $fieldSourceInfo) {
 		$this->statelessDisplayable = $statelessDisplayable;
 		$this->fieldSourceInfo = $fieldSourceInfo;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getUiOutputLabel()
+	 */
 	public function getUiOutputLabel(): string {
 		return $this->statelessDisplayable->getUiOutputLabel($this->fieldSourceInfo);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
+	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return $this->statelessDisplayable->getOutputHtmlContainerAttrs($this->fieldSourceInfo);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
+	 */
 	public function createOutputUiComponent(HtmlView $view) {
 		return $this->statelessDisplayable->createOutputUiComponent($view, $this->fieldSourceInfo);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiElement::isReadOnly()
+	 */
 	public function isReadOnly(): bool {
 		return true;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isMandatory(): bool {
 		return false;
 	}

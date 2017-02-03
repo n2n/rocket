@@ -120,12 +120,12 @@ class EntryEiHtmlBuilder {
 		$fieldErrorInfo = $entryGuiModel->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiSelectionGui->getGuiDefinition()->guiIdPathToEiFieldPath($guiIdPath));
 		
-		if (!$eiSelectionGui->containsEditableInfoGuiIdPath($guiIdPath)) {
+		if (!$eiSelectionGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
 					$this->buildAttrs($guiIdPath));
 		}
 		
-		$editableInfo = $eiSelectionGui->getEditableInfoByGuiIdPath($guiIdPath);
+		$editableInfo = $eiSelectionGui->getEditableWrapperByGuiIdPath($guiIdPath);
 		$propertyPath = $entryGui->getEntryPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
 		$this->pushGuiFieldInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);

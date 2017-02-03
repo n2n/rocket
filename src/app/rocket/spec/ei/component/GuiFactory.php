@@ -29,7 +29,7 @@ use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\component\field\GuiEiField;
-use rocket\spec\ei\manage\gui\EditableInfo;
+use rocket\spec\ei\manage\gui\EditableWrapper;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiField;
@@ -83,8 +83,8 @@ class GuiFactory {
 			
 			$eiSelectionGui->putDisplayable($guiIdPath, $result->getDisplayable());
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
-				$eiSelectionGui->putEditableInfo($guiIdPath, new EditableInfo($result->isMandatory(), 
-						$magPropertyPath));
+				$eiSelectionGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
+						$magPropertyPath, $result->getMagWrapper()));
 			}
 		}
 		

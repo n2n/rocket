@@ -29,7 +29,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\MagWrapper;
 
-class GuiElementAssembler {
+class GuiElementAssembler implements Savable {
 	private $guiDefinition;
 	private $entrySourceInfo;
 	private $eiSelectionForm;
@@ -148,7 +148,8 @@ class AssembleResult {
 	private $mandatory;
 // 	private $eiFieldPath;
 	
-	public function __construct(Displayable $displayable, MagWrapper $magWrapper = null, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
+	public function __construct(Displayable $displayable, MagWrapper $magWrapper = null, 
+			PropertyPath $magPropertyPath = null, bool $mandatory = null) {
 		$this->displayable = $displayable;
 		$this->magWrapper = $magWrapper;
 		$this->magPropertyPath = $magPropertyPath;
@@ -159,18 +160,30 @@ class AssembleResult {
 		}
 	}
 	
+	/**
+	 * @return Displayable
+	 */
 	public function getDisplayable(): Displayable {
 		return $this->displayable;
 	}
 	
+	/**
+	 * @return \n2n\web\dispatch\mag\MagWrapper|null
+	 */
 	public function getMagWrapper() {
 		return $this->magWrapper;
 	}
 	
+	/**
+	 * @return \n2n\web\dispatch\map\PropertyPath|null
+	 */
 	public function getMagPropertyPath() {
 		return $this->magPropertyPath;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isMandatory() {
 		return $this->mandatory;
 	}
