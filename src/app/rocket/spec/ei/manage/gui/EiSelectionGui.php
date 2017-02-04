@@ -129,6 +129,10 @@ class EiSelectionGui {
 		return $this->editableInfos[$guiIdPathStr];
 	}
 	
+	public function getMagWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableInfo {
+		return $this->getEditableInfoByGuiIdPath($guiIdPath)->getMagWrapper();
+	}
+	
 	public function getForkMagPropertyPaths(): array {
 		return $this->forkMagPropertyPaths;
 	}
