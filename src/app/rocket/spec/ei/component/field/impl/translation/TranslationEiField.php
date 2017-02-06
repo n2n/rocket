@@ -72,9 +72,15 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
-				&& $entityProperty->getType() == RelationEntityProperty::TYPE_ONE_TO_MANY
-				&& $entityProperty->getRelation()->getTargetEntityModel()->getClass()
-						->implementsInterface(Translatable::class));
+				&& $entityProperty->getType() == RelationEntityProperty::TYPE_ONE_TO_MANY);
+	
+		if (!$entityProperty->getRelation()->getTargetEntityModel()->getClass()
+				->implementsInterface(Translatable::class)) {
+			throw new \InvalidArgumentException('Target entity ('
+					. $entityProperty->getTargetEntityModel()->getClass()->getName() . ') must implment '
+					. Translatable::class);
+		}
+
 		$this->entityProperty = $entityProperty;
 	}
 	
