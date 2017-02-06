@@ -26,6 +26,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\dispatch\mag\MagWrapper;
+use n2n\util\ex\IllegalStateException;
 
 class EiSelectionGui {
 	private $guiDefinition;
@@ -33,6 +34,7 @@ class EiSelectionGui {
 	private $displayables = array();
 // 	private $eiFieldPaths = array();
 	private $eiSelectionGuiListeners = array();
+	private $initialized = false;
 	
 	private $dispatchable;
 	private $forkMagPropertyPaths = array();
@@ -49,6 +51,10 @@ class EiSelectionGui {
 	
 	public function getViewMode() {
 		return $this->viewMode;
+	}
+	
+	public function isInitialized() {
+		return $this->initialized;
 	}
 	
 	/**
@@ -129,7 +135,7 @@ class EiSelectionGui {
 		return $this->editableInfos[$guiIdPathStr];
 	}
 	
-	public function getMagWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableInfo {
+	public function getMagWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableWrapper {
 		return $this->getEditableInfoByGuiIdPath($guiIdPath)->getMagWrapper();
 	}
 	
@@ -152,6 +158,8 @@ class EiSelectionGui {
 	}
 	
 	public function save() {
+		$this->ensureInitialized();
+		
 		foreach ($this->eiSelectionGuiListeners as $eiSelectionGuiListener) {
 			$eiSelectionGuiListener->onSave($this);
 		}
@@ -162,6 +170,28 @@ class EiSelectionGui {
 		
 		foreach ($this->eiSelectionGuiListeners as $eiSelectionGuiListener) {
 			$eiSelectionGuiListener->saved($this);
+		}
+	}
+	
+	private function ensureInitialized() {
+		if ($this->initialized) return;
+		
+		throw new IllegalStateException('EiSelectionGui not yet initlized.');
+	}
+	
+	private function ensureNotInitialized() {
+		if (!$this->initialized) return;
+		
+		throw new IllegalStateException('EiSelectionGui already initialized.');
+	}
+	
+	public function markInitialized() {
+		$this->ensureNotInitialized();
+		
+		$this->initialized = true;
+		
+		foreach ($this->eiSelectionGuiListeners as $eiSelectionGuiListener) {
+			$eiSelectionGuiListener->finalized($this);
 		}
 	}
 	
