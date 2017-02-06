@@ -24,6 +24,8 @@ namespace rocket\spec\ei\manage\gui;
 use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\Dispatchable;
+use n2n\web\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\MagWrapper;
 
 class EiSelectionGui {
 	private $guiDefinition;
@@ -109,15 +111,15 @@ class EiSelectionGui {
 		$this->dispatchable = $dispatchable;
 	}
 	
-	public function putEditableInfo(GuiIdPath $guiIdPath, EditableInfo $editableInfo) {
+	public function putEditableWrapper(GuiIdPath $guiIdPath, EditableWrapper $editableInfo) {
 		$this->editableInfos[(string) $guiIdPath] = $editableInfo;
 	}
 	
-	public function containsEditableInfoGuiIdPath(GuiIdPath $guiIdPath): bool {
+	public function containsEditableWrapperGuiIdPath(GuiIdPath $guiIdPath): bool {
 		return isset($this->editableInfos[(string) $guiIdPath]);
 	}
 	
-	public function getEditableInfoByGuiIdPath(GuiIdPath $guiIdPath): EditableInfo {
+	public function getEditableWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableWrapper {
 		$guiIdPathStr = (string) $guiIdPath;
 		
 		if (!isset($this->editableInfos[$guiIdPathStr])) {
@@ -125,6 +127,10 @@ class EiSelectionGui {
 		}
 		
 		return $this->editableInfos[$guiIdPathStr];
+	}
+	
+	public function getMagWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableInfo {
+		return $this->getEditableInfoByGuiIdPath($guiIdPath)->getMagWrapper();
 	}
 	
 	public function getForkMagPropertyPaths(): array {
@@ -169,20 +175,35 @@ class EiSelectionGui {
 }
 
 
-class EditableInfo {
+class EditableWrapper {
 	private $mandatory;
 	private $magPropertyPath;
+	private $magWrapper;
 	
-	public function __construct(bool $mandatory, PropertyPath $magPropertyPath) {
+	public function __construct(bool $mandatory, PropertyPath $magPropertyPath, MagWrapper $magWrapper) {
 		$this->mandatory = $mandatory;
 		$this->magPropertyPath = $magPropertyPath;
+		$this->magWrapper = $magWrapper;
 	}
 	
-	public function isMandatory(): bool {
+	/**
+	 * @return boolean
+	 */
+	public function isMandatory() {
 		return $this->mandatory;
 	}
 	
-	public function getMagPropertyPath(): PropertyPath {
+	/**
+	 * @return \n2n\web\dispatch\map\PropertyPath
+	 */
+	public function getMagPropertyPath() {
 		return $this->magPropertyPath;
+	}
+	
+	/**
+	 * @return \n2n\web\dispatch\mag\Mag
+	 */
+	public function getMagWrapper() {
+		return $this->magWrapper;
 	}
 }
