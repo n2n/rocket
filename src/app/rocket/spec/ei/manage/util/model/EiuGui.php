@@ -27,6 +27,9 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\spec\ei\manage\gui\EiSelectionGuiListener;
+use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\manage\gui\GuiException;
+use n2n\web\dispatch\mag\MagWrapper;
 
 class EiuGui {
 	private $eiuEntry;
@@ -69,11 +72,27 @@ class EiuGui {
 		return $this->eiSelectionGui;
 	}
 	
-	public function ready(\Closure $closure) {
+	public function whenReady(\Closure $closure) {
 		$this->whenReadyClosures[] = $closure;
 		
 		if ($this->eiSelectionGui->isInitialized()) {
 			$this->triggerWhenReady();
+		}
+	}
+	
+	/**
+	 * @param unknown $guiIdPath
+	 * @param bool $required
+	 * @throws GuiException
+	 * @return MagWrapper
+	 */
+	public function getMagWrapper($guiIdPath, bool $required = false) {
+		try {
+			return $this->eiSelectionGui->getEditableWrapperByGuiIdPath(
+					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
+		} catch (GuiException $e) {
+			if ($required) throw $e;
+			return null;
 		}
 	}
 	

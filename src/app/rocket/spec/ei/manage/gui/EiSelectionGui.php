@@ -125,7 +125,12 @@ class EiSelectionGui {
 		return isset($this->editableInfos[(string) $guiIdPath]);
 	}
 	
-	public function getEditableWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableWrapper {
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @throws GuiException
+	 * @return EditableWrapper
+	 */
+	public function getEditableWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
 		
 		if (!isset($this->editableInfos[$guiIdPathStr])) {
@@ -133,10 +138,6 @@ class EiSelectionGui {
 		}
 		
 		return $this->editableInfos[$guiIdPathStr];
-	}
-	
-	public function getMagWrapperByGuiIdPath(GuiIdPath $guiIdPath): EditableWrapper {
-		return $this->getEditableInfoByGuiIdPath($guiIdPath)->getMagWrapper();
 	}
 	
 	public function getForkMagPropertyPaths(): array {

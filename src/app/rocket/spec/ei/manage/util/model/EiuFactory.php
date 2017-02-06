@@ -86,6 +86,11 @@ class EiuFactory {
 		
 	}
 	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\gui\EiSelectionGui
+	 */
 	public function getEiSelectionGui(bool $required) {
 		if (!$required || $this->eiSelectionGui !== null) {
 			return $this->eiSelectionGui;
