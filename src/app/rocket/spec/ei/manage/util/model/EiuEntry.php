@@ -79,9 +79,9 @@ class EiuEntry {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function assignEiuGui($viewMode) {
+	public function assignEiuGui($eiGui) {
 		if ($this->assignedEiuGui === null) {
-			return $this->assignedEiuGui = $this->toEiuGui($viewMode);
+			return $this->assignedEiuGui = $this->toEiuGui($eiGui);
 		}
 		
 		throw new EiuPerimeterException('EiuGui already assigned');
@@ -100,8 +100,8 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuGui assigned');
 	}
 	
-	public function toEiuGui($viewMode) {
-		return new EiuGui($viewMode, $this);
+	public function toEiuGui($eiGui) {
+		return new EiuGui($eiGui, $this);
 	}
 	
 	

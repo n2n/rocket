@@ -24,41 +24,99 @@ namespace rocket\spec\ei\manage\util\model;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\gui\EiSelectionGui;
+use n2n\reflection\magic\MagicMethodInvoker;
+use rocket\spec\ei\manage\gui\EiSelectionGuiListener;
+use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\manage\gui\GuiException;
+use n2n\web\dispatch\mag\MagWrapper;
 
 class EiuGui {
-	private $viewMode;
 	private $eiuEntry;
-// 	protected $eiMask;
 	protected $eiSelectionGui;
 	
-	public function __construct($viewMode, $eiuEntry = null) {
-		if ($eiuEntry !== null) {
-			$this->eiuEntry = EiuFactory::buildEiuEntryFromEiArg($eiuEntry, null, 'eiuEntry', false);
-		}
+	public function __construct(...$eiArgs) {
+		$eiuFactory = new EiuFactory();
+		$eiuFactory->applyEiArgs(...$eiArgs);
 		
-		if (is_numeric($viewMode)) {
-			$this->viewMode = $viewMode;
-			return;
-		}
+		$this->eiSelectionGui = $eiuFactory->getEiSelectionGui(true);
+		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 		
-		if ($viewMode instanceof EntryGuiModel) {
-			$this->viewMode = $viewMode->getEiSelectionGui()->getViewMode();
-			if ($this->eiuEntry === null) {
-				$this->eiuEntry = EiuFactory::buildEiuEntryFromEiArg($viewMode);
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new class($this) implements EiSelectionGuiListener {
+			private $eiuGui;
+			
+			public function __construct(EiuGui $eiuGui) {
+				$this->eiuGui = $eiuGui;
 			}
-		}
+			
+			public function finalized(EiSelectionGui $eiSelectionGui) {
+				$this->eiuGui->triggerWhenReady();
+			}
+			
+			public function onSave(EiSelectionGui $eiSelectionGui) {
+			}
+			
+			public function saved(EiSelectionGui $eiSelectionGui) {
+			}
+		});
 	}
 	
 	public function getViewMode() {
-		return $this->viewMode;
+		return $this->eiSelectionGui->getViewMode();
+	}
+	
+	/**
+	 * @return EiSelectionGui 
+	 */
+	public function getEiSelectionGui() {
+		return $this->eiSelectionGui;
+	}
+	
+	public function whenReady(\Closure $closure) {
+		$this->whenReadyClosures[] = $closure;
+		
+		if ($this->eiSelectionGui->isInitialized()) {
+			$this->triggerWhenReady();
+		}
+	}
+	
+	/**
+	 * @param unknown $guiIdPath
+	 * @param bool $required
+	 * @throws GuiException
+	 * @return MagWrapper
+	 */
+	public function getMagWrapper($guiIdPath, bool $required = false) {
+		try {
+			return $this->eiSelectionGui->getEditableWrapperByGuiIdPath(
+					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
+		} catch (GuiException $e) {
+			if ($required) throw $e;
+			return null;
+		}
+	}
+	
+	private function triggerWhenReady() {
+		if (empty($this->whenReadyClosures)) return;
+		
+		$n2nContext = null;
+		if ($this->eiuEntry !== null && null !== ($eiuFrame = $this->eiuEntry->getEiuFrame(false))) {
+			$n2nContext = $eiuFrame->getN2nContext();
+		}
+		$invoker = new MagicMethodInvoker($n2nContext);
+		$invoker->setClassParamObject(EiuGui::class, $this);
+		while (null !== ($closure = array_shift($this->whenReadyClosures))) {
+			$invoker->invoke(null, $closure);
+		}
 	}
 
 	/**
 	 * @return boolean
 	 */
 	public function isViewModeOverview() {
-		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
-		|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
+		$viewMode = $this->eiSelectionGui->getViewMode();
+		return $viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
+				|| $viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
 	}
 	
 	public function getEiuEntry(bool $required = true) {
@@ -66,7 +124,7 @@ class EiuGui {
 			return $this->eiuEntry;
 		}
 		
-		throw new EiuPerimeterException('No EiuGui provided to ' . (new \ReflectionClass($this))->getShortName());
+		throw new EiuPerimeterException('No EiuEntry provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
 // 	public function getEiMask() {

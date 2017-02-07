@@ -102,6 +102,8 @@ class GuiFactory {
 			$eiSelectionGui->registerEiSelectionGuiListener($eiSelectionGuiListener);
 		}
 		
+		$eiSelectionGui->markInitialized();
+		
 		return $eiSelectionGui;
 	}
 }

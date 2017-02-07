@@ -15,19 +15,21 @@ use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\ManageState;
+use rocket\spec\ei\manage\gui\EiSelectionGui;
 
 class EiuFactory {
-	const EI_ENTRY_TYPES = array(EiSelection::class, EiMapping::class, LiveEntry::class, Draft::class, EntryGuiModel::class);
 	const EI_FRAME_TYPES = array(EiState::class, N2nContext::class);
-	const EI_GUI_TYPES = array(EntryGuiModel::class);
+	const EI_ENTRY_TYPES = array(EiSelection::class, EiMapping::class, LiveEntry::class, Draft::class, 
+			EntryGuiModel::class);
+	const EI_GUI_TYPES = array(EntryGuiModel::class, EiSelectionGui::class);
 	const EI_TYPES = array(EiState::class, N2nContext::class, EiSelection::class, EiMapping::class, LiveEntry::class, 
-			Draft::class);
+			Draft::class, EntryGuiModel::class, EiSelectionGui::class);
 	
 	private $eiState;
 	private $n2nContext;
 	private $eiSelection;
 	private $eiMapping;
-	private $viewMode;
+	private $eiSelectionGui;
 	
 	private $eiuCtrl;
 	private $eiuFrame;
@@ -46,13 +48,18 @@ class EiuFactory {
 				continue;
 			}
 			
-			if (null !== ($eiSelection = self::determineEiSelection($eiArg, $this->eiMapping, $this->viewMode))) {
+			if ($eiArg instanceof EiSelectionGui) {
+				$this->eiSelectionGui = $eiArg;
+			}
+			
+			if (null !== ($eiSelection = self::determineEiSelection($eiArg, $this->eiMapping, $this->eiSelectionGui))) {
 				$this->eiSelection = $eiSelection;
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuGui) {
-				$this->viewMode = $eiArg->getViewMode();
+				$this->eiuGui = $eiArg;
+				$this->eiSelectionGui = $eiArg->getEiSelectionGui();
 				$eiArg = $eiArg->getEiuEntry(false);
 			}
 			
@@ -79,6 +86,20 @@ class EiuFactory {
 		
 	}
 	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\gui\EiSelectionGui
+	 */
+	public function getEiSelectionGui(bool $required) {
+		if (!$required || $this->eiSelectionGui !== null) {
+			return $this->eiSelectionGui;
+		}
+		
+		throw new EiuPerimeterException(
+				'Could not determine EiSelectionGui because non of the following types were provided as eiArgs: ' 
+						. implode(', ', self::EI_GUI_TYPES));
+	}
 
 	public function getEiuCtrl() {
 		if ($this->eiuCtrl !== null) {
@@ -169,13 +190,13 @@ class EiuFactory {
 			return $this->eiuGui;
 		}
 		
-		if ($this->viewMode !== null) {
+		if ($this->eiSelectionGui !== null) {
 			$eiuEntry = $this->getEiuEntry(false);
 			if ($eiuEntry !== null) {
-				return $this->eiuGui = $eiuEntry->assignEiuGui($this->viewMode);
+				return $this->eiuGui = $eiuEntry->assignEiuGui($this->eiSelectionGui);
 			} 
 			
-			return $this->eiuGui = new EiuGui($this->viewMode);
+			return $this->eiuGui = new EiuGui($this->eiSelectionGui);
 		}
 		
 		if (!$required) return null;
@@ -245,7 +266,7 @@ class EiuFactory {
 	 * @param unknown $eiEntryObj
 	 * @return rocket\spec\ei\manage\util\model\EiSelection
 	 */
-	public static function determineEiSelection($eiEntryObj, &$eiMapping, &$viewMode) {
+	public static function determineEiSelection($eiEntryObj, &$eiMapping, &$eiSelectionGui) {
 		if ($eiEntryObj instanceof EiSelection) {
 			return $eiEntryObj;
 		} 
@@ -265,9 +286,9 @@ class EiuFactory {
 		
 		if ($eiEntryObj instanceof EntryGuiModel) {
 			$eiMapping = $eiEntryObj->getEiMapping();
-			$viewMode = $eiEntryObj->getEiSelectionGui()->getViewMode();
+			$eiSelectionGui = $eiEntryObj->getEiSelectionGui();
 			return $eiMapping->getEiSelection();
-		} 
+		}
 			
 		return null;
 	}

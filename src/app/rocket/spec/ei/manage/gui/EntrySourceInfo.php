@@ -263,6 +263,9 @@ class FieldGuiListener implements EiSelectionGuiListener {
 		$this->savedClosure = $savedClosure;
 	}
 	
+	public function finalized(EiSelectionGui $eiSelectionGui) {
+	}
+	
 	public function onSave(EiSelectionGui $eiSelectionGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);

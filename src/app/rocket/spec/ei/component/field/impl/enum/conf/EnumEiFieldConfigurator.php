@@ -27,7 +27,6 @@ use rocket\spec\ei\component\field\impl\enum\EnumEiField;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\ei\component\IndependentEiComponent;
 use n2n\util\config\LenientAttributeReader;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
