@@ -66,18 +66,15 @@ class EiuGui {
 	}
 	
 	public function whenReady(\Closure $closure) {
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(
-				$this, $this->getEiuEntry()->getEiFrame()->getN2nContext(), $closure));
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
 	}
 	
 	public function onSave(\Closure $closure) {
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(
-				$this, $this->getEiuEntry()->getEiFrame()->getN2nContext(), null, $closure));
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
 	}
 	
 	public function whenSave(\Closure $closure) {
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(
-				$this, $this->getEiuEntry()->getEiFrame()->getN2nContext(), null, null, $closure));
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
 	
 	/**
@@ -175,6 +172,6 @@ class ClosureGuiListener implements EiSelectionGuiListener {
 	private function call($closure) {
 		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiState()->getN2nContext());
 		$mmi->setClassParamObject(Eiu::class, $this->eiu);
-		$mmi->invoke(null, $closure);
+		$mmi->invoke(null, new \ReflectionFunction($closure));
 	}
 }

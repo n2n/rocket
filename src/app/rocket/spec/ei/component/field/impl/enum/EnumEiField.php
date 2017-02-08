@@ -47,6 +47,7 @@ use rocket\spec\ei\component\field\impl\enum\conf\EnumEiFieldConfigurator;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 use rocket\spec\ei\manage\gui\GuiIdPath;
+use n2n\impl\web\dispatch\mag\model\group\EnumEnablerMag;
 
 class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField, 
 		QuickSearchableEiField {
@@ -87,8 +88,34 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 				unset($choicesMap[$value]);
 			}
 		}
-		return new EnumMag($propertyName, $this->getLabelLstr(), $choicesMap, null, 
-				$this->isMandatory($eiu));
+		
+		if (empty($this->associatedGuiIdPathMap)) {
+			return new EnumMag($propertyName, $this->getLabelLstr(), $choicesMap, null, 
+					$this->isMandatory($eiu));
+		}
+		
+		$enablerMag = new EnumEnablerMag($propertyName, $this->getLabelLstr(), $choicesMap, null, 
+					$this->isMandatory($eiu));
+		
+		$that = $this;
+		$eiu->gui()->whenReady(function () use ($eiu, $enablerMag, $that) {
+			$associatedMagWrapperMap = array();
+			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
+				$magWrappers = array();
+				foreach ($guiIdPaths as $guiIdPath) {
+					$magWrapper = $eiu->gui()->getMagWrapper($guiIdPath, false);
+					if ($magWrapper === null) continue;
+					
+					$magWrappers[] = $magWrapper;
+				}
+				
+				$associatedMagWrapperMap[$value] = $magWrappers; 
+			}
+			
+			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
+		});
+		
+		return $enablerMag;
 	}
 	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
