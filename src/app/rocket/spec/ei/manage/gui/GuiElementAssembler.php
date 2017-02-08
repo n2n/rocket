@@ -28,10 +28,11 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\MagWrapper;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class GuiElementAssembler implements Savable {
 	private $guiDefinition;
-	private $entrySourceInfo;
+	private $eiuGui;
 	private $eiSelectionForm;
 	private $displayables = array();
 	private $magPropertyPaths = array();
@@ -41,16 +42,16 @@ class GuiElementAssembler implements Savable {
 	private $forkedPropertyPaths = array();
 	private $forkMagWrappers = array();
 	
-	public function __construct(GuiDefinition $guiDefinition, EntrySourceInfo $entrySourceInfo) {
+	public function __construct(GuiDefinition $guiDefinition, EiuGui $eiuGui) {
 		$this->guiDefinition = $guiDefinition;
-		$this->entrySourceInfo = $entrySourceInfo;
+		$this->eiuGui = $eiuGui;
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\manage\gui\EntrySourceInfo
 	 */
 	public function getEntrySourceInfo(): EntrySourceInfo {
-		return $this->entrySourceInfo;
+		return $this->eiuGui;
 	}
 	
 	private function getOrCreateDispatchable() {
@@ -69,7 +70,7 @@ class GuiElementAssembler implements Savable {
 	
 	private function assembleGuiField($id, GuiField $guiField, $makeEditable) {
 		$eiFieldPath = $this->guiDefinition->getLevelEiFieldPathById($id);
-		$guiElement = $guiField->buildGuiElement($this->entrySourceInfo->toFieldSourceInfo($eiFieldPath));
+		$guiElement = $guiField->buildGuiElement($this->eiuGui->toFieldSourceInfo($eiFieldPath));
 		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
 		
 		if ($guiElement === null) return null;
@@ -95,7 +96,7 @@ class GuiElementAssembler implements Savable {
 		if (isset($this->forkedGuiElements[$id])) {
 			$forkedGuiElement = $this->forkedGuiElements[$id];
 		} else {
-			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->entrySourceInfo, $makeEditable);
+			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->eiuGui, $makeEditable);
 		} 
 		
 		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath, $makeEditable);

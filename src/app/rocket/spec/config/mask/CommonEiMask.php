@@ -73,6 +73,8 @@ use rocket\spec\ei\manage\control\UnavailableControlException;
 use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuPerimeterException;
+use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -201,7 +203,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	private function createEiSelectionGui(EiState $eiState, EiMapping $eiMapping, $viewMode, $makeEditable): EiSelectionGui {
 		$guiIdPaths = $this->getGuiFieldOrderViewMode($viewMode)->getAllGuiIdPaths();
 	
-		return $this->eiEngine->createEiSelectionGui(new EntrySourceInfo($eiMapping, $eiState, $viewMode), 
+		return $this->eiEngine->createEiSelectionGui(new EiuEntry($eiMapping, $eiState), $viewMode, 
 				$makeEditable, $guiIdPaths);
 	}
 				

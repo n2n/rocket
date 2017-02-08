@@ -137,12 +137,28 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function assignEiuEntry($eiEntryObj) {
+	public function eiuEntry($eiEntryObj, bool $assignToEiuEntry = false) {
+		$eiuEntry = new EiuEntry($eiEntryObj, $this);
+
+		if (!$assignToEiuEntry) return $eiuEntry;
+		
 		if ($this->assignedEiuEntry === null) {
-			return $this->assignedEiuEntry = $this->toEiuEntry($eiEntryObj);
+			return $this->assignedEiuEntry = $eiuEntry;
 		}
 		
 		throw new EiuPerimeterException('EiuEntry already assigned');
+	}
+	
+	public function copy() {
+		return new EiuFrame($this->eiState);
+	}
+	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function hasAssignedEiuEntry() {
+		return $this->assignedEiuEntry !== null;
 	}
 	
 	/**

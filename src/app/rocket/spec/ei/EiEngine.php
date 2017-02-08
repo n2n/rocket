@@ -48,6 +48,7 @@ use rocket\spec\ei\manage\generic\ScalarEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiDefinition;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class EiEngine {
 	private $eiSpec;
@@ -186,9 +187,9 @@ class EiEngine {
 		return $this->guiDefinition;
 	}
 	
-	public function createEiSelectionGui(EntrySourceInfo $entrySourceInfo, bool $makeEditable, array $guiIdPaths) {
+	public function createEiSelectionGui(EiuEntry $eiuEntry, int $viewMode, bool $makeEditable, array $guiIdPaths) {
 		$guiFactory = new GuiFactory($this->getEiFieldCollection(), $this->getEiModificatorCollection());
-		return $guiFactory->createEiSelectionGui($this->getGuiDefinition(), $entrySourceInfo, $makeEditable, $guiIdPaths);
+		return $guiFactory->createEiSelectionGui($this->getGuiDefinition(), $eiuEntry, $viewMode, $makeEditable, $guiIdPaths);
 	}
 	
 	public function getDraftDefinition(): DraftDefinition {

@@ -69,13 +69,15 @@ class GuiFactory {
 		return $guiDefinition;
 	}
 	
-	public function createEiSelectionGui(GuiDefinition $guiDefinition, EntrySourceInfo $entrySourceInfo, 
+	public function createEiSelectionGui(GuiDefinition $guiDefinition, EiuEntry $eiuEntry, int $viewMode, 
 			bool $makeEditable, array $guiIdPaths): EiSelectionGui {
 		ArgUtils::valArrayLike($guiIdPaths, 'rocket\spec\ei\manage\gui\GuiIdPath');
 		
-		$guiElementAssembler = new GuiElementAssembler($guiDefinition, $entrySourceInfo);
-		
 		$eiSelectionGui = new EiSelectionGui($guiDefinition, $entrySourceInfo->getViewMode());
+		$eiuGui = $eiuEntry->gui($eiSelectionGui);
+		
+		
+		$guiElementAssembler = new GuiElementAssembler($guiDefinition, $eiuGui);
 		
 		foreach ($guiIdPaths as $guiIdPath) {
 			$result = $guiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);

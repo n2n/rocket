@@ -126,7 +126,7 @@ class EiuGui {
 		
 		throw new EiuPerimeterException('No EiuEntry provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
-	
+		
 // 	public function getEiMask() {
 // 		if ($this->eiMask !== null) {
 // 			return $this->eiMask;
@@ -135,15 +135,15 @@ class EiuGui {
 // 		throw new IllegalStateException('No EiMask available.');
 // 	}
 	
-	/**
-	 * @param EntryGuiModel $entryGuiModel
-	 * @param EiState $eiState
-	 * @return EiuGui
-	 */
-	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
-		$entryGuiUtils = new EiuGui($entryGuiModel, 
-				new EiuEntry($entryGuiModel, $eiState));
-		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
-		return $entryGuiUtils;
-	}
+// 	/**
+// 	 * @param EntryGuiModel $entryGuiModel
+// 	 * @param EiState $eiState
+// 	 * @return EiuGui
+// 	 */
+// 	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
+// 		$entryGuiUtils = new EiuGui($entryGuiModel, 
+// 				new EiuEntry($entryGuiModel, $eiState));
+// 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
+// 		return $entryGuiUtils;
+// 	}
 }
