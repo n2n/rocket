@@ -33,7 +33,7 @@ use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
@@ -41,7 +41,7 @@ use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\manage\EiObject;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\enum\conf\EnumEiFieldConfigurator;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
@@ -80,21 +80,21 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return new EnumEiFieldConfigurator($this);
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
-			if (!$entrySourceInfo->getEiMapping()->acceptsValue($this, $value)) {
+			if (!$eiu->entry()->getEiMapping()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);
 			}
 		}
 		return new EnumMag($propertyName, $this->getLabelLstr(), $choicesMap, null, 
-				$this->isMandatory($entrySourceInfo));
+				$this->isMandatory($eiu));
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		$options = $this->getOptions();
-		$value = $entrySourceInfo->getValue(EiFieldPath::from($this));
+		$value = $eiu->field()->getValue(EiFieldPath::from($this));
 		if (isset($options[$value])) {
 			return $html->getEsc($options[$value]);
 		}

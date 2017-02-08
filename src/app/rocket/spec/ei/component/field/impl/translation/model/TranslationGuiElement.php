@@ -71,11 +71,11 @@ class TranslationGuiElement implements GuiElementFork {
 
 		foreach ($this->guiElementAssemblers as $n2nLocaleId => $guiElementAssebler) {
 			$dispatchable = $guiElementAssebler->getDispatchable();
-			$guiElementAssebler->getEntrySourceInfo()->isNew();
+			$guiElementAssebler->getEiuGui()->getEiuEntry()->isNew();
 			if ($dispatchable !== null) {
 				$this->translationForm->putAvailableDispatchable($n2nLocaleId, $dispatchable);
 				
-				if (!$guiElementAssebler->getEntrySourceInfo()->isNew()) {
+				if (!$guiElementAssebler->getEiuGui()->getEiuEntry()->isNew()) {
 					$this->translationForm->putDispatchable($n2nLocaleId, $dispatchable);
 				}		
 			}
@@ -102,7 +102,7 @@ class TranslationGuiElement implements GuiElementFork {
 			$result = $guiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
 			if ($result === null) continue;
 			
-			$fieldErrorInfo = $guiElementAssembler->getEntrySourceInfo()->getEiMapping()->getMappingErrorInfo()
+			$fieldErrorInfo = $guiElementAssembler->getEiuGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
 					->getFieldErrorInfo($eiFieldPath);
 // 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
 			

@@ -41,7 +41,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\SimpleSelectorConstraint;
 use rocket\spec\ei\manage\gui\Editable;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\command\impl\tree\field\TreeRootIdEiField;
 use rocket\spec\ei\component\command\impl\tree\field\TreeLeftEiField;
 use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
@@ -83,9 +83,9 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 		return 'Subsystem';
 // 	}
 	
-// 	public function isMandatory(EntrySourceInfo $entrySourceInfo) {
+// 	public function isMandatory(Eiu $eiu) {
 // 		if (empty($this->subsystems)) return false;
-// 		return parent::isMandatory($eiMapping, $entrySourceInfo);
+// 		return parent::isMandatory($eiMapping, $eiu);
 // 	}
 	
 // 	public function isCompatibleWith(EntityProperty $entityProperty) {
@@ -113,17 +113,17 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 	}
 	
 // 	public function createOutputUiComponent(
-// 			HtmlView $view, EntrySourceInfo $entrySourceInfo) {
+// 			HtmlView $view, Eiu $eiu) {
 // 		$html = $view->getHtmlBuilder();
 // 		$subsystemName = $this->read($eiMapping->getEiSelection()->getEntityObj());
-// 		if ($entrySourceInfo->hasListModel() || !isset($this->subsystems[$subsystemName])) {
+// 		if ($eiu->hasListModel() || !isset($this->subsystems[$subsystemName])) {
 // 			return $html->getEsc($subsystemName);
 // 		}
 // 		return $html->getEsc($this->subsystems[$subsystemName]);
 // 	}
 	
 // 	public function optionAttributeValueToPropertyValue(Attributes $attributes,
-// 			EiMapping $eiMapping, EntrySourceInfo $entrySourceInfo) {
+// 			EiMapping $eiMapping, Eiu $eiu) {
 
 // 		$newValue = $attributes->get($this->id);
 // 		$oldValue = $eiMapping->getValue(EiFieldPath::from($this));
@@ -141,7 +141,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 			$currentEntity = $eiSelection->getCurrentEntity();
 // 			$top = $this->getEiSpec()->getSupremeEiSpec();
 			
-// 			$em = $entrySourceInfo->getEiState()->getEntityManager();
+// 			$em = $eiu->frame()->getEiState()->getEntityManager();
 // 			$nestedSetUtils = new NestedSetUtils($em, $this->getEiSpec()->getEntityModel()->getClass());
 // 			foreach ($nestedSetUtils->fetch($currentEntity, true) as $nsItem) {
 // 				$object = $nsItem->getObject();
@@ -163,7 +163,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 		}
 // 	}
 	
-// 	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+// 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 // 		$attrs = array();
 // 		if (!$eiMapping->getEiSelection()->isNew()) {
 // 			$attrs['class'] = 'rocket-critical-input';
@@ -172,7 +172,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 			$attrs['data-edit-label'] =  $dtc->translate('common_edit_label');
 // 			$attrs['data-cancel-label'] =  $dtc->translate('common_cancel_label');
 // 		} else {
-// 			$eiState = $entrySourceInfo->getEiState();
+// 			$eiState = $eiu->frame()->getEiState();
 // 			$cmds = $eiState->getControllerContext()->getCmds();
 // 			if (null !== ($entity = $eiState->getEntityManager()->find(
 // 					$this->getEiSpec()->getEntityModel()->getClass(), end($cmds)))) {
@@ -180,7 +180,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 			}
 // 		}
 // 		return new EnumMag($propertyName, $this->getLabel(), $this->subsystems, null, 
-// 				$this->isMandatory($entrySourceInfo), $attrs);
+// 				$this->isMandatory($eiu), $attrs);
 // 	}
 	
 // 	public function createRestrictionMagCollection(N2nLocale $n2nLocale, N2nContext $n2nContext) {

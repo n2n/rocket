@@ -23,9 +23,18 @@ namespace rocket\spec\ei\manage\gui;
 
 interface EiSelectionGuiListener {
 	
+	/**
+	 * @param EiSelectionGui $eiSelectionGui
+	 */
 	public function finalized(EiSelectionGui $eiSelectionGui);
 	
+	/**
+	 * @param EiSelectionGui $eiSelectionGui
+	 */
 	public function onSave(EiSelectionGui $eiSelectionGui);
 	
+	/**
+	 * @param EiSelectionGui $eiSelectionGui
+	 */
 	public function saved(EiSelectionGui $eiSelectionGui);
 }

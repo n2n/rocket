@@ -26,7 +26,7 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiElement;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
@@ -61,6 +61,8 @@ use n2n\persistence\orm\criteria\JoinType;
 use rocket\spec\ei\manage\critmod\sort\SortConstraint;
 use rocket\spec\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField, MappableEiField, RelationEiField, 
 		Readable, Writable, GuiFieldFork, SortableEiFieldFork {
@@ -141,9 +143,9 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		return $this->eiFieldRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	
-	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork {
-		$eiState = $entrySourceInfo->getEiState();
-		$eiMapping = $entrySourceInfo->getEiMapping();
+	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
+		$eiState = $eiu->frame()->getEiState();
+		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiSelection = $eiMapping->getEiSelection();
 		$targetEiState = null;
 		if ($makeEditable) {
@@ -184,9 +186,9 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 			}
 			
 			$translationGuiElement->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					new GuiElementAssembler($targetGuiDefinition, new EntrySourceInfo(
+					new GuiElementAssembler($targetGuiDefinition, new EiuGui(
 							$targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), 
-							$entrySourceInfo->getViewMode())), 
+							$eiu->gui()->getEiSelectionGui())), 
 					$n2nLocaleDef->isMandatory());
 		}
 		

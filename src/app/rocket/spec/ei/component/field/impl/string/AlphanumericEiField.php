@@ -34,7 +34,7 @@ use rocket\spec\ei\EiFieldPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\ScalarEiField;
 use rocket\spec\ei\component\field\GenericEiField;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
@@ -68,8 +68,8 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 		parent::setEntityProperty($entityProperty);
 	}
 
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
-		return $view->getHtmlBuilder()->getEsc($entrySourceInfo->getEiMapping()->getValue(
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiMapping()->getValue(
 				EiFieldPath::from($this)));
 	}
 

@@ -25,7 +25,6 @@ use rocket\spec\ei\manage\mapping\impl\Readable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\mapping\Mappable;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
 use n2n\l10n\N2nLocale;
@@ -35,7 +34,7 @@ use rocket\spec\ei\component\field\MappableEiField;
 use rocket\spec\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapter implements StatelessDisplayable, 
@@ -72,13 +71,13 @@ abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapte
 		return null;
 	}
 	
-	public function isEiMappingFilterable(): bool {
-		return false;
-	}
+// 	public function isEiMappingFilterable(): bool {
+// 		return false;
+// 	}
 	
-	public function createEiMappingFilterField(N2nContext $n2nContext): EiMappingFilterField {
-		throw new IllegalStateException('EiField cannot provide a EiMappingFilterField: ' . $this);
-	}
+// 	public function createEiMappingFilterField(N2nContext $n2nContext): EiMappingFilterField {
+// 		throw new IllegalStateException('EiField cannot provide an EiMappingFilterField: ' . $this);
+// 	}
 	
 // 	public function getTypeConstraint() {
 // 		$typeConstraint = $this->getPropertyAccessProxy()->getConstraint();
@@ -106,15 +105,15 @@ abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapte
 		return $this->getLabelLstr();
 	}
 	
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		return new StatelessDisplayElement($this, $entrySourceInfo);
+	public function buildGuiElement(Eiu $eiu) {
+		return new StatelessDisplayElement($this, $eiu);
 	}
 	
-	public function getUiOutputLabel(FieldSourceInfo $entrySourceInfo) {
+	public function getUiOutputLabel(Eiu $eiu) {
 		return $this->getLabelLstr();
 	}
 	
-	public function getOutputHtmlContainerAttrs(FieldSourceInfo $entrySourceInfo) {
+	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
 		$eiMask = $this->eiEngine->getEiMask();
 		return array('class' => 'rocket-ei-spec-' . $this->eiEngine->getEiSpec()->getId()
 						. ($eiMask !== null ? ' rocket-ei-mask-' . $eiMask->getId() : '') 

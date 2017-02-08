@@ -21,28 +21,27 @@
  */
 namespace rocket\spec\ei\component\field\impl\adapter;
 
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface StatelessDisplayable {
 
 	/**
-	 * @param EntrySourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 */
-	public function getUiOutputLabel(FieldSourceInfo $entrySourceInfo);
+	public function getUiOutputLabel(Eiu $eiu);
 	
 	/**
-	 * @param EntrySourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(FieldSourceInfo $entrySourceInfo);
+	public function getOutputHtmlContainerAttrs(Eiu $eiu);
 	
 	/**
 	 * @param HtmlView $view
-	 * @param EntrySourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 * @return UiComponent
 	 */
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo);
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu);
 }

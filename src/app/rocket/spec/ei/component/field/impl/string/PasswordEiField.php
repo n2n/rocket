@@ -25,13 +25,13 @@ use n2n\util\config\Attributes;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\impl\web\dispatch\mag\model\SecretStringMag;
 use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\crypt\hash\HashUtils;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\string\conf\PasswordEiFieldConfigurator;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\dispatch\mag\Mag;
 
 class PasswordEiField extends AlphanumericEiField {
@@ -40,7 +40,7 @@ class PasswordEiField extends AlphanumericEiField {
 	const ALGORITHM_BLOWFISH = 'blowfish';
 	const ALGORITHM_SHA_256 = 'sha-256';
 		
-	public function isMandatory(FieldSourceInfo $fieldSourceInfo): bool {
+	public function isMandatory(Eiu $eiu): bool {
 		return false;
 	}
 	
@@ -48,18 +48,18 @@ class PasswordEiField extends AlphanumericEiField {
 		return new PasswordEiFieldConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		return null;
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new SecretStringMag($propertyName, $this->getLabelCode(), null,
-				$entrySourceInfo->getEiMapping()->getEiSelection()->isNew(), $this->getMaxlength(), 
+				$eiu->entry()->getEiMapping()->getEiSelection()->isNew(), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelCode()));
 	}
 	
 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
-			EiMapping $eiMapping, EntrySourceInfo $entrySourceInfo) {
+			EiMapping $eiMapping, Eiu $eiu) {
 		$optionValue = $attributes->get($this->getId());
 		$eiSelection = $eiMapping->getEiSelection();
 		if (mb_strlen($optionValue) === 0 && !$eiSelection->isNew()) {

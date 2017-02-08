@@ -44,7 +44,7 @@ use n2n\util\uri\Path;
 	if ($eiEntryUtils->isDraft()) {
 		$previewPath = new Path(array('draftpreview', $eiEntryUtils->getDraft()->getId()));
 	} else {
-		$previewPath = new Path(array('livepreview', $eiEntryUtils->getIdRep()));
+		$previewPath = new Path(array('livepreview', $eiEntryUtils->getLiveIdRep()));
 	}
 ?>
 

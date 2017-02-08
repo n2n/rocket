@@ -23,6 +23,7 @@ namespace rocket\spec\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface GuiField {
 	
@@ -32,10 +33,10 @@ interface GuiField {
 	public function getDisplayLabel(): string;
 	
 	/**
-	 * @param FieldSourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 * @return \rocket\spec\ei\manage\gui\GuiElement|null
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo);
+	public function buildGuiElement(Eiu $eiu);
 	
 	/**
 	 * @return DisplayDefinition

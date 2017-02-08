@@ -65,8 +65,8 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 	}
 
 // 	public function createOutputUiComponent(HtmlView $view) {
-// 		$eiState = $entrySourceInfo->getEiState();
-// 		$eiMapping = $entrySourceInfo->getEiMapping();
+// 		$eiState = $eiu->frame()->getEiState();
+// 		$eiMapping = $eiu->entry()->getEiMapping();
 // 		$targetEiSelection = $this->createTargetEiSelection($eiState, $eiMapping);
 
 // 		if ($targetEiSelection === null) return null;

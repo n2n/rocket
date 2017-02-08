@@ -27,12 +27,12 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\field\impl\string\conf\UrlEiFieldConfigurator;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
@@ -79,8 +79,8 @@ class UrlEiField extends AlphanumericEiField {
 // 		return $view->getFormHtmlBuilder()->getInput($propertyPath, array('class' => 'rocket-preview-inpage-component'));
 // 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
-		$mag = new UrlMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($entrySourceInfo), 
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
+		$mag = new UrlMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength());
 		if (!empty($this->allowedSchemes)) {
 			$mag->setAllowedSchemes($this->allowedSchemes);
@@ -92,25 +92,25 @@ class UrlEiField extends AlphanumericEiField {
 		return $mag;
 	}
 	
-	public function loadMagValue(FieldSourceInfo $entrySourceInfo, Mag $mag) {
-		$value = $entrySourceInfo->getValue();
+	public function loadMagValue(Eiu $eiu, Mag $mag) {
+		$value = $eiu->field()->getValue();
 		if ($value !== null) {
 			$value = Url::create($value, true);
 		}
 		$mag->setValue($value);
 	}
 	
-	public function saveMagValue(Mag $mag, FieldSourceInfo $entrySourceInfo) {
+	public function saveMagValue(Mag $mag, Eiu $eiu) {
 		$value = $mag->getValue();
 		if ($value !== null) {
 			$value = (string) $value;
 		}
-		$entrySourceInfo->setValue($value);
+		$eiu->field()->setValue($value);
 	}
 
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
-		$value = $entrySourceInfo->getEiMapping()->getValue(EiFieldPath::from($this));
-		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $entrySourceInfo->isViewModeBulky()),
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+		$value = $eiu->entry()->getEiMapping()->getValue(EiFieldPath::from($this));
+		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->gui()->isViewModeBulky()),
 				array('target' => '_blank'));
 	}
 

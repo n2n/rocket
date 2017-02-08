@@ -4,34 +4,47 @@ namespace rocket\spec\ei\manage\util\model;
 use n2n\core\container\N2nContext;
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\util\ex\NotYetImplementedException;
 
 class Eiu implements Lookupable {
-	private $eiUtilFactory;
-	private $eiFrame;
-	private $eiCtrlUtils;
-	private $eiEntryUtils;
-	private $eiFieldUtils;
+	private $eiuFactory;
+	private $eiuCtrl;
+	private $eiuFrame;
+	private $eiuGui;
+	private $eiuEntry;
+	private $eiuField;
 	
 	private function _init(N2nContext $n2nContext) {
-		$this->eiUtilFactory = new EiuFactory();
-		$this->eiUtilFactory->applyEiArgs($n2nContext);
+		$this->eiuFactory = new EiuFactory();
+		$this->eiuFactory->applyEiArgs($n2nContext);
+		$this->eiuCtrl = $this->eiuFactory->getEiuCtrl(false);
+		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
+		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
+		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
+		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
 	
 	public function __construct(...$eiArgs) {
-		$this->eiUtilFactory = new EiuFactory();
-		$this->eiUtilFactory->applyEiArgs(...$eiArgs);
+		$this->eiuFactory = new EiuFactory();
+		$this->eiuFactory->applyEiArgs(...$eiArgs);
+		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
+		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
+		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
+		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
 	
 	public function ctrl(bool $required = true) {
-		return $this->eiUtilFactory->getEiuCtrl($required);
+		if ($this->eiuCtrl !== null || !$required) return $this->eiuCtrl;
+		
+		throw new EiuPerimeterException('EiuCtrl is unavailable.');
 	}
 
 	/**
 	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
 	public function frame(bool $required = true)  {
-		return $this->eiUtilFactory->getEiuFrame($required);
+		if ($this->eiuFrame !== null || !$required) return $this->eiuFrame;
+		
+		throw new EiuPerimeterException('EiuFrame is unavailable.');
 	}
 	
 	/**
@@ -39,23 +52,21 @@ class Eiu implements Lookupable {
 	 * @param bool $assignToEiu
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function entry($eiEntryObj = null, bool $assignToEiu = false) {
-		if ($eiEntryObj === null) {
-			return $this->eiUtilFactory->getEiuEntry(true);
-		}
+	public function entry(bool $required = true) {
+		if ($this->eiuEntry !== null || !$required) return $this->eiuEntry;
+	
+		throw new EiuPerimeterException('EiuEntry is unavailable.');
+	}
+	
+	public function gui(bool $required = true) {
+		if ($this->eiuGui !== null || !$required) return $this->eiuGui;
+	
+		throw new EiuPerimeterException('EiuGui is unavailable.');
+	}
+	
+	public function field(bool $required = true) {
+		if ($this->eiuField !== null || !$required) return $this->eiuField;
 		
-		if ($assignToEiu) {
-			return $this->frame()->assignEiuEntry($eiEntryObj);
-		}
-			
-		return $this->frame()->toEiuEntry($eiEntryObj);
-	}
-	
-	public function gui() {
-		return $this->eiUtilFactory->getEiuGui(true);	
-	}
-	
-	public function field($fieldPath, bool $assignToEiu = false) {
-		throw new NotYetImplementedException();
+		throw new EiuPerimeterException('EiuField is unavailable.');
 	}
 }

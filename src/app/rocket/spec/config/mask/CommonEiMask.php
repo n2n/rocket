@@ -29,7 +29,7 @@ use rocket\spec\ei\EiSpec;
 use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\mask\EiMask;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
@@ -73,6 +73,8 @@ use rocket\spec\ei\manage\control\UnavailableControlException;
 use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuPerimeterException;
+use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -201,7 +203,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	private function createEiSelectionGui(EiState $eiState, EiMapping $eiMapping, $viewMode, $makeEditable): EiSelectionGui {
 		$guiIdPaths = $this->getGuiFieldOrderViewMode($viewMode)->getAllGuiIdPaths();
 	
-		return $this->eiEngine->createEiSelectionGui(new EntrySourceInfo($eiMapping, $eiState, $viewMode), 
+		return $this->eiEngine->createEiSelectionGui(new EiuEntry($eiMapping, $eiState), $viewMode, 
 				$makeEditable, $guiIdPaths);
 	}
 				
@@ -362,12 +364,6 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 		return $guiFieldOrder;
 	}
-	
-// 	public function createEiSelectionGui(EntrySourceInfo $entrySourceInfo) {
-// 		$factory = new EiSelectionGuiFactory($this, $entrySourceInfo);
-// 		return $this->createEiSelectionGui($entrySourceInfo, $this->getGuiFieldOrderViewMode(
-// 				$entrySourceInfo->getViewMode())->getAllGuiIdPaths());
-// 	}
 
 	public function createListEntryGuiModel(EiState $eiState, EiMapping $eiMapping, 
 			bool $makeEditable): EntryGuiModel {

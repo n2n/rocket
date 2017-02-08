@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\numeric;
 
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
@@ -29,7 +29,7 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class IntegerEiField extends NumericEiFieldAdapter {
 	const INT_SIGNED_MIN = -2147483648;
@@ -53,9 +53,9 @@ class IntegerEiField extends NumericEiFieldAdapter {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new NumericMag($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($entrySourceInfo), $this->getMinValue(), $this->getMaxValue(), 
+				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				0, array('placeholder' => $this->getLabelLstr()));
 	}
 }

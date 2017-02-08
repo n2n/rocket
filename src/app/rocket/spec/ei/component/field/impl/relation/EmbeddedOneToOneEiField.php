@@ -25,7 +25,7 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneEditable;
@@ -47,7 +47,7 @@ use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -126,10 +126,10 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		$mapping = $entrySourceInfo->getEiMapping();
+	public function buildGuiElement(Eiu $eiu) {
+		$mapping = $eiu->entry()->getEiMapping();
 		
-		$eiState = $entrySourceInfo->getEiState();
+		$eiState = $eiu->frame()->getEiState();
 		$relationMappable = $mapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
 		
@@ -142,7 +142,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 			if ($targetEditEiState->getEiExecution()->isGranted() 
 					&& ($this->isReplaceable() || $relationMappable->getValue() === null)) {
 				$toOneEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, $mapping->getEiSelection()->isDraft(), $eiState, $entrySourceInfo->getHttpContext()));
+						$mapping, $mapping->getEiSelection()->isDraft(), $eiState, $eiu->frame()->getHttpContext()));
 			}
 			
 			$toOneEditable->setDraftMode($mapping->getEiSelection()->isDraft());

@@ -16,6 +16,8 @@ use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
+use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\EiFieldPath;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiState::class, N2nContext::class);
@@ -23,18 +25,21 @@ class EiuFactory {
 			EntryGuiModel::class);
 	const EI_GUI_TYPES = array(EntryGuiModel::class, EiSelectionGui::class);
 	const EI_TYPES = array(EiState::class, N2nContext::class, EiSelection::class, EiMapping::class, LiveEntry::class, 
-			Draft::class, EntryGuiModel::class, EiSelectionGui::class);
+			Draft::class, EntryGuiModel::class, EiSelectionGui::class, EiField::class, EiFieldPath::class);
+	const EI_FIELD_TYPES = array(EiField::class, EiFieldPath::class);
 	
 	private $eiState;
 	private $n2nContext;
 	private $eiSelection;
 	private $eiMapping;
 	private $eiSelectionGui;
+	private $eiFieldPath;
 	
 	private $eiuCtrl;
 	private $eiuFrame;
 	private $eiuEntry;
 	private $eiuGui;
+	private $eiuField;
 	
 	public function applyEiArgs(...$eiArgs) {
 		foreach ($eiArgs as $key => $eiArg) {
@@ -48,6 +53,16 @@ class EiuFactory {
 				continue;
 			}
 			
+			if ($eiArg instanceof EiField) {
+				$this->eiFieldPath = EiFieldPath::from($eiArg);
+				continue;
+			}
+				
+			if ($eiArg instanceof EiFieldPath) {
+				$this->eiFieldPath = $eiArg;
+				continue;
+			}
+			
 			if ($eiArg instanceof EiSelectionGui) {
 				$this->eiSelectionGui = $eiArg;
 			}
@@ -55,6 +70,11 @@ class EiuFactory {
 			if (null !== ($eiSelection = self::determineEiSelection($eiArg, $this->eiMapping, $this->eiSelectionGui))) {
 				$this->eiSelection = $eiSelection;
 				continue;
+			}
+			
+			if ($eiArg instanceof EiuField) {
+				$this->eiuField = $eiArg;
+				$eiArg = $eiArg->getEiuEntry(false);
 			}
 			
 			if ($eiArg instanceof EiuGui) {
@@ -86,6 +106,16 @@ class EiuFactory {
 		
 	}
 	
+// 	public function getEiState(bool $required) {
+// 		if (!$required || $this->eiState !== null) {
+// 			return $this->eiSelectionGui;
+// 		}
+	
+// 		throw new EiuPerimeterException(
+// 				'Could not determine EiuFrame because non of the following types were provided as eiArgs: '
+// 						. implode(', ', self::EI_FRAME_TYPES));
+// 	}
+	
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
@@ -97,8 +127,18 @@ class EiuFactory {
 		}
 		
 		throw new EiuPerimeterException(
-				'Could not determine EiSelectionGui because non of the following types were provided as eiArgs: ' 
+				'Could not determine EiuGui because non of the following types were provided as eiArgs: ' 
 						. implode(', ', self::EI_GUI_TYPES));
+	}
+	
+	public function getEiFieldPath(bool $required) {
+		if (!$required || $this->eiFieldPath !== null) {
+			return $this->eiFieldPath;
+		}
+	
+		throw new EiuPerimeterException(
+				'Could not create EiuField because non of the following types were provided as eiArgs: '
+						. implode(', ', self::EI_FIELD_TYPES));
 	}
 
 	public function getEiuCtrl() {
@@ -142,7 +182,6 @@ class EiuFactory {
 						. implode(', ', self::EI_FRAME_TYPES));
 	}
 	
-	
 	public function getEiuEntry(bool $required) {
 		if ($this->eiuEntry !== null) {
 			return $this->eiuEntry;
@@ -151,16 +190,12 @@ class EiuFactory {
 		$eiuFrame = $this->getEiuFrame(false);
 		
 		if ($eiuFrame !== null) {
-			if (null !== ($eiuEntry = $eiuFrame->getAssignedEiuEntry(false))) {
-				return $this->eiuEntry = $eiuEntry;
-			}
-			
 			if ($this->eiMapping !== null) {
-				return $this->eiuEntry = $eiuFrame->assignEiuEntry($this->eiMapping);
+				return $this->eiuEntry = $eiuFrame->entry($this->eiMapping, true);
 			}
 			
 			if ($this->eiSelection !== null) {
-				return $this->eiuEntry = $eiuFrame->assignEiuEntry($this->eiSelection);
+				return $this->eiuEntry = $eiuFrame->entry($this->eiSelection, true);
 			}
 		} else {
 			if ($this->eiMapping !== null) {
@@ -204,6 +239,31 @@ class EiuFactory {
 		throw new EiuPerimeterException(
 				'Can not create EiuGui because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_GUI_TYPES));
+	}
+	
+	
+
+	public function getEiuField(bool $required) {
+		if ($this->eiuField !== null) {
+			return $this->eiuField;
+		}
+	
+		$eiuEntry = $this->getEiuEntry(false);
+		if ($eiuEntry !== null) {
+			if ($this->eiFieldPath !== null) {
+				return $this->eiuField = $eiuEntry->field($this->eiFieldPath);
+			}
+		} else {
+			if ($this->eiFieldPath !== null) {
+				return $this->eiuField = new EiuField($this->eiFieldPath);
+			}
+		}
+	
+		if (!$required) return null;
+	
+		throw new EiuPerimeterException(
+				'Can not create EiuField because non of the following types were provided as eiArgs: '
+						. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
 	public static function buildEiuFrameFormEiArg($eiArg, string $argName = null, bool $required = false) {

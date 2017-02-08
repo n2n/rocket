@@ -26,7 +26,7 @@ use n2n\web\ui\Raw;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 
 die('export vimeo to media module');
 
@@ -39,7 +39,7 @@ class VimeoEiField extends AlphanumericEiField {
 	 * @see \rocket\spec\ei\component\field\impl\string\AlphanumericEiField::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(
-			HtmlView $view, EntrySourceInfo $entrySourceInfo)  {
+			HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		$eiSelection = $eiMapping->getEiSelection();
 		$value = $this->getPropertyAccessProxy()->getValue($eiSelection->getCurrentEntity());
@@ -52,9 +52,9 @@ class VimeoEiField extends AlphanumericEiField {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\field\StatelessEditable::createOption()
 	 */
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new VimeoOption($propertyName, $this->getLabelCode(), null,
-				$this->isMandatory($entrySourceInfo), $this->getMaxlength(), null,
+				$this->isMandatory($eiu), $this->getMaxlength(), null,
 				array('placeholder' => $this->getLabelCode()));
 	}	
 }

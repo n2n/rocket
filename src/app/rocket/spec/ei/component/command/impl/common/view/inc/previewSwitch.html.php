@@ -42,7 +42,7 @@
 		$detailPathParts = array('draft', $draftId);
 		$previewPathParts = array('draftpreview', $draftId, $linkedPreviewType);
 	} else {
-		$idRep = $eiEntryUtils->getIdRep(true);
+		$idRep = $eiEntryUtils->getLiveIdRep(true);
 		$detailPathParts = array('live', $idRep);
 		$previewPathParts = array('livepreview', $idRep, $linkedPreviewType);
 	}

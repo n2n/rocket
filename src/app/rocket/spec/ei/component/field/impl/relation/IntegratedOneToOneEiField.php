@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\mapping\MappableSource;
 use rocket\spec\ei\manage\gui\GuiElementFork;
@@ -32,7 +32,6 @@ use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\DraftEiSelection;
@@ -45,11 +44,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\ui\Raw;
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\mapping\Mappable;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFieldFork {
 
@@ -118,12 +117,12 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	}
 	
 	/**
-	 * @param EntrySourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 * @return GuiElementFork
 	 */
-	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork {
-		$eiState = $entrySourceInfo->getEiState();
-		$eiMapping = $entrySourceInfo->getEiMapping();
+	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
+		$eiState = $eiu->frame()->getEiState();
+		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		$targetEiState = null;
 		if ($makeEditable) {
@@ -146,7 +145,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		}
 				
 		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
-				new EntrySourceInfo($targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), $entrySourceInfo->getViewMode()));
+				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), $eiu->getViewMode()));
 		
 		return new OneToOneGuiElementFork($toOneMappable, $targetRelationEntry, $targetGuiElementAssembler);
 	}

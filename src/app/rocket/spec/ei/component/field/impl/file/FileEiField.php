@@ -28,7 +28,7 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\impl\file\command\ThumbEiCommand;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
@@ -42,7 +42,7 @@ use n2n\io\managed\img\impl\ThSt;
 use n2n\impl\web\dispatch\mag\model\FileMag;
 use rocket\spec\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class FileEiField extends DraftableEiFieldAdapter {
@@ -127,9 +127,9 @@ class FileEiField extends DraftableEiFieldAdapter {
 	}
 	
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $fieldSourceInfo) {
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 		$html = $view->getHtmlBuilder();
-		$file = $fieldSourceInfo->getValue();
+		$file = $eiu->field()->getValue();
 		
 		if ($file === null) {
 			return null;
@@ -142,7 +142,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 		} 
 		
 		if ($file->getFileSource()->isImage()) {
-			return $this->createImageUiComponent($view, $fieldSourceInfo, $file);
+			return $this->createImageUiComponent($view, $eiu, $file);
 		} 
 		
 		if ($file->getFileSource()->isHttpaccessible()) {
@@ -152,7 +152,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 		return $html->getEsc($file->getOriginalName());
 	}
 	
-	private function createImageUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo, File $file) {
+	private function createImageUiComponent(HtmlView $view, Eiu $eiu, File $file) {
 		$html = $view->getHtmlBuilder();
 		
 		$meta = $html->meta();
@@ -164,12 +164,12 @@ class FileEiField extends DraftableEiFieldAdapter {
 				$html->getImage($file, ThSt::crop(40, 28, true),
 						array('title' => $file->getOriginalName())), array('class' => 'rocket-image-previewable')));
 		
-		if ($this->isThumbCreationEnabled($file) && !$entrySourceInfo->isNew()) {
+		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
 			$httpContext = $view->getHttpContext();
 			$uiComponent->appendContent($html->getLink(
-					$httpContext->getControllerContextPath($entrySourceInfo->getEiState()->getControllerContext())
-							->ext($this->thumbEiCommand->getId(), $entrySourceInfo->getEntryIdRep())
-							->toUrl(array('refPath' => (string) $entrySourceInfo->getEiState()->getCurrentUrl($httpContext))),
+					$httpContext->getControllerContextPath($eiu->frame()->getEiState()->getControllerContext())
+							->ext($this->thumbEiCommand->getId(), $eiu->entry()->getLiveIdRep())
+							->toUrl(array('refPath' => (string) $eiu->frame()->getEiState()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
 							'class' => 'rocket-control rocket-simple-controls')));
@@ -195,11 +195,11 @@ class FileEiField extends DraftableEiFieldAdapter {
 		}
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$allowedExtensions = $this->getAllowedExtensions();
 		return new FileMag($propertyName, $this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
 				$this->isCheckImageMemoryEnabled(), null, 
-				$this->isMandatory($entrySourceInfo));
+				$this->isMandatory($eiu));
 	}
 
 	public function isStringRepresentable(): bool {

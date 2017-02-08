@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\date;
 
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\modificator\impl\date\LastModEiModificator;
 use rocket\spec\ei\component\field\impl\DisplayableEiFieldAdapter;
 use n2n\web\dispatch\mag\MagCollection;
@@ -46,7 +46,7 @@ use n2n\util\config\Attributes;
 // 		return 'Last Mod';
 // 	}
 	
-// 	public function isRequired(EiMapping $eiMapping, EntrySourceInfo $entrySourceInfo) {
+// 	public function isRequired(EiMapping $eiMapping, Eiu $eiu) {
 // 		return false;
 // 	}
 	
@@ -67,7 +67,7 @@ use n2n\util\config\Attributes;
 // 	}
 
 // 	public function createOutputUiComponent(HtmlView $view, 
-// 			EntrySourceInfo $entrySourceInfo) {
+// 			Eiu $eiu) {
 // 		return $view->getHtmlBuilder()->getL10nDateTime($eiMapping->getValue($this->getId()), 
 // 				DateTimeFormat::STYLE_MEDIUM, DateTimeFormat::STYLE_MEDIUM);
 		

@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\EiState;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\relation\conf\RelationEiFieldConfigurator;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
@@ -43,7 +43,7 @@ use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -139,10 +139,10 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
 	 * @return GuiElement
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		$eiMapping = $entrySourceInfo->getEiMapping();
+	public function buildGuiElement(Eiu $eiu) {
+		$eiMapping = $eiu->entry()->getEiMapping();
 	
-		$eiState = $entrySourceInfo->getEiState();
+		$eiState = $eiu->frame()->getEiState();
 		$relationMappable = $eiMapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $eiMapping);
 		
@@ -158,7 +158,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 			
 			if ($targetEditEiState->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$eiMapping, $draftMode, $eiState, $entrySourceInfo->getHttpContext()));
+						$eiMapping, $draftMode, $eiState, $eiu->frame()->getHttpContext()));
 			}
 		}
 		

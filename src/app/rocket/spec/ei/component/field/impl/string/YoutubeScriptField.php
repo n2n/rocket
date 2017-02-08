@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\string;
 use n2n\web\ui\Raw;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\impl\web\ui\view\html\HtmlView;
 
 die('export youtube to media module');
@@ -36,7 +36,7 @@ class YoutubeEiField extends AlphanumericEiField {
 	}
 	
 	public function createOutputUiComponent(HtmlView $view, 
-			EntrySourceInfo $entrySourceInfo)  {
+			Eiu $eiu)  {
 		$value = $eiMapping->getValue($this->getId());
 		if ($value === null) return null;
 		
@@ -47,9 +47,9 @@ class YoutubeEiField extends AlphanumericEiField {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\gui\Editable::createOption()
 	 */
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new StringMag($propertyName, $this->getLabelCode(), null,
-				$this->isMandatory($entrySourceInfo), $this->getMaxlength(), null,
+				$this->isMandatory($eiu), $this->getMaxlength(), null,
 				array('placeholder' => $this->getLabelCode()));
 	}	
 }

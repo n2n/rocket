@@ -36,7 +36,7 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
 use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
@@ -174,10 +174,10 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement($entrySourceInfo)
+	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement($eiu)
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		return new StatelessDisplayElement($this, $entrySourceInfo);
+	public function buildGuiElement(Eiu $eiu) {
+		return new StatelessDisplayElement($this, $eiu);
 	}
 
 	/**
@@ -200,7 +200,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable::getUiOutputLabel()
 	 */
-	public function getUiOutputLabel(\rocket\spec\ei\manage\gui\FieldSourceInfo $entrySourceInfo) {
+	public function getUiOutputLabel(\rocket\spec\ei\manage\util\model\Eiu $eiu) {
 		return $this->getLabelLstr();
 	}
 
@@ -208,7 +208,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable::getOutputHtmlContainerAttrs()
 	 */
-	public function getOutputHtmlContainerAttrs(\rocket\spec\ei\manage\gui\FieldSourceInfo $entrySourceInfo) {
+	public function getOutputHtmlContainerAttrs(\rocket\spec\ei\manage\util\model\Eiu $eiu) {
 		return array();
 	}
 
@@ -216,7 +216,7 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable::createOutputUiComponent()
 	 */
-	public function createOutputUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\spec\ei\manage\gui\FieldSourceInfo $entrySourceInfo) {
-		return $view->getHtmlBuilder()->getEsc($entrySourceInfo->getValue());
+	public function createOutputUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\spec\ei\manage\util\model\Eiu $eiu) {
+		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
 }

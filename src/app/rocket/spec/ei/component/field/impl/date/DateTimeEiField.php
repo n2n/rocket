@@ -32,7 +32,7 @@ use rocket\spec\ei\component\field\SortableEiField;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\manage\control\IconType;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -50,7 +50,7 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiState;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class DateTimeEiField extends DraftableEiFieldAdapter implements SortableEiField {
@@ -90,14 +90,14 @@ class DateTimeEiField extends DraftableEiFieldAdapter implements SortableEiField
 		$this->timeStyle = $timeStyle;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
-		return $view->getHtmlBuilder()->getL10nDateTime($entrySourceInfo->getValue(EiFieldPath::from($this)), 
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiFieldPath::from($this)), 
 				$this->getDateStyle(), $this->getTimeStyle());
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new DateTimeMag($propertyName, $this->getLabelLstr(), $this->getDateStyle(), $this->getTimeStyle(), null, null, 
-				$this->isMandatory($entrySourceInfo), array('placeholder' => $this->getLabelLstr(), 
+				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(), 
 						'data-icon-class-name-open' => IconType::ICON_CALENDAR,
 						'class' => 'rocket-date-picker'));
 	}

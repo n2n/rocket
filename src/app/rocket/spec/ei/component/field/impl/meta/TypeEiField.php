@@ -29,12 +29,12 @@ use rocket\spec\ei\component\field\impl\adapter\IndependentEiFieldAdapter;
 use rocket\spec\ei\component\field\GuiEiField;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplayable, GuiEiField, GuiField {
@@ -58,17 +58,17 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 		return $this->getLabel();
 	}
 	
-	public function getOutputHtmlContainerAttrs(FieldSourceInfo $entrySourceInfo) {
+	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
 		return array();
 	}
 	
-	public function getUiOutputLabel(FieldSourceInfo $entrySourceInfo) {
-		return $this->getLabelLstr()->t($entrySourceInfo->getN2nLocale());
+	public function getUiOutputLabel(Eiu $eiu) {
+		return $this->getLabelLstr()->t($eiu->frame()->getN2nLocale());
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo) {
-		$eiMask = $entrySourceInfo->getEiState()->getContextEiMask()->determineEiMask(
-				$entrySourceInfo->getEiMapping()->getEiSpec());
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+		$eiMask = $eiu->frame()->getEiState()->getContextEiMask()->determineEiMask(
+				$eiu->entry()->getEiMapping()->getEiSpec());
 		return $view->getHtmlBuilder()->getEsc($eiMask->getLabelLstr()->t($view->getN2nLocale()));
 	}
 	
@@ -101,8 +101,8 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		return new StatelessDisplayElement($this, $entrySourceInfo);
+	public function buildGuiElement(Eiu $eiu) {
+		return new StatelessDisplayElement($this, $eiu);
 	}
 
 	/* (non-PHPdoc)

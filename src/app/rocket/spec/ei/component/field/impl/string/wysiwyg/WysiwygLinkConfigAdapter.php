@@ -22,8 +22,8 @@
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+
+use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class WysiwygLinkConfigAdapter implements WysiwygLinkConfig {
 	
@@ -33,14 +33,14 @@ abstract class WysiwygLinkConfigAdapter implements WysiwygLinkConfig {
 	protected $eiMapping;
 	
 	/**
-	 * @var \rocket\spec\ei\manage\gui\EntrySourceInfo
+	 * @var \rocket\spec\ei\manage\gui\Eiu
 	 */
-	protected $fieldSourceInfo;
+	protected $eiu;
 	
 	public function setup(EiMapping $eiMapping = null, 
-			FieldSourceInfo $fieldSourceInfo = null){ 
+			Eiu $eiu = null){ 
 		$this->eiMapping = $eiMapping;
-		$this->fieldSourceInfo = $fieldSourceInfo;
+		$this->eiu = $eiu;
 	}
 	
 	public function isOpenInNewWindow() {

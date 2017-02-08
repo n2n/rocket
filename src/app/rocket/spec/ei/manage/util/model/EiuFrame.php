@@ -67,17 +67,13 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->eiState;
 	}
 	
-// 	/**
-// 	 * @throws IllegalStateException;
-// 	 * @return \n2n\web\http\HttpContext
-// 	 */
-// 	public function getHttpContext() {
-// 		if ($this->httpContext !== null) {
-// 			return $this->httpContext;
-// 		}
-		
-// 		throw new IllegalStateException('HttpContext not avaialable.');
-// 	}
+	/**
+	 * @throws IllegalStateException;
+	 * @return \n2n\web\http\HttpContext
+	 */
+	public function getHttpContext() {
+		return $this->eiState->getN2nContext()->getHttpContext();
+	}
 	
 	public function em(): EntityManager {
 		return $this->eiState->getManageState()->getEntityManager();
@@ -130,32 +126,13 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->eiState->getManageState()->getDraftManager();
 	}
 	
-	private $assignedEiuEntry;
-	
 	/**
 	 * @param unknown $eiEntryObj
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function assignEiuEntry($eiEntryObj) {
-		if ($this->assignedEiuEntry === null) {
-			return $this->assignedEiuEntry = $this->toEiuEntry($eiEntryObj);
-		}
-		
-		throw new EiuPerimeterException('EiuEntry already assigned');
-	}
-	
-	/**
-	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
-	 */
-	public function getAssignedEiuEntry(bool $required = true) {
-		if (!$required || $this->assignedEiuEntry !== null) {
-			return $this->assignedEiuEntry;
-		}
-		
-		throw new EiuPerimeterException('No EiuEntry assigned.');
+	public function entry($eiEntryObj) {
+		return new EiuEntry($eiEntryObj, $this);
 	}
 	
 	/**

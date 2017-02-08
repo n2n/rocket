@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\ci;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\EmbeddedOneToManyEiField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\ci\conf\ContentItemsEiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItem;
 use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\EiSpec;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\EiState;
 
@@ -99,7 +99,7 @@ class ContentItemsEiField extends EmbeddedOneToManyEiField {
 		$this->panelConfigs = $panelConfigs;
 	}
 	
-	public function determinePanelConfigs(FieldSourceInfo $entrySourceInfo) {
+	public function determinePanelConfigs(Eiu $eiu) {
 		return $this->panelConfigs;
 	}
 	
@@ -107,13 +107,13 @@ class ContentItemsEiField extends EmbeddedOneToManyEiField {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		$mapping = $entrySourceInfo->getEiMapping();
+	public function buildGuiElement(Eiu $eiu) {
+		$mapping = $eiu->entry()->getEiMapping();
 	
-		$eiState = $entrySourceInfo->getEiState();
+		$eiState = $eiu->frame()->getEiState();
 		$relationMappable = $mapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
-		$panelConfigs = $this->determinePanelConfigs($entrySourceInfo);
+		$panelConfigs = $this->determinePanelConfigs($eiu);
 	
 		$contentItemEditable = null;
 		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiState)) {
@@ -127,11 +127,11 @@ class ContentItemsEiField extends EmbeddedOneToManyEiField {
 				
 			if ($targetEditEiState->getEiExecution()->isGranted()) {
 				$contentItemEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl($mapping,
-						$draftMode, $eiState, $entrySourceInfo->getHttpContext()));
+						$draftMode, $eiState, $eiu->frame()->getHttpContext()));
 			}
 		}
 		
-		return new ContentItemGuiElement($this->getLabelLstr(), $this->determinePanelConfigs($entrySourceInfo), 
+		return new ContentItemGuiElement($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
 				$relationMappable, $targetReadEiState, $contentItemEditable);
 	}
 }

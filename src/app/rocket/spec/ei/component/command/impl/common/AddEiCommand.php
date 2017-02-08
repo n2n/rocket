@@ -133,24 +133,24 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$httpContext = $view->getHttpContext();
 		$eiState = $eiu->frame()->getEiState();
-		$eiEntry = $eiu->entry();
+		$eiuEntry = $eiu->entry();
 		
 		return array(
 				self::CONTROL_ADD_BEFORE_BRANCH_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiState->getControllerContext())
-								->ext($this->getId(), 'before', $eiEntry->getIdRep()), 
+								->ext($this->getId(), 'before', $eiuEntry->getLiveIdRep()), 
 						new ControlButton($dtc->translate('ei_impl_add_before_branch_label'), 
 								$dtc->translate('ei_impl_add_before_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP)),
 				self::CONTROL_ADD_AFTER_BRANCH_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiState->getControllerContext())
-								->ext($this->getId(), 'after', $eiEntry->getIdRep()),
+								->ext($this->getId(), 'after', $eiuEntry->getLiveIdRep()),
 						new ControlButton($dtc->translate('ei_impl_add_after_branch_label'),
 								$dtc->translate('ei_impl_add_after_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN)),
 				self::CONTROL_ADD_CHILD_BRANCH_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiState->getControllerContext())
-						->ext($this->getId(), 'child', $eiEntry->getIdRep()),
+						->ext($this->getId(), 'child', $eiuEntry->getLiveIdRep()),
 						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
 								$dtc->translate('ei_impl_add_child_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT)));

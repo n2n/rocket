@@ -25,12 +25,12 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\spec\ei\component\field\impl\numeric\conf\OrderEiFieldConfigurator;
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
@@ -45,16 +45,16 @@ class OrderEiField extends IntegerEiField {
 		return $entityProperty instanceof ScalarEntityProperty;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo) {
-		return $view->getHtmlBuilder()->getEsc($entrySourceInfo->getValue(EiFieldPath::from($this)));
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiFieldPath::from($this)));
 	}
 
 	public function getSortItem() {
 		return new SimpleSortField($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
-	public function createMag(string $propertyName, FieldSourceInfo $fieldSourceInfo): Mag {
-		return new NumericMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($fieldSourceInfo), 
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
+		return new NumericMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
 	}
 

@@ -35,7 +35,7 @@ use n2n\reflection\property\ConstraintsConflictException;
 use rocket\spec\core\CompatibilityTest;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\impl\web\dispatch\mag\model\IntegerOption;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\reflection\property\AccessProxy;
@@ -118,11 +118,11 @@ class MultiSelectEiField extends DraftableEiFieldAdapter {
 		return $this->attributes->get(self::OPTION_MAX_KEY);
 	}
 	
-	public function isMandatory(EntrySourceInfo $entrySourceInfo) {
+	public function isMandatory(Eiu $eiu) {
 		return $this->getMin() > 0;
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new MultiSelectChoice($this->getLabelCode(), $this->getOptions(), array(), 
 				$this->getMin(), $this->getMax());
 	}
@@ -138,7 +138,7 @@ class MultiSelectEiField extends DraftableEiFieldAdapter {
 	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view,
-			EntrySourceInfo $entrySourceInfo) {
+			Eiu $eiu) {
 		return $view->getHtmlBuilder()->getEsc(
 				implode(self::OUTPUT_SEPARATOR, (array)$eiMapping->getValue(EiFieldPath::from($this))));
 	}

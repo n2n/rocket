@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\manage\gui;
 
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface GuiFieldFork {
 
@@ -31,10 +32,10 @@ interface GuiFieldFork {
 	public function getForkedGuiDefinition();
 	
 	/**
-	 * @param EntrySourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 * @return GuiElementFork
 	 */
-	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork;
+	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork;
 		
 	/**
 	 * @param EiObject $eiObject
