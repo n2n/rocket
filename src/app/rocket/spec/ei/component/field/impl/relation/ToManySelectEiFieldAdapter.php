@@ -104,12 +104,12 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 					$targetEditEiState, $this->getRealMin(), $this->getMax());
 				
 			$toManyEditable->setSelectOverviewToolsUrl($this->eiFieldRelation->buildTargetOverviewToolsUrl(
-					$eiState, $eiu->getHttpContext()));
+					$eiState, $eiu->frame()->getHttpContext()));
 				
 			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiState)
 					&& $targetEditEiState->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, false, $eiState, $eiu->getHttpContext()));
+						$mapping, false, $eiState, $eiu->frame()->getHttpContext()));
 			}
 		}
 			

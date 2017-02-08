@@ -44,7 +44,7 @@ class CkeEiField extends AlphanumericEiField {
 	
 	private $mode = self::MODE_SIMPLE;
 	private $ckeLinkProviderLookupIds;
-	private $cssConfigLookupId = null;
+	private $ckeCssConfigLookupId = null;
 	private $tableSupported = false;
 	private $bbcodeEnabled = false;
 	
@@ -125,14 +125,14 @@ class CkeEiField extends AlphanumericEiField {
 		if ($this->bbcodeEnabled) {
 			return $wysiwygHtml->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
 		}
-		return $wysiwygHtml->getIframe($value, $this->cssConfigLookupId);
+		return $wysiwygHtml->getIframe($value, $this->ckeCssConfigLookupId);
 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$eiMapping = $eiu->entry()->getEiMapping();
 		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
-				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->cssConfigLookupId);
+				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
 	}
 	
 // 	/**

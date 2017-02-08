@@ -142,7 +142,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 			if ($targetEditEiState->getEiExecution()->isGranted() 
 					&& ($this->isReplaceable() || $relationMappable->getValue() === null)) {
 				$toOneEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, $mapping->getEiSelection()->isDraft(), $eiState, $eiu->getHttpContext()));
+						$mapping, $mapping->getEiSelection()->isDraft(), $eiState, $eiu->frame()->getHttpContext()));
 			}
 			
 			$toOneEditable->setDraftMode($mapping->getEiSelection()->isDraft());

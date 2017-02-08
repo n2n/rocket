@@ -127,7 +127,7 @@ class ContentItemsEiField extends EmbeddedOneToManyEiField {
 				
 			if ($targetEditEiState->getEiExecution()->isGranted()) {
 				$contentItemEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl($mapping,
-						$draftMode, $eiState, $eiu->getHttpContext()));
+						$draftMode, $eiState, $eiu->frame()->getHttpContext()));
 			}
 		}
 		

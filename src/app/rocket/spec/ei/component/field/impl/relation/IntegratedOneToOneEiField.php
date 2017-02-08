@@ -32,7 +32,6 @@ use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\DraftEiSelection;
@@ -45,11 +44,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\ui\Raw;
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\mapping\Mappable;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFieldFork {
 

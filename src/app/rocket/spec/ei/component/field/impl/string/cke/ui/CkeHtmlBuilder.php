@@ -145,6 +145,26 @@ class CkeHtmlBuilder {
 				. ' ' . self::ATTRIBUTE_CONTENTS_CSS . '="' . $headLinkHtml . '"></iframe>');
 	}
 	
+	private function getCssPaths(CkeCssConfig $cssConfig) {
+		if (empty($cssPaths = $cssConfig->getContentCssPaths($this->view))) return array();
+	
+		$tmpCssPaths = array();
+		foreach ($cssPaths as $cssPath) {
+			$tmpCssPaths[] = (string) $cssPath;
+		}
+		return $tmpCssPaths;
+	}
+
+
+	private function prepareAdditionalStyles($additionalStyles) {
+		$encodable = array();
+		foreach ((array) $additionalStyles as $style) {
+			$style instanceof WysiwygStyle;
+			$encodable[] = $style->getValueForJsonEncode();
+		}
+		return $encodable;
+	}
+	
 	public function editor($propertyPath = null, $mode = self::MODE_NORMAL, $isBbCode = false,
 			$isInline = false, $tableEditing = false, array $linkConfigurations = null,
 			CkeCssConfig $cssConfiguration = null, array $attrs = null, N2nLocale $linkN2nLocale = null) {

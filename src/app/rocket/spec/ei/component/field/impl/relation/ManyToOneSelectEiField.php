@@ -130,7 +130,7 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 					$relationMappable, $targetReadEiState, $targetEditEiState);
 			
 			$toOneEditable->setSelectOverviewToolsUrl($this->eiFieldRelation->buildTargetOverviewToolsUrl(
-					$eiState, $eiu->getHttpContext()));
+					$eiState, $eiu->frame()->getHttpContext()));
 			
 			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiu->frame()->getEiState())
 					 && $targetEditEiState->getEiExecution()->isGranted()) {

@@ -158,7 +158,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 			
 			if ($targetEditEiState->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$eiMapping, $draftMode, $eiState, $eiu->getHttpContext()));
+						$eiMapping, $draftMode, $eiState, $eiu->frame()->getHttpContext()));
 			}
 		}
 		
