@@ -29,6 +29,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiCommandPath;
+use rocket\spec\ei\EiFieldPath;
 
 class EiuEntry {
 	private $eiSelection;
@@ -72,43 +73,19 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
-	private $assignedEiuGui;
-	
 	/**
 	 * @param unknown $eiEntryObj
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function eiuGui($eiGuiObj, bool $assignToEiuEntry = false) {
-		$eiuGui = new EiuGui($eiGuiObj, $this);
-		
-		if (!$assignToEiuEntry) return $eiuGui;
-		
-		if ($this->assignedEiuGui === null) {
-			return $this->assignedEiuGui = $eiuGui;
-		}
-		
-		throw new EiuPerimeterException('EiuGui already assigned');
+	public function gui($eiGuiObj) {
+		return new EiuGui($eiGuiObj, $this);
 	}
 	
-	public function hasAssignedEiuGui() {
-		return $this->assignedEiuGui !== null;
+	public function field($eiFieldObj) {
+		return new EiuField($eiFieldObj, $this);
 	}
-	
-	/**
-	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\util\model\EiuGui
-	 */
-	public function getAssignedEiuGui(bool $required = true) {
-		if (!$required || $this->assignedEiuGui !== null) {
-			return $this->assignedEiuGui;
-		}
 		
-		throw new EiuPerimeterException('No EiuGui assigned');
-	}
-	
-	
 	/**
 	 * @return \rocket\spec\ei\manage\EiState
 	 */
@@ -128,11 +105,27 @@ class EiuEntry {
 		throw new IllegalStateException('No EiMapping available.');
 	}
 	
+	public function getValue($eiFieldPath) {
+		return $this->getEiMapping()->getValue($eiFieldPath);
+	}
+	
+	public function setValue($eiFieldPath, $value) {
+		return $this->getEiMapping()->setValue($eiFieldPath, $value);
+	}
+	
 	/**
 	 * @return \rocket\spec\ei\manage\EiSelection
 	 */
 	public function getEiSelection() {
 		return $this->eiSelection;
+	}
+	
+	public function isNew() {
+		if ($this->isDraft()) {
+			return $this->isDraftNew();
+		} else {
+			return !$this->isLivePersistent();
+		}
 	}
 	
 	/**
@@ -166,20 +159,20 @@ class EiuEntry {
 		
 		return $liveEntry->getId();
 	}
+
+	/*
+	 * @param bool $required
+	 * @return string
+	 */
+	public function getLiveIdRep(bool $required = true) {
+		return $this->getEiSpec()->idToIdRep($this->getLiveId($required));
+	}
 	
 	/**
 	 * @return \rocket\spec\ei\EiSpec
 	 */
 	public function getEiSpec() {
 		return $this->getLiveEntry()->getEiSpec();
-	}
-	
-	/**
-	 * @param bool $required
-	 * @return string
-	 */
-	public function getIdRep(bool $required = true) {
-		return $this->getEiSpec()->idToIdRep($this->getLiveId($required));
 	}
 	
 	/**

@@ -76,14 +76,14 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		$eiuEntry = $eiu->entry();
 		$eiState = $eiu->frame()->getEiState();
 		if (!$eiuEntry->isDraft()) {
-			$urlExt = (new Path(array('live', $eiuEntry->getIdRep())))
+			$urlExt = (new Path(array('live', $eiuEntry->getLiveIdRep())))
 					->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 			$label = $view->getL10nText('common_edit_label');
 			$tooltip = $view->getL10nText('ei_impl_edit_entry_tooltip', array('entry' => $eiu->frame()->getGenericLabel()));
 			$hrefControls[] = HrefControl::create($eiState, $this, $urlExt,
 					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL));
 			if ($eiu->frame()->isDraftingEnabled()) {
-				$urlExt = (new Path(array('latestdraft', $eiuEntry->getIdRep())))
+				$urlExt = (new Path(array('latestdraft', $eiuEntry->getLiveIdRep())))
 						->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($view->getHttpContext())));
 				$label = $view->getL10nText('common_edit_latest_draft_label');
 				$tooltip = $view->getL10nText('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiu->frame()->getGenericLabel()));

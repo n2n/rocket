@@ -27,7 +27,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\string\conf\PathPartEiFieldConfigurator;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\EiObject;
@@ -35,7 +35,7 @@ use rocket\spec\ei\component\EiConfigurator;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
@@ -126,8 +126,8 @@ class PathPartEiField extends AlphanumericEiField  {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
-		return $view->getHtmlBuilder()->getEsc($entrySourceInfo->getValue(EiFieldPath::from($this)));
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiFieldPath::from($this)));
 	}
 
 	
@@ -136,15 +136,15 @@ class PathPartEiField extends AlphanumericEiField  {
 // 		$mappable->
 // 	}
 
-	private function buildMagInputAttrs(FieldSourceInfo $fieldSourceInfo): array {
+	private function buildMagInputAttrs(Eiu $eiu): array {
 		$attrs = array('placeholder' => $this->getLabelLstr());
 		
-		if ($fieldSourceInfo->isNew() || $fieldSourceInfo->isDraft() || !$this->critical) return $attrs;
+		if ($eiu->entry()->isNew() || $eiu->entry()->isDraft() || !$this->critical) return $attrs;
 	
 		$attrs['class'] = 'rocket-critical-input';
 		
 		if (null !== $this->criticalMessage) {
-			$dtc = new DynamicTextCollection('rocket', $fieldSourceInfo->getRequest()->getN2nLocale());
+			$dtc = new DynamicTextCollection('rocket', $eiu->getRequest()->getN2nLocale());
 			$attrs['data-confirm-message'] = $this->criticalMessage;
 			$attrs['data-edit-label'] =  $dtc->translate('common_edit_label');
 			$attrs['data-cancel-label'] =  $dtc->translate('common_cancel_label');
@@ -153,11 +153,11 @@ class PathPartEiField extends AlphanumericEiField  {
 		return $attrs;
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $fieldSourceInfo): Mag {
-		$attrs = $this->buildMagInputAttrs($fieldSourceInfo);
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
+		$attrs = $this->buildMagInputAttrs($eiu);
 		
 		return new StringMag($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($fieldSourceInfo), $this->getMaxlength(), false, null, $attrs);
+				$this->isMandatory($eiu), $this->getMaxlength(), false, null, $attrs);
 	}
 	
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\adapter;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\core\container\N2nContext;
@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
@@ -62,12 +62,12 @@ abstract class DraftableEiFieldAdapter extends EditableEiFieldAdapter implements
 				->getLenientCopy(), $this, $this);
 	}
 	
-	public function isReadOnly(FieldSourceInfo $entrySourceInfo): bool {
-		if (!$entrySourceInfo->isDraft() || !$this->isDraftable()) {
-			return parent::isReadOnly($entrySourceInfo);
+	public function isReadOnly(Eiu $eiu): bool {
+		if (!$eiu->entry()->isDraft() || !$this->isDraftable()) {
+			return parent::isReadOnly($eiu);
 		}
 		
-// 		if (!$this->checkForWriteAccess($entrySourceInfo->getEiMapping())) return true;
+// 		if (!$this->checkForWriteAccess($eiu->entry()->getEiMapping())) return true;
 			
 		return $this->standardEditDefinition->isReadOnly() || !$this->isDraftable();
 	}

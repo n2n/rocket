@@ -31,14 +31,14 @@ use rocket\spec\ei\manage\EiState;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\critmod\filter\impl\field\BoolFilterField;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\bool\conf\BooleanEiFieldConfigurator;
@@ -65,7 +65,7 @@ class BooleanEiField extends DraftableEiFieldAdapter implements FilterableEiFiel
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function isMandatory(FieldSourceInfo $entrySourceInfo): bool {
+	public function isMandatory(Eiu $eiu): bool {
 		return false;
 	}
 	
@@ -83,16 +83,16 @@ class BooleanEiField extends DraftableEiFieldAdapter implements FilterableEiFiel
 // 		return $magCollection;
 // 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
-				$entrySourceInfo->getEiMapping()->getEiSelection()->getLiveObject());
+				$eiu->entry()->getEiMapping()->getEiSelection()->getLiveObject());
 		if ($value) {
 			return new HtmlElement('i', array('class' => 'fa fa-check'), '');
 		}
 		return new HtmlElement('i', array('class' => 'fa fa-check-empty'), '');
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new BoolMag($propertyName, $this->getLabelLstr(), true);
 	}
 

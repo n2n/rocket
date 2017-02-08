@@ -258,7 +258,7 @@ class FieldGuiListener implements EiSelectionGuiListener {
 	
 	public function __construct(FieldSourceInfo $fieldSourceInfo, \Closure $onSaveClosure = null, 
 			\Closure $savedClosure = null) {
-		$this->fieldSourceInfo = $fieldSourceInfo;
+		$this->eiu = $fieldSourceInfo;
 		$this->onSaveClosure = $onSaveClosure;
 		$this->savedClosure = $savedClosure;
 	}
@@ -279,8 +279,8 @@ class FieldGuiListener implements EiSelectionGuiListener {
 	}
 
 	private function call($closure) {
-		$mmi = new MagicMethodInvoker($this->fieldSourceInfo->getEiState()->getN2nContext());
-		$mmi->setClassParamObject(FieldSourceInfo::class, $this->fieldSourceInfo);
+		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiState()->getN2nContext());
+		$mmi->setClassParamObject(FieldSourceInfo::class, $this->eiu);
 		$mmi->invoke(null, $closure);
 	}
 }

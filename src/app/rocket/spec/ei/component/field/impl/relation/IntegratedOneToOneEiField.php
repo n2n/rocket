@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\mapping\MappableSource;
 use rocket\spec\ei\manage\gui\GuiElementFork;
@@ -118,12 +118,12 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	}
 	
 	/**
-	 * @param EntrySourceInfo $entrySourceInfo
+	 * @param Eiu $eiu
 	 * @return GuiElementFork
 	 */
-	public function createGuiElementFork(EntrySourceInfo $entrySourceInfo, bool $makeEditable): GuiElementFork {
-		$eiState = $entrySourceInfo->getEiState();
-		$eiMapping = $entrySourceInfo->getEiMapping();
+	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
+		$eiState = $eiu->frame()->getEiState();
+		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		$targetEiState = null;
 		if ($makeEditable) {
@@ -146,7 +146,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		}
 				
 		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
-				new EntrySourceInfo($targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), $entrySourceInfo->getViewMode()));
+				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), $eiu->getViewMode()));
 		
 		return new OneToOneGuiElementFork($toOneMappable, $targetRelationEntry, $targetGuiElementAssembler);
 	}

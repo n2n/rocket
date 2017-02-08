@@ -30,20 +30,20 @@ use rocket\spec\ei\manage\gui\GuiElement;
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\component\field\EiField;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class ToManySelectGuiElement implements GuiElement {
 	private $eiField;
-	private $fieldSourceInfo;
+	private $eiu;
 	private $targetEiState;
 	private $editable;
 	private $toOneMag;
 	
-	public function __construct(EiField $eiField, FieldSourceInfo $fieldSourceInfo, EiState $targetEiState, 
+	public function __construct(EiField $eiField, Eiu $eiu, EiState $targetEiState, 
 			Editable $editable = null) {
 		$this->eiField = $eiField;
-		$this->fieldSourceInfo = $fieldSourceInfo;
+		$this->eiu = $eiu;
 		$this->targetEiState = $targetEiState;
 		$this->editable = $editable;
 	}
@@ -63,7 +63,7 @@ class ToManySelectGuiElement implements GuiElement {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		if ($this->fieldSourceInfo->isViewModeBulky()) {
+		if ($this->eiu->gui()->isViewModeBulky()) {
 			return array('class' => 'rocket-block');
 		}
 		
@@ -71,7 +71,7 @@ class ToManySelectGuiElement implements GuiElement {
 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
-		if ($this->fieldSourceInfo->getEiMapping()->isNew()) {
+		if ($this->eiu->entry()->getEiMapping()->isNew()) {
 			return null;
 		}
 		
@@ -86,7 +86,7 @@ class ToManySelectGuiElement implements GuiElement {
 			$label = $num . ' ' . $targetEiUtils->getGenericPluralLabel();
 		}
 
-		if (null !== ($relation = $this->fieldSourceInfo->getEiState()
+		if (null !== ($relation = $this->eiu->frame()->getEiState()
 				->getEiRelation($this->eiField->getId()))) {
 			return $this->createUiLink($relation->getEiState(), $label, $view);
 		}

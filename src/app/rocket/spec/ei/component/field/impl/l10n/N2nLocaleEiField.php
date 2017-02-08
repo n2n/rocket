@@ -29,7 +29,7 @@ use rocket\spec\ei\component\field\SortableEiField;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo; 
+ 
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
@@ -41,7 +41,7 @@ use rocket\spec\ei\manage\EiState;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\core\N2N;
@@ -70,34 +70,34 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
-		$value = $entrySourceInfo->getEiMapping()->getValue($this->getId());
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+		$value = $eiu->entry()->getEiMapping()->getValue($this->getId());
 		if (null === ($n2nLocale = N2nLocale::create($value))) return null;
 		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
 	}
 
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new EnumMag($propertyName, $this->getLabelLstr(), $this->buildN2nLocaleArray(
-				$entrySourceInfo->getEiState()->getN2nLocale()), null, $this->isMandatory($entrySourceInfo));
+				$eiu->frame()->getEiState()->getN2nLocale()), null, $this->isMandatory($eiu));
 	}
 	
-	public function saveMagValue(Mag $mag, FieldSourceInfo $entrySourceInfo) {
-		$entrySourceInfo->setValue(N2nLocale::build($mag->getValue()));
+	public function saveMagValue(Mag $mag, Eiu $eiu) {
+		$eiu->field()->setValue(N2nLocale::build($mag->getValue()));
 	}
 	
-	public function loadMagValue(FieldSourceInfo $entrySourceInfo, Mag $mag) {
-		if (null !== ($n2nLocale = $entrySourceInfo->getValue())) {
+	public function loadMagValue(Eiu $eiu, Mag $mag) {
+		if (null !== ($n2nLocale = $eiu->field()->getValue())) {
 			$mag->setValue((string) $n2nLocale);
 		}
 	}
 	
 // 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
-// 			EiMapping $eiMapping, EntrySourceInfo $entrySourceInfo) {
+// 			EiMapping $eiMapping, Eiu $eiu) {
 // 		$eiMapping->setValue($this->id, N2nLocale::create($attributes->get($this->id)));
 // 	}
 	
 // 	public function propertyValueToOptionAttributeValue(EiMapping $eiMapping, 
-// 			Attributes $attributes, EntrySourceInfo $entrySourceInfo) {
+// 			Attributes $attributes, Eiu $eiu) {
 // 		$propertyValue = $eiMapping->getValue(EiFieldPath::from($this));
 // 		$attributeValue = null;
 // 		if ($propertyValue instanceof N2nLocale) {
@@ -128,8 +128,8 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 		return $n2nLocale->getName($displayN2nLocale) . ' / ' . $n2nLocale->toPrettyId();
 	}
 	
-// 	public function isMandatory(FieldSourceInfo $entrySourceInfo): bool {
-// 		return $this->isMultiLingual() && parent::isMandatory($entrySourceInfo);
+// 	public function isMandatory(Eiu $eiu): bool {
+// 		return $this->isMultiLingual() && parent::isMandatory($eiu);
 // 	}
 	
 // 	public function isMultiLingual() {

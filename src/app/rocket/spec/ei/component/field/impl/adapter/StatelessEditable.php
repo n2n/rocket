@@ -22,17 +22,17 @@
 namespace rocket\spec\ei\component\field\impl\adapter;
 
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface StatelessEditable extends StatelessDisplayable {
 
-	public function isMandatory(FieldSourceInfo $fieldSourceInfo): bool;
+	public function isMandatory(Eiu $eiu): bool;
 	
-	public function isReadOnly(FieldSourceInfo $fieldSourceInfo): bool;
+	public function isReadOnly(Eiu $eiu): bool;
 	
-	public function createMag(string $propertyName, FieldSourceInfo $fieldSourceInfo): Mag;
+	public function createMag(string $propertyName, Eiu $eiu): Mag;
 	
-	public function loadMagValue(FieldSourceInfo $entrySourceInfo, Mag $mag);
+	public function loadMagValue(Eiu $eiu, Mag $mag);
 	
-	public function saveMagValue(Mag $option, FieldSourceInfo $fieldSourceInfo);
+	public function saveMagValue(Mag $option, Eiu $eiu);
 }

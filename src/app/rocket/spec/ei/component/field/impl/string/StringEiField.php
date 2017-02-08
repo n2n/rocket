@@ -24,12 +24,12 @@ namespace rocket\spec\ei\component\field\impl\string;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\string\conf\StringEiFieldConfigurator;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class StringEiField extends AlphanumericEiField {
@@ -47,10 +47,10 @@ class StringEiField extends AlphanumericEiField {
 		return new StringEiFieldConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		
-		$value = $entrySourceInfo->getValue(EiFieldPath::from($this));
+		$value = $eiu->field()->getValue(EiFieldPath::from($this));
 		
 		if ($this->isMultiline()) {
 			return $html->getEscBr($value);
@@ -68,11 +68,11 @@ class StringEiField extends AlphanumericEiField {
 // 	}
 	
 
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$mag = new StringMag($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($entrySourceInfo), 
+				$this->isMandatory($eiu), 
 				$this->getMaxlength(), $this->isMultiline(),
-				array('placeholder' => $this->getLabelLstr()->t($entrySourceInfo->getN2nLocale())));
+				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
 		$mag->setAttrs(array('class' => 'rocket-block'));
 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
 		return $mag;

@@ -28,7 +28,7 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\numeric\conf\DecimalEiFieldConfigurator;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use n2n\web\dispatch\map\PropertyPath;
@@ -73,11 +73,11 @@ class DecimalEiField extends NumericEiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessEditable::createMag($propertyName, $entrySourceInfo)
+	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessEditable::createMag($propertyName, $eiu)
 	 */
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$numericMag = new EiDecimalMag($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($entrySourceInfo), $this->getMinValue(), $this->getMaxValue(), 
+				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));
 		$numericMag->setInputPrefix($this->prefix);
 		return $numericMag;

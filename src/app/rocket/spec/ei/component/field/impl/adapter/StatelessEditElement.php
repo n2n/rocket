@@ -25,26 +25,26 @@ use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class StatelessEditElement extends StatelessDisplayElement implements Editable {
 	private $statelessEditable;
-	private $fieldSourceInfo;
+	private $eiu;
 	private $mag;
 	
-	public function __construct(StatelessEditable $statelessEditable, FieldSourceInfo $fieldSourceInfo) {
-		parent::__construct($statelessEditable, $fieldSourceInfo);
+	public function __construct(StatelessEditable $statelessEditable, Eiu $eiu) {
+		parent::__construct($statelessEditable, $eiu);
 		
 		$this->statelessEditable = $statelessEditable;
-		$this->fieldSourceInfo = $fieldSourceInfo;
+		$this->eiu = $eiu;
 	}
 
 	public function isMandatory(): bool {
-		return $this->statelessEditable->isMandatory($this->fieldSourceInfo);
+		return $this->statelessEditable->isMandatory($this->eiu);
 	}
 	
 	public function isReadOnly(): bool {
-		return $this->statelessEditable->isReadOnly($this->fieldSourceInfo);
+		return $this->statelessEditable->isReadOnly($this->eiu);
 	}
 	
 	public function getEditable(): Editable {
@@ -56,9 +56,9 @@ class StatelessEditElement extends StatelessDisplayElement implements Editable {
 			throw new IllegalStateException('Option already created.');
 		}
 		
-		$mag = $this->statelessEditable->createMag($propertyName, $this->fieldSourceInfo);
+		$mag = $this->statelessEditable->createMag($propertyName, $this->eiu);
 		ArgUtils::valTypeReturn($mag, Mag::class, $this->statelessEditable, 'createMag');
-		$this->statelessEditable->loadMagValue($this->fieldSourceInfo, $mag);
+		$this->statelessEditable->loadMagValue($this->eiu, $mag);
 		return $this->mag = $mag;
 	}
 	
@@ -67,6 +67,6 @@ class StatelessEditElement extends StatelessDisplayElement implements Editable {
 			throw new IllegalStateException('No option created.');
 		}
 
-		$this->statelessEditable->saveMagValue($this->mag, $this->fieldSourceInfo);
+		$this->statelessEditable->saveMagValue($this->mag, $this->eiu);
 	}
 }

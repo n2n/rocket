@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\persistence\orm\property\relation\Relation;
@@ -55,7 +55,7 @@ use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewAjahCo
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
 use rocket\spec\ei\manage\LiveEiSelection;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
@@ -117,9 +117,9 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
 	 */
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		$mapping = $entrySourceInfo->getEiMapping();
-		$eiState = $entrySourceInfo->getEiState();
+	public function buildGuiElement(Eiu $eiu) {
+		$mapping = $eiu->entry()->getEiMapping();
+		$eiState = $eiu->frame()->getEiState();
 		$relationMappable = $mapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
 		
@@ -130,12 +130,12 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 					$relationMappable, $targetReadEiState, $targetEditEiState);
 			
 			$toOneEditable->setSelectOverviewToolsUrl($this->eiFieldRelation->buildTargetOverviewToolsUrl(
-					$eiState, $entrySourceInfo->getHttpContext()));
+					$eiState, $eiu->getHttpContext()));
 			
-			if ($this->eiFieldRelation->isEmbeddedAddActivated($entrySourceInfo->getEiState())
+			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiu->frame()->getEiState())
 					 && $targetEditEiState->getEiExecution()->isGranted()) {
 				$toOneEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, false, $eiState, $entrySourceInfo->getRequest()));
+						$mapping, false, $eiState, $eiu->getRequest()));
 			}
 		}
 		

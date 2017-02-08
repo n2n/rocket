@@ -27,7 +27,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
 use rocket\spec\ei\manage\EiObject;
@@ -38,7 +38,7 @@ use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\spec\ei\manage\mapping\impl\Validatable;
@@ -122,20 +122,20 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 		return null;
 	}
 	
-	public function buildGuiElement(FieldSourceInfo $entrySourceInfo) {
-		return new StatelessEditElement($this, $entrySourceInfo);
+	public function buildGuiElement(Eiu $eiu) {
+		return new StatelessEditElement($this, $eiu);
 	}
 	
 	/**
 	 * @return bool
 	 */
-	public function isReadOnly(FieldSourceInfo $entrySourceInfo): bool {
-		if (!WritableEiFieldPrivilege::checkForWriteAccess($entrySourceInfo->getEiState()->getEiExecution()
+	public function isReadOnly(Eiu $eiu): bool {
+		if (!WritableEiFieldPrivilege::checkForWriteAccess($eiu->frame()->getEiState()->getEiExecution()
 				->createEiFieldAccess(EiFieldPath::from($this)))) {
 			return true;
 		}
 		
-		if ($entrySourceInfo->isDraft() || (!$entrySourceInfo->isNew() 
+		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew() 
 				&& $this->standardEditDefinition->isConstant())) {
 			return true;
 		}
@@ -143,7 +143,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 		return $this->standardEditDefinition->isReadOnly();
 	}
 	
-	public function isMandatory(FieldSourceInfo $entrySourceInfo): bool {
+	public function isMandatory(Eiu $eiu): bool {
 		 return $this->standardEditDefinition->isMandatory();
 	}
 
@@ -157,12 +157,12 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 // 		return (boolean) $accessAttributes->get('writingAllowed');
 // 	}
 	
-	public function loadMagValue(FieldSourceInfo $entrySourceInfo, Mag $option) {
-		$option->setValue($entrySourceInfo->getValue());
+	public function loadMagValue(Eiu $eiu, Mag $option) {
+		$option->setValue($eiu->field()->getValue());
 	}
 	
-	public function saveMagValue(Mag $option, FieldSourceInfo $entrySourceInfo) {
-		$entrySourceInfo->setValue($option->getValue());
+	public function saveMagValue(Mag $option, Eiu $eiu) {
+		$eiu->field()->setValue($option->getValue());
 	}
 }
 

@@ -30,7 +30,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\component\field\impl\numeric\conf\NumericEiFieldConfigurator;
 use n2n\reflection\ArgUtils;
@@ -42,7 +42,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiFieldPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\sort\SortField;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 
@@ -84,9 +84,9 @@ abstract class NumericEiFieldAdapter extends DraftableEiFieldAdapter
 		return new NumericEiFieldConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo)  {
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
-		return $html->getEsc($entrySourceInfo->getValue(EiFieldPath::from($this)));
+		return $html->getEsc($eiu->field()->getValue(EiFieldPath::from($this)));
 	}
 	
 // 	public function createPreviewUiComponent(EiState $eiState = null, HtmlView $view, $value) {

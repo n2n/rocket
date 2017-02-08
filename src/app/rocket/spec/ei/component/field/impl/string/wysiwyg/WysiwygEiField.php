@@ -29,7 +29,7 @@ use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiField;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\magic\MagicObjectUnavailableException;
@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\component\field\impl\string\conf\WysiwygEiFieldConfigurator;
 use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
 class WysiwygEiField extends AlphanumericEiField {
@@ -95,8 +95,8 @@ class WysiwygEiField extends AlphanumericEiField {
 		$this->bbcodeEnabled = (boolean) $bbcodeEnabled;
 	}
 
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo) {
-	    $value = $entrySourceInfo->getValue(EiFieldPath::from($this));
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	    $value = $eiu->field()->getValue(EiFieldPath::from($this));
 		$wysiwygHtml = new WysiwygHtmlBuilder($view);
 		if ($this->bbcodeEnabled) {
 			return $wysiwygHtml->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
@@ -120,20 +120,20 @@ class WysiwygEiField extends AlphanumericEiField {
 				$this->obtainCssConfiguration(), array('class' => 'rocket-preview-inpage-component'));
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
-		$eiMapping = $entrySourceInfo->getEiMapping();
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
+		$eiMapping = $eiu->entry()->getEiMapping();
 		return new WysiwygOption($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($entrySourceInfo), 
+				$this->isMandatory($eiu), 
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
-				$this->isTableEditingEnabled(), $this->obtainLinkConfigurations($eiMapping, $entrySourceInfo), 
+				$this->isTableEditingEnabled(), $this->obtainLinkConfigurations($eiMapping, $eiu), 
 				$this->obtainCssConfiguration());
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
 	 */
-	private function obtainLinkConfigurations(EiMapping $eiMapping, FieldSourceInfo $entrySourceInfo) {
-		$n2nContext = $entrySourceInfo->getEiState()->getN2nContext();
+	private function obtainLinkConfigurations(EiMapping $eiMapping, Eiu $eiu) {
+		$n2nContext = $eiu->frame()->getEiState()->getN2nContext();
 		
 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
 		$linkConfigurations = array();
@@ -141,7 +141,7 @@ class WysiwygEiField extends AlphanumericEiField {
 			try {
 				if (null !== ($linkConfiguration = $n2nContext->lookup($linkConfigurationClass)) 
 						&& $linkConfiguration instanceof WysiwygLinkConfig) {
-					$linkConfiguration->setup($eiMapping, $entrySourceInfo);
+					$linkConfiguration->setup($eiMapping, $eiu);
 					$linkConfigurations[] = $linkConfiguration;
 				}
 			} catch (MagicObjectUnavailableException $e) {}

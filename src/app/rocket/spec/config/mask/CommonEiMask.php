@@ -29,7 +29,7 @@ use rocket\spec\ei\EiSpec;
 use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\mask\EiMask;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
@@ -364,12 +364,6 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 		return $guiFieldOrder;
 	}
-	
-// 	public function createEiSelectionGui(EntrySourceInfo $entrySourceInfo) {
-// 		$factory = new EiSelectionGuiFactory($this, $entrySourceInfo);
-// 		return $this->createEiSelectionGui($entrySourceInfo, $this->getGuiFieldOrderViewMode(
-// 				$entrySourceInfo->getViewMode())->getAllGuiIdPaths());
-// 	}
 
 	public function createListEntryGuiModel(EiState $eiState, EiMapping $eiMapping, 
 			bool $makeEditable): EntryGuiModel {

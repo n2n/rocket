@@ -36,7 +36,6 @@ use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\mask\EiMask;

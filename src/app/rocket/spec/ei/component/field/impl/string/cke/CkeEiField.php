@@ -24,12 +24,11 @@ namespace rocket\spec\ei\component\field\impl\string\cke;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiField;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use n2n\util\col\GenericArrayObject;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
@@ -120,8 +119,8 @@ class CkeEiField extends AlphanumericEiField {
 		$this->bbcodeEnabled = $bbcodeEnabled;
 	}
 
-	public function createOutputUiComponent(HtmlView $view, FieldSourceInfo $entrySourceInfo) {
-	    $value = $entrySourceInfo->getValue(EiFieldPath::from($this));
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	    $value = $eiu->field()->getValue(EiFieldPath::from($this));
 		$wysiwygHtml = new CkeHtmlBuilder($view);
 		if ($this->bbcodeEnabled) {
 			return $wysiwygHtml->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
@@ -129,9 +128,9 @@ class CkeEiField extends AlphanumericEiField {
 		return $wysiwygHtml->getIframe($value, $this->cssConfigLookupId);
 	}
 	
-	public function createMag(string $propertyName, FieldSourceInfo $entrySourceInfo): Mag {
-		$eiMapping = $entrySourceInfo->getEiMapping();
-		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($entrySourceInfo), 
+	public function createMag(string $propertyName, Eiu $eiu): Mag {
+		$eiMapping = $eiu->entry()->getEiMapping();
+		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
 				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->cssConfigLookupId);
 	}
@@ -139,8 +138,8 @@ class CkeEiField extends AlphanumericEiField {
 // 	/**
 // 	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
 // 	 */
-// 	private function obtainLinkConfigurations(EiMapping $eiMapping, FieldSourceInfo $entrySourceInfo) {
-// 		$n2nContext = $entrySourceInfo->getEiState()->getN2nContext();
+// 	private function obtainLinkConfigurations(EiMapping $eiMapping, Eiu $eiu) {
+// 		$n2nContext = $eiu->frame()->getEiState()->getN2nContext();
 		
 // 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
 // 		$linkConfigurations = array();
@@ -148,7 +147,7 @@ class CkeEiField extends AlphanumericEiField {
 // 			try {
 // 				if (null !== ($linkConfiguration = $n2nContext->lookup($linkConfigurationClass)) 
 // 						&& $linkConfiguration instanceof WysiwygLinkConfig) {
-// 					$linkConfiguration->setup($eiMapping, $entrySourceInfo);
+// 					$linkConfiguration->setup($eiMapping, $eiu);
 // 					$linkConfigurations[] = $linkConfiguration;
 // 				}
 // 			} catch (MagicObjectUnavailableException $e) {}

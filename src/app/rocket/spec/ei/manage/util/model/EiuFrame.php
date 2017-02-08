@@ -130,48 +130,13 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->eiState->getManageState()->getDraftManager();
 	}
 	
-	private $assignedEiuEntry;
-	
 	/**
 	 * @param unknown $eiEntryObj
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function eiuEntry($eiEntryObj, bool $assignToEiuEntry = false) {
-		$eiuEntry = new EiuEntry($eiEntryObj, $this);
-
-		if (!$assignToEiuEntry) return $eiuEntry;
-		
-		if ($this->assignedEiuEntry === null) {
-			return $this->assignedEiuEntry = $eiuEntry;
-		}
-		
-		throw new EiuPerimeterException('EiuEntry already assigned');
-	}
-	
-	public function copy() {
-		return new EiuFrame($this->eiState);
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function hasAssignedEiuEntry() {
-		return $this->assignedEiuEntry !== null;
-	}
-	
-	/**
-	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
-	 */
-	public function getAssignedEiuEntry(bool $required = true) {
-		if (!$required || $this->assignedEiuEntry !== null) {
-			return $this->assignedEiuEntry;
-		}
-		
-		throw new EiuPerimeterException('No EiuEntry assigned.');
+	public function entry($eiEntryObj) {
+		return new EiuEntry($eiEntryObj, $this);
 	}
 	
 	/**

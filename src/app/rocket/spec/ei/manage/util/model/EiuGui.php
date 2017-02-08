@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\model\EntryGuiModel;
-use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use n2n\reflection\magic\MagicMethodInvoker;
@@ -41,28 +39,23 @@ class EiuGui {
 		
 		$this->eiSelectionGui = $eiuFactory->getEiSelectionGui(true);
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
-		
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new class($this) implements EiSelectionGuiListener {
-			private $eiuGui;
-			
-			public function __construct(EiuGui $eiuGui) {
-				$this->eiuGui = $eiuGui;
-			}
-			
-			public function finalized(EiSelectionGui $eiSelectionGui) {
-				$this->eiuGui->triggerWhenReady();
-			}
-			
-			public function onSave(EiSelectionGui $eiSelectionGui) {
-			}
-			
-			public function saved(EiSelectionGui $eiSelectionGui) {
-			}
-		});
 	}
 	
 	public function getViewMode() {
 		return $this->eiSelectionGui->getViewMode();
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isViewModeOverview() {
+		$viewMode = $this->getViewMode();
+		return $viewMode == DisplayDefinition::LIST_VIEW_MODES
+				|| $viewMode == DisplayDefinition::TREE_VIEW_MODES;
+	}
+	
+	public function isViewModeBulky() {
+		return (bool) ($this->getViewMode() & DisplayDefinition::BULKY_VIEW_MODES);
 	}
 	
 	/**
@@ -73,11 +66,18 @@ class EiuGui {
 	}
 	
 	public function whenReady(\Closure $closure) {
-		$this->whenReadyClosures[] = $closure;
-		
-		if ($this->eiSelectionGui->isInitialized()) {
-			$this->triggerWhenReady();
-		}
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(
+				$this, $this->getEiuEntry()->getEiFrame()->getN2nContext(), $closure));
+	}
+	
+	public function onSave(\Closure $closure) {
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(
+				$this, $this->getEiuEntry()->getEiFrame()->getN2nContext(), null, $closure));
+	}
+	
+	public function whenSave(\Closure $closure) {
+		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(
+				$this, $this->getEiuEntry()->getEiFrame()->getN2nContext(), null, null, $closure));
 	}
 	
 	/**
@@ -96,7 +96,7 @@ class EiuGui {
 		}
 	}
 	
-	private function triggerWhenReady() {
+	protected function triggerWhenReady() {
 		if (empty($this->whenReadyClosures)) return;
 		
 		$n2nContext = null;
@@ -110,15 +110,6 @@ class EiuGui {
 		}
 	}
 
-	/**
-	 * @return boolean
-	 */
-	public function isViewModeOverview() {
-		$viewMode = $this->eiSelectionGui->getViewMode();
-		return $viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
-				|| $viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
-	}
-	
 	public function getEiuEntry(bool $required = true) {
 		if (!$required || $this->eiuEntry !== null) {
 			return $this->eiuEntry;
@@ -146,4 +137,44 @@ class EiuGui {
 // 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
 // 		return $entryGuiUtils;
 // 	}
+}
+
+
+class ClosureGuiListener implements EiSelectionGuiListener {
+	private $eiu;
+	private $whenReadyClosure;
+	private $onSaveClosure;
+	private $savedClosure;
+
+	public function __construct(Eiu $eiu, \Closure $whenReadyClosure, \Closure $onSaveClosure = null,
+			\Closure $savedClosure = null) {
+		$this->eiu = $eiu;
+		$this->whenReadyClosure = $whenReadyClosure;
+		$this->onSaveClosure = $onSaveClosure;
+		$this->savedClosure = $savedClosure;
+	}
+
+	public function finalized(EiSelectionGui $eiSelectionGui) {
+		if ($this->whenReadyClosure !== null) {
+			$this->call($this->whenReadyClosure);
+		}
+	}
+
+	public function onSave(EiSelectionGui $eiSelectionGui) {
+		if ($this->onSaveClosure !== null) {
+			$this->call($this->onSaveClosure);
+		}
+	}
+
+	public function saved(EiSelectionGui $eiSelectionGui) {
+		if ($this->savedClosure !== null) {
+			$this->call($this->savedClosure);
+		}
+	}
+
+	private function call($closure) {
+		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiState()->getN2nContext());
+		$mmi->setClassParamObject(Eiu::class, $this->eiu);
+		$mmi->invoke(null, $closure);
+	}
 }

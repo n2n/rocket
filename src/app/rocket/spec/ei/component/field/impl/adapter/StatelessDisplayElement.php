@@ -25,19 +25,19 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
-use rocket\spec\ei\manage\gui\FieldSourceInfo;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class StatelessDisplayElement implements GuiElement {
 	private $statelessDisplayable;
-	private $fieldSourceInfo;
+	private $eiu;
 	
 	/**
 	 * @param StatelessDisplayable $statelessDisplayable
-	 * @param FieldSourceInfo $fieldSourceInfo
+	 * @param Eiu $eiu
 	 */
-	public function __construct(StatelessDisplayable $statelessDisplayable, FieldSourceInfo $fieldSourceInfo) {
+	public function __construct(StatelessDisplayable $statelessDisplayable, Eiu $eiu) {
 		$this->statelessDisplayable = $statelessDisplayable;
-		$this->fieldSourceInfo = $fieldSourceInfo;
+		$this->eiu = $eiu;
 	}
 	
 	/**
@@ -45,7 +45,7 @@ class StatelessDisplayElement implements GuiElement {
 	 * @see \rocket\spec\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(): string {
-		return $this->statelessDisplayable->getUiOutputLabel($this->fieldSourceInfo);
+		return $this->statelessDisplayable->getUiOutputLabel($this->eiu);
 	}
 	
 	/**
@@ -53,7 +53,7 @@ class StatelessDisplayElement implements GuiElement {
 	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return $this->statelessDisplayable->getOutputHtmlContainerAttrs($this->fieldSourceInfo);
+		return $this->statelessDisplayable->getOutputHtmlContainerAttrs($this->eiu);
 	}
 	
 	/**
@@ -61,7 +61,7 @@ class StatelessDisplayElement implements GuiElement {
 	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view) {
-		return $this->statelessDisplayable->createOutputUiComponent($view, $this->fieldSourceInfo);
+		return $this->statelessDisplayable->createOutputUiComponent($view, $this->eiu);
 	}
 	
 	/**

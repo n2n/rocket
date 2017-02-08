@@ -25,7 +25,7 @@ use rocket\spec\ei\component\field\EiFieldCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\gui\EntrySourceInfo;
+
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\component\field\GuiEiField;
@@ -33,6 +33,7 @@ use rocket\spec\ei\manage\gui\EditableWrapper;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class GuiFactory {
 	private $eiFieldCollection;
@@ -73,9 +74,8 @@ class GuiFactory {
 			bool $makeEditable, array $guiIdPaths): EiSelectionGui {
 		ArgUtils::valArrayLike($guiIdPaths, 'rocket\spec\ei\manage\gui\GuiIdPath');
 		
-		$eiSelectionGui = new EiSelectionGui($guiDefinition, $entrySourceInfo->getViewMode());
+		$eiSelectionGui = new EiSelectionGui($guiDefinition, $viewMode);
 		$eiuGui = $eiuEntry->gui($eiSelectionGui);
-		
 		
 		$guiElementAssembler = new GuiElementAssembler($guiDefinition, $eiuGui);
 		
@@ -98,10 +98,6 @@ class GuiFactory {
 		
 		foreach ($this->eiModificatorCollection as $eiModificator) {
 			$eiModificator->setupEiSelectionGui($eiSelectionGui);
-		}
-		
-		foreach ($entrySourceInfo->getEiSelectionGuiListeners() as $eiSelectionGuiListener) {
-			$eiSelectionGui->registerEiSelectionGuiListener($eiSelectionGuiListener);
 		}
 		
 		$eiSelectionGui->markInitialized();
