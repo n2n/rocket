@@ -33,7 +33,6 @@ use rocket\spec\ei\security\EiCommandAccessRestrictor;
 use rocket\spec\ei\EiCommandPath;
 
 class EiMapping {
-	private $contextEiSpec;
 	private $mappingProfile;
 	private $mappingErrorInfo;
 	private $eiSelection;
@@ -43,10 +42,6 @@ class EiMapping {
 	private $eiExecutionRestrictorSet = array();
 	
 	private $listeners = array();
-	
-// 	private $listenerBindings = array();
-
-	private $eiSelectionPrivilegeConstraint;
 	
 	public function __construct(MappingProfile $mappingProfile, EiSelection $eiSelection) {
 		$this->mappingProfile = $mappingProfile;
@@ -348,19 +343,19 @@ class EiMapping {
 		unset($this->listenerBindings[$fieldId]);
 	}
 	
-	public function registerValidator(MappingValidator $validator) {
-		$this->validators[spl_object_hash($validator)] = $validator;
-	}
+// 	public function registerValidator(MappingValidator $validator) {
+// 		$this->validators[spl_object_hash($validator)] = $validator;
+// 	}
 	
-	public function registerConstraint(EiMappingConstraint $mappingConstraint) {
-		$this->registerValidator($mappingConstraint);
-		$this->mappingConstraintSet[spl_object_hash($mappingConstraint)] = $mappingConstraint;
-	}
+// 	public function registerConstraint(EiMappingConstraint $mappingConstraint) {
+// 		$this->registerValidator($mappingConstraint);
+// 		$this->mappingConstraintSet[spl_object_hash($mappingConstraint)] = $mappingConstraint;
+// 	}
 	
-	public function unregisterValidator(MappingValidator $validator) {
-		unset($this->validators[spl_object_hash($validator)]);
-		unset($this->mappingConstraintSet[spl_object_hash($validator)]);
-	}
+// 	public function unregisterValidator(MappingValidator $validator) {
+// 		unset($this->validators[spl_object_hash($validator)]);
+// 		unset($this->mappingConstraintSet[spl_object_hash($validator)]);
+// 	}
 	
 	public function acceptsValue($eiFieldPath, $value) {
 		$eiFieldPath = EiFieldPath::create($eiFieldPath);

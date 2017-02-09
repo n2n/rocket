@@ -87,7 +87,7 @@ class MappingProfile {
 					. $eiFieldPathStr . '\'.');
 		}
 	
-		return $this->mappables[$eiFieldPathStr];
+		return $this->mappableForks[$eiFieldPathStr];
 	}
 	
 	public function getMappableForks(): array {

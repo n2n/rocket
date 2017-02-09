@@ -37,6 +37,8 @@ interface EiMappingConstraint {
 	 */
 	public function check(EiMapping $eiMapping): bool;
 	
+	/**
+	 * @param EiMapping $eiMapping
+	 */
 	public function validate(EiMapping $eiMapping);
-	
 }

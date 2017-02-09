@@ -88,6 +88,4 @@ class PrivilegesGrantItem {
 		
 		return $this->comparatorConstraint;
 	}
-	
-	
 }
