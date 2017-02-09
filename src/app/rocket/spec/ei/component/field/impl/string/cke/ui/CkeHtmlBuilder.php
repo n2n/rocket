@@ -126,20 +126,20 @@ class CkeHtmlBuilder {
 		echo $this->getIframe($contentsHtml, $bbcode, $cssConfiguration);
 	}
 	
-	public function getIframe($contentsHtml, CkeCssConfig $cssConfig = null) {
-		//
+	public function getIframe($contentsHtml, $ckeCssConfig = null) {
+		$ckeCssConfig = $this->lookupCkeCssConfig($ckeCssConfig);
 		// 		$this->htmlBuilder->addLibrary(new JQueryLibrary());
-		$this->html->meta()->addJs('js/wysiwyg.js', 'rocket');
 	
 		$headLinkHtml = '';
 		$bodyIdHtml = '';
 		$bodyClassHtml = '';
-		if ($cssConfig) {
-			$headLinkHtml = str_replace('"', '\'', StringUtils::jsonEncode((array) $this->getCssPaths($cssConfig)));
-			$bodyIdHtml = ($bodyId = $cssConfig->getBodyId()) ?  self::ATTRIBUTE_BODY_ID . '="' . $bodyId . '"' : '';
-			$bodyClassHtml = ($bodyClass = $cssConfig->getBodyClass()) ? ' ' . self::ATTRIBUTE_BODY_CLASS . '="' . $bodyClass . '"' : '';
+		if ($ckeCssConfig) {
+			$headLinkHtml = str_replace('"', '\'', StringUtils::jsonEncode((array) $this->getCssPaths($ckeCssConfig)));
+			$bodyIdHtml = ($bodyId = $ckeCssConfig->getBodyId()) ?  self::ATTRIBUTE_BODY_ID . '="' . $bodyId . '"' : '';
+			$bodyClassHtml = ($bodyClass = $ckeCssConfig->getBodyClass()) ? ' ' . self::ATTRIBUTE_BODY_CLASS . '="' . $bodyClass . '"' : '';
 		}
-	
+
+		$this->html->meta()->addJs('js/wysiwyg.js', 'rocket', true);
 		return new Raw('<div class="rocket-wysiwyg-content" style="display:none">'
 				. $this->getOut($contentsHtml) . '</div><iframe scrolling="auto" ' . $bodyIdHtml . ' class="rocket-wysiwyg-detail" ' . $bodyClassHtml
 				. ' ' . self::ATTRIBUTE_CONTENTS_CSS . '="' . $headLinkHtml . '"></iframe>');
@@ -176,10 +176,7 @@ class CkeHtmlBuilder {
 			bool $inline = false, $tableEditing = false, array $ckeLinkProviderLookupIds = null,
 			$ckeCssConfig = null, array $attrs = null, N2nLocale $linkN2nLocale = null) {
 		
-		if ($ckeCssConfig !== null && !($ckeCssConfig instanceof CkeCssConfig)) {
-			ArgUtils::valType($ckeCssConfig, array(CkeCssConfig::class, 'string'), true, 'ckeCssConfig');
-			$ckeCssConfig = CkeUtils::lookupCkeCssConfig($ckeCssConfig, $this->view->getN2nContext());
-		}
+		$ckeCssConfig = $this->lookupCssConfig($ckeCssConfig);
 		
 		ArgUtils::valArray($ckeLinkProviderLookupIds, 'string', 'ckeLinkProviderCkeLookupIds', true);
 		$ckeLinkProviers = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $this->view->getN2nContext());
@@ -209,6 +206,14 @@ class CkeHtmlBuilder {
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyPath, $attrs);
 	}
 	
+	private function lookupCkeCssConfig($ckeCssConfig) {
+		if ($ckeCssConfig !== null && !($ckeCssConfig instanceof CkeCssConfig)) {
+			ArgUtils::valType($ckeCssConfig, array(CkeCssConfig::class, 'string'), true, 'ckeCssConfig');
+			return CkeUtils::lookupCkeCssConfig($ckeCssConfig, $this->view->getN2nContext());
+		}
+		
+		return null;
+	}
 
 	private function buildLinkConfigData($ckeLinkProviers, N2nLocale $linkN2nLocale = null) {
 		$linkN2nLocale = (null !== $linkN2nLocale) ? $linkN2nLocale : $this->view->getN2nLocale();
