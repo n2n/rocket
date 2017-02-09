@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\enum;
 
-use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\TypeConstraint;
@@ -35,9 +34,7 @@ use n2n\reflection\property\ConstraintsConflictException;
 use rocket\spec\core\CompatibilityTest;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\impl\web\dispatch\mag\model\IntegerOption;
-
 use n2n\reflection\ArgUtils;
-use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
