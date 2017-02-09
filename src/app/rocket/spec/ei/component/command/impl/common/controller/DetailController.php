@@ -44,7 +44,7 @@ class DetailController extends ControllerAdapter {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 
 		$entryGuiModel = $this->eiCtrlUtils->getEiuFrame()->createBulkyEntryGuiModel($eiMapping, false);
-		$entryGuiUtils = EiuGui::from($entryGuiModel, $this->eiCtrlUtils);
+		$entryGuiUtils = new EiuGui($entryGuiModel, $this->eiCtrlUtils);
 
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), $entryGuiModel);
 		$viewModel->initializeDrafts();
