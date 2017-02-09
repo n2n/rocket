@@ -146,7 +146,9 @@ class CkeHtmlBuilder {
 	}
 	
 	private function getCssPaths(CkeCssConfig $cssConfig) {
-		if (empty($cssPaths = $cssConfig->getContentCssPaths($this->view))) return array();
+		if (empty($cssPaths = $cssConfig->getContentCssPaths($this->view))) {
+			return array();
+		}
 	
 		$tmpCssPaths = array();
 		foreach ($cssPaths as $cssPath) {
@@ -176,7 +178,7 @@ class CkeHtmlBuilder {
 			bool $inline = false, $tableEditing = false, array $ckeLinkProviderLookupIds = null,
 			$ckeCssConfig = null, array $attrs = null, N2nLocale $linkN2nLocale = null) {
 		
-		$ckeCssConfig = $this->lookupCssConfig($ckeCssConfig);
+		$ckeCssConfig = $this->lookupCkeCssConfig($ckeCssConfig);
 		
 		ArgUtils::valArray($ckeLinkProviderLookupIds, 'string', 'ckeLinkProviderCkeLookupIds', true);
 		$ckeLinkProviers = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $this->view->getN2nContext());
