@@ -81,6 +81,12 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return new EnumEiFieldConfigurator($this);
 	}
 	
+// 	public function buildMappable(EiObject $eiObject) {
+		
+		
+// 		return parent::buildMappable($eiObject);
+// 	}
+	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
@@ -114,6 +120,8 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 			
 			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
 		});
+		
+		
 		
 		return $enablerMag;
 	}

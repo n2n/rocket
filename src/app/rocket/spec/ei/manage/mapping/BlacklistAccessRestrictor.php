@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\manage\mapping;
 
 use rocket\spec\ei\component\command\EiCommand;
+use rocket\spec\ei\security\EiCommandAccessRestrictor;
 
 class BlacklistEiCommandAccessRestrictor implements EiCommandAccessRestrictor {
 	private $blacklist = array();
@@ -42,6 +43,4 @@ class BlacklistEiCommandAccessRestrictor implements EiCommandAccessRestrictor {
 		
 		return true;
 	}
-
-	
 }

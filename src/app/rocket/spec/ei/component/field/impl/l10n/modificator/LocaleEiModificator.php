@@ -35,7 +35,7 @@ class N2nLocaleEiModificator extends EiModificatorAdapter {
 		$this->eiField = $eiField;
 	}
 	
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
+	public function setupEiMapping(Eiu $eiu) {
 		if ($this->eiField->isMultiLingual()) return;
 		if (!$eiMapping->getEiSelection()->isNew()) return;
 		$that = $this;

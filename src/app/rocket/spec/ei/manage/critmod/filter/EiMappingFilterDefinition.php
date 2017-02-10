@@ -46,7 +46,7 @@ class EiMappingFilterDefinition extends FilterDefinition {
 		return $this->eiMappingFilterFields;
 	}
 	
-	public function createEimappingConstraint(FilterGroupData $filterGroupData): EiMappingConstraint  {
+	public function createEiMappingConstraint(FilterGroupData $filterGroupData): EiMappingConstraint  {
 		$eiMappingConstraints = array();
 	
 		foreach ($filterGroupData->getFilterItemDatas() as $subFilterItemData) {
@@ -63,7 +63,7 @@ class EiMappingFilterDefinition extends FilterDefinition {
 		}
 	
 		foreach ($filterGroupData->getFilterGroupDatas() as $subFilterGroupData) {
-			$eiMappingConstraints[] = $this->createEimappingConstraint($subFilterGroupData);
+			$eiMappingConstraints[] = $this->createEiMappingConstraint($subFilterGroupData);
 		}
 	
 		return new EiMappingConstraintGroup($filterGroupData->isAndUsed(), $eiMappingConstraints);

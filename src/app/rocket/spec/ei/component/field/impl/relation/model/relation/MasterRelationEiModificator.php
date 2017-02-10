@@ -40,7 +40,7 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 		$this->targetMany = (boolean) $targetMany;
 	}
 
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
+	public function setupEiMapping(Eiu $eiu) {
 		if ($this->targetEiState !== $eiState) return;
 
 		if ($eiMapping->getEiSelection()->isDraft()) return;

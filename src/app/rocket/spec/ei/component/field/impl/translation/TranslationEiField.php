@@ -220,7 +220,6 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		
 		return N2nLocale::getAdmin();
 	}
-	
 }
 
 class TranslationSortFieldFork implements SortFieldFork {
@@ -256,8 +255,6 @@ class TranslationSortFieldFork implements SortFieldFork {
 	public function createSortConstraint(SortConstraint $forkedSortConstraint): SortConstraint {
 		return new TranslationSortConstraint($forkedSortConstraint, $this);
 	}
-	
-	
 }
 
 class TranslationSortConstraint implements SortConstraint {

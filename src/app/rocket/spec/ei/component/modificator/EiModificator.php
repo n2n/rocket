@@ -27,16 +27,33 @@ use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface EiModificator extends EiComponent {
 	
+	/**
+	 * @param EiState $eiState
+	 */
 	public function setupEiState(EiState $eiState);
 	
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping);
+	/**
+	 * @param EiMapping $eiMapping
+	 * @param Eiu $eiu
+	 */
+	public function setupEiMapping(Eiu $eiu);
 	
+	/**
+	 * @param GuiDefinition $guiDefinition
+	 */
 	public function setupGuiDefinition(GuiDefinition $guiDefinition);
 	
+	/**
+	 * @param EiSelectionGui $eiSelectionGui
+	 */
 	public function setupEiSelectionGui(EiSelectionGui $eiSelectionGui);
 	
+	/**
+	 * @param DraftDefinition $draftDefinition
+	 */
 	public function setupDraftDefinition(DraftDefinition $draftDefinition); 
 }

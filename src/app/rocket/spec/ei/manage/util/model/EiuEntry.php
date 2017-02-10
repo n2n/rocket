@@ -30,6 +30,10 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
+use rocket\spec\ei\manage\mapping\WrittenMappingListener;
+use rocket\spec\ei\manage\mapping\OnValidateMappingListener;
+use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
 
 class EiuEntry {
 	private $eiSelection;
@@ -86,6 +90,10 @@ class EiuEntry {
 		return new EiuField($eiFieldObj, $this);
 	}
 		
+	public function getMappableWrapper($eiFieldPath, bool $required = false) {
+		return $this->getEiMapping()->getMappingProfile()->getMappableWrapper(EiFieldPath::create($eiFieldPath));
+	}
+	
 	/**
 	 * @return \rocket\spec\ei\manage\EiState
 	 */
@@ -246,6 +254,22 @@ class EiuEntry {
 	}
 	
 	public function isExecutableBy($eiCommandPath) {
-		return $this->getEiMapping()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+		return $this->getEiMapping()->getMappingProfile()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+	}
+	
+	public function onValidate(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new OnValidateMappingListener($closure));
+	}
+	
+	public function whenValidated(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new ValidatedMappingListener($closure));
+	}
+	
+	public function onWrite(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new OnWriteMappingListener($closure));
+	}
+	
+	public function whenWritten(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new WrittenMappingListener($closure));
 	}
 }

@@ -22,50 +22,91 @@
 namespace rocket\spec\ei\manage\mapping;
 
 use rocket\spec\ei\EiFieldPath;
+use n2n\util\col\HashSet;
+use n2n\util\col\Set;
+use rocket\spec\ei\security\EiCommandAccessRestrictor;
+use rocket\spec\ei\EiCommandPath;
 
 class MappingProfile {
-	private $mappables = array();
+	private $mappableWrappers = array();
 	private $mappableForks = array();
+	private $listeners = array();
+	private $constraints;
+	private $eiCommandAccessRestrictors;
 	
-// 	public function getMappableIds() {
-// 		return array_keys($this->mappables);
-// 	}
+	public function __construct() {
+		$this->constraints = new HashSet(EiMappingConstraint::class);
+		$this->eiCommandAccessRestrictors = new HashSet(EiCommandAccessRestrictor::class); 
+	}
+	
+	public function getEiMappingConstraints(): Set {
+		return $this->constraints;
+	}
+	
+	public function getEiCommandAccessRestrictors(): Set {
+		return $this->eiCommandAccessRestrictors;
+	}
+	
+	public function isExecutableBy(EiCommandPath $eiCommandPath) {
+		foreach ($this->eiCommandAccessRestrictors as $eiExecutionRestrictor) {
+			if (!$eiExecutionRestrictor->isAccessibleBy($eiCommandPath)) {
+				return false;
+			}
+		}
+	
+		return true;
+	}
 	
 	public function contains(EiFieldPath $eiFieldPath): bool {
 		$eiFieldPathStr = (string) $eiFieldPath;
-		return isset($this->mappables[$eiFieldPathStr]) && isset($this->mappableForks[$eiFieldPathStr]);
+		return isset($this->mappableWrappers[$eiFieldPathStr]) && isset($this->mappableForks[$eiFieldPathStr]);
 	}
 	
 	public function remove(EiFieldPath $eiFieldPath) {
 		$eiFieldPathStr = (string) $eiFieldPath;
-		unset($this->mappables[$eiFieldPathStr]);
+		unset($this->mappableWrappers[$eiFieldPathStr]);
 		unset($this->mappableForks[$eiFieldPathStr]);
 	}
 	
 	public function putMappable(EiFieldPath $eiFieldPath, Mappable $mappable) {
 		$eiFieldPathStr = (string) $eiFieldPath;
-		$this->mappables[$eiFieldPathStr] = $mappable;
+		return $this->mappableWrappers[$eiFieldPathStr] = new MappableWrapper($mappable);
 	}
 
 	public function removeMappable(EiFieldPath $eiFieldPath) {
-		unset($this->mappables[(string) $eiFieldPath]);
+		unset($this->mappableWrappers[(string) $eiFieldPath]);
 	}
 	
 	public function containsMappable(EiFieldPath $eiFieldPath): bool {
-		return isset($this->mappables[(string) $eiFieldPath]);
+		return isset($this->mappableWrappers[(string) $eiFieldPath]);
 	}
 	
-	public function getMappable(EiFieldPath $eiFieldPath): Mappable {
+	/**
+	 * @param EiFieldPath $eiFieldPath
+	 * @throws MappingOperationFailedException
+	 * @return Mappable
+	 */
+	public function getMappable(EiFieldPath $eiFieldPath) {
+		return $this->getMappableWrapper($eiFieldPath)->getMappable();
+	}
+	
+	/**
+	 * @param EiFieldPath $eiFieldPath
+	 * @throws MappingOperationFailedException
+	 * @return MappableWrapper
+	 */
+	public function getMappableWrapper(EiFieldPath $eiFieldPath) {
 		$eiFieldPathStr = (string) $eiFieldPath;
-		if (!isset($this->mappables[$eiFieldPathStr])) {
-			throw new MappingOperationFailedException('No Mappable defined for EiFieldPath \'' . $eiFieldPathStr . '\'.');
+		if (!isset($this->mappableWrappers[$eiFieldPathStr])) {
+			throw new MappingOperationFailedException('No Mappable defined for EiFieldPath \'' . $eiFieldPathStr 
+					. '\'.');
 		}
-		
-		return $this->mappables[$eiFieldPathStr];
+	
+		return $this->mappableWrappers[$eiFieldPathStr];
 	}
 	
-	public function getMappables(): array {
-		return $this->mappables;
+	public function getMappableWrappers() {
+		return $this->mappableWrappers;
 	}
 	
 	public function containsMappableFork(EiFieldPath $eiFieldPath): bool {
@@ -109,14 +150,52 @@ class MappingProfile {
 // 	}
 
 	public function validate(MappingErrorInfo $mappingErrorInfo) {
-		foreach ($this->mappables as $eiFieldPathStr => $mappable) {
-			$mappable->validate($mappingErrorInfo->getFieldErrorInfo(EiFieldPath::create($eiFieldPathStr)));
+		foreach ($this->listeners as $listener) {
+			$listener->onValidate($this);
+		}
+		
+		foreach ($this->mappableWrappers as $eiFieldPathStr => $mappableWrapper) {
+			$mappableWrapper->getMappable()->validate($mappingErrorInfo->getFieldErrorInfo(EiFieldPath::create($eiFieldPathStr)));
+		}
+		
+		foreach ($this->constraints as $constraint) {
+			$constraint->validate($this);
+		}
+		
+		foreach ($this->listeners as $listener) {
+			$listener->validated($this);
 		}
 	}
 
 	public function write() {
-		foreach ($this->mappables as $eiFieldPathStr => $mappable) {
-			$mappable->write();
+		foreach ($this->listeners as $listener) {
+			$listener->onWrite($this);
 		}
+		
+		foreach ($this->mappableWrappers as $eiFieldPathStr => $mappableWrapper) {
+			$mappableWrapper->getMappable()->write();
+		}
+		
+		foreach ($this->listeners as $listener) {
+			$listener->written($this);
+		}
+	}
+	
+	public function flush() {
+		foreach ($this->listeners as $listener) {
+			$listener->flush($this);
+		}
+	}
+	
+	/**
+	 * @param EiFieldPath $eiFieldPath
+	 * @param unknown $value
+	 * @return boolean
+	 */
+	public function acceptsValue(EiFieldPath $eiFieldPath, $value) {
+		foreach ($this->mappingConstraints as $constraint) {
+			if (!$constraint->acceptsValue($eiFieldPath, $value)) return false;
+		}
+		return true;
 	}
 }

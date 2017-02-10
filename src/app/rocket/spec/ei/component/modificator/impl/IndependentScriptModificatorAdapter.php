@@ -45,7 +45,7 @@ abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAda
 
 	public function setupEiState(EiState $eiState) {}
 	
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {}
+	public function setupEiMapping(Eiu $eiu) {}
 	
 	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
 }

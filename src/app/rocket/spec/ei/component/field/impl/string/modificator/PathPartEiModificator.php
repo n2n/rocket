@@ -26,11 +26,11 @@ use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\field\impl\string\PathPartEiField;
 use n2n\util\col\ArrayUtils;
-use rocket\spec\ei\EiUtils;
 use n2n\io\IoUtils;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class PathPartEiModificator extends EiModificatorAdapter {
 	private $pathPartEiField;
@@ -39,9 +39,10 @@ class PathPartEiModificator extends EiModificatorAdapter {
 		$this->pathPartEiField = $pathPartEiField;
 	}
 	
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
-		$pathPartPurify = new PathPartPurifier($eiState, $eiMapping, $this->pathPartEiField);
-		$eiMapping->executeOnWrite(function () use ($pathPartPurify) {
+	public function setupEiMapping(Eiu $eiu) {
+		$pathPartPurify = new PathPartPurifier($eiu->frame()->getEiState(), $eiu->entry()->getEiMapping(), 
+				$this->pathPartEiField);
+		$eiu->entry()->onWrite(function () use ($pathPartPurify) {
 			$pathPartPurify->purify();
 		});
 	}	

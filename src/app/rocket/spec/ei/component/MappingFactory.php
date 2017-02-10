@@ -36,6 +36,7 @@ use rocket\spec\ei\manage\mapping\MappableFork;
 use rocket\spec\ei\component\field\MappableEiField;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class MappingFactory {
 	private $eiSpec;
@@ -69,6 +70,29 @@ class MappingFactory {
 // 		return $mappingDefinition;
 // 	}
 
+	/**
+	 * @param MappingDefinition $mappingDefinition
+	 * @param EiState $eiState
+	 * @param EiSelection $eiSelection
+	 * @param PrivilegeConstraint $privilegeConstraint
+	 * @throws InaccessibleEntryException
+	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 */
+	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
+		$copyFromMappingProfile = $copyFrom !== null ? $copyFrom->getMappingProfile() : null;
+	
+		$eiMapping = $eiState->createEiMapping($this->createMappingProfile($eiSelection, $copyFromMappingProfile),
+				$eiSelection);
+	
+		$eiu = new Eiu($eiState, $eiMapping);
+	
+		foreach ($this->eiModificatorCollection as $constraint) {
+			$constraint->setupEiMapping($eiu);
+		}
+	
+		return $eiMapping;
+	}
+	
 	public function createMappingProfile(EiSelection $eiSelection, MappingProfile $fromMappingProfile = null) {
 		$mappingProfile = new MappingProfile();
 				
@@ -131,24 +155,5 @@ class MappingFactory {
 		}
 	}
 	
-	/**
-	 * @param MappingDefinition $mappingDefinition
-	 * @param EiState $eiState
-	 * @param EiSelection $eiSelection
-	 * @param PrivilegeConstraint $privilegeConstraint
-	 * @throws InaccessibleEntryException
-	 * @return \rocket\spec\ei\manage\mapping\EiMapping
-	 */
-	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
-		$copyFromMappingProfile = $copyFrom !== null ? $copyFrom->getMappingProfile() : null;
-		
-		$eiMapping = $eiState->createEiMapping($this->createMappingProfile($eiSelection, $copyFromMappingProfile), 
-				$eiSelection);
-		
-		foreach ($this->eiModificatorCollection as $constraint) {
-			$constraint->setupEiMapping($eiState, $eiMapping);
-		}
-		
-		return $eiMapping;
-	}
+	
 }

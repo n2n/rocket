@@ -35,7 +35,7 @@ class LastModEiModificator extends EiModificatorAdapter {
 		$this->eiField = $eiField;
 	}
 	
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
+	public function setupEiMapping(Eiu $eiu) {
 		$eiSelection = $eiMapping->getEiSelection();
 		$that = $this;
 		$eiMapping->registerListener(new OnWriteMappingListener(function() 
