@@ -76,8 +76,10 @@ class GuiElementAssembler implements Savable {
 		
 		if ($guiElement === null) return null;
 	
+		$mappableWrapper = $this->eiu->entry()->getMappableWrapper($eiFieldPath);
+		
 		if (!$makeEditable || $guiElement->isReadOnly()) {
-			return new AssembleResult($guiElement);
+			return new AssembleResult($guiElement, $mappableWrapper);
 		}
 		
 		$editable = $guiElement->getEditable();
@@ -86,7 +88,7 @@ class GuiElementAssembler implements Savable {
 		$this->savables[$id] = $editable;
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));
-		return new AssembleResult($guiElement, $magWrapper, $magPropertyPath, $editable->isMandatory());
+		return new AssembleResult($guiElement, $mappableWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
 	}
 	
 	private function assembleGuiFieldFork(GuiIdPath $guiIdPath, GuiFieldFork $guiFieldFork, bool $makeEditable) {

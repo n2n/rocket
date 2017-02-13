@@ -104,6 +104,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 					$this->isMandatory($eiu));
 		
 		$that = $this;
+		
 		$eiu->gui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$associatedMagWrapperMap = array();
 			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
@@ -121,7 +122,19 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
 		});
 		
-		
+		$eiu->entry()->onValidate(function () use ($eiu) {
+			$type = $eiu->field()->getValue();
+			
+			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
+				$ignored = $value != $type;
+				
+				foreach ($guiIdPaths as $guiIdPath) {
+					if (null !== ($mappableWrapper = $eiu->gui()->getMappableWrapper($guiIdPath))) {
+						$mappableWrapper->setIgnored($ignored);
+					}
+				}
+			}
+		});
 		
 		return $enablerMag;
 	}

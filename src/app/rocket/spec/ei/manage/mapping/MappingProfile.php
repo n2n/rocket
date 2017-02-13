@@ -26,6 +26,7 @@ use n2n\util\col\HashSet;
 use n2n\util\col\Set;
 use rocket\spec\ei\security\EiCommandAccessRestrictor;
 use rocket\spec\ei\EiCommandPath;
+use rocket\spec\ei\manage\mapping\impl\MappableWrapperImpl;
 
 class MappingProfile {
 	private $mappableWrappers = array();
@@ -70,7 +71,7 @@ class MappingProfile {
 	
 	public function putMappable(EiFieldPath $eiFieldPath, Mappable $mappable) {
 		$eiFieldPathStr = (string) $eiFieldPath;
-		return $this->mappableWrappers[$eiFieldPathStr] = new MappableWrapper($mappable);
+		return $this->mappableWrappers[$eiFieldPathStr] = new MappableWrapperImpl($mappable);
 	}
 
 	public function removeMappable(EiFieldPath $eiFieldPath) {
@@ -155,6 +156,7 @@ class MappingProfile {
 		}
 		
 		foreach ($this->mappableWrappers as $eiFieldPathStr => $mappableWrapper) {
+			if ($mappableWrapper->isIgnored()) continue;
 			$mappableWrapper->getMappable()->validate($mappingErrorInfo->getFieldErrorInfo(EiFieldPath::create($eiFieldPathStr)));
 		}
 		
