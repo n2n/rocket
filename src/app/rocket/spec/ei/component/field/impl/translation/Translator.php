@@ -48,7 +48,7 @@ class Translator {
 			return $translatable;
 		}
 
-		if (!empty($translatables)) {
+		if (0 < count($translatables)) {
 			return current($translatables);
 		}
 		
