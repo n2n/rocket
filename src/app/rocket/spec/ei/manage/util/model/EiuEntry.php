@@ -241,6 +241,10 @@ class EiuEntry {
 		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getLiveId(), $limit, $num);
 	}
 	
+	public function acceptsValue($eiFieldPath, $value) {
+		return $this->getEiMapping()->getMappingProfile()->acceptsValue(EiFieldPath::create($eiFieldPath), $value);
+	}
+	
 	public function isPreviewAvailable() {
 		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiSelection));
 	}
@@ -272,4 +276,4 @@ class EiuEntry {
 	public function whenWritten(\Closure $closure) {
 		$this->getEiMapping()->registerListener(new WrittenMappingListener($closure));
 	}
-}
+}  

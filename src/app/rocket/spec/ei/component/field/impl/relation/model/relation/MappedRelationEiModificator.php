@@ -43,7 +43,7 @@ class MappedRelationEiModificator extends EiModificatorAdapter {
 	
 	public function setupEiMapping(Eiu $eiu) {
 		$eiState = $eiu->frame()->getEiState();
-		$eiMapping = $eiu->entry()->getEiSelection();
+		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		if ($this->targetEiState !== $eiState
 				|| !$eiMapping->getEiSelection()->isNew()) return;

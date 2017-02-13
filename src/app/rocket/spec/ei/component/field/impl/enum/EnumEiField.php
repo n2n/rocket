@@ -90,7 +90,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
-			if (!$eiu->entry()->getEiMapping()->acceptsValue($this, $value)) {
+			if (!$eiu->entry()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);
 			}
 		}

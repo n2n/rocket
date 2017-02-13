@@ -193,7 +193,7 @@ class MappingProfile {
 	 * @return boolean
 	 */
 	public function acceptsValue(EiFieldPath $eiFieldPath, $value) {
-		foreach ($this->mappingConstraints as $constraint) {
+		foreach ($this->constraints as $constraint) {
 			if (!$constraint->acceptsValue($eiFieldPath, $value)) return false;
 		}
 		return true;

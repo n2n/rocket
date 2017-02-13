@@ -41,10 +41,11 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 	}
 
 	public function setupEiMapping(Eiu $eiu) {
-		if ($this->targetEiState !== $eiState) return;
+		if ($this->targetEiState !== $eiu->frame()->getEiState()) return;
 
-		if ($eiMapping->getEiSelection()->isDraft()) return;
+		if ($eiu->entry()->isDraft()) return;
 		
+		$eiMapping = $eiu->entry()->getEiMapping();
 		$that = $this;
 		if (!$this->targetMany) {
 			$eiMapping->registerListener(new WrittenMappingListener(
