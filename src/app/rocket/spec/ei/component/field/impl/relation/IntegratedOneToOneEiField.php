@@ -133,7 +133,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		
 		$targetUtils = new EiuFrame($targetEiState);
 		
-		$toOneMappable = $eiMapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
+		$toOneMappable = $eiMapping->getMappable(EiFieldPath::from($this));
 		$targetRelationEntry = $toOneMappable->getValue();
 		
 		if ($targetRelationEntry === null) {

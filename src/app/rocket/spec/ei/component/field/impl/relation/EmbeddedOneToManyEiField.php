@@ -143,7 +143,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 		$eiMapping = $eiu->entry()->getEiMapping();
 	
 		$eiState = $eiu->frame()->getEiState();
-		$relationMappable = $eiMapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
+		$relationMappable = $eiMapping->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $eiMapping);
 		
 		$toManyEditable = null;

@@ -30,6 +30,7 @@ use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\mapping\MappableWrapper;
 
 class GuiElementAssembler implements Savable {
 	private $guiDefinition;
@@ -104,10 +105,11 @@ class GuiElementAssembler implements Savable {
 		
 		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath, $makeEditable);
 		$displayable = $result->getDisplayable();
+		$mappableWrapper = $result->getMappableWrapper();
 		$magPropertyPath = $result->getMagPropertyPath();
 		
 		if (!$makeEditable || $displayable->isReadOnly() || $magPropertyPath === null) {
-			return new AssembleResult($displayable);
+			return new AssembleResult($displayable, $mappableWrapper);
 		}
 		
 		$magWrapper = null;
@@ -118,7 +120,7 @@ class GuiElementAssembler implements Savable {
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		
-		return new AssembleResult($displayable, $this->forkMagWrappers[$id], 
+		return new AssembleResult($displayable, $mappableWrapper, $this->forkMagWrappers[$id], 
 				$this->forkedPropertyPaths[$id]->ext($magPropertyPath), $result->isMandatory());
 	}
 	
@@ -147,14 +149,16 @@ class GuiElementAssembler implements Savable {
 
 class AssembleResult {
 	private $displayable;
+	private $mappableWrapper;
 	private $magWrapper;
 	private $magPropertyPath;
 	private $mandatory;
 // 	private $eiFieldPath;
 	
-	public function __construct(Displayable $displayable, MagWrapper $magWrapper = null, 
-			PropertyPath $magPropertyPath = null, bool $mandatory = null) {
+	public function __construct(Displayable $displayable, MappableWrapper $mappableWrapper = null, 
+			MagWrapper $magWrapper = null, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
 		$this->displayable = $displayable;
+		$this->mappableWrapper = $mappableWrapper;
 		$this->magWrapper = $magWrapper;
 		$this->magPropertyPath = $magPropertyPath;
 		$this->mandatory = $mandatory;
@@ -169,6 +173,10 @@ class AssembleResult {
 	 */
 	public function getDisplayable(): Displayable {
 		return $this->displayable;
+	}
+	
+	public function getMappableWrapper() {
+		return $this->mappableWrapper;
 	}
 	
 	/**

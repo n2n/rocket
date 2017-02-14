@@ -55,7 +55,7 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 	}
 
 	public function getDisplayLabel(): string {
-		return $this->getLabel();
+		return $this->getLabelLstr();
 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {

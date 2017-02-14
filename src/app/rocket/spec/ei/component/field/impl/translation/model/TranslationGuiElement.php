@@ -34,6 +34,7 @@ use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
+use rocket\spec\ei\manage\mapping\impl\MappableWrapperWrapper;
 
 class TranslationGuiElement implements GuiElementFork {
 	private $toManyMappable;
@@ -97,6 +98,8 @@ class TranslationGuiElement implements GuiElementFork {
 			$translationMag = new TranslationMag($guiIdPath->__toString(), $label);
 		}
 		
+		$mappableWrappers = array();
+		
 		$mandatory = false;
 		foreach ($this->guiElementAssemblers as $n2nLocaleId => $guiElementAssembler) {
 			$result = $guiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
@@ -104,6 +107,9 @@ class TranslationGuiElement implements GuiElementFork {
 			
 			$fieldErrorInfo = $guiElementAssembler->getEiuGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
 					->getFieldErrorInfo($eiFieldPath);
+			if (null !== ($mappableWrapper = $result->getMappableWrapper())) {
+				$mappableWrappers[] = $mappableWrapper;
+			}
 // 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
 			
 			if ($this->targetRelationEntries[$n2nLocaleId]->getEiSelection()->isNew()) {
@@ -123,14 +129,16 @@ class TranslationGuiElement implements GuiElementFork {
 			}
 		}
 		
+		$mappableWrapperWrapper = new MappableWrapperWrapper($mappableWrappers);
+		
 		if (!$makeEditable) {
-			return new AssembleResult($translationDisplayable);
+			return new AssembleResult($translationDisplayable, $mappableWrapperWrapper);
 		}
 		
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($translationMag);
-		return new AssembleResult($translationDisplayable, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
+		return new AssembleResult($translationDisplayable, $mappableWrapperWrapper, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
 	}
 		
 	public function buildForkMag(string $propertyName) {

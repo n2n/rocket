@@ -261,9 +261,7 @@ class EiState {
 	/**
 	 * @return EiMapping
 	 */
-	public function createEiMapping(MappingProfile $mappingProfile, EiSelection $eiSelection) {
-		$eiMapping = new EiMapping($mappingProfile, $eiSelection);
-		
+	public function restrictEiMapping(EiMapping $eiMapping) {
 		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiMappingConstraint())) {
 			$eiMapping->getEiMappingConstraintSet()->add($mappingConstraint);
 		}

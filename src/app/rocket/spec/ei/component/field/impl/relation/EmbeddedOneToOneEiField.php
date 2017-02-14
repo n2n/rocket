@@ -130,7 +130,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 		$mapping = $eiu->entry()->getEiMapping();
 		
 		$eiState = $eiu->frame()->getEiState();
-		$relationMappable = $mapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
+		$relationMappable = $mapping->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
 		
 		$toOneEditable = null;

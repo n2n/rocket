@@ -22,7 +22,7 @@ class MappableWrapperImpl implements MappableWrapper {
 	/**
 	 * @return bool
 	 */
-	public function isIgnored() {
+	public function isIgnored(): bool {
 		return $this->ignored;
 	}
 	

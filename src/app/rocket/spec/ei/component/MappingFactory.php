@@ -79,10 +79,9 @@ class MappingFactory {
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 */
 	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
-		$copyFromMappingProfile = $copyFrom !== null ? $copyFrom->getMappingProfile() : null;
-	
-		$eiMapping = $eiState->createEiMapping($this->createMappingProfile($eiSelection, $copyFromMappingProfile),
-				$eiSelection);
+		$eiMapping = new EiMapping($eiSelection);
+		$this->assembleMappingProfile($eiMapping, $copyFrom);
+		$eiState->restrictEiMapping($eiMapping);
 	
 		$eiu = new Eiu($eiState, $eiMapping);
 	
@@ -93,17 +92,16 @@ class MappingFactory {
 		return $eiMapping;
 	}
 	
-	public function createMappingProfile(EiSelection $eiSelection, MappingProfile $fromMappingProfile = null) {
-		$mappingProfile = new MappingProfile();
-				
+	private function assembleMappingProfile(EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
+		$eiSelection = $eiMappping->getEiSelection();
 		foreach ($this->eiFieldCollection as $id => $eiField) {
 			if (!($eiField instanceof MappableEiField)) continue;
 						
 			$eiFieldPath = new EiFieldPath(array($id));
 			
 			$mappable = null;
-			if ($fromMappingProfile !== null && $fromMappingProfile->containsMappable($eiFieldPath)) {
-				$fromMappable = $fromMappingProfile->getMappable($eiFieldPath);
+			if ($fromEiMapping !== null && $fromEiMapping->containsMappable($eiFieldPath)) {
+				$fromMappable = $fromEiMapping->getMappable($eiFieldPath);
 				$mappable = $fromMappable->copyMappable($eiSelection);
 				ArgUtils::valTypeReturn($mappable, Mappable::class, $fromMappable, 'copyMappable', true);
 			}
@@ -114,12 +112,12 @@ class MappingFactory {
 			}
 
 			if ($mappable !== null) {
-				$mappingProfile->putMappable($eiFieldPath, $mappable);
+				$eiMappping->putMappable($eiFieldPath, $mappable);
 			}
 				
 			$mappableFork = null;
-			if ($fromMappingProfile !== null && $mappingProfile->containsMappableFork($eiFieldPath)) {
-				$mappableFork = $fromMappingProfile->getMappable($eiFieldPath)->copyMappableFork($eiSelection);
+			if ($fromEiMapping !== null && $eiMappping->containsMappableFork($eiFieldPath)) {
+				$mappableFork = $fromEiMapping->getMappable($eiFieldPath)->copyMappableFork($eiSelection);
 			}
 			
 			if ($mappableFork === null) {
@@ -131,8 +129,6 @@ class MappingFactory {
 				$this->applyMappableFork($eiFieldPath, $mappableFork, $mappingProfile);
 			}
 		}
-		
-		return $mappingProfile;
 	}	
 	
 	private function applyMappableFork(EiFieldPath $eiFieldPath, MappableFork $mappableFork, MappingProfile $mappingProfile) {
