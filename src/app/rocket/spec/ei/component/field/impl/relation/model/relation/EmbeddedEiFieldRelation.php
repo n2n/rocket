@@ -35,7 +35,6 @@ use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\component\field\impl\relation\model\RelationVetoableActionListener;
 
 class EmbeddedEiFieldRelation extends EiFieldRelation {
 	private $embeddedPseudoCommand;

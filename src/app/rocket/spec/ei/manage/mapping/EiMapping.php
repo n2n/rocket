@@ -246,6 +246,8 @@ class EiMapping {
 		}
 	
 		foreach ($this->mappableWrappers as $eiFieldPathStr => $mappableWrapper) {
+			if ($mappableWrapper->isIgnored()) continue;
+			
 			$mappableWrapper->getMappable()->write();
 		}
 	

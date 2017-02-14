@@ -26,6 +26,7 @@ use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\manage\EiState;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use n2n\util\ex\IllegalStateException;
 
 class EmbeddedOneToOneGuiElement implements GuiElement {
 	private $label;
