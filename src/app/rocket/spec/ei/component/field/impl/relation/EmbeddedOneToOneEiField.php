@@ -157,7 +157,6 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	 */
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
-
 		return new EmbeddedToOneDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiFieldPath::from($this)),
 				$dm, $this->eiFieldRelation->getTargetEiMask()->getDraftDefinition());
 	}
