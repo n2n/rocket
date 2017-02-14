@@ -102,8 +102,8 @@ class EiuGui {
 	 */
 	public function getMappableWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiSelectionGui->getEditableWrapperByGuiIdPath(
-					GuiIdPath::createFromExpression($guiIdPath))->getMappableWrapper();
+			return $this->eiSelectionGui->getMappableWrapperByGuiIdPath(
+					GuiIdPath::createFromExpression($guiIdPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

@@ -29,6 +29,8 @@ use rocket\spec\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
 use rocket\spec\ei\manage\mapping\impl\MappableWrapperImpl;
+use rocket\spec\ei\EiCommandPath;
+use rocket\spec\ei\security\EiCommandAccessRestrictor;
 
 class EiMapping {
 	private $mappingErrorInfo;
@@ -97,11 +99,11 @@ class EiMapping {
 		throw new InaccessibleEntryException();
 	}
 	
-	public function getEiMappingConstraints(): Set {
+	public function getEiMappingConstraints() {
 		return $this->constraints;
 	}
 	
-	public function getEiCommandAccessRestrictors(): Set {
+	public function getEiCommandAccessRestrictors()  {
 		return $this->eiCommandAccessRestrictors;
 	}
 	
@@ -238,7 +240,7 @@ class EiMapping {
 		unset($this->listenerBindings[$fieldId]);
 	}
 		
-	private function write() {
+	public function write() {
 		foreach ($this->listeners as $listener) {
 			$listener->onWrite($this);
 		}
@@ -302,7 +304,7 @@ class EiMapping {
 	public function save(): bool {
 		if (!$this->validate()) return false;
 		$this->write();
-		$this->mappingProfile->flush();
+		$this->flush();
 		return true;
 	}
 	

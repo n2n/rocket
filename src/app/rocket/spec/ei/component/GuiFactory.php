@@ -84,6 +84,10 @@ class GuiFactory {
 			if ($result === null) continue;
 			
 			$eiSelectionGui->putDisplayable($guiIdPath, $result->getDisplayable());
+			if (null !== ($mappableWrapper = $result->getMappableWrapper())) {
+				$eiSelectionGui->putMappableWrapper($guiIdPath, $mappableWrapper);
+			}
+			
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
 				$eiSelectionGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
 						$magPropertyPath, $result->getMagWrapper()));

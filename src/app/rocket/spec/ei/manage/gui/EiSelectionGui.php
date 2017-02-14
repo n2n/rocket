@@ -27,11 +27,13 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\mapping\MappableWrapper;
 
 class EiSelectionGui {
 	private $guiDefinition;
 	private $viewMode;
 	private $displayables = array();
+	private $mappableWrappers = array();
 // 	private $eiFieldPaths = array();
 	private $eiSelectionGuiListeners = array();
 	private $initialized = false;
@@ -83,6 +85,37 @@ class EiSelectionGui {
 	
 	public function containsDisplayable(GuiIdPath $guiIdPath) {
 		return isset($this->displayables[(string) $guiIdPath]);
+	}
+	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @throws GuiException
+	 * @return MappableWrapper
+	 */
+	public function getMappableWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
+		$guiIdPathStr = (string) $guiIdPath;
+	
+		if (!isset($this->mappableWrappers[$guiIdPathStr])) {
+			throw new GuiException('No MappableWrapper with GuiIdPath ' . $guiIdPathStr . ' registered');
+		}
+	
+		return $this->mappableWrappers[$guiIdPathStr];
+	}
+	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param MappableWrapper $mappableWrapper
+	 */
+	public function putMappableWrapper(GuiIdPath $guiIdPath, MappableWrapper $mappableWrapper) {
+		$this->mappableWrappers[(string) $guiIdPath] = $mappableWrapper;
+	}
+	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return bool
+	 */
+	public function containsMappableWrapper(GuiIdPath $guiIdPath) {
+		return isset($this->mappableWrappers[(string) $guiIdPath]);
 	}
 	
 	public function getDisplayableByGuiIdPath(GuiIdPath $guiIdPath) {
