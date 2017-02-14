@@ -71,10 +71,16 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 		parent::setEntityProperty($entityProperty);
 	}
 		
-	public function isReplaceable(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isReplaceable() {
 		return $this->replaceable;
 	}
 	
+	/**
+	 * @param bool $replaceable
+	 */
 	public function setReplaceable(bool $replaceable) {
 		$this->replaceable = $replaceable;
 	}
