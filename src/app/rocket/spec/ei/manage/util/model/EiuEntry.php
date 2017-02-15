@@ -118,6 +118,20 @@ class EiuEntry {
 		return $this->getEiMapping()->setValue($eiFieldPath, $value);
 	}
 	
+	public function setScalarValue($eiFieldPath, $scalarValue) {
+		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
+				->getScalarEiPropertyByFieldPath($eiFieldPath);
+		$this->setValue($eiFieldPath, $scalarEiProperty->scalarValueToMappableValue($scalarValue));
+	}
+	
+	public function getScalarValue($eiFieldPath) {
+		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
+				->getScalarEiPropertyByFieldPath($eiFieldPath);
+		return $scalarEiProperty->mappableValueToScalarValue($this->getValue($eiFieldPath));
+	}
+	
 	/**
 	 * @return \rocket\spec\ei\manage\EiSelection
 	 */
