@@ -22,12 +22,10 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiState;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\mapping\WrittenMappingListener;
-use rocket\spec\ei\manage\mapping\EiMappingListener;
 use rocket\spec\ei\manage\mapping\MappingListenerAdapter;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class TargetMasterRelationEiModificator extends EiModificatorAdapter {
 	private $eiFieldRelation;
@@ -36,7 +34,8 @@ class TargetMasterRelationEiModificator extends EiModificatorAdapter {
 		$this->eiFieldRelation = $eiFieldRelation;
 	}
 
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
+	public function setupEiMapping(Eiu $eiu) {
+		$eiMapping = $eiu->entry()->getEiMapping();
 		if ($eiMapping->getEiSelection()->isDraft()) return;
 		
 		$that = $this;

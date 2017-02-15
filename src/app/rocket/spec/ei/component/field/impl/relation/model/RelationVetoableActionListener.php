@@ -95,8 +95,6 @@ class VetoCheck {
 		$queue = $this->vetoableRemoveAction->getQueue();
 		foreach ($this->findAll() as $entityObj) {
 			if (!$queue->containsEntityObj($entityObj)) $num++;
-			
-			test(get_class($entityObj) . ' ' . $entityObj->getId());
 		}
 		
 		if ($num === 0) return;
@@ -107,7 +105,6 @@ class VetoCheck {
 				'target_entry' => $this->createTargetIdentityString(),
 				'target_generic_label' => $this->getTargetGenericLabel());
 		$dtc = new DynamicTextCollection('rocket', N2nLocale::getAdmin());
-		test($dtc->translate('ei_impl_relation_remove_veto_err', $attrs));
 		if ($num === 1) {
 			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
 		} else {

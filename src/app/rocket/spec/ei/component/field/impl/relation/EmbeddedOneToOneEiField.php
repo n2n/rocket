@@ -71,10 +71,16 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 		parent::setEntityProperty($entityProperty);
 	}
 		
-	public function isReplaceable(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isReplaceable() {
 		return $this->replaceable;
 	}
 	
+	/**
+	 * @param bool $replaceable
+	 */
 	public function setReplaceable(bool $replaceable) {
 		$this->replaceable = $replaceable;
 	}
@@ -130,7 +136,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 		$mapping = $eiu->entry()->getEiMapping();
 		
 		$eiState = $eiu->frame()->getEiState();
-		$relationMappable = $mapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
+		$relationMappable = $mapping->getMappable(EiFieldPath::from($this));
 		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
 		
 		$toOneEditable = null;
@@ -157,7 +163,6 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	 */
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
-
 		return new EmbeddedToOneDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiFieldPath::from($this)),
 				$dm, $this->eiFieldRelation->getTargetEiMask()->getDraftDefinition());
 	}

@@ -30,6 +30,11 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
+use rocket\spec\ei\manage\mapping\WrittenMappingListener;
+use rocket\spec\ei\manage\mapping\OnValidateMappingListener;
+use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
+use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
 
 class EiuEntry {
 	private $eiSelection;
@@ -233,6 +238,27 @@ class EiuEntry {
 		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getLiveId(), $limit, $num);
 	}
 	
+	public function acceptsValue($eiFieldPath, $value) {
+		return $this->getEiMapping()->acceptsValue(EiFieldPath::create($eiFieldPath), $value);
+	}
+	
+	/**
+	 * 
+	 * @param unknown $eiFieldPath
+	 * @param bool $required
+	 * @throws MappingOperationFailedException
+	 * @return \rocket\spec\ei\manage\mapping\MappableWrapper|null
+	 */
+	public function getMappableWrapper($eiFieldPath, bool $required = false) {
+		try {
+			return $this->getEiMapping()->getMappableWrapper(EiFieldPath::create($eiFieldPath));
+		} catch (MappingOperationFailedException $e) {
+			if ($required) throw $e;
+		}
+		
+		return null;
+	}
+	
 	public function isPreviewAvailable() {
 		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiSelection));
 	}
@@ -248,4 +274,20 @@ class EiuEntry {
 	public function isExecutableBy($eiCommandPath) {
 		return $this->getEiMapping()->isExecutableBy(EiCommandPath::create($eiCommandPath));
 	}
-}
+	
+	public function onValidate(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new OnValidateMappingListener($closure));
+	}
+	
+	public function whenValidated(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new ValidatedMappingListener($closure));
+	}
+	
+	public function onWrite(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new OnWriteMappingListener($closure));
+	}
+	
+	public function whenWritten(\Closure $closure) {
+		$this->getEiMapping()->registerListener(new WrittenMappingListener($closure));
+	}
+}  

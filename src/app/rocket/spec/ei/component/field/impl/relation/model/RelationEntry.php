@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\util\model\EiUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class RelationEntry {

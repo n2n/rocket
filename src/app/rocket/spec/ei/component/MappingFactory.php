@@ -36,6 +36,7 @@ use rocket\spec\ei\manage\mapping\MappableFork;
 use rocket\spec\ei\component\field\MappableEiField;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class MappingFactory {
 	private $eiSpec;
@@ -69,17 +70,38 @@ class MappingFactory {
 // 		return $mappingDefinition;
 // 	}
 
-	public function createMappingProfile(EiSelection $eiSelection, MappingProfile $fromMappingProfile = null) {
-		$mappingProfile = new MappingProfile();
-				
+	/**
+	 * @param MappingDefinition $mappingDefinition
+	 * @param EiState $eiState
+	 * @param EiSelection $eiSelection
+	 * @param PrivilegeConstraint $privilegeConstraint
+	 * @throws InaccessibleEntryException
+	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 */
+	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
+		$eiMapping = new EiMapping($eiSelection);
+		$this->assembleMappingProfile($eiMapping, $copyFrom);
+		$eiState->restrictEiMapping($eiMapping);
+	
+		$eiu = new Eiu($eiState, $eiMapping);
+	
+		foreach ($this->eiModificatorCollection as $constraint) {
+			$constraint->setupEiMapping($eiu);
+		}
+	
+		return $eiMapping;
+	}
+	
+	private function assembleMappingProfile(EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
+		$eiSelection = $eiMappping->getEiSelection();
 		foreach ($this->eiFieldCollection as $id => $eiField) {
 			if (!($eiField instanceof MappableEiField)) continue;
 						
 			$eiFieldPath = new EiFieldPath(array($id));
 			
 			$mappable = null;
-			if ($fromMappingProfile !== null && $fromMappingProfile->containsMappable($eiFieldPath)) {
-				$fromMappable = $fromMappingProfile->getMappable($eiFieldPath);
+			if ($fromEiMapping !== null && $fromEiMapping->containsMappable($eiFieldPath)) {
+				$fromMappable = $fromEiMapping->getMappable($eiFieldPath);
 				$mappable = $fromMappable->copyMappable($eiSelection);
 				ArgUtils::valTypeReturn($mappable, Mappable::class, $fromMappable, 'copyMappable', true);
 			}
@@ -90,12 +112,12 @@ class MappingFactory {
 			}
 
 			if ($mappable !== null) {
-				$mappingProfile->putMappable($eiFieldPath, $mappable);
+				$eiMappping->putMappable($eiFieldPath, $mappable);
 			}
 				
 			$mappableFork = null;
-			if ($fromMappingProfile !== null && $mappingProfile->containsMappableFork($eiFieldPath)) {
-				$mappableFork = $fromMappingProfile->getMappable($eiFieldPath)->copyMappableFork($eiSelection);
+			if ($fromEiMapping !== null && $eiMappping->containsMappableFork($eiFieldPath)) {
+				$mappableFork = $fromEiMapping->getMappable($eiFieldPath)->copyMappableFork($eiSelection);
 			}
 			
 			if ($mappableFork === null) {
@@ -107,8 +129,6 @@ class MappingFactory {
 				$this->applyMappableFork($eiFieldPath, $mappableFork, $mappingProfile);
 			}
 		}
-		
-		return $mappingProfile;
 	}	
 	
 	private function applyMappableFork(EiFieldPath $eiFieldPath, MappableFork $mappableFork, MappingProfile $mappingProfile) {
@@ -131,24 +151,5 @@ class MappingFactory {
 		}
 	}
 	
-	/**
-	 * @param MappingDefinition $mappingDefinition
-	 * @param EiState $eiState
-	 * @param EiSelection $eiSelection
-	 * @param PrivilegeConstraint $privilegeConstraint
-	 * @throws InaccessibleEntryException
-	 * @return \rocket\spec\ei\manage\mapping\EiMapping
-	 */
-	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
-		$copyFromMappingProfile = $copyFrom !== null ? $copyFrom->getMappingProfile() : null;
-		
-		$eiMapping = $eiState->createEiMapping($this->createMappingProfile($eiSelection, $copyFromMappingProfile), 
-				$eiSelection);
-		
-		foreach ($this->eiModificatorCollection as $constraint) {
-			$constraint->setupEiMapping($eiState, $eiMapping);
-		}
-		
-		return $eiMapping;
-	}
+	
 }

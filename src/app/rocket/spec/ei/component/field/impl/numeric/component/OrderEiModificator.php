@@ -30,6 +30,7 @@ use rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\spec\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class OrderEiModificator extends EiModificatorAdapter {
 	
@@ -45,7 +46,9 @@ class OrderEiModificator extends EiModificatorAdapter {
 						new SimpleSortConstraint(CrIt::p($this->eiField->getEntityProperty()), 'ASC'))));
 	}
 	
-	public function setupEiMapping(EiState $eiState, EiMapping $ssm) {
+	public function setupEiMapping(Eiu $eiu) {
+		$ssm = $eiu->entry()->getEiMapping();
+		$eiState = $eiu->frame()->getEiState();
 		$eiField = $this->eiField;
 		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiState, $ssm, $eiField) {
 			$orderIndex = $ssm->getValue($eiField);

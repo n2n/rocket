@@ -81,10 +81,16 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return new EnumEiFieldConfigurator($this);
 	}
 	
+// 	public function buildMappable(EiObject $eiObject) {
+		
+		
+// 		return parent::buildMappable($eiObject);
+// 	}
+	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
-			if (!$eiu->entry()->getEiMapping()->acceptsValue($this, $value)) {
+			if (!$eiu->entry()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);
 			}
 		}
@@ -98,6 +104,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 					$this->isMandatory($eiu));
 		
 		$that = $this;
+		
 		$eiu->gui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$associatedMagWrapperMap = array();
 			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
@@ -113,6 +120,20 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 			}
 			
 			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
+		});
+		
+		$eiu->entry()->onValidate(function () use ($eiu, $that) {
+			$type = $eiu->field()->getValue();
+			
+			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
+				$ignored = $value != $type;
+				
+				foreach ($guiIdPaths as $guiIdPath) {
+					if (null !== ($mappableWrapper = $eiu->gui()->getMappableWrapper($guiIdPath))) {
+						$mappableWrapper->setIgnored($ignored);
+					}
+				}
+			}
 		});
 		
 		return $enablerMag;

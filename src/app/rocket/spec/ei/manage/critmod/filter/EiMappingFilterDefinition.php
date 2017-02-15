@@ -46,7 +46,7 @@ class EiMappingFilterDefinition extends FilterDefinition {
 		return $this->eiMappingFilterFields;
 	}
 	
-	public function createEimappingConstraint(FilterGroupData $filterGroupData): EiMappingConstraint  {
+	public function createEiMappingConstraint(FilterGroupData $filterGroupData): EiMappingConstraint  {
 		$eiMappingConstraints = array();
 	
 		foreach ($filterGroupData->getFilterItemDatas() as $subFilterItemData) {
@@ -63,7 +63,7 @@ class EiMappingFilterDefinition extends FilterDefinition {
 		}
 	
 		foreach ($filterGroupData->getFilterGroupDatas() as $subFilterGroupData) {
-			$eiMappingConstraints[] = $this->createEimappingConstraint($subFilterGroupData);
+			$eiMappingConstraints[] = $this->createEiMappingConstraint($subFilterGroupData);
 		}
 	
 		return new EiMappingConstraintGroup($filterGroupData->isAndUsed(), $eiMappingConstraints);
@@ -157,7 +157,7 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::check($eiMapping)
 	 */
 	public function check(EiMapping $eiMapping): bool {
-		return $this->mappableConstraint->check($eiMapping->getMappingProfile()
+		return $this->mappableConstraint->check($eiMapping
 				->getMappable($this->eiFieldPath));
 	}
 
@@ -166,7 +166,7 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::validate($eiMapping)
 	 */
 	public function validate(EiMapping $eiMapping) {
-		return $this->mappableConstraint->validate($eiMapping->getMappingProfile()->getMappable($this->eiFieldPath), 
+		return $this->mappableConstraint->validate($eiMapping->getMappable($this->eiFieldPath), 
 				$eiMapping->getMappingErrorInfo()->getFieldErrorInfo($this->eiFieldPath));
 	}
 }

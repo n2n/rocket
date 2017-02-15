@@ -28,6 +28,7 @@ use rocket\spec\ei\manage\gui\EiSelectionGuiListener;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
+use rocket\spec\ei\manage\mapping\MappableWrapper;
 
 class EiuGui {
 	private $eiuEntry;
@@ -87,6 +88,22 @@ class EiuGui {
 		try {
 			return $this->eiSelectionGui->getEditableWrapperByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
+		} catch (GuiException $e) {
+			if ($required) throw $e;
+			return null;
+		}
+	}
+	
+	/**
+	 * @param unknown $guiIdPath
+	 * @param bool $required
+	 * @throws GuiException
+	 * @return MappableWrapper
+	 */
+	public function getMappableWrapper($guiIdPath, bool $required = false) {
+		try {
+			return $this->eiSelectionGui->getMappableWrapperByGuiIdPath(
+					GuiIdPath::createFromExpression($guiIdPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

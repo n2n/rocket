@@ -24,38 +24,34 @@ namespace rocket\spec\ei\manage\mapping;
 use n2n\l10n\Message;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\EiFieldPath;
-use n2n\util\col\HashSet;
-use n2n\util\col\Set;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\security\EiCommandAccessRestrictor;
+use n2n\util\col\HashSet;
+use rocket\spec\ei\manage\mapping\impl\MappableWrapperImpl;
 use rocket\spec\ei\EiCommandPath;
+use rocket\spec\ei\security\EiCommandAccessRestrictor;
 
 class EiMapping {
-	private $contextEiSpec;
-	private $mappingProfile;
 	private $mappingErrorInfo;
 	private $eiSelection;
-	
 	private $accessible = true;
-	private $mappingConstraintSet = array();
-	private $eiExecutionRestrictorSet = array();
-	
+	private $mappableWrappers = array();
+	private $mappableForks = array();
 	private $listeners = array();
+	private $constraints;
+	private $eiCommandAccessRestrictors;
 	
-// 	private $listenerBindings = array();
-
-	private $eiSelectionPrivilegeConstraint;
-	
-	public function __construct(MappingProfile $mappingProfile, EiSelection $eiSelection) {
-		$this->mappingProfile = $mappingProfile;
+	public function __construct(EiSelection $eiSelection) {
 		$this->mappingErrorInfo = new MappingErrorInfo();
 		$this->eiSelection = $eiSelection;
-		$this->mappingConstraintSet = new HashSet(EiMappingConstraint::class);
-		$this->eiExecutionRestrictorSet = new HashSet(EiCommandAccessRestrictor::class);
+		$this->constraints = new HashSet(EiMappingConstraint::class);
+		$this->eiCommandAccessRestrictors = new HashSet(EiCommandAccessRestrictor::class);
 	}
 	
+	/**
+	 * @return string|null
+	 */
 	public function getIdRep() {
 		$liveEntry = $this->eiSelection->getLiveEntry();
 		if (!$liveEntry->isPersistent()) return null;
@@ -63,6 +59,9 @@ class EiMapping {
 		return $this->getEiSpec()->idToIdRep($liveEntry->getId());
 	}
 	
+	/**
+	 * @return mixed|null
+	 */
 	public function getId() {
 		$liveEntry = $this->eiSelection->getLiveEntry();
 		if (!$liveEntry->isPersistent()) return null;
@@ -70,11 +69,17 @@ class EiMapping {
 		return $liveEntry->getId();
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function isNew() {
 		return !$this->eiSelection->getLiveEntry()->isPersistent();
 	}
 	
-	public function getEiSpec(): EiSpec {
+	/**
+	 * @return \rocket\spec\ei\EiSpec
+	 */
+	public function getEiSpec() {
 		return $this->eiSelection->getLiveEntry()->getEiSpec();
 	}
 	
@@ -86,253 +91,140 @@ class EiMapping {
 		return $this->accessible;
 	}
 	
-	public function getMappingProfile(bool $ignoreAccessRestriction = false): MappingProfile {
+	private function ensureAccessible($ignoreAccessRestriction) {
 		if ($this->accessible || $ignoreAccessRestriction) {
-			return $this->mappingProfile;
+			return;
 		}
 		
 		throw new InaccessibleEntryException();
 	}
-	/**
-	 * @return \rocket\spec\ei\manage\EiSelection
-	 */
-	public function getEiSelection(): EiSelection {
-		return $this->eiSelection;
+	
+	public function getEiMappingConstraints() {
+		return $this->constraints;
 	}
 	
-	public function getEiMappingConstraintSet(): Set {
-		return $this->mappingConstraintSet;
-	}
-	
-	public function getEiCommandAccessRestrictorSet(): Set {
-		return $this->eiExecutionRestrictorSet;
+	public function getEiCommandAccessRestrictors()  {
+		return $this->eiCommandAccessRestrictors;
 	}
 	
 	public function isExecutableBy(EiCommandPath $eiCommandPath) {
-		foreach ($this->eiExecutionRestrictorSet as $eiExecutionRestrictor) {
+		foreach ($this->eiCommandAccessRestrictors as $eiExecutionRestrictor) {
 			if (!$eiExecutionRestrictor->isAccessibleBy($eiCommandPath)) {
 				return false;
 			}
 		}
-		
+	
 		return true;
 	}
 	
-	public function getValue($eiFieldPath, bool $ignoreAccessRestriction = false) {
-		$eiFieldPath = EiFieldPath::create($eiFieldPath);
-		
-		return $this->getMappingProfile($ignoreAccessRestriction)->getMappable($eiFieldPath, $ignoreAccessRestriction)
-				->getValue();
+	public function contains(EiFieldPath $eiFieldPath): bool {
+		$eiFieldPathStr = (string) $eiFieldPath;
+		return isset($this->mappableWrappers[$eiFieldPathStr]) && isset($this->mappableForks[$eiFieldPathStr]);
 	}
 	
-	public function setValue($eiFieldPath, $value, bool $ignoreAccessRestriction = false) {
-		$eiFieldPath = EiFieldPath::create($eiFieldPath);
-		
-		$this->getMappingProfile($ignoreAccessRestriction)->getMappable($eiFieldPath, $ignoreAccessRestriction)
-				->setValue($value);
-	}
-
-	public function getOrgValue($eiFieldPath, bool $ignoreAccessRestriction = false) {
-		$eiFieldPath = EiFieldPath::create($eiFieldPath);
-		
-		return $this->getMappingProfile($ignoreAccessRestriction)->getMappable($eiFieldPath, $ignoreAccessRestriction)
-				->getOrgValue();
+	public function remove(EiFieldPath $eiFieldPath) {
+		$eiFieldPathStr = (string) $eiFieldPath;
+		unset($this->mappableWrappers[$eiFieldPathStr]);
+		unset($this->mappableForks[$eiFieldPathStr]);
 	}
 	
-// 	private function createSetOperationException(EiFieldPath $eiFieldPath, $code, \Exception $previous) {
-// 		throw new MappingOperationFailedException('Could not set value for field \'' . $eiFieldPath 
-// 						. '\' on  \'' . $this->determineEiSpec()->getId() . '\'. Reason: ' 
-// 						. $previous->getMessage(), 
-// 				0, $previous);
-// 	}
-
-// 	public function setValues(array $values) {
-// 		foreach ($this->values as $id => $value) {
-// 			$this->setValue($id, $value);
-// 		}
-// 	}
-	
-// 	public function getValues() {
-// 		return $this->values;
-// 	}
-	
-// 	public function getAllValues() {
-// 		return $this->values + $this->getOrgValues();
-// 	}
-	
-// 	public function getOrgValues() {
-// 		foreach ($this->mappingProfile->getMappables() as $id => $mappable) {
-// 			if (array_key_exists($id, $this->orgValues)) continue;
-			
-// 			$this->orgValues[$id] = $this->readOrgValue($mappable);
-// 		}
-		
-// 		return $this->orgValues;
-// 	}
-	
-// 	private function readOrgValue(Mappable $mappable) {
-// 		if ($this->eiSelection->isDraft() && $mappable->isDraftable()) {
-// 			return $mappable->draftRead($this->eiSelection->getDraft());
-// 		}
-		
-// 		return $mappable->read($this->eiSelection->getEntityObj());
-// 	}
-	
-// 	protected function setParentMapping(EiMapping $parentMapping) {
-// 		$this->parentMapping = $parentMapping;
-// 	}
-	
-// 	public function getParentMapping() {
-// 		return $this->parentMapping;
-// 	}
-	
-// 	public function registerRelatedMapping($id, EiMapping $relatedMapping) {
-// 		if (!isset($this->relatedMappings[$id])) {
-// 			$this->relatedMappings[$id] = array();
-// 		}
-		
-// 		$this->relatedMappings[$id][] = $relatedMapping;
-// 		$relatedMapping->setParentMapping($this);
-// 	}
-	
-// 	public function unregisterRelatedMappings($id) {
-// 		foreach ($this->getRelatedMappings($id) as $relatedMapping) {
-// 			$relatedMapping->setParentMapping(null);
-// 		}
-// 		$this->relatedMappings[$id] = array();
-// 	}
-	
-// 	public function hasRelatedMapping($id) {
-// 		return isset($this->relatedMappings[$id]) && sizeof($this->relatedMappings[$id]);
-// 	}
-	
-// 	public function getRelatedMapping($id) {
-// 		if (!$this->hasRelatedMapping($id)) {
-// 			throw new UnsupportedOperationException('No related mappings for ' . $id . ' available.');
-// 		}
-		
-// 		if (1 < sizeof($this->relatedMappings[$id])) {
-// 			throw new UnsupportedOperationException('More then one related mappings for ' . $id . ' available.');
-// 		}
-		
-// 		return current($this->relatedMappings[$id]); 
-// 	}
-	
-// 	public function getRelatedMappings($id) {
-// 		if (!$this->hasRelatedMapping($id)) {
-// 			return array();
-// 		}
-		
-// 		return $this->relatedMappings[$id];
-// 	}
-	
-	public function save(): bool {
-		if (!$this->validate()) return false;
-		$this->write();
-		$this->flush();
-		return true;
+	public function putMappable(EiFieldPath $eiFieldPath, Mappable $mappable) {
+		$eiFieldPathStr = (string) $eiFieldPath;
+		return $this->mappableWrappers[$eiFieldPathStr] = new MappableWrapperImpl($mappable);
 	}
 	
-	public function validate(): bool {
-		if (!$this->accessible) {
-			throw new InaccessibleEntryException();
+	public function removeMappable(EiFieldPath $eiFieldPath) {
+		unset($this->mappableWrappers[(string) $eiFieldPath]);
+	}
+	
+	public function containsMappable(EiFieldPath $eiFieldPath): bool {
+		return isset($this->mappableWrappers[(string) $eiFieldPath]);
+	}
+	
+	/**
+	 * @param EiFieldPath $eiFieldPath
+	 * @throws MappingOperationFailedException
+	 * @return Mappable
+	 */
+	public function getMappable(EiFieldPath $eiFieldPath, bool $ignoreAccessRestriction = false) {
+		$this->ensureAccessible($ignoreAccessRestriction);
+		return $this->getMappableWrapper($eiFieldPath, $ignoreAccessRestriction)->getMappable();
+	}
+	
+	/**
+	 * @param EiFieldPath $eiFieldPath
+	 * @throws MappingOperationFailedException
+	 * @return MappableWrapper
+	 */
+	public function getMappableWrapper(EiFieldPath $eiFieldPath, bool $ignoreAccessRestriction = false) {
+		$this->ensureAccessible($ignoreAccessRestriction);
+		$eiFieldPathStr = (string) $eiFieldPath;
+		if (!isset($this->mappableWrappers[$eiFieldPathStr])) {
+			throw new MappingOperationFailedException('No Mappable defined for EiFieldPath \'' . $eiFieldPathStr
+					. '\'.');
 		}
-		
-		$this->mappingErrorInfo = new MappingErrorInfo();
-		
-		foreach ($this->listeners as $listener) {
-			$listener->onValidate($this);
-		}
-		
-		$this->mappingProfile->validate($this->mappingErrorInfo);
-		
-		foreach ($this->mappingConstraintSet as $mappingConstraint) {
-			$mappingConstraint->validate($this);
-		}
-		
-		foreach ($this->listeners as $listener) {
-			$listener->validated($this);
-		}
-		
-		return $this->mappingErrorInfo->isValid();
+	
+		return $this->mappableWrappers[$eiFieldPathStr];
 	}
 	
-	public function hasValidationResult(): bool {
-		return $this->validateionResult !== null;
+	public function getMappableWrappers() {
+		return $this->mappableWrappers;
 	}
 	
-	public function getMappingErrorInfo(): MappingErrorInfo {
-		IllegalStateException::assertTrue($this->mappingErrorInfo !== null);
-		
-		return $this->mappingErrorInfo;
+	public function containsMappableFork(EiFieldPath $eiFieldPath): bool {
+		return isset($this->mappableForks[(string) $eiFieldPath]);
 	}
 	
-	public function write() {
-		foreach ($this->listeners as $listener) {
-			$listener->onWrite($this);
+	public function putMappableFork(EiFieldPath $eiFieldPath, MappableFork $mappableFork) {
+		$this->mappableFork[(string) $eiFieldPath] = $mappableFork;
+	}
+	
+	public function removeMappableFork(EiFieldPath $eiFieldPath) {
+		unset($this->mappableForks[(string) $eiFieldPath]);
+	}
+	
+	public function getMappableFork(EiFieldPath $eiFieldPath): MappableFork {
+		$eiFieldPathStr = (string) $eiFieldPath;
+		if (!isset($this->mappableForks[$eiFieldPathStr])) {
+			throw new MappingOperationFailedException('No MappableFork defined for EiFieldPath \''
+					. $eiFieldPathStr . '\'.');
 		}
-		
-		$this->mappingProfile->write();
-		
-		foreach ($this->listeners as $listener) {
-			$listener->written($this);
-		}
+	
+		return $this->mappableForks[$eiFieldPathStr];
 	}
 	
-	private function flush() {
-// 		foreach ($this->relatedMappings as $id => $relatedMappings) {
-// 			foreach ($relatedMappings as $relatedMapping) {
-// 				$relatedMapping->flush();
-// 			}
-// 		}
-		
-		foreach ($this->listeners as $listener) {
-			$listener->flush($this);
-		}
+	public function getMappableForks(): array {
+		return $this->mappableForks;
 	}
 	
-	public function copy(EiMapping $targetMapping) {
-		$targetMappingDefinition = $targetMapping->getMappingDefinition();
-		$targetType = $targetMapping->getEiSelection()->getType();
-		foreach ($targetMappingDefinition->getIds() as $id) {
-			if (!$this->mappingProfile->containsId($id)) continue;
-
-			$targetMapping->setValue($id, $this->getValue($id));
-		}
-	}
+	// 	public function read($entity, EiFieldPath $eiFieldPath) {
 	
+	// 	}
 	
-	
-// 	public function draftCopy(EiMapping $entityMapping) {
-// 		foreach ($entityMapping->getWritables() as $id => $draftable) {
-// 			if (isset($this->draftables[$id])) {
-// 				$entityMapping->setValue($id, $this->draftables[$id]->draftCopy($this->getValue($id)));
-// 			}
-// 		}
-// 	}
-	
-// 	public function translationCopy(EiMapping $entityMapping) {
-		
-// 	}
+	// 	public function readAll($entity) {
+	// 		$values = array();
+	// 		foreach ($this->mappables as $id => $mappable) {
+	// 			if ($mappable->isReadable()) {
+	// 				$values[$id] = $mappable->read($entity);
+	// 			}
+	// 		}
+	// 		return $values;
+	// 	}
 	
 	
 	public function registerListener(EiMappingListener $listener, $relatedFieldId = null) {
 		$objectHash = spl_object_hash($listener);
 		$this->listeners[$objectHash] = $listener;
-		if (!isset($this->listenerBindings[$relatedFieldId])) {	
+		if (!isset($this->listenerBindings[$relatedFieldId])) {
 			$this->listenerBindings[$relatedFieldId][$objectHash] = $listener;
 		}
-	}
-	
-	public function executeOnWrite(\Closure $closure) {
-		$this->registerListener(new OnWriteMappingListener($closure));
 	}
 	
 	public function getFieldRelatedListeners($fieldId) {
 		if (isset($this->listenerBindings[$fieldId])) {
 			return $this->listenerBindings[$fieldId];
 		}
-		
+	
 		return array();
 	}
 	
@@ -347,27 +239,124 @@ class EiMapping {
 	public function unregisterFieldRelatedListeners($fieldId) {
 		unset($this->listenerBindings[$fieldId]);
 	}
+		
+	public function write() {
+		foreach ($this->listeners as $listener) {
+			$listener->onWrite($this);
+		}
 	
-	public function registerValidator(MappingValidator $validator) {
-		$this->validators[spl_object_hash($validator)] = $validator;
+		foreach ($this->mappableWrappers as $eiFieldPathStr => $mappableWrapper) {
+			if ($mappableWrapper->isIgnored()) continue;
+			
+			$mappableWrapper->getMappable()->write();
+		}
+	
+		foreach ($this->listeners as $listener) {
+			$listener->written($this);
+		}
 	}
 	
-	public function registerConstraint(EiMappingConstraint $mappingConstraint) {
-		$this->registerValidator($mappingConstraint);
-		$this->mappingConstraintSet[spl_object_hash($mappingConstraint)] = $mappingConstraint;
+	private function flush() {
+		foreach ($this->listeners as $listener) {
+			$listener->flush($this);
+		}
 	}
 	
-	public function unregisterValidator(MappingValidator $validator) {
-		unset($this->validators[spl_object_hash($validator)]);
-		unset($this->mappingConstraintSet[spl_object_hash($validator)]);
-	}
-	
-	public function acceptsValue($eiFieldPath, $value) {
-		$eiFieldPath = EiFieldPath::create($eiFieldPath);
-		foreach ($this->mappingConstraintSet as $constraint) {
+	/**
+	 * @param EiFieldPath $eiFieldPath
+	 * @param unknown $value
+	 * @return boolean
+	 */
+	public function acceptsValue(EiFieldPath $eiFieldPath, $value) {
+		foreach ($this->constraints as $constraint) {
 			if (!$constraint->acceptsValue($eiFieldPath, $value)) return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\manage\EiSelection
+	 */
+	public function getEiSelection(): EiSelection {
+		return $this->eiSelection;
+	}
+	
+	public function getValue($eiFieldPath, bool $ignoreAccessRestriction = false) {
+		$this->ensureAccessible($ignoreAccessRestriction);
+		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+		
+		return $this->getMappable($eiFieldPath, $ignoreAccessRestriction)->getValue();
+	}
+	
+	public function setValue($eiFieldPath, $value, bool $ignoreAccessRestriction = false) {
+		$this->ensureAccessible($ignoreAccessRestriction);
+		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+		
+		$this->getMappable($eiFieldPath, $ignoreAccessRestriction)->setValue($value);
+	}
+
+	public function getOrgValue($eiFieldPath, bool $ignoreAccessRestriction = false) {
+		$this->ensureAccessible($ignoreAccessRestriction);
+		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+		
+		return $this->getMappingProfile($ignoreAccessRestriction)->getMappable($eiFieldPath, $ignoreAccessRestriction)
+				->getOrgValue();
+	}
+	
+	public function save(): bool {
+		if (!$this->validate()) return false;
+		$this->write();
+		$this->flush();
+		return true;
+	}
+	
+	public function validate(MappingErrorInfo $mappingErrorInfo = null): bool {
+		if (!$this->accessible) {
+			throw new InaccessibleEntryException();
+		}
+		
+		if ($mappingErrorInfo === null) {
+			$mappingErrorInfo = $this->mappingErrorInfo = new MappingErrorInfo();	
+		}
+		
+		foreach ($this->listeners as $listener) {
+			$listener->onValidate($this);
+		}
+		
+		foreach ($this->mappableWrappers as $eiFieldPathStr => $mappableWrapper) {
+			if ($mappableWrapper->isIgnored()) continue;
+			$mappableWrapper->getMappable()->validate($mappingErrorInfo->getFieldErrorInfo(EiFieldPath::create($eiFieldPathStr)));
+		}
+		
+		foreach ($this->constraints as $constraint) {
+			$constraint->validate($this);
+		}
+		
+		foreach ($this->listeners as $listener) {
+			$listener->validated($this);
+		}
+		
+		return $mappingErrorInfo->isValid();
+	}
+	
+	public function hasValidationResult(): bool {
+		return $this->validateionResult !== null;
+	}
+	
+	public function getMappingErrorInfo(): MappingErrorInfo {
+		IllegalStateException::assertTrue($this->mappingErrorInfo !== null);
+		
+		return $this->mappingErrorInfo;
+	}
+	
+	public function copy(EiMapping $targetMapping) {
+		$targetMappingDefinition = $targetMapping->getMappingDefinition();
+		$targetType = $targetMapping->getEiSelection()->getType();
+		foreach ($targetMappingDefinition->getIds() as $id) {
+			if (!$this->mappingProfile->containsId($id)) continue;
+
+			$targetMapping->setValue($id, $this->getValue($id));
+		}
 	}
 	
 	public function equals($obj) {
@@ -379,9 +368,6 @@ class EiMapping {
 		return $this->eiSelection->toEntryNavPoint($this->contextEiSpec);
 	}
 }
-
-
-
 
 class OnWriteMappingListener implements EiMappingListener {
 	private $closure;
@@ -456,7 +442,7 @@ class OnValidateMappingListener implements EiMappingListener {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onValidate()
 	 */
 	public function onValidate(EiMapping $eiMapping) { 
-		$this->closure->__invoke($mappingValidationResult, $eiMapping);
+		$this->closure->__invoke($eiMapping);
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
@@ -490,7 +476,7 @@ class ValidatedMappingListener implements EiMappingListener {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
 	 */
 	public function validated(EiMapping $eiMapping) { 
-		$this->closure->__invoke($mappingValidationResult, $eiMapping);
+		$this->closure->__invoke($eiMapping);
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onWrite()

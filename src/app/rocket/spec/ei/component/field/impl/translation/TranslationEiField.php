@@ -79,7 +79,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		if (!$entityProperty->getRelation()->getTargetEntityModel()->getClass()
 				->implementsInterface(Translatable::class)) {
 			throw new \InvalidArgumentException('Target entity ('
-					. $entityProperty->getTargetEntityModel()->getClass()->getName() . ') must implment '
+					. $entityProperty->getTargetEntityModel()->getClass()->getName() . ') must implement '
 					. Translatable::class);
 		}
 
@@ -138,7 +138,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::getForkedGuiDefinition()
-	*/
+	 */
 	public function getForkedGuiDefinition() {
 		return $this->eiFieldRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
@@ -155,7 +155,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		}
 		$targetUtils = new EiuFrame($targetEiState);
 		
-		$toManyMappable = $eiMapping->getMappingProfile()->getMappable(EiFieldPath::from($this));
+		$toManyMappable = $eiMapping->getMappable(EiFieldPath::from($this));
 		
 		$targetRelationEntries = array();
 		foreach ($toManyMappable->getValue() as $targetRelationEntry) {
@@ -220,7 +220,6 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		
 		return N2nLocale::getAdmin();
 	}
-	
 }
 
 class TranslationSortFieldFork implements SortFieldFork {
@@ -256,8 +255,6 @@ class TranslationSortFieldFork implements SortFieldFork {
 	public function createSortConstraint(SortConstraint $forkedSortConstraint): SortConstraint {
 		return new TranslationSortConstraint($forkedSortConstraint, $this);
 	}
-	
-	
 }
 
 class TranslationSortConstraint implements SortConstraint {

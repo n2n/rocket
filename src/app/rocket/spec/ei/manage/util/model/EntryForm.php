@@ -33,8 +33,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\spec\ei\manage\EiState;
-use n2n\web\dispatch\map\MappingResult;
-use n2n\web\dispatch\map\PropertyPath;
 
 class EntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

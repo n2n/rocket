@@ -100,7 +100,7 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiState)) {
 			$targetEditEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $mapping);
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), 
-					$mapping->getMappingProfile()->getMappable(EiFieldPath::from($this)), $targetReadEiState,
+					$mapping->getMappable(EiFieldPath::from($this)), $targetReadEiState,
 					$targetEditEiState, $this->getRealMin(), $this->getMax());
 				
 			$toManyEditable->setSelectOverviewToolsUrl($this->eiFieldRelation->buildTargetOverviewToolsUrl(

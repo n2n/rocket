@@ -21,7 +21,5 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-use rocket\core\bo\RocketRuntimeException;
-	  
 class MappingOperationFailedException extends \RuntimeException {
 }

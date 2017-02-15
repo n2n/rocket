@@ -24,8 +24,8 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiState;
 use n2n\reflection\property\AccessProxy;
-use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\mapping\WrittenMappingListener;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class MasterRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiState;
@@ -40,11 +40,12 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 		$this->targetMany = (boolean) $targetMany;
 	}
 
-	public function setupEiMapping(EiState $eiState, EiMapping $eiMapping) {
-		if ($this->targetEiState !== $eiState) return;
+	public function setupEiMapping(Eiu $eiu) {
+		if ($this->targetEiState !== $eiu->frame()->getEiState()) return;
 
-		if ($eiMapping->getEiSelection()->isDraft()) return;
+		if ($eiu->entry()->isDraft()) return;
 		
+		$eiMapping = $eiu->entry()->getEiMapping();
 		$that = $this;
 		if (!$this->targetMany) {
 			$eiMapping->registerListener(new WrittenMappingListener(

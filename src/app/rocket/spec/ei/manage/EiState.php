@@ -25,7 +25,6 @@ use n2n\persistence\orm\EntityManager;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
 use n2n\web\http\controller\ControllerContext;
-use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\ManageState;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -35,7 +34,6 @@ use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use n2n\web\http\HttpContext;
-use rocket\spec\ei\manage\mapping\MappingProfile;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
 
@@ -181,21 +179,21 @@ class EiState {
 		return $this->criteriaConstraintCollection;
 	}
 	
-	public function getOrCreateFilterModel() {
-		if ($this->filterModel !== null) {
-			return $this->filterModel;
-		}
+// 	public function getOrCreateFilterModel() {
+// 		if ($this->filterModel !== null) {
+// 			return $this->filterModel;
+// 		}
 
-		return $this->filterModel = CritmodFactory::createFilterModelFromEiState($this);
-	}
+// 		return $this->filterModel = CritmodFactory::createFilterModelFromEiState($this);
+// 	}
 	
-	public function getOrCreateSortModel() {
-		if ($this->sortModel !== null) {
-			return $this->sortModel;
-		}
+// 	public function getOrCreateSortModel() {
+// 		if ($this->sortModel !== null) {
+// 			return $this->sortModel;
+// 		}
 	
-		return $this->sortModel = CritmodFactory::createSortModelFromEiState($this);
-	}
+// 		return $this->sortModel = CritmodFactory::createSortModelFromEiState($this);
+// 	}
 	/**
 	 * @param \n2n\persistence\orm\EntityManager $em
 	 * @param string $entityAlias
@@ -262,9 +260,7 @@ class EiState {
 	/**
 	 * @return EiMapping
 	 */
-	public function createEiMapping(MappingProfile $mappingProfile, EiSelection $eiSelection) {
-		$eiMapping = new EiMapping($mappingProfile, $eiSelection);
-		
+	public function restrictEiMapping(EiMapping $eiMapping) {
 		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiMappingConstraint())) {
 			$eiMapping->getEiMappingConstraintSet()->add($mappingConstraint);
 		}
