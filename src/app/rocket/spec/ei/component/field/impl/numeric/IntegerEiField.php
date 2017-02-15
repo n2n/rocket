@@ -30,8 +30,10 @@ use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\component\field\ScalarEiField;
+use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
 
-class IntegerEiField extends NumericEiFieldAdapter {
+class IntegerEiField extends NumericEiFieldAdapter implements ScalarEiField {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
 	
@@ -40,6 +42,18 @@ class IntegerEiField extends NumericEiFieldAdapter {
 		
 		$this->minValue = self::INT_SIGNED_MIN;
 		$this->maxValue = self::INT_SIGNED_MAX;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\ScalarEiField::buildScalarValue()
+	 */
+	public function getScalarEiProperty() {
+		return new CommonScalarEiProperty($this, null, function ($value) {
+			ArgUtils::valScalar($value, true);
+			if ($value === null) return null;
+			return (int) $value;
+		});
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {

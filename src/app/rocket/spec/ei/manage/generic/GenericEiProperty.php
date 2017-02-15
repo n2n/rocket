@@ -23,16 +23,42 @@ namespace rocket\spec\ei\manage\generic;
 
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
-use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\l10n\Lstr;
+use rocket\spec\ei\EiFieldPath;
 
 interface GenericEiProperty {
 	
+	/**
+	 * @return Lstr
+	 */
 	public function getLabelLstr(): Lstr;
 	
+	/**
+	 * @return EiFieldPath
+	 */
+	public function getEiFieldPath(): EiFieldPath;
+	
+	/**
+	 * @param CriteriaProperty $alias
+	 * @return CriteriaItem
+	 */
 	public function buildCriteriaItem(CriteriaProperty $alias): CriteriaItem;
 	
-	public function buildEntityValue(EiMapping $eiMapping);
+// 	/**
+// 	 * @param EiMapping $eiMapping
+// 	 * @return mixed
+// 	 */
+// 	public function buildEntityValue(EiMapping $eiMapping);
 
+	/**
+	 * @param mixed $mappableValue
+	 * @return mixed
+	 */
 	public function mappableValueToEntityValue($mappableValue);
+	
+	/**
+	 * @param mixed $entityValue
+	 * @return mixed
+	 */
+	public function entityValueToMappableValue($entityValue);
 }

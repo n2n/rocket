@@ -25,18 +25,26 @@ namespace rocket\spec\ei\manage\generic;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\EiFieldPath;
 
 class CommonScalarEiProperty implements ScalarEiProperty {
 	private $eiField;
 	private $scalarValueBuilder;
+	private $mappableValueBuilder;
 
-	public function __construct(EiField $eiField, \Closure $scalarValueBuilder = null) {
+	public function __construct(EiField $eiField, \Closure $scalarValueBuilder = null, 
+			\Closure $mappableValueBuilder = null) {
 		$this->eiField = $eiField;
 		$this->scalarValueBuilder = $scalarValueBuilder;
+		$this->mappableValueBuilder = $mappableValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
 		return $this->eiField->getLabelLstr();
+	}
+	
+	public function getEiFieldPath(): EiFieldPath {
+		return EiFieldPath::from($this->eiField);
 	}
 
 	public function buildScalarValue(EiMapping $eiMapping) {
@@ -49,5 +57,13 @@ class CommonScalarEiProperty implements ScalarEiProperty {
 		}
 		
 		return $this->scalarValueBuilder->__invoke($mappableValue);
+	}
+
+	public function scalarValueToMappableValue($scalarValue) {
+		if ($this->mappableValueBuilder === null) {
+			return $scalarValue;
+		}
+		
+		return $this->mappableValueBuilder->__invoke($scalarValue);
 	}
 }

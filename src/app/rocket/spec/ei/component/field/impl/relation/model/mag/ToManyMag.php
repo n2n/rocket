@@ -96,7 +96,7 @@ class ToManyMag extends MagAdapter {
 		$this->draftMode = $draftMode;
 	}
 	
-	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath) {
+	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
 		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;
 	}
 	
@@ -147,7 +147,7 @@ class ToManyMag extends MagAdapter {
 	
 		$toManyForm->setNewMappingFormAvailable($this->newMappingFormUrl !== null);
 		$toManyForm->setDraftMode($this->draftMode);
-	
+		
 		return $toManyForm;
 	}
 	

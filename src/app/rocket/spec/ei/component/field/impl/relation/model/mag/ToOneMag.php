@@ -38,7 +38,6 @@ use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldContro
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use rocket\spec\ei\manage\CriteriaConstraintCollection;
 
 class ToOneMag extends MagAdapter {
 	private $mandatory;

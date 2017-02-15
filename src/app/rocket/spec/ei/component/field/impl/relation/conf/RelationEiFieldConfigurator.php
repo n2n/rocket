@@ -43,6 +43,10 @@ use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\component\field\impl\relation\model\RelationVetoableActionListener;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
 use n2n\util\config\InvalidConfigurationException;
+use rocket\spec\ei\component\field\impl\relation\EmbeddedOneToManyEiField;
+use n2n\reflection\CastUtils;
+use rocket\spec\config\SpecManager;
+use rocket\spec\ei\EiFieldPath;
 
 class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
@@ -50,6 +54,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
+	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
 	const OPTION_FILTERED_KEY = 'filtered';
 	const OPTION_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
 	
@@ -78,7 +83,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
-				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY), true), true);
+				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -90,11 +95,19 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$targetEiMaskOptions = array();
 		$relationEntityProperty = $this->eiFieldRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
+		$targetOrderFieldPathOptions = array();
 		try {
 			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
+			CastUtils::assertTrue($specManager instanceof SpecManager);
 			$targetEiSpec = $specManager->getEiSpecByClass($targetEntityClass);
 			foreach ($targetEiSpec->getEiMaskCollection() as $eiMask) {
 				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiSpec()->getLabelLstr();
+			}
+			
+			$scalarEiProperties = $targetEiSpec->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();
+			foreach ($scalarEiProperties as $ref => $scalarEiProperty) {
+				$targetOrderFieldPathOptions[(string) $scalarEiProperties->getKeyByHashCode($ref)]
+						= $scalarEiProperty->getLabelLstr();
 			}
 		} catch (UnknownEiComponentException $e) {
 		} catch (UnknownSpecException $e) {
@@ -114,6 +127,11 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiField) {
 			$magCollection->addMag(new BoolMag(self::ATTR_REPLACEABLE_KEY, 'Replaceable',
 					$lar->getBool(self::ATTR_REPLACEABLE_KEY, $this->eiComponent->isReplaceable())));
+		}
+		
+		if ($this->eiComponent instanceof EmbeddedOneToManyEiField) {
+			$magCollection->addMag(new EnumMag(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY, 'Target order field', 
+					$targetOrderFieldPathOptions, $lar->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)));
 		}
 		
 		if ($this->eiFieldRelation instanceof SelectEiFieldRelation) {
@@ -165,7 +183,6 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 			throw $eiSetupProcess->createException(null, $e);
 		}
 		
-		
 		if ($this->eiComponent instanceof ToManyEiFieldAdapter) {
 			if ($this->attributes->contains(self::ATTR_MIN_KEY)) {
 				$this->eiComponent->setMin($this->attributes->getNumeric(self::ATTR_MIN_KEY, true, null, true));
@@ -179,6 +196,14 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiField 
 				&& $this->attributes->contains(self::ATTR_REPLACEABLE_KEY)) {
 			$this->eiComponent->setReplaceable($this->attributes->getBool(self::ATTR_REPLACEABLE_KEY));
+		}
+		
+		if ($this->eiComponent instanceof EmbeddedOneToManyEiField
+				&& $this->attributes->contains(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)) {
+			$targetEiFieldPath = EiFieldPath::create($this->attributes->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY));
+			$this->eiFieldRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
+						->getScalarEiPropertyByFieldPath($targetEiFieldPath);
+			$this->eiComponent->setTargetOrderEiFieldPath($targetEiFieldPath);
 		}
 		
 		if ($this->eiFieldRelation instanceof SelectEiFieldRelation) {
