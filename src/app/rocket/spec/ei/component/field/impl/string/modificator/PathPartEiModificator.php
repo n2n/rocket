@@ -86,7 +86,8 @@ class PathPartPurifier {
 		}
 	
 		if ($baseScalarEiProperty !== null) {
-			return mb_strtolower(IoUtils::stripSpecialChars($baseScalarEiProperty->buildScalarValue($this->eiMapping)));
+			return mb_strtolower(IoUtils::stripSpecialChars($baseScalarEiProperty->mappableValueToEntityValue(
+					$this->eiMapping->getValue($baseScalarEiProperty->getEiFieldPath()))));
 		}
 	
 		if (null !== ($id = $this->eiMapping->getId())) {
@@ -109,7 +110,6 @@ class PathPartPurifier {
 		$criteria->select('COUNT(1)')
 				->where()->match(CrIt::p('e', $this->pathPartEiField->getEntityProperty(true)), '=', $pathPart)
 				->andMatch(CrIt::p('e', $this->getIdEntityProperty()), '!=', $this->eiMapping->getId());
-	
 		
 		if (null !== ($uniquePerGenericEiProperty = $this->pathPartEiField->getUniquePerGenericEiProperty())) {
 			$criteria->where()->match($uniquePerGenericEiProperty->buildCriteriaItem(CrIt::p('e')),

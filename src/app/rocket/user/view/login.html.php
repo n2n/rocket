@@ -23,6 +23,12 @@
 	use n2n\web\ui\Raw;
 	use rocket\user\model\LoginContext;
 	use n2nutil\jquery\JQueryLibrary;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\view\View;
+	
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($this);
+	$formHtml = HtmlView::formHtml($this);
 	
 	$loginContext = $view->params['loginContext']; $view->assert($loginContext instanceof LoginContext);
 	$html->meta()->addMeta(array('charset' => n2n\core\N2N::CHARSET));

@@ -38,6 +38,7 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\manage\draft\Draft;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class ToManyMag extends MagAdapter {
 	private $min;
@@ -96,7 +97,7 @@ class ToManyMag extends MagAdapter {
 		$this->draftMode = $draftMode;
 	}
 	
-	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath) {
+	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
 		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;
 	}
 	
@@ -147,7 +148,7 @@ class ToManyMag extends MagAdapter {
 	
 		$toManyForm->setNewMappingFormAvailable($this->newMappingFormUrl !== null);
 		$toManyForm->setDraftMode($this->draftMode);
-	
+		
 		return $toManyForm;
 	}
 	
@@ -181,7 +182,8 @@ class ToManyMag extends MagAdapter {
 		$orderIndex = 10;
 		foreach ($formValue->buildEiMappings() as $targetEiMapping) {
 			if ($this->targetOrderEiFieldPath !== null) {
-				$targetEiMapping->setValue($this->targetOrderEiFieldPath, $orderIndex += 10, true);
+				$eiu = new Eiu($targetEiMapping, $this->targetEditUtils->getEiState());
+				$eiu->entry()->setScalarValue($this->targetOrderEiFieldPath, $orderIndex += 10, true);
 			}
 			
 			if ($targetEiMapping->isNew()) {

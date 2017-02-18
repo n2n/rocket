@@ -22,13 +22,33 @@
 namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\EiFieldPath;
 
 interface ScalarEiProperty {
 	
+	/**
+	 * @return Lstr
+	 */
 	public function getLabelLstr(): Lstr;
-	
-	public function buildScalarValue(EiMapping $eiMapping);
 
+
+	/**
+	 * @return EiFieldPath
+	 */
+	public function getEiFieldPath(): EiFieldPath;
+	
+// 	/**
+// 	 * @param EiMapping $eiMapping
+// 	 */
+// 	public function buildScalarValue(EiMapping $eiMapping);
+	
+	/**
+	 * @param mixed $mappableValue
+	 */
 	public function mappableValueToScalarValue($mappableValue);
+	
+	/**
+	 * @param mixed $scalarValue
+	 */
+	public function scalarValueToMappableValue($scalarValue);
 }

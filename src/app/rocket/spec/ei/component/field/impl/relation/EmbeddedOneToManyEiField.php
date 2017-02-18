@@ -65,6 +65,7 @@ use rocket\spec\ei\manage\draft\ModDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements DraftableEiField, Draftable*/ {
+	private $targetOrderEiFieldPath;
 	
 	public function __construct() {	
 		parent::__construct();
@@ -77,6 +78,14 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
+		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;
+	}
+	
+	public function getTargetOrderEiFieldPath() {
+		return $this->targetOrderEiFieldPath;
 	}
 	
 	public function createEiFieldConfigurator(): EiFieldConfigurator {
@@ -160,6 +169,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 				$toManyEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
 						$eiMapping, $draftMode, $eiState, $eiu->frame()->getHttpContext()));
 			}
+			$toManyEditable->setTargetOrderEiFieldPath($this->targetOrderEiFieldPath);
 		}
 		
 		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiState, $toManyEditable);

@@ -69,8 +69,7 @@ class StringEiField extends AlphanumericEiField {
 	
 
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		$mag = new StringMag($propertyName, $this->getLabelLstr(), null,
-				$this->isMandatory($eiu), 
+		$mag = new StringMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength(), $this->isMultiline(),
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
 		$mag->setAttrs(array('class' => 'rocket-block'));
