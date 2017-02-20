@@ -145,6 +145,14 @@ class GuiDefinition {
 		return $guiFields;
 	}
 	
+	/**
+	 * @deprecated
+	 * @return \rocket\spec\ei\manage\gui\GuiIdPath[]
+	 */
+	public function getAllGuiIdPaths() {
+		return $this->getGuiIdPaths();
+	}
+	
 	public function getGuiIdPaths() {
 		return $this->filterGuiIdPaths(DisplayDefinition::ALL_VIEW_MODES);
 	}
