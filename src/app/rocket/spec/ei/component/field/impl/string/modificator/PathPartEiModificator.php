@@ -86,7 +86,7 @@ class PathPartPurifier {
 		}
 	
 		if ($baseScalarEiProperty !== null) {
-			return mb_strtolower(IoUtils::stripSpecialChars($baseScalarEiProperty->mappableValueToEntityValue(
+			return mb_strtolower(IoUtils::stripSpecialChars($baseScalarEiProperty->mappableValueToScalarValue(
 					$this->eiMapping->getValue($baseScalarEiProperty->getEiFieldPath()))));
 		}
 	
