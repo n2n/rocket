@@ -30,7 +30,9 @@ use n2n\web\ui\view\View;
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	
-	$loginContext = $view->params['loginContext']; $view->assert($loginContext instanceof LoginContext);
+	$loginContext = $view->getParam('loginContext'); 
+	$view->assert($loginContext instanceof LoginContext);
+	
 	$html->meta()->addMeta(array('charset' => n2n\core\N2N::CHARSET));
 	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
@@ -46,7 +48,7 @@ use n2n\web\ui\view\View;
 <html> 
 	<?php $html->headStart() ?>
 	<?php $html->headEnd() ?>
-	<body id="rocket-login">
+	<?php $html->bodyStart(array('id' => 'rocket-login')) ?>
 		<div id="rocket-login-container">
 			<div id="rocket-login-form-container">
 				<div id="rocket-logo-container">
@@ -81,5 +83,5 @@ use n2n\web\ui\view\View;
 				<?php $formHtml->close() ?>
 			</div>
 		</div>
-	</body>
+	<?php $html->bodyEnd()?>
 </html>

@@ -146,7 +146,7 @@ class GuiDefinition {
 	}
 	
 	/**
-	 * @deprecated
+	 * @deprecated use {@see GuiDefinition::getGuiIdPaths()}
 	 * @return \rocket\spec\ei\manage\gui\GuiIdPath[]
 	 */
 	public function getAllGuiIdPaths() {
