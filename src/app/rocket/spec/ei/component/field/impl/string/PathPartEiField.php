@@ -131,11 +131,6 @@ class PathPartEiField extends AlphanumericEiField  {
 	}
 
 	
-// 	public function buildMappable(EiObject $eiObject) {
-// 		$mappable = parent::buildMappable($eiObject);
-// 		$mappable->
-// 	}
-
 	private function buildMagInputAttrs(Eiu $eiu): array {
 		$attrs = array('placeholder' => $this->getLabelLstr());
 		

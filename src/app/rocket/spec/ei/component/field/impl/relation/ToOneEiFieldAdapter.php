@@ -35,6 +35,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implements GuiField, DraftableEiField, 
 		DraftProperty {
@@ -60,8 +61,8 @@ abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implemen
 		return $this->displayDefinition;
 	}
 	
-	public function buildMappable(EiObject $eiObject) {
-		return new ToOneMappable($eiObject, $this, $this);
+	public function buildMappable(Eiu $eiu) {
+		return new ToOneMappable($eiu->entry()->getEiSelection(), $this, $this);
 	}
 	
 	public function getGuiField() {

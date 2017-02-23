@@ -53,13 +53,14 @@ abstract class DraftableEiFieldAdapter extends EditableEiFieldAdapter implements
 		$this->draftable = $draftable;
 	}
 	
-	public function buildMappable(EiObject $eiObject) {
-		if (!$eiObject->isDraft()) {
-			return parent::buildMappable($eiObject);
+	public function buildMappable(Eiu $eiu) {
+		if (!$eiu->entry()->isDraft()) {
+			return parent::buildMappable($eiu);
 		}
 	
-		return new SimpleMappable($eiObject, $this->getObjectPropertyAccessProxy(true)->getConstraint()
-				->getLenientCopy(), $this, $this);
+		return new SimpleMappable($eiu->entry()->getEiSelection(), 
+				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
+				$this, $this);
 	}
 	
 	public function isReadOnly(Eiu $eiu): bool {

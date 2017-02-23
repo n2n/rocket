@@ -23,6 +23,7 @@ namespace rocket\spec\ei\manage\gui;
 
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 interface GuiFieldFork {
 
@@ -42,4 +43,11 @@ interface GuiFieldFork {
 	 * @return EiObject|null null if not available
 	 */
 	public function determineForkedEiObject(EiObject $eiObject);
+	
+	/**
+	 *
+	 * @param GuiIdPath $guiIdPath
+	 * @return null|\rocket\spec\ei\manage\mapping\MappableWrapper
+	 */
+	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath);
 }
