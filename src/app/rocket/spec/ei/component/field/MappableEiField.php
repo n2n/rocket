@@ -23,13 +23,14 @@ namespace rocket\spec\ei\component\field;
 
 use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface MappableEiField extends EiField {
 			
 	/**
-	 * @return \rocket\spec\ei\manage\mapping\Mappable
+	 * @param Eiu $eiu
 	 */
-	public function buildMappable(EiObject $eiObject);
+	public function buildMappable(Eiu $eiu);
 	
 	/**
 	 * @return \rocket\spec\ei\manage\mapping\MappableFork or null

@@ -58,8 +58,8 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		$this->initialize(new EmbeddedEiFieldRelation($this, false, false));
 	}
 	
-	public function buildMappable(EiObject $eiObject) {
-		return new ToOneMappable($eiObject, $this, $this);
+	public function buildMappable(Eiu $eiu) {
+		return new ToOneMappable($eiu->entry()->getEiSelection(), $this, $this);
 	}
 	
 	/**
@@ -161,6 +161,20 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		}
 		return $targetEiSelection;
 	}
+	
+	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+		$mappableWrappers = array();
+		$targetRelationEntry = $eiMapping->getValue(EiFieldPath::from($this->eiFieldRelation->getRelationEiField()));
+		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiMapping()) return null;
+	
+		if (null !== ($mappableWrapper = $this->guiDefinition
+				->determineMappableWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
+			return $mappableWrapper;
+		}
+	
+		return null;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\GuiEiField::getGuiField()

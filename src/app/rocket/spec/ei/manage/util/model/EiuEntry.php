@@ -35,6 +35,8 @@ use rocket\spec\ei\manage\mapping\WrittenMappingListener;
 use rocket\spec\ei\manage\mapping\OnValidateMappingListener;
 use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
 use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
+use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\manage\gui\GuiException;
 
 class EiuEntry {
 	private $eiSelection;
@@ -270,6 +272,27 @@ class EiuEntry {
 			if ($required) throw $e;
 		}
 		
+		return null;
+	}
+	
+	/**
+	 *
+	 * @param GuiIdPath $guiIdPath
+	 * @param bool $required
+	 * @throws MappingOperationFailedException
+	 * @throws GuiException
+	 * @return \rocket\spec\ei\manage\mapping\MappableWrapper|null
+	 */
+	public function getMappableWrapperByGuiIdPath($guiIdPath, bool $required = false) {
+		$guiDefinition = $this->getEiuFrame()->getEiMask()->getEiEngine()->getGuiDefinition();
+		try {
+			return $guiDefinition->determineMappableWrapper($this->getEiMapping(), GuiIdPath::createFromExpression($guiIdPath));
+		} catch (MappingOperationFailedException $e) {
+			if ($required) throw $e;
+		} catch (GuiException $e) {
+			if ($required) throw $e;
+		}
+	
 		return null;
 	}
 	

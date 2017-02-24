@@ -32,8 +32,6 @@ use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\component\field\GuiEiField;
 use rocket\spec\ei\component\field\MappableEiField;
 use rocket\spec\ei\manage\EiObject;
-use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 
@@ -62,8 +60,9 @@ abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapte
 		return true;
 	}
 	
-	public function buildMappable(EiObject $eiObject) {
-		return new SimpleMappable($eiObject, $this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
+	public function buildMappable(Eiu $eiu) {
+		return new SimpleMappable($eiu->entry()->getEiSelection(), 
+				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this);
 	}
 	

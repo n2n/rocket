@@ -26,7 +26,6 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\impl\relation\RelationEiField;
-
 use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiElement;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
@@ -63,6 +62,8 @@ use rocket\spec\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField, MappableEiField, RelationEiField, 
 		Readable, Writable, GuiFieldFork, SortableEiFieldFork {
@@ -106,8 +107,8 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\field\EiField::getMappable()
 	 */
-	public function buildMappable(EiObject $eiObject) {
-		return new ToManyMappable($eiObject, $this, $this);
+	public function buildMappable(Eiu $eiu) {
+		return new ToManyMappable($eiu->entry()->getEiSelection(), $this, $this);
 	}
 	
 	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
@@ -199,6 +200,27 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		// @todo access locale and use EiObject with admin locale.
 		return ArrayUtils::first($this->read($eiObject));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::determineMappableWrapper()
+	 */
+	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+		$mappableWrappers = array();
+		foreach ($eiMapping->getValue(EiFieldPath::from($this->eiFieldRelation->getRelationEiField())) as $targetRelationEntry) {
+			if ($targetRelationEntry->hasEiMapping()) continue;
+				
+			if (null !== ($mappableWrapper = $this->guiDefinition
+					->determineMappableWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
+				$mappableWrappers[] = $mappableWrapper;
+			}
+		}
+	
+		if (empty($mappableWrappers)) return null;
+	
+		return new MappableWrapperWrapper($mappableWrappers);
+	}
+	
 	
 	public function buildManagedSortFieldFork(EiState $eiState) {
 		return new TranslationSortFieldFork($this, 

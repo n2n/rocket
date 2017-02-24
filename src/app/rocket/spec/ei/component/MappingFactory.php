@@ -80,10 +80,10 @@ class MappingFactory {
 	 */
 	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
 		$eiMapping = new EiMapping($eiSelection);
-		$this->assembleMappingProfile($eiMapping, $copyFrom);
-		$eiState->restrictEiMapping($eiMapping);
-	
 		$eiu = new Eiu($eiState, $eiMapping);
+		
+		$this->assembleMappingProfile($eiu, $eiMapping, $copyFrom);
+		$eiState->restrictEiMapping($eiMapping);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiMapping($eiu);
@@ -92,7 +92,7 @@ class MappingFactory {
 		return $eiMapping;
 	}
 	
-	private function assembleMappingProfile(EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
+	private function assembleMappingProfile(Eiu $eiu, EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
 		$eiSelection = $eiMappping->getEiSelection();
 		foreach ($this->eiFieldCollection as $id => $eiField) {
 			if (!($eiField instanceof MappableEiField)) continue;
@@ -107,7 +107,7 @@ class MappingFactory {
 			}
 				
 			if ($mappable === null) {
-				$mappable = $eiField->buildMappable($eiSelection);
+				$mappable = $eiField->buildMappable(new Eiu($eiu, $eiField));
 				ArgUtils::valTypeReturn($mappable, Mappable::class, $eiField, 'buildMappable', true);
 			}
 

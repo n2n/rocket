@@ -24,6 +24,9 @@ namespace rocket\spec\ei\manage\gui;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\mapping\MappableWrapper;
 
 class GuiDefinition {	
 	private $levelGuiFields = array();
@@ -219,6 +222,19 @@ class GuiDefinition {
 				
 			$guiDefinition = $guiDefinition->getLevelGuiFieldForkById($id)->getForkedGuiDefinition();
 		}
+	}
+	
+	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+		$ids = $guiIdPath->toArray();
+		$id = array_shift($ids);
+		if (empty($ids)) {
+			return $eiMapping->getMappableWrapper(new EiFieldPath(array($id)));
+		}
+		
+		$guiFieldFork = $guiDefinition->getLevelGuiFieldForkById($id);
+		$mappableWrapper = $guiFieldFork->determineMappableWrapper($eiMapping, $guiIdPath);
+		ArgUtils::valTypeReturn($mappableWrapper, MappableWrapper::class, $guiFieldFork, 'determineMappableWrapper', true);
+		return $mappableWrapper;
 	}
 	
 	public function getGuiFieldForks() {

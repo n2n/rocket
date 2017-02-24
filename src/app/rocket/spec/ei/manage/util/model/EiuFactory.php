@@ -101,6 +101,14 @@ class EiuFactory {
 				continue;
 			}
 			
+			if ($eiArg instanceof Eiu) {
+				$this->eiuField = $this->eiuField ?? $eiArg->field(false);
+				$this->eiuEntry = $this->eiuEntry ?? $eiArg->entry(false);
+				$this->eiuFrame = $this->eiuFrame ?? $eiArg->frame(false);
+				$this->eiuCtrl = $this->eiuCtrl ?? $eiArg->ctrl(false);
+				continue;
+			}
+			
 			ArgUtils::valType($eiArg, self::EI_TYPES, true, 'eiArg#' . ($key + 1));
 		}
 		

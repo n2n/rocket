@@ -82,12 +82,13 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 // // 		return false;
 // 	}
 	
-	public function buildMappable(EiObject $eiObject) {
-		if ($eiObject->isDraft()) {
-			return parent::buildMappable($eiObject);
+	public function buildMappable(Eiu $eiu) {
+		if ($eiu->entry()->isDraft()) {
+			return parent::buildMappable($eiu);
 		}
 
-		return new SimpleMappable($eiObject, $this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
+		return new SimpleMappable($eiu->entry()->getEiSelection(), 
+				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this, $this, $this);
 	}
 	
