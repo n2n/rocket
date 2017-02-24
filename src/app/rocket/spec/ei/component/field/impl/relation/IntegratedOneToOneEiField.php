@@ -49,6 +49,8 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\EiSelection;
 
 class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFieldFork {
 
