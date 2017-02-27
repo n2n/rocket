@@ -125,8 +125,8 @@ class StringDisplayEiField extends IndependentEiFieldAdapter implements ConfObje
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\MappableEiField::buildMappable($eiObject)
 	 */
-	public function buildMappable(EiObject $eiObject) {
-		return new SimpleMappable($eiObject, $this->accessProxy->getConstraint(), $this);
+	public function buildMappable(Eiu $eiu) {
+		return new SimpleMappable($eiu->entry()->getEiSelection(), $this->accessProxy->getConstraint(), $this);
 	}
 
 	/**
