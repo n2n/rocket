@@ -34,6 +34,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'tree-move';
@@ -53,10 +54,8 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return 'Tree Move';
 	}
 	
-	public function lookupController(EiState $eiState) {
-		$controller = new TreeMoveController($eiState);
-		$eiState->getN2nContext()->magicInit($controller);
-		return $controller;
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(TreeMoveController::class);
 	}
 	
 	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {

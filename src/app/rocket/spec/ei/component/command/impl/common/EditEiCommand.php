@@ -40,6 +40,7 @@ use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\HrefControl;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'edit';
@@ -54,11 +55,9 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 	public function getTypeName(): string {
 		return 'Edit';
 	}
-		
-	public function lookupController(EiState $eiState) {
-		$editController = new EditController();
-		$eiState->getN2nContext()->magicInit($editController);
-		return $editController;
+	
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(EditController::class);
 	}
 	
 	public function getEntryControlOptions(N2nLocale $n2nLocale) {

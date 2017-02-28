@@ -22,8 +22,9 @@
 namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\manage\EiState;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
+use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class RelationEiCommand extends EiCommandAdapter {
 	const ID_BASE = 'rl';
@@ -38,7 +39,7 @@ class RelationEiCommand extends EiCommandAdapter {
 		return self::ID_BASE;
 	}
 	
-	public function lookupController(EiState $eiState) {
+	public function lookupController(Eiu $eiu): Controller {
 		return new RelationController($this->eiFieldRelation);
 	}
 }

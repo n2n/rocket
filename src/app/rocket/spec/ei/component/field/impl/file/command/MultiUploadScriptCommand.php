@@ -31,6 +31,8 @@ use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;
 use rocket\spec\ei\component\field\impl\file\command\controller\MultiUploadScriptController;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
+use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
@@ -43,7 +45,7 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		$this->eiField = $eiField;
 	}
 
-	public function lookupController(EiState $eiState) {
+	public function lookupController(Eiu $eiu): Controller {
 		$controller = new MultiUploadScriptController();
 		$controller->setEiField($this->eiField);
 		return $controller;

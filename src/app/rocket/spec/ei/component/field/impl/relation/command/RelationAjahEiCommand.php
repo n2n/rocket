@@ -22,21 +22,9 @@
 namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\manage\EiState;
-use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
-use n2n\web\http\controller\ParamQuery;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\impl\web\ui\view\html\AjahResponse;
-use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\dispatch\map\InvalidPropertyExpressionException;
-use n2n\web\http\BadRequestException;
-use rocket\spec\ei\component\command\impl\common\controller\ControllingUtils;
-use rocket\spec\ei\manage\ManageState;
-use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahController;
-use n2n\util\uri\Url;
-use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahHook;
-use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
+use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class RelationAjahEiCommand extends EiCommandAdapter {
 	private $eiFieldRelation;
@@ -48,8 +36,7 @@ class RelationAjahEiCommand extends EiCommandAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\command\EiCommand::createController()
 	 */
-	public function lookupController(EiState $eiState) {
-		$selectController = $eiState->getN2nContext()->lookup(RelationAjahController::class);
-		return $selectController;
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(RelationAjahController::class);
 	}
 }

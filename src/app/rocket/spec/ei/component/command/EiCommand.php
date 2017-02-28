@@ -22,14 +22,15 @@
 namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\component\EiComponent;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 interface EiCommand extends EiComponent {
 	/**
-	 * @param EiState $eiState
+	 * @param Eiu $eiu
 	 * @return Controller
 	 */
-	public function lookupController(EiState $eiState);
+	public function lookupController(Eiu $eiu): Controller;
 	/**
 	 * @param mixed $obj
 	 * @return boolean

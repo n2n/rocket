@@ -33,6 +33,8 @@ use rocket\spec\ei\component\command\impl\common\controller\OverviewController;
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
+use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {
 	const ID_BASE = 'overview';
@@ -55,7 +57,7 @@ class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOv
 		return 'Overview (Rocket)';
 	}
 	
-	public function lookupController(EiState $eiState) {
+	public function lookupController(Eiu $eiu): Controller {
 		return new OverviewController($this->pageSize);
 	}
 	

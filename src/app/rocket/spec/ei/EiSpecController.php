@@ -27,6 +27,7 @@ use n2n\web\http\ForbiddenException;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\spec\ei\security\InaccessibleControlException;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class EiSpecController extends ControllerAdapter {
 		
@@ -47,6 +48,6 @@ class EiSpecController extends ControllerAdapter {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		
-		$this->delegate($eiCommand->lookupController($eiState));
+		$this->delegate($eiCommand->lookupController(new Eiu($eiState)));
 	}
 }

@@ -42,6 +42,7 @@ use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
 		PrivilegedEiCommand {
@@ -56,12 +57,11 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	public function getTypeName(): string {
 		return 'Detail';
 	}
-		
-	public function lookupController(EiState $eiState) {
-		$detailController = new DetailController();
-		$eiState->getN2nContext()->magicInit($detailController);
-		return $detailController;
+	
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(DetailController::class);
 	}
+	
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */

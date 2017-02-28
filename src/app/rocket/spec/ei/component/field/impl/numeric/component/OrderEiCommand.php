@@ -32,6 +32,7 @@ use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'order';
@@ -52,9 +53,8 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		$this->orderEiField = $orderEiField;
 	}
 		
-	public function lookupController(EiState $eiState) {
-		$controller = new OrderController($eiState);
-		$eiState->getN2nContext()->magicInit($controller);
+	public function lookupController(Eiu $eiu): Controller {
+		$controller = $eiu->lookup(OrderController::class);
 		$controller->setOrderEiField($this->orderEiField);
 		return $controller;
 	}

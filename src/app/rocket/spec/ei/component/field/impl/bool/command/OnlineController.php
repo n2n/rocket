@@ -22,10 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\bool\command;
 
 use rocket\spec\ei\component\field\impl\bool\OnlineEiField;
-use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\component\command\impl\common\controller\ControllingUtils;
 use n2n\web\http\ForbiddenException;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use rocket\spec\ei\manage\util\model\EiuCtrl;

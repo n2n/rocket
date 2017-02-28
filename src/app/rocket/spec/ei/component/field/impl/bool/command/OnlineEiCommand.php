@@ -34,6 +34,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const CONTROL_KEY = 'online_status';
@@ -53,8 +54,8 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		$this->onlineEiField = $onlineEiField;
 	}
 		
-	public function lookupController(EiState $eiState) {
-		$controller = $eiState->getN2nContext()->lookup(OnlineController::class);
+	public function lookupController(Eiu $eiu): Controller {
+		$controller = $eiu->lookup(OnlineController::class);
 		$controller->setOnlineEiField($this->onlineEiField);
 		return $controller;
 	}

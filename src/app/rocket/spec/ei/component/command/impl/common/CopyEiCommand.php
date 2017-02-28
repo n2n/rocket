@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\ei\component\command\impl\common;
 
-use rocket\spec\ei\manage\EiState;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\component\command\impl\common\controller\CopyController;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\util\uri\Url;
 
 class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'rocket-copy';
@@ -40,10 +40,8 @@ class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return 'Copy (Rocket)';
 	}
 	
-	public function lookupController(EiState $eiState) {
-		$copyController = new CopyController($eiState);
-		$copyController->set($this->getEiSpec());
-		return $copyController;
+	public function lookupController(Eiu $eiu): Url {
+		return $eiu->lookup(CopyController::class);
 	}
 	
 	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {

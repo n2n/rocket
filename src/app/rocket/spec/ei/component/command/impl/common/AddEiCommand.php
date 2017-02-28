@@ -40,6 +40,7 @@ use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\security\EiCommandPrivilege;
+use n2n\web\http\controller\Controller;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent, 
 		PrivilegedEiCommand {
@@ -72,10 +73,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		return $pi;
 	}
 	
-	public function lookupController(EiState $eiState) {
-		$addController = new AddController();
-		$eiState->getN2nContext()->magicInit($addController);
-		return $addController;
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(AddController::class);
 	}
 	
 	public function getOverallControlOptions(N2nLocale $n2nLocale) {
