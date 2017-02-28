@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 use rocket\spec\ei\preview\PreviewModel;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiField;
@@ -108,7 +108,7 @@ class WysiwygEiField extends AlphanumericEiField {
 	    return new WysiwygEiFieldConfigurator($this);
 	}
 	
-	public function createPreviewUiComponent(EiState $eiState = null, HtmlView $view, $value) {
+	public function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
 		return new Raw($value);
 	}
 
@@ -133,7 +133,7 @@ class WysiwygEiField extends AlphanumericEiField {
 	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
 	 */
 	private function obtainLinkConfigurations(EiMapping $eiMapping, Eiu $eiu) {
-		$n2nContext = $eiu->frame()->getEiState()->getN2nContext();
+		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();
 		
 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
 		$linkConfigurations = array();

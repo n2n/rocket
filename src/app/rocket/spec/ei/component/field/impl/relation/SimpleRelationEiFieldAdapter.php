@@ -28,7 +28,7 @@ use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\component\field\impl\adapter\StandardEditDefinition;
 use rocket\spec\ei\component\field\FilterableEiField;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use rocket\spec\ei\component\CritmodFactory;
@@ -98,28 +98,28 @@ abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter imple
 	}
 	
 
-	public function buildManagedFilterField(EiState $eiState) {
-		$targetEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState);
+	public function buildManagedFilterField(EiFrame $eiFrame) {
+		$targetEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame);
 		
 		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-				new EiuFrame($targetEiState), 
-				new class($targetEiState) implements TargetFilterDef {
-					private $targetEiState;
+				new EiuFrame($targetEiFrame), 
+				new class($targetEiFrame) implements TargetFilterDef {
+					private $targetEiFrame;
 					
-					public function __construct(EiState $targetEiState) {
-						$this->targetEiState = $targetEiState;
+					public function __construct(EiFrame $targetEiFrame) {
+						$this->targetEiFrame = $targetEiFrame;
 					}
 					
 					public function getFilterDefinition(): FilterDefinition {
-						return $this->targetEiState->getContextEiMask()->getEiEngine()
-								->createManagedFilterDefinition($this->targetEiState);
+						return $this->targetEiFrame->getContextEiMask()->getEiEngine()
+								->createManagedFilterDefinition($this->targetEiFrame);
 					}
 	
 					public function getFilterAjahHook(): FilterAjahHook {
-						$targetEiMask = $this->targetEiState->getContextEiMask();
+						$targetEiMask = $this->targetEiFrame->getContextEiMask();
 						
 						return GlobalFilterFieldController::buildFilterAjahHook(
-								$this->targetEiState->getN2nContext()->lookup(ScrRegistry::class),
+								$this->targetEiFrame->getN2nContext()->lookup(ScrRegistry::class),
 								$targetEiMask);
 					}
 				});
@@ -173,7 +173,7 @@ abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter imple
 			}
 
 			public function getFilterAjahHook(): FilterAjahHook {
-				$targetEiMask = $this->targeteiState->getTargetEiMask();
+				$targetEiMask = $this->targeteiFrame->getTargetEiMask();
 
 				return GlobalFilterFieldController::buildEiMappingFilterAjahHook(
 						$this->n2nContext->lookup(ScrRegistry::class),

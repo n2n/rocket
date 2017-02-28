@@ -104,16 +104,16 @@ class PathUtils {
 // 		return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 	}
 	
-// 	public static function createDetailPathExtFromEiState($commandId, EiState $eiState, $includeDraft = false, 
+// 	public static function createDetailPathExtFromEiFrame($commandId, EiFrame $eiFrame, $includeDraft = false, 
 // 			$includeTranslation = false, $includePreview = false) {
-// 		$eiSelection = $eiState->getEiSelection();
+// 		$eiSelection = $eiFrame->getEiSelection();
 // 		$objectId = $eiSelection->getId();
 // 		$translationN2nLocale = null;
 // 		if ($eiSelection->hasTranslation() && $includeTranslation) {
 // 			$translationN2nLocale = $eiSelection->getTranslationN2nLocale();
 // 		}
 		
-// 		$previewType = $eiState->getPreviewType();
+// 		$previewType = $eiFrame->getPreviewType();
 		
 // 		if ($eiSelection->isDraft() && $includeDraft) {
 // 			return self::createDraftDetailPathExt($commandId, $objectId, $eiSelection->getDraft()->getId(), $translationN2nLocale, $previewType);

@@ -55,7 +55,7 @@ class TreeDeleteModel extends CommandEntryModelAdapter {
 		
 		foreach ($nestedSetItemsToDelete as $nesteSetItem) {
 			$entity = $nesteSetItem->getObject();
-			$this->eiState->triggerOnRemoveObject($this->em, 
+			$this->eiFrame->triggerOnRemoveObject($this->em, 
 					new EiSelection($this->eiSpec->extractId($entity), $entity));
 			$nestedSetUtils->remove($nesteSetItem->getObject());
 		}

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\model;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\model\EntryGuiModel;
@@ -34,16 +34,16 @@ use rocket\user\model\RocketUserDao;
 
 class EntryCommandViewModel {
 	private $title;
-	private $eiStateUtils;
-	private $eiState;
+	private $eiFrameUtils;
+	private $eiFrame;
 	private $entryGuiModel;
 	private $eiSelection;
 	private $cancelUrl;
 	private $eiMask;
 	
-	public function __construct(EiuFrame $eiStateUtils, $entryGuiModel, Url $cancelUrl = null) {
-		$this->eiStateUtils = $eiStateUtils;
-		$this->eiState = $eiStateUtils->getEiState();
+	public function __construct(EiuFrame $eiFrameUtils, $entryGuiModel, Url $cancelUrl = null) {
+		$this->eiFrameUtils = $eiFrameUtils;
+		$this->eiFrame = $eiFrameUtils->getEiFrame();
 		if ($entryGuiModel instanceof EntryGuiModel) {
 			$this->entryGuiModel = $entryGuiModel;
 			$this->eiSelection = $entryGuiModel->getEiMapping()->getEiSelection();
@@ -62,7 +62,7 @@ class EntryCommandViewModel {
 			return $this->entryGuiModel->getEiMask();
 		}
 		
-		return $this->eiState->getContextEiMask();
+		return $this->eiFrame->getContextEiMask();
 	}
 	
 	public function getTitle() {
@@ -74,14 +74,14 @@ class EntryCommandViewModel {
 		
 // 		if ($this->entryGuiModel && !$eiSelection->isNew()) {
 // 			return $this->title = $this->entryGuiModel->getEiMask()
-// 					->createIdentityString($eiSelection, $this->eiState->getN2nLocale());
+// 					->createIdentityString($eiSelection, $this->eiFrame->getN2nLocale());
 // 		} 
 		
 // 		if ($this->entryGuiModel !== null) {
-// 			return $this->title = $this->entryGuiModel->getEiMask()->getLabelLstr()->t($this->eiState->getN2nLocale());
+// 			return $this->title = $this->entryGuiModel->getEiMask()->getLabelLstr()->t($this->eiFrame->getN2nLocale());
 // 		}
 		
-// 		return $this->title = $this->eiState->getContextEiMask()->getLabelLstr()->t($this->eiState->getN2nLocale());
+// 		return $this->title = $this->eiFrame->getContextEiMask()->getLabelLstr()->t($this->eiFrame->getN2nLocale());
 	}
 	
 	public function setTitle($title) {
@@ -92,18 +92,18 @@ class EntryCommandViewModel {
 	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
 	public function getEiuFrame() {
-		return $this->eiStateUtils;
+		return $this->eiFrameUtils;
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function getEiuEntry() {
-		return $this->eiStateUtils->toEiuEntry($this->eiSelection);
+		return $this->eiFrameUtils->toEiuEntry($this->eiSelection);
 	}
 	
-	public function getEiState() {
-		return $this->eiState;
+	public function getEiFrame() {
+		return $this->eiFrame;
 	}
 	
 	private $latestDraft = null;
@@ -111,7 +111,7 @@ class EntryCommandViewModel {
 	
 	public function initializeDrafts() {
 		$entryEiuEntry = $this->getEiuEntry();
-		if ($entryEiuEntry->hasLiveId() && $this->eiStateUtils->isDraftingEnabled()) {
+		if ($entryEiuEntry->hasLiveId() && $this->eiFrameUtils->isDraftingEnabled()) {
 			$this->historicizedDrafts = $entryEiuEntry->lookupDrafts(0, 30);
 		}
 		
@@ -162,14 +162,14 @@ class EntryCommandViewModel {
 	
 	
 // 	public function getInfoPathExt() {
-// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiState->toEntryNavPoint()->copy(false, false, true));
+// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiFrame->toEntryNavPoint()->copy(false, false, true));
 // 	}
 	
 // 	public function getPreviewPathExt() {
-// 		$previewType = $this->eiState->getPreviewType();
+// 		$previewType = $this->eiFrame->getPreviewType();
 // 		if (is_null($previewType)) $previewType = PreviewController::PREVIEW_TYPE_DEFAULT;
 
-// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiState->toEntryNavPoint(null, null, $previewType));
+// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiFrame->toEntryNavPoint(null, null, $previewType));
 // 	}
 	
 // 	public function getCurrentPreviewType() {
@@ -181,12 +181,12 @@ class EntryCommandViewModel {
 // 	}
 	
 	public function getPreviewTypOptions() {
-		return $this->eiMask->getPreviewTypeOptions($this->eiState, 
+		return $this->eiMask->getPreviewTypeOptions($this->eiFrame, 
 				$this->entryGuiModel->getEiSelectionGui()->getViewMode());
 	}
 	
 	public function getLiveEntryUrl(HttpContext $httpContext) {
-		return $this->eiState->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());
+		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());
 	}
 	
 	public function setCancelUrl(Url $cancelUrl) {
@@ -201,18 +201,18 @@ class EntryCommandViewModel {
 		$eiSelection = $this->getEiSelection();
 		
 		if ($eiSelection === null || $eiSelection->isNew()) {
-			return $this->eiState->getOverviewUrl($httpContext);
+			return $this->eiFrame->getOverviewUrl($httpContext);
 		}
 		
-		return $this->eiState->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());	
+		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());	
 	}
 	
 	public function createDetailView() {
-		return $this->entryGuiModel->getEiMask()->createBulkyView($this->eiState, new EntryGui($this->entryGuiModel));
+		return $this->entryGuiModel->getEiMask()->createBulkyView($this->eiFrame, new EntryGui($this->entryGuiModel));
 	}
 }
 // class EntryViewInfo {
-// 	private $eiState;
+// 	private $eiFrame;
 // 	private $commandEntryModel;
 // 	private $entryModel;
 // 	private $eiSelection;
@@ -222,12 +222,12 @@ class EntryCommandViewModel {
 // 	private $title;
 	
 // 	public function __construct(CommandEntryModel $commandEntryModel = null, EntryModel $entryModel, PreviewController $previewController = null, $title = null) {
-// 		$this->eiState = $entryModel->getEiState();
+// 		$this->eiFrame = $entryModel->getEiFrame();
 // 		$this->commandEntryModel = $commandEntryModel;
 // 		$this->entryModel = $entryModel;
 // 		$this->eiSelection = $this->entryModel->getEiSelection();
 		
-// 		$this->context = $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec();
+// 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 // 		$this->exact = $this->entryModel->getEiSpec();
 		
 // 		$this->previewController = $previewController;
@@ -236,7 +236,7 @@ class EntryCommandViewModel {
 // 			$this->title = $title;
 // 		} else {
 // 			$this->title = $this->exact->createIdentityString($this->eiSelection->getEntityObj(),
-// 					$this->eiState->getN2nLocale());
+// 					$this->eiFrame->getN2nLocale());
 // 		}
 // 	}
 	
@@ -244,8 +244,8 @@ class EntryCommandViewModel {
 // 		return $this->title;
 // 	}
 	
-// 	public function getEiState()  {
-// 		return $this->eiState;
+// 	public function getEiFrame()  {
+// 		return $this->eiFrame;
 // 	}
 	
 // 	public function getEiSelection() {
@@ -272,15 +272,15 @@ class EntryCommandViewModel {
 // 		$mainTranslationN2nLocale = $this->commandEntryModel->getMainTranslationN2nLocale();
 // 		$navPoints[] = array(
 // 				'pathExt' => PathUtils::createPathExtFromEntryNavPoint(null, 
-// 						$this->eiState->toEntryNavPoint()->copy(false, true, false)),
-// 				'label' => $mainTranslationN2nLocale->getName($this->eiState->getN2nLocale()),
+// 						$this->eiFrame->toEntryNavPoint()->copy(false, true, false)),
+// 				'label' => $mainTranslationN2nLocale->getName($this->eiFrame->getN2nLocale()),
 // 				'active' => null === $currentTranslationN2nLocale);
 
 // 		foreach ($this->commandEntryModel->getTranslationN2nLocales() as $translationN2nLocale) {
 // 			$navPoints[] = array(
 // 					'pathExt' => PathUtils::createPathExtFromEntryNavPoint(null, 
-// 							$this->eiState->toEntryNavPoint(null, $translationN2nLocale)),
-// 					'label' => $translationN2nLocale->getName($this->eiState->getN2nLocale()),
+// 							$this->eiFrame->toEntryNavPoint(null, $translationN2nLocale)),
+// 					'label' => $translationN2nLocale->getName($this->eiFrame->getN2nLocale()),
 // 					'active'=> $translationN2nLocale->equals($currentTranslationN2nLocale));
 // 		}
 		
@@ -288,8 +288,8 @@ class EntryCommandViewModel {
 // 	}
 	
 // 	public function getLiveEntryPathExt() {
-// 		$previewType = $this->eiState->getPreviewType();
-// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiState->toEntryNavPoint()->copy(true));
+// 		$previewType = $this->eiFrame->getPreviewType();
+// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiFrame->toEntryNavPoint()->copy(true));
 // 	}
 	
 // 	private function ensureCommandEntryModel() {
@@ -299,7 +299,7 @@ class EntryCommandViewModel {
 // 	}
 	
 // 	public function buildPathToDraft(Draft $draft) {
-// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiState->toEntryNavPoint($draft->getId()));
+// 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiFrame->toEntryNavPoint($draft->getId()));
 // 	}
 	
 // 	public function getCurrentDraft() {
@@ -324,11 +324,11 @@ class EntryCommandViewModel {
 // 	public function getPreviewTypeNavInfos() {
 // 		if (is_null($this->previewController)) return array();
 		
-// 		$currentPreviewType = $this->eiState->getPreviewType();
+// 		$currentPreviewType = $this->eiFrame->getPreviewType();
 // 		$navPoints = array();
 // 		foreach ((array) $this->previewController->getPreviewTypeOptions() as $previewType => $label) {
 // 			$navPoints[(string) $previewType] = array('label' => $label,
-// 					'pathExt' => PathUtils::createPathExtFromEntryNavPoint(null, $this->eiState->toEntryNavPoint(null, null, $previewType)),
+// 					'pathExt' => PathUtils::createPathExtFromEntryNavPoint(null, $this->eiFrame->toEntryNavPoint(null, null, $previewType)),
 // 					'active' => ($previewType == $currentPreviewType));
 // 		}
 // 		return $navPoints;

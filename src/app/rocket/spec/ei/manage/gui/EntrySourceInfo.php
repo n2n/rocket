@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
@@ -33,19 +33,19 @@ use n2n\web\http\HttpContext;
 
 class EntrySourceInfo {
 	private $eiMapping;
-	private $eiState;
+	private $eiFrame;
 	private $viewMode;
 // 	private $writable;
 	private $eiSelectionGuiListeners = array();
 	/**
 	 * @param EiMapping $eiMapping
-	 * @param EiState $eiState
+	 * @param EiFrame $eiFrame
 	 * @param int $viewMode
 	 * @param PropertyPath $propertyPath
 	 */
-	public function __construct(EiMapping $eiMapping, EiState $eiState, int $viewMode) {
+	public function __construct(EiMapping $eiMapping, EiFrame $eiFrame, int $viewMode) {
 		$this->eiMapping = $eiMapping;
-		$this->eiState = $eiState;
+		$this->eiFrame = $eiFrame;
 		ArgUtils::valEnum($viewMode, DisplayDefinition::getViewModes(), null, false, 'viewMode');
 		$this->viewMode = $viewMode;
 	}
@@ -62,15 +62,15 @@ class EntrySourceInfo {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\EiState
+	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
-	public function getEiState() {
-		return $this->eiState;
+	public function getEiFrame() {
+		return $this->eiFrame;
 	}
 	
 	public function getRequest(): Request {
 		// @todo update when RequestContext available
-		return $this->eiState->getN2nContext()->getRequest();
+		return $this->eiFrame->getN2nContext()->getRequest();
 	}
 	
 	public function getViewMode() {
@@ -166,22 +166,22 @@ class FieldSourceInfo {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\EiState
+	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
-	public function getEiState(): EiState {
-		return $this->entrySourceInfo->getEiState();
+	public function getEiFrame(): EiFrame {
+		return $this->entrySourceInfo->getEiFrame();
 	}
 	
 	public function getHttpContext(): HttpContext {
-		return $this->getEiState()->getN2nContext()->getHttpContext();
+		return $this->getEiFrame()->getN2nContext()->getHttpContext();
 	}
 	
 	public function getRequest(): Request {
-		return $this->getEiState()->getN2nContext()->getHttpContext()->getRequest();
+		return $this->getEiFrame()->getN2nContext()->getHttpContext()->getRequest();
 	}
 	
 	public function getN2nLocale() {
-		return $this->getEiState()->getN2nContext()->getN2nLocale();
+		return $this->getEiFrame()->getN2nContext()->getN2nLocale();
 	}
 	
 	public function getViewMode() {
@@ -279,7 +279,7 @@ class FieldGuiListener implements EiSelectionGuiListener {
 	}
 
 	private function call($closure) {
-		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiState()->getN2nContext());
+		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiFrame()->getN2nContext());
 		$mmi->setClassParamObject(FieldSourceInfo::class, $this->eiu);
 		$mmi->invoke(null, $closure);
 	}

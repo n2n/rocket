@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\EiState;
+	use rocket\spec\ei\manage\EiFrame;
 	use rocket\spec\config\mask\model\GuiSection;
 	use rocket\spec\config\mask\model\GuiFieldOrder;
 	use rocket\spec\ei\manage\EntryGui;
@@ -32,8 +32,8 @@
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$eiState = $view->getParam('eiState');
-	$view->assert($eiState instanceof EiState);
+	$eiFrame = $view->getParam('eiFrame');
+	$view->assert($eiFrame instanceof EiFrame);
 	
 	$guiFieldOrder = $view->getParam('guiFieldOrder');
 	$view->assert($guiFieldOrder instanceof GuiFieldOrder);
@@ -41,8 +41,8 @@
 	$entryGui = $view->getParam('entryGui');
 	$view->assert($entryGui instanceof EntryGui);
 
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiState, array($entryGui));
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiState);
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, array($entryGui));
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
 	
 	$propertyPath = $entryGui->getEntryPropertyPath();
 ?>
@@ -70,7 +70,7 @@
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">
 					<?php $view->import('entryEdit.html', array(
-							'eiState' => $eiState, 'guiFieldOrder' => $guiSection->getGuiFieldOrder(), 
+							'eiFrame' => $eiFrame, 'guiFieldOrder' => $guiSection->getGuiFieldOrder(), 
 							'entryGui' => $entryGui, 'renderForkMags' => false)) ?>
 				</div>
 			</div>

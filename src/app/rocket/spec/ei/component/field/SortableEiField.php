@@ -23,14 +23,14 @@ namespace rocket\spec\ei\component\field;
 
 use rocket\spec\ei\component\field\EiField;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 
 interface SortableEiField extends EiField {
 	
 	/**
 	 * @return \rocket\spec\ei\manage\critmod\sort\SortField
 	 */
-	public function buildManagedSortField(EiState $eiState);
+	public function buildManagedSortField(EiFrame $eiFrame);
 	
 	/**
 	 * @return \rocket\spec\ei\manage\critmod\sort\SortField

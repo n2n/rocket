@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use rocket\spec\ei\manage\gui\GuiElement;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\util\model\EiuFrame;
@@ -34,17 +34,17 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 	private $readOnly;
 	private $mandatory;
 	private $toManyMappable;
-	private $targetEiState;
+	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToManyMappable $toManyMappable, EiState $targetEiState,
+	public function __construct(string $label, ToManyMappable $toManyMappable, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->toManyMappable = $toManyMappable;
-		$this->targetEiState = $targetEiState;
+		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
 
@@ -70,7 +70,7 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 		$targetRelationEntries = $this->toManyMappable->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->targetEiState);
+		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
 		
 		$detailViews = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {

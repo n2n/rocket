@@ -34,7 +34,7 @@
 	$entryCommandViewModel = $view->params['entryViewInfo'];
 	$view->assert($entryCommandViewModel instanceof EntryViewInfo);
  
-	$entryHtml = new EiHtmlBuilder($view, $entryCommandViewModel->getEiState());
+	$entryHtml = new EiHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
 	
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));

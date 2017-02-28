@@ -22,13 +22,13 @@
 namespace rocket\spec\ei\component\command\control;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 
 interface PartialControlComponent {
 	public function getPartialControlOptions(N2nLocale $n2nLocale);
 	
-	public function createPartialControlButtons(EiState $eiState, HtmlView $htmlView);
+	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView);
 	
-	public function processEntries(EiState $eiState, array $entries);
+	public function processEntries(EiFrame $eiFrame, array $entries);
 }

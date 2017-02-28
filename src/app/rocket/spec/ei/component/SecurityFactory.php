@@ -51,9 +51,9 @@ class SecurityFactory {
 // 		return self::createFilterModelInstance($eiSpec, $n2nContext);
 // 	}
 	
-// 	public static function createFilterModelFromEiState(EiState $eiState) {
-// 		return self::createFilterModelInstance($eiState->getContextEiMask()->getEiEngine()->getEiSpec(), 
-// 				$eiState->getN2nContext(), $eiState);
+// 	public static function createFilterModelFromEiFrame(EiFrame $eiFrame) {
+// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), 
+// 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 		
 	public function createPrivilegedDefinition(N2nContext $n2nContext): PrivilegeDefinition {
@@ -82,8 +82,8 @@ class SecurityFactory {
 // 		return self::createSortModelInstance($eiSpec, $n2nContext);
 // 	}
 	
-// 	public static function createSortModelFromEiState(EiState $eiState) {
-// 		return self::createSortModelInstance($eiState->getContextEiMask()->getEiEngine()->getEiSpec(), $eiState->getN2nContext());
+// 	public static function createSortModelFromEiFrame(EiFrame $eiFrame) {
+// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), $eiFrame->getN2nContext());
 // 	}
 	
 	public static function createSortModel() {
@@ -102,9 +102,9 @@ class SecurityFactory {
 		return $sortModel;
 	}
 		
-// 	public static function createQuickSearchableModel(EiState $eiState) {
+// 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEiFieldCollection() as $field) {
+// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEiFieldCollection() as $field) {
 // 			if ($field instanceof QuickSearchableEiField) {
 // 				$quickSerachModel->addQuickSearchable($field);
 // 			}

@@ -28,7 +28,7 @@ use n2n\reflection\ArgUtils;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\security\PrivilegeBuilder;
 use rocket\spec\ei\mask\EiMaskCollection;
@@ -277,9 +277,9 @@ class EiSpec extends Spec implements EiThing {
 // 	}
 
 	
-	public function setupEiState(EiState $eiState) {
+	public function setupEiFrame(EiFrame $eiFrame) {
 		foreach ($this->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
-			$eiModificator->setupEiState($eiState);
+			$eiModificator->setupEiFrame($eiFrame);
 		}
 	}
 	

@@ -51,7 +51,7 @@ class EiuCtrl implements Lookupable {
 	}
 	
 	protected function init(ManageState $manageState, HttpContext $httpContext, EiuFrame $eiuFrame = null) {
-		$this->eiuFrame = $eiuFrame ?? new EiuFrame($manageState->peakEiState());
+		$this->eiuFrame = $eiuFrame ?? new EiuFrame($manageState->peakEiFrame());
 		$this->httpContext = $httpContext;
 	}
 	
@@ -62,8 +62,8 @@ class EiuCtrl implements Lookupable {
 		return $this->eiuFrame;
 	}
 	
-	public function getEiState() {
-		return $this->eiuFrame->getEiState();
+	public function getEiFrame() {
+		return $this->eiuFrame->getEiFrame();
 	}
 	
 	public function lookupEiSelection(string $liveIdRep, bool $assignToEiu = false) {
@@ -128,16 +128,16 @@ class EiuCtrl implements Lookupable {
 	}
 
 	public function buildRedirectUrl(EiSelection $eiSelection = null) { 
-		$eiState = $this->eiuFrame->getEiState();
+		$eiFrame = $this->eiuFrame->getEiFrame();
 		
 		if ($eiSelection !== null && !$eiSelection->isNew()) {
 			$entryNavPoint = $eiSelection->toEntryNavPoint();
-			if ($eiState->isDetailUrlAvailable($entryNavPoint)) {
-				return $eiState->getDetailUrl($this->httpContext, $entryNavPoint);
+			if ($eiFrame->isDetailUrlAvailable($entryNavPoint)) {
+				return $eiFrame->getDetailUrl($this->httpContext, $entryNavPoint);
 			}
 		}
 		
-		return $eiState->getOverviewUrl($this->httpContext);
+		return $eiFrame->getOverviewUrl($this->httpContext);
 	}
 	
 	public function parseRefUrl(ParamQuery $refPath = null) {
@@ -162,27 +162,27 @@ class EiuCtrl implements Lookupable {
 	}
 	
 	public function applyCommonBreadcrumbs(EiSelection $eiSelection = null, $currentBreadcrumbLabel = null) {
-		$eiState = $this->eiuFrame->getEiState();
-		$rocketState = $eiState->getN2nContext()->lookup(RocketState::class);
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);
 		
-		if (!$eiState->isOverviewDisabled()) {
-			$rocketState->addBreadcrumb($eiState->createOverviewBreadcrumb($this->httpContext));
+		if (!$eiFrame->isOverviewDisabled()) {
+			$rocketState->addBreadcrumb($eiFrame->createOverviewBreadcrumb($this->httpContext));
 		}
 			
-		if ($eiSelection !== null && !$eiState->isDetailDisabled()) {
-			$rocketState->addBreadcrumb($eiState->createDetailBreadcrumb($this->httpContext, $eiSelection));
+		if ($eiSelection !== null && !$eiFrame->isDetailDisabled()) {
+			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiSelection));
 		}
 		
 		if ($currentBreadcrumbLabel !== null) {
-			$rocketState->addBreadcrumb(new Breadcrumb($eiState->getCurrentUrl($this->httpContext), 
+			$rocketState->addBreadcrumb(new Breadcrumb($eiFrame->getCurrentUrl($this->httpContext), 
 					$currentBreadcrumbLabel));
 		}
 	}
 	
 	public function applyBreandcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
-		$eiState = $this->eiuFrame->getEiState();
-		$rocketState = $eiState->getN2nContext()->lookup(RocketState::class);
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);
 		
 		foreach ($additionalBreadcrumbs as $additionalBreadcrumb) {
@@ -200,7 +200,7 @@ class EiuCtrl implements Lookupable {
 	
 	public function redirectToOverview(int $status = null) {
 		$this->httpContext->getResponse()->send(
-				new Redirect($this->getEiState()->getOverviewUrl($this->httpContext), $status));
+				new Redirect($this->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
 	public static function from(HttpContext $httpContext, EiuFrame $eiuFrame = null) {

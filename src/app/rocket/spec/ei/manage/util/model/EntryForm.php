@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\web\dispatch\map\PropertyPathPart;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 
 class EntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -40,9 +40,9 @@ class EntryForm implements Dispatchable {
 		$ai->p('entryModelForms', new AnnoDispObjectArray());
 	}
 		
-	private $eiState;
+	private $eiFrame;
 	private $contextEiMask;
-	private $eiStateUtils;
+	private $eiFrameUtils;
 	
 	private $chosenId;
 	private $eispecChoosable = false;
@@ -54,12 +54,12 @@ class EntryForm implements Dispatchable {
 // 	private $levelEntryFormParts = array();
 		
 	
-	public function __construct(EiState $eiState) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame) {
+		$this->eiFrame = $eiFrame;
 	}
 	
-	public function getEiState(): EiState {
-		return $this->eiState;
+	public function getEiFrame(): EiFrame {
+		return $this->eiFrame;
 	}
 	/**
 	 * @return EditEntryModelForm
@@ -189,7 +189,7 @@ class EntryForm implements Dispatchable {
 // 		$ai->p('subMagForms', DispatchAnnotations::MANAGED_DISPATCHABLE_ARRAY_PROPERTY);
 // 	}
 	
-// 	private $eiState;
+// 	private $eiFrame;
 // 	private $eiSelection;
 // 	private $readOnly;
 	
@@ -203,13 +203,13 @@ class EntryForm implements Dispatchable {
 // 	protected $MagForm;
 // 	protected $subMagForms = array();
 // 	/**
-// 	 * @param EiState $eiState 
+// 	 * @param EiFrame $eiFrame 
 // 	 * @param EiSpec $eiSpec The Script of the Entity which ....
 // 	 * @param EiSelection $eiSelection
 // 	 * @param string $readOnly
 // 	 */
-// 	public function __construct(EiState $eiState,  $eiSpec, EiSelection $eiSelection = null, $readOnly = false) {
-// 		$this->eiState = $eiState;
+// 	public function __construct(EiFrame $eiFrame,  $eiSpec, EiSelection $eiSelection = null, $readOnly = false) {
+// 		$this->eiFrame = $eiFrame;
 // 		$this->eiSpec = $eiSpec;
 // 		$this->eiSelection = $eiSelection;
 // 		$this->readOnly = $readOnly;
@@ -293,7 +293,7 @@ class EntryForm implements Dispatchable {
 // 			}
 				
 // 			$magCollection->addMag($eiField->getPropertyName(), 
-// 					$eiField->createOption($this->eiState, $this->eiSelection));
+// 					$eiField->createOption($this->eiFrame, $this->eiSelection));
 // 		}
 		
 // 		return $magCollection;
@@ -319,7 +319,7 @@ class EntryForm implements Dispatchable {
 			
 // 			$MagForm->setAttributeValue($propertyName,
 // 					$eiField->propertyValueToOptionAttributeValue(
-// 							$accessProxy->getValue($object), $this->eiState, $this->eiSelection));
+// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiSelection));
 // 		}
 // 	}
 	
@@ -343,12 +343,12 @@ class EntryForm implements Dispatchable {
 // 			$accessProxy = $eiField->getPropertyAccessProxy();
 // 			$accessProxy->setValue($object, $eiField->optionAttributeValueToPropertyValue(
 // 					$MagForm->getAttributeValue($propertyName), $MagForm->getAttributes(),
-// 					$object, $this->eiState, $this->eiSelection));
+// 					$object, $this->eiFrame, $this->eiSelection));
 // 		}
 // 	}
 	
-// 	public function getEiState() {
-// 		return $this->eiState;
+// 	public function getEiFrame() {
+// 		return $this->eiFrame;
 // 	}
 	
 // 	public function getEiSpec() {

@@ -123,17 +123,17 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	 * @return GuiElementFork
 	 */
 	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
-		$targetEiState = null;
+		$targetEiFrame = null;
 		if ($makeEditable) {
-			$targetEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $eiMapping);
+			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
 		} else {
-			$targetEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $eiMapping);
+			$targetEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
 		}
 		
-		$targetUtils = new EiuFrame($targetEiState);
+		$targetUtils = new EiuFrame($targetEiFrame);
 		
 		$toOneMappable = $eiMapping->getMappable(EiFieldPath::from($this));
 		$targetRelationEntry = $toOneMappable->getValue();
@@ -147,7 +147,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		}
 				
 		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
-				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), $eiu->getViewMode()));
+				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), $eiu->getViewMode()));
 		
 		return new OneToOneGuiElementFork($toOneMappable, $targetRelationEntry, $targetGuiElementAssembler);
 	}

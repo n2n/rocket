@@ -196,7 +196,7 @@ class EditController extends ControllerAdapter {
 // 				$this->getResponse(), $previewType, $editModel);
 // 		$currentPreviewType = $previewController->getPreviewType();
 				
-// 		$this->applyBreadcrumbs($eiState);
+// 		$this->applyBreadcrumbs($eiFrame);
 		
 // 		$this->forward('spec\ei\component\command\impl\common\view\editPreview.html', array('commandEditEntryModel' => $editModel,
 // 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext(),
@@ -219,7 +219,7 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 // 	public function doDraftPreview($previewType, $id, $draftId, $httpN2nLocaleId = null) {
-// 		$eiState = $this->utils->getEiState();
+// 		$eiFrame = $this->utils->getEiFrame();
 // 		$editModel = $this->utils->createDraftEditModel($id, $draftId, $httpN2nLocaleId, $this->editCommand);
 // 		$previewController = $this->utils->createPreviewController($editModel->getEntryForm(), $this->getRequest(), 
 // 				$this->getResponse(), $previewType);
@@ -246,18 +246,18 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 	private function applyBreadcrumbs(EiSelection $eiSelection) {
-		$eiState = $this->eiuCtrl->getEiuFrame()->getEiState();
+		$eiFrame = $this->eiuCtrl->getEiuFrame()->getEiFrame();
 		$httpContext = $this->getHttpContext();
 				
-		if (!$eiState->isOverviewDisabled()) {
+		if (!$eiFrame->isOverviewDisabled()) {
 			$this->rocketState->addBreadcrumb(
-					$eiState->createOverviewBreadcrumb($this->getHttpContext()));
+					$eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		}
 		
-		$this->rocketState->addBreadcrumb($eiState->createDetailBreadcrumb($httpContext, $eiSelection));
+		$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($httpContext, $eiSelection));
 		
 		if ($eiSelection->isDraft()) {	
-			$breadcrumbPath = $eiState->getDetailUrl($httpContext, $eiSelection->toEntryNavPoint($eiState->getContextEiMask()->getEiEngine()->getEiSpec())
+			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiSelection->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec())
 							->copy(false, true));
 			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale(),
 					DateTimeFormat::STYLE_MEDIUM, DateTimeFormat::STYLE_SHORT);
@@ -269,19 +269,19 @@ class EditController extends ControllerAdapter {
 	}	
 	
 // 	private function dispatchEditModel(EditModel $editModel) {
-// 		$eiState = $this->utils->getEiState();
+// 		$eiFrame = $this->utils->getEiFrame();
 // 		$entryNavPoint = null;
 		
 // 		$dispReturn = $this->dispatch($editModel, 'save');
 // 		$eiSelection = $editModel->getEntryModel()->getEiMapping()->getEiSelection();
 // 		if ($dispReturn instanceof Draft) {
-// 			$entryNavPoint = $eiSelection->toEntryNavPoint($eiState->getContextEiMask()->getEiEngine()->getEiSpec());
+// 			$entryNavPoint = $eiSelection->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec());
 // 		} else if ($dispReturn) {
-// 			$entryNavPoint = $eiSelection->toEntryNavPoint($eiState->getContextEiMask()->getEiEngine()->getEiSpec())->copy(true);
+// 			$entryNavPoint = $eiSelection->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec())->copy(true);
 // 		} else {
 // 			return null;
 // 		}
 		
-// 		return $eiState->getDetailUrl($this->getRequest(), $entryNavPoint);
+// 		return $eiFrame->getDetailUrl($this->getRequest(), $entryNavPoint);
 // 	}
 }

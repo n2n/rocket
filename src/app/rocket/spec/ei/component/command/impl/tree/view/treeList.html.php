@@ -34,9 +34,9 @@
 	$view->assert($treeListView instanceof HtmlView);
 	
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $treeListModel->getEiState()->getContextEiMask()->getLabel()));
+			array('title' => $treeListModel->getEiFrame()->getContextEiMask()->getLabel()));
 	
-	$eiHtml = new EiHtmlBuilder($view, $treeListModel->getEiState(), $treeListModel);
+	$eiHtml = new EiHtmlBuilder($view, $treeListModel->getEiFrame(), $treeListModel);
 	
 ?>	
 <div class="rocket-panel">

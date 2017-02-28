@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\tree\model;
 
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\command\impl\common\model\ListEntryModel;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\model\EntryTreeListModel;
@@ -30,24 +30,24 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\mask\EiMask;
  
 class TreeListModel implements EntryTreeListModel {
-	private $eiState;
+	private $eiFrame;
 	private $guiDefinition;
 	private $entryModels = array();
 	private $entryLevels = array();
 	
-	public function __construct(EiState $eiState) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame) {
+		$this->eiFrame = $eiFrame;
 	}
 				
-	public function getEiState(): EiState {
-		return $this->eiState;
+	public function getEiFrame(): EiFrame {
+		return $this->eiFrame;
 	}
 
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\model\ManageModel::getEiMask()
 	 */
 	public function getEiMask(): EiMask {
-		return $this->eiState->getContextEiMask();
+		return $this->eiFrame->getContextEiMask();
 	}
 	
 	public function getEntryModels() {
@@ -59,21 +59,21 @@ class TreeListModel implements EntryTreeListModel {
 	}
 	
 	public function initialize() {
-		$em = $this->eiState->getEntityManager();
-		$eiSpec = $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec();
+		$em = $this->eiFrame->getEntityManager();
+		$eiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 		
 		$nestedSetUtils = new NestedSetUtils($em, $eiSpec->getEntityModel()->getClass());
-		$criteria = $this->eiState->createCriteria(NestedSetUtils::NODE_ALIAS);
+		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS);
 		$eiMask = $this->getEiMask();
 
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$entity = $nestedSetItem->getEntityObj();
 			$id = $eiSpec->extractId($entity);
 			$eiSelection = new EiSelection($id, $entity);
-			$eiMapping = $eiMask->createEiMapping($this->eiState, $eiSelection);
+			$eiMapping = $eiMask->createEiMapping($this->eiFrame, $eiSelection);
 			
 			$this->entryModels[$id] = new ListEntryModel($eiMask, 
-					$eiMask->createEiSelectionGui($this->eiState, $eiMapping, DisplayDefinition::VIEW_MODE_TREE, false),
+					$eiMask->createEiSelectionGui($this->eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_TREE, false),
 					$eiMapping);
 			$this->entryLevels[$id] = $nestedSetItem->getLevel();
 		}

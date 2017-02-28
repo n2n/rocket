@@ -89,8 +89,8 @@ class TreeAddModel extends AddModel {
 		}
 		
 		$entity = $eiMapping->getEiSelection()->getEntityObj();
-		$eiState = $this->getCurrentEntryModel()->getEiState();
-		$em = $eiState->getEntityManager();
+		$eiFrame = $this->getCurrentEntryModel()->getEiFrame();
+		$em = $eiFrame->getEntityManager();
 		
 		$nestedSetUtils = new NestedSetUtils($em, $this->treeEntityModel->getClass());
 		$nestedSetUtils->setRootIdPropertyName($this->rootIdPropertyName);
@@ -100,6 +100,6 @@ class TreeAddModel extends AddModel {
 		
 		$em->flush();
 
-		return new EiSelection($eiState->getContextEiMask()->getEiEngine()->getEiSpec()->extractId($entity), $entity);
+		return new EiSelection($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->extractId($entity), $entity);
 	}
 }

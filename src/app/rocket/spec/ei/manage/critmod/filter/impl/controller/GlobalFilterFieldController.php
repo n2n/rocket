@@ -39,7 +39,7 @@ use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\EiThing;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;

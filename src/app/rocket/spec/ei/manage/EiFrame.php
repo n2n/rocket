@@ -37,7 +37,7 @@ use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
 
-class EiState {
+class EiFrame {
 	private $contextEiMask;
 	private $manageState;
 	private $criteriaConstraintCollection;
@@ -118,14 +118,14 @@ class EiState {
 	}
 	
 	/**
-	 * @param EiState $parent
+	 * @param EiFrame $parent
 	 */
-	public function setParent(EiState $parent = null) {
+	public function setParent(EiFrame $parent = null) {
 		$this->parent = $parent;
 	}
 	
 	/**
-	 * @return EiState
+	 * @return EiFrame
 	 */
 	public function getParent() {
 		return $this->parent;
@@ -143,7 +143,7 @@ class EiState {
 	 */
 	public function getControllerContext(): ControllerContext {
 		if (null === $this->controllerContext) {
-			throw new IllegalStateException('EiState has no ControllerContext available');
+			throw new IllegalStateException('EiFrame has no ControllerContext available');
 		}
 		
 		return $this->controllerContext;
@@ -184,7 +184,7 @@ class EiState {
 // 			return $this->filterModel;
 // 		}
 
-// 		return $this->filterModel = CritmodFactory::createFilterModelFromEiState($this);
+// 		return $this->filterModel = CritmodFactory::createFilterModelFromEiFrame($this);
 // 	}
 	
 // 	public function getOrCreateSortModel() {
@@ -192,7 +192,7 @@ class EiState {
 // 			return $this->sortModel;
 // 		}
 	
-// 		return $this->sortModel = CritmodFactory::createSortModelFromEiState($this);
+// 		return $this->sortModel = CritmodFactory::createSortModelFromEiFrame($this);
 // 	}
 	/**
 	 * @param \n2n\persistence\orm\EntityManager $em
@@ -247,7 +247,7 @@ class EiState {
 
 	public function getEiExecution(): EiExecution {
 		if (null === $this->eiExecution) {
-			throw new IllegalStateException('EiState contains no EiExecution.');
+			throw new IllegalStateException('EiFrame contains no EiExecution.');
 		}
 		
 		return $this->eiExecution;

@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\util\model\EntryForm;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\store\EntityInfo;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\draft\Draft;
@@ -52,19 +52,20 @@ use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 use rocket\spec\ei\EiCommandPath;
+use n2n\reflection\ReflectionUtils;
 
 class EiuFrame extends EiUtilsAdapter {
-	private $eiState;
+	private $eiFrame;
 	
-	public function __construct(EiState $eiState) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame) {
+		$this->eiFrame = $eiFrame;
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\EiState
+	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
-	public function getEiState(): EiState {
-		return $this->eiState;
+	public function getEiFrame(): EiFrame {
+		return $this->eiFrame;
 	}
 	
 	/**
@@ -72,27 +73,27 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return \n2n\web\http\HttpContext
 	 */
 	public function getHttpContext() {
-		return $this->eiState->getN2nContext()->getHttpContext();
+		return $this->eiFrame->getN2nContext()->getHttpContext();
 	}
 	
 	public function em(): EntityManager {
-		return $this->eiState->getManageState()->getEntityManager();
+		return $this->eiFrame->getManageState()->getEntityManager();
 	}
 	
 	public function getEiMask(): EiMask {
-		return $this->eiState->getContextEiMask();
+		return $this->eiFrame->getContextEiMask();
 	}
 	
 	public function getN2nContext(): N2nContext {
-		return $this->eiState->getN2nContext();
+		return $this->eiFrame->getN2nContext();
 	}
 	
 	public function getN2nLocale(): N2nLocale {
-		return $this->eiState->getN2nLocale();
+		return $this->eiFrame->getN2nLocale();
 	}
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
-		$criteria = $this->eiState->createCriteria('e', $ignoreConstraintTypes);
+		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
 		$criteria->select(CrIt::c('1'));
 		$this->applyIdComparison($criteria->where(), $id);
 		
@@ -104,12 +105,12 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupLiveEntryById($id, $ignoreConstraints)
 	 */
 	public function lookupLiveEntryById($id, int $ignoreConstraintTypes = 0): LiveEntry {
-		$criteria = $this->eiState->createCriteria('e', $ignoreConstraintTypes);
+		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
 		$criteria->select('e');
 		$this->applyIdComparison($criteria->where(), $id);
 		
 		if (null !== ($entityObj = $criteria->toQuery()->fetchSingle())) {
-			return LiveEntry::createFrom($this->eiState->getContextEiMask()->getEiEngine()->getEiSpec(), $entityObj);
+			return LiveEntry::createFrom($this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), $entityObj);
 		}
 		
 		throw new UnknownEntryException('Entity not found: ' . EntityInfo::buildEntityString(
@@ -118,12 +119,12 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
-		$criteriaComparator->match(CrIt::p('e', $this->getEiState()->getContextEiMask()->getEiEngine()->getEiSpec()
+		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiMask()->getEiEngine()->getEiSpec()
 				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);
 	}
 	
 	public function getDraftManager(): DraftManager {
-		return $this->eiState->getManageState()->getDraftManager();
+		return $this->eiFrame->getManageState()->getDraftManager();
 	}
 	
 	/**
@@ -141,30 +142,30 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @throws \rocket\spec\ei\security\InaccessibleEntryException
 	 */
 	public function createEiMapping(EiSelection $eiSelection): EiMapping {
-		return $this->determineEiMask($eiSelection)->getEiEngine()->createEiMapping($this->eiState, $eiSelection);
+		return $this->determineEiMask($eiSelection)->getEiEngine()->createEiMapping($this->eiFrame, $eiSelection);
 	}
 	
 	public function createEiMappingCopy(EiSelection $eiSelection, EiMapping $from): EiMapping {
-		return $this->determineEiMask($eiSelection)->getEiEngine()->createEiMappingCopy($this->eiState, $eiSelection, $from);
+		return $this->determineEiMask($eiSelection)->getEiEngine()->createEiMappingCopy($this->eiFrame, $eiSelection, $from);
 	}
 	
 	public function createBulkyEntryGuiModel(EiMapping $eiMapping, bool $makeEditable) {
-		return $this->determineEiMask($eiMapping)->createBulkyEntryGuiModel($this->eiState, $eiMapping, $makeEditable);
+		return $this->determineEiMask($eiMapping)->createBulkyEntryGuiModel($this->eiFrame, $eiMapping, $makeEditable);
 	}
 	
 	public function createDetailView(EiMapping $eiMapping) {
 		$eiMask = $this->determineEiMask($eiMapping);
 
-		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($this->eiState, $eiMapping, false);
-		return $eiMask->createBulkyView($this->eiState, new EntryGui($entryGuiModel));
+		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($this->eiFrame, $eiMapping, false);
+		return $eiMask->createBulkyView($this->eiFrame, new EntryGui($entryGuiModel));
 	}
 	
 	public function createNewEntryForm(bool $draft = false): EntryForm {
 		$entryModelForms = array();
 		$labels = array();
 		
-		$contextEiSpec = $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec();
-		$contextEiMask = $this->eiState->getContextEiMask();
+		$contextEiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$contextEiMask = $this->eiFrame->getContextEiMask();
 		$eiSpecs = array_merge(array($contextEiSpec->getId() => $contextEiSpec), $contextEiSpec->getAllSubEispecs());
 		foreach ($eiSpecs as $subEiSpecId => $subEiSpec) {
 			if ($subEiSpec->getEntityModel()->getClass()->isAbstract()) {
@@ -176,10 +177,10 @@ class EiuFrame extends EiUtilsAdapter {
 						
 			$entryModelForms[$subEiSpecId] = $this->createEntryModelForm($subEiSpec, $subEiMapping);
 			$labels[$subEiSpecId] = $contextEiMask->determineEiMask($subEiSpec)->getLabelLstr()
-					->t($this->eiState->getN2nLocale());
+					->t($this->eiFrame->getN2nLocale());
 		}
 		
-		$entryForm = new EntryForm($this->eiState);
+		$entryForm = new EntryForm($this->eiFrame);
 		$entryForm->setEntryModelForms($entryModelForms);
 		$entryForm->setChoicesMap($labels);
 		$entryForm->setChosenId(key($entryModelForms));
@@ -197,23 +198,23 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	public function createEntryFormFromMapping(EiMapping $eiMapping) {
-		$contextEiMask = $this->eiState->getContextEiMask();
+		$contextEiMask = $this->eiFrame->getContextEiMask();
 		
-		$entryForm = new EntryForm($this->eiState);
+		$entryForm = new EntryForm($this->eiFrame);
 		$eiSpec = $eiMapping->getEiSpec();
 
 		$entryForm->setEntryModelForms(array($eiSpec->getId() => $this->createEntryModelForm($eiSpec, $eiMapping)));
 		$entryForm->setChosenId($eiSpec->getId());
 		// @todo remove hack when ContentItemEiField gets updated.
 		$entryForm->setChoicesMap(array($eiSpec->getId() => $contextEiMask->determineEiMask($eiSpec)->getLabelLstr()
-				->t($this->eiState->getN2nLocale())));
+				->t($this->eiFrame->getN2nLocale())));
 		return $entryForm;
 	}
 	
 	private function createEntryModelForm(EiSpec $eiSpec, EiMapping $eiMapping) {
-		$eiMask = $this->getEiState()->getContextEiMask()->determineEiMask($eiSpec);
+		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiSpec);
 		
-		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($this->eiState, $eiMapping, true);
+		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($this->eiFrame, $eiMapping, true);
 		return new EntryModelForm($entryGuiModel);
 	}
 	
@@ -223,7 +224,7 @@ class EiuFrame extends EiUtilsAdapter {
 		}
 		
 		
-		$this->eiState->getManageState()->getVetoableRemoveActionQueue()->removeEiSelection($eiSelection);
+		$this->eiFrame->getManageState()->getVetoableRemoveActionQueue()->removeEiSelection($eiSelection);
 	}
 
 	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
@@ -241,7 +242,7 @@ class EiuFrame extends EiUtilsAdapter {
 		
 		$previewModel = new PreviewModel($previewType, $eiSelection, $entityObj);
 		
-		return $this->getEiMask()->lookupPreviewController($this->eiState, $previewModel);
+		return $this->getEiMask()->lookupPreviewController($this->eiFrame, $previewModel);
 	}
 
 	public function getPreviewType(EiSelection $eiSelection) {
@@ -258,8 +259,8 @@ class EiuFrame extends EiUtilsAdapter {
 			return array();
 		}
 		
-		$previewController = $eiMask->lookupPreviewController($this->eiState);
-		$previewTypeOptions = $previewController->getPreviewTypeOptions($this->eiState, $eiSelection);
+		$previewController = $eiMask->lookupPreviewController($this->eiFrame);
+		$previewTypeOptions = $previewController->getPreviewTypeOptions($this->eiFrame, $eiSelection);
 		ArgUtils::valArrayReturn($previewTypeOptions, $previewController, 'getPreviewTypeOptions', 
 				array('string', Lstr::class));
 		
@@ -267,7 +268,12 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	public function isExecutedBy($eiCommandPath) {
-		return $this->eiState->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::create($eiCommandPath));
+		return $this->eiFrame->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::create($eiCommandPath));
+	}
+	
+	public function isExecutedByType($eiCommandType) {
+// 		ArgUtils::valType($eiCommandType, array('string', 'object'));
+		return $this->eiFrame->getEiExecution()->getEiCommand() instanceof $eiCommandType;
 	}
 }
 
@@ -300,10 +306,10 @@ class EiCascadeOperation implements CascadeOperation {
 }
 
 // 	private function createEntryFormPart(EiSpec $eiSpec, EiMapping $eiMapping, $levelOnly) {
-// 		$eiMask = $this->eiState->getContextEiMask()->determineEiMask($eiSpec);
+// 		$eiMask = $this->eiFrame->getContextEiMask()->determineEiMask($eiSpec);
 // 		$eiSelection = $eiMapping->getEiSelection();
-// 		$guiDefinition = $eiMask->createGuiDefinition($this->eiState, $eiSelection->isDraft(), $levelOnly);
-// 		return new EntryFormPart($guiDefinition, $this->eiState, $eiMapping);
+// 		$guiDefinition = $eiMask->createGuiDefinition($this->eiFrame, $eiSelection->isDraft(), $levelOnly);
+// 		return new EntryFormPart($guiDefinition, $this->eiFrame, $eiMapping);
 // 	}
 
 
@@ -356,7 +362,7 @@ class EiCascadeOperation implements CascadeOperation {
 // 			}
 // 		}
 
-// 		if ($eiSpec->equals($this->eiState->getContextEiMask()->getEiEngine()->getEiSpec())) {
+// 		if ($eiSpec->equals($this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec())) {
 // 			$entryForm->setMainEntryFormPart(
 // 					$this->createEntryFormPart($eiSpec, $eiMapping, false));
 // 		} else {

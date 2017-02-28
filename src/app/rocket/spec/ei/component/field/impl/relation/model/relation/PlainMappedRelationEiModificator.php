@@ -1,7 +1,7 @@
 <?php
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\mapping\EiMapping;
@@ -9,23 +9,23 @@ use rocket\spec\ei\manage\mapping\WrittenMappingListener;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class PlainMappedRelationEiModificator extends EiModificatorAdapter {
-	private $targetEiState;
+	private $targetEiFrame;
 	private $entityObj;
 	private $targetAccessProxy;
 	private $sourceMany;
 
-	public function __construct(EiState $targetEiState, $entityObj, AccessProxy $targetAccessProxy, bool $sourceMany) {
-		$this->targetEiState = $targetEiState;
+	public function __construct(EiFrame $targetEiFrame, $entityObj, AccessProxy $targetAccessProxy, bool $sourceMany) {
+		$this->targetEiFrame = $targetEiFrame;
 		$this->entityObj = $entityObj;
 		$this->targetAccessProxy = $targetAccessProxy;
 		$this->sourceMany = $sourceMany;
 	}
 
 	public function setupEiMapping(Eiu $eiu) {
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
-		if ($this->targetEiState !== $eiState
+		if ($this->targetEiFrame !== $eiFrame
 				|| !$eiMapping->getEiSelection()->isNew()) return;
 
 		$that = $this;

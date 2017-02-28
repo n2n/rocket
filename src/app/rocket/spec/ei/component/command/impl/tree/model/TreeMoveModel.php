@@ -27,7 +27,7 @@ use n2n\web\dispatch\map\BindingConstraints;
 use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\DispatchAnnotations;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiSelection;
 
 class TreeMoveModel implements Dispatchable {
@@ -36,7 +36,7 @@ class TreeMoveModel implements Dispatchable {
 	}
 	
 	private $eiSpec;
-	private $eiState;
+	private $eiFrame;
 	private $eiSelection;
 	private $nestedSetUtils;
 	
@@ -44,13 +44,13 @@ class TreeMoveModel implements Dispatchable {
 	public $parentId;
 	private $parentIdOptions;
 	
-	public function __construct(EiState $eiState) {
-		$this->eiSpec = $eiState->getContextEiMask()->getEiEngine()->getEiSpec();
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame) {
+		$this->eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$this->eiFrame = $eiFrame;
 	}
 	
 	public function initialize($id) {
-		$em = $this->eiState->getEntityManager();
+		$em = $this->eiFrame->getEntityManager();
 		$class = $this->eiSpec->getEntityModel()->getClass();
 		
 		$object = $em->find($class, $id);
@@ -60,7 +60,7 @@ class TreeMoveModel implements Dispatchable {
 		
 		$this->nestedSetUtils = $nestedSetUtils = new NestedSetUtils($em, $class);
 		$this->eiSelection = new EiSelection($id, $object);
-		$this->eiState->setEiSelection($this->eiSelection);
+		$this->eiFrame->setEiSelection($this->eiSelection);
 		
 		$this->nestedSetItems = array();
 		$this->parentIdOptions = array(null => 'Root');
@@ -90,7 +90,7 @@ class TreeMoveModel implements Dispatchable {
 			$currentLevelObjectIds[$level] = $objectId;
 			$this->nestedSetItems[$objectId] = $nestedSetItem;
 			$this->parentIdOptions[$objectId] = str_repeat('..', $level + 1) . 
-					$this->eiSpec->createIdentityString($nestedSetItem->getObject(), $this->eiState->getN2nLocale());
+					$this->eiSpec->createIdentityString($nestedSetItem->getObject(), $this->eiFrame->getN2nLocale());
 		}
 				
 		return true;		
@@ -100,8 +100,8 @@ class TreeMoveModel implements Dispatchable {
 		return $this->eiSpec;
 	}
 	
-	public function getEiState() {
-		return $this->eiState;
+	public function getEiFrame() {
+		return $this->eiFrame;
 	}
 	
 	public function getParentIdOptions() {
@@ -110,7 +110,7 @@ class TreeMoveModel implements Dispatchable {
 	
 	public function getTitle() {
 		return $this->eiSpec->createIdentityString($this->eiSelection->getLiveEntityObj(), 
-				$this->eiState->getN2nLocale());
+				$this->eiFrame->getN2nLocale());
 	}
 	
 	private function _validation(BindingConstraints $bc) {

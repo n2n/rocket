@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 
 use rocket\spec\ei\component\field\impl\relation\conf\RelationEiFieldConfigurator;
 use rocket\spec\ei\manage\EiObject;
@@ -151,28 +151,28 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	public function buildGuiElement(Eiu $eiu) {
 		$eiMapping = $eiu->entry()->getEiMapping();
 	
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationMappable = $eiMapping->getMappable(EiFieldPath::from($this));
-		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $eiMapping);
+		$targetReadEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
 		
 		$toManyEditable = null;
-		if (!$this->eiFieldRelation->isReadOnly($eiMapping, $eiState)) {
-			$targetEditEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $eiMapping);
+		if (!$this->eiFieldRelation->isReadOnly($eiMapping, $eiFrame)) {
+			$targetEditEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
 			
-			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationMappable, $targetReadEiState,
-					$targetEditEiState, $this->getRealMin(), $this->getMax());
+			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationMappable, $targetReadEiFrame,
+					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
 				
 			$draftMode = $eiMapping->getEiSelection()->isDraft();
 			$toManyEditable->setDraftMode($draftMode);
 			
-			if ($targetEditEiState->getEiExecution()->isGranted()) {
+			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$eiMapping, $draftMode, $eiState, $eiu->frame()->getHttpContext()));
+						$eiMapping, $draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 			$toManyEditable->setTargetOrderEiFieldPath($this->targetOrderEiFieldPath);
 		}
 		
-		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiState, $toManyEditable);
+		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiFrame, $toManyEditable);
 	}
 	
 // 	const T_ALIAS = 't';

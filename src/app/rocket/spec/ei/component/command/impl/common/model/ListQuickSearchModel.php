@@ -22,31 +22,31 @@
 namespace rocket\spec\ei\component\command\impl\common\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\CritmodFactory;
 
 class ListQuickSearchModel implements Dispatchable {	
-	private $eiState;
+	private $eiFrame;
 	private $tmpFilterStore;
 	private $quickSearchableModel;
 	
 	protected $searchStr;
 	
-	public function __construct(EiState $eiState, ListTmpFilterStore $tmpFilterStore) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame, ListTmpFilterStore $tmpFilterStore) {
+		$this->eiFrame = $eiFrame;
 		$this->tmpFilterStore = $tmpFilterStore;
-		$this->quickSearchableModel = CritmodFactory::createQuickSearchableModel($eiState);
-		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId());
+		$this->quickSearchableModel = CritmodFactory::createQuickSearchableModel($eiFrame);
+		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId());
 	}
 	
 	public function isActive() {
 		return $this->searchStr !== null;
 	}
 	
-	public function applyToEiState(EiState $eiState) {
+	public function applyToEiFrame(EiFrame $eiFrame) {
 		$criteriaConstraint = $this->quickSearchableModel->createCriteriaConstraint($this->searchStr);
 		if ($criteriaConstraint !== null) {
-			$eiState->addCriteriaConstraint($criteriaConstraint);
+			$eiFrame->addCriteriaConstraint($criteriaConstraint);
 		}
 	}
 	
@@ -61,11 +61,11 @@ class ListQuickSearchModel implements Dispatchable {
 	private function _validation() { }
 	
 	public function search() {
-		$this->tmpFilterStore->setTmpSearchStr($this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $this->searchStr);
+		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $this->searchStr);
 	}
 	
 	public function clear() {
-		$this->tmpFilterStore->setTmpSearchStr($this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), null);
+		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), null);
 	}
 	
 }

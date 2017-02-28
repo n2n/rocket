@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
@@ -35,15 +35,15 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 class ToManySelectGuiElement implements GuiElement {
 	private $eiField;
 	private $eiu;
-	private $targetEiState;
+	private $targetEiFrame;
 	private $editable;
 	private $toOneMag;
 	
-	public function __construct(EiField $eiField, Eiu $eiu, EiState $targetEiState, 
+	public function __construct(EiField $eiField, Eiu $eiu, EiFrame $targetEiFrame, 
 			Editable $editable = null) {
 		$this->eiField = $eiField;
 		$this->eiu = $eiu;
-		$this->targetEiState = $targetEiState;
+		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
 	
@@ -74,31 +74,31 @@ class ToManySelectGuiElement implements GuiElement {
 			return null;
 		}
 		
-		$criteria = $this->targetEiState->createCriteria('e');
+		$criteria = $this->targetEiFrame->createCriteria('e');
 		$criteria->select('COUNT(e)');
 		$num = $criteria->toQuery()->fetchSingle();
 
-		$targetEiUtils = new EiuFrame($this->targetEiState);
+		$targetEiUtils = new EiuFrame($this->targetEiFrame);
 		if ($num == 1) {
 			$label = $num . ' ' . $targetEiUtils->getGenericLabel();
 		} else {
 			$label = $num . ' ' . $targetEiUtils->getGenericPluralLabel();
 		}
 
-		if (null !== ($relation = $this->eiu->frame()->getEiState()
+		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
 				->getEiRelation($this->eiField->getId()))) {
-			return $this->createUiLink($relation->getEiState(), $label, $view);
+			return $this->createUiLink($relation->getEiFrame(), $label, $view);
 		}
 
-		return $this->createUiLink($this->targetEiState, $label, $view);
+		return $this->createUiLink($this->targetEiFrame, $label, $view);
 	}
 
-	private function createUiLink(EiState $targetEiState, $label, HtmlView $view) {
+	private function createUiLink(EiFrame $targetEiFrame, $label, HtmlView $view) {
 		$html = $view->getHtmlBuilder();
 
-		if (!$targetEiState->isOverviewUrlAvailable()) return $html->getEsc($label);
+		if (!$targetEiFrame->isOverviewUrlAvailable()) return $html->getEsc($label);
 
-		return $html->getLink($targetEiState->getOverviewUrl($view->getHttpContext()), $label);
+		return $html->getLink($targetEiFrame->getOverviewUrl($view->getHttpContext()), $label);
 	}
 	
 	

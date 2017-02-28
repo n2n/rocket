@@ -50,7 +50,7 @@ use rocket\spec\ei\component\field\impl\relation\EmbeddedOneToManyEiField;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use n2n\util\col\ArrayUtils;
 use rocket\spec\ei\component\field\SortableEiFieldFork;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\sort\SortFieldFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
@@ -145,16 +145,16 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	}
 	
 	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiSelection = $eiMapping->getEiSelection();
-		$targetEiState = null;
+		$targetEiFrame = null;
 		if ($makeEditable) {
-			$targetEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $eiMapping);
+			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
 		} else {
-			$targetEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState);
+			$targetEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame);
 		}
-		$targetUtils = new EiuFrame($targetEiState);
+		$targetUtils = new EiuFrame($targetEiFrame);
 		
 		$toManyMappable = $eiMapping->getMappable(EiFieldPath::from($this));
 		
@@ -170,9 +170,9 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
 		
-		$targetGuiDefinition = $targetUtils->getEiState()->getContextEiMask()->getEiEngine()->getGuiDefinition();
+		$targetGuiDefinition = $targetUtils->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
 		$translationGuiElement = new TranslationGuiElement($toManyMappable, $targetGuiDefinition, 
-				$this->labelLstr->t($eiState->getN2nLocale()));
+				$this->labelLstr->t($eiFrame->getN2nLocale()));
 
 		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
@@ -188,7 +188,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 			
 			$translationGuiElement->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
 					new GuiElementAssembler($targetGuiDefinition, new EiuGui(
-							$targetRelationEntry->getEiMapping(), $targetUtils->getEiState(), 
+							$targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), 
 							$eiu->gui()->getEiSelectionGui())), 
 					$n2nLocaleDef->isMandatory());
 		}
@@ -222,9 +222,9 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	}
 	
 	
-	public function buildManagedSortFieldFork(EiState $eiState) {
+	public function buildManagedSortFieldFork(EiFrame $eiFrame) {
 		return new TranslationSortFieldFork($this, 
-				$this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->createManagedSortDefinition($eiState),
+				$this->getEiFieldRelation()->getTargetEiMask()->getEiEngine()->createManagedSortDefinition($eiFrame),
 				$this->getSortN2nLocale());
 	}
 	

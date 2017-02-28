@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\ci\model;
 
 use rocket\spec\ei\manage\gui\Editable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
@@ -31,18 +31,18 @@ use n2n\util\uri\Url;
 class ContentItemEditable implements Editable {
 	private $label;
 	private $toManyMappable;
-	private $targetReadEiState;
-	private $targetEditEiState;
+	private $targetReadEiFrame;
+	private $targetEditEiFrame;
 	private $panelConfigs;
 	private $newMappingFormUrl;
 	private $draftMode = false;
 
 	public function __construct(string $label, ToManyMappable $toManyMappable,
-			EiState $targetReadEiState, EiState $targetEditEiState, array $panelConfigs) {
+			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, array $panelConfigs) {
 		$this->label = $label;
 		$this->toManyMappable = $toManyMappable;
-		$this->targetReadEiState = $targetReadEiState;
-		$this->targetEditEiState = $targetEditEiState;
+		$this->targetReadEiFrame = $targetReadEiFrame;
+		$this->targetEditEiFrame = $targetEditEiFrame;
 		$this->panelConfigs = $panelConfigs;
 	}
 
@@ -74,7 +74,7 @@ class ContentItemEditable implements Editable {
 	 */
 	public function createMag(string $propertyName): Mag {
 		$this->contentItemMag = new ContentItemMag($propertyName, $this->label, $this->panelConfigs,
-				$this->targetReadEiState, $this->targetEditEiState);
+				$this->targetReadEiFrame, $this->targetEditEiFrame);
 		$this->contentItemMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->contentItemMag->setValue($this->toManyMappable->getValue());
 		return $this->contentItemMag;

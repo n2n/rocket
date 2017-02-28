@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
@@ -81,10 +81,10 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 // 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedEditPseudoCommand);
 	}
 	
-	public function isReadOnlyRequired(EiMapping $mapping, EiState $eiState) {
-		if (parent::isReadOnlyRequired($mapping, $eiState) || $this->hasRecursiveConflict($eiState)) return true;
+	public function isReadOnlyRequired(EiMapping $mapping, EiFrame $eiFrame) {
+		if (parent::isReadOnlyRequired($mapping, $eiFrame) || $this->hasRecursiveConflict($eiFrame)) return true;
 
-		$esConstraint = $eiState->getManageState()->getSecurityManager()
+		$esConstraint = $eiFrame->getManageState()->getSecurityManager()
 				->getConstraintBy($this->getTarget());
 		
 		return $esConstraint !== null
@@ -116,38 +116,38 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 // 				self::OPTION_TRANSLATION_ENABLED_DEFAULT);
 // 	}
 	
-	protected function configureTargetEiState(EiState $targetEiState, EiState $eiState, 
+	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
 			EiSelection $eiSelection = null, $editCommandRequired = null) {
-		parent::configureTargetEiState($targetEiState, $eiState, $eiSelection);
+		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiSelection);
 		
-		$targetEiState->setOverviewDisabled(true);
+		$targetEiFrame->setOverviewDisabled(true);
 		
-// 		if ($targetEiState->isPseudo()) {
+// 		if ($targetEiFrame->isPseudo()) {
 // 			if ($editCommandRequired) {
-// 				$targetEiState->setExecutedEiCommand($this->embeddedEditPseudoCommand);
+// 				$targetEiFrame->setExecutedEiCommand($this->embeddedEditPseudoCommand);
 // 			} else {
-// 				$targetEiState->setExecutedEiCommand($this->embeddedPseudoCommand);
+// 				$targetEiFrame->setExecutedEiCommand($this->embeddedPseudoCommand);
 // 			}
 // 			return;
 // 		}
 
-		if ($eiSelection !== null && null !== $targetEiState->getOverviewUrlExt() 
-				&& null !== $targetEiState->getDetailPathExt()) {
-			$pathExt = $eiState->getControllerContext()->toPathExt()->ext(
-					$eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntryDetailPathExt($eiSelection->toEntryNavPoint()));
-			$targetEiState->setOverviewPathExt($pathExt);
-			$targetEiState->setDetailPathExt($pathExt);
+		if ($eiSelection !== null && null !== $targetEiFrame->getOverviewUrlExt() 
+				&& null !== $targetEiFrame->getDetailPathExt()) {
+			$pathExt = $eiFrame->getControllerContext()->toPathExt()->ext(
+					$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEntryDetailPathExt($eiSelection->toEntryNavPoint()));
+			$targetEiFrame->setOverviewPathExt($pathExt);
+			$targetEiFrame->setDetailPathExt($pathExt);
 		}
 		
-		$targetEiState->setDetailBreadcrumbLabelOverride($this->relationEiField->getLabelLstr()
-				->t($targetEiState->getN2nLocale()));
-		$targetEiState->setDetailDisabled(true);
+		$targetEiFrame->setDetailBreadcrumbLabelOverride($this->relationEiField->getLabelLstr()
+				->t($targetEiFrame->getN2nLocale()));
+		$targetEiFrame->setDetailDisabled(true);
 	}
 	
-	public function createTargetEiSelection(EiState $targetEiState, $targetEntity) {
+	public function createTargetEiSelection(EiFrame $targetEiFrame, $targetEntity) {
 		$id = $this->relationEiField->getId();
 		
-		$targetEiSelection = new EiSelection($targetEiState->getContextEiMask()->getEiEngine()->getEiSpec()
+		$targetEiSelection = new EiSelection($targetEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
 				->extractId($targetEntity), $targetEntity);
 		
 		return $EiSelection;

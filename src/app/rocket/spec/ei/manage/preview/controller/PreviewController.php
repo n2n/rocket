@@ -23,12 +23,12 @@ namespace rocket\spec\ei\manage\preview\controller;
 
 use n2n\web\http\controller\Controller;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiSelection;
 
 interface PreviewController extends Controller {
 	
-	public function getPreviewTypeOptions(EiState $eiState, EiSelection $eiSelection): array;
+	public function getPreviewTypeOptions(EiFrame $eiFrame, EiSelection $eiSelection): array;
 	
 	public function setPreviewModel(PreviewModel $previewModel);
 }

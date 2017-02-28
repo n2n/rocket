@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\ci\model;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
@@ -36,18 +36,18 @@ class ContentItemGuiElement implements GuiElement {
 	private $panelConfigs;
 	private $mandatory;
 	private $toManyMappable;
-	private $targetEiState;
+	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, array $panelConfigs, ToManyMappable $toManyMappable, EiState $targetEiState,
+	public function __construct(string $label, array $panelConfigs, ToManyMappable $toManyMappable, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->panelConfigs = $panelConfigs;
 		$this->toManyMappable = $toManyMappable;
-		$this->targetEiState = $targetEiState;
+		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
 
@@ -77,7 +77,7 @@ class ContentItemGuiElement implements GuiElement {
 	}
 
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetUtils = new EiuFrame($this->targetEiState);
+		$targetUtils = new EiuFrame($this->targetEiFrame);
 		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
 		
 		$groupedUiComponents = array();

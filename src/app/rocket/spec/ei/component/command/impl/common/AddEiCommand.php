@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\command\impl\common;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\impl\common\controller\AddController;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
@@ -89,12 +89,12 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 				self::CONTROL_ADD_DRAFT_KEY => $dtc->translate('common_add_draft_label'));
 	}
 	
-	public function createOverallHrefControls(EiState $eiState, HtmlView $htmlView) {
-		$n2nContext = $eiState->getN2nContext();
-		$eiUtils = new EiuFrame($eiState);
+	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView) {
+		$n2nContext = $eiFrame->getN2nContext();
+		$eiUtils = new EiuFrame($eiFrame);
 		$httpContext = $n2nContext->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
-		$controllerContextPath = $httpContext->getControllerContextPath($eiState->getControllerContext());
+		$controllerContextPath = $httpContext->getControllerContextPath($eiFrame->getControllerContext());
 		
 		$nestedSet = null !== $this->eiEngine->getEiSpec()->getNestedSetStrategy();
 		
@@ -106,7 +106,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$controlButtons = array(self::CONTROL_ADD_KEY => new HrefControl($path, new ControlButton($name, $tooltip, true, 
 				ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE)));
 		
-		if ($eiState->getContextEiMask()->isDraftingEnabled()) {
+		if ($eiFrame->getContextEiMask()->isDraftingEnabled()) {
 			$path = $controllerContextPath->ext($this->getId(), 'draft');
 			$name = $dtc->translate('ei_impl_add_draft_label');
 			$tooltip = $dtc->translate('ei_impl_add_draft_tooltip', array('type' => $eiUtils->getGenericLabel()));
@@ -131,24 +131,24 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$httpContext = $view->getHttpContext();
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiuEntry = $eiu->entry();
 		
 		return array(
 				self::CONTROL_ADD_BEFORE_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'before', $eiuEntry->getLiveIdRep()), 
 						new ControlButton($dtc->translate('ei_impl_add_before_branch_label'), 
 								$dtc->translate('ei_impl_add_before_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP)),
 				self::CONTROL_ADD_AFTER_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'after', $eiuEntry->getLiveIdRep()),
 						new ControlButton($dtc->translate('ei_impl_add_after_branch_label'),
 								$dtc->translate('ei_impl_add_after_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN)),
 				self::CONTROL_ADD_CHILD_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 						->ext($this->getId(), 'child', $eiuEntry->getLiveIdRep()),
 						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
 								$dtc->translate('ei_impl_add_child_branch_tooltip'),

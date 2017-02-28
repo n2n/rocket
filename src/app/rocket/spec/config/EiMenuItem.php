@@ -112,7 +112,7 @@ class EiMenuItem implements MenuItem {
 		$rocket = $n2nContext->lookup(Rocket::class);
 		CastUtils::assertTrue($rocket instanceof Rocket);
 				
-		$manageState->createEiState($this->eiMask, $delegateControllerContext);
+		$manageState->createEiFrame($this->eiMask, $delegateControllerContext);
 		$em = $this->eiSpec->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));

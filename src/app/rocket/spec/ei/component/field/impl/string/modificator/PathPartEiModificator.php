@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\string\modificator;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\field\impl\string\PathPartEiField;
 use n2n\util\col\ArrayUtils;
@@ -40,7 +40,7 @@ class PathPartEiModificator extends EiModificatorAdapter {
 	}
 	
 	public function setupEiMapping(Eiu $eiu) {
-		$pathPartPurify = new PathPartPurifier($eiu->frame()->getEiState(), $eiu->entry()->getEiMapping(), 
+		$pathPartPurify = new PathPartPurifier($eiu->frame()->getEiFrame(), $eiu->entry()->getEiMapping(), 
 				$this->pathPartEiField);
 		$eiu->entry()->onWrite(function () use ($pathPartPurify) {
 			$pathPartPurify->purify();
@@ -49,12 +49,12 @@ class PathPartEiModificator extends EiModificatorAdapter {
 }
 
 class PathPartPurifier {
-	private $eiState;
+	private $eiFrame;
 	private $eiMapping;
 	private $pathPartEiField;
 	
-	public function __construct(EiState $eiState, EiMapping $eiMapping, PathPartEiField $pathPartEiField) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame, EiMapping $eiMapping, PathPartEiField $pathPartEiField) {
+		$this->eiFrame = $eiFrame;
 		$this->eiMapping = $eiMapping;
 		$this->pathPartEiField = $pathPartEiField;
 	}
@@ -106,7 +106,7 @@ class PathPartPurifier {
 	}
 	
 	private function containsPathPart(string $pathPart): bool {
-		$criteria = $this->eiState->createCriteria('e', CriteriaConstraint::ALL_TYPES);
+		$criteria = $this->eiFrame->createCriteria('e', CriteriaConstraint::ALL_TYPES);
 		$criteria->select('COUNT(1)')
 				->where()->match(CrIt::p('e', $this->pathPartEiField->getEntityProperty(true)), '=', $pathPart)
 				->andMatch(CrIt::p('e', $this->getIdEntityProperty()), '!=', $this->eiMapping->getId());

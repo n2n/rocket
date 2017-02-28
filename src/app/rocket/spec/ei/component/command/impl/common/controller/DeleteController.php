@@ -37,7 +37,7 @@ class DeleteController extends ControllerAdapter {
 	
 	public function prepare(ManageState $manageState, DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils) {
 		$this->dtc = $dtc;
-		$this->utils = new EiuFrame($manageState->peakEiState());
+		$this->utils = new EiuFrame($manageState->peakEiFrame());
 		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 	
@@ -70,8 +70,8 @@ class DeleteController extends ControllerAdapter {
 		
 // 		$this->utils->removeEiSelection($eiSelection);
 		
-// 		$eiState = $this->utils->getEiState();
-// 		$this->redirect($this->utils->getEiState()->getDetailUrl(
+// 		$eiFrame = $this->utils->getEiFrame();
+// 		$this->redirect($this->utils->getEiFrame()->getDetailUrl(
 // 				$eiSelection->toEntryNavPoint($previewtype)->copy(true)));
 // 	}
 }

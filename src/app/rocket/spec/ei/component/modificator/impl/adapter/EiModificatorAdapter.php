@@ -24,14 +24,14 @@ namespace rocket\spec\ei\component\modificator\impl\adapter;
 use rocket\spec\ei\component\modificator\EiModificator;
 use rocket\spec\ei\component\impl\EiComponentAdapter;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModificator {
 	
-	public function setupEiState(EiState $eiState) {}
+	public function setupEiFrame(EiFrame $eiFrame) {}
 		
 	public function setupEiMapping(Eiu $eiu) {}
 	

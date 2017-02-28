@@ -32,22 +32,22 @@ use rocket\spec\ei\manage\util\model\Eiu;
 class EiSpecController extends ControllerAdapter {
 		
 	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
-		$eiState = $manageState->peakEiState();
+		$eiFrame = $manageState->peakEiFrame();
 		
 		$eiCommand = null;
 		try {
-			$eiCommand = $eiState->getContextEiMask()->getEiEngine()->getEiCommandCollection()->getById($eiCommandId);
+			$eiCommand = $eiFrame->getContextEiMask()->getEiEngine()->getEiCommandCollection()->getById($eiCommandId);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
 		try {
-			$eiState->setEiExecution($manageState->getEiPermissionManager()
+			$eiFrame->setEiExecution($manageState->getEiPermissionManager()
 					->createEiExecution($eiCommand, $this->getN2nContext()));
 		} catch (InaccessibleControlException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		
-		$this->delegate($eiCommand->lookupController(new Eiu($eiState)));
+		$this->delegate($eiCommand->lookupController(new Eiu($eiFrame)));
 	}
 }

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
@@ -32,15 +32,15 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 class ManyToOneGuiElement implements GuiElement {
 	private $label;
 	private $toOneMappable;
-	private $targetEiState;
+	private $targetEiFrame;
 	private $editable;
 	private $toOneMag;
 	
-	public function __construct(string $label, ToOneMappable $toOneMappable, EiState $targetEiState, 
+	public function __construct(string $label, ToOneMappable $toOneMappable, EiFrame $targetEiFrame, 
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->toOneMappable = $toOneMappable;
-		$this->targetEiState = $targetEiState;
+		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
 	
@@ -68,13 +68,13 @@ class ManyToOneGuiElement implements GuiElement {
 		
 		if ($targetRelationEntry === null || $targetRelationEntry->isNew()) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->targetEiState);
+		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
 		$identityString = $targetEiuFrame->createIdentityString($targetRelationEntry->getEiSelection());
-		if (!$this->targetEiState->isDetailUrlAvailable($targetRelationEntry->getEiSelection()->toEntryNavPoint())) {
+		if (!$this->targetEiFrame->isDetailUrlAvailable($targetRelationEntry->getEiSelection()->toEntryNavPoint())) {
 			return $html->getEsc($identityString);
 		}
 		
-		return $html->getLink($this->targetEiState->getDetailUrl($view->getHttpContext(), $targetRelationEntry
+		return $html->getLink($this->targetEiFrame->getDetailUrl($view->getHttpContext(), $targetRelationEntry
 						->getEiSelection()->toEntryNavPoint()), 
 				$identityString);
 	}

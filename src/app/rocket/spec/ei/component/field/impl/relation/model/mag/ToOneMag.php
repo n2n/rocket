@@ -28,7 +28,7 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
@@ -51,13 +51,13 @@ class ToOneMag extends MagAdapter {
 	
 	private $targetRelationEntry;
 	
-	public function __construct(string $propertyName, string $label, bool $mandatory, EiState $targetReadEiState,
-			EiState $targetEditEiState) {
+	public function __construct(string $propertyName, string $label, bool $mandatory, EiFrame $targetReadEiFrame,
+			EiFrame $targetEditEiFrame) {
 		parent::__construct($propertyName, $label);
 	
 		$this->mandatory = $mandatory;
-		$this->targetReadUtils = new EiuFrame($targetReadEiState);
-		$this->targetEditUtils = new EiuFrame($targetEditEiState);
+		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
+		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
 	
 		$this->updateContainerAttrs(true);
 	}
@@ -172,12 +172,12 @@ class ToOneMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
-		$eiState = $this->targetReadUtils->getEiState();
-		$targetControllerContext = $eiState->getControllerContext();
+		$eiFrame = $this->targetReadUtils->getEiFrame();
+		$targetControllerContext = $eiFrame->getControllerContext();
 		$request = $view->getRequest();
 		
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($view->lookup(ScrRegistry::class), 
-				$eiState->getContextEiMask());
+				$eiFrame->getContextEiMask());
 		
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\toOneForm.html',
 				array('selectOverviewToolsUrl' => $this->selectOverviewToolsUrl, 

@@ -47,7 +47,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -134,8 +134,8 @@ class DateTimeEiField extends DraftableEiFieldAdapter implements SortableEiField
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\field\SortableEiField::createSortCriteriaConstraint()
 	 */
-	public function buildManagedSortField(EiState $eiState) {
-		return $this->buildSortField($eiState->getN2nContext());
+	public function buildManagedSortField(EiFrame $eiFrame) {
+		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 
 	public function buildSortField(N2nContext $n2nContext) {

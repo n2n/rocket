@@ -70,9 +70,9 @@ class OverviewDraftAjahController extends ControllerAdapter {
 	}
 	
 	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $idReps = null) {
-		$eiState = $this->manageState->peakEiState();
+		$eiFrame = $this->manageState->peakEiFrame();
 
-		$draftListModel = new DraftListModel($eiState, $this->listSize, $critmodForm, $quickSearchForm);
+		$draftListModel = new DraftListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
 
 		if ($idReps != null) {
 			$draftListModel->initByIdReps($idReps->toStringArrayOrReject());
@@ -88,7 +88,7 @@ class OverviewDraftAjahController extends ControllerAdapter {
 		
 		$attrs = array('numEntries' => $draftListModel->getNumEntries(), 'numPages' => $draftListModel->getNumPages());
 
-		$this->send(new AjahResponse($eiState->getContextEiMask()->createListView($eiState,
+		$this->send(new AjahResponse($eiFrame->getContextEiMask()->createListView($eiFrame,
 				$draftListModel->getEntryGuis()), $attrs));
 	}
 

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\common;
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
@@ -99,7 +99,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				true, ControlButton::TYPE_DEFAULT, $iconType);
 		
 		$hrefControls = array(self::CONTROL_DETAIL_KEY 
-				=> HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl(), $controlButton));
+				=> HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl(), $controlButton));
 		
 		$previewType = $eiuEntry->getPreviewType();
 		if ($previewType === null) {
@@ -117,7 +117,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 						array('entry' => $eiuFrame->getGenericLabel())),
 				true, ControlButton::TYPE_DEFAULT, IconType::ICON_EYE);
 		
-		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl(), $controlButton);
+		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl(), $controlButton);
 		return $hrefControls;
 	}
 	

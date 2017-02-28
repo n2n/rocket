@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\util\model\EntryManager;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
@@ -39,15 +39,15 @@ class AddModel implements Dispatchable  {
 		$ai->c(new AnnoDispProperties('entryForm'));
 	}
 	
-	private $eiState;
+	private $eiFrame;
 	private $entryForm;
 	private $nestedSetStrategy;
 	private $parentEntityObj;
 	private $beforeEntityObj;
 	private $afterEntityObj;
 	
-	public function __construct(EiState $eiState, EntryForm $entryForm, NestedSetStrategy $nestedSetStrategy = null) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame, EntryForm $entryForm, NestedSetStrategy $nestedSetStrategy = null) {
+		$this->eiFrame = $eiFrame;
 		$this->entryForm = $entryForm;
 		$this->nestedSetStrategy = $nestedSetStrategy;
 	}
@@ -71,8 +71,8 @@ class AddModel implements Dispatchable  {
 // 		return $this->entryForm->getEntryModelForm();
 // 	}
 	
-// 	public function getEiState() {
-// 		return $this->entryManager->getEiState();
+// 	public function getEiFrame() {
+// 		return $this->entryManager->getEiFrame();
 // 	}
 	
 	public function getEntryForm() {
@@ -87,14 +87,14 @@ class AddModel implements Dispatchable  {
 	}
 	
 	private function persist($entityObj) {
-		$em = $this->eiState->getManageState()->getEntityManager();
+		$em = $this->eiFrame->getManageState()->getEntityManager();
 		if ($this->nestedSetStrategy === null) {
 			$em->persist($entityObj);
 			$em->flush();
 			return;
 		}
 			
-		$nsu = new NestedSetUtils($em, $this->eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
+		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
 				$this->nestedSetStrategy);
 		
 		if ($this->beforeEntityObj !== null) {
@@ -124,7 +124,7 @@ class AddModel implements Dispatchable  {
 			$liveEntry->refreshId();
 			$liveEntry->setPersistent(false);
 			
-			$identityString = (new EiuFrame($this->eiState))->createIdentityString($eiSelection);
+			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
 			return $eiSelection;
@@ -135,11 +135,11 @@ class AddModel implements Dispatchable  {
 		$draft = $eiSelection->getDraft();
 		$draftDefinition = $this->entryForm->getChosenEntryModelForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 				->getDraftDefinition();
-		$draftManager = $this->eiState->getManageState()->getDraftManager();
+		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiuFrame($this->eiState))->createIdentityString($eiSelection);
+		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
 		return $eiSelection;

@@ -131,7 +131,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 	 * @return bool
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiFieldPrivilege::checkForWriteAccess($eiu->frame()->getEiState()->getEiExecution()
+		if (!WritableEiFieldPrivilege::checkForWriteAccess($eiu->frame()->getEiFrame()->getEiExecution()
 				->createEiFieldAccess(EiFieldPath::from($this)))) {
 			return true;
 		}
@@ -153,7 +153,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 	}
 	
 
-// 	public function isWritingAllowed(Attributes $accessAttributes, EiState $eiState, 
+// 	public function isWritingAllowed(Attributes $accessAttributes, EiFrame $eiFrame, 
 // 			EiSelection $eiSelection = null) {
 // 		return (boolean) $accessAttributes->get('writingAllowed');
 // 	}

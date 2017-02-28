@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\bool\command;
 
 use rocket\spec\ei\component\field\impl\bool\OnlineEiField;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use n2n\l10n\N2nLocale;
@@ -62,7 +62,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	
 	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		$eiMapping = $eiu->entry()->getEiMapping();
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection(Rocket::NS, $request->getN2nLocale());
 		$eiSelection = $eiMapping->getEiSelection();
@@ -78,7 +78,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 			$controlButton->setIconType(IconType::ICON_MINUS_CIRCLE);
 		}
 		
-		$contextPath = $view->getHttpContext()->getControllerContextPath($eiState->getControllerContext());
+		$contextPath = $view->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext());
 		$controlButton->setAttrs(array('class' => 'rocket-online-cmd',
 				'data-online-url' => (string) $contextPath->ext($this->getId(), 'online', $eiMapping->getIdRep()),
 				'data-offline-url' => (string) $contextPath->ext($this->getId(), 'offline', $eiMapping->getIdRep())));

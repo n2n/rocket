@@ -33,11 +33,11 @@ interface PrivilegedEiField extends EiField {
 	
 	
 // 	/**
-// 	 * @param EiState $eiState
+// 	 * @param EiFrame $eiFrame
 // 	 * @param EiSelection $eiSelection
 // 	 * @param Attributes $accessAttributes
 // 	 * @return boolean
 // 	 */
-// 	public function isWritingAllowed(Attributes $accessAttributes, EiState $eiState, 
+// 	public function isWritingAllowed(Attributes $accessAttributes, EiFrame $eiFrame, 
 // 			EiSelection $eiSelection = null);
 }

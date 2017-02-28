@@ -146,10 +146,10 @@ class DetailController extends ControllerAdapter {
 	private function applyBreadcrumbs(EiSelection $eiSelection, string $previewType = null) {
 		$this->eiCtrlUtils->applyCommonBreadcrumbs();
 		
-		$eiState = $this->eiCtrlUtils->getEiState();
+		$eiFrame = $this->eiCtrlUtils->getEiFrame();
 		$httpContext = $this->getHttpContext();
 
-		if ($eiState->isDetailDisabled()) return;
+		if ($eiFrame->isDetailDisabled()) return;
 		
 		if ($eiSelection->getLiveEntry()->isPersistent()) {
 			$pathParts = null;
@@ -160,7 +160,7 @@ class DetailController extends ControllerAdapter {
 			}
 			
 			$this->eiCtrlUtils->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
-					$eiState->getDetailBreadcrumbLabel($eiSelection)));
+					$eiFrame->getDetailBreadcrumbLabel($eiSelection)));
 		}
 		
 		if ($eiSelection->isDraft()) {

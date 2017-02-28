@@ -22,10 +22,10 @@
 namespace rocket\user\model;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\ObjectPropertyEiField;
 
 interface RestrictionEiField extends ObjectPropertyEiField {
 	
-	public function createRestrictionSelectorItem(N2nContext $n2nContext, EiState $eiState = null);	
+	public function createRestrictionSelectorItem(N2nContext $n2nContext, EiFrame $eiFrame = null);	
 }

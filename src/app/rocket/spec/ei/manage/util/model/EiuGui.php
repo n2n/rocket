@@ -142,12 +142,12 @@ class EiuGui {
 	
 // 	/**
 // 	 * @param EntryGuiModel $entryGuiModel
-// 	 * @param EiState $eiState
+// 	 * @param EiFrame $eiFrame
 // 	 * @return EiuGui
 // 	 */
-// 	public static function from(EntryGuiModel $entryGuiModel, $eiState) {
+// 	public static function from(EntryGuiModel $entryGuiModel, $eiFrame) {
 // 		$entryGuiUtils = new EiuGui($entryGuiModel, 
-// 				new EiuEntry($entryGuiModel, $eiState));
+// 				new EiuEntry($entryGuiModel, $eiFrame));
 // 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
 // 		return $entryGuiUtils;
 // 	}
@@ -187,7 +187,7 @@ class ClosureGuiListener implements EiSelectionGuiListener {
 	}
 
 	private function call($closure) {
-		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiState()->getN2nContext());
+		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiFrame()->getN2nContext());
 		$mmi->setClassParamObject(Eiu::class, $this->eiu);
 		$mmi->invoke(null, new \ReflectionFunction($closure));
 	}

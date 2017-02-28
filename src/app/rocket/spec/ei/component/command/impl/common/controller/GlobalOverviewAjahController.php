@@ -94,10 +94,10 @@ class GlobalOverviewAjahController extends ControllerAdapter implements ScrContr
 		$this->manageState->setEiPermissionManager($this->loginContext->getSecurityManager()->getEiPermissionManager());
 
 		$controllerContext = $this->createDelegateContext($overviewAjahController);
-		$eiState = $this->manageState->createEiState($eiMask, $controllerContext);
+		$eiFrame = $this->manageState->createEiFrame($eiMask, $controllerContext);
 
 		try {
-			$eiState->setEiExecution($this->manageState->getEiPermissionManager()
+			$eiFrame->setEiExecution($this->manageState->getEiPermissionManager()
 					->createUnboundEiExceution($eiMask, new EiCommandPath(array())));
 		} catch (InaccessibleControlException $e) {
 			throw new ForbiddenException(null, 0, $e);

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
@@ -40,24 +40,24 @@ class OrderEiModificator extends EiModificatorAdapter {
 		$this->eiField = $eiField;
 	}
 	
-	public function setupEiState(EiState $eiState) {
-		$eiState->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
+	public function setupEiFrame(EiFrame $eiFrame) {
+		$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiField->getEntityProperty()), 'ASC'))));
 	}
 	
 	public function setupEiMapping(Eiu $eiu) {
 		$ssm = $eiu->entry()->getEiMapping();
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiField = $this->eiField;
-		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiState, $ssm, $eiField) {
+		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiField) {
 			$orderIndex = $ssm->getValue($eiField);
 			
 			if (mb_strlen($orderIndex)) return;
 			
 			$entityProperty = $eiField->getEntityProperty();
 			
-			$em = $eiState->getManageState()->getEntityManager();
+			$em = $eiFrame->getManageState()->getEntityManager();
 			$criteria = $em->createCriteria()
 					->select(CrIt::f('MAX', CrIt::p('eo', $entityProperty)))
 					->from($entityProperty->getEntityModel()->getClass(), 'eo');

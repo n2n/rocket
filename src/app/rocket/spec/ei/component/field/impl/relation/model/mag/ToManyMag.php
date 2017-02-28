@@ -28,7 +28,7 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
@@ -55,12 +55,12 @@ class ToManyMag extends MagAdapter {
 	private $targetRelationEntries = array();
 	private $targetEiMappings = array();
 	
-	public function __construct(string $propertyName, string $label, EiState $targetReadEiState, 
-			EiState $targetEditEiState, int $min, int $max = null) {
+	public function __construct(string $propertyName, string $label, EiFrame $targetReadEiFrame, 
+			EiFrame $targetEditEiFrame, int $min, int $max = null) {
 		parent::__construct($propertyName, $label);
 	
-		$this->targetReadUtils = new EiuFrame($targetReadEiState);
-		$this->targetEditUtils = new EiuFrame($targetEditEiState);
+		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
+		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
 		$this->min = $min;
 		$this->max = $max;
 		
@@ -182,7 +182,7 @@ class ToManyMag extends MagAdapter {
 		$orderIndex = 10;
 		foreach ($formValue->buildEiMappings() as $targetEiMapping) {
 			if ($this->targetOrderEiFieldPath !== null) {
-				$eiu = new Eiu($targetEiMapping, $this->targetEditUtils->getEiState());
+				$eiu = new Eiu($targetEiMapping, $this->targetEditUtils->getEiFrame());
 				$eiu->entry()->setScalarValue($this->targetOrderEiFieldPath, $orderIndex += 10, true);
 			}
 			

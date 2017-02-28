@@ -26,7 +26,7 @@
 // use rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiFieldAdapter;
 // use rocket\spec\ei\component\field\FilterableEiField;
 // use n2n\core\container\N2nContext;
-// use rocket\spec\ei\manage\EiState;
+// use rocket\spec\ei\manage\EiFrame;
 // use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
 // use rocket\spec\ei\manage\critmod\filter\impl\field\FilterFieldAdapter;
 // use rocket\spec\ei\manage\mapping\Mappable;
@@ -37,8 +37,8 @@
 // 		return $entityProperty instanceof ScalarEntityProperty;
 // 	}
 		
-// 	public function buildManagedFilterField(EiState $eiState) {
-// 		return $this->createGlobalFilterFields($eiState->getN2nContext());
+// 	public function buildManagedFilterField(EiFrame $eiFrame) {
+// 		return $this->createGlobalFilterFields($eiFrame->getN2nContext());
 // 	}
 	
 // 	public function buildFilterField(N2nContext $n2nContext) {

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\file\command;
 
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -56,11 +56,11 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		return array(self::MULTI_UPLOAD_KEY => $dtc->translate('ei_impl_multi_upload_label'));
 	}
 
-	public function createOverallHrefControls(EiState $eiState, HtmlView $view) {
+	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $view) {
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection('rocket');
 		
-		$url = $request->getControllerContextPath($eiState->getControllerContext(), array($this->getId()));
+		$url = $request->getControllerContextPath($eiFrame->getControllerContext(), array($this->getId()));
 		
 		$name = $dtc->translate('ei_impl_multi_upload_label');
 		$tooltip = $dtc->translate('ei_impl_multi_upload_tooltip');

@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
@@ -33,17 +33,17 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 	private $readOnly;
 	private $mandatory;
 	private $toOneMappable;
-	private $targetEiState;
+	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToOneMappable $toOneMappable, EiState $targetEiState,
+	public function __construct(string $label, ToOneMappable $toOneMappable, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->toOneMappable = $toOneMappable;
-		$this->targetEiState = $targetEiState;
+		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
 
@@ -66,22 +66,22 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 	}
 
 // 	public function createOutputUiComponent(HtmlView $view) {
-// 		$eiState = $eiu->frame()->getEiState();
+// 		$eiFrame = $eiu->frame()->getEiFrame();
 // 		$eiMapping = $eiu->entry()->getEiMapping();
-// 		$targetEiSelection = $this->createTargetEiSelection($eiState, $eiMapping);
+// 		$targetEiSelection = $this->createTargetEiSelection($eiFrame, $eiMapping);
 
 // 		if ($targetEiSelection === null) return null;
 
 // 		$eiSelection = $eiMapping->getEiSelection();
 // 		$target = $this->eiFieldRelation->getTarget();
-// 		$targetEiState = $this->eiFieldRelation->createTargetPseudoEiState(
-// 				$eiState, $eiSelection, false);
-// 		$targetUtils = new EiuFrame($targetEiState);
+// 		$targetEiFrame = $this->eiFieldRelation->createTargetPseudoEiFrame(
+// 				$eiFrame, $eiSelection, false);
+// 		$targetUtils = new EiuFrame($targetEiFrame);
 
 // 		$targetEiMapping = $targetUtils->createEiMapping($targetEiSelection);
 
 // 		$entryInfo = $targetUtils->createEntryInfo($targetEiMapping);
-// 		$view = $entryInfo->getEiMask()->createDetailView($targetEiState, $entryInfo);
+// 		$view = $entryInfo->getEiMask()->createDetailView($targetEiFrame, $entryInfo);
 
 // 		return $view->getImport($view);
 // 	}
@@ -90,7 +90,7 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 		$targetRelationEntry = $this->toOneMappable->getValue();
 		if ($targetRelationEntry === null) return null;
 	
-		$targetUtils = new EiuFrame($this->targetEiState);
+		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
 		return $targetUtils->createDetailView($targetRelationEntry->toEiMapping($targetUtils));
 	}

@@ -65,11 +65,11 @@ class AddController extends ControllerAdapter {
 	private function live(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 			
-		$eiStateUtils = $this->eiCtrlUtils->getEiuFrame();
-		$entryForm = $eiStateUtils->createNewEntryForm(false);
+		$eiFrameUtils = $this->eiCtrlUtils->getEiuFrame();
+		$entryForm = $eiFrameUtils->createNewEntryForm(false);
 		
-		$eiState = $this->eiCtrlUtils->getEiState();
-		$addModel = new AddModel($eiState, $entryForm, $eiStateUtils->getNestedSetStrategy());
+		$eiFrame = $this->eiCtrlUtils->getEiFrame();
+		$addModel = new AddModel($eiFrame, $entryForm, $eiFrameUtils->getNestedSetStrategy());
 		if ($this->parentEiSelection !== null) {
 			$addModel->setParentEntityObj($this->parentEiSelection->getLiveObject());
 		} else if ($this->beforeEiSelection !== null) {
@@ -90,7 +90,7 @@ class AddController extends ControllerAdapter {
 		
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
-				'type' => $this->eiCtrlUtils->getEiState()->getContextEiMask()->getLabelLstr()
+				'type' => $this->eiCtrlUtils->getEiFrame()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
 		$this->forward('..\view\add.html',
 				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
@@ -101,8 +101,8 @@ class AddController extends ControllerAdapter {
 			
 		$entryForm = $this->eiCtrlUtils->getEiuFrame()->createNewEntryForm(true);
 		
-		$eiState = $this->eiCtrlUtils->getEiState();
-		$addModel = new AddModel($eiState, $entryForm);
+		$eiFrame = $this->eiCtrlUtils->getEiFrame();
+		$addModel = new AddModel($eiFrame, $entryForm);
 		
 		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
 			$this->redirect($this->eiCtrlUtils->buildRefRedirectUrl($redirectUrl, $eiSelection));
@@ -116,19 +116,19 @@ class AddController extends ControllerAdapter {
 	}
 	
 	private function getBreadcrumbLabel() {
-		$eiStateUtils = $this->eiCtrlUtils->getEiuFrame();
+		$eiFrameUtils = $this->eiCtrlUtils->getEiuFrame();
 		
-		if (null === $eiStateUtils->getNestedSetStrategy()) {
+		if (null === $eiFrameUtils->getNestedSetStrategy()) {
 			return $this->dtc->translate('ei_impl_add_breadcrumb');
 		} else if ($this->parentEiSelection !== null) {
 			return $this->dtc->translate('ei_impl_add_child_branch_breadcrumb',
-					array('parent_branch' => $eiStateUtils->createIdentityString($this->parentEiSelection)));
+					array('parent_branch' => $eiFrameUtils->createIdentityString($this->parentEiSelection)));
 		} else if ($this->beforeEiSelection !== null) {
 			return$this->dtc->translate('ei_impl_add_before_branch_breadcrumb',
-					array('branch' => $eiStateUtils->createIdentityString($this->beforeEiSelection)));
+					array('branch' => $eiFrameUtils->createIdentityString($this->beforeEiSelection)));
 		} else if ($this->afterEiSelection !== null) {
 			return $this->dtc->translate('ei_impl_add_after_branch_breadcrumb',
-					array('branch' => $eiStateUtils->createIdentityString($this->afterEiSelection)));
+					array('branch' => $eiFrameUtils->createIdentityString($this->afterEiSelection)));
 		} else {
 			return $this->dtc->translate('ei_impl_add_root_branch_breadcrumb');
 		}

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\critmod\impl\model;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\critmod\sort\SortData;
@@ -153,7 +153,7 @@ class CritmodForm implements Dispatchable {
 	private function _validation(BindingDefinition $bd) {
 	}
 
-	public function applyToEiState(EiState $eiState, bool $tmp) {
+	public function applyToEiFrame(EiFrame $eiFrame, bool $tmp) {
 		$critmodSave = $this->critmodSaveDao->getTmpCritmodSave($this->categoryKey);
 		if ($critmodSave === null) {
 			$critmodSave = $this->critmodSaveDao->getSelectedCritmodSave($this->categoryKey);
@@ -162,14 +162,14 @@ class CritmodForm implements Dispatchable {
 
 		$comparatorConstraint = $this->getFilterGroupForm()->getFilterDefinition()
 						->createComparatorConstraint($critmodSave->readFilterGroupData());
-		$eiState->getCriteriaConstraintCollection()->add(
+		$eiFrame->getCriteriaConstraintCollection()->add(
 				($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
 				new ComparatorConstraintGroup(true, array($comparatorConstraint)));
 		
 		$sortCriteriaConstraint = $this->getSortForm()->getSortDefinition()
 				->builCriteriaConstraint($critmodSave->readSortData(), $tmp);
 		if ($sortCriteriaConstraint !== null) {
-			$eiState->getCriteriaConstraintCollection()->add(
+			$eiFrame->getCriteriaConstraintCollection()->add(
 					($tmp ? CriteriaConstraint::TYPE_TMP_SORT : CriteriaConstraint::TYPE_HARD_SORT),
 					$sortCriteriaConstraint);
 		}
@@ -222,11 +222,11 @@ class CritmodForm implements Dispatchable {
 		$this->critmodSaveDao->removeCritmodSave($critmodSave);
 	}
 	
-	public static function create(EiState $eiState, CritmodSaveDao $critmodSaveDao, string $stateKey): CritmodForm {
-		$eiMask = $eiState->getContextEiMask();
+	public static function create(EiFrame $eiFrame, CritmodSaveDao $critmodSaveDao, string $stateKey): CritmodForm {
+		$eiMask = $eiFrame->getContextEiMask();
 		
-		return new CritmodForm($eiMask->getEiEngine()->createManagedFilterDefinition($eiState), 
-				$eiMask->getEiEngine()->createManagedSortDefinition($eiState), 
-				$critmodSaveDao, $stateKey, $eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask->getId());
+		return new CritmodForm($eiMask->getEiEngine()->createManagedFilterDefinition($eiFrame), 
+				$eiMask->getEiEngine()->createManagedSortDefinition($eiFrame), 
+				$critmodSaveDao, $stateKey, $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask->getId());
 	}
 }

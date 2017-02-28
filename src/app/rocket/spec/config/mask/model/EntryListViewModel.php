@@ -22,24 +22,24 @@
 namespace rocket\spec\config\mask\model;
 
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 
 class EntryListViewModel {
-	private $eiState;
+	private $eiFrame;
 	private $entryGuis;
 	private $guiDefinition;
 	private $guiFieldOrder;
 	
-	public function __construct(EiState $eiState, array $entryGuis, GuiDefinition $guiDefinition, 
+	public function __construct(EiFrame $eiFrame, array $entryGuis, GuiDefinition $guiDefinition, 
 			GuiFieldOrder $guiFieldOrder) {
-		$this->eiState = $eiState;
+		$this->eiFrame = $eiFrame;
 		$this->entryGuis = $entryGuis;
 		$this->guiDefinition = $guiDefinition;
 		$this->guiFieldOrder = $guiFieldOrder;
 	}
 	
-	public function getEiState(): EiState {
-		return $this->eiState;
+	public function getEiFrame(): EiFrame {
+		return $this->eiFrame;
 	}
 
 	public function getEntryGuis(): array {

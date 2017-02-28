@@ -25,7 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\core\N2N;
@@ -141,7 +141,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 			$currentEntity = $eiSelection->getCurrentEntity();
 // 			$top = $this->getEiSpec()->getSupremeEiSpec();
 			
-// 			$em = $eiu->frame()->getEiState()->getEntityManager();
+// 			$em = $eiu->frame()->getEiFrame()->getEntityManager();
 // 			$nestedSetUtils = new NestedSetUtils($em, $this->getEiSpec()->getEntityModel()->getClass());
 // 			foreach ($nestedSetUtils->fetch($currentEntity, true) as $nsItem) {
 // 				$object = $nsItem->getObject();
@@ -172,9 +172,9 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 			$attrs['data-edit-label'] =  $dtc->translate('common_edit_label');
 // 			$attrs['data-cancel-label'] =  $dtc->translate('common_cancel_label');
 // 		} else {
-// 			$eiState = $eiu->frame()->getEiState();
-// 			$cmds = $eiState->getControllerContext()->getCmds();
-// 			if (null !== ($entity = $eiState->getEntityManager()->find(
+// 			$eiFrame = $eiu->frame()->getEiFrame();
+// 			$cmds = $eiFrame->getControllerContext()->getCmds();
+// 			if (null !== ($entity = $eiFrame->getEntityManager()->find(
 // 					$this->getEiSpec()->getEntityModel()->getClass(), end($cmds)))) {
 // 				$eiMapping->setValue($this->getId(), $this->getPropertyAccessProxy()->getValue($entity));
 // 			}
@@ -190,13 +190,13 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 		return $magCollection;
 // 	}
 	
-// 	public function createRestrictionSelectionConstraint(Attributes $restrictionAttributes, EiState $eiState) {
+// 	public function createRestrictionSelectionConstraint(Attributes $restrictionAttributes, EiFrame $eiFrame) {
 // 		$restrictedSubsystemName = $restrictionAttributes->get('restrictedSubsystemName');
 // 		if ($restrictedSubsystemName === null) return null;
 	
 // 		$targetEntityModel = $this->target->getEntityModel();
 // 		return new SimpleSelectorConstraint($this->getEntityProperty(),
-// 				$eiState->getEntityManager()->find(
+// 				$eiFrame->getEntityManager()->find(
 // 						$targetEntityModel->getClass(), $restrictedSubsystemName),
 // 				function ($value1, $value2) use ($targetEntityModel) {
 // 					return OrmUtils::areObjectsEqual($value1, $value2, $targetEntityModel);

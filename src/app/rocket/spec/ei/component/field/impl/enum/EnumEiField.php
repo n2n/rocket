@@ -28,7 +28,7 @@ use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\component\field\QuickSearchableEiField;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
@@ -148,8 +148,8 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return $html->getEsc($value);
 	}
 	
-	public function buildManagedFilterField(EiState $eiState) {
-		return $this->buildFilterField($eiState->getN2nContext());
+	public function buildManagedFilterField(EiFrame $eiFrame) {
+		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
 	public function buildFilterField(N2nContext $n2nContext) {
@@ -164,8 +164,8 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return null;
 	}
 	
-	public function buildManagedSortField(EiState $eiState) {
-		return $this->buildSortField($eiState->getN2nContext());
+	public function buildManagedSortField(EiFrame $eiFrame) {
+		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
 	public function buildSortField(N2nContext $n2nContext) {
@@ -176,7 +176,7 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		return null;
 	}
 	
-	public function buildQuickSearchField(EiState $eiState) {
+	public function buildQuickSearchField(EiFrame $eiFrame) {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
 		}
