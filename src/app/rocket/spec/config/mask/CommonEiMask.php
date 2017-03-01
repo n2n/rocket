@@ -566,7 +566,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			return $previewController;
 		}
 		
-		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions($eiFrame, $previewModel->getEiSelection()))) {
+		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $previewModel->getEiSelection())))) {
 			throw new UnavailableControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}

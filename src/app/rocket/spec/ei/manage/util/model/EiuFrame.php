@@ -260,7 +260,7 @@ class EiuFrame extends EiUtilsAdapter {
 		}
 		
 		$previewController = $eiMask->lookupPreviewController($this->eiFrame);
-		$previewTypeOptions = $previewController->getPreviewTypeOptions($this->eiFrame, $eiSelection);
+		$previewTypeOptions = $previewController->getPreviewTypeOptions(new Eiu($this, $eiSelection));
 		ArgUtils::valArrayReturn($previewTypeOptions, $previewController, 'getPreviewTypeOptions', 
 				array('string', Lstr::class));
 		
