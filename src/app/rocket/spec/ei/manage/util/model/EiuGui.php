@@ -51,8 +51,8 @@ class EiuGui {
 	 */
 	public function isViewModeOverview() {
 		$viewMode = $this->getViewMode();
-		return $viewMode == DisplayDefinition::LIST_VIEW_MODES
-				|| $viewMode == DisplayDefinition::TREE_VIEW_MODES;
+		return $viewMode & DisplayDefinition::LIST_VIEW_MODES
+				|| $viewMode & DisplayDefinition::TREE_VIEW_MODES;
 	}
 	
 	public function isViewModeBulky() {
