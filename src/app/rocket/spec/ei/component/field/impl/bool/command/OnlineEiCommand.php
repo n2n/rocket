@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\bool\command;
 
 use rocket\spec\ei\component\field\impl\bool\OnlineEiField;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use n2n\l10n\N2nLocale;
@@ -34,6 +34,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const CONTROL_KEY = 'online_status';
@@ -53,15 +54,15 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		$this->onlineEiField = $onlineEiField;
 	}
 		
-	public function lookupController(EiState $eiState) {
-		$controller = $eiState->getN2nContext()->lookup(OnlineController::class);
+	public function lookupController(Eiu $eiu): Controller {
+		$controller = $eiu->lookup(OnlineController::class);
 		$controller->setOnlineEiField($this->onlineEiField);
 		return $controller;
 	}
 	
 	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		$eiMapping = $eiu->entry()->getEiMapping();
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection(Rocket::NS, $request->getN2nLocale());
 		$eiSelection = $eiMapping->getEiSelection();
@@ -77,7 +78,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 			$controlButton->setIconType(IconType::ICON_MINUS_CIRCLE);
 		}
 		
-		$contextPath = $view->getHttpContext()->getControllerContextPath($eiState->getControllerContext());
+		$contextPath = $view->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext());
 		$controlButton->setAttrs(array('class' => 'rocket-online-cmd',
 				'data-online-url' => (string) $contextPath->ext($this->getId(), 'online', $eiMapping->getIdRep()),
 				'data-offline-url' => (string) $contextPath->ext($this->getId(), 'offline', $eiMapping->getIdRep())));

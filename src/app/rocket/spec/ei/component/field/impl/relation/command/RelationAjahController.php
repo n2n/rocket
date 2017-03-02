@@ -50,9 +50,9 @@ class RelationAjahController extends ControllerAdapter {
 		} catch (InvalidPropertyExpressionException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
-		$eiStateUtils = $this->eiCtrlUtils->getEiuFrame();
-		$mappingForm = new MappingForm($eiStateUtils->getGenericLabel(), null, 
-				$eiStateUtils->createNewEntryForm($draft->toBool()));
+		$eiFrameUtils = $this->eiCtrlUtils->getEiuFrame();
+		$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), null, 
+				$eiFrameUtils->createNewEntryForm($draft->toBool()));
 		
 		$view = $this->createView('\rocket\spec\ei\component\field\impl\relation\view\pseudoMappingForm.html',
 				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath));

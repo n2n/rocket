@@ -69,4 +69,12 @@ class Eiu implements Lookupable {
 		
 		throw new EiuPerimeterException('EiuField is unavailable.');
 	}
+	
+	/**
+	 * @param string|\ReflectionClass $lookupId
+	 * @return mixed
+	 */
+	public function lookup($lookupId, bool $required = true) {
+		return $this->frame()->getN2nContext()->lookup($lookupId, $required);
+	}
 }

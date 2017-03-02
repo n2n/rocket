@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
 use rocket\spec\ei\manage\control\EntryControlComponent;
@@ -32,6 +32,7 @@ use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'order';
@@ -52,9 +53,8 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		$this->orderEiField = $orderEiField;
 	}
 		
-	public function lookupController(EiState $eiState) {
-		$controller = new OrderController($eiState);
-		$eiState->getN2nContext()->magicInit($controller);
+	public function lookupController(Eiu $eiu): Controller {
+		$controller = $eiu->lookup(OrderController::class);
 		$controller->setOrderEiField($this->orderEiField);
 		return $controller;
 	}
@@ -66,22 +66,22 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		if (!$eiu->gui()->isViewModeOverview()) return array();
 		
 		$eiMapping = $eiu->entry()->getEiMapping();
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
 		
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'before', $eiMapping->getIdRep())
-								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))), 
+								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))), 
 						new ControlButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'after', $eiMapping->getIdRep())
-								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
+								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-order-after-cmd'))));

@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\critmod\quick\impl\form;
 
 use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
@@ -58,25 +58,25 @@ class QuickSearchForm implements Dispatchable {
 		$this->searchStr = null;
 	}
 
-	public function applyToEiState(EiState $eiState, bool $tmp) {
+	public function applyToEiFrame(EiFrame $eiFrame, bool $tmp) {
 		if ($this->searchStr === null) return;
 		
 		if (null !== ($cc = $this->quickSearchDefinition->buildCriteriaConstraint($this->searchStr))) {
-			$eiState->getCriteriaConstraintCollection()->add(
+			$eiFrame->getCriteriaConstraintCollection()->add(
 					($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
 					$cc);
 		}
 	}
 	
-	public static function create(EiState $eiState, CritmodSaveDao $critmodSaveDao, string $stateKey = null) {
-		$eiMask = $eiState->getContextEiMask();
+	public static function create(EiFrame $eiFrame, CritmodSaveDao $critmodSaveDao, string $stateKey = null) {
+		$eiMask = $eiFrame->getContextEiMask();
 		
 		if ($stateKey === null) {
 			$stateKey = uniqid();
 		}
 		
-		return new QuickSearchForm($eiMask->getEiEngine()->createQuickSearchDefinition($eiState), $critmodSaveDao, 
+		return new QuickSearchForm($eiMask->getEiEngine()->createQuickSearchDefinition($eiFrame), $critmodSaveDao, 
 				$stateKey, CritmodSaveDao::buildCategoryKey($stateKey, 
-				$eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask));
+				$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask));
 	}
 }

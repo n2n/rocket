@@ -24,16 +24,16 @@ namespace rocket\spec\ei\manage;
 use n2n\util\ex\IllegalStateException;
 
 class EiRelation {
-	private $eiState;
+	private $eiFrame;
 	private $eiSelection;
 	
-	public function __construct(EiState $eiState, EiSelection $eiSelection = null) {
-		$this->eiState = $eiState;
+	public function __construct(EiFrame $eiFrame, EiSelection $eiSelection = null) {
+		$this->eiFrame = $eiFrame;
 		$this->eiSelection = $eiSelection;
 	}
 	
-	public function getEiState() {
-		return $this->eiState;
+	public function getEiFrame() {
+		return $this->eiFrame;
 	}
 	
 	public function hasEiSelection(): bool {

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\command\impl\tree;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\command\impl\tree\controller\TreeMoveController;
@@ -34,6 +34,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'tree-move';
@@ -53,43 +54,42 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return 'Tree Move';
 	}
 	
-	public function lookupController(EiState $eiState) {
-		$controller = new TreeMoveController($eiState);
-		$eiState->getN2nContext()->magicInit($controller);
-		return $controller;
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(TreeMoveController::class);
 	}
 	
 	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	
-		if (!$eiu->gui()->isViewModeOverview()) return array();
+		if (!$eiu->gui()->isViewModeOverview()) {
+			return array();
+		}
 	
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
 		
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
-		
 	
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'before', $eiMapping->getIdRep())
-								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
+								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_before_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'after', $eiMapping->getIdRep())
-								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
+								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_after_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-order-after-cmd'))),
 				self::CONTROL_INSERT_CHILD_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiState->getControllerContext())
+						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'child', $eiMapping->getIdRep())
-								->toUrl(array('refPath' => (string) $eiState->getCurrentUrl($httpContext))),
+								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_child_label'),
 								$dtc->translate('ei_impl_tree_insert_child_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_RIGHT, array('class' => 'rocket-order-child-cmd'))));

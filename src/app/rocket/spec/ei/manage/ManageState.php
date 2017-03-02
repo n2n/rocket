@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage;
 use n2n\web\http\controller\ControllerContext;
 use n2n\context\RequestScoped;
 use rocket\spec\ei\EiSpec;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\user\model\LoginContext;
 use n2n\core\container\N2nContext;
 use rocket\user\bo\RocketUser;
@@ -32,7 +32,7 @@ use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\EiStateFactory;
+use rocket\spec\ei\manage\EiFrameFactory;
 use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\ei\security\EiPermissionManager;
 use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
@@ -42,7 +42,7 @@ class ManageState implements RequestScoped {
 	private $selectedMenuItem;
 	private $user;
 	private $eiPermissionManager;
-	private $eiStates = array();
+	private $eiFrames = array();
 	private $entityManager;
 	private $draftManager;
 	private $vetoableRemoveQueue;
@@ -133,53 +133,53 @@ class ManageState implements RequestScoped {
 		$this->vetoableRemoveQueue = $vetoableRemoveQueue;
 	}
 	
-	public function createEiState(EiMask $contextEiMask, ControllerContext $controllerContext) {
-		$eiStateFactory = new EiStateFactory($contextEiMask);
+	public function createEiFrame(EiMask $contextEiMask, ControllerContext $controllerContext) {
+		$eiFrameFactory = new EiFrameFactory($contextEiMask);
 		
-		$parentEiState = null;
-		if (sizeof($this->eiStates)) {
-			$parentEiState = end($this->eiStates);
+		$parentEiFrame = null;
+		if (sizeof($this->eiFrames)) {
+			$parentEiFrame = end($this->eiFrames);
 		}
 		
-		return $this->eiStates[] = $eiStateFactory->create($controllerContext, $this, false, $parentEiState);
+		return $this->eiFrames[] = $eiFrameFactory->create($controllerContext, $this, false, $parentEiFrame);
 	}
 	
 	public function isActive(): bool {
-		return !empty($this->eiStates);
+		return !empty($this->eiFrames);
 	}
 	
 	/**
 	 * 
 	 * @param EiSpec $eiSpec
-	 * @throws UnsuitableEiStateException
-	 * @return \rocket\spec\ei\manage\EiState
+	 * @throws UnsuitableEiFrameException
+	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
-	public function peakEiState(EiSpec $eiSpec = null): EiState {
-		if (!sizeof($this->eiStates)) {
-			throw new ManageException('No active EiStates found.');
+	public function peakEiFrame(EiSpec $eiSpec = null): EiFrame {
+		if (!sizeof($this->eiFrames)) {
+			throw new ManageException('No active EiFrames found.');
 		}  
 		
-		end($this->eiStates);
-		$eiState = current($this->eiStates);
-// 		if (isset($eiSpec) && !$eiState->getContextEiMask()->getEiEngine()->getEiSpec()->equals($eiSpec)) {
-// 			throw new UnsuitableEiStateException(
-// 					'Latest EiState is not assigned to passed  (id: ' . $eiSpec->getId() . ').');
+		end($this->eiFrames);
+		$eiFrame = current($this->eiFrames);
+// 		if (isset($eiSpec) && !$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->equals($eiSpec)) {
+// 			throw new UnsuitableEiFrameException(
+// 					'Latest EiFrame is not assigned to passed  (id: ' . $eiSpec->getId() . ').');
 // 		}
 
-		return $eiState;
+		return $eiFrame;
 	}
 	
-	public function popEiStateBy(EiSpec $eiSpec) {
-		$this->peakEiState($eiSpec);
-		return array_pop($this->eiStates);
+	public function popEiFrameBy(EiSpec $eiSpec) {
+		$this->peakEiFrame($eiSpec);
+		return array_pop($this->eiFrames);
 	}
 	
 	public function getMainId() {
-		if (!sizeof($this->eiStates)) {
+		if (!sizeof($this->eiFrames)) {
 			return null;
 		}
 		
-		reset($this->eiStates);
-		return current($this->eiStates)->getId();
+		reset($this->eiFrames);
+		return current($this->eiFrames)->getId();
 	}
 }

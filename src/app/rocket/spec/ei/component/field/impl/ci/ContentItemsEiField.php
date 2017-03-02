@@ -37,7 +37,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 
 class ContentItemsEiField extends EmbeddedOneToManyEiField {
 	private $panelConfigs = array();
@@ -110,28 +110,28 @@ class ContentItemsEiField extends EmbeddedOneToManyEiField {
 	public function buildGuiElement(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
 	
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationMappable = $mapping->getMappable(EiFieldPath::from($this));
-		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
+		$targetReadEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		$panelConfigs = $this->determinePanelConfigs($eiu);
 	
 		$contentItemEditable = null;
-		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiState)) {
-			$targetEditEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $mapping);
+		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiFrame)) {
+			$targetEditEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 				
-			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationMappable, $targetReadEiState,
-					$targetEditEiState, $panelConfigs);
+			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationMappable, $targetReadEiFrame,
+					$targetEditEiFrame, $panelConfigs);
 	
 			$draftMode = $mapping->getEiSelection()->isDraft();
 			$contentItemEditable->setDraftMode($draftMode);
 				
-			if ($targetEditEiState->getEiExecution()->isGranted()) {
+			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
 				$contentItemEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl($mapping,
-						$draftMode, $eiState, $eiu->frame()->getHttpContext()));
+						$draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}
 		
 		return new ContentItemGuiElement($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
-				$relationMappable, $targetReadEiState, $contentItemEditable);
+				$relationMappable, $targetReadEiFrame, $contentItemEditable);
 	}
 }

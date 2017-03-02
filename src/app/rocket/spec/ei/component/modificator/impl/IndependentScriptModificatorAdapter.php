@@ -26,7 +26,7 @@ use rocket\spec\ei\component\impl\IndependentEiComponentAdapter;
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\impl\DefaultEiConfigurator;
 
@@ -43,7 +43,7 @@ abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAda
 		return $obj instanceof EiModificator && parent::equals($obj);
 	}
 
-	public function setupEiState(EiState $eiState) {}
+	public function setupEiFrame(EiFrame $eiFrame) {}
 	
 	public function setupEiMapping(Eiu $eiu) {}
 	

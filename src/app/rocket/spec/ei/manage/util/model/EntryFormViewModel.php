@@ -77,7 +77,7 @@ class EntryFormViewModel {
 		$entryGuiModel = $entryModelForm->getEntryGuiModel();
 		$eiMask = $entryGuiModel->getEiMask();
 		
-		return $eiMask->createBulkyView($entryForm->getEiState(), new EntryGui($entryGuiModel, $propertyPath));
+		return $eiMask->createBulkyView($entryForm->getEiFrame(), new EntryGui($entryGuiModel, $propertyPath));
 		
 	}
 	
@@ -93,7 +93,7 @@ class EntryFormViewModel {
 			$entryGuiModel = $entryModelForm->getEntryGuiModel();
 			$eiMask = $entryGuiModel->getEiMask();
 			
-			$editViews[$eiSpecId] = $eiMask->createBulkyView($entryForm->getEiState(), 
+			$editViews[$eiSpecId] = $eiMask->createBulkyView($entryForm->getEiFrame(), 
 					new EntryGui($entryGuiModel, $propertyPath));
 		}
 		return $editViews;

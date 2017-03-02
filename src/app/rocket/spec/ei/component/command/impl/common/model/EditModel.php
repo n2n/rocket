@@ -41,23 +41,23 @@ class EditModel implements Dispatchable {
 	private $draftingAllowed;
 	private $publishingAllowed;
 		
-	private $eiStateUtils;
+	private $eiFrameUtils;
 	private $entryForm;
 	private $entryModel;
 		
-	public function __construct(EiuFrame $eiStateUtils, $draftingAllowed, $publishingAllowed) {
-		$this->eiStateUtils = $eiStateUtils;
+	public function __construct(EiuFrame $eiFrameUtils, $draftingAllowed, $publishingAllowed) {
+		$this->eiFrameUtils = $eiFrameUtils;
 	}
 	
 	public function initialize(EiMapping $eiMapping) {
-		$this->entryForm = $this->eiStateUtils->createEntryFormFromMapping($eiMapping);
+		$this->entryForm = $this->eiFrameUtils->createEntryFormFromMapping($eiMapping);
 
 		IllegalStateException::assertTrue(!$this->entryForm->isChoosable());
 		$this->entryModel = $this->entryForm->getChosenEntryModelForm();
 	}
 	
-// 	public function getEiState() {
-// 		return $this->entryManager->getEiState();
+// 	public function getEiFrame() {
+// 		return $this->entryManager->getEiFrame();
 // 	}
 	
 	public function setPublishAllowed($publishAllowed) {
@@ -97,7 +97,7 @@ class EditModel implements Dispatchable {
 		$eiMapping = $this->entryForm->buildEiMapping();
 		
 		if ($eiMapping->save()) {
-			$this->eiStateUtils->persist($eiMapping);
+			$this->eiFrameUtils->persist($eiMapping);
 			return true;
 		}
 		

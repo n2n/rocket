@@ -28,7 +28,7 @@ use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiFieldPath;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -73,8 +73,8 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 				EiFieldPath::from($this)));
 	}
 
-	public function buildManagedFilterField(EiState $eiState) {
-		return $this->buildFilterField($eiState->getN2nContext());
+	public function buildManagedFilterField(EiFrame $eiFrame) {
+		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 
 	public function buildFilterField(N2nContext $n2nContext) {
@@ -89,8 +89,8 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 		return null;
 	}
 	
-	public function buildManagedSortField(EiState $eiState) {
-		return $this->buildSortField($eiState->getN2nContext());
+	public function buildManagedSortField(EiFrame $eiFrame) {
+		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
 	public function buildSortField(N2nContext $n2nContext) {
@@ -105,7 +105,7 @@ abstract class AlphanumericEiField extends DraftableEiFieldAdapter implements Fi
 		return null;
 	}
 	
-	public function buildQuickSearchField(EiState $eiState) {
+	public function buildQuickSearchField(EiFrame $eiFrame) {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
 			return new LikeQuickSearchField(CrIt::p($entityProperty));
 		}

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\common;
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
@@ -42,6 +42,7 @@ use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
 		PrivilegedEiCommand {
@@ -56,12 +57,11 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	public function getTypeName(): string {
 		return 'Detail';
 	}
-		
-	public function lookupController(EiState $eiState) {
-		$detailController = new DetailController();
-		$eiState->getN2nContext()->magicInit($detailController);
-		return $detailController;
+	
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(DetailController::class);
 	}
+	
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
@@ -99,7 +99,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				true, ControlButton::TYPE_DEFAULT, $iconType);
 		
 		$hrefControls = array(self::CONTROL_DETAIL_KEY 
-				=> HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl(), $controlButton));
+				=> HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl(), $controlButton));
 		
 		$previewType = $eiuEntry->getPreviewType();
 		if ($previewType === null) {
@@ -117,7 +117,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 						array('entry' => $eiuFrame->getGenericLabel())),
 				true, ControlButton::TYPE_DEFAULT, IconType::ICON_EYE);
 		
-		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl(), $controlButton);
+		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl(), $controlButton);
 		return $hrefControls;
 	}
 	

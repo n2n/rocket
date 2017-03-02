@@ -139,7 +139,7 @@ class CkeEiField extends AlphanumericEiField {
 // 	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
 // 	 */
 // 	private function obtainLinkConfigurations(EiMapping $eiMapping, Eiu $eiu) {
-// 		$n2nContext = $eiu->frame()->getEiState()->getN2nContext();
+// 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();
 		
 // 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
 // 		$linkConfigurations = array();

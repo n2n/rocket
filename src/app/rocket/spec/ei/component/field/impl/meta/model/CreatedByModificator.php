@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\meta\model;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 
 class CreatedByModificator extends EiModificatorAdapter {
@@ -32,10 +32,10 @@ class CreatedByModificator extends EiModificatorAdapter {
 		$this->fieldId = $fieldId;
 	}
 		
-	public function setupEiMapping(EiState $eiState, EiMapping $mapping) {
+	public function setupEiMapping(EiFrame $eiFrame, EiMapping $mapping) {
 		if (!$mapping->getEiSelection()->isNew()) return;
 		
-		$mapping->setValue($this->fieldId, $eiState->getManageState()->getUser()->getId());
+		$mapping->setValue($this->fieldId, $eiFrame->getManageState()->getUser()->getId());
 	}
 	
 }

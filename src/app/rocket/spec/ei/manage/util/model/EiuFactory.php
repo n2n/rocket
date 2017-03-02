@@ -1,7 +1,7 @@
 <?php
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\ManageException;
 use n2n\web\http\HttpContextNotAvailableException;
@@ -20,15 +20,15 @@ use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\EiFieldPath;
 
 class EiuFactory {
-	const EI_FRAME_TYPES = array(EiState::class, N2nContext::class);
+	const EI_FRAME_TYPES = array(EiFrame::class, N2nContext::class);
 	const EI_ENTRY_TYPES = array(EiSelection::class, EiMapping::class, LiveEntry::class, Draft::class, 
 			EntryGuiModel::class);
 	const EI_GUI_TYPES = array(EntryGuiModel::class, EiSelectionGui::class);
-	const EI_TYPES = array(EiState::class, N2nContext::class, EiSelection::class, EiMapping::class, LiveEntry::class, 
+	const EI_TYPES = array(EiFrame::class, N2nContext::class, EiSelection::class, EiMapping::class, LiveEntry::class, 
 			Draft::class, EntryGuiModel::class, EiSelectionGui::class, EiField::class, EiFieldPath::class);
 	const EI_FIELD_TYPES = array(EiField::class, EiFieldPath::class);
 	
-	private $eiState;
+	private $eiFrame;
 	private $n2nContext;
 	private $eiSelection;
 	private $eiMapping;
@@ -43,8 +43,8 @@ class EiuFactory {
 	
 	public function applyEiArgs(...$eiArgs) {
 		foreach ($eiArgs as $key => $eiArg) {
-			if ($eiArg instanceof EiState) {
-				$this->eiState = $eiArg;
+			if ($eiArg instanceof EiFrame) {
+				$this->eiFrame = $eiArg;
 				continue;
 			}
 	
@@ -114,8 +114,8 @@ class EiuFactory {
 		
 	}
 	
-// 	public function getEiState(bool $required) {
-// 		if (!$required || $this->eiState !== null) {
+// 	public function getEiFrame(bool $required) {
+// 		if (!$required || $this->eiFrame !== null) {
 // 			return $this->eiSelectionGui;
 // 		}
 	
@@ -171,13 +171,13 @@ class EiuFactory {
 			return $this->eiuFrame;
 		}
 		
-		if ($this->eiState !== null) {
-			return $this->eiuFrame = new EiuFrame($this->eiState);
+		if ($this->eiFrame !== null) {
+			return $this->eiuFrame = new EiuFrame($this->eiFrame);
 		} 
 		
 		if ($this->n2nContext !== null) {
 			try {
-				return new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiState());
+				return new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiFrame());
 			} catch (ManageException $e) {
 				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
 			}
@@ -283,13 +283,13 @@ class EiuFactory {
 			return null;
 		}
 		
-		if ($eiArg instanceof EiState) {
+		if ($eiArg instanceof EiFrame) {
 			return new EiuFrame($eiArg);
 		}
 		
 		if ($eiArg instanceof N2nContext) {
 			try {
-				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiState());
+				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiFrame());
 			} catch (ManageException $e) {
 				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
 			}

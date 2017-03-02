@@ -40,8 +40,8 @@ class DetailModel {
 // 		return $this->entryInfo;
 // 	}
 	
-// 	public function getEiState() {
-// 		return $this->entryManager->getEiState();
+// 	public function getEiFrame() {
+// 		return $this->entryManager->getEiFrame();
 // 	}
 	
 	public function publish() {

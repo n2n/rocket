@@ -37,7 +37,7 @@ class OrderController extends ControllerAdapter {
 	private $eiCtrlUtils;
 	
 	private function _init(ManageState $manageState, EiuCtrl $eiCtrlUtils) {
-		$this->utils = new EiuFrame($manageState->peakEiState());
+		$this->utils = new EiuFrame($manageState->peakEiFrame());
 		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 	
@@ -87,7 +87,7 @@ class OrderController extends ControllerAdapter {
 			$targetOrderIndex++;
 		}
 		
-		$em = $this->utils->getEiState()->getManageState()->getEntityManager();
+		$em = $this->utils->getEiFrame()->getManageState()->getEntityManager();
 		$criteria = $em->createCriteria();
 		$criteria->select('eo')
 				->from($entityProperty->getEntityModel()->getClass(), 'eo')

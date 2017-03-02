@@ -29,7 +29,7 @@
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $treeMoveModel->getTitle()));
 	
-	$eiState = $treeMoveModel->getEiState(); 
+	$eiFrame = $treeMoveModel->getEiFrame(); 
 ?>
 
 <?php $formHtml->open($treeMoveModel, null, null, array('class' => 'rocket-edit-form')) ?>

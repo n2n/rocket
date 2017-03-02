@@ -24,7 +24,8 @@ namespace rocket\spec\ei\component\field\impl\file\command;
 use rocket\spec\ei\component\field\impl\file\FileEiField;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\component\field\impl\file\command\controller\ThumbController;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class ThumbEiCommand extends EiCommandAdapter {
 	const ID_BASE = 'thumb';
@@ -43,8 +44,8 @@ class ThumbEiCommand extends EiCommandAdapter {
 		$this->fileEiField = $fileEiField;
 	}
 		
-	public function lookupController(EiState $eiState) {
-		$thumbController = $eiState->getN2nContext()->lookup(ThumbController::class);
+	public function lookupController(Eiu $eiu): Controller {
+		$thumbController = $eiu->lookup(ThumbController::class);
 		$thumbController->setFileEiField($this->fileEiField);
 		return $thumbController;
 	}

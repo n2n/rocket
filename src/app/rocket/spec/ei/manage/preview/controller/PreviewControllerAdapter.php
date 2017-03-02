@@ -25,7 +25,8 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class PreviewControllerAdapter extends ControllerAdapter implements PreviewController {
 	const PREVIEW_TYPE_DEFAULT = 'default';
@@ -59,7 +60,7 @@ abstract class PreviewControllerAdapter extends ControllerAdapter implements Pre
 		return $this->getPreviewModel()->getEntityObj();
 	}
 	
-	public function getPreviewTypeOptions(EiState $eiState, EiSelection $eiSelection): array {
+	public function getPreviewTypeOptions(Eiu $eiu): array {
 		return array(self::PREVIEW_TYPE_DEFAULT => 'Default');
 	}
 }

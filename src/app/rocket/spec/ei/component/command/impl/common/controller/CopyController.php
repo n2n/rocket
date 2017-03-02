@@ -49,10 +49,10 @@ class CopyController extends ControllerAdapter {
 	}
 	
 	public function index($id) {
-		$eiState = $this->utils->getEiState();
-		$eiSelection = $eiState->getEiSelection();
+		$eiFrame = $this->utils->getEiFrame();
+		$eiSelection = $eiFrame->getEiSelection();
 
-		$em = $eiState->getEntityManager();;
+		$em = $eiFrame->getEntityManager();;
 		$currentObject = $em->find($this->eiSpec->getEntityModel()->getClass(), $id);
 		$newObject = ReflectionContext::createObject($this->eiSpec->getEntityModel()->getClass());
 		foreach ($this->eiSpec->getEiFieldCollection()->toArray() as $eiField) {
@@ -60,7 +60,7 @@ class CopyController extends ControllerAdapter {
 			$accessProxy = $eiField->getObjectPropertyAccessProxy();
 			$accessProxy->setValue($newObject, $eiField->getEntityProperty()->copy($accessProxy->getValue($currentObject)));
 		}
-		$eiState->triggerOnNewObject($em, $newObject);
+		$eiFrame->triggerOnNewObject($em, $newObject);
 		
 		$this->eiSpec->notifyObjectMod(EntityChangeEvent::TYPE_ON_INSERT, $newObject);
 		$em->persist($newObject);
@@ -70,7 +70,7 @@ class CopyController extends ControllerAdapter {
 			$this->redirectToReferer();
 		} catch (NoHttpRefererGivenException $e) {
 			$this->redirectToController($this->eiSpec->getEntryDetailPathExt($eiSelection->toEntryNavPoint()),
-					null, null, $eiState->getControllerContext());
+					null, null, $eiFrame->getControllerContext());
 			return;
 		}
 	}

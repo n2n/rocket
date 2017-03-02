@@ -55,11 +55,11 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
-		$eiState = $this->eiuCtrl->getEiState();
+		$eiFrame = $this->eiuCtrl->getEiFrame();
 		$stateKey = OverviewAjahController::genStateKey();
-		$critmodForm = CritmodForm::create($eiState, $critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiState, $critmodSaveDao, $stateKey);
-		$listModel = new ListModel($eiState, $this->listSize, $critmodForm, $quickSearchForm);
+		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
+		$listModel = new ListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if ($pageNo === null) {
 			$pageNo = 1;
@@ -73,9 +73,9 @@ class OverviewController extends ControllerAdapter {
 		
 		$listView = null;
 		if ($listModel->isTree()) {
-			$listView = $eiState->getContextEiMask()->createTreeView($eiState, $listModel->getEntryGuiTree());
+			$listView = $eiFrame->getContextEiMask()->createTreeView($eiFrame, $listModel->getEntryGuiTree());
 		} else {
-			$listView = $eiState->getContextEiMask()->createListView($eiState, $listModel->getEntryGuis());
+			$listView = $eiFrame->getContextEiMask()->createListView($eiFrame, $listModel->getEntryGuis());
 		}
 
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
@@ -95,7 +95,7 @@ class OverviewController extends ControllerAdapter {
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$pageNo = $pageNo->toNumericOrReject();
-			$this->eiuCtrl->getEiState()->setCurrentUrlExt(
+			$this->eiuCtrl->getEiFrame()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
 		}
 				
@@ -107,8 +107,8 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
-		$eiState = $this->eiuCtrl->getEiState();
-		$draftListModel = new DraftListModel($eiState, $this->listSize);
+		$eiFrame = $this->eiuCtrl->getEiFrame();
+		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		
 		if ($pageNo === null) {
 			$pageNo = 1;
@@ -120,7 +120,7 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$listView = $eiState->getContextEiMask()->createListView($eiState, $draftListModel->getEntryGuis());
+		$listView = $eiFrame->getContextEiMask()->createListView($eiFrame, $draftListModel->getEntryGuis());
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
 		
@@ -136,7 +136,7 @@ class OverviewController extends ControllerAdapter {
 	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftAjahController $overviewDraftAjahController,
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
-			$this->eiuCtrl->getEiState()->setCurrentUrlExt(
+			$this->eiuCtrl->getEiFrame()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
 		}
 
@@ -144,7 +144,7 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function doDelete($pageNo = null) {
-		$eiState = $this->manageState->peakEiState();
+		$eiFrame = $this->manageState->peakEiFrame();
 		
 // 		$this->manageState->getDraftManager()->findRemoved();
 	}

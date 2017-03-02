@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\modificator\impl\date;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use rocket\spec\ei\component\field\ObjectPropertyEiField;
@@ -39,7 +39,7 @@ class LastModEiModificator extends EiModificatorAdapter {
 		$eiSelection = $eiMapping->getEiSelection();
 		$that = $this;
 		$eiMapping->registerListener(new OnWriteMappingListener(function() 
-				use ($eiState, $eiSelection, $that) {
+				use ($eiFrame, $eiSelection, $that) {
 			$this->eiField->getObjectPropertyAccessProxy()->setValue($eiSelection->getCurrentEntity(), new \DateTime());
 		}));
 	}

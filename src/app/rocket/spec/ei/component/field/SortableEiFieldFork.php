@@ -21,16 +21,16 @@
  */
 namespace rocket\spec\ei\component\field;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 
 interface SortableEiFieldFork extends EiField {
 	
 	/**
-	 * @param EiState $eiState
+	 * @param EiFrame $eiFrame
 	 * @return \rocket\spec\ei\manage\critmod\sort\SortFieldFork
 	 */
-	public function buildManagedSortFieldFork(EiState $eiState);
+	public function buildManagedSortFieldFork(EiFrame $eiFrame);
 	
 	/**
 	 * @param N2nContext $n2nContext

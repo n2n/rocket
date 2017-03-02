@@ -38,5 +38,5 @@ interface EntryControlComponent {
 	 * @param HtmlView $view
 	 * @return \rocket\spec\ei\manage\control\ControlButton[]
 	 */
-	public function createEntryHrefControls(Eiu $entryGuiUtils, HtmlView $view): array;
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array;
 }

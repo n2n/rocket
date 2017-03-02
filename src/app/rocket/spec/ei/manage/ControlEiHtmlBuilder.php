@@ -34,11 +34,11 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ControlEiHtmlBuilder {
 	private $view;
-	private $eiState;
+	private $eiFrame;
 
-	public function __construct(HtmlView $view, EiState $eiState) {
+	public function __construct(HtmlView $view, EiFrame $eiFrame) {
 		$this->view = $view;
-		$this->eiState = $eiState;
+		$this->eiFrame = $eiFrame;
 	}
 	
 	public function overallControlList() {
@@ -47,7 +47,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getOverallControlList(): UiComponent {
 		$ul = new HtmlElement('ul'/*, array('class' => 'rocket-main-controls')*/);
-		foreach ($this->eiState->getContextEiMask()->createOverallHrefControls($this->eiState, $this->view) as $control) {
+		foreach ($this->eiFrame->getContextEiMask()->createOverallHrefControls($this->eiFrame, $this->view) as $control) {
 			$ul->appendContent(new HtmlElement('li', null, $control->createUiComponent(false)));
 		}
 	
@@ -59,8 +59,8 @@ class ControlEiHtmlBuilder {
 	}
 	
 	public function getEntryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
-		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls(
-				new EiuGui($entryGuiModel, new EiuEntry($entryGuiModel, $this->eiState)), $this->view);
+		$entryControls = $this->eiFrame->getContextEiMask()->createEntryHrefControls(
+				new EiuGui($entryGuiModel, new EiuEntry($entryGuiModel, $this->eiFrame)), $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);
 	}
@@ -70,8 +70,8 @@ class ControlEiHtmlBuilder {
 	}
 	
 	public function getEntryControlList($eiEntryObj, int $viewMode, $useIcons = false) {
-		$entryGuiUtils = new EiuGui($eiEntryObj, $viewMode, $this->eiState);
-		return $this->createControlList($this->eiState->getContextEiMask()
+		$entryGuiUtils = new EiuGui($eiEntryObj, $viewMode, $this->eiFrame);
+		return $this->createControlList($this->eiFrame->getContextEiMask()
 				->createEntryHrefControls($entryGuiUtils, $this->view), $useIcons);
 	}
 	

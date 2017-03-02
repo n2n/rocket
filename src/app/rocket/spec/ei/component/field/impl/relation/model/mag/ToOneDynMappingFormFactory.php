@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
 
 class ToOneDynMappingFormFactory {
-	private $eiStateUtils;
+	private $eiFrameUtils;
 	private $inaccessibleCurrentEiSelection;
 	private $currentEiMapping;
 	private $currentMappingForm;
@@ -33,8 +33,8 @@ class ToOneDynMappingFormFactory {
 	private $newMappingForm;
 	private $draftMode = false;
 	
-	public function __construct(EiuFrame $eiStateUtils) {
-		$this->eiStateUtils = $eiStateUtils;
+	public function __construct(EiuFrame $eiFrameUtils) {
+		$this->eiFrameUtils = $eiFrameUtils;
 	}
 	
 	public function setEiMapping(EiMapping $eiMapping = null) {
@@ -47,21 +47,21 @@ class ToOneDynMappingFormFactory {
 		
 		if (!$eiMapping->isAccessible()) {
 			$this->currentMappingForm = new MappingForm(
-					$this->eiStateUtils->createIdentityString($eiMapping->getEiSelection()),
+					$this->eiFrameUtils->createIdentityString($eiMapping->getEiSelection()),
 					$eiMapping);
 			return;
 		}
 		
 		if ($eiMapping->getEiSelection()->isNew()) {
 			$this->newMappingForm = new MappingForm(
-					$this->eiStateUtils->getGenericLabel(), null,
-					$this->eiStateUtils->createEntryFormFromMapping($eiMapping));
+					$this->eiFrameUtils->getGenericLabel(), null,
+					$this->eiFrameUtils->createEntryFormFromMapping($eiMapping));
 			return;
 		}
 		
 		$this->currentMappingForm = new MappingForm(
-				$this->eiStateUtils->getGenericLabel($eiMapping), null,
-				$this->eiStateUtils->createEntryFormFromMapping($eiMapping));
+				$this->eiFrameUtils->getGenericLabel($eiMapping), null,
+				$this->eiFrameUtils->createEntryFormFromMapping($eiMapping));
 	}
 
 	public function getCurrentMappingForm() {
@@ -88,8 +88,8 @@ class ToOneDynMappingFormFactory {
 		if (!$this->newMappingFormAvailable) return null;
 			
 		if ($this->newMappingForm === null) {
-			$this->newMappingForm = new MappingForm($this->eiStateUtils->getGenericLabel(), null,
-					$this->eiStateUtils->createNewEntryForm($this->draftMode));
+			$this->newMappingForm = new MappingForm($this->eiFrameUtils->getGenericLabel(), null,
+					$this->eiFrameUtils->createNewEntryForm($this->draftMode));
 		}
 		
 		return $this->newMappingForm;

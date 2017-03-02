@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiFieldRelation;
 
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\persistence\orm\property\relation\Relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use rocket\spec\ei\component\field\impl\adapter\StandardEditDefinition;
@@ -119,27 +119,27 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 	 */
 	public function buildGuiElement(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
-		$eiState = $eiu->frame()->getEiState();
+		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationMappable = $mapping->getMappable(EiFieldPath::from($this));
-		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
+		$targetReadEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		
 		$toOneEditable = null;
-		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiState)) {
-			$targetEditEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $mapping);
+		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiFrame)) {
+			$targetEditEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(),
-					$relationMappable, $targetReadEiState, $targetEditEiState);
+					$relationMappable, $targetReadEiFrame, $targetEditEiFrame);
 			
 			$toOneEditable->setSelectOverviewToolsUrl($this->eiFieldRelation->buildTargetOverviewToolsUrl(
-					$eiState, $eiu->frame()->getHttpContext()));
+					$eiFrame, $eiu->frame()->getHttpContext()));
 			
-			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiu->frame()->getEiState())
-					 && $targetEditEiState->getEiExecution()->isGranted()) {
+			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiu->frame()->getEiFrame())
+					 && $targetEditEiFrame->getEiExecution()->isGranted()) {
 				$toOneEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, false, $eiState, $eiu->getRequest()));
+						$mapping, false, $eiFrame, $eiu->getRequest()));
 			}
 		}
 		
-		return new ManyToOneGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiState, $toOneEditable);		
+		return new ManyToOneGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiFrame, $toOneEditable);		
 	}
 	
 	/**
@@ -195,13 +195,13 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 		$this->getObjectPropertyAccessProxy()->setValue($object, $value);
 	}
 	
-	public function buildManagedFilterField(EiState $eiState) {
-		$filterField = parent::buildManagedFilterField($eiState);
+	public function buildManagedFilterField(EiFrame $eiFrame) {
+		$filterField = parent::buildManagedFilterField($eiFrame);
 		CastUtils::assertTrue($filterField instanceof RelationFilterField);
 		
 		$that = $this;
-		$filterField->setTargetSelectUrlCallback(function (HttpContext $httpContext) use($that, $eiState) {
-			return $that->eiFieldRelation->buildTargetOverviewToolsUrl($eiState, $httpContext);
+		$filterField->setTargetSelectUrlCallback(function (HttpContext $httpContext) use($that, $eiFrame) {
+			return $that->eiFieldRelation->buildTargetOverviewToolsUrl($eiFrame, $httpContext);
 		});
 				
 		return $filterField;

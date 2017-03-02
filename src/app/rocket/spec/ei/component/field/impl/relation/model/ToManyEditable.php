@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\Mag;
@@ -34,21 +34,21 @@ class ToManyEditable implements Editable {
 	private $min;
 	private $max;
 	private $toManyMappable;
-	private $targetReadEiState;
-	private $targetEditEiState;
+	private $targetReadEiFrame;
+	private $targetEditEiFrame;
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
 	private $targetOrderEiFieldPath;
 	
 	public function __construct(string $label, ToManyMappable $toManyMappable,
-			EiState $targetReadEiState, EiState $targetEditEiState, int $min, int $max = null) {
+			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, int $min, int $max = null) {
 		$this->label = $label;
 		$this->min = $min;
 		$this->max = $max;
 		$this->toManyMappable = $toManyMappable;
-		$this->targetReadEiState = $targetReadEiState;
-		$this->targetEditEiState = $targetEditEiState;
+		$this->targetReadEiFrame = $targetReadEiFrame;
+		$this->targetEditEiFrame = $targetEditEiFrame;
 	}
 
 	/**
@@ -86,7 +86,7 @@ class ToManyEditable implements Editable {
 	private $toManyMag;
 	
 	public function createMag(string $propertyName): Mag {
-		$this->toManyMag = new ToManyMag($propertyName, $this->label, $this->targetReadEiState, $this->targetEditEiState, 
+		$this->toManyMag = new ToManyMag($propertyName, $this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
 				$this->min, $this->max);
 		$this->toManyMag->setValue($this->toManyMappable->getValue());
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);

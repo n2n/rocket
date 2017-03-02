@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\control;
 
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
 use rocket\spec\ei\component\command\EiCommand;
 
@@ -47,10 +47,10 @@ class HrefControl {
 		return $this->controlButton->toButton($this->href, $iconOnly);
 	}
 	
-	public static function create(EiState $eiState, EiCommand $eiCommand, Url $urlExt = null, 
+	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, Url $urlExt = null, 
 			ControlButton $controlButton) {
 		return new HrefControl(
-				$eiState->getN2nContext()->getHttpContext()->getControllerContextPath($eiState->getControllerContext())
+				$eiFrame->getN2nContext()->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())
 						->ext($eiCommand->getId())->toUrl()->ext($urlExt), 
 				$controlButton);
 	}

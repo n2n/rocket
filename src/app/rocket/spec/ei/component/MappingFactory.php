@@ -25,7 +25,7 @@ use rocket\spec\ei\component\field\EiFieldCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\security\PrivilegeConstraint;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\security\InaccessibleEntryException;
@@ -72,18 +72,18 @@ class MappingFactory {
 
 	/**
 	 * @param MappingDefinition $mappingDefinition
-	 * @param EiState $eiState
+	 * @param EiFrame $eiFrame
 	 * @param EiSelection $eiSelection
 	 * @param PrivilegeConstraint $privilegeConstraint
 	 * @throws InaccessibleEntryException
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 */
-	public function createEiMapping(EiState $eiState, EiSelection $eiSelection, EiMapping $copyFrom = null) {
+	public function createEiMapping(EiFrame $eiFrame, EiSelection $eiSelection, EiMapping $copyFrom = null) {
 		$eiMapping = new EiMapping($eiSelection);
-		$eiu = new Eiu($eiState, $eiMapping);
+		$eiu = new Eiu($eiFrame, $eiMapping);
 		
 		$this->assembleMappingProfile($eiu, $eiMapping, $copyFrom);
-		$eiState->restrictEiMapping($eiMapping);
+		$eiFrame->restrictEiMapping($eiMapping);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiMapping($eiu);

@@ -93,27 +93,27 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	 */
 	public function buildGuiElement(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
-		$eiState = $eiu->frame()->getEiState();
-		$targetReadEiState = $this->eiFieldRelation->createTargetReadPseudoEiState($eiState, $mapping);
+		$eiFrame = $eiu->frame()->getEiFrame();
+		$targetReadEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 	
 		$toManyEditable = null;
-		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiState)) {
-			$targetEditEiState = $this->eiFieldRelation->createTargetEditPseudoEiState($eiState, $mapping);
+		if (!$this->eiFieldRelation->isReadOnly($mapping, $eiFrame)) {
+			$targetEditEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), 
-					$mapping->getMappable(EiFieldPath::from($this)), $targetReadEiState,
-					$targetEditEiState, $this->getRealMin(), $this->getMax());
+					$mapping->getMappable(EiFieldPath::from($this)), $targetReadEiFrame,
+					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
 				
 			$toManyEditable->setSelectOverviewToolsUrl($this->eiFieldRelation->buildTargetOverviewToolsUrl(
-					$eiState, $eiu->frame()->getHttpContext()));
+					$eiFrame, $eiu->frame()->getHttpContext()));
 				
-			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiState)
-					&& $targetEditEiState->getEiExecution()->isGranted()) {
+			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiFrame)
+					&& $targetEditEiFrame->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, false, $eiState, $eiu->frame()->getHttpContext()));
+						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}
 			
-		return new ToManySelectGuiElement($this, $eiu, $targetReadEiState, $toManyEditable);
+		return new ToManySelectGuiElement($this, $eiu, $targetReadEiFrame, $toManyEditable);
 	}
 	
 	/**

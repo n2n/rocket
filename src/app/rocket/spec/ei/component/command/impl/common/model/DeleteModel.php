@@ -29,7 +29,7 @@ class DeleteModel extends CommandEntryModelAdapter {
 			return;
 		}
 		
-		$this->eiState->triggerOnRemoveObject($this->em, $this->eiSelection);
+		$this->eiFrame->triggerOnRemoveObject($this->em, $this->eiSelection);
 		$this->em->remove($this->eiSelection->getLiveEntityObj());
 	}
 }

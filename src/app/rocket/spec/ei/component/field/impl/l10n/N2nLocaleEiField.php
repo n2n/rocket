@@ -37,7 +37,7 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use n2n\web\dispatch\mag\Mag;
@@ -78,7 +78,7 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new EnumMag($propertyName, $this->getLabelLstr(), $this->buildN2nLocaleArray(
-				$eiu->frame()->getEiState()->getN2nLocale()), null, $this->isMandatory($eiu));
+				$eiu->frame()->getEiFrame()->getN2nLocale()), null, $this->isMandatory($eiu));
 	}
 	
 	public function saveMagValue(Mag $mag, Eiu $eiu) {
@@ -136,8 +136,8 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 // 		return count($this->n2nLocales) > 1;
 // 	}
 
-	public function buildManagedFilterField(EiState $eiState) {
-		return $this->buildFilterField($eiState->getN2nContext());
+	public function buildManagedFilterField(EiFrame $eiFrame) {
+		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
 	public function buildFilterField(N2nContext $n2nContext) {
@@ -149,8 +149,8 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 		return null;
 	}
 	
-	public function buildManagedSortField(EiState $eiState) {
-		return $this->buildSortField($eiState->getN2nContext());
+	public function buildManagedSortField(EiFrame $eiFrame) {
+		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
 	public function buildSortField(N2nContext $n2nContext) {

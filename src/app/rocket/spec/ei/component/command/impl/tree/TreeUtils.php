@@ -27,7 +27,7 @@
 // use rocket\spec\ei\component\command\EiCommand;
 // use rocket\spec\core\IncompatibleSpecException;
 // use rocket\spec\ei\EiSpec;
-// use rocket\spec\ei\manage\EiState;
+// use rocket\spec\ei\manage\EiFrame;
 
 // class TreeUtils {
 // 	public static function findTreeField(EiSpec $eiSpec, &$treeLeftEiField = null, 
@@ -42,12 +42,12 @@
 // 		}
 // 	}
 	
-// 	public static function initializeController(EiCommand $eiCommand, TreeController $treeController, EiState $eiState) {
+// 	public static function initializeController(EiCommand $eiCommand, TreeController $treeController, EiFrame $eiFrame) {
 // 		$eiSpec = $eiCommand->getEiSpec();
 // 		$treeLeftEiField = null;
 // 		$treeRightEiField = null;
 // 		$treeRootIdEiField = null;
-// 		foreach ($eiState->getContextEiMask()->getEiDef()->getEiFieldCollection() as  $eiField) {
+// 		foreach ($eiFrame->getContextEiMask()->getEiDef()->getEiFieldCollection() as  $eiField) {
 // 			if ($eiField instanceof TreeLeftEiField) {
 // 				$treeLeftEiField = $eiField;
 // 			} else if ($eiField instanceof TreeRightEiField) {
@@ -65,7 +65,7 @@
 
 // 		$treeController->initialize($treeLeftEiField, $treeRightEiField);
 		
-// 		$eiState->getN2nContext()->magicInit($treeController);
+// 		$eiFrame->getN2nContext()->magicInit($treeController);
 // 	}
 
 // 	private static function createIncompatibleSpecException(EiCommand $eiCommand, $missingEiField) {

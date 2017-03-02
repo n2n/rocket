@@ -39,7 +39,7 @@
 	
 	$selectedDraft = $entryCommandViewModel->getSelectedDraft();
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiState());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
 ?>
 <h2><?php $html->l10nText('ei_impl_draft_nav_title') ?></h2>
 <div class="rocket-panel rocket-collapsable rocket-history">

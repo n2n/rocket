@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
@@ -70,42 +70,42 @@ class SelectEiFieldRelation extends EiFieldRelation {
 		$this->embeddedAddEnabled = $embeddedAddEnabled;
 	}
 	
-	public function isEmbeddedAddActivated(EiState $eiState) {
-		return $this->isEmbeddedAddEnabled() /*&& !$this->hasRecursiveConflict($eiState)
-				&& $eiState->isEiCommandAvailable($this->embeddedEditPseudoEiCommand)*/;
+	public function isEmbeddedAddActivated(EiFrame $eiFrame) {
+		return $this->isEmbeddedAddEnabled() /*&& !$this->hasRecursiveConflict($eiFrame)
+				&& $eiFrame->isEiCommandAvailable($this->embeddedEditPseudoEiCommand)*/;
 	}
 	
-	protected function configureTargetEiState(EiState $targetEiState, EiState $eiState, 
+	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
 			EiSelection $eiSelection = null, $editCommandRequired = null) {
-		parent::configureTargetEiState($targetEiState, $eiState, $eiSelection, $editCommandRequired);
+		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiSelection, $editCommandRequired);
 		
 // 		if (!$this->isTargetMany()) {
-// 			$targetEiState->setOverviewDisabled(true);
-// 			$targetEiState->setDetailBreadcrumbLabel($this->buildDetailLabel($eiState, $eiSelection));
+// 			$targetEiFrame->setOverviewDisabled(true);
+// 			$targetEiFrame->setDetailBreadcrumbLabel($this->buildDetailLabel($eiFrame, $eiSelection));
 // 			return;
 // 		}
 		
-// 		$targetEiState->setOverviewBreadcrumbLabel($this->buildDetailLabel($eiState, $eiSelection));
+// 		$targetEiFrame->setOverviewBreadcrumbLabel($this->buildDetailLabel($eiFrame, $eiSelection));
 		
 		
 	}
 	
-	protected function buildDetailLabel(EiState $eiState) {
+	protected function buildDetailLabel(EiFrame $eiFrame) {
 		$label = $this->relationEiField->getLabel();
 		
 		do {
-			if ($eiState->isDetailDisabled() 
-					&& null !== ($detaiLabel = $eiState->getDetailBreadcrumbLabel())) {
+			if ($eiFrame->isDetailDisabled() 
+					&& null !== ($detaiLabel = $eiFrame->getDetailBreadcrumbLabel())) {
 				$label = $detaiLabel . ' > ' . $label; 
 			}
-		} while (null !== ($eiState = $eiState->getParent()));
+		} while (null !== ($eiFrame = $eiFrame->getParent()));
 		
 		return $label;
 	}
 	
 
-	public function buildTargetOverviewToolsUrl(EiState $eiState, HttpContext $httpContext): Url {
-		$contextUrl = $httpContext->getControllerContextPath($eiState->getControllerContext())
+	public function buildTargetOverviewToolsUrl(EiFrame $eiFrame, HttpContext $httpContext): Url {
+		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())
 				->ext($this->relationEiCommand->getId(), 'rel', $this->relationAjahEiCommand->getId())->toUrl();
 		return RelationAjahController::buildSelectToolsUrl($contextUrl);
 	}

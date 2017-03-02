@@ -26,14 +26,14 @@ use rocket\core\model\RocketState;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\EiSelection;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
 use rocket\spec\ei\EiSpecController;
 use rocket\spec\ei\manage\EiRelation;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class RelationController extends ControllerAdapter {
-	private $eiState;
+	private $eiFrame;
 	private $manageState;
 	private $eiuCtrl;
 	private $rocketState;
@@ -44,7 +44,7 @@ class RelationController extends ControllerAdapter {
 	}
 	
 	public function prepare(ManageState $manageState, RocketState $rocketState, EiuCtrl $eiuCtrl) {
-		$this->eiState = $manageState->peakEiState();
+		$this->eiFrame = $manageState->peakEiFrame();
 		$this->manageState = $manageState;
 		$this->eiuCtrl = $eiuCtrl;
 		$this->rocketState = $rocketState;
@@ -61,7 +61,7 @@ class RelationController extends ControllerAdapter {
 			
 		$targetControllerContext = $this->createDelegateContext($eiSpecController);
 		
-		$this->eiFieldRelation->createTargetEiState($this->manageState, $this->eiState, 
+		$this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame, 
 				$eiSelection, $targetControllerContext);
 		
 		$this->applyBreadcrumb($eiSelection);
@@ -72,11 +72,11 @@ class RelationController extends ControllerAdapter {
 	public function doRelUnknownEntry(array $delegateCmds, EiSpecController $eiSpecController) {
 		$targetControllerContext = $this->createDelegateContext($eiSpecController);
 			
-		$targetEiState = $this->eiFieldRelation->createTargetEiState($this->manageState, $this->eiState,
+		$targetEiFrame = $this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
 				null, $targetControllerContext);
 		
 		if (null !== ($targetEiField = $this->eiFieldRelation->findTargetEiField())) {
-			$targetEiState->setEiRelation($targetEiField->getId(), new EiRelation($this->eiState, null));
+			$targetEiFrame->setEiRelation($targetEiField->getId(), new EiRelation($this->eiFrame, null));
 		}
 	
 		$this->applyBreadcrumb();
@@ -87,7 +87,7 @@ class RelationController extends ControllerAdapter {
 	public function doRel(array $delegateCmds, EiSpecController $eiSpecController) {
 		$targetControllerContext = $this->createDelegateContext($eiSpecController);
 	
-		$targetEiState = $this->eiFieldRelation->createTargetEiState($this->manageState, $this->eiState, null, 
+		$targetEiFrame = $this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame, null, 
 				$targetControllerContext);
 	
 		$this->applyBreadcrumb();
@@ -96,12 +96,12 @@ class RelationController extends ControllerAdapter {
 	}
 	
 	private function applyBreadcrumb(EiSelection $eiSelection = null) {
-		if (!$this->eiState->isOverviewDisabled()) {
-			$this->rocketState->addBreadcrumb($this->eiState->createOverviewBreadcrumb($this->getHttpContext()));
+		if (!$this->eiFrame->isOverviewDisabled()) {
+			$this->rocketState->addBreadcrumb($this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		}
 	
-		if ($eiSelection !== null && !$this->eiState->isDetailDisabled()) {
-			$this->rocketState->addBreadcrumb($this->eiState->createDetailBreadcrumb($this->getHttpContext(), 
+		if ($eiSelection !== null && !$this->eiFrame->isDetailDisabled()) {
+			$this->rocketState->addBreadcrumb($this->eiFrame->createDetailBreadcrumb($this->getHttpContext(), 
 					$eiSelection));
 		}
 	} 

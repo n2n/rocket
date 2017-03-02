@@ -25,7 +25,7 @@ use rocket\spec\ei\mask\EiMask;
 use n2n\web\http\controller\ControllerContext;
 use rocket\spec\ei\manage\ManageState;
 
-class EiStateFactory {
+class EiFrameFactory {
 	private $contextEiMask;
 	
 	public function __construct(EiMask $contextEiMask) {
@@ -33,19 +33,19 @@ class EiStateFactory {
 	}
 	
 	public function create(ControllerContext $controllerContext, ManageState $manageState, $pseudo, 
-			EiState $parentEiState = null) {
-		$eiState = new EiState($this->contextEiMask, $manageState, $pseudo);
-		$eiState->setControllerContext($controllerContext);
-		$eiState->setParent($parentEiState);
+			EiFrame $parentEiFrame = null) {
+		$eiFrame = new EiFrame($this->contextEiMask, $manageState, $pseudo);
+		$eiFrame->setControllerContext($controllerContext);
+		$eiFrame->setParent($parentEiFrame);
 		
-		$this->contextEiMask->setupEiState($eiState);
+		$this->contextEiMask->setupEiFrame($eiFrame);
 
 // 		if ($pseudo) {
-// 			$childEiState->setOverviewPathExt(Path::create($this->getOverviewPathExt()));
-// 			$childEiState->setDetailPathExt(Path::create($this->getDetailPathExt()));
+// 			$childEiFrame->setOverviewPathExt(Path::create($this->getOverviewPathExt()));
+// 			$childEiFrame->setDetailPathExt(Path::create($this->getDetailPathExt()));
 // 		}
 		
-		return $eiState;
+		return $eiFrame;
 	}
 	
 	

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\command\impl\common;
 use n2n\core\N2N;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\control\PartialControlComponent;
 use rocket\spec\ei\manage\control\EntryControlComponent;
@@ -41,6 +41,7 @@ use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\http\controller\Controller;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 
 		EntryControlComponent, PrivilegedEiCommand {
@@ -56,9 +57,9 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	public function getTypeName(): string {
 		return 'Delete';
 	}
-		
-	public function lookupController(EiState $eiState) {
-		return $eiState->getN2nContext()->lookup(DeleteController::class);
+	
+	public function lookupController(Eiu $eiu): Controller {
+		return $eiu->lookup(DeleteController::class);
 	}
 	
 	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
@@ -96,10 +97,10 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		
 		$query = array();
 		if ($eiu->gui()->isViewModeOverview()) {
-			$query['refPath'] = (string) $eiuFrame->getEiState()->getCurrentUrl($view->getHttpContext());
+			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 		}
 		
-		$hrefControl = HrefControl::create($eiuFrame->getEiState(), $this, $pathExt->toUrl($query), $controlButton);
+		$hrefControl = HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl($query), $controlButton);
 		
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 	}
@@ -110,7 +111,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));
 	}
 	
-	public function createPartialControlButtons(EiState $eiState, HtmlView $htmlView) {
+	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
 		$eiCommandButton = new ControlButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
 				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_DEFAULT,
@@ -128,10 +129,10 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_partial_delete_label'));
 	}
 	
-	public function processEntries(EiState $eiState, array $entries) {
+	public function processEntries(EiFrame $eiFrame, array $entries) {
 		$scriptManager = N2N::getModelContext()->lookup('rocket\spec\config\SpecManager');
 		$eiSpec = $this->getEiSpec();
-		$em = $eiState->getEntityManager();
+		$em = $eiFrame->getEntityManager();
 		
 		foreach ($entries as $entry) {
 // 			$scriptManager->notifyOnDelete($entry);

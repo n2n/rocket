@@ -23,7 +23,7 @@
 	use rocket\spec\ei\manage\EiHtmlBuilder;
 	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\EiState;
+	use rocket\spec\ei\manage\EiFrame;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 	use rocket\spec\config\mask\model\EntryListViewModel;
@@ -41,11 +41,11 @@
 	$selectPropertyPath = $view->getParam('selectPropertyPath', false);
 	$view->assert($selectPropertyPath === null || $selectPropertyPath instanceof PropertyPath);
 	
-	$eiState = $entryListViewModel->getEiState();
+	$eiFrame = $entryListViewModel->getEiFrame();
 	
 	$eiHtml = new EiHtmlBuilder($view, $entryListViewModel->getGuiDefinition());
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiState, $entryListViewModel->getEntryGuis());
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiState);
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, $entryListViewModel->getEntryGuis());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
 	
 	$entryGuiTree = $view->getParam('entryGuiTree', false);
 	$view->assert($entryGuiTree === null || $entryGuiTree instanceof EntryGuiTree);

@@ -55,21 +55,21 @@ class EntryLabeler {
 	}
 	
 	public function getEiSpecLabels() {
-		$eiState = $this->eiUtils->getEiState();
-		$contextEiMask = $eiState->getContextEiMask();
-		$contextEiSpec = $eiState->getContextEiMask()->getEiEngine()->getEiSpec();
+		$eiFrame = $this->eiUtils->getEiFrame();
+		$contextEiMask = $eiFrame->getContextEiMask();
+		$contextEiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 		
 		$eiSpecLabels = array();
 		
 		if (!$contextEiSpec->isAbstract()) {
-			$eiSpecLabels[$contextEiSpec->getId()] = $contextEiMask->getLabelLstr()->t($eiState->getN2nLocale());
+			$eiSpecLabels[$contextEiSpec->getId()] = $contextEiMask->getLabelLstr()->t($eiFrame->getN2nLocale());
 		}
 		
 		foreach ($contextEiSpec->getAllSubEiSpecs() as $subEiSpec) {
 			if ($subEiSpec->isAbstract()) continue;
 		
 			$eiSpecLabels[$subEiSpec->getId()] = $contextEiMask->determineEiMask($subEiSpec)->getLabelLstr()
-					->t($eiState->getN2nLocale());
+					->t($eiFrame->getN2nLocale());
 		}
 		
 		return $eiSpecLabels;

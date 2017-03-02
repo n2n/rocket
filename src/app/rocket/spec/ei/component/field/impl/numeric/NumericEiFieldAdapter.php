@@ -37,7 +37,7 @@ use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiFieldPath;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -89,16 +89,16 @@ abstract class NumericEiFieldAdapter extends DraftableEiFieldAdapter
 		return $html->getEsc($eiu->field()->getValue(EiFieldPath::from($this)));
 	}
 	
-// 	public function createPreviewUiComponent(EiState $eiState = null, HtmlView $view, $value) {
+// 	public function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\FilterableEiField::buildManagedFilterField($eiState)
+	 * @see \rocket\spec\ei\component\field\FilterableEiField::buildManagedFilterField($eiFrame)
 	 */
-	public function buildManagedFilterField(EiState $eiState) {
-		return $this->buildFilterField($eiState->getN2nContext());
+	public function buildManagedFilterField(EiFrame $eiFrame) {
+		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
 	public function buildFilterField(N2nContext $n2nContext) {
@@ -109,8 +109,8 @@ abstract class NumericEiFieldAdapter extends DraftableEiFieldAdapter
 		return null;
 	}
 	
-	public function buildManagedSortField(EiState $eiState) {
-		return $this->buildSortField($eiState->getN2nContext());
+	public function buildManagedSortField(EiFrame $eiFrame) {
+		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
 	/**
@@ -122,7 +122,7 @@ abstract class NumericEiFieldAdapter extends DraftableEiFieldAdapter
 		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildQuickSearchField(EiState $eiState) {
+	public function buildQuickSearchField(EiFrame $eiFrame) {
 		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
 	}
 

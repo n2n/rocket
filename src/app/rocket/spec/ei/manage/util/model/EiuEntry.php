@@ -22,7 +22,7 @@
 
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
@@ -94,10 +94,10 @@ class EiuEntry {
 	}
 		
 	/**
-	 * @return \rocket\spec\ei\manage\EiState
+	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
-	public function getEiState() {
-		return $this->getEiuFrame()->getEiState();
+	public function getEiFrame() {
+		return $this->getEiuFrame()->getEiFrame();
 	}
 	
 	public function getEiMapping(bool $createIfNotAvaialble = true) {

@@ -127,8 +127,8 @@ class CritmodSaveDao implements RequestScoped {
 				'eiMaskId' => $eiMaskId, 'id' => $id))->toQuery()->fetchSingle();
 	}
 		
-// 	public function getFilterNames(EiState $eiState) {
-// 		$scriptId = $eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
+// 	public function getFilterNames(EiFrame $eiFrame) {
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			return array_keys($this->filterDatas[$scriptId]);
 // 		}	
@@ -166,8 +166,8 @@ class CritmodSaveDao implements RequestScoped {
 		$this->em->remove($filter);
 	}
 	
-// 	public function removeFilterDataByFilterName(EiState $eiState, $filterName) {
-// 		$scriptId = $eiState->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
+// 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
 		
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			unset($this->filterDatas[$scriptId][$filterName]);

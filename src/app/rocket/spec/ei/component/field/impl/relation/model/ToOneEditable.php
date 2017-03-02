@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
@@ -33,19 +33,19 @@ class ToOneEditable implements Editable {
 	private $label;
 	private $mandatory;
 	private $relationMappable;
-	private $targetReadEiState;
-	private $targetEditEiState;
+	private $targetReadEiFrame;
+	private $targetEditEiFrame;
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
 	
 	public function __construct(string $label, bool $mandatory, ToOneMappable $relationMappable,
-			EiState $targetReadEiState, EiState $targetEditEiState) {
+			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
 		$this->label = $label;
 		$this->mandatory = $mandatory;
 		$this->relationMappable = $relationMappable;
-		$this->targetReadEiState = $targetReadEiState;
-		$this->targetEditEiState = $targetEditEiState;
+		$this->targetReadEiFrame = $targetReadEiFrame;
+		$this->targetEditEiFrame = $targetEditEiFrame;
 	}
 	
 	public function isMandatory(): bool {
@@ -65,8 +65,8 @@ class ToOneEditable implements Editable {
 	}
 	
 	public function createMag(string $propertyName): Mag {
-		$this->toOneMag = new ToOneMag($propertyName, $this->label, $this->mandatory, $this->targetReadEiState,
-				$this->targetEditEiState);
+		$this->toOneMag = new ToOneMag($propertyName, $this->label, $this->mandatory, $this->targetReadEiFrame,
+				$this->targetEditEiFrame);
 	
 		$this->toOneMag->setValue($this->relationMappable->getValue());
 		$this->toOneMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);

@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\common\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\spec\ei\component\field\impl\tree\TreeUtils;
 use rocket\spec\ei\component\field\impl\tree\NestedSetDef;
@@ -50,9 +50,9 @@ class ListModel implements Dispatchable {
 	private $critmodForm;
 	private $quickSearchForm;
 	
-	public function __construct(EiState $eiState, int $listSize, CritmodForm $critmodForm, 
+	public function __construct(EiFrame $eiFrame, int $listSize, CritmodForm $critmodForm, 
 			QuickSearchForm $quickSearchForm) {
-		$this->utils = new EiuFrame($eiState);
+		$this->utils = new EiuFrame($eiFrame);
 		$this->listSize = $listSize;
 		$this->critmodForm = $critmodForm;
 		$this->quickSearchForm = $quickSearchForm;
@@ -66,17 +66,17 @@ class ListModel implements Dispatchable {
 		return $this->quickSearchForm;
 	}
 	
-	public function getEiState(): EiState {
-		return $this->utils->getEiState();
+	public function getEiFrame(): EiFrame {
+		return $this->utils->getEiFrame();
 	}
 	
 // 	public function emptyInitialize() {
-// 		$eiState = $this->getEiState();
+// 		$eiFrame = $this->getEiFrame();
 		
-// 		$this->critmodForm->applyToEiState($eiState, true);
-// 		$this->quickSearchForm->applyToEiState($eiState, true);
+// 		$this->critmodForm->applyToEiFrame($eiFrame, true);
+// 		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
 		
-// 		$countCriteria = $eiState->createCriteria('o');
+// 		$countCriteria = $eiFrame->createCriteria('o');
 // 		$countCriteria->select('COUNT(o)');
 // 		$this->numEntries = $countCriteria->toQuery()->fetchSingle();
 // 		$this->numPages = ceil($this->numEntries / $this->listSize);
@@ -86,12 +86,12 @@ class ListModel implements Dispatchable {
 	public function initialize($pageNo): bool {
 		if (!is_numeric($pageNo) || $pageNo < 1) return false;
 		
-		$eiState = $this->getEiState();
+		$eiFrame = $this->getEiFrame();
 
-		$this->critmodForm->applyToEiState($eiState, true);
-		$this->quickSearchForm->applyToEiState($eiState, true);
+		$this->critmodForm->applyToEiFrame($eiFrame, true);
+		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
 		
-		$countCriteria = $eiState->createCriteria('o');
+		$countCriteria = $eiFrame->createCriteria('o');
 		$countCriteria->select('COUNT(o)');
 		$this->numEntries = $countCriteria->toQuery()->fetchSingle();
 		
@@ -103,10 +103,10 @@ class ListModel implements Dispatchable {
 		$this->numPages = ceil($this->numEntries / $this->listSize);
 		if (!$this->numPages) $this->numPages = 1;
 		
-		$criteria = $eiState->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit, $this->listSize);
 		
-		if (null !== ($nestedSetStrategy = $eiState->getContextEiMask()->getEiEngine()->getEiSpec()
+		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
 				->getNestedSetStrategy())) {
 			$this->treeLookup($criteria, $nestedSetStrategy);
 		} else {
@@ -117,15 +117,15 @@ class ListModel implements Dispatchable {
 	}
 	
 	public function initByIdReps(array $idReps) {
-		$eiState = $this->getEiState();
+		$eiFrame = $this->getEiFrame();
 				
-		$eiSpec = $eiState->getContextEiMask()->getEiEngine()->getEiSpec();
+		$eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 		$ids = array();
 		foreach ($idReps as $idRep) {
 			$ids[] = $eiSpec->idRepToId($idRep);
 		}
 	
-		$criteria = $eiState->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)
 			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiSpec->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
 		
@@ -143,14 +143,14 @@ class ListModel implements Dispatchable {
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiMapping = $this->utils->createEiMapping($this->utils->createEiSelectionFromLiveEntry($entityObj));
 			$this->entryGuis[$eiMapping->getIdRep()] = new EntryGui($this->utils->getEiMask()
-					->createListEntryGuiModel($this->utils->getEiState(), $eiMapping, false)); 
+					->createListEntryGuiModel($this->utils->getEiFrame(), $eiMapping, false)); 
 		}
 	}
 	
 	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
 		$nestedSetUtils = new NestedSetUtils($this->utils->em(), $this->utils->getClass(), $nestedSetStrategy);
 		
-		$eiState = $this->utils->getEiState();
+		$eiFrame = $this->utils->getEiFrame();
 		$eiMask = $this->utils->getEiMask();
 		
 		$this->entryGuiTree = new EntryGuiTree();
@@ -159,7 +159,7 @@ class ListModel implements Dispatchable {
 					$this->utils->createEiSelectionFromLiveEntry($nestedSetItem->getEntityObj()));
 			
 			$this->entryGuiTree->addByLevel($nestedSetItem->getLevel(), new EntryGui(
-					$eiMask->createTreeEntryGuiModel($eiState, $eiMapping, false)));
+					$eiMask->createTreeEntryGuiModel($eiFrame, $eiMapping, false)));
 		}
 	}
 	
@@ -231,6 +231,6 @@ class ListModel implements Dispatchable {
 		
 		if (!sizeof($selectedObjects)) return;
 		
-		$executedEiCommand->processEntries($this->eiState, $selectedObjects);
+		$executedEiCommand->processEntries($this->eiFrame, $selectedObjects);
 	}
 }

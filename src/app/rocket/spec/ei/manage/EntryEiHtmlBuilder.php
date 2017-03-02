@@ -43,19 +43,19 @@ class EntryEiHtmlBuilder {
 	private $fieldEiHtml;
 	
 	private $guiDefinition;
-	private $eiState;
+	private $eiFrame;
 	private $entryUtils;
 	private $entryGuis;
 	private $meta;
 	
-	public function __construct(HtmlView $view, EiState $eiState, array $entryGuis) {
+	public function __construct(HtmlView $view, EiFrame $eiFrame, array $entryGuis) {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->fieldEiHtml = new FieldEiHtmlBuilder($view);
 		
-		$this->eiState = $eiState;
-		$this->entryUtils = new EiuFrame($this->eiState);
+		$this->eiFrame = $eiFrame;
+		$this->entryUtils = new EiuFrame($this->eiFrame);
 		$this->entryGuis = $entryGuis;
 		$this->meta = new EiHtmlBuilderMeta($entryGuis);
 	}
@@ -186,7 +186,7 @@ class EntryEiHtmlBuilder {
 	
 	public function getOverallControlList() {
 		$ul = new HtmlElement('ul'/*, array('class' => 'rocket-main-controls')*/);
-		foreach ($this->eiState->getContextEiMask()->createOverallHrefControls($this->eiState, $this->view) as $control) {
+		foreach ($this->eiFrame->getContextEiMask()->createOverallHrefControls($this->eiFrame, $this->view) as $control) {
 			$ul->appendContent(new HtmlElement('li', null, $control->toButton(false)));
 		}
 	
@@ -198,7 +198,7 @@ class EntryEiHtmlBuilder {
 // 	}
 	
 // 	public function getEntryGuiControlList($useIcons = false) {
-// 		$entryControls = $this->eiState->getContextEiMask()->createEntryHrefControls($this->eiState, 
+// 		$entryControls = $this->eiFrame->getContextEiMask()->createEntryHrefControls($this->eiFrame, 
 // 				$this->meta->getCurrentEntryGuiModel()->getEiMapping(), $this->view);
 	
 // 		$ulHtmlElement = new HtmlElement('ul', array('class' => ($useIcons ? 'rocket-simple-controls' : null /* 'rocket-main-controls' */)));

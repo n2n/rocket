@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\meta;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\IndependentEiFieldAdapter;
@@ -50,7 +50,7 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 		return $this->displayDefinition;
 	}
 	
-	public function createDisplayable(EiState $eiState, Attributes $maskAttributes) {
+	public function createDisplayable(EiFrame $eiFrame, Attributes $maskAttributes) {
 		return $this;
 	}
 
@@ -67,7 +67,7 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 	}
 	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
-		$eiMask = $eiu->frame()->getEiState()->getContextEiMask()->determineEiMask(
+		$eiMask = $eiu->frame()->getEiFrame()->getContextEiMask()->determineEiMask(
 				$eiu->entry()->getEiMapping()->getEiSpec());
 		return $view->getHtmlBuilder()->getEsc($eiMask->getLabelLstr()->t($view->getN2nLocale()));
 	}
@@ -79,7 +79,7 @@ class TypeEiField extends IndependentEiFieldAdapter implements StatelessDisplaya
 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs($eiState, $eiMapping, $maskAttributes)
+// 	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs($eiFrame, $eiMapping, $maskAttributes)
 // 	 */
 // 	public function getOutputHtmlContainerAttrs(EntryModel $entryModel) {
 // 		return array('class' => 'rocket-script-' . $this->eiSpec->getId() . ' rocket-field-' . $this->getId());

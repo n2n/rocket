@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\common\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
@@ -46,15 +46,15 @@ class DraftListModel implements Dispatchable {
 	private $entryGuis;
 	private $entryGuiTree;
 		
-	public function __construct(EiState $eiState, int $listSize) {
-		$this->utils = new EiuFrame($eiState);
+	public function __construct(EiFrame $eiFrame, int $listSize) {
+		$this->utils = new EiuFrame($eiFrame);
 		$this->listSize = $listSize;
-		$this->draftManager = $eiState->getManageState()->getDraftManager();
-		$this->draftDefinition = $eiState->getContextEiMask()->getEiEngine()->getDraftDefinition();
+		$this->draftManager = $eiFrame->getManageState()->getDraftManager();
+		$this->draftDefinition = $eiFrame->getContextEiMask()->getEiEngine()->getDraftDefinition();
 	}
 	
-	public function getEiState(): EiState {
-		return $this->utils->getEiState();
+	public function getEiFrame(): EiFrame {
+		return $this->utils->getEiFrame();
 	}
 	
 	public function initialize($pageNo): bool {
@@ -78,15 +78,15 @@ class DraftListModel implements Dispatchable {
 	}
 	
 // 	public function initByIdReps(array $idReps) {
-// 		$eiState = $this->getEiState();
+// 		$eiFrame = $this->getEiFrame();
 				
-// 		$eiSpec = $eiState->getContextEiMask()->getEiEngine()->getEiSpec();
+// 		$eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 // 		$ids = array();
 // 		foreach ($idReps as $idRep) {
 // 			$ids[] = $eiSpec->idRepToId($idRep);
 // 		}
 	
-// 		$criteria = $eiState->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+// 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 // 		$criteria->select(NestedSetUtils::NODE_ALIAS)
 // 			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiSpec->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
 		
@@ -100,13 +100,13 @@ class DraftListModel implements Dispatchable {
 // 	}
 	
 	private function simpleLookup(array $drafts) {
-		$eiState = $this->utils->getEiState();
-		$eiMask = $eiState->getContextEiMask();
+		$eiFrame = $this->utils->getEiFrame();
+		$eiMask = $eiFrame->getContextEiMask();
 		
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {
 			$eiMapping = $this->utils->createEiMapping(new DraftEiSelection($draft));
-			$this->entryGuis[$draft->getId()] = new EntryGui($eiMask->createListEntryGuiModel($eiState, 
+			$this->entryGuis[$draft->getId()] = new EntryGui($eiMask->createListEntryGuiModel($eiFrame, 
 					$eiMapping, false)); 
 		}
 	}
@@ -167,6 +167,6 @@ class DraftListModel implements Dispatchable {
 		
 // 		if (!sizeof($selectedObjects)) return;
 		
-// 		$executedEiCommand->processEntries($this->eiState, $selectedObjects);
+// 		$executedEiCommand->processEntries($this->eiFrame, $selectedObjects);
 // 	}
 }

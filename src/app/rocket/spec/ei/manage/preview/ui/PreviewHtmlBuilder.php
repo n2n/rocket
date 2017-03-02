@@ -34,7 +34,7 @@ class PreviewHtmlBuilder {
 	private $view;
 	private $previewModel;
 	private $entryModel;
-	private $eiState;
+	private $eiFrame;
 	private $eiSelection;
 	private $n2nLocale;
 	private $eiSpec;
@@ -47,7 +47,7 @@ class PreviewHtmlBuilder {
 		$this->n2nLocale = $n2nLocale;
 		
 		if (isset($previewModel)) {
-			$this->eiState = $this->previewModel->getEiState();
+			$this->eiFrame = $this->previewModel->getEiFrame();
 			$this->entryModel = $previewModel->getEntryModel();
 			$this->eiSpec = $this->entryModel->getEiSpec();
 		}

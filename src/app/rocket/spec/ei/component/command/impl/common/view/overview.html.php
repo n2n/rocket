@@ -35,12 +35,12 @@
 	$view->assert($listView instanceof HtmlView);
 		
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $listModel->getEiState()->getContextEiMask()->getLabelLstr()
+			array('title' => $listModel->getEiFrame()->getContextEiMask()->getLabelLstr()
 					->t($view->getN2nLocale())));
 	
-	$eiMask = $listModel->getEiState()->getContextEiMask();
+	$eiMask = $listModel->getEiFrame()->getContextEiMask();
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $listModel->getEiState());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $listModel->getEiFrame());
 ?>	
 
 <div class="rocket-panel">

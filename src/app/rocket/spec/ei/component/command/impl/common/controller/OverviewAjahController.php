@@ -71,16 +71,16 @@ class OverviewAjahController extends ControllerAdapter {
 	}
 
 	public function doOverviewTools(string $stateKey, ScrRegistry $scrRegistry) {
-		$eiState = $this->manageState->peakEiState();
+		$eiFrame = $this->manageState->peakEiFrame();
 		
-		$critmodForm = CritmodForm::create($eiState, $this->critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiState, $this->critmodSaveDao, $stateKey);
+		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
-		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiState->getContextEiMask());
+		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiMask());
 		
-		$eiUtils = new EiuFrame($eiState);
+		$eiUtils = new EiuFrame($eiFrame);
 		
 		$this->send(new AjahResponse($this->createView(
 				'..\view\inc\overviewTools.html',
@@ -91,9 +91,9 @@ class OverviewAjahController extends ControllerAdapter {
 	
 	
 	public function doCritmodForm(string $stateKey, ScrRegistry $scrRegistry) {
-		$eiState = $this->manageState->peakEiState();
+		$eiFrame = $this->manageState->peakEiFrame();
 
-		$critmodForm = CritmodForm::create($eiState, $this->critmodSaveDao, $stateKey);
+		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 
 		$valid = false;
 		if ($this->dispatch($critmodForm, 'select') || $this->dispatch($critmodForm, 'apply')
@@ -104,7 +104,7 @@ class OverviewAjahController extends ControllerAdapter {
 // 			return;
 		}
 		
-		$eiMask = $eiState->getContextEiMask();
+		$eiMask = $eiFrame->getContextEiMask();
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
 		
 // 		$this->forward('spec\ei\manage\critmod\impl\view\critmodForm.html',
@@ -119,7 +119,7 @@ class OverviewAjahController extends ControllerAdapter {
 	}
 	
 // 	public function doCritmodForm(ParamGet $selectedSaveId = null, ScrRegistry $scrRegistry) {
-// 		$eiState = $this->manageState->peakEiState();
+// 		$eiFrame = $this->manageState->peakEiFrame();
 
 // 		$filterGroupData = null;
 // 		$sortData = null;
@@ -136,10 +136,10 @@ class OverviewAjahController extends ControllerAdapter {
 // 			$sortData = $critmodSave->readSortData();
 // 		}
 
-// 		$eiMask = $eiState->getContextEiMask();
-// 		$filterGroupForm = new FilterGroupForm($filterGroupData, $eiMask->createManagedFilterDefinition($eiState));
+// 		$eiMask = $eiFrame->getContextEiMask();
+// 		$filterGroupForm = new FilterGroupForm($filterGroupData, $eiMask->createManagedFilterDefinition($eiFrame));
 // 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
-// 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiState));
+// 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));
 
 // 		$this->send(new AjahResponse($this->createView(
 // 				'spec\ei\component\command\impl\common\view\pseudoCritmodForm.html',
@@ -148,11 +148,11 @@ class OverviewAjahController extends ControllerAdapter {
 // 	}
 
 	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $idReps = null) {
-		$eiState = $this->manageState->peakEiState();
+		$eiFrame = $this->manageState->peakEiFrame();
 
-		$critmodForm = CritmodForm::create($eiState, $this->critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiState, $this->critmodSaveDao, $stateKey);
-		$listModel = new ListModel($eiState, $this->listSize, $critmodForm, $quickSearchForm);
+		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
+		$listModel = new ListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
 
 		if ($idReps != null) {
 			$listModel->initByIdReps($idReps->toStringArrayOrReject());
@@ -173,10 +173,10 @@ class OverviewAjahController extends ControllerAdapter {
 		$attrs = array('numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
 
 		if ($listModel->isTree()) {
-			$this->send(new AjahResponse($eiState->getContextEiMask()->createTreeView($eiState,
+			$this->send(new AjahResponse($eiFrame->getContextEiMask()->createTreeView($eiFrame,
 					$listModel->getEntryGuiTree()), $attrs));
 		} else {
-			$this->send(new AjahResponse($eiState->getContextEiMask()->createListView($eiState,
+			$this->send(new AjahResponse($eiFrame->getContextEiMask()->createListView($eiFrame,
 					$listModel->getEntryGuis()), $attrs));
 		}
 	}

@@ -28,7 +28,7 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
@@ -45,8 +45,8 @@ use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
 
 class ContentItemMag extends MagAdapter {
 	private $panelConfigs = array();
-	private $targetReadEiState;
-	private $targetEditEiState;
+	private $targetReadEiFrame;
+	private $targetEditEiFrame;
 	
 	private $draftMode = false;
 	private $newMappingFormUrl;
@@ -54,12 +54,12 @@ class ContentItemMag extends MagAdapter {
 	private $targetRelationEntries = array();
 	
 	public function __construct(string $propertyName, string $label, array $panelConfigs, 
-			EiState $targetReadEiState, EiState $targetEditEiState) {
+			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
 		parent::__construct($propertyName, $label);
 	
 		$this->panelConfigs = $panelConfigs;
-		$this->targetReadEiState = $targetReadEiState;
-		$this->targetEditEiState = $targetEditEiState;
+		$this->targetReadEiFrame = $targetReadEiFrame;
+		$this->targetEditEiFrame = $targetEditEiFrame;
 		
 		$this->setAttrs(array('class' => 'rocket-control-group'));
 	}
@@ -79,7 +79,7 @@ class ContentItemMag extends MagAdapter {
 	}
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
-		$targetEditUtils = new EiuFrame($this->targetEditEiState);
+		$targetEditUtils = new EiuFrame($this->targetEditEiFrame);
 		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
@@ -111,8 +111,8 @@ class ContentItemMag extends MagAdapter {
 		foreach ($this->panelConfigs as $panelConfig) {
 			$panelName = $panelConfig->getName();
 			
-			$panelMag = new ToManyMag($panelName, $panelConfig->getLabel(), $this->targetReadEiState,
-					$this->targetEditEiState, $panelConfig->getMin(), $panelConfig->getMax());
+			$panelMag = new ToManyMag($panelName, $panelConfig->getLabel(), $this->targetReadEiFrame,
+					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
 			$panelMag->setTargetOrderEiFieldPath($orderEiFieldPath);
 			$panelMag->setDraftMode($this->draftMode);
 			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl);
@@ -177,8 +177,8 @@ class ContentItemMag extends MagAdapter {
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
 		$ciEiSpecLabels = array();
 		
-		$targetContextEiMask = $this->targetEditEiState->getContextEiMask();
-		foreach ($this->targetEditEiState->getContextEiMask()->getEiEngine()->getEiSpec()->getAllSubEiSpecs() as $subEiSpec) {
+		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();
+		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getAllSubEiSpecs() as $subEiSpec) {
 			if ($subEiSpec->isAbstract()) continue;
 			
 			$ciEiSpecLabels[$subEiSpec->getId()] = $targetContextEiMask->determineEiMask($subEiSpec)->getLabelLstr()

@@ -27,7 +27,7 @@ use rocket\spec\ei\component\SecurityFactory;
 use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\MappingFactory;
-use rocket\spec\ei\manage\EiState;
+use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
@@ -132,8 +132,8 @@ class EiEngine {
 		return $this->critmodFactory;
 	}
 	
-	public function createManagedFilterDefinition(EiState $eiState): FilterDefinition {
-		return $this->getCritmodFactory()->createManagedFilterDefinition($eiState);
+	public function createManagedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+		return $this->getCritmodFactory()->createManagedFilterDefinition($eiFrame);
 	}
 	
 	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
@@ -144,8 +144,8 @@ class EiEngine {
 		return $this->getCritmodFactory()->createEiMappingFilterDefinition($n2nContext);
 	}
 	
-	public function createManagedSortDefinition(EiState $eiState): SortDefinition {
-		return $this->getCritmodFactory()->createManagedSortDefinition($eiState);
+	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {
+		return $this->getCritmodFactory()->createManagedSortDefinition($eiFrame);
 	}
 	
 	/**
@@ -156,8 +156,8 @@ class EiEngine {
 		return $this->getCritmodFactory()->createSortDefinition($n2nContext);
 	}
 	
-	public function createQuickSearchDefinition(EiState $eiState): QuickSearchDefinition {
-		return $this->getCritmodFactory()->createQuickSearchDefinition($eiState);
+	public function createQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
+		return $this->getCritmodFactory()->createQuickSearchDefinition($eiFrame);
 	}
 	
 	public function createPrivilegeDefinition(N2nContext $n2nContext) {
@@ -166,14 +166,14 @@ class EiEngine {
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
-	public function createEiMapping(EiState $eiState, EiSelection $eiSelection): EiMapping {
+	public function createEiMapping(EiFrame $eiFrame, EiSelection $eiSelection): EiMapping {
 		$mappingFactory = new MappingFactory($this->eiFieldCollection, $this->eiModificatorCollection);
-		return $mappingFactory->createEiMapping($eiState, $eiSelection);
+		return $mappingFactory->createEiMapping($eiFrame, $eiSelection);
 	}
 	
-	public function createEiMappingCopy(EiState $eiState, EiSelection $eiSelection, EiMapping $from) {
+	public function createEiMappingCopy(EiFrame $eiFrame, EiSelection $eiSelection, EiMapping $from) {
 		$mappingFactory = new MappingFactory($this->eiFieldCollection, $this->eiModificatorCollection);
-		return $mappingFactory->createEiMapping($eiState, $eiSelection, $from);
+		return $mappingFactory->createEiMapping($eiFrame, $eiSelection, $from);
 	}
 	
 	

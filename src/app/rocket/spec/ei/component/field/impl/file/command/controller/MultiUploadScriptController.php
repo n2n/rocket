@@ -40,7 +40,7 @@ class MultiUploadScriptController extends ControllerAdapter {
 	
 	const ACTION_UPLOAD = 'upload';
 	
-	private $eiState;
+	private $eiFrame;
 	private $rocketState;
 	private $utils;
 	private $eiField;
@@ -48,9 +48,9 @@ class MultiUploadScriptController extends ControllerAdapter {
 	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
 	 */
 	private function _init(ManageState $manageState, RocketState $rocketState) {
-		$this->eiState = $manageState->peakEiState();
+		$this->eiFrame = $manageState->peakEiFrame();
 		$this->rocketState = $rocketState;
-		$this->utils = new EiuFrame($manageState->peakEiState());
+		$this->utils = new EiuFrame($manageState->peakEiFrame());
 	}
 	
 	public function setEiField(MultiUploadFileEiField $eiField) {
@@ -59,13 +59,13 @@ class MultiUploadScriptController extends ControllerAdapter {
 	
 	public function index() {
 		$tx = N2N::createTransaction(true);
-		if ($this->eiState->getExecutedEiCommand() instanceof EntryControlComponent) {
-			$this->eiState->setEiSelection(new EiSelection($galleryId, $gallery));
+		if ($this->eiFrame->getExecutedEiCommand() instanceof EntryControlComponent) {
+			$this->eiFrame->setEiSelection(new EiSelection($galleryId, $gallery));
 		}
 		$this->applyBreadCrumbs();
 		$tx->commit();
 		$this->forward('\rocket\spec\ei\component\field\impl\file\command\view\multiupload.html', 
-				array('eiState' => $this->eiState));
+				array('eiFrame' => $this->eiFrame));
 	}
 	
 	public function doUpload(UploadedFileManager $ufm) {
@@ -91,7 +91,7 @@ class MultiUploadScriptController extends ControllerAdapter {
 			throw IllegalStateException::createDefault();
 		}
 		$eiSelection = $eiMapping->getEiSelection();
-		$em = $this->eiState->getEntityManager();
+		$em = $this->eiFrame->getEntityManager();
 		$em->persist($eiSelection->getEntityObj());
 		$tx->commit();
 	}
@@ -99,7 +99,7 @@ class MultiUploadScriptController extends ControllerAdapter {
 	private function applyBreadCrumbs() {
 		$dtc = new DynamicTextCollection('rocket');
 		$this->rocketState->addBreadcrumb(
-				$this->eiState->createOverviewBreadcrumb($this->getHttpContext()));
+				$this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		$this->rocketState->addBreadcrumb(new Breadcrumb($this->getRequest()->getCurrentControllerContextPath(), 
 				$dtc->translate('ei_impl_multi_upload_label')));
 	}
