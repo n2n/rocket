@@ -62,13 +62,14 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	
-		if (!$eiu->gui()->isViewModeOverview()) return array();
+		if (!$eiu->gui()->isViewModeOverview()) {
+			return array();
+		}
 	
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
 		
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
-		
 	
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
