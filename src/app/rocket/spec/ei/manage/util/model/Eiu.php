@@ -13,15 +13,6 @@ class Eiu implements Lookupable {
 	private $eiuEntry;
 	private $eiuField;
 	
-	private function _init(N2nContext $n2nContext) {
-		$this->eiuFactory = new EiuFactory();
-		$this->eiuFactory->applyEiArgs($n2nContext);
-		$this->eiuCtrl = $this->eiuFactory->getEiuCtrl(false);
-		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
-		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
-		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
-		$this->eiuField = $this->eiuFactory->getEiuField(false);
-	}
 	
 	public function __construct(...$eiArgs) {
 		$this->eiuFactory = new EiuFactory();
