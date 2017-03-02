@@ -151,7 +151,7 @@ class RelationFilterField implements FilterField {
 		
 		$relationFilterConf = new RelationFilterConf(new Attributes());
 		
-		$relationFilterConf->setOperator($form->getOperator());
+		$relationFilterConf->setOperator($form->getOperatorMag()->getValue());
 		
 		$targetIdReps = array();
 		foreach ($form->getTargetLiveEntries() as $targetLiveEntry) {

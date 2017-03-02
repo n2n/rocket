@@ -38,7 +38,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
-use rocket\spec\ei\manage\util\model\EiMaskEiUtils;
+use rocket\spec\ei\manage\util\model\EiMaskUtils;
 
 abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter implements GuiField, DraftableEiField, 
 		DraftProperty, FilterableEiField {
@@ -129,7 +129,7 @@ abstract class SimpleRelationEiFieldAdapter extends RelationEiFieldAdapter imple
 		$targetEiMask = $this->eiFieldRelation->getTargetEiMask();
 
 		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-				new EiMaskEiUtils($targetEiMask, $n2nContext),
+				new EiMaskUtils($targetEiMask, $n2nContext),
 				new class($targetEiMask, $n2nContext) implements TargetFilterDef {
 					private $targetEiMask;
 					private $n2nContext;
