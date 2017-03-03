@@ -43,6 +43,7 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 use n2n\web\http\Redirect;
 
 class EiuCtrl implements Lookupable {
+	private $eiu;
 	private $eiuFrame;	
 	private $httpContext;
 	
@@ -50,21 +51,30 @@ class EiuCtrl implements Lookupable {
 		$this->init($manageState, $httpContext);
 	}
 	
-	protected function init(ManageState $manageState, HttpContext $httpContext, EiuFrame $eiuFrame = null) {
-		$this->eiuFrame = $eiuFrame ?? new EiuFrame($manageState->peakEiFrame());
+	protected function init(ManageState $manageState, HttpContext $httpContext, EiFrame $eiFrame = null) {
+		if ($eiFrame === null) {
+			$eiFrame = $manageState->peakEiFrame();
+		}
+		$this->eiu = new Eiu($eiFrame);
+		$this->eiuFrame = $this->eiu->frame();
 		$this->httpContext = $httpContext;
 	}
 	
 	/**
-	 * @return EiuFrame
+	 * @return Eiu
 	 */
-	public function getEiuFrame() {
+	public function eiu() {
+		return $this->eiu;
+	}
+	
+	/**
+	 * 
+	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
+	 */
+	public function frame() {
 		return $this->eiuFrame;
 	}
 	
-	public function getEiFrame() {
-		return $this->eiuFrame->getEiFrame();
-	}
 	
 	public function lookupEiSelection(string $liveIdRep, bool $assignToEiu = false) {
 		$eiSelection = null;
@@ -203,13 +213,13 @@ class EiuCtrl implements Lookupable {
 				new Redirect($this->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
-	public static function from(HttpContext $httpContext, EiuFrame $eiuFrame = null) {
+	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {
 		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		
 		
 		$eiCtrlUtils = new EiuCtrl();
-		$eiCtrlUtils->init($manageState, $httpContext, $eiuFrame);
+		$eiCtrlUtils->init($manageState, $httpContext, $eiFrame);
 		return $eiCtrlUtils;
 	}
 	

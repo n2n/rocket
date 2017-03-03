@@ -35,7 +35,6 @@ class EiuFactory {
 	private $eiSelectionGui;
 	private $eiFieldPath;
 	
-	private $eiuCtrl;
 	private $eiuFrame;
 	private $eiuEntry;
 	private $eiuGui;
@@ -90,14 +89,12 @@ class EiuFactory {
 			}
 			
 			if ($eiArg instanceof EiuFrame) {
-				$this->eiuCtrl = null;
 				$this->eiuFrame = $eiArg;
 				continue;
 			}
 
 			if ($eiArg instanceof EiuCtrl) {
-				$this->eiuCtrl = $eiArg;
-				$this->eiuFrame = $eiArg->getEiuFrame();
+				$this->eiuFrame = $eiArg->frame();
 				continue;
 			}
 			
@@ -147,19 +144,6 @@ class EiuFactory {
 		throw new EiuPerimeterException(
 				'Could not create EiuField because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_FIELD_TYPES));
-	}
-
-	public function getEiuCtrl() {
-		if ($this->eiuCtrl !== null) {
-			return $this->eiuCtrl;
-		}
-		
-		$eiuFrame = $this->getEiuFrame(true);
-		try {
-			return EiuCtrl::from($eiuFrame->getN2nContext()->getHttpContext(), $eiuFrame);
-		} catch (HttpContextNotAvailableException $e) {
-			throw new EiuPerimeterException('Can not create EiuCtrl.', 0, $e);
-		}
 	}
 			
 	/**
