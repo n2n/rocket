@@ -95,7 +95,7 @@ class OverviewController extends ControllerAdapter {
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$pageNo = $pageNo->toNumericOrReject();
-			$this->eiuCtrl->getEiFrame()->setCurrentUrlExt(
+			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
 		}
 				
@@ -107,7 +107,7 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
-		$eiFrame = $this->eiuCtrl->getEiFrame();
+		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		
 		if ($pageNo === null) {
@@ -131,12 +131,11 @@ class OverviewController extends ControllerAdapter {
 		$this->forward('..\view\overviewDrafts.html', array('draftListModel' => $draftListModel, 
 				'overviewDraftAjahHook' => $overviewDraftAjahHook, 'listView' => $listView));
 	}
-	
 
 	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftAjahController $overviewDraftAjahController,
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
-			$this->eiuCtrl->getEiFrame()->setCurrentUrlExt(
+			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
 		}
 
