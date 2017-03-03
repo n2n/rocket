@@ -51,7 +51,7 @@ class EditController extends ControllerAdapter {
 	 * @return \rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel
 	 */
 	private function createEntryCommandViewModel(EntryGuiModel $entryGuiModel, Url $cancelUrl = null) {
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->getEiuFrame(), $entryGuiModel, $cancelUrl);
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $entryGuiModel, $cancelUrl);
 		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
@@ -61,7 +61,7 @@ class EditController extends ControllerAdapter {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
 		$eiMapping = $this->eiuCtrl->lookupEiMapping($idRep);
-		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
 		$editModel->initialize($eiMapping);
 
 		if ($this->dispatch($editModel, 'save')) {
@@ -86,7 +86,7 @@ class EditController extends ControllerAdapter {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
 		$eiSelection = $this->eiuCtrl->lookupEiSelection($idRep);
-		$drafts = $this->eiuCtrl->getEiuFrame()->toEiuEntry($eiSelection)->lookupDrafts(0, 1);
+		$drafts = $this->eiuCtrl->frame()->toEiuEntry($eiSelection)->lookupDrafts(0, 1);
 		$draft = ArrayUtils::first($drafts);
 		if ($draft === null || $draft->isPublished()) {
 			$this->redirectToController(array('newdraft', $idRep), array('refPath' => $refPath));
@@ -102,12 +102,12 @@ class EditController extends ControllerAdapter {
 		$eiMapping = $this->eiuCtrl->lookupEiMapping($idRep);
 		$entryEiUtils = $this->eiuCtrl->toEiuEntry($eiMapping);
 		
-		$eiUtils = $this->eiuCtrl->getEiuFrame();
+		$eiUtils = $this->eiuCtrl->frame();
 		$draftEiSelection = $eiUtils->createEiSelectionFromDraft(
 				$eiUtils->createNewDraftFromLiveEntry($eiMapping->getEiSelection()->getLiveEntry()));
-		$draftEiMapping = $this->eiuCtrl->getEiuFrame()->createEiMappingCopy($draftEiSelection, $eiMapping);
+		$draftEiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($draftEiSelection, $eiMapping);
 		
-		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
 		$editModel->initialize($draftEiMapping);
 		
 		if ($this->dispatch($editModel, 'save')) {
@@ -130,10 +130,10 @@ class EditController extends ControllerAdapter {
 		$entryEiUtils = $this->eiuCtrl->toEiuEntry($eiMapping);
 		if ($entryEiUtils->getDraft()->isPublished()) {
 			$eiSelection = $entryEiUtils->getEiUtils()->createNewEiSelection(true, $entryEiUtils->getEiSpec());
-			$eiMapping = $this->eiuCtrl->getEiuFrame()->createEiMappingCopy($eiSelection, $eiMapping);
+			$eiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($eiSelection, $eiMapping);
 		}
 		
-		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
 		$editModel->initialize($eiMapping);
 	
 		if ($this->dispatch($editModel, 'save')) {
@@ -154,7 +154,7 @@ class EditController extends ControllerAdapter {
 		
 		$draftEiMapping = $this->eiuCtrl->lookupEiMappingByDraftId($draftId);
 		
-		$eiUtils = $this->eiuCtrl->getEiuFrame();
+		$eiUtils = $this->eiuCtrl->frame();
 		$eiSelection = $eiUtils->createEiSelectionFromLiveEntry($draftEiMapping->getEiSelection()->getLiveEntry());
 		$eiMapping = $eiUtils->createEiMappingCopy($eiSelection, $draftEiMapping);
 		
@@ -168,7 +168,7 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 		
-		$editModel = new EditModel($this->eiuCtrl->getEiuFrame(), true, true);
+		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
 		$editModel->initialize($eiMapping);
 		
 		if ($this->dispatch($editModel, 'save')) {
@@ -246,7 +246,7 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 	private function applyBreadcrumbs(EiSelection $eiSelection) {
-		$eiFrame = $this->eiuCtrl->getEiuFrame()->getEiFrame();
+		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$httpContext = $this->getHttpContext();
 				
 		if (!$eiFrame->isOverviewDisabled()) {
