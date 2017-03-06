@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahController;
-use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
 use n2n\web\dispatch\map\PropertyPath;
@@ -50,7 +49,7 @@ class RelationAjahController extends ControllerAdapter {
 		} catch (InvalidPropertyExpressionException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
-		$eiFrameUtils = $this->eiCtrlUtils->getEiuFrame();
+		$eiFrameUtils = $this->eiCtrlUtils->frame();
 		$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), null, 
 				$eiFrameUtils->createNewEntryForm($draft->toBool()));
 		
