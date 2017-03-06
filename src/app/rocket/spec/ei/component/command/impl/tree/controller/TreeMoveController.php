@@ -68,7 +68,7 @@ class TreeMoveController extends ControllerAdapter {
 	private function move(string $idRep, string $targetIdRep, bool $before = null) {
 		if ($idRep === $targetIdRep) return;
 
-		$eiUtils = $this->eiCtrlUtils->getEiuFrame();
+		$eiUtils = $this->eiCtrlUtils->frame();
 		
 		$nestedSetStrategy = $eiUtils->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) return;

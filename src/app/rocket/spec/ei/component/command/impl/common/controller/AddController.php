@@ -65,7 +65,7 @@ class AddController extends ControllerAdapter {
 	private function live(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 			
-		$eiFrameUtils = $this->eiCtrlUtils->getEiuFrame();
+		$eiFrameUtils = $this->eiCtrlUtils->frame();
 		$entryForm = $eiFrameUtils->createNewEntryForm(false);
 		
 		$eiFrame = $this->eiCtrlUtils->getEiFrame();
@@ -88,7 +88,7 @@ class AddController extends ControllerAdapter {
 		
 		$this->eiCtrlUtils->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
 				'type' => $this->eiCtrlUtils->getEiFrame()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
@@ -99,7 +99,7 @@ class AddController extends ControllerAdapter {
 	public function doDraft(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
 			
-		$entryForm = $this->eiCtrlUtils->getEiuFrame()->createNewEntryForm(true);
+		$entryForm = $this->eiCtrlUtils->frame()->createNewEntryForm(true);
 		
 		$eiFrame = $this->eiCtrlUtils->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm);
@@ -109,14 +109,14 @@ class AddController extends ControllerAdapter {
 			return;
 		}
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title', 
-				array('type' => $this->eiCtrlUtils->getEiuFrame()->getGenericLabel())));
+				array('type' => $this->eiCtrlUtils->frame()->getGenericLabel())));
 		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 	}
 	
 	private function getBreadcrumbLabel() {
-		$eiFrameUtils = $this->eiCtrlUtils->getEiuFrame();
+		$eiFrameUtils = $this->eiCtrlUtils->frame();
 		
 		if (null === $eiFrameUtils->getNestedSetStrategy()) {
 			return $this->dtc->translate('ei_impl_add_breadcrumb');

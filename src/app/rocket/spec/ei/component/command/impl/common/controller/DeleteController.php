@@ -52,7 +52,7 @@ class DeleteController extends ControllerAdapter {
 			return;
 		}
 		
-		$vetoableAction = $this->eiCtrlUtils->getEiuFrame()->remove($eiSelection);
+		$vetoableAction = $this->eiCtrlUtils->frame()->remove($eiSelection);
 // 		if ($vetoableAction->hasVetos()) {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}

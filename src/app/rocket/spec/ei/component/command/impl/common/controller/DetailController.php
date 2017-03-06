@@ -43,10 +43,10 @@ class DetailController extends ControllerAdapter {
 	public function doLive($idRep) {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 
-		$entryGuiModel = $this->eiCtrlUtils->getEiuFrame()->createBulkyEntryGuiModel($eiMapping, false);
+		$entryGuiModel = $this->eiCtrlUtils->frame()->createBulkyEntryGuiModel($eiMapping, false);
 		$entryGuiUtils = new EiuGui($entryGuiModel, $this->eiCtrlUtils);
 
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), $entryGuiModel);
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), $entryGuiModel);
 		$viewModel->initializeDrafts();
 		
 		$this->applyBreadcrumbs($eiMapping->getEiSelection());
@@ -57,12 +57,12 @@ class DetailController extends ControllerAdapter {
 	public function doDraft($draftId) { 
 		$eiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
 
-		$entryGuiModel = $this->eiCtrlUtils->getEiuFrame()->createBulkyEntryGuiModel($eiMapping, false);
+		$entryGuiModel = $this->eiCtrlUtils->frame()->createBulkyEntryGuiModel($eiMapping, false);
 		
 		$this->applyBreadcrumbs($eiMapping->getEiSelection());
 
 		$this->forward('..\view\detail.html', array('entryCommandViewModel' 
-				=> new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), $entryGuiModel)));
+				=> new EntryCommandViewModel($this->eiCtrlUtils->frame(), $entryGuiModel)));
 	}
 	
 	public function doLivePreview($idRep, $previewType = null) {
@@ -88,7 +88,7 @@ class DetailController extends ControllerAdapter {
 						->ext('livepreviewsrc', $idRep, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), 
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->frame(), 
 						$eiSelection)));
 	}
 	
@@ -130,7 +130,7 @@ class DetailController extends ControllerAdapter {
 						->ext('draftpreviewsrc', $draftId, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->getEiuFrame(), 
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->frame(), 
 						$eiSelection)));
 	}
 	
@@ -181,7 +181,7 @@ class DetailController extends ControllerAdapter {
 			} else {
 				$breadcrumb = new Breadcrumb($this->getUrlToController($pathParts),
 						$this->dtc->translate('ei_impl_detail_unbound_draft_breadcrumb',
-								array('entry' => $this->eiCtrlUtils->getEiuFrame()
+								array('entry' => $this->eiCtrlUtils->frame()
 										->createIdentityString($eiSelection))));
 			}
 			
