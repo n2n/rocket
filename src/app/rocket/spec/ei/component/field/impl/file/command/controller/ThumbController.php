@@ -115,7 +115,7 @@ class ThumbController extends ControllerAdapter {
 	
 	
 	private function applyBreadcrumbs(EiSelection $eiSelection) {
-		$eiFrame = $this->eiCtrlUtils->getEiFrame();
+		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
 		
 		if (!$eiFrame->isOverviewDisabled()) {
 			$this->rocketState->addBreadcrumb($eiFrame->createOverviewBreadcrumb($this->getHttpContext()));

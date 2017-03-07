@@ -146,7 +146,7 @@ class DetailController extends ControllerAdapter {
 	private function applyBreadcrumbs(EiSelection $eiSelection, string $previewType = null) {
 		$this->eiCtrlUtils->applyCommonBreadcrumbs();
 		
-		$eiFrame = $this->eiCtrlUtils->getEiFrame();
+		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
 		$httpContext = $this->getHttpContext();
 
 		if ($eiFrame->isDetailDisabled()) return;
