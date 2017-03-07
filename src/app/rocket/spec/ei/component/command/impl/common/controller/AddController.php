@@ -68,7 +68,7 @@ class AddController extends ControllerAdapter {
 		$eiFrameUtils = $this->eiCtrlUtils->frame();
 		$entryForm = $eiFrameUtils->createNewEntryForm(false);
 		
-		$eiFrame = $this->eiCtrlUtils->getEiFrame();
+		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm, $eiFrameUtils->getNestedSetStrategy());
 		if ($this->parentEiSelection !== null) {
 			$addModel->setParentEntityObj($this->parentEiSelection->getLiveObject());
@@ -90,7 +90,7 @@ class AddController extends ControllerAdapter {
 		
 		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
-				'type' => $this->eiCtrlUtils->getEiFrame()->getContextEiMask()->getLabelLstr()
+				'type' => $this->eiCtrlUtils->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
 		$this->forward('..\view\add.html',
 				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
@@ -101,7 +101,7 @@ class AddController extends ControllerAdapter {
 			
 		$entryForm = $this->eiCtrlUtils->frame()->createNewEntryForm(true);
 		
-		$eiFrame = $this->eiCtrlUtils->getEiFrame();
+		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm);
 		
 		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
