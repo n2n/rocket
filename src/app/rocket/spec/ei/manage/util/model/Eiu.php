@@ -1,7 +1,6 @@
 <?php
 namespace rocket\spec\ei\manage\util\model;
 
-use n2n\core\container\N2nContext;
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
