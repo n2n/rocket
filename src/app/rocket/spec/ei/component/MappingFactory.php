@@ -102,7 +102,7 @@ class MappingFactory {
 			$mappable = null;
 			if ($fromEiMapping !== null && $fromEiMapping->containsMappable($eiFieldPath)) {
 				$fromMappable = $fromEiMapping->getMappable($eiFieldPath);
-				$mappable = $fromMappable->copyMappable($eiSelection);
+				$mappable = $fromMappable->copyMappable(new Eiu($eiu, $eiField));
 				ArgUtils::valTypeReturn($mappable, Mappable::class, $fromMappable, 'copyMappable', true);
 			}
 				
@@ -117,7 +117,7 @@ class MappingFactory {
 				
 			$mappableFork = null;
 			if ($fromEiMapping !== null && $eiMappping->containsMappableFork($eiFieldPath)) {
-				$mappableFork = $fromEiMapping->getMappable($eiFieldPath)->copyMappableFork($eiSelection);
+				$mappableFork = $fromEiMapping->getMappableFork($eiFieldPath)->copyMappableFork($eiSelection);
 			}
 			
 			if ($mappableFork === null) {

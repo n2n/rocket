@@ -26,8 +26,21 @@ use rocket\spec\ei\manage\mapping\impl\RwMappable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
+use rocket\spec\ei\manage\mapping\impl\Readable;
+use rocket\spec\ei\manage\mapping\impl\Writable;
 
 class ToOneMappable extends RwMappable {
+	private $embeddedEiFieldRelation;
+	
+	public function __construct(EiObject $eiObject, EmbeddedEiFieldRelation $embeddedEiFieldRelation = null, Readable $readable = null, Writable $writable = null,
+			Validatable $validatable = null) {
+		parent::__construct($eiObject, $readable, $writable, $validatable);
+
+		$this->embeddedEiFieldRelation = $embeddedEiFieldRelation;
+	}
+	
 	
 	protected function validateValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
@@ -64,9 +77,24 @@ class ToOneMappable extends RwMappable {
 		}
 	}
 	
-	public function copyMappable(EiObject $eiObject) {
-		$copy = new ToOneMappable($eiObject, $this->readable, $this->writable);
-		$copy->setValue($this->getValue());
+	public function copyMappable(Eiu $eiu) {
+		$copy = new ToOneMappable($eiu->entry()->getEiSelection(), $this->embeddedEiFieldRelation, $this->readable, $this->writable);
+		
+		if ($this->embeddedEiFieldRelation === null) {
+			$copy->setValue($this->getValue());
+			return $copy;
+		}
+		
+		$value = $this->getValue();
+		if ($value === null) {
+			return $copy;
+		}
+		
+		$targetEiuFrame = new EiuFrame($this->embeddedEiFieldRelation->createTargetEditPseudoEiFrame($eiu->frame()->getEiFrame(),
+				$eiu->entry()->getEiMapping()));
+		$copy->setValue(RelationEntry::fromM($targetEiuFrame->createEiMappingCopy($targetRelationEntry
+				->toEiMapping($targetEiuFrame))));
+		
 		return $copy;
 	}
 }

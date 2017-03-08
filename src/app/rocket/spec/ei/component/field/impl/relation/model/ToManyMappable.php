@@ -29,12 +29,18 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\mapping\impl\Validatable;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
+use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class ToManyMappable extends RwMappable  {
+	private $embeddedEiFieldRelation;
 	
-	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
+	public function __construct(EiObject $eiObject, EmbeddedEiFieldRelation $embeddedEiFieldRelation = null, Readable $readable = null, Writable $writable = null,
 			Validatable $validatable = null) {
 		parent::__construct($eiObject, $readable, $writable, $validatable);
+		
+		$this->embeddedEiFieldRelation = $embeddedEiFieldRelation;
 	}	
 	
 	
@@ -80,18 +86,23 @@ class ToManyMappable extends RwMappable  {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\Mappable::copyMappable($eiObject)
 	 */
-	public function copyMappable(EiObject $eiObject) {
-		$copy = new ToManyMappable($eiObject, $this->readable, $this->writable);
-		if (!$this->isValueLoaded()) return $copy;
-			
-		$copy->setValue($this->getValue());
+	public function copyMappable(Eiu $eiu) {
+		$copy = new ToManyMappable($eiu->entry()->getEiSelection(), $this->embeddedEiFieldRelation, $this->readable, $this->writable);
+		if ($this->embeddedEiFieldRelation === null) {
+			$copy->setValue($this->getValue());
+			return $copy;
+		}
+		
+		$targetEiuFrame = new EiuFrame($this->embeddedEiFieldRelation->createTargetEditPseudoEiFrame($eiu->frame()->getEiFrame(), 
+				$eiu->entry()->getEiMapping()));
+		
+		$newValue = array();
+		foreach ($this->getValue() as $key => $targetRelationEntry) {
+			$newValue[$key] = RelationEntry::fromM($targetEiuFrame->createEiMappingCopy(
+					$targetRelationEntry->toEiMapping($targetEiuFrame)));
+		}
+		$copy->setValue($newValue);
 		return $copy;
-		
-// 		foreach ($this->getValue() as $targetRelationEntry) {
-// 			$targetRelationEntry->getEiMapping();
-// 		}
-		
-// 		return $copy;
 	}
 
 }

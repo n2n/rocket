@@ -53,6 +53,7 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 
 class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	private $replaceable = true;
@@ -69,6 +70,11 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+
+	public function buildMappable(Eiu $eiu) {
+		return new ToOneMappable($eiu->entry()->getEiSelection(), $this->eiFieldRelation, $this, $this);
 	}
 		
 	/**

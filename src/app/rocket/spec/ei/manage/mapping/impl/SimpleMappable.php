@@ -25,6 +25,7 @@ use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\manage\EiObject;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class SimpleMappable extends RwMappable {
 	private $typeConstraint;
@@ -74,13 +75,13 @@ class SimpleMappable extends RwMappable {
 		}
 	}
 	
-	public function copyMappable(EiObject $eiObject) {
-		$mappable = new SimpleMappable($eiObject, $this->typeConstraint, $this->readable, $this->writable, 
+	public function copyMappable(Eiu $eiu) {
+		$mappable = new SimpleMappable($eiu->entry()->getEiSelection(), $this->typeConstraint, $this->readable, $this->writable, 
 				$this->validatable);
 		$mappable->setNullReadAllowed($this->isNullReadAllowed());
-		if ($this->isValueLoaded()) {
+// 		if ($this->isValueLoaded()) {
 			$mappable->setValue($this->getValue());
-		}
+// 		}
 		return $mappable;
 	}
 }

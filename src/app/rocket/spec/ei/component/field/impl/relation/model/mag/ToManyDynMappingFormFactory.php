@@ -29,7 +29,7 @@ class ToManyDynMappingFormFactory {
 	private $utils;
 	private $inaccessibleCurrentEiSelection;
 	private $currentEiMapping;
-	private $currentMappingForms;
+	private $currentMappingForms = array();
 	private $newMappingFormAvailable;
 	private $newMappingForms;
 	private $draftMode = false;

@@ -37,8 +37,13 @@ use rocket\spec\ei\manage\LiveEiSelection;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 
 abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
+	
+	public function buildMappable(Eiu $eiu) {
+		return new ToManyMappable($eiu->entry()->getEiSelection(), null, $this, $this);
+	}
 	
 	/**
 	 * {@inheritDoc}

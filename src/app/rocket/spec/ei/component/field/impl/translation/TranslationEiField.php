@@ -64,6 +64,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\component\field\impl\translation\model\TranslationMappable;
 
 class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField, MappableEiField, RelationEiField, 
 		Readable, Writable, GuiFieldFork, SortableEiFieldFork {
@@ -108,7 +109,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	 * @see \rocket\spec\ei\component\field\EiField::getMappable()
 	 */
 	public function buildMappable(Eiu $eiu) {
-		return new ToManyMappable($eiu->entry()->getEiSelection(), $this, $this);
+		return new TranslationMappable($eiu->entry()->getEiSelection(), $this->eiFieldRelation, $this, $this);
 	}
 	
 	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {

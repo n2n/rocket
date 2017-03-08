@@ -63,6 +63,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\draft\stmt\DraftStmtBuilder;
 use rocket\spec\ei\manage\draft\ModDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 
 class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements DraftableEiField, Draftable*/ {
 	private $targetOrderEiFieldPath;
@@ -78,6 +79,10 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	public function buildMappable(Eiu $eiu) {
+		return new ToManyMappable($eiu->entry()->getEiSelection(), $this->eiFieldRelation, $this, $this);
 	}
 	
 	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
