@@ -61,6 +61,7 @@
 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
 	$htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
+	$htmlMeta->addJs('js/wysiwyg.js');
 	$htmlMeta->addJs('js/rocket-ts.js', null);
 	
 // 	$scriptManager = $rocket->getSpecManager();
