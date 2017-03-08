@@ -45,6 +45,7 @@ class TranslationGuiElement implements GuiElementFork {
 	private $targetRelationEntries = array();
 	private $guiElementAssemblers = array();
 	private $mandatoryN2nLocaleIds = array();
+	private $activeN2nLocaleIds = array();
 	
 	private $translationForm;
 		
@@ -55,13 +56,16 @@ class TranslationGuiElement implements GuiElementFork {
 	}
 	
 	public function registerN2nLocale(N2nLocaleDef $n2nLocaleDef, RelationEntry $targetRelationEntry, 
-			GuiElementAssembler $guiElementAssembler, $mandatory) {
+			GuiElementAssembler $guiElementAssembler, $mandatory, $active) {
 		$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 		$this->n2nLocaleDefs[$n2nLocaleId] = $n2nLocaleDef;
 		$this->targetRelationEntries[$n2nLocaleId] = $targetRelationEntry;
 		$this->guiElementAssemblers[$n2nLocaleId] = $guiElementAssembler;
 		if ($mandatory) {
 			$this->mandatoryN2nLocaleIds[$n2nLocaleId] = $n2nLocaleId;
+		}
+		if ($active) {
+			$this->activeN2nLocaleIds[$n2nLocaleId] = $n2nLocaleId;
 		}
 	}
 	
@@ -76,7 +80,7 @@ class TranslationGuiElement implements GuiElementFork {
 			if ($dispatchable !== null) {
 				$this->translationForm->putAvailableDispatchable($n2nLocaleId, $dispatchable);
 				
-				if (!$guiElementAssebler->getEiuGui()->getEiuEntry()->isNew()) {
+				if (isset($this->activeN2nLocaleIds[$n2nLocaleId])) {
 					$this->translationForm->putDispatchable($n2nLocaleId, $dispatchable);
 				}		
 			}
@@ -87,8 +91,6 @@ class TranslationGuiElement implements GuiElementFork {
 		$label = $this->guiDefinition->getGuiFieldByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiFieldPath = $this->guiDefinition->guiIdPathToEiFieldPath($guiIdPath);
 
-		
-		
 // 		$fieldErrorInfo = new FieldErrorInfo();
 		
 		$translationDisplayable = new TranslationDisplayable($label);

@@ -33,12 +33,11 @@ abstract class RwMappable extends MappableAdapter {
 	protected $validatable;
 
 	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null, 
-			Validatable $validatable = null, Copyable $copyable = null) {
+			Validatable $validatable = null) {
 		parent::__construct($eiObject);
 		$this->readable = $readable;
 		$this->writable = $writable;
 		$this->validatable = $validatable;
-		$this->copyable = $copyable;
 		
 		if ($validatable !== null) {
 			$this->getMappableConstraintSet()->add(new ValidatableMappableConstraint($eiObject, $validatable));

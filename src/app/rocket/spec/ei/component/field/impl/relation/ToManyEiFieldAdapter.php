@@ -28,6 +28,8 @@ use rocket\spec\ei\component\field\DraftableEiField;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 
 abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter implements GuiField, DraftableEiField, 
 		DraftProperty {
@@ -107,6 +109,12 @@ abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter impleme
 		}
 		
 		return $numTargetEiSelections . ' ' . $this->eiFieldRelation->getTargetEiMask()->getPluralLabel();
-		
+	}
+
+	public function buildMappable(Eiu $eiu) {
+		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+	
+		return new ToManyMappable($eiu->entry()->getEiSelection(), $this, $this,
+				($readOnly ? null : $this));
 	}
 }

@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
-use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\EnumMag;

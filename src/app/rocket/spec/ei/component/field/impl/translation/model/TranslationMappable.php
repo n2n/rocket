@@ -34,6 +34,8 @@ class TranslationMappable extends ToManyMappable {
 	public function copyMappable(Eiu $eiu) {
 		$copy = parent::copyMappable($eiu);
 		
+		if ($copy === null) return null;
+		
 		$value = $this->getValue();
 		$valueCopy = $copy->getValue();
 

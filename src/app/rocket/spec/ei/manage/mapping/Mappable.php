@@ -82,5 +82,5 @@ interface Mappable {
 	 * @param EiObject $eiObject
 	 * @return Mappable
 	 */
-	public function copyMappable(Eiu $eiu);
+	public function copyMappable(Eiu $copyEiu);
 }

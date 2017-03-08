@@ -61,7 +61,6 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 
 class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 
@@ -76,10 +75,6 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
-	}
-	
-	public function buildMappable(Eiu $eiu) {
-		return new ToOneMappable($eiu->entry()->getEiSelection(), null, $this, $this);
 	}
 	
 	/**
@@ -116,6 +111,10 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 		} else {
 			$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
 		}		
+	}
+	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		return $value;
 	}
 	
 	/**

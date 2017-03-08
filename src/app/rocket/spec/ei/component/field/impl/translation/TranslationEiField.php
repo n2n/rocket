@@ -109,7 +109,10 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	 * @see \rocket\spec\ei\component\field\EiField::getMappable()
 	 */
 	public function buildMappable(Eiu $eiu) {
-		return new TranslationMappable($eiu->entry()->getEiSelection(), $this->eiFieldRelation, $this, $this);
+		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+		
+		return new TranslationMappable($eiu->entry()->getEiSelection(), $this, $this,
+				($readOnly ? null : $this));
 	}
 	
 	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
@@ -191,7 +194,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 					new GuiElementAssembler($targetGuiDefinition, new EiuGui(
 							$targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), 
 							$eiu->gui()->getEiSelectionGui())), 
-					$n2nLocaleDef->isMandatory());
+					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		
 		return $translationGuiElement;

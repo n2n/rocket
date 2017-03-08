@@ -60,7 +60,7 @@ abstract class DraftableEiFieldAdapter extends EditableEiFieldAdapter implements
 	
 		return new SimpleMappable($eiu->entry()->getEiSelection(), 
 				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
-				$this, $this);
+				$this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
 	
 	public function isReadOnly(Eiu $eiu): bool {

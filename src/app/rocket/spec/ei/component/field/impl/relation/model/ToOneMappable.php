@@ -27,18 +27,18 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
+use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 class ToOneMappable extends RwMappable {
-	private $embeddedEiFieldRelation;
+	private $copyable;
 	
-	public function __construct(EiObject $eiObject, EmbeddedEiFieldRelation $embeddedEiFieldRelation = null, Readable $readable = null, Writable $writable = null,
-			Validatable $validatable = null) {
-		parent::__construct($eiObject, $readable, $writable, $validatable);
+	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
+			Copyable $copyable = null) {
+		parent::__construct($eiObject, $readable, $writable);
 
-		$this->embeddedEiFieldRelation = $embeddedEiFieldRelation;
+		$this->copyable = $copyable;
 	}
 	
 	
@@ -77,24 +77,11 @@ class ToOneMappable extends RwMappable {
 		}
 	}
 	
-	public function copyMappable(Eiu $eiu) {
-		$copy = new ToOneMappable($eiu->entry()->getEiSelection(), $this->embeddedEiFieldRelation, $this->readable, $this->writable);
+	public function copyMappable(Eiu $copyEiu) {
+		if ($this->copyable === null) return null;
 		
-		if ($this->embeddedEiFieldRelation === null) {
-			$copy->setValue($this->getValue());
-			return $copy;
-		}
-		
-		$value = $this->getValue();
-		if ($value === null) {
-			return $copy;
-		}
-		
-		$targetEiuFrame = new EiuFrame($this->embeddedEiFieldRelation->createTargetEditPseudoEiFrame($eiu->frame()->getEiFrame(),
-				$eiu->entry()->getEiMapping()));
-		$copy->setValue(RelationEntry::fromM($targetEiuFrame->createEiMappingCopy($targetRelationEntry
-				->toEiMapping($targetEiuFrame))));
-		
+		$copy = new ToOneMappable($copyEiu->entry()->getEiSelection(), $this->readable, $this->writable, $this->copyable);
+		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 }
