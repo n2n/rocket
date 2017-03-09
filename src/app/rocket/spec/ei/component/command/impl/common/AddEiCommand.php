@@ -127,6 +127,9 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 			$controlButtons[self::CONTROL_ADD_DRAFT_KEY] = new HrefControl($path, new ControlButton($name, $tooltip, true,
 					ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_SQUARE));
 		}
+		
+		
+		
 		return $controlButtons;
 	}
 

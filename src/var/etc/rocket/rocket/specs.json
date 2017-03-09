@@ -61,8 +61,5 @@
         }
     },
     "commonEiMasks": [],
-    "menuItems": {
-    	"gallery-gallery": [],
-    	"gallery-gallery-group": []
-    }
+    "menuItems": []
 }
