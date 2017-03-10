@@ -241,12 +241,13 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
 	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView): array {
+		$eiu = new Eiu($eiFrame);
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof OverallControlComponent)
 					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
 				
-			$hrefControls = $eiCommand->createOverallHrefControls($eiFrame, $htmlView);
+			$hrefControls = $eiCommand->createOverallHrefControls($eiu, $htmlView);
 			ArgUtils::valArrayReturn($hrefControls, $eiCommand, 'createOverallHrefControls', HrefControl::class);
 			foreach ($hrefControls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;

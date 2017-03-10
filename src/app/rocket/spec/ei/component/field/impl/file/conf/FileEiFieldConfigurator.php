@@ -33,6 +33,7 @@ use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
+use rocket\spec\ei\component\field\impl\file\command\MultiUploadEiCommand;
 
 class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
@@ -42,6 +43,8 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_DIMENSION_IMPORT_MODE_KEY = 'dimensionImportMode';
 	
 	const ATTR_EXTRA_THUMB_DIMENSIONS_KEY = 'extraThumbDimensions';
+	
+	const ATTR_MULTI_UPLOAD_AVAILABLE_KEY = 'multiUploadAvailable';
 	
 	private $fileEiField;
 	
@@ -79,6 +82,11 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiField);
 		$this->fileEiField->getEiEngine()->getSupremeEiThing()->getEiEngine()->getEiCommandCollection()->add($thumbEiCommand);
 		$this->fileEiField->setThumbEiCommand($thumbEiCommand);
+		
+		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
+			$this->fileEiField->getEiEngine()->getSupremeEiThing()->getEiEngine()->getEiCommandCollection()
+					->add(new MultiUploadEiCommand($this->fileEiField));
+		}
 	}
 	
 	public function initAutoEiFieldAttributes(Column $column = null) {
@@ -120,6 +128,9 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$magCollection->addMag(new BoolMag(self::ATTR_CHECK_IMAGE_MEMORY_KEY, 'Check Image Resource Memory',
 				$lar->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, $this->fileEiField->isCheckImageMemoryEnabled())));
 		
+		$magCollection->addMag(new BoolMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, 'Multi upload',
+				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)));
+		
 		return $magDispatchable;
 	}
 	
@@ -128,6 +139,7 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(array(
 				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
-				self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, self::ATTR_CHECK_IMAGE_MEMORY_KEY), true), true);
+				self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, self::ATTR_CHECK_IMAGE_MEMORY_KEY,
+				self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
 	}
 }

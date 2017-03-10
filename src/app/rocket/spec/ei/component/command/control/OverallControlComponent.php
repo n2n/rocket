@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\command\control;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface OverallControlComponent {
 	public function getOverallControlOptions(N2nLocale $n2nLocale);
 	
-	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView);
+	public function createOverallHrefControls(Eiu $eiu, HtmlView $htmlView);
 }

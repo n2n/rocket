@@ -25,47 +25,31 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\core\N2N;
 use n2n\io\fs\UploadedFileManager;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\RocketState;
 use rocket\spec\ei\manage\EiSelection;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
+use rocket\spec\ei\component\field\impl\file\FileEiField;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
-class MultiUploadScriptController extends ControllerAdapter {
-	
-	const ACTION_UPLOAD = 'upload';
-	
-	private $eiFrame;
-	private $rocketState;
-	private $utils;
+class MultiUploadEiController extends ControllerAdapter {
 	private $eiField;
 	/**
 	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
 	 */
-	private function _init(ManageState $manageState, RocketState $rocketState) {
-		$this->eiFrame = $manageState->peakEiFrame();
-		$this->rocketState = $rocketState;
-		$this->utils = new EiuFrame($manageState->peakEiFrame());
-	}
 	
-	public function setEiField(MultiUploadFileEiField $eiField) {
+	public function setEiField(FileEiField $eiField) {
 		$this->eiField = $eiField;
 	}
 	
-	public function index() {
-		$tx = N2N::createTransaction(true);
-		if ($this->eiFrame->getExecutedEiCommand() instanceof EntryControlComponent) {
-			$this->eiFrame->setEiSelection(new EiSelection($galleryId, $gallery));
-		}
-		$this->applyBreadCrumbs();
-		$tx->commit();
-		$this->forward('\rocket\spec\ei\component\field\impl\file\command\view\multiupload.html', 
-				array('eiFrame' => $this->eiFrame));
+	public function index(EiuCtrl $eiuCtrl, DynamicTextCollection $dtc) {
+		$eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_multi_upload_label'));
+	
+		$this->forward('..\view\multiupload.html', array('eiuFrame' => $eiuCtrl->frame()));
 	}
 	
 	public function doUpload(UploadedFileManager $ufm) {

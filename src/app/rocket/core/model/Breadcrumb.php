@@ -29,7 +29,7 @@ class Breadcrumb {
 	private $label;
 	private $type;
 	
-	public function __construct($url, $label) {
+	public function __construct($url, string $label) {
 		$this->url = $url;
 		$this->label = $label;
 	}

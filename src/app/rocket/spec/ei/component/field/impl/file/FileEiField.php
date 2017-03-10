@@ -105,7 +105,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 	public function setCheckImageMemoryEnabled(bool $checkImageResourceMemory) {
 		$this->checkImageResourceMemory = $checkImageResourceMemory;
 	}
-	
+		
 	public function setThumbEiCommand(ThumbEiCommand $thumbEiCommand) {
 		$thumbEiCommand->setFileEiField($this);
 		$this->thumbEiCommand = $thumbEiCommand;

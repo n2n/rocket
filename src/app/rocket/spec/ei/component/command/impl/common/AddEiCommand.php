@@ -102,12 +102,13 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 				self::CONTROL_ADD_DRAFT_KEY => $dtc->translate('common_add_draft_label'));
 	}
 
-	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView) {
-		$n2nContext = $eiFrame->getN2nContext();
-		$eiUtils = new EiuFrame($eiFrame);
+	public function createOverallHrefControls(Eiu $eiu, HtmlView $htmlView) {
+		$n2nContext = $eiu->frame()->getN2nContext();
+		$eiUtils = $eiu->frame();
+		$eiFrame = $eiUtils->getEiFrame();
 		$httpContext = $n2nContext->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
-		$controllerContextPath = $httpContext->getControllerContextPath($eiFrame->getControllerContext());
+		$controllerContextPath = $httpContext->getControllerContextPath($eiUtils->getEiFrame()->getControllerContext());
 
 		$nestedSet = null !== $this->eiEngine->getEiSpec()->getNestedSetStrategy();
 
