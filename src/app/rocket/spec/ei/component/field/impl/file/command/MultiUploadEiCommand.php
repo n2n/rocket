@@ -34,21 +34,25 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\field\impl\file\FileEiField;
+use rocket\spec\ei\EiFieldPath;
 
 class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
 	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
 	 */
-	private $eiField;
+	private $fileEiField;
+	private $namingEiFieldPath;
 	
-	public function __construct(FileEiField $fileEiField) {
-		$this->eiField = $fileEiField;
+	public function __construct(FileEiField $fileEiField, EiFieldPath $namingEiFieldPath = null) {
+		$this->fileEiField = $fileEiField;
+		$this->namingEiFieldPath = $namingEiFieldPath;
 	}
 
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = new MultiUploadEiController();
-		$controller->setEiField($this->eiField);
+		$controller->setFileEiField($this->fileEiField);
+		$controller->setNamingEiFieldPath($this->namingEiFieldPath);
 		return $controller;
 	}
 	

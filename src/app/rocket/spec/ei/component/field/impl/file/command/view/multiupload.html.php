@@ -22,8 +22,13 @@
 
 	use rocket\spec\ei\manage\control\IconType;
 	use rocket\spec\ei\manage\util\model\EiuFrame;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\view\View;
 	
-	
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($view);
+	$formHtml = HtmlView::formHtml($view);
+	$httpContext = HtmlView::httpContext($view);
 	
 	$eiuFrame = $view->getParam('eiuFrame');
 	$view->assert($eiuFrame instanceof EiuFrame);
@@ -58,7 +63,7 @@
 <div id="rocket-page-controls">
 	<ul>
 		<li>
-			<a id="rocket-multi-upload-submit" href="#" class="rocket-control">
+			<a id="rocket-multi-upload-submit" href="#" class="rocket-control-success rocket-important">
 				<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
 				<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
 			</a>

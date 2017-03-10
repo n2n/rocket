@@ -22,28 +22,30 @@
 namespace rocket\spec\ei\component\field\impl\file\command\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
-use n2n\core\N2N;
-use n2n\io\fs\UploadedFileManager;
-use n2n\web\dispatch\map\PropertyPath;
 use rocket\core\model\RocketState;
-use rocket\spec\ei\manage\EiSelection;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
 use rocket\spec\ei\component\field\impl\file\FileEiField;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\spec\ei\EiFieldPath;
+use n2n\io\managed\impl\FileFactory;
 
 class MultiUploadEiController extends ControllerAdapter {
-	private $eiField;
+	private $fileEiField;
+	private $namingEiFieldPath;
+	
 	/**
 	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
 	 */
+	public function setFileEiField(FileEiField $fileEiField) {
+		$this->fileEiField = $fileEiField;
+	}
 	
-	public function setEiField(FileEiField $eiField) {
-		$this->eiField = $eiField;
+	public function setNamingEiFieldPath(EiFieldPath $namingEiFieldPath = null) {
+		$this->namingEiFieldPath = $namingEiFieldPath;
 	}
 	
 	public function index(EiuCtrl $eiuCtrl, DynamicTextCollection $dtc) {
@@ -52,32 +54,30 @@ class MultiUploadEiController extends ControllerAdapter {
 		$this->forward('..\view\multiupload.html', array('eiuFrame' => $eiuCtrl->frame()));
 	}
 	
-	public function doUpload(UploadedFileManager $ufm) {
-		$file = $ufm->get(new PropertyPath(array('upl')));
+	public function doUpload(EiuCtrl $eiuCtrl) {
+		$file = null;
+		foreach ($this->getRequest()->getUploadDefinitions() as $uploadDefinition) {
+			$file = FileFactory::createFromUploadDefinition($uploadDefinition);
+			break;
+		}
+		
 		if (null === $file) return;
-		$tx = N2N::createTransaction();
-		$entryForm = $this->utils->createNewEntryForm();
-		$entryManager = $this->utils->createEntryManager();
 		
-		$eiMapping = $entryForm->buildEiMapping();
+		$eiuFrame = $eiuCtrl->frame();
+		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiSelection());
 		
-		$eiMapping->setValue($this->eiField->getId(), $file);
-		if (null !== ($referencedNamePropertyId = $this->eiField->getReferencedNamePropertyId())) {
+		$eiuEntry->setValue($this->fileEiField, $file);
+		if (null !== $this->namingEiFieldPath) {
 			$prettyNameParts = preg_split('/(\.|-|_)/', $file->getOriginalName());
 			array_pop($prettyNameParts);
-			$eiMapping->setValue($referencedNamePropertyId, implode(' ', $prettyNameParts));
+			$eiuEntry->setValue($this->namingEiFieldPath, implode(' ', $prettyNameParts));
 		}
-		$entryManager->create($eiMapping);
 		
-		$mappingValidationResult = new MappingValidationResult();
-		if (!$eiMapping->save($mappingValidationResult)) {
-			//$messageContainer->addAll($mappingValidationResult->getMessages());
-			throw IllegalStateException::createDefault();
+		if (!$eiuEntry->getEiMapping()->save()) {
+			throw new IllegalStateException();
 		}
-		$eiSelection = $eiMapping->getEiSelection();
-		$em = $this->eiFrame->getEntityManager();
-		$em->persist($eiSelection->getEntityObj());
-		$tx->commit();
+		
+		$eiuFrame->em()->persist($eiuEntry->getLiveEntry()->getEntityObj());
 	}
 	
 	private function applyBreadCrumbs() {
