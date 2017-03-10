@@ -34,6 +34,8 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
 use rocket\spec\ei\component\field\impl\file\command\MultiUploadEiCommand;
+use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
 
 class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
@@ -45,6 +47,8 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_EXTRA_THUMB_DIMENSIONS_KEY = 'extraThumbDimensions';
 	
 	const ATTR_MULTI_UPLOAD_AVAILABLE_KEY = 'multiUploadAvailable';
+	
+	const ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY = 'multiUploadNamingFieldId'; 
 	
 	private $fileEiField;
 	
@@ -84,8 +88,22 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$this->fileEiField->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
+			$namingEiFieldPath = null;
+			if ($this->attributes->contains(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY)) {
+				try {
+					$namingEiFieldPath = $setupProcess->getScalarEiPropertyByFieldPath(
+							$this->attributes->getString(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY))->getEiFieldPath();
+				} catch (\InvalidArgumentException $e) {
+					throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
+				} catch (UnknownScalarEiPropertyException $e) {
+					throw $setupProcess->createException('Configured base ScalarEiProperty not found.', $e);
+				}
+			}
+			
+			$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiField, $namingEiFieldPath);
 			$this->fileEiField->getEiEngine()->getSupremeEiThing()->getEiEngine()->getEiCommandCollection()
-					->add(new MultiUploadEiCommand($this->fileEiField));
+					->add($multiUploadEiCommand);
+			$this->fileEiField->setMultiUploadEiCommand($multiUploadEiCommand);
 		}
 	}
 	
@@ -128,10 +146,25 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$magCollection->addMag(new BoolMag(self::ATTR_CHECK_IMAGE_MEMORY_KEY, 'Check Image Resource Memory',
 				$lar->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, $this->fileEiField->isCheckImageMemoryEnabled())));
 		
-		$magCollection->addMag(new BoolMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, 'Multi upload',
-				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)));
+		$enablerMag = new EnablerMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, 'Multi upload',
+				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false));
+		$magCollection->addMag($enablerMag);
+		
+		$enumMag = new EnumMag(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY, 'Naming Field', 
+				$this->getNamingEiFieldIdOptions(), $lar->getString(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY));
+		$enablerMag->setAssociatedMagWrappers(array($magCollection->addMag($enumMag)));
 		
 		return $magDispatchable;
+	}
+	
+	private function getNamingEiFieldIdOptions() {
+		$namingEiFieldIdOptions = array();
+		foreach ($this->eiComponent->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()
+				as $id => $genericScalarProperty) {
+			if ($id === $this->eiComponent->getId()) continue;
+			$namingEiFieldIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();
+		}
+		return $namingEiFieldIdOptions;
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
@@ -140,6 +173,6 @@ class FileEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(array(
 				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
 				self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, self::ATTR_CHECK_IMAGE_MEMORY_KEY,
-				self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
+				self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY), true), true);
 	}
 }
