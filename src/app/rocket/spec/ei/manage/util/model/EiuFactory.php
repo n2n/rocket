@@ -280,7 +280,7 @@ class EiuFactory {
 		}
 		
 		if ($eiArg instanceof EiuCtrl) {
-			return $eiArg->getEiuFrame();
+			return $eiArg->frame();
 		}
 		
 		if ($eiArg instanceof EiuEntry) {

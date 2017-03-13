@@ -34,7 +34,7 @@ class ValContentItemOption extends SimplePropertyValidator {
 		$this->panelConfigs = $panelConfigs;
 	}
 	/* (non-PHPdoc)
-	 * @see \n2n\web\dispatch\val\SimplePropertyValidator::validateValue()
+	 * @see \n2n\impl\web\dispatch\map\val\SimplePropertyValidator::validateValue()
 	 */
 	protected function validateValue($mapValue) {
 		return;	
