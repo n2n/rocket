@@ -120,6 +120,15 @@ class EiuEntry {
 		return $this->getEiMapping()->setValue($eiFieldPath, $value);
 	}
 	
+	public function getValues() {
+		$eiMapping = $this->getEiMapping();
+		$values = array();
+		foreach (array_keys($eiMapping->getMappableWrappers()) as $eiFieldPathStr) {
+			$values[$eiFieldPathStr] = $this->getEiMapping()->getValue($eiFieldPathStr);
+		}
+		return $values;
+	}
+	
 	public function setScalarValue($eiFieldPath, $scalarValue) {
 		$eiFieldPath = EiFieldPath::create($eiFieldPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
