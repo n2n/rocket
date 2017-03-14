@@ -86,13 +86,23 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$type = $eiu->field()->getValue();
 				
+			$activeGuiIdPaths = array();
 			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
-				$ignored = $value != $type;
-		
+				if ($value == $type) {
+					$activeGuiIdPaths = $guiIdPaths;
+					continue;
+				}
+				
 				foreach ($guiIdPaths as $guiIdPath) {
 					if (null !== ($mappableWrapper = $eiu->entry()->getMappableWrapperByGuiIdPath($guiIdPath))) {
-						$mappableWrapper->setIgnored($ignored);
+						$mappableWrapper->setIgnored(true);
 					}
+				}
+			}
+			
+			foreach ($activeGuiIdPaths as $guiIdPath) {
+				if (null !== ($mappableWrapper = $eiu->entry()->getMappableWrapperByGuiIdPath($guiIdPath))) {
+					$mappableWrapper->setIgnored(false);
 				}
 			}
 		});
