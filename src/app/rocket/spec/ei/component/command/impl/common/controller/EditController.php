@@ -105,7 +105,7 @@ class EditController extends ControllerAdapter {
 		$eiUtils = $this->eiuCtrl->frame();
 		$draftEiSelection = $eiUtils->createEiSelectionFromDraft(
 				$eiUtils->createNewDraftFromLiveEntry($eiMapping->getEiSelection()->getLiveEntry()));
-		$draftEiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($draftEiSelection, $eiMapping);
+		$draftEiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($eiMapping, $draftEiSelection);
 		
 		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
 		$editModel->initialize($draftEiMapping);
@@ -130,7 +130,7 @@ class EditController extends ControllerAdapter {
 		$entryEiUtils = $this->eiuCtrl->toEiuEntry($eiMapping);
 		if ($entryEiUtils->getDraft()->isPublished()) {
 			$eiSelection = $entryEiUtils->getEiUtils()->createNewEiSelection(true, $entryEiUtils->getEiSpec());
-			$eiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($eiSelection, $eiMapping);
+			$eiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($eiMapping, $eiSelection);
 		}
 		
 		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
@@ -156,7 +156,7 @@ class EditController extends ControllerAdapter {
 		
 		$eiUtils = $this->eiuCtrl->frame();
 		$eiSelection = $eiUtils->createEiSelectionFromLiveEntry($draftEiMapping->getEiSelection()->getLiveEntry());
-		$eiMapping = $eiUtils->createEiMappingCopy($eiSelection, $draftEiMapping);
+		$eiMapping = $eiUtils->createEiMappingCopy($draftEiMapping, $eiSelection);
 		
 		if ($eiMapping->save()) {
 			$eiUtils->persist($eiSelection);

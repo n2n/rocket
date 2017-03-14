@@ -21,15 +21,12 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
-use rocket\spec\ei\preview\PreviewModel;
 use n2n\reflection\ReflectionUtils;
-use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiField;
 use rocket\spec\ei\manage\mapping\EiMapping;
-
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\magic\MagicObjectUnavailableException;
@@ -112,13 +109,13 @@ class WysiwygEiField extends AlphanumericEiField {
 		return new Raw($value);
 	}
 
-	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
-			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
-		$wysiwygHtml = new WysiwygHtmlBuilder($view);
-		return $wysiwygHtml->getWysiwygEditor($propertyPath, $this->mode,
-				$this->getAttributes()->get('bbcode'), true, $this->getAttributes()->get('tableEditing'), $this->obtainLinkConfigurations(), 
-				$this->obtainCssConfiguration(), array('class' => 'rocket-preview-inpage-component'));
-	}
+// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
+// 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
+// 		$wysiwygHtml = new WysiwygHtmlBuilder($view);
+// 		return $wysiwygHtml->getWysiwygEditor($propertyPath, $this->mode,
+// 				$this->getAttributes()->get('bbcode'), true, $this->getAttributes()->get('tableEditing'), $this->obtainLinkConfigurations(), 
+// 				$this->obtainCssConfiguration(), array('class' => 'rocket-preview-inpage-component'));
+// 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$eiMapping = $eiu->entry()->getEiMapping();

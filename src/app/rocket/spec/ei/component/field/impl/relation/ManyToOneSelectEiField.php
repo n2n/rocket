@@ -113,6 +113,10 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 		}		
 	}
 	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		return $value;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()

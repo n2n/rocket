@@ -35,7 +35,6 @@ use n2n\util\config\InvalidAttributeException;
 use n2n\util\StringUtils;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
-use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\spec\ei\manage\generic\UnknownGenericEiPropertyException;

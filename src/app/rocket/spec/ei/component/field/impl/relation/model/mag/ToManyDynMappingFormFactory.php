@@ -29,9 +29,9 @@ class ToManyDynMappingFormFactory {
 	private $utils;
 	private $inaccessibleCurrentEiSelection;
 	private $currentEiMapping;
-	private $currentMappingForms;
+	private $currentMappingForms = array();
 	private $newMappingFormAvailable;
-	private $newMappingForms;
+	private $newMappingForms = array();
 	private $draftMode = false;
 	
 	private $nextOrderIndex = 0;

@@ -44,6 +44,8 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use n2n\io\managed\impl\TmpFileManager;
+use rocket\spec\ei\component\field\impl\file\command\MultiUploadEiCommand;
 
 class FileEiField extends DraftableEiFieldAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
@@ -104,7 +106,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 	public function setCheckImageMemoryEnabled(bool $checkImageResourceMemory) {
 		$this->checkImageResourceMemory = $checkImageResourceMemory;
 	}
-	
+		
 	public function setThumbEiCommand(ThumbEiCommand $thumbEiCommand) {
 		$thumbEiCommand->setFileEiField($this);
 		$this->thumbEiCommand = $thumbEiCommand;
@@ -112,6 +114,14 @@ class FileEiField extends DraftableEiFieldAdapter {
 	
 	public function getThumbEiCommand() {
 		return $this->thumbEiCommand;
+	}
+		
+	public function setMultiUploadEiCommand(MultiUploadEiCommand $multiUploadEiCommand) {
+		$this->multiUploadEiCommand = $multiUploadEiCommand;
+	}
+	
+	public function getMultiUploadEiCommand() {
+		return $this->multiUploadEiCommand;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
@@ -208,5 +218,14 @@ class FileEiField extends DraftableEiFieldAdapter {
 	
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
 		return $this->getPropertyAccessProxy()->getValue($eiObject->getObject());
+	}
+	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		if ($value === null) return null;
+		
+		$tmpFileManager = $copyEiu->lookup(TmpFileManager::class);
+		CastUtils::assertTrue($tmpFileManager instanceof TmpFileManager);
+		
+		return $tmpFileManager->createCopyFromFile($value);
 	}
 }

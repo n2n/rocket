@@ -25,7 +25,6 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiSelection;
-
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEditable;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\DraftManager;
@@ -39,7 +38,6 @@ use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()
@@ -85,6 +83,10 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 		} else {
 			$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObjs);
 		}
+	}
+	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		return $value;
 	}
 	
 	/**

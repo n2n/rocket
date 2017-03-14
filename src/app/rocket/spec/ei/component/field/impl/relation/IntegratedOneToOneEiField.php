@@ -61,7 +61,10 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	}
 	
 	public function buildMappable(Eiu $eiu) {
-		return new ToOneMappable($eiu->entry()->getEiSelection(), $this, $this);
+		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+	
+		return new ToOneMappable($eiu->entry()->getEiSelection(), $this, $this,
+				($readOnly ? null : $this));
 	}
 	
 	/**
@@ -101,6 +104,14 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 	
 		$this->getPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
+	}
+	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		if ($value === null) return $value;
+	
+		$targetEiuFrame = new EiuFrame($this->embeddedEiFieldRelation->createTargetEditPseudoEiFrame(
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
+		return RelationEntry::fromM($targetEiuFrame->createEiMappingCopy($value->toEiMapping($targetEiuFrame)));
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {

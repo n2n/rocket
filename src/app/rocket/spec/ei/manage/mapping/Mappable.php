@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\manage\mapping;
 
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 interface Mappable {
 	
@@ -81,5 +82,5 @@ interface Mappable {
 	 * @param EiObject $eiObject
 	 * @return Mappable
 	 */
-	public function copyMappable(EiObject $eiObject);
+	public function copyMappable(Eiu $copyEiu);
 }

@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\util\model\EiuCtrl;
 class AddController extends ControllerAdapter {
 	private $dtc;
 	private $rocketState;
-	private $eiCtrlUtils;
+	private $eiuCtrl;
 	
 	private $parentEiSelection;
 	private $beforeEiSelection;
@@ -40,36 +40,41 @@ class AddController extends ControllerAdapter {
 	
 	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils, RocketState $rocketState) {
 		$this->dtc = $dtc;
-		$this->eiCtrlUtils = $eiCtrlUtils;
+		$this->eiuCtrl = $eiCtrlUtils;
 	}
 		
-	public function index(ParamGet $refPath = null) {	
-		$this->live($refPath);
+	public function index($copyIdRep = null, ParamGet $refPath = null) {	
+		$this->live($refPath, $copyIdRep);
 	}
 	
-	public function doChild($parentIdRep, ParamGet $refPath = null) {
-		$this->parentEiSelection = $this->eiCtrlUtils->lookupEiSelection($parentIdRep);	
-		$this->live($refPath);	
+	public function doChild($parentIdRep, $copyIdRep = null, ParamGet $refPath = null) {
+		$this->parentEiSelection = $this->eiuCtrl->lookupEiSelection($parentIdRep);	
+		$this->live($refPath, $copyIdRep);	
 	}
 	
-	public function doBefore($beforeIdRep, ParamGet $refPath = null) {
-		$this->beforeEiSelection = $this->eiCtrlUtils->lookupEiSelection($beforeIdRep);	
-		$this->live($refPath);
+	public function doBefore($beforeIdRep, $copyIdRep = null, ParamGet $refPath = null) {
+		$this->beforeEiSelection = $this->eiuCtrl->lookupEiSelection($beforeIdRep);	
+		$this->live($refPath, $copyIdRep);
 	}
 	
-	public function doAfter($afterIdRep, ParamGet $refPath = null) {
-		$this->afterEiSelection = $this->eiCtrlUtils->lookupEiSelection($afterIdRep);	
-		$this->live($refPath);
+	public function doAfter($afterIdRep, $copyIdRep = null, ParamGet $refPath = null) {
+		$this->afterEiSelection = $this->eiuCtrl->lookupEiSelection($afterIdRep);	
+		$this->live($refPath, $copyIdRep);
 	}
 	
-	private function live(ParamGet $refPath = null) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
-			
-		$eiFrameUtils = $this->eiCtrlUtils->frame();
-		$entryForm = $eiFrameUtils->createNewEntryForm(false);
+	private function live(ParamGet $refPath = null, $copyIdRep = null) {
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+		$eiuFrame = $this->eiuCtrl->frame();
 		
-		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $entryForm, $eiFrameUtils->getNestedSetStrategy());
+		$copyFrom = null;
+		if ($copyIdRep !== null) {
+			$copyFrom = $this->eiuCtrl->lookupEiMapping($copyIdRep);
+		}
+		
+		$entryForm = $eiuFrame->createNewEntryForm(false, $copyFrom);
+		
+		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+		$addModel = new AddModel($eiFrame, $entryForm, $eiuFrame->getNestedSetStrategy());
 		if ($this->parentEiSelection !== null) {
 			$addModel->setParentEntityObj($this->parentEiSelection->getLiveObject());
 		} else if ($this->beforeEiSelection !== null) {
@@ -79,44 +84,44 @@ class AddController extends ControllerAdapter {
 		}
 		
 		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($this->eiCtrlUtils->buildRefRedirectUrl($redirectUrl, $eiSelection));
+			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiSelection));
 			return;
 		} else if ($this->dispatch($addModel, 'createAndRepeate')) {
 			$this->refresh();
 			return;
 		}
 		
-		$this->eiCtrlUtils->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
+		$this->eiuCtrl->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
-				'type' => $this->eiCtrlUtils->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
 		$this->forward('..\view\add.html',
 				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 	}
 	
 	public function doDraft(ParamGet $refPath = null) {
-		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 			
-		$entryForm = $this->eiCtrlUtils->frame()->createNewEntryForm(true);
+		$entryForm = $this->eiuCtrl->frame()->createNewEntryForm(true);
 		
-		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
+		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm);
 		
 		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($this->eiCtrlUtils->buildRefRedirectUrl($redirectUrl, $eiSelection));
+			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiSelection));
 			return;
 		}
 		
-		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title', 
-				array('type' => $this->eiCtrlUtils->frame()->getGenericLabel())));
+				array('type' => $this->eiuCtrl->frame()->getGenericLabel())));
 		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 	}
 	
 	private function getBreadcrumbLabel() {
-		$eiFrameUtils = $this->eiCtrlUtils->frame();
+		$eiFrameUtils = $this->eiuCtrl->frame();
 		
 		if (null === $eiFrameUtils->getNestedSetStrategy()) {
 			return $this->dtc->translate('ei_impl_add_breadcrumb');

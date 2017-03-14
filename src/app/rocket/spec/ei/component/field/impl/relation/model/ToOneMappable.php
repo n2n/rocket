@@ -26,8 +26,21 @@ use rocket\spec\ei\manage\mapping\impl\RwMappable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\mapping\impl\Readable;
+use rocket\spec\ei\manage\mapping\impl\Writable;
+use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 class ToOneMappable extends RwMappable {
+	private $copyable;
+	
+	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
+			Copyable $copyable = null) {
+		parent::__construct($eiObject, $readable, $writable);
+
+		$this->copyable = $copyable;
+	}
+	
 	
 	protected function validateValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
@@ -64,9 +77,11 @@ class ToOneMappable extends RwMappable {
 		}
 	}
 	
-	public function copyMappable(EiObject $eiObject) {
-		$copy = new ToOneMappable($eiObject, $this->readable, $this->writable);
-		$copy->setValue($this->getValue());
+	public function copyMappable(Eiu $copyEiu) {
+		if ($this->copyable === null) return null;
+		
+		$copy = new ToOneMappable($copyEiu->entry()->getEiSelection(), $this->readable, $this->writable, $this->copyable);
+		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 }

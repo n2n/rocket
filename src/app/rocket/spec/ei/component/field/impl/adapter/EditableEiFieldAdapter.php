@@ -44,9 +44,10 @@ use n2n\l10n\MessageCode;
 use rocket\spec\ei\manage\mapping\impl\Validatable;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implements StatelessEditable, Writable, 
-		PrivilegedEiField, Validatable {
+		PrivilegedEiField, Validatable, Copyable {
 	protected $standardEditDefinition;
 	
 	public function __construct() {
@@ -89,7 +90,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 
 		return new SimpleMappable($eiu->entry()->getEiSelection(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
-				$this, $this, $this);
+				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
 	
 	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
@@ -98,6 +99,10 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 
 	public function write(EiObject $eiObject, $value) {
 		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $value);
+	}
+	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		return $value;
 	}
 	
 	private function checkMandatory(EiObject $eiObject, $mappableValue): bool {

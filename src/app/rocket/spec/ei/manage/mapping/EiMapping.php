@@ -166,7 +166,7 @@ class EiMapping {
 	
 		return $this->mappableWrappers[$eiFieldPathStr];
 	}
-	
+		
 	public function getMappableWrappers() {
 		return $this->mappableWrappers;
 	}

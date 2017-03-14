@@ -53,6 +53,9 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
+use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	private $replaceable = true;
@@ -70,7 +73,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	
 		parent::setEntityProperty($entityProperty);
 	}
-		
+	
 	/**
 	 * @return bool
 	 */
@@ -126,6 +129,14 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 		
 		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
+	}
+	
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		if ($value === null) return $value;
+		
+		$targetEiuFrame = new EiuFrame($this->embeddedEiFieldRelation->createTargetEditPseudoEiFrame(
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
+		return RelationEntry::fromM($targetEiuFrame->createEiMappingCopy($value->toEiMapping($targetEiuFrame)));
 	}
 	
 	/**

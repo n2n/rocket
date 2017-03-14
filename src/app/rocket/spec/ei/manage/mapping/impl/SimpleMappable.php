@@ -25,15 +25,18 @@ use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\manage\EiObject;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class SimpleMappable extends RwMappable {
 	private $typeConstraint;
+	private $copyable;
 	private $nullReadAllowed = true;
 	
 	public function __construct(EiObject $eiObject, TypeConstraint $typeConstraint, 
-			Readable $readable = null, Writable $writable = null, Validatable $validatable = null) {
+			Readable $readable = null, Writable $writable = null, Validatable $validatable = null, Copyable $copyable = null) {
 		parent::__construct($eiObject, $readable, $writable, $validatable);
 		$this->typeConstraint = $typeConstraint;
+		$this->copyable = $copyable;
 	}
 	
 	public function isNullReadAllowed(): bool {
@@ -74,13 +77,13 @@ class SimpleMappable extends RwMappable {
 		}
 	}
 	
-	public function copyMappable(EiObject $eiObject) {
-		$mappable = new SimpleMappable($eiObject, $this->typeConstraint, $this->readable, $this->writable, 
-				$this->validatable);
+	public function copyMappable(Eiu $copyEiu) {
+		if ($this->copyable === null) return null;
+		
+		$mappable = new SimpleMappable($copyEiu->entry()->getEiSelection(), $this->typeConstraint, $this->readable, $this->writable,
+				$this->validatable, $this->copyable);
 		$mappable->setNullReadAllowed($this->isNullReadAllowed());
-		if ($this->isValueLoaded()) {
-			$mappable->setValue($this->getValue());
-		}
+		$mappable->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $mappable;
 	}
 }

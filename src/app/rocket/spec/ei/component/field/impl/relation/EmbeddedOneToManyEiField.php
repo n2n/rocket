@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\EiFrame;
-
 use rocket\spec\ei\component\field\impl\relation\conf\RelationEiFieldConfigurator;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
@@ -63,6 +62,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\draft\stmt\DraftStmtBuilder;
 use rocket\spec\ei\manage\draft\ModDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements DraftableEiField, Draftable*/ {
 	private $targetOrderEiFieldPath;
@@ -79,6 +80,20 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	
 		parent::setEntityProperty($entityProperty);
 	}
+		
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+		$targetEiuFrame = new EiuFrame($this->eiFieldRelation->createTargetEditPseudoEiFrame(
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
+		
+		$newValue = array();
+		foreach ($value as $key => $targetRelationEntry) {
+			$newValue[$key] = RelationEntry::fromM($targetEiuFrame->createEiMappingCopy(
+					$targetRelationEntry->toEiMapping($targetEiuFrame)));
+		}
+		return $newValue;
+	}
+	
+	
 	
 	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
 		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;

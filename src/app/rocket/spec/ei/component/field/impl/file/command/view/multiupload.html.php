@@ -21,16 +21,21 @@
 	 */
 
 	use rocket\spec\ei\manage\control\IconType;
-	use rocket\spec\ei\manage\EiFrame;
-	use n2n\l10n\DynamicTextCollection;
-	use rocket\spec\ei\component\field\impl\file\command\controller\MultiUploadScriptController;
+	use rocket\spec\ei\manage\util\model\EiuFrame;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\view\View;
 	
-	$eiFrame = $view->getParam('eiFrame');
-	$view->assert($eiFrame instanceof EiFrame);
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($view);
+	$formHtml = HtmlView::formHtml($view);
+	$httpContext = HtmlView::httpContext($view);
+	
+	$eiuFrame = $view->getParam('eiuFrame');
+	$view->assert($eiuFrame instanceof EiuFrame);
 
 	$view->useTemplate('\rocket\core\view\template.html',
 			array('title' => $view->getL10nText('ei_impl_multi_upload_title', 
-					array('plural_label' => $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getPluralLabel())))); 
+					array('plural_label' => $eiuFrame->getGenericPluralLabel())))); 
 	
 	$html->meta()->addJs('js/script/impl/multiupload/jquery.knob.js');
 	$html->meta()->addJs('js/script/impl/multiupload/jquery.ui.widget.js');
@@ -38,14 +43,12 @@
 	$html->meta()->addJs('js/script/impl/multiupload/jquery.fileupload.js');
 	$html->meta()->addJs('js/script/impl/multiupload/multiupload.js');
 	$html->meta()->addCss('css/script/impl/multiupload/multiupload.css');
-	
-	$rocketDtc = new DynamicTextCollection('rocket');
 ?>
 <div class="rocket-panel">
 	<h3><?php $html->text('ei_impl_multi_upload_label', array('plural_label' => 
-					$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getPluralLabel())) ?></h3>
+					$eiuFrame->getGenericPluralLabel())) ?></h3>
 	<form id="rocket-multi-upload-form" method="post" 
-			action="<?php $html->out($request->getCurrentControllerContextPath(array(MultiUploadScriptController::ACTION_UPLOAD))) ?>" 
+			action="<?php $html->out($html->meta()->getControllerUrl(array('upload'))) ?>" 
 			enctype="multipart/form-data">
 		<div id="rocket-multi-upload-drop">
 			Drop Here
@@ -60,14 +63,14 @@
 <div id="rocket-page-controls">
 	<ul>
 		<li>
-			<a id="rocket-multi-upload-submit" href="#" class="rocket-control">
+			<a id="rocket-multi-upload-submit" href="#" class="rocket-control-success rocket-important">
 				<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
-				<span><?php $html->text('ei_impl_multi_upload_label')?></span>
+				<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
 			</a>
 		</li>
 		<li>
-			<?php $html->link($eiFrame->getOverviewUrl($request),
-					new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $rocketDtc->translate('common_cancel_label') . '</span>'),
+			<?php $html->link($eiuFrame->getEiFrame()->getOverviewUrl($httpContext),
+					new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $html->getText('common_cancel_label') . '</span>'),
 							array('class' => 'rocket-control')) ?>
 		</li>
 	</ul>

@@ -50,7 +50,6 @@ use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 use rocket\spec\ei\EiCommandPath;
 use n2n\reflection\ReflectionUtils;
 
@@ -145,8 +144,12 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->determineEiMask($eiSelection)->getEiEngine()->createEiMapping($this->eiFrame, $eiSelection);
 	}
 	
-	public function createEiMappingCopy(EiSelection $eiSelection, EiMapping $from): EiMapping {
-		return $this->determineEiMask($eiSelection)->getEiEngine()->createEiMappingCopy($this->eiFrame, $eiSelection, $from);
+	public function createEiMappingCopy(EiMapping $from, EiSelection $to = null): EiMapping {
+		if ($to === null) {
+			$to = $this->createNewEiSelection($from->getEiSelection()->isDraft(), $from->getEiSpec());
+		}
+		
+		return $this->determineEiMask($to)->getEiEngine()->createEiMappingCopy($this->eiFrame, $to, $from);
 	}
 	
 	public function createBulkyEntryGuiModel(EiMapping $eiMapping, bool $makeEditable) {
@@ -160,7 +163,7 @@ class EiuFrame extends EiUtilsAdapter {
 		return $eiMask->createBulkyView($this->eiFrame, new EntryGui($entryGuiModel));
 	}
 	
-	public function createNewEntryForm(bool $draft = false): EntryForm {
+	public function createNewEntryForm(bool $draft = false, EiMapping $copyFrom = null): EntryForm {
 		$entryModelForms = array();
 		$labels = array();
 		
@@ -173,7 +176,12 @@ class EiuFrame extends EiUtilsAdapter {
 			}
 				
 			$eiSelection = $this->createNewEiSelection($draft, $subEiSpec);
-			$subEiMapping = $this->createEiMapping($eiSelection);
+			$subEiMapping = null;
+			if ($copyFrom !== null) {
+				$subEiMapping = $this->createEiMappingCopy($copyFrom, $eiSelection);
+			} else {
+				$subEiMapping = $this->createEiMapping($eiSelection);
+			}
 						
 			$entryModelForms[$subEiSpecId] = $this->createEntryModelForm($subEiSpec, $subEiMapping);
 			$labels[$subEiSpecId] = $contextEiMask->determineEiMask($subEiSpec)->getLabelLstr()
@@ -233,9 +241,8 @@ class EiuFrame extends EiUtilsAdapter {
 			$entityObj = $eiSelection->getLiveObject();
 		} else {
 			$eiMapping = $this->createEiMapping($eiSelection);
-			$previewEiMapping = $this->createEiMappingCopy(
-					$this->createNewEiSelection(false, $eiSelection->getLiveEntry()->getEiSpec()),
-					$eiMapping);
+			$previewEiMapping = $this->createEiMappingCopy($eiMapping, 
+					$this->createNewEiSelection(false, $eiSelection->getLiveEntry()->getEiSpec()));
 			$previewEiMapping->write();
 			$entityObj = $previewEiMapping->getEiSelection()->getLiveObject();
 		}
