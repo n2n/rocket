@@ -71,7 +71,11 @@ class EiSpec extends Spec implements EiThing {
 		$this->eiEngine = new EiEngine($this);
 		$this->eiMaskCollection = new EiMaskCollection($this);
 	}
-	
+
+	public function getEiThingPath(): EiThingPath {
+		return new EiThingPath(array($this->getId()));
+	}
+
 	public function setEntityModel(EntityModel $entityModel) {
 		IllegalStateException::assertTrue($this->entityModel === null);
 		$this->entityModel = $entityModel;

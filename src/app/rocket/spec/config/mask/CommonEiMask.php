@@ -21,6 +21,7 @@
  */
 namespace rocket\spec\config\mask;
 
+use rocket\spec\ei\EiThingPath;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
@@ -124,6 +125,18 @@ class CommonEiMask implements EiMask, Identifiable {
 	 */
 	public function setId(string $id = null) {
 		$this->id = $id;
+	}
+
+	public function getEiThingPath(): EiThingPath {
+		$ids = array();
+		$curEiThing = $this;
+		do {
+			if (null !== ($id = $curEiThing->getId())) {
+				$ids[] = $id;
+			}
+		} while (null !== ($curEiThing = $curEiThing->getMaskedEiThing()));
+
+		return new EiThingPath($ids);
 	}
 	
 	public function getModuleNamespace(): string {
