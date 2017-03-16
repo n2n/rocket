@@ -74,13 +74,26 @@ class EiuFrame extends EiUtilsAdapter {
 	public function getHttpContext() {
 		return $this->eiFrame->getN2nContext()->getHttpContext();
 	}
-	
+
+	/**
+	 * @return EntityManager
+	 */
 	public function em(): EntityManager {
 		return $this->eiFrame->getManageState()->getEntityManager();
 	}
-	
+
+	/**
+	 * @return EiMask
+	 */
 	public function getEiMask(): EiMask {
 		return $this->eiFrame->getContextEiMask();
+	}
+
+	/**
+	 * @return \rocket\spec\ei\EiThingPath
+	 */
+	public function getEiThingPath() {
+		return $this->eiFrame->getContextEiMask()->getEiThingPath();
 	}
 	
 	public function getN2nContext(): N2nContext {

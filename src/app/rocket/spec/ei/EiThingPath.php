@@ -21,44 +21,15 @@
  */
 namespace rocket\spec\ei;
 
-use n2n\l10n\Lstr;
+use rocket\spec\ei\IdPath;
+use rocket\spec\ei\component\field\EiField;
 
-interface EiThing {
-	
+class EiThingPath extends IdPath {
 	/**
-	 * @return string 
+	 * @param array ...$args
+	 * @return EiThingPath
 	 */
-	public function getId();
-
-	public function getEiThingPath(): EiThingPath;
-	
-	/**
-	 * @return \n2n\l10n\Lstr
-	 */
-	public function getLabelLstr(): Lstr;
-	
-	/**
-	 * @return \n2n\l10n\Lstr
-	 */
-	public function getPluralLabelLstr(): Lstr;
-	
-	/**
-	 * @return \rocket\spec\ei\EiEngine
-	 */
-	public function getEiEngine(): EiEngine;
-	
-	/**
-	 * @return \rocket\spec\ei\EiThing
-	 */
-	public function getMaskedEiThing();
-	
-	/**
-	 * @return string
-	 */
-	public function getModuleNamespace(): string;
-	
-	/**
-	 * @return string 
-	 */
-	public function __toString(): string;
+	public function ext(...$args) {
+		return new EiThingPath(array_merge($this->argsToIds($args), $args));
+	}
 }
