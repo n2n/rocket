@@ -171,7 +171,7 @@ class EiuCtrl implements Lookupable {
 		return $this->buildRedirectUrl($eiSelection);
 	}
 	
-	public function applyCommonBreadcrumbs(EiSelection $eiSelection = null, string $currentBreadcrumbLabel = null) {
+	public function applyCommonBreadcrumbs($eiEntryObj = null, string $currentBreadcrumbLabel = null) {
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);
@@ -180,7 +180,8 @@ class EiuCtrl implements Lookupable {
 			$rocketState->addBreadcrumb($eiFrame->createOverviewBreadcrumb($this->httpContext));
 		}
 			
-		if ($eiSelection !== null && !$eiFrame->isDetailDisabled()) {
+		if ($eiEntryObj !== null && !$eiFrame->isDetailDisabled()) {
+			$eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', $this->eiuFrame->getEiSpec());
 			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiSelection));
 		}
 		

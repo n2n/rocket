@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\core\model\Rocket;
 use n2n\reflection\CastUtils;
 
-class EiMaskUtils extends EiUtilsAdapter {
+class EiuMask extends EiUtilsAdapter {
 	private $eiMask;
 	private $n2nContext;
 	private $em;

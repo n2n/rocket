@@ -119,8 +119,8 @@ class EiSpecExtraction extends SpecExtraction {
 		return $this->commonEiMaskExtractions;
 	}
 	
-// 	public function createScript(SpecManager $scriptManager) {
-// 		$factory = new EiSpecFactory($scriptManager->getEntityModelManager(), $scriptManager->getEiSpecSetupQueue());
+// 	public function createScript(SpecManager $specManager) {
+// 		$factory = new EiSpecFactory($specManager->getEntityModelManager(), $specManager->getEiSpecSetupQueue());
 // 		return $factory->create($this);
 // 	}
 	

@@ -37,7 +37,7 @@ class CustomSpecExtraction extends SpecExtraction {
 		$this->controllerClassName = $customControllerClassName;
 	}
 	
-// 	public function createScript(SpecManager $scriptManager) {
+// 	public function createScript(SpecManager $specManager) {
 // 		$constrollerClass = null;
 // 		try {
 // 			$controllerClass = ReflectionUtils::createReflectionClass(

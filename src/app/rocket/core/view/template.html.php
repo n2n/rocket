@@ -64,8 +64,8 @@
 	$htmlMeta->addJs('js/wysiwyg.js');
 	$htmlMeta->addJs('js/rocket-ts.js', null);
 	
-// 	$scriptManager = $rocket->getSpecManager();
-// 	$menuGroups = $scriptManager->getMenuGroups();
+// 	$specManager = $rocket->getSpecManager();
+// 	$menuGroups = $specManager->getMenuGroups();
 // 	$selectedMenuItem = $manageState->getSelectedMenuItem();
 // 	$breadcrumbs = $rocketState->getBreadcrumbs();
 // 	$activeBreadcrumb = array_pop($breadcrumbs);
