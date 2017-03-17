@@ -32,4 +32,8 @@ class EiuField {
 	public function setValue($value) {
 		return $this->getEiuEntry()->setValue($this->eiFieldPath, $value);
 	}
+	
+	public function setScalarValue($scalarValue) {
+		return $this->getEiuEntry()->setScalarValue($this->eiFieldPath, $scalarValue);
+	}
 }
