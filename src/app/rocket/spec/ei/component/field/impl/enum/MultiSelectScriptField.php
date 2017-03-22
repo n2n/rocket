@@ -36,7 +36,6 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\impl\web\dispatch\mag\model\IntegerOption;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 
 class MultiSelectEiField extends DraftableEiFieldAdapter {

@@ -57,12 +57,10 @@
 	$htmlMeta->addLibrary(new JQueryLibrary(2, false));
 	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/font-awesome.css');
-	$htmlMeta->addJs('js/html5.js', null);
-	$htmlMeta->addJs('js/respond.src.js', null);
+// 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
 	$htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
-	$htmlMeta->addJs('js/wysiwyg.js');
-	$htmlMeta->addJs('js/rocket-ts.js', null);
+	$htmlMeta->addJs('js/rocket.js', null);
 	
 // 	$specManager = $rocket->getSpecManager();
 // 	$menuGroups = $specManager->getMenuGroups();
@@ -134,7 +132,7 @@
 							<li<?php $view->out($templateModel->isMenuItemActive($menuItem) 
 									? ' class="rocket-nav-group-list-item-active"' : null) ?>>
 								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), $menuItem->determinePathExt($view->getN2nContext())), 
-										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>')) ?></li>
+										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>'), array('class' => 'rocket-action')) ?></li>
 						<?php endforeach ?>
 					</ul>
 				</div>
@@ -160,42 +158,44 @@
 		
 		
 		<div id="rocket-content-container">
-			<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
-				<ul id="rocket-breadcrumb">
-					<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
-						<li><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
-					<?php endforeach ?>
-					<li class="rocket-breadcrumb-active">
-						<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
-					</li>
-				</ul>
-			<?php endif ?>
-			
-			<!-- WICHTIG -->
-			
-			<?php if (isset($view->params['title'])): ?>
-				<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
-			<?php else: ?>
-				<h1 class="rocket-main-title">Rocket</h1>
-			<?php endif ?>
-			
-			<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
-			<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
-			<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
-			<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
-			
-			<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
-					data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
-				<?php $view->importContentView() ?>
-			</div>
-			
-			<?php if ($view->hasPanel('additional')): ?>
-				<div id="rocket-additional">
-					<?php $view->importPanel('additional') ?>
+			<div class="rocket-main-content">
+				<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
+					<ul id="rocket-breadcrumb">
+						<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
+							<li><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
+						<?php endforeach ?>
+						<li class="rocket-breadcrumb-active">
+							<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
+						</li>
+					</ul>
+				<?php endif ?>
+				
+				<!-- WICHTIG -->
+				
+				<?php if (isset($view->params['title'])): ?>
+					<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
+				<?php else: ?>
+					<h1 class="rocket-main-title">Rocket</h1>
+				<?php endif ?>
+				
+				<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
+				<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
+				<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
+				<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
+				
+				<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
+						data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
+					<?php $view->importContentView() ?>
 				</div>
-			<?php endif ?>
-			
-			<!-- NICHT MEHR WICHTIG -->
+				
+				<?php if ($view->hasPanel('additional')): ?>
+					<div id="rocket-additional">
+						<?php $view->importPanel('additional') ?>
+					</div>
+				<?php endif ?>
+				
+				<!-- NICHT MEHR WICHTIG -->
+			</div>
 		</div>
 	<?php $html->bodyEnd() ?>
 </html>

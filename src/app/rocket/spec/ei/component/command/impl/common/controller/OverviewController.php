@@ -85,10 +85,16 @@ class OverviewController extends ControllerAdapter {
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
-		$this->forward('..\view\overview.html', 
-				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
+		$this->eiuCtrl->forwardView(
+				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
+						'critmodForm' => $critmodForm,
 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
+						'filterAjahHook' => $filterAjahHook, 'listView' => $listView)));
+		
+// 		$this->forward('..\view\overview.html', 
+// 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
+// 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
+// 						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
 	}
 	
 	public function doAjah(array $delegateCmds = array(), OverviewAjahController $ajahOverviewController, 

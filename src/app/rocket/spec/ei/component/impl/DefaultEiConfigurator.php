@@ -83,5 +83,6 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter implements EiFieldConf
 		throw new IncompatiblePropertyException('EiField can not be assigned to a property.');
 	}
 
+
 	
 }

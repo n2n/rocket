@@ -1,11 +1,11 @@
 namespace rocket.cmd {
-	
+	var $ = jQuery;
 	
 	export class Monitor {
 		private content: Content;
 		
 		constructor(content: Content) {
-			
+			this.content = content;
 		}
 		
 		public scan(jqContent: JQuery) {
@@ -14,7 +14,7 @@ namespace rocket.cmd {
             });
 		}
 	}
-    
+	
     class LinkAction {
         private jqA: JQuery;
         
@@ -33,7 +33,15 @@ namespace rocket.cmd {
         }
 		
 		private handle() {
-			this.jqA.attr("href");
+			$.ajax({
+				"url": this.jqA.attr("href"),
+				"dataType": "json"
+			}).fail(function (data) {
+				alert(data);
+			}).done(function (data) {
+				alert(data);
+				n2n.ajah.analyze(data);
+			});
 		}
     }
 }

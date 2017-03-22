@@ -41,6 +41,9 @@ use n2n\context\Lookupable;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use n2n\web\http\Redirect;
+use n2n\persistence\meta\structure\View;
+use n2n\impl\web\ui\view\html\AjahResponse;
+use n2n\impl\web\ui\view\html\HtmlView;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -75,8 +78,15 @@ class EiuCtrl implements Lookupable {
 		return $this->eiuFrame;
 	}
 	
+	/**
+	 * @param string $liveIdRep
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function lookupEntry(string $liveIdRep) {
+		return $this->eiuFrame->entry($this->lookupEiSelection($liveIdRep));
+	}
 	
-	public function lookupEiSelection(string $liveIdRep, bool $assignToEiu = false) {
+	public function lookupEiSelection(string $liveIdRep) {
 		$eiSelection = null;
 		try {
 			$eiSelection = $this->eiuFrame->lookupEiSelectionById($this->eiuFrame->idRepToId($liveIdRep));
@@ -86,10 +96,6 @@ class EiuCtrl implements Lookupable {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (InaccessibleEntryException $e) {
 			throw new ForbiddenException(null, 0, $e);
-		}
-		
-		if ($assignToEiu) {
-			$this->eiuFrame->assignEiuEntry($eiSelection);
 		}
 		
 		return $eiSelection;
@@ -107,7 +113,15 @@ class EiuCtrl implements Lookupable {
 		return $eiMapping;
 	}
 	
-	public function lookupEiSelectionByDraftId($draftId, bool $assignToEiu = false) {
+	/**
+	 * @param string $liveIdRep
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function lookupEntryByDraftId($draftId) {
+		return $this->eiuFrame->entry($this->lookupEiSelectionByDraftId($draftId));
+	}
+	
+	public function lookupEiSelectionByDraftId($draftId) {
 		if (!is_numeric($draftId)) {
 			throw new PageNotFoundException('Draft id must be numeric. ' . ReflectionUtils::getTypeInfo($draftId) 
 					. ' given');
@@ -122,10 +136,6 @@ class EiuCtrl implements Lookupable {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		
-		if ($assignToEiu) {
-			$this->eiuFrame->assignEiuEntry($eiSelection);	
-		}
-		
 		return $eiSelection;
 	}
 	
@@ -135,6 +145,17 @@ class EiuCtrl implements Lookupable {
 			$this->eiuFrame->assignEiuEntry($eiMapping);
 		}
 		return $eiMapping;
+	}
+	
+	public function forwardView(HtmlView $view) {
+		$response = $this->httpContext->getResponse();
+		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+		if ('application/json' == $acceptRange->bestMatch(['text/html', 'application/json'])) {
+			$response->send(new AjahResponse($view));
+			return;
+		}
+		
+		$response->send($view);
 	}
 
 	public function buildRedirectUrl(EiSelection $eiSelection = null) { 
