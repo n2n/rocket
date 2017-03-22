@@ -18,6 +18,7 @@ use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiSpec;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, N2nContext::class);
@@ -345,7 +346,7 @@ class EiuFactory {
 		return null;
 	}
 	
-	public static function buildEiSelectionFromEiArg($eiEntryObj, string $argName = null, bool $required = true, &$eiMapping = null, &$viewMode = null) {
+	public static function buildEiSelectionFromEiArg($eiEntryObj, string $argName = null, EiSpec $eiSpec = null, bool $required = true, &$eiMapping = null, &$viewMode = null) {
 		if (!$required && $eiEntryObj === null) {
 			return null;
 		}
@@ -354,6 +355,17 @@ class EiuFactory {
 			return $eiSelection;
 		}
 		
-		ArgUtils::valType($eiEntryObj, self::EI_ENTRY_TYPES, !$required, $argName);
+		$eiEntryTypes = self::EI_ENTRY_TYPES;
+		
+		if ($eiSpec !== null) {
+			$eiEntryTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
+			try {
+				return LiveEiSelection::create($eiSpec, $eiEntryObj);
+			} catch (\InvalidArgumentException $e) {
+				return null;
+			}
+		}
+		
+		ArgUtils::valType($eiEntryObj, $eiEntryTypes, !$required, $argName);
 	}
 }

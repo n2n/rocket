@@ -49,7 +49,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // class SubsystemEiField extends TranslatableEiFieldAdapter {
 	
 // 	private $subsystems;
-// 	private $scriptManager;
+// 	private $specManager;
 	
 // 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 // 		ArgUtils::assertTrue($entityProperty instanceof N2nLocaleEntityProperty);
@@ -63,7 +63,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 	}
 	
 // 	public function setup(EiSetupProcess $setupProcess) {
-// 		$this->scriptManager = $setupProcess->getSpecManager();
+// 		$this->specManager = $setupProcess->getSpecManager();
 // 		$subsystemConfigs = N2N::getAppConfig()->web()->getSubsystemConfigs();
 // 		$this->subsystems = (count($subsystemConfigs) > 0) ? 
 // 				array(null => 'Alle Subsysteme') : array();

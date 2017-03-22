@@ -26,11 +26,11 @@ use rocket\user\bo\EiGrant;
 
 class RocketUserGroupListModel {
 	private $userGroups;
-	private $scriptManager;
+	private $specManager;
 	
-	public function __construct(array $userGroups, SpecManager $scriptManager) {
+	public function __construct(array $userGroups, SpecManager $specManager) {
 		$this->userGroups = $userGroups;
-		$this->scriptManager = $scriptManager;
+		$this->specManager = $specManager;
 	}
 	
 	public function getRocketUserGroups() {
@@ -38,7 +38,7 @@ class RocketUserGroupListModel {
 	}
 	
 	public function prettyEiGrantName(EiGrant $eiGrant) {
-		$eiSpec = $this->scriptManager->getEiSpecById($eiGrant->getEiSpecId());
+		$eiSpec = $this->specManager->getEiSpecById($eiGrant->getEiSpecId());
 		if (null !== ($eiMaskId = $eiGrant->getEiMaskId())) {
 			return $eiSpec->getEiMaskCollection()->getById($eiMaskId)->getLabel();
 		}

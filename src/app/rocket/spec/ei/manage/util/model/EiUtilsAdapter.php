@@ -287,7 +287,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 			return;
 		}
 		
-		$eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj');
+		$eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', $this->getEiSpec());
 		
 		if ($eiSelection->isDraft()) {
 			$this->persistDraft($eiSelection->getDraft(), $flush);

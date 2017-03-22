@@ -33,7 +33,7 @@ use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
 
 class SpecEiSetupProcess implements EiSetupProcess {
-	private $scriptManager;
+	private $specManager;
 	private $n2nContext;
 	private $eiComponent;
 	
@@ -47,7 +47,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 	 * @return \rocket\spec\config\SpecManager
 // 	 */
 // 	public function getSpecManager() {
-// 		return $this->scriptManager;
+// 		return $this->specManager;
 // 	}
 	
 	public function getN2nContext(): N2nContext {

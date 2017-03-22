@@ -51,7 +51,6 @@ use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
-use n2n\reflection\ReflectionUtils;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -294,6 +293,14 @@ class EiuFrame extends EiUtilsAdapter {
 	public function isExecutedByType($eiCommandType) {
 // 		ArgUtils::valType($eiCommandType, array('string', 'object'));
 		return $this->eiFrame->getEiExecution()->getEiCommand() instanceof $eiCommandType;
+	}
+	
+	/**
+	 * 
+	 * @return \rocket\spec\ei\manage\generic\ScalarEiProperty[]
+	 */
+	public function getScalarEiProperties() {
+		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues();
 	}
 }
 

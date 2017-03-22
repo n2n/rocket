@@ -57,15 +57,14 @@
 	$htmlMeta->addLibrary(new JQueryLibrary(2, false));
 	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/font-awesome.css');
-	$htmlMeta->addJs('js/html5.js', null);
-	$htmlMeta->addJs('js/respond.src.js', null);
+// 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
 	$htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
 	$htmlMeta->addJs('js/wysiwyg.js');
-	$htmlMeta->addJs('js/rocket-ts.js', null);
+	$htmlMeta->addJs('js/rocket.js');
 	
-// 	$scriptManager = $rocket->getSpecManager();
-// 	$menuGroups = $scriptManager->getMenuGroups();
+// 	$specManager = $rocket->getSpecManager();
+// 	$menuGroups = $specManager->getMenuGroups();
 // 	$selectedMenuItem = $manageState->getSelectedMenuItem();
 // 	$breadcrumbs = $rocketState->getBreadcrumbs();
 // 	$activeBreadcrumb = array_pop($breadcrumbs);

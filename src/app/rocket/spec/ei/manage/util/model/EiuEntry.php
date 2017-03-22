@@ -44,8 +44,9 @@ class EiuEntry {
 	private $eiuFrame;
 	
 	public function __construct($eiEntryObj, $eiuFrame = null) {
-		$this->eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', true, $this->eiMapping);
 		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame, 'eiuFrame');
+		$this->eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', 
+				($this->eiuFrame !== null ? $this->eiuFrame->getEiSpec() : null), true, $this->eiMapping);
 	}
 	
 	public static function create(EiSelection $eiSelection, EiMapping $eiMapping = null, EiuFrame $eiuFrame = null) {

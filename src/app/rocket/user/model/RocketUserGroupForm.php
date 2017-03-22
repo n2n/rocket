@@ -39,15 +39,15 @@ class RocketUserGroupForm implements Dispatchable {
 		$ai->c(new AnnoDispProperties('name', 'menuItemRestrictionEnabled', 'accessibleMenuItemIds'));
 	}
 	
-	private $scriptManager;
+	private $specManager;
 	private $layoutManager;
 	private $userGroup;
 
 	private $menuItemRestrictionEnabled = false;
 	private $accessibleMenuItemIds = array();
 	
-	public function __construct(RocketUserGroup $userGroup, LayoutManager $layoutManager, SpecManager $scriptManager, N2nContext $n2nContext) {
-		$this->scriptManager = $scriptManager;
+	public function __construct(RocketUserGroup $userGroup, LayoutManager $layoutManager, SpecManager $specManager, N2nContext $n2nContext) {
+		$this->specManager = $specManager;
 		$this->layoutManager = $layoutManager;
 		$this->userGroup = $userGroup;
 		
