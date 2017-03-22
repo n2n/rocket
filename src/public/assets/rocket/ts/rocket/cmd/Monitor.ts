@@ -1,7 +1,12 @@
 namespace rocket.cmd {
-
+	
+	
 	export class Monitor {
-		private jqContainer: JQuery;
+		private content: Content;
+		
+		constructor(content: Content) {
+			
+		}
 		
 		public scan(jqContent: JQuery) {
             jqContent.find("a.rocket-action").each(function () {

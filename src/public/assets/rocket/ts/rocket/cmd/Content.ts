@@ -1,13 +1,15 @@
 namespace rocket.cmd {
 	
-	class Content {
+	export class Content {
 		private jqContainer: JQuery;
 		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;
 		}
 		
-		
+		public holeradio() {
+			
+		}
 	}
 	
 }
