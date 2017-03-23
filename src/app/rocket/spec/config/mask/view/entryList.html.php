@@ -62,8 +62,8 @@
 	</thead>
 	<tbody class="rocket-overview-content">
 		<?php while ($entryEiHtml->meta()->next()): ?>
-			<tr<?php $view->out($entryGuiTree === null ? '' : ' class="rocket-tree-level-' 
-					. $entryGuiTree->getLevelByIdRep($entryEiHtml->meta()->getCurrentIdRep()) . '"') ?>>
+			<?php $entryEiHtml->entryOpen('tr', array('class' => ($entryGuiTree === null ? null : ' class="rocket-tree-level-' 
+					. $entryGuiTree->getLevelByIdRep($entryEiHtml->meta()->getCurrentIdRep()) . '"'))) ?>
 				<?php $entryEiHtml->selector('td') ?>
 				
 				<?php foreach ($orderItems as $orderItem): ?>
@@ -71,10 +71,10 @@
 						<?php $entryEiHtml->field() ?>
 					<?php $entryEiHtml->closeField(); ?>
 				<?php endforeach ?>
-				<td>
+				<?php $view->out('<td>') ?>
 					<?php $controlEiHtml->entryGuiControlList($entryEiHtml->meta()->getCurrentEntryGuiModel(), true) ?>
-				</td>
-			</tr>
+				<?php $view->out('</td>') ?>
+			<?php $entryEiHtml->entryClose() ?>
 		<?php endwhile ?>
 	</tbody>
 </table>

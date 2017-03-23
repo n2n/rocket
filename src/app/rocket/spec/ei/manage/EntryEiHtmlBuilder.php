@@ -35,6 +35,8 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use n2n\web\ui\Raw;
+use n2n\web\ui\CouldNotRenderUiComponentException;
 
 class EntryEiHtmlBuilder {
 	private $view;
@@ -81,6 +83,40 @@ class EntryEiHtmlBuilder {
 			return end($this->eiFieldInfoStack);
 		}
 	}
+	
+	private $openEntryTagName = null;
+	
+	public function openEntry(string $tagName, array $attrs = null) {
+		$view->out($this->getOpenEntry($tagName, $attrs));
+	}
+	
+	public function getOpenEntry(string $tagName, array $attrs = null) {
+		$this->openEntryTagName = $tagName;
+		
+		$entryAttrs = array('class' => 'rocket-entry');
+		$eiSelection = $this->meta()->getCurrentEiMapping()->getEiSelection();
+		if (!$eiSelection->isDraft()) {
+			$entryAttrs['data-rocket-live-entry-id-rep'] = $this->meta()->getCurrentIdRep();
+		} else {
+			$entryAttrs['data-rocket-draft-id'] = $eiSelection->getDraft()->getId();
+		}
+		
+		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+				HtmlUtils::mergeAttrs($entryAttrs, $attrs)).'>');
+	}
+	
+	public function closeEntry() {
+		$view->out($this->getOpenEntry($tagName, $attrs));
+	}
+	
+	public function closeEntry(string $tagName, array $attrs = null) {
+		if ($this->openEntryTagName === null) {
+			throw new CouldNotRenderUiComponentException('No entry opened.');
+		}
+		
+		return new Raw('</' . htmlspecialchars($tagName) . '>');
+	}
+	
 	
 	public function selector(string $containerTagName, array $containerAttrs = null, $content = '') {
 		$this->view->out($this->getSelector($containerTagName, $containerAttrs, $content));
