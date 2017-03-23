@@ -24,25 +24,31 @@ namespace rocket\spec\ei\manage;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\gui\EiEntryGui;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EntryGui {
-	private $entryGuiModel;
+	private $eiEntryGui;
 	private $entryPropertyPath;
 	
-	public function __construct(EntryGuiModel $entryGuiModel, PropertyPath $entryPropertyPath = null) {		
-		$this->entryGuiModel = $entryGuiModel;
-		$this->entryPropertyPath = $entryPropertyPath;
+	public function __construct(EiEntryGui $eiEntryGui, PropertyPath $propertyPath = null) {		
+		$this->eiEntryGui = $eiEntryGui;
+		$this->entryPropertyPath = $propertyPath;
+		
+		if ($propertyPath === null && !((bool) $eiEntryGui->getViewMode() & DisplayDefinition::READ_VIEW_MODES)) {
+			throw new \InvalidArgumentException('PropertyPath required.');
+		}
 	}
 	
-	public function getEntryGuiModel(): EntryGuiModel {
-		return $this->entryGuiModel;
+	public function getEiEntryGui(): EntryGuiModel {
+		return $this->eiEntryGui;
 	}
 	
-	public function hasEntryPropertyPath(): bool {
+	public function hasPropertyPath(): bool {
 		return $this->entryPropertyPath !== null;	
 	}
 	
-	public function getEntryPropertyPath(): PropertyPath {
+	public function getPropertyPath(): PropertyPath {
 		if ($this->entryPropertyPath !== null) {
 			return $this->entryPropertyPath;
 		}

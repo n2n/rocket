@@ -6,9 +6,9 @@ use n2n\persistence\orm\LifecycleListener;
 use n2n\persistence\orm\LifecycleEvent;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\config\SpecManager;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
 use rocket\core\model\TransactionApproveAttempt;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\persistence\orm\util\NestedSetUtils;
@@ -30,33 +30,33 @@ class VetoableRemoveQueue implements LifecycleListener {
 		return $this->em;
 	}
 	
-	public function removeEiSelection(EiSelection $eiSelection) {
-		if ($eiSelection->isDraft()) {
+	public function removeEiEntry(EiEntry $eiEntry) {
+		if ($eiEntry->isDraft()) {
 			throw new NotYetImplementedException();
 		}
 
-		$eiSpec = $eiSelection->getLiveEntry()->getEiSpec();
+		$eiSpec = $eiEntry->getLiveEntry()->getEiSpec();
 		$nss = $eiSpec->getNestedSetStrategy();
 		if (null === $nss) {
-			$this->em->remove($eiSelection->getLiveEntry()->getEntityObj());
+			$this->em->remove($eiEntry->getLiveEntry()->getEntityObj());
 		} else {
 			$nsu = new NestedSetUtils($this->em, $eiSpec->getEntityModel()->getClass(), $nss); 
-			$nsu->remove($eiSelection->getLiveObject());
+			$nsu->remove($eiEntry->getLiveObject());
 		}
 		
-		$this->createAction($eiSelection);
+		$this->createAction($eiEntry);
 	}
 	
 	/**
-	 * @param EiSelection $eiSelection
+	 * @param EiEntry $eiEntry
 	 * @return boolean
 	 */
-	public function containsEiSelection(EiSelection $eiSelection) {
-		if ($eiSelection->isDraft()) {
+	public function containsEiEntry(EiEntry $eiEntry) {
+		if ($eiEntry->isDraft()) {
 			throw new NotYetImplementedException();
 		}
 		
-		return $this->containsEntityObj($eiSelection->getLiveEntry()->getEntityObj());
+		return $this->containsEntityObj($eiEntry->getLiveEntry()->getEntityObj());
 	}
 	
 	/**
@@ -88,7 +88,7 @@ class VetoableRemoveQueue implements LifecycleListener {
 		$this->em->flush();
 		
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
-			$action->getEiSelection()->getLiveEntry()->getEiSpec()->onRemove($action, $n2nContext);
+			$action->getEiEntry()->getLiveEntry()->getEiSpec()->onRemove($action, $n2nContext);
 				
 			if (!$action->hasVeto()) {
 				$action->approve();
@@ -123,7 +123,7 @@ class VetoableRemoveQueue implements LifecycleListener {
 		}
 		
 		$eiSpec = $this->specManager->getEiSpecByClass($entityModel->getClass());
-		$this->createAction(LiveEiSelection::create($eiSpec, $entityObj));
+		$this->createAction(LiveEiEntry::create($eiSpec, $entityObj));
 	}
 	
 	private function unprepare($entityObj) {
@@ -135,15 +135,15 @@ class VetoableRemoveQueue implements LifecycleListener {
 		unset($this->uninitializedActions[spl_object_hash($action)]);
 	}
 	
-	private function createAction(EiSelection $eiSelection) {
-		if ($this->containsEiSelection($eiSelection)) return;
+	private function createAction(EiEntry $eiEntry) {
+		if ($this->containsEiEntry($eiEntry)) return;
 		
-		$action = new VetoableRemoveAction($eiSelection, $this);
+		$action = new VetoableRemoveAction($eiEntry, $this);
 		
-		if ($eiSelection->isDraft()) {
+		if ($eiEntry->isDraft()) {
 			throw new NotYetImplementedException();
 		} else {
-			 $this->liveActions[spl_object_hash($eiSelection->getLiveEntry()->getEntityObj())] = $action;
+			 $this->liveActions[spl_object_hash($eiEntry->getLiveEntry()->getEntityObj())] = $action;
 		}
 		
 		$this->uninitializedActions[spl_object_hash($action)] = $action;

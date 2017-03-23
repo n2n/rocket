@@ -40,7 +40,7 @@
 			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));
 	$html->meta()->addJs('js/preview.js');
 	
-	$currentHistoryDraft = $editModel->getEiSelection()->getDraft();
+	$currentHistoryDraft = $editModel->getEiEntry()->getDraft();
 ?>
 <!-- 
 <div class="rocket-select-view-toolbar">

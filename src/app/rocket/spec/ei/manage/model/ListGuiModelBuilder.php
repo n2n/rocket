@@ -27,7 +27,6 @@ interface ListGuiModelBuilder {
 	
 	/**
 	 * @param EiMapping $eiMapping
-	 * @param bool $makeEditable
 	 */
 	public function addEiMapping(EiMapping $eiMapping): int;
 	

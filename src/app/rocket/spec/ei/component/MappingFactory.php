@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component;
 
 use rocket\spec\ei\component\field\EiFieldCollection;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\security\PrivilegeConstraint;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
@@ -73,13 +73,13 @@ class MappingFactory {
 	/**
 	 * @param MappingDefinition $mappingDefinition
 	 * @param EiFrame $eiFrame
-	 * @param EiSelection $eiSelection
+	 * @param EiEntry $eiEntry
 	 * @param PrivilegeConstraint $privilegeConstraint
 	 * @throws InaccessibleEntryException
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 */
-	public function createEiMapping(EiFrame $eiFrame, EiSelection $eiSelection, EiMapping $copyFrom = null) {
-		$eiMapping = new EiMapping($eiSelection);
+	public function createEiMapping(EiFrame $eiFrame, EiEntry $eiEntry, EiMapping $copyFrom = null) {
+		$eiMapping = new EiMapping($eiEntry);
 		$eiu = new Eiu($eiFrame, $eiMapping);
 		
 		$this->assembleMappingProfile($eiu, $eiMapping, $copyFrom);
@@ -93,7 +93,7 @@ class MappingFactory {
 	}
 	
 	private function assembleMappingProfile(Eiu $eiu, EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
-		$eiSelection = $eiMappping->getEiSelection();
+		$eiEntry = $eiMappping->getEiEntry();
 		foreach ($this->eiFieldCollection as $id => $eiField) {
 			if (!($eiField instanceof MappableEiField)) continue;
 						
@@ -117,11 +117,11 @@ class MappingFactory {
 				
 			$mappableFork = null;
 			if ($fromEiMapping !== null && $eiMappping->containsMappableFork($eiFieldPath)) {
-				$mappableFork = $fromEiMapping->getMappableFork($eiFieldPath)->copyMappableFork($eiSelection);
+				$mappableFork = $fromEiMapping->getMappableFork($eiFieldPath)->copyMappableFork($eiEntry);
 			}
 			
 			if ($mappableFork === null) {
-				$mappableFork = $eiField->buildMappableFork($eiSelection, $mappable);
+				$mappableFork = $eiField->buildMappableFork($eiEntry, $mappable);
 				ArgUtils::valTypeReturn($mappableFork, MappableFork::class, $eiField, 'buildMappableFork', true);
 			}
 			

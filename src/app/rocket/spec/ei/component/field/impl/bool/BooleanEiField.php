@@ -85,7 +85,7 @@ class BooleanEiField extends DraftableEiFieldAdapter implements FilterableEiFiel
 	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
-				$eiu->entry()->getEiMapping()->getEiSelection()->getLiveObject());
+				$eiu->entry()->getEiMapping()->getEiEntry()->getLiveObject());
 		if ($value) {
 			return new HtmlElement('i', array('class' => 'fa fa-check'), '');
 		}

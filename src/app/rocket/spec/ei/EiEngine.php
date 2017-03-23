@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\field\EiFieldCollection;
@@ -166,14 +166,14 @@ class EiEngine {
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
-	public function createEiMapping(EiFrame $eiFrame, EiSelection $eiSelection): EiMapping {
+	public function createEiMapping(EiFrame $eiFrame, EiEntry $eiEntry): EiMapping {
 		$mappingFactory = new MappingFactory($this->eiFieldCollection, $this->eiModificatorCollection);
-		return $mappingFactory->createEiMapping($eiFrame, $eiSelection);
+		return $mappingFactory->createEiMapping($eiFrame, $eiEntry);
 	}
 	
-	public function createEiMappingCopy(EiFrame $eiFrame, EiSelection $eiSelection, EiMapping $from) {
+	public function createEiMappingCopy(EiFrame $eiFrame, EiEntry $eiEntry, EiMapping $from) {
 		$mappingFactory = new MappingFactory($this->eiFieldCollection, $this->eiModificatorCollection);
-		return $mappingFactory->createEiMapping($eiFrame, $eiSelection, $from);
+		return $mappingFactory->createEiMapping($eiFrame, $eiEntry, $from);
 	}
 	
 	
@@ -186,9 +186,9 @@ class EiEngine {
 		return $this->guiDefinition;
 	}
 	
-	public function createEiSelectionGui(EiuEntry $eiuEntry, int $viewMode, bool $makeEditable, array $guiIdPaths) {
+	public function createEiEntryGui(EiuEntry $eiuEntry, int $viewMode, array $guiIdPaths) {
 		$guiFactory = new GuiFactory($this->getEiFieldCollection(), $this->getEiModificatorCollection());
-		return $guiFactory->createEiSelectionGui($this->getGuiDefinition(), $eiuEntry, $viewMode, $makeEditable, $guiIdPaths);
+		return $guiFactory->createEiEntryGui($this->getGuiDefinition(), $eiuEntry, $viewMode, $guiIdPaths);
 	}
 	
 	public function getDraftDefinition(): DraftDefinition {

@@ -41,10 +41,10 @@
 	$selectPropertyPath = $view->getParam('selectPropertyPath', false);
 	$view->assert($selectPropertyPath === null || $selectPropertyPath instanceof PropertyPath);
 	
-	$eiFrame = $entryListViewModel->getEiFrame();
+	$eiuFrame = $entryListViewModel->getEiuFrame();
 	
-	$eiHtml = new EiHtmlBuilder($view, $entryListViewModel->getGuiDefinition());
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, $entryListViewModel->getEntryGuis());
+	$eiHtml = new EiHtmlBuilder($view, $eiuFrame);
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiuFrame, $entryListViewModel->getEiEntryGuis());
 	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
 	
 	$entryGuiTree = $view->getParam('entryGuiTree', false);

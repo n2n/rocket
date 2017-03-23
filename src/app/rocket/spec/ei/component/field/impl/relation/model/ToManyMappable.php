@@ -49,23 +49,23 @@ class ToManyMappable extends RwMappable {
 	
 	protected function readValue() {
 		$targetRelationEntries = array();
-		foreach (parent::readValue() as $targetEiSelection) {
-			$targetRelationEntries[] = RelationEntry::from($targetEiSelection);
+		foreach (parent::readValue() as $targetEiEntry) {
+			$targetRelationEntries[] = RelationEntry::from($targetEiEntry);
 		}
 		return $targetRelationEntries;	
 	}
 	
 	protected function writeValue($value) {
-		$targetEiSelections = array();
+		$targetEiEntrys = array();
 		foreach ($value as $targetRelationEntry) {
 			if ($targetRelationEntry->hasEiMapping()) {
 				$targetRelationEntry->getEiMapping()->write();
 			}
 			
-			$targetEiSelections[] = $targetRelationEntry->getEiSelection();
+			$targetEiEntrys[] = $targetRelationEntry->getEiEntry();
 		}
 		
-		parent::writeValue($targetEiSelections);
+		parent::writeValue($targetEiEntrys);
 	}
 	
 
@@ -88,7 +88,7 @@ class ToManyMappable extends RwMappable {
 	public function copyMappable(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToManyMappable($copyEiu->entry()->getEiSelection(), $this->readable, $this->writable, 
+		$copy = new ToManyMappable($copyEiu->entry()->getEiEntry(), $this->readable, $this->writable, 
 				$this->copyable);
 		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;

@@ -36,11 +36,11 @@ class LastModEiModificator extends EiModificatorAdapter {
 	}
 	
 	public function setupEiMapping(Eiu $eiu) {
-		$eiSelection = $eiMapping->getEiSelection();
+		$eiEntry = $eiMapping->getEiEntry();
 		$that = $this;
 		$eiMapping->registerListener(new OnWriteMappingListener(function() 
-				use ($eiFrame, $eiSelection, $that) {
-			$this->eiField->getObjectPropertyAccessProxy()->setValue($eiSelection->getCurrentEntity(), new \DateTime());
+				use ($eiFrame, $eiEntry, $that) {
+			$this->eiField->getObjectPropertyAccessProxy()->setValue($eiEntry->getCurrentEntity(), new \DateTime());
 		}));
 	}
 }

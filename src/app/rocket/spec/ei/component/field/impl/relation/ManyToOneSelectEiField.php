@@ -43,7 +43,7 @@ use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\draft\Draft;
@@ -54,7 +54,7 @@ use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewAjahController;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -91,7 +91,7 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 		
 		if ($targetEntityObj === null) return null;
 		
-		return LiveEiSelection::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
+		return LiveEiEntry::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
-		CastUtils::assertTrue($value === null || $value instanceof EiSelection);
+		CastUtils::assertTrue($value === null || $value instanceof EiEntry);
 	
 		$targetEntityObj = null;
 		if ($value !== null) {

@@ -35,7 +35,7 @@ class PreviewHtmlBuilder {
 	private $previewModel;
 	private $entryModel;
 	private $eiFrame;
-	private $eiSelection;
+	private $eiEntry;
 	private $n2nLocale;
 	private $eiSpec;
 	private $areaObject;
@@ -69,9 +69,9 @@ class PreviewHtmlBuilder {
 				return;
 			}
 						
-			$eiSelection = $this->entryModel->getEiSelection();
+			$eiEntry = $this->entryModel->getEiEntry();
 			$areaObjectId = OrmUtils::extractId($areaObject, $this->eiSpec->getEntityModel());
-			if ($eiSelection->getId() != $areaObjectId) {
+			if ($eiEntry->getId() != $areaObjectId) {
 				$this->areaEditable = false;
 				$this->areaObject = $areaObject;
 				return;
@@ -81,7 +81,7 @@ class PreviewHtmlBuilder {
 					new PreviewAreaException('No object given'));
 		}
 		
-		$this->areaObject = $this->entryModel->getEiSelection()->getEntityObj();
+		$this->areaObject = $this->entryModel->getEiEntry()->getEntityObj();
 		$this->areaEditable = $this->entryModel instanceof EditEntryModel;
 
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
@@ -153,7 +153,7 @@ class PreviewHtmlBuilder {
 		$this->ensurePreviewAreaIsOpen();	
 		
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
-			$eiSelection = $this->entryModel->getEiSelection();
+			$eiEntry = $this->entryModel->getEiEntry();
 			
 			$formHtml = $this->view->getFormHtmlBuilder();
 			$this->view->out('<div class="rocket-preview-inpage-component rocket-preview-inpage-commands">');	

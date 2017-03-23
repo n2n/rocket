@@ -88,7 +88,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 			return parent::buildMappable($eiu);
 		}
 
-		return new SimpleMappable($eiu->entry()->getEiSelection(), 
+		return new SimpleMappable($eiu->entry()->getEiEntry(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
@@ -159,7 +159,7 @@ abstract class EditableEiFieldAdapter extends DisplayableEiFieldAdapter implemen
 	
 
 // 	public function isWritingAllowed(Attributes $accessAttributes, EiFrame $eiFrame, 
-// 			EiSelection $eiSelection = null) {
+// 			EiEntry $eiEntry = null) {
 // 		return (boolean) $accessAttributes->get('writingAllowed');
 // 	}
 	

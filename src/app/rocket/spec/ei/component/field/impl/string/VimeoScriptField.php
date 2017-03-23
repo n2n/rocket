@@ -41,8 +41,8 @@ class VimeoEiField extends AlphanumericEiField {
 	public function createOutputUiComponent(
 			HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
-		$eiSelection = $eiMapping->getEiSelection();
-		$value = $this->getPropertyAccessProxy()->getValue($eiSelection->getCurrentEntity());
+		$eiEntry = $eiMapping->getEiEntry();
+		$value = $this->getPropertyAccessProxy()->getValue($eiEntry->getCurrentEntity());
 		if ($value === null) return null;
 		
 		$raw = '<iframe src="//player.vimeo.com/video/' . $html->getEsc($value) 

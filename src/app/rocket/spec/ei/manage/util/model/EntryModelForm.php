@@ -37,7 +37,7 @@ class EntryModelForm implements Dispatchable {
 
 	public function __construct(EntryGuiModel $entryGuiModel) {
 		$this->entryGuiModel = $entryGuiModel;
-		$this->dispatchable = $entryGuiModel->getEiSelectionGui()->getDispatchable();
+		$this->dispatchable = $entryGuiModel->getEiEntryGui()->getDispatchable();
 	}
 
 	public function getEntryGuiModel(): EntryGuiModel {
@@ -48,8 +48,8 @@ class EntryModelForm implements Dispatchable {
 // 		return $this->eiMask;
 // 	}
 
-// 	public function getEiSelectionGui() {
-// 		return $this->eiSelectionGui;
+// 	public function getEiEntryGui() {
+// 		return $this->eiEntryGui;
 // 	}
 
 	public function getEiMapping(): EiMapping {
@@ -67,6 +67,6 @@ class EntryModelForm implements Dispatchable {
 	private function _validation() {}
 
 	public function save() {
-		$this->entryGuiModel->getEiSelectionGui()->save();
+		$this->entryGuiModel->getEiEntryGui()->save();
 	}
 }

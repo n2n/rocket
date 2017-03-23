@@ -76,7 +76,7 @@ class TranslationGuiElement implements GuiElementFork {
 
 		foreach ($this->guiElementAssemblers as $n2nLocaleId => $guiElementAssebler) {
 			$dispatchable = $guiElementAssebler->getDispatchable();
-			$guiElementAssebler->getEiuGui()->getEiuEntry()->isNew();
+			$guiElementAssebler->getEiuEntryGui()->getEiuEntry()->isNew();
 			if ($dispatchable !== null) {
 				$this->translationForm->putAvailableDispatchable($n2nLocaleId, $dispatchable);
 				
@@ -107,14 +107,14 @@ class TranslationGuiElement implements GuiElementFork {
 			$result = $guiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
 			if ($result === null) continue;
 			
-			$fieldErrorInfo = $guiElementAssembler->getEiuGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
+			$fieldErrorInfo = $guiElementAssembler->getEiuEntryGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
 					->getFieldErrorInfo($eiFieldPath);
 			if (null !== ($mappableWrapper = $result->getMappableWrapper())) {
 				$mappableWrappers[] = $mappableWrapper;
 			}
 // 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
 			
-			if ($this->targetRelationEntries[$n2nLocaleId]->getEiSelection()->isNew()) {
+			if ($this->targetRelationEntries[$n2nLocaleId]->getEiEntry()->isNew()) {
 				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()), 
 						$fieldErrorInfo);
 			} else {
@@ -158,7 +158,7 @@ class TranslationGuiElement implements GuiElementFork {
 		foreach ($this->translationForm->getDispatchables() as $n2nLocaleId => $dispatchable) {
 			$this->guiElementAssemblers[$n2nLocaleId]->save();
 			$targetRelationEntries[$n2nLocaleId] = $this->targetRelationEntries[$n2nLocaleId];
-			$targetRelationEntries[$n2nLocaleId]->getEiSelection()->getLiveObject()
+			$targetRelationEntries[$n2nLocaleId]->getEiEntry()->getLiveObject()
 					->setN2nLocale(new N2nLocale($n2nLocaleId));
 		}
 		

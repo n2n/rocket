@@ -101,20 +101,20 @@ abstract class ToManyEiFieldAdapter extends SimpleRelationEiFieldAdapter impleme
 	 * @return string
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$targetEiSelections = $this->read($eiObject);
+		$targetEiEntrys = $this->read($eiObject);
 		
-		$numTargetEiSelections = count($targetEiSelections);
-		if ($numTargetEiSelections == 1) {
-			return $numTargetEiSelections . ' ' . $this->eiFieldRelation->getTargetEiMask()->getLabel();
+		$numTargetEiEntrys = count($targetEiEntrys);
+		if ($numTargetEiEntrys == 1) {
+			return $numTargetEiEntrys . ' ' . $this->eiFieldRelation->getTargetEiMask()->getLabel();
 		}
 		
-		return $numTargetEiSelections . ' ' . $this->eiFieldRelation->getTargetEiMask()->getPluralLabel();
+		return $numTargetEiEntrys . ' ' . $this->eiFieldRelation->getTargetEiMask()->getPluralLabel();
 	}
 
 	public function buildMappable(Eiu $eiu) {
 		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 	
-		return new ToManyMappable($eiu->entry()->getEiSelection(), $this, $this,
+		return new ToManyMappable($eiu->entry()->getEiEntry(), $this, $this,
 				($readOnly ? null : $this));
 	}
 }

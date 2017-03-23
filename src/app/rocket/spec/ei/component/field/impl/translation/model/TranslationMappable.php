@@ -40,8 +40,8 @@ class TranslationMappable extends ToManyMappable {
 		$valueCopy = $copy->getValue();
 
 		foreach ($value as $key => $targetRelationEntry) {
-			$valueCopy[$key] = $valueCopy[$key]->getEiSelection()->getLiveEntry()->getEntityObj()->setN2nLocale(
-					$targetRelationEntry->getEiSelection()->getLiveEntry()->getEntityObj()->getN2nLocale());
+			$valueCopy[$key] = $valueCopy[$key]->getEiEntry()->getLiveEntry()->getEntityObj()->setN2nLocale(
+					$targetRelationEntry->getEiEntry()->getLiveEntry()->getEntityObj()->getN2nLocale());
 		}
 		
 		return $copy;

@@ -29,7 +29,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\config\mask\model\CommonEntryGuiModel;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ControlEiHtmlBuilder {
@@ -60,7 +60,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getEntryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
 		$entryControls = $this->eiFrame->getContextEiMask()->createEntryHrefControls(
-				new EiuGui($entryGuiModel, new EiuEntry($entryGuiModel, $this->eiFrame)), $this->view);
+				new EiuEntryGui($entryGuiModel, new EiuEntry($entryGuiModel, $this->eiFrame)), $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);
 	}
@@ -70,7 +70,7 @@ class ControlEiHtmlBuilder {
 	}
 	
 	public function getEntryControlList($eiEntryObj, int $viewMode, $useIcons = false) {
-		$entryGuiUtils = new EiuGui($eiEntryObj, $viewMode, $this->eiFrame);
+		$entryGuiUtils = new EiuEntryGui($eiEntryObj, $viewMode, $this->eiFrame);
 		return $this->createControlList($this->eiFrame->getContextEiMask()
 				->createEntryHrefControls($entryGuiUtils, $this->view), $useIcons);
 	}

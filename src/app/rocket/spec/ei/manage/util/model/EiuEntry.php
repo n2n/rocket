@@ -23,7 +23,7 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
@@ -39,17 +39,17 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 
 class EiuEntry {
-	private $eiSelection;
+	private $eiEntry;
 	private $eiMapping;
 	private $eiuFrame;
 	
 	public function __construct($eiEntryObj, $eiuFrame = null) {
 		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame, 'eiuFrame');
-		$this->eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', 
+		$this->eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryObj, 'eiEntryObj', 
 				($this->eiuFrame !== null ? $this->eiuFrame->getEiSpec() : null), true, $this->eiMapping);
 	}
 	
-	public static function create(EiSelection $eiSelection, EiMapping $eiMapping = null, EiuFrame $eiuFrame = null) {
+	public static function create(EiEntry $eiEntry, EiMapping $eiMapping = null, EiuFrame $eiuFrame = null) {
 		
 	}
 	
@@ -81,13 +81,27 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
+	public function gui($eiEntryGuiObj) {
+		return new EiuEntryGui($eiEntryGuiObj, $this);
+	}
+	
 	/**
-	 * @param unknown $eiEntryObj
+	 * @param bool $eiEntryObj
+	 * @param bool $editable
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function gui($eiGuiObj) {
-		return new EiuGui($eiGuiObj, $this);
+	public function newGui(bool $overview = false, bool $editable = false) {
+		$eiEntryGui = null;
+		if (!$overview) {
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui();
+		} else if (null === $this->getEiuFrame()->getNestedSetStrategy()) {
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
+		} else {
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createTreeEiEntryGui($this, $editable);
+		}
+		
+		return new EiuEntryGui($eiEntryGui, $this);
 	}
 	
 	public function field($eiFieldObj) {
@@ -107,7 +121,7 @@ class EiuEntry {
 		}
 		
 		if ($createIfNotAvaialble) {
-			return $this->eiMapping = $this->eiuFrame->createEiMapping($this->eiSelection);
+			return $this->eiMapping = $this->eiuFrame->createEiMapping($this->eiEntry);
 		}
 		
 		throw new IllegalStateException('No EiMapping available.');
@@ -145,10 +159,10 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\EiSelection
+	 * @return \rocket\spec\ei\manage\EiEntry
 	 */
-	public function getEiSelection() {
-		return $this->eiSelection;
+	public function getEiEntry() {
+		return $this->eiEntry;
 	}
 	
 	public function isNew() {
@@ -163,18 +177,18 @@ class EiuEntry {
 	 * @return \rocket\spec\ei\manage\LiveEntry
 	 */
 	public function getLiveEntry() {
-		return $this->eiSelection->getLiveEntry();
+		return $this->eiEntry->getLiveEntry();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isLivePersistent() {
-		return $this->eiSelection->getLiveEntry()->isPersistent();
+		return $this->eiEntry->getLiveEntry()->isPersistent();
 	}
 	
 	public function hasLiveId() {
-		return $this->eiSelection->getLiveEntry()->hasId();
+		return $this->eiEntry->getLiveEntry()->hasId();
 	}
 	
 	/**
@@ -210,7 +224,7 @@ class EiuEntry {
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->eiSelection->isDraft();
+		return $this->eiEntry->isDraft();
 	}
 	
 	/**
@@ -222,7 +236,7 @@ class EiuEntry {
 			return null;
 		}
 		
-		return $this->eiSelection->getDraft();
+		return $this->eiEntry->getDraft();
 	}
 	
 	/**
@@ -252,7 +266,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function createIdentityString(bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		return $this->eiuFrame->createIdentityString($this->eiSelection, $determineEiMask, $n2nLocale);
+		return $this->eiuFrame->createIdentityString($this->eiEntry, $determineEiMask, $n2nLocale);
 	}
 	
 	/**
@@ -307,15 +321,15 @@ class EiuEntry {
 	}
 	
 	public function isPreviewAvailable() {
-		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiSelection));
+		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiEntry));
 	}
 	
 	public function getPreviewType() {
-		return $this->getEiuFrame()->getPreviewType($this->eiSelection);
+		return $this->getEiuFrame()->getPreviewType($this->eiEntry);
 	}
 	
 	public function getPreviewTypeOptions() {
-		return $this->eiuFrame->getPreviewTypeOptions($this->eiSelection);
+		return $this->eiuFrame->getPreviewTypeOptions($this->eiEntry);
 	}
 	
 	public function isExecutableBy($eiCommandPath) {

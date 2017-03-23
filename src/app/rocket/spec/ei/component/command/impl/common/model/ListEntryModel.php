@@ -24,12 +24,12 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 use rocket\spec\ei\manage\model\EntryModel;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\gui\EiSelectionGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\mask\EiMask;
 
 class ListEntryModel implements EntryModel {
 	private $eiMask;
-	private $eiSelectionGui;
+	private $eiEntryGui;
 	
 	private $eiMapping;
 	
@@ -37,9 +37,9 @@ class ListEntryModel implements EntryModel {
 	 * @param GuiDefinition $guiDefinition
 	 * @param EiMapping $eiMapping
 	 */
-	public function __construct(EiMask $eiMask, EiSelectionGui $eiSelectionGui,	EiMapping $eiMapping) {
+	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,	EiMapping $eiMapping) {
 		$this->eiMask = $eiMask;
-		$this->eiSelectionGui = $eiSelectionGui;
+		$this->eiEntryGui = $eiEntryGui;
 		$this->eiMapping = $eiMapping;
 	}
 	
@@ -65,9 +65,9 @@ class ListEntryModel implements EntryModel {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiSelectionGui()
+	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntryGui()
 	 */
-	public function getEiSelectionGui() {
-		return $this->eiSelectionGui;
+	public function getEiEntryGui() {
+		return $this->eiEntryGui;
 	}
 }

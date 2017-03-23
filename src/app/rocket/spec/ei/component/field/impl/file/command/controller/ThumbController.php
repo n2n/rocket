@@ -34,7 +34,7 @@ use rocket\spec\ei\component\field\impl\file\command\model\ThumbModel;
 use n2n\web\http\controller\ParamQuery;
 use n2n\reflection\CastUtils;
 use n2n\io\managed\File;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class ThumbController extends ControllerAdapter {	
@@ -59,7 +59,7 @@ class ThumbController extends ControllerAdapter {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 		
 		// because ThumbEiCommand gets added always on a supreme EiThing
-		if (!$this->fileEiField->getEiEngine()->getEiSpec()->isObjectValid($eiMapping->getEiSelection()->getLiveObject())) {
+		if (!$this->fileEiField->getEiEngine()->getEiSpec()->isObjectValid($eiMapping->getEiEntry()->getLiveObject())) {
 			throw new PageNotFoundException('');
 		}
 
@@ -82,7 +82,7 @@ class ThumbController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->applyBreadcrumbs($eiMapping->getEiSelection());
+		$this->applyBreadcrumbs($eiMapping->getEiEntry());
 				
 		$this->forward('..\view\thumb.html', 
 				array('thumbModel' => $thumbModel, 'cancelUrl' => $redirectUrl));
@@ -114,7 +114,7 @@ class ThumbController extends ControllerAdapter {
 	}
 	
 	
-	private function applyBreadcrumbs(EiSelection $eiSelection) {
+	private function applyBreadcrumbs(EiEntry $eiEntry) {
 		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
 		
 		if (!$eiFrame->isOverviewDisabled()) {
@@ -122,20 +122,20 @@ class ThumbController extends ControllerAdapter {
 		}
 		
 		if (!$eiFrame->isDetailDisabled()) {
-			$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->getHttpContext(), $eiSelection));
+			$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->getHttpContext(), $eiEntry));
 		}
 		
-// 		if ($eiSelection->isDraft()) {			
+// 		if ($eiEntry->isDraft()) {			
 // 			$breadcrumbPath = $request->getControllerContextPath($eiFrame->getControllerContext(),
-// 					$this->eiSpec->getEntryDetailPathExt($eiSelection->toEntryNavPoint(
+// 					$this->eiSpec->getEntryDetailPathExt($eiEntry->toEntryNavPoint(
 // 							$eiFrame->getPreviewType())->copy(false, true)));
-// 			$breadcrumbLabel = $eiSelection->getDraft()->getName();
+// 			$breadcrumbLabel = $eiEntry->getDraft()->getName();
 // 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
 // 		}
 		
-// 		if ($eiSelection->hasTranslation()) {
+// 		if ($eiEntry->hasTranslation()) {
 // 			$breadcrumbPath = $request->getControllerContextPath($eiFrame->getControllerContext(),
-// 					$this->eiSpec->getEntryDetailPathExt($eiSelection->toEntryNavPoint(
+// 					$this->eiSpec->getEntryDetailPathExt($eiEntry->toEntryNavPoint(
 // 							$eiFrame->getPreviewType())->copy(true, true)));
 // 			$breadcrumbLabel = $this->dtc->translate('ei_impl_translation_detail_bradcrumb' ,
 // 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
@@ -143,7 +143,7 @@ class ThumbController extends ControllerAdapter {
 		
 		$breadcrumbPath = $this->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())
 				->ext(PathUtils::createPathExtFromEntryNavPoint($this->fileEiField->getThumbEiCommand(), 
-						$eiSelection->toEntryNavPoint()));
+						$eiEntry->toEntryNavPoint()));
 		$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $this->fileEiField->getLabelLstr()));
 	}
 }

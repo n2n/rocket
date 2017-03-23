@@ -50,7 +50,7 @@ class CopyController extends ControllerAdapter {
 	
 	public function index($id) {
 		$eiFrame = $this->utils->getEiFrame();
-		$eiSelection = $eiFrame->getEiSelection();
+		$eiEntry = $eiFrame->getEiEntry();
 
 		$em = $eiFrame->getEntityManager();;
 		$currentObject = $em->find($this->eiSpec->getEntityModel()->getClass(), $id);
@@ -69,7 +69,7 @@ class CopyController extends ControllerAdapter {
 		try {
 			$this->redirectToReferer();
 		} catch (NoHttpRefererGivenException $e) {
-			$this->redirectToController($this->eiSpec->getEntryDetailPathExt($eiSelection->toEntryNavPoint()),
+			$this->redirectToController($this->eiSpec->getEntryDetailPathExt($eiEntry->toEntryNavPoint()),
 					null, null, $eiFrame->getControllerContext());
 			return;
 		}

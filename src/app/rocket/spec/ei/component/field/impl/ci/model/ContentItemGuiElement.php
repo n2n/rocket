@@ -87,7 +87,7 @@ class ContentItemGuiElement implements GuiElement {
 				$targetEiMapping = $targetRelationEntry->getEiMapping();
 			} else {
 				$targetEiMapping = $targetUtils->createEiMapping(
-						$targetRelationEntry->getEiSelection());
+						$targetRelationEntry->getEiEntry());
 			}
 			
 			$panelName = (string) $targetEiMapping->getValue($panelEiFieldPath, true);
@@ -99,7 +99,7 @@ class ContentItemGuiElement implements GuiElement {
 				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiMapping);
 			} else {
 				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetUtils->createIdentityString($targetEiMapping->getEiSelection()));
+						$targetUtils->createIdentityString($targetEiMapping->getEiEntry()));
 			}
 		}
 		

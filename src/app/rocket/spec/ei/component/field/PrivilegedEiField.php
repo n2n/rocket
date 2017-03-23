@@ -34,10 +34,10 @@ interface PrivilegedEiField extends EiField {
 	
 // 	/**
 // 	 * @param EiFrame $eiFrame
-// 	 * @param EiSelection $eiSelection
+// 	 * @param EiEntry $eiEntry
 // 	 * @param Attributes $accessAttributes
 // 	 * @return boolean
 // 	 */
 // 	public function isWritingAllowed(Attributes $accessAttributes, EiFrame $eiFrame, 
-// 			EiSelection $eiSelection = null);
+// 			EiEntry $eiEntry = null);
 }

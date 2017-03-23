@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\command\impl\tree\model;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\command\impl\common\model\ListEntryModel;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\model\EntryTreeListModel;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\mask\EiMask;
@@ -69,11 +69,11 @@ class TreeListModel implements EntryTreeListModel {
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$entity = $nestedSetItem->getEntityObj();
 			$id = $eiSpec->extractId($entity);
-			$eiSelection = new EiSelection($id, $entity);
-			$eiMapping = $eiMask->createEiMapping($this->eiFrame, $eiSelection);
+			$eiEntry = new EiEntry($id, $entity);
+			$eiMapping = $eiMask->createEiMapping($this->eiFrame, $eiEntry);
 			
 			$this->entryModels[$id] = new ListEntryModel($eiMask, 
-					$eiMask->createEiSelectionGui($this->eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_TREE, false),
+					$eiMask->createEiEntryGui($this->eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_TREE, false),
 					$eiMapping);
 			$this->entryLevels[$id] = $nestedSetItem->getLevel();
 		}

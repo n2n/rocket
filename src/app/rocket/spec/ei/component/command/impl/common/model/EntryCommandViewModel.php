@@ -27,7 +27,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EntryGui;
 use n2n\web\http\HttpContext;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\user\model\RocketUserDao;
@@ -37,7 +37,7 @@ class EntryCommandViewModel {
 	private $eiFrameUtils;
 	private $eiFrame;
 	private $entryGuiModel;
-	private $eiSelection;
+	private $eiEntry;
 	private $cancelUrl;
 	private $eiMask;
 	
@@ -46,15 +46,15 @@ class EntryCommandViewModel {
 		$this->eiFrame = $eiFrameUtils->getEiFrame();
 		if ($entryGuiModel instanceof EntryGuiModel) {
 			$this->entryGuiModel = $entryGuiModel;
-			$this->eiSelection = $entryGuiModel->getEiMapping()->getEiSelection();
-		} else if ($entryGuiModel instanceof EiSelection) {
-			$this->eiSelection = $entryGuiModel;
+			$this->eiEntry = $entryGuiModel->getEiMapping()->getEiEntry();
+		} else if ($entryGuiModel instanceof EiEntry) {
+			$this->eiEntry = $entryGuiModel;
 		}
 		$this->cancelUrl = $cancelUrl;
 	}
 	
-	public function getEiSelection() {
-		return $this->eiSelection;
+	public function getEiEntry() {
+		return $this->eiEntry;
 	}
 	
 	private function getEiMask() {
@@ -68,13 +68,13 @@ class EntryCommandViewModel {
 	public function getTitle() {
 		if ($this->title !== null) return $this->title;
 			
-		$eiSelection = $this->getEiSelection();
+		$eiEntry = $this->getEiEntry();
 		
 		return $this->title = $this->getEiuEntry()->createIdentityString();
 		
-// 		if ($this->entryGuiModel && !$eiSelection->isNew()) {
+// 		if ($this->entryGuiModel && !$eiEntry->isNew()) {
 // 			return $this->title = $this->entryGuiModel->getEiMask()
-// 					->createIdentityString($eiSelection, $this->eiFrame->getN2nLocale());
+// 					->createIdentityString($eiEntry, $this->eiFrame->getN2nLocale());
 // 		} 
 		
 // 		if ($this->entryGuiModel !== null) {
@@ -99,7 +99,7 @@ class EntryCommandViewModel {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function getEiuEntry() {
-		return $this->eiFrameUtils->toEiuEntry($this->eiSelection);
+		return $this->eiFrameUtils->toEiuEntry($this->eiEntry);
 	}
 	
 	public function getEiFrame() {
@@ -115,8 +115,8 @@ class EntryCommandViewModel {
 			$this->historicizedDrafts = $entryEiuEntry->lookupDrafts(0, 30);
 		}
 		
-		if ($this->eiSelection->isDraft() && $this->eiSelection->isNew()) {
-			$this->latestDraft = $this->eiSelection->getDraft();
+		if ($this->eiEntry->isDraft() && $this->eiEntry->isNew()) {
+			$this->latestDraft = $this->eiEntry->getDraft();
 		}
 	
 		if (empty($this->historicizedDrafts) || $this->latestDraft !== null) return;
@@ -133,8 +133,8 @@ class EntryCommandViewModel {
 	}
 	
 	public function getSelectedDraft() {
-		if ($this->getEiSelection()->isDraft()) {
-			return $this->getEiSelection()->getDraft();
+		if ($this->getEiEntry()->isDraft()) {
+			return $this->getEiEntry()->getDraft();
 		}
 		
 		return null;
@@ -182,7 +182,7 @@ class EntryCommandViewModel {
 	
 	public function getPreviewTypOptions() {
 		return $this->eiMask->getPreviewTypeOptions($this->eiFrame, 
-				$this->entryGuiModel->getEiSelectionGui()->getViewMode());
+				$this->entryGuiModel->getEiEntryGui()->getViewMode());
 	}
 	
 	public function getLiveEntryUrl(HttpContext $httpContext) {
@@ -198,9 +198,9 @@ class EntryCommandViewModel {
 			return $this->cancelUrl;
 		}
 		
-		$eiSelection = $this->getEiSelection();
+		$eiEntry = $this->getEiEntry();
 		
-		if ($eiSelection === null || $eiSelection->isNew()) {
+		if ($eiEntry === null || $eiEntry->isNew()) {
 			return $this->eiFrame->getOverviewUrl($httpContext);
 		}
 		
@@ -215,7 +215,7 @@ class EntryCommandViewModel {
 // 	private $eiFrame;
 // 	private $commandEntryModel;
 // 	private $entryModel;
-// 	private $eiSelection;
+// 	private $eiEntry;
 // 	private $context;
 // 	private $exact;
 // 	private $previewController;
@@ -225,7 +225,7 @@ class EntryCommandViewModel {
 // 		$this->eiFrame = $entryModel->getEiFrame();
 // 		$this->commandEntryModel = $commandEntryModel;
 // 		$this->entryModel = $entryModel;
-// 		$this->eiSelection = $this->entryModel->getEiSelection();
+// 		$this->eiEntry = $this->entryModel->getEiEntry();
 		
 // 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 // 		$this->exact = $this->entryModel->getEiSpec();
@@ -235,7 +235,7 @@ class EntryCommandViewModel {
 // 		if (isset($title)) {
 // 			$this->title = $title;
 // 		} else {
-// 			$this->title = $this->exact->createIdentityString($this->eiSelection->getEntityObj(),
+// 			$this->title = $this->exact->createIdentityString($this->eiEntry->getEntityObj(),
 // 					$this->eiFrame->getN2nLocale());
 // 		}
 // 	}
@@ -248,8 +248,8 @@ class EntryCommandViewModel {
 // 		return $this->eiFrame;
 // 	}
 	
-// 	public function getEiSelection() {
-// 		return $this->eiSelection;
+// 	public function getEiEntry() {
+// 		return $this->eiEntry;
 // 	}
 	
 // 	public function isInEditMode() {
@@ -263,7 +263,7 @@ class EntryCommandViewModel {
 
 	
 // 	public function getLangNavPoints() {
-// 		$currentTranslationN2nLocale = $this->eiSelection->getTranslationN2nLocale();
+// 		$currentTranslationN2nLocale = $this->eiEntry->getTranslationN2nLocale();
 		
 // 		$navPoints = array();
 		

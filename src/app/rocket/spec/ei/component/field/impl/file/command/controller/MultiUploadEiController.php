@@ -64,7 +64,7 @@ class MultiUploadEiController extends ControllerAdapter {
 		if (null === $file) return;
 		
 		$eiuFrame = $eiuCtrl->frame();
-		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiSelection());
+		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiEntry());
 		
 		$eiuEntry->setValue($this->fileEiField, $file);
 		if (null !== $this->namingEiFieldPath) {

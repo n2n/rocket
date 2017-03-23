@@ -48,7 +48,7 @@ abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implemen
 	public function buildMappable(Eiu $eiu) {
 		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 	
-		return new ToOneMappable($eiu->entry()->getEiSelection(), $this, $this,
+		return new ToOneMappable($eiu->entry()->getEiEntry(), $this, $this,
 				($readOnly ? null : $this));
 	}
 	
@@ -89,10 +89,10 @@ abstract class ToOneEiFieldAdapter extends SimpleRelationEiFieldAdapter implemen
 	 * @return string
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$targetEiSelection = $this->read($eiObject);
-		if ($targetEiSelection === null) return '';
+		$targetEiEntry = $this->read($eiObject);
+		if ($targetEiEntry === null) return '';
 		
-		return $this->eiFieldRelation->getTargetEiMask()->createIdentityString($targetEiSelection, $n2nLocale);
+		return $this->eiFieldRelation->getTargetEiMask()->createIdentityString($targetEiEntry, $n2nLocale);
 	}
 			
 	public function isEiMappingFilterable(): bool {

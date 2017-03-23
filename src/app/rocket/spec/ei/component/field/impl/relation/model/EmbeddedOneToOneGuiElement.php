@@ -68,17 +68,17 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 // 	public function createOutputUiComponent(HtmlView $view) {
 // 		$eiFrame = $eiu->frame()->getEiFrame();
 // 		$eiMapping = $eiu->entry()->getEiMapping();
-// 		$targetEiSelection = $this->createTargetEiSelection($eiFrame, $eiMapping);
+// 		$targetEiEntry = $this->createTargetEiEntry($eiFrame, $eiMapping);
 
-// 		if ($targetEiSelection === null) return null;
+// 		if ($targetEiEntry === null) return null;
 
-// 		$eiSelection = $eiMapping->getEiSelection();
+// 		$eiEntry = $eiMapping->getEiEntry();
 // 		$target = $this->eiFieldRelation->getTarget();
 // 		$targetEiFrame = $this->eiFieldRelation->createTargetPseudoEiFrame(
-// 				$eiFrame, $eiSelection, false);
+// 				$eiFrame, $eiEntry, false);
 // 		$targetUtils = new EiuFrame($targetEiFrame);
 
-// 		$targetEiMapping = $targetUtils->createEiMapping($targetEiSelection);
+// 		$targetEiMapping = $targetUtils->createEiMapping($targetEiEntry);
 
 // 		$entryInfo = $targetUtils->createEntryInfo($targetEiMapping);
 // 		$view = $entryInfo->getEiMask()->createDetailView($targetEiFrame, $entryInfo);

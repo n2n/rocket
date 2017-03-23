@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
@@ -117,8 +117,8 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 // 	}
 	
 	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
-			EiSelection $eiSelection = null, $editCommandRequired = null) {
-		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiSelection);
+			EiEntry $eiEntry = null, $editCommandRequired = null) {
+		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiEntry);
 		
 		$targetEiFrame->setOverviewDisabled(true);
 		
@@ -131,10 +131,10 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 // 			return;
 // 		}
 
-		if ($eiSelection !== null && null !== $targetEiFrame->getOverviewUrlExt() 
+		if ($eiEntry !== null && null !== $targetEiFrame->getOverviewUrlExt() 
 				&& null !== $targetEiFrame->getDetailPathExt()) {
 			$pathExt = $eiFrame->getControllerContext()->toPathExt()->ext(
-					$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEntryDetailPathExt($eiSelection->toEntryNavPoint()));
+					$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEntryDetailPathExt($eiEntry->toEntryNavPoint()));
 			$targetEiFrame->setOverviewPathExt($pathExt);
 			$targetEiFrame->setDetailPathExt($pathExt);
 		}
@@ -144,12 +144,12 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		$targetEiFrame->setDetailDisabled(true);
 	}
 	
-	public function createTargetEiSelection(EiFrame $targetEiFrame, $targetEntity) {
+	public function createTargetEiEntry(EiFrame $targetEiFrame, $targetEntity) {
 		$id = $this->relationEiField->getId();
 		
-		$targetEiSelection = new EiSelection($targetEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
+		$targetEiEntry = new EiEntry($targetEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
 				->extractId($targetEntity), $targetEntity);
 		
-		return $EiSelection;
+		return $EiEntry;
 	}
 }

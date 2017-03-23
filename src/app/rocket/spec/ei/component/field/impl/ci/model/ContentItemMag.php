@@ -85,7 +85,7 @@ class ContentItemMag extends MagAdapter {
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			if (!$targetRelationEntry->hasEiMapping()) {
 				$targetRelationEntry = RelationEntry::fromM($targetEditUtils
-						->createEiMapping($targetRelationEntry->getEiSelection()));
+						->createEiMapping($targetRelationEntry->getEiEntry()));
 			}
 			
 			$panelName = $targetRelationEntry->getEiMapping()->getValue($panelEiFieldPath);

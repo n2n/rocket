@@ -29,7 +29,7 @@ use n2n\web\http\ForbiddenException;
 use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
 use n2n\web\http\controller\ParamQuery;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use n2n\web\http\HttpContext;
 use rocket\core\model\RocketState;
@@ -83,13 +83,13 @@ class EiuCtrl implements Lookupable {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function lookupEntry(string $liveIdRep) {
-		return $this->eiuFrame->entry($this->lookupEiSelection($liveIdRep));
+		return $this->eiuFrame->entry($this->lookupEiEntry($liveIdRep));
 	}
 	
-	public function lookupEiSelection(string $liveIdRep) {
-		$eiSelection = null;
+	public function lookupEiEntry(string $liveIdRep) {
+		$eiEntry = null;
 		try {
-			$eiSelection = $this->eiuFrame->lookupEiSelectionById($this->eiuFrame->idRepToId($liveIdRep));
+			$eiEntry = $this->eiuFrame->lookupEiEntryById($this->eiuFrame->idRepToId($liveIdRep));
 		} catch (UnknownEntryException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -98,7 +98,7 @@ class EiuCtrl implements Lookupable {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		
-		return $eiSelection;
+		return $eiEntry;
 	}
 	
 	/**
@@ -106,7 +106,7 @@ class EiuCtrl implements Lookupable {
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 */
 	public function lookupEiMapping(string $liveIdRep, bool $assignToEiu = false) {
-		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiSelection($liveIdRep, false));
+		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiEntry($liveIdRep, false));
 		if ($assignToEiu) {
 			$this->eiuFrame->assignEiuEntry($eiMapping);
 		}
@@ -118,29 +118,29 @@ class EiuCtrl implements Lookupable {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function lookupEntryByDraftId($draftId) {
-		return $this->eiuFrame->entry($this->lookupEiSelectionByDraftId($draftId));
+		return $this->eiuFrame->entry($this->lookupEiEntryByDraftId($draftId));
 	}
 	
-	public function lookupEiSelectionByDraftId($draftId) {
+	public function lookupEiEntryByDraftId($draftId) {
 		if (!is_numeric($draftId)) {
 			throw new PageNotFoundException('Draft id must be numeric. ' . ReflectionUtils::getTypeInfo($draftId) 
 					. ' given');
 		}
 		
-		$eiSelection = null;
+		$eiEntry = null;
 		try {
-			$eiSelection = $this->eiuFrame->lookupEiSelectionByDraftId((int) $draftId);
+			$eiEntry = $this->eiuFrame->lookupEiEntryByDraftId((int) $draftId);
 		} catch (UnknownEntryException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (InaccessibleEntryException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		
-		return $eiSelection;
+		return $eiEntry;
 	}
 	
 	public function lookupEiMappingByDraftId($draftId, bool $assignToEiu = false) {
-		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiSelectionByDraftId($draftId, false));
+		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiEntryByDraftId($draftId, false));
 		if ($assignToEiu) {
 			$this->eiuFrame->assignEiuEntry($eiMapping);
 		}
@@ -158,11 +158,11 @@ class EiuCtrl implements Lookupable {
 		$response->send($view);
 	}
 
-	public function buildRedirectUrl(EiSelection $eiSelection = null) { 
+	public function buildRedirectUrl(EiEntry $eiEntry = null) { 
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		
-		if ($eiSelection !== null && !$eiSelection->isNew()) {
-			$entryNavPoint = $eiSelection->toEntryNavPoint();
+		if ($eiEntry !== null && !$eiEntry->isNew()) {
+			$entryNavPoint = $eiEntry->toEntryNavPoint();
 			if ($eiFrame->isDetailUrlAvailable($entryNavPoint)) {
 				return $eiFrame->getDetailUrl($this->httpContext, $entryNavPoint);
 			}
@@ -184,12 +184,12 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function buildRefRedirectUrl(Url $redirectUrl = null, EiSelection $eiSelection = null) {
+	public function buildRefRedirectUrl(Url $redirectUrl = null, EiEntry $eiEntry = null) {
 		if ($redirectUrl !== null) {
 			return $redirectUrl;	
 		}
 		
-		return $this->buildRedirectUrl($eiSelection);
+		return $this->buildRedirectUrl($eiEntry);
 	}
 	
 	public function applyCommonBreadcrumbs($eiEntryObj = null, string $currentBreadcrumbLabel = null) {
@@ -202,8 +202,8 @@ class EiuCtrl implements Lookupable {
 		}
 			
 		if ($eiEntryObj !== null && !$eiFrame->isDetailDisabled()) {
-			$eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', $this->eiuFrame->getEiSpec());
-			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiSelection));
+			$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryObj, 'eiEntryObj', $this->eiuFrame->getEiSpec());
+			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiEntry));
 		}
 		
 		if ($currentBreadcrumbLabel !== null) {
@@ -222,9 +222,9 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function lookupPreviewController(string $previewType, EiSelection $eiSelection) {
+	public function lookupPreviewController(string $previewType, EiEntry $eiEntry) {
 		try {
-			return $this->eiuFrame->lookupPreviewController($previewType, $eiSelection);
+			return $this->eiuFrame->lookupPreviewController($previewType, $eiEntry);
 		} catch (UnavailablePreviewException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}

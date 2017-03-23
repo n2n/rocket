@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\meta;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
 use rocket\spec\ei\component\EiSetupProcess;
@@ -115,7 +115,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 	public function createOutputUiComponent(
 // 			HtmlView $view, Eiu $eiu) {
 // 		$html = $view->getHtmlBuilder();
-// 		$subsystemName = $this->read($eiMapping->getEiSelection()->getEntityObj());
+// 		$subsystemName = $this->read($eiMapping->getEiEntry()->getEntityObj());
 // 		if ($eiu->hasListModel() || !isset($this->subsystems[$subsystemName])) {
 // 			return $html->getEsc($subsystemName);
 // 		}
@@ -130,15 +130,15 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 	
 // 		$eiMapping->setValue($this->id, $attributes->get($this->id));
 // 		$dependantPathPartEiFields = $this->determineDependantPathPartEiFields();
-// 		$eiSelection = $eiMapping->getEiSelection();
+// 		$eiEntry = $eiMapping->getEiEntry();
 
-// 		if (count($dependantPathPartEiFields) === 0 || $eiSelection->isNew() 
+// 		if (count($dependantPathPartEiFields) === 0 || $eiEntry->isNew() 
 // 				|| $oldValue === $newValue) return;
 		
 // 		if ($this->isTreeScript()) {
 // 			//set Subsystem for Childelements and 
 // 			$accessProxy = $this->getEntityProperty()->getAccessProxy();
-// 			$currentEntity = $eiSelection->getCurrentEntity();
+// 			$currentEntity = $eiEntry->getCurrentEntity();
 // 			$top = $this->getEiSpec()->getSupremeEiSpec();
 			
 // 			$em = $eiu->frame()->getEiFrame()->getEntityManager();
@@ -155,7 +155,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 // 					$objAttributes = $this->createAttributesForObject($object);
 // 					$objAttributes->set($this->getPropertyName(), $newValue);
 // 					$newUrlpartValue = $eiField->determineUrlPart($em, $oldUrlPartValue, $oldUrlPartValue, $objAttributes, 
-// 							new EiSelection(OrmUtils::extractId($object), $object));
+// 							new EiEntry(OrmUtils::extractId($object), $object));
 // 					$eiField->getPropertyAccessProxy()->setValue($object, $newUrlpartValue);
 // 				}
 // 				$em->flush();
@@ -165,7 +165,7 @@ use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
 	
 // 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 // 		$attrs = array();
-// 		if (!$eiMapping->getEiSelection()->isNew()) {
+// 		if (!$eiMapping->getEiEntry()->isNew()) {
 // 			$attrs['class'] = 'rocket-critical-input';
 // 			$dtc = new DynamicTextCollection(array('page', 'rocket'));
 // 			$attrs['data-confirm-message'] = $dtc->translate('spec_field_subsystem_unlock_confirm_message');

@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\EiFrame;
 
 use rocket\spec\ei\manage\gui\DisplayDefinition;
@@ -34,8 +34,8 @@ use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\draft\SimpleDraftValueSelection;
-use rocket\spec\ei\manage\LiveEiSelection;
-use rocket\spec\ei\manage\DraftEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
+use rocket\spec\ei\manage\DraftEiEntry;
 use rocket\spec\ei\manage\EiObject;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
@@ -101,13 +101,13 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 			$targetDraft = $eiObject->getDraftValueMap()->getValue(EiFieldPath::from($this));
 			if ($targetDraft === null) return null;
 			
-			return new DraftEiSelection($targetDraft);
+			return new DraftEiEntry($targetDraft);
 		}
 		
 		$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
 		if ($targetEntityObj === null) return null;
 		
-		return LiveEiSelection::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
+		return LiveEiEntry::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
-		CastUtils::assertTrue($value === null || $value instanceof EiSelection);
+		CastUtils::assertTrue($value === null || $value instanceof EiEntry);
 	
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			$targetDraft = null;
@@ -159,10 +159,10 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 			if ($targetEditEiFrame->getEiExecution()->isGranted() 
 					&& ($this->isReplaceable() || $relationMappable->getValue() === null)) {
 				$toOneEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, $mapping->getEiSelection()->isDraft(), $eiFrame, $eiu->frame()->getHttpContext()));
+						$mapping, $mapping->getEiEntry()->isDraft(), $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 			
-			$toOneEditable->setDraftMode($mapping->getEiSelection()->isDraft());
+			$toOneEditable->setDraftMode($mapping->getEiEntry()->isDraft());
 		}
 				
 		return new EmbeddedOneToOneGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiFrame, $toOneEditable);

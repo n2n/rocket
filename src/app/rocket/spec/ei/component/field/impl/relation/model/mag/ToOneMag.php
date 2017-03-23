@@ -120,7 +120,7 @@ class ToOneMag extends MagAdapter {
 				return;
 			}
 				
-			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiSelectionById(
+			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiEntryById(
 					$this->targetReadUtils->idRepToId($entryIdRep), CriteriaConstraint::NON_SECURITY_TYPES));
 			return;
 		}
@@ -141,12 +141,12 @@ class ToOneMag extends MagAdapter {
 			$toOneForm->setOriginalEntryIdRep($idRep);
 			$toOneForm->setSelectedEntryIdRep($idRep);
 			$toOneForm->getEntryLabeler()->setSelectedIdentityString($idRep,
-					$this->targetReadUtils->createIdentityString($this->targetRelationEntry->getEiSelection()));
+					$this->targetReadUtils->createIdentityString($this->targetRelationEntry->getEiEntry()));
 		} else if ($this->targetRelationEntry->hasEiMapping()) {
 			$toOneForm->setEiMapping($this->targetRelationEntry->getEiMapping());
 		} else {
 			$toOneForm->setEiMapping($this->targetEditUtils->createEiMapping(
-					$this->targetRelationEntry->getEiSelection()));
+					$this->targetRelationEntry->getEiEntry()));
 		}
 				
 		return $toOneForm;

@@ -28,7 +28,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\l10n\MessageCode;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\manage\veto\VetoableRemoveAction;
@@ -53,10 +53,10 @@ class RelationVetoableActionListener implements VetoableActionListener {
 	
 	public function onRemove(VetoableRemoveAction $vetoableRemoveAction,
 			N2nContext $n2nContext) {
-		$eiSelection = $vetoableRemoveAction->getEiSelection();
-		if ($eiSelection->isDraft()) return;
+		$eiEntry = $vetoableRemoveAction->getEiEntry();
+		if ($eiEntry->isDraft()) return;
 				
-		$vetoCheck = new VetoCheck($this->relationEiField, $eiSelection->getLiveEntry(), $vetoableRemoveAction, 
+		$vetoCheck = new VetoCheck($this->relationEiField, $eiEntry->getLiveEntry(), $vetoableRemoveAction, 
 				$n2nContext);
 		
 		switch ($this->strategy) {
@@ -132,7 +132,7 @@ class VetoCheck {
 				
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
-				$queue->removeEiSelection(LiveEiSelection::create(
+				$queue->removeEiEntry(LiveEiEntry::create(
 						$that->relationEiField->getEiEngine()->getEiSpec(), $entityObj));
 			});
 		}
@@ -202,7 +202,7 @@ class VetoCheck {
 	private function createIdentityString($entityObj): string {
 		$eiSpec = $this->relationEiField->getEiEngine()->getEiSpec();
 		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->createIdentityString(
-				LiveEiSelection::create($eiSpec, $entityObj), $this->n2nContext->getN2nLocale());
+				LiveEiEntry::create($eiSpec, $entityObj), $this->n2nContext->getN2nLocale());
 	}
 	
 	private function getTargetGenericLabel(): string {
@@ -212,6 +212,6 @@ class VetoCheck {
 	
 	private function createTargetIdentityString() {
 		return $this->relationEiField->getEiFieldRelation()->getTargetEiMask()
-				->createIdentityString(new LiveEiSelection($this->targetLiveEntry), $this->n2nContext->getN2nLocale());
+				->createIdentityString(new LiveEiEntry($this->targetLiveEntry), $this->n2nContext->getN2nLocale());
 	}
 }

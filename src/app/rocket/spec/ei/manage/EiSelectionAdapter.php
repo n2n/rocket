@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage;
 
 use rocket\spec\ei\manage\draft\DraftValueMap;
 
-abstract class EiSelectionAdapter implements EiSelection {
+abstract class EiEntryAdapter implements EiEntry {
 	public function getLiveObject() {
 		return $this->getLiveEntry()->getEntityObj();
 	}
@@ -33,7 +33,7 @@ abstract class EiSelectionAdapter implements EiSelection {
 	}
 
 	public function equals($obj) {
-		if (!($obj instanceof EiSelection && $this->isDraft() === $obj->isDraft()
+		if (!($obj instanceof EiEntry && $this->isDraft() === $obj->isDraft()
 				&& $this->getLiveEntry()->getId() === $obj->getLiveEntry()->getId())) {
 			return false;
 		}

@@ -28,7 +28,7 @@ use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\DispatchAnnotations;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 
 class TreeMoveModel implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -37,7 +37,7 @@ class TreeMoveModel implements Dispatchable {
 	
 	private $eiSpec;
 	private $eiFrame;
-	private $eiSelection;
+	private $eiEntry;
 	private $nestedSetUtils;
 	
 	private $nestedSetItems;
@@ -59,8 +59,8 @@ class TreeMoveModel implements Dispatchable {
 		}
 		
 		$this->nestedSetUtils = $nestedSetUtils = new NestedSetUtils($em, $class);
-		$this->eiSelection = new EiSelection($id, $object);
-		$this->eiFrame->setEiSelection($this->eiSelection);
+		$this->eiEntry = new EiEntry($id, $object);
+		$this->eiFrame->setEiEntry($this->eiEntry);
 		
 		$this->nestedSetItems = array();
 		$this->parentIdOptions = array(null => 'Root');
@@ -109,7 +109,7 @@ class TreeMoveModel implements Dispatchable {
 	}
 	
 	public function getTitle() {
-		return $this->eiSpec->createIdentityString($this->eiSelection->getLiveEntityObj(), 
+		return $this->eiSpec->createIdentityString($this->eiEntry->getLiveEntityObj(), 
 				$this->eiFrame->getN2nLocale());
 	}
 	
@@ -122,6 +122,6 @@ class TreeMoveModel implements Dispatchable {
 		if (isset($this->nestedSetItems[$this->parentId])) {
 			$parentObject = $this->nestedSetItems[$this->parentId]->getObject();
 		}
-		$this->nestedSetUtils->move($this->eiSelection->getLiveEntityObj(), $parentObject);
+		$this->nestedSetUtils->move($this->eiEntry->getLiveEntityObj(), $parentObject);
 	}
 }

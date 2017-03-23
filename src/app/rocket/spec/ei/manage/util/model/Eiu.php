@@ -18,7 +18,7 @@ class Eiu implements Lookupable {
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
 		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
-		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
+		$this->eiuGui = $this->eiuFactory->getEiuEntryGui(false);
 		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
 	
@@ -51,7 +51,7 @@ class Eiu implements Lookupable {
 	public function gui(bool $required = true) {
 		if ($this->eiuGui !== null || !$required) return $this->eiuGui;
 	
-		throw new EiuPerimeterException('EiuGui is unavailable.');
+		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
 	}
 	
 	public function field(bool $required = true) {

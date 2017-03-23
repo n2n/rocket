@@ -33,7 +33,7 @@ class CreatedByModificator extends EiModificatorAdapter {
 	}
 		
 	public function setupEiMapping(EiFrame $eiFrame, EiMapping $mapping) {
-		if (!$mapping->getEiSelection()->isNew()) return;
+		if (!$mapping->getEiEntry()->isNew()) return;
 		
 		$mapping->setValue($this->fieldId, $eiFrame->getManageState()->getUser()->getId());
 	}

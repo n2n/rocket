@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\mapping;
 
 use n2n\l10n\Message;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\security\InaccessibleEntryException;
@@ -34,7 +34,7 @@ use rocket\spec\ei\security\EiCommandAccessRestrictor;
 
 class EiMapping {
 	private $mappingErrorInfo;
-	private $eiSelection;
+	private $eiEntry;
 	private $accessible = true;
 	private $mappableWrappers = array();
 	private $mappableForks = array();
@@ -42,9 +42,9 @@ class EiMapping {
 	private $constraints;
 	private $eiCommandAccessRestrictors;
 	
-	public function __construct(EiSelection $eiSelection) {
+	public function __construct(EiEntry $eiEntry) {
 		$this->mappingErrorInfo = new MappingErrorInfo();
-		$this->eiSelection = $eiSelection;
+		$this->eiEntry = $eiEntry;
 		$this->constraints = new HashSet(EiMappingConstraint::class);
 		$this->eiCommandAccessRestrictors = new HashSet(EiCommandAccessRestrictor::class);
 	}
@@ -53,7 +53,7 @@ class EiMapping {
 	 * @return string|null
 	 */
 	public function getIdRep() {
-		$liveEntry = $this->eiSelection->getLiveEntry();
+		$liveEntry = $this->eiEntry->getLiveEntry();
 		if (!$liveEntry->isPersistent()) return null;
 		
 		return $this->getEiSpec()->idToIdRep($liveEntry->getId());
@@ -63,7 +63,7 @@ class EiMapping {
 	 * @return mixed|null
 	 */
 	public function getId() {
-		$liveEntry = $this->eiSelection->getLiveEntry();
+		$liveEntry = $this->eiEntry->getLiveEntry();
 		if (!$liveEntry->isPersistent()) return null;
 		
 		return $liveEntry->getId();
@@ -73,14 +73,14 @@ class EiMapping {
 	 * @return boolean
 	 */
 	public function isNew() {
-		return !$this->eiSelection->getLiveEntry()->isPersistent();
+		return !$this->eiEntry->getLiveEntry()->isPersistent();
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\EiSpec
 	 */
 	public function getEiSpec() {
-		return $this->eiSelection->getLiveEntry()->getEiSpec();
+		return $this->eiEntry->getLiveEntry()->getEiSpec();
 	}
 	
 	public function setAccessible(bool $accessible) {
@@ -275,10 +275,10 @@ class EiMapping {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\EiSelection
+	 * @return \rocket\spec\ei\manage\EiEntry
 	 */
-	public function getEiSelection(): EiSelection {
-		return $this->eiSelection;
+	public function getEiEntry(): EiEntry {
+		return $this->eiEntry;
 	}
 	
 	public function getValue($eiFieldPath, bool $ignoreAccessRestriction = false) {
@@ -351,7 +351,7 @@ class EiMapping {
 	
 	public function copy(EiMapping $targetMapping) {
 		$targetMappingDefinition = $targetMapping->getMappingDefinition();
-		$targetType = $targetMapping->getEiSelection()->getType();
+		$targetType = $targetMapping->getEiEntry()->getType();
 		foreach ($targetMappingDefinition->getIds() as $id) {
 			if (!$this->mappingProfile->containsId($id)) continue;
 
@@ -361,11 +361,11 @@ class EiMapping {
 	
 	public function equals($obj) {
 		return $obj instanceof EiMapping && $this->determineEiSpec()->equals($obj->determineEiSpec())
-				&& $this->eiSelection->equals($obj->getEiSelection());
+				&& $this->eiEntry->equals($obj->getEiEntry());
 	}
 	
 	public function toEntryNavPoint() {
-		return $this->eiSelection->toEntryNavPoint($this->contextEiSpec);
+		return $this->eiEntry->toEntryNavPoint($this->contextEiSpec);
 	}
 }
 
@@ -530,7 +530,7 @@ class FlushMappingListener implements EiMappingListener {
 // 	public function validate(EiMapping $eiMapping) {
 // 		if (true === $this->closure->__invoke($eiMapping)) return;
 		
-// 		$eiSelectionMapp
+// 		$eiEntryMapp
 // 	}
 // }
 

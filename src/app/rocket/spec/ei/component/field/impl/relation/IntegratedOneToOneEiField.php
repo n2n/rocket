@@ -34,8 +34,8 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
-use rocket\spec\ei\manage\DraftEiSelection;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\DraftEiEntry;
+use rocket\spec\ei\manage\LiveEiEntry;
 use n2n\reflection\CastUtils;
 use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
 use n2n\web\dispatch\Dispatchable;
@@ -50,7 +50,7 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 
 class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFieldFork {
 
@@ -63,7 +63,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	public function buildMappable(Eiu $eiu) {
 		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 	
-		return new ToOneMappable($eiu->entry()->getEiSelection(), $this, $this,
+		return new ToOneMappable($eiu->entry()->getEiEntry(), $this, $this,
 				($readOnly ? null : $this));
 	}
 	
@@ -76,13 +76,13 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 			$targetDraft = $eiObject->getDraftValueMap()->getValue(EiFieldPath::from($this));
 			if ($targetDraft === null) return null;
 				
-			return new DraftEiSelection($targetDraft);
+			return new DraftEiEntry($targetDraft);
 		}
 	
 		$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
 		if ($targetEntityObj === null) return null;
 
-		return LiveEiSelection::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
+		return LiveEiEntry::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
 	}
 	
 	/**
@@ -90,7 +90,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
-		CastUtils::assertTrue($value === null || $value instanceof EiSelection);
+		CastUtils::assertTrue($value === null || $value instanceof EiEntry);
 	
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			$targetDraft = null;
@@ -133,15 +133,15 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	 * @param Eiu $eiu
 	 * @return GuiElementFork
 	 */
-	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
+	public function createGuiElementFork(Eiu $eiu): GuiElementFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		$targetEiFrame = null;
-		if ($makeEditable) {
-			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
-		} else {
+		if ($eiu->gui()->isReadOnly()) {
 			$targetEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
+		} else {
+			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
 		}
 		
 		$targetUtils = new EiuFrame($targetEiFrame);
@@ -150,11 +150,11 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		$targetRelationEntry = $toOneMappable->getValue();
 		
 		if ($targetRelationEntry === null) {
-			$targetEiSelection = $targetUtils->createNewEiSelection();
-			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiSelection));
+			$targetEiEntry = $targetUtils->createNewEiEntry();
+			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiEntry));
 		} else if (!$targetRelationEntry->hasEiMapping()) {
-			$targetEiSelection = $targetRelationEntry->getEiSelection();
-			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiSelection));
+			$targetEiEntry = $targetRelationEntry->getEiEntry();
+			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiEntry));
 		}
 				
 		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
@@ -168,11 +168,11 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 	 * @return MappableSource or null if not available
 	 */
 	public function determineForkedEiObject(EiObject $eiObject) {
-		$targetEiSelection = $this->read($eiObject);
-		if ($targetEiSelection === null) {
+		$targetEiEntry = $this->read($eiObject);
+		if ($targetEiEntry === null) {
 			return null;
 		}
-		return $targetEiSelection;
+		return $targetEiEntry;
 	}
 	
 	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {

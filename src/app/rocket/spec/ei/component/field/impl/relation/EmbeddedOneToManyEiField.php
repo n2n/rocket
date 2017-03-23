@@ -38,10 +38,10 @@ use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
-use rocket\spec\ei\manage\DraftEiSelection;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\DraftEiEntry;
+use rocket\spec\ei\manage\LiveEiEntry;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
@@ -112,25 +112,25 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
-		$targetEiSelections = array();
+		$targetEiEntrys = array();
 		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			$targetDrafts = $eiObject->getDraftValueMap()->getValue(EiFieldPath::from($this));
-			if ($targetDrafts === null) return $targetEiSelections;
+			if ($targetDrafts === null) return $targetEiEntrys;
 			
 			foreach ($targetDrafts as $targetDraft) {
-				$targetEiSelections[] = new DraftEiSelection($targetDraft);
+				$targetEiEntrys[] = new DraftEiEntry($targetDraft);
 			}
-			return $targetEiSelections; 
+			return $targetEiEntrys; 
 		}
 	
 		$targetEntityObjs = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
-		if ($targetEntityObjs === null) return $targetEiSelections;
+		if ($targetEntityObjs === null) return $targetEiEntrys;
 		
 		foreach ($targetEntityObjs as $targetEntityObj) {
-			$targetEiSelections[] = LiveEiSelection::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
+			$targetEiEntrys[] = LiveEiEntry::create($this->eiFieldRelation->getTargetEiSpec(), $targetEntityObj);
 		}
-		return $targetEiSelections;
+		return $targetEiEntrys;
 	}
 	
 	/**
@@ -142,18 +142,18 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 	
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			$targetDrafts = array();
-			foreach ($value as $targetEiSelection) {
-				CastUtils::assertTrue($targetEiSelection instanceof EiSelection);
-				$targetDrafts[] = $targetEiSelection->getDraft();
+			foreach ($value as $targetEiEntry) {
+				CastUtils::assertTrue($targetEiEntry instanceof EiEntry);
+				$targetDrafts[] = $targetEiEntry->getDraft();
 			}
 			$eiObject->getDraftValueMap()->setValue(EiFieldPath::from($this), $targetDrafts);
 			return;
 		}
 	
 		$targetEntityObjs = new \ArrayObject();
-		foreach ($value as $targetEiSelection) {
-			CastUtils::assertTrue($targetEiSelection instanceof EiSelection);
-			$targetEntityObjs[] = $targetEiSelection->getLiveEntry()->getEntityObj();
+		foreach ($value as $targetEiEntry) {
+			CastUtils::assertTrue($targetEiEntry instanceof EiEntry);
+			$targetEntityObjs[] = $targetEiEntry->getLiveEntry()->getEntityObj();
 		}
 		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObjs);
 	}
@@ -177,7 +177,7 @@ class EmbeddedOneToManyEiField extends ToManyEiFieldAdapter /*implements Draftab
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationMappable, $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
 				
-			$draftMode = $eiMapping->getEiSelection()->isDraft();
+			$draftMode = $eiMapping->getEiEntry()->isDraft();
 			$toManyEditable->setDraftMode($draftMode);
 			
 			if ($targetEditEiFrame->getEiExecution()->isGranted()) {

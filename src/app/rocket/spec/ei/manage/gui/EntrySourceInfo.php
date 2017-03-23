@@ -36,7 +36,7 @@ class EntrySourceInfo {
 	private $eiFrame;
 	private $viewMode;
 // 	private $writable;
-	private $eiSelectionGuiListeners = array();
+	private $eiEntryGuiListeners = array();
 	/**
 	 * @param EiMapping $eiMapping
 	 * @param EiFrame $eiFrame
@@ -93,14 +93,14 @@ class EntrySourceInfo {
 	 * @return boolean
 	 */
 	public function isNew() {
-		return $this->getEiMapping()->getEiSelection()->isNew();
+		return $this->getEiMapping()->getEiEntry()->isNew();
 	}
 	
 	/**
 	 * @return boolean 
 	 */
 	public function isDraft() {
-		return $this->getEiMapping()->getEiSelection()->isDraft();
+		return $this->getEiMapping()->getEiEntry()->isDraft();
 	}
 	
 	/**
@@ -120,19 +120,19 @@ class EntrySourceInfo {
 	}
 	
 	public function getId() {
-		return $this->getEiMapping()->getEiSelection()->getId();
+		return $this->getEiMapping()->getEiEntry()->getId();
 	}
 	
 	public function toFieldSourceInfo(EiFieldPath $eiFieldPath): FieldSourceInfo {
 		return new FieldSourceInfo($eiFieldPath, $this);
 	}
 	
-	public function addEiSelectionGuiListener(EiSelectionGuiListener $eiSelectionGuiListener) {
-		$this->eiSelectionGuiListeners[] = $eiSelectionGuiListener;
+	public function addEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
+		$this->eiEntryGuiListeners[] = $eiEntryGuiListener;
 	}
 	
-	public function getEiSelectionGuiListeners(): array {
-		return $this->eiSelectionGuiListeners;
+	public function getEiEntryGuiListeners(): array {
+		return $this->eiEntryGuiListeners;
 	}
 	
 // 	public function createPropertyPath($propertyName, PropertyPath $basePropertyPath = null) {
@@ -204,14 +204,14 @@ class FieldSourceInfo {
 	 * @return boolean
 	 */
 	public function isNew() {
-		return $this->getEiMapping()->getEiSelection()->isNew();
+		return $this->getEiMapping()->getEiEntry()->isNew();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->getEiMapping()->getEiSelection()->isDraft();
+		return $this->getEiMapping()->getEiEntry()->isDraft();
 	}
 	
 	/**
@@ -247,11 +247,11 @@ class FieldSourceInfo {
 	}
 	
 	public function executeWhenSaved(\Closure $closure) {
-		$this->entrySourceInfo->addEiSelectionGuiListener(new FieldGuiListener($this, null, $closure));
+		$this->entrySourceInfo->addEiEntryGuiListener(new FieldGuiListener($this, null, $closure));
 	}
 }
 
-class FieldGuiListener implements EiSelectionGuiListener {
+class FieldGuiListener implements EiEntryGuiListener {
 	private $fieldSourceInfo;
 	private $onSaveClosure;
 	private $savedClosure;
@@ -263,16 +263,16 @@ class FieldGuiListener implements EiSelectionGuiListener {
 		$this->savedClosure = $savedClosure;
 	}
 	
-	public function finalized(EiSelectionGui $eiSelectionGui) {
+	public function finalized(EiEntryGui $eiEntryGui) {
 	}
 	
-	public function onSave(EiSelectionGui $eiSelectionGui) {
+	public function onSave(EiEntryGui $eiEntryGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
 	}
 	
-	public function saved(EiSelectionGui $eiSelectionGui) {
+	public function saved(EiEntryGui $eiEntryGui) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}

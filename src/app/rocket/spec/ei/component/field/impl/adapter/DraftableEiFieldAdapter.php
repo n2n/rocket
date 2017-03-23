@@ -58,7 +58,7 @@ abstract class DraftableEiFieldAdapter extends EditableEiFieldAdapter implements
 			return parent::buildMappable($eiu);
 		}
 	
-		return new SimpleMappable($eiu->entry()->getEiSelection(), 
+		return new SimpleMappable($eiu->entry()->getEiEntry(), 
 				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
 				$this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}

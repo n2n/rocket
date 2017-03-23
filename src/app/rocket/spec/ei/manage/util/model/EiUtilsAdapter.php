@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\util\model\FrameEiu;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\EiSpec;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\ei\mask\EiMask;
@@ -31,9 +31,9 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\manage\DraftEiSelection;
+use rocket\spec\ei\manage\DraftEiEntry;
 use rocket\user\model\LoginContext;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\draft\DraftValueMap;
@@ -109,16 +109,16 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createIdentityString()
 	 */
-	public function createIdentityString(EiSelection $eiSelection, bool $determineEiMask = true, 
+	public function createIdentityString(EiEntry $eiEntry, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string {
 		$eiMask = null;
 		if ($determineEiMask) {
-			$eiMask = $this->determineEiMask($eiSelection);
+			$eiMask = $this->determineEiMask($eiEntry);
 		} else {
 			$eiMask = $this->getEiMask();
 		}
 				
-		return $eiMask->createIdentityString($eiSelection, $n2nLocale ?? $this->getN2nLocale());
+		return $eiMask->createIdentityString($eiEntry, $n2nLocale ?? $this->getN2nLocale());
 	}
 	
 	/**
@@ -130,13 +130,13 @@ abstract class EiUtilsAdapter implements EiUtils {
 			return $this->getEiSpec();
 		}
 		
-		ArgUtils::valType($eiEntryObj, array(EiSelection::class, EiMapping::class, LiveEntry::class, 'object'), true);
+		ArgUtils::valType($eiEntryObj, array(EiEntry::class, EiMapping::class, LiveEntry::class, 'object'), true);
 		
 		if ($eiEntryObj instanceof EiMapping) {
-			return $eiEntryObj->getEiSelection()->getLiveEntry()->getEiSpec();
+			return $eiEntryObj->getEiEntry()->getLiveEntry()->getEiSpec();
 		}
 		
-		if ($eiEntryObj instanceof EiSelection) {
+		if ($eiEntryObj instanceof EiEntry) {
 			return $eiEntryObj->getLiveEntry()->getEiSpec();
 		}
 		
@@ -165,10 +165,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiSelectionById()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiEntryById()
 	 */
-	public function lookupEiSelectionById($id, int $ignoreConstraintTypes = 0): EiSelection {
-		return new LiveEiSelection($this->lookupLiveEntryById($id, $ignoreConstraintTypes));
+	public function lookupEiEntryById($id, int $ignoreConstraintTypes = 0): EiEntry {
+		return new LiveEiEntry($this->lookupLiveEntryById($id, $ignoreConstraintTypes));
 	}
 
 	/**
@@ -194,10 +194,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiSelectionByDraftId()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiEntryByDraftId()
 	 */
-	public function lookupEiSelectionByDraftId(int $id): EiSelection {
-		return new DraftEiSelection($this->lookupDraftById($id));
+	public function lookupEiEntryByDraftId(int $id): EiEntry {
+		return new DraftEiEntry($this->lookupDraftById($id));
 	}
 	
 	/**
@@ -219,45 +219,45 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiSelectionFromLiveEntry()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiEntryFromLiveEntry()
 	 */
-	public function createEiSelectionFromLiveEntry($liveEntry): EiSelection {
+	public function createEiEntryFromLiveEntry($liveEntry): EiEntry {
 		if ($liveEntry instanceof LiveEntry) {
-			return new LiveEiSelection($liveEntry);
+			return new LiveEiEntry($liveEntry);
 		}
 		
 		if ($liveEntry !== null) {
-			return LiveEiSelection::create($this->getEiSpec(), $liveEntry);
+			return LiveEiEntry::create($this->getEiSpec(), $liveEntry);
 		}
 		
-		return new LiveEiSelection(LiveEntry::createNew($this->getEiSpec()));
+		return new LiveEiEntry(LiveEntry::createNew($this->getEiSpec()));
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiSelectionFromDraft()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiEntryFromDraft()
 	 */
-	public function createEiSelectionFromDraft(Draft $draft): EiSelection {
-		return new DraftEiSelection($draft);
+	public function createEiEntryFromDraft(Draft $draft): EiEntry {
+		return new DraftEiEntry($draft);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createNewEiSelection()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createNewEiEntry()
 	 */
-	public function createNewEiSelection(bool $draft = false, EiSpec $eiSpec = null): EiSelection {
+	public function createNewEiEntry(bool $draft = false, EiSpec $eiSpec = null): EiEntry {
 		if ($eiSpec === null) {
 			$eiSpec = $this->getEiSpec();
 		}
 		
 		if (!$draft) {
-			return new LiveEiSelection(LiveEntry::createNew($eiSpec));
+			return new LiveEiEntry(LiveEntry::createNew($eiSpec));
 		}
 		
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 	
-		return new DraftEiSelection($this->createNewDraftFromLiveEntry(LiveEntry::createNew($eiSpec)));
+		return new DraftEiEntry($this->createNewDraftFromLiveEntry(LiveEntry::createNew($eiSpec)));
 	}
 	
 	public function createNewDraftFromLiveEntry(LiveEntry $liveEntry) {
@@ -287,14 +287,14 @@ abstract class EiUtilsAdapter implements EiUtils {
 			return;
 		}
 		
-		$eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', $this->getEiSpec());
+		$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryObj, 'eiEntryObj', $this->getEiSpec());
 		
-		if ($eiSelection->isDraft()) {
-			$this->persistDraft($eiSelection->getDraft(), $flush);
+		if ($eiEntry->isDraft()) {
+			$this->persistDraft($eiEntry->getDraft(), $flush);
 			return;
 		}
 		
-		$this->persistLiveEntry($eiSelection->getLiveEntry(), $flush);
+		$this->persistLiveEntry($eiEntry->getLiveEntry(), $flush);
 	}
 	
 	private function persistDraft(Draft $draft, bool $flush) {

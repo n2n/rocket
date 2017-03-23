@@ -125,12 +125,12 @@ class ToManyMag extends MagAdapter {
 				if (!$targetRelationEntry->isNew()) {
 					$idReps[] = $idRep = $this->targetReadUtils->idToIdRep($targetRelationEntry->getId());
 					$toManyForm->getEntryLabeler()->setSelectedIdentityString($idRep,
-							$this->targetReadUtils->createIdentityString($targetRelationEntry->getEiSelection()));
+							$this->targetReadUtils->createIdentityString($targetRelationEntry->getEiEntry()));
 				} else if ($targetRelationEntry->hasEiMapping()) {
 					$toManyForm->addEiMapping($targetRelationEntry->getEiMapping());
 				} else {
 					$toManyForm->addEiMapping($this->targetEditUtils->createEiMapping(
-							$targetRelationEntry->getEiSelection()));
+							$targetRelationEntry->getEiEntry()));
 				}
 			}
 			$toManyForm->setSelectedEntryIdReps($idReps);
@@ -141,7 +141,7 @@ class ToManyMag extends MagAdapter {
 					$toManyForm->addEiMapping($targetRelationEntry->getEiMapping());
 				} else {
 					$toManyForm->addEiMapping($this->targetEditUtils->createEiMapping(
-							$targetRelationEntry->getEiSelection()));
+							$targetRelationEntry->getEiEntry()));
 				}
 			}
 		}
@@ -174,7 +174,7 @@ class ToManyMag extends MagAdapter {
 					continue;
 				}
 		
-				$this->targetRelationEntries[$idRep] = RelationEntry::from($this->targetReadUtils->lookupEiSelectionById(
+				$this->targetRelationEntries[$idRep] = RelationEntry::from($this->targetReadUtils->lookupEiEntryById(
 						$this->targetReadUtils->idRepToId($idRep), CriteriaConstraint::NON_SECURITY_TYPES));
 			}
 		}
@@ -188,11 +188,11 @@ class ToManyMag extends MagAdapter {
 			
 			if ($targetEiMapping->isNew()) {
 				$this->targetRelationEntries[] = RelationEntry::fromM($targetEiMapping);
-				if ($targetEiMapping->getEiSelection()->isDraft()) {
-					$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
+				if ($targetEiMapping->getEiEntry()->isDraft()) {
+					$targetEiMapping->getEiEntry()->getDraft()->setType(Draft::TYPE_UNLISTED);
 				}
-			} else if ($targetEiMapping->getEiSelection()->isDraft()) {
-				$this->targetRelationEntries['d' . $targetEiMapping->getEiSelection()->getIdRep()] = RelationEntry::fromM($targetEiMapping);
+			} else if ($targetEiMapping->getEiEntry()->isDraft()) {
+				$this->targetRelationEntries['d' . $targetEiMapping->getEiEntry()->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			} else {
 				$this->targetRelationEntries['c' . $targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			}

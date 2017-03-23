@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\util\model\EiUtils;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\property\ObjectProperty;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -69,7 +69,7 @@ class RelationSelectorMag extends MagAdapter  {
 		$relationSelectorForm->setEntryIdReps(array_keys($this->targetLiveEntries));
 		foreach ($this->targetLiveEntries as $targetIdRep => $targetLiveEntry) {
 			$relationSelectorForm->getEntryLabeler()->setSelectedIdentityString($targetIdRep,
-					$this->targetEiUtils->createIdentityString(new LiveEiSelection($targetLiveEntry)));
+					$this->targetEiUtils->createIdentityString(new LiveEiEntry($targetLiveEntry)));
 		}
 		return $relationSelectorForm;	
 	}

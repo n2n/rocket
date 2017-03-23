@@ -65,7 +65,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection(Rocket::NS, $request->getN2nLocale());
-		$eiSelection = $eiMapping->getEiSelection();
+		$eiEntry = $eiMapping->getEiEntry();
 
 		$controlButton = new ControlButton($dtc->translate('ei_impl_online_offline_label'), 
 					$dtc->translate('ei_impl_online_offline_tooltip'));

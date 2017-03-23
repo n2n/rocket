@@ -47,11 +47,11 @@ class OverviewController extends ControllerAdapter {
 		$this->listSize = $listSize;
 	}
 	
-	public function prepare(/*ManageState $manageState, RocketState $rocketState,*/ ScrRegistry $scrRegistry) {
+	public function prepare(ScrRegistry $scrRegistry, EiuCtrl $eiuCtrl) {
 // 		$this->manageState = $manageState;
 // 		$this->rocketState = $rocketState;
 		$this->scrRegistry = $scrRegistry;
-		$this->eiuCtrl = EiuCtrl::from($this->getHttpContext());
+		$this->eiuCtrl = $eiuCtrl;
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
@@ -59,7 +59,7 @@ class OverviewController extends ControllerAdapter {
 		$stateKey = OverviewAjahController::genStateKey();
 		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
-		$listModel = new ListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
+		$listModel = new ListModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if ($pageNo === null) {
 			$pageNo = 1;
@@ -73,9 +73,9 @@ class OverviewController extends ControllerAdapter {
 		
 		$listView = null;
 		if ($listModel->isTree()) {
-			$listView = $eiFrame->getContextEiMask()->createTreeView($eiFrame, $listModel->getEntryGuiTree());
+			$listView = $eiuFrame->createTreeView($eiFrame, $listModel->getEiuEntryGuiTree());
 		} else {
-			$listView = $eiFrame->getContextEiMask()->createListView($eiFrame, $listModel->getEntryGuis());
+			$listView = $eiuFrame->createListView($eiFrame, $listModel->getEiuEntryGuis());
 		}
 
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(

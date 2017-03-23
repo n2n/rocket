@@ -114,35 +114,35 @@ class AddModel implements Dispatchable  {
 		}
 		
 		// @todo think!!!
-		$eiSelection = $eiMapping->getEiSelection();
+		$eiEntry = $eiMapping->getEiEntry();
 		
-		if (!$eiSelection->isDraft()) {
-			$liveEntry = $eiSelection->getLiveEntry();
+		if (!$eiEntry->isDraft()) {
+			$liveEntry = $eiEntry->getLiveEntry();
 			$entityObj = $liveEntry->getEntityObj();
 			$this->persist($entityObj);
 			
 			$liveEntry->refreshId();
 			$liveEntry->setPersistent(false);
 			
-			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
+			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiEntry);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
-			return $eiSelection;
+			return $eiEntry;
 		}
 		
 		IllegalStateException::assertTrue($this->nestedSetStrategy === null);
 		
-		$draft = $eiSelection->getDraft();
+		$draft = $eiEntry->getDraft();
 		$draftDefinition = $this->entryForm->getChosenEntryModelForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 				->getDraftDefinition();
 		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
+		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiEntry);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
-		return $eiSelection;
+		return $eiEntry;
 	}
 	
 	public function createAndRepeate(MessageContainer $messageContainer) {

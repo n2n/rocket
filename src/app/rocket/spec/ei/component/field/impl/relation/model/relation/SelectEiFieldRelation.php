@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
@@ -76,16 +76,16 @@ class SelectEiFieldRelation extends EiFieldRelation {
 	}
 	
 	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
-			EiSelection $eiSelection = null, $editCommandRequired = null) {
-		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiSelection, $editCommandRequired);
+			EiEntry $eiEntry = null, $editCommandRequired = null) {
+		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiEntry, $editCommandRequired);
 		
 // 		if (!$this->isTargetMany()) {
 // 			$targetEiFrame->setOverviewDisabled(true);
-// 			$targetEiFrame->setDetailBreadcrumbLabel($this->buildDetailLabel($eiFrame, $eiSelection));
+// 			$targetEiFrame->setDetailBreadcrumbLabel($this->buildDetailLabel($eiFrame, $eiEntry));
 // 			return;
 // 		}
 		
-// 		$targetEiFrame->setOverviewBreadcrumbLabel($this->buildDetailLabel($eiFrame, $eiSelection));
+// 		$targetEiFrame->setOverviewBreadcrumbLabel($this->buildDetailLabel($eiFrame, $eiEntry));
 		
 		
 	}

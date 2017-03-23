@@ -28,7 +28,7 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiSpec;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
@@ -99,12 +99,12 @@ interface EiUtils {
 	public function getGenericPluralLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string;
 	
 	/**
-	 * @param EiSelection $eiSelection
+	 * @param EiEntry $eiEntry
 	 * @param bool $determineEiMask
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(EiSelection $eiSelection, bool $determineEiMask = true, 
+	public function createIdentityString(EiEntry $eiEntry, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string;
 	
 	/**
@@ -140,9 +140,9 @@ interface EiUtils {
 	/**
 	 * @param int $id
 	 * @throws UnknownEntryException
-	 * @return \rocket\spec\ei\manage\EiSelection
+	 * @return \rocket\spec\ei\manage\EiEntry
 	 */
-	public function lookupEiSelectionById($id, int $ignoreConstraintTypes = 0): EiSelection;
+	public function lookupEiEntryById($id, int $ignoreConstraintTypes = 0): EiEntry;
 	
 	/**
 	 * @return bool
@@ -162,9 +162,9 @@ interface EiUtils {
 	
 	/**
 	 * @param int $id
-	 * @return EiSelection
+	 * @return EiEntry
 	 */
-	public function lookupEiSelectionByDraftId(int $id): EiSelection;
+	public function lookupEiEntryByDraftId(int $id): EiEntry;
 	
 	/**
 	 * @param unknown $entityObjId
@@ -181,22 +181,22 @@ interface EiUtils {
 	
 	/**
 	 * @param object $entity
-	 * @return \rocket\spec\ei\manage\EiSelection
+	 * @return \rocket\spec\ei\manage\EiEntry
 	 */
-	public function createEiSelectionFromLiveEntry($liveEntry): EiSelection;
+	public function createEiEntryFromLiveEntry($liveEntry): EiEntry;
 	
 	/**
 	 * @param Draft $draft
-	 * @return EiSelection
+	 * @return EiEntry
 	 */
-	public function createEiSelectionFromDraft(Draft $draft): EiSelection;
+	public function createEiEntryFromDraft(Draft $draft): EiEntry;
 	
 	/**
 	 * @param bool $draft
 	 * @param EiSpec $eiSpec
-	 * @return EiSelection
+	 * @return EiEntry
 	 */
-	public function createNewEiSelection(bool $draft = false, EiSpec $eiSpec = null): EiSelection;
+	public function createNewEiEntry(bool $draft = false, EiSpec $eiSpec = null): EiEntry;
 	
 	/**
 	 * @param object $eiEntryObj

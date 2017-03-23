@@ -24,8 +24,6 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\persistence\orm\criteria\Criteria;
-use rocket\spec\ei\component\field\impl\tree\TreeUtils;
-use rocket\spec\ei\component\field\impl\tree\NestedSetDef;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
@@ -37,7 +35,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
 
 class ListModel implements Dispatchable {	
-	private $utils;
+	private $eiuFrame;
 	private $listSize;
 	
 	private $currentPageNo;
@@ -50,9 +48,9 @@ class ListModel implements Dispatchable {
 	private $critmodForm;
 	private $quickSearchForm;
 	
-	public function __construct(EiFrame $eiFrame, int $listSize, CritmodForm $critmodForm, 
+	public function __construct(EiuFrame $eiuFrame, int $listSize, CritmodForm $critmodForm, 
 			QuickSearchForm $quickSearchForm) {
-		$this->utils = new EiuFrame($eiFrame);
+		$this->eiuFrame = $eiuFrame;
 		$this->listSize = $listSize;
 		$this->critmodForm = $critmodForm;
 		$this->quickSearchForm = $quickSearchForm;
@@ -67,7 +65,7 @@ class ListModel implements Dispatchable {
 	}
 	
 	public function getEiFrame(): EiFrame {
-		return $this->utils->getEiFrame();
+		return $this->eiuFrame->getEiFrame();
 	}
 	
 // 	public function emptyInitialize() {
@@ -141,25 +139,25 @@ class ListModel implements Dispatchable {
 	private function simpleLookup(Criteria $criteria) {
 		$this->entryGuis = array();
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiMapping = $this->utils->createEiMapping($this->utils->createEiSelectionFromLiveEntry($entityObj));
-			$this->entryGuis[$eiMapping->getIdRep()] = new EntryGui($this->utils->getEiMask()
-					->createListEntryGuiModel($this->utils->getEiFrame(), $eiMapping, false)); 
+			$eiuEntry = $this->eiuFrame->entry($entityObj);
+			$this->entryGuis[$eiuEntry->getIdRep()] = $eiuEntry->gui(true, false);
+// 			$eiMapping = $this->eiuFrame->createEiMapping($this->eiuFrame->createEiEntryFromLiveEntry($entityObj));
+// 			$this->entryGuis[$eiMapping->getIdRep()] = new EntryGui($this->eiuFrame->getEiMask()
+// 					->createListEntryGuiModel($this->eiuFrame->getEiFrame(), $eiMapping, false)); 
 		}
 	}
 	
 	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
-		$nestedSetUtils = new NestedSetUtils($this->utils->em(), $this->utils->getClass(), $nestedSetStrategy);
-		
-		$eiFrame = $this->utils->getEiFrame();
-		$eiMask = $this->utils->getEiMask();
+		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getClass(), $nestedSetStrategy);
 		
 		$this->entryGuiTree = new EntryGuiTree();
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$eiMapping = $this->utils->createEiMapping(
-					$this->utils->createEiSelectionFromLiveEntry($nestedSetItem->getEntityObj()));
+// 			$eiMapping = $this->eiuFrame->createEiMapping(
+// 					$this->eiuFrame->createEiEntryFromLiveEntry($nestedSetItem->getEntityObj()));
+
+			$eiuEntry = $this->eiuFrame->entry($nestedSetItem->getEntityObj());
 			
-			$this->entryGuiTree->addByLevel($nestedSetItem->getLevel(), new EntryGui(
-					$eiMask->createTreeEntryGuiModel($eiFrame, $eiMapping, false)));
+			$this->entryGuiTree->addByLevel($nestedSetItem->getLevel(), $eiuEntry->gui(true, false));
 		}
 	}
 	
@@ -224,9 +222,9 @@ class ListModel implements Dispatchable {
 		
 		$selectedObjects = array();
 		foreach ($this->selectedObjectIds as $entryId) {
-			if (!isset($this->eiSelections[$entryId])) continue;
+			if (!isset($this->eiEntrys[$entryId])) continue;
 			
-			$selectedObjects[$entryId] = $this->eiSelections[$entryId];
+			$selectedObjects[$entryId] = $this->eiEntrys[$entryId];
 		}
 		
 		if (!sizeof($selectedObjects)) return;

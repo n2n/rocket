@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\config\mask\model;
 
-use rocket\spec\ei\manage\gui\EiSelectionGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\mask\EiMask;
 
 class CommonEntryGuiModel implements EntryGuiModel {
 	private $eiMask;
-	private $eiSelectionGui;
+	private $eiEntryGui;
 	private $eiMapping;
 	
-	public function __construct(EiMask $eiMask, EiSelectionGui $eiSelectionGui, EiMapping $eiMapping) {
+	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui, EiMapping $eiMapping) {
 		$this->eiMask = $eiMask;
-		$this->eiSelectionGui = $eiSelectionGui;
+		$this->eiEntryGui = $eiEntryGui;
 		$this->eiMapping = $eiMapping;
 	}
 	
@@ -41,8 +41,8 @@ class CommonEntryGuiModel implements EntryGuiModel {
 		return $this->eiMask;
 	}
 	
-	public function getEiSelectionGui(): EiSelectionGui {
-		return $this->eiSelectionGui;
+	public function getEiEntryGui(): EiEntryGui {
+		return $this->eiEntryGui;
 	}
 	
 	public function getEiMapping(): EiMapping {

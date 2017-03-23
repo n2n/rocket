@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 
-interface EiSelection extends EiObject {
+interface EiEntry extends EiObject {
 	
 	public function isNew(): bool;
 	

@@ -46,11 +46,11 @@ class DetailModel {
 	
 	public function publish() {
 		throw new NotYetImplementedException();
-		if (!$this->eiSelection->isDraft()) return false;
+		if (!$this->eiEntry->isDraft()) return false;
 		
-		$id =  $this->eiSelection->getId();
-		$originalEntry = $this->eiSelection->getLiveEntityObj();
-		$draft = $this->eiSelection->getDraft();
+		$id =  $this->eiEntry->getId();
+		$originalEntry = $this->eiEntry->getLiveEntityObj();
+		$draft = $this->eiEntry->getDraft();
 		$draftedEntry = $draft->getDraftedEntity();
 		
 		$draft->setPublished(true);

@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 
-class LiveEiSelection extends EiSelectionAdapter {
+class LiveEiEntry extends EiEntryAdapter {
 	private $liveEntry;
 
 	public function __construct(LiveEntry $liveEntry) {
@@ -46,7 +46,7 @@ class LiveEiSelection extends EiSelectionAdapter {
 	}
 
 	public function getDraft(): Draft {
-		throw new IllegalStateException('EiSelection contains no Draft.');
+		throw new IllegalStateException('EiEntry contains no Draft.');
 	}
 	
 	public function toEntryNavPoint(): EntryNavPoint {
@@ -55,6 +55,6 @@ class LiveEiSelection extends EiSelectionAdapter {
 	
 	public static function create(EiSpec $eiSpec, $entityObj) {
 		if ($entityObj === null) return null;
-		return new LiveEiSelection(LiveEntry::createFrom($eiSpec, $entityObj));
+		return new LiveEiEntry(LiveEntry::createFrom($eiSpec, $entityObj));
 	}
 }

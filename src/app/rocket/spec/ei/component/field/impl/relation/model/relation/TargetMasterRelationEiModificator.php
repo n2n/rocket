@@ -36,7 +36,7 @@ class TargetMasterRelationEiModificator extends EiModificatorAdapter {
 
 	public function setupEiMapping(Eiu $eiu) {
 		$eiMapping = $eiu->entry()->getEiMapping();
-		if ($eiMapping->getEiSelection()->isDraft()) return;
+		if ($eiMapping->getEiEntry()->isDraft()) return;
 		
 		$that = $this;
 		$eiMapping->registerListener(new TargetMasterEiMappingListener($this->eiFieldRelation));
@@ -57,11 +57,11 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 	}
 	
 	public function onWrite(EiMapping $eiMapping) {
-		$this->oldValue = $this->accessProxy->getValue($eiMapping->getEiSelection()->getLiveObject());
+		$this->oldValue = $this->accessProxy->getValue($eiMapping->getEiEntry()->getLiveObject());
 	}
 	
 	public function written(EiMapping $eiMapping) {
-		$entityObj = $eiMapping->getEiSelection()->getLiveObject();
+		$entityObj = $eiMapping->getEiEntry()->getLiveObject();
 		
 		if ($this->eiFieldRelation->isTargetMany()) {
 			$this->writeToMany($entityObj);

@@ -25,7 +25,7 @@ use rocket\spec\ei\component\field\impl\relation\RelationEiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\component\field\impl\relation\command\RelationEiCommand;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
@@ -215,7 +215,7 @@ abstract class EiFieldRelation {
 	
 	public function isReadOnly(EiMapping $mapping, EiFrame $eiFrame) {
 		return $this->relationEiField->getStandardEditDefinition()->isReadOnly()
-				|| (!$this->relationEiField->isDraftable() && $mapping->getEiSelection()->isDraft())
+				|| (!$this->relationEiField->isDraftable() && $mapping->getEiEntry()->isDraft())
 				|| ($this->isFiltered() && $eiFrame->getEiRelation($this->relationEiField->getId()));
 	}
 	
@@ -268,10 +268,10 @@ abstract class EiFieldRelation {
 // 		return $this->getRelationEntityProperty()->isMaster();
 // 	}
 		
-	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiSelection $eiSelection = null, 
+	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiEntry $eiEntry = null, 
 			ControllerContext $targetControllerContext): EiFrame {
 		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask(), $targetControllerContext);
-		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiSelection);
+		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiEntry);
 		
 		return $targetEiFrame;
 	}
@@ -297,13 +297,13 @@ abstract class EiFieldRelation {
 	}
 	
 	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiMapping $eiMapping = null): EiFrame {
-	    $eiSelection = null;
+	    $eiEntry = null;
 	    if ($eiMapping !== null) {
-	        $eiSelection = $eiMapping->getEiSelection();
+	        $eiEntry = $eiMapping->getEiEntry();
 	    }
 	    
 	    $targetCmdContextPath = $eiFrame->getControllerContext()->getCmdContextPath();
-		if ($eiSelection === null || $eiSelection->isNew()) {
+		if ($eiEntry === null || $eiEntry->isNew()) {
 		    $targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'rel');
 		} else {
 			$targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'relentry', 
@@ -314,7 +314,7 @@ abstract class EiFieldRelation {
 		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask());
 		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), true, $eiFrame);
 		
-		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiSelection/*, $editCommandRequired*/);
+		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiEntry/*, $editCommandRequired*/);
 		
 		return $targetEiFrame;
 	}
@@ -333,52 +333,52 @@ abstract class EiFieldRelation {
 	}
 	
 	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
-			EiSelection $eiSelection = null/*, $editCommandRequired = null*/) {
-		if ($eiSelection === null) return $targetEiFrame;
+			EiEntry $eiEntry = null/*, $editCommandRequired = null*/) {
+		if ($eiEntry === null) return $targetEiFrame;
 				
-		if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiSelection))) {
+		if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiEntry))) {
 			$targetEiFrame->setCriteriaFactory($targetCriteriaFactory);
 		}
 		
-		$this->applyTargetModificators($targetEiFrame, $eiFrame, $eiSelection);
+		$this->applyTargetModificators($targetEiFrame, $eiFrame, $eiEntry);
 		
 		return $targetEiFrame;
 	}
 
-	protected function createTargetCriteriaFactory(EiSelection $eiSelection) {
-		if ($eiSelection->isNew()) return null;
+	protected function createTargetCriteriaFactory(EiEntry $eiEntry) {
+		if ($eiEntry->isNew()) return null;
 
 		if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()) {
 			return new MappedOneToCriteriaFactory($this->getRelationEntityProperty()->getRelation(), 
-					$eiSelection->getLiveObject());
+					$eiEntry->getLiveObject());
 		}
 
-		return new RelationCriteriaFactory($this->getRelationEntityProperty(), $eiSelection->getLiveObject());
+		return new RelationCriteriaFactory($this->getRelationEntityProperty(), $eiEntry->getLiveObject());
 	}
 	
 	protected function applyTargetModificators(EiFrame $targetEiFrame, EiFrame $eiFrame, 
-			EiSelection $eiSelection) {
+			EiEntry $eiEntry) {
 		$targetEiField = $this->findTargetEiField();
 		
 		if (null !== $targetEiField) {
 			$targetEiModificatorCollection = $targetEiField->getEiEngine()->getEiModificatorCollection();
 			
-			$targetEiFrame->setEiRelation($targetEiField->getId(), new EiRelation($eiFrame, $eiSelection, 
+			$targetEiFrame->setEiRelation($targetEiField->getId(), new EiRelation($eiFrame, $eiEntry, 
 					$this->relationEiField));
 			
-			if (!$eiSelection->isDraft()) {
+			if (!$eiEntry->isDraft()) {
 				$targetEiModificatorCollection->add(new MappedRelationEiModificator($targetEiFrame, 
-						RelationEntry::from($eiSelection), EiFieldPath::from($targetEiField), $this->isSourceMany()));
+						RelationEntry::from($eiEntry), EiFieldPath::from($targetEiField), $this->isSourceMany()));
 			}
 		} else if ($this->targetMasterAccessProxy !== null) {
 			$this->getTargetEiSpec()->getEiEngine()->getEiModificatorCollection()->add(
-					new PlainMappedRelationEiModificator($targetEiFrame, $eiSelection->getLiveObject(), 
+					new PlainMappedRelationEiModificator($targetEiFrame, $eiEntry->getLiveObject(), 
 							$this->targetMasterAccessProxy, $this->isSourceMany()));
 		}
 		
-		if ($this->getRelationEntityProperty()->isMaster() && !$eiSelection->isDraft()) {
+		if ($this->getRelationEntityProperty()->isMaster() && !$eiEntry->isDraft()) {
 			$targetEiModificatorCollection = $this->targetEiMask->getEiEngine()->getEiModificatorCollection();
-			$targetEiModificatorCollection->add(new MasterRelationEiModificator($targetEiFrame, $eiSelection->getLiveObject(),
+			$targetEiModificatorCollection->add(new MasterRelationEiModificator($targetEiFrame, $eiEntry->getLiveObject(),
 					$this->relationEiField->getObjectPropertyAccessProxy(), $this->isTargetMany()));
 		}
 	}

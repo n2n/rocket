@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\config\mask\model\EntryGuiTree;
 use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
-use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 interface EiMask extends EiThing {
 		
@@ -95,23 +95,23 @@ interface EiMask extends EiThing {
 	 * @param EntryModel $entryModel
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createEntryHrefControls(EiuGui $eiuGui, HtmlView $view): array;
+	public function createEntryHrefControls(EiuEntryGui $eiuGui, HtmlView $view): array;
 		
 	/**
-	 * @param EiSelection $eiSelection
+	 * @param EiEntry $eiEntry
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(EiSelection $eiSelection, N2nLocale $n2nLocale): string;
+	public function createIdentityString(EiEntry $eiEntry, N2nLocale $n2nLocale): string;
 	
 	// 	/**
 	// 	 * @param EiFrame $eiFrame
 	// 	 * @param EiMapping $eiMapping
 	// 	 * @param string $viewMode
 	// 	 * @param bool $makeEditable
-	// 	 * @return \rocket\spec\ei\manage\gui\EiSelectionGui
+	// 	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
 	// 	 */
-	// 	public function createEiSelectionGui(EiFrame $eiFrame, EiMapping $eiMapping, $viewMode, $makeEditable);
+	// 	public function createEiEntryGui(EiFrame $eiFrame, EiMapping $eiMapping, $viewMode, $makeEditable);
 	
 	/**
 	 * @return boolean

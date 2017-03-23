@@ -83,7 +83,7 @@ class RelationMappableConstraint implements MappableConstraint {
 	
 	private function in($relationEntry) {
 		ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-		return in_array($relationEntry->getEiSelection()->getLiveEntry()->getEntityObj(), 
+		return in_array($relationEntry->getEiEntry()->getLiveEntry()->getEntityObj(), 
 				$this->targetEntityObjs, true);
 	}
 	/**

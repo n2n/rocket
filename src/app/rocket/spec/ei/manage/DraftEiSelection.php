@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 
-class DraftEiSelection extends EiSelectionAdapter {
+class DraftEiEntry extends EiEntryAdapter {
 	private $draft;
 
 	public function __construct(Draft $draft) {

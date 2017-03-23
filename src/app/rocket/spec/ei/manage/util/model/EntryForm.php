@@ -190,7 +190,7 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	private $eiFrame;
-// 	private $eiSelection;
+// 	private $eiEntry;
 // 	private $readOnly;
 	
 // 	private $eiSpec;
@@ -205,13 +205,13 @@ class EntryForm implements Dispatchable {
 // 	/**
 // 	 * @param EiFrame $eiFrame 
 // 	 * @param EiSpec $eiSpec The Script of the Entity which ....
-// 	 * @param EiSelection $eiSelection
+// 	 * @param EiEntry $eiEntry
 // 	 * @param string $readOnly
 // 	 */
-// 	public function __construct(EiFrame $eiFrame,  $eiSpec, EiSelection $eiSelection = null, $readOnly = false) {
+// 	public function __construct(EiFrame $eiFrame,  $eiSpec, EiEntry $eiEntry = null, $readOnly = false) {
 // 		$this->eiFrame = $eiFrame;
 // 		$this->eiSpec = $eiSpec;
-// 		$this->eiSelection = $eiSelection;
+// 		$this->eiEntry = $eiEntry;
 // 		$this->readOnly = $readOnly;
 // 		$this->selectedTypeId = $eiSpec->getId();
 // 		$this->eiSpecs[$this->selectedTypeId] = $eiSpec;
@@ -231,12 +231,12 @@ class EntryForm implements Dispatchable {
 // 				}
 // 			}
 // 		} else {
-// 			$object = $eiSelection->getEntityObj();
+// 			$object = $eiEntry->getEntityObj();
 // 			$entityModel = EntityModelManager::getInstance()->getEntityModelByObject($object);
 				
 // 			$subs = $eiSpec->getAllSubs();
 
-// 			if (!$eiSelection->isDraft() && !$eiSelection->hasTranslation() 
+// 			if (!$eiEntry->isDraft() && !$eiEntry->hasTranslation() 
 // 					&& (sizeof($subs) || $this->eiSpec->getEntityModel()->isAbstract())) {
 // 				$this->subs = array();
 // 			}
@@ -255,7 +255,7 @@ class EntryForm implements Dispatchable {
 // 				}
 // 			}
 				
-// 			$this->readFromObject($eiSelection->getEntityObj());
+// 			$this->readFromObject($eiEntry->getEntityObj());
 // 		}
 // 	}
 	
@@ -274,26 +274,26 @@ class EntryForm implements Dispatchable {
 // 			}
 			
 // 			if (!($eiField instanceof Editable) || $eiField->isReadOnly() || $this->readOnly
-// 					|| (isset($this->eiSelection) && !$this->eiSelection->isWritingAllowed($eiField))) continue;
+// 					|| (isset($this->eiEntry) && !$this->eiEntry->isWritingAllowed($eiField))) continue;
 			
 // 			if ($levelOnly) {
 // 				if ($this->MagForm->containsPropertyName($eiField->getPropertyName())) continue;
 // 				$this->subVisibleEiFields[$eiSpecId][$eiFieldId] = $eiField;
 // 			}
 			
-// 			if (isset($this->eiSelection)) {
-// 				if ($this->eiSelection->isDraft() && !($eiField instanceof DraftableEiField)) {
+// 			if (isset($this->eiEntry)) {
+// 				if ($this->eiEntry->isDraft() && !($eiField instanceof DraftableEiField)) {
 // 					continue;
 // 				}
 			
-// 				if ($this->eiSelection->hasTranslation() && !($eiField instanceof TranslatableEiField
+// 				if ($this->eiEntry->hasTranslation() && !($eiField instanceof TranslatableEiField
 // 						&& $eiField->isTranslationEnabled())) {
 // 					continue;
 // 				}
 // 			}
 				
 // 			$magCollection->addMag($eiField->getPropertyName(), 
-// 					$eiField->createOption($this->eiFrame, $this->eiSelection));
+// 					$eiField->createOption($this->eiFrame, $this->eiEntry));
 // 		}
 		
 // 		return $magCollection;
@@ -319,7 +319,7 @@ class EntryForm implements Dispatchable {
 			
 // 			$MagForm->setAttributeValue($propertyName,
 // 					$eiField->propertyValueToOptionAttributeValue(
-// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiSelection));
+// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiEntry));
 // 		}
 // 	}
 	
@@ -343,7 +343,7 @@ class EntryForm implements Dispatchable {
 // 			$accessProxy = $eiField->getPropertyAccessProxy();
 // 			$accessProxy->setValue($object, $eiField->optionAttributeValueToPropertyValue(
 // 					$MagForm->getAttributeValue($propertyName), $MagForm->getAttributes(),
-// 					$object, $this->eiFrame, $this->eiSelection));
+// 					$object, $this->eiFrame, $this->eiEntry));
 // 		}
 // 	}
 	
@@ -355,8 +355,8 @@ class EntryForm implements Dispatchable {
 // 		return $this->eiSpec;
 // 	}
 	
-// 	public function getEiSelection() {
-// 		return $this->eiSelection;
+// 	public function getEiEntry() {
+// 		return $this->eiEntry;
 // 	}
 	
 // 	public function createPropertyPath($propertyName, PropertyPath $basePropertyPath = null) {
@@ -368,7 +368,7 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	public function isNew() {
-// 		return !isset($this->eiSelection);
+// 		return !isset($this->eiEntry);
 // 	}
 	
 // 	public function getVisibleEiFields() {

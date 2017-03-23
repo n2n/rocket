@@ -122,7 +122,7 @@ class ContentItemsEiField extends EmbeddedOneToManyEiField {
 			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationMappable, $targetReadEiFrame,
 					$targetEditEiFrame, $panelConfigs);
 	
-			$draftMode = $mapping->getEiSelection()->isDraft();
+			$draftMode = $mapping->getEiEntry()->isDraft();
 			$contentItemEditable->setDraftMode($draftMode);
 				
 			if ($targetEditEiFrame->getEiExecution()->isGranted()) {

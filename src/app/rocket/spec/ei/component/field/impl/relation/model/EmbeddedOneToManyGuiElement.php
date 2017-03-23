@@ -79,14 +79,14 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 				$targetEiMapping = $targetRelationEntry->getEiMapping();
 			} else {
 				$targetEiMapping = $targetEiuFrame->createEiMapping(
-						$targetRelationEntry->getEiSelection());
+						$targetRelationEntry->getEiEntry());
 			}
 			
 			if ($targetEiMapping->isAccessible()) {
 				$detailViews[] = $targetEiuFrame->createDetailView($targetEiMapping);
 			} else {
 				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetEiuFrame->createIdentityString($targetEiMapping->getEiSelection()));
+						$targetEiuFrame->createIdentityString($targetEiMapping->getEiEntry()));
 			}
 		}
 

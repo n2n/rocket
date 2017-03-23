@@ -25,7 +25,7 @@ use rocket\spec\ei\component\modificator\EiModificator;
 use rocket\spec\ei\component\impl\EiComponentAdapter;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\EiSelectionGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\manage\util\model\Eiu;
 
@@ -37,7 +37,7 @@ abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModi
 	
 	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
 	
-	public function setupEiSelectionGui(EiSelectionGui $eiSelectionGui) {}
+	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}
 	
 	public function setupDraftDefinition(DraftDefinition $draftDefinition) {}
 }

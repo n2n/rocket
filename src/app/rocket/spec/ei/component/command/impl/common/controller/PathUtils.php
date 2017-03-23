@@ -92,10 +92,10 @@ class PathUtils {
 // 		return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 	}
 	
-// 	public static function createDetailPathExtFromEiSelection($commandId, EiSelection $eiSelection, $previewType) {
-// 		$objectId = $eiSelection->getId();
-// 		$draftId = $eiSelection->getDraftId();
-// 		$translationN2nLocale = $eiSelection->getTranslationN2nLocale();
+// 	public static function createDetailPathExtFromEiEntry($commandId, EiEntry $eiEntry, $previewType) {
+// 		$objectId = $eiEntry->getId();
+// 		$draftId = $eiEntry->getDraftId();
+// 		$translationN2nLocale = $eiEntry->getTranslationN2nLocale();
 	
 // 		if (isset($draftId)) {
 // 			return self::createDraftDetailPathExt($commandId, $objectId, $draftId, $translationN2nLocale, $previewType);
@@ -106,17 +106,17 @@ class PathUtils {
 	
 // 	public static function createDetailPathExtFromEiFrame($commandId, EiFrame $eiFrame, $includeDraft = false, 
 // 			$includeTranslation = false, $includePreview = false) {
-// 		$eiSelection = $eiFrame->getEiSelection();
-// 		$objectId = $eiSelection->getId();
+// 		$eiEntry = $eiFrame->getEiEntry();
+// 		$objectId = $eiEntry->getId();
 // 		$translationN2nLocale = null;
-// 		if ($eiSelection->hasTranslation() && $includeTranslation) {
-// 			$translationN2nLocale = $eiSelection->getTranslationN2nLocale();
+// 		if ($eiEntry->hasTranslation() && $includeTranslation) {
+// 			$translationN2nLocale = $eiEntry->getTranslationN2nLocale();
 // 		}
 		
 // 		$previewType = $eiFrame->getPreviewType();
 		
-// 		if ($eiSelection->isDraft() && $includeDraft) {
-// 			return self::createDraftDetailPathExt($commandId, $objectId, $eiSelection->getDraft()->getId(), $translationN2nLocale, $previewType);
+// 		if ($eiEntry->isDraft() && $includeDraft) {
+// 			return self::createDraftDetailPathExt($commandId, $objectId, $eiEntry->getDraft()->getId(), $translationN2nLocale, $previewType);
 // 		} else {
 // 			return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 		}

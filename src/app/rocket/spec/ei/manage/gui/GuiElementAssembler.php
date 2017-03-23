@@ -28,14 +28,15 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\EiFieldPath;
 use n2n\web\dispatch\mag\MagWrapper;
-use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\MappableWrapper;
 
 class GuiElementAssembler implements Savable {
 	private $guiDefinition;
+	private $eiuGui;
 	private $eiu;
-	private $eiSelectionForm;
+	private $eiEntryForm;
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	private $savables = array();
@@ -44,24 +45,25 @@ class GuiElementAssembler implements Savable {
 	private $forkedPropertyPaths = array();
 	private $forkMagWrappers = array();
 	
-	public function __construct(GuiDefinition $guiDefinition, EiuGui $eiuGui) {
+	public function __construct(GuiDefinition $guiDefinition, EiuEntryGui $eiuGui) {
 		$this->guiDefinition = $guiDefinition;
+		$this->eiuGui = $eiuGui;
 		$this->eiu = new Eiu($eiuGui);
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\manage\gui\Eiu
 	 */
-	public function getEiuGui() {
+	public function getEiuEntryGui() {
 		return $this->eiu->gui();
 	}
 	
 	private function getOrCreateDispatchable() {
-		if ($this->eiSelectionForm === null) {
-			$this->eiSelectionForm = new MagForm(new MagCollection());
+		if ($this->eiEntryForm === null) {
+			$this->eiEntryForm = new MagForm(new MagCollection());
 		}
 		
-		return $this->eiSelectionForm;
+		return $this->eiEntryForm;
 	}
 	
 	public function save() {
@@ -70,7 +72,7 @@ class GuiElementAssembler implements Savable {
 		}
 	}
 	
-	private function assembleGuiField($id, GuiField $guiField, $makeEditable) {
+	private function assembleGuiField($id, GuiField $guiField) {
 		$eiFieldPath = $this->guiDefinition->getLevelEiFieldPathById($id);
 		$guiElement = $guiField->buildGuiElement(new Eiu($this->eiu->gui(), $this->eiu->entry()->field($eiFieldPath)));
 		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
@@ -79,7 +81,7 @@ class GuiElementAssembler implements Savable {
 	
 		$mappableWrapper = $this->eiu->entry()->getMappableWrapper($eiFieldPath);
 		
-		if (!$makeEditable || $guiElement->isReadOnly()) {
+		if ($this->eiuGui->isReadOnly() || $guiElement->isReadOnly()) {
 			return new AssembleResult($guiElement, $mappableWrapper);
 		}
 		
@@ -92,7 +94,7 @@ class GuiElementAssembler implements Savable {
 		return new AssembleResult($guiElement, $mappableWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
 	}
 	
-	private function assembleGuiFieldFork(GuiIdPath $guiIdPath, GuiFieldFork $guiFieldFork, bool $makeEditable) {
+	private function assembleGuiFieldFork(GuiIdPath $guiIdPath, GuiFieldFork $guiFieldFork) {
 		$id = $guiIdPath->getFirstId();
 		
 		$relativeGuiIdPath = $guiIdPath->getShifted();
@@ -100,15 +102,16 @@ class GuiElementAssembler implements Savable {
 		if (isset($this->forkedGuiElements[$id])) {
 			$forkedGuiElement = $this->forkedGuiElements[$id];
 		} else {
-			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->eiu, $makeEditable);
+			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->eiu);
 		} 
 		
-		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath, $makeEditable);
+		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath);
 		$displayable = $result->getDisplayable();
 		$mappableWrapper = $result->getMappableWrapper();
 		$magPropertyPath = $result->getMagPropertyPath();
 		
-		if (!$makeEditable || $displayable->isReadOnly() || $magPropertyPath === null) {
+		
+		if ($this->eiuGui->isReadOnly() || $displayable->isReadOnly() || $magPropertyPath === null) {
 			return new AssembleResult($displayable, $mappableWrapper);
 		}
 		
@@ -124,18 +127,18 @@ class GuiElementAssembler implements Savable {
 				$this->forkedPropertyPaths[$id]->ext($magPropertyPath), $result->isMandatory());
 	}
 	
-	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable) {
+	public function assembleGuiElement(GuiIdPath $guiIdPath) {
 		if ($guiIdPath->hasMultipleIds()) {
 			return $this->assembleGuiFieldFork($guiIdPath, $this->guiDefinition
-					->getLevelGuiFieldForkById($guiIdPath->getFirstId()), $makeEditable);
+					->getLevelGuiFieldForkById($guiIdPath->getFirstId()));
 		}
 		
 		return $this->assembleGuiField($guiIdPath->getFirstId(), $this->guiDefinition
-				->getLevelGuiFieldById($guiIdPath->getFirstId()), $makeEditable);
+				->getLevelGuiFieldById($guiIdPath->getFirstId()));
 	}
 	
 	public function getDispatchable() {
-		return $this->eiSelectionForm;
+		return $this->eiEntryForm;
 	}
 	
 	public function getForkedMagPropertyPaths() {
@@ -201,7 +204,7 @@ class AssembleResult {
 	}
 }
 
-// class EiSelectionForm implements Dispatchable {
+// class EiEntryForm implements Dispatchable {
 // 	private static function _annos(AnnoInit $ai) {
 // 		$ai->p('magForm', new AnnoDispObject());
 // 		$ai->p('forkedDispatchables', new AnnoDispObjectArray());

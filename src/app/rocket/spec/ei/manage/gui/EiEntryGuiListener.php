@@ -19,12 +19,22 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\model;
+namespace rocket\spec\ei\manage\gui;
 
-// interface TreeGuiModelBuilder {
+interface EiEntryGuiListener {
 	
-// 	public function addEiMapping(int $level, EiMapping $eiMapping, 
-// 			bool $makeEditable);
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 */
+	public function finalized(EiEntryGui $eiEntryGui);
 	
-// 	public function toTreeGuiModel(): TreeGuiModel;
-// }
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 */
+	public function onSave(EiEntryGui $eiEntryGui);
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 */
+	public function saved(EiEntryGui $eiEntryGui);
+}

@@ -61,7 +61,7 @@ abstract class DisplayableEiFieldAdapter extends ConfObjectPropertyEiFieldAdapte
 	}
 	
 	public function buildMappable(Eiu $eiu) {
-		return new SimpleMappable($eiu->entry()->getEiSelection(), 
+		return new SimpleMappable($eiu->entry()->getEiEntry(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this);
 	}

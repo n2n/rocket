@@ -46,7 +46,7 @@ class MappedRelationEiModificator extends EiModificatorAdapter {
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		if ($this->targetEiFrame !== $eiFrame
-				|| !$eiMapping->getEiSelection()->isNew()) return;
+				|| !$eiMapping->getEiEntry()->isNew()) return;
 
 		if (!$this->sourceMany) {
 			$eiMapping->setValue($this->targetEiFieldPath, $this->relationEntry);

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation\command;
 use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\RocketState;
 use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
@@ -51,20 +51,20 @@ class RelationController extends ControllerAdapter {
 	}
 		
 	public function doRelEntry($idRep, array $delegateCmds, EiSpecController $eiSpecController) {
-		$eiSelection = $this->eiuCtrl->lookupEiSelection($idRep);
+		$eiEntry = $this->eiuCtrl->lookupEiEntry($idRep);
 		
 		// because RelationCommand gets added always on a supreme EiThing
 		if (!$this->eiFieldRelation->getRelationEiField()->getEiEngine()->getEiSpec()
-				->isObjectValid($eiSelection->getLiveObject())) {
+				->isObjectValid($eiEntry->getLiveObject())) {
 			throw new PageNotFoundException();
 		}
 			
 		$targetControllerContext = $this->createDelegateContext($eiSpecController);
 		
 		$this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame, 
-				$eiSelection, $targetControllerContext);
+				$eiEntry, $targetControllerContext);
 		
-		$this->applyBreadcrumb($eiSelection);
+		$this->applyBreadcrumb($eiEntry);
 
 		$this->delegate($eiSpecController);
 	}
@@ -95,14 +95,14 @@ class RelationController extends ControllerAdapter {
 		$this->delegate($eiSpecController);
 	}
 	
-	private function applyBreadcrumb(EiSelection $eiSelection = null) {
+	private function applyBreadcrumb(EiEntry $eiEntry = null) {
 		if (!$this->eiFrame->isOverviewDisabled()) {
 			$this->rocketState->addBreadcrumb($this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		}
 	
-		if ($eiSelection !== null && !$this->eiFrame->isDetailDisabled()) {
+		if ($eiEntry !== null && !$this->eiFrame->isDetailDisabled()) {
 			$this->rocketState->addBreadcrumb($this->eiFrame->createDetailBreadcrumb($this->getHttpContext(), 
-					$eiSelection));
+					$eiEntry));
 		}
 	} 
 }

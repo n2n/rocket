@@ -44,10 +44,10 @@ class PartialControl {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\control\PartialControl::execute($eiSelections)
+	 * @see \rocket\spec\ei\manage\control\PartialControl::execute($eiEntrys)
 	 */
-	public function execute(array $eiSelections) {
-		$this->executeClosure->__invoke($eiSelections);
+	public function execute(array $eiEntrys) {
+		$this->executeClosure->__invoke($eiEntrys);
 	}
 	
 	public function createUiComponent(PropertyPath $propertyPath, HtmlView $view): UiComponent {

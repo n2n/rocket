@@ -22,60 +22,70 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\EiSelectionGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
-use rocket\spec\ei\manage\gui\EiSelectionGuiListener;
+use rocket\spec\ei\manage\gui\EiEntryGuiListener;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\mapping\MappableWrapper;
 
-class EiuGui {
+class EiuEntryGui {
 	private $eiuEntry;
-	protected $eiSelectionGui;
+	protected $eiEntryGui;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
 		
-		$this->eiSelectionGui = $eiuFactory->getEiSelectionGui(true);
+		$this->eiEntryGui = $eiuFactory->getEiEntryGui(true);
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 	}
 	
 	public function getViewMode() {
-		return $this->eiSelectionGui->getViewMode();
+		return $this->eiEntryGui->getViewMode();
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isViewModeOverview() {
+	public function isOverview() {
 		$viewMode = $this->getViewMode();
 		return $viewMode & DisplayDefinition::LIST_VIEW_MODES
 				|| $viewMode & DisplayDefinition::TREE_VIEW_MODES;
 	}
 	
-	public function isViewModeBulky() {
+	/**
+	 * @return boolean
+	 */
+	public function isBulky() {
 		return (bool) ($this->getViewMode() & DisplayDefinition::BULKY_VIEW_MODES);
 	}
 	
 	/**
-	 * @return EiSelectionGui 
+	 * @return boolean
 	 */
-	public function getEiSelectionGui() {
-		return $this->eiSelectionGui;
+	public function isReadOnly() {
+		return (bool) ($this->getViewMode() & DisplayDefinition::READ_VIEW_MODES);
+	}
+	
+	/**
+	 * @return EiEntryGui 
+	 */
+	public function getEiEntryGui() {
+		return $this->eiEntryGui;
 	}
 	
 	public function whenReady(\Closure $closure) {
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
+		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
 	}
 	
 	public function onSave(\Closure $closure) {
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
+		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
 	}
 	
 	public function whenSave(\Closure $closure) {
-		$this->eiSelectionGui->registerEiSelectionGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
+		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
 	
 	/**
@@ -86,7 +96,7 @@ class EiuGui {
 	 */
 	public function getMagWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiSelectionGui->getEditableWrapperByGuiIdPath(
+			return $this->eiEntryGui->getEditableWrapperByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
 		} catch (GuiException $e) {
 			if ($required) throw $e;
@@ -102,7 +112,7 @@ class EiuGui {
 	 */
 	public function getMappableWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiSelectionGui->getMappableWrapperByGuiIdPath(
+			return $this->eiEntryGui->getMappableWrapperByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
@@ -118,7 +128,7 @@ class EiuGui {
 			$n2nContext = $eiuFrame->getN2nContext();
 		}
 		$invoker = new MagicMethodInvoker($n2nContext);
-		$invoker->setClassParamObject(EiuGui::class, $this);
+		$invoker->setClassParamObject(EiuEntryGui::class, $this);
 		while (null !== ($closure = array_shift($this->whenReadyClosures))) {
 			$invoker->invoke(null, $closure);
 		}
@@ -143,18 +153,18 @@ class EiuGui {
 // 	/**
 // 	 * @param EntryGuiModel $entryGuiModel
 // 	 * @param EiFrame $eiFrame
-// 	 * @return EiuGui
+// 	 * @return EiuEntryGui
 // 	 */
 // 	public static function from(EntryGuiModel $entryGuiModel, $eiFrame) {
-// 		$entryGuiUtils = new EiuGui($entryGuiModel, 
+// 		$entryGuiUtils = new EiuEntryGui($entryGuiModel, 
 // 				new EiuEntry($entryGuiModel, $eiFrame));
-// 		$entryGuiUtils->eiSelectionGui = $entryGuiModel->getEiSelectionGui();
+// 		$entryGuiUtils->eiEntryGui = $entryGuiModel->getEiEntryGui();
 // 		return $entryGuiUtils;
 // 	}
 }
 
 
-class ClosureGuiListener implements EiSelectionGuiListener {
+class ClosureGuiListener implements EiEntryGuiListener {
 	private $eiu;
 	private $whenReadyClosure;
 	private $onSaveClosure;
@@ -168,19 +178,19 @@ class ClosureGuiListener implements EiSelectionGuiListener {
 		$this->savedClosure = $savedClosure;
 	}
 
-	public function finalized(EiSelectionGui $eiSelectionGui) {
+	public function finalized(EiEntryGui $eiEntryGui) {
 		if ($this->whenReadyClosure !== null) {
 			$this->call($this->whenReadyClosure);
 		}
 	}
 
-	public function onSave(EiSelectionGui $eiSelectionGui) {
+	public function onSave(EiEntryGui $eiEntryGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
 	}
 
-	public function saved(EiSelectionGui $eiSelectionGui) {
+	public function saved(EiEntryGui $eiEntryGui) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}

@@ -29,16 +29,17 @@ use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\mapping\MappableWrapper;
 
-class EiSelectionGui {
+class EiEntryGui {
 	private $guiDefinition;
 	private $viewMode;
 	private $displayables = array();
 	private $mappableWrappers = array();
 // 	private $eiFieldPaths = array();
-	private $eiSelectionGuiListeners = array();
+	private $eiEntryGuiListeners = array();
 	private $initialized = false;
 	
 	private $dispatchable;
+	private $contextPropertyPath = null;
 	private $forkMagPropertyPaths = array();
 	private $savables = array();
 	
@@ -58,18 +59,10 @@ class EiSelectionGui {
 	public function isInitialized() {
 		return $this->initialized;
 	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isViewModeOverview() {
-		return $this->viewMode == DisplayDefinition::VIEW_MODE_LIST_READ
-				|| $this->viewMode == DisplayDefinition::VIEW_MODE_TREE_READ;
-	}
-	
-	public function createPropertyPath(GuiIdPath $guiIdPath, PropertyPath $contextPropertyPath = null) {
-		if ($contextPropertyPath !== null) {
-			return $contextPropertyPath->ext((string) $guiIdPath);
+		
+	public function createPropertyPath(GuiIdPath $guiIdPath) {
+		if ($this->contextPropertyPath !== null) {
+			return $this->contextPropertyPath->ext((string) $guiIdPath);
 		}
 		
 		return new PropertyPath(array((string) $guiIdPath));
@@ -142,12 +135,32 @@ class EiSelectionGui {
 // 		return null;
 // 	}
 
+	/**
+	 * @return \n2n\web\dispatch\Dispatchable
+	 */
 	public function getDispatchable() {
 		return $this->dispatchable;
 	}
 	
+	/**
+	 * @param Dispatchable $dispatchable
+	 */
 	public function setDispatchable(Dispatchable $dispatchable = null) {
 		$this->dispatchable = $dispatchable;
+	}
+		
+	/**
+	 * @return \n2n\web\dispatch\map\PropertyPath|null
+	 */
+	public function getContextPropertyPath() {
+		return $this->contextPropertyPath;
+	}
+
+	/**
+	 * @param PropertyPath $contextPropertyPath
+	 */
+	public function setContextPropertyPath(PropertyPath $contextPropertyPath = null) {
+		$this->contextPropertyPath = $contextPropertyPath;
 	}
 	
 	public function putEditableWrapper(GuiIdPath $guiIdPath, EditableWrapper $editableInfo) {
@@ -194,29 +207,29 @@ class EiSelectionGui {
 	public function save() {
 		$this->ensureInitialized();
 		
-		foreach ($this->eiSelectionGuiListeners as $eiSelectionGuiListener) {
-			$eiSelectionGuiListener->onSave($this);
+		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
+			$eiEntryGuiListener->onSave($this);
 		}
 		
 		foreach ($this->savables as $savable) {
 			$savable->save();
 		}
 		
-		foreach ($this->eiSelectionGuiListeners as $eiSelectionGuiListener) {
-			$eiSelectionGuiListener->saved($this);
+		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
+			$eiEntryGuiListener->saved($this);
 		}
 	}
 	
 	private function ensureInitialized() {
 		if ($this->initialized) return;
 		
-		throw new IllegalStateException('EiSelectionGui not yet initlized.');
+		throw new IllegalStateException('EiEntryGui not yet initlized.');
 	}
 	
 	private function ensureNotInitialized() {
 		if (!$this->initialized) return;
 		
-		throw new IllegalStateException('EiSelectionGui already initialized.');
+		throw new IllegalStateException('EiEntryGui already initialized.');
 	}
 	
 	public function markInitialized() {
@@ -224,17 +237,17 @@ class EiSelectionGui {
 		
 		$this->initialized = true;
 		
-		foreach ($this->eiSelectionGuiListeners as $eiSelectionGuiListener) {
-			$eiSelectionGuiListener->finalized($this);
+		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
+			$eiEntryGuiListener->finalized($this);
 		}
 	}
 	
-	public function registerEiSelectionGuiListener(EiSelectionGuiListener $eiSelectionGuiListener) {
-		$this->eiSelectionGuiListeners[spl_object_hash($eiSelectionGuiListener)] = $eiSelectionGuiListener;
+	public function registerEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
+		$this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)] = $eiEntryGuiListener;
 	}
 	
-	public function unregisterEiSelectionGuiListener(EiSelectionGuiListener $eiSelectionGuiListener) {
-		unset($this->eiSelectionGuiListeners[spl_object_hash($eiSelectionGuiListener)]);
+	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
+		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
 	}
 }
 

@@ -43,7 +43,7 @@ class EntryLabeler {
 		}
 		
 		return $this->eiUtils->createIdentityString(
-				$this->eiUtils->lookupEiSelectionById($this->eiUtils->idRepToId($idRep)));
+				$this->eiUtils->lookupEiEntryById($this->eiUtils->idRepToId($idRep)));
 	}
 	
 	public function setSelectedIdentityString(string $idRep, string $identityString) {

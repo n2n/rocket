@@ -50,7 +50,7 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 		if (!$this->targetMany) {
 			$eiMapping->registerListener(new WrittenMappingListener(
 					function () use ($that, $eiMapping) {
-						$that->propertyAccessProxy->setValue($that->entityObj, $eiMapping->getEiSelection()->getLiveObject());
+						$that->propertyAccessProxy->setValue($that->entityObj, $eiMapping->getEiEntry()->getLiveObject());
 					}));
 			return;
 		}
@@ -62,7 +62,7 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 					if ($targetEntities === null) {
 						$targetEntities = new \ArrayObject();
 					}
-					$targetEntities[] = $eiMapping->getEiSelection()->getLiveObject();
+					$targetEntities[] = $eiMapping->getEiEntry()->getLiveObject();
 					$that->propertyAccessProxy->setValue($that->entityObj, $targetEntities);
 				}));
 	}

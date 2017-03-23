@@ -61,7 +61,7 @@ use rocket\spec\ei\manage\critmod\sort\SortConstraint;
 use rocket\spec\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationMappable;
@@ -111,7 +111,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	public function buildMappable(Eiu $eiu) {
 		$readOnly = $this->eiFieldRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 		
-		return new TranslationMappable($eiu->entry()->getEiSelection(), $this, $this,
+		return new TranslationMappable($eiu->entry()->getEiEntry(), $this, $this,
 				($readOnly ? null : $this));
 	}
 	
@@ -151,7 +151,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
-		$eiSelection = $eiMapping->getEiSelection();
+		$eiEntry = $eiMapping->getEiEntry();
 		$targetEiFrame = null;
 		if ($makeEditable) {
 			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
@@ -164,12 +164,12 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		
 		$targetRelationEntries = array();
 		foreach ($toManyMappable->getValue() as $targetRelationEntry) {
-			$targetEntityObj = $targetRelationEntry->getEiSelection()->getLiveObject();
+			$targetEntityObj = $targetRelationEntry->getEiEntry()->getLiveObject();
 			$n2nLocale = $targetEntityObj->getN2nLocale();
 			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
 			if (!$targetRelationEntry->hasEiMapping()) {
 				$targetRelationEntry = RelationEntry::fromM(
-						$targetUtils->createEiMapping($targetRelationEntry->getEiSelection()));
+						$targetUtils->createEiMapping($targetRelationEntry->getEiEntry()));
 			}
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
@@ -185,15 +185,15 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 			if (isset($targetRelationEntries[$n2nLocaleId])) {
 				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
 			} else {
-				$eiSelection = $targetUtils->createNewEiSelection();
-				$eiSelection->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($eiSelection));
+				$eiEntry = $targetUtils->createNewEiEntry();
+				$eiEntry->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
+				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($eiEntry));
 			}
 			
 			$translationGuiElement->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					new GuiElementAssembler($targetGuiDefinition, new EiuGui(
+					new GuiElementAssembler($targetGuiDefinition, new EiuEntryGui(
 							$targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), 
-							$eiu->gui()->getEiSelectionGui())), 
+							$eiu->gui()->getEiEntryGui())), 
 					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		

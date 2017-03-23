@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEditable;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\DraftManager;
@@ -32,7 +32,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\ToManySelectGuiElement;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiEntry;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
@@ -58,11 +58,11 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 		
 		$targetEiSpec = $this->eiFieldRelation->getTargetEiSpec();
 		
-		$targetEiSelections = array();
+		$targetEiEntrys = array();
 		foreach ($targetEntityObjs as $targetEntityObj) {
-			$targetEiSelections[] = LiveEiSelection::create($targetEiSpec, $targetEntityObj);
+			$targetEiEntrys[] = LiveEiEntry::create($targetEiSpec, $targetEntityObj);
 		}
-		return $targetEiSelections;
+		return $targetEiEntrys;
 	}
 	
 	/**
@@ -70,11 +70,11 @@ abstract class ToManySelectEiFieldAdapter extends ToManyEiFieldAdapter {
 	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
-		ArgUtils::valArray($value, EiSelection::class);
+		ArgUtils::valArray($value, EiEntry::class);
 		
 		$targetEntityObjs = new \ArrayObject();
-		foreach ($value as $targetEiSelection) {
-			$targetEntityObjs[] = $targetEiSelection->getLiveObject();
+		foreach ($value as $targetEiEntry) {
+			$targetEntityObjs[] = $targetEiEntry->getLiveObject();
 		}
 		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
