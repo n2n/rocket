@@ -39,8 +39,8 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				alert(data);
 			}).done(function (data) {
-				alert(data);
-				n2n.ajah.analyze(data);
+				alert(n2n.ajah.analyze(data));
+				n2n.ajah.update();
 			});
 		}
     }

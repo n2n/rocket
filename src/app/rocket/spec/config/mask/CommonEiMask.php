@@ -75,6 +75,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\config\mask\model\EiuEntryGuiTree;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -251,12 +252,12 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView): array {
-		$eiu = new Eiu($eiFrame);
+	public function createOverallHrefControls(EiuFrame $eiuFrame, HtmlView $htmlView): array {
+		$eiu = new Eiu($eiuFrame);
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof OverallControlComponent)
-					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
+					|| !$eiuFrame->getEiFrame()->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
 				
 			$hrefControls = $eiCommand->createOverallHrefControls($eiu, $htmlView);
 			ArgUtils::valArrayReturn($hrefControls, $eiCommand, 'createOverallHrefControls', HrefControl::class);
@@ -390,7 +391,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		return $this->createEiEntryGui($eiuEntry, $viewMode);
 	}
 	
-	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): View {
+	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView {
 		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
 		
 		$viewMode = null;
@@ -406,7 +407,7 @@ class CommonEiMask implements EiMask, Identifiable {
 						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $guiFieldOrder)));
 	}
 
-	public function createTreeEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping, bool $makeEditable): EntryGuiModel {
+	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
 		$viewMode = null;
 		if (!$makeEditable) {
 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_READ;
@@ -421,32 +422,31 @@ class CommonEiMask implements EiMask, Identifiable {
 		return new CommonEntryGuiModel($this, $eiEntryGui, $eiMapping);
 	}
 	
-	public function createTreeView(EiFrame $eiFrame, EntryGuiTree $entryGuiTree): View {
+	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
 		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
 	
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array(
-						'entryListViewModel' => new EntryListViewModel($eiFrame, $entryGuiTree->getEntryGuis(), 
+						'entryListViewModel' => new EntryListViewModel($eiuFrame, $entryGuiTree->getEntryGuis(), 
 								$this->eiEngine->getGuiDefinition(), $guiFieldOrder),
 						'entryGuiTree' => $entryGuiTree));
 	}
 	
-	public function createBulkyEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping, bool $makeEditable): EntryGuiModel {
+	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
 		$viewMode = null;
 		if (!$makeEditable) {
 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_READ;
-		} else if (!$eiMapping->getEiEntry()->getLiveEntry()->isPersistent()) {
+		} else if ($eiuEntry->isNew()) {
 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_ADD;
 		} else {
 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_EDIT;
 		}
 		
-		$eiEntryGui = $this->createEiEntryGui($eiFrame, $eiMapping, $viewMode);
-		return new CommonEntryGuiModel($this, $eiEntryGui, $eiMapping);
+		return $this->createEiEntryGui($eiuEntry, $viewMode);
 	}
 	
-	public function createBulkyView(EiFrame $eiFrame, EntryGui $entryGui): View {
-		$viewMode = $entryGui->getEntryGuiModel()->getEiEntryGui()->getViewMode();
+	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView {
+		$viewMode = $eiuEntryGui->getEntryGuiModel()->getEiEntryGui()->getViewMode();
 		
 		switch ($viewMode) {
 			case DisplayDefinition::VIEW_MODE_BULKY_READ:
@@ -462,7 +462,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		
 		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create($viewName, 
-				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryGui' => $entryGui));
+				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryGui' => $eiuEntryGui));
 	}
 	
 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {

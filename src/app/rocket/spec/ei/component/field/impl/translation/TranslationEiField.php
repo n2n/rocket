@@ -148,15 +148,15 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 		return $this->eiFieldRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	
-	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork {
+	public function createGuiElementFork(Eiu $eiu): GuiElementFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiEntry = $eiMapping->getEiEntry();
 		$targetEiFrame = null;
-		if ($makeEditable) {
-			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
-		} else {
+		if ($eiu->entryGui()->isReadOnly()) {
 			$targetEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame);
+		} else {
+			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
 		}
 		$targetUtils = new EiuFrame($targetEiFrame);
 		
@@ -193,7 +193,7 @@ class TranslationEiField extends EmbeddedOneToManyEiField implements GuiEiField,
 			$translationGuiElement->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
 					new GuiElementAssembler($targetGuiDefinition, new EiuEntryGui(
 							$targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), 
-							$eiu->gui()->getEiEntryGui())), 
+							$eiu->entryGui()->getEiEntryGui())), 
 					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		

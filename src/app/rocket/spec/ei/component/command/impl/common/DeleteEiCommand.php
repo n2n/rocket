@@ -96,7 +96,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		$controlButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
 		
 		$query = array();
-		if ($eiu->gui()->isViewModeOverview()) {
+		if ($eiu->entryGui()->isOverview()) {
 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 		}
 		

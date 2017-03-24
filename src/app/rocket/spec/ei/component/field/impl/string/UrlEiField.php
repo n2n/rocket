@@ -105,7 +105,7 @@ class UrlEiField extends AlphanumericEiField {
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $eiu->field()->getValue();
 		if ($value === null) return null;
-		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->gui()->isViewModeBulky()),
+		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->entryGui()->isViewModeBulky()),
 				array('target' => '_blank'));
 	}
 

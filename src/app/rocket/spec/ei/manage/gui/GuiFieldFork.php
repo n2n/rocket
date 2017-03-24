@@ -36,7 +36,7 @@ interface GuiFieldFork {
 	 * @param Eiu $eiu
 	 * @return GuiElementFork
 	 */
-	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork;
+	public function createGuiElementFork(Eiu $eiu): GuiElementFork;
 		
 	/**
 	 * @param EiObject $eiObject

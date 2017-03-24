@@ -124,7 +124,7 @@ class EiuEntry {
 			return $this->eiMapping = $this->eiuFrame->createEiMapping($this->eiEntry);
 		}
 		
-		throw new IllegalStateException('No EiMapping available.');
+		return null;
 	}
 	
 	public function getValue($eiFieldPath) {

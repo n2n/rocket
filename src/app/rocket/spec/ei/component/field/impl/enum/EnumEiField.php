@@ -127,12 +127,12 @@ class EnumEiField extends DraftableEiFieldAdapter implements FilterableEiField, 
 					$this->isMandatory($eiu));
 		
 		$that = $this;
-		$eiu->gui()->whenReady(function () use ($eiu, $enablerMag, $that) {
+		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$associatedMagWrapperMap = array();
 			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
 				$magWrappers = array();
 				foreach ($guiIdPaths as $guiIdPath) {
-					$magWrapper = $eiu->gui()->getMagWrapper($guiIdPath, false);
+					$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
 					if ($magWrapper === null) continue;
 					
 					$magWrappers[] = $magWrapper;

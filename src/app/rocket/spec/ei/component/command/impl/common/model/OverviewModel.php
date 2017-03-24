@@ -41,7 +41,7 @@ class OverviewModel implements Dispatchable {
 	private $numPages;
 	private $numEntries;
 	
-	private $entryGuis;
+	private $eiuEntryGuis;
 	private $entryGuiTree;
 		
 	private $critmodForm;
@@ -63,8 +63,8 @@ class OverviewModel implements Dispatchable {
 		return $this->quickSearchForm;
 	}
 	
-	public function getEiFrame(): EiFrame {
-		return $this->eiuFrame->getEiFrame();
+	public function getEiuFrame() {
+		return $this->eiuFrame;
 	}
 	
 // 	public function emptyInitialize() {
@@ -83,7 +83,7 @@ class OverviewModel implements Dispatchable {
 	public function initialize($pageNo): bool {
 		if (!is_numeric($pageNo) || $pageNo < 1) return false;
 		
-		$eiFrame = $this->getEiFrame();
+		$eiFrame = $this->getEiuFrame()->getEiFrame();
 
 		$this->critmodForm->applyToEiFrame($eiFrame, true);
 		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
@@ -136,10 +136,10 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function simpleLookup(Criteria $criteria) {
-		$this->entryGuis = array();
+		$this->eiuEntryGuis = array();
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiuEntry = $this->eiuFrame->entry($entityObj);
-			$this->entryGuis[$eiuEntry->getIdRep()] = $eiuEntry->newGui(true, false);
+			$this->eiuEntryGuis[$eiuEntry->getLiveIdRep()] = $eiuEntry->newGui(true, false);
 // 			$eiMapping = $this->eiuFrame->createEiMapping($this->eiuFrame->createEiEntryFromLiveEntry($entityObj));
 // 			$this->entryGuis[$eiMapping->getIdRep()] = new EntryGui($this->eiuFrame->getEiMask()
 // 					->createListEntryGuiModel($this->eiuFrame->getEiFrame(), $eiMapping, false)); 
@@ -176,9 +176,9 @@ class OverviewModel implements Dispatchable {
 		return $this->entryGuiTree !== null;
 	}
 	
-	public function getEntryGuis(): array {
-		if ($this->entryGuis !== null) {
-			return $this->entryGuis;
+	public function getEiuEntryGuis(): array {
+		if ($this->eiuEntryGuis !== null) {
+			return $this->eiuEntryGuis;
 		}
 		
 		throw new IllegalStateException();

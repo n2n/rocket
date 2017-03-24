@@ -36,6 +36,10 @@ use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\manage\util\model\EiuEntry;
+use rocket\spec\ei\manage\gui\EiEntryGui;
+use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\config\mask\model\EiuEntryGuiTree;
 
 interface EiMask extends EiThing {
 		
@@ -88,7 +92,7 @@ interface EiMask extends EiThing {
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView): array;
+	public function createOverallHrefControls(EiuFrame $eiuFrame, HtmlView $htmlView): array;
 	
 	/**
 	 * @param HtmlView $view
@@ -118,40 +122,36 @@ interface EiMask extends EiThing {
 	 */
 	public function isDraftingEnabled();
 
-	public function createListEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping,
-			bool $makeEditable): EntryGuiModel;
+	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
 	/**
 	 * @param EiFrame $eiFrame;
-	 * @param EntryListModel $entryListModel
-	 * @return \n2n\web\ui\view\View
+	 * @param EiuEntryGui[]
+	 * @return HtmlView
 	 */
-	public function createListView(EiFrame $eiFrame, array $entryGuis): View;
+	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView;
 
-	public function createTreeEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping,
-			bool $makeEditable): EntryGuiModel;
+	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
 
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EntryTreeListModel $entryListModel
-	 * @return \n2n\web\ui\view\View
+	 * @return HtmlView
 	 */
-	public function createTreeView(EiFrame $eiFrame, EntryGuiTree $entryGuiTree): View;
+	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $eiuEntryGuiTree): HtmlView;
 
 	/**
-	 * @param EiFrame $eiFrame
-	 * @param EiMapping $eiMapping
+	 * @param EiuEntryGui
 	 * @param bool $makeEditable
-	 * @return \rocket\spec\ei\manage\model\EntryGuiModel
+	 * @return EiEntryGui
 	 */
-	public function createBulkyEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping,
-			bool $makeEditable): EntryGuiModel;
+	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
 
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EntryModel $entryModel
-	 * @return \n2n\web\ui\view\View
+	 * @return HtmlView
 	 */
-	public function createBulkyView(EiFrame $eiFrame, EntryGui $entryGui): View;
+	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView;
 
 	public function isPreviewSupported(): bool;
 	

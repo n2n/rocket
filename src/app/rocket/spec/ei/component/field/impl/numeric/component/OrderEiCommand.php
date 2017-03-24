@@ -63,7 +63,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 
-		if (!$eiu->gui()->isViewModeOverview()) return array();
+		if (!$eiu->entryGui()->isViewModeOverview()) return array();
 		
 		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiFrame = $eiu->frame()->getEiFrame();

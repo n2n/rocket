@@ -62,7 +62,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	
-		if (!$eiu->gui()->isViewModeOverview()) {
+		if (!$eiu->entryGui()->isViewModeOverview()) {
 			return array();
 		}
 	

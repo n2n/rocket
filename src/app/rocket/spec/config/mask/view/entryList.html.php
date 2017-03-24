@@ -21,13 +21,12 @@
 	 */
 
 	use rocket\spec\ei\manage\EiHtmlBuilder;
-	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\EiFrame;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 	use rocket\spec\config\mask\model\EntryListViewModel;
 	use rocket\spec\config\mask\model\EntryGuiTree;
+	use rocket\spec\config\mask\model\EiuEntryGuiTree;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -37,18 +36,14 @@
 	$view->assert($entryListViewModel instanceof EntryListViewModel);
 	
 	$orderItems = $entryListViewModel->getGuiFieldOrder()->getOrderItems();
-
-	$selectPropertyPath = $view->getParam('selectPropertyPath', false);
-	$view->assert($selectPropertyPath === null || $selectPropertyPath instanceof PropertyPath);
-	
 	$eiuFrame = $entryListViewModel->getEiuFrame();
 	
-	$eiHtml = new EiHtmlBuilder($view, $eiuFrame);
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiuFrame, $entryListViewModel->getEiEntryGuis());
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
+	$eiHtml = new EiHtmlBuilder($view, $entryListViewModel->getGuiDefinition());
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiuFrame, $entryListViewModel->getEiuEntryGuis());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiuFrame);
 	
 	$entryGuiTree = $view->getParam('entryGuiTree', false);
-	$view->assert($entryGuiTree === null || $entryGuiTree instanceof EntryGuiTree);
+	$view->assert($entryGuiTree === null || $entryGuiTree instanceof EiuEntryGuiTree);
 ?>
 <table class="rocket-list">
 	<thead>
@@ -72,7 +67,7 @@
 					<?php $entryEiHtml->closeField(); ?>
 				<?php endforeach ?>
 				<?php $view->out('<td>') ?>
-					<?php $controlEiHtml->entryGuiControlList($entryEiHtml->meta()->getCurrentEntryGuiModel(), true) ?>
+					<?php $controlEiHtml->entryGuiControlList($entryEiHtml->meta()->getCurrentEiuEntryGui(), true) ?>
 				<?php $view->out('</td>') ?>
 			<?php $entryEiHtml->entryClose() ?>
 		<?php endwhile ?>

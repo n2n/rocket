@@ -55,7 +55,7 @@ class GuiElementAssembler implements Savable {
 	 * @return \rocket\spec\ei\manage\gui\Eiu
 	 */
 	public function getEiuEntryGui() {
-		return $this->eiu->gui();
+		return $this->eiu->entryGui();
 	}
 	
 	private function getOrCreateDispatchable() {
@@ -74,7 +74,7 @@ class GuiElementAssembler implements Savable {
 	
 	private function assembleGuiField($id, GuiField $guiField) {
 		$eiFieldPath = $this->guiDefinition->getLevelEiFieldPathById($id);
-		$guiElement = $guiField->buildGuiElement(new Eiu($this->eiu->gui(), $this->eiu->entry()->field($eiFieldPath)));
+		$guiElement = $guiField->buildGuiElement(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiFieldPath)));
 		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
 		
 		if ($guiElement === null) return null;

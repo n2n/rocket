@@ -138,7 +138,7 @@ class IntegratedOneToOneEiField extends RelationEiFieldAdapter implements GuiFie
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		$targetEiFrame = null;
-		if ($eiu->gui()->isReadOnly()) {
+		if ($eiu->entryGui()->isReadOnly()) {
 			$targetEiFrame = $this->eiFieldRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
 		} else {
 			$targetEiFrame = $this->eiFieldRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);

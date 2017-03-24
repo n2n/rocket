@@ -72,7 +72,7 @@ class GuiFactory {
 	}
 	
 	public function createEiEntryGui(GuiDefinition $guiDefinition, EiuEntry $eiuEntry, int $viewMode, 
-			bool $makeEditable, array $guiIdPaths): EiEntryGui {
+			array $guiIdPaths): EiEntryGui {
 		ArgUtils::valArrayLike($guiIdPaths, 'rocket\spec\ei\manage\gui\GuiIdPath');
 		
 		$eiEntryGui = new EiEntryGui($guiDefinition, $viewMode);
@@ -81,7 +81,7 @@ class GuiFactory {
 		$guiElementAssembler = new GuiElementAssembler($guiDefinition, $eiuEntryGui);
 		
 		foreach ($guiIdPaths as $guiIdPath) {
-			$result = $guiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
+			$result = $guiElementAssembler->assembleGuiElement($guiIdPath);
 			if ($result === null) continue;
 			
 			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());

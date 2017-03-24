@@ -55,7 +55,8 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+		$eiuFrame = $this->eiuCtrl->frame();
+		$eiFrame = $eiuFrame->getEiFrame();
 		$stateKey = OverviewAjahController::genStateKey();
 		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
