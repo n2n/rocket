@@ -31,7 +31,7 @@ use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
-use rocket\spec\ei\component\command\impl\common\model\ListModel;
+use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
 use n2n\util\uri\Url;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\mask\EiMask;
@@ -137,7 +137,7 @@ class OverviewAjahController extends ControllerAdapter {
 
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
-		$listModel = new ListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
+		$listModel = new OverviewModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
 
 		if ($idReps != null) {
 			$listModel->initByIdReps($idReps->toStringArrayOrReject());

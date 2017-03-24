@@ -29,6 +29,7 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\mapping\MappableWrapper;
+use n2n\web\dispatch\map\PropertyPath;
 
 class EiuEntryGui {
 	private $eiuEntry;
@@ -134,6 +135,14 @@ class EiuEntryGui {
 		}
 	}
 
+	public function setContextPropertyPath(PropertyPath $propertyPath) {
+		$this->eiEntryGui->setContextPropertyPath($propertyPath);
+	}
+	
+	public function getContextPropertyPath() {
+		return $this->eiEntryGui->getContextPropertyPath();
+	}
+	
 	public function getEiuEntry(bool $required = true) {
 		if (!$required || $this->eiuEntry !== null) {
 			return $this->eiuEntry;

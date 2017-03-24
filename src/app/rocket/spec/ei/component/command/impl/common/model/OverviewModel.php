@@ -27,14 +27,13 @@ use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\config\mask\model\EntryGuiTree;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
 
-class ListModel implements Dispatchable {	
+class OverviewModel implements Dispatchable {	
 	private $eiuFrame;
 	private $listSize;
 	
@@ -140,7 +139,7 @@ class ListModel implements Dispatchable {
 		$this->entryGuis = array();
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiuEntry = $this->eiuFrame->entry($entityObj);
-			$this->entryGuis[$eiuEntry->getIdRep()] = $eiuEntry->gui(true, false);
+			$this->entryGuis[$eiuEntry->getIdRep()] = $eiuEntry->newGui(true, false);
 // 			$eiMapping = $this->eiuFrame->createEiMapping($this->eiuFrame->createEiEntryFromLiveEntry($entityObj));
 // 			$this->entryGuis[$eiMapping->getIdRep()] = new EntryGui($this->eiuFrame->getEiMask()
 // 					->createListEntryGuiModel($this->eiuFrame->getEiFrame(), $eiMapping, false)); 
@@ -157,7 +156,7 @@ class ListModel implements Dispatchable {
 
 			$eiuEntry = $this->eiuFrame->entry($nestedSetItem->getEntityObj());
 			
-			$this->entryGuiTree->addByLevel($nestedSetItem->getLevel(), $eiuEntry->gui(true, false));
+			$this->entryGuiTree->addByLevel($nestedSetItem->getLevel(), $eiuEntry->newGui(true, false));
 		}
 	}
 	

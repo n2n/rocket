@@ -23,37 +23,38 @@ namespace rocket\spec\config\mask\model;
 
 use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\ei\manage\util\model\UnknownEntryException;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
-class EntryGuiTree {
-	private $entryGuiTreeItems = array();	
+class EiuEntryGuiTree {
+	private $eiuEntryGuiTreeItems = array();	
 	
-	public function addByLevel(int $level, EntryGui $entryGui) {
-		$this->entryGuiTreeItems[$entryGui->getEntryGuiModel()->getEiMapping()->getIdRep()] 
-				= new EntryGuiTreeItem($level, $entryGui);
+	public function addByLevel(int $level, EiuEntryGui $eiuEntryGui) {
+		$this->eiuEntryGuiTreeItems[$eiuEntryGui->getEntryGuiModel()->getEiMapping()->getIdRep()] 
+				= new EiEntryGuiTreeItem($level, $eiuEntryGui);
 	}
 	
 	public function getEntryGuiTreeItems(): array {
-		return $this->entryGuiTreeItems;
+		return $this->eiuEntryGuiTreeItems;
 	}
 	
-	public function getEntryGuis(): array {
+	public function getEiuEntryGuis(): array {
 		$entryGuis = array();
-		foreach ($this->entryGuiTreeItems as $idRep => $entryGuiTreeItem) {
+		foreach ($this->eiuEntryGuiTreeItems as $idRep => $entryGuiTreeItem) {
 			$entryGuis[$idRep] = $entryGuiTreeItem->getEntryGui();
 		}
 		return $entryGuis;
 	}
 	
 	public function getLevelByIdRep(string $idRep): int {
-		if (isset($this->entryGuiTreeItems[$idRep])) {
-			return $this->entryGuiTreeItems[$idRep]->getLevel();
+		if (isset($this->eiuEntryGuiTreeItems[$idRep])) {
+			return $this->eiuEntryGuiTreeItems[$idRep]->getLevel();
 		}
 		
 		throw new UnknownEntryException();
 	}
 }
 
-class EntryGuiTreeItem {
+class EiuEntryGuiTreeItem {
 	private $level;
 	private $entryGui;
 	

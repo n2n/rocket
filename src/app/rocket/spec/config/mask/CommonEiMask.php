@@ -377,7 +377,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		return $guiFieldOrder;
 	}
 
-	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EntryGuiModel {
+	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
 		$viewMode = null;
 		if (!$makeEditable) {
 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
@@ -390,13 +390,20 @@ class CommonEiMask implements EiMask, Identifiable {
 		return $this->createEiEntryGui($eiuEntry, $viewMode);
 	}
 	
-	public function createListView(EiuFrame $eiuFrame, array $eiEntryGuis): View {
-		ArgUtils::valArray($eiEntryGuis, EiEntryGui::class);
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_LIST_READ);
+	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): View {
+		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
+		
+		$viewMode = null;
+		if (empty($eiuEntryGuis)) {
+			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
+		} else {
+			$viewMode = current($eiuEntryGuis)->getViewMode();
+		}
+		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
-						$eiuFrame, $eiEntryGuis, $this->eiEngine->getGuiDefinition(), $guiFieldOrder)));
+						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $guiFieldOrder)));
 	}
 
 	public function createTreeEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping, bool $makeEditable): EntryGuiModel {

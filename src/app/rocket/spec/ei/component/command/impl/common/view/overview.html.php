@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\spec\ei\component\command\impl\common\model\ListModel;
+	use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 	
@@ -29,7 +29,7 @@
 	$formHtml = HtmlView::formHtml($this);
 	
 	$listModel = $view->getParam('listModel'); 
-	$view->assert($listModel instanceof ListModel);
+	$view->assert($listModel instanceof OverviewModel);
 	
 	$listView = $view->getParam('listView');
 	$view->assert($listView instanceof HtmlView);

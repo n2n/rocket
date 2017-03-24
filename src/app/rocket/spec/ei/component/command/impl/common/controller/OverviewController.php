@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\command\impl\common\controller;
 
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\ManageState;
-use rocket\spec\ei\component\command\impl\common\model\ListModel;
+use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
@@ -59,7 +59,7 @@ class OverviewController extends ControllerAdapter {
 		$stateKey = OverviewAjahController::genStateKey();
 		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
-		$listModel = new ListModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
+		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if ($pageNo === null) {
 			$pageNo = 1;
@@ -73,9 +73,9 @@ class OverviewController extends ControllerAdapter {
 		
 		$listView = null;
 		if ($listModel->isTree()) {
-			$listView = $eiuFrame->createTreeView($eiFrame, $listModel->getEiuEntryGuiTree());
+			$listView = $eiuFrame->createTreeView($listModel->getEiuEntryGuiTree());
 		} else {
-			$listView = $eiuFrame->createListView($eiFrame, $listModel->getEiuEntryGuis());
+			$listView = $eiuFrame->createListView($listModel->getEiuEntryGuis());
 		}
 
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
