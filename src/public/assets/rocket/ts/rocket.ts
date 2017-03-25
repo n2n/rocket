@@ -1,8 +1,8 @@
 namespace rocket {
 	jQuery(document).ready(function ($) {
-		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(
-				new rocket.cmd.Content($("#rocket-content-container")));
+		var container = new rocket.cmd.Container($("#rocket-content-container"));
+		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(container);
 
-		monitor.scan($("#rocket-global-nav"));
+		monitor.scan($("#rocket-global-nav"), container.getMainLayer());
 	});
 }

@@ -2,24 +2,27 @@ namespace rocket.cmd {
 	var $ = jQuery;
 	
 	export class Monitor {
-		private content: Content;
+		private container: Container;
 		
-		constructor(content: Content) {
-			this.content = content;
+		constructor(container: Container) {
+			this.container = container;
 		}
 		
-		public scan(jqContent: JQuery) {
+		public scan(jqContent: JQuery, layer: Layer) {
+			var that = this;
             jqContent.find("a.rocket-action").each(function () {
-                (new LinkAction(jQuery(this))).activate();
+                (new LinkAction(jQuery(this), layer)).activate();
             });
 		}
 	}
 	
     class LinkAction {
         private jqA: JQuery;
+		private layer: Layer;
         
-        constructor(jqA: JQuery) {
+        constructor(jqA: JQuery, layer: Layer) {
             this.jqA = jqA;
+			this.layer = layer;
         }
         
         public activate() {
@@ -33,13 +36,14 @@ namespace rocket.cmd {
         }
 		
 		private handle() {
+			var that = this;
 			$.ajax({
 				"url": this.jqA.attr("href"),
 				"dataType": "json"
 			}).fail(function (data) {
 				alert(data);
 			}).done(function (data) {
-				alert(n2n.ajah.analyze(data));
+				that.layer.createContent(n2n.ajah.analyze(data));
 				n2n.ajah.update();
 			});
 		}
