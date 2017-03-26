@@ -46,6 +46,17 @@ namespace rocket.cmd {
 			this.contents.push(content);
 			return content;
 		}
+		
+		public clear() {
+			for (var i in this.contents) {
+				this.contents[i].dispose();
+			}
+		}
+		
+		public dispose() {
+			this.contents = new Array<Content>();
+			this.jqContentGroup.remove();
+		}
 	}
 	
 	export class Content {
@@ -57,6 +68,10 @@ namespace rocket.cmd {
 		
 		public hide() {
 			this.jqContent.hide();	
+		}
+		
+		public dispose() {
+			this.jqContent.remove();
 		}
 	}
 	

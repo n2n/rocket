@@ -8,11 +8,14 @@ namespace rocket.cmd {
 			this.container = container;
 		}
 		
-		public scan(jqContent: JQuery, layer: Layer) {
+		public scanMain(jqContent: JQuery, layer: Layer) {
 			var that = this;
             jqContent.find("a.rocket-action").each(function () {
                 (new LinkAction(jQuery(this), layer)).activate();
             });
+		}
+		
+		public scanContent(content: Content) {
 		}
 	}
 	
@@ -43,6 +46,7 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				alert(data);
 			}).done(function (data) {
+				that.layer.clear();
 				that.layer.createContent(n2n.ajah.analyze(data));
 				n2n.ajah.update();
 			});
