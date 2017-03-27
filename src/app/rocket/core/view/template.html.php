@@ -158,43 +158,45 @@
 		
 		
 		<div id="rocket-content-container">
-			<div class="rocket-main-content">
-				<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
-					<ul id="rocket-breadcrumb">
-						<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
-							<li><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
-						<?php endforeach ?>
-						<li class="rocket-breadcrumb-active">
-							<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
-						</li>
-					</ul>
-				<?php endif ?>
-				
-				<!-- WICHTIG -->
-				
-				<?php if (isset($view->params['title'])): ?>
-					<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
-				<?php else: ?>
-					<h1 class="rocket-main-title">Rocket</h1>
-				<?php endif ?>
-				
-				<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
-				<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
-				<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
-				<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
-				
-				<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
-						data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
-					<?php $view->importContentView() ?>
-				</div>
-				
-				<?php if ($view->hasPanel('additional')): ?>
-					<div id="rocket-additional">
-						<?php $view->importPanel('additional') ?>
+			<div class="rocket-main-layer">
+				<div class="rocket-layer-frame">
+					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
+						<ul id="rocket-breadcrumb">
+							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
+								<li><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
+							<?php endforeach ?>
+							<li class="rocket-breadcrumb-active">
+								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
+							</li>
+						</ul>
+					<?php endif ?>
+					
+					<!-- WICHTIG -->
+					
+					<?php if (isset($view->params['title'])): ?>
+						<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
+					<?php else: ?>
+						<h1 class="rocket-main-title">Rocket</h1>
+					<?php endif ?>
+					
+					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
+					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
+					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
+					<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
+					
+					<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
+							data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
+						<?php $view->importContentView() ?>
 					</div>
-				<?php endif ?>
-				
-				<!-- NICHT MEHR WICHTIG -->
+					
+					<?php if ($view->hasPanel('additional')): ?>
+						<div id="rocket-additional">
+							<?php $view->importPanel('additional') ?>
+						</div>
+					<?php endif ?>
+					
+					<!-- NICHT MEHR WICHTIG -->
+				</div>
 			</div>
 		</div>
 	<?php $html->bodyEnd() ?>
