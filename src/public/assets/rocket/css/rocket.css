@@ -754,8 +754,8 @@ h2 + .rocket-nav-group {
 }
 
 /* line 157, ../theme/sass/rocket/_layout.scss */
-.rocket-page-controls,
-#rocket-page-controls {
+.rocket-context-controls,
+#rocket-context-controls {
   border-top: 1px solid #D3CDC7;
   margin: 0rem;
   padding: 0 0.75rem;
@@ -763,15 +763,15 @@ h2 + .rocket-nav-group {
   z-index: 100;
 }
 /* line 2, ../theme/sass/bootstrap/mixins/_clearfix.scss */
-.rocket-page-controls::after,
-#rocket-page-controls::after {
+.rocket-context-controls::after,
+#rocket-context-controls::after {
   content: "";
   display: table;
   clear: both;
 }
 /* line 165, ../theme/sass/rocket/_layout.scss */
-.rocket-page-controls > ul > li,
-#rocket-page-controls > ul > li {
+.rocket-context-controls > ul > li,
+#rocket-context-controls > ul > li {
   display: inline-block;
   float: left;
   margin: 0 0.75rem 0.75rem 0;
@@ -808,8 +808,8 @@ section::after {
 
 @media (min-width: 544px) {
   /* line 201, ../theme/sass/rocket/_layout.scss */
-  .rocket-page-controls,
-  #rocket-page-controls {
+  .rocket-context-controls,
+  #rocket-context-controls {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -818,8 +818,8 @@ section::after {
     margin: 0;
   }
   /* line 209, ../theme/sass/rocket/_layout.scss */
-  .rocket-page-controls > ul,
-  #rocket-page-controls > ul {
+  .rocket-context-controls > ul,
+  #rocket-context-controls > ul {
     margin: 0;
   }
 }
@@ -987,8 +987,8 @@ section::after {
   }
 
   /* line 363, ../theme/sass/rocket/_layout.scss */
-  .rocket-page-controls,
-  #rocket-page-controls {
+  .rocket-context-controls,
+  #rocket-context-controls {
     left: 245px;
     right: 15px;
   }
@@ -1877,7 +1877,7 @@ input[type="checkbox"],
 }
 
 /* line 2, ../theme/sass/rocket/_buttons.scss */
-div#rocket-page-controls ul,
+div#rocket-context-controls ul,
 ul.rocket-controls,
 ul.rocket-simple-controls {
   padding-left: 0;
@@ -1885,7 +1885,7 @@ ul.rocket-simple-controls {
 }
 
 /* line 10, ../theme/sass/rocket/_buttons.scss */
-div#rocket-page-controls ul > li,
+div#rocket-context-controls ul > li,
 ul.rocket-controls > li {
   margin: 0 0.75rem 0.75rem 0;
 }
@@ -4095,7 +4095,7 @@ body.rocket-preview .rocket-context-toolbar {
   right: 10px;
 }
 /* line 58, ../theme/sass/rocket/_preview.scss */
-body.rocket-preview #rocket-page-controls {
+body.rocket-preview #rocket-context-controls {
   left: 0;
 }
 /* line 63, ../theme/sass/rocket/_preview.scss */
