@@ -54,7 +54,7 @@
 	<?php $view->panelEnd() ?>
 <?php endif ?>
 
-<div id="rocket-page-controls">
+<div class="rocket-context-controls">
 	<?php $controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>

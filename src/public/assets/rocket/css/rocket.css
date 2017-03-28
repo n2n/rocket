@@ -800,7 +800,7 @@ section::after {
  * L A N G U A G E
  **********************************************************************************************************************/
 /* line 190, ../theme/sass/rocket/_layout.scss */
-#rocket-toolbar {
+.rocket-context-toolbar {
   position: absolute;
   top: -36px;
   right: 0;
@@ -3860,7 +3860,7 @@ ul.rocket-dd-menu-open > li > a:hover {
 }
 
 /* line 1, ../theme/sass/rocket/_toolbar.scss */
-#rocket-toolbar {
+.rocket-context-toolbar {
   z-index: 50;
 }
 
@@ -4090,7 +4090,7 @@ body.rocket-preview .rocket-panel {
   border: none;
 }
 /* line 53, ../theme/sass/rocket/_preview.scss */
-body.rocket-preview #rocket-toolbar {
+body.rocket-preview .rocket-context-toolbar {
   top: 2px;
   right: 10px;
 }

@@ -46,7 +46,7 @@
 			</ul>
 		</div>
 	</div>
-	<div id="rocket-page-controls">
+	<div class="rocket-context-controls">
 		<ul>
 			<li class="rocket-control-warning">
 				<?php $formHtml->buttonSubmit('move', new Raw('<i class="fa fa-save"></i><span>' 

@@ -28,55 +28,52 @@
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	
-	$listModel = $view->getParam('listModel'); 
-	$view->assert($listModel instanceof OverviewModel);
+	$overviewModel = $view->getParam('listModel'); 
+	$view->assert($overviewModel instanceof OverviewModel);
 	
 	$listView = $view->getParam('listView');
 	$view->assert($listView instanceof HtmlView);
 		
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $listModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
 					->t($view->getN2nLocale())));
 	
-	$eiMask = $listModel->getEiuFrame()->getEiFrame()->getContextEiMask();
+	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask();
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $listModel->getEiuFrame());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $overviewModel->getEiuFrame());
 ?>	
 
-<div class="rocket-panel">
-	<h3><?php $html->l10nText('ei_impl_list_title') ?></h3>
-	
-	<?php if ($eiMask->isDraftingEnabled()): ?>
-		<div id="rocket-toolbar">
-			<ul class="rocket-draft-nav">
-				<li><?php $html->linkToController(null, $html->getText('ei_impl_list_title'), array('class' => 'active')) ?></li>
-				<li><?php $html->linkToController('drafts', $html->getText('ei_impl_drafts_title')) ?></li>
-				<li><?php $html->linkToController('recovery', $html->getText('ei_impl_recovery_title')) ?></li>
-			</ul>
-		</div>
-	<?php endif ?>
+<?php if ($eiMask->isDraftingEnabled()): ?>
+	<div class="rocket-context-toolbar">
+		<ul class="rocket-draft-nav">
+			<li><?php $html->linkToController(null, $html->getText('ei_impl_list_title'), array('class' => 'active')) ?></li>
+			<li><?php $html->linkToController('drafts', $html->getText('ei_impl_drafts_title')) ?></li>
+			<li><?php $html->linkToController('recovery', $html->getText('ei_impl_recovery_title')) ?></li>
+		</ul>
+	</div>
+<?php endif ?>
 
-	<?php $view->import('inc\overviewTools.html',
-			array('critmodForm' => $listModel->getCritmodForm(), 
-					'quickSearchForm' => $listModel->getQuickSearchForm(),
-					'label' => $eiMask->getLabelLstr()->t($view->getN2nLocale()), 
-					'pluralLabel' => $eiMask->getPluralLabelLstr()->t($view->getN2nLocale()))) ?>
+<?php $view->import('inc\overviewTools.html',
+		array('critmodForm' => $overviewModel->getCritmodForm(), 
+				'quickSearchForm' => $overviewModel->getQuickSearchForm(),
+				'label' => $eiMask->getLabelLstr()->t($view->getN2nLocale()), 
+				'pluralLabel' => $eiMask->getPluralLabelLstr()->t($view->getN2nLocale()))) ?>
+
+<?php $formHtml->open($overviewModel, null, null, array('class' => 'rocket-overview-main-content',
+		'data-num-pages' => $overviewModel->getNumPages(), 'data-num-entries' => $overviewModel->getNumEntries(),
+		'data-current-page' => $overviewModel->getCurrentPageNo(),
+		'data-overview-path' => $html->meta()->getControllerUrl(null))) ?>
 	
-	<?php $formHtml->open($listModel, null, null, array('class' => 'rocket-overview-main-content',
-			'data-num-pages' => $listModel->getNumPages(), 'data-num-entries' => $listModel->getNumEntries(),
-			'data-current-page' => $listModel->getCurrentPageNo(),
-			'data-overview-path' => $html->meta()->getControllerUrl(null))) ?>
+	<?php $view->out($listView)?>
+	
+	<div class="rocket-context-controls">
+		<?php /* Bert: do not display UL with no LI contents ?>
+		<ul class="rocket-partial-controls">
+			<li><?php / * partial control components * / ?></li>
+		</ul>
+		<?php */ ?>
 		
-		<?php $view->out($listView)?>
+		<?php $controlEiHtml->overallControlList() ?>
 		
-		<div id="rocket-page-controls">
-			<?php /* Bert: do not display UL with no LI contents ?>
-			<ul class="rocket-partial-controls">
-				<li><?php / * partial control components * / ?></li>
-			</ul>
-			<?php */ ?>
-			
-			<?php $controlEiHtml->overallControlList() ?>
-		</div>
-	<?php $formHtml->close() ?>
-</div>
+	</div>
+<?php $formHtml->close() ?>

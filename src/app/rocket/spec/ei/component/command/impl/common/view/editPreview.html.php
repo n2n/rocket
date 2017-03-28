@@ -63,7 +63,7 @@
 		<iframe src="<?php $html->esc($view->params['iframeSrc']) ?>" id="rocket-preview-content"></iframe>
 	</div>
 	
-	<div id="rocket-page-controls">
+	<div class="rocket-context-controls">
 		<ul>
 			<li>
 				<button type="button" id="rocket-preview-save-command"

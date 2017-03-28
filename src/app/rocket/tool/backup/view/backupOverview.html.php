@@ -67,7 +67,7 @@
 			<?php endforeach ?>
 		</tbody>
 	</table>
-	<div id="rocket-page-controls">
+	<div class="rocket-context-controls">
 		<ul>
 			<li>
 				<?php $html->linkToController(array('create'), 

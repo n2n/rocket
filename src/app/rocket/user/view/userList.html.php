@@ -86,7 +86,7 @@
 	</table>
 </div>
 <?php if ($loggedInUser->isSuperAdmin()): ?>
-	<div id="rocket-page-controls">
+	<div class="rocket-context-controls">
 		<ul >
 			<li>
 				<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i><span>' 

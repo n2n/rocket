@@ -49,7 +49,7 @@
 				array('entryFormViewModel' => new EntryFormViewModel(
 						$formHtml->meta()->createPropertyPath(array('entryForm'))))) ?>
 			
-		<div id="rocket-page-controls">
+		<div class="rocket-context-controls">
 			<ul>
 				<li>
 					<?php $formHtml->buttonSubmit('create', new Raw('<i class="fa fa-save"></i><span>' 

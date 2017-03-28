@@ -89,7 +89,7 @@
 		</section>
 	</div>
 	
-	<div id="rocket-page-controls">
+	<div class="rocket-context-controls">
 		<ul>
 			<li>
 				<?php $formHtml->open($deleteLoginModel) ?>

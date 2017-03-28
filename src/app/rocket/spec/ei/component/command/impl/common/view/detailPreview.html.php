@@ -52,7 +52,7 @@ use n2n\util\uri\Path;
 <div class="rocket-panel">
 	<h3 class="rocket-preview-iframe-title">Detail</h3>
 	
-	<div id="rocket-toolbar">
+	<div class="rocket-context-toolbar">
 		<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
 			<?php foreach ($eiEntryUtils->getPreviewTypeOptions() as $previewType => $label): ?>
 				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))) ?>"
@@ -68,7 +68,7 @@ use n2n\util\uri\Path;
 	</div>
 </div>
 
-<div id="rocket-page-controls">
+<div class="rocket-context-controls">
 	<?php //$controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>

@@ -48,7 +48,7 @@
 		<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
 				array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->createPropertyPath('entryForm')))) ?>
 						
-		<div id="rocket-page-controls">
+		<div class="rocket-context-controls">
 			<ul>
 				<li>
 					<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 

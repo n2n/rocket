@@ -61,7 +61,7 @@
 			<?php $formHtml->input('width', array('id' => 'rocket-thumb-width')) ?>
 			<?php $formHtml->input('height', array('id' => 'rocket-thumb-height')) ?>
 			
-			<div id="rocket-page-controls">
+			<div class="rocket-context-controls">
 				<ul>
 					<li>
 						<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 

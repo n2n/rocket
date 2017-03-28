@@ -47,7 +47,7 @@
 <div class="rocket-panel">
 	<h3><?php $html->l10nText('ei_impl_list_title') ?></h3>
 	
-	<ul id="rocket-toolbar">
+	<ul class="rocket-context-toolbar">
 		<li><?php $html->linkToController(null, $html->getText('ei_impl_list_title')) ?></li>
 		<li class="active"><?php $html->linkToController('drafts', $html->getText('ei_impl_drafts_title')) ?></li>
 		<li><?php $html->linkToController('recovery', $html->getText('ei_impl_recovery_title')) ?></li>
@@ -64,7 +64,7 @@
 		
 		<?php $view->out($listView)?>
 		
-		<div id="rocket-page-controls">
+		<div class="rocket-context-controls">
 			<ul class="rocket-partial-controls">
 				<li><?php /* partial control components */ ?></li>
 			</ul>

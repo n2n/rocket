@@ -159,7 +159,7 @@
 		
 		<div id="rocket-content-container">
 			<div class="rocket-main-layer">
-				<div class="rocket-layer-frame">
+				<div class="rocket-context">
 					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
 						<ul id="rocket-breadcrumb">
 							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>

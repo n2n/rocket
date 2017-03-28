@@ -60,7 +60,7 @@ use n2n\web\ui\view\View;
 		</ul>
 	</form>
 </div>
-<div id="rocket-page-controls">
+<div class="rocket-context-controls">
 	<ul>
 		<li>
 			<a id="rocket-multi-upload-submit" href="#" class="rocket-control-success rocket-important">

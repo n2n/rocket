@@ -37,7 +37,7 @@ namespace rocket.cmd {
 		
 		public createContent(html: string): Content {
 			var jqContent = $("<div/>", {
-				"class": "rocket-layer-frame",
+				"class": "rocket-context",
 				"html": html
 			});
 			this.jqContentGroup.append(jqContent);
