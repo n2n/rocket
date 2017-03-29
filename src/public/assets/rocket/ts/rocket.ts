@@ -7,21 +7,13 @@ namespace rocket {
 		
 		
 		(function () {
-			var overviewToolElems = new Array<Element>();
-			
-			$(".rocket-overview-tools").each(function () {
-				overviewToolElems.push(this);
-				
-				new rocket.impl.OverviewContext($(this));
+			$(".rocket-impl-overview").each(function () {
+				rocket.impl.OverviewContext.scan($(this));
 			});
 			
 			n2n.dispatch.registerCallback(function () {
-				$(".rocket-overview-tools").each(function () {
-					if (-1 < overviewToolElems.indexOf(this)) {
-						return;
-					}
-					
-					new rocket.impl.OverviewContext($(this));
+				$(".rocket-impl-overview").each(function () {
+					rocket.impl.OverviewContext.scan($(this));
 				});
 			});
 		}) ();
