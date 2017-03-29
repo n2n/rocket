@@ -47,10 +47,13 @@ namespace rocket.impl {
 			
 			jqContainer.data("content-url");
 			
-			var pagination = new Pagination(jqContainer.data("num-pages"), 
-					jqContainer.data("num-entries"), jqContainer.data("current-page"));
+			var jqForm = jqContainer.children("form");
 			
-			pagination.draw(jqContainer.children("form").children(".rocket-context-controls"));
+			var pagination = new Pagination(jqContainer.data("num-pages"), jqContainer.data("current-page"));
+			pagination.draw(jqForm.children(".rocket-context-controls"));
+			
+			var fixedHeader = new FixedHeader(jqContainer.data("num-entries"));
+			fixedHeader.draw(jqContainer.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
 			
 			return overviewContext;
 		}
@@ -58,15 +61,13 @@ namespace rocket.impl {
 	
 	class Pagination {
 		private numPages: number;
-		private numEntries: number;
 		private currentPageNo: number
 		
 		private jqPagination: JQuery;
 		private jqInput: JQuery;
 		
-		constructor(numPages: number, numEntries: number, currentPageNo: number) {
+		constructor(numPages: number, currentPageNo: number) {
 			this.numPages = numPages;
-			this.numEntries = numEntries;
 			this.currentPageNo = currentPageNo;
 		}
 		
@@ -81,7 +82,6 @@ namespace rocket.impl {
 		public goTo(pageNo: number) {
 			alert(pageNo);
 		}
-		
 		
 		public draw(jqContainer: JQuery) {
 			var that = this;
@@ -133,10 +133,54 @@ namespace rocket.impl {
 					}).append($("<span />", {
 						"text": that.getNumPages()	
 					})).append($("<i />", {
-						"class": "fa fa-step-forward"	
+						"class": "fa fa-step-forward"
 					})));
 		}
-			
 	}
 	
+	class FixedHeader {
+		private numEntries: number;
+		
+		private jqHeader: JQuery;
+		private jqTable: JQuery;
+		private jqTableClone: JQuery;
+		
+		public constructor(numEntries: number) {
+			this.numEntries = numEntries;	
+		}
+		
+		public getNumEntries(): number {
+			return this.numEntries;	
+		}
+		
+		public draw(jqHeader: JQuery, jqTable: JQuery) {
+			this.jqHeader = jqHeader;
+			this.jqTable = jqTable;
+			
+			this.cloneTableHeader();
+			
+			var that = this;
+			$("#rocket-content-container").scroll(function () {
+				that.scrolled();
+			});
+		}
+		
+		private scrolled() {
+			console.log(this.jqTable.offset().top + " - " + this.jqTableClone.offset().top);
+		}
+		
+		private cloneTableHeader() {
+			this.jqTableClone = this.jqTable.clone();
+			this.jqTableClone.children("tbody").remove();
+			this.jqHeader.append(this.jqTableClone);
+			
+			var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
+			this.jqTable.children("thead").children("tr").children().each(function(index) {
+				jqClonedChildren.eq(index).innerWidth($(this).innerWidth());
+				jqClonedChildren.css({
+					"boxSizing": "border-box"	
+				});
+			});
+		}
+	}
 }

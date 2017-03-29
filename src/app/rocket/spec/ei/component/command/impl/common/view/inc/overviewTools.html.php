@@ -43,7 +43,7 @@
 	$view->assert($quickSearchForm instanceof QuickSearchForm);
 ?>
 
-<div class="rocket-tool-panel rocket-overview-tools" 
+<div class="rocket-tool-panel rocket-impl-overview-tools" style="background: #ABC"
 		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>"
 		data-selected-label="<?php $html->text('common_selected_label')?>"
 		data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
