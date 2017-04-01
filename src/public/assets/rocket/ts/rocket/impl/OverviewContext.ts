@@ -94,15 +94,12 @@ namespace rocket.impl {
 						"href": "#",
 						"class": "rocket-impl-pagination-first rocket-control",
 						"click": function () { that.goTo(1) }
-					}).append($("<span />", {
-						"text": 1	
-					})).append($("<i />", {
+					}).append($("<i />", {
 						"class": "fa fa-step-backward"	
 					})));
 			
 			this.jqPagination.append(
-					 $("<a />", {
-						"href": "#",
+					 $("<button />", {
 						"class": "rocket-impl-pagination-prev rocket-control",
 						"click": function () { that.goTo(that.getCurrentPageNo() - 1) }
 					}).append($("<i />", {
@@ -117,8 +114,7 @@ namespace rocket.impl {
 			this.jqPagination.append(this.jqInput);
 			
 			this.jqPagination.append(
-					$("<a />", {
-						"href": "#",
+					$("<button />", {
 						"class": "rocket-impl-pagination-next rocket-control",
 						"click": function () { that.goTo(that.getCurrentPageNo() + 1); }
 					}).append($("<i />", {
@@ -126,13 +122,11 @@ namespace rocket.impl {
 					})));
 		
 			this.jqPagination.append(
-					 $("<a />", {
+					 $("<button />", {
 						"href": "#",
 						"class": "rocket-impl-pagination-last rocket-control",
 						"click": function () { that.goTo(that.getNumPages()); }
-					}).append($("<span />", {
-						"text": that.getNumPages()	
-					})).append($("<i />", {
+					}).append($("<i />", {
 						"class": "fa fa-step-forward"
 					})));
 		}
@@ -171,6 +165,9 @@ namespace rocket.impl {
 //			this.jqHeader.parent().css("padding-top", headerHeight);
 			
 			this.calcDimensions();
+			$(window).resize(function () {
+				this.calcDimensions();
+			});
 		}
 		
 		private fixedCssAttrs;
@@ -193,12 +190,13 @@ namespace rocket.impl {
 		private fixed: boolean = false;
 		
 		private scrolled() {
-			var headerHeight = this.jqHeader.height();
+			var headerHeight = this.jqHeader.children(".rocket-tool-panel").outerHeight();
 			if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
 				if (this.fixed) return;
 				this.fixed = true;
 				this.jqHeader.css(this.fixedCssAttrs);
 				this.jqHeader.parent().css("padding-top", headerHeight);
+				this.jqTableClone.show();
 			} else {
 				if (!this.fixed) return;
 				this.fixed = false;
@@ -209,14 +207,16 @@ namespace rocket.impl {
 					"right": "" 
 				});
 				this.jqHeader.parent().css("padding-top", "");
+				this.jqTableClone.hide();
 			}
 		}
 		
 		private cloneTableHeader() {
 			this.jqTableClone = this.jqTable.clone();
+			this.jqTableClone.css("margin-bottom", 0);
 			this.jqTableClone.children("tbody").remove();
-			this.jqTableClone.hide();
 			this.jqHeader.append(this.jqTableClone);
+			this.jqTableClone.hide();
 			
 			var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
 			this.jqTable.children("thead").children("tr").children().each(function(index) {
@@ -225,6 +225,8 @@ namespace rocket.impl {
 					"boxSizing": "border-box"	
 				});
 			});
+			
+//			this.jqTable.children("thead").hide();
 		}
 	}
 }

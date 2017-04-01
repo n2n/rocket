@@ -18,4 +18,11 @@ namespace rocket {
 			});
 		}) ();
 	});
+	
+	
+	class Rocket {
+	}
+	
+	export function entry() {
+	}
 }
