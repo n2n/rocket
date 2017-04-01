@@ -117,7 +117,7 @@ namespace rocket.impl {
 			this.jqPagination.append(this.jqInput);
 			
 			this.jqPagination.append(
-					 $("<a />", {
+					$("<a />", {
 						"href": "#",
 						"class": "rocket-impl-pagination-next rocket-control",
 						"click": function () { that.goTo(that.getCurrentPageNo() + 1); }
@@ -163,15 +163,59 @@ namespace rocket.impl {
 			$("#rocket-content-container").scroll(function () {
 				that.scrolled();
 			});
+			
+//			var headerOffset = this.jqHeader.offset().top;
+//			var headerHeight = this.jqHeader.height();
+//			var headerWidth = this.jqHeader.width();
+//			this.jqHeader.css({"position": "fixed", "top": headerOffset});
+//			this.jqHeader.parent().css("padding-top", headerHeight);
+			
+			this.calcDimensions();
 		}
 		
+		private fixedCssAttrs;
+		
+		private calcDimensions() {
+			this.jqHeader.parent().css("padding-top", null);
+			this.jqHeader.css("position", "relative");
+			
+			var headerOffset = this.jqHeader.offset();
+			this.fixedCssAttrs = {
+				"position": "fixed",
+				"top": $("#rocket-content-container").offset().top, 
+				"left": headerOffset.left, 
+				"right": $(window).width() - (headerOffset.left + this.jqHeader.outerWidth()) 
+			};
+			
+			this.scrolled();
+		}
+		
+		private fixed: boolean = false;
+		
 		private scrolled() {
-			console.log(this.jqTable.offset().top + " - " + this.jqTableClone.offset().top);
+			var headerHeight = this.jqHeader.height();
+			if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
+				if (this.fixed) return;
+				this.fixed = true;
+				this.jqHeader.css(this.fixedCssAttrs);
+				this.jqHeader.parent().css("padding-top", headerHeight);
+			} else {
+				if (!this.fixed) return;
+				this.fixed = false;
+				this.jqHeader.css({
+					"position": "relative",
+					"top": "", 
+					"left": "", 
+					"right": "" 
+				});
+				this.jqHeader.parent().css("padding-top", "");
+			}
 		}
 		
 		private cloneTableHeader() {
 			this.jqTableClone = this.jqTable.clone();
 			this.jqTableClone.children("tbody").remove();
+			this.jqTableClone.hide();
 			this.jqHeader.append(this.jqTableClone);
 			
 			var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
