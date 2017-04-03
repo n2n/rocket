@@ -23,6 +23,6 @@ namespace rocket {
 	class Rocket {
 	}
 	
-	export function entry() {
+	export function entry(jqElem: JQuery) {
 	}
 }
