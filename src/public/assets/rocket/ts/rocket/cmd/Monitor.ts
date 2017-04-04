@@ -15,8 +15,6 @@ namespace rocket.cmd {
             });
 		}
 		
-		public scanContent(content: Content) {
-		}
 	}
 	
     class LinkAction {
@@ -39,15 +37,16 @@ namespace rocket.cmd {
         }
 		
 		private handle() {
+			var url = this.jqA.attr("href");
 			var that = this;
 			$.ajax({
-				"url": this.jqA.attr("href"),
+				"url": url,
 				"dataType": "json"
 			}).fail(function (data) {
 				alert(data);
 			}).done(function (data) {
 				that.layer.clear();
-				that.layer.createContent(n2n.ajah.analyze(data));
+				that.layer.createContext(n2n.ajah.analyze(data), url);
 				n2n.ajah.update();
 			});
 		}
