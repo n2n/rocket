@@ -2,25 +2,43 @@ namespace rocket.cmd {
 	
 	export class Container {
 		private jqContainer: JQuery;
-		private mainLayer: Layer;
-		private additonalLayers: Array<Layer>
-		private currentLayer: Layer;
+		private layers: Array<Layer>;
+		private counter: number = 0;
 		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;
+			this.layers = new Array<Layer>();
 			
-			this.mainLayer = new Layer(this.jqContainer.find(".rocket-main-layer"));
+			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length);
+			this.layers.push(layer);
 			
 			var that = this;
-			this.mainLayer.onNewContext(function () {
+			layer.onNewContext(function () {
 				that.updateUrl();
+			});
+			
+			$(window).bind("popstate", function(e) {
+				alert("jqs");
+			    alert(e.originalEvent.state);
+				alert("hs");
+				alert(history.state);
 			});
 		}
 		
+		public getMainLayer(): Layer {
+			if (this.layers.length > 0) {
+				return this.layers[0];
+			}
+			
+			throw new Error("MainLayer ");
+		}
+			
+		
 		private updateUrl() {
-			console.log(this.mainLayer.getCurrentContext().getUrl());
-			var stateObj = { foo: "bar" };
-			history.pushState(stateObj, "seite 2", this.mainLayer.getCurrentContext().getUrl());
+			console.log(this.getMainLayer().getActiveContext().getUrl());
+			var stateObj = { "foo": this.counter++ };
+			history.pushState(stateObj, "seite 2", this.getMainLayer().getCurrentContext().getUrl());
+			alert(history.state);
 		}
 		
 //		public createContext(html: string, newGroup: boolean = false): Context {
@@ -31,21 +49,23 @@ namespace rocket.cmd {
 //			
 //			return this.currentLayer.createContext(html, bla);
 //		}
-		
-		public getMainLayer(): Layer {
-			return this.mainLayer;
-		}
 	}
 	
 	export class Layer {
 		private jqContentGroup: JQuery;
+		private level: number;
 		private contents: Array<Context>;
 		private onNewContextCallbacks: Array<OnNewContextCallback>;
 		
-		constructor(jqContentGroup: JQuery) {
+		constructor(jqContentGroup: JQuery, level: number) {
 			this.contents = new Array<Context>();
 			this.onNewContextCallbacks = new Array<OnNewContextCallback>();
 			this.jqContentGroup = jqContentGroup;
+			this.level = level;
+		}
+		
+		public getLevel() {
+			return this.level;
 		}
 		
 		public createContext(html: string, url: string): Context {

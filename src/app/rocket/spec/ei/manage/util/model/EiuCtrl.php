@@ -155,6 +155,8 @@ class EiuCtrl implements Lookupable {
 			return;
 		}
 		
+		$view->useTemplate('\rocket\core\view\template.html', array('title' => 'TBD'));
+		
 		$response->send($view);
 	}
 

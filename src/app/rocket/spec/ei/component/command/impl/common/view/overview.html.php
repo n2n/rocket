@@ -34,9 +34,9 @@
 	$overviewView = $view->getParam('listView');
 	$view->assert($overviewView instanceof HtmlView);
 		
-	$view->useTemplate('~\core\view\template.html',
-			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
-					->t($view->getN2nLocale())));
+// 	$view->useTemplate('~\core\view\template.html',
+// 			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+// 					->t($view->getN2nLocale())));
 	
 	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask();
 	
