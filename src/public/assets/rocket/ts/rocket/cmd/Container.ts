@@ -13,15 +13,17 @@ namespace rocket.cmd {
 			this.layers.push(layer);
 			
 			var that = this;
+			
 			layer.onNewContext(function () {
 				that.updateUrl();
 			});
 			
 			$(window).bind("popstate", function(e) {
-				alert("jqs");
-			    alert(e.originalEvent.state);
-				alert("hs");
-				alert(history.state);
+				if (history.state.type != "rocketContext"
+						|| history.state.level != 1) {
+					that.getMainLayer().exec(history.state.url);
+					return;
+				}
 			});
 		}
 		
@@ -35,10 +37,13 @@ namespace rocket.cmd {
 			
 		
 		private updateUrl() {
-			console.log(this.getMainLayer().getActiveContext().getUrl());
-			var stateObj = { "foo": this.counter++ };
+			var mainLayer = this.getMainLayer();
+			var stateObj = { 
+				"type": "rocketContext",
+				"level": mainLayer.getLevel(),
+				"contextUrl": mainLayer.getActiveContext().getUrl()
+			};
 			history.pushState(stateObj, "seite 2", this.getMainLayer().getCurrentContext().getUrl());
-			alert(history.state);
 		}
 		
 //		public createContext(html: string, newGroup: boolean = false): Context {
@@ -54,11 +59,12 @@ namespace rocket.cmd {
 	export class Layer {
 		private jqContentGroup: JQuery;
 		private level: number;
-		private contents: Array<Context>;
+		private contexts: Array<Context>;
+		private activeContextIndex: number;
 		private onNewContextCallbacks: Array<OnNewContextCallback>;
 		
 		constructor(jqContentGroup: JQuery, level: number) {
-			this.contents = new Array<Context>();
+			this.contexts = new Array<Context>();
 			this.onNewContextCallbacks = new Array<OnNewContextCallback>();
 			this.jqContentGroup = jqContentGroup;
 			this.level = level;
@@ -68,12 +74,70 @@ namespace rocket.cmd {
 			return this.level;
 		}
 		
-		public createContext(html: string, url: string): Context {
-			var jqContent = $("<div/>", { "html": html });
+		public getActiveContext(): Context {
+			if (this.contexts.length == 0) {
+				throw new Error("no context avaialble");
+			}
+			
+			return this.contexts[this.activeContextIndex];
+		} 
+		
+		public exec(url: string, config: ExecConfig = null) {
+			var forceReload = false;
+			var showLoadingContext = true;
+			var doneCallback;
+			
+			if (config !== null) {
+				forceReload = config.forceReload === true;
+				showLoadingContext = config.showLoadingContext !== false
+				doneCallback = config.done;
+			}
+			
+			var context = null;
+			
+			for (var i in this.contexts) {
+				if (url != this.contexts[i].getUrl()) continue;
+					
+				context = this.contexts[i];
+				context.show();
+				
+				if (forceReload) break;
+					 
+				if (doneCallback) {
+					setTimeout(function () { doneCallback(new ExecResult(null, context)); }, 0);
+					return;
+				}
+			}
+			
+			if (context === null && showLoadingContext) {
+				context = this.createContext(url);
+			}
+			
+			context.clear(true);
+		
+			var that = this;
+			$.ajax({
+				"url": url,
+				"dataType": "json"
+			}).fail(function (data) {
+				alert(data);
+			}).done(function (data) {
+				context.applyHtml(n2n.ajah.analyze(data));
+				n2n.ajah.update();
+				
+				if (doneCallback) {
+					doneCallback(new ExecResult(null, context));
+				}
+			});
+		}
+		
+		private createContext(url: string): Context {
+			var jqContent = $("<div/>");
 			this.jqContentGroup.append(jqContent);
 			var content = new Context(jqContent, url);
 			
-			this.contents.push(content);
+			this.activeContextIndex = this.contexts.length;
+			this.contexts.push(content);
 			
 			for (var i in this.onNewContextCallbacks) {
 				this.onNewContextCallbacks[i](content);
@@ -83,26 +147,37 @@ namespace rocket.cmd {
 		}
 		
 		public clear() {
-			for (var i in this.contents) {
-				this.contents[i].dispose();
+			for (var i in this.contexts) {
+				this.contexts[i].dispose();
 			}
 		}
 		
 		public dispose() {
-			this.contents = new Array<Context>();
+			this.contexts = new Array<Context>();
 			this.jqContentGroup.remove();
 		}
 		
 		public getCurrentContext(): Context {
-			if (this.contents.length == 0) {
+			if (this.contexts.length == 0) {
 				throw new Error("no context available");
 			}
 			
-			return this.contents[this.contents.length - 1];
+			return this.contexts[this.contexts.length - 1];
 		}
 		
 		public onNewContext(onNewContextCallback: OnNewContextCallback) {
 			this.onNewContextCallbacks.push(onNewContextCallback);
+		}
+	}
+	
+	interface ExecConfig {
+		forceReload: boolean 
+		showLoadingContext: boolean; 
+		done: (ExecResult) => any;
+	}
+	
+	class ExecResult {
+		constructor(order, context: Context) {
 		}
 	}
 	
@@ -132,6 +207,24 @@ namespace rocket.cmd {
 		public dispose() {
 			this.jqContent.remove();
 		}
+		
+		public show() {
+			this.jqContent.show();
+		}
+		
+		public hide() {
+			this.jqContent.hide();
+		}
+		
+		public clear(loading: boolean = false) {
+			this.jqContent.empty();
+			this.jqContent.addClass("rocket-loading");
+		}
+			
+		public applyHtml(html: string) {
+			this.jqContent.removeClass("rocket-loading");
+			this.jqContent.html(html);
+		} 
 		
 		public static findFrom(jqElem: JQuery) {
 			if (!jqElem.hasClass(".rocket-context")) {
