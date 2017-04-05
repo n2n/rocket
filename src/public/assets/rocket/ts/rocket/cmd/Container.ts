@@ -17,20 +17,20 @@ namespace rocket.cmd {
 				var stateObj = { 
 					"type": "rocketContext",
 					"level": layer.getLevel(),
-					"contextUrl": context.getUrl(),
-					"hisotryIndex": historyIndex
+					"url": context.getUrl(),
+					"historyIndex": historyIndex
 				};
 				history.pushState(stateObj, "seite 2", context.getUrl());
 			});
 						
 			$(window).bind("popstate", function(e) {
 				if (!history.state) {
-					layer.go(1, window.location.href);
+					layer.go(0, window.location.href);
 					return;
 				}	
 				
 				if (history.state.type != "rocketContext"
-						&& history.state.level != 1) {
+						|| history.state.level != 0) {
 					return;
 				}
 				
@@ -78,7 +78,9 @@ namespace rocket.cmd {
 			
 			var jqContext = jqContentGroup.children(".rocket-context");
 			if (jqContext.length > 0) {
-				this.addContext(new Context(jqContext, window.location.href, this));
+				var context = new Context(jqContext, window.location.href, this);
+				this.addContext(context);
+				this.createHistoryEntry(context);
 			}
 		}
 		
@@ -136,12 +138,13 @@ namespace rocket.cmd {
 		}
 		
 		public go(historyIndex: number, url: string) {
-			if (this.historyUrls.length > historyIndex) {
+			if (this.historyUrls.length < (historyIndex + 1)) {
 				throw new Error("Invalid history index: " + historyIndex);
 			}
 			
 			if (this.historyUrls[historyIndex] != url) {
-				throw new Error("Url missmatch");
+				throw new Error("Url missmatch for history index " + historyIndex + ". Url: " + url + " History url: " 
+						+ this.historyUrls[historyIndex]);
 			}
 			
 			this.currentHistoryIndex = historyIndex;
