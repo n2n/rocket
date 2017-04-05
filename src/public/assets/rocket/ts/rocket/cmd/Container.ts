@@ -3,7 +3,6 @@ namespace rocket.cmd {
 	export class Container {
 		private jqContainer: JQuery;
 		private layers: Array<Layer>;
-		private counter: number = 0;
 		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;
@@ -14,15 +13,29 @@ namespace rocket.cmd {
 			
 			var that = this;
 			
-			layer.onNewContext(function () {
-				that.updateUrl();
+			layer.onNewHistoryEntry(function (historyIndex: number, context: Context) {
+				var stateObj = { 
+					"type": "rocketContext",
+					"level": layer.getLevel(),
+					"contextUrl": context.getUrl(),
+					"hisotryIndex": historyIndex
+				};
+				history.pushState(stateObj, "seite 2", context.getUrl());
 			});
-			
+						
 			$(window).bind("popstate", function(e) {
-				if (history.state.type != "rocketContext"
-						|| history.state.level != 1) {
-					that.getMainLayer().exec(history.state.url);
+				if (!history.state) {
+					layer.go(1, window.location.href);
 					return;
+				}	
+				
+				if (history.state.type != "rocketContext"
+						&& history.state.level != 1) {
+					return;
+				}
+				
+				if (!layer.go(history.state.historyIndex, history.state.url)) {
+//					history.back();
 				}
 			});
 		}
@@ -35,16 +48,6 @@ namespace rocket.cmd {
 			throw new Error("MainLayer ");
 		}
 			
-		
-		private updateUrl() {
-			var mainLayer = this.getMainLayer();
-			var stateObj = { 
-				"type": "rocketContext",
-				"level": mainLayer.getLevel(),
-				"contextUrl": mainLayer.getActiveContext().getUrl()
-			};
-			history.pushState(stateObj, "seite 2", this.getMainLayer().getCurrentContext().getUrl());
-		}
 		
 //		public createContext(html: string, newGroup: boolean = false): Context {
 ////			if (newGroup) {
@@ -60,27 +63,114 @@ namespace rocket.cmd {
 		private jqContentGroup: JQuery;
 		private level: number;
 		private contexts: Array<Context>;
-		private activeContextIndex: number;
-		private onNewContextCallbacks: Array<OnNewContextCallback>;
+		private historyUrls: Array<string>;
+		private currentHistoryIndex: number = null;
+		private onNewContextCallbacks: Array<ContextCallback>;
+		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
 		
 		constructor(jqContentGroup: JQuery, level: number) {
 			this.contexts = new Array<Context>();
-			this.onNewContextCallbacks = new Array<OnNewContextCallback>();
+			this.onNewContextCallbacks = new Array<ContextCallback>();
+			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
+			this.historyUrls = new Array<string>();
 			this.jqContentGroup = jqContentGroup;
 			this.level = level;
+			
+			var jqContext = jqContentGroup.children(".rocket-context");
+			if (jqContext.length > 0) {
+				this.addContext(new Context(jqContext, window.location.href, this));
+			}
 		}
 		
 		public getLevel() {
 			return this.level;
 		}
 		
-		public getActiveContext(): Context {
+		public getCurrentContext(): Context {
 			if (this.contexts.length == 0) {
 				throw new Error("no context avaialble");
 			}
 			
-			return this.contexts[this.activeContextIndex];
+			var url = this.historyUrls[this.currentHistoryIndex];
+			
+			for (var i in this.contexts) {
+				if (this.contexts[i].getUrl() == url) {
+					return this.contexts[i];
+				} 
+			}
+				
+			return null;
 		} 
+		
+		public getCurrentHistoryIndex() {
+			return this.currentHistoryIndex;
+		}
+		
+		private addContext(context) {
+			this.contexts.push(context);
+			var that = this;
+			
+			context.onClose(function (context: Context) {
+				for (var i in that.contexts) {
+					if (that.contexts[i] !== context) continue;
+					
+					delete that.contexts[i];
+					break;
+				}
+			});
+			
+			for (var i in this.onNewContextCallbacks) {
+				this.onNewContextCallbacks[i](context);
+			}
+		}
+		
+		private createHistoryEntry(context: Context) {
+			this.currentHistoryIndex = this.historyUrls.length;
+			this.historyUrls.push(context.getUrl());
+			
+			for (var i in this.onNewHistoryEntryCallbacks) {
+				this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, context);
+			}
+			
+			this.switchToContext(context);
+		}
+		
+		public go(historyIndex: number, url: string) {
+			if (this.historyUrls.length > historyIndex) {
+				throw new Error("Invalid history index: " + historyIndex);
+			}
+			
+			if (this.historyUrls[historyIndex] != url) {
+				throw new Error("Url missmatch");
+			}
+			
+			this.currentHistoryIndex = historyIndex;
+			var context = this.getContextByUrl(this.historyUrls[historyIndex]);
+			if (context === null) return false;
+			
+			this.switchToContext(context);
+			return true;
+		}
+		
+		private getContextByUrl(url: string): Context {
+			for (var i in this.contexts) {
+				if (this.contexts[i].getUrl() == url) {
+					return this.contexts[i];
+				}
+			}
+
+			return null;
+		}
+		
+		private switchToContext(context: Context) {
+			for (var i in this.contexts) {
+				if (this.contexts[i] === context) {
+					context.show();
+				} else {
+					this.contexts[i].hide();
+				}
+			}
+		}
 		
 		public exec(url: string, config: ExecConfig = null) {
 			var forceReload = false;
@@ -93,27 +183,29 @@ namespace rocket.cmd {
 				doneCallback = config.done;
 			}
 			
-			var context = null;
+			var context = this.getContextByUrl(url);
 			
-			for (var i in this.contexts) {
-				if (url != this.contexts[i].getUrl()) continue;
-					
-				context = this.contexts[i];
-				context.show();
+			if (context !== null) {
+				this.createHistoryEntry(context);
 				
-				if (forceReload) break;
-					 
-				if (doneCallback) {
-					setTimeout(function () { doneCallback(new ExecResult(null, context)); }, 0);
+				if (!forceReload) {
+					if (doneCallback) {
+						setTimeout(function () { doneCallback(new ExecResult(null, context)); }, 0);
+					}
+					
 					return;
 				}
 			}
 			
 			if (context === null && showLoadingContext) {
 				context = this.createContext(url);
+				this.createHistoryEntry(context);
 			}
 			
-			context.clear(true);
+			if (context !== null) {
+				context.clear(true);
+			}
+			
 		
 			var that = this;
 			$.ajax({
@@ -122,6 +214,8 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				alert(data);
 			}).done(function (data) {
+				data.additional;
+				
 				context.applyHtml(n2n.ajah.analyze(data));
 				n2n.ajah.update();
 				
@@ -130,25 +224,21 @@ namespace rocket.cmd {
 				}
 			});
 		}
-		
+				
 		private createContext(url: string): Context {
 			var jqContent = $("<div/>");
 			this.jqContentGroup.append(jqContent);
-			var content = new Context(jqContent, url);
+			var context = new Context(jqContent, url, this);
 			
-			this.activeContextIndex = this.contexts.length;
-			this.contexts.push(content);
+			this.addContext(context);
 			
-			for (var i in this.onNewContextCallbacks) {
-				this.onNewContextCallbacks[i](content);
-			}
-			
-			return content;
+			this.createHistoryEntry(context);
+			return context;
 		}
 		
 		public clear() {
 			for (var i in this.contexts) {
-				this.contexts[i].dispose();
+				this.contexts[i].close();
 			}
 		}
 		
@@ -157,16 +247,12 @@ namespace rocket.cmd {
 			this.jqContentGroup.remove();
 		}
 		
-		public getCurrentContext(): Context {
-			if (this.contexts.length == 0) {
-				throw new Error("no context available");
-			}
-			
-			return this.contexts[this.contexts.length - 1];
+		public onNewContext(onNewContextCallback: ContextCallback) {
+			this.onNewContextCallbacks.push(onNewContextCallback);
 		}
 		
-		public onNewContext(onNewContextCallback: OnNewContextCallback) {
-			this.onNewContextCallbacks.push(onNewContextCallback);
+		public onNewHistoryEntry(onNewHistoryEntryCallback: HistoryCallback) {
+			this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
 		}
 	}
 	
@@ -181,17 +267,25 @@ namespace rocket.cmd {
 		}
 	}
 	
-	interface OnNewContextCallback {
+	interface ContextCallback {
 		(context: Context): any
+	}
+	
+	interface HistoryCallback {
+		(index: number, context: Context): any
 	}
 	
 	export class Context {
 		private jqContent: JQuery;
 		private url: string;
+		private layer: Layer;
+		private onCloseCallbacks: Array<ContextCallback>
 		
-		constructor(jqContent: JQuery, url: string) {
+		constructor(jqContent: JQuery, url: string, layer: Layer) {
 			this.jqContent = jqContent;
 			this.url = url;
+			this.layer = layer;
+			this.onCloseCallbacks = new Array<ContextCallback>();
 			jqContent.addClass("rocket-context");
 			jqContent.data("rocketContent", this);
 		}
@@ -200,16 +294,29 @@ namespace rocket.cmd {
 			return this.url;
 		}
 		
-//		public hide() {
-//			this.jqContent.hide();	
-//		}
+		private ensureNotClosed() {
+			if (this.jqContent !== null) return;
+			
+			throw new Error("Context already closed.");
+		}
 		
-		public dispose() {
+		public close() {
 			this.jqContent.remove();
+			this.jqContent = null;
+			
+			var callback;
+			while (undefined !== (callback = this.onCloseCallbacks.shift())) {
+				callback(this);
+			}
 		}
 		
 		public show() {
 			this.jqContent.show();
+		
+//			var callback;
+//			while (undefined !== (callback = this.onShowCallbacks.shift())) {
+//				callback(this);
+//			}
 		}
 		
 		public hide() {
@@ -225,6 +332,10 @@ namespace rocket.cmd {
 			this.jqContent.removeClass("rocket-loading");
 			this.jqContent.html(html);
 		} 
+		
+		public onClose(onCloseCallback: ContextCallback) {
+			this.onCloseCallbacks.push(onCloseCallback);
+		}
 		
 		public static findFrom(jqElem: JQuery) {
 			if (!jqElem.hasClass(".rocket-context")) {

@@ -62,7 +62,7 @@ class ToManySelectGuiElement implements GuiElement {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		if ($this->eiu->entryGui()->isViewModeBulky()) {
+		if ($this->eiu->entryGui()->isBulky()) {
 			return array('class' => 'rocket-block');
 		}
 		

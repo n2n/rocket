@@ -14,7 +14,6 @@ namespace rocket.cmd {
                 (new LinkAction(jQuery(this), layer)).activate();
             });
 		}
-		
 	}
 	
     class LinkAction {
