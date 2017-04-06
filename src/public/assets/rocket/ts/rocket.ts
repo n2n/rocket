@@ -24,7 +24,5 @@ namespace rocket {
 	}
 	
 	export function entry(jqElem: JQuery) {
-	} 
-	
-	
+	}
 }
