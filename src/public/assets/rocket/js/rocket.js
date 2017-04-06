@@ -1,28 +1,42 @@
 var rocket;
 (function (rocket) {
-    jQuery(document).ready(function ($) {
-        var container = new rocket.cmd.Container($("#rocket-content-container"));
-        var monitor = new rocket.cmd.Monitor(container);
-        monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
-        (function () {
-            $(".rocket-impl-overview").each(function () {
-                rocket.impl.OverviewContext.scan($(this));
-            });
-            n2n.dispatch.registerCallback(function () {
-                $(".rocket-impl-overview").each(function () {
-                    rocket.impl.OverviewContext.scan($(this));
+    var cmd;
+    (function (cmd) {
+        var $ = jQuery;
+        var Monitor = (function () {
+            function Monitor(container) {
+                this.container = container;
+            }
+            Monitor.prototype.scanMain = function (jqContent, layer) {
+                var that = this;
+                jqContent.find("a.rocket-action").each(function () {
+                    (new LinkAction(jQuery(this), layer)).activate();
                 });
-            });
-        })();
-    });
-    var Rocket = (function () {
-        function Rocket() {
-        }
-        return Rocket;
-    }());
-    function entry(jqElem) {
-    }
-    rocket.entry = entry;
+            };
+            return Monitor;
+        }());
+        cmd.Monitor = Monitor;
+        var LinkAction = (function () {
+            function LinkAction(jqA, layer) {
+                this.jqA = jqA;
+                this.layer = layer;
+            }
+            LinkAction.prototype.activate = function () {
+                var that = this;
+                this.jqA.click(function (e) {
+                    e.stopImmediatePropagation();
+                    e.stopPropagation();
+                    that.handle();
+                    return false;
+                });
+            };
+            LinkAction.prototype.handle = function () {
+                var url = this.jqA.attr("href");
+                this.layer.exec(url);
+            };
+            return LinkAction;
+        }());
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
@@ -168,7 +182,9 @@ var rocket;
                 }
                 var context = this.getContextByUrl(url);
                 if (context !== null) {
-                    this.createHistoryEntry(context);
+                    if (this.getCurrentContext() !== context) {
+                        this.createHistoryEntry(context);
+                    }
                     if (!forceReload) {
                         if (doneCallback) {
                             setTimeout(function () { doneCallback(new ExecResult(null, context)); }, 0);
@@ -256,6 +272,10 @@ var rocket;
             };
             Context.prototype.show = function () {
                 this.jqContent.show();
+                //			var callback;
+                //			while (undefined !== (callback = this.onShowCallbacks.shift())) {
+                //				callback(this);
+                //			}
             };
             Context.prototype.hide = function () {
                 this.jqContent.hide();
@@ -290,46 +310,27 @@ var rocket;
         cmd.Entry = Entry;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var $ = jQuery;
-        var Monitor = (function () {
-            function Monitor(container) {
-                this.container = container;
-            }
-            Monitor.prototype.scanMain = function (jqContent, layer) {
-                var that = this;
-                jqContent.find("a.rocket-action").each(function () {
-                    (new LinkAction(jQuery(this), layer)).activate();
-                });
-            };
-            return Monitor;
-        }());
-        cmd.Monitor = Monitor;
-        var LinkAction = (function () {
-            function LinkAction(jqA, layer) {
-                this.jqA = jqA;
-                this.layer = layer;
-            }
-            LinkAction.prototype.activate = function () {
-                var that = this;
-                this.jqA.click(function (e) {
-                    e.stopImmediatePropagation();
-                    e.stopPropagation();
-                    that.handle();
-                    return false;
-                });
-            };
-            LinkAction.prototype.handle = function () {
-                var url = this.jqA.attr("href");
-                this.layer.exec(url);
-            };
-            return LinkAction;
-        }());
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
 var rocket;
 (function (rocket) {
     var impl;
@@ -426,6 +427,11 @@ var rocket;
                 $("#rocket-content-container").scroll(function () {
                     that.scrolled();
                 });
+                //			var headerOffset = this.jqHeader.offset().top;
+                //			var headerHeight = this.jqHeader.height();
+                //			var headerWidth = this.jqHeader.width();
+                //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
+                //			this.jqHeader.parent().css("padding-top", headerHeight);
                 this.calcDimensions();
                 $(window).resize(function () {
                     this.calcDimensions();
@@ -480,9 +486,35 @@ var rocket;
                         "boxSizing": "border-box"
                     });
                 });
+                //			this.jqTable.children("thead").hide();
             };
             return FixedHeader;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
-//# sourceMappingURL=rocket.js.map
+var rocket;
+(function (rocket) {
+    jQuery(document).ready(function ($) {
+        var container = new rocket.cmd.Container($("#rocket-content-container"));
+        var monitor = new rocket.cmd.Monitor(container);
+        monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
+        (function () {
+            $(".rocket-impl-overview").each(function () {
+                rocket.impl.OverviewContext.scan($(this));
+            });
+            n2n.dispatch.registerCallback(function () {
+                $(".rocket-impl-overview").each(function () {
+                    rocket.impl.OverviewContext.scan($(this));
+                });
+            });
+        })();
+    });
+    var Rocket = (function () {
+        function Rocket() {
+        }
+        return Rocket;
+    }());
+    function entry(jqElem) {
+    }
+    rocket.entry = entry;
+})(rocket || (rocket = {}));

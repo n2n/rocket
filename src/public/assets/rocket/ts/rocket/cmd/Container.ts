@@ -189,7 +189,9 @@ namespace rocket.cmd {
 			var context = this.getContextByUrl(url);
 			
 			if (context !== null) {
-				this.createHistoryEntry(context);
+				if (this.getCurrentContext() !== context) {
+					this.createHistoryEntry(context);
+				}
 				
 				if (!forceReload) {
 					if (doneCallback) {
