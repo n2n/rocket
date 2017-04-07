@@ -21,13 +21,10 @@
  */
 namespace rocket\spec\ei\manage\control;
 
-use n2n\impl\web\ui\view\html\InputField;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-
 
 class ControlButton {
 	const TYPE_DEFAULT = 'btn btn-default';
@@ -131,7 +128,7 @@ class ControlButton {
 	}
 	
 	private function applyAttrs(array $attrs) {
-		$attrs['aria-hidden'] = true;
+		$attrs['aria-hidden'] = 'true';
 		
 		if ($this->tooltip !== null) {
 			$attrs['title'] = $this->tooltip;
