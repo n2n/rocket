@@ -3,6 +3,7 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use n2n\l10n\DynamicTextCollection;
 
 class Eiu implements Lookupable {
 	private $eiuFactory;
@@ -71,5 +72,9 @@ class Eiu implements Lookupable {
 	 */
 	public function lookup($lookupId, bool $required = true) {
 		return $this->frame()->getN2nContext()->lookup($lookupId, $required);
+	}
+	
+	public function dtc(string ...$moduleNamespaces) {
+		return new DynamicTextCollection($moduleNamespaces, $this->frame()->getN2nLocale());
 	}
 }

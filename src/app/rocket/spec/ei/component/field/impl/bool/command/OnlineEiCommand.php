@@ -60,7 +60,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return $controller;
 	}
 	
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$request = $view->getRequest();

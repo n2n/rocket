@@ -65,7 +65,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}
 	
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		if ($eiu->frame()->isExecutedBy(EiCommandPath::from($this))) {
 			return array();
 		}

@@ -62,7 +62,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return $eiu->lookup(DeleteController::class);
 	}
 	
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
 		

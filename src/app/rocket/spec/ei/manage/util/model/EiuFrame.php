@@ -51,6 +51,12 @@ use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\component\command\EiCommand;
+use rocket\spec\ei\manage\control\HrefControl;
+use rocket\spec\ei\manage\control\ControlButton;
+use rocket\spec\ei\manage\control\ActionControl;
+use n2n\util\uri\Url;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -322,6 +328,33 @@ class EiuFrame extends EiUtilsAdapter {
 	 */
 	public function getScalarEiProperties() {
 		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues();
+	}
+	
+	public function controlFactory(HtmlView $view) {
+		return new EiuControlFactory($this, $view);
+	}
+}
+
+class EiuControlFactory {
+	private $eiuFrame;
+	private $view;
+	
+	public function __construct(EiuFrame $eiuFrame, HtmlView $view) {
+		$this->eiuFrame = $eiuFrame;
+		$this->view = $view;
+	}
+	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @param ControlButton $controlButton
+	 * @param Url $urlExt
+	 * @return \rocket\spec\ei\manage\control\ActionControl
+	 */
+	public function createAction(EiCommand $eiCommand, ControlButton $controlButton, Url $urlExt = null) {
+		$url = $this->view->getHttpContext()
+				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
+				->ext($eiCommand->getId())->toUrl()->ext($urlExt);
+		return new ActionControl($url, $controlButton);
 	}
 }
 

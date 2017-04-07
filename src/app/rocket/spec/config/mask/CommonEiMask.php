@@ -59,7 +59,6 @@ use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\component\command\control\PartialControlComponent;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\PartialControl;
-use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use n2n\web\ui\ViewFactory;
 use rocket\spec\ei\EiEngine;
@@ -76,6 +75,7 @@ use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\config\mask\model\EiuEntryGuiTree;
+use rocket\spec\ei\manage\control\Control;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -252,16 +252,16 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallHrefControls(EiuFrame $eiuFrame, HtmlView $htmlView): array {
+	public function createOverallControls(EiuFrame $eiuFrame, HtmlView $htmlView): array {
 		$eiu = new Eiu($eiuFrame);
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof OverallControlComponent)
 					|| !$eiuFrame->getEiFrame()->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
 				
-			$hrefControls = $eiCommand->createOverallHrefControls($eiu, $htmlView);
-			ArgUtils::valArrayReturn($hrefControls, $eiCommand, 'createOverallHrefControls', HrefControl::class);
-			foreach ($hrefControls as $controlId => $control) {
+			$controls = $eiCommand->createOverallControls($eiu, $htmlView);
+			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
+			foreach ($controls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 			}
 		}
@@ -274,9 +274,9 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\mask\EiMask::createEntryHrefControls()
+	 * @see \rocket\spec\ei\mask\EiMask::createEntryControls()
 	 */
-	public function createEntryHrefControls(EiuEntryGui $eiuGui, HtmlView $view): array {
+	public function createEntryControls(EiuEntryGui $eiuGui, HtmlView $view): array {
 		try {
 			$eiuGui->getEiuEntry()->getEiuFrame();
 		} catch (EiuPerimeterException $e) {
@@ -292,8 +292,8 @@ class CommonEiMask implements EiMask, Identifiable {
 				continue;
 			}
 			
-			$entryControls = $eiCommand->createEntryHrefControls($eiu, $view);
-			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryHrefControls', HrefControl::class);
+			$entryControls = $eiCommand->createEntryControls($eiu, $view);
+			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
 			foreach ($entryControls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 			}

@@ -92,14 +92,14 @@ interface EiMask extends EiThing {
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallHrefControls(EiuFrame $eiuFrame, HtmlView $htmlView): array;
+	public function createOverallControls(EiuFrame $eiuFrame, HtmlView $htmlView): array;
 	
 	/**
 	 * @param HtmlView $view
 	 * @param EntryModel $entryModel
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createEntryHrefControls(EiuEntryGui $eiuGui, HtmlView $view): array;
+	public function createEntryControls(EiuEntryGui $eiuGui, HtmlView $view): array;
 		
 	/**
 	 * @param EiEntry $eiEntry

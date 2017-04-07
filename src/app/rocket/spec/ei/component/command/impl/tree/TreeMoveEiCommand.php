@@ -58,7 +58,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return $eiu->lookup(TreeMoveController::class);
 	}
 	
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	

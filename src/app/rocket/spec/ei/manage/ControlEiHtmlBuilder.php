@@ -42,7 +42,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getOverallControlList(): UiComponent {
 		$ul = new HtmlElement('ul'/*, array('class' => 'rocket-main-controls')*/);
-		foreach ($this->eiuFrame->getEiFrame()->getContextEiMask()->createOverallHrefControls($this->eiuFrame, $this->view) as $control) {
+		foreach ($this->eiuFrame->getEiFrame()->getContextEiMask()->createOverallControls($this->eiuFrame, $this->view) as $control) {
 			$ul->appendContent(new HtmlElement('li', null, $control->createUiComponent(false)));
 		}
 	
@@ -55,7 +55,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getEntryGuiControlList(EiuEntryGui $eiuEntryGui, bool $useIcons = false) {
 		$entryControls = $this->eiuFrame->getEiFrame()->getContextEiMask()
-				->createEntryHrefControls($eiuEntryGui, $this->view);
+				->createEntryControls($eiuEntryGui, $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);
 	}
@@ -66,7 +66,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getEntryControlList(EiuEntryGui $eiuEntryGui, $useIcons = false) {
 		return $this->createControlList($this->eiuFrame->getContextEiMask()
-				->createEntryHrefControls($eiuEntryGui, $this->view), $useIcons);
+				->createEntryControls($eiuEntryGui, $this->view), $useIcons);
 	}
 	
 	private function createControlList(array $entryControls, bool $useIcons) {

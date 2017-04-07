@@ -61,7 +61,7 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		return array(self::MULTI_UPLOAD_KEY => $dtc->translate('ei_impl_multi_upload_label'));
 	}
 
-	public function createOverallHrefControls(Eiu $eiu, HtmlView $view) {
+	public function createOverallControls(Eiu $eiu, HtmlView $view) {
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection('rocket', $eiu->frame()->getN2nLocale());
 		

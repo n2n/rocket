@@ -13,6 +13,11 @@ var rocket;
                     (new LinkAction(jQuery(this), layer)).activate();
                 });
             };
+            Monitor.prototype.scan = function (jqContainer) {
+                jqContainer.find("a.rocket-action").each(function () {
+                    CommandAction.from($(this));
+                });
+            };
             return Monitor;
         }());
         cmd.Monitor = Monitor;
@@ -35,6 +40,28 @@ var rocket;
                 this.layer.exec(url);
             };
             return LinkAction;
+        }());
+        var CommandAction = (function () {
+            function CommandAction(jqElem) {
+                this.jqElem = jqElem;
+                var that = this;
+                jqElem.click(function (e) {
+                    that.handle();
+                    return false;
+                });
+            }
+            CommandAction.prototype.handle = function () {
+                alert("handle");
+            };
+            CommandAction.from = function (jqElem) {
+                var commandAction = jqElem.data("rocketCommandAction");
+                if (commandAction)
+                    return commandAction;
+                commandAction = new CommandAction(jqElem);
+                jqElem.data("rocketCommandAction", commandAction);
+                return commandAction;
+            };
+            return CommandAction;
         }());
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
@@ -219,7 +246,6 @@ var rocket;
                 this.jqContentGroup.append(jqContent);
                 var context = new Context(jqContent, url, this);
                 this.addContext(context);
-                this.createHistoryEntry(context);
                 return context;
             };
             Layer.prototype.clear = function () {
