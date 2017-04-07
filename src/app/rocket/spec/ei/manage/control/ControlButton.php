@@ -134,10 +134,14 @@ class ControlButton {
 			$attrs['title'] = $this->tooltip;
 		}
 		
+		if (!isset($attrs['class'])) {
+			$attrs['class'] = '';
+		}
+		
 		if ($this->type !== null) {
-			$attrs['class'] = $this->type;
+			$attrs['class'] .= ' ' . $this->type;
 		} else {
-			$attrs['class'] = self::TYPE_DEFAULT;
+			$attrs['class'] .= ' ' . self::TYPE_DEFAULT;
 		}
 		
 		if ($this->important) {
@@ -167,7 +171,6 @@ class ControlButton {
 		
 		$label = new Raw(new HtmlElement('i', array('class' => $iconType), '') . ' '
 				. new HtmlElement('span', null, $this->name));
-		
 		return new HtmlElement('a', $this->applyAttrs($attrs), $label);
 	}
 	

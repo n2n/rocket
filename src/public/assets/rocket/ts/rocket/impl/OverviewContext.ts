@@ -166,7 +166,7 @@ namespace rocket.impl {
 			
 			this.calcDimensions();
 			$(window).resize(function () {
-				this.calcDimensions();
+				that.calcDimensions();
 			});
 		}
 		

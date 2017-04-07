@@ -51,7 +51,12 @@ var rocket;
                 });
             }
             CommandAction.prototype.handle = function () {
-                alert("handle");
+                var url = this.jqElem.attr("href");
+                var layer = cmd.Layer.findFrom(this.jqElem);
+                if (layer === null) {
+                    throw new Error("Command belongs to no layer.");
+                }
+                layer.exec(url);
             };
             CommandAction.from = function (jqElem) {
                 var commandAction = jqElem.data("rocketCommandAction");
@@ -116,6 +121,8 @@ var rocket;
                 this.historyUrls = new Array();
                 this.jqContentGroup = jqContentGroup;
                 this.level = level;
+                jqContentGroup.addClass("rocket-layer");
+                jqContentGroup.data("rocketLayer", this);
                 var jqContext = jqContentGroup.children(".rocket-context");
                 if (jqContext.length > 0) {
                     var context = new Context(jqContext, window.location.href, this);
@@ -262,6 +269,16 @@ var rocket;
             };
             Layer.prototype.onNewHistoryEntry = function (onNewHistoryEntryCallback) {
                 this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
+            };
+            Layer.findFrom = function (jqElem) {
+                if (!jqElem.hasClass(".rocket-layer")) {
+                    jqElem = jqElem.parents(".rocket-layer");
+                }
+                var layer = jqElem.data("rocketLayer");
+                if (layer === undefined) {
+                    return null;
+                }
+                return layer;
             };
             return Layer;
         }());
@@ -460,7 +477,7 @@ var rocket;
                 //			this.jqHeader.parent().css("padding-top", headerHeight);
                 this.calcDimensions();
                 $(window).resize(function () {
-                    this.calcDimensions();
+                    that.calcDimensions();
                 });
             };
             FixedHeader.prototype.calcDimensions = function () {
@@ -521,9 +538,14 @@ var rocket;
 var rocket;
 (function (rocket) {
     jQuery(document).ready(function ($) {
-        var container = new rocket.cmd.Container($("#rocket-content-container"));
+        var jqContainer = $("#rocket-content-container");
+        var container = new rocket.cmd.Container(jqContainer);
         var monitor = new rocket.cmd.Monitor(container);
         monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
+        monitor.scan(jqContainer);
+        n2n.dispatch.registerCallback(function () {
+            monitor.scan(jqContainer);
+        });
         (function () {
             $(".rocket-impl-overview").each(function () {
                 rocket.impl.OverviewContext.scan($(this));

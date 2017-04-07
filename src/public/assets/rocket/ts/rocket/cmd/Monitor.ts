@@ -61,7 +61,13 @@ namespace rocket.cmd {
 		}
 		
 		private handle() {
-			alert("handle");
+			var url = this.jqElem.attr("href");
+			var layer = Layer.findFrom(this.jqElem);
+			if (layer === null) {
+				throw new Error("Command belongs to no layer.");
+			}
+			
+			layer.exec(url);
 		}
 		
 		public static from(jqElem: JQuery): CommandAction {

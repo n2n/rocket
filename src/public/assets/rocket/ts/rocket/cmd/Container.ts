@@ -76,6 +76,9 @@ namespace rocket.cmd {
 			this.jqContentGroup = jqContentGroup;
 			this.level = level;
 			
+			jqContentGroup.addClass("rocket-layer");
+			jqContentGroup.data("rocketLayer", this);
+			
 			var jqContext = jqContentGroup.children(".rocket-context");
 			if (jqContext.length > 0) {
 				var context = new Context(jqContext, window.location.href, this);
@@ -257,6 +260,19 @@ namespace rocket.cmd {
 		
 		public onNewHistoryEntry(onNewHistoryEntryCallback: HistoryCallback) {
 			this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
+		}
+		
+		public static findFrom(jqElem: JQuery): Layer {
+			if (!jqElem.hasClass(".rocket-layer")) {
+				jqElem = jqElem.parents(".rocket-layer");
+			}
+			
+			var layer = jqElem.data("rocketLayer");
+			if (layer === undefined) {
+				return null;
+			}
+			
+			return layer;
 		}
 	}
 	
