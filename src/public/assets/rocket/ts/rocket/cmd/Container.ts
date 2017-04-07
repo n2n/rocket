@@ -237,7 +237,6 @@ namespace rocket.cmd {
 			
 			this.addContext(context);
 			
-			this.createHistoryEntry(context);
 			return context;
 		}
 		

@@ -14,6 +14,12 @@ namespace rocket.cmd {
                 (new LinkAction(jQuery(this), layer)).activate();
             });
 		}
+		
+		public scan(jqContainer: JQuery) {
+			jqContainer.find("a.rocket-action").each(function () {
+				CommandAction.from($(this));
+			});
+		}
 	}
 	
     class LinkAction {
@@ -40,4 +46,31 @@ namespace rocket.cmd {
 			this.layer.exec(url);
 		}
     }
+	
+	class CommandAction {
+		private jqElem: JQuery;
+		
+		public constructor(jqElem: JQuery) {
+			this.jqElem = jqElem;
+			
+			var that = this;
+			jqElem.click(function (e) {
+				that.handle();
+				return false;
+			});
+		}
+		
+		private handle() {
+			alert("handle");
+		}
+		
+		public static from(jqElem: JQuery): CommandAction {
+			var commandAction = jqElem.data("rocketCommandAction");
+			if (commandAction) return commandAction;
+			
+			commandAction = new CommandAction(jqElem);
+			jqElem.data("rocketCommandAction", commandAction);
+			return commandAction;
+		}
+	}
 }
