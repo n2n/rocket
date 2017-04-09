@@ -29,9 +29,9 @@
 	use n2n\web\http\nav\Murl;
 
 	$view = HtmlView::view($this);
-	$request = HtmlView::request($this);
-	$html = HtmlView::html($this);
-	$httpContext = HtmlView::httpContext($this);
+	$request = HtmlView::request($view);
+	$html = HtmlView::html($view);
+	$httpContext = HtmlView::httpContext($view);
 	
 	$templateModel = $view->lookup(TemplateModel::class); 
 	$view->assert($templateModel instanceof TemplateModel);
@@ -55,7 +55,10 @@
 	$htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
 	$htmlMeta->addLibrary(new JQueryLibrary(2, false));
-	$htmlMeta->addCss('css/rocket.css');
+// new design (not ready yet):
+	$htmlMeta->addCss('css/rocket-12.css');
+// old design:
+//	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/font-awesome.css');
 // 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
@@ -77,85 +80,73 @@
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 
 			'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
 		<header id="rocket-header">
-			<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
-					array('id' => 'rocket-branding')) ?>
-					
+			<div id="rocket-logo">
+				<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
+						array('id' => 'rocket-branding')) ?>
+			</div>
 			<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
-			<a href="#" id="rocket-conf-nav-toggle" title="<?php $html->text('mobile_nav_title') ?>">
-				<i class="fa fa-navicon"></i>
-			</a>
-			<nav id="rocket-conf-nav">
+			<nav id="rocket-conf-nav" class="navbar-toggleable-lg">
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
+						data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false" 
+						aria-label="Toggle navigation">
+					<i class="fa fa-navicon"></i>
+				</button>
 				<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
-				<ul class="rocket-level-1">
+				<ul class="nav justify-content-end">
 					<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
-						<li class="rocket-conf-users">
-							<?php $html->linkStart(Murl::controller('rocket')->pathExt('users')) ?>
-								<i class="fa fa-user"></i><?php $html->text('user_title') ?>
+						<li class="nav-item">
+							<?php $html->linkStart(Murl::controller('rocket')->pathExt('users'), array('class' => 'rocket-conf-nav-link')) ?>
+								<i class="fa fa-user mr-2"></i><?php $html->text('user_title') ?>
 							<?php $html->linkEnd() ?> 
 						</li>
-						<li class="rocket-conf-users">
-							<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups')) ?>
-								<i class="fa fa-group"></i><?php $html->text('user_groups_title') ?>
+						<li class="nav-item">
+							<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'rocket-conf-nav-link')) ?>
+								<i class="fa fa-group mr-2"></i><?php $html->text('user_groups_title') ?>
 							<?php $html->linkEnd() ?> 
 						</li>
-						<li class="rocket-conf-tools">
-							<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools')) ?>
-								<i class="fa fa-wrench"></i><?php $html->text('tool_title') ?>
+						<li class="nav-item">
+							<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools'), array('class' => 'rocket-conf-nav-link')) ?>
+								<i class="fa fa-wrench mr-2"></i><?php $html->text('tool_title') ?>
 							<?php $html->linkEnd() ?>
 						</li>
 					<?php endif ?>
-					<li class="rocket-conf-about">
-						<?php $html->linkStart(Murl::controller('rocket')->pathExt('about')) ?>
-							<i class="fa fa-wrench"></i><?php $html->text('about_title') ?>
+					<li class="nav-item">
+						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'rocket-conf-nav-link')) ?> 
+							<?php $html->out((string) $templateModel->getCurrentUser()) ?>
 						<?php $html->linkEnd() ?>
 					</li>
-					<li class="rocket-conf-profile">
-						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile')) ?> 
-							<i class="fa fa-key"></i><?php $html->text('user_profile_title') ?>
+					<li class="nav-item">
+						<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('class' => 'rocket-conf-nav-link')) ?>
+							<i class="fa fa-sign-out"></i>
+						<?php $html->linkEnd() ?>
+					</li>
+					<li class="nav-item">
+						<?php $html->linkStart(Murl::controller('rocket')->pathExt('about'), array('class' => 'rocket-conf-nav-link')) ?>
+							<i class="fa fa-info"></i>
 						<?php $html->linkEnd() ?>
 					</li>
 				</ul>
 			</nav>
-			<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('id' => 'rocket-logout')) ?>
-				<i class="fa fa-sign-out"></i><span class="rocket-logout-text"><?php $html->text('user_logout_label', 
-						array('user' => (string) $templateModel->getCurrentUser())) ?></span>
-			<?php $html->linkEnd() ?>
 		</header>
 		<nav id="rocket-global-nav">
 			<h2 class="sr-only"><?php $html->l10nText('manage_nav_title') ?></h2>
 			<?php foreach ($templateModel->getNavArray() as $navArray): ?>
 				<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>">
-					<h3><a><i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i> 
-							<?php $html->esc($navArray['menuGroup']->getLabel()) ?></a></h3>
-					<ul>
+					<h3 class="rocket-global-nav-group-title">
+						<a><?php $html->esc($navArray['menuGroup']->getLabel()) ?></a>
+						<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
+					</h3>
+					<ul class="nav flex-column">
 						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
-							<li<?php $view->out($templateModel->isMenuItemActive($menuItem) 
-									? ' class="rocket-nav-group-list-item-active"' : null) ?>>
+							<li class="nav-item<?php $view->out($templateModel->isMenuItemActive($menuItem) 
+									? ' rocket-nav-group-list-item-active' : null) ?>">
 								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), $menuItem->determinePathExt($view->getN2nContext())), 
-										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>'), array('class' => 'rocket-action')) ?></li>
+										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>'), array('class' => 'nav-link')) ?></li>
 						<?php endforeach ?>
 					</ul>
 				</div>
 			<?php endforeach ?>
 		</nav>
-		<nav id="rocket-global-mobile-nav">
-			<select onchange="location.href = this.value">
-				<option value="<?php $html->out($view->buildUrl(Murl::controller('rocket'))) ?>">
-					<?php $html->text('common_select_label') ?>
-				</option>
-				<?php foreach ($templateModel->getNavArray() as $navArray): ?>
-					<optgroup label="<?php $html->out($navArray['menuGroup']->getLabel()) ?>">
-						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
-							<option value="<?php $html->out($view->buildUrl(Murl::controller('rocket')->pathExt('manage', $menuItem->getId()))) ?>" 
-									<?php $view->out($templateModel->isMenuItemActive($menuItem) ? 'selected="selected"' : null) ?>>
-								<?php $html->out($navArray['menuGroup']->determineLabel($menuItem))?>
-							</option>
-						<?php endforeach ?>
-					</optgroup>
-				<?php endforeach ?>
-			</select>
-		</nav>
-		
 		
 		<div id="rocket-content-container">
 			<div class="rocket-main-layer">

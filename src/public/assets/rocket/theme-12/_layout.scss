@@ -1,0 +1,82 @@
+/**
+ * Header
+ */
+
+#rocket-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    background-color: $gray-darkest;
+    color: white;
+    display: flex;
+    z-index: 1000;
+}
+
+#rocket-logo {
+    flex: 0 0 17rem;
+}
+
+#rocket-branding {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+}
+#rocket-customer-name {
+    flex: 1 0 auto;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 3rem;
+}
+#rocket-conf-nav {
+    flex: 1 0 auto;
+}
+.rocket-conf-nav-link {
+    display: inline-block;
+    line-height: 3rem;
+    padding: 0 1rem;
+    color: $gray-lighter;
+    &:hover {
+        color: $gray-lightest;
+    }
+}
+
+/**
+ * Global navigation
+ */
+#rocket-global-nav {
+    position: fixed;
+    padding-top: 4rem;
+    top: 3rem;
+    left: 0;
+    bottom: 0;
+    width: 14rem;
+    background: url(../img/nav-body-bg.png) repeat $gray-dark;
+    color: white;
+    overflow-y: scroll;
+}
+
+.rocket-nav-group {
+    background: $gray-darker;
+}
+
+.rocket-global-nav-group-title {
+    font-size: 1rem;
+    background-color: $gray-darkest;
+    margin: 0;
+    padding: 0.75rem $spacer;
+    font-weight: bold;
+    > i.fa {
+        float: right;
+    }
+}
+
+/**
+ * Content
+ */
+
+#rocket-content-container {
+    margin-left: 17rem;
+    margin-top: 5rem;
+}
