@@ -83,7 +83,7 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 			}
 			
 			if ($targetEiMapping->isAccessible()) {
-				$detailViews[] = $targetEiuFrame->createDetailView($targetEiMapping);
+				$detailViews[] = $targetEiuFrame->createBulkyDetailView($targetEiMapping);
 			} else {
 				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
 						$targetEiuFrame->createIdentityString($targetEiMapping->getEiEntry()));

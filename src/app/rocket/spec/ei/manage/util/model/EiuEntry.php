@@ -89,12 +89,12 @@ class EiuEntry {
 	 * @param bool $eiEntryObj
 	 * @param bool $editable
 	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function newGui(bool $overview = false, bool $editable = false) {
 		$eiEntryGui = null;
 		if (!$overview) {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui();
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui($this, $editable);
 		} else if (null === $this->getEiuFrame()->getNestedSetStrategy()) {
 			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
 		} else {

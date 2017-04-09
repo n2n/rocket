@@ -185,7 +185,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	public function createBulkyView(EiuEntryGui $eiuEntryGui) {
-		return $this->getEiMask()->createBulkyView($this, $eiuEntryGui);
+		return $this->getEiMask()->createBulkyView($eiuEntryGui);
 	}
 		
 	public function createBulkyDetailView($eiEntryObj, bool $determineEiMask = true) {
@@ -196,10 +196,9 @@ class EiuFrame extends EiUtilsAdapter {
 			$eiMask = $this->determineEiMask($eiEntryObj);
 		}
 		
-		$eiuGui = $this->entry($eiEntryObj)->gui(false, false);
+		$eiuEntryGui = $this->entry($eiEntryObj)->newGui(false, false);
 
-		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($eiuGui);
-		return $eiMask->createBulkyView($this->eiFrame, new EntryGui($entryGuiModel));
+		return $eiMask->createBulkyView($eiuEntryGui);
 	}
 	
 	public function createNewEntryForm(bool $draft = false, EiMapping $copyFrom = null): EntryForm {

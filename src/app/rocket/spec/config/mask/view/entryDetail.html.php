@@ -26,22 +26,20 @@
 	use rocket\spec\ei\manage\EntryGui;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
-	
-	$eiFrame = $view->getParam('eiFrame');
-	$view->assert($eiFrame instanceof EiFrame);
-	
+		
 	$guiFieldOrder = $view->getParam('guiFieldOrder');
 	$view->assert($guiFieldOrder instanceof GuiFieldOrder);
 	
-	$entryGui = $view->getParam('entryGui');
-	$view->assert($entryGui instanceof EntryGui);
+	$eiuEntryGui = $view->getParam('eiuEntryGui');
+	$view->assert($eiuEntryGui instanceof EiuEntryGui);
 		
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, array($entryGui));
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiuEntryGui->getEiuEntry()->getEiuFrame(), array($eiuEntryGui));
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiuEntryGui->getEiuEntry()->getEiuFrame());
 ?>
 <div class="rocket-properties<?php $html->out($guiFieldOrder->containsAsideGroup() ? ' rocket-aside-container' : '') ?>">
 	<?php foreach ($guiFieldOrder->getOrderItems() as $orderItem): ?>
@@ -52,7 +50,7 @@
 				<div class="rocket-controls">
 					<?php $view->import('entryDetail.html', array(
 							'eiFrame' => $eiFrame, 'guiFieldOrder' => $guiSection->getGuiFieldOrder(), 
-							'entryGui' => $entryGui)) ?>
+							'entryGui' => $eiuEntryGui)) ?>
 				</div>
 			</div>
 		<?php else: ?>

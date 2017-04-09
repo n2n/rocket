@@ -220,7 +220,7 @@ namespace rocket.cmd {
 				"url": url,
 				"dataType": "json"
 			}).fail(function (data) {
-				alert(data);
+				context.applyErrorHtml(data.responseText);
 			}).done(function (data) {
 				data.additional;
 				
@@ -352,6 +352,20 @@ namespace rocket.cmd {
 			this.jqContent.removeClass("rocket-loading");
 			this.jqContent.html(html);
 		} 
+		
+		public applyErrorHtml(html: string) {
+			this.jqContent.removeClass("rocket-loading");
+			
+			var iframe = document.createElement('iframe');
+			this.jqContent.append(iframe);
+			
+			
+			iframe.contentWindow.document.open();
+			iframe.contentWindow.document.write(html);
+			iframe.contentWindow.document.close();
+			
+			$(iframe).css({"width": "100%", "height": "100%"});
+		}
 		
 		public onClose(onCloseCallback: ContextCallback) {
 			this.onCloseCallbacks.push(onCloseCallback);

@@ -238,7 +238,7 @@ var rocket;
                     "url": url,
                     "dataType": "json"
                 }).fail(function (data) {
-                    alert(data);
+                    context.applyErrorHtml(data.responseText);
                 }).done(function (data) {
                     data.additional;
                     context.applyHtml(n2n.ajah.analyze(data));
@@ -331,6 +331,15 @@ var rocket;
             Context.prototype.applyHtml = function (html) {
                 this.jqContent.removeClass("rocket-loading");
                 this.jqContent.html(html);
+            };
+            Context.prototype.applyErrorHtml = function (html) {
+                this.jqContent.removeClass("rocket-loading");
+                var iframe = document.createElement('iframe');
+                this.jqContent.append(iframe);
+                iframe.contentWindow.document.open();
+                iframe.contentWindow.document.write(html);
+                iframe.contentWindow.document.close();
+                $(iframe).css({ "width": "100%", "height": "100%" });
             };
             Context.prototype.onClose = function (onCloseCallback) {
                 this.onCloseCallbacks.push(onCloseCallback);
@@ -557,12 +566,9 @@ var rocket;
             });
         })();
     });
-    var Rocket = (function () {
-        function Rocket() {
-        }
-        return Rocket;
-    }());
-    function entry(jqElem) {
+    function handleErrorResponse(responseObject) {
+        alert(JSON.stringify(responseObject));
+        $("html").html(responseObject.responseText);
     }
-    rocket.entry = entry;
+    rocket.handleErrorResponse = handleErrorResponse;
 })(rocket || (rocket = {}));

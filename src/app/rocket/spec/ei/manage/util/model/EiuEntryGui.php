@@ -150,6 +150,14 @@ class EiuEntryGui {
 		
 		throw new EiuPerimeterException('No EiuEntry provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
+	
+	/**
+	 * 
+	 * @return \n2n\impl\web\ui\view\html\HtmlView
+	 */
+	public function createBulkyView() {
+		return $this->getEiuEntry()->getEiuFrame()->createBulkyView($this);
+	}
 		
 // 	public function getEiMask() {
 // 		if ($this->eiMask !== null) {

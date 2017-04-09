@@ -29,59 +29,22 @@ use rocket\spec\ei\manage\EntryGui;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\EiEntry;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\draft\Draft;
-use rocket\user\model\RocketUserDao;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 class EntryCommandViewModel {
 	private $title;
-	private $eiFrameUtils;
-	private $eiFrame;
-	private $entryGuiModel;
-	private $eiEntry;
+	private $eiuEntryGui;
 	private $cancelUrl;
-	private $eiMask;
 	
-	public function __construct(EiuFrame $eiFrameUtils, $entryGuiModel, Url $cancelUrl = null) {
-		$this->eiFrameUtils = $eiFrameUtils;
-		$this->eiFrame = $eiFrameUtils->getEiFrame();
-		if ($entryGuiModel instanceof EntryGuiModel) {
-			$this->entryGuiModel = $entryGuiModel;
-			$this->eiEntry = $entryGuiModel->getEiMapping()->getEiEntry();
-		} else if ($entryGuiModel instanceof EiEntry) {
-			$this->eiEntry = $entryGuiModel;
-		}
+	public function __construct(EiuEntryGui $eiuEntryGui, Url $cancelUrl = null) {
+		$this->eiuEntryGui = $eiuEntryGui;
 		$this->cancelUrl = $cancelUrl;
-	}
-	
-	public function getEiEntry() {
-		return $this->eiEntry;
-	}
-	
-	private function getEiMask() {
-		if ($this->entryGuiModel !== null) {
-			return $this->entryGuiModel->getEiMask();
-		}
-		
-		return $this->eiFrame->getContextEiMask();
 	}
 	
 	public function getTitle() {
 		if ($this->title !== null) return $this->title;
 			
-		$eiEntry = $this->getEiEntry();
-		
-		return $this->title = $this->getEiuEntry()->createIdentityString();
-		
-// 		if ($this->entryGuiModel && !$eiEntry->isNew()) {
-// 			return $this->title = $this->entryGuiModel->getEiMask()
-// 					->createIdentityString($eiEntry, $this->eiFrame->getN2nLocale());
-// 		} 
-		
-// 		if ($this->entryGuiModel !== null) {
-// 			return $this->title = $this->entryGuiModel->getEiMask()->getLabelLstr()->t($this->eiFrame->getN2nLocale());
-// 		}
-		
-// 		return $this->title = $this->eiFrame->getContextEiMask()->getLabelLstr()->t($this->eiFrame->getN2nLocale());
+		return $this->title = $this->eiuEntryGui->getEiuEntry()->createIdentityString(true);
 	}
 	
 	public function setTitle($title) {
@@ -92,31 +55,28 @@ class EntryCommandViewModel {
 	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
 	public function getEiuFrame() {
-		return $this->eiFrameUtils;
+		return $this->eiuEntryGui->getEiuEntry()->getEiuFrame();
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function getEiuEntry() {
-		return $this->eiFrameUtils->toEiuEntry($this->eiEntry);
+		return $this->eiuEntryGui->getEiuEntry();
 	}
 	
-	public function getEiFrame() {
-		return $this->eiFrame;
-	}
 	
 	private $latestDraft = null;
 	private $historicizedDrafts = array();
 	
 	public function initializeDrafts() {
-		$entryEiuEntry = $this->getEiuEntry();
-		if ($entryEiuEntry->hasLiveId() && $this->eiFrameUtils->isDraftingEnabled()) {
-			$this->historicizedDrafts = $entryEiuEntry->lookupDrafts(0, 30);
+		$eiuEntry = $this->getEiuEntry();
+		if ($eiuEntry->hasLiveId() && $this->getEiuFrame()->isDraftingEnabled()) {
+			$this->historicizedDrafts = $eiuEntry->lookupDrafts(0, 30);
 		}
 		
-		if ($this->eiEntry->isDraft() && $this->eiEntry->isNew()) {
-			$this->latestDraft = $this->eiEntry->getDraft();
+		if ($eiuEntry->isDraft() && $eiuEntry->isNew()) {
+			$this->latestDraft = $eiuEntry->getDraft();
 		}
 	
 		if (empty($this->historicizedDrafts) || $this->latestDraft !== null) return;
@@ -152,12 +112,8 @@ class EntryCommandViewModel {
 		return $this->getEiuEntry()->isPreviewAvailable();
 	}
 	
-	public function getEntryGuiModel(): EntryGuiModel {
-		if ($this->entryGuiModel === null) {
-			throw new IllegalStateException();
-		}
-		
-		return $this->entryGuiModel;
+	public function getEiuEntryGui() {
+		return $this->eiuEntryGui;
 	}
 	
 	
@@ -205,10 +161,6 @@ class EntryCommandViewModel {
 		}
 		
 		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());	
-	}
-	
-	public function createDetailView() {
-		return $this->entryGuiModel->getEiMask()->createBulkyView($this->eiFrame, new EntryGui($this->entryGuiModel));
 	}
 }
 // class EntryViewInfo {

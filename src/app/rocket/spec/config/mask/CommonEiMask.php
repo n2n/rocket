@@ -446,7 +446,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView {
-		$viewMode = $eiuEntryGui->getEntryGuiModel()->getEiEntryGui()->getViewMode();
+		$viewMode = $eiuEntryGui->getViewMode();
 		
 		switch ($viewMode) {
 			case DisplayDefinition::VIEW_MODE_BULKY_READ:
@@ -460,9 +460,10 @@ class CommonEiMask implements EiMask, Identifiable {
 				throw new \InvalidArgumentException('No bulky viewMode.');
 		}
 		
+		$eiFrame = $eiuEntryGui->getEiuEntry()->getEiFrame();
 		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create($viewName, 
-				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryGui' => $eiuEntryGui));
+				array('guiFieldOrder' => $guiFieldOrder, 'eiuEntryGui' => $eiuEntryGui));
 	}
 	
 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
