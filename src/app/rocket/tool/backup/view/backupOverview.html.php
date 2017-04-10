@@ -48,7 +48,7 @@
 					<td>
 						<div class="rocket-simple-controls">
 							<?php $html->linkToController(array('download', $file->getName()), 
-										new Raw('<i class="fa fa-save"></i><span>' . $html->getL10nText('common_save_as_label') . '</span>'), 
+										new Raw('<i class="fa fa-download"></i><span>' . $html->getL10nText('common_save_as_label') . '</span>'), 
 										array('class' => 'btn btn-secondary', 'title' => $html->getL10nText('common_save_as_label'))) ?>
 							<?php $html->linkToController(array('delete', $file->getName()), 
 									new Raw('<i class="fa fa-times-circle"></i><span>' . $html->getL10nText('common_delete_label') . '</span>'), 

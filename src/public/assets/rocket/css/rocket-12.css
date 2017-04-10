@@ -3158,6 +3158,12 @@ body {
 .breadcrumb {
   margin-bottom: 0; }
 
+.table {
+  background: white; }
+
+.rocket-simple-controls > a > span {
+  display: none; }
+
 .align-baseline {
   vertical-align: baseline !important; }
 
