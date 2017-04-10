@@ -57,6 +57,8 @@ use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\ActionControl;
 use n2n\util\uri\Url;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\dispatch\map\PropertyPathPart;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -162,12 +164,15 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->determineEiMask($eiEntry)->getEiEngine()->createEiMapping($this->eiFrame, $eiEntry);
 	}
 	
-	public function createEiMappingCopy(EiMapping $from, EiEntry $to = null): EiMapping {
+	private function createEiMappingCopy($fromEiEntryObj, EiEntry $to = null): EiMapping {
+		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiEntryObj, $this, 'fromEiEntryObj');
+		
 		if ($to === null) {
-			$to = $this->createNewEiEntry($from->getEiEntry()->isDraft(), $from->getEiSpec());
+			$to = $this->createNewEiEntry($fromEiuEntry->isDraft(), $fromEiuEntry->getEiSpec());
 		}
 		
-		return $this->determineEiMask($to)->getEiEngine()->createEiMappingCopy($this->eiFrame, $to, $from);
+		return $this->determineEiMask($to)->getEiEngine()
+				->createEiMappingCopy($this->eiFrame, $to, $fromEiuEntry->getEiMapping());
 	}
 	
 // 	public function createBulkyEntryGuiModel(EiMapping $eiMapping, bool $makeEditable) {
@@ -185,7 +190,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	public function createBulkyView(EiuEntryGui $eiuEntryGui) {
-		return $this->getEiMask()->createBulkyView($eiuEntryGui);
+		return $eiuEntryGui->getEiMask()->createBulkyView($eiuEntryGui);
 	}
 		
 	public function createBulkyDetailView($eiEntryObj, bool $determineEiMask = true) {
@@ -201,7 +206,7 @@ class EiuFrame extends EiUtilsAdapter {
 		return $eiMask->createBulkyView($eiuEntryGui);
 	}
 	
-	public function createNewEntryForm(bool $draft = false, EiMapping $copyFrom = null): EntryForm {
+	public function createNewEntryForm(bool $draft = false, $copyFromEiEntryObj = null): EntryForm {
 		$entryModelForms = array();
 		$labels = array();
 		
@@ -215,8 +220,8 @@ class EiuFrame extends EiUtilsAdapter {
 				
 			$eiEntry = $this->createNewEiEntry($draft, $subEiSpec);
 			$subEiMapping = null;
-			if ($copyFrom !== null) {
-				$subEiMapping = $this->createEiMappingCopy($copyFrom, $eiEntry);
+			if ($copyFromEiEntryObj !== null) {
+				$subEiMapping = $this->createEiMappingCopy($copyFromEiEntryObj, $eiEntry);
 			} else {
 				$subEiMapping = $this->createEiMapping($eiEntry);
 			}
@@ -243,13 +248,13 @@ class EiuFrame extends EiUtilsAdapter {
 		return $entryForm;
 	}
 	
-	public function createEntryFormFromMapping(EiMapping $eiMapping) {
+	public function createEntryFormFromMapping(EiMapping $eiMapping, PropertyPath $contextPropertyPath = null) {
 		$contextEiMask = $this->eiFrame->getContextEiMask();
 		
 		$entryForm = new EntryForm($this->eiFrame);
 		$eiSpec = $eiMapping->getEiSpec();
 
-		$entryForm->setEntryModelForms(array($eiSpec->getId() => $this->createEntryModelForm($eiSpec, $eiMapping)));
+		$entryForm->setEntryModelForms(array($eiSpec->getId() => $this->createEntryModelForm($eiSpec, $eiMapping, $contextPropertyPath)));
 		$entryForm->setChosenId($eiSpec->getId());
 		// @todo remove hack when ContentItemEiField gets updated.
 		$entryForm->setChoicesMap(array($eiSpec->getId() => $contextEiMask->determineEiMask($eiSpec)->getLabelLstr()
@@ -257,11 +262,20 @@ class EiuFrame extends EiUtilsAdapter {
 		return $entryForm;
 	}
 	
-	private function createEntryModelForm(EiSpec $eiSpec, EiMapping $eiMapping) {
+	private function createEntryModelForm(EiSpec $eiSpec, EiMapping $eiMapping, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiSpec);
 		
-		$entryGuiModel = $eiMask->createBulkyEntryGuiModel($this->eiFrame, $eiMapping, true);
-		return new EntryModelForm($entryGuiModel);
+		$eiuEntry = new EiuEntry($eiMapping, $this);
+		$eiuEntryGui = new EiuEntryGui($eiuEntry, $eiMask->createBulkyEiEntryGui(new EiuEntry($eiMapping, $this), true));
+		
+		if ($contextPropertyPath === null) {
+			$contextPropertyPath = new PropertyPath(array());
+		}
+		
+		$eiuEntryGui->setContextPropertyPath($contextPropertyPath->ext(
+				new PropertyPathPart('entryModelForms', true, $eiSpec->getId()))->ext('dispatchable'));
+		
+		return new EntryModelForm($eiuEntryGui);
 	}
 	
 	public function remove(EiEntry $eiEntry) {
@@ -331,6 +345,10 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	public function controlFactory(HtmlView $view) {
 		return new EiuControlFactory($this, $view);
+	}
+	
+	public function getCurrentUrl() {
+		return $this->eiFrame->getCurrentUrl($this->getN2nContext()->getHttpContext());
 	}
 }
 

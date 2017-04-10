@@ -156,13 +156,12 @@ class EntryEiHtmlBuilder {
 	}
 	
 	public function getOpenInputField($tagName, $guiIdPath, array $attrs = null) {
-		$entryGui = $this->meta->getCurrentEntryGui();
+		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
 		
-		$entryGuiModel = $entryGui->getEntryGuiModel();
-		$eiEntryGui = $entryGuiModel->getEiEntryGui();
+		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $entryGuiModel->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getGuiDefinition()->guiIdPathToEiFieldPath($guiIdPath));
 		
 		if (!$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
@@ -171,7 +170,7 @@ class EntryEiHtmlBuilder {
 		}
 		
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
-		$propertyPath = $entryGui->getEntryPropertyPath()->ext($editableInfo->getMagPropertyPath());
+		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
 		$this->pushGuiFieldInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
 		return $this->fieldEiHtml->getOpenInputField($tagName, $propertyPath, $fieldErrorInfo, 
@@ -274,6 +273,14 @@ class EntryEiHtmlBuilderMeta {
 	
 	public function getForkMagPropertyPaths() {
 		return $this->getCurrentEiuEntryGui()->getEiEntryGui()->getForkMagPropertyPaths();
+	}
+	
+	public function getContextPropertyPath() {
+		if (null !== ($contextPropertyPath = $this->getCurrentEiuEntryGui()->getContextPropertyPath())) {
+			return $contextPropertyPath;
+		}
+		
+		return new PropertyPath(array());
 	}
 	
 	/**

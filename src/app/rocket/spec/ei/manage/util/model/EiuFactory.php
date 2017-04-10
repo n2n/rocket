@@ -295,6 +295,13 @@ class EiuFactory {
 		ArgUtils::valType($eiArg, self::EI_FRAME_TYPES, !$required, $argName);
 	}
 	
+	/**
+	 * @param unknown $eiArg
+	 * @param EiuFrame $eiuFrame
+	 * @param string $argName
+	 * @param bool $required
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry|NULL
+	 */
 	public static function buildEiuEntryFromEiArg($eiArg, EiuFrame $eiuFrame = null, string $argName = null, bool $required = false) {
 		if ($eiArg instanceof EiuEntry) {
 			return $eiArg;

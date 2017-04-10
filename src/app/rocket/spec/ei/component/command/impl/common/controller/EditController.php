@@ -35,6 +35,7 @@ use rocket\spec\ei\manage\draft\Draft;
 use n2n\util\col\ArrayUtils;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
@@ -50,8 +51,8 @@ class EditController extends ControllerAdapter {
 	 * @param Url $cancelUrl
 	 * @return \rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel
 	 */
-	private function createEntryCommandViewModel(EntryGuiModel $entryGuiModel, Url $cancelUrl = null) {
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $entryGuiModel, $cancelUrl);
+	private function createEntryCommandViewModel(EiuEntryGui $eiuEntryGui, Url $cancelUrl = null) {
+		$viewModel = new EntryCommandViewModel($eiuEntryGui, $cancelUrl);
 		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
@@ -77,9 +78,10 @@ class EditController extends ControllerAdapter {
 		$this->eiuCtrl->applyCommonBreadcrumbs($eiMapping->getEiEntry(), 
 				$this->dtc->translate('ei_impl_edit_entry_breadcrumb'));
 		
-		$this->forward('..\view\edit.html', array('editModel' => $editModel,
+		$view = $this->createView('..\view\edit.html', array('editModel' => $editModel,
 				'entryCommandViewModel' => $this->createEntryCommandViewModel(
-						$editModel->getEntryModel()->getEntryGuiModel(), $redirectUrl)));
+						$editModel->getEntryModel()->getEiuEntryGui(), $redirectUrl)));
+		$this->eiuCtrl->forwardView($view);
 	}
 	
 	public function doLatestDraft($idRep, ParamQuery $refPath) {

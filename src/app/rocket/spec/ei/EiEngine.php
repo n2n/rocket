@@ -187,8 +187,13 @@ class EiEngine {
 	}
 	
 	public function createEiEntryGui(EiuEntry $eiuEntry, int $viewMode, array $guiIdPaths) {
+		$eiMask = $this->eiMask;
+		if ($this->eiSpec === null) {
+			$eiMask = $this->eiSpec->getEiMaskCollection()->getOrCreateDefault();
+		}
+		
 		$guiFactory = new GuiFactory($this->getEiFieldCollection(), $this->getEiModificatorCollection());
-		return $guiFactory->createEiEntryGui($this->getGuiDefinition(), $eiuEntry, $viewMode, $guiIdPaths);
+		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
 	}
 	
 	public function getDraftDefinition(): DraftDefinition {

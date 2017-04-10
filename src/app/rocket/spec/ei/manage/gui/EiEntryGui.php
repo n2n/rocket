@@ -28,9 +28,10 @@ use n2n\web\dispatch\mag\Mag;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\mask\EiMask;
 
 class EiEntryGui {
-	private $guiDefinition;
+	private $eiMask;
 	private $viewMode;
 	private $displayables = array();
 	private $mappableWrappers = array();
@@ -43,13 +44,27 @@ class EiEntryGui {
 	private $forkMagPropertyPaths = array();
 	private $savables = array();
 	
-	public function __construct(GuiDefinition $guiDefinition, int $viewMode) {
-		$this->guiDefinition = $guiDefinition;
+	/**
+	 * @param EiMask $eiMask
+	 * @param int $viewMode
+	 */
+	public function __construct(EiMask $eiMask, int $viewMode) {
+		$this->eiMask = $eiMask;
 		$this->viewMode = $viewMode;
 	}
 	
-	public function getGuiDefinition(): GuiDefinition {
-		return $this->guiDefinition;
+	/**
+	 * @return \rocket\spec\ei\mask\EiMask
+	 */
+	public function getEiMask() {
+		return $this->eiMask;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\manage\gui\GuiDefinition
+	 */
+	public function getGuiDefinition() {
+		return $this->eiMask->getEiEngine()->getGuiDefinition();
 	}
 	
 	public function getViewMode() {

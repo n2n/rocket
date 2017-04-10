@@ -43,6 +43,16 @@ class EiuEntryGui {
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 	}
 	
+	/**
+	 * @return \rocket\spec\ei\mask\EiMask
+	 */
+	public function getEiMask() {
+		return $this->eiEntryGui->getEiMask();
+	}
+	
+	/**
+	 * @return int
+	 */
 	public function getViewMode() {
 		return $this->eiEntryGui->getViewMode();
 	}
@@ -77,14 +87,23 @@ class EiuEntryGui {
 		return $this->eiEntryGui;
 	}
 	
+	/**
+	 * @param \Closure $closure
+	 */
 	public function whenReady(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
 	}
 	
+	/**
+	 * @param \Closure $closure
+	 */
 	public function onSave(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
 	}
 	
+	/**
+	 * @param \Closure $closure
+	 */
 	public function whenSave(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
@@ -121,6 +140,9 @@ class EiuEntryGui {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	protected function triggerWhenReady() {
 		if (empty($this->whenReadyClosures)) return;
 		
@@ -135,14 +157,25 @@ class EiuEntryGui {
 		}
 	}
 
-	public function setContextPropertyPath(PropertyPath $propertyPath) {
+	/**
+	 * @param PropertyPath|null $propertyPath
+	 */
+	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
 		$this->eiEntryGui->setContextPropertyPath($propertyPath);
 	}
 	
+	/**
+	 * @return \n2n\web\dispatch\map\PropertyPath|null
+	 */
 	public function getContextPropertyPath() {
 		return $this->eiEntryGui->getContextPropertyPath();
 	}
 	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry|null
+	 */
 	public function getEiuEntry(bool $required = true) {
 		if (!$required || $this->eiuEntry !== null) {
 			return $this->eiuEntry;
@@ -187,6 +220,12 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	private $onSaveClosure;
 	private $savedClosure;
 
+	/**
+	 * @param Eiu $eiu
+	 * @param \Closure $whenReadyClosure
+	 * @param \Closure $onSaveClosure
+	 * @param \Closure $savedClosure
+	 */
 	public function __construct(Eiu $eiu, \Closure $whenReadyClosure, \Closure $onSaveClosure = null,
 			\Closure $savedClosure = null) {
 		$this->eiu = $eiu;
@@ -195,24 +234,39 @@ class ClosureGuiListener implements EiEntryGuiListener {
 		$this->savedClosure = $savedClosure;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::finalized()
+	 */
 	public function finalized(EiEntryGui $eiEntryGui) {
 		if ($this->whenReadyClosure !== null) {
 			$this->call($this->whenReadyClosure);
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::onSave()
+	 */
 	public function onSave(EiEntryGui $eiEntryGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::saved()
+	 */
 	public function saved(EiEntryGui $eiEntryGui) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}
 	}
 
+	/**
+	 * @param unknown $closure
+	 */
 	private function call($closure) {
 		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiFrame()->getN2nContext());
 		$mmi->setClassParamObject(Eiu::class, $this->eiu);

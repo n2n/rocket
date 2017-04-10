@@ -25,26 +25,22 @@
 	use rocket\spec\config\mask\model\GuiSection;
 	use rocket\spec\config\mask\model\GuiFieldOrder;
 	use rocket\spec\ei\manage\EntryGui;
-	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
+	use rocket\spec\ei\manage\util\model\Eiu;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$eiFrame = $view->getParam('eiFrame');
-	$view->assert($eiFrame instanceof EiFrame);
-	
 	$guiFieldOrder = $view->getParam('guiFieldOrder');
 	$view->assert($guiFieldOrder instanceof GuiFieldOrder);
 	
-	$entryGui = $view->getParam('entryGui');
-	$view->assert($entryGui instanceof EntryGui);
+	$eiu = $view->getParam('eiu');
+	$view->assert($eiu instanceof Eiu);
 
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, array($entryGui));
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiu);
 	
-	$propertyPath = $entryGui->getEntryPropertyPath();
+	$propertyPath = $eiu->entryGui()->getContextPropertyPath();
 ?>
 
 <?php if ($view->getParam('renderForkMags', false, true) 
@@ -61,11 +57,11 @@
 	</div>
 <?php endif ?>
 
-<div class="rocket-properties<?php $html->out($guiFieldOrder->containsAsideGroup() ? ' rocket-aside-container' : '') ?>">
+<div class="rocket-properties">
 	<?php foreach ($guiFieldOrder->getOrderItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
-			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-group-' . $type : 'rocket-group') ?> 
+			<div class="<?php $html->out('rocket-group-' . $guiSection->getType()) ?> 
 					<?php $html->out($formHtml->meta()->hasErrors($propertyPath) ? 'rocket-has-error' : '') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">

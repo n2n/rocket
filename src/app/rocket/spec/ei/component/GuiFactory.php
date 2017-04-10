@@ -35,12 +35,15 @@ use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\mask\EiMask;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 class GuiFactory {
 	private $eiFieldCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiFieldCollection $eiFieldCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiFieldCollection $eiFieldCollection, 
+			EiModificatorCollection $eiModificatorCollection) {
 		$this->eiFieldCollection = $eiFieldCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
@@ -71,14 +74,20 @@ class GuiFactory {
 		return $guiDefinition;
 	}
 	
-	public function createEiEntryGui(GuiDefinition $guiDefinition, EiuEntry $eiuEntry, int $viewMode, 
-			array $guiIdPaths): EiEntryGui {
-		ArgUtils::valArrayLike($guiIdPaths, 'rocket\spec\ei\manage\gui\GuiIdPath');
+	/**
+	 * @param EiMask $eiMask
+	 * @param EiuEntry $eiuEntry
+	 * @param int $viewMode
+	 * @param array $guiIdPaths
+	 * @return EiEntryGui
+	 */
+	public function createEiEntryGui(EiMask $eiMask, EiuEntry $eiuEntry, int $viewMode, array $guiIdPaths) {
+		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
-		$eiEntryGui = new EiEntryGui($guiDefinition, $viewMode);
+		$eiEntryGui = new EiEntryGui($eiMask, $viewMode);
 		$eiuEntryGui = new EiuEntryGui($eiEntryGui, $eiuEntry);
 		
-		$guiElementAssembler = new GuiElementAssembler($guiDefinition, $eiuEntryGui);
+		$guiElementAssembler = new GuiElementAssembler($eiMask->getEiEngine()->getGuiDefinition(), $eiuEntryGui);
 		
 		foreach ($guiIdPaths as $guiIdPath) {
 			$result = $guiElementAssembler->assembleGuiElement($guiIdPath);

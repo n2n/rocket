@@ -21,39 +21,26 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\spec\ei\manage\model\EntryGuiModel;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 
 class EntryModelForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->p('dispatchable', new AnnoDispObject());
 	}
 
-	private $entryGuiModel;
+	private $eiuEntryGui;
 	private $dispatchable;
 
-	public function __construct(EntryGuiModel $entryGuiModel) {
-		$this->entryGuiModel = $entryGuiModel;
-		$this->dispatchable = $entryGuiModel->getEiEntryGui()->getDispatchable();
+	public function __construct(EiuEntryGui $eiuEntryGui) {
+		$this->eiuEntryGui = $eiuEntryGui;
+		$this->dispatchable = $eiuEntryGui->getEiEntryGui()->getDispatchable();
 	}
 
-	public function getEntryGuiModel(): EntryGuiModel {
-		return $this->entryGuiModel;
-	}
-	
-// 	public function getEiMask() {
-// 		return $this->eiMask;
-// 	}
-
-// 	public function getEiEntryGui() {
-// 		return $this->eiEntryGui;
-// 	}
-
-	public function getEiMapping(): EiMapping {
-		return $this->entryGuiModel->getEiMapping();
+	public function getEiuEntryGui() {
+		return $this->eiuEntryGui;
 	}
 
 	public function getDispatchable() {
@@ -67,6 +54,6 @@ class EntryModelForm implements Dispatchable {
 	private function _validation() {}
 
 	public function save() {
-		$this->entryGuiModel->getEiEntryGui()->save();
+		$this->eiuEntryGui->getEiEntryGui()->save();
 	}
 }

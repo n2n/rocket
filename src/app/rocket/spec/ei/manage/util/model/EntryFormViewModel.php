@@ -72,13 +72,10 @@ class EntryFormViewModel {
 		
 		$eiSpecId = $entryForm->getChosenId();
 		$entryModelForm = $entryForm->getChosenEntryModelForm();
-		$propertyPath = $this->entryFormPropertyPath->ext(
-						new PropertyPathPart('entryModelForms', true, $eiSpecId))->ext('dispatchable');
-		$entryGuiModel = $entryModelForm->getEntryGuiModel();
-		$eiMask = $entryGuiModel->getEiMask();
+		$propertyPath = $this->entryFormPropertyPath
+				->ext(new PropertyPathPart('entryModelForms', true, $eiSpecId))->ext('dispatchable');
 		
-		return $eiMask->createBulkyView($entryForm->getEiFrame(), new EntryGui($entryGuiModel, $propertyPath));
-		
+		return $entryModelForm->getEiuEntryGui()->createBulkyView();
 	}
 	
 	public function createEditViews() {

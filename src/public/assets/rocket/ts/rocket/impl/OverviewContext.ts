@@ -217,13 +217,13 @@ namespace rocket.impl {
 			this.jqTableClone.children("tbody").remove();
 			this.jqHeader.append(this.jqTableClone);
 			this.jqTableClone.hide();
-			
+						
 			var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
 			this.jqTable.children("thead").children("tr").children().each(function(index) {
 				jqClonedChildren.eq(index).innerWidth($(this).innerWidth());
-				jqClonedChildren.css({
-					"boxSizing": "border-box"	
-				});
+//				jqClonedChildren.css({
+//					"boxSizing": "border-box"	
+//				});
 			});
 			
 //			this.jqTable.children("thead").hide();
