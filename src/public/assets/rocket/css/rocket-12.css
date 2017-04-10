@@ -3140,7 +3140,8 @@ body {
  */
 #rocket-content-container {
   margin-left: 17rem;
-  margin-top: 2.75rem; }
+  margin-top: 2.75rem;
+  margin-bottom: 7rem; }
 
 /**
  *
@@ -3150,7 +3151,8 @@ body {
   bottom: 0;
   right: 0;
   left: 17rem;
-  padding: 1rem 0; }
+  padding: 1rem 0;
+  background-color: #FBFAFA; }
 
 /**
  * File to correct bootstrap styles

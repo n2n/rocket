@@ -92,6 +92,7 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 #rocket-content-container {
     margin-left: $rocket-content-margin-left;
     margin-top: $rocket-header-height;
+    margin-bottom: 7rem;
 }
 
 
@@ -105,4 +106,5 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
      right: 0;
      left: $rocket-content-margin-left;
      padding: 1rem 0;
+     background-color: $brand-gray-09;
  }
