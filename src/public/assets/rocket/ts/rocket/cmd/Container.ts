@@ -221,7 +221,6 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				context.applyErrorHtml(data.responseText);
 			}).done(function (data) {
-				alert(JSON.stringify(data));
 				context.applyHtml(n2n.ajah.analyze(data));
 				n2n.ajah.update();
 				

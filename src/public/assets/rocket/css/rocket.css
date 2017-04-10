@@ -2683,80 +2683,80 @@ input[type="button"]:disabled:hover,
   }
 }
 /* line 100, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group {
+.rocket-group {
   position: relative;
   display: inline-block;
   vertical-align: middle;
 }
 /* line 104, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-control {
+.rocket-group > .rocket-control {
   position: relative;
   float: left;
 }
 /* line 108, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-control:hover, .rocket-control-group > .rocket-control:focus, .rocket-control-group > .rocket-control:active, .rocket-control-group > .rocket-control.active {
+.rocket-group > .rocket-control:hover, .rocket-group > .rocket-control:focus, .rocket-group > .rocket-control:active, .rocket-group > .rocket-control.active {
   z-index: 2;
 }
 
 /* line 117, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-control:not(:first-child):not(:last-child) {
+.rocket-group > .rocket-control:not(:first-child):not(:last-child) {
   border-radius: 0;
 }
 
 /* line 121, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-control:first-child {
+.rocket-group > .rocket-control:first-child {
   margin-left: 0;
 }
 /* line 123, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-control:first-child:not(:last-child) {
+.rocket-group > .rocket-control:first-child:not(:last-child) {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
 }
 
 /* line 128, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-control:last-child:not(:first-child) {
+.rocket-group > .rocket-control:last-child:not(:first-child) {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
 }
 
 /* line 132, ../theme/sass/rocket/_buttons.scss */
-.rocket-control-group > .rocket-active {
+.rocket-group > .rocket-active {
   color: #fff;
   background-color: #A7A29C;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-control-group > .rocket-active:hover {
+.rocket-group > .rocket-active:hover {
   color: #fff;
   background-color: #8f8981;
   border-color: #8a847c;
 }
 /* line 21, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-control-group > .rocket-active:focus, .rocket-control-group > .rocket-active.focus {
+.rocket-group > .rocket-active:focus, .rocket-group > .rocket-active.focus {
   color: #fff;
   background-color: #8f8981;
   border-color: #8a847c;
 }
 /* line 28, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-control-group > .rocket-active:active, .rocket-control-group > .rocket-active.active, .open > .rocket-control-group > .rocket-active.dropdown-toggle {
+.rocket-group > .rocket-active:active, .rocket-group > .rocket-active.active, .open > .rocket-group > .rocket-active.dropdown-toggle {
   color: #fff;
   background-color: #8f8981;
   border-color: #8a847c;
   background-image: none;
 }
 /* line 38, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-control-group > .rocket-active:active:hover, .rocket-control-group > .rocket-active:active:focus, .rocket-control-group > .rocket-active:active.focus, .rocket-control-group > .rocket-active.active:hover, .rocket-control-group > .rocket-active.active:focus, .rocket-control-group > .rocket-active.active.focus, .open > .rocket-control-group > .rocket-active.dropdown-toggle:hover, .open > .rocket-control-group > .rocket-active.dropdown-toggle:focus, .open > .rocket-control-group > .rocket-active.dropdown-toggle.focus {
+.rocket-group > .rocket-active:active:hover, .rocket-group > .rocket-active:active:focus, .rocket-group > .rocket-active:active.focus, .rocket-group > .rocket-active.active:hover, .rocket-group > .rocket-active.active:focus, .rocket-group > .rocket-active.active.focus, .open > .rocket-group > .rocket-active.dropdown-toggle:hover, .open > .rocket-group > .rocket-active.dropdown-toggle:focus, .open > .rocket-group > .rocket-active.dropdown-toggle.focus {
   color: #fff;
   background-color: #7d776f;
   border-color: #68625c;
 }
 /* line 49, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-control-group > .rocket-active.disabled:focus, .rocket-control-group > .rocket-active.disabled.focus, .rocket-control-group > .rocket-active:disabled:focus, .rocket-control-group > .rocket-active:disabled.focus {
+.rocket-group > .rocket-active.disabled:focus, .rocket-group > .rocket-active.disabled.focus, .rocket-group > .rocket-active:disabled:focus, .rocket-group > .rocket-active:disabled.focus {
   background-color: #A7A29C;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-control-group > .rocket-active.disabled:hover, .rocket-control-group > .rocket-active:disabled:hover {
+.rocket-group > .rocket-active.disabled:hover, .rocket-group > .rocket-active:disabled:hover {
   background-color: #A7A29C;
   border-color: #A7A29C;
 }
@@ -3140,13 +3140,13 @@ iframe.rocket-wysiwyg-detail {
  * R E L A T I O N S
  ******************************************************************************/
 /* line 97, ../theme/sass/rocket/_entry.scss */
-.rocket-control-group > .rocket-controls > .rocket-simple-controls {
+.rocket-group > .rocket-controls > .rocket-simple-controls {
   position: abolute;
   top: 0;
   right: 0;
 }
 /* line 102, ../theme/sass/rocket/_entry.scss */
-.rocket-control-group > .rocket-controls .rocket-control-options {
+.rocket-group > .rocket-controls .rocket-control-options {
   position: absolute;
   top: 30px;
   right: 10px;
@@ -3157,7 +3157,7 @@ iframe.rocket-wysiwyg-detail {
   z-index: 100;
 }
 /* line 111, ../theme/sass/rocket/_entry.scss */
-.rocket-control-group > .rocket-controls .rocket-control-options > li > .rocket-control {
+.rocket-group > .rocket-controls .rocket-control-options > li > .rocket-control {
   border: none;
   border-bottom: 1px solid #D3CDC7;
   background: none;
@@ -3168,11 +3168,11 @@ iframe.rocket-wysiwyg-detail {
   font-weight: normal;
 }
 /* line 120, ../theme/sass/rocket/_entry.scss */
-.rocket-control-group > .rocket-controls .rocket-control-options > li > .rocket-control:hover {
+.rocket-group > .rocket-controls .rocket-control-options > li > .rocket-control:hover {
   background-color: #F9F8F7;
 }
 /* line 124, ../theme/sass/rocket/_entry.scss */
-.rocket-control-group > .rocket-controls .rocket-control-options > li:last-child > .rocket-control {
+.rocket-group > .rocket-controls .rocket-control-options > li:last-child > .rocket-control {
   border-bottom: none;
 }
 
@@ -3288,7 +3288,7 @@ iframe.rocket-wysiwyg-detail {
   }
 }
 /* line 246, ../theme/sass/rocket/_entry.scss */
-.rocket-control-group > .rocket-controls > .rocket-to-one,
+.rocket-group > .rocket-controls > .rocket-to-one,
 .rocket-controls > .rocket-properties,
 .rocket-controls > div.rocket-type-dependent-entry-form {
   margin-left: -0.75rem;
@@ -3364,9 +3364,9 @@ iframe.rocket-wysiwyg-detail {
 }
 
 /* line 34, ../theme/sass/rocket/_errors.scss */
-.rocket-control-group.rocket-has-error > label,
-.rocket-control-group-main.rocket-has-error > label,
-.rocket-control-group-aside.rocket-has-error > label {
+.rocket-group.rocket-has-error > label,
+.rocket-group-main.rocket-has-error > label,
+.rocket-group-aside.rocket-has-error > label {
   color: #fff;
 }
 
@@ -3379,23 +3379,23 @@ iframe.rocket-wysiwyg-detail {
 }
 
 /* line 4, ../theme/sass/rocket/_groups.scss */
-.rocket-control-group {
+.rocket-group {
   width: calc(100% - 1.5rem);
 }
 
 /* line 8, ../theme/sass/rocket/_groups.scss */
-.rocket-control-group,
-.rocket-control-group-aside,
-.rocket-control-group-main {
+.rocket-group,
+.rocket-group-aside,
+.rocket-group-main {
   margin: 0.75rem;
   border: 1px solid #66615C;
   background-color: rgba(79, 74, 70, 0.08);
   padding: 0;
 }
 /* line 15, ../theme/sass/rocket/_groups.scss */
-.rocket-control-group > label,
-.rocket-control-group-aside > label,
-.rocket-control-group-main > label {
+.rocket-group > label,
+.rocket-group-aside > label,
+.rocket-group-main > label {
   display: block !important;
   width: auto !important;
   float: none !important;
@@ -3406,17 +3406,17 @@ iframe.rocket-wysiwyg-detail {
   font-weight: bold;
 }
 /* line 25, ../theme/sass/rocket/_groups.scss */
-.rocket-control-group > .rocket-controls,
-.rocket-control-group-aside > .rocket-controls,
-.rocket-control-group-main > .rocket-controls {
+.rocket-group > .rocket-controls,
+.rocket-group-aside > .rocket-controls,
+.rocket-group-main > .rocket-controls {
   padding: 0 0.75rem;
   margin: 0 !important;
   width: 100% !important;
 }
 /* line 30, ../theme/sass/rocket/_groups.scss */
-.rocket-control-group.rocket-highlighted,
-.rocket-control-group-aside.rocket-highlighted,
-.rocket-control-group-main.rocket-highlighted {
+.rocket-group.rocket-highlighted,
+.rocket-group-aside.rocket-highlighted,
+.rocket-group-main.rocket-highlighted {
   border-color: #C1392B;
   box-shadow: 0px 0px 0px 3px rgba(193, 57, 43, 0.75);
 }
@@ -3440,12 +3440,12 @@ iframe.rocket-wysiwyg-detail {
   }
 
   /* line 53, ../theme/sass/rocket/_groups.scss */
-  .rocket-control-group-aside > .rocket-controls label {
+  .rocket-group-aside > .rocket-controls label {
     display: block;
     width: 100%;
   }
   /* line 57, ../theme/sass/rocket/_groups.scss */
-  .rocket-control-group-aside > .rocket-controls .rocket-controls {
+  .rocket-group-aside > .rocket-controls .rocket-controls {
     margin-left: 0;
     padding: 0 0.75rem;
     width: 100%;
