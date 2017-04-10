@@ -27,8 +27,8 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 
 class ControlButton {
-	const TYPE_DEFAULT = 'btn btn-default';
 	const TYPE_PRIMARY = 'btn btn-primary';
+	const TYPE_SECONDARY = 'btn btn-secondary';
 	const TYPE_SUCCESS = 'btn btn-success';
 	const TYPE_DANGER = 'btn btn-danger';
 	const TYPE_INFO = 'btn btn-info';
@@ -141,7 +141,7 @@ class ControlButton {
 		if ($this->type !== null) {
 			$attrs['class'] .= ' ' . $this->type;
 		} else {
-			$attrs['class'] .= ' ' . self::TYPE_DEFAULT;
+			$attrs['class'] .= ' ' . self::TYPE_SECONDARY;
 		}
 		
 		if ($this->important) {

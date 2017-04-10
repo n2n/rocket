@@ -1,8 +1,16 @@
+body {
+    background-color: $brand-gray-09;
+}
+
+
 /**
  * Header
  */
 
 $rocket-header-height: 2.75rem;
+$rocket-global-nav-width: 14rem;
+$rocket-global-nav-spacer: 3rem;
+$rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-spacer;
 
 #rocket-header {
     position: fixed;
@@ -17,7 +25,7 @@ $rocket-header-height: 2.75rem;
 }
 
 #rocket-logo {
-    flex: 0 0 17rem;
+    flex: 0 0 $rocket-content-margin-left;
 }
 
 #rocket-branding {
@@ -56,7 +64,7 @@ $rocket-header-height: 2.75rem;
     top: $rocket-header-height;
     left: 0;
     bottom: 0;
-    width: 14rem;
+    width: $rocket-global-nav-width;
     background: url(../img/nav-body-bg.png) repeat $gray-dark;
     color: white;
     overflow-y: scroll;
@@ -82,6 +90,19 @@ $rocket-header-height: 2.75rem;
  */
 
 #rocket-content-container {
-    margin-left: 17rem;
+    margin-left: $rocket-content-margin-left;
     margin-top: $rocket-header-height;
 }
+
+
+/**
+ *
+ */
+
+ .rocket-context-controls {
+     position: fixed;
+     bottom: 0;
+     right: 0;
+     left: $rocket-content-margin-left;
+     padding: 1rem 0;
+ }

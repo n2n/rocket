@@ -114,7 +114,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
 		$eiCommandButton = new ControlButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
-				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_DEFAULT,
+				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_SECONDARY,
 				IconType::ICON_TIMES_SIGN);
 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));

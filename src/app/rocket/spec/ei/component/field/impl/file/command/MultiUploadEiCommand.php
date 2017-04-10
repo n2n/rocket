@@ -69,6 +69,6 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		$tooltip = $dtc->translate('ei_impl_multi_upload_tooltip');
 		
 		return array(self::MULTI_UPLOAD_KEY => HrefControl::create($eiu->frame()->getEiFrame(), $this, null,
-				new ControlButton($name, $tooltip, true, ControlButton::TYPE_DEFAULT, IconType::ICON_UPLOAD)));
+				new ControlButton($name, $tooltip, true, ControlButton::TYPE_SECONDARY, IconType::ICON_UPLOAD)));
 	}
 }
