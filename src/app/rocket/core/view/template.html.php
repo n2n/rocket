@@ -56,9 +56,9 @@
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
 	$htmlMeta->addLibrary(new JQueryLibrary(2, false));
 // new design (not ready yet):
-// 	$htmlMeta->addCss('css/rocket-12.css');
+ 	$htmlMeta->addCss('css/rocket-12.css');
 // old design:
-	$htmlMeta->addCss('css/rocket.css');
+//	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/font-awesome.css');
 // 	$htmlMeta->addJs('js/respond.src.js', null);
 // 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);

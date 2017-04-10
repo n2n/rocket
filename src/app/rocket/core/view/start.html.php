@@ -90,14 +90,10 @@
 	</div>
 	
 	<div class="rocket-context-controls">
-		<ul>
-			<li>
-				<?php $formHtml->open($deleteLoginModel) ?>
-					<?php $formHtml->buttonSubmit('delete', new Raw('<i class="fa fa-times-circle"></i><span>' 
-									. $html->getL10nText('core_delete_failed_logins_label') . '</span>'), 
-							array('class' => 'rocket-control-danger')); ?>
-				<?php $formHtml->close() ?>
-			</li>
-		</ul>
+		<?php $formHtml->open($deleteLoginModel) ?>
+			<?php $formHtml->buttonSubmit('delete', new Raw('<i class="fa fa-times-circle"></i> <span>' 
+							. $html->getL10nText('core_delete_failed_logins_label') . '</span>'), 
+					array('class' => 'btn btn-secondary')); ?>
+		<?php $formHtml->close() ?>
 	</div>
 <?php endif ?>

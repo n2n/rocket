@@ -64,20 +64,13 @@
 	</div>
 	
 	<div class="rocket-context-controls">
-		<ul>
-			<li>
-				<button type="button" id="rocket-preview-save-command"
-						data-rocket-confirm-msg="<?php $html->l10nText('ei_impl_edit_publish_draft_confirm_message') ?>"
-						data-rocket-confirm-ok-label="<?php $html->l10nText('common_yes_label') ?>"
-						data-rocket-confirm-cancel-label="<?php $html->l10nText('common_no_label') ?>">
-					<?php $html->l10nText('common_save_label') ?>
-				</button>
-			</li>
-					
-			<li>
-				<?php $html->link($entryCommandViewModel->getCancelPath($request), $view->getL10nText('common_cancel_label')) ?>
-			</li>
-		</ul>
+		<button type="button" id="rocket-preview-save-command"
+				data-rocket-confirm-msg="<?php $html->l10nText('ei_impl_edit_publish_draft_confirm_message') ?>"
+				data-rocket-confirm-ok-label="<?php $html->l10nText('common_yes_label') ?>"
+				data-rocket-confirm-cancel-label="<?php $html->l10nText('common_no_label') ?>">
+			<?php $html->l10nText('common_save_label') ?>
+		</button>
+		<?php $html->link($entryCommandViewModel->getCancelPath($request), $view->getL10nText('common_cancel_label')) ?>
 	
 		<?php if ($entryCommandViewModel->hasPreviewSwitch()): ?>
 			<?php $view->import('spec\ei\component\command\impl\common\view\inc\previewSwitch.html', array('entryViewInfo' => $entryCommandViewModel)) ?>
