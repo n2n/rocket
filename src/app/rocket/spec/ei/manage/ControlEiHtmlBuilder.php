@@ -26,14 +26,15 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\manage\util\model\EiuFactory;
 
 class ControlEiHtmlBuilder {
 	private $view;
 	private $eiuFrame;
 
-	public function __construct(HtmlView $view, EiuFrame $eiuFrame) {
+	public function __construct(HtmlView $view, $eiuFrame) {
 		$this->view = $view;
-		$this->eiuFrame = $eiuFrame;
+		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame);
 	}
 	
 	public function overallControlList() {

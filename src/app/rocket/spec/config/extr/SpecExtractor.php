@@ -307,7 +307,7 @@ class SpecExtractor {
 			
 			$guiSection = new GuiSection();
 			$guiSection->setType($guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY,
-					GuiSection::getTypes(), false));
+					GuiSection::getTypes(), false, null, true));
 			$guiSection->setTitle($guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY));
 			$guiSection->setGuiFieldOrder($this->createGuiFieldOrder($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
 			

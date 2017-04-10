@@ -37,6 +37,7 @@ use n2n\web\ui\Raw;
 use n2n\web\ui\CouldNotRenderUiComponentException;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\manage\util\model\EiuFactory;
 
 class EntryEiHtmlBuilder {
 	private $view;
@@ -49,15 +50,21 @@ class EntryEiHtmlBuilder {
 	private $eiEntryGuis;
 	private $meta;
 	
-	public function __construct(HtmlView $view, EiuFrame $eiuFrame, array $eiuEntryGuis) {
+	public function __construct(HtmlView $view, $eiuFrame, array $eiuEntryGuis = null) {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->fieldEiHtml = new FieldEiHtmlBuilder($view);
 		
-		$this->eiuFrame = $eiuFrame;
-		$this->eiEntryGuis = $eiuEntryGuis;
-		$this->meta = new EiHtmlBuilderMeta($eiuEntryGuis);
+		$eiuFactory = new EiuFactory();
+		$eiuFactory->applyEiArgs($eiuFrame, $view->getN2nContext());
+		
+		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
+		if (empty($eiuEntryGuis) && null !== ($eiuEntryGui = $eiuFactory->getEiuEntryGui(false))) {
+			$eiuEntryGuis = array($eiuEntryGui);
+		}
+		
+		$this->meta = new EntryEiHtmlBuilderMeta((array) $eiuEntryGuis);
 	}
 	
 	public function meta() {
@@ -99,8 +106,8 @@ class EntryEiHtmlBuilder {
 			$entryAttrs['data-rocket-draft-id'] = $eiEntry->getDraft()->getId();
 		}
 		
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
-				HtmlUtils::mergeAttrs($entryAttrs, $attrs)).'>');
+		return new Raw('<' . htmlspecialchars($tagName) 
+				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, $attrs)) . '>');
 	}
 	
 	public function entryClose() {
@@ -250,7 +257,7 @@ class EntryEiHtmlBuilder {
 // 	}
 }
 
-class EiHtmlBuilderMeta {
+class EntryEiHtmlBuilderMeta {
 	private $currentEiuEntryGui;
 	private $eiuEntryGuis;
 	private $entryPropertyPaths;

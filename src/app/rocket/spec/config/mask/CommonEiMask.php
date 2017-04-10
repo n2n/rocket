@@ -46,7 +46,6 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\config\mask\model\CommonEntryGuiModel;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\config\mask\model\EntryGuiTree;
@@ -460,10 +459,9 @@ class CommonEiMask implements EiMask, Identifiable {
 				throw new \InvalidArgumentException('No bulky viewMode.');
 		}
 		
-		$eiFrame = $eiuEntryGui->getEiuEntry()->getEiFrame();
 		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create($viewName, 
-				array('guiFieldOrder' => $guiFieldOrder, 'eiuEntryGui' => $eiuEntryGui));
+		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
+				->create($viewName, array('guiFieldOrder' => $guiFieldOrder, 'eiu' => new Eiu($eiuEntryGui)));
 	}
 	
 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {

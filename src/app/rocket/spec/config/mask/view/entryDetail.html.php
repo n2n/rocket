@@ -27,6 +27,7 @@
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -35,13 +36,13 @@ use rocket\spec\ei\manage\util\model\EiuEntryGui;
 	$guiFieldOrder = $view->getParam('guiFieldOrder');
 	$view->assert($guiFieldOrder instanceof GuiFieldOrder);
 	
-	$eiuEntryGui = $view->getParam('eiuEntryGui');
-	$view->assert($eiuEntryGui instanceof EiuEntryGui);
+	$eiu = $view->getParam('eiu');
+	$view->assert($eiu instanceof Eiu);
 		
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiuEntryGui->getEiuEntry()->getEiuFrame(), array($eiuEntryGui));
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiuEntryGui->getEiuEntry()->getEiuFrame());
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiu);
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiu);
 ?>
-<div class="rocket-properties<?php $html->out($guiFieldOrder->containsAsideGroup() ? ' rocket-aside-container' : '') ?>">
+<div class="rocket-properties">
 	<?php foreach ($guiFieldOrder->getOrderItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>

@@ -288,6 +288,10 @@ class EiuFactory {
 			return $eiArg->getEiuFrame($required);
 		}
 		
+		if ($eiArg instanceof Eiu) {
+			return $eiArg->frame();
+		}
+		
 		ArgUtils::valType($eiArg, self::EI_FRAME_TYPES, !$required, $argName);
 	}
 	

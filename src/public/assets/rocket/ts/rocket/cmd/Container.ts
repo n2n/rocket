@@ -27,10 +27,9 @@ namespace rocket.cmd {
 				if (!history.state) {
 					layer.go(0, window.location.href);
 					return;
-				}	
+				}
 				
-				if (history.state.type != "rocketContext"
-						|| history.state.level != 0) {
+				if (history.state.type != "rocketContext" || history.state.level != 0) {
 					return;
 				}
 				
@@ -111,7 +110,7 @@ namespace rocket.cmd {
 			return this.currentHistoryIndex;
 		}
 		
-		private addContext(context) {
+		private addContext(context: Context) {
 			this.contexts.push(context);
 			var that = this;
 			
@@ -222,8 +221,7 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				context.applyErrorHtml(data.responseText);
 			}).done(function (data) {
-				data.additional;
-				
+				alert(JSON.stringify(data));
 				context.applyHtml(n2n.ajah.analyze(data));
 				n2n.ajah.update();
 				
@@ -296,18 +294,20 @@ namespace rocket.cmd {
 	}
 	
 	export class Context {
-		private jqContent: JQuery;
+		private jqContext: JQuery;
 		private url: string;
 		private layer: Layer;
 		private onCloseCallbacks: Array<ContextCallback>
 		
-		constructor(jqContent: JQuery, url: string, layer: Layer) {
-			this.jqContent = jqContent;
+		constructor(jqContext: JQuery, url: string, layer: Layer) {
+			this.jqContext = jqContext;
 			this.url = url;
 			this.layer = layer;
 			this.onCloseCallbacks = new Array<ContextCallback>();
-			jqContent.addClass("rocket-context");
-			jqContent.data("rocketContent", this);
+			jqContext.addClass("rocket-context");
+			jqContext.data("rocketContent", this);
+			
+			this.hide();
 		}
 		
 		public getUrl(): string {
@@ -315,14 +315,14 @@ namespace rocket.cmd {
 		}
 		
 		private ensureNotClosed() {
-			if (this.jqContent !== null) return;
+			if (this.jqContext !== null) return;
 			
 			throw new Error("Context already closed.");
 		}
 		
 		public close() {
-			this.jqContent.remove();
-			this.jqContent = null;
+			this.jqContext.remove();
+			this.jqContext = null;
 			
 			var callback;
 			while (undefined !== (callback = this.onCloseCallbacks.shift())) {
@@ -331,7 +331,7 @@ namespace rocket.cmd {
 		}
 		
 		public show() {
-			this.jqContent.show();
+			this.jqContext.show();
 		
 //			var callback;
 //			while (undefined !== (callback = this.onShowCallbacks.shift())) {
@@ -340,24 +340,24 @@ namespace rocket.cmd {
 		}
 		
 		public hide() {
-			this.jqContent.hide();
+			this.jqContext.hide();
 		}
 		
 		public clear(loading: boolean = false) {
-			this.jqContent.empty();
-			this.jqContent.addClass("rocket-loading");
+			this.jqContext.empty();
+			this.jqContext.addClass("rocket-loading");
 		}
 			
 		public applyHtml(html: string) {
-			this.jqContent.removeClass("rocket-loading");
-			this.jqContent.html(html);
+			this.jqContext.removeClass("rocket-loading");
+			this.jqContext.html(html);
 		} 
 		
 		public applyErrorHtml(html: string) {
-			this.jqContent.removeClass("rocket-loading");
+			this.jqContext.removeClass("rocket-loading");
 			
 			var iframe = document.createElement('iframe');
-			this.jqContent.append(iframe);
+			this.jqContext.append(iframe);
 			
 			
 			iframe.contentWindow.document.open();

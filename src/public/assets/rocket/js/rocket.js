@@ -95,8 +95,7 @@ var rocket;
                         layer.go(0, window.location.href);
                         return;
                     }
-                    if (history.state.type != "rocketContext"
-                        || history.state.level != 0) {
+                    if (history.state.type != "rocketContext" || history.state.level != 0) {
                         return;
                     }
                     if (!layer.go(history.state.historyIndex, history.state.url)) {
@@ -240,7 +239,7 @@ var rocket;
                 }).fail(function (data) {
                     context.applyErrorHtml(data.responseText);
                 }).done(function (data) {
-                    data.additional;
+                    alert(JSON.stringify(data));
                     context.applyHtml(n2n.ajah.analyze(data));
                     n2n.ajah.update();
                     if (doneCallback) {
@@ -289,53 +288,54 @@ var rocket;
             return ExecResult;
         }());
         var Context = (function () {
-            function Context(jqContent, url, layer) {
-                this.jqContent = jqContent;
+            function Context(jqContext, url, layer) {
+                this.jqContext = jqContext;
                 this.url = url;
                 this.layer = layer;
                 this.onCloseCallbacks = new Array();
-                jqContent.addClass("rocket-context");
-                jqContent.data("rocketContent", this);
+                jqContext.addClass("rocket-context");
+                jqContext.data("rocketContent", this);
+                this.hide();
             }
             Context.prototype.getUrl = function () {
                 return this.url;
             };
             Context.prototype.ensureNotClosed = function () {
-                if (this.jqContent !== null)
+                if (this.jqContext !== null)
                     return;
                 throw new Error("Context already closed.");
             };
             Context.prototype.close = function () {
-                this.jqContent.remove();
-                this.jqContent = null;
+                this.jqContext.remove();
+                this.jqContext = null;
                 var callback;
                 while (undefined !== (callback = this.onCloseCallbacks.shift())) {
                     callback(this);
                 }
             };
             Context.prototype.show = function () {
-                this.jqContent.show();
+                this.jqContext.show();
                 //			var callback;
                 //			while (undefined !== (callback = this.onShowCallbacks.shift())) {
                 //				callback(this);
                 //			}
             };
             Context.prototype.hide = function () {
-                this.jqContent.hide();
+                this.jqContext.hide();
             };
             Context.prototype.clear = function (loading) {
                 if (loading === void 0) { loading = false; }
-                this.jqContent.empty();
-                this.jqContent.addClass("rocket-loading");
+                this.jqContext.empty();
+                this.jqContext.addClass("rocket-loading");
             };
             Context.prototype.applyHtml = function (html) {
-                this.jqContent.removeClass("rocket-loading");
-                this.jqContent.html(html);
+                this.jqContext.removeClass("rocket-loading");
+                this.jqContext.html(html);
             };
             Context.prototype.applyErrorHtml = function (html) {
-                this.jqContent.removeClass("rocket-loading");
+                this.jqContext.removeClass("rocket-loading");
                 var iframe = document.createElement('iframe');
-                this.jqContent.append(iframe);
+                this.jqContext.append(iframe);
                 iframe.contentWindow.document.open();
                 iframe.contentWindow.document.write(html);
                 iframe.contentWindow.document.close();

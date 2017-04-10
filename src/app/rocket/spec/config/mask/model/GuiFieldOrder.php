@@ -48,15 +48,15 @@ class GuiFieldOrder {
 		$this->orderItems = $orderItems;
 	}
 	
-	public function containsAsideGroup() {
-		foreach ($this->orderItems as $orderItem) {
-			if ($orderItem->isSection() && $orderItem->getGuiSection()->getType() == GuiSection::ASIDE) {
-				return true;
-			}
-		}
+// 	public function containsAsideGroup() {
+// 		foreach ($this->orderItems as $orderItem) {
+// 			if ($orderItem->isSection() && $orderItem->getGuiSection()->getType() == GuiSection::ASIDE) {
+// 				return true;
+// 			}
+// 		}
 		
-		return false;
-	}
+// 		return false;
+// 	}
 	
 	public function getAllGuiIdPaths() {
 		$guiIdPaths = array();

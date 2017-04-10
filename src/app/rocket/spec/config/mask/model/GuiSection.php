@@ -24,11 +24,11 @@ namespace rocket\spec\config\mask\model;
 use n2n\util\ex\IllegalStateException;
 
 class GuiSection {
-	const COMMON = null;
+	const COMMON = 'common';
 	const MAIN = 'main';
-	const ASIDE = 'aside';
+	const AUTONOMIC = 'autonomic';
 	
-	private $type;
+	private $type = self::COMMON;
 	private $title;
 	private $guiFieldOrder;
 	
@@ -37,6 +37,9 @@ class GuiSection {
 	}
 
 	public function setType(string $type = null) {
+		if ($type === null) {
+			$this->type = $type;
+		}
 		$this->type = $type;
 	}
 
@@ -76,6 +79,6 @@ class GuiSection {
 	}
 	
 	public static function getTypes(): array {
-		return array(self::COMMON, self::MAIN, self::ASIDE);
+		return array(self::COMMON, self::MAIN, self::AUTONOMIC);
 	}
 }

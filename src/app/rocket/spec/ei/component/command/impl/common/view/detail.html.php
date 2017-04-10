@@ -35,7 +35,7 @@
 	
 	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiuFrame());
 	
-	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
+// 	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
 ?>
  
 <div class="rocket-panel">
