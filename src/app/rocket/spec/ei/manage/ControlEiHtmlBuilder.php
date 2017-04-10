@@ -27,6 +27,7 @@ use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EiuFactory;
+use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class ControlEiHtmlBuilder {
 	private $view;
@@ -42,12 +43,12 @@ class ControlEiHtmlBuilder {
 	}
 	
 	public function getOverallControlList(): UiComponent {
-		$ul = new HtmlElement('ul'/*, array('class' => 'rocket-main-controls')*/);
+		$snippet = new HtmlSnippet();
 		foreach ($this->eiuFrame->getEiFrame()->getContextEiMask()->createOverallControls($this->eiuFrame, $this->view) as $control) {
-			$ul->appendContent(new HtmlElement('li', null, $control->createUiComponent(false)));
+			$snippet->appendLn($control->createUiComponent(false));
 		}
 	
-		return $ul;
+		return $snippet;
 	}
 	
 	public function entryGuiControlList(EiuEntryGui $eiuEntryGui, bool $useIcons = false) {

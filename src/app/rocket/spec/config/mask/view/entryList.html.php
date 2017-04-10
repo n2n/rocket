@@ -45,7 +45,7 @@
 	$entryGuiTree = $view->getParam('entryGuiTree', false);
 	$view->assert($entryGuiTree === null || $entryGuiTree instanceof EiuEntryGuiTree);
 ?>
-<table class="rocket-list">
+<table class="table table-striped table-hover">
 	<thead>
 		<tr>
 			<?php $eiHtml->generalEntrySelector('th') ?>

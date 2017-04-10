@@ -67,7 +67,7 @@
 			<h2><?php $html->l10nText('core_server_info_title') ?></h2>
 			<div class="rocket-panel">
 				<h3><?php $html->l10nText('core_server_info_title')?></h3>
-				<table class="rocket-list">
+				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th><?php $html->text('core_property_label') ?></th>
