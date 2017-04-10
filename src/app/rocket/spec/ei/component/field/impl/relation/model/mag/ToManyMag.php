@@ -69,7 +69,7 @@ class ToManyMag extends MagAdapter {
 	
 	private function updateContainerAttrs(bool $group) {
 		if ($group) {
-			$this->setAttrs(array('class' => 'rocket-control-group rocket-block'));
+			$this->setAttrs(array('class' => 'rocket-group rocket-block'));
 		} else {
 			$this->setAttrs(array('class' => 'rocket-block'));
 		}

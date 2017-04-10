@@ -61,7 +61,7 @@ class ContentItemMag extends MagAdapter {
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
 		
-		$this->setAttrs(array('class' => 'rocket-control-group'));
+		$this->setAttrs(array('class' => 'rocket-group'));
 	}
 
 	public function setDraftMode(bool $draftMode) {

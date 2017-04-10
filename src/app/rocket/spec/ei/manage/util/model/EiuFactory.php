@@ -38,7 +38,7 @@ class EiuFactory {
 	
 	private $eiuFrame;
 	private $eiuEntry;
-	private $eiuGui;
+	private $eiuEntryGui;
 	private $eiuField;
 	
 	public function applyEiArgs(...$eiArgs) {
@@ -78,7 +78,7 @@ class EiuFactory {
 			}
 			
 			if ($eiArg instanceof EiuEntryGui) {
-				$this->eiuGui = $eiArg;
+				$this->eiuEntryGui = $eiArg;
 				$this->eiEntryGui = $eiArg->getEiEntryGui();
 				$eiArg = $eiArg->getEiuEntry(false);
 			}
@@ -103,7 +103,7 @@ class EiuFactory {
 				$this->eiuField = $this->eiuField ?? $eiArg->field(false);
 				$this->eiuEntry = $this->eiuEntry ?? $eiArg->entry(false);
 				$this->eiuFrame = $this->eiuFrame ?? $eiArg->frame(false);
-				$this->eiuCtrl = $this->eiuCtrl ?? $eiArg->ctrl(false);
+				$this->eiuEntryGui = $this->eiuEntryGui ?? $eiArg->entryGui(false);
 				continue;
 			}
 			
@@ -214,17 +214,17 @@ class EiuFactory {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function getEiuEntryGui(bool $required) {
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui;
+		if ($this->eiuEntryGui !== null) {
+			return $this->eiuEntryGui;
 		}
 		
 		if ($this->eiEntryGui !== null) {
 			$eiuEntry = $this->getEiuEntry(false);
 			if ($eiuEntry !== null) {
-				return $this->eiuGui = $eiuEntry->assignEiuEntryGui($this->eiEntryGui);
+				return $this->eiuEntryGui = $eiuEntry->assignEiuEntryGui($this->eiEntryGui);
 			} 
 			
-			return $this->eiuGui = new EiuEntryGui($this->eiEntryGui);
+			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui);
 		}
 		
 		if (!$required) return null;

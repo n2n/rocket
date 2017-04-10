@@ -65,7 +65,7 @@
 	<?php foreach ($guiFieldOrder->getOrderItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
-			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-control-group-' . $type : 'rocket-control-group') ?> 
+			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-group-' . $type : 'rocket-group') ?> 
 					<?php $html->out($formHtml->meta()->hasErrors($propertyPath) ? 'rocket-has-error' : '') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">

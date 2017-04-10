@@ -62,7 +62,7 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return array('class' => 'rocket-control-group');
+		return array('class' => 'rocket-group');
 	}
 
 // 	public function createOutputUiComponent(HtmlView $view) {

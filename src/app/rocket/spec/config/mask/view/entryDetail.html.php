@@ -40,18 +40,16 @@ use rocket\spec\ei\manage\util\model\Eiu;
 	$view->assert($eiu instanceof Eiu);
 		
 	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiu);
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiu);
 ?>
 <div class="rocket-properties">
 	<?php foreach ($guiFieldOrder->getOrderItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
-			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-control-group-' . $type : 'rocket-control-group') ?>">
+			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-group-' . $type : 'rocket-group') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">
 					<?php $view->import('entryDetail.html', array(
-							'eiFrame' => $eiFrame, 'guiFieldOrder' => $guiSection->getGuiFieldOrder(), 
-							'entryGui' => $eiuEntryGui)) ?>
+							'eiu' => $eiu, 'guiFieldOrder' => $guiSection->getGuiFieldOrder())) ?>
 				</div>
 			</div>
 		<?php else: ?>
