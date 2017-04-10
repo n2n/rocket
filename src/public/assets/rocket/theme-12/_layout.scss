@@ -2,13 +2,15 @@
  * Header
  */
 
+$rocket-header-height: 2.75rem;
+
 #rocket-header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 3rem;
-    background-color: $gray-darkest;
+    height: $rocket-header-height;
+    background-color: $brand-gray-01;
     color: white;
     display: flex;
     z-index: 1000;
@@ -23,18 +25,21 @@
     top: 0.5rem;
     left: 1rem;
 }
+
 #rocket-customer-name {
     flex: 1 0 auto;
     font-size: 1rem;
     font-weight: bold;
-    line-height: 3rem;
+    line-height: $rocket-header-height;
 }
+
 #rocket-conf-nav {
     flex: 1 0 auto;
 }
+
 .rocket-conf-nav-link {
     display: inline-block;
-    line-height: 3rem;
+    line-height: $rocket-header-height;
     padding: 0 1rem;
     color: $gray-lighter;
     &:hover {
@@ -48,7 +53,7 @@
 #rocket-global-nav {
     position: fixed;
     padding-top: 4rem;
-    top: 3rem;
+    top: $rocket-header-height;
     left: 0;
     bottom: 0;
     width: 14rem;
@@ -58,12 +63,12 @@
 }
 
 .rocket-nav-group {
-    background: $gray-darker;
+    background: $brand-gray-02;
 }
 
 .rocket-global-nav-group-title {
     font-size: 1rem;
-    background-color: $gray-darkest;
+    background-color: $brand-gray-01;
     margin: 0;
     padding: 0.75rem $spacer;
     font-weight: bold;
@@ -78,5 +83,5 @@
 
 #rocket-content-container {
     margin-left: 17rem;
-    margin-top: 5rem;
+    margin-top: $rocket-header-height;
 }

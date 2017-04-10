@@ -33,7 +33,7 @@
 @import "bootstrap/nav";
 @import "bootstrap/navbar";
 // @import "bootstrap/card";
-// @import "bootstrap/breadcrumb";
+@import "bootstrap/breadcrumb";
 // @import "bootstrap/pagination";
 // @import "bootstrap/badge";
 // @import "bootstrap/jumbotron";
@@ -51,6 +51,7 @@
 // @import "bootstrap/carousel";
 
 @import "layout";
+@import "corrections";
 
 // Utility classes
 @import "bootstrap/utilities";

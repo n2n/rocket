@@ -112,7 +112,7 @@
 					<?php endif ?>
 					<li class="nav-item">
 						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'rocket-conf-nav-link')) ?> 
-							<?php $html->out((string) $templateModel->getCurrentUser()) ?>
+							<i class="fa fa-user mr-2"></i><?php $html->out((string) $templateModel->getCurrentUser()) ?>
 						<?php $html->linkEnd() ?>
 					</li>
 					<li class="nav-item">
@@ -152,14 +152,14 @@
 			<div class="rocket-main-layer">
 				<div class="rocket-context">
 					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
-						<ul id="rocket-breadcrumb">
+						<ol class="breadcrumb">
 							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
-								<li><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
+								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
 							<?php endforeach ?>
-							<li class="rocket-breadcrumb-active">
+							<li class="breadcrumb-item active">
 								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
 							</li>
-						</ul>
+						</ol>
 					<?php endif ?>
 					
 					<!-- WICHTIG -->

@@ -3,11 +3,35 @@
 // Copy variables from `_variables.scss` to this file to override default values
 // without modifying source files.
 
-$brand-primary: #ed8207;
 
-$gray-darkest: #373431;
-$gray-darker: #4f4a46;
-$gray-dark: #5f5a56;
+$brand-gray-01: #373431;
+$brand-gray-02: #4F4A46;
+$brand-gray-03: #66615C;
+$brand-gray-04: #837E78;
+$brand-gray-05: #C2BDB6;
+$brand-gray-06: #DAD7D3;
+$brand-gray-07: #ECEBE9;
+$brand-gray-08: #F7F5F5;
+$brand-gray-09: #FBFAFA;
+
+$gray-dark:     $brand-gray-02;
+$gray:          $brand-gray-03;
+$gray-light:    $brand-gray-04;
+$gray-lighter:  $brand-gray-07;
+$gray-lightest: $brand-gray-08;
+
+$brand-primary: #ed8207;
+$brand-success: #5cb85c;
+$brand-info:    #4c97cb;
+$brand-warning: #F6A723;
+$brand-danger:  #e32413;
+$brand-inverse: $gray-dark;
+
+$breadcrumb-padding-y:          1rem;
+$breadcrumb-padding-x:          0;
+
+$breadcrumb-bg:                 transparent;
+$breadcrumb-divider:            ">";
 
 $enable-rounded: false;
 $enable-shadows: true;
