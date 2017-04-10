@@ -348,8 +348,9 @@ var rocket;
                     jqElem = jqElem.parents(".rocket-context");
                 }
                 var context = jqElem.data("rocketContext");
-                alert(typeof context);
-                return context;
+                if (context)
+                    return context;
+                return null;
             };
             return Context;
         }());

@@ -376,9 +376,9 @@ namespace rocket.cmd {
 			}
 			
 			var context = jqElem.data("rocketContext");
-			alert(typeof context);
+			if (context) return context;
 			
-			return context;
+			return null;
 		}
 		
 	}
