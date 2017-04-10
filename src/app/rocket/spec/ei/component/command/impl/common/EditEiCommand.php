@@ -84,7 +84,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 			$urlExt = (new Path(array('live', $eiuEntry->getLiveIdRep())))
 					->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl()));
 			
-			$controls[] = $eiuControlFactory->createAction($this, $controlButton, $urlExt);
+			$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 			
 			if ($eiuFrame->isDraftingEnabled()) {
 				$controlButton = new ControlButton($dtc->t('common_edit_latest_draft_label'),
@@ -93,20 +93,20 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 				$urlExt = (new Path(array('latestdraft', $eiuEntry->getLiveIdRep())))
 						->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl()));
 				
-				$controls[] = $eiuControlFactory->createAction($this, $controlButton, $urlExt);
+				$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 			}
 		} else if (!$eiuEntry->isDraftNew()) {
 			$controlButton = new ControlButton($dtc->t('ei_impl_edit_draft_label'), $dtc->t('ei_impl_edit_draft_tooltip'), 
 					true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE);
 			$urlExt = (new Path(array('draft', $eiuEntry->getDraftId())))
 					->toUrl(array('refPath' => $eiuFrame->getCurrentUrl()));
-			$controls[] = $eiuControlFactory->createAction($this, $controlButton, $urlExt);
+			$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 			
 			$controlButton = new ControlButton($dtc->t('ei_impl_publish_draft_label'), 
 					$dtc->t('ei_impl_publish_draft_tooltip'), true, ControlButton::TYPE_WARNING, IconType::ICON_CHECK_SQUARE);
 			$urlExt = (new Path(array('publish', $eiuEntry->getDraftId())))
 					->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl($view->getHttpContext())));
-			$controls[] = $eiuControlFactory->createAction($this, $controlButton, $urlExt);
+			$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 		}
 		
 		return $controls;	

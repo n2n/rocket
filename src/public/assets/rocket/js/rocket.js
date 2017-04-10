@@ -9,12 +9,12 @@ var rocket;
             }
             Monitor.prototype.scanMain = function (jqContent, layer) {
                 var that = this;
-                jqContent.find("a.rocket-action").each(function () {
+                jqContent.find("a.rocket-ajah").each(function () {
                     (new LinkAction(jQuery(this), layer)).activate();
                 });
             };
             Monitor.prototype.scan = function (jqContainer) {
-                jqContainer.find("a.rocket-action").each(function () {
+                jqContainer.find("a.rocket-ajah").each(function () {
                     CommandAction.from($(this));
                 });
             };
@@ -293,7 +293,7 @@ var rocket;
                 this.layer = layer;
                 this.onCloseCallbacks = new Array();
                 jqContext.addClass("rocket-context");
-                jqContext.data("rocketContent", this);
+                jqContext.data("rocketContext", this);
                 this.hide();
             }
             Context.prototype.getUrl = function () {
@@ -347,8 +347,9 @@ var rocket;
                 if (!jqElem.hasClass(".rocket-context")) {
                     jqElem = jqElem.parents(".rocket-context");
                 }
-                var content = jqElem.data("rocketContext");
-                alert(typeof content);
+                var context = jqElem.data("rocketContext");
+                alert(typeof context);
+                return context;
             };
             return Context;
         }());
@@ -564,10 +565,96 @@ var rocket;
                 });
             });
         })();
+        (function () {
+            $("form.rocket-impl-form").each(function () {
+                rocket.impl.Form.scan($(this));
+            });
+            n2n.dispatch.registerCallback(function () {
+                $("form.rocket-impl-form").each(function () {
+                    rocket.impl.Form.scan($(this));
+                });
+            });
+        })();
     });
+    function contextOf(elem) {
+        return rocket.cmd.Context.findFrom($(elem));
+    }
+    rocket.contextOf = contextOf;
     function handleErrorResponse(responseObject) {
         alert(JSON.stringify(responseObject));
         $("html").html(responseObject.responseText);
     }
     rocket.handleErrorResponse = handleErrorResponse;
+})(rocket || (rocket = {}));
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var rocket;
+(function (rocket) {
+    var impl;
+    (function (impl) {
+        var $ = jQuery;
+        var Form = (function () {
+            function Form(jqForm) {
+                this.jqForm = jqForm;
+            }
+            Form.prototype.observe = function () {
+                var that = this;
+                this.jqForm.submit(function () {
+                    that.submit(new FormData(this));
+                    return false;
+                });
+            };
+            Form.prototype.submit = function (formData) {
+                var that = this;
+                $.ajax({
+                    "url": this.jqForm.attr("action"),
+                    "type": "POST",
+                    "data": formData,
+                    "cache": false,
+                    "processData": false,
+                    "contentType": false,
+                    "dataType": "json",
+                    "success": function (data, textStatus, jqXHR) {
+                        var html = n2n.ajah.analyze(data);
+                        alert(html);
+                        rocket.contextOf(that.jqForm.get(0)).applyHtml(html);
+                        n2n.ajah.update();
+                    },
+                    "error": function (jqXHR, textStatus, errorThrown) {
+                        //if fails     
+                    }
+                });
+            };
+            Form.scan = function (jqForm) {
+                var form = jqForm.data("rocketImplForm");
+                if (form)
+                    return form;
+                form = new Form(jqForm);
+                jqForm.data("rocketImplForm", form);
+                form.observe();
+                return form;
+            };
+            return Form;
+        }());
+        impl.Form = Form;
+    })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));

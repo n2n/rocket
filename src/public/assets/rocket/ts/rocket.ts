@@ -21,7 +21,23 @@ namespace rocket {
 				});
 			});
 		}) ();
+		
+		(function () {
+			$("form.rocket-impl-form").each(function () {
+				rocket.impl.Form.scan($(this));
+			});
+			
+			n2n.dispatch.registerCallback(function () {
+				$("form.rocket-impl-form").each(function () {
+					rocket.impl.Form.scan($(this));
+				});
+			});
+		}) ();
 	});
+	
+	export function contextOf(elem: HTMLElement): rocket.cmd.Context {
+		return rocket.cmd.Context.findFrom($(elem));
+	}
 	
 	export function handleErrorResponse(responseObject) {
 		alert(JSON.stringify(responseObject));

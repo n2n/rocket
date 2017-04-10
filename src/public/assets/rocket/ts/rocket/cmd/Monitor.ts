@@ -10,13 +10,13 @@ namespace rocket.cmd {
 		
 		public scanMain(jqContent: JQuery, layer: Layer) {
 			var that = this;
-            jqContent.find("a.rocket-action").each(function () {
+            jqContent.find("a.rocket-ajah").each(function () {
                 (new LinkAction(jQuery(this), layer)).activate();
             });
 		}
 		
 		public scan(jqContainer: JQuery) {
-			jqContainer.find("a.rocket-action").each(function () {
+			jqContainer.find("a.rocket-ajah").each(function () {
 				CommandAction.from($(this));
 			});
 		}

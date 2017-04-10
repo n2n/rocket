@@ -141,7 +141,7 @@
 							<li class="nav-item<?php $view->out($templateModel->isMenuItemActive($menuItem) 
 									? ' rocket-nav-group-list-item-active' : null) ?>">
 								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), $menuItem->determinePathExt($view->getN2nContext())), 
-										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>'), array('class' => 'nav-link rocket-action')) ?></li>
+										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) . '<span></span>'), array('class' => 'nav-link rocket-ajah')) ?></li>
 						<?php endforeach ?>
 					</ul>
 				</div>

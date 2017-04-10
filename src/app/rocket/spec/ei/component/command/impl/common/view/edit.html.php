@@ -36,12 +36,10 @@
 	$view->assert($editModel instanceof EditModel);
 	
 	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
-	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
- 
-	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
+	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel); 
 ?>
 
-<?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form')) ?>
+<?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form rocket-impl-form')) ?>
 	<div class="rocket-panel">
 		<h3><?php $html->l10nText('common_properties_title') ?></h3>
 		

@@ -25,7 +25,7 @@ use n2n\web\ui\UiComponent;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\control\Control;
 
-class ActionControl implements Control {
+class AjahControl implements Control {
 	private $url;
 	private $controlButton;
 	
@@ -43,6 +43,6 @@ class ActionControl implements Control {
 	}
 	
 	public function createUiComponent(bool $iconOnly): UiComponent {
-		return $this->controlButton->toButton($iconOnly, array('href' => $this->url, 'class' => 'rocket-action'));
+		return $this->controlButton->toButton($iconOnly, array('href' => $this->url, 'class' => 'rocket-ajah'));
 	}
 }

@@ -304,7 +304,7 @@ namespace rocket.cmd {
 			this.layer = layer;
 			this.onCloseCallbacks = new Array<ContextCallback>();
 			jqContext.addClass("rocket-context");
-			jqContext.data("rocketContent", this);
+			jqContext.data("rocketContext", this);
 			
 			this.hide();
 		}
@@ -370,13 +370,15 @@ namespace rocket.cmd {
 			this.onCloseCallbacks.push(onCloseCallback);
 		}
 		
-		public static findFrom(jqElem: JQuery) {
+		public static findFrom(jqElem: JQuery): Context {
 			if (!jqElem.hasClass(".rocket-context")) {
 				jqElem = jqElem.parents(".rocket-context");
 			}
 			
-			var content = jqElem.data("rocketContext");
-			alert(typeof content);
+			var context = jqElem.data("rocketContext");
+			alert(typeof context);
+			
+			return context;
 		}
 		
 	}
