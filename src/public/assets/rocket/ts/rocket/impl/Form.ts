@@ -35,6 +35,16 @@ namespace rocket.impl {
 				that.submit(new FormData(this));
 				return false;
 			});
+			
+			var that = this;
+			this.jqForm.find("input[type=submit], button[type=submit]").each(function () {
+				$(this).click(function () {
+					var formData = new FormData(that.jqForm.get(0));
+					formData.append(this.name, this.value);
+					that.submit(formData);
+					return false;
+				});
+			});
 		}
 		
 		private submit(formData: FormData) {

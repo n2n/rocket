@@ -152,7 +152,7 @@ class EntryForm implements Dispatchable {
 	public function buildEiMapping() {
 		IllegalStateException::assertTrue(isset($this->entryModelForms[$this->chosenId]));
 		$this->entryModelForms[$this->chosenId]->save();
-		return $this->entryModelForms[$this->chosenId]->getEiMapping();
+		return $this->entryModelForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry()->getEiMapping();
 	}
 	
 	/**
