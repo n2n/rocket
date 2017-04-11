@@ -221,13 +221,51 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				context.applyErrorHtml(data.responseText);
 			}).done(function (data) {
-				context.applyHtml(n2n.ajah.analyze(data));
-				n2n.ajah.update();
+				this.analyzeResponse(data);
 				
 				if (doneCallback) {
 					doneCallback(new ExecResult(null, context));
 				}
 			});
+		}
+		
+		private analyzeResponse(response: Object, relatedUrl: string, relatedContext: Context = null): boolean {
+			if (typeof response["additional"] === "object") {
+				if (this.execDirectives(response["additional"])) return true;
+			}
+			
+			if (relatedContext === null) {
+				relatedContext = this.getContextByUrl(relatedUrl);
+			}
+			
+			if (relatedContext === null) {
+				relatedContext = this.createContext(relatedUrl);
+			}
+			
+			relatedContext.applyHtml(n2n.ajah.analyze(response));
+			n2n.ajah.update();
+		}
+		
+		private execDirectives(info: any) {
+			if (info.directive == "redirectBack") {
+				this.back(info.fallbackUrl);
+				return true;
+			}
+		}
+		
+		
+		public back(fallbackUrl: string = null) {
+			if (this.currentHistoryIndex > 0) {
+				this.exec(this.historyUrls[this.currentHistoryIndex - 1]);
+				return;
+			}
+			
+			if (fallbackUrl) {
+				this.exec(fallbackUrl);
+				return;
+			}
+			
+			this.close();
 		}
 				
 		private createContext(url: string): Context {
@@ -244,6 +282,10 @@ namespace rocket.cmd {
 			for (var i in this.contexts) {
 				this.contexts[i].close();
 			}
+		}
+		
+		public close() {
+			throw new Error("layer close not yet implemented.");
 		}
 		
 		public dispose() {
@@ -355,9 +397,8 @@ namespace rocket.cmd {
 		public applyErrorHtml(html: string) {
 			this.jqContext.removeClass("rocket-loading");
 			
-			var iframe = document.createElement('iframe');
+			var iframe = document.createElement("iframe");
 			this.jqContext.append(iframe);
-			
 			
 			iframe.contentWindow.document.open();
 			iframe.contentWindow.document.write(html);

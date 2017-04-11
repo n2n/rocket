@@ -239,12 +239,44 @@ var rocket;
                 }).fail(function (data) {
                     context.applyErrorHtml(data.responseText);
                 }).done(function (data) {
-                    context.applyHtml(n2n.ajah.analyze(data));
-                    n2n.ajah.update();
+                    this.analyzeResponse(data);
                     if (doneCallback) {
                         doneCallback(new ExecResult(null, context));
                     }
                 });
+            };
+            Layer.prototype.analyzeResponse = function (response, relatedUrl, relatedContext) {
+                if (relatedContext === void 0) { relatedContext = null; }
+                if (typeof response["additional"] === "object") {
+                    if (this.execDirectives(response["additional"]))
+                        return true;
+                }
+                if (relatedContext === null) {
+                    relatedContext = this.getContextByUrl(relatedUrl);
+                }
+                if (relatedContext === null) {
+                    relatedContext = this.createContext(relatedUrl);
+                }
+                relatedContext.applyHtml(n2n.ajah.analyze(response));
+                n2n.ajah.update();
+            };
+            Layer.prototype.execDirectives = function (info) {
+                if (info.directive == "redirectBack") {
+                    this.back(info.fallbackUrl);
+                    return true;
+                }
+            };
+            Layer.prototype.back = function (fallbackUrl) {
+                if (fallbackUrl === void 0) { fallbackUrl = null; }
+                if (this.currentHistoryIndex > 0) {
+                    this.exec(this.historyUrls[this.currentHistoryIndex - 1]);
+                    return;
+                }
+                if (fallbackUrl) {
+                    this.exec(fallbackUrl);
+                    return;
+                }
+                this.close();
             };
             Layer.prototype.createContext = function (url) {
                 var jqContent = $("<div/>");
@@ -257,6 +289,9 @@ var rocket;
                 for (var i in this.contexts) {
                     this.contexts[i].close();
                 }
+            };
+            Layer.prototype.close = function () {
+                throw new Error("layer close not yet implemented.");
             };
             Layer.prototype.dispose = function () {
                 this.contexts = new Array();
@@ -333,7 +368,7 @@ var rocket;
             };
             Context.prototype.applyErrorHtml = function (html) {
                 this.jqContext.removeClass("rocket-loading");
-                var iframe = document.createElement('iframe');
+                var iframe = document.createElement("iframe");
                 this.jqContext.append(iframe);
                 iframe.contentWindow.document.open();
                 iframe.contentWindow.document.write(html);
@@ -622,6 +657,15 @@ var rocket;
                 this.jqForm.submit(function () {
                     that.submit(new FormData(this));
                     return false;
+                });
+                var that = this;
+                this.jqForm.find("input[type=submit], button[type=submit]").each(function () {
+                    $(this).click(function () {
+                        var formData = new FormData(that.jqForm.get(0));
+                        formData.append(this.name, this.value);
+                        that.submit(formData);
+                        return false;
+                    });
                 });
             };
             Form.prototype.submit = function (formData) {

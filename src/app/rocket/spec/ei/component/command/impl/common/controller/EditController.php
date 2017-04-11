@@ -66,7 +66,7 @@ class EditController extends ControllerAdapter {
 		$editModel->initialize($eiMapping);
 
 		if ($this->dispatch($editModel, 'save')) {
-			$this->redirect($redirectUrl);
+			$this->eiuCtrl->redirectBack($redirectUrl);
 			return;
 		}
 		
