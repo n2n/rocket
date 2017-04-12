@@ -212,7 +212,6 @@ namespace rocket.cmd {
 			if (context !== null) {
 				context.clear(true);
 			}
-			
 		
 			var that = this;
 			$.ajax({
@@ -221,7 +220,7 @@ namespace rocket.cmd {
 			}).fail(function (data) {
 				context.applyErrorHtml(data.responseText);
 			}).done(function (data) {
-				this.analyzeResponse(data);
+				that.analyzeResponse(data, url, context);
 				
 				if (doneCallback) {
 					doneCallback(new ExecResult(null, context));
@@ -252,7 +251,6 @@ namespace rocket.cmd {
 				return true;
 			}
 		}
-		
 		
 		public back(fallbackUrl: string = null) {
 			if (this.currentHistoryIndex > 0) {

@@ -239,7 +239,7 @@ var rocket;
                 }).fail(function (data) {
                     context.applyErrorHtml(data.responseText);
                 }).done(function (data) {
-                    this.analyzeResponse(data);
+                    that.analyzeResponse(data, url, context);
                     if (doneCallback) {
                         doneCallback(new ExecResult(null, context));
                     }

@@ -40,13 +40,17 @@ class RocketAjahResponse implements BufferedResponseContent {
 	
 	const ATTR_DIRECTIVE = 'directive';
 	const ATTR_FALLBACK_URL = 'fallbackUrl';
+	const ATTR_REL_CONFIG = 'relConfig';
+	const ATTR_EXEC_CONFIG = 'execConfig';
 
 	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
 	
-	public static function redirectBack($fallbackUrl) {
+	public static function redirectBack($fallbackUrl, AjahRel $ajahRel = null, AjahExec $ajahExec = null) {
 		return new RocketAjahResponse(array(
 				self::ATTR_DIRECTIVE => self::DIRECTIVE_REDIRECT_BACK,
-				self::ATTR_FALLBACK_URL => $fallbackUrl));
+				self::ATTR_FALLBACK_URL => $fallbackUrl,
+				self::ATTR_REL_CONFIG => $ajahRel === null ? array() : $ajahRel->toAttrs(),
+				self::ATTR_EXEC_CONFIG => $ajahExec === null ? array() : $ajahExec->toAttrs()));
 	}
 }
 
