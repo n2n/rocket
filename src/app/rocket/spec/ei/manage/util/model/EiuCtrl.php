@@ -47,6 +47,8 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use lib\rocket\spec\ei\manage\util\model\RocketAjahResponse;
 use rocket\spec\ei\manage\EiFrame;
+use lib\rocket\spec\ei\manage\util\model\AjahExec;
+use lib\rocket\spec\ei\manage\util\model\AjahRel;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -150,7 +152,7 @@ class EiuCtrl implements Lookupable {
 		return $eiMapping;
 	}
 	
-	public function redirectBack($fallbackUrl) {
+	public function redirectBack($fallbackUrl, AjahRel $ajahRel = null, AjahExec $ajahExec = null) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
@@ -175,7 +177,7 @@ class EiuCtrl implements Lookupable {
 	}
 
 	public function buildRedirectUrl(EiEntry $eiEntry = null) { 
-		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiFrame = $this->eiuFrame->getEiFrame(); 
 		
 		if ($eiEntry !== null && !$eiEntry->isNew()) {
 			$entryNavPoint = $eiEntry->toEntryNavPoint();
