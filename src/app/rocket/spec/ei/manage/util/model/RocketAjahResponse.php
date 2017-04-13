@@ -6,9 +6,7 @@ use n2n\web\http\BufferedResponseContent;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\reflection\ArgUtils;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\EiEntry;
-use rocket\spec\ei\EiSpec;
 
 class RocketAjahResponse implements BufferedResponseContent {
 	private $jsonResponse;
