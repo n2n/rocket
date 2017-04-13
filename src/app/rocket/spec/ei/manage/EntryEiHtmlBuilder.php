@@ -28,7 +28,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\Displayable;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
@@ -236,24 +235,6 @@ class EntryEiHtmlBuilder {
 	
 		return $ul;
 	}
-	
-// 	public function entryGuiControlList($useIcons = false) {
-// 		$this->html->out($this->getEntryGuiControlList($useIcons));
-// 	}
-	
-// 	public function getEntryGuiControlList($useIcons = false) {
-// 		$entryControls = $this->eiFrame->getContextEiMask()->createEntryControls($this->eiFrame, 
-// 				$this->meta->getCurrentEntryGuiModel()->getEiMapping(), $this->view);
-	
-// 		$ulHtmlElement = new HtmlElement('ul', array('class' => ($useIcons ? 'rocket-simple-controls' : null /* 'rocket-main-controls' */)));
-	
-// 		foreach ($entryControls as $control) {
-// 			$liHtmlElement = new HtmlElement('li', null, $control->toButton($useIcons));
-// 			$ulHtmlElement->appendContent($liHtmlElement);
-// 		}
-	
-// 		return $ulHtmlElement;
-// 	}
 }
 
 class EntryEiHtmlBuilderMeta {

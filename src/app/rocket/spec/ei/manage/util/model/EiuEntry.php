@@ -43,14 +43,12 @@ class EiuEntry {
 	private $eiMapping;
 	private $eiuFrame;
 	
-	public function __construct($eiEntryObj, $eiuFrame = null) {
-		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame, 'eiuFrame');
-		$this->eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryObj, 'eiEntryObj', 
-				($this->eiuFrame !== null ? $this->eiuFrame->getEiSpec() : null), true, $this->eiMapping);
-	}
-	
-	public static function create(EiEntry $eiEntry, EiMapping $eiMapping = null, EiuFrame $eiuFrame = null) {
-		
+	public function __construct(...$eiArgs) {
+		$eiuFactory = new EiuFactory();
+		$eiuFactory->applyEiArgs(...$eiArgs);
+		$this->eiEntry = $eiuFactory->getEiEntry(true);
+		$this->eiMapping = $eiuFactory->getEiMapping();
+		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
 	}
 	
 	/**
@@ -121,7 +119,7 @@ class EiuEntry {
 		}
 		
 		if ($createIfNotAvaialble) {
-			return $this->eiMapping = $this->eiuFrame->createEiMapping($this->eiEntry);
+			return $this->eiMapping = $this->getEiuFrame()->createEiMapping($this->eiEntry);
 		}
 		
 		return null;

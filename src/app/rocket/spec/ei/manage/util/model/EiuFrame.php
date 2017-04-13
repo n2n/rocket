@@ -160,11 +160,16 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 * @throws \rocket\spec\ei\security\InaccessibleEntryException
 	 */
-	public function createEiMapping(EiEntry $eiEntry): EiMapping {
+	public function createEiMapping(EiEntry $eiEntry) {
 		return $this->determineEiMask($eiEntry)->getEiEngine()->createEiMapping($this->eiFrame, $eiEntry);
 	}
 	
-	private function createEiMappingCopy($fromEiEntryObj, EiEntry $to = null): EiMapping {
+	/**
+	 * @param unknown $fromEiEntryObj
+	 * @param EiEntry $to
+	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 */
+	private function createEiMappingCopy($fromEiEntryObj, EiEntry $to = null) {
 		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiEntryObj, $this, 'fromEiEntryObj');
 		
 		if ($to === null) {
@@ -174,10 +179,6 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->determineEiMask($to)->getEiEngine()
 				->createEiMappingCopy($this->eiFrame, $to, $fromEiuEntry->getEiMapping());
 	}
-	
-// 	public function createBulkyEntryGuiModel(EiMapping $eiMapping, bool $makeEditable) {
-// 		return $this->determineEiMask($eiMapping)->createBulkyEntryGuiModel($this->eiFrame, $eiMapping, $makeEditable);
-// 	}
 	
 	public function createListView(array $eiuEntryGuis) {
 		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);

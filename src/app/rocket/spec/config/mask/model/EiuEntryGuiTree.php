@@ -29,7 +29,7 @@ class EiuEntryGuiTree {
 	private $eiuEntryGuiTreeItems = array();	
 	
 	public function addByLevel(int $level, EiuEntryGui $eiuEntryGui) {
-		$this->eiuEntryGuiTreeItems[$eiuEntryGui->getEntryGuiModel()->getEiMapping()->getIdRep()] 
+		$this->eiuEntryGuiTreeItems[$eiuEntryGui->getEiuEntry()->getLiveIdRep()] 
 				= new EiEntryGuiTreeItem($level, $eiuEntryGui);
 	}
 	

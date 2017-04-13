@@ -4,7 +4,6 @@ namespace rocket\spec\ei\manage\util\model;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\ManageException;
-use n2n\web\http\HttpContextNotAvailableException;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiEntry;
@@ -13,22 +12,23 @@ use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\LiveEiEntry;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\DraftEiEntry;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
+use n2n\reflection\ReflectionUtils;
 
 class EiuFactory {
-	const EI_FRAME_TYPES = array(EiFrame::class, N2nContext::class);
+	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
 	const EI_ENTRY_TYPES = array(EiEntry::class, EiMapping::class, LiveEntry::class, Draft::class, 
-			EntryGuiModel::class);
-	const EI_GUI_TYPES = array(EntryGuiModel::class, EiEntryGui::class);
+			EiEntryGui::class, EiuEntry::class, EiuEntryGui::class);
+	const EI_GUI_TYPES = array(EiEntryGui::class, EiuEntryGui::class);
 	const EI_TYPES = array(EiFrame::class, N2nContext::class, EiEntry::class, EiMapping::class, LiveEntry::class, 
-			Draft::class, EntryGuiModel::class, EiEntryGui::class, EiField::class, EiFieldPath::class);
-	const EI_FIELD_TYPES = array(EiField::class, EiFieldPath::class);
+			Draft::class, EiEntryGui::class, EiEntryGui::class, EiField::class, EiFieldPath::class, EiuFrame::class, 
+			EiuEntry::class, EiuEntryGui::class, EiuField::class, Eiu::class);
+	const EI_FIELD_TYPES = array(EiField::class, EiFieldPath::class, EiuField::class);
 	
 	private $eiFrame;
 	private $n2nContext;
@@ -43,6 +43,8 @@ class EiuFactory {
 	private $eiuField;
 	
 	public function applyEiArgs(...$eiArgs) {
+		$remainingEiArgs = array();
+		
 		foreach ($eiArgs as $key => $eiArg) {
 			if ($eiArg instanceof EiFrame) {
 				$this->eiFrame = $eiArg;
@@ -63,13 +65,9 @@ class EiuFactory {
 				$this->eiFieldPath = $eiArg;
 				continue;
 			}
-			
+
 			if ($eiArg instanceof EiEntryGui) {
 				$this->eiEntryGui = $eiArg;
-			}
-			
-			if (null !== ($eiEntry = self::determineEiEntry($eiArg, $this->eiMapping, $this->eiEntryGui))) {
-				$this->eiEntry = $eiEntry;
 				continue;
 			}
 			
@@ -89,14 +87,14 @@ class EiuFactory {
 				$this->eiMapping = $eiArg->getEiMapping(false);
 				$eiArg = $eiArg->getEiuFrame(false);
 			}
+
+			if ($eiArg instanceof EiuCtrl) {
+				$eiArg = $eiArg->frame();
+			}
 			
 			if ($eiArg instanceof EiuFrame) {
 				$this->eiuFrame = $eiArg;
-				continue;
-			}
-
-			if ($eiArg instanceof EiuCtrl) {
-				$this->eiuFrame = $eiArg->frame();
+				$this->eiFrame = $eiArg->getEiFrame();
 				continue;
 			}
 			
@@ -108,9 +106,35 @@ class EiuFactory {
 				continue;
 			}
 			
-			ArgUtils::valType($eiArg, self::EI_TYPES, true, 'eiArg#' . ($key + 1));
+			if (null !== ($eiEntry = self::determineEiEntry($eiArg, $this->eiMapping, $this->eiEntryGui))) {
+				$this->eiEntry = $eiEntry;
+				continue;
+			}
+			
+			$remainingEiArgs[$key  + 1] = $eiArg;
 		}
 		
+		if (empty($remainingEiArgs)) return;
+		
+		$eiSpec = null;
+		$eiEntryTypes = self::EI_TYPES;
+		if ($this->eiFrame !== null) {
+			$eiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+			$eiEntryTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
+		}
+		
+		foreach ($remainingEiArgs as $argNo => $eiArg) {
+			if ($eiSpec !== null) { 
+				try {
+					$this->eiEntry = LiveEiEntry::create($eiSpec, $eiArg);
+					continue;
+				} catch (\InvalidArgumentException $e) {
+					return null;
+				}
+			}
+			
+			ArgUtils::valType($eiArg, $eiEntryTypes, true, 'eiArg#' . $argNo);
+		}	
 	}
 	
 // 	public function getEiFrame(bool $required) {
@@ -123,6 +147,26 @@ class EiuFactory {
 // 						. implode(', ', self::EI_FRAME_TYPES));
 // 	}
 	
+	public function getEiMapping() {
+		return $this->eiMapping;
+	}
+	
+	/**
+	 * 
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\EiEntry|NULL
+	 */
+	public function getEiEntry(bool $required) {
+		if (!$required || $this->eiEntry !== null) {
+			return $this->eiEntry;
+		}
+	
+		throw new EiuPerimeterException(
+				'Could not determine EiEntry because non of the following types were provided as eiArgs: '
+						. implode(', ', self::EI_ENTRY_TYPES));
+	}
+	
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
@@ -134,7 +178,7 @@ class EiuFactory {
 		}
 		
 		throw new EiuPerimeterException(
-				'Could not determine EiuEntryGui because non of the following types were provided as eiArgs: ' 
+				'Could not determine EiEntryGui because non of the following types were provided as eiArgs: ' 
 						. implode(', ', self::EI_GUI_TYPES));
 	}
 	
@@ -220,11 +264,6 @@ class EiuFactory {
 		}
 		
 		if ($this->eiEntryGui !== null) {
-			$eiuEntry = $this->getEiuEntry(false);
-			if ($eiuEntry !== null) {
-				return $this->eiuEntryGui = $eiuEntry->assignEiuEntryGui($this->eiEntryGui);
-			} 
-			
 			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui);
 		}
 		
@@ -306,18 +345,10 @@ class EiuFactory {
 			return $eiArg;
 		}
 		
-		if ($eiArg instanceof EiuFrame) {
-			return $eiArg->getAssignedEiuEntry($required);
-		}
-		
 		if ($eiArg !== null) {
 			return new EiuEntry($eiArg, $eiuFrame);
 		}
 			
-		if ($eiuFrame !== null) {
-			return $eiuFrame->getAssignedEiuEntry($required);
-		}
-		
 		if (!$required) {
 			return null;
 		}
@@ -352,6 +383,8 @@ class EiuFactory {
 		}
 		
 		if ($eiEntryArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiEntryArg->getEiuEntry(false))) {
+			$eiMapping = $eiuEntry->getEiMapping(false);
+			$eiEntryGui = $eiEntryArg->getEiEntryGui();
 			return $eiuEntry->getEiEntry();
 		}
 		
@@ -359,7 +392,7 @@ class EiuFactory {
 		
 		throw new EiuPerimeterException('Can not determine EiEntry of passed argument type ' 
 				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
-				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
+				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)));
 	}
 	
 	/**
@@ -393,7 +426,7 @@ class EiuFactory {
 		if (!$required) return null;
 		
 		throw new EiuPerimeterException('Can not determine EiSpec of passed argument type ' 
-				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
+				. ReflectionUtils::getTypeInfo($eiSpecArg) . '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
 	}
 	

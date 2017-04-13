@@ -46,8 +46,6 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\config\mask\model\CommonEntryGuiModel;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\config\mask\model\EntryGuiTree;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\component\field\EiFieldCollection;
@@ -464,16 +462,16 @@ class CommonEiMask implements EiMask, Identifiable {
 				->create($viewName, array('guiFieldOrder' => $guiFieldOrder, 'eiu' => new Eiu($eiuEntryGui)));
 	}
 	
-	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
-		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
+// 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
+// 		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
 	
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
+// 		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
 		
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
-				'rocket\spec\config\mask\view\entryEdit.html',
-				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
-						'propertyPath' => $propertyPath));
-	}
+// 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+// 				'rocket\spec\config\mask\view\entryEdit.html',
+// 				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 						'propertyPath' => $propertyPath));
+// 	}
 	
 // 	public function createAddView(EiFrame $eiFrame, EntryModel $entryModel, PropertyPath $propertyPath = null) {
 // 		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);

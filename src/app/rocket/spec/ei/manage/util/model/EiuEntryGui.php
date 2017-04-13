@@ -38,7 +38,6 @@ class EiuEntryGui {
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
-		
 		$this->eiEntryGui = $eiuFactory->getEiEntryGui(true);
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 	}
