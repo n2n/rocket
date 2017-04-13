@@ -360,7 +360,7 @@ class EiuFactory {
 	 * @param mixed $eiEntryObj
 	 * @return \rocket\spec\ei\manage\EiEntry|null
 	 */
-	public static function determineEiEntry($eiEntryArg, &$eiMapping, &$eiEntryGui, bool $required = false) {
+	public static function determineEiEntry($eiEntryArg, &$eiMapping, &$eiEntryGui) {
 		if ($eiEntryArg instanceof EiEntry) {
 			return $eiEntryArg;
 		} 
@@ -388,11 +388,12 @@ class EiuFactory {
 			return $eiuEntry->getEiEntry();
 		}
 		
-		if (!$required) return null;
+		return null;
+// 		if (!$required) return null;
 		
-		throw new EiuPerimeterException('Can not determine EiEntry of passed argument type ' 
-				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
-				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)));
+// 		throw new EiuPerimeterException('Can not determine EiEntry of passed argument type ' 
+// 				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
+// 				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)));
 	}
 	
 	/**
@@ -423,11 +424,26 @@ class EiuFactory {
 			return $eiSpecArg->getEiSpec();
 		}
 		
+		if ($eiSpecArg instanceof EiuEntry && null !== ($eiuFrame = $eiSpecArg->getEiuFrame(false))) {
+			return $eiuFrame->getEiSpec();
+		}
+		
 		if (!$required) return null;
 		
 		throw new EiuPerimeterException('Can not determine EiSpec of passed argument type ' 
 				. ReflectionUtils::getTypeInfo($eiSpecArg) . '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
+	}
+	
+	public static function buildEiSpecFromEiArg($eiSpecArg, string $argName = null, bool $required = true) {
+		if (null !== ($eiSpec = self::determineEiSpec($eiSpecArg))) {
+			return $eiSpec;
+		}
+		
+		throw new EiuPerimeterException('Can not determine EiSpec of passed argument ' . $argName 
+				. '. Following types are allowed: '
+				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)) . '; '
+				. ReflectionUtils::getTypeInfo($eiSpecArg) . ' given.');
 	}
 	
 	public static function buildEiEntryFromEiArg($eiEntryObj, string $argName = null, EiSpec $eiSpec = null, 
