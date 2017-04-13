@@ -36,8 +36,8 @@ use n2n\util\col\ArrayUtils;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use lib\rocket\spec\ei\manage\util\model\AjahRel;
-use lib\rocket\spec\ei\manage\util\model\AjahExec;
+use rocket\spec\ei\manage\util\model\AjahRel;
+use rocket\spec\ei\manage\util\model\AjahExec;
 
 class EditController extends ControllerAdapter {
 	private $dtc;

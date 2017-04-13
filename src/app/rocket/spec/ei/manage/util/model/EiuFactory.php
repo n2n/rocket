@@ -19,6 +19,7 @@ use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\field\EiField;
 use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\mask\EiMask;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, N2nContext::class);
@@ -234,8 +235,6 @@ class EiuFactory {
 						. implode(', ', self::EI_GUI_TYPES));
 	}
 	
-	
-
 	public function getEiuField(bool $required) {
 		if ($this->eiuField !== null) {
 			return $this->eiuField;
@@ -327,37 +326,79 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @param unknown $eiEntryObj
-	 * @return rocket\spec\ei\manage\util\model\EiEntry
+	 * @param mixed $eiEntryObj
+	 * @return \rocket\spec\ei\manage\EiEntry|null
 	 */
-	public static function determineEiEntry($eiEntryObj, &$eiMapping, &$eiEntryGui) {
-		if ($eiEntryObj instanceof EiEntry) {
-			return $eiEntryObj;
+	public static function determineEiEntry($eiEntryArg, &$eiMapping, &$eiEntryGui, bool $required = false) {
+		if ($eiEntryArg instanceof EiEntry) {
+			return $eiEntryArg;
 		} 
 			
-		if ($eiEntryObj instanceof EiMapping) {
-			$eiMapping = $eiEntryObj;
-			return $eiEntryObj->getEiEntry();
+		if ($eiEntryArg instanceof EiMapping) {
+			$eiMapping = $eiEntryArg;
+			return $eiEntryArg->getEiEntry();
 		}
 		
-		if ($eiEntryObj instanceof LiveEntry) {
-			return new LiveEiEntry($eiEntryObj);
+		if ($eiEntryArg instanceof LiveEntry) {
+			return new LiveEiEntry($eiEntryArg);
 		}
 		
-		if ($eiEntryObj instanceof Draft) {
-			return new DraftEiEntry($eiEntryObj);
+		if ($eiEntryArg instanceof Draft) {
+			return new DraftEiEntry($eiEntryArg);
 		}
 		
-		if ($eiEntryObj instanceof EntryGuiModel) {
-			$eiMapping = $eiEntryObj->getEiMapping();
-			$eiEntryGui = $eiEntryObj->getEiEntryGui();
-			return $eiMapping->getEiEntry();
+		if ($eiEntryArg instanceof EiuEntry) {
+			return $eiEntryArg->getEiEntry();
 		}
-			
-		return null;
+		
+		if ($eiEntryArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiEntryArg->getEiuEntry(false))) {
+			return $eiuEntry->getEiEntry();
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException('Can not determine EiEntry of passed argument type ' 
+				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
+				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
 	}
 	
-	public static function buildEiEntryFromEiArg($eiEntryObj, string $argName = null, EiSpec $eiSpec = null, bool $required = true, &$eiMapping = null, &$viewMode = null) {
+	/**
+	 * 
+	 * @param unknown $eiSpecObj
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\EiSpec|NULL
+	 */
+	public static function determineEiSpec($eiSpecArg, bool $required = false) {
+		if (null !== ($eiEntry = self::determineEiEntry($eiSpecArg, null, null))) {
+			return $eiEntry->getLiveEntry()->getEiSpec();
+		}
+		
+		if ($eiSpecArg instanceof EiSpec) {
+			return $eiSpecArg;
+		}
+		
+		if ($eiSpecArg instanceof EiMask) {
+			return $eiSpecArg->getEiEngine()->getEiSpec();
+		}
+			
+		if ($eiSpecArg instanceof EiFrame) {
+			return $eiSpecArg->getEiEngine()->getEiSpec();
+		}
+		
+		if ($eiSpecArg instanceof EiuFrame) {
+			return $eiSpecArg->getEiSpec();
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException('Can not determine EiSpec of passed argument type ' 
+				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
+				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
+	}
+	
+	public static function buildEiEntryFromEiArg($eiEntryObj, string $argName = null, EiSpec $eiSpec = null, 
+			bool $required = true, &$eiMapping = null, &$viewMode = null) {
 		if (!$required && $eiEntryObj === null) {
 			return null;
 		}

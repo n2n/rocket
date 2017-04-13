@@ -1,11 +1,14 @@
 <?php
 
-namespace lib\rocket\spec\ei\manage\util\model;
+namespace rocket\spec\ei\manage\util\model;
 
 use n2n\web\http\BufferedResponseContent;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\reflection\ArgUtils;
+use n2n\util\ex\UnsupportedOperationException;
+use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\EiSpec;
 
 class RocketAjahResponse implements BufferedResponseContent {
 	private $jsonResponse;
@@ -40,16 +43,22 @@ class RocketAjahResponse implements BufferedResponseContent {
 	
 	const ATTR_DIRECTIVE = 'directive';
 	const ATTR_FALLBACK_URL = 'fallbackUrl';
-	const ATTR_REL_CONFIG = 'relConfig';
-	const ATTR_EXEC_CONFIG = 'execConfig';
-
+	
 	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
 	
-	public static function redirectBack($fallbackUrl, AjahRel $ajahRel = null, AjahExec $ajahExec = null) {
+	const ATTR_EVENTS = 'events';
+	const ATTR_MODIFICATIONS = 'modifications';
+	
+	const MOD_TYPE_CHANGED = 'changed';
+	const MOD_TYPE_REMOVED = 'removed';
+	
+	const ATTR_EXEC_CONFIG = 'execConfig';
+	
+	public static function redirectBack($fallbackUrl, AjahEventInfo $ajahRel = null, AjahExec $ajahExec = null) {
 		return new RocketAjahResponse(array(
 				self::ATTR_DIRECTIVE => self::DIRECTIVE_REDIRECT_BACK,
 				self::ATTR_FALLBACK_URL => $fallbackUrl,
-				self::ATTR_REL_CONFIG => $ajahRel === null ? array() : $ajahRel->toAttrs(),
+				self::ATTR_EVENTS => $ajahRel === null ? array() : $ajahRel->toAttrs(),
 				self::ATTR_EXEC_CONFIG => $ajahExec === null ? array() : $ajahExec->toAttrs()));
 	}
 }
@@ -70,32 +79,128 @@ class AjahExec {
 	}
 }
 
-class AjahRel {
+class AjahEvent {
+	private $refreshCotext;
 	private $refreshMode = null;
 	
-	const REFRESH_ENTRY = 'entry';
-	const REFRESH_CONTEXT = 'context';
-	
-	public function __construct(string $refreshMode = null) {
+	public function __construct($draftMods) {
 		ArgUtils::valEnum($refreshMode, self::getRefreshModes(), null, true);
 		$this->refreshMode = $refreshMode;
+	}
+	
+	public static function common() {
+		return new AjahEventInfo();
+	}
+	
+	public static function ei() {
+		return new AjahEiEventInfo();
 	}
 	
 	public function toAttrs() {
 		return array('refreshMode' => $this->refreshMode);
 	}
+}
 
-	public static function getRefreshModes() {
-		return array(self::REFRESH_CONTEXT, self::REFRESH_ENTRY);
+class AjahEventInfo implements AjahModInfo {
+	private $resfreshMod;
+	private $marks = array();
+	
+	public function groupChanged(string $groupId) {
+		$this->marks[$groupId] = RocketAjahResponse::MOD_TYPE_CHANGED;
 	}
 	
-	public static function refreshContext() {
-		return new AjahRel(self::REFRESH_CONTEXT);
+	/**
+	 * @param string $typeId
+	 * @param string $entryId
+	 * @return \rocket\spec\ei\manage\util\model\AjahModInfoAdapter
+	 */
+	public function itemChanged(string $typeId, string $entryId) {
+		$this->item($typeId, $entryId, RocketAjahResponse::MOD_TYPE_CHANGED);
+		return $this;
 	}
 	
-	public static function refreshEntry() {
-		return new AjahRel(self::REFRESH_ENTRY);
+	/**
+	 * @param string $typeId
+	 * @param string $entryId
+	 * @return \rocket\spec\ei\manage\util\model\AjahModInfoAdapter
+	 */
+	public function itemRemoved(string $typeId, string $entryId) {
+		$this->item($typeId, $entryId, RocketAjahResponse::MOD_TYPE_REMOVED);
+		return $this;
 	}
 	
+	/**
+	 * @param string $typeId
+	 * @param string $entryId
+	 * @param string $modType
+	 */
+	public function item(string $typeId, string $entryId, string $modType) {
+		if (!isset($this->marks[$typeId])) {
+			$this->marks[$typeId] = array();
+		} else if ($type->marks[$typeId] == RocketAjahResponse::MOD_TYPE_CHANGED) {
+			return;
+		}
+		
+		$this->marks[$typeId][$entryId] = $modType;
+		return $this;
+	}
 	
+	public function toAttrs(): array {
+		if ($this->resfreshMod == self::REFRESH_MODE_CONTEXT) {
+			return array(self::ATTR_REFRESH_MODE => self::REFRESH_MODE_CONTEXT);
+		}
+		
+		return array(
+				self::ATTR_REFRESH_MODE => self::REFRESH_MODE_ENTRY,
+				self::ATTR_MARKS => $this->marks);
+	}
+}
+
+class EiAjahEventInfo extends AjahEventInfo {
+	
+	public function eiTypeChanged(...$eiSpecArgs) {
+		$this->categoryChanged(self::buildTypeId($eiEntry));
+	}
+	
+	public function eiEntryChanged(...$eiEntryArgs) {
+		foreach ($eiEntryArgs as $eiEntryArg) {
+			$eiEntry = EiuFactory::determineEiEntry($eiEntryArg, null, null, false);
+			$this->eiEntryMod($eiEntry, true);
+		}
+	}
+	
+	public function eiEntryRemoved(...$eiEntryArgs) {
+		foreach ($eiEntryArgs as $eiEntryArg) {
+			$eiEntry = EiuFactory::determineEiEntry($eiEntryArg, null, null, true);
+			$this->eiEntryMod($eiEntry, true);
+		}
+	}
+	
+	private function eiEntryMod(EiEntry $eiEntry, bool $removed) {
+		if ($removed) {
+			$this->itemRemoved(self::buildTypeId($eiEntry), self::buildItemId($eiEntry));
+		} else {
+			$this->itemChanged(self::buildTypeId($eiEntry), self::buildItemId($eiEntry));
+		}
+	}
+	
+	public static function buildTypeId(EiEntry $eiEntry) {
+		return $eiEntry->getLiveEntry()->getEiSpec()->getSupremeEiSpec()->getId();	
+	}
+	
+	/**
+	 * @param EiEntry $eiEntry
+	 * @return string
+	 */
+	public static function buildItemId(EiEntry $eiEntry) {
+		if ($eiEntry->isDraft()) {
+			return 'draft-id-' . $eiEntry->getDraft()->getId();
+		}
+		
+		return 'live-id-rep-' . $eiEntry->getLiveEntry()->getId();
+	}
+	
+	public function toAttrs(): array {
+	
+	}
 }

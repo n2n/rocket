@@ -45,10 +45,10 @@ use n2n\persistence\meta\structure\View;
 use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\json\JsonResponse;
-use lib\rocket\spec\ei\manage\util\model\RocketAjahResponse;
+use rocket\spec\ei\manage\util\model\RocketAjahResponse;
 use rocket\spec\ei\manage\EiFrame;
-use lib\rocket\spec\ei\manage\util\model\AjahExec;
-use lib\rocket\spec\ei\manage\util\model\AjahRel;
+use rocket\spec\ei\manage\util\model\AjahExec;
+use rocket\spec\ei\manage\util\model\AjahRel;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
