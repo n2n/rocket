@@ -79,9 +79,10 @@ var rocket;
     (function (cmd) {
         var Container = (function () {
             function Container(jqContainer) {
+                this.jqErrorLayer = null;
                 this.jqContainer = jqContainer;
                 this.layers = new Array();
-                var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length);
+                var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length, this);
                 this.layers.push(layer);
                 var that = this;
                 layer.onNewHistoryEntry(function (historyIndex, context) {
@@ -94,6 +95,10 @@ var rocket;
                     history.pushState(stateObj, "seite 2", context.getUrl());
                 });
                 $(window).bind("popstate", function (e) {
+                    if (that.jqErrorLayer) {
+                        that.jqErrorLayer.remove();
+                        that.jqErrorLayer = null;
+                    }
                     if (!history.state) {
                         layer.go(0, window.location.href);
                         return;
@@ -105,6 +110,27 @@ var rocket;
                     }
                 });
             }
+            Container.prototype.handleError = function (url, html) {
+                var stateObj = {
+                    "type": "rocketErrorContext",
+                    "url": url
+                };
+                if (this.jqErrorLayer) {
+                    history.replaceState(stateObj, "seite 2", url);
+                }
+                else {
+                    history.pushState(stateObj, "seite 2", url);
+                }
+                this.jqErrorLayer = $("<div />", { "class": "rocket-error-layer" });
+                this.jqErrorLayer.css({ "position": "fixed", "top": 0, "left": 0, "right": 0, "bottom": 0 });
+                this.jqContainer.append(this.jqErrorLayer);
+                var iframe = document.createElement("iframe");
+                this.jqErrorLayer.append(iframe);
+                iframe.contentWindow.document.open();
+                iframe.contentWindow.document.write(html);
+                iframe.contentWindow.document.close();
+                $(iframe).css({ "width": "100%", "height": "100%" });
+            };
             Container.prototype.getMainLayer = function () {
                 if (this.layers.length > 0) {
                     return this.layers[0];
@@ -129,7 +155,7 @@ var rocket;
         }());
         cmd.Container = Container;
         var Layer = (function () {
-            function Layer(jqContentGroup, level) {
+            function Layer(jqContentGroup, level, container) {
                 this.currentHistoryIndex = null;
                 this.visible = true;
                 this.contexts = new Array();
@@ -138,6 +164,7 @@ var rocket;
                 this.historyUrls = new Array();
                 this.jqLayer = jqContentGroup;
                 this.level = level;
+                this.container = container;
                 jqContentGroup.addClass("rocket-layer");
                 jqContentGroup.data("rocketLayer", this);
                 var jqContext = jqContentGroup.children(".rocket-context");
@@ -147,6 +174,9 @@ var rocket;
                     this.pushHistoryEntry(context.getUrl());
                 }
             }
+            Layer.prototype.getContainer = function () {
+                return this.container;
+            };
             Layer.prototype.isVisible = function () {
                 return this.visible;
             };
@@ -329,15 +359,6 @@ var rocket;
             Context.prototype.applyHtml = function (html) {
                 this.jqContext.removeClass("rocket-loading");
                 this.jqContext.html(html);
-            };
-            Context.prototype.applyErrorHtml = function (html) {
-                this.jqContext.removeClass("rocket-loading");
-                var iframe = document.createElement("iframe");
-                this.jqContext.append(iframe);
-                iframe.contentWindow.document.open();
-                iframe.contentWindow.document.write(html);
-                iframe.contentWindow.document.close();
-                $(iframe).css({ "width": "100%", "height": "100%" });
             };
             Context.prototype.onClose = function (onCloseCallback) {
                 this.onCloseCallbacks.push(onCloseCallback);
@@ -546,9 +567,10 @@ var rocket;
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
+    var container;
     jQuery(document).ready(function ($) {
         var jqContainer = $("#rocket-content-container");
-        var container = new rocket.cmd.Container(jqContainer);
+        container = new rocket.cmd.Container(jqContainer);
         var monitor = new rocket.cmd.Monitor(new rocket.cmd.Executor(container));
         monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
         monitor.scan(jqContainer);
@@ -576,13 +598,16 @@ var rocket;
             });
         })();
     });
+    function layerOf(elem) {
+        return rocket.cmd.Layer.findFrom($(elem));
+    }
+    rocket.layerOf = layerOf;
     function contextOf(elem) {
         return rocket.cmd.Context.findFrom($(elem));
     }
     rocket.contextOf = contextOf;
-    function handleErrorResponse(responseObject) {
-        alert(JSON.stringify(responseObject));
-        $("html").html(responseObject.responseText);
+    function handleErrorResponse(url, responseObject) {
+        container.handleError(url, responseObject.responseText);
     }
     rocket.handleErrorResponse = handleErrorResponse;
 })(rocket || (rocket = {}));
@@ -634,8 +659,9 @@ var rocket;
             };
             Form.prototype.submit = function (formData) {
                 var that = this;
+                var url = this.jqForm.attr("action");
                 $.ajax({
-                    "url": this.jqForm.attr("action"),
+                    "url": url,
                     "type": "POST",
                     "data": formData,
                     "cache": false,
@@ -649,7 +675,7 @@ var rocket;
                         n2n.ajah.update();
                     },
                     "error": function (jqXHR, textStatus, errorThrown) {
-                        //if fails     
+                        rocket.handleErrorResponse(url, jqXHR);
                     }
                 });
             };
@@ -722,7 +748,7 @@ var rocket;
                     "url": url,
                     "dataType": "json"
                 }).fail(function (data) {
-                    targetContext.applyErrorHtml(data.responseText);
+                    config.currentLayer.getContainer().handleError(url, data.responseText);
                 }).done(function (data) {
                     that.analyzeResponse(config.currentLayer, data, url, targetContext);
                     if (config.done) {

@@ -49,9 +49,9 @@ namespace rocket.impl {
 		
 		private submit(formData: FormData) {
 			var that = this;
-			
+			var url = this.jqForm.attr("action");
 			$.ajax({
-			    "url": this.jqForm.attr("action"),
+			    "url": url,
 			    "type": "POST",
 			    "data": formData,
 				"cache": false,
@@ -65,7 +65,7 @@ namespace rocket.impl {
 					n2n.ajah.update();
 			    },
 			    "error": function(jqXHR, textStatus, errorThrown){
-			        //if fails     
+			        rocket.handleErrorResponse(url, jqXHR);     
 			    }
 			});
 		}

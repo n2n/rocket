@@ -1,7 +1,9 @@
 namespace rocket {
+	var container: rocket.cmd.Container;
+	
 	jQuery(document).ready(function ($) {
 		var jqContainer = $("#rocket-content-container");
-		var container = new rocket.cmd.Container(jqContainer);
+		container = new rocket.cmd.Container(jqContainer);
 		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(new rocket.cmd.Executor(container));
 
 		monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
@@ -35,13 +37,15 @@ namespace rocket {
 		}) ();
 	});
 	
+	export function layerOf(elem: HTMLElement): rocket.cmd.Layer {
+		return rocket.cmd.Layer.findFrom($(elem));
+	}
+	
 	export function contextOf(elem: HTMLElement): rocket.cmd.Context {
 		return rocket.cmd.Context.findFrom($(elem));
 	}
 	
-	export function handleErrorResponse(responseObject) {
-		alert(JSON.stringify(responseObject));
-		
-		$("html").html(responseObject.responseText);
+	export function handleErrorResponse(url: string, responseObject: any) {
+		container.handleError(url, responseObject.responseText);
 	}
 }

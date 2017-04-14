@@ -4,11 +4,13 @@ namespace rocket.cmd {
 		private jqContainer: JQuery;
 		private layers: Array<Layer>;
 		
+		private jqErrorLayer: JQuery = null;
+		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;
 			this.layers = new Array<Layer>();
 			
-			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length);
+			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length, this);
 			this.layers.push(layer);
 			
 			var that = this;
@@ -24,6 +26,11 @@ namespace rocket.cmd {
 			});
 						
 			$(window).bind("popstate", function(e) {
+				if (that.jqErrorLayer) {
+					that.jqErrorLayer.remove();
+					that.jqErrorLayer = null;
+				}
+				
 				if (!history.state) {
 					layer.go(0, window.location.href);
 					return;
@@ -39,6 +46,32 @@ namespace rocket.cmd {
 			});
 		}
 		
+		public handleError(url: string, html: string) {
+			var stateObj = { 
+				"type": "rocketErrorContext",
+				"url": url
+			};
+			
+			if (this.jqErrorLayer) {
+				history.replaceState(stateObj, "seite 2", url);
+			} else {
+				history.pushState(stateObj, "seite 2", url);
+			}
+			
+			this.jqErrorLayer = $("<div />", { "class": "rocket-error-layer" });
+			this.jqErrorLayer.css({ "position": "fixed", "top": 0, "left": 0, "right": 0, "bottom": 0 });
+			this.jqContainer.append(this.jqErrorLayer);
+			
+			var iframe = document.createElement("iframe");
+			this.jqErrorLayer.append(iframe);
+			
+			iframe.contentWindow.document.open();
+			iframe.contentWindow.document.write(html);
+			iframe.contentWindow.document.close();
+			
+			$(iframe).css({ "width": "100%", "height": "100%" });
+		}
+	
 		public getMainLayer(): Layer {
 			if (this.layers.length > 0) {
 				return this.layers[0];
@@ -80,6 +113,7 @@ namespace rocket.cmd {
 	export class Layer {
 		private jqLayer: JQuery;
 		private level: number;
+		private container: Container;
 		private contexts: Array<Context>;
 		private historyUrls: Array<string>;
 		private currentHistoryIndex: number = null;
@@ -87,13 +121,14 @@ namespace rocket.cmd {
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
 		private visible: boolean = true;
 		
-		constructor(jqContentGroup: JQuery, level: number) {
+		constructor(jqContentGroup: JQuery, level: number, container: Container) {
 			this.contexts = new Array<Context>();
 			this.onNewContextCallbacks = new Array<ContextCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 			this.historyUrls = new Array<string>();
 			this.jqLayer = jqContentGroup;
 			this.level = level;
+			this.container = container;
 			
 			jqContentGroup.addClass("rocket-layer");
 			jqContentGroup.data("rocketLayer", this);
@@ -104,6 +139,10 @@ namespace rocket.cmd {
 				this.addContext(context);
 				this.pushHistoryEntry(context.getUrl());
 			}
+		}
+		
+		public getContainer(): Container {
+			return this.container;
 		}
 		
 		public isVisible(): boolean {
@@ -344,19 +383,6 @@ namespace rocket.cmd {
 			this.jqContext.removeClass("rocket-loading");
 			this.jqContext.html(html);
 		} 
-		
-		public applyErrorHtml(html: string) {
-			this.jqContext.removeClass("rocket-loading");
-			
-			var iframe = document.createElement("iframe");
-			this.jqContext.append(iframe);
-			
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write(html);
-			iframe.contentWindow.document.close();
-			
-			$(iframe).css({"width": "100%", "height": "100%"});
-		}
 		
 		public onClose(onCloseCallback: ContextCallback) {
 			this.onCloseCallbacks.push(onCloseCallback);

@@ -64,7 +64,7 @@ namespace rocket.cmd {
 				"url": url,
 				"dataType": "json"
 			}).fail(function (data) {
-				targetContext.applyErrorHtml(data.responseText);
+				config.currentLayer.getContainer().handleError(url, data.responseText);
 			}).done(function (data) {
 				that.analyzeResponse(config.currentLayer, data, url, targetContext);
 				
@@ -79,7 +79,7 @@ namespace rocket.cmd {
 				if (this.execDirectives(currentLayer, response["additional"])) {
 					if (targetContext !== null) targetContext.close();
 					return true;
-				} 
+				}
 			}
 			
 			if (targetContext === null) {
