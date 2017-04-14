@@ -48,44 +48,38 @@
 	<div class="rocket-grouped-panels">
 		<section id="rocket-core-latest-logins">
 			<h2><?php $html->l10nText('core_latest_logins_title') ?></h2>
-			<div class="rocket-equal-split-content">
-				<div>
-					<div class="rocket-panel">
-						<h3><?php $html->l10nText('core_latest_logins_title') ?></h3>
-						<?php $view->import('inc\loginTable.html', array('useSuccessfull' => true)) ?>
-					</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<h3><?php $html->l10nText('core_latest_logins_title') ?></h3>
+					<?php $view->import('inc\loginTable.html', array('useSuccessfull' => true)) ?>
 				</div>
-				<div>
-					<div class="rocket-panel">
-						<h3><?php $html->l10nText('core_failed_logins_title') ?></h3>
-						<?php $view->import('inc\loginTable.html', array('useSuccessfull' => false)) ?>
-					</div>
+				<div class="col-sm-6">
+					<h3><?php $html->l10nText('core_failed_logins_title') ?></h3>
+					<?php $view->import('inc\loginTable.html', array('useSuccessfull' => false)) ?>
 				</div>
 			</div>
 		</section>
 		<section id="rocket-core-server-info">
 			<h2><?php $html->l10nText('core_server_info_title') ?></h2>
-			<div class="rocket-panel">
-				<h3><?php $html->l10nText('core_server_info_title')?></h3>
-				<table class="table table-striped">
-					<thead>
+			<h3><?php $html->l10nText('core_server_info_title')?></h3>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th><?php $html->text('core_property_label') ?></th>
+						<th><?php $html->text('core_value_label') ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ($serverInfoExtractor->getServerProperties() as $props): ?>
 						<tr>
-							<th><?php $html->text('core_property_label') ?></th>
-							<th><?php $html->text('core_value_label') ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($serverInfoExtractor->getServerProperties() as $props): ?>
-							<tr>
-								<td><?php $html->out($props['name']) ?></td>
-								<td class="<?php echo ($props['status'] == 1 ? 'rocket-server-info-value-ok' : 'rocket-server-info-value-nok') ?>">
-									<?php $html->esc($props['value']) ?>
-								</td>
-							</tr> 
-						<?php endforeach ?>
-					</tbody>
-				</table>
-			</div>
+							<td><?php $html->out($props['name']) ?></td>
+							<td class="<?php echo ($props['status'] == 1 ? 'rocket-server-info-value-ok' : 'rocket-server-info-value-nok') ?>">
+								<?php $html->esc($props['value']) ?>
+							</td>
+						</tr> 
+					<?php endforeach ?>
+				</tbody>
+			</table>
 		</section>
 	</div>
 	

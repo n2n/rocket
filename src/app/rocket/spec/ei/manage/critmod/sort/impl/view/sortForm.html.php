@@ -46,16 +46,16 @@
 			Criteria::ORDER_DIRECTION_DESC => $view->getL10nText('ei_sort_desc_label'));
 ?>
 
-<ul class="rocket-sort" data-add-sort-label="<?php $html->l10nText('ei_impl_add_sort_label') ?>"
+<ul class="nav rocket-sort" data-add-sort-label="<?php $html->l10nText('ei_impl_add_sort_label') ?>"
 		data-sort-fields="<?php $html->out(json_encode($sortFieldIdOptions)) ?>">
 	<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
-		<li>
-			<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions) ?>
-			<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions) ?>
+		<li class="nav-item">
+			<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions, array('class' => 'form-control')) ?>
+			<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
 		</li>
 	<?php endforeach ?>
-	<li class="rocket-empty-sort-constraint">
-		<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions) ?>
-		<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions) ?>
+	<li class="nav-item rocket-empty-sort-constraint">
+		<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control')) ?>
+		<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions, array('class' => 'form-control')) ?>
 	</li>
 </ul>
