@@ -2,7 +2,7 @@ namespace rocket {
 	jQuery(document).ready(function ($) {
 		var jqContainer = $("#rocket-content-container");
 		var container = new rocket.cmd.Container(jqContainer);
-		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(container);
+		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(new rocket.cmd.Executor(container));
 
 		monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
 		monitor.scan(jqContainer);

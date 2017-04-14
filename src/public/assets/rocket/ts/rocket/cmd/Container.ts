@@ -44,7 +44,24 @@ namespace rocket.cmd {
 				return this.layers[0];
 			}
 			
-			throw new Error("MainLayer ");
+			throw new Error("Container empty.");
+		}
+		
+		public getCurrentLayer() {
+			if (this.layers.length == 0) {
+				throw new Error("Container empty.");
+			}
+			
+			var layer = null;
+			for (var i in this.layers) {
+				if (this.layers[i].isVisible()) {
+					layer = this.layers[i];
+				}
+			}
+			
+			if (layer !== null) return layer;
+			
+			return this.layers[this.layers.length - 1];
 		}
 			
 		
@@ -56,23 +73,26 @@ namespace rocket.cmd {
 //			
 //			return this.currentLayer.createContext(html, bla);
 //		}
+		
+		
 	}
 	
 	export class Layer {
-		private jqContentGroup: JQuery;
+		private jqLayer: JQuery;
 		private level: number;
 		private contexts: Array<Context>;
 		private historyUrls: Array<string>;
 		private currentHistoryIndex: number = null;
 		private onNewContextCallbacks: Array<ContextCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
+		private visible: boolean = true;
 		
 		constructor(jqContentGroup: JQuery, level: number) {
 			this.contexts = new Array<Context>();
 			this.onNewContextCallbacks = new Array<ContextCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 			this.historyUrls = new Array<string>();
-			this.jqContentGroup = jqContentGroup;
+			this.jqLayer = jqContentGroup;
 			this.level = level;
 			
 			jqContentGroup.addClass("rocket-layer");
@@ -82,8 +102,22 @@ namespace rocket.cmd {
 			if (jqContext.length > 0) {
 				var context = new Context(jqContext, window.location.href, this);
 				this.addContext(context);
-				this.createHistoryEntry(context);
+				this.pushHistoryEntry(context.getUrl());
 			}
+		}
+		
+		public isVisible(): boolean {
+			return this.visible;
+		}
+		
+		public show() {
+			this.visible = true;
+			this.jqLayer.show();	
+		}
+		
+		public hide() {
+			this.visible = false;
+			this.jqLayer.hide();	
 		}
 		
 		public getLevel() {
@@ -128,7 +162,12 @@ namespace rocket.cmd {
 			}
 		}
 		
-		private createHistoryEntry(context: Context) {
+		public pushHistoryEntry(url: string) {
+			var context: Context = this.getContextByUrl(url);
+			if (context === null) {
+				throw new Error("Not context with this url found: " + url);
+			}
+			
 			this.currentHistoryIndex = this.historyUrls.length;
 			this.historyUrls.push(context.getUrl());
 			
@@ -157,7 +196,13 @@ namespace rocket.cmd {
 			return true;
 		}
 		
-		private getContextByUrl(url: string): Context {
+		public getHistoryUrlByIndex(historyIndex: number): string {
+			if (this.historyUrls.length >= historyIndex) return null;
+			
+			return this.historyUrls[historyIndex];
+		}
+		
+		public getContextByUrl(url: string): Context {
 			for (var i in this.contexts) {
 				if (this.contexts[i].getUrl() == url) {
 					return this.contexts[i];
@@ -177,98 +222,13 @@ namespace rocket.cmd {
 			}
 		}
 		
-		public exec(url: string, config: ExecConfig = null) {
-			var forceReload = false;
-			var showLoadingContext = true;
-			var doneCallback;
-			
-			if (config !== null) {
-				forceReload = config.forceReload === true;
-				showLoadingContext = config.showLoadingContext !== false
-				doneCallback = config.done;
+		public createContext(url: string): Context {
+			if (this.getContextByUrl(url)) {
+				throw new Error("Context with url already available: " + url);
 			}
 			
-			var context = this.getContextByUrl(url);
-			
-			if (context !== null) {
-				if (this.getCurrentContext() !== context) {
-					this.createHistoryEntry(context);
-				}
-				
-				if (!forceReload) {
-					if (doneCallback) {
-						setTimeout(function () { doneCallback(new ExecResult(null, context)); }, 0);
-					}
-					
-					return;
-				}
-			}
-			
-			if (context === null && showLoadingContext) {
-				context = this.createContext(url);
-				this.createHistoryEntry(context);
-			}
-			
-			if (context !== null) {
-				context.clear(true);
-			}
-		
-			var that = this;
-			$.ajax({
-				"url": url,
-				"dataType": "json"
-			}).fail(function (data) {
-				context.applyErrorHtml(data.responseText);
-			}).done(function (data) {
-				that.analyzeResponse(data, url, context);
-				
-				if (doneCallback) {
-					doneCallback(new ExecResult(null, context));
-				}
-			});
-		}
-		
-		private analyzeResponse(response: Object, relatedUrl: string, relatedContext: Context = null): boolean {
-			if (typeof response["additional"] === "object") {
-				if (this.execDirectives(response["additional"])) return true;
-			}
-			
-			if (relatedContext === null) {
-				relatedContext = this.getContextByUrl(relatedUrl);
-			}
-			
-			if (relatedContext === null) {
-				relatedContext = this.createContext(relatedUrl);
-			}
-			
-			relatedContext.applyHtml(n2n.ajah.analyze(response));
-			n2n.ajah.update();
-		}
-		
-		private execDirectives(info: any) {
-			if (info.directive == "redirectBack") {
-				this.back(info.fallbackUrl);
-				return true;
-			}
-		}
-		
-		public back(fallbackUrl: string = null) {
-			if (this.currentHistoryIndex > 0) {
-				this.exec(this.historyUrls[this.currentHistoryIndex - 1]);
-				return;
-			}
-			
-			if (fallbackUrl) {
-				this.exec(fallbackUrl);
-				return;
-			}
-			
-			this.close();
-		}
-				
-		private createContext(url: string): Context {
 			var jqContent = $("<div/>");
-			this.jqContentGroup.append(jqContent);
+			this.jqLayer.append(jqContent);
 			var context = new Context(jqContent, url, this);
 			
 			this.addContext(context);
@@ -288,7 +248,7 @@ namespace rocket.cmd {
 		
 		public dispose() {
 			this.contexts = new Array<Context>();
-			this.jqContentGroup.remove();
+			this.jqLayer.remove();
 		}
 		
 		public onNewContext(onNewContextCallback: ContextCallback) {
@@ -310,17 +270,6 @@ namespace rocket.cmd {
 			}
 			
 			return layer;
-		}
-	}
-	
-	interface ExecConfig {
-		forceReload: boolean 
-		showLoadingContext: boolean; 
-		done: (ExecResult) => any;
-	}
-	
-	class ExecResult {
-		constructor(order, context: Context) {
 		}
 	}
 	
@@ -347,6 +296,10 @@ namespace rocket.cmd {
 			jqContext.data("rocketContext", this);
 			
 			this.hide();
+		}
+		
+		public getLayer(): Layer {
+			return this.layer;
 		}
 		
 		public getUrl(): string {

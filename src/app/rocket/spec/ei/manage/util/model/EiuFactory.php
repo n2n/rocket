@@ -404,7 +404,7 @@ class EiuFactory {
 	 * @return \rocket\spec\ei\EiSpec|NULL
 	 */
 	public static function determineEiSpec($eiSpecArg, bool $required = false) {
-		if (null !== ($eiEntry = self::determineEiEntry($eiSpecArg, null, null))) {
+		if (null !== ($eiEntry = self::determineEiEntry($eiSpecArg))) {
 			return $eiEntry->getLiveEntry()->getEiSpec();
 		}
 		
