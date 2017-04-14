@@ -32,7 +32,6 @@ use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\security\InaccessibleEntryException;
-use rocket\spec\ei\manage\EntryGui;
 use rocket\core\model\Rocket;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\mask\EiMask;
