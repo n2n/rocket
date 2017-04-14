@@ -4,25 +4,27 @@ var rocket;
     (function (cmd) {
         var $ = jQuery;
         var Monitor = (function () {
-            function Monitor(container) {
-                this.container = container;
+            function Monitor(executor) {
+                this.executor = executor;
             }
             Monitor.prototype.scanMain = function (jqContent, layer) {
                 var that = this;
                 jqContent.find("a.rocket-ajah").each(function () {
-                    (new LinkAction(jQuery(this), layer)).activate();
+                    (new LinkAction(that.executor, jQuery(this), layer)).activate();
                 });
             };
             Monitor.prototype.scan = function (jqContainer) {
+                var that = this;
                 jqContainer.find("a.rocket-ajah").each(function () {
-                    CommandAction.from($(this));
+                    CommandAction.from($(this), that.executor);
                 });
             };
             return Monitor;
         }());
         cmd.Monitor = Monitor;
         var LinkAction = (function () {
-            function LinkAction(jqA, layer) {
+            function LinkAction(executor, jqA, layer) {
+                this.executor = executor;
                 this.jqA = jqA;
                 this.layer = layer;
             }
@@ -37,12 +39,13 @@ var rocket;
             };
             LinkAction.prototype.handle = function () {
                 var url = this.jqA.attr("href");
-                this.layer.exec(url);
+                this.executor.exec(url, { currentLayer: this.layer });
             };
             return LinkAction;
         }());
         var CommandAction = (function () {
-            function CommandAction(jqElem) {
+            function CommandAction(executor, jqElem) {
+                this.executor = executor;
                 this.jqElem = jqElem;
                 var that = this;
                 jqElem.click(function (e) {
@@ -52,17 +55,17 @@ var rocket;
             }
             CommandAction.prototype.handle = function () {
                 var url = this.jqElem.attr("href");
-                var layer = cmd.Layer.findFrom(this.jqElem);
-                if (layer === null) {
-                    throw new Error("Command belongs to no layer.");
+                var context = cmd.Context.findFrom(this.jqElem);
+                if (context === null) {
+                    throw new Error("Command belongs to no Context.");
                 }
-                layer.exec(url);
+                this.executor.exec(url, { currentContext: context });
             };
-            CommandAction.from = function (jqElem) {
+            CommandAction.from = function (jqElem, executor) {
                 var commandAction = jqElem.data("rocketCommandAction");
                 if (commandAction)
                     return commandAction;
-                commandAction = new CommandAction(jqElem);
+                commandAction = new CommandAction(executor, jqElem);
                 jqElem.data("rocketCommandAction", commandAction);
                 return commandAction;
             };
@@ -106,7 +109,21 @@ var rocket;
                 if (this.layers.length > 0) {
                     return this.layers[0];
                 }
-                throw new Error("MainLayer ");
+                throw new Error("Container empty.");
+            };
+            Container.prototype.getCurrentLayer = function () {
+                if (this.layers.length == 0) {
+                    throw new Error("Container empty.");
+                }
+                var layer = null;
+                for (var i in this.layers) {
+                    if (this.layers[i].isVisible()) {
+                        layer = this.layers[i];
+                    }
+                }
+                if (layer !== null)
+                    return layer;
+                return this.layers[this.layers.length - 1];
             };
             return Container;
         }());
@@ -114,11 +131,12 @@ var rocket;
         var Layer = (function () {
             function Layer(jqContentGroup, level) {
                 this.currentHistoryIndex = null;
+                this.visible = true;
                 this.contexts = new Array();
                 this.onNewContextCallbacks = new Array();
                 this.onNewHistoryEntryCallbacks = new Array();
                 this.historyUrls = new Array();
-                this.jqContentGroup = jqContentGroup;
+                this.jqLayer = jqContentGroup;
                 this.level = level;
                 jqContentGroup.addClass("rocket-layer");
                 jqContentGroup.data("rocketLayer", this);
@@ -126,9 +144,20 @@ var rocket;
                 if (jqContext.length > 0) {
                     var context = new Context(jqContext, window.location.href, this);
                     this.addContext(context);
-                    this.createHistoryEntry(context);
+                    this.pushHistoryEntry(context.getUrl());
                 }
             }
+            Layer.prototype.isVisible = function () {
+                return this.visible;
+            };
+            Layer.prototype.show = function () {
+                this.visible = true;
+                this.jqLayer.show();
+            };
+            Layer.prototype.hide = function () {
+                this.visible = false;
+                this.jqLayer.hide();
+            };
             Layer.prototype.getLevel = function () {
                 return this.level;
             };
@@ -162,7 +191,11 @@ var rocket;
                     this.onNewContextCallbacks[i](context);
                 }
             };
-            Layer.prototype.createHistoryEntry = function (context) {
+            Layer.prototype.pushHistoryEntry = function (url) {
+                var context = this.getContextByUrl(url);
+                if (context === null) {
+                    throw new Error("Not context with this url found: " + url);
+                }
                 this.currentHistoryIndex = this.historyUrls.length;
                 this.historyUrls.push(context.getUrl());
                 for (var i in this.onNewHistoryEntryCallbacks) {
@@ -185,6 +218,11 @@ var rocket;
                 this.switchToContext(context);
                 return true;
             };
+            Layer.prototype.getHistoryUrlByIndex = function (historyIndex) {
+                if (this.historyUrls.length >= historyIndex)
+                    return null;
+                return this.historyUrls[historyIndex];
+            };
             Layer.prototype.getContextByUrl = function (url) {
                 for (var i in this.contexts) {
                     if (this.contexts[i].getUrl() == url) {
@@ -203,84 +241,12 @@ var rocket;
                     }
                 }
             };
-            Layer.prototype.exec = function (url, config) {
-                if (config === void 0) { config = null; }
-                var forceReload = false;
-                var showLoadingContext = true;
-                var doneCallback;
-                if (config !== null) {
-                    forceReload = config.forceReload === true;
-                    showLoadingContext = config.showLoadingContext !== false;
-                    doneCallback = config.done;
-                }
-                var context = this.getContextByUrl(url);
-                if (context !== null) {
-                    if (this.getCurrentContext() !== context) {
-                        this.createHistoryEntry(context);
-                    }
-                    if (!forceReload) {
-                        if (doneCallback) {
-                            setTimeout(function () { doneCallback(new ExecResult(null, context)); }, 0);
-                        }
-                        return;
-                    }
-                }
-                if (context === null && showLoadingContext) {
-                    context = this.createContext(url);
-                    this.createHistoryEntry(context);
-                }
-                if (context !== null) {
-                    context.clear(true);
-                }
-                var that = this;
-                $.ajax({
-                    "url": url,
-                    "dataType": "json"
-                }).fail(function (data) {
-                    context.applyErrorHtml(data.responseText);
-                }).done(function (data) {
-                    that.analyzeResponse(data, url, context);
-                    if (doneCallback) {
-                        doneCallback(new ExecResult(null, context));
-                    }
-                });
-            };
-            Layer.prototype.analyzeResponse = function (response, relatedUrl, relatedContext) {
-                if (relatedContext === void 0) { relatedContext = null; }
-                if (typeof response["additional"] === "object") {
-                    if (this.execDirectives(response["additional"]))
-                        return true;
-                }
-                if (relatedContext === null) {
-                    relatedContext = this.getContextByUrl(relatedUrl);
-                }
-                if (relatedContext === null) {
-                    relatedContext = this.createContext(relatedUrl);
-                }
-                relatedContext.applyHtml(n2n.ajah.analyze(response));
-                n2n.ajah.update();
-            };
-            Layer.prototype.execDirectives = function (info) {
-                if (info.directive == "redirectBack") {
-                    this.back(info.fallbackUrl);
-                    return true;
-                }
-            };
-            Layer.prototype.back = function (fallbackUrl) {
-                if (fallbackUrl === void 0) { fallbackUrl = null; }
-                if (this.currentHistoryIndex > 0) {
-                    this.exec(this.historyUrls[this.currentHistoryIndex - 1]);
-                    return;
-                }
-                if (fallbackUrl) {
-                    this.exec(fallbackUrl);
-                    return;
-                }
-                this.close();
-            };
             Layer.prototype.createContext = function (url) {
+                if (this.getContextByUrl(url)) {
+                    throw new Error("Context with url already available: " + url);
+                }
                 var jqContent = $("<div/>");
-                this.jqContentGroup.append(jqContent);
+                this.jqLayer.append(jqContent);
                 var context = new Context(jqContent, url, this);
                 this.addContext(context);
                 return context;
@@ -295,7 +261,7 @@ var rocket;
             };
             Layer.prototype.dispose = function () {
                 this.contexts = new Array();
-                this.jqContentGroup.remove();
+                this.jqLayer.remove();
             };
             Layer.prototype.onNewContext = function (onNewContextCallback) {
                 this.onNewContextCallbacks.push(onNewContextCallback);
@@ -316,11 +282,6 @@ var rocket;
             return Layer;
         }());
         cmd.Layer = Layer;
-        var ExecResult = (function () {
-            function ExecResult(order, context) {
-            }
-            return ExecResult;
-        }());
         var Context = (function () {
             function Context(jqContext, url, layer) {
                 this.jqContext = jqContext;
@@ -331,6 +292,9 @@ var rocket;
                 jqContext.data("rocketContext", this);
                 this.hide();
             }
+            Context.prototype.getLayer = function () {
+                return this.layer;
+            };
             Context.prototype.getUrl = function () {
                 return this.url;
             };
@@ -585,7 +549,7 @@ var rocket;
     jQuery(document).ready(function ($) {
         var jqContainer = $("#rocket-content-container");
         var container = new rocket.cmd.Container(jqContainer);
-        var monitor = new rocket.cmd.Monitor(container);
+        var monitor = new rocket.cmd.Monitor(new rocket.cmd.Executor(container));
         monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
         monitor.scan(jqContainer);
         n2n.dispatch.registerCallback(function () {
@@ -702,4 +666,112 @@ var rocket;
         }());
         impl.Form = Form;
     })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var cmd;
+    (function (cmd) {
+        var Executor = (function () {
+            function Executor(container) {
+                this.container = container;
+            }
+            Executor.prototype.purifyExecConfig = function (config) {
+                config.forceReload = config.forceReload === true;
+                config.showLoadingContext = config.showLoadingContext !== false;
+                config.createNewLayer = config.createNewLayer === true;
+                if (!config.currentLayer) {
+                    if (config.currentContext) {
+                        config.currentLayer = config.currentContext.getLayer();
+                    }
+                    else {
+                        config.currentLayer = this.container.getCurrentLayer();
+                    }
+                }
+                if (!config.currentContext) {
+                    config.currentContext = null;
+                }
+                return config;
+            };
+            Executor.prototype.exec = function (url, config) {
+                if (config === void 0) { config = null; }
+                config = this.purifyExecConfig(config);
+                var targetContext = null;
+                if (!config.createNewLayer) {
+                    targetContext = config.currentLayer.getContextByUrl(url);
+                }
+                if (targetContext !== null) {
+                    if (config.currentLayer.getCurrentContext() !== targetContext) {
+                        config.currentLayer.pushHistoryEntry(targetContext.getUrl());
+                    }
+                    if (!config.forceReload) {
+                        if (config.done) {
+                            setTimeout(function () { config.done(new ExecResult(null, targetContext)); }, 0);
+                        }
+                        return;
+                    }
+                }
+                if (targetContext === null && config.showLoadingContext) {
+                    targetContext = config.currentLayer.createContext(url);
+                    config.currentLayer.pushHistoryEntry(url);
+                }
+                if (targetContext !== null) {
+                    targetContext.clear(true);
+                }
+                var that = this;
+                $.ajax({
+                    "url": url,
+                    "dataType": "json"
+                }).fail(function (data) {
+                    targetContext.applyErrorHtml(data.responseText);
+                }).done(function (data) {
+                    that.analyzeResponse(config.currentLayer, data, url, targetContext);
+                    if (config.done) {
+                        config.done(new ExecResult(null, targetContext));
+                    }
+                });
+            };
+            Executor.prototype.analyzeResponse = function (currentLayer, response, targetUrl, targetContext) {
+                if (targetContext === void 0) { targetContext = null; }
+                if (typeof response["additional"] === "object") {
+                    if (this.execDirectives(currentLayer, response["additional"])) {
+                        if (targetContext !== null)
+                            targetContext.close();
+                        return true;
+                    }
+                }
+                if (targetContext === null) {
+                    targetContext = currentLayer.getContextByUrl(targetUrl);
+                    currentLayer.pushHistoryEntry(targetUrl);
+                }
+                if (targetContext === null) {
+                    targetContext = currentLayer.createContext(targetUrl);
+                    currentLayer.pushHistoryEntry(targetUrl);
+                }
+                targetContext.applyHtml(n2n.ajah.analyze(response));
+                n2n.ajah.update();
+            };
+            Executor.prototype.execDirectives = function (currentLayer, info) {
+                if (info.directive == "redirectBack") {
+                    var index = currentLayer.getCurrentHistoryIndex();
+                    if (index > 0) {
+                        this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });
+                        return true;
+                    }
+                    if (info.fallbackUrl) {
+                        this.exec(info.fallbackUrl, { "currentLayer": currentLayer });
+                        return true;
+                    }
+                    currentLayer.close();
+                }
+                return false;
+            };
+            return Executor;
+        }());
+        cmd.Executor = Executor;
+        var ExecResult = (function () {
+            function ExecResult(order, context) {
+            }
+            return ExecResult;
+        }());
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
