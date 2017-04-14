@@ -45,16 +45,6 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     flex: 1 0 auto;
 }
 
-.rocket-conf-nav-link {
-    display: inline-block;
-    line-height: $rocket-header-height;
-    padding: 0 1rem;
-    color: $gray-lighter;
-    &:hover {
-        color: $gray-lightest;
-    }
-}
-
 /**
  * Global navigation
  */
@@ -74,23 +64,13 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     background: $brand-gray-02;
 }
 
-.rocket-global-nav-group-title {
-    font-size: 1rem;
-    background-color: $brand-gray-01;
-    margin: 0;
-    padding: 0.75rem $spacer;
-    font-weight: bold;
-    > i.fa {
-        float: right;
-    }
-}
-
 /**
  * Content
  */
 
 #rocket-content-container {
     margin-left: $rocket-content-margin-left;
+    margin-right: $rocket-global-nav-spacer;
     margin-top: $rocket-header-height;
     margin-bottom: 7rem;
 }
