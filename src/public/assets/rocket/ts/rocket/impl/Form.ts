@@ -59,10 +59,7 @@ namespace rocket.impl {
 			    "contentType": false,
 				"dataType": "json",
 			    "success": function(data, textStatus, jqXHR){
-					var html = n2n.ajah.analyze(data);
-					alert(html);
-			       	rocket.contextOf(that.jqForm.get(0)).applyHtml(html);
-					n2n.ajah.update();
+					rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
 			    },
 			    "error": function(jqXHR, textStatus, errorThrown){
 			        rocket.handleErrorResponse(url, jqXHR);     

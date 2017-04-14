@@ -236,7 +236,7 @@ namespace rocket.cmd {
 		}
 		
 		public getHistoryUrlByIndex(historyIndex: number): string {
-			if (this.historyUrls.length >= historyIndex) return null;
+			if (this.historyUrls.length <= historyIndex) return null;
 			
 			return this.historyUrls[historyIndex];
 		}

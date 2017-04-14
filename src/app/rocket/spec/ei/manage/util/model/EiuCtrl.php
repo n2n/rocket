@@ -150,7 +150,7 @@ class EiuCtrl implements Lookupable {
 		return $eiMapping;
 	}
 	
-	public function redirectBack($fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {
+	public function redirectBack(string $fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {

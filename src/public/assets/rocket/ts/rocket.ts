@@ -1,10 +1,12 @@
 namespace rocket {
 	var container: rocket.cmd.Container;
+	var executor: rocket.cmd.Executor;
 	
 	jQuery(document).ready(function ($) {
 		var jqContainer = $("#rocket-content-container");
 		container = new rocket.cmd.Container(jqContainer);
-		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(new rocket.cmd.Executor(container));
+		executor = new rocket.cmd.Executor(container);
+		var monitor: rocket.cmd.Monitor = new rocket.cmd.Monitor(executor);
 
 		monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
 		monitor.scan(jqContainer);
@@ -48,4 +50,15 @@ namespace rocket {
 	export function handleErrorResponse(url: string, responseObject: any) {
 		container.handleError(url, responseObject.responseText);
 	}
+	
+	
+	export function exec(url: string, config: rocket.cmd.ExecConfig = null) {
+		executor.exec(url, config);
+	}
+	
+	export function analyzeResponse(currentLayer: rocket.cmd.Layer, response: Object, targetUrl: string, 
+			targetContext: rocket.cmd.Context = null): boolean {
+		return executor.analyzeResponse(currentLayer, response, targetUrl, targetContext);
+	}
+
 }

@@ -56,7 +56,7 @@ class RocketAjahResponse implements BufferedResponseContent {
 	 * @param AjahExec $ajahExec
 	 * @return BufferedResponseContent
 	 */
-	public static function redirectBack($fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {
+	public static function redirectBack(string $fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {
 		$attrs = array(
 				self::ATTR_DIRECTIVE => self::DIRECTIVE_REDIRECT_BACK,
 				self::ATTR_FALLBACK_URL => $fallbackUrl);

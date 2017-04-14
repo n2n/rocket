@@ -74,7 +74,7 @@ namespace rocket.cmd {
 			});
 		}
 		
-		private analyzeResponse(currentLayer: Layer, response: Object, targetUrl: string, targetContext: Context = null): boolean {
+		public analyzeResponse(currentLayer: Layer, response: Object, targetUrl: string, targetContext: Context = null): boolean {
 			if (typeof response["additional"] === "object") {
 				if (this.execDirectives(currentLayer, response["additional"])) {
 					if (targetContext !== null) targetContext.close();
@@ -104,7 +104,7 @@ namespace rocket.cmd {
 					this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });
 					return true;
 				}
-				
+		
 				if (info.fallbackUrl) {
 					this.exec(info.fallbackUrl, { "currentLayer": currentLayer });
 					return true;
@@ -117,7 +117,7 @@ namespace rocket.cmd {
 		}
 	}
 	
-	interface ExecConfig {
+	export interface ExecConfig {
 		forceReload?: boolean; 
 		showLoadingContext?: boolean; 
 		createNewLayer?: boolean;
@@ -126,7 +126,7 @@ namespace rocket.cmd {
 		done?: (ExecResult) => any;
 	}
 	
-	class ExecResult {
+	export class ExecResult {
 		constructor(order, context: Context) {
 		}
 	}
