@@ -63,9 +63,14 @@ namespace rocket.cmd {
 			$.ajax({
 				"url": url,
 				"dataType": "json"
-			}).fail(function (data) {
-				config.currentLayer.getContainer().handleError(url, data.responseText);
-			}).done(function (data) {
+			}).fail(function (jqXHR, textStatus, data) {
+				if (jqXHR.status != 200) {
+					config.currentLayer.getContainer().handleError(url, data.responseText);
+					return;
+				}
+				
+				alert("Not yet implemented press F5 after ok.");
+			}).done(function (data, textStatus, jqXHR) {
 				that.analyzeResponse(config.currentLayer, data, url, targetContext);
 				
 				if (config.done) {

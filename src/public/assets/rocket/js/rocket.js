@@ -249,7 +249,7 @@ var rocket;
                 return true;
             };
             Layer.prototype.getHistoryUrlByIndex = function (historyIndex) {
-                if (this.historyUrls.length >= historyIndex)
+                if (this.historyUrls.length <= historyIndex)
                     return null;
                 return this.historyUrls[historyIndex];
             };
@@ -451,32 +451,32 @@ var rocket;
                 jqContainer.append(this.jqPagination);
                 this.jqPagination.append($("<a />", {
                     "href": "#",
-                    "class": "rocket-impl-pagination-first btn btn-secondary",
+                    "class": "rocket-impl-pagination-first rocket-control",
                     "click": function () { that.goTo(1); }
                 }).append($("<i />", {
                     "class": "fa fa-step-backward"
                 })));
                 this.jqPagination.append($("<button />", {
-                    "class": "rocket-impl-pagination-prev btn btn-secondary",
+                    "class": "rocket-impl-pagination-prev rocket-control",
                     "click": function () { that.goTo(that.getCurrentPageNo() - 1); }
                 }).append($("<i />", {
                     "class": "fa fa-chevron-left"
                 })));
                 this.jqInput = $("<input />", {
-                    "class": "rocket-impl-pagination-no form-control",
+                    "class": "rocket-impl-pagination-no",
                     "type": "text",
                     "value": this.currentPageNo
                 });
                 this.jqPagination.append(this.jqInput);
                 this.jqPagination.append($("<button />", {
-                    "class": "rocket-impl-pagination-next btn btn-secondary",
+                    "class": "rocket-impl-pagination-next rocket-control",
                     "click": function () { that.goTo(that.getCurrentPageNo() + 1); }
                 }).append($("<i />", {
                     "class": "fa fa-chevron-right"
                 })));
                 this.jqPagination.append($("<button />", {
                     "href": "#",
-                    "class": "rocket-impl-pagination-last btn btn-secondary",
+                    "class": "rocket-impl-pagination-last rocket-control",
                     "click": function () { that.goTo(that.getNumPages()); }
                 }).append($("<i />", {
                     "class": "fa fa-step-forward"
@@ -567,11 +567,126 @@ var rocket;
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
+    var cmd;
+    (function (cmd) {
+        var Executor = (function () {
+            function Executor(container) {
+                this.container = container;
+            }
+            Executor.prototype.purifyExecConfig = function (config) {
+                config.forceReload = config.forceReload === true;
+                config.showLoadingContext = config.showLoadingContext !== false;
+                config.createNewLayer = config.createNewLayer === true;
+                if (!config.currentLayer) {
+                    if (config.currentContext) {
+                        config.currentLayer = config.currentContext.getLayer();
+                    }
+                    else {
+                        config.currentLayer = this.container.getCurrentLayer();
+                    }
+                }
+                if (!config.currentContext) {
+                    config.currentContext = null;
+                }
+                return config;
+            };
+            Executor.prototype.exec = function (url, config) {
+                if (config === void 0) { config = null; }
+                config = this.purifyExecConfig(config);
+                var targetContext = null;
+                if (!config.createNewLayer) {
+                    targetContext = config.currentLayer.getContextByUrl(url);
+                }
+                if (targetContext !== null) {
+                    if (config.currentLayer.getCurrentContext() !== targetContext) {
+                        config.currentLayer.pushHistoryEntry(targetContext.getUrl());
+                    }
+                    if (!config.forceReload) {
+                        if (config.done) {
+                            setTimeout(function () { config.done(new ExecResult(null, targetContext)); }, 0);
+                        }
+                        return;
+                    }
+                }
+                if (targetContext === null && config.showLoadingContext) {
+                    targetContext = config.currentLayer.createContext(url);
+                    config.currentLayer.pushHistoryEntry(url);
+                }
+                if (targetContext !== null) {
+                    targetContext.clear(true);
+                }
+                var that = this;
+                $.ajax({
+                    "url": url,
+                    "dataType": "json"
+                }).fail(function (jqXHR, textStatus, data) {
+                    if (jqXHR.status != 200) {
+                        config.currentLayer.getContainer().handleError(url, data.responseText);
+                        return;
+                    }
+                    alert("Not yet implemented press F5 after ok.");
+                }).done(function (data, textStatus, jqXHR) {
+                    that.analyzeResponse(config.currentLayer, data, url, targetContext);
+                    if (config.done) {
+                        config.done(new ExecResult(null, targetContext));
+                    }
+                });
+            };
+            Executor.prototype.analyzeResponse = function (currentLayer, response, targetUrl, targetContext) {
+                if (targetContext === void 0) { targetContext = null; }
+                if (typeof response["additional"] === "object") {
+                    if (this.execDirectives(currentLayer, response["additional"])) {
+                        if (targetContext !== null)
+                            targetContext.close();
+                        return true;
+                    }
+                }
+                if (targetContext === null) {
+                    targetContext = currentLayer.getContextByUrl(targetUrl);
+                    currentLayer.pushHistoryEntry(targetUrl);
+                }
+                if (targetContext === null) {
+                    targetContext = currentLayer.createContext(targetUrl);
+                    currentLayer.pushHistoryEntry(targetUrl);
+                }
+                targetContext.applyHtml(n2n.ajah.analyze(response));
+                n2n.ajah.update();
+            };
+            Executor.prototype.execDirectives = function (currentLayer, info) {
+                if (info.directive == "redirectBack") {
+                    var index = currentLayer.getCurrentHistoryIndex();
+                    if (index > 0) {
+                        this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });
+                        return true;
+                    }
+                    if (info.fallbackUrl) {
+                        this.exec(info.fallbackUrl, { "currentLayer": currentLayer });
+                        return true;
+                    }
+                    currentLayer.close();
+                }
+                return false;
+            };
+            return Executor;
+        }());
+        cmd.Executor = Executor;
+        var ExecResult = (function () {
+            function ExecResult(order, context) {
+            }
+            return ExecResult;
+        }());
+        cmd.ExecResult = ExecResult;
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
     var container;
+    var executor;
     jQuery(document).ready(function ($) {
         var jqContainer = $("#rocket-content-container");
         container = new rocket.cmd.Container(jqContainer);
-        var monitor = new rocket.cmd.Monitor(new rocket.cmd.Executor(container));
+        executor = new rocket.cmd.Executor(container);
+        var monitor = new rocket.cmd.Monitor(executor);
         monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
         monitor.scan(jqContainer);
         n2n.dispatch.registerCallback(function () {
@@ -610,6 +725,16 @@ var rocket;
         container.handleError(url, responseObject.responseText);
     }
     rocket.handleErrorResponse = handleErrorResponse;
+    function exec(url, config) {
+        if (config === void 0) { config = null; }
+        executor.exec(url, config);
+    }
+    rocket.exec = exec;
+    function analyzeResponse(currentLayer, response, targetUrl, targetContext) {
+        if (targetContext === void 0) { targetContext = null; }
+        return executor.analyzeResponse(currentLayer, response, targetUrl, targetContext);
+    }
+    rocket.analyzeResponse = analyzeResponse;
 })(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
@@ -669,10 +794,7 @@ var rocket;
                     "contentType": false,
                     "dataType": "json",
                     "success": function (data, textStatus, jqXHR) {
-                        var html = n2n.ajah.analyze(data);
-                        alert(html);
-                        rocket.contextOf(that.jqForm.get(0)).applyHtml(html);
-                        n2n.ajah.update();
+                        rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
                     },
                     "error": function (jqXHR, textStatus, errorThrown) {
                         rocket.handleErrorResponse(url, jqXHR);
@@ -692,112 +814,4 @@ var rocket;
         }());
         impl.Form = Form;
     })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var Executor = (function () {
-            function Executor(container) {
-                this.container = container;
-            }
-            Executor.prototype.purifyExecConfig = function (config) {
-                config.forceReload = config.forceReload === true;
-                config.showLoadingContext = config.showLoadingContext !== false;
-                config.createNewLayer = config.createNewLayer === true;
-                if (!config.currentLayer) {
-                    if (config.currentContext) {
-                        config.currentLayer = config.currentContext.getLayer();
-                    }
-                    else {
-                        config.currentLayer = this.container.getCurrentLayer();
-                    }
-                }
-                if (!config.currentContext) {
-                    config.currentContext = null;
-                }
-                return config;
-            };
-            Executor.prototype.exec = function (url, config) {
-                if (config === void 0) { config = null; }
-                config = this.purifyExecConfig(config);
-                var targetContext = null;
-                if (!config.createNewLayer) {
-                    targetContext = config.currentLayer.getContextByUrl(url);
-                }
-                if (targetContext !== null) {
-                    if (config.currentLayer.getCurrentContext() !== targetContext) {
-                        config.currentLayer.pushHistoryEntry(targetContext.getUrl());
-                    }
-                    if (!config.forceReload) {
-                        if (config.done) {
-                            setTimeout(function () { config.done(new ExecResult(null, targetContext)); }, 0);
-                        }
-                        return;
-                    }
-                }
-                if (targetContext === null && config.showLoadingContext) {
-                    targetContext = config.currentLayer.createContext(url);
-                    config.currentLayer.pushHistoryEntry(url);
-                }
-                if (targetContext !== null) {
-                    targetContext.clear(true);
-                }
-                var that = this;
-                $.ajax({
-                    "url": url,
-                    "dataType": "json"
-                }).fail(function (data) {
-                    config.currentLayer.getContainer().handleError(url, data.responseText);
-                }).done(function (data) {
-                    that.analyzeResponse(config.currentLayer, data, url, targetContext);
-                    if (config.done) {
-                        config.done(new ExecResult(null, targetContext));
-                    }
-                });
-            };
-            Executor.prototype.analyzeResponse = function (currentLayer, response, targetUrl, targetContext) {
-                if (targetContext === void 0) { targetContext = null; }
-                if (typeof response["additional"] === "object") {
-                    if (this.execDirectives(currentLayer, response["additional"])) {
-                        if (targetContext !== null)
-                            targetContext.close();
-                        return true;
-                    }
-                }
-                if (targetContext === null) {
-                    targetContext = currentLayer.getContextByUrl(targetUrl);
-                    currentLayer.pushHistoryEntry(targetUrl);
-                }
-                if (targetContext === null) {
-                    targetContext = currentLayer.createContext(targetUrl);
-                    currentLayer.pushHistoryEntry(targetUrl);
-                }
-                targetContext.applyHtml(n2n.ajah.analyze(response));
-                n2n.ajah.update();
-            };
-            Executor.prototype.execDirectives = function (currentLayer, info) {
-                if (info.directive == "redirectBack") {
-                    var index = currentLayer.getCurrentHistoryIndex();
-                    if (index > 0) {
-                        this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });
-                        return true;
-                    }
-                    if (info.fallbackUrl) {
-                        this.exec(info.fallbackUrl, { "currentLayer": currentLayer });
-                        return true;
-                    }
-                    currentLayer.close();
-                }
-                return false;
-            };
-            return Executor;
-        }());
-        cmd.Executor = Executor;
-        var ExecResult = (function () {
-            function ExecResult(order, context) {
-            }
-            return ExecResult;
-        }());
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
