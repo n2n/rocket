@@ -77,14 +77,15 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 
 
 /**
- *
+ * Context Control
  */
 
  .rocket-context-controls {
      position: fixed;
      bottom: 0;
-     right: 0;
+     right: 3rem;
      left: $rocket-content-margin-left;
      padding: 1rem 0;
      background-color: $brand-gray-09;
+     border-top: 1px solid $brand-gray-06;
  }

@@ -3128,15 +3128,16 @@ body {
   margin-bottom: 7rem; }
 
 /**
- *
+ * Context Control
  */
 .rocket-context-controls {
   position: fixed;
   bottom: 0;
-  right: 0;
+  right: 3rem;
   left: 17rem;
   padding: 1rem 0;
-  background-color: #FBFAFA; }
+  background-color: #FBFAFA;
+  border-top: 1px solid #DAD7D3; }
 
 .rocket-nav-group {
   padding-bottom: 0.5rem; }
