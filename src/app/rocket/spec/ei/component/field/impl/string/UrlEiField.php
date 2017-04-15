@@ -81,7 +81,7 @@ class UrlEiField extends AlphanumericEiField {
 		}
 		$mag->setRelativeAllowed($this->relativeAllowed);
 		$mag->setAutoScheme($this->autoScheme);
-		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
+		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
 		$mag->setAttrs(array('class' => 'rocket-block'));
 		return $mag;
 	}

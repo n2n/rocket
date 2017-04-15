@@ -73,7 +73,7 @@ class StringEiField extends AlphanumericEiField {
 				$this->getMaxlength(), $this->isMultiline(),
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
 		$mag->setAttrs(array('class' => 'rocket-block'));
-		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
+		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
 		return $mag;
 	}
 	

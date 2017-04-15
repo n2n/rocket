@@ -55,7 +55,7 @@ class PasswordEiField extends AlphanumericEiField {
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new SecretStringMag($propertyName, $this->getLabelCode(), null,
 				$eiu->entry()->getEiMapping()->getEiEntry()->isNew(), $this->getMaxlength(), 
-				array('placeholder' => $this->getLabelCode()));
+				array('placeholder' => $this->getLabelCode(), 'class' => 'form-control'));
 	}
 	
 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 

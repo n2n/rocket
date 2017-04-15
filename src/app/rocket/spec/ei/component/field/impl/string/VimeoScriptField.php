@@ -55,7 +55,7 @@ class VimeoEiField extends AlphanumericEiField {
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new VimeoOption($propertyName, $this->getLabelCode(), null,
 				$this->isMandatory($eiu), $this->getMaxlength(), null,
-				array('placeholder' => $this->getLabelCode()));
+				array('placeholder' => $this->getLabelCode(), 'class' => 'form-control'));
 	}	
 }
 

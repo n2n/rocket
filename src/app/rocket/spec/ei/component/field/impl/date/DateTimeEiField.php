@@ -97,9 +97,9 @@ class DateTimeEiField extends DraftableEiFieldAdapter implements SortableEiField
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new DateTimeMag($propertyName, $this->getLabelLstr(), $this->getDateStyle(), $this->getTimeStyle(), null, null, 
-				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(), 
+				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
 						'data-icon-class-name-open' => IconType::ICON_CALENDAR,
-						'class' => 'rocket-date-picker'));
+						'class' => 'form-control rocket-date-picker'));
 	}
 
 

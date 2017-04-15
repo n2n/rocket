@@ -131,7 +131,7 @@ class PathPartEiField extends AlphanumericEiField  {
 
 	
 	private function buildMagInputAttrs(Eiu $eiu): array {
-		$attrs = array('placeholder' => $this->getLabelLstr());
+		$attrs = array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control');
 		
 		if ($eiu->entry()->isNew() || $eiu->entry()->isDraft() || !$this->critical) return $attrs;
 	
