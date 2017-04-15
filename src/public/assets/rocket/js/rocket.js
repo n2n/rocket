@@ -451,32 +451,32 @@ var rocket;
                 jqContainer.append(this.jqPagination);
                 this.jqPagination.append($("<a />", {
                     "href": "#",
-                    "class": "rocket-impl-pagination-first rocket-control",
+                    "class": "rocket-impl-pagination-first btn btn-secondary",
                     "click": function () { that.goTo(1); }
                 }).append($("<i />", {
                     "class": "fa fa-step-backward"
                 })));
                 this.jqPagination.append($("<button />", {
-                    "class": "rocket-impl-pagination-prev rocket-control",
+                    "class": "rocket-impl-pagination-prev btn btn-secondary",
                     "click": function () { that.goTo(that.getCurrentPageNo() - 1); }
                 }).append($("<i />", {
                     "class": "fa fa-chevron-left"
                 })));
                 this.jqInput = $("<input />", {
-                    "class": "rocket-impl-pagination-no",
+                    "class": "rocket-impl-pagination-no form-control",
                     "type": "text",
                     "value": this.currentPageNo
                 });
                 this.jqPagination.append(this.jqInput);
                 this.jqPagination.append($("<button />", {
-                    "class": "rocket-impl-pagination-next rocket-control",
+                    "class": "rocket-impl-pagination-next btn btn-secondary",
                     "click": function () { that.goTo(that.getCurrentPageNo() + 1); }
                 }).append($("<i />", {
                     "class": "fa fa-chevron-right"
                 })));
                 this.jqPagination.append($("<button />", {
                     "href": "#",
-                    "class": "rocket-impl-pagination-last rocket-control",
+                    "class": "rocket-impl-pagination-last btn btn-secondary",
                     "click": function () { that.goTo(that.getNumPages()); }
                 }).append($("<i />", {
                     "class": "fa fa-step-forward"

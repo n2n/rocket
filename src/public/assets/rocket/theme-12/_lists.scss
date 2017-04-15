@@ -3,3 +3,18 @@
         display: none;
     }
 }
+
+
+
+.rocket-impl-overview-pagination {
+    .rocket-impl-pagination-no {
+        width: 5rem;
+        text-align: center;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+    > a,
+    > button {
+        margin-left: 0.5rem;
+    }
+}
