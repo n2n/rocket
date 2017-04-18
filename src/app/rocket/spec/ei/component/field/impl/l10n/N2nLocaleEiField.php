@@ -27,8 +27,6 @@ use n2n\persistence\orm\property\EntityProperty;
 use rocket\spec\ei\component\field\FilterableEiField;
 use rocket\spec\ei\component\field\SortableEiField;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\util\config\Attributes;
-use rocket\spec\ei\manage\mapping\EiMapping;
  
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
@@ -36,10 +34,8 @@ use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\critmod\filter\FilterField;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -125,7 +121,7 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 	}
 	
 	private function generateDisplayNameForN2nLocale(N2nLocale $n2nLocale, $displayN2nLocale = null) {
-		return $n2nLocale->getName($displayN2nLocale) . ' / ' . $n2nLocale->toPrettyId();
+		return $n2nLocale->getName($displayN2nLocale) /*. ' / ' . $n2nLocale->toPrettyId()*/;
 	}
 	
 // 	public function isMandatory(Eiu $eiu): bool {
