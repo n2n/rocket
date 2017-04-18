@@ -92,7 +92,7 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 	
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
-		return $targetUtils->createDetailView($targetRelationEntry->toEiMapping($targetUtils));
+		return $targetUtils->createBulkyDetailView($targetRelationEntry->toEiMapping($targetUtils));
 	}
 	
 

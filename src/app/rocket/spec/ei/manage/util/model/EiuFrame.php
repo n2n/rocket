@@ -164,6 +164,31 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	/**
+	 * @param mixed $fromEiEntryArg
+	 * @return EiuEntry
+	 */
+	public function copyEntryTo($fromEiEntryArg, $toEiEntryArg = null) {
+		return $this->createEiMappingCopy($fromEiEntryArg, EiuFactory::buildEiEntryFromEiArg($toEiEntryArg, 'toEiEntryArg'));
+	}
+	
+	public function copyEntry($fromEiEntryArg, bool $draft = null, $eiSpecArg = null) {
+		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiEntryArg, $this, 'fromEiEntryArg');
+		$draft = $draft ?? $fromEiuEntry->isDraft();
+		
+		if ($eiSpecArg !== null) {
+			$eiSpec = EiuFactory::buildEiSpecFromEiArg($eiSpecArg, 'eiSpecArg', false);
+		} else {
+			$eiSpec = $fromEiuEntry->getEiSpec();
+		}
+		
+		return $this->createEiMappingCopy($fromEiuEntry, $this->createNewEiEntry($draft, $eiSpec));
+	}
+	
+	public function newEntry(bool $draft = false, EiSpec $eiSpec = null) {
+		return new EiuEntry($this->createNewEiEntry($draft, $eiSpec));
+	}
+	
+	/**
 	 * @param unknown $fromEiEntryObj
 	 * @param EiEntry $to
 	 * @return \rocket\spec\ei\manage\mapping\EiMapping

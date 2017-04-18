@@ -132,11 +132,11 @@ class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
-		if ($value === null) return $value;
+		if ($value === null || ($eiObject->isDraft() && !$this->isDraftable())) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->embeddedEiFieldRelation->createTargetEditPseudoEiFrame(
+		$targetEiuFrame = new EiuFrame($this->eiFieldRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
-		return RelationEntry::fromM($targetEiuFrame->createEiMappingCopy($value->toEiMapping($targetEiuFrame)));
+		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiMapping($targetEiuFrame), $eiObject->isDraft()));
 	}
 	
 	/**
