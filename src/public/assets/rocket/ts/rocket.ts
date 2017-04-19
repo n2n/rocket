@@ -37,6 +37,10 @@ namespace rocket {
 				});
 			});
 		}) ();
+		
+		(function () {
+			
+		}) ();
 	});
 	
 	export function layerOf(elem: HTMLElement): rocket.cmd.Layer {

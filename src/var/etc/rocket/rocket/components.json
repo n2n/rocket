@@ -35,19 +35,19 @@
         "rocket\\spec\\ei\\component\\field\\impl\\string\\PasswordEiField"
     ],
     "eiCommandClasses": [
-        "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
         "rocket\\spec\\ei\\component\\command\\impl\\common\\OverviewEiCommand",
         "rocket\\spec\\ei\\component\\command\\impl\\common\\DetailEiCommand",
         "rocket\\spec\\ei\\component\\command\\impl\\common\\EditEiCommand",
+        "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
         "rocket\\spec\\ei\\component\\command\\impl\\common\\DeleteEiCommand",
         "rocket\\spec\\ei\\component\\command\\impl\\tree\\TreeMoveEiCommand"
     ],
     "eiCommandGroups": {
         "List": [
             "rocket\\spec\\ei\\component\\command\\impl\\common\\OverviewEiCommand",
-            "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
             "rocket\\spec\\ei\\component\\command\\impl\\common\\DetailEiCommand",
             "rocket\\spec\\ei\\component\\command\\impl\\common\\EditEiCommand",
+            "rocket\\spec\\ei\\component\\command\\impl\\common\\AddEiCommand",
             "rocket\\spec\\ei\\component\\command\\impl\\common\\DeleteEiCommand"
         ],
         "Tree": [
