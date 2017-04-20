@@ -3131,7 +3131,7 @@ body {
 /**
  * Context Control
  */
-.rocket-context-controls {
+.rocket-context-commands {
   position: fixed;
   bottom: 0;
   right: 3rem;
@@ -3190,7 +3190,7 @@ body {
 h1, .h1 {
   font-weight: normal; }
 
-.rocket-simple-controls > a > span {
+.rocket-simple-commands > a > span {
   display: none; }
 
 .rocket-impl-overview-pagination .rocket-impl-pagination-no {

@@ -46,7 +46,7 @@
 		<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
 				array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->createPropertyPath('entryForm')))) ?>
 						
-		<div class="rocket-context-controls">
+		<div class="rocket-context-commands">
 			<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_quicksave_label') . '</span>'), 
 					array('class' => 'btn btn-primary')) ?>

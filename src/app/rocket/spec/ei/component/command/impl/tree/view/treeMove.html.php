@@ -52,7 +52,7 @@ use n2n\web\ui\view\View;
 			</ul>
 		</div>
 	</div>
-	<div class="rocket-context-controls">
+	<div class="rocket-context-commands">
 		<?php $formHtml->buttonSubmit('move', new Raw('<i class="fa fa-save"></i><span>' 
 					. $html->getL10nText('ei_impl_tree_move_label') . '</span>'), array('class' => 'btn btn-danger')) ?>
 	</div>

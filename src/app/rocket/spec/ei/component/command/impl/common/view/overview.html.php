@@ -70,7 +70,7 @@
 		
 		<?php $view->out($overviewView)?>
 		
-		<div class="rocket-context-controls">
+		<div class="rocket-context-commands">
 			<?php /* Bert: do not display UL with no LI contents ?>
 			<ul class="rocket-partial-controls">
 				<li><?php / * partial control components * / ?></li>

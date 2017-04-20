@@ -82,7 +82,7 @@
 						</ul>
 					</td>
 					<td>
-						<div class="rocket-simple-controls">
+						<div class="rocket-simple-commands">
 							<?php $html->linkToController(array('edit', $userGroup->getId()), 
 									new n2n\web\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_group_label') . '</span>'),
 									array('title' => $view->getL10nText('user_edit_tooltip'),
@@ -105,7 +105,7 @@
 		</tbody>
 	</table>
 </div>
-<div class="rocket-context-controls">
+<div class="rocket-context-commands">
 	<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
 					. $view->getL10nText('user_add_group_label') . '</span>'), 
 			array('class' => 'btn btn-primary')) ?>

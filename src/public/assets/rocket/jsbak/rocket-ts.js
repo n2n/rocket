@@ -1095,7 +1095,7 @@ var spec;
         EntryHeader.prototype.addControl = function (elem) {
             if (null === this.elemUlControls) {
                 this.elemUlControls = $("<ul />", {
-                    "class": "rocket-simple-controls"
+                    "class": "rocket-simple-commands"
                 }).appendTo(this.elemHeader);
             }
             if (!elem.is("li")) {
@@ -4669,7 +4669,7 @@ var spec;
             ToOne.prototype.addControl = function (text, callback, iconClassName) {
                 if (null === this.elemUlControls) {
                     this.elemUlControls = $("<ul />", {
-                        "class": "rocket-simple-controls"
+                        "class": "rocket-simple-commands"
                     }).css({
                         "position": "absolute",
                         "top": "0",

@@ -49,7 +49,7 @@ td.rocket-property {
     padding: 0 0.75rem;
     position: relative;
 //    margin-bottom: 0.5rem;
-    > .rocket-simple-controls {
+    > .rocket-simple-commands {
         position: absolute;
         top: 8px;
         right: $padding-base-horizontal;
@@ -58,7 +58,7 @@ td.rocket-property {
             padding: 0;
         }
     }
-    > .rocket-simple-controls + label {
+    > .rocket-simple-commands + label {
         display: block;
         margin-left: $padding-base-horizontal;
         width: auto !important;
@@ -94,7 +94,7 @@ iframe.rocket-wysiwyg-detail {
  ******************************************************************************/
 
 .rocket-control-group > .rocket-controls {
-    > .rocket-simple-controls {
+    > .rocket-simple-commands {
         position: abolute;
         top: 0;
         right: 0;

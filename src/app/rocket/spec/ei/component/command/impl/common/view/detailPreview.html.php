@@ -68,7 +68,7 @@ use n2n\util\uri\Path;
 	</div>
 </div>
 
-<div class="rocket-context-controls">
+<div class="rocket-context-commands">
 	<?php //$controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>

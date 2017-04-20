@@ -45,7 +45,7 @@
 					<?php $html->l10nText('tool_backup_title') ?>
 				</td>
 				<td>
-					<div class="rocket-simple-controls">
+					<div class="rocket-simple-commands">
 						<?php $html->linkToController(ToolController::ACTION_BACKUP_OVERVIEW, 
 								new Raw('<i class="fa fa-hdd-o"></i><span>' 
 										. $html->getL10nText('tool_backup_title') . '</span>'), 
@@ -58,7 +58,7 @@
 					<?php $html->l10nText('tool_mail_center_title') ?>
 				</td>
 				<td>
-					<div class="rocket-simple-controls">
+					<div class="rocket-simple-commands">
 						<?php $html->linkToController(ToolController::ACTION_MAIL_CENTER, 
 								new Raw('<i class="' . IconType::ICON_ENVELOPE . '"></i><span>' . $html->getL10nText('tool_mail_center_tooltip') . '</span>'), 
 								array('class' => 'btn btn-secondary')) ?>
@@ -70,7 +70,7 @@
 					<?php $html->l10nText('tool_clear_cache_title') ?>
 				</td>
 				<td>
-					<div class="rocket-simple-controls">
+					<div class="rocket-simple-commands">
 						<?php $html->linkToController(ToolController::ACTION_CLEAR_CACHE, 
 								new Raw('<i class="' . IconType::ICON_ERASER . '"></i><span>' 
 												. $html->getL10nText('tool_clear_cache_title') . '</span>'), 

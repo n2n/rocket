@@ -46,7 +46,7 @@
 						<?php $html->out($file->getName()) ?>
 					</td>
 					<td>
-						<div class="rocket-simple-controls">
+						<div class="rocket-simple-commands">
 							<?php $html->linkToController(array('download', $file->getName()), 
 										new Raw('<i class="fa fa-download"></i><span>' . $html->getL10nText('common_save_as_label') . '</span>'), 
 										array('class' => 'btn btn-secondary', 'title' => $html->getL10nText('common_save_as_label'))) ?>
@@ -63,7 +63,7 @@
 			<?php endforeach ?>
 		</tbody>
 	</table>
-	<div class="rocket-context-controls">
+	<div class="rocket-context-commands">
 
 				<?php $html->linkToController(array('create'), 
 						new Raw('<i class="fa fa-plus-circle"></i> <span>' . $html->getL10nText('tool_backup_create_label') . '</span>'), 

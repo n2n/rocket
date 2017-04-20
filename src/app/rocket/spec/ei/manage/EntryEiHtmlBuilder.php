@@ -97,13 +97,9 @@ class EntryEiHtmlBuilder {
 	public function getEntryOpen(string $tagName, array $attrs = null) {
 		$this->openEntryTagName = $tagName;
 		
-		$entryAttrs = array('class' => 'rocket-entry');
-		$eiEntry = $this->meta()->getCurrentEiuEntryGui()->getEiuEntry()->getEiEntry();
-		if (!$eiEntry->isDraft()) {
-			$entryAttrs['data-rocket-live-entry-id-rep'] = $this->meta()->getCurrentIdRep();
-		} else {
-			$entryAttrs['data-rocket-draft-id'] = $eiEntry->getDraft()->getId();
-		}
+		$entryAttrs = array(
+				'class' => 'rocket-entry',
+				'data-rocket-entry-id' => $this->meta()->getCurrentEiuEntryGui()->getEiuEntry()->getGeneralId());
 		
 		return new Raw('<' . htmlspecialchars($tagName) 
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, $attrs)) . '>');

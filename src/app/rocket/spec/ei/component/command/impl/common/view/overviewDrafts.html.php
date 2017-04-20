@@ -64,7 +64,7 @@
 		
 		<?php $view->out($listView)?>
 		
-		<div class="rocket-context-controls">
+		<div class="rocket-context-commands">
 			<ul class="rocket-partial-controls">
 				<li><?php /* partial control components */ ?></li>
 			</ul>

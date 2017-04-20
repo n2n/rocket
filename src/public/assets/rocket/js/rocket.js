@@ -423,7 +423,7 @@ var rocket;
                 jqContainer.data("content-url");
                 var jqForm = jqContainer.children("form");
                 var pagination = new Pagination(jqContainer.data("num-pages"), jqContainer.data("current-page"));
-                pagination.draw(jqForm.children(".rocket-context-controls"));
+                pagination.draw(jqForm.children(".rocket-context-commands"));
                 var fixedHeader = new FixedHeader(jqContainer.data("num-entries"));
                 fixedHeader.draw(jqContainer.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
                 return overviewContext;

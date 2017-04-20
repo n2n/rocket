@@ -72,7 +72,7 @@ class ControlEiHtmlBuilder {
 	}
 	
 	private function createControlList(array $entryControls, bool $useIcons) {
-		$divHtmlElement = new HtmlElement('div', array('class' => ($useIcons ? 'rocket-simple-controls' : null /* 'rocket-main-controls' */)));
+		$divHtmlElement = new HtmlElement('div', array('class' => ($useIcons ? 'rocket-simple-commands' : null /* 'rocket-main-controls' */)));
 		
 		foreach ($entryControls as $control) {
 			$divHtmlElement->appendContent($control->createUiComponent($useIcons));

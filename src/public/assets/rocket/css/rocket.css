@@ -754,8 +754,8 @@ h2 + .rocket-nav-group {
 }
 
 /* line 157, ../theme/sass/rocket/_layout.scss */
-.rocket-context-controls,
-#rocket-context-controls {
+.rocket-context-commands,
+#rocket-context-commands {
   border-top: 1px solid #D3CDC7;
   margin: 0rem;
   padding: 0 0.75rem;
@@ -763,15 +763,15 @@ h2 + .rocket-nav-group {
   z-index: 100;
 }
 /* line 2, ../theme/sass/bootstrap/mixins/_clearfix.scss */
-.rocket-context-controls::after,
-#rocket-context-controls::after {
+.rocket-context-commands::after,
+#rocket-context-commands::after {
   content: "";
   display: table;
   clear: both;
 }
 /* line 165, ../theme/sass/rocket/_layout.scss */
-.rocket-context-controls > ul > li,
-#rocket-context-controls > ul > li {
+.rocket-context-commands > ul > li,
+#rocket-context-commands > ul > li {
   display: inline-block;
   float: left;
   margin: 0 0.75rem 0.75rem 0;
@@ -808,8 +808,8 @@ section::after {
 
 @media (min-width: 544px) {
   /* line 201, ../theme/sass/rocket/_layout.scss */
-  .rocket-context-controls,
-  #rocket-context-controls {
+  .rocket-context-commands,
+  #rocket-context-commands {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -818,8 +818,8 @@ section::after {
     margin: 0;
   }
   /* line 209, ../theme/sass/rocket/_layout.scss */
-  .rocket-context-controls > ul,
-  #rocket-context-controls > ul {
+  .rocket-context-commands > ul,
+  #rocket-context-commands > ul {
     margin: 0;
   }
 }
@@ -987,8 +987,8 @@ section::after {
   }
 
   /* line 363, ../theme/sass/rocket/_layout.scss */
-  .rocket-context-controls,
-  #rocket-context-controls {
+  .rocket-context-commands,
+  #rocket-context-commands {
     left: 245px;
     right: 15px;
   }
@@ -1877,15 +1877,15 @@ input[type="checkbox"],
 }
 
 /* line 2, ../theme/sass/rocket/_buttons.scss */
-div#rocket-context-controls ul,
+div#rocket-context-commands ul,
 ul.rocket-controls,
-ul.rocket-simple-controls {
+ul.rocket-simple-commands {
   padding-left: 0;
   list-style: none;
 }
 
 /* line 10, ../theme/sass/rocket/_buttons.scss */
-div#rocket-context-controls ul > li,
+div#rocket-context-commands ul > li,
 ul.rocket-controls > li {
   margin: 0 0.75rem 0.75rem 0;
 }
@@ -2409,276 +2409,276 @@ input[type="button"]:disabled:hover,
  * Simple buttons and their color variants
  */
 /* line 61, ../theme/sass/rocket/_buttons.scss */
-.rocket-simple-controls.rocket-control-info,
-.rocket-simple-controls .rocket-control-info {
+.rocket-simple-commands.rocket-control-info,
+.rocket-simple-commands .rocket-control-info {
   color: #256FA1;
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-info:hover,
-.rocket-simple-controls .rocket-control-info:hover {
+.rocket-simple-commands.rocket-control-info:hover,
+.rocket-simple-commands .rocket-control-info:hover {
   color: #256FA1;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 21, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-info:focus, .rocket-simple-controls.rocket-control-info.focus,
-.rocket-simple-controls .rocket-control-info:focus,
-.rocket-simple-controls .rocket-control-info.focus {
+.rocket-simple-commands.rocket-control-info:focus, .rocket-simple-commands.rocket-control-info.focus,
+.rocket-simple-commands .rocket-control-info:focus,
+.rocket-simple-commands .rocket-control-info.focus {
   color: #256FA1;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 28, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-info:active, .rocket-simple-controls.rocket-control-info.active, .open > .rocket-simple-controls.rocket-control-info.dropdown-toggle,
-.rocket-simple-controls .rocket-control-info:active,
-.rocket-simple-controls .rocket-control-info.active, .open >
-.rocket-simple-controls .rocket-control-info.dropdown-toggle {
+.rocket-simple-commands.rocket-control-info:active, .rocket-simple-commands.rocket-control-info.active, .open > .rocket-simple-commands.rocket-control-info.dropdown-toggle,
+.rocket-simple-commands .rocket-control-info:active,
+.rocket-simple-commands .rocket-control-info.active, .open >
+.rocket-simple-commands .rocket-control-info.dropdown-toggle {
   color: #256FA1;
   background-color: #d3cdc6;
   border-color: #8a847c;
   background-image: none;
 }
 /* line 38, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-info:active:hover, .rocket-simple-controls.rocket-control-info:active:focus, .rocket-simple-controls.rocket-control-info:active.focus, .rocket-simple-controls.rocket-control-info.active:hover, .rocket-simple-controls.rocket-control-info.active:focus, .rocket-simple-controls.rocket-control-info.active.focus, .open > .rocket-simple-controls.rocket-control-info.dropdown-toggle:hover, .open > .rocket-simple-controls.rocket-control-info.dropdown-toggle:focus, .open > .rocket-simple-controls.rocket-control-info.dropdown-toggle.focus,
-.rocket-simple-controls .rocket-control-info:active:hover,
-.rocket-simple-controls .rocket-control-info:active:focus,
-.rocket-simple-controls .rocket-control-info:active.focus,
-.rocket-simple-controls .rocket-control-info.active:hover,
-.rocket-simple-controls .rocket-control-info.active:focus,
-.rocket-simple-controls .rocket-control-info.active.focus, .open >
-.rocket-simple-controls .rocket-control-info.dropdown-toggle:hover, .open >
-.rocket-simple-controls .rocket-control-info.dropdown-toggle:focus, .open >
-.rocket-simple-controls .rocket-control-info.dropdown-toggle.focus {
+.rocket-simple-commands.rocket-control-info:active:hover, .rocket-simple-commands.rocket-control-info:active:focus, .rocket-simple-commands.rocket-control-info:active.focus, .rocket-simple-commands.rocket-control-info.active:hover, .rocket-simple-commands.rocket-control-info.active:focus, .rocket-simple-commands.rocket-control-info.active.focus, .open > .rocket-simple-commands.rocket-control-info.dropdown-toggle:hover, .open > .rocket-simple-commands.rocket-control-info.dropdown-toggle:focus, .open > .rocket-simple-commands.rocket-control-info.dropdown-toggle.focus,
+.rocket-simple-commands .rocket-control-info:active:hover,
+.rocket-simple-commands .rocket-control-info:active:focus,
+.rocket-simple-commands .rocket-control-info:active.focus,
+.rocket-simple-commands .rocket-control-info.active:hover,
+.rocket-simple-commands .rocket-control-info.active:focus,
+.rocket-simple-commands .rocket-control-info.active.focus, .open >
+.rocket-simple-commands .rocket-control-info.dropdown-toggle:hover, .open >
+.rocket-simple-commands .rocket-control-info.dropdown-toggle:focus, .open >
+.rocket-simple-commands .rocket-control-info.dropdown-toggle.focus {
   color: #256FA1;
   background-color: #c3bbb2;
   border-color: #68625c;
 }
 /* line 49, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-info.disabled:focus, .rocket-simple-controls.rocket-control-info.disabled.focus, .rocket-simple-controls.rocket-control-info:disabled:focus, .rocket-simple-controls.rocket-control-info:disabled.focus,
-.rocket-simple-controls .rocket-control-info.disabled:focus,
-.rocket-simple-controls .rocket-control-info.disabled.focus,
-.rocket-simple-controls .rocket-control-info:disabled:focus,
-.rocket-simple-controls .rocket-control-info:disabled.focus {
+.rocket-simple-commands.rocket-control-info.disabled:focus, .rocket-simple-commands.rocket-control-info.disabled.focus, .rocket-simple-commands.rocket-control-info:disabled:focus, .rocket-simple-commands.rocket-control-info:disabled.focus,
+.rocket-simple-commands .rocket-control-info.disabled:focus,
+.rocket-simple-commands .rocket-control-info.disabled.focus,
+.rocket-simple-commands .rocket-control-info:disabled:focus,
+.rocket-simple-commands .rocket-control-info:disabled.focus {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-info.disabled:hover, .rocket-simple-controls.rocket-control-info:disabled:hover,
-.rocket-simple-controls .rocket-control-info.disabled:hover,
-.rocket-simple-controls .rocket-control-info:disabled:hover {
+.rocket-simple-commands.rocket-control-info.disabled:hover, .rocket-simple-commands.rocket-control-info:disabled:hover,
+.rocket-simple-commands .rocket-control-info.disabled:hover,
+.rocket-simple-commands .rocket-control-info:disabled:hover {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 65, ../theme/sass/rocket/_buttons.scss */
-.rocket-simple-controls.rocket-control-warning,
-.rocket-simple-controls .rocket-control-warning {
+.rocket-simple-commands.rocket-control-warning,
+.rocket-simple-commands .rocket-control-warning {
   color: #ED8207;
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-warning:hover,
-.rocket-simple-controls .rocket-control-warning:hover {
+.rocket-simple-commands.rocket-control-warning:hover,
+.rocket-simple-commands .rocket-control-warning:hover {
   color: #ED8207;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 21, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-warning:focus, .rocket-simple-controls.rocket-control-warning.focus,
-.rocket-simple-controls .rocket-control-warning:focus,
-.rocket-simple-controls .rocket-control-warning.focus {
+.rocket-simple-commands.rocket-control-warning:focus, .rocket-simple-commands.rocket-control-warning.focus,
+.rocket-simple-commands .rocket-control-warning:focus,
+.rocket-simple-commands .rocket-control-warning.focus {
   color: #ED8207;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 28, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-warning:active, .rocket-simple-controls.rocket-control-warning.active, .open > .rocket-simple-controls.rocket-control-warning.dropdown-toggle,
-.rocket-simple-controls .rocket-control-warning:active,
-.rocket-simple-controls .rocket-control-warning.active, .open >
-.rocket-simple-controls .rocket-control-warning.dropdown-toggle {
+.rocket-simple-commands.rocket-control-warning:active, .rocket-simple-commands.rocket-control-warning.active, .open > .rocket-simple-commands.rocket-control-warning.dropdown-toggle,
+.rocket-simple-commands .rocket-control-warning:active,
+.rocket-simple-commands .rocket-control-warning.active, .open >
+.rocket-simple-commands .rocket-control-warning.dropdown-toggle {
   color: #ED8207;
   background-color: #d3cdc6;
   border-color: #8a847c;
   background-image: none;
 }
 /* line 38, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-warning:active:hover, .rocket-simple-controls.rocket-control-warning:active:focus, .rocket-simple-controls.rocket-control-warning:active.focus, .rocket-simple-controls.rocket-control-warning.active:hover, .rocket-simple-controls.rocket-control-warning.active:focus, .rocket-simple-controls.rocket-control-warning.active.focus, .open > .rocket-simple-controls.rocket-control-warning.dropdown-toggle:hover, .open > .rocket-simple-controls.rocket-control-warning.dropdown-toggle:focus, .open > .rocket-simple-controls.rocket-control-warning.dropdown-toggle.focus,
-.rocket-simple-controls .rocket-control-warning:active:hover,
-.rocket-simple-controls .rocket-control-warning:active:focus,
-.rocket-simple-controls .rocket-control-warning:active.focus,
-.rocket-simple-controls .rocket-control-warning.active:hover,
-.rocket-simple-controls .rocket-control-warning.active:focus,
-.rocket-simple-controls .rocket-control-warning.active.focus, .open >
-.rocket-simple-controls .rocket-control-warning.dropdown-toggle:hover, .open >
-.rocket-simple-controls .rocket-control-warning.dropdown-toggle:focus, .open >
-.rocket-simple-controls .rocket-control-warning.dropdown-toggle.focus {
+.rocket-simple-commands.rocket-control-warning:active:hover, .rocket-simple-commands.rocket-control-warning:active:focus, .rocket-simple-commands.rocket-control-warning:active.focus, .rocket-simple-commands.rocket-control-warning.active:hover, .rocket-simple-commands.rocket-control-warning.active:focus, .rocket-simple-commands.rocket-control-warning.active.focus, .open > .rocket-simple-commands.rocket-control-warning.dropdown-toggle:hover, .open > .rocket-simple-commands.rocket-control-warning.dropdown-toggle:focus, .open > .rocket-simple-commands.rocket-control-warning.dropdown-toggle.focus,
+.rocket-simple-commands .rocket-control-warning:active:hover,
+.rocket-simple-commands .rocket-control-warning:active:focus,
+.rocket-simple-commands .rocket-control-warning:active.focus,
+.rocket-simple-commands .rocket-control-warning.active:hover,
+.rocket-simple-commands .rocket-control-warning.active:focus,
+.rocket-simple-commands .rocket-control-warning.active.focus, .open >
+.rocket-simple-commands .rocket-control-warning.dropdown-toggle:hover, .open >
+.rocket-simple-commands .rocket-control-warning.dropdown-toggle:focus, .open >
+.rocket-simple-commands .rocket-control-warning.dropdown-toggle.focus {
   color: #ED8207;
   background-color: #c3bbb2;
   border-color: #68625c;
 }
 /* line 49, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-warning.disabled:focus, .rocket-simple-controls.rocket-control-warning.disabled.focus, .rocket-simple-controls.rocket-control-warning:disabled:focus, .rocket-simple-controls.rocket-control-warning:disabled.focus,
-.rocket-simple-controls .rocket-control-warning.disabled:focus,
-.rocket-simple-controls .rocket-control-warning.disabled.focus,
-.rocket-simple-controls .rocket-control-warning:disabled:focus,
-.rocket-simple-controls .rocket-control-warning:disabled.focus {
+.rocket-simple-commands.rocket-control-warning.disabled:focus, .rocket-simple-commands.rocket-control-warning.disabled.focus, .rocket-simple-commands.rocket-control-warning:disabled:focus, .rocket-simple-commands.rocket-control-warning:disabled.focus,
+.rocket-simple-commands .rocket-control-warning.disabled:focus,
+.rocket-simple-commands .rocket-control-warning.disabled.focus,
+.rocket-simple-commands .rocket-control-warning:disabled:focus,
+.rocket-simple-commands .rocket-control-warning:disabled.focus {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-warning.disabled:hover, .rocket-simple-controls.rocket-control-warning:disabled:hover,
-.rocket-simple-controls .rocket-control-warning.disabled:hover,
-.rocket-simple-controls .rocket-control-warning:disabled:hover {
+.rocket-simple-commands.rocket-control-warning.disabled:hover, .rocket-simple-commands.rocket-control-warning:disabled:hover,
+.rocket-simple-commands .rocket-control-warning.disabled:hover,
+.rocket-simple-commands .rocket-control-warning:disabled:hover {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 69, ../theme/sass/rocket/_buttons.scss */
-.rocket-simple-controls.rocket-control-danger,
-.rocket-simple-controls .rocket-control-danger {
+.rocket-simple-commands.rocket-control-danger,
+.rocket-simple-commands .rocket-control-danger {
   color: #C1392B;
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-danger:hover,
-.rocket-simple-controls .rocket-control-danger:hover {
+.rocket-simple-commands.rocket-control-danger:hover,
+.rocket-simple-commands .rocket-control-danger:hover {
   color: #C1392B;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 21, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-danger:focus, .rocket-simple-controls.rocket-control-danger.focus,
-.rocket-simple-controls .rocket-control-danger:focus,
-.rocket-simple-controls .rocket-control-danger.focus {
+.rocket-simple-commands.rocket-control-danger:focus, .rocket-simple-commands.rocket-control-danger.focus,
+.rocket-simple-commands .rocket-control-danger:focus,
+.rocket-simple-commands .rocket-control-danger.focus {
   color: #C1392B;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 28, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-danger:active, .rocket-simple-controls.rocket-control-danger.active, .open > .rocket-simple-controls.rocket-control-danger.dropdown-toggle,
-.rocket-simple-controls .rocket-control-danger:active,
-.rocket-simple-controls .rocket-control-danger.active, .open >
-.rocket-simple-controls .rocket-control-danger.dropdown-toggle {
+.rocket-simple-commands.rocket-control-danger:active, .rocket-simple-commands.rocket-control-danger.active, .open > .rocket-simple-commands.rocket-control-danger.dropdown-toggle,
+.rocket-simple-commands .rocket-control-danger:active,
+.rocket-simple-commands .rocket-control-danger.active, .open >
+.rocket-simple-commands .rocket-control-danger.dropdown-toggle {
   color: #C1392B;
   background-color: #d3cdc6;
   border-color: #8a847c;
   background-image: none;
 }
 /* line 38, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-danger:active:hover, .rocket-simple-controls.rocket-control-danger:active:focus, .rocket-simple-controls.rocket-control-danger:active.focus, .rocket-simple-controls.rocket-control-danger.active:hover, .rocket-simple-controls.rocket-control-danger.active:focus, .rocket-simple-controls.rocket-control-danger.active.focus, .open > .rocket-simple-controls.rocket-control-danger.dropdown-toggle:hover, .open > .rocket-simple-controls.rocket-control-danger.dropdown-toggle:focus, .open > .rocket-simple-controls.rocket-control-danger.dropdown-toggle.focus,
-.rocket-simple-controls .rocket-control-danger:active:hover,
-.rocket-simple-controls .rocket-control-danger:active:focus,
-.rocket-simple-controls .rocket-control-danger:active.focus,
-.rocket-simple-controls .rocket-control-danger.active:hover,
-.rocket-simple-controls .rocket-control-danger.active:focus,
-.rocket-simple-controls .rocket-control-danger.active.focus, .open >
-.rocket-simple-controls .rocket-control-danger.dropdown-toggle:hover, .open >
-.rocket-simple-controls .rocket-control-danger.dropdown-toggle:focus, .open >
-.rocket-simple-controls .rocket-control-danger.dropdown-toggle.focus {
+.rocket-simple-commands.rocket-control-danger:active:hover, .rocket-simple-commands.rocket-control-danger:active:focus, .rocket-simple-commands.rocket-control-danger:active.focus, .rocket-simple-commands.rocket-control-danger.active:hover, .rocket-simple-commands.rocket-control-danger.active:focus, .rocket-simple-commands.rocket-control-danger.active.focus, .open > .rocket-simple-commands.rocket-control-danger.dropdown-toggle:hover, .open > .rocket-simple-commands.rocket-control-danger.dropdown-toggle:focus, .open > .rocket-simple-commands.rocket-control-danger.dropdown-toggle.focus,
+.rocket-simple-commands .rocket-control-danger:active:hover,
+.rocket-simple-commands .rocket-control-danger:active:focus,
+.rocket-simple-commands .rocket-control-danger:active.focus,
+.rocket-simple-commands .rocket-control-danger.active:hover,
+.rocket-simple-commands .rocket-control-danger.active:focus,
+.rocket-simple-commands .rocket-control-danger.active.focus, .open >
+.rocket-simple-commands .rocket-control-danger.dropdown-toggle:hover, .open >
+.rocket-simple-commands .rocket-control-danger.dropdown-toggle:focus, .open >
+.rocket-simple-commands .rocket-control-danger.dropdown-toggle.focus {
   color: #C1392B;
   background-color: #c3bbb2;
   border-color: #68625c;
 }
 /* line 49, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-danger.disabled:focus, .rocket-simple-controls.rocket-control-danger.disabled.focus, .rocket-simple-controls.rocket-control-danger:disabled:focus, .rocket-simple-controls.rocket-control-danger:disabled.focus,
-.rocket-simple-controls .rocket-control-danger.disabled:focus,
-.rocket-simple-controls .rocket-control-danger.disabled.focus,
-.rocket-simple-controls .rocket-control-danger:disabled:focus,
-.rocket-simple-controls .rocket-control-danger:disabled.focus {
+.rocket-simple-commands.rocket-control-danger.disabled:focus, .rocket-simple-commands.rocket-control-danger.disabled.focus, .rocket-simple-commands.rocket-control-danger:disabled:focus, .rocket-simple-commands.rocket-control-danger:disabled.focus,
+.rocket-simple-commands .rocket-control-danger.disabled:focus,
+.rocket-simple-commands .rocket-control-danger.disabled.focus,
+.rocket-simple-commands .rocket-control-danger:disabled:focus,
+.rocket-simple-commands .rocket-control-danger:disabled.focus {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-danger.disabled:hover, .rocket-simple-controls.rocket-control-danger:disabled:hover,
-.rocket-simple-controls .rocket-control-danger.disabled:hover,
-.rocket-simple-controls .rocket-control-danger:disabled:hover {
+.rocket-simple-commands.rocket-control-danger.disabled:hover, .rocket-simple-commands.rocket-control-danger:disabled:hover,
+.rocket-simple-commands .rocket-control-danger.disabled:hover,
+.rocket-simple-commands .rocket-control-danger:disabled:hover {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 73, ../theme/sass/rocket/_buttons.scss */
-.rocket-simple-controls.rocket-control-success,
-.rocket-simple-controls .rocket-control-success {
+.rocket-simple-commands.rocket-control-success,
+.rocket-simple-commands .rocket-control-success {
   color: #2B8009;
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-success:hover,
-.rocket-simple-controls .rocket-control-success:hover {
+.rocket-simple-commands.rocket-control-success:hover,
+.rocket-simple-commands .rocket-control-success:hover {
   color: #2B8009;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 21, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-success:focus, .rocket-simple-controls.rocket-control-success.focus,
-.rocket-simple-controls .rocket-control-success:focus,
-.rocket-simple-controls .rocket-control-success.focus {
+.rocket-simple-commands.rocket-control-success:focus, .rocket-simple-commands.rocket-control-success.focus,
+.rocket-simple-commands .rocket-control-success:focus,
+.rocket-simple-commands .rocket-control-success.focus {
   color: #2B8009;
   background-color: #d3cdc6;
   border-color: #8a847c;
 }
 /* line 28, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-success:active, .rocket-simple-controls.rocket-control-success.active, .open > .rocket-simple-controls.rocket-control-success.dropdown-toggle,
-.rocket-simple-controls .rocket-control-success:active,
-.rocket-simple-controls .rocket-control-success.active, .open >
-.rocket-simple-controls .rocket-control-success.dropdown-toggle {
+.rocket-simple-commands.rocket-control-success:active, .rocket-simple-commands.rocket-control-success.active, .open > .rocket-simple-commands.rocket-control-success.dropdown-toggle,
+.rocket-simple-commands .rocket-control-success:active,
+.rocket-simple-commands .rocket-control-success.active, .open >
+.rocket-simple-commands .rocket-control-success.dropdown-toggle {
   color: #2B8009;
   background-color: #d3cdc6;
   border-color: #8a847c;
   background-image: none;
 }
 /* line 38, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-success:active:hover, .rocket-simple-controls.rocket-control-success:active:focus, .rocket-simple-controls.rocket-control-success:active.focus, .rocket-simple-controls.rocket-control-success.active:hover, .rocket-simple-controls.rocket-control-success.active:focus, .rocket-simple-controls.rocket-control-success.active.focus, .open > .rocket-simple-controls.rocket-control-success.dropdown-toggle:hover, .open > .rocket-simple-controls.rocket-control-success.dropdown-toggle:focus, .open > .rocket-simple-controls.rocket-control-success.dropdown-toggle.focus,
-.rocket-simple-controls .rocket-control-success:active:hover,
-.rocket-simple-controls .rocket-control-success:active:focus,
-.rocket-simple-controls .rocket-control-success:active.focus,
-.rocket-simple-controls .rocket-control-success.active:hover,
-.rocket-simple-controls .rocket-control-success.active:focus,
-.rocket-simple-controls .rocket-control-success.active.focus, .open >
-.rocket-simple-controls .rocket-control-success.dropdown-toggle:hover, .open >
-.rocket-simple-controls .rocket-control-success.dropdown-toggle:focus, .open >
-.rocket-simple-controls .rocket-control-success.dropdown-toggle.focus {
+.rocket-simple-commands.rocket-control-success:active:hover, .rocket-simple-commands.rocket-control-success:active:focus, .rocket-simple-commands.rocket-control-success:active.focus, .rocket-simple-commands.rocket-control-success.active:hover, .rocket-simple-commands.rocket-control-success.active:focus, .rocket-simple-commands.rocket-control-success.active.focus, .open > .rocket-simple-commands.rocket-control-success.dropdown-toggle:hover, .open > .rocket-simple-commands.rocket-control-success.dropdown-toggle:focus, .open > .rocket-simple-commands.rocket-control-success.dropdown-toggle.focus,
+.rocket-simple-commands .rocket-control-success:active:hover,
+.rocket-simple-commands .rocket-control-success:active:focus,
+.rocket-simple-commands .rocket-control-success:active.focus,
+.rocket-simple-commands .rocket-control-success.active:hover,
+.rocket-simple-commands .rocket-control-success.active:focus,
+.rocket-simple-commands .rocket-control-success.active.focus, .open >
+.rocket-simple-commands .rocket-control-success.dropdown-toggle:hover, .open >
+.rocket-simple-commands .rocket-control-success.dropdown-toggle:focus, .open >
+.rocket-simple-commands .rocket-control-success.dropdown-toggle.focus {
   color: #2B8009;
   background-color: #c3bbb2;
   border-color: #68625c;
 }
 /* line 49, ../theme/sass/bootstrap/mixins/_buttons.scss */
-.rocket-simple-controls.rocket-control-success.disabled:focus, .rocket-simple-controls.rocket-control-success.disabled.focus, .rocket-simple-controls.rocket-control-success:disabled:focus, .rocket-simple-controls.rocket-control-success:disabled.focus,
-.rocket-simple-controls .rocket-control-success.disabled:focus,
-.rocket-simple-controls .rocket-control-success.disabled.focus,
-.rocket-simple-controls .rocket-control-success:disabled:focus,
-.rocket-simple-controls .rocket-control-success:disabled.focus {
+.rocket-simple-commands.rocket-control-success.disabled:focus, .rocket-simple-commands.rocket-control-success.disabled.focus, .rocket-simple-commands.rocket-control-success:disabled:focus, .rocket-simple-commands.rocket-control-success:disabled.focus,
+.rocket-simple-commands .rocket-control-success.disabled:focus,
+.rocket-simple-commands .rocket-control-success.disabled.focus,
+.rocket-simple-commands .rocket-control-success:disabled:focus,
+.rocket-simple-commands .rocket-control-success:disabled.focus {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 10, ../theme/sass/bootstrap/mixins/_hover.scss */
-.rocket-simple-controls.rocket-control-success.disabled:hover, .rocket-simple-controls.rocket-control-success:disabled:hover,
-.rocket-simple-controls .rocket-control-success.disabled:hover,
-.rocket-simple-controls .rocket-control-success:disabled:hover {
+.rocket-simple-commands.rocket-control-success.disabled:hover, .rocket-simple-commands.rocket-control-success:disabled:hover,
+.rocket-simple-commands .rocket-control-success.disabled:hover,
+.rocket-simple-commands .rocket-control-success:disabled:hover {
   background-color: #E9E6E3;
   border-color: #A7A29C;
 }
 /* line 77, ../theme/sass/rocket/_buttons.scss */
-.rocket-simple-controls i.fa:after {
+.rocket-simple-commands i.fa:after {
   content: "" !important;
 }
 /* line 80, ../theme/sass/rocket/_buttons.scss */
-.rocket-simple-controls span {
+.rocket-simple-commands span {
   display: none;
 }
 
 @media (max-width: 767px) {
   /* line 88, ../theme/sass/rocket/_buttons.scss */
-  td.rocket-entry-commands-area ul.rocket-simple-controls {
+  td.rocket-entry-commands-area ul.rocket-simple-commands {
     border: 1px solid #A7A29C;
     padding: 0.375rem 0.75rem;
     background: white;
     border-radius: 0.25rem;
   }
   /* line 94, ../theme/sass/rocket/_buttons.scss */
-  td.rocket-entry-commands-area ul.rocket-simple-controls > li {
+  td.rocket-entry-commands-area ul.rocket-simple-commands > li {
     padding: 0.375rem 0;
   }
 }
@@ -2801,7 +2801,7 @@ ul.rocket-preview-switch > li > a.rocket-active {
   }
 
   /* line 174, ../theme/sass/rocket/_buttons.scss */
-  ul.rocket-simple-controls li a {
+  ul.rocket-simple-commands li a {
     display: inline-block;
     font-weight: bold;
     text-align: center;
@@ -2815,44 +2815,44 @@ ul.rocket-preview-switch > li > a.rocket-active {
     border-radius: 0.25rem;
   }
   /* line 83, ../theme/sass/rocket/_custom.scss */
-  ul.rocket-simple-controls li a:focus, ul.rocket-simple-controls li a.focus, ul.rocket-simple-controls li a:active:focus, ul.rocket-simple-controls li a:active.focus, ul.rocket-simple-controls li a.active:focus, ul.rocket-simple-controls li a.active.focus {
+  ul.rocket-simple-commands li a:focus, ul.rocket-simple-commands li a.focus, ul.rocket-simple-commands li a:active:focus, ul.rocket-simple-commands li a:active.focus, ul.rocket-simple-commands li a.active:focus, ul.rocket-simple-commands li a.active.focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px;
   }
   /* line 20, ../theme/sass/bootstrap/mixins/_hover.scss */
-  ul.rocket-simple-controls li a:focus, ul.rocket-simple-controls li a:hover {
+  ul.rocket-simple-commands li a:focus, ul.rocket-simple-commands li a:hover {
     text-decoration: none;
   }
   /* line 92, ../theme/sass/rocket/_custom.scss */
-  ul.rocket-simple-controls li a.focus {
+  ul.rocket-simple-commands li a.focus {
     text-decoration: none;
   }
   /* line 96, ../theme/sass/rocket/_custom.scss */
-  ul.rocket-simple-controls li a:active, ul.rocket-simple-controls li a.active {
+  ul.rocket-simple-commands li a:active, ul.rocket-simple-commands li a.active {
     background-image: none;
     outline: 0;
   }
   /* line 103, ../theme/sass/rocket/_custom.scss */
-  ul.rocket-simple-controls li a.disabled, ul.rocket-simple-controls li a:disabled {
+  ul.rocket-simple-commands li a.disabled, ul.rocket-simple-commands li a:disabled {
     cursor: not-allowed;
     opacity: .65;
   }
 
   /* line 178, ../theme/sass/rocket/_buttons.scss */
-  ul.rocket-simple-controls {
+  ul.rocket-simple-commands {
     margin-left: -0.1875rem;
     margin-bottom: 0;
   }
   /* line 182, ../theme/sass/rocket/_buttons.scss */
-  ul.rocket-simple-controls > li {
+  ul.rocket-simple-commands > li {
     display: inline-block;
     padding-left: 0.1875rem;
     padding-right: 0.1875rem;
   }
   /* line 186, ../theme/sass/rocket/_buttons.scss */
-  ul.rocket-simple-controls > li > a > span,
-  ul.rocket-simple-controls > li > button > span {
+  ul.rocket-simple-commands > li > a > span,
+  ul.rocket-simple-commands > li > button > span {
     display: none;
   }
 
@@ -3094,18 +3094,18 @@ td.rocket-property {
   position: relative;
 }
 /* line 52, ../theme/sass/rocket/_entry.scss */
-.rocket-controls > .rocket-simple-controls {
+.rocket-controls > .rocket-simple-commands {
   position: absolute;
   top: 8px;
   right: 0.75rem;
 }
 /* line 56, ../theme/sass/rocket/_entry.scss */
-.rocket-controls > .rocket-simple-controls > li {
+.rocket-controls > .rocket-simple-commands > li {
   margin-left: 0.75rem !important;
   padding: 0;
 }
 /* line 61, ../theme/sass/rocket/_entry.scss */
-.rocket-controls > .rocket-simple-controls + label {
+.rocket-controls > .rocket-simple-commands + label {
   display: block;
   margin-left: 0.75rem;
   width: auto !important;
@@ -3140,7 +3140,7 @@ iframe.rocket-wysiwyg-detail {
  * R E L A T I O N S
  ******************************************************************************/
 /* line 97, ../theme/sass/rocket/_entry.scss */
-.rocket-group > .rocket-controls > .rocket-simple-controls {
+.rocket-group > .rocket-controls > .rocket-simple-commands {
   position: abolute;
   top: 0;
   right: 0;
@@ -3826,13 +3826,13 @@ iframe.rocket-wysiwyg-detail {
 }
 
 /* line 76, ../theme/sass/rocket/_content_items.scss */
-.rocket-entry-form-header .rocket-simple-controls {
+.rocket-entry-form-header .rocket-simple-commands {
   position: absolute;
   top: 1px;
   right: 0.75rem;
 }
 /* line 80, ../theme/sass/rocket/_content_items.scss */
-.rocket-entry-form-header .rocket-simple-controls > li {
+.rocket-entry-form-header .rocket-simple-commands > li {
   padding: 0;
 }
 
@@ -4095,7 +4095,7 @@ body.rocket-preview .rocket-context-toolbar {
   right: 10px;
 }
 /* line 58, ../theme/sass/rocket/_preview.scss */
-body.rocket-preview #rocket-context-controls {
+body.rocket-preview #rocket-context-commands {
   left: 0;
 }
 /* line 63, ../theme/sass/rocket/_preview.scss */

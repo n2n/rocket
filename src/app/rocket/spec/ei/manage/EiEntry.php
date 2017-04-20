@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 
 interface EiEntry extends EiObject {
-	
+    
 	public function isNew(): bool;
 	
 	public function getLiveEntry(): LiveEntry;

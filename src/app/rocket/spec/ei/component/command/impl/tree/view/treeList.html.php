@@ -44,7 +44,7 @@
 	
 	<?php $view->out($treeListView)?>
 	
-	<div class="rocket-context-controls">
+	<div class="rocket-context-commands">
 		<?php $eiHtml->overallControlList() ?>
 	</div>
 </div>

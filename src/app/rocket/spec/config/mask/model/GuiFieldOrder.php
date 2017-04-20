@@ -24,16 +24,21 @@ namespace rocket\spec\config\mask\model;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 
 class GuiFieldOrder {
 	private $orderItems = array();
 	
-	public function addGuiIdPath(GuiIdPath $guiIdPath) {
+	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null) {
 		$this->orderItems[] = OrderItem::createFromGuiIdPath($guiIdPath);
 	}
 	
-	public function addGuiGroup(GuiSection $guiSection) {
+	public function addGuiGroup(GuiSection $guiSection, string $groupType = null) {
 		$this->orderItems[] = OrderItem::createFromGuiSection($guiSection);
+	}
+	
+	public function addOrderItem(OrderItem $orderItem) {
+		$this->orderItems[] = $orderItem;
 	}
 	
 	/**
@@ -44,7 +49,7 @@ class GuiFieldOrder {
 	}
 	
 	public function setOrderItems(array $orderItems) {
-		ArgUtils::valArray($orderItems, 'rocket\spec\config\mask\OrderItem');
+		ArgUtils::valArray($orderItems, OrderItem::class);
 		$this->orderItems = $orderItems;
 	}
 	
@@ -69,11 +74,39 @@ class GuiFieldOrder {
 		}
 		return $guiIdPaths;
 	}
+	
+	const PURIFY_MODE_NO_GROUPS = 'noGroups';
+	const PURIFY_MODE_GROUPS_IN_ROOT = 'groupsInRoot';
+	
+	public function purify(EiEntryGui $eiEntryGui) {
+		$guiFieldOrder = new GuiFieldOrder();
+		
+		foreach ($this->orderItems as $orderItem) {
+			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
+		}
+	}
+	
+	public function withoutGroups() {
+		$guiFieldOrder = new GuiFieldOrder();
+		
+		foreach ($this->orderItems as $orderItem) {
+			if (!$orderItem->isGroup()) {
+				$guiFieldOrder->addOrderItem($orderItem);
+				continue;
+			}
+			
+			
+// 			$guiFieldOrder->addOrderItem($orderItem);
+			
+			$orderItem->get;
+		}
+	}
 }
 
 class OrderItem {
+	protected $groupType;
 	protected $guiIdPath;
-	protected $guiSection;
+	protected $guiGroup;
 
 	private function __construct() {
 	}
@@ -94,12 +127,20 @@ class OrderItem {
 	 */
 	public static function createFromGuiSection(GuiSection $guiSection) {
 		$orderItem = new OrderItem();
-		$orderItem->guiSection = $guiSection;
+		$orderItem->guiGroup = $guiSection;
 		return $orderItem;
 	}
 	
-	public function isSection() {
-		return $this->guiSection !== null;
+	public function getGroupType() {
+		if ($this->groupType !== null || $this->guiGroup === null) {
+			return $this->groupType;
+		}
+		
+		return $this->groupType;
+	}
+	
+	public function isGroup() {
+		return $this->guiGroup !== null;
 	}
 	
 	/**
@@ -107,8 +148,8 @@ class OrderItem {
 	 * @throws IllegalStateException
 	 */
 	public function getGuiSection() {
-		if ($this->guiSection !== null) {
-			return $this->guiSection;
+		if ($this->guiGroup !== null) {
+			return $this->guiGroup;
 		}
 		
 		throw new IllegalStateException();

@@ -58,7 +58,7 @@
 					<td><?php $html->esc($user->getEmail()) ?></td>
 					<td><?php $html->esc($user->getPower()) ?></td>
 					<td>
-						<div class="rocket-simple-controls">
+						<div class="rocket-simple-commands">
 							<?php if ($loggedInUser->isSuperAdmin() || $user->equals($loggedInUser)): ?>
 								<?php $html->linkToController(array('edit', $user->getId()), 
 										new n2n\web\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_label') . '</span>'),
@@ -82,7 +82,7 @@
 	</table>
 </div>
 <?php if ($loggedInUser->isSuperAdmin()): ?>
-	<div class="rocket-context-controls">
+	<div class="rocket-context-commands">
 		<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
 						. $view->getL10nText('user_add_label') . '</span>'), 
 				array('class' => 'btn btn-primary')) ?>

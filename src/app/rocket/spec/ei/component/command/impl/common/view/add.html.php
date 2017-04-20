@@ -49,7 +49,7 @@
 				array('entryFormViewModel' => new EntryFormViewModel(
 						$formHtml->meta()->createPropertyPath(array('entryForm'))))) ?>
 			
-		<div class="rocket-context-controls">
+		<div class="rocket-context-commands">
 			<?php $formHtml->buttonSubmit('create', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_label') . '</span>'),
 					array('class' => 'btn btn-primary')) ?>

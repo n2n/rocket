@@ -50,7 +50,7 @@ module spec {
 		public addControl(elem: JQuery) {
 			if (null === this.elemUlControls) {
 				this.elemUlControls = $("<ul />", {
-					"class": "rocket-simple-controls"
+					"class": "rocket-simple-commands"
 				}).appendTo(this.elemHeader);
 			}
 			

@@ -822,7 +822,7 @@ module spec.edit {
 		public addControl(text: string, callback: () => void, iconClassName: string) {
 			if (null === this.elemUlControls) {
 				this.elemUlControls = $("<ul />", {
-					"class": "rocket-simple-controls"	
+					"class": "rocket-simple-commands"	
 				}).css({
 					"position": "absolute",
 					"top": "0",

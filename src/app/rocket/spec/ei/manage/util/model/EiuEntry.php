@@ -37,6 +37,7 @@ use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
 use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
+use lib\rocket\spec\ei\manage\util\model\GeneralIdUtils;
 
 class EiuEntry {
 	private $eiEntry;
@@ -348,5 +349,12 @@ class EiuEntry {
 	
 	public function whenWritten(\Closure $closure) {
 		$this->getEiMapping()->registerListener(new WrittenMappingListener($closure));
+	}
+	
+	/**
+	 * @return NULL|string
+	 */
+	public function getGeneralId() {
+		return GeneralIdUtils::generalIdOf($this->getEiEntry());
 	}
 }  

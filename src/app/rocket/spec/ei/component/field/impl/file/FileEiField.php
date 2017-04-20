@@ -182,7 +182,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 							->toUrl(array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
-							'class' => 'rocket-control rocket-simple-controls')));
+							'class' => 'rocket-control rocket-simple-commands')));
 		}
 		
 		return $uiComponent;

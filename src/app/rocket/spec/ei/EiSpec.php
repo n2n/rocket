@@ -301,8 +301,6 @@ class EiSpec extends Spec implements EiThing {
 		$n2nLocale = $n2nContext->getN2nLocale();
 		foreach ($eiSpec->getEiCommandCollection()->filterLevel() as $eiCommand) {
 			if ($eiCommand instanceof PrivilegedEiCommand) {
-				$privilegeName = $eiCommand->getPrivilegeLabel($n2nLocale);
-		
 				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
 						= $eiCommand->getPrivilegeLabel($n2nLocale);
 			}
@@ -310,8 +308,7 @@ class EiSpec extends Spec implements EiThing {
 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
 					
-				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand,
-						'getPrivilegeOptions');
+				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
 					
 				foreach ($privilegeOptions as $privilegeExt => $label) {
 					if ($eiSpec->hasSuperEiSpec()) {
