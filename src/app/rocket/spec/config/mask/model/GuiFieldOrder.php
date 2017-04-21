@@ -30,7 +30,7 @@ class GuiFieldOrder {
 	private $orderItems = array();
 	
 	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null) {
-		$this->orderItems[] = OrderItem::createFromGuiIdPath($guiIdPath);
+		$this->orderItems[] = OrderItem::createFromGuiIdPath($guiIdPath, $groupType);
 	}
 	
 	public function addGuiGroup(GuiSection $guiSection, string $groupType = null) {
@@ -85,28 +85,41 @@ class GuiFieldOrder {
 			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
 		}
 	}
-	
+
 	public function withoutGroups() {
 		$guiFieldOrder = new GuiFieldOrder();
-		
-		foreach ($this->orderItems as $orderItem) {
+	
+		$this->withoutGroups($guiFieldOrder, $this->orderItems);
+	
+		return $guiFieldOrder;
+	}
+	
+	private function stripgGroups(GuiFieldOrder $guiFieldOrder, array $orderItems) {
+		foreach ($orderItems as $orderItem) {
 			if (!$orderItem->isGroup()) {
-				$guiFieldOrder->addOrderItem($orderItem);
+				$guiFieldOrder->orderItems[] = $orderItem;
+				continue;
+			}
+				
+			if ($orderItem->hasGuiSection()) {
+				$this->stripgGroups($guiFieldOrder, $orderItem->getGuiSection()->getOrderItems());
 				continue;
 			}
 			
 			
-// 			$guiFieldOrder->addOrderItem($orderItem);
-			
-			$orderItem->get;
+			$orderItem = $orderItem->copy();
+			$orderItem->setGroupType(null);
+			$guiFieldOrder->orderItems[] = $orderItem;
 		}
+	
 	}
 }
 
 class OrderItem {
+	protected $label;
 	protected $groupType;
 	protected $guiIdPath;
-	protected $guiGroup;
+	protected $guiSection;
 
 	private function __construct() {
 	}
@@ -115,8 +128,10 @@ class OrderItem {
 	 * @param GuiIdPath $guiIdPath
 	 * @return \rocket\spec\config\mask\OrderItem
 	 */
-	public static function createFromGuiIdPath(GuiIdPath $guiIdPath) {
+	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
 		$orderItem = new OrderItem();
+		$orderItem->label = $label;
+		$orderItem->groupType = $groupType;
 		$orderItem->guiIdPath = $guiIdPath;
 		return $orderItem;
 	}
@@ -127,12 +142,12 @@ class OrderItem {
 	 */
 	public static function createFromGuiSection(GuiSection $guiSection) {
 		$orderItem = new OrderItem();
-		$orderItem->guiGroup = $guiSection;
+		$orderItem->guiSection = $guiSection;
 		return $orderItem;
 	}
 	
 	public function getGroupType() {
-		if ($this->groupType !== null || $this->guiGroup === null) {
+		if ($this->groupType !== null || $this->guiSection === null) {
 			return $this->groupType;
 		}
 		
@@ -140,7 +155,11 @@ class OrderItem {
 	}
 	
 	public function isGroup() {
-		return $this->guiGroup !== null;
+		return $this->guiSection !== null || $this->groupType !== null;
+	}
+	
+	public function hasGuiSection() {
+		return $this->guiSection !== null;
 	}
 	
 	/**
@@ -148,8 +167,8 @@ class OrderItem {
 	 * @throws IllegalStateException
 	 */
 	public function getGuiSection() {
-		if ($this->guiGroup !== null) {
-			return $this->guiGroup;
+		if ($this->guiSection !== null) {
+			return $this->guiSection;
 		}
 		
 		throw new IllegalStateException();
