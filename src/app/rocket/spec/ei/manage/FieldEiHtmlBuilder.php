@@ -160,7 +160,7 @@ class FieldEiHtmlBuilder {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
 		}
 
-		if (null !== ($message = $eiFieldInfo['fieldErrorInfo']->processeMessage())) {
+		if (null !== ($message = $eiFieldInfo['fieldErrorInfo']->processMessage())) {
 			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
 					$this->view->getN2nLocale());
 			

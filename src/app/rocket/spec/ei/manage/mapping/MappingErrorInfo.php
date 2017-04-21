@@ -41,4 +41,18 @@ class MappingErrorInfo {
 		}
 		return $this->mappableErrorInfos[$eiFieldPathStr];
 	}
+
+	public function getFieldErrorInfos() {
+		return $this->mappableErrorInfos;
+	}
+
+	public function getMessages() {
+		$messages = array();
+		foreach ($this->mappableErrorInfos as $mappableErrorInfo) {
+			$messages = array_merge($messages, $mappableErrorInfo->getMessages());
+		}
+		return $messages;
+	}
+
+
 }

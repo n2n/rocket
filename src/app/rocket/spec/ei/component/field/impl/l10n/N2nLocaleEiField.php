@@ -21,13 +21,18 @@
  */
 namespace rocket\spec\ei\component\field\impl\l10n;
 
+use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use rocket\spec\ei\component\field\FilterableEiField;
+use rocket\spec\ei\component\field\ScalarEiField;
 use rocket\spec\ei\component\field\SortableEiField;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
- 
+use n2n\util\config\Attributes;
+use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
+use rocket\spec\ei\manage\mapping\EiMapping; 
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
@@ -44,7 +49,8 @@ use n2n\core\N2N;
 use rocket\spec\ei\component\field\GenericEiField;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 
-class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField, GenericEiField {
+class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField, GenericEiField,
+		ScalarEiField {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
@@ -157,5 +163,24 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 		if ($this->entityProperty === null) return null;
 		
 		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty));
+	}
+
+
+	public function getScalarEiProperty() {
+		return new CommonScalarEiProperty($this,
+				function (N2nLocale $n2nLocale = null) {
+					if ($n2nLocale === null) return null;
+
+					return (string) $n2nLocale;
+				},
+				function (string $n2nLocaleId = null) {
+					if ($n2nLocaleId === null) return null;
+
+					try {
+						return N2nLocale::create($n2nLocaleId);
+					} catch (IllegalN2nLocaleFormatException $e) {
+						throw new ValueIncompatibleWithConstraintsException(null, 0, $e);
+					}
+				});
 	}
 }

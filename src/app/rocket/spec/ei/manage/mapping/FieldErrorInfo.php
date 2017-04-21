@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\manage\mapping;
 
 use n2n\l10n\Message;
+use n2n\reflection\CastUtils;
 
 class FieldErrorInfo {
 	private $errorMessages = array();
@@ -59,7 +60,7 @@ class FieldErrorInfo {
 	// 		return $this->errorMessages;
 	// 	}
 
-	public function processeMessage(bool $checkrecursive = true) {
+	public function processMessage(bool $checkrecursive = true) {
 		foreach ($this->errorMessages as $errorMessage) {
 			if ($errorMessage->isProcessed()) continue;
 			
@@ -76,5 +77,15 @@ class FieldErrorInfo {
 
 	public function addSubMappingErrorInfo(MappingErrorInfo $subMappingErrorInfo) {
 		$this->subMappingErrorInfos[] = $subMappingErrorInfo;
+	}
+
+	public function getMessages() {
+		$messages = $this->errorMessages;
+
+		foreach ($this->subMappingErrorInfos as $subMappingErrorInfo) {
+			$messages = array_merge($messages, $subMappingErrorInfo->getMessages());
+		}
+
+		return $messages;
 	}
 }
