@@ -27,13 +27,13 @@ use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\persistence\PdoStatement;
 use rocket\spec\ei\manage\EiEntityObj;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
 
 class DraftFetcher {
 	private $fetchDraftStmtBuilder;
-	private $eiSpec;
+	private $eiType;
 	private $stmt;
 	private $draftDefinition;
 	private $draftingContext;
@@ -41,10 +41,10 @@ class DraftFetcher {
 	private $bindValues = array();
 	private $entityObj;
 	
-	public function __construct(FetchDraftStmtBuilder $selectDraftStmtBuilder, EiSpec $eiSpec, 
+	public function __construct(FetchDraftStmtBuilder $selectDraftStmtBuilder, EiType $eiType, 
 			DraftDefinition $draftDefinition, DraftingContext $draftingContext, EntityManager $em) {
 		$this->fetchDraftStmtBuilder = $selectDraftStmtBuilder;
-		$this->eiSpec = $eiSpec;
+		$this->eiType = $eiType;
 		$this->draftDefinition = $draftDefinition;
 		$this->draftingContext = $draftingContext;
 		$this->em = $em;
@@ -123,16 +123,16 @@ class DraftFetcher {
 		
 		$entityObj = null;
 		if (null !== $entityObjId) {
-			$entityObj = $this->em->find($this->eiSpec->getEntityModel()->getClass(), $entityObjId);
+			$entityObj = $this->em->find($this->eiType->getEntityModel()->getClass(), $entityObjId);
 		}
 		
 		$eiEntityObj = null;
 		if ($entityObj !== null) {
-			$eiEntityObj = EiEntityObj::createFrom($this->eiSpec, $entityObj);
+			$eiEntityObj = EiEntityObj::createFrom($this->eiType, $entityObj);
 		} else {
-			$eiEntityObj = EiEntityObj::createNew($this->eiSpec);
+			$eiEntityObj = EiEntityObj::createNew($this->eiType);
 			if ($entityObjId !== null) {
-				$this->eiSpec->getEntityModel()->getIdDef()->getEntityProperty()
+				$this->eiType->getEntityModel()->getIdDef()->getEntityProperty()
 						->writeValue($eiEntityObj->getEntityObj(), $entityObjId);
 			}
 		}

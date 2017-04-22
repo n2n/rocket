@@ -131,7 +131,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	
 	public function processEntries(EiFrame $eiFrame, array $entries) {
 		$specManager = N2N::getModelContext()->lookup('rocket\spec\config\SpecManager');
-		$eiSpec = $this->getEiSpec();
+		$eiType = $this->getEiType();
 		$em = $eiFrame->getEntityManager();
 		
 		foreach ($entries as $entry) {

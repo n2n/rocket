@@ -51,7 +51,7 @@ class MultiUploadFileEiProp extends FileEiProp {
 		parent::setup($setupProcess);
 		$command = new MultiUploadEiCommand(new Attributes());
 		$command->setEiProp($this);
-		$this->getEiSpec()->getEiCommandCollection()->add($command);
+		$this->getEiType()->getEiCommandCollection()->add($command);
 	}
 	
 	public function getReferencedNamePropertyId() {
@@ -67,7 +67,7 @@ class MultiUploadFileEiProp extends FileEiProp {
 	
 	private function determineNamePropertyOptions() {
 		$options = array();
-		foreach ($this->getEiSpec()->getEiPropCollection() as $field) {
+		foreach ($this->getEiType()->getEiPropCollection() as $field) {
 			if (!($field instanceof StringEiProp)) continue;
 			$options[$field->getId()] = $field->getPropertyName();  
 		}

@@ -100,6 +100,6 @@ class TreeAddModel extends AddModel {
 		
 		$em->flush();
 
-		return new EiObject($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->extractId($entity), $entity);
+		return new EiObject($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->extractId($entity), $entity);
 	}
 }

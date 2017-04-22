@@ -104,7 +104,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
 		if ($targetEntityObj === null) return null;
 		
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiSpec(), $targetEntityObj);
+		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
 	}
 	
 	/**

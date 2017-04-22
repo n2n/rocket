@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
@@ -76,7 +76,7 @@ use rocket\spec\ei\manage\control\Control;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
-	private $eiSpec;
+	private $eiType;
 	private $moduleNamespace;
 	private $subEiMaskIds;
 	
@@ -92,22 +92,22 @@ class CommonEiMask implements EiMask, Identifiable {
 	private $guiDefinition;
 	private $draftDefinition;
 	
-	public function __construct(EiSpec $eiSpec, string $moduleNamespace, GuiOrder $guiOrder) {
-		$this->eiSpec = $eiSpec;
+	public function __construct(EiType $eiType, string $moduleNamespace, GuiOrder $guiOrder) {
+		$this->eiType = $eiType;
 		$this->moduleNamespace = $moduleNamespace;
 		
 		$this->eiDef = new EiDef();
-		$this->eiEngine = new EiEngine($this->eiSpec, $this);
+		$this->eiEngine = new EiEngine($this->eiType, $this);
 		$this->guiOrder = $guiOrder;
 		
 		$eiPropCollection = $this->eiEngine->getEiPropCollection();
-		$eiPropCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiPropCollection());
+		$eiPropCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiPropCollection());
 		
 		$eiCommandCollection = $this->eiEngine->getEiCommandCollection();
-		$eiCommandCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiCommandCollection());
+		$eiCommandCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiCommandCollection());
 		
 		$eiModificatorCollection = $this->eiEngine->getEiModificatorCollection();
-		$eiModificatorCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiModificatorCollection());
+		$eiModificatorCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiModificatorCollection());
 	}
 
 	/* (non-PHPdoc)
@@ -148,12 +148,12 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\mask\EiMask::get()
 	 */
-	public function getEiSpec(): EiSpec {
-		return $this->eiSpec;
+	public function getEiType(): EiType {
+		return $this->eiType;
 	}
 	
 	public function getMaskedEiThing(): EiThing {
-		return $this->eiSpec;
+		return $this->eiType;
 	}
 	
 	public function getEiDef() {
@@ -165,7 +165,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	public function getEntityModel(): EntityModel {
-		return $this->eiSpec->getEntityModel();
+		return $this->eiType->getEntityModel();
 	}
 	
 	public function setGuiOrder(GuiOrder $guiOrder) {
@@ -185,7 +185,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			return new Lstr($label, $this->moduleNamespace);
 		}
 		
-		return new Lstr((string) $this->eiSpec->getDefaultEiDef()->getLabel(), $this->moduleNamespace);
+		return new Lstr((string) $this->eiType->getDefaultEiDef()->getLabel(), $this->moduleNamespace);
 	}
 	
 	public function getPluralLabelLstr(): Lstr {
@@ -193,7 +193,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			return new Lstr($pluralLabel, $this->moduleNamespace);
 		}
 		
-		return new Lstr((string) $this->eiSpec->getDefaultEiDef()->getPluralLabel(), $this->moduleNamespace);
+		return new Lstr((string) $this->eiType->getDefaultEiDef()->getPluralLabel(), $this->moduleNamespace);
 	}
 	
 	
@@ -203,7 +203,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	public function isDraftingEnabled(): bool {
 		if (null !== ($draftingAllowed = $this->eiDef->isDraftingAllowed())) {
 			if (!$draftingAllowed) return false;
-		} else if (null !== ($draftingAllowed = $this->eiSpec->getDefaultEiDef()->isDraftingAllowed())) {
+		} else if (null !== ($draftingAllowed = $this->eiType->getDefaultEiDef()->isDraftingAllowed())) {
 			if (!$draftingAllowed) return false;
 		}
 		
@@ -232,12 +232,12 @@ class CommonEiMask implements EiMask, Identifiable {
 		$identityStringPattern = $this->eiDef->getIdentityStringPattern();
 		
 		if ($identityStringPattern === null) {
-			$identityStringPattern = $this->eiSpec->getDefaultEiDef()->getIdentityStringPattern();
+			$identityStringPattern = $this->eiType->getDefaultEiDef()->getIdentityStringPattern();
 		}
 		
 		if ($identityStringPattern === null) {
 			return $this->getLabelLstr()->t($n2nLocale) . ' #' 
-					. $this->eiSpec->idToIdRep($eiObject->getEiEntityObj()->getId());
+					. $this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId());
 		}
 		
 		return $this->eiEngine->getGuiDefinition()
@@ -505,7 +505,7 @@ class CommonEiMask implements EiMask, Identifiable {
 // 			return $filterData;
 // 		}
 		
-// 		return $this->eiSpec->getDefaultEiDef()->getFilterGroupData();
+// 		return $this->eiType->getDefaultEiDef()->getFilterGroupData();
 // 	}
 	
 // 	public function setFilterGroupData(FilterData $filterData = null) {
@@ -517,7 +517,7 @@ class CommonEiMask implements EiMask, Identifiable {
 // 			return $defaultSortDirections;
 // 		}
 		
-// 		return $this->eiSpec->getDefaultEiDef()->getDefaultSortData();
+// 		return $this->eiType->getDefaultEiDef()->getDefaultSortData();
 // 	}
 	
 // 	public function isFiltered()  {
@@ -532,51 +532,51 @@ class CommonEiMask implements EiMask, Identifiable {
 		$this->subEiMaskIds = $subEiMaskIds;
 	}
 	
-	public function determineEiMask(EiSpec $eiSpec): EiMask {
-		$eiSpecId = $eiSpec->getId();
-		if ($this->eiSpec->getId() == $eiSpecId) {
+	public function determineEiMask(EiType $eiType): EiMask {
+		$eiTypeId = $eiType->getId();
+		if ($this->eiType->getId() == $eiTypeId) {
 			return $this;
 		}
 		
-		if ($this->eiSpec->containsSubEiSpecId($eiSpecId)) {
-			return $this->getSubEiMaskByEiSpecId($eiSpecId);
+		if ($this->eiType->containsSubEiTypeId($eiTypeId)) {
+			return $this->getSubEiMaskByEiTypeId($eiTypeId);
 		}
 				
-		foreach ($this->eiSpec->getSubEiSpecs() as $subEiSpec) {
-			if (!$subEiSpec->containsSubEiSpecId($eiSpecId, true)) continue;
-			return $this->getSubEiMaskByEiSpecId($subEiSpec->getId())
-					->determineEiMask($eiSpec);
+		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
+			if (!$subEiType->containsSubEiTypeId($eiTypeId, true)) continue;
+			return $this->getSubEiMaskByEiTypeId($subEiType->getId())
+					->determineEiMask($eiType);
 		}
 		
 		throw new \InvalidArgumentException();
 	}
 	
-	public function getSubEiMaskByEiSpecId($eiSpecId): EiMask {
+	public function getSubEiMaskByEiTypeId($eiTypeId): EiMask {
 		$subMaskIds = $this->getSubEiMaskIds();
 		
-		foreach ($this->eiSpec->getSubEiSpecs() as $subEiSpec) {
-			if ($subEiSpec->getId() != $eiSpecId) continue;
+		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
+			if ($subEiType->getId() != $eiTypeId) continue;
 			
-			if (isset($subMaskIds[$eiSpecId])) {
-				return $subEiSpec->getEiMaskCollection()->getById($subMaskIds[$eiSpecId]);
+			if (isset($subMaskIds[$eiTypeId])) {
+				return $subEiType->getEiMaskCollection()->getById($subMaskIds[$eiTypeId]);
 			} else {
-				return $subEiSpec->getEiMaskCollection()->getOrCreateDefault();
+				return $subEiType->getEiMaskCollection()->getOrCreateDefault();
 			}
 		}
 		
-		throw new \InvalidArgumentException('EiSpec ' . $eiSpecId . ' is no SubEiSpec of ' 
-				. $this->eiSpec->getId());
+		throw new \InvalidArgumentException('EiType ' . $eiTypeId . ' is no SubEiType of ' 
+				. $this->eiType->getId());
 	}
 	
 	public function isPreviewSupported(): bool {
 		return null !== $this->eiDef->getPreviewControllerLookupId() 
-				|| null !== $this->eiSpec->getDefaultEiDef()->getPreviewControllerLookupId();
+				|| null !== $this->eiType->getDefaultEiDef()->getPreviewControllerLookupId();
 	}
 	
 	public function lookupPreviewController(EiFrame $eiFrame, PreviewModel $previewModel = null): PreviewController {
 		$lookupId = $this->eiDef->getPreviewControllerLookupId();
 		if (null === $lookupId) {
-			$lookupId = $this->eiSpec->getDefaultEiDef()->getPreviewControllerLookupId();	
+			$lookupId = $this->eiType->getDefaultEiDef()->getPreviewControllerLookupId();	
 		}
 		
 		if ($lookupId === null) {
@@ -604,10 +604,10 @@ class CommonEiMask implements EiMask, Identifiable {
 	
 	public function __toString(): string {
 		if ($this->id !== null) {
-			return 'CommonEiMask (id: ' . $this->id . ') of ' . $this->eiSpec;
+			return 'CommonEiMask (id: ' . $this->id . ') of ' . $this->eiType;
 		}
 		
-		return 'Default CommonEiMask of ' . $this->eiSpec;
+		return 'Default CommonEiMask of ' . $this->eiType;
 	}
 	
 	/**
@@ -616,7 +616,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	 */
 	public function setupEiFrame(EiFrame $eiFrame) {
 		if (null !== ($filterGroupData = $this->eiDef->getFilterGroupData())
-				|| null !== ($filterGroupData = $this->eiSpec->getDefaultEiDef()->getFilterGroupData())) {
+				|| null !== ($filterGroupData = $this->eiType->getDefaultEiDef()->getFilterGroupData())) {
 			$criteriaConstraint = $this->createManagedFilterDefinition($eiFrame)
 					->buildCriteriaConstraint($filterGroupData, false);
 			if ($criteriaConstraint !== null) {
@@ -625,7 +625,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 
 		if (null !== ($defaultSortData = $this->eiDef->getDefaultSortData())
-				|| null !== ($defaultSortData = $this->eiSpec->getDefaultEiDef()->getDefaultSortData())) {
+				|| null !== ($defaultSortData = $this->eiType->getDefaultEiDef()->getDefaultSortData())) {
 			$criteriaConstraint = $this->eiEngine->createManagedSortDefinition($eiFrame)
 					->builCriteriaConstraint($defaultSortData, false);
 			if ($criteriaConstraint !== null) {

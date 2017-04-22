@@ -175,18 +175,18 @@ class ContentItemMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
-		$ciEiSpecLabels = array();
+		$ciEiTypeLabels = array();
 		
 		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();
-		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getAllSubEiSpecs() as $subEiSpec) {
-			if ($subEiSpec->isAbstract()) continue;
+		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiType()->getAllSubEiTypes() as $subEiType) {
+			if ($subEiType->isAbstract()) continue;
 			
-			$ciEiSpecLabels[$subEiSpec->getId()] = $targetContextEiMask->determineEiMask($subEiSpec)->getLabelLstr()
+			$ciEiTypeLabels[$subEiType->getId()] = $targetContextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($view->getN2nLocale());
 		}
 		
 		return $view->getImport('\rocket\spec\ei\component\field\impl\ci\view\contentItemsForm.html',
 				array('panelConfigs' => $this->panelConfigs, 'propertyPath' => $propertyPath,
-						'ciEiSpecLabels' => $ciEiSpecLabels));
+						'ciEiTypeLabels' => $ciEiTypeLabels));
 	}
 }

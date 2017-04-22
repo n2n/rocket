@@ -37,7 +37,7 @@ class CritmodSave extends ObjectAdapter {
 	}
 	
 	private $id;
-	private $eiSpecId;
+	private $eiTypeId;
 	private $eiMaskId;
 	private $name;
 	private $filterDataJson = '[]';
@@ -55,16 +55,16 @@ class CritmodSave extends ObjectAdapter {
 		$this->name = $name;
 	}
 	
-	public function getEiSpecId() {
-		return $this->eiSpecId;
+	public function getEiTypeId() {
+		return $this->eiTypeId;
 	}
 	
-	public function setEiSpecId(string $eiSpecId) {
-		$this->eiSpecId = $eiSpecId;
+	public function setEiTypeId(string $eiTypeId) {
+		$this->eiTypeId = $eiTypeId;
 	}
 	
 	public function getEiMaskId() {
-		return $this->eiSpecId;
+		return $this->eiTypeId;
 	}
 	
 	public function setEiMaskId(string $eiMaskId = null) {

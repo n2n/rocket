@@ -35,12 +35,12 @@ class VetoableRemoveQueue implements LifecycleListener {
 			throw new NotYetImplementedException();
 		}
 
-		$eiSpec = $eiObject->getEiEntityObj()->getEiSpec();
-		$nss = $eiSpec->getNestedSetStrategy();
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		$nss = $eiType->getNestedSetStrategy();
 		if (null === $nss) {
 			$this->em->remove($eiObject->getEiEntityObj()->getEntityObj());
 		} else {
-			$nsu = new NestedSetUtils($this->em, $eiSpec->getEntityModel()->getClass(), $nss); 
+			$nsu = new NestedSetUtils($this->em, $eiType->getEntityModel()->getClass(), $nss); 
 			$nsu->remove($eiObject->getLiveObject());
 		}
 		
@@ -88,7 +88,7 @@ class VetoableRemoveQueue implements LifecycleListener {
 		$this->em->flush();
 		
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
-			$action->getEiObject()->getEiEntityObj()->getEiSpec()->onRemove($action, $n2nContext);
+			$action->getEiObject()->getEiEntityObj()->getEiType()->onRemove($action, $n2nContext);
 				
 			if (!$action->hasVeto()) {
 				$action->approve();
@@ -117,13 +117,13 @@ class VetoableRemoveQueue implements LifecycleListener {
 	}
 	
 	private function prepare(EntityModel $entityModel, $entityObj) {
-		if (!$this->specManager->containsEiSpecClass($entityModel->getClass())) {
+		if (!$this->specManager->containsEiTypeClass($entityModel->getClass())) {
 			$this->unmangedRemovedEntityObjs[spl_object_hash($entityObj)] = $entityObj;
 			return;
 		}
 		
-		$eiSpec = $this->specManager->getEiSpecByClass($entityModel->getClass());
-		$this->createAction(LiveEiObject::create($eiSpec, $entityObj));
+		$eiType = $this->specManager->getEiTypeByClass($entityModel->getClass());
+		$this->createAction(LiveEiObject::create($eiType, $entityObj));
 	}
 	
 	private function unprepare($entityObj) {

@@ -59,7 +59,7 @@ class ThumbController extends ControllerAdapter {
 		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
 		
 		// because ThumbEiCommand gets added always on a supreme EiThing
-		if (!$this->fileEiProp->getEiEngine()->getEiSpec()->isObjectValid($eiMapping->getEiObject()->getLiveObject())) {
+		if (!$this->fileEiProp->getEiEngine()->getEiType()->isObjectValid($eiMapping->getEiObject()->getLiveObject())) {
 			throw new PageNotFoundException('');
 		}
 
@@ -127,7 +127,7 @@ class ThumbController extends ControllerAdapter {
 		
 // 		if ($eiObject->isDraft()) {			
 // 			$breadcrumbPath = $request->getControllerContextPath($eiFrame->getControllerContext(),
-// 					$this->eiSpec->getEntryDetailPathExt($eiObject->toEntryNavPoint(
+// 					$this->eiType->getEntryDetailPathExt($eiObject->toEntryNavPoint(
 // 							$eiFrame->getPreviewType())->copy(false, true)));
 // 			$breadcrumbLabel = $eiObject->getDraft()->getName();
 // 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
@@ -135,7 +135,7 @@ class ThumbController extends ControllerAdapter {
 		
 // 		if ($eiObject->hasTranslation()) {
 // 			$breadcrumbPath = $request->getControllerContextPath($eiFrame->getControllerContext(),
-// 					$this->eiSpec->getEntryDetailPathExt($eiObject->toEntryNavPoint(
+// 					$this->eiType->getEntryDetailPathExt($eiObject->toEntryNavPoint(
 // 							$eiFrame->getPreviewType())->copy(true, true)));
 // 			$breadcrumbLabel = $this->dtc->translate('ei_impl_translation_detail_bradcrumb' ,
 // 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));

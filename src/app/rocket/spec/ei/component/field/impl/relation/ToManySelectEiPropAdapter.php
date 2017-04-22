@@ -55,11 +55,11 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 			return array();
 		}
 		
-		$targetEiSpec = $this->eiPropRelation->getTargetEiSpec();
+		$targetEiType = $this->eiPropRelation->getTargetEiType();
 		
 		$targetEiObjects = array();
 		foreach ($targetEntityObjs as $targetEntityObj) {
-			$targetEiObjects[] = LiveEiObject::create($targetEiSpec, $targetEntityObj);
+			$targetEiObjects[] = LiveEiObject::create($targetEiType, $targetEntityObj);
 		}
 		return $targetEiObjects;
 	}

@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\EiRelation;
 use n2n\web\http\controller\ControllerContext;
 use n2n\persistence\orm\CascadeType;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\EiFrameFactory;
 use rocket\spec\ei\component\field\impl\relation\command\RelationAjahEiCommand;
@@ -52,7 +52,7 @@ use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 
 abstract class EiPropRelation {
-	protected $targetEiSpec;
+	protected $targetEiType;
 	protected $targetEiMask;
 	protected $targetMasterEiProp;
 	protected $targetMasterAccessProxy;
@@ -96,13 +96,13 @@ abstract class EiPropRelation {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getTargetEiSpec(): EiSpec {
-		if ($this->targetEiSpec === null) {
+	public function getTargetEiType(): EiType {
+		if ($this->targetEiType === null) {
 			throw new IllegalStateException(get_class($this->relationEiProp) . ' not set up');
 		}
-		return $this->targetEiSpec;
+		return $this->targetEiType;
 	}
 	
 	/**
@@ -153,16 +153,16 @@ abstract class EiPropRelation {
 	}
 	
 	/**
-	 * @param EiSpec $targetEiSpec
+	 * @param EiType $targetEiType
 	 * @param EiMask $targetEiMask
 	 */
-	public function init(EiSpec $targetEiSpec, EiMask $targetEiMask) {
-		$this->targetEiSpec = $targetEiSpec;
+	public function init(EiType $targetEiType, EiMask $targetEiMask) {
+		$this->targetEiType = $targetEiType;
 		$this->targetEiMask = $targetEiMask;
 		
 		$this->initTargetMasterEiProp();		
 		
-		// supreme EiEngine to make command available in EiFrames with super context EiSpecs.
+		// supreme EiEngine to make command available in EiFrames with super context EiTypes.
 		$superemeEiEngine = $this->relationEiProp->getEiEngine()->getSupremeEiEngine();
 		$this->relationEiCommand = new RelationEiCommand($this);
 		$superemeEiEngine->getEiCommandCollection()->add($this->relationEiCommand);
@@ -197,7 +197,7 @@ abstract class EiPropRelation {
 		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand('Edit embedded in ' 
 						. $this->getRelationEiProp()->getEiEngine()->getEiThing()->getLabelLstr() 
 						. ' - ' . $this->getTargetEiMask()->getLabelLstr(), 
-				$this->getRelationEiProp()->getId(), $this->getTargetEiSpec()->getId());
+				$this->getRelationEiProp()->getId(), $this->getTargetEiType()->getId());
 		
 		$this->relationEiProp->getEiEngine()->getEiCommandCollection()
 				->add($this->embeddedEditEiCommand);
@@ -206,7 +206,7 @@ abstract class EiPropRelation {
 // 	public function hasRecursiveConflict(EiFrame $eiFrame) {
 // 		$target = $this->getTarget();
 // 		while (null !== ($eiFrame = $eiFrame->getParent())) {
-// 			if ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->equals($target)) {
+// 			if ($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->equals($target)) {
 // 				return true;
 // 			}
 // 		}
@@ -371,7 +371,7 @@ abstract class EiPropRelation {
 						RelationEntry::from($eiObject), EiPropPath::from($targetEiProp), $this->isSourceMany()));
 			}
 		} else if ($this->targetMasterAccessProxy !== null) {
-			$this->getTargetEiSpec()->getEiEngine()->getEiModificatorCollection()->add(
+			$this->getTargetEiType()->getEiEngine()->getEiModificatorCollection()->add(
 					new PlainMappedRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(), 
 							$this->targetMasterAccessProxy, $this->isSourceMany()));
 		}

@@ -35,7 +35,7 @@ class TreeMoveModel implements Dispatchable {
 		$ai->m('move', DispatchAnnotations::MANAGED_METHOD);
 	}
 	
-	private $eiSpec;
+	private $eiType;
 	private $eiFrame;
 	private $eiObject;
 	private $nestedSetUtils;
@@ -45,13 +45,13 @@ class TreeMoveModel implements Dispatchable {
 	private $parentIdOptions;
 	
 	public function __construct(EiFrame $eiFrame) {
-		$this->eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$this->eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$this->eiFrame = $eiFrame;
 	}
 	
 	public function initialize($id) {
 		$em = $this->eiFrame->getEntityManager();
-		$class = $this->eiSpec->getEntityModel()->getClass();
+		$class = $this->eiType->getEntityModel()->getClass();
 		
 		$object = $em->find($class, $id);
 		if (!isset($object)) {
@@ -67,7 +67,7 @@ class TreeMoveModel implements Dispatchable {
 		$currentLevelObjectIds = array();
 		$disabledLevel = null;
 		foreach ($nestedSetUtils->fetch() as $nestedSetItem) {
-			$objectId = $this->eiSpec->extractId($nestedSetItem->getObject());
+			$objectId = $this->eiType->extractId($nestedSetItem->getObject());
 			$level = $nestedSetItem->getLevel();
 			
 			if (isset($disabledLevel)) {
@@ -90,14 +90,14 @@ class TreeMoveModel implements Dispatchable {
 			$currentLevelObjectIds[$level] = $objectId;
 			$this->nestedSetItems[$objectId] = $nestedSetItem;
 			$this->parentIdOptions[$objectId] = str_repeat('..', $level + 1) . 
-					$this->eiSpec->createIdentityString($nestedSetItem->getObject(), $this->eiFrame->getN2nLocale());
+					$this->eiType->createIdentityString($nestedSetItem->getObject(), $this->eiFrame->getN2nLocale());
 		}
 				
 		return true;		
 	}
 			
-	public function getEiSpec() {
-		return $this->eiSpec;
+	public function getEiType() {
+		return $this->eiType;
 	}
 	
 	public function getEiFrame() {
@@ -109,7 +109,7 @@ class TreeMoveModel implements Dispatchable {
 	}
 	
 	public function getTitle() {
-		return $this->eiSpec->createIdentityString($this->eiObject->getLiveEntityObj(), 
+		return $this->eiType->createIdentityString($this->eiObject->getLiveEntityObj(), 
 				$this->eiFrame->getN2nLocale());
 	}
 	

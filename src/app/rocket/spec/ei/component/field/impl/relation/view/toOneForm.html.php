@@ -50,7 +50,7 @@
 		data-replace-item-label="<?php $html->text('ei_impl_to_one_replace_item_label', 
 				array('item' => $entryLabeler->getGenericLabel())) ?>"
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
-		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiSpecLabels())) ?>">
+		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-selector" 

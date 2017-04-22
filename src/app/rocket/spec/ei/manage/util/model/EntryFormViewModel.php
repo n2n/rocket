@@ -70,10 +70,10 @@ class EntryFormViewModel {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue(!$entryForm->isChoosable());
 		
-		$eiSpecId = $entryForm->getChosenId();
+		$eiTypeId = $entryForm->getChosenId();
 		$entryModelForm = $entryForm->getChosenEntryModelForm();
 		$propertyPath = $this->entryFormPropertyPath
-				->ext(new PropertyPathPart('entryModelForms', true, $eiSpecId))->ext('dispatchable');
+				->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
 		
 		return $entryModelForm->getEiuEntryGui()->createBulkyView();
 	}
@@ -83,35 +83,35 @@ class EntryFormViewModel {
 		IllegalStateException::assertTrue($entryForm->isChoosable());
 	
 		$editViews = array();
-		foreach ($entryForm->getEntryModelForms() as $eiSpecId => $entryModelForm) {
+		foreach ($entryForm->getEntryModelForms() as $eiTypeId => $entryModelForm) {
 			$propertyPath = $this->entryFormPropertyPath->ext(
-					new PropertyPathPart('entryModelForms', true, $eiSpecId))->ext('dispatchable');
+					new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
 			
 			$entryGuiModel = $entryModelForm->getEntryGuiModel();
 			$eiMask = $entryGuiModel->getEiMask();
 			
-			$editViews[$eiSpecId] = $eiMask->createBulkyView($entryForm->getEiFrame(), 
+			$editViews[$eiTypeId] = $eiMask->createBulkyView($entryForm->getEiFrame(), 
 					new EntryGui($entryGuiModel, $propertyPath));
 		}
 		return $editViews;
 	}
 	
-// 	private function buildTypeHtmlClasses(EiSpec $eiSpec, array $htmlClasses) {
-// 		$htmlClasses[] = 'rocket-script-type-' . $eiSpec->getId();
-// 		foreach ($eiSpec->getSubEiSpecs() as $sub) {
+// 	private function buildTypeHtmlClasses(EiType $eiType, array $htmlClasses) {
+// 		$htmlClasses[] = 'rocket-script-type-' . $eiType->getId();
+// 		foreach ($eiType->getSubEiTypes() as $sub) {
 // 			$htmlClasses = $this->buildTypeHtmlClasses($sub, $htmlClasses);
 // 		}
 // 		return $htmlClasses;
 // 	}
 	
-// 	public function createTypeLevelEditView($eiSpecId) {
+// 	public function createTypeLevelEditView($eiTypeId) {
 // 		$entryFormParts = $this->entryForm->getLevelEntryFormParts();
-// 		if (!isset($entryFormParts[$eiSpecId])) {
+// 		if (!isset($entryFormParts[$eiTypeId])) {
 // 			throw new \InvalidArgumentException();
 // 		}
 		
-// 		return $entryFormParts[$eiSpecId]->getGuiDefinition()->getEiMask()
-// 				->createEditEntryView($entryFormParts[$eiSpecId], 
-// 						$this->basePropertyPath->ext('levelEntryFormParts')->fieldExt($eiSpecId));
+// 		return $entryFormParts[$eiTypeId]->getGuiDefinition()->getEiMask()
+// 				->createEditEntryView($entryFormParts[$eiTypeId], 
+// 						$this->basePropertyPath->ext('levelEntryFormParts')->fieldExt($eiTypeId));
 // 	}
 }

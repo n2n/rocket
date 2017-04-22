@@ -176,7 +176,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 
 				return GlobalFilterFieldController::buildEiMappingFilterAjahHook(
 						$this->n2nContext->lookup(ScrRegistry::class),
-						$this->targetEiMask->getEiEngine()->getEiSpec()->getId(), $this->targetEiMask->getId());
+						$this->targetEiMask->getEiEngine()->getEiType()->getId(), $this->targetEiMask->getId());
 			}
 		};
 	}

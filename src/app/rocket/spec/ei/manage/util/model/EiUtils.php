@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\EiEntityObj;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\draft\Draft;
@@ -51,9 +51,9 @@ interface EiUtils {
 	public function getEiMask(): EiMask;
 	
 	/**
-	 * @return EiSpec
+	 * @return EiType
 	 */
-	public function getEiSpec(): EiSpec;
+	public function getEiType(): EiType;
 	
 	/**
 	 * @return NestedSetStrategy|null 
@@ -109,9 +109,9 @@ interface EiUtils {
 	
 	/**
 	 * @param object $eiObjectObj
-	 * @return EiSpec
+	 * @return EiType
 	 */
-	public function determineEiSpec($eiObjectObj): EiSpec;
+	public function determineEiType($eiObjectObj): EiType;
 	
 	/**
 	 * @param object $eiObjectObj
@@ -193,10 +193,10 @@ interface EiUtils {
 	
 	/**
 	 * @param bool $draft
-	 * @param EiSpec $eiSpec
+	 * @param EiType $eiType
 	 * @return EiObject
 	 */
-	public function createNewEiObject(bool $draft = false, EiSpec $eiSpec = null): EiObject;
+	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject;
 	
 	/**
 	 * @param object $eiObjectObj

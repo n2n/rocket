@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\mask;
 
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
@@ -45,10 +45,10 @@ interface EiMask extends EiThing {
 	public function setId(string $id = null);
 	
 	/**
-	 * @param EiSpec $eiSpec
+	 * @param EiType $eiType
 	 * @return EiMask
 	 */
-	public function determineEiMask(EiSpec $eiSpec): EiMask;
+	public function determineEiMask(EiType $eiType): EiMask;
 	
 	// 	/**
 	// 	 * @param string $id

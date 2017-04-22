@@ -141,7 +141,7 @@ class GuiOrder {
 	public static function buildOverallControlMap(EiDef $eiDef, N2nLocale $n2nLocale) {
 		$labels = array();
 	
-		foreach ($this->eiSpec->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof OverallControlComponent)) continue;
 				
 			foreach ($eiCommand->getOverallControlOptions($n2nLocale) as $controlId => $label) {
@@ -160,7 +160,7 @@ class GuiOrder {
 	public static function buildEntryControlMap(EiDef $eiDef, N2nLocale $n2nLocale) {
 		$labels = array();
 	
-		foreach ($this->eiSpec->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)) continue;
 				
 			foreach ($eiCommand->getEntryControlOptions($n2nLocale) as $controlId => $label) {

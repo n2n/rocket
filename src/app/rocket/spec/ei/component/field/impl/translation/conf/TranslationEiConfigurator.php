@@ -198,13 +198,13 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$relationProperty = $eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$targetEiSpec = $eiSetupProcess->getEiSpecByClass($targetEntityClass);
+			$targetEiType = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
 // 				$targetEiMask = $target->getEiMaskCollection()->getById($eiMaskId);
 // 			} else {
-				$targetEiMask = $targetEiSpec->getEiMaskCollection()->getOrCreateDefault();
+				$targetEiMask = $targetEiType->getEiMaskCollection()->getOrCreateDefault();
 // 			}
 
 			$entityProperty = $this->requireEntityProperty();
@@ -220,7 +220,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 								$entityProperty->getName()));
 			}
 
-			$eiPropRelation->init($targetEiSpec, $targetEiMask);
+			$eiPropRelation->init($targetEiType, $targetEiMask);
 		} catch (UnknownSpecException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiMaskException $e) {

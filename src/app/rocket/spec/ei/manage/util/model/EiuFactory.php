@@ -16,7 +16,7 @@ use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ReflectionUtils;
 
@@ -116,17 +116,17 @@ class EiuFactory {
 		
 		if (empty($remainingEiArgs)) return;
 		
-		$eiSpec = null;
+		$eiType = null;
 		$eiObjectTypes = self::EI_TYPES;
 		if ($this->eiFrame !== null) {
-			$eiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
-			$eiObjectTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
+			$eiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
 		}
 		
 		foreach ($remainingEiArgs as $argNo => $eiArg) {
-			if ($eiSpec !== null) { 
+			if ($eiType !== null) { 
 				try {
-					$this->eiObject = LiveEiObject::create($eiSpec, $eiArg);
+					$this->eiObject = LiveEiObject::create($eiType, $eiArg);
 					continue;
 				} catch (\InvalidArgumentException $e) {
 					return null;
@@ -398,55 +398,55 @@ class EiuFactory {
 	
 	/**
 	 * 
-	 * @param unknown $eiSpecObj
+	 * @param unknown $eiTypeObj
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\EiSpec|NULL
+	 * @return \rocket\spec\ei\EiType|NULL
 	 */
-	public static function determineEiSpec($eiSpecArg, bool $required = false) {
-		if (null !== ($eiObject = self::determineEiObject($eiSpecArg))) {
-			return $eiObject->getEiEntityObj()->getEiSpec();
+	public static function determineEiType($eiTypeArg, bool $required = false) {
+		if (null !== ($eiObject = self::determineEiObject($eiTypeArg))) {
+			return $eiObject->getEiEntityObj()->getEiType();
 		}
 		
-		if ($eiSpecArg instanceof EiSpec) {
-			return $eiSpecArg;
+		if ($eiTypeArg instanceof EiType) {
+			return $eiTypeArg;
 		}
 		
-		if ($eiSpecArg instanceof EiMask) {
-			return $eiSpecArg->getEiEngine()->getEiSpec();
+		if ($eiTypeArg instanceof EiMask) {
+			return $eiTypeArg->getEiEngine()->getEiType();
 		}
 			
-		if ($eiSpecArg instanceof EiFrame) {
-			return $eiSpecArg->getEiEngine()->getEiSpec();
+		if ($eiTypeArg instanceof EiFrame) {
+			return $eiTypeArg->getEiEngine()->getEiType();
 		}
 		
-		if ($eiSpecArg instanceof EiuFrame) {
-			return $eiSpecArg->getEiSpec();
+		if ($eiTypeArg instanceof EiuFrame) {
+			return $eiTypeArg->getEiType();
 		}
 		
-		if ($eiSpecArg instanceof EiuEntry && null !== ($eiuFrame = $eiSpecArg->getEiuFrame(false))) {
-			return $eiuFrame->getEiSpec();
+		if ($eiTypeArg instanceof EiuEntry && null !== ($eiuFrame = $eiTypeArg->getEiuFrame(false))) {
+			return $eiuFrame->getEiType();
 		}
 		
 		if (!$required) return null;
 		
-		throw new EiuPerimeterException('Can not determine EiSpec of passed argument type ' 
-				. ReflectionUtils::getTypeInfo($eiSpecArg) . '. Following types are allowed: '
+		throw new EiuPerimeterException('Can not determine EiType of passed argument type ' 
+				. ReflectionUtils::getTypeInfo($eiTypeArg) . '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
 	}
 	
-	public static function buildEiSpecFromEiArg($eiSpecArg, string $argName = null, bool $required = true) {
-		if (null !== ($eiSpec = self::determineEiSpec($eiSpecArg))) {
-			return $eiSpec;
+	public static function buildEiTypeFromEiArg($eiTypeArg, string $argName = null, bool $required = true) {
+		if (null !== ($eiType = self::determineEiType($eiTypeArg))) {
+			return $eiType;
 		}
 		
-		throw new EiuPerimeterException('Can not determine EiSpec of passed argument ' . $argName 
+		throw new EiuPerimeterException('Can not determine EiType of passed argument ' . $argName 
 				. '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)) . '; '
-				. ReflectionUtils::getTypeInfo($eiSpecArg) . ' given.');
+				. ReflectionUtils::getTypeInfo($eiTypeArg) . ' given.');
 	}
 	
-	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiSpec $eiSpec = null, 
+	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiType $eiType = null, 
 			bool $required = true, &$eiMapping = null, &$viewMode = null) {
 		if (!$required && $eiObjectObj === null) {
 			return null;
@@ -458,10 +458,10 @@ class EiuFactory {
 		
 		$eiObjectTypes = self::EI_ENTRY_TYPES;
 		
-		if ($eiSpec !== null) {
-			$eiObjectTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
+		if ($eiType !== null) {
+			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
 			try {
-				return LiveEiObject::create($eiSpec, $eiObjectObj);
+				return LiveEiObject::create($eiType, $eiObjectObj);
 			} catch (\InvalidArgumentException $e) {
 				return null;
 			}

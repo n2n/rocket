@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
-use rocket\spec\ei\EiSpecController;
+use rocket\spec\ei\EiTypeController;
 use rocket\spec\ei\manage\EiRelation;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
@@ -50,27 +50,27 @@ class RelationController extends ControllerAdapter {
 		$this->rocketState = $rocketState;
 	}
 		
-	public function doRelEntry($idRep, array $delegateCmds, EiSpecController $eiSpecController) {
+	public function doRelEntry($idRep, array $delegateCmds, EiTypeController $eiTypeController) {
 		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
 		
 		// because RelationCommand gets added always on a supreme EiThing
-		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiSpec()
+		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiType()
 				->isObjectValid($eiObject->getLiveObject())) {
 			throw new PageNotFoundException();
 		}
 			
-		$targetControllerContext = $this->createDelegateContext($eiSpecController);
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 		
 		$this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame, 
 				$eiObject, $targetControllerContext);
 		
 		$this->applyBreadcrumb($eiObject);
 
-		$this->delegate($eiSpecController);
+		$this->delegate($eiTypeController);
 	}
 	
-	public function doRelUnknownEntry(array $delegateCmds, EiSpecController $eiSpecController) {
-		$targetControllerContext = $this->createDelegateContext($eiSpecController);
+	public function doRelUnknownEntry(array $delegateCmds, EiTypeController $eiTypeController) {
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 			
 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
 				null, $targetControllerContext);
@@ -81,18 +81,18 @@ class RelationController extends ControllerAdapter {
 	
 		$this->applyBreadcrumb();
 	
-		$this->delegate($eiSpecController);
+		$this->delegate($eiTypeController);
 	}
 	
-	public function doRel(array $delegateCmds, EiSpecController $eiSpecController) {
-		$targetControllerContext = $this->createDelegateContext($eiSpecController);
+	public function doRel(array $delegateCmds, EiTypeController $eiTypeController) {
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 	
 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame, null, 
 				$targetControllerContext);
 	
 		$this->applyBreadcrumb();
 	
-		$this->delegate($eiSpecController);
+		$this->delegate($eiTypeController);
 	}
 	
 	private function applyBreadcrumb(EiObject $eiObject = null) {

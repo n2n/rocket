@@ -37,7 +37,7 @@ class PreviewHtmlBuilder {
 	private $eiFrame;
 	private $eiObject;
 	private $n2nLocale;
-	private $eiSpec;
+	private $eiType;
 	private $areaObject;
 	private $areaEditable;
 	
@@ -49,7 +49,7 @@ class PreviewHtmlBuilder {
 		if (isset($previewModel)) {
 			$this->eiFrame = $this->previewModel->getEiFrame();
 			$this->entryModel = $previewModel->getEntryModel();
-			$this->eiSpec = $this->entryModel->getEiSpec();
+			$this->eiType = $this->entryModel->getEiType();
 		}
 		
 		// $this->view->getHtmlBuilder()->addJs('js/preview-inpage.js', 'rocket');
@@ -70,7 +70,7 @@ class PreviewHtmlBuilder {
 			}
 						
 			$eiObject = $this->entryModel->getEiObject();
-			$areaObjectId = OrmUtils::extractId($areaObject, $this->eiSpec->getEntityModel());
+			$areaObjectId = OrmUtils::extractId($areaObject, $this->eiType->getEntityModel());
 			if ($eiObject->getId() != $areaObjectId) {
 				$this->areaEditable = false;
 				$this->areaObject = $areaObject;
@@ -124,7 +124,7 @@ class PreviewHtmlBuilder {
 		
 		$eiProp = null;
 		try {
-			$eiProp = $this->eiSpec->getEiPropByPropertyName($propertyName);
+			$eiProp = $this->eiType->getEiPropByPropertyName($propertyName);
 		} catch (UnknownEiComponentException $e) {
 			$this->view->throwRuntimeException(
 					UiUtils::createCouldNotRenderUiComponentException($e));

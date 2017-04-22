@@ -128,7 +128,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 	}
 	
 	public function getPrivilegeExtOptions(N2nLocale $n2nLocale) {
-		if (!$this->getEiSpec()->isDraftable()) return array();
+		if (!$this->getEiType()->isDraftable()) return array();
 		
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::PRIVILEGE_EXT_PUBLISH => $dtc->translate('ei_impl_edit_privilege_publish_label'));

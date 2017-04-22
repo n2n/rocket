@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\security\PrivilegeBuilder;
 use rocket\spec\ei\mask\EiMaskCollection;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\EiThing;
@@ -43,13 +43,13 @@ use rocket\spec\ei\EiEngine;
 use rocket\spec\config\Spec;
 use n2n\l10n\Lstr;
 
-class EiSpec extends Spec implements EiThing {
+class EiType extends Spec implements EiThing {
 	private $entityModel;
 	private $eiDef;
 	private $eiEngine;
 	
-	private $superEiSpec;
-	protected $subEiSpecs = array();
+	private $superEiType;
+	protected $subEiTypes = array();
 	
 	private $defaultEiMask;
 	private $eiMaskCollection;
@@ -90,13 +90,13 @@ class EiSpec extends Spec implements EiThing {
 	}
 	
 	/**
-	 * @param EiSpec $superEiSpec
+	 * @param EiType $superEiType
 	 */
-	public function setSuperEiSpec(EiSpec $superEiSpec) {
-		$this->superEiSpec = $superEiSpec;
-		$superEiSpec->subEiSpecs[$this->getId()] = $this;
+	public function setSuperEiType(EiType $superEiType) {
+		$this->superEiType = $superEiType;
+		$superEiType->subEiTypes[$this->getId()] = $this;
 		
-		$superEiEngine = $superEiSpec->getEiEngine();
+		$superEiEngine = $superEiType->getEiEngine();
 		$this->eiEngine->getEiPropCollection()->setInheritedCollection($superEiEngine->getEiPropCollection());
 		$this->eiEngine->getEiCommandCollection()->setInheritedCollection($superEiEngine->getEiCommandCollection());
 		$this->eiEngine->getEiModificatorCollection()->setInheritedCollection(
@@ -127,68 +127,68 @@ class EiSpec extends Spec implements EiThing {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getSuperEiSpec(): EiSpec {
-		if ($this->superEiSpec !== null) {
-			return $this->superEiSpec;
+	public function getSuperEiType(): EiType {
+		if ($this->superEiType !== null) {
+			return $this->superEiType;
 		}
 		
-		throw new IllegalStateException('EiSpec has not SuperEiSpec: ' . (string) $this);
+		throw new IllegalStateException('EiType has not SuperEiType: ' . (string) $this);
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function hasSuperEiSpec(): bool {
-		return $this->superEiSpec !== null;
+	public function hasSuperEiType(): bool {
+		return $this->superEiType !== null;
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getSupremeEiSpec(): EiSpec {
-		$topEiSpec = $this;
-		while ($topEiSpec->hasSuperEiSpec()) {
-			$topEiSpec = $topEiSpec->getSuperEiSpec();
+	public function getSupremeEiType(): EiType {
+		$topEiType = $this;
+		while ($topEiType->hasSuperEiType()) {
+			$topEiType = $topEiType->getSuperEiType();
 		}
-		return $topEiSpec;
+		return $topEiType;
 	}
 	
-	public function getAllSuperEiSpecs($includeSelf = false) {
-		$superEiSpecs = array();
+	public function getAllSuperEiTypes($includeSelf = false) {
+		$superEiTypes = array();
 		
 		if ($includeSelf) {
-			$superEiSpecs[$this->getId()] = $this;
+			$superEiTypes[$this->getId()] = $this;
 		}
 		
-		$eiSpec = $this;
-		while (null != ($eiSpec = $eiSpec->getSuperEiSpec())) {
-			$superEiSpecs[$eiSpec->getId()] = $eiSpec;
+		$eiType = $this;
+		while (null != ($eiType = $eiType->getSuperEiType())) {
+			$superEiTypes[$eiType->getId()] = $eiType;
 		}
-		return $superEiSpecs;
+		return $superEiTypes;
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function hasSubEiSpecs() {
-		return (bool) sizeof($this->subEiSpecs);
+	public function hasSubEiTypes() {
+		return (bool) sizeof($this->subEiTypes);
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec[]
+	 * @return \rocket\spec\ei\EiType[]
 	 */
-	public function getSubEiSpecs() {
-		return $this->subEiSpecs;
+	public function getSubEiTypes() {
+		return $this->subEiTypes;
 	}
 	
-	public function containsSubEiSpecId($eiSpecId, $deepCheck = false) {
-		if (isset($this->subEiSpecs[$eiSpecId])) return true;
+	public function containsSubEiTypeId($eiTypeId, $deepCheck = false) {
+		if (isset($this->subEiTypes[$eiTypeId])) return true;
 		
 		if ($deepCheck) {
-			foreach ($this->subEiSpecs as $subEiSpec) {
-				if ($subEiSpec->containsSubEiSpecId($eiSpecId, $deepCheck)) {
+			foreach ($this->subEiTypes as $subEiType) {
+				if ($subEiType->containsSubEiTypeId($eiTypeId, $deepCheck)) {
 					return true;
 				}
 			}
@@ -198,79 +198,79 @@ class EiSpec extends Spec implements EiThing {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec[]
+	 * @return \rocket\spec\ei\EiType[]
 	 */
-	public function getAllSubEiSpecs() {
-		return $this->lookupAllSubEiSpecs($this); 
+	public function getAllSubEiTypes() {
+		return $this->lookupAllSubEiTypes($this); 
 	}
 	
 	/**
-	 * @param EiSpec $eiSpec
-	 * @return \rocket\spec\ei\EiSpec[]
+	 * @param EiType $eiType
+	 * @return \rocket\spec\ei\EiType[]
 	 */
-	private function lookupAllSubEiSpecs(EiSpec $eiSpec) {
-		$subEiSpecs = $eiSpec->getSubEiSpecs();
-		foreach ($subEiSpecs as $subEiSpec) {
-			$subEiSpecs = array_merge($subEiSpecs, 
-					$this->lookupAllSubEiSpecs($subEiSpec));
+	private function lookupAllSubEiTypes(EiType $eiType) {
+		$subEiTypes = $eiType->getSubEiTypes();
+		foreach ($subEiTypes as $subEiType) {
+			$subEiTypes = array_merge($subEiTypes, 
+					$this->lookupAllSubEiTypes($subEiType));
 		}
 		
-		return $subEiSpecs;
+		return $subEiTypes;
 	}
 	
-	public function findEiSpecByEntityModel(EntityModel $entityModel) {
+	public function findEiTypeByEntityModel(EntityModel $entityModel) {
 		if ($this->entityModel->equals($entityModel)) {
 			return $this;
 		}
 		
-		foreach ($this->getAllSuperEiSpecs() as $superEiSpec) {
-			if ($superEiSpec->getEntityModel()->equals($entityModel)) {
-				return $superEiSpec;
+		foreach ($this->getAllSuperEiTypes() as $superEiType) {
+			if ($superEiType->getEntityModel()->equals($entityModel)) {
+				return $superEiType;
 			}
 		}
 		
-		foreach ($this->getAllSubEiSpecs() as $subEiSpec) {
-			if ($subEiSpec->getEntityModel()->equals($entityModel)) {
-				return $subEiSpec;
+		foreach ($this->getAllSubEiTypes() as $subEiType) {
+			if ($subEiType->getEntityModel()->equals($entityModel)) {
+				return $subEiType;
 			}
 		}
 	}
 	/**
 	 * @param EntityModel $entityModel
 	 * @throws \InvalidArgumentException
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function determineEiSpec(EntityModel $entityModel): EiSpec {
+	public function determineEiType(EntityModel $entityModel): EiType {
 		if ($this->entityModel->equals($entityModel)) {
 			return $this;
 		}
 		
-		foreach ($this->getAllSubEiSpecs() as $subEiSpec) {
-			if ($subEiSpec->getEntityModel()->equals($entityModel)) {
-				return $subEiSpec;
+		foreach ($this->getAllSubEiTypes() as $subEiType) {
+			if ($subEiType->getEntityModel()->equals($entityModel)) {
+				return $subEiType;
 			}
 		}
 				
 		// @todo make better exception
-		throw new \InvalidArgumentException('No EiSpec for Entity \'' 
+		throw new \InvalidArgumentException('No EiType for Entity \'' 
 				. $entityModel->getClass()->getName() . '\' defined.');
 	}
 		
-	public function determineAdequateEiSpec(\ReflectionClass $class): EiSpec {
+	public function determineAdequateEiType(\ReflectionClass $class): EiType {
 		if (!ReflectionUtils::isClassA($class, $this->entityModel->getClass())) {
 			throw new \InvalidArgumentException('Class \'' . $class->getName()
 					. '\' is not instance of \'' . $this->getEntityModel()->getClass()->getName() . '\'.');
 		} 
 		
-		$eiSpec = $this;
+		$eiType = $this;
 		
-		foreach ($this->getAllSubEiSpecs() as $subEiSpec) {
-			if (ReflectionUtils::isClassA($class, $subEiSpec->getEntityModel()->getClass())) {
-				$eiSpec = $subEiSpec;
+		foreach ($this->getAllSubEiTypes() as $subEiType) {
+			if (ReflectionUtils::isClassA($class, $subEiType->getEntityModel()->getClass())) {
+				$eiType = $subEiType;
 			}
 		}
 		
-		return $eiSpec;
+		return $eiType;
 	}
 	
 // 	public function createDraftModel(DraftManager $draftManager) {
@@ -288,18 +288,18 @@ class EiSpec extends Spec implements EiThing {
 	}
 	
 	public function hasSecurityOptions() {
-		return $this->superEiSpec === null;
+		return $this->superEiType === null;
 	}
 	
 	public function getPrivilegeOptions(N2nContext $n2nContext) {
-		if ($this->superEiSpec !== null) return null;
+		if ($this->superEiType !== null) return null;
 		
 		return $this->buildPrivilegeOptions($this, $n2nContext, array());
 	}
 	
-	private function buildPrivilegeOptions(EiSpec $eiSpec, N2nContext $n2nContext, array $options) {
+	private function buildPrivilegeOptions(EiType $eiType, N2nContext $n2nContext, array $options) {
 		$n2nLocale = $n2nContext->getN2nLocale();
-		foreach ($eiSpec->getEiCommandCollection()->filterLevel() as $eiCommand) {
+		foreach ($eiType->getEiCommandCollection()->filterLevel() as $eiCommand) {
 			if ($eiCommand instanceof PrivilegedEiCommand) {
 				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
 						= $eiCommand->getPrivilegeLabel($n2nLocale);
@@ -311,8 +311,8 @@ class EiSpec extends Spec implements EiThing {
 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
 					
 				foreach ($privilegeOptions as $privilegeExt => $label) {
-					if ($eiSpec->hasSuperEiSpec()) {
-						$label . ' (' . $eiSpec->getLabel() . ')';
+					if ($eiType->hasSuperEiType()) {
+						$label . ' (' . $eiType->getLabel() . ')';
 					}
 					
 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
@@ -320,16 +320,16 @@ class EiSpec extends Spec implements EiThing {
 			}
 		}
 		
-		foreach ($eiSpec->getSubEiSpecs() as $subEiSpec) {
-			$options = $this->buildPrivilegeOptions($subEiSpec, $n2nContext, $options);
+		foreach ($eiType->getSubEiTypes() as $subEiType) {
+			$options = $this->buildPrivilegeOptions($subEiType, $n2nContext, $options);
 		}
 		
 		return $options;
 	}
 	
 	private function ensureIsTop() {
-		if ($this->superEiSpec !== null) {
-			throw new UnsupportedOperationException('EiSpec has super EiSpec');
+		if ($this->superEiType !== null) {
+			throw new UnsupportedOperationException('EiType has super EiType');
 		}
 	}
 	
@@ -400,8 +400,8 @@ class EiSpec extends Spec implements EiThing {
 // 	private $translationN2nLocales;
 	
 // 	public function getMainTranslationN2nLocale() {
-// 		if ($this->superEiSpec !== null) {
-// 			return $this->superEiSpec->getMainTranslationN2nLocale();	
+// 		if ($this->superEiType !== null) {
+// 			return $this->superEiType->getMainTranslationN2nLocale();	
 // 		} 
 		
 // 		if ($this->mainTranslationN2nLocale === null) {
@@ -412,16 +412,16 @@ class EiSpec extends Spec implements EiThing {
 // 	}
 	
 // 	public function setMainTranslationN2nLocale(N2nLocale $mainTranslationN2nLocale = null) {
-// 		if ($this->superEiSpec !== null) {
-// 			return $this->superEiSpec->setMainTranslationN2nLocale($mainTranslationN2nLocale);	
+// 		if ($this->superEiType !== null) {
+// 			return $this->superEiType->setMainTranslationN2nLocale($mainTranslationN2nLocale);	
 // 		}
 		
 // 		$this->mainTranslationN2nLocale = $mainTranslationN2nLocale;
 // 	}
 	
 // 	public function getTranslationN2nLocales() {
-// 		if ($this->superEiSpec !== null) {
-// 			return $this->superEiSpec->getTranslationN2nLocales();	
+// 		if ($this->superEiType !== null) {
+// 			return $this->superEiType->getTranslationN2nLocales();	
 // 		}
 		
 // 		if ($this->translationN2nLocales === null) {
@@ -434,11 +434,11 @@ class EiSpec extends Spec implements EiThing {
 // 	}
 	
 // 	public function setTranslationN2nLocales(array $translationN2nLocales = null) {
-// 		if ($this->superEiSpec === null) {
+// 		if ($this->superEiType === null) {
 // 			$this->translationN2nLocales = $translationN2nLocales;
 // 		}
 		
-// 		$this->superEiSpec->setTranslationN2nLocales($translationN2nLocales);
+// 		$this->superEiType->setTranslationN2nLocales($translationN2nLocales);
 // 	}
 	
 	/**
@@ -494,7 +494,7 @@ class EiSpec extends Spec implements EiThing {
 	}
 	
 	public function __toString(): string {
-		return 'EiSpec [id: ' . $this->getId() . ']';
+		return 'EiType [id: ' . $this->getId() . ']';
 	}
 	
 	public function isAbstract(): bool {

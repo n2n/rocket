@@ -111,7 +111,7 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof ContentItemsEiProp);
 		
-// 		$this->eiComponent->setContentItemEiSpec($eiSetupProcess->getEiSpecByClass(
+// 		$this->eiComponent->setContentItemEiType($eiSetupProcess->getEiTypeByClass(
 // 				ReflectionUtils::createReflectionClass('rocket\spec\ei\component\field\impl\ci\model\ContentItem')));
 		
 		if ($this->attributes->contains(self::ATTR_PANELS_KEY)) {

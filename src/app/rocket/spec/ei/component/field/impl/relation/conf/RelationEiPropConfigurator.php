@@ -100,12 +100,12 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		try {
 			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
 			CastUtils::assertTrue($specManager instanceof SpecManager);
-			$targetEiSpec = $specManager->getEiSpecByClass($targetEntityClass);
-			foreach ($targetEiSpec->getEiMaskCollection() as $eiMask) {
-				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiSpec()->getLabelLstr();
+			$targetEiType = $specManager->getEiTypeByClass($targetEntityClass);
+			foreach ($targetEiType->getEiMaskCollection() as $eiMask) {
+				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiType()->getLabelLstr();
 			}
 			
-			$scalarEiProperties = $targetEiSpec->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();
+			$scalarEiProperties = $targetEiType->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();
 			foreach ($scalarEiProperties as $ref => $scalarEiProperty) {
 				$targetOrderFieldPathOptions[(string) $scalarEiProperties->getKeyByHashCode($ref)]
 						= $scalarEiProperty->getLabelLstr();
@@ -162,7 +162,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$relationEntityProperty = $this->eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$target = $eiSetupProcess->getEiSpecByClass($targetEntityClass);
+			$target = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
 			
 			$targetEiMask = null; 
 			if (null !== ($eiMaskId = $this->attributes->getString(self::ATTR_TARGET_MASK_KEY, false, null, true))) {
@@ -227,7 +227,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 					RelationVetoableActionListener::getStrategies(), false, 
 					RelationVetoableActionListener::STRATEGY_PREVENT);
 			
-			$this->eiPropRelation->getTargetEiSpec()->registerVetoableActionListener(
+			$this->eiPropRelation->getTargetEiType()->registerVetoableActionListener(
 					new RelationVetoableActionListener($this->eiPropRelation->getRelationEiProp(), $strategy));		
 		}
 	}

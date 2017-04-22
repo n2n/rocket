@@ -46,27 +46,27 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($groupGrantsViewModel->getEiSpecItems() as $eiSpecId => $eiSpecItem): ?>
-				<tr class="rocket-tree-level-<?php $html->out($eiSpecItem->getLevel()) ?>">
-					<td><?php $html->esc($eiSpecItem->getLabel()) ?></td>
-					<?php if ($eiSpecItem->isFullyAccessible()): ?>
+			<?php foreach ($groupGrantsViewModel->getEiTypeItems() as $eiTypeId => $eiTypeItem): ?>
+				<tr class="rocket-tree-level-<?php $html->out($eiTypeItem->getLevel()) ?>">
+					<td><?php $html->esc($eiTypeItem->getLabel()) ?></td>
+					<?php if ($eiTypeItem->isFullyAccessible()): ?>
 						<td class="rocket-access-type-full"><?php $html->text('user_full_access_label') ?></td>
-					<?php elseif ($eiSpecItem->isAccessible()): ?>
+					<?php elseif ($eiTypeItem->isAccessible()): ?>
 						<td class="rocket-access-type-restricted"><?php $html->text('user_restricted_access_label') ?></td>
 					<?php else: ?>
 						<td class="rocket-access-type-denied"><?php $html->text('user_denied_access_label') ?></td>
 					<?php endif ?>
 					<td>
 						<div class="rocket-simple-commands">
-							<?php $html->linkToController(array('fullyeigrant', $groupId, $eiSpecId), 
+							<?php $html->linkToController(array('fullyeigrant', $groupId, $eiTypeId), 
 									new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' . $html->getL10nText('user_grant_full_access_label') . '</span>'),
 									array('title' => $view->getL10nText('user_edit_tooltip'),
 											'class' => 'btn btn-success')) ?>
-							<?php $html->linkToController(array('restricteigrant', $groupId, $eiSpecId), 
+							<?php $html->linkToController(array('restricteigrant', $groupId, $eiTypeId), 
 									new n2n\web\ui\Raw('<i class="fa fa-wrench"></i><span>' . $html->getL10nText('user_grant_restricted_access_label') . '</span>'),
 									array('title' => $view->getL10nText('user_edit_tooltip'),
 											'class' => 'btn btn-warning')) ?>
-							<?php $html->linkToController(array('removeeigrant', $groupId, $eiSpecId),
+							<?php $html->linkToController(array('removeeigrant', $groupId, $eiTypeId),
 									new n2n\web\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' . $view->getL10nText('user_deny_access_label') . '</span>'),
 									array('title' => $view->getL10nText('user_edit_tooltip'),
 											'class' => 'btn btn-danger')) ?>
@@ -74,12 +74,12 @@
 					</td>
 				</tr>
 				
-				<?php foreach ($eiSpecItem->getEiMaskItems() as $eiMaskItem): ?>
+				<?php foreach ($eiTypeItem->getEiMaskItems() as $eiMaskItem): ?>
 					<tr class="rocket-ei-mask">
 						<td><?php $html->esc('> ' . $eiMaskItem->getLabel()) ?></td>
-						<?php if ($eiSpecItem->isFullyAccessible()): ?>
+						<?php if ($eiTypeItem->isFullyAccessible()): ?>
 							<td class="rocket-access-type-full"><?php $html->text('user_full_access_label') ?></td>
-						<?php elseif ($eiSpecItem->isAccessible()): ?>
+						<?php elseif ($eiTypeItem->isAccessible()): ?>
 							<td class="rocket-access-type-restricted"><?php $html->text('user_restricted_access_label') ?></td>
 						<?php else: ?>
 							<td class="rocket-access-type-denied"><?php $html->text('user_denied_access_label') ?></td>
@@ -87,17 +87,17 @@
 						<td>
 							<div class="rocket-simple-commands">
 								<li>
-								<?php $html->linkToController(array('fullyeigrant', $groupId, $eiSpecId, $eiMaskItem->getEiMaskId()), 
+								<?php $html->linkToController(array('fullyeigrant', $groupId, $eiTypeId, $eiMaskItem->getEiMaskId()), 
 										new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' 
 												. $html->getL10nText('user_grant_full_access_label') . '</span>'),
 										array('title' => $view->getL10nText('user_edit_tooltip'),
 												'class' => 'btn btn-success')) ?>
-								<?php $html->linkToController(array('restricteigrant', $groupId, $eiSpecId, $eiMaskItem->getEiMaskId()), 
+								<?php $html->linkToController(array('restricteigrant', $groupId, $eiTypeId, $eiMaskItem->getEiMaskId()), 
 										new n2n\web\ui\Raw('<i class="fa fa-wrench"></i><span>' 
 												. $html->getL10nText('user_grant_restricted_access_label') . '</span>'),
 										array('title' => $view->getL10nText('user_edit_tooltip'),
 												'class' => 'btn btn-warning')) ?>
-								<?php $html->linkToController(array('removeeigrant', $groupId, $eiSpecId, $eiMaskItem->getEiMaskId()),
+								<?php $html->linkToController(array('removeeigrant', $groupId, $eiTypeId, $eiMaskItem->getEiMaskId()),
 										new n2n\web\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' 
 												. $view->getL10nText('user_deny_access_label') . '</span>'),
 										array('title' => $view->getL10nText('user_edit_tooltip'),

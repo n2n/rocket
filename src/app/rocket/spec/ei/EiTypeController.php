@@ -29,7 +29,7 @@ use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-class EiSpecController extends ControllerAdapter {
+class EiTypeController extends ControllerAdapter {
 		
 	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
 		$eiFrame = $manageState->peakEiFrame();

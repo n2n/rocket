@@ -90,7 +90,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		
 		if ($targetEntityObj === null) return null;
 		
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiSpec(), $targetEntityObj);
+		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
 	}
 	
 	/**
@@ -153,7 +153,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			N2nContext $n2nContext): DraftValueSelection {
 				
 		return new SimpleToOneDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiPropPath::from($this)),
-				$dm->getEntityManager(), $this->eiPropRelation->getTargetEiSpec()->getEntityModel());
+				$dm->getEntityManager(), $this->eiPropRelation->getTargetEiType()->getEntityModel());
 	}
 	
 	/**
@@ -174,7 +174,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			$em->persist($value);
 		}
 		
-		$target = $this->eiPropRelation->getTargetEiSpec();
+		$target = $this->eiPropRelation->getTargetEiType();
 		
 		$targetId = $target->extractId($value);
 		if ($targetId === null) {
@@ -215,13 +215,13 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		CastUtils::assertTrue($filterField instanceof RelationFilterField);
 		
 		$targetSelectToolsUrl = GlobalOverviewAjahController::buildToolsAjahUrl(
-				$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiSpec(),
+				$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 				$this->eiPropRelation->getTargetEiMask());
 		
 		$that = $this;
 		$filterField->setTargetSelectUrlCallback(function () use ($n2nContext, $that) {
 			return GlobalOverviewAjahController::buildToolsAjahUrl(
-					$n2nContext->lookup(ScrRegistry::class), $that->eiPropRelation->getTargetEiSpec(),
+					$n2nContext->lookup(ScrRegistry::class), $that->eiPropRelation->getTargetEiType(),
 					$that->eiPropRelation->getTargetEiMask());
 		});
 			
@@ -235,7 +235,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$that = $this;
 		$eiMappingFilterField->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
 			return GlobalOverviewAjahController::buildToolsAjahUrl(
-					$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiSpec(),
+					$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 					$this->eiPropRelation->getTargetEiMask());
 		});
 				

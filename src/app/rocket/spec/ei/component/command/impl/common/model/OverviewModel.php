@@ -103,7 +103,7 @@ class OverviewModel implements Dispatchable {
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit, $this->listSize);
 		
-		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
+		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()
 				->getNestedSetStrategy())) {
 			$this->treeLookup($criteria, $nestedSetStrategy);
 		} else {
@@ -116,17 +116,17 @@ class OverviewModel implements Dispatchable {
 	public function initByIdReps(array $idReps) {
 		$eiFrame = $this->getEiFrame();
 				
-		$eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$ids = array();
 		foreach ($idReps as $idRep) {
-			$ids[] = $eiSpec->idRepToId($idRep);
+			$ids[] = $eiType->idRepToId($idRep);
 		}
 	
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)
-			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiSpec->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
+			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiType->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
 		
-		if (null !== ($nestedSetStrategy = $eiSpec->getNestedSetStrategy())) {
+		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 			$this->treeLookup($criteria, $nestedSetStrategy);
 		} else {
 			$this->simpleLookup($criteria);

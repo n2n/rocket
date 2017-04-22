@@ -23,19 +23,19 @@ namespace rocket\spec\ei\manage;
 
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use n2n\reflection\ReflectionUtils;
 
 class EiEntityObj {
 	private $persistent; 
 	private $id;
 	private $entityObj;
-	private $eiSpec;
+	private $eiType;
 	
-	private function __construct(bool $persistent, $id, $entityObj, EiSpec $eiSpec) {
+	private function __construct(bool $persistent, $id, $entityObj, EiType $eiType) {
 		$this->id = $id;
 		$this->entityObj = $entityObj;
-		$this->eiSpec = $eiSpec;
+		$this->eiType = $eiType;
 		
 		$this->setPersistent($persistent);
 	}
@@ -66,35 +66,35 @@ class EiEntityObj {
 	}
 	
 // 	public function getIdRep() {
-// 		return $this->eiSpec->idToIdRep($this->getId());
+// 		return $this->eiType->idToIdRep($this->getId());
 // 	}
 	
 	public function refreshId() {
-		$this->id = $this->eiSpec->extractId($this->entityObj);
+		$this->id = $this->eiType->extractId($this->entityObj);
 	}
 	
 	public function getEntityObj() {
 		return $this->entityObj;
 	}
 	
-	public function getEiSpec(): EiSpec {
-		return $this->eiSpec;
+	public function getEiType(): EiType {
+		return $this->eiType;
 	}
 	
 	public function equals($obj) {
 		return $obj instanceof EiEntityObj && $this->getEntityObj() === $obj->getEntityObj();
 	}
 	
-	public static function createFrom(EiSpec $contextEiSpec, $entityObj) {
+	public static function createFrom(EiType $contextEiType, $entityObj) {
 		ArgUtils::valObject($entityObj, false, 'entityObj');
 		
-		$id = $contextEiSpec->extractId($entityObj);
+		$id = $contextEiType->extractId($entityObj);
 		return new EiEntityObj(($id === null ? false : true), $id, $entityObj, 
-				$contextEiSpec->determineAdequateEiSpec(new \ReflectionClass($entityObj)));
+				$contextEiType->determineAdequateEiType(new \ReflectionClass($entityObj)));
 	}
 	
-	public static function createNew(EiSpec $eiSpec) {
-		$entityObj = ReflectionUtils::createObject($eiSpec->getEntityModel()->getClass());
-		return new EiEntityObj(false, null, $entityObj, $eiSpec);
+	public static function createNew(EiType $eiType) {
+		$entityObj = ReflectionUtils::createObject($eiType->getEntityModel()->getClass());
+		return new EiEntityObj(false, null, $entityObj, $eiType);
 	}
 }

@@ -50,12 +50,12 @@ class CritmodFactory {
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 	
-// 	public static function createFilterModel(EiSpec $eiSpec, N2nContext $n2nContext) {
-// 		return self::createFilterModelInstance($eiSpec, $n2nContext);
+// 	public static function createFilterModel(EiType $eiType, N2nContext $n2nContext) {
+// 		return self::createFilterModelInstance($eiType, $n2nContext);
 // 	}
 	
 // 	public static function createFilterModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), 
+// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), 
 // 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 	
@@ -156,7 +156,7 @@ class CritmodFactory {
 	}
 	
 // 	public static function createSortModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), $eiFrame->getN2nContext());
+// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), $eiFrame->getN2nContext());
 // 	}
 	
 	public static function createSortModel() {
@@ -177,7 +177,7 @@ class CritmodFactory {
 		
 // 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEiPropCollection() as $field) {
+// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEiPropCollection() as $field) {
 // 			if ($field instanceof QuickSearchableEiProp) {
 // 				$quickSerachModel->addQuickSearchable($field);
 // 			}

@@ -127,7 +127,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		if ($targetEntityObjs === null) return $targetEiObjects;
 		
 		foreach ($targetEntityObjs as $targetEntityObj) {
-			$targetEiObjects[] = LiveEiObject::create($this->eiPropRelation->getTargetEiSpec(), $targetEntityObj);
+			$targetEiObjects[] = LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
 		}
 		return $targetEiObjects;
 	}
@@ -222,7 +222,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		$targetStmtBuilder->addOrderBy(new QueryColumn(self::JT_ORDER_INDEX, 'jt'), 'ASC');
 		
 		$targetDraftFetcher = $dm->createDraftFetcher($targetFetchDraftStmtBuilder, 
-				$this->getEiPropRelation()->getTargetEiSpec(), $targetDraftDefinition);
+				$this->getEiPropRelation()->getTargetEiType(), $targetDraftDefinition);
 		
 		return new EmbeddedToManyDraftValueSelection($fetchDraftStmtBuilder, $targetDraftFetcher, $phName);
 	}

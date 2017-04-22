@@ -39,8 +39,8 @@ class SpecRawer {
 		foreach ($specExtractions as $specExtraction) {
 			if ($specExtraction instanceof CustomSpecExtraction) {
 				$specsRawData[$specExtraction->getId()] = $this->buildCustomSpecExtractionRawData($specExtraction);
-			} else if ($specExtraction instanceof EiSpecExtraction) {
-				$specsRawData[$specExtraction->getId()] = $this->buildEiSpecExtractionRawData($specExtraction);
+			} else if ($specExtraction instanceof EiTypeExtraction) {
+				$specsRawData[$specExtraction->getId()] = $this->buildEiTypeExtractionRawData($specExtraction);
 			} else {
 				throw new \InvalidArgumentException();
 			}
@@ -56,7 +56,7 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	private function buildEiSpecExtractionRawData(EiSpecExtraction $extraction) {
+	private function buildEiTypeExtractionRawData(EiTypeExtraction $extraction) {
 		$rawData = array();	
 		$rawData[RawDef::SPEC_TYPE_KEY] = RawDef::SPEC_TYPE_ENTITY;
 		$rawData[RawDef::SPEC_EI_CLASS_KEY] = $extraction->getEntityClassName();
@@ -77,7 +77,7 @@ class SpecRawer {
 	
 	public function rawCommonEiMasks(array $groupedCommonEiMaskExtractions) {
 		$rawData = array();
-		foreach ($groupedCommonEiMaskExtractions as $eiSpecId => $commonEiMaskExtractions) {
+		foreach ($groupedCommonEiMaskExtractions as $eiTypeId => $commonEiMaskExtractions) {
 			if (empty($commonEiMaskExtractions)) continue;
 			
 			$commonEiMasksRawData = array();
@@ -85,7 +85,7 @@ class SpecRawer {
 				$commonEiMasksRawData[$commonEiMaskExtraction->getId()] = $this->buildCommonEiMaskExtractionRawData($commonEiMaskExtraction);
 			}
 			
-			$rawData[$eiSpecId] = $commonEiMasksRawData;
+			$rawData[$eiTypeId] = $commonEiMasksRawData;
 		}
 		
 		$this->attributes->set(RawDef::COMMON_EI_MASKS_KEY, $rawData);

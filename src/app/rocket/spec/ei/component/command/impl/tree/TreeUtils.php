@@ -26,14 +26,14 @@
 // use rocket\spec\ei\component\command\impl\tree\controller\TreeController;
 // use rocket\spec\ei\component\command\EiCommand;
 // use rocket\spec\core\IncompatibleSpecException;
-// use rocket\spec\ei\EiSpec;
+// use rocket\spec\ei\EiType;
 // use rocket\spec\ei\manage\EiFrame;
 
 // class TreeUtils {
-// 	public static function findTreeField(EiSpec $eiSpec, &$treeLeftEiProp = null, 
+// 	public static function findTreeField(EiType $eiType, &$treeLeftEiProp = null, 
 // 				&$treeRightEiProp = null, &$treeRootIdEiProp = null) {
 
-// 		foreach ($eiSpec->getEiEngine()->getEiPropCollection()->toArray() as  $eiProp) {
+// 		foreach ($eiType->getEiEngine()->getEiPropCollection()->toArray() as  $eiProp) {
 // 			if ($eiProp instanceof TreeLeftEiProp) {
 // 				$treeLeftEiProp = $eiProp;
 // 			} else if ($eiProp instanceof TreeRightEiProp) {
@@ -43,7 +43,7 @@
 // 	}
 	
 // 	public static function initializeController(EiCommand $eiCommand, TreeController $treeController, EiFrame $eiFrame) {
-// 		$eiSpec = $eiCommand->getEiSpec();
+// 		$eiType = $eiCommand->getEiType();
 // 		$treeLeftEiProp = null;
 // 		$treeRightEiProp = null;
 // 		$treeRootIdEiProp = null;

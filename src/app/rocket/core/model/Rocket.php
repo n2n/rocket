@@ -130,12 +130,12 @@ class Rocket implements RequestScoped {
 // 		}
 		
 // 		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
-// 		$eiSpec = $this->getSpecManager()->getEiSpecByClass($entityModel->getClass());
+// 		$eiType = $this->getSpecManager()->getEiTypeByClass($entityModel->getClass());
 // 		if ($em === null) {
-// 			$em = $eiSpec->lookupEntityManager(N2N::getPdoPool());
+// 			$em = $eiType->lookupEntityManager(N2N::getPdoPool());
 // 		}
 		
-// 		$translationModel = TranslationModelFactory::createTranslationModel($em, $eiSpec);
+// 		$translationModel = TranslationModelFactory::createTranslationModel($em, $eiType);
 // 		if (!isset($this->translationModels[$className])) {
 // 			$this->translationModels[$className] = $translationModel;
 // 		}
@@ -149,9 +149,9 @@ class Rocket implements RequestScoped {
 // 		}
 
 // 		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
-// 		$eiSpec = $this->getSpecManager()->getEiSpecByClass($entityModel->getClass());
+// 		$eiType = $this->getSpecManager()->getEiTypeByClass($entityModel->getClass());
 // 		if ($em === null) {
-// 			$em = $eiSpec->lookupEntityManager($this->dbhPool);
+// 			$em = $eiType->lookupEntityManager($this->dbhPool);
 // 		}
 		
 // 		$translationManager = $this->getOrCreateTranslationManager($em);

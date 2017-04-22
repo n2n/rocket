@@ -31,7 +31,7 @@ class PathUtils {
 	public static function createPathExtFromEntryNavPoint(EiCommand $eiCommand, EntryNavPoint $entryNavPoint): Path {
 		$idRep = null;
 		if (null !== ($id = $entryNavPoint->getLiveId())) {
-			$idRep = $eiCommand->getEiEngine()->getEiSpec()->idRepToId($id);
+			$idRep = $eiCommand->getEiEngine()->getEiType()->idRepToId($id);
 		}
 		$draftId = $entryNavPoint->getDraftId();
 		$previewType = $entryNavPoint->getPreviewType();

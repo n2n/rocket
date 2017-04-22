@@ -64,7 +64,7 @@ interface EiPropConfigurator extends EiConfigurator {
 	public function getPropertyAssignation(): PropertyAssignation;
 	
 	/**
-	 * Method can be called without assigned EiSpec or EiMask.
+	 * Method can be called without assigned EiType or EiMask.
 	 * @param PropertyAssignation $propertyAssignation
 	 * @return int
 	 */

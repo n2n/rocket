@@ -50,7 +50,7 @@ use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class EiEngine {
-	private $eiSpec;
+	private $eiType;
 	private $eiMask;
 	private $eiPropCollection;
 	private $eiCommandCollection;
@@ -61,8 +61,8 @@ class EiEngine {
 	private $genericEiDefinition;
 	private $scalarEiDefinition;
 		
-	public function __construct(EiSpec $eiSpec, EiMask $eiMask = null) {
-		$this->eiSpec = $eiSpec;
+	public function __construct(EiType $eiType, EiMask $eiMask = null) {
+		$this->eiType = $eiType;
 		$this->eiMask = $eiMask;
 		$this->eiPropCollection = new EiPropCollection($this);
 		$this->eiCommandCollection = new EiCommandCollection($this);
@@ -77,10 +77,10 @@ class EiEngine {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getEiSpec() {
-		return $this->eiSpec;
+	public function getEiType() {
+		return $this->eiType;
 	}
 	
 	/**
@@ -94,7 +94,7 @@ class EiEngine {
 		if ($this->eiMask !== null) {
 			return $this->eiMask;
 		}
-		return $this->eiSpec;
+		return $this->eiType;
 	}
 	
 	public function getSupremeEiEngine() {
@@ -102,11 +102,11 @@ class EiEngine {
 	}
 	
 	public function getSupremeEiThing() {
-		$supremeEiSpec = $this->eiSpec->getSupremeEiSpec();
+		$supremeEiType = $this->eiType->getSupremeEiType();
 		if (null !== $this->eiMask) {
-			return $this->eiMask->determineEiMask($supremeEiSpec);
+			return $this->eiMask->determineEiMask($supremeEiType);
 		}
-		return $supremeEiSpec;
+		return $supremeEiType;
 	}
 	
 	public function getEiPropCollection(): EiPropCollection {
@@ -188,8 +188,8 @@ class EiEngine {
 	
 	public function createEiEntryGui(EiuEntry $eiuEntry, int $viewMode, array $guiIdPaths) {
 		$eiMask = $this->eiMask;
-		if ($this->eiSpec === null) {
-			$eiMask = $this->eiSpec->getEiMaskCollection()->getOrCreateDefault();
+		if ($this->eiType === null) {
+			$eiMask = $this->eiType->getEiMaskCollection()->getOrCreateDefault();
 		}
 		
 		$guiFactory = new GuiFactory($this->getEiPropCollection(), $this->getEiModificatorCollection());

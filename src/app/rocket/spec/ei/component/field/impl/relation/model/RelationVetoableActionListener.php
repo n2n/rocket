@@ -133,7 +133,7 @@ class VetoCheck {
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
 				$queue->removeEiObject(LiveEiObject::create(
-						$that->relationEiProp->getEiEngine()->getEiSpec(), $entityObj));
+						$that->relationEiProp->getEiEngine()->getEiType(), $entityObj));
 			});
 		}
 	}
@@ -195,14 +195,14 @@ class VetoCheck {
 	}
 	
 	private function getGenericLabel(): string {
-		return $this->relationEiProp->getEiEngine()->getEiSpec()->getEiMaskCollection()->getOrCreateDefault()
+		return $this->relationEiProp->getEiEngine()->getEiType()->getEiMaskCollection()->getOrCreateDefault()
 				->getLabelLstr()->t($this->n2nContext->getN2nLocale());
 	}
 	
 	private function createIdentityString($entityObj): string {
-		$eiSpec = $this->relationEiProp->getEiEngine()->getEiSpec();
-		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->createIdentityString(
-				LiveEiObject::create($eiSpec, $entityObj), $this->n2nContext->getN2nLocale());
+		$eiType = $this->relationEiProp->getEiEngine()->getEiType();
+		return $eiType->getEiMaskCollection()->getOrCreateDefault()->createIdentityString(
+				LiveEiObject::create($eiType, $entityObj), $this->n2nContext->getN2nLocale());
 	}
 	
 	private function getTargetGenericLabel(): string {

@@ -92,7 +92,7 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 
 	private function generateReferenceEnumMags() {
 		$referenceFields = array();
-		foreach ($this->eiComponent->getEiSpec()->getEiPropCollection()->combineAll() as $eiProp) {
+		foreach ($this->eiComponent->getEiType()->getEiPropCollection()->combineAll() as $eiProp) {
 			if (!($eiProp instanceof ConfEntityPropertyEiProp)) continue;
 			$referenceFields[$eiProp->getId()] = $eiProp->getLabelCode();
 		}

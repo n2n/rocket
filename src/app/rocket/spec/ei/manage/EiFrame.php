@@ -54,7 +54,7 @@ class EiFrame {
 	private $filterModel;
 	private $sortModel;
 	
-	private $eiSpecConstraint;
+	private $eiTypeConstraint;
 	private $commandExecutionConstraint;
 	
 	private $overviewDisabled = false;
@@ -74,14 +74,14 @@ class EiFrame {
 		$this->manageState = $manageState;
 		$this->criteriaConstraintCollection = new CriteriaConstraintCollection();
 
-// 		$this->eiSpecConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
+// 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
 
 // 	/**
-// 	 * @return \rocket\spec\ei\EiSpec
+// 	 * @return \rocket\spec\ei\EiType
 // 	 */
-// 	public function getContextEiSpec(): EiSpec {
-// 		return $this->contextEiMask->getEiEngine()->getEiSpec();
+// 	public function getContextEiType(): EiType {
+// 		return $this->contextEiMask->getEiEngine()->getEiType();
 // 	}
 	
 	/**
@@ -205,7 +205,7 @@ class EiFrame {
 		if ($this->criteriaFactory !== null && !($ignoreConstraintTypes & CriteriaConstraint::TYPE_MANAGE)) {
 			$criteria = $this->criteriaFactory->create($em, $entityAlias);
 		} else {
-			$criteria = $em->createCriteria()->from($this->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(), $entityAlias);
+			$criteria = $em->createCriteria()->from($this->getContextEiMask()->getEiEngine()->getEiType()->getEntityModel()->getClass(), $entityAlias);
 		}
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
@@ -345,7 +345,7 @@ class EiFrame {
 	
 	public function createDetailBreadcrumb(HttpContext $httpContext, EiObject $eiObject) {
 		return new Breadcrumb(
-				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiSpec())),
+				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiType())),
 				$this->getDetailBreadcrumbLabel($eiObject));
 	}
 	

@@ -24,7 +24,7 @@ namespace rocket\spec\config;
 use rocket\spec\ei\component\IndependentEiComponent;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\component\EiSetupProcess;
 use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
@@ -61,16 +61,16 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
 			return $eiMask->getEiDef();
 		}
-		return $this->eiComponent->getEiEngine()->getEiSpec()->getDefaultEiDef();
+		return $this->eiComponent->getEiEngine()->getEiType()->getDefaultEiDef();
 	}
 	
 	public function getSupremeEiDef() {
-		$supremeEiSpec = $this->eiComponent->getEiEngine()->getEiSpec()->getSupremeEiSpec();
+		$supremeEiType = $this->eiComponent->getEiEngine()->getEiType()->getSupremeEiType();
 		
 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
-			return $eiMask->determineEiMask($supremeEiSpec)->getEiDef();
+			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
 		}
-		return $supremeEiSpec->getDefaultEiDef();
+		return $supremeEiType->getDefaultEiDef();
 	}
 	
 	public function createException($reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException {
@@ -84,15 +84,15 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	 * @see \rocket\spec\ei\component\EiSetupProcess::containsClass($class)
 	 */
 	public function containsClass(\ReflectionClass $class): bool {
-		return $this->specManager->containsEiSpecClass($class);
+		return $this->specManager->containsEiTypeClass($class);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiSpecByClass($class)
+	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiTypeByClass($class)
 	 */
-	public function getEiSpecByClass(\ReflectionClass $class): EiSpec {
-		return $this->specManager->getEiSpecByClass($class);
+	public function getEiTypeByClass(\ReflectionClass $class): EiType {
+		return $this->specManager->getEiTypeByClass($class);
 	}
 
 	public function getEiPropCollection(): EiPropCollection {

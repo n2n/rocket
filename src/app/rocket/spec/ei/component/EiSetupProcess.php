@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component;
 
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
@@ -39,7 +39,7 @@ interface EiSetupProcess {
 	 * @return \rocket\spec\ei\
 	 * @throws UnknownException
 	 */
-	public function getEiSpecByClass(\ReflectionClass $class): EiSpec;
+	public function getEiTypeByClass(\ReflectionClass $class): EiType;
 	
 	public function getN2nContext(): N2nContext;
 	

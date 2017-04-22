@@ -179,8 +179,8 @@ class EntryCommandViewModel {
 // 		$this->entryModel = $entryModel;
 // 		$this->eiObject = $this->entryModel->getEiObject();
 		
-// 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
-// 		$this->exact = $this->entryModel->getEiSpec();
+// 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+// 		$this->exact = $this->entryModel->getEiType();
 		
 // 		$this->previewController = $previewController;
 		

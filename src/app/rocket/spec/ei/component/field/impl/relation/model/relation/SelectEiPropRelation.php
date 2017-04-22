@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use rocket\spec\ei\component\field\impl\relation\command\RelationAjahEiCommand;
@@ -37,8 +37,8 @@ class SelectEiPropRelation extends EiPropRelation {
 	protected $embeddedPseudoEiCommand;
 	protected $embeddedEditPseudoEiCommand;
 	
-	public function init(EiSpec $targetEiSpec, EiMask $targetEiMask) {
-		parent::init($targetEiSpec, $targetEiMask);
+	public function init(EiType $targetEiType, EiMask $targetEiMask) {
+		parent::init($targetEiType, $targetEiMask);
 
 		if ($this->isEmbeddedAddEnabled() && !$this->isPersistCascaded()) {
 			throw new InvalidEiComponentConfigurationException(
@@ -51,7 +51,7 @@ class SelectEiPropRelation extends EiPropRelation {
 		
 // 		if ($this->isEmbeddedAddEnabled()) {
 // 			$this->embeddedEditPseudoEiCommand = new EmbeddedEditPseudoCommand(
-// 					$this->getRelationEiProp()->getEiEngine()->getEiSpec()->getDefaultEiDef()->getLabel() . ' > ' 
+// 					$this->getRelationEiProp()->getEiEngine()->getEiType()->getDefaultEiDef()->getLabel() . ' > ' 
 // 							. $this->relationEiProp->getLabel() . ' Embedded Add', 
 // 					$this->getRelationEiProp()->getId(), $this->getTarget()->getId());
 // 			$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedEditPseudoEiCommand);

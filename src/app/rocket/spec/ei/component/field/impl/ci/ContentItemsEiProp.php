@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\EiFrame;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();
-// 	private $contentItemEiSpec;
+// 	private $contentItemEiType;
 	
 	public function __construct() {
 		parent::__construct();
@@ -70,16 +70,16 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		return new EiPropPath(array('orderIndex'));
 	}
 	
-// 	public function setContentItemEiSpec(EiSpec $contentItemEiSpec) {
-// 		$this->contentItemEiSpec = $contentItemEiSpec;
+// 	public function setContentItemEiType(EiType $contentItemEiType) {
+// 		$this->contentItemEiType = $contentItemEiType;
 // 	}
 	
-// 	public function getContentItemEiSpec(): EiSpec {
-// 		if ($this->contentItemEiSpec === null) {
-// 			return $this->contentItemEiSpec;
+// 	public function getContentItemEiType(): EiType {
+// 		if ($this->contentItemEiType === null) {
+// 			return $this->contentItemEiType;
 // 		}
 		
-// 		throw new IllegalStateException('Undefined ContentItem EiSpec.');
+// 		throw new IllegalStateException('Undefined ContentItem EiType.');
 // 	}
 	
 	public function hasPanelConfigs(): bool {

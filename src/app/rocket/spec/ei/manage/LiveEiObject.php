@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage;
 
 use rocket\spec\ei\manage\draft\Draft;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 
 class LiveEiObject extends EiObjectAdapter {
@@ -53,8 +53,8 @@ class LiveEiObject extends EiObjectAdapter {
 		return new EntryNavPoint($this->eiEntityObj->getId());
 	}
 	
-	public static function create(EiSpec $eiSpec, $entityObj) {
+	public static function create(EiType $eiType, $entityObj) {
 		if ($entityObj === null) return null;
-		return new LiveEiObject(EiEntityObj::createFrom($eiSpec, $entityObj));
+		return new LiveEiObject(EiEntityObj::createFrom($eiType, $entityObj));
 	}
 }

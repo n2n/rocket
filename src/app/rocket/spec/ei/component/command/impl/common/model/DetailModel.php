@@ -56,13 +56,13 @@ class DetailModel {
 		$draft->setPublished(true);
 		$this->historyModel->saveDraft($draft);
 		
-		$entityModel = $this->getEiSpec()->getEntityModel();
+		$entityModel = $this->getEiType()->getEntityModel();
 		$entityModel->copy($draftedEntry, $originalEntry);
 		$this->em->merge($originalEntry);
 		
 		if (is_null($this->translationModel)) return true;
 		
-		$entityTranslationModel = $this->eiSpec->getTranslationModel();
+		$entityTranslationModel = $this->eiType->getTranslationModel();
 		foreach ($this->translationModel->getTranslationsByElementId($draft->getId(), $draftedEntry) as $translation) {
 			$entityTranslationModel->saveTranslation($translation->copy($id));
 		}

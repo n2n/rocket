@@ -43,7 +43,7 @@ class TreeDeleteModel extends CommandEntryModelAdapter {
 			return;
 		}
 		
-		$class = $this->eiSpec->getEntityModel()->getTopEntityModel()->getClass();
+		$class = $this->eiType->getEntityModel()->getTopEntityModel()->getClass();
 		$entity = $this->eiObject->getLiveEntityObj();
 	
 		$nestedSetUtils = new NestedSetUtils($this->em, $class);
@@ -56,7 +56,7 @@ class TreeDeleteModel extends CommandEntryModelAdapter {
 		foreach ($nestedSetItemsToDelete as $nesteSetItem) {
 			$entity = $nesteSetItem->getObject();
 			$this->eiFrame->triggerOnRemoveObject($this->em, 
-					new EiObject($this->eiSpec->extractId($entity), $entity));
+					new EiObject($this->eiType->extractId($entity), $entity));
 			$nestedSetUtils->remove($nesteSetItem->getObject());
 		}
 	}	

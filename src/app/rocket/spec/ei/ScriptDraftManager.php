@@ -52,17 +52,17 @@
 // 			return $this->draftModels[$class->getName()];
 // 		}
 		
-// 		$eiSpec = $this->specManager->getEiSpecByClass($class);
+// 		$eiType = $this->specManager->getEiTypeByClass($class);
 		
 // 		$this->draftModels[$class->getName()] = $draftModel = new DraftModel($em);
 		
-// 		foreach ($eiSpec->getEiPropCollection()->combineAll() as $field) {
+// 		foreach ($eiType->getEiPropCollection()->combineAll() as $field) {
 // 			if ($field instanceof DraftableEiProp && $field->isDraftable()) {
 // 				$draftModel->addDraftable($field);
 // 			}
 // 		}
 		
-// 		foreach ($eiSpec->getEiModificatorCollection()->combineAll() as $constraint) {
+// 		foreach ($eiType->getEiModificatorCollection()->combineAll() as $constraint) {
 // 			$constraint->setupDraftModel($draftModel, $this->drafManager !== null);
 // 		}
 

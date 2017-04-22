@@ -60,15 +60,15 @@ class TreeListModel implements EntryTreeListModel {
 	
 	public function initialize() {
 		$em = $this->eiFrame->getEntityManager();
-		$eiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$eiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		
-		$nestedSetUtils = new NestedSetUtils($em, $eiSpec->getEntityModel()->getClass());
+		$nestedSetUtils = new NestedSetUtils($em, $eiType->getEntityModel()->getClass());
 		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS);
 		$eiMask = $this->getEiMask();
 
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$entity = $nestedSetItem->getEntityObj();
-			$id = $eiSpec->extractId($entity);
+			$id = $eiType->extractId($entity);
 			$eiObject = new EiObject($id, $entity);
 			$eiMapping = $eiMask->createEiMapping($this->eiFrame, $eiObject);
 			

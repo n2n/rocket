@@ -125,7 +125,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	}
 	
 	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
-// 		if (!$this->getEiSpec()->getDefaultEiDef()->getisPreviewAvailable()) {
+// 		if (!$this->getEiType()->getDefaultEiDef()->getisPreviewAvailable()) {
 // 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
 // 		}
 		

@@ -109,7 +109,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
 		$controllerContextPath = $httpContext->getControllerContextPath($eiUtils->getEiFrame()->getControllerContext());
 
-		$nestedSet = null !== $this->eiEngine->getEiSpec()->getNestedSetStrategy();
+		$nestedSet = null !== $this->eiEngine->getEiType()->getNestedSetStrategy();
 
 		$path = $controllerContextPath->ext($this->getId());
 		$name = $dtc->translate($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_add_label');
@@ -143,7 +143,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$eiFrame = $eiu->frame()->getEiFrame();
 		
-		$nestedSetStrategy = $this->eiEngine->getEiSpec()->getNestedSetStrategy();
+		$nestedSetStrategy = $this->eiEngine->getEiType()->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) {
 			if (!$this->dublicatingAllowed) return array();
 				

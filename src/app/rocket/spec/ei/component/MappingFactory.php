@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\security\PrivilegeConstraint;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiPropPath;
@@ -39,7 +39,7 @@ use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class MappingFactory {
-	private $eiSpec;
+	private $eiType;
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	

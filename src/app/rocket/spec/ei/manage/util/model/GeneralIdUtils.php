@@ -41,7 +41,7 @@ class GeneralIdUtils {
 		
 		if (!$eiObject->getEiEntityObj()->isPersistent()) return null;
 			
-		return self::liveIdRepToGeneralId($eiEntityObj->getEiSpec()->idToIdRep($eiEntityObj->getId()));
+		return self::liveIdRepToGeneralId($eiEntityObj->getEiType()->idToIdRep($eiEntityObj->getId()));
 	}
 	
 	

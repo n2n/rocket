@@ -132,7 +132,7 @@ class EditController extends ControllerAdapter {
 		$eiMapping = $this->eiuCtrl->lookupEiMappingByDraftId($draftId);
 		$entryEiUtils = $this->eiuCtrl->toEiuEntry($eiMapping);
 		if ($entryEiUtils->getDraft()->isPublished()) {
-			$eiObject = $entryEiUtils->getEiUtils()->createNewEiObject(true, $entryEiUtils->getEiSpec());
+			$eiObject = $entryEiUtils->getEiUtils()->createNewEiObject(true, $entryEiUtils->getEiType());
 			$eiMapping = $this->eiuCtrl->frame()->createEiMappingCopy($eiMapping, $eiObject);
 		}
 		
@@ -260,7 +260,7 @@ class EditController extends ControllerAdapter {
 		$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($httpContext, $eiObject));
 		
 		if ($eiObject->isDraft()) {	
-			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec())
+			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiType())
 							->copy(false, true));
 			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale(),
 					DateTimeFormat::STYLE_MEDIUM, DateTimeFormat::STYLE_SHORT);
@@ -278,9 +278,9 @@ class EditController extends ControllerAdapter {
 // 		$dispReturn = $this->dispatch($editModel, 'save');
 // 		$eiObject = $editModel->getEntryModel()->getEiMapping()->getEiObject();
 // 		if ($dispReturn instanceof Draft) {
-// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec());
+// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiType());
 // 		} else if ($dispReturn) {
-// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec())->copy(true);
+// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiType())->copy(true);
 // 		} else {
 // 			return null;
 // 		}

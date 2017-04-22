@@ -36,7 +36,7 @@ class EiGrant extends ObjectAdapter implements Grant {
 	}
 
 	private $id;
-	private $eiSpecId;
+	private $eiTypeId;
 	private $eiMaskId;
 	private $rocketUserGroup;
 	private $full = false;
@@ -54,12 +54,12 @@ class EiGrant extends ObjectAdapter implements Grant {
 		$this->id = $id;
 	}
 	
-	public function getEiSpecId() {
-		return $this->eiSpecId;
+	public function getEiTypeId() {
+		return $this->eiTypeId;
 	}
 	
-	public function setEiSpecId(string $eiSpecId) {
-		$this->eiSpecId = $eiSpecId;
+	public function setEiTypeId(string $eiTypeId) {
+		$this->eiTypeId = $eiTypeId;
 	}
 	
 	public function getEiMaskId() {

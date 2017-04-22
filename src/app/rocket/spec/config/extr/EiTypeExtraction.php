@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiDef;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\config\UnknownMaskException;
 
-class EiSpecExtraction extends SpecExtraction {
+class EiTypeExtraction extends SpecExtraction {
 	private $entityClassName;
 	private $eiDefExtraction;
 	private $dataSourceName;
@@ -120,23 +120,23 @@ class EiSpecExtraction extends SpecExtraction {
 	}
 	
 // 	public function createScript(SpecManager $specManager) {
-// 		$factory = new EiSpecFactory($specManager->getEntityModelManager(), $specManager->getEiSpecSetupQueue());
+// 		$factory = new EiTypeFactory($specManager->getEntityModelManager(), $specManager->getEiTypeSetupQueue());
 // 		return $factory->create($this);
 // 	}
 	
-	public static function createFromEiSpec(EiSpec $eiSpec) {
-		$extraction = new EiSpecExtraction($eiSpec->getId(), $eiSpec->getModuleNamespace());
-		$extraction->setEntityClassName($eiSpec->getEntityModel()->getClass()->getName());
-		$extraction->setDataSourceName($eiSpec->getDataSourceName());
-		$extraction->setNestedSetStrategy($eiSpec->getNestedSetStrategy());
+	public static function createFromEiType(EiType $eiType) {
+		$extraction = new EiTypeExtraction($eiType->getId(), $eiType->getModuleNamespace());
+		$extraction->setEntityClassName($eiType->getEntityModel()->getClass()->getName());
+		$extraction->setDataSourceName($eiType->getDataSourceName());
+		$extraction->setNestedSetStrategy($eiType->getNestedSetStrategy());
 		
-		$extraction->setEiDefExtraction(self::createEiDefExtraction($eiSpec->getDefaultEiDef()));
+		$extraction->setEiDefExtraction(self::createEiDefExtraction($eiType->getDefaultEiDef()));
 			
-		if (null !== ($defaultEiMask = $eiSpec->getEiMaskCollection()->getDefault())) {
+		if (null !== ($defaultEiMask = $eiType->getEiMaskCollection()->getDefault())) {
 			$extraction->setDefaultEiMaskId($defaultEiMask->getId());
 		}
 		
-		foreach ($eiSpec->getEiMaskCollection() as $eiMask) {
+		foreach ($eiType->getEiMaskCollection() as $eiMask) {
 			$extraction->addCommonEiMaskExtraction($eiMask->getExtraction());
 		}
 		
@@ -181,7 +181,7 @@ class EiSpecExtraction extends SpecExtraction {
 	}
 	
 	public function toSpecString(): string {
-		return 'EiSpec (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';	
+		return 'EiType (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';	
 	}
 	
 // 	private static function createEiComponentExtraction(IndependentEiComponent $configurable) {

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\mapping;
 use n2n\l10n\Message;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
@@ -56,7 +56,7 @@ class EiMapping {
 		$eiEntityObj = $this->eiObject->getEiEntityObj();
 		if (!$eiEntityObj->isPersistent()) return null;
 		
-		return $this->getEiSpec()->idToIdRep($eiEntityObj->getId());
+		return $this->getEiType()->idToIdRep($eiEntityObj->getId());
 	}
 	
 	/**
@@ -77,10 +77,10 @@ class EiMapping {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getEiSpec() {
-		return $this->eiObject->getEiEntityObj()->getEiSpec();
+	public function getEiType() {
+		return $this->eiObject->getEiEntityObj()->getEiType();
 	}
 	
 	public function setAccessible(bool $accessible) {
@@ -360,12 +360,12 @@ class EiMapping {
 	}
 	
 	public function equals($obj) {
-		return $obj instanceof EiMapping && $this->determineEiSpec()->equals($obj->determineEiSpec())
+		return $obj instanceof EiMapping && $this->determineEiType()->equals($obj->determineEiType())
 				&& $this->eiObject->equals($obj->getEiObject());
 	}
 	
 	public function toEntryNavPoint() {
-		return $this->eiObject->toEntryNavPoint($this->contextEiSpec);
+		return $this->eiObject->toEntryNavPoint($this->contextEiType);
 	}
 }
 

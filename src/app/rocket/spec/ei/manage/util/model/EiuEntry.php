@@ -214,14 +214,14 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function getLiveIdRep(bool $required = true) {
-		return $this->getEiSpec()->idToIdRep($this->getLiveId($required));
+		return $this->getEiType()->idToIdRep($this->getLiveId($required));
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiSpec
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getEiSpec() {
-		return $this->getEiEntityObj()->getEiSpec();
+	public function getEiType() {
+		return $this->getEiEntityObj()->getEiType();
 	}
 	
 	/**

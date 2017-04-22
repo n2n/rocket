@@ -106,7 +106,7 @@ class PathPartPurifier {
 	}
 	
 	private function containsPathPart(string $pathPart): bool {
-		$entityClass = $this->pathPartEiProp->getEiEngine()->getEiSpec()->getEntityModel()->getClass();
+		$entityClass = $this->pathPartEiProp->getEiEngine()->getEiType()->getEntityModel()->getClass();
 		$criteria = $this->eiFrame->getManageState()->getEntityManager()->createCriteria();
 		$criteria->select('COUNT(1)')
 				->from($entityClass, 'e')
