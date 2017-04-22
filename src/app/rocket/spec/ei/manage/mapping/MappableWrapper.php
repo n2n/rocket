@@ -2,7 +2,7 @@
 
 namespace rocket\spec\ei\manage\mapping;
 
-interface MappableWrapper {
+interface EiFieldWrapper {
 	
 	public function isIgnored(): bool;
 	

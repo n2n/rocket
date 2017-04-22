@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\mapping;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-interface Mappable {
+interface EiField {
 	
 	/**
 	 * @return mixed 
@@ -69,9 +69,9 @@ interface Mappable {
 	public function check(): bool;
 	
 	/**
-	 * @param FieldErrorInfo $mappableErrorInfo
+	 * @param FieldErrorInfo $eiFieldErrorInfo
 	 */
-	public function validate(FieldErrorInfo $mappableErrorInfo);
+	public function validate(FieldErrorInfo $eiFieldErrorInfo);
 	
 	/**
 	 * 
@@ -80,7 +80,7 @@ interface Mappable {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return Mappable
+	 * @return EiField
 	 */
-	public function copyMappable(Eiu $copyEiu);
+	public function copyEiField(Eiu $copyEiu);
 }

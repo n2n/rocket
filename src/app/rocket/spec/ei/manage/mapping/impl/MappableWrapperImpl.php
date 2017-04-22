@@ -1,15 +1,15 @@
 <?php
 namespace rocket\spec\ei\manage\mapping\impl;
 
-use rocket\spec\ei\manage\mapping\Mappable;
-use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\manage\mapping\EiField;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 
-class MappableWrapperImpl implements MappableWrapper {
-	private $mappable;
+class EiFieldWrapperImpl implements EiFieldWrapper {
+	private $eiField;
 	private $ignored = false;
 	
-	public function __construct(Mappable $mappable) {
-		$this->mappable = $mappable;
+	public function __construct(EiField $eiField) {
+		$this->eiField = $eiField;
 	}
 	
 	/**
@@ -27,9 +27,9 @@ class MappableWrapperImpl implements MappableWrapper {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\mapping\Mappable
+	 * @return \rocket\spec\ei\manage\mapping\EiField
 	 */
-	public function getMappable() {
-		return $this->mappable;
+	public function getEiField() {
+		return $this->eiField;
 	}
 }

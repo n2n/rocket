@@ -30,13 +30,13 @@ use rocket\spec\ei\EiPropPath;
 class CommonScalarEiProperty implements ScalarEiProperty {
 	private $eiProp;
 	private $scalarValueBuilder;
-	private $mappableValueBuilder;
+	private $eiFieldValueBuilder;
 
 	public function __construct(EiProp $eiProp, \Closure $scalarValueBuilder = null, 
-			\Closure $mappableValueBuilder = null) {
+			\Closure $eiFieldValueBuilder = null) {
 		$this->eiProp = $eiProp;
 		$this->scalarValueBuilder = $scalarValueBuilder;
-		$this->mappableValueBuilder = $mappableValueBuilder;
+		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
@@ -48,22 +48,22 @@ class CommonScalarEiProperty implements ScalarEiProperty {
 	}
 
 	public function buildScalarValue(EiMapping $eiMapping) {
-		return $this->mappableValueToScalarValue($eiMapping->getValue($this->eiProp));
+		return $this->eiFieldValueToScalarValue($eiMapping->getValue($this->eiProp));
 	}
 
-	public function mappableValueToScalarValue($mappableValue) {
+	public function eiFieldValueToScalarValue($eiFieldValue) {
 		if ($this->scalarValueBuilder === null) {
-			return $mappableValue;
+			return $eiFieldValue;
 		}
 		
-		return $this->scalarValueBuilder->__invoke($mappableValue);
+		return $this->scalarValueBuilder->__invoke($eiFieldValue);
 	}
 
-	public function scalarValueToMappableValue($scalarValue) {
-		if ($this->mappableValueBuilder === null) {
+	public function scalarValueToEiFieldValue($scalarValue) {
+		if ($this->eiFieldValueBuilder === null) {
 			return $scalarValue;
 		}
 		
-		return $this->mappableValueBuilder->__invoke($scalarValue);
+		return $this->eiFieldValueBuilder->__invoke($scalarValue);
 	}
 }

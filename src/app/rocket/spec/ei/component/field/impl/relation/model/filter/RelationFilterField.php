@@ -162,7 +162,7 @@ class RelationFilterField implements FilterField {
 		return $relationFilterConf->getAttributes();
 	}
 	
-	public function createMappableConstraint(Attributes $attributes): MappableConstraint {
+	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
 		$relationFilterConf = new RelationFilterConf(new Attributes());
 		
 		$operator = $relationFilterConf->getOperator();

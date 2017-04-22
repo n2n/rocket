@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\impl\RwMappable;
+use rocket\spec\ei\manage\mapping\impl\RwEiField;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiObject;
@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
-class ToOneMappable extends RwMappable {
+class ToOneEiField extends RwEiField {
 	private $copyable;
 	
 	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
@@ -77,10 +77,10 @@ class ToOneMappable extends RwMappable {
 		}
 	}
 	
-	public function copyMappable(Eiu $copyEiu) {
+	public function copyEiField(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToOneMappable($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, $this->copyable);
+		$copy = new ToOneEiField($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, $this->copyable);
 		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;
 	}

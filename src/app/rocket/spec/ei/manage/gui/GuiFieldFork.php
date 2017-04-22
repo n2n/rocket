@@ -47,7 +47,7 @@ interface GuiFieldFork {
 	/**
 	 *
 	 * @param GuiIdPath $guiIdPath
-	 * @return null|\rocket\spec\ei\manage\mapping\MappableWrapper
+	 * @return null|\rocket\spec\ei\manage\mapping\EiFieldWrapper
 	 */
-	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath);
+	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath);
 }

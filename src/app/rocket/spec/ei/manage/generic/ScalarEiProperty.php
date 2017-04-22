@@ -43,14 +43,14 @@ interface ScalarEiProperty {
 // 	public function buildScalarValue(EiMapping $eiMapping);
 	
 	/**
-	 * @param mixed $mappableValue
+	 * @param mixed $eiFieldValue
 	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
 	 */
-	public function mappableValueToScalarValue($mappableValue);
+	public function eiFieldValueToScalarValue($eiFieldValue);
 	
 	/**
 	 * @param mixed $scalarValue
 	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
 	 */
-	public function scalarValueToMappableValue($scalarValue);
+	public function scalarValueToEiFieldValue($scalarValue);
 }

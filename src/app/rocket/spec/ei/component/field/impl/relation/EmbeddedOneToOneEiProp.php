@@ -43,7 +43,7 @@ use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\component\field\impl\relation\conf\RelationEiPropConfigurator;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
+use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
@@ -144,17 +144,17 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		$mapping = $eiu->entry()->getEiMapping();
 		
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationMappable = $mapping->getMappable(EiPropPath::from($this));
+		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(), 
-					$relationMappable, $targetReadEiFrame, $targetEditEiFrame);
+					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
 			
 			if ($targetEditEiFrame->getEiExecution()->isGranted() 
-					&& ($this->isReplaceable() || $relationMappable->getValue() === null)) {
+					&& ($this->isReplaceable() || $relationEiField->getValue() === null)) {
 				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
 						$mapping, $mapping->getEiObject()->isDraft(), $eiFrame, $eiu->frame()->getHttpContext()));
 			}
@@ -162,7 +162,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			$toOneEditable->setDraftMode($mapping->getEiObject()->isDraft());
 		}
 				
-		return new EmbeddedOneToOneGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiFrame, $toOneEditable);
+		return new EmbeddedOneToOneGuiElement($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);
 	}
 	
 	/**

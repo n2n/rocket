@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
+use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
@@ -53,12 +53,12 @@ abstract class DraftableEiPropAdapter extends EditableEiPropAdapter implements C
 		$this->draftable = $draftable;
 	}
 	
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		if (!$eiu->entry()->isDraft()) {
-			return parent::buildMappable($eiu);
+			return parent::buildEiField($eiu);
 		}
 	
-		return new SimpleMappable($eiu->entry()->getEiObject(), 
+		return new SimpleEiField($eiu->entry()->getEiObject(), 
 				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
 				$this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}

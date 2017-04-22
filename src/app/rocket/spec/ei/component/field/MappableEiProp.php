@@ -21,26 +21,26 @@
  */
 namespace rocket\spec\ei\component\field;
 
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-interface MappableEiProp extends EiProp {
+interface EiFieldEiProp extends EiProp {
 			
 	/**
 	 * @param Eiu $eiu
 	 */
-	public function buildMappable(Eiu $eiu);
+	public function buildEiField(Eiu $eiu);
 	
 	/**
-	 * @return \rocket\spec\ei\manage\mapping\MappableFork or null
+	 * @return \rocket\spec\ei\manage\mapping\EiFieldFork or null
 	 */
-	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null);
+	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null);
 }
 
 
 
-interface ScalarEiProp extends MappableEiProp {
+interface ScalarEiProp extends EiFieldEiProp {
 	
 	public function getScalarEiProperty();
 }

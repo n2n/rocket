@@ -27,14 +27,14 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use rocket\spec\ei\mask\EiMask;
 
 class EiEntryGui {
 	private $eiMask;
 	private $viewMode;
 	private $displayables = array();
-	private $mappableWrappers = array();
+	private $eiFieldWrappers = array();
 // 	private $eiPropPaths = array();
 	private $eiObjectGuiListeners = array();
 	private $initialized = false;
@@ -98,32 +98,32 @@ class EiEntryGui {
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @throws GuiException
-	 * @return MappableWrapper
+	 * @return EiFieldWrapper
 	 */
-	public function getMappableWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
+	public function getEiFieldWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
 	
-		if (!isset($this->mappableWrappers[$guiIdPathStr])) {
-			throw new GuiException('No MappableWrapper with GuiIdPath ' . $guiIdPathStr . ' registered');
+		if (!isset($this->eiFieldWrappers[$guiIdPathStr])) {
+			throw new GuiException('No EiFieldWrapper with GuiIdPath ' . $guiIdPathStr . ' registered');
 		}
 	
-		return $this->mappableWrappers[$guiIdPathStr];
+		return $this->eiFieldWrappers[$guiIdPathStr];
 	}
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
-	 * @param MappableWrapper $mappableWrapper
+	 * @param EiFieldWrapper $eiFieldWrapper
 	 */
-	public function putMappableWrapper(GuiIdPath $guiIdPath, MappableWrapper $mappableWrapper) {
-		$this->mappableWrappers[(string) $guiIdPath] = $mappableWrapper;
+	public function putEiFieldWrapper(GuiIdPath $guiIdPath, EiFieldWrapper $eiFieldWrapper) {
+		$this->eiFieldWrappers[(string) $guiIdPath] = $eiFieldWrapper;
 	}
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @return bool
 	 */
-	public function containsMappableWrapper(GuiIdPath $guiIdPath) {
-		return isset($this->mappableWrappers[(string) $guiIdPath]);
+	public function containsEiFieldWrapper(GuiIdPath $guiIdPath) {
+		return isset($this->eiFieldWrappers[(string) $guiIdPath]);
 	}
 	
 	public function getDisplayableByGuiIdPath(GuiIdPath $guiIdPath) {

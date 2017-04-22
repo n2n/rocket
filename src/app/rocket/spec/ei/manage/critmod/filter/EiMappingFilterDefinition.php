@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\mapping\EiMappingConstraint;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\MappableConstraint;
+use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 use n2n\util\config\AttributesException;
 
 class EiMappingFilterDefinition extends FilterDefinition {
@@ -56,8 +56,8 @@ class EiMappingFilterDefinition extends FilterDefinition {
 			}
 				
 			try {
-				$eiMappingConstraints[] = new MappableEiMappingConstraint(EiPropPath::create($id),
-						$this->eiMappingFilterFields[$id]->createMappableConstraint(
+				$eiMappingConstraints[] = new EiFieldEiMappingConstraint(EiPropPath::create($id),
+						$this->eiMappingFilterFields[$id]->createEiFieldConstraint(
 								$subFilterItemData->getAttributes()));
 			} catch (AttributesException $e) {}
 		}
@@ -133,13 +133,13 @@ class EiMappingConstraintGroup implements EiMappingConstraint {
 	}
 }
 
-class MappableEiMappingConstraint implements EiMappingConstraint {
+class EiFieldEiMappingConstraint implements EiMappingConstraint {
 	private $eiPropPath;
-	private $mappableConstraint;
+	private $eiFieldConstraint;
 	
-	public function __construct(EiPropPath $eiPropPath, MappableConstraint $mappableConstraint) {
+	public function __construct(EiPropPath $eiPropPath, EiFieldConstraint $eiFieldConstraint) {
 		$this->eiPropPath = $eiPropPath;
-		$this->mappableConstraint = $mappableConstraint;
+		$this->eiFieldConstraint = $eiFieldConstraint;
 	}
 	
 	/**
@@ -149,7 +149,7 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
 		if (!$this->eiPropPath->equals($eiPropPath)) return;
 		
-		return $this->mappableConstraint->acceptsValue($value);
+		return $this->eiFieldConstraint->acceptsValue($value);
 	}
 
 	/**
@@ -157,8 +157,8 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::check($eiMapping)
 	 */
 	public function check(EiMapping $eiMapping): bool {
-		return $this->mappableConstraint->check($eiMapping
-				->getMappable($this->eiPropPath));
+		return $this->eiFieldConstraint->check($eiMapping
+				->getEiField($this->eiPropPath));
 	}
 
 	/**
@@ -166,7 +166,7 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::validate($eiMapping)
 	 */
 	public function validate(EiMapping $eiMapping) {
-		return $this->mappableConstraint->validate($eiMapping->getMappable($this->eiPropPath), 
+		return $this->eiFieldConstraint->validate($eiMapping->getEiField($this->eiPropPath), 
 				$eiMapping->getMappingErrorInfo()->getFieldErrorInfo($this->eiPropPath));
 	}
 }

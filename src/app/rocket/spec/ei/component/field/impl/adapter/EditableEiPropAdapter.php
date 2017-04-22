@@ -28,8 +28,8 @@ use rocket\spec\ei\manage\mapping\impl\Writable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 
-use rocket\spec\ei\manage\mapping\Mappable;
-use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
+use rocket\spec\ei\manage\mapping\EiField;
+use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\PrivilegedEiProp;
 use rocket\spec\security\EiPropPrivilege;
@@ -83,17 +83,17 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 // // 		return false;
 // 	}
 	
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		if ($eiu->entry()->isDraft()) {
-			return parent::buildMappable($eiu);
+			return parent::buildEiField($eiu);
 		}
 
-		return new SimpleMappable($eiu->entry()->getEiObject(), 
+		return new SimpleEiField($eiu->entry()->getEiObject(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
 	
-	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
+	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
 		return null;
 	}
 
@@ -105,16 +105,16 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $value;
 	}
 	
-	private function checkMandatory(EiObject $eiObject, $mappableValue): bool {
-		return $mappableValue !== null || $eiObject->isDraft() || !$this->standardEditDefinition->isMandatory();
+	private function checkMandatory(EiObject $eiObject, $eiFieldValue): bool {
+		return $eiFieldValue !== null || $eiObject->isDraft() || !$this->standardEditDefinition->isMandatory();
 	}
 	
-	public function testMappableValue(EiObject $eiObject, $mappableValue): bool {
-		return $this->checkMandatory($eiObject, $mappableValue);
+	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool {
+		return $this->checkMandatory($eiObject, $eiFieldValue);
 	}
 	
-	public function validateMappableValue(EiObject $eiObject, $mappableValue, FieldErrorInfo $fieldErrorInfo) {
-		if (!$this->checkMandatory($eiObject, $mappableValue)) {
+	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, FieldErrorInfo $fieldErrorInfo) {
+		if (!$this->checkMandatory($eiObject, $eiFieldValue)) {
 			$fieldErrorInfo->addError(new MessageCode('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
 					Rocket::NS));
 		}

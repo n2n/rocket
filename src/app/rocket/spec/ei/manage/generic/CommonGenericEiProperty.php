@@ -33,14 +33,14 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	private $eiProp;
 	private $criteriaProperty;
 	private $entityValueBuilder;
-	private $mappableValueBuilder;
+	private $eiFieldValueBuilder;
 	
 	public function __construct(EiProp $eiProp, CriteriaProperty $criteriaProperty, 
-			\Closure $entityValueBuilder = null, \Closure $mappableValueBuilder = null) {
+			\Closure $entityValueBuilder = null, \Closure $eiFieldValueBuilder = null) {
 		$this->eiProp = $eiProp;
 		$this->criteriaProperty = $criteriaProperty;
 		$this->entityValueBuilder = $entityValueBuilder;
-		$this->mappableValueBuilder = $mappableValueBuilder;
+		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
@@ -56,22 +56,22 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	}
 	
 	public function buildEntityValue(EiMapping $eiMapping) {
-		return $this->mappableValueToEntityValue($eiMapping->getValue($this->eiProp));
+		return $this->eiFieldValueToEntityValue($eiMapping->getValue($this->eiProp));
 	}
 	
-	public function mappableValueToEntityValue($mappableValue) {
+	public function eiFieldValueToEntityValue($eiFieldValue) {
 		if ($this->entityValueBuilder === null) {
-			return $mappableValue;
+			return $eiFieldValue;
 		}
 		
-		return $this->entityValueBuilder->__invoke($mappableValue);
+		return $this->entityValueBuilder->__invoke($eiFieldValue);
 	}
 	
-	public function entityValueToMappableValue($entityValue) {
-		if ($this->mappableValueBuilder === null) {
+	public function entityValueToEiFieldValue($entityValue) {
+		if ($this->eiFieldValueBuilder === null) {
 			return $entityValue;
 		}
 		
-		return $this->mappableValueBuilder->__invoke($entityValue);
+		return $this->eiFieldValueBuilder->__invoke($entityValue);
 	}
 }

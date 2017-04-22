@@ -33,17 +33,17 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 	private $label;
 	private $readOnly;
 	private $mandatory;
-	private $toManyMappable;
+	private $toManyEiField;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToManyMappable $toManyMappable, EiFrame $targetEiFrame,
+	public function __construct(string $label, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
-		$this->toManyMappable = $toManyMappable;
+		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -67,7 +67,7 @@ class EmbeddedOneToManyGuiElement implements GuiElement {
 	}
 
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetRelationEntries = $this->toManyMappable->getValue();
+		$targetRelationEntries = $this->toManyEiField->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
 		$targetEiuFrame = new EiuFrame($this->targetEiFrame);

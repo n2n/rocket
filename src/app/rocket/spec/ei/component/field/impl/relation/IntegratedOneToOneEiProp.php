@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
 use rocket\spec\ei\manage\gui\GuiFieldFork;
-use rocket\spec\ei\manage\mapping\MappableSource;
+use rocket\spec\ei\manage\mapping\EiFieldSource;
 use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\AssembleResult;
@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
+use rocket\spec\ei\component\field\impl\relation\model\ToOneEiField;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\spec\ei\manage\DraftEiObject;
 use rocket\spec\ei\manage\LiveEiObject;
@@ -59,10 +59,10 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
 	
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 	
-		return new ToOneMappable($eiu->entry()->getEiObject(), $this, $this,
+		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
 	}
 	
@@ -145,8 +145,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 		
 		$targetUtils = new EiuFrame($targetEiFrame);
 		
-		$toOneMappable = $eiMapping->getMappable(EiPropPath::from($this));
-		$targetRelationEntry = $toOneMappable->getValue();
+		$toOneEiField = $eiMapping->getEiField(EiPropPath::from($this));
+		$targetRelationEntry = $toOneEiField->getValue();
 		
 		if ($targetRelationEntry === null) {
 			$targetEiObject = $targetUtils->createNewEiObject();
@@ -159,12 +159,12 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
 				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), $eiu->getViewMode()));
 		
-		return new OneToOneGuiElementFork($toOneMappable, $targetRelationEntry, $targetGuiElementAssembler);
+		return new OneToOneGuiElementFork($toOneEiField, $targetRelationEntry, $targetGuiElementAssembler);
 	}
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return MappableSource or null if not available
+	 * @return EiFieldSource or null if not available
 	 */
 	public function determineForkedEiObject(EiObject $eiObject) {
 		$targetEiObject = $this->read($eiObject);
@@ -174,14 +174,14 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 		return $targetEiObject;
 	}
 	
-	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
-		$mappableWrappers = array();
+	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+		$eiFieldWrappers = array();
 		$targetRelationEntry = $eiMapping->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
 		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiMapping()) return null;
 	
-		if (null !== ($mappableWrapper = $this->guiDefinition
-				->determineMappableWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
-			return $mappableWrapper;
+		if (null !== ($eiFieldWrapper = $this->guiDefinition
+				->determineEiFieldWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
+			return $eiFieldWrapper;
 		}
 	
 		return null;
@@ -207,12 +207,12 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 }
 
 class OneToOneGuiElementFork implements GuiElementFork {
-	private $toOneMappable;
+	private $toOneEiField;
 	private $targetRelationEntry;
 	private $targetGuiElementAssembler;
 	
-	public function __construct(ToOneMappable $toOneMappable, RelationEntry $targetRelationEntry, GuiElementAssembler $targetGuiElementAssembler) {
-		$this->toOneMappable = $toOneMappable;
+	public function __construct(ToOneEiField $toOneEiField, RelationEntry $targetRelationEntry, GuiElementAssembler $targetGuiElementAssembler) {
+		$this->toOneEiField = $toOneEiField;
 		$this->targetRelationEntry = $targetRelationEntry;
 		$this->targetGuiElementAssembler = $targetGuiElementAssembler;
 	}
@@ -233,7 +233,7 @@ class OneToOneGuiElementFork implements GuiElementFork {
 	
 	public function save() {
 		$this->targetGuiElementAssembler->save();
-		$this->toOneMappable->setValue($this->targetRelationEntry);
+		$this->toOneEiField->setValue($this->targetRelationEntry);
 	}
 }
 

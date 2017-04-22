@@ -107,7 +107,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		$mapping = $eiu->entry()->getEiMapping();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationMappable = $mapping->getMappable(EiPropPath::from($this));
+		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		$panelConfigs = $this->determinePanelConfigs($eiu);
 	
@@ -115,7 +115,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 				
-			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationMappable, $targetReadEiFrame,
+			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
 					$targetEditEiFrame, $panelConfigs);
 	
 			$draftMode = $mapping->getEiObject()->isDraft();
@@ -128,6 +128,6 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		}
 		
 		return new ContentItemGuiElement($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
-				$relationMappable, $targetReadEiFrame, $contentItemEditable);
+				$relationEiField, $targetReadEiFrame, $contentItemEditable);
 	}
 }

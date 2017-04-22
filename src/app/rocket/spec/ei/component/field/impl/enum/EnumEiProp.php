@@ -81,7 +81,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return new EnumEiPropConfigurator($this);
 	}
 	
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		$that = $this;
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$type = $eiu->field()->getValue();
@@ -94,20 +94,20 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 				}
 				
 				foreach ($guiIdPaths as $guiIdPath) {
-					if (null !== ($mappableWrapper = $eiu->entry()->getMappableWrapperByGuiIdPath($guiIdPath))) {
-						$mappableWrapper->setIgnored(true);
+					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+						$eiFieldWrapper->setIgnored(true);
 					}
 				}
 			}
 			
 			foreach ($activeGuiIdPaths as $guiIdPath) {
-				if (null !== ($mappableWrapper = $eiu->entry()->getMappableWrapperByGuiIdPath($guiIdPath))) {
-					$mappableWrapper->setIgnored(false);
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+					$eiFieldWrapper->setIgnored(false);
 				}
 			}
 		});
 		
-		return parent::buildMappable($eiu);
+		return parent::buildEiField($eiu);
 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {

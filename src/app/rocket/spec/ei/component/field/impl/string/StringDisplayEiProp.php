@@ -28,9 +28,9 @@ use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
 use rocket\spec\ei\component\field\GuiEiProp;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\field\MappableEiProp;
+use rocket\spec\ei\component\field\EiFieldEiProp;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
+use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
@@ -38,14 +38,14 @@ use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiProp;
 use n2n\reflection\ArgUtils;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObjectPropertyEiProp, GuiEiProp, GuiField, 
-		MappableEiProp, Readable, StatelessDisplayable {
+		EiFieldEiProp, Readable, StatelessDisplayable {
 	private $accessProxy;
 	private $displayDefinition;
 	
@@ -115,31 +115,31 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\MappableEiProp::isMappable()
+	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::isEiField()
 	 */
-	public function isMappable(): bool {
+	public function isEiField(): bool {
 		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\MappableEiProp::buildMappable($eiObject)
+	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::buildEiField($eiObject)
 	 */
-	public function buildMappable(Eiu $eiu) {
-		return new SimpleMappable($eiu->entry()->getEiObject(), $this->accessProxy->getConstraint(), $this);
+	public function buildEiField(Eiu $eiu) {
+		return new SimpleEiField($eiu->entry()->getEiObject(), $this->accessProxy->getConstraint(), $this);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\MappableEiProp::buildMappableFork($eiObject, $mappable)
+	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::buildEiFieldFork($eiObject, $eiField)
 	 */
-	public function buildMappableFork(\rocket\spec\ei\manage\EiObject $eiObject, \rocket\spec\ei\manage\mapping\Mappable $mappable = null) {
+	public function buildEiFieldFork(\rocket\spec\ei\manage\EiObject $eiObject, \rocket\spec\ei\manage\mapping\EiField $eiField = null) {
 		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\MappableEiProp::isEiMappingFilterable()
+	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::isEiMappingFilterable()
 	 */
 	public function isEiMappingFilterable(): bool {
 		return false;
@@ -147,7 +147,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\MappableEiProp::createEiMappingFilterField($n2nContext)
+	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::createEiMappingFilterField($n2nContext)
 	 */
 	public function createEiMappingFilterField(\n2n\core\container\N2nContext $n2nContext): EiMappingFilterField {
 		return null;

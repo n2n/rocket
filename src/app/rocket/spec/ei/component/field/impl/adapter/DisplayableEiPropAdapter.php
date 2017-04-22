@@ -24,19 +24,19 @@ namespace rocket\spec\ei\component\field\impl\adapter;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\mapping\impl\SimpleMappable;
+use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\MappableEiProp;
+use rocket\spec\ei\component\field\EiFieldEiProp;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
 abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter implements StatelessDisplayable, 
-		MappableEiProp, GuiEiProp, GuiField, Readable {
+		EiFieldEiProp, GuiEiProp, GuiField, Readable {
 	protected $displayDefinition;
 	
 	public function __construct() {
@@ -56,17 +56,17 @@ abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter 
 		return $eiPropConfigurator;
 	}
 	
-	public function isMappable(): bool {
+	public function isEiField(): bool {
 		return true;
 	}
 	
-	public function buildMappable(Eiu $eiu) {
-		return new SimpleMappable($eiu->entry()->getEiObject(), 
+	public function buildEiField(Eiu $eiu) {
+		return new SimpleEiField($eiu->entry()->getEiObject(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this);
 	}
 	
-	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
+	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
 		return null;
 	}
 	

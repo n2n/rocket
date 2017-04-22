@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\gui\EiEntryGuiListener;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
-use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use n2n\web\dispatch\map\PropertyPath;
 
 class EiuEntryGui {
@@ -127,11 +127,11 @@ class EiuEntryGui {
 	 * @param unknown $guiIdPath
 	 * @param bool $required
 	 * @throws GuiException
-	 * @return MappableWrapper
+	 * @return EiFieldWrapper
 	 */
-	public function getMappableWrapper($guiIdPath, bool $required = false) {
+	public function getEiFieldWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiObjectGui->getMappableWrapperByGuiIdPath(
+			return $this->eiObjectGui->getEiFieldWrapperByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;

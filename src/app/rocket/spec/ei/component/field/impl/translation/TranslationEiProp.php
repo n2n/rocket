@@ -33,16 +33,16 @@ use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\component\field\impl\translation\conf\TranslationEiConfigurator;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\MappableEiProp;
+use rocket\spec\ei\component\field\EiFieldEiProp;
 use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
@@ -64,9 +64,9 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use rocket\spec\ei\component\field\impl\translation\model\TranslationMappable;
+use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, MappableEiProp, RelationEiProp, 
+class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, EiFieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiFieldFork, SortableEiPropFork {
 	private $n2nLocaleDefs = array();
 
@@ -101,21 +101,21 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ma
 		return $this->eiPropRelation;
 	}
 	
-	public function isMappable(): bool {
+	public function isEiField(): bool {
 		return true;
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\EiProp::getMappable()
+	 * @see \rocket\spec\ei\component\field\EiProp::getEiField()
 	 */
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 		
-		return new TranslationMappable($eiu->entry()->getEiObject(), $this, $this,
+		return new TranslationEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
 	}
 	
-	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
+	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
 		return null;
 	}
 	
@@ -160,10 +160,10 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ma
 		}
 		$targetUtils = new EiuFrame($targetEiFrame);
 		
-		$toManyMappable = $eiMapping->getMappable(EiPropPath::from($this));
+		$toManyEiField = $eiMapping->getEiField(EiPropPath::from($this));
 		
 		$targetRelationEntries = array();
-		foreach ($toManyMappable->getValue() as $targetRelationEntry) {
+		foreach ($toManyEiField->getValue() as $targetRelationEntry) {
 			$targetEntityObj = $targetRelationEntry->getEiObject()->getLiveObject();
 			$n2nLocale = $targetEntityObj->getN2nLocale();
 			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
@@ -175,7 +175,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ma
 		}
 		
 		$targetGuiDefinition = $targetUtils->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
-		$translationGuiElement = new TranslationGuiElement($toManyMappable, $targetGuiDefinition, 
+		$translationGuiElement = new TranslationGuiElement($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nLocale()));
 
 		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
@@ -207,22 +207,22 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ma
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::determineMappableWrapper()
+	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::determineEiFieldWrapper()
 	 */
-	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
-		$mappableWrappers = array();
+	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+		$eiFieldWrappers = array();
 		foreach ($eiMapping->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
 			if ($targetRelationEntry->hasEiMapping()) continue;
 				
-			if (null !== ($mappableWrapper = $this->guiDefinition
-					->determineMappableWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
-				$mappableWrappers[] = $mappableWrapper;
+			if (null !== ($eiFieldWrapper = $this->guiDefinition
+					->determineEiFieldWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
+				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}
 	
-		if (empty($mappableWrappers)) return null;
+		if (empty($eiFieldWrappers)) return null;
 	
-		return new MappableWrapperWrapper($mappableWrappers);
+		return new EiFieldWrapperWrapper($eiFieldWrappers);
 	}
 	
 	

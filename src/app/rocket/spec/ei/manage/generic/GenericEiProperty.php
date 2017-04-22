@@ -51,14 +51,14 @@ interface GenericEiProperty {
 // 	public function buildEntityValue(EiMapping $eiMapping);
 
 	/**
-	 * @param mixed $mappableValue
+	 * @param mixed $eiFieldValue
 	 * @return mixed
 	 */
-	public function mappableValueToEntityValue($mappableValue);
+	public function eiFieldValueToEntityValue($eiFieldValue);
 	
 	/**
 	 * @param mixed $entityValue
 	 * @return mixed
 	 */
-	public function entityValueToMappableValue($entityValue);
+	public function entityValueToEiFieldValue($entityValue);
 }

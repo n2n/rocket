@@ -21,24 +21,24 @@
  */
 namespace rocket\spec\ei\manage\mapping\impl;
 
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\col\HashSet;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\mapping\MappableConstraint;
+use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 use n2n\util\col\Set;
 
-abstract class MappableAdapter implements Mappable {
+abstract class EiFieldAdapter implements EiField {
 	protected $eiObject;
 	protected $valueLoaded = false;
 	protected $value;
 	protected $orgValueLoaded = false;
 	protected $orgValue;
-	protected $mappableConstraintSet;
+	protected $eiFieldConstraintSet;
 
 	public function __construct(EiObject $eiObject) {
 		$this->eiObject = $eiObject;
-		$this->mappableConstraintSet = new HashSet(MappableConstraint::class);
+		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
 	}
 
 	public function isValueLoaded(): bool {
@@ -68,7 +68,7 @@ abstract class MappableAdapter implements Mappable {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\Mappable::setValue()
+	 * @see \rocket\spec\ei\manage\mapping\EiField::setValue()
 	 */
 	public function setValue($value) {
 		$this->validateValue($value);
@@ -90,29 +90,29 @@ abstract class MappableAdapter implements Mappable {
 
 	protected abstract function readValue();
 
-	public function getMappableConstraintSet(): Set {
-		return $this->mappableConstraintSet;
+	public function getEiFieldConstraintSet(): Set {
+		return $this->eiFieldConstraintSet;
 	}
 
 	public function acceptsValue($value): bool {
-		foreach ($this->mappableConstraintSet as $mappableConstraint) {
-			if (!$mappableConstraint->acceptsValue()) return false;
+		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
+			if (!$eiFieldConstraint->acceptsValue()) return false;
 		}
 
 		return true;
 	}
 
 	public function check(): bool {
-		foreach ($this->mappableConstraintSet as $mappableConstraint) {
-			if (!$mappableConstraint->check()) return false;
+		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
+			if (!$eiFieldConstraint->check()) return false;
 		}
 
 		return true;
 	}
 
 	public function validate(FieldErrorInfo $fieldErrorInfo) {
-		foreach ($this->mappableConstraintSet as $mappableConstraint) {
-			$mappableConstraint->validate($this, $fieldErrorInfo);
+		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
+			$eiFieldConstraint->validate($this, $fieldErrorInfo);
 		}
 	}
 

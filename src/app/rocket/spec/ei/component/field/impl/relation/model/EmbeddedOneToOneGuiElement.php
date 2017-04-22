@@ -32,17 +32,17 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 	private $label;
 	private $readOnly;
 	private $mandatory;
-	private $toOneMappable;
+	private $toOneEiField;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToOneMappable $toOneMappable, EiFrame $targetEiFrame,
+	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
-		$this->toOneMappable = $toOneMappable;
+		$this->toOneEiField = $toOneEiField;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -87,7 +87,7 @@ class EmbeddedOneToOneGuiElement implements GuiElement {
 // 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetRelationEntry = $this->toOneMappable->getValue();
+		$targetRelationEntry = $this->toOneEiField->getValue();
 		if ($targetRelationEntry === null) return null;
 	
 		$targetUtils = new EiuFrame($this->targetEiFrame);

@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation;
 
-use rocket\spec\ei\manage\mapping\MappableSource;
+use rocket\spec\ei\manage\mapping\EiFieldSource;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\component\field\DraftableEiProp;
@@ -29,7 +29,7 @@ use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiField, DraftableEiProp, 
 		DraftProperty {
@@ -96,7 +96,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	}
 	
 	/**
-	 * @param MappableSource $eiObject
+	 * @param EiFieldSource $eiObject
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
@@ -111,10 +111,10 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getPluralLabel();
 	}
 
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 	
-		return new ToManyMappable($eiu->entry()->getEiObject(), $this, $this,
+		return new ToManyEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
 	}
 }

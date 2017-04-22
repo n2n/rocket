@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiPropRelation;
 
-use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
+use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\persistence\orm\property\relation\Relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
@@ -123,14 +123,14 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	public function buildGuiElement(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationMappable = $mapping->getMappable(EiPropPath::from($this));
+		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(),
-					$relationMappable, $targetReadEiFrame, $targetEditEiFrame);
+					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
 			
 			$toOneEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(
 					$eiFrame, $eiu->frame()->getHttpContext()));
@@ -142,7 +142,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			}
 		}
 		
-		return new ManyToOneGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiFrame, $toOneEditable);		
+		return new ManyToOneGuiElement($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);		
 	}
 	
 	/**

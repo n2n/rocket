@@ -28,7 +28,7 @@ use rocket\spec\ei\EiType;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
-use rocket\spec\ei\manage\mapping\impl\MappableWrapperImpl;
+use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperImpl;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\security\EiCommandAccessRestrictor;
 
@@ -36,8 +36,8 @@ class EiMapping {
 	private $mappingErrorInfo;
 	private $eiObject;
 	private $accessible = true;
-	private $mappableWrappers = array();
-	private $mappableForks = array();
+	private $eiFieldWrappers = array();
+	private $eiFieldForks = array();
 	private $listeners = array();
 	private $constraints;
 	private $eiCommandAccessRestrictors;
@@ -119,82 +119,82 @@ class EiMapping {
 	
 	public function contains(EiPropPath $eiPropPath): bool {
 		$eiPropPathStr = (string) $eiPropPath;
-		return isset($this->mappableWrappers[$eiPropPathStr]) && isset($this->mappableForks[$eiPropPathStr]);
+		return isset($this->eiFieldWrappers[$eiPropPathStr]) && isset($this->eiFieldForks[$eiPropPathStr]);
 	}
 	
 	public function remove(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
-		unset($this->mappableWrappers[$eiPropPathStr]);
-		unset($this->mappableForks[$eiPropPathStr]);
+		unset($this->eiFieldWrappers[$eiPropPathStr]);
+		unset($this->eiFieldForks[$eiPropPathStr]);
 	}
 	
-	public function putMappable(EiPropPath $eiPropPath, Mappable $mappable) {
+	public function putEiField(EiPropPath $eiPropPath, EiField $eiField) {
 		$eiPropPathStr = (string) $eiPropPath;
-		return $this->mappableWrappers[$eiPropPathStr] = new MappableWrapperImpl($mappable);
+		return $this->eiFieldWrappers[$eiPropPathStr] = new EiFieldWrapperImpl($eiField);
 	}
 	
-	public function removeMappable(EiPropPath $eiPropPath) {
-		unset($this->mappableWrappers[(string) $eiPropPath]);
+	public function removeEiField(EiPropPath $eiPropPath) {
+		unset($this->eiFieldWrappers[(string) $eiPropPath]);
 	}
 	
-	public function containsMappable(EiPropPath $eiPropPath): bool {
-		return isset($this->mappableWrappers[(string) $eiPropPath]);
+	public function containsEiField(EiPropPath $eiPropPath): bool {
+		return isset($this->eiFieldWrappers[(string) $eiPropPath]);
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @throws MappingOperationFailedException
-	 * @return Mappable
+	 * @return EiField
 	 */
-	public function getMappable(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
+	public function getEiField(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
 		$this->ensureAccessible($ignoreAccessRestriction);
-		return $this->getMappableWrapper($eiPropPath, $ignoreAccessRestriction)->getMappable();
+		return $this->getEiFieldWrapper($eiPropPath, $ignoreAccessRestriction)->getEiField();
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @throws MappingOperationFailedException
-	 * @return MappableWrapper
+	 * @return EiFieldWrapper
 	 */
-	public function getMappableWrapper(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
+	public function getEiFieldWrapper(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
 		$this->ensureAccessible($ignoreAccessRestriction);
 		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->mappableWrappers[$eiPropPathStr])) {
-			throw new MappingOperationFailedException('No Mappable defined for EiPropPath \'' . $eiPropPathStr
+		if (!isset($this->eiFieldWrappers[$eiPropPathStr])) {
+			throw new MappingOperationFailedException('No EiField defined for EiPropPath \'' . $eiPropPathStr
 					. '\'.');
 		}
 	
-		return $this->mappableWrappers[$eiPropPathStr];
+		return $this->eiFieldWrappers[$eiPropPathStr];
 	}
 		
-	public function getMappableWrappers() {
-		return $this->mappableWrappers;
+	public function getEiFieldWrappers() {
+		return $this->eiFieldWrappers;
 	}
 	
-	public function containsMappableFork(EiPropPath $eiPropPath): bool {
-		return isset($this->mappableForks[(string) $eiPropPath]);
+	public function containsEiFieldFork(EiPropPath $eiPropPath): bool {
+		return isset($this->eiFieldForks[(string) $eiPropPath]);
 	}
 	
-	public function putMappableFork(EiPropPath $eiPropPath, MappableFork $mappableFork) {
-		$this->mappableFork[(string) $eiPropPath] = $mappableFork;
+	public function putEiFieldFork(EiPropPath $eiPropPath, EiFieldFork $eiFieldFork) {
+		$this->eiFieldFork[(string) $eiPropPath] = $eiFieldFork;
 	}
 	
-	public function removeMappableFork(EiPropPath $eiPropPath) {
-		unset($this->mappableForks[(string) $eiPropPath]);
+	public function removeEiFieldFork(EiPropPath $eiPropPath) {
+		unset($this->eiFieldForks[(string) $eiPropPath]);
 	}
 	
-	public function getMappableFork(EiPropPath $eiPropPath): MappableFork {
+	public function getEiFieldFork(EiPropPath $eiPropPath): EiFieldFork {
 		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->mappableForks[$eiPropPathStr])) {
-			throw new MappingOperationFailedException('No MappableFork defined for EiPropPath \''
+		if (!isset($this->eiFieldForks[$eiPropPathStr])) {
+			throw new MappingOperationFailedException('No EiFieldFork defined for EiPropPath \''
 					. $eiPropPathStr . '\'.');
 		}
 	
-		return $this->mappableForks[$eiPropPathStr];
+		return $this->eiFieldForks[$eiPropPathStr];
 	}
 	
-	public function getMappableForks(): array {
-		return $this->mappableForks;
+	public function getEiFieldForks(): array {
+		return $this->eiFieldForks;
 	}
 	
 	// 	public function read($entity, EiPropPath $eiPropPath) {
@@ -203,9 +203,9 @@ class EiMapping {
 	
 	// 	public function readAll($entity) {
 	// 		$values = array();
-	// 		foreach ($this->mappables as $id => $mappable) {
-	// 			if ($mappable->isReadable()) {
-	// 				$values[$id] = $mappable->read($entity);
+	// 		foreach ($this->eiFields as $id => $eiField) {
+	// 			if ($eiField->isReadable()) {
+	// 				$values[$id] = $eiField->read($entity);
 	// 			}
 	// 		}
 	// 		return $values;
@@ -245,10 +245,10 @@ class EiMapping {
 			$listener->onWrite($this);
 		}
 	
-		foreach ($this->mappableWrappers as $eiPropPathStr => $mappableWrapper) {
-			if ($mappableWrapper->isIgnored()) continue;
+		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
+			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			$mappableWrapper->getMappable()->write();
+			$eiFieldWrapper->getEiField()->write();
 		}
 	
 		foreach ($this->listeners as $listener) {
@@ -285,21 +285,21 @@ class EiMapping {
 		$this->ensureAccessible($ignoreAccessRestriction);
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		
-		return $this->getMappable($eiPropPath, $ignoreAccessRestriction)->getValue();
+		return $this->getEiField($eiPropPath, $ignoreAccessRestriction)->getValue();
 	}
 	
 	public function setValue($eiPropPath, $value, bool $ignoreAccessRestriction = false) {
 		$this->ensureAccessible($ignoreAccessRestriction);
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		
-		$this->getMappable($eiPropPath, $ignoreAccessRestriction)->setValue($value);
+		$this->getEiField($eiPropPath, $ignoreAccessRestriction)->setValue($value);
 	}
 
 	public function getOrgValue($eiPropPath, bool $ignoreAccessRestriction = false) {
 		$this->ensureAccessible($ignoreAccessRestriction);
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		
-		return $this->getMappingProfile($ignoreAccessRestriction)->getMappable($eiPropPath, $ignoreAccessRestriction)
+		return $this->getMappingProfile($ignoreAccessRestriction)->getEiField($eiPropPath, $ignoreAccessRestriction)
 				->getOrgValue();
 	}
 	
@@ -323,9 +323,9 @@ class EiMapping {
 			$listener->onValidate($this);
 		}
 		
-		foreach ($this->mappableWrappers as $eiPropPathStr => $mappableWrapper) {
-			if ($mappableWrapper->isIgnored()) continue;
-			$mappableWrapper->getMappable()->validate($mappingErrorInfo->getFieldErrorInfo(EiPropPath::create($eiPropPathStr)));
+		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
+			if ($eiFieldWrapper->isIgnored()) continue;
+			$eiFieldWrapper->getEiField()->validate($mappingErrorInfo->getFieldErrorInfo(EiPropPath::create($eiPropPathStr)));
 		}
 		
 		foreach ($this->constraints as $constraint) {

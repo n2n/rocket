@@ -94,8 +94,8 @@ class GuiFactory {
 			if ($result === null) continue;
 			
 			$eiObjectGui->putDisplayable($guiIdPath, $result->getDisplayable());
-			if (null !== ($mappableWrapper = $result->getMappableWrapper())) {
-				$eiObjectGui->putMappableWrapper($guiIdPath, $mappableWrapper);
+			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
+				$eiObjectGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
 			}
 			
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {

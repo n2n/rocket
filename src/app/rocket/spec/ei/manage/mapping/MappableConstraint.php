@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-interface MappableConstraint {
+interface EiFieldConstraint {
 	
 	public function acceptsValue($value): bool;
 	
-	public function check(Mappable $mappable): bool;
+	public function check(EiField $eiField): bool;
 	
-	public function validate(Mappable $mappable, FieldErrorInfo $fieldErrorInfo);
+	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo);
 }

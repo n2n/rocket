@@ -30,7 +30,7 @@ use rocket\spec\ei\EiPropPath;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 
 class GuiElementAssembler implements Savable {
 	private $guiDefinition;
@@ -79,10 +79,10 @@ class GuiElementAssembler implements Savable {
 		
 		if ($guiElement === null) return null;
 	
-		$mappableWrapper = $this->eiu->entry()->getMappableWrapper($eiPropPath);
+		$eiFieldWrapper = $this->eiu->entry()->getEiFieldWrapper($eiPropPath);
 		
 		if ($this->eiuGui->isReadOnly() || $guiElement->isReadOnly()) {
-			return new AssembleResult($guiElement, $mappableWrapper);
+			return new AssembleResult($guiElement, $eiFieldWrapper);
 		}
 		
 		$editable = $guiElement->getEditable();
@@ -91,7 +91,7 @@ class GuiElementAssembler implements Savable {
 		$this->savables[$id] = $editable;
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));
-		return new AssembleResult($guiElement, $mappableWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
+		return new AssembleResult($guiElement, $eiFieldWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
 	}
 	
 	private function assembleGuiFieldFork(GuiIdPath $guiIdPath, GuiFieldFork $guiFieldFork) {
@@ -107,12 +107,12 @@ class GuiElementAssembler implements Savable {
 		
 		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath);
 		$displayable = $result->getDisplayable();
-		$mappableWrapper = $result->getMappableWrapper();
+		$eiFieldWrapper = $result->getEiFieldWrapper();
 		$magPropertyPath = $result->getMagPropertyPath();
 		
 		
 		if ($this->eiuGui->isReadOnly() || $displayable->isReadOnly() || $magPropertyPath === null) {
-			return new AssembleResult($displayable, $mappableWrapper);
+			return new AssembleResult($displayable, $eiFieldWrapper);
 		}
 		
 		$magWrapper = null;
@@ -123,7 +123,7 @@ class GuiElementAssembler implements Savable {
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		
-		return new AssembleResult($displayable, $mappableWrapper, $this->forkMagWrappers[$id], 
+		return new AssembleResult($displayable, $eiFieldWrapper, $this->forkMagWrappers[$id], 
 				$this->forkedPropertyPaths[$id]->ext($magPropertyPath), $result->isMandatory());
 	}
 	
@@ -152,16 +152,16 @@ class GuiElementAssembler implements Savable {
 
 class AssembleResult {
 	private $displayable;
-	private $mappableWrapper;
+	private $eiFieldWrapper;
 	private $magWrapper;
 	private $magPropertyPath;
 	private $mandatory;
 // 	private $eiPropPath;
 	
-	public function __construct(Displayable $displayable, MappableWrapper $mappableWrapper = null, 
+	public function __construct(Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null, 
 			MagWrapper $magWrapper = null, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
 		$this->displayable = $displayable;
-		$this->mappableWrapper = $mappableWrapper;
+		$this->eiFieldWrapper = $eiFieldWrapper;
 		$this->magWrapper = $magWrapper;
 		$this->magPropertyPath = $magPropertyPath;
 		$this->mandatory = $mandatory;
@@ -178,8 +178,8 @@ class AssembleResult {
 		return $this->displayable;
 	}
 	
-	public function getMappableWrapper() {
-		return $this->mappableWrapper;
+	public function getEiFieldWrapper() {
+		return $this->eiFieldWrapper;
 	}
 	
 	/**

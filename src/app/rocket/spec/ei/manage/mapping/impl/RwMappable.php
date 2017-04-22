@@ -23,11 +23,11 @@ namespace rocket\spec\ei\manage\mapping\impl;
 
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
-use rocket\spec\ei\manage\mapping\MappableConstraint;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiFieldConstraint;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 
-abstract class RwMappable extends MappableAdapter {
+abstract class RwEiField extends EiFieldAdapter {
 	protected $readable;
 	protected $writable;
 	protected $validatable;
@@ -40,7 +40,7 @@ abstract class RwMappable extends MappableAdapter {
 		$this->validatable = $validatable;
 		
 		if ($validatable !== null) {
-			$this->getMappableConstraintSet()->add(new ValidatableMappableConstraint($eiObject, $validatable));
+			$this->getEiFieldConstraintSet()->add(new ValidatableEiFieldConstraint($eiObject, $validatable));
 		}
 	}
 
@@ -55,7 +55,7 @@ abstract class RwMappable extends MappableAdapter {
 			return $value;
 		}
 
-		throw new MappingOperationFailedException('Mappable is not readable.');
+		throw new MappingOperationFailedException('EiField is not readable.');
 	}
 
 	public function isWritable(): bool {
@@ -68,11 +68,11 @@ abstract class RwMappable extends MappableAdapter {
 			return;
 		}
 
-		throw new MappingOperationFailedException('Mappable is not writable.');
+		throw new MappingOperationFailedException('EiField is not writable.');
 	}
 }
 
-class ValidatableMappableConstraint implements MappableConstraint {
+class ValidatableEiFieldConstraint implements EiFieldConstraint {
 	private $eiObject;
 	private $validatable;
 	
@@ -82,25 +82,25 @@ class ValidatableMappableConstraint implements MappableConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\MappableConstraint::acceptsValue($value)
+	 * @see \rocket\spec\ei\manage\mapping\EiFieldConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value): bool {
-		$this->validatable->testMappableValue($this->eiObject, $value);
+		$this->validatable->testEiFieldValue($this->eiObject, $value);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\MappableConstraint::check($mappable)
+	 * @see \rocket\spec\ei\manage\mapping\EiFieldConstraint::check($eiField)
 	 */
-	public function check(Mappable $mappable): bool {
-		return $this->validatable->testMappableValue($this->eiObject, $mappable->getValue());	
+	public function check(EiField $eiField): bool {
+		return $this->validatable->testEiFieldValue($this->eiObject, $eiField->getValue());	
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\MappableConstraint::validate($mappable, $fieldErrorInfo)
+	 * @see \rocket\spec\ei\manage\mapping\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
-	public function validate(Mappable $mappable, FieldErrorInfo $fieldErrorInfo) {
-		return $this->validatable->validateMappableValue($this->eiObject, $mappable->getValue(), $fieldErrorInfo);
+	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
+		return $this->validatable->validateEiFieldValue($this->eiObject, $eiField->getValue(), $fieldErrorInfo);
 	}	
 }

@@ -24,8 +24,8 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\MappableEiProp;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\component\field\EiFieldEiProp;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\EiObject;
@@ -37,7 +37,7 @@ use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiPropAdapter;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 abstract class RelationEiPropAdapter extends ConfObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
-		MappableEiProp, Readable, Writable, Copyable {
+		EiFieldEiProp, Readable, Writable, Copyable {
 	/**
 	 * @var EiPropRelation
 	 */
@@ -60,11 +60,11 @@ abstract class RelationEiPropAdapter extends ConfObjectPropertyEiPropAdapter imp
 		return new RelationEiPropConfigurator($this);
 	}
 	
-	public function isMappable(): bool {
+	public function isEiField(): bool {
 		return true;
 	}
 	
-	public function buildMappableFork(EiObject $eiObject, Mappable $mappable = null) {
+	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
 		return null;
 	}
 	

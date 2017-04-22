@@ -31,15 +31,15 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class ManyToOneGuiElement implements GuiElement {
 	private $label;
-	private $toOneMappable;
+	private $toOneEiField;
 	private $targetEiFrame;
 	private $editable;
 	private $toOneMag;
 	
-	public function __construct(string $label, ToOneMappable $toOneMappable, EiFrame $targetEiFrame, 
+	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame, 
 			Editable $editable = null) {
 		$this->label = $label;
-		$this->toOneMappable = $toOneMappable;
+		$this->toOneEiField = $toOneEiField;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -64,7 +64,7 @@ class ManyToOneGuiElement implements GuiElement {
 	
 	public function createOutputUiComponent(HtmlView $view) {
 		$html = $view->getHtmlBuilder();
-		$targetRelationEntry = $this->toOneMappable->getValue();
+		$targetRelationEntry = $this->toOneEiField->getValue();
 		
 		if ($targetRelationEntry === null || $targetRelationEntry->isNew()) return null;
 		

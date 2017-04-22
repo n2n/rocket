@@ -27,7 +27,7 @@ use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-class SimpleMappable extends RwMappable {
+class SimpleEiField extends RwEiField {
 	private $typeConstraint;
 	private $copyable;
 	private $nullReadAllowed = true;
@@ -73,17 +73,17 @@ class SimpleMappable extends RwMappable {
 		try {
 			$this->typeConstraint->validate($value);
 		} catch (ValueIncompatibleWithConstraintsException $e) {
-			throw new \InvalidArgumentException('Mappable can not adopt passed value.', 0, $e);
+			throw new \InvalidArgumentException('EiField can not adopt passed value.', 0, $e);
 		}
 	}
 	
-	public function copyMappable(Eiu $copyEiu) {
+	public function copyEiField(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$mappable = new SimpleMappable($copyEiu->entry()->getEiObject(), $this->typeConstraint, $this->readable, $this->writable,
+		$eiField = new SimpleEiField($copyEiu->entry()->getEiObject(), $this->typeConstraint, $this->readable, $this->writable,
 				$this->validatable, $this->copyable);
-		$mappable->setNullReadAllowed($this->isNullReadAllowed());
-		$mappable->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
-		return $mappable;
+		$eiField->setNullReadAllowed($this->isNullReadAllowed());
+		$eiField->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
+		return $eiField;
 	}
 }

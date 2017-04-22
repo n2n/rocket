@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation;
 
-use rocket\spec\ei\manage\mapping\MappableSource;
+use rocket\spec\ei\manage\mapping\EiFieldSource;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\component\field\DraftableEiProp;
@@ -35,7 +35,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
+use rocket\spec\ei\component\field\impl\relation\model\ToOneEiField;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiField, DraftableEiProp, 
 		DraftProperty {
@@ -45,10 +45,10 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		parent::setEntityProperty($entityProperty);
 	}
 
-	public function buildMappable(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu) {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
 	
-		return new ToOneMappable($eiu->entry()->getEiObject(), $this, $this,
+		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
 	}
 	
@@ -84,7 +84,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	}
 	
 	/**
-	 * @param MappableSource $eiObject
+	 * @param EiFieldSource $eiObject
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */

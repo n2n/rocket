@@ -26,7 +26,7 @@ use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 
 class GuiDefinition {	
 	private $levelGuiFields = array();
@@ -224,17 +224,17 @@ class GuiDefinition {
 		}
 	}
 	
-	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
 		$ids = $guiIdPath->toArray();
 		$id = array_shift($ids);
 		if (empty($ids)) {
-			return $eiMapping->getMappableWrapper(new EiPropPath(array($id)));
+			return $eiMapping->getEiFieldWrapper(new EiPropPath(array($id)));
 		}
 		
 		$guiFieldFork = $guiDefinition->getLevelGuiFieldForkById($id);
-		$mappableWrapper = $guiFieldFork->determineMappableWrapper($eiMapping, $guiIdPath);
-		ArgUtils::valTypeReturn($mappableWrapper, MappableWrapper::class, $guiFieldFork, 'determineMappableWrapper', true);
-		return $mappableWrapper;
+		$eiFieldWrapper = $guiFieldFork->determineEiFieldWrapper($eiMapping, $guiIdPath);
+		ArgUtils::valTypeReturn($eiFieldWrapper, EiFieldWrapper::class, $guiFieldFork, 'determineEiFieldWrapper', true);
+		return $eiFieldWrapper;
 	}
 	
 	public function getGuiFieldForks() {
@@ -317,14 +317,14 @@ class SummarizedStringBuilder {
 		}
 		
 		foreach ($guiDefinition->getGuiFieldForks() as $id => $guiFieldFork) {
-			$forkedMappableSource = null;
+			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
-				$forkedMappableSource = $guiFieldFork->determineForkedEiObject($eiObject);
+				$forkedEiFieldSource = $guiFieldFork->determineForkedEiObject($eiObject);
 			}
 			
 			$ids = $baseIds;
 			$ids[] = $id;
-			$this->replaceFields($ids, $guiFieldFork->getForkedGuiDefinition(), $forkedMappableSource);
+			$this->replaceFields($ids, $guiFieldFork->getForkedGuiDefinition(), $forkedEiFieldSource);
 		}
 	}
 	

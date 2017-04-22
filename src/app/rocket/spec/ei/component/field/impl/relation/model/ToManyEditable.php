@@ -33,7 +33,7 @@ class ToManyEditable implements Editable {
 	private $label;
 	private $min;
 	private $max;
-	private $toManyMappable;
+	private $toManyEiField;
 	private $targetReadEiFrame;
 	private $targetEditEiFrame;
 	private $selectOverviewToolsUrl;
@@ -41,12 +41,12 @@ class ToManyEditable implements Editable {
 	private $draftMode = false;
 	private $targetOrderEiPropPath;
 	
-	public function __construct(string $label, ToManyMappable $toManyMappable,
+	public function __construct(string $label, ToManyEiField $toManyEiField,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, int $min, int $max = null) {
 		$this->label = $label;
 		$this->min = $min;
 		$this->max = $max;
-		$this->toManyMappable = $toManyMappable;
+		$this->toManyEiField = $toManyEiField;
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
 	}
@@ -88,7 +88,7 @@ class ToManyEditable implements Editable {
 	public function createMag(string $propertyName): Mag {
 		$this->toManyMag = new ToManyMag($propertyName, $this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
 				$this->min, $this->max);
-		$this->toManyMag->setValue($this->toManyMappable->getValue());
+		$this->toManyMag->setValue($this->toManyEiField->getValue());
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toManyMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->toManyMag->setDraftMode($this->draftMode);
@@ -99,6 +99,6 @@ class ToManyEditable implements Editable {
 	public function save() {
 		IllegalStateException::assertTrue($this->toManyMag !== null);
 
-		$this->toManyMappable->setValue($this->toManyMag->getValue());
+		$this->toManyEiField->setValue($this->toManyMag->getValue());
 	}
 }

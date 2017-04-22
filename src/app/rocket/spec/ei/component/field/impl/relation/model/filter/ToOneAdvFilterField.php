@@ -25,15 +25,15 @@ use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
 use rocket\spec\ei\manage\mapping\EiMappingConstraint;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
-use rocket\spec\ei\manage\mapping\MappableConstraint;
+use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 
 class ToOneEiMappingFilterField extends RelationFilterField implements EiMappingFilterField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\EiMappingFilterField::createMappableConstraint()
+	 * @see \rocket\spec\ei\manage\critmod\filter\EiMappingFilterField::createEiFieldConstraint()
 	 */
-	public function createMappableConstraint(): MappableConstraint {
+	public function createEiFieldConstraint(): EiFieldConstraint {
 		
 	}
 	

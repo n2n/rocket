@@ -1,26 +1,26 @@
 <?php
 namespace rocket\spec\ei\manage\mapping\impl;
 
-use rocket\spec\ei\manage\mapping\MappableWrapper;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 
-class MappableWrapperWrapper implements MappableWrapper {
-	private $mappableWrappers = array();
+class EiFieldWrapperWrapper implements EiFieldWrapper {
+	private $eiFieldWrappers = array();
 	
-	public function __construct(array $mappableWrappers) {
-		$this->mappableWrappers = $mappableWrappers;
+	public function __construct(array $eiFieldWrappers) {
+		$this->eiFieldWrappers = $eiFieldWrappers;
 	}
 	
 	public function isIgnored(): bool {
-		foreach ($this->mappableWrappers as $mappableWrapper) {
-			if (!$mappableWrapper->isIgnored()) return false;
+		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+			if (!$eiFieldWrapper->isIgnored()) return false;
 		}
 		
 		return true;
 	}
 	
 	public function setIgnored(bool $ignored) {
-		foreach ($this->mappableWrappers as $mappableWrapper) {
-			$mappableWrapper->setIgnored($ignored);
+		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+			$eiFieldWrapper->setIgnored($ignored);
 		}
 	}
 }

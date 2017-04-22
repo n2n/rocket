@@ -90,7 +90,7 @@ class CritmodFactory {
 	}
 	
 	public function createEiMappingFilterDefinition(N2nContext $n2nContext): EiMappingFilterDefinition {
-		$mappableFilterDefinition = new EiMappingFilterDefinition();
+		$eiFieldFilterDefinition = new EiMappingFilterDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof FilterableEiProp)) continue;
@@ -100,11 +100,11 @@ class CritmodFactory {
 					'buildEiMappingFilterField', true);
 
 			if ($eiMappingFilterField !== null) {
-				$mappableFilterDefinition->putEiMappingFilterField(EiPropPath::from($eiProp), $eiMappingFilterField);
+				$eiFieldFilterDefinition->putEiMappingFilterField(EiPropPath::from($eiProp), $eiMappingFilterField);
 			}
 		}
 		
-		return $mappableFilterDefinition;
+		return $eiFieldFilterDefinition;
 	}
 	
 	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {

@@ -36,7 +36,7 @@ use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
-use rocket\spec\ei\manage\mapping\Mappable;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 

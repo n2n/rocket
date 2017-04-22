@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
+use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use rocket\spec\ei\manage\DraftEiObject;
 use rocket\spec\ei\manage\LiveEiObject;
 use n2n\reflection\CastUtils;
@@ -166,14 +166,14 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		$eiMapping = $eiu->entry()->getEiMapping();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationMappable = $eiMapping->getMappable(EiPropPath::from($this));
+		$relationEiField = $eiMapping->getEiField(EiPropPath::from($this));
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
 		
 		$toManyEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($eiMapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
 			
-			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationMappable, $targetReadEiFrame,
+			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
 				
 			$draftMode = $eiMapping->getEiObject()->isDraft();
@@ -186,7 +186,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			$toManyEditable->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		}
 		
-		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationMappable, $targetReadEiFrame, $toManyEditable);
+		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toManyEditable);
 	}
 	
 // 	const T_ALIAS = 't';

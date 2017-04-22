@@ -137,7 +137,7 @@ class EiuEntry {
 	public function getValues() {
 		$eiMapping = $this->getEiMapping();
 		$values = array();
-		foreach (array_keys($eiMapping->getMappableWrappers()) as $eiPropPathStr) {
+		foreach (array_keys($eiMapping->getEiFieldWrappers()) as $eiPropPathStr) {
 			$values[$eiPropPathStr] = $this->getEiMapping()->getValue($eiPropPathStr);
 		}
 		return $values;
@@ -152,14 +152,14 @@ class EiuEntry {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
 				->getScalarEiPropertyByFieldPath($eiPropPath);
-		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToMappableValue($scalarValue));
+		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToEiFieldValue($scalarValue));
 	}
 	
 	public function getScalarValue($eiPropPath) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
 				->getScalarEiPropertyByFieldPath($eiPropPath);
-		return $scalarEiProperty->mappableValueToScalarValue($this->getValue($eiPropPath));
+		return $scalarEiProperty->eiFieldValueToScalarValue($this->getValue($eiPropPath));
 	}
 	
 	/**
@@ -291,11 +291,11 @@ class EiuEntry {
 	 * @param unknown $eiPropPath
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
-	 * @return \rocket\spec\ei\manage\mapping\MappableWrapper|null
+	 * @return \rocket\spec\ei\manage\mapping\EiFieldWrapper|null
 	 */
-	public function getMappableWrapper($eiPropPath, bool $required = false) {
+	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->getEiMapping()->getMappableWrapper(EiPropPath::create($eiPropPath));
+			return $this->getEiMapping()->getEiFieldWrapper(EiPropPath::create($eiPropPath));
 		} catch (MappingOperationFailedException $e) {
 			if ($required) throw $e;
 		}
@@ -309,12 +309,12 @@ class EiuEntry {
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
 	 * @throws GuiException
-	 * @return \rocket\spec\ei\manage\mapping\MappableWrapper|null
+	 * @return \rocket\spec\ei\manage\mapping\EiFieldWrapper|null
 	 */
-	public function getMappableWrapperByGuiIdPath($guiIdPath, bool $required = false) {
+	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getEiMask()->getEiEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineMappableWrapper($this->getEiMapping(), GuiIdPath::createFromExpression($guiIdPath));
+			return $guiDefinition->determineEiFieldWrapper($this->getEiMapping(), GuiIdPath::createFromExpression($guiIdPath));
 		} catch (MappingOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {

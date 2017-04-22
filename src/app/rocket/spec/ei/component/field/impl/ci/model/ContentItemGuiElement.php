@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\ci\model;
 
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
@@ -35,18 +35,18 @@ class ContentItemGuiElement implements GuiElement {
 	private $label;
 	private $panelConfigs;
 	private $mandatory;
-	private $toManyMappable;
+	private $toManyEiField;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, array $panelConfigs, ToManyMappable $toManyMappable, EiFrame $targetEiFrame,
+	public function __construct(string $label, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->panelConfigs = $panelConfigs;
-		$this->toManyMappable = $toManyMappable;
+		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -81,7 +81,7 @@ class ContentItemGuiElement implements GuiElement {
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
 		$groupedUiComponents = array();
-		foreach ($this->toManyMappable->getValue() as $targetRelationEntry) {
+		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
 			$targetEiMapping = null;
 			if ($targetRelationEntry->hasEiMapping()) {
 				$targetEiMapping = $targetRelationEntry->getEiMapping();
