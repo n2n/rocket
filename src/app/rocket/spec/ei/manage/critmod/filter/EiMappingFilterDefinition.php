@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\mapping\EiMappingConstraint;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
@@ -37,9 +37,9 @@ class EiMappingFilterDefinition extends FilterDefinition {
 		throw new UnsupportedOperationException();
 	}
 	
-	public function putEiMappingFilterField(EiFieldPath $eiFieldPath, EiMappingFilterField $eiMappingFilterField) {
-		$this->eiMappingFilterFields[(string) $eiFieldPath] = $eiMappingFilterField;
-		parent::putFilterField($eiFieldPath, $eiMappingFilterField);
+	public function putEiMappingFilterField(EiPropPath $eiPropPath, EiMappingFilterField $eiMappingFilterField) {
+		$this->eiMappingFilterFields[(string) $eiPropPath] = $eiMappingFilterField;
+		parent::putFilterField($eiPropPath, $eiMappingFilterField);
 	}
 	
 	public function getEiMappingFilterFields(): array {
@@ -56,7 +56,7 @@ class EiMappingFilterDefinition extends FilterDefinition {
 			}
 				
 			try {
-				$eiMappingConstraints[] = new MappableEiMappingConstraint(EiFieldPath::create($id),
+				$eiMappingConstraints[] = new MappableEiMappingConstraint(EiPropPath::create($id),
 						$this->eiMappingFilterFields[$id]->createMappableConstraint(
 								$subFilterItemData->getAttributes()));
 			} catch (AttributesException $e) {}
@@ -86,11 +86,11 @@ class EiMappingConstraintGroup implements EiMappingConstraint {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptsValue($eiFieldPath, $value)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptsValue($eiPropPath, $value)
 	 */
-	public function acceptsValue(EiFieldPath $eiFieldPath, $value): bool {
+	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
 		foreach ($this->eiMappingConstraints as $eiMappingConstraint) {
-			if ($eiMappingConstraint->acceptsValue($eiFieldPath)) {
+			if ($eiMappingConstraint->acceptsValue($eiPropPath)) {
 				if (!$this->andUsed) return true;
 			} else {
 				if ($this->andUsed) return false;
@@ -134,20 +134,20 @@ class EiMappingConstraintGroup implements EiMappingConstraint {
 }
 
 class MappableEiMappingConstraint implements EiMappingConstraint {
-	private $eiFieldPath;
+	private $eiPropPath;
 	private $mappableConstraint;
 	
-	public function __construct(EiFieldPath $eiFieldPath, MappableConstraint $mappableConstraint) {
-		$this->eiFieldPath = $eiFieldPath;
+	public function __construct(EiPropPath $eiPropPath, MappableConstraint $mappableConstraint) {
+		$this->eiPropPath = $eiPropPath;
 		$this->mappableConstraint = $mappableConstraint;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptsValue($eiFieldPath, $value)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptsValue($eiPropPath, $value)
 	 */
-	public function acceptsValue(EiFieldPath $eiFieldPath, $value): bool {
-		if (!$this->eiFieldPath->equals($eiFieldPath)) return;
+	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
+		if (!$this->eiPropPath->equals($eiPropPath)) return;
 		
 		return $this->mappableConstraint->acceptsValue($value);
 	}
@@ -158,7 +158,7 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	 */
 	public function check(EiMapping $eiMapping): bool {
 		return $this->mappableConstraint->check($eiMapping
-				->getMappable($this->eiFieldPath));
+				->getMappable($this->eiPropPath));
 	}
 
 	/**
@@ -166,7 +166,7 @@ class MappableEiMappingConstraint implements EiMappingConstraint {
 	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::validate($eiMapping)
 	 */
 	public function validate(EiMapping $eiMapping) {
-		return $this->mappableConstraint->validate($eiMapping->getMappable($this->eiFieldPath), 
-				$eiMapping->getMappingErrorInfo()->getFieldErrorInfo($this->eiFieldPath));
+		return $this->mappableConstraint->validate($eiMapping->getMappable($this->eiPropPath), 
+				$eiMapping->getMappingErrorInfo()->getFieldErrorInfo($this->eiPropPath));
 	}
 }

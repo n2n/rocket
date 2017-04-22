@@ -124,9 +124,9 @@ class SpecRawer {
 		}
 		
 		$rawData[RawDef::EI_DEF_FIELDS_KEY] = array();
-		foreach ($extraction->getEiFieldExtractions() as $eiFieldExtraction) {
-			$rawData[RawDef::EI_DEF_FIELDS_KEY][$eiFieldExtraction->getId()] 
-					= $this->buildEiFieldExtractionRawData($eiFieldExtraction);
+		foreach ($extraction->getEiPropExtractions() as $eiPropExtraction) {
+			$rawData[RawDef::EI_DEF_FIELDS_KEY][$eiPropExtraction->getId()] 
+					= $this->buildEiPropExtractionRawData($eiPropExtraction);
 		}
 	
 		$rawData[RawDef::EI_DEF_COMMANDS_KEY] = array();
@@ -144,7 +144,7 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	private function buildEiFieldExtractionRawData(EiFieldExtraction $extraction) {
+	private function buildEiPropExtractionRawData(EiPropExtraction $extraction) {
 		$rawData = array();
 		$rawData[RawDef::EI_COMPONENT_CLASS_KEY] = $extraction->getClassName();
 		$rawData[RawDef::EI_COMPONENT_PROPS_KEY] = $extraction->getProps();

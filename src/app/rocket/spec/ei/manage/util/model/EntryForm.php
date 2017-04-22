@@ -190,14 +190,14 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	private $eiFrame;
-// 	private $eiEntry;
+// 	private $eiObject;
 // 	private $readOnly;
 	
 // 	private $eiSpec;
 // 	private $subs;
 	
-// 	private $visibleEiFields = array();
-// 	private $subVisibleEiFields = array();
+// 	private $visibleEiProps = array();
+// 	private $subVisibleEiProps = array();
 	
 // 	protected $selectedTypeId;
 // 	protected $MagForm;
@@ -205,13 +205,13 @@ class EntryForm implements Dispatchable {
 // 	/**
 // 	 * @param EiFrame $eiFrame 
 // 	 * @param EiSpec $eiSpec The Script of the Entity which ....
-// 	 * @param EiEntry $eiEntry
+// 	 * @param EiObject $eiObject
 // 	 * @param string $readOnly
 // 	 */
-// 	public function __construct(EiFrame $eiFrame,  $eiSpec, EiEntry $eiEntry = null, $readOnly = false) {
+// 	public function __construct(EiFrame $eiFrame,  $eiSpec, EiObject $eiObject = null, $readOnly = false) {
 // 		$this->eiFrame = $eiFrame;
 // 		$this->eiSpec = $eiSpec;
-// 		$this->eiEntry = $eiEntry;
+// 		$this->eiObject = $eiObject;
 // 		$this->readOnly = $readOnly;
 // 		$this->selectedTypeId = $eiSpec->getId();
 // 		$this->eiSpecs[$this->selectedTypeId] = $eiSpec;
@@ -231,12 +231,12 @@ class EntryForm implements Dispatchable {
 // 				}
 // 			}
 // 		} else {
-// 			$object = $eiEntry->getEntityObj();
+// 			$object = $eiObject->getEntityObj();
 // 			$entityModel = EntityModelManager::getInstance()->getEntityModelByObject($object);
 				
 // 			$subs = $eiSpec->getAllSubs();
 
-// 			if (!$eiEntry->isDraft() && !$eiEntry->hasTranslation() 
+// 			if (!$eiObject->isDraft() && !$eiObject->hasTranslation() 
 // 					&& (sizeof($subs) || $this->eiSpec->getEntityModel()->isAbstract())) {
 // 				$this->subs = array();
 // 			}
@@ -255,45 +255,45 @@ class EntryForm implements Dispatchable {
 // 				}
 // 			}
 				
-// 			$this->readFromObject($eiEntry->getEntityObj());
+// 			$this->readFromObject($eiObject->getEntityObj());
 // 		}
 // 	}
 	
 // 	private function createMagCollection(EiSpec $eiSpec, $levelOnly) {
 // 		$eiSpecId = $eiSpec->getId();
-// 		if ($levelOnly && !isset($this->subVisibleEiFields[$eiSpecId])) {
-// 			$this->subVisibleEiFields[$eiSpecId] = array();
+// 		if ($levelOnly && !isset($this->subVisibleEiProps[$eiSpecId])) {
+// 			$this->subVisibleEiProps[$eiSpecId] = array();
 // 		}
 		
 // 		$magCollection = new MagCollection();
-// 		foreach ($eiSpec->getEiFieldCollection()->toArray() as $eiFieldId => $eiField) {
-// 			if (!($eiField instanceof Displayable) || !$eiField->isDisplayInEditViewEnabled()) continue;
+// 		foreach ($eiSpec->getEiPropCollection()->toArray() as $eiPropId => $eiProp) {
+// 			if (!($eiProp instanceof Displayable) || !$eiProp->isDisplayInEditViewEnabled()) continue;
 
 // 			if (!$levelOnly) {
-// 				$this->visibleEiFields[$eiFieldId] = $eiField;
+// 				$this->visibleEiProps[$eiPropId] = $eiProp;
 // 			}
 			
-// 			if (!($eiField instanceof Editable) || $eiField->isReadOnly() || $this->readOnly
-// 					|| (isset($this->eiEntry) && !$this->eiEntry->isWritingAllowed($eiField))) continue;
+// 			if (!($eiProp instanceof Editable) || $eiProp->isReadOnly() || $this->readOnly
+// 					|| (isset($this->eiObject) && !$this->eiObject->isWritingAllowed($eiProp))) continue;
 			
 // 			if ($levelOnly) {
-// 				if ($this->MagForm->containsPropertyName($eiField->getPropertyName())) continue;
-// 				$this->subVisibleEiFields[$eiSpecId][$eiFieldId] = $eiField;
+// 				if ($this->MagForm->containsPropertyName($eiProp->getPropertyName())) continue;
+// 				$this->subVisibleEiProps[$eiSpecId][$eiPropId] = $eiProp;
 // 			}
 			
-// 			if (isset($this->eiEntry)) {
-// 				if ($this->eiEntry->isDraft() && !($eiField instanceof DraftableEiField)) {
+// 			if (isset($this->eiObject)) {
+// 				if ($this->eiObject->isDraft() && !($eiProp instanceof DraftableEiProp)) {
 // 					continue;
 // 				}
 			
-// 				if ($this->eiEntry->hasTranslation() && !($eiField instanceof TranslatableEiField
-// 						&& $eiField->isTranslationEnabled())) {
+// 				if ($this->eiObject->hasTranslation() && !($eiProp instanceof TranslatableEiProp
+// 						&& $eiProp->isTranslationEnabled())) {
 // 					continue;
 // 				}
 // 			}
 				
-// 			$magCollection->addMag($eiField->getPropertyName(), 
-// 					$eiField->createOption($this->eiFrame, $this->eiEntry));
+// 			$magCollection->addMag($eiProp->getPropertyName(), 
+// 					$eiProp->createOption($this->eiFrame, $this->eiObject));
 // 		}
 		
 // 		return $magCollection;
@@ -310,16 +310,16 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	private function readProperties(EiSpec $eiSpec, MagDispatchable $MagForm, Entity $object) {
-// 		foreach ($eiSpec->getEiFieldCollection()->toArray() as $eiField) {
-// 			if (!($eiField instanceof Editable)
-// 				|| !$MagForm->containsPropertyName($eiField->getPropertyName())) continue;
+// 		foreach ($eiSpec->getEiPropCollection()->toArray() as $eiProp) {
+// 			if (!($eiProp instanceof Editable)
+// 				|| !$MagForm->containsPropertyName($eiProp->getPropertyName())) continue;
 				
-// 			$propertyName = $eiField->getPropertyName();
-// 			$accessProxy = $eiField->getPropertyAccessProxy();
+// 			$propertyName = $eiProp->getPropertyName();
+// 			$accessProxy = $eiProp->getPropertyAccessProxy();
 			
 // 			$MagForm->setAttributeValue($propertyName,
-// 					$eiField->propertyValueToOptionAttributeValue(
-// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiEntry));
+// 					$eiProp->propertyValueToOptionAttributeValue(
+// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiObject));
 // 		}
 // 	}
 	
@@ -334,16 +334,16 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	public function writeProperties(EiSpec $eiSpec, MagDispatchable $MagForm, Entity $object) {
-// 		foreach ($eiSpec->getEiFieldCollection()->toArray() as $eiField) {
-// 			if (!($eiField instanceof Editable)) continue;
+// 		foreach ($eiSpec->getEiPropCollection()->toArray() as $eiProp) {
+// 			if (!($eiProp instanceof Editable)) continue;
 						
-// 			$propertyName = $eiField->getPropertyName();
+// 			$propertyName = $eiProp->getPropertyName();
 // 			if (!$MagForm->containsPropertyName($propertyName)) continue;
 				
-// 			$accessProxy = $eiField->getPropertyAccessProxy();
-// 			$accessProxy->setValue($object, $eiField->optionAttributeValueToPropertyValue(
+// 			$accessProxy = $eiProp->getPropertyAccessProxy();
+// 			$accessProxy->setValue($object, $eiProp->optionAttributeValueToPropertyValue(
 // 					$MagForm->getAttributeValue($propertyName), $MagForm->getAttributes(),
-// 					$object, $this->eiFrame, $this->eiEntry));
+// 					$object, $this->eiFrame, $this->eiObject));
 // 		}
 // 	}
 	
@@ -355,8 +355,8 @@ class EntryForm implements Dispatchable {
 // 		return $this->eiSpec;
 // 	}
 	
-// 	public function getEiEntry() {
-// 		return $this->eiEntry;
+// 	public function getEiObject() {
+// 		return $this->eiObject;
 // 	}
 	
 // 	public function createPropertyPath($propertyName, PropertyPath $basePropertyPath = null) {
@@ -368,11 +368,11 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	public function isNew() {
-// 		return !isset($this->eiEntry);
+// 		return !isset($this->eiObject);
 // 	}
 	
-// 	public function getVisibleEiFields() {
-// 		return $this->visibleEiFields;
+// 	public function getVisibleEiProps() {
+// 		return $this->visibleEiProps;
 // 	}
 	
 // 	public function containsPropertyName($propertyName) {
@@ -412,12 +412,12 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	public function getSubIds() {
-// 		return array_keys($this->subVisibleEiFields);
+// 		return array_keys($this->subVisibleEiProps);
 // 	}
 	
-// 	public function getSubVisibleEiFields($scriptId) {
-// 		if (isset($this->subVisibleEiFields[$scriptId])) {
-// 			return $this->subVisibleEiFields[$scriptId]; 
+// 	public function getSubVisibleEiProps($scriptId) {
+// 		if (isset($this->subVisibleEiProps[$scriptId])) {
+// 			return $this->subVisibleEiProps[$scriptId]; 
 // 		}
 		
 // 		throw IllegalStateException::createDefault(); 

@@ -140,7 +140,7 @@ class OverviewModel implements Dispatchable {
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiuEntry = $this->eiuFrame->entry($entityObj);
 			$this->eiuEntryGuis[$eiuEntry->getLiveIdRep()] = $eiuEntry->newGui(true, false);
-// 			$eiMapping = $this->eiuFrame->createEiMapping($this->eiuFrame->createEiEntryFromLiveEntry($entityObj));
+// 			$eiMapping = $this->eiuFrame->createEiMapping($this->eiuFrame->createEiObjectFromEiEntityObj($entityObj));
 // 			$this->entryGuis[$eiMapping->getIdRep()] = new EntryGui($this->eiuFrame->getEiMask()
 // 					->createListEntryGuiModel($this->eiuFrame->getEiFrame(), $eiMapping, false)); 
 		}
@@ -152,7 +152,7 @@ class OverviewModel implements Dispatchable {
 		$this->entryGuiTree = new EntryGuiTree();
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 // 			$eiMapping = $this->eiuFrame->createEiMapping(
-// 					$this->eiuFrame->createEiEntryFromLiveEntry($nestedSetItem->getEntityObj()));
+// 					$this->eiuFrame->createEiObjectFromEiEntityObj($nestedSetItem->getEntityObj()));
 
 			$eiuEntry = $this->eiuFrame->entry($nestedSetItem->getEntityObj());
 			
@@ -221,9 +221,9 @@ class OverviewModel implements Dispatchable {
 		
 		$selectedObjects = array();
 		foreach ($this->selectedObjectIds as $entryId) {
-			if (!isset($this->eiEntrys[$entryId])) continue;
+			if (!isset($this->eiObjects[$entryId])) continue;
 			
-			$selectedObjects[$entryId] = $this->eiEntrys[$entryId];
+			$selectedObjects[$entryId] = $this->eiObjects[$entryId];
 		}
 		
 		if (!sizeof($selectedObjects)) return;

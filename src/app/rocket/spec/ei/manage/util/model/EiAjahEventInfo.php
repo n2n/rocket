@@ -3,7 +3,7 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\ajah\AjahEventInfo;
 use rocket\spec\ei\EiSpec;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 
 class EiAjahEventInfo extends AjahEventInfo {
 	
@@ -13,24 +13,24 @@ class EiAjahEventInfo extends AjahEventInfo {
 		}
 	}
 	
-	public function eiEntryChanged(...$eiEntryArgs) {
-		foreach ($eiEntryArgs as $eiEntryArg) {
-			$this->eiEntryMod($eiEntryArg, false);
+	public function eiObjectChanged(...$eiObjectArgs) {
+		foreach ($eiObjectArgs as $eiObjectArg) {
+			$this->eiObjectMod($eiObjectArg, false);
 		}
 	}
 	
-	public function eiEntryRemoved(...$eiEntryArgs) {
-		foreach ($eiEntryArgs as $eiEntryArg) {
-			$this->eiEntryMod($eiEntryArg, true);
+	public function eiObjectRemoved(...$eiObjectArgs) {
+		foreach ($eiObjectArgs as $eiObjectArg) {
+			$this->eiObjectMod($eiObjectArg, true);
 		}
 	}
 	
-	private function eiEntryMod($eiEntryArg, bool $removed) {
-		$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg', null, true);
+	private function eiObjectMod($eiObjectArg, bool $removed) {
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
 		if ($removed) {
-			$this->itemRemoved(self::buildTypeId($eiEntry->getLiveEntry()->getEiSpec()), self::buildItemId($eiEntry));
+			$this->itemRemoved(self::buildTypeId($eiObject->getEiEntityObj()->getEiSpec()), self::buildItemId($eiObject));
 		} else {
-			$this->itemChanged(self::buildTypeId($eiEntry->getLiveEntry()->getEiSpec()), self::buildItemId($eiEntry));
+			$this->itemChanged(self::buildTypeId($eiObject->getEiEntityObj()->getEiSpec()), self::buildItemId($eiObject));
 		}
 	}
 	
@@ -39,15 +39,15 @@ class EiAjahEventInfo extends AjahEventInfo {
 	}
 	
 	/**
-	 * @param EiEntry $eiEntry
+	 * @param EiObject $eiObject
 	 * @return string
 	 */
-	public static function buildItemId(EiEntry $eiEntry) {
-		if ($eiEntry->isDraft()) {
-			return 'draft-id-' . $eiEntry->getDraft()->getId();
+	public static function buildItemId(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
+			return 'draft-id-' . $eiObject->getDraft()->getId();
 		}
 		
-		return 'live-id-rep-' . $eiEntry->getLiveEntry()->getId();
+		return 'live-id-rep-' . $eiObject->getEiEntityObj()->getId();
 	}
 	
 	public function toAttrs(): array {

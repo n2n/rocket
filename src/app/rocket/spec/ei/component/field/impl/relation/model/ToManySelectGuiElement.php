@@ -28,20 +28,20 @@ use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class ToManySelectGuiElement implements GuiElement {
-	private $eiField;
+	private $eiProp;
 	private $eiu;
 	private $targetEiFrame;
 	private $editable;
 	private $toOneMag;
 	
-	public function __construct(EiField $eiField, Eiu $eiu, EiFrame $targetEiFrame, 
+	public function __construct(EiProp $eiProp, Eiu $eiu, EiFrame $targetEiFrame, 
 			Editable $editable = null) {
-		$this->eiField = $eiField;
+		$this->eiProp = $eiProp;
 		$this->eiu = $eiu;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
@@ -55,7 +55,7 @@ class ToManySelectGuiElement implements GuiElement {
 	 * @return string
 	 */
 	public function getUiOutputLabel(): string {
-		return $this->eiField->getLabelLstr();
+		return $this->eiProp->getLabelLstr();
 	}
 	
 	/**
@@ -86,7 +86,7 @@ class ToManySelectGuiElement implements GuiElement {
 		}
 
 		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
-				->getEiRelation($this->eiField->getId()))) {
+				->getEiRelation($this->eiProp->getId()))) {
 			return $this->createUiLink($relation->getEiFrame(), $label, $view);
 		}
 

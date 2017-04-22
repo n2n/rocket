@@ -26,7 +26,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
@@ -95,8 +95,8 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		return $this->specManager->getEiSpecByClass($class);
 	}
 
-	public function getEiFieldCollection(): EiFieldCollection {
-		return $this->eiComponent->getEiEngine()->getEiFieldCollection();
+	public function getEiPropCollection(): EiPropCollection {
+		return $this->eiComponent->getEiEngine()->getEiPropCollection();
 	}
 	
 	public function getEiCommandCollection(): EiCommandCollection {
@@ -107,13 +107,13 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
 	}
 	
-	public function getGenericEiPropertyByEiFieldPath($eiFieldPath): GenericEiProperty {
+	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty {
 		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
-				->getGenericEiPropertyByEiFieldPath($eiFieldPath);
+				->getGenericEiPropertyByEiPropPath($eiPropPath);
 	}
 	
-	public function getScalarEiPropertyByFieldPath($eiFieldPath): ScalarEiProperty {
+	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
 		return $this->eiComponent->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiFieldPath);
+				->getScalarEiPropertyByFieldPath($eiPropPath);
 	}
 }

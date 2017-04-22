@@ -21,18 +21,18 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\component\field\impl\relation\RelationEiField;
+use rocket\spec\ei\component\field\impl\relation\RelationEiProp;
 use rocket\spec\ei\manage\veto\VetoableActionListener;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\l10n\MessageCode;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\LiveEiEntry;
+use rocket\spec\ei\manage\LiveEiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\manage\veto\VetoableRemoveAction;
-use rocket\spec\ei\manage\LiveEntry;
+use rocket\spec\ei\manage\EiEntityObj;
 use rocket\spec\ei\manage\ManageState;
 use n2n\core\container\N2nContext;
 use n2n\l10n\DynamicTextCollection;
@@ -43,20 +43,20 @@ class RelationVetoableActionListener implements VetoableActionListener {
 	const STRATEGY_UNSET = 'unset';
 	const STRATEGY_SELF_REMOVE = 'selfRemove';
 	
-	private $relationEiField;
+	private $relationEiProp;
 	private $strategy = true;
 	
-	public function __construct(RelationEiField $relationEiField, string $strategy) {
-		$this->relationEiField = $relationEiField;
+	public function __construct(RelationEiProp $relationEiProp, string $strategy) {
+		$this->relationEiProp = $relationEiProp;
 		$this->strategy = $strategy;
 	}
 	
 	public function onRemove(VetoableRemoveAction $vetoableRemoveAction,
 			N2nContext $n2nContext) {
-		$eiEntry = $vetoableRemoveAction->getEiEntry();
-		if ($eiEntry->isDraft()) return;
+		$eiObject = $vetoableRemoveAction->getEiObject();
+		if ($eiObject->isDraft()) return;
 				
-		$vetoCheck = new VetoCheck($this->relationEiField, $eiEntry->getLiveEntry(), $vetoableRemoveAction, 
+		$vetoCheck = new VetoCheck($this->relationEiProp, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
 				$n2nContext);
 		
 		switch ($this->strategy) {
@@ -77,14 +77,14 @@ class RelationVetoableActionListener implements VetoableActionListener {
 }
 
 class VetoCheck {
-	private $relationEiField;
-	private $targetLiveEntry;
+	private $relationEiProp;
+	private $targetEiEntityObj;
 	private $vetoableRemoveAction;
 	
-	public function __construct(RelationEiField $relationEiField, LiveEntry $targetLiveEntry, 
+	public function __construct(RelationEiProp $relationEiProp, EiEntityObj $targetEiEntityObj, 
 			VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext) {
-		$this->relationEiField = $relationEiField;
-		$this->targetLiveEntry = $targetLiveEntry;
+		$this->relationEiProp = $relationEiProp;
+		$this->targetEiEntityObj = $targetEiEntityObj;
 		$this->vetoableRemoveAction = $vetoableRemoveAction;
 		$this->n2nContext = $n2nContext;
 	}
@@ -101,7 +101,7 @@ class VetoCheck {
 		
 		$attrs = array('entry' => $this->createIdentityString($entityObj),
 				'generic_label' => $this->getGenericLabel(), 
-				'field' => $this->relationEiField->getLabelLstr()->t($this->n2nContext->getN2nLocale()),
+				'field' => $this->relationEiProp->getLabelLstr()->t($this->n2nContext->getN2nLocale()),
 				'target_entry' => $this->createTargetIdentityString(),
 				'target_generic_label' => $this->getTargetGenericLabel());
 		$dtc = new DynamicTextCollection('rocket', N2nLocale::getAdmin());
@@ -132,8 +132,8 @@ class VetoCheck {
 				
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
-				$queue->removeEiEntry(LiveEiEntry::create(
-						$that->relationEiField->getEiEngine()->getEiSpec(), $entityObj));
+				$queue->removeEiObject(LiveEiObject::create(
+						$that->relationEiProp->getEiEngine()->getEiSpec(), $entityObj));
 			});
 		}
 	}
@@ -144,7 +144,7 @@ class VetoCheck {
 	}
 	
 	private function getRelationEntityProperty(): RelationEntityProperty {
-		$entityProperty = $this->relationEiField->getEntityProperty();
+		$entityProperty = $this->relationEiProp->getEntityProperty();
 		CastUtils::assertTrue($entityProperty instanceof RelationEntityProperty);
 		return $entityProperty;
 	}
@@ -161,7 +161,7 @@ class VetoCheck {
 		$criteria
 				->from($entityProperty->getEntityModel()->getClass(), 'eo')
 				->where()->match(CrIt::p('eo', $entityProperty), $operator, 
-						CrIt::c($this->targetLiveEntry->getEntityObj()));
+						CrIt::c($this->targetEiEntityObj->getEntityObj()));
 		return $criteria;
 	}
 		
@@ -172,7 +172,7 @@ class VetoCheck {
 	}
 	
 	private function releaseEntityObj($entityObj) {
-		$objectPropertyAccessProxy = $this->relationEiField->getObjectPropertyAccessProxy();
+		$objectPropertyAccessProxy = $this->relationEiProp->getObjectPropertyAccessProxy();
 		
 		if ($this->isToOne()) {
 			$objectPropertyAccessProxy->setValue($entityObj, null);
@@ -186,7 +186,7 @@ class VetoCheck {
 		
 		IllegalStateException::assertTrue($currentTargetEntityObjs instanceof \ArrayObject);
 		
-		$targetEntityObj = $this->targetLiveEntry->getLiveObject();
+		$targetEntityObj = $this->targetEiEntityObj->getLiveObject();
 		foreach ($currentTargetEntityObjs as $key => $currentTargetEntityObj) {
 			if ($currentTargetEntityObj === $targetEntityObj) {
 				$currentTargetEntityObjs->offsetUnset($key);
@@ -195,23 +195,23 @@ class VetoCheck {
 	}
 	
 	private function getGenericLabel(): string {
-		return $this->relationEiField->getEiEngine()->getEiSpec()->getEiMaskCollection()->getOrCreateDefault()
+		return $this->relationEiProp->getEiEngine()->getEiSpec()->getEiMaskCollection()->getOrCreateDefault()
 				->getLabelLstr()->t($this->n2nContext->getN2nLocale());
 	}
 	
 	private function createIdentityString($entityObj): string {
-		$eiSpec = $this->relationEiField->getEiEngine()->getEiSpec();
+		$eiSpec = $this->relationEiProp->getEiEngine()->getEiSpec();
 		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->createIdentityString(
-				LiveEiEntry::create($eiSpec, $entityObj), $this->n2nContext->getN2nLocale());
+				LiveEiObject::create($eiSpec, $entityObj), $this->n2nContext->getN2nLocale());
 	}
 	
 	private function getTargetGenericLabel(): string {
-		return $this->relationEiField->getEiFieldRelation()->getTargetEiMask()->getLabelLstr()
+		return $this->relationEiProp->getEiPropRelation()->getTargetEiMask()->getLabelLstr()
 				->t($this->n2nContext->getN2nLocale());
 	}
 	
 	private function createTargetIdentityString() {
-		return $this->relationEiField->getEiFieldRelation()->getTargetEiMask()
-				->createIdentityString(new LiveEiEntry($this->targetLiveEntry), $this->n2nContext->getN2nLocale());
+		return $this->relationEiProp->getEiPropRelation()->getTargetEiMask()
+				->createIdentityString(new LiveEiObject($this->targetEiEntityObj), $this->n2nContext->getN2nLocale());
 	}
 }

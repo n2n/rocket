@@ -72,11 +72,11 @@
 										</ul>
 									</div>
 									
-									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiFieldPrivilegeMagFormAvailable()): ?>
+									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiPropPrivilegeMagFormAvailable()): ?>
 										<div>
 											<label><?php $html->l10nText('user_group_access_config_label')?></label>
 											<?php $view->out('<ul class="rocket-controls">') ?>
-												<?php $formHtml->meta()->objectProps('eiFieldPrivilegeMagForm', function() use ($formHtml) { ?>
+												<?php $formHtml->meta()->objectProps('eiPropPrivilegeMagForm', function() use ($formHtml) { ?>
 													<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
 														<?php $formHtml->magLabel() ?>
 														<div class="rocket-controls">

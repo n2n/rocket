@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\reflection\ArgUtils;
 use n2n\web\http\Request;
 use n2n\reflection\magic\MagicMethodInvoker;
@@ -36,7 +36,7 @@ class EntrySourceInfo {
 	private $eiFrame;
 	private $viewMode;
 // 	private $writable;
-	private $eiEntryGuiListeners = array();
+	private $eiObjectGuiListeners = array();
 	/**
 	 * @param EiMapping $eiMapping
 	 * @param EiFrame $eiFrame
@@ -93,46 +93,46 @@ class EntrySourceInfo {
 	 * @return boolean
 	 */
 	public function isNew() {
-		return $this->getEiMapping()->getEiEntry()->isNew();
+		return $this->getEiMapping()->getEiObject()->isNew();
 	}
 	
 	/**
 	 * @return boolean 
 	 */
 	public function isDraft() {
-		return $this->getEiMapping()->getEiEntry()->isDraft();
+		return $this->getEiMapping()->getEiObject()->isDraft();
 	}
 	
 	/**
 	 * @param string $id
 	 * @return mixed
 	 */
-	public function getValue(EiFieldPath $eiFieldPath) {
-		return $this->getEiMapping()->getValue($eiFieldPath);
+	public function getValue(EiPropPath $eiPropPath) {
+		return $this->getEiMapping()->getValue($eiPropPath);
 	}
 	
 	/**
 	 * @param string $id
 	 * @param mixed $value
 	 */
-	public function setValue(EiFieldPath $eiFieldPath, $value) {
-		return $this->getEiMapping()->setValue($eiFieldPath, $value);
+	public function setValue(EiPropPath $eiPropPath, $value) {
+		return $this->getEiMapping()->setValue($eiPropPath, $value);
 	}
 	
 	public function getId() {
-		return $this->getEiMapping()->getEiEntry()->getId();
+		return $this->getEiMapping()->getEiObject()->getId();
 	}
 	
-	public function toFieldSourceInfo(EiFieldPath $eiFieldPath): FieldSourceInfo {
-		return new FieldSourceInfo($eiFieldPath, $this);
+	public function toFieldSourceInfo(EiPropPath $eiPropPath): FieldSourceInfo {
+		return new FieldSourceInfo($eiPropPath, $this);
 	}
 	
-	public function addEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
-		$this->eiEntryGuiListeners[] = $eiEntryGuiListener;
+	public function addEiEntryGuiListener(EiEntryGuiListener $eiObjectGuiListener) {
+		$this->eiObjectGuiListeners[] = $eiObjectGuiListener;
 	}
 	
 	public function getEiEntryGuiListeners(): array {
-		return $this->eiEntryGuiListeners;
+		return $this->eiObjectGuiListeners;
 	}
 	
 // 	public function createPropertyPath($propertyName, PropertyPath $basePropertyPath = null) {
@@ -146,16 +146,16 @@ class EntrySourceInfo {
 }
 
 class FieldSourceInfo {
-	private $eiFieldPath;
+	private $eiPropPath;
 	private $entrySourceInfo;
 	
-	public function __construct(EiFieldPath $eiFieldPath, EntrySourceInfo $entrySourceInfo) {
-		$this->eiFieldPath = $eiFieldPath;
+	public function __construct(EiPropPath $eiPropPath, EntrySourceInfo $entrySourceInfo) {
+		$this->eiPropPath = $eiPropPath;
 		$this->entrySourceInfo = $entrySourceInfo;
 	}
 	
-	public function getEiFieldPath(): EiFieldPath {
-		return $this->eiFieldPath;
+	public function getEiPropPath(): EiPropPath {
+		return $this->eiPropPath;
 	}
 	
 	/**
@@ -204,14 +204,14 @@ class FieldSourceInfo {
 	 * @return boolean
 	 */
 	public function isNew() {
-		return $this->getEiMapping()->getEiEntry()->isNew();
+		return $this->getEiMapping()->getEiObject()->isNew();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->getEiMapping()->getEiEntry()->isDraft();
+		return $this->getEiMapping()->getEiObject()->isDraft();
 	}
 	
 	/**
@@ -219,11 +219,11 @@ class FieldSourceInfo {
 	 * @return mixed
 	 */
 	public function getValue() {
-		return $this->getMValue($this->eiFieldPath);
+		return $this->getMValue($this->eiPropPath);
 	}
 	
-	public function getMValue(EiFieldPath $eiFieldPath) {
-		return $this->getEiMapping()->getValue($eiFieldPath);
+	public function getMValue(EiPropPath $eiPropPath) {
+		return $this->getEiMapping()->getValue($eiPropPath);
 	}
 	
 	/**
@@ -231,11 +231,11 @@ class FieldSourceInfo {
 	 * @param mixed $value
 	 */
 	public function setValue($value) {
-		return $this->setMValue($this->eiFieldPath, $value);
+		return $this->setMValue($this->eiPropPath, $value);
 	}
 	
-	public function setMValue(EiFieldPath $eiFieldPath, $value) {
-		return $this->getEiMapping()->setValue($eiFieldPath, $value);
+	public function setMValue(EiPropPath $eiPropPath, $value) {
+		return $this->getEiMapping()->setValue($eiPropPath, $value);
 	}
 	
 	public function getEntryId() {
@@ -263,16 +263,16 @@ class FieldGuiListener implements EiEntryGuiListener {
 		$this->savedClosure = $savedClosure;
 	}
 	
-	public function finalized(EiEntryGui $eiEntryGui) {
+	public function finalized(EiEntryGui $eiObjectGui) {
 	}
 	
-	public function onSave(EiEntryGui $eiEntryGui) {
+	public function onSave(EiEntryGui $eiObjectGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
 	}
 	
-	public function saved(EiEntryGui $eiEntryGui) {
+	public function saved(EiEntryGui $eiObjectGui) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}

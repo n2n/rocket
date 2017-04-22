@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\reflection\ArgUtils;
@@ -30,23 +30,23 @@ use rocket\spec\ei\manage\mapping\MappableWrapper;
 
 class GuiDefinition {	
 	private $levelGuiFields = array();
-	private $levelEiFieldPaths = array();
+	private $levelEiPropPaths = array();
 	private $levelGuiFieldForks = array();
 	private $levelIds = array();
 	
 	/**
 	 * @param unknown $id
 	 * @param GuiField $guiField
-	 * @param EiFieldPath $eiFieldPath
+	 * @param EiPropPath $eiPropPath
 	 * @throws GuiException
 	 */
-	public function putLevelGuiField(string $id, GuiField $guiField, EiFieldPath $eiFieldPath) {
+	public function putLevelGuiField(string $id, GuiField $guiField, EiPropPath $eiPropPath) {
 		if (isset($this->levelGuiFields[$id])) {
 			throw new GuiException('GuiField with id \'' . $id . '\' is already registered');
 		}
 		
 		$this->levelGuiFields[$id] = $guiField;
-		$this->levelEiFieldPaths[$id] = $eiFieldPath;
+		$this->levelEiPropPaths[$id] = $eiPropPath;
 		$this->levelIds[$id] = $id;
 	}
 	
@@ -76,9 +76,9 @@ class GuiDefinition {
 	 * @throws GuiException
 	 * @return GuiField
 	 */
-	public function getLevelEiFieldPathById(string $id): EiFieldPath {
+	public function getLevelEiPropPathById(string $id): EiPropPath {
 		$this->getLevelGuiFieldById($id);
-		return $this->levelEiFieldPaths[$id];
+		return $this->levelEiPropPaths[$id];
 	}
 	
 	/**
@@ -212,12 +212,12 @@ class GuiDefinition {
 		}	
 	}
 	
-	public function guiIdPathToEiFieldPath(GuiIdPath $guiIdPath) {
+	public function guiIdPathToEiPropPath(GuiIdPath $guiIdPath) {
 		$ids = $guiIdPath->toArray();
 		$guiDefinition = $this;
 		while (null !== ($id = array_shift($ids))) {
 			if (empty($ids)) {
-				return $guiDefinition->getLevelEiFieldPathById($id);
+				return $guiDefinition->getLevelEiPropPathById($id);
 			}
 				
 			$guiDefinition = $guiDefinition->getLevelGuiFieldForkById($id)->getForkedGuiDefinition();
@@ -228,7 +228,7 @@ class GuiDefinition {
 		$ids = $guiIdPath->toArray();
 		$id = array_shift($ids);
 		if (empty($ids)) {
-			return $eiMapping->getMappableWrapper(new EiFieldPath(array($id)));
+			return $eiMapping->getMappableWrapper(new EiPropPath(array($id)));
 		}
 		
 		$guiFieldFork = $guiDefinition->getLevelGuiFieldForkById($id);

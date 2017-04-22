@@ -54,7 +54,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	const CONTROL_ADD_AFTER_BRANCH_KEY = 'addAfterBranch';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
 
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
 	private $dublicatingAllowed = true;

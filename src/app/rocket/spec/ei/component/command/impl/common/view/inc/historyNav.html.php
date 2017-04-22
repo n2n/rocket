@@ -71,7 +71,7 @@
 				<div class="rocket-history-entry-content">
 					<p>activation date</p>
 				</div>
-				<?php $controlEiHtml->entryControlList($entryCommandViewModel->getEiEntry()->getLiveEntry(), 
+				<?php $controlEiHtml->entryControlList($entryCommandViewModel->getEiObject()->getEiEntityObj(), 
 						DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
 		</li>
 	</ul>

@@ -23,13 +23,13 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use rocket\spec\ei\manage\mapping\WrittenMappingListener;
 use rocket\spec\ei\manage\mapping\OnValidateMappingListener;
@@ -40,14 +40,14 @@ use rocket\spec\ei\manage\gui\GuiException;
 use lib\rocket\spec\ei\manage\util\model\GeneralIdUtils;
 
 class EiuEntry {
-	private $eiEntry;
+	private $eiObject;
 	private $eiMapping;
 	private $eiuFrame;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
-		$this->eiEntry = $eiuFactory->getEiEntry(true);
+		$this->eiObject = $eiuFactory->getEiObject(true);
 		$this->eiMapping = $eiuFactory->getEiMapping();
 		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
 	}
@@ -80,31 +80,31 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
-	public function gui($eiEntryGuiObj) {
-		return new EiuEntryGui($eiEntryGuiObj, $this);
+	public function gui($eiObjectGuiObj) {
+		return new EiuEntryGui($eiObjectGuiObj, $this);
 	}
 	
 	/**
-	 * @param bool $eiEntryObj
+	 * @param bool $eiObjectObj
 	 * @param bool $editable
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function newGui(bool $overview = false, bool $editable = false) {
-		$eiEntryGui = null;
+		$eiObjectGui = null;
 		if (!$overview) {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui($this, $editable);
+			$eiObjectGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui($this, $editable);
 		} else if (null === $this->getEiuFrame()->getNestedSetStrategy()) {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
+			$eiObjectGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
 		} else {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createTreeEiEntryGui($this, $editable);
+			$eiObjectGui = $this->getEiuFrame()->getEiMask()->createTreeEiEntryGui($this, $editable);
 		}
 		
-		return new EiuEntryGui($eiEntryGui, $this);
+		return new EiuEntryGui($eiObjectGui, $this);
 	}
 	
-	public function field($eiFieldObj) {
-		return new EiuField($eiFieldObj, $this);
+	public function field($eiPropObj) {
+		return new EiuField($eiPropObj, $this);
 	}
 		
 	/**
@@ -120,53 +120,53 @@ class EiuEntry {
 		}
 		
 		if ($createIfNotAvaialble) {
-			return $this->eiMapping = $this->getEiuFrame()->createEiMapping($this->eiEntry);
+			return $this->eiMapping = $this->getEiuFrame()->createEiMapping($this->eiObject);
 		}
 		
 		return null;
 	}
 	
-	public function getValue($eiFieldPath) {
-		return $this->getEiMapping()->getValue($eiFieldPath);
+	public function getValue($eiPropPath) {
+		return $this->getEiMapping()->getValue($eiPropPath);
 	}
 	
-	public function setValue($eiFieldPath, $value) {
-		return $this->getEiMapping()->setValue($eiFieldPath, $value);
+	public function setValue($eiPropPath, $value) {
+		return $this->getEiMapping()->setValue($eiPropPath, $value);
 	}
 	
 	public function getValues() {
 		$eiMapping = $this->getEiMapping();
 		$values = array();
-		foreach (array_keys($eiMapping->getMappableWrappers()) as $eiFieldPathStr) {
-			$values[$eiFieldPathStr] = $this->getEiMapping()->getValue($eiFieldPathStr);
+		foreach (array_keys($eiMapping->getMappableWrappers()) as $eiPropPathStr) {
+			$values[$eiPropPathStr] = $this->getEiMapping()->getValue($eiPropPathStr);
 		}
 		return $values;
 	}
 
 	/**
-	 * @param $eiFieldPath
+	 * @param $eiPropPath
 	 * @param $scalarValue
 	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
 	 */
-	public function setScalarValue($eiFieldPath, $scalarValue) {
-		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+	public function setScalarValue($eiPropPath, $scalarValue) {
+		$eiPropPath = EiPropPath::create($eiPropPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiFieldPath);
-		$this->setValue($eiFieldPath, $scalarEiProperty->scalarValueToMappableValue($scalarValue));
+				->getScalarEiPropertyByFieldPath($eiPropPath);
+		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToMappableValue($scalarValue));
 	}
 	
-	public function getScalarValue($eiFieldPath) {
-		$eiFieldPath = EiFieldPath::create($eiFieldPath);
+	public function getScalarValue($eiPropPath) {
+		$eiPropPath = EiPropPath::create($eiPropPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiFieldPath);
-		return $scalarEiProperty->mappableValueToScalarValue($this->getValue($eiFieldPath));
+				->getScalarEiPropertyByFieldPath($eiPropPath);
+		return $scalarEiProperty->mappableValueToScalarValue($this->getValue($eiPropPath));
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\EiEntry
+	 * @return \rocket\spec\ei\manage\EiObject
 	 */
-	public function getEiEntry() {
-		return $this->eiEntry;
+	public function getEiObject() {
+		return $this->eiObject;
 	}
 	
 	public function isNew() {
@@ -178,21 +178,21 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\LiveEntry
+	 * @return \rocket\spec\ei\manage\EiEntityObj
 	 */
-	public function getLiveEntry() {
-		return $this->eiEntry->getLiveEntry();
+	public function getEiEntityObj() {
+		return $this->eiObject->getEiEntityObj();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isLivePersistent() {
-		return $this->eiEntry->getLiveEntry()->isPersistent();
+		return $this->eiObject->getEiEntityObj()->isPersistent();
 	}
 	
 	public function hasLiveId() {
-		return $this->eiEntry->getLiveEntry()->hasId();
+		return $this->eiObject->getEiEntityObj()->hasId();
 	}
 	
 	/**
@@ -200,13 +200,13 @@ class EiuEntry {
 	 * @return mixed
 	 */
 	public function getLiveId(bool $required = true) {
-		$liveEntry = $this->getLiveEntry();
+		$eiEntityObj = $this->getEiEntityObj();
 		
-		if (!$required && !$liveEntry->isPersistent()) {
+		if (!$required && !$eiEntityObj->isPersistent()) {
 			return null;
 		}
 		
-		return $liveEntry->getId();
+		return $eiEntityObj->getId();
 	}
 
 	/*
@@ -221,14 +221,14 @@ class EiuEntry {
 	 * @return \rocket\spec\ei\EiSpec
 	 */
 	public function getEiSpec() {
-		return $this->getLiveEntry()->getEiSpec();
+		return $this->getEiEntityObj()->getEiSpec();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->eiEntry->isDraft();
+		return $this->eiObject->isDraft();
 	}
 	
 	/**
@@ -240,7 +240,7 @@ class EiuEntry {
 			return null;
 		}
 		
-		return $this->eiEntry->getDraft();
+		return $this->eiObject->getDraft();
 	}
 	
 	/**
@@ -270,7 +270,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function createIdentityString(bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		return $this->eiuFrame->createIdentityString($this->eiEntry, $determineEiMask, $n2nLocale);
+		return $this->eiuFrame->createIdentityString($this->eiObject, $determineEiMask, $n2nLocale);
 	}
 	
 	/**
@@ -282,20 +282,20 @@ class EiuEntry {
 		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getLiveId(), $limit, $num);
 	}
 	
-	public function acceptsValue($eiFieldPath, $value) {
-		return $this->getEiMapping()->acceptsValue(EiFieldPath::create($eiFieldPath), $value);
+	public function acceptsValue($eiPropPath, $value) {
+		return $this->getEiMapping()->acceptsValue(EiPropPath::create($eiPropPath), $value);
 	}
 	
 	/**
 	 * 
-	 * @param unknown $eiFieldPath
+	 * @param unknown $eiPropPath
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
 	 * @return \rocket\spec\ei\manage\mapping\MappableWrapper|null
 	 */
-	public function getMappableWrapper($eiFieldPath, bool $required = false) {
+	public function getMappableWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->getEiMapping()->getMappableWrapper(EiFieldPath::create($eiFieldPath));
+			return $this->getEiMapping()->getMappableWrapper(EiPropPath::create($eiPropPath));
 		} catch (MappingOperationFailedException $e) {
 			if ($required) throw $e;
 		}
@@ -325,15 +325,15 @@ class EiuEntry {
 	}
 	
 	public function isPreviewAvailable() {
-		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiEntry));
+		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiObject));
 	}
 	
 	public function getPreviewType() {
-		return $this->getEiuFrame()->getPreviewType($this->eiEntry);
+		return $this->getEiuFrame()->getPreviewType($this->eiObject);
 	}
 	
 	public function getPreviewTypeOptions() {
-		return $this->eiuFrame->getPreviewTypeOptions($this->eiEntry);
+		return $this->eiuFrame->getPreviewTypeOptions($this->eiObject);
 	}
 	
 	public function isExecutableBy($eiCommandPath) {
@@ -360,6 +360,6 @@ class EiuEntry {
 	 * @return NULL|string
 	 */
 	public function getGeneralId() {
-		return GeneralIdUtils::generalIdOf($this->getEiEntry());
+		return GeneralIdUtils::generalIdOf($this->getEiObject());
 	}
 }  

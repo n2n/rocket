@@ -80,7 +80,7 @@ class SimpleMappable extends RwMappable {
 	public function copyMappable(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$mappable = new SimpleMappable($copyEiu->entry()->getEiEntry(), $this->typeConstraint, $this->readable, $this->writable,
+		$mappable = new SimpleMappable($copyEiu->entry()->getEiObject(), $this->typeConstraint, $this->readable, $this->writable,
 				$this->validatable, $this->copyable);
 		$mappable->setNullReadAllowed($this->isNullReadAllowed());
 		$mappable->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));

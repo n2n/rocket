@@ -27,9 +27,9 @@ use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
 use rocket\spec\ei\EiCommandPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\critmod\filter\EiMappingConstraintGroup;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\security\PrivilegeDefinition;
-use rocket\spec\ei\security\EiFieldAccess;
+use rocket\spec\ei\security\EiPropAccess;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\spec\ei\manage\mapping\EiMapping;
@@ -96,16 +96,16 @@ class RestrictedEiExecution implements EiExecution {
 	}
 
 	
-	public function createEiFieldAccess(EiFieldPath $eiFieldPath): EiFieldAccess {
+	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess {
 		$attributes = array();
 		foreach ($this->eiPrivilegeGrants as $eiPrivilegeGrant) {
-			$eiFieldAttributes = PrivilegeDefinition::extractAttributesOfEiFieldPrivilege($eiFieldPath, 
-					$eiPrivilegeGrant->readEiFieldPrivilegeAttributes());
-			if ($eiFieldAttributes !== null) {
-				$attributes[] = $eiFieldAttributes;
+			$eiPropAttributes = PrivilegeDefinition::extractAttributesOfEiPropPrivilege($eiPropPath, 
+					$eiPrivilegeGrant->readEiPropPrivilegeAttributes());
+			if ($eiPropAttributes !== null) {
+				$attributes[] = $eiPropAttributes;
 			}
 		}
-		return new RestrictedEiFieldAccess($attributes);
+		return new RestrictedEiPropAccess($attributes);
 	}
 
 	private function init(EiCommandPath $eiCommandPath) {

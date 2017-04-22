@@ -97,7 +97,7 @@ class EiSpec extends Spec implements EiThing {
 		$superEiSpec->subEiSpecs[$this->getId()] = $this;
 		
 		$superEiEngine = $superEiSpec->getEiEngine();
-		$this->eiEngine->getEiFieldCollection()->setInheritedCollection($superEiEngine->getEiFieldCollection());
+		$this->eiEngine->getEiPropCollection()->setInheritedCollection($superEiEngine->getEiPropCollection());
 		$this->eiEngine->getEiCommandCollection()->setInheritedCollection($superEiEngine->getEiCommandCollection());
 		$this->eiEngine->getEiModificatorCollection()->setInheritedCollection(
 				$superEiEngine->getEiModificatorCollection());
@@ -337,15 +337,15 @@ class EiSpec extends Spec implements EiThing {
 // 		$this->ensureIsTop();
 		
 // 		$restrictionSelectorItems = array();
-// 		foreach ($this->eiFieldCollection as $eiField) {
-// 			if (!($eiField instanceof RestrictionEiField)) continue;
+// 		foreach ($this->eiPropCollection as $eiProp) {
+// 			if (!($eiProp instanceof RestrictionEiProp)) continue;
 			
-// 			$restrictionSelectorItem = $eiField->createRestrictionSelectorItem($n2nContext);
+// 			$restrictionSelectorItem = $eiProp->createRestrictionSelectorItem($n2nContext);
 			
 // 			ArgUtils::valTypeReturn($restrictionSelectorItem, 'rocket\spec\ei\manage\critmod\filter\impl\field\SelectorItem', 
-// 					$eiField, 'createRestrictionSelectorItem');
+// 					$eiProp, 'createRestrictionSelectorItem');
 			
-// 			$restrictionSelectorItems[$eiField->getId()] = $restrictionSelectorItem;
+// 			$restrictionSelectorItems[$eiProp->getId()] = $restrictionSelectorItem;
 // 		}
 		
 // 		return $restrictionSelectorItems;
@@ -356,12 +356,12 @@ class EiSpec extends Spec implements EiThing {
 	}
 // 	/**
 // 	 * @param unknown $propertyName
-// 	 * @return \rocket\spec\ei\component\field\ObjectPropertyEiField
+// 	 * @return \rocket\spec\ei\component\field\ObjectPropertyEiProp
 // 	 */
-// 	public function containsEiFieldPropertyName($propertyName) {
-// 		foreach ($this->eiFieldCollection as $eiField) {
-// 			if ($eiField instanceof ObjectPropertyEiField
-// 					&& $eiField->getPropertyName() == $propertyName) {
+// 	public function containsEiPropPropertyName($propertyName) {
+// 		foreach ($this->eiPropCollection as $eiProp) {
+// 			if ($eiProp instanceof ObjectPropertyEiProp
+// 					&& $eiProp->getPropertyName() == $propertyName) {
 // 				return true;
 // 			}
 // 		}

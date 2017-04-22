@@ -29,7 +29,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 class ToManyMappable extends RwMappable {
@@ -49,23 +49,23 @@ class ToManyMappable extends RwMappable {
 	
 	protected function readValue() {
 		$targetRelationEntries = array();
-		foreach (parent::readValue() as $targetEiEntry) {
-			$targetRelationEntries[] = RelationEntry::from($targetEiEntry);
+		foreach (parent::readValue() as $targetEiObject) {
+			$targetRelationEntries[] = RelationEntry::from($targetEiObject);
 		}
 		return $targetRelationEntries;	
 	}
 	
 	protected function writeValue($value) {
-		$targetEiEntrys = array();
+		$targetEiObjects = array();
 		foreach ($value as $targetRelationEntry) {
 			if ($targetRelationEntry->hasEiMapping()) {
 				$targetRelationEntry->getEiMapping()->write();
 			}
 			
-			$targetEiEntrys[] = $targetRelationEntry->getEiEntry();
+			$targetEiObjects[] = $targetRelationEntry->getEiObject();
 		}
 		
-		parent::writeValue($targetEiEntrys);
+		parent::writeValue($targetEiObjects);
 	}
 	
 
@@ -88,7 +88,7 @@ class ToManyMappable extends RwMappable {
 	public function copyMappable(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToManyMappable($copyEiu->entry()->getEiEntry(), $this->readable, $this->writable, 
+		$copy = new ToManyMappable($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, 
 				$this->copyable);
 		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;

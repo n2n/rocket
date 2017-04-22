@@ -34,7 +34,7 @@ use rocket\spec\ei\mask\EiMask;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\component\GuiFactory;
@@ -48,7 +48,7 @@ use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\config\mask\model\EntryGuiTree;
 use n2n\web\ui\view\View;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\config\mask\model\EntryListViewModel;
@@ -100,8 +100,8 @@ class CommonEiMask implements EiMask, Identifiable {
 		$this->eiEngine = new EiEngine($this->eiSpec, $this);
 		$this->guiOrder = $guiOrder;
 		
-		$eiFieldCollection = $this->eiEngine->getEiFieldCollection();
-		$eiFieldCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiFieldCollection());
+		$eiPropCollection = $this->eiEngine->getEiPropCollection();
+		$eiPropCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiPropCollection());
 		
 		$eiCommandCollection = $this->eiEngine->getEiCommandCollection();
 		$eiCommandCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiCommandCollection());
@@ -228,7 +228,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createIdentityString()
 	 */
-	public function createIdentityString(EiEntry $eiEntry, N2nLocale $n2nLocale): string {
+	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$identityStringPattern = $this->eiDef->getIdentityStringPattern();
 		
 		if ($identityStringPattern === null) {
@@ -237,11 +237,11 @@ class CommonEiMask implements EiMask, Identifiable {
 		
 		if ($identityStringPattern === null) {
 			return $this->getLabelLstr()->t($n2nLocale) . ' #' 
-					. $this->eiSpec->idToIdRep($eiEntry->getLiveEntry()->getId());
+					. $this->eiSpec->idToIdRep($eiObject->getEiEntityObj()->getId());
 		}
 		
 		return $this->eiEngine->getGuiDefinition()
-				->createIdentityString($identityStringPattern, $eiEntry, $n2nLocale);
+				->createIdentityString($identityStringPattern, $eiObject, $n2nLocale);
 	}
 	
 	/**
@@ -414,9 +414,9 @@ class CommonEiMask implements EiMask, Identifiable {
 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_EDIT;
 		}
 				
-		$eiEntryGui = $this->createEiEntryGui($eiFrame, $eiMapping, $viewMode, $makeEditable);
+		$eiObjectGui = $this->createEiEntryGui($eiFrame, $eiMapping, $viewMode, $makeEditable);
 		
-		return new CommonEntryGuiModel($this, $eiEntryGui, $eiMapping);
+		return new CommonEntryGuiModel($this, $eiObjectGui, $eiMapping);
 	}
 	
 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
@@ -593,7 +593,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			return $previewController;
 		}
 		
-		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $previewModel->getEiEntry())))) {
+		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $previewModel->getEiObject())))) {
 			throw new UnavailableControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}

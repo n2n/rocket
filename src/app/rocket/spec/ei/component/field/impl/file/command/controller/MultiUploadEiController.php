@@ -24,28 +24,28 @@ namespace rocket\spec\ei\component\field\impl\file\command\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\core\model\RocketState;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;
+use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiProp;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
-use rocket\spec\ei\component\field\impl\file\FileEiField;
+use rocket\spec\ei\component\field\impl\file\FileEiProp;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\io\managed\impl\FileFactory;
 
 class MultiUploadEiController extends ControllerAdapter {
-	private $fileEiField;
-	private $namingEiFieldPath;
+	private $fileEiProp;
+	private $namingEiPropPath;
 	
 	/**
-	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
+	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiProp
 	 */
-	public function setFileEiField(FileEiField $fileEiField) {
-		$this->fileEiField = $fileEiField;
+	public function setFileEiProp(FileEiProp $fileEiProp) {
+		$this->fileEiProp = $fileEiProp;
 	}
 	
-	public function setNamingEiFieldPath(EiFieldPath $namingEiFieldPath = null) {
-		$this->namingEiFieldPath = $namingEiFieldPath;
+	public function setNamingEiPropPath(EiPropPath $namingEiPropPath = null) {
+		$this->namingEiPropPath = $namingEiPropPath;
 	}
 	
 	public function index(EiuCtrl $eiuCtrl, DynamicTextCollection $dtc) {
@@ -64,20 +64,20 @@ class MultiUploadEiController extends ControllerAdapter {
 		if (null === $file) return;
 		
 		$eiuFrame = $eiuCtrl->frame();
-		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiEntry());
+		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiObject());
 		
-		$eiuEntry->setValue($this->fileEiField, $file);
-		if (null !== $this->namingEiFieldPath) {
+		$eiuEntry->setValue($this->fileEiProp, $file);
+		if (null !== $this->namingEiPropPath) {
 			$prettyNameParts = preg_split('/(\.|-|_)/', $file->getOriginalName());
 			array_pop($prettyNameParts);
-			$eiuEntry->setValue($this->namingEiFieldPath, implode(' ', $prettyNameParts));
+			$eiuEntry->setValue($this->namingEiPropPath, implode(' ', $prettyNameParts));
 		}
 		
 		if (!$eiuEntry->getEiMapping()->save()) {
 			throw new IllegalStateException();
 		}
 		
-		$eiuFrame->em()->persist($eiuEntry->getLiveEntry()->getEntityObj());
+		$eiuFrame->em()->persist($eiuEntry->getEiEntityObj()->getEntityObj());
 	}
 	
 	private function applyBreadCrumbs() {

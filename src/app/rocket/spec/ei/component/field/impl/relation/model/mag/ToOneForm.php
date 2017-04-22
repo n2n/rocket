@@ -30,7 +30,7 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
 class ToOneForm implements Dispatchable {
@@ -143,10 +143,10 @@ class ToOneForm implements Dispatchable {
 					return;
 				}
 						
-				if (null !== ($eiEntry = $that->utils->lookupEiEntryById(
+				if (null !== ($eiObject = $that->utils->lookupEiObjectById(
 						$that->utils->idRepToId($selectedEntryIdRep), CriteriaConstraint::NON_SECURITY_TYPES))) {
 					$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep, 
-							$that->utils->createIdentityString($eiEntry));				
+							$that->utils->createIdentityString($eiObject));				
 					return;
 				}
 					

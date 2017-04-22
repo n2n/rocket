@@ -47,8 +47,8 @@ class ToOneMappable extends RwMappable {
 	}
 	
 	protected function readValue() {
-		if (null !== ($targetEiEntry = parent::readValue())) {
-			return RelationEntry::from($targetEiEntry);
+		if (null !== ($targetEiObject = parent::readValue())) {
+			return RelationEntry::from($targetEiObject);
 		}
 		
 		return null;	
@@ -64,7 +64,7 @@ class ToOneMappable extends RwMappable {
 			$targetRelationEntry->getEiMapping()->write();
 		}
 			
-		parent::writeValue($targetRelationEntry->getEiEntry());
+		parent::writeValue($targetRelationEntry->getEiObject());
 	}
 	
 	public function validate(FieldErrorInfo $fieldErrorInfo) {
@@ -80,7 +80,7 @@ class ToOneMappable extends RwMappable {
 	public function copyMappable(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToOneMappable($copyEiu->entry()->getEiEntry(), $this->readable, $this->writable, $this->copyable);
+		$copy = new ToOneMappable($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, $this->copyable);
 		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;
 	}

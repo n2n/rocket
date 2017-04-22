@@ -26,29 +26,29 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\component\field\EiField;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\EiPropPath;
 
 class CommonGenericEiProperty implements GenericEiProperty {
-	private $eiField;
+	private $eiProp;
 	private $criteriaProperty;
 	private $entityValueBuilder;
 	private $mappableValueBuilder;
 	
-	public function __construct(EiField $eiField, CriteriaProperty $criteriaProperty, 
+	public function __construct(EiProp $eiProp, CriteriaProperty $criteriaProperty, 
 			\Closure $entityValueBuilder = null, \Closure $mappableValueBuilder = null) {
-		$this->eiField = $eiField;
+		$this->eiProp = $eiProp;
 		$this->criteriaProperty = $criteriaProperty;
 		$this->entityValueBuilder = $entityValueBuilder;
 		$this->mappableValueBuilder = $mappableValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
-		return $this->eiField->getLabelLstr();
+		return $this->eiProp->getLabelLstr();
 	}
 	
-	public function getEiFieldPath(): EiFieldPath {
-		return EiFieldPath::from($this->eiField);
+	public function getEiPropPath(): EiPropPath {
+		return EiPropPath::from($this->eiProp);
 	}
 	
 	public function buildCriteriaItem(CriteriaProperty $alias): CriteriaItem {
@@ -56,7 +56,7 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	}
 	
 	public function buildEntityValue(EiMapping $eiMapping) {
-		return $this->mappableValueToEntityValue($eiMapping->getValue($this->eiField));
+		return $this->mappableValueToEntityValue($eiMapping->getValue($this->eiProp));
 	}
 	
 	public function mappableValueToEntityValue($mappableValue) {

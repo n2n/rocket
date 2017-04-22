@@ -45,7 +45,7 @@ class EiFrame {
 	private $controllerContext;
 	
 	private $eiExecution;
-// 	private $eiEntry;
+// 	private $eiObject;
 // 	private $previewType;
 	private $scriptRelations = array();
 
@@ -343,10 +343,10 @@ class EiFrame {
 		}
 	}
 	
-	public function createDetailBreadcrumb(HttpContext $httpContext, EiEntry $eiEntry) {
+	public function createDetailBreadcrumb(HttpContext $httpContext, EiObject $eiObject) {
 		return new Breadcrumb(
-				$this->getDetailUrl($httpContext, $eiEntry->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiSpec())),
-				$this->getDetailBreadcrumbLabel($eiEntry));
+				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiSpec())),
+				$this->getDetailBreadcrumbLabel($eiObject));
 	}
 	
 	public function setDetailDisabled($detailDisabled) {
@@ -369,17 +369,17 @@ class EiFrame {
 	}
 		
 	/**
-	 * @param EiEntry $eiEntry
+	 * @param EiObject $eiObject
 	 * @return string
 	 */
-	public function getDetailBreadcrumbLabel(EiEntry $eiEntry): string {		
+	public function getDetailBreadcrumbLabel(EiObject $eiObject): string {		
 		if ($this->detailBreadcrumbLabelOverride !== null) {
 			return $this->detailBreadcrumbLabelOverride;
 		}
 	
 		$this->ensureDetailEnabled();
 		
-		return $this->getContextEiMask()->createIdentityString($eiEntry, $this->getN2nLocale());
+		return $this->getContextEiMask()->createIdentityString($eiObject, $this->getN2nLocale());
 	}
 	
 	public function setDetailUrlExt(Url $detailUrlExt) {

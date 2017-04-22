@@ -24,20 +24,20 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class MappedRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiFrame;
 	private $relationEntry;
-	private $targetEiFieldPath;
+	private $targetEiPropPath;
 	private $sourceMany;
 
-	public function __construct(EiFrame $targetEiFrame, RelationEntry $relationEntry, EiFieldPath $targetEiFieldPath, bool $sourceMany) {
+	public function __construct(EiFrame $targetEiFrame, RelationEntry $relationEntry, EiPropPath $targetEiPropPath, bool $sourceMany) {
 		$this->targetEiFrame = $targetEiFrame;
 		$this->relationEntry = $relationEntry;
-		$this->targetEiFieldPath = $targetEiFieldPath;
+		$this->targetEiPropPath = $targetEiPropPath;
 		$this->sourceMany = (boolean) $sourceMany;
 	}
 	
@@ -46,18 +46,18 @@ class MappedRelationEiModificator extends EiModificatorAdapter {
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		if ($this->targetEiFrame !== $eiFrame
-				|| !$eiMapping->getEiEntry()->isNew()) return;
+				|| !$eiMapping->getEiObject()->isNew()) return;
 
 		if (!$this->sourceMany) {
-			$eiMapping->setValue($this->targetEiFieldPath, $this->relationEntry);
+			$eiMapping->setValue($this->targetEiPropPath, $this->relationEntry);
 			return;
 		}
 		
-		$value = $eiMapping->getValue($this->targetEiFieldPath);
+		$value = $eiMapping->getValue($this->targetEiPropPath);
 		if ($value === null) {
 			$value = new \ArrayObject();
 		}
 		$value[] = $this->relationEntry;
-		$eiMapping->setValue($this->targetEiFieldPath, $value);
+		$eiMapping->setValue($this->targetEiPropPath, $value);
 	}
 }

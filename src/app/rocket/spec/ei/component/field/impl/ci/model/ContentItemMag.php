@@ -34,14 +34,14 @@ use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
+use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
 
 class ContentItemMag extends MagAdapter {
 	private $panelConfigs = array();
@@ -80,15 +80,15 @@ class ContentItemMag extends MagAdapter {
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
 		$targetEditUtils = new EiuFrame($this->targetEditEiFrame);
-		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
+		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			if (!$targetRelationEntry->hasEiMapping()) {
 				$targetRelationEntry = RelationEntry::fromM($targetEditUtils
-						->createEiMapping($targetRelationEntry->getEiEntry()));
+						->createEiMapping($targetRelationEntry->getEiObject()));
 			}
 			
-			$panelName = $targetRelationEntry->getEiMapping()->getValue($panelEiFieldPath);
+			$panelName = $targetRelationEntry->getEiMapping()->getValue($panelEiPropPath);
 			if (!isset($filtered[$panelName])) {
 				$filtered[$panelName] = array();
 			}
@@ -107,13 +107,13 @@ class ContentItemMag extends MagAdapter {
 		
 		$groupedTargetRelationEntries = $this->groupRelationEntries($this->targetRelationEntries);
 		
-		$orderEiFieldPath = ContentItemsEiField::getOrderIndexEiFieldPath();
+		$orderEiPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
 		foreach ($this->panelConfigs as $panelConfig) {
 			$panelName = $panelConfig->getName();
 			
 			$panelMag = new ToManyMag($panelName, $panelConfig->getLabel(), $this->targetReadEiFrame,
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
-			$panelMag->setTargetOrderEiFieldPath($orderEiFieldPath);
+			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
 			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl);
 			
@@ -130,13 +130,13 @@ class ContentItemMag extends MagAdapter {
 	public function setFormValue($formValue) {
 		ArgUtils::assertTrue($formValue instanceof MagForm);
 		
-		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
+		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$this->targetRelationEntries = array();
 		foreach ($this->panelConfigs as $panelConfig) {
 			$panelName = $panelConfig->getName();
 			$panelMag = $formValue->getMagCollection()->getMagByPropertyName($panelName);
 			foreach ($panelMag->getValue() as $targetRelationEntry) {
-				$targetRelationEntry->getEiMapping()->setValue($panelEiFieldPath, $panelName, true);
+				$targetRelationEntry->getEiMapping()->setValue($panelEiPropPath, $panelName, true);
 				$this->targetRelationEntries[] = $targetRelationEntry;
 			}
 		}

@@ -6,36 +6,36 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\ManageException;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\manage\LiveEntry;
-use rocket\spec\ei\manage\LiveEiEntry;
+use rocket\spec\ei\manage\EiEntityObj;
+use rocket\spec\ei\manage\LiveEiObject;
 use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\DraftEiEntry;
+use rocket\spec\ei\manage\DraftEiObject;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\component\field\EiField;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ReflectionUtils;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
-	const EI_ENTRY_TYPES = array(EiEntry::class, EiMapping::class, LiveEntry::class, Draft::class, 
+	const EI_ENTRY_TYPES = array(EiObject::class, EiMapping::class, EiEntityObj::class, Draft::class, 
 			EiEntryGui::class, EiuEntry::class, EiuEntryGui::class);
 	const EI_GUI_TYPES = array(EiEntryGui::class, EiuEntryGui::class);
-	const EI_TYPES = array(EiFrame::class, N2nContext::class, EiEntry::class, EiMapping::class, LiveEntry::class, 
-			Draft::class, EiEntryGui::class, EiEntryGui::class, EiField::class, EiFieldPath::class, EiuFrame::class, 
+	const EI_TYPES = array(EiFrame::class, N2nContext::class, EiObject::class, EiMapping::class, EiEntityObj::class, 
+			Draft::class, EiEntryGui::class, EiEntryGui::class, EiProp::class, EiPropPath::class, EiuFrame::class, 
 			EiuEntry::class, EiuEntryGui::class, EiuField::class, Eiu::class);
-	const EI_FIELD_TYPES = array(EiField::class, EiFieldPath::class, EiuField::class);
+	const EI_FIELD_TYPES = array(EiProp::class, EiPropPath::class, EiuField::class);
 	
 	private $eiFrame;
 	private $n2nContext;
-	private $eiEntry;
+	private $eiObject;
 	private $eiMapping;
-	private $eiEntryGui;
-	private $eiFieldPath;
+	private $eiObjectGui;
+	private $eiPropPath;
 	
 	private $eiuFrame;
 	private $eiuEntry;
@@ -56,18 +56,18 @@ class EiuFactory {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiField) {
-				$this->eiFieldPath = EiFieldPath::from($eiArg);
+			if ($eiArg instanceof EiProp) {
+				$this->eiPropPath = EiPropPath::from($eiArg);
 				continue;
 			}
 				
-			if ($eiArg instanceof EiFieldPath) {
-				$this->eiFieldPath = $eiArg;
+			if ($eiArg instanceof EiPropPath) {
+				$this->eiPropPath = $eiArg;
 				continue;
 			}
 
 			if ($eiArg instanceof EiEntryGui) {
-				$this->eiEntryGui = $eiArg;
+				$this->eiObjectGui = $eiArg;
 				continue;
 			}
 			
@@ -78,12 +78,12 @@ class EiuFactory {
 			
 			if ($eiArg instanceof EiuEntryGui) {
 				$this->eiuEntryGui = $eiArg;
-				$this->eiEntryGui = $eiArg->getEiEntryGui();
+				$this->eiObjectGui = $eiArg->getEiEntryGui();
 				$eiArg = $eiArg->getEiuEntry(false);
 			}
 			
 			if ($eiArg instanceof EiuEntry) {
-				$this->eiEntry = $eiArg->getEiEntry();
+				$this->eiObject = $eiArg->getEiObject();
 				$this->eiMapping = $eiArg->getEiMapping(false);
 				$eiArg = $eiArg->getEiuFrame(false);
 			}
@@ -106,8 +106,8 @@ class EiuFactory {
 				continue;
 			}
 			
-			if (null !== ($eiEntry = self::determineEiEntry($eiArg, $this->eiMapping, $this->eiEntryGui))) {
-				$this->eiEntry = $eiEntry;
+			if (null !== ($eiObject = self::determineEiObject($eiArg, $this->eiMapping, $this->eiObjectGui))) {
+				$this->eiObject = $eiObject;
 				continue;
 			}
 			
@@ -117,29 +117,29 @@ class EiuFactory {
 		if (empty($remainingEiArgs)) return;
 		
 		$eiSpec = null;
-		$eiEntryTypes = self::EI_TYPES;
+		$eiObjectTypes = self::EI_TYPES;
 		if ($this->eiFrame !== null) {
 			$eiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
-			$eiEntryTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
+			$eiObjectTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
 		}
 		
 		foreach ($remainingEiArgs as $argNo => $eiArg) {
 			if ($eiSpec !== null) { 
 				try {
-					$this->eiEntry = LiveEiEntry::create($eiSpec, $eiArg);
+					$this->eiObject = LiveEiObject::create($eiSpec, $eiArg);
 					continue;
 				} catch (\InvalidArgumentException $e) {
 					return null;
 				}
 			}
 			
-			ArgUtils::valType($eiArg, $eiEntryTypes, true, 'eiArg#' . $argNo);
+			ArgUtils::valType($eiArg, $eiObjectTypes, true, 'eiArg#' . $argNo);
 		}	
 	}
 	
 // 	public function getEiFrame(bool $required) {
 // 		if (!$required || $this->eiFrame !== null) {
-// 			return $this->eiEntryGui;
+// 			return $this->eiObjectGui;
 // 		}
 	
 // 		throw new EiuPerimeterException(
@@ -155,15 +155,15 @@ class EiuFactory {
 	 * 
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\EiEntry|NULL
+	 * @return \rocket\spec\ei\manage\EiObject|NULL
 	 */
-	public function getEiEntry(bool $required) {
-		if (!$required || $this->eiEntry !== null) {
-			return $this->eiEntry;
+	public function getEiObject(bool $required) {
+		if (!$required || $this->eiObject !== null) {
+			return $this->eiObject;
 		}
 	
 		throw new EiuPerimeterException(
-				'Could not determine EiEntry because non of the following types were provided as eiArgs: '
+				'Could not determine EiObject because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_ENTRY_TYPES));
 	}
 	
@@ -173,8 +173,8 @@ class EiuFactory {
 	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
 	 */
 	public function getEiEntryGui(bool $required) {
-		if (!$required || $this->eiEntryGui !== null) {
-			return $this->eiEntryGui;
+		if (!$required || $this->eiObjectGui !== null) {
+			return $this->eiObjectGui;
 		}
 		
 		throw new EiuPerimeterException(
@@ -182,9 +182,9 @@ class EiuFactory {
 						. implode(', ', self::EI_GUI_TYPES));
 	}
 	
-	public function getEiFieldPath(bool $required) {
-		if (!$required || $this->eiFieldPath !== null) {
-			return $this->eiFieldPath;
+	public function getEiPropPath(bool $required) {
+		if (!$required || $this->eiPropPath !== null) {
+			return $this->eiPropPath;
 		}
 	
 		throw new EiuPerimeterException(
@@ -232,16 +232,16 @@ class EiuFactory {
 				return $this->eiuEntry = $eiuFrame->entry($this->eiMapping, true);
 			}
 			
-			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = $eiuFrame->entry($this->eiEntry, true);
+			if ($this->eiObject !== null) {
+				return $this->eiuEntry = $eiuFrame->entry($this->eiObject, true);
 			}
 		} else {
 			if ($this->eiMapping !== null) {
 				return $this->eiuEntry = new EiuEntry($this->eiMapping);
 			}
 				
-			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = new EiuEntry($this->eiEntry);
+			if ($this->eiObject !== null) {
+				return $this->eiuEntry = new EiuEntry($this->eiObject);
 			}
 		}
 		
@@ -263,8 +263,8 @@ class EiuFactory {
 			return $this->eiuEntryGui;
 		}
 		
-		if ($this->eiEntryGui !== null) {
-			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui);
+		if ($this->eiObjectGui !== null) {
+			return $this->eiuEntryGui = new EiuEntryGui($this->eiObjectGui);
 		}
 		
 		if (!$required) return null;
@@ -281,12 +281,12 @@ class EiuFactory {
 	
 		$eiuEntry = $this->getEiuEntry(false);
 		if ($eiuEntry !== null) {
-			if ($this->eiFieldPath !== null) {
-				return $this->eiuField = $eiuEntry->field($this->eiFieldPath);
+			if ($this->eiPropPath !== null) {
+				return $this->eiuField = $eiuEntry->field($this->eiPropPath);
 			}
 		} else {
-			if ($this->eiFieldPath !== null) {
-				return $this->eiuField = new EiuField($this->eiFieldPath);
+			if ($this->eiPropPath !== null) {
+				return $this->eiuField = new EiuField($this->eiPropPath);
 			}
 		}
 	
@@ -357,42 +357,42 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @param mixed $eiEntryObj
-	 * @return \rocket\spec\ei\manage\EiEntry|null
+	 * @param mixed $eiObjectObj
+	 * @return \rocket\spec\ei\manage\EiObject|null
 	 */
-	public static function determineEiEntry($eiEntryArg, &$eiMapping, &$eiEntryGui) {
-		if ($eiEntryArg instanceof EiEntry) {
-			return $eiEntryArg;
+	public static function determineEiObject($eiObjectArg, &$eiMapping, &$eiObjectGui) {
+		if ($eiObjectArg instanceof EiObject) {
+			return $eiObjectArg;
 		} 
 			
-		if ($eiEntryArg instanceof EiMapping) {
-			$eiMapping = $eiEntryArg;
-			return $eiEntryArg->getEiEntry();
+		if ($eiObjectArg instanceof EiMapping) {
+			$eiMapping = $eiObjectArg;
+			return $eiObjectArg->getEiObject();
 		}
 		
-		if ($eiEntryArg instanceof LiveEntry) {
-			return new LiveEiEntry($eiEntryArg);
+		if ($eiObjectArg instanceof EiEntityObj) {
+			return new LiveEiObject($eiObjectArg);
 		}
 		
-		if ($eiEntryArg instanceof Draft) {
-			return new DraftEiEntry($eiEntryArg);
+		if ($eiObjectArg instanceof Draft) {
+			return new DraftEiObject($eiObjectArg);
 		}
 		
-		if ($eiEntryArg instanceof EiuEntry) {
-			return $eiEntryArg->getEiEntry();
+		if ($eiObjectArg instanceof EiuEntry) {
+			return $eiObjectArg->getEiObject();
 		}
 		
-		if ($eiEntryArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiEntryArg->getEiuEntry(false))) {
+		if ($eiObjectArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiObjectArg->getEiuEntry(false))) {
 			$eiMapping = $eiuEntry->getEiMapping(false);
-			$eiEntryGui = $eiEntryArg->getEiEntryGui();
-			return $eiuEntry->getEiEntry();
+			$eiObjectGui = $eiObjectArg->getEiEntryGui();
+			return $eiuEntry->getEiObject();
 		}
 		
 		return null;
 // 		if (!$required) return null;
 		
-// 		throw new EiuPerimeterException('Can not determine EiEntry of passed argument type ' 
-// 				. ReflectionUtils::getTypeInfo($eiEntryArg) . '. Following types are allowed: '
+// 		throw new EiuPerimeterException('Can not determine EiObject of passed argument type ' 
+// 				. ReflectionUtils::getTypeInfo($eiObjectArg) . '. Following types are allowed: '
 // 				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)));
 	}
 	
@@ -404,8 +404,8 @@ class EiuFactory {
 	 * @return \rocket\spec\ei\EiSpec|NULL
 	 */
 	public static function determineEiSpec($eiSpecArg, bool $required = false) {
-		if (null !== ($eiEntry = self::determineEiEntry($eiSpecArg))) {
-			return $eiEntry->getLiveEntry()->getEiSpec();
+		if (null !== ($eiObject = self::determineEiObject($eiSpecArg))) {
+			return $eiObject->getEiEntityObj()->getEiSpec();
 		}
 		
 		if ($eiSpecArg instanceof EiSpec) {
@@ -446,27 +446,27 @@ class EiuFactory {
 				. ReflectionUtils::getTypeInfo($eiSpecArg) . ' given.');
 	}
 	
-	public static function buildEiEntryFromEiArg($eiEntryObj, string $argName = null, EiSpec $eiSpec = null, 
+	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiSpec $eiSpec = null, 
 			bool $required = true, &$eiMapping = null, &$viewMode = null) {
-		if (!$required && $eiEntryObj === null) {
+		if (!$required && $eiObjectObj === null) {
 			return null;
 		}
 		
-		if (null !== ($eiEntry = self::determineEiEntry($eiEntryObj, $eiMapping, $viewMode))) {
-			return $eiEntry;
+		if (null !== ($eiObject = self::determineEiObject($eiObjectObj, $eiMapping, $viewMode))) {
+			return $eiObject;
 		}
 		
-		$eiEntryTypes = self::EI_ENTRY_TYPES;
+		$eiObjectTypes = self::EI_ENTRY_TYPES;
 		
 		if ($eiSpec !== null) {
-			$eiEntryTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
+			$eiObjectTypes[] = $eiSpec->getEntityModel()->getClass()->getName();
 			try {
-				return LiveEiEntry::create($eiSpec, $eiEntryObj);
+				return LiveEiObject::create($eiSpec, $eiObjectObj);
 			} catch (\InvalidArgumentException $e) {
 				return null;
 			}
 		}
 		
-		ArgUtils::valType($eiEntryObj, $eiEntryTypes, !$required, $argName);
+		ArgUtils::valType($eiObjectObj, $eiObjectTypes, !$required, $argName);
 	}
 }

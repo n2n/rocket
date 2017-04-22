@@ -29,7 +29,7 @@ use n2n\reflection\ReflectionContext;
 use rocket\spec\ei\EntityChangeEvent;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\web\http\NoHttpRefererGivenException;
-use rocket\spec\ei\component\field\ObjectPropertyEiField;
+use rocket\spec\ei\component\field\ObjectPropertyEiProp;
 
 class CopyController extends ControllerAdapter {
 	/**
@@ -50,15 +50,15 @@ class CopyController extends ControllerAdapter {
 	
 	public function index($id) {
 		$eiFrame = $this->utils->getEiFrame();
-		$eiEntry = $eiFrame->getEiEntry();
+		$eiObject = $eiFrame->getEiObject();
 
 		$em = $eiFrame->getEntityManager();;
 		$currentObject = $em->find($this->eiSpec->getEntityModel()->getClass(), $id);
 		$newObject = ReflectionContext::createObject($this->eiSpec->getEntityModel()->getClass());
-		foreach ($this->eiSpec->getEiFieldCollection()->toArray() as $eiField) {
-			if (!($eiField instanceof Editable) || $eiField->isReadOnly() || !($eiField instanceof ObjectPropertyEiField)) continue;
-			$accessProxy = $eiField->getObjectPropertyAccessProxy();
-			$accessProxy->setValue($newObject, $eiField->getEntityProperty()->copy($accessProxy->getValue($currentObject)));
+		foreach ($this->eiSpec->getEiPropCollection()->toArray() as $eiProp) {
+			if (!($eiProp instanceof Editable) || $eiProp->isReadOnly() || !($eiProp instanceof ObjectPropertyEiProp)) continue;
+			$accessProxy = $eiProp->getObjectPropertyAccessProxy();
+			$accessProxy->setValue($newObject, $eiProp->getEntityProperty()->copy($accessProxy->getValue($currentObject)));
 		}
 		$eiFrame->triggerOnNewObject($em, $newObject);
 		
@@ -69,7 +69,7 @@ class CopyController extends ControllerAdapter {
 		try {
 			$this->redirectToReferer();
 		} catch (NoHttpRefererGivenException $e) {
-			$this->redirectToController($this->eiSpec->getEntryDetailPathExt($eiEntry->toEntryNavPoint()),
+			$this->redirectToController($this->eiSpec->getEntryDetailPathExt($eiObject->toEntryNavPoint()),
 					null, null, $eiFrame->getControllerContext());
 			return;
 		}

@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\mapping\EiMappingConstraint;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class RelationEiMappingFilterField extends RelationFilterField implements EiMappingFilterField {
 	
@@ -62,11 +62,11 @@ class RelationEiMappingFilterField extends RelationFilterField implements EiMapp
 				
 			case CriteriaComparator::OPERATOR_EXISTS:
 				$targetEiMappingConstraint = $this->getEiMappingFilterDefinition()->createEimappingConstraint($filterGroupData);
-				return new TestMappableConstraint($this->eiFieldPath, false, $targetEiMappingConstraint);
+				return new TestMappableConstraint($this->eiPropPath, false, $targetEiMappingConstraint);
 				
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
 				$targetEiMappingConstraint = $this->getEiMappingFilterDefinition()->createEimappingConstraint($filterGroupData);
-				return new TestMappableConstraint($this->eiFieldPath, false, $targetEiMappingConstraint);
+				return new TestMappableConstraint($this->eiPropPath, false, $targetEiMappingConstraint);
 		}
 	}
 }
@@ -83,7 +83,7 @@ class RelationMappableConstraint implements MappableConstraint {
 	
 	private function in($relationEntry) {
 		ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-		return in_array($relationEntry->getEiEntry()->getLiveEntry()->getEntityObj(), 
+		return in_array($relationEntry->getEiObject()->getEiEntityObj()->getEntityObj(), 
 				$this->targetEntityObjs, true);
 	}
 	/**
@@ -156,13 +156,13 @@ class RelationMappableConstraint implements MappableConstraint {
 
 class TestMappableConstraint implements MappableConstraint {
 	private $toMany;
-	private $eiFieldPath;
+	private $eiPropPath;
 	private $exists;
 	private $targetEiMappingContraint;
 	
-	public function __construct(bool $toMany, EiFieldPath $eiFieldPath, bool $exists, EiMappingConstraint $targetEiMappingContraint) {
+	public function __construct(bool $toMany, EiPropPath $eiPropPath, bool $exists, EiMappingConstraint $targetEiMappingContraint) {
 		$this->toMany = $toMany;
-		$this->eiFieldPath = $eiFieldPath;
+		$this->eiPropPath = $eiPropPath;
 		$this->exists = $exists;
 		$this->targetEiMappingContraint = $targetEiMappingContraint;
 	}

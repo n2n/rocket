@@ -23,8 +23,8 @@ namespace rocket\spec\ei\security;
 
 use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\security\EiFieldAccess;
+use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\security\EiPropAccess;
 use rocket\spec\ei\manage\mapping\EiMapping;
 
 interface EiExecution {
@@ -68,10 +68,10 @@ interface EiExecution {
 	public function buildEiCommandAccessRestrictor(EiMapping $eiMapping);
 	
 	/**
-	 * @param EiFieldPath $eiFieldPath
-	 * @return \rocket\spec\ei\security\EiFieldAccess
+	 * @param EiPropPath $eiPropPath
+	 * @return \rocket\spec\ei\security\EiPropAccess
 	 */
-	public function createEiFieldAccess(EiFieldPath $eiFieldPath): EiFieldAccess;
+	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess;
 	
 	/**
 	 * @param string $ext

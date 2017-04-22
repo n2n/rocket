@@ -26,10 +26,10 @@ class PlainMappedRelationEiModificator extends EiModificatorAdapter {
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		if ($this->targetEiFrame !== $eiFrame
-				|| !$eiMapping->getEiEntry()->isNew()) return;
+				|| !$eiMapping->getEiObject()->isNew()) return;
 
 		$that = $this;
-		$targetEntityObj = $eiMapping->getEiEntry()->getLiveObject();
+		$targetEntityObj = $eiMapping->getEiObject()->getLiveObject();
 		$eiMapping->registerListener(new WrittenMappingListener(function () use ($that, $targetEntityObj) {
 			$this->write($targetEntityObj);
 		}));

@@ -21,29 +21,29 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class RelationEntry {
-	private $eiEntry;
+	private $eiObject;
 	private $eiMapping;
 
-	private function __construct(EiEntry $eiEntry, EiMapping $eiMapping = null) {
-		$this->eiEntry = $eiEntry;
+	private function __construct(EiObject $eiObject, EiMapping $eiMapping = null) {
+		$this->eiObject = $eiObject;
 		$this->eiMapping = $eiMapping;
 	}
 
 	public function isNew(): bool {
-		return !$this->eiEntry->getLiveEntry()->isPersistent();
+		return !$this->eiObject->getEiEntityObj()->isPersistent();
 	}
 	
 	public function getId() {
-		return $this->eiEntry->getLiveEntry()->getId();
+		return $this->eiObject->getEiEntityObj()->getId();
 	}
 	
-	public function getEiEntry(): EiEntry {
-		return $this->eiEntry;
+	public function getEiObject(): EiObject {
+		return $this->eiObject;
 	}
 	
 	public function hasEiMapping(): bool {
@@ -59,14 +59,14 @@ class RelationEntry {
 			return $this->eiMapping;
 		}
 		
-		return $utils->createEiMapping($this->eiEntry);
+		return $utils->createEiMapping($this->eiObject);
 	}
 	
-	public static function from(EiEntry $eiEntry): RelationEntry {
-		return new RelationEntry($eiEntry, null);
+	public static function from(EiObject $eiObject): RelationEntry {
+		return new RelationEntry($eiObject, null);
 	}
 	
 	public static function fromM(EiMapping $eiMapping): RelationEntry {
-		return new RelationEntry($eiMapping->getEiEntry(), $eiMapping);
+		return new RelationEntry($eiMapping->getEiObject(), $eiMapping);
 	}
 }

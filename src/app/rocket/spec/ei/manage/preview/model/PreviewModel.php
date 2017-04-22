@@ -21,16 +21,16 @@
  */
 namespace rocket\spec\ei\manage\preview\model;
 
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 
 class PreviewModel {
 	private $previewType;
-	private $eiEntry;
+	private $eiObject;
 	private $entityObj;
 	
-	public function __construct(string $previewType, EiEntry $eiEntry, $entityObj) {
+	public function __construct(string $previewType, EiObject $eiObject, $entityObj) {
 		$this->previewType = $previewType;
-		$this->eiEntry = $eiEntry;
+		$this->eiObject = $eiObject;
 		$this->entityObj = $entityObj;
 	}
 	
@@ -38,8 +38,8 @@ class PreviewModel {
 		return $this->previewType;
 	}
 	
-	public function getEiEntry() {
-		return $this->eiEntry;
+	public function getEiObject() {
+		return $this->eiObject;
 	}
 	
 	public function getEntityObj() {

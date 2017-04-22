@@ -23,32 +23,32 @@
 namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class CommonScalarEiProperty implements ScalarEiProperty {
-	private $eiField;
+	private $eiProp;
 	private $scalarValueBuilder;
 	private $mappableValueBuilder;
 
-	public function __construct(EiField $eiField, \Closure $scalarValueBuilder = null, 
+	public function __construct(EiProp $eiProp, \Closure $scalarValueBuilder = null, 
 			\Closure $mappableValueBuilder = null) {
-		$this->eiField = $eiField;
+		$this->eiProp = $eiProp;
 		$this->scalarValueBuilder = $scalarValueBuilder;
 		$this->mappableValueBuilder = $mappableValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
-		return $this->eiField->getLabelLstr();
+		return $this->eiProp->getLabelLstr();
 	}
 	
-	public function getEiFieldPath(): EiFieldPath {
-		return EiFieldPath::from($this->eiField);
+	public function getEiPropPath(): EiPropPath {
+		return EiPropPath::from($this->eiProp);
 	}
 
 	public function buildScalarValue(EiMapping $eiMapping) {
-		return $this->mappableValueToScalarValue($eiMapping->getValue($this->eiField));
+		return $this->mappableValueToScalarValue($eiMapping->getValue($this->eiProp));
 	}
 
 	public function mappableValueToScalarValue($mappableValue) {

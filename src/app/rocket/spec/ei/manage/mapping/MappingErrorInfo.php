@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class MappingErrorInfo {
 	private $mappableErrorInfos;
@@ -34,12 +34,12 @@ class MappingErrorInfo {
 		 return true;
 	}
 	
-	public function getFieldErrorInfo(EiFieldPath $eiFieldPath): FieldErrorInfo {
-		$eiFieldPathStr = (string) $eiFieldPath;
-		if (!isset($this->mappableErrorInfos[$eiFieldPathStr])) {
-			$this->mappableErrorInfos[$eiFieldPathStr] = new FieldErrorInfo();
+	public function getFieldErrorInfo(EiPropPath $eiPropPath): FieldErrorInfo {
+		$eiPropPathStr = (string) $eiPropPath;
+		if (!isset($this->mappableErrorInfos[$eiPropPathStr])) {
+			$this->mappableErrorInfos[$eiPropPathStr] = new FieldErrorInfo();
 		}
-		return $this->mappableErrorInfos[$eiFieldPathStr];
+		return $this->mappableErrorInfos[$eiPropPathStr];
 	}
 
 	public function getFieldErrorInfos() {

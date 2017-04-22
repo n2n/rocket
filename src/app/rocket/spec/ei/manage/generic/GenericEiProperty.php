@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\generic;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 interface GenericEiProperty {
 	
@@ -34,9 +34,9 @@ interface GenericEiProperty {
 	public function getLabelLstr(): Lstr;
 	
 	/**
-	 * @return EiFieldPath
+	 * @return EiPropPath
 	 */
-	public function getEiFieldPath(): EiFieldPath;
+	public function getEiPropPath(): EiPropPath;
 	
 	/**
 	 * @param CriteriaProperty $alias

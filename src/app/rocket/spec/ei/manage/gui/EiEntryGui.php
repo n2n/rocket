@@ -35,8 +35,8 @@ class EiEntryGui {
 	private $viewMode;
 	private $displayables = array();
 	private $mappableWrappers = array();
-// 	private $eiFieldPaths = array();
-	private $eiEntryGuiListeners = array();
+// 	private $eiPropPaths = array();
+	private $eiObjectGuiListeners = array();
 	private $initialized = false;
 	
 	private $dispatchable;
@@ -87,8 +87,8 @@ class EiEntryGui {
 		$this->displayables[(string) $guiIdPath] = $displayable;
 	}
 	
-// 	public function putEiFieldPath(GuiIdPath $guiIdPath, EiFieldPath $eiFieldPath) {
-// 		$this->eiFieldPaths[(string) $guiIdPath] = $eiFieldPath;
+// 	public function putEiPropPath(GuiIdPath $guiIdPath, EiPropPath $eiPropPath) {
+// 		$this->eiPropPaths[(string) $guiIdPath] = $eiPropPath;
 // 	}
 	
 	public function containsDisplayable(GuiIdPath $guiIdPath) {
@@ -140,11 +140,11 @@ class EiEntryGui {
 		return $this->displayables;
 	}
 	
-// 	public function getEiFieldPathByGuiIdPath(GuiIdPath $guiIdPath) {
+// 	public function getEiPropPathByGuiIdPath(GuiIdPath $guiIdPath) {
 // 		$guiIdPathStr = (string) $guiIdPath;
 		
-// 		if (isset($this->eiFieldPaths[$guiIdPathStr])) {
-// 			return $this->eiFieldPaths[$guiIdPathStr];
+// 		if (isset($this->eiPropPaths[$guiIdPathStr])) {
+// 			return $this->eiPropPaths[$guiIdPathStr];
 // 		}
 		
 // 		return null;
@@ -222,16 +222,16 @@ class EiEntryGui {
 	public function save() {
 		$this->ensureInitialized();
 		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->onSave($this);
+		foreach ($this->eiObjectGuiListeners as $eiObjectGuiListener) {
+			$eiObjectGuiListener->onSave($this);
 		}
 		
 		foreach ($this->savables as $savable) {
 			$savable->save();
 		}
 		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->saved($this);
+		foreach ($this->eiObjectGuiListeners as $eiObjectGuiListener) {
+			$eiObjectGuiListener->saved($this);
 		}
 	}
 	
@@ -252,17 +252,17 @@ class EiEntryGui {
 		
 		$this->initialized = true;
 		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->finalized($this);
+		foreach ($this->eiObjectGuiListeners as $eiObjectGuiListener) {
+			$eiObjectGuiListener->finalized($this);
 		}
 	}
 	
-	public function registerEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
-		$this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)] = $eiEntryGuiListener;
+	public function registerEiEntryGuiListener(EiEntryGuiListener $eiObjectGuiListener) {
+		$this->eiObjectGuiListeners[spl_object_hash($eiObjectGuiListener)] = $eiObjectGuiListener;
 	}
 	
-	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
-		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
+	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiObjectGuiListener) {
+		unset($this->eiObjectGuiListeners[spl_object_hash($eiObjectGuiListener)]);
 	}
 }
 

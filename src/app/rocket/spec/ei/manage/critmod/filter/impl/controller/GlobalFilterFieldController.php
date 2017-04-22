@@ -90,7 +90,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 		$eiThing = $this->lookupEiThing($eiSpecId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterFieldId = (string) $filterFieldId;
-		$filterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiFieldCollection(), 
+		$filterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiPropCollection(), 
 						$eiThing->getEiEngine()->getEiModificatorCollection()))
 				->createFilterDefinition($this->getN2nContext());
 	
@@ -110,7 +110,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 		$eiThing = $this->lookupEiThing($eiSpecId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterFieldId = (string) $filterFieldId;
-		$eiMappingFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiFieldCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
+		$eiMappingFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
 				->createEiMappingFilterDefinition($this->getN2nContext());
 		$filterFieldItemForm = null;
 		try {

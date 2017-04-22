@@ -45,7 +45,7 @@ use n2n\web\http\controller\Controller;
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'edit';
 	const CONTROL_KEY = 'edit';
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
 	public function getIdBase() {

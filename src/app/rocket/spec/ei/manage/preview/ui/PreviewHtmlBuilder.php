@@ -35,7 +35,7 @@ class PreviewHtmlBuilder {
 	private $previewModel;
 	private $entryModel;
 	private $eiFrame;
-	private $eiEntry;
+	private $eiObject;
 	private $n2nLocale;
 	private $eiSpec;
 	private $areaObject;
@@ -69,9 +69,9 @@ class PreviewHtmlBuilder {
 				return;
 			}
 						
-			$eiEntry = $this->entryModel->getEiEntry();
+			$eiObject = $this->entryModel->getEiObject();
 			$areaObjectId = OrmUtils::extractId($areaObject, $this->eiSpec->getEntityModel());
-			if ($eiEntry->getId() != $areaObjectId) {
+			if ($eiObject->getId() != $areaObjectId) {
 				$this->areaEditable = false;
 				$this->areaObject = $areaObject;
 				return;
@@ -81,7 +81,7 @@ class PreviewHtmlBuilder {
 					new PreviewAreaException('No object given'));
 		}
 		
-		$this->areaObject = $this->entryModel->getEiEntry()->getEntityObj();
+		$this->areaObject = $this->entryModel->getEiObject()->getEntityObj();
 		$this->areaEditable = $this->entryModel instanceof EditEntryModel;
 
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
@@ -122,21 +122,21 @@ class PreviewHtmlBuilder {
 			return $createUiElementCallback();
 		}
 		
-		$eiField = null;
+		$eiProp = null;
 		try {
-			$eiField = $this->eiSpec->getEiFieldByPropertyName($propertyName);
+			$eiProp = $this->eiSpec->getEiPropByPropertyName($propertyName);
 		} catch (UnknownEiComponentException $e) {
 			$this->view->throwRuntimeException(
 					UiUtils::createCouldNotRenderUiComponentException($e));
 		}
 		
-		if (!($eiField instanceof PreviewableEiField)) {
+		if (!($eiProp instanceof PreviewableEiProp)) {
 			$this->view->throwRuntimeException(
-					new PreviewAreaException('EiField \'' . get_class($eiField) . '\' is not previewable.'));
+					new PreviewAreaException('EiProp \'' . get_class($eiProp) . '\' is not previewable.'));
 		}
 		
 		if ($this->entryModel->containsPropertyName($propertyName)) {
-			return $eiField->createEditablePreviewUiComponent($this->previewModel, 
+			return $eiProp->createEditablePreviewUiComponent($this->previewModel, 
 					$this->previewModel->createPropertyPath($propertyName), $this->view, $createUiElementCallback);
 		} else {
 			return $createUiElementCallback();
@@ -153,7 +153,7 @@ class PreviewHtmlBuilder {
 		$this->ensurePreviewAreaIsOpen();	
 		
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
-			$eiEntry = $this->entryModel->getEiEntry();
+			$eiObject = $this->entryModel->getEiObject();
 			
 			$formHtml = $this->view->getFormHtmlBuilder();
 			$this->view->out('<div class="rocket-preview-inpage-component rocket-preview-inpage-commands">');	

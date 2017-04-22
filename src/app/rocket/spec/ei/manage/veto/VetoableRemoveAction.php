@@ -1,20 +1,20 @@
 <?php
 namespace rocket\spec\ei\manage\veto;
 
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Message;
 
 class VetoableRemoveAction {
-	private $eiEntry;
+	private $eiObject;
 	private $vetoableRemoveQueue;
 	private $approved = null;
 	private $vetoReasonMessage = null;
 	private $whenApprovedClosures = array();
 	
-	public function __construct(EiEntry $eiEntry, VetoableRemoveQueue $vetoableRemoveQueue) {
-		$this->eiEntry = $eiEntry;
+	public function __construct(EiObject $eiObject, VetoableRemoveQueue $vetoableRemoveQueue) {
+		$this->eiObject = $eiObject;
 		$this->vetoableRemoveQueue = $vetoableRemoveQueue;
 	}
 	
@@ -22,8 +22,8 @@ class VetoableRemoveAction {
 		return $this->vetoableRemoveQueue;
 	}
 	
-	public function getEiEntry() {
-		return $this->eiEntry;
+	public function getEiObject() {
+		return $this->eiObject;
 	}
 	
 	public function isInitialized() {

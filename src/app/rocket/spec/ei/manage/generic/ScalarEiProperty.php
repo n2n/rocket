@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 interface ScalarEiProperty {
 	
@@ -33,9 +33,9 @@ interface ScalarEiProperty {
 
 
 	/**
-	 * @return EiFieldPath
+	 * @return EiPropPath
 	 */
-	public function getEiFieldPath(): EiFieldPath;
+	public function getEiPropPath(): EiPropPath;
 	
 // 	/**
 // 	 * @param EiMapping $eiMapping

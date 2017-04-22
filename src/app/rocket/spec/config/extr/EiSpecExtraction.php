@@ -155,18 +155,18 @@ class EiSpecExtraction extends SpecExtraction {
 			
 		$extraction->setPreviewControllerLookupId($eiDef->getPreviewControllerLookupId());
 			
-		foreach ($eiDef->getEiFieldCollection()->filterLevel(true) as $eiField) {
-			$fieldExtraction = new EiFieldExtraction();
-			$fieldExtraction->setId($eiField->getId());
-			$fieldExtraction->setClassName(get_class($eiField));
-			$fieldExtraction->setLabel($eiField->getLabel());
+		foreach ($eiDef->getEiPropCollection()->filterLevel(true) as $eiProp) {
+			$fieldExtraction = new EiPropExtraction();
+			$fieldExtraction->setId($eiProp->getId());
+			$fieldExtraction->setClassName(get_class($eiProp));
+			$fieldExtraction->setLabel($eiProp->getLabel());
 			
-			$eiFiedConfigurator = $eiField->createEiConfigurator();
+			$eiFiedConfigurator = $eiProp->createEiConfigurator();
 			$fieldExtraction->setProps($eiFiedConfigurator->getAttributes()->toArray());
 			$fieldExtraction->setEntityPropertyName($eiFiedConfigurator->getEntityPropertyName());
 			$fieldExtraction->setObjectPropertyName($eiFiedConfigurator->getObjectPropertyName());
 		
-			$extraction->addEiFieldExtraction($fieldExtraction);
+			$extraction->addEiPropExtraction($fieldExtraction);
 		}
 			
 		foreach ($eiDef->getEiCommandCollection()->filterLevel(true) as $command) {

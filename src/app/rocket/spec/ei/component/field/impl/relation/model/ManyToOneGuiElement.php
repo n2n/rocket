@@ -69,13 +69,13 @@ class ManyToOneGuiElement implements GuiElement {
 		if ($targetRelationEntry === null || $targetRelationEntry->isNew()) return null;
 		
 		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
-		$identityString = $targetEiuFrame->createIdentityString($targetRelationEntry->getEiEntry());
-		if (!$this->targetEiFrame->isDetailUrlAvailable($targetRelationEntry->getEiEntry()->toEntryNavPoint())) {
+		$identityString = $targetEiuFrame->createIdentityString($targetRelationEntry->getEiObject());
+		if (!$this->targetEiFrame->isDetailUrlAvailable($targetRelationEntry->getEiObject()->toEntryNavPoint())) {
 			return $html->getEsc($identityString);
 		}
 		
 		return $html->getLink($this->targetEiFrame->getDetailUrl($view->getHttpContext(), $targetRelationEntry
-						->getEiEntry()->toEntryNavPoint()), 
+						->getEiObject()->toEntryNavPoint()), 
 				$identityString);
 	}
 	

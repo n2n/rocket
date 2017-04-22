@@ -21,28 +21,28 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\SortableEiField;
+use rocket\spec\ei\component\field\SortableEiProp;
 use rocket\spec\ei\manage\critmod\SortModel;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\ei\component\field\PrivilegedEiField;
+use rocket\spec\ei\component\field\PrivilegedEiProp;
 use rocket\spec\security\PrivilegeDefinition;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\ei\EiCommandPath;
 use n2n\reflection\ArgUtils;
-use rocket\spec\security\EiFieldPrivilege;
+use rocket\spec\security\EiPropPrivilege;
 
 class SecurityFactory {
-	private $eiFieldCollection;
+	private $eiPropCollection;
 	private $eiCommandCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiFieldCollection $eiFieldCollection, EiCommandCollection $eiCommandCollection ,
+	public function __construct(EiPropCollection $eiPropCollection, EiCommandCollection $eiCommandCollection ,
 			EiModificatorCollection $eiModificatorCollection) {
-		$this->eiFieldCollection = $eiFieldCollection;
+		$this->eiPropCollection = $eiPropCollection;
 		$this->eiCommandCollection = $eiCommandCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
@@ -64,14 +64,14 @@ class SecurityFactory {
 			$privilegeDefinition->putEiCommandPrivilege(EiCommandPath::from($eiCommand), $eiCommand->createEiCommandPrivilege($n2nContext));
 		}	
 		
-		foreach ($this->eiFieldCollection->toArray(false) as $eiField) {
-			if (!($eiField instanceof PrivilegedEiField)) continue;
+		foreach ($this->eiPropCollection->toArray(false) as $eiProp) {
+			if (!($eiProp instanceof PrivilegedEiProp)) continue;
 				
-			$eiFieldPrivilege = $eiField->createEiFieldPrivilege($n2nContext);
-			ArgUtils::valTypeReturn($eiFieldPrivilege, EiFieldPrivilege::class, $eiField, 'buildEiFieldPrivilege');
+			$eiPropPrivilege = $eiProp->createEiPropPrivilege($n2nContext);
+			ArgUtils::valTypeReturn($eiPropPrivilege, EiPropPrivilege::class, $eiProp, 'buildEiPropPrivilege');
 			
-			if ($eiFieldPrivilege !== null) {
-				$privilegeDefinition->putEiFieldPrivilege(EiFieldPath::from($eiField), $eiFieldPrivilege);
+			if ($eiPropPrivilege !== null) {
+				$privilegeDefinition->putEiPropPrivilege(EiPropPath::from($eiProp), $eiPropPrivilege);
 			}
 		}
 		
@@ -88,15 +88,15 @@ class SecurityFactory {
 	
 	public static function createSortModel() {
 		$sortModel = new SortModel();
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof SortableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof SortableEiProp)) continue;
 			
-			if (null !== ($sortItem = $eiField->getSortItem())) {
-				$sortModel->putSortItem($id, $eiField->getSortItem());
+			if (null !== ($sortItem = $eiProp->getSortItem())) {
+				$sortModel->putSortItem($id, $eiProp->getSortItem());
 			}
 			
-			if (null !== ($sortItemFork = $eiField->getSortItemFork())) {
-				$sortModel->putSortItemFork($id, $eiField->getSortItemFork());
+			if (null !== ($sortItemFork = $eiProp->getSortItemFork())) {
+				$sortModel->putSortItemFork($id, $eiProp->getSortItemFork());
 			}
 		}
 		return $sortModel;
@@ -104,8 +104,8 @@ class SecurityFactory {
 		
 // 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEiFieldCollection() as $field) {
-// 			if ($field instanceof QuickSearchableEiField) {
+// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEiPropCollection() as $field) {
+// 			if ($field instanceof QuickSearchableEiProp) {
 // 				$quickSerachModel->addQuickSearchable($field);
 // 			}
 // 		}

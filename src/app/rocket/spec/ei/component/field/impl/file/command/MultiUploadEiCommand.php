@@ -27,32 +27,32 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
-use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField;
+use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiProp;
 use rocket\spec\ei\component\field\impl\file\command\controller\MultiUploadEiController;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\spec\ei\manage\control\HrefControl;
-use rocket\spec\ei\component\field\impl\file\FileEiField;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\component\field\impl\file\FileEiProp;
+use rocket\spec\ei\EiPropPath;
 
 class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
-	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiField
+	 * @var \rocket\spec\ei\component\field\impl\file\MultiUploadFileEiProp
 	 */
-	private $fileEiField;
-	private $namingEiFieldPath;
+	private $fileEiProp;
+	private $namingEiPropPath;
 	
-	public function __construct(FileEiField $fileEiField, EiFieldPath $namingEiFieldPath = null) {
-		$this->fileEiField = $fileEiField;
-		$this->namingEiFieldPath = $namingEiFieldPath;
+	public function __construct(FileEiProp $fileEiProp, EiPropPath $namingEiPropPath = null) {
+		$this->fileEiProp = $fileEiProp;
+		$this->namingEiPropPath = $namingEiPropPath;
 	}
 
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = new MultiUploadEiController();
-		$controller->setFileEiField($this->fileEiField);
-		$controller->setNamingEiFieldPath($this->namingEiFieldPath);
+		$controller->setFileEiProp($this->fileEiProp);
+		$controller->setNamingEiPropPath($this->namingEiPropPath);
 		return $controller;
 	}
 	

@@ -1,7 +1,7 @@
 <?php
 namespace lib\rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use n2n\util\StringUtils;
 
 class GeneralIdUtils {
@@ -28,20 +28,20 @@ class GeneralIdUtils {
 		return self::DRAFT_ID_PREFIX . $draftId;
 	}
 	
-	public static function generalIdOf(EiEntry $eiEntry) {
-		if ($eiEntry->isDraft()) {
-			$draft = $eiEntry->getDraft();
+	public static function generalIdOf(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
+			$draft = $eiObject->getDraft();
 			
 			if ($draft->isNew()) return null;
 			
 			return self::draftIdRepToGeneralId($draft->getId());	
 		}
 		
-		$liveEntry = $eiEntry->getLiveEntry();
+		$eiEntityObj = $eiObject->getEiEntityObj();
 		
-		if (!$eiEntry->getLiveEntry()->isPersistent()) return null;
+		if (!$eiObject->getEiEntityObj()->isPersistent()) return null;
 			
-		return self::liveIdRepToGeneralId($liveEntry->getEiSpec()->idToIdRep($liveEntry->getId()));
+		return self::liveIdRepToGeneralId($eiEntityObj->getEiSpec()->idToIdRep($eiEntityObj->getId()));
 	}
 	
 	

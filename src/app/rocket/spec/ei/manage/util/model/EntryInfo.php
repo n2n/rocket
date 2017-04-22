@@ -28,13 +28,13 @@
 
 // class EntryInfo implements EntryModel {
 // 	private $eiMask;
-// 	private $eiEntryGui;
+// 	private $eiObjectGui;
 // 	private $eiMapping;
 	
-// 	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,
+// 	public function __construct(EiMask $eiMask, EiEntryGui $eiObjectGui,
 // 			EiMapping $eiMapping) {
 // 		$this->eiMask = $eiMask;
-// 		$this->eiEntryGui = $eiEntryGui;
+// 		$this->eiObjectGui = $eiObjectGui;
 // 		$this->eiMapping = $eiMapping;
 // 	}
 // 	/* (non-PHPdoc)
@@ -45,7 +45,7 @@
 // 	}
 	
 // 	public function getEiEntryGui() {
-// 		return $this->eiEntryGui;
+// 		return $this->eiObjectGui;
 // 	}
 // 	/* (non-PHPdoc)
 // 	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiMapping()

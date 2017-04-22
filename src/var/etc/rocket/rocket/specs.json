@@ -9,7 +9,7 @@
             "defaultSort": [],
             "fields": {
                 "panel": {
-                    "class": "rocket\\spec\\ei\\component\\field\\impl\\string\\StringEiField",
+                    "class": "rocket\\spec\\ei\\component\\field\\impl\\string\\StringEiProp",
                     "props": {
                         "displayInOverview": false,
                         "displayInDetailView": false,
@@ -28,7 +28,7 @@
                     "entityProperty": "panel"
                 },
                 "orderIndex": {
-                    "class": "rocket\\spec\\ei\\component\\field\\impl\\numeric\\IntegerEiField",
+                    "class": "rocket\\spec\\ei\\component\\field\\impl\\numeric\\IntegerEiProp",
                     "props": {
                         "displayInOverview": false,
                         "displayInDetailView": false,
@@ -47,7 +47,7 @@
                     "entityProperty": "orderIndex"
                 },
                 "type": {
-                    "class": "rocket\\spec\\ei\\component\\field\\impl\\meta\\TypeEiField",
+                    "class": "rocket\\spec\\ei\\component\\field\\impl\\meta\\TypeEiProp",
                     "props": {
                         "displayInOverview": false,
                         "displayInDetailView": true

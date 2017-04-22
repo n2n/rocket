@@ -29,7 +29,7 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\spec\config\mask\CommonEiMask;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
+use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
 use rocket\spec\config\EiSpecSetupQueue;
 use rocket\spec\ei\component\EiConfigurator;
@@ -39,12 +39,12 @@ use n2n\persistence\orm\OrmConfigurationException;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\component\command\IndependentEiCommand;
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
 use rocket\spec\config\extr\EiSpecExtraction;
 use rocket\spec\config\extr\EiDefExtraction;
-use rocket\spec\config\extr\EiFieldExtraction;
+use rocket\spec\config\extr\EiPropExtraction;
 use rocket\spec\config\extr\EiComponentExtraction;
 use rocket\spec\config\extr\CommonEiMaskExtraction;
 use rocket\spec\ei\EiEngine;
@@ -112,14 +112,14 @@ class EiSpecFactory {
 		}
 		$eiDef->setPreviewControllerLookupId($eiDefExtraction->getPreviewControllerLookupId());
 		
-		$eiFieldCollection = $eiEngine->getEiFieldCollection();
-		foreach ($eiDefExtraction->getEiFieldExtractions() as $eiFieldExtraction) {
+		$eiPropCollection = $eiEngine->getEiPropCollection();
+		foreach ($eiDefExtraction->getEiPropExtractions() as $eiPropExtraction) {
 			try {
-				$eiFieldCollection->addIndependent($this->createEiField($eiFieldExtraction, $eiSpec, $eiMask));
+				$eiPropCollection->addIndependent($this->createEiProp($eiPropExtraction, $eiSpec, $eiMask));
 			} catch (TypeNotFoundException $e) {
-				throw $this->createEiFieldException($eiFieldExtraction, $e);
+				throw $this->createEiPropException($eiPropExtraction, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiFieldException($eiFieldExtraction, $e);
+				throw $this->createEiPropException($eiPropExtraction, $e);
 			}
 		}
 
@@ -129,9 +129,9 @@ class EiSpecFactory {
 				$eiCommandCollection->addIndependent(
 						$this->createEiCommand($eiComponentExtraction, $eiSpec, $eiMask));
 			} catch (TypeNotFoundException $e) {
-				throw $this->createEiCommandException($eiFieldExtraction->getId(), $e);
+				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiCommandException($eiFieldExtraction->getId(), $e);
+				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
 			}
 		}
 		
@@ -152,25 +152,25 @@ class EiSpecFactory {
 	}
 	
 	/**
-	 * @param EiFieldExtraction $eiFieldExtraction
+	 * @param EiPropExtraction $eiPropExtraction
 	 * @param EiSpec $eiSpec
 	 * @param EiMask $eiMask
 	 * @throws InvalidEiComponentConfigurationException
 	 * @throws IncompatiblePropertyException
 	 * @throws TypeNotFoundException
-	 * @return EiField
+	 * @return EiProp
 	 */
-	public function createEiField(EiFieldExtraction $eiFieldExtraction, EiSpec $eiSpec, EiMask $eiMask = null) {
-		$id = $eiFieldExtraction->getId();
-		$eiFieldClass = ReflectionUtils::createReflectionClass($eiFieldExtraction->getClassName());
+	public function createEiProp(EiPropExtraction $eiPropExtraction, EiSpec $eiSpec, EiMask $eiMask = null) {
+		$id = $eiPropExtraction->getId();
+		$eiPropClass = ReflectionUtils::createReflectionClass($eiPropExtraction->getClassName());
 		
-		if (!$eiFieldClass->implementsInterface('rocket\spec\ei\component\field\indepenent\IndependentEiField')) {
-			throw new InvalidEiComponentConfigurationException('\'' . $eiFieldClass->getName() 
-					. '\' must implement \'rocket\spec\ei\component\field\indepenent\IndependentEiField\'.');
+		if (!$eiPropClass->implementsInterface('rocket\spec\ei\component\field\indepenent\IndependentEiProp')) {
+			throw new InvalidEiComponentConfigurationException('\'' . $eiPropClass->getName() 
+					. '\' must implement \'rocket\spec\ei\component\field\indepenent\IndependentEiProp\'.');
 		}
 		
-		$eiField = $eiFieldClass->newInstance();
-		$eiField->setId($id);
+		$eiProp = $eiPropClass->newInstance();
+		$eiProp->setId($id);
 		
 		$moduleNamespace = null;
 		if ($eiMask === null) {
@@ -178,20 +178,20 @@ class EiSpecFactory {
 		} else {
 			$moduleNamespace = $eiMask->getModuleNamespace();
 		}
-		$eiField->setLabelLstr(new Lstr($eiFieldExtraction->getLabel(), $moduleNamespace));
+		$eiProp->setLabelLstr(new Lstr($eiPropExtraction->getLabel(), $moduleNamespace));
 		
-		$eiFieldConfigurator = $eiField->createEiFieldConfigurator();
-		ArgUtils::valTypeReturn($eiFieldConfigurator, EiFieldConfigurator::class, $eiField, 
-				'createEiFieldConfigurator');
-		IllegalStateException::assertTrue($eiFieldConfigurator instanceof EiFieldConfigurator);
-		$eiFieldConfigurator->setAttributes(new Attributes($eiFieldExtraction->getProps()));
+		$eiPropConfigurator = $eiProp->createEiPropConfigurator();
+		ArgUtils::valTypeReturn($eiPropConfigurator, EiPropConfigurator::class, $eiProp, 
+				'createEiPropConfigurator');
+		IllegalStateException::assertTrue($eiPropConfigurator instanceof EiPropConfigurator);
+		$eiPropConfigurator->setAttributes(new Attributes($eiPropExtraction->getProps()));
 		
-		$objectPropertyName = $eiFieldExtraction->getObjectPropertyName();
-		$entityPropertyName = $eiFieldExtraction->getEntityPropertyName();
+		$objectPropertyName = $eiPropExtraction->getObjectPropertyName();
+		$entityPropertyName = $eiPropExtraction->getEntityPropertyName();
 		
-		$this->setupQueue->addPropIn(new PropIn($eiSpec, $eiFieldConfigurator, $objectPropertyName, $entityPropertyName));
+		$this->setupQueue->addPropIn(new PropIn($eiSpec, $eiPropConfigurator, $objectPropertyName, $entityPropertyName));
 		
-// 		$this->setupQueue->addClosure(function () use ($eiSpec, $eiFieldConfigurator, $objectPropertyName, $entityPropertyName) {
+// 		$this->setupQueue->addClosure(function () use ($eiSpec, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
 // 			$accessProxy = null;
 // 			if (null !== $objectPropertyName) {
 // 				try{
@@ -199,7 +199,7 @@ class EiSpecFactory {
 // 					$accessProxy = $propertiesAnalyzer->analyzeProperty($objectPropertyName, false, true);
 // 					$accessProxy->setNullReturnAllowed(true);
 // 				} catch (ReflectionException $e) {
-// 					throw new InvalidEiComponentConfigurationException('EiField is assigned to unknown property: ' 
+// 					throw new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: ' 
 // 							. $objectPropertyName, 0, $e);
 // 				}
 // 			}
@@ -209,19 +209,19 @@ class EiSpecFactory {
 // 				try {
 // 					$entityProperty = $eiSpec->getEntityModel()->getLevelEntityPropertyByName($entityPropertyName, true);
 // 				} catch (UnknownEntityPropertyException $e) {
-// 					throw new InvalidEiComponentConfigurationException('EiField is assigned to unknown EntityProperty: ' 
+// 					throw new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: ' 
 // 							. $entityPropertyName, 0, $e);
 // 				}
 // 			}
 	
 // 			if ($entityProperty !== null || $accessProxy !== null) {
-// 				$eiFieldConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
+// 				$eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
 // 			}
 // 		});
 		
-		$this->setupQueue->add($eiFieldConfigurator);
+		$this->setupQueue->add($eiPropConfigurator);
 		
-		return $eiField;
+		return $eiProp;
 	}
 	
 	/**
@@ -279,7 +279,7 @@ class EiSpecFactory {
 		$eiConfigurator = $eiModificator->createEiConfigurator();
 		ArgUtils::valTypeReturn($eiConfigurator, 'rocket\spec\ei\component\EiConfigurator',
 				$eiModificator, 'creatEiConfigurator');
-		IllegalStateException::assertTrue($eiConfigurator instanceof EiFieldConfigurator);
+		IllegalStateException::assertTrue($eiConfigurator instanceof EiPropConfigurator);
 		$eiConfigurator->setAttributes(new Attributes($eiModificator->getProps()));
 		$this->setupQueue->add($eiConfigurator);
 		
@@ -300,9 +300,9 @@ class EiSpecFactory {
 		return new InvalidSpecConfigurationException('Could not create EiSpec (id: ' . $eiSpecId . ').', 0, $previous);
 	}
 	
-	private function createEiFieldException(EiFieldExtraction $eiFieldExtraction, \Exception $previous) {
-		return new InvalidEiComponentConfigurationException('Could not create ' . $eiFieldExtraction->getClassName() 
-				. ' [id: ' . $eiFieldExtraction->getId() . '].', 0, $previous);
+	private function createEiPropException(EiPropExtraction $eiPropExtraction, \Exception $previous) {
+		return new InvalidEiComponentConfigurationException('Could not create ' . $eiPropExtraction->getClassName() 
+				. ' [id: ' . $eiPropExtraction->getId() . '].', 0, $previous);
 	}
 	
 	private function createEiCommandException($eiCommandId, \Exception $previous) {

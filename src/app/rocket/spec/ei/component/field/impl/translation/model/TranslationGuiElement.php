@@ -89,7 +89,7 @@ class TranslationGuiElement implements GuiElementFork {
 	
 	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
 		$label = $this->guiDefinition->getGuiFieldByGuiIdPath($guiIdPath)->getDisplayLabel();
-		$eiFieldPath = $this->guiDefinition->guiIdPathToEiFieldPath($guiIdPath);
+		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
 // 		$fieldErrorInfo = new FieldErrorInfo();
 		
@@ -108,13 +108,13 @@ class TranslationGuiElement implements GuiElementFork {
 			if ($result === null) continue;
 			
 			$fieldErrorInfo = $guiElementAssembler->getEiuEntryGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
-					->getFieldErrorInfo($eiFieldPath);
+					->getFieldErrorInfo($eiPropPath);
 			if (null !== ($mappableWrapper = $result->getMappableWrapper())) {
 				$mappableWrappers[] = $mappableWrapper;
 			}
 // 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
 			
-			if ($this->targetRelationEntries[$n2nLocaleId]->getEiEntry()->isNew()) {
+			if ($this->targetRelationEntries[$n2nLocaleId]->getEiObject()->isNew()) {
 				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()), 
 						$fieldErrorInfo);
 			} else {
@@ -158,7 +158,7 @@ class TranslationGuiElement implements GuiElementFork {
 		foreach ($this->translationForm->getDispatchables() as $n2nLocaleId => $dispatchable) {
 			$this->guiElementAssemblers[$n2nLocaleId]->save();
 			$targetRelationEntries[$n2nLocaleId] = $this->targetRelationEntries[$n2nLocaleId];
-			$targetRelationEntries[$n2nLocaleId]->getEiEntry()->getLiveObject()
+			$targetRelationEntries[$n2nLocaleId]->getEiObject()->getLiveObject()
 					->setN2nLocale(new N2nLocale($n2nLocaleId));
 		}
 		

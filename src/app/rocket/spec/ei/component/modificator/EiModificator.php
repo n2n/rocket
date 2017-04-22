@@ -48,9 +48,9 @@ interface EiModificator extends EiComponent {
 	public function setupGuiDefinition(GuiDefinition $guiDefinition);
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiEntryGui $eiObjectGui
 	 */
-	public function setupEiEntryGui(EiEntryGui $eiEntryGui);
+	public function setupEiEntryGui(EiEntryGui $eiObjectGui);
 	
 	/**
 	 * @param DraftDefinition $draftDefinition

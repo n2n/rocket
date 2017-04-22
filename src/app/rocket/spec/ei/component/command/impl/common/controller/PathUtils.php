@@ -92,10 +92,10 @@ class PathUtils {
 // 		return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 	}
 	
-// 	public static function createDetailPathExtFromEiEntry($commandId, EiEntry $eiEntry, $previewType) {
-// 		$objectId = $eiEntry->getId();
-// 		$draftId = $eiEntry->getDraftId();
-// 		$translationN2nLocale = $eiEntry->getTranslationN2nLocale();
+// 	public static function createDetailPathExtFromEiObject($commandId, EiObject $eiObject, $previewType) {
+// 		$objectId = $eiObject->getId();
+// 		$draftId = $eiObject->getDraftId();
+// 		$translationN2nLocale = $eiObject->getTranslationN2nLocale();
 	
 // 		if (isset($draftId)) {
 // 			return self::createDraftDetailPathExt($commandId, $objectId, $draftId, $translationN2nLocale, $previewType);
@@ -106,17 +106,17 @@ class PathUtils {
 	
 // 	public static function createDetailPathExtFromEiFrame($commandId, EiFrame $eiFrame, $includeDraft = false, 
 // 			$includeTranslation = false, $includePreview = false) {
-// 		$eiEntry = $eiFrame->getEiEntry();
-// 		$objectId = $eiEntry->getId();
+// 		$eiObject = $eiFrame->getEiObject();
+// 		$objectId = $eiObject->getId();
 // 		$translationN2nLocale = null;
-// 		if ($eiEntry->hasTranslation() && $includeTranslation) {
-// 			$translationN2nLocale = $eiEntry->getTranslationN2nLocale();
+// 		if ($eiObject->hasTranslation() && $includeTranslation) {
+// 			$translationN2nLocale = $eiObject->getTranslationN2nLocale();
 // 		}
 		
 // 		$previewType = $eiFrame->getPreviewType();
 		
-// 		if ($eiEntry->isDraft() && $includeDraft) {
-// 			return self::createDraftDetailPathExt($commandId, $objectId, $eiEntry->getDraft()->getId(), $translationN2nLocale, $previewType);
+// 		if ($eiObject->isDraft() && $includeDraft) {
+// 			return self::createDraftDetailPathExt($commandId, $objectId, $eiObject->getDraft()->getId(), $translationN2nLocale, $previewType);
 // 		} else {
 // 			return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 		}

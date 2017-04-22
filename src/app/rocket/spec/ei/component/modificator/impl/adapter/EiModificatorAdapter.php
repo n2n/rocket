@@ -37,7 +37,7 @@ abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModi
 	
 	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
 	
-	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}
+	public function setupEiEntryGui(EiEntryGui $eiObjectGui) {}
 	
 	public function setupDraftDefinition(DraftDefinition $draftDefinition) {}
 }

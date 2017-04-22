@@ -75,7 +75,7 @@ class EditModel implements Dispatchable {
 	
 	public function isPublishable() {
 		return $this->publishingAllowed && $this->entryModel
-				->getEiMapping()->getEiEntry()->isDraft();
+				->getEiMapping()->getEiObject()->isDraft();
 	}
 	
 	public function getEntryModel() {
@@ -134,7 +134,7 @@ class EditModel implements Dispatchable {
 		}
 		
 		$eiMapping = $this->entryForm->buildEiMapping();
-		IllegalStateException::assertTrue($eiMapping->getEiEntry()->isDraft());
+		IllegalStateException::assertTrue($eiMapping->getEiObject()->isDraft());
 		
 		return $eiMapping->save();
 	}

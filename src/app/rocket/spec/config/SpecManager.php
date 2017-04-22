@@ -25,7 +25,7 @@ use rocket\spec\ei\EiSpec;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\ReflectionUtils;
 use n2n\persistence\orm\model\EntityModelManager;
-use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\config\extr\SpecExtraction;
 use rocket\spec\config\source\RocketConfigSource;
 use rocket\spec\ei\component\EiConfigurator;
@@ -495,13 +495,13 @@ class EiSpecSetupQueue {
 
 class PropIn {
 	private $eiSpec;
-	private $eiFieldConfigurator;
+	private $eiPropConfigurator;
 	private $objectPropertyName;
 	private $entityPropertyName;
 
-	public function __construct($eiSpec, $eiFieldConfigurator, $objectPropertyName, $entityPropertyName) {
+	public function __construct($eiSpec, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
 		$this->eiSpec = $eiSpec;
-		$this->eiFieldConfigurator = $eiFieldConfigurator;
+		$this->eiPropConfigurator = $eiPropConfigurator;
 		$this->objectPropertyName = $objectPropertyName;
 		$this->entityPropertyName = $entityPropertyName;
 	}
@@ -519,7 +519,7 @@ class PropIn {
 				$accessProxy->setNullReturnAllowed(true);
 			} catch (ReflectionException $e) {
 				throw $this->createException(
-						new InvalidEiComponentConfigurationException('EiField is assigned to unknown property: '
+						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
 								. $this->objectPropertyName, 0, $e));
 			}
 		}
@@ -530,14 +530,14 @@ class PropIn {
 				$entityProperty = $this->eiSpec->getEntityModel()->getLevelEntityPropertyByName($this->entityPropertyName, true);
 			} catch (UnknownEntityPropertyException $e) {
 				throw $this->createException(
-						new InvalidEiComponentConfigurationException('EiField is assigned to unknown EntityProperty: '
+						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
 								. $this->entityPropertyName, 0, $e));
 			}
 		}
 
 		if ($entityProperty !== null || $accessProxy !== null) {
 			try {
-				$this->eiFieldConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
+				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
 			} catch (IncompatiblePropertyException $e) {
 				throw $this->createException($e);
 			}
@@ -545,7 +545,7 @@ class PropIn {
 	}
 	
 	private function createException($e) {
-		$eiComponent = $this->eiFieldConfigurator->getEiComponent();
-		return new InvalidEiComponentConfigurationException('EiField is invalid configured: ' . $eiComponent, 0, $e);
+		$eiComponent = $this->eiPropConfigurator->getEiComponent();
+		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent, 0, $e);
 	}
 }

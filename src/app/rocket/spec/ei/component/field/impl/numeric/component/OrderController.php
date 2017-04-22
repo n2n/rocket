@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use n2n\persistence\orm\criteria\Criteria;
-use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
+use rocket\spec\ei\component\field\impl\numeric\OrderEiProp;
 use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\util\model\EiuFrame;
@@ -32,7 +32,7 @@ use n2n\web\http\controller\ParamGet;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class OrderController extends ControllerAdapter {	
-	private $orderEiField;
+	private $orderEiProp;
 	private $utils;
 	private $eiCtrlUtils;
 	
@@ -41,9 +41,9 @@ class OrderController extends ControllerAdapter {
 		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 	
-	public function setOrderEiField(OrderEiField $orderEiField) {
-		$this->orderEiField = $orderEiField;
-		$this->eiSpec = $orderEiField->getEiEngine()->getEiSpec();
+	public function setOrderEiProp(OrderEiProp $orderEiProp) {
+		$this->orderEiProp = $orderEiProp;
+		$this->eiSpec = $orderEiProp->getEiEngine()->getEiSpec();
 	}
 	
 	public function doBefore($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
@@ -69,20 +69,20 @@ class OrderController extends ControllerAdapter {
 	private function move(string $idRep, string $targetIdRep, bool $before) {
 		if ($idRep === $targetIdRep) return;
 		
-		$liveEntry = null;
-		$targetLiveEntry = null;
+		$eiEntityObj = null;
+		$targetEiEntityObj = null;
 		
 		try {
-			$liveEntry = $this->utils->lookupLiveEntryById($this->utils->idRepToId($idRep));
-			$targetLiveEntry = $this->utils->lookupLiveEntryById($this->utils->idRepToId($targetIdRep));
+			$eiEntityObj = $this->utils->lookupEiEntityObjById($this->utils->idRepToId($idRep));
+			$targetEiEntityObj = $this->utils->lookupEiEntityObjById($this->utils->idRepToId($targetIdRep));
 		} catch (UnknownEntryException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {
 			return;
 		}
 		
-		$entityProperty = $this->orderEiField->getEntityProperty();
-		$targetOrderIndex = $entityProperty->readValue($targetLiveEntry->getEntityObj());
+		$entityProperty = $this->orderEiProp->getEntityProperty();
+		$targetOrderIndex = $entityProperty->readValue($targetEiEntityObj->getEntityObj());
 		if (!$before) {
 			$targetOrderIndex++;
 		}
@@ -94,12 +94,12 @@ class OrderController extends ControllerAdapter {
 				->where()->match(CrIt::p('eo', $entityProperty), '>=', $targetOrderIndex)->endClause()
 				->order(CrIt::p('eo', $entityProperty), 'ASC');
 		
-		$newOrderIndex = $targetOrderIndex + OrderEiField::ORDER_INCREMENT;
+		$newOrderIndex = $targetOrderIndex + OrderEiProp::ORDER_INCREMENT;
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$entityProperty->writeValue($entityObj, $newOrderIndex += OrderEiField::ORDER_INCREMENT);
+			$entityProperty->writeValue($entityObj, $newOrderIndex += OrderEiProp::ORDER_INCREMENT);
 		}
 		
-		$entityProperty->writeValue($liveEntry->getEntityObj(), $targetOrderIndex);
+		$entityProperty->writeValue($eiEntityObj->getEntityObj(), $targetOrderIndex);
 		$em->flush();
 	}
 }

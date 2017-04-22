@@ -22,13 +22,13 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use n2n\persistence\orm\model\EntityModel;
-use rocket\spec\ei\manage\LiveEntry;
+use rocket\spec\ei\manage\EiEntityObj;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiSpec;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
@@ -85,39 +85,39 @@ interface EiUtils {
 	public function idRepToId(string $idRep);
 	
 	/**
-	 * @param object $eiEntryObj
+	 * @param object $eiObjectObj
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getGenericLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string;
+	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string;
 	
 	/**
-	 * @param object $eiEntryObj
+	 * @param object $eiObjectObj
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getGenericPluralLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string;
+	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string;
 	
 	/**
-	 * @param EiEntry $eiEntry
+	 * @param EiObject $eiObject
 	 * @param bool $determineEiMask
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(EiEntry $eiEntry, bool $determineEiMask = true, 
+	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string;
 	
 	/**
-	 * @param object $eiEntryObj
+	 * @param object $eiObjectObj
 	 * @return EiSpec
 	 */
-	public function determineEiSpec($eiEntryObj): EiSpec;
+	public function determineEiSpec($eiObjectObj): EiSpec;
 	
 	/**
-	 * @param object $eiEntryObj
+	 * @param object $eiObjectObj
 	 * @return EiMask
 	 */
-	public function determineEiMask($eiEntryObj): EiMask;
+	public function determineEiMask($eiObjectObj): EiMask;
 	
 	/**
 	 * @return N2nLocale
@@ -133,16 +133,16 @@ interface EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupLiveEntryById($id, $ignoreConstraints)
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiEntityObjById($id, $ignoreConstraints)
 	 */
-	public function lookupLiveEntryById($id, int $ignoreConstraintTypes = 0): LiveEntry;
+	public function lookupEiEntityObjById($id, int $ignoreConstraintTypes = 0): EiEntityObj;
 	
 	/**
 	 * @param int $id
 	 * @throws UnknownEntryException
-	 * @return \rocket\spec\ei\manage\EiEntry
+	 * @return \rocket\spec\ei\manage\EiObject
 	 */
-	public function lookupEiEntryById($id, int $ignoreConstraintTypes = 0): EiEntry;
+	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject;
 	
 	/**
 	 * @return bool
@@ -162,9 +162,9 @@ interface EiUtils {
 	
 	/**
 	 * @param int $id
-	 * @return EiEntry
+	 * @return EiObject
 	 */
-	public function lookupEiEntryByDraftId(int $id): EiEntry;
+	public function lookupEiObjectByDraftId(int $id): EiObject;
 	
 	/**
 	 * @param unknown $entityObjId
@@ -181,28 +181,28 @@ interface EiUtils {
 	
 	/**
 	 * @param object $entity
-	 * @return \rocket\spec\ei\manage\EiEntry
+	 * @return \rocket\spec\ei\manage\EiObject
 	 */
-	public function createEiEntryFromLiveEntry($liveEntry): EiEntry;
+	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject;
 	
 	/**
 	 * @param Draft $draft
-	 * @return EiEntry
+	 * @return EiObject
 	 */
-	public function createEiEntryFromDraft(Draft $draft): EiEntry;
+	public function createEiObjectFromDraft(Draft $draft): EiObject;
 	
 	/**
 	 * @param bool $draft
 	 * @param EiSpec $eiSpec
-	 * @return EiEntry
+	 * @return EiObject
 	 */
-	public function createNewEiEntry(bool $draft = false, EiSpec $eiSpec = null): EiEntry;
+	public function createNewEiObject(bool $draft = false, EiSpec $eiSpec = null): EiObject;
 	
 	/**
-	 * @param object $eiEntryObj
+	 * @param object $eiObjectObj
 	 * @return EiuEntry
 	 */
-	public function toEiuEntry($eiEntryObj): EiuEntry;
+	public function toEiuEntry($eiObjectObj): EiuEntry;
 	
-	public function persist($eiEntryObj, bool $flush = true);
+	public function persist($eiObjectObj, bool $flush = true);
 }

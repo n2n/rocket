@@ -26,7 +26,7 @@ use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
@@ -98,11 +98,11 @@ interface EiMask extends EiThing {
 	public function createEntryControls(EiuEntryGui $eiuGui, HtmlView $view): array;
 		
 	/**
-	 * @param EiEntry $eiEntry
+	 * @param EiObject $eiObject
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(EiEntry $eiEntry, N2nLocale $n2nLocale): string;
+	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string;
 	
 	// 	/**
 	// 	 * @param EiFrame $eiFrame

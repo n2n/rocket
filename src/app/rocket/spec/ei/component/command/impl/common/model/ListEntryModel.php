@@ -29,7 +29,7 @@ use rocket\spec\ei\mask\EiMask;
 
 class ListEntryModel implements EntryModel {
 	private $eiMask;
-	private $eiEntryGui;
+	private $eiObjectGui;
 	
 	private $eiMapping;
 	
@@ -37,9 +37,9 @@ class ListEntryModel implements EntryModel {
 	 * @param GuiDefinition $guiDefinition
 	 * @param EiMapping $eiMapping
 	 */
-	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,	EiMapping $eiMapping) {
+	public function __construct(EiMask $eiMask, EiEntryGui $eiObjectGui,	EiMapping $eiMapping) {
 		$this->eiMask = $eiMask;
-		$this->eiEntryGui = $eiEntryGui;
+		$this->eiObjectGui = $eiObjectGui;
 		$this->eiMapping = $eiMapping;
 	}
 	
@@ -68,6 +68,6 @@ class ListEntryModel implements EntryModel {
 	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntryGui()
 	 */
 	public function getEiEntryGui() {
-		return $this->eiEntryGui;
+		return $this->eiObjectGui;
 	}
 }

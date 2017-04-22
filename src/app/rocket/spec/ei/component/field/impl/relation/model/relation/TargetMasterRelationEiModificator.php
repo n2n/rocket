@@ -28,42 +28,42 @@ use rocket\spec\ei\manage\mapping\MappingListenerAdapter;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class TargetMasterRelationEiModificator extends EiModificatorAdapter {
-	private $eiFieldRelation;
+	private $eiPropRelation;
 
-	public function __construct(EiFieldRelation $eiFieldRelation) {
-		$this->eiFieldRelation = $eiFieldRelation;
+	public function __construct(EiPropRelation $eiPropRelation) {
+		$this->eiPropRelation = $eiPropRelation;
 	}
 
 	public function setupEiMapping(Eiu $eiu) {
 		$eiMapping = $eiu->entry()->getEiMapping();
-		if ($eiMapping->getEiEntry()->isDraft()) return;
+		if ($eiMapping->getEiObject()->isDraft()) return;
 		
 		$that = $this;
-		$eiMapping->registerListener(new TargetMasterEiMappingListener($this->eiFieldRelation));
+		$eiMapping->registerListener(new TargetMasterEiMappingListener($this->eiPropRelation));
 	}
 }
 
 class TargetMasterEiMappingListener extends MappingListenerAdapter {
-	private $eiFieldRelation;
+	private $eiPropRelation;
 	private $accessProxy;
 	private $orphanRemoval;
 	
 	private $oldValue;
 	
-	public function __construct(EiFieldRelation $eiFieldRelation) {
-		$this->eiFieldRelation = $eiFieldRelation;
-		$this->accessProxy = $this->eiFieldRelation->getRelationEiField()->getObjectPropertyAccessProxy();
-		$this->orphanRemoval = $this->eiFieldRelation->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
+	public function __construct(EiPropRelation $eiPropRelation) {
+		$this->eiPropRelation = $eiPropRelation;
+		$this->accessProxy = $this->eiPropRelation->getRelationEiProp()->getObjectPropertyAccessProxy();
+		$this->orphanRemoval = $this->eiPropRelation->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
 	}
 	
 	public function onWrite(EiMapping $eiMapping) {
-		$this->oldValue = $this->accessProxy->getValue($eiMapping->getEiEntry()->getLiveObject());
+		$this->oldValue = $this->accessProxy->getValue($eiMapping->getEiObject()->getLiveObject());
 	}
 	
 	public function written(EiMapping $eiMapping) {
-		$entityObj = $eiMapping->getEiEntry()->getLiveObject();
+		$entityObj = $eiMapping->getEiObject()->getLiveObject();
 		
-		if ($this->eiFieldRelation->isTargetMany()) {
+		if ($this->eiPropRelation->isTargetMany()) {
 			$this->writeToMany($entityObj);
 		} else {
 			$this->writeToOne($entityObj);
@@ -112,9 +112,9 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 	}
 	
 	private function writeToMaster($entityObj, $targetEntityObj) {
-		$targetAccessProxy = $this->eiFieldRelation->getTargetMasterAccessProxy();
+		$targetAccessProxy = $this->eiPropRelation->getTargetMasterAccessProxy();
 	
-		if (!$this->eiFieldRelation->isSourceMany()) {
+		if (!$this->eiPropRelation->isSourceMany()) {
 			$targetAccessProxy->setValue($targetEntityObj, $entityObj);
 			return;
 		}
@@ -133,9 +133,9 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 	}
 	
 	private function removeFromMaster($entityObj, $targetEntityObj) {
-		$targetAccessProxy = $this->eiFieldRelation->getTargetMasterAccessProxy();
+		$targetAccessProxy = $this->eiPropRelation->getTargetMasterAccessProxy();
 	
-		if (!$this->eiFieldRelation->isSourceMany()) {
+		if (!$this->eiPropRelation->isSourceMany()) {
 			if ($entityObj === $targetAccessProxy->getValue($targetEntityObj)) {
 				$targetAccessProxy->setValue($targetEntityObj, null);
 			}

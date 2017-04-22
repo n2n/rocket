@@ -36,7 +36,7 @@ class FieldEiHtmlBuilder {
 	private $view;
 	private $html;
 	private $formHtml;
-	private $eiFieldInfoStrack = array();
+	private $eiPropInfoStrack = array();
 	
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
@@ -62,19 +62,19 @@ class FieldEiHtmlBuilder {
 	
 	private function pushGuiFieldInfo($tagName, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null, 
 			PropertyPath $propertyPath = null) {
-		$this->eiFieldInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable,
+		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
 	}
 
-	public function peakEiFieldInfo($pop) {
-		if (!sizeof($this->eiFieldInfoStack)) {
-			throw new IllegalStateException('No EiField open');
+	public function peakEiPropInfo($pop) {
+		if (!sizeof($this->eiPropInfoStack)) {
+			throw new IllegalStateException('No EiProp open');
 		}
 	
 		if ($pop) {
-			return array_pop($this->eiFieldInfoStack);
+			return array_pop($this->eiPropInfoStack);
 		} else {
-			return end($this->eiFieldInfoStack);
+			return end($this->eiPropInfoStack);
 		}
 	}
 	
@@ -112,12 +112,12 @@ class FieldEiHtmlBuilder {
 	}
 	
 	public function getCloseField() {
-		$eiFieldInfo = $this->peakEiFieldInfo(true);
-		if (isset($eiFieldInfo['propertyPath'])) {
+		$eiPropInfo = $this->peakEiPropInfo(true);
+		if (isset($eiPropInfo['propertyPath'])) {
 			return $this->formHtml->getMagClose();
 		}
 	
-		return new Raw('</' . htmlspecialchars($eiFieldInfo['tagName']) . '>');
+		return new Raw('</' . htmlspecialchars($eiPropInfo['tagName']) . '>');
 	}
 	
 	public function label(array $attrs = null, $label = null) {
@@ -125,13 +125,13 @@ class FieldEiHtmlBuilder {
 	}
 	
 	public function getLabel(array $attrs = null, $label = null) {
-		$eiFieldInfo = $this->peakEiFieldInfo(false);
+		$eiPropInfo = $this->peakEiPropInfo(false);
 	
-		if (isset($eiFieldInfo['propertyPath'])) {
+		if (isset($eiPropInfo['propertyPath'])) {
 			return $this->formHtml->getMagLabel($attrs, $label);
 		}
 	
-		return new HtmlElement('label', $attrs, ($label === null ? $eiFieldInfo['displayable']->getUiOutputLabel() : $label));
+		return new HtmlElement('label', $attrs, ($label === null ? $eiPropInfo['displayable']->getUiOutputLabel() : $label));
 	}
 	
 	public function field() {
@@ -139,13 +139,13 @@ class FieldEiHtmlBuilder {
 	}
 	
 	public function getField(): UiComponent {
-		$eiFieldInfo = $this->peakEiFieldInfo(false);
+		$eiPropInfo = $this->peakEiPropInfo(false);
 	
-		if (isset($eiFieldInfo['propertyPath'])) {
+		if (isset($eiPropInfo['propertyPath'])) {
 			return $this->formHtml->getMagField();
 		}
 				
-		return $this->html->getOut($eiFieldInfo['displayable']->createOutputUiComponent($this->view));
+		return $this->html->getOut($eiPropInfo['displayable']->createOutputUiComponent($this->view));
 	}
 	
 	public function message() {
@@ -153,14 +153,14 @@ class FieldEiHtmlBuilder {
 	}
 	
 	public function getMessage() {
-		$eiFieldInfo = $this->peakEiFieldInfo(false);
+		$eiPropInfo = $this->peakEiPropInfo(false);
 	
-		if (isset($eiFieldInfo['propertyPath'])
-				&& null !== ($message = $this->formHtml->getMessage($eiFieldInfo['propertyPath']))) {
+		if (isset($eiPropInfo['propertyPath'])
+				&& null !== ($message = $this->formHtml->getMessage($eiPropInfo['propertyPath']))) {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
 		}
 
-		if (null !== ($message = $eiFieldInfo['fieldErrorInfo']->processMessage())) {
+		if (null !== ($message = $eiPropInfo['fieldErrorInfo']->processMessage())) {
 			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
 					$this->view->getN2nLocale());
 			

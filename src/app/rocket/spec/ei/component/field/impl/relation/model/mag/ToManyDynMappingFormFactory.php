@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ToManyDynMappingFormFactory {
 	private $utils;
-	private $inaccessibleCurrentEiEntry;
+	private $inaccessibleCurrentEiObject;
 	private $currentEiMapping;
 	private $currentMappingForms = array();
 	private $newMappingFormAvailable;
@@ -46,18 +46,18 @@ class ToManyDynMappingFormFactory {
 			return 'd' . $ei->getDraft()->getId();
 		}
 		
-		return 'c' . $ei->getLiveEntry()->getId();
+		return 'c' . $ei->getEiEntityObj()->getId();
 	}
 	
 	public function addEiMapping(EiMapping $currentEiMapping) {
 		if (!$currentEiMapping->isAccessible()) {
 			$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
-					$this->utils->createIdentityString($currentEiMapping->getEiEntry()),
+					$this->utils->createIdentityString($currentEiMapping->getEiObject()),
 					null, $this->nextOrderIndex++);
 			return;
 		}
 		
-		if ($currentEiMapping->getEiEntry()->isNew()) {
+		if ($currentEiMapping->getEiObject()->isNew()) {
 			$this->newMappingForms[] = new MappingForm(
 					$this->utils->getGenericLabel(), null,
 					$this->utils->createEntryFormFromMapping($currentEiMapping), $this->nextOrderIndex++);

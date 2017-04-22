@@ -23,12 +23,12 @@ namespace rocket\user\model\security;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
-use rocket\spec\ei\security\EiFieldAccess;
+use rocket\spec\ei\security\EiPropAccess;
 
-class FullEiFieldAccess implements EiFieldAccess {
+class FullEiPropAccess implements EiPropAccess {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiFieldAccess::isFullyGranted()
+	 * @see \rocket\spec\ei\security\EiPropAccess::isFullyGranted()
 	 */
 	public function isFullyGranted(): bool {
 		return true;
@@ -36,7 +36,7 @@ class FullEiFieldAccess implements EiFieldAccess {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiFieldAccess::getAttributes()
+	 * @see \rocket\spec\ei\security\EiPropAccess::getAttributes()
 	 */
 	public function getAttributes(): array {
 		throw new IllegalStateException();

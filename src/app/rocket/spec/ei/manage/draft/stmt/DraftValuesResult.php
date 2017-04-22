@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\draft\stmt;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class DraftValuesResult {
 	private $id;
@@ -84,13 +84,13 @@ class DraftValuesResult {
 	}
 	
 	/**
-	 * @param EiFieldPath $eiFieldPath
+	 * @param EiPropPath $eiPropPath
 	 * @return mixed
 	 */
-	public function getValue(EiFieldPath $eiFieldPath) {
-		$eiFieldPathStr = (string) $eiFieldPath;
-		if (isset($this->values[$eiFieldPathStr])) {
-			return $this->values[$eiFieldPathStr];
+	public function getValue(EiPropPath $eiPropPath) {
+		$eiPropPathStr = (string) $eiPropPath;
+		if (isset($this->values[$eiPropPathStr])) {
+			return $this->values[$eiPropPathStr];
 		}
 		return null;
 	}

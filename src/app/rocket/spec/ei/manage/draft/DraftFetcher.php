@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\persistence\PdoStatement;
-use rocket\spec\ei\manage\LiveEntry;
+use rocket\spec\ei\manage\EiEntityObj;
 use rocket\spec\ei\EiSpec;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
@@ -126,17 +126,17 @@ class DraftFetcher {
 			$entityObj = $this->em->find($this->eiSpec->getEntityModel()->getClass(), $entityObjId);
 		}
 		
-		$liveEntry = null;
+		$eiEntityObj = null;
 		if ($entityObj !== null) {
-			$liveEntry = LiveEntry::createFrom($this->eiSpec, $entityObj);
+			$eiEntityObj = EiEntityObj::createFrom($this->eiSpec, $entityObj);
 		} else {
-			$liveEntry = LiveEntry::createNew($this->eiSpec);
+			$eiEntityObj = EiEntityObj::createNew($this->eiSpec);
 			if ($entityObjId !== null) {
 				$this->eiSpec->getEntityModel()->getIdDef()->getEntityProperty()
-						->writeValue($liveEntry->getEntityObj(), $entityObjId);
+						->writeValue($eiEntityObj->getEntityObj(), $entityObjId);
 			}
 		}
-		$draft = new Draft($draftValuesResult->getId(), $liveEntry, $draftValuesResult->getLastMod(),
+		$draft = new Draft($draftValuesResult->getId(), $eiEntityObj, $draftValuesResult->getLastMod(),
 				$draftValuesResult->getUserId(), new DraftValueMap($draftValuesResult->getValues()));
 		$draft->setType($draftValuesResult->getType());
 		

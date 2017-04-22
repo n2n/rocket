@@ -145,11 +145,11 @@ class ToManyForm implements Dispatchable {
 				foreach ($selectedEntryIdReps as $selectedEntryIdRep) {
 					if (in_array($selectedEntryIdRep, $that->originalEntryIdReps, true)) continue;
 					
-					if (null !== ($eiEntry = $that->readUtils->lookupEiEntryById(
+					if (null !== ($eiObject = $that->readUtils->lookupEiObjectById(
 							$that->readUtils->idRepToId($selectedEntryIdRep), 
 							CriteriaConstraint::NON_SECURITY_TYPES))) {
 						$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep, 
-								$that->readUtils->createIdentityString($eiEntry));
+								$that->readUtils->createIdentityString($eiObject));
 						continue;
 					}
 					

@@ -26,7 +26,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -36,7 +36,7 @@ class GuiElementAssembler implements Savable {
 	private $guiDefinition;
 	private $eiuGui;
 	private $eiu;
-	private $eiEntryForm;
+	private $eiObjectForm;
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	private $savables = array();
@@ -59,11 +59,11 @@ class GuiElementAssembler implements Savable {
 	}
 	
 	private function getOrCreateDispatchable() {
-		if ($this->eiEntryForm === null) {
-			$this->eiEntryForm = new MagForm(new MagCollection());
+		if ($this->eiObjectForm === null) {
+			$this->eiObjectForm = new MagForm(new MagCollection());
 		}
 		
-		return $this->eiEntryForm;
+		return $this->eiObjectForm;
 	}
 	
 	public function save() {
@@ -73,13 +73,13 @@ class GuiElementAssembler implements Savable {
 	}
 	
 	private function assembleGuiField($id, GuiField $guiField) {
-		$eiFieldPath = $this->guiDefinition->getLevelEiFieldPathById($id);
-		$guiElement = $guiField->buildGuiElement(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiFieldPath)));
+		$eiPropPath = $this->guiDefinition->getLevelEiPropPathById($id);
+		$guiElement = $guiField->buildGuiElement(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
 		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
 		
 		if ($guiElement === null) return null;
 	
-		$mappableWrapper = $this->eiu->entry()->getMappableWrapper($eiFieldPath);
+		$mappableWrapper = $this->eiu->entry()->getMappableWrapper($eiPropPath);
 		
 		if ($this->eiuGui->isReadOnly() || $guiElement->isReadOnly()) {
 			return new AssembleResult($guiElement, $mappableWrapper);
@@ -138,7 +138,7 @@ class GuiElementAssembler implements Savable {
 	}
 	
 	public function getDispatchable() {
-		return $this->eiEntryForm;
+		return $this->eiObjectForm;
 	}
 	
 	public function getForkedMagPropertyPaths() {
@@ -156,7 +156,7 @@ class AssembleResult {
 	private $magWrapper;
 	private $magPropertyPath;
 	private $mandatory;
-// 	private $eiFieldPath;
+// 	private $eiPropPath;
 	
 	public function __construct(Displayable $displayable, MappableWrapper $mappableWrapper = null, 
 			MagWrapper $magWrapper = null, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
@@ -204,7 +204,7 @@ class AssembleResult {
 	}
 }
 
-// class EiEntryForm implements Dispatchable {
+// class EiObjectForm implements Dispatchable {
 // 	private static function _annos(AnnoInit $ai) {
 // 		$ai->p('magForm', new AnnoDispObject());
 // 		$ai->p('forkedDispatchables', new AnnoDispObjectArray());

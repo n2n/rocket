@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class ToManyEditable implements Editable {
 	private $label;
@@ -39,7 +39,7 @@ class ToManyEditable implements Editable {
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
-	private $targetOrderEiFieldPath;
+	private $targetOrderEiPropPath;
 	
 	public function __construct(string $label, ToManyMappable $toManyMappable,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, int $min, int $max = null) {
@@ -79,8 +79,8 @@ class ToManyEditable implements Editable {
 		$this->draftMode = $draftMode;
 	}
 
-	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
-		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;
+	public function setTargetOrderEiPropPath(EiPropPath $targetOrderEiPropPath = null) {
+		$this->targetOrderEiPropPath = $targetOrderEiPropPath;
 	}
 	
 	private $toManyMag;
@@ -92,7 +92,7 @@ class ToManyEditable implements Editable {
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toManyMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->toManyMag->setDraftMode($this->draftMode);
-		$this->toManyMag->setTargetOrderEiFieldPath($this->targetOrderEiFieldPath);
+		$this->toManyMag->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		return $this->toManyMag;
 	}
 	

@@ -66,7 +66,7 @@ class GuiFieldOrder {
 	public function getAllGuiIdPaths() {
 		$guiIdPaths = array();
 		foreach ($this->orderItems as $orderItem) {
-			if ($orderItem->isSection()) {
+			if ($orderItem->isGroup()) {
 				$guiIdPaths = array_merge($guiIdPaths, $orderItem->getGuiSection()->getGuiFieldOrder()->getAllGuiIdPaths());
 			} else{
 				$guiIdPaths[] = $orderItem->getGuiIdPath();

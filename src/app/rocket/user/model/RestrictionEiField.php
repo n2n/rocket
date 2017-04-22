@@ -23,9 +23,9 @@ namespace rocket\user\model;
 
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\component\field\ObjectPropertyEiField;
+use rocket\spec\ei\component\field\ObjectPropertyEiProp;
 
-interface RestrictionEiField extends ObjectPropertyEiField {
+interface RestrictionEiProp extends ObjectPropertyEiProp {
 	
 	public function createRestrictionSelectorItem(N2nContext $n2nContext, EiFrame $eiFrame = null);	
 }

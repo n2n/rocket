@@ -39,7 +39,7 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @param unknown $eiEntryObj
+	 * @param unknown $eiObjectObj
 	 * @param bool $assignToEiu
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */

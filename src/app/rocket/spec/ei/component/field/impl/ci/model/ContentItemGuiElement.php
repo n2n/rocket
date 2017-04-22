@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
+use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
 use n2n\web\ui\Raw;
 
 class ContentItemGuiElement implements GuiElement {
@@ -78,7 +78,7 @@ class ContentItemGuiElement implements GuiElement {
 
 	public function createOutputUiComponent(HtmlView $view) {
 		$targetUtils = new EiuFrame($this->targetEiFrame);
-		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
+		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
 		$groupedUiComponents = array();
 		foreach ($this->toManyMappable->getValue() as $targetRelationEntry) {
@@ -87,10 +87,10 @@ class ContentItemGuiElement implements GuiElement {
 				$targetEiMapping = $targetRelationEntry->getEiMapping();
 			} else {
 				$targetEiMapping = $targetUtils->createEiMapping(
-						$targetRelationEntry->getEiEntry());
+						$targetRelationEntry->getEiObject());
 			}
 			
-			$panelName = (string) $targetEiMapping->getValue($panelEiFieldPath, true);
+			$panelName = (string) $targetEiMapping->getValue($panelEiPropPath, true);
 			if (!isset($groupedUiComponents[$panelName])) {
 				$groupedUiComponents[$panelName] = array();
 			}
@@ -99,7 +99,7 @@ class ContentItemGuiElement implements GuiElement {
 				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiMapping);
 			} else {
 				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetUtils->createIdentityString($targetEiMapping->getEiEntry()));
+						$targetUtils->createIdentityString($targetEiMapping->getEiObject()));
 			}
 		}
 		

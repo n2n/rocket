@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\config\mask\model\EntryGuiTree;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\spec\ei\manage\DraftEiEntry;
+use rocket\spec\ei\manage\DraftEiObject;
 
 class DraftListModel implements Dispatchable {	
 	private $utils;
@@ -105,7 +105,7 @@ class DraftListModel implements Dispatchable {
 		
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {
-			$eiMapping = $this->utils->createEiMapping(new DraftEiEntry($draft));
+			$eiMapping = $this->utils->createEiMapping(new DraftEiObject($draft));
 			$this->entryGuis[$draft->getId()] = new EntryGui($eiMask->createListEntryGuiModel($eiFrame, 
 					$eiMapping, false)); 
 		}
@@ -160,9 +160,9 @@ class DraftListModel implements Dispatchable {
 		
 // 		$selectedObjects = array();
 // 		foreach ($this->selectedObjectIds as $entryId) {
-// 			if (!isset($this->eiEntrys[$entryId])) continue;
+// 			if (!isset($this->eiObjects[$entryId])) continue;
 			
-// 			$selectedObjects[$entryId] = $this->eiEntrys[$entryId];
+// 			$selectedObjects[$entryId] = $this->eiObjects[$entryId];
 // 		}
 		
 // 		if (!sizeof($selectedObjects)) return;

@@ -24,12 +24,12 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 class DeleteModel extends CommandEntryModelAdapter {
 			
 	public function delete() {
-		if ($this->eiEntry->isDraft()) {
-			$this->draftModel->removeDraft($this->eiEntry->getDraft());
+		if ($this->eiObject->isDraft()) {
+			$this->draftModel->removeDraft($this->eiObject->getDraft());
 			return;
 		}
 		
-		$this->eiFrame->triggerOnRemoveObject($this->em, $this->eiEntry);
-		$this->em->remove($this->eiEntry->getLiveEntityObj());
+		$this->eiFrame->triggerOnRemoveObject($this->em, $this->eiObject);
+		$this->em->remove($this->eiObject->getLiveEntityObj());
 	}
 }

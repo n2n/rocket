@@ -27,7 +27,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\EntryGui;
 use n2n\web\http\HttpContext;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
@@ -93,8 +93,8 @@ class EntryCommandViewModel {
 	}
 	
 	public function getSelectedDraft() {
-		if ($this->getEiEntry()->isDraft()) {
-			return $this->getEiEntry()->getDraft();
+		if ($this->getEiObject()->isDraft()) {
+			return $this->getEiObject()->getDraft();
 		}
 		
 		return null;
@@ -141,7 +141,7 @@ class EntryCommandViewModel {
 				$this->entryGuiModel->getEiEntryGui()->getViewMode());
 	}
 	
-	public function getLiveEntryUrl(HttpContext $httpContext) {
+	public function getEiEntityObjUrl(HttpContext $httpContext) {
 		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());
 	}
 	
@@ -154,9 +154,9 @@ class EntryCommandViewModel {
 			return $this->cancelUrl;
 		}
 		
-		$eiEntry = $this->getEiEntry();
+		$eiObject = $this->getEiObject();
 		
-		if ($eiEntry === null || $eiEntry->isNew()) {
+		if ($eiObject === null || $eiObject->isNew()) {
 			return $this->eiFrame->getOverviewUrl($httpContext);
 		}
 		
@@ -167,7 +167,7 @@ class EntryCommandViewModel {
 // 	private $eiFrame;
 // 	private $commandEntryModel;
 // 	private $entryModel;
-// 	private $eiEntry;
+// 	private $eiObject;
 // 	private $context;
 // 	private $exact;
 // 	private $previewController;
@@ -177,7 +177,7 @@ class EntryCommandViewModel {
 // 		$this->eiFrame = $entryModel->getEiFrame();
 // 		$this->commandEntryModel = $commandEntryModel;
 // 		$this->entryModel = $entryModel;
-// 		$this->eiEntry = $this->entryModel->getEiEntry();
+// 		$this->eiObject = $this->entryModel->getEiObject();
 		
 // 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 // 		$this->exact = $this->entryModel->getEiSpec();
@@ -187,7 +187,7 @@ class EntryCommandViewModel {
 // 		if (isset($title)) {
 // 			$this->title = $title;
 // 		} else {
-// 			$this->title = $this->exact->createIdentityString($this->eiEntry->getEntityObj(),
+// 			$this->title = $this->exact->createIdentityString($this->eiObject->getEntityObj(),
 // 					$this->eiFrame->getN2nLocale());
 // 		}
 // 	}
@@ -200,8 +200,8 @@ class EntryCommandViewModel {
 // 		return $this->eiFrame;
 // 	}
 	
-// 	public function getEiEntry() {
-// 		return $this->eiEntry;
+// 	public function getEiObject() {
+// 		return $this->eiObject;
 // 	}
 	
 // 	public function isInEditMode() {
@@ -215,7 +215,7 @@ class EntryCommandViewModel {
 
 	
 // 	public function getLangNavPoints() {
-// 		$currentTranslationN2nLocale = $this->eiEntry->getTranslationN2nLocale();
+// 		$currentTranslationN2nLocale = $this->eiObject->getTranslationN2nLocale();
 		
 // 		$navPoints = array();
 		
@@ -239,7 +239,7 @@ class EntryCommandViewModel {
 // 		return $navPoints;
 // 	}
 	
-// 	public function getLiveEntryPathExt() {
+// 	public function getEiEntityObjPathExt() {
 // 		$previewType = $this->eiFrame->getPreviewType();
 // 		return PathUtils::createPathExtFromEntryNavPoint(null, $this->eiFrame->toEntryNavPoint()->copy(true));
 // 	}

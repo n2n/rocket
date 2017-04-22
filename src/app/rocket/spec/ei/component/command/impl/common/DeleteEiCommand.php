@@ -47,7 +47,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'delete';
 	const CONTROL_BUTTON_KEY = 'delete'; 
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
 	public function getIdBase() {

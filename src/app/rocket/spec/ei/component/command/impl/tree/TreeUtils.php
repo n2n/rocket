@@ -21,8 +21,8 @@
  */
 // namespace rocket\spec\ei\component\command\impl\tree;
 
-// use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField;
-// use rocket\spec\ei\component\command\impl\tree\field\TreeLeftEiField;
+// use rocket\spec\ei\component\command\impl\tree\field\TreeRightEiProp;
+// use rocket\spec\ei\component\command\impl\tree\field\TreeLeftEiProp;
 // use rocket\spec\ei\component\command\impl\tree\controller\TreeController;
 // use rocket\spec\ei\component\command\EiCommand;
 // use rocket\spec\core\IncompatibleSpecException;
@@ -30,46 +30,46 @@
 // use rocket\spec\ei\manage\EiFrame;
 
 // class TreeUtils {
-// 	public static function findTreeField(EiSpec $eiSpec, &$treeLeftEiField = null, 
-// 				&$treeRightEiField = null, &$treeRootIdEiField = null) {
+// 	public static function findTreeField(EiSpec $eiSpec, &$treeLeftEiProp = null, 
+// 				&$treeRightEiProp = null, &$treeRootIdEiProp = null) {
 
-// 		foreach ($eiSpec->getEiEngine()->getEiFieldCollection()->toArray() as  $eiField) {
-// 			if ($eiField instanceof TreeLeftEiField) {
-// 				$treeLeftEiField = $eiField;
-// 			} else if ($eiField instanceof TreeRightEiField) {
-// 				$treeRightEiField = $eiField;
+// 		foreach ($eiSpec->getEiEngine()->getEiPropCollection()->toArray() as  $eiProp) {
+// 			if ($eiProp instanceof TreeLeftEiProp) {
+// 				$treeLeftEiProp = $eiProp;
+// 			} else if ($eiProp instanceof TreeRightEiProp) {
+// 				$treeRightEiProp = $eiProp;
 // 			}
 // 		}
 // 	}
 	
 // 	public static function initializeController(EiCommand $eiCommand, TreeController $treeController, EiFrame $eiFrame) {
 // 		$eiSpec = $eiCommand->getEiSpec();
-// 		$treeLeftEiField = null;
-// 		$treeRightEiField = null;
-// 		$treeRootIdEiField = null;
-// 		foreach ($eiFrame->getContextEiMask()->getEiDef()->getEiFieldCollection() as  $eiField) {
-// 			if ($eiField instanceof TreeLeftEiField) {
-// 				$treeLeftEiField = $eiField;
-// 			} else if ($eiField instanceof TreeRightEiField) {
-// 				$treeRightEiField = $eiField;
+// 		$treeLeftEiProp = null;
+// 		$treeRightEiProp = null;
+// 		$treeRootIdEiProp = null;
+// 		foreach ($eiFrame->getContextEiMask()->getEiDef()->getEiPropCollection() as  $eiProp) {
+// 			if ($eiProp instanceof TreeLeftEiProp) {
+// 				$treeLeftEiProp = $eiProp;
+// 			} else if ($eiProp instanceof TreeRightEiProp) {
+// 				$treeRightEiProp = $eiProp;
 // 			}
 // 		}
 
-// 		if (null === $treeLeftEiField) {
-// 			throw self::createIncompatibleSpecException($eiCommand, 'rocket\spec\ei\component\command\impl\tree\field\TreeLeftEiField');
+// 		if (null === $treeLeftEiProp) {
+// 			throw self::createIncompatibleSpecException($eiCommand, 'rocket\spec\ei\component\command\impl\tree\field\TreeLeftEiProp');
 // 		}
 
-// 		if (null === $treeRightEiField) {
-// 			throw self::createIncompatibleSpecException($eiCommand, 'rocket\spec\ei\component\command\impl\tree\field\TreeRightEiField');
+// 		if (null === $treeRightEiProp) {
+// 			throw self::createIncompatibleSpecException($eiCommand, 'rocket\spec\ei\component\command\impl\tree\field\TreeRightEiProp');
 // 		}
 
-// 		$treeController->initialize($treeLeftEiField, $treeRightEiField);
+// 		$treeController->initialize($treeLeftEiProp, $treeRightEiProp);
 		
 // 		$eiFrame->getN2nContext()->magicInit($treeController);
 // 	}
 
-// 	private static function createIncompatibleSpecException(EiCommand $eiCommand, $missingEiField) {
+// 	private static function createIncompatibleSpecException(EiCommand $eiCommand, $missingEiProp) {
 // 		return new IncompatibleSpecException('Command \'' . get_class($eiCommand) . '\' requires a field of type \''
-// 				. $missingEiField . '\'.');
+// 				. $missingEiProp . '\'.');
 // 	}
 // }

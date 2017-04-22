@@ -135,11 +135,11 @@ class SpecExtractor {
 	
 	
 		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_FIELDS_KEY, false, array(), 
-				TypeConstraint::createSimple('array')) as $eiFieldId => $fieldRawData) {
+				TypeConstraint::createSimple('array')) as $eiPropId => $fieldRawData) {
 			try {
-				$eiDefExtraction->addEiFieldExtraction($this->createEiFieldExtraction($eiFieldId, new Attributes($fieldRawData)));
+				$eiDefExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
 			} catch (AttributesException $e) {
-				throw $this->createEiComponentException('EiField ' . $eiFieldId, $e);
+				throw $this->createEiComponentException('EiProp ' . $eiPropId, $e);
 			}
 		}
 	
@@ -185,8 +185,8 @@ class SpecExtractor {
 		return $eiDefExtraction;
 	}
 	
-	private function createEiFieldExtraction($id, Attributes $attributes)  {
-		$extraction = new EiFieldExtraction();
+	private function createEiPropExtraction($id, Attributes $attributes)  {
+		$extraction = new EiPropExtraction();
 		$extraction->setId($id);
 		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY));
 		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));

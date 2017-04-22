@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\command\impl\tree\model;
 
 use n2n\persistence\orm\NestedSetUtils;
 use rocket\spec\ei\component\command\impl\common\model\CommandEntryModelAdapter;
-use rocket\spec\ei\manage\EiEntry;
+use rocket\spec\ei\manage\EiObject;
 
 
 class TreeDeleteModel extends CommandEntryModelAdapter {	
@@ -38,13 +38,13 @@ class TreeDeleteModel extends CommandEntryModelAdapter {
 	}	
 	
 	public function delete() {
-		if ($this->eiEntry->isDraft()) {
-			$this->draftModel->removeDraft($this->eiEntry->getDraft());
+		if ($this->eiObject->isDraft()) {
+			$this->draftModel->removeDraft($this->eiObject->getDraft());
 			return;
 		}
 		
 		$class = $this->eiSpec->getEntityModel()->getTopEntityModel()->getClass();
-		$entity = $this->eiEntry->getLiveEntityObj();
+		$entity = $this->eiObject->getLiveEntityObj();
 	
 		$nestedSetUtils = new NestedSetUtils($this->em, $class);
 		$nestedSetUtils->setRootIdPropertyName($this->rootIdPropertyName);
@@ -56,7 +56,7 @@ class TreeDeleteModel extends CommandEntryModelAdapter {
 		foreach ($nestedSetItemsToDelete as $nesteSetItem) {
 			$entity = $nesteSetItem->getObject();
 			$this->eiFrame->triggerOnRemoveObject($this->em, 
-					new EiEntry($this->eiSpec->extractId($entity), $entity));
+					new EiObject($this->eiSpec->extractId($entity), $entity));
 			$nestedSetUtils->remove($nesteSetItem->getObject());
 		}
 	}	

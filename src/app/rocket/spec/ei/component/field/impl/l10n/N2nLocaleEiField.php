@@ -26,16 +26,16 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
-use rocket\spec\ei\component\field\FilterableEiField;
-use rocket\spec\ei\component\field\ScalarEiField;
-use rocket\spec\ei\component\field\SortableEiField;
+use rocket\spec\ei\component\field\FilterableEiProp;
+use rocket\spec\ei\component\field\ScalarEiProp;
+use rocket\spec\ei\component\field\SortableEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
 use rocket\spec\ei\manage\mapping\EiMapping; 
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
+use rocket\spec\ei\component\field\impl\adapter\DraftableEiPropAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\manage\EiObject;
@@ -46,11 +46,11 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\core\N2N;
-use rocket\spec\ei\component\field\GenericEiField;
+use rocket\spec\ei\component\field\GenericEiProp;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 
-class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiField, SortableEiField, GenericEiField,
-		ScalarEiField {
+class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
+		ScalarEiProp {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
@@ -100,7 +100,7 @@ class N2nLocaleEiField extends DraftableEiFieldAdapter implements FilterableEiFi
 	
 // 	public function propertyValueToOptionAttributeValue(EiMapping $eiMapping, 
 // 			Attributes $attributes, Eiu $eiu) {
-// 		$propertyValue = $eiMapping->getValue(EiFieldPath::from($this));
+// 		$propertyValue = $eiMapping->getValue(EiPropPath::from($this));
 // 		$attributeValue = null;
 // 		if ($propertyValue instanceof N2nLocale) {
 // 			$attributeValue = $propertyValue->getId(); 
