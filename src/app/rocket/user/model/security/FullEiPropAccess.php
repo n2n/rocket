@@ -19,19 +19,25 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\gui;
+namespace rocket\user\model\security;
 
-interface GuiElement extends Displayable {
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\security\EiPropAccess;
+
+class FullEiPropAccess implements EiPropAccess {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\security\EiPropAccess::isFullyGranted()
+	 */
+	public function isFullyGranted(): bool {
+		return true;
+	}
 
 	/**
-	 * @return boolean 
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\security\EiPropAccess::getAttributes()
 	 */
-	public function isReadOnly(): bool;
-	
-	/**
-	 * @return Editable 
-	 * @throws \n2n\util\ex\IllegalStateException if {@link Displayable::isReadOnly()} belonging to this 
-	 * {@link GuiElement} returns true
-	 */
-	public function getEditable(): Editable;
+	public function getAttributes(): array {
+		throw new IllegalStateException();
+	}
 }

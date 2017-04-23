@@ -30,12 +30,12 @@ use rocket\spec\ei\component\field\impl\relation\model\ToManyEditable;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\field\impl\relation\model\EmbeddedOneToManyGuiElement;
+use rocket\spec\ei\component\field\impl\relation\model\EmbeddedOneToManyGuiField;
 use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\manage\gui\GuiElement;
+use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use rocket\spec\ei\manage\DraftEiObject;
@@ -159,10 +159,10 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
-	 * @return GuiElement
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
+	 * @return GuiField
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		$eiMapping = $eiu->entry()->getEiMapping();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
@@ -186,7 +186,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			$toManyEditable->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		}
 		
-		return new EmbeddedOneToManyGuiElement($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toManyEditable);
+		return new EmbeddedOneToManyGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toManyEditable);
 	}
 	
 // 	const T_ALIAS = 't';

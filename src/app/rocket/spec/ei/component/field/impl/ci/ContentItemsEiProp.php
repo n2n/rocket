@@ -28,7 +28,7 @@ use rocket\spec\ei\component\field\impl\ci\conf\ContentItemsEiPropConfigurator;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItem;
 use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
-use rocket\spec\ei\component\field\impl\ci\model\ContentItemGuiElement;
+use rocket\spec\ei\component\field\impl\ci\model\ContentItemGuiField;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItemEditable;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -101,9 +101,9 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
@@ -127,7 +127,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 			}
 		}
 		
-		return new ContentItemGuiElement($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
+		return new ContentItemGuiField($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
 				$relationEiField, $targetReadEiFrame, $contentItemEditable);
 	}
 }

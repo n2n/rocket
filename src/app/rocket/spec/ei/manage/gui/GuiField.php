@@ -21,19 +21,17 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-interface GuiElementFork extends Savable {
+interface GuiField extends Displayable {
+
+	/**
+	 * @return boolean 
+	 */
+	public function isReadOnly(): bool;
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
-	 * @param bool $makeEditable
-	 * @return AssembleResult
+	 * @return Editable 
+	 * @throws \n2n\util\ex\IllegalStateException if {@link Displayable::isReadOnly()} belonging to this 
+	 * {@link GuiField} returns true
 	 */
-	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult; 
-	
-	/**
-	 * Mag for group toolbar
-	 * @param string $propertyName
-	 * @return Mag|null
-	 */
-	public function buildForkMag(string $propertyName); 
+	public function getEditable(): Editable;
 }

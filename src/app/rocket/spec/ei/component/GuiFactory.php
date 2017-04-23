@@ -26,7 +26,7 @@ use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 
-use rocket\spec\ei\manage\gui\GuiElementAssembler;
+use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\field\GuiEiProp;
 use rocket\spec\ei\manage\gui\EditableWrapper;
@@ -87,10 +87,10 @@ class GuiFactory {
 		$eiObjectGui = new EiEntryGui($eiMask, $viewMode);
 		$eiuEntryGui = new EiuEntryGui($eiObjectGui, $eiuEntry);
 		
-		$guiElementAssembler = new GuiElementAssembler($eiMask->getEiEngine()->getGuiDefinition(), $eiuEntryGui);
+		$guiFieldAssembler = new GuiFieldAssembler($eiMask->getEiEngine()->getGuiDefinition(), $eiuEntryGui);
 		
 		foreach ($guiIdPaths as $guiIdPath) {
-			$result = $guiElementAssembler->assembleGuiElement($guiIdPath);
+			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;
 			
 			$eiObjectGui->putDisplayable($guiIdPath, $result->getDisplayable());
@@ -104,10 +104,10 @@ class GuiFactory {
 			}
 		}
 		
-		if (null !== ($dispatchable = $guiElementAssembler->getDispatchable())) {
-			$eiObjectGui->setDispatchable($guiElementAssembler->getDispatchable());
-			$eiObjectGui->setForkMagPropertyPaths($guiElementAssembler->getForkedMagPropertyPaths());
-			$eiObjectGui->setSavables($guiElementAssembler->getSavables());
+		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
+			$eiObjectGui->setDispatchable($guiFieldAssembler->getDispatchable());
+			$eiObjectGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
+			$eiObjectGui->setSavables($guiFieldAssembler->getSavables());
 		}
 		
 		foreach ($this->eiModificatorCollection as $eiModificator) {

@@ -26,13 +26,13 @@ use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiElement;
+use rocket\spec\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
-class ToManySelectGuiElement implements GuiElement {
+class ToManySelectGuiField implements GuiField {
 	private $eiProp;
 	private $eiu;
 	private $targetEiFrame;
@@ -104,13 +104,13 @@ class ToManySelectGuiElement implements GuiElement {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiElement read only.');
+		throw new IllegalStateException('GuiField read only.');
 	}
 }

@@ -34,9 +34,9 @@ interface GuiPropFork {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return GuiElementFork
+	 * @return GuiFieldFork
 	 */
-	public function createGuiElementFork(Eiu $eiu): GuiElementFork;
+	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork;
 		
 	/**
 	 * @param EiObject $eiObject

@@ -174,9 +174,9 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement($eiu)
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField($eiu)
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 

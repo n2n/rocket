@@ -128,7 +128,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return null;
 	}
 	
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		return new StatelessEditElement($this, $eiu);
 	}
 	

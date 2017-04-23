@@ -38,6 +38,8 @@ interface StatelessDisplayable {
 	 */
 	public function getOutputHtmlContainerAttrs(Eiu $eiu);
 	
+	public function getGroupType();
+	
 	/**
 	 * @param HtmlView $view
 	 * @param Eiu $eiu

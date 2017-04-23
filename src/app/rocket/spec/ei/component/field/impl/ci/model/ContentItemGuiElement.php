@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\ci\model;
 
-use rocket\spec\ei\manage\gui\GuiElement;
+use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\manage\EiFrame;
@@ -31,7 +31,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
 use n2n\web\ui\Raw;
 
-class ContentItemGuiElement implements GuiElement {
+class ContentItemGuiField implements GuiField {
 	private $label;
 	private $panelConfigs;
 	private $mandatory;
@@ -109,13 +109,13 @@ class ContentItemGuiElement implements GuiElement {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiElement read only.');
+		throw new IllegalStateException('GuiField read only.');
 	}
 }

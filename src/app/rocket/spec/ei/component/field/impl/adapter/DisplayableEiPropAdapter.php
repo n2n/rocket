@@ -48,6 +48,10 @@ abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter 
 	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
+	
+	public function getGroupType() {
+		return null;
+	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
@@ -104,7 +108,7 @@ abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter 
 		return $this->getLabelLstr();
 	}
 	
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 	

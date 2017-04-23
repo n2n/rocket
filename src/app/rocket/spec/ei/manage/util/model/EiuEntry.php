@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
 use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
-use lib\rocket\spec\ei\manage\util\model\GeneralIdUtils;
+use rocket\spec\ei\manage\util\model\GeneralIdUtils;
 
 class EiuEntry {
 	private $eiObject;

@@ -1,5 +1,5 @@
 <?php
-namespace lib\rocket\spec\ei\manage\util\model;
+namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\StringUtils;

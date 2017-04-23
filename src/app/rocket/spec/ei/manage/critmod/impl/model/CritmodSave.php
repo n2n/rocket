@@ -24,16 +24,17 @@ namespace rocket\spec\ei\manage\critmod\impl\model;
 use n2n\util\StringUtils;
 use n2n\reflection\ObjectAdapter;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use n2n\persistence\orm\annotation\AnnoTable;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\util\JsonDecodeFailedException;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\sort\SortData;
+use n2n\persistence\orm\annotation\AnnoColumn;
 
 class CritmodSave extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_critmod_save'));
+		$ai->p('eiTypeId', new AnnoColumn('ei_spec_id'));
 	}
 	
 	private $id;

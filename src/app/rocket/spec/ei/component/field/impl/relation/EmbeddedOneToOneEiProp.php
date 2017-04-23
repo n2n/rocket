@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneEditable;
-use rocket\spec\ei\component\field\impl\relation\model\EmbeddedOneToOneGuiElement;
+use rocket\spec\ei\component\field\impl\relation\model\EmbeddedOneToOneGuiField;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
@@ -138,9 +138,9 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
 		
 		$eiFrame = $eiu->frame()->getEiFrame();
@@ -162,7 +162,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			$toOneEditable->setDraftMode($mapping->getEiObject()->isDraft());
 		}
 				
-		return new EmbeddedOneToOneGuiElement($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);
+		return new EmbeddedOneToOneGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);
 	}
 	
 	/**

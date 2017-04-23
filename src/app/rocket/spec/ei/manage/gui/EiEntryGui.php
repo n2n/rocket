@@ -130,7 +130,7 @@ class EiEntryGui {
 		$guiIdPathStr = (string) $guiIdPath;
 		
 		if (!isset($this->displayables[$guiIdPathStr])) {
-			throw new GuiException('No GuiElement with GuiIdPath ' . $guiIdPathStr . ' registered');
+			throw new GuiException('No GuiField with GuiIdPath ' . $guiIdPathStr . ' registered');
 		}
 	
 		return $this->displayables[$guiIdPathStr];

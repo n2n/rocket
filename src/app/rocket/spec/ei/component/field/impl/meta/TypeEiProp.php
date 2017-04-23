@@ -66,6 +66,10 @@ class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayabl
 		return $this->getLabelLstr()->t($eiu->frame()->getN2nLocale());
 	}
 	
+	public function getGroupType() {
+		return null;
+	}
+	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 		$eiMask = $eiu->frame()->getEiFrame()->getContextEiMask()->determineEiMask(
 				$eiu->entry()->getEiMapping()->getEiType());
@@ -99,9 +103,9 @@ class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayabl
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 

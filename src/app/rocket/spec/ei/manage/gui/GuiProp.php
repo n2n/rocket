@@ -34,9 +34,9 @@ interface GuiProp {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\spec\ei\manage\gui\GuiElement|null
+	 * @return \rocket\spec\ei\manage\gui\GuiField|null
 	 */
-	public function buildGuiElement(Eiu $eiu);
+	public function buildGuiField(Eiu $eiu);
 	
 	/**
 	 * @return DisplayDefinition

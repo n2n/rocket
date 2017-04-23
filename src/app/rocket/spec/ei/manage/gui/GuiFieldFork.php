@@ -19,26 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\user\model\security;
+namespace rocket\spec\ei\manage\gui;
 
-use n2n\util\ex\IllegalStateException;
-use n2n\util\config\Attributes;
-use rocket\spec\ei\security\EiPropAccess;
-
-class FullEiPropAccess implements EiPropAccess {
+interface GuiFieldFork extends Savable {
+	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiPropAccess::isFullyGranted()
+	 * @param GuiIdPath $guiIdPath
+	 * @param bool $makeEditable
+	 * @return AssembleResult
 	 */
-	public function isFullyGranted(): bool {
-		return true;
-	}
-
+	public function assembleGuiField(GuiIdPath $guiIdPath, $makeEditable): AssembleResult; 
+	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiPropAccess::getAttributes()
+	 * Mag for group toolbar
+	 * @param string $propertyName
+	 * @return Mag|null
 	 */
-	public function getAttributes(): array {
-		throw new IllegalStateException();
-	}
+	public function buildForkMag(string $propertyName); 
 }

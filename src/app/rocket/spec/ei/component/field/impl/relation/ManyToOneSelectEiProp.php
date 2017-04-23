@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\persistence\orm\property\relation\Relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use rocket\spec\ei\component\field\impl\adapter\StandardEditDefinition;
-use rocket\spec\ei\component\field\impl\relation\model\ManyToOneGuiElement;
+use rocket\spec\ei\component\field\impl\relation\model\ManyToOneGuiField;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
@@ -118,9 +118,9 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
@@ -142,7 +142,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			}
 		}
 		
-		return new ManyToOneGuiElement($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);		
+		return new ManyToOneGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);		
 	}
 	
 	/**

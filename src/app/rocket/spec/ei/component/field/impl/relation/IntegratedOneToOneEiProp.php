@@ -25,10 +25,10 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 
 use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\manage\mapping\EiFieldSource;
-use rocket\spec\ei\manage\gui\GuiElementFork;
+use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\AssembleResult;
-use rocket\spec\ei\manage\gui\GuiElementAssembler;
+use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
@@ -130,9 +130,9 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return GuiElementFork
+	 * @return GuiFieldFork
 	 */
-	public function createGuiElementFork(Eiu $eiu): GuiElementFork {
+	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		
@@ -156,10 +156,10 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiObject));
 		}
 				
-		$targetGuiElementAssembler = new GuiElementAssembler($this->getForkedGuiDefinition(), 
+		$targetGuiFieldAssembler = new GuiFieldAssembler($this->getForkedGuiDefinition(), 
 				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), $eiu->getViewMode()));
 		
-		return new OneToOneGuiElementFork($toOneEiField, $targetRelationEntry, $targetGuiElementAssembler);
+		return new OneToOneGuiFieldFork($toOneEiField, $targetRelationEntry, $targetGuiFieldAssembler);
 	}
 	
 	/**
@@ -206,23 +206,23 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 
 }
 
-class OneToOneGuiElementFork implements GuiElementFork {
+class OneToOneGuiFieldFork implements GuiFieldFork {
 	private $toOneEiField;
 	private $targetRelationEntry;
-	private $targetGuiElementAssembler;
+	private $targetGuiFieldAssembler;
 	
-	public function __construct(ToOneEiField $toOneEiField, RelationEntry $targetRelationEntry, GuiElementAssembler $targetGuiElementAssembler) {
+	public function __construct(ToOneEiField $toOneEiField, RelationEntry $targetRelationEntry, GuiFieldAssembler $targetGuiFieldAssembler) {
 		$this->toOneEiField = $toOneEiField;
 		$this->targetRelationEntry = $targetRelationEntry;
-		$this->targetGuiElementAssembler = $targetGuiElementAssembler;
+		$this->targetGuiFieldAssembler = $targetGuiFieldAssembler;
 	}
 	
-	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
-		return $this->targetGuiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
+	public function assembleGuiField(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
+		return $this->targetGuiFieldAssembler->assembleGuiField($guiIdPath, $makeEditable);
 	}
 	
 	public function buildForkMag(string $propertyName) {
-		$dispatchable = $this->targetGuiElementAssembler->getDispatchable();
+		$dispatchable = $this->targetGuiFieldAssembler->getDispatchable();
 		
 		if ($dispatchable !== null) {
 			return new OneToOneForkMag($propertyName, $dispatchable);
@@ -232,7 +232,7 @@ class OneToOneGuiElementFork implements GuiElementFork {
 	}
 	
 	public function save() {
-		$this->targetGuiElementAssembler->save();
+		$this->targetGuiFieldAssembler->save();
 		$this->toOneEiField->setValue($this->targetRelationEntry);
 	}
 }

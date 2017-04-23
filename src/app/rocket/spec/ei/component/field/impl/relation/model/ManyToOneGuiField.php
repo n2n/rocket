@@ -26,10 +26,10 @@ use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiElement;
+use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
-class ManyToOneGuiElement implements GuiElement {
+class ManyToOneGuiField implements GuiField {
 	private $label;
 	private $toOneEiField;
 	private $targetEiFrame;
@@ -62,6 +62,10 @@ class ManyToOneGuiElement implements GuiElement {
 		return array();
 	}
 	
+	public function getGroupType() {
+		return null;
+	}
+	
 	public function createOutputUiComponent(HtmlView $view) {
 		$html = $view->getHtmlBuilder();
 		$targetRelationEntry = $this->toOneEiField->getValue();
@@ -81,13 +85,13 @@ class ManyToOneGuiElement implements GuiElement {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiElement read only.');
+		throw new IllegalStateException('GuiField read only.');
 	}
 }

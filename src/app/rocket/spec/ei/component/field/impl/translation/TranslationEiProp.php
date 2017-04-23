@@ -26,9 +26,9 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\impl\relation\RelationEiProp;
-use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiElement;
+use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiField;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\gui\GuiElementAssembler;
+use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\component\field\impl\translation\conf\TranslationEiConfigurator;
 use rocket\spec\ei\manage\mapping\impl\Readable;
@@ -36,7 +36,7 @@ use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\component\field\GuiEiProp;
 use rocket\spec\ei\component\field\EiFieldEiProp;
-use rocket\spec\ei\manage\gui\GuiElementFork;
+use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
@@ -148,7 +148,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ei
 		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	
-	public function createGuiElementFork(Eiu $eiu): GuiElementFork {
+	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiObject = $eiMapping->getEiObject();
@@ -175,7 +175,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ei
 		}
 		
 		$targetGuiDefinition = $targetUtils->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
-		$translationGuiElement = new TranslationGuiElement($toManyEiField, $targetGuiDefinition, 
+		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nLocale()));
 
 		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
@@ -190,14 +190,14 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ei
 				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($eiObject));
 			}
 			
-			$translationGuiElement->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					new GuiElementAssembler($targetGuiDefinition, new EiuEntryGui(
+			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
+					new GuiFieldAssembler($targetGuiDefinition, new EiuEntryGui(
 							$targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), 
 							$eiu->entryGui()->getEiEntryGui())), 
 					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		
-		return $translationGuiElement;
+		return $translationGuiField;
 	}
 	
 	public function determineForkedEiObject(EiObject $eiObject) {

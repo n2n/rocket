@@ -41,7 +41,7 @@ interface Displayable {
 	public function createOutputUiComponent(HtmlView $view);
 	
 	/**
-	 * @return string {@see } 
+	 * @return string|null {@see } 
 	 */
 	public function getGroupType();
 }

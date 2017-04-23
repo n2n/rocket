@@ -30,7 +30,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\component\field\impl\relation\model\ToManySelectGuiElement;
+use rocket\spec\ei\component\field\impl\relation\model\ToManySelectGuiField;
 use rocket\spec\ei\manage\LiveEiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
@@ -90,9 +90,9 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiElement(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
@@ -114,7 +114,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 			}
 		}
 			
-		return new ToManySelectGuiElement($this, $eiu, $targetReadEiFrame, $toManyEditable);
+		return new ToManySelectGuiField($this, $eiu, $targetReadEiFrame, $toManyEditable);
 	}
 	
 	/**
