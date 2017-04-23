@@ -28,7 +28,7 @@ use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\IndependentEiPropAdapter;
 use rocket\spec\ei\component\field\GuiEiProp;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiProp;
 
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
@@ -37,7 +37,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
-class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiField {
+class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	private $displayDefinition;
 	
 	public function __construct() {
@@ -85,35 +85,35 @@ class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayabl
 // 		return array('class' => 'rocket-script-' . $this->eiType->getId() . ' rocket-field-' . $this->getId());
 // 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiField()
+	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiField() {
+	public function getGuiProp() {
 		return $this;
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiFieldFork()
+	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiPropFork()
 	 */
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return null;
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
 	 */
 	public function buildGuiElement(Eiu $eiu) {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiField::isStringRepresentable()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::isStringRepresentable()
 	 */
 	public function isStringRepresentable(): bool {
 		return true;
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildIdentityString()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
 		return $this->getEiMask()->determineEiMask($this->getEiType()->determineAdequateEiType(

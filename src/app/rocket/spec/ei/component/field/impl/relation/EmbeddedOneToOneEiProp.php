@@ -26,7 +26,7 @@ use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRe
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneEditable;
 use rocket\spec\ei\component\field\impl\relation\model\EmbeddedOneToOneGuiElement;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -138,7 +138,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
 	 */
 	public function buildGuiElement(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();

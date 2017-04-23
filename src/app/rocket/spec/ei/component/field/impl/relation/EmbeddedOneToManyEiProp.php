@@ -159,7 +159,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
 	 * @return GuiElement
 	 */
 	public function buildGuiElement(Eiu $eiu) {

@@ -30,7 +30,7 @@ class GuiSection {
 	
 	private $type = self::SIMPLE;
 	private $title;
-	private $guiFieldOrder;
+	private $guiPropOrder;
 	
 	public function getType() {
 		return $this->type;
@@ -51,28 +51,28 @@ class GuiSection {
 		$this->title = $title;
 	}
 
-	public function getGuiFieldOrder() {
-		if ($this->guiFieldOrder === null) {
+	public function getGuiPropOrder() {
+		if ($this->guiPropOrder === null) {
 			test($this->title);
-			throw new IllegalStateException('No GuiFieldOrder defined.');
+			throw new IllegalStateException('No GuiPropOrder defined.');
 		}
 		
-		return $this->guiFieldOrder;
+		return $this->guiPropOrder;
 	}
 
-	public function setGuiFieldOrder(GuiFieldOrder $guiFieldOrder) {
-		$this->guiFieldOrder = $guiFieldOrder;
+	public function setGuiPropOrder(GuiPropOrder $guiPropOrder) {
+		$this->guiPropOrder = $guiPropOrder;
 	}
 	
-	public function copy(array $guiFieldOrder = null) {
+	public function copy(array $guiPropOrder = null) {
 		$copy = new GuiSection();
 		$copy->setTitle($this->getTitle());
 		$copy->setType($this->getType());
 		
-		if ($guiFieldOrder !== null) {
-			$copy->setGuiFieldOrder($guiFieldOrder);
+		if ($guiPropOrder !== null) {
+			$copy->setGuiPropOrder($guiPropOrder);
 		} else {
-			$copy->setGuiFieldOrder($this->getGuiFieldOrder());
+			$copy->setGuiPropOrder($this->getGuiPropOrder());
 		}
 		
 		return $copy;

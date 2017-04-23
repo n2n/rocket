@@ -28,55 +28,55 @@ use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 
 class GuiOrder {
-	private $overviewGuiFieldOrder;
-	private $bulkyGuiFieldOrder;
-	private $detailGuiFieldOrder;
-	private $editGuiFieldOrder;
-	private $addGuiFieldOrder;
+	private $overviewGuiPropOrder;
+	private $bulkyGuiPropOrder;
+	private $detailGuiPropOrder;
+	private $editGuiPropOrder;
+	private $addGuiPropOrder;
 	
 	private $partialControlOrder;
 	private $overallControlOrder;
 	private $entryControlOrder;
 	
 
-	public function getOverviewGuiFieldOrder() {
-		return $this->overviewGuiFieldOrder;
+	public function getOverviewGuiPropOrder() {
+		return $this->overviewGuiPropOrder;
 	}
 	
-	public function setOverviewGuiFieldOrder(GuiFieldOrder $overviewGuiFieldOrder = null) {
-		$this->overviewGuiFieldOrder = $overviewGuiFieldOrder;
+	public function setOverviewGuiPropOrder(GuiPropOrder $overviewGuiPropOrder = null) {
+		$this->overviewGuiPropOrder = $overviewGuiPropOrder;
 	}
 	
-	public function getBulkyGuiFieldOrder() {
-		return $this->bulkyGuiFieldOrder;
+	public function getBulkyGuiPropOrder() {
+		return $this->bulkyGuiPropOrder;
 	}
 	
-	public function setBulkyGuiFieldOrder(GuiFieldOrder $bulkyGuiFieldOrder = null) {
-		$this->bulkyGuiFieldOrder = $bulkyGuiFieldOrder;
+	public function setBulkyGuiPropOrder(GuiPropOrder $bulkyGuiPropOrder = null) {
+		$this->bulkyGuiPropOrder = $bulkyGuiPropOrder;
 	}
 	
-	public function getDetailGuiFieldOrder() {
-		return $this->detailGuiFieldOrder;
+	public function getDetailGuiPropOrder() {
+		return $this->detailGuiPropOrder;
 	}
 	
-	public function setDetailGuiFieldOrder(GuiFieldOrder $detailGuiFieldOrder = null) {
-		$this->detailGuiFieldOrder = $detailGuiFieldOrder;
+	public function setDetailGuiPropOrder(GuiPropOrder $detailGuiPropOrder = null) {
+		$this->detailGuiPropOrder = $detailGuiPropOrder;
 	}
 	
-	public function getEditGuiFieldOrder() {
-		return $this->editGuiFieldOrder;
+	public function getEditGuiPropOrder() {
+		return $this->editGuiPropOrder;
 	}
 	
-	public function setEditGuiFieldOrder(GuiFieldOrder $editGuiFieldOrder = null) {
-		$this->editGuiFieldOrder = $editGuiFieldOrder;
+	public function setEditGuiPropOrder(GuiPropOrder $editGuiPropOrder = null) {
+		$this->editGuiPropOrder = $editGuiPropOrder;
 	}
 	
-	public function getAddGuiFieldOrder() {
-		return $this->addGuiFieldOrder;
+	public function getAddGuiPropOrder() {
+		return $this->addGuiPropOrder;
 	}
 	
-	public function setAddGuiFieldOrder(GuiFieldOrder $addGuiFieldOrder = null) {
-		$this->addGuiFieldOrder = $addGuiFieldOrder;
+	public function setAddGuiPropOrder(GuiPropOrder $addGuiPropOrder = null) {
+		$this->addGuiPropOrder = $addGuiPropOrder;
 	}
 	
 // 	const BUTTON_ID_PARTIAL_SEPARATOR = '?PARTIAL?';

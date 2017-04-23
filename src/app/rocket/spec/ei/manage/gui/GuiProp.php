@@ -25,7 +25,7 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-interface GuiField {
+interface GuiProp {
 	
 	/**
 	 * @return string 

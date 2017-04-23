@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiMapping;
 
-interface GuiFieldFork {
+interface GuiPropFork {
 
 	/**
 	 * @return GuiDefinition|null

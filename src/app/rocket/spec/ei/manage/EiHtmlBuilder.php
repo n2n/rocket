@@ -42,7 +42,7 @@ class EiHtmlBuilder {
 	}
 	
 	public function getSimpleLabel($guiIdPath): UiComponent {
-		return $this->view->getHtmlBuilder()->getEsc($this->guiDefinition->getGuiFieldByGuiIdPath(
+		return $this->view->getHtmlBuilder()->getEsc($this->guiDefinition->getGuiPropByGuiIdPath(
 				GuiIdPath::createFromExpression($guiIdPath))->getDisplayLabel());
 	}
 	

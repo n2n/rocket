@@ -41,7 +41,7 @@ use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\config\mask\model\GuiOrder;
 use rocket\spec\config\mask\model\ControlOrder;
-use rocket\spec\config\mask\model\GuiFieldOrder;
+use rocket\spec\config\mask\model\GuiPropOrder;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;
@@ -211,7 +211,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	private function createEiEntryGui(EiuEntry $eiuEntry, $viewMode): EiEntryGui {
-		$guiIdPaths = $this->getGuiFieldOrderViewMode($viewMode)->getAllGuiIdPaths();
+		$guiIdPaths = $this->getGuiPropOrderViewMode($viewMode)->getAllGuiIdPaths();
 	
 		return $this->eiEngine->createEiEntryGui($eiuEntry, $viewMode, $guiIdPaths);
 	}
@@ -329,50 +329,50 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	
-	private function getGuiFieldOrderViewMode($viewMode): GuiFieldOrder {
-		$guiFieldOrder = null;
+	private function getGuiPropOrderViewMode($viewMode): GuiPropOrder {
+		$guiPropOrder = null;
 		
 		switch ($viewMode) {
 			case DisplayDefinition::VIEW_MODE_LIST_READ:
-				if (null !== ($overviewGuiFieldOrder = $this->guiOrder->getOverviewGuiFieldOrder())) {
-					return $overviewGuiFieldOrder;
+				if (null !== ($overviewGuiPropOrder = $this->guiOrder->getOverviewGuiPropOrder())) {
+					return $overviewGuiPropOrder;
 				}
-				return $this->createDefaultGuiFieldOrder($viewMode);
+				return $this->createDefaultGuiPropOrder($viewMode);
 			case DisplayDefinition::VIEW_MODE_TREE_READ:
-				if (null !== ($treeOverviewGuiFieldOrder = $this->guiOrder->getOverviewGuiFieldOrder())) {
-					return $treeOverviewGuiFieldOrder;
+				if (null !== ($treeOverviewGuiPropOrder = $this->guiOrder->getOverviewGuiPropOrder())) {
+					return $treeOverviewGuiPropOrder;
 				}
-				return $this->createDefaultGuiFieldOrder($viewMode);
+				return $this->createDefaultGuiPropOrder($viewMode);
 			case DisplayDefinition::VIEW_MODE_BULKY_READ:
-				if (null !== ($detailGuiFieldOrder = $this->guiOrder->getDetailGuiFieldOrder())) {
-					return $detailGuiFieldOrder;
+				if (null !== ($detailGuiPropOrder = $this->guiOrder->getDetailGuiPropOrder())) {
+					return $detailGuiPropOrder;
 				}
 				break;
 			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
-				if (null !== $editGuiFieldOrder = $this->guiOrder->getEditGuiFieldOrder()) {
-					return $editGuiFieldOrder;
+				if (null !== $editGuiPropOrder = $this->guiOrder->getEditGuiPropOrder()) {
+					return $editGuiPropOrder;
 				}
 				break;
 			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
-				if (null !== ($addGuiFieldOrder = $this->guiOrder->getAddGuiFieldOrder())) {
-					return $addGuiFieldOrder;
+				if (null !== ($addGuiPropOrder = $this->guiOrder->getAddGuiPropOrder())) {
+					return $addGuiPropOrder;
 				}
 				break;
 		}
 		
-		if (null !== ($bulkyGuiFieldOrder = $this->guiOrder->getBulkyGuiFieldOrder())) {
-			return $bulkyGuiFieldOrder;
+		if (null !== ($bulkyGuiPropOrder = $this->guiOrder->getBulkyGuiPropOrder())) {
+			return $bulkyGuiPropOrder;
 		}
 		
-		return $this->createDefaultGuiFieldOrder($viewMode);
+		return $this->createDefaultGuiPropOrder($viewMode);
 	}
 	
-	private function createDefaultGuiFieldOrder($viewMode) {
-		$guiFieldOrder = new GuiFieldOrder();
+	private function createDefaultGuiPropOrder($viewMode) {
+		$guiPropOrder = new GuiPropOrder();
 		foreach ($this->eiEngine->getGuiDefinition()->filterGuiIdPaths($viewMode) as $guiIdPath) {
-			$guiFieldOrder->addGuiIdPath($guiIdPath);
+			$guiPropOrder->addGuiIdPath($guiIdPath);
 		}
-		return $guiFieldOrder;
+		return $guiPropOrder;
 	}
 
 	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
@@ -397,11 +397,11 @@ class CommonEiMask implements EiMask, Identifiable {
 		} else {
 			$viewMode = current($eiuEntryGuis)->getViewMode();
 		}
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
+		$guiPropOrder = $this->getGuiPropOrderViewMode($viewMode);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
-						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $guiFieldOrder)));
+						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $guiPropOrder)));
 	}
 
 	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
@@ -420,12 +420,12 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
+		$guiPropOrder = $this->getGuiPropOrderViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array(
 						'entryListViewModel' => new EntryListViewModel($eiuFrame, $entryGuiTree->getEntryGuis(), 
-								$this->eiEngine->getGuiDefinition(), $guiFieldOrder),
+								$this->eiEngine->getGuiDefinition(), $guiPropOrder),
 						'entryGuiTree' => $entryGuiTree));
 	}
 	
@@ -457,47 +457,47 @@ class CommonEiMask implements EiMask, Identifiable {
 				throw new \InvalidArgumentException('No bulky viewMode.');
 		}
 		
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
+		$guiPropOrder = $this->getGuiPropOrderViewMode($viewMode);
 		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
-				->create($viewName, array('guiFieldOrder' => $guiFieldOrder, 'eiu' => new Eiu($eiuEntryGui)));
+				->create($viewName, array('guiPropOrder' => $guiPropOrder, 'eiu' => new Eiu($eiuEntryGui)));
 	}
 	
 // 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
 // 		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
 	
-// 		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
+// 		$guiPropOrder = $this->getGuiPropOrderViewMode($viewMode);
 		
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
-// 				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 				array('guiPropOrder' => $guiPropOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
 // 						'propertyPath' => $propertyPath));
 // 	}
 	
 // 	public function createAddView(EiFrame $eiFrame, EntryModel $entryModel, PropertyPath $propertyPath = null) {
-// 		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
+// 		$guiPropOrder = $this->getGuiPropOrderViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
 	
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
-// 				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 				array('guiPropOrder' => $guiPropOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
 // 						'propertyPath' => $propertyPath));
 // 	}
 
-// 	private function filterGuiFieldOrder(array $guiFieldOrder, GuiDefinition $guiDefinition) {
-// 		foreach ($guiFieldOrder as $key => $fieldId) {
-// 			if ($fieldId instanceof GroupedGuiFieldOrder) {
-// 				$group = $fieldId->copy($this->filterGuiFieldOrder(
-// 						$fieldId->getGuiFieldOrder(), $guiDefinition));
+// 	private function filterGuiPropOrder(array $guiPropOrder, GuiDefinition $guiDefinition) {
+// 		foreach ($guiPropOrder as $key => $fieldId) {
+// 			if ($fieldId instanceof GroupedGuiPropOrder) {
+// 				$group = $fieldId->copy($this->filterGuiPropOrder(
+// 						$fieldId->getGuiPropOrder(), $guiDefinition));
 // 				if ($group->size()) {
-// 					$guiFieldOrder[$key] = $group;
+// 					$guiPropOrder[$key] = $group;
 // 					continue;
 // 				}
 // 			}
 			
-// 			if (!$guiDefinition->containsGuiFieldId($fieldId)) {
-// 				unset($guiFieldOrder[$key]);
+// 			if (!$guiDefinition->containsGuiPropId($fieldId)) {
+// 				unset($guiPropOrder[$key]);
 // 			}
 // 		}
-// 		return $guiFieldOrder;
+// 		return $guiPropOrder;
 // 	}
 	
 // 	public function getFilterGroupData() {

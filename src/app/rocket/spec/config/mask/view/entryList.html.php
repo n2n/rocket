@@ -35,7 +35,7 @@
 	$entryListViewModel = $view->getParam('entryListViewModel');
 	$view->assert($entryListViewModel instanceof EntryListViewModel);
 	
-	$orderItems = $entryListViewModel->getGuiFieldOrder()->getOrderItems();
+	$orderItems = $entryListViewModel->getGuiPropOrder()->getOrderItems();
 	$eiuFrame = $entryListViewModel->getEiuFrame();
 	
 	$eiHtml = new EiHtmlBuilder($view, $entryListViewModel->getGuiDefinition());

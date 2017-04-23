@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation;
 
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\DraftableEiProp;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
@@ -40,7 +40,7 @@ use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 use rocket\spec\ei\manage\util\model\EiuMask;
 
-abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiField, DraftableEiProp, 
+abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
 	protected $displayDefinition;
 	protected $standardEditDefinition;
@@ -64,7 +64,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayLabel()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayLabel()
 	 */
 	public function getDisplayLabel(): string {
 		return $this->getLabelCode();
@@ -72,7 +72,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayDefinition()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayDefinition()
 	 */
 	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
@@ -82,11 +82,11 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return $this->standardEditDefinition;
 	}
 	
-	public function getGuiField() {
+	public function getGuiProp() {
 		return $this;
 	}
 	
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return null;
 	}
 	

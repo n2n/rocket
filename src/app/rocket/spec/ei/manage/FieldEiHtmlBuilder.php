@@ -60,7 +60,7 @@ class FieldEiHtmlBuilder {
 		return $attrs;
 	}
 	
-	private function pushGuiFieldInfo($tagName, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null, 
+	private function pushGuiPropInfo($tagName, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null, 
 			PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
@@ -91,7 +91,7 @@ class FieldEiHtmlBuilder {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
 	
-		$this->pushGuiFieldInfo($tagName, $fieldErrorInfo, null, $magPropertyPath);
+		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, null, $magPropertyPath);
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $this->buildContainerAttrs(
 				(array) $attrs, false, $mandatory));
 	}
@@ -101,7 +101,7 @@ class FieldEiHtmlBuilder {
 	}
 	
 	public function getOpenOutputField($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
-		$this->pushGuiFieldInfo($tagName, $fieldErrorInfo, $displayable);
+		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, $displayable);
 		
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');

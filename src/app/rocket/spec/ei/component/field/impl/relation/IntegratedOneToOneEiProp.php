@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
-use rocket\spec\ei\manage\gui\GuiFieldFork;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\manage\mapping\EiFieldSource;
 use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\gui\GuiIdPath;
@@ -51,7 +51,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiMapping;
 
-class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiFieldFork {
+class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 
 	public function __construct() {
 		parent::__construct();
@@ -120,7 +120,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return $this;
 	}
 	
@@ -189,9 +189,9 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiField
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiField()
+	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiField() {
+	public function getGuiProp() {
 		return null;	
 	}
 

@@ -120,11 +120,11 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		}
 	}
 	
-	public function getGuiField() {
+	public function getGuiProp() {
 		return $this;
 	}
 	
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return null;
 	}
 	

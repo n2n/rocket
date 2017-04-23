@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 
-class GuiFieldOrder {
+class GuiPropOrder {
 	private $orderItems = array();
 	
 	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null) {
@@ -67,7 +67,7 @@ class GuiFieldOrder {
 		$guiIdPaths = array();
 		foreach ($this->orderItems as $orderItem) {
 			if ($orderItem->isGroup()) {
-				$guiIdPaths = array_merge($guiIdPaths, $orderItem->getGuiSection()->getGuiFieldOrder()->getAllGuiIdPaths());
+				$guiIdPaths = array_merge($guiIdPaths, $orderItem->getGuiSection()->getGuiPropOrder()->getAllGuiIdPaths());
 			} else{
 				$guiIdPaths[] = $orderItem->getGuiIdPath();
 			}
@@ -79,7 +79,7 @@ class GuiFieldOrder {
 	const PURIFY_MODE_GROUPS_IN_ROOT = 'groupsInRoot';
 	
 	public function purify(EiEntryGui $eiEntryGui) {
-		$guiFieldOrder = new GuiFieldOrder();
+		$guiPropOrder = new GuiPropOrder();
 		
 		foreach ($this->orderItems as $orderItem) {
 			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
@@ -87,29 +87,29 @@ class GuiFieldOrder {
 	}
 
 	public function withoutGroups() {
-		$guiFieldOrder = new GuiFieldOrder();
+		$guiPropOrder = new GuiPropOrder();
 	
-		$this->withoutGroups($guiFieldOrder, $this->orderItems);
+		$this->withoutGroups($guiPropOrder, $this->orderItems);
 	
-		return $guiFieldOrder;
+		return $guiPropOrder;
 	}
 	
-	private function stripgGroups(GuiFieldOrder $guiFieldOrder, array $orderItems) {
+	private function stripgGroups(GuiPropOrder $guiPropOrder, array $orderItems) {
 		foreach ($orderItems as $orderItem) {
 			if (!$orderItem->isGroup()) {
-				$guiFieldOrder->orderItems[] = $orderItem;
+				$guiPropOrder->orderItems[] = $orderItem;
 				continue;
 			}
 				
 			if ($orderItem->hasGuiSection()) {
-				$this->stripgGroups($guiFieldOrder, $orderItem->getGuiSection()->getOrderItems());
+				$this->stripgGroups($guiPropOrder, $orderItem->getGuiSection()->getOrderItems());
 				continue;
 			}
 			
 			
 			$orderItem = $orderItem->copy();
 			$orderItem->setGroupType(null);
-			$guiFieldOrder->orderItems[] = $orderItem;
+			$guiPropOrder->orderItems[] = $orderItem;
 		}
 	
 	}

@@ -29,7 +29,7 @@ use rocket\spec\ei\component\field\impl\relation\RelationEiProp;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationGuiElement;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\GuiElementAssembler;
-use rocket\spec\ei\manage\gui\GuiFieldFork;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\component\field\impl\translation\conf\TranslationEiConfigurator;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
@@ -67,7 +67,7 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, EiFieldEiProp, RelationEiProp, 
-		Readable, Writable, GuiFieldFork, SortableEiPropFork {
+		Readable, Writable, GuiPropFork, SortableEiPropFork {
 	private $n2nLocaleDefs = array();
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
@@ -128,21 +128,21 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ei
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\EiProp::getGuiField()
+	 * @see \rocket\spec\ei\component\field\EiProp::getGuiProp()
 	 */
-	public function getGuiField() {
+	public function getGuiProp() {
 		return null;
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\EiProp::getGuiFieldFork()
+	 * @see \rocket\spec\ei\component\field\EiProp::getGuiPropFork()
 	 */
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return $this;
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::getForkedGuiDefinition()
+	 * @see \rocket\spec\ei\manage\gui\GuiPropFork::getForkedGuiDefinition()
 	 */
 	public function getForkedGuiDefinition() {
 		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
@@ -207,7 +207,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Ei
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::determineEiFieldWrapper()
+	 * @see \rocket\spec\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
 	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
 		$eiFieldWrappers = array();

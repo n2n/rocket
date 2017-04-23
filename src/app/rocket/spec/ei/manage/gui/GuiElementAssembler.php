@@ -72,10 +72,10 @@ class GuiElementAssembler implements Savable {
 		}
 	}
 	
-	private function assembleGuiField($id, GuiField $guiField) {
+	private function assembleGuiProp($id, GuiProp $guiProp) {
 		$eiPropPath = $this->guiDefinition->getLevelEiPropPathById($id);
-		$guiElement = $guiField->buildGuiElement(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
-		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiField, 'buildGuiElement', true);
+		$guiElement = $guiProp->buildGuiElement(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
+		ArgUtils::valTypeReturn($guiElement, GuiElement::class, $guiProp, 'buildGuiElement', true);
 		
 		if ($guiElement === null) return null;
 	
@@ -94,7 +94,7 @@ class GuiElementAssembler implements Savable {
 		return new AssembleResult($guiElement, $eiFieldWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
 	}
 	
-	private function assembleGuiFieldFork(GuiIdPath $guiIdPath, GuiFieldFork $guiFieldFork) {
+	private function assembleGuiPropFork(GuiIdPath $guiIdPath, GuiPropFork $guiPropFork) {
 		$id = $guiIdPath->getFirstId();
 		
 		$relativeGuiIdPath = $guiIdPath->getShifted();
@@ -102,7 +102,7 @@ class GuiElementAssembler implements Savable {
 		if (isset($this->forkedGuiElements[$id])) {
 			$forkedGuiElement = $this->forkedGuiElements[$id];
 		} else {
-			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiFieldFork->createGuiElementFork($this->eiu);
+			$forkedGuiElement = $this->forkedGuiElements[$id] = $guiPropFork->createGuiElementFork($this->eiu);
 		} 
 		
 		$result = $forkedGuiElement->assembleGuiElement($relativeGuiIdPath);
@@ -129,12 +129,12 @@ class GuiElementAssembler implements Savable {
 	
 	public function assembleGuiElement(GuiIdPath $guiIdPath) {
 		if ($guiIdPath->hasMultipleIds()) {
-			return $this->assembleGuiFieldFork($guiIdPath, $this->guiDefinition
-					->getLevelGuiFieldForkById($guiIdPath->getFirstId()));
+			return $this->assembleGuiPropFork($guiIdPath, $this->guiDefinition
+					->getLevelGuiPropForkById($guiIdPath->getFirstId()));
 		}
 		
-		return $this->assembleGuiField($guiIdPath->getFirstId(), $this->guiDefinition
-				->getLevelGuiFieldById($guiIdPath->getFirstId()));
+		return $this->assembleGuiProp($guiIdPath->getFirstId(), $this->guiDefinition
+				->getLevelGuiPropById($guiIdPath->getFirstId()));
 	}
 	
 	public function getDispatchable() {

@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\mapping\impl\Readable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\mapping\EiField;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
@@ -36,7 +36,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
 abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter implements StatelessDisplayable, 
-		EiFieldEiProp, GuiEiProp, GuiField, Readable {
+		EiFieldEiProp, GuiEiProp, GuiProp, Readable {
 	protected $displayDefinition;
 	
 	public function __construct() {
@@ -92,11 +92,11 @@ abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter 
 		return $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
 	}
 	
-	public function getGuiField() {
+	public function getGuiProp() {
 		return $this;
 	}
 	
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return null;
 	}
 

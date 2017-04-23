@@ -70,7 +70,7 @@ class EntryEiHtmlBuilder {
 		return $this->meta;
 	}
 	
-	private function pushGuiFieldInfo($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, 
+	private function pushGuiPropInfo($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, 
 			PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable, 
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
@@ -167,7 +167,7 @@ class EntryEiHtmlBuilder {
 		$editableInfo = $eiObjectGui->getEditableWrapperByGuiIdPath($guiIdPath);
 		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
-		$this->pushGuiFieldInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
+		$this->pushGuiPropInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
 		return $this->fieldEiHtml->getOpenInputField($tagName, $propertyPath, $fieldErrorInfo, 
 				$this->buildAttrs($guiIdPath), $editableInfo->isMandatory());
 	}

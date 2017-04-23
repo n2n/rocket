@@ -24,7 +24,7 @@ namespace rocket\spec\config\extr;
 use n2n\util\config\Attributes;
 use n2n\reflection\ArgUtils;
 use rocket\spec\config\mask\model\GuiOrder;
-use rocket\spec\config\mask\model\GuiFieldOrder;
+use rocket\spec\config\mask\model\GuiPropOrder;
 
 class SpecRawer {
 	private $attributes;
@@ -173,24 +173,24 @@ class SpecRawer {
 	private function buildGuiOrderRawData(GuiOrder $guiOrder) {
 		$rawData = array();
 		
-		if (null !== ($overviewGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getOverviewGuiFieldOrder()))) {
-			$rawData[RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY] = $overviewGuiFieldOrder;
+		if (null !== ($overviewGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getOverviewGuiPropOrder()))) {
+			$rawData[RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY] = $overviewGuiPropOrder;
 		}
 		
-		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getBulkyGuiFieldOrder()))) {
-			$rawData[RawDef::BULKY_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
+		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getBulkyGuiPropOrder()))) {
+			$rawData[RawDef::BULKY_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
 		}
 		
-		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getDetailGuiFieldOrder()))) {
-			$rawData[RawDef::DETAIL_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
+		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getDetailGuiPropOrder()))) {
+			$rawData[RawDef::DETAIL_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
 		}
 		
-		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getEditGuiFieldOrder()))) {
-			$rawData[RawDef::EDIT_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
+		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getEditGuiPropOrder()))) {
+			$rawData[RawDef::EDIT_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
 		}
 		
-		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getAddGuiFieldOrder()))) {
-			$rawData[RawDef::ADD_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
+		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getAddGuiPropOrder()))) {
+			$rawData[RawDef::ADD_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
 		}
 				
 		if (null !== ($controlOrder = $guiOrder->getPartialControlOrder())) {
@@ -211,11 +211,11 @@ class SpecRawer {
 	
 	
 	
-	private function buildGuiFieldOrderRawData(GuiFieldOrder $guiFieldOrder = null) {
-		if ($guiFieldOrder === null) return null;
+	private function buildGuiPropOrderRawData(GuiPropOrder $guiPropOrder = null) {
+		if ($guiPropOrder === null) return null;
 	
 		$guiOrderData = array();
-		foreach ($guiFieldOrder->getOrderItems() as $orderItem) {
+		foreach ($guiPropOrder->getOrderItems() as $orderItem) {
 			if (!$orderItem->isSection()) {
 				$guiOrderData[] = (string) $orderItem->getGuiIdPath();
 				continue;
@@ -225,7 +225,7 @@ class SpecRawer {
 			$guiOrderData[] = array(
 					RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY => $guiSection->getType(),
 					RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY => $guiSection->getTitle(),
-					RawDef::GUI_FIELD_ORDER_KEY => $this->buildGuiFieldOrderRawData($guiSection->getGuiFieldOrder()));
+					RawDef::GUI_FIELD_ORDER_KEY => $this->buildGuiPropOrderRawData($guiSection->getGuiPropOrder()));
 		}
 		
 		return $guiOrderData;

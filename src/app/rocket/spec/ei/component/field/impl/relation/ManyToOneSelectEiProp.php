@@ -118,7 +118,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement()
 	 */
 	public function buildGuiElement(Eiu $eiu) {
 		$mapping = $eiu->entry()->getEiMapping();

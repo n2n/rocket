@@ -31,8 +31,8 @@ use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\field\GuiEiProp;
 use rocket\spec\ei\manage\gui\EditableWrapper;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\gui\GuiFieldFork;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\mask\EiMask;
@@ -54,16 +54,16 @@ class GuiFactory {
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof GuiEiProp)) continue;
 			
-			if (null !== ($guiField = $eiProp->getGuiField())){
-				ArgUtils::valTypeReturn($guiField, GuiField::class, $eiProp, 'getGuiField');
+			if (null !== ($guiProp = $eiProp->getGuiProp())){
+				ArgUtils::valTypeReturn($guiProp, GuiProp::class, $eiProp, 'getGuiProp');
 			
-				$guiDefinition->putLevelGuiField($id, $guiField, EiPropPath::from($eiProp));
+				$guiDefinition->putLevelGuiProp($id, $guiProp, EiPropPath::from($eiProp));
 			}
 			
-			if (null !== ($guiFieldFork = $eiProp->getGuiFieldFork())){
-				ArgUtils::valTypeReturn($guiFieldFork, GuiFieldFork::class, $eiProp, 'getGuiFieldFork');
+			if (null !== ($guiPropFork = $eiProp->getGuiPropFork())){
+				ArgUtils::valTypeReturn($guiPropFork, GuiPropFork::class, $eiProp, 'getGuiPropFork');
 				
-				$guiDefinition->putLevelGuiFieldFork($id, $guiFieldFork);
+				$guiDefinition->putLevelGuiPropFork($id, $guiPropFork);
 			}
 		}
 		

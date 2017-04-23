@@ -88,7 +88,7 @@ class TranslationGuiElement implements GuiElementFork {
 	}
 	
 	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
-		$label = $this->guiDefinition->getGuiFieldByGuiIdPath($guiIdPath)->getDisplayLabel();
+		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
 // 		$fieldErrorInfo = new FieldErrorInfo();

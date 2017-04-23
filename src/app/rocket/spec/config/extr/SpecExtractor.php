@@ -29,7 +29,7 @@ use rocket\spec\config\mask\model\GuiSection;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\mask\model\GuiOrder;
-use rocket\spec\config\mask\model\GuiFieldOrder;
+use rocket\spec\config\mask\model\GuiPropOrder;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\ControlOrder;
@@ -261,11 +261,11 @@ class SpecExtractor {
 	private function createGuiOrder(Attributes $attributes): GuiOrder {
 		$guiOrder = new GuiOrder();
 		
-		$guiOrder->setOverviewGuiFieldOrder($this->extractGuiFieldOrder(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setBulkyGuiFieldOrder($this->extractGuiFieldOrder(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setDetailGuiFieldOrder($this->extractGuiFieldOrder(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setEditGuiFieldOrder($this->extractGuiFieldOrder(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setAddGuiFieldOrder($this->extractGuiFieldOrder(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setOverviewGuiPropOrder($this->extractGuiPropOrder(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setBulkyGuiPropOrder($this->extractGuiPropOrder(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setDetailGuiPropOrder($this->extractGuiPropOrder(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setEditGuiPropOrder($this->extractGuiPropOrder(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setAddGuiPropOrder($this->extractGuiPropOrder(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
 		
 		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_PARTIAL_CONTROL_ORDER_KEY, false))) {
 			$guiOrder->setPartialControlOrder(new ControlOrder($controlIds));
@@ -282,24 +282,24 @@ class SpecExtractor {
 		return $guiOrder;
 	}
 	
-	private function extractGuiFieldOrder($key, Attributes $attributes) {
+	private function extractGuiPropOrder($key, Attributes $attributes) {
 		$data = $attributes->getArray($key, false);
 		if (empty($data)) return null;
 		
 		try {
-			return $this->createGuiFieldOrder($data);
+			return $this->createGuiPropOrder($data);
 		} catch (AttributesException $e) {
-			throw new InvalidEiMaskConfigurationException('Field contains invalid GuiFieldOrder configuration: ' 
+			throw new InvalidEiMaskConfigurationException('Field contains invalid GuiPropOrder configuration: ' 
 					. $key, 0, $e);
 		}
 	}
 	
-	private function createGuiFieldOrder(array $data) {
-		$guiFieldOrder = new GuiFieldOrder();
+	private function createGuiPropOrder(array $data) {
+		$guiPropOrder = new GuiPropOrder();
 	
 		foreach ($data as $key => $fieldId) {
 			if (!is_array($fieldId)) {
-				$guiFieldOrder->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
+				$guiPropOrder->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
 				continue;
 			}
 	
@@ -309,12 +309,12 @@ class SpecExtractor {
 			$guiSection->setType($guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY,
 					GuiSection::getTypes(), false, null, true));
 			$guiSection->setTitle($guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY));
-			$guiSection->setGuiFieldOrder($this->createGuiFieldOrder($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
+			$guiSection->setGuiPropOrder($this->createGuiPropOrder($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
 			
-			$guiFieldOrder->addGuiGroup($guiSection);
+			$guiPropOrder->addGuiGroup($guiSection);
 		}
 	
-		return $guiFieldOrder;
+		return $guiPropOrder;
 	}
 	
 	public function extractMenuItems(): array {

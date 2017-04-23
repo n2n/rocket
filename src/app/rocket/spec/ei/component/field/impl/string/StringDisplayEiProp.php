@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
 use rocket\spec\ei\manage\mapping\EiField;
@@ -44,7 +44,7 @@ use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiProp;
 use n2n\reflection\ArgUtils;
 
-class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObjectPropertyEiProp, GuiEiProp, GuiField, 
+class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObjectPropertyEiProp, GuiEiProp, GuiProp, 
 		EiFieldEiProp, Readable, StatelessDisplayable {
 	private $accessProxy;
 	private $displayDefinition;
@@ -99,17 +99,17 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiField()
+	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiField() {
+	public function getGuiProp() {
 		return $this;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiFieldFork()
+	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiPropFork()
 	 */
-	public function getGuiFieldFork() {
+	public function getGuiPropFork() {
 		return null;
 		
 	}
@@ -166,7 +166,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::getDisplayLabel()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayLabel()
 	 */
 	public function getDisplayLabel(): string {
 		return (string) $this->labelLstr;
@@ -174,7 +174,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildGuiElement($eiu)
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiElement($eiu)
 	 */
 	public function buildGuiElement(Eiu $eiu) {
 		return new StatelessDisplayElement($this, $eiu);
@@ -182,7 +182,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::isStringRepresentable()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::isStringRepresentable()
 	 */
 	public function isStringRepresentable(): bool {
 		return true;
@@ -190,7 +190,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::buildIdentityString($eiObject, $n2nLocale)
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString($eiObject, $n2nLocale)
 	 */
 	public function buildIdentityString(\rocket\spec\ei\manage\EiObject $eiObject, \n2n\l10n\N2nLocale $n2nLocale) {
 		return $this->read($eiObject);
