@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-interface EiFieldEiProp extends EiProp {
+interface FieldEiProp extends EiProp {
 			
 	/**
 	 * @param Eiu $eiu
@@ -40,7 +40,7 @@ interface EiFieldEiProp extends EiProp {
 
 
 
-interface ScalarEiProp extends EiFieldEiProp {
+interface ScalarEiProp extends FieldEiProp {
 	
 	public function getScalarEiProperty();
 }

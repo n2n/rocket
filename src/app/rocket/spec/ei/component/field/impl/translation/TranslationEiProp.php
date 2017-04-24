@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\EiFieldEiProp;
+use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
@@ -66,7 +66,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, EiFieldEiProp, RelationEiProp, 
+class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork {
 	private $n2nLocaleDefs = array();
 

@@ -25,7 +25,7 @@ use rocket\spec\config\mask\CommonEiMask;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use n2n\io\IoUtils;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\spec\config\mask\model\GuiOrder;
+use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\mask\EiMaskCollection;
 use rocket\spec\ei\EiType;
@@ -97,7 +97,7 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 	
 		if ($this->createdDefault === null) {
 			$this->createdDefault = new CommonEiMask($this->eiType, $this->eiType->getModuleNamespace(), 
-					new GuiOrder());
+					new DisplayScheme());
 		}
 	
 		return $this->createdDefault;

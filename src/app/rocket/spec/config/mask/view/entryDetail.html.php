@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\EiFrame;
-	use rocket\spec\config\mask\model\GuiPropOrder;
+	use rocket\spec\config\mask\model\DisplayStructure;
 	use rocket\spec\ei\manage\EntryGui;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 	$formHtml = HtmlView::formHtml($this);
 		
 	$guiPropOrder = $view->getParam('guiPropOrder');
-	$view->assert($guiPropOrder instanceof GuiPropOrder);
+	$view->assert($guiPropOrder instanceof DisplayStructure);
 	
 	$eiu = $view->getParam('eiu');
 	$view->assert($eiu instanceof Eiu);
@@ -42,14 +42,14 @@ use rocket\spec\ei\manage\util\model\Eiu;
 	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiu);
 ?>
 <div class="rocket-properties">
-	<?php foreach ($guiPropOrder->getOrderItems() as $orderItem): ?>
+	<?php foreach ($guiPropOrder->getDisplayItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
 			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-group-' . $type : 'rocket-group') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">
 					<?php $view->import('entryDetail.html', array(
-							'eiu' => $eiu, 'guiPropOrder' => $guiSection->getGuiPropOrder())) ?>
+							'eiu' => $eiu, 'guiPropOrder' => $guiSection->getDisplayStructure())) ?>
 				</div>
 			</div>
 		<?php else: ?>

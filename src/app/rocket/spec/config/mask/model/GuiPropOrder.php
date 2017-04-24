@@ -26,30 +26,30 @@ use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 
-class GuiPropOrder {
+class DisplayStructure {
 	private $orderItems = array();
 	
 	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null) {
-		$this->orderItems[] = OrderItem::createFromGuiIdPath($guiIdPath, $groupType);
+		$this->orderItems[] = DisplayItem::createFromGuiIdPath($guiIdPath, $groupType);
 	}
 	
 	public function addGuiGroup(GuiSection $guiSection, string $groupType = null) {
-		$this->orderItems[] = OrderItem::createFromGuiSection($guiSection);
+		$this->orderItems[] = DisplayItem::createFromGuiSection($guiSection);
 	}
 	
-	public function addOrderItem(OrderItem $orderItem) {
+	public function addDisplayItem(DisplayItem $orderItem) {
 		$this->orderItems[] = $orderItem;
 	}
 	
 	/**
-	 * @return OrderItem []
+	 * @return DisplayItem []
 	 */
-	public function getOrderItems() {
+	public function getDisplayItems() {
 		return $this->orderItems;
 	}
 	
-	public function setOrderItems(array $orderItems) {
-		ArgUtils::valArray($orderItems, OrderItem::class);
+	public function setDisplayItems(array $orderItems) {
+		ArgUtils::valArray($orderItems, DisplayItem::class);
 		$this->orderItems = $orderItems;
 	}
 	
@@ -67,7 +67,7 @@ class GuiPropOrder {
 		$guiIdPaths = array();
 		foreach ($this->orderItems as $orderItem) {
 			if ($orderItem->isGroup()) {
-				$guiIdPaths = array_merge($guiIdPaths, $orderItem->getGuiSection()->getGuiPropOrder()->getAllGuiIdPaths());
+				$guiIdPaths = array_merge($guiIdPaths, $orderItem->getGuiSection()->getDisplayStructure()->getAllGuiIdPaths());
 			} else{
 				$guiIdPaths[] = $orderItem->getGuiIdPath();
 			}
@@ -79,7 +79,7 @@ class GuiPropOrder {
 	const PURIFY_MODE_GROUPS_IN_ROOT = 'groupsInRoot';
 	
 	public function purify(EiEntryGui $eiEntryGui) {
-		$guiPropOrder = new GuiPropOrder();
+		$guiPropOrder = new DisplayStructure();
 		
 		foreach ($this->orderItems as $orderItem) {
 			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
@@ -87,14 +87,14 @@ class GuiPropOrder {
 	}
 
 	public function withoutGroups() {
-		$guiPropOrder = new GuiPropOrder();
+		$guiPropOrder = new DisplayStructure();
 	
 		$this->withoutGroups($guiPropOrder, $this->orderItems);
 	
 		return $guiPropOrder;
 	}
 	
-	private function stripgGroups(GuiPropOrder $guiPropOrder, array $orderItems) {
+	private function stripgGroups(DisplayStructure $guiPropOrder, array $orderItems) {
 		foreach ($orderItems as $orderItem) {
 			if (!$orderItem->isGroup()) {
 				$guiPropOrder->orderItems[] = $orderItem;
@@ -102,7 +102,7 @@ class GuiPropOrder {
 			}
 				
 			if ($orderItem->hasGuiSection()) {
-				$this->stripgGroups($guiPropOrder, $orderItem->getGuiSection()->getOrderItems());
+				$this->stripgGroups($guiPropOrder, $orderItem->getGuiSection()->getDisplayItems());
 				continue;
 			}
 			
@@ -115,21 +115,21 @@ class GuiPropOrder {
 	}
 }
 
-class OrderItem {
+class DisplayItem {
 	protected $label;
 	protected $groupType;
 	protected $guiIdPath;
-	protected $guiSection;
+	protected $guiDisplayStructure;
 
 	private function __construct() {
 	}
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
-	 * @return \rocket\spec\config\mask\OrderItem
+	 * @return \rocket\spec\config\mask\DisplayItem
 	 */
 	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
-		$orderItem = new OrderItem();
+		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
 		$orderItem->groupType = $groupType;
 		$orderItem->guiIdPath = $guiIdPath;
@@ -138,16 +138,18 @@ class OrderItem {
 	
 	/**
 	 * @param GuiSection $guiSection
-	 * @return \rocket\spec\config\mask\OrderItem
+	 * @return \rocket\spec\config\mask\DisplayItem
 	 */
-	public static function createFromGuiSection(GuiSection $guiSection) {
-		$orderItem = new OrderItem();
-		$orderItem->guiSection = $guiSection;
+	public static function createFromDisplayStructure(DisplayStructure $guiPropOrder, string $groupType, string $label = null) {
+		$orderItem = new DisplayItem();
+		$orderItem->guiPropOrder = $guiPropOrder;
+		$orderItem->groupType = $groupType;
+		$orderItem->label = $label;
 		return $orderItem;
 	}
 	
 	public function getGroupType() {
-		if ($this->groupType !== null || $this->guiSection === null) {
+		if ($this->groupType !== null || $this->guiDisplayStructure === null) {
 			return $this->groupType;
 		}
 		
@@ -155,20 +157,20 @@ class OrderItem {
 	}
 	
 	public function isGroup() {
-		return $this->guiSection !== null || $this->groupType !== null;
+		return $this->guiDisplayStructure !== null || $this->groupType !== null;
 	}
 	
-	public function hasGuiSection() {
-		return $this->guiSection !== null;
+	public function hasDisplayStructure() {
+		return $this->guiDisplayStructure !== null;
 	}
 	
 	/**
 	 * @return GuiSection
 	 * @throws IllegalStateException
 	 */
-	public function getGuiSection() {
-		if ($this->guiSection !== null) {
-			return $this->guiSection;
+	public function getDisplayStructure() {
+		if ($this->guiDisplayStructure !== null) {
+			return $this->guiDisplayStructure;
 		}
 		
 		throw new IllegalStateException();

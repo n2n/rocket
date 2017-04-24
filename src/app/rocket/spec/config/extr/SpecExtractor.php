@@ -28,8 +28,8 @@ use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\config\mask\model\GuiSection;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
-use rocket\spec\config\mask\model\GuiOrder;
-use rocket\spec\config\mask\model\GuiPropOrder;
+use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\config\mask\model\DisplayStructure;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\ControlOrder;
@@ -254,18 +254,18 @@ class SpecExtractor {
 		$maskExtraction = new CommonEiMaskExtraction($id, $this->moduleNamespace);
 		
 		$maskExtraction->setEiDefExtraction($this->createEiDefExtraction($attributes));
-		$maskExtraction->setGuiOrder($this->createGuiOrder($attributes));	
+		$maskExtraction->setDisplayScheme($this->createDisplayScheme($attributes));	
 		return $maskExtraction;
 	}
 	
-	private function createGuiOrder(Attributes $attributes): GuiOrder {
-		$guiOrder = new GuiOrder();
+	private function createDisplayScheme(Attributes $attributes): DisplayScheme {
+		$guiOrder = new DisplayScheme();
 		
-		$guiOrder->setOverviewGuiPropOrder($this->extractGuiPropOrder(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setBulkyGuiPropOrder($this->extractGuiPropOrder(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setDetailGuiPropOrder($this->extractGuiPropOrder(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setEditGuiPropOrder($this->extractGuiPropOrder(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setAddGuiPropOrder($this->extractGuiPropOrder(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setOverviewDisplayStructure($this->extractDisplayStructure(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setBulkyDisplayStructure($this->extractDisplayStructure(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setDetailDisplayStructure($this->extractDisplayStructure(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setEditDisplayStructure($this->extractDisplayStructure(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setAddDisplayStructure($this->extractDisplayStructure(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
 		
 		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_PARTIAL_CONTROL_ORDER_KEY, false))) {
 			$guiOrder->setPartialControlOrder(new ControlOrder($controlIds));
@@ -282,20 +282,20 @@ class SpecExtractor {
 		return $guiOrder;
 	}
 	
-	private function extractGuiPropOrder($key, Attributes $attributes) {
+	private function extractDisplayStructure($key, Attributes $attributes) {
 		$data = $attributes->getArray($key, false);
 		if (empty($data)) return null;
 		
 		try {
-			return $this->createGuiPropOrder($data);
+			return $this->createDisplayStructure($data);
 		} catch (AttributesException $e) {
-			throw new InvalidEiMaskConfigurationException('Field contains invalid GuiPropOrder configuration: ' 
+			throw new InvalidEiMaskConfigurationException('Field contains invalid DisplayStructure configuration: ' 
 					. $key, 0, $e);
 		}
 	}
 	
-	private function createGuiPropOrder(array $data) {
-		$guiPropOrder = new GuiPropOrder();
+	private function createDisplayStructure(array $data) {
+		$guiPropOrder = new DisplayStructure();
 	
 		foreach ($data as $key => $fieldId) {
 			if (!is_array($fieldId)) {
@@ -309,7 +309,7 @@ class SpecExtractor {
 			$guiSection->setType($guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY,
 					GuiSection::getTypes(), false, null, true));
 			$guiSection->setTitle($guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY));
-			$guiSection->setGuiPropOrder($this->createGuiPropOrder($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
+			$guiSection->setDisplayStructure($this->createDisplayStructure($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
 			
 			$guiPropOrder->addGuiGroup($guiSection);
 		}

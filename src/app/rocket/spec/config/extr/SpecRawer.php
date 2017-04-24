@@ -23,8 +23,8 @@ namespace rocket\spec\config\extr;
 
 use n2n\util\config\Attributes;
 use n2n\reflection\ArgUtils;
-use rocket\spec\config\mask\model\GuiOrder;
-use rocket\spec\config\mask\model\GuiPropOrder;
+use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\config\mask\model\DisplayStructure;
 
 class SpecRawer {
 	private $attributes;
@@ -94,7 +94,7 @@ class SpecRawer {
 	private function buildCommonEiMaskExtractionRawData(CommonEiMaskExtraction $eiMaskExtraction) {
 		$maskRawData = $this->buildEiDefExtractionRawData($eiMaskExtraction->getEiDefExtraction());
 		
-		return array_merge($maskRawData, $this->buildGuiOrderRawData($eiMaskExtraction->getGuiOrder()));
+		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtraction->getDisplayScheme()));
 	}
 	
 	
@@ -170,27 +170,27 @@ class SpecRawer {
 				RawDef::EI_COMPONENT_PROPS_KEY => $extraction->getProps());
 	}
 	
-	private function buildGuiOrderRawData(GuiOrder $guiOrder) {
+	private function buildDisplaySchemeRawData(DisplayScheme $guiOrder) {
 		$rawData = array();
 		
-		if (null !== ($overviewGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getOverviewGuiPropOrder()))) {
-			$rawData[RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY] = $overviewGuiPropOrder;
+		if (null !== ($overviewDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getOverviewDisplayStructure()))) {
+			$rawData[RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY] = $overviewDisplayStructure;
 		}
 		
-		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getBulkyGuiPropOrder()))) {
-			$rawData[RawDef::BULKY_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
+		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getBulkyDisplayStructure()))) {
+			$rawData[RawDef::BULKY_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
 		}
 		
-		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getDetailGuiPropOrder()))) {
-			$rawData[RawDef::DETAIL_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
+		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getDetailDisplayStructure()))) {
+			$rawData[RawDef::DETAIL_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
 		}
 		
-		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getEditGuiPropOrder()))) {
-			$rawData[RawDef::EDIT_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
+		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getEditDisplayStructure()))) {
+			$rawData[RawDef::EDIT_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
 		}
 		
-		if (null !== ($bulkyGuiPropOrder = $this->buildGuiPropOrderRawData($guiOrder->getAddGuiPropOrder()))) {
-			$rawData[RawDef::ADD_GUI_FIELD_ORDER_KEY] = $bulkyGuiPropOrder;
+		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getAddDisplayStructure()))) {
+			$rawData[RawDef::ADD_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
 		}
 				
 		if (null !== ($controlOrder = $guiOrder->getPartialControlOrder())) {
@@ -211,11 +211,11 @@ class SpecRawer {
 	
 	
 	
-	private function buildGuiPropOrderRawData(GuiPropOrder $guiPropOrder = null) {
+	private function buildDisplayStructureRawData(DisplayStructure $guiPropOrder = null) {
 		if ($guiPropOrder === null) return null;
 	
 		$guiOrderData = array();
-		foreach ($guiPropOrder->getOrderItems() as $orderItem) {
+		foreach ($guiPropOrder->getDisplayItems() as $orderItem) {
 			if (!$orderItem->isSection()) {
 				$guiOrderData[] = (string) $orderItem->getGuiIdPath();
 				continue;
@@ -225,7 +225,7 @@ class SpecRawer {
 			$guiOrderData[] = array(
 					RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY => $guiSection->getType(),
 					RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY => $guiSection->getTitle(),
-					RawDef::GUI_FIELD_ORDER_KEY => $this->buildGuiPropOrderRawData($guiSection->getGuiPropOrder()));
+					RawDef::GUI_FIELD_ORDER_KEY => $this->buildDisplayStructureRawData($guiSection->getDisplayStructure()));
 		}
 		
 		return $guiOrderData;

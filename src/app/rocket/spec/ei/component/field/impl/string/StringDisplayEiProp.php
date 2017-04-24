@@ -28,7 +28,7 @@ use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
 use rocket\spec\ei\component\field\GuiEiProp;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\field\EiFieldEiProp;
+use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\manage\mapping\impl\Readable;
@@ -45,7 +45,7 @@ use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiProp;
 use n2n\reflection\ArgUtils;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObjectPropertyEiProp, GuiEiProp, GuiProp, 
-		EiFieldEiProp, Readable, StatelessDisplayable {
+		FieldEiProp, Readable, StatelessDisplayable {
 	private $accessProxy;
 	private $displayDefinition;
 	
@@ -115,7 +115,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::isEiField()
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::isEiField()
 	 */
 	public function isEiField(): bool {
 		return true;
@@ -123,7 +123,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::buildEiField($eiObject)
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::buildEiField($eiObject)
 	 */
 	public function buildEiField(Eiu $eiu) {
 		return new SimpleEiField($eiu->entry()->getEiObject(), $this->accessProxy->getConstraint(), $this);
@@ -131,7 +131,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::buildEiFieldFork($eiObject, $eiField)
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::buildEiFieldFork($eiObject, $eiField)
 	 */
 	public function buildEiFieldFork(\rocket\spec\ei\manage\EiObject $eiObject, \rocket\spec\ei\manage\mapping\EiField $eiField = null) {
 		return null;
@@ -139,7 +139,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::isEiMappingFilterable()
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::isEiMappingFilterable()
 	 */
 	public function isEiMappingFilterable(): bool {
 		return false;
@@ -147,7 +147,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\EiFieldEiProp::createEiMappingFilterField($n2nContext)
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::createEiMappingFilterField($n2nContext)
 	 */
 	public function createEiMappingFilterField(\n2n\core\container\N2nContext $n2nContext): EiMappingFilterField {
 		return null;

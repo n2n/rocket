@@ -39,9 +39,9 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
-use rocket\spec\config\mask\model\GuiOrder;
+use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\config\mask\model\ControlOrder;
-use rocket\spec\config\mask\model\GuiPropOrder;
+use rocket\spec\config\mask\model\DisplayStructure;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;
@@ -92,7 +92,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	private $guiDefinition;
 	private $draftDefinition;
 	
-	public function __construct(EiType $eiType, string $moduleNamespace, GuiOrder $guiOrder) {
+	public function __construct(EiType $eiType, string $moduleNamespace, DisplayScheme $guiOrder) {
 		$this->eiType = $eiType;
 		$this->moduleNamespace = $moduleNamespace;
 		
@@ -168,11 +168,11 @@ class CommonEiMask implements EiMask, Identifiable {
 		return $this->eiType->getEntityModel();
 	}
 	
-	public function setGuiOrder(GuiOrder $guiOrder) {
+	public function setDisplayScheme(DisplayScheme $guiOrder) {
 		$this->guiOrder = $guiOrder;
 	}
 	
-	public function getGuiOrder(): GuiOrder {
+	public function getDisplayScheme(): DisplayScheme {
 		return $this->guiOrder;
 	}
 	
@@ -211,7 +211,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	private function createEiEntryGui(EiuEntry $eiuEntry, $viewMode): EiEntryGui {
-		$guiIdPaths = $this->getGuiPropOrderViewMode($viewMode)->getAllGuiIdPaths();
+		$guiIdPaths = $this->getDisplayStructureViewMode($viewMode)->getAllGuiIdPaths();
 	
 		return $this->eiEngine->createEiEntryGui($eiuEntry, $viewMode, $guiIdPaths);
 	}
@@ -329,46 +329,46 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	
-	private function getGuiPropOrderViewMode($viewMode): GuiPropOrder {
+	private function getDisplayStructureViewMode($viewMode): DisplayStructure {
 		$guiPropOrder = null;
 		
 		switch ($viewMode) {
 			case DisplayDefinition::VIEW_MODE_LIST_READ:
-				if (null !== ($overviewGuiPropOrder = $this->guiOrder->getOverviewGuiPropOrder())) {
-					return $overviewGuiPropOrder;
+				if (null !== ($overviewDisplayStructure = $this->guiOrder->getOverviewDisplayStructure())) {
+					return $overviewDisplayStructure;
 				}
-				return $this->createDefaultGuiPropOrder($viewMode);
+				return $this->createDefaultDisplayStructure($viewMode);
 			case DisplayDefinition::VIEW_MODE_TREE_READ:
-				if (null !== ($treeOverviewGuiPropOrder = $this->guiOrder->getOverviewGuiPropOrder())) {
-					return $treeOverviewGuiPropOrder;
+				if (null !== ($treeOverviewDisplayStructure = $this->guiOrder->getOverviewDisplayStructure())) {
+					return $treeOverviewDisplayStructure;
 				}
-				return $this->createDefaultGuiPropOrder($viewMode);
+				return $this->createDefaultDisplayStructure($viewMode);
 			case DisplayDefinition::VIEW_MODE_BULKY_READ:
-				if (null !== ($detailGuiPropOrder = $this->guiOrder->getDetailGuiPropOrder())) {
-					return $detailGuiPropOrder;
+				if (null !== ($detailDisplayStructure = $this->guiOrder->getDetailDisplayStructure())) {
+					return $detailDisplayStructure;
 				}
 				break;
 			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
-				if (null !== $editGuiPropOrder = $this->guiOrder->getEditGuiPropOrder()) {
-					return $editGuiPropOrder;
+				if (null !== $editDisplayStructure = $this->guiOrder->getEditDisplayStructure()) {
+					return $editDisplayStructure;
 				}
 				break;
 			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
-				if (null !== ($addGuiPropOrder = $this->guiOrder->getAddGuiPropOrder())) {
-					return $addGuiPropOrder;
+				if (null !== ($addDisplayStructure = $this->guiOrder->getAddDisplayStructure())) {
+					return $addDisplayStructure;
 				}
 				break;
 		}
 		
-		if (null !== ($bulkyGuiPropOrder = $this->guiOrder->getBulkyGuiPropOrder())) {
-			return $bulkyGuiPropOrder;
+		if (null !== ($bulkyDisplayStructure = $this->guiOrder->getBulkyDisplayStructure())) {
+			return $bulkyDisplayStructure;
 		}
 		
-		return $this->createDefaultGuiPropOrder($viewMode);
+		return $this->createDefaultDisplayStructure($viewMode);
 	}
 	
-	private function createDefaultGuiPropOrder($viewMode) {
-		$guiPropOrder = new GuiPropOrder();
+	private function createDefaultDisplayStructure($viewMode) {
+		$guiPropOrder = new DisplayStructure();
 		foreach ($this->eiEngine->getGuiDefinition()->filterGuiIdPaths($viewMode) as $guiIdPath) {
 			$guiPropOrder->addGuiIdPath($guiIdPath);
 		}
@@ -397,7 +397,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		} else {
 			$viewMode = current($eiuEntryGuis)->getViewMode();
 		}
-		$guiPropOrder = $this->getGuiPropOrderViewMode($viewMode);
+		$guiPropOrder = $this->getDisplayStructureViewMode($viewMode);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
@@ -420,7 +420,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
-		$guiPropOrder = $this->getGuiPropOrderViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
+		$guiPropOrder = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array(
@@ -457,7 +457,7 @@ class CommonEiMask implements EiMask, Identifiable {
 				throw new \InvalidArgumentException('No bulky viewMode.');
 		}
 		
-		$guiPropOrder = $this->getGuiPropOrderViewMode($viewMode);
+		$guiPropOrder = $this->getDisplayStructureViewMode($viewMode);
 		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
 				->create($viewName, array('guiPropOrder' => $guiPropOrder, 'eiu' => new Eiu($eiuEntryGui)));
 	}
@@ -465,7 +465,7 @@ class CommonEiMask implements EiMask, Identifiable {
 // 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
 // 		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
 	
-// 		$guiPropOrder = $this->getGuiPropOrderViewMode($viewMode);
+// 		$guiPropOrder = $this->getDisplayStructureViewMode($viewMode);
 		
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
@@ -474,7 +474,7 @@ class CommonEiMask implements EiMask, Identifiable {
 // 	}
 	
 // 	public function createAddView(EiFrame $eiFrame, EntryModel $entryModel, PropertyPath $propertyPath = null) {
-// 		$guiPropOrder = $this->getGuiPropOrderViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
+// 		$guiPropOrder = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
 	
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
@@ -482,11 +482,11 @@ class CommonEiMask implements EiMask, Identifiable {
 // 						'propertyPath' => $propertyPath));
 // 	}
 
-// 	private function filterGuiPropOrder(array $guiPropOrder, GuiDefinition $guiDefinition) {
+// 	private function filterDisplayStructure(array $guiPropOrder, GuiDefinition $guiDefinition) {
 // 		foreach ($guiPropOrder as $key => $fieldId) {
-// 			if ($fieldId instanceof GroupedGuiPropOrder) {
-// 				$group = $fieldId->copy($this->filterGuiPropOrder(
-// 						$fieldId->getGuiPropOrder(), $guiDefinition));
+// 			if ($fieldId instanceof GroupedDisplayStructure) {
+// 				$group = $fieldId->copy($this->filterDisplayStructure(
+// 						$fieldId->getDisplayStructure(), $guiDefinition));
 // 				if ($group->size()) {
 // 					$guiPropOrder[$key] = $group;
 // 					continue;

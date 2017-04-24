@@ -27,56 +27,56 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 
-class GuiOrder {
-	private $overviewGuiPropOrder;
-	private $bulkyGuiPropOrder;
-	private $detailGuiPropOrder;
-	private $editGuiPropOrder;
-	private $addGuiPropOrder;
+class DisplayScheme {
+	private $overviewDisplayStructure;
+	private $bulkyDisplayStructure;
+	private $detailDisplayStructure;
+	private $editDisplayStructure;
+	private $addDisplayStructure;
 	
 	private $partialControlOrder;
 	private $overallControlOrder;
 	private $entryControlOrder;
 	
 
-	public function getOverviewGuiPropOrder() {
-		return $this->overviewGuiPropOrder;
+	public function getOverviewDisplayStructure() {
+		return $this->overviewDisplayStructure;
 	}
 	
-	public function setOverviewGuiPropOrder(GuiPropOrder $overviewGuiPropOrder = null) {
-		$this->overviewGuiPropOrder = $overviewGuiPropOrder;
+	public function setOverviewDisplayStructure(DisplayStructure $overviewDisplayStructure = null) {
+		$this->overviewDisplayStructure = $overviewDisplayStructure;
 	}
 	
-	public function getBulkyGuiPropOrder() {
-		return $this->bulkyGuiPropOrder;
+	public function getBulkyDisplayStructure() {
+		return $this->bulkyDisplayStructure;
 	}
 	
-	public function setBulkyGuiPropOrder(GuiPropOrder $bulkyGuiPropOrder = null) {
-		$this->bulkyGuiPropOrder = $bulkyGuiPropOrder;
+	public function setBulkyDisplayStructure(DisplayStructure $bulkyDisplayStructure = null) {
+		$this->bulkyDisplayStructure = $bulkyDisplayStructure;
 	}
 	
-	public function getDetailGuiPropOrder() {
-		return $this->detailGuiPropOrder;
+	public function getDetailDisplayStructure() {
+		return $this->detailDisplayStructure;
 	}
 	
-	public function setDetailGuiPropOrder(GuiPropOrder $detailGuiPropOrder = null) {
-		$this->detailGuiPropOrder = $detailGuiPropOrder;
+	public function setDetailDisplayStructure(DisplayStructure $detailDisplayStructure = null) {
+		$this->detailDisplayStructure = $detailDisplayStructure;
 	}
 	
-	public function getEditGuiPropOrder() {
-		return $this->editGuiPropOrder;
+	public function getEditDisplayStructure() {
+		return $this->editDisplayStructure;
 	}
 	
-	public function setEditGuiPropOrder(GuiPropOrder $editGuiPropOrder = null) {
-		$this->editGuiPropOrder = $editGuiPropOrder;
+	public function setEditDisplayStructure(DisplayStructure $editDisplayStructure = null) {
+		$this->editDisplayStructure = $editDisplayStructure;
 	}
 	
-	public function getAddGuiPropOrder() {
-		return $this->addGuiPropOrder;
+	public function getAddDisplayStructure() {
+		return $this->addDisplayStructure;
 	}
 	
-	public function setAddGuiPropOrder(GuiPropOrder $addGuiPropOrder = null) {
-		$this->addGuiPropOrder = $addGuiPropOrder;
+	public function setAddDisplayStructure(DisplayStructure $addDisplayStructure = null) {
+		$this->addDisplayStructure = $addDisplayStructure;
 	}
 	
 // 	const BUTTON_ID_PARTIAL_SEPARATOR = '?PARTIAL?';

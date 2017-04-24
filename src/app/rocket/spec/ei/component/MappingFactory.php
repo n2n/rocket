@@ -33,7 +33,7 @@ use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\MappingProfile;
 use rocket\spec\ei\manage\mapping\EiFieldFork;
-use rocket\spec\ei\component\field\EiFieldEiProp;
+use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -52,7 +52,7 @@ class MappingFactory {
 // 		$mappingDefinition = new MappingDefinition();
 	
 // 		foreach ($this->eiPropCollection as $field) {
-// // 			if (!($field instanceof EiFieldEiProp)) continue;
+// // 			if (!($field instanceof FieldEiProp)) continue;
 	 
 // 			$eiField = $field->getEiField();
 // 			if ($eiField === null) continue;
@@ -95,7 +95,7 @@ class MappingFactory {
 	private function assembleMappingProfile(Eiu $eiu, EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
 		$eiObject = $eiMappping->getEiObject();
 		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof EiFieldEiProp)) continue;
+			if (!($eiProp instanceof FieldEiProp)) continue;
 						
 			$eiPropPath = new EiPropPath(array($id));
 			

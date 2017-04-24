@@ -30,13 +30,13 @@ use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\EiFieldEiProp;
+use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
 abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter implements StatelessDisplayable, 
-		EiFieldEiProp, GuiEiProp, GuiProp, Readable {
+		FieldEiProp, GuiEiProp, GuiProp, Readable {
 	protected $displayDefinition;
 	
 	public function __construct() {

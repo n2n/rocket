@@ -287,7 +287,7 @@ class EiTypeFactory {
 	}	
 	
 	public function createCommonEiMask(EiType $eiType, CommonEiMaskExtraction $commonEiMaskExtraction): CommonEiMask {
-		$commonEiMask = new CommonEiMask($eiType, $eiType->getModuleNamespace(), $commonEiMaskExtraction->getGuiOrder());
+		$commonEiMask = new CommonEiMask($eiType, $eiType->getModuleNamespace(), $commonEiMaskExtraction->getDisplayScheme());
 		$commonEiMask->setId($commonEiMaskExtraction->getId());
 		
 		$this->asdf($commonEiMaskExtraction->getEiDefExtraction(), $commonEiMask->getEiDef(), 

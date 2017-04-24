@@ -51,16 +51,16 @@ class GuiSection {
 		$this->title = $title;
 	}
 
-	public function getGuiPropOrder() {
+	public function getDisplayStructure() {
 		if ($this->guiPropOrder === null) {
 			test($this->title);
-			throw new IllegalStateException('No GuiPropOrder defined.');
+			throw new IllegalStateException('No DisplayStructure defined.');
 		}
 		
 		return $this->guiPropOrder;
 	}
 
-	public function setGuiPropOrder(GuiPropOrder $guiPropOrder) {
+	public function setDisplayStructure(DisplayStructure $guiPropOrder) {
 		$this->guiPropOrder = $guiPropOrder;
 	}
 	
@@ -70,9 +70,9 @@ class GuiSection {
 		$copy->setType($this->getType());
 		
 		if ($guiPropOrder !== null) {
-			$copy->setGuiPropOrder($guiPropOrder);
+			$copy->setDisplayStructure($guiPropOrder);
 		} else {
-			$copy->setGuiPropOrder($this->getGuiPropOrder());
+			$copy->setDisplayStructure($this->getDisplayStructure());
 		}
 		
 		return $copy;

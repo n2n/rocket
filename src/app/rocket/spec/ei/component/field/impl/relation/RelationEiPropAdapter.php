@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\EiFieldEiProp;
+use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
@@ -37,7 +37,7 @@ use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiPropAdapter;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 abstract class RelationEiPropAdapter extends ConfObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
-		EiFieldEiProp, Readable, Writable, Copyable {
+		FieldEiProp, Readable, Writable, Copyable {
 	/**
 	 * @var EiPropRelation
 	 */

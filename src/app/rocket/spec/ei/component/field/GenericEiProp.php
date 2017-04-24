@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field;
 
-interface GenericEiProp extends EiFieldEiProp {
+interface GenericEiProp extends FieldEiProp {
 	
 	/**
 	 * @return GenericEiProperty|null
