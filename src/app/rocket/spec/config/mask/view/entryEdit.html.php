@@ -32,8 +32,8 @@
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$guiPropOrder = $view->getParam('guiPropOrder');
-	$view->assert($guiPropOrder instanceof DisplayStructure);
+	$displayStructure = $view->getParam('displayStructure');
+	$view->assert($displayStructure instanceof DisplayStructure);
 	
 	$eiu = $view->getParam('eiu');
 	$view->assert($eiu instanceof Eiu);
@@ -58,7 +58,7 @@
 <?php endif ?>
 
 <div class="rocket-properties">
-	<?php foreach ($guiPropOrder->getDisplayItems() as $orderItem): ?>
+	<?php foreach ($displayStructure->getDisplayItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
 			<div class="<?php $html->out('rocket-group-' . $guiSection->getType()) ?> 
@@ -66,7 +66,7 @@
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">
 					<?php $view->import('entryEdit.html', array(
-							'eiFrame' => $eiFrame, 'guiPropOrder' => $guiSection->getDisplayStructure(), 
+							'eiFrame' => $eiFrame, 'displayStructure' => $guiSection->getDisplayStructure(), 
 							'entryGui' => $entryGui, 'renderForkMags' => false)) ?>
 				</div>
 			</div>

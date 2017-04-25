@@ -330,7 +330,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	
 	
 	private function getDisplayStructureViewMode($viewMode): DisplayStructure {
-		$guiPropOrder = null;
+		$displayStructure = null;
 		
 		switch ($viewMode) {
 			case DisplayDefinition::VIEW_MODE_LIST_READ:
@@ -368,11 +368,11 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	private function createDefaultDisplayStructure($viewMode) {
-		$guiPropOrder = new DisplayStructure();
+		$displayStructure = new DisplayStructure();
 		foreach ($this->eiEngine->getGuiDefinition()->filterGuiIdPaths($viewMode) as $guiIdPath) {
-			$guiPropOrder->addGuiIdPath($guiIdPath);
+			$displayStructure->addGuiIdPath($guiIdPath);
 		}
-		return $guiPropOrder;
+		return $displayStructure;
 	}
 
 	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
@@ -397,11 +397,11 @@ class CommonEiMask implements EiMask, Identifiable {
 		} else {
 			$viewMode = current($eiuEntryGuis)->getViewMode();
 		}
-		$guiPropOrder = $this->getDisplayStructureViewMode($viewMode);
+		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
-						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $guiPropOrder)));
+						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $displayStructure)));
 	}
 
 	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
@@ -420,12 +420,12 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
-		$guiPropOrder = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
+		$displayStructure = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
 	
 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 				'rocket\spec\config\mask\view\entryList.html', array(
 						'entryListViewModel' => new EntryListViewModel($eiuFrame, $entryGuiTree->getEntryGuis(), 
-								$this->eiEngine->getGuiDefinition(), $guiPropOrder),
+								$this->eiEngine->getGuiDefinition(), $displayStructure),
 						'entryGuiTree' => $entryGuiTree));
 	}
 	
@@ -457,47 +457,47 @@ class CommonEiMask implements EiMask, Identifiable {
 				throw new \InvalidArgumentException('No bulky viewMode.');
 		}
 		
-		$guiPropOrder = $this->getDisplayStructureViewMode($viewMode);
+		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
-				->create($viewName, array('guiPropOrder' => $guiPropOrder, 'eiu' => new Eiu($eiuEntryGui)));
+				->create($viewName, array('displayStructure' => $displayStructure, 'eiu' => new Eiu($eiuEntryGui)));
 	}
 	
 // 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
 // 		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
 	
-// 		$guiPropOrder = $this->getDisplayStructureViewMode($viewMode);
+// 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 		
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
-// 				array('guiPropOrder' => $guiPropOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 				array('displayStructure' => $displayStructure, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
 // 						'propertyPath' => $propertyPath));
 // 	}
 	
 // 	public function createAddView(EiFrame $eiFrame, EntryModel $entryModel, PropertyPath $propertyPath = null) {
-// 		$guiPropOrder = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
+// 		$displayStructure = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
 	
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
-// 				array('guiPropOrder' => $guiPropOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 				array('displayStructure' => $displayStructure, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
 // 						'propertyPath' => $propertyPath));
 // 	}
 
-// 	private function filterDisplayStructure(array $guiPropOrder, GuiDefinition $guiDefinition) {
-// 		foreach ($guiPropOrder as $key => $fieldId) {
+// 	private function filterDisplayStructure(array $displayStructure, GuiDefinition $guiDefinition) {
+// 		foreach ($displayStructure as $key => $fieldId) {
 // 			if ($fieldId instanceof GroupedDisplayStructure) {
 // 				$group = $fieldId->copy($this->filterDisplayStructure(
 // 						$fieldId->getDisplayStructure(), $guiDefinition));
 // 				if ($group->size()) {
-// 					$guiPropOrder[$key] = $group;
+// 					$displayStructure[$key] = $group;
 // 					continue;
 // 				}
 // 			}
 			
 // 			if (!$guiDefinition->containsGuiPropId($fieldId)) {
-// 				unset($guiPropOrder[$key]);
+// 				unset($displayStructure[$key]);
 // 			}
 // 		}
-// 		return $guiPropOrder;
+// 		return $displayStructure;
 // 	}
 	
 // 	public function getFilterGroupData() {

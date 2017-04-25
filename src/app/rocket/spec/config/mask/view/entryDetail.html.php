@@ -33,8 +33,8 @@ use rocket\spec\ei\manage\util\model\Eiu;
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 		
-	$guiPropOrder = $view->getParam('guiPropOrder');
-	$view->assert($guiPropOrder instanceof DisplayStructure);
+	$displayStructure = $view->getParam('displayStructure');
+	$view->assert($displayStructure instanceof DisplayStructure);
 	
 	$eiu = $view->getParam('eiu');
 	$view->assert($eiu instanceof Eiu);
@@ -42,14 +42,14 @@ use rocket\spec\ei\manage\util\model\Eiu;
 	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiu);
 ?>
 <div class="rocket-properties">
-	<?php foreach ($guiPropOrder->getDisplayItems() as $orderItem): ?>
+	<?php foreach ($displayStructure->getDisplayItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
 			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-group-' . $type : 'rocket-group') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">
 					<?php $view->import('entryDetail.html', array(
-							'eiu' => $eiu, 'guiPropOrder' => $guiSection->getDisplayStructure())) ?>
+							'eiu' => $eiu, 'displayStructure' => $guiSection->getDisplayStructure())) ?>
 				</div>
 			</div>
 		<?php else: ?>

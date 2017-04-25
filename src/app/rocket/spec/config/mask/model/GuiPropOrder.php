@@ -79,7 +79,7 @@ class DisplayStructure {
 	const PURIFY_MODE_GROUPS_IN_ROOT = 'groupsInRoot';
 	
 	public function purify(EiEntryGui $eiEntryGui) {
-		$guiPropOrder = new DisplayStructure();
+		$displayStructure = new DisplayStructure();
 		
 		foreach ($this->orderItems as $orderItem) {
 			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
@@ -87,29 +87,29 @@ class DisplayStructure {
 	}
 
 	public function withoutGroups() {
-		$guiPropOrder = new DisplayStructure();
+		$displayStructure = new DisplayStructure();
 	
-		$this->withoutGroups($guiPropOrder, $this->orderItems);
+		$this->withoutGroups($displayStructure, $this->orderItems);
 	
-		return $guiPropOrder;
+		return $displayStructure;
 	}
 	
-	private function stripgGroups(DisplayStructure $guiPropOrder, array $orderItems) {
+	private function stripgGroups(DisplayStructure $displayStructure, array $orderItems) {
 		foreach ($orderItems as $orderItem) {
 			if (!$orderItem->isGroup()) {
-				$guiPropOrder->orderItems[] = $orderItem;
+				$displayStructure->orderItems[] = $orderItem;
 				continue;
 			}
 				
 			if ($orderItem->hasGuiSection()) {
-				$this->stripgGroups($guiPropOrder, $orderItem->getGuiSection()->getDisplayItems());
+				$this->stripgGroups($displayStructure, $orderItem->getGuiSection()->getDisplayItems());
 				continue;
 			}
 			
 			
 			$orderItem = $orderItem->copy();
 			$orderItem->setGroupType(null);
-			$guiPropOrder->orderItems[] = $orderItem;
+			$displayStructure->orderItems[] = $orderItem;
 		}
 	
 	}
@@ -140,9 +140,9 @@ class DisplayItem {
 	 * @param GuiSection $guiSection
 	 * @return \rocket\spec\config\mask\DisplayItem
 	 */
-	public static function createFromDisplayStructure(DisplayStructure $guiPropOrder, string $groupType, string $label = null) {
+	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $groupType, string $label = null) {
 		$orderItem = new DisplayItem();
-		$orderItem->guiPropOrder = $guiPropOrder;
+		$orderItem->displayStructure = $displayStructure;
 		$orderItem->groupType = $groupType;
 		$orderItem->label = $label;
 		return $orderItem;

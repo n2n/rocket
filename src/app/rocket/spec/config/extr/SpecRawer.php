@@ -211,11 +211,11 @@ class SpecRawer {
 	
 	
 	
-	private function buildDisplayStructureRawData(DisplayStructure $guiPropOrder = null) {
-		if ($guiPropOrder === null) return null;
+	private function buildDisplayStructureRawData(DisplayStructure $displayStructure = null) {
+		if ($displayStructure === null) return null;
 	
 		$guiOrderData = array();
-		foreach ($guiPropOrder->getDisplayItems() as $orderItem) {
+		foreach ($displayStructure->getDisplayItems() as $orderItem) {
 			if (!$orderItem->isSection()) {
 				$guiOrderData[] = (string) $orderItem->getGuiIdPath();
 				continue;

@@ -29,14 +29,14 @@ class EntryListViewModel {
 	private $eiuFrame;
 	private $eiuEntryGuis;
 	private $guiDefinition;
-	private $guiPropOrder;
+	private $displayStructure;
 	
 	public function __construct(EiuFrame $eiuFrame, array $eiuEntryGuis, GuiDefinition $guiDefinition, 
-			DisplayStructure $guiPropOrder) {
+			DisplayStructure $displayStructure) {
 		$this->eiuFrame = $eiuFrame;
 		$this->eiuEntryGuis = $eiuEntryGuis;
 		$this->guiDefinition = $guiDefinition;
-		$this->guiPropOrder = $guiPropOrder;
+		$this->displayStructure = $displayStructure;
 	}
 	
 	/**
@@ -58,6 +58,6 @@ class EntryListViewModel {
 	}
 
 	public function getDisplayStructure() {
-		return $this->guiPropOrder;
+		return $this->displayStructure;
 	}
 }

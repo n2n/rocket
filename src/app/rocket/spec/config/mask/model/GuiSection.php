@@ -30,7 +30,7 @@ class GuiSection {
 	
 	private $type = self::SIMPLE;
 	private $title;
-	private $guiPropOrder;
+	private $displayStructure;
 	
 	public function getType() {
 		return $this->type;
@@ -52,25 +52,25 @@ class GuiSection {
 	}
 
 	public function getDisplayStructure() {
-		if ($this->guiPropOrder === null) {
+		if ($this->displayStructure === null) {
 			test($this->title);
 			throw new IllegalStateException('No DisplayStructure defined.');
 		}
 		
-		return $this->guiPropOrder;
+		return $this->displayStructure;
 	}
 
-	public function setDisplayStructure(DisplayStructure $guiPropOrder) {
-		$this->guiPropOrder = $guiPropOrder;
+	public function setDisplayStructure(DisplayStructure $displayStructure) {
+		$this->displayStructure = $displayStructure;
 	}
 	
-	public function copy(array $guiPropOrder = null) {
+	public function copy(array $displayStructure = null) {
 		$copy = new GuiSection();
 		$copy->setTitle($this->getTitle());
 		$copy->setType($this->getType());
 		
-		if ($guiPropOrder !== null) {
-			$copy->setDisplayStructure($guiPropOrder);
+		if ($displayStructure !== null) {
+			$copy->setDisplayStructure($displayStructure);
 		} else {
 			$copy->setDisplayStructure($this->getDisplayStructure());
 		}

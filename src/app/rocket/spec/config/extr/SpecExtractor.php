@@ -295,11 +295,11 @@ class SpecExtractor {
 	}
 	
 	private function createDisplayStructure(array $data) {
-		$guiPropOrder = new DisplayStructure();
+		$displayStructure = new DisplayStructure();
 	
 		foreach ($data as $key => $fieldId) {
 			if (!is_array($fieldId)) {
-				$guiPropOrder->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
+				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
 				continue;
 			}
 	
@@ -311,10 +311,10 @@ class SpecExtractor {
 			$guiSection->setTitle($guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY));
 			$guiSection->setDisplayStructure($this->createDisplayStructure($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
 			
-			$guiPropOrder->addGuiGroup($guiSection);
+			$displayStructure->addGuiGroup($guiSection);
 		}
 	
-		return $guiPropOrder;
+		return $displayStructure;
 	}
 	
 	public function extractMenuItems(): array {
