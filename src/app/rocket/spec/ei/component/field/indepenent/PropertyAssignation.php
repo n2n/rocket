@@ -51,7 +51,7 @@ class PropertyAssignation {
 	public function getEntityProperty(bool $required = false) {
 		if ($required && $this->entityProperty === null) {
 			throw new IncompatiblePropertyException(
-					'EiField must be assigned to a EntityProperty');
+					'EiProp must be assigned to a EntityProperty');
 		}
 		
 		return $this->entityProperty;
@@ -71,7 +71,7 @@ class PropertyAssignation {
 	public function getObjectPropertyAccessProxy(bool $required = false) {
 		if ($required && $this->objectPropertyAccessProxy === null) {
 			throw new IncompatiblePropertyException(
-					'EiField must be assigned to a accessible object property');
+					'EiProp must be assigned to a accessible object property');
 		}
 		
 		return $this->objectPropertyAccessProxy;
@@ -79,23 +79,23 @@ class PropertyAssignation {
 		
 	public function createEntityPropertyException($reason = null, \Exception $e = null) {
 		if ($this->entityProperty === null) {
-			throw new IncompatiblePropertyException('EiField must be assigned to a EntityProperty'
+			throw new IncompatiblePropertyException('EiProp must be assigned to a EntityProperty'
 					. ($reason ? ' Reason: ' . $reason : ''), 0, $e);
 		}
 		
 		return new IncompatiblePropertyException(
-				'EiField is not compatible with EntityProperty: ' . $this->entityProperty
+				'EiProp is not compatible with EntityProperty: ' . $this->entityProperty
 						. ($reason ? ' Reason: ' . $reason : ''), 0, $e);
 	}
 	
 	public function createAccessProxyException($reason = null, \Exception $e = null) {
 		if ($this->objectPropertyAccessProxy === null) {
 			throw new IncompatiblePropertyException(
-					'EiField must be assigned to a accessible object property');
+					'EiProp must be assigned to a accessible object property');
 		}
 		
 		return new IncompatiblePropertyException(
-				'EiField is not compatible with ' . $this->objectPropertyAccessProxy 
+				'EiProp is not compatible with ' . $this->objectPropertyAccessProxy 
 						. ($reason !== null ? ' Reason: ' . $reason : ''), 0, $e);
 	}
 }

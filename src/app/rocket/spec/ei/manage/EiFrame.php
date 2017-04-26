@@ -29,7 +29,7 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\ManageState;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
@@ -45,7 +45,7 @@ class EiFrame {
 	private $controllerContext;
 	
 	private $eiExecution;
-// 	private $eiSelection;
+// 	private $eiObject;
 // 	private $previewType;
 	private $scriptRelations = array();
 
@@ -54,7 +54,7 @@ class EiFrame {
 	private $filterModel;
 	private $sortModel;
 	
-	private $eiSpecConstraint;
+	private $eiTypeConstraint;
 	private $commandExecutionConstraint;
 	
 	private $overviewDisabled = false;
@@ -74,14 +74,14 @@ class EiFrame {
 		$this->manageState = $manageState;
 		$this->criteriaConstraintCollection = new CriteriaConstraintCollection();
 
-// 		$this->eiSpecConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
+// 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
 
 // 	/**
-// 	 * @return \rocket\spec\ei\EiSpec
+// 	 * @return \rocket\spec\ei\EiType
 // 	 */
-// 	public function getContextEiSpec(): EiSpec {
-// 		return $this->contextEiMask->getEiEngine()->getEiSpec();
+// 	public function getContextEiType(): EiType {
+// 		return $this->contextEiMask->getEiEngine()->getEiType();
 // 	}
 	
 	/**
@@ -205,7 +205,7 @@ class EiFrame {
 		if ($this->criteriaFactory !== null && !($ignoreConstraintTypes & CriteriaConstraint::TYPE_MANAGE)) {
 			$criteria = $this->criteriaFactory->create($em, $entityAlias);
 		} else {
-			$criteria = $em->createCriteria()->from($this->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(), $entityAlias);
+			$criteria = $em->createCriteria()->from($this->getContextEiMask()->getEiEngine()->getEiType()->getEntityModel()->getClass(), $entityAlias);
 		}
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
@@ -258,18 +258,18 @@ class EiFrame {
 	}
 	
 	/**
-	 * @return EiMapping
+	 * @return EiEntry
 	 */
-	public function restrictEiMapping(EiMapping $eiMapping) {
-		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiMappingConstraint())) {
-			$eiMapping->getEiMappingConstraintSet()->add($mappingConstraint);
+	public function restrictEiEntry(EiEntry $eiEntry) {
+		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiEntryConstraint())) {
+			$eiEntry->getEiEntryConstraintSet()->add($mappingConstraint);
 		}
 		
-		if (null !== ($restrictor = $this->getEiExecution()->buildEiCommandAccessRestrictor($eiMapping))) {
-			$eiMapping->getEiCommandAccessRestrictorSet()->add($restrictor);
+		if (null !== ($restrictor = $this->getEiExecution()->buildEiCommandAccessRestrictor($eiEntry))) {
+			$eiEntry->getEiCommandAccessRestrictorSet()->add($restrictor);
 		}
 		
-		return $eiMapping;
+		return $eiEntry;
 	}
 	
 	public function setOverviewDisabled(bool $overviewDisabled) {
@@ -343,10 +343,10 @@ class EiFrame {
 		}
 	}
 	
-	public function createDetailBreadcrumb(HttpContext $httpContext, EiSelection $eiSelection) {
+	public function createDetailBreadcrumb(HttpContext $httpContext, EiObject $eiObject) {
 		return new Breadcrumb(
-				$this->getDetailUrl($httpContext, $eiSelection->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiSpec())),
-				$this->getDetailBreadcrumbLabel($eiSelection));
+				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiType())),
+				$this->getDetailBreadcrumbLabel($eiObject));
 	}
 	
 	public function setDetailDisabled($detailDisabled) {
@@ -369,17 +369,17 @@ class EiFrame {
 	}
 		
 	/**
-	 * @param EiSelection $eiSelection
+	 * @param EiObject $eiObject
 	 * @return string
 	 */
-	public function getDetailBreadcrumbLabel(EiSelection $eiSelection): string {		
+	public function getDetailBreadcrumbLabel(EiObject $eiObject): string {		
 		if ($this->detailBreadcrumbLabelOverride !== null) {
 			return $this->detailBreadcrumbLabelOverride;
 		}
 	
 		$this->ensureDetailEnabled();
 		
-		return $this->getContextEiMask()->createIdentityString($eiSelection, $this->getN2nLocale());
+		return $this->getContextEiMask()->createIdentityString($eiObject, $this->getN2nLocale());
 	}
 	
 	public function setDetailUrlExt(Url $detailUrlExt) {

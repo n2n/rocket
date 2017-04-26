@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\draft\stmt;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
 
 interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
@@ -37,10 +37,10 @@ interface FetchDraftStmtBuilder extends SelectDraftStmtBuilder {
 	public function getTableAlias();
 	
 	/**
-	 * @param EiFieldPath $eiFieldPath
+	 * @param EiPropPath $eiPropPath
 	 * @return string
 	 */
-	public function requestColumn(EiFieldPath $eiFieldPath): string;
+	public function requestColumn(EiPropPath $eiPropPath): string;
 	
 	/**
 	 * @return string 

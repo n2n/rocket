@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-interface MappableFork {
+interface EiFieldFork {
 	
 	/**
 	 * @return \n2n\web\dispatch\map\bind\MappingDefinition 
@@ -37,5 +37,5 @@ interface MappableFork {
 	 * @return mixed
 	 * @return object
 	 */
-	public function determineForkMappableObject($value);
+	public function determineForkEiFieldObject($value);
 }

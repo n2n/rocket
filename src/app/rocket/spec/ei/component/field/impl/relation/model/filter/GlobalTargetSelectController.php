@@ -46,9 +46,9 @@ class GlobalRelationAjahController extends ControllerAdapter implements ScrContr
 				&& $this->loginContext->getCurrentUser()->isAdmin();
 	}
 	
-	private function lookupEiThing(string $eiSpecId, string $eiMaskId): EiThing {
+	private function lookupEiThing(string $eiTypeId, string $eiMaskId): EiThing {
 		try {
-			return $this->specManager->getEiSpecById($eiSpecId)->getEiMaskCollection()->getById($eiMaskId);
+			return $this->specManager->getEiTypeById($eiTypeId)->getEiMaskCollection()->getById($eiMaskId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (UnknownEiMaskException $e) {
@@ -56,7 +56,7 @@ class GlobalRelationAjahController extends ControllerAdapter implements ScrContr
 		}
 	}
 	
-	public function index(string $eiSpecId, string $eiMaskId) {
-		test($eiSpecId . ' ' . $eiMaskId);
+	public function index(string $eiTypeId, string $eiMaskId) {
+		test($eiTypeId . ' ' . $eiMaskId);
 	}
 }

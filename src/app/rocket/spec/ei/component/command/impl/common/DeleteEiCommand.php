@@ -47,7 +47,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'delete';
 	const CONTROL_BUTTON_KEY = 'delete'; 
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
 	public function getIdBase() {
@@ -62,7 +62,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return $eiu->lookup(DeleteController::class);
 	}
 	
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
 		
@@ -96,7 +96,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		$controlButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
 		
 		$query = array();
-		if ($eiu->gui()->isViewModeOverview()) {
+		if ($eiu->entryGui()->isOverview()) {
 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 		}
 		
@@ -114,7 +114,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
 		$eiCommandButton = new ControlButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
-				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_DEFAULT,
+				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_SECONDARY,
 				IconType::ICON_TIMES_SIGN);
 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
@@ -131,7 +131,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	
 	public function processEntries(EiFrame $eiFrame, array $entries) {
 		$specManager = N2N::getModelContext()->lookup('rocket\spec\config\SpecManager');
-		$eiSpec = $this->getEiSpec();
+		$eiType = $this->getEiType();
 		$em = $eiFrame->getEntityManager();
 		
 		foreach ($entries as $entry) {

@@ -25,12 +25,12 @@ use rocket\spec\ei\component\EiComponentCollection;
 
 use rocket\spec\ei\component\modificator\EiModificator;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\EiEngine;
 
 class EiModificatorCollection extends EiComponentCollection {
 	/**
-	 * @param EiSpec $eiSpec
+	 * @param EiType $eiType
 	 */
 	public function __construct(EiEngine $eiEngine) {
 		parent::__construct('EiModificator', EiModificator::class);

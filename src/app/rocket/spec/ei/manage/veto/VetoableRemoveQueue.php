@@ -6,9 +6,9 @@ use n2n\persistence\orm\LifecycleListener;
 use n2n\persistence\orm\LifecycleEvent;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\config\SpecManager;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\ei\manage\LiveEiSelection;
+use rocket\spec\ei\manage\LiveEiObject;
 use rocket\core\model\TransactionApproveAttempt;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\persistence\orm\util\NestedSetUtils;
@@ -30,33 +30,33 @@ class VetoableRemoveQueue implements LifecycleListener {
 		return $this->em;
 	}
 	
-	public function removeEiSelection(EiSelection $eiSelection) {
-		if ($eiSelection->isDraft()) {
+	public function removeEiObject(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
 			throw new NotYetImplementedException();
 		}
 
-		$eiSpec = $eiSelection->getLiveEntry()->getEiSpec();
-		$nss = $eiSpec->getNestedSetStrategy();
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		$nss = $eiType->getNestedSetStrategy();
 		if (null === $nss) {
-			$this->em->remove($eiSelection->getLiveEntry()->getEntityObj());
+			$this->em->remove($eiObject->getEiEntityObj()->getEntityObj());
 		} else {
-			$nsu = new NestedSetUtils($this->em, $eiSpec->getEntityModel()->getClass(), $nss); 
-			$nsu->remove($eiSelection->getLiveObject());
+			$nsu = new NestedSetUtils($this->em, $eiType->getEntityModel()->getClass(), $nss); 
+			$nsu->remove($eiObject->getLiveObject());
 		}
 		
-		$this->createAction($eiSelection);
+		$this->createAction($eiObject);
 	}
 	
 	/**
-	 * @param EiSelection $eiSelection
+	 * @param EiObject $eiObject
 	 * @return boolean
 	 */
-	public function containsEiSelection(EiSelection $eiSelection) {
-		if ($eiSelection->isDraft()) {
+	public function containsEiObject(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
 			throw new NotYetImplementedException();
 		}
 		
-		return $this->containsEntityObj($eiSelection->getLiveEntry()->getEntityObj());
+		return $this->containsEntityObj($eiObject->getEiEntityObj()->getEntityObj());
 	}
 	
 	/**
@@ -88,7 +88,7 @@ class VetoableRemoveQueue implements LifecycleListener {
 		$this->em->flush();
 		
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
-			$action->getEiSelection()->getLiveEntry()->getEiSpec()->onRemove($action, $n2nContext);
+			$action->getEiObject()->getEiEntityObj()->getEiType()->onRemove($action, $n2nContext);
 				
 			if (!$action->hasVeto()) {
 				$action->approve();
@@ -117,13 +117,13 @@ class VetoableRemoveQueue implements LifecycleListener {
 	}
 	
 	private function prepare(EntityModel $entityModel, $entityObj) {
-		if (!$this->specManager->containsEiSpecClass($entityModel->getClass())) {
+		if (!$this->specManager->containsEiTypeClass($entityModel->getClass())) {
 			$this->unmangedRemovedEntityObjs[spl_object_hash($entityObj)] = $entityObj;
 			return;
 		}
 		
-		$eiSpec = $this->specManager->getEiSpecByClass($entityModel->getClass());
-		$this->createAction(LiveEiSelection::create($eiSpec, $entityObj));
+		$eiType = $this->specManager->getEiTypeByClass($entityModel->getClass());
+		$this->createAction(LiveEiObject::create($eiType, $entityObj));
 	}
 	
 	private function unprepare($entityObj) {
@@ -135,15 +135,15 @@ class VetoableRemoveQueue implements LifecycleListener {
 		unset($this->uninitializedActions[spl_object_hash($action)]);
 	}
 	
-	private function createAction(EiSelection $eiSelection) {
-		if ($this->containsEiSelection($eiSelection)) return;
+	private function createAction(EiObject $eiObject) {
+		if ($this->containsEiObject($eiObject)) return;
 		
-		$action = new VetoableRemoveAction($eiSelection, $this);
+		$action = new VetoableRemoveAction($eiObject, $this);
 		
-		if ($eiSelection->isDraft()) {
+		if ($eiObject->isDraft()) {
 			throw new NotYetImplementedException();
 		} else {
-			 $this->liveActions[spl_object_hash($eiSelection->getLiveEntry()->getEntityObj())] = $action;
+			 $this->liveActions[spl_object_hash($eiObject->getEiEntityObj()->getEntityObj())] = $action;
 		}
 		
 		$this->uninitializedActions[spl_object_hash($action)] = $action;

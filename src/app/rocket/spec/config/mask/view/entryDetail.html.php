@@ -22,37 +22,34 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\EiFrame;
-	use rocket\spec\config\mask\model\GuiFieldOrder;
+	use rocket\spec\ei\manage\gui\DisplayStructure;
 	use rocket\spec\ei\manage\EntryGui;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
-	
-	$eiFrame = $view->getParam('eiFrame');
-	$view->assert($eiFrame instanceof EiFrame);
-	
-	$guiFieldOrder = $view->getParam('guiFieldOrder');
-	$view->assert($guiFieldOrder instanceof GuiFieldOrder);
-	
-	$entryGui = $view->getParam('entryGui');
-	$view->assert($entryGui instanceof EntryGui);
 		
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, array($entryGui));
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
+	$displayStructure = $view->getParam('displayStructure');
+	$view->assert($displayStructure instanceof DisplayStructure);
+	
+	$eiu = $view->getParam('eiu');
+	$view->assert($eiu instanceof Eiu);
+		
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiu);
 ?>
-<div class="rocket-properties<?php $html->out($guiFieldOrder->containsAsideGroup() ? ' rocket-aside-container' : '') ?>">
-	<?php foreach ($guiFieldOrder->getOrderItems() as $orderItem): ?>
+<div class="rocket-properties">
+	<?php foreach ($displayStructure->getDisplayItems() as $orderItem): ?>
 		<?php if ($orderItem->isSection()): ?>
 			<?php $guiSection = $orderItem->getGuiSection() ?>
-			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-control-group-' . $type : 'rocket-control-group') ?>">
+			<div class="<?php $html->out(null !== ($type = $guiSection->getType()) ? 'rocket-group-' . $type : 'rocket-group') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
 				<div class="rocket-controls">
 					<?php $view->import('entryDetail.html', array(
-							'eiFrame' => $eiFrame, 'guiFieldOrder' => $guiSection->getGuiFieldOrder(), 
-							'entryGui' => $entryGui)) ?>
+							'eiu' => $eiu, 'displayStructure' => $guiSection->getDisplayStructure())) ?>
 				</div>
 			</div>
 		<?php else: ?>

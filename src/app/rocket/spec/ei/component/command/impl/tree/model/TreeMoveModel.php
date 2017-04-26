@@ -28,16 +28,16 @@ use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\DispatchAnnotations;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiObject;
 
 class TreeMoveModel implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->m('move', DispatchAnnotations::MANAGED_METHOD);
 	}
 	
-	private $eiSpec;
+	private $eiType;
 	private $eiFrame;
-	private $eiSelection;
+	private $eiObject;
 	private $nestedSetUtils;
 	
 	private $nestedSetItems;
@@ -45,13 +45,13 @@ class TreeMoveModel implements Dispatchable {
 	private $parentIdOptions;
 	
 	public function __construct(EiFrame $eiFrame) {
-		$this->eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$this->eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$this->eiFrame = $eiFrame;
 	}
 	
 	public function initialize($id) {
 		$em = $this->eiFrame->getEntityManager();
-		$class = $this->eiSpec->getEntityModel()->getClass();
+		$class = $this->eiType->getEntityModel()->getClass();
 		
 		$object = $em->find($class, $id);
 		if (!isset($object)) {
@@ -59,15 +59,15 @@ class TreeMoveModel implements Dispatchable {
 		}
 		
 		$this->nestedSetUtils = $nestedSetUtils = new NestedSetUtils($em, $class);
-		$this->eiSelection = new EiSelection($id, $object);
-		$this->eiFrame->setEiSelection($this->eiSelection);
+		$this->eiObject = new EiObject($id, $object);
+		$this->eiFrame->setEiObject($this->eiObject);
 		
 		$this->nestedSetItems = array();
 		$this->parentIdOptions = array(null => 'Root');
 		$currentLevelObjectIds = array();
 		$disabledLevel = null;
 		foreach ($nestedSetUtils->fetch() as $nestedSetItem) {
-			$objectId = $this->eiSpec->extractId($nestedSetItem->getObject());
+			$objectId = $this->eiType->extractId($nestedSetItem->getObject());
 			$level = $nestedSetItem->getLevel();
 			
 			if (isset($disabledLevel)) {
@@ -90,14 +90,14 @@ class TreeMoveModel implements Dispatchable {
 			$currentLevelObjectIds[$level] = $objectId;
 			$this->nestedSetItems[$objectId] = $nestedSetItem;
 			$this->parentIdOptions[$objectId] = str_repeat('..', $level + 1) . 
-					$this->eiSpec->createIdentityString($nestedSetItem->getObject(), $this->eiFrame->getN2nLocale());
+					$this->eiType->createIdentityString($nestedSetItem->getObject(), $this->eiFrame->getN2nLocale());
 		}
 				
 		return true;		
 	}
 			
-	public function getEiSpec() {
-		return $this->eiSpec;
+	public function getEiType() {
+		return $this->eiType;
 	}
 	
 	public function getEiFrame() {
@@ -109,7 +109,7 @@ class TreeMoveModel implements Dispatchable {
 	}
 	
 	public function getTitle() {
-		return $this->eiSpec->createIdentityString($this->eiSelection->getLiveEntityObj(), 
+		return $this->eiType->createIdentityString($this->eiObject->getLiveEntityObj(), 
 				$this->eiFrame->getN2nLocale());
 	}
 	
@@ -122,6 +122,6 @@ class TreeMoveModel implements Dispatchable {
 		if (isset($this->nestedSetItems[$this->parentId])) {
 			$parentObject = $this->nestedSetItems[$this->parentId]->getObject();
 		}
-		$this->nestedSetUtils->move($this->eiSelection->getLiveEntityObj(), $parentObject);
+		$this->nestedSetUtils->move($this->eiObject->getLiveEntityObj(), $parentObject);
 	}
 }

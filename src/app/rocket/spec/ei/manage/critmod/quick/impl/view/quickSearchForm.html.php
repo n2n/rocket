@@ -36,7 +36,7 @@
 	<?php $formHtml->open($quickSearchForm) ?>
 		<?php $formHtml->label('searchStr', $html->getL10nText('common_search_label'), array('class' => 'rocket-quicksearch-label')) ?>
 		<?php $formHtml->input('searchStr', array('class' => 'rocket-search-input'), 'search') ?>
-		<span class="rocket-quicksearch-command rocket-simple-controls">
+		<span class="rocket-quicksearch-command rocket-simple-commands">
 			<?php $formHtml->buttonSubmit('search', new Raw('<i class="fa fa-search"></i>'),
 					array('class' => 'rocket-control rocket-command-lonely-appended',
 							'title' => $view->getL10nText('ei_impl_list_quicksearch_tooltip'))) ?>

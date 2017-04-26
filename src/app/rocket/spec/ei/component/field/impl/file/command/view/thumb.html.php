@@ -61,21 +61,14 @@
 			<?php $formHtml->input('width', array('id' => 'rocket-thumb-width')) ?>
 			<?php $formHtml->input('height', array('id' => 'rocket-thumb-height')) ?>
 			
-			<div id="rocket-page-controls">
-				<ul>
-					<li>
-						<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
-										. $html->getL10nText('common_save_label') . '</span>'), 
-								array('class' => 'rocket-control-warning rocket-important')) ?>
-					</li>
-					<li>
-						<?php $html->link($view->getParam('cancelUrl'), 
-								new Raw('<i class="fa fa-times-circle"></i><span>' 
-										. $html->getL10nText('common_cancel_label') . '</span>'),
-								array('class' => 'rocket-control')) ?>
-					</li>
-					
-				</ul>
+			<div class="rocket-context-commands">
+				<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
+								. $html->getL10nText('common_save_label') . '</span>'), 
+						array('class' => 'btn btn-primary')) ?>
+				<?php $html->link($view->getParam('cancelUrl'), 
+						new Raw('<i class="fa fa-times-circle"></i><span>' 
+								. $html->getL10nText('common_cancel_label') . '</span>'),
+						array('class' => 'btn btn-secondary')) ?>
 			</div>
 		<?php $formHtml->close() ?>
 	</div>

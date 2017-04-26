@@ -23,9 +23,9 @@ namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
-use rocket\spec\ei\component\field\impl\numeric\OrderEiField;
+use rocket\spec\ei\component\field\impl\numeric\OrderEiProp;
 use rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\spec\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -34,35 +34,35 @@ use rocket\spec\ei\manage\util\model\Eiu;
 
 class OrderEiModificator extends EiModificatorAdapter {
 	
-	private $eiField;
+	private $eiProp;
 	
-	public function __construct(OrderEiField $eiField) {
-		$this->eiField = $eiField;
+	public function __construct(OrderEiProp $eiProp) {
+		$this->eiProp = $eiProp;
 	}
 	
 	public function setupEiFrame(EiFrame $eiFrame) {
 		$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
-						new SimpleSortConstraint(CrIt::p($this->eiField->getEntityProperty()), 'ASC'))));
+						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 	}
 	
-	public function setupEiMapping(Eiu $eiu) {
-		$ssm = $eiu->entry()->getEiMapping();
+	public function setupEiEntry(Eiu $eiu) {
+		$ssm = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiField = $this->eiField;
-		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiField) {
-			$orderIndex = $ssm->getValue($eiField);
+		$eiProp = $this->eiProp;
+		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiProp) {
+			$orderIndex = $ssm->getValue($eiProp);
 			
 			if (mb_strlen($orderIndex)) return;
 			
-			$entityProperty = $eiField->getEntityProperty();
+			$entityProperty = $eiProp->getEntityProperty();
 			
 			$em = $eiFrame->getManageState()->getEntityManager();
 			$criteria = $em->createCriteria()
 					->select(CrIt::f('MAX', CrIt::p('eo', $entityProperty)))
 					->from($entityProperty->getEntityModel()->getClass(), 'eo');
 			
-			$ssm->setValue($eiField, $criteria->toQuery()->fetchSingle() + OrderEiField::ORDER_INCREMENT);
+			$ssm->setValue($eiProp, $criteria->toQuery()->fetchSingle() + OrderEiProp::ORDER_INCREMENT);
 		}));
 	}
 }

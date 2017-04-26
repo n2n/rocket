@@ -27,24 +27,21 @@
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 		
-	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
+	$entryCommandViewModel = $view->getParam('viewModel');
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
  
+	$entryView = $view->getParam('entryView');
+	$view->assert($entryView instanceof HtmlView);
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiuFrame());
 	
-	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
+// 	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
 ?>
-
-<div class="rocket-select-view-toolbar">
-
-</div>
-
  
 <div class="rocket-panel">
 	<h3><?php $html->l10nText('common_properties_title') ?></h3>
 	
-	<?php $view->import($entryCommandViewModel->createDetailView()) ?>
+	<?php $view->import($entryView) ?>
 </div> 
 
 <?php if ($entryCommandViewModel->hasDraftHistory()): ?>
@@ -54,8 +51,8 @@
 	<?php $view->panelEnd() ?>
 <?php endif ?>
 
-<div id="rocket-page-controls">
-	<?php $controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
+<div class="rocket-context-commands">
+	<?php $controlEiHtml->entryGuiControlList($entryCommandViewModel->getEiuEntryGui()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
 		<?php $view->import('inc\previewSwitch.html') ?>

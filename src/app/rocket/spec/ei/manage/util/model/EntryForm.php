@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\MappingDefinition;
@@ -46,7 +46,7 @@ class EntryForm implements Dispatchable {
 	
 	private $chosenId;
 	private $eispecChoosable = false;
-	private $eiSpecChoicesMap;
+	private $eiTypeChoicesMap;
 	private $entryModelForms;
 		
 // 	private $selectedTypeId;
@@ -83,20 +83,20 @@ class EntryForm implements Dispatchable {
 		$this->chosenId = $chosenId;
 	}
 		
-	public function setChoosable($eiSpecChoosable) {
-		$this->eispecChoosable = (boolean) $eiSpecChoosable;
+	public function setChoosable($eiTypeChoosable) {
+		$this->eispecChoosable = (boolean) $eiTypeChoosable;
 	}
 	
 	public function isChoosable() {
 		return $this->eispecChoosable;
 	}
 	
-	public function setChoicesMap(array $eiSpecChoicesMap) {
-		$this->eiSpecChoicesMap = $eiSpecChoicesMap;
+	public function setChoicesMap(array $eiTypeChoicesMap) {
+		$this->eiTypeChoicesMap = $eiTypeChoicesMap;
 	}
 	
 	public function getChoicesMap() {
-		return $this->eiSpecChoicesMap;
+		return $this->eiTypeChoicesMap;
 	}
 	
 	private function _mapping(MappingDefinition $md) {
@@ -106,11 +106,11 @@ class EntryForm implements Dispatchable {
 			$md->ignore('chosenId');
 		}
 		
-// 		$eiSpecId = $md->getDispatchedValue('chosenId');
-// 		if ($this->chosenId == $eiSpecId) return;
+// 		$eiTypeId = $md->getDispatchedValue('chosenId');
+// 		if ($this->chosenId == $eiTypeId) return;
 		
-// 		if (isset($this->chooseables[$eiSpecId])) {
-// 			$this->initNewEntryFormModel($this->chooseables[$eiSpecId]);
+// 		if (isset($this->chooseables[$eiTypeId])) {
+// 			$this->initNewEntryFormModel($this->chooseables[$eiTypeId]);
 // 		}
 	}
 	
@@ -135,10 +135,10 @@ class EntryForm implements Dispatchable {
 			$chosenId = $bd->getMappingResult()->chosenId;
 			if (!isset($that->entryModelForms[$chosenId])) return;
 			
-			foreach (array_keys($that->entryModelForms) as $eiSpecId) {
-				if ($chosenId !== $eiSpecId) {
+			foreach (array_keys($that->entryModelForms) as $eiTypeId) {
+				if ($chosenId !== $eiTypeId) {
 					foreach ($bd->getBindingTree()->lookupAll($bd->getPropertyPath()
-							->ext(new PropertyPathPart('entryModelForms', true, $eiSpecId))) as $childBd) {
+							->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))) as $childBd) {
 						$childBd->getMappingResult()->getBindingErrors()->removeAllErrors();
 					}
 				}
@@ -146,13 +146,13 @@ class EntryForm implements Dispatchable {
 		});
 	}
 	/**
-	 * @return EiMapping
+	 * @return EiEntry
 	 * @throws IllegalStateException
 	 */
-	public function buildEiMapping() {
+	public function buildEiEntry() {
 		IllegalStateException::assertTrue(isset($this->entryModelForms[$this->chosenId]));
 		$this->entryModelForms[$this->chosenId]->save();
-		return $this->entryModelForms[$this->chosenId]->getEiMapping();
+		return $this->entryModelForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry()->getEiEntry();
 	}
 	
 	/**
@@ -166,19 +166,19 @@ class EntryForm implements Dispatchable {
 
 // class EntryFormResult {
 // 	private $validationResult;
-// 	private $eiMapping;
+// 	private $eiEntry;
 	
-// 	public function __construct(ValidationResult $validationResult, EiMapping $eiMapping = null) {
+// 	public function __construct(ValidationResult $validationResult, EiEntry $eiEntry = null) {
 // 		$this->validationResult = $validationResult;
-// 		$this->eiMapping = $eiMapping;
+// 		$this->eiEntry = $eiEntry;
 // 	}
 	
 // 	public function isValid() {
 // 		return $this->validationResult->isValid();
 // 	}
 	
-// 	public function getEiMapping() {
-// 		return $this->eiMapping;
+// 	public function getEiEntry() {
+// 		return $this->eiEntry;
 // 	}
 // }
 
@@ -190,38 +190,38 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	private $eiFrame;
-// 	private $eiSelection;
+// 	private $eiObject;
 // 	private $readOnly;
 	
-// 	private $eiSpec;
+// 	private $eiType;
 // 	private $subs;
 	
-// 	private $visibleEiFields = array();
-// 	private $subVisibleEiFields = array();
+// 	private $visibleEiProps = array();
+// 	private $subVisibleEiProps = array();
 	
 // 	protected $selectedTypeId;
 // 	protected $MagForm;
 // 	protected $subMagForms = array();
 // 	/**
 // 	 * @param EiFrame $eiFrame 
-// 	 * @param EiSpec $eiSpec The Script of the Entity which ....
-// 	 * @param EiSelection $eiSelection
+// 	 * @param EiType $eiType The Script of the Entity which ....
+// 	 * @param EiObject $eiObject
 // 	 * @param string $readOnly
 // 	 */
-// 	public function __construct(EiFrame $eiFrame,  $eiSpec, EiSelection $eiSelection = null, $readOnly = false) {
+// 	public function __construct(EiFrame $eiFrame,  $eiType, EiObject $eiObject = null, $readOnly = false) {
 // 		$this->eiFrame = $eiFrame;
-// 		$this->eiSpec = $eiSpec;
-// 		$this->eiSelection = $eiSelection;
+// 		$this->eiType = $eiType;
+// 		$this->eiObject = $eiObject;
 // 		$this->readOnly = $readOnly;
-// 		$this->selectedTypeId = $eiSpec->getId();
-// 		$this->eiSpecs[$this->selectedTypeId] = $eiSpec;
+// 		$this->selectedTypeId = $eiType->getId();
+// 		$this->eiTypes[$this->selectedTypeId] = $eiType;
 				
-// 		$this->MagForm = new MagForm($this->createMagCollection($eiSpec, false), new Attributes());
+// 		$this->MagForm = new MagForm($this->createMagCollection($eiType, false), new Attributes());
 		
 // 		if ($this->isNew()) {
-// 			$subs = $eiSpec->getAllSubs();
+// 			$subs = $eiType->getAllSubs();
 			
-// 			if (sizeof($subs) || $this->eiSpec->getEntityModel()->isAbstract()) {
+// 			if (sizeof($subs) || $this->eiType->getEntityModel()->isAbstract()) {
 // 				$this->subs = array();
 			
 // 				foreach ($subs as $id => $sub) {
@@ -231,13 +231,13 @@ class EntryForm implements Dispatchable {
 // 				}
 // 			}
 // 		} else {
-// 			$object = $eiSelection->getEntityObj();
+// 			$object = $eiObject->getEntityObj();
 // 			$entityModel = EntityModelManager::getInstance()->getEntityModelByObject($object);
 				
-// 			$subs = $eiSpec->getAllSubs();
+// 			$subs = $eiType->getAllSubs();
 
-// 			if (!$eiSelection->isDraft() && !$eiSelection->hasTranslation() 
-// 					&& (sizeof($subs) || $this->eiSpec->getEntityModel()->isAbstract())) {
+// 			if (!$eiObject->isDraft() && !$eiObject->hasTranslation() 
+// 					&& (sizeof($subs) || $this->eiType->getEntityModel()->isAbstract())) {
 // 				$this->subs = array();
 // 			}
 			
@@ -255,45 +255,45 @@ class EntryForm implements Dispatchable {
 // 				}
 // 			}
 				
-// 			$this->readFromObject($eiSelection->getEntityObj());
+// 			$this->readFromObject($eiObject->getEntityObj());
 // 		}
 // 	}
 	
-// 	private function createMagCollection(EiSpec $eiSpec, $levelOnly) {
-// 		$eiSpecId = $eiSpec->getId();
-// 		if ($levelOnly && !isset($this->subVisibleEiFields[$eiSpecId])) {
-// 			$this->subVisibleEiFields[$eiSpecId] = array();
+// 	private function createMagCollection(EiType $eiType, $levelOnly) {
+// 		$eiTypeId = $eiType->getId();
+// 		if ($levelOnly && !isset($this->subVisibleEiProps[$eiTypeId])) {
+// 			$this->subVisibleEiProps[$eiTypeId] = array();
 // 		}
 		
 // 		$magCollection = new MagCollection();
-// 		foreach ($eiSpec->getEiFieldCollection()->toArray() as $eiFieldId => $eiField) {
-// 			if (!($eiField instanceof Displayable) || !$eiField->isDisplayInEditViewEnabled()) continue;
+// 		foreach ($eiType->getEiPropCollection()->toArray() as $eiPropId => $eiProp) {
+// 			if (!($eiProp instanceof Displayable) || !$eiProp->isDisplayInEditViewEnabled()) continue;
 
 // 			if (!$levelOnly) {
-// 				$this->visibleEiFields[$eiFieldId] = $eiField;
+// 				$this->visibleEiProps[$eiPropId] = $eiProp;
 // 			}
 			
-// 			if (!($eiField instanceof Editable) || $eiField->isReadOnly() || $this->readOnly
-// 					|| (isset($this->eiSelection) && !$this->eiSelection->isWritingAllowed($eiField))) continue;
+// 			if (!($eiProp instanceof Editable) || $eiProp->isReadOnly() || $this->readOnly
+// 					|| (isset($this->eiObject) && !$this->eiObject->isWritingAllowed($eiProp))) continue;
 			
 // 			if ($levelOnly) {
-// 				if ($this->MagForm->containsPropertyName($eiField->getPropertyName())) continue;
-// 				$this->subVisibleEiFields[$eiSpecId][$eiFieldId] = $eiField;
+// 				if ($this->MagForm->containsPropertyName($eiProp->getPropertyName())) continue;
+// 				$this->subVisibleEiProps[$eiTypeId][$eiPropId] = $eiProp;
 // 			}
 			
-// 			if (isset($this->eiSelection)) {
-// 				if ($this->eiSelection->isDraft() && !($eiField instanceof DraftableEiField)) {
+// 			if (isset($this->eiObject)) {
+// 				if ($this->eiObject->isDraft() && !($eiProp instanceof DraftableEiProp)) {
 // 					continue;
 // 				}
 			
-// 				if ($this->eiSelection->hasTranslation() && !($eiField instanceof TranslatableEiField
-// 						&& $eiField->isTranslationEnabled())) {
+// 				if ($this->eiObject->hasTranslation() && !($eiProp instanceof TranslatableEiProp
+// 						&& $eiProp->isTranslationEnabled())) {
 // 					continue;
 // 				}
 // 			}
 				
-// 			$magCollection->addMag($eiField->getPropertyName(), 
-// 					$eiField->createOption($this->eiFrame, $this->eiSelection));
+// 			$magCollection->addMag($eiProp->getPropertyName(), 
+// 					$eiProp->createOption($this->eiFrame, $this->eiObject));
 // 		}
 		
 // 		return $magCollection;
@@ -306,20 +306,20 @@ class EntryForm implements Dispatchable {
 // 			$this->readProperties($selected, $this->subMagForms[$selectedId], $object);
 // 		}
 		
-// 		$this->readProperties($this->eiSpec, $this->MagForm, $object);
+// 		$this->readProperties($this->eiType, $this->MagForm, $object);
 // 	}
 	
-// 	private function readProperties(EiSpec $eiSpec, MagDispatchable $MagForm, Entity $object) {
-// 		foreach ($eiSpec->getEiFieldCollection()->toArray() as $eiField) {
-// 			if (!($eiField instanceof Editable)
-// 				|| !$MagForm->containsPropertyName($eiField->getPropertyName())) continue;
+// 	private function readProperties(EiType $eiType, MagDispatchable $MagForm, Entity $object) {
+// 		foreach ($eiType->getEiPropCollection()->toArray() as $eiProp) {
+// 			if (!($eiProp instanceof Editable)
+// 				|| !$MagForm->containsPropertyName($eiProp->getPropertyName())) continue;
 				
-// 			$propertyName = $eiField->getPropertyName();
-// 			$accessProxy = $eiField->getPropertyAccessProxy();
+// 			$propertyName = $eiProp->getPropertyName();
+// 			$accessProxy = $eiProp->getPropertyAccessProxy();
 			
 // 			$MagForm->setAttributeValue($propertyName,
-// 					$eiField->propertyValueToOptionAttributeValue(
-// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiSelection));
+// 					$eiProp->propertyValueToOptionAttributeValue(
+// 							$accessProxy->getValue($object), $this->eiFrame, $this->eiObject));
 // 		}
 // 	}
 	
@@ -330,20 +330,20 @@ class EntryForm implements Dispatchable {
 // 			$this->writeProperties($selected, $this->subMagForms[$selectedId], $object);
 // 		}
 		
-// 		$this->writeProperties($this->eiSpec, $this->MagForm, $object);
+// 		$this->writeProperties($this->eiType, $this->MagForm, $object);
 // 	}
 	
-// 	public function writeProperties(EiSpec $eiSpec, MagDispatchable $MagForm, Entity $object) {
-// 		foreach ($eiSpec->getEiFieldCollection()->toArray() as $eiField) {
-// 			if (!($eiField instanceof Editable)) continue;
+// 	public function writeProperties(EiType $eiType, MagDispatchable $MagForm, Entity $object) {
+// 		foreach ($eiType->getEiPropCollection()->toArray() as $eiProp) {
+// 			if (!($eiProp instanceof Editable)) continue;
 						
-// 			$propertyName = $eiField->getPropertyName();
+// 			$propertyName = $eiProp->getPropertyName();
 // 			if (!$MagForm->containsPropertyName($propertyName)) continue;
 				
-// 			$accessProxy = $eiField->getPropertyAccessProxy();
-// 			$accessProxy->setValue($object, $eiField->optionAttributeValueToPropertyValue(
+// 			$accessProxy = $eiProp->getPropertyAccessProxy();
+// 			$accessProxy->setValue($object, $eiProp->optionAttributeValueToPropertyValue(
 // 					$MagForm->getAttributeValue($propertyName), $MagForm->getAttributes(),
-// 					$object, $this->eiFrame, $this->eiSelection));
+// 					$object, $this->eiFrame, $this->eiObject));
 // 		}
 // 	}
 	
@@ -351,12 +351,12 @@ class EntryForm implements Dispatchable {
 // 		return $this->eiFrame;
 // 	}
 	
-// 	public function getEiSpec() {
-// 		return $this->eiSpec;
+// 	public function getEiType() {
+// 		return $this->eiType;
 // 	}
 	
-// 	public function getEiSelection() {
-// 		return $this->eiSelection;
+// 	public function getEiObject() {
+// 		return $this->eiObject;
 // 	}
 	
 // 	public function createPropertyPath($propertyName, PropertyPath $basePropertyPath = null) {
@@ -368,11 +368,11 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	public function isNew() {
-// 		return !isset($this->eiSelection);
+// 		return !isset($this->eiObject);
 // 	}
 	
-// 	public function getVisibleEiFields() {
-// 		return $this->visibleEiFields;
+// 	public function getVisibleEiProps() {
+// 		return $this->visibleEiProps;
 // 	}
 	
 // 	public function containsPropertyName($propertyName) {
@@ -390,7 +390,7 @@ class EntryForm implements Dispatchable {
 // 			return $this->subs[$this->selectedTypeId];
 // 		}
 		
-// 		return $this->eiSpec;
+// 		return $this->eiType;
 // 	}
 	
 // 	public function isTypeSelectionAvailable() {
@@ -400,8 +400,8 @@ class EntryForm implements Dispatchable {
 // 	public function getSelectedTypeOptions() {
 // 		$options = array();
 		
-// 		if (!$this->eiSpec->getEntityModel()->isAbstract()) {
-// 			$options[$this->eiSpec->getId()] = $this->eiSpec->getLabel();
+// 		if (!$this->eiType->getEntityModel()->isAbstract()) {
+// 			$options[$this->eiType->getId()] = $this->eiType->getLabel();
 // 		}
 		
 // 		foreach ($this->subs as $id => $sub) {
@@ -412,12 +412,12 @@ class EntryForm implements Dispatchable {
 // 	}
 	
 // 	public function getSubIds() {
-// 		return array_keys($this->subVisibleEiFields);
+// 		return array_keys($this->subVisibleEiProps);
 // 	}
 	
-// 	public function getSubVisibleEiFields($scriptId) {
-// 		if (isset($this->subVisibleEiFields[$scriptId])) {
-// 			return $this->subVisibleEiFields[$scriptId]; 
+// 	public function getSubVisibleEiProps($scriptId) {
+// 		if (isset($this->subVisibleEiProps[$scriptId])) {
+// 			return $this->subVisibleEiProps[$scriptId]; 
 // 		}
 		
 // 		throw IllegalStateException::createDefault(); 

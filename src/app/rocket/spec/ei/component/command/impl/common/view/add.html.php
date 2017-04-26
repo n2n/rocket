@@ -49,25 +49,17 @@
 				array('entryFormViewModel' => new EntryFormViewModel(
 						$formHtml->meta()->createPropertyPath(array('entryForm'))))) ?>
 			
-		<div id="rocket-page-controls">
-			<ul>
-				<li>
-					<?php $formHtml->buttonSubmit('create', new Raw('<i class="fa fa-save"></i><span>' 
-									. $html->getL10nText('common_save_label') . '</span>'),
-							array('class' => 'rocket-control-warning rocket-important')) ?>
-				</li>
-				<li>
-					<?php $formHtml->buttonSubmit('createAndRepeate', new Raw('<i class="fa fa-save"></i><span>' 
-									. $html->getL10nText('ei_impl_save_and_repeat_label') . '</span>'),
-							array('class' => 'rocket-control-warning')) ?>
-				</li>
-				<li>
-					<?php $html->link($entryCommandViewModel->determineCancelUrl($view->getHttpContext()), 
-							new Raw('<i class=" icon-remove-circle"></i><span>'
-									. $html->getL10nText('common_cancel_label') . '</span>'),
-							array('class' => 'rocket-control')) ?>
-				</li>
-			</ul>
+		<div class="rocket-context-commands">
+			<?php $formHtml->buttonSubmit('create', new Raw('<i class="fa fa-save"></i><span>' 
+							. $html->getL10nText('common_save_label') . '</span>'),
+					array('class' => 'btn btn-primary')) ?>
+			<?php $formHtml->buttonSubmit('createAndRepeate', new Raw('<i class="fa fa-save"></i><span>' 
+							. $html->getL10nText('ei_impl_save_and_repeat_label') . '</span>'),
+					array('class' => 'btn btn-secondary')) ?>
+			<?php $html->link($entryCommandViewModel->determineCancelUrl($view->getHttpContext()), 
+					new Raw('<i class=" icon-remove-circle"></i><span>'
+							. $html->getL10nText('common_cancel_label') . '</span>'),
+					array('class' => 'btn btn-secondary')) ?>
 		</div>
 	</div>
 <?php $formHtml->close() ?>

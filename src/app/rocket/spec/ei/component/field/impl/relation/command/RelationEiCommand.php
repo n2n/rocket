@@ -22,17 +22,17 @@
 namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class RelationEiCommand extends EiCommandAdapter {
 	const ID_BASE = 'rl';
 	
-	private $eiFieldRelation;
+	private $eiPropRelation;
 	
-	public function __construct(EiFieldRelation $eiFieldRelation) {
-		$this->eiFieldRelation = $eiFieldRelation;
+	public function __construct(EiPropRelation $eiPropRelation) {
+		$this->eiPropRelation = $eiPropRelation;
 	}
 	
 	public function getIdBase() {
@@ -40,6 +40,6 @@ class RelationEiCommand extends EiCommandAdapter {
 	}
 	
 	public function lookupController(Eiu $eiu): Controller {
-		return new RelationController($this->eiFieldRelation);
+		return new RelationController($this->eiPropRelation);
 	}
 }

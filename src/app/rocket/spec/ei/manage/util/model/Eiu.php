@@ -3,12 +3,13 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use n2n\l10n\DynamicTextCollection;
 
 class Eiu implements Lookupable {
 	private $eiuFactory;
 	private $eiuCtrl;
 	private $eiuFrame;
-	private $eiuGui;
+	private $eiuEntryGui;
 	private $eiuEntry;
 	private $eiuField;
 	
@@ -18,7 +19,7 @@ class Eiu implements Lookupable {
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
 		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
-		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
+		$this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui(false);
 		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
 	
@@ -38,7 +39,7 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @param unknown $eiEntryObj
+	 * @param unknown $eiObjectObj
 	 * @param bool $assignToEiu
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
@@ -48,10 +49,15 @@ class Eiu implements Lookupable {
 		throw new EiuPerimeterException('EiuEntry is unavailable.');
 	}
 	
-	public function gui(bool $required = true) {
-		if ($this->eiuGui !== null || !$required) return $this->eiuGui;
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
+	 */
+	public function entryGui(bool $required = true) {
+		if ($this->eiuEntryGui !== null || !$required) return $this->eiuEntryGui;
 	
-		throw new EiuPerimeterException('EiuGui is unavailable.');
+		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
 	}
 	
 	public function field(bool $required = true) {
@@ -66,5 +72,9 @@ class Eiu implements Lookupable {
 	 */
 	public function lookup($lookupId, bool $required = true) {
 		return $this->frame()->getN2nContext()->lookup($lookupId, $required);
+	}
+	
+	public function dtc(string ...$moduleNamespaces) {
+		return new DynamicTextCollection($moduleNamespaces, $this->frame()->getN2nLocale());
 	}
 }

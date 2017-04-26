@@ -26,22 +26,22 @@ use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiElement;
+use rocket\spec\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
-class ToManySelectGuiElement implements GuiElement {
-	private $eiField;
+class ToManySelectGuiField implements GuiField {
+	private $eiProp;
 	private $eiu;
 	private $targetEiFrame;
 	private $editable;
 	private $toOneMag;
 	
-	public function __construct(EiField $eiField, Eiu $eiu, EiFrame $targetEiFrame, 
+	public function __construct(EiProp $eiProp, Eiu $eiu, EiFrame $targetEiFrame, 
 			Editable $editable = null) {
-		$this->eiField = $eiField;
+		$this->eiProp = $eiProp;
 		$this->eiu = $eiu;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
@@ -55,14 +55,14 @@ class ToManySelectGuiElement implements GuiElement {
 	 * @return string
 	 */
 	public function getUiOutputLabel(): string {
-		return $this->eiField->getLabelLstr();
+		return $this->eiProp->getLabelLstr();
 	}
 	
 	/**
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		if ($this->eiu->gui()->isViewModeBulky()) {
+		if ($this->eiu->entryGui()->isBulky()) {
 			return array('class' => 'rocket-block');
 		}
 		
@@ -70,7 +70,7 @@ class ToManySelectGuiElement implements GuiElement {
 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
-		if ($this->eiu->entry()->getEiMapping()->isNew()) {
+		if ($this->eiu->entry()->getEiEntry()->isNew()) {
 			return null;
 		}
 		
@@ -86,7 +86,7 @@ class ToManySelectGuiElement implements GuiElement {
 		}
 
 		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
-				->getEiRelation($this->eiField->getId()))) {
+				->getEiRelation($this->eiProp->getId()))) {
 			return $this->createUiLink($relation->getEiFrame(), $label, $view);
 		}
 
@@ -104,13 +104,13 @@ class ToManySelectGuiElement implements GuiElement {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiElement read only.');
+		throw new IllegalStateException('GuiField read only.');
 	}
 }

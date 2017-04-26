@@ -22,6 +22,12 @@
 
 	use rocket\spec\ei\component\command\impl\tree\model\TreeMoveModel;
 	use n2n\web\ui\Raw;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\view\View;
+	
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($view);
+	$formHtml = HtmlView::formHtml($view);
 	
 	$treeMoveModel = $view->params['treeMoveModel']; 
 	$view->assert($treeMoveModel instanceof TreeMoveModel);
@@ -46,12 +52,8 @@
 			</ul>
 		</div>
 	</div>
-	<div id="rocket-page-controls">
-		<ul>
-			<li class="rocket-control-warning">
-				<?php $formHtml->buttonSubmit('move', new Raw('<i class="fa fa-save"></i><span>' 
-							. $html->getL10nText('ei_impl_tree_move_label') . '</span>')) ?>
-			</li>
-		</ul>
+	<div class="rocket-context-commands">
+		<?php $formHtml->buttonSubmit('move', new Raw('<i class="fa fa-save"></i><span>' 
+					. $html->getL10nText('ei_impl_tree_move_label') . '</span>'), array('class' => 'btn btn-danger')) ?>
 	</div>
 <?php $formHtml->close()?>

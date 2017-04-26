@@ -77,6 +77,6 @@ class QuickSearchForm implements Dispatchable {
 		
 		return new QuickSearchForm($eiMask->getEiEngine()->createQuickSearchDefinition($eiFrame), $critmodSaveDao, 
 				$stateKey, CritmodSaveDao::buildCategoryKey($stateKey, 
-				$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask));
+				$eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), $eiMask));
 	}
 }

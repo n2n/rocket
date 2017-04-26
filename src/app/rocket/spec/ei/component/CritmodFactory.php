@@ -21,54 +21,54 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\SortableEiField;
+use rocket\spec\ei\component\field\SortableEiProp;
 use rocket\spec\ei\manage\critmod\SortModel;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use rocket\spec\ei\component\field\FilterableEiField;
+use rocket\spec\ei\component\field\FilterableEiProp;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiFieldPath;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
+use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\critmod\sort\SortField;
-use rocket\spec\ei\component\field\SortableEiFieldFork;
+use rocket\spec\ei\component\field\SortableEiPropFork;
 use rocket\spec\ei\manage\critmod\sort\SortFieldFork;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
-use rocket\spec\ei\component\field\QuickSearchableEiField;
+use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 
 class CritmodFactory {
-	private $eiFieldCollection;
+	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiFieldCollection $eiFieldCollection, EiModificatorCollection $eiModificatorCollection) {
-		$this->eiFieldCollection = $eiFieldCollection;
+	public function __construct(EiPropCollection $eiPropCollection, EiModificatorCollection $eiModificatorCollection) {
+		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 	
-// 	public static function createFilterModel(EiSpec $eiSpec, N2nContext $n2nContext) {
-// 		return self::createFilterModelInstance($eiSpec, $n2nContext);
+// 	public static function createFilterModel(EiType $eiType, N2nContext $n2nContext) {
+// 		return self::createFilterModelInstance($eiType, $n2nContext);
 // 	}
 	
 // 	public static function createFilterModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), 
+// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), 
 // 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 	
 	public function createManagedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
 		$filterDefinition = new FilterDefinition();
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof FilterableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof FilterableEiProp)) continue;
 			
-			$filterField = $eiField->buildManagedFilterField($eiFrame);
-			ArgUtils::valTypeReturn($filterField, FilterField::class, $eiField, 'buildManagedFilterField', true);
+			$filterField = $eiProp->buildManagedFilterField($eiFrame);
+			ArgUtils::valTypeReturn($filterField, FilterField::class, $eiProp, 'buildManagedFilterField', true);
 			
 			if ($filterField !== null) {
-				$filterDefinition->putFilterField($eiField->getId(), $filterField);
+				$filterDefinition->putFilterField($eiProp->getId(), $filterField);
 			}
 		}		
 		return $filterDefinition;
@@ -76,51 +76,51 @@ class CritmodFactory {
 	
 	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
 		$filterDefinition = new FilterDefinition();
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof FilterableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof FilterableEiProp)) continue;
 			
-			$filterField = $eiField->buildFilterField($n2nContext);
-			ArgUtils::valTypeReturn($filterField, FilterField::class, $eiField, 'buildFilterField', true);
+			$filterField = $eiProp->buildFilterField($n2nContext);
+			ArgUtils::valTypeReturn($filterField, FilterField::class, $eiProp, 'buildFilterField', true);
 			
 			if ($filterField !== null) {
-				$filterDefinition->putFilterField($eiField->getId(), $filterField);
+				$filterDefinition->putFilterField($eiProp->getId(), $filterField);
 			}
 		}
 		return $filterDefinition;
 	}
 	
-	public function createEiMappingFilterDefinition(N2nContext $n2nContext): EiMappingFilterDefinition {
-		$mappableFilterDefinition = new EiMappingFilterDefinition();
+	public function createEiEntryFilterDefinition(N2nContext $n2nContext): EiEntryFilterDefinition {
+		$eiFieldFilterDefinition = new EiEntryFilterDefinition();
 		
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof FilterableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof FilterableEiProp)) continue;
 			
-			$eiMappingFilterField = $eiField->buildEiMappingFilterField($n2nContext);
-			ArgUtils::valTypeReturn($eiMappingFilterField, EiMappingFilterField::class, $eiField, 
-					'buildEiMappingFilterField', true);
+			$eiEntryFilterField = $eiProp->buildEiEntryFilterField($n2nContext);
+			ArgUtils::valTypeReturn($eiEntryFilterField, EiEntryFilterField::class, $eiProp, 
+					'buildEiEntryFilterField', true);
 
-			if ($eiMappingFilterField !== null) {
-				$mappableFilterDefinition->putEiMappingFilterField(EiFieldPath::from($eiField), $eiMappingFilterField);
+			if ($eiEntryFilterField !== null) {
+				$eiFieldFilterDefinition->putEiEntryFilterField(EiPropPath::from($eiProp), $eiEntryFilterField);
 			}
 		}
 		
-		return $mappableFilterDefinition;
+		return $eiFieldFilterDefinition;
 	}
 	
 	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {
 		$sortDefinition = new SortDefinition();
 		
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if ($eiField instanceof SortableEiField) {
-				if (null !== ($sortField = $eiField->buildManagedSortField($eiFrame))) {
-					ArgUtils::valTypeReturn($sortField, SortField::class, $eiField, 'buildManagedSortField', true);
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if ($eiProp instanceof SortableEiProp) {
+				if (null !== ($sortField = $eiProp->buildManagedSortField($eiFrame))) {
+					ArgUtils::valTypeReturn($sortField, SortField::class, $eiProp, 'buildManagedSortField', true);
 					$sortDefinition->putSortField($id, $sortField);
 				}
 			}
 			
-			if ($eiField instanceof SortableEiFieldFork) {
-				if (null !== ($sortFieldFork = $eiField->buildManagedSortFieldFork($eiFrame))) {
-					ArgUtils::valTypeReturn($sortFieldFork, SortFieldFork::class, $eiField, 'buildManagedSortFieldFork', true);
+			if ($eiProp instanceof SortableEiPropFork) {
+				if (null !== ($sortFieldFork = $eiProp->buildManagedSortFieldFork($eiFrame))) {
+					ArgUtils::valTypeReturn($sortFieldFork, SortFieldFork::class, $eiProp, 'buildManagedSortFieldFork', true);
 					$sortDefinition->putSortFieldFork($id, $sortFieldFork);
 				}
 			}
@@ -132,10 +132,10 @@ class CritmodFactory {
 	public function createSortDefinition(N2nContext $n2nContext): SortDefinition {
 		$sortDefinition = new SortDefinition();
 		
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof SortableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof SortableEiProp)) continue;
 			
-			$sortDefinition->putSortField(EiFieldPath::from($eiField), $eiField->buildSortField($n2nContext));
+			$sortDefinition->putSortField(EiPropPath::from($eiProp), $eiProp->buildSortField($n2nContext));
 		}
 		
 		return $sortDefinition;
@@ -144,11 +144,11 @@ class CritmodFactory {
 	public function createQuickSearchDefinition(EiFrame $eiFrame) {
 		$quickSearchDefinition = new QuickSearchDefinition();
 	
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof QuickSearchableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof QuickSearchableEiProp)) continue;
 				
-			if (null !== ($quickSearchField = $eiField->buildQuickSearchField($eiFrame))) {
-				$quickSearchDefinition->putQuickSearchField(EiFieldPath::from($eiField), $quickSearchField);
+			if (null !== ($quickSearchField = $eiProp->buildQuickSearchField($eiFrame))) {
+				$quickSearchDefinition->putQuickSearchField(EiPropPath::from($eiProp), $quickSearchField);
 			}
 		}
 	
@@ -156,20 +156,20 @@ class CritmodFactory {
 	}
 	
 // 	public static function createSortModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), $eiFrame->getN2nContext());
+// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), $eiFrame->getN2nContext());
 // 	}
 	
 	public static function createSortModel() {
 		$sortModel = new SortModel();
-		foreach ($this->eiFieldCollection as $id => $eiField) {
-			if (!($eiField instanceof SortableEiField)) continue;
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof SortableEiProp)) continue;
 			
-			if (null !== ($sortItem = $eiField->getSortItem())) {
-				$sortModel->putSortItem($id, $eiField->getSortItem());
+			if (null !== ($sortItem = $eiProp->getSortItem())) {
+				$sortModel->putSortItem($id, $eiProp->getSortItem());
 			}
 			
-			if (null !== ($sortItemFork = $eiField->getSortItemFork())) {
-				$sortModel->putSortItemFork($id, $eiField->getSortItemFork());
+			if (null !== ($sortItemFork = $eiProp->getSortItemFork())) {
+				$sortModel->putSortItemFork($id, $eiProp->getSortItemFork());
 			}
 		}
 		return $sortModel;
@@ -177,8 +177,8 @@ class CritmodFactory {
 		
 // 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEiFieldCollection() as $field) {
-// 			if ($field instanceof QuickSearchableEiField) {
+// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEiPropCollection() as $field) {
+// 			if ($field instanceof QuickSearchableEiProp) {
 // 				$quickSerachModel->addQuickSearchable($field);
 // 			}
 // 		}

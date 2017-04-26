@@ -27,7 +27,7 @@ use n2n\persistence\meta\data\QueryColumn;
 use n2n\persistence\meta\data\QueryPlaceMarker;
 use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\meta\data\QueryComparator;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\persistence\orm\property\BasicEntityProperty;
 
 class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements PersistDraftStmtBuilder {
@@ -97,12 +97,12 @@ class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements P
 		return $placeholderName;
 	}
 	
-	public function registerColumnRawValue(EiFieldPath $eiFieldPath, string $rawValue = null) {
-		return $this->setRawValue(DraftMetaInfo::buildDraftColumnName($eiFieldPath), $rawValue);
+	public function registerColumnRawValue(EiPropPath $eiPropPath, string $rawValue = null) {
+		return $this->setRawValue(DraftMetaInfo::buildDraftColumnName($eiPropPath), $rawValue);
 	}
 	
-	public function registerColumnCallback(EiFieldPath $eiFieldPath, \Closure $bindCallback) {
-		$columnName = DraftMetaInfo::buildDraftColumnName($eiFieldPath);
+	public function registerColumnCallback(EiPropPath $eiPropPath, \Closure $bindCallback) {
+		$columnName = DraftMetaInfo::buildDraftColumnName($eiPropPath);
 		$placeholderName = $this->aliasBuilder->createPlaceholderName();
 		$this->peristStatementBuilder->addColumn(new QueryColumn($columnName), new QueryPlaceMarker($placeholderName));
 		$this->boundCallbacks[$placeholderName] = $bindCallback;

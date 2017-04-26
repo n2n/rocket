@@ -22,7 +22,7 @@
 namespace rocket\user\model;
 
 use rocket\user\bo\RocketUserGroup;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\user\bo\EiGrant;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\config\CustomSpec;
@@ -31,16 +31,16 @@ use rocket\user\bo\Grant;
 
 class GroupGrantsViewModel {
 	private $userGroup;
-	private $eiSpecItems = array();
+	private $eiTypeItems = array();
 	private $customItems = array();
 		
-	public function __construct(RocketUserGroup $userGroup, array $eiSpecs, array $customSpecs) {
+	public function __construct(RocketUserGroup $userGroup, array $eiTypes, array $customSpecs) {
 		$this->userGroup = $userGroup;
 				
-		foreach ($eiSpecs as $eiSpec) {
-			if ($eiSpec->hasSuperEiSpec()) continue; 
+		foreach ($eiTypes as $eiType) {
+			if ($eiType->hasSuperEiType()) continue; 
 			
-			$this->applyEiSpecItems($eiSpec, 0);
+			$this->applyEiTypeItems($eiType, 0);
 		}
 		
 		foreach ($customSpecs as $customSpec) {
@@ -49,8 +49,8 @@ class GroupGrantsViewModel {
 		}
 	}
 	
-	private function findEiGrant(EiSpec $eiSpec, EiMask $eiMask = null) {
-		$eiSpecId = $eiSpec->getId();
+	private function findEiGrant(EiType $eiType, EiMask $eiMask = null) {
+		$eiTypeId = $eiType->getId();
 		$eiMaskId = null;
 		
 		if ($eiMask !== null) {
@@ -58,7 +58,7 @@ class GroupGrantsViewModel {
 		}
 		
 		foreach ($this->userGroup->getEiGrants() as $eiGrant) {
-			if ($eiSpecId === $eiGrant->getEiSpecId() && $eiMaskId === $eiGrant->getEiMaskId()) {
+			if ($eiTypeId === $eiGrant->getEiTypeId() && $eiMaskId === $eiGrant->getEiMaskId()) {
 				return $eiGrant;
 			}
 		}
@@ -78,16 +78,16 @@ class GroupGrantsViewModel {
 		return null;
 	}
 	
-	private function applyEiSpecItems(EiSpec $eiSpec, int $level) {
-		$this->eiSpecItems[$eiSpec->getId()] = $eiSpecItem = new EiSpecItem($level, $eiSpec, $this->findEiGrant($eiSpec));
+	private function applyEiTypeItems(EiType $eiType, int $level) {
+		$this->eiTypeItems[$eiType->getId()] = $eiTypeItem = new EiTypeItem($level, $eiType, $this->findEiGrant($eiType));
 		
-		foreach ($eiSpec->getEiMaskCollection() as $eiMask) {
-			$eiSpecItem->addEiMaskItem(new EiMaskItem($eiMask, $this->findEiGrant($eiSpec, $eiMask)));
+		foreach ($eiType->getEiMaskCollection() as $eiMask) {
+			$eiTypeItem->addEiMaskItem(new EiMaskItem($eiMask, $this->findEiGrant($eiType, $eiMask)));
 		}
 		
 		$level++;
-		foreach ($eiSpec->getSubEiSpecs() as $subEiSpec) {
-			$this->applyEiSpecItems($subEiSpec, $level);
+		foreach ($eiType->getSubEiTypes() as $subEiType) {
+			$this->applyEiTypeItems($subEiType, $level);
 		}
 	}
 	
@@ -101,8 +101,8 @@ class GroupGrantsViewModel {
 	/**
 	 * @return \rocket\user\model\GroupGrantItem[]
 	 */
-	public function getEiSpecItems() {
-		return $this->eiSpecItems;
+	public function getEiTypeItems() {
+		return $this->eiTypeItems;
 	}
 	
 	public function getCustomItems(): array {
@@ -126,31 +126,31 @@ class Item {
 	}
 }
 
-class EiSpecItem extends Item {
+class EiTypeItem extends Item {
 	private $level;
-	private $eiSpec;
+	private $eiType;
 	private $eiMaskItems = array();
 	
-	public function __construct(int $level, EiSpec $eiSpec, EiGrant $eiGrant = null) {
+	public function __construct(int $level, EiType $eiType, EiGrant $eiGrant = null) {
 		parent::__construct($eiGrant);
 		$this->level = $level;
-		$this->eiSpec = $eiSpec;	
+		$this->eiType = $eiType;	
 	}
 	
 	public function getLevel(): int {
 		return $this->level;
 	}
 	
-	public function getEiSpecId(): string {
-		return $this->eiSpec->getId();
+	public function getEiTypeId(): string {
+		return $this->eiType->getId();
 	}
 	
 	public function getLabel(): string {
-		if (null !== ($label = $this->eiSpec->getDefaultEiDef()->getLabel())) {
+		if (null !== ($label = $this->eiType->getDefaultEiDef()->getLabel())) {
 			return $label;
 		}
 		
-		return $this->eiSpec->getEiMaskCollection()->getOrCreateDefault()->getLabel();
+		return $this->eiType->getEiMaskCollection()->getOrCreateDefault()->getLabel();
 	}
 	
 	public function getEiMaskItems(): array {

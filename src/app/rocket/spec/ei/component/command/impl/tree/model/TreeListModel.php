@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\command\impl\tree\model;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\command\impl\common\model\ListEntryModel;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\model\EntryTreeListModel;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\mask\EiMask;
@@ -60,21 +60,21 @@ class TreeListModel implements EntryTreeListModel {
 	
 	public function initialize() {
 		$em = $this->eiFrame->getEntityManager();
-		$eiSpec = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+		$eiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		
-		$nestedSetUtils = new NestedSetUtils($em, $eiSpec->getEntityModel()->getClass());
+		$nestedSetUtils = new NestedSetUtils($em, $eiType->getEntityModel()->getClass());
 		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS);
 		$eiMask = $this->getEiMask();
 
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$entity = $nestedSetItem->getEntityObj();
-			$id = $eiSpec->extractId($entity);
-			$eiSelection = new EiSelection($id, $entity);
-			$eiMapping = $eiMask->createEiMapping($this->eiFrame, $eiSelection);
+			$id = $eiType->extractId($entity);
+			$eiObject = new EiObject($id, $entity);
+			$eiEntry = $eiMask->createEiEntry($this->eiFrame, $eiObject);
 			
 			$this->entryModels[$id] = new ListEntryModel($eiMask, 
-					$eiMask->createEiSelectionGui($this->eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_TREE, false),
-					$eiMapping);
+					$eiMask->createEiEntryGui($this->eiFrame, $eiEntry, DisplayDefinition::VIEW_MODE_TREE, false),
+					$eiEntry);
 			$this->entryLevels[$id] = $nestedSetItem->getLevel();
 		}
 	}

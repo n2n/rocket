@@ -22,54 +22,54 @@
 namespace rocket\spec\ei\component\command\impl\common\controller;
 
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\reflection\ReflectionContext;
 use rocket\spec\ei\EntityChangeEvent;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\web\http\NoHttpRefererGivenException;
-use rocket\spec\ei\component\field\ObjectPropertyEiField;
+use rocket\spec\ei\component\field\ObjectPropertyEiProp;
 
 class CopyController extends ControllerAdapter {
 	/**
 	 * @var \rocket\spec\ei\
 	 */
-	private $eiSpec;
+	private $eiType;
 	private $dtc;
 	private $utils;
 	
 	private function _init(DynamicTextCollection $dtc, ManageState $manageState) {
 		$this->dtc = $dtc;
-		$this->utils = new EntryControllingUtils($this->eiSpec, $manageState);
+		$this->utils = new EntryControllingUtils($this->eiType, $manageState);
 	}
 	
-	public function setEiSpec(EiSpec $eiSpec) {
-		$this->eiSpec = $eiSpec;
+	public function setEiType(EiType $eiType) {
+		$this->eiType = $eiType;
 	}
 	
 	public function index($id) {
 		$eiFrame = $this->utils->getEiFrame();
-		$eiSelection = $eiFrame->getEiSelection();
+		$eiObject = $eiFrame->getEiObject();
 
 		$em = $eiFrame->getEntityManager();;
-		$currentObject = $em->find($this->eiSpec->getEntityModel()->getClass(), $id);
-		$newObject = ReflectionContext::createObject($this->eiSpec->getEntityModel()->getClass());
-		foreach ($this->eiSpec->getEiFieldCollection()->toArray() as $eiField) {
-			if (!($eiField instanceof Editable) || $eiField->isReadOnly() || !($eiField instanceof ObjectPropertyEiField)) continue;
-			$accessProxy = $eiField->getObjectPropertyAccessProxy();
-			$accessProxy->setValue($newObject, $eiField->getEntityProperty()->copy($accessProxy->getValue($currentObject)));
+		$currentObject = $em->find($this->eiType->getEntityModel()->getClass(), $id);
+		$newObject = ReflectionContext::createObject($this->eiType->getEntityModel()->getClass());
+		foreach ($this->eiType->getEiPropCollection()->toArray() as $eiProp) {
+			if (!($eiProp instanceof Editable) || $eiProp->isReadOnly() || !($eiProp instanceof ObjectPropertyEiProp)) continue;
+			$accessProxy = $eiProp->getObjectPropertyAccessProxy();
+			$accessProxy->setValue($newObject, $eiProp->getEntityProperty()->copy($accessProxy->getValue($currentObject)));
 		}
 		$eiFrame->triggerOnNewObject($em, $newObject);
 		
-		$this->eiSpec->notifyObjectMod(EntityChangeEvent::TYPE_ON_INSERT, $newObject);
+		$this->eiType->notifyObjectMod(EntityChangeEvent::TYPE_ON_INSERT, $newObject);
 		$em->persist($newObject);
-		$this->eiSpec->notifyObjectMod(EntityChangeEvent::TYPE_INSERTED, $newObject);
+		$this->eiType->notifyObjectMod(EntityChangeEvent::TYPE_INSERTED, $newObject);
 		
 		try {
 			$this->redirectToReferer();
 		} catch (NoHttpRefererGivenException $e) {
-			$this->redirectToController($this->eiSpec->getEntryDetailPathExt($eiSelection->toEntryNavPoint()),
+			$this->redirectToController($this->eiType->getEntryDetailPathExt($eiObject->toEntryNavPoint()),
 					null, null, $eiFrame->getControllerContext());
 			return;
 		}

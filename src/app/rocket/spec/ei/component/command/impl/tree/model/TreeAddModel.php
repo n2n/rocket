@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\command\impl\tree\model;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\persistence\orm\NestedSetUtils;
 use rocket\spec\ei\component\command\impl\common\model\AddModel;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EntryForm;
 use rocket\spec\ei\manage\util\model\EntryManager;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
@@ -42,7 +42,7 @@ class TreeAddModel extends AddModel {
 	private $treeEntityModel;
 	private $leftPropertyName;
 	private $rightPropertyName;
-	private $parentEiSelection;
+	private $parentEiObject;
 	
 	public function __construct(EntryManager $entryManager, EntryForm $entryForm, 
 			EntityModel $treeEntityModel, $leftPropertyName, $rightPropertyName) {
@@ -54,8 +54,8 @@ class TreeAddModel extends AddModel {
 		$this->rightPropertyName = $rightPropertyName;
 	}	
 	
-	public function setParentEntity(EiSelection $parentEiSelection) {
-		return $this->parentEiSelection = $parentEiSelection;
+	public function setParentEntity(EiObject $parentEiObject) {
+		return $this->parentEiObject = $parentEiObject;
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\command\impl\common\model\EntryCommandModel::getEntryModel()
@@ -74,21 +74,21 @@ class TreeAddModel extends AddModel {
 	
 	public function create(MessageContainer $messageContainer) {
 		$parentEntity = null;
-		if ($this->parentEiSelection !== null) {
-			$parentEntity = $this->parentEiSelection->getLiveEntityObj();
+		if ($this->parentEiObject !== null) {
+			$parentEntity = $this->parentEiObject->getLiveEntityObj();
 		}
 		
-		$eiMapping = $this->entryForm->buildEiMapping();
+		$eiEntry = $this->entryForm->buildEiEntry();
 		
-		$this->entryManager->create($eiMapping);
+		$this->entryManager->create($eiEntry);
 
 		$mappingValidationResult = new MappingValidationResult();
-		if (!$eiMapping->save($mappingValidationResult)) {
+		if (!$eiEntry->save($mappingValidationResult)) {
 			$messageContainer->addAll($mappingValidationResult->getMessages());
 			return false;
 		}
 		
-		$entity = $eiMapping->getEiSelection()->getEntityObj();
+		$entity = $eiEntry->getEiObject()->getEntityObj();
 		$eiFrame = $this->getCurrentEntryModel()->getEiFrame();
 		$em = $eiFrame->getEntityManager();
 		
@@ -100,6 +100,6 @@ class TreeAddModel extends AddModel {
 		
 		$em->flush();
 
-		return new EiSelection($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->extractId($entity), $entity);
+		return new EiObject($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->extractId($entity), $entity);
 	}
 }

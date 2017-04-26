@@ -35,7 +35,7 @@ class EiDefExtraction {
 	private $filterData;
 	private $defaultSortData;
 	
-	private $eiFieldExtractions = array();
+	private $eiPropExtractions = array();
 	private $eiCommandExtractions = array();
 	private $eiModificatorExtractions = array();
 	
@@ -119,19 +119,19 @@ class EiDefExtraction {
 	}
 
 	/**
-	 * @return EiFieldExtraction []
+	 * @return EiPropExtraction []
 	 */
-	public function getEiFieldExtractions(): array {
-		return $this->eiFieldExtractions;
+	public function getEiPropExtractions(): array {
+		return $this->eiPropExtractions;
 	}
 	
-	public function addEiFieldExtraction(EiFieldExtraction $eiFieldExtraction) {
-		$this->eiFieldExtractions[] = $eiFieldExtraction;
+	public function addEiPropExtraction(EiPropExtraction $eiPropExtraction) {
+		$this->eiPropExtractions[] = $eiPropExtraction;
 	}
 	
-	public function setEiFieldExtractions(array $fieldExtractions) {
-		ArgUtils::valArray($fieldExtractions, EiFieldExtraction::class);
-		$this->eiFieldExtractions = $fieldExtractions;	
+	public function setEiPropExtractions(array $fieldExtractions) {
+		ArgUtils::valArray($fieldExtractions, EiPropExtraction::class);
+		$this->eiPropExtractions = $fieldExtractions;	
 	}
 	
 	public function getEiCommandExtractions() {

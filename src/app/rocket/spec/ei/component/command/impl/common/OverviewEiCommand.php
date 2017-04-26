@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\command\impl\common;
 
 use rocket\spec\ei\component\command\GenericOverviewEiCommand;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\impl\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagCollection;

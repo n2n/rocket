@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\spec\ei\component\command\impl\common\model\ListModel;
+	use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 	
@@ -28,26 +28,30 @@
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	
-	$listModel = $view->getParam('listModel'); 
-	$view->assert($listModel instanceof ListModel);
+	$overviewModel = $view->getParam('listModel'); 
+	$view->assert($overviewModel instanceof OverviewModel);
 	
-	$listView = $view->getParam('listView');
-	$view->assert($listView instanceof HtmlView);
+	$overviewView = $view->getParam('listView');
+	$view->assert($overviewView instanceof HtmlView);
 		
-	$view->useTemplate('~\core\view\template.html',
-			array('title' => $listModel->getEiFrame()->getContextEiMask()->getLabelLstr()
-					->t($view->getN2nLocale())));
+// 	$view->useTemplate('~\core\view\template.html',
+// 			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+// 					->t($view->getN2nLocale())));
 	
-	$eiMask = $listModel->getEiFrame()->getContextEiMask();
+	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask();
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $listModel->getEiFrame());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $overviewModel->getEiuFrame());
 ?>	
 
-<div class="rocket-panel">
-	<h3><?php $html->l10nText('ei_impl_list_title') ?></h3>
-	
+
+<div class="rocket-impl-overview" 
+		data-num-pages="<?php $html->out($overviewModel->getNumPages()) ?>"
+		data-num-entries="<?php $html->out($overviewModel->getNumEntries()) ?>"
+		data-current-page="<?php $html->out($overviewModel->getCurrentPageNo()) ?>"
+		data-overview-path="<?php $html->out($html->meta()->getControllerUrl(null)) ?>">
+		
 	<?php if ($eiMask->isDraftingEnabled()): ?>
-		<div id="rocket-toolbar">
+		<div class="rocket-context-toolbar">
 			<ul class="rocket-draft-nav">
 				<li><?php $html->linkToController(null, $html->getText('ei_impl_list_title'), array('class' => 'active')) ?></li>
 				<li><?php $html->linkToController('drafts', $html->getText('ei_impl_drafts_title')) ?></li>
@@ -55,21 +59,18 @@
 			</ul>
 		</div>
 	<?php endif ?>
-
+	
 	<?php $view->import('inc\overviewTools.html',
-			array('critmodForm' => $listModel->getCritmodForm(), 
-					'quickSearchForm' => $listModel->getQuickSearchForm(),
+			array('critmodForm' => $overviewModel->getCritmodForm(), 
+					'quickSearchForm' => $overviewModel->getQuickSearchForm(),
 					'label' => $eiMask->getLabelLstr()->t($view->getN2nLocale()), 
 					'pluralLabel' => $eiMask->getPluralLabelLstr()->t($view->getN2nLocale()))) ?>
 	
-	<?php $formHtml->open($listModel, null, null, array('class' => 'rocket-overview-main-content',
-			'data-num-pages' => $listModel->getNumPages(), 'data-num-entries' => $listModel->getNumEntries(),
-			'data-current-page' => $listModel->getCurrentPageNo(),
-			'data-overview-path' => $html->meta()->getControllerUrl(null))) ?>
+	<?php $formHtml->open($overviewModel) ?>
 		
-		<?php $view->out($listView)?>
+		<?php $view->out($overviewView)?>
 		
-		<div id="rocket-page-controls">
+		<div class="rocket-context-commands">
 			<?php /* Bert: do not display UL with no LI contents ?>
 			<ul class="rocket-partial-controls">
 				<li><?php / * partial control components * / ?></li>
@@ -77,6 +78,7 @@
 			<?php */ ?>
 			
 			<?php $controlEiHtml->overallControlList() ?>
+			
 		</div>
 	<?php $formHtml->close() ?>
 </div>

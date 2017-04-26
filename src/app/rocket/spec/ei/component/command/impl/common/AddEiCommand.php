@@ -37,7 +37,6 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
@@ -55,7 +54,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	const CONTROL_ADD_AFTER_BRANCH_KEY = 'addAfterBranch';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
 
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
 	private $dublicatingAllowed = true;
@@ -102,7 +101,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 				self::CONTROL_ADD_DRAFT_KEY => $dtc->translate('common_add_draft_label'));
 	}
 
-	public function createOverallHrefControls(Eiu $eiu, HtmlView $htmlView) {
+	public function createOverallControls(Eiu $eiu, HtmlView $htmlView) {
 		$n2nContext = $eiu->frame()->getN2nContext();
 		$eiUtils = $eiu->frame();
 		$eiFrame = $eiUtils->getEiFrame();
@@ -110,7 +109,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
 		$controllerContextPath = $httpContext->getControllerContextPath($eiUtils->getEiFrame()->getControllerContext());
 
-		$nestedSet = null !== $this->eiEngine->getEiSpec()->getNestedSetStrategy();
+		$nestedSet = null !== $this->eiEngine->getEiType()->getNestedSetStrategy();
 
 		$path = $controllerContextPath->ext($this->getId());
 		$name = $dtc->translate($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_add_label');
@@ -140,11 +139,11 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 				self::CONTROL_ADD_SIBLING_BRANCH_KEY => $dtc->translate('ei_impl_add_sibling_branch_label'));
 	}
 
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$eiFrame = $eiu->frame()->getEiFrame();
 		
-		$nestedSetStrategy = $this->eiEngine->getEiSpec()->getNestedSetStrategy();
+		$nestedSetStrategy = $this->eiEngine->getEiType()->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) {
 			if (!$this->dublicatingAllowed) return array();
 				

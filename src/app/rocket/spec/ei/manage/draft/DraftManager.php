@@ -32,7 +32,7 @@ use n2n\persistence\TransactionEvent;
 use n2n\persistence\orm\TransactionRequiredException;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\Pdo;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 
 class DraftManager {
@@ -74,22 +74,22 @@ class DraftManager {
 		return $this->em;
 	}
 	
-	private function getDraftDefinitionByEiSpec(EiSpec $eiSpec) {
-		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->getEiEngine()->getDraftDefinition();
+	private function getDraftDefinitionByEiType(EiType $eiType) {
+		return $eiType->getEiMaskCollection()->getOrCreateDefault()->getEiEngine()->getDraftDefinition();
 	}
 	
 	private function getDraftDefinitionByEntityObj($entityObj) {
 		$entityModel = $this->em->getEntityModelManager()->getEntityModelByEntityObj($entityObj);
-		return $this->specManager->getEiSpecByClass($entityModel->getClass())->getEiMaskCollection()
+		return $this->specManager->getEiTypeByClass($entityModel->getClass())->getEiMaskCollection()
 				->getOrCreateDefault()->getDraftDefinition();		
 	}
 	
 	public function find(\ReflectionClass $class, $draftId, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
-		$eiSpec = $this->specManager->getEiSpecByClass($class);
+		$eiType = $this->specManager->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
-			$draftDefinition = $this->getDraftDefinitionByEiSpec($eiSpec);
+			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
@@ -97,7 +97,7 @@ class DraftManager {
 		$restrictedStmtBuilder->restrictToDraftId($draftId);
 		$restrictedStmtBuilder->restrictToType(Draft::TYPE_UNLISTED, true);
 		
-		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		$draftFetcher = new DraftFetcher($stmtBuilder, $eiType, $draftDefinition, $this->draftingContext, $this->em);
 		return $draftFetcher->fetchSingle();
 	}
 	
@@ -105,9 +105,9 @@ class DraftManager {
 			DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
-		$eiSpec = $this->specManager->getEiSpecByClass($class);
+		$eiType = $this->specManager->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
-			$draftDefinition = $this->getDraftDefinitionByEiSpec($eiSpec);
+			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
@@ -117,7 +117,7 @@ class DraftManager {
 		$restrictedStmtBuilder->limit($limit, $num);
 		$restrictedStmtBuilder->order();
 	
-		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		$draftFetcher = new DraftFetcher($stmtBuilder, $eiType, $draftDefinition, $this->draftingContext, $this->em);
 		return $draftFetcher->fetch();
 	}
 	
@@ -125,9 +125,9 @@ class DraftManager {
 			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 
-		$eiSpec = $this->specManager->getEiSpecByClass($class);
+		$eiType = $this->specManager->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
-			$draftDefinition = $this->getDraftDefinitionByEiSpec($eiSpec);
+			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
 
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
@@ -147,7 +147,7 @@ class DraftManager {
 		$restrictedStmtBuilder->limit($limit, $num);
 		$restrictedStmtBuilder->order();
 
-		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		$draftFetcher = new DraftFetcher($stmtBuilder, $eiType, $draftDefinition, $this->draftingContext, $this->em);
 		$draftFetcher->setStmt($restrictedStmtBuilder->buildPdoStatement());
 		return $draftFetcher->fetch();
 	}
@@ -156,8 +156,8 @@ class DraftManager {
 		$this->ensureDraftManagerOpen();
 		
 		if ($draftDefinition === null) {
-			$draftDefinition = $this->getDraftDefinitionByEiSpec(
-					$this->specManager->getEiSpecByClass($class));
+			$draftDefinition = $this->getDraftDefinitionByEiType(
+					$this->specManager->getEiTypeByClass($class));
 		}
 		
 		$stmtBuilder = $draftDefinition->createCountDraftStmtBuilder($this, $this->n2nContext);
@@ -174,9 +174,9 @@ class DraftManager {
 	public function findUnbounds(\ReflectionClass $class, int $limit, int $num = null, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
-		$eiSpec = $this->specManager->getEiSpecByClass($class);
+		$eiType = $this->specManager->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
-			$draftDefinition = $this->getDraftDefinitionByEiSpec($eiSpec);
+			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
 		
 		$stmtBuilder = $draftDefinition->createFetchDraftStmtBuilder($this, $this->n2nContext);
@@ -185,13 +185,13 @@ class DraftManager {
 		$restrictedStmtBuilder->limit($limit, $num);
 		$restrictedStmtBuilder->order();
 		
-		$draftFetcher = new DraftFetcher($stmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		$draftFetcher = new DraftFetcher($stmtBuilder, $eiType, $draftDefinition, $this->draftingContext, $this->em);
 		return $draftFetcher->fetch();
 	}
 	
-	public function createDraftFetcher(FetchDraftStmtBuilder $fetchDraftStmtBuilder, EiSpec $eiSpec, 
+	public function createDraftFetcher(FetchDraftStmtBuilder $fetchDraftStmtBuilder, EiType $eiType, 
 			DraftDefinition $draftDefinition) {
-		return new DraftFetcher($fetchDraftStmtBuilder, $eiSpec, $draftDefinition, $this->draftingContext, $this->em);
+		return new DraftFetcher($fetchDraftStmtBuilder, $eiType, $draftDefinition, $this->draftingContext, $this->em);
 	}
 	
 	public function persist(Draft $draft, DraftDefinition $draftDefinition = null) {
