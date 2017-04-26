@@ -129,7 +129,12 @@ class EiuEntry {
 		}
 		return $values;
 	}
-	
+
+	/**
+	 * @param $eiFieldPath
+	 * @param $scalarValue
+	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
+	 */
 	public function setScalarValue($eiFieldPath, $scalarValue) {
 		$eiFieldPath = EiFieldPath::create($eiFieldPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
