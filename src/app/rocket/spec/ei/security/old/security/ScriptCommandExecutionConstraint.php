@@ -28,7 +28,7 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\spec\ei\manage\critmod\SelectorValidationResult;
 use n2n\l10n\MessageCode;
 use rocket\spec\ei\manage\security\MappingArrayAccess;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\persistence\orm\criteria\item\CriteriaConstant;
 
 class EiCommandExecutionConstraint implements CommandExecutionConstraint {
@@ -38,7 +38,7 @@ class EiCommandExecutionConstraint implements CommandExecutionConstraint {
 		$this->privilegesGrantItems = $privilegesGrantItems;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptValues()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValues()
 	 */
 	public function acceptValues(\ArrayAccess $values) {
 		foreach ($this->privilegesGrantItems as $item) {
@@ -48,7 +48,7 @@ class EiCommandExecutionConstraint implements CommandExecutionConstraint {
 		return false;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptValue()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValue()
 	 */
 	public function acceptValue($id, $value) {
 		foreach ($this->privilegesGrantItems as $item) {
@@ -61,8 +61,8 @@ class EiCommandExecutionConstraint implements CommandExecutionConstraint {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\mapping\MappingValidator::validate()
 	 */
-	public function validate(EiMapping $eiMapping) {
-		$values = new MappingArrayAccess($eiMapping, false);
+	public function validate(EiEntry $eiEntry) {
+		$values = new MappingArrayAccess($eiEntry, false);
 		$validationResults = array();
 		foreach ($this->privilegesGrantItems as $accessGrants) {
 			$validationResult = new SelectorValidationResult();

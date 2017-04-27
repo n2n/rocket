@@ -74,12 +74,12 @@ abstract class DisplayableEiPropAdapter extends ConfObjectPropertyEiPropAdapter 
 		return null;
 	}
 	
-// 	public function isEiMappingFilterable(): bool {
+// 	public function isEiEntryFilterable(): bool {
 // 		return false;
 // 	}
 	
-// 	public function createEiMappingFilterField(N2nContext $n2nContext): EiMappingFilterField {
-// 		throw new IllegalStateException('EiProp cannot provide an EiMappingFilterField: ' . $this);
+// 	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
+// 		throw new IllegalStateException('EiProp cannot provide an EiEntryFilterField: ' . $this);
 // 	}
 	
 // 	public function getTypeConstraint() {

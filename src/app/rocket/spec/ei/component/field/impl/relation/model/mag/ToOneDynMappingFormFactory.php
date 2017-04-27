@@ -22,12 +22,12 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 class ToOneDynMappingFormFactory {
 	private $eiFrameUtils;
 	private $inaccessibleCurrentEiObject;
-	private $currentEiMapping;
+	private $currentEiEntry;
 	private $currentMappingForm;
 	private $newMappingFormAvailable;
 	private $newMappingForm;
@@ -37,31 +37,31 @@ class ToOneDynMappingFormFactory {
 		$this->eiFrameUtils = $eiFrameUtils;
 	}
 	
-	public function setEiMapping(EiMapping $eiMapping = null) {
+	public function setEiEntry(EiEntry $eiEntry = null) {
 		$this->currentMappingForm = null;
 		$this->newMappingForm = null;
 		
-		if ($eiMapping === null) {
+		if ($eiEntry === null) {
 			return;
 		}
 		
-		if (!$eiMapping->isAccessible()) {
+		if (!$eiEntry->isAccessible()) {
 			$this->currentMappingForm = new MappingForm(
-					$this->eiFrameUtils->createIdentityString($eiMapping->getEiObject()),
-					$eiMapping);
+					$this->eiFrameUtils->createIdentityString($eiEntry->getEiObject()),
+					$eiEntry);
 			return;
 		}
 		
-		if ($eiMapping->getEiObject()->isNew()) {
+		if ($eiEntry->getEiObject()->isNew()) {
 			$this->newMappingForm = new MappingForm(
 					$this->eiFrameUtils->getGenericLabel(), null,
-					$this->eiFrameUtils->createEntryFormFromMapping($eiMapping));
+					$this->eiFrameUtils->createEntryFormFromMapping($eiEntry));
 			return;
 		}
 		
 		$this->currentMappingForm = new MappingForm(
-				$this->eiFrameUtils->getGenericLabel($eiMapping), null,
-				$this->eiFrameUtils->createEntryFormFromMapping($eiMapping));
+				$this->eiFrameUtils->getGenericLabel($eiEntry), null,
+				$this->eiFrameUtils->createEntryFormFromMapping($eiEntry));
 	}
 
 	public function getCurrentMappingForm() {

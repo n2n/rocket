@@ -33,11 +33,11 @@ abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModi
 	
 	public function setupEiFrame(EiFrame $eiFrame) {}
 		
-	public function setupEiMapping(Eiu $eiu) {}
+	public function setupEiEntry(Eiu $eiu) {}
 	
 	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
 	
-	public function setupEiEntryGui(EiEntryGui $eiObjectGui) {}
+	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}
 	
 	public function setupDraftDefinition(DraftDefinition $draftDefinition) {}
 }

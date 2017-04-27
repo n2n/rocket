@@ -105,9 +105,9 @@ class DraftListModel implements Dispatchable {
 		
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {
-			$eiMapping = $this->utils->createEiMapping(new DraftEiObject($draft));
+			$eiEntry = $this->utils->createEiEntry(new DraftEiObject($draft));
 			$this->entryGuis[$draft->getId()] = new EntryGui($eiMask->createListEntryGuiModel($eiFrame, 
-					$eiMapping, false)); 
+					$eiEntry, false)); 
 		}
 	}
 		

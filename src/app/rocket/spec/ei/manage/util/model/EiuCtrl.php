@@ -106,14 +106,14 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * @param string $liveIdRep
-	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */
-	public function lookupEiMapping(string $liveIdRep, bool $assignToEiu = false) {
-		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiObject($liveIdRep, false));
+	public function lookupEiEntry(string $liveIdRep, bool $assignToEiu = false) {
+		$eiEntry = $this->eiuFrame->createEiEntry($this->lookupEiObject($liveIdRep, false));
 		if ($assignToEiu) {
-			$this->eiuFrame->assignEiuEntry($eiMapping);
+			$this->eiuFrame->assignEiuEntry($eiEntry);
 		}
-		return $eiMapping;
+		return $eiEntry;
 	}
 	
 	/**
@@ -142,12 +142,12 @@ class EiuCtrl implements Lookupable {
 		return $eiObject;
 	}
 	
-	public function lookupEiMappingByDraftId($draftId, bool $assignToEiu = false) {
-		$eiMapping = $this->eiuFrame->createEiMapping($this->lookupEiObjectByDraftId($draftId, false));
+	public function lookupEiEntryByDraftId($draftId, bool $assignToEiu = false) {
+		$eiEntry = $this->eiuFrame->createEiEntry($this->lookupEiObjectByDraftId($draftId, false));
 		if ($assignToEiu) {
-			$this->eiuFrame->assignEiuEntry($eiMapping);
+			$this->eiuFrame->assignEiuEntry($eiEntry);
 		}
-		return $eiMapping;
+		return $eiEntry;
 	}
 	
 	public function redirectBack(string $fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {

@@ -21,29 +21,29 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-interface EiMappingListener {
+interface EiEntryListener {
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 */
-	public function onValidate(EiMapping $eiMapping);
+	public function onValidate(EiEntry $eiEntry);
 	
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 */
-	public function validated(EiMapping $eiMapping);
+	public function validated(EiEntry $eiEntry);
 	
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 */
-	public function onWrite(EiMapping $eiMapping);
+	public function onWrite(EiEntry $eiEntry);
 	
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 */
-	public function written(EiMapping $eiMapping);
+	public function written(EiEntry $eiEntry);
 	
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 */
-	public function flush(EiMapping $eiMapping);
+	public function flush(EiEntry $eiEntry);
 }

@@ -28,7 +28,7 @@ use rocket\spec\ei\EiType;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\EiEntityObj;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\LiveEiObject;
@@ -130,9 +130,9 @@ abstract class EiUtilsAdapter implements EiUtils {
 			return $this->getEiType();
 		}
 		
-		ArgUtils::valType($eiObjectObj, array(EiObject::class, EiMapping::class, EiEntityObj::class, 'object'), true);
+		ArgUtils::valType($eiObjectObj, array(EiObject::class, EiEntry::class, EiEntityObj::class, 'object'), true);
 		
-		if ($eiObjectObj instanceof EiMapping) {
+		if ($eiObjectObj instanceof EiEntry) {
 			return $eiObjectObj->getEiObject()->getEiEntityObj()->getEiType();
 		}
 		

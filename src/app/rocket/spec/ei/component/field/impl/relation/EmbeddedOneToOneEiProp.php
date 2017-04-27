@@ -132,8 +132,8 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		if ($value === null || ($eiObject->isDraft() && !$this->isDraftable())) return null;
 		
 		$targetEiuFrame = new EiuFrame($this->eiPropRelation->createTargetEditPseudoEiFrame(
-				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
-		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiMapping($targetEiuFrame), $eiObject->isDraft()));
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
+		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiObject->isDraft()));
 	}
 	
 	/**
@@ -141,7 +141,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu) {
-		$mapping = $eiu->entry()->getEiMapping();
+		$mapping = $eiu->entry()->getEiEntry();
 		
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));

@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\string;
 use n2n\util\config\Attributes;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 use n2n\impl\web\dispatch\mag\model\SecretStringMag;
 use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
@@ -54,14 +54,14 @@ class PasswordEiProp extends AlphanumericEiProp {
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		return new SecretStringMag($propertyName, $this->getLabelCode(), null,
-				$eiu->entry()->getEiMapping()->getEiObject()->isNew(), $this->getMaxlength(), 
+				$eiu->entry()->getEiEntry()->getEiObject()->isNew(), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelCode(), 'class' => 'form-control'));
 	}
 	
 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
-			EiMapping $eiMapping, Eiu $eiu) {
+			EiEntry $eiEntry, Eiu $eiu) {
 		$optionValue = $attributes->get($this->getId());
-		$eiObject = $eiMapping->getEiObject();
+		$eiObject = $eiEntry->getEiObject();
 		if (mb_strlen($optionValue) === 0 && !$eiObject->isNew()) {
 			return;
 		}
@@ -80,7 +80,7 @@ class PasswordEiProp extends AlphanumericEiProp {
 				$propertyValue = sha1($optionValue);
 				break;
 		}
-		$eiMapping->setValue($this->getId(), $propertyValue);
+		$eiEntry->setValue($this->getId(), $propertyValue);
 	}
 	
 	public static function getAlgorithms() {

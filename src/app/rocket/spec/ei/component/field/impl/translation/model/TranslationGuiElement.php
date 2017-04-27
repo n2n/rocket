@@ -107,7 +107,7 @@ class TranslationGuiField implements GuiFieldFork {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath, $makeEditable);
 			if ($result === null) continue;
 			
-			$fieldErrorInfo = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
+			$fieldErrorInfo = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry()->getEiEntry()->getMappingErrorInfo()
 					->getFieldErrorInfo($eiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;

@@ -70,9 +70,9 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $eiPropConfigurator;
 	}
 		
-// 	protected function checkForWriteAccess(EiMapping $eiMapping) {
+// 	protected function checkForWriteAccess(EiEntry $eiEntry) {
 // 		return true;
-// // 		$ssPrivilegeConstraint = $eiMapping->getSelectionPrivilegeConstraint();
+// // 		$ssPrivilegeConstraint = $eiEntry->getSelectionPrivilegeConstraint();
 // // 		if ($ssPrivilegeConstraint === null) return true;
 		
 // // 		foreach ($ssPrivilegeConstraint->getAccessGrants() as $accessGrant) {

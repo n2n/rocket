@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperImpl;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\security\EiCommandAccessRestrictor;
 
-class EiMapping {
+class EiEntry {
 	private $mappingErrorInfo;
 	private $eiObject;
 	private $accessible = true;
@@ -45,7 +45,7 @@ class EiMapping {
 	public function __construct(EiObject $eiObject) {
 		$this->mappingErrorInfo = new MappingErrorInfo();
 		$this->eiObject = $eiObject;
-		$this->constraints = new HashSet(EiMappingConstraint::class);
+		$this->constraints = new HashSet(EiEntryConstraint::class);
 		$this->eiCommandAccessRestrictors = new HashSet(EiCommandAccessRestrictor::class);
 	}
 	
@@ -99,7 +99,7 @@ class EiMapping {
 		throw new InaccessibleEntryException();
 	}
 	
-	public function getEiMappingConstraints() {
+	public function getEiEntryConstraints() {
 		return $this->constraints;
 	}
 	
@@ -212,7 +212,7 @@ class EiMapping {
 	// 	}
 	
 	
-	public function registerListener(EiMappingListener $listener, $relatedFieldId = null) {
+	public function registerListener(EiEntryListener $listener, $relatedFieldId = null) {
 		$objectHash = spl_object_hash($listener);
 		$this->listeners[$objectHash] = $listener;
 		if (!isset($this->listenerBindings[$relatedFieldId])) {
@@ -228,7 +228,7 @@ class EiMapping {
 		return array();
 	}
 	
-	public function unregisterListener(EiMappingListener $listener) {
+	public function unregisterListener(EiEntryListener $listener) {
 		$objectHash = spl_object_hash($listener);
 		unset($this->listeners[$objectHash]);
 		foreach ($this->listenerBindings as $fieldId => $listeners) {
@@ -349,7 +349,7 @@ class EiMapping {
 		return $this->mappingErrorInfo;
 	}
 	
-	public function copy(EiMapping $targetMapping) {
+	public function copy(EiEntry $targetMapping) {
 		$targetMappingDefinition = $targetMapping->getMappingDefinition();
 		$targetType = $targetMapping->getEiObject()->getType();
 		foreach ($targetMappingDefinition->getIds() as $id) {
@@ -360,7 +360,7 @@ class EiMapping {
 	}
 	
 	public function equals($obj) {
-		return $obj instanceof EiMapping && $this->determineEiType()->equals($obj->determineEiType())
+		return $obj instanceof EiEntry && $this->determineEiType()->equals($obj->determineEiType())
 				&& $this->eiObject->equals($obj->getEiObject());
 	}
 	
@@ -369,7 +369,7 @@ class EiMapping {
 	}
 }
 
-class OnWriteMappingListener implements EiMappingListener {
+class OnWriteMappingListener implements EiEntryListener {
 	private $closure;
 	/**
 	 * @param \Closure $closure
@@ -378,29 +378,29 @@ class OnWriteMappingListener implements EiMappingListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onValidate()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onValidate()
 	 */
-	public function onValidate(EiMapping $eiMapping) { }
+	public function onValidate(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::validated()
 	 */
-	public function validated(EiMapping $eiMapping) { }
+	public function validated(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onWrite()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onWrite()
 	 */
-	public function onWrite(EiMapping $eiMapping) {
-		$this->closure->__invoke($eiMapping);
+	public function onWrite(EiEntry $eiEntry) {
+		$this->closure->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::written()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::written()
 	 */
-	public function written(EiMapping $eiMapping) {}
+	public function written(EiEntry $eiEntry) {}
 	
-	public function flush(EiMapping $eiMapping) {}
+	public function flush(EiEntry $eiEntry) {}
 
 }
 
-class WrittenMappingListener implements EiMappingListener {
+class WrittenMappingListener implements EiEntryListener {
 	private $closure;
 	/**
 	 * @param \Closure $closure
@@ -409,28 +409,28 @@ class WrittenMappingListener implements EiMappingListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onValidate()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onValidate()
 	 */
-	public function onValidate(EiMapping $eiMapping) { }
+	public function onValidate(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::validated()
 	 */
-	public function validated(EiMapping $eiMapping) { }
+	public function validated(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onWrite()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onWrite()
 	 */
-	public function onWrite(EiMapping $eiMapping) {}
+	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::written()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::written()
 	 */
-	public function written(EiMapping $eiMapping) {
-		$this->closure->__invoke($eiMapping);
+	public function written(EiEntry $eiEntry) {
+		$this->closure->__invoke($eiEntry);
 	}
 	
-	public function flush(EiMapping $eiMapping) {}
+	public function flush(EiEntry $eiEntry) {}
 }
 
-class OnValidateMappingListener implements EiMappingListener {
+class OnValidateMappingListener implements EiEntryListener {
 	private $closure;
 	/**
 	 * @param \Closure $closure
@@ -439,28 +439,28 @@ class OnValidateMappingListener implements EiMappingListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onValidate()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onValidate()
 	 */
-	public function onValidate(EiMapping $eiMapping) { 
-		$this->closure->__invoke($eiMapping);
+	public function onValidate(EiEntry $eiEntry) { 
+		$this->closure->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::validated()
 	 */
-	public function validated(EiMapping $eiMapping) { }
+	public function validated(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onWrite()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onWrite()
 	 */
-	public function onWrite(EiMapping $eiMapping) {}
+	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::written()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::written()
 	 */
-	public function written(EiMapping $eiMapping) {}
+	public function written(EiEntry $eiEntry) {}
 	
-	public function flush(EiMapping $eiMapping) {}
+	public function flush(EiEntry $eiEntry) {}
 }
 
-class ValidatedMappingListener implements EiMappingListener {
+class ValidatedMappingListener implements EiEntryListener {
 	private $closure;
 	/**
 	 * @param \Closure $closure
@@ -469,28 +469,28 @@ class ValidatedMappingListener implements EiMappingListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onValidate()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onValidate()
 	 */
-	public function onValidate(EiMapping $eiMapping) {}
+	public function onValidate(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::validated()
 	 */
-	public function validated(EiMapping $eiMapping) { 
-		$this->closure->__invoke($eiMapping);
+	public function validated(EiEntry $eiEntry) { 
+		$this->closure->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onWrite()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onWrite()
 	 */
-	public function onWrite(EiMapping $eiMapping) {}
+	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::written()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::written()
 	 */
-	public function written(EiMapping $eiMapping) {}
+	public function written(EiEntry $eiEntry) {}
 	
-	public function flush(EiMapping $eiMapping) {}
+	public function flush(EiEntry $eiEntry) {}
 }
 
-class FlushMappingListener implements EiMappingListener {
+class FlushMappingListener implements EiEntryListener {
 	private $closure;
 	/**
 	 * @param \Closure $closure
@@ -499,36 +499,36 @@ class FlushMappingListener implements EiMappingListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onValidate()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onValidate()
 	 */
-	public function onValidate(EiMapping $eiMapping) {}
+	public function onValidate(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::validated()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::validated()
 	 */
-	public function validated(EiMapping $eiMapping) {}
+	public function validated(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::onWrite()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::onWrite()
 	 */
-	public function onWrite(EiMapping $eiMapping) {}
+	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingListener::written()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryListener::written()
 	 */
-	public function written(EiMapping $eiMapping) {}
+	public function written(EiEntry $eiEntry) {}
 	
-	public function flush(EiMapping $eiMapping) {
-		$this->closure->__invoke($eiMapping);
+	public function flush(EiEntry $eiEntry) {
+		$this->closure->__invoke($eiEntry);
 	}
 }
 
-// class SimpleEiMappingConstraint implements EiMappingConstraint {
+// class SimpleEiEntryConstraint implements EiEntryConstraint {
 // 	private $closure;
 
 // 	public function __construct(\Closure $closure) {
 // 		$this->closure = $closure;
 // 	}
 
-// 	public function validate(EiMapping $eiMapping) {
-// 		if (true === $this->closure->__invoke($eiMapping)) return;
+// 	public function validate(EiEntry $eiEntry) {
+// 		if (true === $this->closure->__invoke($eiEntry)) return;
 		
 // 		$eiObjectMapp
 // 	}

@@ -93,7 +93,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu) {
-		$mapping = $eiu->entry()->getEiMapping();
+		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 	

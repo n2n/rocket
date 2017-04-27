@@ -68,7 +68,7 @@ class AddController extends ControllerAdapter {
 		
 		$copyFrom = null;
 		if ($copyIdRep !== null) {
-			$copyFrom = $this->eiuCtrl->lookupEiMapping($copyIdRep);
+			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyIdRep);
 		}
 		
 		$entryForm = $eiuFrame->createNewEntryForm(false, $copyFrom);

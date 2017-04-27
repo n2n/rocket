@@ -65,7 +65,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 
 		if (!$eiu->entryGui()->isViewModeOverview()) return array();
 		
-		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiEntry = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
@@ -73,14 +73,14 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'before', $eiMapping->getIdRep())
+								->ext($this->getId(), 'before', $eiEntry->getIdRep())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))), 
 						new ControlButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'after', $eiMapping->getIdRep())
+								->ext($this->getId(), 'after', $eiEntry->getIdRep())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),

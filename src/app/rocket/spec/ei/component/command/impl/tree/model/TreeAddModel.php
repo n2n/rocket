@@ -78,17 +78,17 @@ class TreeAddModel extends AddModel {
 			$parentEntity = $this->parentEiObject->getLiveEntityObj();
 		}
 		
-		$eiMapping = $this->entryForm->buildEiMapping();
+		$eiEntry = $this->entryForm->buildEiEntry();
 		
-		$this->entryManager->create($eiMapping);
+		$this->entryManager->create($eiEntry);
 
 		$mappingValidationResult = new MappingValidationResult();
-		if (!$eiMapping->save($mappingValidationResult)) {
+		if (!$eiEntry->save($mappingValidationResult)) {
 			$messageContainer->addAll($mappingValidationResult->getMessages());
 			return false;
 		}
 		
-		$entity = $eiMapping->getEiObject()->getEntityObj();
+		$entity = $eiEntry->getEiObject()->getEntityObj();
 		$eiFrame = $this->getCurrentEntryModel()->getEiFrame();
 		$em = $eiFrame->getEntityManager();
 		

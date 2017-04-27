@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
 use rocket\spec\ei\component\field\EiProp;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
 
 class CommonScalarEiProperty implements ScalarEiProperty {
@@ -47,8 +47,8 @@ class CommonScalarEiProperty implements ScalarEiProperty {
 		return EiPropPath::from($this->eiProp);
 	}
 
-	public function buildScalarValue(EiMapping $eiMapping) {
-		return $this->eiFieldValueToScalarValue($eiMapping->getValue($this->eiProp));
+	public function buildScalarValue(EiEntry $eiEntry) {
+		return $this->eiFieldValueToScalarValue($eiEntry->getValue($this->eiProp));
 	}
 
 	public function eiFieldValueToScalarValue($eiFieldValue) {

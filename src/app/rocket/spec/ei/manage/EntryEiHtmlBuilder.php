@@ -46,7 +46,7 @@ class EntryEiHtmlBuilder {
 	
 	private $guiDefinition;
 	private $eiuFrame;
-	private $eiObjectGuis;
+	private $eiEntryGuis;
 	private $meta;
 	
 	public function __construct(HtmlView $view, $eiuFrame, array $eiuEntryGuis = null) {
@@ -154,17 +154,17 @@ class EntryEiHtmlBuilder {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
 		
-		$eiObjectGui = $eiuEntryGui->getEiEntryGui();
-		$displayable = $eiObjectGui->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
-				$eiObjectGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
+		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
+				$eiEntryGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
-		if (!$eiObjectGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
+		if (!$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
 					$this->buildAttrs($guiIdPath));
 		}
 		
-		$editableInfo = $eiObjectGui->getEditableWrapperByGuiIdPath($guiIdPath);
+		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
 		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
 		$this->pushGuiPropInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
@@ -180,7 +180,7 @@ class EntryEiHtmlBuilder {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 

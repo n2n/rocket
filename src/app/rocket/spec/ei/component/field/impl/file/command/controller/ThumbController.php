@@ -56,14 +56,14 @@ class ThumbController extends ControllerAdapter {
 	
 	public function index($idRep, ParamQuery $refPath) {
 		$redirectUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
-		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
+		$eiEntry = $this->eiCtrlUtils->lookupEiEntry($idRep);
 		
 		// because ThumbEiCommand gets added always on a supreme EiThing
-		if (!$this->fileEiProp->getEiEngine()->getEiType()->isObjectValid($eiMapping->getEiObject()->getLiveObject())) {
+		if (!$this->fileEiProp->getEiEngine()->getEiType()->isObjectValid($eiEntry->getEiObject()->getLiveObject())) {
 			throw new PageNotFoundException('');
 		}
 
-		$file = $eiMapping->getValue($this->fileEiProp);
+		$file = $eiEntry->getValue($this->fileEiProp);
 		CastUtils::assertTrue($file instanceof File);
 		
 		$imageDimensions = null;
@@ -82,7 +82,7 @@ class ThumbController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->applyBreadcrumbs($eiMapping->getEiObject());
+		$this->applyBreadcrumbs($eiEntry->getEiObject());
 				
 		$this->forward('..\view\thumb.html', 
 				array('thumbModel' => $thumbModel, 'cancelUrl' => $redirectUrl));

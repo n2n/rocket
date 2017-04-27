@@ -28,7 +28,7 @@ use rocket\spec\ei\component\field\DraftableEiProp;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiMappingFilterField;
+use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiEntryFilterField;
 use rocket\spec\ei\manage\util\model\GlobalEiUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
@@ -46,7 +46,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	}
 
 	public function buildEiField(Eiu $eiu) {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
 		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
@@ -95,15 +95,15 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		return $this->eiPropRelation->getTargetEiMask()->createIdentityString($targetEiObject, $n2nLocale);
 	}
 			
-	public function isEiMappingFilterable(): bool {
+	public function isEiEntryFilterable(): bool {
 		return true;
 	}
 	
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {		
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {		
 		return null;
 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 		
-		return new ToOneEiMappingFilterField($this->getLabelLstr(), $this->getEntityProperty(),
+		return new ToOneEiEntryFilterField($this->getLabelLstr(), $this->getEntityProperty(),
 				new GlobalEiUtils($this->getEiPropRelation()->getTargetEiMask(), $n2nContext),
 				$this->createAdvTargetFilterDef($n2nContext));
 	}

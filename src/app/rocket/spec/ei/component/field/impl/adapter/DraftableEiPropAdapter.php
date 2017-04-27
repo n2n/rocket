@@ -68,7 +68,7 @@ abstract class DraftableEiPropAdapter extends EditableEiPropAdapter implements C
 			return parent::isReadOnly($eiu);
 		}
 		
-// 		if (!$this->checkForWriteAccess($eiu->entry()->getEiMapping())) return true;
+// 		if (!$this->checkForWriteAccess($eiu->entry()->getEiEntry())) return true;
 			
 		return $this->standardEditDefinition->isReadOnly() || !$this->isDraftable();
 	}

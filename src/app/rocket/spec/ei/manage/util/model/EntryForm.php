@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\MappingDefinition;
@@ -146,13 +146,13 @@ class EntryForm implements Dispatchable {
 		});
 	}
 	/**
-	 * @return EiMapping
+	 * @return EiEntry
 	 * @throws IllegalStateException
 	 */
-	public function buildEiMapping() {
+	public function buildEiEntry() {
 		IllegalStateException::assertTrue(isset($this->entryModelForms[$this->chosenId]));
 		$this->entryModelForms[$this->chosenId]->save();
-		return $this->entryModelForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry()->getEiMapping();
+		return $this->entryModelForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry()->getEiEntry();
 	}
 	
 	/**
@@ -166,19 +166,19 @@ class EntryForm implements Dispatchable {
 
 // class EntryFormResult {
 // 	private $validationResult;
-// 	private $eiMapping;
+// 	private $eiEntry;
 	
-// 	public function __construct(ValidationResult $validationResult, EiMapping $eiMapping = null) {
+// 	public function __construct(ValidationResult $validationResult, EiEntry $eiEntry = null) {
 // 		$this->validationResult = $validationResult;
-// 		$this->eiMapping = $eiMapping;
+// 		$this->eiEntry = $eiEntry;
 // 	}
 	
 // 	public function isValid() {
 // 		return $this->validationResult->isValid();
 // 	}
 	
-// 	public function getEiMapping() {
-// 		return $this->eiMapping;
+// 	public function getEiEntry() {
+// 		return $this->eiEntry;
 // 	}
 // }
 

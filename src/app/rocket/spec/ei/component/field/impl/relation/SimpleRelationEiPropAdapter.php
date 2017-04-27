@@ -150,7 +150,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return null;
 	}
 	
@@ -168,13 +168,13 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			public function getFilterDefinition(): FilterDefinition {
 				return (new CritmodFactory($this->targetEiMask->getEiEngine()->getEiPropCollection(),
 								$this->targetEiMask->getEiEngine()->getEiModificatorCollection()))
-						->createEiMappingFilterDefinition($this->n2nContext);
+						->createEiEntryFilterDefinition($this->n2nContext);
 			}
 
 			public function getFilterAjahHook(): FilterAjahHook {
 				$targetEiMask = $this->targeteiFrame->getTargetEiMask();
 
-				return GlobalFilterFieldController::buildEiMappingFilterAjahHook(
+				return GlobalFilterFieldController::buildEiEntryFilterAjahHook(
 						$this->n2nContext->lookup(ScrRegistry::class),
 						$this->targetEiMask->getEiEngine()->getEiType()->getId(), $this->targetEiMask->getId());
 			}

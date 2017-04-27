@@ -28,7 +28,7 @@ use n2n\impl\web\dispatch\map\val\ValEnum;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\EiCommandPath;
@@ -53,7 +53,7 @@ class EiPrivilegeGrantForm implements Dispatchable {
 	private $restrictionFilterGroupForm; 
 	
 	public function __construct(EiPrivilegeGrant $eiPrivilegeGrant, PrivilegeDefinition $privilegeDefinition,
-			EiMappingFilterDefinition $restrictionFilterDefinition) {
+			EiEntryFilterDefinition $restrictionFilterDefinition) {
 		$this->eiPrivilegesGrant = $eiPrivilegeGrant;
 		$this->privilegeDefinition = $privilegeDefinition;
 

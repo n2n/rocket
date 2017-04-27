@@ -23,7 +23,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\EiFrame;
 	use rocket\spec\config\mask\model\GuiSection;
-	use rocket\spec\config\mask\model\DisplayStructure;
+	use rocket\spec\ei\manage\gui\DisplayStructure;
 	use rocket\spec\ei\manage\EntryGui;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\util\model\Eiu;
@@ -52,15 +52,16 @@
 				<div class="rocket-controls">
 					<?php $formHtml->magField() ?>
 				</div>
-			<?php $formHtml->magClose() ?>	
+			<?php $formHtml->magClose() ?>
 		<?php endforeach ?>
 	</div>
 <?php endif ?>
 
 <div class="rocket-properties">
-	<?php foreach ($displayStructure->getDisplayItems() as $orderItem): ?>
-		<?php if ($orderItem->isSection()): ?>
-			<?php $guiSection = $orderItem->getGuiSection() ?>
+	<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
+		<?php if ($displayItem->hasDisplayStructure()): ?>
+			<?php $entryEiHtml->groupOpen() ?>
+			<?php $guiSection = $displayItem->getGuiSection() ?>
 			<div class="<?php $html->out('rocket-group-' . $guiSection->getType()) ?> 
 					<?php $html->out($formHtml->meta()->hasErrors($propertyPath) ? 'rocket-has-error' : '') ?>">
 				<label><?php $html->out($guiSection->getTitle()) ?></label>
@@ -71,7 +72,7 @@
 				</div>
 			</div>
 		<?php else: ?>
-			<?php $entryEiHtml->openInputField('div', $orderItem->getGuiIdPath()) ?>
+			<?php $entryEiHtml->openInputField('div', $displayItem->getGuiIdPath()) ?>
 				<?php $entryEiHtml->label() ?>
 				<?php $view->out('<div class="rocket-controls">') ?>
 					<?php $entryEiHtml->field() ?>

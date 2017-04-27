@@ -25,7 +25,7 @@ use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\security\EiPropAccess;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 interface EiExecution {
 	
@@ -50,10 +50,10 @@ interface EiExecution {
 	public function getEiCommand(): EiCommand;
 	
 	/**
-	 * @return \rocket\spec\ei\manage\mapping\EiMappingConstraint
+	 * @return \rocket\spec\ei\manage\mapping\EiEntryConstraint
 	 * @throws InaccessibleControlException 
 	 */
-	public function getEiMappingConstraint();
+	public function getEiEntryConstraint();
 	
 	/**
 	 * @return \rocket\spec\ei\manage\critmod\CriteriaConstraint
@@ -62,10 +62,10 @@ interface EiExecution {
 	public function getCriteriaConstraint();
 	
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 * @return EiCommandAccessRestrictor
 	 */
-	public function buildEiCommandAccessRestrictor(EiMapping $eiMapping);
+	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry);
 	
 	/**
 	 * @param EiPropPath $eiPropPath

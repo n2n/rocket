@@ -34,7 +34,7 @@ use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\ei\manage\draft\DraftDefinition;
@@ -140,8 +140,8 @@ class EiEngine {
 		return $this->getCritmodFactory()->createFilterDefinition($n2nContext);
 	}
 	
-	public function createEiMappingFilterDefinition(N2nContext $n2nContext) {
-		return $this->getCritmodFactory()->createEiMappingFilterDefinition($n2nContext);
+	public function createEiEntryFilterDefinition(N2nContext $n2nContext) {
+		return $this->getCritmodFactory()->createEiEntryFilterDefinition($n2nContext);
 	}
 	
 	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {
@@ -166,14 +166,14 @@ class EiEngine {
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
-	public function createEiMapping(EiFrame $eiFrame, EiObject $eiObject): EiMapping {
+	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject): EiEntry {
 		$mappingFactory = new MappingFactory($this->eiPropCollection, $this->eiModificatorCollection);
-		return $mappingFactory->createEiMapping($eiFrame, $eiObject);
+		return $mappingFactory->createEiEntry($eiFrame, $eiObject);
 	}
 	
-	public function createEiMappingCopy(EiFrame $eiFrame, EiObject $eiObject, EiMapping $from) {
+	public function createEiEntryCopy(EiFrame $eiFrame, EiObject $eiObject, EiEntry $from) {
 		$mappingFactory = new MappingFactory($this->eiPropCollection, $this->eiModificatorCollection);
-		return $mappingFactory->createEiMapping($eiFrame, $eiObject, $from);
+		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
 	}
 	
 	

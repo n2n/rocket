@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiProp;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\magic\MagicObjectUnavailableException;
@@ -118,18 +118,18 @@ class WysiwygEiProp extends AlphanumericEiProp {
 // 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiEntry = $eiu->entry()->getEiEntry();
 		return new WysiwygOption($propertyName, $this->getLabelLstr(), null,
 				$this->isMandatory($eiu), 
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
-				$this->isTableEditingEnabled(), $this->obtainLinkConfigurations($eiMapping, $eiu), 
+				$this->isTableEditingEnabled(), $this->obtainLinkConfigurations($eiEntry, $eiu), 
 				$this->obtainCssConfiguration());
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
 	 */
-	private function obtainLinkConfigurations(EiMapping $eiMapping, Eiu $eiu) {
+	private function obtainLinkConfigurations(EiEntry $eiEntry, Eiu $eiu) {
 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();
 		
 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
@@ -138,7 +138,7 @@ class WysiwygEiProp extends AlphanumericEiProp {
 			try {
 				if (null !== ($linkConfiguration = $n2nContext->lookup($linkConfigurationClass)) 
 						&& $linkConfiguration instanceof WysiwygLinkConfig) {
-					$linkConfiguration->setup($eiMapping, $eiu);
+					$linkConfiguration->setup($eiEntry, $eiu);
 					$linkConfigurations[] = $linkConfiguration;
 				}
 			} catch (MagicObjectUnavailableException $e) {}

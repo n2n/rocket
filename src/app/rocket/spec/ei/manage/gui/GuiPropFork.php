@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\gui;
 
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 interface GuiPropFork {
 
@@ -49,5 +49,5 @@ interface GuiPropFork {
 	 * @param GuiIdPath $guiIdPath
 	 * @return null|\rocket\spec\ei\manage\mapping\EiFieldWrapper
 	 */
-	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath);
+	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath);
 }

@@ -35,13 +35,13 @@ use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\config\mask\model\ControlOrder;
-use rocket\spec\config\mask\model\DisplayStructure;
+use rocket\spec\ei\manage\gui\DisplayStructure;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;
@@ -273,19 +273,19 @@ class CommonEiMask implements EiMask, Identifiable {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createEntryControls()
 	 */
-	public function createEntryControls(EiuEntryGui $eiuGui, HtmlView $view): array {
+	public function createEntryControls(EiuEntryGui $eiuEntryGui, HtmlView $view): array {
 		try {
-			$eiuGui->getEiuEntry()->getEiuFrame();
+			$eiuEntryGui->getEiuEntry()->getEiuFrame();
 		} catch (EiuPerimeterException $e) {
 			throw new \InvalidArgumentException('Invalid EiuEntryGui passed.', 0, $e);
 		}
 		
-		$eiu = new Eiu($eiuGui);
+		$eiu = new Eiu($eiuEntryGui);
 		
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$eiuGui->getEiuEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
+					|| !$eiuEntryGui->getEiuEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
 				continue;
 			}
 			
@@ -414,9 +414,9 @@ class CommonEiMask implements EiMask, Identifiable {
 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_EDIT;
 		}
 				
-		$eiObjectGui = $this->createEiEntryGui($eiFrame, $eiMapping, $viewMode, $makeEditable);
+		$eiEntryGui = $this->createEiEntryGui($eiFrame, $eiEntry, $viewMode, $makeEditable);
 		
-		return new CommonEntryGuiModel($this, $eiObjectGui, $eiMapping);
+		return new CommonEntryGuiModel($this, $eiEntryGui, $eiEntry);
 	}
 	
 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
@@ -463,7 +463,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 // 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
-// 		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
+// 		$viewMode = $this->determineEditViewMode($entryModel->getEiEntry());
 	
 // 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 		

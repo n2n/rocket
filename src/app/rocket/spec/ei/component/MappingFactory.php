@@ -29,7 +29,7 @@ use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\security\InaccessibleEntryException;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\MappingProfile;
 use rocket\spec\ei\manage\mapping\EiFieldFork;
@@ -76,23 +76,23 @@ class MappingFactory {
 	 * @param EiObject $eiObject
 	 * @param PrivilegeConstraint $privilegeConstraint
 	 * @throws InaccessibleEntryException
-	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */
-	public function createEiMapping(EiFrame $eiFrame, EiObject $eiObject, EiMapping $copyFrom = null) {
-		$eiMapping = new EiMapping($eiObject);
-		$eiu = new Eiu($eiFrame, $eiMapping);
+	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, EiEntry $copyFrom = null) {
+		$eiEntry = new EiEntry($eiObject);
+		$eiu = new Eiu($eiFrame, $eiEntry);
 		
-		$this->assembleMappingProfile($eiu, $eiMapping, $copyFrom);
-		$eiFrame->restrictEiMapping($eiMapping);
+		$this->assembleMappingProfile($eiu, $eiEntry, $copyFrom);
+		$eiFrame->restrictEiEntry($eiEntry);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
-			$constraint->setupEiMapping($eiu);
+			$constraint->setupEiEntry($eiu);
 		}
 	
-		return $eiMapping;
+		return $eiEntry;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
+	private function assembleMappingProfile(Eiu $eiu, EiEntry $eiMappping, EiEntry $fromEiEntry = null) {
 		$eiObject = $eiMappping->getEiObject();
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof FieldEiProp)) continue;
@@ -100,8 +100,8 @@ class MappingFactory {
 			$eiPropPath = new EiPropPath(array($id));
 			
 			$eiField = null;
-			if ($fromEiMapping !== null && $fromEiMapping->containsEiField($eiPropPath)) {
-				$fromEiField = $fromEiMapping->getEiField($eiPropPath);
+			if ($fromEiEntry !== null && $fromEiEntry->containsEiField($eiPropPath)) {
+				$fromEiField = $fromEiEntry->getEiField($eiPropPath);
 				$eiField = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
 				ArgUtils::valTypeReturn($eiField, EiField::class, $fromEiField, 'copyEiField', true);
 			}
@@ -116,8 +116,8 @@ class MappingFactory {
 			}
 				
 			$eiFieldFork = null;
-			if ($fromEiMapping !== null && $eiMappping->containsEiFieldFork($eiPropPath)) {
-				$eiFieldFork = $fromEiMapping->getEiFieldFork($eiPropPath)->copyEiFieldFork($eiObject);
+			if ($fromEiEntry !== null && $eiMappping->containsEiFieldFork($eiPropPath)) {
+				$eiFieldFork = $fromEiEntry->getEiFieldFork($eiPropPath)->copyEiFieldFork($eiObject);
 			}
 			
 			if ($eiFieldFork === null) {

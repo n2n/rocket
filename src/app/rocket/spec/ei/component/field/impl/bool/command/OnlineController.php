@@ -50,9 +50,9 @@ class OnlineController extends ControllerAdapter {
 	}
 	
 	private function setStatus($status, $idRep) {
-		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
-		$eiMapping->setValue($this->onlineEiProp, $status);		
-		if (!$eiMapping->save()) {
+		$eiEntry = $this->eiCtrlUtils->lookupEiEntry($idRep);
+		$eiEntry->setValue($this->onlineEiProp, $status);		
+		if (!$eiEntry->save()) {
 			throw new ForbiddenException();
 		}
 		

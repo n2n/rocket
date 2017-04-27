@@ -29,7 +29,7 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\ManageState;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
@@ -258,18 +258,18 @@ class EiFrame {
 	}
 	
 	/**
-	 * @return EiMapping
+	 * @return EiEntry
 	 */
-	public function restrictEiMapping(EiMapping $eiMapping) {
-		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiMappingConstraint())) {
-			$eiMapping->getEiMappingConstraintSet()->add($mappingConstraint);
+	public function restrictEiEntry(EiEntry $eiEntry) {
+		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiEntryConstraint())) {
+			$eiEntry->getEiEntryConstraintSet()->add($mappingConstraint);
 		}
 		
-		if (null !== ($restrictor = $this->getEiExecution()->buildEiCommandAccessRestrictor($eiMapping))) {
-			$eiMapping->getEiCommandAccessRestrictorSet()->add($restrictor);
+		if (null !== ($restrictor = $this->getEiExecution()->buildEiCommandAccessRestrictor($eiEntry))) {
+			$eiEntry->getEiCommandAccessRestrictorSet()->add($restrictor);
 		}
 		
-		return $eiMapping;
+		return $eiEntry;
 	}
 	
 	public function setOverviewDisabled(bool $overviewDisabled) {

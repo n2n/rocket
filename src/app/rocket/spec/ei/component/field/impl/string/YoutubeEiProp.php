@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\string;
 
 use n2n\web\ui\Raw;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 
@@ -37,7 +37,7 @@ class YoutubeEiProp extends AlphanumericEiProp {
 	
 	public function createOutputUiComponent(HtmlView $view, 
 			Eiu $eiu)  {
-		$value = $eiMapping->getValue($this->getId());
+		$value = $eiEntry->getValue($this->getId());
 		if ($value === null) return null;
 		
 		$html = $view->getHtmlBuilder();

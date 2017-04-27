@@ -30,7 +30,7 @@ use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoComma
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedPseudoCommand;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
@@ -81,7 +81,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 // 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedEditPseudoCommand);
 	}
 	
-	public function isReadOnlyRequired(EiMapping $mapping, EiFrame $eiFrame) {
+	public function isReadOnlyRequired(EiEntry $mapping, EiFrame $eiFrame) {
 		if (parent::isReadOnlyRequired($mapping, $eiFrame) || $this->hasRecursiveConflict($eiFrame)) return true;
 
 		$esConstraint = $eiFrame->getManageState()->getSecurityManager()

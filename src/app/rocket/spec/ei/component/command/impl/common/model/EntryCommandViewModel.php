@@ -142,7 +142,7 @@ class EntryCommandViewModel {
 	}
 	
 	public function getEiEntityObjUrl(HttpContext $httpContext) {
-		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());
+		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiEntry()->toEntryNavPoint());
 	}
 	
 	public function setCancelUrl(Url $cancelUrl) {
@@ -160,7 +160,7 @@ class EntryCommandViewModel {
 			return $this->eiFrame->getOverviewUrl($httpContext);
 		}
 		
-		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiMapping()->toEntryNavPoint());	
+		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiEntry()->toEntryNavPoint());	
 	}
 }
 // class EntryViewInfo {

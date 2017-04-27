@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use n2n\reflection\property\AccessProxy;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\mapping\MappingListenerAdapter;
 use rocket\spec\ei\manage\util\model\Eiu;
 
@@ -34,16 +34,16 @@ class TargetMasterRelationEiModificator extends EiModificatorAdapter {
 		$this->eiPropRelation = $eiPropRelation;
 	}
 
-	public function setupEiMapping(Eiu $eiu) {
-		$eiMapping = $eiu->entry()->getEiMapping();
-		if ($eiMapping->getEiObject()->isDraft()) return;
+	public function setupEiEntry(Eiu $eiu) {
+		$eiEntry = $eiu->entry()->getEiEntry();
+		if ($eiEntry->getEiObject()->isDraft()) return;
 		
 		$that = $this;
-		$eiMapping->registerListener(new TargetMasterEiMappingListener($this->eiPropRelation));
+		$eiEntry->registerListener(new TargetMasterEiEntryListener($this->eiPropRelation));
 	}
 }
 
-class TargetMasterEiMappingListener extends MappingListenerAdapter {
+class TargetMasterEiEntryListener extends MappingListenerAdapter {
 	private $eiPropRelation;
 	private $accessProxy;
 	private $orphanRemoval;
@@ -56,12 +56,12 @@ class TargetMasterEiMappingListener extends MappingListenerAdapter {
 		$this->orphanRemoval = $this->eiPropRelation->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
 	}
 	
-	public function onWrite(EiMapping $eiMapping) {
-		$this->oldValue = $this->accessProxy->getValue($eiMapping->getEiObject()->getLiveObject());
+	public function onWrite(EiEntry $eiEntry) {
+		$this->oldValue = $this->accessProxy->getValue($eiEntry->getEiObject()->getLiveObject());
 	}
 	
-	public function written(EiMapping $eiMapping) {
-		$entityObj = $eiMapping->getEiObject()->getLiveObject();
+	public function written(EiEntry $eiEntry) {
+		$entityObj = $eiEntry->getEiObject()->getLiveObject();
 		
 		if ($this->eiPropRelation->isTargetMany()) {
 			$this->writeToMany($entityObj);

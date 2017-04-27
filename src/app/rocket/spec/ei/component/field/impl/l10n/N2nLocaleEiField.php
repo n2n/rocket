@@ -32,7 +32,7 @@ use rocket\spec\ei\component\field\SortableEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
-use rocket\spec\ei\manage\mapping\EiMapping; 
+use rocket\spec\ei\manage\mapping\EiEntry; 
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiPropAdapter;
@@ -73,7 +73,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
-		$value = $eiu->entry()->getEiMapping()->getValue($this->getId());
+		$value = $eiu->entry()->getEiEntry()->getValue($this->getId());
 		if (null === ($n2nLocale = N2nLocale::create($value))) return null;
 		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
 	}
@@ -94,13 +94,13 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 	}
 	
 // 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
-// 			EiMapping $eiMapping, Eiu $eiu) {
-// 		$eiMapping->setValue($this->id, N2nLocale::create($attributes->get($this->id)));
+// 			EiEntry $eiEntry, Eiu $eiu) {
+// 		$eiEntry->setValue($this->id, N2nLocale::create($attributes->get($this->id)));
 // 	}
 	
-// 	public function propertyValueToOptionAttributeValue(EiMapping $eiMapping, 
+// 	public function propertyValueToOptionAttributeValue(EiEntry $eiEntry, 
 // 			Attributes $attributes, Eiu $eiu) {
-// 		$propertyValue = $eiMapping->getValue(EiPropPath::from($this));
+// 		$propertyValue = $eiEntry->getValue(EiPropPath::from($this));
 // 		$attributeValue = null;
 // 		if ($propertyValue instanceof N2nLocale) {
 // 			$attributeValue = $propertyValue->getId(); 
@@ -147,7 +147,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 				$this->buildN2nLocaleArray($n2nContext->getN2nLocale()));
 	}
 	
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return null;
 	}
 	

@@ -58,11 +58,11 @@ class DetailController extends ControllerAdapter {
 	}
 	
 	public function doDraft($draftId) { 
-		$eiMapping = $this->eiuCtrl->lookupEiMappingByDraftId($draftId);
+		$eiEntry = $this->eiuCtrl->lookupEiEntryByDraftId($draftId);
 
-		$entryGuiModel = $this->eiuCtrl->frame()->createBulkyEntryGuiModel($eiMapping, false);
+		$entryGuiModel = $this->eiuCtrl->frame()->createBulkyEntryGuiModel($eiEntry, false);
 		
-		$this->applyBreadcrumbs($eiMapping->getEiObject());
+		$this->applyBreadcrumbs($eiEntry->getEiObject());
 
 		$this->forward('..\view\detail.html', array('entryCommandViewModel' 
 				=> new EntryCommandViewModel($this->eiuCtrl->frame(), $entryGuiModel)));

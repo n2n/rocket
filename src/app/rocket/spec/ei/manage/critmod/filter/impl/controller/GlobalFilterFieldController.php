@@ -110,12 +110,12 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterFieldId = (string) $filterFieldId;
-		$eiMappingFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
-				->createEiMappingFilterDefinition($this->getN2nContext());
+		$eiEntryFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
+				->createEiEntryFilterDefinition($this->getN2nContext());
 		$filterFieldItemForm = null;
 		try {
 			$filterFieldItemForm = new FilterFieldItemForm(new FilterItemData($filterFieldId, new Attributes()), 
-					$eiMappingFilterDefinition);
+					$eiEntryFilterDefinition);
 		} catch (UnknownFilterFieldException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
@@ -145,7 +145,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 				$baseUrl->extR(array('group', $eiTypeId, $eiMaskId)));
 	}
 	
-	public static function buildEiMappingFilterAjahHook(ScrRegistry $scrRegistry, string $eiTypeId, string $eiMaskId = null): FilterAjahHook {
+	public static function buildEiEntryFilterAjahHook(ScrRegistry $scrRegistry, string $eiTypeId, string $eiMaskId = null): FilterAjahHook {
 		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterFieldController::class);
 		
 		return new FilterAjahHook(

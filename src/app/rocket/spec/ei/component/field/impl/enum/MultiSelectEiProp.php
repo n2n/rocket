@@ -32,7 +32,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\property\ConstraintsConflictException;
 use rocket\spec\core\CompatibilityTest;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\impl\web\dispatch\mag\model\IntegerOption;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -136,7 +136,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 	public function createOutputUiComponent(HtmlView $view,
 			Eiu $eiu) {
 		return $view->getHtmlBuilder()->getEsc(
-				implode(self::OUTPUT_SEPARATOR, (array)$eiMapping->getValue(EiPropPath::from($this))));
+				implode(self::OUTPUT_SEPARATOR, (array)$eiEntry->getValue(EiPropPath::from($this))));
 	}
 	
 }

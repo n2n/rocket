@@ -72,7 +72,7 @@ class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayabl
 	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 		$eiMask = $eiu->frame()->getEiFrame()->getContextEiMask()->determineEiMask(
-				$eiu->entry()->getEiMapping()->getEiType());
+				$eiu->entry()->getEiEntry()->getEiType());
 		return $view->getHtmlBuilder()->getEsc($eiMask->getLabelLstr()->t($view->getN2nLocale()));
 	}
 	
@@ -83,7 +83,7 @@ class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayabl
 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs($eiFrame, $eiMapping, $maskAttributes)
+// 	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs($eiFrame, $eiEntry, $maskAttributes)
 // 	 */
 // 	public function getOutputHtmlContainerAttrs(EntryModel $entryModel) {
 // 		return array('class' => 'rocket-script-' . $this->eiType->getId() . ' rocket-field-' . $this->getId());

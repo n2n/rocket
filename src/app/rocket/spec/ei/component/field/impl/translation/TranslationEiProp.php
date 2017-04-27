@@ -41,7 +41,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
@@ -62,7 +62,7 @@ use rocket\spec\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 
@@ -109,7 +109,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	 * @see \rocket\spec\ei\component\field\EiProp::getEiField()
 	 */
 	public function buildEiField(Eiu $eiu) {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
 		return new TranslationEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
@@ -119,11 +119,11 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return null;
 	}
 	
-	public function isEiMappingFilterable(): bool {
+	public function isEiEntryFilterable(): bool {
 		return false;
 	}
 	
-	public function createEiMappingFilterField(N2nContext $n2nContext): EiMappingFilterField {
+	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
 		throw new IllegalStateException();
 	}
 
@@ -150,26 +150,26 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiMapping = $eiu->entry()->getEiMapping();
-		$eiObject = $eiMapping->getEiObject();
+		$eiEntry = $eiu->entry()->getEiEntry();
+		$eiObject = $eiEntry->getEiObject();
 		$targetEiFrame = null;
 		if ($eiu->entryGui()->isReadOnly()) {
 			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
 		} else {
-			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
+			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
 		$targetUtils = new EiuFrame($targetEiFrame);
 		
-		$toManyEiField = $eiMapping->getEiField(EiPropPath::from($this));
+		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		
 		$targetRelationEntries = array();
 		foreach ($toManyEiField->getValue() as $targetRelationEntry) {
 			$targetEntityObj = $targetRelationEntry->getEiObject()->getLiveObject();
 			$n2nLocale = $targetEntityObj->getN2nLocale();
 			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
-			if (!$targetRelationEntry->hasEiMapping()) {
+			if (!$targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry = RelationEntry::fromM(
-						$targetUtils->createEiMapping($targetRelationEntry->getEiObject()));
+						$targetUtils->createEiEntry($targetRelationEntry->getEiObject()));
 			}
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
@@ -187,12 +187,12 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			} else {
 				$eiObject = $targetUtils->createNewEiObject();
 				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($eiObject));
+				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($eiObject));
 			}
 			
 			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
 					new GuiFieldAssembler($targetGuiDefinition, new EiuEntryGui(
-							$targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), 
+							$targetRelationEntry->getEiEntry(), $targetUtils->getEiFrame(), 
 							$eiu->entryGui()->getEiEntryGui())), 
 					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
 		}
@@ -209,13 +209,13 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath) {
 		$eiFieldWrappers = array();
-		foreach ($eiMapping->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
-			if ($targetRelationEntry->hasEiMapping()) continue;
+		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
+			if ($targetRelationEntry->hasEiEntry()) continue;
 				
 			if (null !== ($eiFieldWrapper = $this->guiDefinition
-					->determineEiFieldWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
+					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiIdPath))) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}

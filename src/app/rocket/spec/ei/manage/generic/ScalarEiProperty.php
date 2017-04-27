@@ -38,9 +38,9 @@ interface ScalarEiProperty {
 	public function getEiPropPath(): EiPropPath;
 	
 // 	/**
-// 	 * @param EiMapping $eiMapping
+// 	 * @param EiEntry $eiEntry
 // 	 */
-// 	public function buildScalarValue(EiMapping $eiMapping);
+// 	public function buildScalarValue(EiEntry $eiEntry);
 	
 	/**
 	 * @param mixed $eiFieldValue

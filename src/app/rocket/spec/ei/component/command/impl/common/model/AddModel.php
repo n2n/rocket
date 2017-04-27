@@ -107,14 +107,14 @@ class AddModel implements Dispatchable  {
 	}
 		
 	public function create(MessageContainer $messageContainer) {
-		$eiMapping = $this->entryForm->buildEiMapping();
+		$eiEntry = $this->entryForm->buildEiEntry();
 		
-		if (!$eiMapping->save()) {
+		if (!$eiEntry->save()) {
 			return false;
 		}
 		
 		// @todo think!!!
-		$eiObject = $eiMapping->getEiObject();
+		$eiObject = $eiEntry->getEiObject();
 		
 		if (!$eiObject->isDraft()) {
 			$eiEntityObj = $eiObject->getEiEntityObj();

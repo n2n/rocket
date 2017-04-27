@@ -27,7 +27,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
@@ -41,14 +41,14 @@ use rocket\spec\ei\manage\util\model\GeneralIdUtils;
 
 class EiuEntry {
 	private $eiObject;
-	private $eiMapping;
+	private $eiEntry;
 	private $eiuFrame;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiObject = $eiuFactory->getEiObject(true);
-		$this->eiMapping = $eiuFactory->getEiMapping();
+		$this->eiEntry = $eiuFactory->getEiEntry();
 		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
 	}
 	
@@ -80,8 +80,8 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
-	public function gui($eiObjectGuiObj) {
-		return new EiuEntryGui($eiObjectGuiObj, $this);
+	public function gui($eiEntryGuiObj) {
+		return new EiuEntryGui($eiEntryGuiObj, $this);
 	}
 	
 	/**
@@ -91,16 +91,16 @@ class EiuEntry {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function newGui(bool $overview = false, bool $editable = false) {
-		$eiObjectGui = null;
+		$eiEntryGui = null;
 		if (!$overview) {
-			$eiObjectGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui($this, $editable);
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui($this, $editable);
 		} else if (null === $this->getEiuFrame()->getNestedSetStrategy()) {
-			$eiObjectGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
 		} else {
-			$eiObjectGui = $this->getEiuFrame()->getEiMask()->createTreeEiEntryGui($this, $editable);
+			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createTreeEiEntryGui($this, $editable);
 		}
 		
-		return new EiuEntryGui($eiObjectGui, $this);
+		return new EiuEntryGui($eiEntryGui, $this);
 	}
 	
 	public function field($eiPropObj) {
@@ -114,31 +114,31 @@ class EiuEntry {
 		return $this->getEiuFrame()->getEiFrame();
 	}
 	
-	public function getEiMapping(bool $createIfNotAvaialble = true) {
-		if ($this->eiMapping !== null) {
-			return $this->eiMapping;
+	public function getEiEntry(bool $createIfNotAvaialble = true) {
+		if ($this->eiEntry !== null) {
+			return $this->eiEntry;
 		}
 		
 		if ($createIfNotAvaialble) {
-			return $this->eiMapping = $this->getEiuFrame()->createEiMapping($this->eiObject);
+			return $this->eiEntry = $this->getEiuFrame()->createEiEntry($this->eiObject);
 		}
 		
 		return null;
 	}
 	
 	public function getValue($eiPropPath) {
-		return $this->getEiMapping()->getValue($eiPropPath);
+		return $this->getEiEntry()->getValue($eiPropPath);
 	}
 	
 	public function setValue($eiPropPath, $value) {
-		return $this->getEiMapping()->setValue($eiPropPath, $value);
+		return $this->getEiEntry()->setValue($eiPropPath, $value);
 	}
 	
 	public function getValues() {
-		$eiMapping = $this->getEiMapping();
+		$eiEntry = $this->getEiEntry();
 		$values = array();
-		foreach (array_keys($eiMapping->getEiFieldWrappers()) as $eiPropPathStr) {
-			$values[$eiPropPathStr] = $this->getEiMapping()->getValue($eiPropPathStr);
+		foreach (array_keys($eiEntry->getEiFieldWrappers()) as $eiPropPathStr) {
+			$values[$eiPropPathStr] = $this->getEiEntry()->getValue($eiPropPathStr);
 		}
 		return $values;
 	}
@@ -283,7 +283,7 @@ class EiuEntry {
 	}
 	
 	public function acceptsValue($eiPropPath, $value) {
-		return $this->getEiMapping()->acceptsValue(EiPropPath::create($eiPropPath), $value);
+		return $this->getEiEntry()->acceptsValue(EiPropPath::create($eiPropPath), $value);
 	}
 	
 	/**
@@ -295,7 +295,7 @@ class EiuEntry {
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->getEiMapping()->getEiFieldWrapper(EiPropPath::create($eiPropPath));
+			return $this->getEiEntry()->getEiFieldWrapper(EiPropPath::create($eiPropPath));
 		} catch (MappingOperationFailedException $e) {
 			if ($required) throw $e;
 		}
@@ -314,7 +314,7 @@ class EiuEntry {
 	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getEiMask()->getEiEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldWrapper($this->getEiMapping(), GuiIdPath::createFromExpression($guiIdPath));
+			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::createFromExpression($guiIdPath));
 		} catch (MappingOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {
@@ -337,23 +337,23 @@ class EiuEntry {
 	}
 	
 	public function isExecutableBy($eiCommandPath) {
-		return $this->getEiMapping()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+		return $this->getEiEntry()->isExecutableBy(EiCommandPath::create($eiCommandPath));
 	}
 	
 	public function onValidate(\Closure $closure) {
-		$this->getEiMapping()->registerListener(new OnValidateMappingListener($closure));
+		$this->getEiEntry()->registerListener(new OnValidateMappingListener($closure));
 	}
 	
 	public function whenValidated(\Closure $closure) {
-		$this->getEiMapping()->registerListener(new ValidatedMappingListener($closure));
+		$this->getEiEntry()->registerListener(new ValidatedMappingListener($closure));
 	}
 	
 	public function onWrite(\Closure $closure) {
-		$this->getEiMapping()->registerListener(new OnWriteMappingListener($closure));
+		$this->getEiEntry()->registerListener(new OnWriteMappingListener($closure));
 	}
 	
 	public function whenWritten(\Closure $closure) {
-		$this->getEiMapping()->registerListener(new WrittenMappingListener($closure));
+		$this->getEiEntry()->registerListener(new WrittenMappingListener($closure));
 	}
 	
 	/**

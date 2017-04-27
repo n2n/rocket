@@ -112,7 +112,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	}
 
 	public function buildEiField(Eiu $eiu) {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
 		return new ToManyEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));

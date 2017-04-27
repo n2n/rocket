@@ -29,7 +29,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
@@ -105,8 +105,8 @@ class ToOneForm implements Dispatchable {
 		$this->entryFormFactory->setDraftMode($draftMode);
 	}
 
-	public function setEiMapping(EiMapping $eiMapping = null) {
-		$this->entryFormFactory->setEiMapping($eiMapping);
+	public function setEiEntry(EiEntry $eiEntry = null) {
+		$this->entryFormFactory->setEiEntry($eiEntry);
 		$this->currentMappingForm = $this->entryFormFactory->getCurrentMappingForm();
 		$this->newMappingForm = $this->entryFormFactory->getNewMappingForm();
 	}
@@ -168,13 +168,13 @@ class ToOneForm implements Dispatchable {
 		}
 	}
 	
-	public function buildEiMapping() {
+	public function buildEiEntry() {
 		if ($this->newMappingForm !== null) {
-			return $this->newMappingForm->buildEiMapping();
+			return $this->newMappingForm->buildEiEntry();
 		}
 		
 		if ($this->currentMappingForm !== null) {
-			return $this->currentMappingForm->buildEiMapping();
+			return $this->currentMappingForm->buildEiEntry();
 		}
 		
 		return null;

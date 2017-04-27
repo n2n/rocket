@@ -69,7 +69,7 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
-		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiMapping()->getValue(
+		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiEntry()->getValue(
 				EiPropPath::from($this)));
 	}
 
@@ -85,7 +85,7 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return null;
 	}
 	

@@ -258,9 +258,9 @@ class RocketUserGroupController extends ControllerAdapter {
 		}
 		
 		$privilegeDefinition = $eiEngine->createPrivilegeDefinition($this->getN2nContext());
-		$eiMappingFilterDefinition = $eiEngine->createEiMappingFilterDefinition($this->getN2nContext());
+		$eiEntryFilterDefinition = $eiEngine->createEiEntryFilterDefinition($this->getN2nContext());
 		
-		$eiGrantForm = new EiGrantForm($eiGrant, $privilegeDefinition, $eiMappingFilterDefinition);
+		$eiGrantForm = new EiGrantForm($eiGrant, $privilegeDefinition, $eiEntryFilterDefinition);
 		
 		if ($this->dispatch($eiGrantForm, 'save')) {
 			if ($eiGrantForm->isNew()) {
@@ -275,7 +275,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->commit();
 		
 		
-		$filterAjahHook = GlobalFilterFieldController::buildEiMappingFilterAjahHook($scrRegistry, $eiTypeId, $eiMaskId);
+		$filterAjahHook = GlobalFilterFieldController::buildEiEntryFilterAjahHook($scrRegistry, $eiTypeId, $eiMaskId);
 		
 		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm,
 				'filterAjahHook' => $filterAjahHook));

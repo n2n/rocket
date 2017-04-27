@@ -70,11 +70,11 @@ class TreeListModel implements EntryTreeListModel {
 			$entity = $nestedSetItem->getEntityObj();
 			$id = $eiType->extractId($entity);
 			$eiObject = new EiObject($id, $entity);
-			$eiMapping = $eiMask->createEiMapping($this->eiFrame, $eiObject);
+			$eiEntry = $eiMask->createEiEntry($this->eiFrame, $eiObject);
 			
 			$this->entryModels[$id] = new ListEntryModel($eiMask, 
-					$eiMask->createEiEntryGui($this->eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_TREE, false),
-					$eiMapping);
+					$eiMask->createEiEntryGui($this->eiFrame, $eiEntry, DisplayDefinition::VIEW_MODE_TREE, false),
+					$eiEntry);
 			$this->entryLevels[$id] = $nestedSetItem->getLevel();
 		}
 	}

@@ -73,7 +73,7 @@ class MultiUploadEiController extends ControllerAdapter {
 			$eiuEntry->setValue($this->namingEiPropPath, implode(' ', $prettyNameParts));
 		}
 		
-		if (!$eiuEntry->getEiMapping()->save()) {
+		if (!$eiuEntry->getEiEntry()->save()) {
 			throw new IllegalStateException();
 		}
 		

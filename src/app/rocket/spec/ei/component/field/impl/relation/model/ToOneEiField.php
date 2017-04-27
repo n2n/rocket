@@ -60,8 +60,8 @@ class ToOneEiField extends RwEiField {
 			return;
 		}
 		
-		if ($targetRelationEntry->hasEiMapping()) {
-			$targetRelationEntry->getEiMapping()->write();
+		if ($targetRelationEntry->hasEiEntry()) {
+			$targetRelationEntry->getEiEntry()->write();
 		}
 			
 		parent::writeValue($targetRelationEntry->getEiObject());
@@ -70,9 +70,9 @@ class ToOneEiField extends RwEiField {
 	public function validate(FieldErrorInfo $fieldErrorInfo) {
 		if (null !== ($value = $this->getValue())) {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
-			if ($value->hasEiMapping()) {
-				$value->getEiMapping()->validate();
-				$fieldErrorInfo->addSubMappingErrorInfo($value->getEiMapping()->getMappingErrorInfo());
+			if ($value->hasEiEntry()) {
+				$value->getEiEntry()->validate();
+				$fieldErrorInfo->addSubMappingErrorInfo($value->getEiEntry()->getMappingErrorInfo());
 			}
 		}
 	}

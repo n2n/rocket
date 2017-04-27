@@ -25,7 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 
 die('export vimeo to media module');
@@ -41,7 +41,7 @@ class VimeoEiProp extends AlphanumericEiProp {
 	public function createOutputUiComponent(
 			HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
-		$eiObject = $eiMapping->getEiObject();
+		$eiObject = $eiEntry->getEiObject();
 		$value = $this->getPropertyAccessProxy()->getValue($eiObject->getCurrentEntity());
 		if ($value === null) return null;
 		

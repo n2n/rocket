@@ -82,24 +82,24 @@ class ContentItemGuiField implements GuiField {
 		
 		$groupedUiComponents = array();
 		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEiMapping = null;
-			if ($targetRelationEntry->hasEiMapping()) {
-				$targetEiMapping = $targetRelationEntry->getEiMapping();
+			$targetEiEntry = null;
+			if ($targetRelationEntry->hasEiEntry()) {
+				$targetEiEntry = $targetRelationEntry->getEiEntry();
 			} else {
-				$targetEiMapping = $targetUtils->createEiMapping(
+				$targetEiEntry = $targetUtils->createEiEntry(
 						$targetRelationEntry->getEiObject());
 			}
 			
-			$panelName = (string) $targetEiMapping->getValue($panelEiPropPath, true);
+			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
 			if (!isset($groupedUiComponents[$panelName])) {
 				$groupedUiComponents[$panelName] = array();
 			}
 			
-			if ($targetEiMapping->isAccessible()) {
-				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiMapping);
+			if ($targetEiEntry->isAccessible()) {
+				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiEntry);
 			} else {
 				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetUtils->createIdentityString($targetEiMapping->getEiObject()));
+						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
 			}
 		}
 		

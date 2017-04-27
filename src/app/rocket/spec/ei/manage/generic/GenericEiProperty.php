@@ -45,10 +45,10 @@ interface GenericEiProperty {
 	public function buildCriteriaItem(CriteriaProperty $alias): CriteriaItem;
 	
 // 	/**
-// 	 * @param EiMapping $eiMapping
+// 	 * @param EiEntry $eiEntry
 // 	 * @return mixed
 // 	 */
-// 	public function buildEntityValue(EiMapping $eiMapping);
+// 	public function buildEntityValue(EiEntry $eiEntry);
 
 	/**
 	 * @param mixed $eiFieldValue

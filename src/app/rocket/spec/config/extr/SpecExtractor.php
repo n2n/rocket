@@ -29,7 +29,7 @@ use rocket\spec\config\mask\model\GuiSection;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\mask\model\DisplayScheme;
-use rocket\spec\config\mask\model\DisplayStructure;
+use rocket\spec\ei\manage\gui\DisplayStructure;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\ControlOrder;

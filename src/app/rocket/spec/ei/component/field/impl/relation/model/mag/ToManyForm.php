@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
@@ -107,8 +107,8 @@ class ToManyForm implements Dispatchable {
 		return $this->selectedEntryIdReps;
 	}
 	
-	public function addEiMapping(EiMapping $currentEiMapping) {
-		$this->entryFormFactory->addEiMapping($currentEiMapping);
+	public function addEiEntry(EiEntry $currentEiEntry) {
+		$this->entryFormFactory->addEiEntry($currentEiEntry);
 		$this->currentMappingForms = $this->entryFormFactory->getCurrentMappingForms();
 		$this->newMappingForms = $this->entryFormFactory->getNewMappingForms();
 	}
@@ -180,26 +180,26 @@ class ToManyForm implements Dispatchable {
 		});
 	}
 	
-	public function buildEiMappings(): array {
-		$eiMappings = array();
+	public function buildEiEntrys(): array {
+		$eiEntrys = array();
 		$keyOrderIndexMap = array();
 		
 		foreach ($this->currentMappingForms as $currentMappingForm) {
 			$keyOrderIndexMap[] = $currentMappingForm->getOrderIndex();
-			$eiMappings[] = $currentMappingForm->buildEiMapping();
+			$eiEntrys[] = $currentMappingForm->buildEiEntry();
 		}
 		
 		foreach ($this->newMappingForms as $newMappingForm) {
 			$keyOrderIndexMap[] = $newMappingForm->getOrderIndex();
-			$eiMappings[] = $newMappingForm->buildEiMapping();
+			$eiEntrys[] = $newMappingForm->buildEiEntry();
 		}
 		
 		asort($keyOrderIndexMap, SORT_NUMERIC);
 		
-		$sortedEiMappings = array();
+		$sortedEiEntrys = array();
 		foreach ($keyOrderIndexMap as $key => $orderIndex) {
-			$sortedEiMappings[] = $eiMappings[$key];
+			$sortedEiEntrys[] = $eiEntrys[$key];
 		}
-		return $sortedEiMappings;
+		return $sortedEiEntrys;
 	}
 }

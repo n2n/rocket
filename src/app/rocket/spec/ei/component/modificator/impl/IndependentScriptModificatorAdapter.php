@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\modificator\impl;
 use rocket\spec\ei\component\modificator\EiModificator;
 use rocket\spec\ei\component\impl\IndependentEiComponentAdapter;
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\EiConfigurator;
@@ -45,7 +45,7 @@ abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAda
 
 	public function setupEiFrame(EiFrame $eiFrame) {}
 	
-	public function setupEiMapping(Eiu $eiu) {}
+	public function setupEiEntry(Eiu $eiu) {}
 	
 	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
 }

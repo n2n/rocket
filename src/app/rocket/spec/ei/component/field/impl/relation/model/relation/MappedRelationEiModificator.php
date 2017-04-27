@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -41,23 +41,23 @@ class MappedRelationEiModificator extends EiModificatorAdapter {
 		$this->sourceMany = (boolean) $sourceMany;
 	}
 	
-	public function setupEiMapping(Eiu $eiu) {
+	public function setupEiEntry(Eiu $eiu) {
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		if ($this->targetEiFrame !== $eiFrame
-				|| !$eiMapping->getEiObject()->isNew()) return;
+				|| !$eiEntry->getEiObject()->isNew()) return;
 
 		if (!$this->sourceMany) {
-			$eiMapping->setValue($this->targetEiPropPath, $this->relationEntry);
+			$eiEntry->setValue($this->targetEiPropPath, $this->relationEntry);
 			return;
 		}
 		
-		$value = $eiMapping->getValue($this->targetEiPropPath);
+		$value = $eiEntry->getValue($this->targetEiPropPath);
 		if ($value === null) {
 			$value = new \ArrayObject();
 		}
 		$value[] = $this->relationEntry;
-		$eiMapping->setValue($this->targetEiPropPath, $value);
+		$eiEntry->setValue($this->targetEiPropPath, $value);
 	}
 }

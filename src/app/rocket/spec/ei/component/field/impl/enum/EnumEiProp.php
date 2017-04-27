@@ -170,7 +170,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return null;
 	}
 
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return null;
 	}
 	

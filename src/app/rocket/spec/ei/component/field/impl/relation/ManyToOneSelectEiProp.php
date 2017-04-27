@@ -46,9 +46,9 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiMappingFilterField;
+use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiEntryFilterField;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewAjahController;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
@@ -121,7 +121,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu) {
-		$mapping = $eiu->entry()->getEiMapping();
+		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
@@ -228,18 +228,18 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		return $filterField;
 	}
 	
-	public function createEiMappingFilterField(N2nContext $n2nContext): EiMappingFilterField {
-		$eiMappingFilterField = parent::createEiMappingFilterField($n2nContext);
-		CastUtils::assertTrue($eiMappingFilterField instanceof ToOneEiMappingFilterField);
+	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
+		$eiEntryFilterField = parent::createEiEntryFilterField($n2nContext);
+		CastUtils::assertTrue($eiEntryFilterField instanceof ToOneEiEntryFilterField);
 				
 		$that = $this;
-		$eiMappingFilterField->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
+		$eiEntryFilterField->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
 			return GlobalOverviewAjahController::buildToolsAjahUrl(
 					$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 					$this->eiPropRelation->getTargetEiMask());
 		});
 				
-		return $eiMappingFilterField;
+		return $eiEntryFilterField;
 	}
 }
 

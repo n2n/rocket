@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\modificator\impl\l10n;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use rocket\spec\ei\component\field\impl\l10n\N2nLocaleEiProp;
 use n2n\l10n\N2nLocale;
@@ -35,13 +35,13 @@ class N2nLocaleEiModificator extends EiModificatorAdapter {
 		$this->eiProp = $eiProp;
 	}
 	
-	public function setupEiMapping(Eiu $eiu) {
+	public function setupEiEntry(Eiu $eiu) {
 		if ($this->eiProp->isMultiLingual()) return;
-		if (!$eiMapping->getEiObject()->isNew()) return;
+		if (!$eiEntry->getEiObject()->isNew()) return;
 		$that = $this;
-		$eiMapping->registerListener(new OnWriteMappingListener(function() 
-				use ($eiFrame, $eiMapping, $that) {
-			$eiMapping->setValue($that->eiProp->getId(), N2nLocale::getDefault());
+		$eiEntry->registerListener(new OnWriteMappingListener(function() 
+				use ($eiFrame, $eiEntry, $that) {
+			$eiEntry->setValue($that->eiProp->getId(), N2nLocale::getDefault());
 		}));
 	}
 }

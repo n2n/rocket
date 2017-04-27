@@ -27,7 +27,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\field\impl\relation\command\RelationEiCommand;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\EiRelation;
@@ -213,7 +213,7 @@ abstract class EiPropRelation {
 // 		return false;
 // 	}
 	
-	public function isReadOnly(EiMapping $mapping, EiFrame $eiFrame) {
+	public function isReadOnly(EiEntry $mapping, EiFrame $eiFrame) {
 		return $this->relationEiProp->getStandardEditDefinition()->isReadOnly()
 				|| (!$this->relationEiProp->isDraftable() && $mapping->getEiObject()->isDraft())
 				|| ($this->isFiltered() && $eiFrame->getEiRelation($this->relationEiProp->getId()));
@@ -276,8 +276,8 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 	
-	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, EiMapping $eiMapping = null): EiFrame {
-		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiMapping);
+	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
+		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry);
 		
 		$eiPermissionManager = $targetEiFrame->getManageState()->getEiPermissionManager();
 		$targetEiFrame->setEiExecution($eiPermissionManager->createUnboundEiExceution(
@@ -286,8 +286,8 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 	
-	public function createTargetEditPseudoEiFrame(EiFrame $eiFrame, EiMapping $eiMapping): EiFrame {
-		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiMapping);
+	public function createTargetEditPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry): EiFrame {
+		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry);
 		
 		$eiPermissionManager = $targetEiFrame->getManageState()->getEiPermissionManager();
 		$targetEiFrame->setEiExecution($eiPermissionManager->createEiExecution(
@@ -296,10 +296,10 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 	
-	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiMapping $eiMapping = null): EiFrame {
+	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
 	    $eiObject = null;
-	    if ($eiMapping !== null) {
-	        $eiObject = $eiMapping->getEiObject();
+	    if ($eiEntry !== null) {
+	        $eiObject = $eiEntry->getEiObject();
 	    }
 	    
 	    $targetCmdContextPath = $eiFrame->getControllerContext()->getCmdContextPath();
@@ -307,7 +307,7 @@ abstract class EiPropRelation {
 		    $targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'rel');
 		} else {
 			$targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'relentry', 
-					$eiMapping->getIdRep());
+					$eiEntry->getIdRep());
 		}
 		
 		$targetControllerContext = new ControllerContext(new Path(array()), $targetCmdContextPath);
@@ -395,13 +395,13 @@ abstract class EiPropRelation {
 // 		return $this->getRelationEntityProperty()->getRelation() instanceof JoinTableRelation;
 // 	}
 
-	public function buildTargetNewEntryFormUrl(EiMapping $eiMapping, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
+	public function buildTargetNewEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$pathParts = array($this->relationEiCommand->getId());
-		if ($eiMapping->isNew()) {
+		if ($eiEntry->isNew()) {
 			$pathParts[] = 'relunknownentry';
 		} else {
 			$pathParts[] = 'relentry';
-			$pathParts[] = $eiMapping->getIdRep();
+			$pathParts[] = $eiEntry->getIdRep();
 		}
 		$pathParts[] = $this->relationAjahEiCommand->getId();
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())->ext(...$pathParts)

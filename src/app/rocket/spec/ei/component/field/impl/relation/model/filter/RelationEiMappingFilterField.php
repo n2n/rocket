@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
@@ -33,15 +33,15 @@ use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\mapping\EiMappingConstraint;
+use rocket\spec\ei\manage\mapping\EiEntryConstraint;
 use rocket\spec\ei\EiPropPath;
 
-class RelationEiMappingFilterField extends RelationFilterField implements EiMappingFilterField {
+class RelationEiEntryFilterField extends RelationFilterField implements EiEntryFilterField {
 	
-	private function getEiMappingFilterDefinition(): EiMappingFilterDefinition {
-		$eiMappingFilterDefinition = $this->targetFilterDef->getFilterDefinition();
-		IllegalStateException::assertTrue($eiMappingFilterDefinition instanceof EiMappingFilterDefinition);
-		return $eiMappingFilterDefinition;
+	private function getEiEntryFilterDefinition(): EiEntryFilterDefinition {
+		$eiEntryFilterDefinition = $this->targetFilterDef->getFilterDefinition();
+		IllegalStateException::assertTrue($eiEntryFilterDefinition instanceof EiEntryFilterDefinition);
+		return $eiEntryFilterDefinition;
 	}
 	
 	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
@@ -61,12 +61,12 @@ class RelationEiMappingFilterField extends RelationFilterField implements EiMapp
 						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetIdReps())));
 				
 			case CriteriaComparator::OPERATOR_EXISTS:
-				$targetEiMappingConstraint = $this->getEiMappingFilterDefinition()->createEimappingConstraint($filterGroupData);
-				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiMappingConstraint);
+				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterGroupData);
+				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 				
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
-				$targetEiMappingConstraint = $this->getEiMappingFilterDefinition()->createEimappingConstraint($filterGroupData);
-				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiMappingConstraint);
+				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterGroupData);
+				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 		}
 	}
 }
@@ -158,13 +158,13 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 	private $toMany;
 	private $eiPropPath;
 	private $exists;
-	private $targetEiMappingContraint;
+	private $targetEiEntryContraint;
 	
-	public function __construct(bool $toMany, EiPropPath $eiPropPath, bool $exists, EiMappingConstraint $targetEiMappingContraint) {
+	public function __construct(bool $toMany, EiPropPath $eiPropPath, bool $exists, EiEntryConstraint $targetEiEntryContraint) {
 		$this->toMany = $toMany;
 		$this->eiPropPath = $eiPropPath;
 		$this->exists = $exists;
-		$this->targetEiMappingContraint = $targetEiMappingContraint;
+		$this->targetEiEntryContraint = $targetEiEntryContraint;
 	}
 	/**
 	 * {@inheritDoc}
@@ -177,7 +177,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 			}
 
 			ArgUtils::assertTrue($value instanceof RelationEntry);
-			return $this->targetEiMappingContraint->check($value->toEiMapping($this->targetEiUtils));
+			return $this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiUtils));
 		} 
 		
 		ArgUtils::assertTrue(is_array($value));
@@ -188,7 +188,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 		if ($this->exists) {
 			foreach ($value as $relationEntry) {
 				ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-				if (!$this->targetEiMappingContraint->check($value->toEiMapping($this->targetEiUtils))) {
+				if (!$this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiUtils))) {
 					return false;
 				}
 			}
@@ -197,7 +197,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 		} else {
 			foreach ($value as $relationEntry) {
 				ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-				if ($this->targetEiMappingContraint->check($value->toEiMapping($this->targetEiUtils))) {
+				if ($this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiUtils))) {
 					return false;
 				}
 			}
@@ -227,12 +227,12 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 					return;
 				}
 				ArgUtils::assertTrue($value instanceof RelationEntry);
-				$this->targetEiMappingContraint->validate($value->toEiMapping($this->targetEiUtils));
+				$this->targetEiEntryContraint->validate($value->toEiEntry($this->targetEiUtils));
 			} else {
 				ArgUtils::assertTrue(is_array($value));
 				foreach ($value as $relationEntry) {
 					ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-					$this->targetEiMappingContraint->validate($relationEntry->toEiMapping($this->targetEiUtils));
+					$this->targetEiEntryContraint->validate($relationEntry->toEiEntry($this->targetEiUtils));
 				}
 			}
 

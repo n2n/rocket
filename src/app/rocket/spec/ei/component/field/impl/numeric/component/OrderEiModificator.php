@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiProp;
 use rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
@@ -46,8 +46,8 @@ class OrderEiModificator extends EiModificatorAdapter {
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 	}
 	
-	public function setupEiMapping(Eiu $eiu) {
-		$ssm = $eiu->entry()->getEiMapping();
+	public function setupEiEntry(Eiu $eiu) {
+		$ssm = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiProp = $this->eiProp;
 		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiProp) {

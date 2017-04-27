@@ -70,7 +70,7 @@ class ToManySelectGuiField implements GuiField {
 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
-		if ($this->eiu->entry()->getEiMapping()->isNew()) {
+		if ($this->eiu->entry()->getEiEntry()->isNew()) {
 			return null;
 		}
 		

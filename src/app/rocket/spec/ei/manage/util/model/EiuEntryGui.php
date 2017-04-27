@@ -33,12 +33,12 @@ use n2n\web\dispatch\map\PropertyPath;
 
 class EiuEntryGui {
 	private $eiuEntry;
-	protected $eiObjectGui;
+	protected $eiEntryGui;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
-		$this->eiObjectGui = $eiuFactory->getEiEntryGui(true);
+		$this->eiEntryGui = $eiuFactory->getEiEntryGui(true);
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 	}
 	
@@ -46,14 +46,14 @@ class EiuEntryGui {
 	 * @return \rocket\spec\ei\mask\EiMask
 	 */
 	public function getEiMask() {
-		return $this->eiObjectGui->getEiMask();
+		return $this->eiEntryGui->getEiMask();
 	}
 	
 	/**
 	 * @return int
 	 */
 	public function getViewMode() {
-		return $this->eiObjectGui->getViewMode();
+		return $this->eiEntryGui->getViewMode();
 	}
 	
 	/**
@@ -83,28 +83,28 @@ class EiuEntryGui {
 	 * @return EiEntryGui 
 	 */
 	public function getEiEntryGui() {
-		return $this->eiObjectGui;
+		return $this->eiEntryGui;
 	}
 	
 	/**
 	 * @param \Closure $closure
 	 */
 	public function whenReady(\Closure $closure) {
-		$this->eiObjectGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
+		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
 	}
 	
 	/**
 	 * @param \Closure $closure
 	 */
 	public function onSave(\Closure $closure) {
-		$this->eiObjectGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
+		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
 	}
 	
 	/**
 	 * @param \Closure $closure
 	 */
 	public function whenSave(\Closure $closure) {
-		$this->eiObjectGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
+		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
 	
 	/**
@@ -115,7 +115,7 @@ class EiuEntryGui {
 	 */
 	public function getMagWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiObjectGui->getEditableWrapperByGuiIdPath(
+			return $this->eiEntryGui->getEditableWrapperByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
 		} catch (GuiException $e) {
 			if ($required) throw $e;
@@ -131,7 +131,7 @@ class EiuEntryGui {
 	 */
 	public function getEiFieldWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiObjectGui->getEiFieldWrapperByGuiIdPath(
+			return $this->eiEntryGui->getEiFieldWrapperByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
@@ -160,14 +160,14 @@ class EiuEntryGui {
 	 * @param PropertyPath|null $propertyPath
 	 */
 	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
-		$this->eiObjectGui->setContextPropertyPath($propertyPath);
+		$this->eiEntryGui->setContextPropertyPath($propertyPath);
 	}
 	
 	/**
 	 * @return \n2n\web\dispatch\map\PropertyPath|null
 	 */
 	public function getContextPropertyPath() {
-		return $this->eiObjectGui->getContextPropertyPath();
+		return $this->eiEntryGui->getContextPropertyPath();
 	}
 	
 	/**
@@ -207,7 +207,7 @@ class EiuEntryGui {
 // 	public static function from(EntryGuiModel $entryGuiModel, $eiFrame) {
 // 		$entryGuiUtils = new EiuEntryGui($entryGuiModel, 
 // 				new EiuEntry($entryGuiModel, $eiFrame));
-// 		$entryGuiUtils->eiObjectGui = $entryGuiModel->getEiEntryGui();
+// 		$entryGuiUtils->eiEntryGui = $entryGuiModel->getEiEntryGui();
 // 		return $entryGuiUtils;
 // 	}
 }
@@ -237,7 +237,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::finalized()
 	 */
-	public function finalized(EiEntryGui $eiObjectGui) {
+	public function finalized(EiEntryGui $eiEntryGui) {
 		if ($this->whenReadyClosure !== null) {
 			$this->call($this->whenReadyClosure);
 		}
@@ -247,7 +247,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::onSave()
 	 */
-	public function onSave(EiEntryGui $eiObjectGui) {
+	public function onSave(EiEntryGui $eiEntryGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
@@ -257,7 +257,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::saved()
 	 */
-	public function saved(EiEntryGui $eiObjectGui) {
+	public function saved(EiEntryGui $eiEntryGui) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}

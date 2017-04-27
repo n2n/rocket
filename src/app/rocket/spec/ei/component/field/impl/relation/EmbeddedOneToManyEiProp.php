@@ -82,12 +82,12 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
 		$targetEiuFrame = new EiuFrame($this->eiPropRelation->createTargetEditPseudoEiFrame(
-				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
 		
 		$newValue = array();
 		foreach ($value as $key => $targetRelationEntry) {
-			$newValue[$key] = RelationEntry::fromM($targetEiuFrame->createEiMappingCopy(
-					$targetRelationEntry->toEiMapping($targetEiuFrame)));
+			$newValue[$key] = RelationEntry::fromM($targetEiuFrame->createEiEntryCopy(
+					$targetRelationEntry->toEiEntry($targetEiuFrame)));
 		}
 		return $newValue;
 	}
@@ -163,25 +163,25 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	 * @return GuiField
 	 */
 	public function buildGuiField(Eiu $eiu) {
-		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiEntry = $eiu->entry()->getEiEntry();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationEiField = $eiMapping->getEiField(EiPropPath::from($this));
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
+		$relationEiField = $eiEntry->getEiField(EiPropPath::from($this));
+		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiEntry);
 		
 		$toManyEditable = null;
-		if (!$this->eiPropRelation->isReadOnly($eiMapping, $eiFrame)) {
-			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
+		if (!$this->eiPropRelation->isReadOnly($eiEntry, $eiFrame)) {
+			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 			
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
 				
-			$draftMode = $eiMapping->getEiObject()->isDraft();
+			$draftMode = $eiEntry->getEiObject()->isDraft();
 			$toManyEditable->setDraftMode($draftMode);
 			
 			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
-						$eiMapping, $draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
+						$eiEntry, $draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 			$toManyEditable->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		}

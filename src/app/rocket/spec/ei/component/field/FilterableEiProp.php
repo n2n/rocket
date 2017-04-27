@@ -41,8 +41,8 @@ interface FilterableEiProp extends EiProp {
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\spec\ei\manage\critmod\filter\EiMappingFilterField|null
+	 * @return \rocket\spec\ei\manage\critmod\filter\EiEntryFilterField|null
 	 */
-	public function buildEiMappingFilterField(N2nContext $n2nContext);
+	public function buildEiEntryFilterField(N2nContext $n2nContext);
 	
 }

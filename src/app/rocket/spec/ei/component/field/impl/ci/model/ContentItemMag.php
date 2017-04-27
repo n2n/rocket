@@ -83,12 +83,12 @@ class ContentItemMag extends MagAdapter {
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
-			if (!$targetRelationEntry->hasEiMapping()) {
+			if (!$targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry = RelationEntry::fromM($targetEditUtils
-						->createEiMapping($targetRelationEntry->getEiObject()));
+						->createEiEntry($targetRelationEntry->getEiObject()));
 			}
 			
-			$panelName = $targetRelationEntry->getEiMapping()->getValue($panelEiPropPath);
+			$panelName = $targetRelationEntry->getEiEntry()->getValue($panelEiPropPath);
 			if (!isset($filtered[$panelName])) {
 				$filtered[$panelName] = array();
 			}
@@ -136,7 +136,7 @@ class ContentItemMag extends MagAdapter {
 			$panelName = $panelConfig->getName();
 			$panelMag = $formValue->getMagCollection()->getMagByPropertyName($panelName);
 			foreach ($panelMag->getValue() as $targetRelationEntry) {
-				$targetRelationEntry->getEiMapping()->setValue($panelEiPropPath, $panelName, true);
+				$targetRelationEntry->getEiEntry()->setValue($panelEiPropPath, $panelName, true);
 				$this->targetRelationEntries[] = $targetRelationEntry;
 			}
 		}

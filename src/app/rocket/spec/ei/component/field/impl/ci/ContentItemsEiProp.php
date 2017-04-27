@@ -104,7 +104,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu) {
-		$mapping = $eiu->entry()->getEiMapping();
+		$mapping = $eiu->entry()->getEiEntry();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));

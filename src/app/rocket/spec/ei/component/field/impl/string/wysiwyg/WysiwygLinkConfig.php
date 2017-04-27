@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\context\RequestScoped;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 interface WysiwygLinkConfig extends RequestScoped {
 	
-	public function setup(EiMapping $eiMapping = null, 
+	public function setup(EiEntry $eiEntry = null, 
 			Eiu $eiu = null);
 	/**
 	 * @return string

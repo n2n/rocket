@@ -95,7 +95,7 @@ interface EiMask extends EiThing {
 	 * @param EntryModel $entryModel
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createEntryControls(EiuEntryGui $eiuGui, HtmlView $view): array;
+	public function createEntryControls(EiuEntryGui $eiuEntryGui, HtmlView $view): array;
 		
 	/**
 	 * @param EiObject $eiObject
@@ -106,12 +106,12 @@ interface EiMask extends EiThing {
 	
 	// 	/**
 	// 	 * @param EiFrame $eiFrame
-	// 	 * @param EiMapping $eiMapping
+	// 	 * @param EiEntry $eiEntry
 	// 	 * @param string $viewMode
 	// 	 * @param bool $makeEditable
 	// 	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
 	// 	 */
-	// 	public function createEiEntryGui(EiFrame $eiFrame, EiMapping $eiMapping, $viewMode, $makeEditable);
+	// 	public function createEiEntryGui(EiFrame $eiFrame, EiEntry $eiEntry, $viewMode, $makeEditable);
 	
 	/**
 	 * @return boolean

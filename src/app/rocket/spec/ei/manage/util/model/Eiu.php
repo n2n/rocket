@@ -9,7 +9,7 @@ class Eiu implements Lookupable {
 	private $eiuFactory;
 	private $eiuCtrl;
 	private $eiuFrame;
-	private $eiuGui;
+	private $eiuEntryGui;
 	private $eiuEntry;
 	private $eiuField;
 	
@@ -19,7 +19,7 @@ class Eiu implements Lookupable {
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
 		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
-		$this->eiuGui = $this->eiuFactory->getEiuEntryGui(false);
+		$this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui(false);
 		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
 	
@@ -55,7 +55,7 @@ class Eiu implements Lookupable {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function entryGui(bool $required = true) {
-		if ($this->eiuGui !== null || !$required) return $this->eiuGui;
+		if ($this->eiuEntryGui !== null || !$required) return $this->eiuEntryGui;
 	
 		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
 	}

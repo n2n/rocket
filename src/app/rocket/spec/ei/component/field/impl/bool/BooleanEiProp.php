@@ -85,7 +85,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
-				$eiu->entry()->getEiMapping()->getEiObject()->getLiveObject());
+				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
 		if ($value) {
 			return new HtmlElement('i', array('class' => 'fa fa-check'), '');
 		}
@@ -101,10 +101,10 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	}
 	
 	public function buildFilterField(N2nContext $n2nContext) {
-		return $this->buildEiMappingFilterField($n2nContext);
+		return $this->buildEiEntryFilterField($n2nContext);
 	}
 	
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return new BoolFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	

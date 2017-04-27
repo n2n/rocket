@@ -58,8 +58,8 @@ class ToManyEiField extends RwEiField {
 	protected function writeValue($value) {
 		$targetEiObjects = array();
 		foreach ($value as $targetRelationEntry) {
-			if ($targetRelationEntry->hasEiMapping()) {
-				$targetRelationEntry->getEiMapping()->write();
+			if ($targetRelationEntry->hasEiEntry()) {
+				$targetRelationEntry->getEiEntry()->write();
 			}
 			
 			$targetEiObjects[] = $targetRelationEntry->getEiObject();
@@ -75,9 +75,9 @@ class ToManyEiField extends RwEiField {
 		
 		foreach ($value as $targetRelationEntry) {
 			IllegalStateException::assertTrue($targetRelationEntry instanceof RelationEntry);
-			if ($targetRelationEntry->hasEiMapping()) {
-				$targetRelationEntry->getEiMapping()->validate();
-				$fieldErrorInfo->addSubMappingErrorInfo($targetRelationEntry->getEiMapping()->getMappingErrorInfo());
+			if ($targetRelationEntry->hasEiEntry()) {
+				$targetRelationEntry->getEiEntry()->validate();
+				$fieldErrorInfo->addSubMappingErrorInfo($targetRelationEntry->getEiEntry()->getMappingErrorInfo());
 			}
 		}
 	}

@@ -105,7 +105,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildEiMappingFilterField(N2nContext $n2nContext) {
+	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return null;
 	}
 	

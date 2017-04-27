@@ -67,20 +67,20 @@ class EmbeddedOneToOneGuiField implements GuiField {
 
 // 	public function createOutputUiComponent(HtmlView $view) {
 // 		$eiFrame = $eiu->frame()->getEiFrame();
-// 		$eiMapping = $eiu->entry()->getEiMapping();
-// 		$targetEiObject = $this->createTargetEiObject($eiFrame, $eiMapping);
+// 		$eiEntry = $eiu->entry()->getEiEntry();
+// 		$targetEiObject = $this->createTargetEiObject($eiFrame, $eiEntry);
 
 // 		if ($targetEiObject === null) return null;
 
-// 		$eiObject = $eiMapping->getEiObject();
+// 		$eiObject = $eiEntry->getEiObject();
 // 		$target = $this->eiPropRelation->getTarget();
 // 		$targetEiFrame = $this->eiPropRelation->createTargetPseudoEiFrame(
 // 				$eiFrame, $eiObject, false);
 // 		$targetUtils = new EiuFrame($targetEiFrame);
 
-// 		$targetEiMapping = $targetUtils->createEiMapping($targetEiObject);
+// 		$targetEiEntry = $targetUtils->createEiEntry($targetEiObject);
 
-// 		$entryInfo = $targetUtils->createEntryInfo($targetEiMapping);
+// 		$entryInfo = $targetUtils->createEntryInfo($targetEiEntry);
 // 		$view = $entryInfo->getEiMask()->createDetailView($targetEiFrame, $entryInfo);
 
 // 		return $view->getImport($view);
@@ -92,7 +92,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
-		return $targetUtils->createBulkyDetailView($targetRelationEntry->toEiMapping($targetUtils));
+		return $targetUtils->createBulkyDetailView($targetRelationEntry->toEiEntry($targetUtils));
 	}
 	
 

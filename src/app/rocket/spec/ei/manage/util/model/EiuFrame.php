@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\util\model\EntryForm;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -156,11 +156,11 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 * @throws \rocket\spec\ei\security\InaccessibleEntryException
 	 */
-	public function createEiMapping(EiObject $eiObject) {
-		return $this->determineEiMask($eiObject)->getEiEngine()->createEiMapping($this->eiFrame, $eiObject);
+	public function createEiEntry(EiObject $eiObject) {
+		return $this->determineEiMask($eiObject)->getEiEngine()->createEiEntry($this->eiFrame, $eiObject);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return EiuEntry
 	 */
 	public function copyEntryTo($fromEiObjectArg, $toEiObjectArg = null) {
-		return $this->createEiMappingCopy($fromEiObjectArg, EiuFactory::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
+		return $this->createEiEntryCopy($fromEiObjectArg, EiuFactory::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
 	}
 	
 	public function copyEntry($fromEiObjectArg, bool $draft = null, $eiTypeArg = null) {
@@ -181,7 +181,7 @@ class EiuFrame extends EiUtilsAdapter {
 			$eiType = $fromEiuEntry->getEiType();
 		}
 		
-		return $this->createEiMappingCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType));
+		return $this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType));
 	}
 	
 	public function newEntry(bool $draft = false, EiType $eiType = null) {
@@ -191,9 +191,9 @@ class EiuFrame extends EiUtilsAdapter {
 	/**
 	 * @param unknown $fromEiObjectObj
 	 * @param EiObject $to
-	 * @return \rocket\spec\ei\manage\mapping\EiMapping
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */
-	private function createEiMappingCopy($fromEiObjectObj, EiObject $to = null) {
+	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null) {
 		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');
 		
 		if ($to === null) {
@@ -201,7 +201,7 @@ class EiuFrame extends EiUtilsAdapter {
 		}
 		
 		return $this->determineEiMask($to)->getEiEngine()
-				->createEiMappingCopy($this->eiFrame, $to, $fromEiuEntry->getEiMapping());
+				->createEiEntryCopy($this->eiFrame, $to, $fromEiuEntry->getEiEntry());
 	}
 	
 	public function createListView(array $eiuEntryGuis) {
@@ -244,14 +244,14 @@ class EiuFrame extends EiUtilsAdapter {
 			}
 				
 			$eiObject = $this->createNewEiObject($draft, $subEiType);
-			$subEiMapping = null;
+			$subEiEntry = null;
 			if ($copyFromEiObjectObj !== null) {
-				$subEiMapping = $this->createEiMappingCopy($copyFromEiObjectObj, $eiObject);
+				$subEiEntry = $this->createEiEntryCopy($copyFromEiObjectObj, $eiObject);
 			} else {
-				$subEiMapping = $this->createEiMapping($eiObject);
+				$subEiEntry = $this->createEiEntry($eiObject);
 			}
 						
-			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiMapping);
+			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiEntry);
 			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($this->eiFrame->getN2nLocale());
 		}
@@ -273,13 +273,13 @@ class EiuFrame extends EiUtilsAdapter {
 		return $entryForm;
 	}
 	
-	public function createEntryFormFromMapping(EiMapping $eiMapping, PropertyPath $contextPropertyPath = null) {
+	public function createEntryFormFromMapping(EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$contextEiMask = $this->eiFrame->getContextEiMask();
 		
 		$entryForm = new EntryForm($this->eiFrame);
-		$eiType = $eiMapping->getEiType();
+		$eiType = $eiEntry->getEiType();
 
-		$entryForm->setEntryModelForms(array($eiType->getId() => $this->createEntryModelForm($eiType, $eiMapping, $contextPropertyPath)));
+		$entryForm->setEntryModelForms(array($eiType->getId() => $this->createEntryModelForm($eiType, $eiEntry, $contextPropertyPath)));
 		$entryForm->setChosenId($eiType->getId());
 		// @todo remove hack when ContentItemEiProp gets updated.
 		$entryForm->setChoicesMap(array($eiType->getId() => $contextEiMask->determineEiMask($eiType)->getLabelLstr()
@@ -287,11 +287,11 @@ class EiuFrame extends EiUtilsAdapter {
 		return $entryForm;
 	}
 	
-	private function createEntryModelForm(EiType $eiType, EiMapping $eiMapping, PropertyPath $contextPropertyPath = null) {
+	private function createEntryModelForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiType);
 		
-		$eiuEntry = new EiuEntry($eiMapping, $this);
-		$eiuEntryGui = new EiuEntryGui($eiuEntry, $eiMask->createBulkyEiEntryGui(new EiuEntry($eiMapping, $this), true));
+		$eiuEntry = new EiuEntry($eiEntry, $this);
+		$eiuEntryGui = new EiuEntryGui($eiuEntry, $eiMask->createBulkyEiEntryGui(new EiuEntry($eiEntry, $this), true));
 		
 		if ($contextPropertyPath === null) {
 			$contextPropertyPath = new PropertyPath(array());
@@ -317,11 +317,11 @@ class EiuFrame extends EiUtilsAdapter {
 		if (!$eiObject->isDraft()) {
 			$entityObj = $eiObject->getLiveObject();
 		} else {
-			$eiMapping = $this->createEiMapping($eiObject);
-			$previewEiMapping = $this->createEiMappingCopy($eiMapping, 
+			$eiEntry = $this->createEiEntry($eiObject);
+			$previewEiEntry = $this->createEiEntryCopy($eiEntry, 
 					$this->createNewEiObject(false, $eiObject->getEiEntityObj()->getEiType()));
-			$previewEiMapping->write();
-			$entityObj = $previewEiMapping->getEiObject()->getLiveObject();
+			$previewEiEntry->write();
+			$entityObj = $previewEiEntry->getEiObject()->getLiveObject();
 		}
 		
 		$previewModel = new PreviewModel($previewType, $eiObject, $entityObj);
@@ -428,37 +428,37 @@ class EiCascadeOperation implements CascadeOperation {
 	}
 }
 
-// 	private function createEntryFormPart(EiType $eiType, EiMapping $eiMapping, $levelOnly) {
+// 	private function createEntryFormPart(EiType $eiType, EiEntry $eiEntry, $levelOnly) {
 // 		$eiMask = $this->eiFrame->getContextEiMask()->determineEiMask($eiType);
-// 		$eiObject = $eiMapping->getEiObject();
+// 		$eiObject = $eiEntry->getEiObject();
 // 		$guiDefinition = $eiMask->createGuiDefinition($this->eiFrame, $eiObject->isDraft(), $levelOnly);
-// 		return new EntryFormPart($guiDefinition, $this->eiFrame, $eiMapping);
+// 		return new EntryFormPart($guiDefinition, $this->eiFrame, $eiEntry);
 // 	}
 
 
 // 	public function applyEntryFormLevel(EntryForm $entryForm,  $eiType,
 // 			EiObject $orgEiObject = null,  $org = null) {
-// 		$latestEiMapping = null;
+// 		$latestEiEntry = null;
 // 		foreach ($eiType->getSubEiTypes() as $sub) {
-// 			$latestEiMapping = $this->applyEntryFormLevel($entryForm, $sub,
+// 			$latestEiEntry = $this->applyEntryFormLevel($entryForm, $sub,
 // 					$orgEiObject, $org);
 // 		}
 
 // 		$entryFormPart = null;
-// 		$eiMapping = null;
+// 		$eiEntry = null;
 // 		if ($entryForm->hasTypeOption($eiType->getId())) {
-// 			$eiMapping = $entryForm->getEiMappingById($eiType->getId());
+// 			$eiEntry = $entryForm->getEiEntryById($eiType->getId());
 // 		}
 
-// 		if (null === $eiMapping) {
+// 		if (null === $eiEntry) {
 // 			$entityClass = $eiType->getEntityModel()->getClass();
 // 			if ($entityClass->isAbstract()) {
-// 				if ($latestEiMapping === null) {
+// 				if ($latestEiEntry === null) {
 // 					throw new IllegalStateException('Cannot instance an object of ' . $eiType->getId()
 // 							. ' because it is abstract and no sub  available.');
 // 				}
 
-// 				$eiMapping = $latestEiMapping;
+// 				$eiEntry = $latestEiEntry;
 // 			} else {
 // 				$newEntity = ReflectionUtils::createObject($entityClass);
 
@@ -480,18 +480,18 @@ class EiCascadeOperation implements CascadeOperation {
 // 					}
 // 				}
 
-// 				$eiMapping = $this->createEiMapping($newEiObject);
-// 				$entryForm->addTypeOption($eiMapping);
+// 				$eiEntry = $this->createEiEntry($newEiObject);
+// 				$entryForm->addTypeOption($eiEntry);
 // 			}
 // 		}
 
 // 		if ($eiType->equals($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType())) {
 // 			$entryForm->setMainEntryFormPart(
-// 					$this->createEntryFormPart($eiType, $eiMapping, false));
+// 					$this->createEntryFormPart($eiType, $eiEntry, false));
 // 		} else {
 // 			$entryForm->addLevelEntryFormPart(
-// 					$this->createEntryFormPart($eiType, $eiMapping, true));
+// 					$this->createEntryFormPart($eiType, $eiEntry, true));
 // 		}
 
-// 		return $eiMapping;
+// 		return $eiEntry;
 // 	}

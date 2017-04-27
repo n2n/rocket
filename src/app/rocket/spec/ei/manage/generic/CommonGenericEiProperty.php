@@ -25,7 +25,7 @@ use n2n\l10n\Lstr;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\EiPropPath;
 
@@ -55,8 +55,8 @@ class CommonGenericEiProperty implements GenericEiProperty {
 		return CrIt::p($alias, $this->criteriaProperty);
 	}
 	
-	public function buildEntityValue(EiMapping $eiMapping) {
-		return $this->eiFieldValueToEntityValue($eiMapping->getValue($this->eiProp));
+	public function buildEntityValue(EiEntry $eiEntry) {
+		return $this->eiFieldValueToEntityValue($eiEntry->getValue($this->eiProp));
 	}
 	
 	public function eiFieldValueToEntityValue($eiFieldValue) {

@@ -39,7 +39,7 @@ use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
 use rocket\spec\ei\manage\mapping\EiField;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiProp;
 use n2n\reflection\ArgUtils;
@@ -139,17 +139,17 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\FieldEiProp::isEiMappingFilterable()
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::isEiEntryFilterable()
 	 */
-	public function isEiMappingFilterable(): bool {
+	public function isEiEntryFilterable(): bool {
 		return false;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\FieldEiProp::createEiMappingFilterField($n2nContext)
+	 * @see \rocket\spec\ei\component\field\FieldEiProp::createEiEntryFilterField($n2nContext)
 	 */
-	public function createEiMappingFilterField(\n2n\core\container\N2nContext $n2nContext): EiMappingFilterField {
+	public function createEiEntryFilterField(\n2n\core\container\N2nContext $n2nContext): EiEntryFilterField {
 		return null;
 	}
 

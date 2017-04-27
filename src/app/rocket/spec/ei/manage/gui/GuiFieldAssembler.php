@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 
 class GuiFieldAssembler implements Savable {
 	private $guiDefinition;
-	private $eiuGui;
+	private $eiuEntryGui;
 	private $eiu;
 	private $eiObjectForm;
 	private $displayables = array();
@@ -45,10 +45,10 @@ class GuiFieldAssembler implements Savable {
 	private $forkedPropertyPaths = array();
 	private $forkMagWrappers = array();
 	
-	public function __construct(GuiDefinition $guiDefinition, EiuEntryGui $eiuGui) {
+	public function __construct(GuiDefinition $guiDefinition, EiuEntryGui $eiuEntryGui) {
 		$this->guiDefinition = $guiDefinition;
-		$this->eiuGui = $eiuGui;
-		$this->eiu = new Eiu($eiuGui);
+		$this->eiuEntryGui = $eiuEntryGui;
+		$this->eiu = new Eiu($eiuEntryGui);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ class GuiFieldAssembler implements Savable {
 	
 		$eiFieldWrapper = $this->eiu->entry()->getEiFieldWrapper($eiPropPath);
 		
-		if ($this->eiuGui->isReadOnly() || $guiField->isReadOnly()) {
+		if ($this->eiuEntryGui->isReadOnly() || $guiField->isReadOnly()) {
 			return new AssembleResult($guiField, $eiFieldWrapper);
 		}
 		
@@ -111,7 +111,7 @@ class GuiFieldAssembler implements Savable {
 		$magPropertyPath = $result->getMagPropertyPath();
 		
 		
-		if ($this->eiuGui->isReadOnly() || $displayable->isReadOnly() || $magPropertyPath === null) {
+		if ($this->eiuEntryGui->isReadOnly() || $displayable->isReadOnly() || $magPropertyPath === null) {
 			return new AssembleResult($displayable, $eiFieldWrapper);
 		}
 		

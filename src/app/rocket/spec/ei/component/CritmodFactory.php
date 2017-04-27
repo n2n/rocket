@@ -30,13 +30,13 @@ use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\component\field\FilterableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\component\field\SortableEiPropFork;
 use rocket\spec\ei\manage\critmod\sort\SortFieldFork;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
@@ -89,18 +89,18 @@ class CritmodFactory {
 		return $filterDefinition;
 	}
 	
-	public function createEiMappingFilterDefinition(N2nContext $n2nContext): EiMappingFilterDefinition {
-		$eiFieldFilterDefinition = new EiMappingFilterDefinition();
+	public function createEiEntryFilterDefinition(N2nContext $n2nContext): EiEntryFilterDefinition {
+		$eiFieldFilterDefinition = new EiEntryFilterDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof FilterableEiProp)) continue;
 			
-			$eiMappingFilterField = $eiProp->buildEiMappingFilterField($n2nContext);
-			ArgUtils::valTypeReturn($eiMappingFilterField, EiMappingFilterField::class, $eiProp, 
-					'buildEiMappingFilterField', true);
+			$eiEntryFilterField = $eiProp->buildEiEntryFilterField($n2nContext);
+			ArgUtils::valTypeReturn($eiEntryFilterField, EiEntryFilterField::class, $eiProp, 
+					'buildEiEntryFilterField', true);
 
-			if ($eiMappingFilterField !== null) {
-				$eiFieldFilterDefinition->putEiMappingFilterField(EiPropPath::from($eiProp), $eiMappingFilterField);
+			if ($eiEntryFilterField !== null) {
+				$eiFieldFilterDefinition->putEiEntryFilterField(EiPropPath::from($eiProp), $eiEntryFilterField);
 			}
 		}
 		

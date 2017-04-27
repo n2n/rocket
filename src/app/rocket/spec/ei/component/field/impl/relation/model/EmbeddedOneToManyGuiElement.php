@@ -74,19 +74,19 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		
 		$detailViews = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
-			$targetEiMapping = null;
-			if ($targetRelationEntry->hasEiMapping()) {
-				$targetEiMapping = $targetRelationEntry->getEiMapping();
+			$targetEiEntry = null;
+			if ($targetRelationEntry->hasEiEntry()) {
+				$targetEiEntry = $targetRelationEntry->getEiEntry();
 			} else {
-				$targetEiMapping = $targetEiuFrame->createEiMapping(
+				$targetEiEntry = $targetEiuFrame->createEiEntry(
 						$targetRelationEntry->getEiObject());
 			}
 			
-			if ($targetEiMapping->isAccessible()) {
-				$detailViews[] = $targetEiuFrame->createBulkyDetailView($targetEiMapping);
+			if ($targetEiEntry->isAccessible()) {
+				$detailViews[] = $targetEiuFrame->createBulkyDetailView($targetEiEntry);
 			} else {
 				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetEiuFrame->createIdentityString($targetEiMapping->getEiObject()));
+						$targetEiuFrame->createIdentityString($targetEiEntry->getEiObject()));
 			}
 		}
 

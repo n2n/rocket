@@ -34,7 +34,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
@@ -42,7 +42,7 @@ use n2n\l10n\MessageCode;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 
-class BoolFilterField implements EiMappingFilterField {
+class BoolFilterField implements EiEntryFilterField {
 	const ATTR_VALUE_KEY = 'value';
 	const ATTR_VALUE_DEFAULT = false;
 	

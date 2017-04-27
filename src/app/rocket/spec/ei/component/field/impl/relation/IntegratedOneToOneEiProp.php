@@ -49,7 +49,7 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 
@@ -60,7 +60,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	}
 	
 	public function buildEiField(Eiu $eiu) {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiMapping(), $eiu->frame()->getEiFrame());
+		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
 		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
@@ -109,8 +109,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		if ($value === null) return $value;
 	
 		$targetEiuFrame = new EiuFrame($this->embeddedEiPropRelation->createTargetEditPseudoEiFrame(
-				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiMapping()));
-		return RelationEntry::fromM($targetEiuFrame->createEiMappingCopy($value->toEiMapping($targetEiuFrame)));
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
+		return RelationEntry::fromM($targetEiuFrame->createEiEntryCopy($value->toEiEntry($targetEiuFrame)));
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
@@ -134,30 +134,30 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	 */
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		$targetEiFrame = null;
 		if ($eiu->entryGui()->isReadOnly()) {
-			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiMapping);
+			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiEntry);
 		} else {
-			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiMapping);
+			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
 		
 		$targetUtils = new EiuFrame($targetEiFrame);
 		
-		$toOneEiField = $eiMapping->getEiField(EiPropPath::from($this));
+		$toOneEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		$targetRelationEntry = $toOneEiField->getValue();
 		
 		if ($targetRelationEntry === null) {
 			$targetEiObject = $targetUtils->createNewEiObject();
-			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiObject));
-		} else if (!$targetRelationEntry->hasEiMapping()) {
+			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($targetEiObject));
+		} else if (!$targetRelationEntry->hasEiEntry()) {
 			$targetEiObject = $targetRelationEntry->getEiObject();
-			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiMapping($targetEiObject));
+			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($targetEiObject));
 		}
 				
 		$targetGuiFieldAssembler = new GuiFieldAssembler($this->getForkedGuiDefinition(), 
-				new Eiu($targetRelationEntry->getEiMapping(), $targetUtils->getEiFrame(), $eiu->getViewMode()));
+				new Eiu($targetRelationEntry->getEiEntry(), $targetUtils->getEiFrame(), $eiu->getViewMode()));
 		
 		return new OneToOneGuiFieldFork($toOneEiField, $targetRelationEntry, $targetGuiFieldAssembler);
 	}
@@ -174,13 +174,13 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		return $targetEiObject;
 	}
 	
-	public function determineEiFieldWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath) {
+	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath) {
 		$eiFieldWrappers = array();
-		$targetRelationEntry = $eiMapping->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
-		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiMapping()) return null;
+		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
+		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) return null;
 	
 		if (null !== ($eiFieldWrapper = $this->guiDefinition
-				->determineEiFieldWrapper($targetRelationEntry->getEiMapping(), $guiIdPath))) {
+				->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiIdPath))) {
 			return $eiFieldWrapper;
 		}
 	

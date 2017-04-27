@@ -37,13 +37,14 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\manage\EiFrame;
+use rocket\spec\ei\manage\gui\EiGui;
 
 class GuiFactory {
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $eiPropCollection, 
-			EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiPropCollection $eiPropCollection, EiModificatorCollection $eiModificatorCollection) {
 		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
@@ -81,41 +82,41 @@ class GuiFactory {
 	 * @param array $guiIdPaths
 	 * @return EiEntryGui
 	 */
-	public function createEiEntryGui(EiMask $eiMask, EiuEntry $eiuEntry, int $viewMode, array $guiIdPaths) {
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiIdPaths, int $level = null) {
 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
-		$eiObjectGui = new EiEntryGui($eiMask, $viewMode);
-		$eiuEntryGui = new EiuEntryGui($eiObjectGui, $eiuEntry);
+		$eiEntryGui = new EiEntryGui($eiGui, $level);
+		$eiuEntryGui = new EiuEntryGui($eiEntryGui);
 		
-		$guiFieldAssembler = new GuiFieldAssembler($eiMask->getEiEngine()->getGuiDefinition(), $eiuEntryGui);
+		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getGuiDefinition(), $eiuEntryGui);
 		
 		foreach ($guiIdPaths as $guiIdPath) {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;
 			
-			$eiObjectGui->putDisplayable($guiIdPath, $result->getDisplayable());
+			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
-				$eiObjectGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
+				$eiEntryGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
 			}
 			
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
-				$eiObjectGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
+				$eiEntryGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
 						$magPropertyPath, $result->getMagWrapper()));
 			}
 		}
 		
 		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
-			$eiObjectGui->setDispatchable($guiFieldAssembler->getDispatchable());
-			$eiObjectGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
-			$eiObjectGui->setSavables($guiFieldAssembler->getSavables());
+			$eiEntryGui->setDispatchable($guiFieldAssembler->getDispatchable());
+			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
+			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
 		}
 		
 		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->setupEiEntryGui($eiObjectGui);
+			$eiModificator->setupEiEntryGui($eiEntryGui);
 		}
 		
-		$eiObjectGui->markInitialized();
+		$eiEntryGui->markInitialized();
 		
-		return $eiObjectGui;
+		return $eiEntryGui;
 	}
 }

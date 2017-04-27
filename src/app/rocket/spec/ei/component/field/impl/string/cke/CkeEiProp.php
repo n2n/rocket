@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\field\impl\string\cke;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiProp;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\EiPropPath;
@@ -129,7 +129,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		$eiMapping = $eiu->entry()->getEiMapping();
+		$eiEntry = $eiu->entry()->getEiEntry();
 		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
 				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
@@ -138,7 +138,7 @@ class CkeEiProp extends AlphanumericEiProp {
 // 	/**
 // 	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
 // 	 */
-// 	private function obtainLinkConfigurations(EiMapping $eiMapping, Eiu $eiu) {
+// 	private function obtainLinkConfigurations(EiEntry $eiEntry, Eiu $eiu) {
 // 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();
 		
 // 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
@@ -147,7 +147,7 @@ class CkeEiProp extends AlphanumericEiProp {
 // 			try {
 // 				if (null !== ($linkConfiguration = $n2nContext->lookup($linkConfigurationClass)) 
 // 						&& $linkConfiguration instanceof WysiwygLinkConfig) {
-// 					$linkConfiguration->setup($eiMapping, $eiu);
+// 					$linkConfiguration->setup($eiEntry, $eiu);
 // 					$linkConfigurations[] = $linkConfiguration;
 // 				}
 // 			} catch (MagicObjectUnavailableException $e) {}
