@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\config\mask\model\GuiOrder;
 use n2n\util\ex\IllegalStateException;
 
 class CommonEiMaskExtraction {
@@ -70,17 +70,17 @@ class CommonEiMaskExtraction {
 	}
 	
 	/**
-	 * @return DisplayScheme
+	 * @return GuiOrder
 	 */
-	public function getDisplayScheme(): DisplayScheme {
+	public function getGuiOrder(): GuiOrder {
 		IllegalStateException::assertTrue($this->guiOrder !== null);
 		return $this->guiOrder;
 	}
 	
 	/**
-	 * @param DisplayScheme $guiOrder
+	 * @param GuiOrder $guiOrder
 	 */
-	public function setDisplayScheme(DisplayScheme $guiOrder) {
+	public function setGuiOrder(GuiOrder $guiOrder) {
 		$this->guiOrder = $guiOrder;
 	}
 	

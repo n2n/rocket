@@ -38,11 +38,11 @@ class RocketUserGroupListModel {
 	}
 	
 	public function prettyEiGrantName(EiGrant $eiGrant) {
-		$eiType = $this->specManager->getEiTypeById($eiGrant->getEiTypeId());
+		$eiSpec = $this->specManager->getEiSpecById($eiGrant->getEiSpecId());
 		if (null !== ($eiMaskId = $eiGrant->getEiMaskId())) {
-			return $eiType->getEiMaskCollection()->getById($eiMaskId)->getLabel();
+			return $eiSpec->getEiMaskCollection()->getById($eiMaskId)->getLabel();
 		}
 		
-		return $eiType->getEiMaskCollection()->getOrCreateDefault()->getLabelLstr();
+		return $eiSpec->getEiMaskCollection()->getOrCreateDefault()->getLabelLstr();
 	}
 }

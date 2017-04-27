@@ -39,9 +39,4 @@ interface Displayable {
 	 * @return mixed UiComponent or string (will be escaped)
 	 */
 	public function createOutputUiComponent(HtmlView $view);
-	
-	/**
-	 * @return string|null {@see } 
-	 */
-	public function getGroupType();
 }

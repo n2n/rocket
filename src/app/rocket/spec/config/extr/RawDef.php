@@ -45,7 +45,7 @@ class RawDef {
 	
 	const GUI_FIELD_ORDER_GROUP_TITLE_KEY = 'title';
 	const GUI_FIELD_ORDER_GROUP_TYPE_KEY = 'type';
-	const GUI_FIELD_ORDER_KEY = 'displayStructure';
+	const GUI_FIELD_ORDER_KEY = 'guiFieldOrder';
 
 	const EI_DEF_PARTIAL_CONTROL_ORDER_KEY = 'partialControlOrder';
 	const EI_DEF_OVERALL_CONTROL_ORDER_KEY = 'overallControlOrder';

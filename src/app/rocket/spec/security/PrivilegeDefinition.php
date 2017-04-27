@@ -22,7 +22,7 @@
 namespace rocket\spec\security;
 
 use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\AttributesException;
@@ -55,61 +55,61 @@ class PrivilegeDefinition {
 		return $this->eiCommandPrivileges;
 	}
 	
-	private $eiPropPrivileges = array();
+	private $eiFieldPrivileges = array();
 	
-	public function getEiPropPrivileges(): array {
-		return $this->eiPropPrivileges;
+	public function getEiFieldPrivileges(): array {
+		return $this->eiFieldPrivileges;
 	}
 	
-	public function putEiPropPrivilege(EiPropPath $eiPropPath, EiPropPrivilege $eiPropPrivilege) {
-		$this->eiPropPrivileges[(string) $eiPropPath] = $eiPropPrivilege;
+	public function putEiFieldPrivilege(EiFieldPath $eiFieldPath, EiFieldPrivilege $eiFieldPrivilege) {
+		$this->eiFieldPrivileges[(string) $eiFieldPath] = $eiFieldPrivilege;
 	}
 	
-	public function getEiPropPrivilegeByEiPropPath(EiPropPath $eiPropPath): EiPropPrivilege {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (isset($this->eiPropPrivileges[$eiPropPath])) {
-			return $this->eiPropPrivileges[$eiPropPath];
+	public function getEiFieldPrivilegeByEiFieldPath(EiFieldPath $eiFieldPath): EiFieldPrivilege {
+		$eiFieldPathStr = (string) $eiFieldPath;
+		if (isset($this->eiFieldPrivileges[$eiFieldPath])) {
+			return $this->eiFieldPrivileges[$eiFieldPath];
 		}
 	
-		throw new UnknownEiPropPrivilegeException();
+		throw new UnknownEiFieldPrivilegeException();
 	}
 	
-	public function createEiPropPrivilegeMagCollection(Attributes $attributes): MagCollection {
+	public function createEiFieldPrivilegeMagCollection(Attributes $attributes): MagCollection {
 		$magCollection = new MagCollection();
-		foreach ($this->eiPropPrivileges as $eiPropPathStr => $eiPropPrivilege) {
+		foreach ($this->eiFieldPrivileges as $eiFieldPathStr => $eiFieldPrivilege) {
 			$itemAttributes = null;
 			try {
-				$itemAttributes = new Attributes($attributes->getArray($eiPropPathStr, false));
+				$itemAttributes = new Attributes($attributes->getArray($eiFieldPathStr, false));
 			} catch (AttributesException $e) {
 				$itemAttributes = new Attributes();
 			}
 				
-			$magCollection->addMag($eiPropPrivilege->createMag($eiPropPathStr, $itemAttributes));
+			$magCollection->addMag($eiFieldPrivilege->createMag($eiFieldPathStr, $itemAttributes));
 		}
 		return $magCollection;
 	}
 	
-	public function buildEiPropPrivilegeAttributes(MagCollection $magCollection) {
+	public function buildEiFieldPrivilegeAttributes(MagCollection $magCollection) {
 		$attributes = new Attributes();
 		
-		foreach ($this->eiPropPrivileges as $eiPropPathStr => $eiPropPrivilege) {
-			if (!$magCollection->containsPropertyName($eiPropPathStr)) continue;
+		foreach ($this->eiFieldPrivileges as $eiFieldPathStr => $eiFieldPrivilege) {
+			if (!$magCollection->containsPropertyName($eiFieldPathStr)) continue;
 			
-			$attributes->set($eiPropPathStr, $eiPropPrivilege->buildAttributes(
-					$magCollection->getMagByPropertyName($eiPropPathStr))->toArray());
+			$attributes->set($eiFieldPathStr, $eiFieldPrivilege->buildAttributes(
+					$magCollection->getMagByPropertyName($eiFieldPathStr))->toArray());
 		}
 
 		return $attributes;
 	}
 	
-	public static function extractAttributesOfEiPropPrivilege(EiPropPath $eiPropPath, 
-			Attributes $eiPropPrivilegeAttributes) {
+	public static function extractAttributesOfEiFieldPrivilege(EiFieldPath $eiFieldPath, 
+			Attributes $eiFieldPrivilegeAttributes) {
 		
-		$eiPropPathStr = (string) $eiPropPath;
+		$eiFieldPathStr = (string) $eiFieldPath;
 				
-		if (!$eiPropPrivilegeAttributes->contains($eiPropPathStr)) return null;
+		if (!$eiFieldPrivilegeAttributes->contains($eiFieldPathStr)) return null;
 		
-		$attrs = $eiPropPrivilegeAttributes->get($eiPropPathStr);
+		$attrs = $eiFieldPrivilegeAttributes->get($eiFieldPathStr);
 		if (is_array($attrs)) return new Attributes($attrs);
 		
 		return null;

@@ -112,9 +112,13 @@
 			</div>
 		</div>
 	</div>
-	<div class="rocket-context-commands">	
-		<?php $formHtml->buttonSubmit('save', 
-				new Raw('<i class="fa fa-save"></i>' . $html->getL10nText('common_save_label')), 
-				array('class' => 'btn btn-primary')) ?>
+	<div id="rocket-page-controls">	
+		<ul>
+			<li>
+				<?php $formHtml->buttonSubmit('save', 
+						new Raw('<i class="fa fa-save"></i>' . $html->getL10nText('common_save_label')), 
+						array('class' => 'rocket-control-warning rocket-important')) ?>
+			</li>
+		</ul>
 	</div>
 <?php $formHtml->close() ?>

@@ -24,12 +24,12 @@ namespace rocket\spec\ei\component\command\impl;
 use rocket\spec\ei\component\impl\IndependentEiComponentAdapter;
 use rocket\spec\ei\component\command\IndependentEiCommand;
 use rocket\spec\ei\component\EiConfigurator;
-use rocket\spec\ei\component\impl\DefaultEiPropConfigurator;
+use rocket\spec\ei\component\impl\DefaultEiFieldConfigurator;
 
 abstract class IndependentEiCommandAdapter extends IndependentEiComponentAdapter implements IndependentEiCommand {
 	
 	public function createEiConfigurator(): EiConfigurator {
-		return new DefaultEiPropConfigurator($this);
+		return new DefaultEiFieldConfigurator($this);
 	}
 	
 	public function equals($obj) {

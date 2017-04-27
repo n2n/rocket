@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\component\command\impl\common;
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
+use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
@@ -38,6 +39,7 @@ use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
+use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\component\command\GenericDetailEiCommand;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
@@ -69,9 +71,9 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryControls()
+	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryHrefControls()
 	 */
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		$eiuFrame = $eiu->frame();
 		if ($eiuFrame->isExecutedBy($this)) {
 			return array();
@@ -91,21 +93,17 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 			return array();
 		}
 		
-		$dtc = $eiu->dtc('rocket');
-		$eiuControlFactory = $eiu->frame()->controlFactory($view);
-		
 		$controlButton = new ControlButton(
-				$dtc->t('ei_impl_detail_label'),
-				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, $iconType);
+				$view->getL10nText('ei_impl_detail_label'), $view->getL10nText('ei_impl_detail_tooltip',
+						array('entry' => $eiuFrame->getGenericLabel())),
+				true, ControlButton::TYPE_DEFAULT, $iconType);
 		
-		$controls = array(
-				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createAjah($this, $controlButton, $pathExt->toUrl()));
-		
+		$hrefControls = array(self::CONTROL_DETAIL_KEY 
+				=> HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl(), $controlButton));
 		
 		$previewType = $eiuEntry->getPreviewType();
 		if ($previewType === null) {
-			return $controls;
+			return $hrefControls;
 		}
 		
 		if (!$eiuEntry->isDraft()) {
@@ -115,17 +113,16 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		}
 		
 		$controlButton = new ControlButton(
-				$dtc->t('ei_impl_detail_preview_label'), 
-				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				IconType::ICON_EYE);
+				$view->getL10nText('ei_impl_detail_preview_label'), $view->getL10nText('ei_impl_detail_preview_tooltip',
+						array('entry' => $eiuFrame->getGenericLabel())),
+				true, ControlButton::TYPE_DEFAULT, IconType::ICON_EYE);
 		
-		$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createAjah($this, $controlButton, $pathExt->toUrl());
-		
-		return $controls;
+		$hrefControls[self::CONTROL_PREVIEW_KEY] = HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl(), $controlButton);
+		return $hrefControls;
 	}
 	
 	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
-// 		if (!$this->getEiType()->getDefaultEiDef()->getisPreviewAvailable()) {
+// 		if (!$this->getEiSpec()->getDefaultEiDef()->getisPreviewAvailable()) {
 // 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
 // 		}
 		

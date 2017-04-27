@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\command\impl\common\controller;
 
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\ManageState;
-use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
+use rocket\spec\ei\component\command\impl\common\model\ListModel;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
@@ -47,20 +47,19 @@ class OverviewController extends ControllerAdapter {
 		$this->listSize = $listSize;
 	}
 	
-	public function prepare(ScrRegistry $scrRegistry, EiuCtrl $eiuCtrl) {
+	public function prepare(/*ManageState $manageState, RocketState $rocketState,*/ ScrRegistry $scrRegistry) {
 // 		$this->manageState = $manageState;
 // 		$this->rocketState = $rocketState;
 		$this->scrRegistry = $scrRegistry;
-		$this->eiuCtrl = $eiuCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->getHttpContext());
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
-		$eiuFrame = $this->eiuCtrl->frame();
-		$eiFrame = $eiuFrame->getEiFrame();
+		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$stateKey = OverviewAjahController::genStateKey();
 		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
-		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
+		$listModel = new ListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if ($pageNo === null) {
 			$pageNo = 1;
@@ -74,9 +73,9 @@ class OverviewController extends ControllerAdapter {
 		
 		$listView = null;
 		if ($listModel->isTree()) {
-			$listView = $eiuFrame->createTreeView($listModel->getEiuEntryGuiTree());
+			$listView = $eiFrame->getContextEiMask()->createTreeView($eiFrame, $listModel->getEntryGuiTree());
 		} else {
-			$listView = $eiuFrame->createListView($listModel->getEiuEntryGuis());
+			$listView = $eiFrame->getContextEiMask()->createListView($eiFrame, $listModel->getEntryGuis());
 		}
 
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
@@ -86,16 +85,10 @@ class OverviewController extends ControllerAdapter {
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
-		$this->eiuCtrl->forwardView(
-				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
-						'critmodForm' => $critmodForm,
+		$this->forward('..\view\overview.html', 
+				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterAjahHook' => $filterAjahHook, 'listView' => $listView)));
-		
-// 		$this->forward('..\view\overview.html', 
-// 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
-// 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-// 						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
+						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
 	}
 	
 	public function doAjah(array $delegateCmds = array(), OverviewAjahController $ajahOverviewController, 

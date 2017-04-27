@@ -21,38 +21,38 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\SortableEiProp;
+use rocket\spec\ei\component\field\SortableEiField;
 use rocket\spec\ei\manage\critmod\SortModel;
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\field\EiFieldCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\ei\component\field\PrivilegedEiProp;
+use rocket\spec\ei\component\field\PrivilegedEiField;
 use rocket\spec\security\PrivilegeDefinition;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\ei\EiCommandPath;
 use n2n\reflection\ArgUtils;
-use rocket\spec\security\EiPropPrivilege;
+use rocket\spec\security\EiFieldPrivilege;
 
 class SecurityFactory {
-	private $eiPropCollection;
+	private $eiFieldCollection;
 	private $eiCommandCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $eiPropCollection, EiCommandCollection $eiCommandCollection ,
+	public function __construct(EiFieldCollection $eiFieldCollection, EiCommandCollection $eiCommandCollection ,
 			EiModificatorCollection $eiModificatorCollection) {
-		$this->eiPropCollection = $eiPropCollection;
+		$this->eiFieldCollection = $eiFieldCollection;
 		$this->eiCommandCollection = $eiCommandCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 	
-// 	public static function createFilterModel(EiType $eiType, N2nContext $n2nContext) {
-// 		return self::createFilterModelInstance($eiType, $n2nContext);
+// 	public static function createFilterModel(EiSpec $eiSpec, N2nContext $n2nContext) {
+// 		return self::createFilterModelInstance($eiSpec, $n2nContext);
 // 	}
 	
 // 	public static function createFilterModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), 
+// 		return self::createFilterModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), 
 // 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 		
@@ -64,39 +64,39 @@ class SecurityFactory {
 			$privilegeDefinition->putEiCommandPrivilege(EiCommandPath::from($eiCommand), $eiCommand->createEiCommandPrivilege($n2nContext));
 		}	
 		
-		foreach ($this->eiPropCollection->toArray(false) as $eiProp) {
-			if (!($eiProp instanceof PrivilegedEiProp)) continue;
+		foreach ($this->eiFieldCollection->toArray(false) as $eiField) {
+			if (!($eiField instanceof PrivilegedEiField)) continue;
 				
-			$eiPropPrivilege = $eiProp->createEiPropPrivilege($n2nContext);
-			ArgUtils::valTypeReturn($eiPropPrivilege, EiPropPrivilege::class, $eiProp, 'buildEiPropPrivilege');
+			$eiFieldPrivilege = $eiField->createEiFieldPrivilege($n2nContext);
+			ArgUtils::valTypeReturn($eiFieldPrivilege, EiFieldPrivilege::class, $eiField, 'buildEiFieldPrivilege');
 			
-			if ($eiPropPrivilege !== null) {
-				$privilegeDefinition->putEiPropPrivilege(EiPropPath::from($eiProp), $eiPropPrivilege);
+			if ($eiFieldPrivilege !== null) {
+				$privilegeDefinition->putEiFieldPrivilege(EiFieldPath::from($eiField), $eiFieldPrivilege);
 			}
 		}
 		
 		return $privilegeDefinition;
 	}
 	
-// 	public static function createSortModel(EiType $eiType, N2nContext $n2nContext) {
-// 		return self::createSortModelInstance($eiType, $n2nContext);
+// 	public static function createSortModel(EiSpec $eiSpec, N2nContext $n2nContext) {
+// 		return self::createSortModelInstance($eiSpec, $n2nContext);
 // 	}
 	
 // 	public static function createSortModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), $eiFrame->getN2nContext());
+// 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec(), $eiFrame->getN2nContext());
 // 	}
 	
 	public static function createSortModel() {
 		$sortModel = new SortModel();
-		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof SortableEiProp)) continue;
+		foreach ($this->eiFieldCollection as $id => $eiField) {
+			if (!($eiField instanceof SortableEiField)) continue;
 			
-			if (null !== ($sortItem = $eiProp->getSortItem())) {
-				$sortModel->putSortItem($id, $eiProp->getSortItem());
+			if (null !== ($sortItem = $eiField->getSortItem())) {
+				$sortModel->putSortItem($id, $eiField->getSortItem());
 			}
 			
-			if (null !== ($sortItemFork = $eiProp->getSortItemFork())) {
-				$sortModel->putSortItemFork($id, $eiProp->getSortItemFork());
+			if (null !== ($sortItemFork = $eiField->getSortItemFork())) {
+				$sortModel->putSortItemFork($id, $eiField->getSortItemFork());
 			}
 		}
 		return $sortModel;
@@ -104,8 +104,8 @@ class SecurityFactory {
 		
 // 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEiPropCollection() as $field) {
-// 			if ($field instanceof QuickSearchableEiProp) {
+// 		foreach ($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEiFieldCollection() as $field) {
+// 			if ($field instanceof QuickSearchableEiField) {
 // 				$quickSerachModel->addQuickSearchable($field);
 // 			}
 // 		}

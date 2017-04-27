@@ -27,7 +27,7 @@ use n2n\web\dispatch\annotation\AnnoDispObject;
 use rocket\spec\ei\manage\util\model\EntryForm;
 use n2n\web\dispatch\annotation\AnnoDispScalar;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 class MappingForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -36,16 +36,16 @@ class MappingForm implements Dispatchable {
 	}
 
 	private $entryLabel;
-	private $eiEntry;
+	private $eiMapping;
 	private $entryForm;
 	private $orderIndex;
 	
-	public function __construct(string $entryLabel, EiEntry $eiEntry = null, EntryForm $entryForm = null, 
+	public function __construct(string $entryLabel, EiMapping $eiMapping = null, EntryForm $entryForm = null, 
 			int $orderIndex = null) {
-		ArgUtils::assertTrue($eiEntry !== null || $entryForm !== null);
+		ArgUtils::assertTrue($eiMapping !== null || $entryForm !== null);
 		
 		$this->entryLabel = $entryLabel;
-		$this->eiEntry = $eiEntry;
+		$this->eiMapping = $eiMapping;
 		$this->entryForm = $entryForm;
 		$this->orderIndex = $orderIndex;
 	}
@@ -58,12 +58,12 @@ class MappingForm implements Dispatchable {
 		return $this->entryLabel;
 	}
 	
-	public function buildEiEntry() {
+	public function buildEiMapping() {
 		if ($this->entryForm !== null) {
-			return $this->entryForm->buildEiEntry();
+			return $this->entryForm->buildEiMapping();
 		}
 		
-		return $this->eiEntry;
+		return $this->eiMapping;
 	}
 	
 	public function getEntryForm() {

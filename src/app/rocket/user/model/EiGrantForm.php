@@ -28,7 +28,7 @@ use rocket\user\bo\EiPrivilegeGrant;
 use rocket\user\bo\EiGrant;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
+use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 
@@ -38,26 +38,26 @@ class EiGrantForm implements Dispatchable {
 		$ai->p('eiPrivilegeGrantForms', new AnnoDispObjectArray( 
 				function (EiGrantForm $that) {
 					return new EiPrivilegeGrantForm(new EiPrivilegeGrant(), $that->privilegeDefinition,
-							$that->eiEntryFilterDefinition);
+							$that->eiMappingFilterDefinition);
 				}));
 	}
 	
 	private $eiGrant;
 	private $privilegeDefinition;
-	private $eiEntryFilterDefinition;
+	private $eiMappingFilterDefinition;
 	
 	private $accessDenyMagForm;
 	private $eiPrivilegeGrantForms = array();
 	
 	public function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, 
-			EiEntryFilterDefinition $eiEntryFilterDefinition) {
+			EiMappingFilterDefinition $eiMappingFilterDefinition) {
 		$this->eiGrant = $eiGrant;
 		$this->privilegeDefinition = $privilegeDefinition;
-		$this->eiEntryFilterDefinition = $eiEntryFilterDefinition;
+		$this->eiMappingFilterDefinition = $eiMappingFilterDefinition;
 		
 		foreach ($eiGrant->getEiPrivilegeGrants() as $eiPrivilegeGrant) {
 			$this->eiPrivilegeGrantForms[] = new EiPrivilegeGrantForm($eiPrivilegeGrant, $this->privilegeDefinition, 
-					$eiEntryFilterDefinition);
+					$eiMappingFilterDefinition);
 		}
 	}
 	
@@ -70,7 +70,7 @@ class EiGrantForm implements Dispatchable {
 	}
 
 	public function areRestrictionsAvailable(): bool {
-		return !$this->eiEntryFilterDefinition->isEmpty();
+		return !$this->eiMappingFilterDefinition->isEmpty();
 	}
 	
 	public function isNew() {

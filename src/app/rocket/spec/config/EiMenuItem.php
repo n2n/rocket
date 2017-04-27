@@ -29,23 +29,23 @@ use n2n\web\http\controller\Controller;
 use rocket\spec\ei\manage\ManageState;
 use n2n\reflection\CastUtils;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\EiTypeController;
+use rocket\spec\ei\EiSpecController;
 use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
 use rocket\core\model\TransactionApproveAttempt;
 
 class EiMenuItem implements MenuItem {
 	private $id;
-	private $eiType;
+	private $eiSpec;
 	private $eiMask;
 	private $label;
 	
-	public function __construct(string $id, EiType $eiType, EiMask $eiMask, string $label = null) {
+	public function __construct(string $id, EiSpec $eiSpec, EiMask $eiMask, string $label = null) {
 		$this->id = $id;
-		$this->eiType = $eiType;
+		$this->eiSpec = $eiSpec;
 		$this->eiMask = $eiMask;
 	}
 	/**
@@ -113,7 +113,7 @@ class EiMenuItem implements MenuItem {
 		CastUtils::assertTrue($rocket instanceof Rocket);
 				
 		$manageState->createEiFrame($this->eiMask, $delegateControllerContext);
-		$em = $this->eiType->lookupEntityManager($n2nContext->lookup(PdoPool::class));
+		$em = $this->eiSpec->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->getEiPermissionManager());
@@ -121,7 +121,7 @@ class EiMenuItem implements MenuItem {
 		$vetoableRemoveActionQueue->initialize($manageState->getEntityManager(), $manageState->getDraftManager());
 		$manageState->setVetoableRemoveActionQueue($vetoableRemoveActionQueue);
 		
-		return $n2nContext->lookup(EiTypeController::class);
+		return $n2nContext->lookup(EiSpecController::class);
 	}
 
 	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt {

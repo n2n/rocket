@@ -23,8 +23,8 @@ namespace rocket\spec\config\extr;
 
 use n2n\util\config\Attributes;
 use n2n\reflection\ArgUtils;
-use rocket\spec\config\mask\model\DisplayScheme;
-use rocket\spec\ei\manage\gui\DisplayStructure;
+use rocket\spec\config\mask\model\GuiOrder;
+use rocket\spec\config\mask\model\GuiFieldOrder;
 
 class SpecRawer {
 	private $attributes;
@@ -39,8 +39,8 @@ class SpecRawer {
 		foreach ($specExtractions as $specExtraction) {
 			if ($specExtraction instanceof CustomSpecExtraction) {
 				$specsRawData[$specExtraction->getId()] = $this->buildCustomSpecExtractionRawData($specExtraction);
-			} else if ($specExtraction instanceof EiTypeExtraction) {
-				$specsRawData[$specExtraction->getId()] = $this->buildEiTypeExtractionRawData($specExtraction);
+			} else if ($specExtraction instanceof EiSpecExtraction) {
+				$specsRawData[$specExtraction->getId()] = $this->buildEiSpecExtractionRawData($specExtraction);
 			} else {
 				throw new \InvalidArgumentException();
 			}
@@ -56,7 +56,7 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	private function buildEiTypeExtractionRawData(EiTypeExtraction $extraction) {
+	private function buildEiSpecExtractionRawData(EiSpecExtraction $extraction) {
 		$rawData = array();	
 		$rawData[RawDef::SPEC_TYPE_KEY] = RawDef::SPEC_TYPE_ENTITY;
 		$rawData[RawDef::SPEC_EI_CLASS_KEY] = $extraction->getEntityClassName();
@@ -77,7 +77,7 @@ class SpecRawer {
 	
 	public function rawCommonEiMasks(array $groupedCommonEiMaskExtractions) {
 		$rawData = array();
-		foreach ($groupedCommonEiMaskExtractions as $eiTypeId => $commonEiMaskExtractions) {
+		foreach ($groupedCommonEiMaskExtractions as $eiSpecId => $commonEiMaskExtractions) {
 			if (empty($commonEiMaskExtractions)) continue;
 			
 			$commonEiMasksRawData = array();
@@ -85,7 +85,7 @@ class SpecRawer {
 				$commonEiMasksRawData[$commonEiMaskExtraction->getId()] = $this->buildCommonEiMaskExtractionRawData($commonEiMaskExtraction);
 			}
 			
-			$rawData[$eiTypeId] = $commonEiMasksRawData;
+			$rawData[$eiSpecId] = $commonEiMasksRawData;
 		}
 		
 		$this->attributes->set(RawDef::COMMON_EI_MASKS_KEY, $rawData);
@@ -94,7 +94,7 @@ class SpecRawer {
 	private function buildCommonEiMaskExtractionRawData(CommonEiMaskExtraction $eiMaskExtraction) {
 		$maskRawData = $this->buildEiDefExtractionRawData($eiMaskExtraction->getEiDefExtraction());
 		
-		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtraction->getDisplayScheme()));
+		return array_merge($maskRawData, $this->buildGuiOrderRawData($eiMaskExtraction->getGuiOrder()));
 	}
 	
 	
@@ -124,9 +124,9 @@ class SpecRawer {
 		}
 		
 		$rawData[RawDef::EI_DEF_FIELDS_KEY] = array();
-		foreach ($extraction->getEiPropExtractions() as $eiPropExtraction) {
-			$rawData[RawDef::EI_DEF_FIELDS_KEY][$eiPropExtraction->getId()] 
-					= $this->buildEiPropExtractionRawData($eiPropExtraction);
+		foreach ($extraction->getEiFieldExtractions() as $eiFieldExtraction) {
+			$rawData[RawDef::EI_DEF_FIELDS_KEY][$eiFieldExtraction->getId()] 
+					= $this->buildEiFieldExtractionRawData($eiFieldExtraction);
 		}
 	
 		$rawData[RawDef::EI_DEF_COMMANDS_KEY] = array();
@@ -144,7 +144,7 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	private function buildEiPropExtractionRawData(EiPropExtraction $extraction) {
+	private function buildEiFieldExtractionRawData(EiFieldExtraction $extraction) {
 		$rawData = array();
 		$rawData[RawDef::EI_COMPONENT_CLASS_KEY] = $extraction->getClassName();
 		$rawData[RawDef::EI_COMPONENT_PROPS_KEY] = $extraction->getProps();
@@ -170,27 +170,27 @@ class SpecRawer {
 				RawDef::EI_COMPONENT_PROPS_KEY => $extraction->getProps());
 	}
 	
-	private function buildDisplaySchemeRawData(DisplayScheme $guiOrder) {
+	private function buildGuiOrderRawData(GuiOrder $guiOrder) {
 		$rawData = array();
 		
-		if (null !== ($overviewDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getOverviewDisplayStructure()))) {
-			$rawData[RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY] = $overviewDisplayStructure;
+		if (null !== ($overviewGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getOverviewGuiFieldOrder()))) {
+			$rawData[RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY] = $overviewGuiFieldOrder;
 		}
 		
-		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getBulkyDisplayStructure()))) {
-			$rawData[RawDef::BULKY_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
+		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getBulkyGuiFieldOrder()))) {
+			$rawData[RawDef::BULKY_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
 		}
 		
-		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getDetailDisplayStructure()))) {
-			$rawData[RawDef::DETAIL_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
+		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getDetailGuiFieldOrder()))) {
+			$rawData[RawDef::DETAIL_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
 		}
 		
-		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getEditDisplayStructure()))) {
-			$rawData[RawDef::EDIT_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
+		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getEditGuiFieldOrder()))) {
+			$rawData[RawDef::EDIT_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
 		}
 		
-		if (null !== ($bulkyDisplayStructure = $this->buildDisplayStructureRawData($guiOrder->getAddDisplayStructure()))) {
-			$rawData[RawDef::ADD_GUI_FIELD_ORDER_KEY] = $bulkyDisplayStructure;
+		if (null !== ($bulkyGuiFieldOrder = $this->buildGuiFieldOrderRawData($guiOrder->getAddGuiFieldOrder()))) {
+			$rawData[RawDef::ADD_GUI_FIELD_ORDER_KEY] = $bulkyGuiFieldOrder;
 		}
 				
 		if (null !== ($controlOrder = $guiOrder->getPartialControlOrder())) {
@@ -211,11 +211,11 @@ class SpecRawer {
 	
 	
 	
-	private function buildDisplayStructureRawData(DisplayStructure $displayStructure = null) {
-		if ($displayStructure === null) return null;
+	private function buildGuiFieldOrderRawData(GuiFieldOrder $guiFieldOrder = null) {
+		if ($guiFieldOrder === null) return null;
 	
 		$guiOrderData = array();
-		foreach ($displayStructure->getDisplayItems() as $orderItem) {
+		foreach ($guiFieldOrder->getOrderItems() as $orderItem) {
 			if (!$orderItem->isSection()) {
 				$guiOrderData[] = (string) $orderItem->getGuiIdPath();
 				continue;
@@ -225,7 +225,7 @@ class SpecRawer {
 			$guiOrderData[] = array(
 					RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY => $guiSection->getType(),
 					RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY => $guiSection->getTitle(),
-					RawDef::GUI_FIELD_ORDER_KEY => $this->buildDisplayStructureRawData($guiSection->getDisplayStructure()));
+					RawDef::GUI_FIELD_ORDER_KEY => $this->buildGuiFieldOrderRawData($guiSection->getGuiFieldOrder()));
 		}
 		
 		return $guiOrderData;

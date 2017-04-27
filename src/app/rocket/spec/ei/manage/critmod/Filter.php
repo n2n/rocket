@@ -33,7 +33,7 @@ class Filter extends ObjectAdapter {
 	}
 	
 	private $id;
-	private $eiTypeId;
+	private $eiSpecId;
 	private $name;
 	private $filterDataJson = '[]';
 	private $sortDirectionsJson  = '[]';
@@ -50,12 +50,12 @@ class Filter extends ObjectAdapter {
 		$this->name = $name;
 	}
 	
-	public function getEiTypeId() {
-		return $this->eiTypeId;
+	public function getEiSpecId() {
+		return $this->eiSpecId;
 	}
 	
-	public function setEiTypeId($eiTypeId) {
-		$this->eiTypeId = $eiTypeId;
+	public function setEiSpecId($eiSpecId) {
+		$this->eiSpecId = $eiSpecId;
 	}
 
 	public function readFilterData() {

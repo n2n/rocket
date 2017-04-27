@@ -24,43 +24,43 @@ namespace rocket\spec\ei\component\field\impl\translation\model;
 use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiFieldFork;
+use rocket\spec\ei\manage\gui\GuiElementFork;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\gui\AssembleResult;
-use rocket\spec\ei\manage\gui\GuiFieldAssembler;
+use rocket\spec\ei\manage\gui\GuiElementAssembler;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
-use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
+use rocket\spec\ei\manage\mapping\impl\MappableWrapperWrapper;
 
-class TranslationGuiField implements GuiFieldFork {
-	private $toManyEiField;
+class TranslationGuiElement implements GuiElementFork {
+	private $toManyMappable;
 	private $guiDefinition;
 	private $label;
 
 	private $n2nLocaleDefs = array();
 	private $targetRelationEntries = array();
-	private $guiFieldAssemblers = array();
+	private $guiElementAssemblers = array();
 	private $mandatoryN2nLocaleIds = array();
 	private $activeN2nLocaleIds = array();
 	
 	private $translationForm;
 		
-	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label) {
-		$this->toManyEiField = $toManyEiField;
+	public function __construct(ToManyMappable $toManyMappable, GuiDefinition $guiDefinition, $label) {
+		$this->toManyMappable = $toManyMappable;
 		$this->guiDefinition = $guiDefinition;
 		$this->label = $label;
 	}
 	
 	public function registerN2nLocale(N2nLocaleDef $n2nLocaleDef, RelationEntry $targetRelationEntry, 
-			GuiFieldAssembler $guiFieldAssembler, $mandatory, $active) {
+			GuiElementAssembler $guiElementAssembler, $mandatory, $active) {
 		$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 		$this->n2nLocaleDefs[$n2nLocaleId] = $n2nLocaleDef;
 		$this->targetRelationEntries[$n2nLocaleId] = $targetRelationEntry;
-		$this->guiFieldAssemblers[$n2nLocaleId] = $guiFieldAssembler;
+		$this->guiElementAssemblers[$n2nLocaleId] = $guiElementAssembler;
 		if ($mandatory) {
 			$this->mandatoryN2nLocaleIds[$n2nLocaleId] = $n2nLocaleId;
 		}
@@ -74,9 +74,9 @@ class TranslationGuiField implements GuiFieldFork {
 			$this->translationForm = new TranslationForm($this->mandatoryN2nLocaleIds, $this->label);
 		}
 
-		foreach ($this->guiFieldAssemblers as $n2nLocaleId => $guiFieldAssebler) {
-			$dispatchable = $guiFieldAssebler->getDispatchable();
-			$guiFieldAssebler->getEiuEntryGui()->getEiuEntry()->isNew();
+		foreach ($this->guiElementAssemblers as $n2nLocaleId => $guiElementAssebler) {
+			$dispatchable = $guiElementAssebler->getDispatchable();
+			$guiElementAssebler->getEiuGui()->getEiuEntry()->isNew();
 			if ($dispatchable !== null) {
 				$this->translationForm->putAvailableDispatchable($n2nLocaleId, $dispatchable);
 				
@@ -87,9 +87,9 @@ class TranslationGuiField implements GuiFieldFork {
 		}
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
-		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
-		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
+	public function assembleGuiElement(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
+		$label = $this->guiDefinition->getGuiFieldByGuiIdPath($guiIdPath)->getDisplayLabel();
+		$eiFieldPath = $this->guiDefinition->guiIdPathToEiFieldPath($guiIdPath);
 
 // 		$fieldErrorInfo = new FieldErrorInfo();
 		
@@ -100,21 +100,21 @@ class TranslationGuiField implements GuiFieldFork {
 			$translationMag = new TranslationMag($guiIdPath->__toString(), $label);
 		}
 		
-		$eiFieldWrappers = array();
+		$mappableWrappers = array();
 		
 		$mandatory = false;
-		foreach ($this->guiFieldAssemblers as $n2nLocaleId => $guiFieldAssembler) {
-			$result = $guiFieldAssembler->assembleGuiField($guiIdPath, $makeEditable);
+		foreach ($this->guiElementAssemblers as $n2nLocaleId => $guiElementAssembler) {
+			$result = $guiElementAssembler->assembleGuiElement($guiIdPath, $makeEditable);
 			if ($result === null) continue;
 			
-			$fieldErrorInfo = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry()->getEiEntry()->getMappingErrorInfo()
-					->getFieldErrorInfo($eiPropPath);
-			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
-				$eiFieldWrappers[] = $eiFieldWrapper;
+			$fieldErrorInfo = $guiElementAssembler->getEiuGui()->getEiuEntry()->getEiMapping()->getMappingErrorInfo()
+					->getFieldErrorInfo($eiFieldPath);
+			if (null !== ($mappableWrapper = $result->getMappableWrapper())) {
+				$mappableWrappers[] = $mappableWrapper;
 			}
 // 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
 			
-			if ($this->targetRelationEntries[$n2nLocaleId]->getEiObject()->isNew()) {
+			if ($this->targetRelationEntries[$n2nLocaleId]->getEiSelection()->isNew()) {
 				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()), 
 						$fieldErrorInfo);
 			} else {
@@ -131,16 +131,16 @@ class TranslationGuiField implements GuiFieldFork {
 			}
 		}
 		
-		$eiFieldWrapperWrapper = new EiFieldWrapperWrapper($eiFieldWrappers);
+		$mappableWrapperWrapper = new MappableWrapperWrapper($mappableWrappers);
 		
 		if (!$makeEditable) {
-			return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper);
+			return new AssembleResult($translationDisplayable, $mappableWrapperWrapper);
 		}
 		
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($translationMag);
-		return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
+		return new AssembleResult($translationDisplayable, $mappableWrapperWrapper, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
 	}
 		
 	public function buildForkMag(string $propertyName) {
@@ -156,13 +156,13 @@ class TranslationGuiField implements GuiFieldFork {
 		
 		$targetRelationEntries = array();
 		foreach ($this->translationForm->getDispatchables() as $n2nLocaleId => $dispatchable) {
-			$this->guiFieldAssemblers[$n2nLocaleId]->save();
+			$this->guiElementAssemblers[$n2nLocaleId]->save();
 			$targetRelationEntries[$n2nLocaleId] = $this->targetRelationEntries[$n2nLocaleId];
-			$targetRelationEntries[$n2nLocaleId]->getEiObject()->getLiveObject()
+			$targetRelationEntries[$n2nLocaleId]->getEiSelection()->getLiveObject()
 					->setN2nLocale(new N2nLocale($n2nLocaleId));
 		}
 		
-		$this->toManyEiField->setValue($targetRelationEntries);
+		$this->toManyMappable->setValue($targetRelationEntries);
 	}
 }
 

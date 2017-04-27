@@ -34,7 +34,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\manage\draft\Draft;
@@ -50,10 +50,10 @@ class ToManyMag extends MagAdapter {
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
-	private $targetOrderEiPropPath;
+	private $targetOrderEiFieldPath;
 	
 	private $targetRelationEntries = array();
-	private $targetEiEntrys = array();
+	private $targetEiMappings = array();
 	
 	public function __construct(string $propertyName, string $label, EiFrame $targetReadEiFrame, 
 			EiFrame $targetEditEiFrame, int $min, int $max = null) {
@@ -69,7 +69,7 @@ class ToManyMag extends MagAdapter {
 	
 	private function updateContainerAttrs(bool $group) {
 		if ($group) {
-			$this->setAttrs(array('class' => 'rocket-group rocket-block'));
+			$this->setAttrs(array('class' => 'rocket-control-group rocket-block'));
 		} else {
 			$this->setAttrs(array('class' => 'rocket-block'));
 		}
@@ -97,8 +97,8 @@ class ToManyMag extends MagAdapter {
 		$this->draftMode = $draftMode;
 	}
 	
-	public function setTargetOrderEiPropPath(EiPropPath $targetOrderEiPropPath = null) {
-		$this->targetOrderEiPropPath = $targetOrderEiPropPath;
+	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
+		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;
 	}
 	
 	public function setValue($targetRelationEntries) {
@@ -111,8 +111,8 @@ class ToManyMag extends MagAdapter {
 		return $this->targetRelationEntries;
 	}
 	
-	public function getRelatedTargetEiEntrys(): array {
-		return $this->targetEiEntrys;
+	public function getRelatedTargetEiMappings(): array {
+		return $this->targetEiMappings;
 	}
 
 	public function getFormValue() {
@@ -125,23 +125,23 @@ class ToManyMag extends MagAdapter {
 				if (!$targetRelationEntry->isNew()) {
 					$idReps[] = $idRep = $this->targetReadUtils->idToIdRep($targetRelationEntry->getId());
 					$toManyForm->getEntryLabeler()->setSelectedIdentityString($idRep,
-							$this->targetReadUtils->createIdentityString($targetRelationEntry->getEiObject()));
-				} else if ($targetRelationEntry->hasEiEntry()) {
-					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
+							$this->targetReadUtils->createIdentityString($targetRelationEntry->getEiSelection()));
+				} else if ($targetRelationEntry->hasEiMapping()) {
+					$toManyForm->addEiMapping($targetRelationEntry->getEiMapping());
 				} else {
-					$toManyForm->addEiEntry($this->targetEditUtils->createEiEntry(
-							$targetRelationEntry->getEiObject()));
+					$toManyForm->addEiMapping($this->targetEditUtils->createEiMapping(
+							$targetRelationEntry->getEiSelection()));
 				}
 			}
 			$toManyForm->setSelectedEntryIdReps($idReps);
 			$toManyForm->setOriginalEntryIdReps($idReps);
 		} else {
 			foreach ($this->targetRelationEntries as $targetRelationEntry) {
-				if ($targetRelationEntry->hasEiEntry()) {
-					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
+				if ($targetRelationEntry->hasEiMapping()) {
+					$toManyForm->addEiMapping($targetRelationEntry->getEiMapping());
 				} else {
-					$toManyForm->addEiEntry($this->targetEditUtils->createEiEntry(
-							$targetRelationEntry->getEiObject()));
+					$toManyForm->addEiMapping($this->targetEditUtils->createEiMapping(
+							$targetRelationEntry->getEiSelection()));
 				}
 			}
 		}
@@ -174,27 +174,27 @@ class ToManyMag extends MagAdapter {
 					continue;
 				}
 		
-				$this->targetRelationEntries[$idRep] = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
+				$this->targetRelationEntries[$idRep] = RelationEntry::from($this->targetReadUtils->lookupEiSelectionById(
 						$this->targetReadUtils->idRepToId($idRep), CriteriaConstraint::NON_SECURITY_TYPES));
 			}
 		}
 		
 		$orderIndex = 10;
-		foreach ($formValue->buildEiEntrys() as $targetEiEntry) {
-			if ($this->targetOrderEiPropPath !== null) {
-				$eiu = new Eiu($targetEiEntry, $this->targetEditUtils->getEiFrame());
-				$eiu->entry()->setScalarValue($this->targetOrderEiPropPath, $orderIndex += 10, true);
+		foreach ($formValue->buildEiMappings() as $targetEiMapping) {
+			if ($this->targetOrderEiFieldPath !== null) {
+				$eiu = new Eiu($targetEiMapping, $this->targetEditUtils->getEiFrame());
+				$eiu->entry()->setScalarValue($this->targetOrderEiFieldPath, $orderIndex += 10, true);
 			}
 			
-			if ($targetEiEntry->isNew()) {
-				$this->targetRelationEntries[] = RelationEntry::fromM($targetEiEntry);
-				if ($targetEiEntry->getEiObject()->isDraft()) {
-					$targetEiEntry->getEiObject()->getDraft()->setType(Draft::TYPE_UNLISTED);
+			if ($targetEiMapping->isNew()) {
+				$this->targetRelationEntries[] = RelationEntry::fromM($targetEiMapping);
+				if ($targetEiMapping->getEiSelection()->isDraft()) {
+					$targetEiMapping->getEiSelection()->getDraft()->setType(Draft::TYPE_UNLISTED);
 				}
-			} else if ($targetEiEntry->getEiObject()->isDraft()) {
-				$this->targetRelationEntries['d' . $targetEiEntry->getEiObject()->getIdRep()] = RelationEntry::fromM($targetEiEntry);
+			} else if ($targetEiMapping->getEiSelection()->isDraft()) {
+				$this->targetRelationEntries['d' . $targetEiMapping->getEiSelection()->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			} else {
-				$this->targetRelationEntries['c' . $targetEiEntry->getIdRep()] = RelationEntry::fromM($targetEiEntry);
+				$this->targetRelationEntries['c' . $targetEiMapping->getIdRep()] = RelationEntry::fromM($targetEiMapping);
 			}
 		}
 	}

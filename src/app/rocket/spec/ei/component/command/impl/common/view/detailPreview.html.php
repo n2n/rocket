@@ -37,14 +37,14 @@ use n2n\util\uri\Path;
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));
 	
-	$eiObjectUtils = $entryCommandViewModel->getEiuEntry();
+	$eiEntryUtils = $entryCommandViewModel->getEiuEntry();
 	$currentPreviewType = $view->getParam('currentPreviewType');
 	
 	$previewPath = null;
-	if ($eiObjectUtils->isDraft()) {
-		$previewPath = new Path(array('draftpreview', $eiObjectUtils->getDraft()->getId()));
+	if ($eiEntryUtils->isDraft()) {
+		$previewPath = new Path(array('draftpreview', $eiEntryUtils->getDraft()->getId()));
 	} else {
-		$previewPath = new Path(array('livepreview', $eiObjectUtils->getLiveIdRep()));
+		$previewPath = new Path(array('livepreview', $eiEntryUtils->getLiveIdRep()));
 	}
 ?>
 
@@ -52,9 +52,9 @@ use n2n\util\uri\Path;
 <div class="rocket-panel">
 	<h3 class="rocket-preview-iframe-title">Detail</h3>
 	
-	<div class="rocket-context-toolbar">
+	<div id="rocket-toolbar">
 		<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-			<?php foreach ($eiObjectUtils->getPreviewTypeOptions() as $previewType => $label): ?>
+			<?php foreach ($eiEntryUtils->getPreviewTypeOptions() as $previewType => $label): ?>
 				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))) ?>"
 						<?php $view->out($currentPreviewType == $previewType ? ' selected="selected"' : '') ?>>
 					<?php $html->out($label) ?>
@@ -68,7 +68,7 @@ use n2n\util\uri\Path;
 	</div>
 </div>
 
-<div class="rocket-context-commands">
+<div id="rocket-page-controls">
 	<?php //$controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
 	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>

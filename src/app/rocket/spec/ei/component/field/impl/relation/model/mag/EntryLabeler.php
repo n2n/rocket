@@ -43,7 +43,7 @@ class EntryLabeler {
 		}
 		
 		return $this->eiUtils->createIdentityString(
-				$this->eiUtils->lookupEiObjectById($this->eiUtils->idRepToId($idRep)));
+				$this->eiUtils->lookupEiSelectionById($this->eiUtils->idRepToId($idRep)));
 	}
 	
 	public function setSelectedIdentityString(string $idRep, string $identityString) {
@@ -54,24 +54,24 @@ class EntryLabeler {
 		return $this->selectedIdentityStrings;
 	}
 	
-	public function getEiTypeLabels() {
+	public function getEiSpecLabels() {
 		$eiFrame = $this->eiUtils->getEiFrame();
 		$contextEiMask = $eiFrame->getContextEiMask();
-		$contextEiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+		$contextEiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
 		
-		$eiTypeLabels = array();
+		$eiSpecLabels = array();
 		
-		if (!$contextEiType->isAbstract()) {
-			$eiTypeLabels[$contextEiType->getId()] = $contextEiMask->getLabelLstr()->t($eiFrame->getN2nLocale());
+		if (!$contextEiSpec->isAbstract()) {
+			$eiSpecLabels[$contextEiSpec->getId()] = $contextEiMask->getLabelLstr()->t($eiFrame->getN2nLocale());
 		}
 		
-		foreach ($contextEiType->getAllSubEiTypes() as $subEiType) {
-			if ($subEiType->isAbstract()) continue;
+		foreach ($contextEiSpec->getAllSubEiSpecs() as $subEiSpec) {
+			if ($subEiSpec->isAbstract()) continue;
 		
-			$eiTypeLabels[$subEiType->getId()] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
+			$eiSpecLabels[$subEiSpec->getId()] = $contextEiMask->determineEiMask($subEiSpec)->getLabelLstr()
 					->t($eiFrame->getN2nLocale());
 		}
 		
-		return $eiTypeLabels;
+		return $eiSpecLabels;
 	}
 }

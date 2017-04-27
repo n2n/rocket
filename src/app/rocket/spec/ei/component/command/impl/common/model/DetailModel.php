@@ -46,23 +46,23 @@ class DetailModel {
 	
 	public function publish() {
 		throw new NotYetImplementedException();
-		if (!$this->eiObject->isDraft()) return false;
+		if (!$this->eiSelection->isDraft()) return false;
 		
-		$id =  $this->eiObject->getId();
-		$originalEntry = $this->eiObject->getLiveEntityObj();
-		$draft = $this->eiObject->getDraft();
+		$id =  $this->eiSelection->getId();
+		$originalEntry = $this->eiSelection->getLiveEntityObj();
+		$draft = $this->eiSelection->getDraft();
 		$draftedEntry = $draft->getDraftedEntity();
 		
 		$draft->setPublished(true);
 		$this->historyModel->saveDraft($draft);
 		
-		$entityModel = $this->getEiType()->getEntityModel();
+		$entityModel = $this->getEiSpec()->getEntityModel();
 		$entityModel->copy($draftedEntry, $originalEntry);
 		$this->em->merge($originalEntry);
 		
 		if (is_null($this->translationModel)) return true;
 		
-		$entityTranslationModel = $this->eiType->getTranslationModel();
+		$entityTranslationModel = $this->eiSpec->getTranslationModel();
 		foreach ($this->translationModel->getTranslationsByElementId($draft->getId(), $draftedEntry) as $translation) {
 			$entityTranslationModel->saveTranslation($translation->copy($id));
 		}

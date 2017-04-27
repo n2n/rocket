@@ -21,16 +21,19 @@
  */
 namespace rocket\spec\ei\manage\critmod\sort;
 
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
+use n2n\persistence\orm\criteria\Criteria;
 use n2n\util\col\ArrayUtils;
+use n2n\util\ex\IllegalStateException;
 
 class SortDefinition {
 	private $sortFields = array();
 	private $sortFieldForks = array();
 	
 	public function putSortField(string $id, SortField $sortField) {
-		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
+		ArgUtils::assertTrue(!EiFieldPath::constainsSpecialIdChars($id), 'Invalid id.');
 		$this->sortFields[$id] = $sortField;	
 	}
 	
@@ -51,7 +54,7 @@ class SortDefinition {
 	}
 
 	public function putSortFieldFork(string $id, SortFieldFork $sortFieldFork) {
-		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
+		ArgUtils::assertTrue(!EiFieldPath::constainsSpecialIdChars($id), 'Invalid id.');
 		$this->sortFieldForks[$id] = $sortFieldFork;
 	}
 	
@@ -63,9 +66,9 @@ class SortDefinition {
 		$sortFields = $this->sortFields;
 		
 		foreach ($this->sortFieldForks as $forkId => $sortFieldFork) {
-			$forkEiPropPath = EiPropPath::create($forkId);
+			$forkEiFieldPath = EiFieldPath::create($forkId);
 			foreach ($sortFieldFork->getForkedSortDefinition()->getAllSortFields() as $id => $sortField) {
-				$forkEiPropPath->ext(EiPropPath::create($id));
+				$forkEiFieldPath->ext(EiFieldPath::create($id));
 			}
 		}
 		
@@ -77,7 +80,7 @@ class SortDefinition {
 					
 		foreach ($sortData->getSortItemDatas() as $sortItemData) {
 			$sortConstraint = $this->buildSortCriteriaConstraint( 
-					EiPropPath::create($sortItemData->getSortFieldId())->toArray(), $sortItemData->getDirection());
+					EiFieldPath::create($sortItemData->getSortFieldId())->toArray(), $sortItemData->getDirection());
 			if ($sortConstraint !== null) {
 				$sortConstraints[] = $sortConstraint;
 			}

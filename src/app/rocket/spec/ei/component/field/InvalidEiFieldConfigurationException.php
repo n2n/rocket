@@ -23,6 +23,6 @@ namespace rocket\spec\ei\component\field;
 
 use rocket\spec\config\SpecException;
 
-class InvalidEiPropConfigurationException extends SpecException {
+class InvalidEiFieldConfigurationException extends SpecException {
 	
 }

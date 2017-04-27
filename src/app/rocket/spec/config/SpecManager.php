@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\config;
 
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\ReflectionUtils;
 use n2n\persistence\orm\model\EntityModelManager;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\field\EiField;
 use rocket\spec\config\extr\SpecExtraction;
 use rocket\spec\config\source\RocketConfigSource;
 use rocket\spec\ei\component\EiConfigurator;
@@ -61,7 +61,7 @@ class SpecManager {
 	
 	private $menuItems = array();
 	private $specs = array();
-	private $eiTypes = array();
+	private $eiSpecs = array();
 	
 	
 // 	private $scriptComponentsStorage;
@@ -69,10 +69,10 @@ class SpecManager {
 // 	private $scriptsConfigSource;
 // 	private $entityModelManager;
 	private $exclusiveMode = false;
-	private $eiTypeSetupQueue;
+	private $eiSpecSetupQueue;
 	
 // 	private $scripts = array();
-// 	private $eiTypes = array();
+// 	private $eiSpecs = array();
 // 	
 
 // 	private $manageConfig;
@@ -82,7 +82,7 @@ class SpecManager {
 	public function __construct(SpecExtractionManager $specExtractionManager, EntityModelManager $entityModelManager) {
 		$this->specExtractionManager = $specExtractionManager;
 		$this->entityModelManager = $entityModelManager;
-		$this->eiTypeSetupQueue = new EiTypeSetupQueue($this);
+		$this->eiSpecSetupQueue = new EiSpecSetupQueue($this);
 	}
 	
 	/**
@@ -170,9 +170,9 @@ class SpecManager {
 // 		return false;
 // 	}
 					
-// 	public function containsEiTypeClass(\ReflectionClass $class) {
+// 	public function containsEiSpecClass(\ReflectionClass $class) {
 // 		foreach ($this->specConfigs as $scriptConfig) {
-// 			if ($scriptConfig->containsEiTypeClass($class)) {
+// 			if ($scriptConfig->containsEiSpecClass($class)) {
 // 				return true;
 // 			}
 // 		}
@@ -192,10 +192,10 @@ class SpecManager {
 		if ($charcs !== null && null !== ($cacheItem = $cacheStore->get(SpecManager::class, $charcs))) {
 // 			$data = $cacheItem->getData();
 			$this->specs = $cacheItem->data['specs'];
-			$this->eiTypes = $cacheItem->data['eiTypes'];
+			$this->eiSpecs = $cacheItem->data['eiSpecs'];
 			$this->menuItems = $cacheItem->data['menuItems'];
-			$this->eiTypeSetupQueue->setPropIns($cacheItem->data['propIns']);
-			$this->eiTypeSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators']);
+			$this->eiSpecSetupQueue->setPropIns($cacheItem->data['propIns']);
+			$this->eiSpecSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators']);
 		} else {
 			if (!$this->specExtractionManager->isInitialized()) {
 				$this->specExtractionManager->initialize();
@@ -217,13 +217,13 @@ class SpecManager {
 			
 			if ($charcs !== null) {
 				$cacheStore->store(SpecManager::class, $charcs, array(
-						'specs' => $this->specs, 'eiTypes' => $this->eiTypes, 'menuItems' => $this->menuItems,
-						'propIns' => $this->eiTypeSetupQueue->getPropIns(),
-						'eiConfigurators' => $this->eiTypeSetupQueue->getEiConfigurators()));
+						'specs' => $this->specs, 'eiSpecs' => $this->eiSpecs, 'menuItems' => $this->menuItems,
+						'propIns' => $this->eiSpecSetupQueue->getPropIns(),
+						'eiConfigurators' => $this->eiSpecSetupQueue->getEiConfigurators()));
 			}
 		}
 		
-		foreach ($this->eiTypes as $className => $eiType) {
+		foreach ($this->eiSpecs as $className => $eiSpec) {
 			$entityModel = null;
 			try {
 				$class = ReflectionUtils::createReflectionClass($className);
@@ -231,28 +231,28 @@ class SpecManager {
 			} catch (TypeNotFoundException $e) {
 				if ($this->exclusiveMode) continue;
 				
-				throw new InvalidSpecConfigurationException('Invalid EiType: ' . $eiType, 0, $e);
+				throw new InvalidSpecConfigurationException('Invalid EiSpec: ' . $eiSpec, 0, $e);
 			} catch (OrmConfigurationException $e) {
 				if ($this->exclusiveMode) continue;
 				
-				throw new InvalidSpecConfigurationException('Invalid EiType: ' . $eiType, 0, $e);
+				throw new InvalidSpecConfigurationException('Invalid EiSpec: ' . $eiSpec, 0, $e);
 			}
 			
 			
-			$eiType->setEntityModel($entityModel);
+			$eiSpec->setEntityModel($entityModel);
 			
-			if ($eiType->getEntityModel()->hasSuperEntityModel()) {
-				$superClassName = $eiType->getEntityModel()->getSuperEntityModel()->getClass()->getName();
-				if (!isset($this->eiTypes[$superClassName])) {
-					throw new InvalidConfigurationException('EiType required for ' . $superClassName);
+			if ($eiSpec->getEntityModel()->hasSuperEntityModel()) {
+				$superClassName = $eiSpec->getEntityModel()->getSuperEntityModel()->getClass()->getName();
+				if (!isset($this->eiSpecs[$superClassName])) {
+					throw new InvalidConfigurationException('EiSpec required for ' . $superClassName);
 				}
 				
-				$eiType->setSuperEiType($this->eiTypes[$superClassName]);
+				$eiSpec->setSuperEiSpec($this->eiSpecs[$superClassName]);
 			}
 		}
 		
 		if (!$this->exclusiveMode) {
-			$this->eiTypeSetupQueue->trigger($n2nContext);
+			$this->eiSpecSetupQueue->trigger($n2nContext);
 		}
 	}
 	
@@ -261,30 +261,30 @@ class SpecManager {
 			return $this->specs[$specExtraction->getId()] = CustomSpecFactory::create($specExtraction);
 		} 
 		
-		$eiType = (new EiTypeFactory($this->entityModelManager, $this->getEiTypeSetupQueue()))
+		$eiSpec = (new EiSpecFactory($this->entityModelManager, $this->getEiSpecSetupQueue()))
 				->create($specExtraction);
 				
-		$this->specs[$specExtraction->getId()] = $eiType;
-		$this->eiTypes[$specExtraction->getEntityClassName()] = $eiType;
+		$this->specs[$specExtraction->getId()] = $eiSpec;
+		$this->eiSpecs[$specExtraction->getEntityClassName()] = $eiSpec;
 			
-		return $eiType;
+		return $eiSpec;
 	}
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\spec\ei\EiType
+	 * @return \rocket\spec\ei\EiSpec
 	 */
-	public function getEiTypeByClass(\ReflectionClass $class) {
+	public function getEiSpecByClass(\ReflectionClass $class) {
 		$className = $class->getName();
-		if (isset($this->eiTypes[$className])) {
+		if (isset($this->eiSpecs[$className])) {
 			if ($this->exclusiveMode) {
-				$this->eiTypeSetupQueue->exclusivePropInForEiType($this->eiTypes[$className]->getId());
+				$this->eiSpecSetupQueue->exclusivePropInForEiSpec($this->eiSpecs[$className]->getId());
 			}
 			
-			return $this->eiTypes[$className];
+			return $this->eiSpecs[$className];
 		}
 		
-		$this->specExtractionManager->getEiTypeExtractionByClassName($className);
+		$this->specExtractionManager->getEiSpecExtractionByClassName($className);
 		throw new IllegalStateException('SpecManager not initialized.');
 	}
 	
@@ -298,7 +298,7 @@ class SpecManager {
 	public function getSpecById($id): Spec {
 		if (isset($this->specs[$id])) {
 			if ($this->exclusiveMode) {
-				$this->eiTypeSetupQueue->exclusivePropInForEiType($this->specs[$id]->getId());
+				$this->eiSpecSetupQueue->exclusivePropInForEiSpec($this->specs[$id]->getId());
 			}
 			
 			return $this->specs[$id];
@@ -308,15 +308,15 @@ class SpecManager {
 		throw new IllegalStateException('SpecManager not initialized.');
 	}
 	
-	public function containsEiTypeClass(\ReflectionClass $class) {
-		return isset($this->eiTypes[$class->getName()]);
+	public function containsEiSpecClass(\ReflectionClass $class) {
+		return isset($this->eiSpecs[$class->getName()]);
 	}
 	
-	public function getEiTypes(): array {
+	public function getEiSpecs(): array {
 		if ($this->exclusiveMode) {
-			$this->eiTypeSetupQueue->propIns();
+			$this->eiSpecSetupQueue->propIns();
 		}
-		return $this->eiTypes;
+		return $this->eiSpecs;
 	}
 	
 	public function getCustomSpecs(): array {
@@ -333,18 +333,18 @@ class SpecManager {
 	 * @param string $id
 	 * @throws UnknownSpecException
 	 * @throws InvalidSpecConfigurationException
-	 * @return EiType
+	 * @return EiSpec
 	 */
-	public function getEiTypeById($id) {
+	public function getEiSpecById($id) {
 		$script = $this->getSpecById($id);
-		if ($script instanceof EiType) {
+		if ($script instanceof EiSpec) {
 			if ($this->exclusiveMode) {
-				$this->eiTypeSetupQueue->exclusivePropInForEiType($script->getId());
+				$this->eiSpecSetupQueue->exclusivePropInForEiSpec($script->getId());
 			}
 			return $script;
 		}
 	
-		throw new UnknownSpecException('Script with id  \'' . $id . '\' is no EiType');
+		throw new UnknownSpecException('Script with id  \'' . $id . '\' is no EiSpec');
 	}
 
 	public function getSpecs(): array {
@@ -353,8 +353,8 @@ class SpecManager {
 	
 	public function removeSpecById($id) {
 		if (isset($this->specs[$id])) {
-			if ($this->specs[$id] instanceof EiType) {
-				unset($this->eiTypes[$this->specs[$id]->getEntityModel()->getClass()->getName()]);
+			if ($this->specs[$id] instanceof EiSpec) {
+				unset($this->eiSpecs[$this->specs[$id]->getEntityModel()->getClass()->getName()]);
 			}
 			
 			unset($this->specs[$id]);
@@ -377,12 +377,12 @@ class SpecManager {
 // 		}
 	}
 	
-	public function getEiTypeSetupQueue() {
-		return $this->eiTypeSetupQueue;
+	public function getEiSpecSetupQueue() {
+		return $this->eiSpecSetupQueue;
 	}
 }
 
-class EiTypeSetupQueue {
+class EiSpecSetupQueue {
 	private $specManager;
 	private $propIns = array();
 	private $eiConfigurators = array();
@@ -430,19 +430,19 @@ class EiTypeSetupQueue {
 		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
 			$this->setup($n2nContext, $eiConfigurator);
 			
-// 			$eiTypeId = $eiComponent->getEiType()->getId();
-// 			if (!isset($this->es[$eiTypeId])) {
-// 				$this->es[$eiTypeId] = array();
+// 			$eiSpecId = $eiComponent->getEiSpec()->getId();
+// 			if (!isset($this->es[$eiSpecId])) {
+// 				$this->es[$eiSpecId] = array();
 // 			}
-// 			$this->es[$eiTypeId][] = $e;
+// 			$this->es[$eiSpecId][] = $e;
 		}
 	}
 
-	public function exclusiveTriggerForEiType($eiTypeId, N2nContext $n2nContext) {
-		$this->exclusivePropInForEiType($eiTypeId, $n2nContext);
+	public function exclusiveTriggerForEiSpec($eiSpecId, N2nContext $n2nContext) {
+		$this->exclusivePropInForEiSpec($eiSpecId, $n2nContext);
 	
 		foreach ($this->eiConfigurators as $key => $eiConfigurator) {
-			if ($eiConfigurator->getEiComponent()->getEiEngine()->getEiType()->getId() !== $eiTypeId) {
+			if ($eiConfigurator->getEiComponent()->getEiEngine()->getEiSpec()->getId() !== $eiSpecId) {
 				continue;
 			}
 				
@@ -467,9 +467,9 @@ class EiTypeSetupQueue {
 		}
 	}
 	
-	public function exclusivePropInForEiType($eiTypeId) {
+	public function exclusivePropInForEiSpec($eiSpecId) {
 		foreach ($this->propIns as $key => $propIn) {
-			if ($propIn->getEiType()->getId() !== $eiTypeId) {
+			if ($propIn->getEiSpec()->getId() !== $eiSpecId) {
 				continue;
 			}
 		
@@ -479,10 +479,10 @@ class EiTypeSetupQueue {
 	}
 	
 	
-// 	public function buildErrorMessages($eiTypeId) {
+// 	public function buildErrorMessages($eiSpecId) {
 // 		$errorMessages = array();
-// 		if (isset($this->es[$eiTypeId])) {
-// 			foreach ($this->es[$eiTypeId] as $e) {
+// 		if (isset($this->es[$eiSpecId])) {
+// 			foreach ($this->es[$eiSpecId] as $e) {
 // 				$errorMessages[] = new Message($e->getMessage());
 // 			}
 // 		}
@@ -494,32 +494,32 @@ class EiTypeSetupQueue {
 }
 
 class PropIn {
-	private $eiType;
-	private $eiPropConfigurator;
+	private $eiSpec;
+	private $eiFieldConfigurator;
 	private $objectPropertyName;
 	private $entityPropertyName;
 
-	public function __construct($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
-		$this->eiType = $eiType;
-		$this->eiPropConfigurator = $eiPropConfigurator;
+	public function __construct($eiSpec, $eiFieldConfigurator, $objectPropertyName, $entityPropertyName) {
+		$this->eiSpec = $eiSpec;
+		$this->eiFieldConfigurator = $eiFieldConfigurator;
 		$this->objectPropertyName = $objectPropertyName;
 		$this->entityPropertyName = $entityPropertyName;
 	}
 
-	public function getEiType() {
-		return $this->eiType;
+	public function getEiSpec() {
+		return $this->eiSpec;
 	}
 	
 	public function invoke() {
 		$accessProxy = null;
 		if (null !== $this->objectPropertyName) {
 			try{
-				$propertiesAnalyzer = new PropertiesAnalyzer($this->eiType->getEntityModel()->getClass(), false);
+				$propertiesAnalyzer = new PropertiesAnalyzer($this->eiSpec->getEntityModel()->getClass(), false);
 				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
 				$accessProxy->setNullReturnAllowed(true);
 			} catch (ReflectionException $e) {
 				throw $this->createException(
-						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
+						new InvalidEiComponentConfigurationException('EiField is assigned to unknown property: '
 								. $this->objectPropertyName, 0, $e));
 			}
 		}
@@ -527,17 +527,17 @@ class PropIn {
 		$entityProperty = null;
 		if (null !== $this->entityPropertyName) {
 			try {
-				$entityProperty = $this->eiType->getEntityModel()->getLevelEntityPropertyByName($this->entityPropertyName, true);
+				$entityProperty = $this->eiSpec->getEntityModel()->getLevelEntityPropertyByName($this->entityPropertyName, true);
 			} catch (UnknownEntityPropertyException $e) {
 				throw $this->createException(
-						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
+						new InvalidEiComponentConfigurationException('EiField is assigned to unknown EntityProperty: '
 								. $this->entityPropertyName, 0, $e));
 			}
 		}
 
 		if ($entityProperty !== null || $accessProxy !== null) {
 			try {
-				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
+				$this->eiFieldConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
 			} catch (IncompatiblePropertyException $e) {
 				throw $this->createException($e);
 			}
@@ -545,7 +545,7 @@ class PropIn {
 	}
 	
 	private function createException($e) {
-		$eiComponent = $this->eiPropConfigurator->getEiComponent();
-		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent, 0, $e);
+		$eiComponent = $this->eiFieldConfigurator->getEiComponent();
+		return new InvalidEiComponentConfigurationException('EiField is invalid configured: ' . $eiComponent, 0, $e);
 	}
 }

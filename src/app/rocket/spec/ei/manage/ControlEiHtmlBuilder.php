@@ -23,19 +23,22 @@ namespace rocket\spec\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\util\model\EiuFactory;
-use n2n\impl\web\ui\view\html\HtmlSnippet;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\config\mask\model\CommonEntryGuiModel;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\mask\EiMask;
+use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ControlEiHtmlBuilder {
 	private $view;
-	private $eiuFrame;
+	private $eiFrame;
 
-	public function __construct(HtmlView $view, $eiuFrame) {
+	public function __construct(HtmlView $view, EiFrame $eiFrame) {
 		$this->view = $view;
-		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame);
+		$this->eiFrame = $eiFrame;
 	}
 	
 	public function overallControlList() {
@@ -43,41 +46,43 @@ class ControlEiHtmlBuilder {
 	}
 	
 	public function getOverallControlList(): UiComponent {
-		$snippet = new HtmlSnippet();
-		foreach ($this->eiuFrame->getEiFrame()->getContextEiMask()->createOverallControls($this->eiuFrame, $this->view) as $control) {
-			$snippet->appendLn($control->createUiComponent(false));
+		$ul = new HtmlElement('ul'/*, array('class' => 'rocket-main-controls')*/);
+		foreach ($this->eiFrame->getContextEiMask()->createOverallHrefControls($this->eiFrame, $this->view) as $control) {
+			$ul->appendContent(new HtmlElement('li', null, $control->createUiComponent(false)));
 		}
 	
-		return $snippet;
+		return $ul;
 	}
 	
-	public function entryGuiControlList(EiuEntryGui $eiuEntryGui, bool $useIcons = false) {
-		$this->view->out($this->getEntryGuiControlList($eiuEntryGui, $useIcons));
+	public function entryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
+		$this->view->out($this->getEntryGuiControlList($entryGuiModel, $useIcons));
 	}
 	
-	public function getEntryGuiControlList(EiuEntryGui $eiuEntryGui, bool $useIcons = false) {
-		$entryControls = $this->eiuFrame->getEiFrame()->getContextEiMask()
-				->createEntryControls($eiuEntryGui, $this->view);
+	public function getEntryGuiControlList(EntryGuiModel $entryGuiModel, bool $useIcons = false) {
+		$entryControls = $this->eiFrame->getContextEiMask()->createEntryHrefControls(
+				new EiuGui($entryGuiModel, new EiuEntry($entryGuiModel, $this->eiFrame)), $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);
 	}
 	
-	public function entryControlList(EiuEntryGui $eiuEntryGui, int $viewMode, bool $useIcons = false) {
-		$this->view->out($this->getEntryControlList($eiuEntryGui, $viewMode, $useIcons));
+	public function entryControlList($eiEntryObj, int $viewMode, bool $useIcons = false) {
+		$this->view->out($this->getEntryControlList($eiEntryObj, $viewMode, $useIcons));
 	}
 	
-	public function getEntryControlList(EiuEntryGui $eiuEntryGui, $useIcons = false) {
-		return $this->createControlList($this->eiuFrame->getContextEiMask()
-				->createEntryControls($eiuEntryGui, $this->view), $useIcons);
+	public function getEntryControlList($eiEntryObj, int $viewMode, $useIcons = false) {
+		$entryGuiUtils = new EiuGui($eiEntryObj, $viewMode, $this->eiFrame);
+		return $this->createControlList($this->eiFrame->getContextEiMask()
+				->createEntryHrefControls($entryGuiUtils, $this->view), $useIcons);
 	}
 	
 	private function createControlList(array $entryControls, bool $useIcons) {
-		$divHtmlElement = new HtmlElement('div', array('class' => ($useIcons ? 'rocket-simple-commands' : null /* 'rocket-main-controls' */)));
+		$ulHtmlElement = new HtmlElement('ul', array('class' => ($useIcons ? 'rocket-simple-controls' : null /* 'rocket-main-controls' */)));
 		
 		foreach ($entryControls as $control) {
-			$divHtmlElement->appendContent($control->createUiComponent($useIcons));
+			$liHtmlElement = new HtmlElement('li', null, $control->createUiComponent($useIcons));
+			$ulHtmlElement->appendContent($liHtmlElement);
 		}
 		
-		return $divHtmlElement;
+		return $ulHtmlElement;
 	}
 }

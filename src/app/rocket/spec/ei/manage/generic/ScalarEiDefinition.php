@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\generic;
 
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use n2n\util\col\HashMap;
 use n2n\util\col\Map;
 
@@ -29,7 +29,7 @@ class ScalarEiDefinition {
 	private $scalarEiProperties;
 	
 	public function __construct() {
-		$this->scalarEiProperties = new HashMap(EiPropPath::class, ScalarEiProperty::class);
+		$this->scalarEiProperties = new HashMap(EiFieldPath::class, ScalarEiProperty::class);
 	}
 	
 	/**
@@ -39,13 +39,13 @@ class ScalarEiDefinition {
 		return $this->scalarEiProperties;
 	}
 	
-	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
+	public function getScalarEiPropertyByFieldPath($eiFieldPath): ScalarEiProperty {
 		if (null !== ($genericEiProperty = $this->scalarEiProperties
-				->offsetGet(EiPropPath::create($eiPropPath)))) {
+				->offsetGet(EiFieldPath::create($eiFieldPath)))) {
 			return $genericEiProperty;
 		}
 	
-		throw new UnknownScalarEiPropertyException('Unknown ScalarEiProperty: ' . $eiPropPath);
+		throw new UnknownScalarEiPropertyException('Unknown ScalarEiProperty: ' . $eiFieldPath);
 	}
 }
 

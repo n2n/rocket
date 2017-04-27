@@ -34,9 +34,9 @@ class AddController extends ControllerAdapter {
 	private $rocketState;
 	private $eiuCtrl;
 	
-	private $parentEiObject;
-	private $beforeEiObject;
-	private $afterEiObject;
+	private $parentEiSelection;
+	private $beforeEiSelection;
+	private $afterEiSelection;
 	
 	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils, RocketState $rocketState) {
 		$this->dtc = $dtc;
@@ -48,17 +48,17 @@ class AddController extends ControllerAdapter {
 	}
 	
 	public function doChild($parentIdRep, $copyIdRep = null, ParamGet $refPath = null) {
-		$this->parentEiObject = $this->eiuCtrl->lookupEiObject($parentIdRep);	
+		$this->parentEiSelection = $this->eiuCtrl->lookupEiSelection($parentIdRep);	
 		$this->live($refPath, $copyIdRep);	
 	}
 	
 	public function doBefore($beforeIdRep, $copyIdRep = null, ParamGet $refPath = null) {
-		$this->beforeEiObject = $this->eiuCtrl->lookupEiObject($beforeIdRep);	
+		$this->beforeEiSelection = $this->eiuCtrl->lookupEiSelection($beforeIdRep);	
 		$this->live($refPath, $copyIdRep);
 	}
 	
 	public function doAfter($afterIdRep, $copyIdRep = null, ParamGet $refPath = null) {
-		$this->afterEiObject = $this->eiuCtrl->lookupEiObject($afterIdRep);	
+		$this->afterEiSelection = $this->eiuCtrl->lookupEiSelection($afterIdRep);	
 		$this->live($refPath, $copyIdRep);
 	}
 	
@@ -68,23 +68,23 @@ class AddController extends ControllerAdapter {
 		
 		$copyFrom = null;
 		if ($copyIdRep !== null) {
-			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyIdRep);
+			$copyFrom = $this->eiuCtrl->lookupEiMapping($copyIdRep);
 		}
 		
 		$entryForm = $eiuFrame->createNewEntryForm(false, $copyFrom);
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm, $eiuFrame->getNestedSetStrategy());
-		if ($this->parentEiObject !== null) {
-			$addModel->setParentEntityObj($this->parentEiObject->getLiveObject());
-		} else if ($this->beforeEiObject !== null) {
-			$addModel->setBeforeEntityObj($this->beforeEiObject->getLiveObject());
-		} else if ($this->afterEiObject !== null) {
-			$addModel->setAfterEntityObj($this->afterEiObject->getLiveObject());
+		if ($this->parentEiSelection !== null) {
+			$addModel->setParentEntityObj($this->parentEiSelection->getLiveObject());
+		} else if ($this->beforeEiSelection !== null) {
+			$addModel->setBeforeEntityObj($this->beforeEiSelection->getLiveObject());
+		} else if ($this->afterEiSelection !== null) {
+			$addModel->setAfterEntityObj($this->afterEiSelection->getLiveObject());
 		}
 		
-		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
+		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
+			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiSelection));
 			return;
 		} else if ($this->dispatch($addModel, 'createAndRepeate')) {
 			$this->refresh();
@@ -109,8 +109,8 @@ class AddController extends ControllerAdapter {
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm);
 		
-		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
+		if (is_object($eiSelection = $this->dispatch($addModel, 'create'))) {
+			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiSelection));
 			return;
 		}
 		
@@ -125,15 +125,15 @@ class AddController extends ControllerAdapter {
 		
 		if (null === $eiFrameUtils->getNestedSetStrategy()) {
 			return $this->dtc->translate('ei_impl_add_breadcrumb');
-		} else if ($this->parentEiObject !== null) {
+		} else if ($this->parentEiSelection !== null) {
 			return $this->dtc->translate('ei_impl_add_child_branch_breadcrumb',
-					array('parent_branch' => $eiFrameUtils->createIdentityString($this->parentEiObject)));
-		} else if ($this->beforeEiObject !== null) {
+					array('parent_branch' => $eiFrameUtils->createIdentityString($this->parentEiSelection)));
+		} else if ($this->beforeEiSelection !== null) {
 			return$this->dtc->translate('ei_impl_add_before_branch_breadcrumb',
-					array('branch' => $eiFrameUtils->createIdentityString($this->beforeEiObject)));
-		} else if ($this->afterEiObject !== null) {
+					array('branch' => $eiFrameUtils->createIdentityString($this->beforeEiSelection)));
+		} else if ($this->afterEiSelection !== null) {
 			return $this->dtc->translate('ei_impl_add_after_branch_breadcrumb',
-					array('branch' => $eiFrameUtils->createIdentityString($this->afterEiObject)));
+					array('branch' => $eiFrameUtils->createIdentityString($this->afterEiSelection)));
 		} else {
 			return $this->dtc->translate('ei_impl_add_root_branch_breadcrumb');
 		}

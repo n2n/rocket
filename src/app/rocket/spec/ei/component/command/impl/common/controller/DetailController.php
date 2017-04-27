@@ -27,52 +27,49 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DateTimeFormat;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class DetailController extends ControllerAdapter {
 	private $dtc;
-	private $eiuCtrl;
+	private $eiCtrlUtils;
 	
-	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrl) {
+	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = $eiCtrl;
+		$this->eiCtrlUtils = $eiCtrlUtils;
 	}
 		
 	public function doLive($idRep) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
-		
-		$eiuEntryGui = $eiuEntry->newGui();
-		$entryView = $eiuEntryGui->createBulkyView();
-		
-		$viewModel = new EntryCommandViewModel($eiuEntryGui);
+		$eiMapping = $this->eiCtrlUtils->lookupEiMapping($idRep);
+
+		$entryGuiModel = $this->eiCtrlUtils->frame()->createBulkyEntryGuiModel($eiMapping, false);
+		$entryGuiUtils = new EiuGui($entryGuiModel, $this->eiCtrlUtils);
+
+		$viewModel = new EntryCommandViewModel($this->eiCtrlUtils->frame(), $entryGuiModel);
 		$viewModel->initializeDrafts();
 		
-		$this->applyBreadcrumbs($eiuEntryGui->getEiuEntry()->getEiObject());
+		$this->applyBreadcrumbs($eiMapping->getEiSelection());
 			
-		$view = $this->createView('..\view\detail.html', array('viewModel' => $viewModel,
-				'entryView' => $entryView, 'eiuEntryGui' => $eiuEntryGui));
-		
-		$this->eiuCtrl->forwardView($view);
+		$this->forward('..\view\detail.html', array('entryCommandViewModel' => $viewModel));
 	}
 	
 	public function doDraft($draftId) { 
-		$eiEntry = $this->eiuCtrl->lookupEiEntryByDraftId($draftId);
+		$eiMapping = $this->eiCtrlUtils->lookupEiMappingByDraftId($draftId);
 
-		$entryGuiModel = $this->eiuCtrl->frame()->createBulkyEntryGuiModel($eiEntry, false);
+		$entryGuiModel = $this->eiCtrlUtils->frame()->createBulkyEntryGuiModel($eiMapping, false);
 		
-		$this->applyBreadcrumbs($eiEntry->getEiObject());
+		$this->applyBreadcrumbs($eiMapping->getEiSelection());
 
 		$this->forward('..\view\detail.html', array('entryCommandViewModel' 
-				=> new EntryCommandViewModel($this->eiuCtrl->frame(), $entryGuiModel)));
+				=> new EntryCommandViewModel($this->eiCtrlUtils->frame(), $entryGuiModel)));
 	}
 	
 	public function doLivePreview($idRep, $previewType = null) {
-		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
+		$eiSelection = $this->eiCtrlUtils->lookupEiSelection($idRep);
 		
-		$eiObjectUtils = $this->eiuCtrl->toEiuEntry($eiObject);
-		$previewTypeOptions = $eiObjectUtils->getPreviewTypeOptions();
+		$eiEntryUtils = $this->eiCtrlUtils->toEiuEntry($eiSelection);
+		$previewTypeOptions = $eiEntryUtils->getPreviewTypeOptions();
 		if (empty($previewTypeOptions)) {
 			throw new PageNotFoundException();
 		}
@@ -82,22 +79,22 @@ class DetailController extends ControllerAdapter {
 			return;
 		}
 		
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiObject);
+		$previewController = $this->eiCtrlUtils->lookupPreviewController($previewType, $eiSelection);
 		
-		$this->applyBreadcrumbs($eiObject, $previewType);
+		$this->applyBreadcrumbs($eiSelection, $previewType);
 		
 		$this->forward('..\view\detailPreview.html', array( 
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 						->ext('livepreviewsrc', $idRep, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), 
-						$eiObject)));
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->frame(), 
+						$eiSelection)));
 	}
 	
 	public function doLivePreviewSrc($idRep, $previewType, array $delegateCmds = array()) {
-		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiObject);
+		$eiSelection = $this->eiCtrlUtils->lookupEiSelection($idRep);
+		$previewController = $this->eiCtrlUtils->lookupPreviewController($previewType, $eiSelection);
 		
 		$this->delegate($previewController);
 	}
@@ -107,14 +104,14 @@ class DetailController extends ControllerAdapter {
 // 		$detailModel->publish();
 		
 // 		$this->redirectToController(PathUtils::createDetailPathExtFromEntryNavPoint(null, 
-// 				$detailModel->getEiObject()->toEntryNavPoint($previewtype)->copy(true)));
+// 				$detailModel->getEiSelection()->toEntryNavPoint($previewtype)->copy(true)));
 // 	}
 	
 	public function doDraftPreview($draftId, $previewType = null) {
-		$eiObject = $this->eiuCtrl->lookupEiObjectByDraftId($draftId);
+		$eiSelection = $this->eiCtrlUtils->lookupEiSelectionByDraftId($draftId);
 		
-		$eiObjectUtils = $this->eiuCtrl->toEiuEntry($eiObject);
-		$previewTypeOptions = $eiObjectUtils->getPreviewTypeOptions();
+		$eiEntryUtils = $this->eiCtrlUtils->toEiuEntry($eiSelection);
+		$previewTypeOptions = $eiEntryUtils->getPreviewTypeOptions();
 		if (empty($previewTypeOptions)) {
 			throw new PageNotFoundException();
 		}
@@ -124,71 +121,71 @@ class DetailController extends ControllerAdapter {
 			return;
 		}
 		
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiObject);
+		$previewController = $this->eiCtrlUtils->lookupPreviewController($previewType, $eiSelection);
 		
-		$this->applyBreadcrumbs($eiObject, $previewType);
+		$this->applyBreadcrumbs($eiSelection, $previewType);
 		
 		$this->forward('..\view\detailPreview.html', array( 
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 						->ext('draftpreviewsrc', $draftId, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), 
-						$eiObject)));
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiCtrlUtils->frame(), 
+						$eiSelection)));
 	}
 	
 	
 	
 	public function doDraftPreviewSrc($draftId, $previewType, array $delegateCmds = array()) {
-		$eiObject = $this->eiuCtrl->lookupEiObjectByDraftId($draftId);
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiObject);
+		$eiSelection = $this->eiCtrlUtils->lookupEiSelectionByDraftId($draftId);
+		$previewController = $this->eiCtrlUtils->lookupPreviewController($previewType, $eiSelection);
 		
 		$this->delegate($previewController);
 	}
 	
-	private function applyBreadcrumbs(EiObject $eiObject, string $previewType = null) {
-		$this->eiuCtrl->applyCommonBreadcrumbs();
+	private function applyBreadcrumbs(EiSelection $eiSelection, string $previewType = null) {
+		$this->eiCtrlUtils->applyCommonBreadcrumbs();
 		
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+		$eiFrame = $this->eiCtrlUtils->frame()->getEiFrame();
 		$httpContext = $this->getHttpContext();
 
 		if ($eiFrame->isDetailDisabled()) return;
 		
-		if ($eiObject->getEiEntityObj()->isPersistent()) {
+		if ($eiSelection->getLiveEntry()->isPersistent()) {
 			$pathParts = null;
-			if ($previewType === null || $eiObject->isDraft()) {
-				$pathParts = array('live', $eiObject->getEiEntityObj()->getId());
+			if ($previewType === null || $eiSelection->isDraft()) {
+				$pathParts = array('live', $eiSelection->getLiveEntry()->getId());
 			} else {
-				$pathParts = array('livepreview', $eiObject->getEiEntityObj()->getId(), $previewType);
+				$pathParts = array('livepreview', $eiSelection->getLiveEntry()->getId(), $previewType);
 			}
 			
-			$this->eiuCtrl->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
-					$eiFrame->getDetailBreadcrumbLabel($eiObject)));
+			$this->eiCtrlUtils->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
+					$eiFrame->getDetailBreadcrumbLabel($eiSelection)));
 		}
 		
-		if ($eiObject->isDraft()) {
+		if ($eiSelection->isDraft()) {
 			$pathParts = null;
 			if ($previewType === null) {
-				$pathParts = array('draft', $eiObject->getDraft()->getId());
+				$pathParts = array('draft', $eiSelection->getDraft()->getId());
 			} else {
-				$pathParts = array('draftpreview', $eiObject->getDraft()->getId(), $previewType);
+				$pathParts = array('draftpreview', $eiSelection->getDraft()->getId(), $previewType);
 			}
 				
 			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale());
 			
 			$breadcrumb = null;
-			if ($eiObject->getEiEntityObj()->isPersistent()) {
+			if ($eiSelection->getLiveEntry()->isPersistent()) {
 				$breadcrumb = new Breadcrumb($this->getUrlToController($pathParts),
 						$this->dtc->translate('ei_impl_detail_draft_breadcrumb',
-								array('last_mod' => $dtf->format($eiObject->getDraft()->getLastMod()))));
+								array('last_mod' => $dtf->format($eiSelection->getDraft()->getLastMod()))));
 			} else {
 				$breadcrumb = new Breadcrumb($this->getUrlToController($pathParts),
 						$this->dtc->translate('ei_impl_detail_unbound_draft_breadcrumb',
-								array('entry' => $this->eiuCtrl->frame()
-										->createIdentityString($eiObject))));
+								array('entry' => $this->eiCtrlUtils->frame()
+										->createIdentityString($eiSelection))));
 			}
 			
-			$this->eiuCtrl->applyBreandcrumbs($breadcrumb);
+			$this->eiCtrlUtils->applyBreandcrumbs($breadcrumb);
 		}
 	}
 }

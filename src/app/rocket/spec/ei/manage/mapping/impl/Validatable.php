@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 
 interface Validatable {
 	
-	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool;
+	public function testMappableValue(EiObject $eiObject, $mappableValue): bool;
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, FieldErrorInfo $fieldErrorInfo);
+	public function validateMappableValue(EiObject $eiObject, $mappableValue, FieldErrorInfo $fieldErrorInfo);
 }

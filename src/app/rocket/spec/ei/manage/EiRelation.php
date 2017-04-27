@@ -25,24 +25,24 @@ use n2n\util\ex\IllegalStateException;
 
 class EiRelation {
 	private $eiFrame;
-	private $eiObject;
+	private $eiSelection;
 	
-	public function __construct(EiFrame $eiFrame, EiObject $eiObject = null) {
+	public function __construct(EiFrame $eiFrame, EiSelection $eiSelection = null) {
 		$this->eiFrame = $eiFrame;
-		$this->eiObject = $eiObject;
+		$this->eiSelection = $eiSelection;
 	}
 	
 	public function getEiFrame() {
 		return $this->eiFrame;
 	}
 	
-	public function hasEiObject(): bool {
-		return $this->eiObject !== null;
+	public function hasEiSelection(): bool {
+		return $this->eiSelection !== null;
 	}
 	
-	public function getEiObject() {
-		if ($this->eiObject !== null) {
-			return $this->eiObject;
+	public function getEiSelection() {
+		if ($this->eiSelection !== null) {
+			return $this->eiSelection;
 		}
 		
 		throw new IllegalStateException();

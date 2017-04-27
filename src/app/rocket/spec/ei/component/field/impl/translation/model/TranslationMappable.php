@@ -23,16 +23,16 @@ namespace rocket\spec\ei\component\field\impl\translation\model;
 
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 
-class TranslationEiField extends ToManyEiField {
+class TranslationMappable extends ToManyMappable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiField::copyEiField($eiObject)
+	 * @see \rocket\spec\ei\manage\mapping\Mappable::copyMappable($eiObject)
 	 */
-	public function copyEiField(Eiu $eiu) {
-		$copy = parent::copyEiField($eiu);
+	public function copyMappable(Eiu $eiu) {
+		$copy = parent::copyMappable($eiu);
 		
 		if ($copy === null) return null;
 		
@@ -40,8 +40,8 @@ class TranslationEiField extends ToManyEiField {
 		$valueCopy = $copy->getValue();
 
 		foreach ($value as $key => $targetRelationEntry) {
-			$valueCopy[$key] = $valueCopy[$key]->getEiObject()->getEiEntityObj()->getEntityObj()->setN2nLocale(
-					$targetRelationEntry->getEiObject()->getEiEntityObj()->getEntityObj()->getN2nLocale());
+			$valueCopy[$key] = $valueCopy[$key]->getEiSelection()->getLiveEntry()->getEntityObj()->setN2nLocale(
+					$targetRelationEntry->getEiSelection()->getLiveEntry()->getEntityObj()->getN2nLocale());
 		}
 		
 		return $copy;

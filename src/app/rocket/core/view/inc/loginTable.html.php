@@ -21,11 +21,6 @@
 	 */
 
 	use rocket\user\model\RocketUserDao;
-	use n2n\impl\web\ui\view\html\HtmlView;
-	use n2n\web\ui\view\View;
-	
-	$view = HtmlView::view($this);
-	$html = HtmlView::html($view);
 	
 	$userDao = $view->lookup('rocket\user\model\RocketUserDao'); $userDao instanceof RocketUserDao;
 	$useSuccessfullLogins = $view->getParam('useSuccessfull', false, true);
@@ -36,7 +31,7 @@
 		$logins = $userDao->getFailedLogins();
 	}
 ?>
-<table class="table table-striped">
+<table class="rocket-list">
 	<thead>
 		<tr>
 			<th><?php $html->l10nText('user_nick_label') ?></th>

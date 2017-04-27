@@ -23,5 +23,5 @@ namespace rocket\spec\ei\component\field;
 
 use rocket\spec\config\SpecException;
 
-class EiPropOperationFailedException extends SpecException {
+class EiFieldOperationFailedException extends SpecException {
 }

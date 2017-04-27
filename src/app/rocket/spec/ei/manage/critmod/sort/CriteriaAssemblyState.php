@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\critmod\sort;
 
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use n2n\util\ex\IllegalStateException;
 class CriteriaAssemblyState {
 	private $criteria;
@@ -38,33 +38,33 @@ class CriteriaAssemblyState {
 		return $this->criteria;
 	}
 
-	public function registerCp(EiPropPath $eiPropPath, CriteriaProperty $criteriaProperty) {
-		if ($eiPropPath->isEmpty()) {
+	public function registerCp(EiFieldPath $eiFieldPath, CriteriaProperty $criteriaProperty) {
+		if ($eiFieldPath->isEmpty()) {
 			IllegalStateException::assertTrue($this->baseCp === null);
 			$this->baseCp = $criteriaProperty;
 		}
 
-		$eiPropPathStr = (string) $eiPropPath;
-		IllegalStateException::assertTrue(!isset($this->cps[$eiPropPathStr]));
-		$this->cps[$eiPropPathStr] = $criteriaProperty;
+		$eiFieldPathStr = (string) $eiFieldPath;
+		IllegalStateException::assertTrue(!isset($this->cps[$eiFieldPathStr]));
+		$this->cps[$eiFieldPathStr] = $criteriaProperty;
 	}
 
-	public function containsCpEiPropPath(EiPropPath $eiPropPath): bool {
-		if ($eiPropPath->isEmpty()) {
+	public function containsCpEiFieldPath(EiFieldPath $eiFieldPath): bool {
+		if ($eiFieldPath->isEmpty()) {
 			return $this->baseCp !== null;
 		}
 
-		return isset($this->cps[(string) $eiPropPath]);
+		return isset($this->cps[(string) $eiFieldPath]);
 	}
 
-	public function getCp(EiPropPath $eiPropPath): CriteriaProperty {
-		if ($eiPropPath->isEmpty()) {
+	public function getCp(EiFieldPath $eiFieldPath): CriteriaProperty {
+		if ($eiFieldPath->isEmpty()) {
 			IllegalStateException::assertTrue($this->baseCp !== null);
 			return $this->baseCp;
 		}
 
-		$eiPropPathStr = (string) $eiPropPath;
-		IllegalStateException::assertTrue(isset($this->cps[$eiPropPathStr]));
-		return $this->cps[$eiPropPathStr];
+		$eiFieldPathStr = (string) $eiFieldPath;
+		IllegalStateException::assertTrue(isset($this->cps[$eiFieldPathStr]));
+		return $this->cps[$eiFieldPathStr];
 	}
 }

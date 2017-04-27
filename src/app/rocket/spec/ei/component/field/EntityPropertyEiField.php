@@ -23,7 +23,7 @@
 
 // use n2n\persistence\orm\property\EntityProperty;
 
-// interface ConfEntityPropertyEiProp extends EiProp {
+// interface ConfEntityPropertyEiField extends EiField {
 // 	/**
 // 	 * @return EntityProperty
 // 	 */

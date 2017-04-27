@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter;
 
-use rocket\spec\ei\manage\mapping\EiFieldConstraint;
+use rocket\spec\ei\manage\mapping\MappableConstraint;
 use n2n\util\config\Attributes;
 
-interface EiEntryFilterField extends FilterField {
+interface EiMappingFilterField extends FilterField {
 
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint; 
+	public function createMappableConstraint(Attributes $attributes): MappableConstraint; 
 }

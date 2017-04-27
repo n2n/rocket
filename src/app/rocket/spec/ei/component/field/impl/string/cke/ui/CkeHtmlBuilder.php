@@ -240,21 +240,21 @@ class CkeHtmlBuilder {
 // 	 * @return \rocket\spec\ei\component\field\impl\string\cke\ui\CkeComposer
 // 	 */
 // 	public static function simple() {
-// 		return new CkeComposer(CkeEiProp::MODE_SIMPLE);
+// 		return new CkeComposer(CkeEiField::MODE_SIMPLE);
 // 	}
 
 // 	/**
 // 	 * @return \rocket\spec\ei\component\field\impl\string\cke\ui\CkeComposer
 // 	 */
 // 	public static function normal() {
-// 		return new CkeComposer(CkeEiProp::MODE_NORMAL);
+// 		return new CkeComposer(CkeEiField::MODE_NORMAL);
 // 	}
 
 // 	/**
 // 	 * @return \rocket\spec\ei\component\field\impl\string\cke\ui\CkeComposer
 // 	 */
 // 	public static function advanced() {
-// 		return new CkeComposer(CkeEiProp::MODE_ADVANCED);
+// 		return new CkeComposer(CkeEiField::MODE_ADVANCED);
 // 	}
 // }
 
@@ -265,7 +265,7 @@ class CkeHtmlBuilder {
 // 	private $ckeLinkProviders = array();
 	
 // 	public function __construct(string $mode) {
-// 		ArgUtils::valEnum($mode, CkeEiProp::getModes());
+// 		ArgUtils::valEnum($mode, CkeEiField::getModes());
 // 		$this->mode = $mode;
 // 	}
 	

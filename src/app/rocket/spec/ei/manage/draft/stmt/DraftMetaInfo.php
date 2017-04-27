@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\draft\stmt;
 
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use n2n\io\IoUtils;
 use rocket\spec\ei\EiThing;
 
@@ -37,7 +37,7 @@ class DraftMetaInfo {
 	const DRAFT_COLUMN_PREFIX = 'd_';
 	const DRAFT_COLUMN_PART_SEPARATOR = '_';
 	
-	public static function buildTableName(EiThing $eiThing, EiPropPath $eiPropPathExt = null) {
+	public static function buildTableName(EiThing $eiThing, EiFieldPath $eiFieldPathExt = null) {
 		$ids = array();
 		do {
 			$id = $eiThing->getId();
@@ -51,18 +51,18 @@ class DraftMetaInfo {
 		$ids = array_reverse($ids);
 		$tableName = self::TABLE_PREFIX . implode(self::DRAFT_COLUMN_PART_SEPARATOR, $ids);
 		
-		if ($eiPropPathExt !== null) {
-			return self::buildFieldTableName($tableName, $eiPropPathExt->toDbColumnName());
+		if ($eiFieldPathExt !== null) {
+			return self::buildFieldTableName($tableName, $eiFieldPathExt->toDbColumnName());
 		}
 		
 		return $tableName;
 	}
 	
-	public static function buildFieldTableName(string $draftTableName, EiPropPath $eiPropPath) {
- 		return $draftTableName . self::DRAFT_COLUMN_PART_SEPARATOR . $eiPropPath->toDbColumnName();
+	public static function buildFieldTableName(string $draftTableName, EiFieldPath $eiFieldPath) {
+ 		return $draftTableName . self::DRAFT_COLUMN_PART_SEPARATOR . $eiFieldPath->toDbColumnName();
  	}
 	
-	public static function buildDraftColumnName(EiPropPath $eiPropPath) {
-		return self::DRAFT_COLUMN_PREFIX . $eiPropPath->toDbColumnName();
+	public static function buildDraftColumnName(EiFieldPath $eiFieldPath) {
+		return self::DRAFT_COLUMN_PREFIX . $eiFieldPath->toDbColumnName();
 	}
 }

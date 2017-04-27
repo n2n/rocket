@@ -37,7 +37,7 @@ class CritmodForm implements Dispatchable {
 	private $critmodSaveDao;
 // 	private $stateKey;
 	private $categoryKey;
-	private $eiTypeId;
+	private $eiSpecId;
 	private $eiMaskId;
 	private $active = false;
 	
@@ -47,11 +47,11 @@ class CritmodForm implements Dispatchable {
 	protected $sortForm;
 	
 	public function __construct(FilterDefinition $filterDefinition, SortDefinition $sortDefinition, 
-			CritmodSaveDao $critmodSaveDao, string $stateKey, string $eiTypeId, string $eiMaskId = null) {
+			CritmodSaveDao $critmodSaveDao, string $stateKey, string $eiSpecId, string $eiMaskId = null) {
 		$this->critmodSaveDao = $critmodSaveDao;
 // 		$this->stateKey = $stateKey;
-		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypeId, $eiMaskId);;
-		$this->eiTypeId = $eiTypeId;
+		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiSpecId, $eiMaskId);;
+		$this->eiSpecId = $eiSpecId;
 		$this->eiMaskId = $eiMaskId;
 				
 		$filterGroupData = null;
@@ -116,7 +116,7 @@ class CritmodForm implements Dispatchable {
 
 	public function getSelectedCritmodSaveIdOptions(): array {
 		$options = array(null => null);
-		foreach ($this->critmodSaveDao->getCritmodSaves($this->eiTypeId, $this->eiMaskId) as $critmodSave) {
+		foreach ($this->critmodSaveDao->getCritmodSaves($this->eiSpecId, $this->eiMaskId) as $critmodSave) {
 			$options[$critmodSave->getId()] = $critmodSave->getName();
 		}
 		return $options;
@@ -181,12 +181,12 @@ class CritmodForm implements Dispatchable {
 	
 	public function select() {
 		$this->critmodSaveDao->setSelectedCritmodSave($this->categoryKey, $this->critmodSaveDao->getCritmodSaveById(
-				$this->eiTypeId, $this->eiMaskId, $this->selectedCritmodSaveId));
+				$this->eiSpecId, $this->eiMaskId, $this->selectedCritmodSaveId));
 	}
 	
 	public function apply() {
 		$critmodSave = new CritmodSave();
-		$critmodSave->setEiTypeId($this->eiTypeId);
+		$critmodSave->setEiSpecId($this->eiSpecId);
 		$critmodSave->setEiMaskId($this->eiMaskId);
 		$critmodSave->writeFilterData($this->filterGroupForm->buildFilterGroupData());
 		$critmodSave->writeSortData($this->sortForm->buildSortData());
@@ -202,8 +202,8 @@ class CritmodForm implements Dispatchable {
 	}
 	
 	public function saveAs() {
-		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiTypeId, $this->eiMaskId,
-				$this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypeId, $this->eiMaskId, $this->name), 
+		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiSpecId, $this->eiMaskId,
+				$this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiSpecId, $this->eiMaskId, $this->name), 
 				$this->filterGroupForm->buildFilterGroupData(), 
 				$this->sortForm->buildSortData());
 		
@@ -227,6 +227,6 @@ class CritmodForm implements Dispatchable {
 		
 		return new CritmodForm($eiMask->getEiEngine()->createManagedFilterDefinition($eiFrame), 
 				$eiMask->getEiEngine()->createManagedSortDefinition($eiFrame), 
-				$critmodSaveDao, $stateKey, $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), $eiMask->getId());
+				$critmodSaveDao, $stateKey, $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $eiMask->getId());
 	}
 }

@@ -21,12 +21,13 @@
 	 */
 
 	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
+	use rocket\spec\ei\manage\EiFrame;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
 	use rocket\spec\config\mask\model\EntryListViewModel;
 	use rocket\spec\config\mask\model\EntryGuiTree;
-	use rocket\spec\config\mask\model\EiuEntryGuiTree;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -35,18 +36,21 @@
 	$entryListViewModel = $view->getParam('entryListViewModel');
 	$view->assert($entryListViewModel instanceof EntryListViewModel);
 	
-	$orderItems = $entryListViewModel->getDisplayStructure()->getDisplayItems();
-	$eiuFrame = $entryListViewModel->getEiuFrame();
+	$orderItems = $entryListViewModel->getGuiFieldOrder()->getOrderItems();
+
+	$selectPropertyPath = $view->getParam('selectPropertyPath', false);
+	$view->assert($selectPropertyPath === null || $selectPropertyPath instanceof PropertyPath);
+	
+	$eiFrame = $entryListViewModel->getEiFrame();
 	
 	$eiHtml = new EiHtmlBuilder($view, $entryListViewModel->getGuiDefinition());
-	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiuFrame, $entryListViewModel->getEiuEntryGuis());
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiuFrame);
+	$entryEiHtml = new EntryEiHtmlBuilder($view, $eiFrame, $entryListViewModel->getEntryGuis());
+	$controlEiHtml = new ControlEiHtmlBuilder($view, $eiFrame);
 	
 	$entryGuiTree = $view->getParam('entryGuiTree', false);
-	$view->assert($entryGuiTree === null || $entryGuiTree instanceof EiuEntryGuiTree);
+	$view->assert($entryGuiTree === null || $entryGuiTree instanceof EntryGuiTree);
 ?>
-
-<table class="table table-striped table-hover">
+<table class="rocket-list">
 	<thead>
 		<tr>
 			<?php $eiHtml->generalEntrySelector('th') ?>
@@ -58,8 +62,8 @@
 	</thead>
 	<tbody class="rocket-overview-content">
 		<?php while ($entryEiHtml->meta()->next()): ?>
-			<?php $entryEiHtml->entryOpen('tr', array('class' => ($entryGuiTree === null ? null : ' class="rocket-tree-level-' 
-					. $entryGuiTree->getLevelByIdRep($entryEiHtml->meta()->getCurrentIdRep()) . '"'))) ?>
+			<tr<?php $view->out($entryGuiTree === null ? '' : ' class="rocket-tree-level-' 
+					. $entryGuiTree->getLevelByIdRep($entryEiHtml->meta()->getCurrentIdRep()) . '"') ?>>
 				<?php $entryEiHtml->selector('td') ?>
 				
 				<?php foreach ($orderItems as $orderItem): ?>
@@ -67,10 +71,10 @@
 						<?php $entryEiHtml->field() ?>
 					<?php $entryEiHtml->closeField(); ?>
 				<?php endforeach ?>
-				<?php $view->out('<td>') ?>
-					<?php $controlEiHtml->entryGuiControlList($entryEiHtml->meta()->getCurrentEiuEntryGui(), true) ?>
-				<?php $view->out('</td>') ?>
-			<?php $entryEiHtml->entryClose() ?>
+				<td>
+					<?php $controlEiHtml->entryGuiControlList($entryEiHtml->meta()->getCurrentEntryGuiModel(), true) ?>
+				</td>
+			</tr>
 		<?php endwhile ?>
 	</tbody>
 </table>

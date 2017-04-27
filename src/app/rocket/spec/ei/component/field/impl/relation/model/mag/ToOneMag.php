@@ -64,7 +64,7 @@ class ToOneMag extends MagAdapter {
 	
 	private function updateContainerAttrs(bool $group) {
 		if ($group) {
-			$this->setAttrs(array('class' => 'rocket-group'));
+			$this->setAttrs(array('class' => 'rocket-control-group'));
 		} else {
 			$this->setAttrs(array());
 		}
@@ -108,8 +108,8 @@ class ToOneMag extends MagAdapter {
 
 		$this->targetRelationEntry = null;
 		
-		if (null !== ($targetEiEntry = $formValue->buildEiEntry())) {
-			$this->targetRelationEntry = RelationEntry::fromM($targetEiEntry);
+		if (null !== ($targetEiMapping = $formValue->buildEiMapping())) {
+			$this->targetRelationEntry = RelationEntry::fromM($targetEiMapping);
 			return;
 		} 
 				
@@ -120,7 +120,7 @@ class ToOneMag extends MagAdapter {
 				return;
 			}
 				
-			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
+			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiSelectionById(
 					$this->targetReadUtils->idRepToId($entryIdRep), CriteriaConstraint::NON_SECURITY_TYPES));
 			return;
 		}
@@ -141,12 +141,12 @@ class ToOneMag extends MagAdapter {
 			$toOneForm->setOriginalEntryIdRep($idRep);
 			$toOneForm->setSelectedEntryIdRep($idRep);
 			$toOneForm->getEntryLabeler()->setSelectedIdentityString($idRep,
-					$this->targetReadUtils->createIdentityString($this->targetRelationEntry->getEiObject()));
-		} else if ($this->targetRelationEntry->hasEiEntry()) {
-			$toOneForm->setEiEntry($this->targetRelationEntry->getEiEntry());
+					$this->targetReadUtils->createIdentityString($this->targetRelationEntry->getEiSelection()));
+		} else if ($this->targetRelationEntry->hasEiMapping()) {
+			$toOneForm->setEiMapping($this->targetRelationEntry->getEiMapping());
 		} else {
-			$toOneForm->setEiEntry($this->targetEditUtils->createEiEntry(
-					$this->targetRelationEntry->getEiObject()));
+			$toOneForm->setEiMapping($this->targetEditUtils->createEiMapping(
+					$this->targetRelationEntry->getEiSelection()));
 		}
 				
 		return $toOneForm;

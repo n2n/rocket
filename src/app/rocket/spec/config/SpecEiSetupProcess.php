@@ -24,9 +24,9 @@ namespace rocket\spec\config;
 use rocket\spec\ei\component\IndependentEiComponent;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\field\EiFieldCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
@@ -61,16 +61,16 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
 			return $eiMask->getEiDef();
 		}
-		return $this->eiComponent->getEiEngine()->getEiType()->getDefaultEiDef();
+		return $this->eiComponent->getEiEngine()->getEiSpec()->getDefaultEiDef();
 	}
 	
 	public function getSupremeEiDef() {
-		$supremeEiType = $this->eiComponent->getEiEngine()->getEiType()->getSupremeEiType();
+		$supremeEiSpec = $this->eiComponent->getEiEngine()->getEiSpec()->getSupremeEiSpec();
 		
 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
-			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
+			return $eiMask->determineEiMask($supremeEiSpec)->getEiDef();
 		}
-		return $supremeEiType->getDefaultEiDef();
+		return $supremeEiSpec->getDefaultEiDef();
 	}
 	
 	public function createException($reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException {
@@ -84,19 +84,19 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	 * @see \rocket\spec\ei\component\EiSetupProcess::containsClass($class)
 	 */
 	public function containsClass(\ReflectionClass $class): bool {
-		return $this->specManager->containsEiTypeClass($class);
+		return $this->specManager->containsEiSpecClass($class);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiTypeByClass($class)
+	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiSpecByClass($class)
 	 */
-	public function getEiTypeByClass(\ReflectionClass $class): EiType {
-		return $this->specManager->getEiTypeByClass($class);
+	public function getEiSpecByClass(\ReflectionClass $class): EiSpec {
+		return $this->specManager->getEiSpecByClass($class);
 	}
 
-	public function getEiPropCollection(): EiPropCollection {
-		return $this->eiComponent->getEiEngine()->getEiPropCollection();
+	public function getEiFieldCollection(): EiFieldCollection {
+		return $this->eiComponent->getEiEngine()->getEiFieldCollection();
 	}
 	
 	public function getEiCommandCollection(): EiCommandCollection {
@@ -107,13 +107,13 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
 	}
 	
-	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty {
+	public function getGenericEiPropertyByEiFieldPath($eiFieldPath): GenericEiProperty {
 		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
-				->getGenericEiPropertyByEiPropPath($eiPropPath);
+				->getGenericEiPropertyByEiFieldPath($eiFieldPath);
 	}
 	
-	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
+	public function getScalarEiPropertyByFieldPath($eiFieldPath): ScalarEiProperty {
 		return $this->eiComponent->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiPropPath);
+				->getScalarEiPropertyByFieldPath($eiFieldPath);
 	}
 }

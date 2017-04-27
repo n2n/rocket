@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\draft;
 
 use n2n\persistence\Pdo;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\draft\stmt\impl\SimplePersistDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\stmt\impl\SimpleRemoveDraftStmtBuilder;
@@ -78,7 +78,7 @@ class DraftDefinition {
 				$idEntityProperty, $tableAlias);
 		
 		foreach ($this->draftProperties as $id => $draftProperty) {
-			$stmtBuilder->putDraftValueSelection(new EiPropPath(array($id)), 
+			$stmtBuilder->putDraftValueSelection(new EiFieldPath(array($id)), 
 					$draftProperty->createDraftValueSelection($stmtBuilder, $dm, $n2nContext));
 		}
 		
@@ -106,20 +106,20 @@ class DraftDefinition {
 		$stmtBuilder->setUserId($draft->getUserId());
 		$stmtBuilder->setLastMod($draft->getLastMod());
 		
-		$eiEntityObj = $draft->getEiEntityObj();
-		if ($eiEntityObj->isPersistent()) { 
-			$stmtBuilder->setDraftedEntityObjId($idEntityProperty->buildRaw($draft->getEiEntityObj()->getId(), $pdo));
+		$liveEntry = $draft->getLiveEntry();
+		if ($liveEntry->isPersistent()) { 
+			$stmtBuilder->setDraftedEntityObjId($idEntityProperty->buildRaw($draft->getLiveEntry()->getId(), $pdo));
 		}
 		
 		$draftValuesMap = $draft->getDraftValueMap();
 		foreach ($this->draftProperties as $id => $draftProperty) {
-			$eiPropPath = new EiPropPath(array($id));
+			$eiFieldPath = new EiFieldPath(array($id));
 			$oldValue = null;
 			if ($draftValuesResult !== null) {
-				$oldValue = $draftValuesResult->getValue($eiPropPath);
+				$oldValue = $draftValuesResult->getValue($eiFieldPath);
 			}
 			
-			$draftProperty->supplyPersistDraftStmtBuilder($draftValuesMap->getValue($eiPropPath), 
+			$draftProperty->supplyPersistDraftStmtBuilder($draftValuesMap->getValue($eiFieldPath), 
 					$oldValue, $stmtBuilder, $persistDraftAction);
 		}
 		
@@ -130,7 +130,7 @@ class DraftDefinition {
 		
 		$persistDraftAction->executeAtEnd(function () use ($draftingContext, $draft) {
 			$newDraftValuesResult = new DraftValuesResult($draft->getId(), 
-					($draft->getEiEntityObj()->hasId() ? $draft->getEiEntityObj()->getId() : null),
+					($draft->getLiveEntry()->hasId() ? $draft->getLiveEntry()->getId() : null),
 					$draft->getLastMod(), $draft->getType(), $draft->getUserId(), 
 					$draft->getDraftValueMap()->getValues());
 			$draftingContext->setDraftValuesResult($draft, $newDraftValuesResult);
@@ -148,10 +148,10 @@ class DraftDefinition {
 		$draftValuesMap = $draft->getDraftValueMap();
 		$draftValuesResult = $draftActionQueue->getDraftingContext()->getDraftValuesResultByDraft($draft);		
 		foreach ($this->draftProperties as $id => $draftProperty) {
-			$eiPropPath = new EiPropPath(array($id));
-			$oldValue = $draftValuesResult->getValue($eiPropPath);
+			$eiFieldPath = new EiFieldPath(array($id));
+			$oldValue = $draftValuesResult->getValue($eiFieldPath);
 			
-			$draftProperty->supplyRemoveDraftStmtBuilder($draftValuesMap->getValue($eiPropPath), $oldValue,
+			$draftProperty->supplyRemoveDraftStmtBuilder($draftValuesMap->getValue($eiFieldPath), $oldValue,
 					$statementBuilder, $removeDraftAction);
 		}
 		

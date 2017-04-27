@@ -23,17 +23,17 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\util\model\FrameEiu;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\EiSpec;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\EiEntityObj;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\LiveEntry;
 use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\LiveEiObject;
+use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\manage\DraftEiObject;
+use rocket\spec\ei\manage\DraftEiSelection;
 use rocket\user\model\LoginContext;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\draft\DraftValueMap;
@@ -44,10 +44,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getEiType()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getEiSpec()
 	 */
-	public function getEiType(): EiType {
-		return $this->getEiMask()->getEiEngine()->getEiType();
+	public function getEiSpec(): EiSpec {
+		return $this->getEiMask()->getEiEngine()->getEiSpec();
 	}
 	
 	/**
@@ -55,14 +55,14 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getNestedSetStrategy()
 	 */
 	public function getNestedSetStrategy() {
-		return $this->getEiType()->getNestedSetStrategy();
+		return $this->getEiSpec()->getNestedSetStrategy();
 	}
 	
 	/**
 	 * @return \n2n\persistence\orm\model\EntityModel
 	 */
 	public function getEntityModel(): EntityModel {
-		return $this->getEiType()->getEntityModel();
+		return $this->getEiSpec()->getEntityModel();
 	}
 
 	/**
@@ -78,7 +78,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::idToIdRep()
 	 */
 	public function idToIdRep($id): string {
-		return $this->getEiType()->idToIdRep($id);
+		return $this->getEiSpec()->idToIdRep($id);
 	}
 	
 	/**
@@ -86,89 +86,89 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::idRepToId()
 	 */
 	public function idRepToId(string $idRep) {
-		return $this->getEiType()->idRepToId($idRep);
+		return $this->getEiSpec()->idRepToId($idRep);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getGenericLabel()
 	 */
-	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
-		return $this->determineEiMask($eiObjectObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
+	public function getGenericLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string {
+		return $this->determineEiMask($eiEntryObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::getGenericPluralLabel()
 	 */
-	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
-		return $this->determineEiMask($eiObjectObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
+	public function getGenericPluralLabel($eiEntryObj = null, N2nLocale $n2nLocale = null): string {
+		return $this->determineEiMask($eiEntryObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createIdentityString()
 	 */
-	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, 
+	public function createIdentityString(EiSelection $eiSelection, bool $determineEiMask = true, 
 			N2nLocale $n2nLocale = null): string {
 		$eiMask = null;
 		if ($determineEiMask) {
-			$eiMask = $this->determineEiMask($eiObject);
+			$eiMask = $this->determineEiMask($eiSelection);
 		} else {
 			$eiMask = $this->getEiMask();
 		}
 				
-		return $eiMask->createIdentityString($eiObject, $n2nLocale ?? $this->getN2nLocale());
+		return $eiMask->createIdentityString($eiSelection, $n2nLocale ?? $this->getN2nLocale());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::determineEiType()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::determineEiSpec()
 	 */
-	public function determineEiType($eiObjectObj): EiType {
-		if ($eiObjectObj === null) {
-			return $this->getEiType();
+	public function determineEiSpec($eiEntryObj): EiSpec {
+		if ($eiEntryObj === null) {
+			return $this->getEiSpec();
 		}
 		
-		ArgUtils::valType($eiObjectObj, array(EiObject::class, EiEntry::class, EiEntityObj::class, 'object'), true);
+		ArgUtils::valType($eiEntryObj, array(EiSelection::class, EiMapping::class, LiveEntry::class, 'object'), true);
 		
-		if ($eiObjectObj instanceof EiEntry) {
-			return $eiObjectObj->getEiObject()->getEiEntityObj()->getEiType();
+		if ($eiEntryObj instanceof EiMapping) {
+			return $eiEntryObj->getEiSelection()->getLiveEntry()->getEiSpec();
 		}
 		
-		if ($eiObjectObj instanceof EiObject) {
-			return $eiObjectObj->getEiEntityObj()->getEiType();
+		if ($eiEntryObj instanceof EiSelection) {
+			return $eiEntryObj->getLiveEntry()->getEiSpec();
 		}
 		
-		if ($eiObjectObj instanceof EiEntityObj) {
-			return $eiObjectObj->getEiType();
+		if ($eiEntryObj instanceof LiveEntry) {
+			return $eiEntryObj->getEiSpec();
 		}
 		
-		if ($eiObjectObj instanceof Draft) {
-			return $eiObjectObj->getEiEntityObj()->getEiType();
+		if ($eiEntryObj instanceof Draft) {
+			return $eiEntryObj->getLiveEntry()->getEiSpec();
 		}
 		
-		return $this->getEiType()->determineAdequateEiType(new \ReflectionClass($eiObjectObj));
+		return $this->getEiSpec()->determineAdequateEiSpec(new \ReflectionClass($eiEntryObj));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::determineEiMask()
 	 */
-	public function determineEiMask($eiObjectObj): EiMask {
-		if ($eiObjectObj === null) {
+	public function determineEiMask($eiEntryObj): EiMask {
+		if ($eiEntryObj === null) {
 			return $this->getEiMask();
 		}
 	
-		return $this->getEiMask()->determineEiMask($this->determineEiType($eiObjectObj));
+		return $this->getEiMask()->determineEiMask($this->determineEiSpec($eiEntryObj));
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiObjectById()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiSelectionById()
 	 */
-	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject {
-		return new LiveEiObject($this->lookupEiEntityObjById($id, $ignoreConstraintTypes));
+	public function lookupEiSelectionById($id, int $ignoreConstraintTypes = 0): EiSelection {
+		return new LiveEiSelection($this->lookupLiveEntryById($id, $ignoreConstraintTypes));
 	}
 
 	/**
@@ -194,10 +194,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiObjectByDraftId()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiSelectionByDraftId()
 	 */
-	public function lookupEiObjectByDraftId(int $id): EiObject {
-		return new DraftEiObject($this->lookupDraftById($id));
+	public function lookupEiSelectionByDraftId(int $id): EiSelection {
+		return new DraftEiSelection($this->lookupDraftById($id));
 	}
 	
 	/**
@@ -219,52 +219,52 @@ abstract class EiUtilsAdapter implements EiUtils {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiObjectFromEiEntityObj()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiSelectionFromLiveEntry()
 	 */
-	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject {
-		if ($eiEntityObj instanceof EiEntityObj) {
-			return new LiveEiObject($eiEntityObj);
+	public function createEiSelectionFromLiveEntry($liveEntry): EiSelection {
+		if ($liveEntry instanceof LiveEntry) {
+			return new LiveEiSelection($liveEntry);
 		}
 		
-		if ($eiEntityObj !== null) {
-			return LiveEiObject::create($this->getEiType(), $eiEntityObj);
+		if ($liveEntry !== null) {
+			return LiveEiSelection::create($this->getEiSpec(), $liveEntry);
 		}
 		
-		return new LiveEiObject(EiEntityObj::createNew($this->getEiType()));
+		return new LiveEiSelection(LiveEntry::createNew($this->getEiSpec()));
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiObjectFromDraft()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createEiSelectionFromDraft()
 	 */
-	public function createEiObjectFromDraft(Draft $draft): EiObject {
-		return new DraftEiObject($draft);
+	public function createEiSelectionFromDraft(Draft $draft): EiSelection {
+		return new DraftEiSelection($draft);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createNewEiObject()
+	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createNewEiSelection()
 	 */
-	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
-		if ($eiType === null) {
-			$eiType = $this->getEiType();
+	public function createNewEiSelection(bool $draft = false, EiSpec $eiSpec = null): EiSelection {
+		if ($eiSpec === null) {
+			$eiSpec = $this->getEiSpec();
 		}
 		
 		if (!$draft) {
-			return new LiveEiObject(EiEntityObj::createNew($eiType));
+			return new LiveEiSelection(LiveEntry::createNew($eiSpec));
 		}
 		
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 	
-		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiType)));
+		return new DraftEiSelection($this->createNewDraftFromLiveEntry(LiveEntry::createNew($eiSpec)));
 	}
 	
-	public function createNewDraftFromEiEntityObj(EiEntityObj $eiEntityObj) {
+	public function createNewDraftFromLiveEntry(LiveEntry $liveEntry) {
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		
-		return new Draft(null, $eiEntityObj, new \DateTime(),
+		return new Draft(null, $liveEntry, new \DateTime(),
 				$loginContext->getCurrentUser()->getId(), new DraftValueMap());
 	}
 	
@@ -272,29 +272,29 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::toEiuEntry()
 	 */
-	public function toEiuEntry($eiObjectObj): EiuEntry {
-		return new EiuEntry($eiObjectObj, $this);
+	public function toEiuEntry($eiEntryObj): EiuEntry {
+		return new EiuEntry($eiEntryObj, $this);
 	}
 	
-	public function persist($eiObjectObj, bool $flush = true) {
-		if ($eiObjectObj instanceof Draft) {
-			$this->persistDraft($eiObjectObj, $flush);
+	public function persist($eiEntryObj, bool $flush = true) {
+		if ($eiEntryObj instanceof Draft) {
+			$this->persistDraft($eiEntryObj, $flush);
 			return;
 		}
 		
-		if ($eiObjectObj instanceof EiEntityObj) {
-			$this->persistEiEntityObj($eiObjectObj, $flush);
+		if ($eiEntryObj instanceof LiveEntry) {
+			$this->persistLiveEntry($eiEntryObj, $flush);
 			return;
 		}
 		
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->getEiType());
+		$eiSelection = EiuFactory::buildEiSelectionFromEiArg($eiEntryObj, 'eiEntryObj', $this->getEiSpec());
 		
-		if ($eiObject->isDraft()) {
-			$this->persistDraft($eiObject->getDraft(), $flush);
+		if ($eiSelection->isDraft()) {
+			$this->persistDraft($eiSelection->getDraft(), $flush);
 			return;
 		}
 		
-		$this->persistEiEntityObj($eiObject->getEiEntityObj(), $flush);
+		$this->persistLiveEntry($eiSelection->getLiveEntry(), $flush);
 	}
 	
 	private function persistDraft(Draft $draft, bool $flush) {
@@ -304,7 +304,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 			$draftManager->persist($draft);
 		} else {
 			$draftManager->persist($draft, $this->getEiMask()->determineEiMask(
-					$draft->getEiEntityObj()->getEiType())->getEiEngine()->getDraftDefinition());
+					$draft->getLiveEntry()->getEiSpec())->getEiEngine()->getDraftDefinition());
 		}
 		
 		if ($flush) {
@@ -312,26 +312,26 @@ abstract class EiUtilsAdapter implements EiUtils {
 		}
 	}
 	
-	private function persistEiEntityObj(EiEntityObj $eiEntityObj, bool $flush) {
+	private function persistLiveEntry(LiveEntry $liveEntry, bool $flush) {
 		$em = $this->em();
 		$nss = $this->getNestedSetStrategy();
-		if ($nss === null || $eiEntityObj->isPersistent()) {
-			$em->persist($eiEntityObj->getEntityObj());
+		if ($nss === null || $liveEntry->isPersistent()) {
+			$em->persist($liveEntry->getEntityObj());
 			if (!$flush) return;
 			$em->flush();
 		} else {
 			if (!$flush) {
 				throw new IllegalStateException(
-						'Flushing is mandatory because EiEntityObj is new and has a NestedSetStrategy.');
+						'Flushing is mandatory because LiveEntry is new and has a NestedSetStrategy.');
 			}
 			
 			$nsu = new NestedSetUtils($em, $this->getClass(), $nss);
-			$nsu->insertRoot($eiEntityObj->getEntityObj());
+			$nsu->insertRoot($liveEntry->getEntityObj());
 		}
 		
-		if (!$eiEntityObj->isPersistent()) {
-			$eiEntityObj->refreshId();
-			$eiEntityObj->setPersistent(true);
+		if (!$liveEntry->isPersistent()) {
+			$liveEntry->refreshId();
+			$liveEntry->setPersistent(true);
 		}
 	}
 }

@@ -21,28 +21,28 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 
-class EmbeddedOneToOneGuiField implements GuiField {
+class EmbeddedOneToOneGuiElement implements GuiElement {
 	private $label;
 	private $readOnly;
 	private $mandatory;
-	private $toOneEiField;
+	private $toOneMappable;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
+	public function __construct(string $label, ToOneMappable $toOneMappable, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
-		$this->toOneEiField = $toOneEiField;
+		$this->toOneMappable = $toOneMappable;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -62,49 +62,49 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return array('class' => 'rocket-group');
+		return array('class' => 'rocket-control-group');
 	}
 
 // 	public function createOutputUiComponent(HtmlView $view) {
 // 		$eiFrame = $eiu->frame()->getEiFrame();
-// 		$eiEntry = $eiu->entry()->getEiEntry();
-// 		$targetEiObject = $this->createTargetEiObject($eiFrame, $eiEntry);
+// 		$eiMapping = $eiu->entry()->getEiMapping();
+// 		$targetEiSelection = $this->createTargetEiSelection($eiFrame, $eiMapping);
 
-// 		if ($targetEiObject === null) return null;
+// 		if ($targetEiSelection === null) return null;
 
-// 		$eiObject = $eiEntry->getEiObject();
-// 		$target = $this->eiPropRelation->getTarget();
-// 		$targetEiFrame = $this->eiPropRelation->createTargetPseudoEiFrame(
-// 				$eiFrame, $eiObject, false);
+// 		$eiSelection = $eiMapping->getEiSelection();
+// 		$target = $this->eiFieldRelation->getTarget();
+// 		$targetEiFrame = $this->eiFieldRelation->createTargetPseudoEiFrame(
+// 				$eiFrame, $eiSelection, false);
 // 		$targetUtils = new EiuFrame($targetEiFrame);
 
-// 		$targetEiEntry = $targetUtils->createEiEntry($targetEiObject);
+// 		$targetEiMapping = $targetUtils->createEiMapping($targetEiSelection);
 
-// 		$entryInfo = $targetUtils->createEntryInfo($targetEiEntry);
+// 		$entryInfo = $targetUtils->createEntryInfo($targetEiMapping);
 // 		$view = $entryInfo->getEiMask()->createDetailView($targetEiFrame, $entryInfo);
 
 // 		return $view->getImport($view);
 // 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetRelationEntry = $this->toOneEiField->getValue();
+		$targetRelationEntry = $this->toOneMappable->getValue();
 		if ($targetRelationEntry === null) return null;
 	
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
-		return $targetUtils->createBulkyDetailView($targetRelationEntry->toEiEntry($targetUtils));
+		return $targetUtils->createDetailView($targetRelationEntry->toEiMapping($targetUtils));
 	}
 	
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiField read only.');
+		throw new IllegalStateException('GuiElement read only.');
 	}
 }

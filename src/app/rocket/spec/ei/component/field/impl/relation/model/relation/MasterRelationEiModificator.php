@@ -40,29 +40,29 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 		$this->targetMany = (boolean) $targetMany;
 	}
 
-	public function setupEiEntry(Eiu $eiu) {
+	public function setupEiMapping(Eiu $eiu) {
 		if ($this->targetEiFrame !== $eiu->frame()->getEiFrame()) return;
 
 		if ($eiu->entry()->isDraft()) return;
 		
-		$eiEntry = $eiu->entry()->getEiEntry();
+		$eiMapping = $eiu->entry()->getEiMapping();
 		$that = $this;
 		if (!$this->targetMany) {
-			$eiEntry->registerListener(new WrittenMappingListener(
-					function () use ($that, $eiEntry) {
-						$that->propertyAccessProxy->setValue($that->entityObj, $eiEntry->getEiObject()->getLiveObject());
+			$eiMapping->registerListener(new WrittenMappingListener(
+					function () use ($that, $eiMapping) {
+						$that->propertyAccessProxy->setValue($that->entityObj, $eiMapping->getEiSelection()->getLiveObject());
 					}));
 			return;
 		}
 
 		
-		$eiEntry->registerListener(new WrittenMappingListener(
-				function () use ($that, $eiEntry) {
+		$eiMapping->registerListener(new WrittenMappingListener(
+				function () use ($that, $eiMapping) {
 					$targetEntities = $that->propertyAccessProxy->getValue($that->entityObj);
 					if ($targetEntities === null) {
 						$targetEntities = new \ArrayObject();
 					}
-					$targetEntities[] = $eiEntry->getEiObject()->getLiveObject();
+					$targetEntities[] = $eiMapping->getEiSelection()->getLiveObject();
 					$that->propertyAccessProxy->setValue($that->entityObj, $targetEntities);
 				}));
 	}

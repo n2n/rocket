@@ -21,25 +21,25 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\wysiwyg;
 
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class WysiwygLinkConfigAdapter implements WysiwygLinkConfig {
 	
 	/**
-	 * @var \rocket\spec\ei\manage\mapping\EiEntry
+	 * @var \rocket\spec\ei\manage\mapping\EiMapping
 	 */
-	protected $eiEntry;
+	protected $eiMapping;
 	
 	/**
 	 * @var \rocket\spec\ei\manage\gui\Eiu
 	 */
 	protected $eiu;
 	
-	public function setup(EiEntry $eiEntry = null, 
+	public function setup(EiMapping $eiMapping = null, 
 			Eiu $eiu = null){ 
-		$this->eiEntry = $eiEntry;
+		$this->eiMapping = $eiMapping;
 		$this->eiu = $eiu;
 	}
 	

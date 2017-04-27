@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiElement;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
@@ -29,21 +29,21 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 
-class EmbeddedOneToManyGuiField implements GuiField {
+class EmbeddedOneToManyGuiElement implements GuiElement {
 	private $label;
 	private $readOnly;
 	private $mandatory;
-	private $toManyEiField;
+	private $toManyMappable;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+	public function __construct(string $label, ToManyMappable $toManyMappable, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
-		$this->toManyEiField = $toManyEiField;
+		$this->toManyMappable = $toManyMappable;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -63,30 +63,30 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return array('class' => 'rocket-group');
+		return array('class' => 'rocket-control-group');
 	}
 
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetRelationEntries = $this->toManyEiField->getValue();
+		$targetRelationEntries = $this->toManyMappable->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
 		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
 		
 		$detailViews = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
-			$targetEiEntry = null;
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetEiEntry = $targetRelationEntry->getEiEntry();
+			$targetEiMapping = null;
+			if ($targetRelationEntry->hasEiMapping()) {
+				$targetEiMapping = $targetRelationEntry->getEiMapping();
 			} else {
-				$targetEiEntry = $targetEiuFrame->createEiEntry(
-						$targetRelationEntry->getEiObject());
+				$targetEiMapping = $targetEiuFrame->createEiMapping(
+						$targetRelationEntry->getEiSelection());
 			}
 			
-			if ($targetEiEntry->isAccessible()) {
-				$detailViews[] = $targetEiuFrame->createBulkyDetailView($targetEiEntry);
+			if ($targetEiMapping->isAccessible()) {
+				$detailViews[] = $targetEiuFrame->createDetailView($targetEiMapping);
 			} else {
 				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetEiuFrame->createIdentityString($targetEiEntry->getEiObject()));
+						$targetEiuFrame->createIdentityString($targetEiMapping->getEiSelection()));
 			}
 		}
 
@@ -96,13 +96,13 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiField read only.');
+		throw new IllegalStateException('GuiElement read only.');
 	}
 }

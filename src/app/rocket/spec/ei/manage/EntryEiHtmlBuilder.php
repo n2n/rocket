@@ -24,19 +24,17 @@ namespace rocket\spec\ei\manage;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlUtils;
+use rocket\spec\ei\manage\model\EntryModel;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\Displayable;
+use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\web\ui\Raw;
-use n2n\web\ui\CouldNotRenderUiComponentException;
-use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\spec\ei\manage\util\model\EiuFactory;
 
 class EntryEiHtmlBuilder {
 	private $view;
@@ -45,100 +43,62 @@ class EntryEiHtmlBuilder {
 	private $fieldEiHtml;
 	
 	private $guiDefinition;
-	private $eiuFrame;
-	private $eiEntryGuis;
+	private $eiFrame;
+	private $entryUtils;
+	private $entryGuis;
 	private $meta;
 	
-	public function __construct(HtmlView $view, $eiuFrame, array $eiuEntryGuis = null) {
+	public function __construct(HtmlView $view, EiFrame $eiFrame, array $entryGuis) {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->fieldEiHtml = new FieldEiHtmlBuilder($view);
 		
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs($eiuFrame, $view->getN2nContext());
-		
-		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
-		if (empty($eiuEntryGuis) && null !== ($eiuEntryGui = $eiuFactory->getEiuEntryGui(false))) {
-			$eiuEntryGuis = array($eiuEntryGui);
-		}
-		
-		$this->meta = new EntryEiHtmlBuilderMeta((array) $eiuEntryGuis);
+		$this->eiFrame = $eiFrame;
+		$this->entryUtils = new EiuFrame($this->eiFrame);
+		$this->entryGuis = $entryGuis;
+		$this->meta = new EiHtmlBuilderMeta($entryGuis);
 	}
 	
 	public function meta() {
 		return $this->meta;
 	}
 	
-	private function pushGuiPropInfo($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, 
+	private function pushGuiFieldInfo($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, 
 			PropertyPath $propertyPath = null) {
-		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable, 
+		$this->eiFieldInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable, 
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
 	}
 	
-	public function peakEiPropInfo($pop) {
-		if (!sizeof($this->eiPropInfoStack)) {
-			throw new IllegalStateException('No EiProp open');
+	public function peakEiFieldInfo($pop) {
+		if (!sizeof($this->eiFieldInfoStack)) {
+			throw new IllegalStateException('No EiField open');
 		}
 
 		if ($pop) {
-			return array_pop($this->eiPropInfoStack);
+			return array_pop($this->eiFieldInfoStack);
 		} else {
-			return end($this->eiPropInfoStack);
+			return end($this->eiFieldInfoStack);
 		}
 	}
-	
-	private $openEntryTagName = null;
-	
-	public function entryOpen(string $tagName, array $attrs = null) {
-		$this->view->out($this->getEntryOpen($tagName, $attrs));
-	}
-	
-	public function getEntryOpen(string $tagName, array $attrs = null) {
-		$this->openEntryTagName = $tagName;
-		
-		$entryAttrs = array(
-				'class' => 'rocket-entry',
-				'data-rocket-entry-id' => $this->meta()->getCurrentEiuEntryGui()->getEiuEntry()->getGeneralId());
-		
-		return new Raw('<' . htmlspecialchars($tagName) 
-				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, $attrs)) . '>');
-	}
-	
-	public function entryClose() {
-		$this->view->out($this->getEntryClose());
-	}
-	
-	private function ensureEntryOpen() {
-		if ($this->openEntryTagName === null) {
-			throw new CouldNotRenderUiComponentException('No entry opened.');
-		}
-	}
-	
-	public function getEntryClose() {
-		$this->ensureEntryOpen();
-		
-		return new Raw('</' . htmlspecialchars($this->openEntryTagName) . '>');
-	}
-	
 	
 	public function selector(string $containerTagName, array $containerAttrs = null, $content = '') {
 		$this->view->out($this->getSelector($containerTagName, $containerAttrs, $content));
 	}
 	
 	public function getSelector(string $containerTagName, array $containerAttrs = null, $content = ''): UiComponent {
-		$eiObject = $this->meta->getCurrentEiuEntryGui()->getEiuEntry()->getEiObject();
+		$eiSelection = $this->meta->getCurrentEiMapping()->getEiSelection();
 		$draftId = null;
-		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
-			$draftId = $eiObject->getDraft()->getId();
+		if ($eiSelection->isDraft() && !$eiSelection->getDraft()->isNew()) {
+			$draftId = $eiSelection->getDraft()->getId();
 		}
 		
 		return new HtmlElement($containerTagName,
 				HtmlUtils::mergeAttrs(array('class' => 'rocket-entry-selector', 
 						'data-entry-id-rep' => $this->meta()->getCurrentIdRep(),
 						'data-draft-id' => ($draftId !== null ? $draftId : ''),
-						'data-identity-string' => $this->eiuFrame->createIdentityString($this->meta()
-								->getCurrentEiuEntryGui()->getEiuEntry()->getEiObject())), (array) $containerAttrs),
+						'data-identity-string' => $this->entryUtils->createIdentityString($this->meta()
+								->getCurrentEiMapping()->getEiSelection())), (array) $containerAttrs),
 				new HtmlElement('input', array('type' => 'checkbox')));
 	}
 	
@@ -151,23 +111,24 @@ class EntryEiHtmlBuilder {
 	}
 	
 	public function getOpenInputField($tagName, $guiIdPath, array $attrs = null) {
-		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
+		$entryGui = $this->meta->getCurrentEntryGui();
 		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
 		
-		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
-		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
-				$eiEntryGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+		$entryGuiModel = $entryGui->getEntryGuiModel();
+		$eiSelectionGui = $entryGuiModel->getEiSelectionGui();
+		$displayable = $eiSelectionGui->getDisplayableByGuiIdPath($guiIdPath);
+		$fieldErrorInfo = $entryGuiModel->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
+				$eiSelectionGui->getGuiDefinition()->guiIdPathToEiFieldPath($guiIdPath));
 		
-		if (!$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
+		if (!$eiSelectionGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
 					$this->buildAttrs($guiIdPath));
 		}
 		
-		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
-		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
+		$editableInfo = $eiSelectionGui->getEditableWrapperByGuiIdPath($guiIdPath);
+		$propertyPath = $entryGui->getEntryPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
-		$this->pushGuiPropInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
+		$this->pushGuiFieldInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
 		return $this->fieldEiHtml->getOpenInputField($tagName, $propertyPath, $fieldErrorInfo, 
 				$this->buildAttrs($guiIdPath), $editableInfo->isMandatory());
 	}
@@ -177,11 +138,11 @@ class EntryEiHtmlBuilder {
 	}
 	
 	public function getOpenOutputField($tagName, $guiIdPath, array $attrs = null) {
-		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
+		$entryGuiModel = $this->meta->getCurrentEntryGuiModel();
 		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
-		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
-				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+		$displayable = $entryGuiModel->getEiSelectionGui()->getDisplayableByGuiIdPath($guiIdPath);
+		$fieldErrorInfo = $entryGuiModel->getEiMapping()->getMappingErrorInfo()->getFieldErrorInfo(
+				$entryGuiModel->getEiSelectionGui()->getGuiDefinition()->guiIdPathToEiFieldPath($guiIdPath));
 		
 		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
 				$this->buildAttrs($guiIdPath));
@@ -225,58 +186,80 @@ class EntryEiHtmlBuilder {
 	
 	public function getOverallControlList() {
 		$ul = new HtmlElement('ul'/*, array('class' => 'rocket-main-controls')*/);
-		foreach ($this->eiuFrame->getContextEiMask()->createOverallControls($this->eiuFrame, $this->view) as $control) {
+		foreach ($this->eiFrame->getContextEiMask()->createOverallHrefControls($this->eiFrame, $this->view) as $control) {
 			$ul->appendContent(new HtmlElement('li', null, $control->toButton(false)));
 		}
 	
 		return $ul;
 	}
+	
+// 	public function entryGuiControlList($useIcons = false) {
+// 		$this->html->out($this->getEntryGuiControlList($useIcons));
+// 	}
+	
+// 	public function getEntryGuiControlList($useIcons = false) {
+// 		$entryControls = $this->eiFrame->getContextEiMask()->createEntryHrefControls($this->eiFrame, 
+// 				$this->meta->getCurrentEntryGuiModel()->getEiMapping(), $this->view);
+	
+// 		$ulHtmlElement = new HtmlElement('ul', array('class' => ($useIcons ? 'rocket-simple-controls' : null /* 'rocket-main-controls' */)));
+	
+// 		foreach ($entryControls as $control) {
+// 			$liHtmlElement = new HtmlElement('li', null, $control->toButton($useIcons));
+// 			$ulHtmlElement->appendContent($liHtmlElement);
+// 		}
+	
+// 		return $ulHtmlElement;
+// 	}
 }
 
-class EntryEiHtmlBuilderMeta {
-	private $currentEiuEntryGui;
-	private $eiuEntryGuis;
+class EiHtmlBuilderMeta {
+	private $currentEntryGui;
+	private $entryGuis;
 	private $entryPropertyPaths;
 	
-	public function __construct(array $eiuEntryGuis) {
-		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
-		$this->eiuEntryGuis = $eiuEntryGuis;
+	public function __construct(array $entryGuis) {
+		ArgUtils::valArray($entryGuis, EntryGui::class);
+		$this->entryGuis = $entryGuis;
 // 		$this->currentEntryModel = array_shift($this->entryModels);
 	}
 	
 	public function getCurrentIdRep() {
-		return $this->getCurrentEiuEntryGui()->getEiuEntry()->getLiveIdRep();
+		return $this->getCurrentEntryGuiModel()->getEiMapping()->getIdRep();
 	}
 	
 	public function getForkMagPropertyPaths() {
-		return $this->getCurrentEiuEntryGui()->getEiEntryGui()->getForkMagPropertyPaths();
+		return $this->getCurrentEntryGuiModel()->getEiSelectionGui()->getForkMagPropertyPaths();
 	}
 	
-	public function getContextPropertyPath() {
-		if (null !== ($contextPropertyPath = $this->getCurrentEiuEntryGui()->getContextPropertyPath())) {
-			return $contextPropertyPath;
-		}
-		
-		return new PropertyPath(array());
-	}
-	
-	/**
-	 * @throws IllegalStateException
-	 * @return EiuEntryGui
-	 */
-	public function getCurrentEiuEntryGui() {
-		if ($this->currentEiuEntryGui === null) {
-			if (empty($this->eiuEntryGuis)) {
-				throw new IllegalStateException('No EiEntryGui selected');
+	public function getCurrentEntryGui(): EntryGui {
+		if ($this->currentEntryGui === null) {
+			if (empty($this->entryGuis)) {
+				throw new IllegalStateException('No EntryGui selected');
 			}
 			$this->next();
 		}
 		
-		return $this->currentEiuEntryGui;
+		return $this->currentEntryGui;
+	}
+	
+	public function getCurrentEiMapping(): EiMapping {
+		return $this->getCurrentEntryGuiModel()->getEiMapping();
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return EntryModel
+	 */
+	public function getCurrentEntryGuiModel(): EntryGuiModel {
+		return $this->getCurrentEntryGui()->getEntryGuiModel();
+	}
+	
+	public function getCurrentEntryPropertyPath() {
+		return $this->getCurrentEntryGui()->getEntryPropertyPath();
 	}
 	
 	public function next() {
-		$this->currentEiuEntryGui = array_shift($this->eiuEntryGuis);
-		return $this->currentEiuEntryGui !== null;
+		$this->currentEntryGui = array_shift($this->entryGuis);
+		return $this->currentEntryGui !== null;
 	}
 }

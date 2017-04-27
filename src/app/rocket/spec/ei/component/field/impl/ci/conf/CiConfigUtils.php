@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\ci\conf;
 
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\field\impl\ci\model\ContentItem;
@@ -43,16 +43,16 @@ class CiConfigUtils {
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	
-	private $ciEiType;
+	private $ciEiSpec;
 	private $allowedContentItemOptions;
 
-	public function __construct(EiType $ciEiType) {
-		$this->ciEiType = $ciEiType;
+	public function __construct(EiSpec $ciEiSpec) {
+		$this->ciEiSpec = $ciEiSpec;
 	}
 
 	public static function createFromN2nContext(N2nContext $n2nContext) {
 		return new CiConfigUtils($n2nContext->lookup(Rocket::class)->getSpecManager()
-				->getEiTypeByClass(ContentItem::getClass()));
+				->getEiSpecByClass(ContentItem::getClass()));
 	}
 
 	public function getAllowedContentItemOptions() {
@@ -61,8 +61,8 @@ class CiConfigUtils {
 		}
 
 		$this->allowedContentItemOptions = array();
-		foreach ($this->ciEiType->getAllSubEiTypes() as $subEiType) {
-			$this->allowedContentItemOptions[$subEiType->getId()] = $subEiType->getEiMaskCollection()
+		foreach ($this->ciEiSpec->getAllSubEiSpecs() as $subEiSpec) {
+			$this->allowedContentItemOptions[$subEiSpec->getId()] = $subEiSpec->getEiMaskCollection()
 					->getOrCreateDefault()->getLabelLstr();
 		}
 

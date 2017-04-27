@@ -34,19 +34,19 @@ class FilterStore implements RequestScoped {
 		$this->em = $em;
 	}
 	
-	public function containsFilterName($eiTypeId, $filterName) {
+	public function containsFilterName($eiSpecId, $filterName) {
 		return OrmUtils::createCountCriteria($this->em, Filter::getClass(), array('name' => $filterName))
 				->fetchSingle();
 	}
 	
-	public function getFiltersById($eiTypeId) {
+	public function getFiltersById($eiSpecId) {
 		return $this->em
-				->createSimpleCriteria(Filter::getClass(), array('eiTypeId' => $eiTypeId))
+				->createSimpleCriteria(Filter::getClass(), array('eiSpecId' => $eiSpecId))
 				->toQuery()->fetchArray();
 	}
 		
 // 	public function getFilterNames(EiFrame $eiFrame) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			return array_keys($this->filterDatas[$scriptId]);
 // 		}	
@@ -54,9 +54,9 @@ class FilterStore implements RequestScoped {
 // 		return array();
 // 	}
 
-	public function createFilter($eiTypeId, $name, FilterData $filterData, array $orderDirections) {
+	public function createFilter($eiSpecId, $name, FilterData $filterData, array $orderDirections) {
 		$filter = new Filter();
-		$filter->setId($eiTypeId);
+		$filter->setId($eiSpecId);
 		$filter->setName($name);
 		$filter->writeFilterData($filterData);
 		$filter->setSortDirections($orderDirections);
@@ -74,7 +74,7 @@ class FilterStore implements RequestScoped {
 	}
 	
 // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
 		
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			unset($this->filterDatas[$scriptId][$filterName]);

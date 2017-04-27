@@ -28,8 +28,8 @@ use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\config\mask\model\GuiSection;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
-use rocket\spec\config\mask\model\DisplayScheme;
-use rocket\spec\ei\manage\gui\DisplayStructure;
+use rocket\spec\config\mask\model\GuiOrder;
+use rocket\spec\config\mask\model\GuiFieldOrder;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\ControlOrder;
@@ -74,7 +74,7 @@ class SpecExtractor {
 			$type = $specAttributes->getEnum(RawDef::SPEC_TYPE_KEY, RawDef::getSpecTypes());
 			
 			if ($type == RawDef::SPEC_TYPE_ENTITY) {
-				return $this->createEiTypeExtraction($id, $specAttributes);
+				return $this->createEiSpecExtraction($id, $specAttributes);
 			} else {
 				return $this->createCustomSpecExtraction($id, $specAttributes);
 			}
@@ -91,13 +91,13 @@ class SpecExtractor {
 		return $extraction;
 	}
 	
-	private function createEiTypeExtraction($id, Attributes $eiTypeAttributes) {
-		$extraction = new EiTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setEntityClassName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY));
-		$extraction->setEiDefExtraction($this->createEiDefExtraction($eiTypeAttributes));
-		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::SPEC_EI_DATA_SOURCE_NAME_KEY, false, null, true));
+	private function createEiSpecExtraction($id, Attributes $eiSpecAttributes) {
+		$extraction = new EiSpecExtraction($id, $this->moduleNamespace);
+		$extraction->setEntityClassName($eiSpecAttributes->getString(RawDef::SPEC_EI_CLASS_KEY));
+		$extraction->setEiDefExtraction($this->createEiDefExtraction($eiSpecAttributes));
+		$extraction->setDataSourceName($eiSpecAttributes->getString(RawDef::SPEC_EI_DATA_SOURCE_NAME_KEY, false, null, true));
 		
-		if (null !== ($nssAttrs = $eiTypeAttributes->getArray(RawDef::SPEC_EI_NESTED_SET_STRATEGY_KEY, false, null))) {
+		if (null !== ($nssAttrs = $eiSpecAttributes->getArray(RawDef::SPEC_EI_NESTED_SET_STRATEGY_KEY, false, null))) {
 			$nssAttributes = new Attributes($nssAttrs);
 			try {
 				$extraction->setNestedSetStrategy(new NestedSetStrategy(
@@ -109,7 +109,7 @@ class SpecExtractor {
 			}
 		}
 		
-		$extraction->setDefaultEiMaskId($eiTypeAttributes->getString(RawDef::SPEC_EI_DEFAULT_MASK_ID, false, null, true));
+		$extraction->setDefaultEiMaskId($eiSpecAttributes->getString(RawDef::SPEC_EI_DEFAULT_MASK_ID, false, null, true));
 	
 		return $extraction;
 	}
@@ -135,11 +135,11 @@ class SpecExtractor {
 	
 	
 		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_FIELDS_KEY, false, array(), 
-				TypeConstraint::createSimple('array')) as $eiPropId => $fieldRawData) {
+				TypeConstraint::createSimple('array')) as $eiFieldId => $fieldRawData) {
 			try {
-				$eiDefExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
+				$eiDefExtraction->addEiFieldExtraction($this->createEiFieldExtraction($eiFieldId, new Attributes($fieldRawData)));
 			} catch (AttributesException $e) {
-				throw $this->createEiComponentException('EiProp ' . $eiPropId, $e);
+				throw $this->createEiComponentException('EiField ' . $eiFieldId, $e);
 			}
 		}
 	
@@ -185,8 +185,8 @@ class SpecExtractor {
 		return $eiDefExtraction;
 	}
 	
-	private function createEiPropExtraction($id, Attributes $attributes)  {
-		$extraction = new EiPropExtraction();
+	private function createEiFieldExtraction($id, Attributes $attributes)  {
+		$extraction = new EiFieldExtraction();
 		$extraction->setId($id);
 		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY));
 		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
@@ -205,8 +205,8 @@ class SpecExtractor {
 	}	
 	
 	
-	private function createSpecCommonEiMaskException($eiTypeId, \Exception $previous) {
-		throw new InvalidSpecConfigurationException('Spec with id \'' . $eiTypeId 
+	private function createSpecCommonEiMaskException($eiSpecId, \Exception $previous) {
+		throw new InvalidSpecConfigurationException('Spec with id \'' . $eiSpecId 
 				. '\' contains invalid CommonEiMask configurations.', 0, $previous);
 	}
 	
@@ -219,14 +219,14 @@ class SpecExtractor {
 		$attributes = new Attributes($this->attributes->getArray(RawDef::COMMON_EI_MASKS_KEY, false));
 		
 		$commonEiMaskGroups = array();
-		foreach ($attributes->getNames() as $eiTypeId) {
+		foreach ($attributes->getNames() as $eiSpecId) {
 			try {
-				$commonEiMasksAttributes = new Attributes($attributes->getArray($eiTypeId, false));
-				$commonEiMaskGroups[$eiTypeId] = $this->createCommonEiMaskExtractions($commonEiMasksAttributes);
+				$commonEiMasksAttributes = new Attributes($attributes->getArray($eiSpecId, false));
+				$commonEiMaskGroups[$eiSpecId] = $this->createCommonEiMaskExtractions($commonEiMasksAttributes);
 			} catch (AttributesException $e) {
-				throw $this->createSpecCommonEiMaskException($eiTypeId, $e);
+				throw $this->createSpecCommonEiMaskException($eiSpecId, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createSpecCommonEiMaskException($eiTypeId, $e);
+				throw $this->createSpecCommonEiMaskException($eiSpecId, $e);
 			}
 		}
 		
@@ -254,18 +254,18 @@ class SpecExtractor {
 		$maskExtraction = new CommonEiMaskExtraction($id, $this->moduleNamespace);
 		
 		$maskExtraction->setEiDefExtraction($this->createEiDefExtraction($attributes));
-		$maskExtraction->setDisplayScheme($this->createDisplayScheme($attributes));	
+		$maskExtraction->setGuiOrder($this->createGuiOrder($attributes));	
 		return $maskExtraction;
 	}
 	
-	private function createDisplayScheme(Attributes $attributes): DisplayScheme {
-		$guiOrder = new DisplayScheme();
+	private function createGuiOrder(Attributes $attributes): GuiOrder {
+		$guiOrder = new GuiOrder();
 		
-		$guiOrder->setOverviewDisplayStructure($this->extractDisplayStructure(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setBulkyDisplayStructure($this->extractDisplayStructure(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setDetailDisplayStructure($this->extractDisplayStructure(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setEditDisplayStructure($this->extractDisplayStructure(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setAddDisplayStructure($this->extractDisplayStructure(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setOverviewGuiFieldOrder($this->extractGuiFieldOrder(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setBulkyGuiFieldOrder($this->extractGuiFieldOrder(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setDetailGuiFieldOrder($this->extractGuiFieldOrder(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setEditGuiFieldOrder($this->extractGuiFieldOrder(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setAddGuiFieldOrder($this->extractGuiFieldOrder(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
 		
 		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_PARTIAL_CONTROL_ORDER_KEY, false))) {
 			$guiOrder->setPartialControlOrder(new ControlOrder($controlIds));
@@ -282,24 +282,24 @@ class SpecExtractor {
 		return $guiOrder;
 	}
 	
-	private function extractDisplayStructure($key, Attributes $attributes) {
+	private function extractGuiFieldOrder($key, Attributes $attributes) {
 		$data = $attributes->getArray($key, false);
 		if (empty($data)) return null;
 		
 		try {
-			return $this->createDisplayStructure($data);
+			return $this->createGuiFieldOrder($data);
 		} catch (AttributesException $e) {
-			throw new InvalidEiMaskConfigurationException('Field contains invalid DisplayStructure configuration: ' 
+			throw new InvalidEiMaskConfigurationException('Field contains invalid GuiFieldOrder configuration: ' 
 					. $key, 0, $e);
 		}
 	}
 	
-	private function createDisplayStructure(array $data) {
-		$displayStructure = new DisplayStructure();
+	private function createGuiFieldOrder(array $data) {
+		$guiFieldOrder = new GuiFieldOrder();
 	
 		foreach ($data as $key => $fieldId) {
 			if (!is_array($fieldId)) {
-				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
+				$guiFieldOrder->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
 				continue;
 			}
 	
@@ -307,14 +307,14 @@ class SpecExtractor {
 			
 			$guiSection = new GuiSection();
 			$guiSection->setType($guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY,
-					GuiSection::getTypes(), false, null, true));
+					GuiSection::getTypes(), false));
 			$guiSection->setTitle($guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY));
-			$guiSection->setDisplayStructure($this->createDisplayStructure($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
+			$guiSection->setGuiFieldOrder($this->createGuiFieldOrder($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
 			
-			$displayStructure->addGuiGroup($guiSection);
+			$guiFieldOrder->addGuiGroup($guiSection);
 		}
 	
-		return $displayStructure;
+		return $guiFieldOrder;
 	}
 	
 	public function extractMenuItems(): array {

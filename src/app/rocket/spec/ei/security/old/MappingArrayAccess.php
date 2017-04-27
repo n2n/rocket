@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\manage\security;
 
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\util\ex\UnsupportedOperationException;
 
 class MappingArrayAccess implements \ArrayAccess {
 	private $mapping;
 	private $testOrgValues;
 	
-	public function __construct(EiEntry $mapping, $testOrgValues) {
+	public function __construct(EiMapping $mapping, $testOrgValues) {
 		$this->mapping = $mapping;
 		$this->testOrgValues = $testOrgValues;
 	}

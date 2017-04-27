@@ -23,11 +23,11 @@ namespace rocket\spec\ei\component\field\impl\adapter;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-class StatelessDisplayElement implements GuiField {
+class StatelessDisplayElement implements GuiElement {
 	private $statelessDisplayable;
 	private $eiu;
 	
@@ -58,14 +58,6 @@ class StatelessDisplayElement implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
-	 */
-	public function getGroupType() {
-		return $this->statelessDisplayable->getGroupType();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view) {
@@ -74,7 +66,7 @@ class StatelessDisplayElement implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::isReadOnly()
+	 * @see \rocket\spec\ei\manage\gui\GuiElement::isReadOnly()
 	 */
 	public function isReadOnly(): bool {
 		return true;

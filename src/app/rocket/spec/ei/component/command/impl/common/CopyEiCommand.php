@@ -44,7 +44,7 @@ class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return $eiu->lookup(CopyController::class);
 	}
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
 		return array();
 	}
 	/* (non-PHPdoc)

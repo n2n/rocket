@@ -44,15 +44,15 @@ class DeleteController extends ControllerAdapter {
 	public function doLive($idRep, ParamQuery $refPath = null, MessageContainer $mc) {
 		$redirectUrl = $this->eiCtrlUtils->buildRefRedirectUrl($this->eiCtrlUtils->parseRefUrl($refPath));
 		
-		$eiObject = null;
+		$eiSelection = null;
 		try {
-			$eiObject = $this->eiCtrlUtils->lookupEiObject($this->utils->idRepToId($idRep));
+			$eiSelection = $this->eiCtrlUtils->lookupEiSelection($this->utils->idRepToId($idRep));
 		} catch (StatusException $e) {
 			$this->redirect($redirectUrl);
 			return;
 		}
 		
-		$vetoableAction = $this->eiCtrlUtils->frame()->remove($eiObject);
+		$vetoableAction = $this->eiCtrlUtils->frame()->remove($eiSelection);
 // 		if ($vetoableAction->hasVetos()) {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}
@@ -61,17 +61,17 @@ class DeleteController extends ControllerAdapter {
 	}
 	
 // 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {
-// 		$eiObject = null;
+// 		$eiSelection = null;
 // 		try {
-// 			$eiObject = $this->utils->createEiObjectFromDraftId($id, $draftId);
+// 			$eiSelection = $this->utils->createEiSelectionFromDraftId($id, $draftId);
 // 		} catch (\InvalidArgumentException $e) {
 // 			throw new PageNotFoundException();
 // 		}
 		
-// 		$this->utils->removeEiObject($eiObject);
+// 		$this->utils->removeEiSelection($eiSelection);
 		
 // 		$eiFrame = $this->utils->getEiFrame();
 // 		$this->redirect($this->utils->getEiFrame()->getDetailUrl(
-// 				$eiObject->toEntryNavPoint($previewtype)->copy(true)));
+// 				$eiSelection->toEntryNavPoint($previewtype)->copy(true)));
 // 	}
 }

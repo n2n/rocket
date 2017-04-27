@@ -21,15 +21,15 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-class MappingListenerAdapter implements EiEntryListener {
+class MappingListenerAdapter implements EiMappingListener {
 
-	public function onValidate(EiEntry $eiEntry) {}
+	public function onValidate(EiMapping $eiMapping) {}
 
-	public function validated(EiEntry $eiEntry) {}
+	public function validated(EiMapping $eiMapping) {}
 
-	public function onWrite(EiEntry $eiEntry) {}
+	public function onWrite(EiMapping $eiMapping) {}
 
-	public function written(EiEntry $eiEntry) {}
+	public function written(EiMapping $eiMapping) {}
 	
-	public function flush(EiEntry $eiEntry) {}
+	public function flush(EiMapping $eiMapping) {}
 }

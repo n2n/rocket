@@ -41,7 +41,7 @@ class EiPrivilegeGrant extends ObjectAdapter {
 	private $id;
 	private $eiGrant;
 	private $eiCommandPrivilegeJson = '[]';
-	private $eiPropPrivilegeJson = '[]';
+	private $eiFieldPrivilegeJson = '[]';
 	private $restricted = false;
 	private $restrictionGroupJson = '[]';
 	
@@ -81,12 +81,12 @@ class EiPrivilegeGrant extends ObjectAdapter {
 		return false;
 	}
 
-	public function readEiPropPrivilegeAttributes(): Attributes {
-		return new Attributes(StringUtils::jsonDecode($this->eiPropPrivilegeJson, true));
+	public function readEiFieldPrivilegeAttributes(): Attributes {
+		return new Attributes(StringUtils::jsonDecode($this->eiFieldPrivilegeJson, true));
 	}
 	
-	public function writeEiPropPrivilegeAttributes(Attributes $accessAttributes) {
-		$this->eiPropPrivilegeJson = StringUtils::jsonEncode($accessAttributes->toArray());
+	public function writeEiFieldPrivilegeAttributes(Attributes $accessAttributes) {
+		$this->eiFieldPrivilegeJson = StringUtils::jsonEncode($accessAttributes->toArray());
 	}
 	
 	public function isRestricted(): bool {

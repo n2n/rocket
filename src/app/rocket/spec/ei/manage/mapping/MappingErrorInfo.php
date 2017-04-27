@@ -21,35 +21,35 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 
 class MappingErrorInfo {
-	private $eiFieldErrorInfos;
+	private $mappableErrorInfos;
 	
 	public function isValid(bool $checkRecurisve = true): bool {
-		 foreach ($this->eiFieldErrorInfos as $eiFieldErrorInfo) {
-		 	if (!$eiFieldErrorInfo->isValid()) return false;
+		 foreach ($this->mappableErrorInfos as $mappableErrorInfo) {
+		 	if (!$mappableErrorInfo->isValid()) return false;
 		 }
 		 
 		 return true;
 	}
 	
-	public function getFieldErrorInfo(EiPropPath $eiPropPath): FieldErrorInfo {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->eiFieldErrorInfos[$eiPropPathStr])) {
-			$this->eiFieldErrorInfos[$eiPropPathStr] = new FieldErrorInfo();
+	public function getFieldErrorInfo(EiFieldPath $eiFieldPath): FieldErrorInfo {
+		$eiFieldPathStr = (string) $eiFieldPath;
+		if (!isset($this->mappableErrorInfos[$eiFieldPathStr])) {
+			$this->mappableErrorInfos[$eiFieldPathStr] = new FieldErrorInfo();
 		}
-		return $this->eiFieldErrorInfos[$eiPropPathStr];
+		return $this->mappableErrorInfos[$eiFieldPathStr];
 	}
 
 	public function getFieldErrorInfos() {
-		return $this->eiFieldErrorInfos;
+		return $this->mappableErrorInfos;
 	}
 
 	public function getMessages() {
 		$messages = array();
-		foreach ($this->eiFieldErrorInfos as $eiFieldErrorInfo) {
-			$messages = array_merge($messages, $eiFieldErrorInfo->getMessages());
+		foreach ($this->mappableErrorInfos as $mappableErrorInfo) {
+			$messages = array_merge($messages, $mappableErrorInfo->getMessages());
 		}
 		return $messages;
 	}

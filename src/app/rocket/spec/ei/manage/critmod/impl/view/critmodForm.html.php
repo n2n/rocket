@@ -43,47 +43,46 @@
 			
 		<div class="rocket-critmod-save-select">
 			<?php $formHtml->label('selectedCritmodSaveId', $view->getL10nText('ei_impl_select_filter_label')) ?>
-			<?php $formHtml->select('selectedCritmodSaveId', $critmodForm->getSelectedCritmodSaveIdOptions(), array('class' => 'form-control')) ?>
-			<?php $formHtml->inputSubmit('select', 'Select', array('class' => 'btn btn-secondary rocket-critmod-select')) ?>
+			<?php $formHtml->select('selectedCritmodSaveId', $critmodForm->getSelectedCritmodSaveIdOptions()) ?>
 		</div>
-		<div class="rocket-critmod-configuration row">
-			<div class="rocket-filter-container col-sm-8">
+		<div class="rocket-critmod-configuration">
+			<fieldset class="rocket-filter-container">
 				<h4><?php $html->l10nText('ei_impl_filter_title') ?></h4>
 				<?php $view->import('~\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
 						array('propertyPath' => $formHtml->meta()->createPropertyPath('filterGroupForm'),
 								'filterAjahHook' => $filterAjahHook)) ?>
-			</div>
-			<div class="rocket-sort-container col-sm-4">
+			</fieldset>
+			<fieldset class="rocket-sort-container">
 				<h4><?php $html->l10nText('ei_impl_sort_title') ?></h4>
 				<?php $view->import('~\spec\ei\manage\critmod\sort\impl\view\sortForm.html', 
 						array('propertyPath' => $formHtml->meta()->createPropertyPath('sortForm'))) ?>
-			</div>
-			<div  class="rocket-form-actions col-sm-12">
-				<ul class="rocket-critmod-commands nav">
-					<li class="nav-item">
+			</fieldset>
+			<div  class="rocket-form-actions clearfix">
+				<ul class="rocket-critmod-commands">
+					<li>
 						<?php $formHtml->inputSubmit('apply', $view->getL10nText('common_apply_label'),
-								array('class' => 'btn btn-secondary rocket-important rocket-critmod-submit-apply')) ?>
+								array('class' => 'rocket-control-warning rocket-important rocket-critmod-submit-apply')) ?>
 					</li>
-					<li class="nav-item">
+					<li>
 						<?php $formHtml->inputSubmit('clear', $view->getL10nText('common_clear_label'),
-								array('class' => 'btn btn-secondary rocket-critmod-submit-clear')) ?>
+								array('class' => 'rocket-control rocket-critmod-submit-clear')) ?>
 					</li>
-					<li class="nav-item">
+					<li>
 						<?php $formHtml->inputSubmit('save', $view->getL10nText('common_save_label'),
-								array('class' => 'btn btn-secondary rocket-critmod-submit-save')) ?>
+								array('class' => 'rocket-control-warning rocket-critmod-submit-save')) ?>
 					</li>
-					<li class="nav-item rocket-textable-control">
+					<li class="rocket-textable-control">
 						<?php $formHtml->inputSubmit('saveAs', $view->getL10nText('common_save_as_label'), 
-								array('class' => 'btn btn-secondary', 'data-after-label' => $view->getL10nText('common_save_as_label'))) ?>
-						<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'form-control')) ?>
+								array('data-after-label' => $view->getL10nText('common_save_as_label'))) ?>
+						<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'rocket-control-warning')) ?>
 					</li>
-					<li class="nav-item">
+					<li>
 						<?php $formHtml->inputSubmit('delete', $view->getL10nText('common_delete_label'),
-								array('class' => 'btn btn-secondary-danger rocket-critmod-submit-delete')) ?>
+								array('class' => 'rocket-control-danger rocket-critmod-submit-delete')) ?>
 					</li>
 				</ul>
 			</div>
-			
+			<?php $formHtml->inputSubmit('select', 'Select', array('class' => 'rocket-critmod-select')) ?>
 		</div>
 	<?php $formHtml->close() ?>
 </div>

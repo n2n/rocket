@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\command\impl\common\model;
 
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 interface EntryCommandModel {
 	
 	public function getEiMask(): EiMask;
 	
-	public function getEiEntry(): EiEntry;
+	public function getEiMapping(): EiMapping;
 }

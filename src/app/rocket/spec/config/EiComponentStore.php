@@ -26,14 +26,14 @@ use n2n\core\TypeNotFoundException;
 use rocket\spec\config\source\ModularConfigSource;
 
 class EiComponentStore {
-	const EI_FIELD_CLASSES_KEY = 'eiPropClasses';
+	const EI_FIELD_CLASSES_KEY = 'eiFieldClasses';
 	const EI_COMMAND_CLASSES_KEY = 'eiCommandClasses';
 	const EI_COMMAND_GROUPS_KEY = 'eiCommandGroups';
 	const EI_MODIFICATOR_CLASSES_KEY = 'eiModificatorClasses';
 	
 	private $eiComponentConfigSource;
-	private $eiPropClasses = array();
-	private $eiPropClassesByModule = array();
+	private $eiFieldClasses = array();
+	private $eiFieldClassesByModule = array();
 	private $eiCommandClasses = array();
 	private $eiCommandClassesByModule = array();
 	private $eiCommandGroups = array();
@@ -61,17 +61,17 @@ class EiComponentStore {
 	}
 	
 	private function analyzeModuleRawData(string $moduleNamespace, array $moduleRawData) {		
-		// EiProps
-		$this->eiPropClassesByModule[$moduleNamespace] = array();
+		// EiFields
+		$this->eiFieldClassesByModule[$moduleNamespace] = array();
 		foreach ($this->extractElementArray(self::EI_FIELD_CLASSES_KEY, $moduleRawData) 
-				as $key => $eiPropClassName) {
+				as $key => $eiFieldClassName) {
 			try {
-				$fieldClass = ReflectionUtils::createReflectionClass($eiPropClassName);
-				if (!$fieldClass->implementsInterface('rocket\spec\ei\component\field\EiProp')
+				$fieldClass = ReflectionUtils::createReflectionClass($eiFieldClassName);
+				if (!$fieldClass->implementsInterface('rocket\spec\ei\component\field\EiField')
 						|| !$fieldClass->implementsInterface('rocket\spec\ei\component\IndependentEiComponent')) continue;
 				
-				$this->eiPropClasses[$eiPropClassName] = $fieldClass;
-				$this->eiPropClassesByModule[$moduleNamespace][$eiPropClassName] = $fieldClass;
+				$this->eiFieldClasses[$eiFieldClassName] = $fieldClass;
+				$this->eiFieldClassesByModule[$moduleNamespace][$eiFieldClassName] = $fieldClass;
 			} catch (TypeNotFoundException $e) { }
 		}
 		
@@ -125,33 +125,33 @@ class EiComponentStore {
 	/**
 	 * @return \ReflectionClass[]
 	 */
-	public function getEiPropClasses(): array {
-		return $this->eiPropClasses;
+	public function getEiFieldClasses(): array {
+		return $this->eiFieldClasses;
 	}
 	
-	public function getEiPropClassesByModuleNamespace(string $moduleNamespace): array {
-		if (isset($this->eiPropClassesByModule[$moduleNamespace])) {
-			return $this->eiPropClassesByModule[$moduleNamespace];
+	public function getEiFieldClassesByModuleNamespace(string $moduleNamespace): array {
+		if (isset($this->eiFieldClassesByModule[$moduleNamespace])) {
+			return $this->eiFieldClassesByModule[$moduleNamespace];
 		}
 		
 		return array();
 	}
 	
-	public function removeEiPropClassesByModuleNamespace(string $moduleNamespace) {
-		if (!isset($this->eiPropClassesByModule[$moduleNamespace])) return;
-		foreach ($this->eiPropClassesByModule[$moduleNamespace] as $eiPropClass) {
-			unset($this->eiPropClasses[$eiPropClass->getName()]);
+	public function removeEiFieldClassesByModuleNamespace(string $moduleNamespace) {
+		if (!isset($this->eiFieldClassesByModule[$moduleNamespace])) return;
+		foreach ($this->eiFieldClassesByModule[$moduleNamespace] as $eiFieldClass) {
+			unset($this->eiFieldClasses[$eiFieldClass->getName()]);
 		}
-		$this->eiPropClassesByModule[$moduleNamespace] = array();
+		$this->eiFieldClassesByModule[$moduleNamespace] = array();
 	}
 	
-	public function addEiPropClass($moduleNamespace, \ReflectionClass $eiPropClass) {
-		if (!isset($this->eiPropClassesByModule[$moduleNamespace])) {
-			$this->eiPropClassesByModule[$moduleNamespace] = array();
+	public function addEiFieldClass($moduleNamespace, \ReflectionClass $eiFieldClass) {
+		if (!isset($this->eiFieldClassesByModule[$moduleNamespace])) {
+			$this->eiFieldClassesByModule[$moduleNamespace] = array();
 		}
-		$className = $eiPropClass->getName();
-		$this->eiPropClasses[$className] = $eiPropClass;
-		$this->eiPropClassesByModule[$moduleNamespace][$className] = $eiPropClass;
+		$className = $eiFieldClass->getName();
+		$this->eiFieldClasses[$className] = $eiFieldClass;
+		$this->eiFieldClassesByModule[$moduleNamespace][$className] = $eiFieldClass;
 	}
 	
 	public function getEiCommandClasses() {
@@ -252,7 +252,7 @@ class EiComponentStore {
 		}
 		
 		$moduleNamespaces = array_unique(array_merge(
-				array_keys($this->eiPropClasses), array_keys($this->eiPropClassesByModule), 
+				array_keys($this->eiFieldClasses), array_keys($this->eiFieldClassesByModule), 
 				array_keys($this->eiCommandClasses), array_keys($this->eiCommandClassesByModule), 
 				array_keys($this->eiCommandGroups), array_keys($this->eiCommandGroupsByModule), 
 				array_keys($this->eiModificatorClasses), array_keys($this->eiModificatorClassesByModule)));
@@ -266,11 +266,11 @@ class EiComponentStore {
 		$write = false;
 		$moduleRawData = array();
 		
-		if (isset($this->eiPropClassesByModule[$moduleNamespace])) {
+		if (isset($this->eiFieldClassesByModule[$moduleNamespace])) {
 			$write = true;
 			$moduleRawData[self::EI_FIELD_CLASSES_KEY] = array();
-			foreach ($this->eiPropClassesByModule[$moduleNamespace] as $eiPropClass) {
-				$moduleRawData[self::EI_FIELD_CLASSES_KEY][] = $eiPropClass->getName();
+			foreach ($this->eiFieldClassesByModule[$moduleNamespace] as $eiFieldClass) {
+				$moduleRawData[self::EI_FIELD_CLASSES_KEY][] = $eiFieldClass->getName();
 			} 
 		}
 		

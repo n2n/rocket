@@ -25,20 +25,20 @@ use rocket\spec\config\mask\CommonEiMask;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use n2n\io\IoUtils;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\config\mask\model\GuiOrder;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\mask\EiMaskCollection;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 
 class EiMaskCollection implements \IteratorAggregate, \Countable {
-	private $eiType;
+	private $eiSpec;
 	private $eiMasks = array();
 	private $commonEiMasks = array();
 	private $defaultId;
 	private $createdDefault = null;
 	
-	public function __construct(EiType $eiType) {
-		$this->eiType = $eiType;
+	public function __construct(EiSpec $eiSpec) {
+		$this->eiSpec = $eiSpec;
 	}
 	
 	public function add(EiMask $eiMask) {
@@ -75,7 +75,7 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 		}
 	
 		throw new UnknownEiMaskException('No EiMask with id \'' . (string) $id
-				. '\' found in  \'' . $this->eiType->getId() . '\'.');
+				. '\' found in  \'' . $this->eiSpec->getId() . '\'.');
 	}
 	
 	public function setDefaultId($defaultId) {
@@ -96,8 +96,8 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 		}
 	
 		if ($this->createdDefault === null) {
-			$this->createdDefault = new CommonEiMask($this->eiType, $this->eiType->getModuleNamespace(), 
-					new DisplayScheme());
+			$this->createdDefault = new CommonEiMask($this->eiSpec, $this->eiSpec->getModuleNamespace(), 
+					new GuiOrder());
 		}
 	
 		return $this->createdDefault;

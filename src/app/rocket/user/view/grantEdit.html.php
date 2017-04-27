@@ -72,11 +72,11 @@
 										</ul>
 									</div>
 									
-									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiPropPrivilegeMagFormAvailable()): ?>
+									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiFieldPrivilegeMagFormAvailable()): ?>
 										<div>
 											<label><?php $html->l10nText('user_group_access_config_label')?></label>
 											<?php $view->out('<ul class="rocket-controls">') ?>
-												<?php $formHtml->meta()->objectProps('eiPropPrivilegeMagForm', function() use ($formHtml) { ?>
+												<?php $formHtml->meta()->objectProps('eiFieldPrivilegeMagForm', function() use ($formHtml) { ?>
 													<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
 														<?php $formHtml->magLabel() ?>
 														<div class="rocket-controls">
@@ -113,9 +113,13 @@
 			</div>
 		</div>
 	</div>
-	<div class="rocket-context-commands">	
-		<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
-						. $html->getL10nText('common_save_label') . '</span>'),
-				array('class' => 'btn btn-primary')) ?>
+	<div id="rocket-page-controls">	
+		<ul>
+			<li>
+				<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
+								. $html->getL10nText('common_save_label') . '</span>'),
+						array('class' => 'rocket-control-warning rocket-important')) ?>
+			</li>
+		</ul>
 	</div>
 <?php $formHtml->close() ?>

@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\component\field\impl\l10n\conf;
 
-use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\field\impl\l10n\N2nLocaleEiProp;
+use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
+use rocket\spec\ei\component\field\impl\l10n\N2nLocaleEiField;
 use n2n\web\dispatch\option\impl\model\BoolMag;
 use n2n\web\dispatch\option\impl\model\StringArrayMag;
 use rocket\spec\ei\component\EiSetupProcess;
@@ -30,27 +30,27 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\modificator\impl\l10n\N2nLocaleEiModificator;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 
-class N2nLocaleEiPropConfigurator extends AdaptableEiPropConfigurator {
+class N2nLocaleEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	
 	const OPTION_TAKE_LOCALES_FROM_CONFIG_KEY = 'takeN2nLocalesFromConfig';
 	const OPTION_CUSTOM_LOCALE_ALIAS_KEY = 'customN2nLocaleAlias';
 	
-	public function __construct(N2nLocaleEiProp $n2nLocaleEiProp) {
-		parent::__construct($n2nLocaleEiProp);
+	public function __construct(N2nLocaleEiField $n2nLocaleEiField) {
+		parent::__construct($n2nLocaleEiField);
 		
-		$this->autoRegister($n2nLocaleEiProp);
+		$this->autoRegister($n2nLocaleEiField);
 	}
 	
 	public function setup(EiSetupProcess $setupProcess) {
 		parent::setup($setupProcess);
 		
-		$n2nLocaleEiProp = $this->eiComponent;
-		IllegalStateException::assertTrue($n2nLocaleEiProp instanceof N2nLocaleEiProp);
+		$n2nLocaleEiField = $this->eiComponent;
+		IllegalStateException::assertTrue($n2nLocaleEiField instanceof N2nLocaleEiField);
 		
 		$takeN2nLocalesFromConfig = $this->attributes->get(self::OPTION_TAKE_LOCALES_FROM_CONFIG_KEY, false, true);
 		
 		if ($takeN2nLocalesFromConfig) {
-			$n2nLocaleEiProp->setN2nLocales($setupProcess->getN2nContext()->getContextN2nLocales());
+			$n2nLocaleEiField->setN2nLocales($setupProcess->getN2nContext()->getContextN2nLocales());
 		} else {
 			$customN2nLocales = array();
 			foreach ($this->attributes->get(self::OPTION_CUSTOM_LOCALE_ALIAS_KEY,
@@ -58,14 +58,14 @@ class N2nLocaleEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$customN2nLocales[$n2nLocaleAlias] = $setupProcess->getN2nContext()
 						->getContextN2nLocaleByAlias($n2nLocaleAlias);
 			}
-			$n2nLocaleEiProp->setN2nLocales($customN2nLocales);
+			$n2nLocaleEiField->setN2nLocales($customN2nLocales);
 		}
 		
-		if ($n2nLocaleEiProp->isMultiLingual()) return;
+		if ($n2nLocaleEiField->isMultiLingual()) return;
 		
 		$setupProcess->getEiDef()->getEiModificatorCollection()
 				->add(new N2nLocaleEiModificator($this));
-		$n2nLocaleEiProp->getDisplayDefinition()
+		$n2nLocaleEiField->getDisplayDefinition()
 				->setDefaultDisplayedViewModes(DisplayDefinition::NO_VIEW_MODES);
 	}
 	

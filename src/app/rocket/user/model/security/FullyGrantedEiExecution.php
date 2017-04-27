@@ -25,9 +25,9 @@ use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\component\command\EiCommand;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\security\EiPropAccess;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\security\EiFieldAccess;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 class FullyGrantedEiExecution implements EiExecution {
 	private $commandPath;
@@ -67,9 +67,9 @@ class FullyGrantedEiExecution implements EiExecution {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiEntryConstraint()
+	 * @see \rocket\spec\ei\security\EiExecution::getEiMappingConstraint()
 	 */
-	public function getEiEntryConstraint() {
+	public function getEiMappingConstraint() {
 		return null;
 	}
 
@@ -90,13 +90,13 @@ class FullyGrantedEiExecution implements EiExecution {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::createEiPropAccess($eiPropPath)
+	 * @see \rocket\spec\ei\security\EiExecution::createEiFieldAccess($eiFieldPath)
 	 */
-	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess {
-		return new FullEiPropAccess();
+	public function createEiFieldAccess(EiFieldPath $eiFieldPath): EiFieldAccess {
+		return new FullEiFieldAccess();
 	}
 	
-	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry) {
+	public function buildEiCommandAccessRestrictor(EiMapping $eiMapping) {
 		return null;
 	}
 

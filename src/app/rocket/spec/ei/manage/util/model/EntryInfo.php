@@ -21,21 +21,21 @@
 //  */
 // namespace rocket\spec\ei\manage\util\model;
 
-// use rocket\spec\ei\manage\mapping\EiEntry;
-// use rocket\spec\ei\manage\gui\EiEntryGui;
+// use rocket\spec\ei\manage\mapping\EiMapping;
+// use rocket\spec\ei\manage\gui\EiSelectionGui;
 // use rocket\spec\ei\manage\model\EntryModel;
 // use rocket\spec\ei\mask\EiMask;
 
 // class EntryInfo implements EntryModel {
 // 	private $eiMask;
-// 	private $eiEntryGui;
-// 	private $eiEntry;
+// 	private $eiSelectionGui;
+// 	private $eiMapping;
 	
-// 	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,
-// 			EiEntry $eiEntry) {
+// 	public function __construct(EiMask $eiMask, EiSelectionGui $eiSelectionGui,
+// 			EiMapping $eiMapping) {
 // 		$this->eiMask = $eiMask;
-// 		$this->eiEntryGui = $eiEntryGui;
-// 		$this->eiEntry = $eiEntry;
+// 		$this->eiSelectionGui = $eiSelectionGui;
+// 		$this->eiMapping = $eiMapping;
 // 	}
 // 	/* (non-PHPdoc)
 // 	 * @see \rocket\spec\ei\manage\model\ManageModel::getGuiDefinition()
@@ -44,14 +44,14 @@
 // 		return $this->eiMask;
 // 	}
 	
-// 	public function getEiEntryGui() {
-// 		return $this->eiEntryGui;
+// 	public function getEiSelectionGui() {
+// 		return $this->eiSelectionGui;
 // 	}
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntry()
+// 	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiMapping()
 // 	 */
-// 	public function getEiEntry() {
-// 		return $this->eiEntry;
+// 	public function getEiMapping() {
+// 		return $this->eiMapping;
 // 	}
 	
 // // 	public function hasListEntryModel() {

@@ -21,52 +21,52 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 
 class RelationEntry {
-	private $eiObject;
-	private $eiEntry;
+	private $eiSelection;
+	private $eiMapping;
 
-	private function __construct(EiObject $eiObject, EiEntry $eiEntry = null) {
-		$this->eiObject = $eiObject;
-		$this->eiEntry = $eiEntry;
+	private function __construct(EiSelection $eiSelection, EiMapping $eiMapping = null) {
+		$this->eiSelection = $eiSelection;
+		$this->eiMapping = $eiMapping;
 	}
 
 	public function isNew(): bool {
-		return !$this->eiObject->getEiEntityObj()->isPersistent();
+		return !$this->eiSelection->getLiveEntry()->isPersistent();
 	}
 	
 	public function getId() {
-		return $this->eiObject->getEiEntityObj()->getId();
+		return $this->eiSelection->getLiveEntry()->getId();
 	}
 	
-	public function getEiObject(): EiObject {
-		return $this->eiObject;
+	public function getEiSelection(): EiSelection {
+		return $this->eiSelection;
 	}
 	
-	public function hasEiEntry(): bool {
-		return $this->eiEntry !== null;
+	public function hasEiMapping(): bool {
+		return $this->eiMapping !== null;
 	}
 
-	public function getEiEntry() {
-		return $this->eiEntry;
+	public function getEiMapping() {
+		return $this->eiMapping;
 	}
 	
-	public function toEiEntry(EiuFrame $utils): EiEntry {
-		if ($this->eiEntry !== null) {
-			return $this->eiEntry;
+	public function toEiMapping(EiuFrame $utils): EiMapping {
+		if ($this->eiMapping !== null) {
+			return $this->eiMapping;
 		}
 		
-		return $utils->createEiEntry($this->eiObject);
+		return $utils->createEiMapping($this->eiSelection);
 	}
 	
-	public static function from(EiObject $eiObject): RelationEntry {
-		return new RelationEntry($eiObject, null);
+	public static function from(EiSelection $eiSelection): RelationEntry {
+		return new RelationEntry($eiSelection, null);
 	}
 	
-	public static function fromM(EiEntry $eiEntry): RelationEntry {
-		return new RelationEntry($eiEntry->getEiObject(), $eiEntry);
+	public static function fromM(EiMapping $eiMapping): RelationEntry {
+		return new RelationEntry($eiMapping->getEiSelection(), $eiMapping);
 	}
 }

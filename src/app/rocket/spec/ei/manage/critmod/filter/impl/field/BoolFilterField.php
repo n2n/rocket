@@ -34,15 +34,15 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
-use rocket\spec\ei\manage\mapping\EiFieldConstraint;
-use rocket\spec\ei\manage\mapping\EiField;
+use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
+use rocket\spec\ei\manage\mapping\MappableConstraint;
+use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 
-class BoolFilterField implements EiEntryFilterField {
+class BoolFilterField implements EiMappingFilterField {
 	const ATTR_VALUE_KEY = 'value';
 	const ATTR_VALUE_DEFAULT = false;
 	
@@ -80,14 +80,14 @@ class BoolFilterField implements EiEntryFilterField {
 				CrIt::c($this->readValue($attributes)));
 	}
 	
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
-		return new BoolEiFieldConstraint($this->labelLstr, $this->readValue($attributes)); 
+	public function createMappableConstraint(Attributes $attributes): MappableConstraint {
+		return new BoolMappableConstraint($this->labelLstr, $this->readValue($attributes)); 
 	}
 }
 
 
 
-class BoolEiFieldConstraint implements EiFieldConstraint {
+class BoolMappableConstraint implements MappableConstraint {
 	private $labelLstr;
 	private $acceptedValue;
 
@@ -97,7 +97,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiFieldConstraint::acceptsValue($value)
+	 * @see \rocket\spec\ei\manage\mapping\MappableConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value): bool {
 		return $this->acceptedValue === $value;
@@ -105,18 +105,18 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiFieldConstraint::check($eiField)
+	 * @see \rocket\spec\ei\manage\mapping\MappableConstraint::check($mappable)
 	 */
-	public function check(EiField $eiField): bool {
-		return $this->acceptsValue($eiField->getValue()); 
+	public function check(Mappable $mappable): bool {
+		return $this->acceptsValue($mappable->getValue()); 
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\spec\ei\manage\mapping\MappableConstraint::validate($mappable, $fieldErrorInfo)
 	 */
-	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
-		if ($this->check($eiField)) return;
+	public function validate(Mappable $mappable, FieldErrorInfo $fieldErrorInfo) {
+		if ($this->check($mappable)) return;
 
 		$fieldErrorInfo->addError(new MessageCode('ei_impl_bool_field_must_be_selected_err', 
 				array('field' => $this->labelLstr)));

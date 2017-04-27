@@ -21,32 +21,32 @@
  */
 namespace rocket\spec\ei\component\field\impl\ci\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyMappable;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
+use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
 use n2n\web\ui\Raw;
 
-class ContentItemGuiField implements GuiField {
+class ContentItemGuiElement implements GuiElement {
 	private $label;
 	private $panelConfigs;
 	private $mandatory;
-	private $toManyEiField;
+	private $toManyMappable;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+	public function __construct(string $label, array $panelConfigs, ToManyMappable $toManyMappable, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->panelConfigs = $panelConfigs;
-		$this->toManyEiField = $toManyEiField;
+		$this->toManyMappable = $toManyMappable;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
@@ -73,33 +73,33 @@ class ContentItemGuiField implements GuiField {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return array('class' => 'rocket-group');
+		return array('class' => 'rocket-control-group');
 	}
 
 	public function createOutputUiComponent(HtmlView $view) {
 		$targetUtils = new EiuFrame($this->targetEiFrame);
-		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
+		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
 		
 		$groupedUiComponents = array();
-		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEiEntry = null;
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetEiEntry = $targetRelationEntry->getEiEntry();
+		foreach ($this->toManyMappable->getValue() as $targetRelationEntry) {
+			$targetEiMapping = null;
+			if ($targetRelationEntry->hasEiMapping()) {
+				$targetEiMapping = $targetRelationEntry->getEiMapping();
 			} else {
-				$targetEiEntry = $targetUtils->createEiEntry(
-						$targetRelationEntry->getEiObject());
+				$targetEiMapping = $targetUtils->createEiMapping(
+						$targetRelationEntry->getEiSelection());
 			}
 			
-			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
+			$panelName = (string) $targetEiMapping->getValue($panelEiFieldPath, true);
 			if (!isset($groupedUiComponents[$panelName])) {
 				$groupedUiComponents[$panelName] = array();
 			}
 			
-			if ($targetEiEntry->isAccessible()) {
-				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiEntry);
+			if ($targetEiMapping->isAccessible()) {
+				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiMapping);
 			} else {
 				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
+						$targetUtils->createIdentityString($targetEiMapping->getEiSelection()));
 			}
 		}
 		
@@ -109,13 +109,13 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiElement::createEditable()
 	 */
 	public function getEditable(): Editable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
 		
-		throw new IllegalStateException('GuiField read only.');
+		throw new IllegalStateException('GuiElement read only.');
 	}
 }

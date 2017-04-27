@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\ei\component\field\impl\translation\conf;
 
-use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
+use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\l10n\N2nLocale;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use rocket\spec\ei\component\UnknownEiComponentException;
-use rocket\spec\ei\component\field\impl\translation\TranslationEiProp;
+use rocket\spec\ei\component\field\impl\translation\TranslationEiField;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
@@ -45,7 +45,7 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\config\WebConfig;
 
-class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
+class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
 	const ATTR_SYSTEM_LOCALE_DEFS_KEY = 'systenN2nLocaleDefs';
 	const ATTR_CUSTOM_LOCALE_DEFS_KEY = 'customN2nLocaleDefs';
@@ -53,14 +53,14 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_LOCALE_LABEL_KEY = 'label';
 	const ATTR_LOCALE_MANDATORY_KEY = 'mandatory';
 	
-	private $translationEiProp;
+	private $translationEiField;
 	
-	public function __construct(TranslationEiProp $translationEiProp) {
-		parent::__construct($translationEiProp);
+	public function __construct(TranslationEiField $translationEiField) {
+		parent::__construct($translationEiField);
 				
-		$this->autoRegister($translationEiProp);
+		$this->autoRegister($translationEiField);
 		
-		$this->translationEiProp = $translationEiProp;
+		$this->translationEiField = $translationEiField;
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
@@ -191,42 +191,42 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		} 
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
-		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
+		$this->translationEiField->setN2nLocaleDefs($n2nLocaleDefs);
 		
 		// @todo combine with relation eifields
-		$eiPropRelation = $this->translationEiProp->getEiPropRelation();
-		$relationProperty = $eiPropRelation->getRelationEntityProperty();
+		$eiFieldRelation = $this->translationEiField->getEiFieldRelation();
+		$relationProperty = $eiFieldRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$targetEiType = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
+			$targetEiSpec = $eiSetupProcess->getEiSpecByClass($targetEntityClass);
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
 // 				$targetEiMask = $target->getEiMaskCollection()->getById($eiMaskId);
 // 			} else {
-				$targetEiMask = $targetEiType->getEiMaskCollection()->getOrCreateDefault();
+				$targetEiMask = $targetEiSpec->getEiMaskCollection()->getOrCreateDefault();
 // 			}
 
 			$entityProperty = $this->requireEntityProperty();
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
-				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
+				throw $eiSetupProcess->createException('EiField requires an EntityProperty which cascades all: ' 
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 			
 			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
-				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
+				throw $eiSetupProcess->createException('EiField requires an EntityProperty which removes orphans: '
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 
-			$eiPropRelation->init($targetEiType, $targetEiMask);
+			$eiFieldRelation->init($targetEiSpec, $targetEiMask);
 		} catch (UnknownSpecException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiMaskException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiComponentException $e) {
-			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);
+			throw $eiSetupProcess->createException('EiField for Mapped Property required', $e);
 		} catch (InvalidEiComponentConfigurationException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		}

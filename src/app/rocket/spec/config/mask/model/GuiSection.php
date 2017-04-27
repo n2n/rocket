@@ -24,22 +24,19 @@ namespace rocket\spec\config\mask\model;
 use n2n\util\ex\IllegalStateException;
 
 class GuiSection {
-	const SIMPLE = 'simple';
+	const COMMON = null;
 	const MAIN = 'main';
-	const AUTONOMIC = 'autonomic';
+	const ASIDE = 'aside';
 	
-	private $type = self::SIMPLE;
+	private $type;
 	private $title;
-	private $displayStructure;
+	private $guiFieldOrder;
 	
 	public function getType() {
 		return $this->type;
 	}
 
 	public function setType(string $type = null) {
-		if ($type === null) {
-			$this->type = $type;
-		}
 		$this->type = $type;
 	}
 
@@ -51,34 +48,34 @@ class GuiSection {
 		$this->title = $title;
 	}
 
-	public function getDisplayStructure() {
-		if ($this->displayStructure === null) {
+	public function getGuiFieldOrder() {
+		if ($this->guiFieldOrder === null) {
 			test($this->title);
-			throw new IllegalStateException('No DisplayStructure defined.');
+			throw new IllegalStateException('No GuiFieldOrder defined.');
 		}
 		
-		return $this->displayStructure;
+		return $this->guiFieldOrder;
 	}
 
-	public function setDisplayStructure(DisplayStructure $displayStructure) {
-		$this->displayStructure = $displayStructure;
+	public function setGuiFieldOrder(GuiFieldOrder $guiFieldOrder) {
+		$this->guiFieldOrder = $guiFieldOrder;
 	}
 	
-	public function copy(array $displayStructure = null) {
+	public function copy(array $guiFieldOrder = null) {
 		$copy = new GuiSection();
 		$copy->setTitle($this->getTitle());
 		$copy->setType($this->getType());
 		
-		if ($displayStructure !== null) {
-			$copy->setDisplayStructure($displayStructure);
+		if ($guiFieldOrder !== null) {
+			$copy->setGuiFieldOrder($guiFieldOrder);
 		} else {
-			$copy->setDisplayStructure($this->getDisplayStructure());
+			$copy->setGuiFieldOrder($this->getGuiFieldOrder());
 		}
 		
 		return $copy;
 	}
 	
 	public static function getTypes(): array {
-		return array(self::SIMPLE, self::MAIN, self::AUTONOMIC);
+		return array(self::COMMON, self::MAIN, self::ASIDE);
 	}
 }

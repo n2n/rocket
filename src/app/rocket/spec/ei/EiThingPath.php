@@ -22,7 +22,7 @@
 namespace rocket\spec\ei;
 
 use rocket\spec\ei\IdPath;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\field\EiField;
 
 class EiThingPath extends IdPath {
 	/**

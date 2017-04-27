@@ -53,8 +53,8 @@ class DisplayDefinition {
 	/**
 	 * @param int $compatibleViewMode
 	 */
-	public function __construct(int $compatibleViewMode = self::ALL_VIEW_MODES) {
-		$this->compatibleViewModes = $compatibleViewMode;
+	public function __construct($compatibleViewMode = self::ALL_VIEW_MODES) {
+		$this->compatibleViewModes = (int) $compatibleViewMode;
 		$this->defaultDisplayedViewModes = $this->compatibleViewModes;
 	}
 	

@@ -21,5 +21,5 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-// class EiEntryTree {
+// class EiMappingTree {
 // }

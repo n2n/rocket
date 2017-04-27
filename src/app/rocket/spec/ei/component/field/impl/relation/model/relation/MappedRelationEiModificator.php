@@ -23,41 +23,41 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class MappedRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiFrame;
 	private $relationEntry;
-	private $targetEiPropPath;
+	private $targetEiFieldPath;
 	private $sourceMany;
 
-	public function __construct(EiFrame $targetEiFrame, RelationEntry $relationEntry, EiPropPath $targetEiPropPath, bool $sourceMany) {
+	public function __construct(EiFrame $targetEiFrame, RelationEntry $relationEntry, EiFieldPath $targetEiFieldPath, bool $sourceMany) {
 		$this->targetEiFrame = $targetEiFrame;
 		$this->relationEntry = $relationEntry;
-		$this->targetEiPropPath = $targetEiPropPath;
+		$this->targetEiFieldPath = $targetEiFieldPath;
 		$this->sourceMany = (boolean) $sourceMany;
 	}
 	
-	public function setupEiEntry(Eiu $eiu) {
+	public function setupEiMapping(Eiu $eiu) {
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiEntry = $eiu->entry()->getEiEntry();
+		$eiMapping = $eiu->entry()->getEiMapping();
 		
 		if ($this->targetEiFrame !== $eiFrame
-				|| !$eiEntry->getEiObject()->isNew()) return;
+				|| !$eiMapping->getEiSelection()->isNew()) return;
 
 		if (!$this->sourceMany) {
-			$eiEntry->setValue($this->targetEiPropPath, $this->relationEntry);
+			$eiMapping->setValue($this->targetEiFieldPath, $this->relationEntry);
 			return;
 		}
 		
-		$value = $eiEntry->getValue($this->targetEiPropPath);
+		$value = $eiMapping->getValue($this->targetEiFieldPath);
 		if ($value === null) {
 			$value = new \ArrayObject();
 		}
 		$value[] = $this->relationEntry;
-		$eiEntry->setValue($this->targetEiPropPath, $value);
+		$eiMapping->setValue($this->targetEiFieldPath, $value);
 	}
 }

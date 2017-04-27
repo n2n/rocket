@@ -36,7 +36,7 @@ class ListQuickSearchModel implements Dispatchable {
 		$this->eiFrame = $eiFrame;
 		$this->tmpFilterStore = $tmpFilterStore;
 		$this->quickSearchableModel = CritmodFactory::createQuickSearchableModel($eiFrame);
-		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId());
+		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId());
 	}
 	
 	public function isActive() {
@@ -61,11 +61,11 @@ class ListQuickSearchModel implements Dispatchable {
 	private function _validation() { }
 	
 	public function search() {
-		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), $this->searchStr);
+		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), $this->searchStr);
 	}
 	
 	public function clear() {
-		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), null);
+		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId(), null);
 	}
 	
 }

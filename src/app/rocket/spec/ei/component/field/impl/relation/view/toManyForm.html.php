@@ -52,7 +52,7 @@
 		data-move-up-label="<?php $html->text('common_move_up_label') ?>"
 		data-move-down-label="<?php $html->text('common_move_down_label') ?>"
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
-		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>">
+		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiSpecLabels())) ?>">
 	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
 			
 		<div class="rocket-option-array rocket-current">

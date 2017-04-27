@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage;
 
 use n2n\web\http\controller\ControllerContext;
 use n2n\context\RequestScoped;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\user\model\LoginContext;
 use n2n\core\container\N2nContext;
@@ -150,27 +150,27 @@ class ManageState implements RequestScoped {
 	
 	/**
 	 * 
-	 * @param EiType $eiType
+	 * @param EiSpec $eiSpec
 	 * @throws UnsuitableEiFrameException
 	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
-	public function peakEiFrame(EiType $eiType = null): EiFrame {
+	public function peakEiFrame(EiSpec $eiSpec = null): EiFrame {
 		if (!sizeof($this->eiFrames)) {
 			throw new ManageException('No active EiFrames found.');
 		}  
 		
 		end($this->eiFrames);
 		$eiFrame = current($this->eiFrames);
-// 		if (isset($eiType) && !$eiFrame->getContextEiMask()->getEiEngine()->getEiType()->equals($eiType)) {
+// 		if (isset($eiSpec) && !$eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->equals($eiSpec)) {
 // 			throw new UnsuitableEiFrameException(
-// 					'Latest EiFrame is not assigned to passed  (id: ' . $eiType->getId() . ').');
+// 					'Latest EiFrame is not assigned to passed  (id: ' . $eiSpec->getId() . ').');
 // 		}
 
 		return $eiFrame;
 	}
 	
-	public function popEiFrameBy(EiType $eiType) {
-		$this->peakEiFrame($eiType);
+	public function popEiFrameBy(EiSpec $eiSpec) {
+		$this->peakEiFrame($eiSpec);
 		return array_pop($this->eiFrames);
 	}
 	

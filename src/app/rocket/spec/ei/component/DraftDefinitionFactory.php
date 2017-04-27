@@ -21,33 +21,33 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\field\EiFieldCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\component\field\DraftableEiProp;
+use rocket\spec\ei\component\field\DraftableEiField;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\ei\manage\draft\DraftProperty;
 
 class DraftDefinitionFactory {
 	private $entityModel;
-	private $eiPropCollection;
+	private $eiFieldCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EntityModel $entityModel, EiPropCollection $eiPropCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EntityModel $entityModel, EiFieldCollection $eiFieldCollection, EiModificatorCollection $eiModificatorCollection) {
 		$this->entityModel = $entityModel;
-		$this->eiPropCollection = $eiPropCollection;
+		$this->eiFieldCollection = $eiFieldCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 	
 	public function create(string $tableName) {
 		$draftDefinition = new DraftDefinition($tableName, $this->entityModel);
 	
-		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof DraftableEiProp && $eiProp->isDraftable())) continue;
+		foreach ($this->eiFieldCollection as $id => $eiField) {
+			if (!($eiField instanceof DraftableEiField && $eiField->isDraftable())) continue;
 			
-			$draftProperty = $eiProp->getDraftProperty();
-			ArgUtils::valTypeReturn($draftProperty, DraftProperty::class, $eiProp, 'getDraftProperty', true);
+			$draftProperty = $eiField->getDraftProperty();
+			ArgUtils::valTypeReturn($draftProperty, DraftProperty::class, $eiField, 'getDraftProperty', true);
 			
 			if ($draftProperty !== null) {
 				$draftDefinition->putDraftProperty($id, $draftProperty);

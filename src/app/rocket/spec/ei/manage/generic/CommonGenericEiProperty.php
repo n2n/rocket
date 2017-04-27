@@ -25,53 +25,53 @@ use n2n\l10n\Lstr;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\component\field\EiProp;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\EiFieldPath;
 
 class CommonGenericEiProperty implements GenericEiProperty {
-	private $eiProp;
+	private $eiField;
 	private $criteriaProperty;
 	private $entityValueBuilder;
-	private $eiFieldValueBuilder;
+	private $mappableValueBuilder;
 	
-	public function __construct(EiProp $eiProp, CriteriaProperty $criteriaProperty, 
-			\Closure $entityValueBuilder = null, \Closure $eiFieldValueBuilder = null) {
-		$this->eiProp = $eiProp;
+	public function __construct(EiField $eiField, CriteriaProperty $criteriaProperty, 
+			\Closure $entityValueBuilder = null, \Closure $mappableValueBuilder = null) {
+		$this->eiField = $eiField;
 		$this->criteriaProperty = $criteriaProperty;
 		$this->entityValueBuilder = $entityValueBuilder;
-		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
+		$this->mappableValueBuilder = $mappableValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
-		return $this->eiProp->getLabelLstr();
+		return $this->eiField->getLabelLstr();
 	}
 	
-	public function getEiPropPath(): EiPropPath {
-		return EiPropPath::from($this->eiProp);
+	public function getEiFieldPath(): EiFieldPath {
+		return EiFieldPath::from($this->eiField);
 	}
 	
 	public function buildCriteriaItem(CriteriaProperty $alias): CriteriaItem {
 		return CrIt::p($alias, $this->criteriaProperty);
 	}
 	
-	public function buildEntityValue(EiEntry $eiEntry) {
-		return $this->eiFieldValueToEntityValue($eiEntry->getValue($this->eiProp));
+	public function buildEntityValue(EiMapping $eiMapping) {
+		return $this->mappableValueToEntityValue($eiMapping->getValue($this->eiField));
 	}
 	
-	public function eiFieldValueToEntityValue($eiFieldValue) {
+	public function mappableValueToEntityValue($mappableValue) {
 		if ($this->entityValueBuilder === null) {
-			return $eiFieldValue;
+			return $mappableValue;
 		}
 		
-		return $this->entityValueBuilder->__invoke($eiFieldValue);
+		return $this->entityValueBuilder->__invoke($mappableValue);
 	}
 	
-	public function entityValueToEiFieldValue($entityValue) {
-		if ($this->eiFieldValueBuilder === null) {
+	public function entityValueToMappableValue($entityValue) {
+		if ($this->mappableValueBuilder === null) {
 			return $entityValue;
 		}
 		
-		return $this->eiFieldValueBuilder->__invoke($entityValue);
+		return $this->mappableValueBuilder->__invoke($entityValue);
 	}
 }

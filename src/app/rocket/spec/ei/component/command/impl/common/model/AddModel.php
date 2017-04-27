@@ -94,7 +94,7 @@ class AddModel implements Dispatchable  {
 			return;
 		}
 			
-		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEntityModel()->getClass(),
+		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
 				$this->nestedSetStrategy);
 		
 		if ($this->beforeEntityObj !== null) {
@@ -107,42 +107,42 @@ class AddModel implements Dispatchable  {
 	}
 		
 	public function create(MessageContainer $messageContainer) {
-		$eiEntry = $this->entryForm->buildEiEntry();
+		$eiMapping = $this->entryForm->buildEiMapping();
 		
-		if (!$eiEntry->save()) {
+		if (!$eiMapping->save()) {
 			return false;
 		}
 		
 		// @todo think!!!
-		$eiObject = $eiEntry->getEiObject();
+		$eiSelection = $eiMapping->getEiSelection();
 		
-		if (!$eiObject->isDraft()) {
-			$eiEntityObj = $eiObject->getEiEntityObj();
-			$entityObj = $eiEntityObj->getEntityObj();
+		if (!$eiSelection->isDraft()) {
+			$liveEntry = $eiSelection->getLiveEntry();
+			$entityObj = $liveEntry->getEntityObj();
 			$this->persist($entityObj);
 			
-			$eiEntityObj->refreshId();
-			$eiEntityObj->setPersistent(false);
+			$liveEntry->refreshId();
+			$liveEntry->setPersistent(false);
 			
-			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
+			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
-			return $eiObject;
+			return $eiSelection;
 		}
 		
 		IllegalStateException::assertTrue($this->nestedSetStrategy === null);
 		
-		$draft = $eiObject->getDraft();
+		$draft = $eiSelection->getDraft();
 		$draftDefinition = $this->entryForm->getChosenEntryModelForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 				->getDraftDefinition();
 		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
+		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
-		return $eiObject;
+		return $eiSelection;
 	}
 	
 	public function createAndRepeate(MessageContainer $messageContainer) {

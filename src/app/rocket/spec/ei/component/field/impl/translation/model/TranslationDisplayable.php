@@ -23,11 +23,11 @@ namespace rocket\spec\ei\component\field\impl\translation\model;
 
 use rocket\spec\ei\manage\gui\Displayable;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiElement;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 
-class TranslationDisplayable implements GuiField {
+class TranslationDisplayable implements GuiElement {
 	private $label;
 	private $MagForm;
 	private $translatedDisplayables = array();
@@ -75,7 +75,7 @@ class TranslationDisplayable implements GuiField {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::getEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiElement::getEditable()
 	 */
 	public function getEditable(): Editable {
 		throw new IllegalStateException();

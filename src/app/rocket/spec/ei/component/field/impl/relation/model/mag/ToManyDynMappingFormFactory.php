@@ -22,13 +22,13 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ToManyDynMappingFormFactory {
 	private $utils;
-	private $inaccessibleCurrentEiObject;
-	private $currentEiEntry;
+	private $inaccessibleCurrentEiSelection;
+	private $currentEiMapping;
 	private $currentMappingForms = array();
 	private $newMappingFormAvailable;
 	private $newMappingForms = array();
@@ -40,33 +40,33 @@ class ToManyDynMappingFormFactory {
 		$this->utils = $utils;
 	}
 	
-	private function getKey(EiEntry $eiEntry) {
-		$ei = new EiuEntry($eiEntry);
+	private function getKey(EiMapping $eiMapping) {
+		$ei = new EiuEntry($eiMapping);
 		if ($ei->isDraft()) {
 			return 'd' . $ei->getDraft()->getId();
 		}
 		
-		return 'c' . $ei->getEiEntityObj()->getId();
+		return 'c' . $ei->getLiveEntry()->getId();
 	}
 	
-	public function addEiEntry(EiEntry $currentEiEntry) {
-		if (!$currentEiEntry->isAccessible()) {
-			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
-					$this->utils->createIdentityString($currentEiEntry->getEiObject()),
+	public function addEiMapping(EiMapping $currentEiMapping) {
+		if (!$currentEiMapping->isAccessible()) {
+			$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
+					$this->utils->createIdentityString($currentEiMapping->getEiSelection()),
 					null, $this->nextOrderIndex++);
 			return;
 		}
 		
-		if ($currentEiEntry->getEiObject()->isNew()) {
+		if ($currentEiMapping->getEiSelection()->isNew()) {
 			$this->newMappingForms[] = new MappingForm(
 					$this->utils->getGenericLabel(), null,
-					$this->utils->createEntryFormFromMapping($currentEiEntry), $this->nextOrderIndex++);
+					$this->utils->createEntryFormFromMapping($currentEiMapping), $this->nextOrderIndex++);
 			return;
 		}
 		
-		$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
-				$this->utils->getGenericLabel($currentEiEntry), null, 
-				$this->utils->createEntryFormFromMapping($currentEiEntry), $this->nextOrderIndex++);
+		$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
+				$this->utils->getGenericLabel($currentEiMapping), null, 
+				$this->utils->createEntryFormFromMapping($currentEiMapping), $this->nextOrderIndex++);
 	}
 
 	public function getCurrentMappingForm(string $idRep) {

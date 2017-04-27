@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\extr\EiTypeExtraction;
+use rocket\spec\config\extr\EiSpecExtraction;
 use n2n\util\config\source\WritableConfigSource;
 use n2n\util\config\Attributes;
 use n2n\util\config\InvalidConfigurationException;
@@ -111,28 +111,28 @@ class SpecConfigSourceDecorator {
 		throw new InvalidConfigurationException('Configruation error in data source: ' . $this->configSource, 0, $previous);
 	}
 	
-	public function getCommonEiMaskEiTypeIds() {
+	public function getCommonEiMaskEiSpecIds() {
 		return array_keys($this->commonEiMaskExtractionGroups);
 	}
 	
-	public function getCommonEiMaskExtractionsByEiTypeId($eiTypeId) {
-		if (isset($this->commonEiMaskExtractionGroups[$eiTypeId])) {
-			return $this->commonEiMaskExtractionGroups[$eiTypeId];
+	public function getCommonEiMaskExtractionsByEiSpecId($eiSpecId) {
+		if (isset($this->commonEiMaskExtractionGroups[$eiSpecId])) {
+			return $this->commonEiMaskExtractionGroups[$eiSpecId];
 		}
 
 		return array();
 	}
 	
-	public function setCommonEiMaskExtractions($eiTypeId, array $commonEiMaskExtractions) {
-		$this->commonEiMaskExtractionGroups[$eiTypeId] = $commonEiMaskExtractions;
+	public function setCommonEiMaskExtractions($eiSpecId, array $commonEiMaskExtractions) {
+		$this->commonEiMaskExtractionGroups[$eiSpecId] = $commonEiMaskExtractions;
 	}
 	
-	public function addCommonEiMaskExtraction($eiTypeId, CommonEiMaskExtraction $commonEiMaskExtraction) {
-		if (!isset($this->commonEiMaskExtractionGroups[$eiTypeId])) {
-			$this->commonEiMaskExtractionGroups[$eiTypeId] = array();
+	public function addCommonEiMaskExtraction($eiSpecId, CommonEiMaskExtraction $commonEiMaskExtraction) {
+		if (!isset($this->commonEiMaskExtractionGroups[$eiSpecId])) {
+			$this->commonEiMaskExtractionGroups[$eiSpecId] = array();
 		}
 		
-		$this->commonEiMaskExtractionGroups[$eiTypeId][] = $commonEiMaskExtraction;
+		$this->commonEiMaskExtractionGroups[$eiSpecId][] = $commonEiMaskExtraction;
 	}
 	
 	public function containsSpecId($specId) {
@@ -141,7 +141,7 @@ class SpecConfigSourceDecorator {
 	
 	public function containsEntityClassName(string $entityClassName): bool {
 		foreach ($this->specExtractions as $id => $spec) {
-			if ($spec instanceof EiTypeExtraction && $spec->getEntityClassName() == $entityClassName) {
+			if ($spec instanceof EiSpecExtraction && $spec->getEntityClassName() == $entityClassName) {
 				return true;
 			}
 		}
@@ -149,8 +149,8 @@ class SpecConfigSourceDecorator {
 		return false;
 	}
 	
-	public function containsCommonEiMaskId(string $eiTypeId, string $commonEiMaskId): bool {
-		return isset($this->commonEiMaskExtractionGroups[$eiTypeId][$commonEiMaskId]);
+	public function containsCommonEiMaskId(string $eiSpecId, string $commonEiMaskId): bool {
+		return isset($this->commonEiMaskExtractionGroups[$eiSpecId][$commonEiMaskId]);
 	}
 	
 	public function containsMenuItemId(string $menuItemId): bool {

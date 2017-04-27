@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\mapping\impl\RwEiField;
+use rocket\spec\ei\manage\mapping\impl\RwMappable;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
@@ -29,10 +29,10 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRelation;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiFieldRelation;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
-class ToManyEiField extends RwEiField {
+class ToManyMappable extends RwMappable {
 	private $copyable = null;
 	
 	public function __construct(EiObject $eiObject, 
@@ -49,23 +49,23 @@ class ToManyEiField extends RwEiField {
 	
 	protected function readValue() {
 		$targetRelationEntries = array();
-		foreach (parent::readValue() as $targetEiObject) {
-			$targetRelationEntries[] = RelationEntry::from($targetEiObject);
+		foreach (parent::readValue() as $targetEiSelection) {
+			$targetRelationEntries[] = RelationEntry::from($targetEiSelection);
 		}
 		return $targetRelationEntries;	
 	}
 	
 	protected function writeValue($value) {
-		$targetEiObjects = array();
+		$targetEiSelections = array();
 		foreach ($value as $targetRelationEntry) {
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry->getEiEntry()->write();
+			if ($targetRelationEntry->hasEiMapping()) {
+				$targetRelationEntry->getEiMapping()->write();
 			}
 			
-			$targetEiObjects[] = $targetRelationEntry->getEiObject();
+			$targetEiSelections[] = $targetRelationEntry->getEiSelection();
 		}
 		
-		parent::writeValue($targetEiObjects);
+		parent::writeValue($targetEiSelections);
 	}
 	
 
@@ -75,20 +75,20 @@ class ToManyEiField extends RwEiField {
 		
 		foreach ($value as $targetRelationEntry) {
 			IllegalStateException::assertTrue($targetRelationEntry instanceof RelationEntry);
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry->getEiEntry()->validate();
-				$fieldErrorInfo->addSubMappingErrorInfo($targetRelationEntry->getEiEntry()->getMappingErrorInfo());
+			if ($targetRelationEntry->hasEiMapping()) {
+				$targetRelationEntry->getEiMapping()->validate();
+				$fieldErrorInfo->addSubMappingErrorInfo($targetRelationEntry->getEiMapping()->getMappingErrorInfo());
 			}
 		}
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiField::copyEiField($eiObject)
+	 * @see \rocket\spec\ei\manage\mapping\Mappable::copyMappable($eiObject)
 	 */
-	public function copyEiField(Eiu $copyEiu) {
+	public function copyMappable(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToManyEiField($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, 
+		$copy = new ToManyMappable($copyEiu->entry()->getEiSelection(), $this->readable, $this->writable, 
 				$this->copyable);
 		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;

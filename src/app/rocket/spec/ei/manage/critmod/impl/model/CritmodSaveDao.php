@@ -49,8 +49,8 @@ class CritmodSaveDao implements RequestScoped {
 		$this->loginContext = $loginContext;
 	}
 	
-	public static function buildCategoryKey(string $stateKey, string $eiTypeId, string $eiMaskId = null): string {
-		return $stateKey . '?' . $eiTypeId . '?' . $eiMaskId;
+	public static function buildCategoryKey(string $stateKey, string $eiSpecId, string $eiMaskId = null): string {
+		return $stateKey . '?' . $eiSpecId . '?' . $eiMaskId;
 	}
 
 	public function setQuickSearchString(string $categoryKey, string $quickSearchString = null) {
@@ -99,36 +99,36 @@ class CritmodSaveDao implements RequestScoped {
 		return $this->em->find(CritmodSave::getClass(), $this->selectedCritmodSaveIds[$categoryKey]);
 	}
 	
-	public function buildUniqueCritmodSaveName(string $eiTypeId, string $eiMaskId = null, string $filterName) {
+	public function buildUniqueCritmodSaveName(string $eiSpecId, string $eiMaskId = null, string $filterName) {
 		$realFilterName = $filterName;
 		
-		for ($i = 2; $this->containsCritmodSaveName($eiTypeId, $eiMaskId, $realFilterName); $i++) {
+		for ($i = 2; $this->containsCritmodSaveName($eiSpecId, $eiMaskId, $realFilterName); $i++) {
 			$realFilterName = $filterName . ' ' . $i;
 		}
 		
 		return $realFilterName;
 	}
 	
-	public function containsCritmodSaveName($eiTypeId, string $eiMaskId = null, string $filterName) {
+	public function containsCritmodSaveName($eiSpecId, string $eiMaskId = null, string $filterName) {
 		$criteria = $this->em->createCriteria();
 		$criteria->select('COUNT(cs)')->from(CritmodSave::getClass(), 'cs')->where(
-				array('cs.eiTypeId' => $eiTypeId, 'cs.eiMaskId' => $eiMaskId));
+				array('cs.eiSpecId' => $eiSpecId, 'cs.eiMaskId' => $eiMaskId));
 		return (bool) $criteria->toQuery()->fetchSingle();
 	}
 	
-	public function getCritmodSaves(string $eiTypeId, string $eiMaskId = null): array {
-		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiTypeId' => $eiTypeId, 
+	public function getCritmodSaves(string $eiSpecId, string $eiMaskId = null): array {
+		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiSpecId' => $eiSpecId, 
 						'eiMaskId' => $eiMaskId), array('name' => 'ASC'))
 				->toQuery()->fetchArray();
 	}
 	
-	public function getCritmodSaveById(string $eiTypeId, string $eiMaskId = null, int $id) {
-		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiTypeId' => $eiTypeId,
+	public function getCritmodSaveById(string $eiSpecId, string $eiMaskId = null, int $id) {
+		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiSpecId' => $eiSpecId,
 				'eiMaskId' => $eiMaskId, 'id' => $id))->toQuery()->fetchSingle();
 	}
 		
 // 	public function getFilterNames(EiFrame $eiFrame) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			return array_keys($this->filterDatas[$scriptId]);
 // 		}	
@@ -141,14 +141,14 @@ class CritmodSaveDao implements RequestScoped {
 		return $this->loginContext->getCurrentUser()->isAdmin();
 	}
 
-	public function createCritmodSave(string $eiTypeId, string $eiMaskId = null, string $name, 
+	public function createCritmodSave(string $eiSpecId, string $eiMaskId = null, string $name, 
 			FilterGroupData $filterGroupData, SortData $sortData) {
 		if (!$this->isModAccessable()) {
 			throw new IllegalStateException();
 		}
 				
 		$critmodSave = new CritmodSave();
-		$critmodSave->setEiTypeId($eiTypeId);
+		$critmodSave->setEiSpecId($eiSpecId);
 		$critmodSave->setEiMaskId($eiMaskId);
 		$critmodSave->setName($name);
 		$critmodSave->writeFilterData($filterGroupData);
@@ -167,7 +167,7 @@ class CritmodSaveDao implements RequestScoped {
 	}
 	
 // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
 		
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			unset($this->filterDatas[$scriptId][$filterName]);

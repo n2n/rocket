@@ -94,7 +94,7 @@ class ThumbModel implements Dispatchable{
 // 		&& isset($_POST['ywert']) && isset($_POST['ausschnittbreite']) && isset($_POST['ausschnitthoehe'])
 // 		&& isset($_POST['anschneiden'])
 // ) {
-// 	$dimension = $this->getDimension($imageEiProp, $_POST['formatbreite'], $_POST['formathoehe']);
+// 	$dimension = $this->getDimension($imageEiField, $_POST['formatbreite'], $_POST['formathoehe']);
 // 	if (!$dimension) {
 // 		$mc->addError($text->get('err_image_resize_invalid_format',
 // 				array('width' => $_POST['formatbreite'], 'height' => $_POST['formathoehe'])));

@@ -40,7 +40,7 @@
 			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));
 	$html->meta()->addJs('js/preview.js');
 	
-	$currentHistoryDraft = $editModel->getEiObject()->getDraft();
+	$currentHistoryDraft = $editModel->getEiSelection()->getDraft();
 ?>
 <!-- 
 <div class="rocket-select-view-toolbar">
@@ -63,14 +63,21 @@
 		<iframe src="<?php $html->esc($view->params['iframeSrc']) ?>" id="rocket-preview-content"></iframe>
 	</div>
 	
-	<div class="rocket-context-commands">
-		<button type="button" id="rocket-preview-save-command"
-				data-rocket-confirm-msg="<?php $html->l10nText('ei_impl_edit_publish_draft_confirm_message') ?>"
-				data-rocket-confirm-ok-label="<?php $html->l10nText('common_yes_label') ?>"
-				data-rocket-confirm-cancel-label="<?php $html->l10nText('common_no_label') ?>">
-			<?php $html->l10nText('common_save_label') ?>
-		</button>
-		<?php $html->link($entryCommandViewModel->getCancelPath($request), $view->getL10nText('common_cancel_label')) ?>
+	<div id="rocket-page-controls">
+		<ul>
+			<li>
+				<button type="button" id="rocket-preview-save-command"
+						data-rocket-confirm-msg="<?php $html->l10nText('ei_impl_edit_publish_draft_confirm_message') ?>"
+						data-rocket-confirm-ok-label="<?php $html->l10nText('common_yes_label') ?>"
+						data-rocket-confirm-cancel-label="<?php $html->l10nText('common_no_label') ?>">
+					<?php $html->l10nText('common_save_label') ?>
+				</button>
+			</li>
+					
+			<li>
+				<?php $html->link($entryCommandViewModel->getCancelPath($request), $view->getL10nText('common_cancel_label')) ?>
+			</li>
+		</ul>
 	
 		<?php if ($entryCommandViewModel->hasPreviewSwitch()): ?>
 			<?php $view->import('spec\ei\component\command\impl\common\view\inc\previewSwitch.html', array('entryViewInfo' => $entryCommandViewModel)) ?>

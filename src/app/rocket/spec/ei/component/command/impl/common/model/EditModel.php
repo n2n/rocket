@@ -29,10 +29,9 @@ use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
-use n2n\web\dispatch\map\PropertyPath;
 
 class EditModel implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -46,12 +45,12 @@ class EditModel implements Dispatchable {
 	private $entryForm;
 	private $entryModel;
 		
-	public function __construct(EiuFrame $eiuFrame, $draftingAllowed, $publishingAllowed) {
-		$this->eiFrameUtils = $eiuFrame;
+	public function __construct(EiuFrame $eiFrameUtils, $draftingAllowed, $publishingAllowed) {
+		$this->eiFrameUtils = $eiFrameUtils;
 	}
 	
-	public function initialize(EiEntry $eiEntry) {
-		$this->entryForm = $this->eiFrameUtils->createEntryFormFromMapping($eiEntry, new PropertyPath(array('entryForm')));
+	public function initialize(EiMapping $eiMapping) {
+		$this->entryForm = $this->eiFrameUtils->createEntryFormFromMapping($eiMapping);
 
 		IllegalStateException::assertTrue(!$this->entryForm->isChoosable());
 		$this->entryModel = $this->entryForm->getChosenEntryModelForm();
@@ -75,7 +74,7 @@ class EditModel implements Dispatchable {
 	
 	public function isPublishable() {
 		return $this->publishingAllowed && $this->entryModel
-				->getEiEntry()->getEiObject()->isDraft();
+				->getEiMapping()->getEiSelection()->isDraft();
 	}
 	
 	public function getEntryModel() {
@@ -95,10 +94,10 @@ class EditModel implements Dispatchable {
 	}
 	
 	public function save(MessageContainer $messageContainer) {
-		$eiEntry = $this->entryForm->buildEiEntry();
+		$eiMapping = $this->entryForm->buildEiMapping();
 		
-		if ($eiEntry->save()) {
-			$this->eiFrameUtils->persist($eiEntry);
+		if ($eiMapping->save()) {
+			$this->eiFrameUtils->persist($eiMapping);
 			return true;
 		}
 		
@@ -115,14 +114,14 @@ class EditModel implements Dispatchable {
 	public function saveAsNewDraft(MessageContainer $messageContainer) {
 		if (!$this->isDraftable()) return null;
 		
-		$eiEntry = $this->entryForm->buildEiEntry();
-		$draftedEiEntry = $eiEntry->createDraftedCopy();
+		$eiMapping = $this->entryForm->buildEiMapping();
+		$draftedEiMapping = $eiMapping->createDraftedCopy();
 		
-		if ($draftedEiEntry->save()) {
-			return $draftedEiEntry->getDraft();
+		if ($draftedEiMapping->save()) {
+			return $draftedEiMapping->getDraft();
 		}
 		
-		$this->initialize($draftedEiEntry);
+		$this->initialize($draftedEiMapping);
 		
 		$messageContainer->addAll($mappingValidationResult->getMessages());
 		return null;
@@ -133,9 +132,9 @@ class EditModel implements Dispatchable {
 			return false;
 		}
 		
-		$eiEntry = $this->entryForm->buildEiEntry();
-		IllegalStateException::assertTrue($eiEntry->getEiObject()->isDraft());
+		$eiMapping = $this->entryForm->buildEiMapping();
+		IllegalStateException::assertTrue($eiMapping->getEiSelection()->isDraft());
 		
-		return $eiEntry->save();
+		return $eiMapping->save();
 	}
 }

@@ -23,9 +23,9 @@ namespace rocket\spec\ei\security;
 
 use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\security\EiPropAccess;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\security\EiFieldAccess;
+use rocket\spec\ei\manage\mapping\EiMapping;
 
 interface EiExecution {
 	
@@ -50,10 +50,10 @@ interface EiExecution {
 	public function getEiCommand(): EiCommand;
 	
 	/**
-	 * @return \rocket\spec\ei\manage\mapping\EiEntryConstraint
+	 * @return \rocket\spec\ei\manage\mapping\EiMappingConstraint
 	 * @throws InaccessibleControlException 
 	 */
-	public function getEiEntryConstraint();
+	public function getEiMappingConstraint();
 	
 	/**
 	 * @return \rocket\spec\ei\manage\critmod\CriteriaConstraint
@@ -62,16 +62,16 @@ interface EiExecution {
 	public function getCriteriaConstraint();
 	
 	/**
-	 * @param EiEntry $eiEntry
+	 * @param EiMapping $eiMapping
 	 * @return EiCommandAccessRestrictor
 	 */
-	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry);
+	public function buildEiCommandAccessRestrictor(EiMapping $eiMapping);
 	
 	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return \rocket\spec\ei\security\EiPropAccess
+	 * @param EiFieldPath $eiFieldPath
+	 * @return \rocket\spec\ei\security\EiFieldAccess
 	 */
-	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess;
+	public function createEiFieldAccess(EiFieldPath $eiFieldPath): EiFieldAccess;
 	
 	/**
 	 * @param string $ext

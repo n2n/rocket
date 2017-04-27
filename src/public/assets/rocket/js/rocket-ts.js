@@ -874,6 +874,93 @@ var RocketTs = (function () {
     return RocketTs;
 }());
 var rocketTs = new RocketTs();
+/// <reference path="..\..\rocket.ts" />
+/// <reference path="..\..\ui\dialog.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var spec;
+(function (spec) {
+    var edit;
+    (function (edit) {
+        var CriticalInput = (function () {
+            function CriticalInput(elem) {
+                this.dialog = null;
+                this.elem = elem;
+                this.elemLockedContainer = $("<div/>", {
+                    "class": "rocket-critical-input-locked-container"
+                }).insertAfter(elem);
+                this.elemLabel = $("<span/>", {
+                    text: this.determineLabel
+                }).appendTo(this.elemLockedContainer);
+                this.elemUnlock = $("<a/>", {
+                    "class": "rocket-critical-input-unlock rocket-control"
+                }).append($("<i/>", { "class": elem.data("icon-unlock") || "fa fa-pencil" }))
+                    .appendTo(this.elemLockedContainer);
+                elem.hide();
+                (function (that) {
+                    if (elem.data("confirm-message")) {
+                        that.initializeDialog();
+                    }
+                    that.elemUnlock.click(function (e) {
+                        e.preventDefault();
+                        if (null !== that.dialog) {
+                            rocketTs.showDialog(that.dialog);
+                        }
+                        else {
+                            that.showInput();
+                        }
+                    });
+                }).call(this, this);
+            }
+            CriticalInput.prototype.initializeDialog = function () {
+                var that = this;
+                this.dialog = new ui.Dialog(this.elem.data("confirm-message"));
+                this.dialog.addButton(this.elem.data("edit-label"), function () {
+                    that.showInput();
+                });
+                this.dialog.addButton(this.elem.data("cancel-label"), function () {
+                    //defaultbehaviour is to close the dialog
+                });
+            };
+            CriticalInput.prototype.showInput = function () {
+                this.elemLockedContainer.hide();
+                this.elemLockedContainer.show();
+                this.elemUnlock.remove();
+            };
+            ;
+            CriticalInput.prototype.determineLabel = function (elem) {
+                var label = elem.val();
+                if (elem.is("select")) {
+                    var elemOption = elem.find("option[value='" + label + "']");
+                    if (elemOption.length > 0) {
+                        label = elemOption.text();
+                    }
+                }
+                return label;
+            };
+            return CriticalInput;
+        }());
+    })(edit = spec.edit || (spec.edit = {}));
+})(spec || (spec = {}));
 /// <reference path="..\rocket.ts" />
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
@@ -1049,6 +1136,201 @@ var ui;
         new ConfNav($("#rocket-conf-nav"), $("#rocket-conf-nav-toggle"));
     });
 })(ui || (ui = {}));
+/// <reference path="..\rocket.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var ui;
+(function (ui) {
+    $ = jQuery;
+    var Panel = (function () {
+        function Panel(group, elem) {
+            this.parentPanelGroupId = null;
+            this.group = group;
+            this.elem = elem;
+            this.elemLi = $("<li/>", {
+                "class": "rocket-panel-activator"
+            });
+            this.parentPanelGroupId = null;
+            (function (that) {
+                that.elemLi.append($("<a/>", {
+                    "href": "#",
+                    "text": elem.children(":first").hide().text()
+                }).click(function (e) {
+                    e.preventDefault();
+                }));
+                that.elemLi.click(function () {
+                    that.show();
+                });
+                that.hide();
+            }).call(this, this);
+        }
+        Panel.prototype.getElemLi = function () {
+            return this.elemLi;
+        };
+        Panel.prototype.show = function () {
+            this.elemLi.addClass("rocket-active");
+            if (this.group.hasParentPanelGroup()) {
+                if (null !== this.getId()) {
+                    if (typeof history.pushState !== 'undefined') {
+                        history.pushState(null, null, '#!' + this.getId());
+                    }
+                    else {
+                        window.location.hash = "#!" + this.getId();
+                    }
+                }
+            }
+            this.elem.show();
+        };
+        ;
+        Panel.prototype.hide = function () {
+            this.elemLi.removeClass("rocket-active");
+            this.elem.hide();
+        };
+        ;
+        Panel.prototype.equals = function (obj) {
+            return obj instanceof Panel && this.elemLi.is(obj.getElemLi());
+        };
+        ;
+        Panel.prototype.getId = function () {
+            return this.elem.attr("id") || null;
+        };
+        return Panel;
+    }());
+    var PanelGroup = (function () {
+        function PanelGroup(elem) {
+            this.currentPanel = null;
+            this.elem = elem;
+            this.elemUl = $("<ul/>", {
+                "class": "rocket-grouped-panels-navigation"
+            });
+            (function (that) {
+                var currentPanelId = window.location.hash.substr(2), panelToActivate = null;
+                elem.children().each(function () {
+                    var panel = new Panel(that, $(this));
+                    if (null === panelToActivate || (panel.getId() === currentPanelId)) {
+                        panelToActivate = panel;
+                    }
+                    that.addPanel(panel);
+                });
+                that.activatePanel(panelToActivate);
+                that.elemUl.prependTo(elem);
+            }).call(this, this);
+        }
+        PanelGroup.prototype.addPanel = function (panel) {
+            var that = this;
+            this.elemUl.append(panel.getElemLi().click(function () {
+                that.activatePanel(panel);
+            }));
+        };
+        ;
+        PanelGroup.prototype.hasParentPanelGroup = function () {
+            return this.elem.parents(".rocket-grouped-panels:first").length > 0;
+        };
+        PanelGroup.prototype.activatePanel = function (panel) {
+            if (null !== this.currentPanel) {
+                if (this.currentPanel.equals(panel))
+                    return;
+                this.currentPanel.hide();
+            }
+            else {
+                panel.show();
+            }
+            this.currentPanel = panel;
+        };
+        ;
+        return PanelGroup;
+    }());
+    ui.PanelGroup = PanelGroup;
+    rocketTs.ready(function () {
+        rocketTs.registerUiInitFunction(".rocket-grouped-panels", function (elemPanelGroup) {
+            new PanelGroup(elemPanelGroup);
+        });
+    });
+})(ui || (ui = {}));
+/// <reference path="../rocket.ts" />
+/// <reference path="../ui/panels.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var spec;
+(function (spec) {
+    $ = jQuery;
+    var AsideContainer = (function () {
+        function AsideContainer(elemContainer) {
+            this.elemContainer = elemContainer;
+            this.elemMainContainer = $("<div />", {
+                "class": "rocket-main-bundle"
+            });
+            this.elemAsideContainer = $("<div />", {
+                "class": "rocket-aside-bundle"
+            });
+            this.elemContainer.children(":not(.rocket-control-group-aside)").appendTo(this.elemMainContainer);
+            this.elemContainer.children(".rocket-control-group-aside").appendTo(this.elemAsideContainer);
+            this.elemMainContainer.appendTo(this.elemContainer);
+            this.elemAsideContainer.appendTo(this.elemContainer);
+        }
+        return AsideContainer;
+    }());
+    rocketTs.ready(function () {
+        rocketTs.registerUiInitFunction(".rocket-aside-container", function (elem) {
+            new AsideContainer(elem);
+        });
+        rocketTs.registerUiInitFunction(".rocket-control-group-main", function (elem) {
+            var elemNextMainContainer = elem.next(".rocket-control-group-main");
+            if (elemNextMainContainer.length === 0)
+                return;
+            var elemPanelGroup = $("<div />", {
+                "class": "rocket-grouped-panels"
+            });
+            elemPanelGroup.insertBefore(elem).append(elem);
+            var tmpElemNextMainContainer;
+            do {
+                tmpElemNextMainContainer = elemNextMainContainer.next(".rocket-control-group-main");
+                elemPanelGroup.append(rocketTs.markAsInitialized(".rocket-control-group-main", elemNextMainContainer));
+                elemNextMainContainer = tmpElemNextMainContainer;
+            } while (elemNextMainContainer.length > 0);
+            rocketTs.markAsInitialized(".rocket-grouped-panels", elemPanelGroup);
+            new ui.PanelGroup(elemPanelGroup);
+        });
+    });
+})(spec || (spec = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -1106,6 +1388,882 @@ var spec;
         return EntryHeader;
     }());
     spec.EntryHeader = EntryHeader;
+})(spec || (spec = {}));
+/// <reference path="..\..\rocket.ts" />
+/// <reference path="..\common.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var spec;
+(function (spec) {
+    var edit;
+    (function (edit) {
+        $ = jQuery;
+        var ToOneCurrent = (function () {
+            function ToOneCurrent(toOne, elem, removable, toOneNew, replaceItemLabel) {
+                if (toOneNew === void 0) { toOneNew = null; }
+                if (replaceItemLabel === void 0) { replaceItemLabel = null; }
+                this.elemRemove = null;
+                this.elemReplace = null;
+                this.toOneNew = null;
+                this.removable = null;
+                this.replaceItemLabel = null;
+                this.elemUlReplaceControlOptions = null;
+                this.toOne = toOne;
+                this.elem = elem;
+                this.toOneNew = toOneNew;
+                this.replaceItemLabel = replaceItemLabel;
+                this.elemContent = elem.find(".rocket-to-one-content");
+                this.eiSpecId = elem.data("ei-spec-id");
+                (function (that) {
+                    that.setRemovable(removable);
+                    if (null !== toOneNew) {
+                        if (toOneNew.isAvailabale()) {
+                            //form was sent and has errors
+                            that.remove();
+                        }
+                        else {
+                            toOneNew.setToOneCurrent(that);
+                            toOneNew.getElemAdd().hide();
+                            toOneNew.applyAdd(replaceItemLabel, function () {
+                                that.resetControls();
+                                that.remove();
+                            });
+                        }
+                    }
+                }).call(this, this);
+            }
+            ToOneCurrent.prototype.setLoading = function () {
+                this.elemContent.hide();
+                this.elem.append(rocketTs.createLoadingElem());
+            };
+            ToOneCurrent.prototype.getEiSpecId = function () {
+                return this.eiSpecId;
+            };
+            ToOneCurrent.prototype.resetControls = function () {
+                if (null !== this.elemRemove) {
+                    this.elemRemove.parent().remove();
+                    this.elemRemove = null;
+                }
+                if (null !== this.elemReplace) {
+                    this.elemReplace.parent().remove();
+                    this.elemReplace = null;
+                }
+            };
+            ToOneCurrent.prototype.getElemContent = function () {
+                return this.elemContent;
+            };
+            ToOneCurrent.prototype.setRemovable = function (removable) {
+                if (removable === this.removable)
+                    return;
+                var that = this;
+                if (removable) {
+                    if (null !== this.toOneNew) {
+                        var replaceControl = new ToOneRecycleControl(that.toOne, function (eiSpecId) {
+                            that.setLoading();
+                            that.toOneNew.activate(eiSpecId);
+                        }, function () {
+                            that.setLoading();
+                            that.toOneNew.activate();
+                        });
+                        replaceControl.setConfirmMessage(this.elem.data("replace-confirm-msg"));
+                        replaceControl.setConfirmOkLabel(this.elem.data("replace-ok-label"));
+                        replaceControl.setConfirmCancelLabel(this.elem.data("replace-cancel-label"));
+                        this.elemReplace = replaceControl.getControlElem();
+                        if (this.toOneNew.isRemovable()) {
+                            this.elemRemove = this.toOne.addControl(this.elem.data("remove-item-label"), function () {
+                                that.remove();
+                                that.resetControls();
+                                that.toOneNew.getElemAdd().show();
+                            }, 'fa fa-times');
+                        }
+                    }
+                    else {
+                        this.elemRemove = this.toOne.addControl(this.elem.data("remove-item-label"), function () {
+                            that.remove();
+                        }, 'fa fa-times');
+                    }
+                }
+                else {
+                    if (null !== this.elemRemove) {
+                        this.elemRemove.parent().remove();
+                        this.elemRemove = null;
+                    }
+                    if (null !== this.elemReplace) {
+                        this.elemReplace.parent().remove();
+                        this.elemReplace = null;
+                    }
+                }
+                this.removable = removable;
+            };
+            ToOneCurrent.prototype.remove = function () {
+                this.elem.remove();
+            };
+            return ToOneCurrent;
+        }());
+        var ToOneSelectorStackedContent = (function () {
+            function ToOneSelectorStackedContent(toOneSelector, elemContent) {
+                this.stackedContentContainer = null;
+                this.overviewTools = null;
+                this.startObservingOnLoad = false;
+                this.idClassName = "rocket-to-one-stacked-content-" + ++ToOneSelectorStackedContent.lastId;
+                this.elemContent = $("<div />", {
+                    "class": "rocket-to-one-stacked-content " + this.idClassName
+                }).append($("<div />", {
+                    "class": "rocket-panel"
+                }).append(elemContent));
+                this.toOneSelector = toOneSelector;
+                (function (that) {
+                    elemContent.on('overview.contentLoaded', function (e, overviewTools) {
+                        that.overviewTools = overviewTools;
+                        overviewTools.getFixedHeader().setApplyDefaultFixedContainer(false);
+                        if (null !== that.stackedContentContainer) {
+                            overviewTools.setElemFixedContainer(that.stackedContentContainer.getElem(), that.startObservingOnLoad);
+                        }
+                        that.overviewTools.setSelectable(false);
+                    });
+                    rocketTs.registerUiInitFunction("." + that.idClassName + " .rocket-overview-content:first > tr > .rocket-entry-selector", function (elem) {
+                        var id = elem.data("entry-id-rep"), identityString = elem.data("identity-string");
+                        rocketTs.creatControlElem(toOneSelector.getSelectLabel() + " (" + identityString + ")", function () {
+                            var identityStrings = {};
+                            identityStrings[id] = identityString;
+                            toOneSelector.applyIdentityStrings(identityStrings);
+                            that.stackedContentContainer.close();
+                        }).appendTo(elem);
+                        $(window).trigger('resize.overview');
+                    });
+                }).call(this, this);
+            }
+            ToOneSelectorStackedContent.prototype.getTitle = function () {
+                return "test";
+            };
+            ;
+            ToOneSelectorStackedContent.prototype.getElemContent = function () {
+                return this.elemContent;
+            };
+            ToOneSelectorStackedContent.prototype.setup = function (stackedContentContainer) {
+                this.stackedContentContainer = stackedContentContainer;
+                if (null !== this.overviewTools) {
+                    this.overviewTools.setElemFixedContainer(stackedContentContainer.getElem(), false);
+                }
+            };
+            ToOneSelectorStackedContent.prototype.onAnimationComplete = function () {
+                if (null !== this.overviewTools) {
+                    this.overviewTools.getFixedHeader().startObserving();
+                }
+                else {
+                    this.startObservingOnLoad = false;
+                }
+            };
+            ToOneSelectorStackedContent.prototype.onClose = function () {
+                this.overviewTools.getFixedHeader().reset();
+                this.overviewTools.getFixedHeader().stopObserving();
+            };
+            ToOneSelectorStackedContent.prototype.onClosed = function () {
+                this.stackedContentContainer.getElem().scrollTop(0);
+                this.startObservingOnLoad = false;
+            };
+            ToOneSelectorStackedContent.lastId = 0;
+            return ToOneSelectorStackedContent;
+        }());
+        var ToOneSelector = (function () {
+            function ToOneSelector(elem, removeItemLabel) {
+                this.elemSelect = null;
+                this.elemReset = null;
+                this.elemRemove = null;
+                this.preloadedStackedContent = null;
+                this.elem = elem;
+                this.overviewToolsUrl = elem.data("overview-tools-url");
+                this.elemInput = elem.find("input:first").hide();
+                this.identityStrings = elem.data("identity-strings") || null;
+                this.originalIdRep = elem.data("original-id-rep");
+                this.selectLabel = elem.data("select-label");
+                this.resetLabel = elem.data("reset-label");
+                this.elemLabel = $("<span />");
+                (function (that) {
+                    that.elemLabelContainer = $("<div />", {
+                        "class": "rocket-relation-label-container"
+                    }).append(that.elemLabel).insertAfter(that.elemInput);
+                    that.elemRemove = rocketTs.creatControlElem(removeItemLabel, function () {
+                        that.applyIdentityStrings(null);
+                        that.elemLabelContainer.detach();
+                    }, "fa fa-times").appendTo(that.elemLabelContainer);
+                    that.applyIdentityStrings(that.getIdentityString(that.elemInput.val()));
+                    that.initControls();
+                }).call(this, this);
+            }
+            ToOneSelector.prototype.getIdentityString = function (idRep) {
+                if (!idRep)
+                    return null;
+                var identityString = {};
+                identityString[idRep] = this.identityStrings[idRep];
+                return identityString;
+            };
+            ToOneSelector.prototype.getSelectLabel = function () {
+                return this.selectLabel;
+            };
+            ToOneSelector.prototype.initControls = function () {
+                var that = this, elemControls = $("<div />", {
+                    "class": "rocket-to-one-controls"
+                }).insertAfter(this.elemLabelContainer);
+                this.elemBtnSelect = rocketTs.creatControlElem(this.selectLabel, function () {
+                    rocketTs.getContentStack().addStackedContent(that.preloadedStackedContent);
+                    rocketTs.updateUi();
+                }).appendTo(elemControls).addClass("rocket-loading").prop("disabled", true);
+                this.elemReset = rocketTs.creatControlElem(this.resetLabel, function () {
+                    that.applyIdentityStrings(that.getIdentityString(that.originalIdRep));
+                }).appendTo(elemControls);
+                that.loadOverlay();
+            };
+            ToOneSelector.prototype.loadOverlay = function () {
+                var that = this;
+                $.getJSON(this.overviewToolsUrl, function (data) {
+                    that.preloadedStackedContent = new ToOneSelectorStackedContent(that, rocketTs.analyzeAjahData(data));
+                    that.preloadedStackedContent.getElemContent().appendTo($("body"));
+                    rocketTs.updateUi();
+                    that.preloadedStackedContent.getElemContent().detach();
+                    that.elemBtnSelect.removeClass("rocket-loading").prop("disabled", false);
+                });
+            };
+            ToOneSelector.prototype.applyIdentityStrings = function (identityObject) {
+                if (identityObject === void 0) { identityObject = null; }
+                var that = this;
+                this.elemLabelContainer.insertAfter(this.elemInput);
+                if (null === identityObject) {
+                    this.elemInput.val(null);
+                    this.elemLabel.empty();
+                }
+                else {
+                    $.each(identityObject, function (id, label) {
+                        that.elemInput.val(id);
+                        that.elemLabel.text(label);
+                        return false;
+                    });
+                }
+                if (!this.elemInput.val()) {
+                    this.elemRemove.hide();
+                }
+                else {
+                    this.elemRemove.show();
+                }
+            };
+            return ToOneSelector;
+        }());
+        var ToOneNew = (function () {
+            function ToOneNew(toOne, elem, removable) {
+                this.elemRemove = null;
+                this.removable = null;
+                this.entryFormLoaded = false;
+                this.activated = false;
+                this.addCallback = null;
+                this.elemEntryForm = null;
+                this.toOneCurrent = null;
+                this.elemScriptTypeSelector = null;
+                this.elemTypeSelection = null;
+                this.elemUlTypes = null;
+                this.entryFormCommandAdd = null;
+                this.toOne = toOne;
+                this.elem = elem;
+                this.newEntryFormUrl = elem.data("new-entry-form-url");
+                this.removeItemLabel = elem.data("remove-item-label");
+                this.addItemLabel = elem.data("add-item-label");
+                this.propertyPath = elem.data("property-path");
+                var elemContents = elem.children();
+                this.elemEntryFormContainer = $("<div />");
+                (function (that) {
+                    if (elemContents.length > 0) {
+                        that.initializeContent(elemContents);
+                        that.activated = true;
+                        that.entryFormLoaded = true;
+                        if (that.hasTypeSelection()) {
+                            if (!elem.data("prefilled")) {
+                                that.applyEiSpecId(that.elemTypeSelection.val());
+                            }
+                            else {
+                                that.initializeAdd();
+                            }
+                        }
+                        else {
+                            that.elemEntryFormContainer.appendTo(elem);
+                        }
+                    }
+                    else {
+                        that.initializeAdd();
+                        that.elemEntryFormContainer.hide();
+                    }
+                    that.setRemovable(removable);
+                }).call(this, this);
+            }
+            ToOneNew.prototype.getElem = function () {
+                return this.elem;
+            };
+            ToOneNew.prototype.getElemAdd = function () {
+                return this.entryFormCommandAdd.getElemContainer();
+            };
+            ToOneNew.prototype.initTypeSelction = function () {
+                this.elemScriptTypeSelector = this.elemEntryForm.find("> .rocket-script-type-selector"),
+                    this.elemTypeSelection = this.elemScriptTypeSelector.find(".rocket-script-type-selection");
+            };
+            ToOneNew.prototype.hasTypeSelection = function () {
+                return this.elemScriptTypeSelector.length > 0 && this.elemScriptTypeSelector.length > 0;
+            };
+            ToOneNew.prototype.setToOneCurrent = function (toOneCurrent) {
+                this.toOneCurrent = toOneCurrent;
+            };
+            ToOneNew.prototype.isAvailabale = function () {
+                return this.activated;
+            };
+            ToOneNew.prototype.initializeContent = function (elemEntryForm) {
+                this.elemEntryForm = elemEntryForm;
+                this.initTypeSelction();
+                this.elemEntryFormContainer.append(elemEntryForm);
+                this.elemEntryFormContainer.children(".rocket-to-many-order-index").hide();
+                var that = this;
+                if (this.removable) {
+                    this.elemRemove = this.toOne.addControl(this.removeItemLabel, function () {
+                        that.elemEntryFormContainer.detach();
+                        that.initializeAdd();
+                    }, "fa fa-times");
+                }
+                if (this.hasTypeSelection()) {
+                    var toOneRecyleControl = new ToOneRecycleControl(that.toOne, function (eiSpecId) {
+                        that.applyEiSpecId(eiSpecId);
+                    });
+                    toOneRecyleControl.setExcludeEiSpecIdCallback(function (eiSpecId) {
+                        if (eiSpecId === that.elemTypeSelection.val())
+                            return true;
+                        return false;
+                    });
+                }
+            };
+            ToOneNew.prototype.initializeAdd = function () {
+                var that = this;
+                if (null === this.entryFormCommandAdd) {
+                    this.entryFormCommandAdd = new ui.EntryFormCommand(this.addItemLabel, function () {
+                        if (!that.toOne.isTypeSelectable()) {
+                            that.activate();
+                            return;
+                        }
+                        var elemButton = that.entryFormCommandAdd.getElemButton();
+                        if (elemButton.hasClass("rocket-command-insert-open")) {
+                            that.elemUlTypes.hide();
+                            elemButton.removeClass("rocket-command-insert-open");
+                            return;
+                        }
+                        if (null === that.elemUlTypes) {
+                            that.elemUlTypes = $("<ul />", {
+                                "class": "rocket-dd-menu-open"
+                            }).insertAfter(elemButton);
+                        }
+                        else {
+                            that.elemUlTypes.empty();
+                        }
+                        elemButton.addClass("rocket-command-insert-open");
+                        that.toOne.createTypeElemLis(function (eiSpecId) {
+                            that.activate(eiSpecId);
+                            elemButton.removeClass("rocket-command-insert-open");
+                            that.elemUlTypes.hide();
+                        }).forEach(function (elemLi) {
+                            elemLi.appendTo(that.elemUlTypes).children("a").removeClass();
+                        });
+                    }, "fa fa-plus");
+                }
+                this.entryFormCommandAdd.getElemContainer().appendTo(this.elem);
+            };
+            ToOneNew.prototype.setRemovable = function (removable) {
+                if (this.removable === removable)
+                    return;
+                var that = this;
+                if (removable) {
+                    var that = this;
+                    this.initializeAdd();
+                }
+                else {
+                    if (this.activated) {
+                        this.activate();
+                    }
+                    if (null !== this.elemRemove) {
+                        this.elemRemove.parent().remove();
+                        this.elemRemove = null;
+                    }
+                }
+                this.removable = removable;
+            };
+            ToOneNew.prototype.isRemovable = function () {
+                return this.removable;
+            };
+            ToOneNew.prototype.applyAdd = function (addItemLabel, callback) {
+                this.addItemLabel = addItemLabel;
+                this.entryFormCommandAdd.getElemButton().text(addItemLabel);
+                this.addCallback = callback;
+            };
+            ToOneNew.prototype.applyEiSpecId = function (eiSpecId) {
+                if (this.elemTypeSelection.children("option[value=" + eiSpecId + "]").length === 0)
+                    return;
+                this.elemScriptTypeSelector.hide();
+                this.toOne.setTypeSpecLabel(this.toOne.determineEiSpecLabel(eiSpecId));
+                this.elemTypeSelection.val(eiSpecId).change();
+                this.elem.trigger('applyEiSpecId.toOne', eiSpecId);
+            };
+            ToOneNew.prototype.activate = function (eiSpecId) {
+                if (eiSpecId === void 0) { eiSpecId = null; }
+                var that = this;
+                this.requestNewEntryForm(function () {
+                    that.elemEntryFormContainer.appendTo(that.elem);
+                    rocketTs.updateUi();
+                    if (null !== eiSpecId && that.hasTypeSelection()) {
+                        that.applyEiSpecId(eiSpecId);
+                    }
+                    if (null !== that.entryFormCommandAdd) {
+                        that.entryFormCommandAdd.getElemContainer().detach();
+                    }
+                    if (null !== that.addCallback) {
+                        that.addCallback();
+                    }
+                });
+                this.activated = true;
+            };
+            ToOneNew.prototype.requestNewEntryForm = function (callback) {
+                var that = this;
+                if (this.entryFormLoaded || this.activated) {
+                    if (null !== this.elemEntryForm) {
+                        this.elemEntryForm.appendTo(this.elemEntryFormContainer);
+                        callback();
+                    }
+                    return;
+                }
+                this.entryFormLoaded = true;
+                if (null !== this.entryFormCommandAdd) {
+                    this.entryFormCommandAdd.setLoading(true);
+                }
+                $.getJSON(this.newEntryFormUrl, { propertyPath: this.propertyPath }, function (data) {
+                    that.initializeContent(rocketTs.analyzeAjahData(data));
+                    rocketTs.updateUi();
+                    that.elemEntryFormContainer.show();
+                    if (null !== that.entryFormCommandAdd) {
+                        that.entryFormCommandAdd.setLoading(false);
+                    }
+                    callback();
+                });
+            };
+            return ToOneNew;
+        }());
+        var ToOneRecycleControl = (function () {
+            function ToOneRecycleControl(toOne, typeCallback, defaultCallback) {
+                if (defaultCallback === void 0) { defaultCallback = null; }
+                this.elemUlReplaceControlOptions = null;
+                this.excludeEiSpecIdCallback = null;
+                this.confirmMessage = null;
+                this.confirmOkLabel = null;
+                this.confirmCancelLabel = null;
+                this.toOne = toOne;
+                this.typeCallback = typeCallback;
+                this.defaultCallback = defaultCallback;
+                (function (that) {
+                    that.controlElem = this.toOne.addControl(this.replaceItemLabel, function () {
+                        if (!that.toOne.isTypeSelectable()) {
+                            if (null !== defaultCallback) {
+                                defaultCallback();
+                                return;
+                            }
+                        }
+                        if (null !== that.confirmMessage
+                            && (null === that.elemUlReplaceControlOptions
+                                || (null !== that.elemUlReplaceControlOptions
+                                    && !that.elemUlReplaceControlOptions.hasClass("rocket-open")))) {
+                            var dialog = new ui.Dialog(that.confirmMessage);
+                            dialog.addButton(that.confirmOkLabel, function (e) {
+                                e.stopPropagation();
+                                that.initList();
+                            });
+                            dialog.addButton(that.confirmCancelLabel, function () {
+                                //defaultbehaviour is to close the dialog
+                            });
+                            rocketTs.showDialog(dialog);
+                            return;
+                        }
+                        that.initList();
+                    }, 'fa fa-recycle').addClass("rocket-control-danger");
+                }).call(this, this);
+            }
+            ToOneRecycleControl.prototype.initList = function () {
+                var that = this;
+                if (null === this.elemUlReplaceControlOptions) {
+                    this.elemUlReplaceControlOptions = $("<ul />", {
+                        "class": "rocket-control-options"
+                    }).insertAfter(this.controlElem);
+                }
+                else {
+                    if (this.elemUlReplaceControlOptions.hasClass("rocket-open")) {
+                        this.hideList();
+                        return;
+                    }
+                    this.elemUlReplaceControlOptions.empty();
+                }
+                console.log(this.elemUlReplaceControlOptions);
+                this.showList();
+                this.toOne.createTypeElemLis(function (eiSpecId) {
+                    that.typeCallback(eiSpecId);
+                    that.hideList();
+                }, this.excludeEiSpecIdCallback).forEach(function (elemLi) {
+                    elemLi.appendTo(that.elemUlReplaceControlOptions);
+                });
+                var elemReplacePosition = this.controlElem.position();
+                this.elemUlReplaceControlOptions.css({
+                    "position": "absolute",
+                    "zIndex": 2,
+                    "top": elemReplacePosition.top + this.controlElem.outerHeight(),
+                    "left": elemReplacePosition.left + this.controlElem.outerWidth()
+                        - this.elemUlReplaceControlOptions.outerWidth()
+                });
+            };
+            ToOneRecycleControl.prototype.setConfirmMessage = function (confirmMessage) {
+                if (confirmMessage === void 0) { confirmMessage = null; }
+                this.confirmMessage = confirmMessage;
+            };
+            ToOneRecycleControl.prototype.setConfirmOkLabel = function (confirmOkLabel) {
+                if (confirmOkLabel === void 0) { confirmOkLabel = null; }
+                this.confirmOkLabel = confirmOkLabel;
+            };
+            ToOneRecycleControl.prototype.setConfirmCancelLabel = function (confirmCancelLabel) {
+                if (confirmCancelLabel === void 0) { confirmCancelLabel = null; }
+                this.confirmCancelLabel = confirmCancelLabel;
+            };
+            ToOneRecycleControl.prototype.hideList = function () {
+                this.elemUlReplaceControlOptions.removeClass("rocket-open");
+                this.elemUlReplaceControlOptions.hide();
+                $(window).off('off.toOneRecycle');
+            };
+            ToOneRecycleControl.prototype.showList = function () {
+                this.elemUlReplaceControlOptions.addClass("rocket-open").show();
+                var that = this;
+                $(window).on('click.toOneRecycle', function (e) {
+                    if ($(e.target).is(that.controlElem) || $.contains(that.controlElem.get(0), e.target))
+                        return;
+                    that.hideList();
+                });
+            };
+            ToOneRecycleControl.prototype.setExcludeEiSpecIdCallback = function (excludeEiSpecIdCallback) {
+                if (excludeEiSpecIdCallback === void 0) { excludeEiSpecIdCallback = null; }
+                this.excludeEiSpecIdCallback = excludeEiSpecIdCallback;
+            };
+            ToOneRecycleControl.prototype.getControlElem = function () {
+                return this.controlElem;
+            };
+            return ToOneRecycleControl;
+        }());
+        var TypeConfig = (function () {
+            function TypeConfig(label, callback) {
+                this.label = label;
+                this.callback = callback;
+            }
+            TypeConfig.prototype.getLabel = function () {
+                return this.label;
+            };
+            TypeConfig.prototype.getCallback = function () {
+                return this.callback;
+            };
+            return TypeConfig;
+        }());
+        var EiSpecConfig = (function () {
+            function EiSpecConfig(specId) {
+                this.additionalTypeConfigs = [];
+                this.specId = specId;
+            }
+            EiSpecConfig.prototype.registerTypeConfig = function (label, callback) {
+                this.additionalTypeConfigs.push(new TypeConfig(label, callback));
+            };
+            EiSpecConfig.prototype.getAdditionalTypeConfigs = function () {
+                return this.additionalTypeConfigs;
+            };
+            EiSpecConfig.prototype.reset = function () {
+                this.additionalTypeConfigs = [];
+            };
+            return EiSpecConfig;
+        }());
+        var ToOne = (function () {
+            function ToOne(elem) {
+                this.mandatory = false;
+                this.toOneNew = null;
+                this.toOneCurrent = null;
+                this.toOneSelector = null;
+                this.elemUlControls = null;
+                this.eiSpecConfigs = {};
+                this.elem = elem;
+                this.mandatory = elem.data("mandatory") || false;
+                this.itemLabel = elem.data("item-label");
+                this.replaceItemLabel = elem.data("replace-item-label");
+                this.removeItemLabel = elem.data("remove-item-label");
+                this.eiSpecLabels = elem.data("ei-spec-labels");
+                this.elemLabel = elem.parent(".rocket-controls:first").prev("label");
+                this.defaultLabel = this.elemLabel.text();
+                this.typeSelectable = false;
+                (function (that) {
+                    var numTypes = 0;
+                    $.each(this.eiSpecLabels, function () {
+                        numTypes++;
+                    });
+                    that.typeSelectable = numTypes > 1;
+                    var elemNew = elem.children(".rocket-new:first");
+                    if (elemNew.length > 0) {
+                        that.toOneNew = new ToOneNew(that, elemNew, !that.mandatory);
+                    }
+                    var elemCurrent = elem.children(".rocket-current:first");
+                    if (elemCurrent.length > 0) {
+                        if (that.typeSelectable) {
+                            that.setTypeSpecLabel(elemCurrent.data("item-label"));
+                        }
+                        that.toOneCurrent = new ToOneCurrent(that, elemCurrent, null !== that.toOneNew || !that.mandatory, that.toOneNew, that.replaceItemLabel);
+                    }
+                    var elemSelector = elem.children(".rocket-selector:first");
+                    if (elemSelector.length > 0) {
+                        new ToOneSelector(elemSelector, that.removeItemLabel);
+                    }
+                }).call(this, this);
+            }
+            ToOne.prototype.isTypeSelectable = function () {
+                return this.typeSelectable;
+            };
+            ToOne.prototype.getEiSpecLabels = function () {
+                return this.eiSpecLabels;
+            };
+            ToOne.prototype.setEiSpecLabels = function (eiSpecLabels) {
+                this.eiSpecLabels = eiSpecLabels;
+            };
+            ToOne.prototype.determineEiSpecLabel = function (eiSpecId) {
+                return this.eiSpecLabels[eiSpecId];
+            };
+            ToOne.prototype.setTypeSpecLabel = function (typeSpecLabel) {
+                this.elemLabel.text(this.defaultLabel + ": " + typeSpecLabel);
+            };
+            ToOne.prototype.getToOneCurrent = function () {
+                return this.toOneCurrent;
+            };
+            ToOne.prototype.getToOneNew = function () {
+                return this.toOneNew;
+            };
+            ToOne.prototype.addControl = function (text, callback, iconClassName) {
+                if (null === this.elemUlControls) {
+                    this.elemUlControls = $("<ul />", {
+                        "class": "rocket-simple-controls"
+                    }).css({
+                        "position": "absolute",
+                        "top": "0",
+                        "right": "0"
+                    }).insertAfter(this.elemLabel);
+                }
+                var elemControl = rocketTs.creatControlElem(text, callback, iconClassName);
+                $("<li />").append(elemControl)
+                    .appendTo(this.elemUlControls);
+                return elemControl;
+            };
+            ToOne.prototype.setMandatory = function (mandatory) {
+                this.mandatory = mandatory;
+                if (null !== this.toOneCurrent) {
+                    this.toOneCurrent.setRemovable(null !== this.toOneNew || !mandatory);
+                }
+                if (null !== this.toOneNew) {
+                    this.toOneNew.setRemovable(!mandatory);
+                }
+            };
+            ToOne.prototype.getElem = function () {
+                return this.elem;
+            };
+            ToOne.prototype.hasEiSpecConfig = function (eiSpecId) {
+                return this.eiSpecConfigs.hasOwnProperty(eiSpecId);
+            };
+            ToOne.prototype.getOrCreateEiSpecConfig = function (eiSpecId) {
+                if (!this.eiSpecLabels.hasOwnProperty(eiSpecId)) {
+                    throw new Error("Invalid ei spec id: " + eiSpecId);
+                }
+                if (!this.eiSpecConfigs.hasOwnProperty(eiSpecId)) {
+                    this.eiSpecConfigs[eiSpecId] = new EiSpecConfig(eiSpecId);
+                }
+                return this.eiSpecConfigs[eiSpecId];
+            };
+            ToOne.prototype.createTypeElemLis = function (typeCallback, excludeEiSpecIdCallback) {
+                if (excludeEiSpecIdCallback === void 0) { excludeEiSpecIdCallback = null; }
+                var lis = [], that = this;
+                $.each(that.getEiSpecLabels(), function (eiSpecId, label) {
+                    if (that.hasEiSpecConfig(eiSpecId)) {
+                        var eiSpecConfig = that.getOrCreateEiSpecConfig(eiSpecId);
+                        eiSpecConfig.getAdditionalTypeConfigs().forEach(function (typeConfig) {
+                            lis.push(that.createTypeElemLi(typeConfig.getLabel(), function () {
+                                typeConfig.getCallback()(that);
+                                typeCallback(eiSpecId);
+                            }));
+                        });
+                        return;
+                    }
+                    if (null !== excludeEiSpecIdCallback) {
+                        if (excludeEiSpecIdCallback(eiSpecId))
+                            return;
+                    }
+                    lis.push(that.createTypeElemLi(label, function () {
+                        typeCallback(eiSpecId);
+                    }));
+                });
+                lis.sort(function (elemLiA, elemLiB) {
+                    if (elemLiA.data("sort") < elemLiB.data("sort"))
+                        return -1;
+                    if (elemLiA.data("sort") == elemLiB.data("sort"))
+                        return 0;
+                    return 1;
+                });
+                return lis;
+            };
+            ToOne.prototype.createTypeElemLi = function (label, callback) {
+                return $("<li />").append(rocketTs.creatControlElem(label, function () {
+                    callback();
+                })).data("sort", label);
+            };
+            return ToOne;
+        }());
+        $(document).ready(function () {
+            rocketTs.registerUiInitFunction("form .rocket-to-one", function (elem) {
+                elem.data('rocket-to-one', new ToOne(elem));
+                elem.trigger('initialized.toOne', elem.data('rocket-to-one'));
+            });
+        });
+    })(edit = spec.edit || (spec.edit = {}));
+})(spec || (spec = {}));
+/// <reference path="../rocket.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var spec;
+(function (spec) {
+    var $ = jQuery;
+    var Error = (function () {
+        function Error(errorList, elemError, elemMessage) {
+            this.elemError = elemError;
+            this.elemLi = $("<li />");
+            this.elemMessage = elemMessage;
+            (function (that) {
+                var elemA = $("<a />", {
+                    "href": "#"
+                }).appendTo(that.elemLi);
+                $("<div />", {
+                    "class": "error-list-label",
+                    "text": elemMessage.text() || "Fehler"
+                }).appendTo(elemA);
+                $("<div />", {
+                    "class": "error-list-path",
+                    "text": errorList.determinePathLabel(that)
+                }).appendTo(elemA);
+                elemA.click(function (e) {
+                    e.preventDefault();
+                    errorList.scrollTo(that);
+                    that.elemLi.find("input[type=text], textarea").first().focus();
+                });
+                elemA.mouseenter(function () {
+                    errorList.highlight(that);
+                }).mouseleave(function () {
+                    errorList.normalize(that);
+                });
+            }).call(this, this);
+        }
+        Error.prototype.getElem = function () {
+            return this.elemError;
+        };
+        Error.prototype.getElemLi = function () {
+            return this.elemLi;
+        };
+        return Error;
+    }());
+    var ErrorList = (function () {
+        function ErrorList() {
+            this.elemFixedContainer = rocketTs.getElemContentContainer();
+            this.elemList = $("<ul />", {
+                "class": "rocket-error-list"
+            });
+        }
+        ErrorList.prototype.hasErrors = function () {
+            return this.elemList.children().length > 0;
+        };
+        ErrorList.prototype.getElemList = function () {
+            return this.elemList;
+        };
+        ErrorList.prototype.determinePathElements = function (elem) {
+            return elem.parents(".rocket-has-error");
+        };
+        ErrorList.prototype.determinePathLabel = function (error) {
+            var elem = error.getElem(), labelParts = [elem.children("label:first").text()];
+            this.determinePathElements(error.getElem()).each(function () {
+                labelParts.unshift($(this).children("label:first").text());
+            });
+            return labelParts.join(" / ");
+        };
+        ErrorList.prototype.highlight = function (error) {
+            var elem = error.getElem().addClass("rocket-highlighted");
+            //			this.determinePathElements(error.getElem()).each(function() {
+            //				$(this).addClass("rocket-highlighted");
+            //			});
+        };
+        ErrorList.prototype.normalize = function (error) {
+            var elem = error.getElem().removeClass("rocket-highlighted");
+            //			this.determinePathElements(error.getElem()).each(function() {
+            //				$(this).removeClass("rocket-highlighted");
+            //			});
+        };
+        ErrorList.prototype.scrollTo = function (error) {
+            this.elemFixedContainer.animate({
+                scrollTop: "+=" + (error.getElem().offset().top - this.elemFixedContainer.offset().top)
+            });
+        };
+        ErrorList.prototype.addError = function (elemError, elemMessage) {
+            var error = new Error(this, elemError, elemMessage);
+            this.elemList.append(error.getElemLi());
+            return error;
+        };
+        return ErrorList;
+    }());
+    rocketTs.ready(function () {
+        var errorList = new ErrorList();
+        $(".rocket-message-error").each(function () {
+            errorList.addError($(this).parents(".rocket-has-error:first"), $(this));
+        });
+        if (errorList.hasErrors()) {
+            var additionalContent = rocketTs.getOrCreateAdditionalContent();
+            additionalContent.createAndPrependEntry(additionalContent.getElemContent().data("error-list-label"), errorList.getElemList());
+        }
+    });
 })(spec || (spec = {}));
 /// <reference path="..\..\rocket.ts" />
 /// <reference path="..\common.ts" />
@@ -1824,29 +2982,28 @@ var spec;
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  *
  */
-var tools;
-(function (tools) {
-    var MailCenter = (function () {
-        function MailCenter(elem) {
-            this.elem = elem;
-            elem.find("article").each(function () {
-                var elem = $(this);
-                var elemMessage = elem.children("dl:first");
-                elem.children("header:first").click(function () {
-                    elemMessage.slideToggle();
+var ui;
+(function (ui) {
+    var LoginInput = (function () {
+        function LoginInput(elemInputLogin) {
+            this.elemInputLogin = elemInputLogin;
+            this.elemLabel = elemInputLogin.parent().prev();
+            (function (that) {
+                elemInputLogin.focus(function () {
+                    that.elemLabel.addClass("rocket-label-active");
+                }).focusout(function () {
+                    that.elemLabel.removeClass("rocket-label-active");
                 });
-                elemMessage.hide();
-            });
+            }).call(this, this);
         }
-        return MailCenter;
+        return LoginInput;
     }());
     rocketTs.ready(function () {
-        var elemMailCenter = $("#rocket-tools-mail-center");
-        if (elemMailCenter.length === 0)
-            return;
-        new MailCenter(elemMailCenter);
+        rocketTs.registerUiInitFunction(".rocket-login-input", function (elemInputLogin) {
+            new LoginInput(elemInputLogin);
+        });
     });
-})(tools || (tools = {}));
+})(ui || (ui = {}));
 /// <reference path="..\rocket.ts" />
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
@@ -2374,180 +3531,6 @@ var l10n;
         }
     });
 })(l10n || (l10n = {}));
-/// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var ui;
-(function (ui) {
-    $ = jQuery;
-    var Panel = (function () {
-        function Panel(group, elem) {
-            this.parentPanelGroupId = null;
-            this.group = group;
-            this.elem = elem;
-            this.elemLi = $("<li/>", {
-                "class": "rocket-panel-activator"
-            });
-            this.parentPanelGroupId = null;
-            (function (that) {
-                that.elemLi.append($("<a/>", {
-                    "href": "#",
-                    "text": elem.children(":first").hide().text()
-                }).click(function (e) {
-                    e.preventDefault();
-                }));
-                that.elemLi.click(function () {
-                    that.show();
-                });
-                that.hide();
-            }).call(this, this);
-        }
-        Panel.prototype.getElemLi = function () {
-            return this.elemLi;
-        };
-        Panel.prototype.show = function () {
-            this.elemLi.addClass("rocket-active");
-            if (this.group.hasParentPanelGroup()) {
-                if (null !== this.getId()) {
-                    if (typeof history.pushState !== 'undefined') {
-                        history.pushState(null, null, '#!' + this.getId());
-                    }
-                    else {
-                        window.location.hash = "#!" + this.getId();
-                    }
-                }
-            }
-            this.elem.show();
-        };
-        ;
-        Panel.prototype.hide = function () {
-            this.elemLi.removeClass("rocket-active");
-            this.elem.hide();
-        };
-        ;
-        Panel.prototype.equals = function (obj) {
-            return obj instanceof Panel && this.elemLi.is(obj.getElemLi());
-        };
-        ;
-        Panel.prototype.getId = function () {
-            return this.elem.attr("id") || null;
-        };
-        return Panel;
-    }());
-    var PanelGroup = (function () {
-        function PanelGroup(elem) {
-            this.currentPanel = null;
-            this.elem = elem;
-            this.elemUl = $("<ul/>", {
-                "class": "rocket-grouped-panels-navigation"
-            });
-            (function (that) {
-                var currentPanelId = window.location.hash.substr(2), panelToActivate = null;
-                elem.children().each(function () {
-                    var panel = new Panel(that, $(this));
-                    if (null === panelToActivate || (panel.getId() === currentPanelId)) {
-                        panelToActivate = panel;
-                    }
-                    that.addPanel(panel);
-                });
-                that.activatePanel(panelToActivate);
-                that.elemUl.prependTo(elem);
-            }).call(this, this);
-        }
-        PanelGroup.prototype.addPanel = function (panel) {
-            var that = this;
-            this.elemUl.append(panel.getElemLi().click(function () {
-                that.activatePanel(panel);
-            }));
-        };
-        ;
-        PanelGroup.prototype.hasParentPanelGroup = function () {
-            return this.elem.parents(".rocket-grouped-panels:first").length > 0;
-        };
-        PanelGroup.prototype.activatePanel = function (panel) {
-            if (null !== this.currentPanel) {
-                if (this.currentPanel.equals(panel))
-                    return;
-                this.currentPanel.hide();
-            }
-            else {
-                panel.show();
-            }
-            this.currentPanel = panel;
-        };
-        ;
-        return PanelGroup;
-    }());
-    ui.PanelGroup = PanelGroup;
-    rocketTs.ready(function () {
-        rocketTs.registerUiInitFunction(".rocket-grouped-panels", function (elemPanelGroup) {
-            new PanelGroup(elemPanelGroup);
-        });
-    });
-})(ui || (ui = {}));
-/// <reference path="..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var ui;
-(function (ui) {
-    var LoginInput = (function () {
-        function LoginInput(elemInputLogin) {
-            this.elemInputLogin = elemInputLogin;
-            this.elemLabel = elemInputLogin.parent().prev();
-            (function (that) {
-                elemInputLogin.focus(function () {
-                    that.elemLabel.addClass("rocket-label-active");
-                }).focusout(function () {
-                    that.elemLabel.removeClass("rocket-label-active");
-                });
-            }).call(this, this);
-        }
-        return LoginInput;
-    }());
-    rocketTs.ready(function () {
-        rocketTs.registerUiInitFunction(".rocket-login-input", function (elemInputLogin) {
-            new LoginInput(elemInputLogin);
-        });
-    });
-})(ui || (ui = {}));
 /// <reference path="..\rocket.ts" />
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
@@ -3645,6 +4628,129 @@ var spec;
         });
     });
 })(spec || (spec = {}));
+/// <reference path="..\..\rocket.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var spec;
+(function (spec) {
+    var display;
+    (function (display) {
+        $ = jQuery;
+        var ContentItem = (function () {
+            function ContentItem(elem) {
+                this.elem = elem;
+                this.elemType = elem.find(".rocket-gui-field-type").hide();
+                this.typeLabel = this.elemType.children(".rocket-controls").text();
+                elem.find(".rocket-field-orderIndex").hide();
+                new spec.EntryHeader(this.typeLabel, elem);
+            }
+            return ContentItem;
+        }());
+        var ContentItemPanel = (function () {
+            function ContentItemPanel(elemHeader, elemContent) {
+                this.elemHeader = elemHeader;
+                this.elemContent = elemContent;
+                (function () {
+                    elemContent.children(".rocket-content-item").each(function () {
+                        new ContentItem($(this));
+                    });
+                }).call(this, this);
+            }
+            return ContentItemPanel;
+        }());
+        var ContentItemComposer = (function () {
+            function ContentItemComposer(elem) {
+                this.elem = elem;
+                (function (that) {
+                    elem.children("h4").each(function () {
+                        new ContentItemPanel($(this), $(this).next());
+                    });
+                }).call(this, this);
+            }
+            return ContentItemComposer;
+        }());
+        rocketTs.ready(function () {
+            rocketTs.registerUiInitFunction(".rocket-content-item-composer", function (elemContentItemComposer) {
+                new ContentItemComposer(elemContentItemComposer);
+            });
+        });
+    })(display = spec.display || (spec.display = {}));
+})(spec || (spec = {}));
+/// <reference path="..\..\rocket.ts" />
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var spec;
+(function (spec) {
+    var edit;
+    (function (edit) {
+        $ = jQuery;
+        var TypeSelection = (function () {
+            function TypeSelection(elemEntryForm) {
+                this.types = {};
+                this.elemCurrentType = null;
+                this.elemEntryForm = elemEntryForm;
+                this.elemSelect = elemEntryForm.find("> .rocket-script-type-selector .rocket-script-type-selection");
+                (function (that) {
+                    that.elemSelect.children().each(function () {
+                        var value = $(this).val();
+                        that.types[value] = elemEntryForm.children(".rocket-script-type-" + value).detach();
+                    });
+                    that.elemSelect.change(function () {
+                        if (null !== that.elemCurrentType) {
+                            that.elemCurrentType.detach();
+                        }
+                        that.elemCurrentType = that.types[that.elemSelect.val()].appendTo(that.elemEntryForm);
+                        rocketTs.updateUi();
+                    }).change();
+                }).call(this, this);
+            }
+            return TypeSelection;
+        }());
+        rocketTs.ready(function ($) {
+            rocketTs.registerUiInitFunction(".rocket-type-dependent-entry-form", function (elemEntryForm) {
+                new TypeSelection(elemEntryForm);
+            });
+        });
+    })(edit = spec.edit || (spec.edit = {}));
+})(spec || (spec = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -3810,1090 +4916,6 @@ var ui;
         });
     });
 })(ui || (ui = {}));
-/// <reference path="../rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var $ = jQuery;
-    var Error = (function () {
-        function Error(errorList, elemError, elemMessage) {
-            this.elemError = elemError;
-            this.elemLi = $("<li />");
-            this.elemMessage = elemMessage;
-            (function (that) {
-                var elemA = $("<a />", {
-                    "href": "#"
-                }).appendTo(that.elemLi);
-                $("<div />", {
-                    "class": "error-list-label",
-                    "text": elemMessage.text() || "Fehler"
-                }).appendTo(elemA);
-                $("<div />", {
-                    "class": "error-list-path",
-                    "text": errorList.determinePathLabel(that)
-                }).appendTo(elemA);
-                elemA.click(function (e) {
-                    e.preventDefault();
-                    errorList.scrollTo(that);
-                    that.elemLi.find("input[type=text], textarea").first().focus();
-                });
-                elemA.mouseenter(function () {
-                    errorList.highlight(that);
-                }).mouseleave(function () {
-                    errorList.normalize(that);
-                });
-            }).call(this, this);
-        }
-        Error.prototype.getElem = function () {
-            return this.elemError;
-        };
-        Error.prototype.getElemLi = function () {
-            return this.elemLi;
-        };
-        return Error;
-    }());
-    var ErrorList = (function () {
-        function ErrorList() {
-            this.elemFixedContainer = rocketTs.getElemContentContainer();
-            this.elemList = $("<ul />", {
-                "class": "rocket-error-list"
-            });
-        }
-        ErrorList.prototype.hasErrors = function () {
-            return this.elemList.children().length > 0;
-        };
-        ErrorList.prototype.getElemList = function () {
-            return this.elemList;
-        };
-        ErrorList.prototype.determinePathElements = function (elem) {
-            return elem.parents(".rocket-has-error");
-        };
-        ErrorList.prototype.determinePathLabel = function (error) {
-            var elem = error.getElem(), labelParts = [elem.children("label:first").text()];
-            this.determinePathElements(error.getElem()).each(function () {
-                labelParts.unshift($(this).children("label:first").text());
-            });
-            return labelParts.join(" / ");
-        };
-        ErrorList.prototype.highlight = function (error) {
-            var elem = error.getElem().addClass("rocket-highlighted");
-            //			this.determinePathElements(error.getElem()).each(function() {
-            //				$(this).addClass("rocket-highlighted");
-            //			});
-        };
-        ErrorList.prototype.normalize = function (error) {
-            var elem = error.getElem().removeClass("rocket-highlighted");
-            //			this.determinePathElements(error.getElem()).each(function() {
-            //				$(this).removeClass("rocket-highlighted");
-            //			});
-        };
-        ErrorList.prototype.scrollTo = function (error) {
-            this.elemFixedContainer.animate({
-                scrollTop: "+=" + (error.getElem().offset().top - this.elemFixedContainer.offset().top)
-            });
-        };
-        ErrorList.prototype.addError = function (elemError, elemMessage) {
-            var error = new Error(this, elemError, elemMessage);
-            this.elemList.append(error.getElemLi());
-            return error;
-        };
-        return ErrorList;
-    }());
-    rocketTs.ready(function () {
-        var errorList = new ErrorList();
-        $(".rocket-message-error").each(function () {
-            errorList.addError($(this).parents(".rocket-has-error:first"), $(this));
-        });
-        if (errorList.hasErrors()) {
-            var additionalContent = rocketTs.getOrCreateAdditionalContent();
-            additionalContent.createAndPrependEntry(additionalContent.getElemContent().data("error-list-label"), errorList.getElemList());
-        }
-    });
-})(spec || (spec = {}));
-/// <reference path="../rocket.ts" />
-/// <reference path="../ui/panels.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    $ = jQuery;
-    var AsideContainer = (function () {
-        function AsideContainer(elemContainer) {
-            this.elemContainer = elemContainer;
-            this.elemMainContainer = $("<div />", {
-                "class": "rocket-main-bundle"
-            });
-            this.elemAsideContainer = $("<div />", {
-                "class": "rocket-aside-bundle"
-            });
-            this.elemContainer.children(":not(.rocket-control-group-aside)").appendTo(this.elemMainContainer);
-            this.elemContainer.children(".rocket-control-group-aside").appendTo(this.elemAsideContainer);
-            this.elemMainContainer.appendTo(this.elemContainer);
-            this.elemAsideContainer.appendTo(this.elemContainer);
-        }
-        return AsideContainer;
-    }());
-    rocketTs.ready(function () {
-        rocketTs.registerUiInitFunction(".rocket-aside-container", function (elem) {
-            new AsideContainer(elem);
-        });
-        rocketTs.registerUiInitFunction(".rocket-control-group-main", function (elem) {
-            var elemNextMainContainer = elem.next(".rocket-control-group-main");
-            if (elemNextMainContainer.length === 0)
-                return;
-            var elemPanelGroup = $("<div />", {
-                "class": "rocket-grouped-panels"
-            });
-            elemPanelGroup.insertBefore(elem).append(elem);
-            var tmpElemNextMainContainer;
-            do {
-                tmpElemNextMainContainer = elemNextMainContainer.next(".rocket-control-group-main");
-                elemPanelGroup.append(rocketTs.markAsInitialized(".rocket-control-group-main", elemNextMainContainer));
-                elemNextMainContainer = tmpElemNextMainContainer;
-            } while (elemNextMainContainer.length > 0);
-            rocketTs.markAsInitialized(".rocket-grouped-panels", elemPanelGroup);
-            new ui.PanelGroup(elemPanelGroup);
-        });
-    });
-})(spec || (spec = {}));
-/// <reference path="..\..\rocket.ts" />
-/// <reference path="..\common.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var edit;
-    (function (edit) {
-        $ = jQuery;
-        var ToOneCurrent = (function () {
-            function ToOneCurrent(toOne, elem, removable, toOneNew, replaceItemLabel) {
-                if (toOneNew === void 0) { toOneNew = null; }
-                if (replaceItemLabel === void 0) { replaceItemLabel = null; }
-                this.elemRemove = null;
-                this.elemReplace = null;
-                this.toOneNew = null;
-                this.removable = null;
-                this.replaceItemLabel = null;
-                this.elemUlReplaceControlOptions = null;
-                this.toOne = toOne;
-                this.elem = elem;
-                this.toOneNew = toOneNew;
-                this.replaceItemLabel = replaceItemLabel;
-                this.elemContent = elem.find(".rocket-to-one-content");
-                this.eiSpecId = elem.data("ei-spec-id");
-                (function (that) {
-                    that.setRemovable(removable);
-                    if (null !== toOneNew) {
-                        if (toOneNew.isAvailabale()) {
-                            //form was sent and has errors
-                            that.remove();
-                        }
-                        else {
-                            toOneNew.setToOneCurrent(that);
-                            toOneNew.getElemAdd().hide();
-                            toOneNew.applyAdd(replaceItemLabel, function () {
-                                that.resetControls();
-                                that.remove();
-                            });
-                        }
-                    }
-                }).call(this, this);
-            }
-            ToOneCurrent.prototype.setLoading = function () {
-                this.elemContent.hide();
-                this.elem.append(rocketTs.createLoadingElem());
-            };
-            ToOneCurrent.prototype.getEiSpecId = function () {
-                return this.eiSpecId;
-            };
-            ToOneCurrent.prototype.resetControls = function () {
-                if (null !== this.elemRemove) {
-                    this.elemRemove.parent().remove();
-                    this.elemRemove = null;
-                }
-                if (null !== this.elemReplace) {
-                    this.elemReplace.parent().remove();
-                    this.elemReplace = null;
-                }
-            };
-            ToOneCurrent.prototype.getElemContent = function () {
-                return this.elemContent;
-            };
-            ToOneCurrent.prototype.setRemovable = function (removable) {
-                if (removable === this.removable)
-                    return;
-                var that = this;
-                if (removable) {
-                    if (null !== this.toOneNew) {
-                        var replaceControl = new ToOneRecycleControl(that.toOne, function (eiSpecId) {
-                            that.setLoading();
-                            that.toOneNew.activate(eiSpecId);
-                        }, function () {
-                            that.setLoading();
-                            that.toOneNew.activate();
-                        });
-                        replaceControl.setConfirmMessage(this.elem.data("replace-confirm-msg"));
-                        replaceControl.setConfirmOkLabel(this.elem.data("replace-ok-label"));
-                        replaceControl.setConfirmCancelLabel(this.elem.data("replace-cancel-label"));
-                        this.elemReplace = replaceControl.getControlElem();
-                        if (this.toOneNew.isRemovable()) {
-                            this.elemRemove = this.toOne.addControl(this.elem.data("remove-item-label"), function () {
-                                that.remove();
-                                that.resetControls();
-                                that.toOneNew.getElemAdd().show();
-                            }, 'fa fa-times');
-                        }
-                    }
-                    else {
-                        this.elemRemove = this.toOne.addControl(this.elem.data("remove-item-label"), function () {
-                            that.remove();
-                        }, 'fa fa-times');
-                    }
-                }
-                else {
-                    if (null !== this.elemRemove) {
-                        this.elemRemove.parent().remove();
-                        this.elemRemove = null;
-                    }
-                    if (null !== this.elemReplace) {
-                        this.elemReplace.parent().remove();
-                        this.elemReplace = null;
-                    }
-                }
-                this.removable = removable;
-            };
-            ToOneCurrent.prototype.remove = function () {
-                this.elem.remove();
-            };
-            return ToOneCurrent;
-        }());
-        var ToOneSelectorStackedContent = (function () {
-            function ToOneSelectorStackedContent(toOneSelector, elemContent) {
-                this.stackedContentContainer = null;
-                this.overviewTools = null;
-                this.startObservingOnLoad = false;
-                this.idClassName = "rocket-to-one-stacked-content-" + ++ToOneSelectorStackedContent.lastId;
-                this.elemContent = $("<div />", {
-                    "class": "rocket-to-one-stacked-content " + this.idClassName
-                }).append($("<div />", {
-                    "class": "rocket-panel"
-                }).append(elemContent));
-                this.toOneSelector = toOneSelector;
-                (function (that) {
-                    elemContent.on('overview.contentLoaded', function (e, overviewTools) {
-                        that.overviewTools = overviewTools;
-                        overviewTools.getFixedHeader().setApplyDefaultFixedContainer(false);
-                        if (null !== that.stackedContentContainer) {
-                            overviewTools.setElemFixedContainer(that.stackedContentContainer.getElem(), that.startObservingOnLoad);
-                        }
-                        that.overviewTools.setSelectable(false);
-                    });
-                    rocketTs.registerUiInitFunction("." + that.idClassName + " .rocket-overview-content:first > tr > .rocket-entry-selector", function (elem) {
-                        var id = elem.data("entry-id-rep"), identityString = elem.data("identity-string");
-                        rocketTs.creatControlElem(toOneSelector.getSelectLabel() + " (" + identityString + ")", function () {
-                            var identityStrings = {};
-                            identityStrings[id] = identityString;
-                            toOneSelector.applyIdentityStrings(identityStrings);
-                            that.stackedContentContainer.close();
-                        }).appendTo(elem);
-                        $(window).trigger('resize.overview');
-                    });
-                }).call(this, this);
-            }
-            ToOneSelectorStackedContent.prototype.getTitle = function () {
-                return "test";
-            };
-            ;
-            ToOneSelectorStackedContent.prototype.getElemContent = function () {
-                return this.elemContent;
-            };
-            ToOneSelectorStackedContent.prototype.setup = function (stackedContentContainer) {
-                this.stackedContentContainer = stackedContentContainer;
-                if (null !== this.overviewTools) {
-                    this.overviewTools.setElemFixedContainer(stackedContentContainer.getElem(), false);
-                }
-            };
-            ToOneSelectorStackedContent.prototype.onAnimationComplete = function () {
-                if (null !== this.overviewTools) {
-                    this.overviewTools.getFixedHeader().startObserving();
-                }
-                else {
-                    this.startObservingOnLoad = false;
-                }
-            };
-            ToOneSelectorStackedContent.prototype.onClose = function () {
-                this.overviewTools.getFixedHeader().reset();
-                this.overviewTools.getFixedHeader().stopObserving();
-            };
-            ToOneSelectorStackedContent.prototype.onClosed = function () {
-                this.stackedContentContainer.getElem().scrollTop(0);
-                this.startObservingOnLoad = false;
-            };
-            ToOneSelectorStackedContent.lastId = 0;
-            return ToOneSelectorStackedContent;
-        }());
-        var ToOneSelector = (function () {
-            function ToOneSelector(elem, removeItemLabel) {
-                this.elemSelect = null;
-                this.elemReset = null;
-                this.elemRemove = null;
-                this.preloadedStackedContent = null;
-                this.elem = elem;
-                this.overviewToolsUrl = elem.data("overview-tools-url");
-                this.elemInput = elem.find("input:first").hide();
-                this.identityStrings = elem.data("identity-strings") || null;
-                this.originalIdRep = elem.data("original-id-rep");
-                this.selectLabel = elem.data("select-label");
-                this.resetLabel = elem.data("reset-label");
-                this.elemLabel = $("<span />");
-                (function (that) {
-                    that.elemLabelContainer = $("<div />", {
-                        "class": "rocket-relation-label-container"
-                    }).append(that.elemLabel).insertAfter(that.elemInput);
-                    that.elemRemove = rocketTs.creatControlElem(removeItemLabel, function () {
-                        that.applyIdentityStrings(null);
-                        that.elemLabelContainer.detach();
-                    }, "fa fa-times").appendTo(that.elemLabelContainer);
-                    that.applyIdentityStrings(that.getIdentityString(that.elemInput.val()));
-                    that.initControls();
-                }).call(this, this);
-            }
-            ToOneSelector.prototype.getIdentityString = function (idRep) {
-                if (!idRep)
-                    return null;
-                var identityString = {};
-                identityString[idRep] = this.identityStrings[idRep];
-                return identityString;
-            };
-            ToOneSelector.prototype.getSelectLabel = function () {
-                return this.selectLabel;
-            };
-            ToOneSelector.prototype.initControls = function () {
-                var that = this, elemControls = $("<div />", {
-                    "class": "rocket-to-one-controls"
-                }).insertAfter(this.elemLabelContainer);
-                this.elemBtnSelect = rocketTs.creatControlElem(this.selectLabel, function () {
-                    rocketTs.getContentStack().addStackedContent(that.preloadedStackedContent);
-                    rocketTs.updateUi();
-                }).appendTo(elemControls).addClass("rocket-loading").prop("disabled", true);
-                this.elemReset = rocketTs.creatControlElem(this.resetLabel, function () {
-                    that.applyIdentityStrings(that.getIdentityString(that.originalIdRep));
-                }).appendTo(elemControls);
-                that.loadOverlay();
-            };
-            ToOneSelector.prototype.loadOverlay = function () {
-                var that = this;
-                $.getJSON(this.overviewToolsUrl, function (data) {
-                    that.preloadedStackedContent = new ToOneSelectorStackedContent(that, rocketTs.analyzeAjahData(data));
-                    that.preloadedStackedContent.getElemContent().appendTo($("body"));
-                    rocketTs.updateUi();
-                    that.preloadedStackedContent.getElemContent().detach();
-                    that.elemBtnSelect.removeClass("rocket-loading").prop("disabled", false);
-                });
-            };
-            ToOneSelector.prototype.applyIdentityStrings = function (identityObject) {
-                if (identityObject === void 0) { identityObject = null; }
-                var that = this;
-                this.elemLabelContainer.insertAfter(this.elemInput);
-                if (null === identityObject) {
-                    this.elemInput.val(null);
-                    this.elemLabel.empty();
-                }
-                else {
-                    $.each(identityObject, function (id, label) {
-                        that.elemInput.val(id);
-                        that.elemLabel.text(label);
-                        return false;
-                    });
-                }
-                if (!this.elemInput.val()) {
-                    this.elemRemove.hide();
-                }
-                else {
-                    this.elemRemove.show();
-                }
-            };
-            return ToOneSelector;
-        }());
-        var ToOneNew = (function () {
-            function ToOneNew(toOne, elem, removable) {
-                this.elemRemove = null;
-                this.removable = null;
-                this.entryFormLoaded = false;
-                this.activated = false;
-                this.addCallback = null;
-                this.elemEntryForm = null;
-                this.toOneCurrent = null;
-                this.elemScriptTypeSelector = null;
-                this.elemTypeSelection = null;
-                this.elemUlTypes = null;
-                this.entryFormCommandAdd = null;
-                this.toOne = toOne;
-                this.elem = elem;
-                this.newEntryFormUrl = elem.data("new-entry-form-url");
-                this.removeItemLabel = elem.data("remove-item-label");
-                this.addItemLabel = elem.data("add-item-label");
-                this.propertyPath = elem.data("property-path");
-                var elemContents = elem.children();
-                this.elemEntryFormContainer = $("<div />");
-                (function (that) {
-                    if (elemContents.length > 0) {
-                        that.initializeContent(elemContents);
-                        that.activated = true;
-                        that.entryFormLoaded = true;
-                        if (that.hasTypeSelection()) {
-                            if (!elem.data("prefilled")) {
-                                that.applyEiSpecId(that.elemTypeSelection.val());
-                            }
-                            else {
-                                that.initializeAdd();
-                            }
-                        }
-                        else {
-                            that.elemEntryFormContainer.appendTo(elem);
-                        }
-                    }
-                    else {
-                        that.initializeAdd();
-                        that.elemEntryFormContainer.hide();
-                    }
-                    that.setRemovable(removable);
-                }).call(this, this);
-            }
-            ToOneNew.prototype.getElem = function () {
-                return this.elem;
-            };
-            ToOneNew.prototype.getElemAdd = function () {
-                return this.entryFormCommandAdd.getElemContainer();
-            };
-            ToOneNew.prototype.initTypeSelction = function () {
-                this.elemScriptTypeSelector = this.elemEntryForm.find("> .rocket-script-type-selector"),
-                    this.elemTypeSelection = this.elemScriptTypeSelector.find(".rocket-script-type-selection");
-            };
-            ToOneNew.prototype.hasTypeSelection = function () {
-                return this.elemScriptTypeSelector.length > 0 && this.elemScriptTypeSelector.length > 0;
-            };
-            ToOneNew.prototype.setToOneCurrent = function (toOneCurrent) {
-                this.toOneCurrent = toOneCurrent;
-            };
-            ToOneNew.prototype.isAvailabale = function () {
-                return this.activated;
-            };
-            ToOneNew.prototype.initializeContent = function (elemEntryForm) {
-                this.elemEntryForm = elemEntryForm;
-                this.initTypeSelction();
-                this.elemEntryFormContainer.append(elemEntryForm);
-                this.elemEntryFormContainer.children(".rocket-to-many-order-index").hide();
-                var that = this;
-                if (this.removable) {
-                    this.elemRemove = this.toOne.addControl(this.removeItemLabel, function () {
-                        that.elemEntryFormContainer.detach();
-                        that.initializeAdd();
-                    }, "fa fa-times");
-                }
-                if (this.hasTypeSelection()) {
-                    var toOneRecyleControl = new ToOneRecycleControl(that.toOne, function (eiSpecId) {
-                        that.applyEiSpecId(eiSpecId);
-                    });
-                    toOneRecyleControl.setExcludeEiSpecIdCallback(function (eiSpecId) {
-                        if (eiSpecId === that.elemTypeSelection.val())
-                            return true;
-                        return false;
-                    });
-                }
-            };
-            ToOneNew.prototype.initializeAdd = function () {
-                var that = this;
-                if (null === this.entryFormCommandAdd) {
-                    this.entryFormCommandAdd = new ui.EntryFormCommand(this.addItemLabel, function () {
-                        if (!that.toOne.isTypeSelectable()) {
-                            that.activate();
-                            return;
-                        }
-                        var elemButton = that.entryFormCommandAdd.getElemButton();
-                        if (elemButton.hasClass("rocket-command-insert-open")) {
-                            that.elemUlTypes.hide();
-                            elemButton.removeClass("rocket-command-insert-open");
-                            return;
-                        }
-                        if (null === that.elemUlTypes) {
-                            that.elemUlTypes = $("<ul />", {
-                                "class": "rocket-dd-menu-open"
-                            }).insertAfter(elemButton);
-                        }
-                        else {
-                            that.elemUlTypes.empty();
-                        }
-                        elemButton.addClass("rocket-command-insert-open");
-                        that.toOne.createTypeElemLis(function (eiSpecId) {
-                            that.activate(eiSpecId);
-                            elemButton.removeClass("rocket-command-insert-open");
-                            that.elemUlTypes.hide();
-                        }).forEach(function (elemLi) {
-                            elemLi.appendTo(that.elemUlTypes).children("a").removeClass();
-                        });
-                    }, "fa fa-plus");
-                }
-                this.entryFormCommandAdd.getElemContainer().appendTo(this.elem);
-            };
-            ToOneNew.prototype.setRemovable = function (removable) {
-                if (this.removable === removable)
-                    return;
-                var that = this;
-                if (removable) {
-                    var that = this;
-                    this.initializeAdd();
-                }
-                else {
-                    if (this.activated) {
-                        this.activate();
-                    }
-                    if (null !== this.elemRemove) {
-                        this.elemRemove.parent().remove();
-                        this.elemRemove = null;
-                    }
-                }
-                this.removable = removable;
-            };
-            ToOneNew.prototype.isRemovable = function () {
-                return this.removable;
-            };
-            ToOneNew.prototype.applyAdd = function (addItemLabel, callback) {
-                this.addItemLabel = addItemLabel;
-                this.entryFormCommandAdd.getElemButton().text(addItemLabel);
-                this.addCallback = callback;
-            };
-            ToOneNew.prototype.applyEiSpecId = function (eiSpecId) {
-                if (this.elemTypeSelection.children("option[value=" + eiSpecId + "]").length === 0)
-                    return;
-                this.elemScriptTypeSelector.hide();
-                this.toOne.setTypeSpecLabel(this.toOne.determineEiSpecLabel(eiSpecId));
-                this.elemTypeSelection.val(eiSpecId).change();
-                this.elem.trigger('applyEiSpecId.toOne', eiSpecId);
-            };
-            ToOneNew.prototype.activate = function (eiSpecId) {
-                if (eiSpecId === void 0) { eiSpecId = null; }
-                var that = this;
-                this.requestNewEntryForm(function () {
-                    that.elemEntryFormContainer.appendTo(that.elem);
-                    rocketTs.updateUi();
-                    if (null !== eiSpecId && that.hasTypeSelection()) {
-                        that.applyEiSpecId(eiSpecId);
-                    }
-                    if (null !== that.entryFormCommandAdd) {
-                        that.entryFormCommandAdd.getElemContainer().detach();
-                    }
-                    if (null !== that.addCallback) {
-                        that.addCallback();
-                    }
-                });
-                this.activated = true;
-            };
-            ToOneNew.prototype.requestNewEntryForm = function (callback) {
-                var that = this;
-                if (this.entryFormLoaded || this.activated) {
-                    if (null !== this.elemEntryForm) {
-                        this.elemEntryForm.appendTo(this.elemEntryFormContainer);
-                        callback();
-                    }
-                    return;
-                }
-                this.entryFormLoaded = true;
-                if (null !== this.entryFormCommandAdd) {
-                    this.entryFormCommandAdd.setLoading(true);
-                }
-                $.getJSON(this.newEntryFormUrl, { propertyPath: this.propertyPath }, function (data) {
-                    that.initializeContent(rocketTs.analyzeAjahData(data));
-                    rocketTs.updateUi();
-                    that.elemEntryFormContainer.show();
-                    if (null !== that.entryFormCommandAdd) {
-                        that.entryFormCommandAdd.setLoading(false);
-                    }
-                    callback();
-                });
-            };
-            return ToOneNew;
-        }());
-        var ToOneRecycleControl = (function () {
-            function ToOneRecycleControl(toOne, typeCallback, defaultCallback) {
-                if (defaultCallback === void 0) { defaultCallback = null; }
-                this.elemUlReplaceControlOptions = null;
-                this.excludeEiSpecIdCallback = null;
-                this.confirmMessage = null;
-                this.confirmOkLabel = null;
-                this.confirmCancelLabel = null;
-                this.toOne = toOne;
-                this.typeCallback = typeCallback;
-                this.defaultCallback = defaultCallback;
-                (function (that) {
-                    that.controlElem = this.toOne.addControl(this.replaceItemLabel, function () {
-                        if (!that.toOne.isTypeSelectable()) {
-                            if (null !== defaultCallback) {
-                                defaultCallback();
-                                return;
-                            }
-                        }
-                        if (null !== that.confirmMessage
-                            && (null === that.elemUlReplaceControlOptions
-                                || (null !== that.elemUlReplaceControlOptions
-                                    && !that.elemUlReplaceControlOptions.hasClass("rocket-open")))) {
-                            var dialog = new ui.Dialog(that.confirmMessage);
-                            dialog.addButton(that.confirmOkLabel, function (e) {
-                                e.stopPropagation();
-                                that.initList();
-                            });
-                            dialog.addButton(that.confirmCancelLabel, function () {
-                                //defaultbehaviour is to close the dialog
-                            });
-                            rocketTs.showDialog(dialog);
-                            return;
-                        }
-                        that.initList();
-                    }, 'fa fa-recycle').addClass("rocket-control-danger");
-                }).call(this, this);
-            }
-            ToOneRecycleControl.prototype.initList = function () {
-                var that = this;
-                if (null === this.elemUlReplaceControlOptions) {
-                    this.elemUlReplaceControlOptions = $("<ul />", {
-                        "class": "rocket-control-options"
-                    }).insertAfter(this.controlElem);
-                }
-                else {
-                    if (this.elemUlReplaceControlOptions.hasClass("rocket-open")) {
-                        this.hideList();
-                        return;
-                    }
-                    this.elemUlReplaceControlOptions.empty();
-                }
-                console.log(this.elemUlReplaceControlOptions);
-                this.showList();
-                this.toOne.createTypeElemLis(function (eiSpecId) {
-                    that.typeCallback(eiSpecId);
-                    that.hideList();
-                }, this.excludeEiSpecIdCallback).forEach(function (elemLi) {
-                    elemLi.appendTo(that.elemUlReplaceControlOptions);
-                });
-                var elemReplacePosition = this.controlElem.position();
-                this.elemUlReplaceControlOptions.css({
-                    "position": "absolute",
-                    "zIndex": 2,
-                    "top": elemReplacePosition.top + this.controlElem.outerHeight(),
-                    "left": elemReplacePosition.left + this.controlElem.outerWidth()
-                        - this.elemUlReplaceControlOptions.outerWidth()
-                });
-            };
-            ToOneRecycleControl.prototype.setConfirmMessage = function (confirmMessage) {
-                if (confirmMessage === void 0) { confirmMessage = null; }
-                this.confirmMessage = confirmMessage;
-            };
-            ToOneRecycleControl.prototype.setConfirmOkLabel = function (confirmOkLabel) {
-                if (confirmOkLabel === void 0) { confirmOkLabel = null; }
-                this.confirmOkLabel = confirmOkLabel;
-            };
-            ToOneRecycleControl.prototype.setConfirmCancelLabel = function (confirmCancelLabel) {
-                if (confirmCancelLabel === void 0) { confirmCancelLabel = null; }
-                this.confirmCancelLabel = confirmCancelLabel;
-            };
-            ToOneRecycleControl.prototype.hideList = function () {
-                this.elemUlReplaceControlOptions.removeClass("rocket-open");
-                this.elemUlReplaceControlOptions.hide();
-                $(window).off('off.toOneRecycle');
-            };
-            ToOneRecycleControl.prototype.showList = function () {
-                this.elemUlReplaceControlOptions.addClass("rocket-open").show();
-                var that = this;
-                $(window).on('click.toOneRecycle', function (e) {
-                    if ($(e.target).is(that.controlElem) || $.contains(that.controlElem.get(0), e.target))
-                        return;
-                    that.hideList();
-                });
-            };
-            ToOneRecycleControl.prototype.setExcludeEiSpecIdCallback = function (excludeEiSpecIdCallback) {
-                if (excludeEiSpecIdCallback === void 0) { excludeEiSpecIdCallback = null; }
-                this.excludeEiSpecIdCallback = excludeEiSpecIdCallback;
-            };
-            ToOneRecycleControl.prototype.getControlElem = function () {
-                return this.controlElem;
-            };
-            return ToOneRecycleControl;
-        }());
-        var TypeConfig = (function () {
-            function TypeConfig(label, callback) {
-                this.label = label;
-                this.callback = callback;
-            }
-            TypeConfig.prototype.getLabel = function () {
-                return this.label;
-            };
-            TypeConfig.prototype.getCallback = function () {
-                return this.callback;
-            };
-            return TypeConfig;
-        }());
-        var EiSpecConfig = (function () {
-            function EiSpecConfig(specId) {
-                this.additionalTypeConfigs = [];
-                this.specId = specId;
-            }
-            EiSpecConfig.prototype.registerTypeConfig = function (label, callback) {
-                this.additionalTypeConfigs.push(new TypeConfig(label, callback));
-            };
-            EiSpecConfig.prototype.getAdditionalTypeConfigs = function () {
-                return this.additionalTypeConfigs;
-            };
-            EiSpecConfig.prototype.reset = function () {
-                this.additionalTypeConfigs = [];
-            };
-            return EiSpecConfig;
-        }());
-        var ToOne = (function () {
-            function ToOne(elem) {
-                this.mandatory = false;
-                this.toOneNew = null;
-                this.toOneCurrent = null;
-                this.toOneSelector = null;
-                this.elemUlControls = null;
-                this.eiSpecConfigs = {};
-                this.elem = elem;
-                this.mandatory = elem.data("mandatory") || false;
-                this.itemLabel = elem.data("item-label");
-                this.replaceItemLabel = elem.data("replace-item-label");
-                this.removeItemLabel = elem.data("remove-item-label");
-                this.eiSpecLabels = elem.data("ei-spec-labels");
-                this.elemLabel = elem.parent(".rocket-controls:first").prev("label");
-                this.defaultLabel = this.elemLabel.text();
-                this.typeSelectable = false;
-                (function (that) {
-                    var numTypes = 0;
-                    $.each(this.eiSpecLabels, function () {
-                        numTypes++;
-                    });
-                    that.typeSelectable = numTypes > 1;
-                    var elemNew = elem.children(".rocket-new:first");
-                    if (elemNew.length > 0) {
-                        that.toOneNew = new ToOneNew(that, elemNew, !that.mandatory);
-                    }
-                    var elemCurrent = elem.children(".rocket-current:first");
-                    if (elemCurrent.length > 0) {
-                        if (that.typeSelectable) {
-                            that.setTypeSpecLabel(elemCurrent.data("item-label"));
-                        }
-                        that.toOneCurrent = new ToOneCurrent(that, elemCurrent, null !== that.toOneNew || !that.mandatory, that.toOneNew, that.replaceItemLabel);
-                    }
-                    var elemSelector = elem.children(".rocket-selector:first");
-                    if (elemSelector.length > 0) {
-                        new ToOneSelector(elemSelector, that.removeItemLabel);
-                    }
-                }).call(this, this);
-            }
-            ToOne.prototype.isTypeSelectable = function () {
-                return this.typeSelectable;
-            };
-            ToOne.prototype.getEiSpecLabels = function () {
-                return this.eiSpecLabels;
-            };
-            ToOne.prototype.setEiSpecLabels = function (eiSpecLabels) {
-                this.eiSpecLabels = eiSpecLabels;
-            };
-            ToOne.prototype.determineEiSpecLabel = function (eiSpecId) {
-                return this.eiSpecLabels[eiSpecId];
-            };
-            ToOne.prototype.setTypeSpecLabel = function (typeSpecLabel) {
-                this.elemLabel.text(this.defaultLabel + ": " + typeSpecLabel);
-            };
-            ToOne.prototype.getToOneCurrent = function () {
-                return this.toOneCurrent;
-            };
-            ToOne.prototype.getToOneNew = function () {
-                return this.toOneNew;
-            };
-            ToOne.prototype.addControl = function (text, callback, iconClassName) {
-                if (null === this.elemUlControls) {
-                    this.elemUlControls = $("<ul />", {
-                        "class": "rocket-simple-controls"
-                    }).css({
-                        "position": "absolute",
-                        "top": "0",
-                        "right": "0"
-                    }).insertAfter(this.elemLabel);
-                }
-                var elemControl = rocketTs.creatControlElem(text, callback, iconClassName);
-                $("<li />").append(elemControl)
-                    .appendTo(this.elemUlControls);
-                return elemControl;
-            };
-            ToOne.prototype.setMandatory = function (mandatory) {
-                this.mandatory = mandatory;
-                if (null !== this.toOneCurrent) {
-                    this.toOneCurrent.setRemovable(null !== this.toOneNew || !mandatory);
-                }
-                if (null !== this.toOneNew) {
-                    this.toOneNew.setRemovable(!mandatory);
-                }
-            };
-            ToOne.prototype.getElem = function () {
-                return this.elem;
-            };
-            ToOne.prototype.hasEiSpecConfig = function (eiSpecId) {
-                return this.eiSpecConfigs.hasOwnProperty(eiSpecId);
-            };
-            ToOne.prototype.getOrCreateEiSpecConfig = function (eiSpecId) {
-                if (!this.eiSpecLabels.hasOwnProperty(eiSpecId)) {
-                    throw new Error("Invalid ei spec id: " + eiSpecId);
-                }
-                if (!this.eiSpecConfigs.hasOwnProperty(eiSpecId)) {
-                    this.eiSpecConfigs[eiSpecId] = new EiSpecConfig(eiSpecId);
-                }
-                return this.eiSpecConfigs[eiSpecId];
-            };
-            ToOne.prototype.createTypeElemLis = function (typeCallback, excludeEiSpecIdCallback) {
-                if (excludeEiSpecIdCallback === void 0) { excludeEiSpecIdCallback = null; }
-                var lis = [], that = this;
-                $.each(that.getEiSpecLabels(), function (eiSpecId, label) {
-                    if (that.hasEiSpecConfig(eiSpecId)) {
-                        var eiSpecConfig = that.getOrCreateEiSpecConfig(eiSpecId);
-                        eiSpecConfig.getAdditionalTypeConfigs().forEach(function (typeConfig) {
-                            lis.push(that.createTypeElemLi(typeConfig.getLabel(), function () {
-                                typeConfig.getCallback()(that);
-                                typeCallback(eiSpecId);
-                            }));
-                        });
-                        return;
-                    }
-                    if (null !== excludeEiSpecIdCallback) {
-                        if (excludeEiSpecIdCallback(eiSpecId))
-                            return;
-                    }
-                    lis.push(that.createTypeElemLi(label, function () {
-                        typeCallback(eiSpecId);
-                    }));
-                });
-                lis.sort(function (elemLiA, elemLiB) {
-                    if (elemLiA.data("sort") < elemLiB.data("sort"))
-                        return -1;
-                    if (elemLiA.data("sort") == elemLiB.data("sort"))
-                        return 0;
-                    return 1;
-                });
-                return lis;
-            };
-            ToOne.prototype.createTypeElemLi = function (label, callback) {
-                return $("<li />").append(rocketTs.creatControlElem(label, function () {
-                    callback();
-                })).data("sort", label);
-            };
-            return ToOne;
-        }());
-        $(document).ready(function () {
-            rocketTs.registerUiInitFunction("form .rocket-to-one", function (elem) {
-                elem.data('rocket-to-one', new ToOne(elem));
-                elem.trigger('initialized.toOne', elem.data('rocket-to-one'));
-            });
-        });
-    })(edit = spec.edit || (spec.edit = {}));
-})(spec || (spec = {}));
-/// <reference path="..\..\rocket.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var edit;
-    (function (edit) {
-        $ = jQuery;
-        var TypeSelection = (function () {
-            function TypeSelection(elemEntryForm) {
-                this.types = {};
-                this.elemCurrentType = null;
-                this.elemEntryForm = elemEntryForm;
-                this.elemSelect = elemEntryForm.find("> .rocket-script-type-selector .rocket-script-type-selection");
-                (function (that) {
-                    that.elemSelect.children().each(function () {
-                        var value = $(this).val();
-                        that.types[value] = elemEntryForm.children(".rocket-script-type-" + value).detach();
-                    });
-                    that.elemSelect.change(function () {
-                        if (null !== that.elemCurrentType) {
-                            that.elemCurrentType.detach();
-                        }
-                        that.elemCurrentType = that.types[that.elemSelect.val()].appendTo(that.elemEntryForm);
-                        rocketTs.updateUi();
-                    }).change();
-                }).call(this, this);
-            }
-            return TypeSelection;
-        }());
-        rocketTs.ready(function ($) {
-            rocketTs.registerUiInitFunction(".rocket-type-dependent-entry-form", function (elemEntryForm) {
-                new TypeSelection(elemEntryForm);
-            });
-        });
-    })(edit = spec.edit || (spec.edit = {}));
-})(spec || (spec = {}));
-/// <reference path="..\..\rocket.ts" />
-/// <reference path="..\..\ui\dialog.ts" />
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var spec;
-(function (spec) {
-    var edit;
-    (function (edit) {
-        var CriticalInput = (function () {
-            function CriticalInput(elem) {
-                this.dialog = null;
-                this.elem = elem;
-                this.elemLockedContainer = $("<div/>", {
-                    "class": "rocket-critical-input-locked-container"
-                }).insertAfter(elem);
-                this.elemLabel = $("<span/>", {
-                    text: this.determineLabel
-                }).appendTo(this.elemLockedContainer);
-                this.elemUnlock = $("<a/>", {
-                    "class": "rocket-critical-input-unlock rocket-control"
-                }).append($("<i/>", { "class": elem.data("icon-unlock") || "fa fa-pencil" }))
-                    .appendTo(this.elemLockedContainer);
-                elem.hide();
-                (function (that) {
-                    if (elem.data("confirm-message")) {
-                        that.initializeDialog();
-                    }
-                    that.elemUnlock.click(function (e) {
-                        e.preventDefault();
-                        if (null !== that.dialog) {
-                            rocketTs.showDialog(that.dialog);
-                        }
-                        else {
-                            that.showInput();
-                        }
-                    });
-                }).call(this, this);
-            }
-            CriticalInput.prototype.initializeDialog = function () {
-                var that = this;
-                this.dialog = new ui.Dialog(this.elem.data("confirm-message"));
-                this.dialog.addButton(this.elem.data("edit-label"), function () {
-                    that.showInput();
-                });
-                this.dialog.addButton(this.elem.data("cancel-label"), function () {
-                    //defaultbehaviour is to close the dialog
-                });
-            };
-            CriticalInput.prototype.showInput = function () {
-                this.elemLockedContainer.hide();
-                this.elemLockedContainer.show();
-                this.elemUnlock.remove();
-            };
-            ;
-            CriticalInput.prototype.determineLabel = function (elem) {
-                var label = elem.val();
-                if (elem.is("select")) {
-                    var elemOption = elem.find("option[value='" + label + "']");
-                    if (elemOption.length > 0) {
-                        label = elemOption.text();
-                    }
-                }
-                return label;
-            };
-            return CriticalInput;
-        }());
-    })(edit = spec.edit || (spec.edit = {}));
-})(spec || (spec = {}));
 /// <reference path="..\rocket.ts" />
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
@@ -4950,7 +4972,7 @@ var preview;
         new Iframe(elemIframe);
     });
 })(preview || (preview = {}));
-/// <reference path="..\..\rocket.ts" />
+/// <reference path="..\rocket.ts" />
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -4972,48 +4994,26 @@ var preview;
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  *
  */
-var spec;
-(function (spec) {
-    var display;
-    (function (display) {
-        $ = jQuery;
-        var ContentItem = (function () {
-            function ContentItem(elem) {
-                this.elem = elem;
-                this.elemType = elem.find(".rocket-gui-field-type").hide();
-                this.typeLabel = this.elemType.children(".rocket-controls").text();
-                elem.find(".rocket-field-orderIndex").hide();
-                new spec.EntryHeader(this.typeLabel, elem);
-            }
-            return ContentItem;
-        }());
-        var ContentItemPanel = (function () {
-            function ContentItemPanel(elemHeader, elemContent) {
-                this.elemHeader = elemHeader;
-                this.elemContent = elemContent;
-                (function () {
-                    elemContent.children(".rocket-content-item").each(function () {
-                        new ContentItem($(this));
-                    });
-                }).call(this, this);
-            }
-            return ContentItemPanel;
-        }());
-        var ContentItemComposer = (function () {
-            function ContentItemComposer(elem) {
-                this.elem = elem;
-                (function (that) {
-                    elem.children("h4").each(function () {
-                        new ContentItemPanel($(this), $(this).next());
-                    });
-                }).call(this, this);
-            }
-            return ContentItemComposer;
-        }());
-        rocketTs.ready(function () {
-            rocketTs.registerUiInitFunction(".rocket-content-item-composer", function (elemContentItemComposer) {
-                new ContentItemComposer(elemContentItemComposer);
+var tools;
+(function (tools) {
+    var MailCenter = (function () {
+        function MailCenter(elem) {
+            this.elem = elem;
+            elem.find("article").each(function () {
+                var elem = $(this);
+                var elemMessage = elem.children("dl:first");
+                elem.children("header:first").click(function () {
+                    elemMessage.slideToggle();
+                });
+                elemMessage.hide();
             });
-        });
-    })(display = spec.display || (spec.display = {}));
-})(spec || (spec = {}));
+        }
+        return MailCenter;
+    }());
+    rocketTs.ready(function () {
+        var elemMailCenter = $("#rocket-tools-mail-center");
+        if (elemMailCenter.length === 0)
+            return;
+        new MailCenter(elemMailCenter);
+    });
+})(tools || (tools = {}));

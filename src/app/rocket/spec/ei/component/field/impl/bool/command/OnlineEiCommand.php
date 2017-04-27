@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\bool\command;
 
-use rocket\spec\ei\component\field\impl\bool\OnlineEiProp;
+use rocket\spec\ei\component\field\impl\bool\OnlineEiField;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -30,7 +30,7 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -40,7 +40,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	const CONTROL_KEY = 'online_status';
 	const ID_BASE = 'online-status';
 	
-	private $onlineEiProp;
+	private $onlineEiField;
 	
 	public function getIdBase() {
 		return self::ID_BASE;
@@ -50,27 +50,27 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return 'Online Status';
 	}
 	
-	public function setOnlineEiProp(OnlineEiProp $onlineEiProp) {
-		$this->onlineEiProp = $onlineEiProp;
+	public function setOnlineEiField(OnlineEiField $onlineEiField) {
+		$this->onlineEiField = $onlineEiField;
 	}
 		
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = $eiu->lookup(OnlineController::class);
-		$controller->setOnlineEiProp($this->onlineEiProp);
+		$controller->setOnlineEiField($this->onlineEiField);
 		return $controller;
 	}
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
-		$eiEntry = $eiu->entry()->getEiEntry();
+	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+		$eiMapping = $eiu->entry()->getEiMapping();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$request = $view->getRequest();
 		$dtc = new DynamicTextCollection(Rocket::NS, $request->getN2nLocale());
-		$eiObject = $eiEntry->getEiObject();
+		$eiSelection = $eiMapping->getEiSelection();
 
 		$controlButton = new ControlButton($dtc->translate('ei_impl_online_offline_label'), 
 					$dtc->translate('ei_impl_online_offline_tooltip'));
 		
-		if ($eiEntry->getValue($this->onlineEiProp)) {
+		if ($eiMapping->getValue($this->onlineEiField)) {
 			$controlButton->setType(ControlButton::TYPE_SUCCESS);
 			$controlButton->setIconType(IconType::ICON_CHECK_CIRCLE);
 		} else {
@@ -80,8 +80,8 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		
 		$contextPath = $view->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext());
 		$controlButton->setAttrs(array('class' => 'rocket-online-cmd',
-				'data-online-url' => (string) $contextPath->ext($this->getId(), 'online', $eiEntry->getIdRep()),
-				'data-offline-url' => (string) $contextPath->ext($this->getId(), 'offline', $eiEntry->getIdRep())));
+				'data-online-url' => (string) $contextPath->ext($this->getId(), 'online', $eiMapping->getIdRep()),
+				'data-offline-url' => (string) $contextPath->ext($this->getId(), 'offline', $eiMapping->getIdRep())));
 		
 		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/online.js', Rocket::NS);
 

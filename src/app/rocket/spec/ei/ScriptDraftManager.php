@@ -24,7 +24,7 @@
 // use rocket\spec\config\SpecManager;
 // use n2n\persistence\orm\EntityManager;
 // use n2n\persistence\orm\model\EntityModelManager;
-// use rocket\spec\ei\component\field\DraftableEiProp;
+// use rocket\spec\ei\component\field\DraftableEiField;
 
 // use n2n\persistence\orm\store\PersistenceActionQueueImpl;
 // use n2n\persistence\orm\store\RemoveActionQueueImpl;
@@ -52,17 +52,17 @@
 // 			return $this->draftModels[$class->getName()];
 // 		}
 		
-// 		$eiType = $this->specManager->getEiTypeByClass($class);
+// 		$eiSpec = $this->specManager->getEiSpecByClass($class);
 		
 // 		$this->draftModels[$class->getName()] = $draftModel = new DraftModel($em);
 		
-// 		foreach ($eiType->getEiPropCollection()->combineAll() as $field) {
-// 			if ($field instanceof DraftableEiProp && $field->isDraftable()) {
+// 		foreach ($eiSpec->getEiFieldCollection()->combineAll() as $field) {
+// 			if ($field instanceof DraftableEiField && $field->isDraftable()) {
 // 				$draftModel->addDraftable($field);
 // 			}
 // 		}
 		
-// 		foreach ($eiType->getEiModificatorCollection()->combineAll() as $constraint) {
+// 		foreach ($eiSpec->getEiModificatorCollection()->combineAll() as $constraint) {
 // 			$constraint->setupDraftModel($draftModel, $this->drafManager !== null);
 // 		}
 

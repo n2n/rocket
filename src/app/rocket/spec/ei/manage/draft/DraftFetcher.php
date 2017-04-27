@@ -26,14 +26,14 @@ use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\persistence\PdoStatement;
-use rocket\spec\ei\manage\EiEntityObj;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\manage\LiveEntry;
+use rocket\spec\ei\EiSpec;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
 
 class DraftFetcher {
 	private $fetchDraftStmtBuilder;
-	private $eiType;
+	private $eiSpec;
 	private $stmt;
 	private $draftDefinition;
 	private $draftingContext;
@@ -41,10 +41,10 @@ class DraftFetcher {
 	private $bindValues = array();
 	private $entityObj;
 	
-	public function __construct(FetchDraftStmtBuilder $selectDraftStmtBuilder, EiType $eiType, 
+	public function __construct(FetchDraftStmtBuilder $selectDraftStmtBuilder, EiSpec $eiSpec, 
 			DraftDefinition $draftDefinition, DraftingContext $draftingContext, EntityManager $em) {
 		$this->fetchDraftStmtBuilder = $selectDraftStmtBuilder;
-		$this->eiType = $eiType;
+		$this->eiSpec = $eiSpec;
 		$this->draftDefinition = $draftDefinition;
 		$this->draftingContext = $draftingContext;
 		$this->em = $em;
@@ -123,20 +123,20 @@ class DraftFetcher {
 		
 		$entityObj = null;
 		if (null !== $entityObjId) {
-			$entityObj = $this->em->find($this->eiType->getEntityModel()->getClass(), $entityObjId);
+			$entityObj = $this->em->find($this->eiSpec->getEntityModel()->getClass(), $entityObjId);
 		}
 		
-		$eiEntityObj = null;
+		$liveEntry = null;
 		if ($entityObj !== null) {
-			$eiEntityObj = EiEntityObj::createFrom($this->eiType, $entityObj);
+			$liveEntry = LiveEntry::createFrom($this->eiSpec, $entityObj);
 		} else {
-			$eiEntityObj = EiEntityObj::createNew($this->eiType);
+			$liveEntry = LiveEntry::createNew($this->eiSpec);
 			if ($entityObjId !== null) {
-				$this->eiType->getEntityModel()->getIdDef()->getEntityProperty()
-						->writeValue($eiEntityObj->getEntityObj(), $entityObjId);
+				$this->eiSpec->getEntityModel()->getIdDef()->getEntityProperty()
+						->writeValue($liveEntry->getEntityObj(), $entityObjId);
 			}
 		}
-		$draft = new Draft($draftValuesResult->getId(), $eiEntityObj, $draftValuesResult->getLastMod(),
+		$draft = new Draft($draftValuesResult->getId(), $liveEntry, $draftValuesResult->getLastMod(),
 				$draftValuesResult->getUserId(), new DraftValueMap($draftValuesResult->getValues()));
 		$draft->setType($draftValuesResult->getType());
 		

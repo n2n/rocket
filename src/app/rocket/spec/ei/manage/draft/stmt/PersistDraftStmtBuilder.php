@@ -21,22 +21,22 @@
  */
 namespace rocket\spec\ei\manage\draft\stmt;
 
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 
 interface PersistDraftStmtBuilder extends DraftStmtBuilder {
 	
 	public function hasValues(): bool;
 	/**
-	 * @param EiPropPath $eiPropPath
+	 * @param EiFieldPath $eiFieldPath
 	 * @param scalar $value
 	 * @return string
 	 */
-	public function registerColumnRawValue(EiPropPath $eiPropPath, string $rawValue = null);
+	public function registerColumnRawValue(EiFieldPath $eiFieldPath, string $rawValue = null);
 	
 	/**
-	 * @param EiPropPath $eiPropPath
+	 * @param EiFieldPath $eiFieldPath
 	 * @param \Closure $bindCallback
 	 * @return string
 	 */
-	public function registerColumnCallback(EiPropPath $eiPropPath, \Closure $bindCallback);
+	public function registerColumnCallback(EiFieldPath $eiFieldPath, \Closure $bindCallback);
 }

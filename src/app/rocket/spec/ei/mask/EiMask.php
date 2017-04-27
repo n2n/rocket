@@ -22,20 +22,20 @@
 namespace rocket\spec\ei\mask;
 
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\config\mask\model\EntryGuiTree;
+use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
+use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\spec\ei\manage\util\model\EiuEntry;
-use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\config\mask\model\EiuEntryGuiTree;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 interface EiMask extends EiThing {
 		
@@ -45,10 +45,10 @@ interface EiMask extends EiThing {
 	public function setId(string $id = null);
 	
 	/**
-	 * @param EiType $eiType
+	 * @param EiSpec $eiSpec
 	 * @return EiMask
 	 */
-	public function determineEiMask(EiType $eiType): EiMask;
+	public function determineEiMask(EiSpec $eiSpec): EiMask;
 	
 	// 	/**
 	// 	 * @param string $id
@@ -88,66 +88,70 @@ interface EiMask extends EiThing {
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallControls(EiuFrame $eiuFrame, HtmlView $htmlView): array;
+	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView): array;
 	
 	/**
 	 * @param HtmlView $view
 	 * @param EntryModel $entryModel
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createEntryControls(EiuEntryGui $eiuEntryGui, HtmlView $view): array;
+	public function createEntryHrefControls(EiuGui $eiuGui, HtmlView $view): array;
 		
 	/**
-	 * @param EiObject $eiObject
+	 * @param EiSelection $eiSelection
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string;
+	public function createIdentityString(EiSelection $eiSelection, N2nLocale $n2nLocale): string;
 	
 	// 	/**
 	// 	 * @param EiFrame $eiFrame
-	// 	 * @param EiEntry $eiEntry
+	// 	 * @param EiMapping $eiMapping
 	// 	 * @param string $viewMode
 	// 	 * @param bool $makeEditable
-	// 	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
+	// 	 * @return \rocket\spec\ei\manage\gui\EiSelectionGui
 	// 	 */
-	// 	public function createEiEntryGui(EiFrame $eiFrame, EiEntry $eiEntry, $viewMode, $makeEditable);
+	// 	public function createEiSelectionGui(EiFrame $eiFrame, EiMapping $eiMapping, $viewMode, $makeEditable);
 	
 	/**
 	 * @return boolean
 	 */
 	public function isDraftingEnabled();
 
-	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
+	public function createListEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping,
+			bool $makeEditable): EntryGuiModel;
 	/**
 	 * @param EiFrame $eiFrame;
-	 * @param EiuEntryGui[]
-	 * @return HtmlView
+	 * @param EntryListModel $entryListModel
+	 * @return \n2n\web\ui\view\View
 	 */
-	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView;
+	public function createListView(EiFrame $eiFrame, array $entryGuis): View;
 
-	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
+	public function createTreeEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping,
+			bool $makeEditable): EntryGuiModel;
 
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EntryTreeListModel $entryListModel
-	 * @return HtmlView
+	 * @return \n2n\web\ui\view\View
 	 */
-	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $eiuEntryGuiTree): HtmlView;
+	public function createTreeView(EiFrame $eiFrame, EntryGuiTree $entryGuiTree): View;
 
 	/**
-	 * @param EiuEntryGui
+	 * @param EiFrame $eiFrame
+	 * @param EiMapping $eiMapping
 	 * @param bool $makeEditable
-	 * @return EiEntryGui
+	 * @return \rocket\spec\ei\manage\model\EntryGuiModel
 	 */
-	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
+	public function createBulkyEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping,
+			bool $makeEditable): EntryGuiModel;
 
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EntryModel $entryModel
-	 * @return HtmlView
+	 * @return \n2n\web\ui\view\View
 	 */
-	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView;
+	public function createBulkyView(EiFrame $eiFrame, EntryGui $entryGui): View;
 
 	public function isPreviewSupported(): bool;
 	

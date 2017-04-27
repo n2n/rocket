@@ -35,9 +35,9 @@ class PreviewHtmlBuilder {
 	private $previewModel;
 	private $entryModel;
 	private $eiFrame;
-	private $eiObject;
+	private $eiSelection;
 	private $n2nLocale;
-	private $eiType;
+	private $eiSpec;
 	private $areaObject;
 	private $areaEditable;
 	
@@ -49,7 +49,7 @@ class PreviewHtmlBuilder {
 		if (isset($previewModel)) {
 			$this->eiFrame = $this->previewModel->getEiFrame();
 			$this->entryModel = $previewModel->getEntryModel();
-			$this->eiType = $this->entryModel->getEiType();
+			$this->eiSpec = $this->entryModel->getEiSpec();
 		}
 		
 		// $this->view->getHtmlBuilder()->addJs('js/preview-inpage.js', 'rocket');
@@ -69,9 +69,9 @@ class PreviewHtmlBuilder {
 				return;
 			}
 						
-			$eiObject = $this->entryModel->getEiObject();
-			$areaObjectId = OrmUtils::extractId($areaObject, $this->eiType->getEntityModel());
-			if ($eiObject->getId() != $areaObjectId) {
+			$eiSelection = $this->entryModel->getEiSelection();
+			$areaObjectId = OrmUtils::extractId($areaObject, $this->eiSpec->getEntityModel());
+			if ($eiSelection->getId() != $areaObjectId) {
 				$this->areaEditable = false;
 				$this->areaObject = $areaObject;
 				return;
@@ -81,7 +81,7 @@ class PreviewHtmlBuilder {
 					new PreviewAreaException('No object given'));
 		}
 		
-		$this->areaObject = $this->entryModel->getEiObject()->getEntityObj();
+		$this->areaObject = $this->entryModel->getEiSelection()->getEntityObj();
 		$this->areaEditable = $this->entryModel instanceof EditEntryModel;
 
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
@@ -122,21 +122,21 @@ class PreviewHtmlBuilder {
 			return $createUiElementCallback();
 		}
 		
-		$eiProp = null;
+		$eiField = null;
 		try {
-			$eiProp = $this->eiType->getEiPropByPropertyName($propertyName);
+			$eiField = $this->eiSpec->getEiFieldByPropertyName($propertyName);
 		} catch (UnknownEiComponentException $e) {
 			$this->view->throwRuntimeException(
 					UiUtils::createCouldNotRenderUiComponentException($e));
 		}
 		
-		if (!($eiProp instanceof PreviewableEiProp)) {
+		if (!($eiField instanceof PreviewableEiField)) {
 			$this->view->throwRuntimeException(
-					new PreviewAreaException('EiProp \'' . get_class($eiProp) . '\' is not previewable.'));
+					new PreviewAreaException('EiField \'' . get_class($eiField) . '\' is not previewable.'));
 		}
 		
 		if ($this->entryModel->containsPropertyName($propertyName)) {
-			return $eiProp->createEditablePreviewUiComponent($this->previewModel, 
+			return $eiField->createEditablePreviewUiComponent($this->previewModel, 
 					$this->previewModel->createPropertyPath($propertyName), $this->view, $createUiElementCallback);
 		} else {
 			return $createUiElementCallback();
@@ -153,7 +153,7 @@ class PreviewHtmlBuilder {
 		$this->ensurePreviewAreaIsOpen();	
 		
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
-			$eiObject = $this->entryModel->getEiObject();
+			$eiSelection = $this->entryModel->getEiSelection();
 			
 			$formHtml = $this->view->getFormHtmlBuilder();
 			$this->view->out('<div class="rocket-preview-inpage-component rocket-preview-inpage-commands">');	

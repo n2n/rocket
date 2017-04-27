@@ -21,46 +21,46 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\field\EiFieldCollection;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\security\PrivilegeConstraint;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\security\InaccessibleEntryException;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\mapping\MappingProfile;
-use rocket\spec\ei\manage\mapping\EiFieldFork;
-use rocket\spec\ei\component\field\FieldEiProp;
-use rocket\spec\ei\component\field\EiProp;
-use rocket\spec\ei\manage\mapping\EiField;
+use rocket\spec\ei\manage\mapping\MappableFork;
+use rocket\spec\ei\component\field\MappableEiField;
+use rocket\spec\ei\component\field\EiField;
+use rocket\spec\ei\manage\mapping\Mappable;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class MappingFactory {
-	private $eiType;
-	private $eiPropCollection;
+	private $eiSpec;
+	private $eiFieldCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $fieldCollection, EiModificatorCollection $eiModificatorCollection) {
-		$this->eiPropCollection = $fieldCollection;
+	public function __construct(EiFieldCollection $fieldCollection, EiModificatorCollection $eiModificatorCollection) {
+		$this->eiFieldCollection = $fieldCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 
 // 	public function createMappingDefinition() {
 // 		$mappingDefinition = new MappingDefinition();
 	
-// 		foreach ($this->eiPropCollection as $field) {
-// // 			if (!($field instanceof FieldEiProp)) continue;
+// 		foreach ($this->eiFieldCollection as $field) {
+// // 			if (!($field instanceof MappableEiField)) continue;
 	 
-// 			$eiField = $field->getEiField();
-// 			if ($eiField === null) continue;
+// 			$mappable = $field->getMappable();
+// 			if ($mappable === null) continue;
 			
-// 			ArgUtils::valTypeReturn($eiField, 'rocket\spec\ei\manage\mapping\EiField',
-// 					$field, 'createEiField');
+// 			ArgUtils::valTypeReturn($mappable, 'rocket\spec\ei\manage\mapping\Mappable',
+// 					$field, 'createMappable');
 				
-// 			$mappingDefinition->putEiField($field->getId(), $eiField);
+// 			$mappingDefinition->putMappable($field->getId(), $mappable);
 // 		}
 	
 // 		foreach ($this->modificatorCollection as $modificator) {
@@ -73,81 +73,81 @@ class MappingFactory {
 	/**
 	 * @param MappingDefinition $mappingDefinition
 	 * @param EiFrame $eiFrame
-	 * @param EiObject $eiObject
+	 * @param EiSelection $eiSelection
 	 * @param PrivilegeConstraint $privilegeConstraint
 	 * @throws InaccessibleEntryException
-	 * @return \rocket\spec\ei\manage\mapping\EiEntry
+	 * @return \rocket\spec\ei\manage\mapping\EiMapping
 	 */
-	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, EiEntry $copyFrom = null) {
-		$eiEntry = new EiEntry($eiObject);
-		$eiu = new Eiu($eiFrame, $eiEntry);
+	public function createEiMapping(EiFrame $eiFrame, EiSelection $eiSelection, EiMapping $copyFrom = null) {
+		$eiMapping = new EiMapping($eiSelection);
+		$eiu = new Eiu($eiFrame, $eiMapping);
 		
-		$this->assembleMappingProfile($eiu, $eiEntry, $copyFrom);
-		$eiFrame->restrictEiEntry($eiEntry);
+		$this->assembleMappingProfile($eiu, $eiMapping, $copyFrom);
+		$eiFrame->restrictEiMapping($eiMapping);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
-			$constraint->setupEiEntry($eiu);
+			$constraint->setupEiMapping($eiu);
 		}
 	
-		return $eiEntry;
+		return $eiMapping;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiEntry $eiMappping, EiEntry $fromEiEntry = null) {
-		$eiObject = $eiMappping->getEiObject();
-		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof FieldEiProp)) continue;
+	private function assembleMappingProfile(Eiu $eiu, EiMapping $eiMappping, EiMapping $fromEiMapping = null) {
+		$eiSelection = $eiMappping->getEiSelection();
+		foreach ($this->eiFieldCollection as $id => $eiField) {
+			if (!($eiField instanceof MappableEiField)) continue;
 						
-			$eiPropPath = new EiPropPath(array($id));
+			$eiFieldPath = new EiFieldPath(array($id));
 			
-			$eiField = null;
-			if ($fromEiEntry !== null && $fromEiEntry->containsEiField($eiPropPath)) {
-				$fromEiField = $fromEiEntry->getEiField($eiPropPath);
-				$eiField = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
-				ArgUtils::valTypeReturn($eiField, EiField::class, $fromEiField, 'copyEiField', true);
+			$mappable = null;
+			if ($fromEiMapping !== null && $fromEiMapping->containsMappable($eiFieldPath)) {
+				$fromMappable = $fromEiMapping->getMappable($eiFieldPath);
+				$mappable = $fromMappable->copyMappable(new Eiu($eiu, $eiField));
+				ArgUtils::valTypeReturn($mappable, Mappable::class, $fromMappable, 'copyMappable', true);
 			}
 				
-			if ($eiField === null) {
-				$eiField = $eiProp->buildEiField(new Eiu($eiu, $eiProp));
-				ArgUtils::valTypeReturn($eiField, EiField::class, $eiProp, 'buildEiField', true);
+			if ($mappable === null) {
+				$mappable = $eiField->buildMappable(new Eiu($eiu, $eiField));
+				ArgUtils::valTypeReturn($mappable, Mappable::class, $eiField, 'buildMappable', true);
 			}
 
-			if ($eiField !== null) {
-				$eiMappping->putEiField($eiPropPath, $eiField);
+			if ($mappable !== null) {
+				$eiMappping->putMappable($eiFieldPath, $mappable);
 			}
 				
-			$eiFieldFork = null;
-			if ($fromEiEntry !== null && $eiMappping->containsEiFieldFork($eiPropPath)) {
-				$eiFieldFork = $fromEiEntry->getEiFieldFork($eiPropPath)->copyEiFieldFork($eiObject);
+			$mappableFork = null;
+			if ($fromEiMapping !== null && $eiMappping->containsMappableFork($eiFieldPath)) {
+				$mappableFork = $fromEiMapping->getMappableFork($eiFieldPath)->copyMappableFork($eiSelection);
 			}
 			
-			if ($eiFieldFork === null) {
-				$eiFieldFork = $eiProp->buildEiFieldFork($eiObject, $eiField);
-				ArgUtils::valTypeReturn($eiFieldFork, EiFieldFork::class, $eiProp, 'buildEiFieldFork', true);
+			if ($mappableFork === null) {
+				$mappableFork = $eiField->buildMappableFork($eiSelection, $mappable);
+				ArgUtils::valTypeReturn($mappableFork, MappableFork::class, $eiField, 'buildMappableFork', true);
 			}
 			
-			if ($eiFieldFork !== null) {
-				$this->applyEiFieldFork($eiPropPath, $eiFieldFork, $mappingProfile);
+			if ($mappableFork !== null) {
+				$this->applyMappableFork($eiFieldPath, $mappableFork, $mappingProfile);
 			}
 		}
 	}	
 	
-	private function applyEiFieldFork(EiPropPath $eiPropPath, EiFieldFork $eiFieldFork, MappingProfile $mappingProfile) {
-		$mappingProfile->putEiFieldFork($eiPropPath, $eiFieldFork);
+	private function applyMappableFork(EiFieldPath $eiFieldPath, MappableFork $mappableFork, MappingProfile $mappingProfile) {
+		$mappingProfile->putMappableFork($eiFieldPath, $mappableFork);
 		
-		$eiFields = $eiFieldFork->getEiFields();
-		ArgUtils::valArrayReturnType($eiFields, 'rocket\spec\ei\manage\mapping\EiField',
-				$eiFieldFork, 'getEiFields');
+		$mappables = $mappableFork->getMappables();
+		ArgUtils::valArrayReturnType($mappables, 'rocket\spec\ei\manage\mapping\Mappable',
+				$mappableFork, 'getMappables');
 		
-		foreach ($eiFields as $id => $eiField) {
-			$mappingProfile->putEiField($eiPropPath->pushed($id), $eiField);
+		foreach ($mappables as $id => $mappable) {
+			$mappingProfile->putMappable($eiFieldPath->pushed($id), $mappable);
 		}
 		
-		$eiFieldForks = $eiFieldFork->getEiFieldForks();
-		ArgUtils::valArrayReturnType($eiFields, 'rocket\spec\ei\manage\mapping\EiFieldFork',
-				$eiFieldFork, 'getEiFieldForks');
+		$mappableForks = $mappableFork->getMappableForks();
+		ArgUtils::valArrayReturnType($mappables, 'rocket\spec\ei\manage\mapping\MappableFork',
+				$mappableFork, 'getMappableForks');
 		
-		foreach ($eiFieldForks as $id => $eiFieldFork) {
-			$this->applyEiFieldFork($eiFieldFork, $eiPropPath->pushed($id), $mappingProfile);
+		foreach ($mappableForks as $id => $mappableFork) {
+			$this->applyMappableFork($mappableFork, $eiFieldPath->pushed($id), $mappingProfile);
 		}
 	}
 	

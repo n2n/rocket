@@ -37,7 +37,7 @@
 ?>
 <div class="rocket-panel">
 	<h3><?php $html->l10nText('user_groups_title') ?></h3>
-	<table class="table table-striped table-hover">
+	<table class="rocket-list">
 		<thead>
 			<tr>
 				<th><?php $html->l10nText('common_id_label') ?></th>
@@ -54,7 +54,7 @@
 					<td><?php $html->esc($userGroup->getId()) ?></td>
 					<td><?php $html->esc($userGroup->getName()) ?></td>
 					<td>
-						<ul class="list-unstyled">
+						<ul>
 							<?php foreach ($userGroup->getRocketUsers() as $user): $view->assert($user instanceof RocketUser) ?>
 								<li><?php $html->esc($user->getNick())?></li>
 							<?php endforeach ?>
@@ -68,7 +68,7 @@
 						<?php endif ?>
 					</td>
 					<td>
-						<ul class="list-unstyled">
+						<ul>
 							<?php foreach ($userGroup->getEiGrants() as $eiGrant): ?>
 								<li<?php $view->out($eiGrant->isFull() ? '' : ' class="rocket-user-access-restricted"') ?>>
 									<?php $html->esc($userGroupOverviewModel->prettyEiGrantName($eiGrant) )?>
@@ -82,31 +82,41 @@
 						</ul>
 					</td>
 					<td>
-						<div class="rocket-simple-commands">
-							<?php $html->linkToController(array('edit', $userGroup->getId()), 
-									new n2n\web\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_group_label') . '</span>'),
-									array('title' => $view->getL10nText('user_edit_tooltip'),
-											'class' => 'btn btn-warning')) ?>
-							<?php $html->linkToController(array('grants', $userGroup->getId()), 
-									new n2n\web\ui\Raw('<i class="fa fa-key"></i><span>' . $view->getL10nText('user_modify_grants_label') . '</span>'),
-									array('title' => $view->getL10nText('user_modify_grants_tooltip'),
-											'class' => 'btn btn-secondary')) ?>
-							<?php $html->linkToController(array('delete', $userGroup->getId()), 
-									new n2n\web\ui\Raw('<i class="fa fa-times"></i><span>' . $view->getL10nText('user_delete_group_label') . '</span>'),
-									array('title' => $view->getL10nText('user_delete_group_tooltip'), 
-											'data-rocket-confirm-msg' => $view->getL10nText('user_group_delete_confirm', array('group' => $userGroup->getName())),
-											'data-rocket-confirm-ok-label' => $view->getL10nText('common_yes_label'),
-											'data-rocket-confirm-cancel-label' => $view->getL10nText('common_no_label'),
-											'class' => 'btn btn-danger')) ?>
-						</div>
+						<ul class="rocket-simple-controls">
+							<li>
+								<?php $html->linkToController(array('edit', $userGroup->getId()), 
+										new n2n\web\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_group_label') . '</span>'),
+										array('title' => $view->getL10nText('user_edit_tooltip'),
+												'class' => 'rocket-control-warning')) ?>
+							</li>
+							<li>
+								<?php $html->linkToController(array('grants', $userGroup->getId()), 
+										new n2n\web\ui\Raw('<i class="fa fa-key"></i><span>' . $view->getL10nText('user_modify_grants_label') . '</span>'),
+										array('title' => $view->getL10nText('user_modify_grants_tooltip'),
+												'class' => 'rocket-control')) ?>
+							</li>
+							<li>
+								<?php $html->linkToController(array('delete', $userGroup->getId()), 
+										new n2n\web\ui\Raw('<i class="fa fa-times"></i><span>' . $view->getL10nText('user_delete_group_label') . '</span>'),
+										array('title' => $view->getL10nText('user_delete_group_tooltip'), 
+												'data-rocket-confirm-msg' => $view->getL10nText('user_group_delete_confirm', array('group' => $userGroup->getName())),
+												'data-rocket-confirm-ok-label' => $view->getL10nText('common_yes_label'),
+												'data-rocket-confirm-cancel-label' => $view->getL10nText('common_no_label'),
+												'class' => 'rocket-control-danger')) ?>
+							</li>
+						</ul>
 					</td>
 				</tr>
 			<?php endforeach ?>	
 		</tbody>
 	</table>
 </div>
-<div class="rocket-context-commands">
-	<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
-					. $view->getL10nText('user_add_group_label') . '</span>'), 
-			array('class' => 'btn btn-primary')) ?>
+<div id="rocket-page-controls">
+	<ul>
+		<li>
+			<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i><span>' 
+							. $view->getL10nText('user_add_group_label') . '</span>'), 
+					array('class' => 'rocket-control-success rocket-important')) ?>
+		</li>
+	</ul>
 </div>

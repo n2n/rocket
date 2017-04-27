@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\util\model\EiUtils;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\property\ObjectProperty;
-use rocket\spec\ei\manage\LiveEiObject;
+use rocket\spec\ei\manage\LiveEiSelection;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -67,9 +67,9 @@ class RelationSelectorMag extends MagAdapter  {
 	public function getFormValue() {
 		$relationSelectorForm = new RelationSelectorForm($this->targetEiUtils);
 		$relationSelectorForm->setEntryIdReps(array_keys($this->targetLiveEntries));
-		foreach ($this->targetLiveEntries as $targetIdRep => $targetEiEntityObj) {
+		foreach ($this->targetLiveEntries as $targetIdRep => $targetLiveEntry) {
 			$relationSelectorForm->getEntryLabeler()->setSelectedIdentityString($targetIdRep,
-					$this->targetEiUtils->createIdentityString(new LiveEiObject($targetEiEntityObj)));
+					$this->targetEiUtils->createIdentityString(new LiveEiSelection($targetLiveEntry)));
 		}
 		return $relationSelectorForm;	
 	}
@@ -86,7 +86,7 @@ class RelationSelectorMag extends MagAdapter  {
 				continue;
 			}
 			
-			$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObjById(
+			$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupLiveEntryById(
 					$this->targetEiUtils->idRepToId($targetIdRep));
 		}
 	}

@@ -29,20 +29,20 @@
 	$entryCommandViewModel = $view->params['entryCommandViewModel']; 
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 	
-	$eiObjectUtils = $entryCommandViewModel->getEiuEntry();
+	$eiEntryUtils = $entryCommandViewModel->getEiuEntry();
 	$linkedPreviewType = $currentPreviewType = $view->getParam('currentPreviewType', false);
 	if ($linkedPreviewType === null) {
-		$linkedPreviewType = $eiObjectUtils->getPreviewType();
+		$linkedPreviewType = $eiEntryUtils->getPreviewType();
 	} 
 	
 	$detailPathParts = null;
 	$previewPathParts = null;
-	if ($eiObjectUtils->isDraft()) {
-		$draftId = $eiObjectUtils->getDraft(true)->getId();
+	if ($eiEntryUtils->isDraft()) {
+		$draftId = $eiEntryUtils->getDraft(true)->getId();
 		$detailPathParts = array('draft', $draftId);
 		$previewPathParts = array('draftpreview', $draftId, $linkedPreviewType);
 	} else {
-		$idRep = $eiObjectUtils->getLiveIdRep(true);
+		$idRep = $eiEntryUtils->getLiveIdRep(true);
 		$detailPathParts = array('live', $idRep);
 		$previewPathParts = array('livepreview', $idRep, $linkedPreviewType);
 	}

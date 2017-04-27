@@ -111,7 +111,7 @@ class RelationFilterField implements FilterField {
 		$targetEntityObjs = array();
 		foreach ($targetIdReps as $targetIdRep) {
 			try {
-				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObjById($targetIdRep, 
+				$targetEntityObjs[] = $this->targetEiUtils->lookupLiveEntryById($targetIdRep, 
 						CriteriaConstraint::ALL_TYPES);
 			} catch (UnknownEntryException $e) { }
 		}
@@ -134,7 +134,7 @@ class RelationFilterField implements FilterField {
 			$targetLiveEntries = array();
 			foreach ($relationFilterConf->getTargetIdReps() as $targetIdRep) {
 				try {
-					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObjById(
+					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupLiveEntryById(
 							$this->targetEiUtils->idRepToId($targetIdRep), CriteriaConstraint::ALL_TYPES);
 				} catch (UnknownEntryException $e) {}
 			}
@@ -154,15 +154,15 @@ class RelationFilterField implements FilterField {
 		$relationFilterConf->setOperator($form->getOperatorMag()->getValue());
 		
 		$targetIdReps = array();
-		foreach ($form->getTargetLiveEntries() as $targetEiEntityObj) {
-			$targetIdReps[] = $this->targetEiUtils->idToIdRep($targetEiEntityObj->getId());
+		foreach ($form->getTargetLiveEntries() as $targetLiveEntry) {
+			$targetIdReps[] = $this->targetEiUtils->idToIdRep($targetLiveEntry->getId());
 		}
 		$relationFilterConf->setTargetIdReps($targetIdReps);	
 		
 		return $relationFilterConf->getAttributes();
 	}
 	
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
+	public function createMappableConstraint(Attributes $attributes): MappableConstraint {
 		$relationFilterConf = new RelationFilterConf(new Attributes());
 		
 		$operator = $relationFilterConf->getOperator();

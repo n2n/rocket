@@ -24,38 +24,38 @@ namespace rocket\spec\ei\manage\critmod\quick;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchField;
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 
 class QuickSearchDefinition {
 	private $quickSearchFields = array();
 	
-	public function putQuickSearchField(EiPropPath $eiPropPath, QuickSearchField $quickSearchField) {
-		$this->quickSearchFields[(string) $eiPropPath] = $quickSearchField;	
+	public function putQuickSearchField(EiFieldPath $eiFieldPath, QuickSearchField $quickSearchField) {
+		$this->quickSearchFields[(string) $eiFieldPath] = $quickSearchField;	
 	}
 	
 	public function getQuickSearchFields(): array {
 		return $this->quickSearchFields;
 	}
 	
-	private function filterFields(array $eiPropPaths) {
+	private function filterFields(array $eiFieldPaths) {
 		$quickSearchFields = array();
-		foreach ($eiPropPaths as $eiPropPath) {
-			$eiPropPathStr = (string) $eiPropPath;
-			if (isset($this->quickSearchFields[$eiPropPathStr])) {
-				$quickSearchFields[] = $this->quickSearchFields[$eiPropPathStr];
+		foreach ($eiFieldPaths as $eiFieldPath) {
+			$eiFieldPathStr = (string) $eiFieldPath;
+			if (isset($this->quickSearchFields[$eiFieldPathStr])) {
+				$quickSearchFields[] = $this->quickSearchFields[$eiFieldPathStr];
 			}
 		}
 		return $quickSearchFields;
 	}
 	
-	public function buildCriteriaConstraint(string $searchStr, array $eiPropPaths = null) {
+	public function buildCriteriaConstraint(string $searchStr, array $eiFieldPaths = null) {
 		$quickSearchFields = null;
-		if ($eiPropPaths === null) {
+		if ($eiFieldPaths === null) {
 			$quickSearchFields = $this->quickSearchFields;
 		} else {
-			ArgUtils::valArray($eiPropPaths, EiPropPath::class);
-			$quickSearchFields = $this->filterFields($eiPropPaths);
+			ArgUtils::valArray($eiFieldPaths, EiFieldPath::class);
+			$quickSearchFields = $this->filterFields($eiFieldPaths);
 		} 
 		
 		if (empty($quickSearchFields)) return null;

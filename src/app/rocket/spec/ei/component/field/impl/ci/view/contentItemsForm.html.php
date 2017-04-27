@@ -35,11 +35,11 @@
 	$propertyPath = $view->getParam('propertyPath');
 	$view->assert($propertyPath instanceof PropertyPath);
 	
-	$ciEiTypeLabels = $view->getParam('ciEiTypeLabels');
-	$view->assert(is_array($ciEiTypeLabels));
+	$ciEiSpecLabels = $view->getParam('ciEiSpecLabels');
+	$view->assert(is_array($ciEiSpecLabels));
 ?>
 
-<div class="rocket-content-items" data-ci-ei-spec-labels="<?php $html->out(json_encode($ciEiTypeLabels)) ?>">
+<div class="rocket-content-items" data-ci-ei-spec-labels="<?php $html->out(json_encode($ciEiSpecLabels)) ?>">
 	<?php foreach ($panelConfigs as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
 				array('class' => 'rocket-content-item-panel', 'data-name' => $panelConfig->getName(),

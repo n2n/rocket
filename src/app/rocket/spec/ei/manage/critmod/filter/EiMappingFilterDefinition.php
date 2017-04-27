@@ -21,76 +21,76 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter;
 
-use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\EiFieldPath;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\spec\ei\manage\mapping\EiEntryConstraint;
+use rocket\spec\ei\manage\mapping\EiMappingConstraint;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\manage\mapping\EiMapping;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\EiFieldConstraint;
+use rocket\spec\ei\manage\mapping\MappableConstraint;
 use n2n\util\config\AttributesException;
 
-class EiEntryFilterDefinition extends FilterDefinition {
-	private $eiEntryFilterFields = array();
+class EiMappingFilterDefinition extends FilterDefinition {
+	private $eiMappingFilterFields = array();
 	
 	public function putFilterField(string $id, FilterField $filterField) {
 		throw new UnsupportedOperationException();
 	}
 	
-	public function putEiEntryFilterField(EiPropPath $eiPropPath, EiEntryFilterField $eiEntryFilterField) {
-		$this->eiEntryFilterFields[(string) $eiPropPath] = $eiEntryFilterField;
-		parent::putFilterField($eiPropPath, $eiEntryFilterField);
+	public function putEiMappingFilterField(EiFieldPath $eiFieldPath, EiMappingFilterField $eiMappingFilterField) {
+		$this->eiMappingFilterFields[(string) $eiFieldPath] = $eiMappingFilterField;
+		parent::putFilterField($eiFieldPath, $eiMappingFilterField);
 	}
 	
-	public function getEiEntryFilterFields(): array {
-		return $this->eiEntryFilterFields;
+	public function getEiMappingFilterFields(): array {
+		return $this->eiMappingFilterFields;
 	}
 	
-	public function createEiEntryConstraint(FilterGroupData $filterGroupData): EiEntryConstraint  {
-		$eiEntryConstraints = array();
+	public function createEiMappingConstraint(FilterGroupData $filterGroupData): EiMappingConstraint  {
+		$eiMappingConstraints = array();
 	
 		foreach ($filterGroupData->getFilterItemDatas() as $subFilterItemData) {
 			$id = $subFilterItemData->getFilterFieldId();
-			if (!isset($this->eiEntryFilterFields[$id])) {
+			if (!isset($this->eiMappingFilterFields[$id])) {
 				continue;
 			}
 				
 			try {
-				$eiEntryConstraints[] = new EiFieldEiEntryConstraint(EiPropPath::create($id),
-						$this->eiEntryFilterFields[$id]->createEiFieldConstraint(
+				$eiMappingConstraints[] = new MappableEiMappingConstraint(EiFieldPath::create($id),
+						$this->eiMappingFilterFields[$id]->createMappableConstraint(
 								$subFilterItemData->getAttributes()));
 			} catch (AttributesException $e) {}
 		}
 	
 		foreach ($filterGroupData->getFilterGroupDatas() as $subFilterGroupData) {
-			$eiEntryConstraints[] = $this->createEiEntryConstraint($subFilterGroupData);
+			$eiMappingConstraints[] = $this->createEiMappingConstraint($subFilterGroupData);
 		}
 	
-		return new EiEntryConstraintGroup($filterGroupData->isAndUsed(), $eiEntryConstraints);
+		return new EiMappingConstraintGroup($filterGroupData->isAndUsed(), $eiMappingConstraints);
 	}
 }
 
-class EiEntryConstraintGroup implements EiEntryConstraint {
+class EiMappingConstraintGroup implements EiMappingConstraint {
 	private $andUsed;
-	private $eiEntryConstraints;
+	private $eiMappingConstraints;
 	
-	public function __construct(bool $andUsed, array $eiEntryConstraints = array()) {
+	public function __construct(bool $andUsed, array $eiMappingConstraints = array()) {
 		$this->andUsed = $andUsed;
-		ArgUtils::valArray($eiEntryConstraints, EiEntryConstraint::class);
-		$this->eiEntryConstraints = $eiEntryConstraints;
+		ArgUtils::valArray($eiMappingConstraints, EiMappingConstraint::class);
+		$this->eiMappingConstraints = $eiMappingConstraints;
 	}
 	
-	public function add(EiEntryConstraint $eiEntryConstraint) {
-		$this->eiEntryConstraints[] = $eiEntryConstraint;
+	public function add(EiMappingConstraint $eiMappingConstraint) {
+		$this->eiMappingConstraints[] = $eiMappingConstraint;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptsValue($eiPropPath, $value)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptsValue($eiFieldPath, $value)
 	 */
-	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
-		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
-			if ($eiEntryConstraint->acceptsValue($eiPropPath)) {
+	public function acceptsValue(EiFieldPath $eiFieldPath, $value): bool {
+		foreach ($this->eiMappingConstraints as $eiMappingConstraint) {
+			if ($eiMappingConstraint->acceptsValue($eiFieldPath)) {
 				if (!$this->andUsed) return true;
 			} else {
 				if ($this->andUsed) return false;
@@ -102,11 +102,11 @@ class EiEntryConstraintGroup implements EiEntryConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::check($eiEntry)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::check($eiMapping)
 	 */
-	public function check(EiEntry $eiEntry): bool {
-		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
-			if ($eiEntryConstraint->check($eiEntry)) {
+	public function check(EiMapping $eiMapping): bool {
+		foreach ($this->eiMappingConstraints as $eiMappingConstraint) {
+			if ($eiMappingConstraint->check($eiMapping)) {
 				if (!$this->andUsed) return true;
 			} else {
 				if ($this->andUsed) return false;
@@ -118,55 +118,55 @@ class EiEntryConstraintGroup implements EiEntryConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::validate($eiEntry)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::validate($eiMapping)
 	 */
-	public function validate(EiEntry $eiEntry) {
+	public function validate(EiMapping $eiMapping) {
 		if (!$this->andUsed) {
-			foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
-				if ($eiEntryConstraint->check($eiEntry)) return;
+			foreach ($this->eiMappingConstraints as $eiMappingConstraint) {
+				if ($eiMappingConstraint->check($eiMapping)) return;
 			}
 		}
 		
-		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
-			$eiEntryConstraint->validate($eiEntry);
+		foreach ($this->eiMappingConstraints as $eiMappingConstraint) {
+			$eiMappingConstraint->validate($eiMapping);
 		}
 	}
 }
 
-class EiFieldEiEntryConstraint implements EiEntryConstraint {
-	private $eiPropPath;
-	private $eiFieldConstraint;
+class MappableEiMappingConstraint implements EiMappingConstraint {
+	private $eiFieldPath;
+	private $mappableConstraint;
 	
-	public function __construct(EiPropPath $eiPropPath, EiFieldConstraint $eiFieldConstraint) {
-		$this->eiPropPath = $eiPropPath;
-		$this->eiFieldConstraint = $eiFieldConstraint;
+	public function __construct(EiFieldPath $eiFieldPath, MappableConstraint $mappableConstraint) {
+		$this->eiFieldPath = $eiFieldPath;
+		$this->mappableConstraint = $mappableConstraint;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptsValue($eiPropPath, $value)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptsValue($eiFieldPath, $value)
 	 */
-	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
-		if (!$this->eiPropPath->equals($eiPropPath)) return;
+	public function acceptsValue(EiFieldPath $eiFieldPath, $value): bool {
+		if (!$this->eiFieldPath->equals($eiFieldPath)) return;
 		
-		return $this->eiFieldConstraint->acceptsValue($value);
+		return $this->mappableConstraint->acceptsValue($value);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::check($eiEntry)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::check($eiMapping)
 	 */
-	public function check(EiEntry $eiEntry): bool {
-		return $this->eiFieldConstraint->check($eiEntry
-				->getEiField($this->eiPropPath));
+	public function check(EiMapping $eiMapping): bool {
+		return $this->mappableConstraint->check($eiMapping
+				->getMappable($this->eiFieldPath));
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::validate($eiEntry)
+	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::validate($eiMapping)
 	 */
-	public function validate(EiEntry $eiEntry) {
-		return $this->eiFieldConstraint->validate($eiEntry->getEiField($this->eiPropPath), 
-				$eiEntry->getMappingErrorInfo()->getFieldErrorInfo($this->eiPropPath));
+	public function validate(EiMapping $eiMapping) {
+		return $this->mappableConstraint->validate($eiMapping->getMappable($this->eiFieldPath), 
+				$eiMapping->getMappingErrorInfo()->getFieldErrorInfo($this->eiFieldPath));
 	}
 }

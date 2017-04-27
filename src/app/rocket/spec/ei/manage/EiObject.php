@@ -22,15 +22,22 @@
 namespace rocket\spec\ei\manage;
 
 use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\control\EntryNavPoint;
+use rocket\spec\ei\manage\draft\DraftValueMap;
 
 interface EiObject {
-    
-	public function isNew(): bool;
-	
-	public function getEiEntityObj(): EiEntityObj;
-	
-	public function getDraft(): Draft;
 
-	public function toEntryNavPoint(): EntryNavPoint;
+	/**
+	 * @return object 
+	 */
+	public function getLiveObject();
+
+	/**
+	 * @return bool 
+	 */
+	public function isDraft(): bool;
+
+	/**
+	 * @return \rocket\spec\ei\manage\draft\DraftValueMap
+	 */
+	public function getDraftValueMap(): DraftValueMap;
 }

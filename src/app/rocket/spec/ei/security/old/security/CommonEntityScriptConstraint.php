@@ -23,7 +23,7 @@ namespace rocket\spec\ei\security;
 
 use rocket\spec\ei\manage\critmod\SelectorModel;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiType;
+use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\ei\component\command\PrivilegeExtendableEiCommand;
@@ -33,7 +33,7 @@ use rocket\spec\security\ScriptGrant;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 
 class CommonConstraint implements Constraint {
-	private $eiType;
+	private $eiSpec;
 	private $n2nContext;
 	private $accessAttributes = array();
 	private $privilegeGrants = array();
@@ -42,8 +42,8 @@ class CommonConstraint implements Constraint {
 	private $filterModel;
 	private $selectorModel;
 	
-	public function __construct(EiType $eiType, N2nContext $n2nContext) {
-		$this->eiType = $eiType;
+	public function __construct(EiSpec $eiSpec, N2nContext $n2nContext) {
+		$this->eiSpec = $eiSpec;
 		$this->n2nContext = $n2nContext;
 	}
 	
@@ -86,7 +86,7 @@ class CommonConstraint implements Constraint {
 	
 	private function getSelectorItems() {
 		if ($this->selectorItems === null) {
-			$this->selectorItems = $this->eiType->createRestrictionSelectorItems($this->n2nContext);
+			$this->selectorItems = $this->eiSpec->createRestrictionSelectorItems($this->n2nContext);
 		}
 		
 		return $this->selectorItems;

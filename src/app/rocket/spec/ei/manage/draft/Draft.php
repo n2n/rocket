@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\draft;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\EiEntityObj;
+use rocket\spec\ei\manage\LiveEntry;
 use n2n\util\ex\IllegalStateException;
 
 class Draft {
@@ -32,16 +32,16 @@ class Draft {
 	const TYPE_UNLISTED = 8;
 	
 	private $id;
-	private $eiEntityObj;
+	private $liveEntry;
 	private $lastMod;
 	private $type = self::TYPE_NORMAL;
 	private $userId;
 	private $draftValueMap = array();
 	
-	public function __construct(int $id = null, EiEntityObj $eiEntityObj, \DateTime $lastMod, 
+	public function __construct(int $id = null, LiveEntry $liveEntry, \DateTime $lastMod, 
 			int $userId = null, DraftValueMap $draftValueMap) {
 		$this->id = $id;
-		$this->eiEntityObj = $eiEntityObj;
+		$this->liveEntry = $liveEntry;
 		$this->lastMod = $lastMod;
 		$this->userId = $userId;
 		$this->draftValueMap = $draftValueMap;
@@ -63,8 +63,8 @@ class Draft {
 		$this->id = $id;
 	}
 	
-	public function getEiEntityObj(): EiEntityObj {
-		return $this->eiEntityObj;
+	public function getLiveEntry(): LiveEntry {
+		return $this->liveEntry;
 	}
 	
 	public function getLastMod(): \DateTime {
@@ -127,6 +127,6 @@ class Draft {
 	public function equals($obj) {
 		if (!($obj instanceof Draft)) return false;
 		
-		return $this->getId(false) == $obj->getId(false) && $this->getEiEntityObj()->equals($obj->getEiEntityObj());
+		return $this->getId(false) == $obj->getId(false) && $this->getLiveEntry()->equals($obj->getLiveEntry());
 	}
 }

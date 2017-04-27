@@ -21,32 +21,30 @@
  */
 namespace rocket\spec\ei\manage\control;
 
+use n2n\impl\web\ui\view\html\InputField;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
+use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 
+
 class ControlButton {
-	const TYPE_PRIMARY = 'btn btn-primary';
-	const TYPE_SECONDARY = 'btn btn-secondary';
-	const TYPE_SUCCESS = 'btn btn-success';
-	const TYPE_DANGER = 'btn btn-danger';
-	const TYPE_INFO = 'btn btn-info';
-	const TYPE_WARNING = 'btn btn-warning';
+	const TYPE_DEFAULT = null;
+	const TYPE_SUCCESS = 'success';
+	const TYPE_DANGER = 'danger';
+	const TYPE_INFO = 'info';
+	const TYPE_WARNING = 'warning';
 	
 	private $name;
 	private $tooltip;
-	private $iconType;
 	private $important;
 	private $type;
+	private $iconType;
 	private $attrs = array();
 	
-	private $confirmMessage;
-	private $confirmOkButtonLabel;
-	private $confirmCancelButtonLabel;
-	
-	public function __construct(string $name, string $tooltip = null, bool $important = false, string $type = null, 
-			string $iconType = null, array $attrs = null) {
+	public function __construct(string $name, string $tooltip = null, bool $important = false, 
+			string $type = self::TYPE_DEFAULT, string $iconType = null, array $attrs = null) {
 		$this->name = $name;
 		$this->tooltip = $tooltip;
 		$this->important = $important;
@@ -128,58 +126,44 @@ class ControlButton {
 	}
 	
 	private function applyAttrs(array $attrs) {
-		$attrs['aria-hidden'] = 'true';
 		
 		if ($this->tooltip !== null) {
 			$attrs['title'] = $this->tooltip;
 		}
-		
-		if (!isset($attrs['class'])) {
-			$attrs['class'] = '';
-		}
-		
 		if ($this->type !== null) {
-			$attrs['class'] .= ' ' . $this->type;
+			$attrs['class'] = 'rocket-control-' . $this->type;
 		} else {
-			$attrs['class'] .= ' ' . self::TYPE_SECONDARY;
+			$attrs['class'] = 'rocket-control';
 		}
-		
 		if ($this->important) {
 			$attrs['class'] .= ' rocket-important';	
 		}
-		
-		if ($this->confirmMessage !== null) {
+		if (isset($this->confirmMessage)) {
 			$attrs['data-rocket-confirm-msg'] = $this->confirmMessage;
 		}
-		
-		if ($this->confirmOkButtonLabel !== null) {
+		if (isset($this->confirmOkButtonLabel)) {
 			$attrs['data-rocket-confirm-ok-label'] = $this->confirmOkButtonLabel;
 		}
-		
-		if ($this->confirmCancelButtonLabel !== null) {
+		if (isset($this->confirmCancelButtonLabel)) {
 			$attrs['data-rocket-confirm-cancel-label'] = $this->confirmCancelButtonLabel;
 		}
 		
 		return HtmlUtils::mergeAttrs($attrs, $this->attrs);
 	}
 	
-	public function toButton(bool $iconOnly, array $attrs): UiComponent {
-		$iconType = $this->iconType;
-		if ($iconType === null) {
-			$iconType = IconType::ICON_ROCKET;
-		}
-		
-		$label = new Raw(new HtmlElement('i', array('class' => $iconType), '') . ' '
+	public function toButton(string $href = null, bool $iconOnly): UiComponent {
+		$label = new Raw(new HtmlElement('i', array('class' => $this->iconType), '') . ' '
 				. new HtmlElement('span', null, $this->name));
-		return new HtmlElement('a', $this->applyAttrs($attrs), $label);
+		
+		return new HtmlElement('a', $this->applyAttrs(array('href' => $href)), $label);
 	}
 	
-// 	public function toSubmitButton(PropertyPath $propertyPath): UiComponent {
-// 		$attrs = $inputField->getAttrs();
-// 		$uiButton = new HtmlElement('button', $this->applyAttrs($attrs));
-// 		$uiButton->appendContent(new HtmlElement('i', array('class' => $this->iconType), ''));
-// // 		$uiButton->appendLn();
-// 		$uiButton->appendContent(new HtmlElement('span', null, $this->name));
-// 		return $uiButton;
-// 	}
+	public function toSubmitButton(PropertyPath $propertyPath): UiComponent {
+		$attrs = $inputField->getAttrs();
+		$uiButton = new HtmlElement('button', $this->applyAttrs($attrs));
+		$uiButton->appendContent(new HtmlElement('i', array('class' => $this->iconType), ''));
+// 		$uiButton->appendLn();
+		$uiButton->appendContent(new HtmlElement('span', null, $this->name));
+		return $uiButton;
+	}
 }

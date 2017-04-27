@@ -45,7 +45,7 @@ class CustomSpecFactory {
 					. ' must implement ' . Controller::class);
 		}
 		
-		return new CustomSpec($customSpecExtraction->getId(), $customSpecExtraction->getModuleNamespace(), $controllerClass->getName());
+		return new CustomSpec($customSpecExtraction->getId(), $customSpecExtraction->getModuleNamespace(), $controllerClass);
 	}
 	
 	private static function createControllerException(CustomSpecExtraction $customSpecExtraction, string $reason = null, 
