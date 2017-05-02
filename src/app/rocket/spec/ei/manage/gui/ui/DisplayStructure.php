@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\gui;
+namespace rocket\spec\ei\manage\gui\ui;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\reflection\ArgUtils;
@@ -33,7 +33,7 @@ class DisplayStructure {
 	}
 	
 	public function addDisplayStructure(DisplayStructure $displayStructure, string $groupType, string $label = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure);
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $groupType, $label);
 	}
 	
 	public function addDisplayItem(DisplayItem $displayItem) {

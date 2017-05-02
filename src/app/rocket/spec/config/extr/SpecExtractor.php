@@ -29,7 +29,7 @@ use rocket\spec\config\mask\model\GuiSection;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\mask\model\DisplayScheme;
-use rocket\spec\ei\manage\gui\DisplayStructure;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\ControlOrder;
@@ -40,6 +40,7 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\config\InvalidAttributeException;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
 
 class SpecExtractor {
 	private $attributes;
@@ -305,13 +306,15 @@ class SpecExtractor {
 	
 			$guiSectionAttributes = new Attributes($fieldId);
 			
-			$guiSection = new GuiSection();
-			$guiSection->setType($guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY,
-					GuiSection::getTypes(), false, null, true));
-			$guiSection->setTitle($guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY));
-			$guiSection->setDisplayStructure($this->createDisplayStructure($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY)));
+			$childDisplayStructure = $this->createDisplayStructure($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY));
+			$title = $guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY);
+			$groupType = $guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(), 
+					false, DisplayItem::TYPE_SIMPLE, true);
+			if ($groupType === null) {
+				$groupType = DisplayItem::TYPE_SIMPLE;
+			}
 			
-			$displayStructure->addGuiGroup($guiSection);
+			$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
 		}
 	
 		return $displayStructure;

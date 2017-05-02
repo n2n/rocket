@@ -26,6 +26,7 @@ use rocket\spec\ei\component\command\control\PartialControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\control\EntryControlComponent;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class DisplayScheme {
 	private $overviewDisplayStructure;

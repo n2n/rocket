@@ -27,6 +27,8 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\EiFrame;
 
 class GuiDefinition {	
 	private $levelGuiProps = array();
@@ -277,6 +279,20 @@ class GuiDefinition {
 		return $guiProps;
 	}
 	
+	private $guiDefinitionListeners = array();
+	
+	public function registerGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
+		$this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)] = $guiDefinitionListener;
+	}
+	
+	public function unregisterGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
+		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
+	}
+	
+	public function createEiGui(EiFrame $eiFrame, int $viewMode) {
+		return new EiGui($eiFrame, $this, $viewMode);
+	}
+	
 	/**
 	 * @param EiMask $eiMask
 	 * @param EiuEntry $eiuEntry
@@ -284,7 +300,7 @@ class GuiDefinition {
 	 * @param array $guiIdPaths
 	 * @return EiEntryGui
 	 */
-	public function createEiEntryGui(EiGui $eiGuiEiFrame $eiFrame, EiEntry $eiEntry, GuiDefinition $guiDefinition, int $viewMode, array $guiIdPaths) {
+	public function createEiEntryGui(EiGui $eiGui, array $guiIdPaths) {
 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiMask, $viewMode);
@@ -295,7 +311,7 @@ class GuiDefinition {
 		foreach ($guiIdPaths as $guiIdPath) {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;
-			
+			 
 			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiEntryGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
@@ -323,8 +339,13 @@ class GuiDefinition {
 	}
 }
 
-class QuickSortDefinitionFactory {
+interface GuiDefinitionListener {
 	
+	public function onNewEiGui(EiGui $eiGui);
+	
+	public function onNewEiEntryGui(EiEntryGui $eiEntryGui);
+	
+	public function onNewView(HtmlView $view);
 }
 
 class SummarizedStringBuilder {

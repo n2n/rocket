@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\EiFrame;
-	use rocket\spec\ei\manage\gui\DisplayStructure;
+	use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 	use rocket\spec\ei\manage\EntryGui;
 	use rocket\spec\ei\manage\EntryEiHtmlBuilder;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;

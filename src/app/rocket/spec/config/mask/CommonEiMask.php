@@ -41,7 +41,7 @@ use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\config\mask\model\ControlOrder;
-use rocket\spec\ei\manage\gui\DisplayStructure;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;

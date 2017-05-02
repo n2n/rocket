@@ -39,6 +39,8 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\EiGui;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\gui\EiGuiListener;
 
 class GuiFactory {
 	private $eiPropCollection;
@@ -73,6 +75,12 @@ class GuiFactory {
 		}
 		
 		return $guiDefinition;
+	}
+	
+	public function createEiGui(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, EiGuiViewFactory $eiGuiViewFactory) {
+		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode, $eiGuiViewFactory);
+		$eiGui->registerListner(new ModEiGuiListener($this->eiModificatorCollection));
+		return $eiGui;
 	}
 	
 	/**
@@ -118,5 +126,26 @@ class GuiFactory {
 		$eiEntryGui->markInitialized();
 		
 		return $eiEntryGui;
+	}
+}
+
+
+class ModEiGuiListener implements EiGuiListener {
+	private $eiModificatorCollection;
+	
+	public function __construct(EiModificatorCollection $eiModificatorCollection) {
+		$this->eiModificatorCollection = $eiModificatorCollection;
+	}
+	
+	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+		foreach ($this->eiModificatorCollection as $eiModificator) {
+			$eiModificator->onNewEiEntryGui($eiEntryGui);
+		}
+	}
+	
+	public function onNewView(HtmlView $view) {
+		foreach ($this->eiModificatorCollection as $eiModificator) {
+			$eiModificator->onNewView($view);
+		}
 	}
 }

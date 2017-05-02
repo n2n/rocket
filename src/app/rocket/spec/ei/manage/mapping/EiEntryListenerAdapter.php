@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-class MappingListenerAdapter implements EiEntryListener {
+class EiEntryListenerAdapter implements EiEntryListener {
 
 	public function onValidate(EiEntry $eiEntry) {}
 

@@ -22,6 +22,7 @@
 namespace rocket\spec\config\mask\model;
 
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class GuiSection {
 	const SIMPLE = 'simple';

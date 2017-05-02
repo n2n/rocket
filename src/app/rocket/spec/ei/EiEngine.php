@@ -48,6 +48,7 @@ use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiDefinition;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\spec\ei\manage\util\model\EiuEntry;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class EiEngine {
 	private $eiType;
@@ -186,7 +187,7 @@ class EiEngine {
 		return $this->guiDefinition;
 	}
 	
-	public function createEiEntryGui(EiuEntry $eiuEntry, int $viewMode, array $guiIdPaths) {
+	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
 		$eiMask = $this->eiMask;
 		if ($this->eiType === null) {
 			$eiMask = $this->eiType->getEiMaskCollection()->getOrCreateDefault();

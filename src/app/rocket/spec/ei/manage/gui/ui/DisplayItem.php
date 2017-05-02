@@ -1,8 +1,8 @@
 <?php
-namespace rocket\spec\ei\manage\gui;
+namespace rocket\spec\ei\manage\gui\ui;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use rocket\spec\ei\manage\gui\DisplayStructure;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\IllegalStateException;
 
 class DisplayItem {
@@ -77,5 +77,9 @@ class DisplayItem {
 		}
 
 		throw new IllegalStateException();
+	}
+	
+	public static function getGroupTypes() {
+		return array(self::TYPE_SIMPLE, self::TYPE_MAIN, self::TYPE_AUTONOMIC);
 	}
 }
