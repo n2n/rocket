@@ -31,7 +31,6 @@ use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\mask\EiMask;
-use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\EiObject;
@@ -210,11 +209,11 @@ class CommonEiMask implements EiMask, Identifiable {
 		return !$this->eiEngine->getDraftDefinition()->isEmpty();
 	}
 	
-	private function createEiEntryGui(EiuEntry $eiuEntry, $viewMode): EiEntryGui {
-		$guiIdPaths = $this->getDisplayStructureViewMode($viewMode)->getAllGuiIdPaths();
+// 	private function createEiEntryGui(EiuEntry $eiuEntry, $viewMode): EiEntryGui {
+// 		$guiIdPaths = $this->getDisplayStructureViewMode($viewMode)->getAllGuiIdPaths();
 	
-		return $this->eiEngine->createEiEntryGui($eiuEntry, $viewMode, $guiIdPaths);
-	}
+// 		return $this->eiEngine->createEiEntryGui($eiuEntry, $viewMode, $guiIdPaths);
+// 	}
 				
 // 	/* (non-PHPdoc)
 // 	 * @see \rocket\spec\ei\mask\EiMask::getCommands()
@@ -373,6 +372,12 @@ class CommonEiMask implements EiMask, Identifiable {
 			$displayStructure->addGuiIdPath($guiIdPath);
 		}
 		return $displayStructure;
+	}
+	
+	public function createEiGui(bool $bulky) {
+		$eiGui = $this->guiFactory->createEiGui($bulky);
+		
+		return $eiGui;
 	}
 
 	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {

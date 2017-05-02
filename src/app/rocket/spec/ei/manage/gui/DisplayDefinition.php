@@ -27,9 +27,6 @@ class DisplayDefinition {
 	const VIEW_MODE_LIST_READ = 1;
 	const VIEW_MODE_LIST_EDIT = 2;
 	const VIEW_MODE_LIST_ADD = 4;
-	const VIEW_MODE_TREE_READ = 8;
-	const VIEW_MODE_TREE_EDIT = 16;
-	const VIEW_MODE_TREE_ADD = 32;
 	const VIEW_MODE_BULKY_READ = 64;
 	const VIEW_MODE_BULKY_EDIT = 128;
 	const VIEW_MODE_BULKY_ADD = 256;
