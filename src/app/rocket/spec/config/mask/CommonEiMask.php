@@ -374,8 +374,14 @@ class CommonEiMask implements EiMask, Identifiable {
 		return $displayStructure;
 	}
 	
-	public function createEiGui(bool $bulky) {
+	public function createEiGui(EiEntry $bulkyEiEntry = null) {
+		$this->
+		
+		
+		
 		$eiGui = $this->guiFactory->createEiGui($bulky);
+		
+		
 		
 		return $eiGui;
 	}
