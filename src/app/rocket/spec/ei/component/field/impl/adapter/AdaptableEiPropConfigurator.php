@@ -274,7 +274,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)) {
 			$this->displayDefinition->changeDefaultDisplayedViewModes(
-					DisplayDefinition::VIEW_MODE_LIST_READ | DisplayDefinition::VIEW_MODE_TREE_READ, 
+					DisplayDefinition::COMPACT_VIEW_MODES, 
 					$this->attributes->get(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
 		}
 	

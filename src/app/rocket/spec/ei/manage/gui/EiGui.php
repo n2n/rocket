@@ -4,21 +4,25 @@ namespace rocket\spec\ei\manage\gui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\component\GuiFactory;
+use n2n\reflection\ArgUtils;
 
 class EiGui {
 	private $eiFrame;
 	private $guiDefinition;
-	private $viewMode;
+	private $bulky;
 	private $eiGuiViewFactory;
 	private $eiGuiListeners = array();
 	
-	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, 
+	private $eiEntryGuis = array();
+	
+	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, bool $bulky, 
 			EiGuiViewFactory $eiGuiViewFactory) {
 		$this->eiFrame = $eiFrame;
 		$this->guiDefinition = $guiDefinition;
-		$this->viewMode = $viewMode;
+		$this->bulky = $bulky;
 		$this->eiGuiViewFactory = $eiGuiViewFactory;
+		
+		$eiGuiViewFactory->setEiGui($this);
 	}
 	
 	/**
@@ -29,35 +33,53 @@ class EiGui {
 	}
 	
 	/**
+	 * @return \rocket\spec\ei\manage\gui\GuiDefinition
+	 */
+	public function getGuiDefinition() {
+		return $this->guiDefinition;
+	}
+	
+	/**
 	 * @return int
 	 */
-	public function getViewMode() {
-		return $this->viewMode;
+	public function isBulky() {
+		return $this->bulky;
 	}
 	
-	public function createEiEntryGui() {
-		$eiEntryGui = $this->eiGuiViewFactory->createEiEntryGui();
+	/**
+	 * @return EiEntryGui
+	 */
+	public function createEiEntryGui(EiEntry $eiEntry, bool $makeEditable, int $treeLevel = null, bool $append = true) {
+		$eiEntryGui = $this->eiGuiViewFactory->createEiEntryGui($eiEntry, $makeEditable, $treeLevel, $append);
+		ArgUtils::valTypeReturn($eiEntryGui, EiEntryGui::class, $this->eiGuiViewFactory, 'createEiEntryGui');
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewEiEntryGui($eiEntryGui);
 		}
 		
-		return $eiEntryGui;
-	}
-	
-	public function createEiEntryGui(EiEntry $eiEntry, int $level) {
-		$eiEntryGui = GuiFactory::createEiEntryGui($eiGui, $eiEntry, $t);
-		
-		foreach ($this->eiGuiListeners as $eiGuiListener) {
-			$eiGuiListener->onNewEiEntryGui($eiEntryGui);
+		if ($append) {
+			$this->eiEntryGuis[] = $eiEntryGui;
 		}
 		
+		$eiEntryGui->markInitialized();
+		
 		return $eiEntryGui;
 	}
 	
+// 	public function appendEiEntryGui(EiEntryGui $eiEntryGui) {
+// 		$this->eiGuiViewFactory->appendEiEntryGui($eiEntryGui);
+// 		$this->eiEntryGuis[] = $eiEntryGui;
+// 	}
+	
+	/**
+	 * @return EiEntryGui[]
+	 */
+	public function getEiEntryGuis() {
+		return $this->eiEntryGuis;
+	}
 	
 	public function createView() {
-		$view = $this->eiGuiViewFactory->createView($this);
+		$view = $this->eiGuiViewFactory->createView();
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);
@@ -78,17 +100,29 @@ class EiGui {
 
 
 interface EiGuiViewFactory {
-	
+
 	/**
-	 * 
-	 * @return GuiIdPath[]
+	 * @param \rocket\spec\ei\manage\gui\EiGui $eiGui
 	 */
-	public function getGuiIdPaths(): array;
+	public function setEiGui(\rocket\spec\ei\manage\gui\EiGui $eiGui);
 	
 	/**
-	 * 
-	 * @param EiGui $eiGui
+	 * @param EiEntry $eiEntry
+	 * @param bool $makeEditable
+	 * @param int $treeLevel
+	 * @param bool $append
+	 * @return EiEntryGui
+	 */
+	public function createEiEntryGui(EiEntry $eiEntry, bool $makeEditable, int $treeLevel = null, 
+			bool $append = true): EiEntryGui;
+	
+	/**
+	 * @param \rocket\spec\ei\manage\gui\EiEntryGui $eiEntryGui
+	 */
+	public function appendEiEntryGui(\rocket\spec\ei\manage\gui\EiEntryGui $eiEntryGui);
+	
+	/**
 	 * @return HtmlView
 	 */
-	public function createView(EiGui $eiGui): HtmlView;
+	public function createView(): HtmlView;
 }

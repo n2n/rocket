@@ -34,29 +34,23 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\config\mask\model\ControlOrder;
-use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\config\mask\model\EntryGuiTree;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\config\mask\model\EntryListViewModel;
 use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\component\command\control\PartialControlComponent;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\manage\control\PartialControl;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use n2n\web\ui\ViewFactory;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\EiThing;
 use n2n\persistence\orm\model\EntityModel;
@@ -68,10 +62,9 @@ use rocket\spec\ei\manage\control\UnavailableControlException;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuPerimeterException;
-use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\config\mask\model\EiuEntryGuiTree;
 use rocket\spec\ei\manage\control\Control;
+use rocket\spec\ei\manage\gui\EiGui;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -327,151 +320,108 @@ class CommonEiMask implements EiMask, Identifiable {
 		return $controls;
 	}
 	
-	
-	private function getDisplayStructureViewMode($viewMode): DisplayStructure {
-		$displayStructure = null;
-		
-		switch ($viewMode) {
-			case DisplayDefinition::VIEW_MODE_LIST_READ:
-				if (null !== ($overviewDisplayStructure = $this->guiOrder->getOverviewDisplayStructure())) {
-					return $overviewDisplayStructure;
-				}
-				return $this->createDefaultDisplayStructure($viewMode);
-			case DisplayDefinition::VIEW_MODE_TREE_READ:
-				if (null !== ($treeOverviewDisplayStructure = $this->guiOrder->getOverviewDisplayStructure())) {
-					return $treeOverviewDisplayStructure;
-				}
-				return $this->createDefaultDisplayStructure($viewMode);
-			case DisplayDefinition::VIEW_MODE_BULKY_READ:
-				if (null !== ($detailDisplayStructure = $this->guiOrder->getDetailDisplayStructure())) {
-					return $detailDisplayStructure;
-				}
-				break;
-			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
-				if (null !== $editDisplayStructure = $this->guiOrder->getEditDisplayStructure()) {
-					return $editDisplayStructure;
-				}
-				break;
-			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
-				if (null !== ($addDisplayStructure = $this->guiOrder->getAddDisplayStructure())) {
-					return $addDisplayStructure;
-				}
-				break;
+	public function createEiGui(EiFrame $eiFrame, int $allowedViewMods): EiGui {
+		if (($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES) 
+				&& ($allowedViewMods & DisplayDefinition::BULKY_VIEW_MODES)) {
+			throw new \InvalidArgumentException('Bulky and compact view mods can not be mixed.');			
 		}
 		
-		if (null !== ($bulkyDisplayStructure = $this->guiOrder->getBulkyDisplayStructure())) {
-			return $bulkyDisplayStructure;
+		if (!(($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES)
+				|| ($allowedViewMods & DisplayDefinition::BULKY_VIEW_MODES))) {
+			throw new \InvalidArgumentException('View mode no recognized.');
 		}
 		
-		return $this->createDefaultDisplayStructure($viewMode);
-	}
-	
-	private function createDefaultDisplayStructure($viewMode) {
-		$displayStructure = new DisplayStructure();
-		foreach ($this->eiEngine->getGuiDefinition()->filterGuiIdPaths($viewMode) as $guiIdPath) {
-			$displayStructure->addGuiIdPath($guiIdPath);
-		}
-		return $displayStructure;
-	}
-	
-	public function createEiGui(EiEntry $bulkyEiEntry = null) {
-		$this->
-		
-		
-		
-		$eiGui = $this->guiFactory->createEiGui($bulky);
-		
-		
-		
-		return $eiGui;
+		return new EiGui($eiFrame, $this->eiEngine->getGuiDefinition(), 
+				(bool) ($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES), 
+				new CommonEiGuiViewFactory($this->guiOrder));
 	}
 
-	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
-		$viewMode = null;
-		if (!$makeEditable) {
-			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
-		} else if ($eiuEntry->isNew()) {
-			$viewMode = DisplayDefinition::VIEW_MODE_LIST_ADD;
-		} else {
-			$viewMode = DisplayDefinition::VIEW_MODE_LIST_EDIT;
-		}
+// 	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
+// 		$viewMode = null;
+// 		if (!$makeEditable) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
+// 		} else if ($eiuEntry->isNew()) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_ADD;
+// 		} else {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_EDIT;
+// 		}
 		
-		return $this->createEiEntryGui($eiuEntry, $viewMode);
-	}
+// 		return $this->createEiEntryGui($eiuEntry, $viewMode);
+// 	}
 	
-	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView {
-		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
+// 	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView {
+// 		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
 		
-		$viewMode = null;
-		if (empty($eiuEntryGuis)) {
-			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
-		} else {
-			$viewMode = current($eiuEntryGuis)->getViewMode();
-		}
-		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
+// 		$viewMode = null;
+// 		if (empty($eiuEntryGuis)) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
+// 		} else {
+// 			$viewMode = current($eiuEntryGuis)->getViewMode();
+// 		}
+// 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 	
-		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
-				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
-						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $displayStructure)));
-	}
+// 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+// 				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
+// 						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $displayStructure)));
+// 	}
 
-	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
-		$viewMode = null;
-		if (!$makeEditable) {
-			$viewMode = DisplayDefinition::VIEW_MODE_TREE_READ;
-		} else if ($eiuEntry->isNew()) {
-			$viewMode = DisplayDefinition::VIEW_MODE_TREE_ADD;
-		} else {
-			$viewMode = DisplayDefinition::VIEW_MODE_TREE_EDIT;
-		}
+// 	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
+// 		$viewMode = null;
+// 		if (!$makeEditable) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_READ;
+// 		} else if ($eiuEntry->isNew()) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_ADD;
+// 		} else {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_EDIT;
+// 		}
 				
-		$eiEntryGui = $this->createEiEntryGui($eiFrame, $eiEntry, $viewMode, $makeEditable);
+// 		$eiEntryGui = $this->createEiEntryGui($eiFrame, $eiEntry, $viewMode, $makeEditable);
 		
-		return new CommonEntryGuiModel($this, $eiEntryGui, $eiEntry);
-	}
+// 		return new CommonEntryGuiModel($this, $eiEntryGui, $eiEntry);
+// 	}
 	
-	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
-		$displayStructure = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
+// 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
+// 		$displayStructure = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
 	
-		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
-				'rocket\spec\config\mask\view\entryList.html', array(
-						'entryListViewModel' => new EntryListViewModel($eiuFrame, $entryGuiTree->getEntryGuis(), 
-								$this->eiEngine->getGuiDefinition(), $displayStructure),
-						'entryGuiTree' => $entryGuiTree));
-	}
+// 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+// 				'rocket\spec\config\mask\view\entryList.html', array(
+// 						'entryListViewModel' => new EntryListViewModel($eiuFrame, $entryGuiTree->getEntryGuis(), 
+// 								$this->eiEngine->getGuiDefinition(), $displayStructure),
+// 						'entryGuiTree' => $entryGuiTree));
+// 	}
 	
-	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
-		$viewMode = null;
-		if (!$makeEditable) {
-			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_READ;
-		} else if ($eiuEntry->isNew()) {
-			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_ADD;
-		} else {
-			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_EDIT;
-		}
+// 	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
+// 		$viewMode = null;
+// 		if (!$makeEditable) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_READ;
+// 		} else if ($eiuEntry->isNew()) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_ADD;
+// 		} else {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_EDIT;
+// 		}
 		
-		return $this->createEiEntryGui($eiuEntry, $viewMode);
-	}
+// 		return $this->createEiEntryGui($eiuEntry, $viewMode);
+// 	}
 	
-	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView {
-		$viewMode = $eiuEntryGui->getViewMode();
+// 	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView {
+// 		$viewMode = $eiuEntryGui->getViewMode();
 		
-		switch ($viewMode) {
-			case DisplayDefinition::VIEW_MODE_BULKY_READ:
-				$viewName = 'rocket\spec\config\mask\view\entryDetail.html';
-				break;
-			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
-			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
-				$viewName = 'rocket\spec\config\mask\view\entryEdit.html';
-				break;
-			default:
-				throw new \InvalidArgumentException('No bulky viewMode.');
-		}
+// 		switch ($viewMode) {
+// 			case DisplayDefinition::VIEW_MODE_BULKY_READ:
+// 				$viewName = 'rocket\spec\config\mask\view\entryDetail.html';
+// 				break;
+// 			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
+// 			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
+// 				$viewName = 'rocket\spec\config\mask\view\entryEdit.html';
+// 				break;
+// 			default:
+// 				throw new \InvalidArgumentException('No bulky viewMode.');
+// 		}
 		
-		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
-		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
-				->create($viewName, array('displayStructure' => $displayStructure, 'eiu' => new Eiu($eiuEntryGui)));
-	}
+// 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
+// 		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
+// 				->create($viewName, array('displayStructure' => $displayStructure, 'eiu' => new Eiu($eiuEntryGui)));
+// 	}
 	
 // 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
 // 		$viewMode = $this->determineEditViewMode($entryModel->getEiEntry());

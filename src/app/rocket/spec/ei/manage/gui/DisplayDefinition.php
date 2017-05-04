@@ -24,9 +24,10 @@ namespace rocket\spec\ei\manage\gui;
 use n2n\reflection\ArgUtils;
 
 class DisplayDefinition {
-	const VIEW_MODE_LIST_READ = 1;
-	const VIEW_MODE_LIST_EDIT = 2;
-	const VIEW_MODE_LIST_ADD = 4;
+	const VIEW_MODE_COMPACT_READ = 1;
+	const VIEW_MODE_COMPACT_EDIT = 2;
+	const VIEW_MODE_COMPACT_ADD = 4;
+	
 	const VIEW_MODE_BULKY_READ = 64;
 	const VIEW_MODE_BULKY_EDIT = 128;
 	const VIEW_MODE_BULKY_ADD = 256;
@@ -35,8 +36,7 @@ class DisplayDefinition {
 	const EDIT_VIEW_MODES = 146;
 	const ADD_VIEW_MODES = 292;
 	
-	const LIST_VIEW_MODES = 7;
-	const TREE_VIEW_MODES = 56;
+	const COMPACT_VIEW_MODES = 7;
 	const BULKY_VIEW_MODES = 448;
 	
 	const ALL_VIEW_MODES = 511;
@@ -62,36 +62,15 @@ class DisplayDefinition {
 	/**
 	 * @return boolean
 	 */
-	public function isListReadViewCompatible(): bool {
-		return (boolean) (self::VIEW_MODE_LIST_READ & $this->compatibleViewModes);
+	public function isCompactViewCompatible(): bool {
+		return (boolean) (self::COMPACT_VIEW_MODES & $this->compatibleViewModes);
 	}
-	
+		
 	/**
 	 * @return boolean
 	 */
-	public function isTreeReadViewCompatible(): bool {
-		return (boolean) (self::VIEW_MODE_TREE_READ & $this->compatibleViewModes);
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isBulkyReadViewCompatible(): bool {
-		return (boolean) (self::VIEW_MODE_BULKY_READ & $this->compatibleViewModes);
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isEditViewCompatible(): bool {
-		return (boolean) (self::EDIT_VIEW_MODES & $this->compatibleViewModes);
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isAddViewCompatible(): bool {
-		return (boolean) (self::ADD_VIEW_MODES & $this->compatibleViewModes);
+	public function isBulkyViewCompatible(): bool {
+		return (boolean) (self::BULKY_VIEW_MODES & $this->compatibleViewModes);
 	}
 	
 	public function setDefaultDisplayedViewModes($viewModes) {
@@ -125,11 +104,7 @@ class DisplayDefinition {
 	}
 	
 	public function setListReadModeDefaultDisplayed($defaultDisplayaed) {
-		$this->changeDefaultDisplayed(self::VIEW_MODE_LIST_READ, $defaultDisplayaed);
-	}
-	
-	public function setTreeReadModeDefaultDisplayed($defaultDisplayaed) {
-		$this->changeDefaultDisplayed(self::VIEW_MODE_TREE_READ, $defaultDisplayaed);
+		$this->changeDefaultDisplayed(self::VIEW_MODE_COMPACT_READ, $defaultDisplayaed);
 	}
 	
 	public function setBulkyModeDefaultDisplayed($defaultDisplayaed) {
@@ -159,7 +134,7 @@ class DisplayDefinition {
 	}
 	
 	public static function getViewModes(): array {
-		return array(self::VIEW_MODE_LIST_READ, self::VIEW_MODE_TREE_READ, self::VIEW_MODE_BULKY_READ, 
-				self::VIEW_MODE_BULKY_EDIT, self::VIEW_MODE_BULKY_ADD);
+		return array(self::VIEW_MODE_COMPACT_READ, self::VIEW_MODE_COMPACT_EDIT, self::VIEW_MODE_COMPACT_ADD,
+				self::VIEW_MODE_BULKY_READ, self::VIEW_MODE_BULKY_EDIT, self::VIEW_MODE_BULKY_ADD);
 	}
 }

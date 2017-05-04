@@ -38,6 +38,7 @@ use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 use rocket\spec\ei\manage\util\model\GeneralIdUtils;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EiuEntry {
 	private $eiObject;
@@ -64,6 +65,10 @@ class EiuEntry {
 		throw new IllegalStateException('No EiUtils provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
+	public function determineEiMask() {
+		return $this->getEiuFrame()->determineEiMask($this->eiObject);
+	}
+	
 	public function hasEiuFrame() {
 		return $this->eiuFrame !== null;
 	}
@@ -80,27 +85,25 @@ class EiuEntry {
 		throw new EiuPerimeterException('No EiuFame provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
-	public function gui($eiEntryGuiObj) {
-		return new EiuEntryGui($eiEntryGuiObj, $this);
-	}
-	
 	/**
 	 * @param bool $eiObjectObj
 	 * @param bool $editable
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
-	public function newGui(bool $overview = false, bool $editable = false) {
-		$eiEntryGui = null;
-		if (!$overview) {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createBulkyEiEntryGui($this, $editable);
-		} else if (null === $this->getEiuFrame()->getNestedSetStrategy()) {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createListEiEntryGui($this, $editable);
+	public function newGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
+			bool $determineEiMask = true) {
+		$eiMask = null;
+		if ($determineEiMask) {
+			$eiMask = $this->determineEiMask();
 		} else {
-			$eiEntryGui = $this->getEiuFrame()->getEiMask()->createTreeEiEntryGui($this, $editable);
+			$eiMask = $this->getEiFrame()->getContextEiMask();
 		}
 		
-		return new EiuEntryGui($eiEntryGui, $this);
+		$eiGui = $eiMask->createEiGui($this->getEiFrame(), 
+				($bulky ? DisplayDefinition::BULKY_VIEW_MODES : DisplayDefinition::COMPACT_VIEW_MODES));
+		
+		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $editable, $treeLevel));
 	}
 	
 	public function field($eiPropObj) {

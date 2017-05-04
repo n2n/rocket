@@ -31,8 +31,9 @@ use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use rocket\spec\ei\mask\EiMask;
 
 class EiEntryGui {
-	private $eiMask;
+	private $eiGui;
 	private $viewMode;
+	private $treeLevel;
 	private $displayables = array();
 	private $eiFieldWrappers = array();
 // 	private $eiPropPaths = array();
@@ -47,17 +48,19 @@ class EiEntryGui {
 	/**
 	 * @param EiMask $eiMask
 	 * @param int $viewMode
+	 * @param int|null $level
 	 */
-	public function __construct(EiMask $eiMask, int $viewMode) {
-		$this->eiMask = $eiMask;
+	public function __construct(EiGui $eiGui, int $viewMode, int $level = null) {
+		$this->eiGui = $eiGui;
 		$this->viewMode = $viewMode;
+		$this->treeLevel = $level;
 	}
 	
 	/**
 	 * @return \rocket\spec\ei\mask\EiMask
 	 */
-	public function getEiMask() {
-		return $this->eiMask;
+	public function getEiGui() {
+		return $this->eiGui;
 	}
 	
 	/**
@@ -69,6 +72,10 @@ class EiEntryGui {
 	
 	public function getViewMode() {
 		return $this->viewMode;
+	}
+	
+	public function getTreeLevel() {
+		return $this->treeLevel;
 	}
 	
 	public function isInitialized() {

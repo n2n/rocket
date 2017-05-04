@@ -19,14 +19,17 @@ use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ReflectionUtils;
+use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
 	const EI_ENTRY_TYPES = array(EiObject::class, EiEntry::class, EiEntityObj::class, Draft::class, 
 			EiEntryGui::class, EiuEntry::class, EiuEntryGui::class);
-	const EI_GUI_TYPES = array(EiEntryGui::class, EiuEntryGui::class);
+	const EI_GUI_TYPES = array(EiGui::class, EiuGui::class, EiEntryGui::class, EiuEntryGui::class);
+	const EI_ENTRY_GUI_TYPES = array(EiEntryGui::class, EiuEntryGui::class);
 	const EI_TYPES = array(EiFrame::class, N2nContext::class, EiObject::class, EiEntry::class, EiEntityObj::class, 
-			Draft::class, EiEntryGui::class, EiEntryGui::class, EiProp::class, EiPropPath::class, EiuFrame::class, 
+			Draft::class, EiGui::class, EiuGui::class, EiEntryGui::class, EiEntryGui::class, EiProp::class, EiPropPath::class, EiuFrame::class, 
 			EiuEntry::class, EiuEntryGui::class, EiuField::class, Eiu::class);
 	const EI_FIELD_TYPES = array(EiProp::class, EiPropPath::class, EiuField::class);
 	
@@ -34,11 +37,13 @@ class EiuFactory {
 	private $n2nContext;
 	private $eiObject;
 	private $eiEntry;
+	private $eiGui;
 	private $eiEntryGui;
 	private $eiPropPath;
 	
 	private $eiuFrame;
 	private $eiuEntry;
+	private $eiuGui;
 	private $eiuEntryGui;
 	private $eiuField;
 	
@@ -65,9 +70,17 @@ class EiuFactory {
 				$this->eiPropPath = $eiArg;
 				continue;
 			}
+			
+			if ($eiArg instanceof EiGui) {
+				$this->eiGui = $eiArg;
+				$this->eiFrame = $eiArg->getEiFrame();
+				continue;
+			}
 
 			if ($eiArg instanceof EiEntryGui) {
 				$this->eiEntryGui = $eiArg;
+				$this->eiGui = $eiArg->getEiGui();
+				$this->eiFrame = $this->eiGui->getEiFrame();
 				continue;
 			}
 			
@@ -79,7 +92,22 @@ class EiuFactory {
 			if ($eiArg instanceof EiuEntryGui) {
 				$this->eiuEntryGui = $eiArg;
 				$this->eiEntryGui = $eiArg->getEiEntryGui();
-				$eiArg = $eiArg->getEiuEntry(false);
+				$this->eiuGui = $eiArg->getEiuGui();
+				$this->eiGui = $this->eiuGui->getEiGui();
+				$this->eiuFrame = $this->eiuGui->getEiuFrame();
+				$this->eiFrame = $this->eiuFrame->getEiFrame();
+				
+				$eiArg = $eiArg->getEiuEntry();
+			}
+			
+			if ($eiArg instanceof EiuGui) {
+				$this->eiuGui = $eiArg->getEiuGui();
+				$this->eiGui = $this->eiuGui->getEiGui();
+				if ($this->eiuGui->isSingle()) {
+					$this->eiuEntryGui = $this->eiuGui->entryGui();
+				}
+				$this->eiuFrame = $this->eiuGui->getEiuFrame();
+				$this->eiFrame = $eiArg->getEiFrame();
 			}
 			
 			if ($eiArg instanceof EiuEntry) {
@@ -170,6 +198,22 @@ class EiuFactory {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\gui\EiGui
+	 */
+	public function getEiGui(bool $required) {
+		if (!$required || $this->eiGui !== null) {
+			return $this->eiGui;
+		}
+	
+		throw new EiuPerimeterException(
+				'Could not determine EiGui because non of the following types were provided as eiArgs: '
+						. implode(', ', self::EI_GUI_TYPES));
+	}
+	
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
 	 */
 	public function getEiEntryGui(bool $required) {
@@ -179,9 +223,9 @@ class EiuFactory {
 		
 		throw new EiuPerimeterException(
 				'Could not determine EiEntryGui because non of the following types were provided as eiArgs: ' 
-						. implode(', ', self::EI_GUI_TYPES));
+						. implode(', ', self::EI_ENTRY_GUI_TYPES));
 	}
-	
+		
 	public function getEiPropPath(bool $required) {
 		if (!$required || $this->eiPropPath !== null) {
 			return $this->eiPropPath;
@@ -271,6 +315,27 @@ class EiuFactory {
 		
 		throw new EiuPerimeterException(
 				'Can not create EiuEntryGui because non of the following types were provided as eiArgs: '
+						. implode(', ', self::EI_ENTRY_GUI_TYPES));
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
+	 */
+	public function getEiuGui(bool $required) {
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui;
+		}
+	
+		if ($this->eiGui !== null) {
+			return $this->eiuGui = new EiuGui($this->eiGui);
+		}
+	
+		if (!$required) return null;
+	
+		throw new EiuPerimeterException(
+				'Can not create EiuGui because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_GUI_TYPES));
 	}
 	

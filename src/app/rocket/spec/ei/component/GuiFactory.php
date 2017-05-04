@@ -41,6 +41,7 @@ use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\EiGuiListener;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 class GuiFactory {
 	private $eiPropCollection;
@@ -77,7 +78,8 @@ class GuiFactory {
 		return $guiDefinition;
 	}
 	
-	public function createEiGui(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, EiGuiViewFactory $eiGuiViewFactory) {
+	public function createEiGui(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, 
+			EiGuiViewFactory $eiGuiViewFactory) {
 		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode, $eiGuiViewFactory);
 		$eiGui->registerListner(new ModEiGuiListener($this->eiModificatorCollection));
 		return $eiGui;
@@ -90,10 +92,10 @@ class GuiFactory {
 	 * @param array $guiIdPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiIdPaths, int $level = null) {
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, int $viewMode, array $guiIdPaths, int $treeLevel = null) {
 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
-		$eiEntryGui = new EiEntryGui($eiGui, $level);
+		$eiEntryGui = new EiEntryGui($eiGui, $viewMode, $treeLevel);
 		$eiuEntryGui = new EiuEntryGui($eiEntryGui);
 		
 		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getGuiDefinition(), $eiuEntryGui);
@@ -118,13 +120,7 @@ class GuiFactory {
 			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
 			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
 		}
-		
-		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->setupEiEntryGui($eiEntryGui);
-		}
-		
-		$eiEntryGui->markInitialized();
-		
+				
 		return $eiEntryGui;
 	}
 }

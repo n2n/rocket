@@ -36,6 +36,7 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\config\mask\model\EiuEntryGuiTree;
+use rocket\spec\ei\manage\gui\EiGui;
 
 interface EiMask extends EiThing {
 		
@@ -118,37 +119,16 @@ interface EiMask extends EiThing {
 	 */
 	public function isDraftingEnabled();
 
-	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
-	/**
-	 * @param EiFrame $eiFrame;
-	 * @param EiuEntryGui[]
-	 * @return HtmlView
-	 */
-	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView;
-
-	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
-
 	/**
 	 * @param EiFrame $eiFrame
-	 * @param EntryTreeListModel $entryListModel
-	 * @return HtmlView
+	 * @param int $allowedViewMods
+	 * @return EiGui
 	 */
-	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $eiuEntryGuiTree): HtmlView;
+	public function createEiGui(EiFrame $eiFrame, int $allowedViewMods): EiGui;
 
 	/**
-	 * @param EiuEntryGui
-	 * @param bool $makeEditable
-	 * @return EiEntryGui
+	 * @return bool
 	 */
-	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui;
-
-	/**
-	 * @param EiFrame $eiFrame
-	 * @param EntryModel $entryModel
-	 * @return HtmlView
-	 */
-	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView;
-
 	public function isPreviewSupported(): bool;
 	
 	/**

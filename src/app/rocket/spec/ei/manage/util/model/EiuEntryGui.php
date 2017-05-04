@@ -39,7 +39,8 @@ class EiuEntryGui {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiEntryGui = $eiuFactory->getEiEntryGui(true);
-		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
+		$this->eiuGui = $eiuFactory->getEiuGui(true);
+		$this->eiuEntry = $eiuFactory->getEiuEntry(true);
 	}
 	
 	/**
@@ -173,14 +174,10 @@ class EiuEntryGui {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\util\model\EiuEntry|null
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function getEiuEntry(bool $required = true) {
-		if (!$required || $this->eiuEntry !== null) {
-			return $this->eiuEntry;
-		}
-		
-		throw new EiuPerimeterException('No EiuEntry provided to ' . (new \ReflectionClass($this))->getShortName());
+	public function getEiuEntry() {
+		return $this->eiuEntry;
 	}
 	
 	/**
