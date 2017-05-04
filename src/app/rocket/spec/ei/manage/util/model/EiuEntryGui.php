@@ -32,6 +32,7 @@ use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use n2n\web\dispatch\map\PropertyPath;
 
 class EiuEntryGui {
+	private $eiuGui;
 	private $eiuEntry;
 	protected $eiEntryGui;
 	
@@ -178,6 +179,14 @@ class EiuEntryGui {
 	 */
 	public function getEiuEntry() {
 		return $this->eiuEntry;
+	}
+
+	/**
+	 * 
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function getEiuGui() {
+		return $this->eiuGui;
 	}
 	
 	/**

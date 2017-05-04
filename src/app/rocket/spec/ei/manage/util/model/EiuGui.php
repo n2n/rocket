@@ -3,13 +3,25 @@ namespace rocket\spec\ei\manage\util\model;
 
 class EiuGui {
 	private $eiGui;
+	private $eiuFrame;
 	private $singleEiuEntryGui;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiGui = $eiuFactory->getEiGui(true);
-		$this->eiuEntryGui = $eiuFactory->getEiuEntryGui(false);
+		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
+	}
+	
+	public function getEiuFrame() {
+		return $this->eiuFrame;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\manage\gui\EiGui
+	 */
+	public function getEiGui() {
+		return $this->eiGui;
 	}
 	
 	/**
@@ -23,7 +35,7 @@ class EiuGui {
 	 * @return bool
 	 */
 	public function isSingle() {
-		return $this->singleEiuEntryGui !== null;
+		return 1 == count($this->eiGui->getEiEntryGuis());
 	}
 	
 	/**

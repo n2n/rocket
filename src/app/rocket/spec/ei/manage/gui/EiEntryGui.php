@@ -29,9 +29,11 @@ use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use rocket\spec\ei\mask\EiMask;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 class EiEntryGui {
 	private $eiGui;
+	private $eiEntry;
 	private $viewMode;
 	private $treeLevel;
 	private $displayables = array();
@@ -50,8 +52,9 @@ class EiEntryGui {
 	 * @param int $viewMode
 	 * @param int|null $level
 	 */
-	public function __construct(EiGui $eiGui, int $viewMode, int $level = null) {
+	public function __construct(EiGui $eiGui, EiEntry $eiEntry, int $viewMode, int $level = null) {
 		$this->eiGui = $eiGui;
+		$this->eiEntry = $eiEntry;
 		$this->viewMode = $viewMode;
 		$this->treeLevel = $level;
 	}
@@ -64,10 +67,10 @@ class EiEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\gui\GuiDefinition
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */
-	public function getGuiDefinition() {
-		return $this->eiMask->getEiEngine()->getGuiDefinition();
+	public function getEiEntry() {
+		return $this->eiEntry;
 	}
 	
 	public function getViewMode() {

@@ -95,7 +95,7 @@ class GuiFactory {
 	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, int $viewMode, array $guiIdPaths, int $treeLevel = null) {
 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
-		$eiEntryGui = new EiEntryGui($eiGui, $viewMode, $treeLevel);
+		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $viewMode, $treeLevel);
 		$eiuEntryGui = new EiuEntryGui($eiEntryGui);
 		
 		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getGuiDefinition(), $eiuEntryGui);

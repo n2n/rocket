@@ -204,19 +204,19 @@ class EiuFrame extends EiUtilsAdapter {
 				->createEiEntryCopy($this->eiFrame, $to, $fromEiuEntry->getEiEntry());
 	}
 	
-	public function createListView(array $eiuEntryGuis) {
-		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
+// 	public function createListView(array $eiuEntryGuis) {
+// 		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
 		
-		return $this->getEiMask()->createListView($this, $eiuEntryGuis);
-	}
+// 		return $this->getEiMask()->createListView($this, $eiuEntryGuis);
+// 	}
 
-	public function createTreeView(EiuEntryGuiTree $eiuEntryGuiTree) {
-		return $this->getEiMask()->createTreeView($this, $eiuEntryGuiTree);
-	}
+// 	public function createTreeView(EiuEntryGuiTree $eiuEntryGuiTree) {
+// 		return $this->getEiMask()->createTreeView($this, $eiuEntryGuiTree);
+// 	}
 	
-	public function createBulkyView(EiuEntryGui $eiuEntryGui) {
-		return $eiuEntryGui->getEiMask()->createBulkyView($eiuEntryGui);
-	}
+// 	public function createBulkyView(EiuEntryGui $eiuEntryGui) {
+// 		return $eiuEntryGui->getEiMask()->createBulkyView($eiuEntryGui);
+// 	}
 		
 	public function createBulkyDetailView($eiObjectObj, bool $determineEiMask = true) {
 		$eiMask = null;
