@@ -30,6 +30,12 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\mapping\EiEntry;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\control\EntryControlComponent;
+use rocket\spec\ei\EiCommandPath;
+use rocket\spec\config\mask\model\ControlOrder;
+use rocket\spec\ei\manage\control\Control;
 
 class EiEntryGui {
 	private $eiGui;
@@ -273,6 +279,35 @@ class EiEntryGui {
 	
 	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
 		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
+	}
+	
+	public function createControls(HtmlView $view) {
+		$eiFrame = $this->eiGui->getEiFrame();
+		$eiMask = $eiFrame->getContextEiMask()->determineEiMask($this->eiEntry->getEiType());
+		
+		$eiu = new Eiu($this);
+		
+		$controls = array();
+		
+		foreach ($eiMask->getEiEngine()->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+			if (!($eiCommand instanceof EntryControlComponent)
+					|| !$this->eiEntry->isExecutableBy(EiCommandPath::from($eiCommand))) {
+				continue;
+			}
+							
+			$entryControls = $eiCommand->createEntryControls($eiu, $view);
+			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
+			foreach ($entryControls as $controlId => $control) {
+				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+			}
+		}
+		
+		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
+			$controls = $eiMask->sortControls($this, $controls);
+			ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class); 
+		}
+			
+		return $controls;
 	}
 }
 

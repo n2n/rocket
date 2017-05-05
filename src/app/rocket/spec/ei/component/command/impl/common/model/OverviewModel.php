@@ -41,8 +41,7 @@ class OverviewModel implements Dispatchable {
 	private $numPages;
 	private $numEntries;
 	
-	private $eiuEntryGuis;
-	private $entryGuiTree;
+	private $eiuGui;
 		
 	private $critmodForm;
 	private $quickSearchForm;
@@ -136,27 +135,20 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function simpleLookup(Criteria $criteria) {
-		$this->eiuEntryGuis = array();
+		$this->eiuGui = $this->eiuFrame->newGui(false);
+		
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiuEntry = $this->eiuFrame->entry($entityObj);
-			$this->eiuEntryGuis[$eiuEntry->getLiveIdRep()] = $eiuEntry->newGui(true, false);
-// 			$eiEntry = $this->eiuFrame->createEiEntry($this->eiuFrame->createEiObjectFromEiEntityObj($entityObj));
-// 			$this->entryGuis[$eiEntry->getIdRep()] = new EntryGui($this->eiuFrame->getEiMask()
-// 					->createListEntryGuiModel($this->eiuFrame->getEiFrame(), $eiEntry, false)); 
+			$this->eiuGui->appendNewEntryGui($entityObj, false);
 		}
 	}
 	
 	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
 		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getClass(), $nestedSetStrategy);
 		
-		$this->entryGuiTree = new EntryGuiTree();
+		$this->eiuGui = $this->eiuFrame->newGui(false);
+		
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-// 			$eiEntry = $this->eiuFrame->createEiEntry(
-// 					$this->eiuFrame->createEiObjectFromEiEntityObj($nestedSetItem->getEntityObj()));
-
-			$eiuEntry = $this->eiuFrame->entry($nestedSetItem->getEntityObj());
-			
-			$this->entryGuiTree->addByLevel($nestedSetItem->getLevel(), $eiuEntry->newGui(true, false));
+			$this->eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), false, $nestedSetItem->getLevel());
 		}
 	}
 	
@@ -171,25 +163,13 @@ class OverviewModel implements Dispatchable {
 	public function getNumEntries() {
 		return $this->numEntries;
 	}
-	
-	public function isTree(): bool {
-		return $this->entryGuiTree !== null;
-	}
-	
-	public function getEiuEntryGuis(): array {
-		if ($this->eiuEntryGuis !== null) {
-			return $this->eiuEntryGuis;
-		}
 		
-		throw new IllegalStateException();
-	}
-	
-	public function getEntryGuiTree(): EntryGuiTree {
-		if ($this->entryGuiTree !== null) {
-			return $this->entryGuiTree;
-		}
-	
-		throw new IllegalStateException();
+	/**
+	 * 
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function getEiuGui() {
+		return $this->eiuGui;
 	}
 	
 	protected $selectedObjectIds = array();

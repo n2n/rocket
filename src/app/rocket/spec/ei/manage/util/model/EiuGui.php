@@ -38,15 +38,42 @@ class EiuGui {
 		return 1 == count($this->eiGui->getEiEntryGuis());
 	}
 	
-	/**
-	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return EiuEntryGui|null
-	 */
-	public function entryGui(bool $required = true) {
-		if ($this->singleEiuEntryGui !== null || !$required) return $this->singleEiuEntryGui;
+// 	/**
+// 	 * @param bool $required
+// 	 * @throws EiuPerimeterException
+// 	 * @return EiuEntryGui|null
+// 	 */
+// 	public function entryGui(bool $required = true) {
+// 		if ($this->singleEiuEntryGui !== null || !$required) return $this->singleEiuEntryGui;
 		
-		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
+// 		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
+// 	}
+	
+	/**
+	 * 
+	 * @param unknown $eiEntryArg
+	 * @param bool $makeEditable
+	 * @param int $treeLevel
+	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
+	 */
+	public function appendNewEntryGui($eiEntryArg, bool $makeEditable = false, int $treeLevel = null) {
+		$eiEntry = null;
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getEiType(), true, 
+				$eiEntry);
+		
+		if ($eiEntry === null) {
+			$eiEntry = (new EiuEntry($eiObject, $this->eiuFrame))->getEiEntry();
+		}
+		
+		return $this->eiGui->createEiEntryGui($eiEntry, $makeEditable, $treeLevel, true);
+	}
+	
+	/**
+	 * 
+	 * @return \n2n\impl\web\ui\view\html\HtmlView
+	 */
+	public function createView() {
+		return $this->eiGui->createView();
 	}
 }
 

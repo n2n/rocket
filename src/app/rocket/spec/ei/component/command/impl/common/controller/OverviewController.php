@@ -72,12 +72,7 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$listView = null;
-		if ($listModel->isTree()) {
-			$listView = $eiuFrame->createTreeView($listModel->getEiuEntryGuiTree());
-		} else {
-			$listView = $eiuFrame->createListView($listModel->getEiuEntryGuis());
-		}
+		$overView = $listModel->getEiuGui()->createView();
 
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
@@ -90,7 +85,7 @@ class OverviewController extends ControllerAdapter {
 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
 						'critmodForm' => $critmodForm,
 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterAjahHook' => $filterAjahHook, 'listView' => $listView)));
+						'filterAjahHook' => $filterAjahHook, 'listView' => $overView)));
 		
 // 		$this->forward('..\view\overview.html', 
 // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,

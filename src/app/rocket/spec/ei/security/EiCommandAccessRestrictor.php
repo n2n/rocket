@@ -24,5 +24,10 @@ namespace rocket\spec\ei\security;
 use rocket\spec\ei\EiCommandPath;
 
 interface EiCommandAccessRestrictor {
+	
+	/**
+	 * @param EiCommandPath $eiCommandPath
+	 * @return bool
+	 */
 	public function isAccessibleBy(EiCommandPath $eiCommandPath): bool;
 }

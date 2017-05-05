@@ -52,12 +52,12 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\AjahControl;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -374,6 +374,15 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	public function getCurrentUrl() {
 		return $this->eiFrame->getCurrentUrl($this->getN2nContext()->getHttpContext());
+	}
+	
+	/**
+	 * @return EiuGui
+	 */
+	public function newGui(bool $bulky) {
+		$eiGui = $this->eiFrame->getContextEiMask()->createEiGui($this->eiFrame, 
+				($bulky ? DisplayDefinition::BULKY_VIEW_MODES : DisplayDefinition::COMPACT_VIEW_MODES));
+		return new EiuGui($eiGui, $this);
 	}
 }
 

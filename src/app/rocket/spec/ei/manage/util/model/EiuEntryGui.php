@@ -30,6 +30,7 @@ use rocket\spec\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use n2n\web\dispatch\map\PropertyPath;
+use n2n\impl\web\ui\view\html\HtmlView;
 
 class EiuEntryGui {
 	private $eiuGui;
@@ -196,7 +197,7 @@ class EiuEntryGui {
 	public function createBulkyView() {
 		return $this->getEiuEntry()->getEiuFrame()->createBulkyView($this);
 	}
-		
+	
 // 	public function getEiMask() {
 // 		if ($this->eiMask !== null) {
 // 			return $this->eiMask;

@@ -73,7 +73,7 @@ class EiEntry {
 	 * @return boolean
 	 */
 	public function isNew() {
-		return !$this->eiObject->getEiEntityObj()->isPersistent();
+		return $this->eiObject->isNew();
 	}
 	
 	/**
