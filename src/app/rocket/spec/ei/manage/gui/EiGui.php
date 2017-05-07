@@ -5,6 +5,10 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
+use rocket\spec\ei\component\command\control\OverallControlComponent;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\config\mask\model\ControlOrder;
+use rocket\spec\ei\manage\control\Control;
 
 class EiGui {
 	private $eiFrame;
@@ -94,6 +98,32 @@ class EiGui {
 	
 	public function unregisterEiGuiListener(EiGuiListener $eiGuiListener) {
 		unset($this->eiGuiListeners[spl_object_hash($eiGuiListener)]);
+	}
+	
+	public function createOverallControls(HtmlView $view) {
+		$eiMask = $this->eiFrame->getContextEiMask();
+		
+		$eiu = new Eiu($this);
+		
+		$controls = array();
+		
+		foreach ($eiMask->getEiEngine()->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+			if (!($eiCommand instanceof OverallControlComponent)
+					|| !$this->eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) {
+				continue;
+			}
+
+			$entryControls = $eiCommand->createOverallControls($eiu, $view);
+			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
+			foreach ($entryControls as $controlId => $control) {
+				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+			}
+		}
+		
+		$controls = $eiMask->sortOverallControls($controls, $this, $view);
+		ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class);
+		
+		return $controls;
 	}
 }
 

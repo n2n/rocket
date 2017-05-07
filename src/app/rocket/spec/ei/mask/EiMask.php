@@ -51,52 +51,19 @@ interface EiMask extends EiThing {
 	 */
 	public function determineEiMask(EiType $eiType): EiMask;
 	
-	// 	/**
-	// 	 * @param string $id
-	// 	 */
-	// 	public function getControlById(string $id): Control;
-	
-// 	/**
-// 	 * @return boolean
-// 	 */
-// 	public function hasOverviewControl(): bool;
-	
-// 	/**
-// 	 * @return \rocket\spec\ei\component\command\GenericOverviewEiCommand
-// 	 */
-// 	public function buildOverviewPathExt(): Path;
-	
-// 	/**
-// 	 * @return boolean
-// 	 */
-// 	public function hasDetailControl(EntryNavPoint $entryNavPoint): bool;
-	
-// 	public function buildDetailPathExt(EntryNavPoint $entryNavPoint): Path;
-// 	/**
-// 	 * @return boolean
-// 	 */
-// 	public function hasEditControl(EntryNavPoint $entryNavPoint): bool;
-	
-// 	public function buildEditPathExt(EntryNavPoint $entryNavPoint): Path;
-	
-// 	public function hasAddControl(bool $draft): bool;
-	
-// 	public function buildAddPathExt(bool $draft): Path;
-	
-	
 	/**
-	 * @param EiFrame $eiFrame
+	 * @param EiGui $eiGui
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallControls(EiuFrame $eiuFrame, HtmlView $htmlView): array;
+	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $htmlView): array;
 	
 	/**
 	 * @param HtmlView $view
 	 * @param EntryModel $entryModel
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createEntryControls(EiuEntryGui $eiuEntryGui, HtmlView $view): array;
+	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array;
 		
 	/**
 	 * @param EiObject $eiObject

@@ -26,8 +26,6 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\util\ex\IllegalStateException;
-use rocket\spec\config\mask\model\EntryGuiTree;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\persistence\orm\criteria\item\CrIt;

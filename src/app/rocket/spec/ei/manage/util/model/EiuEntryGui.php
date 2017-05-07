@@ -62,10 +62,9 @@ class EiuEntryGui {
 	/**
 	 * @return boolean
 	 */
-	public function isOverview() {
+	public function isCompact() {
 		$viewMode = $this->getViewMode();
-		return $viewMode & DisplayDefinition::LIST_VIEW_MODES
-				|| $viewMode & DisplayDefinition::TREE_VIEW_MODES;
+		return $viewMode & DisplayDefinition::COMPACT_VIEW_MODES;
 	}
 	
 	/**

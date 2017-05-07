@@ -139,7 +139,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 			$viewName = 'rocket\spec\config\mask\view\bulky.html';
 			$displayStructure = current($this->displayStructures);
 		} else {
-			$viewName = 'rocket\spec\config\mask\view\overview.html';
+			$viewName = 'rocket\spec\config\mask\view\compact.html';
 		}
 		
 		return $viewFactory->create($viewName, 

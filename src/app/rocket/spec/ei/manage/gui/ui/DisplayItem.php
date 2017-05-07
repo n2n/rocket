@@ -42,6 +42,10 @@ class DisplayItem {
 		$displayItem->label = $label;
 		return $displayItem;
 	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
 
 	public function getGroupType() {
 		if ($this->groupType !== null || $this->guiDisplayStructure === null) {

@@ -284,28 +284,26 @@ class EiEntryGui {
 	public function createControls(HtmlView $view) {
 		$eiFrame = $this->eiGui->getEiFrame();
 		$eiMask = $eiFrame->getContextEiMask()->determineEiMask($this->eiEntry->getEiType());
-		
+	
 		$eiu = new Eiu($this);
-		
+	
 		$controls = array();
-		
+	
 		foreach ($eiMask->getEiEngine()->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)
 					|| !$this->eiEntry->isExecutableBy(EiCommandPath::from($eiCommand))) {
 				continue;
 			}
-							
+
 			$entryControls = $eiCommand->createEntryControls($eiu, $view);
 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
 			foreach ($entryControls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 			}
 		}
-		
-		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
-			$controls = $eiMask->sortControls($this, $controls);
-			ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class); 
-		}
+	
+		$controls = $eiMask->sortEntryControls($controls, $this, $view);
+		ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class);
 			
 		return $controls;
 	}

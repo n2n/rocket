@@ -65,6 +65,8 @@ use rocket\spec\ei\manage\util\model\EiuPerimeterException;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\control\Control;
 use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
+use rocket\spec\ei\manage\util\model\EiuGui;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -241,12 +243,15 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @param HtmlView $htmlView
 	 * @return \rocket\spec\ei\component\command\ControlButton[]
 	 */
-	public function createOverallControls(EiuFrame $eiuFrame, HtmlView $htmlView): array {
-		$eiu = new Eiu($eiuFrame);
+	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $htmlView): array {
+		$eiu = new Eiu($eiGui);
+		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
+		
 		$controls = array();
+		
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof OverallControlComponent)
-					|| !$eiuFrame->getEiFrame()->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
+					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
 				
 			$controls = $eiCommand->createOverallControls($eiu, $htmlView);
 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
@@ -265,19 +270,13 @@ class CommonEiMask implements EiMask, Identifiable {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createEntryControls()
 	 */
-	public function createEntryControls(EiuEntryGui $eiuEntryGui, HtmlView $view): array {
-		try {
-			$eiuEntryGui->getEiuEntry()->getEiuFrame();
-		} catch (EiuPerimeterException $e) {
-			throw new \InvalidArgumentException('Invalid EiuEntryGui passed.', 0, $e);
-		}
-		
-		$eiu = new Eiu($eiuEntryGui);
+	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array {
+		$eiu = new Eiu($eiEntryGui);
 		
 		$controls = array();
 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$eiuEntryGui->getEiuEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
+					|| !$eiEntryGui->getEiEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
 				continue;
 			}
 			
@@ -332,7 +331,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 		
 		return new EiGui($eiFrame, $this->eiEngine->getGuiDefinition(), 
-				(bool) ($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES), 
+				(bool) ($allowedViewMods & DisplayDefinition::BULKY_VIEW_MODES), 
 				new CommonEiGuiViewFactory($this->guiOrder));
 	}
 

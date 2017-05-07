@@ -105,7 +105,7 @@ class EiuFactory {
 			}
 			
 			if ($eiArg instanceof EiuGui) {
-				$this->eiuGui = $eiArg->getEiuGui();
+				$this->eiuGui = $eiArg;
 				$this->eiGui = $this->eiuGui->getEiGui();
 				$this->eiuFrame = $this->eiuGui->getEiuFrame();
 				$this->assignEiFrameArg($this->eiuFrame->getEiFrame(), $key, $eiArg);
@@ -525,8 +525,67 @@ class EiuFactory {
 				. ReflectionUtils::getTypeInfo($eiTypeArg) . ' given.');
 	}
 	
+	/**
+	 * 
+	 * @param unknown $eiEntryGuiArg
+	 * @param string $argName
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
+	 */
+	public static function buildEiEntryGuiFromEiArg($eiEntryGuiArg, string $argName = null, bool $required = true) {
+		if ($eiEntryGuiArg instanceof EiEntryGui) {
+			return $eiEntryGuiArg;
+		}
+		
+		if ($eiEntryGuiArg instanceof EiuEntryGui) {
+			return $eiEntryGuiArg->getEiEntryGui();
+		}
+		
+		if ($eiEntryGuiArg instanceof EiuGui) {
+			$eiEntryGuiArg = $eiEntryGuiArg->getEiGui();
+		}
+		
+		if ($eiEntryGuiArg instanceof EiGui) {
+			$eiEntryGuis = $eiEntryGuiArg->getEiEntryGuis();
+			if (1 == count($eiEntryGuiArg)) {
+				return current($eiEntryGuis);
+			}
+			
+			throw new EiuPerimeterException('Can not determine EiEntryGui of passed EiGui ' . $argName);
+		}
+		
+		throw new EiuPerimeterException('Can not determine EiEntryGui of passed argument ' . $argName
+				. '. Following types are allowed: '
+				. implode(', ', array_merge(self::EI_ENTRY_GUI_TYPES)) . '; '
+				. ReflectionUtils::getTypeInfo($eiEntryGuiArg) . ' given.');
+	}
+	
+	public static function buildEiGuiFromEiArg($eiGuiArg, string $argName = null, bool $required = true) {
+		if ($eiGuiArg instanceof EiGui) {
+			return $eiGuiArg;
+		}
+	
+		if ($eiGuiArg instanceof EiuGui) {
+			return $eiGuiArg->getEiGui();
+		}
+		
+		if ($eiGuiArg instanceof EiEntryGui) {
+			return $eiGuiArg->getEiGui();
+		}
+	
+		if ($eiGuiArg instanceof EiuEntryGui) {
+			return $eiGuiArg->getEiGui();
+		}
+	
+		throw new EiuPerimeterException('Can not determine EiGui of passed argument ' . $argName
+				. '. Following types are allowed: '
+				. implode(', ', array_merge(self::EI_GUI_TYPES)) . '; '
+				. ReflectionUtils::getTypeInfo($eiGuiArg) . ' given.');
+	}
+	
 	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiType $eiType = null, 
-			bool $required = true, &$eiEntry = null, &$viewMode = null) {
+			bool $required = true, &$eiEntry = null, &$eiGuiArg = null) {
 		if (!$required && $eiObjectObj === null) {
 			return null;
 		}

@@ -9,8 +9,9 @@ class Eiu implements Lookupable {
 	private $eiuFactory;
 	private $eiuCtrl;
 	private $eiuFrame;
-	private $eiuEntryGui;
 	private $eiuEntry;
+	private $eiuGui;
+	private $eiuEntryGui;
 	private $eiuField;
 	
 	
@@ -19,6 +20,7 @@ class Eiu implements Lookupable {
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
 		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
 		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
+		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
 		$this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui(false);
 		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
@@ -50,13 +52,32 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
+	 * 
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function gui(bool $required = true) {
+		if ($this->eiuGui !== null || !$required) return $this->eiuGui;
+	
+		throw new EiuPerimeterException('EiuGui is unavailable.');
+	}
+	
+	
+	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function entryGui(bool $required = true) {
-		if ($this->eiuEntryGui !== null || !$required) return $this->eiuEntryGui;
+		if ($this->eiuEntryGui !== null) return $this->eiuEntryGui;
 	
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui->entryGui($required);
+		}
+		
+		if (!$required) return null;
+		
 		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
 	}
 	

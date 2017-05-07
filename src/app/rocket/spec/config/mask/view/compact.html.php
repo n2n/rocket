@@ -20,57 +20,48 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
+	use rocket\spec\ei\manage\EiHtmlBuilder;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\manage\gui\ui\DisplayStructure;
-	use rocket\spec\ei\manage\EntryGui;
 	use rocket\spec\ei\manage\util\model\Eiu;
-	use rocket\spec\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
+	$eiu = $view->getParam('eiu');
+	$view->assert($eiu instanceof Eiu);
+	
 	$displayStructure = $view->getParam('displayStructure');
 	$view->assert($displayStructure instanceof DisplayStructure);
 	
-	$eiu = $view->getParam('eiu');
-	$view->assert($eiu instanceof Eiu);
-
 	$eiHtml = new EiHtmlBuilder($view);
-	
-	$entryOpen = $eiHtml->meta()->isEntryOpen();
 ?>
 
-<?php if (!$entryOpen): ?>
-	<?php $eiHtml->entryOpen('div', $eiu->entryGui())?>
-<?php endif ?>
-
-<?php if ($view->getParam('renderForkMags', false, true) ): ?>
-	<?php $eiHtml->forkControls() ?>
-<?php endif ?>
-
-<div class="rocket-properties">
-	<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-		<?php if ($displayItem->hasDisplayStructure()): ?>
-			<?php $entryEiHtml->groupOpen($displayItem) ?>
-				<label><?php $html->out($displayItem->getLabel()) ?></label>
-				<div class="rocket-control">
-					<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 
-							'eiu' => $eiu, 'renderForkMags' => false)) ?>
-				</div>
-			<?php $eiHtml->groupClose() ?>
-		<?php else: ?>
-			<?php $eiHtml->fieldOpen('div', $displayItem) ?>
-				<?php $eiHtml->fieldLabel() ?>
-				<?php $view->out('<div class="rocket-control">') ?>
-					<?php $eiHtml->fieldContent() ?>
-					<?php $eiHtml->fieldMessage() ?>
-				<?php $view->out('</div>') ?>
-			<?php $eiHtml->fieldClose() ?>
-		<?php endif ?>
-	<?php endforeach; ?>
-</div>
-
-<?php if (!$entryOpen): ?>
-	<?php $eiHtml->entryClose()?>
-<?php endif ?>
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<?php $eiHtml->generalEntrySelector('th') ?>
+			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
+				<th><?php $html->out($displayItem->getLabel()) ?></th>
+			<?php endforeach ?>
+			<th><?php $html->l10nText('common_list_tools_label') ?></th>
+		</tr>
+	</thead>
+	<tbody class="rocket-overview-content">
+		<?php foreach ($eiu->gui()->entryGuis() as $eiuEntryGui): ?>
+			<?php $eiHtml->entryOpen('tr', $eiuEntryGui) ?>
+				<?php $eiHtml->entrySelector('td') ?>
+				
+				<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
+					<?php $eiHtml->fieldOpen('td', $displayItem) ?>
+						<?php $eiHtml->fieldContent() ?>
+					<?php $eiHtml->fieldClose(); ?>
+				<?php endforeach ?>
+				<?php $view->out('<td>') ?>
+					<?php $eiHtml->entryCommands(true) ?>
+				<?php $view->out('</td>') ?>
+			<?php $eiHtml->entryClose() ?>
+		<?php endforeach ?>
+	</tbody>
+</table>

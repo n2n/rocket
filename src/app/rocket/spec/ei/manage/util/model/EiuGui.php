@@ -34,8 +34,42 @@ class EiuGui {
 	/**
 	 * @return bool
 	 */
+	public function isCompact() {
+		return !$this->eiGui->isBulky();
+	}
+	
+	/**
+	 * @return bool
+	 */
 	public function isSingle() {
 		return 1 == count($this->eiGui->getEiEntryGuis());
+	}
+	
+	/**
+	 * 
+	 * @param bool $required
+	 * @return EiuEntryGui|null
+	 */
+	public function entryGui(bool $required = true) {
+		$eiEntryGuis = $this->eiGui->getEiEntryGuis();
+		$eiEntryGui = null;
+		if (count($eiEntryGuis) == 1) {
+			return new EiuEntryGui(current($eiEntryGuis), $this);
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException('No single EiuEntryGui is available.');
+	}
+	
+	public function entryGuis() {
+		$eiuEntryGuis = array();
+		
+		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
+			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this);
+		}
+		
+		return $eiuEntryGuis;
 	}
 	
 // 	/**
