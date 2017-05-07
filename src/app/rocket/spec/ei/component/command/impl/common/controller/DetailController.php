@@ -43,8 +43,8 @@ class DetailController extends ControllerAdapter {
 	public function doLive($idRep) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		
-		$eiuEntryGui = $eiuEntry->newGui();
-		$entryView = $eiuEntryGui->createBulkyView();
+		$eiuEntryGui = $eiuEntry->newEntryGui();
+		$entryView = $eiuEntryGui->createView();
 		
 		$viewModel = new EntryCommandViewModel($eiuEntryGui);
 		$viewModel->initializeDrafts();

@@ -91,7 +91,7 @@ class EiuEntry {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
-	public function newGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
+	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
 			bool $determineEiMask = true) {
 		$eiMask = null;
 		if ($determineEiMask) {

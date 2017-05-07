@@ -232,7 +232,7 @@ class EiuFrame extends EiUtilsAdapter {
 		return $eiMask->createBulkyView($eiuEntryGui);
 	}
 	
-	public function createNewEntryForm(bool $draft = false, $copyFromEiObjectObj = null): EntryForm {
+	public function createNewEntryForm(bool $draft = false, $copyFromEiObjectObj = null, PropertyPath $contextPropertyPath = null): EntryForm {
 		$entryModelForms = array();
 		$labels = array();
 		
@@ -241,7 +241,7 @@ class EiuFrame extends EiUtilsAdapter {
 		
 		$eiGui = $contextEiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
 		
-		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEispecs());
+		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEiTypes());
 		foreach ($eiTypes as $subEiTypeId => $subEiType) {
 			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
 				continue;
@@ -255,7 +255,7 @@ class EiuFrame extends EiUtilsAdapter {
 				$subEiEntry = $this->createEiEntry($eiObject);
 			}
 						
-			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiEntry, $eiGui);
+			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiEntry, $contextPropertyPath);
 			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($this->eiFrame->getN2nLocale());
 		}

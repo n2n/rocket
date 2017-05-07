@@ -28,6 +28,7 @@ use rocket\spec\ei\component\command\impl\common\model\AddModel;
 use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
+use n2n\web\dispatch\map\PropertyPath;
 
 class AddController extends ControllerAdapter {
 	private $dtc;
@@ -71,7 +72,7 @@ class AddController extends ControllerAdapter {
 			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyIdRep);
 		}
 		
-		$entryForm = $eiuFrame->createNewEntryForm(false, $copyFrom);
+		$entryForm = $eiuFrame->createNewEntryForm(false, $copyFrom, new PropertyPath(array('entryForm')));
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm, $eiuFrame->getNestedSetStrategy());
@@ -93,7 +94,7 @@ class AddController extends ControllerAdapter {
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
 		
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $redirectUrl);
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
 				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));

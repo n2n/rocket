@@ -23,9 +23,7 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 
 use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
-use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\model\EntryGuiModel;
-use rocket\spec\ei\manage\EntryGui;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuFrame;
@@ -33,11 +31,11 @@ use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 class EntryCommandViewModel {
 	private $title;
-	private $eiuEntryGui;
+	private $eiuFrame;
 	private $cancelUrl;
 	
-	public function __construct(EiuEntryGui $eiuEntryGui, Url $cancelUrl = null) {
-		$this->eiuEntryGui = $eiuEntryGui;
+	public function __construct(EiuFrame $eiuFrame, Url $cancelUrl = null) {
+		$this->eiuFrame = $eiuFrame;
 		$this->cancelUrl = $cancelUrl;
 	}
 	
@@ -154,10 +152,10 @@ class EntryCommandViewModel {
 			return $this->cancelUrl;
 		}
 		
-		$eiObject = $this->getEiObject();
+		$eiObject = null;
 		
 		if ($eiObject === null || $eiObject->isNew()) {
-			return $this->eiFrame->getOverviewUrl($httpContext);
+			return $this->eiuFrame->getEiFrame()->getOverviewUrl($httpContext);
 		}
 		
 		return $this->eiFrame->getDetailUrl($httpContext, $this->entryGuiModel->getEiEntry()->toEntryNavPoint());	
