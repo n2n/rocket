@@ -35,6 +35,7 @@ use rocket\spec\ei\manage\util\model\GeneralIdUtils;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
+use n2n\web\dispatch\map\PropertyPath;
 
 class EiHtmlBuilder {
 	private $view;
@@ -94,20 +95,20 @@ class EiHtmlBuilder {
 	}
 	
 	public function entryForkControls(array $attrs = null) {
-		$this->view->out($this->getForkControls($attrs));
+		$this->view->out($this->getEntryForkControls($attrs));
 	}
 	
 	public function getEntryForkControls(array $attrs = null) {
 		$info = $this->state->peakEntry();
 		$eiEntryGui = $info['eiEntryGui'];
 		
-		if (empty($eiEntryGui->getForkMagPropertaPaths())) {
+		if (empty($eiEntryGui->getForkMagPropertyPaths())) {
 			return null;
 		}
 		
 		$div = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'rocket-group-controls'), $attrs));
 		
-		foreach ($eiEntryGui->getForkMagPropertaPaths() as $forkMagPropertyPath) {
+		foreach ($eiEntryGui->getForkMagPropertyPaths() as $forkMagPropertyPath) {
 			$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($forkMagPropertyPath);
 			
 			$div->appendLn($this->formHtml->getMagOpen('div', $propertyPath));
@@ -205,9 +206,9 @@ class EiHtmlBuilder {
 		}
 	
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
-		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
+		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 	
-		$this->pushField($tagName, $displayable, $fieldErrorInfo, $propertyPath);
+		$this->state->pushField($tagName, $fieldErrorInfo, $displayable, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
 				$this->buildAttrs($guiIdPath), $editableInfo->isMandatory());
 	}
@@ -221,7 +222,6 @@ class EiHtmlBuilder {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
 
-		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, null, $magPropertyPath);
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $this->buildContainerAttrs(
 				(array) $attrs, false, $mandatory));
 	}
@@ -258,7 +258,7 @@ class EiHtmlBuilder {
 	}
 	
 	public function fieldLabel(array $attrs = null, $label = null) {
-		$this->html->out($this->getLabel($attrs, $label));
+		$this->html->out($this->getFieldLabel($attrs, $label));
 	}
 	
 	public function getFieldLabel(array $attrs = null, $label = null) {
@@ -286,18 +286,18 @@ class EiHtmlBuilder {
 	}
 	
 	public function fieldMessage() {
-		$this->html->out($this->getMessage());
+		$this->html->out($this->getFieldMessage());
 	}
 	
 	public function getFieldMessage() {
-		$eiPropInfo = $this->peakField(false);
+		$fieldInfo = $this->state->peakField(false);
 		
-		if (isset($eiPropInfo['propertyPath'])
-				&& null !== ($message = $this->formHtml->getMessage($eiPropInfo['propertyPath']))) {
+		if (isset($fieldInfo['propertyPath'])
+				&& null !== ($message = $this->formHtml->getMessage($fieldInfo['propertyPath']))) {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
 		}
 
-		if (null !== ($message = $eiPropInfo['fieldErrorInfo']->processMessage())) {
+		if (null !== ($message = $fieldInfo['fieldErrorInfo']->processMessage())) {
 			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
 					$this->view->getN2nLocale());
 				
@@ -443,7 +443,7 @@ class EiHtmlBuilderState {
 	 * @throws IllegalStateException
 	 * @return array
 	 */
-	public function peakField($pop) {
+	public function peakField(bool $pop) {
 		$info = ArrayUtils::end($this->stack);
 	
 		if ($info === null || $info['type'] != 'field') {

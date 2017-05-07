@@ -46,7 +46,7 @@
 <?php endif ?>
 
 <?php if ($view->getParam('renderForkMags', false, true) ): ?>
-	<?php $eiHtml->forkControls() ?>
+	<?php $eiHtml->entryForkControls() ?>
 <?php endif ?>
 
 <div class="rocket-properties">

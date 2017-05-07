@@ -109,9 +109,6 @@ class EiuFactory {
 				$this->eiGui = $this->eiuGui->getEiGui();
 				$this->eiuFrame = $this->eiuGui->getEiuFrame();
 				$this->assignEiFrameArg($this->eiuFrame->getEiFrame(), $key, $eiArg);
-				if ($this->eiuEntryGui === null && $this->eiuGui->isSingle()) {
-					$this->eiuEntryGui = $this->eiuGui->entryGui();
-				}
 				continue;
 			}
 			

@@ -40,6 +40,7 @@ class EiuEntryGui {
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
+		
 		$this->eiEntryGui = $eiuFactory->getEiEntryGui(true);
 		$this->eiuGui = $eiuFactory->getEiuGui(true);
 		$this->eiuEntry = $eiuFactory->getEiuEntry(true);
@@ -193,8 +194,8 @@ class EiuEntryGui {
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
-	public function createBulkyView() {
-		return $this->getEiuEntry()->getEiuFrame()->createBulkyView($this);
+	public function createView() {
+		return $this->eiEntryGui->getEiGui()->createView();
 	}
 	
 // 	public function getEiMask() {

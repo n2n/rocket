@@ -75,7 +75,7 @@ class EntryFormViewModel {
 		$propertyPath = $this->entryFormPropertyPath
 				->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
 		
-		return $entryModelForm->getEiuEntryGui()->createBulkyView();
+		return $entryModelForm->getEiuEntryGui()->createView();
 	}
 	
 	public function createEditViews() {

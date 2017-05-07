@@ -58,6 +58,7 @@ use n2n\util\uri\Url;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\gui\EiGui;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -237,6 +238,9 @@ class EiuFrame extends EiUtilsAdapter {
 		
 		$contextEiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$contextEiMask = $this->eiFrame->getContextEiMask();
+		
+		$eiGui = $contextEiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
+		
 		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEispecs());
 		foreach ($eiTypes as $subEiTypeId => $subEiType) {
 			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
@@ -251,7 +255,7 @@ class EiuFrame extends EiUtilsAdapter {
 				$subEiEntry = $this->createEiEntry($eiObject);
 			}
 						
-			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiEntry);
+			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiEntry, $eiGui);
 			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($this->eiFrame->getN2nLocale());
 		}
@@ -289,18 +293,17 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	private function createEntryModelForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiType);
-		
-		$eiuEntry = new EiuEntry($eiEntry, $this);
-		$eiuEntryGui = new EiuEntryGui($eiuEntry, $eiMask->createBulkyEiEntryGui(new EiuEntry($eiEntry, $this), true));
+		$eiGui = $eiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
+		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry, true);
 		
 		if ($contextPropertyPath === null) {
 			$contextPropertyPath = new PropertyPath(array());
 		}
 		
-		$eiuEntryGui->setContextPropertyPath($contextPropertyPath->ext(
+		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
 				new PropertyPathPart('entryModelForms', true, $eiType->getId()))->ext('dispatchable'));
 		
-		return new EntryModelForm($eiuEntryGui);
+		return new EntryModelForm(new EiuEntryGui($eiEntryGui));
 	}
 	
 	public function remove(EiObject $eiObject) {
