@@ -217,7 +217,7 @@ class FileEiField extends DraftableEiFieldAdapter {
 	}
 	
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-		return $this->getPropertyAccessProxy()->getValue($eiObject->getObject());
+		return $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
