@@ -222,6 +222,9 @@ class FileEiField extends DraftableEiFieldAdapter {
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
 		if ($value === null) return null;
+
+		CastUtils::assertTrue($value instanceof File);
+		if (!$value->isValid()) return null;
 		
 		$tmpFileManager = $copyEiu->lookup(TmpFileManager::class);
 		CastUtils::assertTrue($tmpFileManager instanceof TmpFileManager);
