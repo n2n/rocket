@@ -42,7 +42,7 @@ class EditController extends ControllerAdapter {
 	
 	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiuCtrl, Eiu $eiu) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = $eiuCtrl;;
+		$this->eiuCtrl = $eiuCtrl;
 	}
 	
 	/**

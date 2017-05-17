@@ -211,7 +211,7 @@ class EiuCtrl implements Lookupable {
 	
 	public function redirectToOverview(int $status = null) {
 		$this->httpContext->getResponse()->send(
-				new Redirect($this->getEiFrame()->getOverviewUrl($this->httpContext), $status));
+				new Redirect($this->eiuFrame->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
 	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {
