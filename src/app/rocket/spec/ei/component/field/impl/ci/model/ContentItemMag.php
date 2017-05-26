@@ -34,12 +34,9 @@ use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiFieldPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
-use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\ex\NotYetImplementedException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
 
@@ -163,7 +160,8 @@ class ContentItemMag extends MagAdapter {
 			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName)
 					->__get($panelConfig->getName());
 			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
-				if (in_array($mfMappingResult->entryForm->chosenId, $allowedIds)) continue;
+				if (!$mfMappingResult->entryForm->getObject()->isChoosable()
+						|| in_array($mfMappingResult->entryForm->chosenId, $allowedIds)) continue;
 				
 				$mfMappingResult->getBindingErrors()->addErrorCode('chosenId', 'ei_impl_content_item_type_disallowed');
 			}
