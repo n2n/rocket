@@ -29,7 +29,6 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
 class ToManyEiField extends RwEiField {

@@ -65,6 +65,7 @@ use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
+use rocket\spec\ei\manage\gui\EiGui;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork {
@@ -190,10 +191,11 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($eiObject));
 			}
 			
+			$targetEiuGui = $targetUtils->newGui($eiu->entryGui()->isBulky());
+			$targetEiuEntryGui = $targetEiuGui->appendNewEntryGui($targetRelationEntry->getEiEntry(), !$eiu->entryGui()->isReadOnly());
+			
 			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					new GuiFieldAssembler($targetGuiDefinition, new EiuEntryGui(
-							$targetRelationEntry->getEiEntry(), $targetUtils->getEiFrame(), 
-							$eiu->entryGui()->getEiEntryGui())), 
+					new GuiFieldAssembler($targetGuiDefinition, $targetEiuEntryGui), 
 					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		

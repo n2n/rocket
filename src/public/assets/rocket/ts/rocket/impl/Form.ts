@@ -62,6 +62,7 @@ namespace rocket.impl {
 					rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
 			    },
 			    "error": function(jqXHR, textStatus, errorThrown){
+                    alert(jqXHR.responseText);
 			        rocket.handleErrorResponse(url, jqXHR);     
 			    }
 			});

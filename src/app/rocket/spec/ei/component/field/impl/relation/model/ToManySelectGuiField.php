@@ -21,79 +21,91 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\core\model\Rocket;
+use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\impl\web\ui\view\html\HtmlElement;
 
-class EmbeddedOneToManyGuiField implements GuiField {
-	private $label;
-	private $readOnly;
-	private $mandatory;
-	private $toManyEiField;
+class ToManySelectGuiField implements GuiField {
+	private $eiProp;
+	private $eiu;
 	private $targetEiFrame;
 	private $editable;
-
-	private $selectPathExt;
-	private $newMappingFormPathExt;
-
-	public function __construct(string $label, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+	private $toOneMag;
+	
+	public function __construct(EiProp $eiProp, Eiu $eiu, EiFrame $targetEiFrame, 
 			Editable $editable = null) {
-		$this->label = $label;
-		$this->toManyEiField = $toManyEiField;
+		$this->eiProp = $eiProp;
+		$this->eiu = $eiu;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
-
+	
 	public function isReadOnly(): bool {
 		return $this->editable === null;
+	}
+	
+	public function getGroupType() {
+		return null;
 	}
 	
 	/**
 	 * @return string
 	 */
 	public function getUiOutputLabel(): string {
-		return $this->label;
+		return $this->eiProp->getLabelLstr();
 	}
-
+	
 	/**
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return array('class' => 'rocket-group');
+		if ($this->eiu->entryGui()->isBulky()) {
+			return array('class' => 'rocket-block');
+		}
+		
+		return array();
 	}
-
+	
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetRelationEntries = $this->toManyEiField->getValue();
-		if (empty($targetRelationEntries)) return null;
+		if ($this->eiu->entry()->getEiEntry()->isNew()) {
+			return null;
+		}
 		
-		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
-		
-		$detailViews = array();
-		foreach ($targetRelationEntries as $targetRelationEntry) {
-			$targetEiEntry = null;
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetEiEntry = $targetRelationEntry->getEiEntry();
-			} else {
-				$targetEiEntry = $targetEiuFrame->createEiEntry(
-						$targetRelationEntry->getEiObject());
-			}
-			
-			if ($targetEiEntry->isAccessible()) {
-				$detailViews[] = $targetEiuFrame->createBulkyDetailView($targetEiEntry);
-			} else {
-				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetEiuFrame->createIdentityString($targetEiEntry->getEiObject()));
-			}
+		$criteria = $this->targetEiFrame->createCriteria('e');
+		$criteria->select('COUNT(e)');
+		$num = $criteria->toQuery()->fetchSingle();
+
+		$targetEiUtils = new EiuFrame($this->targetEiFrame);
+		if ($num == 1) {
+			$label = $num . ' ' . $targetEiUtils->getGenericLabel();
+		} else {
+			$label = $num . ' ' . $targetEiUtils->getGenericPluralLabel();
 		}
 
-		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\embeddedOneToMany.html',
-				array('detailViews' => $detailViews));
+		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
+				->getEiRelation($this->eiProp->getId()))) {
+			return $this->createUiLink($relation->getEiFrame(), $label, $view);
+		}
+
+		return $this->createUiLink($this->targetEiFrame, $label, $view);
 	}
 
+	private function createUiLink(EiFrame $targetEiFrame, $label, HtmlView $view) {
+		$html = $view->getHtmlBuilder();
+
+		if (!$targetEiFrame->isOverviewUrlAvailable()) return $html->getEsc($label);
+
+		return $html->getLink($targetEiFrame->getOverviewUrl($view->getHttpContext()), $label);
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()

@@ -46,7 +46,7 @@ class DetailController extends ControllerAdapter {
 		$eiuEntryGui = $eiuEntry->newEntryGui();
 		$entryView = $eiuEntryGui->createView();
 		
-		$viewModel = new EntryCommandViewModel($eiuEntryGui);
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame());
 		$viewModel->initializeDrafts();
 		
 		$this->applyBreadcrumbs($eiuEntryGui->getEiuEntry()->getEiObject());

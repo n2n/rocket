@@ -53,7 +53,7 @@ class EditController extends ControllerAdapter {
 	 * @return \rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel
 	 */
 	private function createEntryCommandViewModel(EiuEntryGui $eiuEntryGui, Url $cancelUrl = null) {
-		$viewModel = new EntryCommandViewModel($eiuEntryGui, $cancelUrl);
+		$viewModel = new EntryCommandViewModel($eiuEntryGui->getEiuEntry()->getEiuFrame(), $cancelUrl);
 		$viewModel->initializeDrafts();
 		return $viewModel;
 	}

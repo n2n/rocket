@@ -55,7 +55,6 @@ namespace rocket {
 		container.handleError(url, responseObject.responseText);
 	}
 	
-	
 	export function exec(url: string, config: rocket.cmd.ExecConfig = null) {
 		executor.exec(url, config);
 	}

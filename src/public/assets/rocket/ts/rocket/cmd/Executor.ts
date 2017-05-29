@@ -65,7 +65,7 @@ namespace rocket.cmd {
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
 				if (jqXHR.status != 200) {
-					config.currentLayer.getContainer().handleError(url, data.responseText);
+                    config.currentLayer.getContainer().handleError(url, jqXHR.responseText);
 					return;
 				}
 				

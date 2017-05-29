@@ -56,18 +56,11 @@ class EntryCommandViewModel {
 		return $this->eiuEntryGui->getEiuEntry()->getEiuFrame();
 	}
 	
-	/**
-	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
-	 */
-	public function getEiuEntry() {
-		return $this->eiuEntryGui->getEiuEntry();
-	}
-	
-	
 	private $latestDraft = null;
 	private $historicizedDrafts = array();
 	
 	public function initializeDrafts() {
+		return;
 		$eiuEntry = $this->getEiuEntry();
 		if ($eiuEntry->hasLiveId() && $this->getEiuFrame()->isDraftingEnabled()) {
 			$this->historicizedDrafts = $eiuEntry->lookupDrafts(0, 30);
@@ -107,12 +100,13 @@ class EntryCommandViewModel {
 	}
 	
 	public function isPreviewAvailable() {
+		return false;
 		return $this->getEiuEntry()->isPreviewAvailable();
 	}
 	
-	public function getEiuEntryGui() {
-		return $this->eiuEntryGui;
-	}
+// 	public function getEiuEntryGui() {
+// 		return $this->eiuEntryGui;
+// 	}
 	
 	
 // 	public function getInfoPathExt() {

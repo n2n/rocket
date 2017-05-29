@@ -116,10 +116,11 @@ var rocket;
                     "url": url
                 };
                 if (this.jqErrorLayer) {
-                    history.replaceState(stateObj, "seite 2", url);
+                    this.jqErrorLayer.remove();
+                    history.replaceState(stateObj, "n2n Rocket", url);
                 }
                 else {
-                    history.pushState(stateObj, "seite 2", url);
+                    history.pushState(stateObj, "n2n Rocket", url);
                 }
                 this.jqErrorLayer = $("<div />", { "class": "rocket-error-layer" });
                 this.jqErrorLayer.css({ "position": "fixed", "top": 0, "left": 0, "right": 0, "bottom": 0 });
@@ -621,7 +622,7 @@ var rocket;
                     "dataType": "json"
                 }).fail(function (jqXHR, textStatus, data) {
                     if (jqXHR.status != 200) {
-                        config.currentLayer.getContainer().handleError(url, data.responseText);
+                        config.currentLayer.getContainer().handleError(url, jqXHR.responseText);
                         return;
                     }
                     alert("Not yet implemented press F5 after ok.");
@@ -799,6 +800,7 @@ var rocket;
                         rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
                     },
                     "error": function (jqXHR, textStatus, errorThrown) {
+                        alert(jqXHR.responseText);
                         rocket.handleErrorResponse(url, jqXHR);
                     }
                 });

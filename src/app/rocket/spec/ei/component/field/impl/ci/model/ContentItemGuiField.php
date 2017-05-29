@@ -19,36 +19,52 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\field\impl\relation\model;
+namespace rocket\spec\ei\component\field\impl\ci\model;
 
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\util\ex\IllegalStateException;
+use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
+use n2n\web\ui\Raw;
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
 
-class EmbeddedOneToOneGuiField implements GuiField {
+class ContentItemGuiField implements GuiField {
 	private $label;
-	private $readOnly;
+	private $panelConfigs;
 	private $mandatory;
-	private $toOneEiField;
+	private $toManyEiField;
 	private $targetEiFrame;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
+	public function __construct(string $label, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
-		$this->toOneEiField = $toOneEiField;
+		$this->panelConfigs = $panelConfigs;
+		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
 	}
 
 	public function isReadOnly(): bool {
 		return $this->editable === null;
+	}
+
+	public function getGroupType() {
+		return DisplayItem::TYPE_SIMPLE;
+	}
+	
+	/**
+	 * @return PanelConfig[] 
+	 */
+	public function getPanelConfigs() {
+		return $this->panelConfigs;
 	}
 	
 	/**
@@ -65,36 +81,36 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		return array('class' => 'rocket-group');
 	}
 
-// 	public function createOutputUiComponent(HtmlView $view) {
-// 		$eiFrame = $eiu->frame()->getEiFrame();
-// 		$eiEntry = $eiu->entry()->getEiEntry();
-// 		$targetEiObject = $this->createTargetEiObject($eiFrame, $eiEntry);
-
-// 		if ($targetEiObject === null) return null;
-
-// 		$eiObject = $eiEntry->getEiObject();
-// 		$target = $this->eiPropRelation->getTarget();
-// 		$targetEiFrame = $this->eiPropRelation->createTargetPseudoEiFrame(
-// 				$eiFrame, $eiObject, false);
-// 		$targetUtils = new EiuFrame($targetEiFrame);
-
-// 		$targetEiEntry = $targetUtils->createEiEntry($targetEiObject);
-
-// 		$entryInfo = $targetUtils->createEntryInfo($targetEiEntry);
-// 		$view = $entryInfo->getEiMask()->createDetailView($targetEiFrame, $entryInfo);
-
-// 		return $view->getImport($view);
-// 	}
-	
 	public function createOutputUiComponent(HtmlView $view) {
-		$targetRelationEntry = $this->toOneEiField->getValue();
-		if ($targetRelationEntry === null) return null;
-	
 		$targetUtils = new EiuFrame($this->targetEiFrame);
+		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
-		return $targetUtils->createBulkyDetailView($targetRelationEntry->toEiEntry($targetUtils));
+		$groupedUiComponents = array();
+		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
+			$targetEiEntry = null;
+			if ($targetRelationEntry->hasEiEntry()) {
+				$targetEiEntry = $targetRelationEntry->getEiEntry();
+			} else {
+				$targetEiEntry = $targetUtils->createEiEntry(
+						$targetRelationEntry->getEiObject());
+			}
+			
+			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
+			if (!isset($groupedUiComponents[$panelName])) {
+				$groupedUiComponents[$panelName] = array();
+			}
+			
+			if ($targetEiEntry->isAccessible()) {
+				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiEntry);
+			} else {
+				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
+						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
+			}
+		}
+		
+		return $view->getImport('\rocket\spec\ei\component\field\impl\ci\view\contentItems.html',
+				array('panelConfigs' => $this->panelConfigs, 'groupedUiComponents' => $groupedUiComponents));
 	}
-	
 
 	/**
 	 * {@inheritDoc}

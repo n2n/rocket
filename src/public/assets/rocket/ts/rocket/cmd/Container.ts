@@ -53,9 +53,10 @@ namespace rocket.cmd {
 			};
 			
 			if (this.jqErrorLayer) {
-				history.replaceState(stateObj, "seite 2", url);
+                this.jqErrorLayer.remove();
+				history.replaceState(stateObj, "n2n Rocket", url);
 			} else {
-				history.pushState(stateObj, "seite 2", url);
+				history.pushState(stateObj, "n2n Rocket", url);
 			}
 			
 			this.jqErrorLayer = $("<div />", { "class": "rocket-error-layer" });
