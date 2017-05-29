@@ -65,7 +65,7 @@ class DisplayStructure {
 	public function getAllGuiIdPaths() {
 		$guiIdPaths = array();
 		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->isGroup()) {
+			if ($displayItem->hasDisplayStructure()) {
 				$guiIdPaths = array_merge($guiIdPaths, $displayItem->getDisplayStructure()->getAllGuiIdPaths());
 			} else{
 				$guiIdPaths[] = $displayItem->getGuiIdPath();

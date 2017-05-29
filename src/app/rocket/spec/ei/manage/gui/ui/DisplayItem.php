@@ -37,7 +37,7 @@ class DisplayItem {
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $groupType, 
 			string $label = null) {
 		$displayItem = new DisplayItem();
-		$displayItem->displayStructure = $displayStructure;
+		$displayItem->guiDisplayStructure = $displayStructure;
 		$displayItem->groupType = $groupType;
 		$displayItem->label = $label;
 		return $displayItem;
