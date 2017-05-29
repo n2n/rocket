@@ -61,7 +61,6 @@ use rocket\spec\ei\manage\critmod\sort\SortConstraint;
 use rocket\spec\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;

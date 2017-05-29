@@ -64,7 +64,7 @@ class DisplayItem {
 	}
 
 	/**
-	 * @return GuiSection
+	 * @return DisplayStructure
 	 * @throws IllegalStateException
 	 */
 	public function getDisplayStructure() {

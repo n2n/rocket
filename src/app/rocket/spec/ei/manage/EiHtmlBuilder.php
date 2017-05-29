@@ -36,6 +36,7 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
+use n2n\l10n\MessageTranslator;
 
 class EiHtmlBuilder {
 	private $view;
@@ -212,7 +213,6 @@ class EiHtmlBuilder {
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
 				$this->buildAttrs($guiIdPath), $editableInfo->isMandatory());
 	}
-	
 
 	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,
 			array $attrs = null, bool $mandatory = false) {
@@ -306,6 +306,14 @@ class EiHtmlBuilder {
 		}
 
 		return null;
+	}
+	
+	public function groupOpen(string $tagName, DisplayItem $displayItem) {
+		$displayStructure = $displayItem->getDisplayStructure();
+		
+		foreach ($displayStructure->getAllGuiIdPaths() as $guiIdPath) {
+			
+		}
 	}
 	
 	/**
