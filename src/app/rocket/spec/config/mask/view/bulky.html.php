@@ -52,7 +52,7 @@
 <div class="rocket-properties">
 	<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 		<?php if ($displayItem->hasDisplayStructure()): ?>
-			<?php $eiHtml->groupOpen($displayItem) ?>
+			<?php $eiHtml->groupOpen('div', $displayItem) ?>
 				<label><?php $html->out($displayItem->getLabel()) ?></label>
 				<div class="rocket-control">
 					<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 

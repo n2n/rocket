@@ -13,7 +13,7 @@ class DisplayItem {
 	protected $label;
 	protected $groupType;
 	protected $guiIdPath;
-	protected $guiDisplayStructure;
+	protected $displayStructure;
 
 	private function __construct() {
 	}
@@ -37,7 +37,7 @@ class DisplayItem {
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $groupType, 
 			string $label = null) {
 		$displayItem = new DisplayItem();
-		$displayItem->guiDisplayStructure = $displayStructure;
+		$displayItem->displayStructure = $displayStructure;
 		$displayItem->groupType = $groupType;
 		$displayItem->label = $label;
 		return $displayItem;
@@ -48,19 +48,19 @@ class DisplayItem {
 	}
 
 	public function getGroupType() {
-		if ($this->groupType !== null || $this->guiDisplayStructure === null) {
+		if ($this->groupType !== null || $this->displayStructure === null) {
 			return $this->groupType;
 		}
 
-		return $this->groupType;
+		return self::TYPE_SIMPLE;
 	}
 
 	public function isGroup() {
-		return $this->guiDisplayStructure !== null || $this->groupType !== null;
+		return $this->displayStructure !== null || $this->groupType !== null;
 	}
 
 	public function hasDisplayStructure() {
-		return $this->guiDisplayStructure !== null;
+		return $this->displayStructure !== null;
 	}
 
 	/**
@@ -68,8 +68,8 @@ class DisplayItem {
 	 * @throws IllegalStateException
 	 */
 	public function getDisplayStructure() {
-		if ($this->guiDisplayStructure !== null) {
-			return $this->guiDisplayStructure;
+		if ($this->displayStructure !== null) {
+			return $this->displayStructure;
 		}
 
 		throw new IllegalStateException();

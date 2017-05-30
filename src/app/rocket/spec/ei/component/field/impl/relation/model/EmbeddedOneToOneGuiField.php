@@ -97,7 +97,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
-		return $targetUtils->createBulkyDetailView($targetRelationEntry->toEiEntry($targetUtils));
+		return $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils))->newEntryGui(true)->createView();
 	}
 	
 

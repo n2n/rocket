@@ -37,6 +37,7 @@ use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
+use n2n\reflection\ArgUtils;
 
 class EiHtmlBuilder {
 	private $view;
@@ -53,7 +54,7 @@ class EiHtmlBuilder {
 		
 		$this->state = $view->getStateObj(self::class);
 		if (!($this->state instanceof EiHtmlBuilderState)) {
-			$this->state = new EiHtmlBuilderState();
+			$view->setStateObj(self::class, $this->state = new EiHtmlBuilderState());
 		}
 		
 		$this->meta = new EiHtmlBuilderMeta($this->state);
@@ -190,6 +191,7 @@ class EiHtmlBuilder {
 			}
 			
 			$guiIdPath = $displayItem->getGuiIdPath();
+			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
 		} else {
 			$guiIdPath = GuiIdPath::createFromExpression($displayItem);
 			$displayItem = null;
@@ -203,7 +205,7 @@ class EiHtmlBuilder {
 		if ($readOnly || !$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $fieldErrorInfo, $displayable);
 			return $this->createOutputFieldOpen($tagName, $displayable, $fieldErrorInfo,
-					$this->buildAttrs($guiIdPath));
+					$this->buildAttrs($guiIdPath, $displayItem));
 		}
 	
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
@@ -232,6 +234,14 @@ class EiHtmlBuilder {
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');
 	}
 
+	private function applyGroupTypeAttr(string $groupType = null, array $attrs) {
+		if (null !== $groupType) {
+			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group-' . $groupType), $attrs);
+		}
+		
+		return $attrs;
+	}
+	
 	private function buildContainerAttrs(array $attrs, bool $readOnly = true, bool $mandatory = false) {
 		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-property'), $attrs);
 	
@@ -308,12 +318,47 @@ class EiHtmlBuilder {
 		return null;
 	}
 	
-	public function groupOpen(string $tagName, DisplayItem $displayItem) {
-		$displayStructure = $displayItem->getDisplayStructure();
-		
-		foreach ($displayStructure->getAllGuiIdPaths() as $guiIdPath) {
-			
+	/**
+	 * 
+	 * @param string $tagName
+	 * @param unknown $displayItem
+	 * @param array $attrs
+	 */
+	public function groupOpen(string $tagName, $displayItem, array $attrs = null) {
+		$this->view->out($this->getGroupOpen($tagName, $displayItem, $attrs));
+	}
+	
+	/**
+	 * 
+	 * @param string $tagName
+	 * @param unknown $displayItem
+	 * @param array $attrs
+	 * @return \n2n\web\ui\UiComponent
+	 */
+	public function getGroupOpen(string $tagName, $displayItem, array $attrs = null) {
+		if ($displayItem instanceof DisplayItem) {
+			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
+		} else {
+			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], 'displayItem');
+			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
 		}
+		$this->state->pushGroup($tagName);
+		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
+	}
+	
+	/**
+	 * 
+	 */
+	public function groupClose() {
+		$this->view->out($this->getGroupClose());
+	}
+	
+	/**
+	 * @return \n2n\web\ui\UiComponent
+	 */
+	public function getGroupClose() {
+		$info = $this->state->peakGroup(true);
+		return new Raw('</ ' . $info['tagName'] . '>');
 	}
 	
 	/**
@@ -432,7 +477,6 @@ class EiHtmlBuilderState {
 		return $info;
 	}
 	
-	
 	/**
 	 * @param string $tagName
 	 * @param FieldErrorInfo $fieldErrorInfo
@@ -456,6 +500,34 @@ class EiHtmlBuilderState {
 	
 		if ($info === null || $info['type'] != 'field') {
 			throw new IllegalStateException('No field open.');
+		}
+	
+		if ($pop) {
+			return array_pop($this->stack);
+		} else {
+			return end($this->stack);
+		}
+	}
+	
+
+	/**
+	 * @param string $tagName
+	 */
+	public function pushGroup(string $tagName) {
+		$this->stack[] = array('type' => 'group', 'tagName' => $tagName);
+	}
+	
+	/**
+	 *
+	 * @param bool $pop
+	 * @throws IllegalStateException
+	 * @return array
+	 */
+	public function peakGroup(bool $pop) {
+		$info = ArrayUtils::end($this->stack);
+	
+		if ($info === null || $info['type'] != 'group') {
+			throw new IllegalStateException('No group open.');
 		}
 	
 		if ($pop) {
