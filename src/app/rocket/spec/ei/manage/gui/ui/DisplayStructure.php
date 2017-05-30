@@ -77,38 +77,44 @@ class DisplayStructure {
 	const PURIFY_MODE_NO_GROUPS = 'noGroups';
 	const PURIFY_MODE_GROUPS_IN_ROOT = 'groupsInRoot';
 	
-	public function purify(EiEntryGui $eiEntryGui) {
+	public function purified(EiEntryGui $eiEntryGui) {
 		$displayStructure = new DisplayStructure();
 		
 		foreach ($this->displayItems as $displayItem) {
 			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
 		}
+		
+		$this->roAutonomics($this->displayItems, $autonomicParent);
+	}
+	
+	private function roAutonomics(array $displayItems, DisplayStructure $autonomicParent) {
+		
 	}
 
 	public function withoutGroups() {
 		$displayStructure = new DisplayStructure();
 	
-		$this->withoutGroups($displayStructure, $this->displayItems);
+		$this->stripGroups($displayStructure, $this->displayItems);
 	
 		return $displayStructure;
 	}
 	
-	private function stripgGroups(DisplayStructure $displayStructure, array $orderItems) {
-		foreach ($orderItems as $orderItem) {
-			if (!$orderItem->isGroup()) {
-				$displayStructure->displayItems[] = $orderItem;
+	private function stripGroups(DisplayStructure $displayStructure, array $orderItems) {
+		foreach ($orderItems as $displayItem) {
+			if (!$displayItem->isGroup()) {
+				$displayStructure->displayItems[] = $displayItem;
 				continue;
 			}
 				
-			if ($orderItem->hasGuiSection()) {
-				$this->stripgGroups($displayStructure, $orderItem->getGuiSection()->getDisplayItems());
+			if ($displayItem->hasDisplayStructure()) {
+				$this->stripGroups($displayStructure, $displayItem->getDisplayStructure()->getDisplayItems());
 				continue;
 			}
 			
 			
-			$orderItem = $orderItem->copy();
-			$orderItem->setGroupType(null);
-			$displayStructure->displayItems[] = $orderItem;
+			$displayItem = $displayItem->copy();
+			$displayItem->setGroupType(null);
+			$displayStructure->displayItems[] = $displayItem;
 		}
 	
 	}
