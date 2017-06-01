@@ -80,15 +80,38 @@ class DisplayStructure {
 	public function purified(EiEntryGui $eiEntryGui) {
 		$displayStructure = new DisplayStructure();
 		
-		foreach ($this->displayItems as $displayItem) {
-			$eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
-		}
+		$this->roAutonomics($this->displayItems, $displayStructure, $displayStructure);
 		
-		$this->roAutonomics($this->displayItems, $autonomicParent);
+		return $displayStructure;
 	}
 	
-	private function roAutonomics(array $displayItems, DisplayStructure $autonomicParent) {
-		
+	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs, EiEntryGui $eiEntryGui) {
+		foreach ($displayItems as $displayItem) {
+			$groupType = $displayItem->getGroupType();
+			
+			if (!$displayItem->hasDisplayStructure()) {
+				if ($groupType !== null) {
+					$groupType = $eiEntryGui->getDisplayableByGuiIdPath($displayItem->getGuiIdPath())->getGroupType(); 
+				}
+				
+				if ($displayItem->getGroupType() != DisplayItem::TYPE_AUTONOMIC) {
+					$ds->displayItems[] = $displayItem;
+				} else {
+					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());
+				}
+				continue;
+			}
+			
+			$newDisplayStructure = new DisplayStructure();
+			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
+					($displayItem->getGroupType() == DisplayItem::TYPE_MAIN ? $newDisplayStructure : $autonomicDs));
+			
+			if ($displayItem->getGroupType() == DisplayItem::TYPE_AUTONOMIC) {
+				$autonomicDs->addDisplayStructure($newDisplayStructure, DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());	
+			} else {
+				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getGroupType(), $displayItem->getLabel());
+			}
+		}
 	}
 
 	public function withoutGroups() {
