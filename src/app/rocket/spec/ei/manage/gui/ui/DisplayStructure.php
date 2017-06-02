@@ -47,6 +47,9 @@ class DisplayStructure {
 		return $this->displayItems;
 	}
 	
+	/**
+	 * @param DisplayItem[] $displayItems
+	 */
 	public function setDisplayItems(array $displayItems) {
 		ArgUtils::valArray($displayItems, DisplayItem::class);
 		$this->displayItems = $displayItems;

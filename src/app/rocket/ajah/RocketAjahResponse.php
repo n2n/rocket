@@ -1,12 +1,12 @@
 <?php
 namespace rocket\ajah;
 
-use n2n\web\http\BufferedResponseContent;
+use n2n\web\http\BufferedResponseObject;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
 
-class RocketAjahResponse implements BufferedResponseContent {
+class RocketAjahResponse extends BufferedResponseObject {
 	private $jsonResponse;
 
 	private function __construct(array $attrs) {
@@ -15,7 +15,7 @@ class RocketAjahResponse implements BufferedResponseContent {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\web\http\BufferedResponseContent::getBufferedContents()
+	 * @see \n2n\web\http\BufferedResponseObject::getBufferedContents()
 	 */
 	public function getBufferedContents(): string {
 		return $this->jsonResponse->getBufferedContents();
@@ -23,7 +23,7 @@ class RocketAjahResponse implements BufferedResponseContent {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\web\http\ResponseThing::prepareForResponse()
+	 * @see \n2n\web\http\ResponseObject::prepareForResponse()
 	 */
 	public function prepareForResponse(\n2n\web\http\Response $response) {
 		$this->jsonResponse->prepareForResponse($response);
@@ -31,7 +31,7 @@ class RocketAjahResponse implements BufferedResponseContent {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\web\http\ResponseThing::toKownResponseString()
+	 * @see \n2n\web\http\ResponseObject::toKownResponseString()
 	 */
 	public function toKownResponseString(): string {
 		return $this->jsonResponse->toKownResponseString();
@@ -54,7 +54,7 @@ class RocketAjahResponse implements BufferedResponseContent {
 	 * @param unknown $fallbackUrl
 	 * @param AjahEventInfo $ajahEventInfo
 	 * @param AjahExec $ajahExec
-	 * @return BufferedResponseContent
+	 * @return BufferedResponseObject
 	 */
 	public static function redirectBack(string $fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {
 		$attrs = array(
@@ -74,7 +74,7 @@ class RocketAjahResponse implements BufferedResponseContent {
 
 	/**
 	 * @param AjahEventInfo $ajahEventInfo
-	 * @return BufferedResponseContent
+	 * @return BufferedResponseObject
 	 */
 	public static function events(AjahEventInfo $ajahEventInfo) {
 		return new RocketAjahResponse(array(
