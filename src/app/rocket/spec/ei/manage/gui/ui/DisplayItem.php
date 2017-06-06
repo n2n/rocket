@@ -9,6 +9,7 @@ class DisplayItem {
 	const TYPE_SIMPLE = 'simple';
 	const TYPE_MAIN = 'main';
 	const TYPE_AUTONOMIC = 'autonomic';
+	const TYPE_NONE = 'none';
 
 	protected $label;
 	protected $groupType;

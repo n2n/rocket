@@ -137,9 +137,10 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		
 		if ($this->eiGui->isBulky()) {
 			$viewName = 'rocket\spec\config\mask\view\bulky.html';
-			$displayStructure = current($this->displayStructures);
+			$displayStructure = current($this->displayStructures)->purified(current($this->eiEntryGuis));
 		} else {
 			$viewName = 'rocket\spec\config\mask\view\compact.html';
+			$displayStructure = $displayStructure->withoutGroups();
 		}
 		
 		return $viewFactory->create($viewName, 

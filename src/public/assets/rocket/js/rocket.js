@@ -384,6 +384,39 @@ var rocket;
         cmd.Entry = Entry;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        var Group = (function () {
+            function Group(jqGroup) {
+                this.jqGroup = jqGroup;
+                jqGroup.addClass("rocket-group");
+                jqGroup.data("rocketGroup", this);
+            }
+            Group.from = function (jqElem) {
+                var rocketGroup = jqElem.data("rocketGroup");
+                if (rocketGroup)
+                    return rocketGroup;
+                rocketGroup = new Group(jqElem);
+                jqElem.data("rocketCommandAction", rocketGroup);
+                return rocketGroup;
+            };
+            Group.findFrom = function (jqElem) {
+                if (!jqElem.hasClass(".rocket-group")) {
+                    jqElem = jqElem.parents(".rocket-group");
+                }
+                var group = jqElem.data("rocketGroup");
+                if (group === undefined) {
+                    return null;
+                }
+                return group;
+            };
+            return Group;
+        }());
+        display.Group = Group;
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -818,4 +851,39 @@ var rocket;
         }());
         impl.Form = Form;
     })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        var Initializer = (function () {
+            function Initializer() {
+            }
+            Initializer.prototype.scan = function (jqContainer) {
+                var that = this;
+                var curGroupContainer = null;
+                jqContainer.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+                    var jqElem = $(this);
+                    var group = display.Group.from(jqElem);
+                    if (!jqElem.hasClass(".rocket-group-main")) {
+                        curGroupContainer = null;
+                        return;
+                    }
+                    if (curGroupContainer === null) {
+                        var jqGroupNav = $("<ul />", {}).insertBefore(jqElem);
+                        curGroupContainer = new GroupContainer(jqGroupNav);
+                    }
+                    curGroupContainer.addGroup(group);
+                });
+            };
+            return Initializer;
+        }());
+        display.Initializer = Initializer;
+        var GroupContainer = (function () {
+            function GroupContainer(jqGroupNav) {
+                this.jqGroupNav = jqGroupNav;
+            }
+            return GroupContainer;
+        }());
+    })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
