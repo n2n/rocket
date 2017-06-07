@@ -93,7 +93,7 @@ class EiHtmlBuilder {
 	public function getEntryClose() {
 		$tagName = $this->state->popEntry()['tagName'];
 		
-		return new Raw('</ ' . htmlspecialchars($tagName) . '>');
+		return new Raw('</' . htmlspecialchars($tagName) . '>');
 	}
 	
 	public function entryForkControls(array $attrs = null) {
@@ -264,7 +264,7 @@ class EiHtmlBuilder {
 	
 	public function getFieldClose() {
 		$info = $this->state->peakField(true);
-		return new Raw('</ ' . $info['tagName'] . '>');
+		return new Raw('</' . $info['tagName'] . '>');
 	}
 	
 	public function fieldLabel(array $attrs = null, $label = null) {
@@ -358,7 +358,7 @@ class EiHtmlBuilder {
 	 */
 	public function getGroupClose() {
 		$info = $this->state->peakGroup(true);
-		return new Raw('</ ' . $info['tagName'] . '>');
+		return new Raw('</' . $info['tagName'] . '>');
 	}
 	
 	/**

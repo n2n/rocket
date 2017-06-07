@@ -39,7 +39,11 @@ namespace rocket {
 		}) ();
 		
 		(function () {
+			rocket.display.Initializer.scan(jqContainer);
 			
+			n2n.dispatch.registerCallback(function () {
+				rocket.impl.Form.scan(jqContainer);
+			});
 		}) ();
 	});
 	

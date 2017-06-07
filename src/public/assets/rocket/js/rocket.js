@@ -75,6 +75,102 @@ var rocket;
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
+    var display;
+    (function (display) {
+        var Initializer = (function () {
+            function Initializer() {
+            }
+            Initializer.scan = function (jqContainer) {
+                var that = this;
+                var i = 0;
+                jqContainer.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+                    var jqElem = $(this);
+                    var group = display.Group.from(jqElem, false);
+                    if (group !== null)
+                        return;
+                    if (!jqElem.hasClass("rocket-group-main")) {
+                        display.Group.from(jqElem, true);
+                        return;
+                    }
+                    Initializer.scanGroupNav(jqElem.parent());
+                });
+            };
+            Initializer.scanGroupNav = function (jqContainer) {
+                var curGroupNav = null;
+                jqContainer.children(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+                    var jqElem = $(this);
+                    if (!jqElem.hasClass("rocket-group-main")) {
+                        curGroupNav = null;
+                        return;
+                    }
+                    if (curGroupNav === null) {
+                        curGroupNav = GroupNav.fromMain(jqElem);
+                    }
+                    var group = display.Group.from(jqElem, false);
+                    if (group === null) {
+                        curGroupNav.registerGroup(display.Group.from(jqElem, true));
+                    }
+                });
+                return curGroupNav;
+            };
+            return Initializer;
+        }());
+        display.Initializer = Initializer;
+        var GroupNav = (function () {
+            function GroupNav(jqGroupNav) {
+                this.jqGroupNav = jqGroupNav;
+                this.groups = new Array();
+                jqGroupNav.addClass("rocket-main-group-nav");
+                jqGroupNav.hide();
+            }
+            GroupNav.prototype.registerGroup = function (group) {
+                this.groups.push(group);
+                if (this.groups.length == 2) {
+                    this.jqGroupNav.show();
+                }
+                var jqLi = $("<li />", {
+                    "text": group.getTitle()
+                });
+                this.jqGroupNav.append(jqLi);
+                var that = this;
+                jqLi.click(function () {
+                    group.show();
+                });
+                group.onShow(function () {
+                    jqLi.addClass("rocket-active");
+                    for (var i in that.groups) {
+                        if (that.groups[i] !== group) {
+                            that.groups[i].hide();
+                        }
+                    }
+                });
+                group.onHide(function () {
+                    jqLi.removeClass("rocket-active");
+                });
+                if (this.groups.length == 1) {
+                    group.show();
+                }
+            };
+            GroupNav.fromMain = function (jqElem, create) {
+                if (create === void 0) { create = true; }
+                var groupNav = null;
+                var jqPrev = jqElem.prev(".rocket-main-group-nav");
+                if (jqPrev.length > 0) {
+                    groupNav = jqPrev.data("rocketGroupNav");
+                }
+                if (groupNav)
+                    return groupNav;
+                if (!create)
+                    return null;
+                var jqUl = $("<ul />").insertBefore(jqElem);
+                return new GroupNav(jqUl);
+            };
+            return GroupNav;
+        }());
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
     var cmd;
     (function (cmd) {
         var Container = (function () {
@@ -390,14 +486,40 @@ var rocket;
     (function (display) {
         var Group = (function () {
             function Group(jqGroup) {
+                this.onShowCallbacks = new Array();
+                this.onHideCallbacks = new Array();
                 this.jqGroup = jqGroup;
                 jqGroup.addClass("rocket-group");
                 jqGroup.data("rocketGroup", this);
             }
-            Group.from = function (jqElem) {
+            Group.prototype.getTitle = function () {
+                return this.jqGroup.find("label:first").text();
+            };
+            Group.prototype.show = function () {
+                this.jqGroup.show();
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+            };
+            Group.prototype.hide = function () {
+                this.jqGroup.hide();
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+            };
+            Group.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            Group.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            Group.from = function (jqElem, create) {
+                if (create === void 0) { create = true; }
                 var rocketGroup = jqElem.data("rocketGroup");
                 if (rocketGroup)
                     return rocketGroup;
+                if (!create)
+                    return null;
                 rocketGroup = new Group(jqElem);
                 jqElem.data("rocketCommandAction", rocketGroup);
                 return rocketGroup;
@@ -747,6 +869,10 @@ var rocket;
             });
         })();
         (function () {
+            rocket.display.Initializer.scan(jqContainer);
+            n2n.dispatch.registerCallback(function () {
+                rocket.impl.Form.scan(jqContainer);
+            });
         })();
     });
     function layerOf(elem) {
@@ -851,39 +977,4 @@ var rocket;
         }());
         impl.Form = Form;
     })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
-        var Initializer = (function () {
-            function Initializer() {
-            }
-            Initializer.prototype.scan = function (jqContainer) {
-                var that = this;
-                var curGroupContainer = null;
-                jqContainer.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
-                    var jqElem = $(this);
-                    var group = display.Group.from(jqElem);
-                    if (!jqElem.hasClass(".rocket-group-main")) {
-                        curGroupContainer = null;
-                        return;
-                    }
-                    if (curGroupContainer === null) {
-                        var jqGroupNav = $("<ul />", {}).insertBefore(jqElem);
-                        curGroupContainer = new GroupContainer(jqGroupNav);
-                    }
-                    curGroupContainer.addGroup(group);
-                });
-            };
-            return Initializer;
-        }());
-        display.Initializer = Initializer;
-        var GroupContainer = (function () {
-            function GroupContainer(jqGroupNav) {
-                this.jqGroupNav = jqGroupNav;
-            }
-            return GroupContainer;
-        }());
-    })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
