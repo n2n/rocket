@@ -1,0 +1,14 @@
+@include media-breakpoint-up(md) {
+    .rocket-property {
+        clear: both;
+        margin-bottom: 1rem;
+
+        > label {
+            width: 15rem;
+            float: left;
+        }
+        > .rocket-control {
+            margin-left: 15rem;
+        }
+    }
+}
