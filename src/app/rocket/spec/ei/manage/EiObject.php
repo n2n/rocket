@@ -30,6 +30,8 @@ interface EiObject {
 	
 	public function getEiEntityObj(): EiEntityObj;
 	
+	public function isDraft(): bool;
+	
 	public function getDraft(): Draft;
 
 	public function toEntryNavPoint(): EntryNavPoint;

@@ -144,9 +144,8 @@ class EiEntryGui {
 	
 	public function getDisplayableByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
-		
 		if (!isset($this->displayables[$guiIdPathStr])) {
-			throw new GuiException('No GuiField with GuiIdPath ' . $guiIdPathStr . ' registered');
+			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPathStr . '\' for \'' . $this->eiGui-> . '\' registered');
 		}
 	
 		return $this->displayables[$guiIdPathStr];
@@ -306,6 +305,10 @@ class EiEntryGui {
 		ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class);
 			
 		return $controls;
+	}
+	
+	public function __toString() {
+		return 'EiEntryGui for ' . $this->eiEntry;
 	}
 }
 
