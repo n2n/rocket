@@ -89,11 +89,21 @@ var rocket;
                     if (group !== null)
                         return;
                     if (!jqElem.hasClass("rocket-group-main")) {
-                        display.Group.from(jqElem, true);
+                        Initializer.createGroup(jqElem);
                         return;
                     }
                     Initializer.scanGroupNav(jqElem.parent());
                 });
+                jqContainer.find(".rocket-message-error").each(function () {
+                });
+            };
+            Initializer.createGroup = function (jqElem) {
+                var group = display.Group.from(jqElem, true);
+                var parentGroup = display.Group.findFrom(jqElem);
+                if (parentGroup !== null) {
+                    parentGroup.addChildGroup(group);
+                }
+                return group;
             };
             Initializer.scanGroupNav = function (jqContainer) {
                 var curGroupNav = null;
@@ -108,7 +118,7 @@ var rocket;
                     }
                     var group = display.Group.from(jqElem, false);
                     if (group === null) {
-                        curGroupNav.registerGroup(display.Group.from(jqElem, true));
+                        curGroupNav.registerGroup(Initializer.createGroup(jqElem));
                     }
                 });
                 return curGroupNav;
@@ -507,6 +517,12 @@ var rocket;
                     this.onHideCallbacks[i](this);
                 }
             };
+            Group.prototype.addChildGroup = function (group) {
+                var that = this;
+                group.onShow(function () {
+                    that.show();
+                });
+            };
             Group.prototype.onShow = function (callback) {
                 this.onShowCallbacks.push(callback);
             };
@@ -525,9 +541,7 @@ var rocket;
                 return rocketGroup;
             };
             Group.findFrom = function (jqElem) {
-                if (!jqElem.hasClass(".rocket-group")) {
-                    jqElem = jqElem.parents(".rocket-group");
-                }
+                jqElem = jqElem.parents(".rocket-group");
                 var group = jqElem.data("rocketGroup");
                 if (group === undefined) {
                     return null;

@@ -32,6 +32,13 @@ namespace rocket.display {
 			}
 		}
 		
+		public addChildGroup(group: Group) {
+			var that = this;
+			group.onShow(function () {
+				that.show();
+			});
+		}
+		
 		public onShow(callback: (Group) => any) {
 			this.onShowCallbacks.push(callback);
 		}
@@ -52,9 +59,7 @@ namespace rocket.display {
 		}
 		
 		public static findFrom(jqElem: JQuery): Group {
-			if (!jqElem.hasClass(".rocket-group")) {
-				jqElem = jqElem.parents(".rocket-group");
-			}
+			jqElem = jqElem.parents(".rocket-group");
 			
 			var group = jqElem.data("rocketGroup");
 			if (group === undefined) {

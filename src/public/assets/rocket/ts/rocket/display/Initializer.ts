@@ -15,12 +15,28 @@ namespace rocket.display {
 				
 				
 				if (!jqElem.hasClass("rocket-group-main")) {
-					Group.from(jqElem, true);
+					Initializer.createGroup(jqElem);
 					return;					
 				}
 				
 				Initializer.scanGroupNav(jqElem.parent());
 			});
+			
+			jqContainer.find(".rocket-message-error").each(function () {
+				
+			});
+		}
+		
+		private static createGroup(jqElem: JQuery) {
+			var group = Group.from(jqElem, true);
+			
+			var parentGroup = Group.findFrom(jqElem);
+			
+			if (parentGroup !== null) {
+				parentGroup.addChildGroup(group);
+			}
+			
+			return group;
 		}
 		
 		private static scanGroupNav(jqContainer: JQuery) {
@@ -39,7 +55,7 @@ namespace rocket.display {
 				
 				var group = Group.from(jqElem, false);
 				if (group === null) {	
-					curGroupNav.registerGroup(Group.from(jqElem, true));
+					curGroupNav.registerGroup(Initializer.createGroup(jqElem));
 				}
 			});
 			
