@@ -145,7 +145,7 @@ class EiEntryGui {
 	public function getDisplayableByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
 		if (!isset($this->displayables[$guiIdPathStr])) {
-			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPathStr . '\' for \'' . $this->eiGui-> . '\' registered');
+			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPathStr . '\' for \'' . $this . '\' registered');
 		}
 	
 		return $this->displayables[$guiIdPathStr];
@@ -308,7 +308,7 @@ class EiEntryGui {
 	}
 	
 	public function __toString() {
-		return 'EiEntryGui for ' . $this->eiEntry;
+		return 'EiEntryGui of ' . $this->eiEntry;
 	}
 }
 

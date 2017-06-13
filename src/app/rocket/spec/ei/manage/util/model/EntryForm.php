@@ -156,7 +156,7 @@ class EntryForm implements Dispatchable {
 	}
 	
 	/**
-	 * @return EntryModel
+	 * @return EntryModelForm
 	 */
 	public function getChosenEntryModelForm() {	
 		IllegalStateException::assertTrue(isset($this->entryModelForms[$this->chosenId]));

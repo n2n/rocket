@@ -74,7 +74,7 @@ class EntryFormViewModel {
 		$entryModelForm = $entryForm->getChosenEntryModelForm();
 		$propertyPath = $this->entryFormPropertyPath
 				->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
-		
+		$entryModelForm->getEiuEntryGui()->setContextPropertyPath($propertyPath);
 		return $entryModelForm->getEiuEntryGui()->createView();
 	}
 	

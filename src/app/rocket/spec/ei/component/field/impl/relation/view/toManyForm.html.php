@@ -26,6 +26,7 @@
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyForm;
+use rocket\spec\ei\manage\EiHtmlBuilder;
 
 	/**
 	 * @var \n2n\web\ui\view\View $view
@@ -44,6 +45,8 @@
 	
 	$newMappingFormUrl = $view->getParam('newMappingFormUrl');
 	$view->assert($newMappingFormUrl === null || $newMappingFormUrl instanceof Url);
+	
+	$eiHtml = new EiHtmlBuilder($view);
 ?>
 <div class="rocket-to-many" data-min="<?php $html->out($toManyForm->getMin()) ?>"
 		data-max="<?php $html->out($toManyForm->getMax()) ?>"

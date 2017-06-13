@@ -129,4 +129,8 @@ class Draft {
 		
 		return $this->getId(false) == $obj->getId(false) && $this->getEiEntityObj()->equals($obj->getEiEntityObj());
 	}
+	
+	public function __toString() {
+		return 'Draft' . $this->isNew() ? '[new]' : '#' . $this->getId();
+	}
 }

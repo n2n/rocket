@@ -412,8 +412,12 @@ class EiHtmlBuilderMeta {
 	/**
 	 * @return boolean
 	 */
-	public function isEntryOpen() {
-		return $this->state->containsEntry();
+	public function isEntryOpen($eiEntryGui = null) {
+		if (!$this->state->containsEntry()) {
+			return false;
+		}
+		
+		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}
 }
 
@@ -473,6 +477,8 @@ class EiHtmlBuilderState {
 		if ($info['type'] != 'entry') {
 			throw new IllegalStateException('Field open.');
 		}
+		
+		array_pop($this->stack);
 	
 		return $info;
 	}
@@ -525,7 +531,7 @@ class EiHtmlBuilderState {
 	 */
 	public function peakGroup(bool $pop) {
 		$info = ArrayUtils::end($this->stack);
-	
+		
 		if ($info === null || $info['type'] != 'group') {
 			throw new IllegalStateException('No group open.');
 		}

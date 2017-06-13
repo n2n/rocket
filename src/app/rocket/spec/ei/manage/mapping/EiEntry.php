@@ -368,13 +368,14 @@ class EiEntry {
 		return $this->eiObject->toEntryNavPoint($this->contextEiType);
 	}
 	
-// 	public function __toString() {
-// 		if ($this->eiObject->isDraft()) {
-// 			return 'Draft' . $this->eiObject->getDraft()->isNew() ? '[new]' . '#' . $this->eiObject->getDraft()->getId();
-// 		}
+	public function __toString() {
+		if ($this->eiObject->isDraft()) {
+			return 'EiEntry (' . $this->eiObject->getDraft() . ')';
+		}
 		
-// 		return  $this->eiObject->getEiEntityObj()->getEiType()->getE'' . $this->eiObject->getDraft()->isNew() ? '[new]' . '#' . $this->eiObject->getDraft()->getId();
-// 	}
+		return  'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName() 
+				. '#' . $this->eiObject->getEiEntityObj()->getIdRep() . ')';
+	}
 }
 
 class OnWriteMappingListener implements EiEntryListener {

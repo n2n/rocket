@@ -38,7 +38,7 @@
 
 	$eiHtml = new EiHtmlBuilder($view);
 	
-	$entryOpen = $eiHtml->meta()->isEntryOpen();
+	$entryOpen = $eiHtml->meta()->isEntryOpen($eiu->entryGui());
 ?>
 
 <?php if (!$entryOpen): ?>
