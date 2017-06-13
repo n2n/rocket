@@ -100,7 +100,7 @@
 
 // .rocket-properties > div is necessary in order to overwrite styles
 .rocket-translatable-content {
-    > .rocket-property {
+    > .rocket-field {
         > .rocket-locale-label {
             display: inline;
             float: left;
@@ -120,7 +120,7 @@
             }
         }
     }
-    > .rocket-property:first-child {
+    > .rocket-field:first-child {
         margin-top: -0.5rem;
     }
 }
@@ -135,7 +135,7 @@
  ******************************************************************************/
 
 td > .rocket-translatable-content {
-    > .rocket-property {
+    > .rocket-field {
         margin: 0;
         > .rocket-locale-label {
             margin: 0;

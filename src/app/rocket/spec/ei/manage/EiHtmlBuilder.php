@@ -243,7 +243,7 @@ class EiHtmlBuilder {
 	}
 	
 	private function buildContainerAttrs(array $attrs, bool $readOnly = true, bool $mandatory = false) {
-		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-property'), $attrs);
+		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-field'), $attrs);
 	
 		if ($mandatory) {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-required'), $attrs);

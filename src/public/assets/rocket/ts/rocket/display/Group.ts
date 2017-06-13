@@ -62,12 +62,65 @@ namespace rocket.display {
 			jqElem = jqElem.parents(".rocket-group");
 			
 			var group = jqElem.data("rocketGroup");
-			if (group === undefined) {
-				return null;
+			if (group instanceof Group) {
+				return group;
 			}
 			
-			return group;
+			return null;
 		}
     }
-    
+	
+	export class Field {
+		private jqField: JQuery;
+		private group: Group;
+		
+		constructor(jqField: JQuery, group: Group = null) {
+			this.jqField = jqField;
+			this.group = group;
+			
+			jqField.addClass("rocket-field");
+			jqField.data("rocketField", this);
+        }
+		
+		public getGroup(): Group {
+			return this.group;
+		}
+		
+		public highlight() {
+			this.jqField.addClass("rocket-highlighted");
+		}
+		
+		public unhighlight(slow: boolean = false) {
+			this.jqField.removeClass("rocket-highlighted");
+			
+			if (slow) {
+				this.jqField.addClass("rocket-highlight-remember");	
+			} else {
+				this.jqField.removeClass("rocket-highlight-remember");
+			}
+		}
+		
+		public static from(jqElem: JQuery, create: boolean = true): Group {
+			var rocketGroup = jqElem.data("rocketGroup");
+			if (rocketGroup) return rocketGroup;
+		
+			if (!create) return null;
+			
+			rocketGroup = new Group(jqElem);
+			jqElem.data("rocketCommandAction", rocketGroup);
+			return rocketGroup;
+		}
+		
+		public static findFrom(jqElem: JQuery): Group {
+			jqElem = jqElem.parents(".rocket-field");
+			
+			 
+			var field = jqElem.data("rocketField");
+			if (field instanceof Field) {
+				return field;	
+			}
+			
+			return null;
+		}
+    }
 }

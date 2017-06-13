@@ -22,6 +22,8 @@ namespace rocket.display {
 				Initializer.scanGroupNav(jqElem.parent());
 			});
 			
+			
+			
 			jqContainer.find(".rocket-message-error").each(function () {
 				
 			});

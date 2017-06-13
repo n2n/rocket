@@ -3101,13 +3101,13 @@ h1, .h1 {
   margin-left: 0.5rem; }
 
 @media (min-width: 768px) {
-  .rocket-property {
+  .rocket-field {
     clear: both;
     margin-bottom: 1rem; }
-    .rocket-property > label {
+    .rocket-field > label {
       width: 15rem;
       float: left; }
-    .rocket-property > .rocket-control {
+    .rocket-field > .rocket-control {
       margin-left: 15rem; } }
 .align-baseline {
   vertical-align: baseline !important; }
