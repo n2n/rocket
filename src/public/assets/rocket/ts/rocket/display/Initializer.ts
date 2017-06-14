@@ -1,37 +1,68 @@
 namespace rocket.display {
-
+	import Container = rocket.cmd.Container;
+	import Context = rocket.cmd.Context;
+	import AdditionalTab = rocket.cmd.AdditionalTab;
+	
     export class Initializer {
-        
-		public static scan(jqContainer: JQuery) {
+        private container: Container;
+		private errorTabTitle: string;
+		private displayErrorLabel: string;
+		private errorIndexes: Array<ErrorIndex>;
+		
+		constructor(container: Container, errorTabTitle: string, displayErrorLabel: string) {
+			this.container = container;
+			this.errorTabTitle = errorTabTitle;
+			this.displayErrorLabel = displayErrorLabel;
+			this.errorIndexes = new Array<ErrorIndex>();
+		}
+		
+		public scan() {
+			var errorIndex = null;
+			while (undefined !== (errorIndex = this.errorIndexes.pop())) {
+				errorIndex.dispose();
+			}  
+			
+			var contexts = this.container.getAllContexts();
+			for (var i in contexts) {
+				this.scanContext(contexts[i]);
+			}
+		}
+		
+		private scanContext(context: Context) {
 			var that = this;
 			
 			var i = 0;
 			
-			jqContainer.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+			var jqContext = context.getJQuery();
+			
+			jqContext.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
 				var jqElem = $(this);
 				var group = Group.from(jqElem, false);
 				
 				if (group !== null) return;
 				
-				
 				if (!jqElem.hasClass("rocket-group-main")) {
 					Initializer.createGroup(jqElem);
-					return;					
+					return;
 				}
 				
 				Initializer.scanGroupNav(jqElem.parent());
 			});
 			
-			
-			jqContainer.find(".rocket-field").each(function () {
+			jqContext.find(".rocket-field").each(function () {
 				Field.from($(this), true);
 			});
 			
+			var errorIndex: ErrorIndex = null;
 			
-			
-			jqContainer.find(".rocket-message-error").each(function () {
-				Field.from($(this));
+			jqContext.find(".rocket-message-error").each(function () {
+				var field = Field.findFrom($(this));
 				
+				if (errorIndex === null) {
+					errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
+				}
+				
+				errorIndex.addError(field, $(this).text());
 			});
 		}
 		
@@ -138,4 +169,43 @@ namespace rocket.display {
 		}
     }
     
+	
+	class ErrorIndex {
+		private jqIndex: JQuery;
+		private tab: AdditionalTab;
+		private displayErrorLabel: string;
+		
+		constructor(tab: AdditionalTab, displayErrorLabel: string) {
+			this.tab = tab;
+			this.displayErrorLabel = displayErrorLabel;
+		}
+		
+		public addError(field: Field, errorMessage: string) {
+			var jqElem = $("<div />", {
+				"class": "rocket-error-index-entry",
+				"css": { "cursor": "pointer" }
+			}).append($("<div />", { 
+				"text": errorMessage 
+			})).append($("<div />", {
+				"text": this.displayErrorLabel
+			}));
+			
+			this.tab.getJqContent().append(jqElem);
+		
+			var clicked = false;
+			
+			jqElem.mouseenter(function () {
+				field.highlight();
+			});
+			
+			jqElem.mouseleave(function () {
+				field.unhighlight(clicked);
+				clicked = false;
+			});
+			
+			jqElem.click(function () {
+				clicked = true;
+			});
+		}
+	}
 }

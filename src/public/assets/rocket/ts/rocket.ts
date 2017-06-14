@@ -39,10 +39,12 @@ namespace rocket {
 		}) ();
 		
 		(function () {
-			rocket.display.Initializer.scan(jqContainer);
+			var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), 
+					jqContainer.data("display-error-label"));
+			initializer.scan();
 			
 			n2n.dispatch.registerCallback(function () {
-				rocket.display.Initializer.scan(jqContainer);
+				initializer.scan();
 			});
 		}) ();
 	});

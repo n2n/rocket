@@ -90,6 +90,9 @@ namespace rocket.display {
 			return this.group;
 		}
 		
+		public getLabel(): string {
+			return this.jqField.find("label:first").text();	
+		}
 		public highlight() {
 			this.jqField.addClass("rocket-highlighted");
 		}
@@ -118,10 +121,11 @@ namespace rocket.display {
 			 
 			var field: Field = jqElem.data("rocketField");
 			if (field instanceof Field) {
-				return field;	
+				return field;
 			}
 			
 			return null;
 		}
     }
+	
 }

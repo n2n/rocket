@@ -78,12 +78,27 @@ var rocket;
     var display;
     (function (display) {
         var Initializer = (function () {
-            function Initializer() {
+            function Initializer(container, errorTabTitle, displayErrorLabel) {
+                this.container = container;
+                this.errorTabTitle = errorTabTitle;
+                this.displayErrorLabel = displayErrorLabel;
+                this.errorIndexes = new Array();
             }
-            Initializer.scan = function (jqContainer) {
+            Initializer.prototype.scan = function () {
+                var errorIndex = null;
+                while (undefined !== (errorIndex = this.errorIndexes.pop())) {
+                    errorIndex.dispose();
+                }
+                var contexts = this.container.getAllContexts();
+                for (var i in contexts) {
+                    this.scanContext(contexts[i]);
+                }
+            };
+            Initializer.prototype.scanContext = function (context) {
                 var that = this;
                 var i = 0;
-                jqContainer.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+                var jqContext = context.getJQuery();
+                jqContext.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
                     var jqElem = $(this);
                     var group = display.Group.from(jqElem, false);
                     if (group !== null)
@@ -94,7 +109,16 @@ var rocket;
                     }
                     Initializer.scanGroupNav(jqElem.parent());
                 });
-                jqContainer.find(".rocket-message-error").each(function () {
+                jqContext.find(".rocket-field").each(function () {
+                    display.Field.from($(this), true);
+                });
+                var errorIndex = null;
+                jqContext.find(".rocket-message-error").each(function () {
+                    var field = display.Field.findFrom($(this));
+                    if (errorIndex === null) {
+                        errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
+                    }
+                    errorIndex.addError(field, $(this).text());
                 });
             };
             Initializer.createGroup = function (jqElem) {
@@ -177,6 +201,35 @@ var rocket;
             };
             return GroupNav;
         }());
+        var ErrorIndex = (function () {
+            function ErrorIndex(tab, displayErrorLabel) {
+                this.tab = tab;
+                this.displayErrorLabel = displayErrorLabel;
+            }
+            ErrorIndex.prototype.addError = function (field, errorMessage) {
+                var jqElem = $("<div />", {
+                    "class": "rocket-error-index-entry",
+                    "css": { "cursor": "pointer" }
+                }).append($("<div />", {
+                    "text": errorMessage
+                })).append($("<div />", {
+                    "text": this.displayErrorLabel
+                }));
+                this.tab.getJqContent().append(jqElem);
+                var clicked = false;
+                jqElem.mouseenter(function () {
+                    field.highlight();
+                });
+                jqElem.mouseleave(function () {
+                    field.unhighlight(clicked);
+                    clicked = false;
+                });
+                jqElem.click(function () {
+                    clicked = true;
+                });
+            };
+            return ErrorIndex;
+        }());
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -258,6 +311,16 @@ var rocket;
                     return layer;
                 return this.layers[this.layers.length - 1];
             };
+            Container.prototype.getAllContexts = function () {
+                var contexts = new Array();
+                for (var i in this.layers) {
+                    var layerContexts = this.layers[i].getContexts();
+                    for (var j in layerContexts) {
+                        contexts.push(layerContexts[j]);
+                    }
+                }
+                return contexts;
+            };
             return Container;
         }());
         cmd.Container = Container;
@@ -309,6 +372,9 @@ var rocket;
                     }
                 }
                 return null;
+            };
+            Layer.prototype.getContexts = function () {
+                return this.contexts;
             };
             Layer.prototype.getCurrentHistoryIndex = function () {
                 return this.currentHistoryIndex;
@@ -421,16 +487,20 @@ var rocket;
         cmd.Layer = Layer;
         var Context = (function () {
             function Context(jqContext, url, layer) {
+                this.onCloseCallbacks = new Array();
                 this.jqContext = jqContext;
                 this.url = url;
                 this.layer = layer;
-                this.onCloseCallbacks = new Array();
+                this.additionalTabManager = new AdditionalTabManager(this);
                 jqContext.addClass("rocket-context");
                 jqContext.data("rocketContext", this);
                 this.hide();
             }
             Context.prototype.getLayer = function () {
                 return this.layer;
+            };
+            Context.prototype.getJQuery = function () {
+                return this.jqContext;
             };
             Context.prototype.getUrl = function () {
                 return this.url;
@@ -470,6 +540,10 @@ var rocket;
             Context.prototype.onClose = function (onCloseCallback) {
                 this.onCloseCallbacks.push(onCloseCallback);
             };
+            Context.prototype.createAdditionalTab = function (title, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                return this.additionalTabManager.createTab(title, prepend);
+            };
             Context.findFrom = function (jqElem) {
                 if (!jqElem.hasClass(".rocket-context")) {
                     jqElem = jqElem.parents(".rocket-context");
@@ -482,12 +556,137 @@ var rocket;
             return Context;
         }());
         cmd.Context = Context;
-        var Entry = (function () {
-            function Entry() {
+        var AdditionalTabManager = (function () {
+            function AdditionalTabManager(context) {
+                this.jqAdditional = null;
+                this.context = context;
+                this.tabs = new Array();
             }
-            return Entry;
+            AdditionalTabManager.prototype.createTab = function (title, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                this.setupAdditional();
+                var jqNavItem = $("<li />", {
+                    "text": title
+                });
+                var jqContent = $("<div />", {
+                    "class": "rocket-additional-content"
+                });
+                if (prepend) {
+                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
+                }
+                else {
+                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
+                }
+                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
+                var tab = new AdditionalTab(jqNavItem, jqContent);
+                this.tabs.push(tab);
+                var that = this;
+                tab.onShow(function () {
+                    for (var i in that.tabs) {
+                        if (that.tabs[i] === tab)
+                            continue;
+                        this.tabs[i].hide();
+                    }
+                });
+                tab.onDispose(function () {
+                    that.removeTab(tab);
+                });
+                if (this.tabs.length == 1) {
+                    tab.show();
+                }
+                return tab;
+            };
+            AdditionalTabManager.prototype.removeTab = function (tab) {
+                for (var i in this.tabs) {
+                    if (this.tabs[i] !== tab)
+                        continue;
+                    delete this.tabs[i];
+                    if (this.tabs.length == 0) {
+                        this.setdownAdditional();
+                        return;
+                    }
+                    if (tab.isActive()) {
+                        this.tabs[0].show();
+                    }
+                    return;
+                }
+            };
+            AdditionalTabManager.prototype.setupAdditional = function () {
+                if (this.jqAdditional !== null)
+                    return;
+                var jqContext = this.context.getJQuery();
+                jqContext.addClass("rocket-contains-additional");
+                this.jqAdditional = $("<div />", {
+                    "class": "rocket-additional"
+                });
+                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
+                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
+                jqContext.append(this.jqAdditional);
+            };
+            AdditionalTabManager.prototype.setdownAdditional = function () {
+                if (this.jqAdditional === null)
+                    return;
+                this.context.getJQuery().removeClass("rocket-contains-additional");
+                this.jqAdditional.remove();
+                this.jqAdditional = null;
+            };
+            return AdditionalTabManager;
         }());
-        cmd.Entry = Entry;
+        var AdditionalTab = (function () {
+            function AdditionalTab(jqNavItem, jqContent) {
+                this.active = false;
+                this.onShowCallbacks = new Array();
+                this.onHideCallbacks = new Array();
+                this.onDisposeCallbacks = new Array();
+                this.jqNavItem = jqNavItem;
+                this.jqContent = jqContent;
+                this.jqNavItem.click(this.show);
+                this.jqContent.hide();
+            }
+            AdditionalTab.prototype.getJqNavItem = function () {
+                return this.jqNavItem;
+            };
+            AdditionalTab.prototype.getJqContent = function () {
+                return this.jqContent;
+            };
+            AdditionalTab.prototype.isActive = function () {
+                return this.active;
+            };
+            AdditionalTab.prototype.show = function () {
+                this.active = true;
+                this.jqNavItem.addClass("rocket-active");
+                this.jqContent.show();
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.hide = function () {
+                this.active = false;
+                this.jqContent.hide();
+                this.jqNavItem.removeClass("rocket-active");
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.dispose = function () {
+                this.jqNavItem.remove();
+                this.jqContent.remove();
+                for (var i in this.onDisposeCallbacks) {
+                    this.onDisposeCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            AdditionalTab.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            AdditionalTab.prototype.onDispose = function (callback) {
+                this.onDisposeCallbacks.push(callback);
+            };
+            return AdditionalTab;
+        }());
+        cmd.AdditionalTab = AdditionalTab;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -543,14 +742,64 @@ var rocket;
             Group.findFrom = function (jqElem) {
                 jqElem = jqElem.parents(".rocket-group");
                 var group = jqElem.data("rocketGroup");
-                if (group === undefined) {
-                    return null;
+                if (group instanceof Group) {
+                    return group;
                 }
-                return group;
+                return null;
             };
             return Group;
         }());
         display.Group = Group;
+        var Field = (function () {
+            function Field(jqField, group) {
+                if (group === void 0) { group = null; }
+                this.jqField = jqField;
+                this.group = group;
+                jqField.addClass("rocket-field");
+                jqField.data("rocketField", this);
+            }
+            Field.prototype.setGroup = function (group) {
+                this.group = group;
+            };
+            Field.prototype.getGroup = function () {
+                return this.group;
+            };
+            Field.prototype.getLabel = function () {
+                return this.jqField.find("label:first").text();
+            };
+            Field.prototype.highlight = function () {
+                this.jqField.addClass("rocket-highlighted");
+            };
+            Field.prototype.unhighlight = function (slow) {
+                if (slow === void 0) { slow = false; }
+                this.jqField.removeClass("rocket-highlighted");
+                if (slow) {
+                    this.jqField.addClass("rocket-highlight-remember");
+                }
+                else {
+                    this.jqField.removeClass("rocket-highlight-remember");
+                }
+            };
+            Field.from = function (jqElem, create) {
+                if (create === void 0) { create = true; }
+                var rocketField = jqElem.data("rocketField");
+                if (rocketField instanceof Field)
+                    return rocketField;
+                if (!create)
+                    return null;
+                return new Field(jqElem, Group.findFrom(jqElem));
+            };
+            Field.findFrom = function (jqElem) {
+                jqElem = jqElem.parents(".rocket-field");
+                var field = jqElem.data("rocketField");
+                if (field instanceof Field) {
+                    return field;
+                }
+                return null;
+            };
+            return Field;
+        }());
+        display.Field = Field;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
 /*
@@ -883,9 +1132,10 @@ var rocket;
             });
         })();
         (function () {
-            rocket.display.Initializer.scan(jqContainer);
+            var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
+            initializer.scan();
             n2n.dispatch.registerCallback(function () {
-                rocket.impl.Form.scan(jqContainer);
+                initializer.scan();
             });
         })();
     });

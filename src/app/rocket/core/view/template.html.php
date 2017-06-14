@@ -151,7 +151,8 @@
 			<?php endforeach ?>
 		</nav>
 		
-		<div id="rocket-content-container">
+		<div id="rocket-content-container" data-error-tab-title="<?php $html->text('ei_error_list_title') ?>"
+				data-display-error-label="<?php $html->text('core_display_error_label') ?>">
 			<div class="rocket-main-layer">
 				<div class="rocket-context">
 					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
