@@ -23,13 +23,19 @@ namespace rocket.display {
 			});
 			
 			
+			jqContainer.find(".rocket-field").each(function () {
+				Field.from($(this), true);
+			});
+			
+			
 			
 			jqContainer.find(".rocket-message-error").each(function () {
+				Field.from($(this));
 				
 			});
 		}
 		
-		private static createGroup(jqElem: JQuery) {
+		private static createGroup(jqElem: JQuery): Group {
 			var group = Group.from(jqElem, true);
 			
 			var parentGroup = Group.findFrom(jqElem);

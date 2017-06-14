@@ -42,7 +42,7 @@ namespace rocket {
 			rocket.display.Initializer.scan(jqContainer);
 			
 			n2n.dispatch.registerCallback(function () {
-				rocket.impl.Form.scan(jqContainer);
+				rocket.display.Initializer.scan(jqContainer);
 			});
 		}) ();
 	});

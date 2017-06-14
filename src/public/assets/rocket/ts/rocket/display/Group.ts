@@ -82,6 +82,10 @@ namespace rocket.display {
 			jqField.data("rocketField", this);
         }
 		
+		public setGroup(group: Group) {
+			this.group = group;
+		}
+		
 		public getGroup(): Group {
 			return this.group;
 		}
@@ -100,22 +104,19 @@ namespace rocket.display {
 			}
 		}
 		
-		public static from(jqElem: JQuery, create: boolean = true): Group {
-			var rocketGroup = jqElem.data("rocketGroup");
-			if (rocketGroup) return rocketGroup;
+		public static from(jqElem: JQuery, create: boolean = true): Field {
+			var rocketField = jqElem.data("rocketField");
+			if (rocketField instanceof Field) return rocketField;
 		
 			if (!create) return null;
 			
-			rocketGroup = new Group(jqElem);
-			jqElem.data("rocketCommandAction", rocketGroup);
-			return rocketGroup;
+			return new Field(jqElem, Group.findFrom(jqElem));
 		}
 		
-		public static findFrom(jqElem: JQuery): Group {
+		public static findFrom(jqElem: JQuery): Field {
 			jqElem = jqElem.parents(".rocket-field");
-			
 			 
-			var field = jqElem.data("rocketField");
+			var field: Field = jqElem.data("rocketField");
 			if (field instanceof Field) {
 				return field;	
 			}
