@@ -95,9 +95,21 @@ namespace rocket.display {
 		}
 		
 		public scrollTo() {
+			var top = this.jqField.offset().top;
+			var maxOffset = top - 50;
+			
+			var height = this.jqField.outerHeight();
+			var margin = $(window).height() - height;
+			
+			var offset = top - (margin / 2);
+			
+			if (maxOffset < offset) {
+				offset = maxOffset;
+			}
+			
 			$("html, body").animate({
-		    	"scrollTop": this.jqField.offset().top
-		    }, 500);
+		    	"scrollTop": offset
+		    }, 250);
 		}
 		
 		public highlight() {

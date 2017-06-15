@@ -79,7 +79,7 @@
 	
 		<style>
 			.rocket-field {
-				border: 3px solid transparent;			
+				border: 3px solid transparent;
 			}
 			
 			.rocket-highlighted {
