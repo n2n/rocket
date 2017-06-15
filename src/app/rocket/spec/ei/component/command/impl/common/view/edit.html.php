@@ -40,7 +40,7 @@
 ?>
 
 <?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form rocket-impl-form')) ?>
-		
+	
 	<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
 			array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->createPropertyPath('entryForm')))) ?>
 					
@@ -51,16 +51,19 @@
 		<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
 						. $html->getL10nText('common_save_and_back_label') . '</span>'), 
 				array('class' => 'btn btn-primary')) ?>
+		
 		<?php if ($editModel->isDraftable()): ?>
 				<?php $formHtml->buttonSubmit('saveAsNewDraft', new Raw('<i class="fa fa-save"></i><span>' 
 								. $html->getL10nText('common_save_as_new_draft_label') . '</span>'), 
 						array('class' => 'btn btn-secondary')) ?>
 		<?php endif ?>
+		
 		<?php if ($editModel->isPublishable()): ?>
 			<?php $formHtml->buttonSubmit('saveAndPublish', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_and_publish_label') . '</span>'), 
 					array('class' => 'btn btn-secondary')) ?>
 		<?php endif ?>
+		
 		<?php $html->link($entryCommandViewModel->determineCancelUrl($view->getHttpContext()), 
 				new Raw('<i class="fa fa-times-circle"></i><span>' 
 						. $html->getL10nText('common_cancel_label') . '</span>'),

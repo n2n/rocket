@@ -36,6 +36,7 @@ class EiDef {
 	
 	private $label;
 	private $pluralLabel;
+	private $iconType;
 	private $draftingAllowed;
 	private $draftHistorySize;
 	private $identityStringPattern;
@@ -72,6 +73,17 @@ class EiDef {
 	}
 	
 	/**
+	 * @return string|null
+	 */
+	public function getIconType() {
+		return $this->iconType;
+	}
+	
+	public function setIconType(string $iconType = null) {
+		$this->iconType = $iconType;
+	}
+	
+	/**
 	 * @return string
 	 */
 	public function getIdentityStringPattern() {
@@ -81,7 +93,7 @@ class EiDef {
 	/**
 	 * @param string $identityStringPattern
 	 */
-	public function setIdentityStringPattern($identityStringPattern) {
+	public function setIdentityStringPattern(string $identityStringPattern = null) {
 		$this->identityStringPattern = $identityStringPattern;
 	}
 	

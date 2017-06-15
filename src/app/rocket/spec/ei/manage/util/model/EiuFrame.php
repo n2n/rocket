@@ -219,18 +219,18 @@ class EiuFrame extends EiUtilsAdapter {
 // 		return $eiuEntryGui->getEiMask()->createBulkyView($eiuEntryGui);
 // 	}
 		
-	public function createBulkyDetailView($eiObjectObj, bool $determineEiMask = true) {
-		$eiMask = null;
-		if ($determineEiMask) {
-			$eiMask = $this->getEiMask();
-		} else {
-			$eiMask = $this->determineEiMask($eiObjectObj);
-		}
+// 	public function createBulkyDetailView($eiObjectObj, bool $determineEiMask = true) {
+// 		$eiMask = null;
+// 		if ($determineEiMask) {
+// 			$eiMask = $this->getEiMask();
+// 		} else {
+// 			$eiMask = $this->determineEiMask($eiObjectObj);
+// 		}
 		
-		$eiuEntryGui = $this->entry($eiObjectObj)->newGui(false, false);
+// 		$eiuEntryGui = $this->entry($eiObjectObj)->newGui(false, false);
 
-		return $eiMask->createBulkyView($eiuEntryGui);
-	}
+// 		return $eiMask->createBulkyView($eiuEntryGui);
+// 	}
 	
 	public function createNewEntryForm(bool $draft = false, $copyFromEiObjectObj = null, PropertyPath $contextPropertyPath = null): EntryForm {
 		$entryModelForms = array();

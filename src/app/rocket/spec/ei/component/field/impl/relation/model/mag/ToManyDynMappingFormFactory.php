@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ToManyDynMappingFormFactory {
-	private $utils;
+	private $eiuFrame;
 	private $inaccessibleCurrentEiObject;
 	private $currentEiEntry;
 	private $currentMappingForms = array();
@@ -37,36 +37,36 @@ class ToManyDynMappingFormFactory {
 	private $nextOrderIndex = 0;
 	
 	public function __construct(EiuFrame $utils) {
-		$this->utils = $utils;
+		$this->eiuFrame = $utils;
 	}
 	
 	private function getKey(EiEntry $eiEntry) {
-		$ei = new EiuEntry($eiEntry);
-		if ($ei->isDraft()) {
-			return 'd' . $ei->getDraft()->getId();
+		$eiuEntry = $this->eiuFrame->entry($eiEntry);
+		if ($eiuEntry->isDraft()) {
+			return 'd' . $eiuEntry->getDraft()->getId();
 		}
 		
-		return 'c' . $ei->getEiEntityObj()->getId();
+		return 'c' . $eiuEntry->getEiEntityObj()->getId();
 	}
 	
 	public function addEiEntry(EiEntry $currentEiEntry) {
 		if (!$currentEiEntry->isAccessible()) {
 			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
-					$this->utils->createIdentityString($currentEiEntry->getEiObject()),
+					$this->eiuFrame->createIdentityString($currentEiEntry->getEiObject()),
 					null, $this->nextOrderIndex++);
 			return;
 		}
 		
 		if ($currentEiEntry->getEiObject()->isNew()) {
 			$this->newMappingForms[] = new MappingForm(
-					$this->utils->getGenericLabel(), null,
-					$this->utils->createEntryFormFromMapping($currentEiEntry), $this->nextOrderIndex++);
+					$this->eiuFrame->getGenericLabel(), null,
+					$this->eiuFrame->createEntryFormFromMapping($currentEiEntry), $this->nextOrderIndex++);
 			return;
 		}
 		
 		$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
-				$this->utils->getGenericLabel($currentEiEntry), null, 
-				$this->utils->createEntryFormFromMapping($currentEiEntry), $this->nextOrderIndex++);
+				$this->eiuFrame->getGenericLabel($currentEiEntry), null, 
+				$this->eiuFrame->createEntryFormFromMapping($currentEiEntry), $this->nextOrderIndex++);
 	}
 
 	public function getCurrentMappingForm(string $idRep) {
@@ -105,7 +105,7 @@ class ToManyDynMappingFormFactory {
 		}
 		
 		return $this->newMappingForms[$key] = new MappingForm(
-				$this->utils->getGenericLabel(), null,
-				$this->utils->createNewEntryForm($this->draftMode));
+				$this->eiuFrame->getGenericLabel(), null,
+				$this->eiuFrame->createNewEntryForm($this->draftMode));
 	}
 }

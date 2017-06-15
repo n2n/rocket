@@ -88,7 +88,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 			}
 			
 			if ($targetEiEntry->isAccessible()) {
-				$detailViews[] = $targetEiuFrame->createBulkyDetailView($targetEiEntry);
+				$detailViews[] = $targetEiuFrame->entry($targetEiEntry)->newEntryGui(true)->createView();
 			} else {
 				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
 						$targetEiuFrame->createIdentityString($targetEiEntry->getEiObject()));

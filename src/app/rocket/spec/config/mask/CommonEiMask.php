@@ -67,6 +67,7 @@ use rocket\spec\ei\manage\control\Control;
 use rocket\spec\ei\manage\gui\EiGui;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\util\model\EiuGui;
+use rocket\spec\ei\manage\control\IconType;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -188,6 +189,18 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 		
 		return new Lstr((string) $this->eiType->getDefaultEiDef()->getPluralLabel(), $this->moduleNamespace);
+	}
+	
+	public function getIconType(): string {
+		if (null !== ($iconType = $this->eiDef->getIconType())) {
+			return $iconType;
+		}
+		
+		if (null !== ($iconType = $this->eiType->getDefaultEiDef()->getIconType())) {
+			return $iconType;
+		}
+		
+		return IconType::ICON_FILE_TEXT;
 	}
 	
 	
