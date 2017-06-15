@@ -60,11 +60,10 @@
 			</div>
 		</div>
 		
-	</div>
-	
-	<div class="col-sm-12">
-		<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
-				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
-						'filterAjahHook' => $filterAjahHook)) ?>
+		<div class="col-sm-12">
+			<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
+					array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
+							'filterAjahHook' => $filterAjahHook)) ?>
+		</div>
 	</div>
 </div>
