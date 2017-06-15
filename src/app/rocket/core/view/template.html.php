@@ -76,6 +76,20 @@
 <!DOCTYPE html>
 <html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>"> 
 	<?php $html->headStart() ?>
+	
+		<style>
+			.rocket-field {
+				border: 3px solid transparent;			
+			}
+			
+			.rocket-highlighted {
+				border: 3px solid #B90F00;						
+			}
+			
+			.rocket-highlight-remember {
+				transition: border 1s;
+			}
+		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 
 			'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>

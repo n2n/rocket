@@ -93,6 +93,13 @@ namespace rocket.display {
 		public getLabel(): string {
 			return this.jqField.find("label:first").text();	
 		}
+		
+		public scrollTo() {
+			$("html, body").animate({
+		    	"scrollTop": this.jqField.offset().top
+		    }, 500);
+		}
+		
 		public highlight() {
 			this.jqField.addClass("rocket-highlighted");
 		}

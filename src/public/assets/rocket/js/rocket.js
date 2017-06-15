@@ -163,7 +163,8 @@ var rocket;
                     this.jqGroupNav.show();
                 }
                 var jqLi = $("<li />", {
-                    "text": group.getTitle()
+                    "text": group.getTitle(),
+                    "clss": { "cursor": "pointer" }
                 });
                 this.jqGroupNav.append(jqLi);
                 var that = this;
@@ -226,6 +227,8 @@ var rocket;
                 });
                 jqElem.click(function () {
                     clicked = true;
+                    field.getGroup().show();
+                    field.scrollTo();
                 });
             };
             return ErrorIndex;
@@ -766,6 +769,11 @@ var rocket;
             };
             Field.prototype.getLabel = function () {
                 return this.jqField.find("label:first").text();
+            };
+            Field.prototype.scrollTo = function () {
+                $("html, body").animate({
+                    "scrollTop": this.jqField.offset().top
+                }, 500);
             };
             Field.prototype.highlight = function () {
                 this.jqField.addClass("rocket-highlighted");

@@ -121,7 +121,8 @@ namespace rocket.display {
 			}
 			
 			var jqLi = $("<li />", {
-				"text": group.getTitle()
+				"text": group.getTitle(),
+				"clss": { "cursor": "pointer" }
 			});
 			
 			this.jqGroupNav.append(jqLi);
@@ -205,6 +206,8 @@ namespace rocket.display {
 			
 			jqElem.click(function () {
 				clicked = true;
+				field.getGroup().show();
+				field.scrollTo();
 			});
 		}
 	}
