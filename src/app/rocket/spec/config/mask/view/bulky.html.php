@@ -45,31 +45,31 @@
 	<?php $eiHtml->entryOpen('div', $eiu->entryGui())?>
 <?php endif ?>
 
-<?php if ($view->getParam('renderForkMags', false, true) ): ?>
-	<?php $eiHtml->entryForkControls() ?>
-<?php endif ?>
-
-<div class="rocket-properties">
-	<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-		<?php if ($displayItem->hasDisplayStructure()): ?>
-			<?php $eiHtml->groupOpen('div', $displayItem) ?>
-				<label><?php $html->out($displayItem->getLabel()) ?></label>
-				<div class="rocket-control">
-					<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 
-							'eiu' => $eiu, 'renderForkMags' => false)) ?>
-				</div>
-			<?php $eiHtml->groupClose() ?>
-		<?php else: ?>
-			<?php $eiHtml->fieldOpen('div', $displayItem) ?>
-				<?php $eiHtml->fieldLabel() ?>
-				<?php $view->out('<div class="rocket-control">') ?>
-					<?php $eiHtml->fieldContent() ?>
-					<?php $eiHtml->fieldMessage() ?>
-				<?php $view->out('</div>') ?>
-			<?php $eiHtml->fieldClose() ?>
-		<?php endif ?>
-	<?php endforeach; ?>
+<div class="rocket-group-toolbar">
+	<?php if ($view->getParam('renderForkMags', false, true) ): ?>
+		<?php $eiHtml->entryForkControls() ?>
+	<?php endif ?>
 </div>
+
+<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
+	<?php if ($displayItem->hasDisplayStructure()): ?>
+		<?php $eiHtml->groupOpen('div', $displayItem) ?>
+			<label><?php $html->out($displayItem->getLabel()) ?></label>
+			<div class="rocket-control">
+				<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 
+						'eiu' => $eiu, 'renderForkMags' => false)) ?>
+			</div>
+		<?php $eiHtml->groupClose() ?>
+	<?php else: ?>
+		<?php $eiHtml->fieldOpen('div', $displayItem) ?>
+			<?php $eiHtml->fieldLabel() ?>
+			<?php $view->out('<div class="rocket-control">') ?>
+				<?php $eiHtml->fieldContent() ?>
+				<?php $eiHtml->fieldMessage() ?>
+			<?php $view->out('</div>') ?>
+		<?php $eiHtml->fieldClose() ?>
+	<?php endif ?>
+<?php endforeach; ?>
 
 <?php if (!$entryOpen): ?>
 	<?php $eiHtml->entryClose()?>

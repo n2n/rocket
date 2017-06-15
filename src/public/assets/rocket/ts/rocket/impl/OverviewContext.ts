@@ -190,7 +190,7 @@ namespace rocket.impl {
 		private fixed: boolean = false;
 		
 		private scrolled() {
-			var headerHeight = this.jqHeader.children(".rocket-tool-panel").outerHeight();
+			var headerHeight = this.jqHeader.children().outerHeight();
 			if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
 				if (this.fixed) return;
 				this.fixed = true;

@@ -49,11 +49,22 @@
 		data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
 		data-entries-label="<?php $html->out($view->getParam('label')) ?>"
 		data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
-	<div class="rocket-tool-panel">
+	<div class="row">
+		<div class="col-sm-5">
+		</div>
+		
+		<div class="col-sm-7 text-right">
+			<div class="rocket-quicksearch">
+				<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
+						array('quickSearchForm' => $quickSearchForm)) ?>
+			</div>
+		</div>
+		
+	</div>
+	
+	<div class="col-sm-12">
 		<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
 						'filterAjahHook' => $filterAjahHook)) ?>
-		<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
-				array('quickSearchForm' => $quickSearchForm)) ?>
 	</div>
 </div>

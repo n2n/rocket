@@ -942,7 +942,7 @@ var rocket;
                 this.scrolled();
             };
             FixedHeader.prototype.scrolled = function () {
-                var headerHeight = this.jqHeader.children(".rocket-tool-panel").outerHeight();
+                var headerHeight = this.jqHeader.children().outerHeight();
                 if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
                     if (this.fixed)
                         return;
