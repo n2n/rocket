@@ -24,32 +24,70 @@ namespace rocket.impl {
 	
 	export class ToMany {
 		private jqToMany;
+		private compact: boolean = true;
+		private sortable: boolean = true;
+		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
+		private jqEmbedded;
 		
 		constructor(jqToMany: JQuery) {
 			this.jqToMany = jqToMany;
+			this.compact = (true == jqToMany.data("compact"));
+			this.sortable = (true == jqToMany.data("sortable"))
+			
 			jqToMany.data("rocketToMany", this);
+			
+			this.jqEmbedded = $("<div />", {
+				"class": "rocket-impl-embedded"
+			});
+			
+			this.jqToMany.append(this.jqEmbedded);
 		}
 		
+		public addEntry(entry: EmbeddedEntry) {
+			this.entries.push(entry);
+			
+			entry.getJQuery().detach();
+			this.jqEmbedded.append(entry.getJQuery());
+			
+			if (!this.compact) {
+				entry.expand();
+			}
+		}
 		
-		public static scan(jqToMany: JQuery): ToMany {
-			var toMany = jqToMany.data("rocketToMany");
-			if (toMany instanceof ToMany) return toMany;
+		public static from(jqToMany: JQuery): ToMany {
+			var toMany: ToMany = jqToMany.data("rocketToMany");
+			if (toMany instanceof ToMany) {
+				return toMany;
+			}
 			
-			var toMany = new ToMany(jqToMany);
+			toMany = new ToMany(jqToMany);			
 			
-			this.jqToMany.find(".rocket-impl-entry");
+			jqToMany.find(".rocket-impl-entry").each(function () {
+				toMany.addEntry(new EmbeddedEntry($(this)));
+			});
 			
 			return toMany;
 		}
 	}
 	
-	class RelationEntry {
-		private jqEntry:JQuery;
+	class EmbeddedEntry {
+		private jqEntry: JQuery;
+		private jqOrderIndex: JQuery;
 		
 		constructor(jqEntry: JQuery) {
 			this.jqEntry = jqEntry;
+			this.jqOrderIndex = jqEntry.find(".rocket-impl-order-index").hide();
 		}
 		
+		public getJQuery(): JQuery {
+			return this.jqEntry;
+		}
 		
+		public expand() {
+			
+		}
+		
+		public reduce() {
+		}
 	}
 }

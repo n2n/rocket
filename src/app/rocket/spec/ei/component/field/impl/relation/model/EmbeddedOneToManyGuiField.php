@@ -68,7 +68,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		return array('class' => 'rocket-group');
+		return array();
 	}
 
 	public function createOutputUiComponent(HtmlView $view) {

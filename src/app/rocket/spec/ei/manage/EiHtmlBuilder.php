@@ -173,8 +173,9 @@ class EiHtmlBuilder {
 				new HtmlElement('input', array('type' => 'checkbox')));
 	}
 	
-	private function buildAttrs(GuiIdPath $guiIdPath) {
-		return array('class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray()));
+	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs) {
+		return HtmlUtils::mergeAttrs($attrs, array(
+				'class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray())));
 	}
 	
 	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
@@ -205,7 +206,7 @@ class EiHtmlBuilder {
 		if ($readOnly || !$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $fieldErrorInfo, $displayable);
 			return $this->createOutputFieldOpen($tagName, $displayable, $fieldErrorInfo,
-					$this->buildAttrs($guiIdPath, $displayItem));
+					$this->buildAttrs($guiIdPath, $attrs));
 		}
 	
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
@@ -213,7 +214,7 @@ class EiHtmlBuilder {
 	
 		$this->state->pushField($tagName, $fieldErrorInfo, $displayable, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
-				$this->buildAttrs($guiIdPath), $editableInfo->isMandatory());
+				$this->buildAttrs($guiIdPath, $attrs), $editableInfo->isMandatory());
 	}
 
 	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,

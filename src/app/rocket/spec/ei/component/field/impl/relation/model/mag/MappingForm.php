@@ -36,15 +36,17 @@ class MappingForm implements Dispatchable {
 	}
 
 	private $entryLabel;
+	private $iconType;
 	private $eiEntry;
 	private $entryForm;
 	private $orderIndex;
 	
-	public function __construct(string $entryLabel, EiEntry $eiEntry = null, EntryForm $entryForm = null, 
-			int $orderIndex = null) {
+	public function __construct(string $entryLabel, string $iconType, EiEntry $eiEntry = null, 
+			EntryForm $entryForm = null, int $orderIndex = null) {
 		ArgUtils::assertTrue($eiEntry !== null || $entryForm !== null);
 		
 		$this->entryLabel = $entryLabel;
+		$this->iconType = $iconType;
 		$this->eiEntry = $eiEntry;
 		$this->entryForm = $entryForm;
 		$this->orderIndex = $orderIndex;
@@ -56,6 +58,10 @@ class MappingForm implements Dispatchable {
 	
 	public function getEntryLabel(): string {
 		return $this->entryLabel;
+	}
+	
+	public function getIconTyp() {
+		return $this->iconType;
 	}
 	
 	public function buildEiEntry() {

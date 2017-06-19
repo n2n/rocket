@@ -53,6 +53,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
+	const ATTR_COMPACT_KEY = 'compact';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
 	const OPTION_FILTERED_KEY = 'filtered';

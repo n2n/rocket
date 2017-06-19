@@ -28,8 +28,8 @@ use rocket\spec\ei\manage\gui\EiEntryGui;
 class DisplayStructure {
 	private $displayItems = array();
 	
-	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null) {
-		$this->displayItems[] = DisplayItem::createFromGuiIdPath($guiIdPath, $groupType);
+	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
+		$this->displayItems[] = DisplayItem::createFromGuiIdPath($guiIdPath, $groupType, $label);
 	}
 	
 	public function addDisplayStructure(DisplayStructure $displayStructure, string $groupType, string $label = null) {
@@ -77,14 +77,33 @@ class DisplayStructure {
 		return $guiIdPaths;
 	}
 	
-	const PURIFY_MODE_NO_GROUPS = 'noGroups';
-	const PURIFY_MODE_GROUPS_IN_ROOT = 'groupsInRoot';
+	public function grouped() {
+		$displayStructure = new DisplayStructure();
+		
+		$curDisplayStructure = null;
+		foreach ($this->displayItems as $displayItem) {
+			if ($displayItem->isGroup()) {
+				$displayStructure->addDisplayItem($displayItem);
+				$curDisplayStructure = null;
+				continue;
+			}
+			
+			if ($curDisplayStructure === null) {
+				$curDisplayStructure = new DisplayStructure();
+				$displayStructure->addDisplayStructure($curDisplayStructure, DisplayItem::TYPE_SIMPLE);
+			}
+			
+			$curDisplayStructure->addDisplayItem($displayItem);
+		}
+			
+		return $displayStructure;
+	}
 	
 	public function purified(EiEntryGui $eiEntryGui = null) {
 		$displayStructure = new DisplayStructure();
 		
 		$this->roAutonomics($this->displayItems, $displayStructure, $displayStructure, $eiEntryGui);
-		
+				
 		return $displayStructure;
 	}
 	
@@ -93,14 +112,16 @@ class DisplayStructure {
 			$groupType = $displayItem->getGroupType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType !== null && $eiEntryGui !== null) {
-					$groupType = $eiEntryGui->getDisplayableByGuiIdPath($displayItem->getGuiIdPath())->getGroupType(); 
+				if ($groupType === null && $eiEntryGui !== null) {
+					$groupType = $eiEntryGui->getDisplayableByGuiIdPath($displayItem->getGuiIdPath())->getGroupType();
 				}
-				
-				if ($displayItem->getGroupType() != DisplayItem::TYPE_AUTONOMIC) {
+
+				if ($groupType == DisplayItem::TYPE_AUTONOMIC) {
+					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());
+				} else if ($displayItem->getGroupType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
 				} else {
-					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());
+					$ds->addGuiIdPath($displayItem->getGuiIdPath(), $groupType, $displayItem->getLabel());	
 				}
 				continue;
 			}

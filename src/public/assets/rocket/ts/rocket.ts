@@ -49,13 +49,13 @@ namespace rocket {
 		}) ();
 		
 		(function () {
-			$("form.rocket-impl-to-many").each(function () {
-				rocket.impl.ToMany.scan($(this));
+			$(".rocket-impl-to-many").each(function () {
+				rocket.impl.ToMany.from($(this));
 			});
 			
 			n2n.dispatch.registerCallback(function () {
-				$("form.rocket-impl-form").each(function () {
-					rocket.impl.ToMany.scan($(this));
+				$(".rocket-impl-many").each(function () {
+					rocket.impl.ToMany.from($(this));
 				});
 			});
 		}) ();
