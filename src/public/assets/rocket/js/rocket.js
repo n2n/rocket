@@ -1000,6 +1000,56 @@ var rocket;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var rocket;
+(function (rocket) {
+    var impl;
+    (function (impl) {
+        var $ = jQuery;
+        var ToMany = (function () {
+            function ToMany(jqToMany) {
+                this.jqToMany = jqToMany;
+                jqToMany.data("rocketToMany", this);
+            }
+            ToMany.scan = function (jqToMany) {
+                var toMany = jqToMany.data("rocketToMany");
+                if (toMany instanceof ToMany)
+                    return toMany;
+                var toMany = new ToMany(jqToMany);
+                this.jqToMany.find(".rocket-impl-entry");
+                return toMany;
+            };
+            return ToMany;
+        }());
+        impl.ToMany = ToMany;
+        var RelationEntry = (function () {
+            function RelationEntry(jqEntry) {
+                this.jqEntry = jqEntry;
+            }
+            return RelationEntry;
+        }());
+    })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
     var cmd;
@@ -1128,6 +1178,13 @@ var rocket;
             monitor.scan(jqContainer);
         });
         (function () {
+            var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
+            initializer.scan();
+            n2n.dispatch.registerCallback(function () {
+                initializer.scan();
+            });
+        })();
+        (function () {
             $(".rocket-impl-overview").each(function () {
                 rocket.impl.OverviewContext.scan($(this));
             });
@@ -1148,10 +1205,13 @@ var rocket;
             });
         })();
         (function () {
-            var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
-            initializer.scan();
+            $("form.rocket-impl-to-many").each(function () {
+                rocket.impl.ToMany.scan($(this));
+            });
             n2n.dispatch.registerCallback(function () {
-                initializer.scan();
+                $("form.rocket-impl-form").each(function () {
+                    rocket.impl.ToMany.scan($(this));
+                });
             });
         })();
     });

@@ -105,6 +105,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 		return $this->determineEiMask($eiObjectObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 	
+	public function getGenericIconType($eiObjectObj = null) {
+		return $this->determineEiMask($eiObjectObj)->getIconType();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::createIdentityString()

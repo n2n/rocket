@@ -66,6 +66,7 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {
 	private $targetOrderEiPropPath;
+	private $compact = true;
 	
 	public function __construct() {	
 		parent::__construct();
@@ -78,6 +79,20 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isCompact() {
+		return $this->compact;
+	}
+	
+	/**
+	 * @param bool $compact
+	 */
+	public function setCompact(bool $compact) {
+		$this->compact = $compact;
 	}
 		
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

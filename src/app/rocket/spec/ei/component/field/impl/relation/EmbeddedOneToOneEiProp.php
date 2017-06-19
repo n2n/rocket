@@ -56,6 +56,7 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
+	private $compact = true;
 	
 	public function __construct() {
 		parent::__construct();
@@ -69,6 +70,20 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isCompact() {
+		return $this->compact;
+	}
+	
+	/**
+	 * @param bool $compact
+	 */
+	public function setCompact(bool $compact) {
+		$this->compact = $compact;
 	}
 	
 	/**

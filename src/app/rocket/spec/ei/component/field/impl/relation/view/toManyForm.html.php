@@ -56,33 +56,8 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 		data-move-down-label="<?php $html->text('common_move_down_label') ?>"
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>">
-	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
-			
-		<div class="rocket-impl-currents">
-			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml) { ?>
-				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
-				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
-			
-				<div class="rocket-impl-entry" 
-						data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>"
-						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
-								array('item' => $currentMappingForm->getEntryLabel())) ?>">
-					<?php $formHtml->optionalObjectEnabledHidden() ?>
-					
-					<?php if ($currentMappingForm->isAccessible()): ?>
-						<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
-								'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-					<?php else: ?>
-						<span class="rocket-inaccessible">
-							<?php $html->out($currentMappingForm->getEntryLabel()) ?>
-						</span>
-					<?php endif ?>
-					
-					<?php $formHtml->input('orderIndex', array('class' => 'rocket-impl-order-index')) ?>
-				</div>
-			<?php }) ?>
-		</div>
-	<?php endif ?>
+		
+	
 		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-selector"
@@ -101,6 +76,39 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 				<?php }, null, null, true) ?>
 				<li class="rocket-new-entry"><?php $formHtml->input($propertyPath->ext('selectedEntryIdReps[]')) ?></li>
 			</ul>
+		</div>
+	<?php endif ?>	
+	
+	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
+		<div class="rocket-impl-currents">
+			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml) { ?>
+				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
+				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
+			
+				<div class="rocket-impl-entry" 
+						data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>"
+						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
+								array('item' => $currentMappingForm->getEntryLabel())) ?>">
+					<?php $formHtml->optionalObjectEnabledHidden() ?>
+					
+					<?php if ($currentMappingForm->isAccessible()): ?>
+						<div class="rocket-impl-summary">
+							summary
+						</div>
+					
+						<div class="rocket-impl-body">
+							<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
+									'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
+						</div>
+					<?php else: ?>
+						<span class="rocket-impl-summary">
+							<?php $html->out($currentMappingForm->getEntryLabel()) ?>
+						</span>
+					<?php endif ?>
+					
+					<?php $formHtml->input('orderIndex', array('class' => 'rocket-impl-order-index')) ?>
+				</div>
+			<?php }) ?>
 		</div>
 	<?php endif ?>
 	

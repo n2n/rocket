@@ -15,6 +15,16 @@ namespace rocket {
 		});
 		
 		(function () {
+			var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), 
+					jqContainer.data("display-error-label"));
+			initializer.scan();
+			
+			n2n.dispatch.registerCallback(function () {
+				initializer.scan();
+			});
+		}) ();
+		
+		(function () {
 			$(".rocket-impl-overview").each(function () {
 				rocket.impl.OverviewContext.scan($(this));
 			});
@@ -39,14 +49,18 @@ namespace rocket {
 		}) ();
 		
 		(function () {
-			var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), 
-					jqContainer.data("display-error-label"));
-			initializer.scan();
+			$("form.rocket-impl-to-many").each(function () {
+				rocket.impl.ToMany.scan($(this));
+			});
 			
 			n2n.dispatch.registerCallback(function () {
-				initializer.scan();
+				$("form.rocket-impl-form").each(function () {
+					rocket.impl.ToMany.scan($(this));
+				});
 			});
 		}) ();
+		
+		
 	});
 	
 	export function layerOf(elem: HTMLElement): rocket.cmd.Layer {

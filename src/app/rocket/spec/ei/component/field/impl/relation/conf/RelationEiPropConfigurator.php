@@ -135,6 +135,11 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 					$targetOrderFieldPathOptions, $lar->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)));
 		}
 		
+		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp) {
+			$magCollection->addMag(new BoolMag(self::ATTR_COMPACT_KEY, 'Compact',
+					$lar->getBool(self::ATTR_COMPACT_KEY, $this->eiComponent->isCompact())));
+		}
+		
 		if ($this->eiPropRelation instanceof SelectEiPropRelation) {
 			$magCollection->addMag(new BoolMag(self::OPTION_FILTERED_KEY, 'Filtered',
 					$lar->getBool(self::OPTION_FILTERED_KEY, $this->eiPropRelation->isFiltered())));
@@ -206,6 +211,12 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 						->getScalarEiPropertyByFieldPath($targetEiPropPath);
 			$this->eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
 		}
+		
+		if (($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp) 
+				&& $this->attributes->contains(self::ATTR_COMPACT_KEY)) {
+			$this->eiComponent->setCompact($this->attributes->getBool(self::ATTR_COMPACT_KEY));
+		}
+		
 		
 		if ($this->eiPropRelation instanceof SelectEiPropRelation) {
 			if ($this->attributes->contains(self::OPTION_FILTERED_KEY)) {
