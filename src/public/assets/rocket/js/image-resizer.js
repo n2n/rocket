@@ -39,7 +39,13 @@ jQuery(window).ready(function($) {
 		var dimension = this.dimensionString.split("x");
 		this.width = dimension[0] * this.zoomFactor;
 		this.height = dimension[1] * this.zoomFactor;
-		this.crop = dimension.length > 2;
+
+		if (dimension.length <= 2) {
+			this.crop = false;
+		} else {
+			this.crop = dimension[2].startsWith("c");
+		}
+		
 		this.ratio = this.width / this.height;
 	};
 
