@@ -75,15 +75,15 @@ class ThumbModel implements Dispatchable{
 		
 		$imageResource = $this->imageFile->getImageSource()->createImageResource();
 		$imageResource->crop($this->x, $this->y, $this->width, $this->height);
-		$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight(), 
-				ImageResource::AUTO_CROP_MODE_CENTER);
+		$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight()/*, 
+				ImageResource::AUTO_CROP_MODE_CENTER*/);
 		$thumbImageFile = new ImageFile($this->imageFile->createThumbFile($imageDimension, $imageResource));
 		$imageResource->destroy();
 		
 		foreach ($thumbImageFile->getVariationImageDimension() as $imageDimension) {
 			$imageResource = $thumbImageFile->getImageSource()->createImageResource();
-			$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight(), 
-					ImageResource::AUTO_CROP_MODE_CENTER);
+			$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight()/*, 
+					ImageResource::AUTO_CROP_MODE_CENTER*/);
 			$thumbImageFile->createVariationFile($imageDimension, $imageResource);
 			$imageResource->destroy();
 		}
