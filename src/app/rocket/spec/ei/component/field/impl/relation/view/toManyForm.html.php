@@ -55,7 +55,9 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 		data-move-up-label="<?php $html->text('common_move_up_label') ?>"
 		data-move-down-label="<?php $html->text('common_move_down_label') ?>"
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
-		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>">
+		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
+		data-compact="<?php $html->out($toManyForm->isCompact()) ?>"
+		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>>
 		
 	
 		
@@ -90,20 +92,30 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 								array('item' => $currentMappingForm->getEntryLabel())) ?>">
 					<?php $formHtml->optionalObjectEnabledHidden() ?>
-					
-					<?php if ($currentMappingForm->isAccessible()): ?>
-						<div class="rocket-impl-summary">
-							summary
-						</div>
-					
-						<div class="rocket-impl-body">
-							<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
-									'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-						</div>
-					<?php else: ?>
+						
+					<?php if (!$currentMappingForm->isAccessible()): ?>
 						<span class="rocket-impl-summary">
 							<?php $html->out($currentMappingForm->getEntryLabel()) ?>
 						</span>
+					<?php else: ?>
+						<div class="rocket-impl-summary">
+							<?php if ($toManyForm->isSortable()): ?>
+								<div><i class="fa fa-bars"></i></div>
+							<?php endif ?>
+							<div>
+								<i class="<?php $html->out($currentMappingForm->getIconTyp()) ?>"></i>
+								<?php $html->out($currentMappingForm->getEntryLabel()) ?>
+							</div>
+							<div>summary</div>
+						</div>
+					
+						<div class="rocket-impl-body rocket-group-simple">
+							<label><?php $html->out($currentMappingForm->getEntryLabel()) ?></label>
+							<div class="rocket-controls">
+								<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
+										'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
+							</div>
+						</div>
 					<?php endif ?>
 					
 					<?php $formHtml->input('orderIndex', array('class' => 'rocket-impl-order-index')) ?>

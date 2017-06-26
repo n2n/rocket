@@ -73,10 +73,16 @@ namespace rocket.impl {
 	class EmbeddedEntry {
 		private jqEntry: JQuery;
 		private jqOrderIndex: JQuery;
+		private jqSummary: JQuery;
+		private jqBody: JQuery;
 		
 		constructor(jqEntry: JQuery) {
 			this.jqEntry = jqEntry;
 			this.jqOrderIndex = jqEntry.find(".rocket-impl-order-index").hide();
+			this.jqSummary = jqEntry.find(".rocket-impl-summary");
+			this.jqBody = jqEntry.find(".rocket-impl-body");
+			
+			this.reduce();
 		}
 		
 		public getJQuery(): JQuery {
@@ -84,10 +90,13 @@ namespace rocket.impl {
 		}
 		
 		public expand() {
-			
+			this.jqSummary.hide();
+			this.jqBody.show();
 		}
 		
 		public reduce() {
+			this.jqSummary.show();
+			this.jqBody.hide();
 		}
 	}
 }
