@@ -57,7 +57,7 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
 		data-compact="<?php $html->out($toManyForm->isCompact()) ?>"
-		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>>
+		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>">
 		
 	
 		
@@ -83,11 +83,11 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 	
 	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
 		<div class="rocket-impl-currents">
-			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml) { ?>
+			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml, $toManyForm) { ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 			
-				<div class="rocket-impl-entry" 
+				<div class="rocket-impl-entry" draggable="true"
 						data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>"
 						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 								array('item' => $currentMappingForm->getEntryLabel())) ?>">

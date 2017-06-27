@@ -52,6 +52,37 @@ namespace rocket.impl {
 			if (!this.compact) {
 				entry.expand();
 			}
+			
+			var i: number = 0;
+			
+			if (this.sortable) {
+				
+				entry.getJQuery().on("dragstart", function (e: JQueryEventObject) {
+//					$(this).css("opacity", 0.5);
+					
+					var ev: DragEvent = <DragEvent> e.originalEvent;
+					ev.dataTransfer.effectAllowed = "move";
+		            ev.dataTransfer.setData("text", "" + i++);
+		            ev.dataTransfer.setDragImage(ev.target, 0, 0);
+					
+					console.log("huii2: " + ev.clientX);
+					return true;
+					
+				});			
+//				
+//				entry.getJQuery().on("dragover", function (e: any) {
+//					$(this).css("background", "blue");
+//					console.log("huii");
+//					if (e.preventDefault) {
+//					    e.preventDefault(); // Necessary. Allows us to drop.
+//					}
+//					
+//					e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+//					
+//					return false;
+//				});
+			}
+				
 		}
 		
 		public static from(jqToMany: JQuery): ToMany {
