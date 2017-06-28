@@ -27,6 +27,7 @@
 	use rocket\core\model\TemplateModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\http\nav\Murl;
+use n2nutil\jquery\JQueryUiLibrary;
 
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($view);
@@ -54,7 +55,7 @@
 	$htmlMeta->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
-	$htmlMeta->addLibrary(new JQueryLibrary(2, false));
+	$htmlMeta->addLibrary(new JQueryUiLibrary(3));
 // new design (not ready yet):
  	$htmlMeta->addCss('css/rocket-12.css');
 // old design:
@@ -89,6 +90,8 @@
 			.rocket-highlight-remember {
 				transition: border 1s;
 			}
+			
+			
 		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 

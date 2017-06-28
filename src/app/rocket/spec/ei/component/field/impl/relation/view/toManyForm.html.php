@@ -26,7 +26,7 @@
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyForm;
-use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\spec\ei\manage\EiHtmlBuilder;
 
 	/**
 	 * @var \n2n\web\ui\view\View $view
@@ -87,7 +87,7 @@ use rocket\spec\ei\manage\EiHtmlBuilder;
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 			
-				<div class="rocket-impl-entry" draggable="true"
+				<div class="rocket-impl-entry"
 						data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>"
 						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 								array('item' => $currentMappingForm->getEntryLabel())) ?>">

@@ -23,11 +23,11 @@ namespace rocket.impl {
 	var $ = jQuery;
 	
 	export class ToMany {
-		private jqToMany;
+		private jqToMany: JQuery;
 		private compact: boolean = true;
 		private sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
-		private jqEmbedded;
+		private jqEmbedded: JQuery;
 		
 		constructor(jqToMany: JQuery) {
 			this.jqToMany = jqToMany;
@@ -55,20 +55,25 @@ namespace rocket.impl {
 			
 			var i: number = 0;
 			
+			
 			if (this.sortable) {
+				this.jqEmbedded.sortable({
+					"forcePlaceholderSize": true,
+			      	"placeholder": "rocket-impl-entry-placeholder"
+			    }).disableSelection();
 				
-				entry.getJQuery().on("dragstart", function (e: JQueryEventObject) {
-//					$(this).css("opacity", 0.5);
-					
-					var ev: DragEvent = <DragEvent> e.originalEvent;
-					ev.dataTransfer.effectAllowed = "move";
-		            ev.dataTransfer.setData("text", "" + i++);
-		            ev.dataTransfer.setDragImage(ev.target, 0, 0);
-					
-					console.log("huii2: " + ev.clientX);
-					return true;
-					
-				});			
+//				entry.getJQuery().on("dragstart", function (e: JQueryEventObject) {
+////					$(this).css("opacity", 0.5);
+//					
+//					var ev: DragEvent = <DragEvent> e.originalEvent;
+//					ev.dataTransfer.effectAllowed = "move";
+//		            ev.dataTransfer.setData("text", "" + i++);
+//		            ev.dataTransfer.setDragImage(ev.target, 0, 0);
+//					
+//					console.log("huii2: " + ev.clientX);
+//					return true;
+//					
+//				});			
 //				
 //				entry.getJQuery().on("dragover", function (e: any) {
 //					$(this).css("background", "blue");
