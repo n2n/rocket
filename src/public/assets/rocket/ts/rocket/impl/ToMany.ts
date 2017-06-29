@@ -28,10 +28,12 @@ namespace rocket.impl {
 		private sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
+		private expanded: boolean = false;
 		
 		constructor(jqToMany: JQuery) {
 			this.jqToMany = jqToMany;
 			this.compact = (true == jqToMany.data("compact"));
+			this.expanded = !this.compact;
 			this.sortable = (true == jqToMany.data("sortable"))
 			
 			jqToMany.data("rocketToMany", this);
@@ -44,50 +46,50 @@ namespace rocket.impl {
 		}
 		
 		public addEntry(entry: EmbeddedEntry) {
+			entry.setOrderIndex(this.entries.length);
 			this.entries.push(entry);
 			
 			entry.getJQuery().detach();
 			this.jqEmbedded.append(entry.getJQuery());
 			
-			if (!this.compact) {
+			if (this.expanded) {
 				entry.expand();
+				this.expand();
+			} else {
+				entry.reduce();
+				this.reduce();
 			}
-			
-			var i: number = 0;
-			
-			
+		}
+		
+		public expand() {
 			if (this.sortable) {
+				this.jqEmbedded.sortable("disable");
+				this.jqEmbedded.enableSelection();
+			}
+		}
+		
+		public reduce() {
+			if (this.sortable) {
+				var that = this;
+				var oldIndex: number = 0;
 				this.jqEmbedded.sortable({
 					"forcePlaceholderSize": true,
-			      	"placeholder": "rocket-impl-entry-placeholder"
+			      	"placeholder": "rocket-impl-entry-placeholder",
+					"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+						var oldIndex = ui.item.index();
+					},
+					"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+						var newIndex = ui.item.index();
+						
+						that.entries[oldIndex].setOrderIndex(newIndex);
+						that.entries[newIndex].setOrderIndex(oldIndex);
+						
+						var entry = that.entries[oldIndex];
+						that.entries[oldIndex] = that.entries[newIndex];
+						that.entries[newIndex] = entry;
+					}
 			    }).disableSelection();
-				
-//				entry.getJQuery().on("dragstart", function (e: JQueryEventObject) {
-////					$(this).css("opacity", 0.5);
-//					
-//					var ev: DragEvent = <DragEvent> e.originalEvent;
-//					ev.dataTransfer.effectAllowed = "move";
-//		            ev.dataTransfer.setData("text", "" + i++);
-//		            ev.dataTransfer.setDragImage(ev.target, 0, 0);
-//					
-//					console.log("huii2: " + ev.clientX);
-//					return true;
-//					
-//				});			
-//				
-//				entry.getJQuery().on("dragover", function (e: any) {
-//					$(this).css("background", "blue");
-//					console.log("huii");
-//					if (e.preventDefault) {
-//					    e.preventDefault(); // Necessary. Allows us to drop.
-//					}
-//					
-//					e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-//					
-//					return false;
-//				});
 			}
-				
 		}
 		
 		public static from(jqToMany: JQuery): ToMany {
@@ -114,11 +116,13 @@ namespace rocket.impl {
 		
 		constructor(jqEntry: JQuery) {
 			this.jqEntry = jqEntry;
-			this.jqOrderIndex = jqEntry.find(".rocket-impl-order-index").hide();
-			this.jqSummary = jqEntry.find(".rocket-impl-summary");
-			this.jqBody = jqEntry.find(".rocket-impl-body");
+			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
+			this.jqSummary = jqEntry.children(".rocket-impl-summary");
+			this.jqBody = jqEntry.children(".rocket-impl-body");
 			
 			this.reduce();
+			
+			jqEntry.data("rocketImplEmbeddedEntry", this);
 		}
 		
 		public getJQuery(): JQuery {
@@ -133,6 +137,27 @@ namespace rocket.impl {
 		public reduce() {
 			this.jqSummary.show();
 			this.jqBody.hide();
+		}
+		
+		public setOrderIndex(orderIndex: number) {
+			this.jqOrderIndex.val(orderIndex);
+		}
+	
+		public getOrderIndex(): number {
+			return parseInt(this.jqOrderIndex.val());
+		}
+		
+		public static from(jqElem: JQuery, create: boolean = false) {
+			var entry = jqElem.data("rocketImplEmbeddedEntry");
+			if (entry instanceof EmbeddedEntry) {
+				return entry;
+			}
+			
+			if (create) {
+				return new EmbeddedEntry(jqElem); 				
+			}
+			
+			return null;
 		}
 	}
 }

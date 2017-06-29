@@ -59,8 +59,6 @@
 		data-compact="<?php $html->out($toManyForm->isCompact()) ?>"
 		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>">
 		
-	
-		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-selector"
 				data-original-id-reps="<?php $html->out(json_encode($toManyForm->getOriginalEntryIdReps())) ?>"
