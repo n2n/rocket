@@ -1,206 +1,5 @@
 var rocket;
 (function (rocket) {
-    var container;
-    var executor;
-    jQuery(document).ready(function ($) {
-        var jqContainer = $("#rocket-content-container");
-        container = new rocket.cmd.Container(jqContainer);
-        executor = new rocket.cmd.Executor(container);
-        var monitor = new rocket.cmd.Monitor(executor);
-        monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
-        monitor.scan(jqContainer);
-        n2n.dispatch.registerCallback(function () {
-            monitor.scan(jqContainer);
-        });
-        (function () {
-            var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
-            initializer.scan();
-            n2n.dispatch.registerCallback(function () {
-                initializer.scan();
-            });
-        })();
-        (function () {
-            $(".rocket-impl-overview").each(function () {
-                rocket.impl.OverviewContext.scan($(this));
-            });
-            n2n.dispatch.registerCallback(function () {
-                $(".rocket-impl-overview").each(function () {
-                    rocket.impl.OverviewContext.scan($(this));
-                });
-            });
-        })();
-        (function () {
-            $("form.rocket-impl-form").each(function () {
-                rocket.impl.Form.scan($(this));
-            });
-            n2n.dispatch.registerCallback(function () {
-                $("form.rocket-impl-form").each(function () {
-                    rocket.impl.Form.scan($(this));
-                });
-            });
-        })();
-        (function () {
-            $(".rocket-impl-to-many").each(function () {
-                rocket.impl.ToMany.from($(this));
-            });
-            n2n.dispatch.registerCallback(function () {
-                $(".rocket-impl-many").each(function () {
-                    rocket.impl.ToMany.from($(this));
-                });
-            });
-        })();
-    });
-    function layerOf(elem) {
-        return rocket.cmd.Layer.findFrom($(elem));
-    }
-    rocket.layerOf = layerOf;
-    function contextOf(elem) {
-        return rocket.cmd.Context.findFrom($(elem));
-    }
-    rocket.contextOf = contextOf;
-    function handleErrorResponse(url, responseObject) {
-        container.handleError(url, responseObject.responseText);
-    }
-    rocket.handleErrorResponse = handleErrorResponse;
-    function exec(url, config) {
-        if (config === void 0) { config = null; }
-        executor.exec(url, config);
-    }
-    rocket.exec = exec;
-    function analyzeResponse(currentLayer, response, targetUrl, targetContext) {
-        if (targetContext === void 0) { targetContext = null; }
-        return executor.analyzeResponse(currentLayer, response, targetUrl, targetContext);
-    }
-    rocket.analyzeResponse = analyzeResponse;
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
-        var Group = (function () {
-            function Group(jqGroup) {
-                this.onShowCallbacks = new Array();
-                this.onHideCallbacks = new Array();
-                this.jqGroup = jqGroup;
-                jqGroup.addClass("rocket-group");
-                jqGroup.data("rocketGroup", this);
-            }
-            Group.prototype.getTitle = function () {
-                return this.jqGroup.find("label:first").text();
-            };
-            Group.prototype.show = function () {
-                this.jqGroup.show();
-                for (var i in this.onShowCallbacks) {
-                    this.onShowCallbacks[i](this);
-                }
-            };
-            Group.prototype.hide = function () {
-                this.jqGroup.hide();
-                for (var i in this.onHideCallbacks) {
-                    this.onHideCallbacks[i](this);
-                }
-            };
-            Group.prototype.addChildGroup = function (group) {
-                var that = this;
-                group.onShow(function () {
-                    that.show();
-                });
-            };
-            Group.prototype.onShow = function (callback) {
-                this.onShowCallbacks.push(callback);
-            };
-            Group.prototype.onHide = function (callback) {
-                this.onHideCallbacks.push(callback);
-            };
-            Group.from = function (jqElem, create) {
-                if (create === void 0) { create = true; }
-                var rocketGroup = jqElem.data("rocketGroup");
-                if (rocketGroup)
-                    return rocketGroup;
-                if (!create)
-                    return null;
-                rocketGroup = new Group(jqElem);
-                jqElem.data("rocketCommandAction", rocketGroup);
-                return rocketGroup;
-            };
-            Group.findFrom = function (jqElem) {
-                jqElem = jqElem.parents(".rocket-group");
-                var group = jqElem.data("rocketGroup");
-                if (group instanceof Group) {
-                    return group;
-                }
-                return null;
-            };
-            return Group;
-        }());
-        display.Group = Group;
-        var Field = (function () {
-            function Field(jqField, group) {
-                if (group === void 0) { group = null; }
-                this.jqField = jqField;
-                this.group = group;
-                jqField.addClass("rocket-field");
-                jqField.data("rocketField", this);
-            }
-            Field.prototype.setGroup = function (group) {
-                this.group = group;
-            };
-            Field.prototype.getGroup = function () {
-                return this.group;
-            };
-            Field.prototype.getLabel = function () {
-                return this.jqField.find("label:first").text();
-            };
-            Field.prototype.scrollTo = function () {
-                var top = this.jqField.offset().top;
-                var maxOffset = top - 50;
-                var height = this.jqField.outerHeight();
-                var margin = $(window).height() - height;
-                var offset = top - (margin / 2);
-                if (maxOffset < offset) {
-                    offset = maxOffset;
-                }
-                $("html, body").animate({
-                    "scrollTop": offset
-                }, 250);
-            };
-            Field.prototype.highlight = function () {
-                this.jqField.addClass("rocket-highlighted");
-            };
-            Field.prototype.unhighlight = function (slow) {
-                if (slow === void 0) { slow = false; }
-                this.jqField.removeClass("rocket-highlighted");
-                if (slow) {
-                    this.jqField.addClass("rocket-highlight-remember");
-                }
-                else {
-                    this.jqField.removeClass("rocket-highlight-remember");
-                }
-            };
-            Field.from = function (jqElem, create) {
-                if (create === void 0) { create = true; }
-                var rocketField = jqElem.data("rocketField");
-                if (rocketField instanceof Field)
-                    return rocketField;
-                if (!create)
-                    return null;
-                return new Field(jqElem, Group.findFrom(jqElem));
-            };
-            Field.findFrom = function (jqElem) {
-                jqElem = jqElem.parents(".rocket-field");
-                var field = jqElem.data("rocketField");
-                if (field instanceof Field) {
-                    return field;
-                }
-                return null;
-            };
-            return Field;
-        }());
-        display.Field = Field;
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
     var cmd;
     (function (cmd) {
         var $ = jQuery;
@@ -435,188 +234,6 @@ var rocket;
             return ErrorIndex;
         }());
     })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- *
- */
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
-        var $ = jQuery;
-        var OverviewContext = (function () {
-            function OverviewContext(jqContainer) {
-                this.jqContainer = jqContainer;
-            }
-            OverviewContext.prototype.initPageNav = function () {
-            };
-            OverviewContext.scan = function (jqContainer) {
-                if (jqContainer.data("rocketImplOverviewContext"))
-                    return null;
-                var overviewContext = new OverviewContext(jqContainer);
-                jqContainer.data("rocketImplOverviewContext", overviewContext);
-                jqContainer.data("content-url");
-                var jqForm = jqContainer.children("form");
-                var pagination = new Pagination(jqContainer.data("num-pages"), jqContainer.data("current-page"));
-                pagination.draw(jqForm.children(".rocket-context-commands"));
-                var fixedHeader = new FixedHeader(jqContainer.data("num-entries"));
-                fixedHeader.draw(jqContainer.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
-                return overviewContext;
-            };
-            return OverviewContext;
-        }());
-        impl.OverviewContext = OverviewContext;
-        var Pagination = (function () {
-            function Pagination(numPages, currentPageNo) {
-                this.numPages = numPages;
-                this.currentPageNo = currentPageNo;
-            }
-            Pagination.prototype.getCurrentPageNo = function () {
-                return this.currentPageNo;
-            };
-            Pagination.prototype.getNumPages = function () {
-                return this.numPages;
-            };
-            Pagination.prototype.goTo = function (pageNo) {
-                alert(pageNo);
-            };
-            Pagination.prototype.draw = function (jqContainer) {
-                var that = this;
-                this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
-                jqContainer.append(this.jqPagination);
-                this.jqPagination.append($("<a />", {
-                    "href": "#",
-                    "class": "rocket-impl-pagination-first rocket-control",
-                    "click": function () { that.goTo(1); }
-                }).append($("<i />", {
-                    "class": "fa fa-step-backward"
-                })));
-                this.jqPagination.append($("<button />", {
-                    "class": "rocket-impl-pagination-prev rocket-control",
-                    "click": function () { that.goTo(that.getCurrentPageNo() - 1); }
-                }).append($("<i />", {
-                    "class": "fa fa-chevron-left"
-                })));
-                this.jqInput = $("<input />", {
-                    "class": "rocket-impl-pagination-no",
-                    "type": "text",
-                    "value": this.currentPageNo
-                });
-                this.jqPagination.append(this.jqInput);
-                this.jqPagination.append($("<button />", {
-                    "class": "rocket-impl-pagination-next rocket-control",
-                    "click": function () { that.goTo(that.getCurrentPageNo() + 1); }
-                }).append($("<i />", {
-                    "class": "fa fa-chevron-right"
-                })));
-                this.jqPagination.append($("<button />", {
-                    "href": "#",
-                    "class": "rocket-impl-pagination-last rocket-control",
-                    "click": function () { that.goTo(that.getNumPages()); }
-                }).append($("<i />", {
-                    "class": "fa fa-step-forward"
-                })));
-            };
-            return Pagination;
-        }());
-        var FixedHeader = (function () {
-            function FixedHeader(numEntries) {
-                this.fixed = false;
-                this.numEntries = numEntries;
-            }
-            FixedHeader.prototype.getNumEntries = function () {
-                return this.numEntries;
-            };
-            FixedHeader.prototype.draw = function (jqHeader, jqTable) {
-                this.jqHeader = jqHeader;
-                this.jqTable = jqTable;
-                this.cloneTableHeader();
-                var that = this;
-                $("#rocket-content-container").scroll(function () {
-                    that.scrolled();
-                });
-                //			var headerOffset = this.jqHeader.offset().top;
-                //			var headerHeight = this.jqHeader.height();
-                //			var headerWidth = this.jqHeader.width();
-                //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
-                //			this.jqHeader.parent().css("padding-top", headerHeight);
-                this.calcDimensions();
-                $(window).resize(function () {
-                    that.calcDimensions();
-                });
-            };
-            FixedHeader.prototype.calcDimensions = function () {
-                this.jqHeader.parent().css("padding-top", null);
-                this.jqHeader.css("position", "relative");
-                var headerOffset = this.jqHeader.offset();
-                this.fixedCssAttrs = {
-                    "position": "fixed",
-                    "top": $("#rocket-content-container").offset().top,
-                    "left": headerOffset.left,
-                    "right": $(window).width() - (headerOffset.left + this.jqHeader.outerWidth())
-                };
-                this.scrolled();
-            };
-            FixedHeader.prototype.scrolled = function () {
-                var headerHeight = this.jqHeader.children().outerHeight();
-                if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
-                    if (this.fixed)
-                        return;
-                    this.fixed = true;
-                    this.jqHeader.css(this.fixedCssAttrs);
-                    this.jqHeader.parent().css("padding-top", headerHeight);
-                    this.jqTableClone.show();
-                }
-                else {
-                    if (!this.fixed)
-                        return;
-                    this.fixed = false;
-                    this.jqHeader.css({
-                        "position": "relative",
-                        "top": "",
-                        "left": "",
-                        "right": ""
-                    });
-                    this.jqHeader.parent().css("padding-top", "");
-                    this.jqTableClone.hide();
-                }
-            };
-            FixedHeader.prototype.cloneTableHeader = function () {
-                this.jqTableClone = this.jqTable.clone();
-                this.jqTableClone.css("margin-bottom", 0);
-                this.jqTableClone.children("tbody").remove();
-                this.jqHeader.append(this.jqTableClone);
-                this.jqTableClone.hide();
-                var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
-                this.jqTable.children("thead").children("tr").children().each(function (index) {
-                    jqClonedChildren.eq(index).innerWidth($(this).innerWidth());
-                    //				jqClonedChildren.css({
-                    //					"boxSizing": "border-box"	
-                    //				});
-                });
-                //			this.jqTable.children("thead").hide();
-            };
-            return FixedHeader;
-        }());
-    })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
@@ -1075,6 +692,319 @@ var rocket;
         cmd.AdditionalTab = AdditionalTab;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        var StructureElement = (function () {
+            function StructureElement() {
+            }
+            return StructureElement;
+        }());
+        var Group = (function () {
+            function Group(jqGroup) {
+                this.onShowCallbacks = new Array();
+                this.onHideCallbacks = new Array();
+                this.jqGroup = jqGroup;
+                jqGroup.addClass("rocket-group");
+                jqGroup.data("rocketGroup", this);
+            }
+            Group.prototype.getTitle = function () {
+                return this.jqGroup.find("label:first").text();
+            };
+            Group.prototype.show = function () {
+                this.jqGroup.show();
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+            };
+            Group.prototype.hide = function () {
+                this.jqGroup.hide();
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+            };
+            Group.prototype.addChildGroup = function (group) {
+                var that = this;
+                group.onShow(function () {
+                    that.show();
+                });
+            };
+            Group.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            Group.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            Group.from = function (jqElem, create) {
+                if (create === void 0) { create = true; }
+                var rocketGroup = jqElem.data("rocketGroup");
+                if (rocketGroup)
+                    return rocketGroup;
+                if (!create)
+                    return null;
+                rocketGroup = new Group(jqElem);
+                jqElem.data("rocketCommandAction", rocketGroup);
+                return rocketGroup;
+            };
+            Group.findFrom = function (jqElem) {
+                jqElem = jqElem.parents(".rocket-group");
+                var group = jqElem.data("rocketGroup");
+                if (group instanceof Group) {
+                    return group;
+                }
+                return null;
+            };
+            return Group;
+        }());
+        display.Group = Group;
+        var Field = (function () {
+            function Field(jqField, group) {
+                if (group === void 0) { group = null; }
+                this.jqField = jqField;
+                this.group = group;
+                jqField.addClass("rocket-field");
+                jqField.data("rocketField", this);
+            }
+            Field.prototype.setGroup = function (group) {
+                this.group = group;
+            };
+            Field.prototype.getGroup = function () {
+                return this.group;
+            };
+            Field.prototype.getLabel = function () {
+                return this.jqField.find("label:first").text();
+            };
+            Field.prototype.scrollTo = function () {
+                var top = this.jqField.offset().top;
+                var maxOffset = top - 50;
+                var height = this.jqField.outerHeight();
+                var margin = $(window).height() - height;
+                var offset = top - (margin / 2);
+                if (maxOffset < offset) {
+                    offset = maxOffset;
+                }
+                $("html, body").animate({
+                    "scrollTop": offset
+                }, 250);
+            };
+            Field.prototype.highlight = function () {
+                this.jqField.addClass("rocket-highlighted");
+            };
+            Field.prototype.unhighlight = function (slow) {
+                if (slow === void 0) { slow = false; }
+                this.jqField.removeClass("rocket-highlighted");
+                if (slow) {
+                    this.jqField.addClass("rocket-highlight-remember");
+                }
+                else {
+                    this.jqField.removeClass("rocket-highlight-remember");
+                }
+            };
+            Field.from = function (jqElem, create) {
+                if (create === void 0) { create = true; }
+                var rocketField = jqElem.data("rocketField");
+                if (rocketField instanceof Field)
+                    return rocketField;
+                if (!create)
+                    return null;
+                return new Field(jqElem, Group.findFrom(jqElem));
+            };
+            Field.findFrom = function (jqElem) {
+                jqElem = jqElem.parents(".rocket-field");
+                var field = jqElem.data("rocketField");
+                if (field instanceof Field) {
+                    return field;
+                }
+                return null;
+            };
+            return Field;
+        }());
+        display.Field = Field;
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ *
+ */
+var rocket;
+(function (rocket) {
+    var impl;
+    (function (impl) {
+        var $ = jQuery;
+        var OverviewContext = (function () {
+            function OverviewContext(jqContainer) {
+                this.jqContainer = jqContainer;
+            }
+            OverviewContext.prototype.initPageNav = function () {
+            };
+            OverviewContext.scan = function (jqContainer) {
+                if (jqContainer.data("rocketImplOverviewContext"))
+                    return null;
+                var overviewContext = new OverviewContext(jqContainer);
+                jqContainer.data("rocketImplOverviewContext", overviewContext);
+                jqContainer.data("content-url");
+                var jqForm = jqContainer.children("form");
+                var pagination = new Pagination(jqContainer.data("num-pages"), jqContainer.data("current-page"));
+                pagination.draw(jqForm.children(".rocket-context-commands"));
+                var fixedHeader = new FixedHeader(jqContainer.data("num-entries"));
+                fixedHeader.draw(jqContainer.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
+                return overviewContext;
+            };
+            return OverviewContext;
+        }());
+        impl.OverviewContext = OverviewContext;
+        var Pagination = (function () {
+            function Pagination(numPages, currentPageNo) {
+                this.numPages = numPages;
+                this.currentPageNo = currentPageNo;
+            }
+            Pagination.prototype.getCurrentPageNo = function () {
+                return this.currentPageNo;
+            };
+            Pagination.prototype.getNumPages = function () {
+                return this.numPages;
+            };
+            Pagination.prototype.goTo = function (pageNo) {
+                alert(pageNo);
+            };
+            Pagination.prototype.draw = function (jqContainer) {
+                var that = this;
+                this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
+                jqContainer.append(this.jqPagination);
+                this.jqPagination.append($("<a />", {
+                    "href": "#",
+                    "class": "rocket-impl-pagination-first rocket-control",
+                    "click": function () { that.goTo(1); }
+                }).append($("<i />", {
+                    "class": "fa fa-step-backward"
+                })));
+                this.jqPagination.append($("<button />", {
+                    "class": "rocket-impl-pagination-prev rocket-control",
+                    "click": function () { that.goTo(that.getCurrentPageNo() - 1); }
+                }).append($("<i />", {
+                    "class": "fa fa-chevron-left"
+                })));
+                this.jqInput = $("<input />", {
+                    "class": "rocket-impl-pagination-no",
+                    "type": "text",
+                    "value": this.currentPageNo
+                });
+                this.jqPagination.append(this.jqInput);
+                this.jqPagination.append($("<button />", {
+                    "class": "rocket-impl-pagination-next rocket-control",
+                    "click": function () { that.goTo(that.getCurrentPageNo() + 1); }
+                }).append($("<i />", {
+                    "class": "fa fa-chevron-right"
+                })));
+                this.jqPagination.append($("<button />", {
+                    "href": "#",
+                    "class": "rocket-impl-pagination-last rocket-control",
+                    "click": function () { that.goTo(that.getNumPages()); }
+                }).append($("<i />", {
+                    "class": "fa fa-step-forward"
+                })));
+            };
+            return Pagination;
+        }());
+        var FixedHeader = (function () {
+            function FixedHeader(numEntries) {
+                this.fixed = false;
+                this.numEntries = numEntries;
+            }
+            FixedHeader.prototype.getNumEntries = function () {
+                return this.numEntries;
+            };
+            FixedHeader.prototype.draw = function (jqHeader, jqTable) {
+                this.jqHeader = jqHeader;
+                this.jqTable = jqTable;
+                this.cloneTableHeader();
+                var that = this;
+                $("#rocket-content-container").scroll(function () {
+                    that.scrolled();
+                });
+                //			var headerOffset = this.jqHeader.offset().top;
+                //			var headerHeight = this.jqHeader.height();
+                //			var headerWidth = this.jqHeader.width();
+                //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
+                //			this.jqHeader.parent().css("padding-top", headerHeight);
+                this.calcDimensions();
+                $(window).resize(function () {
+                    that.calcDimensions();
+                });
+            };
+            FixedHeader.prototype.calcDimensions = function () {
+                this.jqHeader.parent().css("padding-top", null);
+                this.jqHeader.css("position", "relative");
+                var headerOffset = this.jqHeader.offset();
+                this.fixedCssAttrs = {
+                    "position": "fixed",
+                    "top": $("#rocket-content-container").offset().top,
+                    "left": headerOffset.left,
+                    "right": $(window).width() - (headerOffset.left + this.jqHeader.outerWidth())
+                };
+                this.scrolled();
+            };
+            FixedHeader.prototype.scrolled = function () {
+                var headerHeight = this.jqHeader.children().outerHeight();
+                if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
+                    if (this.fixed)
+                        return;
+                    this.fixed = true;
+                    this.jqHeader.css(this.fixedCssAttrs);
+                    this.jqHeader.parent().css("padding-top", headerHeight);
+                    this.jqTableClone.show();
+                }
+                else {
+                    if (!this.fixed)
+                        return;
+                    this.fixed = false;
+                    this.jqHeader.css({
+                        "position": "relative",
+                        "top": "",
+                        "left": "",
+                        "right": ""
+                    });
+                    this.jqHeader.parent().css("padding-top", "");
+                    this.jqTableClone.hide();
+                }
+            };
+            FixedHeader.prototype.cloneTableHeader = function () {
+                this.jqTableClone = this.jqTable.clone();
+                this.jqTableClone.css("margin-bottom", 0);
+                this.jqTableClone.children("tbody").remove();
+                this.jqHeader.append(this.jqTableClone);
+                this.jqTableClone.hide();
+                var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
+                this.jqTable.children("thead").children("tr").children().each(function (index) {
+                    jqClonedChildren.eq(index).innerWidth($(this).innerWidth());
+                    //				jqClonedChildren.css({
+                    //					"boxSizing": "border-box"	
+                    //				});
+                });
+                //			this.jqTable.children("thead").hide();
+            };
+            return FixedHeader;
+        }());
+    })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -1106,8 +1036,10 @@ var rocket;
                 this.compact = true;
                 this.sortable = true;
                 this.entries = new Array();
+                this.expanded = false;
                 this.jqToMany = jqToMany;
                 this.compact = (true == jqToMany.data("compact"));
+                this.expanded = !this.compact;
                 this.sortable = (true == jqToMany.data("sortable"));
                 jqToMany.data("rocketToMany", this);
                 this.jqEmbedded = $("<div />", {
@@ -1116,17 +1048,43 @@ var rocket;
                 this.jqToMany.append(this.jqEmbedded);
             }
             ToMany.prototype.addEntry = function (entry) {
+                entry.setOrderIndex(this.entries.length);
                 this.entries.push(entry);
                 entry.getJQuery().detach();
                 this.jqEmbedded.append(entry.getJQuery());
-                if (!this.compact) {
+                if (this.expanded) {
                     entry.expand();
+                    this.expand();
                 }
-                var i = 0;
+                else {
+                    entry.reduce();
+                    this.reduce();
+                }
+            };
+            ToMany.prototype.expand = function () {
                 if (this.sortable) {
+                    this.jqEmbedded.sortable("disable");
+                    this.jqEmbedded.enableSelection();
+                }
+            };
+            ToMany.prototype.reduce = function () {
+                if (this.sortable) {
+                    var that = this;
+                    var oldIndex = 0;
                     this.jqEmbedded.sortable({
                         "forcePlaceholderSize": true,
-                        "placeholder": "rocket-impl-entry-placeholder"
+                        "placeholder": "rocket-impl-entry-placeholder",
+                        "start": function (event, ui) {
+                            var oldIndex = ui.item.index();
+                        },
+                        "update": function (event, ui) {
+                            var newIndex = ui.item.index();
+                            that.entries[oldIndex].setOrderIndex(newIndex);
+                            that.entries[newIndex].setOrderIndex(oldIndex);
+                            var entry = that.entries[oldIndex];
+                            that.entries[oldIndex] = that.entries[newIndex];
+                            that.entries[newIndex] = entry;
+                        }
                     }).disableSelection();
                 }
             };
@@ -1147,10 +1105,11 @@ var rocket;
         var EmbeddedEntry = (function () {
             function EmbeddedEntry(jqEntry) {
                 this.jqEntry = jqEntry;
-                this.jqOrderIndex = jqEntry.find(".rocket-impl-order-index").hide();
-                this.jqSummary = jqEntry.find(".rocket-impl-summary");
-                this.jqBody = jqEntry.find(".rocket-impl-body");
+                this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
+                this.jqSummary = jqEntry.children(".rocket-impl-summary");
+                this.jqBody = jqEntry.children(".rocket-impl-body");
                 this.reduce();
+                jqEntry.data("rocketImplEmbeddedEntry", this);
             }
             EmbeddedEntry.prototype.getJQuery = function () {
                 return this.jqEntry;
@@ -1162,6 +1121,23 @@ var rocket;
             EmbeddedEntry.prototype.reduce = function () {
                 this.jqSummary.show();
                 this.jqBody.hide();
+            };
+            EmbeddedEntry.prototype.setOrderIndex = function (orderIndex) {
+                this.jqOrderIndex.val(orderIndex);
+            };
+            EmbeddedEntry.prototype.getOrderIndex = function () {
+                return parseInt(this.jqOrderIndex.val());
+            };
+            EmbeddedEntry.from = function (jqElem, create) {
+                if (create === void 0) { create = false; }
+                var entry = jqElem.data("rocketImplEmbeddedEntry");
+                if (entry instanceof EmbeddedEntry) {
+                    return entry;
+                }
+                if (create) {
+                    return new EmbeddedEntry(jqElem);
+                }
+                return null;
             };
             return EmbeddedEntry;
         }());
@@ -1279,6 +1255,81 @@ var rocket;
         }());
         cmd.ExecResult = ExecResult;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var container;
+    var executor;
+    jQuery(document).ready(function ($) {
+        var jqContainer = $("#rocket-content-container");
+        container = new rocket.cmd.Container(jqContainer);
+        executor = new rocket.cmd.Executor(container);
+        var monitor = new rocket.cmd.Monitor(executor);
+        monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
+        monitor.scan(jqContainer);
+        n2n.dispatch.registerCallback(function () {
+            monitor.scan(jqContainer);
+        });
+        (function () {
+            var initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
+            initializer.scan();
+            n2n.dispatch.registerCallback(function () {
+                initializer.scan();
+            });
+        })();
+        (function () {
+            $(".rocket-impl-overview").each(function () {
+                rocket.impl.OverviewContext.scan($(this));
+            });
+            n2n.dispatch.registerCallback(function () {
+                $(".rocket-impl-overview").each(function () {
+                    rocket.impl.OverviewContext.scan($(this));
+                });
+            });
+        })();
+        (function () {
+            $("form.rocket-impl-form").each(function () {
+                rocket.impl.Form.scan($(this));
+            });
+            n2n.dispatch.registerCallback(function () {
+                $("form.rocket-impl-form").each(function () {
+                    rocket.impl.Form.scan($(this));
+                });
+            });
+        })();
+        (function () {
+            $(".rocket-impl-to-many").each(function () {
+                rocket.impl.ToMany.from($(this));
+            });
+            n2n.dispatch.registerCallback(function () {
+                $(".rocket-impl-many").each(function () {
+                    rocket.impl.ToMany.from($(this));
+                });
+            });
+        })();
+    });
+    function layerOf(elem) {
+        return rocket.cmd.Layer.findFrom($(elem));
+    }
+    rocket.layerOf = layerOf;
+    function contextOf(elem) {
+        return rocket.cmd.Context.findFrom($(elem));
+    }
+    rocket.contextOf = contextOf;
+    function handleErrorResponse(url, responseObject) {
+        container.handleError(url, responseObject.responseText);
+    }
+    rocket.handleErrorResponse = handleErrorResponse;
+    function exec(url, config) {
+        if (config === void 0) { config = null; }
+        executor.exec(url, config);
+    }
+    rocket.exec = exec;
+    function analyzeResponse(currentLayer, response, targetUrl, targetContext) {
+        if (targetContext === void 0) { targetContext = null; }
+        return executor.analyzeResponse(currentLayer, response, targetUrl, targetContext);
+    }
+    rocket.analyzeResponse = analyzeResponse;
 })(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.

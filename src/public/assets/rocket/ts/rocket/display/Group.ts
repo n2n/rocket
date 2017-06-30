@@ -1,5 +1,11 @@
 namespace rocket.display {
 
+	class StructureElement {
+		
+		constructor() {
+		}
+	}
+	
     export class Group {
         private jqGroup: JQuery;
 		private onShowCallbacks: Array<(Group) => any> = new Array<(Group) => any>();
