@@ -20,6 +20,7 @@
  * 
  */
 namespace rocket.impl {
+	
 	var $ = jQuery;
 	
 	export class ToMany {
@@ -43,6 +44,17 @@ namespace rocket.impl {
 			});
 			
 			this.jqToMany.append(this.jqEmbedded);
+			
+			if (this.compact) {
+				var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
+				var toolbar = structureElement.getToolbar();
+				if (toolbar !== null) {
+					var jqButton = toolbar.createCommandButton("fa fa-pencil", "Edit", "warining");
+					jqButton.click(function () {
+						alert("alert");
+					});
+				}
+			}
 		}
 		
 		public addEntry(entry: EmbeddedEntry) {

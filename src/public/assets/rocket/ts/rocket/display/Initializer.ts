@@ -35,47 +35,47 @@ namespace rocket.display {
 			
 			var jqContext = context.getJQuery();
 			
-			jqContext.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+			jqContext.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic, .rocket-field").each(function () {
 				var jqElem = $(this);
-				var group = Group.from(jqElem, false);
+				var structureElement = StructureElement.from(jqElem);
 				
-				if (group !== null) return;
+				if (structureElement !== null) return;
 				
 				if (!jqElem.hasClass("rocket-group-main")) {
-					Initializer.createGroup(jqElem);
+					Initializer.createStructureElement(jqElem);
 					return;
 				}
 				
 				Initializer.scanGroupNav(jqElem.parent());
 			});
 			
-			jqContext.find(".rocket-field").each(function () {
-				Field.from($(this), true);
-			});
 			
 			var errorIndex: ErrorIndex = null;
 			
 			jqContext.find(".rocket-message-error").each(function () {
-				var field = Field.findFrom($(this));
+				var structureElement = StructureElement.findFrom($(this));
 				
 				if (errorIndex === null) {
 					errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
 				}
 				
-				errorIndex.addError(field, $(this).text());
+				errorIndex.addError(structureElement, $(this).text());
 			});
 		}
 		
-		private static createGroup(jqElem: JQuery): Group {
-			var group = Group.from(jqElem, true);
+		private static createStructureElement(jqElem: JQuery): StructureElement {
+			var structureElement = StructureElement.from(jqElem, 
+					jqElem.hasClass("rocket-group-simple") || jqElem.hasClass("rocket-group-main") 
+							|| jqElem.hasClass("rocket-group-autonomic"), 
+					jqElem.hasClass("rocket-field"));
 			
-			var parentGroup = Group.findFrom(jqElem);
+			var parentStructureElement = StructureElement.findFrom(jqElem);
 			
-			if (parentGroup !== null) {
-				parentGroup.addChildGroup(group);
+			if (parentStructureElement !== null) {
+				parentStructureElement.addChild(structureElement);
 			}
 			
-			return group;
+			return structureElement;
 		}
 		
 		private static scanGroupNav(jqContainer: JQuery) {
@@ -92,9 +92,9 @@ namespace rocket.display {
 					curGroupNav = GroupNav.fromMain(jqElem);
 				}
 				
-				var group = Group.from(jqElem, false);
+				var group = StructureElement.from(jqElem);
 				if (group === null) {	
-					curGroupNav.registerGroup(Initializer.createGroup(jqElem));
+					curGroupNav.registerGroup(Initializer.createStructureElement(jqElem));
 				}
 			});
 			
@@ -104,17 +104,17 @@ namespace rocket.display {
     
     class GroupNav {
     	private jqGroupNav: JQuery;
-		private groups: Array<Group>;
+		private groups: Array<StructureElement>;
     
     	public constructor(jqGroupNav: JQuery) {
     		this.jqGroupNav = jqGroupNav;
-			this.groups = new Array<Group>();
+			this.groups = new Array<StructureElement>();
 			
 			jqGroupNav.addClass("rocket-main-group-nav");
 			jqGroupNav.hide();
     	}
     	
-    	public registerGroup(group: Group) {
+    	public registerGroup(group: StructureElement) {
 			this.groups.push(group);
 			if (this.groups.length == 2) {
 				this.jqGroupNav.show();
@@ -181,7 +181,7 @@ namespace rocket.display {
 			this.displayErrorLabel = displayErrorLabel;
 		}
 		
-		public addError(field: Field, errorMessage: string) {
+		public addError(field: StructureElement, errorMessage: string) {
 			var jqElem = $("<div />", {
 				"class": "rocket-error-index-entry",
 				"css": { "cursor": "pointer" }
@@ -206,7 +206,7 @@ namespace rocket.display {
 			
 			jqElem.click(function () {
 				clicked = true;
-				field.getGroup().show();
+				field.show();
 				field.scrollTo();
 			});
 		}
