@@ -21,25 +21,33 @@
  */
 namespace rocket\spec\ei\component\field\impl\string;
 
-use n2n\util\config\Attributes;
 use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
-use rocket\spec\ei\manage\mapping\EiMapping;
 
 use n2n\impl\web\dispatch\mag\model\SecretStringMag;
-use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
-use n2n\util\crypt\hash\HashUtils;
-use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\component\field\impl\string\conf\PasswordEiFieldConfigurator;
 use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use n2n\web\dispatch\mag\Mag;
+use n2n\util\HashUtils;
+use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
+use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 
 class PasswordEiField extends AlphanumericEiField {
 	const ALGORITHM_SHA1 = 'sha1';
 	const ALGORITHM_MD5 = 'md5';
 	const ALGORITHM_BLOWFISH = 'blowfish';
 	const ALGORITHM_SHA_256 = 'sha-256';
-		
+	
+	private $algorithm = self::ALGORITHM_BLOWFISH;
+	
+	public function getAlgorithm() {
+		return $this->algorithm;
+	}
+	
+	public function setAlgorithm($algorithm) {
+		$this->algorithm = $algorithm;
+	}
+	
 	public function isMandatory(Eiu $eiu): bool {
 		return false;
 	}
@@ -53,34 +61,32 @@ class PasswordEiField extends AlphanumericEiField {
 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new SecretStringMag($propertyName, $this->getLabelCode(), null,
+		return new SecretStringMag($propertyName, $this->getLabelLstr(), null,
 				$eiu->entry()->getEiMapping()->getEiSelection()->isNew(), $this->getMaxlength(), 
-				array('placeholder' => $this->getLabelCode()));
+				array('placeholder' => $this->getLabelLstr()));
 	}
 	
-	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
-			EiMapping $eiMapping, Eiu $eiu) {
-		$optionValue = $attributes->get($this->getId());
-		$eiSelection = $eiMapping->getEiSelection();
-		if (mb_strlen($optionValue) === 0 && !$eiSelection->isNew()) {
-			return;
-		}
-		$propertyValue = null;
-		switch ($this->getAttributes()->get(self::OPTION_ALGORITHM_KEY)) {
-			case (self::ALGORITHM_BLOWFISH):
-				$propertyValue = HashUtils::buildHash($optionValue, new BlowfishAlgorithm());
+	public function saveMagValue(Mag $option, Eiu $eiu) {
+		$rawPassword = $option->getValue();
+		if ($rawPassword === null) return;
+		
+		$value = null;
+		switch ($this->getAlgorithm()) {
+			case (PasswordEiField::ALGORITHM_BLOWFISH):
+				$value = HashUtils::buildHash($rawPassword, new BlowfishAlgorithm());
 				break;
-			case (self::ALGORITHM_SHA_256):
-				$propertyValue = HashUtils::buildHash($optionValue, new Sha256Algorithm());
+			case (PasswordEiField::ALGORITHM_SHA_256):
+				$value = HashUtils::buildHash($rawPassword, new Sha256Algorithm());
 				break;
-			case (self::ALGORITHM_MD5):
-				$propertyValue = md5($optionValue);
+			case (PasswordEiField::ALGORITHM_MD5):
+				$value = md5($rawPassword);
 				break;
-			case (self::ALGORITHM_SHA1):
-				$propertyValue = sha1($optionValue);
+			case (PasswordEiField::ALGORITHM_SHA1):
+				$value = sha1($rawPassword);
 				break;
 		}
-		$eiMapping->setValue($this->getId(), $propertyValue);
+		
+		$eiu->field()->setValue($value);
 	}
 	
 	public static function getAlgorithms() {

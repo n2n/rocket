@@ -26,7 +26,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\field\impl\string\PasswordEiField;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\spec\ei\component\field\impl\string\StringEiField;
 use n2n\web\dispatch\mag\MagDispatchable;
 
 class PasswordEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
@@ -35,10 +34,11 @@ class PasswordEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
 	public function setup(EiSetupProcess $setupProcess) {
 		parent::setup($setupProcess);
 
-		IllegalStateException::assertTrue($this->eiComponent instanceof StringEiField);
+		IllegalStateException::assertTrue($this->eiComponent instanceof PasswordEiField);
 		if ($this->attributes->contains(self::OPTION_ALGORITHM_KEY)) {
 			try {
-				$this->eiComponent->setAlgorithm($this->attributes->get(self::OPTION_ALGORITHM_KEY));
+				$this->eiComponent->setAlgorithm($this->attributes->get(self::OPTION_ALGORITHM_KEY, false, 
+						$this->eiComponent->getAlgorithm()));
 			} catch (\InvalidArgumentException $e) {
 				$setupProcess->failed($this->eiComponent, 
 						'Invalid algorithm defined for PassworEiField.', $e);
@@ -48,13 +48,21 @@ class PasswordEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
 	}
 
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magCollection = parent::createMagCollection($n2nContext);
+		$magDispatchable = parent::createMagDispatchable($n2nContext);
 
 		IllegalStateException::assertTrue($this->eiComponent instanceof PasswordEiField);
 
 		$algorithms = PasswordEiField::getAlgorithms();
-		$magCollection->addMag(new EnumMag(self::OPTION_ALGORITHM_KEY, 'Algortithm', 
-				array_combine($algorithms, $algorithms), $this->eiComponent->getAlgorithm()));
-		return $magCollection;
+		$magDispatchable->getMagCollection()->addMag(new EnumMag(self::OPTION_ALGORITHM_KEY, 'Algortithm', 
+				array_combine($algorithms, $algorithms), $this->attributes->get(self::OPTION_ALGORITHM_KEY, false)));
+		return $magDispatchable;
+	}
+	
+	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+		parent::saveMagDispatchable($magDispatchable, $n2nContext);
+		
+		$magCollection = $magDispatchable->getMagCollection();
+		$this->attributes->set(self::OPTION_ALGORITHM_KEY,
+				$magCollection->getMagByPropertyName(self::OPTION_ALGORITHM_KEY)->getValue());
 	}
 }
