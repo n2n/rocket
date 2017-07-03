@@ -139,7 +139,7 @@ class ManyToOneSelectEiField extends ToOneEiFieldAdapter {
 			if ($this->eiFieldRelation->isEmbeddedAddActivated($eiu->frame()->getEiFrame())
 					 && $targetEditEiFrame->getEiExecution()->isGranted()) {
 				$toOneEditable->setNewMappingFormUrl($this->eiFieldRelation->buildTargetNewEntryFormUrl(
-						$mapping, false, $eiFrame, $eiu->getRequest()));
+						$mapping, false, $eiFrame, $eiu->lookup(HttpContext::class)));
 			}
 		}
 		
