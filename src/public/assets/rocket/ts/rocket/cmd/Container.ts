@@ -97,6 +97,18 @@ namespace rocket.cmd {
 			
 			return this.layers[this.layers.length - 1];
 		}
+		
+		public createLayer(): Layer {
+			var jqLayer = $("<div />", {
+				"class": "rocket-layer"
+			});
+			
+			this.jqContainer.append(jqLayer);
+			var layer = new Layer(jqLayer, this.layers.length, this);
+			this.layers.push(layer);
+			return layer;
+		}
+			
 			
 		public getAllContexts(): Array<Context> {
 			var contexts = new Array<Context>();
@@ -402,9 +414,18 @@ namespace rocket.cmd {
 		}
 			
 		public applyHtml(html: string) {
-			this.jqContext.removeClass("rocket-loading");
+			this.endLoading();
 			this.jqContext.html(html);
 		} 
+		
+		public endLoading() {
+			this.jqContext.removeClass("rocket-loading");
+		}
+		
+		public applyContent(jqContent: JQuery) {
+			this.endLoading();
+			this.jqContext.append(jqContent);	 
+		}
 		
 		public onClose(onCloseCallback: ContextCallback) {
 			this.onCloseCallbacks.push(onCloseCallback);

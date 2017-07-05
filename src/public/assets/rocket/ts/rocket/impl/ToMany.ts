@@ -20,6 +20,7 @@
  * 
  */
 namespace rocket.impl {
+	import cmd = rocket.cmd;
 	
 	var $ = jQuery;
 	
@@ -29,12 +30,11 @@ namespace rocket.impl {
 		private sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
-		private expanded: boolean = false;
+		private expandContext: cmd.Context = null;
 		
 		constructor(jqToMany: JQuery) {
 			this.jqToMany = jqToMany;
 			this.compact = (true == jqToMany.data("compact"));
-			this.expanded = !this.compact;
 			this.sortable = (true == jqToMany.data("sortable"))
 			
 			jqToMany.data("rocketToMany", this);
@@ -50,8 +50,9 @@ namespace rocket.impl {
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
 					var jqButton = toolbar.createCommandButton("fa fa-pencil", "Edit", "warining");
+					var that = this;
 					jqButton.click(function () {
-						alert("alert");
+						that.expand();
 					});
 				}
 			}
@@ -64,7 +65,7 @@ namespace rocket.impl {
 			entry.getJQuery().detach();
 			this.jqEmbedded.append(entry.getJQuery());
 			
-			if (this.expanded) {
+			if (this.isExpanded()) {
 				entry.expand();
 				this.expand();
 			} else {
@@ -73,11 +74,27 @@ namespace rocket.impl {
 			}
 		}
 		
+		public isExpanded(): boolean {
+			return this.expandContext !== null;
+		}
+		
 		public expand() {
+			if (this.isExpanded()) return;
+			
 			if (this.sortable) {
 				this.jqEmbedded.sortable("disable");
 				this.jqEmbedded.enableSelection();
 			}
+			
+			this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
+			this.jqEmbedded.detach();
+			this.expandContext.applyContent(this.jqEmbedded);
+			this.expandContext.getLayer().pushHistoryEntry(window.location.href);
+			
+			for (let i in this.entries) {
+				this.entries[i].expand();
+			}
+				
 		}
 		
 		public reduce() {

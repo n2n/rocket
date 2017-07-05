@@ -63,6 +63,10 @@ namespace rocket {
 		
 	});
 	
+	export function getContainer(): rocket.cmd.Container {
+		return container;
+	}
+	
 	export function layerOf(elem: HTMLElement): rocket.cmd.Layer {
 		return rocket.cmd.Layer.findFrom($(elem));
 	}
