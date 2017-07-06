@@ -31,11 +31,14 @@ namespace rocket.impl {
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private expandContext: cmd.Context = null;
+		private closeLabel: string;
+		
 		
 		constructor(jqToMany: JQuery) {
 			this.jqToMany = jqToMany;
 			this.compact = (true == jqToMany.data("compact"));
 			this.sortable = (true == jqToMany.data("sortable"))
+			this.closeLabel = jqToMany.data("close-label");
 			
 			jqToMany.data("rocketToMany", this);
 			
@@ -94,7 +97,6 @@ namespace rocket.impl {
 			for (let i in this.entries) {
 				this.entries[i].expand();
 			}
-				
 		}
 		
 		public reduce() {

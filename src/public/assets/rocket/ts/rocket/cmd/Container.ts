@@ -98,14 +98,45 @@ namespace rocket.cmd {
 			return this.layers[this.layers.length - 1];
 		}
 		
-		public createLayer(): Layer {
+		public createLayer(dependentContext: Context = null): Layer {
 			var jqLayer = $("<div />", {
 				"class": "rocket-layer"
 			});
 			
 			this.jqContainer.append(jqLayer);
+			
 			var layer = new Layer(jqLayer, this.layers.length, this);
 			this.layers.push(layer);
+			
+			
+			var jqToolbar = $("<div />", {
+				"class": "rocket-layer-toolbar rocket-simple-commands"
+			});
+			jqLayer.append(jqToolbar);
+			
+			var jqButton = $("<button />", { 
+				"class": "btn btn-danger"
+			}).append($("<i />", {
+				"class": "fa fa-times"
+			})).click(function () {
+				layer.close();
+			});
+			jqToolbar.append(jqButton);
+			
+			if (dependentContext === null) {
+				return layer;
+			}
+			
+			dependentContext.onClose(function () {
+				layer.close();
+			});
+			dependentContext.onHide(function () {
+				layer.hide();
+			});
+			dependentContext.onShow(function () {
+				layer.show();
+			});
+			
 			return layer;
 		}
 			
@@ -353,6 +384,8 @@ namespace rocket.cmd {
 		private jqContext: JQuery;
 		private url: string;
 		private layer: Layer;
+		private onShowCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
+		private onHideCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private onCloseCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private additionalTabManager: AdditionalTabManager;
 		
@@ -398,14 +431,19 @@ namespace rocket.cmd {
 		public show() {
 			this.jqContext.show();
 		
-//			var callback;
-//			while (undefined !== (callback = this.onShowCallbacks.shift())) {
-//				callback(this);
-//			}
+			var callback;
+			while (undefined !== (callback = this.onShowCallbacks.shift())) {
+				callback(this);
+			}
 		}
 		
 		public hide() {
 			this.jqContext.hide();
+			
+			var callback;
+			while (undefined !== (callback = this.onShowCallbacks.shift())) {
+				callback(this);
+			}
 		}
 		
 		public clear(loading: boolean = false) {
@@ -425,6 +463,14 @@ namespace rocket.cmd {
 		public applyContent(jqContent: JQuery) {
 			this.endLoading();
 			this.jqContext.append(jqContent);	 
+		}
+		
+		public onShow(callback: ContextCallback) {
+			this.onShowCallbacks.push(callback);
+		}
+		
+		public onHide(callback: ContextCallback) {
+			this.onHideCallbacks.push(callback);
 		}
 		
 		public onClose(onCloseCallback: ContextCallback) {
@@ -613,6 +659,13 @@ namespace rocket.cmd {
 		
 		public onDispose(callback: (AdditionalTab) => any) {
 			this.onDisposeCallbacks.push(callback);
+		}
+	}
+	
+	class ContextCommands {
+		
+		public constructor(jqContextCommands: JQuery) {
+			
 		}
 	}
 }

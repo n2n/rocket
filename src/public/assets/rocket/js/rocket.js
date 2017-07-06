@@ -312,13 +312,38 @@ var rocket;
                     return layer;
                 return this.layers[this.layers.length - 1];
             };
-            Container.prototype.createLayer = function () {
+            Container.prototype.createLayer = function (dependentContext) {
+                if (dependentContext === void 0) { dependentContext = null; }
                 var jqLayer = $("<div />", {
                     "class": "rocket-layer"
                 });
                 this.jqContainer.append(jqLayer);
                 var layer = new Layer(jqLayer, this.layers.length, this);
                 this.layers.push(layer);
+                var jqToolbar = $("<div />", {
+                    "class": "rocket-layer-toolbar rocket-simple-commands"
+                });
+                jqLayer.append(jqToolbar);
+                var jqButton = $("<button />", {
+                    "class": "btn btn-danger"
+                }).append($("<i />", {
+                    "class": "fa fa-times"
+                })).click(function () {
+                    layer.close();
+                });
+                jqToolbar.append(jqButton);
+                if (dependentContext === null) {
+                    return layer;
+                }
+                dependentContext.onClose(function () {
+                    layer.close();
+                });
+                dependentContext.onHide(function () {
+                    layer.hide();
+                });
+                dependentContext.onShow(function () {
+                    layer.show();
+                });
                 return layer;
             };
             Container.prototype.getAllContexts = function () {
@@ -497,6 +522,8 @@ var rocket;
         cmd.Layer = Layer;
         var Context = (function () {
             function Context(jqContext, url, layer) {
+                this.onShowCallbacks = new Array();
+                this.onHideCallbacks = new Array();
                 this.onCloseCallbacks = new Array();
                 this.jqContext = jqContext;
                 this.url = url;
@@ -530,13 +557,17 @@ var rocket;
             };
             Context.prototype.show = function () {
                 this.jqContext.show();
-                //			var callback;
-                //			while (undefined !== (callback = this.onShowCallbacks.shift())) {
-                //				callback(this);
-                //			}
+                var callback;
+                while (undefined !== (callback = this.onShowCallbacks.shift())) {
+                    callback(this);
+                }
             };
             Context.prototype.hide = function () {
                 this.jqContext.hide();
+                var callback;
+                while (undefined !== (callback = this.onShowCallbacks.shift())) {
+                    callback(this);
+                }
             };
             Context.prototype.clear = function (loading) {
                 if (loading === void 0) { loading = false; }
@@ -553,6 +584,12 @@ var rocket;
             Context.prototype.applyContent = function (jqContent) {
                 this.endLoading();
                 this.jqContext.append(jqContent);
+            };
+            Context.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            Context.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
             };
             Context.prototype.onClose = function (onCloseCallback) {
                 this.onCloseCallbacks.push(onCloseCallback);
@@ -704,6 +741,11 @@ var rocket;
             return AdditionalTab;
         }());
         cmd.AdditionalTab = AdditionalTab;
+        var ContextCommands = (function () {
+            function ContextCommands(jqContextCommands) {
+            }
+            return ContextCommands;
+        }());
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -1095,6 +1137,7 @@ var rocket;
                 this.jqToMany = jqToMany;
                 this.compact = (true == jqToMany.data("compact"));
                 this.sortable = (true == jqToMany.data("sortable"));
+                this.closeLabel = jqToMany.data("close-label");
                 jqToMany.data("rocketToMany", this);
                 this.jqEmbedded = $("<div />", {
                     "class": "rocket-impl-embedded"
