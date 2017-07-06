@@ -312,6 +312,15 @@ var rocket;
                     return layer;
                 return this.layers[this.layers.length - 1];
             };
+            Container.prototype.createLayer = function () {
+                var jqLayer = $("<div />", {
+                    "class": "rocket-layer"
+                });
+                this.jqContainer.append(jqLayer);
+                var layer = new Layer(jqLayer, this.layers.length, this);
+                this.layers.push(layer);
+                return layer;
+            };
             Container.prototype.getAllContexts = function () {
                 var contexts = new Array();
                 for (var i in this.layers) {
@@ -535,8 +544,15 @@ var rocket;
                 this.jqContext.addClass("rocket-loading");
             };
             Context.prototype.applyHtml = function (html) {
-                this.jqContext.removeClass("rocket-loading");
+                this.endLoading();
                 this.jqContext.html(html);
+            };
+            Context.prototype.endLoading = function () {
+                this.jqContext.removeClass("rocket-loading");
+            };
+            Context.prototype.applyContent = function (jqContent) {
+                this.endLoading();
+                this.jqContext.append(jqContent);
             };
             Context.prototype.onClose = function (onCloseCallback) {
                 this.onCloseCallbacks.push(onCloseCallback);
@@ -1075,10 +1091,9 @@ var rocket;
                 this.compact = true;
                 this.sortable = true;
                 this.entries = new Array();
-                this.expanded = false;
+                this.expandContext = null;
                 this.jqToMany = jqToMany;
                 this.compact = (true == jqToMany.data("compact"));
-                this.expanded = !this.compact;
                 this.sortable = (true == jqToMany.data("sortable"));
                 jqToMany.data("rocketToMany", this);
                 this.jqEmbedded = $("<div />", {
@@ -1090,8 +1105,9 @@ var rocket;
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
                         var jqButton = toolbar.createCommandButton("fa fa-pencil", "Edit", "warining");
+                        var that = this;
                         jqButton.click(function () {
-                            alert("alert");
+                            that.expand();
                         });
                     }
                 }
@@ -1101,7 +1117,7 @@ var rocket;
                 this.entries.push(entry);
                 entry.getJQuery().detach();
                 this.jqEmbedded.append(entry.getJQuery());
-                if (this.expanded) {
+                if (this.isExpanded()) {
                     entry.expand();
                     this.expand();
                 }
@@ -1110,10 +1126,22 @@ var rocket;
                     this.reduce();
                 }
             };
+            ToMany.prototype.isExpanded = function () {
+                return this.expandContext !== null;
+            };
             ToMany.prototype.expand = function () {
+                if (this.isExpanded())
+                    return;
                 if (this.sortable) {
                     this.jqEmbedded.sortable("disable");
                     this.jqEmbedded.enableSelection();
+                }
+                this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
+                this.jqEmbedded.detach();
+                this.expandContext.applyContent(this.jqEmbedded);
+                this.expandContext.getLayer().pushHistoryEntry(window.location.href);
+                for (var i in this.entries) {
+                    this.entries[i].expand();
                 }
             };
             ToMany.prototype.reduce = function () {
@@ -1357,6 +1385,10 @@ var rocket;
             });
         })();
     });
+    function getContainer() {
+        return container;
+    }
+    rocket.getContainer = getContainer;
     function layerOf(elem) {
         return rocket.cmd.Layer.findFrom($(elem));
     }
