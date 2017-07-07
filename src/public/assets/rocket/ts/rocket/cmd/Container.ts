@@ -327,7 +327,7 @@ namespace rocket.cmd {
 				throw new Error("Context with url already available: " + url);
 			}
 			
-			var jqContent = $("<div/>");
+			var jqContent = $("<div />");
 			this.jqLayer.append(jqContent);
 			var context = new Context(jqContent, url, this);
 			
@@ -343,10 +343,6 @@ namespace rocket.cmd {
 		}
 		
 		public close() {
-			throw new Error("layer close not yet implemented.");
-		}
-		
-		public dispose() {
 			this.contexts = new Array<Context>();
 			this.jqLayer.remove();
 		}
@@ -527,7 +523,7 @@ namespace rocket.cmd {
 			
 			var jqNavItem = $("<li />", {
 				"text": title
-			}); 
+			});
 			
 			var jqContent = $("<div />", {
 				"class": "rocket-additional-content"
@@ -698,6 +694,7 @@ namespace rocket.cmd {
 				jqCommandList = $("<div />", {
 					"class": "rocket-context-commands"
 				});
+				this.context.getJQuery().append(jqCommandList);
 			}
 			
 			return this.commandList = new display.CommandList(jqCommandList);

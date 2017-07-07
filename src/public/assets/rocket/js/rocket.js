@@ -237,6 +237,7 @@ var rocket;
 (function (rocket) {
     var cmd;
     (function (cmd) {
+        var display = rocket.display;
         var Container = (function () {
             function Container(jqContainer) {
                 this.jqErrorLayer = null;
@@ -483,7 +484,7 @@ var rocket;
                 if (this.getContextByUrl(url)) {
                     throw new Error("Context with url already available: " + url);
                 }
-                var jqContent = $("<div/>");
+                var jqContent = $("<div />");
                 this.jqLayer.append(jqContent);
                 var context = new Context(jqContent, url, this);
                 this.addContext(context);
@@ -495,9 +496,6 @@ var rocket;
                 }
             };
             Layer.prototype.close = function () {
-                throw new Error("layer close not yet implemented.");
-            };
-            Layer.prototype.dispose = function () {
                 this.contexts = new Array();
                 this.jqLayer.remove();
             };
@@ -528,9 +526,9 @@ var rocket;
                 this.jqContext = jqContext;
                 this.url = url;
                 this.layer = layer;
-                this.additionalTabManager = new AdditionalTabManager(this);
                 jqContext.addClass("rocket-context");
                 jqContext.data("rocketContext", this);
+                this.reset();
                 this.hide();
             }
             Context.prototype.getLayer = function () {
@@ -569,14 +567,20 @@ var rocket;
                     callback(this);
                 }
             };
+            Context.prototype.reset = function () {
+                this.additionalTabManager = new AdditionalTabManager(this);
+                this.menu = new Menu(this);
+            };
             Context.prototype.clear = function (loading) {
                 if (loading === void 0) { loading = false; }
                 this.jqContext.empty();
                 this.jqContext.addClass("rocket-loading");
+                this.reset();
             };
             Context.prototype.applyHtml = function (html) {
                 this.endLoading();
                 this.jqContext.html(html);
+                this.reset();
             };
             Context.prototype.endLoading = function () {
                 this.jqContext.removeClass("rocket-loading");
@@ -584,6 +588,7 @@ var rocket;
             Context.prototype.applyContent = function (jqContent) {
                 this.endLoading();
                 this.jqContext.append(jqContent);
+                this.reset();
             };
             Context.prototype.onShow = function (callback) {
                 this.onShowCallbacks.push(callback);
@@ -597,6 +602,9 @@ var rocket;
             Context.prototype.createAdditionalTab = function (title, prepend) {
                 if (prepend === void 0) { prepend = false; }
                 return this.additionalTabManager.createTab(title, prepend);
+            };
+            Context.prototype.getMenu = function () {
+                return this.menu;
             };
             Context.findFrom = function (jqElem) {
                 if (!jqElem.hasClass(".rocket-context")) {
@@ -741,11 +749,27 @@ var rocket;
             return AdditionalTab;
         }());
         cmd.AdditionalTab = AdditionalTab;
-        var ContextCommands = (function () {
-            function ContextCommands(jqContextCommands) {
+        var Menu = (function () {
+            function Menu(context) {
+                this.commandList = null;
+                this.context = context;
             }
-            return ContextCommands;
+            Menu.prototype.getCommandList = function () {
+                if (this.commandList !== null) {
+                    return this.commandList;
+                }
+                var jqCommandList = this.context.getJQuery().find(".rocket-context-commands");
+                if (jqCommandList.length == 0) {
+                    jqCommandList = $("<div />", {
+                        "class": "rocket-context-commands"
+                    });
+                    this.context.getJQuery().append(jqCommandList);
+                }
+                return this.commandList = new display.CommandList(jqCommandList);
+            };
+            return Menu;
         }());
+        cmd.Menu = Menu;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -876,48 +900,53 @@ var rocket;
                 else if (this.jqControls.is(':empty')) {
                     this.jqControls.hide();
                 }
-                this.jqCommands = jqToolbar.children(".rocket-simple-commands");
-                if (this.jqCommands.length == 0) {
-                    this.jqCommands = $("<div />", { "class": "rocket-simple-commands" });
-                    this.jqToolbar.append(this.jqCommands);
-                    this.jqCommands.hide();
+                var jqCommands = jqToolbar.children(".rocket-simple-commands");
+                if (jqCommands.length == 0) {
+                    jqCommands = $("<div />", { "class": "rocket-simple-commands" });
+                    jqToolbar.append(jqCommands);
                 }
-                else if (this.jqCommands.is(':empty')) {
-                    this.jqCommands.hide();
-                }
-                if (this.jqControls.is(':empty') && this.jqCommands.is(':empty')) {
-                    this.jqToolbar.hide();
-                }
+                this.commandList = new CommandList(jqCommands, true);
             }
-            Toolbar.prototype.show = function () {
-                this.jqToolbar.show();
-            };
-            Toolbar.prototype.hide = function () {
-                this.jqToolbar.hide();
+            Toolbar.prototype.getJQuery = function () {
+                return this.jqToolbar;
             };
             Toolbar.prototype.getJqControls = function () {
                 return this.jqControls;
             };
-            Toolbar.prototype.getJqCommands = function () {
-                return this.jqCommands;
+            Toolbar.prototype.getCommandList = function () {
+                return this.commandList;
             };
-            Toolbar.prototype.createCommandButton = function (iconType, label, type, tooltip) {
+            return Toolbar;
+        }());
+        var CommandList = (function () {
+            function CommandList(jqCommandList, simple) {
+                if (simple === void 0) { simple = false; }
+                this.jqCommandList = jqCommandList;
+                if (simple) {
+                    jqCommandList.addClass("rocket-simple-commands");
+                }
+            }
+            CommandList.prototype.getJQuery = function () {
+                return this.jqCommandList;
+            };
+            CommandList.prototype.createJqCommandButton = function (iconType, label, type, tooltip) {
                 if (tooltip === void 0) { tooltip = null; }
-                this.show();
-                this.jqCommands.show();
+                this.jqCommandList.show();
                 var jqButton = $("<button />", {
                     "class": "btn btn-" + type,
-                    "title": tooltip
+                    "title": tooltip,
+                    "type": "button"
                 }).append($("<i />", {
                     "class": iconType
                 })).append($("<span />", {
                     "text": label
                 }));
-                this.jqCommands.append(jqButton);
+                this.jqCommandList.append(jqButton);
                 return jqButton;
             };
-            return Toolbar;
+            return CommandList;
         }());
+        display.CommandList = CommandList;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
 /*
@@ -1147,7 +1176,7 @@ var rocket;
                     var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
-                        var jqButton = toolbar.createCommandButton("fa fa-pencil", "Edit", "warining");
+                        var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", "warining");
                         var that = this;
                         jqButton.click(function () {
                             that.expand();
@@ -1162,12 +1191,35 @@ var rocket;
                 this.jqEmbedded.append(entry.getJQuery());
                 if (this.isExpanded()) {
                     entry.expand();
-                    this.expand();
                 }
                 else {
                     entry.reduce();
-                    this.reduce();
+                    if (this.sortable)
+                        this.enabledSortable();
                 }
+            };
+            ToMany.prototype.enabledSortable = function () {
+                var that = this;
+                var oldIndex = 0;
+                this.jqEmbedded.sortable({
+                    "forcePlaceholderSize": true,
+                    "placeholder": "rocket-impl-entry-placeholder",
+                    "start": function (event, ui) {
+                        var oldIndex = ui.item.index();
+                    },
+                    "update": function (event, ui) {
+                        var newIndex = ui.item.index();
+                        that.entries[oldIndex].setOrderIndex(newIndex);
+                        that.entries[newIndex].setOrderIndex(oldIndex);
+                        var entry = that.entries[oldIndex];
+                        that.entries[oldIndex] = that.entries[newIndex];
+                        that.entries[newIndex] = entry;
+                    }
+                }).disableSelection();
+            };
+            ToMany.prototype.disableSortable = function () {
+                this.jqEmbedded.sortable("disable");
+                this.jqEmbedded.enableSelection();
             };
             ToMany.prototype.isExpanded = function () {
                 return this.expandContext !== null;
@@ -1176,8 +1228,7 @@ var rocket;
                 if (this.isExpanded())
                     return;
                 if (this.sortable) {
-                    this.jqEmbedded.sortable("disable");
-                    this.jqEmbedded.enableSelection();
+                    this.disableSortable();
                 }
                 this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
                 this.jqEmbedded.detach();
@@ -1186,26 +1237,23 @@ var rocket;
                 for (var i in this.entries) {
                     this.entries[i].expand();
                 }
+                var that = this;
+                var jqCommandButton = this.expandContext.getMenu().getCommandList()
+                    .createJqCommandButton("fa fa-times", this.closeLabel, "success");
+                jqCommandButton.click(function () {
+                    that.expandContext.getLayer().close();
+                });
+                this.expandContext.onClose(function () {
+                    that.reduce();
+                });
             };
             ToMany.prototype.reduce = function () {
+                if (!this.isExpanded())
+                    return;
+                this.jqEmbedded.detach();
+                this.jqToMany.append(this.jqEmbedded);
                 if (this.sortable) {
-                    var that = this;
-                    var oldIndex = 0;
-                    this.jqEmbedded.sortable({
-                        "forcePlaceholderSize": true,
-                        "placeholder": "rocket-impl-entry-placeholder",
-                        "start": function (event, ui) {
-                            var oldIndex = ui.item.index();
-                        },
-                        "update": function (event, ui) {
-                            var newIndex = ui.item.index();
-                            that.entries[oldIndex].setOrderIndex(newIndex);
-                            that.entries[newIndex].setOrderIndex(oldIndex);
-                            var entry = that.entries[oldIndex];
-                            that.entries[oldIndex] = that.entries[newIndex];
-                            that.entries[newIndex] = entry;
-                        }
-                    }).disableSelection();
+                    this.enabledSortable();
                 }
             };
             ToMany.from = function (jqToMany) {
@@ -1422,7 +1470,7 @@ var rocket;
                 rocket.impl.ToMany.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
-                $(".rocket-impl-many").each(function () {
+                $(".rocket-impl-to-many").each(function () {
                     rocket.impl.ToMany.from($(this));
                 });
             });

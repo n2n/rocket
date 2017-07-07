@@ -54,7 +54,7 @@ namespace rocket {
 			});
 			
 			n2n.dispatch.registerCallback(function () {
-				$(".rocket-impl-many").each(function () {
+				$(".rocket-impl-to-many").each(function () {
 					rocket.impl.ToMany.from($(this));
 				});
 			});

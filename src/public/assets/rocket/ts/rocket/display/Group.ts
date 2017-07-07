@@ -199,7 +199,8 @@ namespace rocket.display {
 			
 			var jqButton = $("<button />", { 
 				"class": "btn btn-" + type,
-				"title": tooltip
+				"title": tooltip,
+				"type": "button"
 			}).append($("<i />", {
 				"class": iconType
 			})).append($("<span />", {

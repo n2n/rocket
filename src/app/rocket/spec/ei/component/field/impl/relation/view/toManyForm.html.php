@@ -57,7 +57,8 @@
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
 		data-compact="<?php $html->out($toManyForm->isCompact()) ?>"
-		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>">
+		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>"
+		data-close-label="<?php $html->text('common_close_label') ?>">
 		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-selector"
