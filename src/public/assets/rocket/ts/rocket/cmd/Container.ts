@@ -343,6 +343,11 @@ namespace rocket.cmd {
 		}
 		
 		public close() {
+			var context: Context;
+			while (undefined !== (context = this.contexts.pop())) {
+				context.close();
+			}
+				
 			this.contexts = new Array<Context>();
 			this.jqLayer.remove();
 		}
@@ -418,13 +423,13 @@ namespace rocket.cmd {
 		}
 		
 		public close() {
-			this.jqContext.remove();
-			this.jqContext = null;
-			
 			var callback;
 			while (undefined !== (callback = this.onCloseCallbacks.shift())) {
 				callback(this);
 			}
+			
+			this.jqContext.remove();
+			this.jqContext = null;
 		}
 		
 		public show() {

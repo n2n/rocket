@@ -496,6 +496,10 @@ var rocket;
                 }
             };
             Layer.prototype.close = function () {
+                var context;
+                while (undefined !== (context = this.contexts.pop())) {
+                    context.close();
+                }
                 this.contexts = new Array();
                 this.jqLayer.remove();
             };
@@ -546,12 +550,12 @@ var rocket;
                 throw new Error("Context already closed.");
             };
             Context.prototype.close = function () {
-                this.jqContext.remove();
-                this.jqContext = null;
                 var callback;
                 while (undefined !== (callback = this.onCloseCallbacks.shift())) {
                     callback(this);
                 }
+                this.jqContext.remove();
+                this.jqContext = null;
             };
             Context.prototype.show = function () {
                 this.jqContext.show();
@@ -1183,6 +1187,9 @@ var rocket;
                         });
                     }
                 }
+                if (this.sortable) {
+                    this.initSortable();
+                }
             }
             ToMany.prototype.addEntry = function (entry) {
                 entry.setOrderIndex(this.entries.length);
@@ -1194,11 +1201,9 @@ var rocket;
                 }
                 else {
                     entry.reduce();
-                    if (this.sortable)
-                        this.enabledSortable();
                 }
             };
-            ToMany.prototype.enabledSortable = function () {
+            ToMany.prototype.initSortable = function () {
                 var that = this;
                 var oldIndex = 0;
                 this.jqEmbedded.sortable({
@@ -1216,6 +1221,10 @@ var rocket;
                         that.entries[newIndex] = entry;
                     }
                 }).disableSelection();
+            };
+            ToMany.prototype.enabledSortable = function () {
+                this.jqEmbedded.sortable("enable");
+                this.jqEmbedded.disableSelection();
             };
             ToMany.prototype.disableSortable = function () {
                 this.jqEmbedded.sortable("disable");
@@ -1252,6 +1261,9 @@ var rocket;
                     return;
                 this.jqEmbedded.detach();
                 this.jqToMany.append(this.jqEmbedded);
+                for (var i in this.entries) {
+                    this.entries[i].reduce();
+                }
                 if (this.sortable) {
                     this.enabledSortable();
                 }

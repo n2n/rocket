@@ -59,6 +59,10 @@ namespace rocket.impl {
 					});
 				}
 			}
+			
+			if (this.sortable) {
+				this.initSortable();
+			}
 		}
 		
 		public addEntry(entry: EmbeddedEntry) {
@@ -72,11 +76,10 @@ namespace rocket.impl {
 				entry.expand();
 			} else {
 				entry.reduce();
-				if (this.sortable) this.enabledSortable();
 			}
 		}
 		
-		private enabledSortable() {
+		private initSortable() {
 			var that = this;
 			var oldIndex: number = 0;
 			this.jqEmbedded.sortable({
@@ -96,6 +99,12 @@ namespace rocket.impl {
 					that.entries[newIndex] = entry;
 				}
 		    }).disableSelection();
+		}
+		
+		
+		private enabledSortable() {
+			this.jqEmbedded.sortable("enable");
+			this.jqEmbedded.disableSelection();
 		}
 		
 		private disableSortable() {
@@ -141,6 +150,10 @@ namespace rocket.impl {
 			
 			this.jqEmbedded.detach();
 			this.jqToMany.append(this.jqEmbedded);
+			
+			for (let i in this.entries) {
+				this.entries[i].reduce();
+			}
 			
 			if (this.sortable) {
 				this.enabledSortable();
