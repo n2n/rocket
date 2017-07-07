@@ -143,7 +143,7 @@ namespace rocket.display {
 	class Toolbar {
 		private jqToolbar: JQuery;
 		private jqControls: JQuery;
-		private jqCommands: JQuery;
+		private commandList: CommandList;
 		
 		constructor(jqToolbar: JQuery) {
 			this.jqToolbar = jqToolbar;
@@ -157,39 +157,45 @@ namespace rocket.display {
 				this.jqControls.hide();
 			}
 			
-			this.jqCommands = jqToolbar.children(".rocket-simple-commands");
-			if (this.jqCommands.length == 0) {
-				this.jqCommands = $("<div />", { "class": "rocket-simple-commands"});
-				this.jqToolbar.append(this.jqCommands);
-				this.jqCommands.hide();
-			} else if (this.jqCommands.is(':empty')) {
-				this.jqCommands.hide();
+			var jqCommands = jqToolbar.children(".rocket-simple-commands");
+			if (jqCommands.length == 0) {
+				jqCommands = $("<div />", { "class": "rocket-simple-commands"});
+				jqToolbar.append(jqCommands);
 			}
-			
-			if (this.jqControls.is(':empty') && this.jqCommands.is(':empty')) {
-				this.jqToolbar.hide();
-			}
+			this.commandList = new CommandList(jqCommands, true);
 		}
 		
-		public show() {
-			this.jqToolbar.show();
-		}
-		
-		public hide() {
-			this.jqToolbar.hide();
+		public getJQuery(): JQuery {
+			return this.jqToolbar;
 		}
 		
 		public getJqControls(): JQuery {
 			return this.jqControls;	
 		}
 		
-		public getJqCommands(): JQuery {
-			return this.jqCommands;
+		public getCommandList(): CommandList {
+			return this.commandList;
+		}
+	}
+	
+	export class CommandList {
+		private jqCommandList: JQuery;
+		private simple: boolean;
+		
+		public constructor(jqCommandList: JQuery, simple: boolean = false) {
+			this.jqCommandList = jqCommandList;
+			
+			if (simple) {
+				jqCommandList.addClass("rocket-simple-commands");
+			}
 		}
 		
-		public createCommandButton(iconType: string, label: string, type: string, tooltip: string = null): JQuery {
-			this.show();
-			this.jqCommands.show();
+		public getJQuery(): JQuery {
+			return this.jqCommandList;
+		}
+		
+		public createJqCommandButton(iconType: string, label: string, type: string, tooltip: string = null): JQuery {
+			this.jqCommandList.show();
 			
 			var jqButton = $("<button />", { 
 				"class": "btn btn-" + type,
@@ -200,7 +206,7 @@ namespace rocket.display {
 				"text": label
 			}));
 			
-			this.jqCommands.append(jqButton);
+			this.jqCommandList.append(jqButton);
 			
 			return jqButton;
 		}

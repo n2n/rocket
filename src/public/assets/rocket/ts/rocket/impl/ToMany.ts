@@ -52,7 +52,7 @@ namespace rocket.impl {
 				var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
-					var jqButton = toolbar.createCommandButton("fa fa-pencil", "Edit", "warining");
+					var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", "warining");
 					var that = this;
 					jqButton.click(function () {
 						that.expand();
@@ -70,11 +70,37 @@ namespace rocket.impl {
 			
 			if (this.isExpanded()) {
 				entry.expand();
-				this.expand();
 			} else {
 				entry.reduce();
-				this.reduce();
+				if (this.sortable) this.enabledSortable();
 			}
+		}
+		
+		private enabledSortable() {
+			var that = this;
+			var oldIndex: number = 0;
+			this.jqEmbedded.sortable({
+				"forcePlaceholderSize": true,
+		      	"placeholder": "rocket-impl-entry-placeholder",
+				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+					var oldIndex = ui.item.index();
+				},
+				"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+					var newIndex = ui.item.index();
+					
+					that.entries[oldIndex].setOrderIndex(newIndex);
+					that.entries[newIndex].setOrderIndex(oldIndex);
+					
+					var entry = that.entries[oldIndex];
+					that.entries[oldIndex] = that.entries[newIndex];
+					that.entries[newIndex] = entry;
+				}
+		    }).disableSelection();
+		}
+		
+		private disableSortable() {
+			this.jqEmbedded.sortable("disable");
+			this.jqEmbedded.enableSelection();
 		}
 		
 		public isExpanded(): boolean {
@@ -85,8 +111,7 @@ namespace rocket.impl {
 			if (this.isExpanded()) return;
 			
 			if (this.sortable) {
-				this.jqEmbedded.sortable("disable");
-				this.jqEmbedded.enableSelection();
+				this.disableSortable();
 			}
 			
 			this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
@@ -97,29 +122,28 @@ namespace rocket.impl {
 			for (let i in this.entries) {
 				this.entries[i].expand();
 			}
+			
+			var that = this;
+			
+			var jqCommandButton = this.expandContext.getMenu().getCommandList()
+				.createJqCommandButton("fa fa-times", this.closeLabel, "success");
+			jqCommandButton.click(function () {
+				that.expandContext.getLayer().close();
+			});
+			
+			this.expandContext.onClose(function () {
+				that.reduce();
+			});
 		}
 		
 		public reduce() {
+			if (!this.isExpanded()) return;
+			
+			this.jqEmbedded.detach();
+			this.jqToMany.append(this.jqEmbedded);
+			
 			if (this.sortable) {
-				var that = this;
-				var oldIndex: number = 0;
-				this.jqEmbedded.sortable({
-					"forcePlaceholderSize": true,
-			      	"placeholder": "rocket-impl-entry-placeholder",
-					"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
-						var oldIndex = ui.item.index();
-					},
-					"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
-						var newIndex = ui.item.index();
-						
-						that.entries[oldIndex].setOrderIndex(newIndex);
-						that.entries[newIndex].setOrderIndex(oldIndex);
-						
-						var entry = that.entries[oldIndex];
-						that.entries[oldIndex] = that.entries[newIndex];
-						that.entries[newIndex] = entry;
-					}
-			    }).disableSelection();
+				this.enabledSortable();
 			}
 		}
 		

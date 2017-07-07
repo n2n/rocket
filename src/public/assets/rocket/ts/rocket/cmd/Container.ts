@@ -1,4 +1,5 @@
 namespace rocket.cmd {
+	import display = rocket.display;
 	
 	export class Container {
 		private jqContainer: JQuery;
@@ -388,16 +389,18 @@ namespace rocket.cmd {
 		private onHideCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private onCloseCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private additionalTabManager: AdditionalTabManager;
+		private menu: Menu;
 		
 		constructor(jqContext: JQuery, url: string, layer: Layer) {
 			this.jqContext = jqContext;
 			this.url = url;
 			this.layer = layer;
-			this.additionalTabManager = new AdditionalTabManager(this);
+			
 			jqContext.addClass("rocket-context");
 			jqContext.data("rocketContext", this);
 			
-			this.hide();
+			this.reset();
+			this.hide();			
 		}
 		
 		public getLayer(): Layer {
@@ -446,14 +449,23 @@ namespace rocket.cmd {
 			}
 		}
 		
+		private reset() {
+			this.additionalTabManager = new AdditionalTabManager(this);
+			this.menu = new Menu(this);
+		}
+		
 		public clear(loading: boolean = false) {
 			this.jqContext.empty();
 			this.jqContext.addClass("rocket-loading");
+			
+			this.reset();
 		}
 			
 		public applyHtml(html: string) {
 			this.endLoading();
 			this.jqContext.html(html);
+			
+			this.reset();
 		} 
 		
 		public endLoading() {
@@ -462,7 +474,9 @@ namespace rocket.cmd {
 		
 		public applyContent(jqContent: JQuery) {
 			this.endLoading();
-			this.jqContext.append(jqContent);	 
+			this.jqContext.append(jqContent);
+			
+			this.reset();
 		}
 		
 		public onShow(callback: ContextCallback) {
@@ -480,6 +494,10 @@ namespace rocket.cmd {
 		public createAdditionalTab(title: string, prepend: boolean = false) {
 			return this.additionalTabManager.createTab(title, prepend);
 		} 
+		
+		public getMenu(): Menu {
+			return this.menu;
+		}
 		
 		public static findFrom(jqElem: JQuery): Context {
 			if (!jqElem.hasClass(".rocket-context")) {
@@ -662,10 +680,27 @@ namespace rocket.cmd {
 		}
 	}
 	
-	class ContextCommands {
+	export class Menu {
+		private context: Context;
+		private commandList: display.CommandList = null;
 		
-		public constructor(jqContextCommands: JQuery) {
+		public constructor(context: Context) {
+			this.context = context;
+		}
+		
+		public getCommandList(): display.CommandList {
+			if (this.commandList !== null) {
+				return this.commandList;
+			}
 			
+			var jqCommandList = this.context.getJQuery().find(".rocket-context-commands");
+			if (jqCommandList.length == 0) {
+				jqCommandList = $("<div />", {
+					"class": "rocket-context-commands"
+				});
+			}
+			
+			return this.commandList = new display.CommandList(jqCommandList);
 		}
 	}
 }
