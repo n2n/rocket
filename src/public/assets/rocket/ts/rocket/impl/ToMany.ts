@@ -104,9 +104,11 @@ namespace rocket.impl {
 				delete that.entries[entry.getOrderIndex()];
 				entry.getJQuery().remove();
 				
+				var index = 0;
 				for (var i in that.entries) {
-					console.log(i);
-					that.entries[i].setOrderIndex(parseInt(i));
+					that.entries[i].setOrderIndex(index);
+					that.entries[index] = that.entries[i];
+					index++;
 				}	
 				
 				if (that.entries.length > 0) {
