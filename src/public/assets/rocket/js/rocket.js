@@ -1231,9 +1231,11 @@ var rocket;
                 entry.onRemove(function () {
                     delete that.entries[entry.getOrderIndex()];
                     entry.getJQuery().remove();
+                    var index = 0;
                     for (var i in that.entries) {
-                        console.log(i);
-                        that.entries[i].setOrderIndex(parseInt(i));
+                        that.entries[i].setOrderIndex(index);
+                        that.entries[index] = that.entries[i];
+                        index++;
                     }
                     if (that.entries.length > 0) {
                         that.moveConf(0);
@@ -1241,7 +1243,7 @@ var rocket;
                     }
                 });
                 entry.onEdit(function () {
-                    that.expand();
+                    that.expand(entry);
                 });
             };
             ToMany.prototype.reIndex = function (oldIndex, newIndex) {
@@ -1283,7 +1285,8 @@ var rocket;
             ToMany.prototype.isExpanded = function () {
                 return this.expandContext !== null;
             };
-            ToMany.prototype.expand = function () {
+            ToMany.prototype.expand = function (dominantEntry) {
+                if (dominantEntry === void 0) { dominantEntry = null; }
                 if (this.isExpanded())
                     return;
                 if (this.sortable) {
@@ -1294,7 +1297,15 @@ var rocket;
                 this.expandContext.applyContent(this.jqEmbedded);
                 this.expandContext.getLayer().pushHistoryEntry(window.location.href);
                 for (var i in this.entries) {
-                    this.entries[i].expand();
+                    if (dominantEntry === null) {
+                        this.entries[i].expand(true);
+                    }
+                    else if (dominantEntry === this.entries[i]) {
+                        this.entries[i].expand(false);
+                    }
+                    else {
+                        this.entries[i].hide();
+                    }
                 }
                 var that = this;
                 var jqCommandButton = this.expandContext.getMenu().getCommandList()
@@ -1376,15 +1387,31 @@ var rocket;
             EmbeddedEntry.prototype.getExpandedCommandList = function () {
                 return rocket.display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
             };
-            EmbeddedEntry.prototype.expand = function () {
+            EmbeddedEntry.prototype.expand = function (showCommands) {
+                if (showCommands === void 0) { showCommands = true; }
+                this.jqEntry.show();
                 this.jqSummary.hide();
                 this.jqBody.show();
                 this.jqEntry.addClass("rocket-group-simple");
+                if (showCommands) {
+                    this.jqExpMoveUpButton.show();
+                    this.jqExpMoveDownButton.show();
+                    this.jqExpRemoveButton.show();
+                }
+                else {
+                    this.jqExpMoveUpButton.hide();
+                    this.jqExpMoveDownButton.hide();
+                    this.jqExpRemoveButton.hide();
+                }
             };
             EmbeddedEntry.prototype.reduce = function () {
+                this.jqEntry.show();
                 this.jqSummary.show();
                 this.jqBody.hide();
                 this.jqEntry.removeClass("rocket-group-simple");
+            };
+            EmbeddedEntry.prototype.hide = function () {
+                this.jqEntry.hide();
             };
             EmbeddedEntry.prototype.setOrderIndex = function (orderIndex) {
                 this.jqOrderIndex.val(orderIndex);

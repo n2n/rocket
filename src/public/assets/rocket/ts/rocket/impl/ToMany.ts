@@ -118,7 +118,7 @@ namespace rocket.impl {
 			});
 			
 			entry.onEdit(function () {
-				that.expand();				
+				that.expand(entry);
 			});
 		}
 		
@@ -171,7 +171,7 @@ namespace rocket.impl {
 			return this.expandContext !== null;
 		}
 		
-		public expand() {
+		public expand(dominantEntry: EmbeddedEntry = null) {
 			if (this.isExpanded()) return;
 			
 			if (this.sortable) {
@@ -184,7 +184,13 @@ namespace rocket.impl {
 			this.expandContext.getLayer().pushHistoryEntry(window.location.href);
 			
 			for (let i in this.entries) {
-				this.entries[i].expand();
+				if (dominantEntry === null) {
+					this.entries[i].expand(true);
+				} else if (dominantEntry === this.entries[i]) {
+					this.entries[i].expand(false);
+				} else {
+					this.entries[i].hide();
+				}
 			}
 			
 			var that = this;
@@ -297,18 +303,34 @@ namespace rocket.impl {
 			return display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
 		}
 		
-		public expand() {
+		public expand(showCommands: boolean = true) {
+			this.jqEntry.show();
 			this.jqSummary.hide();
 			this.jqBody.show();
 			
 			this.jqEntry.addClass("rocket-group-simple");
+			
+			if (showCommands) {
+				this.jqExpMoveUpButton.show();
+				this.jqExpMoveDownButton.show();
+				this.jqExpRemoveButton.show();
+			} else {
+				this.jqExpMoveUpButton.hide();
+				this.jqExpMoveDownButton.hide();
+				this.jqExpRemoveButton.hide();
+			}
 		}
 		
 		public reduce() {
+			this.jqEntry.show();
 			this.jqSummary.show();
 			this.jqBody.hide();
 			
 			this.jqEntry.removeClass("rocket-group-simple");
+		}
+		
+		public hide() {
+			this.jqEntry.hide();
 		}
 		
 		public setOrderIndex(orderIndex: number) {
