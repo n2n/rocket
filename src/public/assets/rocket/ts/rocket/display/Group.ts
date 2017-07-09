@@ -194,11 +194,11 @@ namespace rocket.display {
 			return this.jqCommandList;
 		}
 		
-		public createJqCommandButton(iconType: string, label: string, type: string, tooltip: string = null): JQuery {
+		public createJqCommandButton(iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null): JQuery {
 			this.jqCommandList.show();
 			
 			var jqButton = $("<button />", { 
-				"class": "btn btn-" + type,
+				"class": "btn btn-" + severity,
 				"title": tooltip,
 				"type": "button"
 			}).append($("<i />", {
@@ -211,5 +211,14 @@ namespace rocket.display {
 			
 			return jqButton;
 		}
+	}
+	
+	export enum Severity {
+		PRIMARY = "primary",
+		SECONDARY = "secondary",
+		SUCCESS = "success",
+		DANGER = "danger",
+		INFO = "info",
+		WARNING = "warning"
 	}
 }

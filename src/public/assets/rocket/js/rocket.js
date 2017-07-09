@@ -933,11 +933,12 @@ var rocket;
             CommandList.prototype.getJQuery = function () {
                 return this.jqCommandList;
             };
-            CommandList.prototype.createJqCommandButton = function (iconType, label, type, tooltip) {
+            CommandList.prototype.createJqCommandButton = function (iconType, label, severity, tooltip) {
+                if (severity === void 0) { severity = Severity.SECONDARY; }
                 if (tooltip === void 0) { tooltip = null; }
                 this.jqCommandList.show();
                 var jqButton = $("<button />", {
-                    "class": "btn btn-" + type,
+                    "class": "btn btn-" + severity,
                     "title": tooltip,
                     "type": "button"
                 }).append($("<i />", {
@@ -951,6 +952,15 @@ var rocket;
             return CommandList;
         }());
         display.CommandList = CommandList;
+        (function (Severity) {
+            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
+            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
+            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
+            Severity[Severity["DANGER"] = "danger"] = "DANGER";
+            Severity[Severity["INFO"] = "info"] = "INFO";
+            Severity[Severity["WARNING"] = "warning"] = "WARNING";
+        })(display.Severity || (display.Severity = {}));
+        var Severity = display.Severity;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
 /*
@@ -1180,7 +1190,7 @@ var rocket;
                     var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
-                        var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", "warining");
+                        var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", rocket.display.Severity.WARNING);
                         var that = this;
                         jqButton.click(function () {
                             that.expand();
@@ -1202,6 +1212,50 @@ var rocket;
                 else {
                     entry.reduce();
                 }
+                this.moveConf(this.entries.length - 1);
+                var that = this;
+                entry.onMove(function (up) {
+                    var oldIndex = entry.getOrderIndex();
+                    var newIndex = up ? oldIndex - 1 : oldIndex + 1;
+                    if (newIndex < 0 || newIndex >= that.entries.length) {
+                        return;
+                    }
+                    if (up) {
+                        that.entries[oldIndex].getJQuery().insertBefore(that.entries[newIndex].getJQuery());
+                    }
+                    else {
+                        that.entries[oldIndex].getJQuery().insertAfter(that.entries[newIndex].getJQuery());
+                    }
+                    that.reIndex(oldIndex, newIndex);
+                });
+                entry.onRemove(function () {
+                    delete that.entries[entry.getOrderIndex()];
+                    entry.getJQuery().remove();
+                    for (var i in that.entries) {
+                        console.log(i);
+                        that.entries[i].setOrderIndex(parseInt(i));
+                    }
+                    if (that.entries.length > 0) {
+                        that.moveConf(0);
+                        that.moveConf(that.entries.length - 1);
+                    }
+                });
+                entry.onEdit(function () {
+                    that.expand();
+                });
+            };
+            ToMany.prototype.reIndex = function (oldIndex, newIndex) {
+                this.entries[oldIndex].setOrderIndex(newIndex);
+                this.entries[newIndex].setOrderIndex(oldIndex);
+                var entry = this.entries[oldIndex];
+                this.entries[oldIndex] = this.entries[newIndex];
+                this.entries[newIndex] = entry;
+                this.moveConf(oldIndex);
+                this.moveConf(newIndex);
+            };
+            ToMany.prototype.moveConf = function (index) {
+                this.entries[index].setMoveUpEnabled(index > 0);
+                this.entries[index].setMoveDownEnabled(index < this.entries.length - 1);
             };
             ToMany.prototype.initSortable = function () {
                 var that = this;
@@ -1214,11 +1268,7 @@ var rocket;
                     },
                     "update": function (event, ui) {
                         var newIndex = ui.item.index();
-                        that.entries[oldIndex].setOrderIndex(newIndex);
-                        that.entries[newIndex].setOrderIndex(oldIndex);
-                        var entry = that.entries[oldIndex];
-                        that.entries[oldIndex] = that.entries[newIndex];
-                        that.entries[newIndex] = entry;
+                        that.reIndex(oldIndex, newIndex);
                     }
                 }).disableSelection();
             };
@@ -1248,7 +1298,7 @@ var rocket;
                 }
                 var that = this;
                 var jqCommandButton = this.expandContext.getMenu().getCommandList()
-                    .createJqCommandButton("fa fa-times", this.closeLabel, "success");
+                    .createJqCommandButton("fa fa-times", this.closeLabel, rocket.display.Severity.WARNING);
                 jqCommandButton.click(function () {
                     that.expandContext.getLayer().close();
                 });
@@ -1259,6 +1309,7 @@ var rocket;
             ToMany.prototype.reduce = function () {
                 if (!this.isExpanded())
                     return;
+                this.expandContext = null;
                 this.jqEmbedded.detach();
                 this.jqToMany.append(this.jqEmbedded);
                 for (var i in this.entries) {
@@ -1288,25 +1339,74 @@ var rocket;
                 this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                 this.jqSummary = jqEntry.children(".rocket-impl-summary");
                 this.jqBody = jqEntry.children(".rocket-impl-body");
+                var ecl = rocket.display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
+                this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
+                this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
+                this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", rocket.display.Severity.DANGER);
+                var rcl = new rocket.display.CommandList(this.jqSummary.find(".rocket-simple-commands"), true);
+                this.jqRedEditButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", rocket.display.Severity.WARNING);
+                this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", rocket.display.Severity.DANGER);
                 this.reduce();
                 jqEntry.data("rocketImplEmbeddedEntry", this);
             }
+            EmbeddedEntry.prototype.onMove = function (callback) {
+                this.jqExpMoveUpButton.click(function () {
+                    callback(true);
+                });
+                this.jqExpMoveDownButton.click(function () {
+                    callback(false);
+                });
+            };
+            EmbeddedEntry.prototype.onRemove = function (callback) {
+                this.jqExpRemoveButton.click(function () {
+                    callback();
+                });
+                this.jqRedRemoveButton.click(function () {
+                    callback();
+                });
+            };
+            EmbeddedEntry.prototype.onEdit = function (callback) {
+                this.jqRedEditButton.click(function () {
+                    callback();
+                });
+            };
             EmbeddedEntry.prototype.getJQuery = function () {
                 return this.jqEntry;
+            };
+            EmbeddedEntry.prototype.getExpandedCommandList = function () {
+                return rocket.display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
             };
             EmbeddedEntry.prototype.expand = function () {
                 this.jqSummary.hide();
                 this.jqBody.show();
+                this.jqEntry.addClass("rocket-group-simple");
             };
             EmbeddedEntry.prototype.reduce = function () {
                 this.jqSummary.show();
                 this.jqBody.hide();
+                this.jqEntry.removeClass("rocket-group-simple");
             };
             EmbeddedEntry.prototype.setOrderIndex = function (orderIndex) {
                 this.jqOrderIndex.val(orderIndex);
             };
             EmbeddedEntry.prototype.getOrderIndex = function () {
                 return parseInt(this.jqOrderIndex.val());
+            };
+            EmbeddedEntry.prototype.setMoveUpEnabled = function (enabled) {
+                if (enabled) {
+                    this.jqExpMoveUpButton.show();
+                }
+                else {
+                    this.jqExpMoveUpButton.hide();
+                }
+            };
+            EmbeddedEntry.prototype.setMoveDownEnabled = function (enabled) {
+                if (enabled) {
+                    this.jqExpMoveDownButton.show();
+                }
+                else {
+                    this.jqExpMoveDownButton.hide();
+                }
             };
             EmbeddedEntry.from = function (jqElem, create) {
                 if (create === void 0) { create = false; }

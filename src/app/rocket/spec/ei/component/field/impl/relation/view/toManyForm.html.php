@@ -106,6 +106,7 @@
 								<?php $html->out($currentMappingForm->getEntryLabel()) ?>
 							</div>
 							<div>summary</div>
+							<div class="rocket-simple-commands"></div>
 						</div>
 					
 						<div class="rocket-impl-body rocket-group-simple">
