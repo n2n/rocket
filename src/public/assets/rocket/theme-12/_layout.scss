@@ -74,8 +74,20 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     margin-right: $rocket-global-nav-spacer;
     margin-top: $rocket-header-height;
     margin-bottom: 7rem;
+    position: relative;
 }
 
+
+.rocket-main-layer {
+}
+
+.rocket-layer:not(.rocket-main-layer) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: $brand-gray-09;
+}
 
 /**
  * Context Control
@@ -84,9 +96,9 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
  .rocket-context-commands {
      position: fixed;
      bottom: 0;
-     right: 3rem;
-     left: $rocket-content-margin-left;
-     padding: 1rem 0;
+     right: 0;
+     left: $rocket-global-nav-width;
+     padding: 1rem 3rem 1rem 3rem;
      background-color: $brand-gray-09;
      border-top: 1px solid $brand-gray-06;
  }

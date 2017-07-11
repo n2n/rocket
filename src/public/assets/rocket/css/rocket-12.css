@@ -3024,7 +3024,15 @@ body {
   margin-left: 17rem;
   margin-right: 3rem;
   margin-top: 2.75rem;
-  margin-bottom: 7rem; }
+  margin-bottom: 7rem;
+  position: relative; }
+
+.rocket-layer:not(.rocket-main-layer) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #FBFAFA; }
 
 /**
  * Context Control
@@ -3032,9 +3040,9 @@ body {
 .rocket-context-commands {
   position: fixed;
   bottom: 0;
-  right: 3rem;
-  left: 17rem;
-  padding: 1rem 0;
+  right: 0;
+  left: 14rem;
+  padding: 1rem 3rem 1rem 3rem;
   background-color: #FBFAFA;
   border-top: 1px solid #DAD7D3; }
 
