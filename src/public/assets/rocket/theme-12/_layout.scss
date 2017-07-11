@@ -87,18 +87,19 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     left: 0;
     right: 0;
     background-color: $brand-gray-09;
+    min-height: 100%;
 }
 
 /**
  * Context Control
  */
 
- .rocket-context-commands {
-     position: fixed;
-     bottom: 0;
-     right: 0;
-     left: $rocket-global-nav-width;
-     padding: 1rem 3rem 1rem 3rem;
-     background-color: $brand-gray-09;
-     border-top: 1px solid $brand-gray-06;
- }
+.rocket-context-commands {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: $rocket-global-nav-width;
+    padding: 1rem 3rem 1rem 3rem;
+    background-color: $brand-gray-09;
+    border-top: 1px solid $brand-gray-06;
+}

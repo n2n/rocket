@@ -3032,7 +3032,8 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #FBFAFA; }
+  background-color: #FBFAFA;
+  min-height: 100%; }
 
 /**
  * Context Control
@@ -5876,5 +5877,4 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 @media print {
   .hidden-print {
     display: none !important; } }
-
 /*# sourceMappingURL=rocket-12.css.map */
