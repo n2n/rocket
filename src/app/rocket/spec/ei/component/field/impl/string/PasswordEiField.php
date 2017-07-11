@@ -28,9 +28,9 @@ use rocket\spec\ei\component\field\impl\string\conf\PasswordEiFieldConfigurator;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use n2n\web\dispatch\mag\Mag;
-use n2n\util\HashUtils;
 use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
 use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
+use n2n\util\crypt\hash\HashUtils;
 
 class PasswordEiField extends AlphanumericEiField {
 	const ALGORITHM_SHA1 = 'sha1';
