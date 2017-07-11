@@ -3118,6 +3118,14 @@ h1, .h1 {
       float: left; }
     .rocket-field > .rocket-control {
       margin-left: 15rem; } }
+.rocket-group-simple > label {
+  width: 100%;
+  padding: 2rem; }
+.rocket-group-simple > .rocket-control {
+  background: white;
+  margin: 0;
+  padding: 2rem; }
+
 .align-baseline {
   vertical-align: baseline !important; }
 

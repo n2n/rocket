@@ -12,3 +12,15 @@
         }
     }
 }
+
+.rocket-group-simple {
+    > label {
+        width: 100%;
+        padding: 2rem;
+    }
+    > .rocket-control {
+        background: white;
+        margin: 0;
+        padding: 2rem;
+    }
+}
