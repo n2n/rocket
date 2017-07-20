@@ -17,7 +17,6 @@
  * Andreas von Burg...........:	Architect, Lead Developer, Concept
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- * 
  */
 jQuery(document).ready(function($) {
 	var iframe = document.getElementById('rocket-preview-content');
