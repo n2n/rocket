@@ -17,6 +17,5 @@
  * Andreas von Burg...........:	Architect, Lead Developer, Concept
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- * 
  */
 declare var Wysiwyg;
