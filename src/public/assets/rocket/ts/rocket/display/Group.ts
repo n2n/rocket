@@ -54,28 +54,33 @@ namespace rocket.display {
 			return this.jqElem.children("label:first").text();
 		}
 		
-		public show() {
-			this.jqElem.show();
-			
+		public show(includeParents: boolean = false) {
 			for (var i in this.onShowCallbacks) {
 				this.onShowCallbacks[i](this);
+			}
+			
+			this.jqElem.show();
+			
+			var parent;
+			if (includeParents && null !== (parent = StructureElement.findFrom(this.jqElem))) {
+				parent.show(true)
 			}
 		}
 		
 		public hide() {
-			this.jqElem.hide();
-			
 			for (var i in this.onHideCallbacks) {
 				this.onHideCallbacks[i](this);
 			}
+			
+			this.jqElem.hide();
 		}
 		
-		public addChild(structureElement: StructureElement) {
-			var that = this;
-			structureElement.onShow(function () {
-				that.show();
-			});
-		}
+//		public addChild(structureElement: StructureElement) {
+//			var that = this;
+//			structureElement.onShow(function () {
+//				that.show();
+//			});
+//		}
 		
 		public onShow(callback: (Group) => any) {
 			this.onShowCallbacks.push(callback);

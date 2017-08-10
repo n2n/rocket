@@ -69,12 +69,6 @@ namespace rocket.display {
 							|| jqElem.hasClass("rocket-group-autonomic"), 
 					jqElem.hasClass("rocket-field"));
 			
-			var parentStructureElement = StructureElement.findFrom(jqElem);
-			
-			if (parentStructureElement !== null) {
-				parentStructureElement.addChild(structureElement);
-			}
-			
 			return structureElement;
 		}
 		
@@ -206,7 +200,7 @@ namespace rocket.display {
 			
 			jqElem.click(function () {
 				clicked = true;
-				field.show();
+				field.show(true);
 				field.scrollTo();
 			});
 		}

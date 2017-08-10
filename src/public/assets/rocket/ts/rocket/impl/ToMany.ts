@@ -21,6 +21,7 @@
  */
 namespace rocket.impl {
 	import cmd = rocket.cmd;
+	import display = rocket.display;
 	
 	var $ = jQuery;
 	
@@ -245,6 +246,8 @@ namespace rocket.impl {
 		private jqSummary: JQuery;
 		private jqBody: JQuery;
 		
+		private group: display.StructureElement;
+		
 		private jqExpMoveUpButton: JQuery;
 		private jqExpMoveDownButton: JQuery;
 		private jqExpRemoveButton: JQuery;
@@ -269,6 +272,7 @@ namespace rocket.impl {
 			this.reduce();
 			
 			jqEntry.data("rocketImplEmbeddedEntry", this);
+			this.group = display.StructureElement.from(this.jqBody, true); 
 		}
 		
 		public onMove(callback: (up: boolean) => any) {
@@ -291,6 +295,10 @@ namespace rocket.impl {
 		
 		public onEdit(callback: () => any) {
 			this.jqRedEditButton.click(function () {
+				callback();
+			});
+			
+			this.group.onShow(function () {
 				callback();
 			});
 		}
