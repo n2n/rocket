@@ -1289,7 +1289,6 @@ var rocket;
                     if (this.contexts[i].getUrl().equals(url)) {
                         return this.contexts[i];
                     }
-                    console.log(this.contexts[i].getUrl() + " - " + url);
                 }
                 return null;
             };
@@ -1648,7 +1647,7 @@ var rocket;
                     return window.location.toString().replace(/\/+$/, "") + "/" + urlStr;
                 }
                 if (!/^(?:[a-z]+:)?\/\//.test(urlStr)) {
-                    return window.location.protocol + "://" + window.location.host + urlStr;
+                    return window.location.protocol + "//" + window.location.host + urlStr;
                 }
                 return urlStr;
             };

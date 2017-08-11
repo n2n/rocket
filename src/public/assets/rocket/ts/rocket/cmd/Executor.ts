@@ -27,7 +27,7 @@ namespace rocket.cmd {
 			return config;
 		}
 		
-		public exec(url: string, config: ExecConfig = null) {
+		public exec(url: string|Url, config: ExecConfig = null) {
 			config = this.purifyExecConfig(config);
 			
 			var targetContext = null;

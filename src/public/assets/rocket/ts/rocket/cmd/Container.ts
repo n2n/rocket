@@ -83,7 +83,7 @@ namespace rocket.cmd {
 			throw new Error("Container empty.");
 		}
 		
-		public getCurrentLayer() {
+		public getCurrentLayer(): Layer {
 			if (this.layers.length == 0) {
 				throw new Error("Container empty.");
 			}
@@ -109,7 +109,6 @@ namespace rocket.cmd {
 			
 			var layer = new Layer(jqLayer, this.layers.length, this);
 			this.layers.push(layer);
-			
 			
 			var jqToolbar = $("<div />", {
 				"class": "rocket-layer-toolbar rocket-simple-commands"
@@ -141,7 +140,6 @@ namespace rocket.cmd {
 			
 			return layer;
 		}
-			
 			
 		public getAllContexts(): Array<Context> {
 			var contexts = new Array<Context>();
@@ -311,8 +309,6 @@ namespace rocket.cmd {
 				if (this.contexts[i].getUrl().equals(url)) {
 					return this.contexts[i];
 				}
-				
-				console.log(this.contexts[i].getUrl() + " - " + url);
 			}
 
 			return null;
@@ -778,7 +774,7 @@ namespace rocket.cmd {
 			} 
 			
 			if (!/^(?:[a-z]+:)?\/\//.test(urlStr)) {
-				return window.location.protocol + "://" + window.location.host + urlStr;				
+				return window.location.protocol + "//" + window.location.host + urlStr;				
 			}
 			
 			return urlStr;
