@@ -24,6 +24,10 @@ namespace rocket.display {
 			jqElem.data("rocketStructureElement", this);
 		}
 		
+		public getJQuery(): JQuery {
+			return this.jqElem;
+		}
+		
 		public isGroup(): boolean {
 			return this.group;
 		}
@@ -54,6 +58,14 @@ namespace rocket.display {
 			return this.jqElem.children("label:first").text();
 		}
 		
+		public getParent(): StructureElement {
+			return StructureElement.findFrom(this.jqElem);
+		}
+		
+		public isVisible() {
+			return this.jqElem.is(":visible");
+		}
+		
 		public show(includeParents: boolean = false) {
 			for (var i in this.onShowCallbacks) {
 				this.onShowCallbacks[i](this);
@@ -62,7 +74,7 @@ namespace rocket.display {
 			this.jqElem.show();
 			
 			var parent;
-			if (includeParents && null !== (parent = StructureElement.findFrom(this.jqElem))) {
+			if (includeParents && null !== (parent = this.getParent())) {
 				parent.show(true)
 			}
 		}

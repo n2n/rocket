@@ -245,12 +245,11 @@ namespace rocket.impl {
 	}
 	
 	class EmbeddedEntry {
-		private jqEntry: JQuery;
+		private entryGroup: display.StructureElement;
 		private jqOrderIndex: JQuery;
 		private jqSummary: JQuery;
-		private jqBody: JQuery;
 		
-		private group: display.StructureElement;
+		private bodyGroup: display.StructureElement;
 		
 		private jqExpMoveUpButton: JQuery;
 		private jqExpMoveDownButton: JQuery;
@@ -259,12 +258,12 @@ namespace rocket.impl {
 		private jqRedRemoveButton: JQuery;
 		
 		constructor(jqEntry: JQuery) {
-			this.jqEntry = jqEntry;
+			this.entryGroup = display.StructureElement.from(jqEntry, true);
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
-			this.jqBody = jqEntry.children(".rocket-impl-body");
+			this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true); 
 			
-			var ecl = display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
+			var ecl = this.bodyGroup.getToolbar().getCommandList();
 			this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
 			this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
 			this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER); 
@@ -276,7 +275,6 @@ namespace rocket.impl {
 			this.reduce();
 			
 			jqEntry.data("rocketImplEmbeddedEntry", this);
-			this.group = display.StructureElement.from(this.jqBody, true); 
 		}
 		
 		public onMove(callback: (up: boolean) => any) {
@@ -302,25 +300,25 @@ namespace rocket.impl {
 				callback();
 			});
 			
-			this.group.onShow(function () {
+			this.bodyGroup.onShow(function () {
 				callback();
 			});
 		}
 		
 		public getJQuery(): JQuery {
-			return this.jqEntry;
+			return this.entryGroup.getJQuery();
 		}
 		
 		public getExpandedCommandList(): display.CommandList {
-			return display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
+			return this.bodyGroup.getToolbar().getCommandList();
 		}
 		
 		public expand(showCommands: boolean = true) {
-			this.jqEntry.show();
+			this.entryGroup.show();
 			this.jqSummary.hide();
-			this.jqBody.show();
+			this.bodyGroup.show();
 			
-			this.jqEntry.addClass("rocket-group-simple");
+			this.entryGroup.getJQuery().addClass("rocket-group-simple");
 			
 			if (showCommands) {
 				this.jqExpMoveUpButton.show();
@@ -334,15 +332,15 @@ namespace rocket.impl {
 		}
 		
 		public reduce() {
-			this.jqEntry.show();
+			this.entryGroup.show();
 			this.jqSummary.show();
-			this.jqBody.hide();
+			this.bodyGroup.hide();
 			
-			this.jqEntry.removeClass("rocket-group-simple");
+			this.entryGroup.getJQuery().removeClass("rocket-group-simple");
 		}
 		
 		public hide() {
-			this.jqEntry.hide();
+			this.entryGroup.hide();
 		}
 		
 		public setOrderIndex(orderIndex: number) {

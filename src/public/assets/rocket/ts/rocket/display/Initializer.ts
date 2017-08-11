@@ -180,7 +180,7 @@ namespace rocket.display {
 			return this.tab;
 		}
 		
-		public addError(field: StructureElement, errorMessage: string) {
+		public addError(structureElement: StructureElement, errorMessage: string) {
 			var jqElem = $("<div />", {
 				"class": "rocket-error-index-entry",
 				"css": { "cursor": "pointer" }
@@ -193,20 +193,41 @@ namespace rocket.display {
 			this.tab.getJqContent().append(jqElem);
 		
 			var clicked = false;
+			var visibleSe: StructureElement = null;
 			
 			jqElem.mouseenter(function () {
-				field.highlight();
+				structureElement.highlight();
+				
+				if (structureElement.isVisible()) return;
+				
+				visibleSe = structureElement;
+				while (null !== (visibleSe = visibleSe.getParent())) {
+					if (!visibleSe.isVisible()) continue;
+					
+					visibleSe.highlight();
+					return;
+				}
 			});
 			
 			jqElem.mouseleave(function () {
-				field.unhighlight(clicked);
+				structureElement.unhighlight(clicked);
 				clicked = false;
+				
+				if (visibleSe !== null) {
+					visibleSe.unhighlight();
+					visibleSe = null;
+				}
 			});
 			
 			jqElem.click(function () {
 				clicked = true;
-				field.show(true);
-				field.scrollTo();
+				structureElement.show(true);
+				structureElement.scrollTo();
+				
+				if (visibleSe !== null) {
+					visibleSe.unhighlight();
+					visibleSe = null;
+				}
 			});
 		}
 	}
