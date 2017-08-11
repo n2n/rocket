@@ -18,7 +18,7 @@ namespace rocket.util {
 			
 			for (var i in this.callbackMap[nature]) {
 				if (this.callbackMap[nature][i] === callback) {
-					delete this.callbackMap[nature][i];
+					this.callbackMap[nature].splice(i, 1);
 					return;
 				}
 			}

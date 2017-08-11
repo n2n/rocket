@@ -872,7 +872,7 @@ var rocket;
                 }
                 for (var i in this.callbackMap[nature]) {
                     if (this.callbackMap[nature][i] === callback) {
-                        delete this.callbackMap[nature][i];
+                        this.callbackMap[nature].splice(i, 1);
                         return;
                     }
                 }
@@ -1072,7 +1072,7 @@ var rocket;
                         "url": context.getUrl(),
                         "historyIndex": historyIndex
                     };
-                    history.pushState(stateObj, "seite 2", context.getUrl());
+                    history.pushState(stateObj, "seite 2", context.getUrl().toString());
                 });
                 $(window).bind("popstate", function (e) {
                     if (that.jqErrorLayer) {
@@ -1194,7 +1194,7 @@ var rocket;
                 jqContentGroup.data("rocketLayer", this);
                 var jqContext = jqContentGroup.children(".rocket-context");
                 if (jqContext.length > 0) {
-                    var context = new Context(jqContext, window.location.href, this);
+                    var context = new Context(jqContext, Url.create(window.location.href), this);
                     this.addContext(context);
                     this.pushHistoryEntry(context.getUrl());
                 }
@@ -1222,7 +1222,7 @@ var rocket;
                 }
                 var url = this.historyUrls[this.currentHistoryIndex];
                 for (var i in this.contexts) {
-                    if (this.contexts[i].getUrl() == url) {
+                    if (this.contexts[i].getUrl().equals(url)) {
                         return this.contexts[i];
                     }
                 }
@@ -1250,6 +1250,7 @@ var rocket;
                 }
             };
             Layer.prototype.pushHistoryEntry = function (url) {
+                url = Url.create(url);
                 var context = this.getContextByUrl(url);
                 if (context === null) {
                     throw new Error("Not context with this url found: " + url);
@@ -1261,11 +1262,12 @@ var rocket;
                 }
                 this.switchToContext(context);
             };
-            Layer.prototype.go = function (historyIndex, url) {
+            Layer.prototype.go = function (historyIndex, urlExpr) {
+                var url = Url.create(urlExpr);
                 if (this.historyUrls.length < (historyIndex + 1)) {
                     throw new Error("Invalid history index: " + historyIndex);
                 }
-                if (this.historyUrls[historyIndex] != url) {
+                if (this.historyUrls[historyIndex].equals(url)) {
                     throw new Error("Url missmatch for history index " + historyIndex + ". Url: " + url + " History url: "
                         + this.historyUrls[historyIndex]);
                 }
@@ -1281,9 +1283,10 @@ var rocket;
                     return null;
                 return this.historyUrls[historyIndex];
             };
-            Layer.prototype.getContextByUrl = function (url) {
+            Layer.prototype.getContextByUrl = function (urlExpr) {
+                var url = Url.create(urlExpr);
                 for (var i in this.contexts) {
-                    if (this.contexts[i].getUrl() == url) {
+                    if (this.contexts[i].getUrl().equals(url)) {
                         return this.contexts[i];
                     }
                     console.log(this.contexts[i].getUrl() + " - " + url);
@@ -1300,7 +1303,8 @@ var rocket;
                     }
                 }
             };
-            Layer.prototype.createContext = function (url) {
+            Layer.prototype.createContext = function (urlExpr) {
+                var url = Url.create(urlExpr);
                 if (this.getContextByUrl(url)) {
                     throw new Error("Context with url already available: " + url);
                 }
@@ -1619,6 +1623,38 @@ var rocket;
             return Menu;
         }());
         cmd.Menu = Menu;
+        var Url = (function () {
+            function Url(urlStr) {
+                this.urlStr = urlStr;
+            }
+            Url.prototype.toString = function () {
+                return this.urlStr;
+            };
+            Url.prototype.equals = function (url) {
+                return this.urlStr == url.urlStr;
+            };
+            Url.create = function (urlExpression) {
+                if (urlExpression instanceof Url) {
+                    return urlExpression;
+                }
+                return new Url(Url.absoluteStr(urlExpression));
+            };
+            Url.absoluteStr = function (urlExpression) {
+                if (urlExpression instanceof Url) {
+                    return urlExpression.toString();
+                }
+                var urlStr = urlExpression;
+                if (!/^(?:\/|[a-z]+:\/\/)/.test(urlStr)) {
+                    return window.location.toString().replace(/\/+$/, "") + "/" + urlStr;
+                }
+                if (!/^(?:[a-z]+:)?\/\//.test(urlStr)) {
+                    return window.location.protocol + "://" + window.location.host + urlStr;
+                }
+                return urlStr;
+            };
+            return Url;
+        }());
+        cmd.Url = Url;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 /*
