@@ -1,5 +1,6 @@
 namespace rocket.cmd {
 	import display = rocket.display;
+	import util = rocket.util;
 	
 	export class Container {
 		private jqContainer: JQuery;
@@ -163,8 +164,6 @@ namespace rocket.cmd {
 //			
 //			return this.currentLayer.createContext(html, bla);
 //		}
-		
-		
 	}
 	
 	export class Layer {
@@ -252,7 +251,7 @@ namespace rocket.cmd {
 				for (var i in that.contexts) {
 					if (that.contexts[i] !== context) continue;
 					
-					delete that.contexts[i];
+					that.contexts.splice(parseInt(i), 1);
 					break;
 				}
 			});
@@ -391,6 +390,8 @@ namespace rocket.cmd {
 		private onShowCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private onHideCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private onCloseCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
+		private whenContentChangedCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
+		private callbackRegistery: util.CallbackRegistry<ContextCallback> = new util.CallbackRegistry<ContextCallback>();
 		private additionalTabManager: AdditionalTabManager;
 		private menu: Menu;
 		
@@ -471,6 +472,10 @@ namespace rocket.cmd {
 			this.reset();
 		} 
 		
+		public isLoading(): boolean {
+			return this.jqContext.hasClass("rocket-loading");
+		}
+		
 		public endLoading() {
 			this.jqContext.removeClass("rocket-loading");
 		}
@@ -480,6 +485,11 @@ namespace rocket.cmd {
 			this.jqContext.append(jqContent);
 			
 			this.reset();
+			
+			var context = this;
+			this.callbackRegistery.filter(Context.EventType.CONTENT_CHANGED.toString()).forEach(function (callback: ContextCallback) {
+				callback(context);
+			});
 		}
 		
 		public onShow(callback: ContextCallback) {
@@ -492,6 +502,18 @@ namespace rocket.cmd {
 		
 		public onClose(onCloseCallback: ContextCallback) {
 			this.onCloseCallbacks.push(onCloseCallback);
+		}
+		
+		public whenContentChanged(whenContentChangedCallback: ContextCallback) {
+			this.whenContentChangedCallbacks.push(whenContentChangedCallback);
+		}
+		
+		public on(eventType: Context.EventType, callback: ContextCallback) {
+			this.callbackRegistery.register(eventType.toString(), callback);
+		}
+		
+		public off(eventType: Context.EventType, callback: ContextCallback) {
+			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
 		public createAdditionalTab(title: string, prepend: boolean = false) {
@@ -511,6 +533,12 @@ namespace rocket.cmd {
 			if (context) return context;
 			
 			return null;
+		}
+	}
+	
+	export namespace Context {
+		export enum EventType {
+			CONTENT_CHANGED = "contentChanged"
 		}
 	}
 	
@@ -572,7 +600,7 @@ namespace rocket.cmd {
 			for (var i in this.tabs) {
 				if (this.tabs[i] !== tab) continue;
 				
-				delete this.tabs[i];
+				this.tabs.splice(parseInt(i), 1);
 				
 				if (this.tabs.length == 0) {
 					this.setdownAdditional();

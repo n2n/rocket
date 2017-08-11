@@ -102,7 +102,7 @@ namespace rocket.impl {
 			});
 			
 			entry.onRemove(function () {
-				delete that.entries[entry.getOrderIndex()];
+				that.entries.splice(entry.getOrderIndex(), 1);
 				entry.getJQuery().remove();
 				
 				var index = 0;
@@ -206,7 +206,7 @@ namespace rocket.impl {
 				that.reduce();
 			});
 			
-			rocket.scan();
+			n2n.ajah.update();
 		}
 		
 		public reduce() {

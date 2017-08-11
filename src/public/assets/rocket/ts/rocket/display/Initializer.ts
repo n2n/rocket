@@ -19,7 +19,7 @@ namespace rocket.display {
 		public scan() {
 			var errorIndex = null;
 			while (undefined !== (errorIndex = this.errorIndexes.pop())) {
-				errorIndex.dispose();
+				errorIndex.getTab().dispose();
 			}  
 			
 			var contexts = this.container.getAllContexts();
@@ -57,6 +57,7 @@ namespace rocket.display {
 				
 				if (errorIndex === null) {
 					errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
+					that.errorIndexes.push(errorIndex);
 				}
 				
 				errorIndex.addError(structureElement, $(this).text());
@@ -173,6 +174,10 @@ namespace rocket.display {
 		constructor(tab: AdditionalTab, displayErrorLabel: string) {
 			this.tab = tab;
 			this.displayErrorLabel = displayErrorLabel;
+		}
+		
+		public getTab(): AdditionalTab {
+			return this.tab;
 		}
 		
 		public addError(field: StructureElement, errorMessage: string) {
