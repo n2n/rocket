@@ -89,7 +89,9 @@ namespace rocket.cmd {
 			
 			if (targetContext === null) {
 				targetContext = currentLayer.getContextByUrl(targetUrl);
-				currentLayer.pushHistoryEntry(targetUrl);
+				if (targetContext !== null) {
+					currentLayer.pushHistoryEntry(targetUrl);
+				}
 			}
 			
 			if (targetContext === null) {

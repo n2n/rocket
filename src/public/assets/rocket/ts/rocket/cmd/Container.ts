@@ -307,6 +307,8 @@ namespace rocket.cmd {
 				if (this.contexts[i].getUrl() == url) {
 					return this.contexts[i];
 				}
+				
+				console.log(this.contexts[i].getUrl() + " - " + url);
 			}
 
 			return null;

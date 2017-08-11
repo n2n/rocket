@@ -58,10 +58,10 @@ namespace rocket.impl {
 			    "processData": false,
 			    "contentType": false,
 				"dataType": "json",
-			    "success": function(data, textStatus, jqXHR){
+			    "success": function(data, textStatus, jqXHR) {
 					rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
 			    },
-			    "error": function(jqXHR, textStatus, errorThrown){
+			    "error": function(jqXHR, textStatus, errorThrown) {
                     alert(jqXHR.responseText);
 			        rocket.handleErrorResponse(url, jqXHR);     
 			    }

@@ -205,6 +205,8 @@ namespace rocket.impl {
 			this.expandContext.onClose(function () {
 				that.reduce();
 			});
+			
+			rocket.scan();
 		}
 		
 		public reduce() {
@@ -222,6 +224,8 @@ namespace rocket.impl {
 			if (this.sortable) {
 				this.enabledSortable();
 			}
+			
+			rocket.scan();
 		}
 		
 		public static from(jqToMany: JQuery): ToMany {
