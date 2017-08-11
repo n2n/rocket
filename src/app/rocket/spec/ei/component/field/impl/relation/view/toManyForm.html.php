@@ -109,7 +109,7 @@
 							<div class="rocket-simple-commands"></div>
 						</div>
 					
-						<div class="rocket-impl-body rocket-group-simple">
+						<div class="rocket-impl-body rocket-group">
 							<label><?php $html->out($currentMappingForm->getEntryLabel()) ?></label>
 							<div class="rocket-controls">
 								<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(

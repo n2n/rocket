@@ -318,7 +318,7 @@ namespace rocket.impl {
 			this.jqSummary.hide();
 			this.bodyGroup.show();
 			
-			this.entryGroup.getJQuery().addClass("rocket-group-simple");
+			this.entryGroup.getJQuery().addClass("rocket-group");
 			
 			if (showCommands) {
 				this.jqExpMoveUpButton.show();
@@ -336,7 +336,7 @@ namespace rocket.impl {
 			this.jqSummary.show();
 			this.bodyGroup.hide();
 			
-			this.entryGroup.getJQuery().removeClass("rocket-group-simple");
+			this.entryGroup.getJQuery().removeClass("rocket-group");
 		}
 		
 		public hide() {

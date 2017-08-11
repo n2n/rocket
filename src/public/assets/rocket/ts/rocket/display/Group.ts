@@ -2,25 +2,14 @@ namespace rocket.display {
 
 	export class StructureElement {
 		private jqElem: JQuery;
-		private group: boolean;
-		private field: boolean;
 		private onShowCallbacks: Array<(Group) => any> = new Array<(Group) => any>();
 		private onHideCallbacks: Array<(Group) => any> = new Array<(Group) => any>();
 		private toolbar: Toolbar = null;
 		
-		constructor(jqElem: JQuery, group: boolean, field: boolean) {
+		constructor(jqElem: JQuery) {
 			this.jqElem = jqElem;
-			this.group = group;
-			this.field = field;
 			
-			if (group) {
-				jqElem.addClass("rocket-group");
-			}
-			
-			if (field) {
-				jqElem.addClass("rocket-field");
-			}
-			
+			jqElem.addClass("rocket-structure-element");
 			jqElem.data("rocketStructureElement", this);
 		}
 		
@@ -29,11 +18,11 @@ namespace rocket.display {
 		}
 		
 		public isGroup(): boolean {
-			return this.group;
+			return this.jqElem.hasClass("rocket-group") || this.jqElem.hasClass("rocket-group-main");
 		}
 		
 		public isField(): boolean {
-			return this.field;
+			return this.jqElem.hasClass("rocket-field");
 		}
 		
 		public getToolbar(): Toolbar {
@@ -41,7 +30,7 @@ namespace rocket.display {
 				return this.toolbar;
 			}
 			
-			if (!this.group) {
+			if (!this.isGroup()) {
 				return null;
 			}
 			
@@ -120,8 +109,20 @@ namespace rocket.display {
 		    }, 250);
 		}
 		
-		public highlight() {
+		private highlightedParent: StructureElement = null;
+		
+		public highlight(findVisibleParent: boolean = false) {
 			this.jqElem.addClass("rocket-highlighted");
+			
+			if (!findVisibleParent || this.isVisible()) return;
+				
+			this.highlightedParent = this;
+			while (null !== (this.highlightedParent = this.highlightedParent.getParent())) {
+				if (!this.highlightedParent.isVisible()) continue;
+				
+				this.highlightedParent.highlight();
+				return;
+			}
 		}
 		
 		public unhighlight(slow: boolean = false) {
@@ -132,15 +133,20 @@ namespace rocket.display {
 			} else {
 				this.jqElem.removeClass("rocket-highlight-remember");
 			}
+			
+			if (this.highlightedParent !== null) {
+				this.highlightedParent.unhighlight();
+				this.highlightedParent = null;
+			}
 		}
 
-		public static from(jqElem: JQuery, createAsGroup: boolean = false, createAsField: boolean = false): StructureElement {
+		public static from(jqElem: JQuery, create: boolean = false): StructureElement {
 			var structureElement = jqElem.data("rocketStructureElement");
 			if (structureElement instanceof StructureElement) return structureElement;
 		
-			if (!createAsGroup && !createAsField) return null;
+			if (!create) return null;
 			
-			structureElement = new StructureElement(jqElem, createAsGroup, createAsField);
+			structureElement = new StructureElement(jqElem);
 			jqElem.data("rocketStructureElement", structureElement);
 			return structureElement;
 		}

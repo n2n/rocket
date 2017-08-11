@@ -35,14 +35,14 @@ namespace rocket.display {
 			
 			var jqContext = context.getJQuery();
 			
-			jqContext.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic, .rocket-field").each(function () {
+			jqContext.find(".rocket-group, .rocket-group-main, .rocket-field").each(function () {
 				var jqElem = $(this);
 				var structureElement = StructureElement.from(jqElem);
 				
 				if (structureElement !== null) return;
 				
 				if (!jqElem.hasClass("rocket-group-main")) {
-					Initializer.createStructureElement(jqElem);
+					StructureElement.from(jqElem, true);;
 					return;
 				}
 				
@@ -64,19 +64,10 @@ namespace rocket.display {
 			});
 		}
 		
-		private static createStructureElement(jqElem: JQuery): StructureElement {
-			var structureElement = StructureElement.from(jqElem, 
-					jqElem.hasClass("rocket-group-simple") || jqElem.hasClass("rocket-group-main") 
-							|| jqElem.hasClass("rocket-group-autonomic"), 
-					jqElem.hasClass("rocket-field"));
-			
-			return structureElement;
-		}
-		
 		private static scanGroupNav(jqContainer: JQuery) {
 			var curGroupNav = null;
 			
-			jqContainer.children(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+			jqContainer.children(".rocket-group, .rocket-group-main, .rocket-group-autonomic").each(function () {
 				var jqElem = $(this);
 				if (!jqElem.hasClass("rocket-group-main")) {
 					curGroupNav = null;
@@ -89,7 +80,7 @@ namespace rocket.display {
 				
 				var group = StructureElement.from(jqElem);
 				if (group === null) {	
-					curGroupNav.registerGroup(Initializer.createStructureElement(jqElem));
+					curGroupNav.registerGroup(StructureElement.from(jqElem, true));
 				}
 			});
 			
@@ -196,38 +187,18 @@ namespace rocket.display {
 			var visibleSe: StructureElement = null;
 			
 			jqElem.mouseenter(function () {
-				structureElement.highlight();
-				
-				if (structureElement.isVisible()) return;
-				
-				visibleSe = structureElement;
-				while (null !== (visibleSe = visibleSe.getParent())) {
-					if (!visibleSe.isVisible()) continue;
-					
-					visibleSe.highlight();
-					return;
-				}
+				structureElement.highlight(true);
 			});
 			
 			jqElem.mouseleave(function () {
 				structureElement.unhighlight(clicked);
 				clicked = false;
-				
-				if (visibleSe !== null) {
-					visibleSe.unhighlight();
-					visibleSe = null;
-				}
 			});
 			
 			jqElem.click(function () {
 				clicked = true;
 				structureElement.show(true);
 				structureElement.scrollTo();
-				
-				if (visibleSe !== null) {
-					visibleSe.unhighlight();
-					visibleSe = null;
-				}
 			});
 		}
 	}
