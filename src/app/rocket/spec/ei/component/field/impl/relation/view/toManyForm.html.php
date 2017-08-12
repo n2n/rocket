@@ -129,6 +129,7 @@
 				data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
 				data-property-path="<?php $html->out($formHtml->meta()
 						->createRealPropertyPath($propertyPath->ext('newMappingForms'))) ?>"
+				data-draft-mode="<?php $html->out($toManyForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>">
 			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view) { ?>

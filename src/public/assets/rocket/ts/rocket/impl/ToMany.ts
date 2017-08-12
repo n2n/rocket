@@ -35,7 +35,7 @@ namespace rocket.impl {
 		private closeLabel: string;
 		
 		
-		constructor(jqToMany: JQuery) {
+		constructor(jqToMany: JQuery, entryFormRetriever: EntryFormRetriever = null) {
 			this.jqToMany = jqToMany;
 			this.compact = (true == jqToMany.data("compact"));
 			this.sortable = (true == jqToMany.data("sortable"))
@@ -234,7 +234,29 @@ namespace rocket.impl {
 				return toMany;
 			}
 			
-			toMany = new ToMany(jqToMany);			
+			var propertyPath = jqNews.data("property-path");
+			var jqNews = jqToMany.find(".rocket-impl-news");
+			
+			var startKey: number = 0;
+			var testPropertyPath = propertyPath + "[n";
+			jqNews.find("input, textarea").each(function () {
+				var name: string = <string> $(this).attr("name");
+				if (0 == name.indexOf(testPropertyPath)) {
+					name = name.substring(testPropertyPath.length);
+					
+					name.match(/^[0-9]+/).forEach(function (key) {
+						var curKey: number = parseInt(key);
+						if (curKey >= startKey) {
+							startKey = curKey + 1;
+						}
+					});	
+				}
+			});
+			
+			
+			toMany = new ToMany(jqToMany, 
+					new EntryFormRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
+							jqNews.data("draftMode"), startKey, "n"));			
 			
 			jqToMany.find(".rocket-impl-entry").each(function () {
 				toMany.addEntry(new EmbeddedEntry($(this)));
@@ -379,5 +401,53 @@ namespace rocket.impl {
 			
 			return null;
 		}
+	}
+	
+	class EntryFormRetriever {
+		private urlStr: string;
+		private propertyPath: string;
+		private draftMode: boolean;
+		private startKey: number;
+		private keyPrefix: string;
+		
+		constructor (lookupUrlStr: string, propertyPath: string, draftMode: boolean, startKey: number = null, keyPrefix: string = null) {
+			this.urlStr = lookupUrlStr;
+			this.propertyPath = propertyPath;
+			this.draftMode = draftMode;
+			this.startKey = startKey;
+			this.keyPrefix = keyPrefix;
+		}
+		
+		public lookupNewEntryForm(doneCallback: (entryForm: EntryForm) => any, failCallback: () => any = null) {
+			var that = this;
+			$.ajax({
+				"url": this.urlStr,
+				"data": {
+					"propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
+					"draft": this.draftMode ? 1 : 0
+				},
+				"dataType": "json"
+			}).fail(function (jqXHR, textStatus, data) {
+				if (jqXHR.status != 200) {
+                    rocket.handleErrorResponse(this.urlStr, jqXHR);
+				}
+				
+				failCallback();
+			}).done(function (data, textStatus, jqXHR) {
+				var jqEntryForm = $(n2n.ajah.analyze(data));
+				doneCallback(new EntryForm(jqEntryForm));
+				n2n.ajah.update();
+			});
+		}
+	}
+	
+	class EntryForm {
+		private jqEntryForm: JQuery;
+		
+		constructor (jqEntryForm: JQuery) {
+			this.jqEntryForm = jqEntryForm;
+		}
+		
+		
 	}
 }

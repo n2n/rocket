@@ -61,17 +61,17 @@ namespace rocket.cmd {
 		
 			var that = this;
 			$.ajax({
-				"url": url,
+				"url": url.toString(),
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
 				if (jqXHR.status != 200) {
-                    config.currentLayer.getContainer().handleError(url, jqXHR.responseText);
+                    config.currentLayer.getContainer().handleError(url.toString(), jqXHR.responseText);
 					return;
 				}
 				
 				alert("Not yet implemented press F5 after ok.");
 			}).done(function (data, textStatus, jqXHR) {
-				that.analyzeResponse(config.currentLayer, data, url, targetContext);
+				that.analyzeResponse(config.currentLayer, data, url.toString(), targetContext);
 				
 				if (config.done) {
 					config.done(new ExecResult(null, targetContext));

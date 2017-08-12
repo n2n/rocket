@@ -95,6 +95,10 @@ class ToManyDynMappingFormFactory {
 		$this->draftMode = $draftMode;
 	}
 	
+	public function isDraftMode() {
+		return $this->draftMode;
+	}
+	
 	public function getNewMappingForms() {
 		return $this->newMappingForms;
 	}

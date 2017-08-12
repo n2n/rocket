@@ -83,6 +83,10 @@ class ToManyForm implements Dispatchable {
 		$this->entryFormFactory->setDraftMode($draftMode);
 	}
 	
+	public function isDraftMode() {
+		return $this->entryFormFactory->isDraftMode();
+	}
+	
 	public function setSelectionModeEnabled(bool $selectionModeEnabled) {
 		$this->selectionModeEnabled = $selectionModeEnabled;
 	}
