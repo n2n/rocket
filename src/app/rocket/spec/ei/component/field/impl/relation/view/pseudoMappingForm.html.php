@@ -23,7 +23,6 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
-	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -36,10 +35,6 @@
 	$view->assert($mappingForm instanceof MappingForm);
 ?>
 
-<?php $formHtml->openPseudo($mappingForm, $propertyPath)?>
-	<?php $formHtml->optionalObjectEnabledHidden(null, array('class' => 'rocket-object-enabler'), 'Add') ?>
-	
-	<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
-			array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-	<?php $formHtml->input('orderIndex', array('class' => 'rocket-to-many-order-index')) ?>
+<?php $formHtml->openPseudo($mappingForm, $propertyPath) ?>
+	<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $mappingForm)) ?>
 <?php $formHtml->closePseudo() ?>

@@ -27,6 +27,7 @@ namespace rocket.impl {
 	
 	export class ToMany {
 		private jqToMany: JQuery;
+		private addButtonFactory: AddButtonFactory;
 		private compact: boolean = true;
 		private sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
@@ -35,8 +36,9 @@ namespace rocket.impl {
 		private closeLabel: string;
 		
 		
-		constructor(jqToMany: JQuery, entryFormRetriever: EntryFormRetriever = null) {
+		constructor(jqToMany: JQuery, addButtonFactory: AddButtonFactory = null) {
 			this.jqToMany = jqToMany;
+			this.addButtonFactory = addButtonFactory;
 			this.compact = (true == jqToMany.data("compact"));
 			this.sortable = (true == jqToMany.data("sortable"))
 			this.closeLabel = jqToMany.data("close-label");
@@ -63,6 +65,14 @@ namespace rocket.impl {
 			
 			if (this.sortable) {
 				this.initSortable();
+			}
+			
+			if (this.addButtonFactory !== null) {
+				var lastButton = this.addButtonFactory.create(function (embeddedEntry: EmbeddedEntry) {
+					that.addEntry(embeddedEntry);
+				});
+				
+				this.jqToMany.append(lastButton.getJQuery());
 			}
 		}
 		
@@ -144,6 +154,7 @@ namespace rocket.impl {
 			var that = this;
 			var oldIndex: number = 0;
 			this.jqEmbedded.sortable({
+				"handle": ".rocket-impl-handle",
 				"forcePlaceholderSize": true,
 		      	"placeholder": "rocket-impl-entry-placeholder",
 				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
@@ -234,8 +245,8 @@ namespace rocket.impl {
 				return toMany;
 			}
 			
-			var propertyPath = jqNews.data("property-path");
 			var jqNews = jqToMany.find(".rocket-impl-news");
+			var propertyPath = jqNews.data("property-path");
 			
 			var startKey: number = 0;
 			var testPropertyPath = propertyPath + "[n";
@@ -249,14 +260,13 @@ namespace rocket.impl {
 						if (curKey >= startKey) {
 							startKey = curKey + 1;
 						}
-					});	
+					});
 				}
 			});
 			
-			
-			toMany = new ToMany(jqToMany, 
-					new EntryFormRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
-							jqNews.data("draftMode"), startKey, "n"));			
+			var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
+							jqNews.data("draftMode"), startKey, "n")
+			toMany = new ToMany(jqToMany, new AddButtonFactory(entryFormRetriever, jqNews.data("add-item-label")));			
 			
 			jqToMany.find(".rocket-impl-entry").each(function () {
 				toMany.addEntry(new EmbeddedEntry($(this)));
@@ -264,6 +274,83 @@ namespace rocket.impl {
 			
 			return toMany;
 		}
+	}
+	
+	class AddButtonFactory {
+		private embeddedEntryRetriever: EmbeddedEntryRetriever;
+		private label: string;
+		
+		constructor (embeddedEntryRetriever: EmbeddedEntryRetriever, label: string) {
+			this.embeddedEntryRetriever = embeddedEntryRetriever;
+			this.label = label;
+		}
+		
+		public create(callback: (embeddedEntry: EmbeddedEntry) => any) {
+			return AddControl.create(this.label, this.embeddedEntryRetriever);
+		}
+	}
+	
+	class AddControl {
+		private embeddedEntryRetriever: EmbeddedEntryRetriever;
+		private jqElem: JQuery;
+		private jqButton: JQuery;
+		private onNewEntryCallbacks: Array<(EmbeddedEntry) => any> = new Array<(EmbeddedEntry) => any>();
+		
+		constructor(jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever) {
+			this.embeddedEntryRetriever = embeddedEntryRetriever;
+			
+			this.jqElem = jqElem;
+			this.jqButton = jqElem.children("button");
+			
+			var that = this;
+			this.jqButton.on("mouseenter", function () {
+				that.embeddedEntryRetriever.setPreloadEnabled(true);
+			});
+			this.jqButton.on("click", function () {
+				if (that.isLoading()) return;
+				that.block(true);
+				that.embeddedEntryRetriever.lookupNew(
+						function (embeddedEntry: EmbeddedEntry) {
+							
+							that.block(false);
+						},
+						function () {
+							that.block(false);
+						});
+			});
+			
+		}
+		
+		public getJQuery(): JQuery {
+			return this.jqElem;
+		}
+		
+		private block(blocked: boolean) {
+			if (blocked) {
+				this.jqElem.addClass("rocket-impl-loading");
+			} else {
+				this.jqElem.removeClass("rocket-impl-loading");
+			}
+		}	
+		
+		public isLoading() {
+			return this.jqElem.hasClass("rocket-impl-loading");
+		}
+		
+		private fireCallbacks(embeddedEntry: EmbeddedEntry) {
+			this.onNewEntryCallbacks.forEach(function (callback: (EmbeddedEntry) => any) {
+				callback(embeddedEntry);
+			});
+		}
+		
+		public onNewEmbeddedEntry(callback: (EmbeddedEntry) => any) {
+			this.onNewEntryCallbacks.push(callback);
+		}
+		
+		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever): AddControl {
+			return new AddControl($("<div />").append($("<button />", { "text": label })),
+					embeddedEntryRetriever);
+		} 
 	}
 	
 	class EmbeddedEntry {
@@ -403,14 +490,18 @@ namespace rocket.impl {
 		}
 	}
 	
-	class EntryFormRetriever {
+	class EmbeddedEntryRetriever {
 		private urlStr: string;
 		private propertyPath: string;
 		private draftMode: boolean;
 		private startKey: number;
 		private keyPrefix: string;
+		private preloadEnabled: boolean = false;
+		private preloadedResponseObjects: Array<Object> = new Array<Object>();
+		private pendingLookups: Array<PendingLookup> = new Array<PendingLookup>();
 		
-		constructor (lookupUrlStr: string, propertyPath: string, draftMode: boolean, startKey: number = null, keyPrefix: string = null) {
+		constructor (lookupUrlStr: string, propertyPath: string, draftMode: boolean, startKey: number = null, 
+				keyPrefix: string = null) {
 			this.urlStr = lookupUrlStr;
 			this.propertyPath = propertyPath;
 			this.draftMode = draftMode;
@@ -418,7 +509,32 @@ namespace rocket.impl {
 			this.keyPrefix = keyPrefix;
 		}
 		
-		public lookupNewEntryForm(doneCallback: (entryForm: EntryForm) => any, failCallback: () => any = null) {
+		public setPreloadEnabled(preloadEnabled: boolean) {
+			if (!this.preloadEnabled && preloadEnabled && this.preloadedResponseObjects.length == 0) {
+				this.load();
+			}
+			
+			this.preloadEnabled = preloadEnabled;
+		}
+		
+		public lookupNew(doneCallback: (embeddedEntry: EmbeddedEntry) => any, failCallback: () => any = null) {
+			this.pendingLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
+			
+			this.check()
+			this.load();
+		}
+		
+		private check() {
+			if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0) return;
+			
+			var pendingLookup: PendingLookup = this.pendingLookups.shift();
+			var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())));
+			
+			pendingLookup.doneCallback(embeddedEntry);
+			n2n.ajah.update();
+		}
+		
+		private load() {
 			var that = this;
 			$.ajax({
 				"url": this.urlStr,
@@ -432,13 +548,30 @@ namespace rocket.impl {
                     rocket.handleErrorResponse(this.urlStr, jqXHR);
 				}
 				
-				failCallback();
+				that.failResponse();
 			}).done(function (data, textStatus, jqXHR) {
-				var jqEntryForm = $(n2n.ajah.analyze(data));
-				doneCallback(new EntryForm(jqEntryForm));
-				n2n.ajah.update();
+				that.doneResponse(data);
 			});
 		}
+		
+		private failResponse() {
+			if (this.pendingLookups.length == 0) return;
+			
+			var pendingLookup = this.pendingLookups.shift();
+			if (pendingLookup.failCallback !== null) {
+				pendingLookup.failCallback();
+			}
+		}
+		
+		private doneResponse(data: Object) {
+			this.preloadedResponseObjects.push(data);
+			this.check();
+		}
+	}
+	
+	interface PendingLookup {
+		doneCallback: (embeddedEntry: EmbeddedEntry) => any;
+		failCallback: () => any;
 	}
 	
 	class EntryForm {

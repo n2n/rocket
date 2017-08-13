@@ -50,7 +50,7 @@ class RelationAjahController extends ControllerAdapter {
 			throw new BadRequestException(null, null, $e);
 		}
 		$eiFrameUtils = $this->eiCtrlUtils->frame();
-		$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), null, null, 
+		$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), $eiFrameUtils->getGenericIconType(), null,  
 				$eiFrameUtils->createNewEntryForm($draft->toBool()));
 		
 		$view = $this->createView('\rocket\spec\ei\component\field\impl\relation\view\pseudoMappingForm.html',

@@ -21,7 +21,6 @@
 	 */
 
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
@@ -86,40 +85,7 @@
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 			
-				<div class="rocket-impl-entry"
-						data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>"
-						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
-								array('item' => $currentMappingForm->getEntryLabel())) ?>">
-					<?php $formHtml->optionalObjectEnabledHidden() ?>
-						
-					<?php if (!$currentMappingForm->isAccessible()): ?>
-						<span class="rocket-impl-summary">
-							<?php $html->out($currentMappingForm->getEntryLabel()) ?>
-						</span>
-					<?php else: ?>
-						<div class="rocket-impl-summary">
-							<?php if ($toManyForm->isSortable()): ?>
-								<div><i class="fa fa-bars"></i></div>
-							<?php endif ?>
-							<div>
-								<i class="<?php $html->out($currentMappingForm->getIconTyp()) ?>"></i>
-								<?php $html->out($currentMappingForm->getEntryLabel()) ?>
-							</div>
-							<div>summary</div>
-							<div class="rocket-simple-commands"></div>
-						</div>
-					
-						<div class="rocket-impl-body rocket-group">
-							<label><?php $html->out($currentMappingForm->getEntryLabel()) ?></label>
-							<div class="rocket-controls">
-								<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
-										'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-							</div>
-						</div>
-					<?php endif ?>
-					
-					<?php $formHtml->input('orderIndex', array('class' => 'rocket-impl-order-index')) ?>
-				</div>
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm))?>
 			<?php }) ?>
 		</div>
 	<?php endif ?>
@@ -133,12 +99,10 @@
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>">
 			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view) { ?>
-				<div class="rocket-impl-entry">
-					<?php $formHtml->optionalObjectEnabledHidden() ?>
-					<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
-							array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-					<?php $formHtml->input('orderIndex', array('class' => 'rocket-to-many-order-index')) ?>
-				</div>
+				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
+				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
+				
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm)) ?>
 			<?php }) ?>
 		</div>
 	<?php endif ?>
