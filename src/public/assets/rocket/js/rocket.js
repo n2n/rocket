@@ -472,8 +472,9 @@ var rocket;
                 this.sortable = true;
                 this.entries = new Array();
                 this.expandContext = null;
+                this.addButtons = new Array();
                 this.jqToMany = jqToMany;
-                this.addButtonFactory = addButtonFactory;
+                this.addControlFactory = addButtonFactory;
                 this.compact = (true == jqToMany.data("compact"));
                 this.sortable = (true == jqToMany.data("sortable"));
                 this.closeLabel = jqToMany.data("close-label");
@@ -495,18 +496,33 @@ var rocket;
                 if (this.sortable) {
                     this.initSortable();
                 }
-                if (this.addButtonFactory !== null) {
-                    var lastButton = this.addButtonFactory.create();
-                    this.jqToMany.append(lastButton.getJQuery());
-                    var that_2 = this;
-                    lastButton.onNewEmbeddedEntry(function (embeddedEntry) {
-                        that_2.addEntry(embeddedEntry);
-                        if (!that_2.isExpanded()) {
-                            that_2.expand(embeddedEntry);
+                this.initAddControl();
+            }
+            ToMany.prototype.initAddControl = function (entry) {
+                if (entry === void 0) { entry = null; }
+                if (this.addControlFactory === null)
+                    return null;
+                var addControl = this.addControlFactory.create();
+                var that = this;
+                if (entry !== null) {
+                    addControl.getJQuery().insertBefore(entry.getJQuery());
+                    addControl.onNewEmbeddedEntry(function (embeddedEntry) {
+                        that.insertEntry(embeddedEntry, entry);
+                    });
+                }
+                else {
+                    addControl.getJQuery().insertAfter(this.jqEmbedded);
+                    addControl.onNewEmbeddedEntry(function (embeddedEntry) {
+                        that.addEntry(embeddedEntry);
+                        if (!that.isExpanded()) {
+                            that.expand(embeddedEntry);
                         }
                     });
                 }
-            }
+                return addControl;
+            };
+            ToMany.prototype.insertEntry = function (entry, beforeEntry) {
+            };
             ToMany.prototype.addEntry = function (entry) {
                 entry.setOrderIndex(this.entries.length);
                 this.entries.push(entry);
@@ -514,6 +530,7 @@ var rocket;
                 this.jqEmbedded.append(entry.getJQuery());
                 if (this.isExpanded()) {
                     entry.expand();
+                    this.initAddControl(entry);
                 }
                 else {
                     entry.reduce();
@@ -661,7 +678,7 @@ var rocket;
                     }
                 });
                 var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
-                toMany = new ToMany(jqToMany, new AddButtonFactory(entryFormRetriever, jqNews.data("add-item-label")));
+                toMany = new ToMany(jqToMany, new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label")));
                 jqToMany.data("rocketImplToMany", toMany);
                 jqToMany.find(".rocket-impl-entry").each(function () {
                     toMany.addEntry(new EmbeddedEntry($(this)));
@@ -671,15 +688,15 @@ var rocket;
             return ToMany;
         }());
         impl.ToMany = ToMany;
-        var AddButtonFactory = (function () {
-            function AddButtonFactory(embeddedEntryRetriever, label) {
+        var AddControlFactory = (function () {
+            function AddControlFactory(embeddedEntryRetriever, label) {
                 this.embeddedEntryRetriever = embeddedEntryRetriever;
                 this.label = label;
             }
-            AddButtonFactory.prototype.create = function () {
+            AddControlFactory.prototype.create = function () {
                 return AddControl.create(this.label, this.embeddedEntryRetriever);
             };
-            return AddButtonFactory;
+            return AddControlFactory;
         }());
         var AddControl = (function () {
             function AddControl(jqElem, embeddedEntryRetriever) {

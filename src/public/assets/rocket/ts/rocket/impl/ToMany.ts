@@ -27,18 +27,18 @@ namespace rocket.impl {
 	
 	export class ToMany {
 		private jqToMany: JQuery;
-		private addButtonFactory: AddButtonFactory;
+		private addControlFactory: AddControlFactory;
 		private compact: boolean = true;
 		private sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private expandContext: cmd.Context = null;
 		private closeLabel: string;
+		private addButtons: Array<AddControl> = new Array<AddControl>();
 		
-		
-		constructor(jqToMany: JQuery, addButtonFactory: AddButtonFactory = null) {
+		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToMany = jqToMany;
-			this.addButtonFactory = addButtonFactory;
+			this.addControlFactory = addButtonFactory;
 			this.compact = (true == jqToMany.data("compact"));
 			this.sortable = (true == jqToMany.data("sortable"))
 			this.closeLabel = jqToMany.data("close-label");
@@ -65,17 +65,35 @@ namespace rocket.impl {
 				this.initSortable();
 			}
 			
-			if (this.addButtonFactory !== null) {
-				var lastButton = this.addButtonFactory.create();
-				this.jqToMany.append(lastButton.getJQuery());
-				let that = this;
-				lastButton.onNewEmbeddedEntry(function(embeddedEntry: EmbeddedEntry) {
+			this.initAddControl();
+		}
+		
+		private initAddControl(entry: EmbeddedEntry = null) {
+			if (this.addControlFactory === null) return null;
+			
+			var addControl = this.addControlFactory.create();
+			
+			var that = this;
+			if (entry !== null) {
+				addControl.getJQuery().insertBefore(entry.getJQuery());
+				addControl.onNewEmbeddedEntry(function(embeddedEntry: EmbeddedEntry) {
+					that.insertEntry(embeddedEntry, entry);
+					
+				});
+			} else {	
+				addControl.getJQuery().insertAfter(this.jqEmbedded);
+				addControl.onNewEmbeddedEntry(function(embeddedEntry: EmbeddedEntry) {
 					that.addEntry(embeddedEntry);
 					if (!that.isExpanded()) {
 						that.expand(embeddedEntry);
 					}
 				});
 			}
+			
+			return addControl;
+		}
+		
+		public insertEntry(entry: EmbeddedEntry, beforeEntry: EmbeddedEntry) {
 		}
 		
 		public addEntry(entry: EmbeddedEntry) {
@@ -87,6 +105,7 @@ namespace rocket.impl {
 			
 			if (this.isExpanded()) {
 				entry.expand();
+				this.initAddControl(entry);
 			} else {
 				entry.reduce();
 			}
@@ -267,7 +286,7 @@ namespace rocket.impl {
 			
 			var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
 							jqNews.data("draftMode"), startKey, "n")
-			toMany = new ToMany(jqToMany, new AddButtonFactory(entryFormRetriever, jqNews.data("add-item-label")));	
+			toMany = new ToMany(jqToMany, new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label")));	
 			jqToMany.data("rocketImplToMany", toMany);		
 			
 			jqToMany.find(".rocket-impl-entry").each(function () {
@@ -278,7 +297,7 @@ namespace rocket.impl {
 		}
 	}
 	
-	class AddButtonFactory {
+	class AddControlFactory {
 		private embeddedEntryRetriever: EmbeddedEntryRetriever;
 		private label: string;
 		
@@ -287,7 +306,7 @@ namespace rocket.impl {
 			this.label = label;
 		}
 		
-		public create() {
+		public create(): AddControl {
 			return AddControl.create(this.label, this.embeddedEntryRetriever);
 		}
 	}
