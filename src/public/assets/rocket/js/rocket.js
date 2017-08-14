@@ -98,13 +98,14 @@ var rocket;
                 var that = this;
                 var i = 0;
                 var jqContext = context.getJQuery();
-                jqContext.find(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic, .rocket-field").each(function () {
+                jqContext.find(".rocket-group, .rocket-group-main, .rocket-field").each(function () {
                     var jqElem = $(this);
                     var structureElement = display.StructureElement.from(jqElem);
                     if (structureElement !== null)
                         return;
                     if (!jqElem.hasClass("rocket-group-main")) {
-                        Initializer.createStructureElement(jqElem);
+                        display.StructureElement.from(jqElem, true);
+                        ;
                         return;
                     }
                     Initializer.scanGroupNav(jqElem.parent());
@@ -119,14 +120,9 @@ var rocket;
                     errorIndex.addError(structureElement, $(this).text());
                 });
             };
-            Initializer.createStructureElement = function (jqElem) {
-                var structureElement = display.StructureElement.from(jqElem, jqElem.hasClass("rocket-group-simple") || jqElem.hasClass("rocket-group-main")
-                    || jqElem.hasClass("rocket-group-autonomic"), jqElem.hasClass("rocket-field"));
-                return structureElement;
-            };
             Initializer.scanGroupNav = function (jqContainer) {
                 var curGroupNav = null;
-                jqContainer.children(".rocket-group-simple, .rocket-group-main, .rocket-group-autonomic").each(function () {
+                jqContainer.children(".rocket-group, .rocket-group-main, .rocket-group-autonomic").each(function () {
                     var jqElem = $(this);
                     if (!jqElem.hasClass("rocket-group-main")) {
                         curGroupNav = null;
@@ -137,7 +133,7 @@ var rocket;
                     }
                     var group = display.StructureElement.from(jqElem);
                     if (group === null) {
-                        curGroupNav.registerGroup(Initializer.createStructureElement(jqElem));
+                        curGroupNav.registerGroup(display.StructureElement.from(jqElem, true));
                     }
                 });
                 return curGroupNav;
@@ -205,7 +201,7 @@ var rocket;
             ErrorIndex.prototype.getTab = function () {
                 return this.tab;
             };
-            ErrorIndex.prototype.addError = function (field, errorMessage) {
+            ErrorIndex.prototype.addError = function (structureElement, errorMessage) {
                 var jqElem = $("<div />", {
                     "class": "rocket-error-index-entry",
                     "css": { "cursor": "pointer" }
@@ -216,17 +212,18 @@ var rocket;
                 }));
                 this.tab.getJqContent().append(jqElem);
                 var clicked = false;
+                var visibleSe = null;
                 jqElem.mouseenter(function () {
-                    field.highlight();
+                    structureElement.highlight(true);
                 });
                 jqElem.mouseleave(function () {
-                    field.unhighlight(clicked);
+                    structureElement.unhighlight(clicked);
                     clicked = false;
                 });
                 jqElem.click(function () {
                     clicked = true;
-                    field.show(true);
-                    field.scrollTo();
+                    structureElement.show(true);
+                    structureElement.scrollTo();
                 });
             };
             return ErrorIndex;
@@ -238,32 +235,29 @@ var rocket;
     var display;
     (function (display) {
         var StructureElement = (function () {
-            function StructureElement(jqElem, group, field) {
+            function StructureElement(jqElem) {
                 this.onShowCallbacks = new Array();
                 this.onHideCallbacks = new Array();
                 this.toolbar = null;
+                this.highlightedParent = null;
                 this.jqElem = jqElem;
-                this.group = group;
-                this.field = field;
-                if (group) {
-                    jqElem.addClass("rocket-group");
-                }
-                if (field) {
-                    jqElem.addClass("rocket-field");
-                }
+                jqElem.addClass("rocket-structure-element");
                 jqElem.data("rocketStructureElement", this);
             }
+            StructureElement.prototype.getJQuery = function () {
+                return this.jqElem;
+            };
             StructureElement.prototype.isGroup = function () {
-                return this.group;
+                return this.jqElem.hasClass("rocket-group") || this.jqElem.hasClass("rocket-group-main");
             };
             StructureElement.prototype.isField = function () {
-                return this.field;
+                return this.jqElem.hasClass("rocket-field");
             };
             StructureElement.prototype.getToolbar = function () {
                 if (this.toolbar !== null) {
                     return this.toolbar;
                 }
-                if (!this.group) {
+                if (!this.isGroup()) {
                     return null;
                 }
                 var jqToolbar = this.jqElem.children(".rocket-group-toolbar:first");
@@ -276,6 +270,12 @@ var rocket;
             StructureElement.prototype.getTitle = function () {
                 return this.jqElem.children("label:first").text();
             };
+            StructureElement.prototype.getParent = function () {
+                return StructureElement.findFrom(this.jqElem);
+            };
+            StructureElement.prototype.isVisible = function () {
+                return this.jqElem.is(":visible");
+            };
             StructureElement.prototype.show = function (includeParents) {
                 if (includeParents === void 0) { includeParents = false; }
                 for (var i in this.onShowCallbacks) {
@@ -283,7 +283,7 @@ var rocket;
                 }
                 this.jqElem.show();
                 var parent;
-                if (includeParents && null !== (parent = StructureElement.findFrom(this.jqElem))) {
+                if (includeParents && null !== (parent = this.getParent())) {
                     parent.show(true);
                 }
             };
@@ -318,8 +318,18 @@ var rocket;
                     "scrollTop": offset
                 }, 250);
             };
-            StructureElement.prototype.highlight = function () {
+            StructureElement.prototype.highlight = function (findVisibleParent) {
+                if (findVisibleParent === void 0) { findVisibleParent = false; }
                 this.jqElem.addClass("rocket-highlighted");
+                if (!findVisibleParent || this.isVisible())
+                    return;
+                this.highlightedParent = this;
+                while (null !== (this.highlightedParent = this.highlightedParent.getParent())) {
+                    if (!this.highlightedParent.isVisible())
+                        continue;
+                    this.highlightedParent.highlight();
+                    return;
+                }
             };
             StructureElement.prototype.unhighlight = function (slow) {
                 if (slow === void 0) { slow = false; }
@@ -330,16 +340,19 @@ var rocket;
                 else {
                     this.jqElem.removeClass("rocket-highlight-remember");
                 }
+                if (this.highlightedParent !== null) {
+                    this.highlightedParent.unhighlight();
+                    this.highlightedParent = null;
+                }
             };
-            StructureElement.from = function (jqElem, createAsGroup, createAsField) {
-                if (createAsGroup === void 0) { createAsGroup = false; }
-                if (createAsField === void 0) { createAsField = false; }
+            StructureElement.from = function (jqElem, create) {
+                if (create === void 0) { create = false; }
                 var structureElement = jqElem.data("rocketStructureElement");
                 if (structureElement instanceof StructureElement)
                     return structureElement;
-                if (!createAsGroup && !createAsField)
+                if (!create)
                     return null;
-                structureElement = new StructureElement(jqElem, createAsGroup, createAsField);
+                structureElement = new StructureElement(jqElem);
                 jqElem.data("rocketStructureElement", structureElement);
                 return structureElement;
             };
@@ -453,16 +466,17 @@ var rocket;
         var display = rocket.display;
         var $ = jQuery;
         var ToMany = (function () {
-            function ToMany(jqToMany) {
+            function ToMany(jqToMany, addButtonFactory) {
+                if (addButtonFactory === void 0) { addButtonFactory = null; }
                 this.compact = true;
                 this.sortable = true;
                 this.entries = new Array();
                 this.expandContext = null;
                 this.jqToMany = jqToMany;
+                this.addButtonFactory = addButtonFactory;
                 this.compact = (true == jqToMany.data("compact"));
                 this.sortable = (true == jqToMany.data("sortable"));
                 this.closeLabel = jqToMany.data("close-label");
-                jqToMany.data("rocketToMany", this);
                 this.jqEmbedded = $("<div />", {
                     "class": "rocket-impl-embedded"
                 });
@@ -472,14 +486,25 @@ var rocket;
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
                         var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
-                        var that = this;
+                        var that_1 = this;
                         jqButton.click(function () {
-                            that.expand();
+                            that_1.expand();
                         });
                     }
                 }
                 if (this.sortable) {
                     this.initSortable();
+                }
+                if (this.addButtonFactory !== null) {
+                    var lastButton = this.addButtonFactory.create();
+                    this.jqToMany.append(lastButton.getJQuery());
+                    var that_2 = this;
+                    lastButton.onNewEmbeddedEntry(function (embeddedEntry) {
+                        that_2.addEntry(embeddedEntry);
+                        if (!that_2.isExpanded()) {
+                            that_2.expand(embeddedEntry);
+                        }
+                    });
                 }
             }
             ToMany.prototype.addEntry = function (entry) {
@@ -544,6 +569,7 @@ var rocket;
                 var that = this;
                 var oldIndex = 0;
                 this.jqEmbedded.sortable({
+                    "handle": ".rocket-impl-handle",
                     "forcePlaceholderSize": true,
                     "placeholder": "rocket-impl-entry-placeholder",
                     "start": function (event, ui) {
@@ -611,14 +637,32 @@ var rocket;
                 if (this.sortable) {
                     this.enabledSortable();
                 }
-                rocket.scan();
+                n2n.ajah.update();
             };
             ToMany.from = function (jqToMany) {
-                var toMany = jqToMany.data("rocketToMany");
+                var toMany = jqToMany.data("rocketImplToMany");
                 if (toMany instanceof ToMany) {
                     return toMany;
                 }
-                toMany = new ToMany(jqToMany);
+                var jqNews = jqToMany.children(".rocket-impl-news");
+                var propertyPath = jqNews.data("property-path");
+                var startKey = 0;
+                var testPropertyPath = propertyPath + "[n";
+                jqNews.find("input, textarea").each(function () {
+                    var name = $(this).attr("name");
+                    if (0 == name.indexOf(testPropertyPath)) {
+                        name = name.substring(testPropertyPath.length);
+                        name.match(/^[0-9]+/).forEach(function (key) {
+                            var curKey = parseInt(key);
+                            if (curKey >= startKey) {
+                                startKey = curKey + 1;
+                            }
+                        });
+                    }
+                });
+                var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
+                toMany = new ToMany(jqToMany, new AddButtonFactory(entryFormRetriever, jqNews.data("add-item-label")));
+                jqToMany.data("rocketImplToMany", toMany);
                 jqToMany.find(".rocket-impl-entry").each(function () {
                     toMany.addEntry(new EmbeddedEntry($(this)));
                 });
@@ -627,13 +671,82 @@ var rocket;
             return ToMany;
         }());
         impl.ToMany = ToMany;
+        var AddButtonFactory = (function () {
+            function AddButtonFactory(embeddedEntryRetriever, label) {
+                this.embeddedEntryRetriever = embeddedEntryRetriever;
+                this.label = label;
+            }
+            AddButtonFactory.prototype.create = function () {
+                return AddControl.create(this.label, this.embeddedEntryRetriever);
+            };
+            return AddButtonFactory;
+        }());
+        var AddControl = (function () {
+            function AddControl(jqElem, embeddedEntryRetriever) {
+                this.onNewEntryCallbacks = new Array();
+                this.embeddedEntryRetriever = embeddedEntryRetriever;
+                this.jqElem = jqElem;
+                this.jqButton = jqElem.children("button");
+                var that = this;
+                this.jqButton.on("mouseenter", function () {
+                    that.embeddedEntryRetriever.setPreloadEnabled(true);
+                });
+                this.jqButton.on("click", function () {
+                    if (that.isLoading())
+                        return;
+                    that.block(true);
+                    that.embeddedEntryRetriever.lookupNew(function (embeddedEntry) {
+                        that.examine(embeddedEntry);
+                    }, function () {
+                        that.block(false);
+                    });
+                });
+            }
+            AddControl.prototype.getJQuery = function () {
+                return this.jqElem;
+            };
+            AddControl.prototype.block = function (blocked) {
+                if (blocked) {
+                    this.jqButton.prop("disabled", true);
+                    this.jqElem.addClass("rocket-impl-loading");
+                }
+                else {
+                    this.jqButton.prop("disabled", false);
+                    this.jqElem.removeClass("rocket-impl-loading");
+                }
+            };
+            AddControl.prototype.examine = function (embeddedEntry) {
+                this.block(false);
+                if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
+                    this.fireCallbacks(embeddedEntry);
+                    return;
+                }
+                alert("todo");
+            };
+            AddControl.prototype.isLoading = function () {
+                return this.jqElem.hasClass("rocket-impl-loading");
+            };
+            AddControl.prototype.fireCallbacks = function (embeddedEntry) {
+                this.onNewEntryCallbacks.forEach(function (callback) {
+                    callback(embeddedEntry);
+                });
+            };
+            AddControl.prototype.onNewEmbeddedEntry = function (callback) {
+                this.onNewEntryCallbacks.push(callback);
+            };
+            AddControl.create = function (label, embeddedEntryRetriever) {
+                return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })), embeddedEntryRetriever);
+            };
+            return AddControl;
+        }());
         var EmbeddedEntry = (function () {
             function EmbeddedEntry(jqEntry) {
-                this.jqEntry = jqEntry;
+                this.entryGroup = display.StructureElement.from(jqEntry, true);
                 this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                 this.jqSummary = jqEntry.children(".rocket-impl-summary");
-                this.jqBody = jqEntry.children(".rocket-impl-body");
-                var ecl = display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
+                this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
+                this.entryForm = display.EntryForm.from(jqEntry, true);
+                var ecl = this.bodyGroup.getToolbar().getCommandList();
                 this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
                 this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
                 this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
@@ -642,8 +755,10 @@ var rocket;
                 this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
                 this.reduce();
                 jqEntry.data("rocketImplEmbeddedEntry", this);
-                this.group = display.StructureElement.from(this.jqBody, true);
             }
+            EmbeddedEntry.prototype.getEntryForm = function () {
+                return this.entryForm;
+            };
             EmbeddedEntry.prototype.onMove = function (callback) {
                 this.jqExpMoveUpButton.click(function () {
                     callback(true);
@@ -664,22 +779,22 @@ var rocket;
                 this.jqRedEditButton.click(function () {
                     callback();
                 });
-                this.group.onShow(function () {
+                this.bodyGroup.onShow(function () {
                     callback();
                 });
             };
             EmbeddedEntry.prototype.getJQuery = function () {
-                return this.jqEntry;
+                return this.entryGroup.getJQuery();
             };
             EmbeddedEntry.prototype.getExpandedCommandList = function () {
-                return display.StructureElement.from(this.jqBody).getToolbar().getCommandList();
+                return this.bodyGroup.getToolbar().getCommandList();
             };
             EmbeddedEntry.prototype.expand = function (showCommands) {
                 if (showCommands === void 0) { showCommands = true; }
-                this.jqEntry.show();
+                this.entryGroup.show();
                 this.jqSummary.hide();
-                this.jqBody.show();
-                this.jqEntry.addClass("rocket-group-simple");
+                this.bodyGroup.show();
+                this.entryGroup.getJQuery().addClass("rocket-group");
                 if (showCommands) {
                     this.jqExpMoveUpButton.show();
                     this.jqExpMoveDownButton.show();
@@ -692,13 +807,13 @@ var rocket;
                 }
             };
             EmbeddedEntry.prototype.reduce = function () {
-                this.jqEntry.show();
+                this.entryGroup.show();
                 this.jqSummary.show();
-                this.jqBody.hide();
-                this.jqEntry.removeClass("rocket-group-simple");
+                this.bodyGroup.hide();
+                this.entryGroup.getJQuery().removeClass("rocket-group");
             };
             EmbeddedEntry.prototype.hide = function () {
-                this.jqEntry.hide();
+                this.entryGroup.hide();
             };
             EmbeddedEntry.prototype.setOrderIndex = function (orderIndex) {
                 this.jqOrderIndex.val(orderIndex);
@@ -734,6 +849,71 @@ var rocket;
                 return null;
             };
             return EmbeddedEntry;
+        }());
+        var EmbeddedEntryRetriever = (function () {
+            function EmbeddedEntryRetriever(lookupUrlStr, propertyPath, draftMode, startKey, keyPrefix) {
+                if (startKey === void 0) { startKey = null; }
+                if (keyPrefix === void 0) { keyPrefix = null; }
+                this.preloadEnabled = false;
+                this.preloadedResponseObjects = new Array();
+                this.pendingLookups = new Array();
+                this.urlStr = lookupUrlStr;
+                this.propertyPath = propertyPath;
+                this.draftMode = draftMode;
+                this.startKey = startKey;
+                this.keyPrefix = keyPrefix;
+            }
+            EmbeddedEntryRetriever.prototype.setPreloadEnabled = function (preloadEnabled) {
+                if (!this.preloadEnabled && preloadEnabled && this.preloadedResponseObjects.length == 0) {
+                    this.load();
+                }
+                this.preloadEnabled = preloadEnabled;
+            };
+            EmbeddedEntryRetriever.prototype.lookupNew = function (doneCallback, failCallback) {
+                if (failCallback === void 0) { failCallback = null; }
+                this.pendingLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
+                this.check();
+                this.load();
+            };
+            EmbeddedEntryRetriever.prototype.check = function () {
+                if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0)
+                    return;
+                var pendingLookup = this.pendingLookups.shift();
+                var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())));
+                pendingLookup.doneCallback(embeddedEntry);
+                n2n.ajah.update();
+            };
+            EmbeddedEntryRetriever.prototype.load = function () {
+                var that = this;
+                $.ajax({
+                    "url": this.urlStr,
+                    "data": {
+                        "propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
+                        "draft": this.draftMode ? 1 : 0
+                    },
+                    "dataType": "json"
+                }).fail(function (jqXHR, textStatus, data) {
+                    if (jqXHR.status != 200) {
+                        rocket.handleErrorResponse(this.urlStr, jqXHR);
+                    }
+                    that.failResponse();
+                }).done(function (data, textStatus, jqXHR) {
+                    that.doneResponse(data);
+                });
+            };
+            EmbeddedEntryRetriever.prototype.failResponse = function () {
+                if (this.pendingLookups.length == 0)
+                    return;
+                var pendingLookup = this.pendingLookups.shift();
+                if (pendingLookup.failCallback !== null) {
+                    pendingLookup.failCallback();
+                }
+            };
+            EmbeddedEntryRetriever.prototype.doneResponse = function (data) {
+                this.preloadedResponseObjects.push(data);
+                this.check();
+            };
+            return EmbeddedEntryRetriever;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
@@ -789,16 +969,16 @@ var rocket;
                 }
                 var that = this;
                 $.ajax({
-                    "url": url,
+                    "url": url.toString(),
                     "dataType": "json"
                 }).fail(function (jqXHR, textStatus, data) {
                     if (jqXHR.status != 200) {
-                        config.currentLayer.getContainer().handleError(url, jqXHR.responseText);
+                        config.currentLayer.getContainer().handleError(url.toString(), jqXHR.responseText);
                         return;
                     }
                     alert("Not yet implemented press F5 after ok.");
                 }).done(function (data, textStatus, jqXHR) {
-                    that.analyzeResponse(config.currentLayer, data, url, targetContext);
+                    that.analyzeResponse(config.currentLayer, data, url.toString(), targetContext);
                     if (config.done) {
                         config.done(new ExecResult(null, targetContext));
                     }
@@ -1032,7 +1212,6 @@ var rocket;
                         rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
                     },
                     "error": function (jqXHR, textStatus, errorThrown) {
-                        alert(jqXHR.responseText);
                         rocket.handleErrorResponse(url, jqXHR);
                     }
                 });
@@ -1837,4 +2016,34 @@ var rocket;
             return FixedHeader;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        var EntryForm = (function () {
+            function EntryForm(jqEntryForm) {
+                this.jqEntryForm = jqEntryForm;
+            }
+            EntryForm.prototype.getJQuery = function () {
+                return this.jqEntryForm;
+            };
+            EntryForm.prototype.hasTypeSelector = function () {
+                return this.jqEntryForm.find(".rocket-type-dependent-entry-form").length > 0;
+            };
+            EntryForm.from = function (jqElem, create) {
+                if (create === void 0) { create = false; }
+                var entryForm = jqElem.data("rocketEntryForm");
+                if (entryForm instanceof EntryForm)
+                    return entryForm;
+                if (!create)
+                    return null;
+                entryForm = new EntryForm(jqElem);
+                jqElem.data("rocketEntryForm", entryForm);
+                return entryForm;
+            };
+            return EntryForm;
+        }());
+        display.EntryForm = EntryForm;
+    })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));

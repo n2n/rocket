@@ -43,8 +43,6 @@ namespace rocket.impl {
 			this.sortable = (true == jqToMany.data("sortable"))
 			this.closeLabel = jqToMany.data("close-label");
 			
-			jqToMany.data("rocketToMany", this);
-			
 			this.jqEmbedded = $("<div />", {
 				"class": "rocket-impl-embedded"
 			});
@@ -56,7 +54,7 @@ namespace rocket.impl {
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
 					var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
-					var that = this;
+					let that = this;
 					jqButton.click(function () {
 						that.expand();
 					});
@@ -68,11 +66,15 @@ namespace rocket.impl {
 			}
 			
 			if (this.addButtonFactory !== null) {
-				var lastButton = this.addButtonFactory.create(function (embeddedEntry: EmbeddedEntry) {
-					that.addEntry(embeddedEntry);
-				});
-				
+				var lastButton = this.addButtonFactory.create();
 				this.jqToMany.append(lastButton.getJQuery());
+				let that = this;
+				lastButton.onNewEmbeddedEntry(function(embeddedEntry: EmbeddedEntry) {
+					that.addEntry(embeddedEntry);
+					if (!that.isExpanded()) {
+						that.expand(embeddedEntry);
+					}
+				});
 			}
 		}
 		
@@ -90,7 +92,6 @@ namespace rocket.impl {
 			}
 			
 			this.moveConf(this.entries.length - 1);
-			
 			
 			var that = this;
 			
@@ -236,16 +237,16 @@ namespace rocket.impl {
 				this.enabledSortable();
 			}
 			
-			rocket.scan();
+			n2n.ajah.update();
 		}
 		
 		public static from(jqToMany: JQuery): ToMany {
-			var toMany: ToMany = jqToMany.data("rocketToMany");
+			var toMany: ToMany = jqToMany.data("rocketImplToMany");
 			if (toMany instanceof ToMany) {
 				return toMany;
 			}
 			
-			var jqNews = jqToMany.find(".rocket-impl-news");
+			var jqNews = jqToMany.children(".rocket-impl-news");
 			var propertyPath = jqNews.data("property-path");
 			
 			var startKey: number = 0;
@@ -266,7 +267,8 @@ namespace rocket.impl {
 			
 			var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
 							jqNews.data("draftMode"), startKey, "n")
-			toMany = new ToMany(jqToMany, new AddButtonFactory(entryFormRetriever, jqNews.data("add-item-label")));			
+			toMany = new ToMany(jqToMany, new AddButtonFactory(entryFormRetriever, jqNews.data("add-item-label")));	
+			jqToMany.data("rocketImplToMany", toMany);		
 			
 			jqToMany.find(".rocket-impl-entry").each(function () {
 				toMany.addEntry(new EmbeddedEntry($(this)));
@@ -285,7 +287,7 @@ namespace rocket.impl {
 			this.label = label;
 		}
 		
-		public create(callback: (embeddedEntry: EmbeddedEntry) => any) {
+		public create() {
 			return AddControl.create(this.label, this.embeddedEntryRetriever);
 		}
 	}
@@ -335,6 +337,14 @@ namespace rocket.impl {
 		}	
 		
 		private examine(embeddedEntry: EmbeddedEntry) {
+			this.block(false);
+			
+			if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
+				this.fireCallbacks(embeddedEntry);
+				return;
+			}
+			
+			alert("todo");
 		}
 		
 		public isLoading() {
@@ -352,7 +362,7 @@ namespace rocket.impl {
 		}
 		
 		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever): AddControl {
-			return new AddControl($("<div />").append($("<button />", { "text": label })),
+			return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })),
 					embeddedEntryRetriever);
 		} 
 	}
@@ -363,6 +373,7 @@ namespace rocket.impl {
 		private jqSummary: JQuery;
 		
 		private bodyGroup: display.StructureElement;
+		private entryForm: display.EntryForm;
 		
 		private jqExpMoveUpButton: JQuery;
 		private jqExpMoveDownButton: JQuery;
@@ -375,6 +386,7 @@ namespace rocket.impl {
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
 			this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true); 
+			this.entryForm = display.EntryForm.from(jqEntry, true);
 			
 			var ecl = this.bodyGroup.getToolbar().getCommandList();
 			this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
@@ -388,6 +400,10 @@ namespace rocket.impl {
 			this.reduce();
 			
 			jqEntry.data("rocketImplEmbeddedEntry", this);
+		}
+		
+		public getEntryForm(): display.EntryForm {
+			return this.entryForm;
 		}
 		
 		public onMove(callback: (up: boolean) => any) {

@@ -111,7 +111,7 @@ class ToManyDynMappingFormFactory {
 		}
 		
 		return $this->newMappingForms[$key] = new MappingForm(
-				$this->eiuFrame->getGenericLabel(), null,
+				$this->eiuFrame->getGenericLabel(), $this->eiuFrame->getGenericIconType(), null,
 				$this->eiuFrame->createNewEntryForm($this->draftMode));
 	}
 }

@@ -1,5 +1,5 @@
 namespace rocket.display {
-	class EntryForm {
+	export class EntryForm {
 		private jqEntryForm: JQuery;
 		
 		constructor (jqEntryForm: JQuery) {
