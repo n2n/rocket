@@ -24,7 +24,6 @@ namespace rocket\spec\ei\manage\util\model;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\spec\ei\manage\gui\EiEntryGui;
 
 class EntryModelForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

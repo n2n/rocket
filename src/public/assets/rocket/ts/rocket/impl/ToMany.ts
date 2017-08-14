@@ -311,8 +311,7 @@ namespace rocket.impl {
 				that.block(true);
 				that.embeddedEntryRetriever.lookupNew(
 						function (embeddedEntry: EmbeddedEntry) {
-							
-							that.block(false);
+							that.examine(embeddedEntry);
 						},
 						function () {
 							that.block(false);
@@ -327,11 +326,16 @@ namespace rocket.impl {
 		
 		private block(blocked: boolean) {
 			if (blocked) {
+				this.jqButton.prop("disabled", true);
 				this.jqElem.addClass("rocket-impl-loading");
 			} else {
+				this.jqButton.prop("disabled", false);
 				this.jqElem.removeClass("rocket-impl-loading");
 			}
 		}	
+		
+		private examine(embeddedEntry: EmbeddedEntry) {
+		}
 		
 		public isLoading() {
 			return this.jqElem.hasClass("rocket-impl-loading");
@@ -572,15 +576,5 @@ namespace rocket.impl {
 	interface PendingLookup {
 		doneCallback: (embeddedEntry: EmbeddedEntry) => any;
 		failCallback: () => any;
-	}
-	
-	class EntryForm {
-		private jqEntryForm: JQuery;
-		
-		constructor (jqEntryForm: JQuery) {
-			this.jqEntryForm = jqEntryForm;
-		}
-		
-		
 	}
 }
