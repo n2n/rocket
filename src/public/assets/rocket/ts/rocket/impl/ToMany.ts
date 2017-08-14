@@ -32,9 +32,13 @@ namespace rocket.impl {
 		private sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
+		private jqEntries: JQuery;
 		private expandContext: cmd.Context = null;
+		private dominantEntry: EmbeddedEntry = null;
 		private closeLabel: string;
-		private addButtons: Array<AddControl> = new Array<AddControl>();
+		private firstAddControl: AddControl = null;
+		private lastAddControl: AddControl = null
+		private entryAddControls: Array<AddControl> = new Array<AddControl>();
 		
 		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToMany = jqToMany;
@@ -46,11 +50,14 @@ namespace rocket.impl {
 			this.jqEmbedded = $("<div />", {
 				"class": "rocket-impl-embedded"
 			});
-			
 			this.jqToMany.append(this.jqEmbedded);
+			
+			this.jqEntries = $("<div />");
+			this.jqEmbedded.append(this.jqEntries);
 			
 			if (this.compact) {
 				var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
+				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
 					var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
@@ -65,52 +72,139 @@ namespace rocket.impl {
 				this.initSortable();
 			}
 			
-			this.initAddControl();
+			this.changed();
 		}
 		
-		private initAddControl(entry: EmbeddedEntry = null) {
-			if (this.addControlFactory === null) return null;
-			
-			var addControl = this.addControlFactory.create();
-			
-			var that = this;
-			if (entry !== null) {
-				addControl.getJQuery().insertBefore(entry.getJQuery());
-				addControl.onNewEmbeddedEntry(function(embeddedEntry: EmbeddedEntry) {
-					that.insertEntry(embeddedEntry, entry);
-					
-				});
-			} else {	
-				addControl.getJQuery().insertAfter(this.jqEmbedded);
-				addControl.onNewEmbeddedEntry(function(embeddedEntry: EmbeddedEntry) {
-					that.addEntry(embeddedEntry);
-					if (!that.isExpanded()) {
-						that.expand(embeddedEntry);
-					}
-				});
+		private changed() {
+			for (let i in this.entries) {
+				let index = parseInt(i); 
+				this.entries[index].setOrderIndex(index);
+				
+				if (this.isPartialExpaned()) continue;
+				this.entries[index].setMoveUpEnabled(index > 0);
+				this.entries[index].setMoveDownEnabled(index < this.entries.length - 1);
 			}
 			
+			if (this.addControlFactory === null) return;
+			
+			if (this.entries.length === 0 && this.firstAddControl !== null) {
+				this.firstAddControl.dispose();
+				this.firstAddControl = null;
+			}
+			
+			if (this.entries.length > 0 && this.firstAddControl === null) {
+				this.firstAddControl = this.createFirstAddControl();
+			}
+				
+			for (var i in this.entryAddControls) {
+				this.entryAddControls[i].dispose();
+			}
+			
+			if (this.isExpanded() && !this.isPartialExpaned()) {
+				for (var i in this.entries) {
+					if (parseInt(i) == 0) continue;
+					
+					this.entryAddControls.push(this.createEntryAddControl(this.entries[i]));
+				}
+			}
+			
+			if (this.lastAddControl === null) {
+				this.lastAddControl = this.createLastAddControl();
+			}
+			
+			if (this.isPartialExpaned()) {
+				if (this.firstAddControl !== null) {
+					this.firstAddControl.getJQuery().hide();
+				}
+				this.lastAddControl.getJQuery().hide();
+			} else {
+				if (this.firstAddControl !== null) {
+					this.firstAddControl.getJQuery().show();
+				}
+				this.lastAddControl.getJQuery().show();
+			}
+		}
+		
+		private createFirstAddControl(): AddControl {
+			var addControl = this.addControlFactory.create();
+			var that = this;
+				
+			this.jqEmbedded.prepend(addControl.getJQuery());
+			
+			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
+				that.insertEntry(newEntry);
+				if (!that.isExpanded()) {
+					that.expand(newEntry);
+				}
+			});
 			return addControl;
 		}
 		
-		public insertEntry(entry: EmbeddedEntry, beforeEntry: EmbeddedEntry) {
+		private createEntryAddControl(entry: EmbeddedEntry): AddControl {
+			var addControl = this.addControlFactory.create();
+			var that = this;
+			
+			this.entryAddControls.push(addControl);
+			addControl.getJQuery().insertBefore(entry.getJQuery());
+			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
+				that.insertEntry(newEntry, entry);
+			});
+			return addControl;
+		}
+		
+		private createLastAddControl(): AddControl {
+			var addControl = this.addControlFactory.create();
+			var that = this;
+			
+			this.jqEmbedded.append(addControl.getJQuery());
+			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
+				that.addEntry(newEntry);
+				if (!that.isExpanded()) {
+					that.expand(newEntry);
+				}
+			});
+			return addControl;
+		}
+		
+		
+		public insertEntry(entry: EmbeddedEntry, beforeEntry: EmbeddedEntry = null) {
+			entry.getJQuery().detach();
+			
+			if (beforeEntry === null) {
+				this.entries.unshift(entry);
+				this.jqEntries.prepend(entry.getJQuery());
+			} else {
+				entry.getJQuery().insertBefore(beforeEntry.getJQuery());
+				this.entries.splice(beforeEntry.getOrderIndex(), 0, entry);
+			}
+			
+			this.initEntry(entry);
+			this.changed();
 		}
 		
 		public addEntry(entry: EmbeddedEntry) {
 			entry.setOrderIndex(this.entries.length);
 			this.entries.push(entry);
+			this.jqEntries.append(entry.getJQuery());
+		
+			this.initEntry(entry);
+			this.changed();
+		}
+		
+		private switchIndex(oldIndex: number, newIndex: number) {
+			var entry = this.entries[oldIndex];
+			this.entries[oldIndex] = this.entries[newIndex];
+			this.entries[newIndex] = entry;
 			
-			entry.getJQuery().detach();
-			this.jqEmbedded.append(entry.getJQuery());
+			this.changed();
+		}
 			
+		private initEntry(entry: EmbeddedEntry) {
 			if (this.isExpanded()) {
 				entry.expand();
-				this.initAddControl(entry);
 			} else {
 				entry.reduce();
 			}
-			
-			this.moveConf(this.entries.length - 1);
 			
 			var that = this;
 			
@@ -128,24 +222,14 @@ namespace rocket.impl {
 					that.entries[oldIndex].getJQuery().insertAfter(that.entries[newIndex].getJQuery());
 				}
 				
-				that.reIndex(oldIndex, newIndex);
+				that.switchIndex(oldIndex, newIndex);
 			});
 			
 			entry.onRemove(function () {
 				that.entries.splice(entry.getOrderIndex(), 1);
 				entry.getJQuery().remove();
 				
-				var index = 0;
-				for (var i in that.entries) {
-					that.entries[i].setOrderIndex(index);
-					that.entries[index] = that.entries[i];
-					index++;
-				}	
-				
-				if (that.entries.length > 0) {
-					that.moveConf(0);
-					that.moveConf(that.entries.length - 1);
-				}
+				this.update();
 			});
 			
 			entry.onEdit(function () {
@@ -153,27 +237,10 @@ namespace rocket.impl {
 			});
 		}
 		
-		private reIndex(oldIndex: number, newIndex: number) {
-			this.entries[oldIndex].setOrderIndex(newIndex);
-			this.entries[newIndex].setOrderIndex(oldIndex);
-			
-			var entry = this.entries[oldIndex];
-			this.entries[oldIndex] = this.entries[newIndex];
-			this.entries[newIndex] = entry;
-			
-			this.moveConf(oldIndex);
-			this.moveConf(newIndex);
-		}
-		
-		private moveConf(index: number) {
-			this.entries[index].setMoveUpEnabled(index > 0);
-			this.entries[index].setMoveDownEnabled(index < this.entries.length - 1);
-		}	
-		
 		private initSortable() {
 			var that = this;
 			var oldIndex: number = 0;
-			this.jqEmbedded.sortable({
+			this.jqEntries.sortable({
 				"handle": ".rocket-impl-handle",
 				"forcePlaceholderSize": true,
 		      	"placeholder": "rocket-impl-entry-placeholder",
@@ -183,25 +250,29 @@ namespace rocket.impl {
 				"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
 					var newIndex = ui.item.index();
 					
-					that.reIndex(oldIndex, newIndex);
+					that.switchIndex(oldIndex, newIndex);
 				}
 		    }).disableSelection();
 		}
 		
 		
 		private enabledSortable() {
-			this.jqEmbedded.sortable("enable");
-			this.jqEmbedded.disableSelection();
+			this.jqEntries.sortable("enable");
+			this.jqEntries.disableSelection();
 		}
 		
 		private disableSortable() {
-			this.jqEmbedded.sortable("disable");
-			this.jqEmbedded.enableSelection();
+			this.jqEntries.sortable("disable");
+			this.jqEntries.enableSelection();
 		}
 		
 		public isExpanded(): boolean {
 			return this.expandContext !== null;
 		}
+		
+		public isPartialExpaned() {
+			return this.dominantEntry !== null;
+		}	 
 		
 		public expand(dominantEntry: EmbeddedEntry = null) {
 			if (this.isExpanded()) return;
@@ -210,6 +281,7 @@ namespace rocket.impl {
 				this.disableSortable();
 			}
 			
+			this.dominantEntry = dominantEntry;
 			this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
 			this.jqEmbedded.detach();
 			this.expandContext.applyContent(this.jqEmbedded);
@@ -237,12 +309,14 @@ namespace rocket.impl {
 				that.reduce();
 			});
 			
+			this.changed();
 			n2n.ajah.update();
 		}
 		
 		public reduce() {
 			if (!this.isExpanded()) return;
 			
+			this.dominantEntry = null;
 			this.expandContext = null;
 			
 			this.jqEmbedded.detach();
@@ -256,6 +330,7 @@ namespace rocket.impl {
 				this.enabledSortable();
 			}
 			
+			this.changed();
 			n2n.ajah.update();
 		}
 		
@@ -316,6 +391,8 @@ namespace rocket.impl {
 		private jqElem: JQuery;
 		private jqButton: JQuery;
 		private onNewEntryCallbacks: Array<(EmbeddedEntry) => any> = new Array<(EmbeddedEntry) => any>();
+		private examinedEmbeddedEntry: EmbeddedEntry; 
+		private disposed: boolean = false;
 		
 		constructor(jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever) {
 			this.embeddedEntryRetriever = embeddedEntryRetriever;
@@ -363,7 +440,17 @@ namespace rocket.impl {
 				return;
 			}
 			
-			alert("todo");
+			this.examinedEmbeddedEntry = embeddedEntry;
+		}
+		
+		public dispose() {
+			this.disposed = true;
+			this.jqElem.remove();
+			
+			if (this.examinedEmbeddedEntry !== null) {
+				this.fireCallbacks(this.examinedEmbeddedEntry);
+				this.examinedEmbeddedEntry = null;
+			}
 		}
 		
 		public isLoading() {
@@ -371,6 +458,8 @@ namespace rocket.impl {
 		}
 		
 		private fireCallbacks(embeddedEntry: EmbeddedEntry) {
+			if (this.disposed) return;
+			
 			this.onNewEntryCallbacks.forEach(function (callback: (EmbeddedEntry) => any) {
 				callback(embeddedEntry);
 			});

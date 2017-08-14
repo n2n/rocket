@@ -17,8 +17,24 @@ namespace rocket.display {
 			return this.jqElem;
 		}
 		
+		public setGroup(group: boolean) {
+			if (!group) {
+				this.jqElem.removeClass("rocket-group");
+			} else {
+				this.jqElem.addClass("rocket-group");
+			}
+		}
+		
 		public isGroup(): boolean {
 			return this.jqElem.hasClass("rocket-group") || this.jqElem.hasClass("rocket-group-main");
+		}
+		
+		public setField(field: boolean) {
+			if (!field) {
+				this.jqElem.removeClass("rocket-field");
+			} else {
+				this.jqElem.addClass("rocket-field");
+			}
 		}
 		
 		public isField(): boolean {
