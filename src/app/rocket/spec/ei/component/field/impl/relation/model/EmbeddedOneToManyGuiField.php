@@ -77,7 +77,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		
 		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
 		
-		$detailViews = array();
+		$targetEiuEntries = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			$targetEiEntry = null;
 			if ($targetRelationEntry->hasEiEntry()) {
@@ -87,16 +87,11 @@ class EmbeddedOneToManyGuiField implements GuiField {
 						$targetRelationEntry->getEiObject());
 			}
 			
-			if ($targetEiEntry->isAccessible()) {
-				$detailViews[] = $targetEiuFrame->entry($targetEiEntry)->newEntryGui(true)->createView();
-			} else {
-				$detailViews[] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetEiuFrame->createIdentityString($targetEiEntry->getEiObject()));
-			}
+			$targetEiuEntries[] = $targetEiuFrame->entry($targetEiEntry);
 		}
 
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\embeddedOneToMany.html',
-				array('detailViews' => $detailViews));
+				array('eiuEntries' => $targetEiuEntries));
 	}
 
 	/**

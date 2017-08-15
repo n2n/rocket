@@ -25,14 +25,13 @@
 	
 	$view = HtmlView::view($this);
 
-	$detailViews = $view->getParam('detailViews');
+	$eiuEntries = $view->getParam('eiuEntries');
 ?>
 <div class="rocket-to-many">
-	<div class="rocket-option-array">
-		<?php foreach ($detailViews as $entryView): ?>
-			<div class="rocket-controls">
-				<?php $view->import($entryView)?>
-			</div>
+	<div class="rocket-impl-entries">
+		
+		<?php foreach ($eiuEntries as $eiuEntry): ?>
+			<?php $view->import('embeddedEntry.html', array('eiuEntry' => $eiuEntry)) ?>
 		<?php endforeach ?>
 	</div>
 </div>

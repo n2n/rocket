@@ -71,8 +71,8 @@ class GuiFactory {
 			}
 		}
 		
-		foreach ($this->eiModificatorCollection as $modificator) {
-			$modificator->setupGuiDefinition($guiDefinition);
+		foreach ($this->eiModificatorCollection as $eiModificator) {
+			$eiModificator->setupGuiDefinition($guiDefinition);
 		}
 		
 		return $guiDefinition;

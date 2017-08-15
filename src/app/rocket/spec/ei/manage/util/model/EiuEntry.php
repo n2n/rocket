@@ -86,6 +86,13 @@ class EiuEntry {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function isAccessible() {
+		return $this->eiEntry->isAccessible();
+	}
+	
+	/**
 	 * @param bool $eiObjectObj
 	 * @param bool $editable
 	 * @throws EiuPerimeterException
@@ -265,6 +272,29 @@ class EiuEntry {
 		}
 	
 		return $draft->getId();
+	}
+	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	public function getGenericLabel(N2nLocale $n2nLocale = null) {
+		return $this->eiuFrame->getGenericLabel($this, $n2nLocale);
+	}
+
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	public function getGenericPluralLabel(N2nLocale $n2nLocale = null) {
+		return $this->eiuFrame->getGenericPluralLabel($this, $n2nLocale);
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getGenericIconType() {
+		return $this->eiEntry->getEiType()->getIconType();
 	}
 	
 	/**

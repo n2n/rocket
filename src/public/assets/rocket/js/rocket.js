@@ -247,8 +247,24 @@ var rocket;
             StructureElement.prototype.getJQuery = function () {
                 return this.jqElem;
             };
+            StructureElement.prototype.setGroup = function (group) {
+                if (!group) {
+                    this.jqElem.removeClass("rocket-group");
+                }
+                else {
+                    this.jqElem.addClass("rocket-group");
+                }
+            };
             StructureElement.prototype.isGroup = function () {
                 return this.jqElem.hasClass("rocket-group") || this.jqElem.hasClass("rocket-group-main");
+            };
+            StructureElement.prototype.setField = function (field) {
+                if (!field) {
+                    this.jqElem.removeClass("rocket-field");
+                }
+                else {
+                    this.jqElem.addClass("rocket-field");
+                }
             };
             StructureElement.prototype.isField = function () {
                 return this.jqElem.hasClass("rocket-field");
@@ -472,7 +488,10 @@ var rocket;
                 this.sortable = true;
                 this.entries = new Array();
                 this.expandContext = null;
-                this.addButtons = new Array();
+                this.dominantEntry = null;
+                this.firstAddControl = null;
+                this.lastAddControl = null;
+                this.entryAddControls = new Array();
                 this.jqToMany = jqToMany;
                 this.addControlFactory = addButtonFactory;
                 this.compact = (true == jqToMany.data("compact"));
@@ -482,8 +501,11 @@ var rocket;
                     "class": "rocket-impl-embedded"
                 });
                 this.jqToMany.append(this.jqEmbedded);
+                this.jqEntries = $("<div />");
+                this.jqEmbedded.append(this.jqEntries);
                 if (this.compact) {
                     var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
+                    structureElement.setGroup(true);
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
                         var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
@@ -496,46 +518,120 @@ var rocket;
                 if (this.sortable) {
                     this.initSortable();
                 }
-                this.initAddControl();
+                this.changed();
             }
-            ToMany.prototype.initAddControl = function (entry) {
-                if (entry === void 0) { entry = null; }
+            ToMany.prototype.changed = function () {
+                for (var i_1 in this.entries) {
+                    var index = parseInt(i_1);
+                    this.entries[index].setOrderIndex(index);
+                    if (this.isPartialExpaned())
+                        continue;
+                    this.entries[index].setMoveUpEnabled(index > 0);
+                    this.entries[index].setMoveDownEnabled(index < this.entries.length - 1);
+                }
                 if (this.addControlFactory === null)
-                    return null;
-                var addControl = this.addControlFactory.create();
-                var that = this;
-                if (entry !== null) {
-                    addControl.getJQuery().insertBefore(entry.getJQuery());
-                    addControl.onNewEmbeddedEntry(function (embeddedEntry) {
-                        that.insertEntry(embeddedEntry, entry);
-                    });
+                    return;
+                if (this.entries.length === 0 && this.firstAddControl !== null) {
+                    this.firstAddControl.dispose();
+                    this.firstAddControl = null;
+                }
+                if (this.entries.length > 0 && this.firstAddControl === null) {
+                    this.firstAddControl = this.createFirstAddControl();
+                }
+                for (var i in this.entryAddControls) {
+                    this.entryAddControls[i].dispose();
+                }
+                if (this.isExpanded() && !this.isPartialExpaned()) {
+                    for (var i in this.entries) {
+                        if (parseInt(i) == 0)
+                            continue;
+                        this.entryAddControls.push(this.createEntryAddControl(this.entries[i]));
+                    }
+                }
+                if (this.lastAddControl === null) {
+                    this.lastAddControl = this.createLastAddControl();
+                }
+                if (this.isPartialExpaned()) {
+                    if (this.firstAddControl !== null) {
+                        this.firstAddControl.getJQuery().hide();
+                    }
+                    this.lastAddControl.getJQuery().hide();
                 }
                 else {
-                    addControl.getJQuery().insertAfter(this.jqEmbedded);
-                    addControl.onNewEmbeddedEntry(function (embeddedEntry) {
-                        that.addEntry(embeddedEntry);
-                        if (!that.isExpanded()) {
-                            that.expand(embeddedEntry);
-                        }
-                    });
+                    if (this.firstAddControl !== null) {
+                        this.firstAddControl.getJQuery().show();
+                    }
+                    this.lastAddControl.getJQuery().show();
                 }
+            };
+            ToMany.prototype.createFirstAddControl = function () {
+                var addControl = this.addControlFactory.create();
+                var that = this;
+                this.jqEmbedded.prepend(addControl.getJQuery());
+                addControl.onNewEmbeddedEntry(function (newEntry) {
+                    that.insertEntry(newEntry);
+                    if (!that.isExpanded()) {
+                        that.expand(newEntry);
+                    }
+                });
+                return addControl;
+            };
+            ToMany.prototype.createEntryAddControl = function (entry) {
+                var addControl = this.addControlFactory.create();
+                var that = this;
+                this.entryAddControls.push(addControl);
+                addControl.getJQuery().insertBefore(entry.getJQuery());
+                addControl.onNewEmbeddedEntry(function (newEntry) {
+                    that.insertEntry(newEntry, entry);
+                });
+                return addControl;
+            };
+            ToMany.prototype.createLastAddControl = function () {
+                var addControl = this.addControlFactory.create();
+                var that = this;
+                this.jqEmbedded.append(addControl.getJQuery());
+                addControl.onNewEmbeddedEntry(function (newEntry) {
+                    that.addEntry(newEntry);
+                    if (!that.isExpanded()) {
+                        that.expand(newEntry);
+                    }
+                });
                 return addControl;
             };
             ToMany.prototype.insertEntry = function (entry, beforeEntry) {
+                if (beforeEntry === void 0) { beforeEntry = null; }
+                entry.getJQuery().detach();
+                if (beforeEntry === null) {
+                    this.entries.unshift(entry);
+                    this.jqEntries.prepend(entry.getJQuery());
+                }
+                else {
+                    entry.getJQuery().insertBefore(beforeEntry.getJQuery());
+                    this.entries.splice(beforeEntry.getOrderIndex(), 0, entry);
+                }
+                this.initEntry(entry);
+                this.changed();
             };
             ToMany.prototype.addEntry = function (entry) {
                 entry.setOrderIndex(this.entries.length);
                 this.entries.push(entry);
-                entry.getJQuery().detach();
-                this.jqEmbedded.append(entry.getJQuery());
+                this.jqEntries.append(entry.getJQuery());
+                this.initEntry(entry);
+                this.changed();
+            };
+            ToMany.prototype.switchIndex = function (oldIndex, newIndex) {
+                var entry = this.entries[oldIndex];
+                this.entries[oldIndex] = this.entries[newIndex];
+                this.entries[newIndex] = entry;
+                this.changed();
+            };
+            ToMany.prototype.initEntry = function (entry) {
                 if (this.isExpanded()) {
                     entry.expand();
-                    this.initAddControl(entry);
                 }
                 else {
                     entry.reduce();
                 }
-                this.moveConf(this.entries.length - 1);
                 var that = this;
                 entry.onMove(function (up) {
                     var oldIndex = entry.getOrderIndex();
@@ -549,43 +645,21 @@ var rocket;
                     else {
                         that.entries[oldIndex].getJQuery().insertAfter(that.entries[newIndex].getJQuery());
                     }
-                    that.reIndex(oldIndex, newIndex);
+                    that.switchIndex(oldIndex, newIndex);
                 });
                 entry.onRemove(function () {
                     that.entries.splice(entry.getOrderIndex(), 1);
                     entry.getJQuery().remove();
-                    var index = 0;
-                    for (var i in that.entries) {
-                        that.entries[i].setOrderIndex(index);
-                        that.entries[index] = that.entries[i];
-                        index++;
-                    }
-                    if (that.entries.length > 0) {
-                        that.moveConf(0);
-                        that.moveConf(that.entries.length - 1);
-                    }
+                    this.update();
                 });
                 entry.onEdit(function () {
                     that.expand(entry);
                 });
             };
-            ToMany.prototype.reIndex = function (oldIndex, newIndex) {
-                this.entries[oldIndex].setOrderIndex(newIndex);
-                this.entries[newIndex].setOrderIndex(oldIndex);
-                var entry = this.entries[oldIndex];
-                this.entries[oldIndex] = this.entries[newIndex];
-                this.entries[newIndex] = entry;
-                this.moveConf(oldIndex);
-                this.moveConf(newIndex);
-            };
-            ToMany.prototype.moveConf = function (index) {
-                this.entries[index].setMoveUpEnabled(index > 0);
-                this.entries[index].setMoveDownEnabled(index < this.entries.length - 1);
-            };
             ToMany.prototype.initSortable = function () {
                 var that = this;
                 var oldIndex = 0;
-                this.jqEmbedded.sortable({
+                this.jqEntries.sortable({
                     "handle": ".rocket-impl-handle",
                     "forcePlaceholderSize": true,
                     "placeholder": "rocket-impl-entry-placeholder",
@@ -594,20 +668,23 @@ var rocket;
                     },
                     "update": function (event, ui) {
                         var newIndex = ui.item.index();
-                        that.reIndex(oldIndex, newIndex);
+                        that.switchIndex(oldIndex, newIndex);
                     }
                 }).disableSelection();
             };
             ToMany.prototype.enabledSortable = function () {
-                this.jqEmbedded.sortable("enable");
-                this.jqEmbedded.disableSelection();
+                this.jqEntries.sortable("enable");
+                this.jqEntries.disableSelection();
             };
             ToMany.prototype.disableSortable = function () {
-                this.jqEmbedded.sortable("disable");
-                this.jqEmbedded.enableSelection();
+                this.jqEntries.sortable("disable");
+                this.jqEntries.enableSelection();
             };
             ToMany.prototype.isExpanded = function () {
                 return this.expandContext !== null;
+            };
+            ToMany.prototype.isPartialExpaned = function () {
+                return this.dominantEntry !== null;
             };
             ToMany.prototype.expand = function (dominantEntry) {
                 if (dominantEntry === void 0) { dominantEntry = null; }
@@ -616,6 +693,7 @@ var rocket;
                 if (this.sortable) {
                     this.disableSortable();
                 }
+                this.dominantEntry = dominantEntry;
                 this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
                 this.jqEmbedded.detach();
                 this.expandContext.applyContent(this.jqEmbedded);
@@ -640,11 +718,13 @@ var rocket;
                 this.expandContext.onClose(function () {
                     that.reduce();
                 });
+                this.changed();
                 n2n.ajah.update();
             };
             ToMany.prototype.reduce = function () {
                 if (!this.isExpanded())
                     return;
+                this.dominantEntry = null;
                 this.expandContext = null;
                 this.jqEmbedded.detach();
                 this.jqToMany.append(this.jqEmbedded);
@@ -654,6 +734,7 @@ var rocket;
                 if (this.sortable) {
                     this.enabledSortable();
                 }
+                this.changed();
                 n2n.ajah.update();
             };
             ToMany.from = function (jqToMany) {
@@ -701,6 +782,7 @@ var rocket;
         var AddControl = (function () {
             function AddControl(jqElem, embeddedEntryRetriever) {
                 this.onNewEntryCallbacks = new Array();
+                this.disposed = false;
                 this.embeddedEntryRetriever = embeddedEntryRetriever;
                 this.jqElem = jqElem;
                 this.jqButton = jqElem.children("button");
@@ -738,12 +820,22 @@ var rocket;
                     this.fireCallbacks(embeddedEntry);
                     return;
                 }
-                alert("todo");
+                this.examinedEmbeddedEntry = embeddedEntry;
+            };
+            AddControl.prototype.dispose = function () {
+                this.disposed = true;
+                this.jqElem.remove();
+                if (this.examinedEmbeddedEntry !== null) {
+                    this.fireCallbacks(this.examinedEmbeddedEntry);
+                    this.examinedEmbeddedEntry = null;
+                }
             };
             AddControl.prototype.isLoading = function () {
                 return this.jqElem.hasClass("rocket-impl-loading");
             };
             AddControl.prototype.fireCallbacks = function (embeddedEntry) {
+                if (this.disposed)
+                    return;
                 this.onNewEntryCallbacks.forEach(function (callback) {
                     callback(embeddedEntry);
                 });
@@ -1852,6 +1944,36 @@ var rocket;
         cmd.Url = Url;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        var EntryForm = (function () {
+            function EntryForm(jqEntryForm) {
+                this.jqEntryForm = jqEntryForm;
+            }
+            EntryForm.prototype.getJQuery = function () {
+                return this.jqEntryForm;
+            };
+            EntryForm.prototype.hasTypeSelector = function () {
+                return this.jqEntryForm.find(".rocket-type-dependent-entry-form").length > 0;
+            };
+            EntryForm.from = function (jqElem, create) {
+                if (create === void 0) { create = false; }
+                var entryForm = jqElem.data("rocketEntryForm");
+                if (entryForm instanceof EntryForm)
+                    return entryForm;
+                if (!create)
+                    return null;
+                entryForm = new EntryForm(jqElem);
+                jqElem.data("rocketEntryForm", entryForm);
+                return entryForm;
+            };
+            return EntryForm;
+        }());
+        display.EntryForm = EntryForm;
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -2033,34 +2155,4 @@ var rocket;
             return FixedHeader;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
-        var EntryForm = (function () {
-            function EntryForm(jqEntryForm) {
-                this.jqEntryForm = jqEntryForm;
-            }
-            EntryForm.prototype.getJQuery = function () {
-                return this.jqEntryForm;
-            };
-            EntryForm.prototype.hasTypeSelector = function () {
-                return this.jqEntryForm.find(".rocket-type-dependent-entry-form").length > 0;
-            };
-            EntryForm.from = function (jqElem, create) {
-                if (create === void 0) { create = false; }
-                var entryForm = jqElem.data("rocketEntryForm");
-                if (entryForm instanceof EntryForm)
-                    return entryForm;
-                if (!create)
-                    return null;
-                entryForm = new EntryForm(jqElem);
-                jqElem.data("rocketEntryForm", entryForm);
-                return entryForm;
-            };
-            return EntryForm;
-        }());
-        display.EntryForm = EntryForm;
-    })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));

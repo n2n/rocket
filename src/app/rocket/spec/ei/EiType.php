@@ -111,6 +111,10 @@ class EiType extends Spec implements EiThing {
 		return new Lstr($this->eiDef->getPluralLabel(), $this->moduleNamespace);
 	}
 	
+	public function getIconType(): string {
+		return $this->eiDef->getIconType();
+	}
+	
 	/**
 	 * @return \rocket\spec\ei\EiDef
 	 */

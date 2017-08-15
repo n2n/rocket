@@ -43,6 +43,11 @@ interface EiThing {
 	public function getPluralLabelLstr(): Lstr;
 	
 	/**
+	 * @return string
+	 */
+	public function getIconType(): string;
+	
+	/**
 	 * @return \rocket\spec\ei\EiEngine
 	 */
 	public function getEiEngine(): EiEngine;

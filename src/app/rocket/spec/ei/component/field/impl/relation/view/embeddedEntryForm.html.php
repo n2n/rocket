@@ -1,7 +1,13 @@
 <?php
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
+	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\web\ui\view\View;
 
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($this);
+	$formHtml = HtmlView::formHtml($this);
+	
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
 ?>
@@ -13,9 +19,19 @@
 	<?php $formHtml->optionalObjectEnabledHidden() ?>
 		
 	<?php if (!$mappingForm->isAccessible()): ?>
-		<span class="rocket-impl-summary">
-			<?php $html->out($mappingForm->getEntryLabel()) ?>
-		</span>
+		<div class="rocket-impl-summary">
+			<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+			<div>
+				<?php $html->out($mappingForm->getEntryLabel()) ?>
+			</div>
+		</div>
+		
+		<div class="rocket-impl-body rocket-group">
+			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
+			<div class="rocket-controls">
+				<?php $html->text('ei_impl_not_accessible') ?>
+			</div>
+		</div>
 	<?php else: ?>
 		<div class="rocket-impl-summary">
 			<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>

@@ -19,40 +19,40 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage;
+// namespace rocket\spec\ei\manage;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiIdPath;
-use rocket\spec\ei\manage\gui\GuiDefinition;
-use n2n\web\ui\UiComponent;
-use n2n\impl\web\ui\view\html\HtmlElement;
-use n2n\impl\web\ui\view\html\HtmlUtils;
+// use n2n\impl\web\ui\view\html\HtmlView;
+// use rocket\spec\ei\manage\gui\GuiIdPath;
+// use rocket\spec\ei\manage\gui\GuiDefinition;
+// use n2n\web\ui\UiComponent;
+// use n2n\impl\web\ui\view\html\HtmlElement;
+// use n2n\impl\web\ui\view\html\HtmlUtils;
 
-class EiHtmlBuilder {
-	private $view;
-	private $guiDefinition;
+// class EiHtmlBuilder {
+// 	private $view;
+// 	private $guiDefinition;
 	
-	public function __construct(HtmlView $view, GuiDefinition $guiDefinition) {
-		$this->view = $view;
-		$this->guiDefinition = $guiDefinition;
-	}
+// 	public function __construct(HtmlView $view, GuiDefinition $guiDefinition) {
+// 		$this->view = $view;
+// 		$this->guiDefinition = $guiDefinition;
+// 	}
 	
-	public function simpleLabel($guiIdPath) {
-		$this->view->getHtmlBuilder()->out($this->getSimpleLabel($guiIdPath));
-	}
+// 	public function simpleLabel($guiIdPath) {
+// 		$this->view->getHtmlBuilder()->out($this->getSimpleLabel($guiIdPath));
+// 	}
 	
-	public function getSimpleLabel($guiIdPath): UiComponent {
-		return $this->view->getHtmlBuilder()->getEsc($this->guiDefinition->getGuiPropByGuiIdPath(
-				GuiIdPath::createFromExpression($guiIdPath))->getDisplayLabel());
-	}
+// 	public function getSimpleLabel($guiIdPath): UiComponent {
+// 		return $this->view->getHtmlBuilder()->getEsc($this->guiDefinition->getGuiPropByGuiIdPath(
+// 				GuiIdPath::createFromExpression($guiIdPath))->getDisplayLabel());
+// 	}
 	
-	public function generalEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
-		$this->view->out($this->getGeneralEntrySelector($containerTagName, $containerAttrs, $content));
-	}
+// 	public function generalEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
+// 		$this->view->out($this->getGeneralEntrySelector($containerTagName, $containerAttrs, $content));
+// 	}
 	
-	public function getGeneralEntrySelector(string $containerTagName, array $containerAttrs = null, $content = ''): UiComponent {
-		return new HtmlElement($containerTagName, 
-				HtmlUtils::mergeAttrs(array('class' => 'rocket-general-entry-selector'), (array) $containerAttrs),
-				$content);
-	}
-}
+// 	public function getGeneralEntrySelector(string $containerTagName, array $containerAttrs = null, $content = ''): UiComponent {
+// 		return new HtmlElement($containerTagName, 
+// 				HtmlUtils::mergeAttrs(array('class' => 'rocket-general-entry-selector'), (array) $containerAttrs),
+// 				$content);
+// 	}
+// }
