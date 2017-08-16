@@ -27,11 +27,11 @@ use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 
 class EmbeddedOneToManyGuiField implements GuiField {
 	private $label;
+	private $compact;
 	private $readOnly;
 	private $mandatory;
 	private $toManyEiField;
@@ -41,9 +41,10 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+	public function __construct(string $label, bool $compact, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
+		$this->compact = $compact;
 		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
 		$this->editable = $editable;
@@ -51,6 +52,13 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	public function isReadOnly(): bool {
 		return $this->editable === null;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isCompact() {
+		return $this->compact;
 	}
 	
 	public function getGroupType() {
@@ -91,7 +99,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		}
 
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\embeddedOneToMany.html',
-				array('eiuEntries' => $targetEiuEntries));
+				array('eiuEntries' => $targetEiuEntries, 'compact' => $this->compact));
 	}
 
 	/**

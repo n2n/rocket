@@ -233,7 +233,7 @@ namespace rocket.display {
 			return this.jqCommandList;
 		}
 		
-		public createJqCommandButton(iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null): JQuery {
+		public createJqCommandButton(iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null, prepend: boolean = false): JQuery {
 			this.jqCommandList.show();
 			
 			var jqButton = $("<button />", { 
@@ -246,7 +246,11 @@ namespace rocket.display {
 				"text": label
 			}));
 			
-			this.jqCommandList.append(jqButton);
+			if (prepend) {
+				this.jqCommandList.prepend(jqButton);
+			} else {
+				this.jqCommandList.append(jqButton);
+			}
 			
 			return jqButton;
 		}

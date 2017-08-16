@@ -60,7 +60,12 @@ namespace rocket.impl {
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
-					var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+					var jqButton = null;
+					if (this.isReadOnly()) { 
+						jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+					} else {
+						jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+					}
 					let that = this;
 					jqButton.click(function () {
 						that.expand();
@@ -73,6 +78,10 @@ namespace rocket.impl {
 			}
 			
 			this.changed();
+		}
+		
+		public isReadOnly(): boolean {
+			return this.addControlFactory === null;
 		}
 		
 		private changed() {
@@ -188,6 +197,8 @@ namespace rocket.impl {
 			this.jqEntries.append(entry.getJQuery());
 		
 			this.initEntry(entry);
+			
+			if (this.isReadOnly()) return;
 			this.changed();
 		}
 		
@@ -232,7 +243,7 @@ namespace rocket.impl {
 				this.update();
 			});
 			
-			entry.onEdit(function () {
+			entry.onFocus(function () {
 				that.expand(entry);
 			});
 		}
@@ -300,7 +311,7 @@ namespace rocket.impl {
 			var that = this;
 			
 			var jqCommandButton = this.expandContext.getMenu().getCommandList()
-					.createJqCommandButton("fa fa-times", this.closeLabel, display.Severity.WARNING);
+					.createJqCommandButton("fa fa-times", this.closeLabel, display.Severity.WARNING, null, true);
 			jqCommandButton.click(function () {
 				that.expandContext.getLayer().close();
 			});
@@ -341,31 +352,36 @@ namespace rocket.impl {
 			}
 			
 			var jqNews = jqToMany.children(".rocket-impl-news");
-			var propertyPath = jqNews.data("property-path");
+			var addControlFactory = null;
+			if (jqNews.length > 0) {
+				var propertyPath = jqNews.data("property-path");
+				
+				var startKey: number = 0;
+				var testPropertyPath = propertyPath + "[n";
+				jqNews.find("input, textarea").each(function () {
+					var name: string = <string> $(this).attr("name");
+					if (0 == name.indexOf(testPropertyPath)) {
+						name = name.substring(testPropertyPath.length);
+						
+						name.match(/^[0-9]+/).forEach(function (key) {
+							var curKey: number = parseInt(key);
+							if (curKey >= startKey) {
+								startKey = curKey + 1;
+							}
+						});
+					}
+				});
 			
-			var startKey: number = 0;
-			var testPropertyPath = propertyPath + "[n";
-			jqNews.find("input, textarea").each(function () {
-				var name: string = <string> $(this).attr("name");
-				if (0 == name.indexOf(testPropertyPath)) {
-					name = name.substring(testPropertyPath.length);
-					
-					name.match(/^[0-9]+/).forEach(function (key) {
-						var curKey: number = parseInt(key);
-						if (curKey >= startKey) {
-							startKey = curKey + 1;
-						}
-					});
-				}
-			});
+				var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
+						jqNews.data("draftMode"), startKey, "n");
+				addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+			}
 			
-			var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
-							jqNews.data("draftMode"), startKey, "n")
-			toMany = new ToMany(jqToMany, new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label")));	
+			toMany = new ToMany(jqToMany, addControlFactory);	
 			jqToMany.data("rocketImplToMany", toMany);		
 			
 			jqToMany.find(".rocket-impl-entry").each(function () {
-				toMany.addEntry(new EmbeddedEntry($(this)));
+				toMany.addEntry(new EmbeddedEntry($(this), toMany.isReadOnly()));
 			});
 			
 			return toMany;
@@ -477,33 +493,48 @@ namespace rocket.impl {
 	
 	class EmbeddedEntry {
 		private entryGroup: display.StructureElement;
+		private readOnly: boolean;
 		private jqOrderIndex: JQuery;
 		private jqSummary: JQuery;
 		
+		private jqContextCommands: JQuery;
 		private bodyGroup: display.StructureElement;
 		private entryForm: display.EntryForm;
 		
 		private jqExpMoveUpButton: JQuery;
 		private jqExpMoveDownButton: JQuery;
 		private jqExpRemoveButton: JQuery;
-		private jqRedEditButton: JQuery;
+		private jqRedFocusButton: JQuery;
 		private jqRedRemoveButton: JQuery;
 		
-		constructor(jqEntry: JQuery) {
+		constructor(jqEntry: JQuery, readOnly: boolean) {
 			this.entryGroup = display.StructureElement.from(jqEntry, true);
+			this.readOnly = readOnly;
+			
+			this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
+			 
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
-			this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true); 
-			this.entryForm = display.EntryForm.from(jqEntry, true);
 			
-			var ecl = this.bodyGroup.getToolbar().getCommandList();
-			this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
-			this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
-			this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER); 
+			this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-context-commands");
 			
-			var rcl = new display.CommandList(this.jqSummary.find(".rocket-simple-commands"), true);
-			this.jqRedEditButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
-			this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+			if (readOnly) {
+				var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+				this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+			} else {
+				this.entryForm = display.EntryForm.from(jqEntry, true);
+				
+				var ecl = this.bodyGroup.getToolbar().getCommandList();
+				this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
+				this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
+				this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER); 
+				
+				var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+				this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+				this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+			}
+			
+			
 			
 			this.reduce();
 			
@@ -515,6 +546,8 @@ namespace rocket.impl {
 		}
 		
 		public onMove(callback: (up: boolean) => any) {
+			if (this.readOnly) return;
+			
 			this.jqExpMoveUpButton.click(function () {
 				callback(true);
 			});
@@ -524,6 +557,8 @@ namespace rocket.impl {
 		}
 				
 		public onRemove(callback: () => any) {
+			if (this.readOnly) return;
+			
 			this.jqExpRemoveButton.click(function () {
 				callback();
 			});
@@ -532,8 +567,8 @@ namespace rocket.impl {
 			});
 		}
 		
-		public onEdit(callback: () => any) {
-			this.jqRedEditButton.click(function () {
+		public onFocus(callback: () => any) {
+			this.jqRedFocusButton.click(function () {
 				callback();
 			});
 			
@@ -550,21 +585,31 @@ namespace rocket.impl {
 			return this.bodyGroup.getToolbar().getCommandList();
 		}
 		
-		public expand(showCommands: boolean = true) {
+		public expand(asPartOfList: boolean = true) {
 			this.entryGroup.show();
 			this.jqSummary.hide();
 			this.bodyGroup.show();
 			
 			this.entryGroup.getJQuery().addClass("rocket-group");
 			
-			if (showCommands) {
+			if (asPartOfList) {
+				this.jqContextCommands.hide();
+			} else {
+				this.jqContextCommands.show();
+			}
+			
+			if (this.readOnly) return;
+			
+			if (asPartOfList) {
 				this.jqExpMoveUpButton.show();
 				this.jqExpMoveDownButton.show();
 				this.jqExpRemoveButton.show();
+				this.jqContextCommands.hide();
 			} else {
 				this.jqExpMoveUpButton.hide();
 				this.jqExpMoveDownButton.hide();
 				this.jqExpRemoveButton.hide();
+				this.jqContextCommands.show();
 			}
 		}
 		
@@ -589,6 +634,8 @@ namespace rocket.impl {
 		}
 		
 		public setMoveUpEnabled(enabled: boolean) {
+			if (this.readOnly) return;
+			
 			if (enabled) {
 				this.jqExpMoveUpButton.show();
 			} else {
@@ -597,6 +644,8 @@ namespace rocket.impl {
 		}
 		
 		public setMoveDownEnabled(enabled: boolean) {
+			if (this.readOnly) return;
+			
 			if (enabled) {
 				this.jqExpMoveDownButton.show();
 			} else {
@@ -604,18 +653,18 @@ namespace rocket.impl {
 			}
 		}
 		
-		public static from(jqElem: JQuery, create: boolean = false): EmbeddedEntry {
-			var entry = jqElem.data("rocketImplEmbeddedEntry");
-			if (entry instanceof EmbeddedEntry) {
-				return entry;
-			}
-			
-			if (create) {
-				return new EmbeddedEntry(jqElem); 				
-			}
-			
-			return null;
-		}
+//		public static from(jqElem: JQuery, create: boolean = false): EmbeddedEntry {
+//			var entry = jqElem.data("rocketImplEmbeddedEntry");
+//			if (entry instanceof EmbeddedEntry) {
+//				return entry;
+//			}
+//			
+//			if (create) {
+//				return new EmbeddedEntry(jqElem); 				
+//			}
+//			
+//			return null;
+//		}
 	}
 	
 	class EmbeddedEntryRetriever {
@@ -656,7 +705,7 @@ namespace rocket.impl {
 			if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0) return;
 			
 			var pendingLookup: PendingLookup = this.pendingLookups.shift();
-			var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())));
+			var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())), false);
 			
 			pendingLookup.doneCallback(embeddedEntry);
 			n2n.ajah.update();

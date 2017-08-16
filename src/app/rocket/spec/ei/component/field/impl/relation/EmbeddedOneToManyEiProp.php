@@ -201,7 +201,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			$toManyEditable->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		}
 		
-		return new EmbeddedOneToManyGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toManyEditable);
+		return new EmbeddedOneToManyGuiField($this->getLabelLstr(), $this->isCompact(), $relationEiField, $targetReadEiFrame, $toManyEditable);
 	}
 	
 // 	const T_ALIAS = 't';

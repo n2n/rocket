@@ -44,6 +44,12 @@ class EiGui {
 	}
 	
 	/**
+	 */
+	public function hasMultipleEiEntryGuis() {
+		return count($this->eiEntryGuis) > 1;
+	}
+	
+	/**
 	 * @return int
 	 */
 	public function isBulky() {

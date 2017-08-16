@@ -27,7 +27,9 @@
 
 	$eiuEntries = $view->getParam('eiuEntries');
 ?>
-<div class="rocket-to-many">
+<div class="rocket-impl-to-many"
+		data-compact="<?php $html->out($view->getParam('compact')) ?>"
+		data-close-label="<?php $html->text('common_close_label') ?>">
 	<div class="rocket-impl-entries">
 		<?php foreach ($eiuEntries as $eiuEntry): ?>
 			<?php $view->import('embeddedEntry.html', array('eiuEntry' => $eiuEntry)) ?>

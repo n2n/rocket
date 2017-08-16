@@ -45,14 +45,19 @@
 					<?php $eiHtml->fieldClose() ?>
 				<?php endforeach ?>
 			</div>
-			<?php $eiHtml->entryCommands(true)?>
+			<div class="rocket-simple-commands"></div>
 		<?php $eiHtml->entryClose() ?>
 	
-		<div class="rocket-impl-body rocket-group">
+		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true) ?>
+		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group')) ?>
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
 			<div class="rocket-controls">
-				<?php $view->import($eiuEntry->newEntryGui(true)->createView()) ?>
+				<?php $view->import($eiuEntryGui->createView()) ?>
 			</div>
-		</div>
+			
+			<div class="rocket-context-commands">
+				<?php $eiHtml->entryCommands(false) ?>
+			</div>
+		<?php $eiHtml->entryClose() ?>
 	<?php endif ?>
 </div>
