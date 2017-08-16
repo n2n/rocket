@@ -31,11 +31,7 @@ use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\config\mask\model\EiuEntryGuiTree;
 use rocket\spec\ei\manage\gui\EiGui;
 
 interface EiMask extends EiThing {

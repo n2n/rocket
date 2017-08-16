@@ -252,11 +252,10 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	/**
-	 * @param EiFrame $eiFrame
-	 * @param HtmlView $htmlView
-	 * @return \rocket\spec\ei\component\command\ControlButton[]
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\mask\EiMask::sortOverallControls()
 	 */
-	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $htmlView): array {
+	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
 		$eiu = new Eiu($eiGui);
 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
 		
@@ -266,7 +265,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			if (!($eiCommand instanceof OverallControlComponent)
 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
 				
-			$controls = $eiCommand->createOverallControls($eiu, $htmlView);
+			$controls = $eiCommand->createOverallControls($eiu, $view);
 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
 			foreach ($controls as $controlId => $control) {
 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
