@@ -355,6 +355,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	public function isExecutedBy($eiCommandPath) {
+		test($this->eiFrame->getEiExecution()->getEiCommandPath());
 		return $this->eiFrame->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::create($eiCommandPath));
 	}
 	

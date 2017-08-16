@@ -294,7 +294,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function getGenericIconType() {
-		return $this->eiEntry->getEiType()->getIconType();
+		return $this->eiuFrame->getGenericIconType($this);
 	}
 	
 	/**

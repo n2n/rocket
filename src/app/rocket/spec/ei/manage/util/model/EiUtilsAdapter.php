@@ -134,8 +134,8 @@ abstract class EiUtilsAdapter implements EiUtils {
 			return $this->getEiType();
 		}
 		
-		ArgUtils::valType($eiObjectObj, array(EiObject::class, EiEntry::class, EiEntityObj::class, 'object'), true);
-		
+		ArgUtils::valType($eiObjectObj, array(EiObject::class, EiEntry::class, EiEntityObj::class, EiuEntry::class, 'object'), true);
+				
 		if ($eiObjectObj instanceof EiEntry) {
 			return $eiObjectObj->getEiObject()->getEiEntityObj()->getEiType();
 		}
@@ -149,6 +149,10 @@ abstract class EiUtilsAdapter implements EiUtils {
 		}
 		
 		if ($eiObjectObj instanceof Draft) {
+			return $eiObjectObj->getEiEntityObj()->getEiType();
+		}
+		
+		if ($eiObjectObj instanceof EiuEntry) {
 			return $eiObjectObj->getEiEntityObj()->getEiType();
 		}
 		
