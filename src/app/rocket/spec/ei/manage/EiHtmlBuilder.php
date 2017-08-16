@@ -206,7 +206,7 @@ class EiHtmlBuilder {
 		if ($readOnly || !$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $fieldErrorInfo, $displayable);
 			return $this->createOutputFieldOpen($tagName, $displayable, $fieldErrorInfo,
-					$this->buildAttrs($guiIdPath, $attrs));
+					$this->buildAttrs($guiIdPath, (array) $attrs));
 		}
 	
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);

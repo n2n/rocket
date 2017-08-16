@@ -112,6 +112,17 @@ class EiEntryGui {
 	}
 	
 	/**
+	 * @return \rocket\spec\ei\manage\gui\GuiIdPath[]
+	 */
+	public function getGuiIdPaths() {
+		$guiIdPaths = array();
+		foreach (array_keys($this->displayables) as $guiIdPathStr) {
+			$guiIdPaths[] = GuiIdPath::createFromExpression($guiIdPathStr);
+		}
+		return $guiIdPaths;
+	}
+	
+	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @throws GuiException
 	 * @return EiFieldWrapper

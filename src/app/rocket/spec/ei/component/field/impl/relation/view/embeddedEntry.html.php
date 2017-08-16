@@ -39,7 +39,11 @@
 				<?php $html->out($eiuEntry->getGenericLabel()) ?>
 			</div>
 			<div>
-				<?php $html->out($eiuEntryGui->createView()) ?>
+				<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
+					<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+						<?php $eiHtml->fieldContent() ?>
+					<?php $eiHtml->fieldClose() ?>
+				<?php endforeach ?>
 			</div>
 			<?php $eiHtml->entryCommands(true)?>
 		<?php $eiHtml->entryClose() ?>

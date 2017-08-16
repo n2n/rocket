@@ -61,6 +61,14 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @see EiEntryGui::getGuiIdsPaths()
+	 * @return \rocket\spec\ei\manage\gui\GuiIdPath[]
+	 */
+	public function getGuiIdPaths() {
+		return $this->eiEntryGui->getGuiIdPaths();	
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isCompact() {

@@ -24,8 +24,6 @@ namespace rocket\spec\config\mask;
 use rocket\spec\ei\EiThingPath;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\EiType;
 use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
@@ -38,8 +36,6 @@ use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
 use rocket\spec\config\mask\model\DisplayScheme;
-use rocket\spec\config\mask\model\ControlOrder;
-use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use n2n\web\ui\view\View;
@@ -47,9 +43,6 @@ use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\CritmodFactory;
-use rocket\spec\ei\component\command\control\PartialControlComponent;
-use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\manage\control\PartialControl;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\EiThing;
@@ -59,14 +52,9 @@ use rocket\spec\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\control\UnavailableControlException;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\util\model\EiuPerimeterException;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\control\Control;
 use rocket\spec\ei\manage\gui\EiGui;
 use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\control\IconType;
 
 class CommonEiMask implements EiMask, Identifiable {
@@ -256,21 +244,21 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @see \rocket\spec\ei\mask\EiMask::sortOverallControls()
 	 */
 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
-		$eiu = new Eiu($eiGui);
-		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
+// 		$eiu = new Eiu($eiGui);
+// 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
 		
-		$controls = array();
+// 		$controls = array();
 		
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof OverallControlComponent)
-					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
+// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof OverallControlComponent)
+// 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
 				
-			$controls = $eiCommand->createOverallControls($eiu, $view);
-			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
-			foreach ($controls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
+// 			$controls = $eiCommand->createOverallControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
+// 			foreach ($controls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			}
+// 		}
 		
 		if (null !== ($overallControlOrder = $this->guiOrder->getOverallControlOrder())) {
 			return $overallControlOrder->sort($controls);
@@ -283,53 +271,53 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @see \rocket\spec\ei\mask\EiMask::createEntryControls()
 	 */
 	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array {
-		$eiu = new Eiu($eiEntryGui);
+// 		$eiu = new Eiu($eiEntryGui);
 		
-		$controls = array();
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$eiEntryGui->getEiEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
-				continue;
-			}
+// 		$controls = array();
+// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof EntryControlComponent)
+// 					|| !$eiEntryGui->getEiEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
+// 				continue;
+// 			}
 			
-			$entryControls = $eiCommand->createEntryControls($eiu, $view);
-			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
-			foreach ($entryControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
+// 			$entryControls = $eiCommand->createEntryControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
+// 			foreach ($entryControls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			}
+// 		}
 	
-		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
-			return $entryControlOrder->sort($controls);
-		}		
+// 		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
+// 			return $entryControlOrder->sort($controls);
+// 		}		
 		
 		return $controls;
 	}
 	
-	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
-		$controls = array();
-		foreach ($this->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof PartialControlComponent)
-					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
+// 	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
+// 		$controls = array();
+// 		foreach ($this->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof PartialControlComponent)
+// 					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
 				
-			$executionPath = EiCommandPath::from($eiCommand);
-			$partialControls = $eiCommand->createPartialControls($eiFrame, $view);
-			ArgUtils::valArrayReturn($partialControls, $eiCommand, 'createPartialControls', PartialControl::class);
-			foreach ($partialControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			$executionPath = EiCommandPath::from($eiCommand);
+// 			$partialControls = $eiCommand->createPartialControls($eiFrame, $view);
+// 			ArgUtils::valArrayReturn($partialControls, $eiCommand, 'createPartialControls', PartialControl::class);
+// 			foreach ($partialControls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 				
-				if (!$control->hasEiCommandPath()) {
-					$control->setExecutionPath($executionPath->ext($controlId));
-				}
-			}
-		}
+// 				if (!$control->hasEiCommandPath()) {
+// 					$control->setExecutionPath($executionPath->ext($controlId));
+// 				}
+// 			}
+// 		}
 		
-		if (null !== ($overallControlOrder = $this->guiOrder->getOverallControlOrder())) {
-			return $overallControlOrder->sortControls($controls);
-		}
+// 		if (null !== ($overallControlOrder = $this->guiOrder->getOverallControlOrder())) {
+// 			return $overallControlOrder->sortControls($controls);
+// 		}
 	
-		return $controls;
-	}
+// 		return $controls;
+// 	}
 	
 	public function createEiGui(EiFrame $eiFrame, int $allowedViewMods): EiGui {
 		if (($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES) 
