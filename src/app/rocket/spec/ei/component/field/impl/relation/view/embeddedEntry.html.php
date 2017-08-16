@@ -6,7 +6,6 @@
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
-	$formHtml = HtmlView::formHtml($this);
 	
 	$eiuEntry = $view->getParam('eiuEntry');
 	$view->assert($eiuEntry instanceof EiuEntry);
@@ -19,19 +18,22 @@
 		<div class="rocket-impl-summary">
 			<div>
 				<i class="<?php $html->out($eiuEntry->getIconTyp()) ?>"></i>
-				<?php $html->out($eiuEntry->createIdentityString()) ?>
+				<?php $html->out($eiuEntry->getGenericLabel()) ?>
+			</div>
+			<div>
+				<?php $html->text('ei_impl_not_accessible', array('entry' => $eiuEntry->createIdentityString())) ?>
 			</div>
 		</div>
 		
 		<div class="rocket-impl-body rocket-group">
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
 			<div class="rocket-controls">
-				<?php $html->text('ei_impl_not_accessible') ?>
+				<?php $html->text('ei_impl_not_accessible', array('entry' => $eiuEntry->createIdentityString())) ?>
 			</div>
 		</div>
 	<?php else: ?>
 		<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
-		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary'))?>
+		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 			<div>
 				<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 				<?php $html->out($eiuEntry->getGenericLabel()) ?>
@@ -49,6 +51,4 @@
 			</div>
 		</div>
 	<?php endif ?>
-	
-	<?php $formHtml->input('orderIndex', array('class' => 'rocket-impl-order-index')) ?>
 </div>

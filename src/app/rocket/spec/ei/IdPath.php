@@ -33,7 +33,8 @@ abstract class IdPath implements Hashable {
 	public function __construct(array $ids) {
 		$this->ids = array();
 		foreach ($ids as $id) {
-			ArgUtils::assertTrue(!$this->constainsSpecialIdChars($id));
+			$id = (string) $id;
+			ArgUtils::assertTrue($id !== "" || !$this->constainsSpecialIdChars($id));
 			$this->ids[] = $id;
 		}	
 	}
@@ -66,8 +67,6 @@ abstract class IdPath implements Hashable {
 	}
 	
 	public function startsWith(IdPath $idPath): bool {
-		$this->ensureNotEmpty();
-		
 		foreach ($idPath->ids as $key => $id) {
 			if (!isset($this->ids[$key]) || $this->ids[$key] !== $id) return false;
 		}

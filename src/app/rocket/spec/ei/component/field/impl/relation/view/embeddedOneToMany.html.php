@@ -29,7 +29,6 @@
 ?>
 <div class="rocket-to-many">
 	<div class="rocket-impl-entries">
-		
 		<?php foreach ($eiuEntries as $eiuEntry): ?>
 			<?php $view->import('embeddedEntry.html', array('eiuEntry' => $eiuEntry)) ?>
 		<?php endforeach ?>
