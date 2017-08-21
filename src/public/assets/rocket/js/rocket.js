@@ -424,9 +424,10 @@ var rocket;
             CommandList.prototype.getJQuery = function () {
                 return this.jqCommandList;
             };
-            CommandList.prototype.createJqCommandButton = function (iconType, label, severity, tooltip) {
+            CommandList.prototype.createJqCommandButton = function (iconType, label, severity, tooltip, prepend) {
                 if (severity === void 0) { severity = Severity.SECONDARY; }
                 if (tooltip === void 0) { tooltip = null; }
+                if (prepend === void 0) { prepend = false; }
                 this.jqCommandList.show();
                 var jqButton = $("<button />", {
                     "class": "btn btn-" + severity,
@@ -437,7 +438,12 @@ var rocket;
                 })).append($("<span />", {
                     "text": label
                 }));
-                this.jqCommandList.append(jqButton);
+                if (prepend) {
+                    this.jqCommandList.prepend(jqButton);
+                }
+                else {
+                    this.jqCommandList.append(jqButton);
+                }
                 return jqButton;
             };
             return CommandList;
@@ -508,7 +514,13 @@ var rocket;
                     structureElement.setGroup(true);
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
-                        var jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+                        var jqButton = null;
+                        if (this.isReadOnly()) {
+                            jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+                        }
+                        else {
+                            jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+                        }
                         var that_1 = this;
                         jqButton.click(function () {
                             that_1.expand();
@@ -520,6 +532,9 @@ var rocket;
                 }
                 this.changed();
             }
+            ToMany.prototype.isReadOnly = function () {
+                return this.addControlFactory === null;
+            };
             ToMany.prototype.changed = function () {
                 for (var i_1 in this.entries) {
                     var index = parseInt(i_1);
@@ -617,6 +632,8 @@ var rocket;
                 this.entries.push(entry);
                 this.jqEntries.append(entry.getJQuery());
                 this.initEntry(entry);
+                if (this.isReadOnly())
+                    return;
                 this.changed();
             };
             ToMany.prototype.switchIndex = function (oldIndex, newIndex) {
@@ -652,7 +669,7 @@ var rocket;
                     entry.getJQuery().remove();
                     this.update();
                 });
-                entry.onEdit(function () {
+                entry.onFocus(function () {
                     that.expand(entry);
                 });
             };
@@ -711,7 +728,7 @@ var rocket;
                 }
                 var that = this;
                 var jqCommandButton = this.expandContext.getMenu().getCommandList()
-                    .createJqCommandButton("fa fa-times", this.closeLabel, display.Severity.WARNING);
+                    .createJqCommandButton("fa fa-times", this.closeLabel, display.Severity.WARNING, null, true);
                 jqCommandButton.click(function () {
                     that.expandContext.getLayer().close();
                 });
@@ -743,26 +760,30 @@ var rocket;
                     return toMany;
                 }
                 var jqNews = jqToMany.children(".rocket-impl-news");
-                var propertyPath = jqNews.data("property-path");
-                var startKey = 0;
-                var testPropertyPath = propertyPath + "[n";
-                jqNews.find("input, textarea").each(function () {
-                    var name = $(this).attr("name");
-                    if (0 == name.indexOf(testPropertyPath)) {
-                        name = name.substring(testPropertyPath.length);
-                        name.match(/^[0-9]+/).forEach(function (key) {
-                            var curKey = parseInt(key);
-                            if (curKey >= startKey) {
-                                startKey = curKey + 1;
-                            }
-                        });
-                    }
-                });
-                var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
-                toMany = new ToMany(jqToMany, new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label")));
+                var addControlFactory = null;
+                if (jqNews.length > 0) {
+                    var propertyPath = jqNews.data("property-path");
+                    var startKey = 0;
+                    var testPropertyPath = propertyPath + "[n";
+                    jqNews.find("input, textarea").each(function () {
+                        var name = $(this).attr("name");
+                        if (0 == name.indexOf(testPropertyPath)) {
+                            name = name.substring(testPropertyPath.length);
+                            name.match(/^[0-9]+/).forEach(function (key) {
+                                var curKey = parseInt(key);
+                                if (curKey >= startKey) {
+                                    startKey = curKey + 1;
+                                }
+                            });
+                        }
+                    });
+                    var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
+                    addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+                }
+                toMany = new ToMany(jqToMany, addControlFactory);
                 jqToMany.data("rocketImplToMany", toMany);
                 jqToMany.find(".rocket-impl-entry").each(function () {
-                    toMany.addEntry(new EmbeddedEntry($(this)));
+                    toMany.addEntry(new EmbeddedEntry($(this), toMany.isReadOnly()));
                 });
                 return toMany;
             };
@@ -849,19 +870,27 @@ var rocket;
             return AddControl;
         }());
         var EmbeddedEntry = (function () {
-            function EmbeddedEntry(jqEntry) {
+            function EmbeddedEntry(jqEntry, readOnly) {
                 this.entryGroup = display.StructureElement.from(jqEntry, true);
+                this.readOnly = readOnly;
+                this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
                 this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                 this.jqSummary = jqEntry.children(".rocket-impl-summary");
-                this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
-                this.entryForm = display.EntryForm.from(jqEntry, true);
-                var ecl = this.bodyGroup.getToolbar().getCommandList();
-                this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
-                this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
-                this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
-                var rcl = new display.CommandList(this.jqSummary.find(".rocket-simple-commands"), true);
-                this.jqRedEditButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
-                this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+                this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-context-commands");
+                if (readOnly) {
+                    var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+                    this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+                }
+                else {
+                    this.entryForm = display.EntryForm.from(jqEntry, true);
+                    var ecl = this.bodyGroup.getToolbar().getCommandList();
+                    this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
+                    this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
+                    this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+                    var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+                    this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+                    this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+                }
                 this.reduce();
                 jqEntry.data("rocketImplEmbeddedEntry", this);
             }
@@ -869,6 +898,8 @@ var rocket;
                 return this.entryForm;
             };
             EmbeddedEntry.prototype.onMove = function (callback) {
+                if (this.readOnly)
+                    return;
                 this.jqExpMoveUpButton.click(function () {
                     callback(true);
                 });
@@ -877,6 +908,8 @@ var rocket;
                 });
             };
             EmbeddedEntry.prototype.onRemove = function (callback) {
+                if (this.readOnly)
+                    return;
                 this.jqExpRemoveButton.click(function () {
                     callback();
                 });
@@ -884,8 +917,8 @@ var rocket;
                     callback();
                 });
             };
-            EmbeddedEntry.prototype.onEdit = function (callback) {
-                this.jqRedEditButton.click(function () {
+            EmbeddedEntry.prototype.onFocus = function (callback) {
+                this.jqRedFocusButton.click(function () {
                     callback();
                 });
                 this.bodyGroup.onShow(function () {
@@ -898,21 +931,31 @@ var rocket;
             EmbeddedEntry.prototype.getExpandedCommandList = function () {
                 return this.bodyGroup.getToolbar().getCommandList();
             };
-            EmbeddedEntry.prototype.expand = function (showCommands) {
-                if (showCommands === void 0) { showCommands = true; }
+            EmbeddedEntry.prototype.expand = function (asPartOfList) {
+                if (asPartOfList === void 0) { asPartOfList = true; }
                 this.entryGroup.show();
                 this.jqSummary.hide();
                 this.bodyGroup.show();
                 this.entryGroup.getJQuery().addClass("rocket-group");
-                if (showCommands) {
+                if (asPartOfList) {
+                    this.jqContextCommands.hide();
+                }
+                else {
+                    this.jqContextCommands.show();
+                }
+                if (this.readOnly)
+                    return;
+                if (asPartOfList) {
                     this.jqExpMoveUpButton.show();
                     this.jqExpMoveDownButton.show();
                     this.jqExpRemoveButton.show();
+                    this.jqContextCommands.hide();
                 }
                 else {
                     this.jqExpMoveUpButton.hide();
                     this.jqExpMoveDownButton.hide();
                     this.jqExpRemoveButton.hide();
+                    this.jqContextCommands.show();
                 }
             };
             EmbeddedEntry.prototype.reduce = function () {
@@ -931,6 +974,8 @@ var rocket;
                 return parseInt(this.jqOrderIndex.val());
             };
             EmbeddedEntry.prototype.setMoveUpEnabled = function (enabled) {
+                if (this.readOnly)
+                    return;
                 if (enabled) {
                     this.jqExpMoveUpButton.show();
                 }
@@ -939,23 +984,14 @@ var rocket;
                 }
             };
             EmbeddedEntry.prototype.setMoveDownEnabled = function (enabled) {
+                if (this.readOnly)
+                    return;
                 if (enabled) {
                     this.jqExpMoveDownButton.show();
                 }
                 else {
                     this.jqExpMoveDownButton.hide();
                 }
-            };
-            EmbeddedEntry.from = function (jqElem, create) {
-                if (create === void 0) { create = false; }
-                var entry = jqElem.data("rocketImplEmbeddedEntry");
-                if (entry instanceof EmbeddedEntry) {
-                    return entry;
-                }
-                if (create) {
-                    return new EmbeddedEntry(jqElem);
-                }
-                return null;
             };
             return EmbeddedEntry;
         }());
@@ -988,7 +1024,7 @@ var rocket;
                 if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0)
                     return;
                 var pendingLookup = this.pendingLookups.shift();
-                var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())));
+                var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())), false);
                 pendingLookup.doneCallback(embeddedEntry);
                 n2n.ajah.update();
             };

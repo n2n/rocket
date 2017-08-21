@@ -7,13 +7,11 @@ use n2n\l10n\DynamicTextCollection;
 
 class Eiu implements Lookupable {
 	private $eiuFactory;
-	private $eiuCtrl;
 	private $eiuFrame;
 	private $eiuEntry;
 	private $eiuGui;
 	private $eiuEntryGui;
 	private $eiuField;
-	
 	
 	public function __construct(...$eiArgs) {
 		$this->eiuFactory = new EiuFactory();
@@ -23,12 +21,6 @@ class Eiu implements Lookupable {
 		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
 		$this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui(false);
 		$this->eiuField = $this->eiuFactory->getEiuField(false);
-	}
-	
-	public function ctrl(bool $required = true) {
-		if ($this->eiuCtrl !== null || !$required) return $this->eiuCtrl;
-		
-		throw new EiuPerimeterException('EiuCtrl is unavailable.');
 	}
 
 	/**

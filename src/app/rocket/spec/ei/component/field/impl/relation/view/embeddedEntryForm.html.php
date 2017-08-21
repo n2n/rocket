@@ -1,6 +1,5 @@
 <?php
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
-	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\ui\view\View;
 
@@ -10,6 +9,8 @@
 	
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
+	
+	$eiuEntry = $mappingForm->getEntryForm()->getChosenEntryTypeForm()->getEiuEntryGui()->getEiuEntry();
 ?>
 
 <div class="rocket-impl-entry"
@@ -46,8 +47,9 @@
 		<div class="rocket-impl-body rocket-group">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-controls">
-				<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
-						'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
+				<?php $view->view($mappingForm->getEntryForm()->createView()) ?>
+				<?php /* $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
+						'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) */?>
 			</div>
 		</div>
 	<?php endif ?>

@@ -133,9 +133,9 @@ interface EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiEntityObjById($id, $ignoreConstraints)
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiEntityObj($id, $ignoreConstraints)
 	 */
-	public function lookupEiEntityObjById($id, int $ignoreConstraintTypes = 0): EiEntityObj;
+	public function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj;
 	
 	/**
 	 * @param int $id

@@ -86,7 +86,7 @@ class RelationSelectorMag extends MagAdapter  {
 				continue;
 			}
 			
-			$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObjById(
+			$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
 					$this->targetEiUtils->idRepToId($targetIdRep));
 		}
 	}

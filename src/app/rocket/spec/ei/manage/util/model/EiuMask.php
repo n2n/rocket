@@ -77,7 +77,7 @@ class EiuMask extends EiUtilsAdapter {
 	 * @throws UnknownEntryException
 	 * @return \rocket\spec\ei\manage\EiEntityObj
 	 */
-	public function lookupEiEntityObjById($id, int $ignoreConstraints = 0): EiEntityObj {
+	public function lookupEiEntityObj($id, int $ignoreConstraints = 0): EiEntityObj {
 		if (null !== ($entity = $this->em()->find($this->getEntityModel()->getClass(), $id))) {
 			return new EiEntityObj($id, $entity);
 		}

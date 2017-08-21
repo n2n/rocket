@@ -64,9 +64,9 @@ class EiEntryGui {
 		$this->viewMode = $viewMode;
 		$this->treeLevel = $level;
 	}
-	
+
 	/**
-	 * @return \rocket\spec\ei\mask\EiMask
+	 * @return \rocket\spec\ei\manage\gui\EiGui
 	 */
 	public function getEiGui() {
 		return $this->eiGui;

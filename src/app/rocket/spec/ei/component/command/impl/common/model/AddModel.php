@@ -68,7 +68,7 @@ class AddModel implements Dispatchable  {
 	 * @see \rocket\spec\ei\component\command\impl\common\model\EntryCommandModel::getEntryModel()
 	 */
 // 	public function getCurrentEntryModel() {
-// 		return $this->entryForm->getEntryModelForm();
+// 		return $this->entryForm->getEntryTypeForm();
 // 	}
 	
 // 	public function getEiFrame() {
@@ -133,7 +133,7 @@ class AddModel implements Dispatchable  {
 		IllegalStateException::assertTrue($this->nestedSetStrategy === null);
 		
 		$draft = $eiObject->getDraft();
-		$draftDefinition = $this->entryForm->getChosenEntryModelForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
+		$draftDefinition = $this->entryForm->getChosenEntryTypeForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 				->getDraftDefinition();
 		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);

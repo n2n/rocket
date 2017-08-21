@@ -77,8 +77,8 @@ class TreeMoveController extends ControllerAdapter {
 		$targetEiEntityObj = null;
 
 		try {
-			$eiEntityObj = $eiUtils->lookupEiEntityObjById($eiUtils->idRepToId($idRep));
-			$targetEiEntityObj = $eiUtils->lookupEiEntityObjById($eiUtils->idRepToId($targetIdRep));
+			$eiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->idRepToId($idRep));
+			$targetEiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->idRepToId($targetIdRep));
 		} catch (UnknownEntryException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {

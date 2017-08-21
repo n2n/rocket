@@ -73,8 +73,8 @@ class OrderController extends ControllerAdapter {
 		$targetEiEntityObj = null;
 		
 		try {
-			$eiEntityObj = $this->utils->lookupEiEntityObjById($this->utils->idRepToId($idRep));
-			$targetEiEntityObj = $this->utils->lookupEiEntityObjById($this->utils->idRepToId($targetIdRep));
+			$eiEntityObj = $this->utils->lookupEiEntityObj($this->utils->idRepToId($idRep));
+			$targetEiEntityObj = $this->utils->lookupEiEntityObj($this->utils->idRepToId($targetIdRep));
 		} catch (UnknownEntryException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {

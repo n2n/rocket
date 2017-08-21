@@ -51,10 +51,10 @@ class EditModel implements Dispatchable {
 	}
 	
 	public function initialize(EiEntry $eiEntry) {
-		$this->entryForm = $this->eiFrameUtils->createEntryFormFromMapping($eiEntry, new PropertyPath(array('entryForm')));
+		$this->entryForm = $this->eiFrameUtils->entryForm($eiEntry, new PropertyPath(array('entryForm')));
 
 		IllegalStateException::assertTrue(!$this->entryForm->isChoosable());
-		$this->entryModel = $this->entryForm->getChosenEntryModelForm();
+		$this->entryModel = $this->entryForm->getChosenEntryTypeForm();
 	}
 	
 // 	public function getEiFrame() {

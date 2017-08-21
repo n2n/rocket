@@ -25,7 +25,7 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 
-class EntryModelForm implements Dispatchable {
+class EntryTypeForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->p('dispatchable', new AnnoDispObject());
 	}

@@ -111,7 +111,7 @@ class RelationFilterField implements FilterField {
 		$targetEntityObjs = array();
 		foreach ($targetIdReps as $targetIdRep) {
 			try {
-				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObjById($targetIdRep, 
+				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObj($targetIdRep, 
 						CriteriaConstraint::ALL_TYPES);
 			} catch (UnknownEntryException $e) { }
 		}
@@ -134,7 +134,7 @@ class RelationFilterField implements FilterField {
 			$targetLiveEntries = array();
 			foreach ($relationFilterConf->getTargetIdReps() as $targetIdRep) {
 				try {
-					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObjById(
+					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
 							$this->targetEiUtils->idRepToId($targetIdRep), CriteriaConstraint::ALL_TYPES);
 				} catch (UnknownEntryException $e) {}
 			}

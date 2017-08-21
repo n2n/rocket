@@ -24,26 +24,24 @@ namespace rocket\spec\ei\manage\util\model;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\map\MappingResult;
 
 class EntryFormViewModel {
 	private $entryForm;
 	private $entryFormPropertyPath;
 	
-	public function __construct(PropertyPath $entryFormPropertyPath) {
-		$this->entryFormPropertyPath = $entryFormPropertyPath;
-	}
-	
-	public function initFromView(HtmlView $view) {
-		$mappingResult = $view->getFormHtmlBuilder()->meta()->getMapValue($this->entryFormPropertyPath);
-		$view->assert($mappingResult instanceof MappingResult);
-		
-		$entryForm = $mappingResult->getObject();
-		$view->assert($entryForm instanceof EntryForm);
-		
+	public function __construct(EntryForm $entryForm) {
 		$this->entryForm = $entryForm;
 	}
+	
+// 	public function initFromView(HtmlView $view) {
+// 		$mappingResult = $view->getFormHtmlBuilder()->meta()->getMapValue($this->entryFormPropertyPath);
+// 		$view->assert($mappingResult instanceof MappingResult);
+		
+// 		$entryForm = $mappingResult->getObject();
+// 		$view->assert($entryForm instanceof EntryForm);
+		
+// 		$this->entryForm = $entryForm;
+// 	}
 	
 	public function getEntryForm(): EntryForm {
 		if ($this->entryForm === null) {
@@ -70,7 +68,7 @@ class EntryFormViewModel {
 		IllegalStateException::assertTrue(!$entryForm->isChoosable());
 		
 		$eiTypeId = $entryForm->getChosenId();
-		$entryModelForm = $entryForm->getChosenEntryModelForm();
+		$entryModelForm = $entryForm->getChosenEntryTypeForm();
 		$propertyPath = $this->entryFormPropertyPath
 				->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
 		$entryModelForm->getEiuEntryGui()->setContextPropertyPath($propertyPath);
@@ -82,7 +80,7 @@ class EntryFormViewModel {
 		IllegalStateException::assertTrue($entryForm->isChoosable());
 	
 		$editViews = array();
-		foreach ($entryForm->getEntryModelForms() as $eiTypeId => $entryModelForm) {
+		foreach ($entryForm->getEntryTypeForms() as $eiTypeId => $entryModelForm) {
 			$propertyPath = $this->entryFormPropertyPath->ext(
 					new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
 			

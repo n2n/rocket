@@ -23,7 +23,6 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\MappingDefinition;
@@ -31,7 +30,9 @@ use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\web\dispatch\map\PropertyPathPart;
-use rocket\spec\ei\manage\EiFrame;
+use n2n\reflection\CastUtils;
+use n2n\web\dispatch\map\PropertyPath;
+use n2n\web\ui\ViewFactory;
 
 class EntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -39,38 +40,47 @@ class EntryForm implements Dispatchable {
 		$ai->p('entryModelForms', new AnnoDispObjectArray());
 	}
 		
-	private $eiFrame;
+	private $eiuFrame;
 	private $contextEiMask;
 	private $eiFrameUtils;
 	
 	private $chosenId;
 	private $eispecChoosable = false;
 	private $eiTypeChoicesMap;
-	private $entryModelForms;
+	private $entryTypeForms;
 		
 // 	private $selectedTypeId;
 // 	private $mainEntryFormPart;
 // 	private $levelEntryFormParts = array();
 		
-	
-	public function __construct(EiFrame $eiFrame) {
-		$this->eiFrame = $eiFrame;
+	/**
+	 * 
+	 * @param EiuFrame $eiuFrame
+	 */
+	public function __construct(EiuFrame $eiuFrame) {
+		$this->eiuFrame = $eiuFrame;
 	}
 	
-	public function getEiFrame(): EiFrame {
-		return $this->eiFrame;
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
+	 */
+	public function getEiuFrame() {
+		return $this->eiuFrame;
 	}
 	/**
-	 * @return EditEntryModelForm
+	 * @return EntryTypeForm[]
 	 */
-	public function getEntryModelForms() {
-		return $this->entryModelForms;
+	public function getEntryTypeForms() {
+		return $this->entryTypeForms;
 	}
 	
-	public function setEntryModelForms(array $entryModelForms) {
-		$this->entryModelForms = $entryModelForms; 
+	/**
+	 * @param EntryTypeForm[] $entryModelForms
+	 */
+	public function setEntryTypeForms(array $entryTypeForms) {
+		$this->entryTypeForms = $entryTypeForms; 
 		if ($this->chosenId === null) {
-			$this->chosenId = key($entryModelForms);
+			$this->chosenId = key($entryTypeForms);
 		}
 	}
 	
@@ -114,7 +124,7 @@ class EntryForm implements Dispatchable {
 	}
 	
 	private function _validation(BindingDefinition $bd) {
-		$bd->val('chosenId', new ValEnum(array_keys($this->entryModelForms)));
+		$bd->val('chosenId', new ValEnum(array_keys($this->entryTypeForms)));
 		
 		if (!$this->isChoosable()) return;
 		
@@ -132,9 +142,9 @@ class EntryForm implements Dispatchable {
 // 			}
 			
 			$chosenId = $bd->getMappingResult()->chosenId;
-			if (!isset($that->entryModelForms[$chosenId])) return;
+			if (!isset($that->entryTypeForms[$chosenId])) return;
 			
-			foreach (array_keys($that->entryModelForms) as $eiTypeId) {
+			foreach (array_keys($that->entryTypeForms) as $eiTypeId) {
 				if ($chosenId !== $eiTypeId) {
 					foreach ($bd->getBindingTree()->lookupAll($bd->getPropertyPath()
 							->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))) as $childBd) {
@@ -145,21 +155,29 @@ class EntryForm implements Dispatchable {
 		});
 	}
 	/**
-	 * @return EiEntry
+	 * @return EiuEntry
 	 * @throws IllegalStateException
 	 */
-	public function buildEiEntry() {
-		IllegalStateException::assertTrue(isset($this->entryModelForms[$this->chosenId]));
-		$this->entryModelForms[$this->chosenId]->save();
-		return $this->entryModelForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry()->getEiEntry();
+	public function buildEiuEntry() {
+		IllegalStateException::assertTrue(isset($this->entryTypeForms[$this->chosenId]));
+		$this->entryTypeForms[$this->chosenId]->save();
+		return $this->entryTypeForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry();
 	}
 	
 	/**
-	 * @return EntryModelForm
+	 * @return EntryTypeForm
 	 */
-	public function getChosenEntryModelForm() {	
-		IllegalStateException::assertTrue(isset($this->entryModelForms[$this->chosenId]));
-		return $this->entryModelForms[$this->chosenId];
+	public function getChosenEntryTypeForm() {	
+		IllegalStateException::assertTrue(isset($this->entryTypeForms[$this->chosenId]));
+		return $this->entryTypeForms[$this->chosenId];
+	}
+	
+	public function createView() {
+		$viewFactory = $this->eiuFrame->getN2nContext()->lookup(ViewFactory::class);
+		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
+		
+		return $viewFactory->create('rocket\spec\ei\manage\util\view\entryForm.html',
+				array('entryFormViewModel' => new EntryFormViewModel($this)));
 	}
 }
 

@@ -36,7 +36,6 @@ use rocket\core\model\RocketState;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\Breadcrumb;
-use n2n\reflection\ReflectionUtils;
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\util\model\EiuEntry;
@@ -47,6 +46,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ajah\RocketAjahResponse;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\ajah\AjahExec;
+use rocket\ajah\AjahEventInfo;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -89,7 +89,21 @@ class EiuCtrl implements Lookupable {
 		return $this->eiuFrame->entry($this->lookupEiObject($liveIdRep));
 	}
 	
-	public function lookupEiObject(string $liveIdRep) {
+	/**
+	 * @param string $liveIdRep
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
+	 */
+	public function lookupEiEntry(string $liveIdRep) {
+		return $this->eiuFrame->createEiEntry($this->lookupEiObject($liveIdRep));
+	}
+	
+	/**
+	 * @param string $liveIdRep
+	 * @throws PageNotFoundException
+	 * @throws ForbiddenException
+	 * @return \rocket\spec\ei\manage\EiObject
+	 */
+	private function lookupEiObject(string $liveIdRep) {
 		$eiObject = null;
 		try {
 			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->idRepToId($liveIdRep));
@@ -106,30 +120,27 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * @param string $liveIdRep
-	 * @return \rocket\spec\ei\manage\mapping\EiEntry
-	 */
-	public function lookupEiEntry(string $liveIdRep, bool $assignToEiu = false) {
-		$eiEntry = $this->eiuFrame->createEiEntry($this->lookupEiObject($liveIdRep, false));
-		if ($assignToEiu) {
-			$this->eiuFrame->assignEiuEntry($eiEntry);
-		}
-		return $eiEntry;
-	}
-	
-	/**
-	 * @param string $liveIdRep
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function lookupEntryByDraftId($draftId) {
+	public function lookupEntryByDraftId(int $draftId) {
 		return $this->eiuFrame->entry($this->lookupEiObjectByDraftId($draftId));
 	}
 	
-	public function lookupEiObjectByDraftId($draftId) {
-		if (!is_numeric($draftId)) {
-			throw new PageNotFoundException('Draft id must be numeric. ' . ReflectionUtils::getTypeInfo($draftId) 
-					. ' given');
-		}
-		
+	/**
+	 * @param int $draftId
+	 * @return \rocket\spec\ei\manage\mapping\EiEntry
+	 */
+	private function lookupEiEntryByDraftId(int $draftId) {
+		return $this->eiuFrame->createEiEntry($this->lookupEiObjectByDraftId($draftId));
+	}
+	
+	/**
+	 * @param int $draftId
+	 * @throws PageNotFoundException
+	 * @throws ForbiddenException
+	 * @return \rocket\spec\ei\manage\EiObject
+	 */
+	private function lookupEiObjectByDraftId(int $draftId) {
 		$eiObject = null;
 		try {
 			$eiObject = $this->eiuFrame->lookupEiObjectByDraftId((int) $draftId);
@@ -140,14 +151,6 @@ class EiuCtrl implements Lookupable {
 		}
 		
 		return $eiObject;
-	}
-	
-	public function lookupEiEntryByDraftId($draftId, bool $assignToEiu = false) {
-		$eiEntry = $this->eiuFrame->createEiEntry($this->lookupEiObjectByDraftId($draftId, false));
-		if ($assignToEiu) {
-			$this->eiuFrame->assignEiuEntry($eiEntry);
-		}
-		return $eiEntry;
 	}
 	
 	public function redirectBack(string $fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {

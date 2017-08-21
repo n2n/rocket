@@ -42,11 +42,11 @@
 ?>
 
 <?php if (!$entryOpen): ?>
-	<?php $eiHtml->entryOpen('div', $eiu->entryGui())?>
+	<?php $eiHtml->entryOpen('div', $eiu->entryGui()) ?>
 <?php endif ?>
 
 <div class="rocket-group-toolbar">
-	<?php if ($view->getParam('renderForkMags', false, true) ): ?>
+	<?php if ($view->getParam('renderForkMags', false, true)): ?>
 		<?php $eiHtml->entryForkControls() ?>
 	<?php endif ?>
 </div>

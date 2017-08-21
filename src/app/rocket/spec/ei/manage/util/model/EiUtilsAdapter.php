@@ -176,7 +176,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * @see \rocket\spec\ei\manage\util\model\FrameEiu::lookupEiObjectById()
 	 */
 	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject {
-		return new LiveEiObject($this->lookupEiEntityObjById($id, $ignoreConstraintTypes));
+		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
 	}
 
 	/**

@@ -111,6 +111,24 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->eiFrame->getN2nLocale();
 	}
 	
+	/**
+	 * @param unknown $eiObjectObj
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function entry($eiObjectObj) {
+		return new EiuEntry($eiObjectObj, $this);
+	}
+	
+	/**
+	 * @param bool $draft
+	 * @param EiType $eiType
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function newEntry(bool $draft = false, EiType $eiType = null) {
+		return new EiuEntry($this->createNewEiObject($draft, $eiType));
+	}
+	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
 		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
 		$criteria->select(CrIt::c('1'));
@@ -120,10 +138,20 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiEntityObjById($id, $ignoreConstraints)
+	 * 
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function lookupEiEntityObjById($id, int $ignoreConstraintTypes = 0): EiEntityObj {
+	public function lookupEntry($id, int $ignoreConstraintTypes = 0) {
+		return $this->entry($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiEntityObj($id, $ignoreConstraints)
+	 */
+	public function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj {
 		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
 		$criteria->select('e');
 		$this->applyIdComparison($criteria->where(), $id);
@@ -144,15 +172,6 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	public function getDraftManager(): DraftManager {
 		return $this->eiFrame->getManageState()->getDraftManager();
-	}
-	
-	/**
-	 * @param unknown $eiObjectObj
-	 * @throws EiuPerimeterException
-	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
-	 */
-	public function entry($eiObjectObj) {
-		return new EiuEntry($eiObjectObj, $this);
 	}
 	
 	/**
@@ -183,10 +202,6 @@ class EiuFrame extends EiUtilsAdapter {
 		}
 		
 		return $this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType));
-	}
-	
-	public function newEntry(bool $draft = false, EiType $eiType = null) {
-		return new EiuEntry($this->createNewEiObject($draft, $eiType));
 	}
 	
 	/**
@@ -232,7 +247,7 @@ class EiuFrame extends EiUtilsAdapter {
 // 		return $eiMask->createBulkyView($eiuEntryGui);
 // 	}
 	
-	public function createNewEntryForm(bool $draft = false, $copyFromEiObjectObj = null, PropertyPath $contextPropertyPath = null): EntryForm {
+	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, PropertyPath $contextPropertyPath = null): EntryForm {
 		$entryModelForms = array();
 		$labels = array();
 		
@@ -255,13 +270,13 @@ class EiuFrame extends EiUtilsAdapter {
 				$subEiEntry = $this->createEiEntry($eiObject);
 			}
 						
-			$entryModelForms[$subEiTypeId] = $this->createEntryModelForm($subEiType, $subEiEntry, $contextPropertyPath);
+			$entryModelForms[$subEiTypeId] = $this->createEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
 			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($this->eiFrame->getN2nLocale());
 		}
 		
 		$entryForm = new EntryForm($this->eiFrame);
-		$entryForm->setEntryModelForms($entryModelForms);
+		$entryForm->setEntryTypeForms($entryModelForms);
 		$entryForm->setChoicesMap($labels);
 		$entryForm->setChosenId(key($entryModelForms));
 		// @todo remove hack when ContentItemEiProp gets updated.
@@ -277,13 +292,18 @@ class EiuFrame extends EiUtilsAdapter {
 		return $entryForm;
 	}
 	
-	public function createEntryFormFromMapping(EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
+	/**
+	 * @param EiEntry $eiEntry
+	 * @param PropertyPath $contextPropertyPath
+	 * @return \rocket\spec\ei\manage\util\model\EntryForm
+	 */
+	public function entryForm(EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$contextEiMask = $this->eiFrame->getContextEiMask();
 		
 		$entryForm = new EntryForm($this->eiFrame);
 		$eiType = $eiEntry->getEiType();
 
-		$entryForm->setEntryModelForms(array($eiType->getId() => $this->createEntryModelForm($eiType, $eiEntry, $contextPropertyPath)));
+		$entryForm->setEntryTypeForms(array($eiType->getId() => $this->createEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
 		$entryForm->setChosenId($eiType->getId());
 		// @todo remove hack when ContentItemEiProp gets updated.
 		$entryForm->setChoicesMap(array($eiType->getId() => $contextEiMask->determineEiMask($eiType)->getLabelLstr()
@@ -291,7 +311,7 @@ class EiuFrame extends EiUtilsAdapter {
 		return $entryForm;
 	}
 	
-	private function createEntryModelForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
+	private function createEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiType);
 		$eiGui = $eiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
 		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry, true);
@@ -303,7 +323,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
 				new PropertyPathPart('entryModelForms', true, $eiType->getId()))->ext('dispatchable'));
 		
-		return new EntryModelForm(new EiuEntryGui($eiEntryGui));
+		return new EntryTypeForm(new EiuEntryGui($eiEntryGui));
 	}
 	
 	public function remove(EiObject $eiObject) {
