@@ -103,7 +103,7 @@ class EiuCtrl implements Lookupable {
 	 * @throws ForbiddenException
 	 * @return \rocket\spec\ei\manage\EiObject
 	 */
-	private function lookupEiObject(string $liveIdRep) {
+	public function lookupEiObject(string $liveIdRep) {
 		$eiObject = null;
 		try {
 			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->idRepToId($liveIdRep));
@@ -140,7 +140,7 @@ class EiuCtrl implements Lookupable {
 	 * @throws ForbiddenException
 	 * @return \rocket\spec\ei\manage\EiObject
 	 */
-	private function lookupEiObjectByDraftId(int $draftId) {
+	public function lookupEiObjectByDraftId(int $draftId) {
 		$eiObject = null;
 		try {
 			$eiObject = $this->eiuFrame->lookupEiObjectByDraftId((int) $draftId);

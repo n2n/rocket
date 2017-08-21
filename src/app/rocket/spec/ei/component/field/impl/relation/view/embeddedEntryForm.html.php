@@ -2,10 +2,12 @@
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\ui\view\View;
+	use rocket\spec\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
+	$eiHtml = new EiHtmlBuilder($view);
 	
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
@@ -34,22 +36,39 @@
 			</div>
 		</div>
 	<?php else: ?>
-		<div class="rocket-impl-summary">
-			<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
-			<div>
-				<i class="<?php $html->out($mappingForm->getIconTyp()) ?>"></i>
-				<?php $html->out($mappingForm->getEntryLabel()) ?>
+		<?php if (!$eiuEntry->isNew()): ?>
+			<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
+			<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
+				<div>
+					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+					<?php $html->out($eiuEntry->getGenericLabel()) ?>
+				</div>
+				<div>
+					<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
+						<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+							<?php $eiHtml->fieldContent() ?>
+						<?php $eiHtml->fieldClose() ?>
+					<?php endforeach ?>
+				</div>
+				<div class="rocket-simple-commands"></div>
+			<?php $eiHtml->entryClose() ?>
+		<?php else: ?>
+			<div class="rocket-impl-summary">
+				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+				<div>
+					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+					<?php $html->out($eiuEntry->getGenericLabel()) ?>
+				</div>
+				<div><?php $html->text('ei_impl_new_entry_txt') ?></div>
+				<div class="rocket-simple-commands"></div>
 			</div>
-			<div>summary</div>
-			<div class="rocket-simple-commands"></div>
-		</div>
+		<?php endif ?>
 	
 		<div class="rocket-impl-body rocket-group">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-controls">
-				<?php $view->out($mappingForm->getEntryForm()->createView()) ?>
-				<?php /* $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
-						'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) */?>
+				<?php $view->out($mappingForm->getEntryForm()
+						->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView()) ?>
 			</div>
 		</div>
 	<?php endif ?>

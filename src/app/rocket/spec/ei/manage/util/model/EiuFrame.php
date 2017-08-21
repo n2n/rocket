@@ -248,7 +248,7 @@ class EiuFrame extends EiUtilsAdapter {
 // 	}
 	
 	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, PropertyPath $contextPropertyPath = null): EntryForm {
-		$entryModelForms = array();
+		$entryTypeForms = array();
 		$labels = array();
 		
 		$contextEiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
@@ -270,21 +270,21 @@ class EiuFrame extends EiUtilsAdapter {
 				$subEiEntry = $this->createEiEntry($eiObject);
 			}
 						
-			$entryModelForms[$subEiTypeId] = $this->createEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
+			$entryTypeForms[$subEiTypeId] = $this->createEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
 			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($this->eiFrame->getN2nLocale());
 		}
 		
-		$entryForm = new EntryForm($this->eiFrame);
-		$entryForm->setEntryTypeForms($entryModelForms);
+		$entryForm = new EntryForm($this);
+		$entryForm->setEntryTypeForms($entryTypeForms);
 		$entryForm->setChoicesMap($labels);
-		$entryForm->setChosenId(key($entryModelForms));
+		$entryForm->setChosenId(key($entryTypeForms));
 		// @todo remove hack when ContentItemEiProp gets updated.
 		if ($contextEiType->hasSubEiTypes()) {
 			$entryForm->setChoosable(true);
 		}
 		
-		if (empty($entryModelForms)) {
+		if (empty($entryTypeForms)) {
 			throw new EntryManageException('Can not create EntryForm of ' . $contextEiType
 					. ' because its class is abstract an has no s of non-abstract subtypes.');
 		}
@@ -299,8 +299,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 */
 	public function entryForm(EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$contextEiMask = $this->eiFrame->getContextEiMask();
-		
-		$entryForm = new EntryForm($this->eiFrame);
+		$entryForm = new EntryForm($this);
 		$eiType = $eiEntry->getEiType();
 
 		$entryForm->setEntryTypeForms(array($eiType->getId() => $this->createEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
@@ -321,7 +320,7 @@ class EiuFrame extends EiUtilsAdapter {
 		}
 		
 		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
-				new PropertyPathPart('entryModelForms', true, $eiType->getId()))->ext('dispatchable'));
+				new PropertyPathPart('entryTypeForms', true, $eiType->getId()))->ext('dispatchable'));
 		
 		return new EntryTypeForm(new EiuEntryGui($eiEntryGui));
 	}

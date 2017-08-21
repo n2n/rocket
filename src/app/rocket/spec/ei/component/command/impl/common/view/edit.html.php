@@ -40,9 +40,7 @@
 ?>
 
 <?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form rocket-impl-form')) ?>
-	
-	<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
-			array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->createPropertyPath('entryForm')))) ?>
+	<?php $view->out($editModel->getEntryForm()->createView()) ?>
 					
 	<div class="rocket-context-commands">
 		<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 

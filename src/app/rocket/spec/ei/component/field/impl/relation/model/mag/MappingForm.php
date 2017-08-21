@@ -60,7 +60,7 @@ class MappingForm implements Dispatchable {
 		return $this->entryLabel;
 	}
 	
-	public function getIconTyp() {
+	public function getIconType() {
 		return $this->iconType;
 	}
 	

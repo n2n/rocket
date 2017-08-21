@@ -31,6 +31,7 @@ class EntryFormViewModel {
 	
 	public function __construct(EntryForm $entryForm) {
 		$this->entryForm = $entryForm;
+		
 	}
 	
 // 	public function initFromView(HtmlView $view) {
@@ -52,7 +53,7 @@ class EntryFormViewModel {
 	}
 	
 	public function getEntryFormPropertyPath() {
-		return $this->entryFormPropertyPath;
+		return $this->entryForm->getChosenEntryTypeForm()->getEiuEntryGui()->getContextPropertyPath();
 	}
 	
 	public function isTypeChangable() {
@@ -67,24 +68,31 @@ class EntryFormViewModel {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue(!$entryForm->isChoosable());
 		
-		$eiTypeId = $entryForm->getChosenId();
-		$entryModelForm = $entryForm->getChosenEntryTypeForm();
-		$propertyPath = $this->entryFormPropertyPath
-				->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
-		$entryModelForm->getEiuEntryGui()->setContextPropertyPath($propertyPath);
-		return $entryModelForm->getEiuEntryGui()->createView();
+		$entryTypeForm = $entryForm->getChosenEntryTypeForm();
+		
+		if (null !== ($contextPropertyPath = $this->entryForm->getContextPropertyPath())) {
+			$eiTypeId = $entryForm->getChosenId();
+			$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath
+					->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
+		}
+				
+		return $entryTypeForm->getEiuEntryGui()->createView();
 	}
 	
 	public function createEditViews() {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue($entryForm->isChoosable());
 	
+		$contextPropertyPath = $this->entryForm->getContextPropertyPath();
+		
 		$editViews = array();
-		foreach ($entryForm->getEntryTypeForms() as $eiTypeId => $entryModelForm) {
-			$propertyPath = $this->entryFormPropertyPath->ext(
-					new PropertyPathPart('entryModelForms', true, $eiTypeId))->ext('dispatchable');
+		foreach ($entryForm->getEntryTypeForms() as $eiTypeId => $entryTypeForm) {
+			if ($contextPropertyPath !== null) {
+				$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath->ext(
+						new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
+			}
 			
-			$entryGuiModel = $entryModelForm->getEiuEntryGui();
+			$entryGuiModel = $entryTypeForm->getEiuEntryGui();
 			
 			$editViews[$eiTypeId] = $entryGuiModel->createView();
 		}

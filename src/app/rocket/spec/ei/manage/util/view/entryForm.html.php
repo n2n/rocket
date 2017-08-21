@@ -30,7 +30,7 @@
 	$entryFormViewModel = $view->getParam('entryFormViewModel');
 	$view->assert($entryFormViewModel instanceof EntryFormViewModel);
 	
-	$entryFormViewModel->initFromView($view);
+// 	$entryFormViewModel->initFromView($view);
 	
 	$selectedTypeIdPropertyPath = $entryFormViewModel->getEntryFormPropertyPath()->ext('chosenId');
 ?>

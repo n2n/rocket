@@ -31,13 +31,13 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\reflection\CastUtils;
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\ViewFactory;
+use n2n\web\dispatch\map\PropertyPath;
 
 class EntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('chosenId'));
-		$ai->p('entryModelForms', new AnnoDispObjectArray());
+		$ai->p('entryTypeForms', new AnnoDispObjectArray());
 	}
 		
 	private $eiuFrame;
@@ -49,6 +49,7 @@ class EntryForm implements Dispatchable {
 	private $eiTypeChoicesMap;
 	private $entryTypeForms;
 		
+	private $contextPropertyPath = null;
 // 	private $selectedTypeId;
 // 	private $mainEntryFormPart;
 // 	private $levelEntryFormParts = array();
@@ -59,6 +60,23 @@ class EntryForm implements Dispatchable {
 	 */
 	public function __construct(EiuFrame $eiuFrame) {
 		$this->eiuFrame = $eiuFrame;
+	}
+	
+	/**
+	 * 
+	 * @param PropertyPath $propertyPath
+	 * @return \rocket\spec\ei\manage\util\model\EntryForm
+	 */
+	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
+		$this->contextPropertyPath = $propertyPath;
+		return $this;
+	}
+	
+	/**
+	 * @return \n2n\web\dispatch\map\PropertyPath
+	 */
+	public function getContextPropertyPath() {
+		return $this->contextPropertyPath;
 	}
 	
 	/**
@@ -75,7 +93,7 @@ class EntryForm implements Dispatchable {
 	}
 	
 	/**
-	 * @param EntryTypeForm[] $entryModelForms
+	 * @param EntryTypeForm[] $entryTypeForms
 	 */
 	public function setEntryTypeForms(array $entryTypeForms) {
 		$this->entryTypeForms = $entryTypeForms; 
@@ -129,12 +147,12 @@ class EntryForm implements Dispatchable {
 		if (!$this->isChoosable()) return;
 		
 		$that = $this;
-		$bd->closure(function ($entryModelForms) use ($bd, $that) {
-// 			foreach ($bd->getMappingResult()->entryModelForms as $entryModelForm) {
+		$bd->closure(function ($entryTypeForms) use ($bd, $that) {
+// 			foreach ($bd->getMappingResult()->entryTypeForms as $entryModelForm) {
 // 				test('hii' . $entryModelForm->getBindingErrors()->isEmpty());
 // 			}
 			
-// 			foreach ($entryModelForms as $entryModelForm) {
+// 			foreach ($entryTypeForms as $entryModelForm) {
 				
 				
 // 				test('hi ' . get_class($entryModelForm->getObject()) . ' ' . spl_object_hash($entryModelForm->getBindingErrors()));
@@ -147,7 +165,7 @@ class EntryForm implements Dispatchable {
 			foreach (array_keys($that->entryTypeForms) as $eiTypeId) {
 				if ($chosenId !== $eiTypeId) {
 					foreach ($bd->getBindingTree()->lookupAll($bd->getPropertyPath()
-							->ext(new PropertyPathPart('entryModelForms', true, $eiTypeId))) as $childBd) {
+							->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))) as $childBd) {
 						$childBd->getMappingResult()->getBindingErrors()->removeAllErrors();
 					}
 				}
