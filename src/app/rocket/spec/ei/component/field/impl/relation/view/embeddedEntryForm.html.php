@@ -47,7 +47,7 @@
 		<div class="rocket-impl-body rocket-group">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-controls">
-				<?php $view->view($mappingForm->getEntryForm()->createView()) ?>
+				<?php $view->out($mappingForm->getEntryForm()->createView()) ?>
 				<?php /* $view->import('~\spec\ei\manage\util\view\entryForm.html', array(
 						'entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) */?>
 			</div>
