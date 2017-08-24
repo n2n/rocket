@@ -790,6 +790,18 @@ var rocket;
             return ToMany;
         }());
         impl.ToMany = ToMany;
+        var ToManySelector = (function () {
+            function ToManySelector(jqElem) {
+                this.jqElem = jqElem;
+                this.jqUl = jqElem.children("ul");
+            }
+            return ToManySelector;
+        }());
+        var SelectedEntry = (function () {
+            function SelectedEntry() {
+            }
+            return SelectedEntry;
+        }());
         var AddControlFactory = (function () {
             function AddControlFactory(embeddedEntryRetriever, label) {
                 this.embeddedEntryRetriever = embeddedEntryRetriever;

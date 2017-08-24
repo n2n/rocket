@@ -60,7 +60,7 @@
 		data-close-label="<?php $html->text('common_close_label') ?>">
 		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
-		<div class="rocket-selector"
+		<div class="rocket-impl-selector"
 				data-original-id-reps="<?php $html->out(json_encode($toManyForm->getOriginalEntryIdReps())) ?>"
 				data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 				data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"

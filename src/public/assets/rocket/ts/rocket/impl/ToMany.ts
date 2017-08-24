@@ -388,6 +388,22 @@ namespace rocket.impl {
 		}
 	}
 	
+	class ToManySelector {
+		private jqElem: JQuery;
+		private jqUl: JQuery
+		
+		constructor(jqElem: JQuery) {
+			this.jqElem = jqElem;
+			this.jqUl = jqElem.children("ul");
+			
+			
+		}
+	}
+	
+	class SelectedEntry {
+		
+	}
+	
 	class AddControlFactory {
 		private embeddedEntryRetriever: EmbeddedEntryRetriever;
 		private label: string;
