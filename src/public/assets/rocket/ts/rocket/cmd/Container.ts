@@ -539,12 +539,6 @@ namespace rocket.cmd {
 		}
 	}
 	
-	export namespace Context {
-		export enum EventType {
-			CONTENT_CHANGED = "contentChanged"
-		}
-	}
-	
 	class AdditionalTabManager {
 		private context: Context;
 		private tabs: Array<AdditionalTab>;

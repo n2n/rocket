@@ -26,6 +26,124 @@ namespace rocket.impl {
 	var $ = jQuery;
 	
 	export class ToMany {
+		constructor(private selector: ToManySelector = null, private embedded: ToManyEmbedded = null) {
+		}
+				
+		public static from(jqToMany: JQuery): ToMany {
+			var toMany: ToMany = jqToMany.data("rocketImplToMany");
+			if (toMany instanceof ToMany) {
+				return toMany;
+			}
+			
+			var toManySelector = null;
+			var jqSelector = jqToMany.children(".rocket-impl-selector");
+			if (jqSelector.length > 0) {
+				toManySelector = new ToManySelector(jqSelector);
+			}
+			
+			var jqCurrents = jqToMany.children(".rocket-impl-currents");
+			var jqNews = jqToMany.children(".rocket-impl-news");
+			var addControlFactory = null;
+			
+			var toManyEmbedded = null;
+			if (jqCurrents.length > 0 || jqNews.length > 0) {
+				if (jqNews.length > 0) {
+					var propertyPath = jqNews.data("property-path");
+					
+					var startKey: number = 0;
+					var testPropertyPath = propertyPath + "[n";
+					jqNews.find("input, textarea").each(function () {
+						var name: string = <string> $(this).attr("name");
+						if (0 == name.indexOf(testPropertyPath)) {
+							name = name.substring(testPropertyPath.length);
+							
+							name.match(/^[0-9]+/).forEach(function (key) {
+								var curKey: number = parseInt(key);
+								if (curKey >= startKey) {
+									startKey = curKey + 1;
+								}
+							});
+						}
+					});
+				
+					var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
+							jqNews.data("draftMode"), startKey, "n");
+					addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+				}
+				
+				toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
+				jqCurrents.children(".rocket-impl-entry").each(function () {
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+				});
+				jqNews.children(".rocket-impl-entry").each(function () {
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+				});
+			}
+			
+			var toMany = new ToMany(toManySelector, toManyEmbedded);
+			jqToMany.data("rocketImplToMany", toMany);		
+			
+			
+			
+			return toMany;
+		}
+	}
+	
+	class ToManySelector {
+		private jqElem: JQuery;
+		private jqUl: JQuery
+		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
+		
+		
+		constructor(jqElem: JQuery) {
+			this.jqElem = jqElem;
+			this.jqUl = jqElem.children("ul");
+			
+			this.init();
+		}
+		
+		private init() {
+			var jqCommandList = $("<div />");
+			this.jqElem.append(jqCommandList);
+			
+			var that = this;
+			var commandList = new display.CommandList(jqCommandList);
+			
+			commandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+				that.openBrowser();
+			});
+			
+			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
+				
+			});
+			commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
+				
+			});
+		}
+		
+		public addSelectedEntry(entry: SelectedEntry) {
+			this.entries.push(entry);	
+		}
+		
+		public openBrowser() {
+			var layer = rocket.getContainer().createLayer();
+			rocket.exec(this.jqElem.data("overview-tools-url"), {
+				showLoadingContext: true,
+				currentLayer: layer
+			});
+		}
+	}
+	
+	class SelectedEntry {
+		private jqElem: JQuery;
+		
+		constructor(jqElem: JQuery) {
+			this.jqElem = jqElem;
+		}
+	}
+	
+	
+	export class ToManyEmbedded {
 		private jqToMany: JQuery;
 		private addControlFactory: AddControlFactory;
 		private compact: boolean = true;
@@ -62,9 +180,9 @@ namespace rocket.impl {
 				if (toolbar !== null) {
 					var jqButton = null;
 					if (this.isReadOnly()) { 
-						jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+						jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
 					} else {
-						jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+						jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", severity: display.Severity.WARNING });
 					}
 					let that = this;
 					jqButton.click(function () {
@@ -311,7 +429,7 @@ namespace rocket.impl {
 			var that = this;
 			
 			var jqCommandButton = this.expandContext.getMenu().getCommandList()
-					.createJqCommandButton("fa fa-times", this.closeLabel, display.Severity.WARNING, null, true);
+					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(function () {
 				that.expandContext.getLayer().close();
 			});
@@ -344,168 +462,8 @@ namespace rocket.impl {
 			this.changed();
 			n2n.ajah.update();
 		}
-		
-		public static from(jqToMany: JQuery): ToMany {
-			var toMany: ToMany = jqToMany.data("rocketImplToMany");
-			if (toMany instanceof ToMany) {
-				return toMany;
-			}
-			
-			var jqNews = jqToMany.children(".rocket-impl-news");
-			var addControlFactory = null;
-			if (jqNews.length > 0) {
-				var propertyPath = jqNews.data("property-path");
-				
-				var startKey: number = 0;
-				var testPropertyPath = propertyPath + "[n";
-				jqNews.find("input, textarea").each(function () {
-					var name: string = <string> $(this).attr("name");
-					if (0 == name.indexOf(testPropertyPath)) {
-						name = name.substring(testPropertyPath.length);
-						
-						name.match(/^[0-9]+/).forEach(function (key) {
-							var curKey: number = parseInt(key);
-							if (curKey >= startKey) {
-								startKey = curKey + 1;
-							}
-						});
-					}
-				});
-			
-				var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
-						jqNews.data("draftMode"), startKey, "n");
-				addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
-			}
-			
-			toMany = new ToMany(jqToMany, addControlFactory);	
-			jqToMany.data("rocketImplToMany", toMany);		
-			
-			jqToMany.find(".rocket-impl-entry").each(function () {
-				toMany.addEntry(new EmbeddedEntry($(this), toMany.isReadOnly()));
-			});
-			
-			return toMany;
-		}
 	}
 	
-	class ToManySelector {
-		private jqElem: JQuery;
-		private jqUl: JQuery
-		
-		constructor(jqElem: JQuery) {
-			this.jqElem = jqElem;
-			this.jqUl = jqElem.children("ul");
-			
-			
-		}
-	}
-	
-	class SelectedEntry {
-		
-	}
-	
-	class AddControlFactory {
-		private embeddedEntryRetriever: EmbeddedEntryRetriever;
-		private label: string;
-		
-		constructor (embeddedEntryRetriever: EmbeddedEntryRetriever, label: string) {
-			this.embeddedEntryRetriever = embeddedEntryRetriever;
-			this.label = label;
-		}
-		
-		public create(): AddControl {
-			return AddControl.create(this.label, this.embeddedEntryRetriever);
-		}
-	}
-	
-	class AddControl {
-		private embeddedEntryRetriever: EmbeddedEntryRetriever;
-		private jqElem: JQuery;
-		private jqButton: JQuery;
-		private onNewEntryCallbacks: Array<(EmbeddedEntry) => any> = new Array<(EmbeddedEntry) => any>();
-		private examinedEmbeddedEntry: EmbeddedEntry; 
-		private disposed: boolean = false;
-		
-		constructor(jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever) {
-			this.embeddedEntryRetriever = embeddedEntryRetriever;
-			
-			this.jqElem = jqElem;
-			this.jqButton = jqElem.children("button");
-			
-			var that = this;
-			this.jqButton.on("mouseenter", function () {
-				that.embeddedEntryRetriever.setPreloadEnabled(true);
-			});
-			this.jqButton.on("click", function () {
-				if (that.isLoading()) return;
-				that.block(true);
-				that.embeddedEntryRetriever.lookupNew(
-						function (embeddedEntry: EmbeddedEntry) {
-							that.examine(embeddedEntry);
-						},
-						function () {
-							that.block(false);
-						});
-			});
-			
-		}
-		
-		public getJQuery(): JQuery {
-			return this.jqElem;
-		}
-		
-		private block(blocked: boolean) {
-			if (blocked) {
-				this.jqButton.prop("disabled", true);
-				this.jqElem.addClass("rocket-impl-loading");
-			} else {
-				this.jqButton.prop("disabled", false);
-				this.jqElem.removeClass("rocket-impl-loading");
-			}
-		}	
-		
-		private examine(embeddedEntry: EmbeddedEntry) {
-			this.block(false);
-			
-			if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
-				this.fireCallbacks(embeddedEntry);
-				return;
-			}
-			
-			this.examinedEmbeddedEntry = embeddedEntry;
-		}
-		
-		public dispose() {
-			this.disposed = true;
-			this.jqElem.remove();
-			
-			if (this.examinedEmbeddedEntry !== null) {
-				this.fireCallbacks(this.examinedEmbeddedEntry);
-				this.examinedEmbeddedEntry = null;
-			}
-		}
-		
-		public isLoading() {
-			return this.jqElem.hasClass("rocket-impl-loading");
-		}
-		
-		private fireCallbacks(embeddedEntry: EmbeddedEntry) {
-			if (this.disposed) return;
-			
-			this.onNewEntryCallbacks.forEach(function (callback: (EmbeddedEntry) => any) {
-				callback(embeddedEntry);
-			});
-		}
-		
-		public onNewEmbeddedEntry(callback: (EmbeddedEntry) => any) {
-			this.onNewEntryCallbacks.push(callback);
-		}
-		
-		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever): AddControl {
-			return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })),
-					embeddedEntryRetriever);
-		} 
-	}
 	
 	class EmbeddedEntry {
 		private entryGroup: display.StructureElement;
@@ -536,18 +494,18 @@ namespace rocket.impl {
 			
 			if (readOnly) {
 				var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-				this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+				this.jqRedFocusButton = rcl.createJqCommandButton({iconType: "fa fa-file", label: "Detail", severity: display.Severity.SECONDARY});
 			} else {
 				this.entryForm = display.EntryForm.from(jqEntry, true);
 				
 				var ecl = this.bodyGroup.getToolbar().getCommandList();
-				this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
-				this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
-				this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER); 
+				this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
+				this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down"});
+				this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", severity: display.Severity.DANGER }); 
 				
 				var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-				this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
-				this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+				this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", severity: display.Severity.WARNING });
+				this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", severity: display.Severity.DANGER });
 			}
 			
 			
@@ -765,5 +723,109 @@ namespace rocket.impl {
 	interface PendingLookup {
 		doneCallback: (embeddedEntry: EmbeddedEntry) => any;
 		failCallback: () => any;
+	}
+	
+	
+	class AddControlFactory {
+		private embeddedEntryRetriever: EmbeddedEntryRetriever;
+		private label: string;
+		
+		constructor (embeddedEntryRetriever: EmbeddedEntryRetriever, label: string) {
+			this.embeddedEntryRetriever = embeddedEntryRetriever;
+			this.label = label;
+		}
+		
+		public create(): AddControl {
+			return AddControl.create(this.label, this.embeddedEntryRetriever);
+		}
+	}
+	
+	class AddControl {
+		private embeddedEntryRetriever: EmbeddedEntryRetriever;
+		private jqElem: JQuery;
+		private jqButton: JQuery;
+		private onNewEntryCallbacks: Array<(EmbeddedEntry) => any> = new Array<(EmbeddedEntry) => any>();
+		private examinedEmbeddedEntry: EmbeddedEntry; 
+		private disposed: boolean = false;
+		
+		constructor(jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever) {
+			this.embeddedEntryRetriever = embeddedEntryRetriever;
+			
+			this.jqElem = jqElem;
+			this.jqButton = jqElem.children("button");
+			
+			var that = this;
+			this.jqButton.on("mouseenter", function () {
+				that.embeddedEntryRetriever.setPreloadEnabled(true);
+			});
+			this.jqButton.on("click", function () {
+				if (that.isLoading()) return;
+				that.block(true);
+				that.embeddedEntryRetriever.lookupNew(
+						function (embeddedEntry: EmbeddedEntry) {
+							that.examine(embeddedEntry);
+						},
+						function () {
+							that.block(false);
+						});
+			});
+			
+		}
+		
+		public getJQuery(): JQuery {
+			return this.jqElem;
+		}
+		
+		private block(blocked: boolean) {
+			if (blocked) {
+				this.jqButton.prop("disabled", true);
+				this.jqElem.addClass("rocket-impl-loading");
+			} else {
+				this.jqButton.prop("disabled", false);
+				this.jqElem.removeClass("rocket-impl-loading");
+			}
+		}	
+		
+		private examine(embeddedEntry: EmbeddedEntry) {
+			this.block(false);
+			
+			if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
+				this.fireCallbacks(embeddedEntry);
+				return;
+			}
+			
+			this.examinedEmbeddedEntry = embeddedEntry;
+		}
+		
+		public dispose() {
+			this.disposed = true;
+			this.jqElem.remove();
+			
+			if (this.examinedEmbeddedEntry !== null) {
+				this.fireCallbacks(this.examinedEmbeddedEntry);
+				this.examinedEmbeddedEntry = null;
+			}
+		}
+		
+		public isLoading() {
+			return this.jqElem.hasClass("rocket-impl-loading");
+		}
+		
+		private fireCallbacks(embeddedEntry: EmbeddedEntry) {
+			if (this.disposed) return;
+			
+			this.onNewEntryCallbacks.forEach(function (callback: (EmbeddedEntry) => any) {
+				callback(embeddedEntry);
+			});
+		}
+		
+		public onNewEmbeddedEntry(callback: (EmbeddedEntry) => any) {
+			this.onNewEntryCallbacks.push(callback);
+		}
+		
+		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever): AddControl {
+			return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })),
+					embeddedEntryRetriever);
+		} 
 	}
 }

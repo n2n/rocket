@@ -233,17 +233,25 @@ namespace rocket.display {
 			return this.jqCommandList;
 		}
 		
-		public createJqCommandButton(iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null, prepend: boolean = false): JQuery {
+		public createJqCommandButton(buttonConfig: ButtonConfig/*, iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null*/, prepend: boolean = false): JQuery {
 			this.jqCommandList.show();
 			
+			if (buttonConfig.iconType === undefined) {
+				buttonConfig.iconType = "fa fa-circle-o";
+			}
+			
+			if (buttonConfig.severity === undefined) {
+				buttonConfig.severity = Severity.SECONDARY;
+			}
+			
 			var jqButton = $("<button />", { 
-				"class": "btn btn-" + severity,
-				"title": tooltip,
+				"class": "btn btn-" + buttonConfig.severity,
+				"title": buttonConfig.tooltip,
 				"type": "button"
 			}).append($("<i />", {
-				"class": iconType
+				"class": buttonConfig.iconType
 			})).append($("<span />", {
-				"text": label
+				"text": buttonConfig.label
 			}));
 			
 			if (prepend) {
@@ -256,12 +264,10 @@ namespace rocket.display {
 		}
 	}
 	
-	export enum Severity {
-		PRIMARY = "primary",
-		SECONDARY = "secondary",
-		SUCCESS = "success",
-		DANGER = "danger",
-		INFO = "info",
-		WARNING = "warning"
+	export interface ButtonConfig {
+		iconType?: string;
+		label: string;
+		severity?: Severity;
+		tooltip?: string;
 	}
 }

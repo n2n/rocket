@@ -64,7 +64,7 @@
 				data-original-id-reps="<?php $html->out(json_encode($toManyForm->getOriginalEntryIdReps())) ?>"
 				data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 				data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"
-				data-add-label="<?php $html->text('common_add_label') ?>"
+				data-select-label="<?php $html->text('common_select_label') ?>"
 				data-reset-label="<?php $html->text('common_reset_label') ?>"
 				data-clear-label="<?php $html->text('common_clear_label') ?>"
 				data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
