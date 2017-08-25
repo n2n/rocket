@@ -38,7 +38,12 @@ namespace rocket.impl {
 			var toManySelector = null;
 			var jqSelector = jqToMany.children(".rocket-impl-selector");
 			if (jqSelector.length > 0) {
-				toManySelector = new ToManySelector(jqSelector);
+				toManySelector = new ToManySelector(jqSelector, jqSelector.find("li.rocket-new-entry").detach());
+				jqSelector.find("ul li").each(function () {
+					var entry = new SelectedEntry($(this));
+					entry.label = toManySelector.determineIdentityString(entry.idRep);
+					toManySelector.addSelectedEntry(entry);
+				});
 			}
 			
 			var jqCurrents = jqToMany.children(".rocket-impl-currents");
@@ -90,16 +95,23 @@ namespace rocket.impl {
 	}
 	
 	class ToManySelector {
-		private jqElem: JQuery;
 		private jqUl: JQuery
 		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
+		private originalIdReps: Array<String>;
+		private identityStrings: Array<String>;
 		
-		
-		constructor(jqElem: JQuery) {
+		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
 			this.jqUl = jqElem.children("ul");
 			
+			this.originalIdReps = jqElem.data("original-id-reps");
+			this.identityStrings = jqElem.data("identity-strings");
+			
 			this.init();
+		}
+		
+		public determineIdentityString(idRep: string): string {
+			return this.identityStrings[idRep];
 		}
 		
 		private init() {
@@ -122,6 +134,20 @@ namespace rocket.impl {
 		
 		public addSelectedEntry(entry: SelectedEntry) {
 			this.entries.push(entry);	
+			
+			var that = this;
+			entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
+				that.removeSelectedEntry(entry);				
+			});
+		}
+		
+		public removeSelectedEntry(entry: SelectedEntry) {
+			for (var i in this.entries) {
+				if (this.entries[i] !== entry) continue;
+			
+				entry.jQuery.remove();
+				this.entries.slice(parseInt(i), 1);
+			}
 		}
 		
 		public openBrowser() {
@@ -134,12 +160,40 @@ namespace rocket.impl {
 	}
 	
 	class SelectedEntry {
+		private cmdList: display.CommandList;
+		private jqLabel: JQuery;
+		private jqInput: JQuery;
+		
 		constructor(private jqElem: JQuery) {
+			jqElem.prepend(this.jqLabel = $("<span />"));
+			
+			this.cmdList = new display.CommandList($("<div />", true).appendTo(jqElem));			
+			this.jqInput = jqElem.children("input").hide();
 		}
 		
-		get jQuery() {
+		get jQuery(): JQuery {
 			return this.jqElem;
 		}
+		
+		get commandList(): display.CommandList {
+			return this.cmdList;
+		}
+		
+		get label(): string {
+			return this.jqLabel.text();
+		}
+		
+		set label(label: string) {
+			this.jqLabel.text(label);
+		}
+		
+		get idRep(): string {
+			return this.jqInput.val();
+		}
+		
+//		set idRep(idRep: string) {
+//			this.jqInput.val(idRep);
+//		}
 	}
 	
 	
