@@ -99,6 +99,7 @@ namespace rocket.impl {
 		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
 		private originalIdReps: Array<String>;
 		private identityStrings: Array<String>;
+		private browserLayer: cmd.Layer;
 		
 		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
@@ -126,9 +127,11 @@ namespace rocket.impl {
 			});
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
+				that.reset();
 			});
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
+				that.clear();
 			});
 		}
 		
@@ -148,6 +151,17 @@ namespace rocket.impl {
 				entry.jQuery.remove();
 				this.entries.slice(parseInt(i), 1);
 			}
+		}
+		
+		public reset() {
+		}
+		
+		public clear() {
+			for (var i in this.entries) {
+				this.entries[i].jQuery.remove();
+			}
+			
+			this.entries.slice(0, this.entries.length);
 		}
 		
 		public openBrowser() {

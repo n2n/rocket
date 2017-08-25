@@ -39,21 +39,24 @@ namespace rocket.impl {
 		private initPageNav() {
 		}
 		
-		public static scan(jqContainer: JQuery): OverviewContext {
-			if (jqContainer.data("rocketImplOverviewContext")) return null;
+		public static from(jqElem: JQuery): OverviewContext {
+			var overviewContext: OverviewContext = jqElem.data("rocketImplOverviewContext");
+			if (overviewContext instanceof OverviewContext) {
+				return overviewContext;
+			}
 			
-			var overviewContext = new OverviewContext(jqContainer);
-			jqContainer.data("rocketImplOverviewContext", overviewContext);
+			overviewContext = new OverviewContext(jqElem);
+			jqElem.data("rocketImplOverviewContext", overviewContext);
 			
-			jqContainer.data("content-url");
+			jqElem.data("content-url");
 			
-			var jqForm = jqContainer.children("form");
+			var jqForm = jqElem.children("form");
 			
-			var pagination = new Pagination(jqContainer.data("num-pages"), jqContainer.data("current-page"));
+			var pagination = new Pagination(jqElem.data("num-pages"), jqElem.data("current-page"));
 			pagination.draw(jqForm.children(".rocket-context-commands"));
 			
-			var fixedHeader = new FixedHeader(jqContainer.data("num-entries"));
-			fixedHeader.draw(jqContainer.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
+			var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
+			fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
 			
 			return overviewContext;
 		}
@@ -154,7 +157,7 @@ namespace rocket.impl {
 			this.cloneTableHeader();
 			
 			var that = this;
-			$("#rocket-content-container").scroll(function () {
+			$(window).scroll(function () {
 				that.scrolled();
 			});
 			
@@ -191,7 +194,7 @@ namespace rocket.impl {
 		
 		private scrolled() {
 			var headerHeight = this.jqHeader.children().outerHeight();
-			if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
+			if (this.jqTable.offset().top - $(window).scrollTop() <= this.fixedCssAttrs.top + headerHeight) {
 				if (this.fixed) return;
 				this.fixed = true;
 				this.jqHeader.css(this.fixedCssAttrs);
