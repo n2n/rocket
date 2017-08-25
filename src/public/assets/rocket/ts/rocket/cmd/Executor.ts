@@ -134,7 +134,11 @@ namespace rocket.cmd {
 	}
 	
 	export class ExecResult {
-		constructor(order, context: Context) {
+		constructor(order, private _context: Context) {
+		}
+		
+		get context(): Context {
+			return this._context;
 		}
 	}
 }

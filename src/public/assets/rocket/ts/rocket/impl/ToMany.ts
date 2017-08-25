@@ -114,10 +114,9 @@ namespace rocket.impl {
 			});
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
-				
 			});
+			
 			commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
-				
 			});
 		}
 		
@@ -135,10 +134,11 @@ namespace rocket.impl {
 	}
 	
 	class SelectedEntry {
-		private jqElem: JQuery;
+		constructor(private jqElem: JQuery) {
+		}
 		
-		constructor(jqElem: JQuery) {
-			this.jqElem = jqElem;
+		get jQuery() {
+			return this.jqElem;
 		}
 	}
 	

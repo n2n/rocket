@@ -424,19 +424,23 @@ var rocket;
             CommandList.prototype.getJQuery = function () {
                 return this.jqCommandList;
             };
-            CommandList.prototype.createJqCommandButton = function (iconType, label, severity, tooltip, prepend) {
-                if (severity === void 0) { severity = Severity.SECONDARY; }
-                if (tooltip === void 0) { tooltip = null; }
+            CommandList.prototype.createJqCommandButton = function (buttonConfig /*, iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null*/, prepend) {
                 if (prepend === void 0) { prepend = false; }
                 this.jqCommandList.show();
+                if (buttonConfig.iconType === undefined) {
+                    buttonConfig.iconType = "fa fa-circle-o";
+                }
+                if (buttonConfig.severity === undefined) {
+                    buttonConfig.severity = display.Severity.SECONDARY;
+                }
                 var jqButton = $("<button />", {
-                    "class": "btn btn-" + severity,
-                    "title": tooltip,
+                    "class": "btn btn-" + buttonConfig.severity,
+                    "title": buttonConfig.tooltip,
                     "type": "button"
                 }).append($("<i />", {
-                    "class": iconType
+                    "class": buttonConfig.iconType
                 })).append($("<span />", {
-                    "text": label
+                    "text": buttonConfig.label
                 }));
                 if (prepend) {
                     this.jqCommandList.prepend(jqButton);
@@ -449,15 +453,6 @@ var rocket;
             return CommandList;
         }());
         display.CommandList = CommandList;
-        (function (Severity) {
-            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
-            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
-            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
-            Severity[Severity["DANGER"] = "danger"] = "DANGER";
-            Severity[Severity["INFO"] = "info"] = "INFO";
-            Severity[Severity["WARNING"] = "warning"] = "WARNING";
-        })(display.Severity || (display.Severity = {}));
-        var Severity = display.Severity;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
 /*
@@ -488,7 +483,108 @@ var rocket;
         var display = rocket.display;
         var $ = jQuery;
         var ToMany = (function () {
-            function ToMany(jqToMany, addButtonFactory) {
+            function ToMany(selector, embedded) {
+                if (selector === void 0) { selector = null; }
+                if (embedded === void 0) { embedded = null; }
+                this.selector = selector;
+                this.embedded = embedded;
+            }
+            ToMany.from = function (jqToMany) {
+                var toMany = jqToMany.data("rocketImplToMany");
+                if (toMany instanceof ToMany) {
+                    return toMany;
+                }
+                var toManySelector = null;
+                var jqSelector = jqToMany.children(".rocket-impl-selector");
+                if (jqSelector.length > 0) {
+                    toManySelector = new ToManySelector(jqSelector);
+                }
+                var jqCurrents = jqToMany.children(".rocket-impl-currents");
+                var jqNews = jqToMany.children(".rocket-impl-news");
+                var addControlFactory = null;
+                var toManyEmbedded = null;
+                if (jqCurrents.length > 0 || jqNews.length > 0) {
+                    if (jqNews.length > 0) {
+                        var propertyPath = jqNews.data("property-path");
+                        var startKey = 0;
+                        var testPropertyPath = propertyPath + "[n";
+                        jqNews.find("input, textarea").each(function () {
+                            var name = $(this).attr("name");
+                            if (0 == name.indexOf(testPropertyPath)) {
+                                name = name.substring(testPropertyPath.length);
+                                name.match(/^[0-9]+/).forEach(function (key) {
+                                    var curKey = parseInt(key);
+                                    if (curKey >= startKey) {
+                                        startKey = curKey + 1;
+                                    }
+                                });
+                            }
+                        });
+                        var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
+                        addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+                    }
+                    toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
+                    jqCurrents.children(".rocket-impl-entry").each(function () {
+                        toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+                    });
+                    jqNews.children(".rocket-impl-entry").each(function () {
+                        toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+                    });
+                }
+                var toMany = new ToMany(toManySelector, toManyEmbedded);
+                jqToMany.data("rocketImplToMany", toMany);
+                return toMany;
+            };
+            return ToMany;
+        }());
+        impl.ToMany = ToMany;
+        var ToManySelector = (function () {
+            function ToManySelector(jqElem) {
+                this.entries = new Array();
+                this.jqElem = jqElem;
+                this.jqUl = jqElem.children("ul");
+                this.init();
+            }
+            ToManySelector.prototype.init = function () {
+                var jqCommandList = $("<div />");
+                this.jqElem.append(jqCommandList);
+                var that = this;
+                var commandList = new display.CommandList(jqCommandList);
+                commandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+                    that.openBrowser();
+                });
+                commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
+                });
+                commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
+                });
+            };
+            ToManySelector.prototype.addSelectedEntry = function (entry) {
+                this.entries.push(entry);
+            };
+            ToManySelector.prototype.openBrowser = function () {
+                var layer = rocket.getContainer().createLayer();
+                rocket.exec(this.jqElem.data("overview-tools-url"), {
+                    showLoadingContext: true,
+                    currentLayer: layer
+                });
+            };
+            return ToManySelector;
+        }());
+        var SelectedEntry = (function () {
+            function SelectedEntry(jqElem) {
+                this.jqElem = jqElem;
+            }
+            Object.defineProperty(SelectedEntry.prototype, "jQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return SelectedEntry;
+        }());
+        var ToManyEmbedded = (function () {
+            function ToManyEmbedded(jqToMany, addButtonFactory) {
                 if (addButtonFactory === void 0) { addButtonFactory = null; }
                 this.compact = true;
                 this.sortable = true;
@@ -516,10 +612,10 @@ var rocket;
                     if (toolbar !== null) {
                         var jqButton = null;
                         if (this.isReadOnly()) {
-                            jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+                            jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
                         }
                         else {
-                            jqButton = toolbar.getCommandList().createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
+                            jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", severity: display.Severity.WARNING });
                         }
                         var that_1 = this;
                         jqButton.click(function () {
@@ -532,10 +628,10 @@ var rocket;
                 }
                 this.changed();
             }
-            ToMany.prototype.isReadOnly = function () {
+            ToManyEmbedded.prototype.isReadOnly = function () {
                 return this.addControlFactory === null;
             };
-            ToMany.prototype.changed = function () {
+            ToManyEmbedded.prototype.changed = function () {
                 for (var i_1 in this.entries) {
                     var index = parseInt(i_1);
                     this.entries[index].setOrderIndex(index);
@@ -579,7 +675,7 @@ var rocket;
                     this.lastAddControl.getJQuery().show();
                 }
             };
-            ToMany.prototype.createFirstAddControl = function () {
+            ToManyEmbedded.prototype.createFirstAddControl = function () {
                 var addControl = this.addControlFactory.create();
                 var that = this;
                 this.jqEmbedded.prepend(addControl.getJQuery());
@@ -591,7 +687,7 @@ var rocket;
                 });
                 return addControl;
             };
-            ToMany.prototype.createEntryAddControl = function (entry) {
+            ToManyEmbedded.prototype.createEntryAddControl = function (entry) {
                 var addControl = this.addControlFactory.create();
                 var that = this;
                 this.entryAddControls.push(addControl);
@@ -601,7 +697,7 @@ var rocket;
                 });
                 return addControl;
             };
-            ToMany.prototype.createLastAddControl = function () {
+            ToManyEmbedded.prototype.createLastAddControl = function () {
                 var addControl = this.addControlFactory.create();
                 var that = this;
                 this.jqEmbedded.append(addControl.getJQuery());
@@ -613,7 +709,7 @@ var rocket;
                 });
                 return addControl;
             };
-            ToMany.prototype.insertEntry = function (entry, beforeEntry) {
+            ToManyEmbedded.prototype.insertEntry = function (entry, beforeEntry) {
                 if (beforeEntry === void 0) { beforeEntry = null; }
                 entry.getJQuery().detach();
                 if (beforeEntry === null) {
@@ -627,7 +723,7 @@ var rocket;
                 this.initEntry(entry);
                 this.changed();
             };
-            ToMany.prototype.addEntry = function (entry) {
+            ToManyEmbedded.prototype.addEntry = function (entry) {
                 entry.setOrderIndex(this.entries.length);
                 this.entries.push(entry);
                 this.jqEntries.append(entry.getJQuery());
@@ -636,13 +732,13 @@ var rocket;
                     return;
                 this.changed();
             };
-            ToMany.prototype.switchIndex = function (oldIndex, newIndex) {
+            ToManyEmbedded.prototype.switchIndex = function (oldIndex, newIndex) {
                 var entry = this.entries[oldIndex];
                 this.entries[oldIndex] = this.entries[newIndex];
                 this.entries[newIndex] = entry;
                 this.changed();
             };
-            ToMany.prototype.initEntry = function (entry) {
+            ToManyEmbedded.prototype.initEntry = function (entry) {
                 if (this.isExpanded()) {
                     entry.expand();
                 }
@@ -673,7 +769,7 @@ var rocket;
                     that.expand(entry);
                 });
             };
-            ToMany.prototype.initSortable = function () {
+            ToManyEmbedded.prototype.initSortable = function () {
                 var that = this;
                 var oldIndex = 0;
                 this.jqEntries.sortable({
@@ -689,21 +785,21 @@ var rocket;
                     }
                 }).disableSelection();
             };
-            ToMany.prototype.enabledSortable = function () {
+            ToManyEmbedded.prototype.enabledSortable = function () {
                 this.jqEntries.sortable("enable");
                 this.jqEntries.disableSelection();
             };
-            ToMany.prototype.disableSortable = function () {
+            ToManyEmbedded.prototype.disableSortable = function () {
                 this.jqEntries.sortable("disable");
                 this.jqEntries.enableSelection();
             };
-            ToMany.prototype.isExpanded = function () {
+            ToManyEmbedded.prototype.isExpanded = function () {
                 return this.expandContext !== null;
             };
-            ToMany.prototype.isPartialExpaned = function () {
+            ToManyEmbedded.prototype.isPartialExpaned = function () {
                 return this.dominantEntry !== null;
             };
-            ToMany.prototype.expand = function (dominantEntry) {
+            ToManyEmbedded.prototype.expand = function (dominantEntry) {
                 if (dominantEntry === void 0) { dominantEntry = null; }
                 if (this.isExpanded())
                     return;
@@ -728,7 +824,7 @@ var rocket;
                 }
                 var that = this;
                 var jqCommandButton = this.expandContext.getMenu().getCommandList()
-                    .createJqCommandButton("fa fa-times", this.closeLabel, display.Severity.WARNING, null, true);
+                    .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                 jqCommandButton.click(function () {
                     that.expandContext.getLayer().close();
                 });
@@ -738,7 +834,7 @@ var rocket;
                 this.changed();
                 n2n.ajah.update();
             };
-            ToMany.prototype.reduce = function () {
+            ToManyEmbedded.prototype.reduce = function () {
                 if (!this.isExpanded())
                     return;
                 this.dominantEntry = null;
@@ -754,133 +850,9 @@ var rocket;
                 this.changed();
                 n2n.ajah.update();
             };
-            ToMany.from = function (jqToMany) {
-                var toMany = jqToMany.data("rocketImplToMany");
-                if (toMany instanceof ToMany) {
-                    return toMany;
-                }
-                var jqNews = jqToMany.children(".rocket-impl-news");
-                var addControlFactory = null;
-                if (jqNews.length > 0) {
-                    var propertyPath = jqNews.data("property-path");
-                    var startKey = 0;
-                    var testPropertyPath = propertyPath + "[n";
-                    jqNews.find("input, textarea").each(function () {
-                        var name = $(this).attr("name");
-                        if (0 == name.indexOf(testPropertyPath)) {
-                            name = name.substring(testPropertyPath.length);
-                            name.match(/^[0-9]+/).forEach(function (key) {
-                                var curKey = parseInt(key);
-                                if (curKey >= startKey) {
-                                    startKey = curKey + 1;
-                                }
-                            });
-                        }
-                    });
-                    var entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
-                    addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
-                }
-                toMany = new ToMany(jqToMany, addControlFactory);
-                jqToMany.data("rocketImplToMany", toMany);
-                jqToMany.find(".rocket-impl-entry").each(function () {
-                    toMany.addEntry(new EmbeddedEntry($(this), toMany.isReadOnly()));
-                });
-                return toMany;
-            };
-            return ToMany;
+            return ToManyEmbedded;
         }());
-        impl.ToMany = ToMany;
-        var ToManySelector = (function () {
-            function ToManySelector(jqElem) {
-                this.jqElem = jqElem;
-                this.jqUl = jqElem.children("ul");
-            }
-            return ToManySelector;
-        }());
-        var SelectedEntry = (function () {
-            function SelectedEntry() {
-            }
-            return SelectedEntry;
-        }());
-        var AddControlFactory = (function () {
-            function AddControlFactory(embeddedEntryRetriever, label) {
-                this.embeddedEntryRetriever = embeddedEntryRetriever;
-                this.label = label;
-            }
-            AddControlFactory.prototype.create = function () {
-                return AddControl.create(this.label, this.embeddedEntryRetriever);
-            };
-            return AddControlFactory;
-        }());
-        var AddControl = (function () {
-            function AddControl(jqElem, embeddedEntryRetriever) {
-                this.onNewEntryCallbacks = new Array();
-                this.disposed = false;
-                this.embeddedEntryRetriever = embeddedEntryRetriever;
-                this.jqElem = jqElem;
-                this.jqButton = jqElem.children("button");
-                var that = this;
-                this.jqButton.on("mouseenter", function () {
-                    that.embeddedEntryRetriever.setPreloadEnabled(true);
-                });
-                this.jqButton.on("click", function () {
-                    if (that.isLoading())
-                        return;
-                    that.block(true);
-                    that.embeddedEntryRetriever.lookupNew(function (embeddedEntry) {
-                        that.examine(embeddedEntry);
-                    }, function () {
-                        that.block(false);
-                    });
-                });
-            }
-            AddControl.prototype.getJQuery = function () {
-                return this.jqElem;
-            };
-            AddControl.prototype.block = function (blocked) {
-                if (blocked) {
-                    this.jqButton.prop("disabled", true);
-                    this.jqElem.addClass("rocket-impl-loading");
-                }
-                else {
-                    this.jqButton.prop("disabled", false);
-                    this.jqElem.removeClass("rocket-impl-loading");
-                }
-            };
-            AddControl.prototype.examine = function (embeddedEntry) {
-                this.block(false);
-                if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
-                    this.fireCallbacks(embeddedEntry);
-                    return;
-                }
-                this.examinedEmbeddedEntry = embeddedEntry;
-            };
-            AddControl.prototype.dispose = function () {
-                this.disposed = true;
-                this.jqElem.remove();
-                if (this.examinedEmbeddedEntry !== null) {
-                    this.fireCallbacks(this.examinedEmbeddedEntry);
-                    this.examinedEmbeddedEntry = null;
-                }
-            };
-            AddControl.prototype.isLoading = function () {
-                return this.jqElem.hasClass("rocket-impl-loading");
-            };
-            AddControl.prototype.fireCallbacks = function (embeddedEntry) {
-                if (this.disposed)
-                    return;
-                this.onNewEntryCallbacks.forEach(function (callback) {
-                    callback(embeddedEntry);
-                });
-            };
-            AddControl.prototype.onNewEmbeddedEntry = function (callback) {
-                this.onNewEntryCallbacks.push(callback);
-            };
-            AddControl.create = function (label, embeddedEntryRetriever) {
-                return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })), embeddedEntryRetriever);
-            };
-            return AddControl;
-        }());
+        impl.ToManyEmbedded = ToManyEmbedded;
         var EmbeddedEntry = (function () {
             function EmbeddedEntry(jqEntry, readOnly) {
                 this.entryGroup = display.StructureElement.from(jqEntry, true);
@@ -891,17 +863,17 @@ var rocket;
                 this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-context-commands");
                 if (readOnly) {
                     var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-                    this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-file", "Detail", display.Severity.SECONDARY);
+                    this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail", severity: display.Severity.SECONDARY });
                 }
                 else {
                     this.entryForm = display.EntryForm.from(jqEntry, true);
                     var ecl = this.bodyGroup.getToolbar().getCommandList();
-                    this.jqExpMoveUpButton = ecl.createJqCommandButton("fa fa-arrow-up", "Move up");
-                    this.jqExpMoveDownButton = ecl.createJqCommandButton("fa fa-arrow-down", "Move down");
-                    this.jqExpRemoveButton = ecl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+                    this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
+                    this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down" });
+                    this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", severity: display.Severity.DANGER });
                     var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-                    this.jqRedFocusButton = rcl.createJqCommandButton("fa fa-pencil", "Edit", display.Severity.WARNING);
-                    this.jqRedRemoveButton = rcl.createJqCommandButton("fa fa-times", "Remove", display.Severity.DANGER);
+                    this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", severity: display.Severity.WARNING });
+                    this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", severity: display.Severity.DANGER });
                 }
                 this.reduce();
                 jqEntry.data("rocketImplEmbeddedEntry", this);
@@ -1072,6 +1044,85 @@ var rocket;
             };
             return EmbeddedEntryRetriever;
         }());
+        var AddControlFactory = (function () {
+            function AddControlFactory(embeddedEntryRetriever, label) {
+                this.embeddedEntryRetriever = embeddedEntryRetriever;
+                this.label = label;
+            }
+            AddControlFactory.prototype.create = function () {
+                return AddControl.create(this.label, this.embeddedEntryRetriever);
+            };
+            return AddControlFactory;
+        }());
+        var AddControl = (function () {
+            function AddControl(jqElem, embeddedEntryRetriever) {
+                this.onNewEntryCallbacks = new Array();
+                this.disposed = false;
+                this.embeddedEntryRetriever = embeddedEntryRetriever;
+                this.jqElem = jqElem;
+                this.jqButton = jqElem.children("button");
+                var that = this;
+                this.jqButton.on("mouseenter", function () {
+                    that.embeddedEntryRetriever.setPreloadEnabled(true);
+                });
+                this.jqButton.on("click", function () {
+                    if (that.isLoading())
+                        return;
+                    that.block(true);
+                    that.embeddedEntryRetriever.lookupNew(function (embeddedEntry) {
+                        that.examine(embeddedEntry);
+                    }, function () {
+                        that.block(false);
+                    });
+                });
+            }
+            AddControl.prototype.getJQuery = function () {
+                return this.jqElem;
+            };
+            AddControl.prototype.block = function (blocked) {
+                if (blocked) {
+                    this.jqButton.prop("disabled", true);
+                    this.jqElem.addClass("rocket-impl-loading");
+                }
+                else {
+                    this.jqButton.prop("disabled", false);
+                    this.jqElem.removeClass("rocket-impl-loading");
+                }
+            };
+            AddControl.prototype.examine = function (embeddedEntry) {
+                this.block(false);
+                if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
+                    this.fireCallbacks(embeddedEntry);
+                    return;
+                }
+                this.examinedEmbeddedEntry = embeddedEntry;
+            };
+            AddControl.prototype.dispose = function () {
+                this.disposed = true;
+                this.jqElem.remove();
+                if (this.examinedEmbeddedEntry !== null) {
+                    this.fireCallbacks(this.examinedEmbeddedEntry);
+                    this.examinedEmbeddedEntry = null;
+                }
+            };
+            AddControl.prototype.isLoading = function () {
+                return this.jqElem.hasClass("rocket-impl-loading");
+            };
+            AddControl.prototype.fireCallbacks = function (embeddedEntry) {
+                if (this.disposed)
+                    return;
+                this.onNewEntryCallbacks.forEach(function (callback) {
+                    callback(embeddedEntry);
+                });
+            };
+            AddControl.prototype.onNewEmbeddedEntry = function (callback) {
+                this.onNewEntryCallbacks.push(callback);
+            };
+            AddControl.create = function (label, embeddedEntryRetriever) {
+                return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })), embeddedEntryRetriever);
+            };
+            return AddControl;
+        }());
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -1182,8 +1233,16 @@ var rocket;
         }());
         cmd.Executor = Executor;
         var ExecResult = (function () {
-            function ExecResult(order, context) {
+            function ExecResult(order, _context) {
+                this._context = _context;
             }
+            Object.defineProperty(ExecResult.prototype, "context", {
+                get: function () {
+                    return this._context;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return ExecResult;
         }());
         cmd.ExecResult = ExecResult;
@@ -1799,13 +1858,6 @@ var rocket;
             return Context;
         }());
         cmd.Context = Context;
-        var Context;
-        (function (Context) {
-            (function (EventType) {
-                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
-            })(Context.EventType || (Context.EventType = {}));
-            var EventType = Context.EventType;
-        })(Context = cmd.Context || (cmd.Context = {}));
         var AdditionalTabManager = (function () {
             function AdditionalTabManager(context) {
                 this.jqAdditional = null;
@@ -2203,4 +2255,32 @@ var rocket;
             return FixedHeader;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var cmd;
+    (function (cmd) {
+        var Context;
+        (function (Context) {
+            (function (EventType) {
+                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
+            })(Context.EventType || (Context.EventType = {}));
+            var EventType = Context.EventType;
+        })(Context = cmd.Context || (cmd.Context = {}));
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        (function (Severity) {
+            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
+            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
+            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
+            Severity[Severity["DANGER"] = "danger"] = "DANGER";
+            Severity[Severity["INFO"] = "info"] = "INFO";
+            Severity[Severity["WARNING"] = "warning"] = "WARNING";
+        })(display.Severity || (display.Severity = {}));
+        var Severity = display.Severity;
+    })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
