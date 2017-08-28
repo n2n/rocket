@@ -71,7 +71,7 @@ namespace rocket.impl {
 		constructor(private jqElem: JQuery, private _currentPageNo: number = null, private _numPages: number,
 				private loadUrl: string) {
 			if (this.currentPageNo !== null) {
-				this.addPage(this.currentPageNo, jqElem.children());
+				this.createPage(this.currentPageNo).jqContents = jqElem.children();
 			}
 		}	
 		
@@ -96,34 +96,44 @@ namespace rocket.impl {
 			return this._numPages;
 		}
 		
+		isPageNoValid(pageNo: number) {
+			return (pageNo > 0 && pageNo <= this.numPages);
+		}
+			
+		
 		containsPageNo(pageNo: number): boolean {
 			return this.pages[pageNo] !== undefined;
 		}
 		
-		private addPage(pageNo: number, jqContents: JQuery) {
-			if (this.pages[pageNo] !== undefined) {
-				throw new Error("page no taken.");
+		private applyContents(page: Page, jqContents: JQuery) {
+			if (page.jqContents !== null) {
+				throw new Error("Contents already applied.");
 			}
 			
-			for (var pni = pageNo; pni > 0; pni--) {
-				if (this.pages[pageNo] === undefined) continue;
+			page.jqContents = jqContents;
+			
+			for (var pni = page.pageNo - 1; pni > 0; pni--) {
+				if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded()) continue;
 				
-				jqContents.insertAfter(this.pages[pageNo].jqContents.last());
-				break;
+				jqContents.insertAfter(this.pages[pni].jqContents.last());
+				return;
 			}
 			
 			this.jqElem.prepend(jqContents);
-			
-			this.pages[pageNo] = new Page(pageNo, jqContents);
 		}
 		
 		goTo(pageNo: number) {
+			if (!this.isPageNoValid(pageNo)) {
+				throw new Error("Invalid pageNo: " + pageNo);
+			}
+			
 			if (pageNo === this.currentPageNo) {
 				return;
 			}
 			
 			if (this.pages[pageNo] === undefined) {
-				this.load(pageNo, false);
+				this.showSingle(pageNo);
+				this.load(pageNo);
 				this.setCurrentPageNo(pageNo);
 				return;
 			}
@@ -133,12 +143,14 @@ namespace rocket.impl {
 				return;	
 			}
 			
+			this.showSingle(pageNo);
+			this.setCurrentPageNo(pageNo);
+		}
+		
+		private showSingle(pageNo: number) {
 			for (var i in this.pages) {
 				this.pages[i].visible = (this.pages[i].pageNo == pageNo);
 			}
-			
-			console.log(pageNo);
-			this.setCurrentPageNo(pageNo);
 		}
 		
 		private scrollToPage(pageNo: number, targetPageNo: number): boolean {
@@ -166,7 +178,7 @@ namespace rocket.impl {
 		private loadingPageNos: Array<number> = new Array<number>();
 		private jqLoader: JQuery = null;
 		
-		private markPageAsLoading(pageNo: number, exclusive: boolean) {
+		private markPageAsLoading(pageNo: number) {
 			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
 				throw new Error("page already loading");
 			}
@@ -174,15 +186,9 @@ namespace rocket.impl {
 			if (this.jqLoader === null) {
 				this.jqLoader = $("<div />", { "class": "rocket-loading" })
 						.insertAfter(this.jqElem.parent("table"));
-			} 
+			}
 			
 			this.loadingPageNos.push(pageNo);
-			
-			if (exclusive) {
-				this.pages.forEach(function (page: Page) {
-					page.visible = false;
-				});
-			}
 		}
 		
 		private unmarkPageAsLoading(pageNo: number) {
@@ -205,15 +211,15 @@ namespace rocket.impl {
 			return this.pages[pageNo] = new Page(pageNo);
 		}
 		
-		private load(pageNo: number, append: boolean) {
+		private load(pageNo: number) {
 			var page: Page = this.createPage(pageNo);
 			
-			this.markPageAsLoading(pageNo, !append);
+			this.markPageAsLoading(pageNo);
 			
 			var that = this;
 			$.ajax({
 				"url": this.loadUrl,
-				"data": JSON.stringify({ "pageNo": pageNo }),
+				"data": { "pageNo": pageNo },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
 				that.unmarkPageAsLoading(pageNo);
@@ -228,8 +234,8 @@ namespace rocket.impl {
 				that.unmarkPageAsLoading(pageNo);
 				
 				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
-				
-				that.addPage(pageNo, jqContents);
+				that.applyContents(page, jqContents);
+				n2n.ajah.update();
 			});
 		}
 		
@@ -238,7 +244,7 @@ namespace rocket.impl {
 	}
 	
 	class Page {
-		private _visible: boolean;
+		private _visible: boolean = true;
 		
 		constructor(public pageNo: number, private _jqContents: JQuery = null) {
 		}
@@ -258,11 +264,11 @@ namespace rocket.impl {
 		}
 		
 		get jqContents(): JQuery {
-			return this.jqContents;
+			return this._jqContents;
 		}
 		
 		set jqContents(jqContents: JQuery) {
-			this.jqContents = jqContents;
+			this._jqContents = jqContents;
 			
 			this.disp();
 		}
@@ -297,7 +303,7 @@ namespace rocket.impl {
 			
 			
 			this.overviewContent.goTo(pageNo);
-				return;
+			return;
 		}
 		
 		public draw(jqContainer: JQuery) {
@@ -308,7 +314,7 @@ namespace rocket.impl {
 			
 			this.jqPagination.append(
 					 $("<button />", {
-						"href": "#",
+						"type": "button",
 						"class": "rocket-impl-pagination-first rocket-control",
 						"click": function () { that.goTo(1) }
 					}).append($("<i />", {
@@ -317,6 +323,7 @@ namespace rocket.impl {
 			
 			this.jqPagination.append(
 					 $("<button />", {
+						"type": "button",
 						"class": "rocket-impl-pagination-prev rocket-control",
 						"click": function () { that.goTo(that.getCurrentPageNo() - 1) }
 					}).append($("<i />", {
@@ -329,18 +336,19 @@ namespace rocket.impl {
 				"value": this.getCurrentPageNo()
 			}).on("change", function () {
 				var pageNo: number = parseInt(that.jqInput.val());
-				if (pageNo === NaN || !that.overviewContent.containsPageNo(pageNo)) {
-					this.jqInput.val(this.overviewContent.currentPageNo);
+				if (pageNo === NaN || !that.overviewContent.isPageNoValid(pageNo)) {
+					that.jqInput.val(that.overviewContent.currentPageNo);
 					return;
 				}
 				
-				this.jqInput.val(pageNo);
+				that.jqInput.val(pageNo);
 				that.overviewContent.goTo(pageNo);
 			});
 			this.jqPagination.append(this.jqInput);
 			
 			this.jqPagination.append(
 					$("<button />", {
+						"type": "button",
 						"class": "rocket-impl-pagination-next rocket-control",
 						"click": function () { that.goTo(that.getCurrentPageNo() + 1); }
 					}).append($("<i />", {
@@ -349,7 +357,7 @@ namespace rocket.impl {
 		
 			this.jqPagination.append(
 					 $("<button />", {
-						"href": "#",
+						"type": "button",
 						"class": "rocket-impl-pagination-last rocket-control",
 						"click": function () { that.goTo(that.getNumPages()); }
 					}).append($("<i />", {
