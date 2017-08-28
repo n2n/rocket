@@ -497,7 +497,12 @@ var rocket;
                 var toManySelector = null;
                 var jqSelector = jqToMany.children(".rocket-impl-selector");
                 if (jqSelector.length > 0) {
-                    toManySelector = new ToManySelector(jqSelector);
+                    toManySelector = new ToManySelector(jqSelector, jqSelector.find("li.rocket-new-entry").detach());
+                    jqSelector.find("ul li").each(function () {
+                        var entry = new SelectedEntry($(this));
+                        entry.label = toManySelector.determineIdentityString(entry.idRep);
+                        toManySelector.addSelectedEntry(entry);
+                    });
                 }
                 var jqCurrents = jqToMany.children(".rocket-impl-currents");
                 var jqNews = jqToMany.children(".rocket-impl-news");
@@ -539,12 +544,19 @@ var rocket;
         }());
         impl.ToMany = ToMany;
         var ToManySelector = (function () {
-            function ToManySelector(jqElem) {
+            function ToManySelector(jqElem, jqNewEntrySkeleton) {
+                this.jqElem = jqElem;
+                this.jqNewEntrySkeleton = jqNewEntrySkeleton;
                 this.entries = new Array();
                 this.jqElem = jqElem;
                 this.jqUl = jqElem.children("ul");
+                this.originalIdReps = jqElem.data("original-id-reps");
+                this.identityStrings = jqElem.data("identity-strings");
                 this.init();
             }
+            ToManySelector.prototype.determineIdentityString = function (idRep) {
+                return this.identityStrings[idRep];
+            };
             ToManySelector.prototype.init = function () {
                 var jqCommandList = $("<div />");
                 this.jqElem.append(jqCommandList);
@@ -554,12 +566,34 @@ var rocket;
                     that.openBrowser();
                 });
                 commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
+                    that.reset();
                 });
                 commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
+                    that.clear();
                 });
             };
             ToManySelector.prototype.addSelectedEntry = function (entry) {
                 this.entries.push(entry);
+                var that = this;
+                entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
+                    that.removeSelectedEntry(entry);
+                });
+            };
+            ToManySelector.prototype.removeSelectedEntry = function (entry) {
+                for (var i in this.entries) {
+                    if (this.entries[i] !== entry)
+                        continue;
+                    entry.jQuery.remove();
+                    this.entries.slice(parseInt(i), 1);
+                }
+            };
+            ToManySelector.prototype.reset = function () {
+            };
+            ToManySelector.prototype.clear = function () {
+                for (var i in this.entries) {
+                    this.entries[i].jQuery.remove();
+                }
+                this.entries.slice(0, this.entries.length);
             };
             ToManySelector.prototype.openBrowser = function () {
                 var layer = rocket.getContainer().createLayer();
@@ -573,10 +607,37 @@ var rocket;
         var SelectedEntry = (function () {
             function SelectedEntry(jqElem) {
                 this.jqElem = jqElem;
+                jqElem.prepend(this.jqLabel = $("<span />"));
+                this.cmdList = new display.CommandList($("<div />", true).appendTo(jqElem));
+                this.jqInput = jqElem.children("input").hide();
             }
             Object.defineProperty(SelectedEntry.prototype, "jQuery", {
                 get: function () {
                     return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(SelectedEntry.prototype, "commandList", {
+                get: function () {
+                    return this.cmdList;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(SelectedEntry.prototype, "label", {
+                get: function () {
+                    return this.jqLabel.text();
+                },
+                set: function (label) {
+                    this.jqLabel.text(label);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(SelectedEntry.prototype, "idRep", {
+                get: function () {
+                    return this.jqInput.val();
                 },
                 enumerable: true,
                 configurable: true
@@ -1306,11 +1367,11 @@ var rocket;
         });
         (function () {
             $(".rocket-impl-overview").each(function () {
-                rocket.impl.OverviewContext.scan($(this));
+                rocket.impl.OverviewContext.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
                 $(".rocket-impl-overview").each(function () {
-                    rocket.impl.OverviewContext.scan($(this));
+                    rocket.impl.OverviewContext.from($(this));
                 });
             });
         })();
@@ -1445,6 +1506,19 @@ var rocket;
         }());
         impl.Form = Form;
     })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var cmd;
+    (function (cmd) {
+        var Context;
+        (function (Context) {
+            (function (EventType) {
+                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
+            })(Context.EventType || (Context.EventType = {}));
+            var EventType = Context.EventType;
+        })(Context = cmd.Context || (cmd.Context = {}));
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
@@ -2074,6 +2148,21 @@ var rocket;
         display.EntryForm = EntryForm;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        (function (Severity) {
+            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
+            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
+            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
+            Severity[Severity["DANGER"] = "danger"] = "DANGER";
+            Severity[Severity["INFO"] = "info"] = "INFO";
+            Severity[Severity["WARNING"] = "warning"] = "WARNING";
+        })(display.Severity || (display.Severity = {}));
+        var Severity = display.Severity;
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -2106,41 +2195,209 @@ var rocket;
             }
             OverviewContext.prototype.initPageNav = function () {
             };
-            OverviewContext.scan = function (jqContainer) {
-                if (jqContainer.data("rocketImplOverviewContext"))
-                    return null;
-                var overviewContext = new OverviewContext(jqContainer);
-                jqContainer.data("rocketImplOverviewContext", overviewContext);
-                jqContainer.data("content-url");
-                var jqForm = jqContainer.children("form");
-                var pagination = new Pagination(jqContainer.data("num-pages"), jqContainer.data("current-page"));
+            OverviewContext.from = function (jqElem) {
+                var overviewContext = jqElem.data("rocketImplOverviewContext");
+                if (overviewContext instanceof OverviewContext) {
+                    return overviewContext;
+                }
+                overviewContext = new OverviewContext(jqElem);
+                jqElem.data("rocketImplOverviewContext", overviewContext);
+                jqElem.data("content-url");
+                var jqForm = jqElem.children("form");
+                var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.data("current-page"));
+                var pagination = new Pagination(jqElem.data("num-pages"), overviewContent, jqElem.data("overview-path"));
                 pagination.draw(jqForm.children(".rocket-context-commands"));
-                var fixedHeader = new FixedHeader(jqContainer.data("num-entries"));
-                fixedHeader.draw(jqContainer.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
+                var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
+                fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
                 return overviewContext;
             };
             return OverviewContext;
         }());
         impl.OverviewContext = OverviewContext;
+        var OverviewContent = (function () {
+            function OverviewContent(jqElem, _currentPageNo, _numPages, loadUrl) {
+                if (_currentPageNo === void 0) { _currentPageNo = null; }
+                this.jqElem = jqElem;
+                this._currentPageNo = _currentPageNo;
+                this._numPages = _numPages;
+                this.loadUrl = loadUrl;
+                this.pages = new Array();
+                this.loadingPageNos = new Array();
+                this.jqLoader = null;
+                if (this.currentPageNo !== null) {
+                    this.addPage(this.currentPageNo, jqElem.children());
+                }
+            }
+            Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
+                get: function () {
+                    return this._currentPageNo;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(OverviewContent.prototype, "numPages", {
+                get: function () {
+                    return this.numPages;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            OverviewContent.prototype.containsPageNo = function (pageNo) {
+                return this.pages[pageNo] !== undefined;
+            };
+            OverviewContent.prototype.addPage = function (pageNo, jqContents) {
+                if (this.pages[pageNo] !== undefined) {
+                    throw new Error("page no taken.");
+                }
+                for (var pni = pageNo; pni > 0; pni--) {
+                    if (this.pages[pageNo] === undefined)
+                        continue;
+                    jqContents.insertAfter(this.pages[pageNo].jqContents.last());
+                    break;
+                }
+                this.jqElem.prepend(jqContents);
+                this.pages[pageNo] = new Page(pageNo, jqContents);
+            };
+            OverviewContent.prototype.goTo = function (pageNo) {
+                if (pageNo === this.currentPageNo) {
+                    return;
+                }
+                if (this.pages[pageNo] === undefined) {
+                    this._currentPageNo = pageNo;
+                    this.load(pageNo, false);
+                    return;
+                }
+                this.deterRout(this.currentPageNo, pageNo);
+            };
+            OverviewContent.prototype.deterRout = function (pageNo, targetPageNo) {
+                var pageNos = new Array();
+                if (pageNo < targetPageNo) {
+                    for (var i = pageNo; i <= targetPageNo; i++) {
+                        pageNos.push(pageNo);
+                    }
+                }
+                else {
+                    for (var i = pageNo; i >= targetPageNo; i--) {
+                        pageNos.push(pageNo);
+                    }
+                }
+                return pageNos;
+            };
+            OverviewContent.prototype.markPageAsLoading = function (pageNo, exclusive) {
+                if (-1 < this.loadingPageNos.indexOf(pageNo)) {
+                    throw new Error("page already loading");
+                }
+                if (this.jqLoader === null) {
+                    this.jqLoader = $("<div />", { "class": "rocket-loading" })
+                        .insertAfter(this.jqElem.parent("table"));
+                }
+                this.loadingPageNos.push(pageNo);
+                if (exclusive) {
+                    this.pages.forEach(function (page) {
+                        page.visible = false;
+                    });
+                }
+            };
+            OverviewContent.prototype.unmarkPageAsLoading = function (pageNo) {
+                if (-1 < this.loadingPageNos.indexOf(pageNo))
+                    return;
+                this.loadingPageNos.slice(pageNo, 1);
+                if (this.loadingPageNos.length == 0) {
+                    this.jqLoader.remove();
+                    this.jqLoader = null;
+                }
+            };
+            OverviewContent.prototype.scrollTo = function (pageNo) {
+            };
+            OverviewContent.prototype.load = function (pageNo, append) {
+                var page = new Page(pageNo);
+                this.markPageAsLoading(pageNo, !append);
+                var that = this;
+                $.ajax({
+                    "url": this.loadUrl,
+                    "data": JSON.stringify({ "pageNo": pageNo }),
+                    "dataType": "json"
+                }).fail(function (jqXHR, textStatus, data) {
+                    that.unmarkLoadingPage(pageNo);
+                    if (jqXHR.status != 200) {
+                        rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                        return;
+                    }
+                    throw new Error("invalid response");
+                }).done(function (data, textStatus, jqXHR) {
+                    that.unmarkLoadingPage(pageNo);
+                    var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
+                    that.addPage(pageNo, jqContents);
+                });
+            };
+            OverviewContent.prototype.onNewPage = function () {
+            };
+            return OverviewContent;
+        }());
+        var Page = (function () {
+            function Page(pageNo, _jqContents) {
+                if (_jqContents === void 0) { _jqContents = null; }
+                this.pageNo = pageNo;
+                this._jqContents = _jqContents;
+            }
+            Object.defineProperty(Page.prototype, "visible", {
+                get: function () {
+                    return this._visible;
+                },
+                set: function (visible) {
+                    this._visible = visible;
+                    this.disp();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Page.prototype.isContentLoaded = function () {
+                return this.jqContents !== null;
+            };
+            Object.defineProperty(Page.prototype, "jqContents", {
+                get: function () {
+                    return this.jqContents;
+                },
+                set: function (jqContents) {
+                    this.jqContents = jqContents;
+                    this.disp();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Page.prototype.disp = function () {
+                if (this._jqContents === null)
+                    return;
+                if (this._visible) {
+                    this._jqContents.show();
+                }
+                else {
+                    this._jqContents.hide();
+                }
+            };
+            return Page;
+        }());
         var Pagination = (function () {
-            function Pagination(numPages, currentPageNo) {
-                this.numPages = numPages;
-                this.currentPageNo = currentPageNo;
+            function Pagination(overviewContent) {
+                this.overviewContent = overviewContent;
             }
             Pagination.prototype.getCurrentPageNo = function () {
-                return this.currentPageNo;
+                return this.overviewContent.currentPageNo;
             };
             Pagination.prototype.getNumPages = function () {
-                return this.numPages;
+                return this.overviewContent.numPages;
             };
             Pagination.prototype.goTo = function (pageNo) {
-                alert(pageNo);
+                if (this.overviewContent.containsPageNo(pageNo)) {
+                    this.overviewContent.goToPageNo(pageNo);
+                    return;
+                }
             };
             Pagination.prototype.draw = function (jqContainer) {
                 var that = this;
                 this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
                 jqContainer.append(this.jqPagination);
-                this.jqPagination.append($("<a />", {
+                this.jqPagination.append($("<button />", {
                     "href": "#",
                     "class": "rocket-impl-pagination-first rocket-control",
                     "click": function () { that.goTo(1); }
@@ -2156,7 +2413,7 @@ var rocket;
                 this.jqInput = $("<input />", {
                     "class": "rocket-impl-pagination-no",
                     "type": "text",
-                    "value": this.currentPageNo
+                    "value": this.getCurrentPageNo()
                 });
                 this.jqPagination.append(this.jqInput);
                 this.jqPagination.append($("<button />", {
@@ -2188,7 +2445,7 @@ var rocket;
                 this.jqTable = jqTable;
                 this.cloneTableHeader();
                 var that = this;
-                $("#rocket-content-container").scroll(function () {
+                $(window).scroll(function () {
                     that.scrolled();
                 });
                 //			var headerOffset = this.jqHeader.offset().top;
@@ -2215,7 +2472,7 @@ var rocket;
             };
             FixedHeader.prototype.scrolled = function () {
                 var headerHeight = this.jqHeader.children().outerHeight();
-                if (this.jqTable.offset().top <= this.fixedCssAttrs.top + headerHeight) {
+                if (this.jqTable.offset().top - $(window).scrollTop() <= this.fixedCssAttrs.top + headerHeight) {
                     if (this.fixed)
                         return;
                     this.fixed = true;
@@ -2255,32 +2512,4 @@ var rocket;
             return FixedHeader;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var Context;
-        (function (Context) {
-            (function (EventType) {
-                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
-            })(Context.EventType || (Context.EventType = {}));
-            var EventType = Context.EventType;
-        })(Context = cmd.Context || (cmd.Context = {}));
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
-        (function (Severity) {
-            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
-            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
-            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
-            Severity[Severity["DANGER"] = "danger"] = "DANGER";
-            Severity[Severity["INFO"] = "info"] = "INFO";
-            Severity[Severity["WARNING"] = "warning"] = "WARNING";
-        })(display.Severity || (display.Severity = {}));
-        var Severity = display.Severity;
-    })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
