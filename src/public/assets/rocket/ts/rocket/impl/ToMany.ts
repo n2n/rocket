@@ -19,6 +19,7 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  * 
  */
+/// <reference path="../display/Group.ts" />
 namespace rocket.impl {
 	import cmd = rocket.cmd;
 	import display = rocket.display;

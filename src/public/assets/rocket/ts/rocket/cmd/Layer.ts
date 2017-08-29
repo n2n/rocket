@@ -29,8 +29,16 @@ namespace rocket.cmd {
 			if (jqContext.length > 0) {
 				var context = new Context(jqContext, Url.create(window.location.href), this);
 				this.addContext(context);
-				this.pushHistoryEntry(context.getUrl());
+				this.pushHistoryEntry(context.activeUrl);
 			}
+		}
+		
+		public containsUrl(url: Url): boolean {
+			for (var i in this.contexts) {
+				if (this.contexts[i].containsUrl(url)) return true;
+			}
+			
+			return false;
 		}
 		
 		public getContainer(): Container {
@@ -63,7 +71,7 @@ namespace rocket.cmd {
 			var url = this.historyUrls[this.currentHistoryIndex];
 			
 			for (var i in this.contexts) {
-				if (this.contexts[i].getUrl().equals(url)) {
+				if (this.contexts[i].containsUrl(url)) {
 					return this.contexts[i];
 				} 
 			}
@@ -97,18 +105,19 @@ namespace rocket.cmd {
 			}
 		}
 		
-		public pushHistoryEntry(url: string|Url) {
-			url = Url.create(url);
+		public pushHistoryEntry(urlExpr: string|Url) {
+			var url: Url = Url.create(urlExpr);
 			var context: Context = this.getContextByUrl(url);
 			if (context === null) {
 				throw new Error("Not context with this url found: " + url);
 			}
 			
 			this.currentHistoryIndex = this.historyUrls.length;
-			this.historyUrls.push(context.getUrl());
+			this.historyUrls.push(url);
+			context.activeUrl = url;
 			
 			for (var i in this.onNewHistoryEntryCallbacks) {
-				this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, context);
+				this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, url, context);
 			}
 			
 			this.switchToContext(context);
@@ -144,7 +153,7 @@ namespace rocket.cmd {
 			var url = Url.create(urlExpr);
 			
 			for (var i in this.contexts) {
-				if (this.contexts[i].getUrl().equals(url)) {
+				if (this.contexts[i].containsUrl(url)) {
 					return this.contexts[i];
 				}
 			}
@@ -217,6 +226,6 @@ namespace rocket.cmd {
 	}
 	
 	interface HistoryCallback {
-		(index: number, context: Context): any
+		(index: number, url: Url, context: Context): any
 	}
 }

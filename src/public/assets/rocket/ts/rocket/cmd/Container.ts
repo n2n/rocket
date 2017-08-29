@@ -17,14 +17,14 @@ namespace rocket.cmd {
 			
 			var that = this;
 			
-			layer.onNewHistoryEntry(function (historyIndex: number, context: Context) {
+			layer.onNewHistoryEntry(function (historyIndex: number, url: Url, context: Context) {
 				var stateObj = { 
 					"type": "rocketContext",
 					"level": layer.getLevel(),
-					"url": context.getUrl(),
+					"url": url,
 					"historyIndex": historyIndex
 				};
-				history.pushState(stateObj, "seite 2", context.getUrl().toString());
+				history.pushState(stateObj, "seite 2", url.toString());
 			});
 						
 			$(window).bind("popstate", function(e) {

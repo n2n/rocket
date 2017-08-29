@@ -32,4 +32,18 @@ namespace rocket.util {
 			return this.callbackMap[nature];
 		}
 	}
+	
+	export class ArgUtils {
+		static valIsset(arg) {
+			if (arg !== null && arg !== undefined) return;
+			
+			throw new InvalidArgumentError("Invalid arg: " + arg);
+		}
+	}
+	
+	export class InvalidArgumentError extends Error {
+	}
+	
+	export class IllegalStateError extends Error {
+	}
 }

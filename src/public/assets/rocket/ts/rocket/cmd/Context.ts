@@ -4,7 +4,8 @@ namespace rocket.cmd {
 	
 	export class Context {
 		private jqContext: JQuery;
-		private url: Url;
+		private _activeUrl: Url;
+		private urls: Array<Url> = new Array<Url>();
 		private layer: Layer;
 		private onShowCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private onHideCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
@@ -16,7 +17,7 @@ namespace rocket.cmd {
 		
 		constructor(jqContext: JQuery, url: Url, layer: Layer) {
 			this.jqContext = jqContext;
-			this.url = url;
+			this.urls.push(this._activeUrl = url);
 			this.layer = layer;
 			
 			jqContext.addClass("rocket-context");
@@ -34,8 +35,54 @@ namespace rocket.cmd {
 			return this.jqContext;
 		}
 		
-		public getUrl(): Url {
-			return this.url;
+		containsUrl(url: Url): boolean {
+			for (var i in this.urls) {
+				if (this.urls[i].equals(url)) return true;
+			}
+			
+			return false;
+		}
+		
+		registerUrl(url: Url) {
+			if (this.containsUrl(url)) return;
+			
+			if (this.layer.containsUrl(url)) {
+				throw new rocket.util.IllegalStateError(
+					"Url already registered for another Context of the current Layer."); 
+			}
+			
+			this.urls.push(url);
+		}
+		
+		unregisterUrl(url: Url) {
+			if (!this.activeUrl.equals(url)) {
+				throw new rocket.util.IllegalStateError("Cannot remove active url");
+			}
+			
+			for (var i in this.urls) {
+				if (this.urls[i].equals(url)) {
+					this.urls.splice(parseInt(i), 1);
+				}
+			}
+		}
+		
+		get activeUrl(): Url {
+			return this._activeUrl;
+		}
+		
+		set activeUrl(activeUrl: Url) {
+			rocket.util.ArgUtils.valIsset(activeUrl !== null)
+			
+			if (this._activeUrl.equals(activeUrl)) {
+				return;
+			}
+			
+			if (this.containsUrl(activeUrl)) {
+				this._activeUrl = activeUrl;
+				return;
+			}
+			
+			throw new rocket.util.IllegalStateError("Active url not available for this context.");
 		}
 		
 		private ensureNotClosed() {
@@ -400,3 +447,4 @@ namespace rocket.cmd {
 			CONTENT_CHANGED = "contentChanged"
 		}
 	}
+}
