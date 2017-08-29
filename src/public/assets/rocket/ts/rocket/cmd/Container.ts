@@ -774,4 +774,10 @@ namespace rocket.cmd {
 			return urlStr;
 		}
 	}
+	
+	export namespace Context {
+		export enum EventType {
+			CONTENT_CHANGED = "contentChanged"
+		}
+	}
 }

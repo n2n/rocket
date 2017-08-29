@@ -1511,19 +1511,6 @@ var rocket;
 (function (rocket) {
     var cmd;
     (function (cmd) {
-        var Context;
-        (function (Context) {
-            (function (EventType) {
-                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
-            })(Context.EventType || (Context.EventType = {}));
-            var EventType = Context.EventType;
-        })(Context = cmd.Context || (cmd.Context = {}));
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
         var display = rocket.display;
         var util = rocket.util;
         var Container = (function () {
@@ -2116,6 +2103,13 @@ var rocket;
             return Url;
         }());
         cmd.Url = Url;
+        var Context;
+        (function (Context) {
+            (function (EventType) {
+                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
+            })(Context.EventType || (Context.EventType = {}));
+            var EventType = Context.EventType;
+        })(Context = cmd.Context || (cmd.Context = {}));
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
