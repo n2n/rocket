@@ -39,6 +39,7 @@
 		<?php if (!$eiuEntry->isNew()): ?>
 			<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
 			<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
+				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
 				<div>
 					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 					<?php $html->out($eiuEntry->getGenericLabel()) ?>
