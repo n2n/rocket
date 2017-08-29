@@ -71,7 +71,7 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 
 #rocket-content-container {
     margin-left: $rocket-content-margin-left;
-    margin-right: $rocket-global-nav-spacer;
+    margin-right: 1rem;
     margin-top: $rocket-header-height;
     margin-bottom: 7rem;
     position: relative;
@@ -99,7 +99,24 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     bottom: 0;
     right: 0;
     left: $rocket-global-nav-width;
-    padding: 1rem 3rem 1rem 3rem;
+    padding: 1rem 1rem 1rem 3rem;
     background-color: $brand-gray-09;
     border-top: 1px solid $brand-gray-06;
+    display: grid;
+    grid-template-columns: auto auto;
+
 }
+
+.rocket-impl-overview-pagination {
+    text-align: right;
+}
+
+
+
+/**
+ * General Styles
+ */
+
+.rocket-simple-commands > button > span {
+    display: none;
+} 

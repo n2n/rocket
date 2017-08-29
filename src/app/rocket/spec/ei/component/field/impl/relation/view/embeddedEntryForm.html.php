@@ -20,12 +20,13 @@
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 								array('item' => $mappingForm->getEntryLabel())) ?>">
 	<?php $formHtml->optionalObjectEnabledHidden() ?>
-		
 	<?php if (!$mappingForm->isAccessible()): ?>
 		<div class="rocket-impl-summary">
 			<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
-			<div>
-				<?php $html->out($mappingForm->getEntryLabel()) ?>
+			<div class="rocket-impl-content">
+				<div>
+					<?php $html->out($mappingForm->getEntryLabel()) ?>
+				</div>
 			</div>
 		</div>
 		
@@ -40,27 +41,31 @@
 			<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
 			<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
-				<div>
-					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-					<?php $html->out($eiuEntry->getGenericLabel()) ?>
-				</div>
-				<div>
-					<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-						<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
-							<?php $eiHtml->fieldContent() ?>
-						<?php $eiHtml->fieldClose() ?>
-					<?php endforeach ?>
+				<div class="rocket-impl-content">
+					<div>
+						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+						<?php $html->out($eiuEntry->getGenericLabel()) ?>
+					</div>
+					<div>
+						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
+							<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+								<?php $eiHtml->fieldContent() ?>
+							<?php $eiHtml->fieldClose() ?>
+						<?php endforeach ?>
+					</div>
 				</div>
 				<div class="rocket-simple-commands"></div>
 			<?php $eiHtml->entryClose() ?>
 		<?php else: ?>
 			<div class="rocket-impl-summary">
 				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
-				<div>
-					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-					<?php $html->out($eiuEntry->getGenericLabel()) ?>
+				<div class="rocket-impl-content">
+					<div>
+						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+						<?php $html->out($eiuEntry->getGenericLabel()) ?>
+					</div>
+					<div><?php $html->text('ei_impl_new_entry_txt') ?></div>
 				</div>
-				<div><?php $html->text('ei_impl_new_entry_txt') ?></div>
 				<div class="rocket-simple-commands"></div>
 			</div>
 		<?php endif ?>

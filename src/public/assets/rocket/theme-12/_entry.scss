@@ -24,3 +24,24 @@
         padding: 2rem;
     }
 }
+
+
+/*
+ * embeded
+ */
+
+// embeded objects in edit view
+
+.rocket-impl-entry {
+    display: grid;
+}
+
+.rocket-control .rocket-impl-entry {
+    border: 1px solid $brand-gray-05;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    > .rocket-impl-summary {
+        display: grid;
+        grid-template-columns: 2rem auto 100px;
+    }
+ }
