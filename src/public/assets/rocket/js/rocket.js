@@ -2225,7 +2225,7 @@ var rocket;
                 this.loadingPageNos = new Array();
                 this.jqLoader = null;
                 if (this.currentPageNo !== null) {
-                    this.addPage(this.currentPageNo, jqElem.children());
+                    this.createPage(this.currentPageNo).jqContents = jqElem.children();
                 }
             }
             Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
@@ -2252,28 +2252,35 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
+            OverviewContent.prototype.isPageNoValid = function (pageNo) {
+                return (pageNo > 0 && pageNo <= this.numPages);
+            };
             OverviewContent.prototype.containsPageNo = function (pageNo) {
                 return this.pages[pageNo] !== undefined;
             };
-            OverviewContent.prototype.addPage = function (pageNo, jqContents) {
-                if (this.pages[pageNo] !== undefined) {
-                    throw new Error("page no taken.");
+            OverviewContent.prototype.applyContents = function (page, jqContents) {
+                if (page.jqContents !== null) {
+                    throw new Error("Contents already applied.");
                 }
-                for (var pni = pageNo; pni > 0; pni--) {
-                    if (this.pages[pageNo] === undefined)
+                page.jqContents = jqContents;
+                for (var pni = page.pageNo - 1; pni > 0; pni--) {
+                    if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded())
                         continue;
-                    jqContents.insertAfter(this.pages[pageNo].jqContents.last());
-                    break;
+                    jqContents.insertAfter(this.pages[pni].jqContents.last());
+                    return;
                 }
                 this.jqElem.prepend(jqContents);
-                this.pages[pageNo] = new Page(pageNo, jqContents);
             };
             OverviewContent.prototype.goTo = function (pageNo) {
+                if (!this.isPageNoValid(pageNo)) {
+                    throw new Error("Invalid pageNo: " + pageNo);
+                }
                 if (pageNo === this.currentPageNo) {
                     return;
                 }
                 if (this.pages[pageNo] === undefined) {
-                    this.load(pageNo, false);
+                    this.showSingle(pageNo);
+                    this.load(pageNo);
                     this.setCurrentPageNo(pageNo);
                     return;
                 }
@@ -2281,11 +2288,13 @@ var rocket;
                     this.setCurrentPageNo(pageNo);
                     return;
                 }
+                this.showSingle(pageNo);
+                this.setCurrentPageNo(pageNo);
+            };
+            OverviewContent.prototype.showSingle = function (pageNo) {
                 for (var i in this.pages) {
                     this.pages[i].visible = (this.pages[i].pageNo == pageNo);
                 }
-                console.log(pageNo);
-                this.setCurrentPageNo(pageNo);
             };
             OverviewContent.prototype.scrollToPage = function (pageNo, targetPageNo) {
                 var page = null;
@@ -2308,7 +2317,7 @@ var rocket;
                     scrollTop: page.jqContents.first().offset().top
                 }, 500);
             };
-            OverviewContent.prototype.markPageAsLoading = function (pageNo, exclusive) {
+            OverviewContent.prototype.markPageAsLoading = function (pageNo) {
                 if (-1 < this.loadingPageNos.indexOf(pageNo)) {
                     throw new Error("page already loading");
                 }
@@ -2317,11 +2326,6 @@ var rocket;
                         .insertAfter(this.jqElem.parent("table"));
                 }
                 this.loadingPageNos.push(pageNo);
-                if (exclusive) {
-                    this.pages.forEach(function (page) {
-                        page.visible = false;
-                    });
-                }
             };
             OverviewContent.prototype.unmarkPageAsLoading = function (pageNo) {
                 if (-1 < this.loadingPageNos.indexOf(pageNo))
@@ -2338,13 +2342,13 @@ var rocket;
                 }
                 return this.pages[pageNo] = new Page(pageNo);
             };
-            OverviewContent.prototype.load = function (pageNo, append) {
+            OverviewContent.prototype.load = function (pageNo) {
                 var page = this.createPage(pageNo);
-                this.markPageAsLoading(pageNo, !append);
+                this.markPageAsLoading(pageNo);
                 var that = this;
                 $.ajax({
                     "url": this.loadUrl,
-                    "data": JSON.stringify({ "pageNo": pageNo }),
+                    "data": { "pageNo": pageNo },
                     "dataType": "json"
                 }).fail(function (jqXHR, textStatus, data) {
                     that.unmarkPageAsLoading(pageNo);
@@ -2356,7 +2360,8 @@ var rocket;
                 }).done(function (data, textStatus, jqXHR) {
                     that.unmarkPageAsLoading(pageNo);
                     var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
-                    that.addPage(pageNo, jqContents);
+                    that.applyContents(page, jqContents);
+                    n2n.ajah.update();
                 });
             };
             OverviewContent.prototype.onNewPage = function () {
@@ -2368,6 +2373,7 @@ var rocket;
                 if (_jqContents === void 0) { _jqContents = null; }
                 this.pageNo = pageNo;
                 this._jqContents = _jqContents;
+                this._visible = true;
             }
             Object.defineProperty(Page.prototype, "visible", {
                 get: function () {
@@ -2385,10 +2391,10 @@ var rocket;
             };
             Object.defineProperty(Page.prototype, "jqContents", {
                 get: function () {
-                    return this.jqContents;
+                    return this._jqContents;
                 },
                 set: function (jqContents) {
-                    this.jqContents = jqContents;
+                    this._jqContents = jqContents;
                     this.disp();
                 },
                 enumerable: true,
@@ -2425,13 +2431,14 @@ var rocket;
                 this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
                 jqContainer.append(this.jqPagination);
                 this.jqPagination.append($("<button />", {
-                    "href": "#",
+                    "type": "button",
                     "class": "rocket-impl-pagination-first rocket-control",
                     "click": function () { that.goTo(1); }
                 }).append($("<i />", {
                     "class": "fa fa-step-backward"
                 })));
                 this.jqPagination.append($("<button />", {
+                    "type": "button",
                     "class": "rocket-impl-pagination-prev rocket-control",
                     "click": function () { that.goTo(that.getCurrentPageNo() - 1); }
                 }).append($("<i />", {
@@ -2443,22 +2450,23 @@ var rocket;
                     "value": this.getCurrentPageNo()
                 }).on("change", function () {
                     var pageNo = parseInt(that.jqInput.val());
-                    if (pageNo === NaN || !that.overviewContent.containsPageNo(pageNo)) {
-                        this.jqInput.val(this.overviewContent.currentPageNo);
+                    if (pageNo === NaN || !that.overviewContent.isPageNoValid(pageNo)) {
+                        that.jqInput.val(that.overviewContent.currentPageNo);
                         return;
                     }
-                    this.jqInput.val(pageNo);
+                    that.jqInput.val(pageNo);
                     that.overviewContent.goTo(pageNo);
                 });
                 this.jqPagination.append(this.jqInput);
                 this.jqPagination.append($("<button />", {
+                    "type": "button",
                     "class": "rocket-impl-pagination-next rocket-control",
                     "click": function () { that.goTo(that.getCurrentPageNo() + 1); }
                 }).append($("<i />", {
                     "class": "fa fa-chevron-right"
                 })));
                 this.jqPagination.append($("<button />", {
-                    "href": "#",
+                    "type": "button",
                     "class": "rocket-impl-pagination-last rocket-control",
                     "click": function () { that.goTo(that.getNumPages()); }
                 }).append($("<i />", {
