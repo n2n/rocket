@@ -26,6 +26,7 @@
 	use n2n\log4php\appender\nn6\AdminMailCenter;
 	use rocket\tool\mail\controller\MailCenterController;
 	use n2n\mail\MailUtils;
+use rocket\tool\mail\ui\MailHtmlBuilder;
 
 	$mailCenter = $view->getParam('mailCenter');
 	
@@ -41,6 +42,7 @@
 			array('title' => $view->getL10nText('tool_mail_center_title')));
 	
 	$html->meta()->addJs('js/tools.js');
+	$mailHtml = new MailHtmlBuilder($view);
 	
 	$fileNames = MailCenter::getMailFileNames();
 ?>
@@ -130,7 +132,9 @@
 						</dd>
 					<?php endif ?>
 					<dt class="rocket-mail-message-label"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
-					<dd class="rocket-mail-message"><pre style="<?php $html->out('font-family: "Courier";') ?>"><?php $html->esc($mailItem->getMessage()) ?></pre></dd>
+					<dd class="rocket-mail-message">
+						<pre style="<?php $html->out('font-family: "Courier";') ?>"><?php $mailHtml->message($mailItem) ?></pre>
+					</dd>
 				</dl>
 			</article>
 		<?php endforeach ?>
