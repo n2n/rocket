@@ -328,9 +328,9 @@ namespace rocket.impl {
 			
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.insertEntry(newEntry);
-				if (!that.isExpanded()) {
-					that.expand(newEntry);
-				}
+//				if (!that.isExpanded()) {
+//					that.expand(newEntry);
+//				}
 			});
 			return addControl;
 		}
@@ -354,9 +354,9 @@ namespace rocket.impl {
 			this.jqEmbedded.append(addControl.getJQuery());
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.addEntry(newEntry);
-				if (!that.isExpanded()) {
-					that.expand(newEntry);
-				}
+//				if (!that.isExpanded()) {
+//					that.expand(newEntry);
+//				}
 			});
 			return addControl;
 		}

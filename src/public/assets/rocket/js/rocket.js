@@ -742,9 +742,9 @@ var rocket;
                 this.jqEmbedded.prepend(addControl.getJQuery());
                 addControl.onNewEmbeddedEntry(function (newEntry) {
                     that.insertEntry(newEntry);
-                    if (!that.isExpanded()) {
-                        that.expand(newEntry);
-                    }
+                    //				if (!that.isExpanded()) {
+                    //					that.expand(newEntry);
+                    //				}
                 });
                 return addControl;
             };
@@ -764,9 +764,9 @@ var rocket;
                 this.jqEmbedded.append(addControl.getJQuery());
                 addControl.onNewEmbeddedEntry(function (newEntry) {
                     that.addEntry(newEntry);
-                    if (!that.isExpanded()) {
-                        that.expand(newEntry);
-                    }
+                    //				if (!that.isExpanded()) {
+                    //					that.expand(newEntry);
+                    //				}
                 });
                 return addControl;
             };
