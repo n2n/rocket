@@ -20,6 +20,8 @@
  * 
  */
 namespace rocket.impl {
+	import cmd = rocket.cmd;
+	
 	var $ = jQuery;
 	
 	export class OverviewContext {
@@ -52,7 +54,8 @@ namespace rocket.impl {
 			var jqForm = jqElem.children("form");
 			
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
-					jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("content-url"));
+					jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("content-url"), 
+					rocket.cmd.Context.findFrom(jqElem));
 			
 			var pagination = new Pagination(overviewContent);
 			pagination.draw(jqForm.children(".rocket-context-commands"));
@@ -69,7 +72,7 @@ namespace rocket.impl {
 		private callback: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		
 		constructor(private jqElem: JQuery, private _currentPageNo: number = null, private _numPages: number,
-				private loadUrl: string) {
+				private loadUrl: string, private context: cmd.Context) {
 			if (this.currentPageNo !== null) {
 				this.createPage(this.currentPageNo).jqContents = jqElem.children();
 			}
@@ -96,10 +99,15 @@ namespace rocket.impl {
 			return this._numPages;
 		}
 		
+		private setNumPages(numPages: number) {
+			for (var pageNo = 1; pageNo < this._numPages; pageNo++) {
+//				this.context.
+			}
+		}
+		
 		isPageNoValid(pageNo: number) {
 			return (pageNo > 0 && pageNo <= this.numPages);
 		}
-			
 		
 		containsPageNo(pageNo: number): boolean {
 			return this.pages[pageNo] !== undefined;
@@ -201,7 +209,6 @@ namespace rocket.impl {
 				this.jqLoader = null;
 			}
 		}
-		
 		
 		private createPage(pageNo: number): Page {
 			if (this.containsPageNo(pageNo)) {
