@@ -106,7 +106,9 @@
 	</table>
 </div>
 <div class="rocket-context-commands">
-	<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
-					. $view->getL10nText('user_add_group_label') . '</span>'), 
-			array('class' => 'btn btn-primary')) ?>
+	<div>
+		<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
+						. $view->getL10nText('user_add_group_label') . '</span>'), 
+				array('class' => 'btn btn-primary')) ?>
+	</div>
 </div>

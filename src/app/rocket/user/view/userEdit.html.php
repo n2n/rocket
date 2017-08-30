@@ -113,8 +113,10 @@
 		</div>
 	</div>
 	<div class="rocket-context-commands">	
-		<?php $formHtml->buttonSubmit('save', 
-				new Raw('<i class="fa fa-save"></i>' . $html->getL10nText('common_save_label')), 
-				array('class' => 'btn btn-primary')) ?>
+		<div>
+			<?php $formHtml->buttonSubmit('save', 
+					new Raw('<i class="fa fa-save"></i>' . $html->getL10nText('common_save_label')), 
+					array('class' => 'btn btn-primary')) ?>
+		</div>
 	</div>
 <?php $formHtml->close() ?>
