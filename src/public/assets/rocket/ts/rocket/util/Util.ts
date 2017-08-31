@@ -40,16 +40,32 @@ namespace rocket.util {
 			throw new InvalidArgumentError("Invalid arg: " + arg);
 		}
 	}
-	
+		
 	export class InvalidArgumentError extends Error {
+		
+//		constructor (message: string) {
+//			super(message);
+//			Object.setPrototypeOf(this, InvalidArgumentError.prototype);
+//		}
 	}
 	
-	export class IllegalStateError extends Error {
+	export class IllegalStateError extends Error /*implements ExceptionInformation*/ {
+//		constructor (public message: string) {
+//			super(message);
+//			
+//			this.name = 'MyError';
+//			this.message = message || 'Default Message';
+//			this.stack = (new Error()).stack;
+//		}
 		
 		static assertTrue(arg, errMsg: string = null) {
-			if (arg === true) return true;
+			if (arg === true) return;
 			
-			throw new IllegalStateError(errMsg);
+			if (errMsg === null) {
+				errMsg = "Illegal state";
+			}
+			
+			throw new Error(errMsg);
 		}
 	}
 }

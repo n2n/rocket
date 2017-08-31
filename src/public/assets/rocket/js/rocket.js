@@ -136,11 +136,21 @@ var rocket;
             function IllegalStateError() {
                 _super.apply(this, arguments);
             }
+            //		constructor (public message: string) {
+            //			super(message);
+            //			
+            //			this.name = 'MyError';
+            //			this.message = message || 'Default Message';
+            //			this.stack = (new Error()).stack;
+            //		}
             IllegalStateError.assertTrue = function (arg, errMsg) {
                 if (errMsg === void 0) { errMsg = null; }
                 if (arg === true)
-                    return true;
-                throw new IllegalStateError(errMsg);
+                    return;
+                if (errMsg === null) {
+                    errMsg = "Illegal state";
+                }
+                throw new Error(errMsg);
             };
             return IllegalStateError;
         }(Error));
@@ -187,13 +197,13 @@ var rocket;
                 if (this.containsUrl(url))
                     return;
                 if (this.layer.containsUrl(url)) {
-                    throw new rocket.util.IllegalStateError("Url already registered for another Context of the current Layer.");
+                    throw new Error("Url already registered for another Context of the current Layer.");
                 }
                 this.urls.push(url);
             };
             Context.prototype.unregisterUrl = function (url) {
                 if (!this.activeUrl.equals(url)) {
-                    throw new rocket.util.IllegalStateError("Cannot remove active url");
+                    throw new Error("Cannot remove active url");
                 }
                 for (var i in this.urls) {
                     if (this.urls[i].equals(url)) {
@@ -215,7 +225,7 @@ var rocket;
                         this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
                         return;
                     }
-                    throw new rocket.util.IllegalStateError("Active url not available for this context.");
+                    throw new Error("Active url not available for this context.");
                 },
                 enumerable: true,
                 configurable: true
@@ -2315,9 +2325,9 @@ var rocket;
                 jqElem.data("rocketImplOverviewContext", overviewContext);
                 var jqForm = jqElem.children("form");
                 var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
-                overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"));
-                new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), jqElem.data("overview-path"))
+                new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
                     .init(overviewContent);
+                overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                 var pagination = new Pagination(overviewContent);
                 pagination.draw(jqForm.children(".rocket-context-commands"));
                 var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
@@ -2332,22 +2342,27 @@ var rocket;
                 this.jqElem = jqElem;
                 this.loadUrl = loadUrl;
                 this.pages = new Array();
-                this.callback = new Array();
+                this.changedCallbacks = new Array();
                 this._currentPageNo = null;
                 this.loadingPageNos = new Array();
                 this.jqLoader = null;
             }
             OverviewContent.prototype.isInit = function () {
-                return this._currentPageNo != null && this._numPages != null;
+                return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
             };
-            OverviewContent.prototype.initFromDom = function (currentPageNo, numPages) {
-                rocket.util.IllegalStateError.assertTrue(this.isInit());
+            OverviewContent.prototype.initFromDom = function (currentPageNo, numPages, numEntries) {
+                rocket.util.IllegalStateError.assertTrue(!this.isInit());
                 this._currentPageNo = currentPageNo;
                 this._numPages = numPages;
+                this._numEntries = numEntries;
                 this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
+                var that = this;
+                this.changedCallbacks.forEach(function (callback) {
+                    callback(that);
+                });
             };
             OverviewContent.prototype.init = function () {
-                rocket.util.IllegalStateError.assertTrue(this.isInit());
+                rocket.util.IllegalStateError.assertTrue(!this.isInit());
                 this.goTo(1);
             };
             Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
@@ -2357,16 +2372,6 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
-            OverviewContent.prototype.setCurrentPageNo = function (pageNo) {
-                this._currentPageNo = pageNo;
-                var that = this;
-                this.callback.forEach(function (callback) {
-                    callback(that);
-                });
-            };
-            OverviewContent.prototype.whenCurrentPageNoChanged = function (callback) {
-                this.callback.push(callback);
-            };
             Object.defineProperty(OverviewContent.prototype, "numPages", {
                 get: function () {
                     return this._numPages;
@@ -2374,9 +2379,40 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
-            OverviewContent.prototype.setNumPages = function (numPages) {
-                for (var pageNo = 1; pageNo < this._numPages; pageNo++) {
+            Object.defineProperty(OverviewContent.prototype, "numEntries", {
+                get: function () {
+                    return this._numEntries;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            OverviewContent.prototype.setCurrentPageNo = function (currentPageNo) {
+                if (this._currentPageNo == currentPageNo) {
+                    return;
                 }
+                this._currentPageNo = currentPageNo;
+                var that = this;
+                this.changedCallbacks.forEach(function (callback) {
+                    callback(that);
+                });
+            };
+            OverviewContent.prototype.changeBoundaries = function (numPages, numEntries) {
+                if (this._numPages == numPages && this._numEntries == numEntries) {
+                    return;
+                }
+                this._numPages = numPages;
+                this._numEntries = numEntries;
+                if (this.currentPageNo > this.numPages) {
+                    this.goTo(this.numPages);
+                    return;
+                }
+                var that = this;
+                this.changedCallbacks.forEach(function (callback) {
+                    callback(that);
+                });
+            };
+            OverviewContent.prototype.whenChanged = function (callback) {
+                this.changedCallbacks.push(callback);
             };
             OverviewContent.prototype.isPageNoValid = function (pageNo) {
                 return (pageNo > 0 && pageNo <= this.numPages);
@@ -2485,6 +2521,7 @@ var rocket;
                     throw new Error("invalid response");
                 }).done(function (data, textStatus, jqXHR) {
                     that.unmarkPageAsLoading(pageNo);
+                    that.changeBoundaries(data.additional.numPages, data.additional.numEntries);
                     var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
                     that.applyContents(page, jqContents);
                     n2n.ajah.update();
@@ -2647,7 +2684,7 @@ var rocket;
                 }).append($("<i />", {
                     "class": "fa fa-step-forward"
                 })));
-                this.overviewContent.whenCurrentPageNoChanged(function () {
+                this.overviewContent.whenChanged(function () {
                     that.jqInput.val(that.overviewContent.currentPageNo);
                 });
             };

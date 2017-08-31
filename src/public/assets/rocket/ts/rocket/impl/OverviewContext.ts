@@ -56,10 +56,11 @@ namespace rocket.impl {
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
 					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
 			
-			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"));
-			
-			new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), jqElem.data("overview-path"))
+			new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
 					.init(overviewContent);
+			
+			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
+			
 			
 			var pagination = new Pagination(overviewContent);
 			pagination.draw(jqForm.children(".rocket-context-commands"));
@@ -73,27 +74,34 @@ namespace rocket.impl {
 	
 	class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
-		private callback: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
+		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
+		private _numEntries: number;
 		
 		constructor(private jqElem: JQuery, private loadUrl) {
 			
 		}	
 		
 		isInit(): boolean {
-			return this._currentPageNo != null && this._numPages != null;
+			return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
 		}
 		
-		initFromDom(currentPageNo: number, numPages: number) {
-			rocket.util.IllegalStateError.assertTrue(this.isInit());
+		initFromDom(currentPageNo: number, numPages: number, numEntries: number) {
+			rocket.util.IllegalStateError.assertTrue(!this.isInit());
 			this._currentPageNo = currentPageNo;
 			this._numPages = numPages;
+			this._numEntries = numEntries;
 			this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
+			
+			var that = this;
+			this.changedCallbacks.forEach(function (callback) {
+				callback(that);
+			});
 		}
 		
 		init() {
-			rocket.util.IllegalStateError.assertTrue(this.isInit());
+			rocket.util.IllegalStateError.assertTrue(!this.isInit());
 			this.goTo(1);
 		}
 		
@@ -101,30 +109,51 @@ namespace rocket.impl {
 			return this._currentPageNo;
 		}
 		
-		private setCurrentPageNo(pageNo: number) {
-			this._currentPageNo = pageNo;
-			
-			var that = this;
-			this.callback.forEach(function (callback) {
-				callback(that);
-			});
-		}
-		
-		public whenCurrentPageNoChanged(callback: (OverviewContent) => any) {
-			this.callback.push(callback);
-		}
-		
 		get numPages(): number {
 			return this._numPages;
 		}
 		
-		private setNumPages(numPages: number) {
-			for (var pageNo = 1; pageNo < this._numPages; pageNo++) {
-//				this.context.
-			}
+		get numEntries(): number {
+			return this._numEntries;
 		}
 		
-		isPageNoValid(pageNo: number) {
+		private setCurrentPageNo(currentPageNo: number) {
+			if (this._currentPageNo == currentPageNo) {
+				return;
+			}
+			
+			this._currentPageNo = currentPageNo;
+			
+			var that = this;
+			this.changedCallbacks.forEach(function (callback) {
+				callback(that);
+			});
+		}
+		
+		private changeBoundaries(numPages: number, numEntries: number) {
+			if (this._numPages == numPages && this._numEntries == numEntries) {
+				return;
+			}
+			
+			this._numPages = numPages;
+			this._numEntries = numEntries;
+			
+			if (this.currentPageNo > this.numPages) {
+				this.goTo(this.numPages);
+				return;
+			}
+			
+			var that = this;
+			this.changedCallbacks.forEach(function (callback) {
+				callback(that);
+			});
+		}
+		
+		public whenChanged(callback: (OverviewContent) => any) {
+			this.changedCallbacks.push(callback);
+		}
+		
+		isPageNoValid(pageNo: number): boolean {
 			return (pageNo > 0 && pageNo <= this.numPages);
 		}
 		
@@ -258,7 +287,7 @@ namespace rocket.impl {
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
 				that.unmarkPageAsLoading(pageNo);
-				
+				that.changeBoundaries(data.additional.numPages, data.additional.numEntries);
 				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
 				that.applyContents(page, jqContents);
 				n2n.ajah.update();
@@ -313,7 +342,7 @@ namespace rocket.impl {
 	class ContextUpdater {
 		private overviewContent: OverviewContent;
 		private lastCurrentPageNo: number = null;
-		private pageUrls: Array<Url> = new Array<Url>();
+		private pageUrls: Array<cmd.Url> = new Array<cmd.Url>();
 		
 		constructor(private context: cmd.Context, private overviewBaseUrl: cmd.Url) {
 			var that = this;
@@ -442,7 +471,7 @@ namespace rocket.impl {
 						"class": "fa fa-step-forward"
 					})));
 			
-			this.overviewContent.whenCurrentPageNoChanged(function () {
+			this.overviewContent.whenChanged(function () {
 				that.jqInput.val(that.overviewContent.currentPageNo);
 			});		
 		}

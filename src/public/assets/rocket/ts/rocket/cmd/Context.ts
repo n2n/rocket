@@ -48,8 +48,7 @@ namespace rocket.cmd {
 			if (this.containsUrl(url)) return;
 			
 			if (this.layer.containsUrl(url)) {
-				throw new rocket.util.IllegalStateError(
-					"Url already registered for another Context of the current Layer."); 
+				throw new Error("Url already registered for another Context of the current Layer."); 
 			}
 			
 			this.urls.push(url);
@@ -57,7 +56,7 @@ namespace rocket.cmd {
 		
 		unregisterUrl(url: Url) {
 			if (!this.activeUrl.equals(url)) {
-				throw new rocket.util.IllegalStateError("Cannot remove active url");
+				throw new Error("Cannot remove active url");
 			}
 			
 			for (var i in this.urls) {
@@ -84,7 +83,7 @@ namespace rocket.cmd {
 				return;
 			}
 			
-			throw new rocket.util.IllegalStateError("Active url not available for this context.");
+			throw new Error("Active url not available for this context.");
 		}
 		
 		private fireEvent(eventType: Context.EventType) {
