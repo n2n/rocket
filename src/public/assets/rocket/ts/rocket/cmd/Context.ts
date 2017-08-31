@@ -1,3 +1,4 @@
+/// <reference path="../util/Util.ts" />
 namespace rocket.cmd {
 	import display = rocket.display;
 	import util = rocket.util;
@@ -79,10 +80,18 @@ namespace rocket.cmd {
 			
 			if (this.containsUrl(activeUrl)) {
 				this._activeUrl = activeUrl;
+				this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
 				return;
 			}
 			
 			throw new rocket.util.IllegalStateError("Active url not available for this context.");
+		}
+		
+		private fireEvent(eventType: Context.EventType) {
+			var that = this;
+			this.callbackRegistery.filter(eventType.toString()).forEach(function (callback: ContextCallback) {
+				callback(that);
+			});
 		}
 		
 		private ensureNotClosed() {
@@ -411,6 +420,14 @@ namespace rocket.cmd {
 			return this.urlStr == url.urlStr;
 		}
 		
+		public extR(pathExt: string): Url {
+			if (pathExt === null || pathExt === undefined) {
+				return this;
+			}
+			
+			return new Url(this.urlStr.replace(/\/+$/, "") + "/" + encodeURI(pathExt));
+		}
+		
 		public static create(urlExpression: string|Url): Url {
 			if (urlExpression instanceof Url) {
 				return urlExpression;
@@ -444,7 +461,8 @@ namespace rocket.cmd {
 	
 	export namespace Context {
 		export enum EventType {
-			CONTENT_CHANGED = "contentChanged"
+			CONTENT_CHANGED = "contentChanged",
+			ACTIVE_URL_CHANGED = "activeUrlChanged"
 		}
 	}
 }

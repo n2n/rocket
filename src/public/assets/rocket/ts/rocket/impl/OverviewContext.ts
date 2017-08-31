@@ -54,8 +54,12 @@ namespace rocket.impl {
 			var jqForm = jqElem.children("form");
 			
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
-					jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("content-url"), 
-					rocket.cmd.Context.findFrom(jqElem));
+					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
+			
+			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"));
+			
+			new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), jqElem.data("overview-path"))
+					.init(overviewContent);
 			
 			var pagination = new Pagination(overviewContent);
 			pagination.draw(jqForm.children(".rocket-context-commands"));
@@ -70,13 +74,28 @@ namespace rocket.impl {
 	class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
 		private callback: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
+		private _currentPageNo: number = null; 
+		private _numPages: number;
 		
-		constructor(private jqElem: JQuery, private _currentPageNo: number = null, private _numPages: number,
-				private loadUrl: string, private context: cmd.Context) {
-			if (this.currentPageNo !== null) {
-				this.createPage(this.currentPageNo).jqContents = jqElem.children();
-			}
+		constructor(private jqElem: JQuery, private loadUrl) {
+			
 		}	
+		
+		isInit(): boolean {
+			return this._currentPageNo != null && this._numPages != null;
+		}
+		
+		initFromDom(currentPageNo: number, numPages: number) {
+			rocket.util.IllegalStateError.assertTrue(this.isInit());
+			this._currentPageNo = currentPageNo;
+			this._numPages = numPages;
+			this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
+		}
+		
+		init() {
+			rocket.util.IllegalStateError.assertTrue(this.isInit());
+			this.goTo(1);
+		}
 		
 		get currentPageNo(): number {
 			return this._currentPageNo;
@@ -225,7 +244,7 @@ namespace rocket.impl {
 			
 			var that = this;
 			$.ajax({
-				"url": this.loadUrl,
+				"url": that.loadUrl,
 				"data": { "pageNo": pageNo },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
@@ -291,6 +310,60 @@ namespace rocket.impl {
 		}
 	}
 	
+	class ContextUpdater {
+		private overviewContent: OverviewContent;
+		private lastCurrentPageNo: number = null;
+		private pageUrls: Array<Url> = new Array<Url>();
+		
+		constructor(private context: cmd.Context, private overviewBaseUrl: cmd.Url) {
+			var that = this;
+			this.context.on(cmd.Context.EventType.ACTIVE_URL_CHANGED, function () {
+				that.contextUpdated();
+			});
+		}
+		
+		public init(overviewContent: OverviewContent) {
+			this.overviewContent = overviewContent;
+			var that = this;
+			overviewContent.whenChanged(function () {
+				that.contentUpdated();
+			});
+		}
+		
+		private contextUpdated() {
+			var newActiveUrl = this.context.activeUrl;
+			for (var i in this.pageUrls) {
+				if (!this.pageUrls[i].equals(newActiveUrl)) continue;
+				
+				this.overviewContent.currentPageNo = (parseInt(i) + 1);
+				return;
+			}
+		}
+		
+		private contentUpdated() {
+			var newCurPageNo = this.overviewContent.currentPageNo;
+			var newNumPages = this.overviewContent.numPages;
+			
+			if (this.pageUrls.length < newNumPages) {
+				for (let pageNo = this.pageUrls.length + 1; pageNo <= newNumPages; pageNo++) {
+					var pageUrl = this.overviewBaseUrl.extR(pageNo > 1 ? pageNo.toString() : null);
+					this.pageUrls[pageNo - 1] = pageUrl;
+					this.context.registerUrl(pageUrl);
+				}
+			} else if (this.pageUrls.length > newNumPages){
+				for (let pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
+					this.context.unregisterUrl(this.pageUrls.pop());
+				}
+			}
+			
+			var newActiveUrl = this.pageUrls[newCurPageNo - 1];
+			if (!this.context.activeUrl.equals(newActiveUrl)) {
+				this.context.getLayer().pushHistoryEntry(newActiveUrl);
+			}
+		}
+		
+	}
+	
 	class Pagination {
 		private jqPagination: JQuery;
 		private jqInput: JQuery;
@@ -307,8 +380,6 @@ namespace rocket.impl {
 		}
 		
 		public goTo(pageNo: number) {
-			
-			
 			this.overviewContent.goTo(pageNo);
 			return;
 		}

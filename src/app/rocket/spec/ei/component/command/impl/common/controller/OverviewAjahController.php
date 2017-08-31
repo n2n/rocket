@@ -36,9 +36,11 @@ use n2n\util\uri\Url;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class OverviewAjahController extends ControllerAdapter {
 	private $manageState;
+	private $eiuCtrl;
 	private $critmodSaveDao;
 	private $listSize = 30;
 
@@ -50,9 +52,10 @@ class OverviewAjahController extends ControllerAdapter {
 		return $this->listSize;
 	}
 
-	public function prepare(ManageState $manageState, CritmodSaveDao $critmodSaveDao) {
+	public function prepare(ManageState $manageState, CritmodSaveDao $critmodSaveDao, EiuCtrl $eiuCtrl) {
 		$this->manageState = $manageState;
 		$this->critmodSaveDao = $critmodSaveDao;
+		$this->eiuCtrl = $eiuCtrl;
 	}
 
 	public function doOverviewTools(string $stateKey, ScrRegistry $scrRegistry) {
@@ -137,7 +140,7 @@ class OverviewAjahController extends ControllerAdapter {
 
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
-		$listModel = new OverviewModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
+		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
 
 		if ($idReps != null) {
 			$listModel->initByIdReps($idReps->toStringArrayOrReject());
@@ -157,13 +160,7 @@ class OverviewAjahController extends ControllerAdapter {
 		
 		$attrs = array('numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
 
-		if ($listModel->isTree()) {
-			$this->send(new AjahResponse($eiFrame->getContextEiMask()->createTreeView($eiFrame,
-					$listModel->getEntryGuiTree()), $attrs));
-		} else {
-			$this->send(new AjahResponse($eiFrame->getContextEiMask()->createListView($eiFrame,
-					$listModel->getEntryGuis()), $attrs));
-		}
+		$this->send(new AjahResponse($listModel->getEiuGui()->createView(), $attrs));
 	}
 
 	public static function buildToolsAjahUrl(Url $contextUrl): Url {

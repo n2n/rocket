@@ -45,5 +45,11 @@ namespace rocket.util {
 	}
 	
 	export class IllegalStateError extends Error {
+		
+		static assertTrue(arg, errMsg: string = null) {
+			if (arg === true) return true;
+			
+			throw new IllegalStateError(errMsg);
+		}
 	}
 }
