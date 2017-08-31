@@ -13,8 +13,11 @@
     }
 }
 
+.rocket-group,
 .rocket-group-simple {
     position: relative;
+    background-color: white;
+    margin-bottom: 1rem;
     
     > label {
         width: 100%;
@@ -55,12 +58,21 @@
         display: grid;
         grid-template-columns: 2.5rem auto 100px;
     }
- }
+}
 
- .rocket-impl-summary > .rocket-impl-content div {
-     display: inline-block;
- }
+.rocket-impl-summary > .rocket-impl-content div {
+    display: inline-block;
+}
 
- .rocket-impl-content-type {
-     min-width: 10rem;
- }
+.rocket-impl-content-type {
+    min-width: 10rem;
+}
+
+.rocket-impl-add-entry {
+    margin-bottom: 1rem;
+    > button {
+        text-align: left;
+        font-weight: bold;
+        font-size: $font-size-sm;
+    }
+}

@@ -2348,14 +2348,14 @@ fieldset[disabled] a.btn {
 
 .btn-secondary {
   color: #4F4A46;
-  background-color: #fff;
+  background-color: #FBFAFA;
   border-color: #ccc;
   box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary:hover {
   color: #4F4A46;
-  background-color: #e6e6e6;
+  background-color: #e4dede;
   border-color: #adadad;
 }
 
@@ -2364,14 +2364,14 @@ fieldset[disabled] a.btn {
 }
 
 .btn-secondary.disabled, .btn-secondary:disabled {
-  background-color: #fff;
+  background-color: #FBFAFA;
   border-color: #ccc;
 }
 
 .btn-secondary:active, .btn-secondary.active,
 .show > .btn-secondary.dropdown-toggle {
   color: #4F4A46;
-  background-color: #e6e6e6;
+  background-color: #e4dede;
   background-image: none;
   border-color: #adadad;
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
@@ -3552,10 +3552,14 @@ h1, .h1 {
   }
 }
 
+.rocket-group,
 .rocket-group-simple {
   position: relative;
+  background-color: white;
+  margin-bottom: 1rem;
 }
 
+.rocket-group > label,
 .rocket-group-simple > label {
   width: 100%;
   padding: 0.5rem 2rem;
@@ -3564,12 +3568,14 @@ h1, .h1 {
   font-weight: bold;
 }
 
+.rocket-group > .rocket-control,
 .rocket-group-simple > .rocket-control {
   background: white;
   margin: 0;
   padding: 2rem;
 }
 
+.rocket-group > .rocket-group-toolbar,
 .rocket-group-simple > .rocket-group-toolbar {
   position: absolute;
   top: 0;
@@ -3601,6 +3607,16 @@ h1, .h1 {
 
 .rocket-impl-content-type {
   min-width: 10rem;
+}
+
+.rocket-impl-add-entry {
+  margin-bottom: 1rem;
+}
+
+.rocket-impl-add-entry > button {
+  text-align: left;
+  font-weight: bold;
+  font-size: 0.875rem;
 }
 
 .align-baseline {
