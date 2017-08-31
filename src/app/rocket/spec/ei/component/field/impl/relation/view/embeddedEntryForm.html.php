@@ -24,7 +24,7 @@
 		<div class="rocket-impl-summary">
 			<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
 			<div class="rocket-impl-content">
-				<div>
+				<div class="rocket-impl-content-type">
 					<?php $html->out($mappingForm->getEntryLabel()) ?>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 			<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
 				<div class="rocket-impl-content">
-					<div>
+					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 						<?php $html->out($eiuEntry->getGenericLabel()) ?>
 					</div>
@@ -60,7 +60,7 @@
 			<div class="rocket-impl-summary">
 				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
 				<div class="rocket-impl-content">
-					<div>
+					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 						<?php $html->out($eiuEntry->getGenericLabel()) ?>
 					</div>

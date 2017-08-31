@@ -18,7 +18,7 @@
 		<div class="rocket-impl-summary">
 			<div class="rocket-impl-handle"></div>
 			<div class="rocket-impl-content">
-				<div>
+				<div class="rocket-impl-content-type">
 					<i class="<?php $html->out($eiuEntry->getIconTyp()) ?>"></i>
 					<?php $html->out($eiuEntry->getGenericLabel()) ?>
 				</div>
@@ -39,7 +39,7 @@
 		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 			<div class="rocket-impl-handle"></div>
 			<div class="rocket-impl-content">
-				<div>
+				<div class="rocket-impl-content-type">
 					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 					<?php $html->out($eiuEntry->getGenericLabel()) ?>
 				</div>

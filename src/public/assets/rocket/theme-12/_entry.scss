@@ -14,14 +14,24 @@
 }
 
 .rocket-group-simple {
+    position: relative;
+    
     > label {
         width: 100%;
-        padding: 2rem;
+        padding: 0.5rem 2rem;
+        border-left: 3px solid $brand-primary;
+        font-size: $font-size-h2;
+        font-weight: bold;
     }
     > .rocket-control {
         background: white;
         margin: 0;
         padding: 2rem;
+    }
+    > .rocket-group-toolbar {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 }
 
@@ -38,10 +48,19 @@
 
 .rocket-control .rocket-impl-entry {
     border: 1px solid $brand-gray-05;
+    background-color: white;
     margin-bottom: 1rem;
     padding: 1rem;
     > .rocket-impl-summary {
         display: grid;
-        grid-template-columns: 2rem auto 100px;
+        grid-template-columns: 2.5rem auto 100px;
     }
+ }
+
+ .rocket-impl-summary > .rocket-impl-content div {
+     display: inline-block;
+ }
+
+ .rocket-impl-content-type {
+     min-width: 10rem;
  }
