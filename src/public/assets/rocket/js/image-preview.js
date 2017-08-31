@@ -21,7 +21,7 @@
 jQuery(document).ready(function($) {
 	(function() {
 		if (typeof $.fn.colorbox != 'function') return
-		$(".rocket-image-previewable").colorbox({rel:"rocket-image-previewable", transition:"fade"});
+		$(".rocket-image-previewable").colorbox({rel:"rocket-image-previewable", maxHeight:'98%', maxWidth:'98%', scalePhotos:true, transition:"fade"});
 	})();
 	
 	(function(){
