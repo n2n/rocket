@@ -893,7 +893,8 @@ namespace rocket.impl {
 		}
 		
 		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever): AddControl {
-			return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })),
+			return new AddControl($("<div />", { "class": "rocket-impl-add-entry"})
+							.append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })),
 					embeddedEntryRetriever);
 		} 
 	}

@@ -73,6 +73,453 @@ var rocket;
         }());
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var rocket;
+(function (rocket) {
+    var util;
+    (function (util) {
+        var CallbackRegistry = (function () {
+            function CallbackRegistry() {
+                this.callbackMap = new Array();
+            }
+            CallbackRegistry.prototype.register = function (nature, callback) {
+                if (this.callbackMap[nature] === undefined) {
+                    this.callbackMap[nature] = new Array();
+                }
+                this.callbackMap[nature].push(callback);
+            };
+            CallbackRegistry.prototype.unregister = function (nature, callback) {
+                if (this.callbackMap[nature] === undefined) {
+                    return;
+                }
+                for (var i in this.callbackMap[nature]) {
+                    if (this.callbackMap[nature][i] === callback) {
+                        this.callbackMap[nature].splice(i, 1);
+                        return;
+                    }
+                }
+            };
+            CallbackRegistry.prototype.filter = function (nature) {
+                if (this.callbackMap[nature] === undefined) {
+                    return new Array();
+                }
+                return this.callbackMap[nature];
+            };
+            return CallbackRegistry;
+        }());
+        util.CallbackRegistry = CallbackRegistry;
+        var ArgUtils = (function () {
+            function ArgUtils() {
+            }
+            ArgUtils.valIsset = function (arg) {
+                if (arg !== null && arg !== undefined)
+                    return;
+                throw new InvalidArgumentError("Invalid arg: " + arg);
+            };
+            return ArgUtils;
+        }());
+        util.ArgUtils = ArgUtils;
+        var InvalidArgumentError = (function (_super) {
+            __extends(InvalidArgumentError, _super);
+            function InvalidArgumentError() {
+                _super.apply(this, arguments);
+            }
+            return InvalidArgumentError;
+        }(Error));
+        util.InvalidArgumentError = InvalidArgumentError;
+        var IllegalStateError = (function (_super) {
+            __extends(IllegalStateError, _super);
+            function IllegalStateError() {
+                _super.apply(this, arguments);
+            }
+            IllegalStateError.assertTrue = function (arg, errMsg) {
+                if (errMsg === void 0) { errMsg = null; }
+                if (arg === true)
+                    return true;
+                throw new IllegalStateError(errMsg);
+            };
+            return IllegalStateError;
+        }(Error));
+        util.IllegalStateError = IllegalStateError;
+    })(util = rocket.util || (rocket.util = {}));
+})(rocket || (rocket = {}));
+/// <reference path="../util/Util.ts" />
+var rocket;
+(function (rocket) {
+    var cmd;
+    (function (cmd) {
+        var display = rocket.display;
+        var util = rocket.util;
+        var Context = (function () {
+            function Context(jqContext, url, layer) {
+                this.urls = new Array();
+                this.onShowCallbacks = new Array();
+                this.onHideCallbacks = new Array();
+                this.onCloseCallbacks = new Array();
+                this.whenContentChangedCallbacks = new Array();
+                this.callbackRegistery = new util.CallbackRegistry();
+                this.jqContext = jqContext;
+                this.urls.push(this._activeUrl = url);
+                this.layer = layer;
+                jqContext.addClass("rocket-context");
+                jqContext.data("rocketContext", this);
+                this.reset();
+                this.hide();
+            }
+            Context.prototype.getLayer = function () {
+                return this.layer;
+            };
+            Context.prototype.getJQuery = function () {
+                return this.jqContext;
+            };
+            Context.prototype.containsUrl = function (url) {
+                for (var i in this.urls) {
+                    if (this.urls[i].equals(url))
+                        return true;
+                }
+                return false;
+            };
+            Context.prototype.registerUrl = function (url) {
+                if (this.containsUrl(url))
+                    return;
+                if (this.layer.containsUrl(url)) {
+                    throw new rocket.util.IllegalStateError("Url already registered for another Context of the current Layer.");
+                }
+                this.urls.push(url);
+            };
+            Context.prototype.unregisterUrl = function (url) {
+                if (!this.activeUrl.equals(url)) {
+                    throw new rocket.util.IllegalStateError("Cannot remove active url");
+                }
+                for (var i in this.urls) {
+                    if (this.urls[i].equals(url)) {
+                        this.urls.splice(parseInt(i), 1);
+                    }
+                }
+            };
+            Object.defineProperty(Context.prototype, "activeUrl", {
+                get: function () {
+                    return this._activeUrl;
+                },
+                set: function (activeUrl) {
+                    rocket.util.ArgUtils.valIsset(activeUrl !== null);
+                    if (this._activeUrl.equals(activeUrl)) {
+                        return;
+                    }
+                    if (this.containsUrl(activeUrl)) {
+                        this._activeUrl = activeUrl;
+                        this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
+                        return;
+                    }
+                    throw new rocket.util.IllegalStateError("Active url not available for this context.");
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Context.prototype.fireEvent = function (eventType) {
+                var that = this;
+                this.callbackRegistery.filter(eventType.toString()).forEach(function (callback) {
+                    callback(that);
+                });
+            };
+            Context.prototype.ensureNotClosed = function () {
+                if (this.jqContext !== null)
+                    return;
+                throw new Error("Context already closed.");
+            };
+            Context.prototype.close = function () {
+                var callback;
+                while (undefined !== (callback = this.onCloseCallbacks.shift())) {
+                    callback(this);
+                }
+                this.jqContext.remove();
+                this.jqContext = null;
+            };
+            Context.prototype.show = function () {
+                this.jqContext.show();
+                var callback;
+                while (undefined !== (callback = this.onShowCallbacks.shift())) {
+                    callback(this);
+                }
+            };
+            Context.prototype.hide = function () {
+                this.jqContext.hide();
+                var callback;
+                while (undefined !== (callback = this.onShowCallbacks.shift())) {
+                    callback(this);
+                }
+            };
+            Context.prototype.reset = function () {
+                this.additionalTabManager = new AdditionalTabManager(this);
+                this.menu = new Menu(this);
+            };
+            Context.prototype.clear = function (loading) {
+                if (loading === void 0) { loading = false; }
+                this.jqContext.empty();
+                this.jqContext.addClass("rocket-loading");
+                this.reset();
+            };
+            Context.prototype.applyHtml = function (html) {
+                this.endLoading();
+                this.jqContext.html(html);
+                this.reset();
+            };
+            Context.prototype.isLoading = function () {
+                return this.jqContext.hasClass("rocket-loading");
+            };
+            Context.prototype.endLoading = function () {
+                this.jqContext.removeClass("rocket-loading");
+            };
+            Context.prototype.applyContent = function (jqContent) {
+                this.endLoading();
+                this.jqContext.append(jqContent);
+                this.reset();
+                var context = this;
+                this.callbackRegistery.filter(Context.EventType.CONTENT_CHANGED.toString()).forEach(function (callback) {
+                    callback(context);
+                });
+            };
+            Context.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            Context.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            Context.prototype.onClose = function (onCloseCallback) {
+                this.onCloseCallbacks.push(onCloseCallback);
+            };
+            Context.prototype.whenContentChanged = function (whenContentChangedCallback) {
+                this.whenContentChangedCallbacks.push(whenContentChangedCallback);
+            };
+            Context.prototype.on = function (eventType, callback) {
+                this.callbackRegistery.register(eventType.toString(), callback);
+            };
+            Context.prototype.off = function (eventType, callback) {
+                this.callbackRegistery.unregister(eventType.toString(), callback);
+            };
+            Context.prototype.createAdditionalTab = function (title, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                return this.additionalTabManager.createTab(title, prepend);
+            };
+            Context.prototype.getMenu = function () {
+                return this.menu;
+            };
+            Context.findFrom = function (jqElem) {
+                if (!jqElem.hasClass(".rocket-context")) {
+                    jqElem = jqElem.parents(".rocket-context");
+                }
+                var context = jqElem.data("rocketContext");
+                if (context)
+                    return context;
+                return null;
+            };
+            return Context;
+        }());
+        cmd.Context = Context;
+        var AdditionalTabManager = (function () {
+            function AdditionalTabManager(context) {
+                this.jqAdditional = null;
+                this.context = context;
+                this.tabs = new Array();
+            }
+            AdditionalTabManager.prototype.createTab = function (title, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                this.setupAdditional();
+                var jqNavItem = $("<li />", {
+                    "text": title
+                });
+                var jqContent = $("<div />", {
+                    "class": "rocket-additional-content"
+                });
+                if (prepend) {
+                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
+                }
+                else {
+                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
+                }
+                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
+                var tab = new AdditionalTab(jqNavItem, jqContent);
+                this.tabs.push(tab);
+                var that = this;
+                tab.onShow(function () {
+                    for (var i in that.tabs) {
+                        if (that.tabs[i] === tab)
+                            continue;
+                        this.tabs[i].hide();
+                    }
+                });
+                tab.onDispose(function () {
+                    that.removeTab(tab);
+                });
+                if (this.tabs.length == 1) {
+                    tab.show();
+                }
+                return tab;
+            };
+            AdditionalTabManager.prototype.removeTab = function (tab) {
+                for (var i in this.tabs) {
+                    if (this.tabs[i] !== tab)
+                        continue;
+                    this.tabs.splice(parseInt(i), 1);
+                    if (this.tabs.length == 0) {
+                        this.setdownAdditional();
+                        return;
+                    }
+                    if (tab.isActive()) {
+                        this.tabs[0].show();
+                    }
+                    return;
+                }
+            };
+            AdditionalTabManager.prototype.setupAdditional = function () {
+                if (this.jqAdditional !== null)
+                    return;
+                var jqContext = this.context.getJQuery();
+                jqContext.addClass("rocket-contains-additional");
+                this.jqAdditional = $("<div />", {
+                    "class": "rocket-additional"
+                });
+                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
+                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
+                jqContext.append(this.jqAdditional);
+            };
+            AdditionalTabManager.prototype.setdownAdditional = function () {
+                if (this.jqAdditional === null)
+                    return;
+                this.context.getJQuery().removeClass("rocket-contains-additional");
+                this.jqAdditional.remove();
+                this.jqAdditional = null;
+            };
+            return AdditionalTabManager;
+        }());
+        var AdditionalTab = (function () {
+            function AdditionalTab(jqNavItem, jqContent) {
+                this.active = false;
+                this.onShowCallbacks = new Array();
+                this.onHideCallbacks = new Array();
+                this.onDisposeCallbacks = new Array();
+                this.jqNavItem = jqNavItem;
+                this.jqContent = jqContent;
+                this.jqNavItem.click(this.show);
+                this.jqContent.hide();
+            }
+            AdditionalTab.prototype.getJqNavItem = function () {
+                return this.jqNavItem;
+            };
+            AdditionalTab.prototype.getJqContent = function () {
+                return this.jqContent;
+            };
+            AdditionalTab.prototype.isActive = function () {
+                return this.active;
+            };
+            AdditionalTab.prototype.show = function () {
+                this.active = true;
+                this.jqNavItem.addClass("rocket-active");
+                this.jqContent.show();
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.hide = function () {
+                this.active = false;
+                this.jqContent.hide();
+                this.jqNavItem.removeClass("rocket-active");
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.dispose = function () {
+                this.jqNavItem.remove();
+                this.jqContent.remove();
+                for (var i in this.onDisposeCallbacks) {
+                    this.onDisposeCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            AdditionalTab.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            AdditionalTab.prototype.onDispose = function (callback) {
+                this.onDisposeCallbacks.push(callback);
+            };
+            return AdditionalTab;
+        }());
+        cmd.AdditionalTab = AdditionalTab;
+        var Menu = (function () {
+            function Menu(context) {
+                this.commandList = null;
+                this.context = context;
+            }
+            Menu.prototype.getCommandList = function () {
+                if (this.commandList !== null) {
+                    return this.commandList;
+                }
+                var jqCommandList = this.context.getJQuery().find(".rocket-context-commands");
+                if (jqCommandList.length == 0) {
+                    jqCommandList = $("<div />", {
+                        "class": "rocket-context-commands"
+                    });
+                    this.context.getJQuery().append(jqCommandList);
+                }
+                return this.commandList = new display.CommandList(jqCommandList);
+            };
+            return Menu;
+        }());
+        cmd.Menu = Menu;
+        var Url = (function () {
+            function Url(urlStr) {
+                this.urlStr = urlStr;
+            }
+            Url.prototype.toString = function () {
+                return this.urlStr;
+            };
+            Url.prototype.equals = function (url) {
+                return this.urlStr == url.urlStr;
+            };
+            Url.prototype.extR = function (pathExt) {
+                if (pathExt === null || pathExt === undefined) {
+                    return this;
+                }
+                return new Url(this.urlStr.replace(/\/+$/, "") + "/" + encodeURI(pathExt));
+            };
+            Url.create = function (urlExpression) {
+                if (urlExpression instanceof Url) {
+                    return urlExpression;
+                }
+                return new Url(Url.absoluteStr(urlExpression));
+            };
+            Url.absoluteStr = function (urlExpression) {
+                if (urlExpression instanceof Url) {
+                    return urlExpression.toString();
+                }
+                var urlStr = urlExpression;
+                if (!/^(?:\/|[a-z]+:\/\/)/.test(urlStr)) {
+                    return window.location.toString().replace(/\/+$/, "") + "/" + urlStr;
+                }
+                if (!/^(?:[a-z]+:)?\/\//.test(urlStr)) {
+                    return window.location.protocol + "//" + window.location.host + urlStr;
+                }
+                return urlStr;
+            };
+            return Url;
+        }());
+        cmd.Url = Url;
+        var Context;
+        (function (Context) {
+            (function (EventType) {
+                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
+                EventType[EventType["ACTIVE_URL_CHANGED"] = "activeUrlChanged"] = "ACTIVE_URL_CHANGED";
+            })(Context.EventType || (Context.EventType = {}));
+            var EventType = Context.EventType;
+        })(Context = cmd.Context || (cmd.Context = {}));
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
+})(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
     var display;
@@ -476,6 +923,7 @@ var rocket;
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  *
  */
+/// <reference path="../display/Group.ts" />
 var rocket;
 (function (rocket) {
     var impl;
@@ -1180,7 +1628,8 @@ var rocket;
                 this.onNewEntryCallbacks.push(callback);
             };
             AddControl.create = function (label, embeddedEntryRetriever) {
-                return new AddControl($("<div />").append($("<button />", { "text": label, "type": "button" })), embeddedEntryRetriever);
+                return new AddControl($("<div />", { "class": "rocket-impl-add-entry" })
+                    .append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })), embeddedEntryRetriever);
             };
             return AddControl;
         }());
@@ -1308,42 +1757,6 @@ var rocket;
         }());
         cmd.ExecResult = ExecResult;
     })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var util;
-    (function (util) {
-        var CallbackRegistry = (function () {
-            function CallbackRegistry() {
-                this.callbackMap = new Array();
-            }
-            CallbackRegistry.prototype.register = function (nature, callback) {
-                if (this.callbackMap[nature] === undefined) {
-                    this.callbackMap[nature] = new Array();
-                }
-                this.callbackMap[nature].push(callback);
-            };
-            CallbackRegistry.prototype.unregister = function (nature, callback) {
-                if (this.callbackMap[nature] === undefined) {
-                    return;
-                }
-                for (var i in this.callbackMap[nature]) {
-                    if (this.callbackMap[nature][i] === callback) {
-                        this.callbackMap[nature].splice(i, 1);
-                        return;
-                    }
-                }
-            };
-            CallbackRegistry.prototype.filter = function (nature) {
-                if (this.callbackMap[nature] === undefined) {
-                    return new Array();
-                }
-                return this.callbackMap[nature];
-            };
-            return CallbackRegistry;
-        }());
-        util.CallbackRegistry = CallbackRegistry;
-    })(util = rocket.util || (rocket.util = {}));
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
@@ -1519,14 +1932,14 @@ var rocket;
                 var layer = new cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length, this);
                 this.layers.push(layer);
                 var that = this;
-                layer.onNewHistoryEntry(function (historyIndex, context) {
+                layer.onNewHistoryEntry(function (historyIndex, url, context) {
                     var stateObj = {
                         "type": "rocketContext",
                         "level": layer.getLevel(),
-                        "url": context.getUrl(),
+                        "url": url,
                         "historyIndex": historyIndex
                     };
-                    history.pushState(stateObj, "seite 2", context.getUrl().toString());
+                    history.pushState(stateObj, "seite 2", url.toString());
                 });
                 $(window).bind("popstate", function (e) {
                     if (that.jqErrorLayer) {
@@ -1667,6 +2080,186 @@ var rocket;
 })(rocket || (rocket = {}));
 var rocket;
 (function (rocket) {
+    var cmd;
+    (function (cmd) {
+        var Layer = (function () {
+            function Layer(jqContentGroup, level, container) {
+                this.currentHistoryIndex = null;
+                this.visible = true;
+                this.contexts = new Array();
+                this.onNewContextCallbacks = new Array();
+                this.onNewHistoryEntryCallbacks = new Array();
+                this.historyUrls = new Array();
+                this.jqLayer = jqContentGroup;
+                this.level = level;
+                this.container = container;
+                jqContentGroup.addClass("rocket-layer");
+                jqContentGroup.data("rocketLayer", this);
+                var jqContext = jqContentGroup.children(".rocket-context");
+                if (jqContext.length > 0) {
+                    var context = new cmd.Context(jqContext, cmd.Url.create(window.location.href), this);
+                    this.addContext(context);
+                    this.pushHistoryEntry(context.activeUrl);
+                }
+            }
+            Layer.prototype.containsUrl = function (url) {
+                for (var i in this.contexts) {
+                    if (this.contexts[i].containsUrl(url))
+                        return true;
+                }
+                return false;
+            };
+            Layer.prototype.getContainer = function () {
+                return this.container;
+            };
+            Layer.prototype.isVisible = function () {
+                return this.visible;
+            };
+            Layer.prototype.show = function () {
+                this.visible = true;
+                this.jqLayer.show();
+            };
+            Layer.prototype.hide = function () {
+                this.visible = false;
+                this.jqLayer.hide();
+            };
+            Layer.prototype.getLevel = function () {
+                return this.level;
+            };
+            Layer.prototype.getCurrentContext = function () {
+                if (this.contexts.length == 0) {
+                    throw new Error("no context avaialble");
+                }
+                var url = this.historyUrls[this.currentHistoryIndex];
+                for (var i in this.contexts) {
+                    if (this.contexts[i].containsUrl(url)) {
+                        return this.contexts[i];
+                    }
+                }
+                return null;
+            };
+            Layer.prototype.getContexts = function () {
+                return this.contexts;
+            };
+            Layer.prototype.getCurrentHistoryIndex = function () {
+                return this.currentHistoryIndex;
+            };
+            Layer.prototype.addContext = function (context) {
+                this.contexts.push(context);
+                var that = this;
+                context.onClose(function (context) {
+                    for (var i in that.contexts) {
+                        if (that.contexts[i] !== context)
+                            continue;
+                        that.contexts.splice(parseInt(i), 1);
+                        break;
+                    }
+                });
+                for (var i in this.onNewContextCallbacks) {
+                    this.onNewContextCallbacks[i](context);
+                }
+            };
+            Layer.prototype.pushHistoryEntry = function (urlExpr) {
+                var url = cmd.Url.create(urlExpr);
+                var context = this.getContextByUrl(url);
+                if (context === null) {
+                    throw new Error("Not context with this url found: " + url);
+                }
+                this.currentHistoryIndex = this.historyUrls.length;
+                this.historyUrls.push(url);
+                context.activeUrl = url;
+                for (var i in this.onNewHistoryEntryCallbacks) {
+                    this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, url, context);
+                }
+                this.switchToContext(context);
+            };
+            Layer.prototype.go = function (historyIndex, urlExpr) {
+                var url = cmd.Url.create(urlExpr);
+                if (this.historyUrls.length < (historyIndex + 1)) {
+                    throw new Error("Invalid history index: " + historyIndex);
+                }
+                if (this.historyUrls[historyIndex].equals(url)) {
+                    throw new Error("Url missmatch for history index " + historyIndex + ". Url: " + url + " History url: "
+                        + this.historyUrls[historyIndex]);
+                }
+                this.currentHistoryIndex = historyIndex;
+                var context = this.getContextByUrl(this.historyUrls[historyIndex]);
+                if (context === null)
+                    return false;
+                this.switchToContext(context);
+                return true;
+            };
+            Layer.prototype.getHistoryUrlByIndex = function (historyIndex) {
+                if (this.historyUrls.length <= historyIndex)
+                    return null;
+                return this.historyUrls[historyIndex];
+            };
+            Layer.prototype.getContextByUrl = function (urlExpr) {
+                var url = cmd.Url.create(urlExpr);
+                for (var i in this.contexts) {
+                    if (this.contexts[i].containsUrl(url)) {
+                        return this.contexts[i];
+                    }
+                }
+                return null;
+            };
+            Layer.prototype.switchToContext = function (context) {
+                for (var i in this.contexts) {
+                    if (this.contexts[i] === context) {
+                        context.show();
+                    }
+                    else {
+                        this.contexts[i].hide();
+                    }
+                }
+            };
+            Layer.prototype.createContext = function (urlExpr) {
+                var url = cmd.Url.create(urlExpr);
+                if (this.getContextByUrl(url)) {
+                    throw new Error("Context with url already available: " + url);
+                }
+                var jqContent = $("<div />");
+                this.jqLayer.append(jqContent);
+                var context = new cmd.Context(jqContent, url, this);
+                this.addContext(context);
+                return context;
+            };
+            Layer.prototype.clear = function () {
+                for (var i in this.contexts) {
+                    this.contexts[i].close();
+                }
+            };
+            Layer.prototype.close = function () {
+                var context;
+                while (undefined !== (context = this.contexts.pop())) {
+                    context.close();
+                }
+                this.contexts = new Array();
+                this.jqLayer.remove();
+            };
+            Layer.prototype.onNewContext = function (onNewContextCallback) {
+                this.onNewContextCallbacks.push(onNewContextCallback);
+            };
+            Layer.prototype.onNewHistoryEntry = function (onNewHistoryEntryCallback) {
+                this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
+            };
+            Layer.findFrom = function (jqElem) {
+                if (!jqElem.hasClass(".rocket-layer")) {
+                    jqElem = jqElem.parents(".rocket-layer");
+                }
+                var layer = jqElem.data("rocketLayer");
+                if (layer === undefined) {
+                    return null;
+                }
+                return layer;
+            };
+            return Layer;
+        }());
+        cmd.Layer = Layer;
+    })(cmd = rocket.cmd || (rocket.cmd = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
     var display;
     (function (display) {
         (function (Severity) {
@@ -1705,6 +2298,7 @@ var rocket;
 (function (rocket) {
     var impl;
     (function (impl) {
+        var cmd = rocket.cmd;
         var $ = jQuery;
         var OverviewContext = (function () {
             function OverviewContext(jqContainer) {
@@ -1720,7 +2314,10 @@ var rocket;
                 overviewContext = new OverviewContext(jqElem);
                 jqElem.data("rocketImplOverviewContext", overviewContext);
                 var jqForm = jqElem.children("form");
-                var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("content-url"));
+                var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
+                overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"));
+                new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), jqElem.data("overview-path"))
+                    .init(overviewContent);
                 var pagination = new Pagination(overviewContent);
                 pagination.draw(jqForm.children(".rocket-context-commands"));
                 var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
@@ -1731,20 +2328,28 @@ var rocket;
         }());
         impl.OverviewContext = OverviewContext;
         var OverviewContent = (function () {
-            function OverviewContent(jqElem, _currentPageNo, _numPages, loadUrl) {
-                if (_currentPageNo === void 0) { _currentPageNo = null; }
+            function OverviewContent(jqElem, loadUrl) {
                 this.jqElem = jqElem;
-                this._currentPageNo = _currentPageNo;
-                this._numPages = _numPages;
                 this.loadUrl = loadUrl;
                 this.pages = new Array();
                 this.callback = new Array();
+                this._currentPageNo = null;
                 this.loadingPageNos = new Array();
                 this.jqLoader = null;
-                if (this.currentPageNo !== null) {
-                    this.createPage(this.currentPageNo).jqContents = jqElem.children();
-                }
             }
+            OverviewContent.prototype.isInit = function () {
+                return this._currentPageNo != null && this._numPages != null;
+            };
+            OverviewContent.prototype.initFromDom = function (currentPageNo, numPages) {
+                rocket.util.IllegalStateError.assertTrue(this.isInit());
+                this._currentPageNo = currentPageNo;
+                this._numPages = numPages;
+                this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
+            };
+            OverviewContent.prototype.init = function () {
+                rocket.util.IllegalStateError.assertTrue(this.isInit());
+                this.goTo(1);
+            };
             Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
                 get: function () {
                     return this._currentPageNo;
@@ -1769,6 +2374,10 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
+            OverviewContent.prototype.setNumPages = function (numPages) {
+                for (var pageNo = 1; pageNo < this._numPages; pageNo++) {
+                }
+            };
             OverviewContent.prototype.isPageNoValid = function (pageNo) {
                 return (pageNo > 0 && pageNo <= this.numPages);
             };
@@ -1864,7 +2473,7 @@ var rocket;
                 this.markPageAsLoading(pageNo);
                 var that = this;
                 $.ajax({
-                    "url": this.loadUrl,
+                    "url": that.loadUrl,
                     "data": { "pageNo": pageNo },
                     "dataType": "json"
                 }).fail(function (jqXHR, textStatus, data) {
@@ -1928,6 +2537,55 @@ var rocket;
                 }
             };
             return Page;
+        }());
+        var ContextUpdater = (function () {
+            function ContextUpdater(context, overviewBaseUrl) {
+                this.context = context;
+                this.overviewBaseUrl = overviewBaseUrl;
+                this.lastCurrentPageNo = null;
+                this.pageUrls = new Array();
+                var that = this;
+                this.context.on(cmd.Context.EventType.ACTIVE_URL_CHANGED, function () {
+                    that.contextUpdated();
+                });
+            }
+            ContextUpdater.prototype.init = function (overviewContent) {
+                this.overviewContent = overviewContent;
+                var that = this;
+                overviewContent.whenChanged(function () {
+                    that.contentUpdated();
+                });
+            };
+            ContextUpdater.prototype.contextUpdated = function () {
+                var newActiveUrl = this.context.activeUrl;
+                for (var i in this.pageUrls) {
+                    if (!this.pageUrls[i].equals(newActiveUrl))
+                        continue;
+                    this.overviewContent.currentPageNo = (parseInt(i) + 1);
+                    return;
+                }
+            };
+            ContextUpdater.prototype.contentUpdated = function () {
+                var newCurPageNo = this.overviewContent.currentPageNo;
+                var newNumPages = this.overviewContent.numPages;
+                if (this.pageUrls.length < newNumPages) {
+                    for (var pageNo = this.pageUrls.length + 1; pageNo <= newNumPages; pageNo++) {
+                        var pageUrl = this.overviewBaseUrl.extR(pageNo > 1 ? pageNo.toString() : null);
+                        this.pageUrls[pageNo - 1] = pageUrl;
+                        this.context.registerUrl(pageUrl);
+                    }
+                }
+                else if (this.pageUrls.length > newNumPages) {
+                    for (var pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
+                        this.context.unregisterUrl(this.pageUrls.pop());
+                    }
+                }
+                var newActiveUrl = this.pageUrls[newCurPageNo - 1];
+                if (!this.context.activeUrl.equals(newActiveUrl)) {
+                    this.context.getLayer().pushHistoryEntry(newActiveUrl);
+                }
+            };
+            return ContextUpdater;
         }());
         var Pagination = (function () {
             function Pagination(overviewContent) {
@@ -2075,493 +2733,4 @@ var rocket;
             return FixedHeader;
         }());
     })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var Layer = (function () {
-            function Layer(jqContentGroup, level, container) {
-                this.currentHistoryIndex = null;
-                this.visible = true;
-                this.contexts = new Array();
-                this.onNewContextCallbacks = new Array();
-                this.onNewHistoryEntryCallbacks = new Array();
-                this.historyUrls = new Array();
-                this.jqLayer = jqContentGroup;
-                this.level = level;
-                this.container = container;
-                jqContentGroup.addClass("rocket-layer");
-                jqContentGroup.data("rocketLayer", this);
-                var jqContext = jqContentGroup.children(".rocket-context");
-                if (jqContext.length > 0) {
-                    var context = new cmd.Context(jqContext, cmd.Url.create(window.location.href), this);
-                    this.addContext(context);
-                    this.pushHistoryEntry(context.getUrl());
-                }
-            }
-            Layer.prototype.getContainer = function () {
-                return this.container;
-            };
-            Layer.prototype.isVisible = function () {
-                return this.visible;
-            };
-            Layer.prototype.show = function () {
-                this.visible = true;
-                this.jqLayer.show();
-            };
-            Layer.prototype.hide = function () {
-                this.visible = false;
-                this.jqLayer.hide();
-            };
-            Layer.prototype.getLevel = function () {
-                return this.level;
-            };
-            Layer.prototype.getCurrentContext = function () {
-                if (this.contexts.length == 0) {
-                    throw new Error("no context avaialble");
-                }
-                var url = this.historyUrls[this.currentHistoryIndex];
-                for (var i in this.contexts) {
-                    if (this.contexts[i].getUrl().equals(url)) {
-                        return this.contexts[i];
-                    }
-                }
-                return null;
-            };
-            Layer.prototype.getContexts = function () {
-                return this.contexts;
-            };
-            Layer.prototype.getCurrentHistoryIndex = function () {
-                return this.currentHistoryIndex;
-            };
-            Layer.prototype.addContext = function (context) {
-                this.contexts.push(context);
-                var that = this;
-                context.onClose(function (context) {
-                    for (var i in that.contexts) {
-                        if (that.contexts[i] !== context)
-                            continue;
-                        that.contexts.splice(parseInt(i), 1);
-                        break;
-                    }
-                });
-                for (var i in this.onNewContextCallbacks) {
-                    this.onNewContextCallbacks[i](context);
-                }
-            };
-            Layer.prototype.pushHistoryEntry = function (url) {
-                url = cmd.Url.create(url);
-                var context = this.getContextByUrl(url);
-                if (context === null) {
-                    throw new Error("Not context with this url found: " + url);
-                }
-                this.currentHistoryIndex = this.historyUrls.length;
-                this.historyUrls.push(context.getUrl());
-                for (var i in this.onNewHistoryEntryCallbacks) {
-                    this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, context);
-                }
-                this.switchToContext(context);
-            };
-            Layer.prototype.go = function (historyIndex, urlExpr) {
-                var url = cmd.Url.create(urlExpr);
-                if (this.historyUrls.length < (historyIndex + 1)) {
-                    throw new Error("Invalid history index: " + historyIndex);
-                }
-                if (this.historyUrls[historyIndex].equals(url)) {
-                    throw new Error("Url missmatch for history index " + historyIndex + ". Url: " + url + " History url: "
-                        + this.historyUrls[historyIndex]);
-                }
-                this.currentHistoryIndex = historyIndex;
-                var context = this.getContextByUrl(this.historyUrls[historyIndex]);
-                if (context === null)
-                    return false;
-                this.switchToContext(context);
-                return true;
-            };
-            Layer.prototype.getHistoryUrlByIndex = function (historyIndex) {
-                if (this.historyUrls.length <= historyIndex)
-                    return null;
-                return this.historyUrls[historyIndex];
-            };
-            Layer.prototype.getContextByUrl = function (urlExpr) {
-                var url = cmd.Url.create(urlExpr);
-                for (var i in this.contexts) {
-                    if (this.contexts[i].getUrl().equals(url)) {
-                        return this.contexts[i];
-                    }
-                }
-                return null;
-            };
-            Layer.prototype.switchToContext = function (context) {
-                for (var i in this.contexts) {
-                    if (this.contexts[i] === context) {
-                        context.show();
-                    }
-                    else {
-                        this.contexts[i].hide();
-                    }
-                }
-            };
-            Layer.prototype.createContext = function (urlExpr) {
-                var url = cmd.Url.create(urlExpr);
-                if (this.getContextByUrl(url)) {
-                    throw new Error("Context with url already available: " + url);
-                }
-                var jqContent = $("<div />");
-                this.jqLayer.append(jqContent);
-                var context = new cmd.Context(jqContent, url, this);
-                this.addContext(context);
-                return context;
-            };
-            Layer.prototype.clear = function () {
-                for (var i in this.contexts) {
-                    this.contexts[i].close();
-                }
-            };
-            Layer.prototype.close = function () {
-                var context;
-                while (undefined !== (context = this.contexts.pop())) {
-                    context.close();
-                }
-                this.contexts = new Array();
-                this.jqLayer.remove();
-            };
-            Layer.prototype.onNewContext = function (onNewContextCallback) {
-                this.onNewContextCallbacks.push(onNewContextCallback);
-            };
-            Layer.prototype.onNewHistoryEntry = function (onNewHistoryEntryCallback) {
-                this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
-            };
-            Layer.findFrom = function (jqElem) {
-                if (!jqElem.hasClass(".rocket-layer")) {
-                    jqElem = jqElem.parents(".rocket-layer");
-                }
-                var layer = jqElem.data("rocketLayer");
-                if (layer === undefined) {
-                    return null;
-                }
-                return layer;
-            };
-            return Layer;
-        }());
-        cmd.Layer = Layer;
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var display = rocket.display;
-        var util = rocket.util;
-        var Context = (function () {
-            function Context(jqContext, url, layer) {
-                this.onShowCallbacks = new Array();
-                this.onHideCallbacks = new Array();
-                this.onCloseCallbacks = new Array();
-                this.whenContentChangedCallbacks = new Array();
-                this.callbackRegistery = new util.CallbackRegistry();
-                this.jqContext = jqContext;
-                this.url = url;
-                this.layer = layer;
-                jqContext.addClass("rocket-context");
-                jqContext.data("rocketContext", this);
-                this.reset();
-                this.hide();
-            }
-            Context.prototype.getLayer = function () {
-                return this.layer;
-            };
-            Context.prototype.getJQuery = function () {
-                return this.jqContext;
-            };
-            Context.prototype.getUrl = function () {
-                return this.url;
-            };
-            Context.prototype.ensureNotClosed = function () {
-                if (this.jqContext !== null)
-                    return;
-                throw new Error("Context already closed.");
-            };
-            Context.prototype.close = function () {
-                var callback;
-                while (undefined !== (callback = this.onCloseCallbacks.shift())) {
-                    callback(this);
-                }
-                this.jqContext.remove();
-                this.jqContext = null;
-            };
-            Context.prototype.show = function () {
-                this.jqContext.show();
-                var callback;
-                while (undefined !== (callback = this.onShowCallbacks.shift())) {
-                    callback(this);
-                }
-            };
-            Context.prototype.hide = function () {
-                this.jqContext.hide();
-                var callback;
-                while (undefined !== (callback = this.onShowCallbacks.shift())) {
-                    callback(this);
-                }
-            };
-            Context.prototype.reset = function () {
-                this.additionalTabManager = new AdditionalTabManager(this);
-                this.menu = new Menu(this);
-            };
-            Context.prototype.clear = function (loading) {
-                if (loading === void 0) { loading = false; }
-                this.jqContext.empty();
-                this.jqContext.addClass("rocket-loading");
-                this.reset();
-            };
-            Context.prototype.applyHtml = function (html) {
-                this.endLoading();
-                this.jqContext.html(html);
-                this.reset();
-            };
-            Context.prototype.isLoading = function () {
-                return this.jqContext.hasClass("rocket-loading");
-            };
-            Context.prototype.endLoading = function () {
-                this.jqContext.removeClass("rocket-loading");
-            };
-            Context.prototype.applyContent = function (jqContent) {
-                this.endLoading();
-                this.jqContext.append(jqContent);
-                this.reset();
-                var context = this;
-                this.callbackRegistery.filter(Context.EventType.CONTENT_CHANGED.toString()).forEach(function (callback) {
-                    callback(context);
-                });
-            };
-            Context.prototype.onShow = function (callback) {
-                this.onShowCallbacks.push(callback);
-            };
-            Context.prototype.onHide = function (callback) {
-                this.onHideCallbacks.push(callback);
-            };
-            Context.prototype.onClose = function (onCloseCallback) {
-                this.onCloseCallbacks.push(onCloseCallback);
-            };
-            Context.prototype.whenContentChanged = function (whenContentChangedCallback) {
-                this.whenContentChangedCallbacks.push(whenContentChangedCallback);
-            };
-            Context.prototype.on = function (eventType, callback) {
-                this.callbackRegistery.register(eventType.toString(), callback);
-            };
-            Context.prototype.off = function (eventType, callback) {
-                this.callbackRegistery.unregister(eventType.toString(), callback);
-            };
-            Context.prototype.createAdditionalTab = function (title, prepend) {
-                if (prepend === void 0) { prepend = false; }
-                return this.additionalTabManager.createTab(title, prepend);
-            };
-            Context.prototype.getMenu = function () {
-                return this.menu;
-            };
-            Context.findFrom = function (jqElem) {
-                if (!jqElem.hasClass(".rocket-context")) {
-                    jqElem = jqElem.parents(".rocket-context");
-                }
-                var context = jqElem.data("rocketContext");
-                if (context)
-                    return context;
-                return null;
-            };
-            return Context;
-        }());
-        cmd.Context = Context;
-        var AdditionalTabManager = (function () {
-            function AdditionalTabManager(context) {
-                this.jqAdditional = null;
-                this.context = context;
-                this.tabs = new Array();
-            }
-            AdditionalTabManager.prototype.createTab = function (title, prepend) {
-                if (prepend === void 0) { prepend = false; }
-                this.setupAdditional();
-                var jqNavItem = $("<li />", {
-                    "text": title
-                });
-                var jqContent = $("<div />", {
-                    "class": "rocket-additional-content"
-                });
-                if (prepend) {
-                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
-                }
-                else {
-                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
-                }
-                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
-                var tab = new AdditionalTab(jqNavItem, jqContent);
-                this.tabs.push(tab);
-                var that = this;
-                tab.onShow(function () {
-                    for (var i in that.tabs) {
-                        if (that.tabs[i] === tab)
-                            continue;
-                        this.tabs[i].hide();
-                    }
-                });
-                tab.onDispose(function () {
-                    that.removeTab(tab);
-                });
-                if (this.tabs.length == 1) {
-                    tab.show();
-                }
-                return tab;
-            };
-            AdditionalTabManager.prototype.removeTab = function (tab) {
-                for (var i in this.tabs) {
-                    if (this.tabs[i] !== tab)
-                        continue;
-                    this.tabs.splice(parseInt(i), 1);
-                    if (this.tabs.length == 0) {
-                        this.setdownAdditional();
-                        return;
-                    }
-                    if (tab.isActive()) {
-                        this.tabs[0].show();
-                    }
-                    return;
-                }
-            };
-            AdditionalTabManager.prototype.setupAdditional = function () {
-                if (this.jqAdditional !== null)
-                    return;
-                var jqContext = this.context.getJQuery();
-                jqContext.addClass("rocket-contains-additional");
-                this.jqAdditional = $("<div />", {
-                    "class": "rocket-additional"
-                });
-                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
-                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
-                jqContext.append(this.jqAdditional);
-            };
-            AdditionalTabManager.prototype.setdownAdditional = function () {
-                if (this.jqAdditional === null)
-                    return;
-                this.context.getJQuery().removeClass("rocket-contains-additional");
-                this.jqAdditional.remove();
-                this.jqAdditional = null;
-            };
-            return AdditionalTabManager;
-        }());
-        var AdditionalTab = (function () {
-            function AdditionalTab(jqNavItem, jqContent) {
-                this.active = false;
-                this.onShowCallbacks = new Array();
-                this.onHideCallbacks = new Array();
-                this.onDisposeCallbacks = new Array();
-                this.jqNavItem = jqNavItem;
-                this.jqContent = jqContent;
-                this.jqNavItem.click(this.show);
-                this.jqContent.hide();
-            }
-            AdditionalTab.prototype.getJqNavItem = function () {
-                return this.jqNavItem;
-            };
-            AdditionalTab.prototype.getJqContent = function () {
-                return this.jqContent;
-            };
-            AdditionalTab.prototype.isActive = function () {
-                return this.active;
-            };
-            AdditionalTab.prototype.show = function () {
-                this.active = true;
-                this.jqNavItem.addClass("rocket-active");
-                this.jqContent.show();
-                for (var i in this.onShowCallbacks) {
-                    this.onShowCallbacks[i](this);
-                }
-            };
-            AdditionalTab.prototype.hide = function () {
-                this.active = false;
-                this.jqContent.hide();
-                this.jqNavItem.removeClass("rocket-active");
-                for (var i in this.onHideCallbacks) {
-                    this.onHideCallbacks[i](this);
-                }
-            };
-            AdditionalTab.prototype.dispose = function () {
-                this.jqNavItem.remove();
-                this.jqContent.remove();
-                for (var i in this.onDisposeCallbacks) {
-                    this.onDisposeCallbacks[i](this);
-                }
-            };
-            AdditionalTab.prototype.onShow = function (callback) {
-                this.onShowCallbacks.push(callback);
-            };
-            AdditionalTab.prototype.onHide = function (callback) {
-                this.onHideCallbacks.push(callback);
-            };
-            AdditionalTab.prototype.onDispose = function (callback) {
-                this.onDisposeCallbacks.push(callback);
-            };
-            return AdditionalTab;
-        }());
-        cmd.AdditionalTab = AdditionalTab;
-        var Menu = (function () {
-            function Menu(context) {
-                this.commandList = null;
-                this.context = context;
-            }
-            Menu.prototype.getCommandList = function () {
-                if (this.commandList !== null) {
-                    return this.commandList;
-                }
-                var jqCommandList = this.context.getJQuery().find(".rocket-context-commands");
-                if (jqCommandList.length == 0) {
-                    jqCommandList = $("<div />", {
-                        "class": "rocket-context-commands"
-                    });
-                    this.context.getJQuery().append(jqCommandList);
-                }
-                return this.commandList = new display.CommandList(jqCommandList);
-            };
-            return Menu;
-        }());
-        cmd.Menu = Menu;
-        var Url = (function () {
-            function Url(urlStr) {
-                this.urlStr = urlStr;
-            }
-            Url.prototype.toString = function () {
-                return this.urlStr;
-            };
-            Url.prototype.equals = function (url) {
-                return this.urlStr == url.urlStr;
-            };
-            Url.create = function (urlExpression) {
-                if (urlExpression instanceof Url) {
-                    return urlExpression;
-                }
-                return new Url(Url.absoluteStr(urlExpression));
-            };
-            Url.absoluteStr = function (urlExpression) {
-                if (urlExpression instanceof Url) {
-                    return urlExpression.toString();
-                }
-                var urlStr = urlExpression;
-                if (!/^(?:\/|[a-z]+:\/\/)/.test(urlStr)) {
-                    return window.location.toString().replace(/\/+$/, "") + "/" + urlStr;
-                }
-                if (!/^(?:[a-z]+:)?\/\//.test(urlStr)) {
-                    return window.location.protocol + "//" + window.location.host + urlStr;
-                }
-                return urlStr;
-            };
-            return Url;
-        }());
-        cmd.Url = Url;
-        var Context;
-        (function (Context) {
-            (function (EventType) {
-                EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
-            })(Context.EventType || (Context.EventType = {}));
-            var EventType = Context.EventType;
-        })(Context = cmd.Context || (cmd.Context = {}));
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
