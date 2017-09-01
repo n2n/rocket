@@ -47,9 +47,6 @@ namespace rocket.impl {
 				return overviewContext;
 			}
 			
-			overviewContext = new OverviewContext(jqElem);
-			jqElem.data("rocketImplOverviewContext", overviewContext);
-			
 			
 			var jqForm = jqElem.children("form");
 			
@@ -68,6 +65,9 @@ namespace rocket.impl {
 			var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
 			fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
 			
+			overviewContext = new OverviewContext(jqElem);
+			jqElem.data("rocketImplOverviewContext", overviewContext);
+			
 			return overviewContext;
 		}
 	}
@@ -80,7 +80,6 @@ namespace rocket.impl {
 		private _numEntries: number;
 		
 		constructor(private jqElem: JQuery, private loadUrl) {
-			
 		}	
 		
 		isInit(): boolean {
@@ -213,22 +212,28 @@ namespace rocket.impl {
 			var page: Page = null;
 			if (pageNo < targetPageNo) {
 				for (var i = pageNo; i <= targetPageNo; i++) {
-					if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded()) return false;
+					if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded()) {
+						return false;
+					}
 					
 					page = this.pages[i];
 					page.visible = true;
 				}
 			} else {
 				for (var i = pageNo; i >= targetPageNo; i--) {
-					if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded() || !this.pages[i].visible) return false;
+					if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded() || !this.pages[i].visible) {
+						return false;
+					}
 					
 					page = this.pages[i];
 				}
 			}
 			
-			$(window).stop().animate({
+			$("html, body").stop().animate({
 				scrollTop: page.jqContents.first().offset().top 
 			}, 500);
+			
+			return true;
 		}	
 		
 		private loadingPageNos: Array<number> = new Array<number>();
@@ -240,7 +245,7 @@ namespace rocket.impl {
 			}
 			
 			if (this.jqLoader === null) {
-				this.jqLoader = $("<div />", { "class": "rocket-loading" })
+				this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
 						.insertAfter(this.jqElem.parent("table"));
 			}
 			
@@ -248,9 +253,11 @@ namespace rocket.impl {
 		}
 		
 		private unmarkPageAsLoading(pageNo: number) {
-			if (-1 < this.loadingPageNos.indexOf(pageNo)) return;
+			var i = this.loadingPageNos.indexOf(pageNo);
 			
-			this.loadingPageNos.slice(pageNo, 1);
+			if (-1 == i) return;
+			
+			this.loadingPageNos.splice(i, 1);
 			
 			if (this.loadingPageNos.length == 0) {
 				this.jqLoader.remove();
@@ -432,7 +439,11 @@ namespace rocket.impl {
 					 $("<button />", {
 						"type": "button",
 						"class": "rocket-impl-pagination-prev rocket-control",
-						"click": function () { that.goTo(that.getCurrentPageNo() - 1) }
+						"click": function () { 
+							if (that.getCurrentPageNo() > 1) {
+								that.goTo(that.getCurrentPageNo() - 1);
+							} 
+						}
 					}).append($("<i />", {
 						"class": "fa fa-chevron-left"	
 					})));
@@ -457,7 +468,11 @@ namespace rocket.impl {
 					$("<button />", {
 						"type": "button",
 						"class": "rocket-impl-pagination-next rocket-control",
-						"click": function () { that.goTo(that.getCurrentPageNo() + 1); }
+						"click": function () { 
+							if (that.getCurrentPageNo() < that.getNumPages()) {
+								that.goTo(that.getCurrentPageNo() + 1);
+							} 
+						}
 					}).append($("<i />", {
 						"class": "fa fa-chevron-right"	
 					})));

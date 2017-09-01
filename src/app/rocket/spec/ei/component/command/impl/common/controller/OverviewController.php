@@ -74,8 +74,8 @@ class OverviewController extends ControllerAdapter {
 		
 		$overView = $listModel->getEiuGui()->createView();
 
-		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
-				$this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
+		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()
+				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
 		$filterAjahHook = FilterFieldController::buildFilterAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
 		

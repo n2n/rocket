@@ -67,14 +67,21 @@ class OverviewAjahController extends ControllerAdapter {
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiMask());
+		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
 		
+		if (!$listModel->initialize(1)) {
+			throw new PageNotFoundException();
+		}
+		
+		$overView = $listModel->getEiuGui()->createView();
 		$eiUtils = new EiuFrame($eiFrame);
 		
 		$this->send(new AjahResponse($this->createView(
-				'..\view\inc\overviewTools.html',
+				'..\view\ajahOverview.html',
 				array('critmodForm' => $critmodForm, 'quickSearchForm' => $quickSearchForm, 
 						'overviewAjahHook' => $overviewAjahHook, 'filterAjahHook' => $filterAjahHook,
-						'label' => $eiUtils->getGenericLabel(), 'pluralLabel' => $eiUtils->getGenericPluralLabel()))));
+						'label' => $eiUtils->getGenericLabel(), 'pluralLabel' => $eiUtils->getGenericPluralLabel(),
+						'listView' => $overView, 'listModel' => $listModel))));
 	}
 	
 	
