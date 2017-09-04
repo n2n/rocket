@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
-use n2n\util\uri\Url;
 
 interface GenericDetailEiCommand {
 	

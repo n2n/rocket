@@ -38,7 +38,7 @@ namespace rocket.impl {
 			this.jqContainer = jqContainer;
 		}
 		
-		private initPageNav() {
+		private initSelector() {
 		}
 		
 		public static from(jqElem: JQuery): OverviewContext {
@@ -72,8 +72,30 @@ namespace rocket.impl {
 		}
 	}
 	
+	interface Selector {
+		
+		registerEntrySelector(jqElem: JQuery);
+		
+		
+	}
+	
+	class MultiSelector implements Selector {
+		
+		
+		registerEntrySelector(jqElem: JQuery) {
+			jqElem.empty();
+			jqElem.append($("<input />", { "type": "checkbox" }));
+		}
+		
+		
+		
+		
+		
+	}
+	
 	class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
+		private selector: Selector;
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
@@ -85,6 +107,7 @@ namespace rocket.impl {
 		isInit(): boolean {
 			return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
 		}
+		
 		
 		initFromDom(currentPageNo: number, numPages: number, numEntries: number) {
 			rocket.util.IllegalStateError.assertTrue(!this.isInit());
@@ -99,8 +122,8 @@ namespace rocket.impl {
 			});
 		}
 		
-		init() {
-			rocket.util.IllegalStateError.assertTrue(!this.isInit());
+		initSelector(idReps: Array<string>) {
+			rocket.util.IllegalStateError.assertTrue(this.isInit());
 			this.goTo(1);
 		}
 		
@@ -302,6 +325,16 @@ namespace rocket.impl {
 		}
 		
 		public onNewPage() {
+		}
+	}	
+	
+	class Entry {
+		
+		constructor (private _idRep: string, public identityString: string) {
+		}
+		
+		get idRep(): string {
+			return this._idRep;
 		}
 	}
 	
