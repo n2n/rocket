@@ -19,7 +19,7 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  * 
  */
-namespace rocket.impl {
+namespace rocket.impl.overview {
 	import cmd = rocket.cmd;
 	
 	var $ = jQuery;
@@ -38,8 +38,11 @@ namespace rocket.impl {
 			this.jqContainer = jqContainer;
 		}
 		
-		private initSelector() {
+		private initSelector(selector: Selector) {
+			
 		}
+		
+		
 		
 		public static from(jqElem: JQuery): OverviewContext {
 			var overviewContext: OverviewContext = jqElem.data("rocketImplOverviewContext");
@@ -74,24 +77,56 @@ namespace rocket.impl {
 	
 	interface Selector {
 		
-		registerEntrySelector(jqElem: JQuery);
+		registerEntrySelector(jqElem: JQuery, idRep: string, identityString: string);
 		
+		getSelectedIdReps(): Array<string>;
 		
 	}
 	
 	class MultiSelector implements Selector {
+		private selectedIdReps: Array<string>;
 		
-		
-		registerEntrySelector(jqElem: JQuery) {
-			jqElem.empty();
-			jqElem.append($("<input />", { "type": "checkbox" }));
+		constructor(private loadUrl: string, private originalIdReps: Array<string>) {
+			this.selectedIdReps = originalIdReps;
 		}
 		
+		registerEntrySelector(jqElem: JQuery, idRep: string, identityString: string) {
+			var jqCheck = $("<input />", { "type": "checkbox" });
+			if (-1 < this.originalIdReps.indexOf(idRep)) {
+				jqCheck.prop("checked", true);
+			}
+			
+			var that;
+			jqCheck.click(function () {
+				that.chSelect(jqCheck.is(":checked"), idRep);
+			})
+			
+			jqElem.empty();
+			jqElem.append(jqCheck);
+		}
 		
+		private chSelect(selected: boolean, idRep: string) {
+			if (selected) {
+				if (-1 < this.selectedIdReps.indexOf(idRep)) return;
+				
+				this.selectedIdReps.push(idRep);
+				return;
+			}
+			
+			var i;
+			if (-1 < (i = this.selectedIdReps.indexOf(idRep))) {
+				this.selectedIdReps.splice(i, 1);
+			}
+		}
 		
-		
-		
+		getSelectedIdReps(): Array<string> {
+			return this.selectedIdReps;
+		}
 	}
+	
+	
+	
+	
 	
 	class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
@@ -122,9 +157,17 @@ namespace rocket.impl {
 			});
 		}
 		
-		initSelector(idReps: Array<string>) {
-			rocket.util.IllegalStateError.assertTrue(this.isInit());
-			this.goTo(1);
+		initSelector(selector: Selector) {
+			
+		}
+		
+		
+		private showSelected() {
+			
+		}
+		
+		private showAll() {
+			
 		}
 		
 		get currentPageNo(): number {

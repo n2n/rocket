@@ -2283,6 +2283,38 @@ var rocket;
         var Severity = display.Severity;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
+        var Entry = (function () {
+            function Entry(jqElem) {
+                this.jqElem = jqElem;
+            }
+            Object.defineProperty(Entry.prototype, "jqQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Entry.findFrom = function (jqElem) {
+                var jqElem = jqElem.closest(".rocket-entry");
+                if (jqElem.length == 0)
+                    return null;
+                var entry = jqElem.data("rocketEntry");
+                if (entry instanceof Entry) {
+                    return entry;
+                }
+                entry = new Entry(jqElem);
+                jqElem.data("rocketEntry", entry);
+                return entry;
+            };
+            return Entry;
+        }());
+        display.Entry = Entry;
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -2308,478 +2340,532 @@ var rocket;
 (function (rocket) {
     var impl;
     (function (impl) {
-        var cmd = rocket.cmd;
-        var $ = jQuery;
-        var OverviewContext = (function () {
-            function OverviewContext(jqContainer) {
-                this.jqContainer = jqContainer;
-            }
-            OverviewContext.prototype.initPageNav = function () {
-            };
-            OverviewContext.from = function (jqElem) {
-                var overviewContext = jqElem.data("rocketImplOverviewContext");
-                if (overviewContext instanceof OverviewContext) {
+        var overview;
+        (function (overview) {
+            var cmd = rocket.cmd;
+            var $ = jQuery;
+            var OverviewContext = (function () {
+                function OverviewContext(jqContainer) {
+                    this.jqContainer = jqContainer;
+                }
+                OverviewContext.prototype.initSelector = function (selector) {
+                };
+                OverviewContext.from = function (jqElem) {
+                    var overviewContext = jqElem.data("rocketImplOverviewContext");
+                    if (overviewContext instanceof OverviewContext) {
+                        return overviewContext;
+                    }
+                    var jqForm = jqElem.children("form");
+                    var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
+                    new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
+                        .init(overviewContent);
+                    overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
+                    var pagination = new Pagination(overviewContent);
+                    pagination.draw(jqForm.children(".rocket-context-commands"));
+                    var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
+                    fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
+                    overviewContext = new OverviewContext(jqElem);
+                    jqElem.data("rocketImplOverviewContext", overviewContext);
                     return overviewContext;
+                };
+                return OverviewContext;
+            }());
+            overview.OverviewContext = OverviewContext;
+            var MultiSelector = (function () {
+                function MultiSelector(loadUrl, originalIdReps) {
+                    this.loadUrl = loadUrl;
+                    this.originalIdReps = originalIdReps;
+                    this.selectedIdReps = originalIdReps;
                 }
-                var jqForm = jqElem.children("form");
-                var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
-                new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
-                    .init(overviewContent);
-                overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
-                var pagination = new Pagination(overviewContent);
-                pagination.draw(jqForm.children(".rocket-context-commands"));
-                var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
-                fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
-                overviewContext = new OverviewContext(jqElem);
-                jqElem.data("rocketImplOverviewContext", overviewContext);
-                return overviewContext;
-            };
-            return OverviewContext;
-        }());
-        impl.OverviewContext = OverviewContext;
-        var OverviewContent = (function () {
-            function OverviewContent(jqElem, loadUrl) {
-                this.jqElem = jqElem;
-                this.loadUrl = loadUrl;
-                this.pages = new Array();
-                this.changedCallbacks = new Array();
-                this._currentPageNo = null;
-                this.loadingPageNos = new Array();
-                this.jqLoader = null;
-            }
-            OverviewContent.prototype.isInit = function () {
-                return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
-            };
-            OverviewContent.prototype.initFromDom = function (currentPageNo, numPages, numEntries) {
-                rocket.util.IllegalStateError.assertTrue(!this.isInit());
-                this._currentPageNo = currentPageNo;
-                this._numPages = numPages;
-                this._numEntries = numEntries;
-                this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
-                var that = this;
-                this.changedCallbacks.forEach(function (callback) {
-                    callback(that);
-                });
-            };
-            OverviewContent.prototype.init = function () {
-                rocket.util.IllegalStateError.assertTrue(!this.isInit());
-                this.goTo(1);
-            };
-            Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
-                get: function () {
-                    return this._currentPageNo;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(OverviewContent.prototype, "numPages", {
-                get: function () {
-                    return this._numPages;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(OverviewContent.prototype, "numEntries", {
-                get: function () {
-                    return this._numEntries;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            OverviewContent.prototype.setCurrentPageNo = function (currentPageNo) {
-                if (this._currentPageNo == currentPageNo) {
-                    return;
-                }
-                this._currentPageNo = currentPageNo;
-                var that = this;
-                this.changedCallbacks.forEach(function (callback) {
-                    callback(that);
-                });
-            };
-            OverviewContent.prototype.changeBoundaries = function (numPages, numEntries) {
-                if (this._numPages == numPages && this._numEntries == numEntries) {
-                    return;
-                }
-                this._numPages = numPages;
-                this._numEntries = numEntries;
-                if (this.currentPageNo > this.numPages) {
-                    this.goTo(this.numPages);
-                    return;
-                }
-                var that = this;
-                this.changedCallbacks.forEach(function (callback) {
-                    callback(that);
-                });
-            };
-            OverviewContent.prototype.whenChanged = function (callback) {
-                this.changedCallbacks.push(callback);
-            };
-            OverviewContent.prototype.isPageNoValid = function (pageNo) {
-                return (pageNo > 0 && pageNo <= this.numPages);
-            };
-            OverviewContent.prototype.containsPageNo = function (pageNo) {
-                return this.pages[pageNo] !== undefined;
-            };
-            OverviewContent.prototype.applyContents = function (page, jqContents) {
-                if (page.jqContents !== null) {
-                    throw new Error("Contents already applied.");
-                }
-                page.jqContents = jqContents;
-                for (var pni = page.pageNo - 1; pni > 0; pni--) {
-                    if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded())
-                        continue;
-                    jqContents.insertAfter(this.pages[pni].jqContents.last());
-                    return;
-                }
-                this.jqElem.prepend(jqContents);
-            };
-            OverviewContent.prototype.goTo = function (pageNo) {
-                if (!this.isPageNoValid(pageNo)) {
-                    throw new Error("Invalid pageNo: " + pageNo);
-                }
-                if (pageNo === this.currentPageNo) {
-                    return;
-                }
-                if (this.pages[pageNo] === undefined) {
-                    this.showSingle(pageNo);
-                    this.load(pageNo);
-                    this.setCurrentPageNo(pageNo);
-                    return;
-                }
-                if (this.scrollToPage(this.currentPageNo, pageNo)) {
-                    this.setCurrentPageNo(pageNo);
-                    return;
-                }
-                this.showSingle(pageNo);
-                this.setCurrentPageNo(pageNo);
-            };
-            OverviewContent.prototype.showSingle = function (pageNo) {
-                for (var i in this.pages) {
-                    this.pages[i].visible = (this.pages[i].pageNo == pageNo);
-                }
-            };
-            OverviewContent.prototype.scrollToPage = function (pageNo, targetPageNo) {
-                var page = null;
-                if (pageNo < targetPageNo) {
-                    for (var i = pageNo; i <= targetPageNo; i++) {
-                        if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded()) {
-                            return false;
-                        }
-                        page = this.pages[i];
-                        page.visible = true;
+                MultiSelector.prototype.registerEntrySelector = function (jqElem, idRep, identityString) {
+                    var jqCheck = $("<input />", { "type": "checkbox" });
+                    if (-1 < this.originalIdReps.indexOf(idRep)) {
+                        jqCheck.prop("checked", true);
                     }
-                }
-                else {
-                    for (var i = pageNo; i >= targetPageNo; i--) {
-                        if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded() || !this.pages[i].visible) {
-                            return false;
-                        }
-                        page = this.pages[i];
+                    var that;
+                    jqCheck.click(function () {
+                        that.chSelect(jqCheck.is(":checked"), idRep);
+                    });
+                    jqElem.empty();
+                    jqElem.append(jqCheck);
+                };
+                MultiSelector.prototype.chSelect = function (selected, idRep) {
+                    if (selected) {
+                        if (-1 < this.selectedIdReps.indexOf(idRep))
+                            return;
+                        this.selectedIdReps.push(idRep);
+                        return;
                     }
-                }
-                $("html, body").stop().animate({
-                    scrollTop: page.jqContents.first().offset().top
-                }, 500);
-                return true;
-            };
-            OverviewContent.prototype.markPageAsLoading = function (pageNo) {
-                if (-1 < this.loadingPageNos.indexOf(pageNo)) {
-                    throw new Error("page already loading");
-                }
-                if (this.jqLoader === null) {
-                    this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
-                        .insertAfter(this.jqElem.parent("table"));
-                }
-                this.loadingPageNos.push(pageNo);
-            };
-            OverviewContent.prototype.unmarkPageAsLoading = function (pageNo) {
-                var i = this.loadingPageNos.indexOf(pageNo);
-                if (-1 == i)
-                    return;
-                this.loadingPageNos.splice(i, 1);
-                if (this.loadingPageNos.length == 0) {
-                    this.jqLoader.remove();
+                    var i;
+                    if (-1 < (i = this.selectedIdReps.indexOf(idRep))) {
+                        this.selectedIdReps.splice(i, 1);
+                    }
+                };
+                MultiSelector.prototype.getSelectedIdReps = function () {
+                    return this.selectedIdReps;
+                };
+                return MultiSelector;
+            }());
+            var OverviewContent = (function () {
+                function OverviewContent(jqElem, loadUrl) {
+                    this.jqElem = jqElem;
+                    this.loadUrl = loadUrl;
+                    this.pages = new Array();
+                    this.changedCallbacks = new Array();
+                    this._currentPageNo = null;
+                    this.loadingPageNos = new Array();
                     this.jqLoader = null;
                 }
-            };
-            OverviewContent.prototype.createPage = function (pageNo) {
-                if (this.containsPageNo(pageNo)) {
-                    throw new Error();
-                }
-                return this.pages[pageNo] = new Page(pageNo);
-            };
-            OverviewContent.prototype.load = function (pageNo) {
-                var page = this.createPage(pageNo);
-                this.markPageAsLoading(pageNo);
-                var that = this;
-                $.ajax({
-                    "url": that.loadUrl,
-                    "data": { "pageNo": pageNo },
-                    "dataType": "json"
-                }).fail(function (jqXHR, textStatus, data) {
-                    that.unmarkPageAsLoading(pageNo);
-                    if (jqXHR.status != 200) {
-                        rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
-                        return;
-                    }
-                    throw new Error("invalid response");
-                }).done(function (data, textStatus, jqXHR) {
-                    that.unmarkPageAsLoading(pageNo);
-                    that.changeBoundaries(data.additional.numPages, data.additional.numEntries);
-                    var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
-                    that.applyContents(page, jqContents);
-                    n2n.ajah.update();
-                });
-            };
-            OverviewContent.prototype.onNewPage = function () {
-            };
-            return OverviewContent;
-        }());
-        var Page = (function () {
-            function Page(pageNo, _jqContents) {
-                if (_jqContents === void 0) { _jqContents = null; }
-                this.pageNo = pageNo;
-                this._jqContents = _jqContents;
-                this._visible = true;
-            }
-            Object.defineProperty(Page.prototype, "visible", {
-                get: function () {
-                    return this._visible;
-                },
-                set: function (visible) {
-                    this._visible = visible;
-                    this.disp();
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Page.prototype.isContentLoaded = function () {
-                return this.jqContents !== null;
-            };
-            Object.defineProperty(Page.prototype, "jqContents", {
-                get: function () {
-                    return this._jqContents;
-                },
-                set: function (jqContents) {
-                    this._jqContents = jqContents;
-                    this.disp();
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Page.prototype.disp = function () {
-                if (this._jqContents === null)
-                    return;
-                if (this._visible) {
-                    this._jqContents.show();
-                }
-                else {
-                    this._jqContents.hide();
-                }
-            };
-            return Page;
-        }());
-        var ContextUpdater = (function () {
-            function ContextUpdater(context, overviewBaseUrl) {
-                this.context = context;
-                this.overviewBaseUrl = overviewBaseUrl;
-                this.lastCurrentPageNo = null;
-                this.pageUrls = new Array();
-                var that = this;
-                this.context.on(cmd.Context.EventType.ACTIVE_URL_CHANGED, function () {
-                    that.contextUpdated();
-                });
-            }
-            ContextUpdater.prototype.init = function (overviewContent) {
-                this.overviewContent = overviewContent;
-                var that = this;
-                overviewContent.whenChanged(function () {
-                    that.contentUpdated();
-                });
-            };
-            ContextUpdater.prototype.contextUpdated = function () {
-                var newActiveUrl = this.context.activeUrl;
-                for (var i in this.pageUrls) {
-                    if (!this.pageUrls[i].equals(newActiveUrl))
-                        continue;
-                    this.overviewContent.currentPageNo = (parseInt(i) + 1);
-                    return;
-                }
-            };
-            ContextUpdater.prototype.contentUpdated = function () {
-                var newCurPageNo = this.overviewContent.currentPageNo;
-                var newNumPages = this.overviewContent.numPages;
-                if (this.pageUrls.length < newNumPages) {
-                    for (var pageNo = this.pageUrls.length + 1; pageNo <= newNumPages; pageNo++) {
-                        var pageUrl = this.overviewBaseUrl.extR(pageNo > 1 ? pageNo.toString() : null);
-                        this.pageUrls[pageNo - 1] = pageUrl;
-                        this.context.registerUrl(pageUrl);
-                    }
-                }
-                else if (this.pageUrls.length > newNumPages) {
-                    for (var pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
-                        this.context.unregisterUrl(this.pageUrls.pop());
-                    }
-                }
-                var newActiveUrl = this.pageUrls[newCurPageNo - 1];
-                if (!this.context.activeUrl.equals(newActiveUrl)) {
-                    this.context.getLayer().pushHistoryEntry(newActiveUrl);
-                }
-            };
-            return ContextUpdater;
-        }());
-        var Pagination = (function () {
-            function Pagination(overviewContent) {
-                this.overviewContent = overviewContent;
-            }
-            Pagination.prototype.getCurrentPageNo = function () {
-                return this.overviewContent.currentPageNo;
-            };
-            Pagination.prototype.getNumPages = function () {
-                return this.overviewContent.numPages;
-            };
-            Pagination.prototype.goTo = function (pageNo) {
-                this.overviewContent.goTo(pageNo);
-                return;
-            };
-            Pagination.prototype.draw = function (jqContainer) {
-                var that = this;
-                this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
-                jqContainer.append(this.jqPagination);
-                this.jqPagination.append($("<button />", {
-                    "type": "button",
-                    "class": "rocket-impl-pagination-first rocket-control",
-                    "click": function () { that.goTo(1); }
-                }).append($("<i />", {
-                    "class": "fa fa-step-backward"
-                })));
-                this.jqPagination.append($("<button />", {
-                    "type": "button",
-                    "class": "rocket-impl-pagination-prev rocket-control",
-                    "click": function () {
-                        if (that.getCurrentPageNo() > 1) {
-                            that.goTo(that.getCurrentPageNo() - 1);
-                        }
-                    }
-                }).append($("<i />", {
-                    "class": "fa fa-chevron-left"
-                })));
-                this.jqInput = $("<input />", {
-                    "class": "rocket-impl-pagination-no",
-                    "type": "text",
-                    "value": this.getCurrentPageNo()
-                }).on("change", function () {
-                    var pageNo = parseInt(that.jqInput.val());
-                    if (pageNo === NaN || !that.overviewContent.isPageNoValid(pageNo)) {
-                        that.jqInput.val(that.overviewContent.currentPageNo);
-                        return;
-                    }
-                    that.jqInput.val(pageNo);
-                    that.overviewContent.goTo(pageNo);
-                });
-                this.jqPagination.append(this.jqInput);
-                this.jqPagination.append($("<button />", {
-                    "type": "button",
-                    "class": "rocket-impl-pagination-next rocket-control",
-                    "click": function () {
-                        if (that.getCurrentPageNo() < that.getNumPages()) {
-                            that.goTo(that.getCurrentPageNo() + 1);
-                        }
-                    }
-                }).append($("<i />", {
-                    "class": "fa fa-chevron-right"
-                })));
-                this.jqPagination.append($("<button />", {
-                    "type": "button",
-                    "class": "rocket-impl-pagination-last rocket-control",
-                    "click": function () { that.goTo(that.getNumPages()); }
-                }).append($("<i />", {
-                    "class": "fa fa-step-forward"
-                })));
-                this.overviewContent.whenChanged(function () {
-                    that.jqInput.val(that.overviewContent.currentPageNo);
-                });
-            };
-            return Pagination;
-        }());
-        var FixedHeader = (function () {
-            function FixedHeader(numEntries) {
-                this.fixed = false;
-                this.numEntries = numEntries;
-            }
-            FixedHeader.prototype.getNumEntries = function () {
-                return this.numEntries;
-            };
-            FixedHeader.prototype.draw = function (jqHeader, jqTable) {
-                this.jqHeader = jqHeader;
-                this.jqTable = jqTable;
-                this.cloneTableHeader();
-                var that = this;
-                $(window).scroll(function () {
-                    that.scrolled();
-                });
-                //			var headerOffset = this.jqHeader.offset().top;
-                //			var headerHeight = this.jqHeader.height();
-                //			var headerWidth = this.jqHeader.width();
-                //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
-                //			this.jqHeader.parent().css("padding-top", headerHeight);
-                this.calcDimensions();
-                $(window).resize(function () {
-                    that.calcDimensions();
-                });
-            };
-            FixedHeader.prototype.calcDimensions = function () {
-                this.jqHeader.parent().css("padding-top", null);
-                this.jqHeader.css("position", "relative");
-                var headerOffset = this.jqHeader.offset();
-                this.fixedCssAttrs = {
-                    "position": "fixed",
-                    "top": $("#rocket-content-container").offset().top,
-                    "left": headerOffset.left,
-                    "right": $(window).width() - (headerOffset.left + this.jqHeader.outerWidth())
+                OverviewContent.prototype.isInit = function () {
+                    return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
                 };
-                this.scrolled();
-            };
-            FixedHeader.prototype.scrolled = function () {
-                var headerHeight = this.jqHeader.children().outerHeight();
-                if (this.jqTable.offset().top - $(window).scrollTop() <= this.fixedCssAttrs.top + headerHeight) {
-                    if (this.fixed)
-                        return;
-                    this.fixed = true;
-                    this.jqHeader.css(this.fixedCssAttrs);
-                    this.jqHeader.parent().css("padding-top", headerHeight);
-                    this.jqTableClone.show();
-                }
-                else {
-                    if (!this.fixed)
-                        return;
-                    this.fixed = false;
-                    this.jqHeader.css({
-                        "position": "relative",
-                        "top": "",
-                        "left": "",
-                        "right": ""
+                OverviewContent.prototype.initFromDom = function (currentPageNo, numPages, numEntries) {
+                    rocket.util.IllegalStateError.assertTrue(!this.isInit());
+                    this._currentPageNo = currentPageNo;
+                    this._numPages = numPages;
+                    this._numEntries = numEntries;
+                    this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
+                    var that = this;
+                    this.changedCallbacks.forEach(function (callback) {
+                        callback(that);
                     });
-                    this.jqHeader.parent().css("padding-top", "");
-                    this.jqTableClone.hide();
-                }
-            };
-            FixedHeader.prototype.cloneTableHeader = function () {
-                this.jqTableClone = this.jqTable.clone();
-                this.jqTableClone.css("margin-bottom", 0);
-                this.jqTableClone.children("tbody").remove();
-                this.jqHeader.append(this.jqTableClone);
-                this.jqTableClone.hide();
-                var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
-                this.jqTable.children("thead").children("tr").children().each(function (index) {
-                    jqClonedChildren.eq(index).innerWidth($(this).innerWidth());
-                    //				jqClonedChildren.css({
-                    //					"boxSizing": "border-box"	
-                    //				});
+                };
+                OverviewContent.prototype.initSelector = function (selector) {
+                };
+                OverviewContent.prototype.showSelected = function () {
+                };
+                OverviewContent.prototype.showAll = function () {
+                };
+                Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
+                    get: function () {
+                        return this._currentPageNo;
+                    },
+                    enumerable: true,
+                    configurable: true
                 });
-                //			this.jqTable.children("thead").hide();
-            };
-            return FixedHeader;
-        }());
+                Object.defineProperty(OverviewContent.prototype, "numPages", {
+                    get: function () {
+                        return this._numPages;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OverviewContent.prototype, "numEntries", {
+                    get: function () {
+                        return this._numEntries;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                OverviewContent.prototype.setCurrentPageNo = function (currentPageNo) {
+                    if (this._currentPageNo == currentPageNo) {
+                        return;
+                    }
+                    this._currentPageNo = currentPageNo;
+                    var that = this;
+                    this.changedCallbacks.forEach(function (callback) {
+                        callback(that);
+                    });
+                };
+                OverviewContent.prototype.changeBoundaries = function (numPages, numEntries) {
+                    if (this._numPages == numPages && this._numEntries == numEntries) {
+                        return;
+                    }
+                    this._numPages = numPages;
+                    this._numEntries = numEntries;
+                    if (this.currentPageNo > this.numPages) {
+                        this.goTo(this.numPages);
+                        return;
+                    }
+                    var that = this;
+                    this.changedCallbacks.forEach(function (callback) {
+                        callback(that);
+                    });
+                };
+                OverviewContent.prototype.whenChanged = function (callback) {
+                    this.changedCallbacks.push(callback);
+                };
+                OverviewContent.prototype.isPageNoValid = function (pageNo) {
+                    return (pageNo > 0 && pageNo <= this.numPages);
+                };
+                OverviewContent.prototype.containsPageNo = function (pageNo) {
+                    return this.pages[pageNo] !== undefined;
+                };
+                OverviewContent.prototype.applyContents = function (page, jqContents) {
+                    if (page.jqContents !== null) {
+                        throw new Error("Contents already applied.");
+                    }
+                    page.jqContents = jqContents;
+                    for (var pni = page.pageNo - 1; pni > 0; pni--) {
+                        if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded())
+                            continue;
+                        jqContents.insertAfter(this.pages[pni].jqContents.last());
+                        return;
+                    }
+                    this.jqElem.prepend(jqContents);
+                };
+                OverviewContent.prototype.goTo = function (pageNo) {
+                    if (!this.isPageNoValid(pageNo)) {
+                        throw new Error("Invalid pageNo: " + pageNo);
+                    }
+                    if (pageNo === this.currentPageNo) {
+                        return;
+                    }
+                    if (this.pages[pageNo] === undefined) {
+                        this.showSingle(pageNo);
+                        this.load(pageNo);
+                        this.setCurrentPageNo(pageNo);
+                        return;
+                    }
+                    if (this.scrollToPage(this.currentPageNo, pageNo)) {
+                        this.setCurrentPageNo(pageNo);
+                        return;
+                    }
+                    this.showSingle(pageNo);
+                    this.setCurrentPageNo(pageNo);
+                };
+                OverviewContent.prototype.showSingle = function (pageNo) {
+                    for (var i in this.pages) {
+                        this.pages[i].visible = (this.pages[i].pageNo == pageNo);
+                    }
+                };
+                OverviewContent.prototype.scrollToPage = function (pageNo, targetPageNo) {
+                    var page = null;
+                    if (pageNo < targetPageNo) {
+                        for (var i = pageNo; i <= targetPageNo; i++) {
+                            if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded()) {
+                                return false;
+                            }
+                            page = this.pages[i];
+                            page.visible = true;
+                        }
+                    }
+                    else {
+                        for (var i = pageNo; i >= targetPageNo; i--) {
+                            if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded() || !this.pages[i].visible) {
+                                return false;
+                            }
+                            page = this.pages[i];
+                        }
+                    }
+                    $("html, body").stop().animate({
+                        scrollTop: page.jqContents.first().offset().top
+                    }, 500);
+                    return true;
+                };
+                OverviewContent.prototype.markPageAsLoading = function (pageNo) {
+                    if (-1 < this.loadingPageNos.indexOf(pageNo)) {
+                        throw new Error("page already loading");
+                    }
+                    if (this.jqLoader === null) {
+                        this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
+                            .insertAfter(this.jqElem.parent("table"));
+                    }
+                    this.loadingPageNos.push(pageNo);
+                };
+                OverviewContent.prototype.unmarkPageAsLoading = function (pageNo) {
+                    var i = this.loadingPageNos.indexOf(pageNo);
+                    if (-1 == i)
+                        return;
+                    this.loadingPageNos.splice(i, 1);
+                    if (this.loadingPageNos.length == 0) {
+                        this.jqLoader.remove();
+                        this.jqLoader = null;
+                    }
+                };
+                OverviewContent.prototype.createPage = function (pageNo) {
+                    if (this.containsPageNo(pageNo)) {
+                        throw new Error();
+                    }
+                    return this.pages[pageNo] = new Page(pageNo);
+                };
+                OverviewContent.prototype.load = function (pageNo) {
+                    var page = this.createPage(pageNo);
+                    this.markPageAsLoading(pageNo);
+                    var that = this;
+                    $.ajax({
+                        "url": that.loadUrl,
+                        "data": { "pageNo": pageNo },
+                        "dataType": "json"
+                    }).fail(function (jqXHR, textStatus, data) {
+                        that.unmarkPageAsLoading(pageNo);
+                        if (jqXHR.status != 200) {
+                            rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                            return;
+                        }
+                        throw new Error("invalid response");
+                    }).done(function (data, textStatus, jqXHR) {
+                        that.unmarkPageAsLoading(pageNo);
+                        that.changeBoundaries(data.additional.numPages, data.additional.numEntries);
+                        var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
+                        that.applyContents(page, jqContents);
+                        n2n.ajah.update();
+                    });
+                };
+                OverviewContent.prototype.onNewPage = function () {
+                };
+                return OverviewContent;
+            }());
+            var Entry = (function () {
+                function Entry(_idRep, identityString) {
+                    this._idRep = _idRep;
+                    this.identityString = identityString;
+                }
+                Object.defineProperty(Entry.prototype, "idRep", {
+                    get: function () {
+                        return this._idRep;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Entry;
+            }());
+            var Page = (function () {
+                function Page(pageNo, _jqContents) {
+                    if (_jqContents === void 0) { _jqContents = null; }
+                    this.pageNo = pageNo;
+                    this._jqContents = _jqContents;
+                    this._visible = true;
+                }
+                Object.defineProperty(Page.prototype, "visible", {
+                    get: function () {
+                        return this._visible;
+                    },
+                    set: function (visible) {
+                        this._visible = visible;
+                        this.disp();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Page.prototype.isContentLoaded = function () {
+                    return this.jqContents !== null;
+                };
+                Object.defineProperty(Page.prototype, "jqContents", {
+                    get: function () {
+                        return this._jqContents;
+                    },
+                    set: function (jqContents) {
+                        this._jqContents = jqContents;
+                        this.disp();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Page.prototype.disp = function () {
+                    if (this._jqContents === null)
+                        return;
+                    if (this._visible) {
+                        this._jqContents.show();
+                    }
+                    else {
+                        this._jqContents.hide();
+                    }
+                };
+                return Page;
+            }());
+            var ContextUpdater = (function () {
+                function ContextUpdater(context, overviewBaseUrl) {
+                    this.context = context;
+                    this.overviewBaseUrl = overviewBaseUrl;
+                    this.lastCurrentPageNo = null;
+                    this.pageUrls = new Array();
+                    var that = this;
+                    this.context.on(cmd.Context.EventType.ACTIVE_URL_CHANGED, function () {
+                        that.contextUpdated();
+                    });
+                }
+                ContextUpdater.prototype.init = function (overviewContent) {
+                    this.overviewContent = overviewContent;
+                    var that = this;
+                    overviewContent.whenChanged(function () {
+                        that.contentUpdated();
+                    });
+                };
+                ContextUpdater.prototype.contextUpdated = function () {
+                    var newActiveUrl = this.context.activeUrl;
+                    for (var i in this.pageUrls) {
+                        if (!this.pageUrls[i].equals(newActiveUrl))
+                            continue;
+                        this.overviewContent.currentPageNo = (parseInt(i) + 1);
+                        return;
+                    }
+                };
+                ContextUpdater.prototype.contentUpdated = function () {
+                    var newCurPageNo = this.overviewContent.currentPageNo;
+                    var newNumPages = this.overviewContent.numPages;
+                    if (this.pageUrls.length < newNumPages) {
+                        for (var pageNo = this.pageUrls.length + 1; pageNo <= newNumPages; pageNo++) {
+                            var pageUrl = this.overviewBaseUrl.extR(pageNo > 1 ? pageNo.toString() : null);
+                            this.pageUrls[pageNo - 1] = pageUrl;
+                            this.context.registerUrl(pageUrl);
+                        }
+                    }
+                    else if (this.pageUrls.length > newNumPages) {
+                        for (var pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
+                            this.context.unregisterUrl(this.pageUrls.pop());
+                        }
+                    }
+                    var newActiveUrl = this.pageUrls[newCurPageNo - 1];
+                    if (!this.context.activeUrl.equals(newActiveUrl)) {
+                        this.context.getLayer().pushHistoryEntry(newActiveUrl);
+                    }
+                };
+                return ContextUpdater;
+            }());
+            var Pagination = (function () {
+                function Pagination(overviewContent) {
+                    this.overviewContent = overviewContent;
+                }
+                Pagination.prototype.getCurrentPageNo = function () {
+                    return this.overviewContent.currentPageNo;
+                };
+                Pagination.prototype.getNumPages = function () {
+                    return this.overviewContent.numPages;
+                };
+                Pagination.prototype.goTo = function (pageNo) {
+                    this.overviewContent.goTo(pageNo);
+                    return;
+                };
+                Pagination.prototype.draw = function (jqContainer) {
+                    var that = this;
+                    this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
+                    jqContainer.append(this.jqPagination);
+                    this.jqPagination.append($("<button />", {
+                        "type": "button",
+                        "class": "rocket-impl-pagination-first rocket-control",
+                        "click": function () { that.goTo(1); }
+                    }).append($("<i />", {
+                        "class": "fa fa-step-backward"
+                    })));
+                    this.jqPagination.append($("<button />", {
+                        "type": "button",
+                        "class": "rocket-impl-pagination-prev rocket-control",
+                        "click": function () {
+                            if (that.getCurrentPageNo() > 1) {
+                                that.goTo(that.getCurrentPageNo() - 1);
+                            }
+                        }
+                    }).append($("<i />", {
+                        "class": "fa fa-chevron-left"
+                    })));
+                    this.jqInput = $("<input />", {
+                        "class": "rocket-impl-pagination-no",
+                        "type": "text",
+                        "value": this.getCurrentPageNo()
+                    }).on("change", function () {
+                        var pageNo = parseInt(that.jqInput.val());
+                        if (pageNo === NaN || !that.overviewContent.isPageNoValid(pageNo)) {
+                            that.jqInput.val(that.overviewContent.currentPageNo);
+                            return;
+                        }
+                        that.jqInput.val(pageNo);
+                        that.overviewContent.goTo(pageNo);
+                    });
+                    this.jqPagination.append(this.jqInput);
+                    this.jqPagination.append($("<button />", {
+                        "type": "button",
+                        "class": "rocket-impl-pagination-next rocket-control",
+                        "click": function () {
+                            if (that.getCurrentPageNo() < that.getNumPages()) {
+                                that.goTo(that.getCurrentPageNo() + 1);
+                            }
+                        }
+                    }).append($("<i />", {
+                        "class": "fa fa-chevron-right"
+                    })));
+                    this.jqPagination.append($("<button />", {
+                        "type": "button",
+                        "class": "rocket-impl-pagination-last rocket-control",
+                        "click": function () { that.goTo(that.getNumPages()); }
+                    }).append($("<i />", {
+                        "class": "fa fa-step-forward"
+                    })));
+                    this.overviewContent.whenChanged(function () {
+                        that.jqInput.val(that.overviewContent.currentPageNo);
+                    });
+                };
+                return Pagination;
+            }());
+            var FixedHeader = (function () {
+                function FixedHeader(numEntries) {
+                    this.fixed = false;
+                    this.numEntries = numEntries;
+                }
+                FixedHeader.prototype.getNumEntries = function () {
+                    return this.numEntries;
+                };
+                FixedHeader.prototype.draw = function (jqHeader, jqTable) {
+                    this.jqHeader = jqHeader;
+                    this.jqTable = jqTable;
+                    this.cloneTableHeader();
+                    var that = this;
+                    $(window).scroll(function () {
+                        that.scrolled();
+                    });
+                    //			var headerOffset = this.jqHeader.offset().top;
+                    //			var headerHeight = this.jqHeader.height();
+                    //			var headerWidth = this.jqHeader.width();
+                    //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
+                    //			this.jqHeader.parent().css("padding-top", headerHeight);
+                    this.calcDimensions();
+                    $(window).resize(function () {
+                        that.calcDimensions();
+                    });
+                };
+                FixedHeader.prototype.calcDimensions = function () {
+                    this.jqHeader.parent().css("padding-top", null);
+                    this.jqHeader.css("position", "relative");
+                    var headerOffset = this.jqHeader.offset();
+                    this.fixedCssAttrs = {
+                        "position": "fixed",
+                        "top": $("#rocket-content-container").offset().top,
+                        "left": headerOffset.left,
+                        "right": $(window).width() - (headerOffset.left + this.jqHeader.outerWidth())
+                    };
+                    this.scrolled();
+                };
+                FixedHeader.prototype.scrolled = function () {
+                    var headerHeight = this.jqHeader.children().outerHeight();
+                    if (this.jqTable.offset().top - $(window).scrollTop() <= this.fixedCssAttrs.top + headerHeight) {
+                        if (this.fixed)
+                            return;
+                        this.fixed = true;
+                        this.jqHeader.css(this.fixedCssAttrs);
+                        this.jqHeader.parent().css("padding-top", headerHeight);
+                        this.jqTableClone.show();
+                    }
+                    else {
+                        if (!this.fixed)
+                            return;
+                        this.fixed = false;
+                        this.jqHeader.css({
+                            "position": "relative",
+                            "top": "",
+                            "left": "",
+                            "right": ""
+                        });
+                        this.jqHeader.parent().css("padding-top", "");
+                        this.jqTableClone.hide();
+                    }
+                };
+                FixedHeader.prototype.cloneTableHeader = function () {
+                    this.jqTableClone = this.jqTable.clone();
+                    this.jqTableClone.css("margin-bottom", 0);
+                    this.jqTableClone.children("tbody").remove();
+                    this.jqHeader.append(this.jqTableClone);
+                    this.jqTableClone.hide();
+                    var jqClonedChildren = this.jqTableClone.children("thead").children("tr").children();
+                    this.jqTable.children("thead").children("tr").children().each(function (index) {
+                        jqClonedChildren.eq(index).innerWidth($(this).innerWidth());
+                        //				jqClonedChildren.css({
+                        //					"boxSizing": "border-box"	
+                        //				});
+                    });
+                    //			this.jqTable.children("thead").hide();
+                };
+                return FixedHeader;
+            }());
+        })(overview = impl.overview || (impl.overview = {}));
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
