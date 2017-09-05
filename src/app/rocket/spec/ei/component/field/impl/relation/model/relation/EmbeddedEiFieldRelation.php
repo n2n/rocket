@@ -23,13 +23,9 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiSelection;
 use rocket\spec\ei\manage\EiFrame;
-use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiFieldAdapter;
-use rocket\spec\ei\component\field\impl\TranslatableEiFieldAdapter;
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoCommand;
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedPseudoCommand;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\mapping\EiMapping;
 use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\mask\EiMask;
@@ -58,17 +54,18 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		
 		$this->setupEmbeddedEditEiCommand();
 		
-		if (!$this->getRelationEntityProperty()->isMaster()) {
+		// reason to remove: orphans should never remain in db on embeddedeiprops
+// 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$entityProperty = $this->getRelationEntityProperty();
 			if (!$entityProperty->getRelation()->isOrphanRemoval()
-					&& (!$this->isSourceMany() && !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull())) {
+					&& (!$this->isSourceMany() /*&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()*/)) {
 								
-				throw new InvalidEiComponentConfigurationException('EiField requires an EntityProperty '
+				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
-						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
-						. ' must accept null.');
+						. ' which removes orphans' . /* or target ' . $this->getTargetMasterAccessProxy()
+						. ' must accept null*/ '.');
 			}
-		}
+// 		}
 		
 			
 // 		$this->embeddedPseudoCommand = new EmbeddedPseudoCommand($this->getTarget());
@@ -91,16 +88,16 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 				&& !$esConstraint->isEiCommandAvailable($this->embeddedEditPseudoCommand);		
 	}
 	
-	public function completeMagCollection(MagCollection $magCollection) {
-		$dtc = new DynamicTextCollection('rocket');
-		$magCollection->addMag(DraftableEiFieldAdapter::ATTR_DRAFTABLE_KEY,
-				new BoolMag($dtc->translate('ei_impl_draftable_label'), self::OPTION_DRAFTABLE_DEFAULT));
-		$magCollection->addMag(TranslatableEiFieldAdapter::OPTION_TRANSLATION_ENABLED_KEY,
-				new BoolMag($dtc->translate('ei_impl_translatable_label'), self::OPTION_TRANSLATION_ENABLED_DEFAULT));
+// 	public function completeMagCollection(MagCollection $magCollection) {
+// 		$dtc = new DynamicTextCollection('rocket');
+// 		$magCollection->addMag(DraftableEiFieldAdapter::ATTR_DRAFTABLE_KEY,
+// 				new BoolMag($dtc->translate('ei_impl_draftable_label'), self::OPTION_DRAFTABLE_DEFAULT));
+// 		$magCollection->addMag(TranslatableEiFieldAdapter::OPTION_TRANSLATION_ENABLED_KEY,
+// 				new BoolMag($dtc->translate('ei_impl_translatable_label'), self::OPTION_TRANSLATION_ENABLED_DEFAULT));
 		
-		parent::completeMagCollection($magCollection);
-		return $magCollection;
-	}
+// 		parent::completeMagCollection($magCollection);
+// 		return $magCollection;
+// 	}
 	
 	const OPTION_DRAFTABLE_DEFAULT = false;
 	const OPTION_TRANSLATION_ENABLED_DEFAULT = false;
@@ -144,12 +141,12 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		$targetEiFrame->setDetailDisabled(true);
 	}
 	
-	public function createTargetEiSelection(EiFrame $targetEiFrame, $targetEntity) {
-		$id = $this->relationEiField->getId();
+// 	public function createTargetEiSelection(EiFrame $targetEiFrame, $targetEntity) {
+// 		$id = $this->relationEiField->getId();
 		
-		$targetEiSelection = new EiSelection($targetEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
-				->extractId($targetEntity), $targetEntity);
+// 		$targetEiSelection = new EiSelection($targetEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()
+// 				->extractId($targetEntity), $targetEntity);
 		
-		return $EiSelection;
-	}
+// 		return $EiSelection;
+// 	}
 }
