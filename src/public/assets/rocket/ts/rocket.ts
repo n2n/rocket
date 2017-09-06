@@ -25,12 +25,12 @@ namespace rocket {
 		
 		(function () {
 			$(".rocket-impl-overview").each(function () {
-				rocket.impl.OverviewContext.from($(this));
+				rocket.impl.overview.OverviewContext.from($(this));
 			});
 			
 			n2n.dispatch.registerCallback(function () {
 				$(".rocket-impl-overview").each(function () {
-					rocket.impl.OverviewContext.from($(this));
+					rocket.impl.overview.OverviewContext.from($(this));
 				});
 			});
 		}) ();

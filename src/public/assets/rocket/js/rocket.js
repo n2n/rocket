@@ -534,6 +534,112 @@ var rocket;
 (function (rocket) {
     var display;
     (function (display) {
+        var Entry = (function () {
+            function Entry(jqElem) {
+                this.jqElem = jqElem;
+            }
+            Object.defineProperty(Entry.prototype, "jqQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Entry.prototype, "entrySelector", {
+                get: function () {
+                    var entrySelectors = EntrySelector.findAll(this.jqElem);
+                    for (var i in entrySelectors) {
+                        if (entrySelectors[i].entry === this) {
+                            return entrySelectors[i];
+                        }
+                    }
+                    return null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Entry.findFrom = function (jqElem) {
+                var jqElem = jqElem.closest(".rocket-entry");
+                if (jqElem.length == 0)
+                    return null;
+                var entry = jqElem.data("rocketEntry");
+                if (entry instanceof Entry) {
+                    return entry;
+                }
+                entry = new Entry(jqElem);
+                jqElem.data("rocketEntry", entry);
+                return entry;
+            };
+            return Entry;
+        }());
+        display.Entry = Entry;
+        var EntrySelector = (function () {
+            function EntrySelector(jqElem) {
+                this.jqElem = jqElem;
+            }
+            Object.defineProperty(EntrySelector.prototype, "jQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EntrySelector.prototype, "idRep", {
+                get: function () {
+                    return this.jqElem.data("entry-id-rep");
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EntrySelector.prototype, "draftId", {
+                get: function () {
+                    var draftId = parseInt(this.jqElem.data("draft-id-rep"));
+                    if (!isNaN(draftId)) {
+                        return draftId;
+                    }
+                    return null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EntrySelector.prototype, "entry", {
+                get: function () {
+                    return Entry.findFrom(this.jqElem);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            EntrySelector.findAll = function (jqElem) {
+                var entrySelectors = new Array();
+                jqElem.find(".rocket-entry-selector").each(function () {
+                    entrySelectors.push(EntrySelector.from($(this)));
+                });
+                return entrySelectors;
+            };
+            EntrySelector.findFrom = function (jqElem) {
+                var jqElem = jqElem.closest(".rocket-entry-selector");
+                if (jqElem.length == 0)
+                    return null;
+                return EntrySelector.findFrom(jqElem);
+            };
+            EntrySelector.from = function (jqElem) {
+                var entrySelector = jqElem.data("rocketEntrySelector");
+                if (entrySelector instanceof EntrySelector) {
+                    return entrySelector;
+                }
+                entrySelector = new Entry(jqElem);
+                jqElem.data("rocketEntrySelector", entrySelector);
+                return entrySelector;
+            };
+            return EntrySelector;
+        }());
+        display.EntrySelector = EntrySelector;
+    })(display = rocket.display || (rocket.display = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var display;
+    (function (display) {
         var Initializer = (function () {
             function Initializer(container, errorTabTitle, displayErrorLabel) {
                 this.container = container;
@@ -1790,11 +1896,11 @@ var rocket;
         });
         (function () {
             $(".rocket-impl-overview").each(function () {
-                rocket.impl.OverviewContext.from($(this));
+                rocket.impl.overview.OverviewContext.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
                 $(".rocket-impl-overview").each(function () {
-                    rocket.impl.OverviewContext.from($(this));
+                    rocket.impl.overview.OverviewContext.from($(this));
                 });
             });
         })();
@@ -2283,38 +2389,6 @@ var rocket;
         var Severity = display.Severity;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
-        var Entry = (function () {
-            function Entry(jqElem) {
-                this.jqElem = jqElem;
-            }
-            Object.defineProperty(Entry.prototype, "jqQuery", {
-                get: function () {
-                    return this.jqElem;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Entry.findFrom = function (jqElem) {
-                var jqElem = jqElem.closest(".rocket-entry");
-                if (jqElem.length == 0)
-                    return null;
-                var entry = jqElem.data("rocketEntry");
-                if (entry instanceof Entry) {
-                    return entry;
-                }
-                entry = new Entry(jqElem);
-                jqElem.data("rocketEntry", entry);
-                return entry;
-            };
-            return Entry;
-        }());
-        display.Entry = Entry;
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -2411,6 +2485,7 @@ var rocket;
                     this.jqElem = jqElem;
                     this.loadUrl = loadUrl;
                     this.pages = new Array();
+                    this.fakePage = null;
                     this.changedCallbacks = new Array();
                     this._currentPageNo = null;
                     this.loadingPageNos = new Array();
@@ -2431,10 +2506,20 @@ var rocket;
                     });
                 };
                 OverviewContent.prototype.initSelector = function (selector) {
+                    var idReps = selector.getSelectedIdReps();
+                    idReps.forEach(function (idRep) {
+                    });
                 };
                 OverviewContent.prototype.showSelected = function () {
                 };
                 OverviewContent.prototype.showAll = function () {
+                };
+                OverviewContent.prototype.containsIdRep = function (idRep) {
+                    for (var i in this.pages) {
+                        if (this.pages[i].containsIdRep(idRep))
+                            return true;
+                    }
+                    return false;
                 };
                 Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
                     get: function () {
@@ -2640,6 +2725,11 @@ var rocket;
                 });
                 Page.prototype.isContentLoaded = function () {
                     return this.jqContents !== null;
+                };
+                Page.prototype.containsIdRep = function (idRep) {
+                };
+                Page.prototype.findJqEntrySelectors = function () {
+                    return this.jqContents.find(".rocket-entry-selector");
                 };
                 Object.defineProperty(Page.prototype, "jqContents", {
                     get: function () {

@@ -39,10 +39,7 @@ namespace rocket.impl.overview {
 		}
 		
 		private initSelector(selector: Selector) {
-			
 		}
-		
-		
 		
 		public static from(jqElem: JQuery): OverviewContext {
 			var overviewContext: OverviewContext = jqElem.data("rocketImplOverviewContext");
@@ -130,6 +127,7 @@ namespace rocket.impl.overview {
 	
 	class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
+		private fakePage: Page = null;
 		private selector: Selector;
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
@@ -158,9 +156,11 @@ namespace rocket.impl.overview {
 		}
 		
 		initSelector(selector: Selector) {
-			
+			var idReps = selector.getSelectedIdReps();
+			idReps.forEach(function (idRep) {
+				
+			});
 		}
-		
 		
 		private showSelected() {
 			
@@ -168,6 +168,14 @@ namespace rocket.impl.overview {
 		
 		private showAll() {
 			
+		}
+		
+		containsIdRep(idRep: string): boolean {
+			for (let i in this.pages) {
+				if (this.pages[i].containsIdRep(idRep)) return true;
+			}
+			
+			return false;
 		}
 		
 		get currentPageNo(): number {
@@ -397,8 +405,16 @@ namespace rocket.impl.overview {
 			this.disp();
 		}
 		
-		public isContentLoaded(): boolean {
+		isContentLoaded(): boolean {
 			return this.jqContents !== null;
+		}
+		
+		containsIdRep(idRep: string) {
+			
+		}
+		
+		findJqEntrySelectors(): JQuery {
+			return this.jqContents.find(".rocket-entry-selector");
 		}
 		
 		get jqContents(): JQuery {
