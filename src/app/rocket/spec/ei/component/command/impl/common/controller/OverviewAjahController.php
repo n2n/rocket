@@ -142,7 +142,7 @@ class OverviewAjahController extends ControllerAdapter {
 // 						'sortForm' => $sortForm))));
 // 	}
 
-	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $idReps = null) {
+	public function doSelect(string $stateKey, ParamQuery $pageNo = null, ParamQuery $idReps = null) {
 		$eiFrame = $this->manageState->peakEiFrame();
 
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);

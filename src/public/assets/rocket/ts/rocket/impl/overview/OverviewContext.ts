@@ -127,7 +127,7 @@ namespace rocket.impl.overview {
 	
 	class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
-		private fakePage: Page = null;
+		private selectorState: SelectorState = null;
 		private selector: Selector;
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
@@ -157,9 +157,42 @@ namespace rocket.impl.overview {
 		
 		initSelector(selector: Selector) {
 			var idReps = selector.getSelectedIdReps();
+			var unloadedIdReps = idReps.slice();
+			var that = this;
 			idReps.forEach(function (idRep) {
-				
+				for (let i in that.pages) {
+					if (that.pages[i].containsIdRep(idRep)) continue;
+					
+					unloadedIdReps.splice(unloadedIdReps.indexOf(idRep), 1);
+					return;
+				};
 			});
+			
+			var fakePage = new Page(0);
+			this.selectorState = new SelectorState(selector, fakePage);
+			fakePage.visible = false;
+			
+			var that = this;
+			$.ajax({
+				"url": that.loadUrl,
+				"data": { "idReps": unloadedIdReps },
+				"dataType": "json"
+			}).fail(function (jqXHR, textStatus, data) {
+				if (jqXHR.status != 200) {
+                    rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+					return;
+				}
+				
+				throw new Error("invalid response");
+			}).done(function (data, textStatus, jqXHR) {
+				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
+				that.selectorState.fakePage.jqContents = jqContents;
+				that.jqElem.append(jqContents);
+				n2n.ajah.update();
+				
+				that.selectorState.observePage(fakePage);
+			});
+			
 		}
 		
 		private showSelected() {
@@ -249,6 +282,10 @@ namespace rocket.impl.overview {
 			}
 			
 			this.jqElem.prepend(jqContents);
+			
+			if (this.selectorState !== null) {
+				this.selectorState.observePage(page);
+			}
 		}
 		
 		goTo(pageNo: number) {
@@ -379,15 +416,29 @@ namespace rocket.impl.overview {
 		}
 	}	
 	
-	class Entry {
-		
-		constructor (private _idRep: string, public identityString: string) {
+	
+	class SelectorState {
+		constructor(public selector: Selector, public fakePage: Page) {
 		}
 		
-		get idRep(): string {
-			return this._idRep;
+		observePage(page: Page) {
+			var that = this;
+			page.entrySelectors.forEach(function (entrySelector) {
+				that.selector.registerEntrySelector(entrySelector);
+			});
 		}
 	}
+//	
+	
+//	class Entry {
+//		
+//		constructor (private _idRep: string, public identityString: string) {
+//		}
+//		
+//		get idRep(): string {
+//			return this._idRep;
+//		}
+//	}
 	
 	class Page {
 		private _visible: boolean = true;
