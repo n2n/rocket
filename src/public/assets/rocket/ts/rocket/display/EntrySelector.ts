@@ -1,6 +1,8 @@
 namespace rocket.display {
 	
 	export class EntrySelector {
+		private control: EntrySelectorControl = null;
+		
 		constructor(private jqElem: JQuery) {
 		}
 		
@@ -24,6 +26,18 @@ namespace rocket.display {
 			return Entry.findFrom(this.jqElem);
 		}
 		
+		applyControl(control: EntrySelectorControl) {
+			this.control = control;
+			control.setup(this);
+		}
+		
+		get selected(): boolean {
+			if (this.control === null) {
+				return false;
+			}
+			
+			return this.control.isSelected();
+		}
 		
 		static findAll(jqElem: JQuery): Array<EntrySelector> {
 			var entrySelectors = new Array<EntrySelector>();
@@ -56,8 +70,70 @@ namespace rocket.display {
 		}
 	}
 	
-	interface EntrySelectorControl {
+	export interface EntrySelectorControl {
 		
+		setup(entrySelector: EntrySelector);
 		
+		whenChanged(callback: () => any);
+		
+		isSelected(): boolean;
+		
+		setSelected(selected: boolean);
+	}
+	
+	abstract class EntrySelectorControlAdapter implements EntrySelectorControl {
+		private changedCallbacks: Array<() => any> = new Array<() => any>();
+		
+		setup(entrySelector: EntrySelector) {
+			throw new Error("setup() not implemented.");
+		}
+		
+		whenChanged(callback: () => any) {
+			this.changedCallbacks.push(callback);
+		}
+		
+		protected triggerChanged() {
+			this.changedCallbacks.forEach(function (callback) {
+				callback();
+			});
+		}
+		
+		isSelected(): boolean {
+			throw new Error("isSelected() not implemented.");
+		}
+		
+		setSelected(selected: boolean) {
+			throw new Error("setSelected() not implemented.");
+		}
+		
+	}
+	
+	export class CheckEntrySelectorControl extends EntrySelectorControlAdapter {
+		private jqCheck: JQuery = null;
+		
+		setup(entrySelector: EntrySelector) {
+			if (this.jqCheck !== null) {
+				throw new Error("CheckEntrySelectorControl already setup.");
+			}
+			
+			this.jqCheck = $("<input />", { "type": "checkbox" });
+			
+			var that;
+			this.jqCheck.change(function () {
+				that.triggerChanged();
+			})
+			
+			entrySelector.jQuery.empty();
+			entrySelector.jQuery.append(this.jqCheck);
+		}
+		
+		isSelected(): boolean {
+			return this.jqCheck.is(":checked");
+		}
+		
+		setSelected(selected: boolean) {
+			this.jqCheck.prop("checked", true);
+			this.triggerChanged();
+		}
 	}
 }
