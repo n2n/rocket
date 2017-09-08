@@ -25,20 +25,25 @@ namespace rocket.impl.overview {
 	var $ = jQuery;
 	
 	export class OverviewContext {
-		private jqContainer: JQuery;
 		
-		private contentUrl: string;
-		private numPages: number;
-		private numEntries: number;
-		private currentPageNo: number;
 		
 		private jqContextControls: JQuery;
 		
-		constructor(jqContainer: JQuery) {
-			this.jqContainer = jqContainer;
+		constructor(private jqContainer: JQuery, private overviewContent: OverviewContent) {
 		}
 		
-		private initSelector(selector: SelectorObserver) {
+		public initSelector(selector: SelectorObserver) {
+			this.overviewContent.initSelector(selector);
+		}
+		
+		public static findAll(jqElem: JQuery): Array<OverviewContext> {
+			var oc: Array<OverviewContext> = new Array();
+			
+			jqElem.find(".rocket-overview-context").each(function () {
+				oc.push(OverviewContext.from($(this)));
+			});
+			
+			return oc;
 		}
 		
 		public static from(jqElem: JQuery): OverviewContext {
@@ -65,7 +70,7 @@ namespace rocket.impl.overview {
 			var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
 			fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
 			
-			overviewContext = new OverviewContext(jqElem);
+			overviewContext = new OverviewContext(jqElem, overviewContent);
 			jqElem.data("rocketImplOverviewContext", overviewContext);
 			
 			return overviewContext;

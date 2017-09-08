@@ -100,7 +100,8 @@ namespace rocket.impl {
 		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
 		private originalIdReps: Array<String>;
 		private identityStrings: Array<String>;
-		private browserLayer: cmd.Layer;
+		private browserLayer: cmd.Layer = null;
+		private browserSelectorObserver: overview.MultiEntrySelectorObserver = null;
 		
 		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
@@ -123,9 +124,13 @@ namespace rocket.impl {
 			var that = this;
 			var commandList = new display.CommandList(jqCommandList);
 			
-			commandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
-				that.openBrowser();
-			});
+			commandList.createJqCommandButton({ label: this.jqElem.data("select-label") })
+				.mouseenter(function () {
+					that.loadBrowser();
+				})
+				.click(function () {
+					that.openBrowser();
+				});
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
 				that.reset();
@@ -165,12 +170,47 @@ namespace rocket.impl {
 			this.entries.slice(0, this.entries.length);
 		}
 		
-		public openBrowser() {
-			var layer = rocket.getContainer().createLayer();
+		public loadBrowser() {
+			if (this.browserLayer !== null) return;
+			
+			this.browserLayer = rocket.getContainer().createLayer();
+			
+			var that = this;
 			rocket.exec(this.jqElem.data("overview-tools-url"), {
 				showLoadingContext: true,
-				currentLayer: layer
+				currentLayer: this.browserLayer,
+				done: function (result: cmd.ExecResult) {
+					that.iniBrowserContext(result.context)
+				}
 			});
+		}
+		
+		private iniBrowserContext(context: cmd.Context) {
+			var ocs = impl.overview.OverviewContext.findAll(context.getJQuery());
+			if (ocs.length == 0) return;
+			
+			ocs[0].initSelector(this.browserSelectorObserver = new overview.MultiEntrySelectorObserver());
+			
+			this.updateBrowser();
+		}
+		
+		public openBrowser() {
+			this.loadBrowser();
+			
+			this.updateBrowser();
+			
+			this.browserLayer.show();
+		}
+		
+		private updateBrowser() {
+			if (this.browserSelectorObserver === null) return;
+			
+			var selectedIds: Array<string> = new Array();
+			this.entries.forEach(function (entry: SelectedEntry) {
+				selectedIds.push(entry.idRep);
+			});
+			
+			this.browserSelectorObserver.setSelectedIds(selectedIds);
 		}
 	}
 	

@@ -12,17 +12,24 @@ namespace rocket.impl.overview {
 	export class MultiEntrySelectorObserver implements SelectorObserver {
 		private _selectedIds: Array<string>;
 		
-		constructor(private originalIdReps: Array<string>) {
+		constructor(private originalIdReps: Array<string> = new Array<string>()) {
 			this._selectedIds = originalIdReps;
 		}
 		
-		observerEntrySelector(selector: display.EntrySelector) {
-			var control = new display.CheckEntrySelectorControl();
-			selector.applyControl(control);
+		observeEntrySelector(selector: display.EntrySelector) {
 			var that = this;
-			control.whenChanged(function () {
-				that.chSelect(control.isSelected(), selector.entry.id);
-			}); 
+			
+			var jqCheck = $("<input />", { "type": "checkbox" });
+			selector.jQuery.empty();
+			selector.jQuery.append(jqCheck);
+			
+			jqCheck.change(function () {
+				selector.selected = jqCheck.is(":checked");
+			});
+			selector.whenChanged(function () {
+				jqCheck.prop("checked", selector.selected);
+				that.chSelect(selector.selected, selector.entry.id);
+			});
 		}
 		
 		private chSelect(selected: boolean, idRep: string) {
@@ -41,6 +48,13 @@ namespace rocket.impl.overview {
 		
 		getSelectedIds(): Array<string> {
 			return this._selectedIds;
+		}
+		
+		setSelectedIds(selectedIds: Array<string>) {
+			this._selectedIds = selectedIds;
+			
+			selectedIds.forEach(function (id: string) {
+			});
 		}
 	}
 }

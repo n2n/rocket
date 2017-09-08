@@ -819,7 +819,7 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
-            Object.defineProperty(Entry.prototype, "entrySelector", {
+            Object.defineProperty(Entry.prototype, "selector", {
                 get: function () {
                     var entrySelectors = display.EntrySelector.findAll(this.jqElem);
                     for (var i in entrySelectors) {
@@ -1110,6 +1110,8 @@ var rocket;
                 this.jqElem = jqElem;
                 this.jqNewEntrySkeleton = jqNewEntrySkeleton;
                 this.entries = new Array();
+                this.browserLayer = null;
+                this.browserSelectorObserver = null;
                 this.jqElem = jqElem;
                 this.jqUl = jqElem.children("ul");
                 this.originalIdReps = jqElem.data("original-id-reps");
@@ -1124,7 +1126,11 @@ var rocket;
                 this.jqElem.append(jqCommandList);
                 var that = this;
                 var commandList = new display.CommandList(jqCommandList);
-                commandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+                commandList.createJqCommandButton({ label: this.jqElem.data("select-label") })
+                    .mouseenter(function () {
+                    that.loadBrowser();
+                })
+                    .click(function () {
                     that.openBrowser();
                 });
                 commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
@@ -1157,12 +1163,39 @@ var rocket;
                 }
                 this.entries.slice(0, this.entries.length);
             };
-            ToManySelector.prototype.openBrowser = function () {
-                var layer = rocket.getContainer().createLayer();
+            ToManySelector.prototype.loadBrowser = function () {
+                if (this.browserLayer !== null)
+                    return;
+                this.browserLayer = rocket.getContainer().createLayer();
+                var that = this;
                 rocket.exec(this.jqElem.data("overview-tools-url"), {
                     showLoadingContext: true,
-                    currentLayer: layer
+                    currentLayer: this.browserLayer,
+                    done: function (result) {
+                        that.iniBrowserContext(result.context);
+                    }
                 });
+            };
+            ToManySelector.prototype.iniBrowserContext = function (context) {
+                var ocs = impl.overview.OverviewContext.findAll(context.getJQuery());
+                if (ocs.length == 0)
+                    return;
+                ocs[0].initSelector(this.browserSelectorObserver = new impl.overview.MultiEntrySelectorObserver());
+                this.updateBrowser();
+            };
+            ToManySelector.prototype.openBrowser = function () {
+                this.loadBrowser();
+                this.updateBrowser();
+                this.browserLayer.show();
+            };
+            ToManySelector.prototype.updateBrowser = function () {
+                if (this.browserSelectorObserver === null)
+                    return;
+                var selectedIds = new Array();
+                this.entries.forEach(function (entry) {
+                    selectedIds.push(entry.idRep);
+                });
+                this.browserSelectorObserver.setSelectedIds(selectedIds);
             };
             return ToManySelector;
         }());
@@ -1914,7 +1947,7 @@ var rocket;
                     this.pages.forEach(function (page) {
                         if (!page.isContentLoaded())
                             return;
-                        page.entries().forEach(function (entry) {
+                        page.entries.forEach(function (entry) {
                             var id = entry.id;
                             var i;
                             if (-1 < (i = unloadedIds.indexOf(id))) {
@@ -2159,13 +2192,13 @@ var rocket;
                     this.allInfo = null;
                     this.fakePage = null;
                     this.entries = {};
-                    this.changedCallbacks = new Array()();
+                    this.changedCallbacks = new Array();
                 }
                 SelectorState.prototype.init = function (fakePage) {
                     this.fakePage = fakePage;
                     var that = this;
                     fakePage.entries.forEach(function (entry) {
-                        this.registerEntry(entry);
+                        that.registerEntry(entry);
                     });
                 };
                 SelectorState.prototype.isInit = function () {
@@ -2197,14 +2230,15 @@ var rocket;
                         this.selectorObserver.getSelectedIds().forEach(function (id) {
                             if (that.entries[id] === undefined)
                                 return;
-                            entires.push(that.entries[id]);
+                            entries.push(that.entries[id]);
                         });
+                        return entries;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 SelectorState.prototype.triggerChanged = function () {
-                    this.changeCallbacks.forEach(function (callback) {
+                    this.changedCallbacks.forEach(function (callback) {
                         callback();
                     });
                 };
@@ -2455,18 +2489,23 @@ var rocket;
     (function (impl) {
         var overview;
         (function (overview) {
-            var display = rocket.display;
             var MultiEntrySelectorObserver = (function () {
                 function MultiEntrySelectorObserver(originalIdReps) {
+                    if (originalIdReps === void 0) { originalIdReps = new Array(); }
                     this.originalIdReps = originalIdReps;
                     this._selectedIds = originalIdReps;
                 }
-                MultiEntrySelectorObserver.prototype.observerEntrySelector = function (selector) {
-                    var control = new display.CheckEntrySelectorControl();
-                    selector.applyControl(control);
+                MultiEntrySelectorObserver.prototype.observeEntrySelector = function (selector) {
                     var that = this;
-                    control.whenChanged(function () {
-                        that.chSelect(control.isSelected(), selector.entry.id);
+                    var jqCheck = $("<input />", { "type": "checkbox" });
+                    selector.jQuery.empty();
+                    selector.jQuery.append(jqCheck);
+                    jqCheck.change(function () {
+                        selector.selected = jqCheck.is(":checked");
+                    });
+                    selector.whenChanged(function () {
+                        jqCheck.prop("checked", selector.selected);
+                        that.chSelect(selector.selected, selector.entry.id);
                     });
                 };
                 MultiEntrySelectorObserver.prototype.chSelect = function (selected, idRep) {
@@ -2484,6 +2523,11 @@ var rocket;
                 MultiEntrySelectorObserver.prototype.getSelectedIds = function () {
                     return this._selectedIds;
                 };
+                MultiEntrySelectorObserver.prototype.setSelectedIds = function (selectedIds) {
+                    this._selectedIds = selectedIds;
+                    selectedIds.forEach(function (id) {
+                    });
+                };
                 return MultiEntrySelectorObserver;
             }());
             overview.MultiEntrySelectorObserver = MultiEntrySelectorObserver;
@@ -2497,7 +2541,8 @@ var rocket;
         var EntrySelector = (function () {
             function EntrySelector(jqElem) {
                 this.jqElem = jqElem;
-                this.control = null;
+                this.changedCallbacks = new Array();
+                this._selected = false;
             }
             Object.defineProperty(EntrySelector.prototype, "jQuery", {
                 get: function () {
@@ -2513,20 +2558,27 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
-            EntrySelector.prototype.applyControl = function (control) {
-                this.control = control;
-                control.setup(this);
-            };
             Object.defineProperty(EntrySelector.prototype, "selected", {
                 get: function () {
-                    if (this.control === null) {
-                        return false;
-                    }
-                    return this.control.isSelected();
+                    return this._selected;
+                },
+                set: function (selected) {
+                    if (this._selected == selected)
+                        return;
+                    this._selected = selected;
+                    this.triggerChanged();
                 },
                 enumerable: true,
                 configurable: true
             });
+            EntrySelector.prototype.whenChanged = function (callback) {
+                this.changedCallbacks.push(callback);
+            };
+            EntrySelector.prototype.triggerChanged = function () {
+                this.changedCallbacks.forEach(function (callback) {
+                    callback();
+                });
+            };
             EntrySelector.findAll = function (jqElem) {
                 var entrySelectors = new Array();
                 jqElem.find(".rocket-entry-selector").each(function () {
@@ -2552,57 +2604,6 @@ var rocket;
             return EntrySelector;
         }());
         display.EntrySelector = EntrySelector;
-        var EntrySelectorControlAdapter = (function () {
-            function EntrySelectorControlAdapter() {
-                this.changedCallbacks = new Array();
-            }
-            EntrySelectorControlAdapter.prototype.setup = function (entrySelector) {
-                throw new Error("setup() not implemented.");
-            };
-            EntrySelectorControlAdapter.prototype.whenChanged = function (callback) {
-                this.changedCallbacks.push(callback);
-            };
-            EntrySelectorControlAdapter.prototype.triggerChanged = function () {
-                this.changedCallbacks.forEach(function (callback) {
-                    callback();
-                });
-            };
-            EntrySelectorControlAdapter.prototype.isSelected = function () {
-                throw new Error("isSelected() not implemented.");
-            };
-            EntrySelectorControlAdapter.prototype.setSelected = function (selected) {
-                throw new Error("setSelected() not implemented.");
-            };
-            return EntrySelectorControlAdapter;
-        }());
-        var CheckEntrySelectorControl = (function (_super) {
-            __extends(CheckEntrySelectorControl, _super);
-            function CheckEntrySelectorControl() {
-                _super.apply(this, arguments);
-                this.jqCheck = null;
-            }
-            CheckEntrySelectorControl.prototype.setup = function (entrySelector) {
-                if (this.jqCheck !== null) {
-                    throw new Error("CheckEntrySelectorControl already setup.");
-                }
-                this.jqCheck = $("<input />", { "type": "checkbox" });
-                var that;
-                this.jqCheck.change(function () {
-                    that.triggerChanged();
-                });
-                entrySelector.jQuery.empty();
-                entrySelector.jQuery.append(this.jqCheck);
-            };
-            CheckEntrySelectorControl.prototype.isSelected = function () {
-                return this.jqCheck.is(":checked");
-            };
-            CheckEntrySelectorControl.prototype.setSelected = function (selected) {
-                this.jqCheck.prop("checked", true);
-                this.triggerChanged();
-            };
-            return CheckEntrySelectorControl;
-        }(EntrySelectorControlAdapter));
-        display.CheckEntrySelectorControl = CheckEntrySelectorControl;
     })(display = rocket.display || (rocket.display = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -2988,10 +2989,19 @@ var rocket;
             var cmd = rocket.cmd;
             var $ = jQuery;
             var OverviewContext = (function () {
-                function OverviewContext(jqContainer) {
+                function OverviewContext(jqContainer, overviewContent) {
                     this.jqContainer = jqContainer;
+                    this.overviewContent = overviewContent;
                 }
                 OverviewContext.prototype.initSelector = function (selector) {
+                    this.overviewContent.initSelector(selector);
+                };
+                OverviewContext.findAll = function (jqElem) {
+                    var oc = new Array();
+                    jqElem.find(".rocket-overview-context").each(function () {
+                        oc.push(OverviewContext.from($(this)));
+                    });
+                    return oc;
                 };
                 OverviewContext.from = function (jqElem) {
                     var overviewContext = jqElem.data("rocketImplOverviewContext");
@@ -3007,7 +3017,7 @@ var rocket;
                     pagination.draw(jqForm.children(".rocket-context-commands"));
                     var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
                     fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
-                    overviewContext = new OverviewContext(jqElem);
+                    overviewContext = new OverviewContext(jqElem, overviewContent);
                     jqElem.data("rocketImplOverviewContext", overviewContext);
                     return overviewContext;
                 };

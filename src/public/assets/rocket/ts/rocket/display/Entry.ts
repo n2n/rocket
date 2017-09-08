@@ -45,7 +45,7 @@ namespace rocket.display {
 			return this.jqElem.data("rocket-identity-string");
 		}
 		
-		get entrySelector(): EntrySelector {
+		get selector(): EntrySelector {
 			var entrySelectors = EntrySelector.findAll(this.jqElem);
 			for (var i in entrySelectors) {
 				if (entrySelectors[i].entry === this) {

@@ -43,7 +43,7 @@ namespace rocket.impl.overview {
 			this.pages.forEach(function (page: Page) {
 				if (!page.isContentLoaded()) return;
 				
-				page.entries().forEach(function (entry: display.Entry) {
+				page.entries.forEach(function (entry: display.Entry) {
 					let id = entry.id;
 					
 					let i;
@@ -333,7 +333,7 @@ namespace rocket.impl.overview {
 		public allInfo: AllInfo = null;
 		private fakePage: Page = null;
 		private entries: { [id:string]: display.Entry } = {};
-		private changedCallbacks: Array<() => any> = new Array()<() => any>();
+		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
 		constructor(public selectorObserver: SelectorObserver) {
 		}
@@ -343,7 +343,7 @@ namespace rocket.impl.overview {
 			
 			var that = this;
 			fakePage.entries.forEach(function (entry: display.Entry) {
-				this.registerEntry(entry);
+				that.registerEntry(entry);
 			});
 		}
 		
@@ -357,7 +357,7 @@ namespace rocket.impl.overview {
 			}
 			
 			var that = this;
-			page.entries.forEach(function (entry: Entry) {
+			page.entries.forEach(function (entry: display.Entry) {
 				this.fakePage.removeEntryById(entry.id);
 			});
 		}
@@ -382,12 +382,14 @@ namespace rocket.impl.overview {
 			this.selectorObserver.getSelectedIds().forEach(function (id: string) {
 				if (that.entries[id] === undefined) return;
 				
-				entires.push(that.entries[id]);
+				entries.push(that.entries[id]);
 			});	
+			
+			return entries;
 		}
 		
 		private triggerChanged() {
-			this.changeCallbacks.forEach(function (callback) {
+			this.changedCallbacks.forEach(function (callback) {
 				callback();
 			});
 		}
@@ -423,7 +425,7 @@ namespace rocket.impl.overview {
 			return this.jqContents !== null;
 		}
 		
-		get entries(): Array<display.EntrySelector> {
+		get entries(): Array<display.Entry> {
 			return this._entries;
 		}
 		
