@@ -38,6 +38,7 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 class EiHtmlBuilder {
 	private $view;
@@ -73,6 +74,15 @@ class EiHtmlBuilder {
 	
 	public function getEntryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
 		$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
+		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
+		$idRep = null;
+		if ($eiObject->getEiEntityObj()->isPersistent()) {
+			$idRep = $eiObject->getEiEntityObj()->getIdRep();
+		}
+		$draftId = null;
+		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
+			$draftId = $eiObject->getDraft()->getId();
+		}
 	
 		$this->state->pushEntry($tagName, $eiEntryGui);
 	
@@ -80,7 +90,10 @@ class EiHtmlBuilder {
 				
 		$entryAttrs = array(
 				'class' => 'rocket-entry' . ($treeLevel !== null ? ' rocket-tree-level-' . $treeLevel : ''),
-				'data-rocket-entry-id' => GeneralIdUtils::generalIdOf($eiEntryGui->getEiEntry()->getEiObject()));
+				'data-rocket-general-id' => GeneralIdUtils::generalIdOf($eiEntryGui->getEiEntry()->getEiObject()),
+				'data-rocket-id-rep' => $idRep,
+				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
+				'data-rocket-identity-string' => (new EiuEntry($eiEntryGui))->createIdentityString());
 		
 		return new Raw('<' . htmlspecialchars($tagName)
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, (array) $attrs)) . '>');
@@ -157,20 +170,12 @@ class EiHtmlBuilder {
 	 */
 	public function getEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
-		$draftId = null;
-		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
-			$draftId = $eiObject->getDraft()->getId();
-		}
 		
 		return new HtmlElement($containerTagName,
 				HtmlUtils::mergeAttrs(
-						array('class' => 'rocket-entry-selector',
-								'data-entry-id-rep' => $eiObject->getEiEntityObj()->getIdRep(),
-								'data-draft-id' => ($draftId !== null ? $draftId : ''),
-								'data-identity-string' => (new EiuEntry($eiEntryGui))->createIdentityString()), 
-						(array) $containerAttrs),
-				new HtmlElement('input', array('type' => 'checkbox')));
+						array('class' => 'rocket-entry-selector'), 
+						(array) $containerAttrs), ''/*
+				new HtmlElement('input', array('type' => 'checkbox'))*/);
 	}
 	
 	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs) {

@@ -33,32 +33,31 @@ namespace rocket.impl.overview {
 		
 		initSelector(selectorObserver: SelectorObserver) {
 			var fakePage = new Page(0);
-			this.selectorState = new SelectorState(selectorObserver, fakePage);
+			this.selectorState = new SelectorState(selectorObserver);
 			fakePage.visible = false;
 			
-			var idReps = selectorObserver.getSelectedIdReps();
-			var unloadedIdReps = idReps.slice();
+			var idReps = selectorObserver.getSelectedIds();
+			var unloadedIds = idReps.slice();
 			var that = this;
 			
 			this.pages.forEach(function (page: Page) {
 				if (!page.isContentLoaded()) return;
 				
-				page.entrySelectors().forEach(function (entrySelector: display.EntrySelector) {
-					selectorObserver.observeEntrySelector(entrySelector);
-					let idRep = entrySelector.idRep;
+				page.entries().forEach(function (entry: display.Entry) {
+					let id = entry.id;
 					
 					let i;
-					if (-1 < (i = unloadedIdReps.indexOf(idRep))) {
-						unloadedIdReps.splice(i, 1);
+					if (-1 < (i = unloadedIds.indexOf(id))) {
+						unloadedIds.splice(i, 1);
 					}
 				});
 			});
 			
-			if (unloadedIdReps.length == 0) {
+			if (unloadedIds.length == 0) {
 				return;
 			}
 			
-			this.loadFakePage(fakePage, unloadedIdReps);
+			this.loadFakePage(fakePage, unloadedIds);
 		}
 		
 		private loadFakePage(fakePage: Page, unloadedIdReps: Array<string>) {
@@ -76,29 +75,53 @@ namespace rocket.impl.overview {
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
 				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
-				that.selectorState.fakePage.jqContents = jqContents;
+				fakePage.jqContents = jqContents;
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that.selectorState.observePage(fakePage);
+				that.selectorState.init(fakePage);
 			});
 		}
 		
 		private showSelected() {
+			if (this.selectorState.allInfo !== null) {
+				return;
+			}
 			
+			var visiblePages = new Array<Page>();
+			this.pages.forEach(function (page: Page) {
+				if (page.visible) {
+					visiblePages.push(page);
+				}
+			});
+			
+			this.selectorState.allInfo = new AllInfo(visiblePages, $("html, body").scrollTop());
+			
+			this.selectorState.selectedEntries.forEach(function (entry: display.Entry) {
+				entry.show();
+			});
+			
+			this.selectorState.allInfo = null;
 		}
 		
 		private showAll() {
+			if (this.selectorState.allInfo === null) return;
 			
+			this.selectorState.allInfo.pages.forEach(function (page: Page) {
+				page.visible = true;
+			});
+			
+			$("html, body").scrollTop(this.selectorState.allInfo.scrollTop);
+			this.selectorState.allInfo = null;
 		}
 		
-		containsIdRep(idRep: string): boolean {
-			for (let i in this.pages) {
-				if (this.pages[i].containsIdRep(idRep)) return true;
-			}
-			
-			return false;
-		}
+//		containsIdRep(idRep: string): boolean {
+//			for (let i in this.pages) {
+//				if (this.pages[i].containsIdRep(idRep)) return true;
+//			}
+//			
+//			return false;
+//		}
 		
 		get currentPageNo(): number {
 			return this._currentPageNo;
@@ -307,19 +330,81 @@ namespace rocket.impl.overview {
 	
 	
 	class SelectorState {
-		constructor(public selectorObserver: SelectorObserver, public fakePage: Page) {
+		public allInfo: AllInfo = null;
+		private fakePage: Page = null;
+		private entries: { [id:string]: display.Entry } = {};
+		private changedCallbacks: Array<() => any> = new Array()<() => any>();
+		
+		constructor(public selectorObserver: SelectorObserver) {
+		}
+		
+		init(fakePage: Page) {
+			this.fakePage = fakePage;
+			
+			var that = this;
+			fakePage.entries.forEach(function (entry: display.Entry) {
+				this.registerEntry(entry);
+			});
+		}
+		
+		isInit(): boolean {
+			return this.fakePage = null;
 		}
 		
 		observePage(page: Page) {
+			if (!this.isInit()) {
+				throw new Error("Fake page not yet loaded.");
+			}
+			
 			var that = this;
-			page.entrySelectors.forEach(function (entrySelector) {
-				that.selectorObserver.observeEntrySelector(entrySelector);
+			page.entries.forEach(function (entry: Entry) {
+				this.fakePage.removeEntryById(entry.id);
 			});
+		}
+		
+		private registerEntry(entry: display.Entry) {
+			this.entries[entry.id] = entry;
+			
+			if (entry.selector === null) return;
+				
+			this.selectorObserver.observeEntrySelector(entry.selector);
+			
+			var that = this;
+			entry.selector.whenChanged(function () {
+				that.triggerChanged();
+			});
+		}
+		
+		get selectedEntries(): Array<display.Entry> {
+			var entries = new Array<display.Entry>();
+			
+			var that = this;
+			this.selectorObserver.getSelectedIds().forEach(function (id: string) {
+				if (that.entries[id] === undefined) return;
+				
+				entires.push(that.entries[id]);
+			});	
+		}
+		
+		private triggerChanged() {
+			this.changeCallbacks.forEach(function (callback) {
+				callback();
+			});
+		}
+				
+		whenChanged(callback: () => any) {
+			this.changedCallbacks.push(callback);
+		}
+	}
+	
+	class AllInfo {
+		constructor(public pages: Array<Page>, public scrollTop: number) {
 		}
 	}
 	
 	class Page {
 		private _visible: boolean = true;
+		private _entries: Array<display.Entry>;
 		
 		constructor(public pageNo: number, private _jqContents: JQuery = null) {
 		}
@@ -338,12 +423,8 @@ namespace rocket.impl.overview {
 			return this.jqContents !== null;
 		}
 		
-		containsIdRep(idRep: string) {
-			
-		}
-		
-		findJqEntrySelectors(): JQuery {
-			return display.EntrySelector.findAll(this.jqContents);
+		get entries(): Array<display.EntrySelector> {
+			return this._entries;
 		}
 		
 		get jqContents(): JQuery {
@@ -352,17 +433,31 @@ namespace rocket.impl.overview {
 		
 		set jqContents(jqContents: JQuery) {
 			this._jqContents = jqContents;
+			this._entries = display.Entry.findAll(this.jqContents);
 			
 			this.disp();
 		}
 		
 		private disp() {
-			if (this._jqContents === null) return
+			if (this._jqContents === null) return;
 			
-			if (this._visible) {
-				this._jqContents.show();
-			} else {
-				this._jqContents.hide();
+			var that = this;
+			this._entries.forEach(function (entry: display.Entry) {
+				if (that._visible) {
+					entry.show();
+				} else {
+					entry.hide();
+				}
+			});
+		}
+		
+		removeEntryById(id: string) {
+			for (var i in this._entries) {
+				if (this._entries[i].id != id) continue;
+				
+				this._entries[i].jqQuery.remove();
+				this._entries.splice(parseInt(i), 1);
+				return; 
 			}
 		}
 	}

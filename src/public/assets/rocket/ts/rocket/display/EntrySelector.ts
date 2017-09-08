@@ -10,18 +10,6 @@ namespace rocket.display {
 			return this.jqElem;
 		}
 		
-		get idRep(): string {
-			return this.jqElem.data("entry-id-rep");
-		}
-		
-		get draftId(): number {
-			var draftId = parseInt(this.jqElem.data("draft-id-rep"));
-			if (!isNaN(draftId)) {
-				return draftId;
-			}
-			return null;
-		}
-		
 		get entry(): Entry {
 			return Entry.findFrom(this.jqElem);
 		}

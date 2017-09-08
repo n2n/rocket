@@ -6,43 +6,41 @@ namespace rocket.impl.overview {
 		
 		observeEntrySelector(entrySelector: display.EntrySelector);
 		
-		getSelectedIdReps(): Array<string>;
+		getSelectedIds(): Array<string>;
 	}
 	
 	export class MultiEntrySelectorObserver implements SelectorObserver {
-		private _selectedIdReps: Array<string>;
+		private _selectedIds: Array<string>;
 		
 		constructor(private originalIdReps: Array<string>) {
-			this._selectedIdReps = originalIdReps;
+			this._selectedIds = originalIdReps;
 		}
 		
-		observerEntrySelector(entrySelector: display.EntrySelector) {
+		observerEntrySelector(selector: display.EntrySelector) {
 			var control = new display.CheckEntrySelectorControl();
-			entrySelector.applyControl(control);
+			selector.applyControl(control);
 			var that = this;
 			control.whenChanged(function () {
-				that.chSelect(control.isSelected(), entrySelector.idRep);
+				that.chSelect(control.isSelected(), selector.entry.id);
 			}); 
 		}
 		
 		private chSelect(selected: boolean, idRep: string) {
 			if (selected) {
-				if (-1 < this._selectedIdReps.indexOf(idRep)) return;
+				if (-1 < this._selectedIds.indexOf(idRep)) return;
 				
-				this._selectedIdReps.push(idRep);
+				this._selectedIds.push(idRep);
 				return;
 			}
 			
 			var i;
-			if (-1 < (i = this._selectedIdReps.indexOf(idRep))) {
-				this._selectedIdReps.splice(i, 1);
+			if (-1 < (i = this._selectedIds.indexOf(idRep))) {
+				this._selectedIds.splice(i, 1);
 			}
 		}
 		
-		getSelectedIdReps(): Array<string> {
-			return this._selectedIdReps;
+		getSelectedIds(): Array<string> {
+			return this._selectedIds;
 		}
 	}
-	
-	
 }

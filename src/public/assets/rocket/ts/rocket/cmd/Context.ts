@@ -1,4 +1,5 @@
 /// <reference path="../util/Util.ts" />
+/// <reference path="../display/Group.ts" />
 namespace rocket.cmd {
 	import display = rocket.display;
 	import util = rocket.util;
