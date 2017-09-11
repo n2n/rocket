@@ -125,12 +125,12 @@ namespace rocket.impl {
 			var commandList = new display.CommandList(jqCommandList);
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("select-label") })
-				.mouseenter(function () {
-					that.loadBrowser();
-				})
-				.click(function () {
-					that.openBrowser();
-				});
+					.mouseenter(function () {
+						that.loadBrowser();
+					})
+					.click(function () {
+						that.openBrowser();
+					});
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
 				that.reset();
@@ -467,7 +467,7 @@ namespace rocket.impl {
 				that.entries.splice(entry.getOrderIndex(), 1);
 				entry.getJQuery().remove();
 				
-				this.update();
+				that.changed();
 			});
 			
 			entry.onFocus(function () {

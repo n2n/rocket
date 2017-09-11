@@ -847,9 +847,12 @@ var rocket;
                     return null;
                 return Entry.from(jqElem);
             };
-            Entry.findAll = function (jqElem) {
+            Entry.findAll = function (jqElem, includeSelf) {
+                if (includeSelf === void 0) { includeSelf = false; }
                 var entries = new Array();
-                jqElem.find(".rocket-entry").each(function () {
+                var jqEntries = jqElem.find(".rocket-entry");
+                jqEntries = jqEntries.add(jqElem.filter(".rocket-entry"));
+                jqEntries.each(function () {
                     entries.push(Entry.from($(this)));
                 });
                 return entries;
@@ -1419,7 +1422,7 @@ var rocket;
                 entry.onRemove(function () {
                     that.entries.splice(entry.getOrderIndex(), 1);
                     entry.getJQuery().remove();
-                    this.update();
+                    that.changed();
                 });
                 entry.onFocus(function () {
                     that.expand(entry);
@@ -1955,12 +1958,14 @@ var rocket;
                             }
                         });
                     });
-                    if (unloadedIds.length == 0) {
-                        return;
-                    }
                     this.loadFakePage(fakePage, unloadedIds);
                 };
                 OverviewContent.prototype.loadFakePage = function (fakePage, unloadedIdReps) {
+                    if (unloadedIdReps.length == 0) {
+                        fakePage.jqContents = $();
+                        this.initFakePage(fakePage);
+                        return;
+                    }
                     var that = this;
                     $.ajax({
                         "url": that.loadUrl,
@@ -1977,7 +1982,16 @@ var rocket;
                         fakePage.jqContents = jqContents;
                         that.jqElem.append(jqContents);
                         n2n.ajah.update();
-                        that.selectorState.init(fakePage);
+                        that.initFakePage(fakePage);
+                    });
+                };
+                OverviewContent.prototype.initFakePage = function (fakePage) {
+                    this.selectorState.init(fakePage);
+                    var that = this;
+                    this.pages.forEach(function (page) {
+                        if (!page.isContentLoaded())
+                            return;
+                        that.selectorState.observePage(page);
                     });
                 };
                 OverviewContent.prototype.showSelected = function () {
@@ -2202,7 +2216,7 @@ var rocket;
                     });
                 };
                 SelectorState.prototype.isInit = function () {
-                    return this.fakePage = null;
+                    return this.fakePage !== null;
                 };
                 SelectorState.prototype.observePage = function (page) {
                     if (!this.isInit()) {
@@ -2210,7 +2224,8 @@ var rocket;
                     }
                     var that = this;
                     page.entries.forEach(function (entry) {
-                        this.fakePage.removeEntryById(entry.id);
+                        that.fakePage.removeEntryById(entry.id);
+                        that.registerEntry(entry);
                     });
                 };
                 SelectorState.prototype.registerEntry = function (entry) {
@@ -2288,7 +2303,7 @@ var rocket;
                     },
                     set: function (jqContents) {
                         this._jqContents = jqContents;
-                        this._entries = rocket.display.Entry.findAll(this.jqContents);
+                        this._entries = rocket.display.Entry.findAll(this.jqContents, true);
                         this.disp();
                     },
                     enumerable: true,
@@ -2597,7 +2612,7 @@ var rocket;
                 if (entrySelector instanceof EntrySelector) {
                     return entrySelector;
                 }
-                entrySelector = new display.Entry(jqElem);
+                entrySelector = new EntrySelector(jqElem);
                 jqElem.data("rocketEntrySelector", entrySelector);
                 return entrySelector;
             };
@@ -2993,12 +3008,12 @@ var rocket;
                     this.jqContainer = jqContainer;
                     this.overviewContent = overviewContent;
                 }
-                OverviewContext.prototype.initSelector = function (selector) {
-                    this.overviewContent.initSelector(selector);
+                OverviewContext.prototype.initSelector = function (selectorObserver) {
+                    this.overviewContent.initSelector(selectorObserver);
                 };
                 OverviewContext.findAll = function (jqElem) {
                     var oc = new Array();
-                    jqElem.find(".rocket-overview-context").each(function () {
+                    jqElem.find(".rocket-impl-overview").each(function () {
                         oc.push(OverviewContext.from($(this)));
                     });
                     return oc;

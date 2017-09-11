@@ -47,6 +47,7 @@ namespace rocket.display {
 		
 		get selector(): EntrySelector {
 			var entrySelectors = EntrySelector.findAll(this.jqElem);
+			
 			for (var i in entrySelectors) {
 				if (entrySelectors[i].entry === this) {
 					return entrySelectors[i];
@@ -74,11 +75,15 @@ namespace rocket.display {
 			
 			return Entry.from(jqElem);
 		}
-		
-		static findAll(jqElem: JQuery): Array<Entry> {
+
+		static findAll(jqElem: JQuery, includeSelf: boolean = false): Array<Entry> {
 			var entries = new Array<Entry>();
 			
-			jqElem.find(".rocket-entry").each(function () {
+			var jqEntries = jqElem.find(".rocket-entry");
+			
+			jqEntries = jqEntries.add(jqElem.filter(".rocket-entry"));
+			
+			jqEntries.each(function () {
 				entries.push(Entry.from($(this)));
 			});
 			

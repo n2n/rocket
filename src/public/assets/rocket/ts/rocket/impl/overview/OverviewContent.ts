@@ -39,7 +39,7 @@ namespace rocket.impl.overview {
 			var idReps = selectorObserver.getSelectedIds();
 			var unloadedIds = idReps.slice();
 			var that = this;
-			
+		
 			this.pages.forEach(function (page: Page) {
 				if (!page.isContentLoaded()) return;
 				
@@ -51,16 +51,20 @@ namespace rocket.impl.overview {
 						unloadedIds.splice(i, 1);
 					}
 				});
+				
+				
 			});
-			
-			if (unloadedIds.length == 0) {
-				return;
-			}
 			
 			this.loadFakePage(fakePage, unloadedIds);
 		}
 		
 		private loadFakePage(fakePage: Page, unloadedIdReps: Array<string>) {
+			if (unloadedIdReps.length == 0) {
+				fakePage.jqContents = $();
+				this.initFakePage(fakePage);	
+				return;
+			}
+			
 			var that = this;
 			$.ajax({
 				"url": that.loadUrl,
@@ -79,7 +83,17 @@ namespace rocket.impl.overview {
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that.selectorState.init(fakePage);
+				that.initFakePage(fakePage);	
+			});
+		}
+		
+		private initFakePage(fakePage: Page) {
+			this.selectorState.init(fakePage);
+			var that = this;
+			this.pages.forEach(function (page: Page) {
+				if (!page.isContentLoaded()) return;
+				
+				that.selectorState.observePage(page);
 			});
 		}
 		
@@ -348,7 +362,7 @@ namespace rocket.impl.overview {
 		}
 		
 		isInit(): boolean {
-			return this.fakePage = null;
+			return this.fakePage !== null;
 		}
 		
 		observePage(page: Page) {
@@ -358,13 +372,15 @@ namespace rocket.impl.overview {
 			
 			var that = this;
 			page.entries.forEach(function (entry: display.Entry) {
-				this.fakePage.removeEntryById(entry.id);
+				that.fakePage.removeEntryById(entry.id);
+				
+				that.registerEntry(entry);
 			});
 		}
 		
 		private registerEntry(entry: display.Entry) {
 			this.entries[entry.id] = entry;
-		
+			
 			if (entry.selector === null) return;
 				
 			this.selectorObserver.observeEntrySelector(entry.selector);
@@ -435,7 +451,7 @@ namespace rocket.impl.overview {
 		
 		set jqContents(jqContents: JQuery) {
 			this._jqContents = jqContents;
-			this._entries = display.Entry.findAll(this.jqContents);
+			this._entries = display.Entry.findAll(this.jqContents, true);
 			
 			this.disp();
 		}

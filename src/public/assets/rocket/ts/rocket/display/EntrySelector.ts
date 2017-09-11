@@ -60,7 +60,7 @@ namespace rocket.display {
 				return entrySelector;
 			}
 			
-			entrySelector = new Entry(jqElem); 
+			entrySelector = new EntrySelector(jqElem); 
 			jqElem.data("rocketEntrySelector", entrySelector);
 			
 			return entrySelector;

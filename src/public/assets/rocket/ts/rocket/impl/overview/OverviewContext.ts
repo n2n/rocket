@@ -25,21 +25,19 @@ namespace rocket.impl.overview {
 	var $ = jQuery;
 	
 	export class OverviewContext {
-		
-		
 		private jqContextControls: JQuery;
 		
 		constructor(private jqContainer: JQuery, private overviewContent: OverviewContent) {
 		}
 		
-		public initSelector(selector: SelectorObserver) {
-			this.overviewContent.initSelector(selector);
+		public initSelector(selectorObserver: SelectorObserver) {
+			this.overviewContent.initSelector(selectorObserver);
 		}
 		
 		public static findAll(jqElem: JQuery): Array<OverviewContext> {
 			var oc: Array<OverviewContext> = new Array();
 			
-			jqElem.find(".rocket-overview-context").each(function () {
+			jqElem.find(".rocket-impl-overview").each(function () {
 				oc.push(OverviewContext.from($(this)));
 			});
 			
