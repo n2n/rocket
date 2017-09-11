@@ -364,7 +364,7 @@ namespace rocket.impl.overview {
 		
 		private registerEntry(entry: display.Entry) {
 			this.entries[entry.id] = entry;
-			
+		
 			if (entry.selector === null) return;
 				
 			this.selectorObserver.observeEntrySelector(entry.selector);
