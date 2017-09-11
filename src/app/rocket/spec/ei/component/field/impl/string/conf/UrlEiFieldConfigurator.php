@@ -40,14 +40,16 @@ class UrlEiFieldConfigurator extends AlphanumericEiFieldConfigurator {
 	const ATTR_AUTO_SCHEME_KEY = 'autoScheme';
 	
 	private static $commonNeedles = array('url', 'link');
+	private static $commonNotNeedles = array('label', 'title', 'text');
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
 		
 		if ($level <= CompatibilityLevel::NOT_COMPATIBLE) return $level;
 		
-		if (StringUtils::contains(self::$commonNeedles, $propertyAssignation->getObjectPropertyAccessProxy()
-				->getPropertyName())) {
+		$propertyName = $propertyAssignation->getObjectPropertyAccessProxy()->getPropertyName();
+		if (StringUtils::contains(self::$commonNeedles, $propertyName, false) 
+				&& !StringUtils::contains(self::$commonNotNeedles, $propertyName, false)) {
 			return CompatibilityLevel::COMMON;
 		}
 		
