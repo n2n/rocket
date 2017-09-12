@@ -89,8 +89,6 @@ namespace rocket.impl {
 			var toMany = new ToMany(toManySelector, toManyEmbedded);
 			jqToMany.data("rocketImplToMany", toMany);		
 			
-			
-			
 			return toMany;
 		}
 	}
@@ -98,8 +96,8 @@ namespace rocket.impl {
 	class ToManySelector {
 		private jqUl: JQuery
 		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
-		private originalIdReps: Array<String>;
-		private identityStrings: Array<String>;
+		private originalIdReps: Array<string>;
+		private identityStrings: { [key: string]: string};
 		private browserLayer: cmd.Layer = null;
 		private browserSelectorObserver: overview.MultiEntrySelectorObserver = null;
 		
@@ -141,6 +139,18 @@ namespace rocket.impl {
 			});
 		}
 		
+		public createSelectedEntry(idRep: string, identityString: string = null): SelectedEntry {
+			var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
+			entry.idRep = idRep;
+			if (identityString !== null) {
+				entry.label = identityString;
+			} else {
+				entry.label = this.determineIdentityString(idRep);
+			} 
+			this.addSelectedEntry(entry);
+			return entry;
+		}
+		
 		public addSelectedEntry(entry: SelectedEntry) {
 			this.entries.push(entry);	
 			
@@ -155,7 +165,7 @@ namespace rocket.impl {
 				if (this.entries[i] !== entry) continue;
 			
 				entry.jQuery.remove();
-				this.entries.slice(parseInt(i), 1);
+				this.entries.splice(parseInt(i), 1);
 			}
 		}
 		
@@ -167,29 +177,46 @@ namespace rocket.impl {
 				this.entries[i].jQuery.remove();
 			}
 			
-			this.entries.slice(0, this.entries.length);
+			this.entries.splice(0, this.entries.length);
 		}
 		
 		public loadBrowser() {
 			if (this.browserLayer !== null) return;
 			
-			this.browserLayer = rocket.getContainer().createLayer();
-			
 			var that = this;
+			
+			this.browserLayer = rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+			this.browserLayer.hide();
+			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
+				that.browserLayer = null;
+				that.browserSelectorObserver = null;				
+			});
+			
 			rocket.exec(this.jqElem.data("overview-tools-url"), {
 				showLoadingContext: true,
 				currentLayer: this.browserLayer,
 				done: function (result: cmd.ExecResult) {
-					that.iniBrowserContext(result.context)
+					that.iniBrowserContext(result.context);
 				}
 			});
 		}
 		
 		private iniBrowserContext(context: cmd.Context) {
+			if (this.browserLayer === null) return;
+			
 			var ocs = impl.overview.OverviewContext.findAll(context.getJQuery());
 			if (ocs.length == 0) return;
 			
 			ocs[0].initSelector(this.browserSelectorObserver = new overview.MultiEntrySelectorObserver());
+			
+			var that = this;
+			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+				that.updateSelection();
+				context.getLayer().hide();
+			});
+			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
+				context.getLayer().hide();
+			});
 			
 			this.updateBrowser();
 		}
@@ -211,6 +238,23 @@ namespace rocket.impl {
 			});
 			
 			this.browserSelectorObserver.setSelectedIds(selectedIds);
+		}
+		
+		private updateSelection() {
+			if (this.browserSelectorObserver === null) return;
+			
+			this.clear();
+			
+			var that = this;
+			this.browserSelectorObserver.getSelectedIds().forEach(function (id) {
+				var selector = that.browserSelectorObserver.getSelectorById(id);
+				if (selector !== null) {
+					that.createSelectedEntry(id, selector.entry.identityString);
+					return;
+				}
+				
+				that.createSelectedEntry(id);
+			});
 		}
 	}
 	
@@ -246,9 +290,9 @@ namespace rocket.impl {
 			return this.jqInput.val();
 		}
 		
-//		set idRep(idRep: string) {
-//			this.jqInput.val(idRep);
-//		}
+		set idRep(idRep: string) {
+			this.jqInput.val(idRep);
+		}
 	}
 	
 	

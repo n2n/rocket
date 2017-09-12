@@ -10,10 +10,11 @@ namespace rocket.impl.overview {
 	}
 	
 	export class MultiEntrySelectorObserver implements SelectorObserver {
-		private _selectedIds: Array<string>;
+		private selectedIds: Array<string>;
+		private selectors: { [key: string]: display.EntrySelector } = {};
 		
 		constructor(private originalIdReps: Array<string> = new Array<string>()) {
-			this._selectedIds = originalIdReps;
+			this.selectedIds = originalIdReps;
 		}
 		
 		observeEntrySelector(selector: display.EntrySelector) {
@@ -30,31 +31,49 @@ namespace rocket.impl.overview {
 				jqCheck.prop("checked", selector.selected);
 				that.chSelect(selector.selected, selector.entry.id);
 			});
+			
+			var id = selector.entry.id;
+			selector.selected = this.containsSelectedId(id);
+			this.selectors[id] = selector;
+		}
+		
+		public containsSelectedId(id: string): boolean {
+			return -1 < this.selectedIds.indexOf(id);
 		}
 		
 		private chSelect(selected: boolean, idRep: string) {
 			if (selected) {
-				if (-1 < this._selectedIds.indexOf(idRep)) return;
+				if (-1 < this.selectedIds.indexOf(idRep)) return;
 				
-				this._selectedIds.push(idRep);
+				this.selectedIds.push(idRep);
 				return;
 			}
 			
 			var i;
-			if (-1 < (i = this._selectedIds.indexOf(idRep))) {
-				this._selectedIds.splice(i, 1);
+			if (-1 < (i = this.selectedIds.indexOf(idRep))) {
+				this.selectedIds.splice(i, 1);
 			}
 		}
 		
 		getSelectedIds(): Array<string> {
-			return this._selectedIds;
+			return this.selectedIds;
+		}
+		
+		getSelectorById(id: string): display.EntrySelector {
+			if (this.selectors[id] !== undefined) {
+				return this.selectors[id];
+			}
+			
+			return null;
 		}
 		
 		setSelectedIds(selectedIds: Array<string>) {
-			this._selectedIds = selectedIds;
+			this.selectedIds = selectedIds;
 			
-			selectedIds.forEach(function (id: string) {
-			});
+			var that = this;
+			for (var id in this.selectors) {
+				this.selectors[id].selected = that.containsSelectedId(id);
+			}
 		}
 	}
 }

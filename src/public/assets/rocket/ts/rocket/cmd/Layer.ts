@@ -11,6 +11,7 @@ namespace rocket.cmd {
 		private currentHistoryIndex: number = null;
 		private onNewContextCallbacks: Array<ContextCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
+		private callbackRegistery: util.CallbackRegistry<LayerCallback> = new util.CallbackRegistry<LayerCallback>();
 		private visible: boolean = true;
 		
 		constructor(jqContentGroup: JQuery, level: number, container: Container) {
@@ -49,17 +50,37 @@ namespace rocket.cmd {
 			return this.visible;
 		}
 		
+		private trigger(eventType: Layer.EventType) {
+			var layer = this;
+			this.callbackRegistery.filter(eventType.toString())
+					.forEach(function (callback: LayerCallback) {
+						callback(layer);
+					});
+		}
+		
+		public on(eventType: Layer.EventType, callback: LayerCallback) {
+			this.callbackRegistery.register(eventType.toString(), callback);
+		}
+		
+		public off(eventType: Layer.EventType, callback: LayerCallback) {
+			this.callbackRegistery.unregister(eventType.toString(), callback);
+		}		
+		
 		public show() {
+			this.trigger(Layer.EventType.SHOW);
+			
 			this.visible = true;
-			this.jqLayer.show();	
+			this.jqLayer.show();
 		}
 		
 		public hide() {
+			this.trigger(Layer.EventType.SHOW);
+			
 			this.visible = false;
-			this.jqLayer.hide();	
+			this.jqLayer.hide();
 		}
 		
-		public getLevel() {
+		public getLevel(): number {
 			return this.level;
 		}
 		
@@ -91,7 +112,7 @@ namespace rocket.cmd {
 			this.contexts.push(context);
 			var that = this;
 			
-			context.onClose(function (context: Context) {
+			context.on(Context.EventType.CLOSE, function (context: Context) {
 				for (var i in that.contexts) {
 					if (that.contexts[i] !== context) continue;
 					
@@ -194,10 +215,7 @@ namespace rocket.cmd {
 		}
 		
 		public close() {
-			var context: Context;
-			while (undefined !== (context = this.contexts.pop())) {
-				context.close();
-			}
+			this.trigger(Layer.EventType.CLOSE);
 				
 			this.contexts = new Array<Context>();
 			this.jqLayer.remove();
@@ -227,5 +245,18 @@ namespace rocket.cmd {
 	
 	interface HistoryCallback {
 		(index: number, url: Url, context: Context): any
+	}
+	
+	
+	export interface LayerCallback {
+		(layer: Layer): any
+	}
+	
+	export namespace Layer {
+		export enum EventType {
+			SHOW = "show",
+			HIDE = "hide",
+			CLOSE = "close"
+		}
 	}
 }

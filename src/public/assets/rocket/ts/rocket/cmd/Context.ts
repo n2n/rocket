@@ -9,13 +9,9 @@ namespace rocket.cmd {
 		private _activeUrl: Url;
 		private urls: Array<Url> = new Array<Url>();
 		private layer: Layer;
-		private onShowCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
-		private onHideCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
-		private onCloseCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
-		private whenContentChangedCallbacks: Array<ContextCallback> = new Array<ContextCallback>();
 		private callbackRegistery: util.CallbackRegistry<ContextCallback> = new util.CallbackRegistry<ContextCallback>();
 		private additionalTabManager: AdditionalTabManager;
-		private menu: Menu;
+		private _menu: Menu;
 		
 		constructor(jqContext: JQuery, url: Url, layer: Layer) {
 			this.jqContext = jqContext;
@@ -101,36 +97,27 @@ namespace rocket.cmd {
 		}
 		
 		public close() {
-			var callback;
-			while (undefined !== (callback = this.onCloseCallbacks.shift())) {
-				callback(this);
-			}
+			this.trigger(Context.EventType.CLOSE)
 			
 			this.jqContext.remove();
 			this.jqContext = null;
 		}
 		
 		public show() {
+			this.trigger(Context.EventType.SHOW);
+			
 			this.jqContext.show();
-		
-			var callback;
-			while (undefined !== (callback = this.onShowCallbacks.shift())) {
-				callback(this);
-			}
 		}
 		
 		public hide() {
-			this.jqContext.hide();
+			this.trigger(Context.EventType.HIDE);
 			
-			var callback;
-			while (undefined !== (callback = this.onShowCallbacks.shift())) {
-				callback(this);
-			}
+			this.jqContext.hide();
 		}
 		
 		private reset() {
 			this.additionalTabManager = new AdditionalTabManager(this);
-			this.menu = new Menu(this);
+			this._menu = new Menu(this);
 		}
 		
 		public clear(loading: boolean = false) {
@@ -160,27 +147,15 @@ namespace rocket.cmd {
 			this.jqContext.append(jqContent);
 			
 			this.reset();
-			
+			this.trigger(Context.EventType.CONTENT_CHANGED);
+		}
+		
+		private trigger(eventType: Context.EventType) {
 			var context = this;
-			this.callbackRegistery.filter(Context.EventType.CONTENT_CHANGED.toString()).forEach(function (callback: ContextCallback) {
-				callback(context);
-			});
-		}
-		
-		public onShow(callback: ContextCallback) {
-			this.onShowCallbacks.push(callback);
-		}
-		
-		public onHide(callback: ContextCallback) {
-			this.onHideCallbacks.push(callback);
-		}
-		
-		public onClose(onCloseCallback: ContextCallback) {
-			this.onCloseCallbacks.push(onCloseCallback);
-		}
-		
-		public whenContentChanged(whenContentChangedCallback: ContextCallback) {
-			this.whenContentChangedCallbacks.push(whenContentChangedCallback);
+			this.callbackRegistery.filter(eventType.toString())
+					.forEach(function (callback: ContextCallback) {
+						callback(context);
+					});
 		}
 		
 		public on(eventType: Context.EventType, callback: ContextCallback) {
@@ -195,8 +170,8 @@ namespace rocket.cmd {
 			return this.additionalTabManager.createTab(title, prepend);
 		} 
 		
-		public getMenu(): Menu {
-			return this.menu;
+		get menu(): Menu {
+			return this._menu;
 		}
 		
 		public static findFrom(jqElem: JQuery): Context {
@@ -382,18 +357,16 @@ namespace rocket.cmd {
 	
 	export class Menu {
 		private context: Context;
-		private commandList: display.CommandList = null;
+		private _commandList: display.CommandList = null;
+		private _partialCommandList: display.CommandList = null;
 		
-		public constructor(context: Context) {
+		
+		constructor(context: Context) {
 			this.context = context;
 		}
 		
-		public getCommandList(): display.CommandList {
-			if (this.commandList !== null) {
-				return this.commandList;
-			}
-			
-			var jqCommandList = this.context.getJQuery().find(".rocket-context-commands");
+		private getJqContextCommands() {
+			var jqCommandList = this.context.getJQuery().find(".rocket-context-commands:first");
 			if (jqCommandList.length == 0) {
 				jqCommandList = $("<div />", {
 					"class": "rocket-context-commands"
@@ -401,7 +374,36 @@ namespace rocket.cmd {
 				this.context.getJQuery().append(jqCommandList);
 			}
 			
-			return this.commandList = new display.CommandList(jqCommandList);
+			return jqCommandList;
+		}
+		
+		get partialCommandList(): display.CommandList {
+			if (this._partialCommandList !== null) {
+				return this._partialCommandList;
+			}
+			
+			var jqContextCommands = this.getJqContextCommands();
+			
+			var jqPartialCommands = jqContextCommands.children(".rocket-partial-commands:first");
+			if (jqPartialCommands.length == 0) {
+				jqPartialCommands = $("<div />", {"class": "rocket-partial-commands" }).prependTo(jqContextCommands);
+			}
+			
+			return this._partialCommandList = new display.CommandList(jqPartialCommands);
+		}
+		
+		get commandList(): display.CommandList {
+			if (this._commandList !== null) {
+				return this._commandList;
+			}
+			
+			var jqContextCommands = this.getJqContextCommands();
+			var jqCommands = jqContextCommands.children(":not(.rocket-partial-commands):first");
+			if (jqCommands.length == 0) {
+				jqCommands = $("<div />").appendTo(jqContextCommands);
+			}
+			
+			return this._commandList = new display.CommandList(jqCommands);
 		}
 	}
 	
@@ -461,6 +463,9 @@ namespace rocket.cmd {
 	
 	export namespace Context {
 		export enum EventType {
+			SHOW = "show",
+			HIDE = "hide",
+			CLOSE = "close",
 			CONTENT_CHANGED = "contentChanged",
 			ACTIVE_URL_CHANGED = "activeUrlChanged"
 		}

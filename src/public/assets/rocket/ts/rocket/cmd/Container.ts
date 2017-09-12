@@ -128,13 +128,13 @@ namespace rocket.cmd {
 				return layer;
 			}
 			
-			dependentContext.onClose(function () {
+			dependentContext.on(Context.EventType.CLOSE, function () {
 				layer.close();
 			});
-			dependentContext.onHide(function () {
+			dependentContext.on(Context.EventType.HIDE, function () {
 				layer.hide();
 			});
-			dependentContext.onShow(function () {
+			dependentContext.on(Context.EventType.SHOW, function () {
 				layer.show();
 			});
 			

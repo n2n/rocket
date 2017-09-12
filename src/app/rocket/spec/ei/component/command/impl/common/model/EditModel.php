@@ -95,10 +95,10 @@ class EditModel implements Dispatchable {
 	}
 	
 	public function save(MessageContainer $messageContainer) {
-		$eiEntry = $this->entryForm->buildEiuEntry();
+		$eiuEntry = $this->entryForm->buildEiuEntry();
 		
-		if ($eiEntry->save()) {
-			$this->eiFrameUtils->persist($eiEntry);
+		if ($eiuEntry->getEiEntry()->save()) {
+			$this->eiFrameUtils->persist($eiuEntry);
 			return true;
 		}
 		

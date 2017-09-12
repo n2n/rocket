@@ -393,10 +393,6 @@ var rocket;
         var Context = (function () {
             function Context(jqContext, url, layer) {
                 this.urls = new Array();
-                this.onShowCallbacks = new Array();
-                this.onHideCallbacks = new Array();
-                this.onCloseCallbacks = new Array();
-                this.whenContentChangedCallbacks = new Array();
                 this.callbackRegistery = new util.CallbackRegistry();
                 this.jqContext = jqContext;
                 this.urls.push(this._activeUrl = url);
@@ -468,30 +464,21 @@ var rocket;
                 throw new Error("Context already closed.");
             };
             Context.prototype.close = function () {
-                var callback;
-                while (undefined !== (callback = this.onCloseCallbacks.shift())) {
-                    callback(this);
-                }
+                this.trigger(Context.EventType.CLOSE);
                 this.jqContext.remove();
                 this.jqContext = null;
             };
             Context.prototype.show = function () {
+                this.trigger(Context.EventType.SHOW);
                 this.jqContext.show();
-                var callback;
-                while (undefined !== (callback = this.onShowCallbacks.shift())) {
-                    callback(this);
-                }
             };
             Context.prototype.hide = function () {
+                this.trigger(Context.EventType.HIDE);
                 this.jqContext.hide();
-                var callback;
-                while (undefined !== (callback = this.onShowCallbacks.shift())) {
-                    callback(this);
-                }
             };
             Context.prototype.reset = function () {
                 this.additionalTabManager = new AdditionalTabManager(this);
-                this.menu = new Menu(this);
+                this._menu = new Menu(this);
             };
             Context.prototype.clear = function (loading) {
                 if (loading === void 0) { loading = false; }
@@ -514,22 +501,14 @@ var rocket;
                 this.endLoading();
                 this.jqContext.append(jqContent);
                 this.reset();
+                this.trigger(Context.EventType.CONTENT_CHANGED);
+            };
+            Context.prototype.trigger = function (eventType) {
                 var context = this;
-                this.callbackRegistery.filter(Context.EventType.CONTENT_CHANGED.toString()).forEach(function (callback) {
+                this.callbackRegistery.filter(eventType.toString())
+                    .forEach(function (callback) {
                     callback(context);
                 });
-            };
-            Context.prototype.onShow = function (callback) {
-                this.onShowCallbacks.push(callback);
-            };
-            Context.prototype.onHide = function (callback) {
-                this.onHideCallbacks.push(callback);
-            };
-            Context.prototype.onClose = function (onCloseCallback) {
-                this.onCloseCallbacks.push(onCloseCallback);
-            };
-            Context.prototype.whenContentChanged = function (whenContentChangedCallback) {
-                this.whenContentChangedCallbacks.push(whenContentChangedCallback);
             };
             Context.prototype.on = function (eventType, callback) {
                 this.callbackRegistery.register(eventType.toString(), callback);
@@ -541,9 +520,13 @@ var rocket;
                 if (prepend === void 0) { prepend = false; }
                 return this.additionalTabManager.createTab(title, prepend);
             };
-            Context.prototype.getMenu = function () {
-                return this.menu;
-            };
+            Object.defineProperty(Context.prototype, "menu", {
+                get: function () {
+                    return this._menu;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Context.findFrom = function (jqElem) {
                 if (!jqElem.hasClass(".rocket-context")) {
                     jqElem = jqElem.parents(".rocket-context");
@@ -689,22 +672,50 @@ var rocket;
         cmd.AdditionalTab = AdditionalTab;
         var Menu = (function () {
             function Menu(context) {
-                this.commandList = null;
+                this._commandList = null;
+                this._partialCommandList = null;
                 this.context = context;
             }
-            Menu.prototype.getCommandList = function () {
-                if (this.commandList !== null) {
-                    return this.commandList;
-                }
-                var jqCommandList = this.context.getJQuery().find(".rocket-context-commands");
+            Menu.prototype.getJqContextCommands = function () {
+                var jqCommandList = this.context.getJQuery().find(".rocket-context-commands:first");
                 if (jqCommandList.length == 0) {
                     jqCommandList = $("<div />", {
                         "class": "rocket-context-commands"
                     });
                     this.context.getJQuery().append(jqCommandList);
                 }
-                return this.commandList = new display.CommandList(jqCommandList);
+                return jqCommandList;
             };
+            Object.defineProperty(Menu.prototype, "partialCommandList", {
+                get: function () {
+                    if (this._partialCommandList !== null) {
+                        return this._partialCommandList;
+                    }
+                    var jqContextCommands = this.getJqContextCommands();
+                    var jqPartialCommands = jqContextCommands.children(".rocket-partial-commands:first");
+                    if (jqPartialCommands.length == 0) {
+                        jqPartialCommands = $("<div />", { "class": "rocket-partial-commands" }).prependTo(jqContextCommands);
+                    }
+                    return this._partialCommandList = new display.CommandList(jqPartialCommands);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Menu.prototype, "commandList", {
+                get: function () {
+                    if (this._commandList !== null) {
+                        return this._commandList;
+                    }
+                    var jqContextCommands = this.getJqContextCommands();
+                    var jqCommands = jqContextCommands.children(":not(.rocket-partial-commands):first");
+                    if (jqCommands.length == 0) {
+                        jqCommands = $("<div />").appendTo(jqContextCommands);
+                    }
+                    return this._commandList = new display.CommandList(jqCommands);
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Menu;
         }());
         cmd.Menu = Menu;
@@ -749,6 +760,9 @@ var rocket;
         var Context;
         (function (Context) {
             (function (EventType) {
+                EventType[EventType["SHOW"] = "show"] = "SHOW";
+                EventType[EventType["HIDE"] = "hide"] = "HIDE";
+                EventType[EventType["CLOSE"] = "close"] = "CLOSE";
                 EventType[EventType["CONTENT_CHANGED"] = "contentChanged"] = "CONTENT_CHANGED";
                 EventType[EventType["ACTIVE_URL_CHANGED"] = "activeUrlChanged"] = "ACTIVE_URL_CHANGED";
             })(Context.EventType || (Context.EventType = {}));
@@ -779,7 +793,7 @@ var rocket;
             };
             Object.defineProperty(Entry.prototype, "generalId", {
                 get: function () {
-                    return this.jqElem.data("rocket-general-id");
+                    return this.jqElem.data("rocket-general-id").toString();
                 },
                 enumerable: true,
                 configurable: true
@@ -796,7 +810,7 @@ var rocket;
             });
             Object.defineProperty(Entry.prototype, "idRep", {
                 get: function () {
-                    return this.jqElem.data("rocket-id-rep");
+                    return this.jqElem.data("rocket-id-rep").toString();
                 },
                 enumerable: true,
                 configurable: true
@@ -1045,6 +1059,7 @@ var rocket;
 (function (rocket) {
     var impl;
     (function (impl) {
+        var cmd = rocket.cmd;
         var display = rocket.display;
         var $ = jQuery;
         var ToMany = (function () {
@@ -1143,6 +1158,19 @@ var rocket;
                     that.clear();
                 });
             };
+            ToManySelector.prototype.createSelectedEntry = function (idRep, identityString) {
+                if (identityString === void 0) { identityString = null; }
+                var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
+                entry.idRep = idRep;
+                if (identityString !== null) {
+                    entry.label = identityString;
+                }
+                else {
+                    entry.label = this.determineIdentityString(idRep);
+                }
+                this.addSelectedEntry(entry);
+                return entry;
+            };
             ToManySelector.prototype.addSelectedEntry = function (entry) {
                 this.entries.push(entry);
                 var that = this;
@@ -1155,7 +1183,7 @@ var rocket;
                     if (this.entries[i] !== entry)
                         continue;
                     entry.jQuery.remove();
-                    this.entries.slice(parseInt(i), 1);
+                    this.entries.splice(parseInt(i), 1);
                 }
             };
             ToManySelector.prototype.reset = function () {
@@ -1164,13 +1192,18 @@ var rocket;
                 for (var i in this.entries) {
                     this.entries[i].jQuery.remove();
                 }
-                this.entries.slice(0, this.entries.length);
+                this.entries.splice(0, this.entries.length);
             };
             ToManySelector.prototype.loadBrowser = function () {
                 if (this.browserLayer !== null)
                     return;
-                this.browserLayer = rocket.getContainer().createLayer();
                 var that = this;
+                this.browserLayer = rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+                this.browserLayer.hide();
+                this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
+                    that.browserLayer = null;
+                    that.browserSelectorObserver = null;
+                });
                 rocket.exec(this.jqElem.data("overview-tools-url"), {
                     showLoadingContext: true,
                     currentLayer: this.browserLayer,
@@ -1180,10 +1213,20 @@ var rocket;
                 });
             };
             ToManySelector.prototype.iniBrowserContext = function (context) {
+                if (this.browserLayer === null)
+                    return;
                 var ocs = impl.overview.OverviewContext.findAll(context.getJQuery());
                 if (ocs.length == 0)
                     return;
                 ocs[0].initSelector(this.browserSelectorObserver = new impl.overview.MultiEntrySelectorObserver());
+                var that = this;
+                context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+                    that.updateSelection();
+                    context.getLayer().hide();
+                });
+                context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
+                    context.getLayer().hide();
+                });
                 this.updateBrowser();
             };
             ToManySelector.prototype.openBrowser = function () {
@@ -1199,6 +1242,20 @@ var rocket;
                     selectedIds.push(entry.idRep);
                 });
                 this.browserSelectorObserver.setSelectedIds(selectedIds);
+            };
+            ToManySelector.prototype.updateSelection = function () {
+                if (this.browserSelectorObserver === null)
+                    return;
+                this.clear();
+                var that = this;
+                this.browserSelectorObserver.getSelectedIds().forEach(function (id) {
+                    var selector = that.browserSelectorObserver.getSelectorById(id);
+                    if (selector !== null) {
+                        that.createSelectedEntry(id, selector.entry.identityString);
+                        return;
+                    }
+                    that.createSelectedEntry(id);
+                });
             };
             return ToManySelector;
         }());
@@ -1236,6 +1293,9 @@ var rocket;
             Object.defineProperty(SelectedEntry.prototype, "idRep", {
                 get: function () {
                     return this.jqInput.val();
+                },
+                set: function (idRep) {
+                    this.jqInput.val(idRep);
                 },
                 enumerable: true,
                 configurable: true
@@ -2508,7 +2568,8 @@ var rocket;
                 function MultiEntrySelectorObserver(originalIdReps) {
                     if (originalIdReps === void 0) { originalIdReps = new Array(); }
                     this.originalIdReps = originalIdReps;
-                    this._selectedIds = originalIdReps;
+                    this.selectors = {};
+                    this.selectedIds = originalIdReps;
                 }
                 MultiEntrySelectorObserver.prototype.observeEntrySelector = function (selector) {
                     var that = this;
@@ -2522,26 +2583,40 @@ var rocket;
                         jqCheck.prop("checked", selector.selected);
                         that.chSelect(selector.selected, selector.entry.id);
                     });
+                    var id = selector.entry.id;
+                    selector.selected = this.containsSelectedId(id);
+                    this.selectors[id] = selector;
+                };
+                MultiEntrySelectorObserver.prototype.containsSelectedId = function (id) {
+                    return -1 < this.selectedIds.indexOf(id);
                 };
                 MultiEntrySelectorObserver.prototype.chSelect = function (selected, idRep) {
                     if (selected) {
-                        if (-1 < this._selectedIds.indexOf(idRep))
+                        if (-1 < this.selectedIds.indexOf(idRep))
                             return;
-                        this._selectedIds.push(idRep);
+                        this.selectedIds.push(idRep);
                         return;
                     }
                     var i;
-                    if (-1 < (i = this._selectedIds.indexOf(idRep))) {
-                        this._selectedIds.splice(i, 1);
+                    if (-1 < (i = this.selectedIds.indexOf(idRep))) {
+                        this.selectedIds.splice(i, 1);
                     }
                 };
                 MultiEntrySelectorObserver.prototype.getSelectedIds = function () {
-                    return this._selectedIds;
+                    return this.selectedIds;
+                };
+                MultiEntrySelectorObserver.prototype.getSelectorById = function (id) {
+                    if (this.selectors[id] !== undefined) {
+                        return this.selectors[id];
+                    }
+                    return null;
                 };
                 MultiEntrySelectorObserver.prototype.setSelectedIds = function (selectedIds) {
-                    this._selectedIds = selectedIds;
-                    selectedIds.forEach(function (id) {
-                    });
+                    this.selectedIds = selectedIds;
+                    var that = this;
+                    for (var id in this.selectors) {
+                        this.selectors[id].selected = that.containsSelectedId(id);
+                    }
                 };
                 return MultiEntrySelectorObserver;
             }());
@@ -2723,13 +2798,13 @@ var rocket;
                 if (dependentContext === null) {
                     return layer;
                 }
-                dependentContext.onClose(function () {
+                dependentContext.on(cmd.Context.EventType.CLOSE, function () {
                     layer.close();
                 });
-                dependentContext.onHide(function () {
+                dependentContext.on(cmd.Context.EventType.HIDE, function () {
                     layer.hide();
                 });
-                dependentContext.onShow(function () {
+                dependentContext.on(cmd.Context.EventType.SHOW, function () {
                     layer.show();
                 });
                 return layer;
@@ -2783,9 +2858,11 @@ var rocket;
 (function (rocket) {
     var cmd;
     (function (cmd) {
+        var util = rocket.util;
         var Layer = (function () {
             function Layer(jqContentGroup, level, container) {
                 this.currentHistoryIndex = null;
+                this.callbackRegistery = new util.CallbackRegistry();
                 this.visible = true;
                 this.contexts = new Array();
                 this.onNewContextCallbacks = new Array();
@@ -2816,11 +2893,26 @@ var rocket;
             Layer.prototype.isVisible = function () {
                 return this.visible;
             };
+            Layer.prototype.trigger = function (eventType) {
+                var layer = this;
+                this.callbackRegistery.filter(eventType.toString())
+                    .forEach(function (callback) {
+                    callback(layer);
+                });
+            };
+            Layer.prototype.on = function (eventType, callback) {
+                this.callbackRegistery.register(eventType.toString(), callback);
+            };
+            Layer.prototype.off = function (eventType, callback) {
+                this.callbackRegistery.unregister(eventType.toString(), callback);
+            };
             Layer.prototype.show = function () {
+                this.trigger(Layer.EventType.SHOW);
                 this.visible = true;
                 this.jqLayer.show();
             };
             Layer.prototype.hide = function () {
+                this.trigger(Layer.EventType.SHOW);
                 this.visible = false;
                 this.jqLayer.hide();
             };
@@ -2848,7 +2940,7 @@ var rocket;
             Layer.prototype.addContext = function (context) {
                 this.contexts.push(context);
                 var that = this;
-                context.onClose(function (context) {
+                context.on(cmd.Context.EventType.CLOSE, function (context) {
                     for (var i in that.contexts) {
                         if (that.contexts[i] !== context)
                             continue;
@@ -2931,10 +3023,7 @@ var rocket;
                 }
             };
             Layer.prototype.close = function () {
-                var context;
-                while (undefined !== (context = this.contexts.pop())) {
-                    context.close();
-                }
+                this.trigger(Layer.EventType.CLOSE);
                 this.contexts = new Array();
                 this.jqLayer.remove();
             };
@@ -2957,6 +3046,15 @@ var rocket;
             return Layer;
         }());
         cmd.Layer = Layer;
+        var Layer;
+        (function (Layer) {
+            (function (EventType) {
+                EventType[EventType["SHOW"] = "show"] = "SHOW";
+                EventType[EventType["HIDE"] = "hide"] = "HIDE";
+                EventType[EventType["CLOSE"] = "close"] = "CLOSE";
+            })(Layer.EventType || (Layer.EventType = {}));
+            var EventType = Layer.EventType;
+        })(Layer = cmd.Layer || (cmd.Layer = {}));
     })(cmd = rocket.cmd || (rocket.cmd = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -3183,20 +3281,20 @@ var rocket;
                 FixedHeader.prototype.draw = function (jqHeader, jqTable) {
                     this.jqHeader = jqHeader;
                     this.jqTable = jqTable;
-                    this.cloneTableHeader();
-                    var that = this;
-                    $(window).scroll(function () {
-                        that.scrolled();
-                    });
+                    //			this.cloneTableHeader();
+                    //			var that = this;
+                    //			$(window).scroll(function () {
+                    //				that.scrolled();
+                    //			});
                     //			var headerOffset = this.jqHeader.offset().top;
                     //			var headerHeight = this.jqHeader.height();
                     //			var headerWidth = this.jqHeader.width();
                     //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
                     //			this.jqHeader.parent().css("padding-top", headerHeight);
-                    this.calcDimensions();
-                    $(window).resize(function () {
-                        that.calcDimensions();
-                    });
+                    //			this.calcDimensions();
+                    //			$(window).resize(function () {
+                    //				that.calcDimensions();
+                    //			});
                 };
                 FixedHeader.prototype.calcDimensions = function () {
                     this.jqHeader.parent().css("padding-top", null);

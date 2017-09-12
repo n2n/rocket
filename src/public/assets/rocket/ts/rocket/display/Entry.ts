@@ -18,7 +18,7 @@ namespace rocket.display {
 		}
 		
 		get generalId(): string {
-			return this.jqElem.data("rocket-general-id");
+			return this.jqElem.data("rocket-general-id").toString();
 		}
 		
 		get id(): string {
@@ -30,7 +30,7 @@ namespace rocket.display {
 		}
 		
 		get idRep(): string {
-			return this.jqElem.data("rocket-id-rep");
+			return this.jqElem.data("rocket-id-rep").toString();
 		}
 		
 		get draftId(): number {

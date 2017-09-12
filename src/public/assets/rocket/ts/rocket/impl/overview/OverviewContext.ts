@@ -255,12 +255,12 @@ namespace rocket.impl.overview {
 			this.jqHeader = jqHeader;
 			this.jqTable = jqTable;
 			
-			this.cloneTableHeader();
+//			this.cloneTableHeader();
 			
-			var that = this;
-			$(window).scroll(function () {
-				that.scrolled();
-			});
+//			var that = this;
+//			$(window).scroll(function () {
+//				that.scrolled();
+//			});
 			
 //			var headerOffset = this.jqHeader.offset().top;
 //			var headerHeight = this.jqHeader.height();
@@ -268,10 +268,10 @@ namespace rocket.impl.overview {
 //			this.jqHeader.css({"position": "fixed", "top": headerOffset});
 //			this.jqHeader.parent().css("padding-top", headerHeight);
 			
-			this.calcDimensions();
-			$(window).resize(function () {
-				that.calcDimensions();
-			});
+//			this.calcDimensions();
+//			$(window).resize(function () {
+//				that.calcDimensions();
+//			});
 		}
 		
 		private fixedCssAttrs;
