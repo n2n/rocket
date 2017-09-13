@@ -3128,8 +3128,8 @@ var rocket;
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-context-commands"));
-                    var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
-                    fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
+                    var header = new overview.Header(overviewContent);
+                    header.draw(jqElem.children(".rocket-impl-overview-tools"));
                     overviewContext = new OverviewContext(jqElem, overviewContent);
                     jqElem.data("rocketImplOverviewContext", overviewContext);
                     return overviewContext;
@@ -3350,5 +3350,31 @@ var rocket;
                 return FixedHeader;
             }());
         })(overview = impl.overview || (impl.overview = {}));
+    })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
+var rocket;
+(function (rocket) {
+    var impl;
+    (function (impl_1) {
+        var overview;
+        (function (overview) {
+            var $ = jQuery;
+            var Header = (function () {
+                function Header(overviewContent) {
+                    this.overviewContent = overviewContent;
+                }
+                Header.prototype.draw = function (jqElem) {
+                    jqElem.find("rocket-impl-quicksearch");
+                };
+                return Header;
+            }());
+            overview.Header = Header;
+            var QuickSearch = (function () {
+                function QuickSearch(overviewContent, jqForm) {
+                    this.overviewContent = overviewContent;
+                }
+                return QuickSearch;
+            }());
+        })(overview = impl_1.overview || (impl_1.overview = {}));
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));

@@ -21,27 +21,25 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
-	use n2n\web\ui\Raw;
-	
+	use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
+	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
+		
+	$critmodForm = $view->getParam('critmodForm'); 
+	$view->assert($critmodForm instanceof CritmodForm);
 	
-	$quickSearchForm = $view->getParam('quickSearchForm');
-	$this->assert($quickSearchForm instanceof QuickSearchForm);
+	$filterAjahHook = $view->getParam('filterAjahHook');
+	$view->assert($filterAjahHook instanceof FilterAjahHook);
 ?>
-
-
-<?php $formHtml->open($quickSearchForm, null, null, array('class' => 'rocket-impl-quicksearch')) ?>
-	<?php $formHtml->label('searchStr', $html->getL10nText('common_search_label')) ?>
-	<?php $formHtml->input('searchStr', null, 'search') ?>
-	<span class="rocket-simple-commands">
-		<?php $formHtml->buttonSubmit('search', new Raw('<i class="fa fa-search"></i>'),
-				array('class' => 'rocket-control rocket-command-lonely-appended',
-						'title' => $view->getL10nText('ei_impl_list_quicksearch_tooltip'))) ?>
-		<?php $formHtml->buttonSubmit('clear', new Raw('<i class="fa fa-eraser"></i>'),
-				array('class' => 'rocket-control rocket-command-lonely-appended',
-						'title' => $view->getL10nText('ei_impl_list_quicksearch_erase_tooltip'))) ?>
-	</span>
+<?php $formHtml->open($critmodForm, null, null, array('class' => 'rocket-impl-critmod-select'),
+		$view->getParam('critmodFormUrl')) ?>
+			
+	<?php $formHtml->label('selectedCritmodSaveId', $view->getL10nText('ei_impl_select_filter_label')) ?>
+	<?php $formHtml->select('selectedCritmodSaveId', $critmodForm->getSelectedCritmodSaveIdOptions(), 
+			array('class' => 'form-control')) ?>
+	<?php $formHtml->buttonSubmit('select', 'Select', array('class' => 'btn btn-secondary rocket-critmod-select')) ?>
+	<?php $formHtml->message() ?>
 <?php $formHtml->close() ?>

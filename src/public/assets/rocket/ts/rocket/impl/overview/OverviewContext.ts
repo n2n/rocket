@@ -65,8 +65,9 @@ namespace rocket.impl.overview {
 			var pagination = new Pagination(overviewContent);
 			pagination.draw(jqForm.children(".rocket-context-commands"));
 			
-			var fixedHeader = new FixedHeader(jqElem.data("num-entries"));
-			fixedHeader.draw(jqElem.children(".rocket-impl-overview-tools"), jqForm.find("table:first"));
+			
+			var header = new Header(overviewContent);
+			header.draw(jqElem.children(".rocket-impl-overview-tools"));
 			
 			overviewContext = new OverviewContext(jqElem, overviewContent);
 			jqElem.data("rocketImplOverviewContext", overviewContext);
