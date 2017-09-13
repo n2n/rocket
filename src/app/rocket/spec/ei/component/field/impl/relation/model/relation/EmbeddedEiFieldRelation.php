@@ -55,17 +55,22 @@ class EmbeddedEiFieldRelation extends EiFieldRelation {
 		$this->setupEmbeddedEditEiCommand();
 		
 		// reason to remove: orphans should never remain in db on embeddedeiprops
-// 		if (!$this->getRelationEntityProperty()->isMaster()) {
-			$entityProperty = $this->getRelationEntityProperty();
-			if (!$entityProperty->getRelation()->isOrphanRemoval()
-					&& (!$this->isSourceMany() /*&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()*/)) {
-								
-				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+		$entityProperty = $this->getRelationEntityProperty();
+		if (!$entityProperty->getRelation()->isOrphanRemoval()) {
+			if (!$this->getRelationEiField()->getOrphansAllowed()) {
+				throw new InvalidEiComponentConfigurationException('EiField requires an EntityProperty '
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
-						. ' which removes orphans' . /* or target ' . $this->getTargetMasterAccessProxy()
-						. ' must accept null*/ '.');
+						. ' which removes orphans');
+			} 
+			
+			if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany() 
+					&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
+				throw new InvalidEiComponentConfigurationException('EiField requires an EntityProperty '
+						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
+						. ' must accept null.');
 			}
-// 		}
+		}
 		
 			
 // 		$this->embeddedPseudoCommand = new EmbeddedPseudoCommand($this->getTarget());
