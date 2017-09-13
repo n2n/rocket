@@ -56,6 +56,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_COMPACT_KEY = 'compact';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
+	const ATTR_ORPHANS_ALLOWED_KEY = 'orphansAllowed';
 	const OPTION_FILTERED_KEY = 'filtered';
 	const OPTION_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
 	
@@ -85,7 +86,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY,
-				self::OPTION_EMBEDDED_ADD_KEY, self::OPTION_FILTERED_KEY), true), true);
+				self::ATTR_ORPHANS_ALLOWED_KEY, self::OPTION_EMBEDDED_ADD_KEY, self::OPTION_FILTERED_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -139,6 +140,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp) {
 			$magCollection->addMag(new BoolMag(self::ATTR_COMPACT_KEY, 'Compact',
 					$lar->getBool(self::ATTR_COMPACT_KEY, $this->eiComponent->isCompact())));
+			$magCollection->addMag(new BoolMag(self::ATTR_ORPHANS_ALLOWED_KEY, 'Allow orphans',
+					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $this->eiComponent->getOrphansAllowed())));
 		}
 		
 		if ($this->eiPropRelation instanceof SelectEiPropRelation) {
@@ -164,6 +167,14 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
+		
+		
+		if (($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp)
+				&& $this->attributes->contains(self::ATTR_ORPHANS_ALLOWED_KEY)) {
+					
+			$this->eiComponent->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));
+		}
+				
 		
 		$relationEntityProperty = $this->eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();

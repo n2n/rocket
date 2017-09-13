@@ -52,12 +52,22 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiEntry;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
-
+	private $orphansAllowed = false;
+	
 	public function __construct() {
 		parent::__construct();
 	
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
+	
+	public function getOrphansAllowed() {
+		return $this->orphansAllowed;
+	}
+	
+	public function setOrphansAllowed(bool $orphansAllowed) {
+		$this->orphansAllowed = $orphansAllowed;
+	}
+	
 	
 	public function buildEiField(Eiu $eiu) {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());

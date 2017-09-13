@@ -67,11 +67,20 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {
 	private $targetOrderEiPropPath;
 	private $compact = true;
+	private $orphansAllowed = false;
 	
 	public function __construct() {	
 		parent::__construct();
 		
 		$this->initialize(new EmbeddedEiPropRelation($this, false, true));
+	}
+	
+	public function getOrphansAllowed() {
+		return $this->orphansAllowed;
+	}
+	
+	public function setOrphansAllowed(bool $orphansAllowed) {
+		$this->orphansAllowed = $orphansAllowed;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
