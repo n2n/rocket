@@ -55,6 +55,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
+	const ATTR_ORPHANS_ALLOWED_KEY = 'orphansAllowed';
 	const OPTION_FILTERED_KEY = 'filtered';
 	const OPTION_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
 	
@@ -84,7 +85,7 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY,
-				self::OPTION_EMBEDDED_ADD_KEY, self::OPTION_FILTERED_KEY), true), true);
+				self::ATTR_ORPHANS_ALLOWED_KEY, self::OPTION_EMBEDDED_ADD_KEY, self::OPTION_FILTERED_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -135,6 +136,12 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 					$targetOrderFieldPathOptions, $lar->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)));
 		}
 		
+		if ($this->eiComponent instanceof EmbeddedOneToOneEiField
+				|| $this->eiComponent instanceof EmbeddedOneToManyEiField) {
+			$magCollection->addMag(new BoolMag(self::ATTR_ORPHANS_ALLOWED_KEY, 'Allow orphans',
+					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $this->eiComponent->getOrphansAllowed())));
+		}
+		
 		if ($this->eiFieldRelation instanceof SelectEiFieldRelation) {
 			$magCollection->addMag(new BoolMag(self::OPTION_FILTERED_KEY, 'Filtered',
 					$lar->getBool(self::OPTION_FILTERED_KEY, $this->eiFieldRelation->isFiltered())));
@@ -158,6 +165,12 @@ class RelationEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
+		
+		if (($this->eiComponent instanceof EmbeddedOneToOneEiField || $this->eiComponent instanceof EmbeddedOneToManyEiField)
+				&& $this->attributes->contains(self::ATTR_ORPHANS_ALLOWED_KEY)) {
+			
+			$this->eiComponent->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));
+		}
 		
 		$relationEntityProperty = $this->eiFieldRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();

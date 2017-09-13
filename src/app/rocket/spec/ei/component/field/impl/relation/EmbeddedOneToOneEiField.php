@@ -53,18 +53,26 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\component\field\indepenent\EiFieldConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\spec\ei\component\field\impl\relation\model\ToOneMappable;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToOneEiField extends ToOneEiFieldAdapter {
 	private $replaceable = true;
+	private $orphansAllowed = false;
 	
 	public function __construct() {
 		parent::__construct();
 		
 		$this->displayDefinition = new DisplayDefinition(DisplayDefinition::BULKY_VIEW_MODES);
 		$this->initialize(new EmbeddedEiFieldRelation($this, false, false));
+	}
+	
+	public function getOrphansAllowed() {
+		return $this->orphansAllowed;
+	}
+	
+	public function setOrphansAllowed(bool $orphansAllowed) {
+		$this->orphansAllowed = $orphansAllowed;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
