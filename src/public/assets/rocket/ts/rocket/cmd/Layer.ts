@@ -254,9 +254,9 @@ namespace rocket.cmd {
 	
 	export namespace Layer {
 		export enum EventType {
-			SHOW = "show",
-			HIDE = "hide",
-			CLOSE = "close"
+			SHOW /*= "show"*/,
+			HIDE /*= "hide"*/,
+			CLOSE /*= "close"*/
 		}
 	}
 }

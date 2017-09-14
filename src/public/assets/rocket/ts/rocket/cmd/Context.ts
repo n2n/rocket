@@ -463,11 +463,11 @@ namespace rocket.cmd {
 	
 	export namespace Context {
 		export enum EventType {
-			SHOW = "show",
-			HIDE = "hide",
-			CLOSE = "close",
-			CONTENT_CHANGED = "contentChanged",
-			ACTIVE_URL_CHANGED = "activeUrlChanged"
+			SHOW /*= "show"*/,
+			HIDE /*= "hide"*/,
+			CLOSE /*= "close"*/,
+			CONTENT_CHANGED /*= "contentChanged"*/,
+			ACTIVE_URL_CHANGED /*= "activeUrlChanged"*/
 		}
 	}
 }

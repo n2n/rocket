@@ -32,25 +32,33 @@ namespace rocket.impl.overview {
 				that.chSelect(selector.selected, selector.entry.id);
 			});
 			
-			var id = selector.entry.id;
+			var entry = selector.entry;
+			var id = entry.id;
 			selector.selected = this.containsSelectedId(id);
 			this.selectors[id] = selector;
+			
+			entry.on(display.Entry.EventType.DISPOSED, function () {
+				delete that.selectors[id];
+			});
+			entry.on(display.Entry.EventType.REMOVED, function () {
+				that.chSelect(false, id);
+			});
 		}
 		
 		public containsSelectedId(id: string): boolean {
 			return -1 < this.selectedIds.indexOf(id);
 		}
 		
-		private chSelect(selected: boolean, idRep: string) {
+		private chSelect(selected: boolean, id: string) {
 			if (selected) {
-				if (-1 < this.selectedIds.indexOf(idRep)) return;
+				if (-1 < this.selectedIds.indexOf(id)) return;
 				
-				this.selectedIds.push(idRep);
+				this.selectedIds.push(id);
 				return;
 			}
 			
 			var i;
-			if (-1 < (i = this.selectedIds.indexOf(idRep))) {
+			if (-1 < (i = this.selectedIds.indexOf(id))) {
 				this.selectedIds.splice(i, 1);
 			}
 		}

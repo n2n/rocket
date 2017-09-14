@@ -581,13 +581,13 @@ namespace rocket.impl {
 			
 			var that = this;
 			
-			var jqCommandButton = this.expandContext.getMenu().getCommandList()
+			var jqCommandButton = this.expandContext.menu.commandList
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(function () {
 				that.expandContext.getLayer().close();
 			});
 			
-			this.expandContext.onClose(function () {
+			this.expandContext.on(cmd.Context.EventType.CLOSE, function () {
 				that.reduce();
 			});
 			

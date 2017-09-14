@@ -5,7 +5,7 @@ namespace rocket.impl.overview {
 	
 	export class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
-		private selectorState: SelectorState = null;
+		private selectorState: SelectorState = new SelectorState();
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
@@ -33,7 +33,6 @@ namespace rocket.impl.overview {
 		
 		initSelector(selectorObserver: SelectorObserver) {
 			var fakePage = new Page(0);
-			this.selectorState = new SelectorState(selectorObserver);
 			fakePage.visible = false;
 			
 			var idReps = selectorObserver.getSelectedIds();
@@ -55,13 +54,13 @@ namespace rocket.impl.overview {
 				
 			});
 			
-			this.loadFakePage(fakePage, unloadedIds);
+			this.loadFakePage(selectorObserver, fakePage, unloadedIds);
 		}
 		
-		private loadFakePage(fakePage: Page, unloadedIdReps: Array<string>) {
+		private loadFakePage(selectorObserver: SelectorObserver, fakePage: Page, unloadedIdReps: Array<string>) {
 			if (unloadedIdReps.length == 0) {
 				fakePage.jqContents = $();
-				this.initFakePage(fakePage);	
+				this.initFakePage(selectorObserver, fakePage);	
 				return;
 			}
 			
@@ -83,12 +82,12 @@ namespace rocket.impl.overview {
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that.initFakePage(fakePage);	
+				that.initFakePage(selectorObserver, fakePage);	
 			});
 		}
 		
-		private initFakePage(fakePage: Page) {
-			this.selectorState.init(fakePage);
+		private initFakePage(selectorObserver: SelectorObserver, fakePage: Page) {
+			this.selectorState.init(selectorObserver, fakePage);
 			var that = this;
 			this.pages.forEach(function (page: Page) {
 				if (!page.isContentLoaded()) return;
@@ -344,21 +343,24 @@ namespace rocket.impl.overview {
 	
 	
 	class SelectorState {
+		private _selectorObserver: SelectorObserver = null;
 		public allInfo: AllInfo = null;
 		private fakePage: Page = null;
 		private entries: { [id:string]: display.Entry } = {};
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
-		constructor(public selectorObserver: SelectorObserver) {
-		}
-		
-		init(fakePage: Page) {
+		init(selectorObserver: SelectorObserver, fakePage: Page) {
+			this._selectorObserver = selectorObserver;
 			this.fakePage = fakePage;
 			
 			var that = this;
 			fakePage.entries.forEach(function (entry: display.Entry) {
 				that.registerEntry(entry);
 			});
+		}
+		
+		get selectorObserver(): SelectorObserver {
+			return this._selectorObserver;
 		}
 		
 		isInit(): boolean {
@@ -388,6 +390,12 @@ namespace rocket.impl.overview {
 			var that = this;
 			entry.selector.whenChanged(function () {
 				that.triggerChanged();
+			});
+			entry.on(display.Entry.EventType.DISPOSED, function () {
+				delete that.entries[entry.id];
+			});
+			entry.on(display.Entry.EventType.REMOVED, function () {
+				delete that.entries[entry.id];
 			});
 		}
 		

@@ -1,8 +1,30 @@
 namespace rocket.display {
 	
 	export class Entry {
+		private _state: Entry.State = Entry.State.PERSISTENT;
+		private callbackRegistery: util.CallbackRegistry<EntryCallback> = new util.CallbackRegistry<EntryCallback>();
 		
 		constructor(private jqElem: JQuery) {
+			var that = this;
+			jqElem.on("remove", function () {
+				that.trigger(Entry.EventType.DISPOSED);
+			});
+		}
+		
+		private trigger(eventType: Entry.EventType) {
+			var entry = this;
+			this.callbackRegistery.filter(eventType.toString())
+					.forEach(function (callback: EntryCallback) {
+						callback(entry);
+					});
+		}
+		
+		public on(eventType: Entry.EventType, callback: EntryCallback) {
+			this.callbackRegistery.register(eventType.toString(), callback);
+		}
+		
+		public off(eventType: Entry.EventType, callback: EntryCallback) {
+			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
 		get jqQuery(): JQuery {
@@ -17,8 +39,26 @@ namespace rocket.display {
 			this.jqElem.hide();
 		}
 		
+		dipose() {
+			this.jqElem.remove();
+		}
+		
+		get state(): Entry.State {
+			return this._state;
+		}
+		
+		set state(state: Entry.State) {
+			if (this._state == state) return;
+			
+			this._state = state;
+			
+			if (state == Entry.State.REMOVED) {
+				this.trigger(Entry.EventType.REMOVED);
+			}
+		}
+		
 		get generalId(): string {
-			return this.jqElem.data("rocket-general-id").toString();
+			return this.jqElem.data("rocket-general-id").toString();		
 		}
 		
 		get id(): string {
@@ -88,6 +128,23 @@ namespace rocket.display {
 			});
 			
 			return entries;
+		}
+	}
+	
+	export interface EntryCallback {
+		(entry: Entry): any;
+	}
+	
+	export namespace Entry {
+		export enum State {
+			PERSISTENT /*= "persistent"*/,
+			REMOVED /*= "removed"*/
+		}
+		
+		export enum EventType {
+			DISPOSED /*= "disposed"*/,
+			REFRESHED /*= "refreshed"*/,
+			REMOVED /*= "removed"*/
 		}
 	}
 }
