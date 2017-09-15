@@ -89,7 +89,8 @@ namespace rocket.impl.overview {
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that.initFakePage(fakePage);	
+				that.initFakePage(fakePage);
+				that.pageLoadded(fakePage);
 			});
 		}
 		
@@ -220,16 +221,19 @@ namespace rocket.impl.overview {
 				if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded()) continue;
 				
 				jqContents.insertAfter(this.pages[pni].jqContents.last());
-				this.observePage(page);
+				this._selectorState.observePage(page);
+				this.pageLoadded(page);
 				return;
 			}
 			
 			this.jqElem.prepend(jqContents);
-			this.observePage(page);
+			this._selectorState.observePage(page);
+			this.pageLoadded(page);
 		}
 		
-		private observePage(page: Page) {
-			this._selectorState.observePage(page);
+		private pageLoadded(page: Page) {
+			if (!this.selectedOnly) return;
+			
 			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
 				entry.show();
 			});	

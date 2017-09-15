@@ -2098,6 +2098,7 @@ var rocket;
                         that.jqElem.append(jqContents);
                         n2n.ajah.update();
                         that.initFakePage(fakePage);
+                        that.pageLoadded(fakePage);
                     });
                 };
                 OverviewContent.prototype.initFakePage = function (fakePage) {
@@ -2219,14 +2220,17 @@ var rocket;
                         if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded())
                             continue;
                         jqContents.insertAfter(this.pages[pni].jqContents.last());
-                        this.observePage(page);
+                        this._selectorState.observePage(page);
+                        this.pageLoadded(page);
                         return;
                     }
                     this.jqElem.prepend(jqContents);
-                    this.observePage(page);
-                };
-                OverviewContent.prototype.observePage = function (page) {
                     this._selectorState.observePage(page);
+                    this.pageLoadded(page);
+                };
+                OverviewContent.prototype.pageLoadded = function (page) {
+                    if (!this.selectedOnly)
+                        return;
                     this._selectorState.selectedEntries.forEach(function (entry) {
                         entry.show();
                     });
