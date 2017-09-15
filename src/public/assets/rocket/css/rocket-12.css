@@ -3538,6 +3538,38 @@ h1, .h1 {
   margin-left: 0.5rem;
 }
 
+.rocket-impl-overview-tools {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 44px;
+  background-color: #FBFAFA;
+  padding-top: 1rem;
+}
+
+.rocket-impl-quicksearch {
+  float: left;
+  width: 310px;
+}
+
+.rocket-impl-critmod-select-container {
+  margin-left: 320px;
+  text-align: right;
+  border: 3px solid #C2BDB6;
+  border-bottom-color: #ECEBE9;
+  background-color: #ECEBE9;
+  padding: 0.5rem 1rem;
+  position: relative;
+  top: 3px;
+  z-index: 1;
+}
+
+.rocket-impl-critmod-form {
+  background-color: #ECEBE9;
+  padding: 1rem;
+  border-bottom: 3px solid #C2BDB6;
+  border-top: 3px solid #C2BDB6;
+}
+
 @media (min-width: 768px) {
   .rocket-field {
     clear: both;

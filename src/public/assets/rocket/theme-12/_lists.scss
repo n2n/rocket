@@ -18,3 +18,35 @@
         margin-left: 0.5rem;
     }
 }
+
+.rocket-impl-overview-tools {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 44px;
+    background-color: $brand-gray-09;
+    padding-top: 1rem;
+}
+
+.rocket-impl-quicksearch {
+    float: left;
+    width: 310px;
+}
+
+.rocket-impl-critmod-select-container {
+    margin-left: 320px;
+    text-align: right;
+    border: 3px solid $brand-gray-05;
+    border-bottom-color: $brand-gray-07;
+    background-color: $brand-gray-07;
+    padding: 0.5rem 1rem;
+    position: relative;
+    top: 3px;
+    z-index: 1;
+}
+
+.rocket-impl-critmod-form {
+    background-color: $brand-gray-07;
+    padding: 1rem;
+    border-bottom: 3px solid $brand-gray-05;
+    border-top: 3px solid $brand-gray-05;
+}

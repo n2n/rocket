@@ -34,7 +34,7 @@
 	$filterAjahHook = $view->getParam('filterAjahHook');
 	$view->assert($filterAjahHook instanceof FilterAjahHook);
 ?>
-<?php $formHtml->open($critmodForm, null, null, array('class' => 'rocket-impl-critmod-select'),
+<?php $formHtml->open($critmodForm, null, null, array('class' => 'rocket-impl-critmod-select form-inline'),
 		$view->getParam('critmodFormUrl')) ?>
 			
 	<?php $formHtml->label('selectedCritmodSaveId', $view->getL10nText('ei_impl_select_filter_label')) ?>

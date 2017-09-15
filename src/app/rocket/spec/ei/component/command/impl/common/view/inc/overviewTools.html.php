@@ -50,18 +50,19 @@
 		data-entries-label="<?php $html->out($view->getParam('label')) ?>"
 		data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
 	<div class="row">
-		<div class="col-sm-5 rocket-impl-state">
+		<div class="col-md-4 rocket-impl-state">
 		</div>
 		
-		<div class="col-sm-7 text-right">
+		<div class="col-md-8 text-right">
 			<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
 					array('quickSearchForm' => $quickSearchForm)) ?>
-					
-			<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
-					array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
+			<div class="rocket-impl-critmod-select-container">
+				<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
+						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
+			</div>
 		</div>
 		
-		<div class="col-sm-12">
+		<div class="col-md-12">
 			<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
 					array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
 							'filterAjahHook' => $filterAjahHook)) ?>
