@@ -72,6 +72,8 @@ namespace rocket.impl.overview {
 			overviewContext = new OverviewContext(jqElem, overviewContent);
 			jqElem.data("rocketImplOverviewContext", overviewContext);
 			
+			overviewContent.initSelector(new MultiEntrySelectorObserver(["51","53"]));
+			
 			return overviewContext;
 		}
 	}
@@ -232,6 +234,11 @@ namespace rocket.impl.overview {
 					})));
 			
 			this.overviewContent.whenChanged(function () {
+				if (that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
+					that.jqPagination.hide();
+				} else {
+					that.jqPagination.show();
+				}
 				that.jqInput.val(that.overviewContent.currentPageNo);
 			});		
 		}

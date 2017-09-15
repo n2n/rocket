@@ -11,6 +11,7 @@ namespace rocket.impl.overview {
 	
 	export class MultiEntrySelectorObserver implements SelectorObserver {
 		private selectedIds: Array<string>;
+		private identityStrings: { [key: string]: string } = {};
 		private selectors: { [key: string]: display.EntrySelector } = {};
 		
 		constructor(private originalIdReps: Array<string> = new Array<string>()) {
@@ -36,6 +37,7 @@ namespace rocket.impl.overview {
 			var id = entry.id;
 			selector.selected = this.containsSelectedId(id);
 			this.selectors[id] = selector;
+			this.identityStrings[id] = entry.identityString;
 			
 			entry.on(display.Entry.EventType.DISPOSED, function () {
 				delete that.selectors[id];
@@ -65,6 +67,14 @@ namespace rocket.impl.overview {
 		
 		getSelectedIds(): Array<string> {
 			return this.selectedIds;
+		}
+		
+		getIdentityStringById(id: string): string {
+			if (this.identityStrings[id] !== undefined) {
+				return this.identityStrings[id];
+			}
+			
+			return null;
 		}
 		
 		getSelectorById(id: string): display.EntrySelector {

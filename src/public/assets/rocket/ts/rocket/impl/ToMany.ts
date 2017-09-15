@@ -247,9 +247,9 @@ namespace rocket.impl {
 			
 			var that = this;
 			this.browserSelectorObserver.getSelectedIds().forEach(function (id) {
-				var selector = that.browserSelectorObserver.getSelectorById(id);
-				if (selector !== null) {
-					that.createSelectedEntry(id, selector.entry.identityString);
+				var identityString = that.browserSelectorObserver.getIdentityStringById(id);
+				if (identityString !== null) {
+					that.createSelectedEntry(id, identityString);
 					return;
 				}
 				

@@ -111,7 +111,7 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	public function initByIdReps(array $idReps) {
-		$eiFrame = $this->getEiFrame();
+		$eiFrame = $this->getEiuFrame()->getEiFrame();
 				
 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$ids = array();

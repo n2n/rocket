@@ -5,11 +5,12 @@ namespace rocket.impl.overview {
 	
 	export class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
-		private selectorState: SelectorState = new SelectorState();
+		private _selectorState: SelectorState = new SelectorState();
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
 		private _numEntries: number;
+		private allInfo: AllInfo = null;
 		
 		constructor(private jqElem: JQuery, private loadUrl) {
 		}	
@@ -23,17 +24,19 @@ namespace rocket.impl.overview {
 			this._currentPageNo = currentPageNo;
 			this._numPages = numPages;
 			this._numEntries = numEntries;
-			this.createPage(this.currentPageNo).jqContents = this.jqElem.children();
+			var page = this.createPage(this.currentPageNo);
+			page.jqContents = this.jqElem.children();
+			this.selectorState.observePage(page);
 			
-			var that = this;
-			this.changedCallbacks.forEach(function (callback) {
-				callback(that);
-			});
+			this.triggerChange();
 		}
 		
 		initSelector(selectorObserver: SelectorObserver) {
+			this.selectorState.activate(selectorObserver);
+			this.triggerChange();
+			
 			var fakePage = new Page(0);
-			fakePage.visible = false;
+			fakePage.hide();
 			
 			var idReps = selectorObserver.getSelectedIds();
 			var unloadedIds = idReps.slice();
@@ -50,19 +53,19 @@ namespace rocket.impl.overview {
 						unloadedIds.splice(i, 1);
 					}
 				});
-				
-				
 			});
 			
-			this.loadFakePage(selectorObserver, fakePage, unloadedIds);
+			this.loadFakePage(fakePage, unloadedIds);
 		}
 		
-		private loadFakePage(selectorObserver: SelectorObserver, fakePage: Page, unloadedIdReps: Array<string>) {
+		private loadFakePage(fakePage: Page, unloadedIdReps: Array<string>) {
 			if (unloadedIdReps.length == 0) {
 				fakePage.jqContents = $();
-				this.initFakePage(selectorObserver, fakePage);	
+				this.initFakePage(fakePage);	
 				return;
 			}
+			
+			this.markPageAsLoading(0);
 			
 			var that = this;
 			$.ajax({
@@ -70,6 +73,8 @@ namespace rocket.impl.overview {
 				"data": { "idReps": unloadedIdReps },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
+				that.unmarkPageAsLoading(0);
+				
 				if (jqXHR.status != 200) {
                     rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
 					return;
@@ -77,55 +82,66 @@ namespace rocket.impl.overview {
 				
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
+				that.unmarkPageAsLoading(0);
+				
 				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
 				fakePage.jqContents = jqContents;
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that.initFakePage(selectorObserver, fakePage);	
+				that.initFakePage(fakePage);	
 			});
 		}
 		
-		private initFakePage(selectorObserver: SelectorObserver, fakePage: Page) {
-			this.selectorState.init(selectorObserver, fakePage);
-			var that = this;
-			this.pages.forEach(function (page: Page) {
-				if (!page.isContentLoaded()) return;
-				
-				that.selectorState.observePage(page);
-			});
+		private initFakePage(fakePage: Page) {
+			this._selectorState.init(fakePage);
+			this.triggerChange();
 		}
 		
-		private showSelected() {
-			if (this.selectorState.allInfo !== null) {
-				return;
-			}
-			
+		get selectedOnly(): boolean {
+			return this.allInfo !== null;
+		}
+		
+		public showSelected() {
+			var scrollTop =  $("html, body").scrollTop();
 			var visiblePages = new Array<Page>();
 			this.pages.forEach(function (page: Page) {
 				if (page.visible) {
 					visiblePages.push(page);
 				}
+				page.hide();
 			});
 			
-			this.selectorState.allInfo = new AllInfo(visiblePages, $("html, body").scrollTop());
-			
-			this.selectorState.selectedEntries.forEach(function (entry: display.Entry) {
+			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
 				entry.show();
-			});
+			});	
 			
-			this.selectorState.allInfo = null;
+			if (this.allInfo === null) {
+				this.allInfo = new AllInfo(visiblePages, scrollTop);
+			}
+			
+			this.triggerChange();
 		}
 		
-		private showAll() {
-			if (this.selectorState.allInfo === null) return;
+		get selectorState(): SelectorState {
+			return this._selectorState;
+		}
+		
+		public showAll() {
+			if (this.allInfo === null) return;
 			
-			this.selectorState.allInfo.pages.forEach(function (page: Page) {
-				page.visible = true;
+			this.pages.forEach(function (page: Page) {
+				page.hide();
 			});
 			
-			$("html, body").scrollTop(this.selectorState.allInfo.scrollTop);
-			this.selectorState.allInfo = null;
+			this.allInfo.pages.forEach(function (page: Page) {
+				page.show();
+			});
+			
+			$("html, body").scrollTop(this.allInfo.scrollTop);
+			this.allInfo = null;
+			
+			this.triggerChange();
 		}
 		
 //		containsIdRep(idRep: string): boolean {
@@ -155,6 +171,10 @@ namespace rocket.impl.overview {
 			
 			this._currentPageNo = currentPageNo;
 			
+			this.triggerChange();	
+		}
+		
+		private triggerChange() {
 			var that = this;
 			this.changedCallbacks.forEach(function (callback) {
 				callback(that);
@@ -174,10 +194,7 @@ namespace rocket.impl.overview {
 				return;
 			}
 			
-			var that = this;
-			this.changedCallbacks.forEach(function (callback) {
-				callback(that);
-			});
+			this.triggerChange();
 		}
 		
 		public whenChanged(callback: (OverviewContent) => any) {
@@ -203,14 +220,19 @@ namespace rocket.impl.overview {
 				if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded()) continue;
 				
 				jqContents.insertAfter(this.pages[pni].jqContents.last());
+				this.observePage(page);
 				return;
 			}
 			
 			this.jqElem.prepend(jqContents);
-			
-			if (this.selectorState !== null) {
-				this.selectorState.observePage(page);
-			}
+			this.observePage(page);
+		}
+		
+		private observePage(page: Page) {
+			this._selectorState.observePage(page);
+			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
+				entry.show();
+			});	
 		}
 		
 		goTo(pageNo: number) {
@@ -240,7 +262,11 @@ namespace rocket.impl.overview {
 		
 		private showSingle(pageNo: number) {
 			for (var i in this.pages) {
-				this.pages[i].visible = (this.pages[i].pageNo == pageNo);
+				if (this.pages[i].pageNo == pageNo) {
+					this.pages[i].show();
+				} else {
+					this.pages[i].hide();
+				}
 			}
 		}
 		
@@ -253,7 +279,7 @@ namespace rocket.impl.overview {
 					}
 					
 					page = this.pages[i];
-					page.visible = true;
+					page.show();
 				}
 			} else {
 				for (var i = pageNo; i >= targetPageNo; i--) {
@@ -336,26 +362,39 @@ namespace rocket.impl.overview {
 				n2n.ajah.update();
 			});
 		}
-		
-		public onNewPage() {
-		}
 	}	
 	
 	
 	class SelectorState {
 		private _selectorObserver: SelectorObserver = null;
-		public allInfo: AllInfo = null;
 		private fakePage: Page = null;
-		private entries: { [id:string]: display.Entry } = {};
+		private entries: { [id: string]: display.Entry } = {};
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
-		init(selectorObserver: SelectorObserver, fakePage: Page) {
+		activate(selectorObserver: SelectorObserver) {
 			this._selectorObserver = selectorObserver;
+			
+			for (let id in this.entries) {
+				if (this.entries[id].selector === null) continue;
+				
+				selectorObserver.observeEntrySelector(this.entries[id].selector);
+			}
+		}
+		
+		init(fakePage: Page) {
+			if (!this.isActive()) {
+				throw new Error("No SelectorObserver provided.");
+			}
+			
 			this.fakePage = fakePage;
 			
 			var that = this;
 			fakePage.entries.forEach(function (entry: display.Entry) {
-				that.registerEntry(entry);
+				if (!that.containsEntryId(entry.id)) {	
+					that.registerEntry(entry);
+				} else {
+					entry.dispose();
+				}
 			});
 		}
 		
@@ -363,18 +402,20 @@ namespace rocket.impl.overview {
 			return this._selectorObserver;
 		}
 		
+		isActive(): boolean {
+			return this._selectorObserver !== null;
+		}
+		
 		isInit(): boolean {
 			return this.fakePage !== null;
 		}
 		
 		observePage(page: Page) {
-			if (!this.isInit()) {
-				throw new Error("Fake page not yet loaded.");
-			}
-			
 			var that = this;
 			page.entries.forEach(function (entry: display.Entry) {
-				that.fakePage.removeEntryById(entry.id);
+				if (that.fakePage !== null) {
+					that.fakePage.removeEntryById(entry.id);
+				}
 				
 				that.registerEntry(entry);
 			});
@@ -384,8 +425,10 @@ namespace rocket.impl.overview {
 			this.entries[entry.id] = entry;
 			
 			if (entry.selector === null) return;
-				
-			this.selectorObserver.observeEntrySelector(entry.selector);
+			
+			if (this.selectorObserver !== null) {
+				this.selectorObserver.observeEntrySelector(entry.selector);
+			}
 			
 			var that = this;
 			entry.selector.whenChanged(function () {
@@ -397,6 +440,10 @@ namespace rocket.impl.overview {
 			entry.on(display.Entry.EventType.REMOVED, function () {
 				delete that.entries[entry.id];
 			});
+		}
+		
+		private containsEntryId(id: string) {
+			return this.entries[id] !== undefined;
 		}
 		
 		get selectedEntries(): Array<display.Entry> {
@@ -439,9 +486,13 @@ namespace rocket.impl.overview {
 			return this._visible;
 		}
 		
-		set visible(visible: boolean) {
-			this._visible = visible;
-			
+		show() {
+			this._visible = true;
+			this.disp();
+		}
+		
+		hide() {
+			this._visible = false;
 			this.disp();
 		}
 		

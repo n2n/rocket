@@ -39,7 +39,7 @@ namespace rocket.display {
 			this.jqElem.hide();
 		}
 		
-		dipose() {
+		dispose() {
 			this.jqElem.remove();
 		}
 		
