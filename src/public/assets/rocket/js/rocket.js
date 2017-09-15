@@ -2627,9 +2627,19 @@ var rocket;
         var $ = jQuery;
         var Form = (function () {
             function Form(jqForm) {
+                this._observing = false;
                 this.jqForm = jqForm;
             }
+            Object.defineProperty(Form.prototype, "observing", {
+                get: function () {
+                    return this._observing;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Form.prototype.observe = function () {
+                if (this._observing)
+                    return;
                 var that = this;
                 this.jqForm.submit(function () {
                     that.submit(new FormData(this));

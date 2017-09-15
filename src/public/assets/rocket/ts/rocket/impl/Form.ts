@@ -24,12 +24,20 @@ namespace rocket.impl {
 	
 	export class Form {
 		private jqForm;
+		private _observing = false;
+		private 
 		
 		constructor(jqForm: JQuery) {
 			this.jqForm = jqForm;
 		}
 		
+		get observing() {
+			return this._observing;
+		}
+		
 		public observe() {
+			if (this._observing) return;
+			
 			var that = this;
 			this.jqForm.submit(function () {
 				that.submit(new FormData(this));
