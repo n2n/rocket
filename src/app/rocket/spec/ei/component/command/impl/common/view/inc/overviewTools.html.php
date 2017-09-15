@@ -43,7 +43,7 @@
 	$view->assert($quickSearchForm instanceof QuickSearchForm);
 ?>
 
-<div class="rocket-impl-overview-tools" style="background: #ABC"
+<div class="rocket-impl-overview-tools" 
 		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>"
 		data-selected-label="<?php $html->text('common_selected_label')?>"
 		data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
@@ -54,14 +54,11 @@
 		</div>
 		
 		<div class="col-sm-7 text-right">
-			<div>
-				<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
-						array('quickSearchForm' => $quickSearchForm)) ?>
-			</div>
-			<div>
-				<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
-						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
-			</div>
+			<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
+					array('quickSearchForm' => $quickSearchForm)) ?>
+					
+			<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
+					array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
 		</div>
 		
 		<div class="col-sm-12">
