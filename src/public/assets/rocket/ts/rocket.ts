@@ -37,12 +37,12 @@ namespace rocket {
 		
 		(function () {
 			$("form.rocket-impl-form").each(function () {
-				rocket.impl.Form.scan($(this));
+				rocket.impl.Form.from($(this));
 			});
 			
 			n2n.dispatch.registerCallback(function () {
 				$("form.rocket-impl-form").each(function () {
-					rocket.impl.Form.scan($(this));
+					rocket.impl.Form.from($(this));
 				});
 			});
 		}) ();

@@ -67,7 +67,7 @@ namespace rocket.impl.overview {
 			
 			
 			var header = new Header(overviewContent);
-			header.draw(jqElem.children(".rocket-impl-overview-tools"));
+			header.init(jqElem.children(".rocket-impl-overview-tools"));
 			
 			overviewContext = new OverviewContext(jqElem, overviewContent);
 			jqElem.data("rocketImplOverviewContext", overviewContext);
@@ -124,6 +124,8 @@ namespace rocket.impl.overview {
 		}
 		
 		private contentUpdated() {
+			if (!this.overviewContent.isInit()) return;
+			
 			var newCurPageNo = this.overviewContent.currentPageNo;
 			var newNumPages = this.overviewContent.numPages;
 			
@@ -234,7 +236,7 @@ namespace rocket.impl.overview {
 					})));
 			
 			this.overviewContent.whenChanged(function () {
-				if (that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
+				if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
 					that.jqPagination.hide();
 				} else {
 					that.jqPagination.show();

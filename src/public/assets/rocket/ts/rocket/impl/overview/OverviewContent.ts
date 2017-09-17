@@ -20,13 +20,45 @@ namespace rocket.impl.overview {
 		}
 		
 		initFromDom(currentPageNo: number, numPages: number, numEntries: number) {
-			rocket.util.IllegalStateError.assertTrue(!this.isInit());
+			this.clear(false);
 			this._currentPageNo = currentPageNo;
 			this._numPages = numPages;
 			this._numEntries = numEntries;
 			var page = this.createPage(this.currentPageNo);
 			page.jqContents = this.jqElem.children();
 			this.selectorState.observePage(page);
+			
+			this.triggerChange();
+		}
+		
+		initFromResponse(data: any) {
+			this.clear(false);
+			
+			var page: Page = this.createPage(data.additional.pageNo);
+			this.initPageFromResponse(page, data);
+			
+			this.triggerChange();
+		}
+		
+		clear(markLoading: boolean) {
+			let page: Page = null;
+			while (undefined !== (page = this.pages.pop())) {
+				page.jqContents.remove();
+				this.unmarkPageAsLoading(page.pageNo);
+			}
+			
+			this._currentPageNo = null;
+			
+			if (page = this.selectorState.reset()) {
+				page.jqContents.remove();
+				this.unmarkPageAsLoading(page.pageNo);
+			}
+			
+			if (markLoading) {
+				this.removeLoader();
+			} else {
+				this.addLoader();
+			}
 			
 			this.triggerChange();
 		}
@@ -306,14 +338,11 @@ namespace rocket.impl.overview {
 		private jqLoader: JQuery = null;
 		
 		private markPageAsLoading(pageNo: number) {
-			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
-				throw new Error("page already loading");
-			}
-			
-			if (this.jqLoader === null) {
-				this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
-						.insertAfter(this.jqElem.parent("table"));
-			}
+//			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
+//				throw new Error("page already loading");
+//			}
+//			
+			this.addLoader();
 			
 			this.loadingPageNos.push(pageNo);
 		}
@@ -326,10 +355,24 @@ namespace rocket.impl.overview {
 			this.loadingPageNos.splice(i, 1);
 			
 			if (this.loadingPageNos.length == 0) {
-				this.jqLoader.remove();
-				this.jqLoader = null;
+				this.removeLoader();
 			}
 		}
+		
+		private addLoader() {
+			if (this.jqLoader) return;
+			
+			this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
+						.insertAfter(this.jqElem.parent("table"));
+		}
+		
+		private removeLoader() {
+			if (!this.jqLoader) return;
+			
+			this.jqLoader.remove();
+			this.jqLoader = null;
+		}
+		
 		
 		private createPage(pageNo: number): Page {
 			if (this.containsPageNo(pageNo)) {
@@ -359,12 +402,16 @@ namespace rocket.impl.overview {
 				
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
-				that.unmarkPageAsLoading(pageNo);
-				that.changeBoundaries(data.additional.numPages, data.additional.numEntries);
-				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
-				that.applyContents(page, jqContents);
-				n2n.ajah.update();
+				that.initPageFromResponse(page, data);
 			});
+		}
+		
+		private initPageFromResponse(page: Page, jsonData: any) {
+			this.unmarkPageAsLoading(page.pageNo);
+			this.changeBoundaries(jsonData.additional.numPages, jsonData.additional.numEntries);
+			var jqContents = $(n2n.ajah.analyze(jsonData)).find(".rocket-overview-content:first").children();
+			this.applyContents(page, jqContents);
+			n2n.ajah.update();
 		}
 	}	
 	
@@ -383,6 +430,14 @@ namespace rocket.impl.overview {
 				
 				selectorObserver.observeEntrySelector(this.entries[id].selector);
 			}
+		}
+		
+		reset(): Page {
+			var fakePage: Page = this.fakePage;
+			
+			this.fakePage = null;
+			
+			return fakePage;
 		}
 		
 		init(fakePage: Page) {

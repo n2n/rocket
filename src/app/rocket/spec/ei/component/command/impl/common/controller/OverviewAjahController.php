@@ -153,19 +153,22 @@ class OverviewAjahController extends ControllerAdapter {
 			$listModel->initByIdReps($idReps->toStringArrayOrReject());
 		} else {
 			if ($pageNo === null) {
-				throw new PageNotFoundException();
+				$pageNo = 1;
+			} else {
+				$pageNo = $pageNo->toNumericOrReject();
 			}
+				
 			
 			if ($this->dispatch($quickSearchForm, 'search') || $this->dispatch($quickSearchForm, 'clear')) {
 				//
 			}
 				
-			if (!$listModel->initialize($pageNo->toNumericOrReject())) {
+			if (!$listModel->initialize($pageNo)) {
 				throw new PageNotFoundException();
 			}
 		}
 		
-		$attrs = array('numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
+		$attrs = array('pageNo' => $pageNo, 'numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
 
 		$this->send(new AjahResponse($listModel->getEiuGui()->createView(), $attrs));
 	}

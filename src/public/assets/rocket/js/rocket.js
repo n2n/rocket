@@ -2042,13 +2042,38 @@ var rocket;
                     return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
                 };
                 OverviewContent.prototype.initFromDom = function (currentPageNo, numPages, numEntries) {
-                    rocket.util.IllegalStateError.assertTrue(!this.isInit());
+                    this.clear(false);
                     this._currentPageNo = currentPageNo;
                     this._numPages = numPages;
                     this._numEntries = numEntries;
                     var page = this.createPage(this.currentPageNo);
                     page.jqContents = this.jqElem.children();
                     this.selectorState.observePage(page);
+                    this.triggerChange();
+                };
+                OverviewContent.prototype.initFromResponse = function (data) {
+                    this.clear(false);
+                    var page = this.createPage(data.additional.pageNo);
+                    this.initPageFromResponse(page, data);
+                    this.triggerChange();
+                };
+                OverviewContent.prototype.clear = function (markLoading) {
+                    var page = null;
+                    while (undefined !== (page = this.pages.pop())) {
+                        page.jqContents.remove();
+                        this.unmarkPageAsLoading(page.pageNo);
+                    }
+                    this._currentPageNo = null;
+                    if (page = this.selectorState.reset()) {
+                        page.jqContents.remove();
+                        this.unmarkPageAsLoading(page.pageNo);
+                    }
+                    if (markLoading) {
+                        this.removeLoader();
+                    }
+                    else {
+                        this.addLoader();
+                    }
                     this.triggerChange();
                 };
                 OverviewContent.prototype.initSelector = function (selectorObserver) {
@@ -2290,13 +2315,11 @@ var rocket;
                     return true;
                 };
                 OverviewContent.prototype.markPageAsLoading = function (pageNo) {
-                    if (-1 < this.loadingPageNos.indexOf(pageNo)) {
-                        throw new Error("page already loading");
-                    }
-                    if (this.jqLoader === null) {
-                        this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
-                            .insertAfter(this.jqElem.parent("table"));
-                    }
+                    //			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
+                    //				throw new Error("page already loading");
+                    //			}
+                    //			
+                    this.addLoader();
                     this.loadingPageNos.push(pageNo);
                 };
                 OverviewContent.prototype.unmarkPageAsLoading = function (pageNo) {
@@ -2305,9 +2328,20 @@ var rocket;
                         return;
                     this.loadingPageNos.splice(i, 1);
                     if (this.loadingPageNos.length == 0) {
-                        this.jqLoader.remove();
-                        this.jqLoader = null;
+                        this.removeLoader();
                     }
+                };
+                OverviewContent.prototype.addLoader = function () {
+                    if (this.jqLoader)
+                        return;
+                    this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
+                        .insertAfter(this.jqElem.parent("table"));
+                };
+                OverviewContent.prototype.removeLoader = function () {
+                    if (!this.jqLoader)
+                        return;
+                    this.jqLoader.remove();
+                    this.jqLoader = null;
                 };
                 OverviewContent.prototype.createPage = function (pageNo) {
                     if (this.containsPageNo(pageNo)) {
@@ -2331,12 +2365,15 @@ var rocket;
                         }
                         throw new Error("invalid response");
                     }).done(function (data, textStatus, jqXHR) {
-                        that.unmarkPageAsLoading(pageNo);
-                        that.changeBoundaries(data.additional.numPages, data.additional.numEntries);
-                        var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
-                        that.applyContents(page, jqContents);
-                        n2n.ajah.update();
+                        that.initPageFromResponse(page, data);
                     });
+                };
+                OverviewContent.prototype.initPageFromResponse = function (page, jsonData) {
+                    this.unmarkPageAsLoading(page.pageNo);
+                    this.changeBoundaries(jsonData.additional.numPages, jsonData.additional.numEntries);
+                    var jqContents = $(n2n.ajah.analyze(jsonData)).find(".rocket-overview-content:first").children();
+                    this.applyContents(page, jqContents);
+                    n2n.ajah.update();
                 };
                 return OverviewContent;
             }());
@@ -2355,6 +2392,11 @@ var rocket;
                             continue;
                         selectorObserver.observeEntrySelector(this.entries[id].selector);
                     }
+                };
+                SelectorState.prototype.reset = function () {
+                    var fakePage = this.fakePage;
+                    this.fakePage = null;
+                    return fakePage;
                 };
                 SelectorState.prototype.init = function (fakePage) {
                     if (!this.isActive()) {
@@ -2548,11 +2590,11 @@ var rocket;
         })();
         (function () {
             $("form.rocket-impl-form").each(function () {
-                rocket.impl.Form.scan($(this));
+                rocket.impl.Form.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
                 $("form.rocket-impl-form").each(function () {
-                    rocket.impl.Form.scan($(this));
+                    rocket.impl.Form.from($(this));
                 });
             });
         })();
@@ -2628,8 +2670,18 @@ var rocket;
         var Form = (function () {
             function Form(jqForm) {
                 this._observing = false;
+                this._config = new Form.Config();
+                this.callbackRegistery = new rocket.util.CallbackRegistry();
+                this.curXhr = null;
                 this.jqForm = jqForm;
             }
+            Object.defineProperty(Form.prototype, "jQuery", {
+                get: function () {
+                    return this.jqForm;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(Form.prototype, "observing", {
                 get: function () {
                     return this._observing;
@@ -2637,28 +2689,66 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Form.prototype, "config", {
+                get: function () {
+                    return this._config;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Form.prototype.trigger = function (eventType) {
+                var that = this;
+                this.callbackRegistery.filter(eventType.toString())
+                    .forEach(function (callback) {
+                    callback(that);
+                });
+            };
+            Form.prototype.on = function (eventType, callback) {
+                this.callbackRegistery.register(eventType.toString(), callback);
+            };
+            Form.prototype.off = function (eventType, callback) {
+                this.callbackRegistery.unregister(eventType.toString(), callback);
+            };
             Form.prototype.observe = function () {
                 if (this._observing)
                     return;
+                this._observing = true;
                 var that = this;
                 this.jqForm.submit(function () {
-                    that.submit(new FormData(this));
+                    if (!that._config.autoSubmitAllowed)
+                        return false;
+                    that.submit();
                     return false;
                 });
                 var that = this;
                 this.jqForm.find("input[type=submit], button[type=submit]").each(function () {
                     $(this).click(function () {
-                        var formData = new FormData(that.jqForm.get(0));
-                        formData.append(this.name, this.value);
-                        that.submit(formData);
+                        if (!that._config.autoSubmitAllowed)
+                            return false;
+                        //					var formData = new FormData(that.jqForm.get(0));
+                        //					formData.append(this.name, this.value);
+                        that.submit({ button: this });
                         return false;
                     });
                 });
             };
-            Form.prototype.submit = function (formData) {
+            Form.prototype.buildFormData = function (submitConfig) {
+                var formData = new FormData(this.jqForm.get(0));
+                if (submitConfig && submitConfig.button) {
+                    formData.append(submitConfig.button.name, submitConfig.button.value);
+                }
+                return formData;
+            };
+            Form.prototype.submit = function (submitConfig) {
+                if (this.curXhr) {
+                    this.curXhr.abort();
+                    this.curXhr = null;
+                }
+                this.trigger(Form.EventType.SUBMIT);
+                var formData = this.buildFormData(submitConfig);
+                var url = this._config.actionUrl || this.jqForm.attr("action");
                 var that = this;
-                var url = this.jqForm.attr("action");
-                $.ajax({
+                var xhr = this.curXhr = $.ajax({
                     "url": url,
                     "type": "POST",
                     "data": formData,
@@ -2667,16 +2757,33 @@ var rocket;
                     "contentType": false,
                     "dataType": "json",
                     "success": function (data, textStatus, jqXHR) {
-                        rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
+                        if (that.curXhr !== xhr)
+                            return;
+                        if (that._config.successResponseHandler) {
+                            that._config.successResponseHandler(data);
+                        }
+                        else {
+                            rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
+                        }
+                        if (submitConfig && submitConfig.success) {
+                            submitConfig.success();
+                        }
+                        that.trigger(Form.EventType.SUBMITTED);
                     },
                     "error": function (jqXHR, textStatus, errorThrown) {
+                        if (that.curXhr !== xhr)
+                            return;
                         rocket.handleErrorResponse(url, jqXHR);
+                        if (submitConfig && submitConfig.error) {
+                            submitConfig.error();
+                        }
+                        that.trigger(Form.EventType.SUBMITTED);
                     }
                 });
             };
-            Form.scan = function (jqForm) {
+            Form.from = function (jqForm) {
                 var form = jqForm.data("rocketImplForm");
-                if (form)
+                if (form instanceof Form)
                     return form;
                 form = new Form(jqForm);
                 jqForm.data("rocketImplForm", form);
@@ -2686,6 +2793,23 @@ var rocket;
             return Form;
         }());
         impl.Form = Form;
+        var Form;
+        (function (Form) {
+            var Config = (function () {
+                function Config() {
+                    this.blockContext = true;
+                    this.autoSubmitAllowed = true;
+                    this.actionUrl = null;
+                }
+                return Config;
+            }());
+            Form.Config = Config;
+            (function (EventType) {
+                EventType[EventType["SUBMIT"] = 0] = "SUBMIT"; /* = "submit"*/
+                EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED"; /* = "submitted"*/
+            })(Form.EventType || (Form.EventType = {}));
+            var EventType = Form.EventType;
+        })(Form = impl.Form || (impl.Form = {}));
     })(impl = rocket.impl || (rocket.impl = {}));
 })(rocket || (rocket = {}));
 var rocket;
@@ -3275,7 +3399,7 @@ var rocket;
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-context-commands"));
                     var header = new overview.Header(overviewContent);
-                    header.draw(jqElem.children(".rocket-impl-overview-tools"));
+                    header.init(jqElem.children(".rocket-impl-overview-tools"));
                     overviewContext = new OverviewContext(jqElem, overviewContent);
                     jqElem.data("rocketImplOverviewContext", overviewContext);
                     overviewContent.initSelector(new overview.MultiEntrySelectorObserver(["51", "53"]));
@@ -3322,6 +3446,8 @@ var rocket;
                     }
                 };
                 ContextUpdater.prototype.contentUpdated = function () {
+                    if (!this.overviewContent.isInit())
+                        return;
                     var newCurPageNo = this.overviewContent.currentPageNo;
                     var newNumPages = this.overviewContent.numPages;
                     if (this.pageUrls.length < newNumPages) {
@@ -3412,7 +3538,7 @@ var rocket;
                         "class": "fa fa-step-forward"
                     })));
                     this.overviewContent.whenChanged(function () {
-                        if (that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
+                        if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
                             that.jqPagination.hide();
                         }
                         else {
@@ -3516,16 +3642,29 @@ var rocket;
                 function Header(overviewContent) {
                     this.overviewContent = overviewContent;
                 }
-                Header.prototype.draw = function (jqElem) {
+                Header.prototype.init = function (jqElem) {
+                    this.jqElem = jqElem;
+                    this.state = new State(this.overviewContent);
+                    this.state.draw(this.jqElem.find(".rocket-impl-state:first"));
+                    this.quicksearch = new Quicksearch(this.overviewContent);
+                    this.quicksearch.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
+                };
+                return Header;
+            }());
+            overview.Header = Header;
+            var State = (function () {
+                function State(overviewContent) {
+                    this.overviewContent = overviewContent;
+                }
+                State.prototype.draw = function (jqElem) {
                     this.jqElem = jqElem;
                     var that = this;
-                    var jqState = jqElem.find(".rocket-impl-state:first");
-                    this.jqAllButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(jqState);
+                    this.jqAllButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(jqElem);
                     this.jqAllButton.click(function () {
                         that.overviewContent.showAll();
                         that.reDraw();
                     });
-                    this.jqSelectedButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(jqState);
+                    this.jqSelectedButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(jqElem);
                     this.jqSelectedButton.click(function () {
                         that.overviewContent.showSelected();
                         that.reDraw();
@@ -3534,7 +3673,7 @@ var rocket;
                     this.overviewContent.whenChanged(function () { that.reDraw(); });
                     this.overviewContent.selectorState.whenChanged(function () { that.reDraw(); });
                 };
-                Header.prototype.reDraw = function () {
+                State.prototype.reDraw = function () {
                     var numEntries = this.overviewContent.numEntries;
                     if (numEntries == 1) {
                         this.jqAllButton.text(numEntries + " " + this.jqElem.data("entries-label"));
@@ -3569,14 +3708,66 @@ var rocket;
                     }
                     this.jqSelectedButton.prop("disabled", false);
                 };
-                return Header;
+                return State;
             }());
-            overview.Header = Header;
-            var QuickSearch = (function () {
-                function QuickSearch(overviewContent, jqForm) {
+            var Quicksearch = (function () {
+                function Quicksearch(overviewContent) {
                     this.overviewContent = overviewContent;
+                    this.sc = 0;
+                    this.serachVal = null;
                 }
-                return QuickSearch;
+                Quicksearch.prototype.init = function (jqForm) {
+                    if (this.form) {
+                        throw new Error("Quicksearch already initialized.");
+                    }
+                    this.form = impl_1.Form.from(jqForm);
+                    var that = this;
+                    this.form.on(impl_1.Form.EventType.SUBMIT, function () {
+                        that.onSubmit();
+                    });
+                    this.form.config.blockContext = false;
+                    this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
+                    this.form.config.successResponseHandler = function (data) {
+                        that.whenSubmitted(data);
+                    };
+                    this.initListeners();
+                };
+                Quicksearch.prototype.initListeners = function () {
+                    this.jqSearchButton = this.form.jQuery.find("button[type=submit]:first");
+                    this.jqSearchInput = this.form.jQuery.find("input[type=search]:first");
+                    var that = this;
+                    this.jqSearchInput.on("paste keyup", function () {
+                        that.send(false);
+                    });
+                    this.jqSearchInput.on("change", function () {
+                        that.send(true);
+                    });
+                };
+                Quicksearch.prototype.send = function (force) {
+                    this.overviewContent.clear(true);
+                    var searchVal = this.jqSearchInput.val();
+                    if (this.serachVal == searchVal)
+                        return;
+                    this.serachVal = searchVal;
+                    var si = ++this.sc;
+                    var that = this;
+                    if (force) {
+                        that.jqSearchButton.click();
+                        return;
+                    }
+                    setTimeout(function () {
+                        if (si !== that.sc)
+                            return;
+                        that.jqSearchButton.click();
+                    }, 300);
+                };
+                Quicksearch.prototype.onSubmit = function () {
+                    this.sc++;
+                };
+                Quicksearch.prototype.whenSubmitted = function (data) {
+                    this.overviewContent.initFromResponse(data);
+                };
+                return Quicksearch;
             }());
         })(overview = impl_1.overview || (impl_1.overview = {}));
     })(impl = rocket.impl || (rocket.impl = {}));

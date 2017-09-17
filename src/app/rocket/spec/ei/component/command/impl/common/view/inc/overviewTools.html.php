@@ -44,18 +44,18 @@
 ?>
 
 <div class="rocket-impl-overview-tools" 
-		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>"
-		data-selected-label="<?php $html->text('common_selected_label')?>"
-		data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
-		data-entries-label="<?php $html->out($view->getParam('label')) ?>"
-		data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
+		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>">
 	<div class="row">
-		<div class="col-md-4 rocket-impl-state">
+		<div class="col-md-4 rocket-impl-state"
+				data-selected-label="<?php $html->text('common_selected_label')?>"
+				data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
+				data-entries-label="<?php $html->out($view->getParam('label')) ?>"
+				data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
 		</div>
 		
 		<div class="col-md-8 text-right">
 			<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
-					array('quickSearchForm' => $quickSearchForm)) ?>
+					array('quickSearchForm' => $quickSearchForm, 'postUrl' => $overviewAjahHook->getSelectUrl())) ?>
 			<div class="rocket-impl-critmod-select-container">
 				<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
 						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
