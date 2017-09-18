@@ -148,7 +148,11 @@ class OverviewAjahController extends ControllerAdapter {
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
-
+		
+		if ($this->dispatch($quickSearchForm, 'search') || $this->dispatch($quickSearchForm, 'clear')) {
+			//
+		}
+		
 		if ($idReps != null) {
 			$listModel->initByIdReps($idReps->toStringArrayOrReject());
 		} else {
@@ -156,11 +160,6 @@ class OverviewAjahController extends ControllerAdapter {
 				$pageNo = 1;
 			} else {
 				$pageNo = $pageNo->toNumericOrReject();
-			}
-				
-			
-			if ($this->dispatch($quickSearchForm, 'search') || $this->dispatch($quickSearchForm, 'clear')) {
-				//
 			}
 				
 			if (!$listModel->initialize($pageNo)) {

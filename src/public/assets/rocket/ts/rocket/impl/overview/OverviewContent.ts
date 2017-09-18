@@ -5,6 +5,7 @@ namespace rocket.impl.overview {
 	
 	export class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
+		private fakePage: Page = null;
 		private _selectorState: SelectorState = new SelectorState();
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
@@ -20,100 +21,121 @@ namespace rocket.impl.overview {
 		}
 		
 		initFromDom(currentPageNo: number, numPages: number, numEntries: number) {
-			this.clear(false);
+			this.reset(false);
 			this._currentPageNo = currentPageNo;
 			this._numPages = numPages;
 			this._numEntries = numEntries;
 			var page = this.createPage(this.currentPageNo);
 			page.jqContents = this.jqElem.children();
-			this.selectorState.observePage(page);
+			this._selectorState.observePage(page);
 			
-			this.createFakePage();
-			this.triggerChange();
+			if (this.allInfo) {
+				this.allInfo = new AllInfo([page], 0);
+			}
+			
+			this.buildFakePage();
+			this.triggerContentChange();
 		}
 		
 		initFromResponse(data: any) {
-			this.clear(false);
+			this.reset(false);
 			
-			var page: Page = this.createPage(data.additional.pageNo);
+			var page: Page = this.createPage(parseInt(data.additional.pageNo));
 			this.initPageFromResponse(page, data);
 			
-			this.createFakePage();
-			this.triggerChange();
+			if (this.allInfo) {
+				this.allInfo = new AllInfo([page], 0);
+			}
+			
+			this.buildFakePage();
+			
+			this.triggerContentChange();
 		}
 		
-		clear(markLoading: boolean) {
+		clear(showLoader: boolean) {
+			this.reset(showLoader);
+			
+			this.triggerContentChange();
+		}
+		
+		private reset(showLoader: boolean) { 
 			let page: Page = null;
 			while (undefined !== (page = this.pages.pop())) {
-				page.jqContents.remove();
+				page.dispose();
 				this.unmarkPageAsLoading(page.pageNo);
 			}
 			
 			this._currentPageNo = null;
 			
-			if (page = this.selectorState.reset()) {
-				page.jqContents.remove();
-				this.unmarkPageAsLoading(page.pageNo);
+			if (this.fakePage) {
+				this.fakePage.dispose();
+				this.unmarkPageAsLoading(this.fakePage.pageNo);
+				this.fakePage = null;
 			}
 			
-			if (markLoading) {
-				this.removeLoader();
-			} else {
+			if (this.allInfo) {
+				this.allInfo = new AllInfo([], 0);
+			}
+			
+			if (showLoader) {
 				this.addLoader();
+			} else {
+				this.removeLoader();
 			}
-			
-			this.triggerChange();
 		}
 		
 		initSelector(selectorObserver: SelectorObserver) {
-			this.selectorState.activate(selectorObserver);
-			this.triggerChange();
+			this._selectorState.activate(selectorObserver);
+			this.triggerContentChange();
 			
-			this.createFakePage();
+			this.buildFakePage();
 		}
 		
-		private createFakePage() {
-			if (!this.selectorState.selectorObserver) return;
+		private buildFakePage() {
+			if (!this._selectorState.selectorObserver) return;
 			
-			var fakePage = new Page(0);
-			fakePage.hide();
+			if (this.fakePage) {
+				throw new Error("Fake page already existing.");
+			}
 			
-			var idReps = this.selectorState.selectorObserver.getSelectedIds();
+			this.fakePage = new Page(0);
+			this.fakePage.hide();
+			
+			var idReps = this._selectorState.selectorObserver.getSelectedIds();
 			var unloadedIds = idReps.slice();
 			var that = this;
 		
-			this.pages.forEach(function (page: Page) {
-				if (!page.isContentLoaded()) return;
+			this._selectorState.entries.forEach(function (entry: display.Entry) {
+				let id = entry.id;
 				
-				page.entries.forEach(function (entry: display.Entry) {
-					let id = entry.id;
-					
-					let i;
-					if (-1 < (i = unloadedIds.indexOf(id))) {
-						unloadedIds.splice(i, 1);
-					}
-				});
+				let i;
+				if (-1 < (i = unloadedIds.indexOf(id))) {
+					unloadedIds.splice(i, 1);
+				}
 			});
 			
-			this.loadFakePage(fakePage, unloadedIds);
-			return fakePage;
+			this.loadFakePage(unloadedIds);
+			return this.fakePage;
 		}
 		
-		private loadFakePage(fakePage: Page, unloadedIdReps: Array<string>) {
+		private loadFakePage(unloadedIdReps: Array<string>) {
 			if (unloadedIdReps.length == 0) {
-				fakePage.jqContents = $();
-				this.initFakePage(fakePage);	
+				this.fakePage.jqContents = $();
+				this._selectorState.observeFakePage(this.fakePage);
 				return;
 			}
 			
 			this.markPageAsLoading(0);
 			
+			var fakePage = this.fakePage;
 			var that = this;
 			$.ajax({
 				"url": that.loadUrl,
 				"data": { "idReps": unloadedIdReps },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
+				if (fakePage !== that.fakePage) return;
+				
 				that.unmarkPageAsLoading(0);
 				
 				if (jqXHR.status != 200) {
@@ -123,6 +145,8 @@ namespace rocket.impl.overview {
 				
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
+				if (fakePage !== that.fakePage) return; 
+				
 				that.unmarkPageAsLoading(0);
 				
 				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
@@ -130,18 +154,13 @@ namespace rocket.impl.overview {
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that.initFakePage(fakePage);
+				that._selectorState.observeFakePage(fakePage);
 				that.pageLoadded(fakePage);
 			});
 		}
 		
-		private initFakePage(fakePage: Page) {
-			this._selectorState.init(fakePage);
-			this.triggerChange();
-		}
-		
 		get selectedOnly(): boolean {
-			return this.allInfo !== null;
+			return this.allInfo != null;
 		}
 		
 		public showSelected() {
@@ -154,6 +173,10 @@ namespace rocket.impl.overview {
 				page.hide();
 			});
 			
+			if (this.fakePage) {
+				this.fakePage.hide();
+			}
+			
 			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
 				entry.show();
 			});	
@@ -162,12 +185,12 @@ namespace rocket.impl.overview {
 				this.allInfo = new AllInfo(visiblePages, scrollTop);
 			}
 			
-			this.triggerChange();
+			this.triggerContentChange();
 		}
 		
-		get selectorState(): SelectorState {
-			return this._selectorState;
-		}
+//		get selectorState(): SelectorState {
+//			return this._selectorState;
+//		}
 		
 		public showAll() {
 			if (this.allInfo === null) return;
@@ -176,6 +199,10 @@ namespace rocket.impl.overview {
 				page.hide();
 			});
 			
+			if (this.fakePage) {
+				this.fakePage.hide();
+			}
+			
 			this.allInfo.pages.forEach(function (page: Page) {
 				page.show();
 			});
@@ -183,7 +210,7 @@ namespace rocket.impl.overview {
 			$("html, body").scrollTop(this.allInfo.scrollTop);
 			this.allInfo = null;
 			
-			this.triggerChange();
+			this.triggerContentChange();
 		}
 		
 //		containsIdRep(idRep: string): boolean {
@@ -206,6 +233,14 @@ namespace rocket.impl.overview {
 			return this._numEntries;
 		}
 		
+		get numSelectedEntries(): number {
+			return this._selectorState.selectorObserver.getSelectedIds().length;
+		}
+		
+		get selectable(): boolean {
+			return this._selectorState.selectorObserver != null;
+		}
+		
 		private setCurrentPageNo(currentPageNo: number) {
 			if (this._currentPageNo == currentPageNo) {
 				return;
@@ -213,10 +248,10 @@ namespace rocket.impl.overview {
 			
 			this._currentPageNo = currentPageNo;
 			
-			this.triggerChange();	
+			this.triggerContentChange();	
 		}
 		
-		private triggerChange() {
+		private triggerContentChange() {
 			var that = this;
 			this.changedCallbacks.forEach(function (callback) {
 				callback(that);
@@ -236,11 +271,15 @@ namespace rocket.impl.overview {
 				return;
 			}
 			
-			this.triggerChange();
+			this.triggerContentChange();
 		}
 		
-		public whenChanged(callback: (OverviewContent) => any) {
+		whenContentChanged(callback: (OverviewContent) => any) {
 			this.changedCallbacks.push(callback);
+		}
+		
+		whenSelectionChanged(callback: () => any) {
+			this._selectorState.whenChanged(callback);
 		}
 		
 		isPageNoValid(pageNo: number): boolean {
@@ -277,12 +316,16 @@ namespace rocket.impl.overview {
 			
 			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
 				entry.show();
-			});	
+			});
 		}
 		
 		goTo(pageNo: number) {
 			if (!this.isPageNoValid(pageNo)) {
 				throw new Error("Invalid pageNo: " + pageNo);
+			}
+			
+			if (this.selectedOnly) {
+				throw new Error("No paging support for selected entries.");
 			}
 			
 			if (pageNo === this.currentPageNo) {
@@ -347,10 +390,10 @@ namespace rocket.impl.overview {
 		private jqLoader: JQuery = null;
 		
 		private markPageAsLoading(pageNo: number) {
-//			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
-//				throw new Error("page already loading");
-//			}
-//			
+			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
+				throw new Error("page already loading");
+			}
+
 			this.addLoader();
 			
 			this.loadingPageNos.push(pageNo);
@@ -388,7 +431,11 @@ namespace rocket.impl.overview {
 				throw new Error();
 			}
 			
-			return this.pages[pageNo] = new Page(pageNo);
+			var page = this.pages[pageNo] = new Page(pageNo);
+			if (this.selectedOnly) {
+				page.hide();
+			}
+			return page;
 		}
 		
 		private load(pageNo: number) {
@@ -402,6 +449,8 @@ namespace rocket.impl.overview {
 				"data": { "pageNo": pageNo },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
+				if (page !== that.pages[pageNo]) return;
+				
 				that.unmarkPageAsLoading(pageNo);
 				
 				if (jqXHR.status != 200) {
@@ -411,12 +460,15 @@ namespace rocket.impl.overview {
 				
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
+				if (page !== that.pages[pageNo]) return;
+				
+				that.unmarkPageAsLoading(pageNo);
+				
 				that.initPageFromResponse(page, data);
 			});
 		}
 		
 		private initPageFromResponse(page: Page, jsonData: any) {
-			this.unmarkPageAsLoading(page.pageNo);
 			this.changeBoundaries(jsonData.additional.numPages, jsonData.additional.numEntries);
 			var jqContents = $(n2n.ajah.analyze(jsonData)).find(".rocket-overview-content:first").children();
 			this.applyContents(page, jqContents);
@@ -427,41 +479,29 @@ namespace rocket.impl.overview {
 	
 	class SelectorState {
 		private _selectorObserver: SelectorObserver = null;
-		private fakePage: Page = null;
-		private entries: { [id: string]: display.Entry } = {};
+		private entryMap: { [id: string]: display.Entry } = {};
+		private fakeEntryMap: { [id: string]: display.Entry } = {};
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
 		activate(selectorObserver: SelectorObserver) {
 			this._selectorObserver = selectorObserver;
 			
-			for (let id in this.entries) {
-				if (this.entries[id].selector === null) continue;
+			if (!selectorObserver) return;
+			
+			for (let id in this.entryMap) {
+				if (this.entryMap[id].selector === null) continue;
 				
-				selectorObserver.observeEntrySelector(this.entries[id].selector);
+				selectorObserver.observeEntrySelector(this.entryMap[id].selector);
 			}
 		}
 		
-		reset(): Page {
-			var fakePage: Page = this.fakePage;
-			
-			this.fakePage = null;
-			
-			return fakePage;
-		}
-		
-		init(fakePage: Page) {
-			if (!this.isActive()) {
-				throw new Error("No SelectorObserver provided.");
-			}
-			
-			this.fakePage = fakePage;
-			
+		observeFakePage(fakePage: Page) {
 			var that = this;
 			fakePage.entries.forEach(function (entry: display.Entry) {
-				if (!that.containsEntryId(entry.id)) {	
-					that.registerEntry(entry);
-				} else {
+				if (that.containsEntryId(entry.id)) {
 					entry.dispose();
+				} else {
+					that.registerEntry(entry);
 				}
 			});
 		}
@@ -471,26 +511,25 @@ namespace rocket.impl.overview {
 		}
 		
 		isActive(): boolean {
-			return this._selectorObserver !== null;
-		}
-		
-		isInit(): boolean {
-			return this.fakePage !== null;
+			return this._selectorObserver != null;
 		}
 		
 		observePage(page: Page) {
 			var that = this;
 			page.entries.forEach(function (entry: display.Entry) {
-				if (that.fakePage !== null) {
-					that.fakePage.removeEntryById(entry.id);
+				if (that.fakeEntryMap[entry.id]) {
+					that.fakeEntryMap[entry.id].dispose();
 				}
 				
 				that.registerEntry(entry);
 			});
 		}
 		
-		private registerEntry(entry: display.Entry) {
-			this.entries[entry.id] = entry;
+		private registerEntry(entry: display.Entry, fake: boolean = false) {
+			this.entryMap[entry.id] = entry;
+			if (fake) {
+				this.fakeEntryMap[entry.id] = entry;
+			}
 			
 			if (entry.selector === null) return;
 			
@@ -502,16 +541,25 @@ namespace rocket.impl.overview {
 			entry.selector.whenChanged(function () {
 				that.triggerChanged();
 			});
-			entry.on(display.Entry.EventType.DISPOSED, function () {
-				delete that.entries[entry.id];
-			});
-			entry.on(display.Entry.EventType.REMOVED, function () {
-				delete that.entries[entry.id];
-			});
+			console.log("register " + entry.id);
+			var onFunc = function () {
+				if (that.entryMap[entry.id] !== entry) return;
+			
+				console.log("unregister " + entry.id);
+				delete that.entryMap[entry.id];
+				delete that.fakeEntryMap[entry.id];
+			};
+			entry.on(display.Entry.EventType.DISPOSED, onFunc);
+			entry.on(display.Entry.EventType.REMOVED, onFunc);
 		}
 		
 		private containsEntryId(id: string) {
-			return this.entries[id] !== undefined;
+			return this.entryMap[id] !== undefined;
+		}
+		
+		get entries(): Array<display.Entry> {
+			var k: any = Object;
+			return k.values(this.entryMap);
 		}
 		
 		get selectedEntries(): Array<display.Entry> {
@@ -519,9 +567,9 @@ namespace rocket.impl.overview {
 			
 			var that = this;
 			this.selectorObserver.getSelectedIds().forEach(function (id: string) {
-				if (that.entries[id] === undefined) return;
+				if (that.entryMap[id] === undefined) return;
 				
-				entries.push(that.entries[id]);
+				entries.push(that.entryMap[id]);
 			});	
 			
 			return entries;
@@ -564,6 +612,14 @@ namespace rocket.impl.overview {
 			this.disp();
 		}
 		
+		dispose() {
+			if (!this.isContentLoaded()) return;
+			
+			this._jqContents.remove();
+			this._jqContents = null;
+			this._entries = null;
+		}
+		
 		isContentLoaded(): boolean {
 			return this.jqContents !== null;
 		}
@@ -578,9 +634,21 @@ namespace rocket.impl.overview {
 		
 		set jqContents(jqContents: JQuery) {
 			this._jqContents = jqContents;
+			
 			this._entries = display.Entry.findAll(this.jqContents, true);
 			
 			this.disp();
+			
+			var that = this;
+			for (var i in this._entries) {
+				let entry = this._entries[i];
+				entry.on(display.Entry.EventType.DISPOSED, function () {
+					let j = that._entries.indexOf(entry);
+					if (-1 == j) return;
+					
+					that._entries.splice(j, 1);
+				});
+			}
 		}
 		
 		private disp() {

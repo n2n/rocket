@@ -98,8 +98,9 @@ namespace rocket.impl {
 		
 		public submit(submitConfig?: Form.SubmitDirective) {
 			if (this.curXhr) {
-				this.curXhr.abort();
+				var curXhr = this.curXhr;
 				this.curXhr = null;
+				curXhr.abort();
 			}
 			
 			this.trigger(Form.EventType.SUBMIT);

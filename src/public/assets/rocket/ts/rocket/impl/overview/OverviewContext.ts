@@ -108,7 +108,7 @@ namespace rocket.impl.overview {
 		public init(overviewContent: OverviewContent) {
 			this.overviewContent = overviewContent;
 			var that = this;
-			overviewContent.whenChanged(function () {
+			overviewContent.whenContentChanged(function () {
 				that.contentUpdated();
 			});
 		}
@@ -235,7 +235,7 @@ namespace rocket.impl.overview {
 						"class": "fa fa-step-forward"
 					})));
 			
-			this.overviewContent.whenChanged(function () {
+			this.overviewContent.whenContentChanged(function () {
 				if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
 					that.jqPagination.hide();
 				} else {

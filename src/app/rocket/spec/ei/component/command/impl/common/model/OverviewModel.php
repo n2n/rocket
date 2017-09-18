@@ -112,6 +112,9 @@ class OverviewModel implements Dispatchable {
 	
 	public function initByIdReps(array $idReps) {
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
+		
+		$this->critmodForm->applyToEiFrame($eiFrame, true);
+		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
 				
 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$ids = array();
@@ -121,7 +124,7 @@ class OverviewModel implements Dispatchable {
 	
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)
-			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiType->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
+				->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiType->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $ids);
 		
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 			$this->treeLookup($criteria, $nestedSetStrategy);

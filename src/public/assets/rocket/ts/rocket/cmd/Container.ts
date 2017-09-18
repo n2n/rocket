@@ -72,7 +72,7 @@ namespace rocket.cmd {
 			iframe.contentWindow.document.write(html);
 			iframe.contentWindow.document.close();
 			
-			$(iframe).css({ "width": "100%", "height": "100%" });
+			$(iframe).css({ "width": "100%", "height": "100%", "background": "white" });
 		}
 	
 		public getMainLayer(): Layer {

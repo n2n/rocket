@@ -50,8 +50,8 @@ namespace rocket.impl.overview {
 			
 			this.reDraw();
 			
-			this.overviewContent.whenChanged(function () { that.reDraw(); });
-			this.overviewContent.selectorState.whenChanged(function () { that.reDraw(); }); 
+			this.overviewContent.whenContentChanged(function () { that.reDraw(); });
+			this.overviewContent.whenSelectionChanged(function () { that.reDraw(); }); 
 		}
 		
 		public reDraw() {
@@ -70,16 +70,15 @@ namespace rocket.impl.overview {
 				this.jqSelectedButton.removeClass("active");
 			}
 			
-			var selectorState = this.overviewContent.selectorState;
 			
-			if (!selectorState.isActive()) {
+			if (!this.overviewContent.selectable) {
 				this.jqSelectedButton.hide();
 				return;
 			}
 			
 			this.jqSelectedButton.show();
 			
-			var numSelected = numSelected = selectorState.selectorObserver.getSelectedIds().length;
+			var numSelected = numSelected = this.overviewContent.numSelectedEntries;
 			if (numSelected == 1) {
 				this.jqSelectedButton.text(numSelected + " " + this.jqElem.data("selected-label"));
 			} else {
@@ -141,10 +140,10 @@ namespace rocket.impl.overview {
 		private serachVal = null;
 		
 		private send(force: boolean) {
-			this.overviewContent.clear(true);
-			
 			var searchVal = this.jqSearchInput.val();
 			if (this.serachVal == searchVal) return;
+
+			this.overviewContent.clear(true);
 			
 			this.serachVal = searchVal;
 			
@@ -160,12 +159,13 @@ namespace rocket.impl.overview {
 				if (si !== that.sc) return;
 				
 				that.jqSearchButton.click();
-			}, 300);
+			}, 500);
 
 		}
 		
 		private onSubmit() {
 			this.sc++;
+			this.overviewContent.clear(true);
 		}
 		
 		private whenSubmitted(data) {

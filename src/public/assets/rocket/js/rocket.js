@@ -2031,6 +2031,7 @@ var rocket;
                     this.jqElem = jqElem;
                     this.loadUrl = loadUrl;
                     this.pages = new Array();
+                    this.fakePage = null;
                     this._selectorState = new SelectorState();
                     this.changedCallbacks = new Array();
                     this._currentPageNo = null;
@@ -2042,74 +2043,97 @@ var rocket;
                     return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
                 };
                 OverviewContent.prototype.initFromDom = function (currentPageNo, numPages, numEntries) {
-                    this.clear(false);
+                    this.reset(false);
                     this._currentPageNo = currentPageNo;
                     this._numPages = numPages;
                     this._numEntries = numEntries;
                     var page = this.createPage(this.currentPageNo);
                     page.jqContents = this.jqElem.children();
-                    this.selectorState.observePage(page);
-                    this.triggerChange();
+                    this._selectorState.observePage(page);
+                    if (this.allInfo) {
+                        this.allInfo = new AllInfo([page], 0);
+                    }
+                    this.buildFakePage();
+                    this.triggerContentChange();
                 };
                 OverviewContent.prototype.initFromResponse = function (data) {
-                    this.clear(false);
-                    var page = this.createPage(data.additional.pageNo);
+                    this.reset(false);
+                    var page = this.createPage(parseInt(data.additional.pageNo));
                     this.initPageFromResponse(page, data);
-                    this.triggerChange();
+                    if (this.allInfo) {
+                        this.allInfo = new AllInfo([page], 0);
+                    }
+                    this.buildFakePage();
+                    this.triggerContentChange();
                 };
-                OverviewContent.prototype.clear = function (markLoading) {
+                OverviewContent.prototype.clear = function (showLoader) {
+                    this.reset(showLoader);
+                    this.triggerContentChange();
+                };
+                OverviewContent.prototype.reset = function (showLoader) {
                     var page = null;
                     while (undefined !== (page = this.pages.pop())) {
-                        page.jqContents.remove();
+                        page.dispose();
                         this.unmarkPageAsLoading(page.pageNo);
                     }
                     this._currentPageNo = null;
-                    if (page = this.selectorState.reset()) {
-                        page.jqContents.remove();
-                        this.unmarkPageAsLoading(page.pageNo);
+                    if (this.fakePage) {
+                        this.fakePage.dispose();
+                        this.unmarkPageAsLoading(this.fakePage.pageNo);
+                        this.fakePage = null;
                     }
-                    if (markLoading) {
-                        this.removeLoader();
+                    if (this.allInfo) {
+                        this.allInfo = new AllInfo([], 0);
                     }
-                    else {
+                    if (showLoader) {
                         this.addLoader();
                     }
-                    this.triggerChange();
+                    else {
+                        this.removeLoader();
+                    }
                 };
                 OverviewContent.prototype.initSelector = function (selectorObserver) {
-                    this.selectorState.activate(selectorObserver);
-                    this.triggerChange();
-                    var fakePage = new Page(0);
-                    fakePage.hide();
-                    var idReps = selectorObserver.getSelectedIds();
+                    this._selectorState.activate(selectorObserver);
+                    this.triggerContentChange();
+                    this.buildFakePage();
+                };
+                OverviewContent.prototype.buildFakePage = function () {
+                    if (!this._selectorState.selectorObserver)
+                        return;
+                    if (this.fakePage) {
+                        throw new Error("Fake page already existing.");
+                    }
+                    this.fakePage = new Page(0);
+                    this.fakePage.hide();
+                    var idReps = this._selectorState.selectorObserver.getSelectedIds();
                     var unloadedIds = idReps.slice();
                     var that = this;
-                    this.pages.forEach(function (page) {
-                        if (!page.isContentLoaded())
-                            return;
-                        page.entries.forEach(function (entry) {
-                            var id = entry.id;
-                            var i;
-                            if (-1 < (i = unloadedIds.indexOf(id))) {
-                                unloadedIds.splice(i, 1);
-                            }
-                        });
+                    this._selectorState.entries.forEach(function (entry) {
+                        var id = entry.id;
+                        var i;
+                        if (-1 < (i = unloadedIds.indexOf(id))) {
+                            unloadedIds.splice(i, 1);
+                        }
                     });
-                    this.loadFakePage(fakePage, unloadedIds);
+                    this.loadFakePage(unloadedIds);
+                    return this.fakePage;
                 };
-                OverviewContent.prototype.loadFakePage = function (fakePage, unloadedIdReps) {
+                OverviewContent.prototype.loadFakePage = function (unloadedIdReps) {
                     if (unloadedIdReps.length == 0) {
-                        fakePage.jqContents = $();
-                        this.initFakePage(fakePage);
+                        this.fakePage.jqContents = $();
+                        this._selectorState.observeFakePage(this.fakePage);
                         return;
                     }
                     this.markPageAsLoading(0);
+                    var fakePage = this.fakePage;
                     var that = this;
                     $.ajax({
                         "url": that.loadUrl,
                         "data": { "idReps": unloadedIdReps },
                         "dataType": "json"
                     }).fail(function (jqXHR, textStatus, data) {
+                        if (fakePage !== that.fakePage)
+                            return;
                         that.unmarkPageAsLoading(0);
                         if (jqXHR.status != 200) {
                             rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
@@ -2117,22 +2141,20 @@ var rocket;
                         }
                         throw new Error("invalid response");
                     }).done(function (data, textStatus, jqXHR) {
+                        if (fakePage !== that.fakePage)
+                            return;
                         that.unmarkPageAsLoading(0);
                         var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
                         fakePage.jqContents = jqContents;
                         that.jqElem.append(jqContents);
                         n2n.ajah.update();
-                        that.initFakePage(fakePage);
+                        that._selectorState.observeFakePage(fakePage);
                         that.pageLoadded(fakePage);
                     });
                 };
-                OverviewContent.prototype.initFakePage = function (fakePage) {
-                    this._selectorState.init(fakePage);
-                    this.triggerChange();
-                };
                 Object.defineProperty(OverviewContent.prototype, "selectedOnly", {
                     get: function () {
-                        return this.allInfo !== null;
+                        return this.allInfo != null;
                     },
                     enumerable: true,
                     configurable: true
@@ -2146,33 +2168,35 @@ var rocket;
                         }
                         page.hide();
                     });
+                    if (this.fakePage) {
+                        this.fakePage.hide();
+                    }
                     this._selectorState.selectedEntries.forEach(function (entry) {
                         entry.show();
                     });
                     if (this.allInfo === null) {
                         this.allInfo = new AllInfo(visiblePages, scrollTop);
                     }
-                    this.triggerChange();
+                    this.triggerContentChange();
                 };
-                Object.defineProperty(OverviewContent.prototype, "selectorState", {
-                    get: function () {
-                        return this._selectorState;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
+                //		get selectorState(): SelectorState {
+                //			return this._selectorState;
+                //		}
                 OverviewContent.prototype.showAll = function () {
                     if (this.allInfo === null)
                         return;
                     this.pages.forEach(function (page) {
                         page.hide();
                     });
+                    if (this.fakePage) {
+                        this.fakePage.hide();
+                    }
                     this.allInfo.pages.forEach(function (page) {
                         page.show();
                     });
                     $("html, body").scrollTop(this.allInfo.scrollTop);
                     this.allInfo = null;
-                    this.triggerChange();
+                    this.triggerContentChange();
                 };
                 Object.defineProperty(OverviewContent.prototype, "currentPageNo", {
                     //		containsIdRep(idRep: string): boolean {
@@ -2202,14 +2226,28 @@ var rocket;
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(OverviewContent.prototype, "numSelectedEntries", {
+                    get: function () {
+                        return this._selectorState.selectorObserver.getSelectedIds().length;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OverviewContent.prototype, "selectable", {
+                    get: function () {
+                        return this._selectorState.selectorObserver != null;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 OverviewContent.prototype.setCurrentPageNo = function (currentPageNo) {
                     if (this._currentPageNo == currentPageNo) {
                         return;
                     }
                     this._currentPageNo = currentPageNo;
-                    this.triggerChange();
+                    this.triggerContentChange();
                 };
-                OverviewContent.prototype.triggerChange = function () {
+                OverviewContent.prototype.triggerContentChange = function () {
                     var that = this;
                     this.changedCallbacks.forEach(function (callback) {
                         callback(that);
@@ -2225,10 +2263,13 @@ var rocket;
                         this.goTo(this.numPages);
                         return;
                     }
-                    this.triggerChange();
+                    this.triggerContentChange();
                 };
-                OverviewContent.prototype.whenChanged = function (callback) {
+                OverviewContent.prototype.whenContentChanged = function (callback) {
                     this.changedCallbacks.push(callback);
+                };
+                OverviewContent.prototype.whenSelectionChanged = function (callback) {
+                    this._selectorState.whenChanged(callback);
                 };
                 OverviewContent.prototype.isPageNoValid = function (pageNo) {
                     return (pageNo > 0 && pageNo <= this.numPages);
@@ -2263,6 +2304,9 @@ var rocket;
                 OverviewContent.prototype.goTo = function (pageNo) {
                     if (!this.isPageNoValid(pageNo)) {
                         throw new Error("Invalid pageNo: " + pageNo);
+                    }
+                    if (this.selectedOnly) {
+                        throw new Error("No paging support for selected entries.");
                     }
                     if (pageNo === this.currentPageNo) {
                         return;
@@ -2315,10 +2359,9 @@ var rocket;
                     return true;
                 };
                 OverviewContent.prototype.markPageAsLoading = function (pageNo) {
-                    //			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
-                    //				throw new Error("page already loading");
-                    //			}
-                    //			
+                    if (-1 < this.loadingPageNos.indexOf(pageNo)) {
+                        throw new Error("page already loading");
+                    }
                     this.addLoader();
                     this.loadingPageNos.push(pageNo);
                 };
@@ -2347,7 +2390,11 @@ var rocket;
                     if (this.containsPageNo(pageNo)) {
                         throw new Error();
                     }
-                    return this.pages[pageNo] = new Page(pageNo);
+                    var page = this.pages[pageNo] = new Page(pageNo);
+                    if (this.selectedOnly) {
+                        page.hide();
+                    }
+                    return page;
                 };
                 OverviewContent.prototype.load = function (pageNo) {
                     var page = this.createPage(pageNo);
@@ -2358,6 +2405,8 @@ var rocket;
                         "data": { "pageNo": pageNo },
                         "dataType": "json"
                     }).fail(function (jqXHR, textStatus, data) {
+                        if (page !== that.pages[pageNo])
+                            return;
                         that.unmarkPageAsLoading(pageNo);
                         if (jqXHR.status != 200) {
                             rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
@@ -2365,11 +2414,13 @@ var rocket;
                         }
                         throw new Error("invalid response");
                     }).done(function (data, textStatus, jqXHR) {
+                        if (page !== that.pages[pageNo])
+                            return;
+                        that.unmarkPageAsLoading(pageNo);
                         that.initPageFromResponse(page, data);
                     });
                 };
                 OverviewContent.prototype.initPageFromResponse = function (page, jsonData) {
-                    this.unmarkPageAsLoading(page.pageNo);
                     this.changeBoundaries(jsonData.additional.numPages, jsonData.additional.numEntries);
                     var jqContents = $(n2n.ajah.analyze(jsonData)).find(".rocket-overview-content:first").children();
                     this.applyContents(page, jqContents);
@@ -2381,35 +2432,28 @@ var rocket;
             var SelectorState = (function () {
                 function SelectorState() {
                     this._selectorObserver = null;
-                    this.fakePage = null;
-                    this.entries = {};
+                    this.entryMap = {};
+                    this.fakeEntryMap = {};
                     this.changedCallbacks = new Array();
                 }
                 SelectorState.prototype.activate = function (selectorObserver) {
                     this._selectorObserver = selectorObserver;
-                    for (var id in this.entries) {
-                        if (this.entries[id].selector === null)
+                    if (!selectorObserver)
+                        return;
+                    for (var id in this.entryMap) {
+                        if (this.entryMap[id].selector === null)
                             continue;
-                        selectorObserver.observeEntrySelector(this.entries[id].selector);
+                        selectorObserver.observeEntrySelector(this.entryMap[id].selector);
                     }
                 };
-                SelectorState.prototype.reset = function () {
-                    var fakePage = this.fakePage;
-                    this.fakePage = null;
-                    return fakePage;
-                };
-                SelectorState.prototype.init = function (fakePage) {
-                    if (!this.isActive()) {
-                        throw new Error("No SelectorObserver provided.");
-                    }
-                    this.fakePage = fakePage;
+                SelectorState.prototype.observeFakePage = function (fakePage) {
                     var that = this;
                     fakePage.entries.forEach(function (entry) {
-                        if (!that.containsEntryId(entry.id)) {
-                            that.registerEntry(entry);
+                        if (that.containsEntryId(entry.id)) {
+                            entry.dispose();
                         }
                         else {
-                            entry.dispose();
+                            that.registerEntry(entry);
                         }
                     });
                 };
@@ -2421,22 +2465,23 @@ var rocket;
                     configurable: true
                 });
                 SelectorState.prototype.isActive = function () {
-                    return this._selectorObserver !== null;
-                };
-                SelectorState.prototype.isInit = function () {
-                    return this.fakePage !== null;
+                    return this._selectorObserver != null;
                 };
                 SelectorState.prototype.observePage = function (page) {
                     var that = this;
                     page.entries.forEach(function (entry) {
-                        if (that.fakePage !== null) {
-                            that.fakePage.removeEntryById(entry.id);
+                        if (that.fakeEntryMap[entry.id]) {
+                            that.fakeEntryMap[entry.id].dispose();
                         }
                         that.registerEntry(entry);
                     });
                 };
-                SelectorState.prototype.registerEntry = function (entry) {
-                    this.entries[entry.id] = entry;
+                SelectorState.prototype.registerEntry = function (entry, fake) {
+                    if (fake === void 0) { fake = false; }
+                    this.entryMap[entry.id] = entry;
+                    if (fake) {
+                        this.fakeEntryMap[entry.id] = entry;
+                    }
                     if (entry.selector === null)
                         return;
                     if (this.selectorObserver !== null) {
@@ -2446,24 +2491,36 @@ var rocket;
                     entry.selector.whenChanged(function () {
                         that.triggerChanged();
                     });
-                    entry.on(rocket.display.Entry.EventType.DISPOSED, function () {
-                        delete that.entries[entry.id];
-                    });
-                    entry.on(rocket.display.Entry.EventType.REMOVED, function () {
-                        delete that.entries[entry.id];
-                    });
+                    console.log("register " + entry.id);
+                    var onFunc = function () {
+                        if (that.entryMap[entry.id] !== entry)
+                            return;
+                        console.log("unregister " + entry.id);
+                        delete that.entryMap[entry.id];
+                        delete that.fakeEntryMap[entry.id];
+                    };
+                    entry.on(rocket.display.Entry.EventType.DISPOSED, onFunc);
+                    entry.on(rocket.display.Entry.EventType.REMOVED, onFunc);
                 };
                 SelectorState.prototype.containsEntryId = function (id) {
-                    return this.entries[id] !== undefined;
+                    return this.entryMap[id] !== undefined;
                 };
+                Object.defineProperty(SelectorState.prototype, "entries", {
+                    get: function () {
+                        var k = Object;
+                        return k.values(this.entryMap);
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(SelectorState.prototype, "selectedEntries", {
                     get: function () {
                         var entries = new Array();
                         var that = this;
                         this.selectorObserver.getSelectedIds().forEach(function (id) {
-                            if (that.entries[id] === undefined)
+                            if (that.entryMap[id] === undefined)
                                 return;
-                            entries.push(that.entries[id]);
+                            entries.push(that.entryMap[id]);
                         });
                         return entries;
                     },
@@ -2509,6 +2566,13 @@ var rocket;
                     this._visible = false;
                     this.disp();
                 };
+                Page.prototype.dispose = function () {
+                    if (!this.isContentLoaded())
+                        return;
+                    this._jqContents.remove();
+                    this._jqContents = null;
+                    this._entries = null;
+                };
                 Page.prototype.isContentLoaded = function () {
                     return this.jqContents !== null;
                 };
@@ -2527,6 +2591,20 @@ var rocket;
                         this._jqContents = jqContents;
                         this._entries = rocket.display.Entry.findAll(this.jqContents, true);
                         this.disp();
+                        var that = this;
+                        var _loop_1 = function() {
+                            var entry = this_1._entries[i];
+                            entry.on(rocket.display.Entry.EventType.DISPOSED, function () {
+                                var j = that._entries.indexOf(entry);
+                                if (-1 == j)
+                                    return;
+                                that._entries.splice(j, 1);
+                            });
+                        };
+                        var this_1 = this;
+                        for (var i in this._entries) {
+                            _loop_1();
+                        }
                     },
                     enumerable: true,
                     configurable: true
@@ -2741,8 +2819,9 @@ var rocket;
             };
             Form.prototype.submit = function (submitConfig) {
                 if (this.curXhr) {
-                    this.curXhr.abort();
+                    var curXhr = this.curXhr;
                     this.curXhr = null;
+                    curXhr.abort();
                 }
                 this.trigger(Form.EventType.SUBMIT);
                 var formData = this.buildFormData(submitConfig);
@@ -3023,7 +3102,7 @@ var rocket;
                 iframe.contentWindow.document.open();
                 iframe.contentWindow.document.write(html);
                 iframe.contentWindow.document.close();
-                $(iframe).css({ "width": "100%", "height": "100%" });
+                $(iframe).css({ "width": "100%", "height": "100%", "background": "white" });
             };
             Container.prototype.getMainLayer = function () {
                 if (this.layers.length > 0) {
@@ -3432,7 +3511,7 @@ var rocket;
                 ContextUpdater.prototype.init = function (overviewContent) {
                     this.overviewContent = overviewContent;
                     var that = this;
-                    overviewContent.whenChanged(function () {
+                    overviewContent.whenContentChanged(function () {
                         that.contentUpdated();
                     });
                 };
@@ -3537,7 +3616,7 @@ var rocket;
                     }).append($("<i />", {
                         "class": "fa fa-step-forward"
                     })));
-                    this.overviewContent.whenChanged(function () {
+                    this.overviewContent.whenContentChanged(function () {
                         if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
                             that.jqPagination.hide();
                         }
@@ -3670,8 +3749,8 @@ var rocket;
                         that.reDraw();
                     });
                     this.reDraw();
-                    this.overviewContent.whenChanged(function () { that.reDraw(); });
-                    this.overviewContent.selectorState.whenChanged(function () { that.reDraw(); });
+                    this.overviewContent.whenContentChanged(function () { that.reDraw(); });
+                    this.overviewContent.whenSelectionChanged(function () { that.reDraw(); });
                 };
                 State.prototype.reDraw = function () {
                     var numEntries = this.overviewContent.numEntries;
@@ -3689,13 +3768,12 @@ var rocket;
                         this.jqAllButton.addClass("active");
                         this.jqSelectedButton.removeClass("active");
                     }
-                    var selectorState = this.overviewContent.selectorState;
-                    if (!selectorState.isActive()) {
+                    if (!this.overviewContent.selectable) {
                         this.jqSelectedButton.hide();
                         return;
                     }
                     this.jqSelectedButton.show();
-                    var numSelected = numSelected = selectorState.selectorObserver.getSelectedIds().length;
+                    var numSelected = numSelected = this.overviewContent.numSelectedEntries;
                     if (numSelected == 1) {
                         this.jqSelectedButton.text(numSelected + " " + this.jqElem.data("selected-label"));
                     }
@@ -3744,10 +3822,10 @@ var rocket;
                     });
                 };
                 Quicksearch.prototype.send = function (force) {
-                    this.overviewContent.clear(true);
                     var searchVal = this.jqSearchInput.val();
                     if (this.serachVal == searchVal)
                         return;
+                    this.overviewContent.clear(true);
                     this.serachVal = searchVal;
                     var si = ++this.sc;
                     var that = this;
@@ -3759,10 +3837,11 @@ var rocket;
                         if (si !== that.sc)
                             return;
                         that.jqSearchButton.click();
-                    }, 300);
+                    }, 500);
                 };
                 Quicksearch.prototype.onSubmit = function () {
                     this.sc++;
+                    this.overviewContent.clear(true);
                 };
                 Quicksearch.prototype.whenSubmitted = function (data) {
                     this.overviewContent.initFromResponse(data);
