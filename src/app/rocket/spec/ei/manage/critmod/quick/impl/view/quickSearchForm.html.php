@@ -33,7 +33,8 @@
 ?>
 
 
-<?php $formHtml->open($quickSearchForm, null, null, array('class' => 'rocket-impl-quicksearch', 
+<?php $formHtml->open($quickSearchForm, null, null, array('class' => 'rocket-impl-quicksearch' 
+				. ($quickSearchForm->isActive() ? ' rocket-active' : ''), 
 		'data-rocket-impl-post-url' => $view->getParam('postUrl'))) ?>
 	<?php $formHtml->label('searchStr', $html->getL10nText('common_search_label')) ?>
 	<?php $formHtml->input('searchStr', null, 'search') ?>

@@ -45,6 +45,10 @@ namespace rocket.impl {
 			return this._config;
 		}
 		
+		reset() {
+			this.jqForm.get(0).reset();
+		}
+		
 		private trigger(eventType: Form.EventType) {
 			var that = this;
 			this.callbackRegistery.filter(eventType.toString())

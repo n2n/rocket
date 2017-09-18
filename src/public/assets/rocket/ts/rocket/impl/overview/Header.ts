@@ -78,7 +78,7 @@ namespace rocket.impl.overview {
 			
 			this.jqSelectedButton.show();
 			
-			var numSelected = numSelected = this.overviewContent.numSelectedEntries;
+			var numSelected = this.overviewContent.numSelectedEntries;
 			if (numSelected == 1) {
 				this.jqSelectedButton.text(numSelected + " " + this.jqElem.data("selected-label"));
 			} else {
@@ -123,7 +123,10 @@ namespace rocket.impl.overview {
 		}
 		
 		private initListeners() {
-			this.jqSearchButton = this.form.jQuery.find("button[type=submit]:first");
+			this.form.reset();
+			var jqButtons = this.form.jQuery.find("button[type=submit]");
+			this.jqSearchButton = $(jqButtons.get(0));
+			var jqClearButton = $(jqButtons.get(1));
 			this.jqSearchInput = this.form.jQuery.find("input[type=search]:first");
 			var that = this;
 			
@@ -134,6 +137,10 @@ namespace rocket.impl.overview {
 			this.jqSearchInput.on("change", function () {
 				that.send(true);
 			});
+			
+			jqClearButton.on("click", function () {
+				that.jqSearchInput.val("");	
+			});
 		}
 		
 		private sc = 0;
@@ -141,6 +148,13 @@ namespace rocket.impl.overview {
 		
 		private send(force: boolean) {
 			var searchVal = this.jqSearchInput.val();
+			
+			if (searchVal.length > 0) {
+				this.form.jQuery.addClass("rocket-active");
+			} else {
+				this.form.jQuery.removeClass("rocket-active");
+			}
+			
 			if (this.serachVal == searchVal) return;
 
 			this.overviewContent.clear(true);

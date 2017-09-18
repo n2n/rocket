@@ -50,7 +50,7 @@ class CritmodForm implements Dispatchable {
 			CritmodSaveDao $critmodSaveDao, string $stateKey, string $eiTypeId, string $eiMaskId = null) {
 		$this->critmodSaveDao = $critmodSaveDao;
 // 		$this->stateKey = $stateKey;
-		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypeId, $eiMaskId);;
+		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypeId, $eiMaskId);
 		$this->eiTypeId = $eiTypeId;
 		$this->eiMaskId = $eiMaskId;
 				

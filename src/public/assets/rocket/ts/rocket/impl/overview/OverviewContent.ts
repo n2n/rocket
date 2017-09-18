@@ -546,11 +546,10 @@ namespace rocket.impl.overview {
 				
 				that.triggerChanged();
 			});
-			console.log("register " + entry.id);
+
 			var onFunc = function () {
 				if (that.entryMap[entry.id] !== entry) return;
 			
-				console.log("unregister " + entry.id);
 				delete that.entryMap[entry.id];
 				delete that.fakeEntryMap[entry.id];
 			};
