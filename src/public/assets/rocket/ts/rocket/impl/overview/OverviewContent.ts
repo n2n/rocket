@@ -28,6 +28,7 @@ namespace rocket.impl.overview {
 			page.jqContents = this.jqElem.children();
 			this.selectorState.observePage(page);
 			
+			this.createFakePage();
 			this.triggerChange();
 		}
 		
@@ -37,6 +38,7 @@ namespace rocket.impl.overview {
 			var page: Page = this.createPage(data.additional.pageNo);
 			this.initPageFromResponse(page, data);
 			
+			this.createFakePage();
 			this.triggerChange();
 		}
 		
@@ -67,10 +69,16 @@ namespace rocket.impl.overview {
 			this.selectorState.activate(selectorObserver);
 			this.triggerChange();
 			
+			this.createFakePage();
+		}
+		
+		private createFakePage() {
+			if (!this.selectorState.selectorObserver) return;
+			
 			var fakePage = new Page(0);
 			fakePage.hide();
 			
-			var idReps = selectorObserver.getSelectedIds();
+			var idReps = this.selectorState.selectorObserver.getSelectedIds();
 			var unloadedIds = idReps.slice();
 			var that = this;
 		
@@ -88,6 +96,7 @@ namespace rocket.impl.overview {
 			});
 			
 			this.loadFakePage(fakePage, unloadedIds);
+			return fakePage;
 		}
 		
 		private loadFakePage(fakePage: Page, unloadedIdReps: Array<string>) {
