@@ -6,7 +6,7 @@ namespace rocket.impl.overview {
 	export class OverviewContent {
 		private pages: Array<Page> = new Array<Page>();
 		private fakePage: Page = null;
-		private _selectorState: SelectorState = new SelectorState();
+		private selectorState: SelectorState = new SelectorState();
 		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
@@ -27,7 +27,7 @@ namespace rocket.impl.overview {
 			this._numEntries = numEntries;
 			var page = this.createPage(this.currentPageNo);
 			page.jqContents = this.jqElem.children();
-			this._selectorState.observePage(page);
+			this.selectorState.observePage(page);
 			
 			if (this.allInfo) {
 				this.allInfo = new AllInfo([page], 0);
@@ -85,14 +85,14 @@ namespace rocket.impl.overview {
 		}
 		
 		initSelector(selectorObserver: SelectorObserver) {
-			this._selectorState.activate(selectorObserver);
+			this.selectorState.activate(selectorObserver);
 			this.triggerContentChange();
 			
 			this.buildFakePage();
 		}
 		
 		private buildFakePage() {
-			if (!this._selectorState.selectorObserver) return;
+			if (!this.selectorState.selectorObserver) return;
 			
 			if (this.fakePage) {
 				throw new Error("Fake page already existing.");
@@ -101,11 +101,11 @@ namespace rocket.impl.overview {
 			this.fakePage = new Page(0);
 			this.fakePage.hide();
 			
-			var idReps = this._selectorState.selectorObserver.getSelectedIds();
+			var idReps = this.selectorState.selectorObserver.getSelectedIds();
 			var unloadedIds = idReps.slice();
 			var that = this;
 		
-			this._selectorState.entries.forEach(function (entry: display.Entry) {
+			this.selectorState.entries.forEach(function (entry: display.Entry) {
 				let id = entry.id;
 				
 				let i;
@@ -121,7 +121,7 @@ namespace rocket.impl.overview {
 		private loadFakePage(unloadedIdReps: Array<string>) {
 			if (unloadedIdReps.length == 0) {
 				this.fakePage.jqContents = $();
-				this._selectorState.observeFakePage(this.fakePage);
+				this.selectorState.observeFakePage(this.fakePage);
 				return;
 			}
 			
@@ -154,7 +154,7 @@ namespace rocket.impl.overview {
 				that.jqElem.append(jqContents);
 				n2n.ajah.update();
 				
-				that._selectorState.observeFakePage(fakePage);
+				that.selectorState.observeFakePage(fakePage);
 				that.pageLoadded(fakePage);
 			});
 		}
@@ -173,13 +173,8 @@ namespace rocket.impl.overview {
 				page.hide();
 			});
 			
-			if (this.fakePage) {
-				this.fakePage.hide();
-			}
-			
-			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
-				entry.show();
-			});	
+			this.selectorState.showSelectedEntriesOnly();
+			this.selectorState.autoShowSelected = true;	
 			
 			if (this.allInfo === null) {
 				this.allInfo = new AllInfo(visiblePages, scrollTop);
@@ -195,13 +190,8 @@ namespace rocket.impl.overview {
 		public showAll() {
 			if (this.allInfo === null) return;
 			
-			this.pages.forEach(function (page: Page) {
-				page.hide();
-			});
-			
-			if (this.fakePage) {
-				this.fakePage.hide();
-			}
+			this.selectorState.hideEntries();
+			this.selectorState.autoShowSelected = false;
 			
 			this.allInfo.pages.forEach(function (page: Page) {
 				page.show();
@@ -234,11 +224,17 @@ namespace rocket.impl.overview {
 		}
 		
 		get numSelectedEntries(): number {
-			return this._selectorState.selectorObserver.getSelectedIds().length;
+			if (!this.selectorState.isActive()) return null;
+			
+			if (this.fakePage !== null) {
+				return this.selectorState.selectedEntries.length;
+			}
+			
+			return this.selectorState.selectorObserver.getSelectedIds().length;
 		}
 		
 		get selectable(): boolean {
-			return this._selectorState.selectorObserver != null;
+			return this.selectorState.selectorObserver != null;
 		}
 		
 		private setCurrentPageNo(currentPageNo: number) {
@@ -279,7 +275,7 @@ namespace rocket.impl.overview {
 		}
 		
 		whenSelectionChanged(callback: () => any) {
-			this._selectorState.whenChanged(callback);
+			this.selectorState.whenChanged(callback);
 		}
 		
 		isPageNoValid(pageNo: number): boolean {
@@ -301,20 +297,20 @@ namespace rocket.impl.overview {
 				if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded()) continue;
 				
 				jqContents.insertAfter(this.pages[pni].jqContents.last());
-				this._selectorState.observePage(page);
+				this.selectorState.observePage(page);
 				this.pageLoadded(page);
 				return;
 			}
 			
 			this.jqElem.prepend(jqContents);
-			this._selectorState.observePage(page);
+			this.selectorState.observePage(page);
 			this.pageLoadded(page);
 		}
 		
 		private pageLoadded(page: Page) {
 			if (!this.selectedOnly) return;
 			
-			this._selectorState.selectedEntries.forEach(function (entry: display.Entry) {
+			this.selectorState.selectedEntries.forEach(function (entry: display.Entry) {
 				entry.show();
 			});
 		}
@@ -482,6 +478,7 @@ namespace rocket.impl.overview {
 		private entryMap: { [id: string]: display.Entry } = {};
 		private fakeEntryMap: { [id: string]: display.Entry } = {};
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
+		private _autoShowSelected: boolean = false;
 		
 		activate(selectorObserver: SelectorObserver) {
 			this._selectorObserver = selectorObserver;
@@ -537,8 +534,16 @@ namespace rocket.impl.overview {
 				this.selectorObserver.observeEntrySelector(entry.selector);
 			}
 			
+			if (this.autoShowSelected && entry.selector.selected) {
+				entry.show();
+			}
+			
 			var that = this;
 			entry.selector.whenChanged(function () {
+				if (that.autoShowSelected && entry.selector.selected) {
+					entry.show();
+				}
+				
 				that.triggerChanged();
 			});
 			console.log("register " + entry.id);
@@ -573,6 +578,30 @@ namespace rocket.impl.overview {
 			});	
 			
 			return entries;
+		}
+		
+		get autoShowSelected(): boolean {
+			return this._autoShowSelected;
+		}
+		
+		set autoShowSelected(showSelected: boolean) {
+			this._autoShowSelected = showSelected; 
+		}
+		
+		showSelectedEntriesOnly() {
+			this.entries.forEach(function (entry: display.Entry) {
+				if (entry.selector.selected) {
+					entry.show();
+				} else {
+					entry.hide();
+				}
+			});
+		}
+		
+		hideEntries() {
+			this.entries.forEach(function (entry: display.Entry) {
+				entry.hide();
+			});
 		}
 		
 		private triggerChanged() {
