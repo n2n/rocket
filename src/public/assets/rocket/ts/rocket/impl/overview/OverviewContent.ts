@@ -41,6 +41,7 @@ namespace rocket.impl.overview {
 			this.reset(false);
 			
 			var page: Page = this.createPage(parseInt(data.additional.pageNo));
+			this._currentPageNo = page.pageNo;
 			this.initPageFromResponse(page, data);
 			
 			if (this.allInfo) {
