@@ -140,22 +140,27 @@ namespace rocket.impl.overview {
 			
 			jqClearButton.on("click", function () {
 				that.jqSearchInput.val("");	
+				that.updateState();
 			});
 		}
 		
 		private sc = 0;
 		private serachVal = null;
 		
-		private send(force: boolean) {
-			var searchVal = this.jqSearchInput.val();
-			
-			if (searchVal.length > 0) {
+		private updateState() {
+			if (this.jqSearchInput.val().length > 0) {
 				this.form.jQuery.addClass("rocket-active");
 			} else {
 				this.form.jQuery.removeClass("rocket-active");
 			}
+		}
+		
+		private send(force: boolean) {
+			var searchVal = this.jqSearchInput.val();
 			
 			if (this.serachVal == searchVal) return;
+			
+			this.updateState();
 
 			this.overviewContent.clear(true);
 			
@@ -173,7 +178,7 @@ namespace rocket.impl.overview {
 				if (si !== that.sc) return;
 				
 				that.jqSearchButton.click();
-			}, 500);
+			}, 300);
 
 		}
 		

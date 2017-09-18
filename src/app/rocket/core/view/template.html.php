@@ -101,6 +101,10 @@ use n2nutil\jquery\JQueryUiLibrary;
 				min-height: 100px;
 			}
 			
+			form.rocket-active {
+				background: yellow;
+			}
+			
 		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 

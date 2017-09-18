@@ -155,7 +155,7 @@ namespace rocket.impl.overview {
 				n2n.ajah.update();
 				
 				that.selectorState.observeFakePage(fakePage);
-				that.pageLoadded(fakePage);
+				that.triggerContentChange();
 			});
 		}
 		
@@ -180,6 +180,7 @@ namespace rocket.impl.overview {
 				this.allInfo = new AllInfo(visiblePages, scrollTop);
 			}
 			
+			this.updateLoader();
 			this.triggerContentChange();
 		}
 		
@@ -200,6 +201,7 @@ namespace rocket.impl.overview {
 			$("html, body").scrollTop(this.allInfo.scrollTop);
 			this.allInfo = null;
 			
+			this.updateLoader();
 			this.triggerContentChange();
 		}
 		
@@ -226,7 +228,7 @@ namespace rocket.impl.overview {
 		get numSelectedEntries(): number {
 			if (!this.selectorState.isActive()) return null;
 			
-			if (this.fakePage !== null) {
+			if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
 				return this.selectorState.selectedEntries.length;
 			}
 			
@@ -298,21 +300,11 @@ namespace rocket.impl.overview {
 				
 				jqContents.insertAfter(this.pages[pni].jqContents.last());
 				this.selectorState.observePage(page);
-				this.pageLoadded(page);
 				return;
 			}
 			
 			this.jqElem.prepend(jqContents);
 			this.selectorState.observePage(page);
-			this.pageLoadded(page);
-		}
-		
-		private pageLoadded(page: Page) {
-			if (!this.selectedOnly) return;
-			
-			this.selectorState.selectedEntries.forEach(function (entry: display.Entry) {
-				entry.show();
-			});
 		}
 		
 		goTo(pageNo: number) {
@@ -390,9 +382,8 @@ namespace rocket.impl.overview {
 				throw new Error("page already loading");
 			}
 
-			this.addLoader();
-			
 			this.loadingPageNos.push(pageNo);
+			this.updateLoader();
 		}
 		
 		private unmarkPageAsLoading(pageNo: number) {
@@ -401,10 +392,23 @@ namespace rocket.impl.overview {
 			if (-1 == i) return;
 			
 			this.loadingPageNos.splice(i, 1);
-			
-			if (this.loadingPageNos.length == 0) {
-				this.removeLoader();
+			this.updateLoader();
+		}
+		
+		private updateLoader() {
+			for (var i in this.loadingPageNos) {
+				if (this.loadingPageNos[i] == 0 && this.selectedOnly) {
+					this.addLoader();
+					return;
+				}
+				
+				if (this.loadingPageNos[i] > 0 && !this.selectedOnly) {
+					this.addLoader();
+					return;
+				}
 			}
+			
+			this.removeLoader();
 		}
 		
 		private addLoader() {
@@ -461,6 +465,7 @@ namespace rocket.impl.overview {
 				that.unmarkPageAsLoading(pageNo);
 				
 				that.initPageFromResponse(page, data);
+				that.triggerContentChange();
 			});
 		}
 		
