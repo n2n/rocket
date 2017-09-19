@@ -7,8 +7,9 @@ namespace rocket.impl.overview {
 	export class Header {
 		private jqElem: JQuery;
 		private state: State;
-		private quicksearch: Quicksearch;
+		private quicksearchForm: QuicksearchForm;
 		private critmodSelect: CritmodSelect;
+		private critmodForm: CritmodForm;
 		
 		constructor(private overviewContent: OverviewContent) {
 			
@@ -20,11 +21,14 @@ namespace rocket.impl.overview {
 			this.state = new State(this.overviewContent);
 			this.state.draw(this.jqElem.find(".rocket-impl-state:first"));
 			
-			this.quicksearch = new Quicksearch(this.overviewContent);
-			this.quicksearch.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
+			this.quicksearchForm = new QuicksearchForm(this.overviewContent);
+			this.quicksearchForm.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
 			
 			this.critmodSelect = new CritmodSelect(this.overviewContent);
 			this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"));
+			
+			this.critmodForm = new CritmodForm(this.overviewContent);
+			this.critmodForm.init(this.jqElem.find("form.rocket-impl-critmod:first"));
 		}
 	}
 	
@@ -98,7 +102,7 @@ namespace rocket.impl.overview {
 		}
 	}
 	
-	class Quicksearch {
+	class QuicksearchForm {
 		private jqSearchButton: JQuery;
 		private jqSearchInput: JQuery;
 		private form: Form;
@@ -258,10 +262,6 @@ namespace rocket.impl.overview {
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		get critmodSaveId(): string {
-			return this._critmodSaveId;
-		}
-		
 		public init(jqForm: JQuery) {
 			if (this.form) {
 				throw new Error("CritmodForm already initialized.");
@@ -276,6 +276,9 @@ namespace rocket.impl.overview {
 			this.form.config.successResponseHandler = function (data: string) {
 				that.whenSubmitted(data);
 			};
+			this.form.on(Form.EventType.SUBMIT, function () {
+				that.onSubmit();
+			});
 			
 			this.jqSaveButtonContainer = jqForm.find(".rocket-impl-critmod-save").parent();
 			this.jqDeleteButtonContainer = jqForm.find(".rocket-impl-critmod-delete").parent();
@@ -285,6 +288,10 @@ namespace rocket.impl.overview {
 			});
 			
 			this.updateState();
+		}
+		
+		get critmodSaveId(): string {
+			return this._critmodSaveId;
 		}
 		
 		private updateState() {
@@ -297,18 +304,6 @@ namespace rocket.impl.overview {
 			}	
 		}
 		
-		
-//		private sc = 0;
-//		private serachVal = null;
-//		
-//		private updateState() {
-//			if (this.jqSearchInput.val().length > 0) {
-//				this.form.jQuery.addClass("rocket-active");
-//			} else {
-//				this.form.jQuery.removeClass("rocket-active");
-//			}
-//		}
-		
 		private send(id: string) {
 			this.form.submit();
 		}
@@ -318,7 +313,12 @@ namespace rocket.impl.overview {
 		}
 		
 		private whenSubmitted(data) {
-			this.overviewContent.initFromResponse(data);
+			var jqForm = $(n2n.ajah.analyze(data));
+			this.form.jQuery.replaceWith(jqForm);
+			this.form = null;
+			n2n.ajah.update();
+			this.init(jqForm);
+			this.overviewContent.init(1);
 		}
 	}
 }

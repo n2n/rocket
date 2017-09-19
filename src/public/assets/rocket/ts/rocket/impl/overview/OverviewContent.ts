@@ -37,6 +37,18 @@ namespace rocket.impl.overview {
 			this.triggerContentChange();
 		}
 		
+		init(currentPageNo: number) {
+			this.reset(false);
+			this.goTo(currentPageNo);
+			
+			if (this.allInfo) {
+				this.allInfo = new AllInfo([this.pages[currentPageNo]], 0);
+			}
+			
+			this.buildFakePage();
+			this.triggerContentChange();
+		}
+		
 		initFromResponse(data: any) {
 			this.reset(false);
 			
