@@ -38,7 +38,6 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 class EiHtmlBuilder {
 	private $view;

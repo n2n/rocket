@@ -49,7 +49,6 @@ namespace rocket.impl.overview {
 			}
 			
 			this.buildFakePage();
-			
 			this.triggerContentChange();
 		}
 		
@@ -429,7 +428,7 @@ namespace rocket.impl.overview {
 		
 		private createPage(pageNo: number): Page {
 			if (this.containsPageNo(pageNo)) {
-				throw new Error();
+				throw new Error("Page already exists: " + pageNo);
 			}
 			
 			var page = this.pages[pageNo] = new Page(pageNo);

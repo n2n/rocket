@@ -424,7 +424,7 @@ var rocket;
                 this.urls.push(url);
             };
             Context.prototype.unregisterUrl = function (url) {
-                if (!this.activeUrl.equals(url)) {
+                if (this.activeUrl.equals(url)) {
                     throw new Error("Cannot remove active url");
                 }
                 for (var i in this.urls) {
@@ -2390,7 +2390,7 @@ var rocket;
                 };
                 OverviewContent.prototype.createPage = function (pageNo) {
                     if (this.containsPageNo(pageNo)) {
-                        throw new Error();
+                        throw new Error("Page already exists: " + pageNo);
                     }
                     var page = this.pages[pageNo] = new Page(pageNo);
                     if (this.selectedOnly) {
@@ -3572,14 +3572,14 @@ var rocket;
                             this.context.registerUrl(pageUrl);
                         }
                     }
-                    else if (this.pageUrls.length > newNumPages) {
-                        for (var pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
-                            this.context.unregisterUrl(this.pageUrls.pop());
-                        }
-                    }
                     var newActiveUrl = this.pageUrls[newCurPageNo - 1];
                     if (!this.context.activeUrl.equals(newActiveUrl)) {
                         this.context.getLayer().pushHistoryEntry(newActiveUrl);
+                    }
+                    if (this.pageUrls.length > newNumPages) {
+                        for (var pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
+                            this.context.unregisterUrl(this.pageUrls.pop());
+                        }
                     }
                 };
                 return ContextUpdater;

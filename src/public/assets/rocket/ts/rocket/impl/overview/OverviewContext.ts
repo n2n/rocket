@@ -135,15 +135,17 @@ namespace rocket.impl.overview {
 					this.pageUrls[pageNo - 1] = pageUrl;
 					this.context.registerUrl(pageUrl);
 				}
-			} else if (this.pageUrls.length > newNumPages){
-				for (let pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
-					this.context.unregisterUrl(this.pageUrls.pop());
-				}
-			}
+			} 
 			
 			var newActiveUrl = this.pageUrls[newCurPageNo - 1];
 			if (!this.context.activeUrl.equals(newActiveUrl)) {
 				this.context.getLayer().pushHistoryEntry(newActiveUrl);
+			}
+			
+			if (this.pageUrls.length > newNumPages) {
+				for (let pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
+					this.context.unregisterUrl(this.pageUrls.pop());
+				}
 			}
 		}
 		

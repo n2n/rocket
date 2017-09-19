@@ -52,7 +52,7 @@ namespace rocket.cmd {
 		}
 		
 		unregisterUrl(url: Url) {
-			if (!this.activeUrl.equals(url)) {
+			if (this.activeUrl.equals(url)) {
 				throw new Error("Cannot remove active url");
 			}
 			
