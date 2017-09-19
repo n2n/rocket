@@ -98,7 +98,7 @@ class CkeEiFieldConfigurator extends AdaptableEiFieldConfigurator {
 			return $level;
 		}
 		
-		if (StringUtils::endsWith('Html', $propertyAssignation->getEntityProperty()->getName())) {
+		if (StringUtils::endsWith('Html', $propertyAssignation->getObjectPropertyAccessProxy(true)->getPropertyName())) {
 			return CompatibilityLevel::COMMON;
 		}
 		
