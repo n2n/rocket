@@ -297,7 +297,7 @@ namespace rocket.impl.overview {
 			page.jqContents = jqContents;
 			
 			for (var pni = page.pageNo - 1; pni > 0; pni--) {
-				if (this.pages[pni] === undefined && this.pages[pni].isContentLoaded()) continue;
+				if (this.pages[pni] === undefined || !this.pages[pni].isContentLoaded()) continue;
 				
 				jqContents.insertAfter(this.pages[pni].jqContents.last());
 				this.selectorState.observePage(page);
