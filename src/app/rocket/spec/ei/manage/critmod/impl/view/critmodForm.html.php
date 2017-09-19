@@ -36,7 +36,9 @@
 	$view->assert($filterAjahHook instanceof FilterAjahHook);
 ?>
 
-<?php $formHtml->open($critmodForm, null, null, array('class' => 'rocket-impl-critmod-form'),
+<?php $formHtml->open($critmodForm, null, null, array(
+				'class' => 'rocket-impl-critmod-form' . ($critmodForm->isActive() ? ' rocket-active' : ''),
+				'data-rocket-impl-critmod-save-id' => $critmodForm->getSelectedCritmodSaveId()),
 		$view->getParam('critmodFormUrl')) ?>
 		
 	<?php $formHtml->messageList() ?>
@@ -57,24 +59,24 @@
 			<ul class="rocket-critmod-commands nav">
 				<li class="nav-item">
 					<?php $formHtml->inputSubmit('apply', $view->getL10nText('common_apply_label'),
-							array('class' => 'btn btn-secondary rocket-important rocket-critmod-submit-apply')) ?>
+							array('class' => 'btn btn-secondary rocket-important rocket-impl-critmod-apply')) ?>
 				</li>
 				<li class="nav-item">
 					<?php $formHtml->inputSubmit('clear', $view->getL10nText('common_clear_label'),
-							array('class' => 'btn btn-secondary rocket-critmod-submit-clear')) ?>
+							array('class' => 'btn btn-secondary rocket-impl-critmod-clear')) ?>
 				</li>
 				<li class="nav-item">
 					<?php $formHtml->inputSubmit('save', $view->getL10nText('common_save_label'),
-							array('class' => 'btn btn-secondary rocket-critmod-submit-save')) ?>
+							array('class' => 'btn btn-secondary rocket-impl-critmod-save')) ?>
 				</li>
 				<li class="nav-item rocket-textable-control">
 					<?php $formHtml->inputSubmit('saveAs', $view->getL10nText('common_save_as_label'), 
-							array('class' => 'btn btn-secondary', 'data-after-label' => $view->getL10nText('common_save_as_label'))) ?>
+							array('class' => 'btn btn-secondary rocket-impl-critmod-save-as', 'data-after-label' => $view->getL10nText('common_save_as_label'))) ?>
 					<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'form-control')) ?>
 				</li>
 				<li class="nav-item">
 					<?php $formHtml->inputSubmit('delete', $view->getL10nText('common_delete_label'),
-							array('class' => 'btn btn-secondary-danger rocket-critmod-submit-delete')) ?>
+							array('class' => 'btn btn-secondary-danger rocket-impl-critmod-delete')) ?>
 				</li>
 			</ul>
 		</div>

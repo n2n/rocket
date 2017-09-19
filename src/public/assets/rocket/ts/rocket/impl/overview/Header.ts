@@ -8,6 +8,7 @@ namespace rocket.impl.overview {
 		private jqElem: JQuery;
 		private state: State;
 		private quicksearch: Quicksearch;
+		private critmodSelect: CritmodSelect;
 		
 		constructor(private overviewContent: OverviewContent) {
 			
@@ -21,6 +22,9 @@ namespace rocket.impl.overview {
 			
 			this.quicksearch = new Quicksearch(this.overviewContent);
 			this.quicksearch.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
+			
+			this.critmodSelect = new CritmodSelect(this.overviewContent);
+			this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"));
 		}
 	}
 	
@@ -184,6 +188,132 @@ namespace rocket.impl.overview {
 		
 		private onSubmit() {
 			this.sc++;
+			this.overviewContent.clear(true);
+		}
+		
+		private whenSubmitted(data) {
+			this.overviewContent.initFromResponse(data);
+		}
+	}
+	
+	class CritmodSelect {
+		private form: Form;
+		
+		constructor(private overviewContent: OverviewContent) {
+		}
+		
+		public init(jqForm: JQuery) {
+			if (this.form) {
+				throw new Error("CritmodSelect already initialized.");
+			}
+			
+			this.form = Form.from(jqForm);
+			
+			jqForm.find("button[type=submit]").hide();
+			
+			this.form.config.blockContext = false;
+			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
+			this.form.config.autoSubmitAllowed = false;
+			
+			var that = this;
+			this.form.config.successResponseHandler = function (data: string) {
+				that.whenSubmitted(data);
+			}
+			
+			jqForm.find("select:first").change(function () {
+				that.send($(this).val());
+			});
+		}
+		
+//		private sc = 0;
+//		private serachVal = null;
+//		
+//		private updateState() {
+//			if (this.jqSearchInput.val().length > 0) {
+//				this.form.jQuery.addClass("rocket-active");
+//			} else {
+//				this.form.jQuery.removeClass("rocket-active");
+//			}
+//		}
+		
+		private send(id: string) {
+			this.form.submit();
+		}
+		
+		private onSubmit() {
+			this.overviewContent.clear(true);
+		}
+		
+		private whenSubmitted(data) {
+			this.overviewContent.initFromResponse(data);
+		}
+	}
+	
+	class CritmodForm {
+		private form: Form;
+		private _critmodSaveId: string = null;
+		private jqSaveButtonContainer: JQuery;
+		private jqDeleteButtonContainer: JQuery;
+		
+		constructor(private overviewContent: OverviewContent) {
+		}
+		
+		get critmodSaveId(): string {
+			return this._critmodSaveId;
+		}
+		
+		public init(jqForm: JQuery) {
+			if (this.form) {
+				throw new Error("CritmodForm already initialized.");
+			}
+			
+			this._critmodSaveId = jqForm.data("rocket-impl-critmod-save-id");
+			this.form = Form.from(jqForm);
+			
+			this.form.config.blockContext = false;
+			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
+			var that = this;
+			this.form.config.successResponseHandler = function (data: string) {
+				that.whenSubmitted(data);
+			};
+			
+			this.jqSaveButtonContainer = jqForm.find(".rocket-impl-critmod-save").parent();
+			this.jqDeleteButtonContainer = jqForm.find(".rocket-impl-critmod-delete").parent();
+			
+			jqForm.find("select:first").change(function () {
+				that.send($(this).val());
+			});
+			
+			this.updateState();
+		}
+		
+		private updateState() {
+			if (this.critmodSaveId) {
+				this.jqSaveButtonContainer.show();
+				this.jqDeleteButtonContainer.show();
+			} else {
+				this.jqSaveButtonContainer.hide();
+				this.jqDeleteButtonContainer.hide();
+			}	
+		}
+		
+		
+//		private sc = 0;
+//		private serachVal = null;
+//		
+//		private updateState() {
+//			if (this.jqSearchInput.val().length > 0) {
+//				this.form.jQuery.addClass("rocket-active");
+//			} else {
+//				this.form.jQuery.removeClass("rocket-active");
+//			}
+//		}
+		
+		private send(id: string) {
+			this.form.submit();
+		}
+		
+		private onSubmit() {
 			this.overviewContent.clear(true);
 		}
 		

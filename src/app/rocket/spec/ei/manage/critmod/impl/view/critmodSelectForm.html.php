@@ -40,6 +40,6 @@
 	<?php $formHtml->label('selectedCritmodSaveId', $view->getL10nText('ei_impl_select_filter_label')) ?>
 	<?php $formHtml->select('selectedCritmodSaveId', $critmodForm->getSelectedCritmodSaveIdOptions(), 
 			array('class' => 'form-control')) ?>
-	<?php $formHtml->buttonSubmit('select', 'Select', array('class' => 'btn btn-secondary rocket-critmod-select')) ?>
+	<?php $formHtml->buttonSubmit('select', 'Select', array('class' => 'btn btn-secondary')) ?>
 	<?php $formHtml->message() ?>
 <?php $formHtml->close() ?>
