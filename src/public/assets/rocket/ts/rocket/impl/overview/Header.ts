@@ -240,6 +240,7 @@ namespace rocket.impl.overview {
 			});
 			
 			critmodForm.onChange(function () {
+				that.form.abortSubmit();
 				that.updateId();
 			});
 			
@@ -267,7 +268,8 @@ namespace rocket.impl.overview {
 			
 			var id = this.jqSelect.val();
 			this.critmodForm.activated = id == true;
-			this.critmodForm.critmodSaveId = id; 
+			this.critmodForm.critmodSaveId = id;
+			this.critmodForm.freeze(); 
 		}
 		
 		private whenSubmitted(data) {
@@ -464,6 +466,10 @@ namespace rocket.impl.overview {
 				this.jqSaveAsButton.hide();
 				this.jqDeleteButton.hide();
 			}
+		}
+		
+		public freeze() {
+			this.form.abortSubmit();
 		}
 		
 		public reload() {

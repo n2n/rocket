@@ -100,12 +100,16 @@ namespace rocket.impl {
 			return formData;
 		}
 		
-		public submit(submitConfig?: Form.SubmitDirective) {
+		public abortSubmit() {
 			if (this.curXhr) {
 				var curXhr = this.curXhr;
 				this.curXhr = null;
 				curXhr.abort();
 			}
+		}
+		
+		public submit(submitConfig?: Form.SubmitDirective) {
+			this.abortSubmit();
 			
 			this.trigger(Form.EventType.SUBMIT);
 			
