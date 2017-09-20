@@ -29,6 +29,8 @@ namespace rocket.impl.overview {
 			
 			this.critmodSelect = new CritmodSelect(this.overviewContent);
 			this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"), this.critmodForm);
+			
+			this.critmodForm.drawControl(this.critmodSelect.jQuery.parent());
 		}
 	}
 	
@@ -209,6 +211,10 @@ namespace rocket.impl.overview {
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
+		get jQuery(): JQuery {
+			return this.form.jQuery;
+		}
+		
 		public init(jqForm: JQuery, critmodForm: CritmodForm) {
 			if (this.form) {
 				throw new Error("CritmodSelect already initialized.");
@@ -255,11 +261,13 @@ namespace rocket.impl.overview {
 		
 		private send() {
 			this.form.submit({ button: this.jqButton.get(0) });
-			this.updateState();
-		}
 		
-		private onSubmit() {
+			this.updateState();
 			this.overviewContent.clear(true);
+			
+			var id = this.jqSelect.val();
+			this.critmodForm.activated = id == true;
+			this.critmodForm.critmodSaveId = id; 
 		}
 		
 		private whenSubmitted(data) {
@@ -299,10 +307,83 @@ namespace rocket.impl.overview {
 		private jqSaveAsButton: JQuery;
 		private jqDeleteButton: JQuery;
 		
+		private jqOpenButton: JQuery;
+		private jqEditButton: JQuery;
+		private jqCloseButton: JQuery;
+		
 		private changeCallbacks: Array<() => any> = [];
 		private changedCallbacks: Array<(idOptions: {[key: string]: string}) => any> = [];
 		
+		private _open: boolean = true;
+		
 		constructor(private overviewContent: OverviewContent) {
+		}
+		
+		public drawControl(jqControlContainer: JQuery) {
+			var that = this;
+			
+			this.jqOpenButton = $("<button />", { 
+						"class": "btn btn-secondary", 
+						"text": jqControlContainer.data("rocket-impl-open-filter-label") + " "
+					})
+					.append($("<i />", { "class": "fa fa-filter"}))
+					.click(function () { that.open = true })
+					.appendTo(jqControlContainer);
+			
+			this.jqEditButton = $("<button />", { 
+						"class": "btn btn-secondary", 
+						"text": jqControlContainer.data("rocket-impl-edit-filter-label") + " "
+					})
+					.append($("<i />", { "class": "fa fa-filter"}))
+					.click(function () { that.open = true })
+					.appendTo(jqControlContainer);
+			
+			this.jqCloseButton = $("<button />", { 
+						"class": "btn btn-secondary", 
+						"text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
+					})
+					.append($("<i />", { "class": "fa fa-times"}))
+					.click(function () { that.open = false })
+					.appendTo(jqControlContainer);
+			
+			this.open = false;
+		}
+		
+		private updateControl() {
+			if (!this.jqOpenButton) return;
+			
+			if (this.open) {
+				this.jqOpenButton.hide();
+				this.jqEditButton.hide();
+				this.jqCloseButton.show();
+				return;
+			} 
+			
+			if (this.critmodSaveId) {
+				this.jqOpenButton.hide();
+				this.jqEditButton.show();
+			} else {
+				this.jqOpenButton.show();
+				this.jqEditButton.hide();
+			}
+		
+			this.jqCloseButton.hide();
+		}
+		
+		get open() {
+			return this._open;
+		}
+		
+		set open(open: boolean) {
+			this._open = open;
+			
+			if (open) {
+				this.form.jQuery.show();
+			} else {
+				this.form.jQuery.hide();
+			}
+			
+			this.updateControl();
 		}
 		
 		public init(jqForm: JQuery) {
@@ -322,16 +403,16 @@ namespace rocket.impl.overview {
 			};
 			
 			var activateFunc = function (ensureCritmodSaveId: boolean) { 
-				jqForm.addClass("rocket-active");
+				that.activated = true;
 				
 				if (ensureCritmodSaveId && !that.critmodSaveId) {
-					that.form.jQuery.data("rocket-impl-critmod-save-id", "new");
+					that.critmodSaveId = "new";
 				}
 				that.onSubmit();
 			}
 			var deactivateFunc = function () { 
-				jqForm.removeClass("rocket-active"); 
-			 	that.form.jQuery.data("rocket-impl-critmod-save-id", null);
+				that.activated = false; 
+			 	that.critmodSaveId = null;
 				
 				that.onSubmit();
 			}
@@ -341,7 +422,7 @@ namespace rocket.impl.overview {
 			this.jqNameInput = jqForm.find(".rocket-impl-critmod-name");
 			this.jqSaveButton = jqForm.find(".rocket-impl-critmod-save").click(function () { activateFunc(true); });
 			this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(function () {
-				that.form.jQuery.data("rocket-impl-critmod-save-id", null);
+				that.critmodSaveId = null;
 				activateFunc(true); 
 			});
 			this.jqDeleteButton = jqForm.find(".rocket-impl-critmod-delete").click(function () { deactivateFunc(); });
@@ -349,8 +430,26 @@ namespace rocket.impl.overview {
 			this.updateState();
 		}
 		
+		get activated(): boolean {
+			return this.form.jQuery.hasClass("rocket-active");
+		}
+		
+		set activated(activated: boolean) {
+			if (activated) {
+				this.form.jQuery.addClass("rocket-active");
+			} else {
+				this.form.jQuery.removeClass("rocket-active");
+			}
+		}
+		
 		get critmodSaveId(): string {
 			return this.form.jQuery.data("rocket-impl-critmod-save-id");
+		}
+		
+		set critmodSaveId(critmodSaveId: string) {
+			this.form.jQuery.data("rocket-impl-critmod-save-id", critmodSaveId);
+			
+			this.updateControl();
 		}
 		
 		get critmodSaveName(): string {
@@ -382,7 +481,7 @@ namespace rocket.impl.overview {
 				
 				throw new Error("invalid response");
 			}).done(function (data, textStatus, jqXHR) {
-				that.whenSubmitted(data);
+				that.replaceForm(data);
 			});
 		}
 		
@@ -395,12 +494,20 @@ namespace rocket.impl.overview {
 		}
 		
 		private whenSubmitted(data) {
+			this.overviewContent.init(1);
+			
+			this.replaceForm(data);
+		}
+		
+		private replaceForm(data) {
 			var jqForm = $(n2n.ajah.analyze(data));
 			this.form.jQuery.replaceWith(jqForm);
 			this.form = null;
 			n2n.ajah.update();
 			this.init(jqForm);
-			this.overviewContent.init(1);
+			
+			this.open = this.open;
+			this.updateControl();
 			
 			var idOptions = data.additional.critmodSaveIdOptions;
 			this.changedCallbacks.forEach(function (callback) {

@@ -120,7 +120,7 @@ class CritmodForm implements Dispatchable {
 	}
 
 	public function getSelectedCritmodSaveIdOptions(): array {
-		$options = array(null => null);
+		$options = array(null => '');
 		foreach ($this->critmodSaveDao->getCritmodSaves($this->eiTypeId, $this->eiMaskId) as $critmodSave) {
 			$options[$critmodSave->getId()] = $critmodSave->getName();
 		}
@@ -183,13 +183,19 @@ class CritmodForm implements Dispatchable {
 		}
 	}
 	
-	public function getSelectOptions(): array {
+// 	public function getSelectOptions(): array {
 		
-	}
+// 	}
 	
 	public function select() {
-		$this->critmodSaveDao->setSelectedCritmodSave($this->categoryKey, $this->critmodSaveDao->getCritmodSaveById(
-				$this->eiTypeId, $this->eiMaskId, $this->selectedCritmodSaveId));
+		$critmodSave = null;
+		if ($this->selectedCritmodSaveId !== null) {
+			$critmodSave = $this->critmodSaveDao->getCritmodSaveById(
+					$this->eiTypeId, $this->eiMaskId, $this->selectedCritmodSaveId);
+		}
+		
+		$this->critmodSaveDao->setTmpCritmodSave($this->categoryKey, null);
+		$this->critmodSaveDao->setSelectedCritmodSave($this->categoryKey, $critmodSave);
 	}
 	
 	public function apply() {

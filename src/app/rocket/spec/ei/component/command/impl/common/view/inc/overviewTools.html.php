@@ -56,7 +56,10 @@
 		<div class="col-md-8 text-right">
 			<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
 					array('quickSearchForm' => $quickSearchForm, 'postUrl' => $overviewAjahHook->getSelectUrl())) ?>
-			<div class="rocket-impl-critmod-select-container">
+			<div class="rocket-impl-critmod-select-container"
+					data-rocket-impl-open-filter-label="<?php $html->text('ei_impl_open_filter_label') ?>"
+					data-rocket-impl-edit-filter-label="<?php $html->text('ei_impl_edit_filter_label') ?>"
+					data-rocket-impl-close-filter-label="<?php $html->text('ei_impl_close_filter_label') ?>">
 				<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
 						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getSelectUrl())) ?>
 			</div>

@@ -37,7 +37,7 @@
 <?php $formHtml->open($critmodForm, null, null, array('class' => 'rocket-impl-critmod-select form-inline'),
 		$view->getParam('critmodFormUrl')) ?>
 			
-	<?php $formHtml->label('selectedCritmodSaveId', $view->getL10nText('ei_impl_select_filter_label')) ?>
+	<?php $formHtml->label('selectedCritmodSaveId', $view->getL10nText('ei_impl_filter_label')) ?>
 	<?php $formHtml->select('selectedCritmodSaveId', $critmodForm->getSelectedCritmodSaveIdOptions(), 
 			array('class' => 'form-control')) ?>
 	<?php $formHtml->buttonSubmit('select', 'Select', array('class' => 'btn btn-secondary')) ?>
