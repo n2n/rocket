@@ -12,7 +12,6 @@ namespace rocket.impl.overview {
 		private critmodForm: CritmodForm;
 		
 		constructor(private overviewContent: OverviewContent) {
-			
 		}
 		
 		init(jqElem: JQuery) {
@@ -528,5 +527,5 @@ namespace rocket.impl.overview {
 		public whenChanged(callback: (idOptions: {[key: string]: string}) => any) {
 			this.changedCallbacks.push(callback);
 		}
-	}
+	};
 }
