@@ -106,10 +106,15 @@ class OverviewAjahController extends ControllerAdapter {
 // 		$this->forward('spec\ei\manage\critmod\impl\view\critmodForm.html',
 // 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
 // 						'filterAjahHook' => $filterAjahHook));
+		$unbelivableHack = array();
+		foreach ($critmodForm->getSelectedCritmodSaveIdOptions() as $id => $name) {
+			$unbelivableHack[' ' . $id . ' '] = $name;
+		}
+		
 		$this->send(new AjahResponse($this->createView('~\spec\ei\manage\critmod\impl\view\critmodForm.html',
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
 						'filterAjahHook' => $filterAjahHook)),
-				array('critmodSaveIdOptions' => $critmodForm->getSelectedCritmodSaveIdOptions())));
+				array('critmodSaveIdOptions' => $unbelivableHack)));
 				
 	}
 	

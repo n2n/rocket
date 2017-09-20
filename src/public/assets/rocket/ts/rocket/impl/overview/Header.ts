@@ -292,7 +292,7 @@ namespace rocket.impl.overview {
 			this.jqSelect.empty();
 			
 			for (let id in idOptions) {
-				this.jqSelect.append($("<option />", { value: id, text: idOptions[id] }));	
+				this.jqSelect.append($("<option />", { value: id.trim(), text: idOptions[id] }));	
 			}	
 			
 			this.jqSelect.val(this.critmodForm.critmodSaveId);
