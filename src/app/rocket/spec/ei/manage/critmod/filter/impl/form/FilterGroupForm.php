@@ -22,13 +22,8 @@
 namespace rocket\spec\ei\manage\critmod\filter\impl\form;
 
 use n2n\web\dispatch\Dispatchable;
-use n2n\web\dispatch\map\bind\MappingDefinition;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use n2n\web\dispatch\map\bind\BindingErrors;
-use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\web\dispatch\map\MappingResult;
-use n2n\web\dispatch\DispatchContext;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
@@ -95,6 +90,11 @@ class FilterGroupForm implements Dispatchable {
 	
 	public function getFilterGroupForms(): array {
 		return $this->filterGroupForms;
+	}
+	
+	public function clear() {
+		$this->filterFieldItemForms = array();
+		$this->filterGroupForms = array();
 	}
 	
 // 	private function _mapping(MappingResult $mr, MappingDefinition $md, DispatchContext $dc, BindingErrors $be) {

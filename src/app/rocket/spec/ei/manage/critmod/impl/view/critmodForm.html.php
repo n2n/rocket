@@ -37,9 +37,9 @@
 ?>
 
 <?php $formHtml->open($critmodForm, null, null, array(
-				'class' => 'rocket-impl-critmod' . ($critmodForm->isActive() ? ' rocket-active' : ''),
-				'data-rocket-impl-critmod-save-id' => $critmodForm->getSelectedCritmodSaveId(),
-				'data-rocket-impl-post-url' => $view->getParam('critmodFormUrl'))) ?>
+		'class' => 'rocket-impl-critmod' . ($critmodForm->isActive() ? ' rocket-active' : ''),
+		'data-rocket-impl-critmod-save-id' => $critmodForm->getSelectedCritmodSaveId(),
+		'data-rocket-impl-post-url' => $view->getParam('critmodFormUrl'))) ?>
 		
 	<?php $formHtml->messageList() ?>
 

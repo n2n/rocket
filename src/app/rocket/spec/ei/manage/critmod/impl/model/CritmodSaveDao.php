@@ -112,7 +112,7 @@ class CritmodSaveDao implements RequestScoped {
 	public function containsCritmodSaveName($eiTypeId, string $eiMaskId = null, string $filterName) {
 		$criteria = $this->em->createCriteria();
 		$criteria->select('COUNT(cs)')->from(CritmodSave::getClass(), 'cs')->where(
-				array('cs.eiTypeId' => $eiTypeId, 'cs.eiMaskId' => $eiMaskId));
+				array('cs.eiTypeId' => $eiTypeId, 'cs.eiMaskId' => $eiMaskId, 'cs.name' => $filterName));
 		return (bool) $criteria->toQuery()->fetchSingle();
 	}
 	
