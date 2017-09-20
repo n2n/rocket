@@ -24,11 +24,11 @@ namespace rocket.impl.overview {
 			this.quicksearchForm = new QuicksearchForm(this.overviewContent);
 			this.quicksearchForm.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
 			
-			this.critmodSelect = new CritmodSelect(this.overviewContent);
-			this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"));
-			
 			this.critmodForm = new CritmodForm(this.overviewContent);
 			this.critmodForm.init(this.jqElem.find("form.rocket-impl-critmod:first"));
+			
+			this.critmodSelect = new CritmodSelect(this.overviewContent);
+			this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"), this.critmodForm);
 		}
 	}
 	
@@ -77,7 +77,6 @@ namespace rocket.impl.overview {
 				this.jqAllButton.addClass("active");
 				this.jqSelectedButton.removeClass("active");
 			}
-			
 			
 			if (!this.overviewContent.selectable) {
 				this.jqSelectedButton.hide();
@@ -202,18 +201,25 @@ namespace rocket.impl.overview {
 	
 	class CritmodSelect {
 		private form: Form;
+		private critmodForm: CritmodForm;
+		
+		private jqSelect: JQuery;
+		private jqButton: JQuery;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		public init(jqForm: JQuery) {
+		public init(jqForm: JQuery, critmodForm: CritmodForm) {
 			if (this.form) {
 				throw new Error("CritmodSelect already initialized.");
 			}
 			
 			this.form = Form.from(jqForm);
+			this.form.reset();
 			
-			jqForm.find("button[type=submit]").hide();
+			this.critmodForm = critmodForm;
+			
+			this.jqButton = jqForm.find("button[type=submit]").hide();
 			
 			this.form.config.blockContext = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
@@ -223,25 +229,33 @@ namespace rocket.impl.overview {
 			this.form.config.successResponseHandler = function (data: string) {
 				that.whenSubmitted(data);
 			}
+			this.jqSelect = jqForm.find("select:first").change(function () {
+				that.send();
+			});
 			
-			jqForm.find("select:first").change(function () {
-				that.send($(this).val());
+			critmodForm.onChange(function () {
+				that.updateId();
+			});
+			
+			critmodForm.whenChanged(function (idOptions) {
+				that.updateIdOptions(idOptions);
 			});
 		}
 		
 //		private sc = 0;
 //		private serachVal = null;
 //		
-//		private updateState() {
-//			if (this.jqSearchInput.val().length > 0) {
-//				this.form.jQuery.addClass("rocket-active");
-//			} else {
-//				this.form.jQuery.removeClass("rocket-active");
-//			}
-//		}
+		private updateState() {
+			if (this.jqSelect.val()) {
+				this.form.jQuery.addClass("rocket-active");
+			} else {
+				this.form.jQuery.removeClass("rocket-active");
+			}
+		}
 		
-		private send(id: string) {
-			this.form.submit();
+		private send() {
+			this.form.submit({ button: this.jqButton.get(0) });
+			this.updateState();
 		}
 		
 		private onSubmit() {
@@ -250,14 +264,43 @@ namespace rocket.impl.overview {
 		
 		private whenSubmitted(data) {
 			this.overviewContent.initFromResponse(data);
+			this.critmodForm.reload();
+		}
+		
+		private updateId() {
+			var id = this.critmodForm.critmodSaveId;
+			if (id && isNaN(parseInt(id))) {
+				this.jqSelect.append($("<option />", { "value": id, "text": this.critmodForm.critmodSaveName }));
+			}
+			
+			this.jqSelect.val(id);
+			this.updateState();
+			
+		}
+		
+		private updateIdOptions(idOptions) {
+			this.jqSelect.empty();
+			
+			for (let id in idOptions) {
+				this.jqSelect.append($("<option />", { value: id, text: idOptions[id] }));	
+			}	
+			
+			this.jqSelect.val(this.critmodForm.critmodSaveId);
 		}
 	}
 	
 	class CritmodForm {
 		private form: Form;
-		private _critmodSaveId: string = null;
-		private jqSaveButtonContainer: JQuery;
-		private jqDeleteButtonContainer: JQuery;
+		
+		private jqApplyButton: JQuery;
+		private jqClearButton: JQuery;
+		private jqNameInput: JQuery;
+		private jqSaveButton: JQuery;
+		private jqSaveAsButton: JQuery;
+		private jqDeleteButton: JQuery;
+		
+		private changeCallbacks: Array<() => any> = [];
+		private changedCallbacks: Array<(idOptions: {[key: string]: string}) => any> = [];
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
@@ -267,48 +310,87 @@ namespace rocket.impl.overview {
 				throw new Error("CritmodForm already initialized.");
 			}
 			
-			this._critmodSaveId = jqForm.data("rocket-impl-critmod-save-id");
 			this.form = Form.from(jqForm);
+			this.form.reset();
 			
 			this.form.config.blockContext = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
+
 			var that = this;
 			this.form.config.successResponseHandler = function (data: string) {
 				that.whenSubmitted(data);
 			};
-			this.form.on(Form.EventType.SUBMIT, function () {
+			
+			var activateFunc = function (ensureCritmodSaveId: boolean) { 
+				jqForm.addClass("rocket-active");
+				
+				if (ensureCritmodSaveId && !that.critmodSaveId) {
+					that.form.jQuery.data("rocket-impl-critmod-save-id", "new");
+				}
 				that.onSubmit();
-			});
+			}
+			var deactivateFunc = function () { 
+				jqForm.removeClass("rocket-active"); 
+			 	that.form.jQuery.data("rocket-impl-critmod-save-id", null);
+				
+				that.onSubmit();
+			}
 			
-			this.jqSaveButtonContainer = jqForm.find(".rocket-impl-critmod-save").parent();
-			this.jqDeleteButtonContainer = jqForm.find(".rocket-impl-critmod-delete").parent();
-			
-			jqForm.find("select:first").change(function () {
-				that.send($(this).val());
+			this.jqApplyButton = jqForm.find(".rocket-impl-critmod-apply").click(function () { activateFunc(false); });
+			this.jqClearButton = jqForm.find(".rocket-impl-critmod-clear").click(function () { deactivateFunc(); });
+			this.jqNameInput = jqForm.find(".rocket-impl-critmod-name");
+			this.jqSaveButton = jqForm.find(".rocket-impl-critmod-save").click(function () { activateFunc(true); });
+			this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(function () {
+				that.form.jQuery.data("rocket-impl-critmod-save-id", null);
+				activateFunc(true); 
 			});
+			this.jqDeleteButton = jqForm.find(".rocket-impl-critmod-delete").click(function () { deactivateFunc(); });
 			
 			this.updateState();
 		}
 		
 		get critmodSaveId(): string {
-			return this._critmodSaveId;
+			return this.form.jQuery.data("rocket-impl-critmod-save-id");
 		}
 		
+		get critmodSaveName(): string {
+			return this.jqNameInput.val();
+		}
+						
 		private updateState() {
 			if (this.critmodSaveId) {
-				this.jqSaveButtonContainer.show();
-				this.jqDeleteButtonContainer.show();
+				this.jqSaveAsButton.show();
+				this.jqDeleteButton.show();
 			} else {
-				this.jqSaveButtonContainer.hide();
-				this.jqDeleteButtonContainer.hide();
-			}	
+				this.jqSaveAsButton.hide();
+				this.jqDeleteButton.hide();
+			}
 		}
 		
-		private send(id: string) {
-			this.form.submit();
+		public reload() {
+			var url = this.form.config.actionUrl;
+			
+			var that = this;
+			$.ajax({
+				"url": url,
+				"dataType": "json"
+			}).fail(function (jqXHR, textStatus, data) {
+				if (jqXHR.status != 200) {
+                    rocket.getContainer().handleError(url, jqXHR.responseText);
+					return;
+				}
+				
+				throw new Error("invalid response");
+			}).done(function (data, textStatus, jqXHR) {
+				that.whenSubmitted(data);
+			});
 		}
 		
 		private onSubmit() {
+			this.changeCallbacks.forEach(function (callback) {
+				callback();
+			});
+			
 			this.overviewContent.clear(true);
 		}
 		
@@ -319,6 +401,19 @@ namespace rocket.impl.overview {
 			n2n.ajah.update();
 			this.init(jqForm);
 			this.overviewContent.init(1);
+			
+			var idOptions = data.additional.critmodSaveIdOptions;
+			this.changedCallbacks.forEach(function (callback) {
+				callback(idOptions);
+			});
+		}
+		
+		public onChange(callback: () => any) {
+			this.changeCallbacks.push(callback);
+		}
+		
+		public whenChanged(callback: (idOptions: {[key: string]: string}) => any) {
+			this.changedCallbacks.push(callback);
 		}
 	}
 }

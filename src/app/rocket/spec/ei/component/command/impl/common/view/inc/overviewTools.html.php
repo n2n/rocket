@@ -58,7 +58,7 @@
 					array('quickSearchForm' => $quickSearchForm, 'postUrl' => $overviewAjahHook->getSelectUrl())) ?>
 			<div class="rocket-impl-critmod-select-container">
 				<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
-						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
+						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getSelectUrl())) ?>
 			</div>
 		</div>
 		

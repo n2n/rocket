@@ -2056,6 +2056,15 @@ var rocket;
                     this.buildFakePage();
                     this.triggerContentChange();
                 };
+                OverviewContent.prototype.init = function (currentPageNo) {
+                    this.reset(false);
+                    this.goTo(currentPageNo);
+                    if (this.allInfo) {
+                        this.allInfo = new AllInfo([this.pages[currentPageNo]], 0);
+                    }
+                    this.buildFakePage();
+                    this.triggerContentChange();
+                };
                 OverviewContent.prototype.initFromResponse = function (data) {
                     this.reset(false);
                     var page = this.createPage(parseInt(data.additional.pageNo));
@@ -3761,10 +3770,12 @@ var rocket;
                     this.jqElem = jqElem;
                     this.state = new State(this.overviewContent);
                     this.state.draw(this.jqElem.find(".rocket-impl-state:first"));
-                    this.quicksearch = new Quicksearch(this.overviewContent);
-                    this.quicksearch.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
+                    this.quicksearchForm = new QuicksearchForm(this.overviewContent);
+                    this.quicksearchForm.init(this.jqElem.find("form.rocket-impl-quicksearch:first"));
+                    this.critmodForm = new CritmodForm(this.overviewContent);
+                    this.critmodForm.init(this.jqElem.find("form.rocket-impl-critmod:first"));
                     this.critmodSelect = new CritmodSelect(this.overviewContent);
-                    this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"));
+                    this.critmodSelect.init(this.jqElem.find("form.rocket-impl-critmod-select:first"), this.critmodForm);
                 };
                 return Header;
             }());
@@ -3826,13 +3837,13 @@ var rocket;
                 };
                 return State;
             }());
-            var Quicksearch = (function () {
-                function Quicksearch(overviewContent) {
+            var QuicksearchForm = (function () {
+                function QuicksearchForm(overviewContent) {
                     this.overviewContent = overviewContent;
                     this.sc = 0;
                     this.serachVal = null;
                 }
-                Quicksearch.prototype.init = function (jqForm) {
+                QuicksearchForm.prototype.init = function (jqForm) {
                     if (this.form) {
                         throw new Error("Quicksearch already initialized.");
                     }
@@ -3848,7 +3859,7 @@ var rocket;
                     };
                     this.initListeners();
                 };
-                Quicksearch.prototype.initListeners = function () {
+                QuicksearchForm.prototype.initListeners = function () {
                     this.form.reset();
                     var jqButtons = this.form.jQuery.find("button[type=submit]");
                     this.jqSearchButton = $(jqButtons.get(0));
@@ -3866,7 +3877,7 @@ var rocket;
                         that.updateState();
                     });
                 };
-                Quicksearch.prototype.updateState = function () {
+                QuicksearchForm.prototype.updateState = function () {
                     if (this.jqSearchInput.val().length > 0) {
                         this.form.jQuery.addClass("rocket-active");
                     }
@@ -3874,7 +3885,7 @@ var rocket;
                         this.form.jQuery.removeClass("rocket-active");
                     }
                 };
-                Quicksearch.prototype.send = function (force) {
+                QuicksearchForm.prototype.send = function (force) {
                     var searchVal = this.jqSearchInput.val();
                     if (this.serachVal == searchVal)
                         return;
@@ -3893,25 +3904,27 @@ var rocket;
                         that.jqSearchButton.click();
                     }, 300);
                 };
-                Quicksearch.prototype.onSubmit = function () {
+                QuicksearchForm.prototype.onSubmit = function () {
                     this.sc++;
                     this.overviewContent.clear(true);
                 };
-                Quicksearch.prototype.whenSubmitted = function (data) {
+                QuicksearchForm.prototype.whenSubmitted = function (data) {
                     this.overviewContent.initFromResponse(data);
                 };
-                return Quicksearch;
+                return QuicksearchForm;
             }());
             var CritmodSelect = (function () {
                 function CritmodSelect(overviewContent) {
                     this.overviewContent = overviewContent;
                 }
-                CritmodSelect.prototype.init = function (jqForm) {
+                CritmodSelect.prototype.init = function (jqForm, critmodForm) {
                     if (this.form) {
                         throw new Error("CritmodSelect already initialized.");
                     }
                     this.form = impl_1.Form.from(jqForm);
-                    jqForm.find("button[type=submit]").hide();
+                    this.form.reset();
+                    this.critmodForm = critmodForm;
+                    this.jqButton = jqForm.find("button[type=submit]").hide();
                     this.form.config.blockContext = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     this.form.config.autoSubmitAllowed = false;
@@ -3919,90 +3932,159 @@ var rocket;
                     this.form.config.successResponseHandler = function (data) {
                         that.whenSubmitted(data);
                     };
-                    jqForm.find("select:first").change(function () {
-                        that.send($(this).val());
+                    this.jqSelect = jqForm.find("select:first").change(function () {
+                        that.send();
+                    });
+                    critmodForm.onChange(function () {
+                        that.updateId();
+                    });
+                    critmodForm.whenChanged(function (idOptions) {
+                        that.updateIdOptions(idOptions);
                     });
                 };
                 //		private sc = 0;
                 //		private serachVal = null;
                 //		
-                //		private updateState() {
-                //			if (this.jqSearchInput.val().length > 0) {
-                //				this.form.jQuery.addClass("rocket-active");
-                //			} else {
-                //				this.form.jQuery.removeClass("rocket-active");
-                //			}
-                //		}
-                CritmodSelect.prototype.send = function (id) {
-                    this.form.submit();
+                CritmodSelect.prototype.updateState = function () {
+                    if (this.jqSelect.val()) {
+                        this.form.jQuery.addClass("rocket-active");
+                    }
+                    else {
+                        this.form.jQuery.removeClass("rocket-active");
+                    }
+                };
+                CritmodSelect.prototype.send = function () {
+                    this.form.submit({ button: this.jqButton.get(0) });
+                    this.updateState();
                 };
                 CritmodSelect.prototype.onSubmit = function () {
                     this.overviewContent.clear(true);
                 };
                 CritmodSelect.prototype.whenSubmitted = function (data) {
                     this.overviewContent.initFromResponse(data);
+                    this.critmodForm.reload();
+                };
+                CritmodSelect.prototype.updateId = function () {
+                    var id = this.critmodForm.critmodSaveId;
+                    if (id && isNaN(parseInt(id))) {
+                        this.jqSelect.append($("<option />", { "value": id, "text": this.critmodForm.critmodSaveName }));
+                    }
+                    this.jqSelect.val(id);
+                    this.updateState();
+                };
+                CritmodSelect.prototype.updateIdOptions = function (idOptions) {
+                    this.jqSelect.empty();
+                    for (var id in idOptions) {
+                        this.jqSelect.append($("<option />", { value: id, text: idOptions[id] }));
+                    }
+                    this.jqSelect.val(this.critmodForm.critmodSaveId);
                 };
                 return CritmodSelect;
             }());
             var CritmodForm = (function () {
                 function CritmodForm(overviewContent) {
                     this.overviewContent = overviewContent;
-                    this._critmodSaveId = null;
+                    this.changeCallbacks = [];
+                    this.changedCallbacks = [];
                 }
-                Object.defineProperty(CritmodForm.prototype, "critmodSaveId", {
-                    get: function () {
-                        return this._critmodSaveId;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 CritmodForm.prototype.init = function (jqForm) {
                     if (this.form) {
                         throw new Error("CritmodForm already initialized.");
                     }
-                    this._critmodSaveId = jqForm.data("rocket-impl-critmod-save-id");
                     this.form = impl_1.Form.from(jqForm);
+                    this.form.reset();
                     this.form.config.blockContext = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     var that = this;
                     this.form.config.successResponseHandler = function (data) {
                         that.whenSubmitted(data);
                     };
-                    this.jqSaveButtonContainer = jqForm.find(".rocket-impl-critmod-save").parent();
-                    this.jqDeleteButtonContainer = jqForm.find(".rocket-impl-critmod-delete").parent();
-                    jqForm.find("select:first").change(function () {
-                        that.send($(this).val());
+                    var activateFunc = function (ensureCritmodSaveId) {
+                        jqForm.addClass("rocket-active");
+                        if (ensureCritmodSaveId && !that.critmodSaveId) {
+                            that.form.jQuery.data("rocket-impl-critmod-save-id", "new");
+                        }
+                        that.onSubmit();
+                    };
+                    var deactivateFunc = function () {
+                        jqForm.removeClass("rocket-active");
+                        that.form.jQuery.data("rocket-impl-critmod-save-id", null);
+                        that.onSubmit();
+                    };
+                    this.jqApplyButton = jqForm.find(".rocket-impl-critmod-apply").click(function () { activateFunc(false); });
+                    this.jqClearButton = jqForm.find(".rocket-impl-critmod-clear").click(function () { deactivateFunc(); });
+                    this.jqNameInput = jqForm.find(".rocket-impl-critmod-name");
+                    this.jqSaveButton = jqForm.find(".rocket-impl-critmod-save").click(function () { activateFunc(true); });
+                    this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(function () {
+                        that.form.jQuery.data("rocket-impl-critmod-save-id", null);
+                        activateFunc(true);
                     });
+                    this.jqDeleteButton = jqForm.find(".rocket-impl-critmod-delete").click(function () { deactivateFunc(); });
                     this.updateState();
                 };
+                Object.defineProperty(CritmodForm.prototype, "critmodSaveId", {
+                    get: function () {
+                        return this.form.jQuery.data("rocket-impl-critmod-save-id");
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(CritmodForm.prototype, "critmodSaveName", {
+                    get: function () {
+                        return this.jqNameInput.val();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 CritmodForm.prototype.updateState = function () {
                     if (this.critmodSaveId) {
-                        this.jqSaveButtonContainer.show();
-                        this.jqDeleteButtonContainer.show();
+                        this.jqSaveAsButton.show();
+                        this.jqDeleteButton.show();
                     }
                     else {
-                        this.jqSaveButtonContainer.hide();
-                        this.jqDeleteButtonContainer.hide();
+                        this.jqSaveAsButton.hide();
+                        this.jqDeleteButton.hide();
                     }
                 };
-                //		private sc = 0;
-                //		private serachVal = null;
-                //		
-                //		private updateState() {
-                //			if (this.jqSearchInput.val().length > 0) {
-                //				this.form.jQuery.addClass("rocket-active");
-                //			} else {
-                //				this.form.jQuery.removeClass("rocket-active");
-                //			}
-                //		}
-                CritmodForm.prototype.send = function (id) {
-                    this.form.submit();
+                CritmodForm.prototype.reload = function () {
+                    var url = this.form.config.actionUrl;
+                    var that = this;
+                    $.ajax({
+                        "url": url,
+                        "dataType": "json"
+                    }).fail(function (jqXHR, textStatus, data) {
+                        if (jqXHR.status != 200) {
+                            rocket.getContainer().handleError(url, jqXHR.responseText);
+                            return;
+                        }
+                        throw new Error("invalid response");
+                    }).done(function (data, textStatus, jqXHR) {
+                        that.whenSubmitted(data);
+                    });
                 };
                 CritmodForm.prototype.onSubmit = function () {
+                    this.changeCallbacks.forEach(function (callback) {
+                        callback();
+                    });
                     this.overviewContent.clear(true);
                 };
                 CritmodForm.prototype.whenSubmitted = function (data) {
-                    this.overviewContent.initFromResponse(data);
+                    var jqForm = $(n2n.ajah.analyze(data));
+                    this.form.jQuery.replaceWith(jqForm);
+                    this.form = null;
+                    n2n.ajah.update();
+                    this.init(jqForm);
+                    this.overviewContent.init(1);
+                    var idOptions = data.additional.critmodSaveIdOptions;
+                    this.changedCallbacks.forEach(function (callback) {
+                        callback(idOptions);
+                    });
+                };
+                CritmodForm.prototype.onChange = function (callback) {
+                    this.changeCallbacks.push(callback);
+                };
+                CritmodForm.prototype.whenChanged = function (callback) {
+                    this.changedCallbacks.push(callback);
                 };
                 return CritmodForm;
             }());

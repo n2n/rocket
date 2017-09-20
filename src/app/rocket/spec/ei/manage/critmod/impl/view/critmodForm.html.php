@@ -56,29 +56,27 @@
 					array('propertyPath' => $formHtml->meta()->createPropertyPath('sortForm'))) ?>
 		</div>
 		<div class="col-sm-12">
-			<ul class="rocket-critmod-commands nav">
-				<li class="nav-item">
-					<?php $formHtml->inputSubmit('apply', $view->getL10nText('common_apply_label'),
-							array('class' => 'btn btn-secondary rocket-important rocket-impl-critmod-apply')) ?>
-				</li>
-				<li class="nav-item">
-					<?php $formHtml->inputSubmit('clear', $view->getL10nText('common_clear_label'),
-							array('class' => 'btn btn-secondary rocket-impl-critmod-clear')) ?>
-				</li>
-				<li class="nav-item">
-					<?php $formHtml->inputSubmit('save', $view->getL10nText('common_save_label'),
-							array('class' => 'btn btn-secondary rocket-impl-critmod-save')) ?>
-				</li>
-				<li class="nav-item rocket-textable-control">
-					<?php $formHtml->inputSubmit('saveAs', $view->getL10nText('common_save_as_label'), 
-							array('class' => 'btn btn-secondary rocket-impl-critmod-save-as', 'data-after-label' => $view->getL10nText('common_save_as_label'))) ?>
-					<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'form-control')) ?>
-				</li>
-				<li class="nav-item">
-					<?php $formHtml->inputSubmit('delete', $view->getL10nText('common_delete_label'),
-							array('class' => 'btn btn-secondary-danger rocket-impl-critmod-delete')) ?>
-				</li>
-			</ul>
+			<div>
+				<?php $formHtml->buttonSubmit('apply', $view->getL10nText('common_apply_label'),
+						array('class' => 'btn btn-primary rocket-impl-critmod-apply')) ?>
+				
+				<?php $formHtml->buttonSubmit('clear', $view->getL10nText('common_clear_label'),
+						array('class' => 'btn btn-secondary rocket-impl-critmod-clear')) ?>
+			</div>
+			<div>
+				<?php $html->text('ei_impl_filter_label') ?>
+			
+				<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'rocket-impl-critmod-name')) ?>
+				
+				<?php $formHtml->buttonSubmit('save', $view->getL10nText('common_save_label'),
+						array('class' => 'btn btn-secondary rocket-impl-critmod-save')) ?>
+
+				<?php $formHtml->buttonSubmit('saveAs', $view->getL10nText('common_save_as_copy_label'), 
+						array('class' => 'btn btn-secondary rocket-impl-critmod-save-as')) ?>
+				
+				<?php $formHtml->buttonSubmit('delete', $view->getL10nText('common_delete_label'),
+						array('class' => 'btn btn-secondary rocket-impl-critmod-delete')) ?>
+			</div>
 		</div>
 	</div>
 <?php $formHtml->close() ?>

@@ -94,7 +94,8 @@ class OverviewAjahController extends ControllerAdapter {
 		if ($this->dispatch($critmodForm, 'select') || $this->dispatch($critmodForm, 'apply')
 				|| $this->dispatch($critmodForm, 'clear') || $this->dispatch($critmodForm, 'save')
 				|| $this->dispatch($critmodForm, 'saveAs') || $this->dispatch($critmodForm, 'delete')) {
-			$valid = true;
+					
+			$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 // 			$this->refresh();
 // 			return;
 		}
@@ -109,7 +110,7 @@ class OverviewAjahController extends ControllerAdapter {
 		$this->send(new AjahResponse($this->createView('~\spec\ei\manage\critmod\impl\view\critmodForm.html',
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
 						'filterAjahHook' => $filterAjahHook)),
-				array('valid' => $valid)));
+				array('critmodSaveIdOptions' => $critmodForm->getSelectedCritmodSaveIdOptions())));
 				
 	}
 	
@@ -149,9 +150,8 @@ class OverviewAjahController extends ControllerAdapter {
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
 		
-		if ($this->dispatch($quickSearchForm, 'search') || $this->dispatch($quickSearchForm, 'clear')) {
-			//
-		}
+		$this->dispatch($critmodForm, 'select') || $this->dispatch($quickSearchForm, 'search') 
+				|| $this->dispatch($quickSearchForm, 'clear');
 		
 		if ($idReps != null) {
 			$listModel->initByIdReps($idReps->toStringArrayOrReject());

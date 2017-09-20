@@ -33,7 +33,6 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use n2n\web\dispatch\map\bind\MappingDefinition;
-use n2n\impl\web\dispatch\map\val\ValNotEmpty;
 use n2n\l10n\DynamicTextCollection;
 
 class CritmodForm implements Dispatchable {	
@@ -65,9 +64,12 @@ class CritmodForm implements Dispatchable {
 			$filterGroupData = $tmpCritmodSave->readFilterGroupData();
 			$sortData = $tmpCritmodSave->readSortData();
 			$this->active = true;
+			if (null !== $selectedCritmodSave = $critmodSaveDao->getSelectedCritmodSave($this->categoryKey)) {
+				$this->selectedCritmodSaveId = $selectedCritmodSave->getId();
+			}	
 		} else if (null !== ($selectedCritmodSave = $critmodSaveDao->getSelectedCritmodSave($this->categoryKey))) {
 			$this->selectedCritmodSaveId = $selectedCritmodSave->getId();
-			$this->name = $selectedCritmodSave->getName() . ' 2';
+			$this->name = $selectedCritmodSave->getName();
 			$filterGroupData = $selectedCritmodSave->readFilterGroupData();
 			$sortData = $selectedCritmodSave->readSortData();
 			$this->active = true;
@@ -201,18 +203,25 @@ class CritmodForm implements Dispatchable {
 		$this->active = true;
 	}
 	
-	public function save() {
+	public function save(DynamicTextCollection $dtc) {
 		$critmodSave = $this->critmodSaveDao->getSelectedCritmodSave($this->categoryKey);
-		if ($critmodSave === null) return;
-		
-		if ($this->name !== null) {
-			$critmodSave->setName($this->name);
-		} else {
-			$this->name = $critmodSave->getName();
+		if ($critmodSave === null) {
+			$this->saveAs($dtc);
+			return;
 		}
 		
+		if ($this->name === null) {
+			$this->name = $dtc->t('common_untitled_label');
+		}
+		
+		$this->name = $this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypeId, $this->eiMaskId,
+				$this->name, $critmodSave);
+		
+		$critmodSave->setName($this->name);
 		$critmodSave->writeFilterData($this->filterGroupForm->buildFilterGroupData());
 		$critmodSave->writeSortData($this->sortForm->buildSortData());
+		
+		$this->name = $critmodSave->getName();
 	}
 	
 	public function saveAs(DynamicTextCollection $dtc) {
@@ -220,8 +229,9 @@ class CritmodForm implements Dispatchable {
 			$this->name = $dtc->t('common_untitled_label');
 		}
 		
-		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiTypeId, $this->eiMaskId,
-				$this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypeId, $this->eiMaskId, $this->name), 
+		$this->name = $this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypeId, $this->eiMaskId, $this->name);
+		
+		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiTypeId, $this->eiMaskId, $this->name, 
 				$this->filterGroupForm->buildFilterGroupData(), 
 				$this->sortForm->buildSortData());
 		
