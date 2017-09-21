@@ -29,9 +29,9 @@ use rocket\spec\ei\manage\util\model\Eiu;
 interface EntryControlComponent {
 	/**
 	 * @param N2nLocale $n2nLocale
-	 * @return array
+	 * @return string[]
 	 */
-	public function getEntryControlOptions(N2nLocale $n2nLocale);
+	public function getEntryControlOptions(N2nLocale $n2nLocale): array;
 	
 	/**
 	 * @param EntryModel $entryModel

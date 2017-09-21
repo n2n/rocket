@@ -40,6 +40,21 @@ namespace Rocket.util {
 			throw new InvalidArgumentError("Invalid arg: " + arg);
 		}
 	}
+	
+	export class ElementUtils {
+		static isControl(elem: Element) {
+			switch (elem.tagName) {
+				case 'A':
+				case 'BUTTON':
+				case 'INPUT':
+				case 'TEXTAREA':
+				case 'SELECT':
+					return true;
+				default:
+					return false;
+			}
+		}
+	}
 		
 	export class InvalidArgumentError extends Error {
 		

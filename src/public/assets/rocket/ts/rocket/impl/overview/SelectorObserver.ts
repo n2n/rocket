@@ -31,7 +31,6 @@ namespace Rocket.Impl.Overview {
 			selector.whenChanged(function () {
 				jqCheck.prop("checked", selector.selected);
 				that.chSelect(selector.selected, selector.entry.id);
-				console.log("idrep change");
 			});
 			
 			var entry = selector.entry;

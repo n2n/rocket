@@ -39,9 +39,9 @@ class AddController extends ControllerAdapter {
 	private $beforeEiObject;
 	private $afterEiObject;
 	
-	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils, RocketState $rocketState) {
+	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrl, RocketState $rocketState) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = $eiCtrlUtils;
+		$this->eiuCtrl = $eiCtrl;
 	}
 		
 	public function index($copyIdRep = null, ParamGet $refPath = null) {	
@@ -98,8 +98,10 @@ class AddController extends ControllerAdapter {
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
 				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
-		$this->forward('..\view\add.html',
+		
+		$view = $this->createView('..\view\add.html',
 				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
+		$this->eiuCtrl->forwardView($view);
 	}
 	
 	public function doDraft(ParamGet $refPath = null) {

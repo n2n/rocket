@@ -5,16 +5,28 @@ namespace Rocket.Display {
 		private _state: Entry.State = Entry.State.PERSISTENT;
 		private callbackRegistery: util.CallbackRegistry<EntryCallback> = new util.CallbackRegistry<EntryCallback>();
 		
-		constructor(private jqElem: JQuery) {
+		constructor(private jqElem: JQuery, jqSelector: JQuery = null) {
 			var that = this;
 			jqElem.on("remove", function () {
 				that.trigger(Entry.EventType.DISPOSED);
 			});
 			
-			var jqSelectors = this.jqElem.find(".rocket-entry-selector:first");
-			if (jqSelectors.length > 0) {
-				this._selector = new EntrySelector(jqSelectors.first(), this);
+			if (jqSelector) {
+				this.initSelector(jqSelector);
 			}
+		}
+		
+		private initSelector(jqSelector: JQuery) {
+			this._selector = new EntrySelector(jqSelector, this);
+			
+			var that = this;
+			this.jqElem.click(function (e) {
+				if (getSelection().toString() || util.ElementUtils.isControl(e.target)) {
+					return;
+				}
+				
+				that._selector.selected = !that._selector.selected;
+			});
 		}
 		
 		private trigger(eventType: Entry.EventType) {

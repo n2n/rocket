@@ -60,7 +60,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return $eiu->lookup(EditController::class);
 	}
 	
-	public function getEntryControlOptions(N2nLocale $n2nLocale) {
+	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}

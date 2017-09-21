@@ -50,7 +50,7 @@ class CopyEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
-	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale) {
+	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::ID_BASE => $dtc->translate('ei_impl_copy_label'));
 	}

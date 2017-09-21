@@ -123,6 +123,24 @@ var Rocket;
             return ArgUtils;
         }());
         util.ArgUtils = ArgUtils;
+        var ElementUtils = (function () {
+            function ElementUtils() {
+            }
+            ElementUtils.isControl = function (elem) {
+                switch (elem.tagName) {
+                    case 'A':
+                    case 'BUTTON':
+                    case 'INPUT':
+                    case 'TEXTAREA':
+                    case 'SELECT':
+                        return true;
+                    default:
+                        return false;
+                }
+            };
+            return ElementUtils;
+        }());
+        util.ElementUtils = ElementUtils;
         var InvalidArgumentError = (function (_super) {
             __extends(InvalidArgumentError, _super);
             function InvalidArgumentError() {
@@ -833,7 +851,8 @@ var Rocket;
     var Display;
     (function (Display) {
         var Entry = (function () {
-            function Entry(jqElem) {
+            function Entry(jqElem, jqSelector) {
+                if (jqSelector === void 0) { jqSelector = null; }
                 this.jqElem = jqElem;
                 this._selector = null;
                 this._state = Entry.State.PERSISTENT;
@@ -842,11 +861,20 @@ var Rocket;
                 jqElem.on("remove", function () {
                     that.trigger(Entry.EventType.DISPOSED);
                 });
-                var jqSelectors = this.jqElem.find(".rocket-entry-selector:first");
-                if (jqSelectors.length > 0) {
-                    this._selector = new Display.EntrySelector(jqSelectors.first(), this);
+                if (jqSelector) {
+                    this.initSelector(jqSelector);
                 }
             }
+            Entry.prototype.initSelector = function (jqSelector) {
+                this._selector = new Display.EntrySelector(jqSelector, this);
+                var that = this;
+                this.jqElem.click(function (e) {
+                    if (getSelection().toString() || Rocket.util.ElementUtils.isControl(e.target)) {
+                        return;
+                    }
+                    that._selector.selected = !that._selector.selected;
+                });
+            };
             Entry.prototype.trigger = function (eventType) {
                 var entry = this;
                 this.callbackRegistery.filter(eventType.toString())
@@ -2584,12 +2612,12 @@ var Rocket;
                 Object.defineProperty(SelectorState.prototype, "selectedEntries", {
                     get: function () {
                         var entries = new Array();
-                        var that = this;
-                        this.selectorObserver.getSelectedIds().forEach(function (id) {
-                            if (that.entryMap[id] === undefined)
-                                return;
-                            entries.push(that.entryMap[id]);
-                        });
+                        for (var _i = 0, _a = this.entries; _i < _a.length; _i++) {
+                            var entry = _a[_i];
+                            if (!entry.selector || !entry.selector.selected)
+                                continue;
+                            entries.push(entry);
+                        }
                         return entries;
                     },
                     enumerable: true,
