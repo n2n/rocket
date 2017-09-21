@@ -586,12 +586,11 @@ namespace Rocket.Impl.Overview {
 		get selectedEntries(): Array<Display.Entry> {
 			var entries = new Array<Display.Entry>();
 			
-			var that = this;
-			this.selectorObserver.getSelectedIds().forEach(function (id: string) {
-				if (that.entryMap[id] === undefined) return;
+			for (let entry of this.entries) {
+				if (!entry.selector || !entry.selector.selected) continue;
 				
-				entries.push(that.entryMap[id]);
-			});	
+				entries.push(entry);
+			}
 			
 			return entries;
 		}

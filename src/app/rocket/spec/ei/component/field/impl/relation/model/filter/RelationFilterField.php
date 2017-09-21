@@ -251,7 +251,7 @@ class RelationFilterMagForm extends MagForm {
 		}
 		$this->filterGroupMag = new RelationFilterGroupMag('filterGroup', $targetFilterDefinition, $filterAjahHook);
 		$this->operatorMag = new EnumMag('operator', 'Operator',
-				$this->buildOperatorOptions());
+				$this->buildOperatorOptions(), null, true);
 		
 		$magCollection = new MagCollection();
 		$magCollection->addMag($this->operatorMag);
