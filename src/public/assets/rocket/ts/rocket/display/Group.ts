@@ -11,6 +11,16 @@ namespace Rocket.Display {
 			
 			jqElem.addClass("rocket-structure-element");
 			jqElem.data("rocketStructureElement", this);
+			
+			this.valClasses();
+		}
+		
+		private valClasses() {
+			if (this.isField() || this.isGroup()) {
+				this.jqElem.removeClass("rocket-structure-element");
+			} else {
+				this.jqElem.addClass("rocket-structure-element");
+			}
 		}
 		
 		public getJQuery(): JQuery {
@@ -23,10 +33,12 @@ namespace Rocket.Display {
 			} else {
 				this.jqElem.addClass("rocket-group");
 			}
+			
+			this.valClasses();
 		}
 		
 		public isGroup(): boolean {
-			return this.jqElem.hasClass("rocket-group") || this.jqElem.hasClass("rocket-group-main");
+			return this.jqElem.hasClass("rocket-group");
 		}
 		
 		public setField(field: boolean) {
@@ -35,6 +47,8 @@ namespace Rocket.Display {
 			} else {
 				this.jqElem.addClass("rocket-field");
 			}
+			
+			this.valClasses();
 		}
 		
 		public isField(): boolean {

@@ -241,7 +241,7 @@ class EiHtmlBuilder {
 
 	private function applyGroupTypeAttr(string $groupType = null, array $attrs) {
 		if (null !== $groupType) {
-			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group-' . $groupType), $attrs);
+			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group rocket-group-' . $groupType), $attrs);
 		}
 		
 		return $attrs;

@@ -35,18 +35,12 @@ namespace Rocket.Display {
 			
 			var jqContext = context.jQuery;
 			
-			jqContext.find(".rocket-group, .rocket-group-main, .rocket-field").each(function () {
+			jqContext.find(".rocket-group-main").each(function () {
 				var jqElem = $(this);
-				var structureElement = StructureElement.from(jqElem);
 				
-				if (structureElement !== null) return;
-				
-				if (!jqElem.hasClass("rocket-group-main")) {
-					StructureElement.from(jqElem, true);;
-					return;
+				if (jqElem.hasClass("rocket-group-main")) {
+					Initializer.scanGroupNav(jqElem.parent());
 				}
-				
-				Initializer.scanGroupNav(jqElem.parent());
 			});
 			
 			
@@ -67,7 +61,7 @@ namespace Rocket.Display {
 		private static scanGroupNav(jqContainer: JQuery) {
 			var curGroupNav = null;
 			
-			jqContainer.children(".rocket-group, .rocket-group-main, .rocket-group-autonomic").each(function () {
+			jqContainer.children().each(function () {
 				var jqElem = $(this);
 				if (!jqElem.hasClass("rocket-group-main")) {
 					curGroupNav = null;

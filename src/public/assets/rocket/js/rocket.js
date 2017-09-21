@@ -170,7 +170,16 @@ var Rocket;
                 this.jqElem = jqElem;
                 jqElem.addClass("rocket-structure-element");
                 jqElem.data("rocketStructureElement", this);
+                this.valClasses();
             }
+            StructureElement.prototype.valClasses = function () {
+                if (this.isField() || this.isGroup()) {
+                    this.jqElem.removeClass("rocket-structure-element");
+                }
+                else {
+                    this.jqElem.addClass("rocket-structure-element");
+                }
+            };
             StructureElement.prototype.getJQuery = function () {
                 return this.jqElem;
             };
@@ -181,9 +190,10 @@ var Rocket;
                 else {
                     this.jqElem.addClass("rocket-group");
                 }
+                this.valClasses();
             };
             StructureElement.prototype.isGroup = function () {
-                return this.jqElem.hasClass("rocket-group") || this.jqElem.hasClass("rocket-group-main");
+                return this.jqElem.hasClass("rocket-group");
             };
             StructureElement.prototype.setField = function (field) {
                 if (!field) {
@@ -192,6 +202,7 @@ var Rocket;
                 else {
                     this.jqElem.addClass("rocket-field");
                 }
+                this.valClasses();
             };
             StructureElement.prototype.isField = function () {
                 return this.jqElem.hasClass("rocket-field");
@@ -998,17 +1009,11 @@ var Rocket;
                 var that = this;
                 var i = 0;
                 var jqContext = context.jQuery;
-                jqContext.find(".rocket-group, .rocket-group-main, .rocket-field").each(function () {
+                jqContext.find(".rocket-group-main").each(function () {
                     var jqElem = $(this);
-                    var structureElement = Display.StructureElement.from(jqElem);
-                    if (structureElement !== null)
-                        return;
-                    if (!jqElem.hasClass("rocket-group-main")) {
-                        Display.StructureElement.from(jqElem, true);
-                        ;
-                        return;
+                    if (jqElem.hasClass("rocket-group-main")) {
+                        Initializer.scanGroupNav(jqElem.parent());
                     }
-                    Initializer.scanGroupNav(jqElem.parent());
                 });
                 var errorIndex = null;
                 jqContext.find(".rocket-message-error").each(function () {
@@ -1022,7 +1027,7 @@ var Rocket;
             };
             Initializer.scanGroupNav = function (jqContainer) {
                 var curGroupNav = null;
-                jqContainer.children(".rocket-group, .rocket-group-main, .rocket-group-autonomic").each(function () {
+                jqContainer.children().each(function () {
                     var jqElem = $(this);
                     if (!jqElem.hasClass("rocket-group-main")) {
                         curGroupNav = null;
