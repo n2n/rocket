@@ -105,6 +105,28 @@ use n2nutil\jquery\JQueryUiLibrary;
 				background: yellow;
 			}
 			
+			.rocket-context-block {
+				position: fixed; 
+				top: 0px; 
+				left: 0px; 
+				right: 0px; 
+				bottom: 0px;
+				background: url('https://media.giphy.com/media/14fx8QIuKnp8Pu/giphy.gif') center center no-repeat rgba(0, 0, 0, 0.2);
+			}
+			
+			form.rocket-impl-critmod {
+				position: relative;
+			}
+			
+			form.rocket-impl-critmod .rocket-impl-critmod-blocker {
+				position: absolute; 
+				top: 0px; 
+				left: 0px; 
+				right: 0px; 
+				bottom: 0px;
+				background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
+			}
+			
 		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 

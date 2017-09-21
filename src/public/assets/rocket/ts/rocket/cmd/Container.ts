@@ -1,26 +1,27 @@
-namespace rocket.cmd {
-	import display = rocket.display;
-	import util = rocket.util;
+namespace Rocket.Cmd {
+	import display = Rocket.Display;
+	import util = Rocket.util;
 	
 	export class Container {
 		private jqContainer: JQuery;
-		private layers: Array<Layer>;
+		private _layers: Array<Layer>;
+		private layerCallbackRegistery: util.CallbackRegistry<LayerCallback> = new util.CallbackRegistry<LayerCallback>();
 		
 		private jqErrorLayer: JQuery = null;
 		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;
-			this.layers = new Array<Layer>();
+			this._layers = new Array<Layer>();
 			
-			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length, this);
-			this.layers.push(layer);
+			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this);
+			this._layers.push(layer);
 			
 			var that = this;
 			
 			layer.onNewHistoryEntry(function (historyIndex: number, url: Url, context: Context) {
 				var stateObj = { 
 					"type": "rocketContext",
-					"level": layer.getLevel(),
+					"level": layer.level,
 					"url": url,
 					"historyIndex": historyIndex
 				};
@@ -46,6 +47,10 @@ namespace rocket.cmd {
 //					history.back();
 				}
 			});
+		}
+		
+		get layers(): Array<Layer> {
+			return this._layers.slice();
 		}
 		
 		public handleError(url: string, html: string) {
@@ -75,29 +80,38 @@ namespace rocket.cmd {
 			$(iframe).css({ "width": "100%", "height": "100%", "background": "white" });
 		}
 	
-		public getMainLayer(): Layer {
-			if (this.layers.length > 0) {
-				return this.layers[0];
+		get mainLayer(): Layer {
+			if (this._layers.length > 0) {
+				return this._layers[0];
 			}
 			
 			throw new Error("Container empty.");
 		}
 		
-		public getCurrentLayer(): Layer {
-			if (this.layers.length == 0) {
+		get currentLayer(): Layer {
+			if (this._layers.length == 0) {
 				throw new Error("Container empty.");
 			}
 			
 			var layer = null;
-			for (var i in this.layers) {
-				if (this.layers[i].isVisible()) {
-					layer = this.layers[i];
+			for (let i in this._layers) {
+				if (this._layers[i].visible) {
+					layer = this._layers[i];
 				}
 			}
 			
 			if (layer !== null) return layer;
 			
-			return this.layers[this.layers.length - 1];
+			return this._layers[this._layers.length - 1];
+		}
+		
+		private unregisterLayer(layer: Layer) {
+			var i = this._layers.indexOf(layer);
+			if (i < 0) return;
+			
+			this._layers.splice(i, 1);
+			
+			this.layerTrigger(Container.LayerEventType.REMOVED, layer);
 		}
 		
 		public createLayer(dependentContext: Context = null): Layer {
@@ -107,8 +121,8 @@ namespace rocket.cmd {
 			
 			this.jqContainer.append(jqLayer);
 			
-			var layer = new Layer(jqLayer, this.layers.length, this);
-			this.layers.push(layer);
+			var layer = new Layer(jqLayer, this._layers.length, this);
+			this._layers.push(layer);
 			
 			var jqToolbar = $("<div />", {
 				"class": "rocket-layer-toolbar rocket-simple-commands"
@@ -124,7 +138,13 @@ namespace rocket.cmd {
 			});
 			jqToolbar.append(jqButton);
 			
+			var that = this;
+			layer.on(Layer.EventType.CLOSE, function () {
+				that.unregisterLayer(layer);
+			})
+			
 			if (dependentContext === null) {
+				this.layerTrigger(Container.LayerEventType.ADDED, layer);
 				return layer;
 			}
 			
@@ -138,14 +158,15 @@ namespace rocket.cmd {
 				layer.show();
 			});
 			
+			this.layerTrigger(Container.LayerEventType.ADDED, layer);
 			return layer;
 		}
 			
 		public getAllContexts(): Array<Context> {
 			var contexts = new Array<Context>();
 			
-			for (var i in this.layers) {
-				var layerContexts = this.layers[i].getContexts(); 
+			for (var i in this._layers) {
+				var layerContexts = this._layers[i].contexts; 
 				for (var j in layerContexts) {
 					contexts.push(layerContexts[j]);
 				}
@@ -162,5 +183,29 @@ namespace rocket.cmd {
 //			
 //			return this.currentLayer.createContext(html, bla);
 //		}
+		
+		private layerTrigger(eventType: Container.LayerEventType, layer: Layer) {
+			var container = this;
+			this.layerCallbackRegistery.filter(eventType.toString())
+					.forEach(function (callback: LayerCallback) {
+						callback(layer);
+					});
+		}
+		
+		public layerOn(eventType: Container.LayerEventType, callback: LayerCallback) {
+			this.layerCallbackRegistery.register(eventType.toString(), callback);
+		}
+		
+		public layerOff(eventType: Context.EventType, callback: LayerCallback) {
+			this.layerCallbackRegistery.unregister(eventType.toString(), callback);
+		}
+	}
+	
+	
+	export namespace Container {
+		export enum LayerEventType {
+			REMOVED /*= "removed"*/,
+			ADDED /*= "added"*/
+		}
 	}
 }

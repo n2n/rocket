@@ -1,6 +1,7 @@
-namespace rocket.display {
+namespace Rocket.Display {
 	
 	export class Entry {
+		private _selector: EntrySelector = null;
 		private _state: Entry.State = Entry.State.PERSISTENT;
 		private callbackRegistery: util.CallbackRegistry<EntryCallback> = new util.CallbackRegistry<EntryCallback>();
 		
@@ -9,6 +10,11 @@ namespace rocket.display {
 			jqElem.on("remove", function () {
 				that.trigger(Entry.EventType.DISPOSED);
 			});
+			
+			var jqSelectors = this.jqElem.find(".rocket-entry-selector:first");
+			if (jqSelectors.length > 0) {
+				this._selector = new EntrySelector(jqSelectors.first(), this);
+			}
 		}
 		
 		private trigger(eventType: Entry.EventType) {
@@ -86,14 +92,7 @@ namespace rocket.display {
 		}
 		
 		get selector(): EntrySelector {
-			var entrySelectors = EntrySelector.findAll(this.jqElem);
-			
-			for (var i in entrySelectors) {
-				if (entrySelectors[i].entry === this) {
-					return entrySelectors[i];
-				}
-			}
-			return null;
+			return this._selector;	
 		}
 		
 		private static from(jqElem: JQuery): Entry {

@@ -19,8 +19,8 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  * 
  */
-namespace rocket.impl.overview {
-	import cmd = rocket.cmd;
+namespace Rocket.Impl.Overview {
+	import cmd = Rocket.Cmd;
 	
 	var $ = jQuery;
 	
@@ -56,7 +56,7 @@ namespace rocket.impl.overview {
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
 					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
 			
-			new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
+			new ContextUpdater(Rocket.Cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
 					.init(overviewContent);
 			
 			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
@@ -139,7 +139,7 @@ namespace rocket.impl.overview {
 			
 			var newActiveUrl = this.pageUrls[newCurPageNo - 1];
 			if (!this.context.activeUrl.equals(newActiveUrl)) {
-				this.context.getLayer().pushHistoryEntry(newActiveUrl);
+				this.context.layer.pushHistoryEntry(newActiveUrl);
 			}
 			
 			if (this.pageUrls.length > newNumPages) {

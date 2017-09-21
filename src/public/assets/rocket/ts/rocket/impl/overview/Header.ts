@@ -1,6 +1,6 @@
-namespace rocket.impl.overview {
-	import cmd = rocket.cmd;
-	import impl = rocket.impl.overview;
+namespace Rocket.Impl.Overview {
+	import cmd = Rocket.Cmd;
+	import impl = Rocket.Impl.Overview;
 	
 	var $ = jQuery;
 
@@ -122,6 +122,7 @@ namespace rocket.impl.overview {
 				that.onSubmit();
 			});
 			this.form.config.blockContext = false;
+			this.form.config.disableControls = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
 			this.form.config.successResponseHandler = function (data: string) {
 				that.whenSubmitted(data);
@@ -227,6 +228,7 @@ namespace rocket.impl.overview {
 			this.jqButton = jqForm.find("button[type=submit]").hide();
 			
 			this.form.config.blockContext = false;
+			this.form.config.disableControls = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
 			this.form.config.autoSubmitAllowed = false;
 			
@@ -234,6 +236,7 @@ namespace rocket.impl.overview {
 			this.form.config.successResponseHandler = function (data: string) {
 				that.whenSubmitted(data);
 			}
+			
 			this.jqSelect = jqForm.find("select:first").change(function () {
 				that.send();
 			});
@@ -266,7 +269,7 @@ namespace rocket.impl.overview {
 			this.overviewContent.clear(true);
 			
 			var id = this.jqSelect.val();
-			this.critmodForm.activated = id == true;
+			this.critmodForm.activated = id ? true : false;
 			this.critmodForm.critmodSaveId = id;
 			this.critmodForm.freeze(); 
 		}
@@ -415,6 +418,7 @@ namespace rocket.impl.overview {
 				that.activated = false; 
 			 	that.critmodSaveId = null;
 				
+				that.block();
 				that.onSubmit();
 			}
 			
@@ -467,8 +471,20 @@ namespace rocket.impl.overview {
 			}
 		}
 		
+		private jqBlocker: JQuery;
+		
 		public freeze() {
 			this.form.abortSubmit();
+			this.form.disableControls();
+			
+			this.block();
+		}
+		
+		private block() {
+			if (this.jqBlocker) return;
+			
+			this.jqBlocker = $("<div />", { "class": "rocket-impl-critmod-blocker" })
+					.appendTo(this.form.jQuery);
 		}
 		
 		public reload() {
@@ -480,7 +496,7 @@ namespace rocket.impl.overview {
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
 				if (jqXHR.status != 200) {
-                    rocket.getContainer().handleError(url, jqXHR.responseText);
+                    Rocket.getContainer().handleError(url, jqXHR.responseText);
 					return;
 				}
 				
@@ -505,6 +521,11 @@ namespace rocket.impl.overview {
 		}
 		
 		private replaceForm(data) {
+			if (this.jqBlocker) {
+				this.jqBlocker.remove();
+				this.jqBlocker = null;
+			}
+			
 			var jqForm = $(n2n.ajah.analyze(data));
 			this.form.jQuery.replaceWith(jqForm);
 			this.form = null;

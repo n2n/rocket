@@ -156,6 +156,10 @@ class CritmodForm implements Dispatchable {
 	}
 	
 	private function _mapping(MappingDefinition $md) {
+		if ($md->getMethodName() == 'delete' || $md->getMethodName() == 'clear' || $md->getMethodName() == 'select') {
+			$md->ignore('filterGroupForm');
+			$md->ignore('sortForm');
+		}
 	}
 	
 	private function _validation(BindingDefinition $bd) {

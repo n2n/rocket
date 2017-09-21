@@ -168,6 +168,7 @@ class CritmodSaveDao implements RequestScoped {
 	
 	public function removeCritmodSave(CritmodSave $critmodSave) {
 		$this->em->remove($critmodSave);
+		$this->em->flush();
 	}
 	
 // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {

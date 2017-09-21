@@ -1,4 +1,4 @@
-namespace rocket.cmd {
+namespace Rocket.Cmd {
 	var $ = jQuery;
 	
 	export class Monitor {

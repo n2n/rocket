@@ -1,4 +1,4 @@
-namespace rocket.display {
+namespace Rocket.Display {
 
 	export class StructureElement {
 		private jqElem: JQuery;

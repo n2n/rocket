@@ -1,4 +1,4 @@
-namespace rocket.cmd {
+namespace Rocket.Cmd {
 	
 	export class Executor {
 		private container: Container;
@@ -14,9 +14,9 @@ namespace rocket.cmd {
 			
 			if (!config.currentLayer) {
 				if (config.currentContext) {
-					config.currentLayer = config.currentContext.getLayer();
+					config.currentLayer = config.currentContext.layer;
 				} else {
-					config.currentLayer = this.container.getCurrentLayer();
+					config.currentLayer = this.container.currentLayer;
 				}
 			}
 			
@@ -37,7 +37,7 @@ namespace rocket.cmd {
 			}
 			
 			if (targetContext !== null) {
-				if (config.currentLayer.getCurrentContext() !== targetContext) {
+				if (config.currentLayer.currentContext !== targetContext) {
 					config.currentLayer.pushHistoryEntry(targetContext.getUrl());
 				}
 				
@@ -65,7 +65,7 @@ namespace rocket.cmd {
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
 				if (jqXHR.status != 200) {
-                    config.currentLayer.getContainer().handleError(url.toString(), jqXHR.responseText);
+                    config.currentLayer.container.handleError(url.toString(), jqXHR.responseText);
 					return;
 				}
 				
@@ -105,7 +105,7 @@ namespace rocket.cmd {
 		
 		private execDirectives(currentLayer: Layer, info: any) {
 			if (info.directive == "redirectBack") {
-				var index = currentLayer.getCurrentHistoryIndex();
+				var index = currentLayer.currentHistoryIndex();
 				
 				if (index > 0) {
 					this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });

@@ -1,10 +1,10 @@
-namespace rocket.display {
+namespace Rocket.Display {
 	
 	export class EntrySelector {
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		private _selected: boolean = false;
 		
-		constructor(private jqElem: JQuery) {
+		constructor(private jqElem: JQuery, private _entry: Entry) {
 		}
 		
 		get jQuery(): JQuery {
@@ -12,7 +12,7 @@ namespace rocket.display {
 		}
 		
 		get entry(): Entry {
-			return Entry.findFrom(this.jqElem);
+			return this._entry;
 		}
 		
 		get selected(): boolean {
@@ -36,34 +36,34 @@ namespace rocket.display {
 			});
 		}
 		
-		static findAll(jqElem: JQuery): Array<EntrySelector> {
-			var entrySelectors = new Array<EntrySelector>();
-			
-			jqElem.find(".rocket-entry-selector").each(function () {
-				entrySelectors.push(EntrySelector.from($(this)));
-			});
-			
-			return entrySelectors;
-		}
-		
-		static findFrom(jqElem: JQuery): EntrySelector {
-			var jqElem = jqElem.closest(".rocket-entry-selector");
-			
-			if (jqElem.length == 0) return null;
-			
-			return EntrySelector.findFrom(jqElem);
-		}
-		
-		private static from(jqElem: JQuery): EntrySelector {
-			var entrySelector = jqElem.data("rocketEntrySelector");
-			if (entrySelector instanceof EntrySelector) {
-				return entrySelector;
-			}
-			
-			entrySelector = new EntrySelector(jqElem); 
-			jqElem.data("rocketEntrySelector", entrySelector);
-			
-			return entrySelector;
-		}
+//		static findAll(jqElem: JQuery): Array<EntrySelector> {
+//			var entrySelectors = new Array<EntrySelector>();
+//			
+//			jqElem.find(".rocket-entry-selector").each(function () {
+//				entrySelectors.push(EntrySelector.from($(this)));
+//			});
+//			
+//			return entrySelectors;
+//		}
+//		
+//		static findFrom(jqElem: JQuery): EntrySelector {
+//			var jqElem = jqElem.closest(".rocket-entry-selector");
+//			
+//			if (jqElem.length == 0) return null;
+//			
+//			return EntrySelector.findFrom(jqElem);
+//		}
+//		
+//		private static from(jqElem: JQuery): EntrySelector {
+//			var entrySelector = jqElem.data("rocketEntrySelector");
+//			if (entrySelector instanceof EntrySelector) {
+//				return entrySelector;
+//			}
+//			
+//			entrySelector = new EntrySelector(jqElem); 
+//			jqElem.data("rocketEntrySelector", entrySelector);
+//			
+//			return entrySelector;
+//		}
 	}
 }

@@ -19,7 +19,7 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  * 
  */
-namespace rocket.impl {
+namespace Rocket.Impl {
 	var $ = jQuery;
 	
 	export class Form {
@@ -100,11 +100,54 @@ namespace rocket.impl {
 			return formData;
 		}
 		
+		private lock: Cmd.Lock;
+		private controlLock: ControlLock;
+		private controlLockAutoReleaseable = true;
+		
+		private block() {
+			let context: Cmd.Context;
+			if (!this.lock && this.config.blockContext && (context = Cmd.Context.findFrom(this.jqForm))) {
+				this.lock = context.createLock();
+			}
+			
+			if (!this.controlLock && this.config.disableControls) {
+				this.disableControls();
+			}	
+		}
+		
+		private unblock() {
+			if (this.lock) {
+				this.lock.release();
+				this.lock = null;
+			}
+			
+			if (this.controlLock && this.controlLockAutoReleaseable) {
+				this.controlLock.release();
+			}
+		}
+		
+		public disableControls(autoReleaseable: boolean = true) {
+			this.controlLockAutoReleaseable = autoReleaseable;
+			
+			if (this.controlLock) return;
+			
+			this.controlLock = new ControlLock(this.jqForm);
+		}
+		
+		public enableControls() {
+			if (this.controlLock) {
+				this.controlLock.release();
+				this.controlLock = null;
+				this.controlLockAutoReleaseable = true;
+			}
+		}
+		
 		public abortSubmit() {
 			if (this.curXhr) {
 				var curXhr = this.curXhr;
 				this.curXhr = null;
 				curXhr.abort();
+				this.unblock();
 			}
 		}
 		
@@ -131,24 +174,31 @@ namespace rocket.impl {
 					if (that._config.successResponseHandler) {
 						that._config.successResponseHandler(data);
 					} else {
-						rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
+						Rocket.analyzeResponse(Rocket.layerOf(that.jqForm.get(0)), data, url);
 					}
 					
 					if (submitConfig && submitConfig.success) {
 						submitConfig.success();
 					}
+					
+					that.unblock();
 					that.trigger(Form.EventType.SUBMITTED);
 			    },
 			    "error": function(jqXHR, textStatus, errorThrown) {
 					if (that.curXhr !== xhr) return;
 					
-                    rocket.handleErrorResponse(url, jqXHR);
+                    Rocket.handleErrorResponse(url, jqXHR);
 					if (submitConfig && submitConfig.error) {
 						submitConfig.error();
-					}     
+					}
+					
+					that.unblock();
 					that.trigger(Form.EventType.SUBMITTED);
 			    }
 			});
+			
+			
+			this.block();
 		}
 		
 		public static from(jqForm: JQuery): Form {
@@ -162,9 +212,26 @@ namespace rocket.impl {
 		}
 	}
 	
+	class ControlLock {
+		private jqControls: JQuery;
+		
+		constructor(jqContainer: JQuery) {
+			this.jqControls = jqContainer.find("input:not([disabled]), textarea:not([disabled]), button:not([disabled]), select:not([disabled])");
+			this.jqControls.prop("disabled", true);
+		}
+		
+		public release() {
+			if (!this.jqControls) return;
+			
+			this.jqControls.prop("disabled", false);
+			this.jqControls = null;
+		}
+	}
+	
 	export namespace Form {
 		export class Config {
 			public blockContext = true; 
+			public disableControls = true;
 			public successResponseHandler: (data: string) => any;
 			public autoSubmitAllowed: boolean = true;
 			public actionUrl: string = null;

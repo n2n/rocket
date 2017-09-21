@@ -1,4 +1,4 @@
-namespace rocket.util {
+namespace Rocket.util {
 	
 	export class CallbackRegistry<C extends Function> {
 		private callbackMap: Array<Array<C>> = new Array<Array<C>>();  

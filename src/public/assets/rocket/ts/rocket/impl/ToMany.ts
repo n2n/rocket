@@ -20,9 +20,9 @@
  * 
  */
 /// <reference path="../display/Group.ts" />
-namespace rocket.impl {
-	import cmd = rocket.cmd;
-	import display = rocket.display;
+namespace Rocket.Impl {
+	import cmd = Rocket.Cmd;
+	import display = Rocket.Display;
 	
 	var $ = jQuery;
 	
@@ -99,7 +99,7 @@ namespace rocket.impl {
 		private originalIdReps: Array<string>;
 		private identityStrings: { [key: string]: string};
 		private browserLayer: cmd.Layer = null;
-		private browserSelectorObserver: overview.MultiEntrySelectorObserver = null;
+		private browserSelectorObserver: Overview.MultiEntrySelectorObserver = null;
 		
 		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
@@ -185,14 +185,14 @@ namespace rocket.impl {
 			
 			var that = this;
 			
-			this.browserLayer = rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
 			this.browserLayer.hide();
 			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
 				that.browserLayer = null;
 				that.browserSelectorObserver = null;				
 			});
 			
-			rocket.exec(this.jqElem.data("overview-tools-url"), {
+			Rocket.exec(this.jqElem.data("overview-tools-url"), {
 				showLoadingContext: true,
 				currentLayer: this.browserLayer,
 				done: function (result: cmd.ExecResult) {
@@ -204,18 +204,18 @@ namespace rocket.impl {
 		private iniBrowserContext(context: cmd.Context) {
 			if (this.browserLayer === null) return;
 			
-			var ocs = impl.overview.OverviewContext.findAll(context.getJQuery());
+			var ocs = Impl.Overview.OverviewContext.findAll(context.jQuery);
 			if (ocs.length == 0) return;
 			
-			ocs[0].initSelector(this.browserSelectorObserver = new overview.MultiEntrySelectorObserver());
+			ocs[0].initSelector(this.browserSelectorObserver = new Overview.MultiEntrySelectorObserver());
 			
 			var that = this;
 			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
 				that.updateSelection();
-				context.getLayer().hide();
+				context.layer.hide();
 			});
 			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
-				context.getLayer().hide();
+				context.layer.hide();
 			});
 			
 			this.updateBrowser();
@@ -327,7 +327,7 @@ namespace rocket.impl {
 			this.jqEmbedded.append(this.jqEntries);
 			
 			if (this.compact) {
-				var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
+				var structureElement = Rocket.Display.StructureElement.findFrom(this.jqToMany);
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
@@ -564,10 +564,10 @@ namespace rocket.impl {
 			}
 			
 			this.dominantEntry = dominantEntry;
-			this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
+			this.expandContext = Rocket.getContainer().createLayer().createContext(window.location.href);
 			this.jqEmbedded.detach();
 			this.expandContext.applyContent(this.jqEmbedded);
-			this.expandContext.getLayer().pushHistoryEntry(window.location.href);
+			this.expandContext.layer.pushHistoryEntry(window.location.href);
 			
 			for (let i in this.entries) {
 				if (dominantEntry === null) {
@@ -584,7 +584,7 @@ namespace rocket.impl {
 			var jqCommandButton = this.expandContext.menu.commandList
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(function () {
-				that.expandContext.getLayer().close();
+				that.expandContext.layer.close();
 			});
 			
 			this.expandContext.on(cmd.Context.EventType.CLOSE, function () {
@@ -849,7 +849,7 @@ namespace rocket.impl {
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {
 				if (jqXHR.status != 200) {
-                    rocket.handleErrorResponse(this.urlStr, jqXHR);
+                    Rocket.handleErrorResponse(this.urlStr, jqXHR);
 				}
 				
 				that.failResponse();

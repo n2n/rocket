@@ -1,5 +1,5 @@
-namespace rocket.impl.overview {
-	import cmd = rocket.cmd;
+namespace Rocket.Impl.Overview {
+	import cmd = Rocket.Cmd;
 	
 	var $ = jQuery;
 	
@@ -117,7 +117,7 @@ namespace rocket.impl.overview {
 			var unloadedIds = idReps.slice();
 			var that = this;
 		
-			this.selectorState.entries.forEach(function (entry: display.Entry) {
+			this.selectorState.entries.forEach(function (entry: Display.Entry) {
 				let id = entry.id;
 				
 				let i;
@@ -151,7 +151,7 @@ namespace rocket.impl.overview {
 				that.unmarkPageAsLoading(0);
 				
 				if (jqXHR.status != 200) {
-                    rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                    Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
 					return;
 				}
 				
@@ -466,7 +466,7 @@ namespace rocket.impl.overview {
 				that.unmarkPageAsLoading(pageNo);
 				
 				if (jqXHR.status != 200) {
-                    rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                    Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
 					return;
 				}
 				
@@ -492,8 +492,8 @@ namespace rocket.impl.overview {
 	
 	class SelectorState {
 		private _selectorObserver: SelectorObserver = null;
-		private entryMap: { [id: string]: display.Entry } = {};
-		private fakeEntryMap: { [id: string]: display.Entry } = {};
+		private entryMap: { [id: string]: Display.Entry } = {};
+		private fakeEntryMap: { [id: string]: Display.Entry } = {};
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		private _autoShowSelected: boolean = false;
 		
@@ -511,7 +511,7 @@ namespace rocket.impl.overview {
 		
 		observeFakePage(fakePage: Page) {
 			var that = this;
-			fakePage.entries.forEach(function (entry: display.Entry) {
+			fakePage.entries.forEach(function (entry: Display.Entry) {
 				if (that.containsEntryId(entry.id)) {
 					entry.dispose();
 				} else {
@@ -530,7 +530,7 @@ namespace rocket.impl.overview {
 		
 		observePage(page: Page) {
 			var that = this;
-			page.entries.forEach(function (entry: display.Entry) {
+			page.entries.forEach(function (entry: Display.Entry) {
 				if (that.fakeEntryMap[entry.id]) {
 					that.fakeEntryMap[entry.id].dispose();
 				}
@@ -539,7 +539,7 @@ namespace rocket.impl.overview {
 			});
 		}
 		
-		private registerEntry(entry: display.Entry, fake: boolean = false) {
+		private registerEntry(entry: Display.Entry, fake: boolean = false) {
 			this.entryMap[entry.id] = entry;
 			if (fake) {
 				this.fakeEntryMap[entry.id] = entry;
@@ -570,21 +570,21 @@ namespace rocket.impl.overview {
 				delete that.entryMap[entry.id];
 				delete that.fakeEntryMap[entry.id];
 			};
-			entry.on(display.Entry.EventType.DISPOSED, onFunc);
-			entry.on(display.Entry.EventType.REMOVED, onFunc);
+			entry.on(Display.Entry.EventType.DISPOSED, onFunc);
+			entry.on(Display.Entry.EventType.REMOVED, onFunc);
 		}
 		
 		private containsEntryId(id: string) {
 			return this.entryMap[id] !== undefined;
 		}
 		
-		get entries(): Array<display.Entry> {
+		get entries(): Array<Display.Entry> {
 			var k: any = Object;
 			return k.values(this.entryMap);
 		}
 		
-		get selectedEntries(): Array<display.Entry> {
-			var entries = new Array<display.Entry>();
+		get selectedEntries(): Array<Display.Entry> {
+			var entries = new Array<Display.Entry>();
 			
 			var that = this;
 			this.selectorObserver.getSelectedIds().forEach(function (id: string) {
@@ -605,7 +605,7 @@ namespace rocket.impl.overview {
 		}
 		
 		showSelectedEntriesOnly() {
-			this.entries.forEach(function (entry: display.Entry) {
+			this.entries.forEach(function (entry: Display.Entry) {
 				if (entry.selector.selected) {
 					entry.show();
 				} else {
@@ -615,7 +615,7 @@ namespace rocket.impl.overview {
 		}
 		
 		hideEntries() {
-			this.entries.forEach(function (entry: display.Entry) {
+			this.entries.forEach(function (entry: Display.Entry) {
 				entry.hide();
 			});
 		}
@@ -638,7 +638,7 @@ namespace rocket.impl.overview {
 	
 	class Page {
 		private _visible: boolean = true;
-		private _entries: Array<display.Entry>;
+		private _entries: Array<Display.Entry>;
 		
 		constructor(public pageNo: number, private _jqContents: JQuery = null) {
 		}
@@ -669,7 +669,7 @@ namespace rocket.impl.overview {
 			return this.jqContents !== null;
 		}
 		
-		get entries(): Array<display.Entry> {
+		get entries(): Array<Display.Entry> {
 			return this._entries;
 		}
 		
@@ -680,14 +680,14 @@ namespace rocket.impl.overview {
 		set jqContents(jqContents: JQuery) {
 			this._jqContents = jqContents;
 			
-			this._entries = display.Entry.findAll(this.jqContents, true);
+			this._entries = Display.Entry.findAll(this.jqContents, true);
 			
 			this.disp();
 			
 			var that = this;
 			for (var i in this._entries) {
 				let entry = this._entries[i];
-				entry.on(display.Entry.EventType.DISPOSED, function () {
+				entry.on(Display.Entry.EventType.DISPOSED, function () {
 					let j = that._entries.indexOf(entry);
 					if (-1 == j) return;
 					
@@ -700,7 +700,7 @@ namespace rocket.impl.overview {
 			if (this._jqContents === null) return;
 			
 			var that = this;
-			this._entries.forEach(function (entry: display.Entry) {
+			this._entries.forEach(function (entry: Display.Entry) {
 				if (that._visible) {
 					entry.show();
 				} else {

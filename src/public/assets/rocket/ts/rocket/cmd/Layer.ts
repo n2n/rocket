@@ -1,27 +1,27 @@
-namespace rocket.cmd {
-	import display = rocket.display;
-	import util = rocket.util;
+namespace Rocket.Cmd {
+	import display = Rocket.Display;
+	import util = Rocket.util;
 	
 	export class Layer {
 		private jqLayer: JQuery;
-		private level: number;
-		private container: Container;
-		private contexts: Array<Context>;
+		private _level: number;
+		private _container: Container;
+		private _contexts: Array<Context>;
 		private historyUrls: Array<Url>;
-		private currentHistoryIndex: number = null;
+		private _currentHistoryIndex: number = null;
 		private onNewContextCallbacks: Array<ContextCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
 		private callbackRegistery: util.CallbackRegistry<LayerCallback> = new util.CallbackRegistry<LayerCallback>();
-		private visible: boolean = true;
+		private _visible: boolean = true;
 		
 		constructor(jqContentGroup: JQuery, level: number, container: Container) {
-			this.contexts = new Array<Context>();
+			this._contexts = new Array<Context>();
 			this.onNewContextCallbacks = new Array<ContextCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 			this.historyUrls = new Array<Url>();
 			this.jqLayer = jqContentGroup;
-			this.level = level;
-			this.container = container;
+			this._level = level;
+			this._container = container;
 			
 			jqContentGroup.addClass("rocket-layer");
 			jqContentGroup.data("rocketLayer", this);
@@ -34,20 +34,20 @@ namespace rocket.cmd {
 			}
 		}
 		
-		public containsUrl(url: Url): boolean {
-			for (var i in this.contexts) {
-				if (this.contexts[i].containsUrl(url)) return true;
+		containsUrl(url: Url): boolean {
+			for (var i in this._contexts) {
+				if (this._contexts[i].containsUrl(url)) return true;
 			}
 			
 			return false;
 		}
 		
-		public getContainer(): Container {
-			return this.container;
+		get container(): Container {
+			return this._container;
 		}
 		
-		public isVisible(): boolean {
-			return this.visible;
+		get visible(): boolean {
+			return this._visible;
 		}
 		
 		private trigger(eventType: Layer.EventType) {
@@ -58,65 +58,65 @@ namespace rocket.cmd {
 					});
 		}
 		
-		public on(eventType: Layer.EventType, callback: LayerCallback) {
+		on(eventType: Layer.EventType, callback: LayerCallback) {
 			this.callbackRegistery.register(eventType.toString(), callback);
 		}
 		
-		public off(eventType: Layer.EventType, callback: LayerCallback) {
+		off(eventType: Layer.EventType, callback: LayerCallback) {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}		
 		
-		public show() {
+		show() {
 			this.trigger(Layer.EventType.SHOW);
 			
-			this.visible = true;
+			this._visible = true;
 			this.jqLayer.show();
 		}
 		
-		public hide() {
+		hide() {
 			this.trigger(Layer.EventType.SHOW);
 			
-			this.visible = false;
+			this._visible = false;
 			this.jqLayer.hide();
 		}
 		
-		public getLevel(): number {
-			return this.level;
+		get level(): number {
+			return this._level;
 		}
 		
-		public getCurrentContext(): Context {
-			if (this.contexts.length == 0) {
+		get currentContext(): Context {
+			if (this._contexts.length == 0) {
 				throw new Error("no context avaialble");
 			}
 			
-			var url = this.historyUrls[this.currentHistoryIndex];
+			var url = this.historyUrls[this._currentHistoryIndex];
 			
-			for (var i in this.contexts) {
-				if (this.contexts[i].containsUrl(url)) {
-					return this.contexts[i];
+			for (var i in this._contexts) {
+				if (this._contexts[i].containsUrl(url)) {
+					return this._contexts[i];
 				} 
 			}
 				
 			return null;
 		} 
 		
-		getContexts(): Array<Context> {
-			return this.contexts;
+		get contexts(): Array<Context> {
+			return this._contexts.slice();
 		}
 		
-		public getCurrentHistoryIndex(): number {
-			return this.currentHistoryIndex;
+		public currentHistoryIndex(): number {
+			return this._currentHistoryIndex;
 		}
 		
 		private addContext(context: Context) {
-			this.contexts.push(context);
+			this._contexts.push(context);
 			var that = this;
 			
 			context.on(Context.EventType.CLOSE, function (context: Context) {
-				for (var i in that.contexts) {
-					if (that.contexts[i] !== context) continue;
+				for (var i in that._contexts) {
+					if (that._contexts[i] !== context) continue;
 					
-					that.contexts.splice(parseInt(i), 1);
+					that._contexts.splice(parseInt(i), 1);
 					break;
 				}
 			});
@@ -133,12 +133,12 @@ namespace rocket.cmd {
 				throw new Error("Not context with this url found: " + url);
 			}
 			
-			this.currentHistoryIndex = this.historyUrls.length;
+			this._currentHistoryIndex = this.historyUrls.length;
 			this.historyUrls.push(url);
 			context.activeUrl = url;
 			
 			for (var i in this.onNewHistoryEntryCallbacks) {
-				this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, url, context);
+				this.onNewHistoryEntryCallbacks[i](this._currentHistoryIndex, url, context);
 			}
 			
 			this.switchToContext(context);
@@ -156,7 +156,7 @@ namespace rocket.cmd {
 						+ this.historyUrls[historyIndex]);
 			}
 			
-			this.currentHistoryIndex = historyIndex;
+			this._currentHistoryIndex = historyIndex;
 			var context = this.getContextByUrl(this.historyUrls[historyIndex]);
 			if (context === null) return false;
 			
@@ -173,9 +173,9 @@ namespace rocket.cmd {
 		public getContextByUrl(urlExpr: string|Url): Context {
 			var url = Url.create(urlExpr);
 			
-			for (var i in this.contexts) {
-				if (this.contexts[i].containsUrl(url)) {
-					return this.contexts[i];
+			for (var i in this._contexts) {
+				if (this._contexts[i].containsUrl(url)) {
+					return this._contexts[i];
 				}
 			}
 
@@ -183,11 +183,11 @@ namespace rocket.cmd {
 		}
 		
 		private switchToContext(context: Context) {
-			for (var i in this.contexts) {
-				if (this.contexts[i] === context) {
+			for (var i in this._contexts) {
+				if (this._contexts[i] === context) {
 					context.show();
 				} else {
-					this.contexts[i].hide();
+					this._contexts[i].hide();
 				}
 			}
 		}
@@ -209,15 +209,15 @@ namespace rocket.cmd {
 		}
 		
 		public clear() {
-			for (var i in this.contexts) {
-				this.contexts[i].close();
+			for (var i in this._contexts) {
+				this._contexts[i].close();
 			}
 		}
 		
 		public close() {
 			this.trigger(Layer.EventType.CLOSE);
 				
-			this.contexts = new Array<Context>();
+			this._contexts = new Array<Context>();
 			this.jqLayer.remove();
 		}
 		

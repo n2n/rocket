@@ -1,7 +1,7 @@
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
         var $ = jQuery;
         var Monitor = (function () {
             function Monitor(executor) {
@@ -21,7 +21,7 @@ var rocket;
             };
             return Monitor;
         }());
-        cmd.Monitor = Monitor;
+        Cmd.Monitor = Monitor;
         var LinkAction = (function () {
             function LinkAction(executor, jqA, layer) {
                 this.executor = executor;
@@ -55,7 +55,7 @@ var rocket;
             }
             CommandAction.prototype.handle = function () {
                 var url = this.jqElem.attr("href");
-                var context = cmd.Context.findFrom(this.jqElem);
+                var context = Cmd.Context.findFrom(this.jqElem);
                 if (context === null) {
                     throw new Error("Command belongs to no Context.");
                 }
@@ -71,15 +71,15 @@ var rocket;
             };
             return CommandAction;
         }());
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var rocket;
-(function (rocket) {
+var Rocket;
+(function (Rocket) {
     var util;
     (function (util) {
         var CallbackRegistry = (function () {
@@ -155,12 +155,12 @@ var rocket;
             return IllegalStateError;
         }(Error));
         util.IllegalStateError = IllegalStateError;
-    })(util = rocket.util || (rocket.util = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
+    })(util = Rocket.util || (Rocket.util = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         var StructureElement = (function () {
             function StructureElement(jqElem) {
                 this.onShowCallbacks = new Array();
@@ -309,7 +309,7 @@ var rocket;
             };
             return StructureElement;
         }());
-        display.StructureElement = StructureElement;
+        Display.StructureElement = StructureElement;
         var Toolbar = (function () {
             function Toolbar(jqToolbar) {
                 this.jqToolbar = jqToolbar;
@@ -358,7 +358,7 @@ var rocket;
                     buttonConfig.iconType = "fa fa-circle-o";
                 }
                 if (buttonConfig.severity === undefined) {
-                    buttonConfig.severity = display.Severity.SECONDARY;
+                    buttonConfig.severity = Display.Severity.SECONDARY;
                 }
                 var jqButton = $("<button />", {
                     "class": "btn btn-" + buttonConfig.severity,
@@ -379,35 +379,45 @@ var rocket;
             };
             return CommandList;
         }());
-        display.CommandList = CommandList;
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
+        Display.CommandList = CommandList;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
 /// <reference path="../util/Util.ts" />
 /// <reference path="../display/Group.ts" />
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var display = rocket.display;
-        var util = rocket.util;
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        var display = Rocket.Display;
+        var util = Rocket.util;
         var Context = (function () {
             function Context(jqContext, url, layer) {
                 this.urls = new Array();
                 this.callbackRegistery = new util.CallbackRegistry();
+                this._blocked = false;
+                this.locks = new Array();
                 this.jqContext = jqContext;
                 this.urls.push(this._activeUrl = url);
-                this.layer = layer;
+                this._layer = layer;
                 jqContext.addClass("rocket-context");
                 jqContext.data("rocketContext", this);
                 this.reset();
                 this.hide();
             }
-            Context.prototype.getLayer = function () {
-                return this.layer;
-            };
-            Context.prototype.getJQuery = function () {
-                return this.jqContext;
-            };
+            Object.defineProperty(Context.prototype, "layer", {
+                get: function () {
+                    return this._layer;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Context.prototype, "jQuery", {
+                get: function () {
+                    return this.jqContext;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Context.prototype.containsUrl = function (url) {
                 for (var i in this.urls) {
                     if (this.urls[i].equals(url))
@@ -418,7 +428,7 @@ var rocket;
             Context.prototype.registerUrl = function (url) {
                 if (this.containsUrl(url))
                     return;
-                if (this.layer.containsUrl(url)) {
+                if (this._layer.containsUrl(url)) {
                     throw new Error("Url already registered for another Context of the current Layer.");
                 }
                 this.urls.push(url);
@@ -438,7 +448,7 @@ var rocket;
                     return this._activeUrl;
                 },
                 set: function (activeUrl) {
-                    rocket.util.ArgUtils.valIsset(activeUrl !== null);
+                    Rocket.util.ArgUtils.valIsset(activeUrl !== null);
                     if (this._activeUrl.equals(activeUrl)) {
                         return;
                     }
@@ -480,16 +490,19 @@ var rocket;
                 this.additionalTabManager = new AdditionalTabManager(this);
                 this._menu = new Menu(this);
             };
-            Context.prototype.clear = function (loading) {
-                if (loading === void 0) { loading = false; }
+            Context.prototype.clear = function (showLoader) {
+                if (showLoader === void 0) { showLoader = false; }
                 this.jqContext.empty();
-                this.jqContext.addClass("rocket-loading");
-                this.reset();
+                if (showLoader) {
+                    this.jqContext.addClass("rocket-loading");
+                }
+                this.trigger(Context.EventType.CONTENT_CHANGED);
             };
             Context.prototype.applyHtml = function (html) {
                 this.endLoading();
                 this.jqContext.html(html);
                 this.reset();
+                this.trigger(Context.EventType.CONTENT_CHANGED);
             };
             Context.prototype.isLoading = function () {
                 return this.jqContext.hasClass("rocket-loading");
@@ -527,6 +540,29 @@ var rocket;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Context.prototype, "locked", {
+                get: function () {
+                    return this.locks.length > 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Context.prototype.releaseLock = function (lock) {
+                var i = this.locks.indexOf(lock);
+                if (i == -1)
+                    return;
+                this.locks.splice(i, 1);
+                this.trigger(Context.EventType.BLOCKED_CHANGED);
+            };
+            Context.prototype.createLock = function () {
+                var that = this;
+                var lock = new Lock(function (lock) {
+                    that.releaseLock(lock);
+                });
+                this.locks.push(lock);
+                this.trigger(Context.EventType.BLOCKED_CHANGED);
+                return lock;
+            };
             Context.findFrom = function (jqElem) {
                 if (!jqElem.hasClass(".rocket-context")) {
                     jqElem = jqElem.parents(".rocket-context");
@@ -538,7 +574,17 @@ var rocket;
             };
             return Context;
         }());
-        cmd.Context = Context;
+        Cmd.Context = Context;
+        var Lock = (function () {
+            function Lock(releaseCallback) {
+                this.releaseCallback = releaseCallback;
+            }
+            Lock.prototype.release = function () {
+                this.releaseCallback(this);
+            };
+            return Lock;
+        }());
+        Cmd.Lock = Lock;
         var AdditionalTabManager = (function () {
             function AdditionalTabManager(context) {
                 this.jqAdditional = null;
@@ -597,7 +643,7 @@ var rocket;
             AdditionalTabManager.prototype.setupAdditional = function () {
                 if (this.jqAdditional !== null)
                     return;
-                var jqContext = this.context.getJQuery();
+                var jqContext = this.context.jQuery;
                 jqContext.addClass("rocket-contains-additional");
                 this.jqAdditional = $("<div />", {
                     "class": "rocket-additional"
@@ -609,7 +655,7 @@ var rocket;
             AdditionalTabManager.prototype.setdownAdditional = function () {
                 if (this.jqAdditional === null)
                     return;
-                this.context.getJQuery().removeClass("rocket-contains-additional");
+                this.context.jQuery.removeClass("rocket-contains-additional");
                 this.jqAdditional.remove();
                 this.jqAdditional = null;
             };
@@ -669,7 +715,7 @@ var rocket;
             };
             return AdditionalTab;
         }());
-        cmd.AdditionalTab = AdditionalTab;
+        Cmd.AdditionalTab = AdditionalTab;
         var Menu = (function () {
             function Menu(context) {
                 this._commandList = null;
@@ -677,12 +723,12 @@ var rocket;
                 this.context = context;
             }
             Menu.prototype.getJqContextCommands = function () {
-                var jqCommandList = this.context.getJQuery().find(".rocket-context-commands:first");
+                var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
                 if (jqCommandList.length == 0) {
                     jqCommandList = $("<div />", {
                         "class": "rocket-context-commands"
                     });
-                    this.context.getJQuery().append(jqCommandList);
+                    this.context.jQuery.append(jqCommandList);
                 }
                 return jqCommandList;
             };
@@ -718,7 +764,7 @@ var rocket;
             });
             return Menu;
         }());
-        cmd.Menu = Menu;
+        Cmd.Menu = Menu;
         var Url = (function () {
             function Url(urlStr) {
                 this.urlStr = urlStr;
@@ -756,7 +802,7 @@ var rocket;
             };
             return Url;
         }());
-        cmd.Url = Url;
+        Cmd.Url = Url;
         var Context;
         (function (Context) {
             (function (EventType) {
@@ -765,24 +811,30 @@ var rocket;
                 EventType[EventType["CLOSE"] = 2] = "CLOSE"; /*= "close"*/
                 EventType[EventType["CONTENT_CHANGED"] = 3] = "CONTENT_CHANGED"; /*= "contentChanged"*/
                 EventType[EventType["ACTIVE_URL_CHANGED"] = 4] = "ACTIVE_URL_CHANGED"; /*= "activeUrlChanged"*/
+                EventType[EventType["BLOCKED_CHANGED"] = 5] = "BLOCKED_CHANGED"; /*= "stateChanged"*/
             })(Context.EventType || (Context.EventType = {}));
             var EventType = Context.EventType;
-        })(Context = cmd.Context || (cmd.Context = {}));
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
+        })(Context = Cmd.Context || (Cmd.Context = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         var Entry = (function () {
             function Entry(jqElem) {
                 this.jqElem = jqElem;
+                this._selector = null;
                 this._state = Entry.State.PERSISTENT;
-                this.callbackRegistery = new rocket.util.CallbackRegistry();
+                this.callbackRegistery = new Rocket.util.CallbackRegistry();
                 var that = this;
                 jqElem.on("remove", function () {
                     that.trigger(Entry.EventType.DISPOSED);
                 });
+                var jqSelectors = this.jqElem.find(".rocket-entry-selector:first");
+                if (jqSelectors.length > 0) {
+                    this._selector = new Display.EntrySelector(jqSelectors.first(), this);
+                }
             }
             Entry.prototype.trigger = function (eventType) {
                 var entry = this;
@@ -872,13 +924,7 @@ var rocket;
             });
             Object.defineProperty(Entry.prototype, "selector", {
                 get: function () {
-                    var entrySelectors = display.EntrySelector.findAll(this.jqElem);
-                    for (var i in entrySelectors) {
-                        if (entrySelectors[i].entry === this) {
-                            return entrySelectors[i];
-                        }
-                    }
-                    return null;
+                    return this._selector;
                 },
                 enumerable: true,
                 configurable: true
@@ -910,7 +956,7 @@ var rocket;
             };
             return Entry;
         }());
-        display.Entry = Entry;
+        Display.Entry = Entry;
         var Entry;
         (function (Entry) {
             (function (State) {
@@ -924,13 +970,13 @@ var rocket;
                 EventType[EventType["REMOVED"] = 2] = "REMOVED"; /*= "removed"*/
             })(Entry.EventType || (Entry.EventType = {}));
             var EventType = Entry.EventType;
-        })(Entry = display.Entry || (display.Entry = {}));
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
+        })(Entry = Display.Entry || (Display.Entry = {}));
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         var Initializer = (function () {
             function Initializer(container, errorTabTitle, displayErrorLabel) {
                 this.container = container;
@@ -951,14 +997,14 @@ var rocket;
             Initializer.prototype.scanContext = function (context) {
                 var that = this;
                 var i = 0;
-                var jqContext = context.getJQuery();
+                var jqContext = context.jQuery;
                 jqContext.find(".rocket-group, .rocket-group-main, .rocket-field").each(function () {
                     var jqElem = $(this);
-                    var structureElement = display.StructureElement.from(jqElem);
+                    var structureElement = Display.StructureElement.from(jqElem);
                     if (structureElement !== null)
                         return;
                     if (!jqElem.hasClass("rocket-group-main")) {
-                        display.StructureElement.from(jqElem, true);
+                        Display.StructureElement.from(jqElem, true);
                         ;
                         return;
                     }
@@ -966,7 +1012,7 @@ var rocket;
                 });
                 var errorIndex = null;
                 jqContext.find(".rocket-message-error").each(function () {
-                    var structureElement = display.StructureElement.findFrom($(this));
+                    var structureElement = Display.StructureElement.findFrom($(this));
                     if (errorIndex === null) {
                         errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
                         that.errorIndexes.push(errorIndex);
@@ -985,16 +1031,16 @@ var rocket;
                     if (curGroupNav === null) {
                         curGroupNav = GroupNav.fromMain(jqElem);
                     }
-                    var group = display.StructureElement.from(jqElem);
+                    var group = Display.StructureElement.from(jqElem);
                     if (group === null) {
-                        curGroupNav.registerGroup(display.StructureElement.from(jqElem, true));
+                        curGroupNav.registerGroup(Display.StructureElement.from(jqElem, true));
                     }
                 });
                 return curGroupNav;
             };
             return Initializer;
         }());
-        display.Initializer = Initializer;
+        Display.Initializer = Initializer;
         var GroupNav = (function () {
             function GroupNav(jqGroupNav) {
                 this.jqGroupNav = jqGroupNav;
@@ -1082,8 +1128,8 @@ var rocket;
             };
             return ErrorIndex;
         }());
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -1106,12 +1152,12 @@ var rocket;
  *
  */
 /// <reference path="../display/Group.ts" />
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
-        var cmd = rocket.cmd;
-        var display = rocket.display;
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var cmd = Rocket.Cmd;
+        var display = Rocket.Display;
         var $ = jQuery;
         var ToMany = (function () {
             function ToMany(selector, embedded) {
@@ -1173,7 +1219,7 @@ var rocket;
             };
             return ToMany;
         }());
-        impl.ToMany = ToMany;
+        Impl.ToMany = ToMany;
         var ToManySelector = (function () {
             function ToManySelector(jqElem, jqNewEntrySkeleton) {
                 this.jqElem = jqElem;
@@ -1249,13 +1295,13 @@ var rocket;
                 if (this.browserLayer !== null)
                     return;
                 var that = this;
-                this.browserLayer = rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+                this.browserLayer = Rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
                 this.browserLayer.hide();
                 this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
                     that.browserLayer = null;
                     that.browserSelectorObserver = null;
                 });
-                rocket.exec(this.jqElem.data("overview-tools-url"), {
+                Rocket.exec(this.jqElem.data("overview-tools-url"), {
                     showLoadingContext: true,
                     currentLayer: this.browserLayer,
                     done: function (result) {
@@ -1266,17 +1312,17 @@ var rocket;
             ToManySelector.prototype.iniBrowserContext = function (context) {
                 if (this.browserLayer === null)
                     return;
-                var ocs = impl.overview.OverviewContext.findAll(context.getJQuery());
+                var ocs = Impl.Overview.OverviewContext.findAll(context.jQuery);
                 if (ocs.length == 0)
                     return;
-                ocs[0].initSelector(this.browserSelectorObserver = new impl.overview.MultiEntrySelectorObserver());
+                ocs[0].initSelector(this.browserSelectorObserver = new Impl.Overview.MultiEntrySelectorObserver());
                 var that = this;
                 context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
                     that.updateSelection();
-                    context.getLayer().hide();
+                    context.layer.hide();
                 });
                 context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
-                    context.getLayer().hide();
+                    context.layer.hide();
                 });
                 this.updateBrowser();
             };
@@ -1376,7 +1422,7 @@ var rocket;
                 this.jqEntries = $("<div />");
                 this.jqEmbedded.append(this.jqEntries);
                 if (this.compact) {
-                    var structureElement = rocket.display.StructureElement.findFrom(this.jqToMany);
+                    var structureElement = Rocket.Display.StructureElement.findFrom(this.jqToMany);
                     structureElement.setGroup(true);
                     var toolbar = structureElement.getToolbar();
                     if (toolbar !== null) {
@@ -1577,10 +1623,10 @@ var rocket;
                     this.disableSortable();
                 }
                 this.dominantEntry = dominantEntry;
-                this.expandContext = rocket.getContainer().createLayer().createContext(window.location.href);
+                this.expandContext = Rocket.getContainer().createLayer().createContext(window.location.href);
                 this.jqEmbedded.detach();
                 this.expandContext.applyContent(this.jqEmbedded);
-                this.expandContext.getLayer().pushHistoryEntry(window.location.href);
+                this.expandContext.layer.pushHistoryEntry(window.location.href);
                 for (var i in this.entries) {
                     if (dominantEntry === null) {
                         this.entries[i].expand(true);
@@ -1596,7 +1642,7 @@ var rocket;
                 var jqCommandButton = this.expandContext.menu.commandList
                     .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                 jqCommandButton.click(function () {
-                    that.expandContext.getLayer().close();
+                    that.expandContext.layer.close();
                 });
                 this.expandContext.on(cmd.Context.EventType.CLOSE, function () {
                     that.reduce();
@@ -1622,7 +1668,7 @@ var rocket;
             };
             return ToManyEmbedded;
         }());
-        impl.ToManyEmbedded = ToManyEmbedded;
+        Impl.ToManyEmbedded = ToManyEmbedded;
         var EmbeddedEntry = (function () {
             function EmbeddedEntry(jqEntry, readOnly) {
                 this.entryGroup = display.StructureElement.from(jqEntry, true);
@@ -1793,7 +1839,7 @@ var rocket;
                     "dataType": "json"
                 }).fail(function (jqXHR, textStatus, data) {
                     if (jqXHR.status != 200) {
-                        rocket.handleErrorResponse(this.urlStr, jqXHR);
+                        Rocket.handleErrorResponse(this.urlStr, jqXHR);
                     }
                     that.failResponse();
                 }).done(function (data, textStatus, jqXHR) {
@@ -1894,12 +1940,12 @@ var rocket;
             };
             return AddControl;
         }());
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
         var Executor = (function () {
             function Executor(container) {
                 this.container = container;
@@ -1910,10 +1956,10 @@ var rocket;
                 config.createNewLayer = config.createNewLayer === true;
                 if (!config.currentLayer) {
                     if (config.currentContext) {
-                        config.currentLayer = config.currentContext.getLayer();
+                        config.currentLayer = config.currentContext.layer;
                     }
                     else {
-                        config.currentLayer = this.container.getCurrentLayer();
+                        config.currentLayer = this.container.currentLayer;
                     }
                 }
                 if (!config.currentContext) {
@@ -1929,7 +1975,7 @@ var rocket;
                     targetContext = config.currentLayer.getContextByUrl(url);
                 }
                 if (targetContext !== null) {
-                    if (config.currentLayer.getCurrentContext() !== targetContext) {
+                    if (config.currentLayer.currentContext !== targetContext) {
                         config.currentLayer.pushHistoryEntry(targetContext.getUrl());
                     }
                     if (!config.forceReload) {
@@ -1952,7 +1998,7 @@ var rocket;
                     "dataType": "json"
                 }).fail(function (jqXHR, textStatus, data) {
                     if (jqXHR.status != 200) {
-                        config.currentLayer.getContainer().handleError(url.toString(), jqXHR.responseText);
+                        config.currentLayer.container.handleError(url.toString(), jqXHR.responseText);
                         return;
                     }
                     alert("Not yet implemented press F5 after ok.");
@@ -1987,7 +2033,7 @@ var rocket;
             };
             Executor.prototype.execDirectives = function (currentLayer, info) {
                 if (info.directive == "redirectBack") {
-                    var index = currentLayer.getCurrentHistoryIndex();
+                    var index = currentLayer.currentHistoryIndex();
                     if (index > 0) {
                         this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });
                         return true;
@@ -2002,7 +2048,7 @@ var rocket;
             };
             return Executor;
         }());
-        cmd.Executor = Executor;
+        Cmd.Executor = Executor;
         var ExecResult = (function () {
             function ExecResult(order, _context) {
                 this._context = _context;
@@ -2016,15 +2062,15 @@ var rocket;
             });
             return ExecResult;
         }());
-        cmd.ExecResult = ExecResult;
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
-        var overview;
-        (function (overview) {
+        Cmd.ExecResult = ExecResult;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Overview;
+        (function (Overview) {
             var $ = jQuery;
             var OverviewContent = (function () {
                 function OverviewContent(jqElem, loadUrl) {
@@ -2146,7 +2192,7 @@ var rocket;
                             return;
                         that.unmarkPageAsLoading(0);
                         if (jqXHR.status != 200) {
-                            rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                            Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
                             return;
                         }
                         throw new Error("invalid response");
@@ -2420,7 +2466,7 @@ var rocket;
                             return;
                         that.unmarkPageAsLoading(pageNo);
                         if (jqXHR.status != 200) {
-                            rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                            Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
                             return;
                         }
                         throw new Error("invalid response");
@@ -2440,7 +2486,7 @@ var rocket;
                 };
                 return OverviewContent;
             }());
-            overview.OverviewContent = OverviewContent;
+            Overview.OverviewContent = OverviewContent;
             var SelectorState = (function () {
                 function SelectorState() {
                     this._selectorObserver = null;
@@ -2516,8 +2562,8 @@ var rocket;
                         delete that.entryMap[entry.id];
                         delete that.fakeEntryMap[entry.id];
                     };
-                    entry.on(rocket.display.Entry.EventType.DISPOSED, onFunc);
-                    entry.on(rocket.display.Entry.EventType.REMOVED, onFunc);
+                    entry.on(Rocket.Display.Entry.EventType.DISPOSED, onFunc);
+                    entry.on(Rocket.Display.Entry.EventType.REMOVED, onFunc);
                 };
                 SelectorState.prototype.containsEntryId = function (id) {
                     return this.entryMap[id] !== undefined;
@@ -2631,12 +2677,12 @@ var rocket;
                     },
                     set: function (jqContents) {
                         this._jqContents = jqContents;
-                        this._entries = rocket.display.Entry.findAll(this.jqContents, true);
+                        this._entries = Rocket.Display.Entry.findAll(this.jqContents, true);
                         this.disp();
                         var that = this;
                         var _loop_1 = function() {
                             var entry = this_1._entries[i];
-                            entry.on(rocket.display.Entry.EventType.DISPOSED, function () {
+                            entry.on(Rocket.Display.Entry.EventType.DISPOSED, function () {
                                 var j = that._entries.indexOf(entry);
                                 if (-1 == j)
                                     return;
@@ -2675,56 +2721,59 @@ var rocket;
                 };
                 return Page;
             }());
-        })(overview = impl.overview || (impl.overview = {}));
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
+        })(Overview = Impl.Overview || (Impl.Overview = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
     var container;
+    var blocker;
     var executor;
     var initializer;
     jQuery(document).ready(function ($) {
         var jqContainer = $("#rocket-content-container");
-        container = new rocket.cmd.Container(jqContainer);
-        executor = new rocket.cmd.Executor(container);
-        var monitor = new rocket.cmd.Monitor(executor);
-        monitor.scanMain($("#rocket-global-nav"), container.getMainLayer());
+        container = new Rocket.Cmd.Container(jqContainer);
+        blocker = new Rocket.Cmd.Blocker(container);
+        blocker.init($("body"));
+        executor = new Rocket.Cmd.Executor(container);
+        var monitor = new Rocket.Cmd.Monitor(executor);
+        monitor.scanMain($("#rocket-global-nav"), container.mainLayer);
         monitor.scan(jqContainer);
         n2n.dispatch.registerCallback(function () {
             monitor.scan(jqContainer);
         });
-        initializer = new rocket.display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
+        initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
         initializer.scan();
         n2n.dispatch.registerCallback(function () {
             initializer.scan();
         });
         (function () {
             $(".rocket-impl-overview").each(function () {
-                rocket.impl.overview.OverviewContext.from($(this));
+                Rocket.Impl.Overview.OverviewContext.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
                 $(".rocket-impl-overview").each(function () {
-                    rocket.impl.overview.OverviewContext.from($(this));
+                    Rocket.Impl.Overview.OverviewContext.from($(this));
                 });
             });
         })();
         (function () {
             $("form.rocket-impl-form").each(function () {
-                rocket.impl.Form.from($(this));
+                Rocket.Impl.Form.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
                 $("form.rocket-impl-form").each(function () {
-                    rocket.impl.Form.from($(this));
+                    Rocket.Impl.Form.from($(this));
                 });
             });
         })();
         (function () {
             $(".rocket-impl-to-many").each(function () {
-                rocket.impl.ToMany.from($(this));
+                Rocket.Impl.ToMany.from($(this));
             });
             n2n.dispatch.registerCallback(function () {
                 $(".rocket-impl-to-many").each(function () {
-                    rocket.impl.ToMany.from($(this));
+                    Rocket.Impl.ToMany.from($(this));
                 });
             });
         })();
@@ -2733,34 +2782,34 @@ var rocket;
         if (context === void 0) { context = null; }
         initializer.scan();
     }
-    rocket.scan = scan;
+    Rocket.scan = scan;
     function getContainer() {
         return container;
     }
-    rocket.getContainer = getContainer;
+    Rocket.getContainer = getContainer;
     function layerOf(elem) {
-        return rocket.cmd.Layer.findFrom($(elem));
+        return Rocket.Cmd.Layer.findFrom($(elem));
     }
-    rocket.layerOf = layerOf;
+    Rocket.layerOf = layerOf;
     function contextOf(elem) {
-        return rocket.cmd.Context.findFrom($(elem));
+        return Rocket.Cmd.Context.findFrom($(elem));
     }
-    rocket.contextOf = contextOf;
+    Rocket.contextOf = contextOf;
     function handleErrorResponse(url, responseObject) {
         container.handleError(url, responseObject.responseText);
     }
-    rocket.handleErrorResponse = handleErrorResponse;
+    Rocket.handleErrorResponse = handleErrorResponse;
     function exec(url, config) {
         if (config === void 0) { config = null; }
         executor.exec(url, config);
     }
-    rocket.exec = exec;
+    Rocket.exec = exec;
     function analyzeResponse(currentLayer, response, targetUrl, targetContext) {
         if (targetContext === void 0) { targetContext = null; }
         return executor.analyzeResponse(currentLayer, response, targetUrl, targetContext);
     }
-    rocket.analyzeResponse = analyzeResponse;
-})(rocket || (rocket = {}));
+    Rocket.analyzeResponse = analyzeResponse;
+})(Rocket || (Rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -2782,17 +2831,18 @@ var rocket;
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  *
  */
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
         var $ = jQuery;
         var Form = (function () {
             function Form(jqForm) {
                 this._observing = false;
                 this._config = new Form.Config();
-                this.callbackRegistery = new rocket.util.CallbackRegistry();
+                this.callbackRegistery = new Rocket.util.CallbackRegistry();
                 this.curXhr = null;
+                this.controlLockAutoReleaseable = true;
                 this.jqForm = jqForm;
             }
             Object.defineProperty(Form.prototype, "jQuery", {
@@ -2862,11 +2912,44 @@ var rocket;
                 }
                 return formData;
             };
+            Form.prototype.block = function () {
+                var context;
+                if (!this.lock && this.config.blockContext && (context = Rocket.Cmd.Context.findFrom(this.jqForm))) {
+                    this.lock = context.createLock();
+                }
+                if (!this.controlLock && this.config.disableControls) {
+                    this.disableControls();
+                }
+            };
+            Form.prototype.unblock = function () {
+                if (this.lock) {
+                    this.lock.release();
+                    this.lock = null;
+                }
+                if (this.controlLock && this.controlLockAutoReleaseable) {
+                    this.controlLock.release();
+                }
+            };
+            Form.prototype.disableControls = function (autoReleaseable) {
+                if (autoReleaseable === void 0) { autoReleaseable = true; }
+                this.controlLockAutoReleaseable = autoReleaseable;
+                if (this.controlLock)
+                    return;
+                this.controlLock = new ControlLock(this.jqForm);
+            };
+            Form.prototype.enableControls = function () {
+                if (this.controlLock) {
+                    this.controlLock.release();
+                    this.controlLock = null;
+                    this.controlLockAutoReleaseable = true;
+                }
+            };
             Form.prototype.abortSubmit = function () {
                 if (this.curXhr) {
                     var curXhr = this.curXhr;
                     this.curXhr = null;
                     curXhr.abort();
+                    this.unblock();
                 }
             };
             Form.prototype.submit = function (submitConfig) {
@@ -2890,23 +2973,26 @@ var rocket;
                             that._config.successResponseHandler(data);
                         }
                         else {
-                            rocket.analyzeResponse(rocket.layerOf(that.jqForm.get(0)), data, url);
+                            Rocket.analyzeResponse(Rocket.layerOf(that.jqForm.get(0)), data, url);
                         }
                         if (submitConfig && submitConfig.success) {
                             submitConfig.success();
                         }
+                        that.unblock();
                         that.trigger(Form.EventType.SUBMITTED);
                     },
                     "error": function (jqXHR, textStatus, errorThrown) {
                         if (that.curXhr !== xhr)
                             return;
-                        rocket.handleErrorResponse(url, jqXHR);
+                        Rocket.handleErrorResponse(url, jqXHR);
                         if (submitConfig && submitConfig.error) {
                             submitConfig.error();
                         }
+                        that.unblock();
                         that.trigger(Form.EventType.SUBMITTED);
                     }
                 });
+                this.block();
             };
             Form.from = function (jqForm) {
                 var form = jqForm.data("rocketImplForm");
@@ -2919,12 +3005,26 @@ var rocket;
             };
             return Form;
         }());
-        impl.Form = Form;
+        Impl.Form = Form;
+        var ControlLock = (function () {
+            function ControlLock(jqContainer) {
+                this.jqControls = jqContainer.find("input:not([disabled]), textarea:not([disabled]), button:not([disabled]), select:not([disabled])");
+                this.jqControls.prop("disabled", true);
+            }
+            ControlLock.prototype.release = function () {
+                if (!this.jqControls)
+                    return;
+                this.jqControls.prop("disabled", false);
+                this.jqControls = null;
+            };
+            return ControlLock;
+        }());
         var Form;
         (function (Form) {
             var Config = (function () {
                 function Config() {
                     this.blockContext = true;
+                    this.disableControls = true;
                     this.autoSubmitAllowed = true;
                     this.actionUrl = null;
                 }
@@ -2936,16 +3036,16 @@ var rocket;
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED"; /* = "submitted"*/
             })(Form.EventType || (Form.EventType = {}));
             var EventType = Form.EventType;
-        })(Form = impl.Form || (impl.Form = {}));
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
-        var overview;
-        (function (overview) {
-            var display = rocket.display;
+        })(Form = Impl.Form || (Impl.Form = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Overview;
+        (function (Overview) {
+            var display = Rocket.Display;
             var MultiEntrySelectorObserver = (function () {
                 function MultiEntrySelectorObserver(originalIdReps) {
                     if (originalIdReps === void 0) { originalIdReps = new Array(); }
@@ -3017,17 +3117,18 @@ var rocket;
                 };
                 return MultiEntrySelectorObserver;
             }());
-            overview.MultiEntrySelectorObserver = MultiEntrySelectorObserver;
-        })(overview = impl.overview || (impl.overview = {}));
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
+            Overview.MultiEntrySelectorObserver = MultiEntrySelectorObserver;
+        })(Overview = Impl.Overview || (Impl.Overview = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         var EntrySelector = (function () {
-            function EntrySelector(jqElem) {
+            function EntrySelector(jqElem, _entry) {
                 this.jqElem = jqElem;
+                this._entry = _entry;
                 this.changedCallbacks = new Array();
                 this._selected = false;
             }
@@ -3040,7 +3141,7 @@ var rocket;
             });
             Object.defineProperty(EntrySelector.prototype, "entry", {
                 get: function () {
-                    return display.Entry.findFrom(this.jqElem);
+                    return this._entry;
                 },
                 enumerable: true,
                 configurable: true
@@ -3066,49 +3167,29 @@ var rocket;
                     callback();
                 });
             };
-            EntrySelector.findAll = function (jqElem) {
-                var entrySelectors = new Array();
-                jqElem.find(".rocket-entry-selector").each(function () {
-                    entrySelectors.push(EntrySelector.from($(this)));
-                });
-                return entrySelectors;
-            };
-            EntrySelector.findFrom = function (jqElem) {
-                var jqElem = jqElem.closest(".rocket-entry-selector");
-                if (jqElem.length == 0)
-                    return null;
-                return EntrySelector.findFrom(jqElem);
-            };
-            EntrySelector.from = function (jqElem) {
-                var entrySelector = jqElem.data("rocketEntrySelector");
-                if (entrySelector instanceof EntrySelector) {
-                    return entrySelector;
-                }
-                entrySelector = new EntrySelector(jqElem);
-                jqElem.data("rocketEntrySelector", entrySelector);
-                return entrySelector;
-            };
             return EntrySelector;
         }());
-        display.EntrySelector = EntrySelector;
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
+        Display.EntrySelector = EntrySelector;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        var util = Rocket.util;
         var Container = (function () {
             function Container(jqContainer) {
+                this.layerCallbackRegistery = new util.CallbackRegistry();
                 this.jqErrorLayer = null;
                 this.jqContainer = jqContainer;
-                this.layers = new Array();
-                var layer = new cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this.layers.length, this);
-                this.layers.push(layer);
+                this._layers = new Array();
+                var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this);
+                this._layers.push(layer);
                 var that = this;
                 layer.onNewHistoryEntry(function (historyIndex, url, context) {
                     var stateObj = {
                         "type": "rocketContext",
-                        "level": layer.getLevel(),
+                        "level": layer.level,
                         "url": url,
                         "historyIndex": historyIndex
                     };
@@ -3130,6 +3211,13 @@ var rocket;
                     }
                 });
             }
+            Object.defineProperty(Container.prototype, "layers", {
+                get: function () {
+                    return this._layers.slice();
+                },
+                enumerable: true,
+                configurable: true
+            });
             Container.prototype.handleError = function (url, html) {
                 var stateObj = {
                     "type": "rocketErrorContext",
@@ -3152,25 +3240,40 @@ var rocket;
                 iframe.contentWindow.document.close();
                 $(iframe).css({ "width": "100%", "height": "100%", "background": "white" });
             };
-            Container.prototype.getMainLayer = function () {
-                if (this.layers.length > 0) {
-                    return this.layers[0];
-                }
-                throw new Error("Container empty.");
-            };
-            Container.prototype.getCurrentLayer = function () {
-                if (this.layers.length == 0) {
-                    throw new Error("Container empty.");
-                }
-                var layer = null;
-                for (var i in this.layers) {
-                    if (this.layers[i].isVisible()) {
-                        layer = this.layers[i];
+            Object.defineProperty(Container.prototype, "mainLayer", {
+                get: function () {
+                    if (this._layers.length > 0) {
+                        return this._layers[0];
                     }
-                }
-                if (layer !== null)
-                    return layer;
-                return this.layers[this.layers.length - 1];
+                    throw new Error("Container empty.");
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Container.prototype, "currentLayer", {
+                get: function () {
+                    if (this._layers.length == 0) {
+                        throw new Error("Container empty.");
+                    }
+                    var layer = null;
+                    for (var i in this._layers) {
+                        if (this._layers[i].visible) {
+                            layer = this._layers[i];
+                        }
+                    }
+                    if (layer !== null)
+                        return layer;
+                    return this._layers[this._layers.length - 1];
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Container.prototype.unregisterLayer = function (layer) {
+                var i = this._layers.indexOf(layer);
+                if (i < 0)
+                    return;
+                this._layers.splice(i, 1);
+                this.layerTrigger(Container.LayerEventType.REMOVED, layer);
             };
             Container.prototype.createLayer = function (dependentContext) {
                 if (dependentContext === void 0) { dependentContext = null; }
@@ -3178,8 +3281,8 @@ var rocket;
                     "class": "rocket-layer"
                 });
                 this.jqContainer.append(jqLayer);
-                var layer = new cmd.Layer(jqLayer, this.layers.length, this);
-                this.layers.push(layer);
+                var layer = new Cmd.Layer(jqLayer, this._layers.length, this);
+                this._layers.push(layer);
                 var jqToolbar = $("<div />", {
                     "class": "rocket-layer-toolbar rocket-simple-commands"
                 });
@@ -3192,39 +3295,74 @@ var rocket;
                     layer.close();
                 });
                 jqToolbar.append(jqButton);
+                var that = this;
+                layer.on(Cmd.Layer.EventType.CLOSE, function () {
+                    that.unregisterLayer(layer);
+                });
                 if (dependentContext === null) {
+                    this.layerTrigger(Container.LayerEventType.ADDED, layer);
                     return layer;
                 }
-                dependentContext.on(cmd.Context.EventType.CLOSE, function () {
+                dependentContext.on(Cmd.Context.EventType.CLOSE, function () {
                     layer.close();
                 });
-                dependentContext.on(cmd.Context.EventType.HIDE, function () {
+                dependentContext.on(Cmd.Context.EventType.HIDE, function () {
                     layer.hide();
                 });
-                dependentContext.on(cmd.Context.EventType.SHOW, function () {
+                dependentContext.on(Cmd.Context.EventType.SHOW, function () {
                     layer.show();
                 });
+                this.layerTrigger(Container.LayerEventType.ADDED, layer);
                 return layer;
             };
             Container.prototype.getAllContexts = function () {
                 var contexts = new Array();
-                for (var i in this.layers) {
-                    var layerContexts = this.layers[i].getContexts();
+                for (var i in this._layers) {
+                    var layerContexts = this._layers[i].contexts;
                     for (var j in layerContexts) {
                         contexts.push(layerContexts[j]);
                     }
                 }
                 return contexts;
             };
+            //		public createContext(html: string, newGroup: boolean = false): Context {
+            ////			if (newGroup) {
+            ////				this.currentContentGroup = new ContentGroup();
+            ////				this.additonalContentGroups.push(this.currentContentGroup);
+            ////			}
+            //			
+            //			return this.currentLayer.createContext(html, bla);
+            //		}
+            Container.prototype.layerTrigger = function (eventType, layer) {
+                var container = this;
+                this.layerCallbackRegistery.filter(eventType.toString())
+                    .forEach(function (callback) {
+                    callback(layer);
+                });
+            };
+            Container.prototype.layerOn = function (eventType, callback) {
+                this.layerCallbackRegistery.register(eventType.toString(), callback);
+            };
+            Container.prototype.layerOff = function (eventType, callback) {
+                this.layerCallbackRegistery.unregister(eventType.toString(), callback);
+            };
             return Container;
         }());
-        cmd.Container = Container;
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
+        Cmd.Container = Container;
+        var Container;
+        (function (Container) {
+            (function (LayerEventType) {
+                LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED"; /*= "removed"*/
+                LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED"; /*= "added"*/
+            })(Container.LayerEventType || (Container.LayerEventType = {}));
+            var LayerEventType = Container.LayerEventType;
+        })(Container = Cmd.Container || (Cmd.Container = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         var EntryForm = (function () {
             function EntryForm(jqEntryForm) {
                 this.jqEntryForm = jqEntryForm;
@@ -3248,48 +3386,56 @@ var rocket;
             };
             return EntryForm;
         }());
-        display.EntryForm = EntryForm;
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var cmd;
-    (function (cmd) {
-        var util = rocket.util;
+        Display.EntryForm = EntryForm;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        var util = Rocket.util;
         var Layer = (function () {
             function Layer(jqContentGroup, level, container) {
-                this.currentHistoryIndex = null;
+                this._currentHistoryIndex = null;
                 this.callbackRegistery = new util.CallbackRegistry();
-                this.visible = true;
-                this.contexts = new Array();
+                this._visible = true;
+                this._contexts = new Array();
                 this.onNewContextCallbacks = new Array();
                 this.onNewHistoryEntryCallbacks = new Array();
                 this.historyUrls = new Array();
                 this.jqLayer = jqContentGroup;
-                this.level = level;
-                this.container = container;
+                this._level = level;
+                this._container = container;
                 jqContentGroup.addClass("rocket-layer");
                 jqContentGroup.data("rocketLayer", this);
                 var jqContext = jqContentGroup.children(".rocket-context");
                 if (jqContext.length > 0) {
-                    var context = new cmd.Context(jqContext, cmd.Url.create(window.location.href), this);
+                    var context = new Cmd.Context(jqContext, Cmd.Url.create(window.location.href), this);
                     this.addContext(context);
                     this.pushHistoryEntry(context.activeUrl);
                 }
             }
             Layer.prototype.containsUrl = function (url) {
-                for (var i in this.contexts) {
-                    if (this.contexts[i].containsUrl(url))
+                for (var i in this._contexts) {
+                    if (this._contexts[i].containsUrl(url))
                         return true;
                 }
                 return false;
             };
-            Layer.prototype.getContainer = function () {
-                return this.container;
-            };
-            Layer.prototype.isVisible = function () {
-                return this.visible;
-            };
+            Object.defineProperty(Layer.prototype, "container", {
+                get: function () {
+                    return this._container;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Layer.prototype, "visible", {
+                get: function () {
+                    return this._visible;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Layer.prototype.trigger = function (eventType) {
                 var layer = this;
                 this.callbackRegistery.filter(eventType.toString())
@@ -3305,43 +3451,55 @@ var rocket;
             };
             Layer.prototype.show = function () {
                 this.trigger(Layer.EventType.SHOW);
-                this.visible = true;
+                this._visible = true;
                 this.jqLayer.show();
             };
             Layer.prototype.hide = function () {
                 this.trigger(Layer.EventType.SHOW);
-                this.visible = false;
+                this._visible = false;
                 this.jqLayer.hide();
             };
-            Layer.prototype.getLevel = function () {
-                return this.level;
-            };
-            Layer.prototype.getCurrentContext = function () {
-                if (this.contexts.length == 0) {
-                    throw new Error("no context avaialble");
-                }
-                var url = this.historyUrls[this.currentHistoryIndex];
-                for (var i in this.contexts) {
-                    if (this.contexts[i].containsUrl(url)) {
-                        return this.contexts[i];
+            Object.defineProperty(Layer.prototype, "level", {
+                get: function () {
+                    return this._level;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Layer.prototype, "currentContext", {
+                get: function () {
+                    if (this._contexts.length == 0) {
+                        throw new Error("no context avaialble");
                     }
-                }
-                return null;
-            };
-            Layer.prototype.getContexts = function () {
-                return this.contexts;
-            };
-            Layer.prototype.getCurrentHistoryIndex = function () {
-                return this.currentHistoryIndex;
+                    var url = this.historyUrls[this._currentHistoryIndex];
+                    for (var i in this._contexts) {
+                        if (this._contexts[i].containsUrl(url)) {
+                            return this._contexts[i];
+                        }
+                    }
+                    return null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Layer.prototype, "contexts", {
+                get: function () {
+                    return this._contexts.slice();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Layer.prototype.currentHistoryIndex = function () {
+                return this._currentHistoryIndex;
             };
             Layer.prototype.addContext = function (context) {
-                this.contexts.push(context);
+                this._contexts.push(context);
                 var that = this;
-                context.on(cmd.Context.EventType.CLOSE, function (context) {
-                    for (var i in that.contexts) {
-                        if (that.contexts[i] !== context)
+                context.on(Cmd.Context.EventType.CLOSE, function (context) {
+                    for (var i in that._contexts) {
+                        if (that._contexts[i] !== context)
                             continue;
-                        that.contexts.splice(parseInt(i), 1);
+                        that._contexts.splice(parseInt(i), 1);
                         break;
                     }
                 });
@@ -3350,21 +3508,21 @@ var rocket;
                 }
             };
             Layer.prototype.pushHistoryEntry = function (urlExpr) {
-                var url = cmd.Url.create(urlExpr);
+                var url = Cmd.Url.create(urlExpr);
                 var context = this.getContextByUrl(url);
                 if (context === null) {
                     throw new Error("Not context with this url found: " + url);
                 }
-                this.currentHistoryIndex = this.historyUrls.length;
+                this._currentHistoryIndex = this.historyUrls.length;
                 this.historyUrls.push(url);
                 context.activeUrl = url;
                 for (var i in this.onNewHistoryEntryCallbacks) {
-                    this.onNewHistoryEntryCallbacks[i](this.currentHistoryIndex, url, context);
+                    this.onNewHistoryEntryCallbacks[i](this._currentHistoryIndex, url, context);
                 }
                 this.switchToContext(context);
             };
             Layer.prototype.go = function (historyIndex, urlExpr) {
-                var url = cmd.Url.create(urlExpr);
+                var url = Cmd.Url.create(urlExpr);
                 if (this.historyUrls.length < (historyIndex + 1)) {
                     throw new Error("Invalid history index: " + historyIndex);
                 }
@@ -3372,7 +3530,7 @@ var rocket;
                     throw new Error("Url missmatch for history index " + historyIndex + ". Url: " + url + " History url: "
                         + this.historyUrls[historyIndex]);
                 }
-                this.currentHistoryIndex = historyIndex;
+                this._currentHistoryIndex = historyIndex;
                 var context = this.getContextByUrl(this.historyUrls[historyIndex]);
                 if (context === null)
                     return false;
@@ -3385,43 +3543,43 @@ var rocket;
                 return this.historyUrls[historyIndex];
             };
             Layer.prototype.getContextByUrl = function (urlExpr) {
-                var url = cmd.Url.create(urlExpr);
-                for (var i in this.contexts) {
-                    if (this.contexts[i].containsUrl(url)) {
-                        return this.contexts[i];
+                var url = Cmd.Url.create(urlExpr);
+                for (var i in this._contexts) {
+                    if (this._contexts[i].containsUrl(url)) {
+                        return this._contexts[i];
                     }
                 }
                 return null;
             };
             Layer.prototype.switchToContext = function (context) {
-                for (var i in this.contexts) {
-                    if (this.contexts[i] === context) {
+                for (var i in this._contexts) {
+                    if (this._contexts[i] === context) {
                         context.show();
                     }
                     else {
-                        this.contexts[i].hide();
+                        this._contexts[i].hide();
                     }
                 }
             };
             Layer.prototype.createContext = function (urlExpr) {
-                var url = cmd.Url.create(urlExpr);
+                var url = Cmd.Url.create(urlExpr);
                 if (this.getContextByUrl(url)) {
                     throw new Error("Context with url already available: " + url);
                 }
                 var jqContent = $("<div />");
                 this.jqLayer.append(jqContent);
-                var context = new cmd.Context(jqContent, url, this);
+                var context = new Cmd.Context(jqContent, url, this);
                 this.addContext(context);
                 return context;
             };
             Layer.prototype.clear = function () {
-                for (var i in this.contexts) {
-                    this.contexts[i].close();
+                for (var i in this._contexts) {
+                    this._contexts[i].close();
                 }
             };
             Layer.prototype.close = function () {
                 this.trigger(Layer.EventType.CLOSE);
-                this.contexts = new Array();
+                this._contexts = new Array();
                 this.jqLayer.remove();
             };
             Layer.prototype.onNewContext = function (onNewContextCallback) {
@@ -3442,7 +3600,7 @@ var rocket;
             };
             return Layer;
         }());
-        cmd.Layer = Layer;
+        Cmd.Layer = Layer;
         var Layer;
         (function (Layer) {
             (function (EventType) {
@@ -3451,13 +3609,13 @@ var rocket;
                 EventType[EventType["CLOSE"] = 2] = "CLOSE"; /*= "close"*/
             })(Layer.EventType || (Layer.EventType = {}));
             var EventType = Layer.EventType;
-        })(Layer = cmd.Layer || (cmd.Layer = {}));
-    })(cmd = rocket.cmd || (rocket.cmd = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var display;
-    (function (display) {
+        })(Layer = Cmd.Layer || (Cmd.Layer = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         (function (Severity) {
             Severity[Severity["PRIMARY"] = 0] = "PRIMARY"; /*= "primary"*/
             Severity[Severity["SECONDARY"] = 1] = "SECONDARY"; /*= "secondary"*/
@@ -3465,10 +3623,10 @@ var rocket;
             Severity[Severity["DANGER"] = 3] = "DANGER"; /*= "danger"*/
             Severity[Severity["INFO"] = 4] = "INFO"; /*= "info"*/
             Severity[Severity["WARNING"] = 5] = "WARNING"; /*= "warning"*/
-        })(display.Severity || (display.Severity = {}));
-        var Severity = display.Severity;
-    })(display = rocket.display || (rocket.display = {}));
-})(rocket || (rocket = {}));
+        })(Display.Severity || (Display.Severity = {}));
+        var Severity = Display.Severity;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -3490,13 +3648,13 @@ var rocket;
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  *
  */
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
-        var overview;
-        (function (overview) {
-            var cmd = rocket.cmd;
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Overview;
+        (function (Overview) {
+            var cmd = Rocket.Cmd;
             var $ = jQuery;
             var OverviewContext = (function () {
                 function OverviewContext(jqContainer, overviewContent) {
@@ -3519,22 +3677,22 @@ var rocket;
                         return overviewContext;
                     }
                     var jqForm = jqElem.children("form");
-                    var overviewContent = new overview.OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
-                    new ContextUpdater(rocket.cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
+                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
+                    new ContextUpdater(Rocket.Cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
                         .init(overviewContent);
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-context-commands"));
-                    var header = new overview.Header(overviewContent);
+                    var header = new Overview.Header(overviewContent);
                     header.init(jqElem.children(".rocket-impl-overview-tools"));
                     overviewContext = new OverviewContext(jqElem, overviewContent);
                     jqElem.data("rocketImplOverviewContext", overviewContext);
-                    overviewContent.initSelector(new overview.MultiEntrySelectorObserver(["51", "53"]));
+                    overviewContent.initSelector(new Overview.MultiEntrySelectorObserver(["51", "53"]));
                     return overviewContext;
                 };
                 return OverviewContext;
             }());
-            overview.OverviewContext = OverviewContext;
+            Overview.OverviewContext = OverviewContext;
             //	
             //	class Entry {
             //		
@@ -3586,7 +3744,7 @@ var rocket;
                     }
                     var newActiveUrl = this.pageUrls[newCurPageNo - 1];
                     if (!this.context.activeUrl.equals(newActiveUrl)) {
-                        this.context.getLayer().pushHistoryEntry(newActiveUrl);
+                        this.context.layer.pushHistoryEntry(newActiveUrl);
                     }
                     if (this.pageUrls.length > newNumPages) {
                         for (var pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
@@ -3755,15 +3913,15 @@ var rocket;
                 };
                 return FixedHeader;
             }());
-        })(overview = impl.overview || (impl.overview = {}));
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl_1) {
-        var overview;
-        (function (overview) {
+        })(Overview = Impl.Overview || (Impl.Overview = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Overview;
+        (function (Overview) {
             var $ = jQuery;
             var Header = (function () {
                 function Header(overviewContent) {
@@ -3783,7 +3941,7 @@ var rocket;
                 };
                 return Header;
             }());
-            overview.Header = Header;
+            Overview.Header = Header;
             var State = (function () {
                 function State(overviewContent) {
                     this.overviewContent = overviewContent;
@@ -3851,12 +4009,13 @@ var rocket;
                     if (this.form) {
                         throw new Error("Quicksearch already initialized.");
                     }
-                    this.form = impl_1.Form.from(jqForm);
+                    this.form = Impl.Form.from(jqForm);
                     var that = this;
-                    this.form.on(impl_1.Form.EventType.SUBMIT, function () {
+                    this.form.on(Impl.Form.EventType.SUBMIT, function () {
                         that.onSubmit();
                     });
                     this.form.config.blockContext = false;
+                    this.form.config.disableControls = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     this.form.config.successResponseHandler = function (data) {
                         that.whenSubmitted(data);
@@ -3932,11 +4091,12 @@ var rocket;
                     if (this.form) {
                         throw new Error("CritmodSelect already initialized.");
                     }
-                    this.form = impl_1.Form.from(jqForm);
+                    this.form = Impl.Form.from(jqForm);
                     this.form.reset();
                     this.critmodForm = critmodForm;
                     this.jqButton = jqForm.find("button[type=submit]").hide();
                     this.form.config.blockContext = false;
+                    this.form.config.disableControls = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     this.form.config.autoSubmitAllowed = false;
                     var that = this;
@@ -3970,7 +4130,7 @@ var rocket;
                     this.updateState();
                     this.overviewContent.clear(true);
                     var id = this.jqSelect.val();
-                    this.critmodForm.activated = id == true;
+                    this.critmodForm.activated = id ? true : false;
                     this.critmodForm.critmodSaveId = id;
                     this.critmodForm.freeze();
                 };
@@ -4067,7 +4227,7 @@ var rocket;
                     if (this.form) {
                         throw new Error("CritmodForm already initialized.");
                     }
-                    this.form = impl_1.Form.from(jqForm);
+                    this.form = Impl.Form.from(jqForm);
                     this.form.reset();
                     this.form.config.blockContext = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
@@ -4085,6 +4245,7 @@ var rocket;
                     var deactivateFunc = function () {
                         that.activated = false;
                         that.critmodSaveId = null;
+                        that.block();
                         that.onSubmit();
                     };
                     this.jqApplyButton = jqForm.find(".rocket-impl-critmod-apply").click(function () { activateFunc(false); });
@@ -4143,6 +4304,14 @@ var rocket;
                 };
                 CritmodForm.prototype.freeze = function () {
                     this.form.abortSubmit();
+                    this.form.disableControls();
+                    this.block();
+                };
+                CritmodForm.prototype.block = function () {
+                    if (this.jqBlocker)
+                        return;
+                    this.jqBlocker = $("<div />", { "class": "rocket-impl-critmod-blocker" })
+                        .appendTo(this.form.jQuery);
                 };
                 CritmodForm.prototype.reload = function () {
                     var url = this.form.config.actionUrl;
@@ -4152,7 +4321,7 @@ var rocket;
                         "dataType": "json"
                     }).fail(function (jqXHR, textStatus, data) {
                         if (jqXHR.status != 200) {
-                            rocket.getContainer().handleError(url, jqXHR.responseText);
+                            Rocket.getContainer().handleError(url, jqXHR.responseText);
                             return;
                         }
                         throw new Error("invalid response");
@@ -4171,6 +4340,10 @@ var rocket;
                     this.replaceForm(data);
                 };
                 CritmodForm.prototype.replaceForm = function (data) {
+                    if (this.jqBlocker) {
+                        this.jqBlocker.remove();
+                        this.jqBlocker = null;
+                    }
                     var jqForm = $(n2n.ajah.analyze(data));
                     this.form.jQuery.replaceWith(jqForm);
                     this.form = null;
@@ -4192,6 +4365,83 @@ var rocket;
                 return CritmodForm;
             }());
             ;
-        })(overview = impl_1.overview || (impl_1.overview = {}));
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
+        })(Overview = Impl.Overview || (Impl.Overview = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        var Blocker = (function () {
+            function Blocker(container) {
+                this.container = container;
+                this.jqBlocker = null;
+                for (var _i = 0, _a = container.layers; _i < _a.length; _i++) {
+                    var layer = _a[_i];
+                    this.observeLayer(layer);
+                }
+                var that = this;
+                container.layerOn(Cmd.Container.LayerEventType.ADDED, function (layer) {
+                    that.observeLayer(layer);
+                    that.check();
+                });
+            }
+            Blocker.prototype.observeLayer = function (layer) {
+                for (var _i = 0, _a = layer.contexts; _i < _a.length; _i++) {
+                    var context = _a[_i];
+                    this.observeContext(context);
+                }
+                var that = this;
+                layer.onNewContext(function (context) {
+                    that.observeContext(context);
+                    that.check();
+                });
+            };
+            Blocker.prototype.observeContext = function (context) {
+                var that = this;
+                var checkCallback = function () {
+                    that.check();
+                };
+                context.on(Cmd.Context.EventType.SHOW, checkCallback);
+                context.on(Cmd.Context.EventType.HIDE, checkCallback);
+                context.on(Cmd.Context.EventType.CLOSE, checkCallback);
+                context.on(Cmd.Context.EventType.CONTENT_CHANGED, checkCallback);
+                context.on(Cmd.Context.EventType.BLOCKED_CHANGED, checkCallback);
+            };
+            Blocker.prototype.init = function (jqContainer) {
+                if (this.jqContainer) {
+                    throw new Error("Blocker already initialized.");
+                }
+                this.jqContainer = jqContainer;
+                this.check();
+            };
+            Blocker.prototype.check = function () {
+                if (!this.jqContainer)
+                    return;
+                if (!this.container.currentLayer.currentContext.locked) {
+                    if (!this.jqBlocker)
+                        return;
+                    this.jqBlocker.remove();
+                    this.jqBlocker = null;
+                    return;
+                }
+                if (this.jqBlocker)
+                    return;
+                this.jqBlocker =
+                    $("<div />", {
+                        "class": "rocket-context-block",
+                        "css": {
+                            "position": "fixed",
+                            "top": 0,
+                            "left": 0,
+                            "right": 0,
+                            "bottom": 0
+                        }
+                    })
+                        .appendTo(this.jqContainer);
+            };
+            return Blocker;
+        }());
+        Cmd.Blocker = Blocker;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));

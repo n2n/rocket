@@ -90,11 +90,10 @@ class OverviewAjahController extends ControllerAdapter {
 
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 
-		$valid = false;
 		if ($this->dispatch($critmodForm, 'select') || $this->dispatch($critmodForm, 'apply')
 				|| $this->dispatch($critmodForm, 'clear') || $this->dispatch($critmodForm, 'save')
 				|| $this->dispatch($critmodForm, 'saveAs') || $this->dispatch($critmodForm, 'delete')) {
-					
+				
 			$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 // 			$this->refresh();
 // 			return;

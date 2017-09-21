@@ -1,6 +1,6 @@
-namespace rocket.impl.overview {
-	import cmd = rocket.cmd;
-	import display = rocket.display;
+namespace Rocket.Impl.Overview {
+	import cmd = Rocket.Cmd;
+	import display = Rocket.Display;
 
 	export interface SelectorObserver {
 		

@@ -1,7 +1,7 @@
-namespace rocket.display {
-	import Container = rocket.cmd.Container;
-	import Context = rocket.cmd.Context;
-	import AdditionalTab = rocket.cmd.AdditionalTab;
+namespace Rocket.Display {
+	import Container = Rocket.Cmd.Container;
+	import Context = Rocket.Cmd.Context;
+	import AdditionalTab = Rocket.Cmd.AdditionalTab;
 	
     export class Initializer {
         private container: Container;
@@ -33,7 +33,7 @@ namespace rocket.display {
 			
 			var i = 0;
 			
-			var jqContext = context.getJQuery();
+			var jqContext = context.jQuery;
 			
 			jqContext.find(".rocket-group, .rocket-group-main, .rocket-field").each(function () {
 				var jqElem = $(this);

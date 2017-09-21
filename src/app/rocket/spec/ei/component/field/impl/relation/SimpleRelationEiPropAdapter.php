@@ -139,7 +139,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 					}
 					
 					public function getFilterDefinition(): FilterDefinition {
-						return $this->targetEiMask->createFilterDefinition($this->n2nContext);
+						return $this->targetEiMask->getEiEngine()->createFilterDefinition($this->n2nContext);
 					}
 	
 					public function getFilterAjahHook(): FilterAjahHook {
