@@ -182,14 +182,18 @@ namespace Rocket.Display {
 		}
 		
 		public static findFrom(jqElem: JQuery): StructureElement {
-			jqElem = jqElem.parents(".rocket-group, .rocket-field");
+			jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+			
+			if (jqElem.length == 0) return null;
 			
 			var structureElement = jqElem.data("rocketStructureElement");
 			if (structureElement instanceof StructureElement) {
 				return structureElement;
 			}
 			
-			return null;
+			structureElement = StructureElement.from(jqElem, true);
+			jqElem.data("rocketStructureElement", structureElement);
+			return structureElement;
 		}
 	}
 	
