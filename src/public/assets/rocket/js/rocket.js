@@ -329,12 +329,16 @@ var Rocket;
                 return structureElement;
             };
             StructureElement.findFrom = function (jqElem) {
-                jqElem = jqElem.parents(".rocket-group, .rocket-field");
+                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+                if (jqElem.length == 0)
+                    return null;
                 var structureElement = jqElem.data("rocketStructureElement");
                 if (structureElement instanceof StructureElement) {
                     return structureElement;
                 }
-                return null;
+                structureElement = StructureElement.from(jqElem, true);
+                jqElem.data("rocketStructureElement", structureElement);
+                return structureElement;
             };
             return StructureElement;
         }());
@@ -1011,6 +1015,83 @@ var Rocket;
             var EventType = Entry.EventType;
         })(Entry = Display.Entry || (Display.Entry = {}));
     })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        var Blocker = (function () {
+            function Blocker(container) {
+                this.container = container;
+                this.jqBlocker = null;
+                for (var _i = 0, _a = container.layers; _i < _a.length; _i++) {
+                    var layer = _a[_i];
+                    this.observeLayer(layer);
+                }
+                var that = this;
+                container.layerOn(Cmd.Container.LayerEventType.ADDED, function (layer) {
+                    that.observeLayer(layer);
+                    that.check();
+                });
+            }
+            Blocker.prototype.observeLayer = function (layer) {
+                for (var _i = 0, _a = layer.contexts; _i < _a.length; _i++) {
+                    var context = _a[_i];
+                    this.observeContext(context);
+                }
+                var that = this;
+                layer.onNewContext(function (context) {
+                    that.observeContext(context);
+                    that.check();
+                });
+            };
+            Blocker.prototype.observeContext = function (context) {
+                var that = this;
+                var checkCallback = function () {
+                    that.check();
+                };
+                context.on(Cmd.Context.EventType.SHOW, checkCallback);
+                context.on(Cmd.Context.EventType.HIDE, checkCallback);
+                context.on(Cmd.Context.EventType.CLOSE, checkCallback);
+                context.on(Cmd.Context.EventType.CONTENT_CHANGED, checkCallback);
+                context.on(Cmd.Context.EventType.BLOCKED_CHANGED, checkCallback);
+            };
+            Blocker.prototype.init = function (jqContainer) {
+                if (this.jqContainer) {
+                    throw new Error("Blocker already initialized.");
+                }
+                this.jqContainer = jqContainer;
+                this.check();
+            };
+            Blocker.prototype.check = function () {
+                if (!this.jqContainer)
+                    return;
+                if (!this.container.currentLayer.currentContext.locked) {
+                    if (!this.jqBlocker)
+                        return;
+                    this.jqBlocker.remove();
+                    this.jqBlocker = null;
+                    return;
+                }
+                if (this.jqBlocker)
+                    return;
+                this.jqBlocker =
+                    $("<div />", {
+                        "class": "rocket-context-block",
+                        "css": {
+                            "position": "fixed",
+                            "top": 0,
+                            "left": 0,
+                            "right": 0,
+                            "bottom": 0
+                        }
+                    })
+                        .appendTo(this.jqContainer);
+            };
+            return Blocker;
+        }());
+        Cmd.Blocker = Blocker;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
@@ -4400,81 +4481,4 @@ var Rocket;
             ;
         })(Overview = Impl.Overview || (Impl.Overview = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Cmd;
-    (function (Cmd) {
-        var Blocker = (function () {
-            function Blocker(container) {
-                this.container = container;
-                this.jqBlocker = null;
-                for (var _i = 0, _a = container.layers; _i < _a.length; _i++) {
-                    var layer = _a[_i];
-                    this.observeLayer(layer);
-                }
-                var that = this;
-                container.layerOn(Cmd.Container.LayerEventType.ADDED, function (layer) {
-                    that.observeLayer(layer);
-                    that.check();
-                });
-            }
-            Blocker.prototype.observeLayer = function (layer) {
-                for (var _i = 0, _a = layer.contexts; _i < _a.length; _i++) {
-                    var context = _a[_i];
-                    this.observeContext(context);
-                }
-                var that = this;
-                layer.onNewContext(function (context) {
-                    that.observeContext(context);
-                    that.check();
-                });
-            };
-            Blocker.prototype.observeContext = function (context) {
-                var that = this;
-                var checkCallback = function () {
-                    that.check();
-                };
-                context.on(Cmd.Context.EventType.SHOW, checkCallback);
-                context.on(Cmd.Context.EventType.HIDE, checkCallback);
-                context.on(Cmd.Context.EventType.CLOSE, checkCallback);
-                context.on(Cmd.Context.EventType.CONTENT_CHANGED, checkCallback);
-                context.on(Cmd.Context.EventType.BLOCKED_CHANGED, checkCallback);
-            };
-            Blocker.prototype.init = function (jqContainer) {
-                if (this.jqContainer) {
-                    throw new Error("Blocker already initialized.");
-                }
-                this.jqContainer = jqContainer;
-                this.check();
-            };
-            Blocker.prototype.check = function () {
-                if (!this.jqContainer)
-                    return;
-                if (!this.container.currentLayer.currentContext.locked) {
-                    if (!this.jqBlocker)
-                        return;
-                    this.jqBlocker.remove();
-                    this.jqBlocker = null;
-                    return;
-                }
-                if (this.jqBlocker)
-                    return;
-                this.jqBlocker =
-                    $("<div />", {
-                        "class": "rocket-context-block",
-                        "css": {
-                            "position": "fixed",
-                            "top": 0,
-                            "left": 0,
-                            "right": 0,
-                            "bottom": 0
-                        }
-                    })
-                        .appendTo(this.jqContainer);
-            };
-            return Blocker;
-        }());
-        Cmd.Blocker = Blocker;
-    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
