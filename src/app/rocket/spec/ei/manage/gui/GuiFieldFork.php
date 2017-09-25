@@ -28,7 +28,7 @@ interface GuiFieldFork extends Savable {
 	 * @param bool $makeEditable
 	 * @return AssembleResult
 	 */
-	public function assembleGuiField(GuiIdPath $guiIdPath, $makeEditable): AssembleResult; 
+	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult; 
 	
 	/**
 	 * Mag for group toolbar

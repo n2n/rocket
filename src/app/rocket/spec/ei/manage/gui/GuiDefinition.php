@@ -293,50 +293,50 @@ class GuiDefinition {
 		return new EiGui($eiFrame, $this, $viewMode);
 	}
 	
-	/**
-	 * @param EiMask $eiMask
-	 * @param EiuEntry $eiuEntry
-	 * @param int $viewMode
-	 * @param array $guiIdPaths
-	 * @return EiEntryGui
-	 */
-	public function createEiEntryGui(EiGui $eiGui, array $guiIdPaths) {
-		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
+// 	/**
+// 	 * @param EiMask $eiMask
+// 	 * @param EiuEntry $eiuEntry
+// 	 * @param int $viewMode
+// 	 * @param array $guiIdPaths
+// 	 * @return EiEntryGui
+// 	 */
+// 	public function createEiEntryGui(EiGui $eiGui, array $guiIdPaths) {
+// 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
-		$eiEntryGui = new EiEntryGui($eiMask, $viewMode);
-		$eiuEntryGui = new EiuEntryGui($eiEntryGui, $eiEntry, $eiFrame);
+// 		$eiEntryGui = new EiEntryGui($eiMask, $viewMode);
+// 		$eiuEntryGui = new EiuEntryGui($eiEntryGui, $eiEntry, $eiFrame);
 		
-		$guiFieldAssembler = new GuiFieldAssembler($eiMask->getEiEngine()->getGuiDefinition(), $eiuEntryGui);
+// 		$guiFieldAssembler = new GuiFieldAssembler($eiMask->getEiEngine()->getGuiDefinition(), $eiEntryGui);
 		
-		foreach ($guiIdPaths as $guiIdPath) {
-			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
-			if ($result === null) continue;
+// 		foreach ($guiIdPaths as $guiIdPath) {
+// 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
+// 			if ($result === null) continue;
 			 
-			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());
-			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
-				$eiEntryGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
-			}
+// 			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());
+// 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
+// 				$eiEntryGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
+// 			}
 			
-			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
-				$eiEntryGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
-						$magPropertyPath, $result->getMagWrapper()));
-			}
-		}
+// 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
+// 				$eiEntryGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
+// 						$magPropertyPath, $result->getMagWrapper()));
+// 			}
+// 		}
 		
-		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
-			$eiEntryGui->setDispatchable($guiFieldAssembler->getDispatchable());
-			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
-			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
-		}
+// 		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
+// 			$eiEntryGui->setDispatchable($guiFieldAssembler->getDispatchable());
+// 			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
+// 			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
+// 		}
 		
-		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->setupEiEntryGui($eiEntryGui);
-		}
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->setupEiEntryGui($eiEntryGui);
+// 		}
 		
-		$eiEntryGui->markInitialized();
+// 		$eiEntryGui->markInitialized();
 		
-		return $eiEntryGui;
-	}
+// 		return $eiEntryGui;
+// 	}
 }
 
 interface GuiDefinitionListener {

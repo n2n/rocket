@@ -43,6 +43,9 @@ class TranslationGuiField implements GuiFieldFork {
 
 	private $n2nLocaleDefs = array();
 	private $targetRelationEntries = array();
+	/**
+	 * @var GuiFieldAssembler[]
+	 */
 	private $guiFieldAssemblers = array();
 	private $mandatoryN2nLocaleIds = array();
 	private $activeN2nLocaleIds = array();
@@ -87,7 +90,7 @@ class TranslationGuiField implements GuiFieldFork {
 		}
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
+	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult {
 		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
@@ -96,15 +99,11 @@ class TranslationGuiField implements GuiFieldFork {
 		$translationDisplayable = new TranslationDisplayable($label);
 		
 		$translationMag = null;
-		if ($makeEditable) {
-			$translationMag = new TranslationMag($guiIdPath->__toString(), $label);
-		}
-		
 		$eiFieldWrappers = array();
 		
 		$mandatory = false;
 		foreach ($this->guiFieldAssemblers as $n2nLocaleId => $guiFieldAssembler) {
-			$result = $guiFieldAssembler->assembleGuiField($guiIdPath, $makeEditable);
+			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;
 			
 			$fieldErrorInfo = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry()->getEiEntry()->getMappingErrorInfo()
@@ -121,7 +120,11 @@ class TranslationGuiField implements GuiFieldFork {
 				$translationDisplayable->putDisplayable($n2nLocaleId, $result->getDisplayable(), $fieldErrorInfo);
 			}
 			
-			if (!$makeEditable) continue;
+			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
+			
+			if ($translationMag === null) {
+				$translationMag = new TranslationMag($guiIdPath->__toString(), $label);
+			}
 			
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
 				$translationMag->putMagPropertyPath($n2nLocaleId, $magPropertyPath, $fieldErrorInfo);
@@ -133,7 +136,7 @@ class TranslationGuiField implements GuiFieldFork {
 		
 		$eiFieldWrapperWrapper = new EiFieldWrapperWrapper($eiFieldWrappers);
 		
-		if (!$makeEditable) {
+		if ($translationMag === null) {
 			return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper);
 		}
 		

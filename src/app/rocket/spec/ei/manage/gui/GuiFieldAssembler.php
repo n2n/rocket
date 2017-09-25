@@ -52,7 +52,7 @@ class GuiFieldAssembler implements Savable {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\gui\Eiu
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
 	 */
 	public function getEiuEntryGui() {
 		return $this->eiu->entryGui();
@@ -118,8 +118,8 @@ class GuiFieldAssembler implements Savable {
 		$magWrapper = null;
 		if (!isset($this->forkedPropertyPaths[$id])) {
 			$this->savables[$id] = $forkedGuiField;
-			$this->forkMagWrappers[$id] = $this->getOrCreateDispatchable()->getMagCollection()->addMag(
-					$forkedGuiField->buildForkMag($id));
+			$this->forkMagWrappers[$id] = $this->getOrCreateDispatchable()->getMagCollection()
+					->addMag($forkedGuiField->buildForkMag($id));
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		

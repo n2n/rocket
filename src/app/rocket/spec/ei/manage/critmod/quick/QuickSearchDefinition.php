@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\critmod\quick;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchField;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
@@ -30,14 +29,25 @@ use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 class QuickSearchDefinition {
 	private $quickSearchFields = array();
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param QuickSearchField $quickSearchField
+	 */
 	public function putQuickSearchField(EiPropPath $eiPropPath, QuickSearchField $quickSearchField) {
 		$this->quickSearchFields[(string) $eiPropPath] = $quickSearchField;	
 	}
 	
+	/**
+	 * @return QuickSearchField[]
+	 */
 	public function getQuickSearchFields(): array {
 		return $this->quickSearchFields;
 	}
 	
+	/**
+	 * @param EiPropPath[] $eiPropPaths
+	 * @return QuickSearchField[]
+	 */
 	private function filterFields(array $eiPropPaths) {
 		$quickSearchFields = array();
 		foreach ($eiPropPaths as $eiPropPath) {
@@ -49,6 +59,12 @@ class QuickSearchDefinition {
 		return $quickSearchFields;
 	}
 	
+	/**
+	 * 
+	 * @param string $searchStr
+	 * @param EiPropPath[] $eiPropPaths
+	 * @return null|\rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup
+	 */
 	public function buildCriteriaConstraint(string $searchStr, array $eiPropPaths = null) {
 		$quickSearchFields = null;
 		if ($eiPropPaths === null) {

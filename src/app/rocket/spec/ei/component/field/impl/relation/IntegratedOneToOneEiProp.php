@@ -227,8 +227,8 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->targetGuiFieldAssembler = $targetGuiFieldAssembler;
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath, $makeEditable): AssembleResult {
-		return $this->targetGuiFieldAssembler->assembleGuiField($guiIdPath, $makeEditable);
+	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult {
+		return $this->targetGuiFieldAssembler->assembleGuiField($guiIdPath);
 	}
 	
 	public function buildForkMag(string $propertyName) {

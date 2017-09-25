@@ -80,5 +80,12 @@ class TranslationDisplayable implements GuiField {
 	public function getEditable(): Editable {
 		throw new IllegalStateException();
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
+	 */
+	public function getGroupType() {
+		return null;
+	}
 }

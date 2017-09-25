@@ -88,7 +88,7 @@ class EiuGui {
 	 * @param unknown $eiEntryArg
 	 * @param bool $makeEditable
 	 * @param int $treeLevel
-	 * @return \rocket\spec\ei\manage\gui\EiEntryGui
+	 * @return EiuEntryGui
 	 */
 	public function appendNewEntryGui($eiEntryArg, bool $makeEditable = false, int $treeLevel = null) {
 		$eiEntry = null;
@@ -99,7 +99,7 @@ class EiuGui {
 			$eiEntry = (new EiuEntry($eiObject, $this->eiuFrame))->getEiEntry();
 		}
 		
-		return $this->eiGui->createEiEntryGui($eiEntry, $makeEditable, $treeLevel, true);
+		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $makeEditable, $treeLevel, true), $this);
 	}
 	
 	/**

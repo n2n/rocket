@@ -64,10 +64,11 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
-use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\component\field\QuickSearchableEiProp;
+use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearchField;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
-		Readable, Writable, GuiPropFork, SortableEiPropFork {
+		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
@@ -247,6 +248,19 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		
 		return N2nLocale::getAdmin();
 	}
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\QuickSearchableEiProp::buildQuickSearchField()
+	 */
+	public function buildQuickSearchField(EiFrame $eiFrame) {
+		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		
+		return new TranslationQuickSearchField(
+				$this->eiPropRelation->getRelationEntityProperty(),
+				$this->eiPropRelation->getTargetEiType()->getEiEngine()->getEiType()->getEntityModel()->getClass(), 
+				$targetEiFrame->getContextEiMask()->getEiEngine()->createQuickSearchDefinition($targetEiFrame));
+	}
+
 }
 
 class TranslationSortFieldFork implements SortFieldFork {
