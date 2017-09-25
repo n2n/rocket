@@ -54,7 +54,9 @@
 <?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 	<?php if ($displayItem->hasDisplayStructure()): ?>
 		<?php $eiHtml->groupOpen('div', $displayItem) ?>
-			<label><?php $html->out($displayItem->getLabel()) ?></label>
+			<?php if (null !== ($label = $displayItem->getLabel())): ?>
+				<label><?php $html->out($displayItem->getLabel()) ?></label>
+			<?php endif ?>
 			<div class="rocket-control">
 				<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 
 						'eiu' => $eiu, 'renderForkMags' => false)) ?>
