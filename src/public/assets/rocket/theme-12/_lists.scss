@@ -1,3 +1,114 @@
+/*
+ * Toolbar
+ */
+
+.rocket-impl-overview-tools {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 44px;
+    background-color: $brand-gray-09;
+    padding-top: 1rem;
+}
+
+.rocket-impl-state {
+    margin-bottom: 0.5rem;
+}
+
+.rocket-impl-critmod-select-container {
+    border: 3px solid $brand-gray-05;
+    border-bottom-color: $brand-gray-07;
+    background-color: $brand-gray-07;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    height: calc(100% + 1rem);
+    top: -.825rem;
+    z-index: 1;
+}
+
+.rocket-impl-critmod-select {
+    display: inline;
+    > label {
+        display: inline;
+        font-weight: bold;
+    }
+}
+
+.rocket-impl-critmod {
+    background-color: $brand-gray-07;
+    padding: 1rem;
+    border-bottom: 3px solid $brand-gray-05;
+    border-top: 3px solid $brand-gray-05;
+}
+
+
+.rocket-filter-items {
+    position: relative;
+    background: white;
+    border: 1px solid $brand-gray-05;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.rocket-filter-groups,
+.rocket-filter-group-controls,
+.rocket-filter-field-items,
+.rocket-multi-add-entries {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rocket-filter-field-item, 
+.rocket-filter-group {
+    position: relative;
+}
+
+// fields 
+.rocket-filter-field-text-and-or {
+    position: absolute;
+    top: 0;
+    left: -2rem;
+    font-size: $font-size-xs;
+    background: white;
+    border: 1px solid $brand-gray-05;
+    padding: 0 0.125rem;
+}
+
+.rocket-filter-field-item > * {
+    display: inline-block;
+}
+
+.rocket-filter-field-id {
+    width: 10rem;
+}
+
+.rocket-multi-add-entries {
+    background: white;
+    border: 1px solid $brand-gray-05;
+    > li {
+        > a {
+            display: block;
+            border-bottom: 1px solid $brand-gray-05;
+            padding: $btn-padding-y $btn-padding-x;
+        }
+    }
+}
+
+// groups
+
+.rocket-filter-group-controls {
+    position: absolute;
+    bottom: -1.125rem;
+    left: 1rem;
+    > li {
+        display: inline-block;
+    }
+}
+
+/*
+ * Content
+ */
+
 .rocket-simple-commands {
     > a > span {
         display: none;
@@ -5,6 +116,9 @@
 }
 
 
+/*
+ * Footer
+ */
 
 .rocket-impl-overview-pagination {
     .rocket-impl-pagination-no {
@@ -17,36 +131,4 @@
     > button {
         margin-left: 0.5rem;
     }
-}
-
-.rocket-impl-overview-tools {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 44px;
-    background-color: $brand-gray-09;
-    padding-top: 1rem;
-}
-
-.rocket-impl-quicksearch {
-    float: left;
-    width: 310px;
-}
-
-.rocket-impl-critmod-select-container {
-    margin-left: 320px;
-    text-align: right;
-    border: 3px solid $brand-gray-05;
-    border-bottom-color: $brand-gray-07;
-    background-color: $brand-gray-07;
-    padding: 0.5rem 1rem;
-    position: relative;
-    top: 3px;
-    z-index: 1;
-}
-
-.rocket-impl-critmod {
-    background-color: $brand-gray-07;
-    padding: 1rem;
-    border-bottom: 3px solid $brand-gray-05;
-    border-top: 3px solid $brand-gray-05;
 }

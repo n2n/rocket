@@ -3522,10 +3522,119 @@ h1, .h1 {
   font-weight: normal;
 }
 
+/*
+ * Toolbar
+ */
+.rocket-impl-overview-tools {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 44px;
+  background-color: #FBFAFA;
+  padding-top: 1rem;
+}
+
+.rocket-impl-state {
+  margin-bottom: 0.5rem;
+}
+
+.rocket-impl-critmod-select-container {
+  border: 3px solid #C2BDB6;
+  border-bottom-color: #ECEBE9;
+  background-color: #ECEBE9;
+  padding: 0.5rem 1rem;
+  position: absolute;
+  height: calc(100% + 1rem);
+  top: -.825rem;
+  z-index: 1;
+}
+
+.rocket-impl-critmod-select {
+  display: inline;
+}
+
+.rocket-impl-critmod-select > label {
+  display: inline;
+  font-weight: bold;
+}
+
+.rocket-impl-critmod {
+  background-color: #ECEBE9;
+  padding: 1rem;
+  border-bottom: 3px solid #C2BDB6;
+  border-top: 3px solid #C2BDB6;
+}
+
+.rocket-filter-items {
+  position: relative;
+  background: white;
+  border: 1px solid #C2BDB6;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.rocket-filter-groups,
+.rocket-filter-group-controls,
+.rocket-filter-field-items,
+.rocket-multi-add-entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rocket-filter-field-item,
+.rocket-filter-group {
+  position: relative;
+}
+
+.rocket-filter-field-text-and-or {
+  position: absolute;
+  top: 0;
+  left: -2rem;
+  font-size: 0.75rem;
+  background: white;
+  border: 1px solid #C2BDB6;
+  padding: 0 0.125rem;
+}
+
+.rocket-filter-field-item > * {
+  display: inline-block;
+}
+
+.rocket-filter-field-id {
+  width: 10rem;
+}
+
+.rocket-multi-add-entries {
+  background: white;
+  border: 1px solid #C2BDB6;
+}
+
+.rocket-multi-add-entries > li > a {
+  display: block;
+  border-bottom: 1px solid #C2BDB6;
+  padding: 0.5rem 0.625rem;
+}
+
+.rocket-filter-group-controls {
+  position: absolute;
+  bottom: -1.125rem;
+  left: 1rem;
+}
+
+.rocket-filter-group-controls > li {
+  display: inline-block;
+}
+
+/*
+ * Content
+ */
 .rocket-simple-commands > a > span {
   display: none;
 }
 
+/*
+ * Footer
+ */
 .rocket-impl-overview-pagination .rocket-impl-pagination-no {
   width: 5rem;
   text-align: center;
@@ -3536,38 +3645,6 @@ h1, .h1 {
 .rocket-impl-overview-pagination > a,
 .rocket-impl-overview-pagination > button {
   margin-left: 0.5rem;
-}
-
-.rocket-impl-overview-tools {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 44px;
-  background-color: #FBFAFA;
-  padding-top: 1rem;
-}
-
-.rocket-impl-quicksearch {
-  float: left;
-  width: 310px;
-}
-
-.rocket-impl-critmod-select-container {
-  margin-left: 320px;
-  text-align: right;
-  border: 3px solid #C2BDB6;
-  border-bottom-color: #ECEBE9;
-  background-color: #ECEBE9;
-  padding: 0.5rem 1rem;
-  position: relative;
-  top: 3px;
-  z-index: 1;
-}
-
-.rocket-impl-critmod {
-  background-color: #ECEBE9;
-  padding: 1rem;
-  border-bottom: 3px solid #C2BDB6;
-  border-top: 3px solid #C2BDB6;
 }
 
 @media (min-width: 768px) {
