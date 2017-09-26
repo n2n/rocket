@@ -78,7 +78,7 @@ class MailCenterController extends ControllerAdapter {
 		if (null === ($attachment = $mailCenter->getAttachment($mailIndex, $attachmentIndex))) {
 			throw new PageNotFoundException();
 		}
-		if (!$attachment->getPath()->isFile()) {
+		if (!$attachment->getFileSource()->getFsPath()->isFile()) {
 			$dtc = new DynamicTextCollection('rocket');
 			N2N::getMessageContainer()->addInfo($dtc->translate('tool_mail_center_notification_attachment_deleted'));
 			$this->redirectToReferer();
