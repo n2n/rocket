@@ -31,6 +31,8 @@ use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use rocket\tool\mail\controller\MailArchiveBatchController;
 use n2n\io\managed\File;
+use n2n\io\managed\impl\CommonFile;
+use n2n\io\managed\impl\FsFileSource;
 
 class MailCenter {
 	const NUM_MAILS_PER_PAGE = 15;
@@ -92,7 +94,8 @@ class MailCenter {
 		$items = $this->getAllItems();
 		if (!isset($items[$itemIndex]))	return null;
 		$attachments = $items[$itemIndex]->getAttachments();
-		return new File($attachments[$attachmentIndex]->getPath());
+		$fsPath = new FsPath($attachments[$attachmentIndex]->getPath());
+		return new CommonFile(new FsFileSource($fsPath), $fsPath->getFileName());
 	}
 	
 	public static function getMailFileNames() {
