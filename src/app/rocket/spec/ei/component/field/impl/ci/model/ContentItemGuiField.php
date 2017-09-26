@@ -101,7 +101,7 @@ class ContentItemGuiField implements GuiField {
 			}
 			
 			if ($targetEiEntry->isAccessible()) {
-				$groupedUiComponents[$panelName][] = $targetUtils->createDetailView($targetEiEntry);
+				$groupedUiComponents[$panelName][] = $targetUtils->newGui(true)->appendNewEntryGui($targetEiEntry)->createView();
 			} else {
 				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
 						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
