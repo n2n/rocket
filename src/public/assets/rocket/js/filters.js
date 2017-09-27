@@ -82,7 +82,7 @@ jQuery(document).ready(function($) {
 			
 			this.jqElemCbxAndIndicator = jqElem.find(".rocket-filter-and-indicator:first").hide();
 			
-			this.jqElemUlCommands = null;
+			this.jqElemDivCommands = null;
 			this.jqElemSpanAndOrSwitchText = null;
 			this.jqElemIAndOrSwitch = null;
 			this.jqElemAAndOrSwitch = null;
@@ -224,8 +224,8 @@ jQuery(document).ready(function($) {
 		
 		FilterGroup.prototype.initializeCommands = function() {
 			var that = this;
-			this.jqElemUlCommands = $("<ul />", {
-				"class": "rocket-filter-group-controls"
+			this.jqElemDivCommands = $("<div />", {
+				"class": "btn-group rocket-filter-group-controls"
 			}).insertAfter(this.jqElemGroups);
 			
 			this.jqElemSpanAndOrSwitchText = $("<span />");
@@ -235,7 +235,7 @@ jQuery(document).ready(function($) {
 				"href": "#",
 				"class": "rocket-control btn btn-secondary"
 			}).append(this.jqElemIAndOrSwitch).append(this.jqElemSpanAndOrSwitchText)
-			.appendTo($("<li />").appendTo(this.jqElemUlCommands));
+			.appendTo(this.jqElemDivCommands);
 
 			this.initializeMultiAdd();
 
@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
 				"class": this.filter.iconClassNameAdd
 			})).append($("<span />", {
 				"text": this.filter.textAddGroup
-			})).appendTo($("<li />").appendTo(this.jqElemUlCommands));
+			})).appendTo(this.jqElemDivCommands);
 
 			
 			if (this.removable) {
@@ -257,7 +257,7 @@ jQuery(document).ready(function($) {
 					"class": this.filter.iconClassNameRemove
 				})).append($("<span />", {
 					"text": this.filter.textRemove
-				})).appendTo($("<li />").appendTo(this.jqElemUlCommands)).click(function(e) {
+				})).appendTo(this.jqElemDivCommands).click(function(e) {
 					e.preventDefault();
 					that.jqElem.remove();
 					that.jqElem.trigger('heightChange');
@@ -274,14 +274,14 @@ jQuery(document).ready(function($) {
 				"class": this.filter.iconClassNameAdd
 			})).append($("<span />", {
 				"text": this.filter.textAddField
-			})).appendTo($("<li />").appendTo(this.jqElemUlCommands));
+			})).appendTo($("<li />").appendTo(this.jqElemDivCommands));
 			
 			this.jqElemDivFieldListContainer = $("<div />", {
 				"class": "rocket-multi-add-content-container"
 			}).css({
 				"position": "fixed",
 				"zIndex": 1000
-			}).insertAfter(this.jqElemUlCommands).hide().click(function() {
+			}).insertAfter(this.jqElemDivCommands).hide().click(function() {
 				that.jqElemArrow.hide();
 			});
 			
