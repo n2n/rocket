@@ -311,6 +311,7 @@ namespace Rocket.Impl.Overview {
 		private jqSaveAsButton: JQuery;
 		private jqDeleteButton: JQuery;
 		
+		private jqControlContainer: JQuery;
 		private jqOpenButton: JQuery;
 		private jqEditButton: JQuery;
 		private jqCloseButton: JQuery;
@@ -324,14 +325,14 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		public drawControl(jqControlContainer: JQuery) {
-			var that = this;
+			this.jqControlContainer = jqControlContainer;
 			
 			this.jqOpenButton = $("<button />", { 
 						"class": "btn btn-secondary", 
 						"text": jqControlContainer.data("rocket-impl-open-filter-label") + " "
 					})
 					.append($("<i />", { "class": "fa fa-filter"}))
-					.click(function () { that.open = true })
+					.click(() => { this.open = true })
 					.appendTo(jqControlContainer);
 			
 			this.jqEditButton = $("<button />", { 
@@ -339,7 +340,7 @@ namespace Rocket.Impl.Overview {
 						"text": jqControlContainer.data("rocket-impl-edit-filter-label") + " "
 					})
 					.append($("<i />", { "class": "fa fa-filter"}))
-					.click(function () { that.open = true })
+					.click(() => { this.open = true })
 					.appendTo(jqControlContainer);
 			
 			this.jqCloseButton = $("<button />", { 
@@ -347,7 +348,7 @@ namespace Rocket.Impl.Overview {
 						"text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
 					})
 					.append($("<i />", { "class": "fa fa-times"}))
-					.click(function () { that.open = false })
+					.click(() => { this.open = false })
 					.appendTo(jqControlContainer);
 			
 			this.open = false;
@@ -357,11 +358,14 @@ namespace Rocket.Impl.Overview {
 			if (!this.jqOpenButton) return;
 			
 			if (this.open) {
+				this.jqControlContainer.addClass("rocket-open");
 				this.jqOpenButton.hide();
 				this.jqEditButton.hide();
 				this.jqCloseButton.show();
 				return;
 			} 
+			
+			this.jqControlContainer.removeClass("rocket-open");
 			
 			if (this.critmodSaveId) {
 				this.jqOpenButton.hide();
