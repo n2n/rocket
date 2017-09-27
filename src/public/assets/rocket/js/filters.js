@@ -35,7 +35,6 @@ jQuery(document).ready(function($) {
 			this.filterFieldItemFormUrl = jqElem.data("filter-field-item-form-url");
 			this.filterGroupFormUrl = jqElem.data("filter-group-form-url");
 			this.fields = jqElem.data("filter-fields");
-			console.log(this.fields);
 			
 			new FilterGroup(jqElem.children(":first"), this, null);
 		};
@@ -234,7 +233,7 @@ jQuery(document).ready(function($) {
 			
 			this.jqElemAAndOrSwitch = $("<a />", {
 				"href": "#",
-				"class": "rocket-control"
+				"class": "rocket-control btn btn-secondary"
 			}).append(this.jqElemIAndOrSwitch).append(this.jqElemSpanAndOrSwitchText)
 			.appendTo($("<li />").appendTo(this.jqElemUlCommands));
 
@@ -242,7 +241,7 @@ jQuery(document).ready(function($) {
 
 			this.jqElemAAddGroup = $("<a />", {
 				"href": "#",
-				"class": "rocket-control"
+				"class": "rocket-control btn btn-secondary"
 			}).append($("<i />", {
 				"class": this.filter.iconClassNameAdd
 			})).append($("<span />", {
@@ -253,7 +252,7 @@ jQuery(document).ready(function($) {
 			if (this.removable) {
 				this.jqElemARemove = $("<a />", {
 					"href": "#",
-					"class": "rocket-control"
+					"class": "rocket-control btn btn-secondary"
 				}).append($("<i />", {
 					"class": this.filter.iconClassNameRemove
 				})).append($("<span />", {
@@ -270,7 +269,7 @@ jQuery(document).ready(function($) {
 			var that = this;
 			this.jqElemAAddFieldItem = $("<a />", {
 				"href": "#",
-				"class": "rocket-control"
+				"class": "rocket-control btn btn-secondary"
 			}).append($("<i />", {
 				"class": this.filter.iconClassNameAdd
 			})).append($("<span />", {
