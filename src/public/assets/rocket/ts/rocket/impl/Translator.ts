@@ -3,19 +3,68 @@ namespace Rocket.Impl {
 	
 	export class Translator {
 		
-		static scan(contexts: Array<Rocket.Cmd.Context>) {
-			for (let context of contexts) {
+		constructor(private container: Rocket.Cmd.Container) {
+		}
+		
+		scan() {
+			for (let context of this.container.getAllContexts()) {
+				let elems: Array<HTMLElement> = context.jQuery.find(".rocket-impl-translation-manager").toArray();
+				let elem;
+				while (elem = elems.pop()) {
+					this.initTm($(elem));
+				}
+					
 				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
 					Translatable.from($(elem));
 				});
 			}
 		}
+		
+		private initTm(jqElem: JQuery) {
+			TranslationManager.from(jqElem);
+		}
+		
 	}
 	
 	export class TranslationManager {
+		private jqMenu: JQuery;
 		
-		static findFrom(jqElem: JQuery) {
-			jqElem.find
+		constructor(private jqElem: JQuery) {
+			this.initControl();
+			this.initMenu();
+		}
+		
+		private initControl() {
+			let jqLabel = this.jqElem.children("label:first");
+			let cmdList = Rocket.Display.CommandList.create(true);
+			cmdList.createJqCommandButton({
+				iconType: "fa fa-language",
+				label: jqLabel.text(),
+				tooltip: this.jqElem.data("rocket-impl-tooltip")
+			}).click(() => this.toggle());
+			
+			jqLabel.replaceWith(cmdList.jQuery);
+		}
+		
+		private initMenu() {
+			this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
+			this.jqMenu.hide();
+		}
+		
+		private toggle() {
+			this.jqMenu.toggle();
+		}
+			
+		static from(jqElem: JQuery): TranslationManager {
+			let tm = jqElem.data("rocketImplTranslationManager");
+			if (tm instanceof TranslationManager) {
+				return tm;
+			}
+			
+			tm = new TranslationManager(jqElem);
+			jqElem.data("rocketImplTranslationManager", tm);
+			
+			return tm;
 		}
 		
 	}

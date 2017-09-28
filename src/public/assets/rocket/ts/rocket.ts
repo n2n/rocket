@@ -65,10 +65,11 @@ namespace Rocket {
 		}) ();
 		
 		(function () {
-			Rocket.Impl.Translator.scan(container.getAllContexts());
+			let t = new Rocket.Impl.Translator(container);
+			t.scan();
 			
 			n2n.dispatch.registerCallback(function () {
-				Rocket.Impl.Translator.scan(container.getAllContexts());	
+				t.scan();	
 			});
 		}) ();
 	});

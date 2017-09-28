@@ -35,7 +35,7 @@
 	$view->assert(is_array($n2nLocaleDefs));
 ?>
 
-<ul class="rocket-impl-translation-manager" 
+<ul class="rocket-impl-translation-menu"
 		data-rocket-impl-locale-labels="<?php $html->text('ei_impl_languages_label') ?>"
 		data-active-locales-label="<?php $html->text('ei_impl_active_locales_label') ?>"
 		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"

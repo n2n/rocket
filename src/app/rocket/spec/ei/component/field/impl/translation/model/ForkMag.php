@@ -34,6 +34,12 @@ class ForkMag extends ObjectMagAdapter {
 		$this->n2nLocaleDefs = $n2nLocaleDefs;
 	}
 	
+	public function getContainerAttrs(HtmlView $view): array {
+		return array('class' => 'rocket-impl-translation-manager',
+				'data-rocket-impl-tooltip' => $view->getL10nText('ei_impl_tranlsation_manager_tooltip'), null, null, 
+						null, 'rocket');
+	}
+	
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
 		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\forkMag.html', 
 				array('propertyPath' => $propertyPath->ext('dispatchables'), 'localeDefs' => $this->n2nLocaleDefs));

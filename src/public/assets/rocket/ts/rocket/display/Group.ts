@@ -247,7 +247,7 @@ namespace Rocket.Display {
 			}
 		}
 		
-		public getJQuery(): JQuery {
+		get jQuery(): JQuery {
 			return this.jqCommandList;
 		}
 		
@@ -279,6 +279,10 @@ namespace Rocket.Display {
 			}
 			
 			return jqButton;
+		}
+		
+		static create(simple: boolean = false) {
+			return new CommandList($("<div />"), simple);
 		}
 	}
 	
