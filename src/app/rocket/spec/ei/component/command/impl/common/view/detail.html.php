@@ -34,16 +34,13 @@
 	$eiuEntryGui = $view->getParam('eiuEntryGui');
 	$view->assert($eiuEntryGui instanceof EiuEntryGui);
  
-	$entryView = $view->getParam('entryView');
-	$view->assert($entryView instanceof HtmlView);
-	
 	$eiHtml = new EiHtmlBuilder($view);
 	
 // 	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
 ?>
  
 <?php $eiHtml->entryOpen('div', $eiuEntryGui)?>
-	<?php $view->import($entryView) ?>
+	<?php $view->out($eiuEntryGui->createView($view)) ?>
 
 	<div class="rocket-context-commands">
 		<?php $eiHtml->entryCommands() ?>

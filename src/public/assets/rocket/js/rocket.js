@@ -1244,6 +1244,105 @@ var Rocket;
         }());
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translator = (function () {
+            function Translator() {
+            }
+            Translator.scan = function (contexts) {
+                for (var _i = 0, contexts_1 = contexts; _i < contexts_1.length; _i++) {
+                    var context = contexts_1[_i];
+                    context.jQuery.find(".rocket-impl-translatable").each(function (i, elem) {
+                        Translatable.from($(elem));
+                    });
+                }
+            };
+            return Translator;
+        }());
+        Impl.Translator = Translator;
+        var TranslationManager = (function () {
+            function TranslationManager() {
+            }
+            TranslationManager.findFrom = function (jqElem) {
+                jqElem.find;
+            };
+            return TranslationManager;
+        }());
+        Impl.TranslationManager = TranslationManager;
+        var Translatable = (function () {
+            function Translatable(jqElem) {
+                this.jqElem = jqElem;
+            }
+            Object.defineProperty(Translatable.prototype, "localeIds", {
+                get: function () {
+                    return Object.keys(this._contents);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Translatable.prototype, "contents", {
+                get: function () {
+                    var O = Object;
+                    return O.values(this._contents);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Translatable.prototype.scan = function () {
+                var _this = this;
+                this.jqElem.contents().each(function (i, elem) {
+                    var jqElem = $(elem);
+                    var localeId = jqElem.data("rocket-impl-locale-id");
+                    if (!localeId || _this._contents[localeId])
+                        return;
+                    _this._contents[localeId] = new TranslatedContent(localeId, jqElem);
+                });
+            };
+            Translatable.from = function (jqElem) {
+                var translatable = jqElem.data("rocketImplTranslatable");
+                if (translatable instanceof Translatable) {
+                    return translatable;
+                }
+                translatable = new Translatable(jqElem);
+                jqElem.data("rocketImplTranslatable", translatable);
+                translatable.scan();
+                return translatable;
+            };
+            return Translatable;
+        }());
+        Impl.Translatable = Translatable;
+        var TranslatedContent = (function () {
+            function TranslatedContent(_localeId, jqElem) {
+                this._localeId = _localeId;
+                this.jqElem = jqElem;
+            }
+            Object.defineProperty(TranslatedContent.prototype, "localeId", {
+                get: function () {
+                    return this._localeId;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(TranslatedContent.prototype, "prettyLocaleId", {
+                get: function () {
+                    return this.jqElem.find("label:first").text();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(TranslatedContent.prototype, "localeName", {
+                get: function () {
+                    return this.jqElem.find("label:first").attr("title");
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return TranslatedContent;
+        }());
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -2891,6 +2990,12 @@ var Rocket;
                 });
             });
         })();
+        (function () {
+            Rocket.Impl.Translator.scan(container.getAllContexts());
+            n2n.dispatch.registerCallback(function () {
+                Rocket.Impl.Translator.scan(container.getAllContexts());
+            });
+        })();
     });
     function scan(context) {
         if (context === void 0) { context = null; }
@@ -4277,27 +4382,28 @@ var Rocket;
                     this._open = true;
                 }
                 CritmodForm.prototype.drawControl = function (jqControlContainer) {
-                    var that = this;
+                    var _this = this;
+                    this.jqControlContainer = jqControlContainer;
                     this.jqOpenButton = $("<button />", {
                         "class": "btn btn-secondary",
                         "text": jqControlContainer.data("rocket-impl-open-filter-label") + " "
                     })
                         .append($("<i />", { "class": "fa fa-filter" }))
-                        .click(function () { that.open = true; })
+                        .click(function () { _this.open = true; })
                         .appendTo(jqControlContainer);
                     this.jqEditButton = $("<button />", {
                         "class": "btn btn-secondary",
                         "text": jqControlContainer.data("rocket-impl-edit-filter-label") + " "
                     })
                         .append($("<i />", { "class": "fa fa-filter" }))
-                        .click(function () { that.open = true; })
+                        .click(function () { _this.open = true; })
                         .appendTo(jqControlContainer);
                     this.jqCloseButton = $("<button />", {
                         "class": "btn btn-secondary",
                         "text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
                     })
                         .append($("<i />", { "class": "fa fa-times" }))
-                        .click(function () { that.open = false; })
+                        .click(function () { _this.open = false; })
                         .appendTo(jqControlContainer);
                     this.open = false;
                 };
@@ -4305,11 +4411,13 @@ var Rocket;
                     if (!this.jqOpenButton)
                         return;
                     if (this.open) {
+                        this.jqControlContainer.addClass("rocket-open");
                         this.jqOpenButton.hide();
                         this.jqEditButton.hide();
                         this.jqCloseButton.show();
                         return;
                     }
+                    this.jqControlContainer.removeClass("rocket-open");
                     if (this.critmodSaveId) {
                         this.jqOpenButton.hide();
                         this.jqEditButton.show();

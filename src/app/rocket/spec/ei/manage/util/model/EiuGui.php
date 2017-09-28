@@ -1,6 +1,8 @@
 <?php
 namespace rocket\spec\ei\manage\util\model;
 
+use n2n\impl\web\ui\view\html\HtmlView;
+
 class EiuGui {
 	private $eiGui;
 	private $eiuFrame;
@@ -106,8 +108,8 @@ class EiuGui {
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
-	public function createView() {
-		return $this->eiGui->createView();
+	public function createView(HtmlView $contextView = null) {
+		return $this->eiGui->createView($contextView);
 	}
 }
 

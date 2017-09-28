@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
+use n2n\impl\web\ui\view\html\HtmlView;
 
 class EntryFormViewModel {
 	private $entryForm;
@@ -64,7 +64,7 @@ class EntryFormViewModel {
 		return $this->getEntryForm()->getChoicesMap();
 	}
 	
-	public function createEditView() {
+	public function createEditView(HtmlView $contextView) {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue(!$entryForm->isChoosable());
 		
@@ -76,10 +76,10 @@ class EntryFormViewModel {
 					->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 		}
 				
-		return $entryTypeForm->getEiuEntryGui()->createView();
+		return $entryTypeForm->getEiuEntryGui()->createView($contextView);
 	}
 	
-	public function createEditViews() {
+	public function createEditViews(HtmlView $contextView) {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue($entryForm->isChoosable());
 	
@@ -94,7 +94,7 @@ class EntryFormViewModel {
 			
 			$entryGuiModel = $entryTypeForm->getEiuEntryGui();
 			
-			$editViews[$eiTypeId] = $entryGuiModel->createView();
+			$editViews[$eiTypeId] = $entryGuiModel->createView($contextView);
 		}
 		return $editViews;
 	}

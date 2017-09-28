@@ -21,7 +21,6 @@
 	 */
 
 	use rocket\spec\ei\component\command\impl\common\model\AddModel;
-	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 	use n2n\web\ui\Raw;
 	use n2n\impl\web\ui\view\html\HtmlView;
@@ -40,7 +39,7 @@
 ?>
 
 <?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-edit-form rocket-unsaved-check-form')) ?>
-	<?php $view->import($addModel->getEntryForm()->createView()) ?>
+	<?php $view->import($addModel->getEntryForm()->createView($view)) ?>
 		
 	<div class="rocket-context-commands">
 		<div>

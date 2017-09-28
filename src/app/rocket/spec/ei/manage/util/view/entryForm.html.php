@@ -36,7 +36,7 @@
 ?>
 	
 <?php if (!$entryFormViewModel->isTypeChangable()): ?>
-	<?php $view->import($entryFormViewModel->createEditView())?>
+	<?php $view->import($entryFormViewModel->createEditView($view))?>
 <?php else: ?>
 	<div class="rocket-type-dependent-entry-form">
 		<div class="rocket-script-type-selector">
@@ -47,7 +47,7 @@
 			</div>
 		</div>
 	
-		<?php foreach ($entryFormViewModel->createEditViews() as $id => $editView): ?>
+		<?php foreach ($entryFormViewModel->createEditViews($view) as $id => $editView): ?>
 			<div class="rocket-script-type-<?php $html->out($id) ?>">
 				<?php $view->import($editView) ?>
 			</div>

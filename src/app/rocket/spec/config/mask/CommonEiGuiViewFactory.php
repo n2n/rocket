@@ -14,6 +14,7 @@ use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\ui\UiComponent;
 
 class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $displayScheme;
@@ -128,7 +129,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	}
 	
 	
-	public function createView(): HtmlView {
+	public function createView(HtmlView $contextView = null): UiComponent {
 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
@@ -143,7 +144,12 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 			$displayStructure = $displayStructure->withoutGroups();
 		}
 		
-		return $viewFactory->create($viewName, 
-				array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui)));
+		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
+		
+		if ($contextView !== null) {
+			return $contextView->getImport('\\' .$viewName, $params);
+		} 
+		
+		return $viewFactory->create($viewName, $params);
 	}
 }

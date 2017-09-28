@@ -202,8 +202,8 @@ class EiuEntryGui {
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
-	public function createView() {
-		return $this->eiEntryGui->getEiGui()->createView();
+	public function createView(HtmlView $contextView = null) {
+		return $this->eiEntryGui->getEiGui()->createView($contextView);
 	}
 	
 // 	public function getEiMask() {

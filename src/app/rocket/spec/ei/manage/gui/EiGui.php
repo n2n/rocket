@@ -9,6 +9,8 @@ use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\config\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
+use n2n\persistence\meta\structure\View;
+use n2n\web\ui\UiComponent;
 
 class EiGui {
 	private $eiFrame;
@@ -88,8 +90,8 @@ class EiGui {
 		return $this->eiEntryGuis;
 	}
 	
-	public function createView() {
-		$view = $this->eiGuiViewFactory->createView();
+	public function createView(HtmlView $contextView = null) {
+		$view = $this->eiGuiViewFactory->createView($contextView);
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);
@@ -160,5 +162,5 @@ interface EiGuiViewFactory {
 	/**
 	 * @return HtmlView
 	 */
-	public function createView(): HtmlView;
+	public function createView(HtmlView $contextView = null): UiComponent;
 }

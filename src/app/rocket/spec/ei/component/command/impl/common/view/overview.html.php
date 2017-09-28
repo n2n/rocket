@@ -31,9 +31,6 @@
 	$overviewModel = $view->getParam('listModel'); 
 	$view->assert($overviewModel instanceof OverviewModel);
 	
-	$overviewView = $view->getParam('listView');
-	$view->assert($overviewView instanceof HtmlView);
-		
 // 	$view->useTemplate('~\core\view\template.html',
 // 			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
 // 					->t($view->getN2nLocale())));
@@ -68,7 +65,7 @@
 	
 	<?php $formHtml->open($overviewModel) ?>
 		
-		<?php $view->out($overviewView)?>
+		<?php $view->out($overviewModel->getEiuGui()->createView($view)) ?>
 		
 		<div class="rocket-context-commands">
 			<?php /* Bert: do not display UL with no LI contents ?>

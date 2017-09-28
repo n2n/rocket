@@ -44,7 +44,6 @@ class DetailController extends ControllerAdapter {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		
 		$eiuEntryGui = $eiuEntry->newEntryGui();
-		$entryView = $eiuEntryGui->createView();
 		
 		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame());
 		$viewModel->initializeDrafts();
@@ -52,7 +51,7 @@ class DetailController extends ControllerAdapter {
 		$this->applyBreadcrumbs($eiuEntryGui->getEiuEntry()->getEiObject());
 			
 		$view = $this->createView('..\view\detail.html', array('viewModel' => $viewModel,
-				'entryView' => $entryView, 'eiuEntryGui' => $eiuEntryGui));
+				'eiuEntryGui' => $eiuEntryGui));
 		
 		$this->eiuCtrl->forwardView($view);
 	}

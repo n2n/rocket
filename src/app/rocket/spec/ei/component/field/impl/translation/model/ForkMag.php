@@ -26,7 +26,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
 use n2n\web\ui\UiComponent;
 
-class ForkOption extends ObjectMagAdapter {
+class ForkMag extends ObjectMagAdapter {
 	private $n2nLocaleDefs;	
 	
 	public function __construct($propertyName, $label, TranslationForm $translationForm, array $n2nLocaleDefs) {
@@ -35,8 +35,7 @@ class ForkOption extends ObjectMagAdapter {
 	}
 	
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
-		
-		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\forkOption.html', 
+		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\forkMag.html', 
 				array('propertyPath' => $propertyPath->ext('dispatchables'), 'localeDefs' => $this->n2nLocaleDefs));
 	}
 }

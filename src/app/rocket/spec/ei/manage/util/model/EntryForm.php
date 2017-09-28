@@ -33,6 +33,7 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\reflection\CastUtils;
 use n2n\web\ui\ViewFactory;
 use n2n\web\dispatch\map\PropertyPath;
+use n2n\impl\web\ui\view\html\HtmlView;
 
 class EntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -190,7 +191,12 @@ class EntryForm implements Dispatchable {
 		return $this->entryTypeForms[$this->chosenId];
 	}
 	
-	public function createView() {
+	public function createView(HtmlView $contextView = null) {
+		if ($contextView !== null) {
+			return $contextView->getImport('\rocket\spec\ei\manage\util\view\entryForm.html',
+					array('entryFormViewModel' => new EntryFormViewModel($this)));
+		}
+		
 		$viewFactory = $this->eiuFrame->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		

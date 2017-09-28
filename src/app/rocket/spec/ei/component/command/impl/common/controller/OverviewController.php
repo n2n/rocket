@@ -72,8 +72,6 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$overView = $listModel->getEiuGui()->createView();
-
 		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
 		$filterAjahHook = FilterFieldController::buildFilterAjahHook($this->getHttpContext()
@@ -85,7 +83,7 @@ class OverviewController extends ControllerAdapter {
 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
 						'critmodForm' => $critmodForm,
 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterAjahHook' => $filterAjahHook, 'listView' => $overView)));
+						'filterAjahHook' => $filterAjahHook)));
 		
 // 		$this->forward('..\view\overview.html', 
 // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,

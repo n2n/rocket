@@ -43,7 +43,6 @@
 	$eiHtml = new EiHtmlBuilder($view);
 ?>	
 
-
 <div class="rocket-impl-overview" 
 		data-num-pages="<?php $html->out($overviewModel->getNumPages()) ?>"
 		data-num-entries="<?php $html->out($overviewModel->getNumEntries()) ?>"
@@ -68,7 +67,7 @@
 	
 	<?php $formHtml->open($overviewModel) ?>
 		
-		<?php $view->out($overviewView)?>
+		<?php $view->out($overviewModel->getEiuGui()->createView($view))?>
 		
 		<div class="rocket-context-commands">
 			<?php $eiHtml->frameCommands($overviewModel->getEiuGui()) ?>
