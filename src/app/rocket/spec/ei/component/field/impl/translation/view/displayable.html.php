@@ -34,18 +34,18 @@
 	$fieldEiHtml = new FieldEiHtmlBuilder($view);
 ?>
 
-<div class="rocket-properties rocket-translatable-content" 
-		data-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+<div class="rocket-impl-translatable" 
+		data-rocket-impl-locale-labels="<?php $html->text('ei_impl_languages_label') ?>"
 		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"
 		data-translations-only-label="<?php $html->text('ei_impl_translations_only_label') ?>">
 	<?php foreach ($displayables as $n2nLocaleId => $displayable): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 				
 		<?php $fieldEiHtml->openOutputField('div', $displayable, new FieldErrorInfo(), 
-				array('data-locale-id' => $n2nLocaleId, 'data-pretty-locale-id' => $n2nLocale->toPrettyId())) ?>
+				array('data-rocket-impl-locale-id' => $n2nLocaleId)) ?>
 			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
 					'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
-			<div class="rocket-controls rocket-locale-controls">
+			<div class="rocket-controls">
 				<?php $fieldEiHtml->field() ?>
 				<?php $fieldEiHtml->message() ?>
 			</div>

@@ -22,7 +22,6 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
-	use n2n\l10n\N2nLocale;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -36,8 +35,8 @@
 	$view->assert(is_array($n2nLocaleDefs));
 ?>
 
-<ul class="rocket-translation-enabler" 
-		data-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+<ul class="rocket-impl-translation-manager" 
+		data-rocket-impl-locale-labels="<?php $html->text('ei_impl_languages_label') ?>"
 		data-active-locales-label="<?php $html->text('ei_impl_active_locales_label') ?>"
 		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"
 		data-translations-only-label="<?php $html->text('ei_impl_translations_only_label') ?>">

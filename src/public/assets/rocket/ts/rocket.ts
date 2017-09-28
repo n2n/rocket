@@ -63,6 +63,14 @@ namespace Rocket {
 				});
 			});
 		}) ();
+		
+		(function () {
+			Rocket.Impl.Translator.scan(container.getAllContexts());
+			
+			n2n.dispatch.registerCallback(function () {
+				Rocket.Impl.Translator.scan(container.getAllContexts());	
+			});
+		}) ();
 	});
 	
 	export function scan(context: Rocket.Cmd.Context = null) {
