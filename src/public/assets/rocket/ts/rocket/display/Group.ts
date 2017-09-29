@@ -202,7 +202,7 @@ namespace Rocket.Display {
 		private jqControls: JQuery;
 		private commandList: CommandList;
 		
-		constructor(jqToolbar: JQuery) {
+		public constructor(jqToolbar: JQuery) {
 			this.jqToolbar = jqToolbar;
 			
 			this.jqControls = jqToolbar.children(".rocket-group-controls");

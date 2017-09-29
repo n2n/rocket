@@ -12,14 +12,16 @@ namespace Rocket.Impl {
 				while (elem = elems.pop()) {
 					this.initTm($(elem), context);
 				}
-					
+				
 				let jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
-				context.menu.toolbar.getJqControls().append(jqViewControl);
+				context.menu.toolbar.getJqControls().show().append(jqViewControl);
+				
+				let jqMenu = $("<ul/>");
 				
 				new Rocket.Display.CommandList(jqViewControl).createJqCommandButton({
 					iconType: "fa fa-cog",
 					label: "Languages"
-				});
+				}).click(() => jqMenu.toggle());
 				
 //				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
 //					Translatable.from($(elem));
@@ -43,7 +45,17 @@ namespace Rocket.Impl {
 				tm.registerTranslatable(Translatable.from($(elem)));
 			});
 		}
+	}
+	
+	class ViewMenu {
+		private translatables: Array<Translatable> = [];
 		
+		constructor(jqMenu) {
+		}
+		
+		registerTranslatable(translatable: Translatable) {
+			this.translatables.push(translatable);
+		}
 	}
 	
 	export class TranslationManager {
@@ -83,9 +95,7 @@ namespace Rocket.Impl {
 					break;
 				}
 			}
-			
-			console.log(activeLocaleIds);
-			
+						
 			return activeLocaleIds;
 		}
 		

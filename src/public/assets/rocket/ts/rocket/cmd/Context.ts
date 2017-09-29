@@ -397,7 +397,7 @@ namespace Rocket.Cmd {
 	
 	export class Menu {
 		private context: Context;
-		private _toolbar = display.Toolbar = null;
+		private _toolbar: display.Toolbar = null;
 		private _commandList: display.CommandList = null;
 		private _partialCommandList: display.CommandList = null;
 		
@@ -416,7 +416,8 @@ namespace Rocket.Cmd {
 				jqToolbar = $("<div />", { "class": "rocket-context-toolbar"}).prependTo(this.context.jQuery);
 			}
 			
-			return this._toolbar = new Rocket.Display.Toolbar(jqToolbar);
+			
+			return this._toolbar = new display.Toolbar(jqToolbar);
 		}
 		
 		private getJqContextCommands() {

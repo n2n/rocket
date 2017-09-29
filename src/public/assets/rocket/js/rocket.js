@@ -768,7 +768,7 @@ var Rocket;
         Cmd.AdditionalTab = AdditionalTab;
         var Menu = (function () {
             function Menu(context) {
-                this._toolbar = display.Toolbar = null;
+                this._toolbar = null;
                 this._commandList = null;
                 this._partialCommandList = null;
                 this.context = context;
@@ -782,7 +782,7 @@ var Rocket;
                     if (jqToolbar.length == 0) {
                         jqToolbar = $("<div />", { "class": "rocket-context-toolbar" }).prependTo(this.context.jQuery);
                     }
-                    return this._toolbar = new Rocket.Display.Toolbar(jqToolbar);
+                    return this._toolbar = new display.Toolbar(jqToolbar);
                 },
                 enumerable: true,
                 configurable: true
@@ -1285,19 +1285,24 @@ var Rocket;
                 this.container = container;
             }
             Translator.prototype.scan = function () {
-                for (var _i = 0, _a = this.container.getAllContexts(); _i < _a.length; _i++) {
-                    var context = _a[_i];
+                var _loop_1 = function(context) {
                     var elems = context.jQuery.find(".rocket-impl-translation-manager").toArray();
                     var elem = void 0;
                     while (elem = elems.pop()) {
-                        this.initTm($(elem), context);
+                        this_1.initTm($(elem), context);
                     }
                     var jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
-                    context.menu.toolbar.getJqControls().append(jqViewControl);
+                    context.menu.toolbar.getJqControls().show().append(jqViewControl);
+                    var jqMenu = $("<ul/>");
                     new Rocket.Display.CommandList(jqViewControl).createJqCommandButton({
                         iconType: "fa fa-cog",
                         label: "Languages"
-                    });
+                    }).click(function () { return jqMenu.toggle(); });
+                };
+                var this_1 = this;
+                for (var _i = 0, _a = this.container.getAllContexts(); _i < _a.length; _i++) {
+                    var context = _a[_i];
+                    _loop_1(context);
                 }
             };
             Translator.prototype.initTm = function (jqElem, context) {
@@ -1317,6 +1322,15 @@ var Rocket;
             return Translator;
         }());
         Impl.Translator = Translator;
+        var ViewMenu = (function () {
+            function ViewMenu(jqMenu) {
+                this.translatables = [];
+            }
+            ViewMenu.prototype.registerTranslatable = function (translatable) {
+                this.translatables.push(translatable);
+            };
+            return ViewMenu;
+        }());
         var TranslationManager = (function () {
             function TranslationManager(jqElem) {
                 this.jqElem = jqElem;
@@ -1349,7 +1363,6 @@ var Rocket;
                         break;
                     }
                 }
-                console.log(activeLocaleIds);
                 return activeLocaleIds;
             };
             TranslationManager.prototype.registerTranslatable = function (translatable) {
@@ -3185,8 +3198,8 @@ var Rocket;
                         this._entries = Rocket.Display.Entry.findAll(this.jqContents, true);
                         this.disp();
                         var that = this;
-                        var _loop_1 = function() {
-                            var entry = this_1._entries[i];
+                        var _loop_2 = function() {
+                            var entry = this_2._entries[i];
                             entry.on(Rocket.Display.Entry.EventType.DISPOSED, function () {
                                 var j = that._entries.indexOf(entry);
                                 if (-1 == j)
@@ -3194,9 +3207,9 @@ var Rocket;
                                 that._entries.splice(j, 1);
                             });
                         };
-                        var this_1 = this;
+                        var this_2 = this;
                         for (var i in this._entries) {
-                            _loop_1();
+                            _loop_2();
                         }
                     },
                     enumerable: true,
