@@ -42,9 +42,9 @@
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 				
 		<?php $fieldEiHtml->openOutputField('div', $displayable, new FieldErrorInfo(), 
-				array('data-rocket-impl-locale-id' => $n2nLocaleId)) ?>
-			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-					'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
+				array('class' => 'rocket-impl-translation', 'data-rocket-impl-locale-id' => $n2nLocaleId)) ?>
+			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale())), 
+					$n2nLocale->toPrettyId()) ?>
 			<div class="rocket-controls">
 				<?php $fieldEiHtml->field() ?>
 				<?php $fieldEiHtml->message() ?>

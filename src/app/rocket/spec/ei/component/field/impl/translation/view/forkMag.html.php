@@ -41,9 +41,9 @@
 		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"
 		data-translations-only-label="<?php $html->text('ei_impl_translations_only_label') ?>">
 	<?php foreach ($n2nLocaleDefs as $n2nLocaleDef): ?>
-		<li data-locale-id="<?php $html->out($n2nLocaleDef->getN2nLocaleId()) ?>" 
-				data-mandatory="<?php $html->out($n2nLocaleDef->isMandatory())?>"
-				data-activate-label="<?php $html->text('ei_impl_activate_locale', 
+		<li data-rocket-impl-locale-id="<?php $html->out($n2nLocaleDef->getN2nLocaleId()) ?>" 
+				data-rocket-impl-mandatory="<?php $html->out($n2nLocaleDef->isMandatory())?>"
+				data-rocket-impl-activate-label="<?php $html->text('ei_impl_activate_locale', 
 						array('locale' => $n2nLocaleDef->buildLabel($request->getN2nLocale())))?>">
 			<?php $formHtml->optionalObjectCheckbox($propertyPath->fieldExt($n2nLocaleDef->getN2nLocaleId()), null, 
 					$n2nLocaleDef->buildLabel($request->getN2nLocale())) ?>

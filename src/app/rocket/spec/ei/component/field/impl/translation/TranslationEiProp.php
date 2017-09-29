@@ -70,6 +70,7 @@ use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearch
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
+	private $minNumTranslations = 0;
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new TranslationEiConfigurator($this);
@@ -96,6 +97,20 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	
 	public function getN2nLocaleDefs() {
 		return $this->n2nLocaleDefs;
+	}
+	
+	/**
+	 * @param int $minNumTranslations
+	 */
+	public function setMinNumTranslations(int $minNumTranslations) {
+		$this->minNumTranslations = $minNumTranslations;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getMinNumTranslations() {
+		return $this->minNumTranslations;
 	}
 	
 	public function getEiPropRelation(): EiPropRelation {
@@ -177,7 +192,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		
 		$targetGuiDefinition = $targetUtils->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
 		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition, 
-				$this->labelLstr->t($eiFrame->getN2nLocale()));
+				$this->labelLstr->t($eiFrame->getN2nLocale()), $this->minNumTranslations);
 
 		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();

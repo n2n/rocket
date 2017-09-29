@@ -52,10 +52,11 @@ class TranslationGuiField implements GuiFieldFork {
 	
 	private $translationForm;
 		
-	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label) {
+	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label, int $minNumTranslations) {
 		$this->toManyEiField = $toManyEiField;
 		$this->guiDefinition = $guiDefinition;
 		$this->label = $label;
+		$this->min = $minNumTranslations;
 	}
 	
 	public function registerN2nLocale(N2nLocaleDef $n2nLocaleDef, RelationEntry $targetRelationEntry, 
@@ -151,7 +152,7 @@ class TranslationGuiField implements GuiFieldFork {
 			return null;
 		}
 		
-		return new ForkMag($propertyName, $this->label, $this->translationForm, $this->n2nLocaleDefs);
+		return new ForkMag($propertyName, $this->label, $this->translationForm, $this->n2nLocaleDefs, $this->min);
 	}
 	
 	public function save() {

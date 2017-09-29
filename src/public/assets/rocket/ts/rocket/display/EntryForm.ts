@@ -6,7 +6,7 @@ namespace Rocket.Display {
 			this.jqEntryForm = jqEntryForm;
 		}
 		
-		public getJQuery(): JQuery {
+		get jQuery(): JQuery {
 			return this.jqEntryForm;
 		}
 		

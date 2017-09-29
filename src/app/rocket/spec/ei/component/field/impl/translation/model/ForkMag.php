@@ -28,14 +28,16 @@ use n2n\web\ui\UiComponent;
 
 class ForkMag extends ObjectMagAdapter {
 	private $n2nLocaleDefs;	
+	private $min;
 	
-	public function __construct($propertyName, $label, TranslationForm $translationForm, array $n2nLocaleDefs) {
+	public function __construct($propertyName, $label, TranslationForm $translationForm, array $n2nLocaleDefs, int $min) {
 		parent::__construct($propertyName, $label, $translationForm);
 		$this->n2nLocaleDefs = $n2nLocaleDefs;
 	}
 	
 	public function getContainerAttrs(HtmlView $view): array {
 		return array('class' => 'rocket-impl-translation-manager',
+				'data-rocket-impl-min' => 0,
 				'data-rocket-impl-tooltip' => $view->getL10nText('ei_impl_tranlsation_manager_tooltip'), null, null, 
 						null, 'rocket');
 	}

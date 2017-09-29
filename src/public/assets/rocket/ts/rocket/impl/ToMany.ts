@@ -394,14 +394,14 @@ namespace Rocket.Impl {
 			
 			if (this.isPartialExpaned()) {
 				if (this.firstAddControl !== null) {
-					this.firstAddControl.getJQuery().hide();
+					this.firstAddControl.jQuery.hide();
 				}
-				this.lastAddControl.getJQuery().hide();
+				this.lastAddControl.jQuery.hide();
 			} else {
 				if (this.firstAddControl !== null) {
-					this.firstAddControl.getJQuery().show();
+					this.firstAddControl.jQuery.show();
 				}
-				this.lastAddControl.getJQuery().show();
+				this.lastAddControl.jQuery.show();
 			}
 		}
 		
@@ -409,7 +409,7 @@ namespace Rocket.Impl {
 			var addControl = this.addControlFactory.create();
 			var that = this;
 				
-			this.jqEmbedded.prepend(addControl.getJQuery());
+			this.jqEmbedded.prepend(addControl.jQuery);
 			
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.insertEntry(newEntry);
@@ -425,7 +425,7 @@ namespace Rocket.Impl {
 			var that = this;
 			
 			this.entryAddControls.push(addControl);
-			addControl.getJQuery().insertBefore(entry.getJQuery());
+			addControl.jQuery.insertBefore(entry.jQuery);
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.insertEntry(newEntry, entry);
 			});
@@ -436,7 +436,7 @@ namespace Rocket.Impl {
 			var addControl = this.addControlFactory.create();
 			var that = this;
 			
-			this.jqEmbedded.append(addControl.getJQuery());
+			this.jqEmbedded.append(addControl.jQuery);
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.addEntry(newEntry);
 //				if (!that.isExpanded()) {
@@ -448,13 +448,13 @@ namespace Rocket.Impl {
 		
 		
 		public insertEntry(entry: EmbeddedEntry, beforeEntry: EmbeddedEntry = null) {
-			entry.getJQuery().detach();
+			entry.jQuery.detach();
 			
 			if (beforeEntry === null) {
 				this.entries.unshift(entry);
-				this.jqEntries.prepend(entry.getJQuery());
+				this.jqEntries.prepend(entry.jQuery);
 			} else {
-				entry.getJQuery().insertBefore(beforeEntry.getJQuery());
+				entry.jQuery.insertBefore(beforeEntry.jQuery);
 				this.entries.splice(beforeEntry.getOrderIndex(), 0, entry);
 			}
 			
@@ -465,7 +465,7 @@ namespace Rocket.Impl {
 		public addEntry(entry: EmbeddedEntry) {
 			entry.setOrderIndex(this.entries.length);
 			this.entries.push(entry);
-			this.jqEntries.append(entry.getJQuery());
+			this.jqEntries.append(entry.jQuery);
 		
 			this.initEntry(entry);
 			
@@ -499,9 +499,9 @@ namespace Rocket.Impl {
 				}
 
 				if (up) {
-					that.entries[oldIndex].getJQuery().insertBefore(that.entries[newIndex].getJQuery());
+					that.entries[oldIndex].jQuery.insertBefore(that.entries[newIndex].jQuery);
 				} else {
-					that.entries[oldIndex].getJQuery().insertAfter(that.entries[newIndex].getJQuery());
+					that.entries[oldIndex].jQuery.insertAfter(that.entries[newIndex].jQuery);
 				}
 				
 				that.switchIndex(oldIndex, newIndex);
@@ -509,7 +509,7 @@ namespace Rocket.Impl {
 			
 			entry.onRemove(function () {
 				that.entries.splice(entry.getOrderIndex(), 1);
-				entry.getJQuery().remove();
+				entry.jQuery.remove();
 				
 				that.changed();
 			});
@@ -643,7 +643,7 @@ namespace Rocket.Impl {
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
 			
-			this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-context-commands");
+			this.jqContextCommands = this.bodyGroup.jQuery.children(".rocket-context-commands");
 			
 			if (readOnly) {
 				var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
@@ -704,8 +704,8 @@ namespace Rocket.Impl {
 			});
 		}
 		
-		public getJQuery(): JQuery {
-			return this.entryGroup.getJQuery();
+		get jQuery(): JQuery {
+			return this.entryGroup.jQuery;
 		}
 		
 		public getExpandedCommandList(): display.CommandList {
@@ -717,7 +717,7 @@ namespace Rocket.Impl {
 			this.jqSummary.hide();
 			this.bodyGroup.show();
 			
-			this.entryGroup.getJQuery().addClass("rocket-group");
+			this.entryGroup.jQuery.addClass("rocket-group");
 			
 			if (asPartOfList) {
 				this.jqContextCommands.hide();
@@ -745,7 +745,7 @@ namespace Rocket.Impl {
 			this.jqSummary.show();
 			this.bodyGroup.hide();
 			
-			this.entryGroup.getJQuery().removeClass("rocket-group");
+			this.entryGroup.jQuery.removeClass("rocket-group");
 		}
 		
 		public hide() {
@@ -925,7 +925,7 @@ namespace Rocket.Impl {
 			
 		}
 		
-		public getJQuery(): JQuery {
+		get jQuery(): JQuery {
 			return this.jqElem;
 		}
 		

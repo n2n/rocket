@@ -52,6 +52,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_LOCALE_ID_KEY = 'id';
 	const ATTR_LOCALE_LABEL_KEY = 'label';
 	const ATTR_LOCALE_MANDATORY_KEY = 'mandatory';
+	const ATTR_MIN_NUM_TRANSLATIONS_KEY = 'minNumTranslations';
 	
 	private $translationEiProp;
 	
@@ -92,6 +93,9 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				$this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar)));
 		$magCollection->addMag($customN2nLocaleDefsMag);
 		
+		$magCollection->addMag(new BoolMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 'Min translations number',
+				$lar->getNumeric(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0)));
+		
 		return $magDispatchable;
 	}
 	
@@ -109,7 +113,8 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(
-				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, self::ATTR_CUSTOM_LOCALE_DEFS_KEY)));
+				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 
+						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)));
 	}
 	
 	private function n2nLocaleDefsToMagValue(array $n2nLocaleDefs) {
@@ -192,6 +197,10 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
+		
+		$this->translationEiProp->setMinNumTranslations($this->attributes->getInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, false, 0));
+		
+		$this->addMandatory = true;
 		
 		// @todo combine with relation eifields
 		$eiPropRelation = $this->translationEiProp->getEiPropRelation();

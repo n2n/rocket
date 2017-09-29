@@ -23,7 +23,7 @@ namespace Rocket.Display {
 			}
 		}
 		
-		public getJQuery(): JQuery {
+		get jQuery(): JQuery {
 			return this.jqElem;
 		}
 		
@@ -222,7 +222,7 @@ namespace Rocket.Display {
 			this.commandList = new CommandList(jqCommands, true);
 		}
 		
-		public getJQuery(): JQuery {
+		get jQuery(): JQuery {
 			return this.jqToolbar;
 		}
 		
