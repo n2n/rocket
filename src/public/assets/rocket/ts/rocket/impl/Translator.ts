@@ -23,9 +23,9 @@ namespace Rocket.Impl {
 					label: "Languages"
 				}).click(() => jqMenu.toggle());
 				
-//				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
-//					Translatable.from($(elem));
-//				});
+				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
+					Translatable.from($(elem));
+				});
 			}
 		}
 		

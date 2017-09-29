@@ -1298,6 +1298,9 @@ var Rocket;
                         iconType: "fa fa-cog",
                         label: "Languages"
                     }).click(function () { return jqMenu.toggle(); });
+                    context.jQuery.find(".rocket-impl-translatable").each(function (i, elem) {
+                        Translatable.from($(elem));
+                    });
                 };
                 var this_1 = this;
                 for (var _i = 0, _a = this.container.getAllContexts(); _i < _a.length; _i++) {
