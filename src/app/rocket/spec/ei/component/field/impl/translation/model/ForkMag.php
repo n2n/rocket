@@ -37,7 +37,7 @@ class ForkMag extends ObjectMagAdapter {
 	
 	public function getContainerAttrs(HtmlView $view): array {
 		return array('class' => 'rocket-impl-translation-manager',
-				'data-rocket-impl-min' => 0,
+				'data-rocket-impl-min' => $this->min,
 				'data-rocket-impl-tooltip' => $view->getL10nText('ei_impl_tranlsation_manager_tooltip'), null, null, 
 						null, 'rocket');
 	}

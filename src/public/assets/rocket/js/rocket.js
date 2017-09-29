@@ -198,9 +198,13 @@ var Rocket;
                     this.jqElem.addClass("rocket-structure-element");
                 }
             };
-            StructureElement.prototype.getJQuery = function () {
-                return this.jqElem;
-            };
+            Object.defineProperty(StructureElement.prototype, "jQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
             StructureElement.prototype.setGroup = function (group) {
                 if (!group) {
                     this.jqElem.removeClass("rocket-group");
@@ -362,9 +366,13 @@ var Rocket;
                 }
                 this.commandList = new CommandList(jqCommands, true);
             }
-            Toolbar.prototype.getJQuery = function () {
-                return this.jqToolbar;
-            };
+            Object.defineProperty(Toolbar.prototype, "jQuery", {
+                get: function () {
+                    return this.jqToolbar;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Toolbar.prototype.getJqControls = function () {
                 return this.jqControls;
             };
@@ -381,9 +389,13 @@ var Rocket;
                     jqCommandList.addClass("rocket-simple-commands");
                 }
             }
-            CommandList.prototype.getJQuery = function () {
-                return this.jqCommandList;
-            };
+            Object.defineProperty(CommandList.prototype, "jQuery", {
+                get: function () {
+                    return this.jqCommandList;
+                },
+                enumerable: true,
+                configurable: true
+            });
             CommandList.prototype.createJqCommandButton = function (buttonConfig /*, iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null*/, prepend) {
                 if (prepend === void 0) { prepend = false; }
                 this.jqCommandList.show();
@@ -409,6 +421,10 @@ var Rocket;
                     this.jqCommandList.append(jqButton);
                 }
                 return jqButton;
+            };
+            CommandList.create = function (simple) {
+                if (simple === void 0) { simple = false; }
+                return new CommandList($("<div />"), simple);
             };
             return CommandList;
         }());
@@ -1249,32 +1265,217 @@ var Rocket;
     var Impl;
     (function (Impl) {
         var Translator = (function () {
-            function Translator() {
+            function Translator(container) {
+                this.container = container;
             }
-            Translator.scan = function (contexts) {
-                for (var _i = 0, contexts_1 = contexts; _i < contexts_1.length; _i++) {
-                    var context = contexts_1[_i];
-                    context.jQuery.find(".rocket-impl-translatable").each(function (i, elem) {
-                        Translatable.from($(elem));
-                    });
+            Translator.prototype.scan = function () {
+                for (var _i = 0, _a = this.container.getAllContexts(); _i < _a.length; _i++) {
+                    var context = _a[_i];
+                    var elems = context.jQuery.find(".rocket-impl-translation-manager").toArray();
+                    var elem = void 0;
+                    while (elem = elems.pop()) {
+                        this.initTm($(elem), context);
+                    }
                 }
+            };
+            Translator.prototype.initTm = function (jqElem, context) {
+                var tm = TranslationManager.from(jqElem);
+                var se = Rocket.Display.StructureElement.findFrom(jqElem);
+                var jqBase = null;
+                if (!se) {
+                    jqBase = context.jQuery;
+                }
+                else {
+                    jqBase = jqElem;
+                }
+                jqBase.find(".rocket-impl-translatable").each(function (i, elem) {
+                    tm.registerTranslatable(Translatable.from($(elem)));
+                });
             };
             return Translator;
         }());
         Impl.Translator = Translator;
         var TranslationManager = (function () {
-            function TranslationManager() {
+            function TranslationManager(jqElem) {
+                this.jqElem = jqElem;
+                this.min = 0;
+                this.translatables = [];
+                this.menuItems = [];
+                this.changing = false;
+                this.min = parseInt(jqElem.data("rocket-impl-min"));
+                this.initControl();
+                this.initMenu();
+                this.val();
             }
-            TranslationManager.findFrom = function (jqElem) {
-                jqElem.find;
+            TranslationManager.prototype.val = function () {
+                var activeLocaleIds = [];
+                for (var _i = 0, _a = this.menuItems; _i < _a.length; _i++) {
+                    var menuItem = _a[_i];
+                    if (!menuItem.active)
+                        continue;
+                    activeLocaleIds.push(menuItem.localeId);
+                }
+                if (activeLocaleIds.length >= this.min) {
+                    return activeLocaleIds;
+                }
+                for (var _b = 0, _c = this.menuItems; _b < _c.length; _b++) {
+                    var menuItem = _c[_b];
+                    if (menuItem.active)
+                        continue;
+                    activeLocaleIds.push(menuItem.localeId);
+                    if (activeLocaleIds.length >= this.min) {
+                        break;
+                    }
+                }
+                return activeLocaleIds;
+            };
+            TranslationManager.prototype.registerTranslatable = function (translatable) {
+                var _this = this;
+                if (-1 < this.translatables.indexOf(translatable))
+                    return;
+                this.translatables.push(translatable);
+                translatable.activeLocaleIds = this.activeLocaleIds;
+                translatable.jQuery.on("remove", function () { return _this.unregisterTranslatable(translatable); });
+                for (var _i = 0, _a = translatable.contents; _i < _a.length; _i++) {
+                    var tc = _a[_i];
+                    tc.whenChanged(function () {
+                        _this.activeLocaleIds = translatable.activeLocaleIds;
+                    });
+                }
+            };
+            TranslationManager.prototype.unregisterTranslatable = function (translatable) {
+                var i = this.translatables.indexOf(translatable);
+                if (i > -1) {
+                    this.translatables.splice(i, 1);
+                }
+            };
+            Object.defineProperty(TranslationManager.prototype, "activeLocaleIds", {
+                get: function () {
+                    var localeIds = Array();
+                    for (var _i = 0, _a = this.menuItems; _i < _a.length; _i++) {
+                        var menuItem = _a[_i];
+                        if (menuItem.active) {
+                            localeIds.push(menuItem.localeId);
+                        }
+                    }
+                    return localeIds;
+                },
+                set: function (localeIds) {
+                    if (this.changing)
+                        return;
+                    this.changing = true;
+                    var changed = false;
+                    for (var _i = 0, _a = this.menuItems; _i < _a.length; _i++) {
+                        var menuItem = _a[_i];
+                        if (menuItem.mandatory)
+                            continue;
+                        var active = -1 < localeIds.indexOf(menuItem.localeId);
+                        if (menuItem.active != active) {
+                            changed = true;
+                        }
+                        menuItem.active = active;
+                    }
+                    if (!changed)
+                        return;
+                    localeIds = this.val();
+                    for (var _b = 0, _c = this.translatables; _b < _c.length; _b++) {
+                        var translatable = _c[_b];
+                        translatable.localeIds = localeIds;
+                    }
+                    this.changing = false;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            TranslationManager.prototype.initControl = function () {
+                var _this = this;
+                var jqLabel = this.jqElem.children("label:first");
+                var cmdList = Rocket.Display.CommandList.create(true);
+                cmdList.createJqCommandButton({
+                    iconType: "fa fa-language",
+                    label: jqLabel.text(),
+                    tooltip: this.jqElem.data("rocket-impl-tooltip")
+                }).click(function () { return _this.toggle(); });
+                jqLabel.replaceWith(cmdList.jQuery);
+            };
+            TranslationManager.prototype.initMenu = function () {
+                var _this = this;
+                this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
+                this.jqMenu.hide();
+                this.jqMenu.children().each(function (i, elem) {
+                    _this.menuItems.push(new MenuItem($(elem)));
+                });
+            };
+            TranslationManager.prototype.toggle = function () {
+                this.jqMenu.toggle();
+            };
+            TranslationManager.from = function (jqElem) {
+                var tm = jqElem.data("rocketImplTranslationManager");
+                if (tm instanceof TranslationManager) {
+                    return tm;
+                }
+                tm = new TranslationManager(jqElem);
+                jqElem.data("rocketImplTranslationManager", tm);
+                return tm;
             };
             return TranslationManager;
         }());
         Impl.TranslationManager = TranslationManager;
+        var MenuItem = (function () {
+            function MenuItem(jqElem) {
+                this.jqElem = jqElem;
+                this._localeId = this.jqElem.data("rocket-impl-locale-id");
+                this._mandatory = this.jqElem.data("rocket-impl-mandatory") ? true : false;
+                this.init();
+            }
+            MenuItem.prototype.init = function () {
+                if (this.jqCheck) {
+                    throw new Error("already initialized");
+                }
+                this.jqCheck = this.jqElem.find("input[type=checkbox]");
+                if (this.mandatory) {
+                    this.jqCheck.prop("checked", true);
+                    this.jqCheck.prop("disabled", true);
+                }
+            };
+            Object.defineProperty(MenuItem.prototype, "active", {
+                get: function () {
+                    return this.jqCheck.is(":checked");
+                },
+                set: function (active) {
+                    this.jqCheck.prop("checked", active);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(MenuItem.prototype, "localeId", {
+                get: function () {
+                    return this._localeId;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(MenuItem.prototype, "mandatory", {
+                get: function () {
+                    return this._mandatory;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return MenuItem;
+        }());
         var Translatable = (function () {
             function Translatable(jqElem) {
                 this.jqElem = jqElem;
+                this._contents = {};
             }
+            Object.defineProperty(Translatable.prototype, "jQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(Translatable.prototype, "localeIds", {
                 get: function () {
                     return Object.keys(this._contents);
@@ -1290,9 +1491,29 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Translatable.prototype, "activeLocaleIds", {
+                get: function () {
+                    var localeIds = new Array();
+                    for (var _i = 0, _a = this.contents; _i < _a.length; _i++) {
+                        var content = _a[_i];
+                        if (!content.active)
+                            continue;
+                        localeIds.push(content.localeId);
+                    }
+                    return localeIds;
+                },
+                set: function (localeIds) {
+                    for (var _i = 0, _a = this.contents; _i < _a.length; _i++) {
+                        var content = _a[_i];
+                        content.active = -1 < localeIds.indexOf(content.localeId);
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
             Translatable.prototype.scan = function () {
                 var _this = this;
-                this.jqElem.contents().each(function (i, elem) {
+                this.jqElem.children().each(function (i, elem) {
                     var jqElem = $(elem);
                     var localeId = jqElem.data("rocket-impl-locale-id");
                     if (!localeId || _this._contents[localeId])
@@ -1317,6 +1538,10 @@ var Rocket;
             function TranslatedContent(_localeId, jqElem) {
                 this._localeId = _localeId;
                 this.jqElem = jqElem;
+                this.jqEnabler = null;
+                this.activateLabel = "av";
+                this.changedCallbacks = [];
+                this.jqTranslation = jqElem.children(".rocket-impl-translation");
             }
             Object.defineProperty(TranslatedContent.prototype, "localeId", {
                 get: function () {
@@ -1339,6 +1564,40 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(TranslatedContent.prototype, "active", {
+                get: function () {
+                    return this.jqEnabler ? true : false;
+                },
+                set: function (active) {
+                    if (!active) {
+                        if (this.jqEnabler) {
+                            this.jqEnabler.remove();
+                            this.jqEnabler = null;
+                            this.triggerChanged();
+                        }
+                        return;
+                    }
+                    if (this.jqEnabler)
+                        return;
+                    this.jqEnabler = $("<button />", {
+                        "class": "rocket-impl-enabler",
+                        "type": "button",
+                        "text": this.activateLabel
+                    }).appendTo(this.jqElem);
+                    this.triggerChanged();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            TranslatedContent.prototype.triggerChanged = function () {
+                for (var _i = 0, _a = this.changedCallbacks; _i < _a.length; _i++) {
+                    var callback = _a[_i];
+                    callback();
+                }
+            };
+            TranslatedContent.prototype.whenChanged = function (callback) {
+                this.changedCallbacks.push(callback);
+            };
             return TranslatedContent;
         }());
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
@@ -1693,21 +1952,21 @@ var Rocket;
                 }
                 if (this.isPartialExpaned()) {
                     if (this.firstAddControl !== null) {
-                        this.firstAddControl.getJQuery().hide();
+                        this.firstAddControl.jQuery.hide();
                     }
-                    this.lastAddControl.getJQuery().hide();
+                    this.lastAddControl.jQuery.hide();
                 }
                 else {
                     if (this.firstAddControl !== null) {
-                        this.firstAddControl.getJQuery().show();
+                        this.firstAddControl.jQuery.show();
                     }
-                    this.lastAddControl.getJQuery().show();
+                    this.lastAddControl.jQuery.show();
                 }
             };
             ToManyEmbedded.prototype.createFirstAddControl = function () {
                 var addControl = this.addControlFactory.create();
                 var that = this;
-                this.jqEmbedded.prepend(addControl.getJQuery());
+                this.jqEmbedded.prepend(addControl.jQuery);
                 addControl.onNewEmbeddedEntry(function (newEntry) {
                     that.insertEntry(newEntry);
                     //				if (!that.isExpanded()) {
@@ -1720,7 +1979,7 @@ var Rocket;
                 var addControl = this.addControlFactory.create();
                 var that = this;
                 this.entryAddControls.push(addControl);
-                addControl.getJQuery().insertBefore(entry.getJQuery());
+                addControl.jQuery.insertBefore(entry.jQuery);
                 addControl.onNewEmbeddedEntry(function (newEntry) {
                     that.insertEntry(newEntry, entry);
                 });
@@ -1729,7 +1988,7 @@ var Rocket;
             ToManyEmbedded.prototype.createLastAddControl = function () {
                 var addControl = this.addControlFactory.create();
                 var that = this;
-                this.jqEmbedded.append(addControl.getJQuery());
+                this.jqEmbedded.append(addControl.jQuery);
                 addControl.onNewEmbeddedEntry(function (newEntry) {
                     that.addEntry(newEntry);
                     //				if (!that.isExpanded()) {
@@ -1740,13 +1999,13 @@ var Rocket;
             };
             ToManyEmbedded.prototype.insertEntry = function (entry, beforeEntry) {
                 if (beforeEntry === void 0) { beforeEntry = null; }
-                entry.getJQuery().detach();
+                entry.jQuery.detach();
                 if (beforeEntry === null) {
                     this.entries.unshift(entry);
-                    this.jqEntries.prepend(entry.getJQuery());
+                    this.jqEntries.prepend(entry.jQuery);
                 }
                 else {
-                    entry.getJQuery().insertBefore(beforeEntry.getJQuery());
+                    entry.jQuery.insertBefore(beforeEntry.jQuery);
                     this.entries.splice(beforeEntry.getOrderIndex(), 0, entry);
                 }
                 this.initEntry(entry);
@@ -1755,7 +2014,7 @@ var Rocket;
             ToManyEmbedded.prototype.addEntry = function (entry) {
                 entry.setOrderIndex(this.entries.length);
                 this.entries.push(entry);
-                this.jqEntries.append(entry.getJQuery());
+                this.jqEntries.append(entry.jQuery);
                 this.initEntry(entry);
                 if (this.isReadOnly())
                     return;
@@ -1782,16 +2041,16 @@ var Rocket;
                         return;
                     }
                     if (up) {
-                        that.entries[oldIndex].getJQuery().insertBefore(that.entries[newIndex].getJQuery());
+                        that.entries[oldIndex].jQuery.insertBefore(that.entries[newIndex].jQuery);
                     }
                     else {
-                        that.entries[oldIndex].getJQuery().insertAfter(that.entries[newIndex].getJQuery());
+                        that.entries[oldIndex].jQuery.insertAfter(that.entries[newIndex].jQuery);
                     }
                     that.switchIndex(oldIndex, newIndex);
                 });
                 entry.onRemove(function () {
                     that.entries.splice(entry.getOrderIndex(), 1);
-                    entry.getJQuery().remove();
+                    entry.jQuery.remove();
                     that.changed();
                 });
                 entry.onFocus(function () {
@@ -1889,7 +2148,7 @@ var Rocket;
                 this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
                 this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                 this.jqSummary = jqEntry.children(".rocket-impl-summary");
-                this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-context-commands");
+                this.jqContextCommands = this.bodyGroup.jQuery.children(".rocket-context-commands");
                 if (readOnly) {
                     var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                     this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail", severity: display.Severity.SECONDARY });
@@ -1938,9 +2197,13 @@ var Rocket;
                     callback();
                 });
             };
-            EmbeddedEntry.prototype.getJQuery = function () {
-                return this.entryGroup.getJQuery();
-            };
+            Object.defineProperty(EmbeddedEntry.prototype, "jQuery", {
+                get: function () {
+                    return this.entryGroup.jQuery;
+                },
+                enumerable: true,
+                configurable: true
+            });
             EmbeddedEntry.prototype.getExpandedCommandList = function () {
                 return this.bodyGroup.getToolbar().getCommandList();
             };
@@ -1949,7 +2212,7 @@ var Rocket;
                 this.entryGroup.show();
                 this.jqSummary.hide();
                 this.bodyGroup.show();
-                this.entryGroup.getJQuery().addClass("rocket-group");
+                this.entryGroup.jQuery.addClass("rocket-group");
                 if (asPartOfList) {
                     this.jqContextCommands.hide();
                 }
@@ -1975,7 +2238,7 @@ var Rocket;
                 this.entryGroup.show();
                 this.jqSummary.show();
                 this.bodyGroup.hide();
-                this.entryGroup.getJQuery().removeClass("rocket-group");
+                this.entryGroup.jQuery.removeClass("rocket-group");
             };
             EmbeddedEntry.prototype.hide = function () {
                 this.entryGroup.hide();
@@ -2105,9 +2368,13 @@ var Rocket;
                     });
                 });
             }
-            AddControl.prototype.getJQuery = function () {
-                return this.jqElem;
-            };
+            Object.defineProperty(AddControl.prototype, "jQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
             AddControl.prototype.block = function (blocked) {
                 if (blocked) {
                     this.jqButton.prop("disabled", true);
@@ -2991,9 +3258,10 @@ var Rocket;
             });
         })();
         (function () {
-            Rocket.Impl.Translator.scan(container.getAllContexts());
+            var t = new Rocket.Impl.Translator(container);
+            t.scan();
             n2n.dispatch.registerCallback(function () {
-                Rocket.Impl.Translator.scan(container.getAllContexts());
+                t.scan();
             });
         })();
     });
@@ -3586,9 +3854,13 @@ var Rocket;
             function EntryForm(jqEntryForm) {
                 this.jqEntryForm = jqEntryForm;
             }
-            EntryForm.prototype.getJQuery = function () {
-                return this.jqEntryForm;
-            };
+            Object.defineProperty(EntryForm.prototype, "jQuery", {
+                get: function () {
+                    return this.jqEntryForm;
+                },
+                enumerable: true,
+                configurable: true
+            });
             EntryForm.prototype.hasTypeSelector = function () {
                 return this.jqEntryForm.find(".rocket-type-dependent-entry-form").length > 0;
             };

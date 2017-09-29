@@ -11,7 +11,7 @@ namespace Rocket.Impl {
 				let elems: Array<HTMLElement> = context.jQuery.find(".rocket-impl-translation-manager").toArray();
 				let elem;
 				while (elem = elems.pop()) {
-					this.initTm($(elem));
+					this.initTm($(elem), context);
 				}
 					
 //				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
@@ -20,14 +20,19 @@ namespace Rocket.Impl {
 			}
 		}
 		
-		private initTm(jqElem: JQuery) {
+		private initTm(jqElem: JQuery, context: Rocket.Cmd.Context) {
 			let tm = TranslationManager.from(jqElem);
 			
 			let se = Rocket.Display.StructureElement.findFrom(jqElem);
 			
-			if (!se) return;
+			let jqBase = null;
+			if (!se) {
+				jqBase = context.jQuery;
+			} else {
+				jqBase = jqElem;
+			}
 			
-			se.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
+			jqBase.find(".rocket-impl-translatable").each((i, elem) => {
 				tm.registerTranslatable(Translatable.from($(elem)));
 			});
 		}
@@ -99,6 +104,16 @@ namespace Rocket.Impl {
 		}
 		
 		private changing: boolean = false;
+		
+		get activeLocaleIds(): Array<string> {
+			let localeIds = Array<string>();
+			for (let menuItem of this.menuItems) {
+				if (menuItem.active) {
+					localeIds.push(menuItem.localeId);
+				}
+			}
+			return localeIds;
+		}
 		
 		set activeLocaleIds(localeIds: Array<string>) {
 			if (this.changing) return;
@@ -209,7 +224,7 @@ namespace Rocket.Impl {
 	}
 	
 	export class Translatable {
-		private _contents: { [localeId: string]: TranslatedContent }
+		private _contents: { [localeId: string]: TranslatedContent } = {}
 		
 		constructor(private jqElem: JQuery) {
 		}
@@ -269,13 +284,13 @@ namespace Rocket.Impl {
 	}
 	
 	class TranslatedContent {
-		private jqTranslated: JQuery;
+		private jqTranslation: JQuery;
 		private jqEnabler = null;
 		public activateLabel: string = "av";
 		private changedCallbacks: Array<() => any> = [];
 		
 		constructor(private _localeId: string, private jqElem: JQuery) {
-			this.jqTranslated = jqElem.children(".rocket-impl-translation");
+			this.jqTranslation = jqElem.children(".rocket-impl-translation");
 		}
 		
 		get localeId(): string {
@@ -296,17 +311,17 @@ namespace Rocket.Impl {
 		
 		set active(active: boolean) {
 			if (!active) {
-				if (this.jqTranslated) {
-					this.jqTranslated.remove();
-					this.jqTranslated = null;
+				if (this.jqEnabler) {
+					this.jqEnabler.remove();
+					this.jqEnabler = null;
 					this.triggerChanged();
 				}
 				return;
 			}
 			
-			if (this.jqTranslated) return;
+			if (this.jqEnabler) return;
 			
-			this.jqTranslated = $("<button />", {
+			this.jqEnabler = $("<button />", {
 				"class": "rocket-impl-enabler",
 				"type": "button",
 				"text": this.activateLabel

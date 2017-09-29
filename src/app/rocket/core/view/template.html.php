@@ -23,11 +23,10 @@
 	use n2n\l10n\Message;
 	use n2n\core\N2N;
 	use n2n\web\ui\Raw;
-	use n2nutil\jquery\JQueryLibrary;
 	use rocket\core\model\TemplateModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\http\nav\Murl;
-use n2nutil\jquery\JQueryUiLibrary;
+	use n2nutil\jquery\JQueryUiLibrary;
 
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($view);
@@ -125,6 +124,19 @@ use n2nutil\jquery\JQueryUiLibrary;
 				right: 0px; 
 				bottom: 0px;
 				background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
+			}
+			
+			.rocket-impl-translation {
+				position: relative;
+			}
+			
+			.rocket-impl-translation .rocket-impl-enabler {
+				position: absolute;
+				width: 100%;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
 			}
 			
 		</style>
