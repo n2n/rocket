@@ -1,5 +1,6 @@
 /// <reference path="../util/Util.ts" />
 /// <reference path="../display/Group.ts" />
+
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	import util = Rocket.util;
@@ -396,12 +397,26 @@ namespace Rocket.Cmd {
 	
 	export class Menu {
 		private context: Context;
+		private _toolbar = display.Toolbar = null;
 		private _commandList: display.CommandList = null;
 		private _partialCommandList: display.CommandList = null;
 		
 		
 		constructor(context: Context) {
 			this.context = context;
+		}
+		
+		get toolbar(): display.Toolbar {
+			if (this._toolbar) {
+				return this._toolbar;
+			}
+			
+			let jqToolbar = this.context.jQuery.find(".rocket-context-toolbar:first");
+			if (jqToolbar.length == 0) {
+				jqToolbar = $("<div />", { "class": "rocket-context-toolbar"}).prependTo(this.context.jQuery);
+			}
+			
+			return this._toolbar = new Rocket.Display.Toolbar(jqToolbar);
 		}
 		
 		private getJqContextCommands() {

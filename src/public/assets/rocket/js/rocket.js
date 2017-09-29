@@ -381,6 +381,7 @@ var Rocket;
             };
             return Toolbar;
         }());
+        Display.Toolbar = Toolbar;
         var CommandList = (function () {
             function CommandList(jqCommandList, simple) {
                 if (simple === void 0) { simple = false; }
@@ -767,10 +768,25 @@ var Rocket;
         Cmd.AdditionalTab = AdditionalTab;
         var Menu = (function () {
             function Menu(context) {
+                this._toolbar = display.Toolbar = null;
                 this._commandList = null;
                 this._partialCommandList = null;
                 this.context = context;
             }
+            Object.defineProperty(Menu.prototype, "toolbar", {
+                get: function () {
+                    if (this._toolbar) {
+                        return this._toolbar;
+                    }
+                    var jqToolbar = this.context.jQuery.find(".rocket-context-toolbar:first");
+                    if (jqToolbar.length == 0) {
+                        jqToolbar = $("<div />", { "class": "rocket-context-toolbar" }).prependTo(this.context.jQuery);
+                    }
+                    return this._toolbar = new Rocket.Display.Toolbar(jqToolbar);
+                },
+                enumerable: true,
+                configurable: true
+            });
             Menu.prototype.getJqContextCommands = function () {
                 var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
                 if (jqCommandList.length == 0) {
@@ -1276,6 +1292,12 @@ var Rocket;
                     while (elem = elems.pop()) {
                         this.initTm($(elem), context);
                     }
+                    var jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
+                    context.menu.toolbar.getJqControls().append(jqViewControl);
+                    new Rocket.Display.CommandList(jqViewControl).createJqCommandButton({
+                        iconType: "fa fa-cog",
+                        label: "Languages"
+                    });
                 }
             };
             Translator.prototype.initTm = function (jqElem, context) {
@@ -1327,6 +1349,7 @@ var Rocket;
                         break;
                     }
                 }
+                console.log(activeLocaleIds);
                 return activeLocaleIds;
             };
             TranslationManager.prototype.registerTranslatable = function (translatable) {
@@ -1380,7 +1403,7 @@ var Rocket;
                     localeIds = this.val();
                     for (var _b = 0, _c = this.translatables; _b < _c.length; _b++) {
                         var translatable = _c[_b];
-                        translatable.localeIds = localeIds;
+                        translatable.activeLocaleIds = localeIds;
                     }
                     this.changing = false;
                 },
@@ -1566,10 +1589,11 @@ var Rocket;
             });
             Object.defineProperty(TranslatedContent.prototype, "active", {
                 get: function () {
-                    return this.jqEnabler ? true : false;
+                    return this.jqEnabler ? false : true;
                 },
                 set: function (active) {
-                    if (!active) {
+                    var _this = this;
+                    if (active) {
                         if (this.jqEnabler) {
                             this.jqEnabler.remove();
                             this.jqEnabler = null;
@@ -1582,7 +1606,8 @@ var Rocket;
                     this.jqEnabler = $("<button />", {
                         "class": "rocket-impl-enabler",
                         "type": "button",
-                        "text": this.activateLabel
+                        "text": this.activateLabel,
+                        "click": function () { _this.active = true; }
                     }).appendTo(this.jqElem);
                     this.triggerChanged();
                 },

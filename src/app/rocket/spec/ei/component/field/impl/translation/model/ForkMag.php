@@ -33,6 +33,7 @@ class ForkMag extends ObjectMagAdapter {
 	public function __construct($propertyName, $label, TranslationForm $translationForm, array $n2nLocaleDefs, int $min) {
 		parent::__construct($propertyName, $label, $translationForm);
 		$this->n2nLocaleDefs = $n2nLocaleDefs;
+		$this->min = $min;
 	}
 	
 	public function getContainerAttrs(HtmlView $view): array {

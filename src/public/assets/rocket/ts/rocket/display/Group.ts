@@ -197,7 +197,7 @@ namespace Rocket.Display {
 		}
 	}
 	
-	class Toolbar {
+	export class Toolbar {
 		private jqToolbar: JQuery;
 		private jqControls: JQuery;
 		private commandList: CommandList;

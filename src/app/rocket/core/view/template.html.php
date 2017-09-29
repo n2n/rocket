@@ -137,7 +137,10 @@
 				left: 0;
 				right: 0;
 				bottom: 0;
+				animation: 0.5s ease 0s normal none infinite running pointless;
 			}
+			
+			@keyframes pointless{0%{color:#39f;background-color:#95b850}15%{color:#8bc5d1;background-color:#944893}30%{color:#f8cb4a;background-color:#c71f00}45%{color:#95b850;background-color:#bdb280}60%{color:#944893;background-color:#39f}75%{color:#c71f00;background-color:#8bc5d1}90%{color:#bdb280;background-color:#f8cb4a}100%{color:#39f;background-color:#95b850}}
 			
 		</style>
 	<?php $html->headEnd() ?>

@@ -1,6 +1,5 @@
 namespace Rocket.Impl {
 	
-	
 	export class Translator {
 		
 		constructor(private container: Rocket.Cmd.Container) {
@@ -14,6 +13,14 @@ namespace Rocket.Impl {
 					this.initTm($(elem), context);
 				}
 					
+				let jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
+				context.menu.toolbar.getJqControls().append(jqViewControl);
+				
+				new Rocket.Display.CommandList(jqViewControl).createJqCommandButton({
+					iconType: "fa fa-cog",
+					label: "Languages"
+				});
+				
 //				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
 //					Translatable.from($(elem));
 //				});
@@ -77,6 +84,8 @@ namespace Rocket.Impl {
 				}
 			}
 			
+			console.log(activeLocaleIds);
+			
 			return activeLocaleIds;
 		}
 		
@@ -136,7 +145,7 @@ namespace Rocket.Impl {
 			localeIds = this.val();
 			
 			for (let translatable of this.translatables) {
-				translatable.localeIds = localeIds;
+				translatable.activeLocaleIds = localeIds;
 			}
 			
 			this.changing = false;
@@ -306,11 +315,11 @@ namespace Rocket.Impl {
 		}
 		
 		get active(): boolean {
-			return this.jqEnabler ? true : false;
+			return this.jqEnabler ? false : true;
 		}
 		
 		set active(active: boolean) {
-			if (!active) {
+			if (active) {
 				if (this.jqEnabler) {
 					this.jqEnabler.remove();
 					this.jqEnabler = null;
@@ -324,7 +333,8 @@ namespace Rocket.Impl {
 			this.jqEnabler = $("<button />", {
 				"class": "rocket-impl-enabler",
 				"type": "button",
-				"text": this.activateLabel
+				"text": this.activateLabel,
+				"click": () => { this.active = true} 
 			}).appendTo(this.jqElem);
 			
 			this.triggerChanged();
