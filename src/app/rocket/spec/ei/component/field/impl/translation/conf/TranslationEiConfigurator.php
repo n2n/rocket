@@ -274,6 +274,6 @@ class N2nLocaleDef {
 			return $this->label;
 		}
 		
-		return $this->n2nLocale->getName($this->n2nLocale);
+		return $this->n2nLocale->getName($n2nLocale);
 	}
 }

@@ -30,6 +30,8 @@
 	$request = HtmlView::request($this);
 
 	$displayables = $view->getParam('displayables');
+	$label = $view->getParam('label');
+	$localeDefs = $view->getParam('localeDefs');
 	
 	$fieldEiHtml = new FieldEiHtmlBuilder($view);
 ?>
@@ -41,8 +43,12 @@
 	<?php foreach ($displayables as $n2nLocaleId => $displayable): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 				
-		<?php $fieldEiHtml->openOutputField('div', $displayable, new FieldErrorInfo(), 
-				array('class' => 'rocket-impl-translation', 'data-rocket-impl-locale-id' => $n2nLocaleId)) ?>
+		<?php $fieldEiHtml->openOutputField('div', $displayable, new FieldErrorInfo(),  array(
+				'class' => 'rocket-impl-translation', 
+				'data-rocket-impl-locale-id' => $n2nLocaleId,
+				'data-rocket-impl-activate-label' => $view->getL10nText('ei_impl_activate_translation', array(
+						'locale' => $localeDefs[(string) $n2nLocale]->buildLabel($request->getN2nLocale()),
+						'field' => $label)))) ?>
 			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale())), 
 					$n2nLocale->toPrettyId()) ?>
 			<div class="rocket-controls">

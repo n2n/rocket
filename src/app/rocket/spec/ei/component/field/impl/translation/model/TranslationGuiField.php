@@ -97,7 +97,7 @@ class TranslationGuiField implements GuiFieldFork {
 
 // 		$fieldErrorInfo = new FieldErrorInfo();
 		
-		$translationDisplayable = new TranslationDisplayable($label);
+		$translationDisplayable = new TranslationDisplayable($label, $this->n2nLocaleDefs);
 		
 		$translationMag = null;
 		$eiFieldWrappers = array();

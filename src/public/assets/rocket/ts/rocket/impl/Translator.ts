@@ -13,18 +13,17 @@ namespace Rocket.Impl {
 					this.initTm($(elem), context);
 				}
 				
-				let jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
-				context.menu.toolbar.getJqControls().show().append(jqViewControl);
 				
-				let jqMenu = $("<ul/>");
+				let jqViewControl = context.menu.toolbar.getJqControls().find(".rocket-impl-translation-view-control");
+				if (jqViewControl.length == 0) {
+					jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
+					context.menu.toolbar.getJqControls().show().append(jqViewControl);
+				}
 				
-				new Rocket.Display.CommandList(jqViewControl).createJqCommandButton({
-					iconType: "fa fa-cog",
-					label: "Languages"
-				}).click(() => jqMenu.toggle());
+				let viewMenu = ViewMenu.from(jqViewControl);
 				
 				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
-					Translatable.from($(elem));
+					viewMenu.registerTranslatable(Translatable.from($(elem)));
 				});
 			}
 		}
@@ -49,12 +48,144 @@ namespace Rocket.Impl {
 	
 	class ViewMenu {
 		private translatables: Array<Translatable> = [];
+		private jqMenu: JQuery;
+		private items: { [localeId: string]: ViewMenuItem } = {};
+		private changing: boolean = false;
 		
-		constructor(jqMenu) {
+		constructor() {
+			this.jqMenu = $("<ul></ul>", {
+			});
+		}
+		
+		draw(jqContainer: JQuery) {
+			new Rocket.Display.CommandList(jqContainer).createJqCommandButton({
+				iconType: "fa fa-cog",
+				label: "Languages"
+			}).click(() => this.jqMenu.toggle());
+			
+			jqContainer.append(this.jqMenu);
 		}
 		
 		registerTranslatable(translatable: Translatable) {
+			if (-1 < this.translatables.indexOf(translatable)) return;
+			
 			this.translatables.push(translatable);
+			
+			translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
+			
+			for (let content of translatable.contents) {
+				if (!this.items[content.localeId]) {
+					let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName);
+					item.draw($("<li />").appendTo(this.jqMenu));
+					
+					item.on = Object.keys(this.items).length == 1;
+					item.whenChanged(() => this.menuChanged());
+				}
+				
+				content.visible = this.items[content.localeId].on;
+				
+				content.whenChanged(() => {
+					if (this.changing || !content.active) return;
+					
+					this.items[content.localeId].on = true;
+				});
+			}
+		}
+		
+		unregisterTranslatable(translatable: Translatable) {
+			let i = this.translatables.indexOf(translatable);
+			
+			if (-1 < i) {
+				this.translatables.splice(i, 1);
+			}
+		}
+		
+		private menuChanged() {
+			if (this.changing) {
+				throw new Error("already changing");
+			}	
+			
+			this.changing = true;
+			
+			let visiableLocaleIds: Array<string> = [];
+			
+			for (let i in this.items) {
+				if (this.items[i].on) {
+					visiableLocaleIds.push(this.items[i].localeId);
+				} 
+			}
+			
+			for (let translatable of this.translatables) {
+				translatable.visibleLocaleIds = visiableLocaleIds;
+			}
+			
+			this.changing = false;
+		}
+		static from(jqElem: JQuery): ViewMenu {
+			let vm = jqElem.data("rocketImplViewMenu");
+			if (vm instanceof ViewMenu) {
+				return vm;
+			}
+			
+			vm = new ViewMenu();
+			vm.draw(jqElem);
+			jqElem.data("rocketImplViewMenu", vm);
+			
+			return vm;
+		}
+	}
+	
+	class ViewMenuItem {
+		private _on: boolean = true;
+		private changedCallbacks: Array<() => any> = [];
+		private jqI: JQuery;
+		
+		constructor (public localeId: string, public label: string) {
+			
+		}
+		
+		draw(jqElem: JQuery) {
+			this.jqI = $("<i></i>");
+			
+			$("<button />", { "type": "button", "text": this.label + " "})
+					.append(this.jqI)
+					.appendTo(jqElem)
+					.click(() => {
+						this.on = !this.on;
+					});
+			
+			this.checkI();
+		}
+		
+		get on(): boolean {
+			return this._on;
+		}
+		
+		set on(on: boolean) {
+			if (this._on == on) return;
+			
+			this._on = on;
+			this.checkI();
+			
+			this.triggerChanged();
+		}
+		
+		private triggerChanged() {
+			for (let callback of this.changedCallbacks) {
+				callback();
+			}
+		}
+		
+		whenChanged(callback: () => any) {
+			this.changedCallbacks.push(callback);
+		}
+		
+		private checkI() {
+			if (this.on) {
+				this.jqI.attr("class", "fa fa-toggle-on");
+			} else {
+				this.jqI.attr("class", "fa fa-toggle-off");
+			}
 		}
 	}
 	
@@ -150,7 +281,10 @@ namespace Rocket.Impl {
 				menuItem.active = active;
 			}
 			
-			if (!changed) return; 
+			if (!changed) {
+				this.changing = false;
+				return;
+			} 
 			
 			localeIds = this.val();
 			
@@ -160,6 +294,20 @@ namespace Rocket.Impl {
 			
 			this.changing = false;
 		}
+		
+		private menuChanged() {
+			if (this.changing) return;
+			this.changing = true;
+			
+			let localeIds = this.val();
+			
+			for (let translatable of this.translatables) {
+				translatable.activeLocaleIds = localeIds;
+			}
+			
+			this.changing = false;
+		}
+		
 		
 		private initControl() {
 			let jqLabel = this.jqElem.children("label:first");
@@ -178,7 +326,12 @@ namespace Rocket.Impl {
 			this.jqMenu.hide();
 			
 			this.jqMenu.children().each((i, elem) => {
-				this.menuItems.push(new MenuItem($(elem)));
+				let mi = new MenuItem($(elem));
+				this.menuItems.push(mi);
+				
+				mi.whenChanged(() => {
+					this.menuChanged();
+				});
 			});
 			
 		}
@@ -225,6 +378,10 @@ namespace Rocket.Impl {
 			}
 		}
 		
+		whenChanged(callback: () => any) {
+			this.jqCheck.change(callback);
+		}
+		
 		get active(): boolean {
 			return this.jqCheck.is(":checked");
 		}
@@ -259,6 +416,24 @@ namespace Rocket.Impl {
 		get contents(): Array<TranslatedContent> {
 			let O: any = Object;
 			return O.values(this._contents);
+		}
+		
+		set visibleLocaleIds(localeIds: Array<string>) {
+			for (let content of this.contents) {
+				content.visible = -1 < localeIds.indexOf(content.localeId);
+			}
+		}
+		
+		get visibleLocaleIds() {
+			let localeIds = new Array<string>();
+			
+			for (let content of this.contents) {
+				if (!content.visible) continue;
+				
+				localeIds.push(content.localeId);
+			}
+			
+			return localeIds;
 		}
 		
 		set activeLocaleIds(localeIds: Array<string>) {
@@ -305,8 +480,8 @@ namespace Rocket.Impl {
 	class TranslatedContent {
 		private jqTranslation: JQuery;
 		private jqEnabler = null;
-		public activateLabel: string = "av";
 		private changedCallbacks: Array<() => any> = [];
+		private _visible: boolean = true;
 		
 		constructor(private _localeId: string, private jqElem: JQuery) {
 			this.jqTranslation = jqElem.children(".rocket-impl-translation");
@@ -322,6 +497,27 @@ namespace Rocket.Impl {
 		
 		get localeName(): string {
 			return this.jqElem.find("label:first").attr("title");
+		}
+		
+		get visible(): boolean {
+			return this._visible;
+		}
+		
+		set visible(visible: boolean) {
+			if (visible) {
+				if (this._visible) return;
+				this._visible = true;
+				
+				this.jqElem.show();
+				this.triggerChanged();
+				return;
+			}
+			
+			if (!this._visible) return;
+			
+			this._visible = false;
+			this.jqElem.hide();
+			this.triggerChanged();
 		}
 		
 		get active(): boolean {
@@ -343,9 +539,9 @@ namespace Rocket.Impl {
 			this.jqEnabler = $("<button />", {
 				"class": "rocket-impl-enabler",
 				"type": "button",
-				"text": this.activateLabel,
+				"text": " " + this.jqElem.data("rocket-impl-activate-label"),
 				"click": () => { this.active = true} 
-			}).appendTo(this.jqElem);
+			}).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.jqElem);
 			
 			this.triggerChanged();
 		}

@@ -44,8 +44,13 @@
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 		<?php $hasError = $formHtml->meta()->hasErrors($propertyPath) ?>
 	
-		<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId], 
-				array('class' => 'rocket-impl-translation', 'data-rocket-impl-locale-id' => $n2nLocaleId)) ?>
+		<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId], array(
+				'class' => 'rocket-impl-translation', 
+				'data-rocket-impl-locale-id' => $n2nLocaleId,
+				'data-rocket-impl-activate-label' => $html->getText('ei_impl_activate_translation', array(
+						'locale' => $n2nLocale->getName($request->getN2nLocale()),
+						'field' => $view->getParam('label'))))) ?>
+				
 			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
 					'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
 			<div class="rocket-controls rocket-impl-translation">
