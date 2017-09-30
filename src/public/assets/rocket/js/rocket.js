@@ -1292,19 +1292,26 @@ var Rocket;
                         this_1.initTm($(elem), context);
                     }
                     var jqViewControl = context.menu.toolbar.getJqControls().find(".rocket-impl-translation-view-control");
+                    var jqTranslatables = context.jQuery.find(".rocket-impl-translatable");
+                    if (jqTranslatables.length == 0) {
+                        jqViewControl.hide();
+                        return "continue";
+                    }
+                    jqViewControl.show();
                     if (jqViewControl.length == 0) {
                         jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
                         context.menu.toolbar.getJqControls().show().append(jqViewControl);
                     }
                     var viewMenu = ViewMenu.from(jqViewControl);
-                    context.jQuery.find(".rocket-impl-translatable").each(function (i, elem) {
+                    jqTranslatables.each(function (i, elem) {
                         viewMenu.registerTranslatable(Translatable.from($(elem)));
                     });
                 };
                 var this_1 = this;
                 for (var _i = 0, _a = this.container.getAllContexts(); _i < _a.length; _i++) {
                     var context = _a[_i];
-                    _loop_1(context);
+                    var state_1 = _loop_1(context);
+                    if (state_1 === "continue") continue;
                 }
             };
             Translator.prototype.initTm = function (jqElem, context) {
@@ -1325,32 +1332,64 @@ var Rocket;
         }());
         Impl.Translator = Translator;
         var ViewMenu = (function () {
-            function ViewMenu() {
+            function ViewMenu(jqContainer) {
+                this.jqContainer = jqContainer;
                 this.translatables = [];
                 this.items = {};
                 this.changing = false;
-                this.jqMenu = $("<ul></ul>", {});
             }
-            ViewMenu.prototype.draw = function (jqContainer) {
+            ViewMenu.prototype.draw = function (languagesLabel, visibleLabel) {
                 var _this = this;
-                new Rocket.Display.CommandList(jqContainer).createJqCommandButton({
+                $("<div />", { "class": "rocket-impl-translation-status" })
+                    .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
+                    .append(this.jqStatus = $("<span></span>"))
+                    .prependTo(this.jqContainer);
+                new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
                     iconType: "fa fa-cog",
-                    label: "Languages"
+                    label: languagesLabel
                 }).click(function () { return _this.jqMenu.toggle(); });
-                jqContainer.append(this.jqMenu);
+                this.jqMenu = $("<ul></ul>", {}).hide();
+                this.jqContainer.append(this.jqMenu);
             };
+            ViewMenu.prototype.updateStatus = function () {
+                var prettyLocaleIds = [];
+                for (var localeId in this.items) {
+                    if (!this.items[localeId].on)
+                        continue;
+                    prettyLocaleIds.push(this.items[localeId].prettyLocaleId);
+                }
+                this.jqStatus.empty();
+                this.jqStatus.text(prettyLocaleIds.join(", "));
+            };
+            Object.defineProperty(ViewMenu.prototype, "visibleLocaleIds", {
+                get: function () {
+                    var localeIds = [];
+                    for (var localeId in this.items) {
+                        if (!this.items[localeId].on)
+                            continue;
+                        localeIds.push(localeId);
+                    }
+                    return localeIds;
+                },
+                enumerable: true,
+                configurable: true
+            });
             ViewMenu.prototype.registerTranslatable = function (translatable) {
                 var _this = this;
                 if (-1 < this.translatables.indexOf(translatable))
                     return;
+                if (!this.jqStatus) {
+                    this.draw(translatable.jQuery.data("rocket-impl-languages-label"), translatable.jQuery.data("rocket-impl-visible-label"));
+                }
                 this.translatables.push(translatable);
                 translatable.jQuery.on("remove", function () { return _this.unregisterTranslatable(translatable); });
                 var _loop_2 = function(content) {
                     if (!this_2.items[content.localeId]) {
-                        var item = this_2.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName);
+                        var item = this_2.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
                         item.draw($("<li />").appendTo(this_2.jqMenu));
                         item.on = Object.keys(this_2.items).length == 1;
                         item.whenChanged(function () { return _this.menuChanged(); });
+                        this_2.updateStatus();
                     }
                     content.visible = this_2.items[content.localeId].on;
                     content.whenChanged(function () {
@@ -1386,6 +1425,7 @@ var Rocket;
                     var translatable = _a[_i];
                     translatable.visibleLocaleIds = visiableLocaleIds;
                 }
+                this.updateStatus();
                 this.changing = false;
             };
             ViewMenu.from = function (jqElem) {
@@ -1393,17 +1433,17 @@ var Rocket;
                 if (vm instanceof ViewMenu) {
                     return vm;
                 }
-                vm = new ViewMenu();
-                vm.draw(jqElem);
+                vm = new ViewMenu(jqElem);
                 jqElem.data("rocketImplViewMenu", vm);
                 return vm;
             };
             return ViewMenu;
         }());
         var ViewMenuItem = (function () {
-            function ViewMenuItem(localeId, label) {
+            function ViewMenuItem(localeId, label, prettyLocaleId) {
                 this.localeId = localeId;
                 this.label = label;
+                this.prettyLocaleId = prettyLocaleId;
                 this._on = true;
                 this.changedCallbacks = [];
             }
