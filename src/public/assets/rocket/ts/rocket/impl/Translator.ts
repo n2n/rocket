@@ -13,16 +13,23 @@ namespace Rocket.Impl {
 					this.initTm($(elem), context);
 				}
 				
-				
 				let jqViewControl = context.menu.toolbar.getJqControls().find(".rocket-impl-translation-view-control");
+				
+				let jqTranslatables = context.jQuery.find(".rocket-impl-translatable");
+				if (jqTranslatables.length == 0) {
+					jqViewControl.hide();
+					continue;
+				}
+				
+				jqViewControl.show();
+				
 				if (jqViewControl.length == 0) {
 					jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
 					context.menu.toolbar.getJqControls().show().append(jqViewControl);
 				}
 				
 				let viewMenu = ViewMenu.from(jqViewControl);
-				
-				context.jQuery.find(".rocket-impl-translatable").each((i, elem) => {
+				jqTranslatables.each((i, elem) => {
 					viewMenu.registerTranslatable(Translatable.from($(elem)));
 				});
 			}
@@ -48,26 +55,63 @@ namespace Rocket.Impl {
 	
 	class ViewMenu {
 		private translatables: Array<Translatable> = [];
+		private jqStatus: JQuery;
 		private jqMenu: JQuery;
 		private items: { [localeId: string]: ViewMenuItem } = {};
 		private changing: boolean = false;
 		
-		constructor() {
-			this.jqMenu = $("<ul></ul>", {
-			});
+		constructor(private jqContainer: JQuery) {
+			
 		}
 		
-		draw(jqContainer: JQuery) {
-			new Rocket.Display.CommandList(jqContainer).createJqCommandButton({
+		
+		private draw(languagesLabel: string, visibleLabel: string) {
+			$("<div />", { "class": "rocket-impl-translation-status" })
+					.append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
+					.append(this.jqStatus = $("<span></span>"))
+					.prependTo(this.jqContainer);
+			
+			new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
 				iconType: "fa fa-cog",
-				label: "Languages"
+				label: languagesLabel
 			}).click(() => this.jqMenu.toggle());
 			
-			jqContainer.append(this.jqMenu);
+			this.jqMenu = $("<ul></ul>", {}).hide();
+			this.jqContainer.append(this.jqMenu);
+		}	
+		
+		
+		private updateStatus() {
+			let prettyLocaleIds: Array<string> = [];
+			for (let localeId in this.items) {
+				if (!this.items[localeId].on) continue;
+				
+				prettyLocaleIds.push(this.items[localeId].prettyLocaleId);
+			}
+			
+			this.jqStatus.empty();
+			this.jqStatus.text(prettyLocaleIds.join(", "));
+		}
+		
+		get visibleLocaleIds(): Array<string> {
+			let localeIds: Array<string> = [];
+			
+			for (let localeId in this.items) {
+				if (!this.items[localeId].on) continue;
+				
+				localeIds.push(localeId);
+			}
+			
+			return localeIds;
 		}
 		
 		registerTranslatable(translatable: Translatable) {
 			if (-1 < this.translatables.indexOf(translatable)) return;
+			
+			if (!this.jqStatus) {
+				this.draw(translatable.jQuery.data("rocket-impl-languages-label"), 
+						translatable.jQuery.data("rocket-impl-visible-label"));
+			}
 			
 			this.translatables.push(translatable);
 			
@@ -75,11 +119,13 @@ namespace Rocket.Impl {
 			
 			for (let content of translatable.contents) {
 				if (!this.items[content.localeId]) {
-					let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName);
+					let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
 					item.draw($("<li />").appendTo(this.jqMenu));
 					
 					item.on = Object.keys(this.items).length == 1;
 					item.whenChanged(() => this.menuChanged());
+					
+					this.updateStatus();
 				}
 				
 				content.visible = this.items[content.localeId].on;
@@ -119,6 +165,7 @@ namespace Rocket.Impl {
 				translatable.visibleLocaleIds = visiableLocaleIds;
 			}
 			
+			this.updateStatus();
 			this.changing = false;
 		}
 		static from(jqElem: JQuery): ViewMenu {
@@ -127,8 +174,7 @@ namespace Rocket.Impl {
 				return vm;
 			}
 			
-			vm = new ViewMenu();
-			vm.draw(jqElem);
+			vm = new ViewMenu(jqElem);
 			jqElem.data("rocketImplViewMenu", vm);
 			
 			return vm;
@@ -140,7 +186,7 @@ namespace Rocket.Impl {
 		private changedCallbacks: Array<() => any> = [];
 		private jqI: JQuery;
 		
-		constructor (public localeId: string, public label: string) {
+		constructor (public localeId: string, public label: string, public prettyLocaleId: string) {
 			
 		}
 		

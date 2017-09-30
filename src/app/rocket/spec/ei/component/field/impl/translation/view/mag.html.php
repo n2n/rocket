@@ -39,7 +39,8 @@
 ?>
 
 <div class="rocket-impl-translatable"
-		data-languages-label="<?php $html->text('ei_impl_languages_label') ?>">
+		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>">
 	<?php foreach ($propertyPaths as $n2nLocaleId => $propertyPath): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 		<?php $hasError = $formHtml->meta()->hasErrors($propertyPath) ?>
