@@ -87,7 +87,7 @@ class PreviewHtmlBuilder {
 		if ($this->areaEditable && $this->previewModel->hasMainDispatchable()) {
 			$this->view->getFormHtmlBuilder()->open($this->previewModel->getMainDispatchable(), Form::ENCTYPE_MULTIPART, 
 					null, array('class' => 'rocket-preview-component', 'id' => 'rocket-preview-inpage-form',
-							'data-rocket-preview-message-list' => $this->view->getHtmlBuilder()->getMessageList()->getContents()));
+							'data-rocket-preview-message-list' => $this->view->getOut($this->view->getHtmlBuilder()->getMessageList())));
 		}	
 	}
 	
