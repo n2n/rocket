@@ -279,6 +279,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$entryForm->setEntryTypeForms($entryTypeForms);
 		$entryForm->setChoicesMap($labels);
 		$entryForm->setChosenId(key($entryTypeForms));
+		$entryForm->setContextPropertyPath($contextPropertyPath);
 		// @todo remove hack when ContentItemEiProp gets updated.
 		if ($contextEiType->hasSubEiTypes()) {
 			$entryForm->setChoosable(true);

@@ -35,6 +35,8 @@ namespace Rocket.Display {
 			
 			var jqContext = context.jQuery;
 			
+			EntryForm.find(jqContext, true);
+			
 			jqContext.find(".rocket-group-main").each(function () {
 				var jqElem = $(this);
 				

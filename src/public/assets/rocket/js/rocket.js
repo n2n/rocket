@@ -1150,6 +1150,7 @@ var Rocket;
                 var that = this;
                 var i = 0;
                 var jqContext = context.jQuery;
+                Display.EntryForm.find(jqContext, true);
                 jqContext.find(".rocket-group-main").each(function () {
                     var jqElem = $(this);
                     if (jqElem.hasClass("rocket-group-main")) {
@@ -4160,29 +4161,101 @@ var Rocket;
     var Display;
     (function (Display) {
         var EntryForm = (function () {
-            function EntryForm(jqEntryForm) {
-                this.jqEntryForm = jqEntryForm;
+            function EntryForm(jqElem) {
+                this.jqTypeSelect = null;
+                this.inited = false;
+                this.jqElem = jqElem;
             }
+            EntryForm.prototype.init = function () {
+                var _this = this;
+                if (this.inited) {
+                    throw new Error("EntryForm already initialized:");
+                }
+                this.inited = true;
+                if (!this.jqElem.hasClass("rocket-multi-type"))
+                    return;
+                this.jqTypeSelect = this.jqElem.children(".rocket-type-selector").find("select");
+                this.updateDisplay();
+                this.jqTypeSelect.change(function () {
+                    _this.updateDisplay();
+                });
+            };
+            EntryForm.prototype.updateDisplay = function () {
+                if (!this.jqTypeSelect)
+                    return;
+                this.jqElem.children(".rocket-type-entry-form").hide();
+                this.jqElem.children(".rocket-type-" + this.jqTypeSelect.val()).show();
+            };
             Object.defineProperty(EntryForm.prototype, "jQuery", {
                 get: function () {
-                    return this.jqEntryForm;
+                    return this.jqElem;
                 },
                 enumerable: true,
                 configurable: true
             });
-            EntryForm.prototype.hasTypeSelector = function () {
-                return this.jqEntryForm.find(".rocket-type-dependent-entry-form").length > 0;
-            };
+            Object.defineProperty(EntryForm.prototype, "multiType", {
+                get: function () {
+                    return this.jqTypeSelect ? true : false;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EntryForm.prototype, "curTypeId", {
+                get: function () {
+                    if (!this.multiType) {
+                        return this.jqElem.data("rocket-type-id");
+                    }
+                    throw new Error();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EntryForm.prototype, "curGenericLabel", {
+                get: function () {
+                    if (!this.multiType) {
+                        return this.jqElem.data("rocket-generic-label");
+                    }
+                    throw new Error();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(EntryForm.prototype, "typeMap", {
+                get: function () {
+                    var typeMap = {};
+                    if (!this.multiType) {
+                        typeMap[this.curTypeId] = this.curGenericLabel;
+                        return typeMap;
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
             EntryForm.from = function (jqElem, create) {
-                if (create === void 0) { create = false; }
+                if (create === void 0) { create = true; }
                 var entryForm = jqElem.data("rocketEntryForm");
                 if (entryForm instanceof EntryForm)
                     return entryForm;
                 if (!create)
                     return null;
                 entryForm = new EntryForm(jqElem);
+                entryForm.init();
                 jqElem.data("rocketEntryForm", entryForm);
                 return entryForm;
+            };
+            EntryForm.findFirst = function (jqElem) {
+                var jqEntryForm = jqElem.find(".rocket-entry-form:first");
+                if (jqEntryForm.length == 0)
+                    return null;
+                return EntryForm.from(jqEntryForm);
+            };
+            EntryForm.find = function (jqElem, mulitTypeOnly) {
+                if (mulitTypeOnly === void 0) { mulitTypeOnly = false; }
+                var entryForms = [];
+                jqElem.find(".rocket-entry-form" + (mulitTypeOnly ? ".rocket-multi-type" : "")).each(function () {
+                    entryForms.push(EntryForm.from($(this)));
+                });
+                return entryForms;
             };
             return EntryForm;
         }());

@@ -22,6 +22,7 @@
 
 	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\dispatch\map\PropertyPath;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -32,23 +33,32 @@
 	
 // 	$entryFormViewModel->initFromView($view);
 	
-	$selectedTypeIdPropertyPath = $entryFormViewModel->getEntryFormPropertyPath()->ext('chosenId');
+	$efPropertyPath = $entryFormViewModel->getEntryForm()->getContextPropertyPath();
+	if ($efPropertyPath === null) {
+		$efPropertyPath = new PropertyPath(array());
+	}
+	$selectedTypeIdPropertyPath = $efPropertyPath->ext('chosenId');
+	
+	$typeChoicesMap = $entryFormViewModel->getTypeChoicesMap();
 ?>
 	
 <?php if (!$entryFormViewModel->isTypeChangable()): ?>
-	<?php $view->import($entryFormViewModel->createEditView($view))?>
+	<div class="rocket-entry-form" 
+			data-rocket-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
+			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>">
+		<?php $view->import($entryFormViewModel->createEditView($view))?>
+	</div>
 <?php else: ?>
-	<div class="rocket-type-dependent-entry-form">
-		<div class="rocket-script-type-selector">
+	<div class="rocket-entry-form rocket-multi-type">
+		<div class="rocket-type-selector">
 			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
-			<div class="rocket-controls">
-				<?php $formHtml->select($selectedTypeIdPropertyPath, 
-						$entryFormViewModel->getTypeChoicesMap(), array('class' => 'rocket-script-type-selection')) ?>
+			<div>
+				<?php $formHtml->select($selectedTypeIdPropertyPath, $entryFormViewModel->getTypeChoicesMap()) ?>
 			</div>
 		</div>
 	
 		<?php foreach ($entryFormViewModel->createEditViews($view) as $id => $editView): ?>
-			<div class="rocket-script-type-<?php $html->out($id) ?>">
+			<div class="rocket-type-entry-form rocket-type-<?php $html->out($id) ?>">
 				<?php $view->import($editView) ?>
 			</div>
 		<?php endforeach ?>
