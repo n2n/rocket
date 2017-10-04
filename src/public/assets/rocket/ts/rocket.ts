@@ -54,12 +54,12 @@ namespace Rocket {
 		
 		(function () {
 			$(".rocket-impl-to-many").each(function () {
-				Rocket.Impl.ToMany.from($(this));
+				Rocket.Impl.Relation.ToMany.from($(this));
 			});
 			
 			n2n.dispatch.registerCallback(function () {
 				$(".rocket-impl-to-many").each(function () {
-					Rocket.Impl.ToMany.from($(this));
+					Rocket.Impl.Relation.ToMany.from($(this));
 				});
 			});
 		}) ();

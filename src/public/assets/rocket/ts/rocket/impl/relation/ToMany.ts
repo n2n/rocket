@@ -19,8 +19,8 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  * 
  */
-/// <reference path="../display/Group.ts" />
-namespace Rocket.Impl {
+/// <reference path="../../display/Group.ts" />
+namespace Rocket.Impl.Relation {
 	import cmd = Rocket.Cmd;
 	import display = Rocket.Display;
 	
@@ -626,7 +626,7 @@ namespace Rocket.Impl {
 		
 		private jqContextCommands: JQuery;
 		private bodyGroup: display.StructureElement;
-		private entryForm: display.EntryForm;
+		private _entryForm: display.EntryForm;
 		
 		private jqExpMoveUpButton: JQuery;
 		private jqExpMoveDownButton: JQuery;
@@ -649,7 +649,7 @@ namespace Rocket.Impl {
 				var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
 				this.jqRedFocusButton = rcl.createJqCommandButton({iconType: "fa fa-file", label: "Detail", severity: display.Severity.SECONDARY});
 			} else {
-				this.entryForm = display.EntryForm.from(jqEntry, true);
+				this._entryForm = display.EntryForm.firstOf(jqEntry);
 				
 				var ecl = this.bodyGroup.getToolbar().getCommandList();
 				this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
@@ -668,8 +668,8 @@ namespace Rocket.Impl {
 			jqEntry.data("rocketImplEmbeddedEntry", this);
 		}
 		
-		public getEntryForm(): display.EntryForm {
-			return this.entryForm;
+		get entryForm(): display.EntryForm {
+			return this._entryForm;
 		}
 		
 		public onMove(callback: (up: boolean) => any) {
@@ -839,7 +839,6 @@ namespace Rocket.Impl {
 		}
 		
 		private load() {
-			var that = this;
 			$.ajax({
 				"url": this.urlStr,
 				"data": {
@@ -847,14 +846,14 @@ namespace Rocket.Impl {
 					"draft": this.draftMode ? 1 : 0
 				},
 				"dataType": "json"
-			}).fail(function (jqXHR, textStatus, data) {
+			}).fail((jqXHR, textStatus, data) => {
 				if (jqXHR.status != 200) {
                     Rocket.handleErrorResponse(this.urlStr, jqXHR);
 				}
 				
-				that.failResponse();
-			}).done(function (data, textStatus, jqXHR) {
-				that.doneResponse(data);
+				this.failResponse();
+			}).done((data, textStatus, jqXHR) => {
+				this.doneResponse(data);
 			});
 		}
 		
@@ -898,7 +897,8 @@ namespace Rocket.Impl {
 		private jqElem: JQuery;
 		private jqButton: JQuery;
 		private onNewEntryCallbacks: Array<(EmbeddedEntry) => any> = new Array<(EmbeddedEntry) => any>();
-		private examinedEmbeddedEntry: EmbeddedEntry; 
+		private jqMultiTypeUl: JQuery;
+		private multiTypeEmbeddedEntry: EmbeddedEntry; 
 		private disposed: boolean = false;
 		
 		constructor(jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever) {
@@ -907,19 +907,24 @@ namespace Rocket.Impl {
 			this.jqElem = jqElem;
 			this.jqButton = jqElem.children("button");
 			
-			var that = this;
-			this.jqButton.on("mouseenter", function () {
-				that.embeddedEntryRetriever.setPreloadEnabled(true);
+			this.jqButton.on("mouseenter", () => {
+				this.embeddedEntryRetriever.setPreloadEnabled(true);
 			});
-			this.jqButton.on("click", function () {
-				if (that.isLoading()) return;
-				that.block(true);
-				that.embeddedEntryRetriever.lookupNew(
-						function (embeddedEntry: EmbeddedEntry) {
-							that.examine(embeddedEntry);
+			this.jqButton.on("click", () => {
+				if (this.isLoading()) return;
+				
+				if (this.jqMultiTypeUl) {
+					this.jqMultiTypeUl.toggle();
+					return;
+				}
+				
+				this.block(true);
+				this.embeddedEntryRetriever.lookupNew(
+						(embeddedEntry: EmbeddedEntry) => {
+							this.examine(embeddedEntry);
 						},
-						function () {
-							that.block(false);
+						() => {
+							this.block(false);
 						});
 			});
 			
@@ -942,21 +947,39 @@ namespace Rocket.Impl {
 		private examine(embeddedEntry: EmbeddedEntry) {
 			this.block(false);
 			
-			if (!embeddedEntry.getEntryForm().multiType) {
+			if (!embeddedEntry.entryForm.multiType) {
 				this.fireCallbacks(embeddedEntry);
 				return;
 			}
 			
-			this.examinedEmbeddedEntry = embeddedEntry;
+			this.multiTypeEmbeddedEntry = embeddedEntry;
+			
+			this.jqMultiTypeUl = $("<ul />", { "class": "rocket-impl-multi-type-menu" });
+			this.jqElem.append(this.jqMultiTypeUl);
+			
+			let typeMap = embeddedEntry.entryForm.typeMap;
+			for (let typeId in typeMap) {
+				this.jqMultiTypeUl.append($("<li />").append($("<button />", { 
+					"type": "button", 
+					"text": typeMap[typeId],
+					"click": () => {
+						embeddedEntry.entryForm.curTypeId = typeId;
+						this.jqMultiTypeUl.remove();
+						this.jqMultiTypeUl = null;
+						this.multiTypeEmbeddedEntry = null;
+						this.fireCallbacks(embeddedEntry);
+					}
+				})));
+			}
 		}
 		
 		public dispose() {
 			this.disposed = true;
 			this.jqElem.remove();
 			
-			if (this.examinedEmbeddedEntry !== null) {
-				this.fireCallbacks(this.examinedEmbeddedEntry);
-				this.examinedEmbeddedEntry = null;
+			if (this.multiTypeEmbeddedEntry !== null) {
+				this.fireCallbacks(this.multiTypeEmbeddedEntry);
+				this.multiTypeEmbeddedEntry = null;
 			}
 		}
 		

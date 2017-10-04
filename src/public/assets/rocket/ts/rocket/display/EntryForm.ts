@@ -44,7 +44,11 @@ namespace Rocket.Display {
 				return this.jqElem.data("rocket-type-id");
 			}
 			
-			throw new Error();
+			return this.jqTypeSelect.val();
+		}
+		
+		set curTypeId(typeId: string) {
+			this.jqTypeSelect.val(typeId);
 		}
 		
 		get curGenericLabel(): string {
@@ -52,16 +56,23 @@ namespace Rocket.Display {
 				return this.jqElem.data("rocket-generic-label");
 			}
 			
-			throw new Error();
+			return this.jqTypeSelect.children(":selected").text();
 		}
 		
 		get typeMap(): { [typeId: string]: string } {
 			let typeMap: { [typeId: string]: string } = {};
+			
 			if (!this.multiType) {
 				typeMap[this.curTypeId] = this.curGenericLabel;
 				return typeMap;  
 			}
 			
+			this.jqTypeSelect.children().each(function () {
+				let jqElem = $(this);
+				typeMap[jqElem.attr("value")] = jqElem.text();
+			});
+			
+			return typeMap;
 		}
 		
 		public static from(jqElem: JQuery, create: boolean = true): EntryForm {
@@ -76,7 +87,11 @@ namespace Rocket.Display {
 			return entryForm;
 		}
 		
-		public static findFirst(jqElem: JQuery): EntryForm {
+		public static firstOf(jqElem: JQuery): EntryForm {
+			if (jqElem.hasClass("rocket-entry-form")) {
+				return EntryForm.from(jqElem);
+			}
+			
 			let jqEntryForm = jqElem.find(".rocket-entry-form:first");
 			if (jqEntryForm.length == 0) return null;
 			
