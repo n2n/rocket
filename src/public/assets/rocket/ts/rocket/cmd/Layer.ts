@@ -224,6 +224,11 @@ namespace Rocket.Cmd {
 		
 		public close() {
 			this.trigger(Layer.EventType.CLOSE);
+			
+			let context = null;
+			while (context = this._contexts.pop()) {
+				context.close();
+			}
 				
 			this._contexts = new Array<Context>();
 			this.jqLayer.remove();
