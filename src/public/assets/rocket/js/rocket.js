@@ -1067,20 +1067,20 @@ var Rocket;
                 });
             }
             Blocker.prototype.observeLayer = function (layer) {
+                var _this = this;
                 for (var _i = 0, _a = layer.contexts; _i < _a.length; _i++) {
                     var context = _a[_i];
                     this.observeContext(context);
                 }
-                var that = this;
                 layer.onNewContext(function (context) {
-                    that.observeContext(context);
-                    that.check();
+                    _this.observeContext(context);
+                    _this.check();
                 });
             };
             Blocker.prototype.observeContext = function (context) {
-                var that = this;
+                var _this = this;
                 var checkCallback = function () {
-                    that.check();
+                    _this.check();
                 };
                 context.on(Cmd.Context.EventType.SHOW, checkCallback);
                 context.on(Cmd.Context.EventType.HIDE, checkCallback);
@@ -1096,7 +1096,7 @@ var Rocket;
                 this.check();
             };
             Blocker.prototype.check = function () {
-                if (!this.jqContainer)
+                if (!this.jqContainer || !this.container.currentLayer.currentContext)
                     return;
                 if (!this.container.currentLayer.currentContext.locked) {
                     if (!this.jqBlocker)
@@ -2697,7 +2697,7 @@ var Rocket;
             };
             AddControl.prototype.examine = function (embeddedEntry) {
                 this.block(false);
-                if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
+                if (!embeddedEntry.getEntryForm().multiType) {
                     this.fireCallbacks(embeddedEntry);
                     return;
                 }
@@ -4339,10 +4339,20 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Layer.prototype, "empty", {
+                get: function () {
+                    return this._contexts.length == 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Layer.prototype.hasCurrent = function () {
+                return this._currentHistoryIndex !== null;
+            };
             Object.defineProperty(Layer.prototype, "currentContext", {
                 get: function () {
-                    if (this._contexts.length == 0) {
-                        throw new Error("no context avaialble");
+                    if (this.empty || !this.hasCurrent()) {
+                        return null;
                     }
                     var url = this.historyUrls[this._currentHistoryIndex];
                     for (var i in this._contexts) {

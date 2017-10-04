@@ -84,9 +84,17 @@ namespace Rocket.Cmd {
 			return this._level;
 		}
 		
+		get empty(): boolean {
+			return this._contexts.length == 0;
+		}
+		
+		private hasCurrent(): boolean {
+			return this._currentHistoryIndex !== null;
+		}
+		
 		get currentContext(): Context {
-			if (this._contexts.length == 0) {
-				throw new Error("no context avaialble");
+			if (this.empty || !this.hasCurrent()) {
+				return null;
 			}
 			
 			var url = this.historyUrls[this._currentHistoryIndex];

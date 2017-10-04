@@ -942,7 +942,7 @@ namespace Rocket.Impl {
 		private examine(embeddedEntry: EmbeddedEntry) {
 			this.block(false);
 			
-			if (!embeddedEntry.getEntryForm().hasTypeSelector()) {
+			if (!embeddedEntry.getEntryForm().multiType) {
 				this.fireCallbacks(embeddedEntry);
 				return;
 			}

@@ -22,17 +22,15 @@ namespace Rocket.Cmd {
 				this.observeContext(context)
 			}
 			
-			var that = this;
-			layer.onNewContext(function (context: Context) {
-				that.observeContext(context);
-				that.check();
+			layer.onNewContext((context: Context) => {
+				this.observeContext(context);
+				this.check();
 			});
 		}
 		
 		private observeContext(context: Context) {
-			var that = this;
-			var checkCallback = function () {
-				that.check();
+			var checkCallback = () => {
+				this.check();
 			}
 			
 			context.on(Context.EventType.SHOW, checkCallback);
@@ -54,7 +52,7 @@ namespace Rocket.Cmd {
 		
 		
 		private check() {
-			if (!this.jqContainer) return;
+			if (!this.jqContainer || !this.container.currentLayer.currentContext) return;
 			
 			if (!this.container.currentLayer.currentContext.locked) {
 				if (!this.jqBlocker) return;
