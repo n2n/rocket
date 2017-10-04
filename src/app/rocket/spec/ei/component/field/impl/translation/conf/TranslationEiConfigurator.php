@@ -52,7 +52,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_LOCALE_ID_KEY = 'id';
 	const ATTR_LOCALE_LABEL_KEY = 'label';
 	const ATTR_LOCALE_MANDATORY_KEY = 'mandatory';
-	const ATTR_MIN_NUM_TRANSLATIONS_KEY = 'minNumTranslations';
+	const ATTR_MIN_NUM_TRANSLATIONS_KEY = 'min';
 	
 	private $translationEiProp;
 	

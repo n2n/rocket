@@ -43,8 +43,10 @@
 	<?php foreach ($n2nLocaleDefs as $n2nLocaleDef): ?>
 		<li data-rocket-impl-locale-id="<?php $html->out($n2nLocaleDef->getN2nLocaleId()) ?>" 
 				data-rocket-impl-mandatory="<?php $html->out($n2nLocaleDef->isMandatory()) ?>">
-			<?php $formHtml->optionalObjectCheckbox($propertyPath->fieldExt($n2nLocaleDef->getN2nLocaleId()), null, 
-					$n2nLocaleDef->buildLabel($request->getN2nLocale())) ?>
+			<label>
+				<?php $formHtml->optionalObjectCheckbox($propertyPath->fieldExt($n2nLocaleDef->getN2nLocaleId())) ?>
+				<?php $html->out($n2nLocaleDef->buildLabel($request->getN2nLocale())) ?>
+			</label>
 		</li>
 	<?php endforeach ?>
 </ul>

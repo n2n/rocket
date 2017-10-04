@@ -1534,17 +1534,16 @@ var Rocket;
                         continue;
                     activeLocaleIds.push(menuItem.localeId);
                 }
-                if (activeLocaleIds.length >= this.min) {
-                    return activeLocaleIds;
-                }
+                var activeDisabled = activeLocaleIds.length <= this.min;
                 for (var _b = 0, _c = this.menuItems; _b < _c.length; _b++) {
                     var menuItem = _c[_b];
-                    if (menuItem.active)
+                    if (menuItem.mandatory)
                         continue;
-                    activeLocaleIds.push(menuItem.localeId);
-                    if (activeLocaleIds.length >= this.min) {
-                        break;
+                    if (!menuItem.active && activeLocaleIds.length < this.min) {
+                        menuItem.active = true;
+                        activeLocaleIds.push(menuItem.localeId);
                     }
+                    menuItem.disabled = activeDisabled && menuItem.active;
                 }
                 return activeLocaleIds;
             };
@@ -1673,16 +1672,43 @@ var Rocket;
                     this.jqCheck.prop("checked", true);
                     this.jqCheck.prop("disabled", true);
                 }
+                this.jqCheck.change(this.updateClasses());
+            };
+            MenuItem.prototype.updateClasses = function () {
+                if (this.disabled) {
+                    this.jqElem.addClass("rocket-disabled");
+                }
+                else {
+                    this.jqElem.removeClass("rocket-disabled");
+                }
+                if (this.active) {
+                    this.jqElem.addClass("rocket-active");
+                }
+                else {
+                    this.jqElem.removeClass("rocket-active");
+                }
             };
             MenuItem.prototype.whenChanged = function (callback) {
                 this.jqCheck.change(callback);
             };
+            Object.defineProperty(MenuItem.prototype, "disabled", {
+                get: function () {
+                    return this.jqCheck.is(":disabled");
+                },
+                set: function (disabled) {
+                    this.jqCheck.prop("disabled", disabled);
+                    this.updateClasses();
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(MenuItem.prototype, "active", {
                 get: function () {
                     return this.jqCheck.is(":checked");
                 },
                 set: function (active) {
                     this.jqCheck.prop("checked", active);
+                    this.updateClasses();
                 },
                 enumerable: true,
                 configurable: true

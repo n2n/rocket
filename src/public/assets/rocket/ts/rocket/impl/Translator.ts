@@ -194,7 +194,6 @@ namespace Rocket.Impl {
 		private jqI: JQuery;
 		
 		constructor (public localeId: string, public label: string, public prettyLocaleId: string) {
-			
 		}
 		
 		draw(jqElem: JQuery) {
@@ -283,18 +282,17 @@ namespace Rocket.Impl {
 				activeLocaleIds.push(menuItem.localeId);
 			}
 			
-			if (activeLocaleIds.length >= this.min) {
-				return activeLocaleIds;
-			}
+			let activeDisabled = activeLocaleIds.length <= this.min;
 			
 			for (let menuItem of this.menuItems) {
-				if (menuItem.active) continue;
+				if (menuItem.mandatory) continue;
 				
-				activeLocaleIds.push(menuItem.localeId);
-				
-				if (activeLocaleIds.length >= this.min) {
-					break;
+				if (!menuItem.active && activeLocaleIds.length < this.min) {
+					menuItem.active = true;
+					activeLocaleIds.push(menuItem.localeId);
 				}
+				
+				menuItem.disabled = activeDisabled && menuItem.active;
 			}
 						
 			return activeLocaleIds;
@@ -428,6 +426,7 @@ namespace Rocket.Impl {
 		private _localeId;
 		private _mandatory: boolean;
 		private jqCheck: JQuery;
+		private jqI: JQuery;
 		
 		constructor(private jqElem: JQuery) {
 			this._localeId = this.jqElem.data("rocket-impl-locale-id");
@@ -446,10 +445,35 @@ namespace Rocket.Impl {
 				this.jqCheck.prop("checked", true);
 				this.jqCheck.prop("disabled", true);
 			}
+			
+			this.jqCheck.change(this.updateClasses());
+		}
+		
+		private updateClasses() {
+			if (this.disabled) {
+				this.jqElem.addClass("rocket-disabled");
+			} else {
+				this.jqElem.removeClass("rocket-disabled");
+			}
+			
+			if (this.active) {
+				this.jqElem.addClass("rocket-active");
+			} else {
+				this.jqElem.removeClass("rocket-active");
+			}
 		}
 		
 		whenChanged(callback: () => any) {
 			this.jqCheck.change(callback);
+		}
+		
+		get disabled(): boolean {
+			return this.jqCheck.is(":disabled");
+		}
+		
+		set disabled(disabled: boolean) {
+			this.jqCheck.prop("disabled", disabled);
+			this.updateClasses();	
 		}
 		
 		get active(): boolean {
@@ -457,7 +481,8 @@ namespace Rocket.Impl {
 		}
 		
 		set active(active: boolean) {
-			this.jqCheck.prop("checked", active);	
+			this.jqCheck.prop("checked", active);
+			this.updateClasses();	
 		}
 		
 		get localeId(): string {
