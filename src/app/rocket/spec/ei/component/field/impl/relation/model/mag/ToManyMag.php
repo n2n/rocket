@@ -49,6 +49,7 @@ class ToManyMag extends MagAdapter {
 	
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
+	private $allowedNewEiTypeIds = null;
 	private $draftMode = false;
 	private $targetOrderEiPropPath;
 	
@@ -87,6 +88,17 @@ class ToManyMag extends MagAdapter {
 	
 	public function getNewMappingFormUrl(): Url {
 		return $this->newMappingFormUrl;
+	}
+	
+	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+		$this->allowedNewEiTypeIds = $allowedEiTypeIds;
+	}
+	
+	/**
+	 * @return array|null
+	 */
+	public function getAllowedNewEiTypeIds() {
+		return  $this->allowedNewEiTypeIds;
 	}
 
 	public function setDraftMode(bool $draftMode) {
@@ -143,6 +155,7 @@ class ToManyMag extends MagAdapter {
 		}
 	
 		$toManyForm->setNewMappingFormAvailable($this->newMappingFormUrl !== null);
+		$toManyForm->setAllowedNewEiTypeIds($this->allowedNewEiTypeIds);
 		$toManyForm->setDraftMode($this->draftMode);
 		
 		return $toManyForm;
@@ -208,6 +221,14 @@ class ToManyMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition()
 	 */
 	public function setupBindingDefinition(BindingDefinition $bindingDefinition) {
+		if ($this->allowedNewEiTypeIds !== null) {
+			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName);
+			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
+				if (in_array($mfMappingResult->entryForm->chosenId, $this->allowedNewEiTypeIds)) continue;
+				
+				$mfMappingResult->getBindingErrors()->addErrorCode('chosenId', 'ei_impl_ei_type_disallowed');
+			}
+		}
 	}
 
 	/**

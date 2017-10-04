@@ -247,7 +247,17 @@ class EiuFrame extends EiUtilsAdapter {
 // 		return $eiMask->createBulkyView($eiuEntryGui);
 // 	}
 	
-	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, PropertyPath $contextPropertyPath = null): EntryForm {
+	/**
+	 * 
+	 * @param bool $draft
+	 * @param unknown $copyFromEiObjectObj
+	 * @param PropertyPath $contextPropertyPath
+	 * @param array $allowedEiTypeIds
+	 * @throws EntryManageException
+	 * @return EntryForm
+	 */
+	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
+			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null): EntryForm {
 		$entryTypeForms = array();
 		$labels = array();
 		
@@ -257,6 +267,18 @@ class EiuFrame extends EiUtilsAdapter {
 		$eiGui = $contextEiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
 		
 		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEiTypes());
+		if ($allowedEiTypeIds !== null) {
+			foreach (array_keys($eiTypes) as $eiTypeId) {
+				if (in_array($eiTypeId, $allowedEiTypeIds)) continue;
+					
+				unset($eiTypes[$eiTypeId]);
+			}
+		}
+		
+		if (empty($eiTypes)) {
+			throw new \InvalidArgumentException('Param allowedEiTypeIds caused an empty EntryForm.');
+		}
+		
 		foreach ($eiTypes as $subEiTypeId => $subEiType) {
 			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
 				continue;
@@ -280,10 +302,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$entryForm->setChoicesMap($labels);
 		$entryForm->setChosenId(key($entryTypeForms));
 		$entryForm->setContextPropertyPath($contextPropertyPath);
-		// @todo remove hack when ContentItemEiProp gets updated.
-		if ($contextEiType->hasSubEiTypes()) {
-			$entryForm->setChoosable(true);
-		}
+		$entryForm->setChoosable(count($entryTypeForms) > 1);
 		
 		if (empty($entryTypeForms)) {
 			throw new EntryManageException('Can not create EntryForm of ' . $contextEiType

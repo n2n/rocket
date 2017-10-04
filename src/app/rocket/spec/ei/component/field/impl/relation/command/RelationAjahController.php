@@ -43,15 +43,23 @@ class RelationAjahController extends ControllerAdapter {
 		$this->delegate($delegateController);
 	}
 	
-	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft) {
+	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ParamQuery $chooseableEiTypeIds = null) {
 		try {
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 		} catch (InvalidPropertyExpressionException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
-		$eiFrameUtils = $this->eiCtrlUtils->frame();
-		$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), $eiFrameUtils->getGenericIconType(), null,  
-				$eiFrameUtils->newEntryForm($draft->toBool()));
+		
+		$allowedEiTypeIds = $chooseableEiTypeIds === null ? null : $chooseableEiTypeIds->toStringArrayOrReject();
+		
+		$mappingForm = null;
+		try {
+			$eiFrameUtils = $this->eiCtrlUtils->frame();
+			$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), $eiFrameUtils->getGenericIconType(), null,  
+					$eiFrameUtils->newEntryForm($draft->toBool(), null, null, $allowedEiTypeIds));
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
 		
 		$view = $this->createView('\rocket\spec\ei\component\field\impl\relation\view\pseudoMappingForm.html',
 				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath));

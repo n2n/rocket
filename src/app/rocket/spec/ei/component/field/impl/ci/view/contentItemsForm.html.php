@@ -39,14 +39,12 @@
 	$view->assert(is_array($ciEiTypeLabels));
 ?>
 
-<div class="rocket-content-items" data-ci-ei-spec-labels="<?php $html->out(json_encode($ciEiTypeLabels)) ?>">
+<div class="rocket-impl-content-items">
 	<?php foreach ($panelConfigs as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
-				array('class' => 'rocket-content-item-panel', 'data-name' => $panelConfig->getName(),
-						'data-allowed-ci-spec-ids' => $panelConfig->isRestricted() 
-								? json_encode(array_values($panelConfig->getAllowedContentItemIds())) : null)) ?>
+				array('class' => 'rocket-impl-content-item-panel rocket-group')) ?>
 			<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
-			
+			<?php $formHtml->magLabel() ?>
 			<?php $formHtml->magField() ?>
 		<?php $formHtml->magClose() ?>
 	<?php endforeach ?>	

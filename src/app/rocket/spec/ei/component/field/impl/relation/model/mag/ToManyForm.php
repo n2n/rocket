@@ -132,6 +132,20 @@ class ToManyForm implements Dispatchable {
 	public function setNewMappingFormAvailable($newMappingFormAvailable) {
 		$this->entryFormFactory->setNewMappingFormAvailable($newMappingFormAvailable);
 	}
+	
+	/**
+	 * @return array|null
+	 */
+	public function getAllowedNewEiTypeIds() {
+		return $this->entryFormFactory->getAllowedNewEiTypeIds();
+	}
+	
+	/**
+	 * @param array|null $allowedEiTypeIds
+	 */
+	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+		$this->entryFormFactory->setAllowedNewEiTypeIds($allowedEiTypeIds);
+	}
 
 	public function getNewMappingForms() {
 		return $this->newMappingForms;

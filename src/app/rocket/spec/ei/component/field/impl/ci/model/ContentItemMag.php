@@ -53,6 +53,13 @@ class ContentItemMag extends MagAdapter {
 	
 	private $targetRelationEntries = array();
 	
+	/**
+	 * @param string $propertyName
+	 * @param string $label
+	 * @param PanelConfig[] $panelConfigs
+	 * @param EiFrame $targetReadEiFrame
+	 * @param EiFrame $targetEditEiFrame
+	 */
 	public function __construct(string $propertyName, string $label, array $panelConfigs, 
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
 		parent::__construct($propertyName, $label);
@@ -113,7 +120,10 @@ class ContentItemMag extends MagAdapter {
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
 			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
-			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl);
+			
+			$allowedEiTypeIds = $panelConfig->isRestricted() ? $panelConfig->getAllowedContentItemIds() : null;
+			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl->queryExt(array('chooseableEiTypeIds' => $allowedEiTypeIds)));
+			$panelMag->setAllowedNewEiTypeIds($allowedEiTypeIds);
 			
 			if (isset($groupedTargetRelationEntries[$panelName])) {
 				$panelMag->setValue($groupedTargetRelationEntries[$panelName]);
@@ -153,19 +163,6 @@ class ContentItemMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition()
 	 */
 	public function setupBindingDefinition(BindingDefinition $bindingDefinition) {
-		foreach ($this->panelConfigs as $panelConfig) {
-			if (!$panelConfig->isRestricted()) continue;
-			
-			$allowedIds = $panelConfig->getAllowedContentItemIds();
-		
-			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName)
-					->__get($panelConfig->getName());
-			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
-				if (in_array($mfMappingResult->entryForm->chosenId, $allowedIds)) continue;
-				
-				$mfMappingResult->getBindingErrors()->addErrorCode('chosenId', 'ei_impl_content_item_type_disallowed');
-			}
-		}
 	}
 
 	/**

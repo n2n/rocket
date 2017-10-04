@@ -32,6 +32,7 @@ class ToManyDynMappingFormFactory {
 	private $currentMappingForms = array();
 	private $newMappingFormAvailable;
 	private $newMappingForms = array();
+	private $allowedNewEiTypeIds = null;
 	private $draftMode = false;
 	
 	private $nextOrderIndex = 0;
@@ -91,6 +92,20 @@ class ToManyDynMappingFormFactory {
 		return $this->newMappingFormAvailable;
 	}
 	
+	/**
+	 * @param array|null $allowedEiTypeIds
+	 */
+	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+		$this->allowedNewEiTypeIds = $allowedEiTypeIds;
+	}
+	
+	/**
+	 * @return array|null
+	 */
+	public function getAllowedNewEiTypeIds() {
+		return  $this->allowedNewEiTypeIds;
+	}
+	
 	public function setDraftMode(bool $draftMode) {
 		$this->draftMode = $draftMode;
 	}
@@ -112,6 +127,6 @@ class ToManyDynMappingFormFactory {
 		
 		return $this->newMappingForms[$key] = new MappingForm(
 				$this->eiuFrame->getGenericLabel(), $this->eiuFrame->getGenericIconType(), null,
-				$this->eiuFrame->newEntryForm($this->draftMode));
+				$this->eiuFrame->newEntryForm($this->draftMode, null, null, $this->allowedNewEiTypeIds));
 	}
 }
