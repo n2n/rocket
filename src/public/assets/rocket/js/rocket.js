@@ -1348,7 +1348,7 @@ var Rocket;
                     iconType: "fa fa-cog",
                     label: languagesLabel
                 }).click(function () { return _this.jqMenu.toggle(); });
-                this.jqMenu = $("<ul></ul>", {}).hide();
+                this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
                 this.jqContainer.append(this.jqMenu);
             };
             ViewMenu.prototype.updateStatus = function () {
@@ -1360,6 +1360,10 @@ var Rocket;
                 }
                 this.jqStatus.empty();
                 this.jqStatus.text(prettyLocaleIds.join(", "));
+                var onDisabled = prettyLocaleIds.length == 1;
+                for (var localeId in this.items) {
+                    this.items[localeId].disabled = onDisabled && this.items[localeId].on;
+                }
             };
             Object.defineProperty(ViewMenu.prototype, "visibleLocaleIds", {
                 get: function () {
@@ -1450,14 +1454,33 @@ var Rocket;
             ViewMenuItem.prototype.draw = function (jqElem) {
                 var _this = this;
                 this.jqI = $("<i></i>");
-                $("<button />", { "type": "button", "text": this.label + " " })
+                this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
                     .append(this.jqI)
                     .appendTo(jqElem)
-                    .click(function () {
+                    .click(function (evt) {
+                    if (_this.disabled)
+                        return;
                     _this.on = !_this.on;
+                    evt.preventDefault();
+                    return false;
                 });
                 this.checkI();
             };
+            Object.defineProperty(ViewMenuItem.prototype, "disabled", {
+                get: function () {
+                    return this.jqA.hasClass("disabled");
+                },
+                set: function (disabled) {
+                    if (disabled) {
+                        this.jqA.addClass("disabled");
+                    }
+                    else {
+                        this.jqA.removeClass("disabled");
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(ViewMenuItem.prototype, "on", {
                 get: function () {
                     return this._on;

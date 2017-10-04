@@ -76,7 +76,7 @@ namespace Rocket.Impl {
 				label: languagesLabel
 			}).click(() => this.jqMenu.toggle());
 			
-			this.jqMenu = $("<ul></ul>", {}).hide();
+			this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
 			this.jqContainer.append(this.jqMenu);
 		}	
 		
@@ -91,6 +91,12 @@ namespace Rocket.Impl {
 			
 			this.jqStatus.empty();
 			this.jqStatus.text(prettyLocaleIds.join(", "));
+			
+			let onDisabled = prettyLocaleIds.length == 1;
+			
+			for (let localeId in this.items) {
+				this.items[localeId].disabled = onDisabled && this.items[localeId].on;
+			} 
 		}
 		
 		get visibleLocaleIds(): Array<string> {
@@ -184,6 +190,7 @@ namespace Rocket.Impl {
 	class ViewMenuItem {
 		private _on: boolean = true;
 		private changedCallbacks: Array<() => any> = [];
+		private jqA: JQuery;
 		private jqI: JQuery;
 		
 		constructor (public localeId: string, public label: string, public prettyLocaleId: string) {
@@ -193,14 +200,31 @@ namespace Rocket.Impl {
 		draw(jqElem: JQuery) {
 			this.jqI = $("<i></i>");
 			
-			$("<button />", { "type": "button", "text": this.label + " "})
+			this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
 					.append(this.jqI)
 					.appendTo(jqElem)
-					.click(() => {
+					.click((evt: JQueryEventObject) => {
+						if (this.disabled) return;
+						
 						this.on = !this.on;
+						
+						evt.preventDefault();
+						return false;
 					});
 			
 			this.checkI();
+		}
+		
+		get disabled(): boolean {
+			return this.jqA.hasClass("disabled");
+		}
+		
+		set disabled(disabled: boolean) {
+			if (disabled) {
+				this.jqA.addClass("disabled");
+			} else {
+				this.jqA.removeClass("disabled");
+			}
 		}
 		
 		get on(): boolean {
