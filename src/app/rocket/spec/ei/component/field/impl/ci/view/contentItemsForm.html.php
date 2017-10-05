@@ -23,7 +23,6 @@
 	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
-	use n2n\util\uri\Url;
 
 	$view = HtmlView::view($view);
 	$html = HtmlView::html($view);
@@ -43,7 +42,6 @@
 	<?php foreach ($panelConfigs as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
 				array('class' => 'rocket-impl-content-item-panel rocket-group')) ?>
-			<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
 			<?php $formHtml->magLabel() ?>
 			<?php $formHtml->magField() ?>
 		<?php $formHtml->magClose() ?>
