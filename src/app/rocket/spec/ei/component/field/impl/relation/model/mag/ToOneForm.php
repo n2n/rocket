@@ -179,4 +179,14 @@ class ToOneForm implements Dispatchable {
 		
 		return null;
 	}
+	
+	public function isCompact() {
+		return true;
+	}
+	
+	
+	
+	public function isDraftMode() {
+		return $this->entryFormFactory->isDraftMode();
+	}
 }

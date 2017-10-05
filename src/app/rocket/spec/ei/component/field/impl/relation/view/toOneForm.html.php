@@ -21,7 +21,6 @@
 	 */
 
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneForm;
@@ -44,21 +43,25 @@
 	
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
 ?>
-<div class="rocket-to-one" data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
+<div class="rocket-impl-to-one" data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 				array('item' => $entryLabeler->getGenericLabel())) ?>"
 		data-replace-item-label="<?php $html->text('ei_impl_to_one_replace_item_label', 
 				array('item' => $entryLabeler->getGenericLabel())) ?>"
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
-		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>">
+		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
+		data-compact="<?php $html->out($toOneForm->isCompact()) ?>"
+		data-close-label="<?php $html->text('common_close_label') ?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
-		<div class="rocket-selector" 
+		<div class="rocket-impl-selector" 
 				data-original-id-rep="<?php $html->out($toOneForm->getOriginalEntryIdRep()) ?>"
 				data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 				data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"
 				data-select-label="<?php $html->text('common_select_label') ?>"
-				data-reset-label="<?php $html->text('common_reset_label') ?>">
+				data-reset-label="<?php $html->text('common_reset_label') ?>"
+				data-clear-label="<?php $html->text('common_clear_label') ?>"
+				data-cancel-label="<?php $html->text('common_cancel_label') ?>">
 			<?php $formHtml->input($propertyPath->ext('selectedEntryIdRep')) ?>
 		</div>
 	<?php endif ?>
@@ -69,41 +72,34 @@
 		<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 		
 		<?php if (null === $formHtml->meta()->getMapValue($currentPropertyPath)->getAttrs()): ?>
-			<div class="rocket-current"
-					data-replace-confirm-msg="<?php $html->out('Text: The current Entry will be deleted. Are you sure?')?>"
-					data-replace-ok-label="<?php $html->text('common_yes_label') ?>"
-					data-replace-cancel-label="<?php $html->text('common_no_label') ?>"
-					data-ei-spec-id="<?php $html->out($currentMappingForm->getEntryForm()->getChosenId()) ?>"
+			<div class="rocket-impl-current"
 					data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 							array('item' => $currentMappingForm->getEntryLabel())) ?>"
 					data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>">
-					
-				<?php $formHtml->optionalObjectEnabledHidden($currentPropertyPath) ?>
-				<div class="rocket-to-one-content">
-					<?php if ($currentMappingForm->isAccessible()): ?>
-						<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
-								array('entryFormViewModel' => new EntryFormViewModel($currentPropertyPath->ext('entryForm')))) ?>
-					<?php else: ?>
-						<span class="rocket-inaccessible">
-							<?php $html->out($currentMappingForm->getEntryLabel()) ?>
-						</span>
-					<?php endif ?>
-				</div>
+				
+				<?php $formHtml->meta()->pushBasePropertyPath($currentPropertyPath) ?>	
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm)) ?>
+				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			</div>
 		<?php endif ?>
 	<?php endif ?>
 
 	<?php if ($toOneForm->isNewMappingFormAvailable()): ?>
-		<div class="rocket-new" data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
+		<div class="rocket-impl-news" 
+				data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
 				data-property-path="<?php $html->out((string) $formHtml->meta()->createRealPropertyPath($newMappingFormPropertyPath)) ?>"
-				data-prefilled=""
+				data-draft-mode="<?php $html->out($toOneForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
+						array('item' => $entryLabeler->getGenericLabel())) ?>"
+				data-replace-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>">
 			<?php if (null === $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getAttrs()): ?>
-				<?php $formHtml->optionalObjectEnabledHidden($newMappingFormPropertyPath) ?>
+				<?php $currentMappingForm = $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getObject() ?>
+				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 				
-				<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
-						array('entryFormViewModel' => new EntryFormViewModel($newMappingFormPropertyPath->ext('entryForm')))) ?>
+				<?php $formHtml->meta()->pushBasePropertyPath($newMappingFormPropertyPath) ?>
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm)) ?>
+				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			<?php endif ?>
 		</div>
 	<?php endif ?>

@@ -70,7 +70,7 @@
 				data-cancel-label="<?php $html->text('common_cancel_label') ?>"
 				data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 				data-base-property-name="<?php $html->out($formHtml->meta()->getForm()->getDispatchTargetEncoder()
-						->buildValueParamName($propertyPath->ext('selectedEntryIdReps'), false))?>">
+						->buildValueParamName($propertyPath->ext('selectedEntryIdReps'), false)) ?>">
 			<ul>
 				<?php $formHtml->meta()->arrayProps($propertyPath->ext('selectedEntryIdReps'), function () use ($formHtml, $propertyPath) { ?> 
 					<li><?php $formHtml->input($propertyPath->ext('selectedEntryIdReps[]')) ?></li>
@@ -78,7 +78,7 @@
 				<li class="rocket-new-entry"><?php $formHtml->input($propertyPath->ext('selectedEntryIdReps[]')) ?></li>
 			</ul>
 		</div>
-	<?php endif ?>	
+	<?php endif ?>
 	
 	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
 		<div class="rocket-impl-currents">
