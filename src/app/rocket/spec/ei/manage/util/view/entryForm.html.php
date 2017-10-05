@@ -40,25 +40,28 @@ use n2n\web\dispatch\map\PropertyPath;
 	$selectedTypeIdPropertyPath = $efPropertyPath->ext('chosenId');
 	
 	$typeChoicesMap = $entryFormViewModel->getTypeChoicesMap();
+	$iconTypesMap = $entryFormViewModel->getIconTypeMap();
 ?>
 	
 <?php if (!$entryFormViewModel->isTypeChangable()): ?>
 	<div class="rocket-entry-form" 
-			data-rocket-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
-			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>">
+			data-rocket-ei-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
+			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>"
+			data-rocket-generic-icon-type="<?php $html->out(current($iconTypesMap)) ?>">
 		<?php $view->import($entryFormViewModel->createEditView($view))?>
 	</div>
 <?php else: ?>
-	<div class="rocket-entry-form rocket-multi-type">
-		<div class="rocket-type-selector">
+	<div class="rocket-entry-form rocket-multi-ei-type">
+		<div class="rocket-ei-type-selector">
 			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
 			<div>
-				<?php $formHtml->select($selectedTypeIdPropertyPath, $entryFormViewModel->getTypeChoicesMap()) ?>
+				<?php $formHtml->select($selectedTypeIdPropertyPath, $entryFormViewModel->getTypeChoicesMap(),
+						array('data-rocket-generic-icon-types' => json_encode($iconTypesMap))) ?>
 			</div>
 		</div>
 	
 		<?php foreach ($entryFormViewModel->createEditViews($view) as $id => $editView): ?>
-			<div class="rocket-type-entry-form rocket-type-<?php $html->out($id) ?>">
+			<div class="rocket-ei-type-entry-form rocket-ei-type-<?php $html->out($id) ?>">
 				<?php $view->import($editView) ?>
 			</div>
 		<?php endforeach ?>

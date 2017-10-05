@@ -64,6 +64,16 @@ class EntryFormViewModel {
 		return $this->getEntryForm()->getChoicesMap();
 	}
 	
+	public function getIconTypeMap() {
+		$iconTypeMap = array();
+		
+		foreach ($this->entryForm->getEntryTypeForms() as $eiTypeId => $entryTypeForm) {
+			$iconTypeMap[$eiTypeId] = $entryTypeForm->getEiuEntryGui()->getEiuEntry()->getGenericIconType();
+		}
+		
+		return $iconTypeMap;
+	}
+	
 	public function createEditView(HtmlView $contextView) {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue(!$entryForm->isChoosable());

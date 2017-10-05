@@ -69,7 +69,7 @@ namespace Rocket.Impl.Relation {
 		private examine(embeddedEntry: EmbeddedEntry) {
 			this.block(false);
 			
-			if (!embeddedEntry.entryForm.multiType) {
+			if (!embeddedEntry.entryForm.multiEiType) {
 				this.fireCallbacks(embeddedEntry);
 				return;
 			}
@@ -85,7 +85,7 @@ namespace Rocket.Impl.Relation {
 					"type": "button", 
 					"text": typeMap[typeId],
 					"click": () => {
-						embeddedEntry.entryForm.curTypeId = typeId;
+						embeddedEntry.entryForm.curEiTypeId = typeId;
 						this.jqMultiTypeUl.remove();
 						this.jqMultiTypeUl = null;
 						this.multiTypeEmbeddedEntry = null;

@@ -44,7 +44,7 @@
 				<div class="rocket-impl-content">
 					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-						<?php $html->out($eiuEntry->getGenericLabel()) ?>
+						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
 					</div>
 					<div>
 						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
@@ -62,7 +62,7 @@
 				<div class="rocket-impl-content">
 					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-						<?php $html->out($eiuEntry->getGenericLabel()) ?>
+						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
 					</div>
 					<div><?php $html->text('ei_impl_new_entry_txt') ?></div>
 				</div>

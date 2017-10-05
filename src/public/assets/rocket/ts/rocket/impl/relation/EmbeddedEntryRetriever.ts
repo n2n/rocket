@@ -130,8 +130,6 @@ namespace Rocket.Impl.Relation {
 						severity: Rocket.Display.Severity.DANGER });
 			}
 			
-			
-			
 			this.reduce();
 			
 			jqEntry.data("rocketImplEmbeddedEntry", this);
@@ -213,6 +211,10 @@ namespace Rocket.Impl.Relation {
 			this.entryGroup.show();
 			this.jqSummary.show();
 			this.bodyGroup.hide();
+			
+			let jqContentType = this.jqSummary.find(".rocket-impl-content-type:first");
+			jqContentType.children("span").text(this.entryForm.curGenericLabel);
+			jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
 			
 			this.entryGroup.jQuery.removeClass("rocket-group");
 		}

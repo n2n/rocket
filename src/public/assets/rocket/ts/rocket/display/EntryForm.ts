@@ -1,7 +1,7 @@
 namespace Rocket.Display {
 	export class EntryForm {
 		private jqElem: JQuery;
-		private jqTypeSelect: JQuery = null;
+		private jqEiTypeSelect: JQuery = null;
 		private inited: boolean = false;
 		
 		constructor (jqElem: JQuery) {
@@ -14,60 +14,68 @@ namespace Rocket.Display {
 			}
 			this.inited = true;
 			
-			if (!this.jqElem.hasClass("rocket-multi-type")) return;
+			if (!this.jqElem.hasClass("rocket-multi-ei-type")) return;
 			
-			this.jqTypeSelect = this.jqElem.children(".rocket-type-selector").find("select");
+			this.jqEiTypeSelect = this.jqElem.children(".rocket-ei-type-selector").find("select");
 			this.updateDisplay();
 			
-			this.jqTypeSelect.change(() => {
+			this.jqEiTypeSelect.change(() => {
 				this.updateDisplay();
 			});
 		}
 		
 		private updateDisplay() {
-			if (!this.jqTypeSelect) return;
+			if (!this.jqEiTypeSelect) return;
 			
-			this.jqElem.children(".rocket-type-entry-form").hide();
-			this.jqElem.children(".rocket-type-" + this.jqTypeSelect.val()).show();
+			this.jqElem.children(".rocket-ei-type-entry-form").hide();
+			this.jqElem.children(".rocket-ei-type-" + this.jqEiTypeSelect.val()).show();
 		}
 		
 		get jQuery(): JQuery {
 			return this.jqElem;
 		}
 		
-		get multiType(): boolean {
-			return this.jqTypeSelect ? true : false;
+		get multiEiType(): boolean {
+			return this.jqEiTypeSelect ? true : false;
 		}
 		
-		get curTypeId(): string {
-			if (!this.multiType) {
-				return this.jqElem.data("rocket-type-id");
+		get curEiTypeId(): string {
+			if (!this.multiEiType) {
+				return this.jqElem.data("rocket-ei-type-id");
 			}
 			
-			return this.jqTypeSelect.val();
+			return this.jqEiTypeSelect.val();
 		}
 		
-		set curTypeId(typeId: string) {
-			this.jqTypeSelect.val(typeId);
+		set curEiTypeId(typeId: string) {
+			this.jqEiTypeSelect.val(typeId);
 		}
 		
 		get curGenericLabel(): string {
-			if (!this.multiType) {
+			if (!this.multiEiType) {
 				return this.jqElem.data("rocket-generic-label");
 			}
 			
-			return this.jqTypeSelect.children(":selected").text();
+			return this.jqEiTypeSelect.children(":selected").text();
+		}
+		
+		get curGenericIconType(): string {
+			if (!this.multiEiType) {
+				return this.jqElem.data("rocket-generic-icon-type");
+			}
+			
+			return this.jqEiTypeSelect.data("rocket-generic-icon-types")[this.curEiTypeId];
 		}
 		
 		get typeMap(): { [typeId: string]: string } {
 			let typeMap: { [typeId: string]: string } = {};
 			
-			if (!this.multiType) {
-				typeMap[this.curTypeId] = this.curGenericLabel;
+			if (!this.multiEiType) {
+				typeMap[this.curEiTypeId] = this.curGenericLabel;
 				return typeMap;  
 			}
 			
-			this.jqTypeSelect.children().each(function () {
+			this.jqEiTypeSelect.children().each(function () {
 				let jqElem = $(this);
 				typeMap[jqElem.attr("value")] = jqElem.text();
 			});
@@ -100,7 +108,7 @@ namespace Rocket.Display {
 		
 		public static find(jqElem: JQuery, mulitTypeOnly: boolean = false): Array<EntryForm> {
 			let entryForms: Array<EntryForm> = [];
-			jqElem.find(".rocket-entry-form" + (mulitTypeOnly ? ".rocket-multi-type": "")).each(function() {
+			jqElem.find(".rocket-entry-form" + (mulitTypeOnly ? ".rocket-multi-ei-type": "")).each(function() {
 				entryForms.push(EntryForm.from($(this)));	
 			});
 			return entryForms;
