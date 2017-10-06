@@ -299,4 +299,174 @@ namespace Rocket.Impl.Relation {
 			n2n.ajah.update();
 		}
 	}
+	
+	
+	
+	class ToOneSelector {
+		private jqUl: JQuery
+		private entry: SelectedEntry;
+		private originalIdReps: Array<string>;
+		private identityString: { [key: string]: string};
+		private jqEntry: JQuery;
+		private jqEntryLabel: JQuery;
+		private browserLayer: cmd.Layer = null;
+		private browserSelectorObserver: Overview.MultiEntrySelectorObserver = null;
+		
+		constructor(private jqElem: JQuery) {
+			this.jqElem = jqElem;
+			this.jqInput = jqElem.children("input").hide();
+			
+			this.originalIdRep = jqElem.data("original-id-rep");
+			this.identityString = jqElem.data("identity-string");
+			
+			this.init();
+		}
+		
+		private init() {
+			this.jqEntry = $("<div />")
+			this.jqElem.append(this.jqEntryLabel = $("<span />", { "text": this.identityString }));
+			new display.CommandList($("<div />", true).appendTo(jqElem))
+					.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
+					.click(() => {
+						this.clear();				
+					});
+			this.jqElem.append(this.jqEntry);
+			if (this.originalIdReps
+			
+			var jqCommandList = $("<div />");
+			this.jqElem.append(jqCommandList);
+			
+			var that = this;
+			var commandList = new display.CommandList(jqCommandList);
+			
+			commandList.createJqCommandButton({ label: this.jqElem.data("select-label") })
+					.mouseenter(function () {
+						that.loadBrowser();
+					})
+					.click(function () {
+						that.openBrowser();
+					});
+			
+			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
+				that.reset();
+			});
+		}
+		
+		public createSelectedEntry(idRep: string, identityString: string = null): SelectedEntry {
+			var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
+			entry.idRep = idRep;
+			if (identityString !== null) {
+				entry.label = identityString;
+			} else {
+				entry.label = this.determineIdentityString(idRep);
+			} 
+			this.addSelectedEntry(entry);
+			return entry;
+		}
+		
+		public addSelectedEntry(entry: SelectedEntry) {
+			this.entries.push(entry);	
+			
+			var that = this;
+			entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
+				that.removeSelectedEntry(entry);				
+			});
+		}
+		
+		public removeSelectedEntry(entry: SelectedEntry) {
+			for (var i in this.entries) {
+				if (this.entries[i] !== entry) continue;
+			
+				entry.jQuery.remove();
+				this.entries.splice(parseInt(i), 1);
+			}
+		}
+		
+		public reset() {
+		}
+		
+		public clear() {
+			for (var i in this.entries) {
+				this.entries[i].jQuery.remove();
+			}
+			
+			this.entries.splice(0, this.entries.length);
+		}
+		
+		public loadBrowser() {
+			if (this.browserLayer !== null) return;
+			
+			var that = this;
+			
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+			this.browserLayer.hide();
+			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
+				that.browserLayer = null;
+				that.browserSelectorObserver = null;				
+			});
+			
+			Rocket.exec(this.jqElem.data("overview-tools-url"), {
+				showLoadingContext: true,
+				currentLayer: this.browserLayer,
+				done: function (result: cmd.ExecResult) {
+					that.iniBrowserContext(result.context);
+				}
+			});
+		}
+		
+		private iniBrowserContext(context: cmd.Context) {
+			if (this.browserLayer === null) return;
+			
+			var ocs = Impl.Overview.OverviewContext.findAll(context.jQuery);
+			if (ocs.length == 0) return;
+			
+			ocs[0].initSelector(this.browserSelectorObserver = new Overview.MultiEntrySelectorObserver());
+			
+			var that = this;
+			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+				that.updateSelection();
+				context.layer.hide();
+			});
+			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
+				context.layer.hide();
+			});
+			
+			this.updateBrowser();
+		}
+		
+		public openBrowser() {
+			this.loadBrowser();
+			
+			this.updateBrowser();
+			
+			this.browserLayer.show();
+		}
+		
+		private updateBrowser() {
+			if (this.browserSelectorObserver === null) return;
+			
+			var selectedIds: Array<string> = new Array();
+			this.entries.forEach(function (entry: SelectedEntry) {
+				selectedIds.push(entry.idRep);
+			});
+			
+			this.browserSelectorObserver.setSelectedIds(selectedIds);
+		}
+		
+		private updateSelection() {
+			if (this.browserSelectorObserver === null) return;
+			
+			this.clear();
+			
+			var that = this;
+			this.browserSelectorObserver.getSelectedIds().forEach(function (id) {
+				var identityString = that.browserSelectorObserver.getIdentityStringById(id);
+				if (identityString !== null) {
+					that.createSelectedEntry(id, identityString);
+					return;
+				}
+				
+				that.createSelectedEntry(id);
+			});
+		}
 }
