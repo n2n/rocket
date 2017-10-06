@@ -184,7 +184,7 @@ namespace Rocket.Impl.Relation {
 			this.jqSummary.hide();
 			this.bodyGroup.show();
 			
-			this.entryGroup.jQuery.addClass("rocket-group");
+			this.entryGroup.setGroup(true);
 			
 			if (asPartOfList) {
 				this.jqContextCommands.hide();
@@ -249,6 +249,10 @@ namespace Rocket.Impl.Relation {
 			} else {
 				this.jqExpMoveDownButton.hide();
 			}
+		}
+		
+		public dispose() {
+			this.jQuery.remove();
 		}
 		
 //		public static from(jqElem: JQuery, create: boolean = false): EmbeddedEntry {

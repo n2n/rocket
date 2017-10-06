@@ -65,6 +65,18 @@ namespace Rocket {
 		}) ();
 		
 		(function () {
+			$(".rocket-impl-to-one").each(function () {
+				Rocket.Impl.Relation.ToOne.from($(this));
+			});
+			
+			n2n.dispatch.registerCallback(function () {
+				$(".rocket-impl-to-one").each(function () {
+					Rocket.Impl.Relation.ToOne.from($(this));
+				});
+			});
+		}) ();
+		
+		(function () {
 			let t = new Rocket.Impl.Translator(container);
 			t.scan();
 			

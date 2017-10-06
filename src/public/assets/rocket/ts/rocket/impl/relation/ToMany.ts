@@ -295,8 +295,7 @@ namespace Rocket.Impl.Relation {
 		}
 	}
 	
-	
-	export class ToManyEmbedded {
+	class ToManyEmbedded {
 		private jqToMany: JQuery;
 		private addControlFactory: AddControlFactory;
 		private compact: boolean = true;

@@ -85,7 +85,7 @@
 	<?php endif ?>
 
 	<?php if ($toOneForm->isNewMappingFormAvailable()): ?>
-		<div class="rocket-impl-news" 
+		<div class="rocket-impl-new" 
 				data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
 				data-property-path="<?php $html->out((string) $formHtml->meta()->createRealPropertyPath($newMappingFormPropertyPath)) ?>"
 				data-draft-mode="<?php $html->out($toOneForm->isDraftMode())?>"
