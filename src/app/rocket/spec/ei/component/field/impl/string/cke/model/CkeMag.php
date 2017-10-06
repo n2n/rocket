@@ -32,8 +32,10 @@ class CkeMag extends StringMag {
 	}
 	
 	public function createUiField(PropertyPath $propertyPath, HtmlView $htmlView): UiComponent {
+		/* , $this->bbcode, false, $this->tableEditing, 
+				$this->ckeLinkProviderLookupIds, $this->ckeCssCssConfigLookupId, $this->getInputAttrs()*/
+		
 		$ckeHtml = new CkeHtmlBuilder($htmlView);
-		return $ckeHtml->getEditor($propertyPath, $this->mode, $this->bbcode, false, $this->tableEditing, 
-				$this->ckeLinkProviderLookupIds, $this->ckeCssCssConfigLookupId, $this->getInputAttrs());
+		return $ckeHtml->getEditor($propertyPath, Cke::classic()->mode($this->mode)->table($this->tableEditing));
 	}
 }

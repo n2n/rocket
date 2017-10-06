@@ -121,7 +121,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->ckeEiProp->setCkeLinkProviderLookupIds($ckeLinkProviderLookupIds);
 		
 		
-		$ckeCssConfigLookupId = $this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, false);
+		$ckeCssConfigLookupId = $this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
 		try {
 			CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
 		} catch (\InvalidArgumentException $e) {
