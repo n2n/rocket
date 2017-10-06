@@ -197,7 +197,6 @@ namespace Rocket.Impl {
 			    }
 			});
 			
-			
 			this.block();
 		}
 		

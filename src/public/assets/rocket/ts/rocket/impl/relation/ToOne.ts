@@ -25,7 +25,7 @@ namespace Rocket.Impl.Relation {
 	import display = Rocket.Display;
 	
 	export class ToOne {
-		constructor(private embedded: ToOneEmbedded = null) {
+		constructor(private toOneSelector: ToOneSelector = null, private embedded: ToOneEmbedded = null) {
 		}
 				
 		public static from(jqToOne: JQuery): ToOne {
@@ -33,6 +33,13 @@ namespace Rocket.Impl.Relation {
 			if (toOne instanceof ToOne) {
 				return toOne;
 			}
+			
+			let toOneSelector: ToOneSelector = null;
+			let jqSelector = jqToOne.children(".rocket-impl-selector");
+			if (jqSelector.length > 0) {
+				toOneSelector = new ToOneSelector(jqSelector);
+			}
+			
 			
 			var jqCurrent = jqToOne.children(".rocket-impl-current");
 			var jqNew = jqToOne.children(".rocket-impl-new");
@@ -73,7 +80,7 @@ namespace Rocket.Impl.Relation {
 				});
 			}
 			
-			toOne = new ToOne(toOneEmbedded);
+			toOne = new ToOne(toOneSelector, toOneEmbedded);
 			jqToOne.data("rocketImplToOne", toOne);		
 			
 			return toOne;
@@ -303,94 +310,83 @@ namespace Rocket.Impl.Relation {
 	
 	
 	class ToOneSelector {
-		private jqUl: JQuery
-		private entry: SelectedEntry;
-		private originalIdReps: Array<string>;
-		private identityString: { [key: string]: string};
-		private jqEntry: JQuery;
+		private jqInput: JQuery;
+		private originalIdRep: string;
+		private identityStrings: { [key: string]: string};
+		private jqSelectedEntry: JQuery;
 		private jqEntryLabel: JQuery;
 		private browserLayer: cmd.Layer = null;
-		private browserSelectorObserver: Overview.MultiEntrySelectorObserver = null;
+		private browserSelectorObserver: Overview.SingleEntrySelectorObserver = null;
 		
 		constructor(private jqElem: JQuery) {
 			this.jqElem = jqElem;
 			this.jqInput = jqElem.children("input").hide();
 			
 			this.originalIdRep = jqElem.data("original-id-rep");
-			this.identityString = jqElem.data("identity-string");
+			this.identityStrings = jqElem.data("identity-strings");
 			
 			this.init();
+			this.selectEntry(this.selectedIdRep);
 		}
 		
+		get selectedIdRep(): string {
+			let idRep: string = this.jqInput.val();
+			if (idRep.length == 0) return null;
+			
+			return idRep;
+		}	
+		
 		private init() {
-			this.jqEntry = $("<div />")
-			this.jqElem.append(this.jqEntryLabel = $("<span />", { "text": this.identityString }));
-			new display.CommandList($("<div />", true).appendTo(jqElem))
+			this.jqSelectedEntry = $("<div />")
+			this.jqElem.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
+			new display.CommandList($("<div />", true).appendTo(this.jqElem))
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
 					.click(() => {
 						this.clear();				
 					});
-			this.jqElem.append(this.jqEntry);
-			if (this.originalIdReps
+			this.jqElem.append(this.jqSelectedEntry);
 			
 			var jqCommandList = $("<div />");
 			this.jqElem.append(jqCommandList);
 			
-			var that = this;
 			var commandList = new display.CommandList(jqCommandList);
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("select-label") })
-					.mouseenter(function () {
-						that.loadBrowser();
+					.mouseenter(() => {
+						this.loadBrowser();
 					})
-					.click(function () {
-						that.openBrowser();
+					.click(() => {
+						this.openBrowser();
 					});
 			
-			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
-				that.reset();
-			});
+			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
+					.click(() => {
+						this.reset();
+					});
 		}
 		
-		public createSelectedEntry(idRep: string, identityString: string = null): SelectedEntry {
-			var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
-			entry.idRep = idRep;
-			if (identityString !== null) {
-				entry.label = identityString;
-			} else {
-				entry.label = this.determineIdentityString(idRep);
-			} 
-			this.addSelectedEntry(entry);
-			return entry;
-		}
-		
-		public addSelectedEntry(entry: SelectedEntry) {
-			this.entries.push(entry);	
+		private selectEntry(idRep: string, identityString: string = null) {
+			this.jqInput.val(idRep);
 			
-			var that = this;
-			entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
-				that.removeSelectedEntry(entry);				
-			});
-		}
-		
-		public removeSelectedEntry(entry: SelectedEntry) {
-			for (var i in this.entries) {
-				if (this.entries[i] !== entry) continue;
-			
-				entry.jQuery.remove();
-				this.entries.splice(parseInt(i), 1);
+			if (idRep === null) {
+				this.jqSelectedEntry.hide();
+				return;
 			}
+			
+			this.jqSelectedEntry.show();
+			
+			if (identityString === null) {
+				identityString = this.identityStrings[idRep];
+			}
+			this.jqEntryLabel.text(identityString);
 		}
 		
 		public reset() {
+			this.selectEntry(this.originalIdRep);
 		}
 		
 		public clear() {
-			for (var i in this.entries) {
-				this.entries[i].jQuery.remove();
-			}
-			
-			this.entries.splice(0, this.entries.length);
+			this.selectEntry(null);
 		}
 		
 		public loadBrowser() {
@@ -420,7 +416,7 @@ namespace Rocket.Impl.Relation {
 			var ocs = Impl.Overview.OverviewContext.findAll(context.jQuery);
 			if (ocs.length == 0) return;
 			
-			ocs[0].initSelector(this.browserSelectorObserver = new Overview.MultiEntrySelectorObserver());
+			ocs[0].initSelector(this.browserSelectorObserver = new Overview.SingleEntrySelectorObserver());
 			
 			var that = this;
 			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
@@ -445,12 +441,7 @@ namespace Rocket.Impl.Relation {
 		private updateBrowser() {
 			if (this.browserSelectorObserver === null) return;
 			
-			var selectedIds: Array<string> = new Array();
-			this.entries.forEach(function (entry: SelectedEntry) {
-				selectedIds.push(entry.idRep);
-			});
-			
-			this.browserSelectorObserver.setSelectedIds(selectedIds);
+			this.browserSelectorObserver.setSelectedId(this.selectedIdRep);
 		}
 		
 		private updateSelection() {
@@ -458,15 +449,15 @@ namespace Rocket.Impl.Relation {
 			
 			this.clear();
 			
-			var that = this;
-			this.browserSelectorObserver.getSelectedIds().forEach(function (id) {
-				var identityString = that.browserSelectorObserver.getIdentityStringById(id);
+			this.browserSelectorObserver.getSelectedIds().forEach((id) => {
+				var identityString = this.browserSelectorObserver.getIdentityStringById(id);
 				if (identityString !== null) {
-					that.createSelectedEntry(id, identityString);
+					this.selectEntry(id, identityString);
 					return;
 				}
 				
-				that.createSelectedEntry(id);
+				this.selectEntry(id);
 			});
 		}
+	}
 }

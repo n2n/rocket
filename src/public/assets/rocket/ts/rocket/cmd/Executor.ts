@@ -89,7 +89,7 @@ namespace Rocket.Cmd {
 			
 			if (targetContext === null) {
 				targetContext = currentLayer.getContextByUrl(targetUrl);
-				if (targetContext !== null) {
+				if (targetContext !== null && !currentLayer.currentHistoryEntryUrl.equals(Url.create(targetUrl))) {
 					currentLayer.pushHistoryEntry(targetUrl);
 				}
 			}

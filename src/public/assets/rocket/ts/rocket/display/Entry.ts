@@ -5,13 +5,14 @@ namespace Rocket.Display {
 		private _state: Entry.State = Entry.State.PERSISTENT;
 		private callbackRegistery: util.CallbackRegistry<EntryCallback> = new util.CallbackRegistry<EntryCallback>();
 		
-		constructor(private jqElem: JQuery, jqSelector: JQuery = null) {
+		constructor(private jqElem: JQuery) {
 			var that = this;
 			jqElem.on("remove", function () {
 				that.trigger(Entry.EventType.DISPOSED);
 			});
 			
-			if (jqSelector) {
+			let jqSelector = jqElem.find(".rocket-entry-selector:first");
+			if (jqSelector.length > 0) {
 				this.initSelector(jqSelector);
 			}
 		}

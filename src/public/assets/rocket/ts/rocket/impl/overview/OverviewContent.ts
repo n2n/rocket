@@ -498,6 +498,10 @@ namespace Rocket.Impl.Overview {
 		private _autoShowSelected: boolean = false;
 		
 		activate(selectorObserver: SelectorObserver) {
+			if (this._selectorObserver) {
+				throw new Error("Selector state already activated");
+			}
+			
 			this._selectorObserver = selectorObserver;
 			
 			if (!selectorObserver) return;

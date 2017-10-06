@@ -115,7 +115,7 @@ namespace Rocket.Cmd {
 		public currentHistoryIndex(): number {
 			return this._currentHistoryIndex;
 		}
-		
+				
 		private addContext(context: Context) {
 			this._contexts.push(context);
 			var that = this;
@@ -150,6 +150,10 @@ namespace Rocket.Cmd {
 			}
 			
 			this.switchToContext(context);
+		}
+		
+		get currentHistoryEntryUrl(): Url {
+			return this.historyUrls[this._currentHistoryIndex];
 		}
 		
 		public go(historyIndex: number, urlExpr: string|Url) {

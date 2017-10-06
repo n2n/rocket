@@ -72,7 +72,7 @@ namespace Rocket.Impl.Overview {
 			overviewContext = new OverviewContext(jqElem, overviewContent);
 			jqElem.data("rocketImplOverviewContext", overviewContext);
 			
-			overviewContent.initSelector(new MultiEntrySelectorObserver(["51","53"]));
+//			overviewContent.initSelector(new MultiEntrySelectorObserver(["51","53"]));
 			
 			return overviewContext;
 		}
