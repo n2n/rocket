@@ -1,16 +1,17 @@
 namespace Rocket.Impl.Relation {
 	
 	export class AddControlFactory {
-		private embeddedEntryRetriever: EmbeddedEntryRetriever;
-		private label: string;
 		
-		constructor (embeddedEntryRetriever: EmbeddedEntryRetriever, label: string) {
-			this.embeddedEntryRetriever = embeddedEntryRetriever;
-			this.label = label;
+		constructor (private embeddedEntryRetriever: EmbeddedEntryRetriever, private addLabel: string,
+				private replaceLabel: string = null) {
 		}
 		
-		public create(): AddControl {
-			return AddControl.create(this.label, this.embeddedEntryRetriever);
+		public createAdd(): AddControl {
+			return AddControl.create(this.addLabel, this.embeddedEntryRetriever);
+		}
+		
+		public createReplace(): AddControl {
+			return AddControl.create(this.replaceLabel, this.embeddedEntryRetriever);
 		}
 	}
 	

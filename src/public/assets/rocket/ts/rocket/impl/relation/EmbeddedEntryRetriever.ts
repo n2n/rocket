@@ -85,7 +85,6 @@ namespace Rocket.Impl.Relation {
 	
 	export class EmbeddedEntry {
 		private entryGroup: Rocket.Display.StructureElement;
-		private readOnly: boolean;
 		private jqOrderIndex: JQuery;
 		private jqSummary: JQuery;
 		
@@ -99,9 +98,8 @@ namespace Rocket.Impl.Relation {
 		private jqRedFocusButton: JQuery;
 		private jqRedRemoveButton: JQuery;
 		
-		constructor(jqEntry: JQuery, readOnly: boolean) {
+		constructor(jqEntry: JQuery, private readOnly: boolean) {
 			this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
-			this.readOnly = readOnly;
 			
 			this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
 			 

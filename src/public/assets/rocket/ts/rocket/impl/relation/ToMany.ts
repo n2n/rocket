@@ -170,6 +170,11 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public reset() {
+			this.clear();
+			
+			for (let idRep of this.originalIdReps) {
+				this.createSelectedEntry(idRep);
+			}
 		}
 		
 		public clear() {
@@ -320,13 +325,19 @@ namespace Rocket.Impl.Relation {
 			this.jqEmbedded = $("<div />", {
 				"class": "rocket-impl-embedded"
 			});
-			this.jqToMany.append(this.jqEmbedded);
+			
+			let jqGroup = this.jqToMany.children(".rocket-group");
+			if (jqGroup.length > 0) {
+				jqGroup.append(this.jqEmbedded);
+			} else {
+				this.jqToMany.append(this.jqEmbedded);
+			}
 			
 			this.jqEntries = $("<div />");
 			this.jqEmbedded.append(this.jqEntries);
 			
 			if (this.compact) {
-				var structureElement = Rocket.Display.StructureElement.findFrom(this.jqToMany);
+				var structureElement = Rocket.Display.StructureElement.findFrom(this.jqEmbedded);
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
@@ -405,7 +416,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		private createFirstAddControl(): AddControl {
-			var addControl = this.addControlFactory.create();
+			var addControl = this.addControlFactory.createAdd();
 			var that = this;
 				
 			this.jqEmbedded.prepend(addControl.jQuery);
@@ -420,7 +431,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		private createEntryAddControl(entry: EmbeddedEntry): AddControl {
-			var addControl = this.addControlFactory.create();
+			var addControl = this.addControlFactory.createAdd();
 			var that = this;
 			
 			this.entryAddControls.push(addControl);
@@ -432,7 +443,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		private createLastAddControl(): AddControl {
-			var addControl = this.addControlFactory.create();
+			var addControl = this.addControlFactory.createAdd();
 			var that = this;
 			
 			this.jqEmbedded.append(addControl.jQuery);

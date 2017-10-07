@@ -46,6 +46,8 @@
 	$view->assert($newMappingFormUrl === null || $newMappingFormUrl instanceof Url);
 	
 	$eiHtml = new EiHtmlBuilder($view);
+	
+	$combined = $toManyForm->isSelectionModeEnabled() && count($toManyForm->getCurrentMappingForms()) > 0
 ?>
 <div class="rocket-impl-to-many" data-min="<?php $html->out($toManyForm->getMin()) ?>"
 		data-max="<?php $html->out($toManyForm->getMax()) ?>"
@@ -105,6 +107,12 @@
 				
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm)) ?>
 			<?php }) ?>
+		</div>
+	<?php endif ?>
+	
+	<?php if ($toManyForm->isSelectionModeEnabled() && $toManyForm->isNewMappingFormAvailable()): ?>
+		<div class="rocket-group">
+			<label><?php $html->text('ei_impl_embedded_add_title') ?></label>
 		</div>
 	<?php endif ?>
 </div>

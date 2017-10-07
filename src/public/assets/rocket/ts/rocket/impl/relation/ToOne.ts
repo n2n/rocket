@@ -26,6 +26,16 @@ namespace Rocket.Impl.Relation {
 	
 	export class ToOne {
 		constructor(private toOneSelector: ToOneSelector = null, private embedded: ToOneEmbedded = null) {
+			
+			if (toOneSelector && embedded) {
+				embedded.whenChanged(function () {
+					if (embedded.currentEntry || embedded.newEntry) {
+						toOneSelector.jQuery.hide();
+					} else {
+						toOneSelector.jQuery.show();
+					}
+				});
+			}
 		}
 				
 		public static from(jqToOne: JQuery): ToOne {
@@ -68,7 +78,8 @@ namespace Rocket.Impl.Relation {
 				
 					var entryFormRetriever = new EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, 
 							jqNew.data("draftMode"), startKey, "n");
-					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"));
+					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
+							jqNew.data("replace-item-label"));
 				}
 				
 				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory);
@@ -98,6 +109,7 @@ namespace Rocket.Impl.Relation {
 		private jqEntries: JQuery;
 		private expandContext: cmd.Context = null;
 		private closeLabel: string;
+		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
 		constructor(jqToOne: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToOne = jqToOne;
@@ -148,10 +160,12 @@ namespace Rocket.Impl.Relation {
 				this.firstReplaceControl.jQuery.hide();
 				this.secondReplaceControl.jQuery.hide();
 			}
+			
+			this.triggerChanged();
 		}
 		
 		private createReplaceControl(prepend: boolean): AddControl {
-			var addControl = this.addControlFactory.create();
+			var addControl = this.addControlFactory.createReplace();
 				
 			if (prepend) {
 				this.jqEmbedded.prepend(addControl.jQuery);
@@ -166,10 +180,10 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		private createAddControl(): AddControl {
-			var addControl = this.addControlFactory.create();
+			var addControl = this.addControlFactory.createAdd();
 			
 			this.jqEmbedded.append(addControl.jQuery);
-			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
+			addControl.onNewEmbeddedEntry((newEntry: EmbeddedEntry) => {
 				this.newEntry = newEntry;
 			});
 			return addControl;
@@ -242,7 +256,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEntries.append(entry.jQuery);
 			
 			if (this.isExpanded()) {
-				entry.expand();
+				entry.expand(false);
 			} else {
 				entry.reduce();
 			}
@@ -305,6 +319,16 @@ namespace Rocket.Impl.Relation {
 			this.changed();
 			n2n.ajah.update();
 		}
+		
+		private triggerChanged() {
+			for (let callback of this.changedCallbacks) {
+				callback();
+			}
+		}
+		
+		public whenChanged(callback: () => any) {
+			this.changedCallbacks.push(callback);
+		}
 	}
 	
 	
@@ -329,6 +353,10 @@ namespace Rocket.Impl.Relation {
 			this.selectEntry(this.selectedIdRep);
 		}
 		
+		get jQuery(): JQuery {
+			return this.jqElem;
+		}
+		
 		get selectedIdRep(): string {
 			let idRep: string = this.jqInput.val();
 			if (idRep.length == 0) return null;
@@ -338,8 +366,8 @@ namespace Rocket.Impl.Relation {
 		
 		private init() {
 			this.jqSelectedEntry = $("<div />")
-			this.jqElem.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
-			new display.CommandList($("<div />", true).appendTo(this.jqElem))
+			this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
+			new display.CommandList($("<div />", true).appendTo(this.jqSelectedEntry))
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
 					.click(() => {
 						this.clear();				

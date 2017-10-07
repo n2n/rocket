@@ -91,7 +91,7 @@
 				data-draft-mode="<?php $html->out($toOneForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>"
-				data-replace-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
+				data-replace-item-label="<?php $html->text('ei_impl_relation_replace_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>">
 			<?php if (null === $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getAttrs()): ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getObject() ?>
