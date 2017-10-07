@@ -90,8 +90,7 @@ class DetailController extends ControllerAdapter {
 						->ext('livepreviewsrc', $idRep, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), 
-						$eiObject)));
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame())));
 	}
 	
 	public function doLivePreviewSrc($idRep, $previewType, array $delegateCmds = array()) {

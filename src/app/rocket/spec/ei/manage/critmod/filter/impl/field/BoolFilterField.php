@@ -23,7 +23,6 @@ namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\spec\ei\manage\critmod\filter\FilterField;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
