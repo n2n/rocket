@@ -1209,12 +1209,17 @@ var Rocket;
         var Relation;
         (function (Relation) {
             var AddControlFactory = (function () {
-                function AddControlFactory(embeddedEntryRetriever, label) {
+                function AddControlFactory(embeddedEntryRetriever, addLabel, replaceLabel) {
+                    if (replaceLabel === void 0) { replaceLabel = null; }
                     this.embeddedEntryRetriever = embeddedEntryRetriever;
-                    this.label = label;
+                    this.addLabel = addLabel;
+                    this.replaceLabel = replaceLabel;
                 }
-                AddControlFactory.prototype.create = function () {
-                    return AddControl.create(this.label, this.embeddedEntryRetriever);
+                AddControlFactory.prototype.createAdd = function () {
+                    return AddControl.create(this.addLabel, this.embeddedEntryRetriever);
+                };
+                AddControlFactory.prototype.createReplace = function () {
+                    return AddControl.create(this.replaceLabel, this.embeddedEntryRetriever);
                 };
                 return AddControlFactory;
             }());
@@ -1478,6 +1483,11 @@ var Rocket;
                     }
                 };
                 ToManySelector.prototype.reset = function () {
+                    this.clear();
+                    for (var _i = 0, _a = this.originalIdReps; _i < _a.length; _i++) {
+                        var idRep = _a[_i];
+                        this.createSelectedEntry(idRep);
+                    }
                 };
                 ToManySelector.prototype.clear = function () {
                     for (var i in this.entries) {
@@ -1612,11 +1622,17 @@ var Rocket;
                     this.jqEmbedded = $("<div />", {
                         "class": "rocket-impl-embedded"
                     });
-                    this.jqToMany.append(this.jqEmbedded);
+                    var jqGroup = this.jqToMany.children(".rocket-group");
+                    if (jqGroup.length > 0) {
+                        jqGroup.append(this.jqEmbedded);
+                    }
+                    else {
+                        this.jqToMany.append(this.jqEmbedded);
+                    }
                     this.jqEntries = $("<div />");
                     this.jqEmbedded.append(this.jqEntries);
                     if (this.compact) {
-                        var structureElement = Rocket.Display.StructureElement.findFrom(this.jqToMany);
+                        var structureElement = Rocket.Display.StructureElement.findFrom(this.jqEmbedded);
                         structureElement.setGroup(true);
                         var toolbar = structureElement.getToolbar();
                         if (toolbar !== null) {
@@ -1686,7 +1702,7 @@ var Rocket;
                     }
                 };
                 ToManyEmbedded.prototype.createFirstAddControl = function () {
-                    var addControl = this.addControlFactory.create();
+                    var addControl = this.addControlFactory.createAdd();
                     var that = this;
                     this.jqEmbedded.prepend(addControl.jQuery);
                     addControl.onNewEmbeddedEntry(function (newEntry) {
@@ -1698,7 +1714,7 @@ var Rocket;
                     return addControl;
                 };
                 ToManyEmbedded.prototype.createEntryAddControl = function (entry) {
-                    var addControl = this.addControlFactory.create();
+                    var addControl = this.addControlFactory.createAdd();
                     var that = this;
                     this.entryAddControls.push(addControl);
                     addControl.jQuery.insertBefore(entry.jQuery);
@@ -1708,7 +1724,7 @@ var Rocket;
                     return addControl;
                 };
                 ToManyEmbedded.prototype.createLastAddControl = function () {
-                    var addControl = this.addControlFactory.create();
+                    var addControl = this.addControlFactory.createAdd();
                     var that = this;
                     this.jqEmbedded.append(addControl.jQuery);
                     addControl.onNewEmbeddedEntry(function (newEntry) {
@@ -2563,6 +2579,16 @@ var Rocket;
                     if (embedded === void 0) { embedded = null; }
                     this.toOneSelector = toOneSelector;
                     this.embedded = embedded;
+                    if (toOneSelector && embedded) {
+                        embedded.whenChanged(function () {
+                            if (embedded.currentEntry || embedded.newEntry) {
+                                toOneSelector.jQuery.hide();
+                            }
+                            else {
+                                toOneSelector.jQuery.show();
+                            }
+                        });
+                    }
                 }
                 ToOne.from = function (jqToOne) {
                     var toOne = jqToOne.data("rocketImplToOne");
@@ -2596,7 +2622,7 @@ var Rocket;
                                 }
                             });
                             var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"), startKey, "n");
-                            addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"));
+                            addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("replace-item-label"));
                         }
                         toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory);
                         jqCurrent.children(".rocket-impl-entry").each(function () {
@@ -2618,6 +2644,7 @@ var Rocket;
                     if (addButtonFactory === void 0) { addButtonFactory = null; }
                     this.compact = true;
                     this.expandContext = null;
+                    this.changedCallbacks = new Array();
                     this.jqToOne = jqToOne;
                     this.addControlFactory = addButtonFactory;
                     this.compact = (true == jqToOne.data("compact"));
@@ -2655,10 +2682,11 @@ var Rocket;
                         this.firstReplaceControl.jQuery.hide();
                         this.secondReplaceControl.jQuery.hide();
                     }
+                    this.triggerChanged();
                 };
                 ToOneEmbedded.prototype.createReplaceControl = function (prepend) {
                     var _this = this;
-                    var addControl = this.addControlFactory.create();
+                    var addControl = this.addControlFactory.createReplace();
                     if (prepend) {
                         this.jqEmbedded.prepend(addControl.jQuery);
                     }
@@ -2671,10 +2699,11 @@ var Rocket;
                     return addControl;
                 };
                 ToOneEmbedded.prototype.createAddControl = function () {
-                    var addControl = this.addControlFactory.create();
+                    var _this = this;
+                    var addControl = this.addControlFactory.createAdd();
                     this.jqEmbedded.append(addControl.jQuery);
                     addControl.onNewEmbeddedEntry(function (newEntry) {
-                        this.newEntry = newEntry;
+                        _this.newEntry = newEntry;
                     });
                     return addControl;
                 };
@@ -2741,7 +2770,7 @@ var Rocket;
                     var _this = this;
                     this.jqEntries.append(entry.jQuery);
                     if (this.isExpanded()) {
-                        entry.expand();
+                        entry.expand(false);
                     }
                     else {
                         entry.reduce();
@@ -2793,6 +2822,15 @@ var Rocket;
                     this.changed();
                     n2n.ajah.update();
                 };
+                ToOneEmbedded.prototype.triggerChanged = function () {
+                    for (var _i = 0, _a = this.changedCallbacks; _i < _a.length; _i++) {
+                        var callback = _a[_i];
+                        callback();
+                    }
+                };
+                ToOneEmbedded.prototype.whenChanged = function (callback) {
+                    this.changedCallbacks.push(callback);
+                };
                 return ToOneEmbedded;
             }());
             var ToOneSelector = (function () {
@@ -2807,6 +2845,13 @@ var Rocket;
                     this.init();
                     this.selectEntry(this.selectedIdRep);
                 }
+                Object.defineProperty(ToOneSelector.prototype, "jQuery", {
+                    get: function () {
+                        return this.jqElem;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ToOneSelector.prototype, "selectedIdRep", {
                     get: function () {
                         var idRep = this.jqInput.val();
@@ -2820,8 +2865,8 @@ var Rocket;
                 ToOneSelector.prototype.init = function () {
                     var _this = this;
                     this.jqSelectedEntry = $("<div />");
-                    this.jqElem.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
-                    new display.CommandList($("<div />", true).appendTo(this.jqElem))
+                    this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
+                    new display.CommandList($("<div />", true).appendTo(this.jqSelectedEntry))
                         .createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
                         .click(function () {
                         _this.clear();
@@ -5454,8 +5499,8 @@ var Rocket;
             Relation.EmbeddedEntryRetriever = EmbeddedEntryRetriever;
             var EmbeddedEntry = (function () {
                 function EmbeddedEntry(jqEntry, readOnly) {
-                    this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
                     this.readOnly = readOnly;
+                    this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
                     this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
                     this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");

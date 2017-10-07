@@ -38,7 +38,7 @@
 		<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
 		<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
 			<div>
-				<?php $html->text('ei_impl_ci_empty_panel_label') ?>
+				<?php $html->text('common_empty_label') ?>
 			</div>
 		<?php else: ?>
 			<div>
