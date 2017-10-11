@@ -30,13 +30,11 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\field\impl\string\conf\PathPartEiPropConfigurator;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\component\EiConfigurator;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
-use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
@@ -55,7 +53,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	public function __construct() {
 		parent::__construct();
 		$this->displayDefinition->setDefaultDisplayedViewModes(DisplayDefinition::VIEW_MODE_BULKY_ADD 
-				| DisplayDefinition::VIEW_MODE_LIST_READ);
+				| DisplayDefinition::VIEW_MODE_COMPACT_READ);
 		$this->entityPropertyRequired = true;
 		$this->getStandardEditDefinition()->setMandatory(false);
 	}

@@ -219,6 +219,30 @@ class CommonEiMask implements EiMask, Identifiable {
 // 	}
 	
 	
+	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+		$id = null;
+		$name = null;
+		
+		foreach ($this->eiEngine->getGuiDefinition()->getSummarizableGuiProps() as $placeholder => $guiProp) {
+			if ($placeholder == $this->eiEngine->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
+				$id = $guiProp->buildIdentityString($eiObject, $n2nLocale);
+			} else {
+				$name = $guiProp->buildIdentityString($eiObject, $n2nLocale);
+			}
+			
+			if ($name !== null) break;
+		}
+		
+		if ($id === null) {
+			$id = $this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId());
+		}
+		
+		if ($name === null) {
+			$name = $this->getLabelLstr()->t($n2nLocale);
+		}
+		
+		return $name . ' #' . $id;
+	}
 	
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createIdentityString()
@@ -231,8 +255,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 		
 		if ($identityStringPattern === null) {
-			return $this->getLabelLstr()->t($n2nLocale) . ' #' 
-					. $this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId());
+			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
 		}
 		
 		return $this->eiEngine->getGuiDefinition()

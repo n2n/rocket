@@ -219,4 +219,12 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 	public function createOutputUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\spec\ei\manage\util\model\Eiu $eiu) {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable::getGroupType()
+	 */
+	public function getGroupType() {
+		// TODO Auto-generated method stub
+		
+	}
 }

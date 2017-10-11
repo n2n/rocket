@@ -308,7 +308,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY,
 					$dtc->translate('ei_impl_display_in_overview_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
-							$this->displayDefinition->isViewModeDefaultDisplayed(DisplayDefinition::VIEW_MODE_LIST_READ))));
+							$this->displayDefinition->isViewModeDefaultDisplayed(DisplayDefinition::VIEW_MODE_BULKY_READ))));
 		}
 	
 		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_READ)) {
