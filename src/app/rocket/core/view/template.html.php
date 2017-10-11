@@ -27,6 +27,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\http\nav\Murl;
 	use n2nutil\jquery\JQueryUiLibrary;
+	use n2n\impl\web\ui\view\jhtml\JhtmlLibrary;
 
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($view);
@@ -55,6 +56,7 @@
 	$htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
 	$htmlMeta->addLibrary(new JQueryUiLibrary(3));
+	$htmlMeta->addLibrary(new JhtmlLibrary(false));
 // new design (not ready yet):
  	$htmlMeta->addCss('css/rocket-12.css');
 // old design:
