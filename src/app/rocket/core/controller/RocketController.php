@@ -40,6 +40,7 @@ use n2n\core\config\N2nLocaleConfig;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\impl\ScrBaseController;
 use n2n\l10n\MessageContainer;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
@@ -82,7 +83,8 @@ class RocketController extends ControllerAdapter {
 		if (!$this->verifyUser()) return;
 		$deleteLoginModel = new DeleteLoginModel(); 
 		$this->dispatch($deleteLoginModel, 'delete');
-		$this->forward('..\view\start.html', array('deleteLoginModel' => $deleteLoginModel));
+		$this->send(new JhtmlResponse($this->createView('..\view\start.html', 
+		    array('deleteLoginModel' => $deleteLoginModel))));
 	}
 	
 	public function doUsers(array $delegateParams = array(), RocketUserController $delegateController) {

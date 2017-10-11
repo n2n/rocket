@@ -24,7 +24,6 @@
 	use rocket\core\model\ServerInfoExtractor;
 	use rocket\core\model\DeleteLoginModel;
 	use n2n\web\ui\Raw;
-	use n2n\web\ui\view\View;
 	use n2n\impl\web\ui\view\html\HtmlView;
 
 	$view = HtmlView::view($this);
