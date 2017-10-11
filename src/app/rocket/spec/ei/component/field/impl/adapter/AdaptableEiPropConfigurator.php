@@ -304,14 +304,14 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 				
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		if ($this->displayDefinition->isListReadViewCompatible()) {
+		if ($this->displayDefinition->isCompactViewCompatible()) {
 			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY,
 					$dtc->translate('ei_impl_display_in_overview_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
 							$this->displayDefinition->isViewModeDefaultDisplayed(DisplayDefinition::VIEW_MODE_LIST_READ))));
 		}
 	
-		if ($this->displayDefinition->isBulkyReadViewCompatible()) {
+		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_READ)) {
 			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
 					$dtc->translate('ei_impl_display_in_detail_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
@@ -319,7 +319,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 									DisplayDefinition::VIEW_MODE_BULKY_READ))));
 		}
 	
-		if ($this->displayDefinition->isEditViewCompatible()) {
+		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_EDIT)) {
 			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY,
 					$dtc->translate('ei_impl_display_in_edit_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
@@ -327,7 +327,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 									DisplayDefinition::VIEW_MODE_BULKY_EDIT))));
 		}
 	
-		if ($this->displayDefinition->isAddViewCompatible()) {
+		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_ADD)) {
 			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY,
 					$dtc->translate('ei_impl_display_in_add_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
