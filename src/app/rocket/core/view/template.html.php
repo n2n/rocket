@@ -148,120 +148,122 @@
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 
 			'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
-		<header id="rocket-header">
-			<div id="rocket-logo">
-				<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
-						array('id' => 'rocket-branding')) ?>
-			</div>
-			<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
-			<nav id="rocket-conf-nav" class="navbar-toggleable-lg jhtml-comp" data-jhtml-name="conf-nav">
-				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
-						data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false" 
-						aria-label="Toggle navigation">
-					<i class="fa fa-navicon"></i>
-				</button>
-				<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
-				<ul class="nav justify-content-end">
-					<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
-						<li class="nav-item">
-							<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools'), array('class' => 'nav-link')) ?>
-								<i class="fa fa-wrench mr-2"></i><?php $html->text('tool_title') ?>
-							<?php $html->linkEnd() ?>
-						</li>
-						<li class="nav-item">
-							<?php $html->linkStart(Murl::controller('rocket')->pathExt('users'), array('class' => 'nav-link')) ?>
-								<i class="fa fa-user mr-2"></i><?php $html->text('user_title') ?>
-							<?php $html->linkEnd() ?> 
-						</li>
-						<li class="nav-item">
-							<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'nav-link')) ?>
-								<i class="fa fa-group mr-2"></i><?php $html->text('user_groups_title') ?>
-							<?php $html->linkEnd() ?> 
-						</li>
-					<?php endif ?>
-					<li class="nav-item">
-						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'nav-link rocket-conf-user')) ?> 
-							<i class="fa fa-user mr-2"></i><?php $html->out((string) $templateModel->getCurrentUser()) ?>
-						<?php $html->linkEnd() ?>
-					</li>
-					<li class="nav-item">
-						<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('class' => 'nav-link rocket-conf-logout')) ?>
-							<i class="fa fa-sign-out"></i>
-						<?php $html->linkEnd() ?>
-					</li>
-					<li class="nav-item">
-						<?php $html->linkStart(Murl::controller('rocket')->pathExt('about'), array('class' => 'nav-link')) ?>
-							<i class="fa fa-info"></i>
-						<?php $html->linkEnd() ?>
-					</li>
-				</ul>
-			</nav>
-		</header>
-		<nav id="rocket-global-nav" class="jhtml-comp" data-jhtml-name="global-nav">
-			<h2 class="sr-only"><?php $html->l10nText('manage_nav_title') ?></h2>
-			<?php foreach ($templateModel->getNavArray() as $navArray): ?>
-				<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>">
-					<h3 class="rocket-global-nav-group-title">
-						<a><?php $html->esc($navArray['menuGroup']->getLabel()) ?></a>
-						<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
-					</h3>
-					<ul class="nav flex-column">
-						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
-							<li class="nav-item">
-								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), 
-										$menuItem->determinePathExt($view->getN2nContext())), 
-										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) 
-												. '<span></span>'), 
-										array('class' => 'nav-link rocket-ajah' 
-										. ($templateModel->isMenuItemActive($menuItem) ? ' active' : null))) ?></li>
-						<?php endforeach ?>
-					</ul>
-				</div>
-			<?php endforeach ?>
-		</nav>
-		
-		<div id="rocket-content-container" data-error-tab-title="<?php $html->text('ei_error_list_title') ?>"
-				data-display-error-label="<?php $html->text('core_display_error_label') ?>">
-			<div class="rocket-main-layer">
-				<div class="rocket-context">
-					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
-						<ol class="breadcrumb">
-							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
-								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
-							<?php endforeach ?>
-							<li class="breadcrumb-item active">
-								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
-							</li>
-						</ol>
-					<?php endif ?>
-					
-					<!-- WICHTIG -->
-					
-					<?php if (isset($view->params['title'])): ?>
-						<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
-					<?php else: ?>
-						<h1 class="rocket-main-title">Rocket</h1>
-					<?php endif ?>
-					
-					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
-					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
-					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
-					<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
-					
-					<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
-							data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
-						<?php $view->importContentView() ?>
-					</div>
-					
-					<?php if ($view->hasPanel('additional')): ?>
-						<div id="rocket-additional">
-							<?php $view->importPanel('additional') ?>
-						</div>
-					<?php endif ?>
-					
-					<!-- NICHT MEHR WICHTIG -->
-				</div>
-			</div>
-		</div>
+		<div class="jhtml-container">
+    		<header id="rocket-header">
+    			<div id="rocket-logo">
+    				<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
+    						array('id' => 'rocket-branding')) ?>
+    			</div>
+    			<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
+    			<nav id="rocket-conf-nav" class="navbar-toggleable-lg jhtml-comp" data-jhtml-name="conf-nav">
+    				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
+    						data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false" 
+    						aria-label="Toggle navigation">
+    					<i class="fa fa-navicon"></i>
+    				</button>
+    				<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
+    				<ul class="nav justify-content-end">
+    					<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
+    						<li class="nav-item">
+    							<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools'), array('class' => 'nav-link')) ?>
+    								<i class="fa fa-wrench mr-2"></i><?php $html->text('tool_title') ?>
+    							<?php $html->linkEnd() ?>
+    						</li>
+    						<li class="nav-item">
+    							<?php $html->linkStart(Murl::controller('rocket')->pathExt('users'), array('class' => 'nav-link')) ?>
+    								<i class="fa fa-user mr-2"></i><?php $html->text('user_title') ?>
+    							<?php $html->linkEnd() ?> 
+    						</li>
+    						<li class="nav-item">
+    							<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'nav-link')) ?>
+    								<i class="fa fa-group mr-2"></i><?php $html->text('user_groups_title') ?>
+    							<?php $html->linkEnd() ?> 
+    						</li>
+    					<?php endif ?>
+    					<li class="nav-item">
+    						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'nav-link rocket-conf-user')) ?> 
+    							<i class="fa fa-user mr-2"></i><?php $html->out((string) $templateModel->getCurrentUser()) ?>
+    						<?php $html->linkEnd() ?>
+    					</li>
+    					<li class="nav-item">
+    						<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('class' => 'nav-link rocket-conf-logout')) ?>
+    							<i class="fa fa-sign-out"></i>
+    						<?php $html->linkEnd() ?>
+    					</li>
+    					<li class="nav-item">
+    						<?php $html->linkStart(Murl::controller('rocket')->pathExt('about'), array('class' => 'nav-link')) ?>
+    							<i class="fa fa-info"></i>
+    						<?php $html->linkEnd() ?>
+    					</li>
+    				</ul>
+    			</nav>
+    		</header>
+    		<nav id="rocket-global-nav" class="jhtml-comp" data-jhtml-name="global-nav">
+    			<h2 class="sr-only"><?php $html->l10nText('manage_nav_title') ?></h2>
+    			<?php foreach ($templateModel->getNavArray() as $navArray): ?>
+    				<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>">
+    					<h3 class="rocket-global-nav-group-title">
+    						<a><?php $html->esc($navArray['menuGroup']->getLabel()) ?></a>
+    						<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
+    					</h3>
+    					<ul class="nav flex-column">
+    						<?php foreach ($navArray['menuItems'] as $menuItem): ?>
+    							<li class="nav-item">
+    								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(), 
+    										$menuItem->determinePathExt($view->getN2nContext())), 
+    										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) 
+    												. '<span></span>'), 
+    										array('class' => 'nav-link rocket-ajah' 
+    										. ($templateModel->isMenuItemActive($menuItem) ? ' active' : null))) ?></li>
+    						<?php endforeach ?>
+    					</ul>
+    				</div>
+    			<?php endforeach ?>
+    		</nav>
+    		
+    		<div id="rocket-content-container" data-error-tab-title="<?php $html->text('ei_error_list_title') ?>"
+    				data-display-error-label="<?php $html->text('core_display_error_label') ?>">
+    			<div class="rocket-main-layer">
+    				<div class="rocket-context">
+    					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
+    						<ol class="breadcrumb">
+    							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
+    								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
+    							<?php endforeach ?>
+    							<li class="breadcrumb-item active">
+    								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
+    							</li>
+    						</ol>
+    					<?php endif ?>
+    					
+    					<!-- WICHTIG -->
+    					
+    					<?php if (isset($view->params['title'])): ?>
+    						<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
+    					<?php else: ?>
+    						<h1 class="rocket-main-title">Rocket</h1>
+    					<?php endif ?>
+    					
+    					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
+    					
+    					<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
+    							data-error-list-label="<?php $html->text('ei_error_list_title') ?>">
+    						<?php $view->importContentView() ?>
+    					</div>
+    					
+    					<?php if ($view->hasPanel('additional')): ?>
+    						<div id="rocket-additional">
+    							<?php $view->importPanel('additional') ?>
+    						</div>
+    					<?php endif ?>
+    					
+    					<!-- NICHT MEHR WICHTIG -->
+    				</div>
+    			</div>
+    		</div>
+    	</div>
 	<?php $html->bodyEnd() ?>
 </html>
