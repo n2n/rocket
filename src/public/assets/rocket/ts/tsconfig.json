@@ -5,6 +5,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "outFile": "../js/rocket.js",
-        "sourceMap": true
+        "sourceMap": true,
+		"target": "es5"
     }
 }
