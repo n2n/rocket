@@ -21,9 +21,10 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\cke\ui;
 
+use n2n\util\StringUtils;
+use nikolai\TestCkeCss;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
-use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
 use n2n\l10n\N2nLocale;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
@@ -86,51 +87,37 @@ class CkeHtmlBuilder {
 	public function editor($propertyPath = null, CkeComposer $ckeComposer = null) {
 		$this->view->out($this->getEditor($propertyPath, $ckeComposer));
 	}
-	
+
+	private function prepareAdditionalStyles($additionalStyles) {
+		$encodable = array();
+		foreach ((array) $additionalStyles as $style) {
+			$style instanceof WysiwygStyle;
+			$encodable[] = $style->getValueForJsonEncode();
+		}
+		return $encodable;
+	}
+
 	public function getEditor($propertyPath = null, CkeComposer $ckeComposer = null) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
-		
+
 		$ckeConfig = null;
 		if ($ckeComposer !== null) {
 			$ckeConfig = $ckeComposer->toCkeConfig();
 		} else {
 			$ckeConfig = CkeConfig::createDefault();
 		}
-		
-	
-		$attrs = array('class' => 'rocket-impl-cke-classic');
-		$toolbar = null;
-		switch ($ckeConfig->getMode()) {
-			case CkeEiProp::MODE_SIMPLE:
-				$attrs['data-rocket-impl-toolbar'] = json_encode(['headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']);
-				break;
-			case CkeEiProp::MODE_NORMAL:
-				$attrs['data-rocket-impl-toolbar'] = json_encode(['headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']);
-				break;
-			case CkeEiProp::MODE_ADVANCED:
-				$attrs['data-rocket-impl-toolbar'] = json_encode(['headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']);
-				break;
-		}
-		
-// 		this.simpleToolbar =  [
-// 		{ name: "basicstyles", items : [ "Bold", "Italic", "Underline", "Strike", "RemoveFormat" ]}
-// 		];
-		
-// 		this.normalToolbar = [
-// 		{ name: 'document', items: [ ]},
-// 		{ name: "basicstyles", items : [ "Bold", "Italic", "Underline", "Strike", "RemoveFormat" ]},
-// 		{ name: "clipboard", items : [ "Cut", "Copy", "Paste", "PateText", "PasteFromWord", "Undo", "Redo" ] },
-// 		{ name: "editing", items: [ ]},
-// 		{ name: "basicstyles", items : [ "Subscript", "Superscript" ]},
-// 		{ name: "paragraph", items : [ "NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ] },
-// 		{ name: "links", items: [ "Link", "Unlink", "Anchor"]},
-// 		{ name: "insert", items: [ "HorizontalRule", "SpecialChar"]},
-// 		{ name: "styles", items: [ "Styles", "Format"]},
-// 		{ name: "tools", items: [ "Maximize" ]},
-// 		{ name: "about", items: [ "About" ]}
-// 		];
-		
-		
+
+		$testCkeCss = new TestCkeCss();
+		$attrs = array('class' => 'rocket-impl-cke-classic', 'data-rocket-impl-toolbar' =>
+				json_encode(array(
+						'mode' => 'advanced', $ckeConfig->getMode(),
+						'tableEditing' => $ckeConfig->isTablesEnabled(),
+						'bbcode' => $ckeConfig->isBbcodeEnabled(),
+						'additionalStyles' => StringUtils::jsonEncode($this->prepareAdditionalStyles($testCkeCss->getAdditionalStyles())),
+						'bodyClass' => $testCkeCss->getBodyClass(),
+						'bodyId' => $testCkeCss->getBodyId())),
+						'contentsCss' => $testCkeCss->getContentCssPaths($this->view));
+
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyPath, $attrs);
 	}
 }
@@ -146,8 +133,8 @@ class Cke {
 
 class CkeComposer {
 	private $mode = CkeEiProp::MODE_NORMAL;
-	private $tableEditing;
-	private $table;
+	private $bbcodeEnabled = false;
+	private $tableEnabled = false;
 	
 	public function __construct() {
 	}
@@ -161,13 +148,18 @@ class CkeComposer {
 		$this->mode = $mode;
 		return $this;
 	}
-	
+
+	public function bbcode(bool $bbcode) {
+		$this->bbcodeEnabled = $bbcode;
+		return $this;
+	}
+
 	/**
 	 * @param bool $table
 	 * @return \rocket\spec\ei\component\field\impl\string\cke\ui\CkeComposer
 	 */
 	public function table(bool $table) {
-		$this->table = $table;
+		$this->tableEnabled = $table;
 		return $this;
 	}
 	
@@ -175,17 +167,19 @@ class CkeComposer {
 	 * @return \rocket\spec\ei\component\field\impl\string\cke\ui\CkeConfig
 	 */
 	public function toCkeConfig() {
-		return new CkeConfig($this->mode, $this->table);
+		return new CkeConfig($this->mode, $this->tableEnabled, $this->bbcodeEnabled);
 	}
 }
 
 class CkeConfig {
 	private $mode;
 	private $tableEnabled;
-	
-	public function __construct(string $mode, bool $tablesEnabled) {
+	private $bbcodeEnabled;
+
+	public function __construct(string $mode, bool $tablesEnabled, bool $bbcodeEnabled) {
 		$this->mode = $mode;
 		$this->tableEnabled = $tablesEnabled;
+		$this->bbcodeEnabled = $bbcodeEnabled;
 	}
 	
 	public function getMode() {
@@ -195,8 +189,12 @@ class CkeConfig {
 	public function isTablesEnabled() {
 		return $this->tableEnabled;
 	}
-	
+
+	public function isBbcodeEnabled() {
+		return $this->bbcodeEnabled;
+	}
+
 	public static function createDefault() {
-		return new CkeConfig(CkeEiProp::MODE_NORMAL, false);
+		return new CkeConfig(CkeEiProp::MODE_NORMAL, false, false);
 	}
 }

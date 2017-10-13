@@ -36,6 +36,8 @@ class CkeMag extends StringMag {
 				$this->ckeLinkProviderLookupIds, $this->ckeCssCssConfigLookupId, $this->getInputAttrs()*/
 		
 		$ckeHtml = new CkeHtmlBuilder($htmlView);
-		return $ckeHtml->getEditor($propertyPath, Cke::classic()->mode($this->mode)->table($this->tableEditing));
+
+		return $ckeHtml->getEditor($propertyPath,
+				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode));
 	}
 }
