@@ -11,7 +11,7 @@ namespace Rocket.Cmd {
 			this.jqContainer = jqContainer;
 			this._layers = new Array<Layer>();
 			
-			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this);
+			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateBrowser().history);
 			this._layers.push(layer);
 		}
 

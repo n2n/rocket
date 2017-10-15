@@ -7,5 +7,7 @@
         "outFile": "../js/rocket.js",
         "sourceMap": true,
 		"target": "es5"
-    }
+    },
+	"files": [],
+	"include": ["../../../**/*.d.ts","**/*"]
 }
