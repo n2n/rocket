@@ -1,18 +1,25 @@
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
-	import util = Rocket.util;
 	
-	export class Container {
+	export class Container implements Jhtml.CompHandler {
 		private jqContainer: JQuery;
 		private _layers: Array<Layer>;
-		private layerCallbackRegistery: util.CallbackRegistry<LayerCallback> = new util.CallbackRegistry<LayerCallback>();
+		private layerCallbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
 		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;
 			this._layers = new Array<Layer>();
 			
-			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateBrowser().history);
+			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, 
+					Jhtml.getOrCreateMonitor());
 			this._layers.push(layer);
+			
+			Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
+		}
+		
+		handleComp(comp: Jhtml.Comp): boolean {
+			alert("comp comp comp!!");
+			return true;
 		}
 
 		get layers(): Array<Layer> {
@@ -87,7 +94,8 @@ namespace Rocket.Cmd {
 			
 			this.jqContainer.append(jqLayer);
 			
-			var layer = new Layer(jqLayer, this._layers.length, this);
+			var layer = new Layer(jqLayer, this._layers.length, this, 
+					Jhtml.Monitor.from(jqLayer.get(0)).history);
 			this._layers.push(layer);
 			
 			var jqToolbar = $("<div />", {

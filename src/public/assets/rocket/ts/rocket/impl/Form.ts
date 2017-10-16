@@ -23,11 +23,11 @@ namespace Rocket.Impl {
 	var $ = jQuery;
 	
 	export class Form {
-		private jqForm;
+		private jqForm: JQuery;
 		private _observing = false;
 		private _config: Form.Config = new Form.Config();
 		private callbackRegistery: util.CallbackRegistry<FormCallback> = new util.CallbackRegistry<FormCallback>();
-		private curXhr: JQueryXHR = null;
+		private curXhr: JQuery.jqXHR = null;
 		
 		constructor(jqForm: JQuery) {
 			this.jqForm = jqForm;
@@ -46,7 +46,7 @@ namespace Rocket.Impl {
 		}
 		
 		reset() {
-			this.jqForm.get(0).reset();
+			(<HTMLFormElement> this.jqForm.get(0)).reset();
 		}
 		
 		private trigger(eventType: Form.EventType) {
@@ -91,7 +91,7 @@ namespace Rocket.Impl {
 		}
 		
 		private buildFormData(submitConfig?: Form.SubmitDirective): FormData {
-			var formData = new FormData(this.jqForm.get(0));
+			var formData = new FormData(<HTMLFormElement> this.jqForm.get(0));
 			
 			if (submitConfig && submitConfig.button) {
 				formData.append(submitConfig.button.name, submitConfig.button.value);
@@ -160,7 +160,7 @@ namespace Rocket.Impl {
 			var url = this._config.actionUrl || this.jqForm.attr("action");
 			
 			var that = this;
-			var xhr = this.curXhr = $.ajax({
+			var xhr = this.curXhr = <JQuery.jqXHR> $.ajax({
 			    "url": url,
 			    "type": "POST",
 			    "data": formData,

@@ -9,5 +9,6 @@
 		"target": "es5"
     },
 	"files": [],
-	"include": ["../../../**/*.d.ts","**/*"]
+	"include": ["../../../**/*.d.ts","**/*"],
+	"compileOnSave": true
 }

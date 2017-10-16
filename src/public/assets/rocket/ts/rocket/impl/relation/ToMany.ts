@@ -36,8 +36,8 @@ namespace Rocket.Impl.Relation {
 				return toMany;
 			}
 			
-			var toManySelector = null;
-			var jqSelector = jqToMany.children(".rocket-impl-selector");
+			let toManySelector: ToManySelector = null;
+			let jqSelector = jqToMany.children(".rocket-impl-selector");
 			if (jqSelector.length > 0) {
 				toManySelector = new ToManySelector(jqSelector, jqSelector.find("li.rocket-new-entry").detach());
 				jqSelector.find("ul li").each(function () {
@@ -51,7 +51,7 @@ namespace Rocket.Impl.Relation {
 			var jqNews = jqToMany.children(".rocket-impl-news");
 			var addControlFactory = null;
 			
-			var toManyEmbedded = null;
+			let toManyEmbedded: ToManyEmbedded = null;
 			if (jqCurrents.length > 0 || jqNews.length > 0) {
 				if (jqNews.length > 0) {
 					var propertyPath = jqNews.data("property-path");
@@ -197,13 +197,20 @@ namespace Rocket.Impl.Relation {
 				that.browserSelectorObserver = null;				
 			});
 			
-			Rocket.exec(this.jqElem.data("overview-tools-url"), {
-				showLoadingContext: true,
-				currentLayer: this.browserLayer,
-				done: function (result: cmd.ExecResult) {
-					that.iniBrowserContext(result.context);
-				}
+			let url = this.jqElem.data("overview-tools-url");
+			this.browserLayer.monitor.exec(url).then(() => {
+				that.iniBrowserContext(this.browserLayer.getContextByUrl(url));
 			});
+			
+			
+//			
+//			Rocket.exec(, {
+//				showLoadingContext: true,
+//				currentLayer: this.browserLayer,
+//				done: function (result: cmd.ExecResult) {
+//					
+//				}
+//			});
 		}
 		
 		private iniBrowserContext(context: cmd.Context) {

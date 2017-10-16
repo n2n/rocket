@@ -44,7 +44,7 @@ namespace Rocket.Display {
 				return this.jqElem.data("rocket-ei-type-id");
 			}
 			
-			return this.jqEiTypeSelect.val();
+			return <string> this.jqEiTypeSelect.val();
 		}
 		
 		set curEiTypeId(typeId: string) {

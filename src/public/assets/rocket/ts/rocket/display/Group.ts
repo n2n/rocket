@@ -2,8 +2,8 @@ namespace Rocket.Display {
 
 	export class StructureElement {
 		private jqElem: JQuery;
-		private onShowCallbacks: Array<(Group) => any> = new Array<(Group) => any>();
-		private onHideCallbacks: Array<(Group) => any> = new Array<(Group) => any>();
+		private onShowCallbacks: Array<(se: StructureElement) => any> = [];
+		private onHideCallbacks: Array<(se: StructureElement) => any> = [];
 		private toolbar: Toolbar = null;
 		
 		constructor(jqElem: JQuery) {
@@ -113,11 +113,11 @@ namespace Rocket.Display {
 //			});
 //		}
 		
-		public onShow(callback: (Group) => any) {
+		public onShow(callback: (group: StructureElement) => any) {
 			this.onShowCallbacks.push(callback);
 		}
 		
-		public onHide(callback: (Group) => any) {
+		public onHide(callback: (group: StructureElement) => any) {
 			this.onHideCallbacks.push(callback);
 		}
 		

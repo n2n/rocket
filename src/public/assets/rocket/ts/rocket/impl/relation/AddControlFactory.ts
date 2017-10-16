@@ -19,7 +19,7 @@ namespace Rocket.Impl.Relation {
 		private embeddedEntryRetriever: EmbeddedEntryRetriever;
 		private jqElem: JQuery;
 		private jqButton: JQuery;
-		private onNewEntryCallbacks: Array<(EmbeddedEntry) => any> = new Array<(EmbeddedEntry) => any>();
+		private onNewEntryCallbacks: Array<(entry: EmbeddedEntry) => any> = [];
 		private jqMultiTypeUl: JQuery;
 		private multiTypeEmbeddedEntry: EmbeddedEntry; 
 		private disposed: boolean = false;
@@ -113,12 +113,12 @@ namespace Rocket.Impl.Relation {
 		private fireCallbacks(embeddedEntry: EmbeddedEntry) {
 			if (this.disposed) return;
 			
-			this.onNewEntryCallbacks.forEach(function (callback: (EmbeddedEntry) => any) {
+			this.onNewEntryCallbacks.forEach(function (callback: (entry: EmbeddedEntry) => any) {
 				callback(embeddedEntry);
 			});
 		}
 		
-		public onNewEmbeddedEntry(callback: (EmbeddedEntry) => any) {
+		public onNewEmbeddedEntry(callback: (entry: EmbeddedEntry) => any) {
 			this.onNewEntryCallbacks.push(callback);
 		}
 		

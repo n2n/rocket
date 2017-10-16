@@ -61,7 +61,7 @@ namespace Rocket.Display {
 		}
 		
 		private static scanGroupNav(jqContainer: JQuery) {
-			var curGroupNav = null;
+			let curGroupNav: GroupNav = null;
 			
 			jqContainer.children().each(function () {
 				var jqElem = $(this);

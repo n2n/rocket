@@ -226,7 +226,7 @@ namespace Rocket.Impl.Relation {
 		}
 	
 		public getOrderIndex(): number {
-			return parseInt(this.jqOrderIndex.val());
+			return parseInt(<string> this.jqOrderIndex.val());
 		}
 		
 		public setMoveUpEnabled(enabled: boolean) {

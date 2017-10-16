@@ -1,7 +1,7 @@
 namespace Rocket.util {
 	
 	export class CallbackRegistry<C extends Function> {
-		private callbackMap: Array<Array<C>> = new Array<Array<C>>();  
+		private callbackMap: { [nature: string]: Array<C>} = {};  
 		
 		public register(nature: string, callback: C) {
 			if (this.callbackMap[nature] === undefined) {
@@ -16,9 +16,9 @@ namespace Rocket.util {
 				return;
 			}
 			
-			for (var i in this.callbackMap[nature]) {
+			for (let i in this.callbackMap[nature]) {
 				if (this.callbackMap[nature][i] === callback) {
-					this.callbackMap[nature].splice(i, 1);
+					this.callbackMap[nature].splice(parseInt(i), 1);
 					return;
 				}
 			}
@@ -34,7 +34,7 @@ namespace Rocket.util {
 	}
 	
 	export class ArgUtils {
-		static valIsset(arg) {
+		static valIsset(arg: any) {
 			if (arg !== null && arg !== undefined) return;
 			
 			throw new InvalidArgumentError("Invalid arg: " + arg);
@@ -73,7 +73,7 @@ namespace Rocket.util {
 //			this.stack = (new Error()).stack;
 //		}
 		
-		static assertTrue(arg, errMsg: string = null) {
+		static assertTrue(arg: any, errMsg: string = null) {
 			if (arg === true) return;
 			
 			if (errMsg === null) {

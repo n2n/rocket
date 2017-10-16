@@ -7,15 +7,15 @@ namespace Rocket.Cmd {
 	
 	export class Context {
 		private jqContext: JQuery;
-		private _activeUrl: Url;
-		private urls: Array<Url> = new Array<Url>();
+		private _activeUrl: Jhtml.Url;
+		private urls: Array<Jhtml.Url> = [];
 		private _layer: Layer;
 		private callbackRegistery: util.CallbackRegistry<ContextCallback> = new util.CallbackRegistry<ContextCallback>();
 		private additionalTabManager: AdditionalTabManager;
 		private _menu: Menu;
 		private _blocked: boolean = false;
 		
-		constructor(jqContext: JQuery, url: Url, layer: Layer) {
+		constructor(jqContext: JQuery, url: Jhtml.Url, layer: Layer) {
 			this.jqContext = jqContext;
 			this.urls.push(this._activeUrl = url);
 			this._layer = layer;
@@ -35,7 +35,7 @@ namespace Rocket.Cmd {
 			return this.jqContext;
 		}
 		
-		containsUrl(url: Url): boolean {
+		containsUrl(url: Jhtml.Url): boolean {
 			for (var i in this.urls) {
 				if (this.urls[i].equals(url)) return true;
 			}
@@ -43,47 +43,47 @@ namespace Rocket.Cmd {
 			return false;
 		}
 		
-		registerUrl(url: Url) {
-			if (this.containsUrl(url)) return;
-			
-			if (this._layer.containsUrl(url)) {
-				throw new Error("Url already registered for another Context of the current Layer."); 
-			}
-			
-			this.urls.push(url);
-		}
+//		registerUrl(url: Url) {
+//			if (this.containsUrl(url)) return;
+//			
+//			if (this._layer.containsUrl(url)) {
+//				throw new Error("Url already registered for another Context of the current Layer."); 
+//			}
+//			
+//			this.urls.push(url);
+//		}
+//		
+//		unregisterUrl(url: Url) {
+//			if (this.activeUrl.equals(url)) {
+//				throw new Error("Cannot remove active url");
+//			}
+//			
+//			for (var i in this.urls) {
+//				if (this.urls[i].equals(url)) {
+//					this.urls.splice(parseInt(i), 1);
+//				}
+//			}
+//		}
 		
-		unregisterUrl(url: Url) {
-			if (this.activeUrl.equals(url)) {
-				throw new Error("Cannot remove active url");
-			}
-			
-			for (var i in this.urls) {
-				if (this.urls[i].equals(url)) {
-					this.urls.splice(parseInt(i), 1);
-				}
-			}
-		}
-		
-		get activeUrl(): Url {
+		get activeUrl(): Jhtml.Url {
 			return this._activeUrl;
 		}
 		
-		set activeUrl(activeUrl: Url) {
-			Rocket.util.ArgUtils.valIsset(activeUrl !== null)
-			
-			if (this._activeUrl.equals(activeUrl)) {
-				return;
-			}
-			
-			if (this.containsUrl(activeUrl)) {
-				this._activeUrl = activeUrl;
-				this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
-				return;
-			}
-			
-			throw new Error("Active url not available for this context.");
-		}
+//		set activeUrl(activeUrl: Url) {
+//			Rocket.util.ArgUtils.valIsset(activeUrl !== null)
+//			
+//			if (this._activeUrl.equals(activeUrl)) {
+//				return;
+//			}
+//			
+//			if (this.containsUrl(activeUrl)) {
+//				this._activeUrl = activeUrl;
+//				this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
+//				return;
+//			}
+//			
+//			throw new Error("Active url not available for this context.");
+//		}
 		
 		private fireEvent(eventType: Context.EventType) {
 			var that = this;
@@ -218,7 +218,7 @@ namespace Rocket.Cmd {
 	}
 	
 	export class Lock {
-		constructor(private releaseCallback: (Lock) => any) {
+		constructor(private releaseCallback: (lock: Lock) => any) {
 		}
 		
 		release() {
@@ -329,9 +329,9 @@ namespace Rocket.Cmd {
 		private jqContent: JQuery;
 		private active: boolean = false;
 		
-		private onShowCallbacks: Array<(AdditionalTab) => any> = new Array<(AdditionalTab) => any>();
-		private onHideCallbacks: Array<(AdditionalTab) => any> = new Array<(AdditionalTab) => any>();
-		private onDisposeCallbacks: Array<(AdditionalTab) => any> = new Array<(AdditionalTab) => any>();
+		private onShowCallbacks: Array<(tab: AdditionalTab) => any> = [];
+		private onHideCallbacks: Array<(tab: AdditionalTab) => any> = [];
+		private onDisposeCallbacks: Array<(tab: AdditionalTab) => any> = [];
 		
 		constructor(jqNavItem: JQuery, jqContent: JQuery) {
 			this.jqNavItem = jqNavItem;
@@ -382,15 +382,15 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		public onShow(callback: (AdditionalTab) => any) {
+		public onShow(callback: (tab: AdditionalTab) => any) {
 			this.onShowCallbacks.push(callback);
 		}
 		
-		public onHide(callback: (AdditionalTab) => any) {
+		public onHide(callback: (tab: AdditionalTab) => any) {
 			this.onHideCallbacks.push(callback);
 		}
 		
-		public onDispose(callback: (AdditionalTab) => any) {
+		public onDispose(callback: (tab: AdditionalTab) => any) {
 			this.onDisposeCallbacks.push(callback);
 		}
 	}

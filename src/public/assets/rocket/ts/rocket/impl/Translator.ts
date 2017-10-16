@@ -423,7 +423,7 @@ namespace Rocket.Impl {
 	}
 	
 	class MenuItem {
-		private _localeId;
+		private _localeId: string;
 		private _mandatory: boolean;
 		private jqCheck: JQuery;
 		private jqI: JQuery;
@@ -574,7 +574,7 @@ namespace Rocket.Impl {
 	
 	class TranslatedContent {
 		private jqTranslation: JQuery;
-		private jqEnabler = null;
+		private jqEnabler: JQuery = null;
 		private changedCallbacks: Array<() => any> = [];
 		private _visible: boolean = true;
 		
