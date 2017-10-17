@@ -21,7 +21,7 @@ class DisplayItem {
 
 	/**
 	 * @param GuiIdPath $guiIdPath
-	 * @return \rocket\spec\config\mask\DisplayItem
+	 * @return DisplayItem
 	 */
 	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
 		$orderItem = new DisplayItem();
@@ -33,7 +33,7 @@ class DisplayItem {
 
 	/**
 	 * @param DisplayStructure $displayStructure
-	 * @return \rocket\spec\config\mask\DisplayItem
+	 * @return DisplayItem
 	 */
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $groupType, 
 			string $label = null) {

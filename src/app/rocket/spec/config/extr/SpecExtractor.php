@@ -25,7 +25,6 @@ use n2n\util\config\Attributes;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\AttributesException;
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\config\mask\model\GuiSection;
 use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\mask\model\DisplayScheme;
@@ -284,8 +283,8 @@ class SpecExtractor {
 	}
 	
 	private function extractDisplayStructure($key, Attributes $attributes) {
-		$data = $attributes->getArray($key, false);
-		if (empty($data)) return null;
+		$data = $attributes->getArray($key, false, null);
+		if ($data === null) return null;
 		
 		try {
 			return $this->createDisplayStructure($data);
