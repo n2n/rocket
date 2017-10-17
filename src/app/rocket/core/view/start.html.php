@@ -38,8 +38,7 @@
 	
 	$loginContext = $view->lookup('rocket\user\model\LoginContext');
 	$view->assert($loginContext instanceof LoginContext);
-?>
-<?php
+
 	$view->useTemplate('template.html',
 			array('title' => $view->getL10nText('core_start_title', array('user' => $loginContext->getCurrentUser()))));
 ?>

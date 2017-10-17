@@ -148,14 +148,14 @@
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 
 			'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
-		<div class="jhtml-container">
+		<div data-jhtml-container="rocket-template">
     		<header id="rocket-header">
     			<div id="rocket-logo">
     				<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
     						array('id' => 'rocket-branding')) ?>
     			</div>
     			<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
-    			<nav id="rocket-conf-nav" class="navbar-toggleable-lg jhtml-comp" data-jhtml-name="conf-nav">
+    			<nav id="rocket-conf-nav" class="navbar-toggleable-lg" data-jhtml-comp="rocket-conf-nav">
     				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
     						data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false" 
     						aria-label="Toggle navigation">
@@ -198,7 +198,7 @@
     				</ul>
     			</nav>
     		</header>
-    		<nav id="rocket-global-nav" class="jhtml-comp" data-jhtml-name="global-nav">
+    		<nav id="rocket-global-nav" data-jhtml-comp="rocket-global-nav">
     			<h2 class="sr-only"><?php $html->l10nText('manage_nav_title') ?></h2>
     			<?php foreach ($templateModel->getNavArray() as $navArray): ?>
     				<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>">
