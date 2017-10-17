@@ -299,7 +299,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		get idRep(): string {
-			return this.jqInput.val();
+			return this.jqInput.val().toString();
 		}
 		
 		set idRep(idRep: string) {
