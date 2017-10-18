@@ -3628,6 +3628,35 @@ h1, .h1 {
 /*
  * Content
  */
+.rocket-simple-commands > a {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #837E78;
+  font-size: 1.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.rocket-simple-commands > a:hover {
+  background: transparent;
+}
+
+.rocket-simple-commands > a:focus, .rocket-simple-commands > a:visited, .rocket-simple-commands > a:active {
+  box-shadow: none;
+}
+
+.rocket-simple-commands > a.btn-danger:hover {
+  color: #e32413;
+}
+
+.rocket-simple-commands > a.btn-warning:hover {
+  color: #F6A723;
+}
+
+.rocket-simple-commands > a.btn-success:hover {
+  color: #5cb85c;
+}
+
 .rocket-simple-commands > a > span {
   display: none;
 }

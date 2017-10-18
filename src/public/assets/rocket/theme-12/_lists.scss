@@ -110,8 +110,33 @@
  */
 
 .rocket-simple-commands {
-    > a > span {
-        display: none;
+    > a { 
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: $gray-light;
+        font-size: $font-size-lg;
+        padding: 0.25rem 0.5rem;
+        &:hover {
+            background: transparent;
+        }
+        &:focus,
+        &:visited,
+        &:active {
+            box-shadow: none;
+        }
+        &.btn-danger:hover {
+            color: $brand-danger;
+        }
+        &.btn-warning:hover {
+            color: $brand-warning;
+        }
+        &.btn-success:hover {
+            color: $brand-success;
+        }
+        &> span {
+            display: none;
+        }
     }
 }
 
