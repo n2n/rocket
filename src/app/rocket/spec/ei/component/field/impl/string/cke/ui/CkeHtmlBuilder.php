@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\string\cke\ui;
 
 use n2n\util\StringUtils;
-use nikolai\TestCkeCss;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
 use n2n\l10n\N2nLocale;
@@ -30,74 +29,68 @@ use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
 use n2n\web\http\nav\UnavailableLinkException;
 use rocket\spec\ei\component\field\impl\string\cke\CkeEiProp;
+use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
+use rocket\spec\ei\component\field\impl\string\cke\model\CkeUtils;
 
 class CkeHtmlBuilder {
-	const CLASS_NAME_CKE = 'rocket-cke-classic';
-	const CLASS_NAME_CKE_INLINE = 'rocket-cke-inline';
-	
+
 	private $html;
 	private $view;
-	
+
+	private $linkProviders;
+
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 	}
-		
-	
-	public function out($contentsHtml, N2nLocale $n2nLocale = null) {
+
+	public function out(string $contentsHtml, N2nLocale $n2nLocale = null) {
 		return $this->view->out($this->getOut($contentsHtml, $n2nLocale));
 	}
-	
-	public function getOut($contentsHtml, N2nLocale $n2nLocale = null) {
+
+	public function getOut(string $contentsHtml, N2nLocale $n2nLocale = null) {
 		$that = $this;
 		$n2nLocale = $n2nLocale ?? $this->view->getN2nLocale();
-		return new Raw(preg_replace_callback('/(href\s*=\s*")?\s*(ckelink:\?provider=[^"<]+&amp;key=[^"<]+)(")?/', function($matches) use ($that, $n2nLocale) {
-			$url = null;
-			try {
-				$url = Url::create(htmlspecialchars_decode($matches[2]), true);
-			} catch (\InvalidArgumentException $e) {
-				return '';
-			}
-			
-			$query = $url->getQuery()->toArray();
-			$ckeLinkProvider = null;
-			if (!isset($query['provider']) || !isset($query['key'])) {
-				return '';
-			}
-			
-			$ckeLinkProvider = $that->lookupLinkProvider($query['provider']);
-			if ($ckeLinkProvider === null) {
-				return '';
-			}
-			
-			try {
-				$url = $ckeLinkProvider->buildUrl($query['key'], $that->view, $n2nLocale);
-			} catch (UnavailableLinkException $e) {
-				return '';
-			}
-			
-			if ($url === null) {
-				$url = $query['key'];
-			} 
-			
-			return $matches[1] .  $url . ($matches[3] ?? '');
-		}, $contentsHtml));
+
+		return new Raw(preg_replace_callback('/(href\s*=\s*")?\s*(ckelink:\?provider=[^"<]+&amp;key=[^"<]+)(")?/',
+				function($matches) use ($that, $n2nLocale) {
+					$url = null;
+					try {
+						$url = Url::create(htmlspecialchars_decode($matches[2]), true);
+					} catch (\InvalidArgumentException $e) {
+						return '';
+					}
+
+					$query = $url->getQuery()->toArray();
+					$ckeLinkProvider = null;
+					if (!isset($query['provider']) || !isset($query['key'])) {
+						return '';
+					}
+
+					$ckeLinkProvider = $that->lookupLinkProvider($query['provider']);
+					if ($ckeLinkProvider === null) {
+						return '';
+					}
+
+					try {
+						$url = $ckeLinkProvider->buildUrl($query['key'], $that->view, $n2nLocale);
+					} catch (UnavailableLinkException $e) {
+						return '';
+					}
+
+					if ($url === null) {
+						$url = $query['key'];
+					}
+
+					return $matches[1] .  $url . ($matches[3] ?? '');
+				}, $contentsHtml));
 	}
 	
-	public function editor($propertyPath = null, CkeComposer $ckeComposer = null) {
+	public function editor(string $propertyPath = null, CkeComposer $ckeComposer = null) {
 		$this->view->out($this->getEditor($propertyPath, $ckeComposer));
 	}
 
-	private function prepareAdditionalStyles($additionalStyles) {
-		$encodable = array();
-		foreach ((array) $additionalStyles as $style) {
-			$style instanceof WysiwygStyle;
-			$encodable[] = $style->getValueForJsonEncode();
-		}
-		return $encodable;
-	}
-
-	public function getEditor($propertyPath = null, CkeComposer $ckeComposer = null) {
+	public function getEditor(string $propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
 		$ckeConfig = null;
@@ -107,18 +100,95 @@ class CkeHtmlBuilder {
 			$ckeConfig = CkeConfig::createDefault();
 		}
 
-		$testCkeCss = new TestCkeCss();
-		$attrs = array('class' => 'rocket-impl-cke-classic', 'data-rocket-impl-toolbar' =>
-				json_encode(array(
-						'mode' => 'advanced', $ckeConfig->getMode(),
-						'tableEditing' => $ckeConfig->isTablesEnabled(),
-						'bbcode' => $ckeConfig->isBbcodeEnabled(),
-						'additionalStyles' => StringUtils::jsonEncode($this->prepareAdditionalStyles($testCkeCss->getAdditionalStyles())),
-						'bodyClass' => $testCkeCss->getBodyClass(),
-						'bodyId' => $testCkeCss->getBodyId())),
-						'contentsCss' => $testCkeCss->getContentCssPaths($this->view));
+		$attrs = array('mode' => $ckeConfig->getMode(),
+			'tableEditing' => $ckeConfig->isTablesEnabled(),
+			'bbcode' => $ckeConfig->isBbcodeEnabled(),
+			'additionalStyles' => null,
+			'bodyClass' => null,
+			'bodyId' => null,
+			'contentsCss' => null);
 
+		if ($ckeCssConfig !== null) {
+			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
+			$attrs['bodyClass'] = $ckeCssConfig->getBodyClass();
+			$attrs['contentsCss'] = $ckeCssConfig->getContentCssPaths($this->view);
+			$attrs['additionalStyles'] = StringUtils::jsonEncode(
+					$this->prepareAdditionalStyles($ckeCssConfig->getAdditionalStyles()));
+		}
+
+		$attrs = array('class' => 'rocket-impl-cke-classic', 'data-rocket-impl-toolbar' => json_encode($attrs),
+				'data-link-configurations' => json_encode($this->buildLinkConfigData($linkProviders)));
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyPath, $attrs);
+	}
+
+	public function getIframe(string $contentsHtml, CkeCssConfig $ckeCssConfig = null, array $linkProviders = null) {
+		$this->linkProviders = $linkProviders;
+		$headLinkHtml = '';
+		$bodyIdHtml = '';
+		$bodyClassHtml = '';
+		if ($ckeCssConfig) {
+			$headLinkHtml = str_replace('"', '\'',
+					StringUtils::jsonEncode((array) $this->getCssPaths($ckeCssConfig)));
+			$bodyIdHtml = ($bodyId = $ckeCssConfig->getBodyId()) ?  'data-body-id="' . $bodyId . '"' : '';
+			$bodyClassHtml = ($bodyClass = $ckeCssConfig->getBodyClass()) ? ' ' . 'data-body-class="'
+					. $bodyClass . '"' : '';
+		}
+
+		$contentsHtml = htmlspecialchars(str_replace('"', "'", $this->getOut($contentsHtml, $this->view->getN2nLocale())));
+		$this->html->meta()->addJs('js/impl/cke.js', 'rocket', true);
+		return new Raw('<iframe scrolling="auto" ' . $bodyIdHtml
+			. ' class="rocket-cke-detail" ' . $bodyClassHtml
+			. 'data-contents-css="' . $headLinkHtml . '" data-content-html-json="'
+			. $contentsHtml . '"></iframe>');
+	}
+
+	private function getCssPaths(CkeCssConfig $cssConfig) {
+		if (empty($cssPaths = $cssConfig->getContentCssPaths($this->view))) {
+			return array();
+		}
+
+		$tmpCssPaths = array();
+		foreach ($cssPaths as $cssPath) {
+			$tmpCssPaths[] = (string) $cssPath;
+		}
+		return $tmpCssPaths;
+	}
+
+	private function buildLinkConfigData(array $ckeLinkProviers, N2nLocale $linkN2nLocale = null) {
+		$linkN2nLocale = (null !== $linkN2nLocale) ? $linkN2nLocale : $this->view->getN2nLocale();
+		$linkConfigData = array();
+		foreach ($ckeLinkProviers as $providerName => $ckeLinkProvider) {
+			$title = $ckeLinkProvider->getTitle();
+			$linkConfigData[$title] = array();
+			$linkConfigData[$title]['items'] = array();
+			$linkConfigData[$title]['open-in-new-window'] = $ckeLinkProvider->isOpenInNewWindow();
+			foreach ($ckeLinkProvider->getLinkOptions($linkN2nLocale) as $key => $label) {
+				$url = (new Url('ckelink'))->chQuery(array('provider' => $providerName, 'key' => $key));
+				$linkConfigData[$title]['items'][] = array($label, (string) $url);
+			}
+		}
+		return $linkConfigData;
+	}
+
+	private function lookupLinkProvider(string $lookupId) {
+		if (array_key_exists($lookupId, $this->linkProviders)) {
+			return $this->linkProviders[$lookupId];
+		}
+
+		try {
+			return $this->linkProviders[$lookupId] = CkeUtils::lookupCkeLinkProvider($lookupId, $this->view->getN2nContext());
+		} catch (\InvalidArgumentException $e) {
+			return $this->linkProviders[$lookupId] = null;
+		}
+	}
+
+	private function prepareAdditionalStyles($additionalStyles) {
+		$encodable = array();
+		foreach ((array) $additionalStyles as $style) {
+			$style instanceof WysiwygStyle;
+			$encodable[] = $style->getValueForJsonEncode();
+		}
+		return $encodable;
 	}
 }
 
@@ -135,7 +205,7 @@ class CkeComposer {
 	private $mode = CkeEiProp::MODE_NORMAL;
 	private $bbcodeEnabled = false;
 	private $tableEnabled = false;
-	
+
 	public function __construct() {
 	}
 
@@ -162,7 +232,7 @@ class CkeComposer {
 		$this->tableEnabled = $table;
 		return $this;
 	}
-	
+
 	/**
 	 * @return \rocket\spec\ei\component\field\impl\string\cke\ui\CkeConfig
 	 */

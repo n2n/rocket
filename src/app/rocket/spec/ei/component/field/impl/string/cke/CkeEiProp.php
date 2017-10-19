@@ -21,6 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\cke;
 
+use n2n\core\N2N;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiProp;
 use rocket\spec\ei\manage\mapping\EiEntry;
@@ -121,16 +122,27 @@ class CkeEiProp extends AlphanumericEiProp {
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
-		$wysiwygHtml = new CkeHtmlBuilder($view);
+		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 		if ($this->bbcodeEnabled) {
-			return $wysiwygHtml->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
+			return $ckeHtmlBuidler->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
 		}
-		return $wysiwygHtml->getIframe($value, $this->ckeCssConfigLookupId);
+
+		$ckeCss = null;
+		if ($this->ckeCssConfigLookupId !== null) {
+			$ckeCss = N2N::getLookupManager()->lookup($this->ckeCssConfigLookupId);
+		}
+
+		$linkProviders = array();
+		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
+			$linkProviders[] = N2N::getLookupManager()->lookup($linkProviderLookupId);
+		}
+
+		return $ckeHtmlBuidler->getIframe($value, $ckeCss, $linkProviders);
 	}
 	
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
-		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
+		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu),
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
 				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
 	}
@@ -153,7 +165,7 @@ class CkeEiProp extends AlphanumericEiProp {
 // 			} catch (MagicObjectUnavailableException $e) {}
 // 		}
 // 		return $linkConfigurations;
-// 	}
+// 	}<
 	
 // 	/**
 // 	* @return rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygCssConfig
