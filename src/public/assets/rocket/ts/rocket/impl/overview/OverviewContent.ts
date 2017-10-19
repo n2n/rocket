@@ -7,13 +7,13 @@ namespace Rocket.Impl.Overview {
 		private pages: Array<Page> = new Array<Page>();
 		private fakePage: Page = null;
 		private selectorState: SelectorState = new SelectorState();
-		private changedCallbacks: Array<(OverviewContent) => any> = new Array<(OverviewContent) => any>();
+		private changedCallbacks: Array<(oc: OverviewContent) => any> = new Array<(oc: OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
 		private _numEntries: number;
 		private allInfo: AllInfo = null;
 		
-		constructor(private jqElem: JQuery, private loadUrl) {
+		constructor(private jqElem: JQuery, private loadUrl: Jhtml.Url) {
 		}	
 		
 		isInit(): boolean {
@@ -142,7 +142,7 @@ namespace Rocket.Impl.Overview {
 			var fakePage = this.fakePage;
 			var that = this;
 			$.ajax({
-				"url": that.loadUrl,
+				"url": that.loadUrl.toString(),
 				"data": { "idReps": unloadedIdReps },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {

@@ -1,12 +1,11 @@
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
-	import util = Rocket.util;
 	
 	export class Layer {
 		private _contexts: Array<Page> = new Array<Page>();
 		private onNewPageCallbacks: Array<PageCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
-		private callbackRegistery: util.CallbackRegistry<LayerCallback> = new util.CallbackRegistry<LayerCallback>();
+		private callbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
 		private _visible: boolean = true;
 		
 		constructor(private jqLayer: JQuery, private _level: number, private _container: Container, 
@@ -16,11 +15,13 @@ namespace Rocket.Cmd {
 
 			var jqPage = jqLayer.children(".rocket-context:first");
 			if (jqPage.length > 0) {
-				var context = new Page(jqPage, Jhtml.Url.create(window.location.href), this);
-				this.addPage(context);
+				var page = new Page(jqPage, Jhtml.Url.create(window.location.href), this);
+				this.addPage(page);
 			}
 
 			this._monitor.history.onChanged(() => this.historyChanged() );
+			
+			this.historyChanged();
 		}
 		
 		get monitor(): Jhtml.Monitor {
@@ -48,9 +49,9 @@ namespace Rocket.Cmd {
 		}
 		
 		private historyChanged() {
-			let context: Page = this.getPageByUrl(this._monitor.history.currentEntry.page.url);
-			if (context) {
-				context.show();
+			let page: Page = this.getPageByUrl(this._monitor.history.currentEntry.page.url);
+			if (page) {
+				page.show();
 				return;
 			}
 			
@@ -140,11 +141,11 @@ namespace Rocket.Cmd {
 			return this._contexts.slice();
 		}
 				
-		private addPage(context: Page) {
-			this._contexts.push(context);
+		private addPage(page: Page) {
+			this._contexts.push(page);
 			var that = this;
 			
-			context.on(Page.EventType.CLOSE, function (context: Page) {
+			page.on(Page.EventType.CLOSE, function (context: Page) {
 				for (var i in that._contexts) {
 					if (that._contexts[i] !== context) continue;
 					
@@ -154,7 +155,7 @@ namespace Rocket.Cmd {
 			});
 			
 			for (var i in this.onNewPageCallbacks) {
-				this.onNewPageCallbacks[i](context);
+				this.onNewPageCallbacks[i](page);
 			}
 		}
 		

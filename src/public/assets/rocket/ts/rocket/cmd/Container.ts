@@ -14,7 +14,7 @@ namespace Rocket.Cmd {
 					Jhtml.getOrCreateMonitor());
 			this._layers.push(layer);
 			
-			Jhtml.getOrCreatePage().registerCompHandler("rocket-page", this);
+			Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
 		}
 		
 		handleComp(comp: Jhtml.Comp): boolean {

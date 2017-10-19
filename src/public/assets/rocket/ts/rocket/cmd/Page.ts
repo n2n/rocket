@@ -24,7 +24,7 @@ namespace Rocket.Cmd {
 			jqPage.data("rocketPage", this);
 			
 			this.reset();
-			this.hide();			
+			this.hide();
 		}
 		
 		get layer(): Layer {
