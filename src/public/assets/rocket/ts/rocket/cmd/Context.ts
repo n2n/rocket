@@ -205,13 +205,13 @@ namespace Rocket.Cmd {
 			return lock;
 		}
 		
-		public static findFrom(jqElem: JQuery): Context {
+		public static of(jqElem: JQuery): Context {
 			if (!jqElem.hasClass(".rocket-context")) {
 				jqElem = jqElem.parents(".rocket-context");
 			}
 			
 			var context = jqElem.data("rocketContext");
-			if (context) return context;
+			if (context instanceof Context) return context;
 			
 			return null;
 		}

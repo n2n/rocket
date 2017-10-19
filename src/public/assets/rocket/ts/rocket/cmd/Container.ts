@@ -95,7 +95,7 @@ namespace Rocket.Cmd {
 			this.jqContainer.append(jqLayer);
 			
 			var layer = new Layer(jqLayer, this._layers.length, this, 
-					Jhtml.Monitor.from(jqLayer.get(0)).history);
+					Jhtml.Monitor.from(jqLayer.get(0)));
 			this._layers.push(layer);
 			
 			var jqToolbar = $("<div />", {

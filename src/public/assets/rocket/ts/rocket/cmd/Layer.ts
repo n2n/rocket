@@ -13,13 +13,13 @@ namespace Rocket.Cmd {
 				private _monitor: Jhtml.Monitor) {
 			this.onNewContextCallbacks = new Array<ContextCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
-			
+
 			var jqContext = jqLayer.children(".rocket-context:first");
 			if (jqContext.length > 0) {
 				var context = new Context(jqContext, Jhtml.Url.create(window.location.href), this);
 				this.addContext(context);
 			}
-			
+
 			this._monitor.history.onChanged(() => this.historyChanged() );
 		}
 		

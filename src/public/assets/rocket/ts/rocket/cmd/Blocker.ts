@@ -63,7 +63,7 @@ namespace Rocket.Cmd {
 			}
 			
 			if (this.jqBlocker) return;
-			
+
 			this.jqBlocker = 
 					$("<div />", { 
 						"class": "rocket-context-block",
