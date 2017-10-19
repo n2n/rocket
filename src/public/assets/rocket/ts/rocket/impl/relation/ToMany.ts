@@ -190,7 +190,7 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			this.browserLayer = Rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Page.findFrom(this.jqElem));
 			this.browserLayer.hide();
 			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
 				that.browserLayer = null;
@@ -199,13 +199,13 @@ namespace Rocket.Impl.Relation {
 			
 			let url = this.jqElem.data("overview-tools-url");
 			this.browserLayer.monitor.exec(url).then(() => {
-				that.iniBrowserContext(this.browserLayer.getContextByUrl(url));
+				that.iniBrowserPage(this.browserLayer.getPageByUrl(url));
 			});
 			
 			
 //			
 //			Rocket.exec(, {
-//				showLoadingContext: true,
+//				showLoadingPage: true,
 //				currentLayer: this.browserLayer,
 //				done: function (result: cmd.ExecResult) {
 //					
@@ -213,10 +213,10 @@ namespace Rocket.Impl.Relation {
 //			});
 		}
 		
-		private iniBrowserContext(context: cmd.Context) {
+		private iniBrowserPage(context: cmd.Page) {
 			if (this.browserLayer === null) return;
 			
-			var ocs = Impl.Overview.OverviewContext.findAll(context.jQuery);
+			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
 			if (ocs.length == 0) return;
 			
 			ocs[0].initSelector(this.browserSelectorObserver = new Overview.MultiEntrySelectorObserver());
@@ -315,7 +315,7 @@ namespace Rocket.Impl.Relation {
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
-		private expandContext: cmd.Context = null;
+		private expandPage: cmd.Page = null;
 		private dominantEntry: EmbeddedEntry = null;
 		private closeLabel: string;
 		private firstAddControl: AddControl = null;
@@ -566,7 +566,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandContext !== null;
+			return this.expandPage !== null;
 		}
 		
 		public isPartialExpaned() {
@@ -581,10 +581,10 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.dominantEntry = dominantEntry;
-			this.expandContext = Rocket.getContainer().createLayer().createContext(window.location.href);
+			this.expandPage = Rocket.getContainer().createLayer().createPage(window.location.href);
 			this.jqEmbedded.detach();
-			this.expandContext.applyContent(this.jqEmbedded);
-			this.expandContext.layer.pushHistoryEntry(window.location.href);
+			this.expandPage.applyContent(this.jqEmbedded);
+			this.expandPage.layer.pushHistoryEntry(window.location.href);
 			
 			for (let i in this.entries) {
 				if (dominantEntry === null) {
@@ -598,13 +598,13 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			var jqCommandButton = this.expandContext.menu.commandList
+			var jqCommandButton = this.expandPage.menu.commandList
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(function () {
-				that.expandContext.layer.close();
+				that.expandPage.layer.close();
 			});
 			
-			this.expandContext.on(cmd.Context.EventType.CLOSE, function () {
+			this.expandPage.on(cmd.Page.EventType.CLOSE, function () {
 				that.reduce();
 			});
 			
@@ -616,7 +616,7 @@ namespace Rocket.Impl.Relation {
 			if (!this.isExpanded()) return;
 			
 			this.dominantEntry = null;
-			this.expandContext = null;
+			this.expandPage = null;
 			
 			this.jqEmbedded.detach();
 			this.jqToMany.append(this.jqEmbedded);

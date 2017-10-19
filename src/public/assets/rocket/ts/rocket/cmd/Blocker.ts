@@ -19,25 +19,25 @@ namespace Rocket.Cmd {
 		
 		private observeLayer(layer: Layer) {
 			for (let context of layer.contexts) {
-				this.observeContext(context)
+				this.observePage(context)
 			}
 			
-			layer.onNewContext((context: Context) => {
-				this.observeContext(context);
+			layer.onNewPage((context: Page) => {
+				this.observePage(context);
 				this.check();
 			});
 		}
 		
-		private observeContext(context: Context) {
+		private observePage(context: Page) {
 			var checkCallback = () => {
 				this.check();
 			}
 			
-			context.on(Context.EventType.SHOW, checkCallback);
-			context.on(Context.EventType.HIDE, checkCallback);
-			context.on(Context.EventType.CLOSE, checkCallback);
-			context.on(Context.EventType.CONTENT_CHANGED, checkCallback);
-			context.on(Context.EventType.BLOCKED_CHANGED, checkCallback);
+			context.on(Page.EventType.SHOW, checkCallback);
+			context.on(Page.EventType.HIDE, checkCallback);
+			context.on(Page.EventType.CLOSE, checkCallback);
+			context.on(Page.EventType.CONTENT_CHANGED, checkCallback);
+			context.on(Page.EventType.BLOCKED_CHANGED, checkCallback);
 		}
 		
 		
@@ -52,9 +52,9 @@ namespace Rocket.Cmd {
 		
 		
 		private check() {
-			if (!this.jqContainer || !this.container.currentLayer.currentContext) return;
+			if (!this.jqContainer || !this.container.currentLayer.currentPage) return;
 			
-			if (!this.container.currentLayer.currentContext.locked) {
+			if (!this.container.currentLayer.currentPage.locked) {
 				if (!this.jqBlocker) return;
 				
 				this.jqBlocker.remove();

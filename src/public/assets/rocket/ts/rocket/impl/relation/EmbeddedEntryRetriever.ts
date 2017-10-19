@@ -88,7 +88,7 @@ namespace Rocket.Impl.Relation {
 		private jqOrderIndex: JQuery;
 		private jqSummary: JQuery;
 		
-		private jqContextCommands: JQuery;
+		private jqPageCommands: JQuery;
 		private bodyGroup: Rocket.Display.StructureElement;
 		private _entryForm: Rocket.Display.EntryForm;
 		
@@ -106,7 +106,7 @@ namespace Rocket.Impl.Relation {
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
 			
-			this.jqContextCommands = this.bodyGroup.jQuery.children(".rocket-context-commands");
+			this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-context-commands");
 			
 			if (readOnly) {
 				var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
@@ -185,9 +185,9 @@ namespace Rocket.Impl.Relation {
 			this.entryGroup.setGroup(true);
 			
 			if (asPartOfList) {
-				this.jqContextCommands.hide();
+				this.jqPageCommands.hide();
 			} else {
-				this.jqContextCommands.show();
+				this.jqPageCommands.show();
 			}
 			
 			if (this.readOnly) return;
@@ -196,12 +196,12 @@ namespace Rocket.Impl.Relation {
 				this.jqExpMoveUpButton.show();
 				this.jqExpMoveDownButton.show();
 				this.jqExpRemoveButton.show();
-				this.jqContextCommands.hide();
+				this.jqPageCommands.hide();
 			} else {
 				this.jqExpMoveUpButton.hide();
 				this.jqExpMoveDownButton.hide();
 				this.jqExpRemoveButton.hide();
-				this.jqContextCommands.show();
+				this.jqPageCommands.show();
 			}
 		}
 		

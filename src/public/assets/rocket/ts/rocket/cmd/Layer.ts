@@ -3,21 +3,21 @@ namespace Rocket.Cmd {
 	import util = Rocket.util;
 	
 	export class Layer {
-		private _contexts: Array<Context> = new Array<Context>();
-		private onNewContextCallbacks: Array<ContextCallback>;
+		private _contexts: Array<Page> = new Array<Page>();
+		private onNewPageCallbacks: Array<PageCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
 		private callbackRegistery: util.CallbackRegistry<LayerCallback> = new util.CallbackRegistry<LayerCallback>();
 		private _visible: boolean = true;
 		
 		constructor(private jqLayer: JQuery, private _level: number, private _container: Container, 
 				private _monitor: Jhtml.Monitor) {
-			this.onNewContextCallbacks = new Array<ContextCallback>();
+			this.onNewPageCallbacks = new Array<PageCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 
-			var jqContext = jqLayer.children(".rocket-context:first");
-			if (jqContext.length > 0) {
-				var context = new Context(jqContext, Jhtml.Url.create(window.location.href), this);
-				this.addContext(context);
+			var jqPage = jqLayer.children(".rocket-context:first");
+			if (jqPage.length > 0) {
+				var context = new Page(jqPage, Jhtml.Url.create(window.location.href), this);
+				this.addPage(context);
 			}
 
 			this._monitor.history.onChanged(() => this.historyChanged() );
@@ -35,7 +35,7 @@ namespace Rocket.Cmd {
 			return false;
 		}
 		
-		public getContextByUrl(urlExpr: string|Jhtml.Url): Context {
+		public getPageByUrl(urlExpr: string|Jhtml.Url): Page {
 			var url = Jhtml.Url.create(urlExpr);
 			
 			for (var i in this._contexts) {
@@ -48,33 +48,33 @@ namespace Rocket.Cmd {
 		}
 		
 		private historyChanged() {
-			let context: Context = this.getContextByUrl(this._monitor.history.currentEntry.page.url);
+			let context: Page = this.getPageByUrl(this._monitor.history.currentEntry.page.url);
 			if (context) {
 				context.show();
 				return;
 			}
 			
-			this.addContext(this.createContext(this._monitor.history.currentEntry.page.url))
+			this.addPage(this.createPage(this._monitor.history.currentEntry.page.url))
 		}
 		
 
-		public createContext(urlExpr: string|Jhtml.Url): Context {
+		public createPage(urlExpr: string|Jhtml.Url): Page {
 			let url = Jhtml.Url.create(urlExpr);
 			
 			if (this.containsUrl(url)) {
-				throw new Error("Context with url already available: " + url);
+				throw new Error("Page with url already available: " + url);
 			}
 			
 			var jqContent = $("<div />");
 			this.jqLayer.append(jqContent);
-			var context = new Context(jqContent, url, this);
+			var context = new Page(jqContent, url, this);
 			
-			this.addContext(context);
+			this.addPage(context);
 			
 			return context;
 		}
 
-		get currentContext(): Context {
+		get currentPage(): Page {
 			if (this.empty || !this._monitor.history.currentEntry) {
 				return null;
 			}
@@ -136,15 +136,15 @@ namespace Rocket.Cmd {
 			return this._contexts.length == 0;
 		}
 		
-		get contexts(): Array<Context> {
+		get contexts(): Array<Page> {
 			return this._contexts.slice();
 		}
 				
-		private addContext(context: Context) {
+		private addPage(context: Page) {
 			this._contexts.push(context);
 			var that = this;
 			
-			context.on(Context.EventType.CLOSE, function (context: Context) {
+			context.on(Page.EventType.CLOSE, function (context: Page) {
 				for (var i in that._contexts) {
 					if (that._contexts[i] !== context) continue;
 					
@@ -153,13 +153,13 @@ namespace Rocket.Cmd {
 				}
 			});
 			
-			for (var i in this.onNewContextCallbacks) {
-				this.onNewContextCallbacks[i](context);
+			for (var i in this.onNewPageCallbacks) {
+				this.onNewPageCallbacks[i](context);
 			}
 		}
 		
-		public onNewContext(onNewContextCallback: ContextCallback) {
-			this.onNewContextCallbacks.push(onNewContextCallback);
+		public onNewPage(onNewPageCallback: PageCallback) {
+			this.onNewPageCallbacks.push(onNewPageCallback);
 		}
 		
 		public clear() {
@@ -176,7 +176,7 @@ namespace Rocket.Cmd {
 				context.close();
 			}
 				
-			this._contexts = new Array<Context>();
+			this._contexts = new Array<Page>();
 			this.jqLayer.remove();
 		}
 		
@@ -186,7 +186,7 @@ namespace Rocket.Cmd {
 		
 //		public pushHistoryEntry(urlExpr: string|Url) {
 //			var url: Url = Url.create(urlExpr);
-//			var context: Context = this.getContextByUrl(url);
+//			var context: Page = this.getPageByUrl(url);
 //			if (context === null) {
 //				throw new Error("Not context with this url found: " + url);
 //			}
@@ -199,7 +199,7 @@ namespace Rocket.Cmd {
 //				this.onNewHistoryEntryCallbacks[i](this._currentHistoryIndex, url, context);
 //			}
 //			
-//			this.switchToContext(context);
+//			this.switchToPage(context);
 //		}
 		
 //		get currentHistoryEntryUrl(): Url {
@@ -219,10 +219,10 @@ namespace Rocket.Cmd {
 //			}
 //			
 //			this._currentHistoryIndex = historyIndex;
-//			var context = this.getContextByUrl(this.historyUrls[historyIndex]);
+//			var context = this.getPageByUrl(this.historyUrls[historyIndex]);
 //			if (context === null) return false;
 //			
-//			this.switchToContext(context);
+//			this.switchToPage(context);
 //			return true;
 //		}
 //		
@@ -233,7 +233,7 @@ namespace Rocket.Cmd {
 //		}
 //		
 //		
-//		private switchToContext(context: Context) {
+//		private switchToPage(context: Page) {
 //			for (var i in this._contexts) {
 //				if (this._contexts[i] === context) {
 //					context.show();
@@ -281,7 +281,7 @@ namespace Rocket.Cmd {
 	}
 	
 	interface HistoryCallback {
-		(index: number, url: Url, context: Context): any
+		(index: number, url: Url, context: Page): any
 	}
 	
 	

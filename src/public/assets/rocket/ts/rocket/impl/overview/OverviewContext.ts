@@ -24,8 +24,8 @@ namespace Rocket.Impl.Overview {
 	
 	var $ = jQuery;
 	
-	export class OverviewContext {
-		private jqContextControls: JQuery;
+	export class OverviewPage {
+		private jqPageControls: JQuery;
 		
 		constructor(private jqContainer: JQuery, private overviewContent: OverviewContent) {
 		}
@@ -34,20 +34,20 @@ namespace Rocket.Impl.Overview {
 			this.overviewContent.initSelector(selectorObserver);
 		}
 		
-		public static findAll(jqElem: JQuery): Array<OverviewContext> {
-			var oc: Array<OverviewContext> = new Array();
+		public static findAll(jqElem: JQuery): Array<OverviewPage> {
+			var oc: Array<OverviewPage> = new Array();
 			
 			jqElem.find(".rocket-impl-overview").each(function () {
-				oc.push(OverviewContext.from($(this)));
+				oc.push(OverviewPage.from($(this)));
 			});
 			
 			return oc;
 		}
 		
-		public static from(jqElem: JQuery): OverviewContext {
-			var overviewContext: OverviewContext = jqElem.data("rocketImplOverviewContext");
-			if (overviewContext instanceof OverviewContext) {
-				return overviewContext;
+		public static from(jqElem: JQuery): OverviewPage {
+			var overviewPage: OverviewPage = jqElem.data("rocketImplOverviewPage");
+			if (overviewPage instanceof OverviewPage) {
+				return overviewPage;
 			}
 			
 			
@@ -56,7 +56,7 @@ namespace Rocket.Impl.Overview {
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
 					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
 			
-			new ContextUpdater(Rocket.Cmd.Context.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
+			new PageUpdater(Rocket.Cmd.Page.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
 					.init(overviewContent);
 			
 			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
@@ -69,12 +69,12 @@ namespace Rocket.Impl.Overview {
 			var header = new Header(overviewContent);
 			header.init(jqElem.children(".rocket-impl-overview-tools"));
 			
-			overviewContext = new OverviewContext(jqElem, overviewContent);
-			jqElem.data("rocketImplOverviewContext", overviewContext);
+			overviewPage = new OverviewPage(jqElem, overviewContent);
+			jqElem.data("rocketImplOverviewPage", overviewPage);
 			
 //			overviewContent.initSelector(new MultiEntrySelectorObserver(["51","53"]));
 			
-			return overviewContext;
+			return overviewPage;
 		}
 	}
 	
@@ -93,14 +93,14 @@ namespace Rocket.Impl.Overview {
 //		}
 //	}
 	
-	class ContextUpdater {
+	class PageUpdater {
 		private overviewContent: OverviewContent;
 		private lastCurrentPageNo: number = null;
 		private pageUrls: Array<cmd.Url> = new Array<cmd.Url>();
 		
-		constructor(private context: cmd.Context, private overviewBaseUrl: cmd.Url) {
+		constructor(private context: cmd.Page, private overviewBaseUrl: cmd.Url) {
 			var that = this;
-			this.context.on(cmd.Context.EventType.ACTIVE_URL_CHANGED, function () {
+			this.context.on(cmd.Page.EventType.ACTIVE_URL_CHANGED, function () {
 				that.contextUpdated();
 			});
 		}

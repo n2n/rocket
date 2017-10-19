@@ -6,7 +6,7 @@ namespace Rocket.Impl {
 		}
 		
 		scan() {
-			for (let context of this.container.getAllContexts()) {
+			for (let context of this.container.getAllPages()) {
 				let elems: Array<HTMLElement> = context.jQuery.find(".rocket-impl-translation-manager").toArray();
 				let elem;
 				while (elem = elems.pop()) {
@@ -35,7 +35,7 @@ namespace Rocket.Impl {
 			}
 		}
 		
-		private initTm(jqElem: JQuery, context: Rocket.Cmd.Context) {
+		private initTm(jqElem: JQuery, context: Rocket.Cmd.Page) {
 			let tm = TranslationManager.from(jqElem);
 			
 			let se = Rocket.Display.StructureElement.findFrom(jqElem);

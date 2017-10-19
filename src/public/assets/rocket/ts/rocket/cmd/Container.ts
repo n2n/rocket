@@ -14,7 +14,7 @@ namespace Rocket.Cmd {
 					Jhtml.getOrCreateMonitor());
 			this._layers.push(layer);
 			
-			Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
+			Jhtml.getOrCreatePage().registerCompHandler("rocket-page", this);
 		}
 		
 		handleComp(comp: Jhtml.Comp): boolean {
@@ -28,7 +28,7 @@ namespace Rocket.Cmd {
 		
 //		public handleError(url: string, html: string) {
 //			var stateObj = { 
-//				"type": "rocketErrorContext",
+//				"type": "rocketErrorPage",
 //				"url": url
 //			};
 //			
@@ -87,7 +87,7 @@ namespace Rocket.Cmd {
 			this.layerTrigger(Container.LayerEventType.REMOVED, layer);
 		}
 		
-		public createLayer(dependentContext: Context = null): Layer {
+		public createLayer(dependentPage: Page = null): Layer {
 			var jqLayer = $("<div />", {
 				"class": "rocket-layer"
 			});
@@ -117,18 +117,18 @@ namespace Rocket.Cmd {
 				that.unregisterLayer(layer);
 			})
 			
-			if (dependentContext === null) {
+			if (dependentPage === null) {
 				this.layerTrigger(Container.LayerEventType.ADDED, layer);
 				return layer;
 			}
 			
-			dependentContext.on(Context.EventType.CLOSE, function () {
+			dependentPage.on(Page.EventType.CLOSE, function () {
 				layer.close();
 			});
-			dependentContext.on(Context.EventType.HIDE, function () {
+			dependentPage.on(Page.EventType.HIDE, function () {
 				layer.hide();
 			});
-			dependentContext.on(Context.EventType.SHOW, function () {
+			dependentPage.on(Page.EventType.SHOW, function () {
 				layer.show();
 			});
 			
@@ -136,13 +136,13 @@ namespace Rocket.Cmd {
 			return layer;
 		}
 			
-		public getAllContexts(): Array<Context> {
-			var contexts = new Array<Context>();
+		public getAllPages(): Array<Page> {
+			var contexts = new Array<Page>();
 			
 			for (var i in this._layers) {
-				var layerContexts = this._layers[i].contexts; 
-				for (var j in layerContexts) {
-					contexts.push(layerContexts[j]);
+				var layerPages = this._layers[i].contexts; 
+				for (var j in layerPages) {
+					contexts.push(layerPages[j]);
 				}
 			}
 			
@@ -161,7 +161,7 @@ namespace Rocket.Cmd {
 			this.layerCallbackRegistery.register(eventType.toString(), callback);
 		}
 		
-		public layerOff(eventType: Context.EventType, callback: LayerCallback) {
+		public layerOff(eventType: Page.EventType, callback: LayerCallback) {
 			this.layerCallbackRegistery.unregister(eventType.toString(), callback);
 		}
 	}

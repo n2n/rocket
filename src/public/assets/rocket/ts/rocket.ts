@@ -21,12 +21,12 @@ namespace Rocket {
 
 		(function () {
 			Jhtml.ready(() => {
-				Rocket.Impl.Overview.OverviewContext.from($(this));
+				Rocket.Impl.Overview.OverviewPage.from($(this));
 			});
 			
 			Jhtml.ready(() => {
 				$(".rocket-impl-overview").each(function () {
-					Rocket.Impl.Overview.OverviewContext.from($(this));
+					Rocket.Impl.Overview.OverviewPage.from($(this));
 				});
 			});
 		}) ();
@@ -77,7 +77,7 @@ namespace Rocket {
 		}) ();
 	});
 	
-	export function scan(context: Rocket.Cmd.Context = null) {
+	export function scan(context: Rocket.Cmd.Page = null) {
 		initializer.scan();
 	}
 	
@@ -89,8 +89,8 @@ namespace Rocket {
 		return Rocket.Cmd.Layer.of($(elem));
 	}
 	
-	export function contextOf(elem: HTMLElement): Rocket.Cmd.Context {
-		return Rocket.Cmd.Context.of($(elem));
+	export function contextOf(elem: HTMLElement): Rocket.Cmd.Page {
+		return Rocket.Cmd.Page.of($(elem));
 	}
 	
 //	export function exec(url: string, config: Rocket.Cmd.ExecConfig = null) {

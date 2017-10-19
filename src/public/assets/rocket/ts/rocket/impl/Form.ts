@@ -105,8 +105,8 @@ namespace Rocket.Impl {
 		private controlLockAutoReleaseable = true;
 		
 		private block() {
-			let context: Cmd.Context;
-			if (!this.lock && this.config.blockContext && (context = Cmd.Context.findFrom(this.jqForm))) {
+			let context: Cmd.Page;
+			if (!this.lock && this.config.blockPage && (context = Cmd.Page.findFrom(this.jqForm))) {
 				this.lock = context.createLock();
 			}
 			
@@ -229,7 +229,7 @@ namespace Rocket.Impl {
 	
 	export namespace Form {
 		export class Config {
-			public blockContext = true; 
+			public blockPage = true; 
 			public disableControls = true;
 			public successResponseHandler: (data: string) => any;
 			public autoSubmitAllowed: boolean = true;

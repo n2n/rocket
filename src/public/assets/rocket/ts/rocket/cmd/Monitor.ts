@@ -67,12 +67,12 @@
 //		
 //		private handle() {
 //			var url = this.jqElem.attr("href");
-//			var context = Context.findFrom(this.jqElem);
+//			var context = Page.findFrom(this.jqElem);
 //			if (context === null) {
-//				throw new Error("Command belongs to no Context.");
+//				throw new Error("Command belongs to no Page.");
 //			}
 //			
-//			this.executor.exec(url, { currentContext: context });
+//			this.executor.exec(url, { currentPage: context });
 //		}
 //		
 //		public static from(jqElem: JQuery, executor: Executor): CommandAction {

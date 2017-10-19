@@ -5,23 +5,23 @@ namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	import util = Rocket.util;
 	
-	export class Context {
-		private jqContext: JQuery;
+	export class Page {
+		private jqPage: JQuery;
 		private _activeUrl: Jhtml.Url;
 		private urls: Array<Jhtml.Url> = [];
 		private _layer: Layer;
-		private callbackRegistery: util.CallbackRegistry<ContextCallback> = new util.CallbackRegistry<ContextCallback>();
+		private callbackRegistery: util.CallbackRegistry<PageCallback> = new util.CallbackRegistry<PageCallback>();
 		private additionalTabManager: AdditionalTabManager;
 		private _menu: Menu;
 		private _blocked: boolean = false;
 		
-		constructor(jqContext: JQuery, url: Jhtml.Url, layer: Layer) {
-			this.jqContext = jqContext;
+		constructor(jqPage: JQuery, url: Jhtml.Url, layer: Layer) {
+			this.jqPage = jqPage;
 			this.urls.push(this._activeUrl = url);
 			this._layer = layer;
 			
-			jqContext.addClass("rocket-context");
-			jqContext.data("rocketContext", this);
+			jqPage.addClass("rocket-context");
+			jqPage.data("rocketPage", this);
 			
 			this.reset();
 			this.hide();			
@@ -32,7 +32,7 @@ namespace Rocket.Cmd {
 		}
 		
 		get jQuery(): JQuery {
-			return this.jqContext;
+			return this.jqPage;
 		}
 		
 		containsUrl(url: Jhtml.Url): boolean {
@@ -47,7 +47,7 @@ namespace Rocket.Cmd {
 //			if (this.containsUrl(url)) return;
 //			
 //			if (this._layer.containsUrl(url)) {
-//				throw new Error("Url already registered for another Context of the current Layer."); 
+//				throw new Error("Url already registered for another Page of the current Layer."); 
 //			}
 //			
 //			this.urls.push(url);
@@ -78,43 +78,43 @@ namespace Rocket.Cmd {
 //			
 //			if (this.containsUrl(activeUrl)) {
 //				this._activeUrl = activeUrl;
-//				this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
+//				this.fireEvent(Page.EventType.ACTIVE_URL_CHANGED);
 //				return;
 //			}
 //			
 //			throw new Error("Active url not available for this context.");
 //		}
 		
-		private fireEvent(eventType: Context.EventType) {
+		private fireEvent(eventType: Page.EventType) {
 			var that = this;
-			this.callbackRegistery.filter(eventType.toString()).forEach(function (callback: ContextCallback) {
+			this.callbackRegistery.filter(eventType.toString()).forEach(function (callback: PageCallback) {
 				callback(that);
 			});
 		}
 		
 		private ensureNotClosed() {
-			if (this.jqContext !== null) return;
+			if (this.jqPage !== null) return;
 			
-			throw new Error("Context already closed.");
+			throw new Error("Page already closed.");
 		}
 		
 		public close() {
-			this.trigger(Context.EventType.CLOSE)
+			this.trigger(Page.EventType.CLOSE)
 			
-			this.jqContext.remove();
-			this.jqContext = null;
+			this.jqPage.remove();
+			this.jqPage = null;
 		}
 		
 		public show() {
-			this.trigger(Context.EventType.SHOW);
+			this.trigger(Page.EventType.SHOW);
 			
-			this.jqContext.show();
+			this.jqPage.show();
 		}
 		
 		public hide() {
-			this.trigger(Context.EventType.HIDE);
+			this.trigger(Page.EventType.HIDE);
 			
-			this.jqContext.hide();
+			this.jqPage.hide();
 		}
 		
 		private reset() {
@@ -124,52 +124,52 @@ namespace Rocket.Cmd {
 		
 		
 		public clear(showLoader: boolean = false) {
-			this.jqContext.empty();
+			this.jqPage.empty();
 			if (showLoader) {
-				this.jqContext.addClass("rocket-loading");
+				this.jqPage.addClass("rocket-loading");
 			}
 			
-			this.trigger(Context.EventType.CONTENT_CHANGED);
+			this.trigger(Page.EventType.CONTENT_CHANGED);
 		}
 			
 		public applyHtml(html: string) {
 			this.endLoading();
-			this.jqContext.html(html);
+			this.jqPage.html(html);
 			
 			this.reset();
 			
-			this.trigger(Context.EventType.CONTENT_CHANGED);
+			this.trigger(Page.EventType.CONTENT_CHANGED);
 		}
 		
 		public isLoading(): boolean {
-			return this.jqContext.hasClass("rocket-loading");
+			return this.jqPage.hasClass("rocket-loading");
 		}
 		
 		public endLoading() {
-			this.jqContext.removeClass("rocket-loading");
+			this.jqPage.removeClass("rocket-loading");
 		}
 		
 		public applyContent(jqContent: JQuery) {
 			this.endLoading();
-			this.jqContext.append(jqContent);
+			this.jqPage.append(jqContent);
 			
 			this.reset();
-			this.trigger(Context.EventType.CONTENT_CHANGED);
+			this.trigger(Page.EventType.CONTENT_CHANGED);
 		}
 		
-		private trigger(eventType: Context.EventType) {
+		private trigger(eventType: Page.EventType) {
 			var context = this;
 			this.callbackRegistery.filter(eventType.toString())
-					.forEach(function (callback: ContextCallback) {
+					.forEach(function (callback: PageCallback) {
 						callback(context);
 					});
 		}
 		
-		public on(eventType: Context.EventType, callback: ContextCallback) {
+		public on(eventType: Page.EventType, callback: PageCallback) {
 			this.callbackRegistery.register(eventType.toString(), callback);
 		}
 		
-		public off(eventType: Context.EventType, callback: ContextCallback) {
+		public off(eventType: Page.EventType, callback: PageCallback) {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
@@ -192,7 +192,7 @@ namespace Rocket.Cmd {
 			if (i == -1) return; 
 			
 			this.locks.splice(i, 1);
-			this.trigger(Context.EventType.BLOCKED_CHANGED);
+			this.trigger(Page.EventType.BLOCKED_CHANGED);
 		}
 		
 		createLock(): Lock {
@@ -201,17 +201,17 @@ namespace Rocket.Cmd {
 				that.releaseLock(lock);
 			});
 			this.locks.push(lock);
-			this.trigger(Context.EventType.BLOCKED_CHANGED);
+			this.trigger(Page.EventType.BLOCKED_CHANGED);
 			return lock;
 		}
 		
-		public static of(jqElem: JQuery): Context {
+		public static of(jqElem: JQuery): Page {
 			if (!jqElem.hasClass(".rocket-context")) {
 				jqElem = jqElem.parents(".rocket-context");
 			}
 			
-			var context = jqElem.data("rocketContext");
-			if (context instanceof Context) return context;
+			var context = jqElem.data("rocketPage");
+			if (context instanceof Page) return context;
 			
 			return null;
 		}
@@ -227,12 +227,12 @@ namespace Rocket.Cmd {
 	}
 	
 	class AdditionalTabManager {
-		private context: Context;
+		private context: Page;
 		private tabs: Array<AdditionalTab>;
 		
 		private jqAdditional: JQuery = null;
 		
-		public constructor(context: Context) {
+		public constructor(context: Page) {
 			this.context = context;
 			this.tabs = new Array<AdditionalTab>();
 		}
@@ -302,16 +302,16 @@ namespace Rocket.Cmd {
 		private setupAdditional() {
 			if (this.jqAdditional !== null) return;
 			
-			var jqContext = this.context.jQuery;
+			var jqPage = this.context.jQuery;
 			
-			jqContext.addClass("rocket-contains-additional")
+			jqPage.addClass("rocket-contains-additional")
 			
 			this.jqAdditional = $("<div />", {
 				"class": "rocket-additional"
 			});
 			this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
 			this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
-			jqContext.append(this.jqAdditional);
+			jqPage.append(this.jqAdditional);
 		}
 		
 		private setdownAdditional() {
@@ -396,13 +396,13 @@ namespace Rocket.Cmd {
 	}
 	
 	export class Menu {
-		private context: Context;
+		private context: Page;
 		private _toolbar: display.Toolbar = null;
 		private _commandList: display.CommandList = null;
 		private _partialCommandList: display.CommandList = null;
 		
 		
-		constructor(context: Context) {
+		constructor(context: Page) {
 			this.context = context;
 		}
 		
@@ -420,7 +420,7 @@ namespace Rocket.Cmd {
 			return this._toolbar = new display.Toolbar(jqToolbar);
 		}
 		
-		private getJqContextCommands() {
+		private getJqPageCommands() {
 			var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
 			if (jqCommandList.length == 0) {
 				jqCommandList = $("<div />", {
@@ -437,11 +437,11 @@ namespace Rocket.Cmd {
 				return this._partialCommandList;
 			}
 			
-			var jqContextCommands = this.getJqContextCommands();
+			var jqPageCommands = this.getJqPageCommands();
 			
-			var jqPartialCommands = jqContextCommands.children(".rocket-partial-commands:first");
+			var jqPartialCommands = jqPageCommands.children(".rocket-partial-commands:first");
 			if (jqPartialCommands.length == 0) {
-				jqPartialCommands = $("<div />", {"class": "rocket-partial-commands" }).prependTo(jqContextCommands);
+				jqPartialCommands = $("<div />", {"class": "rocket-partial-commands" }).prependTo(jqPageCommands);
 			}
 			
 			return this._partialCommandList = new display.CommandList(jqPartialCommands);
@@ -452,10 +452,10 @@ namespace Rocket.Cmd {
 				return this._commandList;
 			}
 			
-			var jqContextCommands = this.getJqContextCommands();
-			var jqCommands = jqContextCommands.children(":not(.rocket-partial-commands):first");
+			var jqPageCommands = this.getJqPageCommands();
+			var jqCommands = jqPageCommands.children(":not(.rocket-partial-commands):first");
 			if (jqCommands.length == 0) {
-				jqCommands = $("<div />").appendTo(jqContextCommands);
+				jqCommands = $("<div />").appendTo(jqPageCommands);
 			}
 			
 			return this._commandList = new display.CommandList(jqCommands);
@@ -512,11 +512,11 @@ namespace Rocket.Cmd {
 		}
 	}
 	
-	export interface ContextCallback {
-		(context: Context): any
+	export interface PageCallback {
+		(context: Page): any
 	}
 	
-	export namespace Context {
+	export namespace Page {
 		export enum EventType {
 			SHOW /*= "show"*/,
 			HIDE /*= "hide"*/,

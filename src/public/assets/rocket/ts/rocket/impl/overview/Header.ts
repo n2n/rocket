@@ -121,7 +121,7 @@ namespace Rocket.Impl.Overview {
 			this.form.on(Form.EventType.SUBMIT, function () {
 				that.onSubmit();
 			});
-			this.form.config.blockContext = false;
+			this.form.config.blockPage = false;
 			this.form.config.disableControls = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
 			this.form.config.successResponseHandler = function (data: string) {
@@ -227,7 +227,7 @@ namespace Rocket.Impl.Overview {
 			
 			this.jqButton = jqForm.find("button[type=submit]").hide();
 			
-			this.form.config.blockContext = false;
+			this.form.config.blockPage = false;
 			this.form.config.disableControls = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
 			this.form.config.autoSubmitAllowed = false;
@@ -402,7 +402,7 @@ namespace Rocket.Impl.Overview {
 			this.form = Form.from(jqForm);
 			this.form.reset();
 			
-			this.form.config.blockContext = false;
+			this.form.config.blockPage = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
 
 			var that = this;

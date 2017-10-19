@@ -9,19 +9,19 @@
 //		
 //		private purifyExecConfig(config: ExecConfig): ExecConfig {
 //			config.forceReload = config.forceReload === true;
-//			config.showLoadingContext = config.showLoadingContext !== false
+//			config.showLoadingPage = config.showLoadingPage !== false
 //			config.createNewLayer = config.createNewLayer === true
 //			
 //			if (!config.currentLayer) {
-//				if (config.currentContext) {
-//					config.currentLayer = config.currentContext.layer;
+//				if (config.currentPage) {
+//					config.currentLayer = config.currentPage.layer;
 //				} else {
 //					config.currentLayer = this.container.currentLayer;
 //				}
 //			}
 //			
-//			if (!config.currentContext) {
-//				config.currentContext = null;
+//			if (!config.currentPage) {
+//				config.currentPage = null;
 //			}
 //			
 //			return config;
@@ -30,33 +30,33 @@
 //		public exec(url: string|Url, config: ExecConfig = null) {
 //			config = this.purifyExecConfig(config);
 //			
-//			var targetContext = null;
+//			var targetPage = null;
 //			
 //			if (!config.createNewLayer) {
-//				targetContext = config.currentLayer.getContextByUrl(url);
+//				targetPage = config.currentLayer.getPageByUrl(url);
 //			}
 //			
-//			if (targetContext !== null) {
-//				if (config.currentLayer.currentContext !== targetContext) {
-//					config.currentLayer.pushHistoryEntry(targetContext.getUrl());
+//			if (targetPage !== null) {
+//				if (config.currentLayer.currentPage !== targetPage) {
+//					config.currentLayer.pushHistoryEntry(targetPage.getUrl());
 //				}
 //				
 //				if (!config.forceReload) {
 //					if (config.done) {
-//						setTimeout(function () { config.done(new ExecResult(null, targetContext)); }, 0);
+//						setTimeout(function () { config.done(new ExecResult(null, targetPage)); }, 0);
 //					}
 //					
 //					return;
 //				}
 //			}
 //			
-//			if (targetContext === null && config.showLoadingContext) {
-//				targetContext = config.currentLayer.createContext(url);
+//			if (targetPage === null && config.showLoadingPage) {
+//				targetPage = config.currentLayer.createPage(url);
 //				config.currentLayer.pushHistoryEntry(url);
 //			}
 //			
-//			if (targetContext !== null) {
-//				targetContext.clear(true);
+//			if (targetPage !== null) {
+//				targetPage.clear(true);
 //			}
 //		
 //			var that = this;
@@ -71,35 +71,35 @@
 //				
 //				alert("Not yet implemented press F5 after ok.");
 //			}).done(function (data, textStatus, jqXHR) {
-//				that.analyzeResponse(config.currentLayer, data, url.toString(), targetContext);
+//				that.analyzeResponse(config.currentLayer, data, url.toString(), targetPage);
 //				
 //				if (config.done) {
-//					config.done(new ExecResult(null, targetContext));
+//					config.done(new ExecResult(null, targetPage));
 //				}
 //			});
 //		}
 //		
-//		public analyzeResponse(currentLayer: Layer, response: Object, targetUrl: string, targetContext: Context = null): boolean {
+//		public analyzeResponse(currentLayer: Layer, response: Object, targetUrl: string, targetPage: Page = null): boolean {
 //			if (typeof response["additional"] === "object") {
 //				if (this.execDirectives(currentLayer, response["additional"])) {
-//					if (targetContext !== null) targetContext.close();
+//					if (targetPage !== null) targetPage.close();
 //					return true;
 //				}
 //			}
 //			
-//			if (targetContext === null) {
-//				targetContext = currentLayer.getContextByUrl(targetUrl);
-//				if (targetContext !== null && !currentLayer.currentHistoryEntryUrl.equals(Url.create(targetUrl))) {
+//			if (targetPage === null) {
+//				targetPage = currentLayer.getPageByUrl(targetUrl);
+//				if (targetPage !== null && !currentLayer.currentHistoryEntryUrl.equals(Url.create(targetUrl))) {
 //					currentLayer.pushHistoryEntry(targetUrl);
 //				}
 //			}
 //			
-//			if (targetContext === null) {
-//				targetContext = currentLayer.createContext(targetUrl);
+//			if (targetPage === null) {
+//				targetPage = currentLayer.createPage(targetUrl);
 //				currentLayer.pushHistoryEntry(targetUrl);
 //			}
 //			
-//			targetContext.applyHtml(n2n.ajah.analyze(response));
+//			targetPage.applyHtml(n2n.ajah.analyze(response));
 //			n2n.ajah.update();
 //		}
 //		
@@ -126,18 +126,18 @@
 //	
 //	export interface ExecConfig {
 //		forceReload?: boolean; 
-//		showLoadingContext?: boolean; 
+//		showLoadingPage?: boolean; 
 //		createNewLayer?: boolean;
 //		currentLayer?: Layer;
-//		currentContext?: Context;
+//		currentPage?: Page;
 //		done?: (ExecResult) => any;
 //	}
 //	
 //	export class ExecResult {
-//		constructor(order, private _context: Context) {
+//		constructor(order, private _context: Page) {
 //		}
 //		
-//		get context(): Context {
+//		get context(): Page {
 //			return this._context;
 //		}
 //	}

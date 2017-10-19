@@ -107,7 +107,7 @@ namespace Rocket.Impl.Relation {
 		private _newEntry: EmbeddedEntry;
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
-		private expandContext: cmd.Context = null;
+		private expandPage: cmd.Page = null;
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
@@ -267,16 +267,16 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandContext !== null;
+			return this.expandPage !== null;
 		}
 		
 		public expand() {
 			if (this.isExpanded()) return;
 			
-			this.expandContext = Rocket.getContainer().createLayer().createContext(window.location.href);
+			this.expandPage = Rocket.getContainer().createLayer().createPage(window.location.href);
 			this.jqEmbedded.detach();
-			this.expandContext.applyContent(this.jqEmbedded);
-			this.expandContext.layer.pushHistoryEntry(window.location.href);
+			this.expandPage.applyContent(this.jqEmbedded);
+			this.expandPage.layer.pushHistoryEntry(window.location.href);
 
 			if (this.newEntry) {
 				this.newEntry.expand(false);
@@ -286,13 +286,13 @@ namespace Rocket.Impl.Relation {
 				this.currentEntry.expand(false);
 			}
 			
-			var jqCommandButton = this.expandContext.menu.commandList
+			var jqCommandButton = this.expandPage.menu.commandList
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(() => {
-				this.expandContext.layer.close();
+				this.expandPage.layer.close();
 			});
 			
-			this.expandContext.on(cmd.Context.EventType.CLOSE, () => {
+			this.expandPage.on(cmd.Page.EventType.CLOSE, () => {
 				this.reduce();
 			});
 			
@@ -303,7 +303,7 @@ namespace Rocket.Impl.Relation {
 		public reduce() {
 			if (!this.isExpanded()) return;
 			
-			this.expandContext = null;
+			this.expandPage = null;
 			
 			this.jqEmbedded.detach();
 			this.jqToOne.append(this.jqEmbedded);
@@ -422,7 +422,7 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			this.browserLayer = Rocket.getContainer().createLayer(cmd.Context.findFrom(this.jqElem));
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Page.findFrom(this.jqElem));
 			this.browserLayer.hide();
 			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
 				that.browserLayer = null;
@@ -430,18 +430,18 @@ namespace Rocket.Impl.Relation {
 			});
 			
 			Rocket.exec(this.jqElem.data("overview-tools-url"), {
-				showLoadingContext: true,
+				showLoadingPage: true,
 				currentLayer: this.browserLayer,
 				done: function (result: cmd.ExecResult) {
-					that.iniBrowserContext(result.context);
+					that.iniBrowserPage(result.context);
 				}
 			});
 		}
 		
-		private iniBrowserContext(context: cmd.Context) {
+		private iniBrowserPage(context: cmd.Page) {
 			if (this.browserLayer === null) return;
 			
-			var ocs = Impl.Overview.OverviewContext.findAll(context.jQuery);
+			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
 			if (ocs.length == 0) return;
 			
 			ocs[0].initSelector(this.browserSelectorObserver = new Overview.SingleEntrySelectorObserver());

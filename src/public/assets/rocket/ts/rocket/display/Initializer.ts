@@ -1,6 +1,6 @@
 namespace Rocket.Display {
 	import Container = Rocket.Cmd.Container;
-	import Context = Rocket.Cmd.Context;
+	import Page = Rocket.Cmd.Page;
 	import AdditionalTab = Rocket.Cmd.AdditionalTab;
 	
     export class Initializer {
@@ -22,22 +22,22 @@ namespace Rocket.Display {
 				errorIndex.getTab().dispose();
 			}  
 			
-			var contexts = this.container.getAllContexts();
+			var contexts = this.container.getAllPages();
 			for (var i in contexts) {
-				this.scanContext(contexts[i]);
+				this.scanPage(contexts[i]);
 			}
 		}
 		
-		private scanContext(context: Context) {
+		private scanPage(context: Page) {
 			var that = this;
 			
 			var i = 0;
 			
-			var jqContext = context.jQuery;
+			var jqPage = context.jQuery;
 			
-			EntryForm.find(jqContext, true);
+			EntryForm.find(jqPage, true);
 			
-			jqContext.find(".rocket-group-main").each(function () {
+			jqPage.find(".rocket-group-main").each(function () {
 				var jqElem = $(this);
 				
 				if (jqElem.hasClass("rocket-group-main")) {
@@ -48,7 +48,7 @@ namespace Rocket.Display {
 			
 			var errorIndex: ErrorIndex = null;
 			
-			jqContext.find(".rocket-message-error").each(function () {
+			jqPage.find(".rocket-message-error").each(function () {
 				var structureElement = StructureElement.findFrom($(this));
 				
 				if (errorIndex === null) {
