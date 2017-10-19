@@ -154,7 +154,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		private sc = 0;
-		private serachVal = null;
+		private serachVal: string = null;
 		
 		private updateState() {
 			if (this.jqSearchInput.val().length > 0) {
@@ -196,7 +196,7 @@ namespace Rocket.Impl.Overview {
 			this.overviewContent.clear(true);
 		}
 		
-		private whenSubmitted(data) {
+		private whenSubmitted(data: any) {
 			this.overviewContent.initFromResponse(data);
 		}
 	}
@@ -274,7 +274,7 @@ namespace Rocket.Impl.Overview {
 			this.critmodForm.freeze(); 
 		}
 		
-		private whenSubmitted(data) {
+		private whenSubmitted(data: any) {
 			this.overviewContent.initFromResponse(data);
 			this.critmodForm.reload();
 		}
@@ -290,7 +290,7 @@ namespace Rocket.Impl.Overview {
 			
 		}
 		
-		private updateIdOptions(idOptions) {
+		private updateIdOptions(idOptions: {[key: string]: string}) {
 			this.jqSelect.empty();
 			
 			for (let id in idOptions) {
@@ -498,14 +498,14 @@ namespace Rocket.Impl.Overview {
 			$.ajax({
 				"url": url,
 				"dataType": "json"
-			}).fail(function (jqXHR, textStatus, data) {
+			}).fail(function (jqXHR: any, textStatus: any, data: any) {
 				if (jqXHR.status != 200) {
                     Rocket.getContainer().handleError(url, jqXHR.responseText);
 					return;
 				}
 				
 				throw new Error("invalid response");
-			}).done(function (data, textStatus, jqXHR) {
+			}).done(function (data: any, textStatus: any, jqXHR: any) {
 				that.replaceForm(data);
 			});
 		}
@@ -518,13 +518,13 @@ namespace Rocket.Impl.Overview {
 			this.overviewContent.clear(true);
 		}
 		
-		private whenSubmitted(data) {
+		private whenSubmitted(data: any) {
 			this.overviewContent.init(1);
 			
 			this.replaceForm(data);
 		}
 		
-		private replaceForm(data) {
+		private replaceForm(data: any) {
 			if (this.jqBlocker) {
 				this.jqBlocker.remove();
 				this.jqBlocker = null;

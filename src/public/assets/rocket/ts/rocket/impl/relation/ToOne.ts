@@ -422,7 +422,7 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			this.browserLayer = Rocket.getContainer().createLayer(cmd.Page.findFrom(this.jqElem));
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Page.of(this.jqElem));
 			this.browserLayer.hide();
 			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
 				that.browserLayer = null;

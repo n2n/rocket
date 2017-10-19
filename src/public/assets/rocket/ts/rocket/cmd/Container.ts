@@ -17,9 +17,17 @@ namespace Rocket.Cmd {
 			Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
 		}
 		
-		handleComp(comp: Jhtml.Comp): boolean {
+		attachComp(comp: Jhtml.Comp): boolean {
 			alert("comp comp comp!!");
 			return true;
+		}
+		
+		detachComp(comp: Jhtml.Comp): boolean {
+			return false;
+		}
+		
+		replaceComp(oldComp: Jhtml.Comp, newComp: Jhtml.Comp): boolean {
+			return false;
 		}
 
 		get layers(): Array<Layer> {

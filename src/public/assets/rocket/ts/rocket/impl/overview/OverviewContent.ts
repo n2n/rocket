@@ -145,7 +145,7 @@ namespace Rocket.Impl.Overview {
 				"url": that.loadUrl.toString(),
 				"data": { "idReps": unloadedIdReps },
 				"dataType": "json"
-			}).fail(function (jqXHR, textStatus, data) {
+			}).fail(function (jqXHR: any, textStatus: any, data: any) {
 				if (fakePage !== that.fakePage) return;
 				
 				that.unmarkPageAsLoading(0);
@@ -156,7 +156,7 @@ namespace Rocket.Impl.Overview {
 				}
 				
 				throw new Error("invalid response");
-			}).done(function (data, textStatus, jqXHR) {
+			}).done(function (data: any, textStatus: any, jqXHR: any) {
 				if (fakePage !== that.fakePage) return; 
 				
 				that.unmarkPageAsLoading(0);
@@ -457,7 +457,7 @@ namespace Rocket.Impl.Overview {
 			
 			var that = this;
 			$.ajax({
-				"url": that.loadUrl,
+				"url": that.loadUrl.toString(),
 				"data": { "pageNo": pageNo },
 				"dataType": "json"
 			}).fail(function (jqXHR, textStatus, data) {

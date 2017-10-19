@@ -282,7 +282,7 @@ namespace Rocket.Cmd {
 	}
 	
 	interface HistoryCallback {
-		(index: number, url: Url, context: Page): any
+		(index: number, url: Jhtml.Url, context: Page): any
 	}
 	
 	

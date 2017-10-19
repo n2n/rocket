@@ -56,7 +56,7 @@ namespace Rocket.Impl.Overview {
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
 					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
 			
-			new PageUpdater(Rocket.Cmd.Page.findFrom(jqElem), new cmd.Url(jqElem.data("overview-path")))
+			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))
 					.init(overviewContent);
 			
 			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
@@ -96,9 +96,9 @@ namespace Rocket.Impl.Overview {
 	class PageUpdater {
 		private overviewContent: OverviewContent;
 		private lastCurrentPageNo: number = null;
-		private pageUrls: Array<cmd.Url> = new Array<cmd.Url>();
+		private pageUrls: Array<Jhtml.Url> = new Array<Jhtml.Url>();
 		
-		constructor(private context: cmd.Page, private overviewBaseUrl: cmd.Url) {
+		constructor(private context: cmd.Page, private overviewBaseUrl: Jhtml.Url) {
 			var that = this;
 			this.context.on(cmd.Page.EventType.ACTIVE_URL_CHANGED, function () {
 				that.contextUpdated();

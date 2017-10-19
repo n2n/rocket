@@ -4,7 +4,7 @@ namespace Rocket.Impl.Overview {
 
 	export interface SelectorObserver {
 		
-		observeEntrySelector(entrySelector: display.EntrySelector);
+		observeEntrySelector(entrySelector: display.EntrySelector): void;
 		
 		getSelectedIds(): Array<string>;
 	}
