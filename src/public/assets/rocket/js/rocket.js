@@ -12,30 +12,23 @@ var Rocket;
 (function (Rocket) {
     var container;
     var blocker;
-    var executor;
     var initializer;
     jQuery(document).ready(function ($) {
         var jqContainer = $("#rocket-content-container");
         container = new Rocket.Cmd.Container(jqContainer);
         blocker = new Rocket.Cmd.Blocker(container);
         blocker.init($("body"));
-        executor = new Rocket.Cmd.Executor(container);
-        var monitor = new Rocket.Cmd.Monitor(executor);
-        monitor.scanMain($("#rocket-global-nav"), container.mainLayer);
-        monitor.scan(jqContainer);
-        n2n.dispatch.registerCallback(function () {
-            monitor.scan(jqContainer);
-        });
         initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
         initializer.scan();
-        n2n.dispatch.registerCallback(function () {
+        Jhtml.ready(function () {
             initializer.scan();
         });
         (function () {
-            $(".rocket-impl-overview").each(function () {
-                Rocket.Impl.Overview.OverviewContext.from($(this));
+            var _this = this;
+            Jhtml.ready(function () {
+                Rocket.Impl.Overview.OverviewContext.from($(_this));
             });
-            n2n.dispatch.registerCallback(function () {
+            Jhtml.ready(function () {
                 $(".rocket-impl-overview").each(function () {
                     Rocket.Impl.Overview.OverviewContext.from($(this));
                 });
@@ -45,7 +38,7 @@ var Rocket;
             $("form.rocket-impl-form").each(function () {
                 Rocket.Impl.Form.from($(this));
             });
-            n2n.dispatch.registerCallback(function () {
+            Jhtml.ready(function () {
                 $("form.rocket-impl-form").each(function () {
                     Rocket.Impl.Form.from($(this));
                 });
@@ -55,7 +48,7 @@ var Rocket;
             $(".rocket-impl-to-many").each(function () {
                 Rocket.Impl.Relation.ToMany.from($(this));
             });
-            n2n.dispatch.registerCallback(function () {
+            Jhtml.ready(function () {
                 $(".rocket-impl-to-many").each(function () {
                     Rocket.Impl.Relation.ToMany.from($(this));
                 });
@@ -65,7 +58,7 @@ var Rocket;
             $(".rocket-impl-to-one").each(function () {
                 Rocket.Impl.Relation.ToOne.from($(this));
             });
-            n2n.dispatch.registerCallback(function () {
+            Jhtml.ready(function () {
                 $(".rocket-impl-to-one").each(function () {
                     Rocket.Impl.Relation.ToOne.from($(this));
                 });
@@ -74,7 +67,7 @@ var Rocket;
         (function () {
             var t = new Rocket.Impl.Translator(container);
             t.scan();
-            n2n.dispatch.registerCallback(function () {
+            Jhtml.ready(function () {
                 t.scan();
             });
         })();
@@ -89,27 +82,13 @@ var Rocket;
     }
     Rocket.getContainer = getContainer;
     function layerOf(elem) {
-        return Rocket.Cmd.Layer.findFrom($(elem));
+        return Rocket.Cmd.Layer.of($(elem));
     }
     Rocket.layerOf = layerOf;
     function contextOf(elem) {
-        return Rocket.Cmd.Context.findFrom($(elem));
+        return Rocket.Cmd.Context.of($(elem));
     }
     Rocket.contextOf = contextOf;
-    function handleErrorResponse(url, responseObject) {
-        container.handleError(url, responseObject.responseText);
-    }
-    Rocket.handleErrorResponse = handleErrorResponse;
-    function exec(url, config) {
-        if (config === void 0) { config = null; }
-        executor.exec(url, config);
-    }
-    Rocket.exec = exec;
-    function analyzeResponse(currentLayer, response, targetUrl, targetContext) {
-        if (targetContext === void 0) { targetContext = null; }
-        return executor.analyzeResponse(currentLayer, response, targetUrl, targetContext);
-    }
-    Rocket.analyzeResponse = analyzeResponse;
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
@@ -192,41 +171,19 @@ var Rocket;
 (function (Rocket) {
     var Cmd;
     (function (Cmd) {
-        var util = Rocket.util;
         var Container = (function () {
             function Container(jqContainer) {
-                this.layerCallbackRegistery = new util.CallbackRegistry();
-                this.jqErrorLayer = null;
+                this.layerCallbackRegistery = new Rocket.util.CallbackRegistry();
                 this.jqContainer = jqContainer;
                 this._layers = new Array();
-                var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this);
+                var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
                 this._layers.push(layer);
-                var that = this;
-                layer.onNewHistoryEntry(function (historyIndex, url, context) {
-                    var stateObj = {
-                        "type": "rocketContext",
-                        "level": layer.level,
-                        "url": url,
-                        "historyIndex": historyIndex
-                    };
-                    history.pushState(stateObj, "seite 2", url.toString());
-                });
-                $(window).bind("popstate", function (e) {
-                    if (that.jqErrorLayer) {
-                        that.jqErrorLayer.remove();
-                        that.jqErrorLayer = null;
-                    }
-                    if (!history.state) {
-                        layer.go(0, window.location.href);
-                        return;
-                    }
-                    if (history.state.type != "rocketContext" || history.state.level != 0) {
-                        return;
-                    }
-                    if (!layer.go(history.state.historyIndex, history.state.url)) {
-                    }
-                });
+                Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
             }
+            Container.prototype.handleComp = function (comp) {
+                alert("comp comp comp!!");
+                return true;
+            };
             Object.defineProperty(Container.prototype, "layers", {
                 get: function () {
                     return this._layers.slice();
@@ -234,28 +191,6 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
-            Container.prototype.handleError = function (url, html) {
-                var stateObj = {
-                    "type": "rocketErrorContext",
-                    "url": url
-                };
-                if (this.jqErrorLayer) {
-                    this.jqErrorLayer.remove();
-                    history.replaceState(stateObj, "n2n Rocket", url);
-                }
-                else {
-                    history.pushState(stateObj, "n2n Rocket", url);
-                }
-                this.jqErrorLayer = $("<div />", { "class": "rocket-error-layer" });
-                this.jqErrorLayer.css({ "position": "fixed", "top": 0, "left": 0, "right": 0, "bottom": 0 });
-                this.jqContainer.append(this.jqErrorLayer);
-                var iframe = document.createElement("iframe");
-                this.jqErrorLayer.append(iframe);
-                iframe.contentWindow.document.open();
-                iframe.contentWindow.document.write(html);
-                iframe.contentWindow.document.close();
-                $(iframe).css({ "width": "100%", "height": "100%", "background": "white" });
-            };
             Object.defineProperty(Container.prototype, "mainLayer", {
                 get: function () {
                     if (this._layers.length > 0) {
@@ -297,7 +232,7 @@ var Rocket;
                     "class": "rocket-layer"
                 });
                 this.jqContainer.append(jqLayer);
-                var layer = new Cmd.Layer(jqLayer, this._layers.length, this);
+                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.from(jqLayer.get(0)));
                 this._layers.push(layer);
                 var jqToolbar = $("<div />", {
                     "class": "rocket-layer-toolbar rocket-simple-commands"
@@ -372,7 +307,7 @@ var Rocket;
     (function (util) {
         var CallbackRegistry = (function () {
             function CallbackRegistry() {
-                this.callbackMap = new Array();
+                this.callbackMap = {};
             }
             CallbackRegistry.prototype.register = function (nature, callback) {
                 if (this.callbackMap[nature] === undefined) {
@@ -386,7 +321,7 @@ var Rocket;
                 }
                 for (var i in this.callbackMap[nature]) {
                     if (this.callbackMap[nature][i] === callback) {
-                        this.callbackMap[nature].splice(i, 1);
+                        this.callbackMap[nature].splice(parseInt(i), 1);
                         return;
                     }
                 }
@@ -462,8 +397,8 @@ var Rocket;
     (function (Display) {
         var StructureElement = (function () {
             function StructureElement(jqElem) {
-                this.onShowCallbacks = new Array();
-                this.onHideCallbacks = new Array();
+                this.onShowCallbacks = [];
+                this.onHideCallbacks = [];
                 this.toolbar = null;
                 this.highlightedParent = null;
                 this.jqElem = jqElem;
@@ -715,7 +650,7 @@ var Rocket;
         var util = Rocket.util;
         var Context = (function () {
             function Context(jqContext, url, layer) {
-                this.urls = new Array();
+                this.urls = [];
                 this.callbackRegistery = new util.CallbackRegistry();
                 this._blocked = false;
                 this.locks = new Array();
@@ -748,39 +683,9 @@ var Rocket;
                 }
                 return false;
             };
-            Context.prototype.registerUrl = function (url) {
-                if (this.containsUrl(url))
-                    return;
-                if (this._layer.containsUrl(url)) {
-                    throw new Error("Url already registered for another Context of the current Layer.");
-                }
-                this.urls.push(url);
-            };
-            Context.prototype.unregisterUrl = function (url) {
-                if (this.activeUrl.equals(url)) {
-                    throw new Error("Cannot remove active url");
-                }
-                for (var i in this.urls) {
-                    if (this.urls[i].equals(url)) {
-                        this.urls.splice(parseInt(i), 1);
-                    }
-                }
-            };
             Object.defineProperty(Context.prototype, "activeUrl", {
                 get: function () {
                     return this._activeUrl;
-                },
-                set: function (activeUrl) {
-                    Rocket.util.ArgUtils.valIsset(activeUrl !== null);
-                    if (this._activeUrl.equals(activeUrl)) {
-                        return;
-                    }
-                    if (this.containsUrl(activeUrl)) {
-                        this._activeUrl = activeUrl;
-                        this.fireEvent(Context.EventType.ACTIVE_URL_CHANGED);
-                        return;
-                    }
-                    throw new Error("Active url not available for this context.");
                 },
                 enumerable: true,
                 configurable: true
@@ -886,12 +791,12 @@ var Rocket;
                 this.trigger(Context.EventType.BLOCKED_CHANGED);
                 return lock;
             };
-            Context.findFrom = function (jqElem) {
+            Context.of = function (jqElem) {
                 if (!jqElem.hasClass(".rocket-context")) {
                     jqElem = jqElem.parents(".rocket-context");
                 }
                 var context = jqElem.data("rocketContext");
-                if (context)
+                if (context instanceof Context)
                     return context;
                 return null;
             };
@@ -987,9 +892,9 @@ var Rocket;
         var AdditionalTab = (function () {
             function AdditionalTab(jqNavItem, jqContent) {
                 this.active = false;
-                this.onShowCallbacks = new Array();
-                this.onHideCallbacks = new Array();
-                this.onDisposeCallbacks = new Array();
+                this.onShowCallbacks = [];
+                this.onHideCallbacks = [];
+                this.onDisposeCallbacks = [];
                 this.jqNavItem = jqNavItem;
                 this.jqContent = jqContent;
                 this.jqNavItem.click(this.show);
@@ -1158,151 +1063,33 @@ var Rocket;
 (function (Rocket) {
     var Cmd;
     (function (Cmd) {
-        var Executor = (function () {
-            function Executor(container) {
-                this.container = container;
+        var util = Rocket.util;
+        var Layer = (function () {
+            function Layer(jqLayer, _level, _container, _monitor) {
+                var _this = this;
+                this.jqLayer = jqLayer;
+                this._level = _level;
+                this._container = _container;
+                this._monitor = _monitor;
+                this._contexts = new Array();
+                this.callbackRegistery = new util.CallbackRegistry();
+                this._visible = true;
+                this.onNewContextCallbacks = new Array();
+                this.onNewHistoryEntryCallbacks = new Array();
+                var jqContext = jqLayer.children(".rocket-context:first");
+                if (jqContext.length > 0) {
+                    var context = new Cmd.Context(jqContext, Jhtml.Url.create(window.location.href), this);
+                    this.addContext(context);
+                }
+                this._monitor.history.onChanged(function () { return _this.historyChanged(); });
             }
-            Executor.prototype.purifyExecConfig = function (config) {
-                config.forceReload = config.forceReload === true;
-                config.showLoadingContext = config.showLoadingContext !== false;
-                config.createNewLayer = config.createNewLayer === true;
-                if (!config.currentLayer) {
-                    if (config.currentContext) {
-                        config.currentLayer = config.currentContext.layer;
-                    }
-                    else {
-                        config.currentLayer = this.container.currentLayer;
-                    }
-                }
-                if (!config.currentContext) {
-                    config.currentContext = null;
-                }
-                return config;
-            };
-            Executor.prototype.exec = function (url, config) {
-                if (config === void 0) { config = null; }
-                config = this.purifyExecConfig(config);
-                var targetContext = null;
-                if (!config.createNewLayer) {
-                    targetContext = config.currentLayer.getContextByUrl(url);
-                }
-                if (targetContext !== null) {
-                    if (config.currentLayer.currentContext !== targetContext) {
-                        config.currentLayer.pushHistoryEntry(targetContext.getUrl());
-                    }
-                    if (!config.forceReload) {
-                        if (config.done) {
-                            setTimeout(function () { config.done(new ExecResult(null, targetContext)); }, 0);
-                        }
-                        return;
-                    }
-                }
-                if (targetContext === null && config.showLoadingContext) {
-                    targetContext = config.currentLayer.createContext(url);
-                    config.currentLayer.pushHistoryEntry(url);
-                }
-                if (targetContext !== null) {
-                    targetContext.clear(true);
-                }
-                var that = this;
-                $.ajax({
-                    "url": url.toString(),
-                    "dataType": "json"
-                }).fail(function (jqXHR, textStatus, data) {
-                    if (jqXHR.status != 200) {
-                        config.currentLayer.container.handleError(url.toString(), jqXHR.responseText);
-                        return;
-                    }
-                    alert("Not yet implemented press F5 after ok.");
-                }).done(function (data, textStatus, jqXHR) {
-                    that.analyzeResponse(config.currentLayer, data, url.toString(), targetContext);
-                    if (config.done) {
-                        config.done(new ExecResult(null, targetContext));
-                    }
-                });
-            };
-            Executor.prototype.analyzeResponse = function (currentLayer, response, targetUrl, targetContext) {
-                if (targetContext === void 0) { targetContext = null; }
-                if (typeof response["additional"] === "object") {
-                    if (this.execDirectives(currentLayer, response["additional"])) {
-                        if (targetContext !== null)
-                            targetContext.close();
-                        return true;
-                    }
-                }
-                if (targetContext === null) {
-                    targetContext = currentLayer.getContextByUrl(targetUrl);
-                    if (targetContext !== null && !currentLayer.currentHistoryEntryUrl.equals(Cmd.Url.create(targetUrl))) {
-                        currentLayer.pushHistoryEntry(targetUrl);
-                    }
-                }
-                if (targetContext === null) {
-                    targetContext = currentLayer.createContext(targetUrl);
-                    currentLayer.pushHistoryEntry(targetUrl);
-                }
-                targetContext.applyHtml(n2n.ajah.analyze(response));
-                n2n.ajah.update();
-            };
-            Executor.prototype.execDirectives = function (currentLayer, info) {
-                if (info.directive == "redirectBack") {
-                    var index = currentLayer.currentHistoryIndex();
-                    if (index > 0) {
-                        this.exec(currentLayer.getHistoryUrlByIndex(index - 1), { "currentLayer": currentLayer });
-                        return true;
-                    }
-                    if (info.fallbackUrl) {
-                        this.exec(info.fallbackUrl, { "currentLayer": currentLayer });
-                        return true;
-                    }
-                    currentLayer.close();
-                }
-                return false;
-            };
-            return Executor;
-        }());
-        Cmd.Executor = Executor;
-        var ExecResult = (function () {
-            function ExecResult(order, _context) {
-                this._context = _context;
-            }
-            Object.defineProperty(ExecResult.prototype, "context", {
+            Object.defineProperty(Layer.prototype, "monitor", {
                 get: function () {
-                    return this._context;
+                    return this._monitor;
                 },
                 enumerable: true,
                 configurable: true
             });
-            return ExecResult;
-        }());
-        Cmd.ExecResult = ExecResult;
-    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Cmd;
-    (function (Cmd) {
-        var util = Rocket.util;
-        var Layer = (function () {
-            function Layer(jqContentGroup, level, container) {
-                this._currentHistoryIndex = null;
-                this.callbackRegistery = new util.CallbackRegistry();
-                this._visible = true;
-                this._contexts = new Array();
-                this.onNewContextCallbacks = new Array();
-                this.onNewHistoryEntryCallbacks = new Array();
-                this.historyUrls = new Array();
-                this.jqLayer = jqContentGroup;
-                this._level = level;
-                this._container = container;
-                jqContentGroup.addClass("rocket-layer");
-                jqContentGroup.data("rocketLayer", this);
-                var jqContext = jqContentGroup.children(".rocket-context");
-                if (jqContext.length > 0) {
-                    var context = new Cmd.Context(jqContext, Cmd.Url.create(window.location.href), this);
-                    this.addContext(context);
-                    this.pushHistoryEntry(context.activeUrl);
-                }
-            }
             Layer.prototype.containsUrl = function (url) {
                 for (var i in this._contexts) {
                     if (this._contexts[i].containsUrl(url))
@@ -1310,6 +1097,50 @@ var Rocket;
                 }
                 return false;
             };
+            Layer.prototype.getContextByUrl = function (urlExpr) {
+                var url = Jhtml.Url.create(urlExpr);
+                for (var i in this._contexts) {
+                    if (this._contexts[i].containsUrl(url)) {
+                        return this._contexts[i];
+                    }
+                }
+                return null;
+            };
+            Layer.prototype.historyChanged = function () {
+                var context = this.getContextByUrl(this._monitor.history.currentEntry.page.url);
+                if (context) {
+                    context.show();
+                    return;
+                }
+                this.addContext(this.createContext(this._monitor.history.currentEntry.page.url));
+            };
+            Layer.prototype.createContext = function (urlExpr) {
+                var url = Jhtml.Url.create(urlExpr);
+                if (this.containsUrl(url)) {
+                    throw new Error("Context with url already available: " + url);
+                }
+                var jqContent = $("<div />");
+                this.jqLayer.append(jqContent);
+                var context = new Cmd.Context(jqContent, url, this);
+                this.addContext(context);
+                return context;
+            };
+            Object.defineProperty(Layer.prototype, "currentContext", {
+                get: function () {
+                    if (this.empty || !this._monitor.history.currentEntry) {
+                        return null;
+                    }
+                    var url = this._monitor.history.currentPage.url;
+                    for (var i in this._contexts) {
+                        if (this._contexts[i].containsUrl(url)) {
+                            return this._contexts[i];
+                        }
+                    }
+                    return null;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(Layer.prototype, "container", {
                 get: function () {
                     return this._container;
@@ -1361,25 +1192,6 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
-            Layer.prototype.hasCurrent = function () {
-                return this._currentHistoryIndex !== null;
-            };
-            Object.defineProperty(Layer.prototype, "currentContext", {
-                get: function () {
-                    if (this.empty || !this.hasCurrent()) {
-                        return null;
-                    }
-                    var url = this.historyUrls[this._currentHistoryIndex];
-                    for (var i in this._contexts) {
-                        if (this._contexts[i].containsUrl(url)) {
-                            return this._contexts[i];
-                        }
-                    }
-                    return null;
-                },
-                enumerable: true,
-                configurable: true
-            });
             Object.defineProperty(Layer.prototype, "contexts", {
                 get: function () {
                     return this._contexts.slice();
@@ -1387,9 +1199,6 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
-            Layer.prototype.currentHistoryIndex = function () {
-                return this._currentHistoryIndex;
-            };
             Layer.prototype.addContext = function (context) {
                 this._contexts.push(context);
                 var that = this;
@@ -1405,77 +1214,8 @@ var Rocket;
                     this.onNewContextCallbacks[i](context);
                 }
             };
-            Layer.prototype.pushHistoryEntry = function (urlExpr) {
-                var url = Cmd.Url.create(urlExpr);
-                var context = this.getContextByUrl(url);
-                if (context === null) {
-                    throw new Error("Not context with this url found: " + url);
-                }
-                this._currentHistoryIndex = this.historyUrls.length;
-                this.historyUrls.push(url);
-                context.activeUrl = url;
-                for (var i in this.onNewHistoryEntryCallbacks) {
-                    this.onNewHistoryEntryCallbacks[i](this._currentHistoryIndex, url, context);
-                }
-                this.switchToContext(context);
-            };
-            Object.defineProperty(Layer.prototype, "currentHistoryEntryUrl", {
-                get: function () {
-                    return this.historyUrls[this._currentHistoryIndex];
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Layer.prototype.go = function (historyIndex, urlExpr) {
-                var url = Cmd.Url.create(urlExpr);
-                if (this.historyUrls.length < (historyIndex + 1)) {
-                    throw new Error("Invalid history index: " + historyIndex);
-                }
-                if (this.historyUrls[historyIndex].equals(url)) {
-                    throw new Error("Url missmatch for history index " + historyIndex + ". Url: " + url + " History url: "
-                        + this.historyUrls[historyIndex]);
-                }
-                this._currentHistoryIndex = historyIndex;
-                var context = this.getContextByUrl(this.historyUrls[historyIndex]);
-                if (context === null)
-                    return false;
-                this.switchToContext(context);
-                return true;
-            };
-            Layer.prototype.getHistoryUrlByIndex = function (historyIndex) {
-                if (this.historyUrls.length <= historyIndex)
-                    return null;
-                return this.historyUrls[historyIndex];
-            };
-            Layer.prototype.getContextByUrl = function (urlExpr) {
-                var url = Cmd.Url.create(urlExpr);
-                for (var i in this._contexts) {
-                    if (this._contexts[i].containsUrl(url)) {
-                        return this._contexts[i];
-                    }
-                }
-                return null;
-            };
-            Layer.prototype.switchToContext = function (context) {
-                for (var i in this._contexts) {
-                    if (this._contexts[i] === context) {
-                        context.show();
-                    }
-                    else {
-                        this._contexts[i].hide();
-                    }
-                }
-            };
-            Layer.prototype.createContext = function (urlExpr) {
-                var url = Cmd.Url.create(urlExpr);
-                if (this.getContextByUrl(url)) {
-                    throw new Error("Context with url already available: " + url);
-                }
-                var jqContent = $("<div />");
-                this.jqLayer.append(jqContent);
-                var context = new Cmd.Context(jqContent, url, this);
-                this.addContext(context);
-                return context;
+            Layer.prototype.onNewContext = function (onNewContextCallback) {
+                this.onNewContextCallbacks.push(onNewContextCallback);
             };
             Layer.prototype.clear = function () {
                 for (var i in this._contexts) {
@@ -1491,17 +1231,25 @@ var Rocket;
                 this._contexts = new Array();
                 this.jqLayer.remove();
             };
-            Layer.prototype.onNewContext = function (onNewContextCallback) {
-                this.onNewContextCallbacks.push(onNewContextCallback);
-            };
-            Layer.prototype.onNewHistoryEntry = function (onNewHistoryEntryCallback) {
-                this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
-            };
-            Layer.findFrom = function (jqElem) {
-                if (!jqElem.hasClass(".rocket-layer")) {
-                    jqElem = jqElem.parents(".rocket-layer");
+            Layer.create = function (jqLayer, _level, _container, history) {
+                if (Layer.test(jqLayer)) {
+                    throw new Error("Layer already bound to this element.");
                 }
-                var layer = jqElem.data("rocketLayer");
+                jqLayer.addClass("rocket-layer");
+                jqLayer.data("rocketLayer", this);
+            };
+            Layer.test = function (jqLayer) {
+                var layer = jqLayer.data("rocketLayer");
+                if (layer instanceof Layer) {
+                    return layer;
+                }
+                return null;
+            };
+            Layer.of = function (jqElem) {
+                if (!jqElem.hasClass(".rocket-layer")) {
+                    jqElem = jqElem.closest(".rocket-layer");
+                }
+                var layer = Layer.test(jqElem);
                 if (layer === undefined) {
                     return null;
                 }
@@ -1518,81 +1266,6 @@ var Rocket;
                 EventType[EventType["CLOSE"] = 2] = "CLOSE";
             })(EventType = Layer.EventType || (Layer.EventType = {}));
         })(Layer = Cmd.Layer || (Cmd.Layer = {}));
-    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Cmd;
-    (function (Cmd) {
-        var $ = jQuery;
-        var Monitor = (function () {
-            function Monitor(executor) {
-                this.executor = executor;
-            }
-            Monitor.prototype.scanMain = function (jqContent, layer) {
-                var that = this;
-                jqContent.find("a.rocket-ajah").each(function () {
-                    (new LinkAction(that.executor, jQuery(this), layer)).activate();
-                });
-            };
-            Monitor.prototype.scan = function (jqContainer) {
-                var that = this;
-                jqContainer.find("a.rocket-ajah").each(function () {
-                    CommandAction.from($(this), that.executor);
-                });
-            };
-            return Monitor;
-        }());
-        Cmd.Monitor = Monitor;
-        var LinkAction = (function () {
-            function LinkAction(executor, jqA, layer) {
-                this.executor = executor;
-                this.jqA = jqA;
-                this.layer = layer;
-            }
-            LinkAction.prototype.activate = function () {
-                var that = this;
-                this.jqA.click(function (e) {
-                    e.stopImmediatePropagation();
-                    e.stopPropagation();
-                    that.handle();
-                    return false;
-                });
-            };
-            LinkAction.prototype.handle = function () {
-                var url = this.jqA.attr("href");
-                this.executor.exec(url, { currentLayer: this.layer });
-            };
-            return LinkAction;
-        }());
-        var CommandAction = (function () {
-            function CommandAction(executor, jqElem) {
-                this.executor = executor;
-                this.jqElem = jqElem;
-                var that = this;
-                jqElem.click(function (e) {
-                    that.handle();
-                    return false;
-                });
-            }
-            CommandAction.prototype.handle = function () {
-                var url = this.jqElem.attr("href");
-                var context = Cmd.Context.findFrom(this.jqElem);
-                if (context === null) {
-                    throw new Error("Command belongs to no Context.");
-                }
-                this.executor.exec(url, { currentContext: context });
-            };
-            CommandAction.from = function (jqElem, executor) {
-                var commandAction = jqElem.data("rocketCommandAction");
-                if (commandAction)
-                    return commandAction;
-                commandAction = new CommandAction(executor, jqElem);
-                jqElem.data("rocketCommandAction", commandAction);
-                return commandAction;
-            };
-            return CommandAction;
-        }());
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -4472,7 +4145,7 @@ var Rocket;
             var AddControl = (function () {
                 function AddControl(jqElem, embeddedEntryRetriever) {
                     var _this = this;
-                    this.onNewEntryCallbacks = new Array();
+                    this.onNewEntryCallbacks = [];
                     this.disposed = false;
                     this.embeddedEntryRetriever = embeddedEntryRetriever;
                     this.jqElem = jqElem;
@@ -4939,6 +4612,7 @@ var Rocket;
                     this.entries.splice(0, this.entries.length);
                 };
                 ToManySelector.prototype.loadBrowser = function () {
+                    var _this = this;
                     if (this.browserLayer !== null)
                         return;
                     var that = this;
@@ -4948,12 +4622,9 @@ var Rocket;
                         that.browserLayer = null;
                         that.browserSelectorObserver = null;
                     });
-                    Rocket.exec(this.jqElem.data("overview-tools-url"), {
-                        showLoadingContext: true,
-                        currentLayer: this.browserLayer,
-                        done: function (result) {
-                            that.iniBrowserContext(result.context);
-                        }
+                    var url = this.jqElem.data("overview-tools-url");
+                    this.browserLayer.monitor.exec(url).then(function () {
+                        that.iniBrowserContext(_this.browserLayer.getContextByUrl(url));
                     });
                 };
                 ToManySelector.prototype.iniBrowserContext = function (context) {
@@ -5036,7 +4707,7 @@ var Rocket;
                 });
                 Object.defineProperty(SelectedEntry.prototype, "idRep", {
                     get: function () {
-                        return this.jqInput.val();
+                        return this.jqInput.val().toString();
                     },
                     set: function (idRep) {
                         this.jqInput.val(idRep);
