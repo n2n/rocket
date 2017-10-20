@@ -167,12 +167,10 @@ class EiuCtrl implements Lookupable {
 	public function forwardView(HtmlView $view) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
-		if ('application/json' == $acceptRange->bestMatch(['text/html', 'application/json'])) {
-			$response->send(new AjahResponse($view));
-			return;
-		}
-		
-		$view->useTemplate('\rocket\core\view\template.html', array('title' => 'TBD'));
+// 		if ('application/json' == $acceptRange->bestMatch(['text/html', 'application/json'])) {
+// 			$response->send(new AjahResponse($view));
+// 			return;
+// 		}
 		
 		$response->send($view);
 	}

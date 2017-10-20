@@ -56,8 +56,8 @@ namespace Rocket.Impl.Overview {
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
 					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
 			
-			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))
-					.init(overviewContent);
+//			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))
+//					.init(overviewContent);
 			
 			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
 			
@@ -93,63 +93,63 @@ namespace Rocket.Impl.Overview {
 //		}
 //	}
 	
-	class PageUpdater {
-		private overviewContent: OverviewContent;
-		private lastCurrentPageNo: number = null;
-		private pageUrls: Array<Jhtml.Url> = new Array<Jhtml.Url>();
-		
-		constructor(private context: cmd.Page, private overviewBaseUrl: Jhtml.Url) {
-			var that = this;
-			this.context.on(cmd.Page.EventType.ACTIVE_URL_CHANGED, function () {
-				that.contextUpdated();
-			});
-		}
-		
-		public init(overviewContent: OverviewContent) {
-			this.overviewContent = overviewContent;
-			var that = this;
-			overviewContent.whenContentChanged(function () {
-				that.contentUpdated();
-			});
-		}
-		
-		private contextUpdated() {
-			var newActiveUrl = this.context.activeUrl;
-			for (var i in this.pageUrls) {
-				if (!this.pageUrls[i].equals(newActiveUrl)) continue;
-				
-				this.overviewContent.currentPageNo = (parseInt(i) + 1);
-				return;
-			}
-		}
-		
-		private contentUpdated() {
-			if (!this.overviewContent.isInit()) return;
-			
-			var newCurPageNo = this.overviewContent.currentPageNo;
-			var newNumPages = this.overviewContent.numPages;
-			
-			if (this.pageUrls.length < newNumPages) {
-				for (let pageNo = this.pageUrls.length + 1; pageNo <= newNumPages; pageNo++) {
-					var pageUrl = this.overviewBaseUrl.extR(pageNo > 1 ? pageNo.toString() : null);
-					this.pageUrls[pageNo - 1] = pageUrl;
-					this.context.registerUrl(pageUrl);
-				}
-			} 
-			
-			var newActiveUrl = this.pageUrls[newCurPageNo - 1];
-			if (!this.context.activeUrl.equals(newActiveUrl)) {
-				this.context.layer.pushHistoryEntry(newActiveUrl);
-			}
-			
-			if (this.pageUrls.length > newNumPages) {
-				for (let pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
-					this.context.unregisterUrl(this.pageUrls.pop());
-				}
-			}
-		}
-		
-	}
+//	class PageUpdater {
+//		private overviewContent: OverviewContent;
+//		private lastCurrentPageNo: number = null;
+//		private pageUrls: Array<Jhtml.Url> = new Array<Jhtml.Url>();
+//		
+//		constructor(private context: cmd.Page, private overviewBaseUrl: Jhtml.Url) {
+//			var that = this;
+//			this.context.on(cmd.Page.EventType.ACTIVE_URL_CHANGED, function () {
+//				that.contextUpdated();
+//			});
+//		}
+//		
+//		public init(overviewContent: OverviewContent) {
+//			this.overviewContent = overviewContent;
+//			var that = this;
+//			overviewContent.whenContentChanged(function () {
+//				that.contentUpdated();
+//			});
+//		}
+//		
+//		private contextUpdated() {
+//			var newActiveUrl = this.context.activeUrl;
+//			for (var i in this.pageUrls) {
+//				if (!this.pageUrls[i].equals(newActiveUrl)) continue;
+//				
+//				this.overviewContent.currentPageNo = (parseInt(i) + 1);
+//				return;
+//			}
+//		}
+//		
+//		private contentUpdated() {
+//			if (!this.overviewContent.isInit()) return;
+//			
+//			var newCurPageNo = this.overviewContent.currentPageNo;
+//			var newNumPages = this.overviewContent.numPages;
+//			
+//			if (this.pageUrls.length < newNumPages) {
+//				for (let pageNo = this.pageUrls.length + 1; pageNo <= newNumPages; pageNo++) {
+//					var pageUrl = this.overviewBaseUrl.extR(pageNo > 1 ? pageNo.toString() : null);
+//					this.pageUrls[pageNo - 1] = pageUrl;
+//					this.context.registerUrl(pageUrl);
+//				}
+//			} 
+//			
+//			var newActiveUrl = this.pageUrls[newCurPageNo - 1];
+//			if (!this.context.activeUrl.equals(newActiveUrl)) {
+//				this.context.layer.pushHistoryEntry(newActiveUrl);
+//			}
+//			
+//			if (this.pageUrls.length > newNumPages) {
+//				for (let pageNo = this.pageUrls.length; pageNo > newNumPages; pageNo--) {
+//					this.context.unregisterUrl(this.pageUrls.pop());
+//				}
+//			}
+//		}
+//		
+//	}
 	
 	class Pagination {
 		private jqPagination: JQuery;
