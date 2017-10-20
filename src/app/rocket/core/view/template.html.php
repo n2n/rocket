@@ -224,7 +224,7 @@
     		<div id="rocket-content-container" data-error-tab-title="<?php $html->text('ei_error_list_title') ?>"
     				data-display-error-label="<?php $html->text('core_display_error_label') ?>">
     			<div class="rocket-main-layer">
-    				<div class="rocket-context">
+    				<div class="rocket-context" data-jhtml-comp="rocket-page">
     					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
     						<ol class="breadcrumb">
     							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
