@@ -204,6 +204,10 @@ namespace Rocket.Impl {
 			var form = jqForm.data("rocketImplForm");
 			if (form instanceof Form) return form;
 			
+			if (jqForm.length == 0) {
+				throw new Error("asd");
+			}
+			
 			form = new Form(jqForm);
 			jqForm.data("rocketImplForm", form);
 			form.observe();

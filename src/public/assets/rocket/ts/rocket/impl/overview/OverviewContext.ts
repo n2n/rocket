@@ -50,7 +50,6 @@ namespace Rocket.Impl.Overview {
 				return overviewPage;
 			}
 			
-			
 			var jqForm = jqElem.children("form");
 			
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 

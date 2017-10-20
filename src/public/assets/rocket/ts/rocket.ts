@@ -21,7 +21,9 @@ namespace Rocket {
 
 		(function () {
 			Jhtml.ready(() => {
-				Rocket.Impl.Overview.OverviewPage.from($(this));
+				$(".rocket-impl-overview").each(function () {
+					Rocket.Impl.Overview.OverviewPage.from($(this));
+				});
 			});
 			
 			Jhtml.ready(() => {

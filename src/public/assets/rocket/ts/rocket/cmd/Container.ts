@@ -18,8 +18,8 @@ namespace Rocket.Cmd {
 		}
 		
 		attachComp(comp: Jhtml.Comp): boolean {
-			alert("comp comp comp!!");
-			return true;
+			//alert("comp comp comp!!");
+			return false;
 		}
 		
 		detachComp(comp: Jhtml.Comp): boolean {
