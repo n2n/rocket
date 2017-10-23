@@ -298,22 +298,41 @@ class SpecExtractor {
 		$displayStructure = new DisplayStructure();
 	
 		foreach ($data as $key => $fieldId) {
+			//Old specs (guiId)
 			if (!is_array($fieldId)) {
 				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
 				continue;
 			}
 	
-			$guiSectionAttributes = new Attributes($fieldId);
+			$displayStructureAttributes = new Attributes($fieldId);
 			
-			$childDisplayStructure = $this->createDisplayStructure($guiSectionAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY));
-			$title = $guiSectionAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY);
-			$groupType = $guiSectionAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(), 
-					false, DisplayItem::TYPE_SIMPLE, true);
-			if ($groupType === null) {
-				$groupType = DisplayItem::TYPE_SIMPLE;
+			//Old specs (fieldOrder)
+			$title = $displayStructureAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY, false);
+			if (null !== $title) {
+				$childDisplayStructure = $this->createDisplayStructure($displayStructureAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY));
+				$groupType = $displayStructureAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(), 
+						false, DisplayItem::TYPE_SIMPLE, true);
+				if ($groupType === null) {
+					$groupType = DisplayItem::TYPE_SIMPLE;
+				}
+				
+				$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
+				continue;
 			}
 			
-			$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
+			$label = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
+			$guiIdPath = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
+			if (null !== $guiIdPath) {
+				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($guiIdPath), 
+						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
+						false, null, true), $label);
+				continue;
+			}
+			
+			$childDisplayStructure = $this->createDisplayStructure(
+					$displayStructureAttributes->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
+			$displayStructure->addDisplayStructure($childDisplayStructure, $displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, 
+					DisplayItem::getGroupTypes()), $label);
 		}
 	
 		return $displayStructure;

@@ -54,7 +54,6 @@ class GuiSection {
 
 	public function getDisplayStructure() {
 		if ($this->displayStructure === null) {
-			test($this->title);
 			throw new IllegalStateException('No DisplayStructure defined.');
 		}
 		

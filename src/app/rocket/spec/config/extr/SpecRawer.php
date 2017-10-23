@@ -208,27 +208,25 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	
-	
-	
 	private function buildDisplayStructureRawData(DisplayStructure $displayStructure = null) {
 		if ($displayStructure === null) return null;
 	
-		$guiOrderData = array();
-		foreach ($displayStructure->getDisplayItems() as $orderItem) {
-			if (!$orderItem->isSection()) {
-				$guiOrderData[] = (string) $orderItem->getGuiIdPath();
-				continue;
+		$displaStructureData = array();
+		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+			$displayItemData = array(
+					RawDef::DISPLAY_ITEM_LABEL_KEY => $displayItem->getLabel(),
+					RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY => $displayItem->getGroupType());
+			if (!$displayItem->hasDisplayStructure()) {
+				$displayItemData[RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY] = (string) $displayItem->getGuiIdPath();
+			} else {
+				$displayItemData[RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY] = 
+						$this->buildDisplayStructureRawData($displayItem->getDisplayStructure());
 			}
 			
-			$guiSection = $orderItem->getGuiSection();
-			$guiOrderData[] = array(
-					RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY => $guiSection->getType(),
-					RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY => $guiSection->getTitle(),
-					RawDef::GUI_FIELD_ORDER_KEY => $this->buildDisplayStructureRawData($guiSection->getDisplayStructure()));
+			$displaStructureData[] = $displayItemData;
 		}
 		
-		return $guiOrderData;
+		return $displaStructureData;
 	}
 	
 	public function rawMenuItems(array $menuItemExtractions) {
