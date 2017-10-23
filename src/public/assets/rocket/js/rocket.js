@@ -308,7 +308,7 @@ var Rocket;
                 this._level = _level;
                 this._container = _container;
                 this._monitor = _monitor;
-                this._contexts = new Array();
+                this._pages = new Array();
                 this.callbackRegistery = new Rocket.util.CallbackRegistry();
                 this._visible = true;
                 this.onNewPageCallbacks = new Array();
@@ -330,28 +330,30 @@ var Rocket;
                 configurable: true
             });
             Layer.prototype.containsUrl = function (url) {
-                for (var i in this._contexts) {
-                    if (this._contexts[i].containsUrl(url))
+                for (var i in this._pages) {
+                    if (this._pages[i].containsUrl(url))
                         return true;
                 }
                 return false;
             };
             Layer.prototype.getPageByUrl = function (urlExpr) {
                 var url = Jhtml.Url.create(urlExpr);
-                for (var i in this._contexts) {
-                    if (this._contexts[i].containsUrl(url)) {
-                        return this._contexts[i];
+                for (var i in this._pages) {
+                    if (this._pages[i].containsUrl(url)) {
+                        return this._pages[i];
                     }
                 }
                 return null;
             };
             Layer.prototype.historyChanged = function () {
-                var currentEntry;
+                var currentEntry = this.monitor.history.currentEntry;
                 if (!currentEntry)
                     return;
                 var page = this.getPageByUrl(currentEntry.page.url);
                 if (!page) {
-                    this.addPage(page = this.createPage(currentEntry.page.url));
+                    page = this.createPage(currentEntry.page.url);
+                    page.clear(true);
+                    this.addPage(page);
                 }
                 this.switchToPage(page);
             };
@@ -360,11 +362,11 @@ var Rocket;
                 if (this.containsUrl(url)) {
                     throw new Error("Page with url already available: " + url);
                 }
-                var jqContent = $("<div />");
-                this.jqLayer.append(jqContent);
-                var context = new Cmd.Page(jqContent, url, this);
-                this.addPage(context);
-                return context;
+                var jqPage = $("<div />");
+                this.jqLayer.append(jqPage);
+                var page = new Cmd.Page(jqPage, url, this);
+                this.addPage(page);
+                return page;
             };
             Object.defineProperty(Layer.prototype, "currentPage", {
                 get: function () {
@@ -372,9 +374,9 @@ var Rocket;
                         return null;
                     }
                     var url = this._monitor.history.currentPage.url;
-                    for (var i in this._contexts) {
-                        if (this._contexts[i].containsUrl(url)) {
-                            return this._contexts[i];
+                    for (var i in this._pages) {
+                        if (this._pages[i].containsUrl(url)) {
+                            return this._pages[i];
                         }
                     }
                     return null;
@@ -428,26 +430,26 @@ var Rocket;
             });
             Object.defineProperty(Layer.prototype, "empty", {
                 get: function () {
-                    return this._contexts.length == 0;
+                    return this._pages.length == 0;
                 },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Layer.prototype, "contexts", {
                 get: function () {
-                    return this._contexts.slice();
+                    return this._pages.slice();
                 },
                 enumerable: true,
                 configurable: true
             });
             Layer.prototype.addPage = function (page) {
-                this._contexts.push(page);
+                this._pages.push(page);
                 var that = this;
                 page.on(Cmd.Page.EventType.CLOSE, function (context) {
-                    for (var i in that._contexts) {
-                        if (that._contexts[i] !== context)
+                    for (var i in that._pages) {
+                        if (that._pages[i] !== context)
                             continue;
-                        that._contexts.splice(parseInt(i), 1);
+                        that._pages.splice(parseInt(i), 1);
                         break;
                     }
                 });
@@ -459,30 +461,32 @@ var Rocket;
                 this.onNewPageCallbacks.push(onNewPageCallback);
             };
             Layer.prototype.clear = function () {
-                for (var i in this._contexts) {
-                    this._contexts[i].close();
+                for (var i in this._pages) {
+                    this._pages[i].close();
                 }
             };
             Layer.prototype.close = function () {
                 this.trigger(Layer.EventType.CLOSE);
                 var context = null;
-                while (context = this._contexts.pop()) {
+                while (context = this._pages.pop()) {
                     context.close();
                 }
-                this._contexts = new Array();
+                this._pages = new Array();
                 this.jqLayer.remove();
             };
-            Layer.prototype.switchToPage = function (context) {
-                for (var i in this._contexts) {
-                    if (this._contexts[i] === context) {
-                        context.show();
+            Layer.prototype.switchToPage = function (page) {
+                for (var i in this._pages) {
+                    if (this._pages[i] === page) {
+                        page.show();
                     }
                     else {
-                        this._contexts[i].hide();
+                        this._pages[i].hide();
                     }
                 }
             };
             Layer.prototype.attachComp = function (comp) {
+                if (!comp.model.response)
+                    return false;
                 var page = this.getPageByUrl(comp.model.response.url);
                 if (page) {
                     page.applyComp(comp);
@@ -492,6 +496,8 @@ var Rocket;
             };
             Layer.prototype.detachComp = function (comp) {
                 return false;
+            };
+            Layer.prototype.pushHistoryEntry = function (url) {
             };
             Layer.create = function (jqLayer, _level, _container, history) {
                 if (Layer.test(jqLayer)) {

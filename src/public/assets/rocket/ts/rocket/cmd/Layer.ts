@@ -2,7 +2,7 @@ namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	
 	export class Layer implements Jhtml.CompHandler {
-		private _contexts: Array<Page> = new Array<Page>();
+		private _pages: Array<Page> = new Array<Page>();
 		private onNewPageCallbacks: Array<PageCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
 		private callbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
@@ -29,8 +29,8 @@ namespace Rocket.Cmd {
 		}
 		
 		containsUrl(url: Jhtml.Url): boolean {
-			for (var i in this._contexts) {
-				if (this._contexts[i].containsUrl(url)) return true;
+			for (var i in this._pages) {
+				if (this._pages[i].containsUrl(url)) return true;
 			}
 			
 			return false;
@@ -39,9 +39,9 @@ namespace Rocket.Cmd {
 		public getPageByUrl(urlExpr: string|Jhtml.Url): Page {
 			var url = Jhtml.Url.create(urlExpr);
 			
-			for (var i in this._contexts) {
-				if (this._contexts[i].containsUrl(url)) {
-					return this._contexts[i];
+			for (var i in this._pages) {
+				if (this._pages[i].containsUrl(url)) {
+					return this._pages[i];
 				}
 			}
 	
@@ -49,13 +49,15 @@ namespace Rocket.Cmd {
 		}
 		
 		private historyChanged() {
-			let currentEntry: Jhtml.History.Entry;
-		
+			let currentEntry: Jhtml.History.Entry = this.monitor.history.currentEntry;
+
 			if (!currentEntry) return;
 			
 			let page: Page = this.getPageByUrl(currentEntry.page.url);
 			if (!page) {
-				this.addPage(page = this.createPage(currentEntry.page.url))
+				page = this.createPage(currentEntry.page.url)
+				page.clear(true);
+				this.addPage(page);
 			}
 			
 			this.switchToPage(page);
@@ -69,13 +71,12 @@ namespace Rocket.Cmd {
 				throw new Error("Page with url already available: " + url);
 			}
 			
-			var jqContent = $("<div />");
-			this.jqLayer.append(jqContent);
-			var context = new Page(jqContent, url, this);
+			var jqPage = $("<div />");
+			this.jqLayer.append(jqPage);
+			var page = new Page(jqPage, url, this);
+			this.addPage(page);
 			
-			this.addPage(context);
-			
-			return context;
+			return page;
 		}
 
 		get currentPage(): Page {
@@ -85,9 +86,9 @@ namespace Rocket.Cmd {
 
 			var url = this._monitor.history.currentPage.url;
 			
-			for (var i in this._contexts) {
-				if (this._contexts[i].containsUrl(url)) {
-					return this._contexts[i];
+			for (var i in this._pages) {
+				if (this._pages[i].containsUrl(url)) {
+					return this._pages[i];
 				} 
 			}
 				
@@ -137,22 +138,22 @@ namespace Rocket.Cmd {
 		}
 		
 		get empty(): boolean {
-			return this._contexts.length == 0;
+			return this._pages.length == 0;
 		}
 		
 		get contexts(): Array<Page> {
-			return this._contexts.slice();
+			return this._pages.slice();
 		}
 				
 		private addPage(page: Page) {
-			this._contexts.push(page);
+			this._pages.push(page);
 			var that = this;
 			
 			page.on(Page.EventType.CLOSE, function (context: Page) {
-				for (var i in that._contexts) {
-					if (that._contexts[i] !== context) continue;
+				for (var i in that._pages) {
+					if (that._pages[i] !== context) continue;
 					
-					that._contexts.splice(parseInt(i), 1);
+					that._pages.splice(parseInt(i), 1);
 					break;
 				}
 			});
@@ -167,8 +168,8 @@ namespace Rocket.Cmd {
 		}
 		
 		public clear() {
-			for (var i in this._contexts) {
-				this._contexts[i].close();
+			for (var i in this._pages) {
+				this._pages[i].close();
 			}
 		}
 		
@@ -176,25 +177,27 @@ namespace Rocket.Cmd {
 			this.trigger(Layer.EventType.CLOSE);
 			
 			let context = null;
-			while (context = this._contexts.pop()) {
+			while (context = this._pages.pop()) {
 				context.close();
 			}
 				
-			this._contexts = new Array<Page>();
+			this._pages = new Array<Page>();
 			this.jqLayer.remove();
 		}
 		
-		private switchToPage(context: Page) {
-			for (var i in this._contexts) {
-				if (this._contexts[i] === context) {
-					context.show();
+		private switchToPage(page: Page) {
+			for (var i in this._pages) {
+				if (this._pages[i] === page) {
+					page.show();
 				} else {
-					this._contexts[i].hide();
+					this._pages[i].hide();
 				}
 			}
 		}
 		
 		attachComp(comp: Jhtml.Comp): boolean {
+			if (!comp.model.response) return false;
+			
 			let page: Page = this.getPageByUrl(comp.model.response.url);
 			if (page) {
 				page.applyComp(comp);
@@ -206,6 +209,11 @@ namespace Rocket.Cmd {
 		
 		detachComp(comp: Jhtml.Comp): boolean {
 			return false;
+		}
+		
+		pushHistoryEntry(url: Jhtml.Url|string) {
+			
+//			this.monitor.history.push(new Jhtml.Page(url, new Promise<Jhtml.Directive>(())));
 		}
 		
 //		public currentHistoryIndex(): number {
