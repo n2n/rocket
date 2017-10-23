@@ -35,7 +35,9 @@
 	$view->assert($editModel instanceof EditModel);
 	
 	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
-	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel); 
+	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
+	
+	$view->useTemplate('~\core\view\template.html', array('title' => 'Edit'));
 ?>
 <?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form rocket-impl-form')) ?>
 	<?php $view->out($editModel->getEntryForm()->createView($view)) ?>

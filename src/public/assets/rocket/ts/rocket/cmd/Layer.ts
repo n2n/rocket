@@ -50,12 +50,11 @@ namespace Rocket.Cmd {
 		
 		private historyChanged() {
 			let page: Page = this.getPageByUrl(this._monitor.history.currentEntry.page.url);
-			if (page) {
-				page.show();
-				return;
+			if (!page) {
+				this.addPage(page = this.createPage(this._monitor.history.currentEntry.page.url))
 			}
 			
-			this.addPage(this.createPage(this._monitor.history.currentEntry.page.url))
+			this.switchToPage(page);
 		}
 		
 
@@ -181,6 +180,16 @@ namespace Rocket.Cmd {
 			this.jqLayer.remove();
 		}
 		
+		private switchToPage(context: Page) {
+			for (var i in this._contexts) {
+				if (this._contexts[i] === context) {
+					context.show();
+				} else {
+					this._contexts[i].hide();
+				}
+			}
+		}
+		
 //		public currentHistoryIndex(): number {
 //			return this._currentHistoryIndex;
 //		}
@@ -234,15 +243,6 @@ namespace Rocket.Cmd {
 //		}
 //		
 //		
-//		private switchToPage(context: Page) {
-//			for (var i in this._contexts) {
-//				if (this._contexts[i] === context) {
-//					context.show();
-//				} else {
-//					this._contexts[i].hide();
-//				}
-//			}
-//		}
 //		
 //		
 //		public onNewHistoryEntry(onNewHistoryEntryCallback: HistoryCallback) {
