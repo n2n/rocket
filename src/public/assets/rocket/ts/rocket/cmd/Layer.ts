@@ -49,9 +49,13 @@ namespace Rocket.Cmd {
 		}
 		
 		private historyChanged() {
-			let page: Page = this.getPageByUrl(this._monitor.history.currentEntry.page.url);
+			let currentEntry: Jhtml.History.Entry;
+		
+			if (!currentEntry) return;
+			
+			let page: Page = this.getPageByUrl(currentEntry.page.url);
 			if (!page) {
-				this.addPage(page = this.createPage(this._monitor.history.currentEntry.page.url))
+				this.addPage(page = this.createPage(currentEntry.page.url))
 			}
 			
 			this.switchToPage(page);
