@@ -105,7 +105,7 @@ namespace Rocket.Impl.Overview {
 	class QuicksearchForm {
 		private jqSearchButton: JQuery;
 		private jqSearchInput: JQuery;
-		private form: Form;
+		private form: Jhtml.Ui.Form;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
@@ -115,17 +115,19 @@ namespace Rocket.Impl.Overview {
 				throw new Error("Quicksearch already initialized.");
 			}
 			
-			this.form = Form.from(jqForm);
+			this.form = Jhtml.Ui.Form.from(<HTMLFormElement> jqForm.get(0));
 			
-			var that = this;
-			this.form.on(Form.EventType.SUBMIT, function () {
-				that.onSubmit();
+			this.form.on("submit", () => {
+				this.onSubmit();
 			});
-			this.form.config.blockPage = false;
+			
 			this.form.config.disableControls = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
-			this.form.config.successResponseHandler = function (data: string) {
-				that.whenSubmitted(data);
+			this.form.config.successResponseHandler = (response: Jhtml.Response) => {
+				if (!response.model) return false;
+				
+				this.whenSubmitted(response.model);
+				return true;
 			}
 			
 			this.initListeners();
@@ -133,10 +135,10 @@ namespace Rocket.Impl.Overview {
 		
 		private initListeners() {
 			this.form.reset();
-			var jqButtons = this.form.jQuery.find("button[type=submit]");
+			var jqButtons = this.jqForm.find("button[type=submit]");
 			this.jqSearchButton = $(jqButtons.get(0));
 			var jqClearButton = $(jqButtons.get(1));
-			this.jqSearchInput = this.form.jQuery.find("input[type=search]:first");
+			this.jqSearchInput = this.jqForm.find("input[type=search]:first");
 			var that = this;
 			
 			this.jqSearchInput.on("paste keyup", function () {
@@ -157,15 +159,15 @@ namespace Rocket.Impl.Overview {
 		private serachVal: string = null;
 		
 		private updateState() {
-			if (this.jqSearchInput.val().length > 0) {
-				this.form.jQuery.addClass("rocket-active");
+			if (this.jqSearchInput.val().toString().length > 0) {
+				this.jqForm.addClass("rocket-active");
 			} else {
-				this.form.jQuery.removeClass("rocket-active");
+				this.jqForm.removeClass("rocket-active");
 			}
 		}
 		
 		private send(force: boolean) {
-			var searchVal = this.jqSearchInput.val();
+			var searchVal = this.jqSearchInput.val().toString();
 			
 			if (this.serachVal == searchVal) return;
 			
@@ -196,7 +198,7 @@ namespace Rocket.Impl.Overview {
 			this.overviewContent.clear(true);
 		}
 		
-		private whenSubmitted(data: any) {
+		private whenSubmitted(model: Jhtml.Model) {
 			this.overviewContent.initFromResponse(data);
 		}
 	}

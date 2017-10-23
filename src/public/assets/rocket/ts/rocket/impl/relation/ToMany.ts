@@ -198,9 +198,9 @@ namespace Rocket.Impl.Relation {
 			});
 			
 			let url = this.jqElem.data("overview-tools-url");
-			this.browserLayer.monitor.exec(url)/*.then(() => {
+			this.browserLayer.monitor.exec(url).then(() => {
 				that.iniBrowserPage(this.browserLayer.getZoneByUrl(url));
-			})*/;
+			});
 			
 			
 //			

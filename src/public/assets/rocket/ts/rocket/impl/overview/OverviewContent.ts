@@ -481,11 +481,14 @@ namespace Rocket.Impl.Overview {
 			});
 		}
 		
-		private initPageFromResponse(page: Page, jsonData: any) {
-			this.changeBoundaries(jsonData.additional.numPages, jsonData.additional.numEntries);
-			var jqContents = $(n2n.ajah.analyze(jsonData)).find(".rocket-overview-content:first").children();
+		private initPageFromResponse(page: Page, model: Jhtml.Model) {
+			this.changeBoundaries(model.additional.numPages, model.additional.numEntries);
+			let snippet: Jhtml.Snippet = model.snippet;
+			var jqContents = $(snippet.element).find(".rocket-overview-content:first").children().toArray();
+			
+			snippet.element = jqContents.toArray();
 			this.applyContents(page, jqContents);
-			n2n.ajah.update();
+			snippet.markAsAttached();
 		}
 	}	
 	

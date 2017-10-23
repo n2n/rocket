@@ -358,7 +358,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		get selectedIdRep(): string {
-			let idRep: string = this.jqInput.val();
+			let idRep: string = this.jqInput.val().toString();
 			if (idRep.length == 0) return null;
 			
 			return idRep;
@@ -429,12 +429,9 @@ namespace Rocket.Impl.Relation {
 				that.browserSelectorObserver = null;				
 			});
 			
-			Rocket.exec(this.jqElem.data("overview-tools-url"), {
-				showLoadingPage: true,
-				currentLayer: this.browserLayer,
-				done: function (result: cmd.ExecResult) {
-					that.iniBrowserPage(result.context);
-				}
+			let url = this.jqElem.data("overview-tools-url");
+			this.browserLayer.monitor.exec(url).then(() => {
+				that.iniBrowserPage(this.browserLayer.getZoneByUrl(url));
 			});
 		}
 		
