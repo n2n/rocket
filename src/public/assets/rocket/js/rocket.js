@@ -355,12 +355,14 @@ var Rocket;
                 return null;
             };
             Layer.prototype.historyChanged = function () {
-                var page = this.getPageByUrl(this._monitor.history.currentEntry.page.url);
-                if (page) {
-                    page.show();
+                var currentEntry;
+                if (!currentEntry)
                     return;
+                var page = this.getPageByUrl(currentEntry.page.url);
+                if (!page) {
+                    this.addPage(page = this.createPage(currentEntry.page.url));
                 }
-                this.addPage(this.createPage(this._monitor.history.currentEntry.page.url));
+                this.switchToPage(page);
             };
             Layer.prototype.createPage = function (urlExpr) {
                 var url = Jhtml.Url.create(urlExpr);
@@ -479,6 +481,16 @@ var Rocket;
                 this._contexts = new Array();
                 this.jqLayer.remove();
             };
+            Layer.prototype.switchToPage = function (context) {
+                for (var i in this._contexts) {
+                    if (this._contexts[i] === context) {
+                        context.show();
+                    }
+                    else {
+                        this._contexts[i].hide();
+                    }
+                }
+            };
             Layer.create = function (jqLayer, _level, _container, history) {
                 if (Layer.test(jqLayer)) {
                     throw new Error("Layer already bound to this element.");
@@ -514,6 +526,726 @@ var Rocket;
                 EventType[EventType["CLOSE"] = 2] = "CLOSE";
             })(EventType = Layer.EventType || (Layer.EventType = {}));
         })(Layer = Cmd.Layer || (Cmd.Layer = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var util;
+    (function (util) {
+        var CallbackRegistry = (function () {
+            function CallbackRegistry() {
+                this.callbackMap = {};
+            }
+            CallbackRegistry.prototype.register = function (nature, callback) {
+                if (this.callbackMap[nature] === undefined) {
+                    this.callbackMap[nature] = new Array();
+                }
+                this.callbackMap[nature].push(callback);
+            };
+            CallbackRegistry.prototype.unregister = function (nature, callback) {
+                if (this.callbackMap[nature] === undefined) {
+                    return;
+                }
+                for (var i in this.callbackMap[nature]) {
+                    if (this.callbackMap[nature][i] === callback) {
+                        this.callbackMap[nature].splice(parseInt(i), 1);
+                        return;
+                    }
+                }
+            };
+            CallbackRegistry.prototype.filter = function (nature) {
+                if (this.callbackMap[nature] === undefined) {
+                    return new Array();
+                }
+                return this.callbackMap[nature];
+            };
+            return CallbackRegistry;
+        }());
+        util.CallbackRegistry = CallbackRegistry;
+        var ArgUtils = (function () {
+            function ArgUtils() {
+            }
+            ArgUtils.valIsset = function (arg) {
+                if (arg !== null && arg !== undefined)
+                    return;
+                throw new InvalidArgumentError("Invalid arg: " + arg);
+            };
+            return ArgUtils;
+        }());
+        util.ArgUtils = ArgUtils;
+        var ElementUtils = (function () {
+            function ElementUtils() {
+            }
+            ElementUtils.isControl = function (elem) {
+                switch (elem.tagName) {
+                    case 'A':
+                    case 'BUTTON':
+                    case 'INPUT':
+                    case 'TEXTAREA':
+                    case 'SELECT':
+                        return true;
+                    default:
+                        return false;
+                }
+            };
+            return ElementUtils;
+        }());
+        util.ElementUtils = ElementUtils;
+        var InvalidArgumentError = (function (_super) {
+            __extends(InvalidArgumentError, _super);
+            function InvalidArgumentError() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            return InvalidArgumentError;
+        }(Error));
+        util.InvalidArgumentError = InvalidArgumentError;
+        var IllegalStateError = (function (_super) {
+            __extends(IllegalStateError, _super);
+            function IllegalStateError() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            IllegalStateError.assertTrue = function (arg, errMsg) {
+                if (errMsg === void 0) { errMsg = null; }
+                if (arg === true)
+                    return;
+                if (errMsg === null) {
+                    errMsg = "Illegal state";
+                }
+                throw new Error(errMsg);
+            };
+            return IllegalStateError;
+        }(Error));
+        util.IllegalStateError = IllegalStateError;
+    })(util = Rocket.util || (Rocket.util = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        var StructureElement = (function () {
+            function StructureElement(jqElem) {
+                this.onShowCallbacks = [];
+                this.onHideCallbacks = [];
+                this.toolbar = null;
+                this.highlightedParent = null;
+                this.jqElem = jqElem;
+                jqElem.addClass("rocket-structure-element");
+                jqElem.data("rocketStructureElement", this);
+                this.valClasses();
+            }
+            StructureElement.prototype.valClasses = function () {
+                if (this.isField() || this.isGroup()) {
+                    this.jqElem.removeClass("rocket-structure-element");
+                }
+                else {
+                    this.jqElem.addClass("rocket-structure-element");
+                }
+            };
+            Object.defineProperty(StructureElement.prototype, "jQuery", {
+                get: function () {
+                    return this.jqElem;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            StructureElement.prototype.setGroup = function (group) {
+                if (!group) {
+                    this.jqElem.removeClass("rocket-group");
+                }
+                else {
+                    this.jqElem.addClass("rocket-group");
+                }
+                this.valClasses();
+            };
+            StructureElement.prototype.isGroup = function () {
+                return this.jqElem.hasClass("rocket-group");
+            };
+            StructureElement.prototype.setField = function (field) {
+                if (!field) {
+                    this.jqElem.removeClass("rocket-field");
+                }
+                else {
+                    this.jqElem.addClass("rocket-field");
+                }
+                this.valClasses();
+            };
+            StructureElement.prototype.isField = function () {
+                return this.jqElem.hasClass("rocket-field");
+            };
+            StructureElement.prototype.getToolbar = function () {
+                if (this.toolbar !== null) {
+                    return this.toolbar;
+                }
+                if (!this.isGroup()) {
+                    return null;
+                }
+                var jqToolbar = this.jqElem.children(".rocket-group-toolbar:first");
+                if (jqToolbar.length == 0) {
+                    jqToolbar = $("<div />", { "class": "rocket-group-toolbar" });
+                    this.jqElem.prepend(jqToolbar);
+                }
+                return this.toolbar = new Toolbar(jqToolbar);
+            };
+            StructureElement.prototype.getTitle = function () {
+                return this.jqElem.children("label:first").text();
+            };
+            StructureElement.prototype.getParent = function () {
+                return StructureElement.findFrom(this.jqElem);
+            };
+            StructureElement.prototype.isVisible = function () {
+                return this.jqElem.is(":visible");
+            };
+            StructureElement.prototype.show = function (includeParents) {
+                if (includeParents === void 0) { includeParents = false; }
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+                this.jqElem.show();
+                var parent;
+                if (includeParents && null !== (parent = this.getParent())) {
+                    parent.show(true);
+                }
+            };
+            StructureElement.prototype.hide = function () {
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+                this.jqElem.hide();
+            };
+            StructureElement.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            StructureElement.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            StructureElement.prototype.scrollTo = function () {
+                var top = this.jqElem.offset().top;
+                var maxOffset = top - 50;
+                var height = this.jqElem.outerHeight();
+                var margin = $(window).height() - height;
+                var offset = top - (margin / 2);
+                if (maxOffset < offset) {
+                    offset = maxOffset;
+                }
+                $("html, body").animate({
+                    "scrollTop": offset
+                }, 250);
+            };
+            StructureElement.prototype.highlight = function (findVisibleParent) {
+                if (findVisibleParent === void 0) { findVisibleParent = false; }
+                this.jqElem.addClass("rocket-highlighted");
+                if (!findVisibleParent || this.isVisible())
+                    return;
+                this.highlightedParent = this;
+                while (null !== (this.highlightedParent = this.highlightedParent.getParent())) {
+                    if (!this.highlightedParent.isVisible())
+                        continue;
+                    this.highlightedParent.highlight();
+                    return;
+                }
+            };
+            StructureElement.prototype.unhighlight = function (slow) {
+                if (slow === void 0) { slow = false; }
+                this.jqElem.removeClass("rocket-highlighted");
+                if (slow) {
+                    this.jqElem.addClass("rocket-highlight-remember");
+                }
+                else {
+                    this.jqElem.removeClass("rocket-highlight-remember");
+                }
+                if (this.highlightedParent !== null) {
+                    this.highlightedParent.unhighlight();
+                    this.highlightedParent = null;
+                }
+            };
+            StructureElement.from = function (jqElem, create) {
+                if (create === void 0) { create = false; }
+                var structureElement = jqElem.data("rocketStructureElement");
+                if (structureElement instanceof StructureElement)
+                    return structureElement;
+                if (!create)
+                    return null;
+                structureElement = new StructureElement(jqElem);
+                jqElem.data("rocketStructureElement", structureElement);
+                return structureElement;
+            };
+            StructureElement.findFrom = function (jqElem) {
+                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+                if (jqElem.length == 0)
+                    return null;
+                var structureElement = jqElem.data("rocketStructureElement");
+                if (structureElement instanceof StructureElement) {
+                    return structureElement;
+                }
+                structureElement = StructureElement.from(jqElem, true);
+                jqElem.data("rocketStructureElement", structureElement);
+                return structureElement;
+            };
+            return StructureElement;
+        }());
+        Display.StructureElement = StructureElement;
+        var Toolbar = (function () {
+            function Toolbar(jqToolbar) {
+                this.jqToolbar = jqToolbar;
+                this.jqControls = jqToolbar.children(".rocket-group-controls");
+                if (this.jqControls.length == 0) {
+                    this.jqControls = $("<div />", { "class": "rocket-group-controls" });
+                    this.jqToolbar.append(this.jqControls);
+                    this.jqControls.hide();
+                }
+                else if (this.jqControls.is(':empty')) {
+                    this.jqControls.hide();
+                }
+                var jqCommands = jqToolbar.children(".rocket-simple-commands");
+                if (jqCommands.length == 0) {
+                    jqCommands = $("<div />", { "class": "rocket-simple-commands" });
+                    jqToolbar.append(jqCommands);
+                }
+                this.commandList = new CommandList(jqCommands, true);
+            }
+            Object.defineProperty(Toolbar.prototype, "jQuery", {
+                get: function () {
+                    return this.jqToolbar;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Toolbar.prototype.getJqControls = function () {
+                return this.jqControls;
+            };
+            Toolbar.prototype.getCommandList = function () {
+                return this.commandList;
+            };
+            return Toolbar;
+        }());
+        Display.Toolbar = Toolbar;
+        var CommandList = (function () {
+            function CommandList(jqCommandList, simple) {
+                if (simple === void 0) { simple = false; }
+                this.jqCommandList = jqCommandList;
+                if (simple) {
+                    jqCommandList.addClass("rocket-simple-commands");
+                }
+            }
+            Object.defineProperty(CommandList.prototype, "jQuery", {
+                get: function () {
+                    return this.jqCommandList;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            CommandList.prototype.createJqCommandButton = function (buttonConfig, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                this.jqCommandList.show();
+                if (buttonConfig.iconType === undefined) {
+                    buttonConfig.iconType = "fa fa-circle-o";
+                }
+                if (buttonConfig.severity === undefined) {
+                    buttonConfig.severity = Display.Severity.SECONDARY;
+                }
+                var jqButton = $("<button />", {
+                    "class": "btn btn-" + buttonConfig.severity,
+                    "title": buttonConfig.tooltip,
+                    "type": "button"
+                }).append($("<i />", {
+                    "class": buttonConfig.iconType
+                })).append($("<span />", {
+                    "text": buttonConfig.label
+                }));
+                if (prepend) {
+                    this.jqCommandList.prepend(jqButton);
+                }
+                else {
+                    this.jqCommandList.append(jqButton);
+                }
+                return jqButton;
+            };
+            CommandList.create = function (simple) {
+                if (simple === void 0) { simple = false; }
+                return new CommandList($("<div />"), simple);
+            };
+            return CommandList;
+        }());
+        Display.CommandList = CommandList;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        var display = Rocket.Display;
+        var util = Rocket.util;
+        var Page = (function () {
+            function Page(jqPage, url, layer) {
+                this.urls = [];
+                this.callbackRegistery = new util.CallbackRegistry();
+                this._blocked = false;
+                this.locks = new Array();
+                this.jqPage = jqPage;
+                this.urls.push(this._activeUrl = url);
+                this._layer = layer;
+                jqPage.addClass("rocket-context");
+                jqPage.data("rocketPage", this);
+                this.reset();
+                this.hide();
+            }
+            Object.defineProperty(Page.prototype, "layer", {
+                get: function () {
+                    return this._layer;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Page.prototype, "jQuery", {
+                get: function () {
+                    return this.jqPage;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Page.prototype.containsUrl = function (url) {
+                for (var i in this.urls) {
+                    if (this.urls[i].equals(url))
+                        return true;
+                }
+                return false;
+            };
+            Object.defineProperty(Page.prototype, "activeUrl", {
+                get: function () {
+                    return this._activeUrl;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Page.prototype.fireEvent = function (eventType) {
+                var that = this;
+                this.callbackRegistery.filter(eventType.toString()).forEach(function (callback) {
+                    callback(that);
+                });
+            };
+            Page.prototype.ensureNotClosed = function () {
+                if (this.jqPage !== null)
+                    return;
+                throw new Error("Page already closed.");
+            };
+            Page.prototype.close = function () {
+                this.trigger(Page.EventType.CLOSE);
+                this.jqPage.remove();
+                this.jqPage = null;
+            };
+            Page.prototype.show = function () {
+                this.trigger(Page.EventType.SHOW);
+                this.jqPage.show();
+            };
+            Page.prototype.hide = function () {
+                this.trigger(Page.EventType.HIDE);
+                this.jqPage.hide();
+            };
+            Page.prototype.reset = function () {
+                this.additionalTabManager = new AdditionalTabManager(this);
+                this._menu = new Menu(this);
+            };
+            Page.prototype.clear = function (showLoader) {
+                if (showLoader === void 0) { showLoader = false; }
+                this.jqPage.empty();
+                if (showLoader) {
+                    this.jqPage.addClass("rocket-loading");
+                }
+                this.trigger(Page.EventType.CONTENT_CHANGED);
+            };
+            Page.prototype.applyHtml = function (html) {
+                this.endLoading();
+                this.jqPage.html(html);
+                this.reset();
+                this.trigger(Page.EventType.CONTENT_CHANGED);
+            };
+            Page.prototype.isLoading = function () {
+                return this.jqPage.hasClass("rocket-loading");
+            };
+            Page.prototype.endLoading = function () {
+                this.jqPage.removeClass("rocket-loading");
+            };
+            Page.prototype.applyContent = function (jqContent) {
+                this.endLoading();
+                this.jqPage.append(jqContent);
+                this.reset();
+                this.trigger(Page.EventType.CONTENT_CHANGED);
+            };
+            Page.prototype.trigger = function (eventType) {
+                var context = this;
+                this.callbackRegistery.filter(eventType.toString())
+                    .forEach(function (callback) {
+                    callback(context);
+                });
+            };
+            Page.prototype.on = function (eventType, callback) {
+                this.callbackRegistery.register(eventType.toString(), callback);
+            };
+            Page.prototype.off = function (eventType, callback) {
+                this.callbackRegistery.unregister(eventType.toString(), callback);
+            };
+            Page.prototype.createAdditionalTab = function (title, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                return this.additionalTabManager.createTab(title, prepend);
+            };
+            Object.defineProperty(Page.prototype, "menu", {
+                get: function () {
+                    return this._menu;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Page.prototype, "locked", {
+                get: function () {
+                    return this.locks.length > 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Page.prototype.releaseLock = function (lock) {
+                var i = this.locks.indexOf(lock);
+                if (i == -1)
+                    return;
+                this.locks.splice(i, 1);
+                this.trigger(Page.EventType.BLOCKED_CHANGED);
+            };
+            Page.prototype.createLock = function () {
+                var that = this;
+                var lock = new Lock(function (lock) {
+                    that.releaseLock(lock);
+                });
+                this.locks.push(lock);
+                this.trigger(Page.EventType.BLOCKED_CHANGED);
+                return lock;
+            };
+            Page.of = function (jqElem) {
+                if (!jqElem.hasClass(".rocket-context")) {
+                    jqElem = jqElem.parents(".rocket-context");
+                }
+                var context = jqElem.data("rocketPage");
+                if (context instanceof Page)
+                    return context;
+                return null;
+            };
+            return Page;
+        }());
+        Cmd.Page = Page;
+        var Lock = (function () {
+            function Lock(releaseCallback) {
+                this.releaseCallback = releaseCallback;
+            }
+            Lock.prototype.release = function () {
+                this.releaseCallback(this);
+            };
+            return Lock;
+        }());
+        Cmd.Lock = Lock;
+        var AdditionalTabManager = (function () {
+            function AdditionalTabManager(context) {
+                this.jqAdditional = null;
+                this.context = context;
+                this.tabs = new Array();
+            }
+            AdditionalTabManager.prototype.createTab = function (title, prepend) {
+                if (prepend === void 0) { prepend = false; }
+                this.setupAdditional();
+                var jqNavItem = $("<li />", {
+                    "text": title
+                });
+                var jqContent = $("<div />", {
+                    "class": "rocket-additional-content"
+                });
+                if (prepend) {
+                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
+                }
+                else {
+                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
+                }
+                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
+                var tab = new AdditionalTab(jqNavItem, jqContent);
+                this.tabs.push(tab);
+                var that = this;
+                tab.onShow(function () {
+                    for (var i in that.tabs) {
+                        if (that.tabs[i] === tab)
+                            continue;
+                        this.tabs[i].hide();
+                    }
+                });
+                tab.onDispose(function () {
+                    that.removeTab(tab);
+                });
+                if (this.tabs.length == 1) {
+                    tab.show();
+                }
+                return tab;
+            };
+            AdditionalTabManager.prototype.removeTab = function (tab) {
+                for (var i in this.tabs) {
+                    if (this.tabs[i] !== tab)
+                        continue;
+                    this.tabs.splice(parseInt(i), 1);
+                    if (this.tabs.length == 0) {
+                        this.setdownAdditional();
+                        return;
+                    }
+                    if (tab.isActive()) {
+                        this.tabs[0].show();
+                    }
+                    return;
+                }
+            };
+            AdditionalTabManager.prototype.setupAdditional = function () {
+                if (this.jqAdditional !== null)
+                    return;
+                var jqPage = this.context.jQuery;
+                jqPage.addClass("rocket-contains-additional");
+                this.jqAdditional = $("<div />", {
+                    "class": "rocket-additional"
+                });
+                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
+                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
+                jqPage.append(this.jqAdditional);
+            };
+            AdditionalTabManager.prototype.setdownAdditional = function () {
+                if (this.jqAdditional === null)
+                    return;
+                this.context.jQuery.removeClass("rocket-contains-additional");
+                this.jqAdditional.remove();
+                this.jqAdditional = null;
+            };
+            return AdditionalTabManager;
+        }());
+        var AdditionalTab = (function () {
+            function AdditionalTab(jqNavItem, jqContent) {
+                this.active = false;
+                this.onShowCallbacks = [];
+                this.onHideCallbacks = [];
+                this.onDisposeCallbacks = [];
+                this.jqNavItem = jqNavItem;
+                this.jqContent = jqContent;
+                this.jqNavItem.click(this.show);
+                this.jqContent.hide();
+            }
+            AdditionalTab.prototype.getJqNavItem = function () {
+                return this.jqNavItem;
+            };
+            AdditionalTab.prototype.getJqContent = function () {
+                return this.jqContent;
+            };
+            AdditionalTab.prototype.isActive = function () {
+                return this.active;
+            };
+            AdditionalTab.prototype.show = function () {
+                this.active = true;
+                this.jqNavItem.addClass("rocket-active");
+                this.jqContent.show();
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.hide = function () {
+                this.active = false;
+                this.jqContent.hide();
+                this.jqNavItem.removeClass("rocket-active");
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.dispose = function () {
+                this.jqNavItem.remove();
+                this.jqContent.remove();
+                for (var i in this.onDisposeCallbacks) {
+                    this.onDisposeCallbacks[i](this);
+                }
+            };
+            AdditionalTab.prototype.onShow = function (callback) {
+                this.onShowCallbacks.push(callback);
+            };
+            AdditionalTab.prototype.onHide = function (callback) {
+                this.onHideCallbacks.push(callback);
+            };
+            AdditionalTab.prototype.onDispose = function (callback) {
+                this.onDisposeCallbacks.push(callback);
+            };
+            return AdditionalTab;
+        }());
+        Cmd.AdditionalTab = AdditionalTab;
+        var Menu = (function () {
+            function Menu(context) {
+                this._toolbar = null;
+                this._commandList = null;
+                this._partialCommandList = null;
+                this.context = context;
+            }
+            Object.defineProperty(Menu.prototype, "toolbar", {
+                get: function () {
+                    if (this._toolbar) {
+                        return this._toolbar;
+                    }
+                    var jqToolbar = this.context.jQuery.find(".rocket-context-toolbar:first");
+                    if (jqToolbar.length == 0) {
+                        jqToolbar = $("<div />", { "class": "rocket-context-toolbar" }).prependTo(this.context.jQuery);
+                    }
+                    return this._toolbar = new display.Toolbar(jqToolbar);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Menu.prototype.getJqPageCommands = function () {
+                var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
+                if (jqCommandList.length == 0) {
+                    jqCommandList = $("<div />", {
+                        "class": "rocket-context-commands"
+                    });
+                    this.context.jQuery.append(jqCommandList);
+                }
+                return jqCommandList;
+            };
+            Object.defineProperty(Menu.prototype, "partialCommandList", {
+                get: function () {
+                    if (this._partialCommandList !== null) {
+                        return this._partialCommandList;
+                    }
+                    var jqPageCommands = this.getJqPageCommands();
+                    var jqPartialCommands = jqPageCommands.children(".rocket-partial-commands:first");
+                    if (jqPartialCommands.length == 0) {
+                        jqPartialCommands = $("<div />", { "class": "rocket-partial-commands" }).prependTo(jqPageCommands);
+                    }
+                    return this._partialCommandList = new display.CommandList(jqPartialCommands);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Menu.prototype, "commandList", {
+                get: function () {
+                    if (this._commandList !== null) {
+                        return this._commandList;
+                    }
+                    var jqPageCommands = this.getJqPageCommands();
+                    var jqCommands = jqPageCommands.children(":not(.rocket-partial-commands):first");
+                    if (jqCommands.length == 0) {
+                        jqCommands = $("<div />").appendTo(jqPageCommands);
+                    }
+                    return this._commandList = new display.CommandList(jqCommands);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Menu;
+        }());
+        Cmd.Menu = Menu;
+        (function (Page) {
+            var EventType;
+            (function (EventType) {
+                EventType[EventType["SHOW"] = 0] = "SHOW";
+                EventType[EventType["HIDE"] = 1] = "HIDE";
+                EventType[EventType["CLOSE"] = 2] = "CLOSE";
+                EventType[EventType["CONTENT_CHANGED"] = 3] = "CONTENT_CHANGED";
+                EventType[EventType["ACTIVE_URL_CHANGED"] = 4] = "ACTIVE_URL_CHANGED";
+                EventType[EventType["BLOCKED_CHANGED"] = 5] = "BLOCKED_CHANGED";
+            })(EventType = Page.EventType || (Page.EventType = {}));
+        })(Page = Cmd.Page || (Cmd.Page = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -857,257 +1589,6 @@ var Rocket;
             return EntrySelector;
         }());
         Display.EntrySelector = EntrySelector;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        var StructureElement = (function () {
-            function StructureElement(jqElem) {
-                this.onShowCallbacks = [];
-                this.onHideCallbacks = [];
-                this.toolbar = null;
-                this.highlightedParent = null;
-                this.jqElem = jqElem;
-                jqElem.addClass("rocket-structure-element");
-                jqElem.data("rocketStructureElement", this);
-                this.valClasses();
-            }
-            StructureElement.prototype.valClasses = function () {
-                if (this.isField() || this.isGroup()) {
-                    this.jqElem.removeClass("rocket-structure-element");
-                }
-                else {
-                    this.jqElem.addClass("rocket-structure-element");
-                }
-            };
-            Object.defineProperty(StructureElement.prototype, "jQuery", {
-                get: function () {
-                    return this.jqElem;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            StructureElement.prototype.setGroup = function (group) {
-                if (!group) {
-                    this.jqElem.removeClass("rocket-group");
-                }
-                else {
-                    this.jqElem.addClass("rocket-group");
-                }
-                this.valClasses();
-            };
-            StructureElement.prototype.isGroup = function () {
-                return this.jqElem.hasClass("rocket-group");
-            };
-            StructureElement.prototype.setField = function (field) {
-                if (!field) {
-                    this.jqElem.removeClass("rocket-field");
-                }
-                else {
-                    this.jqElem.addClass("rocket-field");
-                }
-                this.valClasses();
-            };
-            StructureElement.prototype.isField = function () {
-                return this.jqElem.hasClass("rocket-field");
-            };
-            StructureElement.prototype.getToolbar = function () {
-                if (this.toolbar !== null) {
-                    return this.toolbar;
-                }
-                if (!this.isGroup()) {
-                    return null;
-                }
-                var jqToolbar = this.jqElem.children(".rocket-group-toolbar:first");
-                if (jqToolbar.length == 0) {
-                    jqToolbar = $("<div />", { "class": "rocket-group-toolbar" });
-                    this.jqElem.prepend(jqToolbar);
-                }
-                return this.toolbar = new Toolbar(jqToolbar);
-            };
-            StructureElement.prototype.getTitle = function () {
-                return this.jqElem.children("label:first").text();
-            };
-            StructureElement.prototype.getParent = function () {
-                return StructureElement.findFrom(this.jqElem);
-            };
-            StructureElement.prototype.isVisible = function () {
-                return this.jqElem.is(":visible");
-            };
-            StructureElement.prototype.show = function (includeParents) {
-                if (includeParents === void 0) { includeParents = false; }
-                for (var i in this.onShowCallbacks) {
-                    this.onShowCallbacks[i](this);
-                }
-                this.jqElem.show();
-                var parent;
-                if (includeParents && null !== (parent = this.getParent())) {
-                    parent.show(true);
-                }
-            };
-            StructureElement.prototype.hide = function () {
-                for (var i in this.onHideCallbacks) {
-                    this.onHideCallbacks[i](this);
-                }
-                this.jqElem.hide();
-            };
-            StructureElement.prototype.onShow = function (callback) {
-                this.onShowCallbacks.push(callback);
-            };
-            StructureElement.prototype.onHide = function (callback) {
-                this.onHideCallbacks.push(callback);
-            };
-            StructureElement.prototype.scrollTo = function () {
-                var top = this.jqElem.offset().top;
-                var maxOffset = top - 50;
-                var height = this.jqElem.outerHeight();
-                var margin = $(window).height() - height;
-                var offset = top - (margin / 2);
-                if (maxOffset < offset) {
-                    offset = maxOffset;
-                }
-                $("html, body").animate({
-                    "scrollTop": offset
-                }, 250);
-            };
-            StructureElement.prototype.highlight = function (findVisibleParent) {
-                if (findVisibleParent === void 0) { findVisibleParent = false; }
-                this.jqElem.addClass("rocket-highlighted");
-                if (!findVisibleParent || this.isVisible())
-                    return;
-                this.highlightedParent = this;
-                while (null !== (this.highlightedParent = this.highlightedParent.getParent())) {
-                    if (!this.highlightedParent.isVisible())
-                        continue;
-                    this.highlightedParent.highlight();
-                    return;
-                }
-            };
-            StructureElement.prototype.unhighlight = function (slow) {
-                if (slow === void 0) { slow = false; }
-                this.jqElem.removeClass("rocket-highlighted");
-                if (slow) {
-                    this.jqElem.addClass("rocket-highlight-remember");
-                }
-                else {
-                    this.jqElem.removeClass("rocket-highlight-remember");
-                }
-                if (this.highlightedParent !== null) {
-                    this.highlightedParent.unhighlight();
-                    this.highlightedParent = null;
-                }
-            };
-            StructureElement.from = function (jqElem, create) {
-                if (create === void 0) { create = false; }
-                var structureElement = jqElem.data("rocketStructureElement");
-                if (structureElement instanceof StructureElement)
-                    return structureElement;
-                if (!create)
-                    return null;
-                structureElement = new StructureElement(jqElem);
-                jqElem.data("rocketStructureElement", structureElement);
-                return structureElement;
-            };
-            StructureElement.findFrom = function (jqElem) {
-                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
-                if (jqElem.length == 0)
-                    return null;
-                var structureElement = jqElem.data("rocketStructureElement");
-                if (structureElement instanceof StructureElement) {
-                    return structureElement;
-                }
-                structureElement = StructureElement.from(jqElem, true);
-                jqElem.data("rocketStructureElement", structureElement);
-                return structureElement;
-            };
-            return StructureElement;
-        }());
-        Display.StructureElement = StructureElement;
-        var Toolbar = (function () {
-            function Toolbar(jqToolbar) {
-                this.jqToolbar = jqToolbar;
-                this.jqControls = jqToolbar.children(".rocket-group-controls");
-                if (this.jqControls.length == 0) {
-                    this.jqControls = $("<div />", { "class": "rocket-group-controls" });
-                    this.jqToolbar.append(this.jqControls);
-                    this.jqControls.hide();
-                }
-                else if (this.jqControls.is(':empty')) {
-                    this.jqControls.hide();
-                }
-                var jqCommands = jqToolbar.children(".rocket-simple-commands");
-                if (jqCommands.length == 0) {
-                    jqCommands = $("<div />", { "class": "rocket-simple-commands" });
-                    jqToolbar.append(jqCommands);
-                }
-                this.commandList = new CommandList(jqCommands, true);
-            }
-            Object.defineProperty(Toolbar.prototype, "jQuery", {
-                get: function () {
-                    return this.jqToolbar;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Toolbar.prototype.getJqControls = function () {
-                return this.jqControls;
-            };
-            Toolbar.prototype.getCommandList = function () {
-                return this.commandList;
-            };
-            return Toolbar;
-        }());
-        Display.Toolbar = Toolbar;
-        var CommandList = (function () {
-            function CommandList(jqCommandList, simple) {
-                if (simple === void 0) { simple = false; }
-                this.jqCommandList = jqCommandList;
-                if (simple) {
-                    jqCommandList.addClass("rocket-simple-commands");
-                }
-            }
-            Object.defineProperty(CommandList.prototype, "jQuery", {
-                get: function () {
-                    return this.jqCommandList;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            CommandList.prototype.createJqCommandButton = function (buttonConfig, prepend) {
-                if (prepend === void 0) { prepend = false; }
-                this.jqCommandList.show();
-                if (buttonConfig.iconType === undefined) {
-                    buttonConfig.iconType = "fa fa-circle-o";
-                }
-                if (buttonConfig.severity === undefined) {
-                    buttonConfig.severity = Display.Severity.SECONDARY;
-                }
-                var jqButton = $("<button />", {
-                    "class": "btn btn-" + buttonConfig.severity,
-                    "title": buttonConfig.tooltip,
-                    "type": "button"
-                }).append($("<i />", {
-                    "class": buttonConfig.iconType
-                })).append($("<span />", {
-                    "text": buttonConfig.label
-                }));
-                if (prepend) {
-                    this.jqCommandList.prepend(jqButton);
-                }
-                else {
-                    this.jqCommandList.append(jqButton);
-                }
-                return jqButton;
-            };
-            CommandList.create = function (simple) {
-                if (simple === void 0) { simple = false; }
-                return new CommandList($("<div />"), simple);
-            };
-            return CommandList;
-        }());
-        Display.CommandList = CommandList;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -4841,474 +5322,5 @@ var Rocket;
             }());
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var util;
-    (function (util) {
-        var CallbackRegistry = (function () {
-            function CallbackRegistry() {
-                this.callbackMap = {};
-            }
-            CallbackRegistry.prototype.register = function (nature, callback) {
-                if (this.callbackMap[nature] === undefined) {
-                    this.callbackMap[nature] = new Array();
-                }
-                this.callbackMap[nature].push(callback);
-            };
-            CallbackRegistry.prototype.unregister = function (nature, callback) {
-                if (this.callbackMap[nature] === undefined) {
-                    return;
-                }
-                for (var i in this.callbackMap[nature]) {
-                    if (this.callbackMap[nature][i] === callback) {
-                        this.callbackMap[nature].splice(parseInt(i), 1);
-                        return;
-                    }
-                }
-            };
-            CallbackRegistry.prototype.filter = function (nature) {
-                if (this.callbackMap[nature] === undefined) {
-                    return new Array();
-                }
-                return this.callbackMap[nature];
-            };
-            return CallbackRegistry;
-        }());
-        util.CallbackRegistry = CallbackRegistry;
-        var ArgUtils = (function () {
-            function ArgUtils() {
-            }
-            ArgUtils.valIsset = function (arg) {
-                if (arg !== null && arg !== undefined)
-                    return;
-                throw new InvalidArgumentError("Invalid arg: " + arg);
-            };
-            return ArgUtils;
-        }());
-        util.ArgUtils = ArgUtils;
-        var ElementUtils = (function () {
-            function ElementUtils() {
-            }
-            ElementUtils.isControl = function (elem) {
-                switch (elem.tagName) {
-                    case 'A':
-                    case 'BUTTON':
-                    case 'INPUT':
-                    case 'TEXTAREA':
-                    case 'SELECT':
-                        return true;
-                    default:
-                        return false;
-                }
-            };
-            return ElementUtils;
-        }());
-        util.ElementUtils = ElementUtils;
-        var InvalidArgumentError = (function (_super) {
-            __extends(InvalidArgumentError, _super);
-            function InvalidArgumentError() {
-                return _super !== null && _super.apply(this, arguments) || this;
-            }
-            return InvalidArgumentError;
-        }(Error));
-        util.InvalidArgumentError = InvalidArgumentError;
-        var IllegalStateError = (function (_super) {
-            __extends(IllegalStateError, _super);
-            function IllegalStateError() {
-                return _super !== null && _super.apply(this, arguments) || this;
-            }
-            IllegalStateError.assertTrue = function (arg, errMsg) {
-                if (errMsg === void 0) { errMsg = null; }
-                if (arg === true)
-                    return;
-                if (errMsg === null) {
-                    errMsg = "Illegal state";
-                }
-                throw new Error(errMsg);
-            };
-            return IllegalStateError;
-        }(Error));
-        util.IllegalStateError = IllegalStateError;
-    })(util = Rocket.util || (Rocket.util = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Cmd;
-    (function (Cmd) {
-        var display = Rocket.Display;
-        var util = Rocket.util;
-        var Page = (function () {
-            function Page(jqPage, url, layer) {
-                this.urls = [];
-                this.callbackRegistery = new util.CallbackRegistry();
-                this._blocked = false;
-                this.locks = new Array();
-                this.jqPage = jqPage;
-                this.urls.push(this._activeUrl = url);
-                this._layer = layer;
-                jqPage.addClass("rocket-context");
-                jqPage.data("rocketPage", this);
-                this.reset();
-                this.hide();
-            }
-            Object.defineProperty(Page.prototype, "layer", {
-                get: function () {
-                    return this._layer;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Page.prototype, "jQuery", {
-                get: function () {
-                    return this.jqPage;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Page.prototype.containsUrl = function (url) {
-                for (var i in this.urls) {
-                    if (this.urls[i].equals(url))
-                        return true;
-                }
-                return false;
-            };
-            Object.defineProperty(Page.prototype, "activeUrl", {
-                get: function () {
-                    return this._activeUrl;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Page.prototype.fireEvent = function (eventType) {
-                var that = this;
-                this.callbackRegistery.filter(eventType.toString()).forEach(function (callback) {
-                    callback(that);
-                });
-            };
-            Page.prototype.ensureNotClosed = function () {
-                if (this.jqPage !== null)
-                    return;
-                throw new Error("Page already closed.");
-            };
-            Page.prototype.close = function () {
-                this.trigger(Page.EventType.CLOSE);
-                this.jqPage.remove();
-                this.jqPage = null;
-            };
-            Page.prototype.show = function () {
-                this.trigger(Page.EventType.SHOW);
-                this.jqPage.show();
-            };
-            Page.prototype.hide = function () {
-                this.trigger(Page.EventType.HIDE);
-                this.jqPage.hide();
-            };
-            Page.prototype.reset = function () {
-                this.additionalTabManager = new AdditionalTabManager(this);
-                this._menu = new Menu(this);
-            };
-            Page.prototype.clear = function (showLoader) {
-                if (showLoader === void 0) { showLoader = false; }
-                this.jqPage.empty();
-                if (showLoader) {
-                    this.jqPage.addClass("rocket-loading");
-                }
-                this.trigger(Page.EventType.CONTENT_CHANGED);
-            };
-            Page.prototype.applyHtml = function (html) {
-                this.endLoading();
-                this.jqPage.html(html);
-                this.reset();
-                this.trigger(Page.EventType.CONTENT_CHANGED);
-            };
-            Page.prototype.isLoading = function () {
-                return this.jqPage.hasClass("rocket-loading");
-            };
-            Page.prototype.endLoading = function () {
-                this.jqPage.removeClass("rocket-loading");
-            };
-            Page.prototype.applyContent = function (jqContent) {
-                this.endLoading();
-                this.jqPage.append(jqContent);
-                this.reset();
-                this.trigger(Page.EventType.CONTENT_CHANGED);
-            };
-            Page.prototype.trigger = function (eventType) {
-                var context = this;
-                this.callbackRegistery.filter(eventType.toString())
-                    .forEach(function (callback) {
-                    callback(context);
-                });
-            };
-            Page.prototype.on = function (eventType, callback) {
-                this.callbackRegistery.register(eventType.toString(), callback);
-            };
-            Page.prototype.off = function (eventType, callback) {
-                this.callbackRegistery.unregister(eventType.toString(), callback);
-            };
-            Page.prototype.createAdditionalTab = function (title, prepend) {
-                if (prepend === void 0) { prepend = false; }
-                return this.additionalTabManager.createTab(title, prepend);
-            };
-            Object.defineProperty(Page.prototype, "menu", {
-                get: function () {
-                    return this._menu;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Page.prototype, "locked", {
-                get: function () {
-                    return this.locks.length > 0;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Page.prototype.releaseLock = function (lock) {
-                var i = this.locks.indexOf(lock);
-                if (i == -1)
-                    return;
-                this.locks.splice(i, 1);
-                this.trigger(Page.EventType.BLOCKED_CHANGED);
-            };
-            Page.prototype.createLock = function () {
-                var that = this;
-                var lock = new Lock(function (lock) {
-                    that.releaseLock(lock);
-                });
-                this.locks.push(lock);
-                this.trigger(Page.EventType.BLOCKED_CHANGED);
-                return lock;
-            };
-            Page.of = function (jqElem) {
-                if (!jqElem.hasClass(".rocket-context")) {
-                    jqElem = jqElem.parents(".rocket-context");
-                }
-                var context = jqElem.data("rocketPage");
-                if (context instanceof Page)
-                    return context;
-                return null;
-            };
-            return Page;
-        }());
-        Cmd.Page = Page;
-        var Lock = (function () {
-            function Lock(releaseCallback) {
-                this.releaseCallback = releaseCallback;
-            }
-            Lock.prototype.release = function () {
-                this.releaseCallback(this);
-            };
-            return Lock;
-        }());
-        Cmd.Lock = Lock;
-        var AdditionalTabManager = (function () {
-            function AdditionalTabManager(context) {
-                this.jqAdditional = null;
-                this.context = context;
-                this.tabs = new Array();
-            }
-            AdditionalTabManager.prototype.createTab = function (title, prepend) {
-                if (prepend === void 0) { prepend = false; }
-                this.setupAdditional();
-                var jqNavItem = $("<li />", {
-                    "text": title
-                });
-                var jqContent = $("<div />", {
-                    "class": "rocket-additional-content"
-                });
-                if (prepend) {
-                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
-                }
-                else {
-                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
-                }
-                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
-                var tab = new AdditionalTab(jqNavItem, jqContent);
-                this.tabs.push(tab);
-                var that = this;
-                tab.onShow(function () {
-                    for (var i in that.tabs) {
-                        if (that.tabs[i] === tab)
-                            continue;
-                        this.tabs[i].hide();
-                    }
-                });
-                tab.onDispose(function () {
-                    that.removeTab(tab);
-                });
-                if (this.tabs.length == 1) {
-                    tab.show();
-                }
-                return tab;
-            };
-            AdditionalTabManager.prototype.removeTab = function (tab) {
-                for (var i in this.tabs) {
-                    if (this.tabs[i] !== tab)
-                        continue;
-                    this.tabs.splice(parseInt(i), 1);
-                    if (this.tabs.length == 0) {
-                        this.setdownAdditional();
-                        return;
-                    }
-                    if (tab.isActive()) {
-                        this.tabs[0].show();
-                    }
-                    return;
-                }
-            };
-            AdditionalTabManager.prototype.setupAdditional = function () {
-                if (this.jqAdditional !== null)
-                    return;
-                var jqPage = this.context.jQuery;
-                jqPage.addClass("rocket-contains-additional");
-                this.jqAdditional = $("<div />", {
-                    "class": "rocket-additional"
-                });
-                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
-                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
-                jqPage.append(this.jqAdditional);
-            };
-            AdditionalTabManager.prototype.setdownAdditional = function () {
-                if (this.jqAdditional === null)
-                    return;
-                this.context.jQuery.removeClass("rocket-contains-additional");
-                this.jqAdditional.remove();
-                this.jqAdditional = null;
-            };
-            return AdditionalTabManager;
-        }());
-        var AdditionalTab = (function () {
-            function AdditionalTab(jqNavItem, jqContent) {
-                this.active = false;
-                this.onShowCallbacks = [];
-                this.onHideCallbacks = [];
-                this.onDisposeCallbacks = [];
-                this.jqNavItem = jqNavItem;
-                this.jqContent = jqContent;
-                this.jqNavItem.click(this.show);
-                this.jqContent.hide();
-            }
-            AdditionalTab.prototype.getJqNavItem = function () {
-                return this.jqNavItem;
-            };
-            AdditionalTab.prototype.getJqContent = function () {
-                return this.jqContent;
-            };
-            AdditionalTab.prototype.isActive = function () {
-                return this.active;
-            };
-            AdditionalTab.prototype.show = function () {
-                this.active = true;
-                this.jqNavItem.addClass("rocket-active");
-                this.jqContent.show();
-                for (var i in this.onShowCallbacks) {
-                    this.onShowCallbacks[i](this);
-                }
-            };
-            AdditionalTab.prototype.hide = function () {
-                this.active = false;
-                this.jqContent.hide();
-                this.jqNavItem.removeClass("rocket-active");
-                for (var i in this.onHideCallbacks) {
-                    this.onHideCallbacks[i](this);
-                }
-            };
-            AdditionalTab.prototype.dispose = function () {
-                this.jqNavItem.remove();
-                this.jqContent.remove();
-                for (var i in this.onDisposeCallbacks) {
-                    this.onDisposeCallbacks[i](this);
-                }
-            };
-            AdditionalTab.prototype.onShow = function (callback) {
-                this.onShowCallbacks.push(callback);
-            };
-            AdditionalTab.prototype.onHide = function (callback) {
-                this.onHideCallbacks.push(callback);
-            };
-            AdditionalTab.prototype.onDispose = function (callback) {
-                this.onDisposeCallbacks.push(callback);
-            };
-            return AdditionalTab;
-        }());
-        Cmd.AdditionalTab = AdditionalTab;
-        var Menu = (function () {
-            function Menu(context) {
-                this._toolbar = null;
-                this._commandList = null;
-                this._partialCommandList = null;
-                this.context = context;
-            }
-            Object.defineProperty(Menu.prototype, "toolbar", {
-                get: function () {
-                    if (this._toolbar) {
-                        return this._toolbar;
-                    }
-                    var jqToolbar = this.context.jQuery.find(".rocket-context-toolbar:first");
-                    if (jqToolbar.length == 0) {
-                        jqToolbar = $("<div />", { "class": "rocket-context-toolbar" }).prependTo(this.context.jQuery);
-                    }
-                    return this._toolbar = new display.Toolbar(jqToolbar);
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Menu.prototype.getJqPageCommands = function () {
-                var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
-                if (jqCommandList.length == 0) {
-                    jqCommandList = $("<div />", {
-                        "class": "rocket-context-commands"
-                    });
-                    this.context.jQuery.append(jqCommandList);
-                }
-                return jqCommandList;
-            };
-            Object.defineProperty(Menu.prototype, "partialCommandList", {
-                get: function () {
-                    if (this._partialCommandList !== null) {
-                        return this._partialCommandList;
-                    }
-                    var jqPageCommands = this.getJqPageCommands();
-                    var jqPartialCommands = jqPageCommands.children(".rocket-partial-commands:first");
-                    if (jqPartialCommands.length == 0) {
-                        jqPartialCommands = $("<div />", { "class": "rocket-partial-commands" }).prependTo(jqPageCommands);
-                    }
-                    return this._partialCommandList = new display.CommandList(jqPartialCommands);
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Menu.prototype, "commandList", {
-                get: function () {
-                    if (this._commandList !== null) {
-                        return this._commandList;
-                    }
-                    var jqPageCommands = this.getJqPageCommands();
-                    var jqCommands = jqPageCommands.children(":not(.rocket-partial-commands):first");
-                    if (jqCommands.length == 0) {
-                        jqCommands = $("<div />").appendTo(jqPageCommands);
-                    }
-                    return this._commandList = new display.CommandList(jqCommands);
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return Menu;
-        }());
-        Cmd.Menu = Menu;
-        (function (Page) {
-            var EventType;
-            (function (EventType) {
-                EventType[EventType["SHOW"] = 0] = "SHOW";
-                EventType[EventType["HIDE"] = 1] = "HIDE";
-                EventType[EventType["CLOSE"] = 2] = "CLOSE";
-                EventType[EventType["CONTENT_CHANGED"] = 3] = "CONTENT_CHANGED";
-                EventType[EventType["ACTIVE_URL_CHANGED"] = 4] = "ACTIVE_URL_CHANGED";
-                EventType[EventType["BLOCKED_CHANGED"] = 5] = "BLOCKED_CHANGED";
-            })(EventType = Page.EventType || (Page.EventType = {}));
-        })(Page = Cmd.Page || (Cmd.Page = {}));
-    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
