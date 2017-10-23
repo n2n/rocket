@@ -1,6 +1,6 @@
 namespace Rocket.Display {
 	import Container = Rocket.Cmd.Container;
-	import Page = Rocket.Cmd.Page;
+	import Page = Rocket.Cmd.Zone;
 	import AdditionalTab = Rocket.Cmd.AdditionalTab;
 	
     export class Initializer {

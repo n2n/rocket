@@ -81,7 +81,7 @@ namespace Rocket.Cmd {
 			this.layerTrigger(Container.LayerEventType.REMOVED, layer);
 		}
 		
-		public createLayer(dependentPage: Page = null): Layer {
+		public createLayer(dependentPage: Zone = null): Layer {
 			var jqLayer = $("<div />", {
 				"class": "rocket-layer"
 			});
@@ -116,13 +116,13 @@ namespace Rocket.Cmd {
 				return layer;
 			}
 			
-			dependentPage.on(Page.EventType.CLOSE, function () {
+			dependentPage.on(Zone.EventType.CLOSE, function () {
 				layer.close();
 			});
-			dependentPage.on(Page.EventType.HIDE, function () {
+			dependentPage.on(Zone.EventType.HIDE, function () {
 				layer.hide();
 			});
-			dependentPage.on(Page.EventType.SHOW, function () {
+			dependentPage.on(Zone.EventType.SHOW, function () {
 				layer.show();
 			});
 			
@@ -130,8 +130,8 @@ namespace Rocket.Cmd {
 			return layer;
 		}
 			
-		public getAllPages(): Array<Page> {
-			var contexts = new Array<Page>();
+		public getAllPages(): Array<Zone> {
+			var contexts = new Array<Zone>();
 			
 			for (var i in this._layers) {
 				var layerPages = this._layers[i].contexts; 
@@ -155,7 +155,7 @@ namespace Rocket.Cmd {
 			this.layerCallbackRegistery.register(eventType.toString(), callback);
 		}
 		
-		public layerOff(eventType: Page.EventType, callback: LayerCallback) {
+		public layerOff(eventType: Zone.EventType, callback: LayerCallback) {
 			this.layerCallbackRegistery.unregister(eventType.toString(), callback);
 		}
 	}

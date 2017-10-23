@@ -35,7 +35,7 @@ namespace Rocket.Impl {
 			}
 		}
 		
-		private initTm(jqElem: JQuery, context: Rocket.Cmd.Page) {
+		private initTm(jqElem: JQuery, context: Rocket.Cmd.Zone) {
 			let tm = TranslationManager.from(jqElem);
 			
 			let se = Rocket.Display.StructureElement.findFrom(jqElem);

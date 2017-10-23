@@ -33,8 +33,6 @@ use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
 use n2n\util\uri\Url;
-use rocket\core\model\Rocket;
-use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
@@ -75,12 +73,12 @@ class OverviewAjahController extends ControllerAdapter {
 		
 		$eiUtils = new EiuFrame($eiFrame);
 		
-		$this->send(new AjahResponse($this->createView(
+		$this->eiuCtrl->forwardView($this->createView(
 				'..\view\ajahOverview.html',
 				array('critmodForm' => $critmodForm, 'quickSearchForm' => $quickSearchForm, 
 						'overviewAjahHook' => $overviewAjahHook, 'filterAjahHook' => $filterAjahHook,
 						'label' => $eiUtils->getGenericLabel(), 'pluralLabel' => $eiUtils->getGenericPluralLabel(), 
-						'listModel' => $listModel))));
+						'listModel' => $listModel)));
 	}
 	
 	

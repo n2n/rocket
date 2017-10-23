@@ -190,7 +190,7 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			this.browserLayer = Rocket.getContainer().createLayer(cmd.Page.of(this.jqElem));
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqElem));
 			this.browserLayer.hide();
 			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
 				that.browserLayer = null;
@@ -198,9 +198,9 @@ namespace Rocket.Impl.Relation {
 			});
 			
 			let url = this.jqElem.data("overview-tools-url");
-			this.browserLayer.monitor.exec(url).then(() => {
-				that.iniBrowserPage(this.browserLayer.getPageByUrl(url));
-			});
+			this.browserLayer.monitor.exec(url)/*.then(() => {
+				that.iniBrowserPage(this.browserLayer.getZoneByUrl(url));
+			})*/;
 			
 			
 //			
@@ -213,7 +213,7 @@ namespace Rocket.Impl.Relation {
 //			});
 		}
 		
-		private iniBrowserPage(context: cmd.Page) {
+		private iniBrowserPage(context: cmd.Zone) {
 			if (this.browserLayer === null) return;
 			
 			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
@@ -315,7 +315,7 @@ namespace Rocket.Impl.Relation {
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
-		private expandPage: cmd.Page = null;
+		private expandPage: cmd.Zone = null;
 		private dominantEntry: EmbeddedEntry = null;
 		private closeLabel: string;
 		private firstAddControl: AddControl = null;
@@ -581,7 +581,7 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.dominantEntry = dominantEntry;
-			this.expandPage = Rocket.getContainer().createLayer().createPage(window.location.href);
+			this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
 			this.jqEmbedded.detach();
 			this.expandPage.applyContent(this.jqEmbedded);
 			this.expandPage.layer.pushHistoryEntry(window.location.href);
@@ -604,7 +604,7 @@ namespace Rocket.Impl.Relation {
 				that.expandPage.layer.close();
 			});
 			
-			this.expandPage.on(cmd.Page.EventType.CLOSE, function () {
+			this.expandPage.on(cmd.Zone.EventType.CLOSE, function () {
 				that.reduce();
 			});
 			

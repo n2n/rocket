@@ -107,7 +107,7 @@ namespace Rocket.Impl.Relation {
 		private _newEntry: EmbeddedEntry;
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
-		private expandPage: cmd.Page = null;
+		private expandPage: cmd.Zone = null;
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
@@ -273,7 +273,7 @@ namespace Rocket.Impl.Relation {
 		public expand() {
 			if (this.isExpanded()) return;
 			
-			this.expandPage = Rocket.getContainer().createLayer().createPage(window.location.href);
+			this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
 			this.jqEmbedded.detach();
 			this.expandPage.applyContent(this.jqEmbedded);
 			this.expandPage.layer.pushHistoryEntry(window.location.href);
@@ -292,7 +292,7 @@ namespace Rocket.Impl.Relation {
 				this.expandPage.layer.close();
 			});
 			
-			this.expandPage.on(cmd.Page.EventType.CLOSE, () => {
+			this.expandPage.on(cmd.Zone.EventType.CLOSE, () => {
 				this.reduce();
 			});
 			
@@ -422,7 +422,7 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			this.browserLayer = Rocket.getContainer().createLayer(cmd.Page.of(this.jqElem));
+			this.browserLayer = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqElem));
 			this.browserLayer.hide();
 			this.browserLayer.on(cmd.Layer.EventType.CLOSE, function () {
 				that.browserLayer = null;
@@ -438,7 +438,7 @@ namespace Rocket.Impl.Relation {
 			});
 		}
 		
-		private iniBrowserPage(context: cmd.Page) {
+		private iniBrowserPage(context: cmd.Zone) {
 			if (this.browserLayer === null) return;
 			
 			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);

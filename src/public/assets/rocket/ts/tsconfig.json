@@ -6,7 +6,8 @@
         "preserveConstEnums": true,
         "outFile": "../js/rocket.js",
         "sourceMap": true,
-		"target": "es5"
+		"target": "es6",
+		"experimentalDecorators": true
     },
 	"files": [],
 	"include": ["../../../**/*.d.ts","**/*"],

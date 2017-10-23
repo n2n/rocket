@@ -5,8 +5,8 @@ namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	import util = Rocket.util;
 	
-	export class Page {
-		private jqPage: JQuery;
+	export class Zone {
+		private jqZone: JQuery;
 		private _activeUrl: Jhtml.Url;
 		private urls: Array<Jhtml.Url> = [];
 		private _layer: Layer;
@@ -15,13 +15,13 @@ namespace Rocket.Cmd {
 		private _menu: Menu;
 		private _blocked: boolean = false;
 		
-		constructor(jqPage: JQuery, url: Jhtml.Url, layer: Layer) {
-			this.jqPage = jqPage;
+		constructor(jqZone: JQuery, url: Jhtml.Url, layer: Layer) {
+			this.jqZone = jqZone;
 			this.urls.push(this._activeUrl = url);
 			this._layer = layer;
 			
-			jqPage.addClass("rocket-context");
-			jqPage.data("rocketPage", this);
+			jqZone.addClass("rocket-context");
+			jqZone.data("rocketPage", this);
 			
 			this.reset();
 			this.hide();
@@ -32,7 +32,7 @@ namespace Rocket.Cmd {
 		}
 		
 		get jQuery(): JQuery {
-			return this.jqPage;
+			return this.jqZone;
 		}
 		
 		containsUrl(url: Jhtml.Url): boolean {
@@ -85,7 +85,7 @@ namespace Rocket.Cmd {
 //			throw new Error("Active url not available for this context.");
 //		}
 		
-		private fireEvent(eventType: Page.EventType) {
+		private fireEvent(eventType: Zone.EventType) {
 			var that = this;
 			this.callbackRegistery.filter(eventType.toString()).forEach(function (callback: PageCallback) {
 				callback(that);
@@ -93,28 +93,28 @@ namespace Rocket.Cmd {
 		}
 		
 		private ensureNotClosed() {
-			if (this.jqPage !== null) return;
+			if (this.jqZone !== null) return;
 			
 			throw new Error("Page already closed.");
 		}
 		
 		public close() {
-			this.trigger(Page.EventType.CLOSE)
+			this.trigger(Zone.EventType.CLOSE)
 			
-			this.jqPage.remove();
-			this.jqPage = null;
+			this.jqZone.remove();
+			this.jqZone = null;
 		}
 		
 		public show() {
-			this.trigger(Page.EventType.SHOW);
+			this.trigger(Zone.EventType.SHOW);
 			
-			this.jqPage.show();
+			this.jqZone.show();
 		}
 		
 		public hide() {
-			this.trigger(Page.EventType.HIDE);
+			this.trigger(Zone.EventType.HIDE);
 			
-			this.jqPage.hide();
+			this.jqZone.hide();
 		}
 		
 		private reset() {
@@ -124,49 +124,49 @@ namespace Rocket.Cmd {
 		
 		
 		public clear(showLoader: boolean = false) {
-			this.jqPage.empty();
+			this.jqZone.empty();
 			if (showLoader) {
-				this.jqPage.addClass("rocket-loading");
+				this.jqZone.addClass("rocket-loading");
 			}
 			
-			this.trigger(Page.EventType.CONTENT_CHANGED);
+			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 			
 		public applyHtml(html: string) {
 			this.endLoading();
-			this.jqPage.html(html);
+			this.jqZone.html(html);
 			
 			this.reset();
 			
-			this.trigger(Page.EventType.CONTENT_CHANGED);
+			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
 		public applyComp(comp: Jhtml.Comp) {
 			this.endLoading();
-			comp.attachTo(this.jqPage.get(0));
+			comp.attachTo(this.jqZone.get(0));
 			
 			this.reset();
 			
-			this.trigger(Page.EventType.CONTENT_CHANGED);
+			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
 		public isLoading(): boolean {
-			return this.jqPage.hasClass("rocket-loading");
+			return this.jqZone.hasClass("rocket-loading");
 		}
 		
 		public endLoading() {
-			this.jqPage.removeClass("rocket-loading");
+			this.jqZone.removeClass("rocket-loading");
 		}
 		
 		public applyContent(jqContent: JQuery) {
 			this.endLoading();
-			this.jqPage.append(jqContent);
+			this.jqZone.append(jqContent);
 			
 			this.reset();
-			this.trigger(Page.EventType.CONTENT_CHANGED);
+			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
-		private trigger(eventType: Page.EventType) {
+		private trigger(eventType: Zone.EventType) {
 			var context = this;
 			this.callbackRegistery.filter(eventType.toString())
 					.forEach(function (callback: PageCallback) {
@@ -174,11 +174,11 @@ namespace Rocket.Cmd {
 					});
 		}
 		
-		public on(eventType: Page.EventType, callback: PageCallback) {
+		public on(eventType: Zone.EventType, callback: PageCallback) {
 			this.callbackRegistery.register(eventType.toString(), callback);
 		}
 		
-		public off(eventType: Page.EventType, callback: PageCallback) {
+		public off(eventType: Zone.EventType, callback: PageCallback) {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
@@ -201,7 +201,7 @@ namespace Rocket.Cmd {
 			if (i == -1) return; 
 			
 			this.locks.splice(i, 1);
-			this.trigger(Page.EventType.BLOCKED_CHANGED);
+			this.trigger(Zone.EventType.BLOCKED_CHANGED);
 		}
 		
 		createLock(): Lock {
@@ -210,17 +210,17 @@ namespace Rocket.Cmd {
 				that.releaseLock(lock);
 			});
 			this.locks.push(lock);
-			this.trigger(Page.EventType.BLOCKED_CHANGED);
+			this.trigger(Zone.EventType.BLOCKED_CHANGED);
 			return lock;
 		}
 		
-		public static of(jqElem: JQuery): Page {
+		public static of(jqElem: JQuery): Zone {
 			if (!jqElem.hasClass(".rocket-context")) {
 				jqElem = jqElem.parents(".rocket-context");
 			}
 			
 			var context = jqElem.data("rocketPage");
-			if (context instanceof Page) return context;
+			if (context instanceof Zone) return context;
 			
 			return null;
 		}
@@ -236,12 +236,12 @@ namespace Rocket.Cmd {
 	}
 	
 	class AdditionalTabManager {
-		private context: Page;
+		private context: Zone;
 		private tabs: Array<AdditionalTab>;
 		
 		private jqAdditional: JQuery = null;
 		
-		public constructor(context: Page) {
+		public constructor(context: Zone) {
 			this.context = context;
 			this.tabs = new Array<AdditionalTab>();
 		}
@@ -405,13 +405,13 @@ namespace Rocket.Cmd {
 	}
 	
 	export class Menu {
-		private context: Page;
+		private context: Zone;
 		private _toolbar: display.Toolbar = null;
 		private _commandList: display.CommandList = null;
 		private _partialCommandList: display.CommandList = null;
 		
 		
-		constructor(context: Page) {
+		constructor(context: Zone) {
 			this.context = context;
 		}
 		
@@ -472,10 +472,10 @@ namespace Rocket.Cmd {
 	}
 	
 	export interface PageCallback {
-		(context: Page): any
+		(context: Zone): any
 	}
 	
-	export namespace Page {
+	export namespace Zone {
 		export enum EventType {
 			SHOW /*= "show"*/,
 			HIDE /*= "hide"*/,

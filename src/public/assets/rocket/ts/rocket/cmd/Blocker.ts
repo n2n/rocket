@@ -22,22 +22,22 @@ namespace Rocket.Cmd {
 				this.observePage(context)
 			}
 			
-			layer.onNewPage((context: Page) => {
+			layer.onNewPage((context: Zone) => {
 				this.observePage(context);
 				this.check();
 			});
 		}
 		
-		private observePage(context: Page) {
+		private observePage(context: Zone) {
 			var checkCallback = () => {
 				this.check();
 			}
 			
-			context.on(Page.EventType.SHOW, checkCallback);
-			context.on(Page.EventType.HIDE, checkCallback);
-			context.on(Page.EventType.CLOSE, checkCallback);
-			context.on(Page.EventType.CONTENT_CHANGED, checkCallback);
-			context.on(Page.EventType.BLOCKED_CHANGED, checkCallback);
+			context.on(Zone.EventType.SHOW, checkCallback);
+			context.on(Zone.EventType.HIDE, checkCallback);
+			context.on(Zone.EventType.CLOSE, checkCallback);
+			context.on(Zone.EventType.CONTENT_CHANGED, checkCallback);
+			context.on(Zone.EventType.BLOCKED_CHANGED, checkCallback);
 		}
 		
 		
@@ -52,9 +52,9 @@ namespace Rocket.Cmd {
 		
 		
 		private check() {
-			if (!this.jqContainer || !this.container.currentLayer.currentPage) return;
+			if (!this.jqContainer || !this.container.currentLayer.currentZone) return;
 			
-			if (!this.container.currentLayer.currentPage.locked) {
+			if (!this.container.currentLayer.currentZone.locked) {
 				if (!this.jqBlocker) return;
 				
 				this.jqBlocker.remove();

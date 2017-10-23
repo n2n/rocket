@@ -79,7 +79,7 @@ namespace Rocket {
 		}) ();
 	});
 	
-	export function scan(context: Rocket.Cmd.Page = null) {
+	export function scan(context: Rocket.Cmd.Zone = null) {
 		initializer.scan();
 	}
 	
@@ -91,8 +91,8 @@ namespace Rocket {
 		return Rocket.Cmd.Layer.of($(elem));
 	}
 	
-	export function contextOf(elem: HTMLElement): Rocket.Cmd.Page {
-		return Rocket.Cmd.Page.of($(elem));
+	export function contextOf(elem: HTMLElement): Rocket.Cmd.Zone {
+		return Rocket.Cmd.Zone.of($(elem));
 	}
 	
 //	export function exec(url: string, config: Rocket.Cmd.ExecConfig = null) {

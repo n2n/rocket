@@ -105,8 +105,8 @@ namespace Rocket.Impl {
 		private controlLockAutoReleaseable = true;
 		
 		private block() {
-			let context: Cmd.Page;
-			if (!this.lock && this.config.blockPage && (context = Cmd.Page.findFrom(this.jqForm))) {
+			let context: Cmd.Zone;
+			if (!this.lock && this.config.blockPage && (context = Cmd.Zone.findFrom(this.jqForm))) {
 				this.lock = context.createLock();
 			}
 			

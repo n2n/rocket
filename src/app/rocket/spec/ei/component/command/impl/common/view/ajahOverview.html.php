@@ -31,9 +31,9 @@
 	$overviewModel = $view->getParam('listModel'); 
 	$view->assert($overviewModel instanceof OverviewModel);
 	
-// 	$view->useTemplate('~\core\view\template.html',
-// 			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
-// 					->t($view->getN2nLocale())));
+	$view->useTemplate('~\core\view\template.html',
+			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+					->t($view->getN2nLocale())));
 	
 	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask();
 	
