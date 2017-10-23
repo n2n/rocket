@@ -1,7 +1,7 @@
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	
-	export class Container implements Jhtml.CompHandler {
+	export class Container {
 		private jqContainer: JQuery;
 		private _layers: Array<Layer>;
 		private layerCallbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
@@ -13,22 +13,8 @@ namespace Rocket.Cmd {
 			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, 
 					Jhtml.getOrCreateMonitor());
 			this._layers.push(layer);
-			
-			Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
 		}
 		
-		attachComp(comp: Jhtml.Comp): boolean {
-			//alert("comp comp comp!!");
-			return false;
-		}
-		
-		detachComp(comp: Jhtml.Comp): boolean {
-			return false;
-		}
-		
-		replaceComp(oldComp: Jhtml.Comp, newComp: Jhtml.Comp): boolean {
-			return false;
-		}
 
 		get layers(): Array<Layer> {
 			return this._layers.slice();

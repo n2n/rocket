@@ -141,6 +141,15 @@ namespace Rocket.Cmd {
 			this.trigger(Page.EventType.CONTENT_CHANGED);
 		}
 		
+		public applyComp(comp: Jhtml.Comp) {
+			this.endLoading();
+			comp.attachTo(this.jqPage.get(0));
+			
+			this.reset();
+			
+			this.trigger(Page.EventType.CONTENT_CHANGED);
+		}
+		
 		public isLoading(): boolean {
 			return this.jqPage.hasClass("rocket-loading");
 		}

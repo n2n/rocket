@@ -1,7 +1,7 @@
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	
-	export class Layer {
+	export class Layer implements Jhtml.CompHandler {
 		private _contexts: Array<Page> = new Array<Page>();
 		private onNewPageCallbacks: Array<PageCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
@@ -19,8 +19,8 @@ namespace Rocket.Cmd {
 				this.addPage(page);
 			}
 
-			this._monitor.history.onChanged(() => this.historyChanged() );
-			
+			this.monitor.history.onChanged(() => this.historyChanged() );
+			this.monitor.registerCompHandler("rocket-page", this);
 			this.historyChanged();
 		}
 		
@@ -192,6 +192,20 @@ namespace Rocket.Cmd {
 					this._contexts[i].hide();
 				}
 			}
+		}
+		
+		attachComp(comp: Jhtml.Comp): boolean {
+			let page: Page = this.getPageByUrl(comp.model.response.url);
+			if (page) {
+				page.applyComp(comp);
+				return true;
+			}
+			
+			return false;
+		}
+		
+		detachComp(comp: Jhtml.Comp): boolean {
+			return false;
 		}
 		
 //		public currentHistoryIndex(): number {

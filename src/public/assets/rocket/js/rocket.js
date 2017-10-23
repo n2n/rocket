@@ -179,17 +179,7 @@ var Rocket;
                 this._layers = new Array();
                 var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
                 this._layers.push(layer);
-                Jhtml.getOrCreateContext().registerCompHandler("rocket-page", this);
             }
-            Container.prototype.attachComp = function (comp) {
-                return false;
-            };
-            Container.prototype.detachComp = function (comp) {
-                return false;
-            };
-            Container.prototype.replaceComp = function (oldComp, newComp) {
-                return false;
-            };
             Object.defineProperty(Container.prototype, "layers", {
                 get: function () {
                     return this._layers.slice();
@@ -328,7 +318,8 @@ var Rocket;
                     var page = new Cmd.Page(jqPage, Jhtml.Url.create(window.location.href), this);
                     this.addPage(page);
                 }
-                this._monitor.history.onChanged(function () { return _this.historyChanged(); });
+                this.monitor.history.onChanged(function () { return _this.historyChanged(); });
+                this.monitor.registerCompHandler("rocket-page", this);
                 this.historyChanged();
             }
             Object.defineProperty(Layer.prototype, "monitor", {
@@ -490,6 +481,17 @@ var Rocket;
                         this._contexts[i].hide();
                     }
                 }
+            };
+            Layer.prototype.attachComp = function (comp) {
+                var page = this.getPageByUrl(comp.model.response.url);
+                if (page) {
+                    page.applyComp(comp);
+                    return true;
+                }
+                return false;
+            };
+            Layer.prototype.detachComp = function (comp) {
+                return false;
             };
             Layer.create = function (jqLayer, _level, _container, history) {
                 if (Layer.test(jqLayer)) {
@@ -956,6 +958,12 @@ var Rocket;
             Page.prototype.applyHtml = function (html) {
                 this.endLoading();
                 this.jqPage.html(html);
+                this.reset();
+                this.trigger(Page.EventType.CONTENT_CHANGED);
+            };
+            Page.prototype.applyComp = function (comp) {
+                this.endLoading();
+                comp.attachTo(this.jqPage.get(0));
                 this.reset();
                 this.trigger(Page.EventType.CONTENT_CHANGED);
             };
