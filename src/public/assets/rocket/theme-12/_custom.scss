@@ -15,6 +15,7 @@ $gray-200: #F7F5F5;
 $gray-100: #FBFAFA;
 
 $primary: #ed8207;
+$secondary: $gray-200;
 $success: #5cb85c;
 $info:    #4c97cb;
 $warning: #F6A723;
@@ -39,8 +40,7 @@ $breadcrumb-padding-x:          0;
 $breadcrumb-bg:                 transparent;
 $breadcrumb-divider:            ">";
 
-$btn-padding-x: 0.625rem;
-$btn-secondary-bg: $gray-600;
+$input-btn-padding-x: 0.625rem;
 
 $enable-rounded: false;
 $enable-shadows: true;
