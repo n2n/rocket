@@ -6,7 +6,7 @@
     position: -webkit-sticky;
     position: sticky;
     top: 44px;
-    background-color: $brand-gray-09;
+    background-color: $gray-100;
     padding-top: 1rem;
 }
 
@@ -15,9 +15,9 @@
 }
 
 .rocket-impl-critmod-select-container {
-    border: 3px solid $brand-gray-05;
-    border-bottom-color: $brand-gray-07;
-    background-color: $brand-gray-07;
+    border: 3px solid $gray-500;
+    border-bottom-color: $gray-300;
+    background-color: $gray-300;
     padding: 0.5rem 1rem;
     position: absolute;
     height: calc(100% + 1rem);
@@ -34,17 +34,17 @@
 }
 
 .rocket-impl-critmod {
-    background-color: $brand-gray-07;
+    background-color: $gray-300;
     padding: 1rem;
-    border-bottom: 3px solid $brand-gray-05;
-    border-top: 3px solid $brand-gray-05;
+    border-bottom: 3px solid $gray-500;
+    border-top: 3px solid $gray-500;
 }
 
 
 .rocket-filter-items {
     position: relative;
     background: white;
-    border: 1px solid $brand-gray-05;
+    border: 1px solid $gray-500;
     padding: 1rem;
     margin-bottom: 2rem;
 }
@@ -68,9 +68,9 @@
     position: absolute;
     top: 0;
     left: -2rem;
-    font-size: $font-size-xs;
+    font-size: $font-size-sm;
     background: white;
-    border: 1px solid $brand-gray-05;
+    border: 1px solid $gray-500;
     padding: 0 0.125rem;
 }
 
@@ -84,12 +84,12 @@
 
 .rocket-multi-add-entries {
     background: white;
-    border: 1px solid $brand-gray-05;
+    border: 1px solid $gray-500;
     > li {
         > a {
             display: block;
-            border-bottom: 1px solid $brand-gray-05;
-            padding: $btn-padding-y $btn-padding-x;
+            border-bottom: 1px solid $gray-500;
+            padding: $input-btn-padding-y $input-btn-padding-x;
         }
     }
 }
@@ -114,7 +114,7 @@
         background: transparent;
         border: none;
         box-shadow: none;
-        color: $gray-light;
+        color: $gray-600;
         font-size: $font-size-lg;
         padding: 0.25rem 0.5rem;
         &:hover {
@@ -126,13 +126,13 @@
             box-shadow: none;
         }
         &.btn-danger:hover {
-            color: $brand-danger;
+            color: $danger;
         }
         &.btn-warning:hover {
-            color: $brand-warning;
+            color: $warning;
         }
         &.btn-success:hover {
-            color: $brand-success;
+            color: $success;
         }
         &> span {
             display: none;

@@ -22,7 +22,7 @@
     > label {
         width: 100%;
         padding: 0.5rem 2rem;
-        border-left: 3px solid $brand-primary;
+        border-left: 3px solid $primary;
         font-size: $font-size-h2;
         font-weight: bold;
     }
@@ -50,7 +50,7 @@
 }
 
 .rocket-control .rocket-impl-entry {
-    border: 1px solid $brand-gray-05;
+    border: 1px solid $gray-500;
     background-color: white;
     margin-bottom: 1rem;
     padding: 1rem;

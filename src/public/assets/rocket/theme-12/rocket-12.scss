@@ -1,5 +1,5 @@
 /*!
- * Bootstrap v4.0.0-alpha.6 (https://getbootstrap.com)
+ * Bootstrap v4.0.0-beta.2 (https://getbootstrap.com)
  * Copyright 2011-2017 The Bootstrap Authors
  * Copyright 2011-2017 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -7,11 +7,13 @@
 
 // Core variables and mixins
 @import "custom";
+
+@import "bootstrap/functions";
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
 
 // Reset and dependencies
-@import "bootstrap/normalize";
+@import "bootstrap/root";
 @import "bootstrap/print";
 
 // Core CSS
@@ -27,8 +29,8 @@
 // Components
 // @import "bootstrap/transitions";
 // @import "bootstrap/dropdown";
-// @import "bootstrap/button-group";
-// @import "bootstrap/input-group";
+@import "bootstrap/button-group";
+@import "bootstrap/input-group";
 // @import "bootstrap/custom-forms";
 @import "bootstrap/nav";
 @import "bootstrap/navbar";
@@ -41,7 +43,6 @@
 // @import "bootstrap/progress";
 // @import "bootstrap/media";
 // @import "bootstrap/list-group";
-@import "bootstrap/responsive-embed";
 @import "bootstrap/close";
 
 // Components w/ JavaScript

@@ -4,28 +4,22 @@
 // without modifying source files.
 
 
-$brand-gray-01: #373431;
-$brand-gray-02: #4F4A46;
-$brand-gray-03: #66615C;
-$brand-gray-04: #837E78;
-$brand-gray-05: #C2BDB6;
-$brand-gray-06: #DAD7D3;
-$brand-gray-07: #ECEBE9;
-$brand-gray-08: #F7F5F5;
-$brand-gray-09: #FBFAFA;
+$gray-900: #373431;
+$gray-800: #4F4A46;
+$gray-700: #66615C;
+$gray-600: #837E78;
+$gray-500: #C2BDB6;
+$gray-400: #DAD7D3;
+$gray-300: #ECEBE9;
+$gray-200: #F7F5F5;
+$gray-100: #FBFAFA;
 
-$gray-dark:     $brand-gray-02;
-$gray:          $brand-gray-03;
-$gray-light:    $brand-gray-04;
-$gray-lighter:  $brand-gray-07;
-$gray-lightest: $brand-gray-08;
-
-$brand-primary: #ed8207;
-$brand-success: #5cb85c;
-$brand-info:    #4c97cb;
-$brand-warning: #F6A723;
-$brand-danger:  #e32413;
-$brand-inverse: $gray-dark;
+$primary: #ed8207;
+$success: #5cb85c;
+$info:    #4c97cb;
+$warning: #F6A723;
+$danger:  #e32413;
+$inverse: $gray-900;
 
 $link-decoration:       none;
 $link-hover-decoration: none;
@@ -46,11 +40,11 @@ $breadcrumb-bg:                 transparent;
 $breadcrumb-divider:            ">";
 
 $btn-padding-x: 0.625rem;
-$btn-secondary-bg: $brand-gray-09;
+$btn-secondary-bg: $gray-600;
 
 $enable-rounded: false;
 $enable-shadows: true;
 
 $btn-box-shadow:                 2px 1px 4px 0 rgba(0,0,0,0.20);
-// $btn-focus-box-shadow:           0 0 0 2px rgba($brand-primary, .25) !default;
+// $btn-focus-box-shadow:           0 0 0 2px rgba($primary, .25) !default;
 // $btn-active-box-shadow:          inset 0 3px 5px rgba($black,.125) !default;

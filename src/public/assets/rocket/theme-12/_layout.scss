@@ -1,5 +1,5 @@
 body {
-    background-color: $brand-gray-09;
+    background-color: $gray-100;
     overflow-y: scroll;
 }
 
@@ -19,7 +19,7 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     left: 0;
     right: 0;
     height: $rocket-header-height;
-    background-color: $brand-gray-01;
+    background-color: $gray-900;
     color: white;
     display: flex;
     z-index: 1000;
@@ -56,13 +56,13 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     left: 0;
     bottom: 0;
     width: $rocket-global-nav-width;
-    background: url(../img/nav-body-bg.png) repeat $gray-dark;
+    background: url(../img/nav-body-bg.png) repeat $gray-800;
     color: white;
     overflow-y: scroll;
 }
 
 .rocket-nav-group {
-    background: $brand-gray-02;
+    background: $gray-800;
 }
 
 /**
@@ -86,7 +86,7 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     top: 0;
     left: 0;
     right: 0;
-    background-color: $brand-gray-09;
+    background-color: $gray-100;
     min-height: 100%;
 }
 
@@ -100,8 +100,8 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
     right: 0;
     left: $rocket-global-nav-width;
     padding: 1rem 1rem 1rem 3rem;
-    background-color: $brand-gray-09;
-    border-top: 1px solid $brand-gray-06;
+    background-color: $gray-100;
+    border-top: 1px solid $gray-400;
     display: grid;
     grid-template-columns: auto auto;
 
