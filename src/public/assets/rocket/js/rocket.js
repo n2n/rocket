@@ -259,7 +259,7 @@ var Rocket;
         }
         Cmd.Container = Container;
         (function (Container) {
-            var LayerEventType;
+            let LayerEventType;
             (function (LayerEventType) {
                 LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED";
                 LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED";
@@ -436,7 +436,7 @@ var Rocket;
                 return false;
             }
             detachComp(comp) {
-                return !this.jqLayer.get(0).contains(comp.attachedElement);
+                return !this.jqLayer.get(0).contains(comp.elements[0]);
             }
             pushHistoryEntry(urlExpr) {
                 let url = Jhtml.Url.create(urlExpr);
@@ -489,7 +489,7 @@ var Rocket;
         }
         Cmd.Layer = Layer;
         (function (Layer) {
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["SHOW"] = 0] = "SHOW";
                 EventType[EventType["HIDE"] = 1] = "HIDE";
@@ -1132,7 +1132,7 @@ var Rocket;
         }
         Cmd.Menu = Menu;
         (function (Zone) {
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["SHOW"] = 0] = "SHOW";
                 EventType[EventType["HIDE"] = 1] = "HIDE";
@@ -1261,12 +1261,12 @@ var Rocket;
         }
         Display.Entry = Entry;
         (function (Entry) {
-            var State;
+            let State;
             (function (State) {
                 State[State["PERSISTENT"] = 0] = "PERSISTENT";
                 State[State["REMOVED"] = 1] = "REMOVED";
             })(State = Entry.State || (Entry.State = {}));
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["DISPOSED"] = 0] = "DISPOSED";
                 EventType[EventType["REFRESHED"] = 1] = "REFRESHED";
@@ -1564,7 +1564,7 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
-        var Severity;
+        let Severity;
         (function (Severity) {
             Severity[Severity["PRIMARY"] = 0] = "PRIMARY";
             Severity[Severity["SECONDARY"] = 1] = "SECONDARY";
@@ -1634,7 +1634,7 @@ var Rocket;
                 }
             }
             Form.Config = Config;
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["SUBMIT"] = 0] = "SUBMIT";
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED";
@@ -2933,31 +2933,25 @@ var Rocket;
                 load(pageNo) {
                     var page = this.createPage(pageNo);
                     this.markPageAsLoading(pageNo);
-                    var that = this;
-                    $.ajax({
-                        "url": that.loadUrl.toString(),
-                        "data": { "pageNo": pageNo },
-                        "dataType": "json"
-                    }).fail(function (jqXHR, textStatus, data) {
-                        if (page !== that.pages[pageNo])
+                    Jhtml.Monitor.of(this.jqElem.get(0))
+                        .lookupModel(this.loadUrl.extR(null, { "pageNo": pageNo }))
+                        .then((model) => {
+                        if (page !== this.pages[pageNo])
                             return;
-                        that.unmarkPageAsLoading(pageNo);
-                        if (jqXHR.status != 200) {
-                            Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
+                        this.unmarkPageAsLoading(pageNo);
+                        this.initPageFromResponse(page, model.snippet, model.additionalData);
+                        this.triggerContentChange();
+                    })
+                        .catch(e => {
+                        if (page !== this.pages[pageNo])
                             return;
-                        }
-                        throw new Error("invalid response");
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (page !== that.pages[pageNo])
-                            return;
-                        that.unmarkPageAsLoading(pageNo);
-                        that.initPageFromResponse(page, data);
-                        that.triggerContentChange();
+                        this.unmarkPageAsLoading(pageNo);
+                        throw e;
                     });
                 }
                 initPageFromResponse(page, snippet, data) {
                     this.changeBoundaries(data.numPages, data.numEntries);
-                    var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children().toArray();
+                    var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children();
                     snippet.elements = jqContents.toArray();
                     this.applyContents(page, jqContents);
                     snippet.markAttached();

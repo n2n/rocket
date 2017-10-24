@@ -285,7 +285,7 @@ namespace Rocket.Impl.Overview {
 //			});
 		}
 		
-		private fixedCssAttrs;
+		private fixedCssAttrs: any;
 		
 		private calcDimensions() {
 			this.jqHeader.parent().css("padding-top", null);

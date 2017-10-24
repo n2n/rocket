@@ -207,7 +207,7 @@ namespace Rocket.Cmd {
 		}
 		
 		detachComp(comp: Jhtml.Comp): boolean {
-			return !this.jqLayer.get(0).contains(comp.attachedElement);
+			return !this.jqLayer.get(0).contains(comp.elements[0]);
 		}
 		
 		pushHistoryEntry(urlExpr: Jhtml.Url|string) {

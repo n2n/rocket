@@ -441,36 +441,28 @@ namespace Rocket.Impl.Overview {
 			
 			this.markPageAsLoading(pageNo);
 			
-			var that = this;
-			$.ajax({
-				"url": that.loadUrl.toString(),
-				"data": { "pageNo": pageNo },
-				"dataType": "json"
-			}).fail(function (jqXHR, textStatus, data) {
-				if (page !== that.pages[pageNo]) return;
-				
-				that.unmarkPageAsLoading(pageNo);
-				
-				if (jqXHR.status != 200) {
-                    Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
-					return;
-				}
-				
-				throw new Error("invalid response");
-			}).done(function (data, textStatus, jqXHR) {
-				if (page !== that.pages[pageNo]) return;
-				
-				that.unmarkPageAsLoading(pageNo);
-				
-				that.initPageFromResponse(page, data);
-				that.triggerContentChange();
-			});
+			Jhtml.Monitor.of(this.jqElem.get(0))
+					.lookupModel(this.loadUrl.extR(null, { "pageNo": pageNo }))
+					.then((model: Jhtml.Model) => {
+						if (page !== this.pages[pageNo]) return;
+						
+						this.unmarkPageAsLoading(pageNo);
+						
+						this.initPageFromResponse(page, model.snippet, model.additionalData);
+						this.triggerContentChange();
+					})
+					.catch(e => {
+						if (page !== this.pages[pageNo]) return;
+						
+						this.unmarkPageAsLoading(pageNo);
+						throw e;
+					});
 		}
 		
 		private initPageFromResponse(page: Page, snippet: Jhtml.Snippet, data: any) {
 			this.changeBoundaries(data.numPages, data.numEntries);
 			
-			var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children().toArray();
+			var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children();
 			
 			snippet.elements = jqContents.toArray();
 			this.applyContents(page, jqContents);

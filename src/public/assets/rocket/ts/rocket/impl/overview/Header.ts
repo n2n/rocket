@@ -198,7 +198,7 @@ namespace Rocket.Impl.Overview {
 			this.sc++;
 			this.overviewContent.clear(true);
 		}
-		
+
 		private whenSubmitted(snippet: Jhtml.Snippet, info: any) {
 			this.overviewContent.initFromResponse(snippet, info);
 		}
