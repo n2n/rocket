@@ -49,12 +49,12 @@ namespace Rocket.Impl.Overview {
 			this.triggerContentChange();
 		}
 		
-		initFromResponse(data: any) {
+		initFromResponse(snippet: Jhtml.Snippet, info: any) {
 			this.reset(false);
 			
-			var page: Page = this.createPage(parseInt(data.additional.pageNo));
+			var page: Page = this.createPage(parseInt(info.pageNo));
 			this._currentPageNo = page.pageNo;
-			this.initPageFromResponse(page, data);
+			this.initPageFromResponse(page, snippet, info);
 			
 			if (this.allInfo) {
 				this.allInfo = new AllInfo([page], 0);
@@ -481,14 +481,14 @@ namespace Rocket.Impl.Overview {
 			});
 		}
 		
-		private initPageFromResponse(page: Page, model: Jhtml.Model) {
-			this.changeBoundaries(model.additional.numPages, model.additional.numEntries);
-			let snippet: Jhtml.Snippet = model.snippet;
-			var jqContents = $(snippet.element).find(".rocket-overview-content:first").children().toArray();
+		private initPageFromResponse(page: Page, snippet: Jhtml.Snippet, data: any) {
+			this.changeBoundaries(data.numPages, data.numEntries);
 			
-			snippet.element = jqContents.toArray();
+			var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children().toArray();
+			
+			snippet.elements = jqContents.toArray();
 			this.applyContents(page, jqContents);
-			snippet.markAsAttached();
+			snippet.markAttached();
 		}
 	}	
 	

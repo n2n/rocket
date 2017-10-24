@@ -259,7 +259,7 @@ var Rocket;
         }
         Cmd.Container = Container;
         (function (Container) {
-            let LayerEventType;
+            var LayerEventType;
             (function (LayerEventType) {
                 LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED";
                 LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED";
@@ -489,7 +489,7 @@ var Rocket;
         }
         Cmd.Layer = Layer;
         (function (Layer) {
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["SHOW"] = 0] = "SHOW";
                 EventType[EventType["HIDE"] = 1] = "HIDE";
@@ -1132,7 +1132,7 @@ var Rocket;
         }
         Cmd.Menu = Menu;
         (function (Zone) {
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["SHOW"] = 0] = "SHOW";
                 EventType[EventType["HIDE"] = 1] = "HIDE";
@@ -1261,12 +1261,12 @@ var Rocket;
         }
         Display.Entry = Entry;
         (function (Entry) {
-            let State;
+            var State;
             (function (State) {
                 State[State["PERSISTENT"] = 0] = "PERSISTENT";
                 State[State["REMOVED"] = 1] = "REMOVED";
             })(State = Entry.State || (Entry.State = {}));
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["DISPOSED"] = 0] = "DISPOSED";
                 EventType[EventType["REFRESHED"] = 1] = "REFRESHED";
@@ -1564,7 +1564,7 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
-        let Severity;
+        var Severity;
         (function (Severity) {
             Severity[Severity["PRIMARY"] = 0] = "PRIMARY";
             Severity[Severity["SECONDARY"] = 1] = "SECONDARY";
@@ -1634,7 +1634,7 @@ var Rocket;
                 }
             }
             Form.Config = Config;
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["SUBMIT"] = 0] = "SUBMIT";
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED";
@@ -2256,6 +2256,7 @@ var Rocket;
                     if (this.form) {
                         throw new Error("Quicksearch already initialized.");
                     }
+                    this.jqForm = jqForm;
                     this.form = Jhtml.Ui.Form.from(jqForm.get(0));
                     this.form.on("submit", () => {
                         this.onSubmit();
@@ -2263,9 +2264,9 @@ var Rocket;
                     this.form.config.disableControls = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     this.form.config.successResponseHandler = (response) => {
-                        if (!response.model)
+                        if (!response.model || !response.model.snippet)
                             return false;
-                        this.whenSubmitted(response.model);
+                        this.whenSubmitted(response.model.snippet);
                         return true;
                     };
                     this.initListeners();
@@ -2319,8 +2320,8 @@ var Rocket;
                     this.sc++;
                     this.overviewContent.clear(true);
                 }
-                whenSubmitted(model) {
-                    this.overviewContent.initFromResponse(data);
+                whenSubmitted(snippet) {
+                    this.overviewContent.initFromResponse(snippet);
                 }
             }
             class CritmodSelect {
@@ -2638,11 +2639,11 @@ var Rocket;
                     this.buildFakePage();
                     this.triggerContentChange();
                 }
-                initFromResponse(data) {
+                initFromResponse(snippet, info) {
                     this.reset(false);
-                    var page = this.createPage(parseInt(data.additional.pageNo));
+                    var page = this.createPage(parseInt(info.pageNo));
                     this._currentPageNo = page.pageNo;
-                    this.initPageFromResponse(page, data);
+                    this.initPageFromResponse(page, snippet, info);
                     if (this.allInfo) {
                         this.allInfo = new AllInfo([page], 0);
                     }
@@ -2971,13 +2972,12 @@ var Rocket;
                         that.triggerContentChange();
                     });
                 }
-                initPageFromResponse(page, model) {
-                    this.changeBoundaries(model.additional.numPages, model.additional.numEntries);
-                    let snippet = model.snippet;
-                    var jqContents = $(snippet.element).find(".rocket-overview-content:first").children().toArray();
-                    snippet.element = jqContents.toArray();
+                initPageFromResponse(page, snippet, data) {
+                    this.changeBoundaries(data.numPages, data.numEntries);
+                    var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children().toArray();
+                    snippet.elements = jqContents.toArray();
                     this.applyContents(page, jqContents);
-                    snippet.markAsAttached();
+                    snippet.markAttached();
                 }
             }
             Overview.OverviewContent = OverviewContent;

@@ -106,6 +106,7 @@ namespace Rocket.Impl.Overview {
 		private jqSearchButton: JQuery;
 		private jqSearchInput: JQuery;
 		private form: Jhtml.Ui.Form;
+		private jqForm: JQuery;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
@@ -115,6 +116,7 @@ namespace Rocket.Impl.Overview {
 				throw new Error("Quicksearch already initialized.");
 			}
 			
+			this.jqForm = jqForm;
 			this.form = Jhtml.Ui.Form.from(<HTMLFormElement> jqForm.get(0));
 			
 			this.form.on("submit", () => {
@@ -124,9 +126,9 @@ namespace Rocket.Impl.Overview {
 			this.form.config.disableControls = false;
 			this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
 			this.form.config.successResponseHandler = (response: Jhtml.Response) => {
-				if (!response.model) return false;
+				if (!response.model || !response.model.snippet) return false;
 				
-				this.whenSubmitted(response.model);
+				this.whenSubmitted(response.model.snippet);
 				return true;
 			}
 			
@@ -172,7 +174,6 @@ namespace Rocket.Impl.Overview {
 			if (this.serachVal == searchVal) return;
 			
 			this.updateState();
-
 			this.overviewContent.clear(true);
 			
 			this.serachVal = searchVal;
@@ -198,8 +199,8 @@ namespace Rocket.Impl.Overview {
 			this.overviewContent.clear(true);
 		}
 		
-		private whenSubmitted(model: Jhtml.Model) {
-			this.overviewContent.initFromResponse(data);
+		private whenSubmitted(snippet: Jhtml.Snippet) {
+			this.overviewContent.initFromResponse(snippet);
 		}
 	}
 	
