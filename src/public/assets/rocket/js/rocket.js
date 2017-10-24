@@ -1622,7 +1622,6 @@ var Rocket;
                 }
                 form = new Form(jqForm);
                 jqForm.data("rocketImplForm", form);
-                form.observe();
                 return form;
             }
         }
@@ -3641,25 +3640,23 @@ var Rocket;
                     if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0)
                         return;
                     var pendingLookup = this.pendingLookups.shift();
-                    var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())), false);
+                    let snippet = this.preloadedResponseObjects.shift();
+                    var embeddedEntry = new EmbeddedEntry($(snippet.elements), false);
                     pendingLookup.doneCallback(embeddedEntry);
-                    n2n.ajah.update();
+                    snippet.markAttached();
                 }
                 load() {
-                    $.ajax({
-                        "url": this.urlStr,
-                        "data": {
-                            "propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
-                            "draft": this.draftMode ? 1 : 0
-                        },
-                        "dataType": "json"
-                    }).fail((jqXHR, textStatus, data) => {
-                        if (jqXHR.status != 200) {
-                            Rocket.handleErrorResponse(this.urlStr, jqXHR);
-                        }
+                    let url = Jhtml.Url.create(this.urlStr).extR(null, {
+                        "propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
+                        "draft": this.draftMode ? 1 : 0
+                    });
+                    Jhtml.lookupModel(url)
+                        .then((model) => {
+                        this.doneResponse(model.snippet);
+                    })
+                        .catch(e => {
                         this.failResponse();
-                    }).done((data, textStatus, jqXHR) => {
-                        this.doneResponse(data);
+                        throw e;
                     });
                 }
                 failResponse() {
@@ -3670,8 +3667,8 @@ var Rocket;
                         pendingLookup.failCallback();
                     }
                 }
-                doneResponse(data) {
-                    this.preloadedResponseObjects.push(data);
+                doneResponse(snippet) {
+                    this.preloadedResponseObjects.push(snippet);
                     this.check();
                 }
             }

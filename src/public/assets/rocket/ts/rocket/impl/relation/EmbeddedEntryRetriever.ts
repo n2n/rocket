@@ -7,7 +7,7 @@ namespace Rocket.Impl.Relation {
 		private startKey: number;
 		private keyPrefix: string;
 		private preloadEnabled: boolean = false;
-		private preloadedResponseObjects: Array<Object> = new Array<Object>();
+		private preloadedResponseObjects: Array<Jhtml.Snippet> = new Array<Jhtml.Snippet>();
 		private pendingLookups: Array<PendingLookup> = new Array<PendingLookup>();
 		
 		constructor (lookupUrlStr: string, propertyPath: string, draftMode: boolean, startKey: number = null, 
@@ -38,29 +38,26 @@ namespace Rocket.Impl.Relation {
 			if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0) return;
 			
 			var pendingLookup: PendingLookup = this.pendingLookups.shift();
-			var embeddedEntry = new EmbeddedEntry($(n2n.ajah.analyze(this.preloadedResponseObjects.shift())), false);
+			let snippet: Jhtml.Snippet = this.preloadedResponseObjects.shift();
+			var embeddedEntry = new EmbeddedEntry($(snippet.elements), false);
 			
 			pendingLookup.doneCallback(embeddedEntry);
-			n2n.ajah.update();
+			snippet.markAttached();
 		}
 		
 		private load() {
-			$.ajax({
-				"url": this.urlStr,
-				"data": {
-					"propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
-					"draft": this.draftMode ? 1 : 0
-				},
-				"dataType": "json"
-			}).fail((jqXHR, textStatus, data) => {
-				if (jqXHR.status != 200) {
-                    Rocket.handleErrorResponse(this.urlStr, jqXHR);
-				}
-				
-				this.failResponse();
-			}).done((data, textStatus, jqXHR) => {
-				this.doneResponse(data);
+			let url = Jhtml.Url.create(this.urlStr).extR(null, {
+				"propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
+				"draft": this.draftMode ? 1 : 0
 			});
+			Jhtml.lookupModel(url)
+				.then((model: Jhtml.Model) => {
+					this.doneResponse(model.snippet);
+				})
+				.catch(e => {
+					this.failResponse();
+					throw e;
+				});
 		}
 		
 		private failResponse() {
@@ -72,8 +69,8 @@ namespace Rocket.Impl.Relation {
 			}
 		}
 		
-		private doneResponse(data: Object) {
-			this.preloadedResponseObjects.push(data);
+		private doneResponse(snippet: Jhtml.Snippet) {
+			this.preloadedResponseObjects.push(snippet);
 			this.check();
 		}
 	}

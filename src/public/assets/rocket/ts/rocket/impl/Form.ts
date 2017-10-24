@@ -79,7 +79,6 @@ namespace Rocket.Impl {
 			
 			form = new Form(jqForm);
 			jqForm.data("rocketImplForm", form);
-			form.observe();
 			return form;
 		}
 	}
