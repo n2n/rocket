@@ -155,7 +155,7 @@
     						array('id' => 'rocket-branding')) ?>
     			</div>
     			<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
-    			<nav id="rocket-conf-nav" class="navbar-toggleable-lg" data-jhtml-comp="rocket-conf-nav">
+    			<nav id="rocket-conf-nav" class="navbar-expand-lg" data-jhtml-comp="rocket-conf-nav">
     				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
     						data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false" 
     						aria-label="Toggle navigation">
