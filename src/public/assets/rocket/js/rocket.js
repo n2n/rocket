@@ -2266,7 +2266,7 @@ var Rocket;
                     this.form.config.successResponseHandler = (response) => {
                         if (!response.model || !response.model.snippet)
                             return false;
-                        this.whenSubmitted(response.model.snippet);
+                        this.whenSubmitted(response.model.snippet, response.model.additionalData);
                         return true;
                     };
                     this.initListeners();
@@ -2320,8 +2320,8 @@ var Rocket;
                     this.sc++;
                     this.overviewContent.clear(true);
                 }
-                whenSubmitted(snippet) {
-                    this.overviewContent.initFromResponse(snippet);
+                whenSubmitted(snippet, info) {
+                    this.overviewContent.initFromResponse(snippet, info);
                 }
             }
             class CritmodSelect {
@@ -2329,41 +2329,44 @@ var Rocket;
                     this.overviewContent = overviewContent;
                 }
                 get jQuery() {
-                    return this.form.jQuery;
+                    return this.jqForm;
                 }
                 init(jqForm, critmodForm) {
                     if (this.form) {
                         throw new Error("CritmodSelect already initialized.");
                     }
-                    this.form = Impl.Form.from(jqForm);
+                    this.jqForm = jqForm;
+                    this.form = Jhtml.Ui.Form.from(jqForm.get(0));
                     this.form.reset();
                     this.critmodForm = critmodForm;
                     this.jqButton = jqForm.find("button[type=submit]").hide();
-                    this.form.config.blockPage = false;
                     this.form.config.disableControls = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     this.form.config.autoSubmitAllowed = false;
-                    var that = this;
-                    this.form.config.successResponseHandler = function (data) {
-                        that.whenSubmitted(data);
+                    this.form.config.successResponseHandler = (response) => {
+                        if (response.model && response.model.snippet) {
+                            this.whenSubmitted(response.model.snippet, response.model.additionalData);
+                            return true;
+                        }
+                        return false;
                     };
-                    this.jqSelect = jqForm.find("select:first").change(function () {
-                        that.send();
+                    this.jqSelect = jqForm.find("select:first").change(() => {
+                        this.send();
                     });
-                    critmodForm.onChange(function () {
-                        that.form.abortSubmit();
-                        that.updateId();
+                    critmodForm.onChange(() => {
+                        this.form.abortSubmit();
+                        this.updateId();
                     });
-                    critmodForm.whenChanged(function (idOptions) {
-                        that.updateIdOptions(idOptions);
+                    critmodForm.whenChanged((idOptions) => {
+                        this.updateIdOptions(idOptions);
                     });
                 }
                 updateState() {
                     if (this.jqSelect.val()) {
-                        this.form.jQuery.addClass("rocket-active");
+                        this.jqForm.addClass("rocket-active");
                     }
                     else {
-                        this.form.jQuery.removeClass("rocket-active");
+                        this.jqForm.removeClass("rocket-active");
                     }
                 }
                 send() {
@@ -2375,8 +2378,8 @@ var Rocket;
                     this.critmodForm.critmodSaveId = id;
                     this.critmodForm.freeze();
                 }
-                whenSubmitted(data) {
-                    this.overviewContent.initFromResponse(data);
+                whenSubmitted(snippet, info) {
+                    this.overviewContent.initFromResponse(snippet, info);
                     this.critmodForm.reload();
                 }
                 updateId() {
@@ -2454,10 +2457,10 @@ var Rocket;
                 set open(open) {
                     this._open = open;
                     if (open) {
-                        this.form.jQuery.show();
+                        this.jqForm.show();
                     }
                     else {
-                        this.form.jQuery.hide();
+                        this.jqForm.hide();
                     }
                     this.updateControl();
                 }
@@ -2465,54 +2468,57 @@ var Rocket;
                     if (this.form) {
                         throw new Error("CritmodForm already initialized.");
                     }
-                    this.form = Impl.Form.from(jqForm);
+                    this.jqForm = jqForm;
+                    this.form = Jhtml.Ui.Form.from(jqForm.get(0));
                     this.form.reset();
-                    this.form.config.blockPage = false;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
-                    var that = this;
-                    this.form.config.successResponseHandler = function (data) {
-                        that.whenSubmitted(data);
-                    };
-                    var activateFunc = function (ensureCritmodSaveId) {
-                        that.activated = true;
-                        if (ensureCritmodSaveId && !that.critmodSaveId) {
-                            that.critmodSaveId = "new";
+                    this.form.config.successResponseHandler = (response) => {
+                        if (response.model && response.model.snippet) {
+                            this.whenSubmitted(response.model.snippet, response.model.additionalData);
+                            return true;
                         }
-                        that.onSubmit();
+                        return false;
                     };
-                    var deactivateFunc = function () {
-                        that.activated = false;
-                        that.critmodSaveId = null;
-                        that.block();
-                        that.onSubmit();
+                    var activateFunc = (ensureCritmodSaveId) => {
+                        this.activated = true;
+                        if (ensureCritmodSaveId && !this.critmodSaveId) {
+                            this.critmodSaveId = "new";
+                        }
+                        this.onSubmit();
+                    };
+                    var deactivateFunc = () => {
+                        this.activated = false;
+                        this.critmodSaveId = null;
+                        this.block();
+                        this.onSubmit();
                     };
                     this.jqApplyButton = jqForm.find(".rocket-impl-critmod-apply").click(function () { activateFunc(false); });
                     this.jqClearButton = jqForm.find(".rocket-impl-critmod-clear").click(function () { deactivateFunc(); });
                     this.jqNameInput = jqForm.find(".rocket-impl-critmod-name");
                     this.jqSaveButton = jqForm.find(".rocket-impl-critmod-save").click(function () { activateFunc(true); });
                     this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(function () {
-                        that.critmodSaveId = null;
+                        this.critmodSaveId = null;
                         activateFunc(true);
                     });
                     this.jqDeleteButton = jqForm.find(".rocket-impl-critmod-delete").click(function () { deactivateFunc(); });
                     this.updateState();
                 }
                 get activated() {
-                    return this.form.jQuery.hasClass("rocket-active");
+                    return this.jqForm.hasClass("rocket-active");
                 }
                 set activated(activated) {
                     if (activated) {
-                        this.form.jQuery.addClass("rocket-active");
+                        this.jqForm.addClass("rocket-active");
                     }
                     else {
-                        this.form.jQuery.removeClass("rocket-active");
+                        this.jqForm.removeClass("rocket-active");
                     }
                 }
                 get critmodSaveId() {
-                    return this.form.jQuery.data("rocket-impl-critmod-save-id");
+                    return this.jqForm.data("rocket-impl-critmod-save-id");
                 }
                 set critmodSaveId(critmodSaveId) {
-                    this.form.jQuery.data("rocket-impl-critmod-save-id", critmodSaveId);
+                    this.jqForm.data("rocket-impl-critmod-save-id", critmodSaveId);
                     this.updateControl();
                 }
                 get critmodSaveName() {
@@ -2537,22 +2543,12 @@ var Rocket;
                     if (this.jqBlocker)
                         return;
                     this.jqBlocker = $("<div />", { "class": "rocket-impl-critmod-blocker" })
-                        .appendTo(this.form.jQuery);
+                        .appendTo(this.jqForm);
                 }
                 reload() {
                     var url = this.form.config.actionUrl;
-                    var that = this;
-                    $.ajax({
-                        "url": url,
-                        "dataType": "json"
-                    }).fail(function (jqXHR, textStatus, data) {
-                        if (jqXHR.status != 200) {
-                            Rocket.getContainer().handleError(url, jqXHR.responseText);
-                            return;
-                        }
-                        throw new Error("invalid response");
-                    }).done(function (data, textStatus, jqXHR) {
-                        that.replaceForm(data);
+                    Jhtml.Monitor.of(this.jqForm.get(0)).lookupModel(Jhtml.Url.create(url)).then((model) => {
+                        this.replaceForm(model.snippet, model.additionalData);
                     });
                 }
                 onSubmit() {
@@ -2561,23 +2557,23 @@ var Rocket;
                     });
                     this.overviewContent.clear(true);
                 }
-                whenSubmitted(data) {
+                whenSubmitted(snippet, info) {
                     this.overviewContent.init(1);
-                    this.replaceForm(data);
+                    this.replaceForm(snippet, info);
                 }
-                replaceForm(data) {
+                replaceForm(snippet, info) {
                     if (this.jqBlocker) {
                         this.jqBlocker.remove();
                         this.jqBlocker = null;
                     }
-                    var jqForm = $(n2n.ajah.analyze(data));
-                    this.form.jQuery.replaceWith(jqForm);
+                    var jqForm = $(snippet.elements);
+                    this.jqForm.replaceWith(jqForm);
                     this.form = null;
-                    n2n.ajah.update();
+                    snippet.markAttached();
                     this.init(jqForm);
                     this.open = this.open;
                     this.updateControl();
-                    var idOptions = data.additional.critmodSaveIdOptions;
+                    var idOptions = info.critmodSaveIdOptions;
                     this.changedCallbacks.forEach(function (callback) {
                         callback(idOptions);
                     });
@@ -2710,30 +2706,17 @@ var Rocket;
                     }
                     this.markPageAsLoading(0);
                     var fakePage = this.fakePage;
-                    var that = this;
-                    $.ajax({
-                        "url": that.loadUrl.toString(),
-                        "data": { "idReps": unloadedIdReps },
-                        "dataType": "json"
-                    }).fail(function (jqXHR, textStatus, data) {
-                        if (fakePage !== that.fakePage)
+                    Jhtml.Monitor.of(this.jqElem.get(0)).lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
+                        .then((model) => {
+                        if (fakePage !== this.fakePage)
                             return;
-                        that.unmarkPageAsLoading(0);
-                        if (jqXHR.status != 200) {
-                            Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
-                            return;
-                        }
-                        throw new Error("invalid response");
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (fakePage !== that.fakePage)
-                            return;
-                        that.unmarkPageAsLoading(0);
-                        var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
+                        this.unmarkPageAsLoading(0);
+                        var jqContents = $(model.snippet.elements).find(".rocket-overview-content:first").children();
                         fakePage.jqContents = jqContents;
-                        that.jqElem.append(jqContents);
-                        n2n.ajah.update();
-                        that.selectorState.observeFakePage(fakePage);
-                        that.triggerContentChange();
+                        this.jqElem.append(jqContents);
+                        model.snippet.markAttached();
+                        this.selectorState.observeFakePage(fakePage);
+                        this.triggerContentChange();
                     });
                 }
                 get selectedOnly() {

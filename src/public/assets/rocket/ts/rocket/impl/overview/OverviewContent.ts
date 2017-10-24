@@ -140,34 +140,20 @@ namespace Rocket.Impl.Overview {
 			this.markPageAsLoading(0);
 			
 			var fakePage = this.fakePage;
-			var that = this;
-			$.ajax({
-				"url": that.loadUrl.toString(),
-				"data": { "idReps": unloadedIdReps },
-				"dataType": "json"
-			}).fail(function (jqXHR: any, textStatus: any, data: any) {
-				if (fakePage !== that.fakePage) return;
+			
+			Jhtml.Monitor.of(this.jqElem.get(0)).lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
+					.then((model: Jhtml.Model) => {
+				if (fakePage !== this.fakePage) return; 
 				
-				that.unmarkPageAsLoading(0);
+				this.unmarkPageAsLoading(0);
 				
-				if (jqXHR.status != 200) {
-                    Rocket.getContainer().handleError(that.loadUrl, jqXHR.responseText);
-					return;
-				}
-				
-				throw new Error("invalid response");
-			}).done(function (data: any, textStatus: any, jqXHR: any) {
-				if (fakePage !== that.fakePage) return; 
-				
-				that.unmarkPageAsLoading(0);
-				
-				var jqContents = $(n2n.ajah.analyze(data)).find(".rocket-overview-content:first").children();
+				var jqContents = $(model.snippet.elements).find(".rocket-overview-content:first").children();
 				fakePage.jqContents = jqContents;
-				that.jqElem.append(jqContents);
-				n2n.ajah.update();
+				this.jqElem.append(jqContents);
+				model.snippet.markAttached();
 				
-				that.selectorState.observeFakePage(fakePage);
-				that.triggerContentChange();
+				this.selectorState.observeFakePage(fakePage);
+				this.triggerContentChange();
 			});
 		}
 		
@@ -284,7 +270,7 @@ namespace Rocket.Impl.Overview {
 			this.triggerContentChange();
 		}
 		
-		whenContentChanged(callback: (OverviewContent) => any) {
+		whenContentChanged(callback: (overviewContent: OverviewContent) => any) {
 			this.changedCallbacks.push(callback);
 		}
 		
