@@ -63,7 +63,7 @@
 			<?php endforeach ?>
 		</tbody>
 	</table>
-	<div class="rocket-context-commands">
+	<div class="rocket-zone-commands">
 
 				<?php $html->linkToController(array('create'), 
 						new Raw('<i class="fa fa-plus-circle"></i> <span>' . $html->getL10nText('tool_backup_create_label') . '</span>'), 

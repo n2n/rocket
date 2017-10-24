@@ -137,7 +137,7 @@ var Rocket;
                     return;
                 this.jqBlocker =
                     $("<div />", {
-                        "class": "rocket-context-block",
+                        "class": "rocket-zone-block",
                         "css": {
                             "position": "fixed",
                             "top": 0,
@@ -282,7 +282,7 @@ var Rocket;
                 this._visible = true;
                 this.onNewPageCallbacks = new Array();
                 this.onNewHistoryEntryCallbacks = new Array();
-                var jqPage = jqLayer.children(".rocket-context:first");
+                var jqPage = jqLayer.children(".rocket-zone:first");
                 if (jqPage.length > 0) {
                     var page = new Cmd.Zone(jqPage, Jhtml.Url.create(window.location.href), this);
                     this.addZone(page);
@@ -814,7 +814,7 @@ var Rocket;
                 this.jqZone = jqZone;
                 this.urls.push(this._activeUrl = url);
                 this._layer = layer;
-                jqZone.addClass("rocket-context");
+                jqZone.addClass("rocket-zone");
                 jqZone.data("rocketPage", this);
                 this.reset();
                 this.hide();
@@ -933,8 +933,8 @@ var Rocket;
                 return lock;
             }
             static of(jqElem) {
-                if (!jqElem.hasClass(".rocket-context")) {
-                    jqElem = jqElem.parents(".rocket-context");
+                if (!jqElem.hasClass(".rocket-zone")) {
+                    jqElem = jqElem.parents(".rocket-zone");
                 }
                 var context = jqElem.data("rocketPage");
                 if (context instanceof Zone)
@@ -1091,17 +1091,17 @@ var Rocket;
                 if (this._toolbar) {
                     return this._toolbar;
                 }
-                let jqToolbar = this.context.jQuery.find(".rocket-context-toolbar:first");
+                let jqToolbar = this.context.jQuery.find(".rocket-zone-toolbar:first");
                 if (jqToolbar.length == 0) {
-                    jqToolbar = $("<div />", { "class": "rocket-context-toolbar" }).prependTo(this.context.jQuery);
+                    jqToolbar = $("<div />", { "class": "rocket-zone-toolbar" }).prependTo(this.context.jQuery);
                 }
                 return this._toolbar = new display.Toolbar(jqToolbar);
             }
             getJqPageCommands() {
-                var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
+                var jqCommandList = this.context.jQuery.find(".rocket-zone-commands:first");
                 if (jqCommandList.length == 0) {
                     jqCommandList = $("<div />", {
-                        "class": "rocket-context-commands"
+                        "class": "rocket-zone-commands"
                     });
                     this.context.jQuery.append(jqCommandList);
                 }
@@ -3190,7 +3190,7 @@ var Rocket;
                     var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                     var pagination = new Pagination(overviewContent);
-                    pagination.draw(jqForm.children(".rocket-context-commands"));
+                    pagination.draw(jqForm.children(".rocket-zone-commands"));
                     var header = new Overview.Header(overviewContent);
                     header.init(jqElem.children(".rocket-impl-overview-tools"));
                     overviewPage = new OverviewPage(jqElem, overviewContent);
@@ -3680,7 +3680,7 @@ var Rocket;
                     this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
                     this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");
-                    this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-context-commands");
+                    this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
                     if (readOnly) {
                         var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                         this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail",

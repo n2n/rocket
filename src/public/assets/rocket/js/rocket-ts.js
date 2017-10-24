@@ -536,7 +536,7 @@ var Rocket;
                         .init(overviewContent);
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                     var pagination = new Pagination(overviewContent);
-                    pagination.draw(jqForm.children(".rocket-context-commands"));
+                    pagination.draw(jqForm.children(".rocket-zone-commands"));
                     var header = new Overview.Header(overviewContent);
                     header.init(jqElem.children(".rocket-impl-overview-tools"));
                     overviewContext = new OverviewContext(jqElem, overviewContent);
@@ -2361,7 +2361,7 @@ var Rocket;
                 this.bodyGroup = display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
                 this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                 this.jqSummary = jqEntry.children(".rocket-impl-summary");
-                this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-context-commands");
+                this.jqContextCommands = this.bodyGroup.getJQuery().children(".rocket-zone-commands");
                 if (readOnly) {
                     var rcl = new display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                     this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail", severity: display.Severity.SECONDARY });
@@ -3067,7 +3067,7 @@ var Rocket;
                     return;
                 this.jqBlocker =
                     $("<div />", {
-                        "class": "rocket-context-block",
+                        "class": "rocket-zone-block",
                         "css": {
                             "position": "fixed",
                             "top": 0,
@@ -3102,7 +3102,7 @@ var Rocket;
                 this._container = container;
                 jqContentGroup.addClass("rocket-layer");
                 jqContentGroup.data("rocketLayer", this);
-                var jqContext = jqContentGroup.children(".rocket-context");
+                var jqContext = jqContentGroup.children(".rocket-zone");
                 if (jqContext.length > 0) {
                     var context = new Cmd.Context(jqContext, Cmd.Url.create(window.location.href), this);
                     this.addContext(context);
@@ -3323,7 +3323,7 @@ var Rocket;
                 this.jqContext = jqContext;
                 this.urls.push(this._activeUrl = url);
                 this._layer = layer;
-                jqContext.addClass("rocket-context");
+                jqContext.addClass("rocket-zone");
                 jqContext.data("rocketContext", this);
                 this.reset();
                 this.hide();
@@ -3488,8 +3488,8 @@ var Rocket;
                 return lock;
             };
             Context.findFrom = function (jqElem) {
-                if (!jqElem.hasClass(".rocket-context")) {
-                    jqElem = jqElem.parents(".rocket-context");
+                if (!jqElem.hasClass(".rocket-zone")) {
+                    jqElem = jqElem.parents(".rocket-zone");
                 }
                 var context = jqElem.data("rocketContext");
                 if (context)
@@ -3647,10 +3647,10 @@ var Rocket;
                 this.context = context;
             }
             Menu.prototype.getJqContextCommands = function () {
-                var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
+                var jqCommandList = this.context.jQuery.find(".rocket-zone-commands:first");
                 if (jqCommandList.length == 0) {
                     jqCommandList = $("<div />", {
-                        "class": "rocket-context-commands"
+                        "class": "rocket-zone-commands"
                     });
                     this.context.jQuery.append(jqCommandList);
                 }

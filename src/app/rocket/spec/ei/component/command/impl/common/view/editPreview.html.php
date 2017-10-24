@@ -63,7 +63,7 @@
 		<iframe src="<?php $html->esc($view->params['iframeSrc']) ?>" id="rocket-preview-content"></iframe>
 	</div>
 	
-	<div class="rocket-context-commands">
+	<div class="rocket-zone-commands">
 		<button type="button" id="rocket-preview-save-command"
 				data-rocket-confirm-msg="<?php $html->l10nText('ei_impl_edit_publish_draft_confirm_message') ?>"
 				data-rocket-confirm-ok-label="<?php $html->l10nText('common_yes_label') ?>"

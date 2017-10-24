@@ -61,7 +61,7 @@
 				<?php $view->import($eiuEntryGui->createView($view)) ?>
 			</div>
 			
-			<div class="rocket-context-commands">
+			<div class="rocket-zone-commands">
 				<?php $eiHtml->entryCommands(false) ?>
 			</div>
 		<?php $eiHtml->entryClose() ?>

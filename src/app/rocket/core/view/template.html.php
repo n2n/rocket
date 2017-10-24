@@ -92,7 +92,7 @@
 				transition: border 1s;
 			}
 			
-			.rocket-context.rocket-loading {
+			.rocket-zone.rocket-loading {
 				background: url('https://media.giphy.com/media/3o7bu8sRnYpTOG1p8k/giphy-downsized.gif') center center no-repeat; 
 				min-height: 80vh;
 			}
@@ -106,7 +106,7 @@
 				background: yellow;
 			}
 			
-			.rocket-context-block {
+			.rocket-zone-block {
 				position: fixed; 
 				top: 0px; 
 				left: 0px; 
@@ -224,7 +224,7 @@
     		<div id="rocket-content-container" data-error-tab-title="<?php $html->text('ei_error_list_title') ?>"
     				data-display-error-label="<?php $html->text('core_display_error_label') ?>">
     			<div class="rocket-main-layer">
-    				<div class="rocket-context" data-jhtml-comp="rocket-page">
+    				<div class="rocket-zone" data-jhtml-comp="rocket-page">
     					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
     						<ol class="breadcrumb">
     							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>

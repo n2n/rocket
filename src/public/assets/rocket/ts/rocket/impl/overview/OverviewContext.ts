@@ -62,7 +62,7 @@ namespace Rocket.Impl.Overview {
 			
 			
 			var pagination = new Pagination(overviewContent);
-			pagination.draw(jqForm.children(".rocket-context-commands"));
+			pagination.draw(jqForm.children(".rocket-zone-commands"));
 			
 			
 			var header = new Header(overviewContent);

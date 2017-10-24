@@ -20,7 +20,7 @@ namespace Rocket.Cmd {
 			this.urls.push(this._activeUrl = url);
 			this._layer = layer;
 			
-			jqZone.addClass("rocket-context");
+			jqZone.addClass("rocket-zone");
 			jqZone.data("rocketPage", this);
 			
 			this.reset();
@@ -215,8 +215,8 @@ namespace Rocket.Cmd {
 		}
 		
 		public static of(jqElem: JQuery): Zone {
-			if (!jqElem.hasClass(".rocket-context")) {
-				jqElem = jqElem.parents(".rocket-context");
+			if (!jqElem.hasClass(".rocket-zone")) {
+				jqElem = jqElem.parents(".rocket-zone");
 			}
 			
 			var context = jqElem.data("rocketPage");
@@ -420,9 +420,9 @@ namespace Rocket.Cmd {
 				return this._toolbar;
 			}
 			
-			let jqToolbar = this.context.jQuery.find(".rocket-context-toolbar:first");
+			let jqToolbar = this.context.jQuery.find(".rocket-zone-toolbar:first");
 			if (jqToolbar.length == 0) {
-				jqToolbar = $("<div />", { "class": "rocket-context-toolbar"}).prependTo(this.context.jQuery);
+				jqToolbar = $("<div />", { "class": "rocket-zone-toolbar"}).prependTo(this.context.jQuery);
 			}
 			
 			
@@ -430,10 +430,10 @@ namespace Rocket.Cmd {
 		}
 		
 		private getJqPageCommands() {
-			var jqCommandList = this.context.jQuery.find(".rocket-context-commands:first");
+			var jqCommandList = this.context.jQuery.find(".rocket-zone-commands:first");
 			if (jqCommandList.length == 0) {
 				jqCommandList = $("<div />", {
-					"class": "rocket-context-commands"
+					"class": "rocket-zone-commands"
 				});
 				this.context.jQuery.append(jqCommandList);
 			}

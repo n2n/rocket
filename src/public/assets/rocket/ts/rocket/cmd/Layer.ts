@@ -13,7 +13,7 @@ namespace Rocket.Cmd {
 			this.onNewPageCallbacks = new Array<PageCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 
-			var jqPage = jqLayer.children(".rocket-context:first");
+			var jqPage = jqLayer.children(".rocket-zone:first");
 			if (jqPage.length > 0) {
 				var page = new Zone(jqPage, Jhtml.Url.create(window.location.href), this);
 				this.addZone(page);

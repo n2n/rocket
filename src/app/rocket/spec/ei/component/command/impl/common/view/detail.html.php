@@ -42,7 +42,7 @@
 <?php $eiHtml->entryOpen('div', $eiuEntryGui)?>
 	<?php $view->out($eiuEntryGui->createView($view)) ?>
 
-	<div class="rocket-context-commands">
+	<div class="rocket-zone-commands">
 		<?php $eiHtml->entryCommands() ?>
 		
 		<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>

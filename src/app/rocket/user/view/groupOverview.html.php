@@ -105,7 +105,7 @@
 		</tbody>
 	</table>
 </div>
-<div class="rocket-context-commands">
+<div class="rocket-zone-commands">
 	<div>
 		<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
 						. $view->getL10nText('user_add_group_label') . '</span>'), 

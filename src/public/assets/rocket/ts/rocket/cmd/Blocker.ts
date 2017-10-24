@@ -66,7 +66,7 @@ namespace Rocket.Cmd {
 
 			this.jqBlocker = 
 					$("<div />", { 
-						"class": "rocket-context-block",
+						"class": "rocket-zone-block",
 						"css": {
 							"position": "fixed",
 							"top": 0,

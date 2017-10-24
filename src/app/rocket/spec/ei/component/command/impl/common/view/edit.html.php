@@ -42,7 +42,7 @@
 <?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form rocket-impl-form')) ?>
 	<?php $view->out($editModel->getEntryForm()->createView($view)) ?>
 					
-	<div class="rocket-context-commands">
+	<div class="rocket-zone-commands">
 		<div>
 			<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_quicksave_label') . '</span>'), 

@@ -112,7 +112,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="rocket-context-commands">	
+	<div class="rocket-zone-commands">	
 		<div>
 			<?php $formHtml->buttonSubmit('save', 
 					new Raw('<i class="fa fa-save"></i>' . $html->getL10nText('common_save_label')), 

@@ -103,7 +103,7 @@ namespace Rocket.Impl.Relation {
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
 			
-			this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-context-commands");
+			this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
 			
 			if (readOnly) {
 				var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);

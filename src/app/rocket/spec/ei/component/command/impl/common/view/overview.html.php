@@ -48,7 +48,7 @@
 		data-overview-path="<?php $html->out($html->meta()->getControllerUrl(null)) ?>">
 		
 	<?php if ($eiMask->isDraftingEnabled()): ?>
-		<div class="rocket-context-toolbar">
+		<div class="rocket-zone-toolbar">
 			<ul class="rocket-draft-nav">
 				<li><?php $html->linkToController(null, $html->getText('ei_impl_list_title'), array('class' => 'active')) ?></li>
 				<li><?php $html->linkToController('drafts', $html->getText('ei_impl_drafts_title')) ?></li>
@@ -67,7 +67,7 @@
 		
 		<?php $view->out($overviewModel->getEiuGui()->createView($view)) ?>
 		
-		<div class="rocket-context-commands">
+		<div class="rocket-zone-commands">
 			<?php /* Bert: do not display UL with no LI contents ?>
 			<ul class="rocket-partial-controls">
 				<li><?php / * partial control components * / ?></li>

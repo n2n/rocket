@@ -60,7 +60,7 @@ use n2n\web\ui\view\View;
 		</ul>
 	</form>
 </div>
-<div class="rocket-context-commands">
+<div class="rocket-zone-commands">
 	<a id="rocket-multi-upload-submit" href="#" class="btn btn-primary">
 		<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
 		<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>

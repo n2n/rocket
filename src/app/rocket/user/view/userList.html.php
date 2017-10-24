@@ -82,7 +82,7 @@
 	</table>
 </div>
 <?php if ($loggedInUser->isSuperAdmin()): ?>
-	<div class="rocket-context-commands">
+	<div class="rocket-zone-commands">
 		<div>
 			<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
 							. $view->getL10nText('user_add_label') . '</span>'), 
