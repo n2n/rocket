@@ -1,0 +1,129 @@
+.rocket-impl-translation-status {
+	display: inline-block;
+	padding-right: 1rem;
+	font-size: $font-size-sm;
+	> label {
+		padding-right: 0.5rem;
+		font-weight: bold;
+		> i {
+			padding-right: 0.5rem;
+			font-weight: normal;
+		}
+	}
+}
+
+
+/**
+ * common language menu 
+ */
+.rocket-impl-translation-status-menu,
+.rocket-impl-translation-menu {
+    position: absolute;
+    right: 0;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: white;
+    
+    padding: 1rem;
+    box-shadow: $btn-box-shadow;
+	> li {
+		border-bottom: 1px solid $input-border-color;
+	}
+	> li:last-child {
+        border-bottom: none;
+    }
+}
+
+.rocket-impl-translation-status-menu {
+	border-bottom: 3px solid $primary;
+	z-index: 20;
+    > li {
+        > a.btn {
+            display: block;
+            color: $body-color;
+            text-align: left;
+            padding-left: 0;
+            padding-right: 0;
+            font-weight: bold;
+            i {
+                font-size: $font-size-lg;
+            }
+        }
+    }
+    > li:last-child {
+        border-bottom: none;
+    }
+}
+
+
+.rocket-impl-translation-manager {
+	text-align: right;
+	position: relative;
+}
+
+.rocket-impl-translation-menu {
+	z-index: 10;
+	> li {
+		text-align: left;
+		> label {
+			display:block;
+			margin: 0.75rem 0;
+			&:after {
+				font-family: fontawesome;
+				padding-left: 5rem;
+				float: right;
+				font-weight: normal;
+				content: "\f068";
+			}
+			input {
+				display: none;
+			}
+		}
+	}
+	> li.rocket-active {
+		font-weight: bold;
+		> label:after {
+			content: "\f067";
+		}
+	}
+}
+
+
+/**
+ * labels
+ */
+
+.rocket-impl-translatable {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	.rocket-locale-label {
+		position: absolute;
+		top: 0.5rem;
+		left: -6rem;
+		width: 5rem;
+		text-align: right;
+		font-size: $font-size-sm;
+		font-weight: bold;
+		color: $text-muted;
+	}
+}
+
+.rocket-impl-translation {
+	position: relative;
+	
+	> .rocket-impl-enabler {
+		position: absolute;
+		width: 100%;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border: 1px solid $input-border-color;
+		text-align: left;
+	}
+}
+
+

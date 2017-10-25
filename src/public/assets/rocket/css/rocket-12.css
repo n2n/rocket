@@ -1651,7 +1651,7 @@ mark,
   padding: 0.375rem 0.625rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: #66615C;
+  color: #4F4A46;
   background-color: #fff;
   background-image: none;
   background-clip: padding-box;
@@ -1667,7 +1667,7 @@ mark,
 }
 
 .form-control:focus {
-  color: #66615C;
+  color: #4F4A46;
   background-color: #fff;
   border-color: #fbbe78;
   outline: none;
@@ -1675,7 +1675,7 @@ mark,
 }
 
 .form-control::placeholder {
-  color: #837E78;
+  color: #C2BDB6;
   opacity: 1;
 }
 
@@ -1689,7 +1689,7 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 select.form-control:focus::-ms-value {
-  color: #66615C;
+  color: #4F4A46;
   background-color: #fff;
 }
 
@@ -2034,7 +2034,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 
 .btn {
   display: inline-block;
-  font-weight: 400;
+  font-weight: bold;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -2761,7 +2761,7 @@ input[type="button"].btn-block {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #66615C;
+  color: #4F4A46;
   text-align: center;
   background-color: #F7F5F5;
   border: 1px solid #DAD7D3;
@@ -3570,6 +3570,16 @@ body {
 }
 
 /**
+ * View Control
+ */
+.rocket-impl-translation-view-control {
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  z-index: 10;
+}
+
+/**
  * Content
  */
 #rocket-content-container {
@@ -3613,6 +3623,143 @@ body {
  */
 .rocket-simple-commands > button > span {
   display: none;
+}
+
+.rocket-impl-translation-status {
+  display: inline-block;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+}
+
+.rocket-impl-translation-status > label {
+  padding-right: 0.5rem;
+  font-weight: bold;
+}
+
+.rocket-impl-translation-status > label > i {
+  padding-right: 0.5rem;
+  font-weight: normal;
+}
+
+/**
+ * common language menu 
+ */
+.rocket-impl-translation-status-menu,
+.rocket-impl-translation-menu {
+  position: absolute;
+  right: 0;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: white;
+  padding: 1rem;
+  box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.rocket-impl-translation-status-menu > li,
+.rocket-impl-translation-menu > li {
+  border-bottom: 1px solid #DAD7D3;
+}
+
+.rocket-impl-translation-status-menu > li:last-child,
+.rocket-impl-translation-menu > li:last-child {
+  border-bottom: none;
+}
+
+.rocket-impl-translation-status-menu {
+  border-bottom: 3px solid #ed8207;
+  z-index: 20;
+}
+
+.rocket-impl-translation-status-menu > li > a.btn {
+  display: block;
+  color: #373431;
+  text-align: left;
+  padding-left: 0;
+  padding-right: 0;
+  font-weight: bold;
+}
+
+.rocket-impl-translation-status-menu > li > a.btn i {
+  font-size: 1.25rem;
+}
+
+.rocket-impl-translation-status-menu > li:last-child {
+  border-bottom: none;
+}
+
+.rocket-impl-translation-manager {
+  text-align: right;
+  position: relative;
+}
+
+.rocket-impl-translation-menu {
+  z-index: 10;
+}
+
+.rocket-impl-translation-menu > li {
+  text-align: left;
+}
+
+.rocket-impl-translation-menu > li > label {
+  display: block;
+  margin: 0.75rem 0;
+}
+
+.rocket-impl-translation-menu > li > label:after {
+  font-family: fontawesome;
+  padding-left: 5rem;
+  float: right;
+  font-weight: normal;
+  content: "\f068";
+}
+
+.rocket-impl-translation-menu > li > label input {
+  display: none;
+}
+
+.rocket-impl-translation-menu > li.rocket-active {
+  font-weight: bold;
+}
+
+.rocket-impl-translation-menu > li.rocket-active > label:after {
+  content: "\f067";
+}
+
+/**
+ * labels
+ */
+.rocket-impl-translatable {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.rocket-impl-translatable .rocket-locale-label {
+  position: absolute;
+  top: 0.5rem;
+  left: -6rem;
+  width: 5rem;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #837E78;
+}
+
+.rocket-impl-translation {
+  position: relative;
+}
+
+.rocket-impl-translation > .rocket-impl-enabler {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #DAD7D3;
+  text-align: left;
 }
 
 .rocket-nav-group {
@@ -3685,6 +3832,10 @@ body {
 
 h1, .h1 {
   font-weight: normal;
+}
+
+.btn {
+  font-size: 0.875rem;
 }
 
 /*

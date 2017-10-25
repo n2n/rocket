@@ -66,6 +66,17 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 }
 
 /**
+ * View Control
+ */
+
+.rocket-impl-translation-view-control {
+    position: absolute;
+    top: 1rem; 
+    right: 0;
+    z-index: 10;
+}
+
+/**
  * Content
  */
 
