@@ -4073,6 +4073,33 @@ h1, .h1 {
   font-size: 0.875rem;
 }
 
+/**
+ * Relation
+ */
+.rocket-impl-selector > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #DAD7D3;
+  max-height: 20rem;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+
+.rocket-impl-selector > ul > li {
+  border-bottom: 1px solid #DAD7D3;
+  clear: both;
+}
+
+.rocket-impl-selector > ul > li > span {
+  padding: 0.375rem 0.625rem;
+  display: inline-block;
+}
+
+.rocket-impl-selector > ul > li > div {
+  float: right;
+}
+
 .align-baseline {
   vertical-align: baseline !important;
 }
