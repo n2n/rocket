@@ -51,12 +51,18 @@
 // @import "bootstrap/popover";
 // @import "bootstrap/carousel";
 
+// rocket main
 @import "layout";
 @import "translation";
 @import "navigation";
-@import "corrections";
 @import "lists";
 @import "entry";
+
+// rocket components
+@import "filter";
+@import "content_items";
+
+@import "corrections";
 
 // Utility classes
 @import "bootstrap/utilities";

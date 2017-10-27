@@ -14,94 +14,15 @@
     margin-bottom: 0.5rem;
 }
 
-.rocket-impl-critmod-select-container {
-    border: 3px solid $gray-500;
-    border-bottom-color: $gray-300;
-    background-color: $gray-300;
-    padding: 0.5rem 1rem;
-    position: absolute;
-    height: calc(100% + 1rem);
-    top: -.825rem;
-    z-index: 1;
-}
-
-.rocket-impl-critmod-select {
-    display: inline;
+.rocket-impl-quicksearch {
     > label {
-        display: inline;
         font-weight: bold;
+        margin-right: 1rem;
     }
-}
-
-.rocket-impl-critmod {
-    background-color: $gray-300;
-    padding: 1rem;
-    border-bottom: 3px solid $gray-500;
-    border-top: 3px solid $gray-500;
-}
-
-
-.rocket-filter-items {
-    position: relative;
-    background: white;
-    border: 1px solid $gray-500;
-    padding: 1rem;
-    margin-bottom: 2rem;
-}
-
-.rocket-filter-groups,
-.rocket-filter-group-controls,
-.rocket-filter-field-items,
-.rocket-multi-add-entries {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.rocket-filter-field-item, 
-.rocket-filter-group {
-    position: relative;
-}
-
-// fields 
-.rocket-filter-field-text-and-or {
-    position: absolute;
-    top: 0;
-    left: -2rem;
-    font-size: $font-size-sm;
-    background: white;
-    border: 1px solid $gray-500;
-    padding: 0 0.125rem;
-}
-
-.rocket-filter-field-item > * {
-    display: inline-block;
-}
-
-.rocket-filter-field-id {
-    width: 10rem;
-}
-
-.rocket-multi-add-entries {
-    background: white;
-    border: 1px solid $gray-500;
-    > li {
-        > a {
-            display: block;
-            border-bottom: 1px solid $gray-500;
-            padding: $input-btn-padding-y $input-btn-padding-x;
-        }
-    }
-}
-
-// groups
-
-.rocket-filter-group-controls {
-    position: absolute;
-    bottom: -1.125rem;
-    left: 1rem;
-    > li {
-        display: inline-block;
+    &.rocket-active > .input-group > .input-group-btn > .btn {
+        color: white;
+        background: $primary;
+        border-color: darken($primary, 15);
     }
 }
 
@@ -115,7 +36,6 @@
         border: none;
         box-shadow: none;
         color: $gray-600;
-        font-size: $font-size-lg;
         padding: 0.25rem 0.5rem;
         &:hover {
             background: transparent;
@@ -134,8 +54,11 @@
         &.btn-success:hover {
             color: $success;
         }
-        &> span {
+        > span {
             display: none;
+        }
+        > i {
+            font-size: $font-size-lg;
         }
     }
 }

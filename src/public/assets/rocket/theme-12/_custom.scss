@@ -25,20 +25,20 @@ $inverse: $gray-900;
 $link-decoration:       none;
 $link-hover-decoration: none;
 
-$font-size-h1: 1.5rem;
-$font-size-h2: 1.25rem;
-$font-size-h3: 1.125rem;
-$font-size-h4: 1rem;
-$font-size-h5: 1rem;
-$font-size-h6: 1rem;
+$h1-font-size: 1.5rem;
+$h2-font-size: 1.25rem;
+$h3-font-size: 1.125rem;
+$h4-font-size: 1rem;
+$h5-font-size: 1rem;
+$h6-font-size: 1rem;
 
 $headings-font-weight:   bold;
 
-$breadcrumb-padding-y:          1rem;
-$breadcrumb-padding-x:          0;
-
 $breadcrumb-bg:                 transparent;
-$breadcrumb-divider:            ">";
+$breadcrumb-divider:            "\f105";
+$breadcrumb-item-padding:		1rem;
+$breadcrumb-padding-y:          0.6rem;
+$breadcrumb-padding-x:          0;
 
 $input-btn-padding-x: 0.625rem;
 
@@ -52,4 +52,5 @@ $btn-box-shadow:                 2px 1px 4px 0 rgba(0,0,0,0.20);
 
 
 $input-color: $gray-800;
+$input-border-color: $gray-500;
 $input-placeholder-color: $gray-500;

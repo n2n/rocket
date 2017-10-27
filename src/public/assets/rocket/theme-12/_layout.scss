@@ -1,6 +1,12 @@
+html {
+    height: 100%;
+}
+
 body {
-    background-color: $gray-100;
     overflow-y: scroll;
+    background: $gray-100; /* Old browsers */
+    background: linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%); 
+    min-height: 100%;
 }
 
 
@@ -51,12 +57,12 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
  */
 #rocket-global-nav {
     position: fixed;
-    padding-top: 4rem;
+    padding-top: 5rem;
     top: $rocket-header-height;
     left: 0;
     bottom: 0;
     width: $rocket-global-nav-width;
-    background: url(../img/nav-body-bg.png) repeat $gray-800;
+    background: url(../img/nav-body-bg.png) repeat $gray-800 4px 11px;
     color: white;
     overflow-y: scroll;
 }
@@ -90,6 +96,9 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 
 
 .rocket-main-layer {
+    .rocket-main-title {
+        margin-bottom: 2rem;
+    }
 }
 
 .rocket-layer:not(.rocket-main-layer) {

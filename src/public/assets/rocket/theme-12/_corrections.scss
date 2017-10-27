@@ -4,6 +4,19 @@
 
 .breadcrumb {
     margin-bottom: 0;
+    font-size: $font-size-sm;
+}
+
+.breadcrumb-item {
+    > a {
+        color: $body-color;
+        &:hover {
+            color: $primary;
+        }
+    }
+    &:before {
+        font-family: fontawesome;
+    }
 }
 
 .table {
@@ -16,4 +29,13 @@ h1, .h1 {
 
 .btn {
     font-size: $font-size-sm;
+    > i {
+        font-size: $font-size-base;
+    }
+}
+
+@each $color, $value in $theme-colors {
+    .btn-#{$color} {
+        border-color: darken($value, 15);
+    }
 }
