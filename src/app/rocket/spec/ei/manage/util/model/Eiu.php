@@ -2,7 +2,6 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use n2n\context\Lookupable;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\l10n\DynamicTextCollection;
 
 class Eiu implements Lookupable {
