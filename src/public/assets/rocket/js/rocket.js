@@ -638,7 +638,7 @@ var Rocket;
                 return this.jqElem.children("label:first").text();
             }
             getParent() {
-                return StructureElement.findFrom(this.jqElem);
+                return StructureElement.of(this.jqElem);
             }
             isVisible() {
                 return this.jqElem.is(":visible");
@@ -713,7 +713,7 @@ var Rocket;
                 jqElem.data("rocketStructureElement", structureElement);
                 return structureElement;
             }
-            static findFrom(jqElem) {
+            static of(jqElem) {
                 jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
                 if (jqElem.length == 0)
                     return null;
@@ -1446,7 +1446,7 @@ var Rocket;
                 });
                 var errorIndex = null;
                 jqPage.find(".rocket-message-error").each(function () {
-                    var structureElement = Display.StructureElement.findFrom($(this));
+                    var structureElement = Display.StructureElement.of($(this));
                     if (errorIndex === null) {
                         errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
                         that.errorIndexes.push(errorIndex);
@@ -1675,7 +1675,7 @@ var Rocket;
             }
             initTm(jqElem, context) {
                 let tm = TranslationManager.from(jqElem);
-                let se = Rocket.Display.StructureElement.findFrom(jqElem);
+                let se = Rocket.Display.StructureElement.of(jqElem);
                 let jqBase = null;
                 if (!se) {
                     jqBase = context.jQuery;
@@ -4067,7 +4067,7 @@ var Rocket;
                     this.jqEntries = $("<div />");
                     this.jqEmbedded.append(this.jqEntries);
                     if (this.compact) {
-                        var structureElement = Rocket.Display.StructureElement.findFrom(this.jqEmbedded);
+                        var structureElement = Rocket.Display.StructureElement.of(this.jqEmbedded);
                         structureElement.setGroup(true);
                         var toolbar = structureElement.getToolbar();
                         if (toolbar !== null) {
