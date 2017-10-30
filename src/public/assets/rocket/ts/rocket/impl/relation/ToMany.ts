@@ -344,7 +344,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEmbedded.append(this.jqEntries);
 			
 			if (this.compact) {
-				var structureElement = Rocket.Display.StructureElement.findFrom(this.jqEmbedded);
+				var structureElement = Rocket.Display.StructureElement.of(this.jqEmbedded);
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {

@@ -49,7 +49,7 @@ namespace Rocket.Display {
 			var errorIndex: ErrorIndex = null;
 			
 			jqPage.find(".rocket-message-error").each(function () {
-				var structureElement = StructureElement.findFrom($(this));
+				var structureElement = StructureElement.of($(this));
 				
 				if (errorIndex === null) {
 					errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);

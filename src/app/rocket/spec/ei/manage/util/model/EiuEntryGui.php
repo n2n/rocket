@@ -119,7 +119,14 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param unknown $guiIdPath
+	 * @return boolean
+	 */
+	public function hasForkMags() {
+		return !empty($this->eiEntryGui->getForkMagPropertyPaths());
+	}
+	
+	/**
+	 * @param GuiIdPath|string $guiIdPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return MagWrapper
@@ -135,7 +142,7 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param unknown $guiIdPath
+	 * @param GuiIdPath|string $guiIdPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return EiFieldWrapper

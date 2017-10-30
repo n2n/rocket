@@ -24,7 +24,6 @@ namespace rocket\spec\ei\manage\gui;
 use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\Dispatchable;
-use n2n\web\dispatch\mag\Mag;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;

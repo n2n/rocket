@@ -38,7 +38,7 @@ namespace Rocket.Impl {
 		private initTm(jqElem: JQuery, context: Rocket.Cmd.Zone) {
 			let tm = TranslationManager.from(jqElem);
 			
-			let se = Rocket.Display.StructureElement.findFrom(jqElem);
+			let se = Rocket.Display.StructureElement.of(jqElem);
 			
 			let jqBase = null;
 			if (!se) {
@@ -63,7 +63,6 @@ namespace Rocket.Impl {
 		constructor(private jqContainer: JQuery) {
 			
 		}
-		
 		
 		private draw(languagesLabel: string, visibleLabel: string) {
 			$("<div />", { "class": "rocket-impl-translation-status" })
