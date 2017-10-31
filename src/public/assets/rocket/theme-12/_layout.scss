@@ -104,7 +104,7 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 .rocket-layer:not(.rocket-main-layer) {
     position: absolute;
     top: 0;
-    left: 0;
+    left: -$rocket-global-nav-spacer;
     right: 0;
     background-color: $gray-100;
     min-height: 100%;
@@ -132,6 +132,25 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 }
 
 
+/**
+ * loader
+ */
+
+.rocket-impl-overview-loading {
+    margin: 40px auto 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: solid 10px rgba(0, 0, 0, 0.1);
+    border-top-color: $primary;
+    animation: spin 1s infinite linear;  
+}
+
+@keyframes spin { 
+    100% { 
+      transform: rotate(360deg); 
+    } 
+}
 
 /**
  * General Styles
@@ -140,3 +159,4 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
 .rocket-simple-commands > button > span {
     display: none;
 } 
+
