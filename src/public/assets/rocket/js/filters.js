@@ -384,8 +384,8 @@ jQuery(document).ready(function($) {
 				
 			}).call(this, this);
 		};
-		
 
+		
 		var initialize = function() {
 			$(".rocket-filter").each(function() {
 				var jqElem = $(this);
@@ -395,6 +395,10 @@ jQuery(document).ready(function($) {
 				new Filter(jqElem);
 			});
 		};
+		
+		if (Jhtml) {
+			Jhtml.ready(initialize);
+		}
 		
 		initialize();
 		n2n.dispatch.registerCallback(initialize);
