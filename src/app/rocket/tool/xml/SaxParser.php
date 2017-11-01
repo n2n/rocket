@@ -21,14 +21,14 @@
  */
 namespace rocket\tool\xml;
 
-use rocket\tool\xml\SaxHandler;
 use n2n\io\IoUtils;
 use n2n\io\fs\FsPath;
+
 class SaxParser {
 	private $saxHandler;
 	/**
 	 * 
-	 * @param \n2n\is\fs\FsPath $xmlPath
+	 * @param \n2n\io\fs\FsPath $xmlPath
 	 * @param \rocket\tool\xml\SaxHandler $saxHandler
 	 * @throws \rocket\tool\xml\SaxParsingException
 	 */
@@ -60,8 +60,8 @@ class SaxParser {
 	}
 	/**
 	 * 
-	 * @param unknown_type $parser
-	 * @param unknown_type $cdata
+	 * @param mixed $parser
+	 * @param mixed $cdata
 	 */
 	private function cdata($parser, $cdata) {
 		$this->saxHandler->cdata($cdata);

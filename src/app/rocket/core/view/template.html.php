@@ -196,25 +196,27 @@
     				data-display-error-label="<?php $html->text('core_display_error_label') ?>">
     			<div class="rocket-main-layer">
     				<div class="rocket-zone" data-jhtml-comp="rocket-page">
-    					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
-    						<ol class="breadcrumb">
-    							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
-    								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
-    							<?php endforeach ?>
-    							<li class="breadcrumb-item active">
-    								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
-    							</li>
-    						</ol>
-    					<?php endif ?>
-    					
-    					<!-- WICHTIG -->
-    					
-    					<?php if (isset($view->params['title'])): ?>
-    						<h1 class="rocket-main-title"><?php $html->out($view->params['title']) ?></h1>
-    					<?php else: ?>
-    						<h1 class="rocket-main-title">Rocket</h1>
-    					<?php endif ?>
-    					
+    					<header>
+	    					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
+	    						<ol class="breadcrumb">
+	    							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
+	    								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
+	    							<?php endforeach ?>
+	    							<li class="breadcrumb-item active">
+	    								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
+	    							</li>
+	    						</ol>
+	    					<?php endif ?>
+	    					
+	    					<!-- WICHTIG -->
+	    					
+	    					<?php if (isset($view->params['title'])): ?>
+	    						<h1><?php $html->out($view->params['title']) ?></h1>
+	    					<?php else: ?>
+	    						<h1>Rocket</h1>
+	    					<?php endif ?>
+	    				</header>
+	    					
     					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
     					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
     					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>

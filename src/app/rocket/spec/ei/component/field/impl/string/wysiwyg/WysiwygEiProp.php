@@ -127,7 +127,7 @@ class WysiwygEiProp extends AlphanumericEiProp {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\component\field\WysiwygLinkConfig
+	 * @return WysiwygLinkConfig[]
 	 */
 	private function obtainLinkConfigurations(EiEntry $eiEntry, Eiu $eiu) {
 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();

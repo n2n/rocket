@@ -48,16 +48,18 @@ interface EiMask extends EiThing {
 	public function determineEiMask(EiType $eiType): EiMask;
 	
 	/**
+	 * @param \rocket\spec\ei\manage\control\Control[] $controls
 	 * @param EiGui $eiGui
 	 * @param HtmlView $htmlView
-	 * @return \rocket\spec\ei\component\command\ControlButton[]
+	 * @return \rocket\spec\ei\manage\control\Control[]
 	 */
 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $htmlView): array;
 	
 	/**
-	 * @param HtmlView $view
-	 * @param EntryModel $entryModel
-	 * @return \rocket\spec\ei\component\command\ControlButton[]
+	 * @param \rocket\spec\ei\manage\control\Control[] $controls
+	 * @param EiGui $eiGui
+	 * @param HtmlView $htmlView
+	 * @return \rocket\spec\ei\manage\control\Control[]
 	 */
 	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array;
 		

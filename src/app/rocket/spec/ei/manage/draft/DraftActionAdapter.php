@@ -64,7 +64,6 @@ abstract class DraftActionAdapter implements DraftAction {
 	}
 	/**
 	 * @param Action $draftAction
-	 * @return \n2n\persistence\orm\store\Action[]
 	 */
 	public function addDependent(DraftAction $draftAction) {
 		$this->dependents[] = $draftAction;

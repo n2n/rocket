@@ -67,18 +67,10 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 		return $eiPropConfigurator;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\ObjectPropertyEiProp::getPropertyName()
-	 */
 	public function getPropertyName(): string {
 		return $this->getObjectPropertyAccessProxy()->getPropertyName();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\ObjectPropertyEiProp::getPropertyAccessProxy()
-	 */
 	public function getObjectPropertyAccessProxy(bool $required = false) {
 		if ($this->accessProxy === null && $required) {
 			throw new IllegalStateException('No object property AccessProxy assigned to ' . $this);
@@ -87,10 +79,6 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 		return $this->accessProxy;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\ObjectPropertyEiProp::setPropertyAccessProxy($propertyAccessProxy)
-	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null) {
 		ArgUtils::assertTrue($objectPropertyAccessProxy !== null);
 		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createSimple('string', true));

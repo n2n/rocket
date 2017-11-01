@@ -4,12 +4,12 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "../js/rocket.js",
+        "outFile": "../src/public/assets/rocket/js/rocket.js",
         "sourceMap": true,
 		"target": "es6",
 		"experimentalDecorators": true
     },
-	"files": [],
-	"include": ["../../../**/*.d.ts","**/*"],
+    "include": ["rocket/**/*", "../src/public/assets/n2n-impl-web-ui/js/jhtml.d.ts"],
+	"exclude": ["node_modules"],
 	"compileOnSave": true
 }

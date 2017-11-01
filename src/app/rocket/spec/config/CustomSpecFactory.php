@@ -29,7 +29,7 @@ use n2n\web\http\controller\Controller;
 class CustomSpecFactory {
 	/**
 	 * @param CustomSpecExtraction $customSpecExtraction
-	 * @return \rocket\spec\custom\CustomSpec
+	 * @return CustomSpec
 	 * @throws InvalidSpecConfigurationException
 	 */
 	public static function create(CustomSpecExtraction $customSpecExtraction): CustomSpec {

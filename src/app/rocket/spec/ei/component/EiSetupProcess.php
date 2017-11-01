@@ -36,7 +36,7 @@ interface EiSetupProcess {
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\spec\ei\
+	 * @return EiType
 	 * @throws UnknownException
 	 */
 	public function getEiTypeByClass(\ReflectionClass $class): EiType;

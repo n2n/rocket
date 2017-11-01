@@ -1,18 +1,24 @@
 (function() {
-	$( document ).ready(function() {
-		$(".rocket-impl-cke-classic").each((i, elem) => {
+	
+	Jhtml.ready(function (elements) {
+		$(elements).find(".rocket-impl-cke-classic").each((i, elem) => {
 			var editor = CKEDITOR.replace(elem);
 
-			//Jhtml.Form.of(elem).onSubmit();
-
-			setInterval(() => {
-				for (let i in CKEDITOR.instances) {
-					CKEDITOR.instances[i].updateElement();
-				}
-			}, 1000);
+//			let formJq = $(elem).closest("form");
+//			formJq.submit(() => {
+//				for (let i in CKEDITOR.instances) {
+//					CKEDITOR.instances[i].updateElement();
+//				}
+//			});
+//			formJq.find("input[type=submit], button[type=submit]").click(() => {
+//				alert();
+//				for (let i in CKEDITOR.instances) {
+//					CKEDITOR.instances[i].updateElement();
+//				}
+//			});
 		});
 
-		$(".rocket-cke-detail").each(function () {
+		$(elements).find(".rocket-cke-detail").each(function () {
 			var elemJq = $(this);
 
 			this.contentWindow.document.open();

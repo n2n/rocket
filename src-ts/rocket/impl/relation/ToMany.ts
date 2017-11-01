@@ -583,7 +583,11 @@ namespace Rocket.Impl.Relation {
 			this.dominantEntry = dominantEntry;
 			this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
 			this.jqEmbedded.detach();
-			this.expandPage.applyContent(this.jqEmbedded);
+			
+			let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
+			this.expandPage.applyContent(contentJq);
+			$("<header></header>").insertBefore(contentJq);
+			
 			this.expandPage.layer.pushHistoryEntry(window.location.href);
 			
 			for (let i in this.entries) {
