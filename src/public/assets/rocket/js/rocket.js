@@ -3219,14 +3219,14 @@ var Rocket;
                     jqContainer.append(this.jqPagination);
                     this.jqPagination.append($("<button />", {
                         "type": "button",
-                        "class": "rocket-impl-pagination-first rocket-control",
+                        "class": "rocket-impl-pagination-first btn btn-secondary",
                         "click": function () { that.goTo(1); }
                     }).append($("<i />", {
                         "class": "fa fa-step-backward"
                     })));
                     this.jqPagination.append($("<button />", {
                         "type": "button",
-                        "class": "rocket-impl-pagination-prev rocket-control",
+                        "class": "rocket-impl-pagination-prev btn btn-secondary",
                         "click": function () {
                             if (that.getCurrentPageNo() > 1) {
                                 that.goTo(that.getCurrentPageNo() - 1);
@@ -3251,7 +3251,7 @@ var Rocket;
                     this.jqPagination.append(this.jqInput);
                     this.jqPagination.append($("<button />", {
                         "type": "button",
-                        "class": "rocket-impl-pagination-next rocket-control",
+                        "class": "rocket-impl-pagination-next btn btn-secondary",
                         "click": function () {
                             if (that.getCurrentPageNo() < that.getNumPages()) {
                                 that.goTo(that.getCurrentPageNo() + 1);
@@ -3262,7 +3262,7 @@ var Rocket;
                     })));
                     this.jqPagination.append($("<button />", {
                         "type": "button",
-                        "class": "rocket-impl-pagination-last rocket-control",
+                        "class": "rocket-impl-pagination-last btn btn-secondary",
                         "click": function () { that.goTo(that.getNumPages()); }
                     }).append($("<i />", {
                         "class": "fa fa-step-forward"
