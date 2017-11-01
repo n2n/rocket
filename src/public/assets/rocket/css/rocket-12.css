@@ -3518,8 +3518,8 @@ body {
   overflow-y: scroll;
   background: #FBFAFA;
   /* Old browsers */
-  background: linear-gradient(to bottom, #ffffff 0%, #ffffff 124px, #FBFAFA 124px, #FBFAFA 100%) fixed;
-  min-height: 100%;
+  background: #FBFAFA linear-gradient(to bottom, #ffffff 0%, #ffffff 124px, #FBFAFA 124px, #FBFAFA 100%) repeat-x;
+  min-height: calc(100% - 2.75rem);
 }
 
 /**
@@ -3598,19 +3598,6 @@ body {
   position: relative;
 }
 
-.rocket-main-layer .rocket-main-title {
-  margin-bottom: 2rem;
-}
-
-.rocket-layer:not(.rocket-main-layer) {
-  position: absolute;
-  top: 0;
-  left: -3rem;
-  right: 0;
-  background-color: #FBFAFA;
-  min-height: 100%;
-}
-
 /**
  * Context Control
  */
@@ -3656,6 +3643,55 @@ body {
   display: none;
 }
 
+/**
+ * rocket-layer and rocket zone
+ */
+.rocket-zone > header {
+  display: grid;
+  position: relative;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 2rem 3rem;
+  margin-bottom: 0.5rem;
+  background: white;
+}
+
+.rocket-zone > header > .breadcrumb {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.rocket-zone > header > h1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  margin-top: 0.5rem;
+}
+
+.rocket-layer {
+  position: absolute;
+  top: 0;
+  left: -3rem;
+  right: -1rem;
+  padding: 0 1rem 0 3rem;
+  background-color: #ECEBE9;
+  min-height: calc(100vh - 2.75rem);
+}
+
+.rocket-layer > .rocket-layer-toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3rem;
+}
+
+.rocket-layer > .rocket-layer-toolbar > button {
+  width: 3rem;
+  height: 5rem;
+}
+
 .rocket-impl-translation-status {
   display: inline-block;
   padding-right: 1rem;
@@ -3680,8 +3716,8 @@ body {
   position: absolute;
   right: 0;
   width: auto;
+  min-width: 20rem;
   margin: 0;
-  padding: 0;
   list-style: none;
   background: white;
   padding: 1rem;
@@ -3756,6 +3792,10 @@ body {
 
 .rocket-impl-translation-menu > li.rocket-active > label:after {
   content: "\f067";
+}
+
+.rocket-impl-translation-menu > li.rocket-active.rocket-disabled > label:after {
+  content: "\f023";
 }
 
 /**

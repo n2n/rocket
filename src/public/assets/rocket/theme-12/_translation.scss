@@ -20,9 +20,9 @@
 .rocket-impl-translation-menu {
     position: absolute;
     right: 0;
-    width: auto;
+	width: auto;
+	min-width: 20rem;
     margin: 0;
-    padding: 0;
     list-style: none;
     background: white;
     
@@ -86,6 +86,11 @@
 		font-weight: bold;
 		> label:after {
 			content: "\f067";
+		}
+	}
+	> li.rocket-active.rocket-disabled {
+		> label:after {
+			content: "\f023";
 		}
 	}
 }

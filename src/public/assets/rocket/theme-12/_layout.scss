@@ -1,3 +1,9 @@
+$rocket-header-height: 2.75rem;
+$rocket-global-nav-width: 14rem;
+$rocket-global-nav-spacer: 3rem;
+$rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-spacer;
+
+
 html {
     height: 100%;
 }
@@ -5,19 +11,14 @@ html {
 body {
     overflow-y: scroll;
     background: $gray-100; /* Old browsers */
-    background: linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%) fixed; 
-    min-height: 100%;
+    background: $gray-100 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%) repeat-x; 
+    min-height: calc(100% - #{$rocket-header-height});
 }
-
 
 /**
  * Header
  */
 
-$rocket-header-height: 2.75rem;
-$rocket-global-nav-width: 14rem;
-$rocket-global-nav-spacer: 3rem;
-$rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-spacer;
 
 #rocket-header {
     position: fixed;
@@ -86,28 +87,12 @@ $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-space
  * Content
  */
 
-#rocket-content-container {
+ #rocket-content-container {
     margin-left: $rocket-content-margin-left;
     margin-right: 1rem;
     margin-top: $rocket-header-height;
     margin-bottom: 7rem;
     position: relative;
-}
-
-
-.rocket-main-layer {
-    .rocket-main-title {
-        margin-bottom: 2rem;
-    }
-}
-
-.rocket-layer:not(.rocket-main-layer) {
-    position: absolute;
-    top: 0;
-    left: -$rocket-global-nav-spacer;
-    right: 0;
-    background-color: $gray-100;
-    min-height: 100%;
 }
 
 /**
