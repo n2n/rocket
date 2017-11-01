@@ -5,7 +5,7 @@ html {
 body {
     overflow-y: scroll;
     background: $gray-100; /* Old browsers */
-    background: linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%); 
+    background: linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%) fixed; 
     min-height: 100%;
 }
 

@@ -3518,7 +3518,7 @@ body {
   overflow-y: scroll;
   background: #FBFAFA;
   /* Old browsers */
-  background: linear-gradient(to bottom, #ffffff 0%, #ffffff 124px, #FBFAFA 124px, #FBFAFA 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #ffffff 124px, #FBFAFA 124px, #FBFAFA 100%) fixed;
   min-height: 100%;
 }
 

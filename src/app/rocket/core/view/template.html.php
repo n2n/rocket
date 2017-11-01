@@ -89,7 +89,7 @@
 				transition: border 1s;
 			}
 			
-			// pizza loader
+			/* pizza loader */
 			.rocket-zone.rocket-loading {
 				background: url('https://media.giphy.com/media/3o7bu8sRnYpTOG1p8k/giphy-downsized.gif') center center no-repeat; 
 				min-height: 80vh;
