@@ -38,7 +38,7 @@ use rocket\spec\ei\EiType;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\EiFrameFactory;
 use rocket\spec\ei\component\field\impl\relation\command\RelationAjahEiCommand;
-use rocket\spec\ei\component\field\impl\relation\command\RelationAjahController;
+use rocket\spec\ei\component\field\impl\relation\command\RelationJhtmlController;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoCommand;
@@ -406,6 +406,6 @@ abstract class EiPropRelation {
 		$pathParts[] = $this->relationAjahEiCommand->getId();
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())->ext(...$pathParts)
 				->toUrl();
-		return RelationAjahController::buildNewFormUrl($contextUrl, $draft);
+		return RelationJhtmlController::buildNewFormUrl($contextUrl, $draft);
 	}
 }

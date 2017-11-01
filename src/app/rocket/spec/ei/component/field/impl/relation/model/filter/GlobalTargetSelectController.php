@@ -29,7 +29,7 @@ use rocket\user\model\LoginContext;
 use n2n\web\http\controller\impl\ScrController;
 use n2n\web\http\controller\ControllerAdapter;
 
-class GlobalRelationAjahController extends ControllerAdapter implements ScrController {
+class GlobalRelationJhtmlController extends ControllerAdapter implements ScrController {
 	private $specManager;
 	private $loginContext;
 	

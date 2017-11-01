@@ -53,7 +53,7 @@ use rocket\spec\ei\EiCommandPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\AjahControl;
+use rocket\spec\ei\manage\control\JhtmlControl;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
@@ -441,13 +441,13 @@ class EiuControlFactory {
 	 * @param EiCommand $eiCommand
 	 * @param ControlButton $controlButton
 	 * @param Url $urlExt
-	 * @return \rocket\spec\ei\manage\control\AjahControl
+	 * @return \rocket\spec\ei\manage\control\JhtmlControl
 	 */
 	public function createAjah(EiCommand $eiCommand, ControlButton $controlButton, Url $urlExt = null) {
 		$url = $this->view->getHttpContext()
 				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
 				->ext($eiCommand->getId())->toUrl()->ext($urlExt);
-		return new AjahControl($url, $controlButton);
+		return new JhtmlControl($url, $controlButton);
 	}
 }
 

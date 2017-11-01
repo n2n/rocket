@@ -184,7 +184,7 @@
     										$menuItem->determinePathExt($view->getN2nContext())), 
     										new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem)) 
     												. '<span></span>'), 
-    										array('data-jhtml' => 'true', 'class' => 'nav-link rocket-ajah' 
+    										array('data-jhtml' => 'true', 'class' => 'nav-link' 
     												. ($templateModel->isMenuItemActive($menuItem) ? ' active' : null))) ?></li>
     						<?php endforeach ?>
     					</ul>

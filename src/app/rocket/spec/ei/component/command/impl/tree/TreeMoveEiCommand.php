@@ -21,16 +21,13 @@
  */
 namespace rocket\spec\ei\component\command\impl\tree;
 
-use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\command\impl\tree\controller\TreeMoveController;
-use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;

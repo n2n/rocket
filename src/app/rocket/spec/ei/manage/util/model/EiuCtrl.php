@@ -30,7 +30,6 @@ use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
 use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\control\EntryNavPoint;
 use n2n\web\http\HttpContext;
 use rocket\core\model\RocketState;
 use n2n\reflection\CastUtils;
@@ -38,12 +37,9 @@ use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\Breadcrumb;
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\spec\ei\manage\util\model\EiuEntry;
 use n2n\web\http\Redirect;
-use n2n\persistence\meta\structure\View;
-use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ajah\RocketAjahResponse;
+use rocket\ajah\RocketJhtmlResponse;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\ajah\AjahExec;
 use rocket\ajah\AjahEventInfo;
@@ -161,7 +157,7 @@ class EiuCtrl implements Lookupable {
 			return;
 		}
 		
-		$response->send(RocketAjahResponse::redirectBack($fallbackUrl, $ajahEventInfo, $ajahExec));
+		$response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, $ajahEventInfo, $ajahExec));
 	}
 	
 	public function forwardView(HtmlView $view) {

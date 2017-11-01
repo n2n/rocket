@@ -164,13 +164,4 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 				->t($targetEiFrame->getN2nLocale()));
 		$targetEiFrame->setDetailDisabled(true);
 	}
-	
-	public function createTargetEiObject(EiFrame $targetEiFrame, $targetEntity) {
-		$id = $this->relationEiProp->getId();
-		
-		$targetEiObject = new EiObject($targetEiFrame->getContextEiMask()->getEiEngine()->getEiType()
-				->extractId($targetEntity), $targetEntity);
-		
-		return $EiObject;
-	}
 }

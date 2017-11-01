@@ -278,7 +278,7 @@ namespace Rocket.Impl.Overview {
 			
 			var id = this.jqSelect.val();
 			this.critmodForm.activated = id ? true : false;
-			this.critmodForm.critmodSaveId = id;
+			this.critmodForm.critmodSaveId = id.toString();
 			this.critmodForm.freeze(); 
 		}
 		
@@ -443,7 +443,7 @@ namespace Rocket.Impl.Overview {
 			this.jqClearButton = jqForm.find(".rocket-impl-critmod-clear").click(function () { deactivateFunc(); });
 			this.jqNameInput = jqForm.find(".rocket-impl-critmod-name");
 			this.jqSaveButton = jqForm.find(".rocket-impl-critmod-save").click(function () { activateFunc(true); });
-			this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(function () {
+			this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(() => {
 				this.critmodSaveId = null;
 				activateFunc(true); 
 			});
@@ -475,7 +475,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		get critmodSaveName(): string {
-			return this.jqNameInput.val();
+			return this.jqNameInput.val().toString();
 		}
 						
 		private updateState() {

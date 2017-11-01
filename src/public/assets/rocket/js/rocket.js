@@ -1991,7 +1991,7 @@ var Rocket;
                     this.jqCheck.prop("checked", true);
                     this.jqCheck.prop("disabled", true);
                 }
-                this.jqCheck.change(this.updateClasses());
+                this.jqCheck.change(() => { this.updateClasses(); });
             }
             updateClasses() {
                 if (this.disabled) {
@@ -2374,7 +2374,7 @@ var Rocket;
                     this.overviewContent.clear(true);
                     var id = this.jqSelect.val();
                     this.critmodForm.activated = id ? true : false;
-                    this.critmodForm.critmodSaveId = id;
+                    this.critmodForm.critmodSaveId = id.toString();
                     this.critmodForm.freeze();
                 }
                 whenSubmitted(snippet, info) {
@@ -2495,7 +2495,7 @@ var Rocket;
                     this.jqClearButton = jqForm.find(".rocket-impl-critmod-clear").click(function () { deactivateFunc(); });
                     this.jqNameInput = jqForm.find(".rocket-impl-critmod-name");
                     this.jqSaveButton = jqForm.find(".rocket-impl-critmod-save").click(function () { activateFunc(true); });
-                    this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(function () {
+                    this.jqSaveAsButton = jqForm.find(".rocket-impl-critmod-save-as").click(() => {
                         this.critmodSaveId = null;
                         activateFunc(true);
                     });
@@ -2521,7 +2521,7 @@ var Rocket;
                     this.updateControl();
                 }
                 get critmodSaveName() {
-                    return this.jqNameInput.val();
+                    return this.jqNameInput.val().toString();
                 }
                 updateState() {
                     if (this.critmodSaveId) {
@@ -3187,7 +3187,7 @@ var Rocket;
                         return overviewPage;
                     }
                     var jqForm = jqElem.children("form");
-                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), jqElem.children(".rocket-impl-overview-tools").data("content-url"));
+                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-zone-commands"));
@@ -3240,7 +3240,7 @@ var Rocket;
                         "type": "text",
                         "value": this.getCurrentPageNo()
                     }).on("change", function () {
-                        var pageNo = parseInt(that.jqInput.val());
+                        var pageNo = parseInt(that.jqInput.val().toString());
                         if (pageNo === NaN || !that.overviewContent.isPageNoValid(pageNo)) {
                             that.jqInput.val(that.overviewContent.currentPageNo);
                             return;
@@ -4017,7 +4017,7 @@ var Rocket;
                 constructor(jqElem) {
                     this.jqElem = jqElem;
                     jqElem.prepend(this.jqLabel = $("<span />"));
-                    this.cmdList = new display.CommandList($("<div />", true).appendTo(jqElem));
+                    this.cmdList = new display.CommandList($("<div />").appendTo(jqElem), true);
                     this.jqInput = jqElem.children("input").hide();
                 }
                 get jQuery() {
@@ -4287,7 +4287,6 @@ var Rocket;
                         that.reduce();
                     });
                     this.changed();
-                    n2n.ajah.update();
                 }
                 reduce() {
                     if (!this.isExpanded())
@@ -4303,7 +4302,6 @@ var Rocket;
                         this.enabledSortable();
                     }
                     this.changed();
-                    n2n.ajah.update();
                 }
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
@@ -4533,7 +4531,6 @@ var Rocket;
                         this.reduce();
                     });
                     this.changed();
-                    n2n.ajah.update();
                 }
                 reduce() {
                     if (!this.isExpanded())
@@ -4548,7 +4545,6 @@ var Rocket;
                         this.currentEntry.reduce();
                     }
                     this.changed();
-                    n2n.ajah.update();
                 }
                 triggerChanged() {
                     for (let callback of this.changedCallbacks) {
@@ -4583,7 +4579,7 @@ var Rocket;
                 init() {
                     this.jqSelectedEntry = $("<div />");
                     this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
-                    new display.CommandList($("<div />", true).appendTo(this.jqSelectedEntry))
+                    new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
                         .createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
                         .click(() => {
                         this.clear();

@@ -37,6 +37,6 @@ class RelationAjahEiCommand extends EiCommandAdapter {
 	 * @see \rocket\spec\ei\component\command\EiCommand::createController()
 	 */
 	public function lookupController(Eiu $eiu): Controller {
-		return $eiu->lookup(RelationAjahController::class);
+		return $eiu->lookup(RelationJhtmlController::class);
 	}
 }

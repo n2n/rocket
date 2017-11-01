@@ -3,14 +3,14 @@ namespace rocket\ajah;
 
 use n2n\web\http\BufferedResponseObject;
 use n2n\impl\web\ui\view\json\JsonResponse;
-use n2n\impl\web\ui\view\html\AjahResponse;
+use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
 
-class RocketAjahResponse extends BufferedResponseObject {
+class RocketJhtmlResponse extends BufferedResponseObject {
 	private $jsonResponse;
 
 	private function __construct(array $attrs) {
-		$this->jsonResponse = new JsonResponse(array(AjahResponse::ADDITIONAL_KEY => $attrs));
+		$this->jsonResponse = new JsonResponse(array(JhtmlJsonResponse::ADDITIONAL_KEY => $attrs));
 	}
 
 	/**
@@ -51,7 +51,7 @@ class RocketAjahResponse extends BufferedResponseObject {
 	const ATTR_EXEC_CONFIG = 'execConfig';
 
 	/**
-	 * @param unknown $fallbackUrl
+	 * @param string $fallbackUrl
 	 * @param AjahEventInfo $ajahEventInfo
 	 * @param AjahExec $ajahExec
 	 * @return BufferedResponseObject
@@ -69,7 +69,7 @@ class RocketAjahResponse extends BufferedResponseObject {
 			$attrs[self::ATTR_EXEC_CONFIG] = $ajahExec->toAttrs();
 		}
 
-		return new RocketAjahResponse($attrs);
+		return new RocketJhtmlResponse($attrs);
 	}
 
 	/**
@@ -77,12 +77,12 @@ class RocketAjahResponse extends BufferedResponseObject {
 	 * @return BufferedResponseObject
 	 */
 	public static function events(AjahEventInfo $ajahEventInfo) {
-		return new RocketAjahResponse(array(
+		return new RocketJhtmlResponse(array(
 				self::ATTR_EVENTS => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
 	}
 
 	public static function view(HtmlView $htmlView, AjahEventInfo $ajahEventInfo = null) {
-		return new AjahResponse($htmlView,
+		return new JhtmlJsonResponse($htmlView,
 				($ajahEventInfo !== null ? array(self::ATTR_EVENTS => $ajahEventInfo->toAttrs()) : null));
 	}
 }

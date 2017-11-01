@@ -301,7 +301,6 @@ namespace Rocket.Impl.Relation {
 			});
 			
 			this.changed();
-			n2n.ajah.update();
 		}
 		
 		public reduce() {
@@ -321,7 +320,6 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.changed();
-			n2n.ajah.update();
 		}
 		
 		private triggerChanged() {
@@ -371,7 +369,7 @@ namespace Rocket.Impl.Relation {
 		private init() {
 			this.jqSelectedEntry = $("<div />")
 			this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
-			new display.CommandList($("<div />", true).appendTo(this.jqSelectedEntry))
+			new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
 					.click(() => {
 						this.clear();				

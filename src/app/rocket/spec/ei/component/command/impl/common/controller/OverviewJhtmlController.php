@@ -27,7 +27,6 @@ use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
-use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
@@ -35,8 +34,9 @@ use rocket\spec\ei\component\command\impl\common\model\OverviewModel;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
+use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 
-class OverviewAjahController extends ControllerAdapter {
+class OverviewJhtmlController extends ControllerAdapter {
 	private $manageState;
 	private $eiuCtrl;
 	private $critmodSaveDao;
@@ -62,7 +62,7 @@ class OverviewAjahController extends ControllerAdapter {
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
 		
-		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
+		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiMask());
 		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
@@ -107,7 +107,7 @@ class OverviewAjahController extends ControllerAdapter {
 			$unbelivableHack[' ' . $id . ' '] = $name;
 		}
 		
-		$this->send(new AjahResponse($this->createView('~\spec\ei\manage\critmod\impl\view\critmodForm.html',
+		$this->send(new JhtmlJsonResponse($this->createView('~\spec\ei\manage\critmod\impl\view\critmodForm.html',
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
 						'filterAjahHook' => $filterAjahHook)),
 				array('critmodSaveIdOptions' => $unbelivableHack)));
@@ -169,7 +169,7 @@ class OverviewAjahController extends ControllerAdapter {
 		
 		$attrs = array('pageNo' => $pageNo, 'numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
 
-		$this->send(new AjahResponse($listModel->getEiuGui()->createView(), $attrs));
+		$this->send(new JhtmlJsonResponse($listModel->getEiuGui()->createView(), $attrs));
 	}
 
 	public static function buildToolsAjahUrl(Url $contextUrl): Url {

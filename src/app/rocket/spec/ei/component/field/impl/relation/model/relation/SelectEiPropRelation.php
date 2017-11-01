@@ -26,8 +26,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\component\field\impl\relation\command\RelationAjahEiCommand;
-use rocket\spec\ei\component\field\impl\relation\command\RelationAjahController;
+use rocket\spec\ei\component\field\impl\relation\command\RelationJhtmlController;
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;
 
@@ -107,6 +106,6 @@ class SelectEiPropRelation extends EiPropRelation {
 	public function buildTargetOverviewToolsUrl(EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())
 				->ext($this->relationEiCommand->getId(), 'rel', $this->relationAjahEiCommand->getId())->toUrl();
-		return RelationAjahController::buildSelectToolsUrl($contextUrl);
+		return RelationJhtmlController::buildSelectToolsUrl($contextUrl);
 	}
 }

@@ -201,7 +201,7 @@ namespace Rocket.Impl {
 			this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
 					.append(this.jqI)
 					.appendTo(jqElem)
-					.click((evt: JQueryEventObject) => {
+					.click((evt: any) => {
 						if (this.disabled) return;
 						
 						this.on = !this.on;
@@ -445,7 +445,7 @@ namespace Rocket.Impl {
 				this.jqCheck.prop("disabled", true);
 			}
 			
-			this.jqCheck.change(this.updateClasses());
+			this.jqCheck.change(() => { this.updateClasses() });
 		}
 		
 		private updateClasses() {

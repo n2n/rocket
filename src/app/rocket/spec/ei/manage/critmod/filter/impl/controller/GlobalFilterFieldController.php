@@ -45,6 +45,7 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\UnknownFilterFieldException;
+use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 
 class GlobalFilterFieldController extends ControllerAdapter implements ScrController {
 	private $specManager;
@@ -102,7 +103,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	
-		$this->send(new AjahResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
+		$this->send(new JhtmlJsonResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
 				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
@@ -120,7 +121,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
-		$this->send(new AjahResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
+		$this->send(new JhtmlJsonResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
 				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
@@ -130,7 +131,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 		
 		$filterGroupForm = new FilterGroupForm(new FilterGroupData(), new FilterDefinition());
 		
-		$this->send(new AjahResponse($this->createView(
+		$this->send(new JhtmlJsonResponse($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}

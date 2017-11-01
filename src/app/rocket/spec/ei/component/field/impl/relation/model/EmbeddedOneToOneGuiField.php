@@ -69,27 +69,6 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
 	}
-
-// 	public function createOutputUiComponent(HtmlView $view) {
-// 		$eiFrame = $eiu->frame()->getEiFrame();
-// 		$eiEntry = $eiu->entry()->getEiEntry();
-// 		$targetEiObject = $this->createTargetEiObject($eiFrame, $eiEntry);
-
-// 		if ($targetEiObject === null) return null;
-
-// 		$eiObject = $eiEntry->getEiObject();
-// 		$target = $this->eiPropRelation->getTarget();
-// 		$targetEiFrame = $this->eiPropRelation->createTargetPseudoEiFrame(
-// 				$eiFrame, $eiObject, false);
-// 		$targetUtils = new EiuFrame($targetEiFrame);
-
-// 		$targetEiEntry = $targetUtils->createEiEntry($targetEiObject);
-
-// 		$entryInfo = $targetUtils->createEntryInfo($targetEiEntry);
-// 		$view = $entryInfo->getEiMask()->createDetailView($targetEiFrame, $entryInfo);
-
-// 		return $view->getImport($view);
-// 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
 		$targetRelationEntry = $this->toOneEiField->getValue();

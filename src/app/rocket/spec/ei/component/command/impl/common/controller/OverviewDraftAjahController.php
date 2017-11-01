@@ -25,15 +25,15 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
 use n2n\web\http\PageNotFoundException;
-use n2n\impl\web\ui\view\html\AjahResponse;
 use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\util\uri\Url;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\component\command\impl\common\model\DraftListModel;
+use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 
-class OverviewDraftAjahController extends ControllerAdapter {
+class OverviewDraftJhtmlController extends ControllerAdapter {
 	private $manageState;
 	private $critmodSaveDao;
 	private $listSize = 30;
@@ -69,7 +69,7 @@ class OverviewDraftAjahController extends ControllerAdapter {
 		
 		$attrs = array('numEntries' => $draftListModel->getNumEntries(), 'numPages' => $draftListModel->getNumPages());
 
-		$this->send(new AjahResponse($eiFrame->getContextEiMask()->createListView($eiFrame,
+		$this->send(new JhtmlJsonResponse($eiFrame->getContextEiMask()->createListView($eiFrame,
 				$draftListModel->getEntryGuis()), $attrs));
 	}
 

@@ -50,7 +50,7 @@ use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiEntryFilter
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewAjahController;
+use rocket\spec\ei\component\command\impl\common\controller\GlobalOverviewJhtmlController;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\component\field\impl\relation\model\filter\RelationFilterField;
 use rocket\spec\ei\manage\LiveEiObject;
@@ -214,13 +214,13 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$filterField = parent::buildFilterField($n2nContext);
 		CastUtils::assertTrue($filterField instanceof RelationFilterField);
 		
-		$targetSelectToolsUrl = GlobalOverviewAjahController::buildToolsAjahUrl(
+		$targetSelectToolsUrl = GlobalOverviewJhtmlController::buildToolsAjahUrl(
 				$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 				$this->eiPropRelation->getTargetEiMask());
 		
 		$that = $this;
 		$filterField->setTargetSelectUrlCallback(function () use ($n2nContext, $that) {
-			return GlobalOverviewAjahController::buildToolsAjahUrl(
+			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
 					$n2nContext->lookup(ScrRegistry::class), $that->eiPropRelation->getTargetEiType(),
 					$that->eiPropRelation->getTargetEiMask());
 		});
@@ -234,7 +234,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 				
 		$that = $this;
 		$eiEntryFilterField->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
-			return GlobalOverviewAjahController::buildToolsAjahUrl(
+			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
 					$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 					$this->eiPropRelation->getTargetEiMask());
 		});

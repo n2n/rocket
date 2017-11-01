@@ -278,7 +278,7 @@ namespace Rocket.Impl.Relation {
 		constructor(private jqElem: JQuery) {
 			jqElem.prepend(this.jqLabel = $("<span />"));
 			
-			this.cmdList = new display.CommandList($("<div />", true).appendTo(jqElem));			
+			this.cmdList = new display.CommandList($("<div />").appendTo(jqElem), true);			
 			this.jqInput = jqElem.children("input").hide();
 		}
 		
@@ -613,7 +613,6 @@ namespace Rocket.Impl.Relation {
 			});
 			
 			this.changed();
-			n2n.ajah.update();
 		}
 		
 		public reduce() {
@@ -634,7 +633,6 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.changed();
-			n2n.ajah.update();
 		}
 	}
 }

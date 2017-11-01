@@ -6,7 +6,7 @@ class AjahEventInfo {
 	private $eventMap = array();
 
 	public function groupChanged(string $groupId) {
-		$this->eventMap[$groupId] = RocketAjahResponse::MOD_TYPE_CHANGED;
+		$this->eventMap[$groupId] = RocketJhtmlResponse::MOD_TYPE_CHANGED;
 	}
 
 	/**
@@ -15,7 +15,7 @@ class AjahEventInfo {
 	 * @return \rocket\spec\ei\manage\util\model\AjahModInfoAdapter
 	 */
 	public function itemChanged(string $typeId, string $entryId) {
-		$this->item($typeId, $entryId, RocketAjahResponse::MOD_TYPE_CHANGED);
+		$this->item($typeId, $entryId, RocketJhtmlResponse::MOD_TYPE_CHANGED);
 		return $this;
 	}
 
@@ -25,7 +25,7 @@ class AjahEventInfo {
 	 * @return \rocket\spec\ei\manage\util\model\AjahModInfoAdapter
 	 */
 	public function itemRemoved(string $typeId, string $entryId) {
-		$this->item($typeId, $entryId, RocketAjahResponse::MOD_TYPE_REMOVED);
+		$this->item($typeId, $entryId, RocketJhtmlResponse::MOD_TYPE_REMOVED);
 		return $this;
 	}
 
@@ -37,7 +37,7 @@ class AjahEventInfo {
 	public function item(string $typeId, string $entryId, string $modType) {
 		if (!isset($this->eventMap[$typeId])) {
 			$this->eventMap[$typeId] = array();
-		} else if ($this->eventMap[$typeId] == RocketAjahResponse::MOD_TYPE_CHANGED) {
+		} else if ($this->eventMap[$typeId] == RocketJhtmlResponse::MOD_TYPE_CHANGED) {
 			return;
 		}
 

@@ -57,7 +57,7 @@ class OverviewController extends ControllerAdapter {
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
 		$eiuFrame = $this->eiuCtrl->frame();
 		$eiFrame = $eiuFrame->getEiFrame();
-		$stateKey = OverviewAjahController::genStateKey();
+		$stateKey = OverviewJhtmlController::genStateKey();
 		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
@@ -72,7 +72,7 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$overviewAjahHook = OverviewAjahController::buildAjahHook($this->getHttpContext()
+		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
 		$filterAjahHook = FilterFieldController::buildFilterAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
@@ -91,7 +91,7 @@ class OverviewController extends ControllerAdapter {
 // 						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
 	}
 	
-	public function doAjah(array $delegateCmds = array(), OverviewAjahController $ajahOverviewController, 
+	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$pageNo = $pageNo->toNumericOrReject();
@@ -124,22 +124,22 @@ class OverviewController extends ControllerAdapter {
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
 		
-		$stateKey = OverviewDraftAjahController::genStateKey();
-		$overviewDraftAjahHook = OverviewDraftAjahController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
+		$stateKey = OverviewDraftJhtmlController::genStateKey();
+		$overviewDraftAjahHook = OverviewDraftJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->ext('draftAjah')->toUrl(), $stateKey);
 
 		$this->forward('..\view\overviewDrafts.html', array('draftListModel' => $draftListModel, 
 				'overviewDraftAjahHook' => $overviewDraftAjahHook, 'listView' => $listView));
 	}
 
-	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftAjahController $overviewDraftAjahController,
+	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftJhtmlController $overviewDraftJhtmlController,
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
 		}
 
-		$this->delegate($overviewDraftAjahController);
+		$this->delegate($overviewDraftJhtmlController);
 	}
 	
 	public function doDelete($pageNo = null) {

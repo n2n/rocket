@@ -53,7 +53,7 @@ namespace Rocket.Impl.Overview {
 			var jqForm = jqElem.children("form");
 			
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
-					jqElem.children(".rocket-impl-overview-tools").data("content-url"));
+					Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
 			
 //			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))
 //					.init(overviewContent);
@@ -203,7 +203,7 @@ namespace Rocket.Impl.Overview {
 				"type": "text",
 				"value": this.getCurrentPageNo()
 			}).on("change", function () {
-				var pageNo: number = parseInt(that.jqInput.val());
+				var pageNo: number = parseInt(that.jqInput.val().toString());
 				if (pageNo === NaN || !that.overviewContent.isPageNoValid(pageNo)) {
 					that.jqInput.val(that.overviewContent.currentPageNo);
 					return;
