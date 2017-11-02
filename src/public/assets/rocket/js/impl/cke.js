@@ -1,8 +1,8 @@
 (function() {
-	
 	Jhtml.ready(function (elements) {
 		$(elements).find(".rocket-impl-cke-classic").each((i, elem) => {
 			var editor = CKEDITOR.replace(elem);
+			
 
 //			let formJq = $(elem).closest("form");
 //			formJq.submit(() => {
@@ -20,7 +20,7 @@
 
 		$(elements).find(".rocket-cke-detail").each(function () {
 			var elemJq = $(this);
-
+			
 			this.contentWindow.document.open();
 			this.contentWindow.document.write(elemJq.data("content-html-json"));
 			this.contentWindow.document.close();

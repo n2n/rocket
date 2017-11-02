@@ -194,12 +194,12 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		attachComp(comp: Jhtml.Comp): boolean {
+		attachComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver): boolean {
 			if (!comp.model.response) return false;
 			
 			let zone: Zone = this.getZoneByUrl(comp.model.response.url);
 			if (zone) {
-				zone.applyComp(comp);
+				zone.applyComp(comp, loadObserver);
 				return true;
 			}
 			

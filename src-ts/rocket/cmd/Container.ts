@@ -14,7 +14,6 @@ namespace Rocket.Cmd {
 					Jhtml.getOrCreateMonitor());
 			this._layers.push(layer);
 		}
-		
 
 		get layers(): Array<Layer> {
 			return this._layers.slice();

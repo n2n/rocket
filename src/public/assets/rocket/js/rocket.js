@@ -425,12 +425,12 @@ var Rocket;
                     }
                 }
             }
-            attachComp(comp) {
+            attachComp(comp, loadObserver) {
                 if (!comp.model.response)
                     return false;
                 let zone = this.getZoneByUrl(comp.model.response.url);
                 if (zone) {
-                    zone.applyComp(comp);
+                    zone.applyComp(comp, loadObserver);
                     return true;
                 }
                 return false;
@@ -876,9 +876,9 @@ var Rocket;
                 this.reset();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
-            applyComp(comp) {
+            applyComp(comp, loadObserver) {
                 this.endLoading();
-                comp.attachTo(this.jqZone.get(0));
+                comp.attachTo(this.jqZone.get(0), loadObserver);
                 this.reset();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }

@@ -141,9 +141,9 @@ namespace Rocket.Cmd {
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
-		public applyComp(comp: Jhtml.Comp) {
+		public applyComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver) {
 			this.endLoading();
-			comp.attachTo(this.jqZone.get(0));
+			comp.attachTo(this.jqZone.get(0), loadObserver);
 			
 			this.reset();
 			
