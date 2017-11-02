@@ -88,8 +88,8 @@
         list-style: none;
         border: 1px solid $input-border-color;
         max-height: 20rem;
-        overflow-y: scroll;
-        overflow-x: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
         > li {
             border-bottom: 1px solid $input-border-color;
             clear: both;
