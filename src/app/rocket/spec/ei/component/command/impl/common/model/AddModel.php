@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\spec\ei\manage\util\model\EntryForm;
-use rocket\spec\ei\manage\util\model\EntryManager;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
@@ -107,14 +106,14 @@ class AddModel implements Dispatchable  {
 	}
 		
 	public function create(MessageContainer $messageContainer) {
-		$eiEntry = $this->entryForm->buildEiEntry();
+		$eiuEntry = $this->entryForm->buildEiuEntry();
 		
-		if (!$eiEntry->save()) {
+		if (!$eiuEntry->getEiEntry()->save()) {
 			return false;
 		}
 		
 		// @todo think!!!
-		$eiObject = $eiEntry->getEiObject();
+		$eiObject = $eiuEntry->getEiEntry()->getEiObject();
 		
 		if (!$eiObject->isDraft()) {
 			$eiEntityObj = $eiObject->getEiEntityObj();

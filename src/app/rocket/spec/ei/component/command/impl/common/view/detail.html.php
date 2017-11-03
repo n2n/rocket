@@ -36,7 +36,8 @@
  
 	$eiHtml = new EiHtmlBuilder($view);
 	
-	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
+	$view->useTemplate('~\core\view\template.html', 
+			array('title' => $eiuEntryGui->getEiuEntry()->createIdentityString()));
 ?>
  
 <?php $eiHtml->entryOpen('div', $eiuEntryGui)?>

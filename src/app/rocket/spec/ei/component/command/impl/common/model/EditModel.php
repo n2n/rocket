@@ -27,7 +27,6 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\util\ex\IllegalStateException;
