@@ -59,25 +59,9 @@ namespace Rocket.Impl.Relation {
 			if (jqCurrent.length > 0 || jqNew.length > 0) {
 				if (jqNew.length > 0) {
 					var propertyPath = jqNew.data("property-path");
-					
-					var startKey: number = 0;
-					var testPropertyPath = propertyPath + "[n";
-					jqNew.find("input, textarea").each(function () {
-						var name: string = <string> $(this).attr("name");
-						if (0 == name.indexOf(testPropertyPath)) {
-							name = name.substring(testPropertyPath.length);
-							
-							name.match(/^[0-9]+/).forEach(function (key) {
-								var curKey: number = parseInt(key);
-								if (curKey >= startKey) {
-									startKey = curKey + 1;
-								}
-							});
-						}
-					});
 				
 					var entryFormRetriever = new EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, 
-							jqNew.data("draftMode"), startKey, "n");
+							jqNew.data("draftMode"));
 					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
 							jqNew.data("replace-item-label"));
 				}

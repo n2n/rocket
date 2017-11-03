@@ -47,7 +47,7 @@ namespace Rocket.Impl.Relation {
 		
 		private load() {
 			let url = Jhtml.Url.create(this.urlStr).extR(null, {
-				"propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
+				"propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
 				"draft": this.draftMode ? 1 : 0
 			});
 			Jhtml.lookupModel(url)
