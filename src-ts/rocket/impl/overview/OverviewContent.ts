@@ -25,7 +25,7 @@ namespace Rocket.Impl.Overview {
 			this._currentPageNo = currentPageNo;
 			this._numPages = numPages;
 			this._numEntries = numEntries;
-			var page = this.createPage(this.currentPageNo);
+			let page = this.createPage(this.currentPageNo);
 			page.jqContents = this.jqElem.children();
 			this.selectorState.observePage(page);
 			

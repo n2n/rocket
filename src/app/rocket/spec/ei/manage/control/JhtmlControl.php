@@ -26,6 +26,8 @@ use n2n\web\ui\UiComponent;
 class JhtmlControl implements Control {
 	private $url;
 	private $controlButton;
+	private $forceReload = false;
+	private $pushToHistory = true;
 	
 	public function __construct($url, ControlButton $controlButton) {
 		$this->url = $url;
@@ -40,7 +42,41 @@ class JhtmlControl implements Control {
 		return $this->controlButton;
 	}
 	
+	/**
+	 * @param bool $forceReload
+	 * @return JhtmlControl
+	 */
+	public function setForceReload(bool $forceReload) {
+		$this->forceReload = $forceReload;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isForceReload() {
+		return $this->forceReload;
+	}
+	
+	/**
+	 * @param bool $pushToHistory
+	 * @return JhtmlControl
+	 */
+	public function setPushToHistory(bool $pushToHistory) {
+		$this->pushToHistory = $pushToHistory;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isPushToHistory() {
+		return $this->pushToHistory;
+	}
+	
 	public function createUiComponent(bool $iconOnly): UiComponent {
-		return $this->controlButton->toButton($iconOnly, array('href' => $this->url, 'data-jhtml' => 'true'));
+		return $this->controlButton->toButton($iconOnly, array('href' => $this->url, 'data-jhtml' => 'true',
+				'data-jhtml-push-to-history' => $this->pushToHistory ? 'true' : 'false',
+				'data-jhtml-forece-reload' => $this->forceReload ? 'true' : 'false'));
 	}
 }

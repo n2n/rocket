@@ -7,22 +7,37 @@ use rocket\spec\ei\manage\EiObject;
 
 class EiAjahEventInfo extends AjahEventInfo {
 	
+	/**
+	 * @param mixed ...$eiTypeArgs
+	 * @return \rocket\spec\ei\manage\util\model\EiAjahEventInfo
+	 */
 	public function eiTypeChanged(...$eiTypeArgs) {
 		foreach ($eiTypeArgs as $eiTypeArg) {
 			$this->groupChanged(self::buildTypeId(EiuFactory::buildEiTypeFromEiArg($eiTypeArg)));
 		}
+		return $this;
 	}
 	
+	/**
+	 * @param mixed ...$eiObjectArgs
+	 * @return \rocket\spec\ei\manage\util\model\EiAjahEventInfo
+	 */
 	public function eiObjectChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
 			$this->eiObjectMod($eiObjectArg, false);
 		}
+		return $this;
 	}
 	
+	/**
+	 * @param mixed ...$eiObjectArgs
+	 * @return \rocket\spec\ei\manage\util\model\EiAjahEventInfo
+	 */
 	public function eiObjectRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
 			$this->eiObjectMod($eiObjectArg, true);
 		}
+		return $this;
 	}
 	
 	private function eiObjectMod($eiObjectArg, bool $removed) {
@@ -34,6 +49,10 @@ class EiAjahEventInfo extends AjahEventInfo {
 		}
 	}
 	
+	/**
+	 * @param EiType $eiType
+	 * @return string
+	 */
 	public static function buildTypeId(EiType $eiType) {
 		return $eiType->getSupremeEiType()->getId();	
 	}

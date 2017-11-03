@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\command\impl\common;
 
-use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
@@ -36,8 +35,6 @@ use rocket\spec\security\EiCommandPrivilege;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\manage\control\HrefControl;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;

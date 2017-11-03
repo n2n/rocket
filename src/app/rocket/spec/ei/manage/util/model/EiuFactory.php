@@ -4,7 +4,6 @@ namespace rocket\spec\ei\manage\util\model;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\ManageException;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\EiEntry;
@@ -20,7 +19,6 @@ use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ReflectionUtils;
 use rocket\spec\ei\manage\gui\EiGui;
-use rocket\spec\ei\manage\util\model\EiuGui;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -410,7 +408,7 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @param unknown $eiArg
+	 * @param mixed $eiArg
 	 * @param EiuFrame $eiuFrame
 	 * @param string $argName
 	 * @param bool $required
@@ -474,7 +472,7 @@ class EiuFactory {
 	
 	/**
 	 * 
-	 * @param unknown $eiTypeObj
+	 * @param mixed $eiTypeObj
 	 * @param bool $required
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\EiType|NULL
@@ -524,7 +522,7 @@ class EiuFactory {
 	
 	/**
 	 * 
-	 * @param unknown $eiEntryGuiArg
+	 * @param mixed $eiEntryGuiArg
 	 * @param string $argName
 	 * @param bool $required
 	 * @throws EiuPerimeterException

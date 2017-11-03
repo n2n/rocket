@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\command\impl\common;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\impl\common\controller\AddController;
 use rocket\spec\ei\component\command\control\OverallControlComponent;

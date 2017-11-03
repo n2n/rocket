@@ -2616,7 +2616,7 @@ var Rocket;
                     this._currentPageNo = currentPageNo;
                     this._numPages = numPages;
                     this._numEntries = numEntries;
-                    var page = this.createPage(this.currentPageNo);
+                    let page = this.createPage(this.currentPageNo);
                     page.jqContents = this.jqElem.children();
                     this.selectorState.observePage(page);
                     if (this.allInfo) {
@@ -3268,7 +3268,7 @@ var Rocket;
                         "class": "fa fa-step-forward"
                     })));
                     this.overviewContent.whenContentChanged(function () {
-                        if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
+                        if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages <= 1) {
                             that.jqPagination.hide();
                         }
                         else {
@@ -3647,7 +3647,7 @@ var Rocket;
                 }
                 load() {
                     let url = Jhtml.Url.create(this.urlStr).extR(null, {
-                        "propertyPath": this.propertyPath + "[" + this.keyPrefix + (this.startKey++) + "]",
+                        "propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
                         "draft": this.draftMode ? 1 : 0
                     });
                     Jhtml.lookupModel(url)
@@ -4347,21 +4347,7 @@ var Rocket;
                     if (jqCurrent.length > 0 || jqNew.length > 0) {
                         if (jqNew.length > 0) {
                             var propertyPath = jqNew.data("property-path");
-                            var startKey = 0;
-                            var testPropertyPath = propertyPath + "[n";
-                            jqNew.find("input, textarea").each(function () {
-                                var name = $(this).attr("name");
-                                if (0 == name.indexOf(testPropertyPath)) {
-                                    name = name.substring(testPropertyPath.length);
-                                    name.match(/^[0-9]+/).forEach(function (key) {
-                                        var curKey = parseInt(key);
-                                        if (curKey >= startKey) {
-                                            startKey = curKey + 1;
-                                        }
-                                    });
-                                }
-                            });
-                            var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"), startKey, "n");
+                            var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"));
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("replace-item-label"));
                         }
                         toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory);

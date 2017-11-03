@@ -23,18 +23,15 @@ namespace rocket\spec\ei\component\field\impl\bool\command;
 
 use rocket\spec\ei\component\field\impl\bool\OnlineEiProp;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\control\HrefControl;
-use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
+use n2n\util\uri\Path;
 
 class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const CONTROL_KEY = 'online_status';
@@ -61,36 +58,35 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	}
 	
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
-		$eiEntry = $eiu->entry()->getEiEntry();
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$request = $view->getRequest();
-		$dtc = new DynamicTextCollection(Rocket::NS, $request->getN2nLocale());
-		$eiObject = $eiEntry->getEiObject();
-
-		$controlButton = new ControlButton($dtc->translate('ei_impl_online_offline_label'), 
-					$dtc->translate('ei_impl_online_offline_tooltip'));
+		$eiuControlFactory = $eiu->frame()->controlFactory($view);
 		
-		if ($eiEntry->getValue($this->onlineEiProp)) {
+		$eiuEntry = $eiu->entry();
+		$eiuFrame = $eiu->frame();
+		$dtc = new DynamicTextCollection('rocket', $view->getN2nLocale());
+		
+		$controlButton = new ControlButton($dtc->t('ei_impl_online_offline_label'),
+				$dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
+		
+		$urlExt = null;
+		if ($eiuEntry->getValue($this->onlineEiProp)) {
 			$controlButton->setType(ControlButton::TYPE_SUCCESS);
 			$controlButton->setIconType(IconType::ICON_CHECK_CIRCLE);
+			$urlExt = (new Path(array('online', $eiuEntry->getLiveIdRep())))->toUrl();
 		} else {
 			$controlButton->setType(ControlButton::TYPE_DANGER);
 			$controlButton->setIconType(IconType::ICON_MINUS_CIRCLE);
+			$urlExt = (new Path(array('offline', $eiuEntry->getLiveIdRep())))->toUrl();
 		}
 		
-		$contextPath = $view->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext());
-		$controlButton->setAttrs(array('class' => 'rocket-online-cmd',
-				'data-online-url' => (string) $contextPath->ext($this->getId(), 'online', $eiEntry->getIdRep()),
-				'data-offline-url' => (string) $contextPath->ext($this->getId(), 'offline', $eiEntry->getIdRep())));
+		$control = $eiuControlFactory->createAjah($this, $controlButton, $urlExt)
+				->setForceReload(true);
 		
-		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/online.js', Rocket::NS);
-
-		return array(self::CONTROL_KEY => new HrefControl(null, $controlButton));
+		return array(self::CONTROL_KEY => $control);
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
-	public function getEntryControlOptions(N2nLocale $n2nLocale) {
+	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('ei_impl_online_set_label'));
 	}

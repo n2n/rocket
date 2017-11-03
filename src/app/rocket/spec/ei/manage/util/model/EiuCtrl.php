@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use n2n\web\http\ForbiddenException;
@@ -259,7 +257,7 @@ class EiuCtrl implements Lookupable {
 	}
 	
 	/**
-	 * @param unknown $eiObjectObj
+	 * @param object $eiObjectObj
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function toEiuEntry($eiObjectObj) {

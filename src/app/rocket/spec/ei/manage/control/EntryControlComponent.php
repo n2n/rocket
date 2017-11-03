@@ -23,7 +23,6 @@ namespace rocket\spec\ei\manage\control;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\model\EntryModel;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 interface EntryControlComponent {
@@ -34,7 +33,7 @@ interface EntryControlComponent {
 	public function getEntryControlOptions(N2nLocale $n2nLocale): array;
 	
 	/**
-	 * @param EntryModel $entryModel
+	 * @param Eiu $eiu
 	 * @param HtmlView $view
 	 * @return \rocket\spec\ei\manage\control\ControlButton[]
 	 */

@@ -286,7 +286,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	}
 
 	/**
-	 * @param unknown $closure
+	 * @param \Closure $closure
 	 */
 	private function call($closure) {
 		$mmi = new MagicMethodInvoker($this->eiu->frame()->getEiFrame()->getN2nContext());

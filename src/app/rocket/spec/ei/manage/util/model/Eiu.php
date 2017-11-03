@@ -32,8 +32,8 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @param unknown $eiObjectObj
-	 * @param bool $assignToEiu
+	 * @param bool $required
+	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function entry(bool $required = true) {

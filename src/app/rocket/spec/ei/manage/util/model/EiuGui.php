@@ -87,7 +87,7 @@ class EiuGui {
 	
 	/**
 	 * 
-	 * @param unknown $eiEntryArg
+	 * @param mixed $eiEntryArg
 	 * @param bool $makeEditable
 	 * @param int $treeLevel
 	 * @return EiuEntryGui

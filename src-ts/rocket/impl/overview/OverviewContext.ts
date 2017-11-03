@@ -237,7 +237,7 @@ namespace Rocket.Impl.Overview {
 					})));
 			
 			this.overviewContent.whenContentChanged(function () {
-				if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages == 1) {
+				if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages <= 1) {
 					that.jqPagination.hide();
 				} else {
 					that.jqPagination.show();

@@ -22,12 +22,8 @@
 
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
@@ -37,7 +33,6 @@ use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
 use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
-use rocket\spec\ei\manage\util\model\GeneralIdUtils;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 
 class EiuEntry {
@@ -321,7 +316,7 @@ class EiuEntry {
 	
 	/**
 	 * 
-	 * @param unknown $eiPropPath
+	 * @param mixed $eiPropPath
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
 	 * @return \rocket\spec\ei\manage\mapping\EiFieldWrapper|null

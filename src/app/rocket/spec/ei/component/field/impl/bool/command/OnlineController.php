@@ -26,15 +26,14 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ajah\AjahEvent;
 
 class OnlineController extends ControllerAdapter {
-	const ACTION_OFFLINE = 'offline';
-	
 	private $onlineEiProp;
-	private $eiCtrlUtils;
+	private $eiuCtrl;
 	
-	public function prepare(EiuCtrl $eiCtrlUtils) {
-		$this->eiCtrlUtils = $eiCtrlUtils;
+	public function prepare(EiuCtrl $eiCtrl) {
+		$this->eiuCtrl = $eiCtrl;
 	}
 	
 	public function setOnlineEiProp(OnlineEiProp $onlineEiProp) {
@@ -50,12 +49,14 @@ class OnlineController extends ControllerAdapter {
 	}
 	
 	private function setStatus($status, $idRep) {
-		$eiEntry = $this->eiCtrlUtils->lookupEiEntry($idRep);
+		$eiEntry = $this->eiuCtrl->lookupEiEntry($idRep);
 		$eiEntry->setValue($this->onlineEiProp, $status);		
 		if (!$eiEntry->save()) {
 			throw new ForbiddenException();
 		}
 		
+		$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRedirectUrl($eiEntry), 
+				AjahEvent::ei()->eiObjectChanged($eiEntry));
 		$this->send(new JsonResponse(array('status' => 'ok')));
 	}
 }

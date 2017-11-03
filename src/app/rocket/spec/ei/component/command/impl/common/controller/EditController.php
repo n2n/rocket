@@ -30,7 +30,6 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\core\model\Breadcrumb;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use rocket\spec\ei\manage\draft\Draft;
 use n2n\util\col\ArrayUtils;
 use rocket\spec\ei\manage\util\model\EiuCtrl;

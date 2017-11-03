@@ -22,43 +22,32 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\util\model\EntryForm;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\store\EntityInfo;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiType;
-use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\EiEntityObj;
-use rocket\spec\ei\security\InaccessibleEntryException;
 use rocket\core\model\Rocket;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\mask\EiMask;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\util\model\EiUtilsAdapter;
 use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\persistence\orm\store\operation\CascadeOperation;
 use rocket\spec\config\SpecManager;
 use n2n\persistence\orm\store\operation\OperationCascader;
-use n2n\persistence\orm\CascadeType;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\JhtmlControl;
-use n2n\util\uri\Url;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\EiGui;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -112,7 +101,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	/**
-	 * @param unknown $eiObjectObj
+	 * @param mixed $eiObjectObj
 	 * @throws EiuPerimeterException
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
@@ -205,7 +194,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	/**
-	 * @param unknown $fromEiObjectObj
+	 * @param mixed $fromEiObjectObj
 	 * @param EiObject $to
 	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */
@@ -250,7 +239,7 @@ class EiuFrame extends EiUtilsAdapter {
 	/**
 	 * 
 	 * @param bool $draft
-	 * @param unknown $copyFromEiObjectObj
+	 * @param mixed $copyFromEiObjectObj
 	 * @param PropertyPath $contextPropertyPath
 	 * @param array $allowedEiTypeIds
 	 * @throws EntryManageException
@@ -425,29 +414,6 @@ class EiuFrame extends EiUtilsAdapter {
 		$eiGui = $this->eiFrame->getContextEiMask()->createEiGui($this->eiFrame, 
 				($bulky ? DisplayDefinition::BULKY_VIEW_MODES : DisplayDefinition::COMPACT_VIEW_MODES));
 		return new EiuGui($eiGui, $this);
-	}
-}
-
-class EiuControlFactory {
-	private $eiuFrame;
-	private $view;
-	
-	public function __construct(EiuFrame $eiuFrame, HtmlView $view) {
-		$this->eiuFrame = $eiuFrame;
-		$this->view = $view;
-	}
-	
-	/**
-	 * @param EiCommand $eiCommand
-	 * @param ControlButton $controlButton
-	 * @param Url $urlExt
-	 * @return \rocket\spec\ei\manage\control\JhtmlControl
-	 */
-	public function createAjah(EiCommand $eiCommand, ControlButton $controlButton, Url $urlExt = null) {
-		$url = $this->view->getHttpContext()
-				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
-				->ext($eiCommand->getId())->toUrl()->ext($urlExt);
-		return new JhtmlControl($url, $controlButton);
 	}
 }
 

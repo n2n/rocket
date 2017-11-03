@@ -72,7 +72,7 @@ interface EiUtils {
 	
 	/**
 	 * @param mixed $id
-	 * @return scalar
+	 * @return string
 	 * @throws \InvalidArgumentException if null is passed as id.
 	 */
 	public function idToIdRep($id): string;
@@ -167,7 +167,7 @@ interface EiUtils {
 	public function lookupEiObjectByDraftId(int $id): EiObject;
 	
 	/**
-	 * @param unknown $entityObjId
+	 * @param mixed $entityObjId
 	 * @param int $limit
 	 * @param int $num
 	 * @return Draft[]

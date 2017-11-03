@@ -26,7 +26,6 @@ use n2n\core\container\N2nContext;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\manage\EiEntityObj;
 use n2n\persistence\orm\store\EntityInfo;
-use rocket\spec\ei\manage\util\model\EiUtilsAdapter;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\core\model\Rocket;
@@ -73,7 +72,7 @@ class EiuMask extends EiUtilsAdapter {
 		return null !== $this->em()->find($this->getEntityModel()->getClass(), $id);
 	}
 	/**
-	 * @param unknown $id
+	 * @param mixed $id
 	 * @throws UnknownEntryException
 	 * @return \rocket\spec\ei\manage\EiEntityObj
 	 */
