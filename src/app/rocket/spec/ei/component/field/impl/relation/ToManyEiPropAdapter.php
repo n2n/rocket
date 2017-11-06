@@ -108,7 +108,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 			return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getLabel();
 		}
 		
-		return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getPluralLabel();
+		return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getPluralLabelLstr();
 	}
 
 	public function buildEiField(Eiu $eiu) {
