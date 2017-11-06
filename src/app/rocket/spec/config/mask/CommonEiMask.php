@@ -234,7 +234,8 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 		
 		if ($id === null) {
-			$id = $this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId());
+			$id = $eiObject->getEiEntityObj()->hasId() ? 
+					$this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId()) : 'new';
 		}
 		
 		if ($name === null) {
