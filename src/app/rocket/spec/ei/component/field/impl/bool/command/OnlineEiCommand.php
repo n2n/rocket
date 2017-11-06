@@ -78,7 +78,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 			$urlExt = (new Path(array('offline', $eiuEntry->getLiveIdRep())))->toUrl();
 		}
 		
-		$control = $eiuControlFactory->createAjah($this, $controlButton, $urlExt)
+		$control = $eiuControlFactory->createJhtml($controlButton, $urlExt)
 				->setForceReload(true);
 		
 		return array(self::CONTROL_KEY => $control);

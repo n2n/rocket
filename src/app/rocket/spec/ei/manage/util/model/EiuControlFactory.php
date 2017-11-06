@@ -10,10 +10,12 @@ use rocket\spec\ei\manage\control\JhtmlControl;
 class EiuControlFactory {
 	private $eiuFrame;
 	private $view;
+	private $eiCommand;
 	
-	public function __construct(EiuFrame $eiuFrame, HtmlView $view) {
+	public function __construct(EiuFrame $eiuFrame, HtmlView $view, EiCommand $eiCommand) {
 		$this->eiuFrame = $eiuFrame;
 		$this->view = $view;
+		$this->eiCommand = $eiCommand;
 	}
 	
 	/**
@@ -22,10 +24,10 @@ class EiuControlFactory {
 	 * @param Url $urlExt
 	 * @return \rocket\spec\ei\manage\control\JhtmlControl
 	 */
-	public function createAjah(EiCommand $eiCommand, ControlButton $controlButton, Url $urlExt = null) {
+	public function createJhtml(ControlButton $controlButton, Url $urlExt = null) {
 		$url = $this->view->getHttpContext()
 				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
-				->ext($eiCommand->getId())->toUrl()->ext($urlExt);
+				->ext($this->eiCommand->getId())->toUrl()->ext($urlExt);
 		return new JhtmlControl($url, $controlButton);
 	}
 }

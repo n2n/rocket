@@ -48,6 +48,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\command\EiCommand;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -399,8 +400,8 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues();
 	}
 	
-	public function controlFactory(HtmlView $view) {
-		return new EiuControlFactory($this, $view);
+	public function controlFactory(HtmlView $view, EiCommand $eiCommand) {
+		return new EiuControlFactory($this, $view, $eiCommand);
 	}
 	
 	public function getCurrentUrl() {

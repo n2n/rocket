@@ -113,12 +113,12 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$controls = array();
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
-		$controls[$key] = $eiuControlFactory->createAjah($this, new ControlButton(
+		$controls[$key] = $eiuControlFactory->createJhtml(new ControlButton(
 				$dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_add_label'),
 				null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
 		
 		if ($eiu->frame()->isDraftingEnabled()) {
-			$controls[self::CONTROL_ADD_DRAFT_KEY] = $eiuControlFactory->createAjah($this, new ControlButton(
+			$controls[self::CONTROL_ADD_DRAFT_KEY] = $eiuControlFactory->createJhtml(new ControlButton(
 					$dtc->translate('ei_impl_add_draft_label'),
 					null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
 		}
