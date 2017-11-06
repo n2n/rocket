@@ -23,7 +23,6 @@
 	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\spec\ei\component\field\impl\ci\model\PanelConfig;
-	use n2n\util\uri\Url;
 
 	$view = HtmlView::view($view);
 	$html = HtmlView::html($view);
@@ -35,18 +34,15 @@
 	$propertyPath = $view->getParam('propertyPath');
 	$view->assert($propertyPath instanceof PropertyPath);
 	
-	$ciEiSpecLabels = $view->getParam('ciEiSpecLabels');
-	$view->assert(is_array($ciEiSpecLabels));
+	$ciEiTypeLabels = $view->getParam('ciEiTypeLabels');
+	$view->assert(is_array($ciEiTypeLabels));
 ?>
 
-<div class="rocket-content-items" data-ci-ei-spec-labels="<?php $html->out(json_encode($ciEiSpecLabels)) ?>">
+<div class="rocket-impl-content-items">
 	<?php foreach ($panelConfigs as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
-				array('class' => 'rocket-content-item-panel', 'data-name' => $panelConfig->getName(),
-						'data-allowed-ci-spec-ids' => $panelConfig->isRestricted() 
-								? json_encode(array_values($panelConfig->getAllowedContentItemIds())) : null)) ?>
-			<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
-			
+				array('class' => 'rocket-impl-content-item-panel rocket-group')) ?>
+			<?php $formHtml->magLabel() ?>
 			<?php $formHtml->magField() ?>
 		<?php $formHtml->magClose() ?>
 	<?php endforeach ?>	

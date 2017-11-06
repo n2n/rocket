@@ -23,8 +23,8 @@ namespace rocket\spec\ei\component;
 
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\EiSpec;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\EiType;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
@@ -36,23 +36,23 @@ interface EiSetupProcess {
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\spec\ei\
+	 * @return EiType
 	 * @throws UnknownException
 	 */
-	public function getEiSpecByClass(\ReflectionClass $class): EiSpec;
+	public function getEiTypeByClass(\ReflectionClass $class): EiType;
 	
 	public function getN2nContext(): N2nContext;
 	
 	public function createException($reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException;
 	
-	public function getGenericEiPropertyByEiFieldPath($eiFieldPath): GenericEiProperty;
+	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty;
 	
-	public function getScalarEiPropertyByFieldPath($eiFieldPath): ScalarEiProperty;
+	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty;
 	
 	/**
-	 * @return \rocket\spec\ei\component\field\EiFieldCollection
+	 * @return \rocket\spec\ei\component\field\EiPropCollection
 	 */
-	public function getEiFieldCollection(): EiFieldCollection;
+	public function getEiPropCollection(): EiPropCollection;
 	
 	/**
 	 * @return \rocket\spec\ei\component\command\EiCommandCollection

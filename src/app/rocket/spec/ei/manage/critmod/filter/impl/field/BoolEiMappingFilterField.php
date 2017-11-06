@@ -21,16 +21,16 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterField;
-use rocket\spec\ei\manage\mapping\MappableConstraint;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 
-class BoolEiMappingFilterField extends BoolFilterField implements EiMappingFilterField {
+class BoolEiEntryFilterField extends BoolFilterField implements EiEntryFilterField {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\EiMappingFilterField::createMappableConstraint()
+	 * @see \rocket\spec\ei\manage\critmod\filter\EiEntryFilterField::createEiFieldConstraint()
 	 */
-	public function createMappableConstraint() {
-		return new BoolMappableConstraint($this->buildValue($operator, $mag));
+	public function createEiFieldConstraint() {
+		return new BoolEiFieldConstraint($this->buildValue($operator, $mag));
 	}
 	
 }

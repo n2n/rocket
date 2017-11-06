@@ -1,0 +1,82 @@
+/*
+ * Toolbar
+ */
+
+.rocket-impl-overview-tools {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 44px;
+    background-color: $gray-100;
+    padding-top: 1rem;
+}
+
+.rocket-impl-state {
+    margin-bottom: 0.5rem;
+}
+
+.rocket-impl-quicksearch {
+    > label {
+        font-weight: bold;
+        margin-right: 1rem;
+    }
+    &.rocket-active > .input-group > .input-group-btn > .btn {
+        color: white;
+        background: $primary;
+        border-color: darken($primary, 15);
+    }
+}
+
+/*
+ * Content
+ */
+
+.rocket-simple-commands {
+    > a { 
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: $gray-600;
+        padding: 0.25rem 0.5rem;
+        &:hover {
+            background: transparent;
+        }
+        &:focus,
+        &:visited,
+        &:active {
+            box-shadow: none;
+        }
+        &.btn-danger:hover {
+            color: $danger;
+        }
+        &.btn-warning:hover {
+            color: $warning;
+        }
+        &.btn-success:hover {
+            color: $success;
+        }
+        > span {
+            display: none;
+        }
+        > i {
+            font-size: $font-size-lg;
+        }
+    }
+}
+
+
+/*
+ * Footer
+ */
+
+.rocket-impl-overview-pagination {
+    .rocket-impl-pagination-no {
+        width: 5rem;
+        text-align: center;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+    > a,
+    > button {
+        margin-left: 0.5rem;
+    }
+}

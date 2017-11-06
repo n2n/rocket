@@ -22,12 +22,12 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 
 class ToOneDynMappingFormFactory {
 	private $eiFrameUtils;
-	private $inaccessibleCurrentEiSelection;
-	private $currentEiMapping;
+	private $inaccessibleCurrentEiObject;
+	private $currentEiEntry;
 	private $currentMappingForm;
 	private $newMappingFormAvailable;
 	private $newMappingForm;
@@ -37,31 +37,32 @@ class ToOneDynMappingFormFactory {
 		$this->eiFrameUtils = $eiFrameUtils;
 	}
 	
-	public function setEiMapping(EiMapping $eiMapping = null) {
+	public function setEiEntry(EiEntry $eiEntry = null) {
 		$this->currentMappingForm = null;
 		$this->newMappingForm = null;
 		
-		if ($eiMapping === null) {
+		if ($eiEntry === null) {
 			return;
 		}
 		
-		if (!$eiMapping->isAccessible()) {
+		if (!$eiEntry->isAccessible()) {
 			$this->currentMappingForm = new MappingForm(
-					$this->eiFrameUtils->createIdentityString($eiMapping->getEiSelection()),
-					$eiMapping);
+					$this->eiFrameUtils->createIdentityString($eiEntry->getEiObject()),
+					$eiEntry);
 			return;
 		}
 		
-		if ($eiMapping->getEiSelection()->isNew()) {
+		if ($eiEntry->getEiObject()->isNew()) {
 			$this->newMappingForm = new MappingForm(
 					$this->eiFrameUtils->getGenericLabel(), null,
-					$this->eiFrameUtils->createEntryFormFromMapping($eiMapping));
+					$this->eiFrameUtils->entryForm($eiEntry));
 			return;
 		}
 		
 		$this->currentMappingForm = new MappingForm(
-				$this->eiFrameUtils->getGenericLabel($eiMapping), null,
-				$this->eiFrameUtils->createEntryFormFromMapping($eiMapping));
+				$this->eiFrameUtils->getGenericLabel($eiEntry), 
+				$this->eiFrameUtils->getGenericIconType($eiEntry), null,
+				$this->eiFrameUtils->entryForm($eiEntry));
 	}
 
 	public function getCurrentMappingForm() {
@@ -80,6 +81,10 @@ class ToOneDynMappingFormFactory {
 		$this->draftMode = $draftMode;
 	}
 	
+	public function isDraftMode() {
+		return $this->draftMode;
+	}
+	
 	public function getNewMappingForm() {
 		return $this->newMappingForm;
 	}
@@ -88,8 +93,9 @@ class ToOneDynMappingFormFactory {
 		if (!$this->newMappingFormAvailable) return null;
 			
 		if ($this->newMappingForm === null) {
-			$this->newMappingForm = new MappingForm($this->eiFrameUtils->getGenericLabel(), null,
-					$this->eiFrameUtils->createNewEntryForm($this->draftMode));
+			$this->newMappingForm = new MappingForm($this->eiFrameUtils->getGenericLabel(), 
+					$this->eiFrameUtils->getGenericIconType(), null,
+					$this->eiFrameUtils->newEntryForm($this->draftMode));
 		}
 		
 		return $this->newMappingForm;

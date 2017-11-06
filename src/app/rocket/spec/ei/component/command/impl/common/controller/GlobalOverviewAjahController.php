@@ -25,13 +25,13 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\impl\ScrController;
 use rocket\user\model\LoginContext;
 use rocket\spec\ei\manage\ManageState;
-use rocket\spec\ei\component\command\impl\common\controller\OverviewAjahController;
+use rocket\spec\ei\component\command\impl\common\controller\OverviewJhtmlController;
 use n2n\web\http\PageNotFoundException;
 use rocket\spec\ei\mask\EiMask;
 use n2n\web\http\ForbiddenException;
 use rocket\spec\ei\EiCommandPath;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
@@ -39,7 +39,7 @@ use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 
-class GlobalOverviewAjahController extends ControllerAdapter implements ScrController {
+class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrController {
 	private $manageState;
 	private $rocket;
 	private $loginContext;
@@ -59,41 +59,41 @@ class GlobalOverviewAjahController extends ControllerAdapter implements ScrContr
 				&& $this->loginContext->getCurrentUser()->isAdmin()) || N2N::isDevelopmentModeOn();
 	}
 
-	public function doEis($eiSpecId, array $delegateCmds = array(), OverviewAjahController $overviewAjahController) {
-		$eiSpec = null;
+	public function doEis($eiTypeId, array $delegateCmds = array(), OverviewJhtmlController $overviewJhtmlController) {
+		$eiType = null;
 		try {
-			$eiSpec = $this->rocket->getSpecManager()->getEiSpecById($eiSpecId);
+			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException();
 		}
 
-		$this->del($eiSpec->getEiMaskCollection()->getOrCreateDefault(), $overviewAjahController);
+		$this->del($eiType->getEiMaskCollection()->getOrCreateDefault(), $overviewJhtmlController);
 	}
 
-	public function doEim($eiSpecId, $eiMaskId, array $delegateCmds = array(),
-			OverviewAjahController $overviewAjahController) {
+	public function doEim($eiTypeId, $eiMaskId, array $delegateCmds = array(),
+			OverviewJhtmlController $overviewJhtmlController) {
 
 		$eiMask = null;
 		try {
-			$eiSpec = $this->rocket->getSpecManager()->getEiSpecById($eiSpecId);
-			$eiMask = $eiSpec->getEiMaskCollection()->getById($eiMaskId);
+			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
+			$eiMask = $eiType->getEiMaskCollection()->getById($eiMaskId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (UnknownEiMaskException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 
-		$this->del($eiMask, $overviewAjahController);
+		$this->del($eiMask, $overviewJhtmlController);
 	}
 
-	private function del(EiMask $eiMask, OverviewAjahController $overviewAjahController) {
+	private function del(EiMask $eiMask, OverviewJhtmlController $overviewJhtmlController) {
 		$n2nContext = $this->getN2nContext();
-		$em = $eiMask->getEiEngine()->getEiSpec()->lookupEntityManager($this->getN2nContext()->getPdoPool());
+		$em = $eiMask->getEiEngine()->getEiType()->lookupEntityManager($this->getN2nContext()->getPdoPool());
 		$this->manageState->setEntityManager($em);
 		$this->manageState->setDraftManager($n2nContext->lookup(Rocket::class)->getOrCreateDraftManager($em));
 		$this->manageState->setEiPermissionManager($this->loginContext->getSecurityManager()->getEiPermissionManager());
 
-		$controllerContext = $this->createDelegateContext($overviewAjahController);
+		$controllerContext = $this->createDelegateContext($overviewJhtmlController);
 		$eiFrame = $this->manageState->createEiFrame($eiMask, $controllerContext);
 
 		try {
@@ -106,14 +106,14 @@ class GlobalOverviewAjahController extends ControllerAdapter implements ScrContr
 		$this->delegateToControllerContext($controllerContext);
 	}
 
-	public static function buildToolsAjahUrl(ScrRegistry $scrRegistry, EiSpec $eiSpec, EiMask $eiMask = null): Url {
-		$contextUrl = $scrRegistry->registerSessionScrController(GlobalOverviewAjahController::class);
+	public static function buildToolsAjahUrl(ScrRegistry $scrRegistry, EiType $eiType, EiMask $eiMask = null): Url {
+		$contextUrl = $scrRegistry->registerSessionScrController(GlobalOverviewJhtmlController::class);
 		if ($eiMask !== null) {
-			$contextUrl = $contextUrl->extR(array('eim', $eiSpec->getId(), $eiMask->getId()));
+			$contextUrl = $contextUrl->extR(array('eim', $eiType->getId(), $eiMask->getId()));
 		} else {
-			$contextUrl = $contextUrl->extR(array('eis', $eiSpec->getId()));
+			$contextUrl = $contextUrl->extR(array('eis', $eiType->getId()));
 		}
 
-		return OverviewAjahController::buildToolsAjahUrl($contextUrl);
+		return OverviewJhtmlController::buildToolsAjahUrl($contextUrl);
 	}
 }

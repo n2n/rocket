@@ -22,35 +22,42 @@
 namespace rocket\spec\config\mask\model;
 
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 class EntryListViewModel {
-	private $eiFrame;
-	private $entryGuis;
+	private $eiuFrame;
+	private $eiuEntryGuis;
 	private $guiDefinition;
-	private $guiFieldOrder;
+	private $displayStructure;
 	
-	public function __construct(EiFrame $eiFrame, array $entryGuis, GuiDefinition $guiDefinition, 
-			GuiFieldOrder $guiFieldOrder) {
-		$this->eiFrame = $eiFrame;
-		$this->entryGuis = $entryGuis;
+	public function __construct(EiuFrame $eiuFrame, array $eiuEntryGuis, GuiDefinition $guiDefinition, 
+			DisplayStructure $displayStructure) {
+		$this->eiuFrame = $eiuFrame;
+		$this->eiuEntryGuis = $eiuEntryGuis;
 		$this->guiDefinition = $guiDefinition;
-		$this->guiFieldOrder = $guiFieldOrder;
+		$this->displayStructure = $displayStructure;
 	}
 	
-	public function getEiFrame(): EiFrame {
-		return $this->eiFrame;
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
+	 */
+	public function getEiuFrame() {
+		return $this->eiuFrame;
 	}
 
-	public function getEntryGuis(): array {
-		return $this->entryGuis;
+	/**
+	 * @return EiuEntryGui[]
+	 */
+	public function getEiuEntryGuis() {
+		return $this->eiuEntryGuis;
 	}
 
-	public function getGuiDefinition(): GuiDefinition {
+	public function getGuiDefinition() {
 		return $this->guiDefinition;
 	}
 
-	public function getGuiFieldOrder(): GuiFieldOrder {
-		return $this->guiFieldOrder;
+	public function getDisplayStructure() {
+		return $this->displayStructure;
 	}
 }

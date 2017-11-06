@@ -27,26 +27,26 @@ use rocket\spec\ei\manage\gui\Editable;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class ToManyEditable implements Editable {
 	private $label;
 	private $min;
 	private $max;
-	private $toManyMappable;
+	private $toManyEiField;
 	private $targetReadEiFrame;
 	private $targetEditEiFrame;
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
-	private $targetOrderEiFieldPath;
+	private $targetOrderEiPropPath;
 	
-	public function __construct(string $label, ToManyMappable $toManyMappable,
+	public function __construct(string $label, ToManyEiField $toManyEiField,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, int $min, int $max = null) {
 		$this->label = $label;
 		$this->min = $min;
 		$this->max = $max;
-		$this->toManyMappable = $toManyMappable;
+		$this->toManyEiField = $toManyEiField;
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
 	}
@@ -79,8 +79,8 @@ class ToManyEditable implements Editable {
 		$this->draftMode = $draftMode;
 	}
 
-	public function setTargetOrderEiFieldPath(EiFieldPath $targetOrderEiFieldPath = null) {
-		$this->targetOrderEiFieldPath = $targetOrderEiFieldPath;
+	public function setTargetOrderEiPropPath(EiPropPath $targetOrderEiPropPath = null) {
+		$this->targetOrderEiPropPath = $targetOrderEiPropPath;
 	}
 	
 	private $toManyMag;
@@ -88,17 +88,17 @@ class ToManyEditable implements Editable {
 	public function createMag(string $propertyName): Mag {
 		$this->toManyMag = new ToManyMag($propertyName, $this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
 				$this->min, $this->max);
-		$this->toManyMag->setValue($this->toManyMappable->getValue());
+		$this->toManyMag->setValue($this->toManyEiField->getValue());
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toManyMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->toManyMag->setDraftMode($this->draftMode);
-		$this->toManyMag->setTargetOrderEiFieldPath($this->targetOrderEiFieldPath);
+		$this->toManyMag->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		return $this->toManyMag;
 	}
 	
 	public function save() {
 		IllegalStateException::assertTrue($this->toManyMag !== null);
 
-		$this->toManyMappable->setValue($this->toManyMag->getValue());
+		$this->toManyEiField->setValue($this->toManyMag->getValue());
 	}
 }

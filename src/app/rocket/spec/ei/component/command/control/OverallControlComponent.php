@@ -28,5 +28,10 @@ use rocket\spec\ei\manage\util\model\Eiu;
 interface OverallControlComponent {
 	public function getOverallControlOptions(N2nLocale $n2nLocale);
 	
-	public function createOverallHrefControls(Eiu $eiu, HtmlView $htmlView);
+	/**
+	 * @param EntryModel $entryModel
+	 * @param HtmlView $view
+	 * @return \rocket\spec\ei\manage\control\ControlButton[]
+	 */
+	public function createOverallControls(Eiu $eiu, HtmlView $htmlView): array;
 }

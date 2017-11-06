@@ -31,7 +31,7 @@ use rocket\spec\ei\manage\EntryGui;
 use rocket\spec\config\mask\model\EntryGuiTree;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\spec\ei\manage\DraftEiSelection;
+use rocket\spec\ei\manage\DraftEiObject;
 
 class DraftListModel implements Dispatchable {	
 	private $utils;
@@ -80,17 +80,17 @@ class DraftListModel implements Dispatchable {
 // 	public function initByIdReps(array $idReps) {
 // 		$eiFrame = $this->getEiFrame();
 				
-// 		$eiSpec = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec();
+// 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 // 		$ids = array();
 // 		foreach ($idReps as $idRep) {
-// 			$ids[] = $eiSpec->idRepToId($idRep);
+// 			$ids[] = $eiType->idRepToId($idRep);
 // 		}
 	
 // 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 // 		$criteria->select(NestedSetUtils::NODE_ALIAS)
-// 			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiSpec->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
+// 			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiType->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $idReps);
 		
-// 		if (null !== ($nestedSetStrategy = $eiSpec->getNestedSetStrategy())) {
+// 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 // 			$this->treeLookup($criteria, $nestedSetStrategy);
 // 		} else {
 // 			$this->simpleLookup($criteria);
@@ -105,9 +105,9 @@ class DraftListModel implements Dispatchable {
 		
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {
-			$eiMapping = $this->utils->createEiMapping(new DraftEiSelection($draft));
+			$eiEntry = $this->utils->createEiEntry(new DraftEiObject($draft));
 			$this->entryGuis[$draft->getId()] = new EntryGui($eiMask->createListEntryGuiModel($eiFrame, 
-					$eiMapping, false)); 
+					$eiEntry, false)); 
 		}
 	}
 		
@@ -160,9 +160,9 @@ class DraftListModel implements Dispatchable {
 		
 // 		$selectedObjects = array();
 // 		foreach ($this->selectedObjectIds as $entryId) {
-// 			if (!isset($this->eiSelections[$entryId])) continue;
+// 			if (!isset($this->eiObjects[$entryId])) continue;
 			
-// 			$selectedObjects[$entryId] = $this->eiSelections[$entryId];
+// 			$selectedObjects[$entryId] = $this->eiObjects[$entryId];
 // 		}
 		
 // 		if (!sizeof($selectedObjects)) return;

@@ -1,0 +1,54 @@
+.rocket-nav-group {
+    padding-bottom: 0.5rem;
+    border-top: 1px solid $gray-700;
+    .nav-link {
+        color: $gray-500;
+        font-size: $font-size-sm;
+        font-weight: 600;
+        padding: 0.375 1rem;
+        &:hover {
+            color: white;
+        }
+        &.active  {
+            color: white;
+            border-left: 3px solid $primary;
+        }
+    }
+}
+.rocket-nav-group:last-child {
+    border-bottom: 1px solid $gray-700;
+}
+
+.rocket-global-nav-group-title {
+    font-size: 1rem;
+    background-color: $gray-900;
+    margin: 0;
+    padding: 0.75rem $spacer;
+    font-weight: bold;
+    > i.fa {
+        float: right;
+        color: $gray-400;
+    }
+}
+
+#rocket-conf-nav {
+    .nav-link {
+        color: $gray-500;
+        display: inline-block;
+        line-height: $rocket-header-height;
+        font-weight: 600;
+        padding: 0 1rem;
+        &:hover {
+            color: $gray-200;
+        }
+        .fa {
+            font-size: $font-size-lg;
+        }
+    }
+    .rocket-conf-user {
+        border-left: 1px solid $gray-700;
+    }
+    .rocket-conf-logout {
+        background: $gray-800;
+    }
+}

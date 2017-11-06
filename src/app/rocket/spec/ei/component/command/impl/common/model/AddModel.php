@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\command\impl\common\model;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\spec\ei\manage\util\model\EntryForm;
-use rocket\spec\ei\manage\util\model\EntryManager;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
@@ -68,7 +67,7 @@ class AddModel implements Dispatchable  {
 	 * @see \rocket\spec\ei\component\command\impl\common\model\EntryCommandModel::getEntryModel()
 	 */
 // 	public function getCurrentEntryModel() {
-// 		return $this->entryForm->getEntryModelForm();
+// 		return $this->entryForm->getEntryTypeForm();
 // 	}
 	
 // 	public function getEiFrame() {
@@ -94,7 +93,7 @@ class AddModel implements Dispatchable  {
 			return;
 		}
 			
-		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getEntityModel()->getClass(),
+		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEntityModel()->getClass(),
 				$this->nestedSetStrategy);
 		
 		if ($this->beforeEntityObj !== null) {
@@ -107,42 +106,42 @@ class AddModel implements Dispatchable  {
 	}
 		
 	public function create(MessageContainer $messageContainer) {
-		$eiMapping = $this->entryForm->buildEiMapping();
+		$eiuEntry = $this->entryForm->buildEiuEntry();
 		
-		if (!$eiMapping->save()) {
+		if (!$eiuEntry->getEiEntry()->save()) {
 			return false;
 		}
 		
 		// @todo think!!!
-		$eiSelection = $eiMapping->getEiSelection();
+		$eiObject = $eiuEntry->getEiEntry()->getEiObject();
 		
-		if (!$eiSelection->isDraft()) {
-			$liveEntry = $eiSelection->getLiveEntry();
-			$entityObj = $liveEntry->getEntityObj();
+		if (!$eiObject->isDraft()) {
+			$eiEntityObj = $eiObject->getEiEntityObj();
+			$entityObj = $eiEntityObj->getEntityObj();
 			$this->persist($entityObj);
 			
-			$liveEntry->refreshId();
-			$liveEntry->setPersistent(false);
+			$eiEntityObj->refreshId();
+			$eiEntityObj->setPersistent(false);
 			
-			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
+			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
-			return $eiSelection;
+			return $eiObject;
 		}
 		
 		IllegalStateException::assertTrue($this->nestedSetStrategy === null);
 		
-		$draft = $eiSelection->getDraft();
-		$draftDefinition = $this->entryForm->getChosenEntryModelForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
+		$draft = $eiObject->getDraft();
+		$draftDefinition = $this->entryForm->getChosenEntryTypeForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 				->getDraftDefinition();
 		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiSelection);
+		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
-		return $eiSelection;
+		return $eiObject;
 	}
 	
 	public function createAndRepeate(MessageContainer $messageContainer) {

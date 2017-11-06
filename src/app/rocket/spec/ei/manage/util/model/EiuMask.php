@@ -24,9 +24,8 @@ namespace rocket\spec\ei\manage\util\model;
 use rocket\spec\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\EntityManager;
-use rocket\spec\ei\manage\LiveEntry;
+use rocket\spec\ei\manage\EiEntityObj;
 use n2n\persistence\orm\store\EntityInfo;
-use rocket\spec\ei\manage\util\model\EiUtilsAdapter;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\core\model\Rocket;
@@ -44,7 +43,7 @@ class EiuMask extends EiUtilsAdapter {
 	
 	public function em(): EntityManager {
 		if ($this->em === null) {
-			$this->em = $this->eiMask->getEiEngine()->getEiSpec()->lookupEntityManager($this->n2nContext->getPdoPool());
+			$this->em = $this->eiMask->getEiEngine()->getEiType()->lookupEntityManager($this->n2nContext->getPdoPool());
 		}
 		
 		return $this->em;
@@ -73,13 +72,13 @@ class EiuMask extends EiUtilsAdapter {
 		return null !== $this->em()->find($this->getEntityModel()->getClass(), $id);
 	}
 	/**
-	 * @param unknown $id
+	 * @param mixed $id
 	 * @throws UnknownEntryException
-	 * @return \rocket\spec\ei\manage\LiveEntry
+	 * @return \rocket\spec\ei\manage\EiEntityObj
 	 */
-	public function lookupLiveEntryById($id, int $ignoreConstraints = 0): LiveEntry {
+	public function lookupEiEntityObj($id, int $ignoreConstraints = 0): EiEntityObj {
 		if (null !== ($entity = $this->em()->find($this->getEntityModel()->getClass(), $id))) {
-			return new LiveEntry($id, $entity);
+			return new EiEntityObj($id, $entity);
 		}
 	
 		throw new UnknownEntryException('Entity not found: ' . EntityInfo::buildEntityString(

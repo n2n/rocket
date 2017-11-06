@@ -22,7 +22,7 @@
 namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 interface ScalarEiProperty {
 	
@@ -33,24 +33,24 @@ interface ScalarEiProperty {
 
 
 	/**
-	 * @return EiFieldPath
+	 * @return EiPropPath
 	 */
-	public function getEiFieldPath(): EiFieldPath;
+	public function getEiPropPath(): EiPropPath;
 	
 // 	/**
-// 	 * @param EiMapping $eiMapping
+// 	 * @param EiEntry $eiEntry
 // 	 */
-// 	public function buildScalarValue(EiMapping $eiMapping);
+// 	public function buildScalarValue(EiEntry $eiEntry);
 	
 	/**
-	 * @param mixed $mappableValue
+	 * @param mixed $eiFieldValue
 	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
 	 */
-	public function mappableValueToScalarValue($mappableValue);
+	public function eiFieldValueToScalarValue($eiFieldValue);
 	
 	/**
 	 * @param mixed $scalarValue
 	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
 	 */
-	public function scalarValueToMappableValue($scalarValue);
+	public function scalarValueToEiFieldValue($scalarValue);
 }

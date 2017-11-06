@@ -39,7 +39,7 @@ class PrivilegeBuilder {
 			throw new \InvalidArgumentException('Cannot build privilege for this command. Please contact Andreas von Burg.');
 		}
 		
-		return $eiCommand->getEiSpec()->getId() . self::PART_SEPARATOR . $eiCommand->getId()
+		return $eiCommand->getEiType()->getId() . self::PART_SEPARATOR . $eiCommand->getId()
 				. self::PART_SEPARATOR . $privilegeExt;
 	}
 	

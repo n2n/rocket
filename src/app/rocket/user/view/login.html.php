@@ -38,11 +38,6 @@ use n2n\web\ui\view\View;
 	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
 	$html->meta()->addCss('css/rocket.css');
 	$html->meta()->addCss('css/font-awesome.css');
-	$html->meta()->addJs('js/html5.js');
-	$html->meta()->addJs('js/respond.src.js');
-	$html->meta()->addLibrary(new JQueryLibrary(2));
-	$html->meta()->addJs('js/ajah.js', 'n2n\web', true);
-	$html->meta()->addJs('js/rocket-ts.js');
 ?>
 <!DOCTYPE html>
 <html> 

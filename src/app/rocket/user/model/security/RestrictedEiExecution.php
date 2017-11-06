@@ -23,16 +23,16 @@ namespace rocket\user\model\security;
 
 use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\manage\critmod\filter\EiMappingFilterDefinition;
+use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\spec\ei\EiCommandPath;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\critmod\filter\EiMappingConstraintGroup;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\manage\critmod\filter\EiEntryConstraintGroup;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\security\PrivilegeDefinition;
-use rocket\spec\ei\security\EiFieldAccess;
+use rocket\spec\ei\security\EiPropAccess;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\user\bo\EiPrivilegeGrant;
 use rocket\spec\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
 
@@ -40,18 +40,18 @@ class RestrictedEiExecution implements EiExecution {
 	private $eiCommand;
 	private $eiPrivilegeGrants;
 	private $privilegeDefinition;
-	private $eiMappingFilterDefinition;
+	private $eiEntryFilterDefinition;
 	
 	private $eiCommandPath;
-	private $eiMappingConstraintGroup;
+	private $eiEntryConstraintGroup;
 	private $comparatorConstraintGroup;
 
 	public function __construct(EiCommand $eiCommand = null, EiCommandPath $eiCommandPath, array $eiPrivilegeGrants, 
-			PrivilegeDefinition $privilegeDefinition, EiMappingFilterDefinition $eiMappingFilterDefinition) {
+			PrivilegeDefinition $privilegeDefinition, EiEntryFilterDefinition $eiEntryFilterDefinition) {
 		$this->eiCommand = $eiCommand;
 		$this->eiPrivilegeGrants = $eiPrivilegeGrants;
 		$this->privilegeDefinition = $privilegeDefinition;
-		$this->eiMappingFilterDefinition = $eiMappingFilterDefinition;
+		$this->eiEntryFilterDefinition = $eiEntryFilterDefinition;
 		$this->init($eiCommandPath);
 	}
 
@@ -81,10 +81,10 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiMappingConstraint()
+	 * @see \rocket\spec\ei\security\EiExecution::getEiEntryConstraint()
 	 */
-	public function getEiMappingConstraint() {
-		return $this->eiMappingConstraintGroup;
+	public function getEiEntryConstraint() {
+		return $this->eiEntryConstraintGroup;
 	}
 	
 	/**
@@ -96,16 +96,16 @@ class RestrictedEiExecution implements EiExecution {
 	}
 
 	
-	public function createEiFieldAccess(EiFieldPath $eiFieldPath): EiFieldAccess {
+	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess {
 		$attributes = array();
 		foreach ($this->eiPrivilegeGrants as $eiPrivilegeGrant) {
-			$eiFieldAttributes = PrivilegeDefinition::extractAttributesOfEiFieldPrivilege($eiFieldPath, 
-					$eiPrivilegeGrant->readEiFieldPrivilegeAttributes());
-			if ($eiFieldAttributes !== null) {
-				$attributes[] = $eiFieldAttributes;
+			$eiPropAttributes = PrivilegeDefinition::extractAttributesOfEiPropPrivilege($eiPropPath, 
+					$eiPrivilegeGrant->readEiPropPrivilegeAttributes());
+			if ($eiPropAttributes !== null) {
+				$attributes[] = $eiPropAttributes;
 			}
 		}
-		return new RestrictedEiFieldAccess($attributes);
+		return new RestrictedEiPropAccess($attributes);
 	}
 
 	private function init(EiCommandPath $eiCommandPath) {
@@ -116,7 +116,7 @@ class RestrictedEiExecution implements EiExecution {
 			
 			$this->eiCommandPath = $eiCommandPath;
 			$this->initCriteriaConstraint();
-			$this->initEiMappingConstraint();
+			$this->initEiEntryConstraint();
 			return;
 		}
 		
@@ -134,7 +134,7 @@ class RestrictedEiExecution implements EiExecution {
 		$this->eiPrivilegeGrants = $newEiPrivilegeGrants;
 		$this->eiCommandPath = $eiCommandPath;
 		$this->initCriteriaConstraint();
-		$this->initEiMappingConstraint();
+		$this->initEiEntryConstraint();
 	}
 	
 	private function initCriteriaConstraint() {
@@ -146,44 +146,44 @@ class RestrictedEiExecution implements EiExecution {
 				return;
 			}
 				
-			$this->comparatorConstraintGroup->addComparatorConstraint($this->eiMappingFilterDefinition
+			$this->comparatorConstraintGroup->addComparatorConstraint($this->eiEntryFilterDefinition
 					->createComparatorConstraint($eiPrivilegeGrant->readRestrictionFilterGroupData()));
 		}
 	}
 	
-	private function initEiMappingConstraint() {
-		$this->eiMappingConstraintGroup = new EiMappingConstraintGroup(false);
-		$this->cachedEiMappingConstraints = array();
+	private function initEiEntryConstraint() {
+		$this->eiEntryConstraintGroup = new EiEntryConstraintGroup(false);
+		$this->cachedEiEntryConstraints = array();
 			
 		foreach ($this->eiPrivilegeGrants as $eiPrivilegeGrant) {
-			$eiMappingConstraint = $this->getOrBuildEiMappingConstraint($eiPrivilegeGrant);
+			$eiEntryConstraint = $this->getOrBuildEiEntryConstraint($eiPrivilegeGrant);
 			
-			if ($eiMappingConstraint === null) {
-				$this->eiMappingConstraintGroup = null;
+			if ($eiEntryConstraint === null) {
+				$this->eiEntryConstraintGroup = null;
 				return;
 			}
 		
-			$this->eiMappingConstraintGroup->add($eiMappingConstraint);
+			$this->eiEntryConstraintGroup->add($eiEntryConstraint);
 		}
 	}
 	
-	private $cachedEiMappingConstraints = array();
+	private $cachedEiEntryConstraints = array();
 	
 	/**
 	 * @param EiPrivilegeGrant $eiPrivilegeGrant
-	 * @return \rocket\spec\ei\manage\mapping\EiMappingConstraint
+	 * @return \rocket\spec\ei\manage\mapping\EiEntryConstraint
 	 */
-	private function getOrBuildEiMappingConstraint(EiPrivilegeGrant $eiPrivilegeGrant) {
+	private function getOrBuildEiEntryConstraint(EiPrivilegeGrant $eiPrivilegeGrant) {
 		if (!$eiPrivilegeGrant->isRestricted()) return null;
 		
 		$objHash = spl_object_hash($eiPrivilegeGrant);
 		
-		if (isset($this->cachedEiMappingConstraints[$objHash])) {
-			return $this->cachedEiMappingConstraints[$objHash];
+		if (isset($this->cachedEiEntryConstraints[$objHash])) {
+			return $this->cachedEiEntryConstraints[$objHash];
 		}
 		
-		return $this->cachedEiMappingConstraints[$objHash] = $this->eiMappingFilterDefinition
-					->createEiMappingConstraint($eiPrivilegeGrant->readRestrictionFilterGroupData());
+		return $this->cachedEiEntryConstraints[$objHash] = $this->eiEntryFilterDefinition
+					->createEiEntryConstraint($eiPrivilegeGrant->readRestrictionFilterGroupData());
 	}
 	
 	/**
@@ -194,13 +194,13 @@ class RestrictedEiExecution implements EiExecution {
 		$this->init($this->eiCommandPath->ext($ext));
 	}
 	
-	public function buildEiCommandAccessRestrictor(EiMapping $eiMapping) {
+	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry) {
 		$restrictor = new WhitelistEiCommandAccessRestrictor();
 		
 		foreach ($this->eiPrivilegeGrants as $eiPrivilegeGrant) {
-			$eiMappingConstraint = $this->getOrBuildEiMappingConstraint($eiPrivilegeGrant);
+			$eiEntryConstraint = $this->getOrBuildEiEntryConstraint($eiPrivilegeGrant);
 			
-			if ($eiMappingConstraint !== null && !$eiMappingConstraint->check($eiMapping)) {
+			if ($eiEntryConstraint !== null && !$eiEntryConstraint->check($eiEntry)) {
 				continue;
 			}
 			

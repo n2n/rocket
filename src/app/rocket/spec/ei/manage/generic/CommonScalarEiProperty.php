@@ -23,47 +23,47 @@
 namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\spec\ei\component\field\EiField;
-use rocket\spec\ei\manage\mapping\EiMapping;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\spec\ei\EiPropPath;
 
 class CommonScalarEiProperty implements ScalarEiProperty {
-	private $eiField;
+	private $eiProp;
 	private $scalarValueBuilder;
-	private $mappableValueBuilder;
+	private $eiFieldValueBuilder;
 
-	public function __construct(EiField $eiField, \Closure $scalarValueBuilder = null, 
-			\Closure $mappableValueBuilder = null) {
-		$this->eiField = $eiField;
+	public function __construct(EiProp $eiProp, \Closure $scalarValueBuilder = null, 
+			\Closure $eiFieldValueBuilder = null) {
+		$this->eiProp = $eiProp;
 		$this->scalarValueBuilder = $scalarValueBuilder;
-		$this->mappableValueBuilder = $mappableValueBuilder;
+		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
-		return $this->eiField->getLabelLstr();
+		return $this->eiProp->getLabelLstr();
 	}
 	
-	public function getEiFieldPath(): EiFieldPath {
-		return EiFieldPath::from($this->eiField);
+	public function getEiPropPath(): EiPropPath {
+		return EiPropPath::from($this->eiProp);
 	}
 
-	public function buildScalarValue(EiMapping $eiMapping) {
-		return $this->mappableValueToScalarValue($eiMapping->getValue($this->eiField));
+	public function buildScalarValue(EiEntry $eiEntry) {
+		return $this->eiFieldValueToScalarValue($eiEntry->getValue($this->eiProp));
 	}
 
-	public function mappableValueToScalarValue($mappableValue) {
+	public function eiFieldValueToScalarValue($eiFieldValue) {
 		if ($this->scalarValueBuilder === null) {
-			return $mappableValue;
+			return $eiFieldValue;
 		}
 		
-		return $this->scalarValueBuilder->__invoke($mappableValue);
+		return $this->scalarValueBuilder->__invoke($eiFieldValue);
 	}
 
-	public function scalarValueToMappableValue($scalarValue) {
-		if ($this->mappableValueBuilder === null) {
+	public function scalarValueToEiFieldValue($scalarValue) {
+		if ($this->eiFieldValueBuilder === null) {
 			return $scalarValue;
 		}
 		
-		return $this->mappableValueBuilder->__invoke($scalarValue);
+		return $this->eiFieldValueBuilder->__invoke($scalarValue);
 	}
 }

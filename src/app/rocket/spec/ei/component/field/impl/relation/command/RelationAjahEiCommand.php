@@ -22,21 +22,21 @@
 namespace rocket\spec\ei\component\field\impl\relation\command;
 
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class RelationAjahEiCommand extends EiCommandAdapter {
-	private $eiFieldRelation;
+	private $eiPropRelation;
 	
-	public function __construct(EiFieldRelation $eiFieldRelation) {
-		$this->eiFieldRelation = $eiFieldRelation;
+	public function __construct(EiPropRelation $eiPropRelation) {
+		$this->eiPropRelation = $eiPropRelation;
 	}
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\command\EiCommand::createController()
 	 */
 	public function lookupController(Eiu $eiu): Controller {
-		return $eiu->lookup(RelationAjahController::class);
+		return $eiu->lookup(RelationJhtmlController::class);
 	}
 }

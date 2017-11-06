@@ -73,12 +73,12 @@ class TreeMoveController extends ControllerAdapter {
 		$nestedSetStrategy = $eiUtils->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) return;
 		
-		$liveEntry = null;
-		$targetLiveEntry = null;
+		$eiEntityObj = null;
+		$targetEiEntityObj = null;
 
 		try {
-			$liveEntry = $eiUtils->lookupLiveEntryById($eiUtils->idRepToId($idRep));
-			$targetLiveEntry = $eiUtils->lookupLiveEntryById($eiUtils->idRepToId($targetIdRep));
+			$eiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->idRepToId($idRep));
+			$targetEiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->idRepToId($targetIdRep));
 		} catch (UnknownEntryException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {
@@ -89,11 +89,11 @@ class TreeMoveController extends ControllerAdapter {
 		
 		try {
 			if ($before === true) {
-				$nsu->moveBefore($liveEntry->getEntityObj(), $targetLiveEntry->getEntityObj());
+				$nsu->moveBefore($eiEntityObj->getEntityObj(), $targetEiEntityObj->getEntityObj());
 			} else if ($before === false) {
-				$nsu->moveAfter($liveEntry->getEntityObj(), $targetLiveEntry->getEntityObj());
+				$nsu->moveAfter($eiEntityObj->getEntityObj(), $targetEiEntityObj->getEntityObj());
 			} else {
-				$nsu->move($liveEntry->getEntityObj(), $targetLiveEntry->getEntityObj());
+				$nsu->move($eiEntityObj->getEntityObj(), $targetEiEntityObj->getEntityObj());
 			}
 		} catch (\n2n\util\ex\IllegalStateException $e) {
 		}

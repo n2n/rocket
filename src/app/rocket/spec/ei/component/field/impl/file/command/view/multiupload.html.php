@@ -60,18 +60,12 @@ use n2n\web\ui\view\View;
 		</ul>
 	</form>
 </div>
-<div id="rocket-page-controls">
-	<ul>
-		<li>
-			<a id="rocket-multi-upload-submit" href="#" class="rocket-control-success rocket-important">
-				<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
-				<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
-			</a>
-		</li>
-		<li>
-			<?php $html->link($eiuFrame->getEiFrame()->getOverviewUrl($httpContext),
-					new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $html->getText('common_cancel_label') . '</span>'),
-							array('class' => 'rocket-control')) ?>
-		</li>
-	</ul>
+<div class="rocket-zone-commands">
+	<a id="rocket-multi-upload-submit" href="#" class="btn btn-primary">
+		<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
+		<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
+	</a>
+	<?php $html->link($eiuFrame->getEiFrame()->getOverviewUrl($httpContext),
+			new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $html->getText('common_cancel_label') . '</span>'),
+					array('class' => 'btn btn-secondary')) ?>
 </div>

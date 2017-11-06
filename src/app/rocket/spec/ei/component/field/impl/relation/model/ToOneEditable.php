@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\component\field\impl\relation\model\RelationMappable;
+use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use rocket\spec\ei\manage\EiFrame;
@@ -32,18 +32,18 @@ use n2n\util\uri\Url;
 class ToOneEditable implements Editable {
 	private $label;
 	private $mandatory;
-	private $relationMappable;
+	private $relationEiField;
 	private $targetReadEiFrame;
 	private $targetEditEiFrame;
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
 	
-	public function __construct(string $label, bool $mandatory, ToOneMappable $relationMappable,
+	public function __construct(string $label, bool $mandatory, ToOneEiField $relationEiField,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
 		$this->label = $label;
 		$this->mandatory = $mandatory;
-		$this->relationMappable = $relationMappable;
+		$this->relationEiField = $relationEiField;
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
 	}
@@ -68,7 +68,7 @@ class ToOneEditable implements Editable {
 		$this->toOneMag = new ToOneMag($propertyName, $this->label, $this->mandatory, $this->targetReadEiFrame,
 				$this->targetEditEiFrame);
 	
-		$this->toOneMag->setValue($this->relationMappable->getValue());
+		$this->toOneMag->setValue($this->relationEiField->getValue());
 		$this->toOneMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toOneMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->toOneMag->setDraftMode($this->draftMode);
@@ -78,6 +78,6 @@ class ToOneEditable implements Editable {
 	public function save() {
 		IllegalStateException::assertTrue($this->toOneMag !== null);
 	
-		$this->relationMappable->setValue($this->toOneMag->getValue());
+		$this->relationEiField->setValue($this->toOneMag->getValue());
 	}
 }

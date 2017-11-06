@@ -22,19 +22,19 @@
 namespace rocket\spec\ei\manage\util\model;
 
 class EiuField {
-	private $eiFieldPath;
+	private $eiPropPath;
 	private $eiuEntry;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
 		$eiuFactory->applyEiArgs(...$eiArgs);
 		
-		$this->eiFieldPath = $eiuFactory->getEiFieldPath(true);
+		$this->eiPropPath = $eiuFactory->getEiPropPath(true);
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 	}
 	
-	public function getEiFieldPath() {
-		return $this->eiFieldPath;
+	public function getEiPropPath() {
+		return $this->eiPropPath;
 	}
 	
 	public function getEiuEntry(bool $required = true) {
@@ -46,14 +46,14 @@ class EiuField {
 	}
 	
 	public function getValue() {
-		return $this->getEiuEntry()->getValue($this->eiFieldPath);
+		return $this->getEiuEntry()->getValue($this->eiPropPath);
 	}
 	
 	public function setValue($value) {
-		return $this->getEiuEntry()->setValue($this->eiFieldPath, $value);
+		return $this->getEiuEntry()->setValue($this->eiPropPath, $value);
 	}
 	
 	public function setScalarValue($scalarValue) {
-		return $this->getEiuEntry()->setScalarValue($this->eiFieldPath, $scalarValue);
+		return $this->getEiuEntry()->setScalarValue($this->eiPropPath, $scalarValue);
 	}
 }

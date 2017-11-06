@@ -23,7 +23,7 @@ namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\component\EiComponentCollection;
 use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\component\UnknownEiComponentException;
@@ -34,7 +34,7 @@ use n2n\util\uri\Url;
 class EiCommandCollection extends EiComponentCollection {
 	
 	/**
-	 * @param EiSpec $eiSpec
+	 * @param EiType $eiType
 	 */
 	public function __construct(EiEngine $eiEngine) {
 		parent::__construct('EiCommand', 'rocket\spec\ei\component\command\EiCommand');

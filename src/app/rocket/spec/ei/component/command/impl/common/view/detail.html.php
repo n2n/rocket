@@ -22,30 +22,36 @@
 
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
+	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\spec\ei\manage\util\model\EiuEntryGui;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 		
-	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
+	$entryCommandViewModel = $view->getParam('viewModel');
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
+
+	$eiuEntryGui = $view->getParam('eiuEntryGui');
+	$view->assert($eiuEntryGui instanceof EiuEntryGui);
  
+	$eiHtml = new EiHtmlBuilder($view);
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
-	
-	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
+	$view->useTemplate('~\core\view\template.html', 
+			array('title' => $eiuEntryGui->getEiuEntry()->createIdentityString()));
 ?>
-
-<div class="rocket-select-view-toolbar">
-
-</div>
-
  
-<div class="rocket-panel">
-	<h3><?php $html->l10nText('common_properties_title') ?></h3>
-	
-	<?php $view->import($entryCommandViewModel->createDetailView()) ?>
-</div> 
+<?php $eiHtml->entryOpen('div', $eiuEntryGui)?>
+	<?php $view->out($eiuEntryGui->createView($view)) ?>
+
+	<div class="rocket-zone-commands">
+		<?php $eiHtml->entryCommands() ?>
+		
+		<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
+			<?php $view->import('inc\previewSwitch.html') ?>
+		<?php endif ?>
+	</div>
+<?php $eiHtml->entryClose() ?>
+ 
 
 <?php if ($entryCommandViewModel->hasDraftHistory()): ?>
 	<?php $view->panelStart('additional') ?>
@@ -54,10 +60,3 @@
 	<?php $view->panelEnd() ?>
 <?php endif ?>
 
-<div id="rocket-page-controls">
-	<?php $controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
-	
-	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
-		<?php $view->import('inc\previewSwitch.html') ?>
-	<?php endif ?>
-</div>

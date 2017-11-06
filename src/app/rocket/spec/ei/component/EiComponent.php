@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\component;
 
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\EiThing;
-use rocket\spec\ei\EiSpec;
 use rocket\spec\ei\EiEngine;
 
 interface EiComponent {
@@ -49,7 +49,7 @@ interface EiComponent {
 	public function getEiEngine(): EiEngine;
 	
 	/**
-	 * @param EiSpec $eiThing
+	 * @param EiType $eiThing
 	 */
 	public function setEiEngine(EiEngine $eiEngine);
 		

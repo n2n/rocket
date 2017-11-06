@@ -34,11 +34,14 @@ use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyMag;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\util\ex\NotYetImplementedException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\spec\ei\component\field\impl\ci\ContentItemsEiField;
+use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
 
 class ContentItemMag extends MagAdapter {
 	private $panelConfigs = array();
@@ -50,6 +53,13 @@ class ContentItemMag extends MagAdapter {
 	
 	private $targetRelationEntries = array();
 	
+	/**
+	 * @param string $propertyName
+	 * @param string $label
+	 * @param PanelConfig[] $panelConfigs
+	 * @param EiFrame $targetReadEiFrame
+	 * @param EiFrame $targetEditEiFrame
+	 */
 	public function __construct(string $propertyName, string $label, array $panelConfigs, 
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
 		parent::__construct($propertyName, $label);
@@ -57,8 +67,6 @@ class ContentItemMag extends MagAdapter {
 		$this->panelConfigs = $panelConfigs;
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
-		
-		$this->setAttrs(array('class' => 'rocket-control-group'));
 	}
 
 	public function setDraftMode(bool $draftMode) {
@@ -77,15 +85,15 @@ class ContentItemMag extends MagAdapter {
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
 		$targetEditUtils = new EiuFrame($this->targetEditEiFrame);
-		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
+		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
-			if (!$targetRelationEntry->hasEiMapping()) {
+			if (!$targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry = RelationEntry::fromM($targetEditUtils
-						->createEiMapping($targetRelationEntry->getEiSelection()));
+						->createEiEntry($targetRelationEntry->getEiObject()));
 			}
 			
-			$panelName = $targetRelationEntry->getEiMapping()->getValue($panelEiFieldPath);
+			$panelName = $targetRelationEntry->getEiEntry()->getValue($panelEiPropPath);
 			if (!isset($filtered[$panelName])) {
 				$filtered[$panelName] = array();
 			}
@@ -104,15 +112,18 @@ class ContentItemMag extends MagAdapter {
 		
 		$groupedTargetRelationEntries = $this->groupRelationEntries($this->targetRelationEntries);
 		
-		$orderEiFieldPath = ContentItemsEiField::getOrderIndexEiFieldPath();
+		$orderEiPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
 		foreach ($this->panelConfigs as $panelConfig) {
 			$panelName = $panelConfig->getName();
 			
 			$panelMag = new ToManyMag($panelName, $panelConfig->getLabel(), $this->targetReadEiFrame,
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
-			$panelMag->setTargetOrderEiFieldPath($orderEiFieldPath);
+			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
-			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl);
+			
+			$allowedEiTypeIds = $panelConfig->isRestricted() ? $panelConfig->getAllowedContentItemIds() : null;
+			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl->queryExt(array('chooseableEiTypeIds' => $allowedEiTypeIds)));
+			$panelMag->setAllowedNewEiTypeIds($allowedEiTypeIds);
 			
 			if (isset($groupedTargetRelationEntries[$panelName])) {
 				$panelMag->setValue($groupedTargetRelationEntries[$panelName]);
@@ -127,13 +138,13 @@ class ContentItemMag extends MagAdapter {
 	public function setFormValue($formValue) {
 		ArgUtils::assertTrue($formValue instanceof MagForm);
 		
-		$panelEiFieldPath = ContentItemsEiField::getPanelEiFieldPath();
+		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$this->targetRelationEntries = array();
 		foreach ($this->panelConfigs as $panelConfig) {
 			$panelName = $panelConfig->getName();
 			$panelMag = $formValue->getMagCollection()->getMagByPropertyName($panelName);
 			foreach ($panelMag->getValue() as $targetRelationEntry) {
-				$targetRelationEntry->getEiMapping()->setValue($panelEiFieldPath, $panelName, true);
+				$targetRelationEntry->getEiEntry()->setValue($panelEiPropPath, $panelName, true);
 				$this->targetRelationEntries[] = $targetRelationEntry;
 			}
 		}
@@ -152,20 +163,6 @@ class ContentItemMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition()
 	 */
 	public function setupBindingDefinition(BindingDefinition $bindingDefinition) {
-		foreach ($this->panelConfigs as $panelConfig) {
-			if (!$panelConfig->isRestricted()) continue;
-			
-			$allowedIds = $panelConfig->getAllowedContentItemIds();
-		
-			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName)
-					->__get($panelConfig->getName());
-			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
-				if (!$mfMappingResult->entryForm->getObject()->isChoosable()
-						|| in_array($mfMappingResult->entryForm->chosenId, $allowedIds)) continue;
-				
-				$mfMappingResult->getBindingErrors()->addErrorCode('chosenId', 'ei_impl_content_item_type_disallowed');
-			}
-		}
 	}
 
 	/**
@@ -173,18 +170,18 @@ class ContentItemMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
-		$ciEiSpecLabels = array();
+		$ciEiTypeLabels = array();
 		
 		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();
-		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getAllSubEiSpecs() as $subEiSpec) {
-			if ($subEiSpec->isAbstract()) continue;
+		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiType()->getAllSubEiTypes() as $subEiType) {
+			if ($subEiType->isAbstract()) continue;
 			
-			$ciEiSpecLabels[$subEiSpec->getId()] = $targetContextEiMask->determineEiMask($subEiSpec)->getLabelLstr()
+			$ciEiTypeLabels[$subEiType->getId()] = $targetContextEiMask->determineEiMask($subEiType)->getLabelLstr()
 					->t($view->getN2nLocale());
 		}
 		
 		return $view->getImport('\rocket\spec\ei\component\field\impl\ci\view\contentItemsForm.html',
 				array('panelConfigs' => $this->panelConfigs, 'propertyPath' => $propertyPath,
-						'ciEiSpecLabels' => $ciEiSpecLabels));
+						'ciEiTypeLabels' => $ciEiTypeLabels));
 	}
 }

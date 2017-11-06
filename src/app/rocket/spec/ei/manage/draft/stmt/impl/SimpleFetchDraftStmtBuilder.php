@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\draft\stmt\impl;
 
 use n2n\persistence\meta\data\QueryTable;
 use n2n\persistence\Pdo;
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\persistence\meta\data\QueryColumn;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
@@ -99,18 +99,18 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 	}
 
 	/**
-	 * @param EiFieldPath $eiFieldPath
+	 * @param EiPropPath $eiPropPath
 	 * @return string column alias
 	 */
-	public function requestColumn(EiFieldPath $eiFieldPath): string {
-		$columnName = DraftMetaInfo::buildDraftColumnName($eiFieldPath);
+	public function requestColumn(EiPropPath $eiPropPath): string {
+		$columnName = DraftMetaInfo::buildDraftColumnName($eiPropPath);
 		$columnAlias = $this->aliasBuilder->createColumnAlias($columnName);
 		$this->selectBuilder->addSelectColumn(new QueryColumn($columnName, $this->tableAlias), $columnAlias);
 		return $columnAlias;
 	}
 
-	public function putDraftValueSelection(EiFieldPath $eiFieldPath, DraftValueSelection $draftValueSelection) {
-		$this->draftValueSelections[(string) $eiFieldPath] = $draftValueSelection;
+	public function putDraftValueSelection(EiPropPath $eiPropPath, DraftValueSelection $draftValueSelection) {
+		$this->draftValueSelections[(string) $eiPropPath] = $draftValueSelection;
 	}
 	
 	public function buildPdoStatement(): PdoStatement {
@@ -200,8 +200,8 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 		}
 		
 		$values = array();
-		foreach ($this->draftValueSelections as $eiFieldPathStr => $draftValueSelection) {
-			$values[$eiFieldPathStr] = $draftValueSelection->buildDraftValue();
+		foreach ($this->draftValueSelections as $eiPropPathStr => $draftValueSelection) {
+			$values[$eiPropPathStr] = $draftValueSelection->buildDraftValue();
 		}
 		
 		return new DraftValuesResult($this->boundIdRawValue, 

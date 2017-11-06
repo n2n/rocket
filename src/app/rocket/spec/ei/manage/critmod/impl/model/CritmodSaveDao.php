@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\critmod\impl\model;
 
-use rocket\spec\ei\manage\critmod\Filter;
 use n2n\context\RequestScoped;
 use n2n\persistence\orm\EntityManager;
 use n2n\reflection\annotation\AnnoInit;
@@ -49,8 +48,8 @@ class CritmodSaveDao implements RequestScoped {
 		$this->loginContext = $loginContext;
 	}
 	
-	public static function buildCategoryKey(string $stateKey, string $eiSpecId, string $eiMaskId = null): string {
-		return $stateKey . '?' . $eiSpecId . '?' . $eiMaskId;
+	public static function buildCategoryKey(string $stateKey, string $eiTypeId, string $eiMaskId = null): string {
+		return $stateKey . '?' . $eiTypeId . '?' . $eiMaskId;
 	}
 
 	public function setQuickSearchString(string $categoryKey, string $quickSearchString = null) {
@@ -99,36 +98,41 @@ class CritmodSaveDao implements RequestScoped {
 		return $this->em->find(CritmodSave::getClass(), $this->selectedCritmodSaveIds[$categoryKey]);
 	}
 	
-	public function buildUniqueCritmodSaveName(string $eiSpecId, string $eiMaskId = null, string $filterName) {
+	public function buildUniqueCritmodSaveName(string $eiTypeId, string $eiMaskId = null, string $filterName, CritmodSave $exceptCritmodSave = null) {
 		$realFilterName = $filterName;
 		
-		for ($i = 2; $this->containsCritmodSaveName($eiSpecId, $eiMaskId, $realFilterName); $i++) {
+		for ($i = 2; $this->containsCritmodSaveName($eiTypeId, $eiMaskId, $realFilterName, $exceptCritmodSave); $i++) {
 			$realFilterName = $filterName . ' ' . $i;
 		}
 		
 		return $realFilterName;
 	}
 	
-	public function containsCritmodSaveName($eiSpecId, string $eiMaskId = null, string $filterName) {
+	public function containsCritmodSaveName($eiTypeId, string $eiMaskId = null, string $filterName, CritmodSave $exceptCritmodSave = null) {
 		$criteria = $this->em->createCriteria();
 		$criteria->select('COUNT(cs)')->from(CritmodSave::getClass(), 'cs')->where(
-				array('cs.eiSpecId' => $eiSpecId, 'cs.eiMaskId' => $eiMaskId));
+				array('cs.eiTypeId' => $eiTypeId, 'cs.eiMaskId' => $eiMaskId, 'cs.name' => $filterName));
+		
+		if ($exceptCritmodSave !== null) {
+			$criteria->where()->andMatch('cs', '!=', $exceptCritmodSave);
+		}
+		
 		return (bool) $criteria->toQuery()->fetchSingle();
 	}
 	
-	public function getCritmodSaves(string $eiSpecId, string $eiMaskId = null): array {
-		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiSpecId' => $eiSpecId, 
-						'eiMaskId' => $eiMaskId), array('name' => 'ASC'))
+	public function getCritmodSaves(string $eiTypeId, string $eiMaskId = null): array {
+		return $this->em->createSimpleCriteria(CritmodSave::getClass(), 
+						array('eiTypeId' => $eiTypeId, 'eiMaskId' => $eiMaskId), array('name' => 'ASC'))
 				->toQuery()->fetchArray();
 	}
 	
-	public function getCritmodSaveById(string $eiSpecId, string $eiMaskId = null, int $id) {
-		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiSpecId' => $eiSpecId,
+	public function getCritmodSaveById(string $eiTypeId, string $eiMaskId = null, int $id) {
+		return $this->em->createSimpleCriteria(CritmodSave::getClass(), array('eiTypeId' => $eiTypeId,
 				'eiMaskId' => $eiMaskId, 'id' => $id))->toQuery()->fetchSingle();
 	}
 		
 // 	public function getFilterNames(EiFrame $eiFrame) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			return array_keys($this->filterDatas[$scriptId]);
 // 		}	
@@ -141,14 +145,14 @@ class CritmodSaveDao implements RequestScoped {
 		return $this->loginContext->getCurrentUser()->isAdmin();
 	}
 
-	public function createCritmodSave(string $eiSpecId, string $eiMaskId = null, string $name, 
+	public function createCritmodSave(string $eiTypeId, string $eiMaskId = null, string $name, 
 			FilterGroupData $filterGroupData, SortData $sortData) {
 		if (!$this->isModAccessable()) {
 			throw new IllegalStateException();
 		}
 				
 		$critmodSave = new CritmodSave();
-		$critmodSave->setEiSpecId($eiSpecId);
+		$critmodSave->setEiTypeId($eiTypeId);
 		$critmodSave->setEiMaskId($eiMaskId);
 		$critmodSave->setName($name);
 		$critmodSave->writeFilterData($filterGroupData);
@@ -158,16 +162,17 @@ class CritmodSaveDao implements RequestScoped {
 		return $critmodSave;
 	}
 
-	public function mergeFilter(Filter $filter) {
-		return $this->em->merge($filter);
-	}
+// 	public function mergeFilter(Filter $filter) {
+// 		return $this->em->merge($filter);
+// 	}
 	
-	public function removeFilter(Filter $filter) {
-		$this->em->remove($filter);
+	public function removeCritmodSave(CritmodSave $critmodSave) {
+		$this->em->remove($critmodSave);
+		$this->em->flush();
 	}
 	
 // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiSpec()->getId();
+// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
 		
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			unset($this->filterDatas[$scriptId][$filterName]);

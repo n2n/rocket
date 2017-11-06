@@ -28,7 +28,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
@@ -83,6 +83,10 @@ class ToManyForm implements Dispatchable {
 		$this->entryFormFactory->setDraftMode($draftMode);
 	}
 	
+	public function isDraftMode() {
+		return $this->entryFormFactory->isDraftMode();
+	}
+	
 	public function setSelectionModeEnabled(bool $selectionModeEnabled) {
 		$this->selectionModeEnabled = $selectionModeEnabled;
 	}
@@ -107,8 +111,8 @@ class ToManyForm implements Dispatchable {
 		return $this->selectedEntryIdReps;
 	}
 	
-	public function addEiMapping(EiMapping $currentEiMapping) {
-		$this->entryFormFactory->addEiMapping($currentEiMapping);
+	public function addEiEntry(EiEntry $currentEiEntry) {
+		$this->entryFormFactory->addEiEntry($currentEiEntry);
 		$this->currentMappingForms = $this->entryFormFactory->getCurrentMappingForms();
 		$this->newMappingForms = $this->entryFormFactory->getNewMappingForms();
 	}
@@ -128,6 +132,20 @@ class ToManyForm implements Dispatchable {
 	public function setNewMappingFormAvailable($newMappingFormAvailable) {
 		$this->entryFormFactory->setNewMappingFormAvailable($newMappingFormAvailable);
 	}
+	
+	/**
+	 * @return array|null
+	 */
+	public function getAllowedNewEiTypeIds() {
+		return $this->entryFormFactory->getAllowedNewEiTypeIds();
+	}
+	
+	/**
+	 * @param array|null $allowedEiTypeIds
+	 */
+	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+		$this->entryFormFactory->setAllowedNewEiTypeIds($allowedEiTypeIds);
+	}
 
 	public function getNewMappingForms() {
 		return $this->newMappingForms;
@@ -145,11 +163,11 @@ class ToManyForm implements Dispatchable {
 				foreach ($selectedEntryIdReps as $selectedEntryIdRep) {
 					if (in_array($selectedEntryIdRep, $that->originalEntryIdReps, true)) continue;
 					
-					if (null !== ($eiSelection = $that->readUtils->lookupEiSelectionById(
+					if (null !== ($eiObject = $that->readUtils->lookupEiObjectById(
 							$that->readUtils->idRepToId($selectedEntryIdRep), 
 							CriteriaConstraint::NON_SECURITY_TYPES))) {
 						$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep, 
-								$that->readUtils->createIdentityString($eiSelection));
+								$that->readUtils->createIdentityString($eiObject));
 						continue;
 					}
 					
@@ -180,26 +198,34 @@ class ToManyForm implements Dispatchable {
 		});
 	}
 	
-	public function buildEiMappings(): array {
-		$eiMappings = array();
+	public function buildEiEntrys(): array {
+		$eiEntrys = array();
 		$keyOrderIndexMap = array();
 		
 		foreach ($this->currentMappingForms as $currentMappingForm) {
 			$keyOrderIndexMap[] = $currentMappingForm->getOrderIndex();
-			$eiMappings[] = $currentMappingForm->buildEiMapping();
+			$eiEntrys[] = $currentMappingForm->buildEiEntry();
 		}
 		
 		foreach ($this->newMappingForms as $newMappingForm) {
 			$keyOrderIndexMap[] = $newMappingForm->getOrderIndex();
-			$eiMappings[] = $newMappingForm->buildEiMapping();
+			$eiEntrys[] = $newMappingForm->buildEiEntry();
 		}
 		
 		asort($keyOrderIndexMap, SORT_NUMERIC);
 		
-		$sortedEiMappings = array();
+		$sortedEiEntrys = array();
 		foreach ($keyOrderIndexMap as $key => $orderIndex) {
-			$sortedEiMappings[] = $eiMappings[$key];
+			$sortedEiEntrys[] = $eiEntrys[$key];
 		}
-		return $sortedEiMappings;
+		return $sortedEiEntrys;
+	}
+	
+	public function isSortable() {
+		return true;
+	}
+	
+	public function isCompact() {
+		return true;
 	}
 }

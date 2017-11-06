@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\manage\generic;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 use n2n\util\col\HashMap;
 
 class GenericEiDefinition {
 	private $genericEiProperties;
 	
 	public function __construct() {
-		$this->genericEiProperties = new HashMap(EiFieldPath::class, GenericEiProperty::class);
+		$this->genericEiProperties = new HashMap(EiPropPath::class, GenericEiProperty::class);
 	}
 	
 	public function getGenericEiProperties() {
@@ -36,16 +36,16 @@ class GenericEiDefinition {
 	}
 	
 	/**
-	 * @param unknown $eiFieldPath
+	 * @param unknown $eiPropPath
 	 * @throws UnknownGenericEiPropertyException
 	 * @return GenericEiProperty
 	 */
-	public function getGenericEiPropertyByEiFieldPath($eiFieldPath) {
+	public function getGenericEiPropertyByEiPropPath($eiPropPath) {
 		if (null !== ($genericEiProperty = $this->genericEiProperties
-				->offsetGet(EiFieldPath::create($eiFieldPath)))) {
+				->offsetGet(EiPropPath::create($eiPropPath)))) {
 			return $genericEiProperty;
 		}
 	
-		throw new UnknownGenericEiPropertyException('Unknown GenericEiProperty: ' . $eiFieldPath);
+		throw new UnknownGenericEiPropertyException('Unknown GenericEiProperty: ' . $eiPropPath);
 	}
 }

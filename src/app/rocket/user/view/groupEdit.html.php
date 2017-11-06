@@ -66,13 +66,11 @@
 			</div>
 		</div>
 	</div>
-	<div id="rocket-page-controls">	
-		<ul>
-			<li>
-				<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
-								. $html->getL10nText('common_save_label') . '</span>'),
-						array('class' => 'rocket-control-warning rocket-important')) ?>
-			</li>
-		</ul>
+	<div class="rocket-zone-commands">	
+		<div>
+			<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
+							. $html->getL10nText('common_save_label') . '</span>'),
+					array('class' => 'btn btn-primary')) ?>
+		</div>
 	</div>
 <?php $formHtml->close() ?>

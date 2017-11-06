@@ -21,11 +21,11 @@
 	 */
 
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\spec\ei\manage\util\model\EntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\util\uri\Url;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use rocket\spec\ei\component\field\impl\relation\model\mag\ToManyForm;
+	use rocket\spec\ei\manage\EiHtmlBuilder;
 
 	/**
 	 * @var \n2n\web\ui\view\View $view
@@ -44,54 +44,35 @@
 	
 	$newMappingFormUrl = $view->getParam('newMappingFormUrl');
 	$view->assert($newMappingFormUrl === null || $newMappingFormUrl instanceof Url);
+	
+	$eiHtml = new EiHtmlBuilder($view);
+	
+	$combined = $toManyForm->isSelectionModeEnabled() && count($toManyForm->getCurrentMappingForms()) > 0
 ?>
-<div class="rocket-to-many" data-min="<?php $html->out($toManyForm->getMin()) ?>"
+<div class="rocket-impl-to-many" data-min="<?php $html->out($toManyForm->getMin()) ?>"
 		data-max="<?php $html->out($toManyForm->getMax()) ?>"
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 				array('item' => $entryLabeler->getGenericLabel())) ?>"
 		data-move-up-label="<?php $html->text('common_move_up_label') ?>"
 		data-move-down-label="<?php $html->text('common_move_down_label') ?>"
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
-		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiSpecLabels())) ?>">
-	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
-			
-		<div class="rocket-option-array rocket-current">
-			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml) { ?>
-				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
-				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
-			
-				<div class="rocket-current" 
-						data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>"
-						data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
-								array('item' => $currentMappingForm->getEntryLabel())) ?>">
-					<?php $formHtml->optionalObjectEnabledHidden() ?>
-					
-					<?php if ($currentMappingForm->isAccessible()): ?>
-						<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', array('entryFormViewModel' 
-								=> new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-					<?php else: ?>
-						<span class="rocket-inaccessible">
-							<?php $html->out($currentMappingForm->getEntryLabel()) ?>
-						</span>
-					<?php endif ?>
-					
-					<?php $formHtml->input('orderIndex', array('class' => 'rocket-to-many-order-index')) ?>
-				</div>
-			<?php }) ?>
-		</div>
-	<?php endif ?>
+		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
+		data-compact="<?php $html->out($toManyForm->isCompact()) ?>"
+		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>"
+		data-close-label="<?php $html->text('common_close_label') ?>">
 		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
-		<div class="rocket-selector"
+		<div class="rocket-impl-selector"
 				data-original-id-reps="<?php $html->out(json_encode($toManyForm->getOriginalEntryIdReps())) ?>"
 				data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 				data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"
-				data-add-label="<?php $html->text('common_add_label') ?>"
+				data-select-label="<?php $html->text('common_select_label') ?>"
 				data-reset-label="<?php $html->text('common_reset_label') ?>"
 				data-clear-label="<?php $html->text('common_clear_label') ?>"
+				data-cancel-label="<?php $html->text('common_cancel_label') ?>"
 				data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 				data-base-property-name="<?php $html->out($formHtml->meta()->getForm()->getDispatchTargetEncoder()
-						->buildValueParamName($propertyPath->ext('selectedEntryIdReps'), false))?>">
+						->buildValueParamName($propertyPath->ext('selectedEntryIdReps'), false)) ?>">
 			<ul>
 				<?php $formHtml->meta()->arrayProps($propertyPath->ext('selectedEntryIdReps'), function () use ($formHtml, $propertyPath) { ?> 
 					<li><?php $formHtml->input($propertyPath->ext('selectedEntryIdReps[]')) ?></li>
@@ -101,21 +82,37 @@
 		</div>
 	<?php endif ?>
 	
+	<?php if (count($toManyForm->getCurrentMappingForms()) > 0): ?>
+		<div class="rocket-impl-currents">
+			<?php $formHtml->meta()->arrayProps($propertyPath->ext('currentMappingForms'), function () use ($view, $html, $formHtml, $toManyForm) { ?>
+				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
+				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
+			
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm))?>
+			<?php }) ?>
+		</div>
+	<?php endif ?>
+	
 	<?php if ($toManyForm->isNewMappingFormAvailable()): ?>
-		<div class="rocket-option-array rocket-new"
+		<div class="rocket-impl-news"
 				data-new-entry-form-url="<?php $html->out((string) $newMappingFormUrl) ?>"
 				data-property-path="<?php $html->out($formHtml->meta()
 						->createRealPropertyPath($propertyPath->ext('newMappingForms'))) ?>"
+				data-draft-mode="<?php $html->out($toManyForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>">
 			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view) { ?>
-				<div class="rocket-new">
-					<?php $formHtml->optionalObjectEnabledHidden() ?>
-					<?php $view->import('~\spec\ei\manage\util\view\entryForm.html', 
-							array('entryFormViewModel' => new EntryFormViewModel($formHtml->meta()->propPath('entryForm')))) ?>
-					<?php $formHtml->input('orderIndex', array('class' => 'rocket-to-many-order-index')) ?>
-				</div>
+				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
+				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
+				
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm)) ?>
 			<?php }) ?>
+		</div>
+	<?php endif ?>
+	
+	<?php if ($toManyForm->isSelectionModeEnabled() && $toManyForm->isNewMappingFormAvailable()): ?>
+		<div class="rocket-group">
+			<label><?php $html->text('ei_impl_embedded_add_title') ?></label>
 		</div>
 	<?php endif ?>
 </div>

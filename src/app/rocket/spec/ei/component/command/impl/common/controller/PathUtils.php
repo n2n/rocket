@@ -31,7 +31,7 @@ class PathUtils {
 	public static function createPathExtFromEntryNavPoint(EiCommand $eiCommand, EntryNavPoint $entryNavPoint): Path {
 		$idRep = null;
 		if (null !== ($id = $entryNavPoint->getLiveId())) {
-			$idRep = $eiCommand->getEiEngine()->getEiSpec()->idRepToId($id);
+			$idRep = $eiCommand->getEiEngine()->getEiType()->idRepToId($id);
 		}
 		$draftId = $entryNavPoint->getDraftId();
 		$previewType = $entryNavPoint->getPreviewType();
@@ -92,10 +92,10 @@ class PathUtils {
 // 		return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 	}
 	
-// 	public static function createDetailPathExtFromEiSelection($commandId, EiSelection $eiSelection, $previewType) {
-// 		$objectId = $eiSelection->getId();
-// 		$draftId = $eiSelection->getDraftId();
-// 		$translationN2nLocale = $eiSelection->getTranslationN2nLocale();
+// 	public static function createDetailPathExtFromEiObject($commandId, EiObject $eiObject, $previewType) {
+// 		$objectId = $eiObject->getId();
+// 		$draftId = $eiObject->getDraftId();
+// 		$translationN2nLocale = $eiObject->getTranslationN2nLocale();
 	
 // 		if (isset($draftId)) {
 // 			return self::createDraftDetailPathExt($commandId, $objectId, $draftId, $translationN2nLocale, $previewType);
@@ -106,17 +106,17 @@ class PathUtils {
 	
 // 	public static function createDetailPathExtFromEiFrame($commandId, EiFrame $eiFrame, $includeDraft = false, 
 // 			$includeTranslation = false, $includePreview = false) {
-// 		$eiSelection = $eiFrame->getEiSelection();
-// 		$objectId = $eiSelection->getId();
+// 		$eiObject = $eiFrame->getEiObject();
+// 		$objectId = $eiObject->getId();
 // 		$translationN2nLocale = null;
-// 		if ($eiSelection->hasTranslation() && $includeTranslation) {
-// 			$translationN2nLocale = $eiSelection->getTranslationN2nLocale();
+// 		if ($eiObject->hasTranslation() && $includeTranslation) {
+// 			$translationN2nLocale = $eiObject->getTranslationN2nLocale();
 // 		}
 		
 // 		$previewType = $eiFrame->getPreviewType();
 		
-// 		if ($eiSelection->isDraft() && $includeDraft) {
-// 			return self::createDraftDetailPathExt($commandId, $objectId, $eiSelection->getDraft()->getId(), $translationN2nLocale, $previewType);
+// 		if ($eiObject->isDraft() && $includeDraft) {
+// 			return self::createDraftDetailPathExt($commandId, $objectId, $eiObject->getDraft()->getId(), $translationN2nLocale, $previewType);
 // 		} else {
 // 			return self::createDetailPathExt($commandId, $objectId, $translationN2nLocale, $previewType);
 // 		}

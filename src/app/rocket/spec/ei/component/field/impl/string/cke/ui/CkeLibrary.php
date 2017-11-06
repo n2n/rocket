@@ -27,6 +27,7 @@ use n2n\impl\web\ui\view\html\HtmlBuilderMeta;
 
 class CkeLibrary extends LibraryAdapter {
 	public function apply(HtmlView $view, HtmlBuilderMeta $htmlMeta) {
-		$htmlMeta->addJs('js/thirdparty/ckeditor/ckeditor.js', 'rocket');
+		$htmlMeta->addJs('js/impl/thirdparty/ckeditor/ckeditor.js', 'rocket');
+		$htmlMeta->addJs('js/impl/cke.js');
 	}
 }

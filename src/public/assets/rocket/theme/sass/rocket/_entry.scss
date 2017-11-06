@@ -14,7 +14,7 @@
 }
 
 // add some padding to labels after editable content
-.rocket-property {
+.rocket-field {
     border: 3px solid transparent;
     transition: border 0.7s;
     -webkit-transition: border 0.7s;
@@ -28,11 +28,11 @@
 }
 
 // do not show the border on the table of the list view!
-td.rocket-property {
+td.rocket-field {
     border: none;
 }
 
-.rocket-property.rocket-editable {
+.rocket-field.rocket-editable {
     > label {
         padding-top: 0.25rem;
     }
@@ -49,7 +49,7 @@ td.rocket-property {
     padding: 0 0.75rem;
     position: relative;
 //    margin-bottom: 0.5rem;
-    > .rocket-simple-controls {
+    > .rocket-simple-commands {
         position: absolute;
         top: 8px;
         right: $padding-base-horizontal;
@@ -58,7 +58,7 @@ td.rocket-property {
             padding: 0;
         }
     }
-    > .rocket-simple-controls + label {
+    > .rocket-simple-commands + label {
         display: block;
         margin-left: $padding-base-horizontal;
         width: auto !important;
@@ -94,7 +94,7 @@ iframe.rocket-wysiwyg-detail {
  ******************************************************************************/
 
 .rocket-control-group > .rocket-controls {
-    > .rocket-simple-controls {
+    > .rocket-simple-commands {
         position: abolute;
         top: 0;
         right: 0;
@@ -274,7 +274,7 @@ iframe.rocket-wysiwyg-detail {
         }
     }
 
-    .rocket-property {
+    .rocket-field {
         > label {
             float: left;
         }

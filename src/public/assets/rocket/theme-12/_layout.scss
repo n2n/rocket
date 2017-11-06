@@ -1,0 +1,147 @@
+$rocket-header-height: 2.75rem;
+$rocket-global-nav-width: 14rem;
+$rocket-global-nav-spacer: 3rem;
+$rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-spacer;
+
+
+html {
+    height: 100%;
+}
+
+body {
+    overflow-y: scroll;
+    background: $gray-100; /* Old browsers */
+    background: $gray-100 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%) repeat-x; 
+    min-height: calc(100% - #{$rocket-header-height});
+}
+
+/**
+ * Header
+ */
+
+
+#rocket-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $rocket-header-height;
+    background-color: $gray-900;
+    color: white;
+    display: flex;
+    z-index: 1000;
+}
+
+#rocket-logo {
+    flex: 0 0 $rocket-content-margin-left;
+}
+
+#rocket-branding {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+}
+
+#rocket-customer-name {
+    flex: 1 0 auto;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: $rocket-header-height;
+}
+
+#rocket-conf-nav {
+    flex: 1 0 auto;
+}
+
+/**
+ * Global navigation
+ */
+#rocket-global-nav {
+    position: fixed;
+    padding-top: 5rem;
+    top: $rocket-header-height;
+    left: 0;
+    bottom: 0;
+    width: $rocket-global-nav-width;
+    background: url(../img/nav-body-bg.png) repeat $gray-800 4px 11px;
+    color: white;
+    overflow-y: scroll;
+}
+
+.rocket-nav-group {
+    background: $gray-800;
+}
+
+/**
+ * View Control
+ */
+
+.rocket-impl-translation-view-control {
+    position: absolute;
+    top: 1rem; 
+    right: 0;
+    z-index: 10;
+}
+
+/**
+ * Content
+ */
+
+ #rocket-content-container {
+    margin-left: $rocket-content-margin-left;
+    margin-right: 1rem;
+    margin-top: $rocket-header-height;
+    margin-bottom: 7rem;
+    position: relative;
+}
+
+/**
+ * Context Control
+ */
+
+.rocket-zone-commands {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: $rocket-global-nav-width;
+    padding: 1rem 1rem 1rem 3rem;
+    background-color: $gray-100;
+    border-top: 1px solid $gray-400;
+    display: grid;
+    grid-template-columns: auto auto;
+
+}
+
+.rocket-impl-overview-pagination {
+    text-align: right;
+}
+
+
+/**
+ * loader
+ */
+
+.rocket-impl-overview-loading {
+    margin: 40px auto 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: solid 10px rgba(0, 0, 0, 0.1);
+    border-top-color: $primary;
+    animation: spin 1s infinite linear;  
+}
+
+@keyframes spin { 
+    100% { 
+      transform: rotate(360deg); 
+    } 
+}
+
+/**
+ * General Styles
+ */
+
+.rocket-simple-commands > button > span {
+    display: none;
+} 
+

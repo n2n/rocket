@@ -24,11 +24,11 @@ namespace rocket\spec\ei\component\field\impl\relation\command;
 use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\RocketState;
 use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\manage\EiSelection;
+use rocket\spec\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EiFieldRelation;
-use rocket\spec\ei\EiSpecController;
+use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
+use rocket\spec\ei\EiTypeController;
 use rocket\spec\ei\manage\EiRelation;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
@@ -37,10 +37,10 @@ class RelationController extends ControllerAdapter {
 	private $manageState;
 	private $eiuCtrl;
 	private $rocketState;
-	private $eiFieldRelation;
+	private $eiPropRelation;
 	
-	public function __construct(EiFieldRelation $eifieldRelation) {
-		$this->eiFieldRelation = $eifieldRelation;
+	public function __construct(EiPropRelation $eifieldRelation) {
+		$this->eiPropRelation = $eifieldRelation;
 	}
 	
 	public function prepare(ManageState $manageState, RocketState $rocketState, EiuCtrl $eiuCtrl) {
@@ -50,59 +50,59 @@ class RelationController extends ControllerAdapter {
 		$this->rocketState = $rocketState;
 	}
 		
-	public function doRelEntry($idRep, array $delegateCmds, EiSpecController $eiSpecController) {
-		$eiSelection = $this->eiuCtrl->lookupEiSelection($idRep);
+	public function doRelEntry($idRep, array $delegateCmds, EiTypeController $eiTypeController) {
+		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
 		
 		// because RelationCommand gets added always on a supreme EiThing
-		if (!$this->eiFieldRelation->getRelationEiField()->getEiEngine()->getEiSpec()
-				->isObjectValid($eiSelection->getLiveObject())) {
+		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiType()
+				->isObjectValid($eiObject->getLiveObject())) {
 			throw new PageNotFoundException();
 		}
 			
-		$targetControllerContext = $this->createDelegateContext($eiSpecController);
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 		
-		$this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame, 
-				$eiSelection, $targetControllerContext);
+		$this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame, 
+				$eiObject, $targetControllerContext);
 		
-		$this->applyBreadcrumb($eiSelection);
+		$this->applyBreadcrumb($eiObject);
 
-		$this->delegate($eiSpecController);
+		$this->delegate($eiTypeController);
 	}
 	
-	public function doRelUnknownEntry(array $delegateCmds, EiSpecController $eiSpecController) {
-		$targetControllerContext = $this->createDelegateContext($eiSpecController);
+	public function doRelUnknownEntry(array $delegateCmds, EiTypeController $eiTypeController) {
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 			
-		$targetEiFrame = $this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
+		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
 				null, $targetControllerContext);
 		
-		if (null !== ($targetEiField = $this->eiFieldRelation->findTargetEiField())) {
-			$targetEiFrame->setEiRelation($targetEiField->getId(), new EiRelation($this->eiFrame, null));
+		if (null !== ($targetEiProp = $this->eiPropRelation->findTargetEiProp())) {
+			$targetEiFrame->setEiRelation($targetEiProp->getId(), new EiRelation($this->eiFrame, null));
 		}
 	
 		$this->applyBreadcrumb();
 	
-		$this->delegate($eiSpecController);
+		$this->delegate($eiTypeController);
 	}
 	
-	public function doRel(array $delegateCmds, EiSpecController $eiSpecController) {
-		$targetControllerContext = $this->createDelegateContext($eiSpecController);
+	public function doRel(array $delegateCmds, EiTypeController $eiTypeController) {
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 	
-		$targetEiFrame = $this->eiFieldRelation->createTargetEiFrame($this->manageState, $this->eiFrame, null, 
+		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame, null, 
 				$targetControllerContext);
 	
 		$this->applyBreadcrumb();
 	
-		$this->delegate($eiSpecController);
+		$this->delegate($eiTypeController);
 	}
 	
-	private function applyBreadcrumb(EiSelection $eiSelection = null) {
+	private function applyBreadcrumb(EiObject $eiObject = null) {
 		if (!$this->eiFrame->isOverviewDisabled()) {
 			$this->rocketState->addBreadcrumb($this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		}
 	
-		if ($eiSelection !== null && !$this->eiFrame->isDetailDisabled()) {
+		if ($eiObject !== null && !$this->eiFrame->isDetailDisabled()) {
 			$this->rocketState->addBreadcrumb($this->eiFrame->createDetailBreadcrumb($this->getHttpContext(), 
-					$eiSelection));
+					$eiObject));
 		}
 	} 
 }

@@ -21,36 +21,17 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
+interface GuiField extends Displayable {
 
-interface GuiField {
+	/**
+	 * @return boolean 
+	 */
+	public function isReadOnly(): bool;
 	
 	/**
-	 * @return string 
+	 * @return Editable 
+	 * @throws \n2n\util\ex\IllegalStateException if {@link Displayable::isReadOnly()} belonging to this 
+	 * {@link GuiField} returns true
 	 */
-	public function getDisplayLabel(): string;
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\spec\ei\manage\gui\GuiElement|null
-	 */
-	public function buildGuiElement(Eiu $eiu);
-	
-	/**
-	 * @return DisplayDefinition
-	 */
-	public function getDisplayDefinition(): DisplayDefinition;
-	
-	/**
-	 * @return boolean
-	 */
-	public function isStringRepresentable(): bool;
-	
-	/**
-	 * @param object $entity
-	 * @return string
-	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale);
+	public function getEditable(): Editable;
 }

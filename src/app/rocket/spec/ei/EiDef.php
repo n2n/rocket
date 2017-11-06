@@ -25,7 +25,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\critmod\sort\SortData;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 
@@ -36,6 +36,7 @@ class EiDef {
 	
 	private $label;
 	private $pluralLabel;
+	private $iconType;
 	private $draftingAllowed;
 	private $draftHistorySize;
 	private $identityStringPattern;
@@ -72,6 +73,17 @@ class EiDef {
 	}
 	
 	/**
+	 * @return string|null
+	 */
+	public function getIconType() {
+		return $this->iconType;
+	}
+	
+	public function setIconType(string $iconType = null) {
+		$this->iconType = $iconType;
+	}
+	
+	/**
 	 * @return string
 	 */
 	public function getIdentityStringPattern() {
@@ -81,7 +93,7 @@ class EiDef {
 	/**
 	 * @param string $identityStringPattern
 	 */
-	public function setIdentityStringPattern($identityStringPattern) {
+	public function setIdentityStringPattern(string $identityStringPattern = null) {
 		$this->identityStringPattern = $identityStringPattern;
 	}
 	

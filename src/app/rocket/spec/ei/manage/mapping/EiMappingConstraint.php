@@ -21,24 +21,24 @@
  */
 namespace rocket\spec\ei\manage\mapping;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
-interface EiMappingConstraint {
+interface EiEntryConstraint {
 	/**
 	 * @param unknown $id
 	 * @param unknown $value
 	 * @return boolean
 	 */
-	public function acceptsValue(EiFieldPath $eiFieldPath, $value): bool;
+	public function acceptsValue(EiPropPath $eiPropPath, $value): bool;
 
 	/**
 	 * @param \ArrayAccess $values
 	 * @return boolean
 	 */
-	public function check(EiMapping $eiMapping): bool;
+	public function check(EiEntry $eiEntry): bool;
 	
 	/**
-	 * @param EiMapping $eiMapping
+	 * @param EiEntry $eiEntry
 	 */
-	public function validate(EiMapping $eiMapping);
+	public function validate(EiEntry $eiEntry);
 }

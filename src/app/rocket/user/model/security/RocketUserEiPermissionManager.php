@@ -23,7 +23,7 @@ namespace rocket\user\model\security;
 
 use rocket\user\bo\RocketUser;
 use rocket\spec\ei\security\EiPermissionManager;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\ei\component\command\EiCommand;
@@ -40,8 +40,8 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		$this->rocketUser = $rocketUser;
 	}
 
-	private function findEiGrant(EiSpec $eiSpec, EiMask $eiMask = null) {
-		$eiSpecId = $eiSpec->getId();
+	private function findEiGrant(EiType $eiType, EiMask $eiMask = null) {
+		$eiTypeId = $eiType->getId();
 		$eiMaskId = null;
 		if (null !== $eiMask) {
 			$eiMaskId = $eiMask->getId();
@@ -49,7 +49,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 
 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
 			foreach ($rocketUserGroup->getEiGrants() as $eiGrant) {
-				if ($eiGrant->getEiSpecId() === $eiSpecId && $eiGrant->getEiMaskId() === $eiMaskId) {
+				if ($eiGrant->getEiTypeId() === $eiTypeId && $eiGrant->getEiMaskId() === $eiMaskId) {
 					return $eiGrant;
 				}
 			}
@@ -62,7 +62,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	public function isEiCommandAccessible(EiCommand $eiCommand): bool {
 		if ($this->rocketUser->isAdmin()) return true;
 
-		return null !== $this->findEiGrant($eiCommand->getEiEngine()->getEiSpec(), $eiCommand->getEiEngine()->getEiMask());
+		return null !== $this->findEiGrant($eiCommand->getEiEngine()->getEiType(), $eiCommand->getEiEngine()->getEiMask());
 	}
 
 	/**
@@ -88,7 +88,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 			return new FullyGrantedEiExecution($eiCommandPath, $eiCommand);
 		}
 		
-		$eiGrant = $this->findEiGrant($eiEngine->getEiSpec(), $eiEngine->getEiMask());
+		$eiGrant = $this->findEiGrant($eiEngine->getEiType(), $eiEngine->getEiMask());
 
 		if ($eiGrant === null) {
 			throw new InaccessibleControlException();
@@ -101,6 +101,6 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		return new RestrictedEiExecution($eiCommand, $eiCommandPath, 
 				$eiGrant->getEiPrivilegeGrants()->getArrayCopy(),
 				$eiEngine->createPrivilegeDefinition($n2nContext),
-				$eiEngine->createEiMappingFilterDefinition($n2nContext));
+				$eiEngine->createEiEntryFilterDefinition($n2nContext));
 	}
 }

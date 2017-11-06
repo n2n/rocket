@@ -49,8 +49,8 @@ class PrivilegeConstraint {
 	}
 	
 	
-// 	public function applyToEiMapping(EiMapping $eiMapping) {
-// 		$values = $eiMapping->getValues();
+// 	public function applyToEiEntry(EiEntry $eiEntry) {
+// 		$values = $eiEntry->getValues();
 		
 		
 // 	}

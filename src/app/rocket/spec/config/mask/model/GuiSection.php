@@ -22,21 +22,25 @@
 namespace rocket\spec\config\mask\model;
 
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class GuiSection {
-	const COMMON = null;
+	const SIMPLE = 'simple';
 	const MAIN = 'main';
-	const ASIDE = 'aside';
+	const AUTONOMIC = 'autonomic';
 	
-	private $type;
+	private $type = self::SIMPLE;
 	private $title;
-	private $guiFieldOrder;
+	private $displayStructure;
 	
 	public function getType() {
 		return $this->type;
 	}
 
 	public function setType(string $type = null) {
+		if ($type === null) {
+			$this->type = $type;
+		}
 		$this->type = $type;
 	}
 
@@ -48,34 +52,33 @@ class GuiSection {
 		$this->title = $title;
 	}
 
-	public function getGuiFieldOrder() {
-		if ($this->guiFieldOrder === null) {
-			test($this->title);
-			throw new IllegalStateException('No GuiFieldOrder defined.');
+	public function getDisplayStructure() {
+		if ($this->displayStructure === null) {
+			throw new IllegalStateException('No DisplayStructure defined.');
 		}
 		
-		return $this->guiFieldOrder;
+		return $this->displayStructure;
 	}
 
-	public function setGuiFieldOrder(GuiFieldOrder $guiFieldOrder) {
-		$this->guiFieldOrder = $guiFieldOrder;
+	public function setDisplayStructure(DisplayStructure $displayStructure) {
+		$this->displayStructure = $displayStructure;
 	}
 	
-	public function copy(array $guiFieldOrder = null) {
+	public function copy(array $displayStructure = null) {
 		$copy = new GuiSection();
 		$copy->setTitle($this->getTitle());
 		$copy->setType($this->getType());
 		
-		if ($guiFieldOrder !== null) {
-			$copy->setGuiFieldOrder($guiFieldOrder);
+		if ($displayStructure !== null) {
+			$copy->setDisplayStructure($displayStructure);
 		} else {
-			$copy->setGuiFieldOrder($this->getGuiFieldOrder());
+			$copy->setDisplayStructure($this->getDisplayStructure());
 		}
 		
 		return $copy;
 	}
 	
 	public static function getTypes(): array {
-		return array(self::COMMON, self::MAIN, self::ASIDE);
+		return array(self::SIMPLE, self::MAIN, self::AUTONOMIC);
 	}
 }

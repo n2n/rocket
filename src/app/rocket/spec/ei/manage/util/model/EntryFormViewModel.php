@@ -21,30 +21,28 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\map\MappingResult;
-use rocket\spec\ei\manage\EntryGui;
 
 class EntryFormViewModel {
 	private $entryForm;
 	private $entryFormPropertyPath;
 	
-	public function __construct(PropertyPath $entryFormPropertyPath) {
-		$this->entryFormPropertyPath = $entryFormPropertyPath;
+	public function __construct(EntryForm $entryForm) {
+		$this->entryForm = $entryForm;
+		
 	}
 	
-	public function initFromView(HtmlView $view) {
-		$mappingResult = $view->getFormHtmlBuilder()->meta()->getMapValue($this->entryFormPropertyPath);
-		$view->assert($mappingResult instanceof MappingResult);
+// 	public function initFromView(HtmlView $view) {
+// 		$mappingResult = $view->getFormHtmlBuilder()->meta()->getMapValue($this->entryFormPropertyPath);
+// 		$view->assert($mappingResult instanceof MappingResult);
 		
-		$entryForm = $mappingResult->getObject();
-		$view->assert($entryForm instanceof EntryForm);
+// 		$entryForm = $mappingResult->getObject();
+// 		$view->assert($entryForm instanceof EntryForm);
 		
-		$this->entryForm = $entryForm;
-	}
+// 		$this->entryForm = $entryForm;
+// 	}
 	
 	public function getEntryForm(): EntryForm {
 		if ($this->entryForm === null) {
@@ -55,7 +53,7 @@ class EntryFormViewModel {
 	}
 	
 	public function getEntryFormPropertyPath() {
-		return $this->entryFormPropertyPath;
+		return $this->entryForm->getChosenEntryTypeForm()->getEiuEntryGui()->getContextPropertyPath();
 	}
 	
 	public function isTypeChangable() {
@@ -66,55 +64,67 @@ class EntryFormViewModel {
 		return $this->getEntryForm()->getChoicesMap();
 	}
 	
-	public function createEditView() {
+	public function getIconTypeMap() {
+		$iconTypeMap = array();
+		
+		foreach ($this->entryForm->getEntryTypeForms() as $eiTypeId => $entryTypeForm) {
+			$iconTypeMap[$eiTypeId] = $entryTypeForm->getEiuEntryGui()->getEiuEntry()->getGenericIconType();
+		}
+		
+		return $iconTypeMap;
+	}
+	
+	public function createEditView(HtmlView $contextView) {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue(!$entryForm->isChoosable());
 		
-		$eiSpecId = $entryForm->getChosenId();
-		$entryModelForm = $entryForm->getChosenEntryModelForm();
-		$propertyPath = $this->entryFormPropertyPath->ext(
-						new PropertyPathPart('entryModelForms', true, $eiSpecId))->ext('dispatchable');
-		$entryGuiModel = $entryModelForm->getEntryGuiModel();
-		$eiMask = $entryGuiModel->getEiMask();
+		$entryTypeForm = $entryForm->getChosenEntryTypeForm();
 		
-		return $eiMask->createBulkyView($entryForm->getEiFrame(), new EntryGui($entryGuiModel, $propertyPath));
-		
+		if (null !== ($contextPropertyPath = $this->entryForm->getContextPropertyPath())) {
+			$eiTypeId = $entryForm->getChosenId();
+			$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath
+					->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
+		}
+				
+		return $entryTypeForm->getEiuEntryGui()->createView($contextView);
 	}
 	
-	public function createEditViews() {
+	public function createEditViews(HtmlView $contextView) {
 		$entryForm = $this->getEntryForm();
 		IllegalStateException::assertTrue($entryForm->isChoosable());
 	
+		$contextPropertyPath = $this->entryForm->getContextPropertyPath();
+		
 		$editViews = array();
-		foreach ($entryForm->getEntryModelForms() as $eiSpecId => $entryModelForm) {
-			$propertyPath = $this->entryFormPropertyPath->ext(
-					new PropertyPathPart('entryModelForms', true, $eiSpecId))->ext('dispatchable');
+		foreach ($entryForm->getEntryTypeForms() as $eiTypeId => $entryTypeForm) {
+			if ($contextPropertyPath !== null) {
+				$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath->ext(
+						new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
+			}
 			
-			$entryGuiModel = $entryModelForm->getEntryGuiModel();
-			$eiMask = $entryGuiModel->getEiMask();
+			$entryGuiModel = $entryTypeForm->getEiuEntryGui();
 			
-			$editViews[$eiSpecId] = $eiMask->createBulkyView($entryForm->getEiFrame(), 
-					new EntryGui($entryGuiModel, $propertyPath));
+			$editViews[$eiTypeId] = $entryGuiModel->createView($contextView);
 		}
 		return $editViews;
 	}
 	
-// 	private function buildTypeHtmlClasses(EiSpec $eiSpec, array $htmlClasses) {
-// 		$htmlClasses[] = 'rocket-script-type-' . $eiSpec->getId();
-// 		foreach ($eiSpec->getSubEiSpecs() as $sub) {
+// 	private function buildTypeHtmlClasses(EiType $eiType, array $htmlClasses) {
+// 		$htmlClasses[] = 'rocket-script-type-' . $eiType->getId();
+// 		foreach ($eiType->getSubEiTypes() as $sub) {
 // 			$htmlClasses = $this->buildTypeHtmlClasses($sub, $htmlClasses);
 // 		}
 // 		return $htmlClasses;
 // 	}
 	
-// 	public function createTypeLevelEditView($eiSpecId) {
+// 	public function createTypeLevelEditView($eiTypeId) {
 // 		$entryFormParts = $this->entryForm->getLevelEntryFormParts();
-// 		if (!isset($entryFormParts[$eiSpecId])) {
+// 		if (!isset($entryFormParts[$eiTypeId])) {
 // 			throw new \InvalidArgumentException();
 // 		}
 		
-// 		return $entryFormParts[$eiSpecId]->getGuiDefinition()->getEiMask()
-// 				->createEditEntryView($entryFormParts[$eiSpecId], 
-// 						$this->basePropertyPath->ext('levelEntryFormParts')->fieldExt($eiSpecId));
+// 		return $entryFormParts[$eiTypeId]->getGuiDefinition()->getEiMask()
+// 				->createEditEntryView($entryFormParts[$eiTypeId], 
+// 						$this->basePropertyPath->ext('levelEntryFormParts')->fieldExt($eiTypeId));
 // 	}
 }

@@ -1,0 +1,47 @@
+/**
+ * rocket-layer and rocket zone
+ */
+
+.rocket-zone {
+	> header {
+		display: grid;
+		position: relative;
+		grid-template-columns: 1fr auto;
+		grid-template-rows: 2rem 3rem;
+		margin-bottom: 0.5rem;
+		background: white;
+		> .breadcrumb {
+			grid-column-start: 1;
+			grid-column-end: 2;
+			grid-row-start: 1;
+			grid-row-end: 2;
+		}
+		> h1 {
+			grid-column-start: 1;
+			grid-column-end: 2;
+			grid-row-start: 2;
+			grid-row-end: 3;
+			margin-top: 0.5rem;
+		}
+	}
+}
+
+.rocket-layer {
+    position: absolute;
+    top: 0;
+    left: -$rocket-global-nav-spacer;
+	right: -1rem;
+	padding: 0 1rem 0 $rocket-global-nav-spacer;
+    background-color: $gray-300;
+	min-height: calc(100vh - #{$rocket-header-height});
+	> .rocket-layer-toolbar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: $rocket-global-nav-spacer;
+		> button {
+			width: $rocket-global-nav-spacer;
+			height: 5rem;
+		}
+	}
+}

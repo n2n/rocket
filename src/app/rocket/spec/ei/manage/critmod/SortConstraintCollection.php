@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei;
 
-use rocket\spec\ei\component\field\SortableEiField;
+use rocket\spec\ei\component\field\SortableEiProp;
 use n2n\reflection\ArgUtils;
 use n2n\util\HashMap;
 
@@ -30,17 +30,17 @@ class SortModificatorCollection {
 	private $directions = array();
 	private $sortConstraints;
 	
-	public function addSortableEiField(SortableEiField $field, $direction) {
+	public function addSortableEiProp(SortableEiProp $field, $direction) {
 		$this->fields[] = $field;
 		$this->directions[] = $direction;
 		$this->sortConstraints = null;
 	}
 	
-	public function getSortableEiFields() {
+	public function getSortableEiProps() {
 		return $this->fields;
 	}
 	
-	public function removeSortableEiFields() {
+	public function removeSortableEiProps() {
 		$this->fields = array();
 		$this->directions = array();
 		$this->sortConstraints = array();

@@ -1,7 +1,7 @@
 
 div#rocket-page-controls ul,
 ul.rocket-controls,
-ul.rocket-simple-controls {
+ul.rocket-simple-commands {
     @include list-unstyled();
 }
 
@@ -57,7 +57,7 @@ input[type="button"],
 /*
  * Simple buttons and their color variants
  */
-.rocket-simple-controls {
+.rocket-simple-commands {
     &.rocket-control-info,
     .rocket-control-info {
         @include button-variant($color-info, $btn-default-bg, $btn-default-border);
@@ -85,7 +85,7 @@ input[type="button"],
 
 // phone only
 @include media-breakpoint-down('sm') {
-   td.rocket-entry-commands-area ul.rocket-simple-controls {
+   td.rocket-entry-commands-area ul.rocket-simple-commands {
         border: 1px solid $btn-default-border;
         padding: $padding-base-vertical $padding-base-horizontal;
         background: white;
@@ -171,11 +171,11 @@ ul.rocket-preview-switch {
         white-space: nowrap;
     }
 
-    ul.rocket-simple-controls li a {
+    ul.rocket-simple-commands li a {
         @include button();
     }
 
-    ul.rocket-simple-controls {
+    ul.rocket-simple-commands {
         margin-left: -($padding-base-horizontal / 4);
         margin-bottom: 0;
 

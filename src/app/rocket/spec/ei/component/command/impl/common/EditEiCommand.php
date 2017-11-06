@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\command\impl\common;
 
-use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
@@ -36,8 +35,6 @@ use rocket\spec\security\EiCommandPrivilege;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\manage\control\HrefControl;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
@@ -45,7 +42,7 @@ use n2n\web\http\controller\Controller;
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
 	const ID_BASE = 'edit';
 	const CONTROL_KEY = 'edit';
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
 	public function getIdBase() {
@@ -60,59 +57,56 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return $eiu->lookup(EditController::class);
 	}
 	
-	public function getEntryControlOptions(N2nLocale $n2nLocale) {
+	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}
 	
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
-		if ($eiu->frame()->isExecutedBy(EiCommandPath::from($this))) {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+		if ($eiu->frame()->isExecutedBy($this)) {
 			return array();
 		}
-				
-		$hrefControls = array();
 
+		$eiuControlFactory = $eiu->frame()->controlFactory($view);
 		$eiuEntry = $eiu->entry();
-		$eiFrame = $eiu->frame()->getEiFrame();
+		$eiuFrame = $eiu->frame();
+		$dtc = new DynamicTextCollection('rocket', $view->getN2nLocale());
+		
+		$controls = array();
+
 		if (!$eiuEntry->isDraft()) {
+			$controlButton = new ControlButton($dtc->t('common_edit_label'), 
+					$dtc->t('ei_impl_edit_entry_tooltip', array('entry' => $eiuFrame->getGenericLabel())), 
+					true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL);
 			$urlExt = (new Path(array('live', $eiuEntry->getLiveIdRep())))
-					->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($view->getHttpContext())));
-			$label = $view->getL10nText('common_edit_label');
-			$tooltip = $view->getL10nText('ei_impl_edit_entry_tooltip', array('entry' => $eiu->frame()->getGenericLabel()));
-			$hrefControls[] = HrefControl::create($eiFrame, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL));
-			if ($eiu->frame()->isDraftingEnabled()) {
+					->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl()));
+			
+			$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
+			
+			if ($eiuFrame->isDraftingEnabled()) {
+				$controlButton = new ControlButton($dtc->t('common_edit_latest_draft_label'),
+						$dtc->t('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
+						true, ControlButton::TYPE_PRIMARY, IconType::ICON_PENCIL_SQUARE);
 				$urlExt = (new Path(array('latestdraft', $eiuEntry->getLiveIdRep())))
-						->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($view->getHttpContext())));
-				$label = $view->getL10nText('common_edit_latest_draft_label');
-				$tooltip = $view->getL10nText('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiu->frame()->getGenericLabel()));
-				$hrefControls[] = HrefControl::create($eiFrame, $this, $urlExt,
-						new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
+						->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl()));
+				
+				$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 			}
 		} else if (!$eiuEntry->isDraftNew()) {
+			$controlButton = new ControlButton($dtc->t('ei_impl_edit_draft_label'), $dtc->t('ei_impl_edit_draft_tooltip'), 
+					true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE);
 			$urlExt = (new Path(array('draft', $eiuEntry->getDraftId())))
-					->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($view->getHttpContext())));
-			$label = $view->getL10nText('ei_impl_edit_draft_label');
-			$tooltip = $view->getL10nText('ei_impl_edit_draft_tooltip');
-			$hrefControls[] = HrefControl::create($eiFrame, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL_SQUARE));
+					->toUrl(array('refPath' => $eiuFrame->getCurrentUrl()));
+			$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 			
+			$controlButton = new ControlButton($dtc->t('ei_impl_publish_draft_label'), 
+					$dtc->t('ei_impl_publish_draft_tooltip'), true, ControlButton::TYPE_WARNING, IconType::ICON_CHECK_SQUARE);
 			$urlExt = (new Path(array('publish', $eiuEntry->getDraftId())))
-					->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($view->getHttpContext())));
-			$label = $view->getL10nText('ei_impl_publish_draft_label');
-			$tooltip = $view->getL10nText('ei_impl_publish_draft_tooltip');
-			$hrefControls[] = HrefControl::create($eiFrame, $this, $urlExt,
-					new ControlButton($label, $tooltip, true, ControlButton::TYPE_WARNING, IconType::ICON_CHECK_SQUARE));
+					->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl($view->getHttpContext())));
+			$controls[] = $eiuControlFactory->createAjah($this, $controlButton, $urlExt);
 		}
 		
-		return $hrefControls;
-		
-// 		if ($eiUtils->getEiMask()->isDraftingEnabled()) {
-// 			$label = $view->getL10nText('ei_impl_edit_latest_draft_label');
-// 			$tooltip = $view->getL10nText('ei_impl_edit_latest_draft_tooltip');
-// 			$pathExt = new Path('draft');
-// 		}
-		
+		return $controls;	
 	}
 	
 	public function createEiCommandPrivilege(N2nContext $n2nContext): EiCommandPrivilege {
@@ -131,7 +125,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 	}
 	
 	public function getPrivilegeExtOptions(N2nLocale $n2nLocale) {
-		if (!$this->getEiSpec()->isDraftable()) return array();
+		if (!$this->getEiType()->isDraftable()) return array();
 		
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::PRIVILEGE_EXT_PUBLISH => $dtc->translate('ei_impl_edit_privilege_publish_label'));

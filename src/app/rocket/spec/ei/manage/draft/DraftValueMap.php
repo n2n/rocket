@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\draft;
 
-use rocket\spec\ei\EiFieldPath;
+use rocket\spec\ei\EiPropPath;
 
 class DraftValueMap {
 	private $draftValues = array();
@@ -31,20 +31,20 @@ class DraftValueMap {
 	}
 	
 	
-	public function containsValue($eiFieldPath) {
-		return array_key_exists((string) EiFieldPath::create($eiFieldPath), $this->draftValues);
+	public function containsValue($eiPropPath) {
+		return array_key_exists((string) EiPropPath::create($eiPropPath), $this->draftValues);
 	}
 	
-	public function getValue($eiFieldPath) {
-		$eiFieldPathStr = (string) EiFieldPath::create($eiFieldPath);
-		if (isset($this->draftValues[$eiFieldPathStr])) {
-			return $this->draftValues[$eiFieldPathStr];
+	public function getValue($eiPropPath) {
+		$eiPropPathStr = (string) EiPropPath::create($eiPropPath);
+		if (isset($this->draftValues[$eiPropPathStr])) {
+			return $this->draftValues[$eiPropPathStr];
 		}
 		return null;
 	}
 	
-	public function setValue($eiFieldPath, $value) {
-		$this->draftValues[(string) EiFieldPath::create($eiFieldPath)] = $value; 
+	public function setValue($eiPropPath, $value) {
+		$this->draftValues[(string) EiPropPath::create($eiPropPath)] = $value; 
 	}
 	
 	public function getValues() {

@@ -30,22 +30,27 @@
 	$request = HtmlView::request($this);
 
 	$displayables = $view->getParam('displayables');
+	$label = $view->getParam('label');
+	$localeDefs = $view->getParam('localeDefs');
 	
 	$fieldEiHtml = new FieldEiHtmlBuilder($view);
 ?>
 
-<div class="rocket-properties rocket-translatable-content" 
-		data-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
-		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"
-		data-translations-only-label="<?php $html->text('ei_impl_translations_only_label') ?>">
+<div class="rocket-impl-translatable" 
+		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>">
 	<?php foreach ($displayables as $n2nLocaleId => $displayable): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 				
-		<?php $fieldEiHtml->openOutputField('div', $displayable, new FieldErrorInfo(), 
-				array('data-locale-id' => $n2nLocaleId, 'data-pretty-locale-id' => $n2nLocale->toPrettyId())) ?>
-			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-					'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
-			<div class="rocket-controls rocket-locale-controls">
+		<?php $fieldEiHtml->openOutputField('div', $displayable, new FieldErrorInfo(),  array(
+				'class' => 'rocket-impl-translation', 
+				'data-rocket-impl-locale-id' => $n2nLocaleId,
+				'data-rocket-impl-activate-label' => $view->getL10nText('ei_impl_activate_translation', array(
+						'locale' => $localeDefs[(string) $n2nLocale]->buildLabel($request->getN2nLocale()),
+						'field' => $label)))) ?>
+			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale())), 
+					$n2nLocale->toPrettyId()) ?>
+			<div class="rocket-controls">
 				<?php $fieldEiHtml->field() ?>
 				<?php $fieldEiHtml->message() ?>
 			</div>

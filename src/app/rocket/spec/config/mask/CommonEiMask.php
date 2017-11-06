@@ -24,45 +24,26 @@ namespace rocket\spec\config\mask;
 use rocket\spec\ei\EiThingPath;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\component\command\control\OverallControlComponent;
-use rocket\spec\ei\EiSpec;
+use rocket\spec\ei\EiType;
 use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
-
 use rocket\spec\ei\mask\EiMask;
-use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use rocket\spec\ei\manage\EiSelection;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\DraftDefinitionFactory;
-use rocket\spec\config\mask\model\GuiOrder;
-use rocket\spec\config\mask\model\ControlOrder;
-use rocket\spec\config\mask\model\GuiFieldOrder;
-use n2n\reflection\ArgUtils;
+use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\gui\EiSelectionGui;
 use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\ei\manage\EntryGui;
-use rocket\spec\config\mask\model\CommonEntryGuiModel;
-use rocket\spec\ei\manage\model\EntryGuiModel;
-use rocket\spec\config\mask\model\EntryGuiTree;
 use n2n\web\ui\view\View;
-use rocket\spec\ei\component\field\EiFieldCollection;
+use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\config\mask\model\EntryListViewModel;
 use rocket\spec\ei\component\CritmodFactory;
-use rocket\spec\ei\component\command\control\PartialControlComponent;
-use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\manage\control\PartialControl;
-use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use n2n\web\ui\ViewFactory;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\EiThing;
 use n2n\persistence\orm\model\EntityModel;
@@ -71,15 +52,14 @@ use rocket\spec\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\spec\ei\manage\control\UnavailableControlException;
-use rocket\spec\ei\manage\util\model\EiuGui;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\util\model\EiuPerimeterException;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\util\model\EiuEntry;
+use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
+use rocket\spec\ei\manage\control\IconType;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
-	private $eiSpec;
+	private $eiType;
 	private $moduleNamespace;
 	private $subEiMaskIds;
 	
@@ -95,22 +75,22 @@ class CommonEiMask implements EiMask, Identifiable {
 	private $guiDefinition;
 	private $draftDefinition;
 	
-	public function __construct(EiSpec $eiSpec, string $moduleNamespace, GuiOrder $guiOrder) {
-		$this->eiSpec = $eiSpec;
+	public function __construct(EiType $eiType, string $moduleNamespace, DisplayScheme $guiOrder) {
+		$this->eiType = $eiType;
 		$this->moduleNamespace = $moduleNamespace;
 		
 		$this->eiDef = new EiDef();
-		$this->eiEngine = new EiEngine($this->eiSpec, $this);
+		$this->eiEngine = new EiEngine($this->eiType, $this);
 		$this->guiOrder = $guiOrder;
 		
-		$eiFieldCollection = $this->eiEngine->getEiFieldCollection();
-		$eiFieldCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiFieldCollection());
+		$eiPropCollection = $this->eiEngine->getEiPropCollection();
+		$eiPropCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiPropCollection());
 		
 		$eiCommandCollection = $this->eiEngine->getEiCommandCollection();
-		$eiCommandCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiCommandCollection());
+		$eiCommandCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiCommandCollection());
 		
 		$eiModificatorCollection = $this->eiEngine->getEiModificatorCollection();
-		$eiModificatorCollection->setInheritedCollection($this->eiSpec->getEiEngine()->getEiModificatorCollection());
+		$eiModificatorCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiModificatorCollection());
 	}
 
 	/* (non-PHPdoc)
@@ -151,12 +131,12 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\mask\EiMask::get()
 	 */
-	public function getEiSpec(): EiSpec {
-		return $this->eiSpec;
+	public function getEiType(): EiType {
+		return $this->eiType;
 	}
 	
 	public function getMaskedEiThing(): EiThing {
-		return $this->eiSpec;
+		return $this->eiType;
 	}
 	
 	public function getEiDef() {
@@ -168,14 +148,14 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	public function getEntityModel(): EntityModel {
-		return $this->eiSpec->getEntityModel();
+		return $this->eiType->getEntityModel();
 	}
 	
-	public function setGuiOrder(GuiOrder $guiOrder) {
+	public function setDisplayScheme(DisplayScheme $guiOrder) {
 		$this->guiOrder = $guiOrder;
 	}
 	
-	public function getGuiOrder(): GuiOrder {
+	public function getDisplayScheme(): DisplayScheme {
 		return $this->guiOrder;
 	}
 	
@@ -188,7 +168,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			return new Lstr($label, $this->moduleNamespace);
 		}
 		
-		return new Lstr((string) $this->eiSpec->getDefaultEiDef()->getLabel(), $this->moduleNamespace);
+		return new Lstr((string) $this->eiType->getDefaultEiDef()->getLabel(), $this->moduleNamespace);
 	}
 	
 	public function getPluralLabelLstr(): Lstr {
@@ -196,7 +176,19 @@ class CommonEiMask implements EiMask, Identifiable {
 			return new Lstr($pluralLabel, $this->moduleNamespace);
 		}
 		
-		return new Lstr((string) $this->eiSpec->getDefaultEiDef()->getPluralLabel(), $this->moduleNamespace);
+		return new Lstr((string) $this->eiType->getDefaultEiDef()->getPluralLabel(), $this->moduleNamespace);
+	}
+	
+	public function getIconType(): string {
+		if (null !== ($iconType = $this->eiDef->getIconType())) {
+			return $iconType;
+		}
+		
+		if (null !== ($iconType = $this->eiType->getDefaultEiDef()->getIconType())) {
+			return $iconType;
+		}
+		
+		return IconType::ICON_FILE_TEXT;
 	}
 	
 	
@@ -206,19 +198,18 @@ class CommonEiMask implements EiMask, Identifiable {
 	public function isDraftingEnabled(): bool {
 		if (null !== ($draftingAllowed = $this->eiDef->isDraftingAllowed())) {
 			if (!$draftingAllowed) return false;
-		} else if (null !== ($draftingAllowed = $this->eiSpec->getDefaultEiDef()->isDraftingAllowed())) {
+		} else if (null !== ($draftingAllowed = $this->eiType->getDefaultEiDef()->isDraftingAllowed())) {
 			if (!$draftingAllowed) return false;
 		}
 		
 		return !$this->eiEngine->getDraftDefinition()->isEmpty();
 	}
 	
-	private function createEiSelectionGui(EiFrame $eiFrame, EiMapping $eiMapping, $viewMode, $makeEditable): EiSelectionGui {
-		$guiIdPaths = $this->getGuiFieldOrderViewMode($viewMode)->getAllGuiIdPaths();
+// 	private function createEiEntryGui(EiuEntry $eiuEntry, $viewMode): EiEntryGui {
+// 		$guiIdPaths = $this->getDisplayStructureViewMode($viewMode)->getAllGuiIdPaths();
 	
-		return $this->eiEngine->createEiSelectionGui(new EiuEntry($eiMapping, $eiFrame), $viewMode, 
-				$makeEditable, $guiIdPaths);
-	}
+// 		return $this->eiEngine->createEiEntryGui($eiuEntry, $viewMode, $guiIdPaths);
+// 	}
 				
 // 	/* (non-PHPdoc)
 // 	 * @see \rocket\spec\ei\mask\EiMask::getCommands()
@@ -228,44 +219,69 @@ class CommonEiMask implements EiMask, Identifiable {
 // 	}
 	
 	
+	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+		$id = null;
+		$name = null;
+		
+		foreach ($this->eiEngine->getGuiDefinition()->getSummarizableGuiProps() as $placeholder => $guiProp) {
+			if ($placeholder == $this->eiEngine->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
+				$id = $guiProp->buildIdentityString($eiObject, $n2nLocale);
+			} else {
+				$name = $guiProp->buildIdentityString($eiObject, $n2nLocale);
+			}
+			
+			if ($name !== null) break;
+		}
+		
+		if ($id === null) {
+			$id = $this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId());
+		}
+		
+		if ($name === null) {
+			$name = $this->getLabelLstr()->t($n2nLocale);
+		}
+		
+		return $name . ' #' . $id;
+	}
 	
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\mask\EiMask::createIdentityString()
 	 */
-	public function createIdentityString(EiSelection $eiSelection, N2nLocale $n2nLocale): string {
+	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$identityStringPattern = $this->eiDef->getIdentityStringPattern();
 		
 		if ($identityStringPattern === null) {
-			$identityStringPattern = $this->eiSpec->getDefaultEiDef()->getIdentityStringPattern();
+			$identityStringPattern = $this->eiType->getDefaultEiDef()->getIdentityStringPattern();
 		}
 		
 		if ($identityStringPattern === null) {
-			return $this->getLabelLstr()->t($n2nLocale) . ' #' 
-					. $this->eiSpec->idToIdRep($eiSelection->getLiveEntry()->getId());
+			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
 		}
 		
 		return $this->eiEngine->getGuiDefinition()
-				->createIdentityString($identityStringPattern, $eiSelection, $n2nLocale);
+				->createIdentityString($identityStringPattern, $eiObject, $n2nLocale);
 	}
 	
 	/**
-	 * @param EiFrame $eiFrame
-	 * @param HtmlView $htmlView
-	 * @return \rocket\spec\ei\component\command\ControlButton[]
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\mask\EiMask::sortOverallControls()
 	 */
-	public function createOverallHrefControls(EiFrame $eiFrame, HtmlView $htmlView): array {
-		$eiu = new Eiu($eiFrame);
-		$controls = array();
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof OverallControlComponent)
-					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
+	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
+// 		$eiu = new Eiu($eiGui);
+// 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
+		
+// 		$controls = array();
+		
+// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof OverallControlComponent)
+// 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
 				
-			$hrefControls = $eiCommand->createOverallHrefControls($eiu, $htmlView);
-			ArgUtils::valArrayReturn($hrefControls, $eiCommand, 'createOverallHrefControls', HrefControl::class);
-			foreach ($hrefControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
+// 			$controls = $eiCommand->createOverallControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
+// 			foreach ($controls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			}
+// 		}
 		
 		if (null !== ($overallControlOrder = $this->guiOrder->getOverallControlOrder())) {
 			return $overallControlOrder->sort($controls);
@@ -275,216 +291,196 @@ class CommonEiMask implements EiMask, Identifiable {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\mask\EiMask::createEntryHrefControls()
+	 * @see \rocket\spec\ei\mask\EiMask::createEntryControls()
 	 */
-	public function createEntryHrefControls(EiuGui $eiuGui, HtmlView $view): array {
-		try {
-			$eiuGui->getEiuEntry()->getEiuFrame();
-		} catch (EiuPerimeterException $e) {
-			throw new \InvalidArgumentException('Invalid EiuGui passed.', 0, $e);
-		}
+	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array {
+// 		$eiu = new Eiu($eiEntryGui);
 		
-		$eiu = new Eiu($eiuGui);
-		
-		$controls = array();
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$eiuGui->getEiuEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
-				continue;
-			}
+// 		$controls = array();
+// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof EntryControlComponent)
+// 					|| !$eiEntryGui->getEiEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
+// 				continue;
+// 			}
 			
-			$entryControls = $eiCommand->createEntryHrefControls($eiu, $view);
-			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryHrefControls', HrefControl::class);
-			foreach ($entryControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
+// 			$entryControls = $eiCommand->createEntryControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
+// 			foreach ($entryControls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			}
+// 		}
 	
-		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
-			return $entryControlOrder->sort($controls);
-		}		
+// 		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
+// 			return $entryControlOrder->sort($controls);
+// 		}		
 		
 		return $controls;
 	}
 	
-	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
-		$controls = array();
-		foreach ($this->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof PartialControlComponent)
-					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
+// 	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
+// 		$controls = array();
+// 		foreach ($this->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof PartialControlComponent)
+// 					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
 				
-			$executionPath = EiCommandPath::from($eiCommand);
-			$partialControls = $eiCommand->createPartialControls($eiFrame, $view);
-			ArgUtils::valArrayReturn($partialControls, $eiCommand, 'createPartialControls', PartialControl::class);
-			foreach ($partialControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			$executionPath = EiCommandPath::from($eiCommand);
+// 			$partialControls = $eiCommand->createPartialControls($eiFrame, $view);
+// 			ArgUtils::valArrayReturn($partialControls, $eiCommand, 'createPartialControls', PartialControl::class);
+// 			foreach ($partialControls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 				
-				if (!$control->hasEiCommandPath()) {
-					$control->setExecutionPath($executionPath->ext($controlId));
-				}
-			}
+// 				if (!$control->hasEiCommandPath()) {
+// 					$control->setExecutionPath($executionPath->ext($controlId));
+// 				}
+// 			}
+// 		}
+		
+// 		if (null !== ($overallControlOrder = $this->guiOrder->getOverallControlOrder())) {
+// 			return $overallControlOrder->sortControls($controls);
+// 		}
+	
+// 		return $controls;
+// 	}
+	
+	public function createEiGui(EiFrame $eiFrame, int $allowedViewMods): EiGui {
+		if (($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES) 
+				&& ($allowedViewMods & DisplayDefinition::BULKY_VIEW_MODES)) {
+			throw new \InvalidArgumentException('Bulky and compact view mods can not be mixed.');			
 		}
 		
-		if (null !== ($overallControlOrder = $this->guiOrder->getOverallControlOrder())) {
-			return $overallControlOrder->sortControls($controls);
-		}
-	
-		return $controls;
-	}
-	
-	
-	private function getGuiFieldOrderViewMode($viewMode): GuiFieldOrder {
-		$guiFieldOrder = null;
-		
-		switch ($viewMode) {
-			case DisplayDefinition::VIEW_MODE_LIST_READ:
-				if (null !== ($overviewGuiFieldOrder = $this->guiOrder->getOverviewGuiFieldOrder())) {
-					return $overviewGuiFieldOrder;
-				}
-				return $this->createDefaultGuiFieldOrder($viewMode);
-			case DisplayDefinition::VIEW_MODE_TREE_READ:
-				if (null !== ($treeOverviewGuiFieldOrder = $this->guiOrder->getOverviewGuiFieldOrder())) {
-					return $treeOverviewGuiFieldOrder;
-				}
-				return $this->createDefaultGuiFieldOrder($viewMode);
-			case DisplayDefinition::VIEW_MODE_BULKY_READ:
-				if (null !== ($detailGuiFieldOrder = $this->guiOrder->getDetailGuiFieldOrder())) {
-					return $detailGuiFieldOrder;
-				}
-				break;
-			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
-				if (null !== $editGuiFieldOrder = $this->guiOrder->getEditGuiFieldOrder()) {
-					return $editGuiFieldOrder;
-				}
-				break;
-			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
-				if (null !== ($addGuiFieldOrder = $this->guiOrder->getAddGuiFieldOrder())) {
-					return $addGuiFieldOrder;
-				}
-				break;
+		if (!(($allowedViewMods & DisplayDefinition::COMPACT_VIEW_MODES)
+				|| ($allowedViewMods & DisplayDefinition::BULKY_VIEW_MODES))) {
+			throw new \InvalidArgumentException('View mode no recognized.');
 		}
 		
-		if (null !== ($bulkyGuiFieldOrder = $this->guiOrder->getBulkyGuiFieldOrder())) {
-			return $bulkyGuiFieldOrder;
-		}
-		
-		return $this->createDefaultGuiFieldOrder($viewMode);
-	}
-	
-	private function createDefaultGuiFieldOrder($viewMode) {
-		$guiFieldOrder = new GuiFieldOrder();
-		foreach ($this->eiEngine->getGuiDefinition()->filterGuiIdPaths($viewMode) as $guiIdPath) {
-			$guiFieldOrder->addGuiIdPath($guiIdPath);
-		}
-		return $guiFieldOrder;
+		return new EiGui($eiFrame, $this->eiEngine->getGuiDefinition(), 
+				(bool) ($allowedViewMods & DisplayDefinition::BULKY_VIEW_MODES), 
+				new CommonEiGuiViewFactory($this->guiOrder));
 	}
 
-	public function createListEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping, 
-			bool $makeEditable): EntryGuiModel {
-		$eiSelectionGui = $this->createEiSelectionGui($eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_LIST_READ, 
-				$makeEditable);
+// 	public function createListEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
+// 		$viewMode = null;
+// 		if (!$makeEditable) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
+// 		} else if ($eiuEntry->isNew()) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_ADD;
+// 		} else {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_EDIT;
+// 		}
 		
-		return new CommonEntryGuiModel($this, $eiSelectionGui, $eiMapping);
-	}
+// 		return $this->createEiEntryGui($eiuEntry, $viewMode);
+// 	}
 	
-	public function createListView(EiFrame $eiFrame, array $entryGuis): View {
-		ArgUtils::valArray($entryGuis, EntryGui::class);
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_LIST_READ);
+// 	public function createListView(EiuFrame $eiuFrame, array $eiuEntryGuis): HtmlView {
+// 		ArgUtils::valArray($eiuEntryGuis, EiuEntryGui::class);
+		
+// 		$viewMode = null;
+// 		if (empty($eiuEntryGuis)) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_LIST_READ;
+// 		} else {
+// 			$viewMode = current($eiuEntryGuis)->getViewMode();
+// 		}
+// 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 	
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
-				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
-						$eiFrame, $entryGuis, $this->eiEngine->getGuiDefinition(), $guiFieldOrder)));
-	}
+// 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+// 				'rocket\spec\config\mask\view\entryList.html', array('entryListViewModel' => new EntryListViewModel(
+// 						$eiuFrame, $eiuEntryGuis, $this->eiEngine->getGuiDefinition(), $displayStructure)));
+// 	}
 
-	public function createTreeEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping, 
-			bool $makeEditable): EntryGuiModel {
-		$eiSelectionGui = $this->createEiSelectionGui($eiFrame, $eiMapping, DisplayDefinition::VIEW_MODE_TREE_READ,
-				$makeEditable);
+// 	public function createTreeEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
+// 		$viewMode = null;
+// 		if (!$makeEditable) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_READ;
+// 		} else if ($eiuEntry->isNew()) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_ADD;
+// 		} else {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_TREE_EDIT;
+// 		}
+				
+// 		$eiEntryGui = $this->createEiEntryGui($eiFrame, $eiEntry, $viewMode, $makeEditable);
 		
-		return new CommonEntryGuiModel($this, $eiSelectionGui, $eiMapping);
-	}
+// 		return new CommonEntryGuiModel($this, $eiEntryGui, $eiEntry);
+// 	}
 	
-	public function createTreeView(EiFrame $eiFrame, EntryGuiTree $entryGuiTree): View {
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
+// 	public function createTreeView(EiuFrame $eiuFrame, EiuEntryGuiTree $entryGuiTree): HtmlView {
+// 		$displayStructure = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_TREE_READ);
 	
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
-				'rocket\spec\config\mask\view\entryList.html', array(
-						'entryListViewModel' => new EntryListViewModel($eiFrame, $entryGuiTree->getEntryGuis(), 
-								$this->eiEngine->getGuiDefinition(), $guiFieldOrder),
-						'entryGuiTree' => $entryGuiTree));
-	}
+// 		return $eiuFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+// 				'rocket\spec\config\mask\view\entryList.html', array(
+// 						'entryListViewModel' => new EntryListViewModel($eiuFrame, $entryGuiTree->getEntryGuis(), 
+// 								$this->eiEngine->getGuiDefinition(), $displayStructure),
+// 						'entryGuiTree' => $entryGuiTree));
+// 	}
 	
-	public function createBulkyEntryGuiModel(EiFrame $eiFrame, EiMapping $eiMapping, 
-			bool $makeEditable): EntryGuiModel {
-		$viewMode = null;
-		if (!$makeEditable) {
-			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_READ;
-		} else if (!$eiMapping->getEiSelection()->getLiveEntry()->isPersistent()) {
-			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_ADD;
-		} else {
-			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_EDIT;
-		}
+// 	public function createBulkyEiEntryGui(EiuEntry $eiuEntry, bool $makeEditable): EiEntryGui {
+// 		$viewMode = null;
+// 		if (!$makeEditable) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_READ;
+// 		} else if ($eiuEntry->isNew()) {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_ADD;
+// 		} else {
+// 			$viewMode = DisplayDefinition::VIEW_MODE_BULKY_EDIT;
+// 		}
 		
-		$eiSelectionGui = $this->createEiSelectionGui($eiFrame, $eiMapping, $viewMode, $makeEditable);
-		return new CommonEntryGuiModel($this, $eiSelectionGui, $eiMapping);
-	}
+// 		return $this->createEiEntryGui($eiuEntry, $viewMode);
+// 	}
 	
-	public function createBulkyView(EiFrame $eiFrame, EntryGui $entryGui): View {
-		$viewMode = $entryGui->getEntryGuiModel()->getEiSelectionGui()->getViewMode();
+// 	public function createBulkyView(EiuEntryGui $eiuEntryGui): HtmlView {
+// 		$viewMode = $eiuEntryGui->getViewMode();
 		
-		switch ($viewMode) {
-			case DisplayDefinition::VIEW_MODE_BULKY_READ:
-				$viewName = 'rocket\spec\config\mask\view\entryDetail.html';
-				break;
-			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
-			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
-				$viewName = 'rocket\spec\config\mask\view\entryEdit.html';
-				break;
-			default:
-				throw new \InvalidArgumentException('No bulky viewMode.');
-		}
+// 		switch ($viewMode) {
+// 			case DisplayDefinition::VIEW_MODE_BULKY_READ:
+// 				$viewName = 'rocket\spec\config\mask\view\entryDetail.html';
+// 				break;
+// 			case DisplayDefinition::VIEW_MODE_BULKY_ADD:
+// 			case DisplayDefinition::VIEW_MODE_BULKY_EDIT:
+// 				$viewName = 'rocket\spec\config\mask\view\entryEdit.html';
+// 				break;
+// 			default:
+// 				throw new \InvalidArgumentException('No bulky viewMode.');
+// 		}
 		
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create($viewName, 
-				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryGui' => $entryGui));
-	}
+// 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
+// 		return $eiuEntryGui->getEiuEntry()->getEiFrame()->getN2nContext()->lookup(ViewFactory::class)
+// 				->create($viewName, array('displayStructure' => $displayStructure, 'eiu' => new Eiu($eiuEntryGui)));
+// 	}
 	
-	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
-		$viewMode = $this->determineEditViewMode($entryModel->getEiMapping());
+// 	public function createEditView(EiFrame $eiFrame, EntryGuiModel $entryModel, PropertyPath $propertyPath = null): View {
+// 		$viewMode = $this->determineEditViewMode($entryModel->getEiEntry());
 	
-		$guiFieldOrder = $this->getGuiFieldOrderViewMode($viewMode);
+// 		$displayStructure = $this->getDisplayStructureViewMode($viewMode);
 		
-		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
-				'rocket\spec\config\mask\view\entryEdit.html',
-				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
-						'propertyPath' => $propertyPath));
-	}
+// 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
+// 				'rocket\spec\config\mask\view\entryEdit.html',
+// 				array('displayStructure' => $displayStructure, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 						'propertyPath' => $propertyPath));
+// 	}
 	
 // 	public function createAddView(EiFrame $eiFrame, EntryModel $entryModel, PropertyPath $propertyPath = null) {
-// 		$guiFieldOrder = $this->getGuiFieldOrderViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
+// 		$displayStructure = $this->getDisplayStructureViewMode(DisplayDefinition::VIEW_MODE_BULKY_ADD);
 	
 // 		return $eiFrame->getN2nContext()->lookup(ViewFactory::class)->create(
 // 				'rocket\spec\config\mask\view\entryEdit.html',
-// 				array('guiFieldOrder' => $guiFieldOrder, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
+// 				array('displayStructure' => $displayStructure, 'eiFrame' => $eiFrame, 'entryModel' => $entryModel, 
 // 						'propertyPath' => $propertyPath));
 // 	}
 
-// 	private function filterGuiFieldOrder(array $guiFieldOrder, GuiDefinition $guiDefinition) {
-// 		foreach ($guiFieldOrder as $key => $fieldId) {
-// 			if ($fieldId instanceof GroupedGuiFieldOrder) {
-// 				$group = $fieldId->copy($this->filterGuiFieldOrder(
-// 						$fieldId->getGuiFieldOrder(), $guiDefinition));
+// 	private function filterDisplayStructure(array $displayStructure, GuiDefinition $guiDefinition) {
+// 		foreach ($displayStructure as $key => $fieldId) {
+// 			if ($fieldId instanceof GroupedDisplayStructure) {
+// 				$group = $fieldId->copy($this->filterDisplayStructure(
+// 						$fieldId->getDisplayStructure(), $guiDefinition));
 // 				if ($group->size()) {
-// 					$guiFieldOrder[$key] = $group;
+// 					$displayStructure[$key] = $group;
 // 					continue;
 // 				}
 // 			}
 			
-// 			if (!$guiDefinition->containsGuiFieldId($fieldId)) {
-// 				unset($guiFieldOrder[$key]);
+// 			if (!$guiDefinition->containsGuiPropId($fieldId)) {
+// 				unset($displayStructure[$key]);
 // 			}
 // 		}
-// 		return $guiFieldOrder;
+// 		return $displayStructure;
 // 	}
 	
 // 	public function getFilterGroupData() {
@@ -492,7 +488,7 @@ class CommonEiMask implements EiMask, Identifiable {
 // 			return $filterData;
 // 		}
 		
-// 		return $this->eiSpec->getDefaultEiDef()->getFilterGroupData();
+// 		return $this->eiType->getDefaultEiDef()->getFilterGroupData();
 // 	}
 	
 // 	public function setFilterGroupData(FilterData $filterData = null) {
@@ -504,7 +500,7 @@ class CommonEiMask implements EiMask, Identifiable {
 // 			return $defaultSortDirections;
 // 		}
 		
-// 		return $this->eiSpec->getDefaultEiDef()->getDefaultSortData();
+// 		return $this->eiType->getDefaultEiDef()->getDefaultSortData();
 // 	}
 	
 // 	public function isFiltered()  {
@@ -519,51 +515,51 @@ class CommonEiMask implements EiMask, Identifiable {
 		$this->subEiMaskIds = $subEiMaskIds;
 	}
 	
-	public function determineEiMask(EiSpec $eiSpec): EiMask {
-		$eiSpecId = $eiSpec->getId();
-		if ($this->eiSpec->getId() == $eiSpecId) {
+	public function determineEiMask(EiType $eiType): EiMask {
+		$eiTypeId = $eiType->getId();
+		if ($this->eiType->getId() == $eiTypeId) {
 			return $this;
 		}
 		
-		if ($this->eiSpec->containsSubEiSpecId($eiSpecId)) {
-			return $this->getSubEiMaskByEiSpecId($eiSpecId);
+		if ($this->eiType->containsSubEiTypeId($eiTypeId)) {
+			return $this->getSubEiMaskByEiTypeId($eiTypeId);
 		}
 				
-		foreach ($this->eiSpec->getSubEiSpecs() as $subEiSpec) {
-			if (!$subEiSpec->containsSubEiSpecId($eiSpecId, true)) continue;
-			return $this->getSubEiMaskByEiSpecId($subEiSpec->getId())
-					->determineEiMask($eiSpec);
+		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
+			if (!$subEiType->containsSubEiTypeId($eiTypeId, true)) continue;
+			return $this->getSubEiMaskByEiTypeId($subEiType->getId())
+					->determineEiMask($eiType);
 		}
 		
 		throw new \InvalidArgumentException();
 	}
 	
-	public function getSubEiMaskByEiSpecId($eiSpecId): EiMask {
+	public function getSubEiMaskByEiTypeId($eiTypeId): EiMask {
 		$subMaskIds = $this->getSubEiMaskIds();
 		
-		foreach ($this->eiSpec->getSubEiSpecs() as $subEiSpec) {
-			if ($subEiSpec->getId() != $eiSpecId) continue;
+		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
+			if ($subEiType->getId() != $eiTypeId) continue;
 			
-			if (isset($subMaskIds[$eiSpecId])) {
-				return $subEiSpec->getEiMaskCollection()->getById($subMaskIds[$eiSpecId]);
+			if (isset($subMaskIds[$eiTypeId])) {
+				return $subEiType->getEiMaskCollection()->getById($subMaskIds[$eiTypeId]);
 			} else {
-				return $subEiSpec->getEiMaskCollection()->getOrCreateDefault();
+				return $subEiType->getEiMaskCollection()->getOrCreateDefault();
 			}
 		}
 		
-		throw new \InvalidArgumentException('EiSpec ' . $eiSpecId . ' is no SubEiSpec of ' 
-				. $this->eiSpec->getId());
+		throw new \InvalidArgumentException('EiType ' . $eiTypeId . ' is no SubEiType of ' 
+				. $this->eiType->getId());
 	}
 	
 	public function isPreviewSupported(): bool {
 		return null !== $this->eiDef->getPreviewControllerLookupId() 
-				|| null !== $this->eiSpec->getDefaultEiDef()->getPreviewControllerLookupId();
+				|| null !== $this->eiType->getDefaultEiDef()->getPreviewControllerLookupId();
 	}
 	
 	public function lookupPreviewController(EiFrame $eiFrame, PreviewModel $previewModel = null): PreviewController {
 		$lookupId = $this->eiDef->getPreviewControllerLookupId();
 		if (null === $lookupId) {
-			$lookupId = $this->eiSpec->getDefaultEiDef()->getPreviewControllerLookupId();	
+			$lookupId = $this->eiType->getDefaultEiDef()->getPreviewControllerLookupId();	
 		}
 		
 		if ($lookupId === null) {
@@ -580,7 +576,7 @@ class CommonEiMask implements EiMask, Identifiable {
 			return $previewController;
 		}
 		
-		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $previewModel->getEiSelection())))) {
+		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $previewModel->getEiObject())))) {
 			throw new UnavailableControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}
@@ -591,10 +587,10 @@ class CommonEiMask implements EiMask, Identifiable {
 	
 	public function __toString(): string {
 		if ($this->id !== null) {
-			return 'CommonEiMask (id: ' . $this->id . ') of ' . $this->eiSpec;
+			return 'CommonEiMask (id: ' . $this->id . ') of ' . $this->eiType;
 		}
 		
-		return 'Default CommonEiMask of ' . $this->eiSpec;
+		return 'Default CommonEiMask of ' . $this->eiType;
 	}
 	
 	/**
@@ -603,7 +599,7 @@ class CommonEiMask implements EiMask, Identifiable {
 	 */
 	public function setupEiFrame(EiFrame $eiFrame) {
 		if (null !== ($filterGroupData = $this->eiDef->getFilterGroupData())
-				|| null !== ($filterGroupData = $this->eiSpec->getDefaultEiDef()->getFilterGroupData())) {
+				|| null !== ($filterGroupData = $this->eiType->getDefaultEiDef()->getFilterGroupData())) {
 			$criteriaConstraint = $this->createManagedFilterDefinition($eiFrame)
 					->buildCriteriaConstraint($filterGroupData, false);
 			if ($criteriaConstraint !== null) {
@@ -612,7 +608,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		}
 
 		if (null !== ($defaultSortData = $this->eiDef->getDefaultSortData())
-				|| null !== ($defaultSortData = $this->eiSpec->getDefaultEiDef()->getDefaultSortData())) {
+				|| null !== ($defaultSortData = $this->eiType->getDefaultEiDef()->getDefaultSortData())) {
 			$criteriaConstraint = $this->eiEngine->createManagedSortDefinition($eiFrame)
 					->builCriteriaConstraint($defaultSortData, false);
 			if ($criteriaConstraint !== null) {

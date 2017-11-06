@@ -23,22 +23,19 @@ namespace rocket\spec\ei\manage\critmod\filter\impl\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\core\model\Rocket;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use n2n\impl\web\ui\view\html\AjahResponse;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\critmod\filter\UnknownFilterFieldException;
+use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 
 class FilterFieldController extends ControllerAdapter  {
 	private $eiFrame;
@@ -75,7 +72,7 @@ class FilterFieldController extends ControllerAdapter  {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	
-		$this->send(new AjahResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
+		$this->send(new JhtmlJsonResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
 				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
@@ -84,7 +81,7 @@ class FilterFieldController extends ControllerAdapter  {
 	
 		$filterGroupForm = new FilterGroupForm(new FilterGroupData(), new FilterDefinition());
 	
-		$this->send(new AjahResponse($this->createView(
+		$this->send(new JhtmlJsonResponse($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}

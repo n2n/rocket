@@ -51,7 +51,7 @@ class RocketState implements RequestScoped {
 	}
 	
 	/**
-	 * @return \rocket\spec\core\MenuItem
+	 * @return MenuItem
 	 */
 	public function getActiveMenuItem() {
 		return $this->activeMenuItem;

@@ -24,15 +24,15 @@ namespace rocket\spec\ei\manage;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 
-class DraftEiSelection extends EiSelectionAdapter {
+class DraftEiObject extends EiObjectAdapter {
 	private $draft;
 
 	public function __construct(Draft $draft) {
 		$this->draft = $draft;
 	}
 
-	public function getLiveEntry(): LiveEntry {
-		return $this->draft->getLiveEntry();
+	public function getEiEntityObj(): EiEntityObj {
+		return $this->draft->getEiEntityObj();
 	}
 	
 	public function isNew(): bool {
@@ -49,8 +49,8 @@ class DraftEiSelection extends EiSelectionAdapter {
 	
 	public function toEntryNavPoint(): EntryNavPoint {
 		$liveId = null;
-		if ($this->getLiveEntry()->isPersistent()) {
-			$liveId = $this->getLiveEntry()->getId();
+		if ($this->getEiEntityObj()->isPersistent()) {
+			$liveId = $this->getEiEntityObj()->getId();
 		}
 		return new EntryNavPoint($liveId, $this->draft->getId());
 	}

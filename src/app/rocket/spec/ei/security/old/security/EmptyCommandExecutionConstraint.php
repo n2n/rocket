@@ -23,19 +23,19 @@ namespace rocket\spec\ei\security;
 
 use rocket\spec\ei\manage\security\CommandExecutionConstraint;
 use rocket\spec\ei\manage\mapping\MappingValidationResult;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\Criteria;
 
 class EmptyCommandExecutionConstraint implements CommandExecutionConstraint {
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptValues()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValues()
 	 */
 	public function acceptValues(\ArrayAccess $values) {
 		return true;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiMappingConstraint::acceptValue()
+	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValue()
 	 */
 	public function acceptValue($id, $value) {
 		return true;
@@ -43,7 +43,7 @@ class EmptyCommandExecutionConstraint implements CommandExecutionConstraint {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\mapping\MappingValidator::validate()
 	 */
-	public function validate(EiMapping $eiMapping) {
+	public function validate(EiEntry $eiEntry) {
 		return true;
 	}
 	/* (non-PHPdoc)

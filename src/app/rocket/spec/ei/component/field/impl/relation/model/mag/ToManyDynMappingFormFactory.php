@@ -22,51 +22,54 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\mag;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\EiMapping;
+use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class ToManyDynMappingFormFactory {
-	private $utils;
-	private $inaccessibleCurrentEiSelection;
-	private $currentEiMapping;
+	private $eiuFrame;
+	private $inaccessibleCurrentEiObject;
+	private $currentEiEntry;
 	private $currentMappingForms = array();
 	private $newMappingFormAvailable;
 	private $newMappingForms = array();
+	private $allowedNewEiTypeIds = null;
 	private $draftMode = false;
 	
 	private $nextOrderIndex = 0;
 	
 	public function __construct(EiuFrame $utils) {
-		$this->utils = $utils;
+		$this->eiuFrame = $utils;
 	}
 	
-	private function getKey(EiMapping $eiMapping) {
-		$ei = new EiuEntry($eiMapping);
-		if ($ei->isDraft()) {
-			return 'd' . $ei->getDraft()->getId();
+	private function getKey(EiEntry $eiEntry) {
+		$eiuEntry = $this->eiuFrame->entry($eiEntry);
+		if ($eiuEntry->isDraft()) {
+			return 'd' . $eiuEntry->getDraft()->getId();
 		}
 		
-		return 'c' . $ei->getLiveEntry()->getId();
+		return 'c' . $eiuEntry->getEiEntityObj()->getId();
 	}
 	
-	public function addEiMapping(EiMapping $currentEiMapping) {
-		if (!$currentEiMapping->isAccessible()) {
-			$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
-					$this->utils->createIdentityString($currentEiMapping->getEiSelection()),
+	public function addEiEntry(EiEntry $currentEiEntry) {
+		if (!$currentEiEntry->isAccessible()) {
+			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
+					$this->eiuFrame->createIdentityString($currentEiEntry->getEiObject()),
+					$this->eiuFrame->getGenericIconType($currentEiEntry),
 					null, $this->nextOrderIndex++);
 			return;
 		}
 		
-		if ($currentEiMapping->getEiSelection()->isNew()) {
+		if ($currentEiEntry->getEiObject()->isNew()) {
 			$this->newMappingForms[] = new MappingForm(
-					$this->utils->getGenericLabel(), null,
-					$this->utils->createEntryFormFromMapping($currentEiMapping), $this->nextOrderIndex++);
+					$this->eiuFrame->getGenericLabel(), null, null,
+					$this->eiuFrame->entryForm($currentEiEntry), $this->nextOrderIndex++);
 			return;
 		}
 		
-		$this->currentMappingForms[$this->getKey($currentEiMapping)] = new MappingForm(
-				$this->utils->getGenericLabel($currentEiMapping), null, 
-				$this->utils->createEntryFormFromMapping($currentEiMapping), $this->nextOrderIndex++);
+		$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
+				$this->eiuFrame->getGenericLabel($currentEiEntry), 
+				$this->eiuFrame->getGenericIconType($currentEiEntry), null, 
+				$this->eiuFrame->entryForm($currentEiEntry), $this->nextOrderIndex++);
 	}
 
 	public function getCurrentMappingForm(string $idRep) {
@@ -89,8 +92,26 @@ class ToManyDynMappingFormFactory {
 		return $this->newMappingFormAvailable;
 	}
 	
+	/**
+	 * @param array|null $allowedEiTypeIds
+	 */
+	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+		$this->allowedNewEiTypeIds = $allowedEiTypeIds;
+	}
+	
+	/**
+	 * @return array|null
+	 */
+	public function getAllowedNewEiTypeIds() {
+		return  $this->allowedNewEiTypeIds;
+	}
+	
 	public function setDraftMode(bool $draftMode) {
 		$this->draftMode = $draftMode;
+	}
+	
+	public function isDraftMode() {
+		return $this->draftMode;
 	}
 	
 	public function getNewMappingForms() {
@@ -105,7 +126,7 @@ class ToManyDynMappingFormFactory {
 		}
 		
 		return $this->newMappingForms[$key] = new MappingForm(
-				$this->utils->getGenericLabel(), null,
-				$this->utils->createNewEntryForm($this->draftMode));
+				$this->eiuFrame->getGenericLabel(), $this->eiuFrame->getGenericIconType(), null,
+				$this->eiuFrame->newEntryForm($this->draftMode, null, null, $this->allowedNewEiTypeIds));
 	}
 }

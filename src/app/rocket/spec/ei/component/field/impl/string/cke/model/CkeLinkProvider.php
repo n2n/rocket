@@ -34,8 +34,8 @@ interface CkeLinkProvider extends Lookupable {
 	
 	/**
 	 * @param N2nLocale If the linked page is available in multiple languages return the url to the language which 
-	 * matches this locale the best. Don't use this locale to translate the label. Use the N2nLocale::getAdmin() or 
-	 * even better the locale from the {@see \n2n\core\container\N2nContext}.  
+	 * matches this locale the best. Don't use this locale to translate the label. Use the N2nLocale::getAdmin() or
+	 * even better the locale from the {@see \n2n\core\container\N2nContext}.
 	 * @return string[]
 	 */
 	public function getLinkOptions(N2nLocale $n2nLocale): array;

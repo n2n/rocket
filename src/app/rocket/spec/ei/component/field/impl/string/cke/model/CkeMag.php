@@ -21,6 +21,7 @@
  */
 namespace rocket\spec\ei\component\field\impl\string\cke\model;
 
+use n2n\core\N2N;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
@@ -33,8 +34,8 @@ class CkeMag extends StringMag {
 	private $bbcode;
 	private $tableEditing;
 	private $ckeLinkProviderLookupIds;
-	private $ckeCssCssConfigLookupId;
-	
+	private $ckeCssConfigLookupId;
+
 	public function __construct(string $propertyName, $label, $value = null, bool $mandatory = false, 
 			int $maxlength = null, array $inputAttrs = null, string $mode = self::MODE_NORMAL, bool $bbcode = false, 
 			bool $tableEditing = false, array $ckeLinkProviderLookupIds, string $ckeCssConfigLookupId = null) {
@@ -44,7 +45,8 @@ class CkeMag extends StringMag {
 		$this->bbcode = $bbcode;
 		$this->tableEditing = $tableEditing;
 		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
-		$this->ckeCssCssConfigLookupId = $ckeCssConfigLookupId;
+		$this->ckeCssConfigLookupId = $ckeCssConfigLookupId;
+		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
 	}
 	
 	public function isMultiline() {
@@ -52,8 +54,23 @@ class CkeMag extends StringMag {
 	}
 	
 	public function createUiField(PropertyPath $propertyPath, HtmlView $htmlView): UiComponent {
+		/* , $this->bbcode, false, $this->tableEditing, 
+				$this->ckeLinkProviderLookupIds, $this->ckeCssCssConfigLookupId, $this->getInputAttrs()*/
+		
 		$ckeHtml = new CkeHtmlBuilder($htmlView);
-		return $ckeHtml->getEditor($propertyPath, $this->mode, $this->bbcode, false, $this->tableEditing, 
-				$this->ckeLinkProviderLookupIds, $this->ckeCssCssConfigLookupId, $this->getInputAttrs());
+
+		$ckeCss = null;
+		if ($this->ckeCssConfigLookupId !== null) {
+			$ckeCss = N2N::getLookupManager()->lookup($this->ckeCssConfigLookupId);
+		}
+
+		$linkProviders = array();
+		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
+			$linkProviders[$linkProviderLookupId] = N2N::getLookupManager()->lookup($linkProviderLookupId);
+		}
+
+		return $ckeHtml->getEditor($propertyPath,
+				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
+				$ckeCss, $linkProviders);
 	}
 }

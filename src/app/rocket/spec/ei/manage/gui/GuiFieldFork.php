@@ -21,33 +21,19 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\EiMapping;
-
-interface GuiFieldFork {
-
-	/**
-	 * @return GuiDefinition|null
-	 */
-	public function getForkedGuiDefinition();
+interface GuiFieldFork extends Savable {
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return GuiElementFork
-	 */
-	public function createGuiElementFork(Eiu $eiu, bool $makeEditable): GuiElementFork;
-		
-	/**
-	 * @param EiObject $eiObject
-	 * @return EiObject|null null if not available
-	 */
-	public function determineForkedEiObject(EiObject $eiObject);
-	
-	/**
-	 *
 	 * @param GuiIdPath $guiIdPath
-	 * @return null|\rocket\spec\ei\manage\mapping\MappableWrapper
+	 * @param bool $makeEditable
+	 * @return AssembleResult
 	 */
-	public function determineMappableWrapper(EiMapping $eiMapping, GuiIdPath $guiIdPath);
+	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult; 
+	
+	/**
+	 * Mag for group toolbar
+	 * @param string $propertyName
+	 * @return Mag|null
+	 */
+	public function buildForkMag(string $propertyName); 
 }

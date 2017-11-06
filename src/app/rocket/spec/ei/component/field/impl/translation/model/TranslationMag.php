@@ -88,7 +88,8 @@ class TranslationMag extends MagAdapter {
 					->ext($magPropertyPath);
 		}
 
-		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\option.html', 
-				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos));
+		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\mag.html', 
+				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
+						'label' => $this->getLabel($view->getN2nLocale())));
 	}
 }

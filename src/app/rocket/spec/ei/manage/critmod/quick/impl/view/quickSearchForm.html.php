@@ -32,17 +32,20 @@
 	$this->assert($quickSearchForm instanceof QuickSearchForm);
 ?>
 
-<div class="rocket-quicksearch<?php $view->out($quickSearchForm->isActive() ? ' rocket-active' : '') ?>">
-	<?php $formHtml->open($quickSearchForm) ?>
-		<?php $formHtml->label('searchStr', $html->getL10nText('common_search_label'), array('class' => 'rocket-quicksearch-label')) ?>
-		<?php $formHtml->input('searchStr', array('class' => 'rocket-search-input'), 'search') ?>
-		<span class="rocket-quicksearch-command rocket-simple-controls">
+
+<?php $formHtml->open($quickSearchForm, null, null, array('class' => 'rocket-impl-quicksearch form-inline' 
+				. ($quickSearchForm->isActive() ? ' rocket-active' : ''), 
+		'data-rocket-impl-post-url' => $view->getParam('postUrl'))) ?>
+	<?php $formHtml->label('searchStr', $html->getL10nText('common_search_label')) ?>
+	<div class="input-group">
+		<?php $formHtml->input('searchStr', array('class' => 'form-control'), 'search') ?>
+		<span class="input-group-btn">
 			<?php $formHtml->buttonSubmit('search', new Raw('<i class="fa fa-search"></i>'),
-					array('class' => 'rocket-control rocket-command-lonely-appended',
+					array('class' => 'btn btn-secondary',
 							'title' => $view->getL10nText('ei_impl_list_quicksearch_tooltip'))) ?>
 			<?php $formHtml->buttonSubmit('clear', new Raw('<i class="fa fa-eraser"></i>'),
-					array('class' => 'rocket-control rocket-command-lonely-appended',
+					array('class' => 'btn btn-secondary',
 							'title' => $view->getL10nText('ei_impl_list_quicksearch_erase_tooltip'))) ?>
 		</span>
-	<?php $formHtml->close() ?>
-</div>
+	</div>
+<?php $formHtml->close() ?>

@@ -111,7 +111,7 @@ class RelationFilterField implements FilterField {
 		$targetEntityObjs = array();
 		foreach ($targetIdReps as $targetIdRep) {
 			try {
-				$targetEntityObjs[] = $this->targetEiUtils->lookupLiveEntryById($targetIdRep, 
+				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObj($targetIdRep, 
 						CriteriaConstraint::ALL_TYPES);
 			} catch (UnknownEntryException $e) { }
 		}
@@ -134,7 +134,7 @@ class RelationFilterField implements FilterField {
 			$targetLiveEntries = array();
 			foreach ($relationFilterConf->getTargetIdReps() as $targetIdRep) {
 				try {
-					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupLiveEntryById(
+					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
 							$this->targetEiUtils->idRepToId($targetIdRep), CriteriaConstraint::ALL_TYPES);
 				} catch (UnknownEntryException $e) {}
 			}
@@ -154,15 +154,15 @@ class RelationFilterField implements FilterField {
 		$relationFilterConf->setOperator($form->getOperatorMag()->getValue());
 		
 		$targetIdReps = array();
-		foreach ($form->getTargetLiveEntries() as $targetLiveEntry) {
-			$targetIdReps[] = $this->targetEiUtils->idToIdRep($targetLiveEntry->getId());
+		foreach ($form->getTargetLiveEntries() as $targetEiEntityObj) {
+			$targetIdReps[] = $this->targetEiUtils->idToIdRep($targetEiEntityObj->getId());
 		}
 		$relationFilterConf->setTargetIdReps($targetIdReps);	
 		
 		return $relationFilterConf->getAttributes();
 	}
 	
-	public function createMappableConstraint(Attributes $attributes): MappableConstraint {
+	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
 		$relationFilterConf = new RelationFilterConf(new Attributes());
 		
 		$operator = $relationFilterConf->getOperator();
@@ -251,7 +251,7 @@ class RelationFilterMagForm extends MagForm {
 		}
 		$this->filterGroupMag = new RelationFilterGroupMag('filterGroup', $targetFilterDefinition, $filterAjahHook);
 		$this->operatorMag = new EnumMag('operator', 'Operator',
-				$this->buildOperatorOptions());
+				$this->buildOperatorOptions(), null, true);
 		
 		$magCollection = new MagCollection();
 		$magCollection->addMag($this->operatorMag);

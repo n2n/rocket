@@ -23,17 +23,18 @@ namespace rocket\spec\ei\component\field\impl\translation\model;
 
 use rocket\spec\ei\manage\gui\Displayable;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiElement;
+use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 
-class TranslationDisplayable implements GuiElement {
+class TranslationDisplayable implements GuiField {
 	private $label;
-	private $MagForm;
+	private $localeDefs;
 	private $translatedDisplayables = array();
 	
-	public function __construct($label) {
+	public function __construct($label, array $localeDefs) {
 		$this->label = $label;
+		$this->localeDefs = $localeDefs;
 	}
 	
 	public function getUiOutputLabel(): string {
@@ -71,14 +72,22 @@ class TranslationDisplayable implements GuiElement {
 // 		}
 		
 		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\displayable.html',
-				array('displayables' => $this->translatedDisplayables));
+				array('displayables' => $this->translatedDisplayables, 'label' => $this->label,
+						'localeDefs' => $this->localeDefs));
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiElement::getEditable()
+	 * @see \rocket\spec\ei\manage\gui\GuiField::getEditable()
 	 */
 	public function getEditable(): Editable {
 		throw new IllegalStateException();
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
+	 */
+	public function getGroupType() {
+		return null;
+	}
 }

@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\ei\component\field\impl\translation\conf;
 
-use rocket\spec\ei\component\field\impl\adapter\AdaptableEiFieldConfigurator;
+use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\l10n\N2nLocale;
 use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use rocket\spec\ei\component\UnknownEiComponentException;
-use rocket\spec\ei\component\field\impl\translation\TranslationEiField;
+use rocket\spec\ei\component\field\impl\translation\TranslationEiProp;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
@@ -45,22 +45,23 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\config\WebConfig;
 
-class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
+class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
 	const ATTR_SYSTEM_LOCALE_DEFS_KEY = 'systenN2nLocaleDefs';
 	const ATTR_CUSTOM_LOCALE_DEFS_KEY = 'customN2nLocaleDefs';
 	const ATTR_LOCALE_ID_KEY = 'id';
 	const ATTR_LOCALE_LABEL_KEY = 'label';
 	const ATTR_LOCALE_MANDATORY_KEY = 'mandatory';
+	const ATTR_MIN_NUM_TRANSLATIONS_KEY = 'min';
 	
-	private $translationEiField;
+	private $translationEiProp;
 	
-	public function __construct(TranslationEiField $translationEiField) {
-		parent::__construct($translationEiField);
+	public function __construct(TranslationEiProp $translationEiProp) {
+		parent::__construct($translationEiProp);
 				
-		$this->autoRegister($translationEiField);
+		$this->autoRegister($translationEiProp);
 		
-		$this->translationEiField = $translationEiField;
+		$this->translationEiProp = $translationEiProp;
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
@@ -92,6 +93,9 @@ class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 				$this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar)));
 		$magCollection->addMag($customN2nLocaleDefsMag);
 		
+		$magCollection->addMag(new BoolMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 'Min translations number',
+				$lar->getNumeric(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0)));
+		
 		return $magDispatchable;
 	}
 	
@@ -109,7 +113,8 @@ class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(
-				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, self::ATTR_CUSTOM_LOCALE_DEFS_KEY)));
+				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 
+						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)));
 	}
 	
 	private function n2nLocaleDefsToMagValue(array $n2nLocaleDefs) {
@@ -191,42 +196,46 @@ class TranslationEiConfigurator extends AdaptableEiFieldConfigurator {
 		} 
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
-		$this->translationEiField->setN2nLocaleDefs($n2nLocaleDefs);
+		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
+		
+		$this->translationEiProp->setMinNumTranslations($this->attributes->getInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, false, 0));
+		
+		$this->addMandatory = true;
 		
 		// @todo combine with relation eifields
-		$eiFieldRelation = $this->translationEiField->getEiFieldRelation();
-		$relationProperty = $eiFieldRelation->getRelationEntityProperty();
+		$eiPropRelation = $this->translationEiProp->getEiPropRelation();
+		$relationProperty = $eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$targetEiSpec = $eiSetupProcess->getEiSpecByClass($targetEntityClass);
+			$targetEiType = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
 // 				$targetEiMask = $target->getEiMaskCollection()->getById($eiMaskId);
 // 			} else {
-				$targetEiMask = $targetEiSpec->getEiMaskCollection()->getOrCreateDefault();
+				$targetEiMask = $targetEiType->getEiMaskCollection()->getOrCreateDefault();
 // 			}
 
 			$entityProperty = $this->requireEntityProperty();
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
-				throw $eiSetupProcess->createException('EiField requires an EntityProperty which cascades all: ' 
+				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 			
 			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
-				throw $eiSetupProcess->createException('EiField requires an EntityProperty which removes orphans: '
+				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 
-			$eiFieldRelation->init($targetEiSpec, $targetEiMask);
+			$eiPropRelation->init($targetEiType, $targetEiMask);
 		} catch (UnknownSpecException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiMaskException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiComponentException $e) {
-			throw $eiSetupProcess->createException('EiField for Mapped Property required', $e);
+			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);
 		} catch (InvalidEiComponentConfigurationException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		}
@@ -265,6 +274,6 @@ class N2nLocaleDef {
 			return $this->label;
 		}
 		
-		return $this->n2nLocale->getName($this->n2nLocale);
+		return $this->n2nLocale->getName($n2nLocale);
 	}
 }

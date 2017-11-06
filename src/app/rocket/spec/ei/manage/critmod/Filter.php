@@ -21,63 +21,63 @@
  */
 namespace rocket\spec\ei\manage\critmod;
 
-use n2n\util\StringUtils;
-use n2n\reflection\ObjectAdapter;
-use n2n\reflection\annotation\AnnoInit;
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
-use n2n\persistence\orm\annotation\AnnoTable;
+// use n2n\util\StringUtils;
+// use n2n\reflection\ObjectAdapter;
+// use n2n\reflection\annotation\AnnoInit;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterData;
+// use n2n\persistence\orm\annotation\AnnoTable;
 
-class Filter extends ObjectAdapter {
-	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoTable('rocket_filter'));
-	}
+// class Filter extends ObjectAdapter {
+// 	private static function _annos(AnnoInit $ai) {
+// 		$ai->c(new AnnoTable('rocket_filter'));
+// 	}
 	
-	private $id;
-	private $eiSpecId;
-	private $name;
-	private $filterDataJson = '[]';
-	private $sortDirectionsJson  = '[]';
+// 	private $id;
+// 	private $eiTypeId;
+// 	private $name;
+// 	private $filterDataJson = '[]';
+// 	private $sortDirectionsJson  = '[]';
 	
-	public function getId() {
-		return $this->id;
-	}
+// 	public function getId() {
+// 		return $this->id;
+// 	}
 	
-	public function getName() {
-		return $this->name;
-	}
+// 	public function getName() {
+// 		return $this->name;
+// 	}
 	
-	public function setName($name) {
-		$this->name = $name;
-	}
+// 	public function setName($name) {
+// 		$this->name = $name;
+// 	}
 	
-	public function getEiSpecId() {
-		return $this->eiSpecId;
-	}
+// 	public function getEiTypeId() {
+// 		return $this->eiTypeId;
+// 	}
 	
-	public function setEiSpecId($eiSpecId) {
-		$this->eiSpecId = $eiSpecId;
-	}
+// 	public function setEiTypeId($eiTypeId) {
+// 		$this->eiTypeId = $eiTypeId;
+// 	}
 
-	public function readFilterData() {
-		$data = array();
-		if (!empty($this->filterDataJson)) {
-			$data = StringUtils::jsonDecode($this->filterDataJson, true);
-		}
-		return FilterData::createFromArray($data);
-	}
+// 	public function readFilterData() {
+// 		$data = array();
+// 		if (!empty($this->filterDataJson)) {
+// 			$data = StringUtils::jsonDecode($this->filterDataJson, true);
+// 		}
+// 		return FilterData::createFromArray($data);
+// 	}
 	
-	public function writeFilterData(FilterData $filterData) {
-		$this->filterDataJson = StringUtils::jsonEncode($filterData->toArray());		
-	}
+// 	public function writeFilterData(FilterData $filterData) {
+// 		$this->filterDataJson = StringUtils::jsonEncode($filterData->toArray());		
+// 	}
 	
-	public function getSortDirections() {
-		if (empty($this->filterDataJson)) {
-			return array();
-		}
-		return StringUtils::jsonDecode($this->sortDirectionsJson, true);
-	}
+// 	public function getSortDirections() {
+// 		if (empty($this->filterDataJson)) {
+// 			return array();
+// 		}
+// 		return StringUtils::jsonDecode($this->sortDirectionsJson, true);
+// 	}
 	
-	public function setSortDirections(array $sortDirections) {
-		$this->sortDirectionsJson = StringUtils::jsonEncode($sortDirections);
-	}
-}
+// 	public function setSortDirections(array $sortDirections) {
+// 		$this->sortDirectionsJson = StringUtils::jsonEncode($sortDirections);
+// 	}
+// }

@@ -1,0 +1,105 @@
+@include media-breakpoint-up(md) {
+    .rocket-field {
+        clear: both;
+        margin-bottom: 1rem;
+
+        > label {
+            width: 15rem;
+            float: left;
+        }
+        > .rocket-control {
+            margin-left: 15rem;
+        }
+    }
+}
+
+.rocket-group,
+.rocket-group-simple {
+    position: relative;
+    background-color: white;
+    margin-bottom: 1rem;
+    
+    > label {
+        width: 100%;
+        padding: 0.5rem 2rem;
+        border-left: 3px solid $primary;
+        font-size: $h2-font-size;
+        font-weight: bold;
+    }
+    > .rocket-control {
+        background: white;
+        margin: 0;
+        padding: 2rem;
+    }
+    > .rocket-group-toolbar {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}
+
+
+/*
+ * embeded
+ */
+
+// embeded objects in edit view
+
+.rocket-impl-entry {
+    display: grid;
+}
+
+.rocket-control .rocket-impl-entry {
+    border: 1px solid $gray-500;
+    background-color: white;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    > .rocket-impl-summary {
+        display: grid;
+        grid-template-columns: 2.5rem auto 100px;
+    }
+}
+
+.rocket-impl-summary > .rocket-impl-content div {
+    display: inline-block;
+}
+
+.rocket-impl-content-type {
+    min-width: 10rem;
+}
+
+.rocket-impl-add-entry {
+    margin-bottom: 1rem;
+    > button {
+        text-align: left;
+        font-weight: bold;
+        font-size: $font-size-sm;
+    }
+}
+
+/**
+ * Relation
+ */
+
+.rocket-impl-selector {
+    > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid $input-border-color;
+        max-height: 20rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        > li {
+            border-bottom: 1px solid $input-border-color;
+            clear: both;
+            > span {
+                padding: $input-btn-padding-y $input-btn-padding-x;
+                display: inline-block;
+            }
+            > div {
+                float: right;
+            }
+        }
+    }
+}

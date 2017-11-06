@@ -33,49 +33,49 @@ class ListTmpFilterStore implements SessionScoped {
 	private function _onSerialize() {}
 	private function _onUnserialize() {}
 	
-	public function setFilterId($eiSpecId, $filterId) {
-		$this->filterIds[$eiSpecId] = $filterId;
+	public function setFilterId($eiTypeId, $filterId) {
+		$this->filterIds[$eiTypeId] = $filterId;
 	}
 	
-	public function getFilterId($eiSpecId) {
-		if (isset($this->filterIds[$eiSpecId])) {
-			return $this->filterIds[$eiSpecId];
+	public function getFilterId($eiTypeId) {
+		if (isset($this->filterIds[$eiTypeId])) {
+			return $this->filterIds[$eiTypeId];
 		}
 		
 		return null;
 	}
 	
-	public function setTmpFilterData($eiSpecId, FilterData $filterData = null) {
-		$this->filterDatas[$eiSpecId] = $filterData;
+	public function setTmpFilterData($eiTypeId, FilterData $filterData = null) {
+		$this->filterDatas[$eiTypeId] = $filterData;
 	}	
 	
-	public function getTmpFilterData($eiSpecId) {
-		if (isset($this->filterDatas[$eiSpecId])) {
-			return $this->filterDatas[$eiSpecId];
+	public function getTmpFilterData($eiTypeId) {
+		if (isset($this->filterDatas[$eiTypeId])) {
+			return $this->filterDatas[$eiTypeId];
 		}
 		
 		return null;
 	}
 	
-	public function setTmpSortDirections($eiSpecId, array $sortDirections = null) {
-		$this->sortDirections[$eiSpecId] = $sortDirections;
+	public function setTmpSortDirections($eiTypeId, array $sortDirections = null) {
+		$this->sortDirections[$eiTypeId] = $sortDirections;
 	}	
 	
-	public function getTmpSortDirections($eiSpecId) {
-		if (isset($this->sortDirections[$eiSpecId])) {
-			return $this->sortDirections[$eiSpecId];
+	public function getTmpSortDirections($eiTypeId) {
+		if (isset($this->sortDirections[$eiTypeId])) {
+			return $this->sortDirections[$eiTypeId];
 		}
 		
 		return null;
 	}
 	
-	public function setTmpSearchStr($eiSpecId, $searchStr) {
-		$this->searchStrs[$eiSpecId] = $searchStr;
+	public function setTmpSearchStr($eiTypeId, $searchStr) {
+		$this->searchStrs[$eiTypeId] = $searchStr;
 	}
 	
-	public function getTmpSearchStr($eiSpecId) {
-		if (isset($this->searchStrs[$eiSpecId])) {
-			return $this->searchStrs[$eiSpecId];
+	public function getTmpSearchStr($eiTypeId) {
+		if (isset($this->searchStrs[$eiTypeId])) {
+			return $this->searchStrs[$eiTypeId];
 		}
 		return null;
 	}

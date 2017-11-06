@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\command\impl\common;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\impl\common\controller\AddController;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
@@ -37,7 +36,6 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
@@ -55,7 +53,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	const CONTROL_ADD_AFTER_BRANCH_KEY = 'addAfterBranch';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
 
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'liveEntry';
+	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
 	private $dublicatingAllowed = true;
@@ -90,61 +88,56 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		return $eiu->lookup(AddController::class);
 	}
 
-	public function getOverallControlOptions(N2nLocale $n2nLocale) {
+	public function getOverallControlOptions(N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 
-		if (null !== $this->eiThing->getNestedSetStrategy()) {
-			return array(self::CONTROL_ADD_ROOT_BRANCH_KEY => $dtc->translate('ei_impl_add_root_branch_label'),
-					self::CONTROL_ADD_ROOT_BRANCH_DRAFT_KEY => $dtc->translate('ei_impl_add_root_branch_draft_label'));
+		$options = array();
+		
+		if (null === $this->eiEngine->getEiType()->getNestedSetStrategy()) {
+			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_add_label');
+		} else {
+			$options[self::CONTROL_ADD_ROOT_BRANCH_KEY] = $dtc->t('ei_impl_add_root_branch_label');
 		}
 
-		return array(self::CONTROL_ADD_KEY => $dtc->translate('common_add_label'),
-				self::CONTROL_ADD_DRAFT_KEY => $dtc->translate('common_add_draft_label'));
+		$options[self::CONTROL_ADD_DRAFT_KEY] = $dtc->translate('common_add_draft_label');
+		
+		return $options;
 	}
 
-	public function createOverallHrefControls(Eiu $eiu, HtmlView $htmlView) {
-		$n2nContext = $eiu->frame()->getN2nContext();
-		$eiUtils = $eiu->frame();
-		$eiFrame = $eiUtils->getEiFrame();
-		$httpContext = $n2nContext->getHttpContext();
-		$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
-		$controllerContextPath = $httpContext->getControllerContextPath($eiUtils->getEiFrame()->getControllerContext());
-
-		$nestedSet = null !== $this->eiEngine->getEiSpec()->getNestedSetStrategy();
-
-		$path = $controllerContextPath->ext($this->getId());
-		$name = $dtc->translate($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_add_label');
-		$tooltip = $dtc->translate($nestedSet ? 'ei_impl_add_root_branch_tooltip' : 'ei_impl_add_tooltip',
-				array('type' => $eiUtils->getGenericLabel()));
-
-		$controlButtons = array(self::CONTROL_ADD_KEY => new HrefControl($path, new ControlButton($name, $tooltip, true,
-				ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE)));
-
-		if ($eiFrame->getContextEiMask()->isDraftingEnabled()) {
-			$path = $controllerContextPath->ext($this->getId(), 'draft');
-			$name = $dtc->translate('ei_impl_add_draft_label');
-			$tooltip = $dtc->translate('ei_impl_add_draft_tooltip', array('type' => $eiUtils->getGenericLabel()));
-				
-			$controlButtons[self::CONTROL_ADD_DRAFT_KEY] = new HrefControl($path, new ControlButton($name, $tooltip, true,
-					ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_SQUARE));
+	public function createOverallControls(Eiu $eiu, HtmlView $view): array {
+		$eiuControlFactory = $eiu->frame()->controlFactory($view);
+		$dtc = $eiu->dtc('rocket');
+		
+		$nestedSet = null !== $this->eiEngine->getEiType()->getNestedSetStrategy();
+		
+		$controls = array();
+		
+		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
+		$controls[$key] = $eiuControlFactory->createAjah($this, new ControlButton(
+				$dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_add_label'),
+				null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
+		
+		if ($eiu->frame()->isDraftingEnabled()) {
+			$controls[self::CONTROL_ADD_DRAFT_KEY] = $eiuControlFactory->createAjah($this, new ControlButton(
+					$dtc->translate('ei_impl_add_draft_label'),
+					null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
 		}
 		
-		
-		
-		return $controlButtons;
+		return $controls;
 	}
 
-	public function getEntryControlOptions(N2nLocale $n2nLocale) {
+	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
-		return array(self::CONTROL_ADD_CHILD_BRANCH_KEY => $dtc->translate('ei_impl_add_child_branch_label'),
-				self::CONTROL_ADD_SIBLING_BRANCH_KEY => $dtc->translate('ei_impl_add_sibling_branch_label'));
+		
+		return array(self::CONTROL_ADD_CHILD_BRANCH_KEY => $dtc->t('ei_impl_add_child_branch_label'),
+				self::CONTROL_ADD_SIBLING_BRANCH_KEY => $dtc->t('ei_impl_add_sibling_branch_label'));
 	}
 
-	public function createEntryHrefControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 		$eiFrame = $eiu->frame()->getEiFrame();
 		
-		$nestedSetStrategy = $this->eiEngine->getEiSpec()->getNestedSetStrategy();
+		$nestedSetStrategy = $this->eiEngine->getEiType()->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) {
 			if (!$this->dublicatingAllowed) return array();
 				
