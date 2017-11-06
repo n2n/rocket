@@ -1478,7 +1478,7 @@ var Rocket;
             constructor(jqGroupNav) {
                 this.jqGroupNav = jqGroupNav;
                 this.groups = new Array();
-                jqGroupNav.addClass("rocket-main-group-nav");
+                jqGroupNav.addClass("rocket-main-group-nav nav nav-tabs");
                 jqGroupNav.hide();
             }
             registerGroup(group) {
@@ -1488,7 +1488,7 @@ var Rocket;
                 }
                 var jqLi = $("<li />", {
                     "text": group.getTitle(),
-                    "clss": { "cursor": "pointer" }
+                    "class": { "class": "nav-item" }
                 });
                 this.jqGroupNav.append(jqLi);
                 var that = this;

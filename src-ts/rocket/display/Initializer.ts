@@ -92,7 +92,7 @@ namespace Rocket.Display {
     		this.jqGroupNav = jqGroupNav;
 			this.groups = new Array<StructureElement>();
 			
-			jqGroupNav.addClass("rocket-main-group-nav");
+			jqGroupNav.addClass("rocket-main-group-nav nav nav-tabs");
 			jqGroupNav.hide();
     	}
     	
@@ -104,7 +104,7 @@ namespace Rocket.Display {
 			
 			var jqLi = $("<li />", {
 				"text": group.getTitle(),
-				"clss": { "cursor": "pointer" }
+				"class": { "class": "nav-item" }
 			});
 			
 			this.jqGroupNav.append(jqLi);
