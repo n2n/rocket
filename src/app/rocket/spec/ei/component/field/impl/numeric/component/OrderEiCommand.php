@@ -89,7 +89,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
-	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale) {
+	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_INSERT_BEFORE_KEY => $dtc->translate('ei_impl_order_insert_before_label'),
 				self::CONTROL_INSERT_AFTER_KEY => $dtc->translate('ei_impl_order_insert_after_label'));
