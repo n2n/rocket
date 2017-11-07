@@ -79,7 +79,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		}
 		
 		$control = $eiuControlFactory->createJhtml($controlButton, $urlExt)
-				->setForceReload(true);
+				->setForceReload(true)->setPushToHistory(false);
 		
 		return array(self::CONTROL_KEY => $control);
 	}

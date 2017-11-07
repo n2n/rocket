@@ -1016,7 +1016,7 @@ var Rocket;
                 });
                 this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
                 this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
-                jqPage.append(this.jqAdditional);
+                jqPage.prepend(this.jqAdditional);
             }
             setdownAdditional() {
                 if (this.jqAdditional === null)
