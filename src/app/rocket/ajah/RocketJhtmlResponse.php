@@ -5,6 +5,7 @@ use n2n\web\http\BufferedResponseObject;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\impl\web\ui\view\jhtml\JhtmlRedirect;
 
 class RocketJhtmlResponse extends BufferedResponseObject {
 	private $jsonResponse;
@@ -37,11 +38,6 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 		return $this->jsonResponse->toKownResponseString();
 	}
 
-	const ATTR_DIRECTIVE = 'directive';
-	const ATTR_FALLBACK_URL = 'fallbackUrl';
-
-	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
-
 	const ATTR_EVENTS = 'events';
 	const ATTR_MODIFICATIONS = 'modifications';
 
@@ -57,9 +53,7 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 	 * @return BufferedResponseObject
 	 */
 	public static function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
-		$attrs = array(
-				self::ATTR_DIRECTIVE => self::DIRECTIVE_REDIRECT_BACK,
-				self::ATTR_FALLBACK_URL => $fallbackUrl);
+		$attrs = array();
 
 		if ($ajahEventInfo !== null) {
 			$attrs[self::ATTR_EVENTS] = $ajahEventInfo->toAttrs();
@@ -69,7 +63,7 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 			$attrs[self::ATTR_EXEC_CONFIG] = $jhtmlExec->toAttrs();
 		}
 
-		return new RocketJhtmlResponse($attrs);
+		return JhtmlRedirect::back($fallbackUrl, $jhtmlExec, $attrs);
 	}
 
 	/**

@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\field\impl\bool\command;
 use rocket\spec\ei\component\field\impl\bool\OnlineEiProp;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
-use n2n\impl\web\ui\view\json\JsonResponse;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -63,7 +62,6 @@ class OnlineController extends ControllerAdapter {
 		
 		$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRedirectUrl($eiuEntry), 
 				JhtmlEvent::ei()->eiObjectChanged($eiuEntry)
-						->swapControl($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry))));
-		$this->send(new JsonResponse(array('status' => 'ok')));
+						->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry))));
 	}
 }

@@ -54,6 +54,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = $eiu->lookup(OnlineController::class);
 		$controller->setOnlineEiProp($this->onlineEiProp);
+		$controller->setOnlineEiCommand($this);
 		return $controller;
 	}
 	

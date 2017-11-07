@@ -1,5 +1,8 @@
 var Rocket;
 (function (Rocket) {
+    Jhtml.ready((elements) => {
+        console.log("ready!!!!");
+    });
     var container;
     var blocker;
     var initializer;
@@ -60,6 +63,13 @@ var Rocket;
             t.scan();
             Jhtml.ready(() => {
                 t.scan();
+            });
+        })();
+        (function () {
+            Jhtml.ready((elements) => {
+                $(elements).find("a.rocket-jhtml").each(function () {
+                    new Rocket.Display.Command(Jhtml.Ui.Link.from(this)).observe();
+                });
             });
         })();
     });
@@ -1143,6 +1153,29 @@ var Rocket;
             })(EventType = Zone.EventType || (Zone.EventType = {}));
         })(Zone = Cmd.Zone || (Cmd.Zone = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Command {
+            constructor(jLink) {
+                this.jLink = jLink;
+                this._observing = false;
+                alert("huii");
+            }
+            observe() {
+                if (this._observing)
+                    return;
+                this._observing = true;
+                this.jLink.onDirective((directivePromise) => {
+                    alert("wut");
+                    $(this.jLink.element).find("i").attr("class", "fa fa-minus-circle");
+                });
+            }
+        }
+        Display.Command = Command;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
