@@ -193,10 +193,14 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 
 	protected function getAssignedEntityProperty() {
+		if ($this->confEntityPropertyEiProp === null) return null;
+		
 		return $this->confEntityPropertyEiProp->getEntityProperty();
 	}
 	
 	protected function getAssignedObjectPropertyAccessProxy() {
+		if ($this->confObjectPropertyEiProp === null) return null;
+		
 		return $this->confObjectPropertyEiProp->getObjectPropertyAccessProxy();
 	}
 	
