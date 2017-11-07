@@ -74,8 +74,10 @@ class JhtmlControl implements Control {
 		return $this->pushToHistory;
 	}
 	
-	public function createUiComponent(bool $iconOnly): UiComponent {
-		return $this->controlButton->toButton($iconOnly, array('href' => $this->url, 'data-jhtml' => 'true',
+	public function createUiComponent(): UiComponent {
+		return $this->controlButton->toButton(array('href' => $this->url,
+				'class' => 'rocket-jhtml',
+				'data-jhtml' => 'true',
 				'data-jhtml-push-to-history' => $this->pushToHistory ? 'true' : 'false',
 				'data-jhtml-forece-reload' => $this->forceReload ? 'true' : 'false'));
 	}

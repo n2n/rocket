@@ -35,7 +35,7 @@ interface EntryControlComponent {
 	/**
 	 * @param Eiu $eiu
 	 * @param HtmlView $view
-	 * @return \rocket\spec\ei\manage\control\ControlButton[]
+	 * @return \rocket\spec\ei\manage\control\Control[]
 	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array;
 }

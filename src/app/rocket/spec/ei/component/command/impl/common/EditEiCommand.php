@@ -67,7 +67,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 			return array();
 		}
 
-		$eiuControlFactory = $eiu->frame()->controlFactory($view, $this);
+		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
 		$dtc = new DynamicTextCollection('rocket', $view->getN2nLocale());

@@ -1,15 +1,19 @@
 <?php
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\ajah\AjahEventInfo;
+use rocket\ajah\JhtmlEventInfo;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\EiObject;
+use rocket\spec\ei\manage\control\Control;
+use n2n\web\ui\SimpleBuildContext;
 
-class EiAjahEventInfo extends AjahEventInfo {
+class EiJhtmlEventInfo extends JhtmlEventInfo {
+	const ATTR_SWAP_CONTROL_HTML_KEY = 'swapControlHtml';
+	private $swapControl;
 	
 	/**
 	 * @param mixed ...$eiTypeArgs
-	 * @return \rocket\spec\ei\manage\util\model\EiAjahEventInfo
+	 * @return \rocket\spec\ei\manage\util\model\EiJhtmlEventInfo
 	 */
 	public function eiTypeChanged(...$eiTypeArgs) {
 		foreach ($eiTypeArgs as $eiTypeArg) {
@@ -20,7 +24,7 @@ class EiAjahEventInfo extends AjahEventInfo {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return \rocket\spec\ei\manage\util\model\EiAjahEventInfo
+	 * @return \rocket\spec\ei\manage\util\model\EiJhtmlEventInfo
 	 */
 	public function eiObjectChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -31,7 +35,7 @@ class EiAjahEventInfo extends AjahEventInfo {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return \rocket\spec\ei\manage\util\model\EiAjahEventInfo
+	 * @return \rocket\spec\ei\manage\util\model\EiJhtmlEventInfo
 	 */
 	public function eiObjectRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -47,6 +51,15 @@ class EiAjahEventInfo extends AjahEventInfo {
 		} else {
 			$this->itemChanged(self::buildTypeId($eiObject->getEiEntityObj()->getEiType()), self::buildItemId($eiObject));
 		}
+	}
+	
+	/**
+	 * @param Control $control
+	 * @return \rocket\spec\ei\manage\util\model\EiJhtmlEventInfo
+	 */
+	public function controlSwaped(Control $control) {
+		$this->swapControl = $control;
+		return $this;
 	}
 	
 	/**
@@ -70,6 +83,7 @@ class EiAjahEventInfo extends AjahEventInfo {
 	}
 	
 	public function toAttrs(): array {
-	
+		return array(self::ATTR_SWAP_CONTROL_HTML_KEY => $this->swapControl->createUiComponent()
+				->build(new SimpleBuildContext()));	
 	}
 }

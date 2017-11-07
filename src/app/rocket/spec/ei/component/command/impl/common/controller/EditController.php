@@ -35,7 +35,7 @@ use n2n\util\col\ArrayUtils;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\ajah\AjahEvent;
+use rocket\ajah\JhtmlEvent;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
@@ -66,7 +66,7 @@ class EditController extends ControllerAdapter {
 		$editModel->initialize($eiEntry);
 
 		if ($this->dispatch($editModel, 'save')) {
-			$this->eiuCtrl->redirectBack($redirectUrl, AjahEvent::ei()->eiObjectChanged($eiEntry));
+			$this->eiuCtrl->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectChanged($eiEntry));
 			return;
 		}
 		

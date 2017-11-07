@@ -52,11 +52,11 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 
 	/**
 	 * @param string $fallbackUrl
-	 * @param AjahEventInfo $ajahEventInfo
-	 * @param AjahExec $ajahExec
+	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedResponseObject
 	 */
-	public static function redirectBack(string $fallbackUrl, AjahEventInfo $ajahEventInfo = null, AjahExec $ajahExec = null) {
+	public static function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
 		$attrs = array(
 				self::ATTR_DIRECTIVE => self::DIRECTIVE_REDIRECT_BACK,
 				self::ATTR_FALLBACK_URL => $fallbackUrl);
@@ -65,23 +65,23 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 			$attrs[self::ATTR_EVENTS] = $ajahEventInfo->toAttrs();
 		}
 
-		if ($ajahExec !== null) {
-			$attrs[self::ATTR_EXEC_CONFIG] = $ajahExec->toAttrs();
+		if ($jhtmlExec !== null) {
+			$attrs[self::ATTR_EXEC_CONFIG] = $jhtmlExec->toAttrs();
 		}
 
 		return new RocketJhtmlResponse($attrs);
 	}
 
 	/**
-	 * @param AjahEventInfo $ajahEventInfo
+	 * @param JhtmlEventInfo $ajahEventInfo
 	 * @return BufferedResponseObject
 	 */
-	public static function events(AjahEventInfo $ajahEventInfo) {
+	public static function events(JhtmlEventInfo $ajahEventInfo) {
 		return new RocketJhtmlResponse(array(
 				self::ATTR_EVENTS => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
 	}
 
-	public static function view(HtmlView $htmlView, AjahEventInfo $ajahEventInfo = null) {
+	public static function view(HtmlView $htmlView, JhtmlEventInfo $ajahEventInfo = null) {
 		return new JhtmlJsonResponse($htmlView,
 				($ajahEventInfo !== null ? array(self::ATTR_EVENTS => $ajahEventInfo->toAttrs()) : null));
 	}

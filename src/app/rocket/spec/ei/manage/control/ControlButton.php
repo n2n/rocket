@@ -163,7 +163,7 @@ class ControlButton {
 		return HtmlUtils::mergeAttrs($attrs, $this->attrs);
 	}
 	
-	public function toButton(bool $iconOnly, array $attrs): UiComponent {
+	public function toButton(array $attrs): UiComponent {
 		$iconType = $this->iconType;
 		if ($iconType === null) {
 			$iconType = IconType::ICON_ROCKET;

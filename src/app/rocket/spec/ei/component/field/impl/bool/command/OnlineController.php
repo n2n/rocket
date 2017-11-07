@@ -26,10 +26,12 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
-use rocket\ajah\AjahEvent;
+use rocket\ajah\JhtmlEvent;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class OnlineController extends ControllerAdapter {
 	private $onlineEiProp;
+	private $onlineEiCommand;
 	private $eiuCtrl;
 	
 	public function prepare(EiuCtrl $eiCtrl) {
@@ -38,6 +40,10 @@ class OnlineController extends ControllerAdapter {
 	
 	public function setOnlineEiProp(OnlineEiProp $onlineEiProp) {
 		$this->onlineEiProp = $onlineEiProp;
+	}
+	
+	public function setOnlineEiCommand(OnlineEiCommand $onlineEiCommand) {
+		$this->onlineEiCommand = $onlineEiCommand;
 	}
 	
 	public function doOnline($idRep) {
@@ -49,14 +55,15 @@ class OnlineController extends ControllerAdapter {
 	}
 	
 	private function setStatus($status, $idRep) {
-		$eiEntry = $this->eiuCtrl->lookupEiEntry($idRep);
-		$eiEntry->setValue($this->onlineEiProp, $status);		
-		if (!$eiEntry->save()) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
+		$eiuEntry->setValue($this->onlineEiProp, $status);		
+		if (!$eiuEntry->getEiEntry()->save()) {
 			throw new ForbiddenException();
 		}
 		
-		$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRedirectUrl($eiEntry), 
-				AjahEvent::ei()->eiObjectChanged($eiEntry));
+		$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRedirectUrl($eiuEntry), 
+				JhtmlEvent::ei()->eiObjectChanged($eiuEntry)
+						->swapControl($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry))));
 		$this->send(new JsonResponse(array('status' => 'ok')));
 	}
 }

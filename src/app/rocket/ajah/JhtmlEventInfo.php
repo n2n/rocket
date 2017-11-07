@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ajah;
 
-class AjahEventInfo {
+class JhtmlEventInfo {
 	private $resfreshMod;
 	private $eventMap = array();
 
@@ -12,7 +12,7 @@ class AjahEventInfo {
 	/**
 	 * @param string $typeId
 	 * @param string $entryId
-	 * @return \rocket\spec\ei\manage\util\model\AjahModInfoAdapter
+	 * @return \rocket\ajah\JhtmlEventInfo
 	 */
 	public function itemChanged(string $typeId, string $entryId) {
 		$this->item($typeId, $entryId, RocketJhtmlResponse::MOD_TYPE_CHANGED);
@@ -22,7 +22,7 @@ class AjahEventInfo {
 	/**
 	 * @param string $typeId
 	 * @param string $entryId
-	 * @return \rocket\spec\ei\manage\util\model\AjahModInfoAdapter
+	 * @return \rocket\ajah\JhtmlEventInfo
 	 */
 	public function itemRemoved(string $typeId, string $entryId) {
 		$this->item($typeId, $entryId, RocketJhtmlResponse::MOD_TYPE_REMOVED);

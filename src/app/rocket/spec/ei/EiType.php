@@ -32,14 +32,11 @@ use rocket\spec\ei\manage\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\security\PrivilegeBuilder;
 use rocket\spec\ei\mask\EiMaskCollection;
-use rocket\spec\ei\EiType;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
-use rocket\spec\ei\EiThing;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\manage\veto\VetoableActionListener;
 use rocket\spec\ei\manage\veto\VetoableRemoveAction;
-use rocket\spec\ei\EiEngine;
 use rocket\spec\config\Spec;
 use n2n\l10n\Lstr;
 
@@ -309,19 +306,19 @@ class EiType extends Spec implements EiThing {
 						= $eiCommand->getPrivilegeLabel($n2nLocale);
 			}
 				
-			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
-				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
+// 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
+// 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
 					
-				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
+// 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
 					
-				foreach ($privilegeOptions as $privilegeExt => $label) {
-					if ($eiType->hasSuperEiType()) {
-						$label . ' (' . $eiType->getLabel() . ')';
-					}
+// 				foreach ($privilegeOptions as $privilegeExt => $label) {
+// 					if ($eiType->hasSuperEiType()) {
+// 						$label . ' (' . $eiType->getLabel() . ')';
+// 					}
 					
-					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
-				}
-			}
+// 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
+// 				}
+// 			}
 		}
 		
 		foreach ($eiType->getSubEiTypes() as $subEiType) {

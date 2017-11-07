@@ -57,12 +57,16 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return $controller;
 	}
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
-		$eiuControlFactory = $eiu->frame()->controlFactory($view, $this);
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\spec\ei\manage\control\JhtmlControl
+	 */
+	public function createEntryControl(Eiu $eiu) {
+		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
-		$dtc = new DynamicTextCollection('rocket', $view->getN2nLocale());
+		$dtc = new DynamicTextCollection('rocket', $eiuFrame->getN2nLocale());
 		
 		$controlButton = new ControlButton($dtc->t('ei_impl_online_offline_label'),
 				$dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
@@ -78,10 +82,12 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 			$urlExt = (new Path(array('offline', $eiuEntry->getLiveIdRep())))->toUrl();
 		}
 		
-		$control = $eiuControlFactory->createJhtml($controlButton, $urlExt)
+		return $eiuControlFactory->createJhtml($controlButton, $urlExt)
 				->setForceReload(true)->setPushToHistory(false);
-		
-		return array(self::CONTROL_KEY => $control);
+	}
+	
+	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+		return array(self::CONTROL_KEY => $this->createEntryControl($eiu));
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()

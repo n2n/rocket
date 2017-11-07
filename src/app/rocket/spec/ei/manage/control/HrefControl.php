@@ -44,8 +44,8 @@ class HrefControl implements Control {
 		return $this->controlButton;
 	}
 	
-	public function createUiComponent(bool $iconOnly): UiComponent {
-		return $this->controlButton->toButton($iconOnly, array('href' => $this->href));
+	public function createUiComponent(): UiComponent {
+		return $this->controlButton->toButton(array('href' => $this->href));
 	}
 	
 	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, Url $urlExt = null, 

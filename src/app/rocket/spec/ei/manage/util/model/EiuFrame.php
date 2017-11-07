@@ -400,8 +400,8 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues();
 	}
 	
-	public function controlFactory(HtmlView $view, EiCommand $eiCommand) {
-		return new EiuControlFactory($this, $view, $eiCommand);
+	public function controlFactory(EiCommand $eiCommand) {
+		return new EiuControlFactory($this, $eiCommand);
 	}
 	
 	public function getCurrentUrl() {

@@ -1,18 +1,18 @@
 <?php
 namespace rocket\ajah;
 
-class AjahExec {
+class JhtmlExec {
 	private $forceReload = false;
-	private $showLoadingContext = true;
+	private $pushToHistory = true;
 
-	public function __construct(bool $forceReload = false, bool $showLoadingContext = true) {
+	public function __construct(bool $forceReload = false, bool $pushToHistory = true) {
 		$this->forceReload = $forceReload;
-		$this->showLoadingContext = $showLoadingContext;
+		$this->pushToHistory = $pushToHistory;
 	}
 
 	public function toAttrs() {
 		return array(
 				'forceReload' => $this->forceReload,
-				'showLoadingcontext' => $this->showLoadingContext);
+				'pushToHistory' => $this->pushToHistory);
 	}
 }
