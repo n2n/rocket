@@ -86,11 +86,11 @@ class CkeHtmlBuilder {
 				}, $contentsHtml));
 	}
 	
-	public function editor(string $propertyPath = null, CkeComposer $ckeComposer = null) {
+	public function editor($propertyPath = null, CkeComposer $ckeComposer = null) {
 		$this->view->out($this->getEditor($propertyPath, $ckeComposer));
 	}
 
-	public function getEditor(string $propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders) {
+	public function getEditor($propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
 		$ckeConfig = null;
