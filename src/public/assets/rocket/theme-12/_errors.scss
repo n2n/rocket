@@ -1,0 +1,35 @@
+.rocket-highlighted {
+    outline: 3px solid $red;
+    background: rgba($red, 0.1);				
+	transition: background 1s;
+	position: relative;
+}
+
+.rocket-error-index-entry {
+	background: $white;
+	border-bottom: 1px solid $danger;
+	padding: 0.5rem 1rem;
+	position: relative;
+	&::after {
+		position: absolute;
+		top: 0.75rem;
+		right: 1rem;
+		color: $danger;
+		content: '\f0e7';
+		font-family: fontawesome;
+		font-size: $font-size-lg;
+	}
+	&:hover {
+		background-color: $danger;
+		color: white;
+	}
+	&:hover::after {
+		color: white;
+	}
+	> div:first-child {
+		font-weight: bold;
+	}
+	> div:last-child {
+		font-size: $font-size-sm;
+	}
+}

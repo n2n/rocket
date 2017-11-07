@@ -24,6 +24,25 @@
 			margin-top: 0.5rem;
 		}
 	}
+
+
+}
+
+/**
+ * rocket addtional
+ */
+
+@include media-breakpoint-up(md) {
+	.rocket-zone.rocket-contains-additional {
+		width: calc(100% - 20rem);
+		> .rocket-additional {
+			position: fixed;
+			top: 8.325rem;
+			bottom: 4.5rem;
+			right: 1rem;
+			width: 19rem;
+		}
+	}
 }
 
 .rocket-layer {

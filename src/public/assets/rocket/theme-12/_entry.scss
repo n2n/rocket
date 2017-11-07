@@ -1,7 +1,7 @@
 @include media-breakpoint-up(md) {
     .rocket-field {
         clear: both;
-        margin-bottom: 1rem;
+        padding: 1rem 1.5rem;
 
         > label {
             width: 15rem;
@@ -29,7 +29,6 @@
     > .rocket-control {
         background: white;
         margin: 0;
-        padding: 2rem;
     }
     > .rocket-group-toolbar {
         position: absolute;
@@ -37,7 +36,6 @@
         right: 0;
     }
 }
-
 
 /*
  * embeded
@@ -53,7 +51,6 @@
     border: 1px solid $gray-500;
     background-color: white;
     margin-bottom: 1rem;
-    padding: 1rem;
     > .rocket-impl-summary {
         display: grid;
         grid-template-columns: 2.5rem auto 100px;
