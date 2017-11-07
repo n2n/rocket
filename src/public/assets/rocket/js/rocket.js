@@ -1162,15 +1162,13 @@ var Rocket;
             constructor(jLink) {
                 this.jLink = jLink;
                 this._observing = false;
-                alert("huii");
             }
             observe() {
                 if (this._observing)
                     return;
                 this._observing = true;
                 this.jLink.onDirective((directivePromise) => {
-                    alert("wut");
-                    $(this.jLink.element).find("i").attr("class", "fa fa-minus-circle");
+                    $(this.jLink.element).find("i").attr("class", "fa fa-circle-o-notch fa-spin");
                 });
             }
         }
