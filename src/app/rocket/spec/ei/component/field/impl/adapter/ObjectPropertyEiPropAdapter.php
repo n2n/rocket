@@ -25,7 +25,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
-abstract class ConfObjectPropertyEiPropAdapter extends ConfEntityPropertyEiPropAdapter implements ConfObjectPropertyEiProp {
+abstract class ObjectPropertyEiPropAdapter extends EntityPropertyEiPropAdapter implements ObjectPropertyConfigurable {
 	protected $objectPropertyAccessProxy;
 	protected $objectPropertyRequired = true;
 	
@@ -50,50 +50,22 @@ abstract class ConfObjectPropertyEiPropAdapter extends ConfEntityPropertyEiPropA
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiPropAdapter::createEiConfigurator()
+	 * @see \rocket\spec\ei\component\field\impl\adapter\EntityPropertyEiPropAdapter::createEiConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerConfObjectPropertyEiProp($this);
+		$eiPropConfigurator->registerObjectPropertyConfigurable($this);
 		return $eiPropConfigurator;
 	}
-	
-// 	public function isPropertyCompatible(PropertyAccessProxy $propertyAccessProxy) {
-// 		$constraints = $propertyAccessProxy->getConstraints();
-// 		return $constraints === null || $constraints->isPassableBy($this->entityProperty->getAccessProxy()->getConstraint());
-// 	}
 	
 	public function getPropertyName(): string {
 		return $this->objectPropertyAccessProxy->getPropertyName();
 	}
 	
-// 	public function setup(SetupProcess $setupProcess) {
-// 		parent::setup($setupProcess);
-// 		try {
-// 			$entityPropertyConstraints = $this->entityProperty->getAccessProxy()->getConstraint();
-// 			$currentPropertyConstraints = $this->propertyAccessProxy->getConstraints();
-			
-// 			$propertyConstraints = new TypeConstraint($entityPropertyConstraints->getParamClass(),
-// 					$entityPropertyConstraints->isArray(), $entityPropertyConstraints->isArrayObject(),
-// 					!isset($currentPropertyConstraints) || $currentPropertyConstraints->allowsNull());
-	
-// 			$this->propertyAccessProxy->setConstraints($propertyConstraints);
-// 		} catch (ConstraintsConflictException $e) {
-// 			$setupProcess->failedE($this, $e);
-// 		}
-// 	}
-	
-	public function checkCompatibility(CompatibilityTest $compatibilityTest) {
-		parent::checkCompatibility($compatibilityTest);
+// 	public function checkCompatibility(CompatibilityTest $compatibilityTest) {
+// 		parent::checkCompatibility($compatibilityTest);
 		
-		if ($compatibilityTest->hasFailed()) return;
-		// @todo rewrite compatibility test
-// 		$propertyConstraints = $compatibilityTest->getPropertyAccessProxy()->getConstraint();
-// 		$entityPropertyContraints = $compatibilityTest->getEntityProperty()->getAccessProxy()->getConstraint();
-// 		if ($propertyConstraints !== null && !$propertyConstraints->isPassableBy($entityPropertyContraints, true)) {
-// 			$compatibilityTest->propertyTestFailed('EiProp can not pass Type ' . $entityPropertyContraints->__toString() 
-// 					. ' to property due to incompatible TypeConstraint ' . $propertyConstraints->__toString());
-// 		}
-	}
+// 		if ($compatibilityTest->hasFailed()) return;
+// 	}
 }

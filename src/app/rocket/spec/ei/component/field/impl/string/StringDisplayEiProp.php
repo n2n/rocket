@@ -41,10 +41,10 @@ use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
-use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiProp;
+use rocket\spec\ei\component\field\impl\adapter\ObjectPropertyConfigurable;
 use n2n\reflection\ArgUtils;
 
-class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObjectPropertyEiProp, GuiEiProp, GuiProp, 
+class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
 	private $accessProxy;
 	private $displayDefinition;
@@ -63,7 +63,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ConfObject
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
 		$eiPropConfigurator->registerDisplayDefinition($this->displayDefinition);
-		$eiPropConfigurator->registerConfObjectPropertyEiProp($this);
+		$eiPropConfigurator->registerObjectPropertyConfigurable($this);
 		return $eiPropConfigurator;
 	}
 	

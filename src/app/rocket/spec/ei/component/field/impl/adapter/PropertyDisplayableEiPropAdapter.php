@@ -21,17 +21,22 @@
  */
 namespace rocket\spec\ei\component\field\impl\adapter;
 
+use rocket\spec\ei\manage\mapping\impl\Readable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\gui\GuiProp;
+use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\component\field\GuiEiProp;
+use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
+abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
+		FieldEiProp, GuiEiProp, GuiProp, Readable {
 	protected $displayDefinition;
 	
 	public function __construct() {
@@ -53,6 +58,41 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return $eiPropConfigurator;
 	}
 	
+	public function isEiField(): bool {
+		return true;
+	}
+	
+	public function buildEiField(Eiu $eiu) {
+		return new SimpleEiField($eiu->entry()->getEiObject(), 
+				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
+				$this);
+	}
+	
+	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
+		return null;
+	}
+	
+// 	public function isEiEntryFilterable(): bool {
+// 		return false;
+// 	}
+	
+// 	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
+// 		throw new IllegalStateException('EiProp cannot provide an EiEntryFilterField: ' . $this);
+// 	}
+	
+// 	public function getTypeConstraint() {
+// 		$typeConstraint = $this->getPropertyAccessProxy()->getConstraint();
+// 		if ($typeConstraint === null) return null;
+// 		return $typeConstraint->getLenientCopy();
+// 	}
+	
+	public function read(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
+			return $eiObject->getDraft()->getDraftValueMap()->getValue($this);
+		}
+		
+		return $this->getObjectPropertyAccessProxy()->getValue($eiObject->getEiEntityObj()->getEntityObj());
+	}
 	
 	public function getGuiProp() {
 		return $this;
@@ -87,6 +127,6 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	}
 	
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not string representable.');
+		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not summarizable.');
 	}
 }

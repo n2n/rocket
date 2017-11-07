@@ -25,7 +25,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 
-abstract class ConfEntityPropertyEiPropAdapter extends IndependentEiPropAdapter implements ConfEntityPropertyEiProp {
+abstract class EntityPropertyEiPropAdapter extends IndependentEiPropAdapter implements EntityPropertyConfigurable {
 	protected $entityProperty;
 	protected $entityPropertyRequired = true;
 	
@@ -46,7 +46,7 @@ abstract class ConfEntityPropertyEiPropAdapter extends IndependentEiPropAdapter 
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiProp::getEntityProperty()
+	 * @see \rocket\spec\ei\component\field\impl\adapter\EntityPropertyConfigurable::getEntityProperty()
 	 */
 	public function getEntityProperty(bool $required = false) {
 		if ($this->entityProperty === null && $required) {
@@ -59,7 +59,7 @@ abstract class ConfEntityPropertyEiPropAdapter extends IndependentEiPropAdapter 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerConfEntityPropertyEiProp($this);
+		$eiPropConfigurator->registerEntityPropertyConfigurable($this);
 		return $eiPropConfigurator;
 	}
 	

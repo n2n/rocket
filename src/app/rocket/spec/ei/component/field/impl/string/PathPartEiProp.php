@@ -59,7 +59,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\impl\EditableEiPropAdapter::createEiConfigurator()
+	 * @see \rocket\spec\ei\component\field\impl\PropertyEditableEiPropAdapter::createEiConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new PathPartEiPropConfigurator($this);

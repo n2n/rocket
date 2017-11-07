@@ -92,7 +92,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		}
 		
 		$dtc = $eiu->dtc('rocket');
-		$eiuControlFactory = $eiu->frame()->controlFactory($view);
+		$eiuControlFactory = $eiu->frame()->controlFactory($view, $this);
 		
 		$controlButton = new ControlButton(
 				$dtc->t('ei_impl_detail_label'),

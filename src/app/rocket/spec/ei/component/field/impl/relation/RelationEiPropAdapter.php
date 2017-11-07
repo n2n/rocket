@@ -33,10 +33,10 @@ use rocket\spec\ei\component\field\impl\relation\conf\RelationEiPropConfigurator
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
-use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiPropAdapter;
+use rocket\spec\ei\component\field\impl\adapter\ObjectPropertyEiPropAdapter;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
-abstract class RelationEiPropAdapter extends ConfObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
+abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
 		FieldEiProp, Readable, Writable, Copyable {
 	/**
 	 * @var EiPropRelation

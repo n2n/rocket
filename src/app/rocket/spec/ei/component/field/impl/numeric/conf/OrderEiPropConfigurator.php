@@ -31,7 +31,7 @@ use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use rocket\spec\ei\component\field\impl\numeric\component\OrderEiCommand;
 use rocket\spec\ei\component\field\impl\numeric\component\OrderEiModificator;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiProp;
+use rocket\spec\ei\component\field\impl\adapter\EntityPropertyConfigurable;
 
 class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 
@@ -93,7 +93,7 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 	private function generateReferenceEnumMags() {
 		$referenceFields = array();
 		foreach ($this->eiComponent->getEiType()->getEiPropCollection()->combineAll() as $eiProp) {
-			if (!($eiProp instanceof ConfEntityPropertyEiProp)) continue;
+			if (!($eiProp instanceof EntityPropertyConfigurable)) continue;
 			$referenceFields[$eiProp->getId()] = $eiProp->getLabelCode();
 		}
 		return $referenceFields;

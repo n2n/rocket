@@ -22,9 +22,8 @@
 namespace rocket\spec\ei\component\field\impl\adapter;
 
 use n2n\reflection\property\AccessProxy;
-use rocket\spec\ei\component\field\EiProp;
 
-interface ConfObjectPropertyEiProp extends EiProp {
+interface ObjectPropertyConfigurable {
 	
 	/**
 	 * @return string

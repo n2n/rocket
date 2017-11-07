@@ -21,17 +21,20 @@
  */
 namespace rocket\spec\ei\component\field\impl\adapter;
 
-use rocket\spec\ei\component\field\DraftableEiProp;
+use n2n\persistence\orm\property\EntityProperty;
 
-interface ConfDraftableEiProp extends DraftableEiProp {
+interface EntityPropertyConfigurable {
 	
 	/**
-	 * @return bool
+	 * @param bool $required
+	 * @return EntityProperty
+	 * @throws \n2n\util\ex\IllegalStateException
 	 */
-	public function isDraftable(): bool;
+	public function getEntityProperty(bool $required);
 	
 	/**
-	 * @param bool $draftable
+	 * @param EntityProperty $entityProperty
+	 * @throws \InvalidArgumentException
 	 */
-	public function setDraftable(bool $draftable);
+	public function setEntityProperty(EntityProperty $entityProperty = null);
 }

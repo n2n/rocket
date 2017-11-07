@@ -46,7 +46,7 @@ use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
 
-abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessEditable, Writable, 
+abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
 	protected $standardEditDefinition;
 	
@@ -98,7 +98,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	}
 
 	public function write(EiObject $eiObject, $value) {
-		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $value);
+		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getEiEntityObj()->getEntityObj(), $value);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

@@ -77,6 +77,9 @@ class EiEntityObj {
 		$this->id = $this->eiType->extractId($this->entityObj);
 	}
 	
+	/**
+	 * @return mixed
+	 */
 	public function getEntityObj() {
 		return $this->entityObj;
 	}

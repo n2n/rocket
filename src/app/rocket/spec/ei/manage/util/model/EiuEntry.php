@@ -190,6 +190,13 @@ class EiuEntry {
 	}
 	
 	/**
+	 * @return Entity
+	 */
+	public function getEntityObj() {
+		return $this->eiObject->getEiEntityObj()->getEntityObj();
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isLivePersistent() {

@@ -22,11 +22,11 @@
 
 namespace rocket\spec\ei\component\field\impl\enum;
 
-use rocket\spec\ei\component\field\impl\adapter\DisplayableEiPropAdapter;
+use rocket\spec\ei\component\field\impl\adapter\PropertyDisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-class EnumGuiGroupEiProp extends DisplayableEiPropAdapter {
+class EnumGuiGroupEiProp extends PropertyDisplayableEiPropAdapter {
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable::createOutputUiComponent()

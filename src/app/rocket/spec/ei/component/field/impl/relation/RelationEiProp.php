@@ -22,11 +22,11 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
-use rocket\spec\ei\component\field\impl\adapter\ConfEntityPropertyEiProp;
-use rocket\spec\ei\component\field\impl\adapter\ConfObjectPropertyEiProp;
-use rocket\spec\ei\component\field\impl\adapter\ConfDraftableEiProp;
+use rocket\spec\ei\component\field\impl\adapter\EntityPropertyConfigurable;
+use rocket\spec\ei\component\field\impl\adapter\ObjectPropertyConfigurable;
+use rocket\spec\ei\component\field\impl\adapter\DraftConfigurable;
 
-interface RelationEiProp extends ConfEntityPropertyEiProp, ConfObjectPropertyEiProp, ConfDraftableEiProp {
+interface RelationEiProp extends EntityPropertyConfigurable, ObjectPropertyConfigurable, DraftConfigurable {
 	
 	/**
 	 * @return \rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation

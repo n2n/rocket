@@ -39,7 +39,7 @@ use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
-abstract class DraftableEiPropAdapter extends EditableEiPropAdapter implements ConfDraftableEiProp, DraftProperty {
+abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;
 
 	public function isDraftable(): bool {
@@ -74,12 +74,12 @@ abstract class DraftableEiPropAdapter extends EditableEiPropAdapter implements C
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\impl\EditableEiPropAdapter::createEiConfigurator()
+	 * @see \rocket\spec\ei\component\field\impl\PropertyEditableEiPropAdapter::createEiConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerConfDraftableEiProp($this);
+		$eiPropConfigurator->registerDraftConfigurable($this);
 		return $eiPropConfigurator;
 	}
 	

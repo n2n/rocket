@@ -46,6 +46,7 @@ use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\core\N2N;
 use rocket\spec\ei\component\field\GenericEiProp;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
+use n2n\core\config\WebConfig;
 
 class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp {
@@ -77,8 +78,9 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 	}
 
 	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new EnumMag($propertyName, $this->getLabelLstr(), $this->buildN2nLocaleArray(
-				$eiu->frame()->getEiFrame()->getN2nLocale()), null, $this->isMandatory($eiu));
+		return new EnumMag($propertyName, $this->getLabelLstr(), 
+				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
+				null, $this->isMandatory($eiu));
 	}
 	
 	public function saveMagValue(Mag $mag, Eiu $eiu) {
@@ -116,12 +118,19 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 		return $entityProperty instanceof N2nLocaleEntityProperty;
 	}
 	
-	private function buildN2nLocaleArray(N2nLocale $displayN2nLocale) {
-		$n2nLocales = array();
-		foreach (N2N::getAppConfig()->web()->getAllN2nLocales() as $n2nLocale) {
-			$n2nLocales[$n2nLocale->getId()] = $this->generateDisplayNameForN2nLocale($n2nLocale, $displayN2nLocale);
+	/**
+	 * @param WebConfig $webConfig
+	 * @param N2nLocale $displayN2nLocale
+	 * @return N2nLocale[]
+	 */
+	private function buildN2nLocaleOptions(WebConfig $webConfig, N2nLocale $displayN2nLocale) {
+		$options = array();
+		$n2nLocales = $this->definedN2nLocales ?? $webConfig->getAllN2nLocales();
+		
+		foreach ($n2nLocales as $n2nLocale) {
+			$options[$n2nLocale->getId()] = $this->generateDisplayNameForN2nLocale($n2nLocale, $displayN2nLocale);
 		}
-		return $n2nLocales;
+		return $options;
 	}
 	
 	private function generateDisplayNameForN2nLocale(N2nLocale $n2nLocale, $displayN2nLocale = null) {
@@ -142,7 +151,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 	
 	public function buildFilterField(N2nContext $n2nContext) {
 		return new N2nLocaleFilterField(CrIt::p($this->entityProperty), $this->getLabelLstr(), 
-				$this->buildN2nLocaleArray($n2nContext->getN2nLocale()));
+				$this->buildN2nLocaleOptions($n2nContext->lookup(WebConfig::class), $n2nContext->getN2nLocale()));
 	}
 	
 	public function buildEiEntryFilterField(N2nContext $n2nContext) {

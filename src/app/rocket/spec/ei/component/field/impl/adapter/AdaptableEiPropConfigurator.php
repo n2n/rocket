@@ -128,13 +128,13 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	private $confEntityPropertyEiProp;
 	
-	public function registerConfEntityPropertyEiProp(ConfEntityPropertyEiProp $entityPropertyEiProp) {
+	public function registerEntityPropertyConfigurable(EntityPropertyConfigurable $entityPropertyEiProp) {
 		$this->confEntityPropertyEiProp = $entityPropertyEiProp;
 	}
 	
 	private $confObjectPropertyEiProp;
 	
-	public function registerConfObjectPropertyEiProp(ConfObjectPropertyEiProp $confObjectPropertyEiProp) {
+	public function registerObjectPropertyConfigurable(ObjectPropertyConfigurable $confObjectPropertyEiProp) {
 		$this->confObjectPropertyEiProp = $confObjectPropertyEiProp;
 	}
 	
@@ -146,29 +146,31 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->standardEditDefinition = $standardEditDefinition;
 	}
 	
-	public function registerConfDraftableEiProp(ConfDraftableEiProp $confDraftableEiProp) {
+	public function registerDraftConfigurable(DraftConfigurable $confDraftableEiProp) {
 		$this->confDraftableEiProp = $confDraftableEiProp;		
-	}	
+	}
 	
 	public function autoRegister() {
-		if ($this->eiComponent instanceof ConfEntityPropertyEiPropAdapter) {
-			$this->registerConfEntityPropertyEiProp($this->eiComponent);
+		$eiComponent = $this->eiComponent;
+		
+		if ($eiComponent instanceof EntityPropertyConfigurable) {
+			$this->registerEntityPropertyConfigurable($eiComponent);
 		}
 		
-		if ($this->eiComponent instanceof ConfObjectPropertyEiPropAdapter) {
-			$this->registerConfObjectPropertyEiProp($this->eiComponent);
+		if ($eiComponent instanceof ObjectPropertyConfigurable) {
+			$this->registerObjectPropertyConfigurable($eiComponent);
 		}
 		
-		if ($this->eiComponent instanceof DisplayableEiPropAdapter) {
-			$this->registerDisplayDefinition($this->eiComponent->getDisplayDefinition());
+		if ($eiComponent instanceof PropertyDisplayableEiPropAdapter) {
+			$this->registerDisplayDefinition($eiComponent->getDisplayDefinition());
 		}
 		
-		if ($this->eiComponent instanceof EditableEiPropAdapter) {
-			$this->registerStandardEditDefinition($this->eiComponent->getStandardEditDefinition());
+		if ($eiComponent instanceof PropertyEditableEiPropAdapter) {
+			$this->registerStandardEditDefinition($eiComponent->getStandardEditDefinition());
 		}
 		
-		if ($this->eiComponent instanceof ConfDraftableEiProp) {
-			$this->registerConfDraftableEiProp($this->eiComponent);
+		if ($eiComponent instanceof DraftConfigurable) {
+			$this->registerDraftConfigurable($eiComponent);
 		}
 	}
 	
@@ -221,7 +223,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			return $entityProperty->getName();
 		}
 	
-		if (null !== ($accessProxy = $this->getObjectPropertyAccessProxy())) {
+		if (null !== ($accessProxy = $propertyAssignation->getObjectPropertyAccessProxy())) {
 			return $accessProxy->getPropertyName();
 		}
 	

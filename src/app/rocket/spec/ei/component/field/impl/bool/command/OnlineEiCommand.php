@@ -58,7 +58,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	}
 	
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
-		$eiuControlFactory = $eiu->frame()->controlFactory($view);
+		$eiuControlFactory = $eiu->frame()->controlFactory($view, $this);
 		
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();

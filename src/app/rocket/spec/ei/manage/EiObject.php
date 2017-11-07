@@ -26,13 +26,28 @@ use rocket\spec\ei\manage\control\EntryNavPoint;
 
 interface EiObject {
     
+	/**
+	 * @return bool
+	 */
 	public function isNew(): bool;
 	
+	/**
+	 * @return EiEntityObj
+	 */
 	public function getEiEntityObj(): EiEntityObj;
 	
+	/**
+	 * @return bool
+	 */
 	public function isDraft(): bool;
 	
+	/**
+	 * @return Draft
+	 */
 	public function getDraft(): Draft;
 
+	/**
+	 * @return EntryNavPoint
+	 */
 	public function toEntryNavPoint(): EntryNavPoint;
 }
