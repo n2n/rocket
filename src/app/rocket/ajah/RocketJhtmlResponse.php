@@ -6,6 +6,7 @@ use n2n\impl\web\ui\view\json\JsonResponse;
 use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\jhtml\JhtmlRedirect;
+use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 
 class RocketJhtmlResponse extends BufferedPayload {
 	private $jsonResponse;
@@ -38,7 +39,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 		return $this->jsonResponse->toKownPayloadString();
 	}
 
-	const ATTR_EVENTS = 'events';
+	const ATTR_ROCKET_EVENT = 'rocketEvent';
 	const ATTR_MODIFICATIONS = 'modifications';
 
 	const MOD_TYPE_CHANGED = 'changed';
@@ -52,15 +53,12 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
+	public static function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, 
+			JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 
 		if ($ajahEventInfo !== null) {
-			$attrs[self::ATTR_EVENTS] = $ajahEventInfo->toAttrs();
-		}
-
-		if ($jhtmlExec !== null) {
-			$attrs[self::ATTR_EXEC_CONFIG] = $jhtmlExec->toAttrs();
+			$attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
 		}
 
 		return JhtmlRedirect::back($fallbackUrl, $jhtmlExec, $attrs);
@@ -72,11 +70,11 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 */
 	public static function events(JhtmlEventInfo $ajahEventInfo) {
 		return new RocketJhtmlResponse(array(
-				self::ATTR_EVENTS => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
+				self::ATTR_ROCKET_EVENT => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
 	}
 
 	public static function view(HtmlView $htmlView, JhtmlEventInfo $ajahEventInfo = null) {
 		return new JhtmlJsonResponse($htmlView,
-				($ajahEventInfo !== null ? array(self::ATTR_EVENTS => $ajahEventInfo->toAttrs()) : null));
+				($ajahEventInfo !== null ? array(self::ATTR_ROCKET_EVENT => $ajahEventInfo->toAttrs()) : null));
 	}
 }
