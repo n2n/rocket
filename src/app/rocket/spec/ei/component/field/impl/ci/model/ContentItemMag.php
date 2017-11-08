@@ -42,6 +42,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class ContentItemMag extends MagAdapter {
 	private $panelConfigs = array();
@@ -60,9 +61,9 @@ class ContentItemMag extends MagAdapter {
 	 * @param EiFrame $targetReadEiFrame
 	 * @param EiFrame $targetEditEiFrame
 	 */
-	public function __construct(string $propertyName, string $label, array $panelConfigs, 
+	public function __construct(string $label, array $panelConfigs, 
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
-		parent::__construct($propertyName, $label);
+		parent::__construct($label);
 	
 		$this->panelConfigs = $panelConfigs;
 		$this->targetReadEiFrame = $targetReadEiFrame;

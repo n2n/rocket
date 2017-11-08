@@ -43,9 +43,9 @@ class WysiwygOption extends StringMag {
 	*/
 	private $cssConfiguration;
 	
-	public function __construct($propertyName, $label, $default = null, $mandatory = false, $maxlength = null, array $inputAttrs = null, 
+	public function __construct($label, $default = null, $mandatory = false, $maxlength = null, array $inputAttrs = null, 
 			$mode = self::MODE_NORMAL, $bbcode = false, $tableEditing = false, array $linkConfigurations = null, WysiwygCssConfig $cssConfiguration = null) {
-		parent::__construct($propertyName, $label, $default, $mandatory, $maxlength, true, $inputAttrs);
+		parent::__construct($label, $default, $mandatory, $maxlength, true, $inputAttrs);
 		
 		$this->inputAttrs = $inputAttrs;
 		$this->mode = $mode;

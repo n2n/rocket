@@ -33,14 +33,15 @@ use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\bind\BindingErrors;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class TranslationMag extends MagAdapter {
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	private $fieldErrorInfos = array();
 
-	public function __construct($propertyName, $label) {
-		parent::__construct($propertyName, $label);
+	public function __construct($label) {
+		parent::__construct($label);
 	}
 
 	public function createManagedProperty(AccessProxy $accessProxy): ManagedProperty {

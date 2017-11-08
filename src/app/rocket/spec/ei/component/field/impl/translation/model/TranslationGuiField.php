@@ -124,7 +124,7 @@ class TranslationGuiField implements GuiFieldFork {
 			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
 			
 			if ($translationMag === null) {
-				$translationMag = new TranslationMag($guiIdPath->__toString(), $label);
+				$translationMag = new TranslationMag($label);
 			}
 			
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
