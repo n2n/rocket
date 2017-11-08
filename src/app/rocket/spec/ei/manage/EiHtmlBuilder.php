@@ -38,7 +38,8 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
-use n2nutil\bootstrap\mag\BsUiOutfitter;
+use n2n\web\dispatch\mag\UiOutfitter;
+use n2n\web\ui\UiComponent;
 
 class EiHtmlBuilder {
 	private $view;
@@ -47,6 +48,7 @@ class EiHtmlBuilder {
 	private $stack = array();
 	private $state;
 	private $meta;
+	private $uiOutfitter;
 	
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
@@ -59,6 +61,7 @@ class EiHtmlBuilder {
 		}
 		
 		$this->meta = new EiHtmlBuilderMeta($this->state);
+		$this->uiOutfitter = new RocketUiOutfitter();
 	}
 	
 	/**
@@ -221,7 +224,7 @@ class EiHtmlBuilder {
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
 				$this->buildAttrs($guiIdPath, $attrs), $editableInfo->isMandatory());
 	}
-
+	
 	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,
 			array $attrs = null, bool $mandatory = false) {
 		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
@@ -232,8 +235,7 @@ class EiHtmlBuilder {
 
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, 
 				$this->buildContainerAttrs((array) $attrs, false, $mandatory), 
-				new BsUiOutfitter(null, null, $magPropertyPath, array('class' => 'form-control'), 
-						array('class' => 'form-check-input')));
+				$this->uiOutfitter);
 	}
 	
 	
@@ -329,7 +331,7 @@ class EiHtmlBuilder {
 	/**
 	 * 
 	 * @param string $tagName
-	 * @param unknown $displayItem
+	 * @param DisplayItem|string $displayItem
 	 * @param array $attrs
 	 */
 	public function groupOpen(string $tagName, $displayItem, array $attrs = null) {
@@ -339,7 +341,7 @@ class EiHtmlBuilder {
 	/**
 	 * 
 	 * @param string $tagName
-	 * @param unknown $displayItem
+	 * @param DisplayItem|string $displayItem
 	 * @param array $attrs
 	 * @return \n2n\web\ui\UiComponent
 	 */
@@ -348,7 +350,7 @@ class EiHtmlBuilder {
 			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
 		} else {
 			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], 'displayItem');
-			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
+			$attrs = $this->applyGroupTypeAttr($displayItem, (array) $attrs);
 		}
 		$this->state->pushGroup($tagName);
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
@@ -549,5 +551,40 @@ class EiHtmlBuilderState {
 		} else {
 			return end($this->stack);
 		}
+	}
+}
+
+class RocketUiOutfitter implements UiOutfitter {
+	
+	public function __construct() {
+	}
+	
+	/**
+	 * @param string $nature
+	 * @return array
+	 */
+	public function buildAttrs(int $nature): array {
+		$attrs = array();
+		if ($nature & self::NATURE_MAIN_CONTROL) {
+			return ($nature & self::NATURE_CHECK) ? array('class' => 'form-check-input') : array('class' => 'form-control');
+		}
+		
+		if ($nature & self::NATURE_CHECK_LABEL) {
+			return array('class' => 'form-check-label');
+		}
+		
+		if ($nature & self::NATURE_BTN_PRIMARY) {
+			return array('class' => 'btn btn-primary mt-2');
+		}
+		
+		if ($nature & self::NATURE_BTN_SECONDARY) {
+			return array('class' => 'btn btn-secondary');
+		}
+		
+		return $attrs;
+	}
+	
+	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
+		return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html', array('propertyPath' => $propertyPath, 'uiOutfitter' => $this));
 	}
 }
