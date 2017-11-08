@@ -38,6 +38,7 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
+use n2nutil\bootstrap\mag\BsUiOutfitter;
 
 class EiHtmlBuilder {
 	private $view;
@@ -229,8 +230,10 @@ class EiHtmlBuilder {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
 
-		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $this->buildContainerAttrs(
-				(array) $attrs, false, $mandatory));
+		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, 
+				$this->buildContainerAttrs((array) $attrs, false, $mandatory), 
+				new BsUiOutfitter(null, null, $magPropertyPath, array('class' => 'form-control'), 
+						array('class' => 'form-check-input')));
 	}
 	
 	
