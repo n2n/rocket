@@ -72,8 +72,8 @@ class ContentItemEditable implements Editable {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\Editable::createMag($propertyName)
 	 */
-	public function createMag(string $propertyName): Mag {
-		$this->contentItemMag = new ContentItemMag($propertyName, $this->label, $this->panelConfigs,
+	public function createMag(): Mag {
+		$this->contentItemMag = new ContentItemMag($this->label, $this->panelConfigs,
 				$this->targetReadEiFrame, $this->targetEditEiFrame);
 		$this->contentItemMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->contentItemMag->setValue($this->toManyEiField->getValue());

@@ -87,7 +87,7 @@ class RelationFilterGroupMag extends MagAdapter {
 	 * {@inheritDoc}
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField($propertyPath, $view)
 	 */
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		return $view->getImport('\rocket\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
 				array('propertyPath' => $propertyPath,
 						'filterAjahHook' => $this->filterAjahHook));

@@ -51,8 +51,8 @@ class OrderEiProp extends IntegerEiProp {
 		return new SimpleSortField($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new NumericMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
+	public function createMag(Eiu $eiu): Mag {
+		return new NumericMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
 	}
 

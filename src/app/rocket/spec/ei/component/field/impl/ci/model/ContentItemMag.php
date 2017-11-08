@@ -169,7 +169,7 @@ class ContentItemMag extends MagAdapter {
 	 * {@inheritDoc}
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
 	 */
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$ciEiTypeLabels = array();
 		
 		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();

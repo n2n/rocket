@@ -73,8 +73,8 @@ class UrlEiProp extends AlphanumericEiProp {
 // 		return $view->getFormHtmlBuilder()->getInput($propertyPath, array('class' => 'rocket-preview-inpage-component'));
 // 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		$mag = new UrlMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
+	public function createMag(Eiu $eiu): Mag {
+		$mag = new UrlMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength());
 		if (!empty($this->allowedSchemes)) {
 			$mag->setAllowedSchemes($this->allowedSchemes);

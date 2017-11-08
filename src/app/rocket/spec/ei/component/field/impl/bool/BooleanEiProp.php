@@ -92,8 +92,8 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		return new HtmlElement('i', array('class' => 'fa fa-check-empty'), '');
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new BoolMag($propertyName, $this->getLabelLstr(), true);
+	public function createMag(Eiu $eiu): Mag {
+		return new BoolMag($this->getLabelLstr(), true);
 	}
 
 	public function buildManagedFilterField(EiFrame $eiFrame) {

@@ -77,8 +77,8 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
 	}
 
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new EnumMag($propertyName, $this->getLabelLstr(), 
+	public function createMag(Eiu $eiu): Mag {
+		return new EnumMag($this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
 				null, $this->isMandatory($eiu));
 	}

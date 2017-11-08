@@ -73,10 +73,10 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessEditable::createMag($propertyName, $eiu)
+	 * @see \rocket\spec\ei\component\field\impl\adapter\StatelessEditable::createMag($eiu)
 	 */
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		$numericMag = new EiDecimalMag($propertyName, $this->getLabelLstr(), null,
+	public function createMag(Eiu $eiu): Mag {
+		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));
 		$numericMag->setInputPrefix($this->prefix);
@@ -97,7 +97,7 @@ class EiDecimalMag extends NumericMag {
 	}
 	
 
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$input = parent::createUiField($propertyPath, $view);
 	
 		if ($this->inputPrefix === null) return $input;

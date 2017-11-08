@@ -1168,11 +1168,46 @@ var Rocket;
                     return;
                 this._observing = true;
                 this.jLink.onDirective((directivePromise) => {
-                    $(this.jLink.element).find("i").attr("class", "fa fa-circle-o-notch fa-spin");
+                    this.handle(directivePromise);
+                });
+            }
+            handle(directivePromise) {
+                let jqElem = $(this.jLink.element);
+                let iJq = jqElem.find("i");
+                let orgClassAttr = iJq.attr("class");
+                iJq.attr("class", "fa fa-circle-o-notch fa-spin");
+                jqElem.css("cursor", "default");
+                this.jLink.disabled = true;
+                directivePromise.then(directive => {
+                    iJq.attr("class", orgClassAttr);
+                    this.jLink.disabled = false;
+                    let revt = RocketEvent.fromAdditionalData(directive.getAdditionalData());
+                    if (!revt.swapControlHtml)
+                        return;
+                    let jqNewElem = $(revt.swapControlHtml);
+                    jqElem.replaceWith(jqNewElem);
+                    this.jLink.dispose();
+                    this.jLink = Jhtml.Ui.Link.from(jqNewElem.get(0));
+                    this._observing = false;
+                    this.observe();
                 });
             }
         }
         Display.Command = Command;
+        class RocketEvent {
+            constructor() {
+                this.swapControlHtml = null;
+            }
+            static fromAdditionalData(data) {
+                let rocketEvent = new RocketEvent();
+                if (!data || !data.rocketEvent)
+                    return rocketEvent;
+                if (data.rocketEvent.swapControlHtml) {
+                    rocketEvent.swapControlHtml = data.rocketEvent.swapControlHtml;
+                }
+                return rocketEvent;
+            }
+        }
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;

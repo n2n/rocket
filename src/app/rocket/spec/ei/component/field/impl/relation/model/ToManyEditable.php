@@ -85,8 +85,8 @@ class ToManyEditable implements Editable {
 	
 	private $toManyMag;
 	
-	public function createMag(string $propertyName): Mag {
-		$this->toManyMag = new ToManyMag($propertyName, $this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
+	public function createMag(): Mag {
+		$this->toManyMag = new ToManyMag($this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
 				$this->min, $this->max);
 		$this->toManyMag->setValue($this->toManyEiField->getValue());
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);

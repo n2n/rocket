@@ -95,8 +95,8 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 				$this->getDateStyle(), $this->getTimeStyle());
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new DateTimeMag($propertyName, $this->getLabelLstr(), $this->getDateStyle(), $this->getTimeStyle(), null, null, 
+	public function createMag(Eiu $eiu): Mag {
+		return new DateTimeMag($this->getLabelLstr(), $this->getDateStyle(), $this->getTimeStyle(), null, null, 
 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
 						'data-icon-class-name-open' => IconType::ICON_CALENDAR,
 						'class' => 'form-control rocket-date-picker'));

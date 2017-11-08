@@ -51,12 +51,12 @@ class StatelessEditElement extends StatelessDisplayElement implements Editable {
 		return $this;
 	}
 	
-	public function createMag(string $propertyName): Mag {
+	public function createMag(): Mag {
 		if ($this->mag !== null) {
 			throw new IllegalStateException('Option already created.');
 		}
 		
-		$mag = $this->statelessEditable->createMag($propertyName, $this->eiu);
+		$mag = $this->statelessEditable->createMag( $this->eiu);
 		ArgUtils::valTypeReturn($mag, Mag::class, $this->statelessEditable, 'createMag');
 		$this->statelessEditable->loadMagValue($this->eiu, $mag);
 		return $this->mag = $mag;

@@ -205,9 +205,9 @@ class FileEiProp extends DraftableEiPropAdapter {
 		}
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
+	public function createMag(Eiu $eiu): Mag {
 		$allowedExtensions = $this->getAllowedExtensions();
-		return new FileMag($propertyName, $this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
+		return new FileMag($this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
 				$this->isCheckImageMemoryEnabled(), null, 
 				$this->isMandatory($eiu));
 	}

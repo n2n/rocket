@@ -110,7 +110,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return parent::buildEiField($eiu);
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
+	public function createMag(Eiu $eiu): Mag {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($this, $value)) {
@@ -119,11 +119,11 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		}
 		
 		if (empty($this->associatedGuiIdPathMap)) {
-			return new EnumMag($propertyName, $this->getLabelLstr(), $choicesMap, null, 
+			return new EnumMag($this->getLabelLstr(), $choicesMap, null, 
 					$this->isMandatory($eiu));
 		}
 		
-		$enablerMag = new EnumEnablerMag($propertyName, $this->getLabelLstr(), $choicesMap, null, 
+		$enablerMag = new EnumEnablerMag($this->getLabelLstr(), $choicesMap, null, 
 					$this->isMandatory($eiu));
 		
 		$that = $this;

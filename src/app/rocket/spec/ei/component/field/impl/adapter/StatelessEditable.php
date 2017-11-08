@@ -30,7 +30,7 @@ interface StatelessEditable extends StatelessDisplayable {
 	
 	public function isReadOnly(Eiu $eiu): bool;
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag;
+	public function createMag(Eiu $eiu): Mag;
 	
 	public function loadMagValue(Eiu $eiu, Mag $mag);
 	

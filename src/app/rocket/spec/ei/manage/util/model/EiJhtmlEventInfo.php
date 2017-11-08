@@ -83,6 +83,10 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	}
 	
 	public function toAttrs(): array {
+		if ($this->swapControl === null) {
+			return array();
+		}
+		
 		return array(self::ATTR_SWAP_CONTROL_HTML_KEY => $this->swapControl->createUiComponent()
 				->build(new SimpleBuildContext()));	
 	}

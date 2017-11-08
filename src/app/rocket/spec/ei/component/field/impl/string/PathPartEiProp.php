@@ -145,10 +145,10 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		return $attrs;
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
+	public function createMag(Eiu $eiu): Mag {
 		$attrs = $this->buildMagInputAttrs($eiu);
 		
-		return new StringMag($propertyName, $this->getLabelLstr(), null,
+		return new StringMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMaxlength(), false, null, $attrs);
 	}
 	

@@ -64,8 +64,8 @@ class ToOneEditable implements Editable {
 		$this->draftMode = $draftMode;
 	}
 	
-	public function createMag(string $propertyName): Mag {
-		$this->toOneMag = new ToOneMag($propertyName, $this->label, $this->mandatory, $this->targetReadEiFrame,
+	public function createMag(): Mag {
+		$this->toOneMag = new ToOneMag($this->label, $this->mandatory, $this->targetReadEiFrame,
 				$this->targetEditEiFrame);
 	
 		$this->toOneMag->setValue($this->relationEiField->getValue());

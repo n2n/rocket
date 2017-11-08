@@ -38,6 +38,7 @@ use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldContro
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class ToOneMag extends MagAdapter {
 	private $mandatory;
@@ -51,9 +52,9 @@ class ToOneMag extends MagAdapter {
 	
 	private $targetRelationEntry;
 	
-	public function __construct(string $propertyName, string $label, bool $mandatory, EiFrame $targetReadEiFrame,
+	public function __construct(string $label, bool $mandatory, EiFrame $targetReadEiFrame,
 			EiFrame $targetEditEiFrame) {
-		parent::__construct($propertyName, $label);
+		parent::__construct($label);
 	
 		$this->mandatory = $mandatory;
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
@@ -171,7 +172,7 @@ class ToOneMag extends MagAdapter {
 	 * {@inheritDoc}
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
 	 */
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$eiFrame = $this->targetReadUtils->getEiFrame();
 		$targetControllerContext = $eiFrame->getControllerContext();
 		$request = $view->getRequest();

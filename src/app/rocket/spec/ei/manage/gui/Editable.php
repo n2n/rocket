@@ -36,5 +36,5 @@ interface Editable extends Savable {
 	 * @return \n2n\web\dispatch\mag\Mag
 	 * @throws IllegalStateException if Method has already been called.
 	 */
-	public function createMag(string $propertyName): Mag;
+	public function createMag(): Mag;
 }

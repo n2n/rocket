@@ -103,7 +103,7 @@ class RelationSelectorMag extends MagAdapter  {
 	 * {@inheritDoc}
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField($propertyPath, $view)
 	 */
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$selectOverviewToolsUrl = $this->targetSelectUrlCallback->__invoke($view->getHttpContext());
 		
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\selectorMag.html',

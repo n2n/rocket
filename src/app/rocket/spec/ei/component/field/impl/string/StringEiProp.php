@@ -68,8 +68,8 @@ class StringEiProp extends AlphanumericEiProp {
 // 	}
 	
 
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		$mag = new StringMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu), 
+	public function createMag(Eiu $eiu): Mag {
+		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength(), $this->isMultiline(),
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
 		$mag->setAttrs(array('class' => 'rocket-block'));

@@ -52,8 +52,8 @@ class PasswordEiProp extends AlphanumericEiProp {
 		return null;
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new SecretStringMag($propertyName, $this->getLabelCode(), null,
+	public function createMag(Eiu $eiu): Mag {
+		return new SecretStringMag($this->getLabelCode(), null,
 				$eiu->entry()->getEiEntry()->getEiObject()->isNew(), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelCode(), 'class' => 'form-control'));
 	}

@@ -39,6 +39,7 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class ToManyMag extends MagAdapter {
 	private $min;
@@ -56,9 +57,9 @@ class ToManyMag extends MagAdapter {
 	private $targetRelationEntries = array();
 	private $targetEiEntrys = array();
 	
-	public function __construct(string $propertyName, string $label, EiFrame $targetReadEiFrame, 
+	public function __construct(string $label, EiFrame $targetReadEiFrame, 
 			EiFrame $targetEditEiFrame, int $min, int $max = null) {
-		parent::__construct($propertyName, $label);
+		parent::__construct($label);
 	
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
 		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
@@ -235,7 +236,7 @@ class ToManyMag extends MagAdapter {
 	 * {@inheritDoc}
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
 	 */
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\toManyForm.html',
 				array('selectOverviewToolsUrl' => $this->selectOverviewToolsUrl, 
 						'newMappingFormUrl' => $this->newMappingFormUrl, 'propertyPath' => $propertyPath));

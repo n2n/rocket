@@ -26,7 +26,6 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\spec\ei\EiPropPath;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -87,7 +86,7 @@ class GuiFieldAssembler implements Savable {
 		
 		$editable = $guiField->getEditable();
 		ArgUtils::valTypeReturn($editable, 'rocket\spec\ei\manage\gui\Editable', $guiField, 'createEditable');
-		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($editable->createMag($id));
+		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($id, $editable->createMag($id));
 		$this->savables[$id] = $editable;
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));

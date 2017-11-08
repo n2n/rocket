@@ -118,7 +118,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 		return $this->getMin() > 0;
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
+	public function createMag(Eiu $eiu): Mag {
 		return new MultiSelectChoice($this->getLabelCode(), $this->getOptions(), array(), 
 				$this->getMin(), $this->getMax());
 	}

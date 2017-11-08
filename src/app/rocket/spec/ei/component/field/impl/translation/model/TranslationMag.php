@@ -79,7 +79,7 @@ class TranslationMag extends MagAdapter {
 		});
 	}
 
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$basePropertyPath = $propertyPath->reduced(2);
 
 		$propertyPaths = array();

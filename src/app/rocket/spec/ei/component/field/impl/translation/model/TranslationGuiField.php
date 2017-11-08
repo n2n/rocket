@@ -152,7 +152,7 @@ class TranslationGuiField implements GuiFieldFork {
 			return null;
 		}
 		
-		return new ForkMag($propertyName, $this->label, $this->translationForm, $this->n2nLocaleDefs, $this->min);
+		return new ForkMag($this->label, $this->translationForm, $this->n2nLocaleDefs, $this->min);
 	}
 	
 	public function save() {

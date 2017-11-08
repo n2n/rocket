@@ -43,7 +43,7 @@ class ForkMag extends ObjectMagAdapter {
 						null, 'rocket');
 	}
 	
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\forkMag.html', 
 				array('propertyPath' => $propertyPath->ext('dispatchables'), 'localeDefs' => $this->n2nLocaleDefs,
 						'label' => $this->getLabel($view->getN2nLocale())));

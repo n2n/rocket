@@ -140,9 +140,9 @@ class CkeEiProp extends AlphanumericEiProp {
 		return $ckeHtmlBuidler->getIframe($value, $ckeCss, $linkProviders);
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
+	public function createMag(Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
-		return new CkeMag($propertyName, $this->getLabelLstr(), null, $this->isMandatory($eiu),
+		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
 				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
 				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
 	}

@@ -50,6 +50,7 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiEntry;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 	private $orphansAllowed = false;
@@ -235,7 +236,7 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$dispatchable = $this->targetGuiFieldAssembler->getDispatchable();
 		
 		if ($dispatchable !== null) {
-			return new OneToOneForkMag($propertyName, $dispatchable);
+			return new OneToOneForkMag($dispatchable);
 		}
 		
 		return null;
@@ -251,11 +252,15 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 class OneToOneForkMag extends ObjectMagAdapter {
 	private $dispatchable;
 
-	public function __construct($propertyName, Dispatchable $dispatchable) {
-		parent::__construct($propertyName, '', $dispatchable);
+	public function __construct(Dispatchable $dispatchable) {
+		parent::__construct('', $dispatchable);
 	}
 	
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view): UiComponent {
+	/**
+	 * {@inheritDoc}
+	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
+	 */
+	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		return new Raw();
 	}
 }

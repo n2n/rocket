@@ -117,7 +117,7 @@ class WysiwygEiProp extends AlphanumericEiProp {
 // 				$this->obtainCssConfiguration(), array('class' => 'rocket-preview-inpage-component'));
 // 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
+	public function createMag(Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		return new WysiwygOption($propertyName, $this->getLabelLstr(), null,
 				$this->isMandatory($eiu), 

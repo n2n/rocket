@@ -67,8 +67,8 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function createMag(string $propertyName, Eiu $eiu): Mag {
-		return new NumericMag($propertyName, $this->getLabelLstr(), null,
+	public function createMag(Eiu $eiu): Mag {
+		return new NumericMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				0, array('placeholder' => $this->getLabelLstr()));
 	}

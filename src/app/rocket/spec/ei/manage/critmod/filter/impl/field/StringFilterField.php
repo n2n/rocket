@@ -30,7 +30,7 @@ use rocket\core\model\Rocket;
 class StringFilterField extends FilterFieldAdapter {
 	
 	public function createValueMag(string $propertyName, $value): Mag {
-		return new StringMag($propertyName, 'Value', $value);
+		return new StringMag('Value', $value);
 	}
 	
 	protected function getOperators(): array {

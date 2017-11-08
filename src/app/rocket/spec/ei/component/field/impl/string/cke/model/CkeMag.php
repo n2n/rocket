@@ -28,6 +28,7 @@ use n2n\web\ui\UiComponent;
 use rocket\spec\ei\component\field\impl\string\cke\ui\CkeHtmlBuilder;
 use rocket\spec\ei\component\field\impl\string\cke\ui\Cke;
 use n2n\impl\web\dispatch\mag\model\StringMag;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class CkeMag extends StringMag {
 	private $mode;
@@ -36,10 +37,10 @@ class CkeMag extends StringMag {
 	private $ckeLinkProviderLookupIds;
 	private $ckeCssConfigLookupId;
 
-	public function __construct(string $propertyName, $label, $value = null, bool $mandatory = false, 
+	public function __construct($label, $value = null, bool $mandatory = false, 
 			int $maxlength = null, array $inputAttrs = null, string $mode = self::MODE_NORMAL, bool $bbcode = false, 
 			bool $tableEditing = false, array $ckeLinkProviderLookupIds, string $ckeCssConfigLookupId = null) {
-		parent::__construct($propertyName, $label, $value, $mandatory, $maxlength, true, $inputAttrs);
+		parent::__construct($label, $value, $mandatory, $maxlength, true, $inputAttrs);
 		
 		$this->mode = $mode;
 		$this->bbcode = $bbcode;
@@ -53,7 +54,7 @@ class CkeMag extends StringMag {
 		return true;
 	}
 	
-	public function createUiField(PropertyPath $propertyPath, HtmlView $htmlView): UiComponent {
+	public function createUiField(PropertyPath $propertyPath, HtmlView $htmlView, UiOutfitter $uo): UiComponent {
 		/* , $this->bbcode, false, $this->tableEditing, 
 				$this->ckeLinkProviderLookupIds, $this->ckeCssCssConfigLookupId, $this->getInputAttrs()*/
 		
