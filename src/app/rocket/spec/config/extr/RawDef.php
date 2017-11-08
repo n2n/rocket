@@ -37,6 +37,8 @@ class RawDef {
 	const COMMON_EI_MASKS_KEY = 'commonEiMasks';
 	const COMMON_EI_MASK_DRAFTING_ALLOWED_KEY = 'draftingAllowed';
 	
+	const EI_MODIFICATORS_KEY = 'modificators';
+	
 	const OVERVIEW_GUI_FIELD_ORDER_KEY = 'overviewOrder';
 	const BULKY_GUI_FIELD_ORDER_KEY = 'bulkyOrder';
 	const DETAIL_GUI_FIELD_ORDER_KEY = 'detailOrder';
@@ -63,7 +65,6 @@ class RawDef {
 	const EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY = 'previewControllerLookupId';
 	const EI_DEF_FIELDS_KEY = 'fields';
 	const EI_DEF_COMMANDS_KEY = 'commands';
-	const EI_DEF_MODIFICATORS_KEY = 'modificators';
 	const EI_DEF_FILTER_DATA_KEY = 'filterData';
 	const EI_DEF_DEFAULT_SORT_KEY = 'defaultSort';
 
@@ -85,7 +86,37 @@ class RawDef {
 	const SPEC_TYPE_ENTITY = 'entity';
 	const SPEC_TYPE_CUSTOM = 'custom';
 	
+	
+	const ID_EI_TYPE_MASK_DELIMITER = '&';
+	
 	public static function getSpecTypes() {
 		return array(self::SPEC_TYPE_ENTITY, self::SPEC_TYPE_CUSTOM);
+	}
+	
+	public static function extractEiTypeIdFromIdCombination(string $idCombination) {
+		return self::extractIdParts($idCombination)[0];
+	}
+	
+	public static function extractCommonEiMaskIdFromIdCombination(string $idCombination) {
+		$idParts = self::extractIdParts($idCombination);
+		if (count($idParts) === 2) return $idParts[1];
+		
+		return null;
+	}
+	
+	private static function extractIdParts(string $idCombination) {
+		$idParts = explode(self::ID_EI_TYPE_MASK_DELIMITER, $idCombination);
+		
+		if (count($idParts) < 1) {
+			throw new \InvalidArgumentException('Invalid id: ' . $idCombination);
+		}
+		
+		return $idParts;
+	}
+	
+	public static function buildEiTypeMaskId(string $eiTypeId, string $maskId = null) {
+		if (null === $maskId) return $eiTypeId;
+		
+		return $eiTypeId . self::ID_EI_TYPE_MASK_DELIMITER . $maskId;
 	}
 }

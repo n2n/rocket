@@ -39,6 +39,7 @@ class SpecConfigSourceDecorator {
 	private $attributes;
 	private $specExtractions = array();
 	private $commonEiMaskExtractionGroups = array();
+	private $eiModificatorExtractionGroups = array();
 	private $menuItemExtractions = array();
 	
 	public function __construct(WritableConfigSource $configSource, $module) {
@@ -63,6 +64,7 @@ class SpecConfigSourceDecorator {
 		try {
 			$this->specExtractions = $specExtractor->extractSpecs();
 			$this->commonEiMaskExtractionGroups = $specExtractor->extractCommonEiMaskGroups();
+			$this->eiModificatorExtractionGroups = $specExtractor->extractEiModificatorGroups();
 			$this->menuItemExtractions = $specExtractor->extractMenuItems();
 		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
@@ -77,6 +79,7 @@ class SpecConfigSourceDecorator {
 		$this->specRawer = new SpecRawer($this->attributes);
 		$this->specRawer->rawSpecs($this->specExtractions);
 		$this->specRawer->rawCommonEiMasks($this->commonEiMaskExtractionGroups);
+		$this->specRawer->rawEiModificatorExtractionGroups($this->eiModificatorExtractionGroups);
 		$this->specRawer->rawMenuItems($this->menuItemExtractions);
 		
 		$this->configSource->writeArray($this->attributes->toArray());
@@ -91,6 +94,7 @@ class SpecConfigSourceDecorator {
 		
 		$this->specExtractions = array();
 		$this->commonEiMaskExtractionGroups = array();
+		$this->eiModificatorExtractionGroups = array();
 		$this->menuItemExtractions = array();
 	}
 		
@@ -135,6 +139,31 @@ class SpecConfigSourceDecorator {
 		$this->commonEiMaskExtractionGroups[$eiTypeId][] = $commonEiMaskExtraction;
 	}
 	
+	public function getEiModificatorsEiTypeIds() {
+		return array_keys($this->eiModificatorExtractionGroups);
+	}
+	
+	public function getEiModificatorExtractionsByEiTypeId(string $eiTypeId) {
+		if (isset($this->eiModificatorExtractionGroups[$eiTypeId])) {
+			return $this->eiModificatorExtractionGroups[$eiTypeId];
+		}
+
+		return array();
+	}
+	
+	public function setEiModificatorExtractions(string $eiTypeId, array $eiModificatorExtractions) {
+		ArgUtils::valArray($eiModificatorExtractions, EiModificatorExtraction::class);
+		$this->eiModificatorExtractionGroups[$eiTypeId] = $eiModificatorExtractions;
+	}
+	
+	public function addEiModificatorExtraction(string $eiTypeId, EiModificatorExtraction $eiModificatorExtraction) {
+		if (!isset($this->eiModificatorExtractionGroups[$eiTypeId])) {
+			$this->eiModificatorExtractionGroups[$eiTypeId] = array();
+		}
+		
+		$this->eiModificatorExtractionGroups[$eiTypeId][] = $eiModificatorExtraction;
+	}
+	
 	public function containsSpecId($specId) {
 		return isset($this->specExtractions[$specId]);
 	}
@@ -151,6 +180,10 @@ class SpecConfigSourceDecorator {
 	
 	public function containsCommonEiMaskId(string $eiTypeId, string $commonEiMaskId): bool {
 		return isset($this->commonEiMaskExtractionGroups[$eiTypeId][$commonEiMaskId]);
+	}
+	
+	public function containsEiModificatorId(string $eiTypeId, string $eiModificatorId): bool {
+		return isset($this->eiModificatorExtractionGroups[$eiTypeId][$eiModificatorId]);
 	}
 	
 	public function containsMenuItemId(string $menuItemId): bool {

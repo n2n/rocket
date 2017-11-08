@@ -91,13 +91,33 @@ class SpecRawer {
 		$this->attributes->set(RawDef::COMMON_EI_MASKS_KEY, $rawData);
 	}
 	
+	public function rawEiModificatorExtractionGroups(array $eiModificatorExtractionGroups) {
+		$rawData = array();
+		foreach ($eiModificatorExtractionGroups as $eiTypeId => $eiModificatorExtractionGroup) {
+			if (empty($eiModificatorExtractionGroup)) continue;
+			
+			$eiModificatorsRawData = array();
+			foreach ($eiModificatorExtractionGroup as $eiModificatorExtraction) {
+				$idCombination = RawDef::buildEiTypeMaskId($eiModificatorExtraction->getEiTypeId(), 
+						$eiModificatorExtraction->getCommonEiMaskId());
+				if (!isset($rawData[$idCombination])) {
+					$rawData[$idCombination] = array();
+				}
+				
+				$rawData[$idCombination][$eiModificatorExtraction->getId()] = $this->buildEiModificatorExtractionRawData($eiModificatorExtraction);
+			}
+			
+			$rawData[$eiTypeId] = $eiModificatorsRawData;
+		}
+		
+		$this->attributes->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
+	}
+	
 	private function buildCommonEiMaskExtractionRawData(CommonEiMaskExtraction $eiMaskExtraction) {
 		$maskRawData = $this->buildEiDefExtractionRawData($eiMaskExtraction->getEiDefExtraction());
 		
 		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtraction->getDisplayScheme()));
 	}
-	
-	
 
 	private function buildEiDefExtractionRawData(EiDefExtraction $extraction) {
 		$rawData[RawDef::EI_DEF_LABEL_KEY] = $extraction->getLabel();
@@ -134,12 +154,6 @@ class SpecRawer {
 			$rawData[RawDef::EI_DEF_COMMANDS_KEY][$eiComponentExtraction->getId()] 
 					= $this->buildEiComponentExtractionRawData($eiComponentExtraction);
 		}
-	
-		$rawData[RawDef::EI_DEF_MODIFICATORS_KEY] = array();
-		foreach ($extraction->getEiModificatorExtractions() as $eiComponentExtraction) {
-			$rawData[RawDef::EI_DEF_MODIFICATORS_KEY][$eiComponentExtraction->getId()] 
-					= $this->buildEiComponentExtractionRawData($eiComponentExtraction);
-		}
 		
 		return $rawData;
 	}
@@ -168,6 +182,12 @@ class SpecRawer {
 		return array(
 				RawDef::EI_COMPONENT_CLASS_KEY => $extraction->getClassName(),
 				RawDef::EI_COMPONENT_PROPS_KEY => $extraction->getProps());
+	}
+	
+	private function buildEiModificatorExtractionRawData(EiModificatorExtraction $eiModificatorExtraction) {
+		return array(
+				RawDef::EI_COMPONENT_CLASS_KEY => $eiModificatorExtraction->getClassName(),
+				RawDef::EI_COMPONENT_PROPS_KEY => $eiModificatorExtraction->getProps());
 	}
 	
 	private function buildDisplaySchemeRawData(DisplayScheme $guiOrder) {

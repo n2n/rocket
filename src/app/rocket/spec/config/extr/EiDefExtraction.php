@@ -37,7 +37,6 @@ class EiDefExtraction {
 	
 	private $eiPropExtractions = array();
 	private $eiCommandExtractions = array();
-	private $eiModificatorExtractions = array();
 	
 	private $overviewEiCommandId;
 	private $entryDetailEiCommandId;
@@ -145,19 +144,6 @@ class EiDefExtraction {
 	public function setEiCommandExtraction(array $eiCommandExtractions) {
 		ArgUtils::valArray($eiCommandExtractions, EiComponentExtraction::class);
 		$this->eiCommandExtractions = $eiCommandExtractions;
-	}
-	
-	public function getEiModificatorExtractions() {
-		return $this->eiModificatorExtractions;
-	}
-	
-	public function addEiModificatorExtraction(EiComponentExtraction $eiModificatorExtraction) {
-		$this->eiModificatorExtractions[] = $eiModificatorExtraction;
-	}
-	
-	public function setEiModificatorExtraction(array $eiModificatorExtractions) {
-		ArgUtils::valArray($eiModificatorExtractions, EiComponentExtraction::class);
-		$this->eiModificatorExtractions = $eiModificatorExtractions;
 	}
 	
 	public function getOverviewEiCommandId() {

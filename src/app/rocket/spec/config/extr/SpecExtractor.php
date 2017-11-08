@@ -152,16 +152,6 @@ class SpecExtractor {
 				throw $this->createEiComponentException('EiCommand ' . $eiCommandId, $e);
 			}
 		}
-	
-		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_MODIFICATORS_KEY, false, array(), 
-				TypeConstraint::createSimple('array')) as $eiModificatorId => $eiModificatorRawData) {
-			try {
-				$eiDefExtraction->addEiModificatorExtraction($this->createEiComponentExtraction(
-						$eiModificatorId, new Attributes($eiModificatorRawData)));
-			} catch (AttributesException $e) {
-				throw $this->createEiComponentException('EiModificator ' . $eiModificatorId, $e);
-			}
-		}
 
 		$eiDefExtraction->setOverviewEiCommandId($eiDefAttributes->getString(
 				RawDef::EI_DEF_OVERVIEW_COMMAND_ID_KEY, false));	
@@ -175,7 +165,7 @@ class SpecExtractor {
 		
 		if (null !== ($filterData = $eiDefAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null, 
 				TypeConstraint::createSimple('array')))) {
-			$eiDefExtraction->setFilterGroupData(FilterGroupData::createFromArray(new Attributes($filterData)));
+			$eiDefExtraction->setFilterGroupData(FilterGroupData::create(new Attributes($filterData)));
 		}
 		
 		if (null !== ($defaultSortData = $eiDefAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
@@ -204,6 +194,14 @@ class SpecExtractor {
 		return $extraction;
 	}	
 	
+	private function createEiModficatorExtraction(string $eiModificatorId, Attributes $attributes, 
+			string $eiTypeId, string $commonEiMaskId = null) {
+		$extraction = new EiModificatorExtraction($eiModificatorId, $this->moduleNamespace, 
+				$eiTypeId, $commonEiMaskId);
+		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
+		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
+		return $extraction;
+	}	
 	
 	private function createSpecCommonEiMaskException($eiTypeId, \Exception $previous) {
 		throw new InvalidSpecConfigurationException('Spec with id \'' . $eiTypeId 
@@ -212,6 +210,11 @@ class SpecExtractor {
 	
 	private function createCommonEiMaskException($commonEiMaskId, \Exception $previous) {
 		throw new InvalidEiMaskConfigurationException('CommonEiMask with id \'' . $commonEiMaskId
+				. '\' contains invalid configurations.', 0, $previous);
+	}
+	
+	private function createEiModificatorException($eiModificatorId, \Exception $previous) {
+		throw new InvalidEiMaskConfigurationException('EiModificator with id \'' . $eiModificatorId
 				. '\' contains invalid configurations.', 0, $previous);
 	}
 	
@@ -256,6 +259,44 @@ class SpecExtractor {
 		$maskExtraction->setEiDefExtraction($this->createEiDefExtraction($attributes));
 		$maskExtraction->setDisplayScheme($this->createDisplayScheme($attributes));	
 		return $maskExtraction;
+	}
+	
+	public function extractEiModificatorGroups() {
+		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_MODIFICATORS_KEY, false));
+		
+		$eiModificatorGroups = array();
+		foreach ($attributes->getNames() as $idCombination) {
+			try {
+				$eiTypeId = RawDef::extractEiTypeIdFromIdCombination($idCombination);
+				$commonEiMaskId = RawDef::extractCommonEiMaskIdFromIdCombination($idCombination);
+				
+				$eiModificatorsAttributes = new Attributes($attributes->getArray($eiTypeId, false));
+				$eiModificatorGroups[$eiTypeId] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $eiTypeId, $commonEiMaskId);
+			} catch (AttributesException $e) {
+				throw $this->createSpecCommonEiMaskException($eiTypeId, $e);
+			} catch (InvalidConfigurationException $e) {
+				throw $this->createSpecCommonEiMaskException($eiTypeId, $e);
+			}
+		}
+		
+		return $eiModificatorGroups;
+	}
+	
+	public function createEiModificatorExtractions(Attributes $eiModificatorsAttributes, string $eiTypeId, string $eiMaskId = null): array {
+		$commonEiModificators = array();
+		
+		foreach ($eiModificatorsAttributes->getNames() as $commonEiModificatorId) {
+			try {
+				$commonEiModificators[$commonEiModificatorId] = $this->createEiModficatorExtraction($commonEiModificatorId,
+						new Attributes($eiModificatorsAttributes->getArray($commonEiModificatorId)));
+			} catch (InvalidConfigurationException $e) {
+				throw $this->createEiModificatorException($commonEiModificatorId, $e);
+			} catch (AttributesException $e) {
+				throw $this->createEiModificatorException($commonEiModificatorId, $e);
+			}
+		}
+		
+		return $commonEiModificators;
 	}
 	
 	private function createDisplayScheme(Attributes $attributes): DisplayScheme {

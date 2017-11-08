@@ -21,52 +21,66 @@
  */
 namespace rocket\spec\config\extr;
 
-class MenuItemExtraction {
-	
+class EiModificatorExtraction {
 	private $id;
 	private $moduleNamespace;
 	private $specId;
-	private $eiMaskId;
-	private $label;
+	private $commonEiMaskId;
+	private $className;
+	private $props = array();
 	
-	private function __construct(string $id, string $moduleNamespace, string $specId, string $eiMaskId = null) {
+	public function __construct(string $id, string $moduleNamespace, string $specId, string $commonEiMaskId = null) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
 		$this->specId = $specId;
-		$this->eiMaskId = $eiMaskId;
+		$this->commonEiMaskId = $commonEiMaskId;
 	}
 	
-	public function getId(): string {
+	public function getId() {
 		return $this->id;
 	}
+
+	public function setId($id) {
+		$this->id = $id;
+	}
 	
-	public function getModuleNamespace(): string {
+	public function getModuleNamespace() {
 		return $this->moduleNamespace;
 	}
-	
-	public function setModuleNamespace(string $moduleNamespace) {
+
+	public function setModuleNamespace($moduleNamespace) {
 		$this->moduleNamespace = $moduleNamespace;
 	}
-	
-	public function getSpecId(): string  {
+
+	public function getSpecId() {
 		return $this->specId;
 	}
-	
-	public function getEiMaskId() {
-		return $this->eiMaskId;
+
+	public function setSpecId($specId) {
+		$this->specId = $specId;
+	}
+
+	public function getCommonEiMaskId() {
+		return $this->commonEiMaskId;
+	}
+
+	public function setCommonEiMaskId($commonEiMaskId) {
+		$this->commonEiMaskId = $commonEiMaskId;
+	}
+
+	public function getClassName() {
+		return $this->className;
+	}
+
+	public function setClassName($className) {
+		$this->className = $className;
 	}
 	
-	public function getLabel() {
-		return $this->label;
+	public function getProps() {
+		return $this->props;
 	}
-	
-	public function setLabel(string $label = null) {
-		$this->label = $label;
-	}
-	
-	public static function createFromId(string $menuItemId, string $moduleNamespace): MenuItemExtraction {
-		return new MenuItemExtraction($menuItemId, $moduleNamespace, 
-				RawDef::extractEiTypeIdFromIdCombination($menuItemId),
-				RawDef::extractCommonEiMaskIdFromIdCombination($menuItemId));
+
+	public function setProps(array $props) {
+		$this->props = $props;
 	}
 }

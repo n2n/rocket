@@ -85,6 +85,21 @@ class EiTypeFactory {
 			}
 		}
 		$eiMaskCollection->setDefaultId($eiTypeExtraction->getDefaultEiMaskId());
+		
+		$eiModificatorCollection = $eiType->getEiEngine()->getEiModificatorCollection();
+		foreach ($eiTypeExtraction->getEiModificatorExtractions() as $eiModificatorExtraction) {
+			try {
+				$eiMask = null;
+				if (null !== $eiModificatorExtraction->getCommonEiMaskId()) {
+					$eiMask = $eiMaskCollection->getById($eiModificatorExtraction->getCommonEiMaskId());
+				}
+				
+				$eiModificatorCollection->add($this->createEiModificator($eiModificatorExtraction, $eiType, $eiMask));
+			} catch (InvalidConfigurationException $e) {
+				throw $this->createEiTypeException($eiTypeExtraction->getId(),
+						$this->createEiModificatorException($eiModificatorExtraction->getId(), $e));
+			}
+		}
 			
 		return $eiType;
 	}
@@ -132,18 +147,6 @@ class EiTypeFactory {
 				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
-			}
-		}
-		
-		$eiModificatorCollection = $eiEngine->getEiModificatorCollection();
-		foreach ($eiDefExtraction->getEiModificatorExtractions() as $eiComponentExtraction) {
-			try {
-				$eiModificatorCollection->addIndependent(
-						$this->createEiModificator($eiComponentExtraction, $eiType, $eiMask));
-			} catch (TypeNotFoundException $e) {
-				throw $this->createEiModificatorException($eiComponentExtraction->getId(), $e);
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiModificatorException($eiComponentExtraction->getId(), $e);
 			}
 		}
 		
