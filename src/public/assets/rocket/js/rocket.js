@@ -971,6 +971,7 @@ var Rocket;
             createTab(title, prepend = false) {
                 this.setupAdditional();
                 var jqNavItem = $("<li />", {
+                    "class": "nav-item",
                     "text": title
                 });
                 var jqContent = $("<div />", {
@@ -1024,7 +1025,7 @@ var Rocket;
                 this.jqAdditional = $("<div />", {
                     "class": "rocket-additional"
                 });
-                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
+                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav nav nav-tabs" }));
                 this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
                 jqPage.prepend(this.jqAdditional);
             }
