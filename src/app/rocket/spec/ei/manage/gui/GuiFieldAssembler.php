@@ -118,7 +118,7 @@ class GuiFieldAssembler implements Savable {
 		if (!isset($this->forkedPropertyPaths[$id])) {
 			$this->savables[$id] = $forkedGuiField;
 			$this->forkMagWrappers[$id] = $this->getOrCreateDispatchable()->getMagCollection()
-					->addMag($forkedGuiField->buildForkMag($id));
+					->addMag($id, $forkedGuiField->buildForkMag());
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		

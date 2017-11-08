@@ -143,11 +143,15 @@ class TranslationGuiField implements GuiFieldFork {
 		
 		$this->setupTranslationForm();
 				
-		$magInfo = $this->translationForm->registerMag($translationMag);
+		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
 		return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
 	}
 		
-	public function buildForkMag(string $propertyName) {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::buildForkMag()
+	 */
+	public function buildForkMag() {
 		if ($this->translationForm === null) {
 			return null;
 		}

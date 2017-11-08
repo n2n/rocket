@@ -232,7 +232,7 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		return $this->targetGuiFieldAssembler->assembleGuiField($guiIdPath);
 	}
 	
-	public function buildForkMag(string $propertyName) {
+	public function buildForkMag() {
 		$dispatchable = $this->targetGuiFieldAssembler->getDispatchable();
 		
 		if ($dispatchable !== null) {

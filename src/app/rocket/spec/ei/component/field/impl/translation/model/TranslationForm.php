@@ -85,10 +85,10 @@ class TranslationForm implements Dispatchable {
 		$this->translationMagForm = $MagForm;
 	}
 	
-	public function registerMag(TranslationMag $translationOption) {
+	public function registerMag(string $propertyName, TranslationMag $translationMag) {
 		return array(
-				'magWrapper' => $this->translationMagForm->getMagCollection()->addMag($translationOption),
-				'propertyPath' => new PropertyPath(array('translationMagForm', $translationOption->getPropertyName())));
+				'magWrapper' => $this->translationMagForm->getMagCollection()->addMag($propertyName, $translationMag),
+				'propertyPath' => new PropertyPath(array('translationMagForm', $translationMag->getPropertyName())));
 	}
 	
 	private function _mapping(MappingDefinition $md) {

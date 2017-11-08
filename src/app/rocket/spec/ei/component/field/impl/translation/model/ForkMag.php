@@ -25,6 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
 use n2n\web\ui\UiComponent;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class ForkMag extends ObjectMagAdapter {
 	private $n2nLocaleDefs;	

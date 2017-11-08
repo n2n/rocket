@@ -32,8 +32,7 @@ interface GuiFieldFork extends Savable {
 	
 	/**
 	 * Mag for group toolbar
-	 * @param string $propertyName
-	 * @return Mag|null
+	 * @return \n2n\web\dispatch\mag\Mag|null
 	 */
-	public function buildForkMag(string $propertyName); 
+	public function buildForkMag(); 
 }

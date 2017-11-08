@@ -117,7 +117,7 @@ class ContentItemMag extends MagAdapter {
 		foreach ($this->panelConfigs as $panelConfig) {
 			$panelName = $panelConfig->getName();
 			
-			$panelMag = new ToManyMag($panelName, $panelConfig->getLabel(), $this->targetReadEiFrame,
+			$panelMag = new ToManyMag($panelConfig->getLabel(), $this->targetReadEiFrame,
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
 			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
@@ -130,7 +130,7 @@ class ContentItemMag extends MagAdapter {
 				$panelMag->setValue($groupedTargetRelationEntries[$panelName]);
 			}
 			
-			$magCollection->addMag($panelMag);
+			$magCollection->addMag($panelName, $panelMag);
 		}
 		
 		return new MagForm($magCollection);
