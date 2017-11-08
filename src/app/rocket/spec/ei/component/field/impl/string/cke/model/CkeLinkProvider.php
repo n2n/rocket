@@ -42,7 +42,7 @@ interface CkeLinkProvider extends Lookupable {
 	
 	/**
 	 * @return string|Url|null 
-	 * @throws \n2n\web\http\nav\UnavailableUrlException
+	 * @throws \n2n\util\uri\UnavailableUrlException
 	 */
 	public function buildUrl(string $key, View $view, N2nLocale $n2nLocale);
 	

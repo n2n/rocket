@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\ManageState;
 use rocket\core\model\Breadcrumb;
 use n2n\context\Lookupable;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
-use n2n\web\http\Redirect;
+use n2n\web\http\payload\impl\Redirect;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ajah\RocketJhtmlResponse;
 use rocket\spec\ei\manage\EiFrame;

@@ -27,10 +27,12 @@ use n2n\web\ui\Raw;
 use n2n\l10n\N2nLocale;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
-use n2n\web\http\nav\UnavailableLinkException;
 use rocket\spec\ei\component\field\impl\string\cke\CkeEiProp;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeCssConfig;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeUtils;
+use n2n\util\uri\UnavailableUrlException;
+use rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygStyle;
+use n2n\reflection\CastUtils;
 
 class CkeHtmlBuilder {
 
@@ -74,7 +76,7 @@ class CkeHtmlBuilder {
 
 					try {
 						$url = $ckeLinkProvider->buildUrl($query['key'], $that->view, $n2nLocale);
-					} catch (UnavailableLinkException $e) {
+					} catch (UnavailableUrlException $e) {
 						return '';
 					}
 
@@ -185,7 +187,7 @@ class CkeHtmlBuilder {
 	private function prepareAdditionalStyles($additionalStyles) {
 		$encodable = array();
 		foreach ((array) $additionalStyles as $style) {
-			$style instanceof WysiwygStyle;
+			CastUtils::assertTrue($style instanceof WysiwygStyle);
 			$encodable[] = $style->getValueForJsonEncode();
 		}
 		return $encodable;

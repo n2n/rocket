@@ -1,13 +1,13 @@
 <?php
 namespace rocket\ajah;
 
-use n2n\web\http\BufferedResponseObject;
+use n2n\web\http\payload\BufferedPayload;
 use n2n\impl\web\ui\view\json\JsonResponse;
 use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\jhtml\JhtmlRedirect;
 
-class RocketJhtmlResponse extends BufferedResponseObject {
+class RocketJhtmlResponse extends BufferedPayload {
 	private $jsonResponse;
 
 	private function __construct(array $attrs) {
@@ -16,7 +16,7 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\web\http\BufferedResponseObject::getBufferedContents()
+	 * @see \n2n\web\http\payload\BufferedPayload::getBufferedContents()
 	 */
 	public function getBufferedContents(): string {
 		return $this->jsonResponse->getBufferedContents();
@@ -24,7 +24,7 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\web\http\ResponseObject::prepareForResponse()
+	 * @see \n2n\web\http\payload\Payload::prepareForResponse()
 	 */
 	public function prepareForResponse(\n2n\web\http\Response $response) {
 		$this->jsonResponse->prepareForResponse($response);
@@ -32,10 +32,10 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \n2n\web\http\ResponseObject::toKownResponseString()
+	 * @see \n2n\web\http\payload\Payload::toKownPayloadString()
 	 */
-	public function toKownResponseString(): string {
-		return $this->jsonResponse->toKownResponseString();
+	public function toKownPayloadString(): string {
+		return $this->jsonResponse->toKownPayloadString();
 	}
 
 	const ATTR_EVENTS = 'events';
@@ -50,7 +50,7 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 	 * @param string $fallbackUrl
 	 * @param JhtmlEventInfo $ajahEventInfo
 	 * @param JhtmlExec $jhtmlExec
-	 * @return BufferedResponseObject
+	 * @return BufferedPayload
 	 */
 	public static function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
@@ -68,7 +68,7 @@ class RocketJhtmlResponse extends BufferedResponseObject {
 
 	/**
 	 * @param JhtmlEventInfo $ajahEventInfo
-	 * @return BufferedResponseObject
+	 * @return BufferedPayload
 	 */
 	public static function events(JhtmlEventInfo $ajahEventInfo) {
 		return new RocketJhtmlResponse(array(
