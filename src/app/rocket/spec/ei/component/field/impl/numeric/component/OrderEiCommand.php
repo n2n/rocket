@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiProp;
 use rocket\spec\ei\manage\control\EntryControlComponent;
@@ -30,7 +29,6 @@ use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\control\HrefControl;
-use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
@@ -41,24 +39,35 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	
 	private $orderEiProp;
 		
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\impl\EiComponentAdapter::getIdBase()
+	 */
 	public function getIdBase() {
 		return self::ID_BASE;
 	}
 	
-	public function getTypeName(): string {
-		return 'Order';
-	}
-	
+	/**
+	 * @param OrderEiProp $orderEiProp
+	 */
 	public function setOrderEiProp(OrderEiProp $orderEiProp) {
 		$this->orderEiProp = $orderEiProp;
 	}
 		
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\command\EiCommand::lookupController()
+	 */
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = $eiu->lookup(OrderController::class);
 		$controller->setOrderEiProp($this->orderEiProp);
 		return $controller;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryControls()
+	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
@@ -68,8 +77,6 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		
-		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
-		
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
@@ -77,16 +84,18 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))), 
 						new ControlButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'after', $eiEntry->getIdRep())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-order-after-cmd'))));
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'))));
 	}
-	/* (non-PHPdoc)
+
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale): array {

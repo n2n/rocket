@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\ci\model;
 
-use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\l10n\MessageCode;
 use n2n\web\dispatch\map\PropertyPath;

@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\numeric\component;
 
-use n2n\persistence\orm\criteria\Criteria;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiProp;
 use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
@@ -34,11 +33,11 @@ use rocket\spec\ei\manage\util\model\EiuCtrl;
 class OrderController extends ControllerAdapter {	
 	private $orderEiProp;
 	private $utils;
-	private $eiCtrlUtils;
+	private $eiCtrl;
 	
-	private function _init(ManageState $manageState, EiuCtrl $eiCtrlUtils) {
+	private function _init(ManageState $manageState, EiuCtrl $eiCtrl) {
 		$this->utils = new EiuFrame($manageState->peakEiFrame());
-		$this->eiCtrlUtils = $eiCtrlUtils;
+		$this->eiCtrl = $eiCtrl;
 	}
 	
 	public function setOrderEiProp(OrderEiProp $orderEiProp) {
@@ -47,7 +46,7 @@ class OrderController extends ControllerAdapter {
 	}
 	
 	public function doBefore($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
-		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
 		foreach ($idReps->toStringArrayOrReject() as $idRep) {
 			$this->move($idRep, $targetIdRep, true);
@@ -57,7 +56,7 @@ class OrderController extends ControllerAdapter {
 	}
 	
 	public function doAfter($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
-		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
 		foreach (array_reverse($idReps->toStringArrayOrReject()) as $idRep) {
 			$this->move($idRep, $targetIdRep, false);

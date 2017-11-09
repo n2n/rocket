@@ -35,38 +35,63 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class DecimalEiProp extends NumericEiPropAdapter {
 	protected $decimalPlaces = 0;
 	protected $prefix;
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\impl\numeric\NumericEiPropAdapter::createEiPropConfigurator()
+	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new DecimalEiPropConfigurator($this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\impl\numeric\NumericEiPropAdapter::setEntityProperty()
+	 */
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\impl\numeric\NumericEiPropAdapter::setObjectPropertyAccessProxy()
+	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
+	/**
+	 * @return int
+	 */
 	public function getDecimalPlaces() {
 		return $this->decimalPlaces;
 	}
 	
-	public function setDecimalPlaces($decimalPlaces) {
-		$this->decimalPlaces = (int) $decimalPlaces;
+	/**
+	 * @param int $decimalPlaces
+	 */
+	public function setDecimalPlaces(int $decimalPlaces) {
+		$this->decimalPlaces = $decimalPlaces;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getPrefix() {
 		return $this->prefix;
 	}
 	
+	/**
+	 * @param string $prefix
+	 */
 	public function setPrefix(string $prefix = null) {
 		$this->prefix = $prefix;
 	}
@@ -88,15 +113,24 @@ class DecimalEiProp extends NumericEiPropAdapter {
 class EiDecimalMag extends NumericMag {
 	private $inputPrefix;
 	
+	/**
+	 * @return string
+	 */
 	public function getInputPrefix() {
 		return $this->inputPrefix;
 	}
 	
+	/**
+	 * @param string $inputPrefix
+	 */
 	public function setInputPrefix(string $inputPrefix = null) {
 		$this->inputPrefix = $inputPrefix;
 	}
 	
-
+	/**
+	 * {@inheritDoc}
+	 * @see \n2n\impl\web\dispatch\mag\model\NumericMag::createUiField()
+	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$input = parent::createUiField($propertyPath, $view);
 	

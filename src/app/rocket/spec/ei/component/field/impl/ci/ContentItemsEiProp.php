@@ -33,7 +33,6 @@ use rocket\spec\ei\component\field\impl\ci\model\ContentItemEditable;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\EiFrame;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();

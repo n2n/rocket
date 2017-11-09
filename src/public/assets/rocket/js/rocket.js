@@ -1,8 +1,5 @@
 var Rocket;
 (function (Rocket) {
-    Jhtml.ready((elements) => {
-        console.log("ready!!!!");
-    });
     var container;
     var blocker;
     var initializer;
@@ -63,13 +60,6 @@ var Rocket;
             t.scan();
             Jhtml.ready(() => {
                 t.scan();
-            });
-        })();
-        (function () {
-            Jhtml.ready((elements) => {
-                $(elements).find("a.rocket-jhtml").each(function () {
-                    new Rocket.Display.Command(Jhtml.Ui.Link.from(this)).observe();
-                });
             });
         })();
     });
@@ -971,7 +961,6 @@ var Rocket;
             createTab(title, prepend = false) {
                 this.setupAdditional();
                 var jqNavItem = $("<li />", {
-                    "class": "nav-item",
                     "text": title
                 });
                 var jqContent = $("<div />", {
@@ -1025,9 +1014,9 @@ var Rocket;
                 this.jqAdditional = $("<div />", {
                     "class": "rocket-additional"
                 });
-                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav nav nav-tabs" }));
+                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
                 this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
-                jqPage.prepend(this.jqAdditional);
+                jqPage.append(this.jqAdditional);
             }
             setdownAdditional() {
                 if (this.jqAdditional === null)
@@ -1159,56 +1148,82 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
-        class Command {
-            constructor(jLink) {
-                this.jLink = jLink;
-                this._observing = false;
+        let $ = jQuery;
+        class Collection {
+            constructor(elemJq) {
+                this._sortable = false;
+                this.sortableInit = false;
+                this.elemJq = elemJq;
             }
-            observe() {
-                if (this._observing)
-                    return;
-                this._observing = true;
-                this.jLink.onDirective((directivePromise) => {
-                    this.handle(directivePromise);
-                });
+            get jQuery() {
+                return this.elemJq;
             }
-            handle(directivePromise) {
-                let jqElem = $(this.jLink.element);
-                let iJq = jqElem.find("i");
-                let orgClassAttr = iJq.attr("class");
-                iJq.attr("class", "fa fa-circle-o-notch fa-spin");
-                jqElem.css("cursor", "default");
-                this.jLink.disabled = true;
-                directivePromise.then(directive => {
-                    iJq.attr("class", orgClassAttr);
-                    this.jLink.disabled = false;
-                    let revt = RocketEvent.fromAdditionalData(directive.getAdditionalData());
-                    if (!revt.swapControlHtml)
+            findEntries() {
+                return Display.Entry.findAll(this.elemJq, false);
+            }
+            get sortable() {
+                return this._sortable;
+            }
+            set sortable(sortable) {
+                this._sortable = sortable;
+                this.ajustSelectors();
+                if (!this.sortableInit) {
+                    if (!sortable)
                         return;
-                    let jqNewElem = $(revt.swapControlHtml);
-                    jqElem.replaceWith(jqNewElem);
-                    this.jLink.dispose();
-                    this.jLink = Jhtml.Ui.Link.from(jqNewElem.get(0));
-                    this._observing = false;
-                    this.observe();
+                    this.initSortable();
+                    return;
+                }
+                if (sortable) {
+                    this.elemJq.sortable("enable");
+                    this.elemJq.disableSelection();
+                }
+                else {
+                    this.elemJq.sortable("disable");
+                    this.elemJq.enableSelection();
+                }
+            }
+            ajustSelectors() {
+                for (let entry of this.findEntries()) {
+                    if (!entry.selector)
+                        continue;
+                    entry.selector.jQuery.append($("span", { "class": "rocket-handle" }));
+                }
+            }
+            initSortable() {
+                var that = this;
+                let oldIndex = 0;
+                this.elemJq.sortable({
+                    "items": ".rocket-entry",
+                    "handle": ".rocket-handle",
+                    "forcePlaceholderSize": true,
+                    "placeholder": "rocket-entry-placeholder",
+                    "start": function (event, ui) {
+                        let oldIndex = ui.item.index();
+                    },
+                    "update": function (event, ui) {
+                        let newIndex = ui.item.index();
+                    }
                 });
             }
-        }
-        Display.Command = Command;
-        class RocketEvent {
-            constructor() {
-                this.swapControlHtml = null;
+            static from(elemJq, create = true) {
+                var structureElement = elemJq.data("rocketCollection");
+                if (structureElement instanceof Display.StructureElement)
+                    return structureElement;
+                if (!create)
+                    return null;
+                structureElement = new Collection(elemJq);
+                elemJq.addClass("rocket-collection");
+                elemJq.data("rocketCollection", structureElement);
+                return structureElement;
             }
-            static fromAdditionalData(data) {
-                let rocketEvent = new RocketEvent();
-                if (!data || !data.rocketEvent)
-                    return rocketEvent;
-                if (data.rocketEvent.swapControlHtml) {
-                    rocketEvent.swapControlHtml = data.rocketEvent.swapControlHtml;
-                }
-                return rocketEvent;
+            static of(elemJq) {
+                elemJq = elemJq.closest(".rocket-collection");
+                if (elemJq.length == 0)
+                    return null;
+                return Collection.from(elemJq);
             }
         }
+        Display.Collection = Collection;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -2231,6 +2246,20 @@ var Rocket;
         }
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
+var rocket;
+(function (rocket) {
+    var impl;
+    (function (impl) {
+        var order;
+        (function (order) {
+            class InsertAfterCommand {
+                constructor() {
+                }
+            }
+            order.InsertAfterCommand = InsertAfterCommand;
+        })(order = impl.order || (impl.order = {}));
+    })(impl = rocket.impl || (rocket.impl = {}));
+})(rocket || (rocket = {}));
 var Rocket;
 (function (Rocket) {
     var Impl;

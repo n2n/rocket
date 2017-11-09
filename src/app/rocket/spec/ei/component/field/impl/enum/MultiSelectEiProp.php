@@ -37,6 +37,7 @@ use n2n\impl\web\dispatch\mag\model\IntegerOption;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiPropAdapter;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class MultiSelectEiProp extends DraftableEiPropAdapter {
 	const OPTION_OPTIONS = 'options';

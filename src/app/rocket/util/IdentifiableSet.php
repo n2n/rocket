@@ -21,92 +21,110 @@
  */
 namespace rocket\util;
 
-use n2n\util\Set;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\UnsupportedOperationException;
-use n2n\core\NotYetImplementedException;
+use n2n\util\col\Set;
+use n2n\util\ex\NotYetImplementedException;
 
 class IdentifiableSet implements Set, \ArrayAccess {
 	private $values = array();
 	private $genericType;
 	
+	/**
+	 * @param mixed $genericType
+	 */
 	public function __construct($genericType = null) {
 		$this->genericType = $genericType;
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::add()
+	
+	/**
+	 * @param mixed $arg
 	 */
 	public function add($arg) {
 		ArgUtils::valType($arg, $this->genericType);
 		ArgUtils::assertTrue($arg instanceof Identifiable);
 		$this->values[$arg->getId()] = $arg;
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::addAll()
+
+	/**
+	 * @param array $args
+	 * @throws NotYetImplementedException
 	 */
 	public function addAll(array $args) {
 		throw new NotYetImplementedException();
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::remove()
+
+	/**
+	 * @param mixed $arg
 	 */
 	public function remove($arg) {
 		ArgUtils::assertTrue($arg instanceof Identifiable);
 		$this->offsetUnset($id);
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::removeAll()
+
+	/**
+	 * @param array $args
+	 * @throws NotYetImplementedException
 	 */
 	public function removeAll(array $args) {
 		throw new NotYetImplementedException();
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::clear()
+
+	/**
+	 * 
 	 */
 	public function clear() {
 		$this->values = array();
 	}
 
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::contains()
+	/**
+	 * @param mixed $arg
+	 * @return mixed
 	 */
 	public function contains($arg) {
 		ArgUtils::assertTrue($arg instanceof Identifiable);
 		return $this->offsetExists($arg->getId());
 	}
 
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::isEmpty()
+	/**
+	 * @return boolean
 	 */
 	public function isEmpty() {
 		return empty($this->values);
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\util\Set::toArray()
+
+	/**
+	 * @return array
 	 */
 	public function toArray() {
 		return $this->values;
 	}
-	/* (non-PHPdoc)
-	 * @see IteratorAggregate::getIterator()
+
+	/**
+	 * @return \ArrayIterator
 	 */
 	public function getIterator() {
 		return new \ArrayIterator($this->values);	
 	}
-	/* (non-PHPdoc)
-	 * @see Countable::count()
+
+	/**
+	 * @return int
 	 */
 	public function count() {
 		return sizeof($this->values);	
 	}
-	/* (non-PHPdoc)
-	 * @see ArrayAccess::offsetExists()
+
+	/**
+	 * {@inheritDoc}
+	 * @see \ArrayAccess::offsetExists()
 	 */
 	public function offsetExists($offset) {
 		return isset($this->values[$offset]);
 	}
-	/* (non-PHPdoc)
-	 * @see ArrayAccess::offsetGet()
+
+	/**
+	 * {@inheritDoc}
+	 * @see \ArrayAccess::offsetGet()
 	 */
 	public function offsetGet($offset) {
 		if (isset($this->values[$offset])) {
@@ -114,19 +132,26 @@ class IdentifiableSet implements Set, \ArrayAccess {
 		}	
 		return null;
 	}
-	/* (non-PHPdoc)
-	 * @see ArrayAccess::offsetSet()
+
+	/**
+	 * {@inheritDoc}
+	 * @see \ArrayAccess::offsetSet()
 	 */
 	public function offsetSet($offset, $value) {
 		throw new UnsupportedOperationException('use add()');	
 	}
-	/* (non-PHPdoc)
-	 * @see ArrayAccess::offsetUnset()
+
+	/**
+	 * {@inheritDoc}
+	 * @see \ArrayAccess::offsetUnset()
 	 */
 	public function offsetUnset($offset) {
 		unset($this->values[$offset]);
 	}
 	
+	/**
+	 * @return array
+	 */
 	public function getIds() {
 		return array_keys($this->values);
 	}

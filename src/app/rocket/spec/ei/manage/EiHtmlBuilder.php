@@ -71,6 +71,37 @@ class EiHtmlBuilder {
 		return $this->meta;
 	}
 	
+	private $collectionTagName = null;
+	
+	public function collectionOpen(string $tagName, array $attrs = null) {
+		$this->view->out($this->getCollectionOpen($tagName, $attrs));
+	}
+	
+	public function getCollectionOpen(string $tagName, array $attrs = null) {
+		if ($this->collectionTagName !== null) {
+			throw new IllegalStateException('Collection already open');
+		}
+		
+		$this->collectionTagName = $tagName;
+		
+		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+				HtmlUtils::mergeAttrs(['class' => 'rocket-collection'], (array) $attrs)) . '>');
+	}
+	
+	public function collectionClose() {
+		$this->view->out($this->getCollectionClose());
+	}
+	
+	public function getCollectionClose() {
+		if ($this->collectionTagName === null) {
+			throw new IllegalStateException('No collection open');
+		}
+		
+		$raw = new Raw('</' . htmlspecialchars($this->collectionTagName) . '>');
+		$this->collectionTagName = null;
+		return $raw;
+	}
+	
 	public function entryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
 		$this->view->out($this->getEntryOpen($tagName, $eiEntryGuiArg, $attrs));
 	}

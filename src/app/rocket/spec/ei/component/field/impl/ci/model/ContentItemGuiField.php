@@ -29,8 +29,8 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
-use n2n\web\ui\Raw;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use n2n\util\ex\IllegalStateException;
 
 class ContentItemGuiField implements GuiField {
 	private $label;
@@ -43,6 +43,13 @@ class ContentItemGuiField implements GuiField {
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
+	/**
+	 * @param string $label
+	 * @param array $panelConfigs
+	 * @param ToManyEiField $toManyEiField
+	 * @param EiFrame $targetEiFrame
+	 * @param Editable $editable
+	 */
 	public function __construct(string $label, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
@@ -52,10 +59,18 @@ class ContentItemGuiField implements GuiField {
 		$this->editable = $editable;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiField::isReadOnly()
+	 */
 	public function isReadOnly(): bool {
 		return $this->editable === null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
+	 */
 	public function getGroupType() {
 		return DisplayItem::TYPE_SIMPLE;
 	}
@@ -68,19 +83,25 @@ class ContentItemGuiField implements GuiField {
 	}
 	
 	/**
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(): string {
 		return $this->label;
 	}
 
 	/**
-	 * @return array
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
+	 */
 	public function createOutputUiComponent(HtmlView $view) {
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
