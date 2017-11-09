@@ -1,8 +1,9 @@
 var Rocket;
 (function (Rocket) {
-    var container;
-    var blocker;
-    var initializer;
+    let container;
+    let blocker;
+    let initializer;
+    let $ = jQuery;
     jQuery(document).ready(function ($) {
         var jqContainer = $("#rocket-content-container");
         container = new Rocket.Cmd.Container(jqContainer);
@@ -60,6 +61,13 @@ var Rocket;
             t.scan();
             Jhtml.ready(() => {
                 t.scan();
+            });
+        })();
+        (function () {
+            Jhtml.ready((elements) => {
+                $(elements).find("a.rocket-jhtml").each(function () {
+                    new Rocket.Display.Command(Jhtml.Ui.Link.from(this)).observe();
+                });
             });
         })();
     });
@@ -1148,82 +1156,58 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
-        let $ = jQuery;
-        class Collection {
-            constructor(elemJq) {
-                this._sortable = false;
-                this.sortableInit = false;
-                this.elemJq = elemJq;
+        class Command {
+            constructor(jLink) {
+                this._observing = false;
+                this.jLink = jLink;
             }
-            get jQuery() {
-                return this.elemJq;
-            }
-            findEntries() {
-                return Display.Entry.findAll(this.elemJq, false);
-            }
-            get sortable() {
-                return this._sortable;
-            }
-            set sortable(sortable) {
-                this._sortable = sortable;
-                this.ajustSelectors();
-                if (!this.sortableInit) {
-                    if (!sortable)
-                        return;
-                    this.initSortable();
+            observe() {
+                if (this._observing)
                     return;
-                }
-                if (sortable) {
-                    this.elemJq.sortable("enable");
-                    this.elemJq.disableSelection();
-                }
-                else {
-                    this.elemJq.sortable("disable");
-                    this.elemJq.enableSelection();
-                }
-            }
-            ajustSelectors() {
-                for (let entry of this.findEntries()) {
-                    if (!entry.selector)
-                        continue;
-                    entry.selector.jQuery.append($("span", { "class": "rocket-handle" }));
-                }
-            }
-            initSortable() {
-                var that = this;
-                let oldIndex = 0;
-                this.elemJq.sortable({
-                    "items": ".rocket-entry",
-                    "handle": ".rocket-handle",
-                    "forcePlaceholderSize": true,
-                    "placeholder": "rocket-entry-placeholder",
-                    "start": function (event, ui) {
-                        let oldIndex = ui.item.index();
-                    },
-                    "update": function (event, ui) {
-                        let newIndex = ui.item.index();
-                    }
+                this._observing = true;
+                this.jLink.onDirective((directivePromise) => {
+                    this.handle(directivePromise);
                 });
             }
-            static from(elemJq, create = true) {
-                var structureElement = elemJq.data("rocketCollection");
-                if (structureElement instanceof Display.StructureElement)
-                    return structureElement;
-                if (!create)
-                    return null;
-                structureElement = new Collection(elemJq);
-                elemJq.addClass("rocket-collection");
-                elemJq.data("rocketCollection", structureElement);
-                return structureElement;
-            }
-            static of(elemJq) {
-                elemJq = elemJq.closest(".rocket-collection");
-                if (elemJq.length == 0)
-                    return null;
-                return Collection.from(elemJq);
+            handle(directivePromise) {
+                let jqElem = $(this.jLink.element);
+                let iJq = jqElem.find("i");
+                let orgClassAttr = iJq.attr("class");
+                iJq.attr("class", "fa fa-circle-o-notch fa-spin");
+                jqElem.css("cursor", "default");
+                this.jLink.disabled = true;
+                directivePromise.then(directive => {
+                    iJq.attr("class", orgClassAttr);
+                    this.jLink.disabled = false;
+                    let revt = RocketEvent.fromAdditionalData(directive.getAdditionalData());
+                    if (!revt.swapControlHtml)
+                        return;
+                    let jqNewElem = $(revt.swapControlHtml);
+                    jqElem.replaceWith(jqNewElem);
+                    this.jLink.dispose();
+                    this.jLink = Jhtml.Ui.Link.from(jqNewElem.get(0));
+                    this._observing = false;
+                    this.observe();
+                });
             }
         }
-        Display.Collection = Collection;
+        Display.Command = Command;
+        class RocketEvent {
+            constructor() {
+                this.swapControlHtml = null;
+            }
+            static fromAdditionalData(data) {
+                let rocketEvent = new RocketEvent();
+                if (!data || !data.rocketEvent) {
+                    return rocketEvent;
+                }
+                if (data.rocketEvent.swapControlHtml) {
+                    rocketEvent.swapControlHtml = data.rocketEvent.swapControlHtml;
+                }
+                return rocketEvent;
+            }
+        }
+        Display.RocketEvent = RocketEvent;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -2246,20 +2230,6 @@ var Rocket;
         }
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
-var rocket;
-(function (rocket) {
-    var impl;
-    (function (impl) {
-        var order;
-        (function (order) {
-            class InsertAfterCommand {
-                constructor() {
-                }
-            }
-            order.InsertAfterCommand = InsertAfterCommand;
-        })(order = impl.order || (impl.order = {}));
-    })(impl = rocket.impl || (rocket.impl = {}));
-})(rocket || (rocket = {}));
 var Rocket;
 (function (Rocket) {
     var Impl;

@@ -1,7 +1,8 @@
 namespace Rocket {
-	var container: Rocket.Cmd.Container;
-	var blocker: Rocket.Cmd.Blocker;
-	var initializer: Rocket.Display.Initializer;
+	let container: Rocket.Cmd.Container;
+	let blocker: Rocket.Cmd.Blocker;
+	let initializer: Rocket.Display.Initializer;
+	let $ = jQuery;
 	
 	jQuery(document).ready(function ($) {
 		var jqContainer = $("#rocket-content-container");
@@ -77,6 +78,14 @@ namespace Rocket {
 				t.scan();	
 			});
 		}) ();
+		
+        (function () {
+            Jhtml.ready((elements) => {
+                $(elements).find("a.rocket-jhtml").each(function () {
+                    new Rocket.Display.Command(Jhtml.Ui.Link.from(<HTMLAnchorElement> this)).observe();
+                });
+            });
+        })();
 	});
 	
 	export function scan(context: Rocket.Cmd.Zone = null) {
