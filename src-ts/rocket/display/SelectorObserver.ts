@@ -1,10 +1,8 @@
-namespace Rocket.Impl.Overview {
-	import cmd = Rocket.Cmd;
-	import display = Rocket.Display;
-
+namespace Rocket.Display {
+	
 	export interface SelectorObserver {
 		
-		observeEntrySelector(entrySelector: display.EntrySelector): void;
+		observeEntrySelector(entrySelector: EntrySelector): void;
 		
 		getSelectedIds(): Array<string>;
 	}
@@ -12,13 +10,13 @@ namespace Rocket.Impl.Overview {
 	export class MultiEntrySelectorObserver implements SelectorObserver {
 		private selectedIds: Array<string>;
 		private identityStrings: { [key: string]: string } = {};
-		private selectors: { [key: string]: display.EntrySelector } = {};
+		private selectors: { [key: string]: EntrySelector } = {};
 		
 		constructor(private originalIdReps: Array<string> = new Array<string>()) {
 			this.selectedIds = originalIdReps;
 		}
 		
-		observeEntrySelector(selector: display.EntrySelector) {
+		observeEntrySelector(selector: EntrySelector) {
 			var that = this;
 			
 			var jqCheck = $("<input />", { "type": "checkbox" });
@@ -39,10 +37,10 @@ namespace Rocket.Impl.Overview {
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
 			
-			entry.on(display.Entry.EventType.DISPOSED, function () {
+			entry.on(Entry.EventType.DISPOSED, function () {
 				delete that.selectors[id];
 			});
-			entry.on(display.Entry.EventType.REMOVED, function () {
+			entry.on(Entry.EventType.REMOVED, function () {
 				that.chSelect(false, id);
 			});
 		}
@@ -77,7 +75,7 @@ namespace Rocket.Impl.Overview {
 			return null;
 		}
 		
-		getSelectorById(id: string): display.EntrySelector {
+		getSelectorById(id: string): EntrySelector {
 			if (this.selectors[id] !== undefined) {
 				return this.selectors[id];
 			}
@@ -100,13 +98,13 @@ namespace Rocket.Impl.Overview {
 	export class SingleEntrySelectorObserver implements SelectorObserver {
 		private selectedId: string = null;
 		private identityStrings: { [key: string]: string } = {};
-		private selectors: { [key: string]: display.EntrySelector } = {};
+		private selectors: { [key: string]: EntrySelector } = {};
 		
 		constructor(private originalId: string = null) {
 			this.selectedId = originalId;
 		}
 		
-		observeEntrySelector(selector: display.EntrySelector) {
+		observeEntrySelector(selector: EntrySelector) {
 			var that = this;
 			
 			var jqCheck = $("<input />", { "type": "radio" });
@@ -127,10 +125,10 @@ namespace Rocket.Impl.Overview {
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
 			
-			entry.on(display.Entry.EventType.DISPOSED, () => {
+			entry.on(Entry.EventType.DISPOSED, () => {
 				delete this.selectors[id];
 			});
-			entry.on(display.Entry.EventType.REMOVED, function () {
+			entry.on(Entry.EventType.REMOVED, function () {
 				this.chSelect(false, id);
 			});
 		}
@@ -166,7 +164,7 @@ namespace Rocket.Impl.Overview {
 			return null;
 		}
 		
-		getSelectorById(id: string): display.EntrySelector {
+		getSelectorById(id: string): EntrySelector {
 			if (this.selectors[id] !== undefined) {
 				return this.selectors[id];
 			}

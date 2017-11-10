@@ -327,7 +327,7 @@ namespace Rocket.Impl.Overview {
 			
 			if (this.scrollToPage(this.currentPageNo, pageNo)) {
 				this.setCurrentPageNo(pageNo);
-				return;	
+				return;
 			}
 			
 			this.showSingle(pageNo);
