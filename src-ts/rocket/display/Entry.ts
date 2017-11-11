@@ -108,20 +108,23 @@ namespace Rocket.Display {
 			return this._selector;	
 		}
 		
-		private static from(jqElem: JQuery): Entry {
-			var entry = jqElem.data("rocketEntry");
+		static readonly CSS_CLASS = "rocket-entry";
+		
+		private static from(elemJq: JQuery): Entry {
+			var entry = elemJq.data("rocketEntry");
 			if (entry instanceof Entry) {
 				return entry;
 			}
 			
-			entry = new Entry(jqElem); 
-			jqElem.data("rocketEntry", entry);
+			entry = new Entry(elemJq); 
+			elemJq.data("rocketEntry", entry);
+			elemJq.addClass(Entry.CSS_CLASS);
 			
 			return entry;
 		}
 		
-		static findFrom(jqElem: JQuery): Entry {
-			var jqElem = jqElem.closest(".rocket-entry");
+		static of(jqElem: JQuery): Entry {
+			var jqElem = jqElem.closest("." + Entry.CSS_CLASS);
 			
 			if (jqElem.length == 0) return null;
 			
@@ -131,9 +134,9 @@ namespace Rocket.Display {
 		static findAll(jqElem: JQuery, includeSelf: boolean = false): Array<Entry> {
 			var entries = new Array<Entry>();
 			
-			var jqEntries = jqElem.find(".rocket-entry");
+			var jqEntries = jqElem.find("." + Entry.CSS_CLASS);
 			
-			jqEntries = jqEntries.add(jqElem.filter(".rocket-entry"));
+			jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
 			
 			jqEntries.each(function () {
 				entries.push(Entry.from($(this)));

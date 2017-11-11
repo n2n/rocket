@@ -8,9 +8,22 @@ namespace Rocket.Display {
 		}
 		
 		scan() {
+		    let curEntries = this.entries;
 			for (let entry of Entry.findAll(this.elemJq, false)) {
+				if (this.entryMap[entry.id] && this.entryMap[entry.id] === entry) {
+				    continue;
+				}
 				
+				this.registerEntry(entry);
 			}
+		}
+		
+		private registerEntry(entry: Entry) {
+		    this.entryMap[entry.id] = entry;
+		    
+		    if (this.selectorObserver && entry.selector) {
+		        this.selectorObserver.observeEntrySelector(entry.selector);
+		    }
 		}
 		
 		setupSelector(selectorObserver: SelectorObserver) {
@@ -49,6 +62,11 @@ namespace Rocket.Display {
 			
 			return entries;
 		}
+		
+
+        
+        
+        
 		
 		static from(jqElem: JQuery, create: boolean = false): Collection {
 			var collection = jqElem.data("rocketCollection");
