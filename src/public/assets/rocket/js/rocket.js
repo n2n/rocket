@@ -1156,6 +1156,126 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
+        class Collection {
+            constructor(elemJq) {
+                this.elemJq = elemJq;
+                this.entryMap = {};
+                this._sortable = false;
+            }
+            scan() {
+                let curEntries = this.entries;
+                for (let entry of Display.Entry.findAll(this.elemJq, false)) {
+                    if (this.entryMap[entry.id] && this.entryMap[entry.id] === entry) {
+                        continue;
+                    }
+                    this.registerEntry(entry);
+                }
+            }
+            registerEntry(entry) {
+                this.entryMap[entry.id] = entry;
+                if (this.selectorObserver && entry.selector) {
+                    this.selectorObserver.observeEntrySelector(entry.selector);
+                }
+                if (this.sortable && entry.selector) {
+                    this.applyHandle(entry.selector);
+                }
+                var onFunc = () => {
+                    if (this.entryMap[entry.id] !== entry)
+                        return;
+                    delete this.entryMap[entry.id];
+                };
+                entry.on(Display.Entry.EventType.DISPOSED, onFunc);
+                entry.on(Display.Entry.EventType.REMOVED, onFunc);
+            }
+            setupSelector(selectorObserver) {
+                this.selectorObserver = selectorObserver;
+                for (let entry of this.entries) {
+                    if (!entry.selector)
+                        continue;
+                    selectorObserver.observeEntrySelector(entry.selector);
+                }
+            }
+            get selectedIds() {
+                if (!this.selectorObserver)
+                    return [];
+                return this.selectorObserver.getSelectedIds();
+            }
+            get selectable() {
+                return !!this.selectorObserver;
+            }
+            get jQuery() {
+                return this.elemJq;
+            }
+            containsEntryId(id) {
+                return this.entryMap[id] !== undefined;
+            }
+            get entries() {
+                var OC = Object;
+                return OC.values(this.entryMap);
+            }
+            get selectedEntries() {
+                var entries = new Array();
+                for (let entry of this.entries) {
+                    if (!entry.selector || !entry.selector.selected)
+                        continue;
+                    entries.push(entry);
+                }
+                return entries;
+            }
+            setupSortable() {
+                if (this._sortable)
+                    return;
+                this._sortable = true;
+                this.elemJq.sortable({
+                    "handle": ".rocket-handle",
+                    "forcePlaceholderSize": true,
+                    "placeholder": "rocket-entry-placeholder",
+                    "start": function (event, ui) {
+                    },
+                    "update": function (event, ui) {
+                    }
+                });
+                for (let entry of this.entries) {
+                    if (!entry.selector)
+                        continue;
+                    this.applyHandle(entry.selector);
+                }
+            }
+            get sortable() {
+                return this._sortable;
+            }
+            applyHandle(selector) {
+                selector.jQuery.append($("<div />", { "class": "rocket-handle" })
+                    .append($("<i></i>", { "class": "fa fa-bars" })));
+            }
+            enabledSortable() {
+                this._sortable = true;
+                this.elemJq.sortable("enable");
+                this.elemJq.disableSelection();
+            }
+            disableSortable() {
+                this._sortable = false;
+                this.elemJq.sortable("disable");
+                this.elemJq.enableSelection();
+            }
+            static from(jqElem, create = false) {
+                var collection = jqElem.data("rocketCollection");
+                if (collection instanceof Collection)
+                    return collection;
+                if (!create)
+                    return null;
+                collection = new Collection(jqElem);
+                jqElem.data("rocketCollection", collection);
+                return collection;
+            }
+        }
+        Display.Collection = Collection;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         class Command {
             constructor(jLink) {
                 this._observing = false;
@@ -1300,31 +1420,33 @@ var Rocket;
             get selector() {
                 return this._selector;
             }
-            static from(jqElem) {
-                var entry = jqElem.data("rocketEntry");
+            static from(elemJq) {
+                var entry = elemJq.data("rocketEntry");
                 if (entry instanceof Entry) {
                     return entry;
                 }
-                entry = new Entry(jqElem);
-                jqElem.data("rocketEntry", entry);
+                entry = new Entry(elemJq);
+                elemJq.data("rocketEntry", entry);
+                elemJq.addClass(Entry.CSS_CLASS);
                 return entry;
             }
-            static findFrom(jqElem) {
-                var jqElem = jqElem.closest(".rocket-entry");
+            static of(jqElem) {
+                var jqElem = jqElem.closest("." + Entry.CSS_CLASS);
                 if (jqElem.length == 0)
                     return null;
                 return Entry.from(jqElem);
             }
             static findAll(jqElem, includeSelf = false) {
                 var entries = new Array();
-                var jqEntries = jqElem.find(".rocket-entry");
-                jqEntries = jqEntries.add(jqElem.filter(".rocket-entry"));
+                var jqEntries = jqElem.find("." + Entry.CSS_CLASS);
+                jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
                 jqEntries.each(function () {
                     entries.push(Entry.from($(this)));
                 });
                 return entries;
             }
         }
+        Entry.CSS_CLASS = "rocket-entry";
         Display.Entry = Entry;
         (function (Entry) {
             let State;
@@ -1624,6 +1746,157 @@ var Rocket;
                 });
             }
         }
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class MultiEntrySelectorObserver {
+            constructor(originalIdReps = new Array()) {
+                this.originalIdReps = originalIdReps;
+                this.identityStrings = {};
+                this.selectors = {};
+                this.selectedIds = originalIdReps;
+            }
+            observeEntrySelector(selector) {
+                var that = this;
+                var jqCheck = $("<input />", { "type": "checkbox" });
+                selector.jQuery.empty();
+                selector.jQuery.append(jqCheck);
+                jqCheck.change(function () {
+                    selector.selected = jqCheck.is(":checked");
+                });
+                selector.whenChanged(function () {
+                    jqCheck.prop("checked", selector.selected);
+                    that.chSelect(selector.selected, selector.entry.id);
+                });
+                var entry = selector.entry;
+                var id = entry.id;
+                selector.selected = this.containsSelectedId(id);
+                this.selectors[id] = selector;
+                this.identityStrings[id] = entry.identityString;
+                entry.on(Display.Entry.EventType.DISPOSED, function () {
+                    delete that.selectors[id];
+                });
+                entry.on(Display.Entry.EventType.REMOVED, function () {
+                    that.chSelect(false, id);
+                });
+            }
+            containsSelectedId(id) {
+                return -1 < this.selectedIds.indexOf(id);
+            }
+            chSelect(selected, id) {
+                if (selected) {
+                    if (-1 < this.selectedIds.indexOf(id))
+                        return;
+                    this.selectedIds.push(id);
+                    return;
+                }
+                var i;
+                if (-1 < (i = this.selectedIds.indexOf(id))) {
+                    this.selectedIds.splice(i, 1);
+                }
+            }
+            getSelectedIds() {
+                return this.selectedIds;
+            }
+            getIdentityStringById(id) {
+                if (this.identityStrings[id] !== undefined) {
+                    return this.identityStrings[id];
+                }
+                return null;
+            }
+            getSelectorById(id) {
+                if (this.selectors[id] !== undefined) {
+                    return this.selectors[id];
+                }
+                return null;
+            }
+            setSelectedIds(selectedIds) {
+                this.selectedIds = selectedIds;
+                var that = this;
+                for (var id in this.selectors) {
+                    this.selectors[id].selected = that.containsSelectedId(id);
+                }
+            }
+        }
+        Display.MultiEntrySelectorObserver = MultiEntrySelectorObserver;
+        class SingleEntrySelectorObserver {
+            constructor(originalId = null) {
+                this.originalId = originalId;
+                this.selectedId = null;
+                this.identityStrings = {};
+                this.selectors = {};
+                this.selectedId = originalId;
+            }
+            observeEntrySelector(selector) {
+                var that = this;
+                var jqCheck = $("<input />", { "type": "radio" });
+                selector.jQuery.empty();
+                selector.jQuery.append(jqCheck);
+                jqCheck.change(() => {
+                    selector.selected = jqCheck.is(":checked");
+                });
+                selector.whenChanged(() => {
+                    jqCheck.prop("checked", selector.selected);
+                    this.chSelect(selector.selected, selector.entry.id);
+                });
+                var entry = selector.entry;
+                var id = entry.id;
+                selector.selected = this.selectedId === id;
+                this.selectors[id] = selector;
+                this.identityStrings[id] = entry.identityString;
+                entry.on(Display.Entry.EventType.DISPOSED, () => {
+                    delete this.selectors[id];
+                });
+                entry.on(Display.Entry.EventType.REMOVED, function () {
+                    this.chSelect(false, id);
+                });
+            }
+            getSelectedIds() {
+                return [this.selectedId];
+            }
+            chSelect(selected, id) {
+                if (!selected) {
+                    if (this.selectedId === id) {
+                        this.selectedId = null;
+                    }
+                    return;
+                }
+                if (this.selectedId === id)
+                    return;
+                this.selectedId = id;
+                for (let id in this.selectors) {
+                    if (id === this.selectedId)
+                        continue;
+                    this.selectors[id].selected = false;
+                }
+            }
+            getIdentityStringById(id) {
+                if (this.identityStrings[id] !== undefined) {
+                    return this.identityStrings[id];
+                }
+                return null;
+            }
+            getSelectorById(id) {
+                if (this.selectors[id] !== undefined) {
+                    return this.selectors[id];
+                }
+                return null;
+            }
+            setSelectedId(selectedId) {
+                if (this.selectors[selectedId]) {
+                    this.selectors[selectedId].selected = true;
+                    return;
+                }
+                this.selectedId = selectedId;
+                for (let id in this.selectors) {
+                    this.selectors[id].selected = false;
+                }
+            }
+        }
+        Display.SingleEntrySelectorObserver = SingleEntrySelectorObserver;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -2663,16 +2936,16 @@ var Rocket;
             var $ = jQuery;
             class OverviewContent {
                 constructor(jqElem, loadUrl) {
-                    this.jqElem = jqElem;
                     this.loadUrl = loadUrl;
                     this.pages = new Array();
                     this.fakePage = null;
-                    this.selectorState = new SelectorState();
                     this.changedCallbacks = new Array();
                     this._currentPageNo = null;
                     this.allInfo = null;
                     this.loadingPageNos = new Array();
                     this.jqLoader = null;
+                    this.collection = Rocket.Display.Collection.from(jqElem, true);
+                    this.selectorState = new SelectorState(this.collection);
                 }
                 isInit() {
                     return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
@@ -2683,7 +2956,7 @@ var Rocket;
                     this._numPages = numPages;
                     this._numEntries = numEntries;
                     let page = this.createPage(this.currentPageNo);
-                    page.jqContents = this.jqElem.children();
+                    page.jqContents = this.collection.jQuery.children();
                     this.selectorState.observePage(page);
                     if (this.allInfo) {
                         this.allInfo = new AllInfo([page], 0);
@@ -2743,17 +3016,17 @@ var Rocket;
                     this.buildFakePage();
                 }
                 buildFakePage() {
-                    if (!this.selectorState.selectorObserver)
+                    if (!this.collection.selectable)
                         return;
                     if (this.fakePage) {
                         throw new Error("Fake page already existing.");
                     }
                     this.fakePage = new Page(0);
                     this.fakePage.hide();
-                    var idReps = this.selectorState.selectorObserver.getSelectedIds();
+                    var idReps = this.collection.selectedIds;
                     var unloadedIds = idReps.slice();
                     var that = this;
-                    this.selectorState.entries.forEach(function (entry) {
+                    this.collection.entries.forEach(function (entry) {
                         let id = entry.id;
                         let i;
                         if (-1 < (i = unloadedIds.indexOf(id))) {
@@ -2770,15 +3043,16 @@ var Rocket;
                         return;
                     }
                     this.markPageAsLoading(0);
-                    var fakePage = this.fakePage;
-                    Jhtml.Monitor.of(this.jqElem.get(0)).lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
+                    let fakePage = this.fakePage;
+                    Jhtml.Monitor.of(this.collection.jQuery.get(0))
+                        .lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
                         .then((model) => {
                         if (fakePage !== this.fakePage)
                             return;
                         this.unmarkPageAsLoading(0);
-                        var jqContents = $(model.snippet.elements).find(".rocket-overview-content:first").children();
+                        var jqContents = $(model.snippet.elements).find(".rocket-collection:first").children();
                         fakePage.jqContents = jqContents;
-                        this.jqElem.append(jqContents);
+                        this.collection.jQuery.append(jqContents);
                         model.snippet.markAttached();
                         this.selectorState.observeFakePage(fakePage);
                         this.triggerContentChange();
@@ -2827,15 +3101,15 @@ var Rocket;
                     return this._numEntries;
                 }
                 get numSelectedEntries() {
-                    if (!this.selectorState.isActive())
+                    if (!this.collection.selectable)
                         return null;
                     if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
-                        return this.selectorState.selectedEntries.length;
+                        return this.collection.selectedEntries.length;
                     }
-                    return this.selectorState.selectorObserver.getSelectedIds().length;
+                    return this.collection.selectedIds.length;
                 }
                 get selectable() {
-                    return this.selectorState.selectorObserver != null;
+                    return this.collection.selectable;
                 }
                 setCurrentPageNo(currentPageNo) {
                     if (this._currentPageNo == currentPageNo) {
@@ -2886,7 +3160,7 @@ var Rocket;
                         this.selectorState.observePage(page);
                         return;
                     }
-                    this.jqElem.prepend(jqContents);
+                    this.collection.jQuery.prepend(jqContents);
                     this.selectorState.observePage(page);
                 }
                 goTo(pageNo) {
@@ -2977,7 +3251,7 @@ var Rocket;
                     if (this.jqLoader)
                         return;
                     this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
-                        .insertAfter(this.jqElem.parent("table"));
+                        .insertAfter(this.collection.jQuery.parent("table"));
                 }
                 removeLoader() {
                     if (!this.jqLoader)
@@ -2998,7 +3272,7 @@ var Rocket;
                 load(pageNo) {
                     var page = this.createPage(pageNo);
                     this.markPageAsLoading(pageNo);
-                    Jhtml.Monitor.of(this.jqElem.get(0))
+                    Jhtml.Monitor.of(this.collection.jQuery.get(0))
                         .lookupModel(this.loadUrl.extR(null, { "pageNo": pageNo }))
                         .then((model) => {
                         if (page !== this.pages[pageNo])
@@ -3016,7 +3290,7 @@ var Rocket;
                 }
                 initPageFromResponse(page, snippet, data) {
                     this.changeBoundaries(data.numPages, data.numEntries);
-                    var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children();
+                    var jqContents = $(snippet.elements).find(".rocket-collectiont:first").children();
                     snippet.elements = jqContents.toArray();
                     this.applyContents(page, jqContents);
                     snippet.markAttached();
@@ -3024,42 +3298,29 @@ var Rocket;
             }
             Overview.OverviewContent = OverviewContent;
             class SelectorState {
-                constructor() {
-                    this._selectorObserver = null;
-                    this.entryMap = {};
+                constructor(collection) {
+                    this.collection = collection;
                     this.fakeEntryMap = {};
                     this.changedCallbacks = new Array();
                     this._autoShowSelected = false;
                 }
                 activate(selectorObserver) {
-                    if (this._selectorObserver) {
+                    if (this.collection.selectable) {
                         throw new Error("Selector state already activated");
                     }
-                    this._selectorObserver = selectorObserver;
                     if (!selectorObserver)
                         return;
-                    for (let id in this.entryMap) {
-                        if (this.entryMap[id].selector === null)
-                            continue;
-                        selectorObserver.observeEntrySelector(this.entryMap[id].selector);
-                    }
+                    this.collection.setupSelector(selectorObserver);
                 }
                 observeFakePage(fakePage) {
-                    var that = this;
-                    fakePage.entries.forEach(function (entry) {
-                        if (that.containsEntryId(entry.id)) {
+                    fakePage.entries.forEach((entry) => {
+                        if (this.collection.containsEntryId(entry.id)) {
                             entry.dispose();
                         }
                         else {
-                            that.registerEntry(entry);
+                            this.registerEntry(entry);
                         }
                     });
-                }
-                get selectorObserver() {
-                    return this._selectorObserver;
-                }
-                isActive() {
-                    return this._selectorObserver != null;
                 }
                 observePage(page) {
                     var that = this;
@@ -3071,49 +3332,26 @@ var Rocket;
                     });
                 }
                 registerEntry(entry, fake = false) {
-                    this.entryMap[entry.id] = entry;
+                    this.collection.registerEntry(entry);
                     if (fake) {
                         this.fakeEntryMap[entry.id] = entry;
                     }
                     if (entry.selector === null)
                         return;
-                    if (this.selectorObserver !== null) {
-                        this.selectorObserver.observeEntrySelector(entry.selector);
-                    }
                     if (this.autoShowSelected && entry.selector.selected) {
                         entry.show();
                     }
-                    var that = this;
-                    entry.selector.whenChanged(function () {
-                        if (that.autoShowSelected && entry.selector.selected) {
+                    entry.selector.whenChanged(() => {
+                        if (this.autoShowSelected && entry.selector.selected) {
                             entry.show();
                         }
-                        that.triggerChanged();
+                        this.triggerChanged();
                     });
-                    var onFunc = function () {
-                        if (that.entryMap[entry.id] !== entry)
-                            return;
-                        delete that.entryMap[entry.id];
-                        delete that.fakeEntryMap[entry.id];
+                    var onFunc = () => {
+                        delete this.fakeEntryMap[entry.id];
                     };
                     entry.on(Rocket.Display.Entry.EventType.DISPOSED, onFunc);
                     entry.on(Rocket.Display.Entry.EventType.REMOVED, onFunc);
-                }
-                containsEntryId(id) {
-                    return this.entryMap[id] !== undefined;
-                }
-                get entries() {
-                    var k = Object;
-                    return k.values(this.entryMap);
-                }
-                get selectedEntries() {
-                    var entries = new Array();
-                    for (let entry of this.entries) {
-                        if (!entry.selector || !entry.selector.selected)
-                            continue;
-                        entries.push(entry);
-                    }
-                    return entries;
                 }
                 get autoShowSelected() {
                     return this._autoShowSelected;
@@ -3122,7 +3360,7 @@ var Rocket;
                     this._autoShowSelected = showSelected;
                 }
                 showSelectedEntriesOnly() {
-                    this.entries.forEach(function (entry) {
+                    this.collection.entries.forEach(function (entry) {
                         if (entry.selector.selected) {
                             entry.show();
                         }
@@ -3132,7 +3370,7 @@ var Rocket;
                     });
                 }
                 hideEntries() {
-                    this.entries.forEach(function (entry) {
+                    this.collection.entries.forEach(function (entry) {
                         entry.hide();
                     });
                 }
@@ -3253,7 +3491,7 @@ var Rocket;
                         return overviewPage;
                     }
                     var jqForm = jqElem.children("form");
-                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
+                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-collection:first"), Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-zone-commands"));
@@ -3404,161 +3642,6 @@ var Rocket;
                     });
                 }
             }
-        })(Overview = Impl.Overview || (Impl.Overview = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        var Overview;
-        (function (Overview) {
-            var display = Rocket.Display;
-            class MultiEntrySelectorObserver {
-                constructor(originalIdReps = new Array()) {
-                    this.originalIdReps = originalIdReps;
-                    this.identityStrings = {};
-                    this.selectors = {};
-                    this.selectedIds = originalIdReps;
-                }
-                observeEntrySelector(selector) {
-                    var that = this;
-                    var jqCheck = $("<input />", { "type": "checkbox" });
-                    selector.jQuery.empty();
-                    selector.jQuery.append(jqCheck);
-                    jqCheck.change(function () {
-                        selector.selected = jqCheck.is(":checked");
-                    });
-                    selector.whenChanged(function () {
-                        jqCheck.prop("checked", selector.selected);
-                        that.chSelect(selector.selected, selector.entry.id);
-                    });
-                    var entry = selector.entry;
-                    var id = entry.id;
-                    selector.selected = this.containsSelectedId(id);
-                    this.selectors[id] = selector;
-                    this.identityStrings[id] = entry.identityString;
-                    entry.on(display.Entry.EventType.DISPOSED, function () {
-                        delete that.selectors[id];
-                    });
-                    entry.on(display.Entry.EventType.REMOVED, function () {
-                        that.chSelect(false, id);
-                    });
-                }
-                containsSelectedId(id) {
-                    return -1 < this.selectedIds.indexOf(id);
-                }
-                chSelect(selected, id) {
-                    if (selected) {
-                        if (-1 < this.selectedIds.indexOf(id))
-                            return;
-                        this.selectedIds.push(id);
-                        return;
-                    }
-                    var i;
-                    if (-1 < (i = this.selectedIds.indexOf(id))) {
-                        this.selectedIds.splice(i, 1);
-                    }
-                }
-                getSelectedIds() {
-                    return this.selectedIds;
-                }
-                getIdentityStringById(id) {
-                    if (this.identityStrings[id] !== undefined) {
-                        return this.identityStrings[id];
-                    }
-                    return null;
-                }
-                getSelectorById(id) {
-                    if (this.selectors[id] !== undefined) {
-                        return this.selectors[id];
-                    }
-                    return null;
-                }
-                setSelectedIds(selectedIds) {
-                    this.selectedIds = selectedIds;
-                    var that = this;
-                    for (var id in this.selectors) {
-                        this.selectors[id].selected = that.containsSelectedId(id);
-                    }
-                }
-            }
-            Overview.MultiEntrySelectorObserver = MultiEntrySelectorObserver;
-            class SingleEntrySelectorObserver {
-                constructor(originalId = null) {
-                    this.originalId = originalId;
-                    this.selectedId = null;
-                    this.identityStrings = {};
-                    this.selectors = {};
-                    this.selectedId = originalId;
-                }
-                observeEntrySelector(selector) {
-                    var that = this;
-                    var jqCheck = $("<input />", { "type": "radio" });
-                    selector.jQuery.empty();
-                    selector.jQuery.append(jqCheck);
-                    jqCheck.change(() => {
-                        selector.selected = jqCheck.is(":checked");
-                    });
-                    selector.whenChanged(() => {
-                        jqCheck.prop("checked", selector.selected);
-                        this.chSelect(selector.selected, selector.entry.id);
-                    });
-                    var entry = selector.entry;
-                    var id = entry.id;
-                    selector.selected = this.selectedId === id;
-                    this.selectors[id] = selector;
-                    this.identityStrings[id] = entry.identityString;
-                    entry.on(display.Entry.EventType.DISPOSED, () => {
-                        delete this.selectors[id];
-                    });
-                    entry.on(display.Entry.EventType.REMOVED, function () {
-                        this.chSelect(false, id);
-                    });
-                }
-                getSelectedIds() {
-                    return [this.selectedId];
-                }
-                chSelect(selected, id) {
-                    if (!selected) {
-                        if (this.selectedId === id) {
-                            this.selectedId = null;
-                        }
-                        return;
-                    }
-                    if (this.selectedId === id)
-                        return;
-                    this.selectedId = id;
-                    for (let id in this.selectors) {
-                        if (id === this.selectedId)
-                            continue;
-                        this.selectors[id].selected = false;
-                    }
-                }
-                getIdentityStringById(id) {
-                    if (this.identityStrings[id] !== undefined) {
-                        return this.identityStrings[id];
-                    }
-                    return null;
-                }
-                getSelectorById(id) {
-                    if (this.selectors[id] !== undefined) {
-                        return this.selectors[id];
-                    }
-                    return null;
-                }
-                setSelectedId(selectedId) {
-                    if (this.selectors[selectedId]) {
-                        this.selectors[selectedId].selected = true;
-                        return;
-                    }
-                    this.selectedId = selectedId;
-                    for (let id in this.selectors) {
-                        this.selectors[id].selected = false;
-                    }
-                }
-            }
-            Overview.SingleEntrySelectorObserver = SingleEntrySelectorObserver;
         })(Overview = Impl.Overview || (Impl.Overview = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
@@ -4039,7 +4122,7 @@ var Rocket;
                     var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
                     if (ocs.length == 0)
                         return;
-                    ocs[0].initSelector(this.browserSelectorObserver = new Impl.Overview.MultiEntrySelectorObserver());
+                    ocs[0].initSelector(this.browserSelectorObserver = new Rocket.Display.MultiEntrySelectorObserver());
                     var that = this;
                     context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
                         that.updateSelection();
@@ -4691,7 +4774,7 @@ var Rocket;
                     var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
                     if (ocs.length == 0)
                         return;
-                    ocs[0].initSelector(this.browserSelectorObserver = new Impl.Overview.SingleEntrySelectorObserver());
+                    ocs[0].initSelector(this.browserSelectorObserver = new Rocket.Display.SingleEntrySelectorObserver());
                     var that = this;
                     context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
                         that.updateSelection();

@@ -326,7 +326,7 @@ namespace Rocket.Impl.Relation {
 		private jqSelectedEntry: JQuery;
 		private jqEntryLabel: JQuery;
 		private browserLayer: cmd.Layer = null;
-		private browserSelectorObserver: Overview.SingleEntrySelectorObserver = null;
+		private browserSelectorObserver: Display.SingleEntrySelectorObserver = null;
 		
 		constructor(private jqElem: JQuery) {
 			this.jqElem = jqElem;
@@ -427,7 +427,7 @@ namespace Rocket.Impl.Relation {
 			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
 			if (ocs.length == 0) return;
 			
-			ocs[0].initSelector(this.browserSelectorObserver = new Overview.SingleEntrySelectorObserver());
+			ocs[0].initSelector(this.browserSelectorObserver = new Display.SingleEntrySelectorObserver());
 			
 			var that = this;
 			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {

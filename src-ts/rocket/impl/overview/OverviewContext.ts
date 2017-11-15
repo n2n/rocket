@@ -30,7 +30,7 @@ namespace Rocket.Impl.Overview {
 		constructor(private jqContainer: JQuery, private overviewContent: OverviewContent) {
 		}
 		
-		public initSelector(selectorObserver: SelectorObserver) {
+		public initSelector(selectorObserver: Display.SelectorObserver) {
 			this.overviewContent.initSelector(selectorObserver);
 		}
 		
@@ -52,7 +52,7 @@ namespace Rocket.Impl.Overview {
 			
 			var jqForm = jqElem.children("form");
 			
-			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-overview-content:first"), 
+			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-collection:first"), 
 					Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
 			
 //			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))

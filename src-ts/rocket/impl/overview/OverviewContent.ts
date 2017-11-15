@@ -4,16 +4,19 @@ namespace Rocket.Impl.Overview {
 	var $ = jQuery;
 	
 	export class OverviewContent {
+		private collection: Display.Collection;
 		private pages: Array<Page> = new Array<Page>();
 		private fakePage: Page = null;
-		private selectorState: SelectorState = new SelectorState();
+		private selectorState: SelectorState;
 		private changedCallbacks: Array<(oc: OverviewContent) => any> = new Array<(oc: OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
 		private _numEntries: number;
 		private allInfo: AllInfo = null;
 		
-		constructor(private jqElem: JQuery, private loadUrl: Jhtml.Url) {
+		constructor(jqElem: JQuery, private loadUrl: Jhtml.Url) {
+			this.collection = Display.Collection.from(jqElem, true);
+			this.selectorState = new SelectorState(this.collection);
 		}	
 		
 		isInit(): boolean {
@@ -26,7 +29,7 @@ namespace Rocket.Impl.Overview {
 			this._numPages = numPages;
 			this._numEntries = numEntries;
 			let page = this.createPage(this.currentPageNo);
-			page.jqContents = this.jqElem.children();
+			page.jqContents = this.collection.jQuery.children();
 			this.selectorState.observePage(page);
 			
 			if (this.allInfo) {
@@ -96,7 +99,7 @@ namespace Rocket.Impl.Overview {
 			}
 		}
 		
-		initSelector(selectorObserver: SelectorObserver) {
+		initSelector(selectorObserver: Display.SelectorObserver) {
 			this.selectorState.activate(selectorObserver);
 			this.triggerContentChange();
 			
@@ -104,7 +107,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		private buildFakePage() {
-			if (!this.selectorState.selectorObserver) return;
+			if (!this.collection.selectable) return;
 			
 			if (this.fakePage) {
 				throw new Error("Fake page already existing.");
@@ -113,11 +116,11 @@ namespace Rocket.Impl.Overview {
 			this.fakePage = new Page(0);
 			this.fakePage.hide();
 			
-			var idReps = this.selectorState.selectorObserver.getSelectedIds();
+			var idReps = this.collection.selectedIds;
 			var unloadedIds = idReps.slice();
 			var that = this;
 		
-			this.selectorState.entries.forEach(function (entry: Display.Entry) {
+			this.collection.entries.forEach(function (entry: Display.Entry) {
 				let id = entry.id;
 				
 				let i;
@@ -139,17 +142,18 @@ namespace Rocket.Impl.Overview {
 			
 			this.markPageAsLoading(0);
 			
-			var fakePage = this.fakePage;
+			let fakePage = this.fakePage;
 			
-			Jhtml.Monitor.of(this.jqElem.get(0)).lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
+			Jhtml.Monitor.of(this.collection.jQuery.get(0))
+					.lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
 					.then((model: Jhtml.Model) => {
 				if (fakePage !== this.fakePage) return; 
 				
 				this.unmarkPageAsLoading(0);
 				
-				var jqContents = $(model.snippet.elements).find(".rocket-overview-content:first").children();
+				var jqContents = $(model.snippet.elements).find(".rocket-collection:first").children();
 				fakePage.jqContents = jqContents;
-				this.jqElem.append(jqContents);
+				this.collection.jQuery.append(jqContents);
 				model.snippet.markAttached();
 				
 				this.selectorState.observeFakePage(fakePage);
@@ -224,17 +228,17 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		get numSelectedEntries(): number {
-			if (!this.selectorState.isActive()) return null;
+			if (!this.collection.selectable) return null;
 			
 			if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
-				return this.selectorState.selectedEntries.length;
+				return this.collection.selectedEntries.length;
 			}
 			
-			return this.selectorState.selectorObserver.getSelectedIds().length;
+			return this.collection.selectedIds.length;
 		}
 		
 		get selectable(): boolean {
-			return this.selectorState.selectorObserver != null;
+			return this.collection.selectable;
 		}
 		
 		private setCurrentPageNo(currentPageNo: number) {
@@ -301,7 +305,7 @@ namespace Rocket.Impl.Overview {
 				return;
 			}
 			
-			this.jqElem.prepend(jqContents);
+			this.collection.jQuery.prepend(jqContents);
 			this.selectorState.observePage(page);
 		}
 		
@@ -413,7 +417,7 @@ namespace Rocket.Impl.Overview {
 			if (this.jqLoader) return;
 			
 			this.jqLoader = $("<div />", { "class": "rocket-impl-overview-loading" })
-						.insertAfter(this.jqElem.parent("table"));
+						.insertAfter(this.collection.jQuery.parent("table"));
 		}
 		
 		private removeLoader() {
@@ -441,7 +445,7 @@ namespace Rocket.Impl.Overview {
 			
 			this.markPageAsLoading(pageNo);
 			
-			Jhtml.Monitor.of(this.jqElem.get(0))
+			Jhtml.Monitor.of(this.collection.jQuery.get(0))
 					.lookupModel(this.loadUrl.extR(null, { "pageNo": pageNo }))
 					.then((model: Jhtml.Model) => {
 						if (page !== this.pages[pageNo]) return;
@@ -462,7 +466,7 @@ namespace Rocket.Impl.Overview {
 		private initPageFromResponse(page: Page, snippet: Jhtml.Snippet, data: any) {
 			this.changeBoundaries(data.numPages, data.numEntries);
 			
-			var jqContents = $(snippet.elements).find(".rocket-overview-content:first").children();
+			var jqContents = $(snippet.elements).find(".rocket-collectiont:first").children();
 			
 			snippet.elements = jqContents.toArray();
 			this.applyContents(page, jqContents);
@@ -472,45 +476,31 @@ namespace Rocket.Impl.Overview {
 	
 	
 	class SelectorState {
-		private _selectorObserver: SelectorObserver = null;
-		private entryMap: { [id: string]: Display.Entry } = {};
 		private fakeEntryMap: { [id: string]: Display.Entry } = {};
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		private _autoShowSelected: boolean = false;
 		
-		activate(selectorObserver: SelectorObserver) {
-			if (this._selectorObserver) {
+		constructor(private collection: Display.Collection) {
+		}
+		
+		activate(selectorObserver: Display.SelectorObserver) {
+			if (this.collection.selectable) {
 				throw new Error("Selector state already activated");
 			}
 			
-			this._selectorObserver = selectorObserver;
-			
 			if (!selectorObserver) return;
-			
-			for (let id in this.entryMap) {
-				if (this.entryMap[id].selector === null) continue;
-				
-				selectorObserver.observeEntrySelector(this.entryMap[id].selector);
-			}
+
+			this.collection.setupSelector(selectorObserver);
 		}
 		
 		observeFakePage(fakePage: Page) {
-			var that = this;
-			fakePage.entries.forEach(function (entry: Display.Entry) {
-				if (that.containsEntryId(entry.id)) {
+			fakePage.entries.forEach((entry: Display.Entry) => {
+				if (this.collection.containsEntryId(entry.id)) {
 					entry.dispose();
 				} else {
-					that.registerEntry(entry);
+					this.registerEntry(entry);
 				}
 			});
-		}
-		
-		get selectorObserver(): SelectorObserver {
-			return this._selectorObserver;
-		}
-		
-		isActive(): boolean {
-			return this._selectorObserver != null;
 		}
 		
 		observePage(page: Page) {
@@ -525,59 +515,29 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		private registerEntry(entry: Display.Entry, fake: boolean = false) {
-			this.entryMap[entry.id] = entry;
+			this.collection.registerEntry(entry);
 			if (fake) {
 				this.fakeEntryMap[entry.id] = entry;
 			}
 			
 			if (entry.selector === null) return;
 			
-			if (this.selectorObserver !== null) {
-				this.selectorObserver.observeEntrySelector(entry.selector);
-			}
-			
 			if (this.autoShowSelected && entry.selector.selected) {
 				entry.show();
 			}
 			
-			var that = this;
-			entry.selector.whenChanged(function () {
-				if (that.autoShowSelected && entry.selector.selected) {
+			entry.selector.whenChanged(() => {
+				if (this.autoShowSelected && entry.selector.selected) {
 					entry.show();
 				}
 				
-				that.triggerChanged();
+				this.triggerChanged();
 			});
-
-			var onFunc = function () {
-				if (that.entryMap[entry.id] !== entry) return;
-			
-				delete that.entryMap[entry.id];
-				delete that.fakeEntryMap[entry.id];
+			var onFunc = () => {
+				delete this.fakeEntryMap[entry.id];
 			};
 			entry.on(Display.Entry.EventType.DISPOSED, onFunc);
 			entry.on(Display.Entry.EventType.REMOVED, onFunc);
-		}
-		
-		private containsEntryId(id: string) {
-			return this.entryMap[id] !== undefined;
-		}
-		
-		get entries(): Array<Display.Entry> {
-			var k: any = Object;
-			return k.values(this.entryMap);
-		}
-		
-		get selectedEntries(): Array<Display.Entry> {
-			var entries = new Array<Display.Entry>();
-			
-			for (let entry of this.entries) {
-				if (!entry.selector || !entry.selector.selected) continue;
-				
-				entries.push(entry);
-			}
-			
-			return entries;
 		}
 		
 		get autoShowSelected(): boolean {
@@ -589,7 +549,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		showSelectedEntriesOnly() {
-			this.entries.forEach(function (entry: Display.Entry) {
+			this.collection.entries.forEach(function (entry: Display.Entry) {
 				if (entry.selector.selected) {
 					entry.show();
 				} else {
@@ -599,7 +559,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		hideEntries() {
-			this.entries.forEach(function (entry: Display.Entry) {
+			this.collection.entries.forEach(function (entry: Display.Entry) {
 				entry.hide();
 			});
 		}

@@ -99,7 +99,7 @@ namespace Rocket.Impl.Relation {
 		private originalIdReps: Array<string>;
 		private identityStrings: { [key: string]: string};
 		private browserLayer: cmd.Layer = null;
-		private browserSelectorObserver: Overview.MultiEntrySelectorObserver = null;
+		private browserSelectorObserver: Display.MultiEntrySelectorObserver = null;
 		
 		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
@@ -219,7 +219,7 @@ namespace Rocket.Impl.Relation {
 			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
 			if (ocs.length == 0) return;
 			
-			ocs[0].initSelector(this.browserSelectorObserver = new Overview.MultiEntrySelectorObserver());
+			ocs[0].initSelector(this.browserSelectorObserver = new Display.MultiEntrySelectorObserver());
 			
 			var that = this;
 			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
@@ -344,7 +344,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEmbedded.append(this.jqEntries);
 			
 			if (this.compact) {
-				var structureElement = Rocket.Display.StructureElement.of(this.jqEmbedded);
+				var structureElement = Display.StructureElement.of(this.jqEmbedded);
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
