@@ -466,7 +466,7 @@ namespace Rocket.Impl.Overview {
 		private initPageFromResponse(page: Page, snippet: Jhtml.Snippet, data: any) {
 			this.changeBoundaries(data.numPages, data.numEntries);
 			
-			var jqContents = $(snippet.elements).find(".rocket-collectiont:first").children();
+			var jqContents = $(snippet.elements).find(".rocket-collection:first").children();
 			
 			snippet.elements = jqContents.toArray();
 			this.applyContents(page, jqContents);
