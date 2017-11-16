@@ -3290,7 +3290,7 @@ var Rocket;
                 }
                 initPageFromResponse(page, snippet, data) {
                     this.changeBoundaries(data.numPages, data.numEntries);
-                    var jqContents = $(snippet.elements).find(".rocket-collectiont:first").children();
+                    var jqContents = $(snippet.elements).find(".rocket-collection:first").children();
                     snippet.elements = jqContents.toArray();
                     this.applyContents(page, jqContents);
                     snippet.markAttached();
