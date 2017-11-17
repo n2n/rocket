@@ -26,9 +26,6 @@ namespace Rocket.Impl.Order {
 		}
 		
 		private update() {
-			console.log((this.entry.selector && this.entry.selector.selected) + " -- " 
-					+ this.collection.selectedIds.length);
-			
 			if ((this.entry.selector && this.entry.selector.selected)
 					|| this.collection.selectedIds.length == 0) {
 				this.elemJq.hide();
