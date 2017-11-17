@@ -4,9 +4,13 @@
  */
 
 $( document ).ready(function() {
+
 	var configOptions = $(".rocket-impl-cke-classic").data("rocket-impl-toolbar")
 
 	CKEDITOR.editorConfig = function( config ) {
+		var modes = ["simple", "normal", "advanced"];
+		var modeNum = modes.indexOf(configOptions["mode"]);
+
 		config.plugins = 'dialogui,dialog,about,a11yhelp,dialogadvtab,basicstyles,bidi,blockquote,notification,button,toolbar,clipboard,panelbutton,panel,floatpanel,colorbutton,colordialog,templates,menu,contextmenu,copyformatting,div,resize,elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,floatingspace,listblock,richcombo,font,forms,format,horizontalrule,htmlwriter,iframe,wysiwygarea,image,indent,indentblock,indentlist,smiley,justify,menubutton,language,link,list,liststyle,magicline,maximize,newpage,pagebreak,pastetext,pastefromword,preview,print,removeformat,save,selectall,showblocks,showborders,sourcearea,specialchar,scayt,stylescombo,tab,table,tabletools,tableselection,undo,wsc';
 		config.skin = 'moono-lisa';
 
@@ -20,26 +24,55 @@ $( document ).ready(function() {
 			config.extraPlugins = "stylesheetparser";
 		}
 
-		if (configOptions["mode"] === "simple") {
-			config.toolbar = [{ name: "basicstyles", items : ["Bold", "Italic", "Underline", "Strike", "RemoveFormat" ]}]
+		config.toolbar = [];
+
+		var basicStyleItems = ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"];
+		var clipboardItems = [];
+		var editingItems = [];
+		var paragraphItems = [];
+		var linkItems = [];
+		var insertItems = [];
+		var styleItems = [];
+		var toolItems = [];
+		var aboutItems = ["About"];
+
+		if (modeNum >= 1) {
+			clipboardItems = clipboardItems.concat(["Cut", "Copy", "Paste", "PateText", "PasteFromWord", "-", "Undo", "Redo"]);
+			editingItems = editingItems.concat(["Find", "Replace"]);
+			basicStyleItems = basicStyleItems.concat([ "Subscript", "Superscript" ]);
+			paragraphItems = paragraphItems.concat(["NumberedList", "BulletedList", "Outdent", "Indent", "blocks", "Blockquote", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]);
+			linkItems = linkItems.concat(["-", "Link", "Unlink", "Anchor", "-"]);
+			basicStyleItems = basicStyleItems.concat(["-", "CopyFormatting", "RemoveFormat", "-"]);
+			toolItems = toolItems.concat([ 'Maximize', 'ShowBlocks' ]);
+
+			if (configOptions["tableEditing"]) {
+				insertItems.push("Table");
+			}
+
+			insertItems = insertItems.concat(["HorizontalRule", "Smiley", "SpecialChar", "InsertSmiley"]);
+
+			if (!!configOptions["additionalStyles"]) {
+				styleItems = styleItems.concat([ "Styles", "Format"]);
+			}
 		}
 
-		if (configOptions["mode"] === "normal") {
-			config.toolbar = [{ name: "basicstyles", items : [ "Bold", "Italic", "Underline", "Strike", "RemoveFormat" ]},
-				{ name: "clipboard", items : [ "Cut", "Copy", "Paste", "PateText", "PasteFromWord", "Undo", "Redo" ] },
-				{ name: "editing", items: [ ]},
-				{ name: "basicstyles", items : [ "Subscript", "Superscript" ]},
-				{ name: "paragraph", items : [ "NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ] },
-				{ name: "links", items: [ "Link", "Unlink", "Anchor"]},
-				{ name: "insert", items: [ "HorizontalRule", "SpecialChar"]},
-				{ name: "styles", items: [ "Styles", "Format"]},
-				{ name: "tools", items: [ "Maximize" ]},
-				{ name: "about", items: [ "About" ]}]
+		if (modeNum >= 2) {
+			insertItems = insertItems.concat(["Iframe"]);
+			paragraphItems = paragraphItems.concat(["-", "CreateDiv", "PageBreak", "-"]);
+			toolItems = toolItems.concat("-", "Source", "-");
 		}
 
-		if (configOptions["mode"] !== "advanced" && configOptions["tableEditing"]) {
-			config.toolbar.push({ name: "table", items: ["Table"]});
-		}
+		console.log(clipboardItems);
+
+		config.toolbar.push({name: "clipboard", items: clipboardItems});
+		config.toolbar.push({name: "editing", items: editingItems});
+		config.toolbar.push({name: "basicstyles", items: basicStyleItems});
+		config.toolbar.push({name: "paragraph", items: paragraphItems})
+		config.toolbar.push({name: "links", items: linkItems});
+		config.toolbar.push({name: "insert", items: insertItems});
+		config.toolbar.push({name: "styles", items: styleItems});
+		config.toolbar.push({name: "tools", items: toolItems});
+		config.toolbar.push({name: "about", items: aboutItems});
 
 		if (configOptions["bbcode"]) {
 			config.extraPlugins = "bbcode";
