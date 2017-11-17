@@ -53,7 +53,14 @@
     margin-bottom: 1rem;
     > .rocket-impl-summary {
         display: grid;
-        grid-template-columns: 2.5rem auto 100px;
+        grid-template-columns: 3rem auto 100px;
+        > .rocket-impl-handle {
+            padding: 1rem;
+        }
+        > .rocket-simple-commands {
+            padding: 0.75rem 0.75rem 0.75rem 0;
+            text-align: right;
+        }
     }
 }
 

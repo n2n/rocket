@@ -3594,7 +3594,7 @@ body {
   margin-left: 17rem;
   margin-right: 1rem;
   margin-top: 2.75rem;
-  margin-bottom: 7rem;
+  padding-bottom: 5rem;
   position: relative;
 }
 
@@ -4049,7 +4049,16 @@ body {
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
   display: grid;
-  grid-template-columns: 2.5rem auto 100px;
+  grid-template-columns: 3rem auto 100px;
+}
+
+.rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
+  padding: 1rem;
+}
+
+.rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
+  padding: 0.75rem 0.75rem 0.75rem 0;
+  text-align: right;
 }
 
 .rocket-impl-summary > .rocket-impl-content div {

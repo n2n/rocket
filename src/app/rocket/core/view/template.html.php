@@ -105,8 +105,6 @@
 				background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
 			}
 			
-			@keyframes pointless{0%{color:#39f;background-color:#95b850}15%{color:#8bc5d1;background-color:#944893}30%{color:#f8cb4a;background-color:#c71f00}45%{color:#95b850;background-color:#bdb280}60%{color:#944893;background-color:#39f}75%{color:#c71f00;background-color:#8bc5d1}90%{color:#bdb280;background-color:#f8cb4a}100%{color:#39f;background-color:#95b850}}
-			
 		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 
