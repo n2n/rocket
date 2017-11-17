@@ -86,6 +86,14 @@ namespace Rocket {
                 });
             });
         })();
+		
+        (function () {
+            Jhtml.ready((elements) => {
+                $(elements).find(".rocket-impl-insert-before").each(function () {
+                    new Rocket.Impl.Order.Control($(this));
+                });
+            });
+        })();
 	});
 	
 	export function scan(context: Rocket.Cmd.Zone = null) {

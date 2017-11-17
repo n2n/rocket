@@ -129,7 +129,9 @@ namespace Rocket.Display {
 			this.elemJq.enableSelection();
 		}
 		
-		static from(jqElem: JQuery, create: boolean = false): Collection {
+		static readonly CSS_CLASS = "rocket-collection";
+		
+		static from(jqElem: JQuery, create: boolean = true): Collection {
 			var collection = jqElem.data("rocketCollection");
 			if (collection instanceof Collection) return collection;
 		
@@ -137,7 +139,15 @@ namespace Rocket.Display {
 			
 			collection = new Collection(jqElem);
 			jqElem.data("rocketCollection", collection);
+			jqElem.addClass(Collection.CSS_CLASS);
 			return collection;
+		}
+		
+		static of(jqElem:JQuery) {
+			jqElem = jqElem.closest("." + Collection.CSS_CLASS);
+			if (jqElem.length == 0) return null;
+			
+			return Collection.from(jqElem, true);
 		}
 	}
 	

@@ -70,6 +70,13 @@ var Rocket;
                 });
             });
         })();
+        (function () {
+            Jhtml.ready((elements) => {
+                $(elements).find(".rocket-impl-insert-before").each(function () {
+                    new Rocket.Impl.Order.Control($(this));
+                });
+            });
+        })();
     });
     function scan(context = null) {
         initializer.scan();
@@ -1258,7 +1265,7 @@ var Rocket;
                 this.elemJq.sortable("disable");
                 this.elemJq.enableSelection();
             }
-            static from(jqElem, create = false) {
+            static from(jqElem, create = true) {
                 var collection = jqElem.data("rocketCollection");
                 if (collection instanceof Collection)
                     return collection;
@@ -1266,9 +1273,17 @@ var Rocket;
                     return null;
                 collection = new Collection(jqElem);
                 jqElem.data("rocketCollection", collection);
+                jqElem.addClass(Collection.CSS_CLASS);
                 return collection;
             }
+            static of(jqElem) {
+                jqElem = jqElem.closest("." + Collection.CSS_CLASS);
+                if (jqElem.length == 0)
+                    return null;
+                return Collection.from(jqElem, true);
+            }
         }
+        Collection.CSS_CLASS = "rocket-collection";
         Display.Collection = Collection;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
@@ -4810,6 +4825,28 @@ var Rocket;
                 }
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Order;
+        (function (Order) {
+            class Control {
+                constructor(elemJq) {
+                    this.elemJq = elemJq;
+                    this.collection = Rocket.Display.Collection.of(this.elemJq);
+                    if (!this.collection)
+                        return;
+                    this.collection.setupSortable();
+                }
+                get jQuery() {
+                    return this.elemJq;
+                }
+            }
+            Order.Control = Control;
+        })(Order = Impl.Order || (Impl.Order = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
