@@ -3,6 +3,7 @@ namespace Rocket.Display {
 	export class Collection {
 		private entryMap: { [id: string]: Entry } = {};
 		private selectorObserver: SelectorObserver;
+		private selectionChangedCallbacks: Array<() => any> = new Array<() => any>();
 		
 		constructor(private elemJq: JQuery) {
 		}
@@ -28,6 +29,11 @@ namespace Rocket.Display {
 		    	this.applyHandle(entry.selector);
 		    }
 		    
+			entry.selector.whenChanged(() => {
+				this.triggerChanged();
+			});
+		    
+		    
 			var onFunc = () => {
 				if (this.entryMap[entry.id] !== entry) return;
 			
@@ -35,6 +41,16 @@ namespace Rocket.Display {
 			};
 			entry.on(Display.Entry.EventType.DISPOSED, onFunc);
 			entry.on(Display.Entry.EventType.REMOVED, onFunc);
+		}
+		
+		private triggerChanged() {
+			this.selectionChangedCallbacks.forEach((callback) => {
+				callback();
+			});
+		}
+				
+		whenSelectionChanged(callback: () => any) {
+			this.selectionChangedCallbacks.push(callback);
 		}
 		
 		setupSelector(selectorObserver: SelectorObserver) {
@@ -92,9 +108,16 @@ namespace Rocket.Display {
 				"forcePlaceholderSize": true,
 		      	"placeholder": "rocket-entry-placeholder",
 				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+					console.log("start " + ui.item.index());
 //					var oldIndex = ui.item.index();
 				},
 				"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+//					let entry = Entry.find(ui.item, true);
+//					if (entry)
+					
+					console.log("update< " + ui.item.html());
+					console.log("update> " + ui.sender.html());
+					
 //					var newIndex = ui.item.index();
 //					
 //					that.switchIndex(oldIndex, newIndex);

@@ -131,6 +131,14 @@ namespace Rocket.Display {
 			return Entry.from(jqElem);
 		}
 
+		static find(jqElem: JQuery, includeSelf: boolean = false): Entry|null {
+			let entries = Entry.findAll(jqElem, includeSelf);
+			if (entries.length > 0) {
+				return entries[0]
+			}
+			return null;
+		}
+		
 		static findAll(jqElem: JQuery, includeSelf: boolean = false): Array<Entry> {
 			var entries = new Array<Entry>();
 			

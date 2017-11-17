@@ -8,11 +8,11 @@ namespace Rocket.Impl.Overview {
 		private pages: Array<Page> = new Array<Page>();
 		private fakePage: Page = null;
 		private selectorState: SelectorState;
-		private changedCallbacks: Array<(oc: OverviewContent) => any> = new Array<(oc: OverviewContent) => any>();
 		private _currentPageNo: number = null; 
 		private _numPages: number;
 		private _numEntries: number;
 		private allInfo: AllInfo = null;
+		private contentChangedCallbacks: Array<(overviewContent: OverviewContent) => any> = [];
 		
 		constructor(jqElem: JQuery, private loadUrl: Jhtml.Url) {
 			this.collection = Display.Collection.from(jqElem, true);
@@ -253,7 +253,7 @@ namespace Rocket.Impl.Overview {
 		
 		private triggerContentChange() {
 			var that = this;
-			this.changedCallbacks.forEach(function (callback) {
+			this.contentChangedCallbacks.forEach(function (callback) {
 				callback(that);
 			});
 		}
@@ -275,7 +275,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		whenContentChanged(callback: (overviewContent: OverviewContent) => any) {
-			this.changedCallbacks.push(callback);
+			this.contentChangedCallbacks.push(callback);
 		}
 		
 		whenSelectionChanged(callback: () => any) {
@@ -477,7 +477,6 @@ namespace Rocket.Impl.Overview {
 	
 	class SelectorState {
 		private fakeEntryMap: { [id: string]: Display.Entry } = {};
-		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		private _autoShowSelected: boolean = false;
 		
 		constructor(private collection: Display.Collection) {
@@ -530,8 +529,6 @@ namespace Rocket.Impl.Overview {
 				if (this.autoShowSelected && entry.selector.selected) {
 					entry.show();
 				}
-				
-				this.triggerChanged();
 			});
 			var onFunc = () => {
 				delete this.fakeEntryMap[entry.id];
@@ -564,14 +561,8 @@ namespace Rocket.Impl.Overview {
 			});
 		}
 		
-		private triggerChanged() {
-			this.changedCallbacks.forEach(function (callback) {
-				callback();
-			});
-		}
-				
 		whenChanged(callback: () => any) {
-			this.changedCallbacks.push(callback);
+			this.collection.whenSelectionChanged(callback);
 		}
 	}
 	
