@@ -648,7 +648,7 @@ namespace Rocket.Impl.Overview {
 			for (var i in this._entries) {
 				if (this._entries[i].id != id) continue;
 				
-				this._entries[i].jqQuery.remove();
+				this._entries[i].jQuery.remove();
 				this._entries.splice(parseInt(i), 1);
 				return; 
 			}

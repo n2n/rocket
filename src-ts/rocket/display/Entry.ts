@@ -46,7 +46,7 @@ namespace Rocket.Display {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
-		get jqQuery(): JQuery {
+		get jQuery(): JQuery {
 			return this.jqElem;
 		}
 		

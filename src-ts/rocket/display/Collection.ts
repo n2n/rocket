@@ -41,6 +41,10 @@ namespace Rocket.Display {
 			};
 			entry.on(Display.Entry.EventType.DISPOSED, onFunc);
 			entry.on(Display.Entry.EventType.REMOVED, onFunc);
+			
+			entry.jQuery.on("DOMNodeInserted", () => {
+				
+			});
 		}
 		
 		private triggerChanged() {
