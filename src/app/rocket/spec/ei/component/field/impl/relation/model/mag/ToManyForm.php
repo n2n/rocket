@@ -31,6 +31,7 @@ use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\spec\ei\manage\util\model\UnknownEntryException;
 
 class ToManyForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -163,16 +164,16 @@ class ToManyForm implements Dispatchable {
 				foreach ($selectedEntryIdReps as $selectedEntryIdRep) {
 					if (in_array($selectedEntryIdRep, $that->originalEntryIdReps, true)) continue;
 					
-					if (null !== ($eiObject = $that->readUtils->lookupEiObjectById(
-							$that->readUtils->idRepToId($selectedEntryIdRep), 
-							CriteriaConstraint::NON_SECURITY_TYPES))) {
-						$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep, 
+					$eiObject = null;
+					try {
+						$eiObject = $that->readUtils->lookupEiObjectById($that->readUtils->idRepToId($selectedEntryIdRep),
+								CriteriaConstraint::NON_SECURITY_TYPES);
+						$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep,
 								$that->readUtils->createIdentityString($eiObject));
-						continue;
+					} catch (UnknownEntryException $e) {
+						$be->addErrorCode('entryIdRep', 'ei_impl_relation_unkown_entry_err',
+								array('id_rep' => $selectedEntryIdRep), Rocket::NS);
 					}
-					
-					$be->addErrorCode('entryIdRep', 'ei_impl_relation_unkown_entry_err', 
-							array('id_rep' => $selectedEntryIdRep), Rocket::NS);
 				}
 			});
 		}
