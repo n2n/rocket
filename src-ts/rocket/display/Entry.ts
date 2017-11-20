@@ -108,7 +108,39 @@ namespace Rocket.Display {
 			return this._selector;	
 		}
 		
+		private findTreeLevelClass(): string|null {
+			let cl = this.jqElem.get(0).classList;
+			
+			for (let i = 0; i < cl.length; i++) {
+				let className = cl.item(i);
+				if (className.startsWith(Entry.TREE_LEVEL_CSS_CLASS_PREFIX)) {
+					return className;
+				}
+			}
+			
+			return null;
+		}
+		
+		get treeLevel(): number|null {
+			let className = this.findTreeLevelClass()
+			if (className === null) return null;
+			
+			return parseInt(className.substr(Entry.TREE_LEVEL_CSS_CLASS_PREFIX.length));
+		}
+		
+		set treeLevel(treeLevel: number|null) {
+			let className = this.findTreeLevelClass();
+			if (className) {
+				this.jqElem.removeClass(className);
+			} 
+			
+			if (treeLevel) {
+				this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel)
+			}
+		}
+		
 		static readonly CSS_CLASS = "rocket-entry";
+		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
 		
 		private static from(elemJq: JQuery): Entry {
 			var entry = elemJq.data("rocketEntry");
