@@ -87,7 +87,9 @@ namespace Rocket.Impl.Order {
 				idReps.push(entry.id);
 				entry.selector.selected = false;
 			}
-			$.get(this.elemJq.attr("href"), { "idReps": idReps });
+			
+			let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
+			Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
 		}
 	}
 	

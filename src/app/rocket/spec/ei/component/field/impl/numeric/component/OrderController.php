@@ -52,7 +52,7 @@ class OrderController extends ControllerAdapter {
 			$this->move($idRep, $targetIdRep, true);
 		}
 		
-		$this->redirect($refUrl);
+		$this->eiCtrl->redirectBack($refUrl);
 	}
 	
 	public function doAfter($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
@@ -62,7 +62,7 @@ class OrderController extends ControllerAdapter {
 			$this->move($idRep, $targetIdRep, false);
 		}
 		
-		$this->redirect($refUrl);
+		$this->eiCtrl->redirectBack($refUrl);
 	}
 	
 	private function move(string $idRep, string $targetIdRep, bool $before) {

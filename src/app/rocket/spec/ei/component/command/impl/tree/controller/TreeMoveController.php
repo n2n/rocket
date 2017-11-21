@@ -29,46 +29,46 @@ use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 
 class TreeMoveController extends ControllerAdapter {
-	private $eiCtrlUtils;
+	private $eiCtrl;
 
-	public function prepare(ManageState $manageState) {
-		$this->eiCtrlUtils = EiuCtrl::from($this->getHttpContext());
+	public function prepare(ManageState $manageState, EiuCtrl $eiuCtrl) {
+		$this->eiCtrl = $eiuCtrl;
 	}
 
 	public function doChild($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
-		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
 		foreach ($idReps->toStringArrayOrReject() as $idRep) {
 			$this->move($idRep, $targetIdRep);
 		}
 		
-		$this->redirect($refUrl);
+		$this->eiCtrl->redirectBack($refUrl);
 	}
 	
 	public function doBefore($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
-		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 
 		foreach ($idReps->toStringArrayOrReject() as $idRep) {
 			$this->move($idRep, $targetIdRep, true);
 		}
-
-		$this->redirect($refUrl);
+		
+		$this->eiCtrl->redirectBack($refUrl);
 	}
 
 	public function doAfter($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
-		$refUrl = $this->eiCtrlUtils->parseRefUrl($refPath);
+		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 
 		foreach (array_reverse($idReps->toStringArrayOrReject()) as $idRep) {
 			$this->move($idRep, $targetIdRep, false);
 		}
 
-		$this->redirect($refUrl);
+		$this->eiCtrl->redirectBack($refUrl);
 	}
 
 	private function move(string $idRep, string $targetIdRep, bool $before = null) {
 		if ($idRep === $targetIdRep) return;
 
-		$eiUtils = $this->eiCtrlUtils->frame();
+		$eiUtils = $this->eiCtrl->frame();
 		
 		$nestedSetStrategy = $eiUtils->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) return;
