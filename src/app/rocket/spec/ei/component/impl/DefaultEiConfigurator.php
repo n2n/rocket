@@ -82,7 +82,11 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter implements EiPropConfi
 	public function assignProperty(PropertyAssignation $propertyAssignation) {
 		throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');
 	}
-
-
-	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\indepenent\EiPropConfigurator::getPropertyAssignation()
+	 */
+	public function getPropertyAssignation(): PropertyAssignation {
+		return new PropertyAssignation();
+	}	
 }

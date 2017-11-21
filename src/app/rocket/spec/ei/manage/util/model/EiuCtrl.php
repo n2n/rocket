@@ -86,6 +86,7 @@ class EiuCtrl implements Lookupable {
 	/**
 	 * @param string $liveIdRep
 	 * @return \rocket\spec\ei\manage\mapping\EiEntry
+	 * @deprecated use {@see self::lookupEntry()}
 	 */
 	public function lookupEiEntry(string $liveIdRep) {
 		return $this->eiuFrame->createEiEntry($this->lookupEiObject($liveIdRep));
@@ -96,6 +97,7 @@ class EiuCtrl implements Lookupable {
 	 * @throws PageNotFoundException
 	 * @throws ForbiddenException
 	 * @return \rocket\spec\ei\manage\EiObject
+	 * @deprecated use {@see self::lookupEntry()}
 	 */
 	public function lookupEiObject(string $liveIdRep) {
 		$eiObject = null;
@@ -123,6 +125,7 @@ class EiuCtrl implements Lookupable {
 	/**
 	 * @param int $draftId
 	 * @return \rocket\spec\ei\manage\mapping\EiEntry
+	 * @deprecated
 	 */
 	private function lookupEiEntryByDraftId(int $draftId) {
 		return $this->eiuFrame->createEiEntry($this->lookupEiObjectByDraftId($draftId));
@@ -133,6 +136,7 @@ class EiuCtrl implements Lookupable {
 	 * @throws PageNotFoundException
 	 * @throws ForbiddenException
 	 * @return \rocket\spec\ei\manage\EiObject
+	 * @deprecated
 	 */
 	public function lookupEiObjectByDraftId(int $draftId) {
 		$eiObject = null;

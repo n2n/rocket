@@ -21,7 +21,7 @@ class EiuControlFactory {
 	 * @param Url $urlExt
 	 * @return \rocket\spec\ei\manage\control\JhtmlControl
 	 */
-	public function createJhtml(ControlButton $controlButton, Url $urlExt = null) {
+	public function createJhtml(ControlButton $controlButton, $urlExt = null) {
 		$url = $this->eiuFrame->getHttpContext()
 				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
 				->ext($this->eiCommand->getId())->toUrl()->ext($urlExt);

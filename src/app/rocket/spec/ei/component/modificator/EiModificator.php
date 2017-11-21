@@ -34,7 +34,7 @@ interface EiModificator extends EiComponent {
 	/**
 	 * @param EiFrame $eiFrame
 	 */
-	public function setupEiFrame(EiFrame $eiFrame);
+	public function setupEiFrame(Eiu $eiu);
 	
 	/**
 	 * @param EiEntry $eiEntry

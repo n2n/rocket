@@ -24,16 +24,12 @@ namespace rocket\spec\ei\component\modificator\impl;
 use rocket\spec\ei\component\modificator\EiModificator;
 use rocket\spec\ei\component\impl\IndependentEiComponentAdapter;
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\component\impl\DefaultEiConfigurator;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAdapter implements IndependentEiModificator {
-	public function getTypeName(): string {
-		return self::shortenTypeName(parent::getTypeName(), array('Script', 'Constraint'));
-	}
 	
 	public function createEiConfigurator(): EiConfigurator {
 		return new DefaultEiConfigurator($this);
@@ -43,9 +39,21 @@ abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAda
 		return $obj instanceof EiModificator && parent::equals($obj);
 	}
 
-	public function setupEiFrame(EiFrame $eiFrame) {}
+	public function setupEiFrame(Eiu $eiu) { }
 	
-	public function setupEiEntry(Eiu $eiu) {}
+	public function setupEiEntry(Eiu $eiu) { }
 	
-	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
+	public function setupGuiDefinition(GuiDefinition $guiDefinition) { }
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\modificator\EiModificator::setupEiEntryGui()
+	 */
+	public function setupEiEntryGui(\rocket\spec\ei\manage\gui\EiEntryGui $eiEntryGui) { }
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\modificator\EiModificator::setupDraftDefinition()
+	 */
+	public function setupDraftDefinition(\rocket\spec\ei\manage\draft\DraftDefinition $draftDefinition) { }
 }

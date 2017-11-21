@@ -125,7 +125,7 @@ class EiTypeExtraction extends SpecExtraction {
 	}
 	
 	public function setEiModificatorExtractions(array $eiModificatorExtractions) {
-		ArgUtils::valArray($eiModificatorExtractions, EiComponentExtraction::class);
+		ArgUtils::valArray($eiModificatorExtractions, EiModificatorExtraction::class);
 		$this->eiModificatorExtractions = $eiModificatorExtractions;
 	}
 	

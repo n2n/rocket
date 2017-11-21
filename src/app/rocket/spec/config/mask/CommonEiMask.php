@@ -617,8 +617,9 @@ class CommonEiMask implements EiMask, Identifiable {
 			}
 		}
 
+		$eiu = new Eiu($eiFrame);
 		foreach ($this->eiEngine->getEiModificatorCollection()->toArray() as $modificator) {
-			$modificator->setupEiFrame($eiFrame);
+			$modificator->setupEiFrame($eiu);
 		}
 	}
 

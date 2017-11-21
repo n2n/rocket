@@ -49,6 +49,7 @@ use rocket\spec\config\extr\EiComponentExtraction;
 use rocket\spec\config\extr\CommonEiMaskExtraction;
 use rocket\spec\ei\EiEngine;
 use n2n\l10n\Lstr;
+use rocket\spec\config\extr\EiModificatorExtraction;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -244,11 +245,6 @@ class EiTypeFactory {
 		}
 		
 		$eiCommand = $eiCommandClass->newInstance();
-// 		if ($eiMask === null) {
-// 			$eiCommand->setEiThing($eiType);
-// 		} else {
-// 			$eiCommand->setEiMask($eiMask);
-// 		}
 
 		$eiConfigurator = $eiCommand->createEiConfigurator();	
 		ArgUtils::valTypeReturn($eiConfigurator, 'rocket\spec\ei\component\EiConfigurator',
@@ -261,15 +257,15 @@ class EiTypeFactory {
 	}
 	
 	/**
-	 * @param EiComponentExtraction $configurableExtraction
+	 * @param EiComponentExtraction $eiModificatorExtraction
 	 * @param EiType $eiType
 	 * @param EiMask $eiMask
 	 * @throws InvalidEiComponentConfigurationException
 	 * @throws TypeNotFoundException
 	 * @return IndependentEiModificator
 	 */
-	public function createEiModificator(EiComponentExtraction $configurableExtraction, EiType $eiType, EiMask $eiMask = null) {
-		$eiModificatorClass = ReflectionUtils::createReflectionClass($configurableExtraction->getClassName());
+	public function createEiModificator(EiModificatorExtraction $eiModificatorExtraction, EiType $eiType, EiMask $eiMask = null) {
+		$eiModificatorClass = ReflectionUtils::createReflectionClass($eiModificatorExtraction->getClassName());
 		
 		if (!$eiModificatorClass->implementsInterface('rocket\spec\ei\component\modificator\IndependentEiModificator')) {
 			throw new InvalidEiComponentConfigurationException('\'' . $eiModificatorClass->getName() 
@@ -277,13 +273,11 @@ class EiTypeFactory {
 		}
 		
 		$eiModificator =  $eiModificatorClass->newInstance();
-		$eiModificator->setEiType($eiType);
 
 		$eiConfigurator = $eiModificator->createEiConfigurator();
-		ArgUtils::valTypeReturn($eiConfigurator, 'rocket\spec\ei\component\EiConfigurator',
-				$eiModificator, 'creatEiConfigurator');
-		IllegalStateException::assertTrue($eiConfigurator instanceof EiPropConfigurator);
-		$eiConfigurator->setAttributes(new Attributes($eiModificator->getProps()));
+		ArgUtils::valTypeReturn($eiConfigurator, EiConfigurator::class, $eiModificator, 'creatEiConfigurator');
+		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
+		$eiConfigurator->setAttributes(new Attributes($eiModificatorExtraction->getProps()));
 		$this->setupQueue->add($eiConfigurator);
 		
 		return $eiModificator;

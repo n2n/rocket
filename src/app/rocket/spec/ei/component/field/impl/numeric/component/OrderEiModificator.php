@@ -39,8 +39,8 @@ class OrderEiModificator extends EiModificatorAdapter {
 		$this->eiProp = $eiProp;
 	}
 	
-	public function setupEiFrame(EiFrame $eiFrame) {
-		$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
+	public function setupEiFrame(Eiu $eiu) {
+		$eiu->frame()->getEiFrame()->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 	}
