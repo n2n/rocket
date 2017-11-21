@@ -4,7 +4,7 @@ namespace Rocket.Display {
 		private entryMap: { [id: string]: Entry } = {};
 		private sortedEntries: Entry[];
 		private selectorObserver: SelectorObserver;
-		private selectionChangedCallbacks: Array<() => any> = new Array<() => any>();
+		private selectionChangedCbr = new Jhtml.Util.CallbackRegistry<() => any>();
 		private insertedCbr = new Jhtml.Util.CallbackRegistry<InsertedCallback>();
 		
 		constructor(private elemJq: JQuery) {
@@ -49,13 +49,15 @@ namespace Rocket.Display {
 		}
 		
 		private triggerChanged() {
-			this.selectionChangedCallbacks.forEach((callback) => {
-				callback();
-			});
+			this.selectionChangedCbr.fire();
 		}
 				
-		whenSelectionChanged(callback: () => any) {
-			this.selectionChangedCallbacks.push(callback);
+		onSelectionChanged(callback: () => any) {
+			this.selectionChangedCbr.on(callback);
+		}
+		
+		offSelectionChanged(callback: () => any) {
+			this.selectionChangedCbr.off(callback);
 		}
 		
 		setupSelector(selectorObserver: SelectorObserver) {

@@ -14,9 +14,14 @@ namespace Rocket.Impl.Order {
 				this.collection.setupSelector(new Display.MultiEntrySelectorObserver());
 			}
 			
-			this.collection.whenSelectionChanged(() => {
+			let onSelectionChanged = () => {
 				this.update();
-			})
+			};
+			this.collection.onSelectionChanged(onSelectionChanged)
+			this.entry.on(Display.Entry.EventType.DISPOSED, () => {
+				this.collection.offSelectionChanged(onSelectionChanged);
+			});
+			
 			this.update();
 			
 			this.elemJq.click((evt) => {

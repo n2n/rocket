@@ -562,7 +562,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		whenChanged(callback: () => any) {
-			this.collection.whenSelectionChanged(callback);
+			this.collection.onSelectionChanged(callback);
 		}
 	}
 	
