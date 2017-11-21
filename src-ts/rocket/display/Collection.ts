@@ -126,19 +126,11 @@ namespace Rocket.Display {
 				"forcePlaceholderSize": true,
 		      	"placeholder": "rocket-entry-placeholder",
 				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
-					console.log("start " + ui.item.index());
-//					var oldIndex = ui.item.index();
 				},
-				"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
-//					let entry = Entry.find(ui.item, true);
-//					if (entry)
-					
-					console.log("update< " + ui.item.html());
-					console.log("update> " + ui.sender.html());
-					
-//					var newIndex = ui.item.index();
-//					
-//					that.switchIndex(oldIndex, newIndex);
+				"update": (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) => {
+					this.sortedEntries = null;
+					let entry = Entry.find(ui.item, true);
+					this.insertedCbr.fire([entry], this.findEntryBefore(entry));
 				}
 		    })/*.disableSelection()*/;
 			
@@ -207,6 +199,7 @@ namespace Rocket.Display {
 				}
 			}
 			
+			this.sortedEntries = null;
 			this.insertedCbr.fire(entries, aboveEntry);
 		}
 		

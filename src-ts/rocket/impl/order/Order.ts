@@ -3,6 +3,7 @@ namespace Rocket.Impl.Order {
 	export class Control {
 		private entry: Display.Entry;
 		private collection: Display.Collection;
+		private executing: boolean = false;
 		
 		constructor(private elemJq: JQuery, private insertMode: InsertMode) {
 			this.entry = Display.Entry.of(elemJq);
@@ -13,8 +14,6 @@ namespace Rocket.Impl.Order {
 				this.collection.setupSelector(new Display.MultiEntrySelectorObserver());
 			}
 			
-			this.collection.setupSortable();
-			
 			this.collection.whenSelectionChanged(() => {
 				this.update();
 			})
@@ -24,6 +23,26 @@ namespace Rocket.Impl.Order {
 				evt.preventDefault();
 				this.exec();
 				return false;
+			});
+			
+			this.setupSortable();
+		}
+		
+		private setupSortable() {
+			if (this.insertMode != InsertMode.AFTER && this.insertMode != InsertMode.BEFORE) {
+				return;
+			}
+			
+			this.collection.setupSortable();
+			
+			this.collection.onInserted((entries: Display.Entry[], aboveEntry: Display.Entry) => {
+				if (this.executing) return;
+				
+				if ((this.insertMode == InsertMode.AFTER && this.entry === aboveEntry)
+						|| (this.insertMode == InsertMode.BEFORE && aboveEntry === null
+								&& this.entry === this.collection.entries[1])) {
+					this.dingsel(entries);
+				}
 			});
 		}
 		
@@ -41,6 +60,7 @@ namespace Rocket.Impl.Order {
 		}
 		
 		private exec() {
+			this.executing = true;
 			let entries = this.collection.selectedEntries;
 			
 			if (this.insertMode == InsertMode.BEFORE) {
@@ -49,6 +69,11 @@ namespace Rocket.Impl.Order {
 				this.collection.insertAfter(this.entry, entries);
 			}
 			
+			this.dingsel(entries);
+			this.executing = false;
+		}
+		
+		private dingsel(entries: Display.Entry[]) {
 			let newTreeLevel: number;
 			if (this.insertMode == InsertMode.CHILD) {
 				newTreeLevel = (this.entry.treeLevel || 0) + 1;
@@ -62,7 +87,6 @@ namespace Rocket.Impl.Order {
 				idReps.push(entry.id);
 				entry.selector.selected = false;
 			}
-			
 			$.get(this.elemJq.attr("href"), { "idReps": idReps });
 		}
 	}
