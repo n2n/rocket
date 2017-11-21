@@ -75,21 +75,21 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_before_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-order-before-cmd'))),
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'))),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'after', $eiEntry->getIdRep())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_after_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-order-after-cmd'))),
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'))),
 				self::CONTROL_INSERT_CHILD_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'child', $eiEntry->getIdRep())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_child_label'),
 								$dtc->translate('ei_impl_tree_insert_child_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_RIGHT, array('class' => 'rocket-order-child-cmd'))));
+								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'))));
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()

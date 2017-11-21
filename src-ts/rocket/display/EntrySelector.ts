@@ -26,8 +26,12 @@ namespace Rocket.Display {
 			this.triggerChanged();
 		}
 				
-		whenChanged(callback: () => any) {
-			this.changedCallbacks.push(callback);
+		whenChanged(callback: () => any, prepend: boolean = false) {
+			if (prepend) {
+				this.changedCallbacks.unshift(callback);
+			} else {
+				this.changedCallbacks.push(callback);
+			}
 		}
 		
 		protected triggerChanged() {

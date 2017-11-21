@@ -2,8 +2,10 @@ namespace Rocket.Display {
 
 	export class Collection {
 		private entryMap: { [id: string]: Entry } = {};
+		private sortedEntries: Entry[];
 		private selectorObserver: SelectorObserver;
 		private selectionChangedCallbacks: Array<() => any> = new Array<() => any>();
+		private insertedCbr = new Jhtml.Util.CallbackRegistry<InsertedCallback>();
 		
 		constructor(private elemJq: JQuery) {
 		}
@@ -33,7 +35,6 @@ namespace Rocket.Display {
 				this.triggerChanged();
 			});
 		    
-		    
 			var onFunc = () => {
 				if (this.entryMap[entry.id] !== entry) return;
 			
@@ -42,9 +43,9 @@ namespace Rocket.Display {
 			entry.on(Display.Entry.EventType.DISPOSED, onFunc);
 			entry.on(Display.Entry.EventType.REMOVED, onFunc);
 			
-			entry.jQuery.on("DOMNodeInserted", () => {
-				
-			});
+//			entry.jQuery.on("DOMNodeInserted", () => {
+//				
+//			});
 		}
 		
 		private triggerChanged() {
@@ -69,7 +70,7 @@ namespace Rocket.Display {
 		get selectedIds(): string[] {
 			if (!this.selectorObserver) return [];
 			
-			return this.selectorObserver.getSelectedIds()
+			return this.selectorObserver.getSelectedIds();
 		}
 		
 		get selectable(): boolean {
@@ -85,8 +86,21 @@ namespace Rocket.Display {
 		}
 		
 		get entries(): Array<Entry> {
-			var OC: any = Object;
-			return OC.values(this.entryMap);
+			if (this.sortedEntries) {
+				return this.sortedEntries;
+			}
+			
+			this.sortedEntries = new Array<Entry>();
+			
+			for (let entry of Entry.findAll(this.elemJq, false)) {
+				if (!this.entryMap[entry.id] || this.entryMap[entry.id] !== entry) {
+					continue;
+				}
+				
+				this.sortedEntries.push(entry);
+			}
+
+			return this.sortedEntries.slice();
 		}
 		
 		get selectedEntries(): Array<Entry> {
@@ -156,6 +170,54 @@ namespace Rocket.Display {
 			this.elemJq.enableSelection();
 		}
 		
+		private valEntry(entry: Entry) {
+			let id = entry.id;
+			if (!this.entryMap[id]) {
+				throw new Error("Unknown entry with id " + id);
+			}
+			
+			if (this.entryMap[id] !== entry) {
+				throw new Error("Collection contains other entry with same id: " + id);
+			}
+		}
+		
+		findEntryBefore(belowEntry: Entry): Entry|null {
+			this.valEntry(belowEntry);
+			
+			let aboveEntry: Entry = null;
+			for (let entry of this.entries) {
+				if (entry === belowEntry) return aboveEntry;
+				
+				aboveEntry = entry;
+			}
+			
+			return null;
+		}
+		
+		insertAfter(aboveEntry: Entry|null, entries: Entry[]) {
+			if (aboveEntry !== null) {
+				this.valEntry(aboveEntry)
+			}
+			
+			for (let entry of entries.reverse()) {
+				if (aboveEntry) {
+					entry.jQuery.insertAfter(aboveEntry.jQuery);
+				} else {
+					this.elemJq.prepend(entry.jQuery);
+				}
+			}
+			
+			this.insertedCbr.fire(entries, aboveEntry);
+		}
+		
+		onInserted(callback: InsertedCallback) {
+			this.insertedCbr.on(callback);
+		}
+		
+		offInserted(callback: InsertedCallback) {
+			this.insertedCbr.off(callback);
+		}
+		
 		static readonly CSS_CLASS = "rocket-collection";
 		
 		static from(jqElem: JQuery, create: boolean = true): Collection {
@@ -178,4 +240,8 @@ namespace Rocket.Display {
 		}
 	}
 	
+	
+	export interface InsertedCallback {
+		(entries: Entry[], aboveEntry: Entry): any
+	}
 }

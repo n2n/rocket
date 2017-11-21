@@ -17,19 +17,20 @@ namespace Rocket.Display {
 		}
 		
 		observeEntrySelector(selector: EntrySelector) {
-			var that = this;
-			
-			var jqCheck = $("<input />", { "type": "checkbox" });
+			let jqCheck = $("<input />", { "type": "checkbox" });
 			selector.jQuery.empty();
 			selector.jQuery.append(jqCheck);
 			
-			jqCheck.change(function () {
+			jqCheck.change(() => {
 				selector.selected = jqCheck.is(":checked");
 			});
-			selector.whenChanged(function () {
+			selector.whenChanged(() => {
+				if (selector.selected == this.containsSelectedId(selector.entry.id)) {
+					return;
+				}
 				jqCheck.prop("checked", selector.selected);
-				that.chSelect(selector.selected, selector.entry.id);
-			});
+				this.chSelect(selector.selected, selector.entry.id);
+			}, true);
 			
 			var entry = selector.entry;
 			var id = entry.id;
@@ -37,11 +38,11 @@ namespace Rocket.Display {
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
 			
-			entry.on(Entry.EventType.DISPOSED, function () {
-				delete that.selectors[id];
+			entry.on(Entry.EventType.DISPOSED, () => {
+				delete this.selectors[id];
 			});
-			entry.on(Entry.EventType.REMOVED, function () {
-				that.chSelect(false, id);
+			entry.on(Entry.EventType.REMOVED, () => {
+				this.chSelect(false, id);
 			});
 		}
 		

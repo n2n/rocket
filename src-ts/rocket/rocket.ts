@@ -90,7 +90,13 @@ namespace Rocket {
         (function () {
             Jhtml.ready((elements) => {
                 $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Rocket.Impl.Order.Control($(this));
+                    new Impl.Order.Control($(this), Impl.Order.InsertMode.BEFORE);
+                });
+                $(elements).find(".rocket-impl-insert-after").each(function () {
+                    new Impl.Order.Control($(this), Impl.Order.InsertMode.AFTER);
+                });
+                $(elements).find(".rocket-impl-insert-as-child").each(function () {
+                    new Impl.Order.Control($(this), Impl.Order.InsertMode.CHILD);
                 });
             });
         })();

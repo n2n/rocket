@@ -23,13 +23,15 @@ namespace rocket\spec\ei\component\command;
 
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
+use n2n\util\uri\Url;
 
 interface GenericAddEiCommand {
 	
 	public function isAddAvailable(EntryNavPoint $entryNavPoint): bool;
+	
 	/**
 	 * @param EntryNavPoint
-	 * @return \rocket\spec\ei\manage\control\DetailControlInfo
+	 * @return Url
 	 * @throws UnsupportedOperationException if EiCommand can not be used as ..
 	 */
 	public function getAddUrlExt(EntryNavPoint $entryNavPoint): Url;

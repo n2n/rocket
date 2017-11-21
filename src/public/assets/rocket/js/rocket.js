@@ -73,7 +73,13 @@ var Rocket;
         (function () {
             Jhtml.ready((elements) => {
                 $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Rocket.Impl.Order.Control($(this));
+                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.BEFORE);
+                });
+                $(elements).find(".rocket-impl-insert-after").each(function () {
+                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.AFTER);
+                });
+                $(elements).find(".rocket-impl-insert-as-child").each(function () {
+                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.CHILD);
                 });
             });
         })();
@@ -1167,6 +1173,8 @@ var Rocket;
             constructor(elemJq) {
                 this.elemJq = elemJq;
                 this.entryMap = {};
+                this.selectionChangedCallbacks = new Array();
+                this.insertedCbr = new Jhtml.Util.CallbackRegistry();
                 this._sortable = false;
             }
             scan() {
@@ -1186,6 +1194,9 @@ var Rocket;
                 if (this.sortable && entry.selector) {
                     this.applyHandle(entry.selector);
                 }
+                entry.selector.whenChanged(() => {
+                    this.triggerChanged();
+                });
                 var onFunc = () => {
                     if (this.entryMap[entry.id] !== entry)
                         return;
@@ -1193,6 +1204,14 @@ var Rocket;
                 };
                 entry.on(Display.Entry.EventType.DISPOSED, onFunc);
                 entry.on(Display.Entry.EventType.REMOVED, onFunc);
+            }
+            triggerChanged() {
+                this.selectionChangedCallbacks.forEach((callback) => {
+                    callback();
+                });
+            }
+            whenSelectionChanged(callback) {
+                this.selectionChangedCallbacks.push(callback);
             }
             setupSelector(selectorObserver) {
                 this.selectorObserver = selectorObserver;
@@ -1217,8 +1236,17 @@ var Rocket;
                 return this.entryMap[id] !== undefined;
             }
             get entries() {
-                var OC = Object;
-                return OC.values(this.entryMap);
+                if (this.sortedEntries) {
+                    return this.sortedEntries;
+                }
+                this.sortedEntries = new Array();
+                for (let entry of Display.Entry.findAll(this.elemJq, false)) {
+                    if (!this.entryMap[entry.id] || this.entryMap[entry.id] !== entry) {
+                        continue;
+                    }
+                    this.sortedEntries.push(entry);
+                }
+                return this.sortedEntries.slice();
             }
             get selectedEntries() {
                 var entries = new Array();
@@ -1238,8 +1266,11 @@ var Rocket;
                     "forcePlaceholderSize": true,
                     "placeholder": "rocket-entry-placeholder",
                     "start": function (event, ui) {
+                        console.log("start " + ui.item.index());
                     },
                     "update": function (event, ui) {
+                        console.log("update< " + ui.item.html());
+                        console.log("update> " + ui.sender.html());
                     }
                 });
                 for (let entry of this.entries) {
@@ -1264,6 +1295,45 @@ var Rocket;
                 this._sortable = false;
                 this.elemJq.sortable("disable");
                 this.elemJq.enableSelection();
+            }
+            valEntry(entry) {
+                let id = entry.id;
+                if (!this.entryMap[id]) {
+                    throw new Error("Unknown entry with id " + id);
+                }
+                if (this.entryMap[id] !== entry) {
+                    throw new Error("Collection contains other entry with same id: " + id);
+                }
+            }
+            findEntryBefore(belowEntry) {
+                this.valEntry(belowEntry);
+                let aboveEntry = null;
+                for (let entry of this.entries) {
+                    if (entry === belowEntry)
+                        return aboveEntry;
+                    aboveEntry = entry;
+                }
+                return null;
+            }
+            insertAfter(aboveEntry, entries) {
+                if (aboveEntry !== null) {
+                    this.valEntry(aboveEntry);
+                }
+                for (let entry of entries.reverse()) {
+                    if (aboveEntry) {
+                        entry.jQuery.insertAfter(aboveEntry.jQuery);
+                    }
+                    else {
+                        this.elemJq.prepend(entry.jQuery);
+                    }
+                }
+                this.insertedCbr.fire(entries, aboveEntry);
+            }
+            onInserted(callback) {
+                this.insertedCbr.on(callback);
+            }
+            offInserted(callback) {
+                this.insertedCbr.off(callback);
             }
             static from(jqElem, create = true) {
                 var collection = jqElem.data("rocketCollection");
@@ -1387,7 +1457,7 @@ var Rocket;
             off(eventType, callback) {
                 this.callbackRegistery.unregister(eventType.toString(), callback);
             }
-            get jqQuery() {
+            get jQuery() {
                 return this.jqElem;
             }
             show() {
@@ -1435,6 +1505,31 @@ var Rocket;
             get selector() {
                 return this._selector;
             }
+            findTreeLevelClass() {
+                let cl = this.jqElem.get(0).classList;
+                for (let i = 0; i < cl.length; i++) {
+                    let className = cl.item(i);
+                    if (className.startsWith(Entry.TREE_LEVEL_CSS_CLASS_PREFIX)) {
+                        return className;
+                    }
+                }
+                return null;
+            }
+            get treeLevel() {
+                let className = this.findTreeLevelClass();
+                if (className === null)
+                    return null;
+                return parseInt(className.substr(Entry.TREE_LEVEL_CSS_CLASS_PREFIX.length));
+            }
+            set treeLevel(treeLevel) {
+                let className = this.findTreeLevelClass();
+                if (className) {
+                    this.jqElem.removeClass(className);
+                }
+                if (treeLevel) {
+                    this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel);
+                }
+            }
             static from(elemJq) {
                 var entry = elemJq.data("rocketEntry");
                 if (entry instanceof Entry) {
@@ -1451,6 +1546,13 @@ var Rocket;
                     return null;
                 return Entry.from(jqElem);
             }
+            static find(jqElem, includeSelf = false) {
+                let entries = Entry.findAll(jqElem, includeSelf);
+                if (entries.length > 0) {
+                    return entries[0];
+                }
+                return null;
+            }
             static findAll(jqElem, includeSelf = false) {
                 var entries = new Array();
                 var jqEntries = jqElem.find("." + Entry.CSS_CLASS);
@@ -1462,6 +1564,7 @@ var Rocket;
             }
         }
         Entry.CSS_CLASS = "rocket-entry";
+        Entry.TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
         Display.Entry = Entry;
         (function (Entry) {
             let State;
@@ -1603,8 +1706,13 @@ var Rocket;
                 this._selected = selected;
                 this.triggerChanged();
             }
-            whenChanged(callback) {
-                this.changedCallbacks.push(callback);
+            whenChanged(callback, prepend = false) {
+                if (prepend) {
+                    this.changedCallbacks.unshift(callback);
+                }
+                else {
+                    this.changedCallbacks.push(callback);
+                }
             }
             triggerChanged() {
                 this.changedCallbacks.forEach(function (callback) {
@@ -1775,27 +1883,29 @@ var Rocket;
                 this.selectedIds = originalIdReps;
             }
             observeEntrySelector(selector) {
-                var that = this;
-                var jqCheck = $("<input />", { "type": "checkbox" });
+                let jqCheck = $("<input />", { "type": "checkbox" });
                 selector.jQuery.empty();
                 selector.jQuery.append(jqCheck);
-                jqCheck.change(function () {
+                jqCheck.change(() => {
                     selector.selected = jqCheck.is(":checked");
                 });
-                selector.whenChanged(function () {
+                selector.whenChanged(() => {
+                    if (selector.selected == this.containsSelectedId(selector.entry.id)) {
+                        return;
+                    }
                     jqCheck.prop("checked", selector.selected);
-                    that.chSelect(selector.selected, selector.entry.id);
-                });
+                    this.chSelect(selector.selected, selector.entry.id);
+                }, true);
                 var entry = selector.entry;
                 var id = entry.id;
                 selector.selected = this.containsSelectedId(id);
                 this.selectors[id] = selector;
                 this.identityStrings[id] = entry.identityString;
-                entry.on(Display.Entry.EventType.DISPOSED, function () {
-                    delete that.selectors[id];
+                entry.on(Display.Entry.EventType.DISPOSED, () => {
+                    delete this.selectors[id];
                 });
-                entry.on(Display.Entry.EventType.REMOVED, function () {
-                    that.chSelect(false, id);
+                entry.on(Display.Entry.EventType.REMOVED, () => {
+                    this.chSelect(false, id);
                 });
             }
             containsSelectedId(id) {
@@ -2522,6 +2632,80 @@ var Rocket;
 (function (Rocket) {
     var Impl;
     (function (Impl) {
+        var Order;
+        (function (Order) {
+            class Control {
+                constructor(elemJq, insertMode) {
+                    this.elemJq = elemJq;
+                    this.insertMode = insertMode;
+                    this.entry = Rocket.Display.Entry.of(elemJq);
+                    this.collection = Rocket.Display.Collection.of(this.elemJq);
+                    if (!this.collection)
+                        return;
+                    if (!this.collection.selectable) {
+                        this.collection.setupSelector(new Rocket.Display.MultiEntrySelectorObserver());
+                    }
+                    this.collection.setupSortable();
+                    this.collection.whenSelectionChanged(() => {
+                        this.update();
+                    });
+                    this.update();
+                    this.elemJq.click((evt) => {
+                        evt.preventDefault();
+                        this.exec();
+                        return false;
+                    });
+                }
+                get jQuery() {
+                    return this.elemJq;
+                }
+                update() {
+                    if ((this.entry.selector && this.entry.selector.selected)
+                        || this.collection.selectedIds.length == 0) {
+                        this.elemJq.hide();
+                    }
+                    else {
+                        this.elemJq.show();
+                    }
+                }
+                exec() {
+                    let entries = this.collection.selectedEntries;
+                    if (this.insertMode == InsertMode.BEFORE) {
+                        this.collection.insertAfter(this.collection.findEntryBefore(this.entry), entries);
+                    }
+                    else {
+                        this.collection.insertAfter(this.entry, entries);
+                    }
+                    let newTreeLevel;
+                    if (this.insertMode == InsertMode.CHILD) {
+                        newTreeLevel = (this.entry.treeLevel || 0) + 1;
+                    }
+                    else {
+                        newTreeLevel = this.entry.treeLevel;
+                    }
+                    let idReps = [];
+                    for (let entry of entries) {
+                        entry.treeLevel = newTreeLevel;
+                        idReps.push(entry.id);
+                        entry.selector.selected = false;
+                    }
+                    $.get(this.elemJq.attr("href"), { "idReps": idReps });
+                }
+            }
+            Order.Control = Control;
+            let InsertMode;
+            (function (InsertMode) {
+                InsertMode[InsertMode["BEFORE"] = 0] = "BEFORE";
+                InsertMode[InsertMode["AFTER"] = 1] = "AFTER";
+                InsertMode[InsertMode["CHILD"] = 2] = "CHILD";
+            })(InsertMode = Order.InsertMode || (Order.InsertMode = {}));
+        })(Order = Impl.Order || (Impl.Order = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
         var Overview;
         (function (Overview) {
             var $ = jQuery;
@@ -2954,9 +3138,9 @@ var Rocket;
                     this.loadUrl = loadUrl;
                     this.pages = new Array();
                     this.fakePage = null;
-                    this.changedCallbacks = new Array();
                     this._currentPageNo = null;
                     this.allInfo = null;
+                    this.contentChangedCallbacks = [];
                     this.loadingPageNos = new Array();
                     this.jqLoader = null;
                     this.collection = Rocket.Display.Collection.from(jqElem, true);
@@ -3135,7 +3319,7 @@ var Rocket;
                 }
                 triggerContentChange() {
                     var that = this;
-                    this.changedCallbacks.forEach(function (callback) {
+                    this.contentChangedCallbacks.forEach(function (callback) {
                         callback(that);
                     });
                 }
@@ -3152,7 +3336,7 @@ var Rocket;
                     this.triggerContentChange();
                 }
                 whenContentChanged(callback) {
-                    this.changedCallbacks.push(callback);
+                    this.contentChangedCallbacks.push(callback);
                 }
                 whenSelectionChanged(callback) {
                     this.selectorState.whenChanged(callback);
@@ -3316,7 +3500,6 @@ var Rocket;
                 constructor(collection) {
                     this.collection = collection;
                     this.fakeEntryMap = {};
-                    this.changedCallbacks = new Array();
                     this._autoShowSelected = false;
                 }
                 activate(selectorObserver) {
@@ -3360,7 +3543,6 @@ var Rocket;
                         if (this.autoShowSelected && entry.selector.selected) {
                             entry.show();
                         }
-                        this.triggerChanged();
                     });
                     var onFunc = () => {
                         delete this.fakeEntryMap[entry.id];
@@ -3389,13 +3571,8 @@ var Rocket;
                         entry.hide();
                     });
                 }
-                triggerChanged() {
-                    this.changedCallbacks.forEach(function (callback) {
-                        callback();
-                    });
-                }
                 whenChanged(callback) {
-                    this.changedCallbacks.push(callback);
+                    this.collection.whenSelectionChanged(callback);
                 }
             }
             class AllInfo {
@@ -3469,7 +3646,7 @@ var Rocket;
                     for (var i in this._entries) {
                         if (this._entries[i].id != id)
                             continue;
-                        this._entries[i].jqQuery.remove();
+                        this._entries[i].jQuery.remove();
                         this._entries.splice(parseInt(i), 1);
                         return;
                     }
@@ -4825,28 +5002,6 @@ var Rocket;
                 }
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        var Order;
-        (function (Order) {
-            class Control {
-                constructor(elemJq) {
-                    this.elemJq = elemJq;
-                    this.collection = Rocket.Display.Collection.of(this.elemJq);
-                    if (!this.collection)
-                        return;
-                    this.collection.setupSortable();
-                }
-                get jQuery() {
-                    return this.elemJq;
-                }
-            }
-            Order.Control = Control;
-        })(Order = Impl.Order || (Impl.Order = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
