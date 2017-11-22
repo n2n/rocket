@@ -56,9 +56,9 @@ class DateTimeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		$magCollection->addMag(new EnumMag(self::MAG_DATE_STYLE_KEY, 'Date Style', $styleOptions, 
+		$magCollection->addMag(self::MAG_DATE_STYLE_KEY, new EnumMag('Date Style', $styleOptions, 
 				$lar->getEnum(self::MAG_DATE_STYLE_KEY, $styles, $this->dateTimeEiProp->getDateStyle()), true));
-		$magCollection->addMag(new EnumMag(self::MAG_TIME_STYLE_KEY, 'Time Style', $styleOptions, 
+		$magCollection->addMag(self::MAG_TIME_STYLE_KEY, new EnumMag('Time Style', $styleOptions, 
 				$lar->getEnum(self::MAG_TIME_STYLE_KEY, $styles, $this->dateTimeEiProp->getTimeStyle()), true));
 		return new MagForm($magCollection);
 	}

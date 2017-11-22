@@ -311,14 +311,14 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		if ($this->displayDefinition->isCompactViewCompatible()) {
-			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY,
+			$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_overview_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
 							$this->displayDefinition->isViewModeDefaultDisplayed(DisplayDefinition::VIEW_MODE_BULKY_READ))));
 		}
 	
 		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_READ)) {
-			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
+			$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_detail_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
 							$this->displayDefinition->isViewModeDefaultDisplayed(
@@ -326,7 +326,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 	
 		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_EDIT)) {
-			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY,
+			$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_edit_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
 							$this->displayDefinition->isViewModeDefaultDisplayed(
@@ -334,14 +334,14 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 	
 		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_ADD)) {
-			$magCollection->addMag(new BoolMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY,
+			$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_add_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
 							$this->displayDefinition->isViewModeDefaultDisplayed(
 									DisplayDefinition::VIEW_MODE_BULKY_ADD))));
 		}
 		
-		$magCollection->addMag(new StringMag(self::ATTR_HELPTEXT_KEY, $dtc->translate('ei_impl_help_text_label'), 
+		$magCollection->addMag(self::ATTR_HELPTEXT_KEY, new StringMag($dtc->translate('ei_impl_help_text_label'), 
 				$lar->getString(self::ATTR_HELPTEXT_KEY, $this->displayDefinition->getHelpText())));
 	}
 	
@@ -384,17 +384,17 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		if ($this->addConstant) {
-			$magCollection->addMag(new BoolMag(self::ATTR_CONSTANT_KEY, 'Constant',
+			$magCollection->addMag(self::ATTR_CONSTANT_KEY, new BoolMag('Constant',
 					$lar->getBool(self::ATTR_CONSTANT_KEY, $this->standardEditDefinition->isConstant())));
 		}
 			
 		if ($this->addReadOnly) {
-			$magCollection->addMag(new BoolMag(self::ATTR_READ_ONLY_KEY, 'Read only',
+			$magCollection->addMag(self::ATTR_READ_ONLY_KEY, new BoolMag('Read only',
 					$lar->getBool(self::ATTR_READ_ONLY_KEY, $this->standardEditDefinition->isReadOnly())));
 		}
 			
 		if ($this->addMandatory) {
-			$magCollection->addMag(new BoolMag(self::ATTR_MANDATORY_KEY, 'Mandatory',
+			$magCollection->addMag(self::ATTR_MANDATORY_KEY, new BoolMag('Mandatory',
 					$lar->getBool(self::ATTR_MANDATORY_KEY, $this->standardEditDefinition->isMandatory())));
 		}
 	}
@@ -411,7 +411,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		$magCollection->addMag(new BoolMag(self::ATTR_DRAFTABLE_KEY, $dtc->translate('ei_impl_draftable_label'),
+		$magCollection->addMag(self::ATTR_DRAFTABLE_KEY, new BoolMag($dtc->translate('ei_impl_draftable_label'),
 				$lar->getBool(self::ATTR_DRAFTABLE_KEY, $this->confDraftableEiProp->isDraftable())));	
 	}
 

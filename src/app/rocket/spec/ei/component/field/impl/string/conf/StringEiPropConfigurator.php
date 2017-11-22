@@ -61,7 +61,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
-		$magDispatchable->getMagCollection()->addMag(new BoolMag(self::OPTION_MULTILINE_KEY, 'Multiline',
+		$magDispatchable->getMagCollection()->addMag(self::OPTION_MULTILINE_KEY, new BoolMag('Multiline',
 				$this->attributes->getBool(self::OPTION_MULTILINE_KEY, false, $this->eiComponent->isMultiline())));
 		
 		return $magDispatchable;

@@ -68,7 +68,7 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);
-		$magDispatchable->getMagCollection()->addMag(new NumericMag(self::OPTION_MAXLENGTH_KEY, 'Maxlength', 
+		$magDispatchable->getMagCollection()->addMag(self::OPTION_MAXLENGTH_KEY, new NumericMag('Maxlength', 
 				$lar->getInt(self::OPTION_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
 		
 		return $magDispatchable;
