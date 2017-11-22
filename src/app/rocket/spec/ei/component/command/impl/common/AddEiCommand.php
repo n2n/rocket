@@ -126,7 +126,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		return $controls;
 	}
 
-	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
+	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		
 		return array(self::CONTROL_ADD_CHILD_BRANCH_KEY => $dtc->t('ei_impl_add_child_branch_label'),

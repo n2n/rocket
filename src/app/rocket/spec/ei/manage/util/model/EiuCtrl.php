@@ -39,8 +39,8 @@ use n2n\web\http\payload\impl\Redirect;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ajah\RocketJhtmlResponse;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\ajah\JhtmlExec;
 use rocket\ajah\JhtmlEventInfo;
+use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -165,6 +165,17 @@ class EiuCtrl implements Lookupable {
 		}
 		
 		$response->send(RocketJhtmlResponse::redirectBack($refererUrl, $ajahEventInfo, $ajahExec));
+	}
+	
+	public function redirect(string $url, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+		$response = $this->httpContext->getResponse();
+		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+			$response->send(new Redirect($url));
+			return;
+		}
+		
+		$response->send(RocketJhtmlResponse::redirect($url, $ajahEventInfo, $ajahExec));
 	}
 	
 	public function forwardView(HtmlView $view) {

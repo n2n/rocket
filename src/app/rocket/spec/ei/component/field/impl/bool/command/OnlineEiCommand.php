@@ -93,7 +93,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
-	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
+	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('ei_impl_online_set_label'));
 	}

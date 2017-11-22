@@ -105,7 +105,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 	}
 	
-	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
+	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket');
 		
 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));

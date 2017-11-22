@@ -24,13 +24,14 @@ namespace rocket\spec\ei\manage\control;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\core\container\N2nContext;
 
 interface EntryControlComponent {
 	/**
 	 * @param N2nLocale $n2nLocale
 	 * @return string[]
 	 */
-	public function getEntryControlOptions(N2nLocale $n2nLocale): array;
+	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array;
 	
 	/**
 	 * @param Eiu $eiu

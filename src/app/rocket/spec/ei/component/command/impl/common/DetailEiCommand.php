@@ -63,7 +63,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
-	public function getEntryControlOptions(N2nLocale $n2nLocale): array {
+	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_DETAIL_KEY => $dtc->translate('ei_impl_detail_label'), 
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));

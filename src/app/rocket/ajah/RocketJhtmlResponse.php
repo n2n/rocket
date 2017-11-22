@@ -65,6 +65,22 @@ class RocketJhtmlResponse extends BufferedPayload {
 	}
 
 	/**
+	 * @param string $url
+	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param JhtmlExec $jhtmlExec
+	 * @return BufferedPayload
+	 */
+	public static function redirect(string $url, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
+		$attrs = array();
+		
+		if ($ajahEventInfo !== null) {
+			$attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
+		}
+		
+		return JhtmlRedirect::r($url, $jhtmlExec, $attrs);
+	}
+	
+	/**
 	 * @param JhtmlEventInfo $ajahEventInfo
 	 * @return BufferedPayload
 	 */
