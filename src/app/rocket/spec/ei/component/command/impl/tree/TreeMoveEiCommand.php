@@ -32,6 +32,8 @@ use rocket\spec\ei\manage\control\HrefControl;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
+use n2n\core\container\N2nContext;
+use n2n\l10n\N2nLocale;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
 	const ID_BASE = 'tree-move';
@@ -94,7 +96,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
-	public function getEntryControlOptions(\n2n\l10n\N2nLocale $n2nLocale): array {
+	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_INSERT_BEFORE_KEY => $dtc->translate('ei_impl_tree_insert_before_label'),
 				self::CONTROL_INSERT_AFTER_KEY => $dtc->translate('ei_impl_tree_insert_after_label'));
