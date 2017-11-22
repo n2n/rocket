@@ -122,11 +122,11 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 		$lar = new LenientAttributeReader($this->attributes);
 				
-		$magCollection->addMag(new StringArrayMag(self::ATTR_ALLOWED_EXTENSIONS_KEY, 'Allowed Extensions', 
+		$magCollection->addMag(self::ATTR_ALLOWED_EXTENSIONS_KEY, new StringArrayMag('Allowed Extensions', 
 				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getAllowedExtensions()), 
 				false));
 		
-		$magCollection->addMag(new EnumMag(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 'Dimensions import mode', 
+		$magCollection->addMag(self::ATTR_DIMENSION_IMPORT_MODE_KEY, new EnumMag('Dimensions import mode', 
 				array(FileEiProp::DIM_IMPORT_MODE_ALL => 'All possible dimensions',
 						FileEiProp::DIM_IMPORT_MODE_USED_ONLY => 'Only for current image used dimensions'),
 				$lar->getString(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
@@ -140,19 +140,19 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$extraImageDimensionStrs[] = (string) $extraImageDimension;
 			}
 		}
-		$magCollection->addMag(new StringArrayMag(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, 'Extra Thumb Dimensions', 
+		$magCollection->addMag(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, new StringArrayMag('Extra Thumb Dimensions', 
 				$extraImageDimensionStrs, false));
 		
-		$magCollection->addMag(new BoolMag(self::ATTR_CHECK_IMAGE_MEMORY_KEY, 'Check Image Resource Memory',
+		$magCollection->addMag(self::ATTR_CHECK_IMAGE_MEMORY_KEY, new BoolMag('Check Image Resource Memory',
 				$lar->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, $this->fileEiProp->isCheckImageMemoryEnabled())));
 		
-		$enablerMag = new EnablerMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, 'Multi upload',
+		$enablerMag = new EnablerMag('Multi upload',
 				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false));
-		$magCollection->addMag($enablerMag);
+		$magCollection->addMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, $enablerMag);
 		
-		$enumMag = new EnumMag(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY, 'Naming Field', 
+		$enumMag = new EnumMag('Naming Field', 
 				$this->getNamingEiPropIdOptions(), $lar->getString(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY));
-		$enablerMag->setAssociatedMagWrappers(array($magCollection->addMag($enumMag)));
+		$enablerMag->setAssociatedMagWrappers(array($magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY, $enumMag)));
 		
 		return $magDispatchable;
 	}

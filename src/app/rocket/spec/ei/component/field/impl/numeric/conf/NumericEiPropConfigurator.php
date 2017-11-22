@@ -101,9 +101,9 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
-		$magCollection->addMag(new NumericMag(self::OPTION_MIN_VALUE_KEY, 'Min Value',
+		$magCollection->addMag(self::OPTION_MIN_VALUE_KEY, new NumericMag('Min Value',
 				$lar->getNumeric(self::OPTION_MIN_VALUE_KEY, $this->eiComponent->getMinValue())));
-		$magCollection->addMag(new NumericMag(self::OPTION_MAX_VALUE_KEY, 'Max Value',
+		$magCollection->addMag(self::OPTION_MAX_VALUE_KEY, new NumericMag('Max Value',
 				$lar->getNumeric(self::OPTION_MAX_VALUE_KEY, $this->eiComponent->getMaxValue())));
 	
 		return $magDispatchable;

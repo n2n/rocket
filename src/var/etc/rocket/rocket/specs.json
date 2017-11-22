@@ -56,10 +56,10 @@
                 }
             },
             "commands": [],
-            "modificators": [],
             "defaultMaskId": null
         }
     },
     "commonEiMasks": [],
+    "modificators": [],
     "menuItems": []
 }

@@ -89,15 +89,15 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
 		$lar = new LenientAttributeReader($this->attributes);
-		$magDispatchable->getMagCollection()->addMag(new BoolMag(self::MAG_RELATIVE_ALLOWED_KEY, 'Relative allowed',
+		$magDispatchable->getMagCollection()->addMag(self::MAG_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
 				$lar->getBool(self::MAG_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
 	
-		$magDispatchable->getMagCollection()->addMag(new StringArrayMag(self::MAG_ALLOWED_PROTOCOLS_KEY, 
-				'Allowed protocols', $lar->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY,
+		$magDispatchable->getMagCollection()->addMag(self::MAG_ALLOWED_PROTOCOLS_KEY, 
+				new StringArrayMag('Allowed protocols', $lar->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY,
 						$this->eiComponent->getAllowedSchemes(), TypeConstraint::createSimple('string'))));
 	
-		$magDispatchable->getMagCollection()->addMag(new StringMag(self::ATTR_AUTO_SCHEME_KEY, 
-				'Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 
+		$magDispatchable->getMagCollection()->addMag(self::ATTR_AUTO_SCHEME_KEY, 
+				new StringMag('Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 
 						$this->eiComponent->getAutoScheme())));
 		
 		return $magDispatchable;

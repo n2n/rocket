@@ -62,22 +62,21 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		$magCollection->addMag(new EnumMag(self::OPTION_MODE_KEY, 'Mode',
+		$magCollection->addMag(self::OPTION_MODE_KEY, new EnumMag('Mode',
 				array_combine(CkeEiProp::getModes(), CkeEiProp::getModes()), 
 				$lar->getEnum(self::OPTION_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode())));
 		
-		$magCollection->addMag(new StringArrayMag(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, 
-				'Link Provider Lookup Ids',
-				$lar->getScalarArray(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY)));
+		$magCollection->addMag(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, 
+				new StringArrayMag('Link Provider Lookup Ids',
+						$lar->getScalarArray(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY)));
 		
-		$magCollection->addMag(new StringMag(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, 
-				'Css Config Lookup Id',
+		$magCollection->addMag(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, new StringMag('Css Config Lookup Id',
 				$lar->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY)));
 		
-		$magCollection->addMag(new BoolMag(self::OPTION_TABLES_SUPPORTED_KEY, 'Table Editing',
+		$magCollection->addMag(self::OPTION_TABLES_SUPPORTED_KEY, new BoolMag('Table Editing',
 				$lar->getBool(self::OPTION_TABLES_SUPPORTED_KEY, $this->ckeEiProp->isTableSupported())));
 		
-		$magCollection->addMag(new BoolMag(self::OPTION_BBCODE_KEY, 'BBcode',
+		$magCollection->addMag(self::OPTION_BBCODE_KEY, new BoolMag('BBcode',
 				$this->attributes->get(self::OPTION_BBCODE_KEY, false, $this->ckeEiProp->isBbcodeEnabled())));
 				
 		return $magDispatchable;

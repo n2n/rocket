@@ -117,43 +117,43 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		} catch (InvalidConfigurationException $e) {
 		}
 		
-		$magCollection->addMag(new EnumMag(self::ATTR_TARGET_MASK_KEY, 'Target Mask', $targetEiMaskOptions,
+		$magCollection->addMag(self::ATTR_TARGET_MASK_KEY, new EnumMag('Target Mask', $targetEiMaskOptions,
 				$lar->getString(self::ATTR_TARGET_MASK_KEY)));
 				
 		if ($this->eiComponent instanceof ToManyEiPropAdapter) {
-			$magCollection->addMag(new NumericMag(self::ATTR_MIN_KEY, 'Min',
+			$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min',
 					$lar->getInt(self::ATTR_MIN_KEY, $this->eiComponent->getMin())));
-			$magCollection->addMag(new NumericMag(self::ATTR_MAX_KEY, 'Max',
+			$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max',
 					$lar->getInt(self::ATTR_MAX_KEY, $this->eiComponent->getMax())));
 		}
 		
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp) {
-			$magCollection->addMag(new BoolMag(self::ATTR_REPLACEABLE_KEY, 'Replaceable',
+			$magCollection->addMag(self::ATTR_REPLACEABLE_KEY, new BoolMag('Replaceable',
 					$lar->getBool(self::ATTR_REPLACEABLE_KEY, $this->eiComponent->isReplaceable())));
 		}
 		
 		if ($this->eiComponent instanceof EmbeddedOneToManyEiProp) {
-			$magCollection->addMag(new EnumMag(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY, 'Target order field', 
+			$magCollection->addMag(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY, new EnumMag('Target order field', 
 					$targetOrderFieldPathOptions, $lar->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)));
 		}
 		
 		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp) {
-			$magCollection->addMag(new BoolMag(self::ATTR_COMPACT_KEY, 'Compact',
+			$magCollection->addMag(self::ATTR_COMPACT_KEY, new BoolMag('Compact',
 					$lar->getBool(self::ATTR_COMPACT_KEY, $this->eiComponent->isCompact())));
-			$magCollection->addMag(new BoolMag(self::ATTR_ORPHANS_ALLOWED_KEY, 'Allow orphans',
+			$magCollection->addMag(self::ATTR_ORPHANS_ALLOWED_KEY, new BoolMag('Allow orphans',
 					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $this->eiComponent->getOrphansAllowed())));
 		}
 		
 		if ($this->eiPropRelation instanceof SelectEiPropRelation) {
-			$magCollection->addMag(new BoolMag(self::OPTION_FILTERED_KEY, 'Filtered',
+			$magCollection->addMag(self::OPTION_FILTERED_KEY, new BoolMag('Filtered',
 					$lar->getBool(self::OPTION_FILTERED_KEY, $this->eiPropRelation->isFiltered())));
-			$magCollection->addMag(new BoolMag(self::OPTION_EMBEDDED_ADD_KEY,
+			$magCollection->addMag(self::OPTION_EMBEDDED_ADD_KEY, new BoolMag(
 					'Embedded Add Enabled', $lar->getBool(self::OPTION_EMBEDDED_ADD_KEY,
 							$this->eiPropRelation->isEmbeddedAddEnabled())));
 		}
 
 		if ($this->eiPropRelation->getRelationEntityProperty()->isMaster()) {
-			$magCollection->addMag(new EnumMag(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 'Target removal startegy', 
+			$magCollection->addMag(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, new EnumMag('Target removal startegy', 
 					array(RelationVetoableActionListener::STRATEGY_UNSET => 'Unset target',
 							RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
 							RelationVetoableActionListener::STRATEGY_SELF_REMOVE => 'Self remove'),
@@ -169,7 +169,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::setup($eiSetupProcess);
 		
 		
-		if (($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp)
+		if (($this->eiComponent instanceof EmbeddedOneToOneEiProp 
+						|| $this->eiComponent instanceof EmbeddedOneToManyEiProp)
 				&& $this->attributes->contains(self::ATTR_ORPHANS_ALLOWED_KEY)) {
 					
 			$this->eiComponent->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));

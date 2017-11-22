@@ -72,16 +72,16 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabel();
 		}
 		
-		$optionsMag = new MagCollectionArrayMag(self::OPTION_OPTIONS_KEY, 'Options',
+		$optionsMag = new MagCollectionArrayMag('Options',
 				function() use ($assoicatedGuiPropOptions) {
 					$magCollection = new MagCollection();
-					$magCollection->addMag(new StringMag('value', 'Value'));
-					$magCollection->addMag(new StringMag('label', 'Label'));
+					$magCollection->addMag('value', new StringMag('Value'));
+					$magCollection->addMag('label', new StringMag('Label'));
 					
-					$eMag = new EnablerMag('bindGuiPropsToValue', 'Bind GuiProps to value', false);
-					$magCollection->addMag($eMag);
+					$eMag = new EnablerMag('Bind GuiProps to value', false);
+					$magCollection->addMag('bindGuiPropsToValue', $eMag);
 					$eMag->setAssociatedMags(array(
-							$magCollection->addMag(new MultiSelectMag('assoicatedGuiIdPaths', 'Associated Gui Fields', $assoicatedGuiPropOptions))));
+							$magCollection->addMag('assoicatedGuiIdPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
 					return new MagForm($magCollection);
 				});
 		
@@ -102,7 +102,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$optionsMag->setValue($valueLabelMap);
 		
-		$magDispatchable->getMagCollection()->addMag($optionsMag);
+		$magDispatchable->getMagCollection()->addMag(self::OPTION_OPTIONS_KEY, $optionsMag);
 		return $magDispatchable;
 	}
 	
