@@ -315,7 +315,7 @@ namespace Rocket.Impl.Relation {
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
-		private expandPage: cmd.Zone = null;
+		private expandZone: cmd.Zone = null;
 		private dominantEntry: EmbeddedEntry = null;
 		private closeLabel: string;
 		private firstAddControl: AddControl = null;
@@ -566,7 +566,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandPage !== null;
+			return this.expandZone !== null;
 		}
 		
 		public isPartialExpaned() {
@@ -581,14 +581,14 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.dominantEntry = dominantEntry;
-			this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
+			this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
 			this.jqEmbedded.detach();
 			
 			let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
-			this.expandPage.applyContent(contentJq);
+			this.expandZone.applyContent(contentJq);
 			$("<header></header>").insertBefore(contentJq);
 			
-			this.expandPage.layer.pushHistoryEntry(window.location.href);
+			this.expandZone.layer.pushHistoryEntry(window.location.href);
 			
 			for (let i in this.entries) {
 				if (dominantEntry === null) {
@@ -602,13 +602,13 @@ namespace Rocket.Impl.Relation {
 			
 			var that = this;
 			
-			var jqCommandButton = this.expandPage.menu.commandList
+			var jqCommandButton = this.expandZone.menu.commandList
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(function () {
-				that.expandPage.layer.close();
+				that.expandZone.layer.close();
 			});
 			
-			this.expandPage.on(cmd.Zone.EventType.CLOSE, function () {
+			this.expandZone.on(cmd.Zone.EventType.CLOSE, function () {
 				that.reduce();
 			});
 			
@@ -619,7 +619,7 @@ namespace Rocket.Impl.Relation {
 			if (!this.isExpanded()) return;
 			
 			this.dominantEntry = null;
-			this.expandPage = null;
+			this.expandZone = null;
 			
 			this.jqEmbedded.detach();
 			this.jqToMany.append(this.jqEmbedded);

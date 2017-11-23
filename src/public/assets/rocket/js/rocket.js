@@ -220,7 +220,7 @@ var Rocket;
                     "class": "rocket-layer"
                 });
                 this.jqContainer.append(jqLayer);
-                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.from(jqLayer.get(0)));
+                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History()));
                 this._layers.push(layer);
                 var jqToolbar = $("<div />", {
                     "class": "rocket-layer-toolbar rocket-simple-commands"
@@ -1173,7 +1173,7 @@ var Rocket;
             constructor(elemJq) {
                 this.elemJq = elemJq;
                 this.entryMap = {};
-                this.selectionChangedCallbacks = new Array();
+                this.selectionChangedCbr = new Jhtml.Util.CallbackRegistry();
                 this.insertedCbr = new Jhtml.Util.CallbackRegistry();
                 this._sortable = false;
             }
@@ -1206,12 +1206,13 @@ var Rocket;
                 entry.on(Display.Entry.EventType.REMOVED, onFunc);
             }
             triggerChanged() {
-                this.selectionChangedCallbacks.forEach((callback) => {
-                    callback();
-                });
+                this.selectionChangedCbr.fire();
             }
-            whenSelectionChanged(callback) {
-                this.selectionChangedCallbacks.push(callback);
+            onSelectionChanged(callback) {
+                this.selectionChangedCbr.on(callback);
+            }
+            offSelectionChanged(callback) {
+                this.selectionChangedCbr.off(callback);
             }
             setupSelector(selectorObserver) {
                 this.selectorObserver = selectorObserver;
@@ -1266,11 +1267,11 @@ var Rocket;
                     "forcePlaceholderSize": true,
                     "placeholder": "rocket-entry-placeholder",
                     "start": function (event, ui) {
-                        console.log("start " + ui.item.index());
                     },
-                    "update": function (event, ui) {
-                        console.log("update< " + ui.item.html());
-                        console.log("update> " + ui.sender.html());
+                    "update": (event, ui) => {
+                        this.sortedEntries = null;
+                        let entry = Display.Entry.find(ui.item, true);
+                        this.insertedCbr.fire([entry], this.findEntryBefore(entry));
                     }
                 });
                 for (let entry of this.entries) {
@@ -1327,6 +1328,7 @@ var Rocket;
                         this.elemJq.prepend(entry.jQuery);
                     }
                 }
+                this.sortedEntries = null;
                 this.insertedCbr.fire(entries, aboveEntry);
             }
             onInserted(callback) {
@@ -2638,6 +2640,7 @@ var Rocket;
                 constructor(elemJq, insertMode) {
                     this.elemJq = elemJq;
                     this.insertMode = insertMode;
+                    this.executing = false;
                     this.entry = Rocket.Display.Entry.of(elemJq);
                     this.collection = Rocket.Display.Collection.of(this.elemJq);
                     if (!this.collection)
@@ -2645,15 +2648,34 @@ var Rocket;
                     if (!this.collection.selectable) {
                         this.collection.setupSelector(new Rocket.Display.MultiEntrySelectorObserver());
                     }
-                    this.collection.setupSortable();
-                    this.collection.whenSelectionChanged(() => {
+                    let onSelectionChanged = () => {
                         this.update();
+                    };
+                    this.collection.onSelectionChanged(onSelectionChanged);
+                    this.entry.on(Rocket.Display.Entry.EventType.DISPOSED, () => {
+                        this.collection.offSelectionChanged(onSelectionChanged);
                     });
                     this.update();
                     this.elemJq.click((evt) => {
                         evt.preventDefault();
                         this.exec();
                         return false;
+                    });
+                    this.setupSortable();
+                }
+                setupSortable() {
+                    if (this.insertMode != InsertMode.AFTER && this.insertMode != InsertMode.BEFORE) {
+                        return;
+                    }
+                    this.collection.setupSortable();
+                    this.collection.onInserted((entries, aboveEntry) => {
+                        if (this.executing)
+                            return;
+                        if ((this.insertMode == InsertMode.AFTER && this.entry === aboveEntry)
+                            || (this.insertMode == InsertMode.BEFORE && aboveEntry === null
+                                && this.entry === this.collection.entries[1])) {
+                            this.dingsel(entries);
+                        }
                     });
                 }
                 get jQuery() {
@@ -2669,6 +2691,7 @@ var Rocket;
                     }
                 }
                 exec() {
+                    this.executing = true;
                     let entries = this.collection.selectedEntries;
                     if (this.insertMode == InsertMode.BEFORE) {
                         this.collection.insertAfter(this.collection.findEntryBefore(this.entry), entries);
@@ -2676,6 +2699,10 @@ var Rocket;
                     else {
                         this.collection.insertAfter(this.entry, entries);
                     }
+                    this.dingsel(entries);
+                    this.executing = false;
+                }
+                dingsel(entries) {
                     let newTreeLevel;
                     if (this.insertMode == InsertMode.CHILD) {
                         newTreeLevel = (this.entry.treeLevel || 0) + 1;
@@ -2689,7 +2716,8 @@ var Rocket;
                         idReps.push(entry.id);
                         entry.selector.selected = false;
                     }
-                    $.get(this.elemJq.attr("href"), { "idReps": idReps });
+                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
+                    Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
                 }
             }
             Order.Control = Control;
@@ -3572,7 +3600,7 @@ var Rocket;
                     });
                 }
                 whenChanged(callback) {
-                    this.collection.whenSelectionChanged(callback);
+                    this.collection.onSelectionChanged(callback);
                 }
             }
             class AllInfo {
@@ -4385,7 +4413,7 @@ var Rocket;
                     this.compact = true;
                     this.sortable = true;
                     this.entries = new Array();
-                    this.expandPage = null;
+                    this.expandZone = null;
                     this.dominantEntry = null;
                     this.firstAddControl = null;
                     this.lastAddControl = null;
@@ -4589,7 +4617,7 @@ var Rocket;
                     this.jqEntries.enableSelection();
                 }
                 isExpanded() {
-                    return this.expandPage !== null;
+                    return this.expandZone !== null;
                 }
                 isPartialExpaned() {
                     return this.dominantEntry !== null;
@@ -4601,12 +4629,12 @@ var Rocket;
                         this.disableSortable();
                     }
                     this.dominantEntry = dominantEntry;
-                    this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
+                    this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
                     this.jqEmbedded.detach();
                     let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
-                    this.expandPage.applyContent(contentJq);
+                    this.expandZone.applyContent(contentJq);
                     $("<header></header>").insertBefore(contentJq);
-                    this.expandPage.layer.pushHistoryEntry(window.location.href);
+                    this.expandZone.layer.pushHistoryEntry(window.location.href);
                     for (let i in this.entries) {
                         if (dominantEntry === null) {
                             this.entries[i].expand(true);
@@ -4619,12 +4647,12 @@ var Rocket;
                         }
                     }
                     var that = this;
-                    var jqCommandButton = this.expandPage.menu.commandList
+                    var jqCommandButton = this.expandZone.menu.commandList
                         .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(function () {
-                        that.expandPage.layer.close();
+                        that.expandZone.layer.close();
                     });
-                    this.expandPage.on(cmd.Zone.EventType.CLOSE, function () {
+                    this.expandZone.on(cmd.Zone.EventType.CLOSE, function () {
                         that.reduce();
                     });
                     this.changed();
@@ -4633,7 +4661,7 @@ var Rocket;
                     if (!this.isExpanded())
                         return;
                     this.dominantEntry = null;
-                    this.expandPage = null;
+                    this.expandZone = null;
                     this.jqEmbedded.detach();
                     this.jqToMany.append(this.jqEmbedded);
                     for (let i in this.entries) {

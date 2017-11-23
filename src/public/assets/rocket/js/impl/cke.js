@@ -1,9 +1,10 @@
 (function() {
 	Jhtml.ready(function (elements) {
+		console.log("ready");
+		console.log(elements[0]);
 		$(elements).find(".rocket-impl-cke-classic").each((i, elem) => {
 			var editor = CKEDITOR.replace(elem);
 			
-
 //			let formJq = $(elem).closest("form");
 //			formJq.submit(() => {
 //				for (let i in CKEDITOR.instances) {
