@@ -32,6 +32,7 @@ use rocket\spec\ei\component\command\impl\EiCommandAdapter;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\util\uri\Path;
+use n2n\core\container\N2nContext;
 
 class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	const CONTROL_KEY = 'online_status';
