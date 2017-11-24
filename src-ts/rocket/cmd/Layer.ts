@@ -219,9 +219,9 @@ namespace Rocket.Cmd {
 				history.push(page);
 				return;
 			}
-			
+
 			let zone: Zone = this.getZoneByUrl(url);
-			if (!zone) {
+			if (zone) {
 				history.push(new Jhtml.Page(url, this.createPromise(zone)))
 				return;
 			}
@@ -233,7 +233,7 @@ namespace Rocket.Cmd {
 			return new Promise((resolve: any) => {
 				resolve({
 					exec() {
-						this.switchToPage(zone);
+						zone.layer.switchToZone(zone);
 					}
 				});
 			});
