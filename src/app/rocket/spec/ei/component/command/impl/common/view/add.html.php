@@ -40,7 +40,7 @@
 	$view->useTemplate('~\core\view\template.html', array('title' => 'Add'));
 ?>
 
-<?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-edit-form rocket-unsaved-check-form')) ?>
+<?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-form')) ?>
 	<?php $view->import($addModel->getEntryForm()->createView($view)) ?>
 		
 	<div class="rocket-zone-commands">

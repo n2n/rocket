@@ -146,6 +146,8 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.triggerChanged();
+
+			Rocket.scan();
 		}
 		
 		private createReplaceControl(prepend: boolean): AddControl {

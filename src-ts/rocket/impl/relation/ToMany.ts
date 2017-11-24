@@ -382,6 +382,8 @@ namespace Rocket.Impl.Relation {
 				this.entries[index].setMoveDownEnabled(index < this.entries.length - 1);
 			}
 			
+			Rocket.scan();
+			
 			if (this.addControlFactory === null) return;
 			
 			if (this.entries.length === 0 && this.firstAddControl !== null) {

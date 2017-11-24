@@ -104,7 +104,7 @@
 				bottom: 0px;
 				background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
 			}
-			
+						
 		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 

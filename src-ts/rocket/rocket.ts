@@ -35,12 +35,12 @@ namespace Rocket {
 		}) ();
 		
 		(function () {
-			$("form.rocket-impl-form").each(function () {
+			$("form.rocket-form").each(function () {
 				Rocket.Impl.Form.from($(this));
 			});
 			
 			Jhtml.ready(() => {
-				$("form.rocket-impl-form").each(function () {
+				$("form.rocket-form").each(function () {
 					Rocket.Impl.Form.from($(this));
 				});
 			});

@@ -39,7 +39,7 @@
 	
 	$view->useTemplate('~\core\view\template.html', array('title' => 'Edit'));
 ?>
-<?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-unsaved-check-form rocket-impl-form')) ?>
+<?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-form')) ?>
 	<?php $view->out($editModel->getEntryForm()->createView($view)) ?>
 					
 	<div class="rocket-zone-commands">

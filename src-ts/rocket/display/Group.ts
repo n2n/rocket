@@ -78,7 +78,7 @@ namespace Rocket.Display {
 		}
 		
 		public getParent(): StructureElement {
-			return StructureElement.of(this.jqElem);
+			return StructureElement.of(this.jqElem.parent());
 		}
 		
 		public isVisible() {
@@ -183,6 +183,7 @@ namespace Rocket.Display {
 		
 		public static of(jqElem: JQuery): StructureElement {
 			jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+			console.log("huii " + jqElem);
 			
 			if (jqElem.length == 0) return null;
 			
