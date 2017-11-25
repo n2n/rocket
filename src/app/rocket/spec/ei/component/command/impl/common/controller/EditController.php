@@ -47,7 +47,7 @@ class EditController extends ControllerAdapter {
 	}
 	
 	/**
-	 * @param EntryModel $entryGuiModel
+	 * @param EiuEntryGui $eiuEntryGui
 	 * @param Url $cancelUrl
 	 * @return \rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel
 	 */
