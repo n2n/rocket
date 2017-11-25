@@ -65,6 +65,23 @@ class RocketJhtmlResponse extends BufferedPayload {
 	}
 
 	/**
+	 * @param string $fallbackUrl
+	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param JhtmlExec $jhtmlExec
+	 * @return BufferedPayload
+	 */
+	public static function redirectReferer(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null,
+            JhtmlExec $jhtmlExec = null) {
+        $attrs = array();
+        
+        if ($ajahEventInfo !== null) {
+            $attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
+        }
+        
+        return JhtmlRedirect::referer($fallbackUrl, $jhtmlExec, $attrs);
+	}
+	
+	/**
 	 * @param string $url
 	 * @param JhtmlEventInfo $ajahEventInfo
 	 * @param JhtmlExec $jhtmlExec
@@ -77,7 +94,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 			$attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
 		}
 		
-		return JhtmlRedirect::r($url, $jhtmlExec, $attrs);
+		return JhtmlRedirect::redirect($url, $jhtmlExec, $attrs);
 	}
 	
 	/**

@@ -60,7 +60,7 @@ class OnlineController extends ControllerAdapter {
 			throw new ForbiddenException();
 		}
 		
-		$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRedirectUrl($eiuEntry), 
+		$this->eiuCtrl->redirectToReferer($this->eiuCtrl->buildRedirectUrl($eiuEntry), 
 				JhtmlEvent::ei()->eiObjectChanged($eiuEntry)
 						->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry))));
 	}

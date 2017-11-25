@@ -42,7 +42,7 @@ class TreeMoveController extends ControllerAdapter {
 			$this->move($idRep, $targetIdRep);
 		}
 		
-		$this->eiCtrl->redirectBack($refUrl);
+		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 	
 	public function doBefore($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
@@ -52,7 +52,7 @@ class TreeMoveController extends ControllerAdapter {
 			$this->move($idRep, $targetIdRep, true);
 		}
 		
-		$this->eiCtrl->redirectBack($refUrl);
+		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 
 	public function doAfter($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
@@ -62,7 +62,7 @@ class TreeMoveController extends ControllerAdapter {
 			$this->move($idRep, $targetIdRep, false);
 		}
 
-		$this->eiCtrl->redirectBack($refUrl);
+		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 
 	private function move(string $idRep, string $targetIdRep, bool $before = null) {

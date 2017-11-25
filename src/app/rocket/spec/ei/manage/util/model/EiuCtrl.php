@@ -151,20 +151,31 @@ class EiuCtrl implements Lookupable {
 		return $eiObject;
 	}
 	
+	public function redirectToReferer(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
+	    if ($refererUrl === null) {
+	        $refererUrl = $fallbackUrl;
+	    }
+	    
+	    $response = $this->httpContext->getResponse();
+	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+	        $response->send(new Redirect($refererUrl));
+	        return;
+	    }
+	    
+	    $response->send(RocketJhtmlResponse::redirectToReferer($refererUrl, $ajahEventInfo, $ajahExec));
+	}
+	
 	public function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
-		$refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
-		if ($refererUrl === null) {
-			$refererUrl = $fallbackUrl;
-		}
-		
-		$response = $this->httpContext->getResponse();
-		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
-		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
-			$response->send(new Redirect($refererUrl));
-			return;
-		}
-		
-		$response->send(RocketJhtmlResponse::redirectBack($refererUrl, $ajahEventInfo, $ajahExec));
+	    $response = $this->httpContext->getResponse();
+	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+	        $response->send(new Redirect($refererUrl));
+	        return;
+	    }
+	    
+	    $response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, $ajahEventInfo, $ajahExec));
 	}
 	
 	public function redirect(string $url, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
