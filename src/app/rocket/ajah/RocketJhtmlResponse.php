@@ -70,7 +70,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectReferer(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null,
+	public static function redirectToReferer(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null,
             JhtmlExec $jhtmlExec = null) {
         $attrs = array();
         
