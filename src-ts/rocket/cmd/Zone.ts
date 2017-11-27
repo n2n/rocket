@@ -52,6 +52,9 @@ namespace Rocket.Cmd {
 			page.on("disposed", () => {
 				this.clear(true);
 			});
+			page.on("promiseAssigned", () => {
+				this.clear(true);
+			});
 		}
 		
 		containsUrl(url: Jhtml.Url): boolean {

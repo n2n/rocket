@@ -371,7 +371,9 @@ var Rocket;
                 if (zoneJq.length > 0) {
                     let url = Jhtml.Url.create(window.location.href);
                     var zone = new Cmd.Zone(zoneJq, url, this);
-                    zone.page = this.monitor.history.currentPage;
+                    let page = this.monitor.history.currentPage;
+                    page.promise = this.createPromise(zone);
+                    zone.page = page;
                     this.addZone(zone);
                 }
                 this.monitor.history.onChanged(() => this.historyChanged());
@@ -517,17 +519,18 @@ var Rocket;
                 }
             }
             attachComp(comp, loadObserver) {
-                if (!comp.model.response)
-                    return false;
-                let zone = this.getZoneByUrl(comp.model.response.url);
-                if (zone) {
-                    zone.applyComp(comp, loadObserver);
-                    return true;
+                if (!comp.model.response) {
+                    throw new Error("model response undefined");
                 }
-                return false;
+                let zone = this.getZoneByUrl(comp.model.response.url);
+                if (!zone) {
+                    throw new Error("Zone for url " + comp.model.response.url + " does not extist");
+                }
+                zone.applyComp(comp, loadObserver);
+                return true;
             }
             detachComp(comp) {
-                return !this.jqLayer.get(0).contains(comp.elements[0]);
+                return true;
             }
             pushHistoryEntry(urlExpr) {
                 let url = Jhtml.Url.create(urlExpr);
@@ -932,6 +935,9 @@ var Rocket;
                 this._page = page;
                 page.config.keep = true;
                 page.on("disposed", () => {
+                    this.clear(true);
+                });
+                page.on("promiseAssigned", () => {
                     this.clear(true);
                 });
             }

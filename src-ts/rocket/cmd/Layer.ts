@@ -17,8 +17,9 @@ namespace Rocket.Cmd {
 			if (zoneJq.length > 0) {
 				let url = Jhtml.Url.create(window.location.href);
 				var zone = new Zone(zoneJq, url, this);
-				zone.page = this.monitor.history.currentPage;
-//				zone.page.config.keep = true;
+				let page = this.monitor.history.currentPage;
+				page.promise = this.createPromise(zone);
+				zone.page = page;
 				this.addZone(zone);
 			}
 
@@ -201,19 +202,21 @@ namespace Rocket.Cmd {
 		}
 		
 		attachComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver): boolean {
-			if (!comp.model.response) return false;
-			
-			let zone: Zone = this.getZoneByUrl(comp.model.response.url);
-			if (zone) {
-				zone.applyComp(comp, loadObserver);
-				return true;
+			if (!comp.model.response) {
+				throw new Error("model response undefined");
 			}
 			
-			return false;
+			let zone: Zone = this.getZoneByUrl(comp.model.response.url);
+			if (!zone) {
+				throw new Error("Zone for url " + comp.model.response.url + " does not extist");
+			}
+				
+			zone.applyComp(comp, loadObserver);
+			return true;
 		}
 		
 		detachComp(comp: Jhtml.Comp): boolean {
-			return !this.jqLayer.get(0).contains(comp.elements[0]);
+			return true;
 		}
 		
 		pushHistoryEntry(urlExpr: Jhtml.Url|string) {
