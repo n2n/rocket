@@ -87,8 +87,8 @@ namespace Rocket.Cmd {
 		
 		private directiveExecuted(directive: Jhtml.Directive) {
 			let data = directive.getAdditionalData();
-		
-			if (!data.eiEvents || !data.eiEvents.eiMods) return;
+
+			if (!data || !data.eiEvents || !data.eiEvents.eiMods) return;
 			
 			let zoneClearer = new ZoneClearer(this.getAllZones());
 			

@@ -36,7 +36,7 @@ class EiJhtmlEventInfo {
 	       $this->eventMap[$eiTypeId]['idReps'][$idRep] = $modType;
 	    }
 	    
-	    if (draftId !== null) {
+	    if ($draftId !== null) {
 	        $this->eventMap[$eiTypeId]['draftIds'][$draftId] = $modType;
 	    }
 	}

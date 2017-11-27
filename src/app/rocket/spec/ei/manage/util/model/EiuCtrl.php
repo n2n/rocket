@@ -39,7 +39,6 @@ use n2n\web\http\payload\impl\Redirect;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ajah\RocketJhtmlResponse;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\ajah\JhtmlEventInfo;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 
 class EiuCtrl implements Lookupable {
@@ -151,7 +150,7 @@ class EiuCtrl implements Lookupable {
 		return $eiObject;
 	}
 	
-	public function redirectToReferer(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	public function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
 	    if ($refererUrl === null) {
 	        $refererUrl = $fallbackUrl;
@@ -167,7 +166,7 @@ class EiuCtrl implements Lookupable {
 	    $response->send(RocketJhtmlResponse::redirectToReferer($refererUrl, $ajahEventInfo, $ajahExec));
 	}
 	
-	public function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	public function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 	    $response = $this->httpContext->getResponse();
 	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
@@ -178,7 +177,7 @@ class EiuCtrl implements Lookupable {
 	    $response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, $ajahEventInfo, $ajahExec));
 	}
 	
-	public function redirect(string $url, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	public function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
