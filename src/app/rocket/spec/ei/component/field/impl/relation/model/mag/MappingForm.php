@@ -66,7 +66,7 @@ class MappingForm implements Dispatchable {
 	
 	public function buildEiEntry() {
 		if ($this->entryForm !== null) {
-			return $this->entryForm->buildEiEntry();
+			return $this->entryForm->buildEiuEntry()->getEiEntry();
 		}
 		
 		return $this->eiEntry;
