@@ -221,9 +221,9 @@ namespace Rocket.Cmd {
 
 			let zone: Zone = this.getZoneByUrl(url);
 			if (zone) {
+				page = new Jhtml.Page(url, this.createPromise(zone));
+				history.push(page);
 				zone.page = page;
-				page.config.keep = true;
-				history.push(new Jhtml.Page(url, this.createPromise(zone)))
 				return;
 			}
 			
