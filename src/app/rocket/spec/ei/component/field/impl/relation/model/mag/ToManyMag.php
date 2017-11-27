@@ -46,6 +46,8 @@ class ToManyMag extends MagAdapter {
 	private $targetReadUtils;
 	private $targetEditUtils;
 	private $elementLabel;
+	private $compact = true;
+	private $sortable = true;
 	
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
@@ -124,7 +126,10 @@ class ToManyMag extends MagAdapter {
 	}
 
 	public function getFormValue() {
-		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditUtils, $this->min, $this->max);
+		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditUtils, $this->min, 
+				$this->max);
+		$toManyForm->setSortable($this->sortable);
+		$toManyForm->setCompact($this->compact);
 	
 		if ($this->selectOverviewToolsUrl !== null) {
 			$toManyForm->setSelectionModeEnabled(true);
