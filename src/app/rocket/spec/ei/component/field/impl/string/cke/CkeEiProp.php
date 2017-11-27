@@ -136,7 +136,7 @@ class CkeEiProp extends AlphanumericEiProp {
 			$linkProviders[] = N2N::getLookupManager()->lookup($linkProviderLookupId);
 		}
 
-		return $ckeHtmlBuidler->getIframe($value, $ckeCss, $linkProviders);
+		return $ckeHtmlBuidler->getIframe((string) $value, $ckeCss, $linkProviders);
 	}
 	
 	public function createMag(Eiu $eiu): Mag {

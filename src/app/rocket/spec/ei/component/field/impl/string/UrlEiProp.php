@@ -104,7 +104,7 @@ class UrlEiProp extends AlphanumericEiProp {
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $eiu->field()->getValue();
 		if ($value === null) return null;
-		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->entryGui()->isViewModeBulky()),
+		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->entryGui()->isBulky()),
 				array('target' => '_blank'));
 	}
 
