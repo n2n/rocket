@@ -546,7 +546,7 @@ namespace Rocket.Impl.Relation {
 				"forcePlaceholderSize": true,
 		      	"placeholder": "rocket-impl-entry-placeholder",
 				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
-					var oldIndex = ui.item.index();
+					oldIndex = ui.item.index();
 				},
 				"update": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
 					var newIndex = ui.item.index();

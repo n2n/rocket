@@ -196,7 +196,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
-				
+			$toManyEditable->setCompact($this->compact);
 			$draftMode = $eiEntry->getEiObject()->isDraft();
 			$toManyEditable->setDraftMode($draftMode);
 			

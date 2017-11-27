@@ -47,7 +47,6 @@ class ToManyMag extends MagAdapter {
 	private $targetEditUtils;
 	private $elementLabel;
 	private $compact = true;
-	private $sortable = true;
 	
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
@@ -72,6 +71,10 @@ class ToManyMag extends MagAdapter {
 	
 	private function updateContainerAttrs(bool $group) {
 		$this->setAttrs(array('class' => 'rocket-block'));
+	}
+	
+	public function setCompact(bool $compact) {
+		$this->compact = $compact;
 	}
 	
 	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
@@ -128,7 +131,7 @@ class ToManyMag extends MagAdapter {
 	public function getFormValue() {
 		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditUtils, $this->min, 
 				$this->max);
-		$toManyForm->setSortable($this->sortable);
+		$toManyForm->setSortable($this->targetOrderEiPropPath !== null);
 		$toManyForm->setCompact($this->compact);
 	
 		if ($this->selectOverviewToolsUrl !== null) {
@@ -229,7 +232,14 @@ class ToManyMag extends MagAdapter {
 		if ($this->allowedNewEiTypeIds !== null) {
 			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName);
 			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
-				if (in_array($mfMappingResult->entryForm->chosenId, $this->allowedNewEiTypeIds)) continue;
+				$chosenId = null;
+				if ($mfMappingResult->entryForm->containsPropertyName('chosenId')) {
+					$chosenId = $mfMappingResult->entryForm->chosenId;
+				} else {
+					$chosenId = $mfMappingResult->entryForm->getObject()->getChosenId();
+				}
+				
+				if (in_array($chosenId, $this->allowedNewEiTypeIds)) continue;
 				
 				$mfMappingResult->getBindingErrors()->addErrorCode('chosenId', 'ei_impl_ei_type_disallowed');
 			}

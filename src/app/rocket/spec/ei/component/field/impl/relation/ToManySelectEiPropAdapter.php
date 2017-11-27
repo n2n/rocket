@@ -103,7 +103,6 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), 
 					$mapping->getEiField(EiPropPath::from($this)), $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
-				
 			$toManyEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(
 					$eiFrame, $eiu->frame()->getHttpContext()));
 				

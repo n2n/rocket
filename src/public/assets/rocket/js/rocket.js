@@ -4680,7 +4680,7 @@ var Rocket;
                         "forcePlaceholderSize": true,
                         "placeholder": "rocket-impl-entry-placeholder",
                         "start": function (event, ui) {
-                            var oldIndex = ui.item.index();
+                            oldIndex = ui.item.index();
                         },
                         "update": function (event, ui) {
                             var newIndex = ui.item.index();
