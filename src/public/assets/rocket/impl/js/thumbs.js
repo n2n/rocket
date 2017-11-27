@@ -18,25 +18,29 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-jQuery(document).ready(function($) {
-	var jqElemResizer = $("#rocket-image-resizer");
+
+
+Jhtml.ready((elements) => { 
+	let $ = jQuery;
+	
+	var jqElemResizer = $(elements).find("#rocket-image-resizer");
 	if (jqElemResizer.length == 0) return;
 	
-	var jqElemPageControls = $("#rocket-page-controls");
-	var jqElemRocketHeader = $("#rocket-header");
+	var jqElemPageControls = $(elements).find("#rocket-page-controls");
+	var jqElemRocketHeader = $(elements).find("#rocket-header");
 	var jqElemWindow = $(window);
 	
 	new HnmImageResizer(jqElemResizer, $("#rocket-thumb-dimension-select"), null, function() {
 		return jqElemWindow.height() - jqElemRocketHeader.outerHeight() - jqElemPageControls.outerHeight() - 50;
 	});
 	
-	var jqElemInpPositionX = $("#rocket-thumb-pos-x").hide();
-	var jqElemInpPositionY = $("#rocket-thumb-pos-y").hide();
-	var jqElemInpWidth = $("#rocket-thumb-width").hide();
-	var jqElemInpHeight = $("#rocket-thumb-height").hide();
+	var jqElemInpPositionX = $(elements).find("#rocket-thumb-pos-x").hide();
+	var jqElemInpPositionY = $(elements).find("#rocket-thumb-pos-y").hide();
+	var jqElemInpWidth = $(elements).find("#rocket-thumb-width").hide();
+	var jqElemInpHeight = $(elements).find("#rocket-thumb-height").hide();
 	
 	
-	$(".rocket-thumbnail > img").each(function() {
+	$(elements).find(".rocket-thumbnail > img").each(function() {
 		$(this).attr('src', $(this).attr("src") + "?timestamp=" + new Date().getTime());
 	});
 		

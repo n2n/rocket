@@ -18,14 +18,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-jQuery(document).ready(function($) {
+Jhtml.ready(function(elements) {
 	(function() {
 		if (typeof $.fn.colorbox != 'function') return
-		$(".rocket-image-previewable").colorbox({rel:"rocket-image-previewable", maxHeight:'98%', maxWidth:'98%', scalePhotos:true, transition:"fade"});
+		$(elements).find(".rocket-image-previewable").colorbox({rel:"rocket-image-previewable", maxHeight:'98%', maxWidth:'98%', scalePhotos:true, transition:"fade"});
 	})();
 	
 	(function(){
-		var jqImagePreviewItem = $('.rocket-image-previewable');
+		var jqImagePreviewItem = $(elements).find('.rocket-image-previewable');
 		
 		jqImagePreviewItem.each(function(){
 			$(this).parent('td').addClass('rocket-image-preview-item');

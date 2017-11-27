@@ -18,7 +18,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-jQuery(window).ready(function($) {
+
+
+(function () {
+	let $ = jQuery;
 	
 	var HnmImageResizingDimension = function(dimensionString, zoomFactor) {
 		//not possible in js
@@ -713,4 +716,4 @@ jQuery(window).ready(function($) {
 		};
 	}
 	window.HnmImageResizer = HnmImageResizer;
-});
+})();
