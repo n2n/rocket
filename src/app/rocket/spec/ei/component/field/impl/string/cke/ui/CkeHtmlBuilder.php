@@ -137,7 +137,7 @@ class CkeHtmlBuilder {
 		}
 
 		$contentsHtml = htmlspecialchars(str_replace('"', "'", $this->getOut($contentsHtml, $this->view->getN2nLocale())));
-		$this->html->meta()->addJs('js/impl/cke.js', 'rocket', true);
+		$this->html->meta()->addJs('impl/js/cke.js', 'rocket', true);
 		return new Raw('<iframe scrolling="auto" ' . $bodyIdHtml
 			. ' class="rocket-cke-detail" ' . $bodyClassHtml
 			. 'data-contents-css="' . $headLinkHtml . '" data-content-html-json="'

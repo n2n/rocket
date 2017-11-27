@@ -35,7 +35,7 @@
 	$view->assert($relationSelectorForm instanceof RelationSelectorForm);
 	
 	$entryLabeler = $relationSelectorForm->getEntryLabeler();
-	$html->meta()->addJs('js/impl/selectorMag.js', 'rocket');
+	$html->meta()->addJs('impl/js/selectorMag.js', 'rocket');
 ?>
 <div class="rocket-selector-mag"
 		data-original-id-reps="<?php $html->out(json_encode($relationSelectorForm->getEntryIdReps())) ?>"

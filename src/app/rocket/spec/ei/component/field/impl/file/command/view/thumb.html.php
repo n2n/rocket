@@ -36,9 +36,9 @@
 	
 	$imageFile = $thumbModel->getImageFile();
 	
-	$html->meta()->addJs('js/image-resizer.js');
-	$html->meta()->addJs('js/thumbs.js');
-	$html->meta()->addCss('css/image-resizer.css');
+	$html->meta()->addJs('impl/js/image-resizer.js');
+	$html->meta()->addJs('impl/js/thumbs.js');
+	$html->meta()->addCss('impl/css/image-resizer.css');
 ?>
 
 

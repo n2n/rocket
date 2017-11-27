@@ -139,7 +139,7 @@
 // 			$bodyClassHtml = ($bodyClass = $ckeCssConfig->getBodyClass()) ? ' ' . self::ATTRIBUTE_BODY_CLASS . '="' . $bodyClass . '"' : '';
 // 		}
 
-// 		$this->html->meta()->addJs('js/impl/cke.js', 'rocket', true);
+// 		$this->html->meta()->addJs('impl/js/cke.js', 'rocket', true);
 // 		return new Raw('<div class="rocket-wysiwyg-content" style="display:none">'
 // 				. $this->getOut($contentsHtml) . '</div><iframe scrolling="auto" ' . $bodyIdHtml . ' class="rocket-wysiwyg-detail" ' . $bodyClassHtml
 // 				. ' ' . self::ATTRIBUTE_CONTENTS_CSS . '="' . $headLinkHtml . '"></iframe>');

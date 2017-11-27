@@ -166,9 +166,9 @@ class FileEiProp extends DraftableEiPropAdapter {
 		$html = $view->getHtmlBuilder();
 		
 		$meta = $html->meta();
-		$meta->addCss('js/impl/thirdparty/colorbox/colorbox.css', 'screen');
-		$meta->addJs('js/impl/thirdparty/colorbox/jquery.colorbox-min.js');
-		$meta->addJs('js/impl/image-preview.js');
+		$meta->addCss('impl/js/thirdparty/colorbox/colorbox.css', 'screen');
+		$meta->addJs('impl/js/thirdparty/colorbox/jquery.colorbox-min.js');
+		$meta->addJs('impl/js/image-preview.js');
 		
 		$uiComponent = new HtmlElement('div', null, new Link($file->getFileSource()->getUrl(),
 				$html->getImage($file, ThSt::crop(40, 28, true),
@@ -182,7 +182,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 							->toUrl(array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
-							'class' => 'rocket-control rocket-simple-commands')));
+							'class' => 'rocket-control rocket-simple-commands', 'data-jhtml' => 'true')));
 		}
 		
 		return $uiComponent;

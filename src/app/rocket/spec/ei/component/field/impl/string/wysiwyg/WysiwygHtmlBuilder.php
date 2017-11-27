@@ -102,7 +102,7 @@ class WysiwygHtmlBuilder {
 	public function getWysiwygIframeHtml($html, WysiwygCssConfig $cssConfig = null) {
 // 		
 // 		$this->htmlBuilder->addLibrary(new JQueryLibrary());
-		$this->html->meta()->addJs('js/impl/wysiwyg.js', 'rocket', true);
+		$this->html->meta()->addJs('impl/js/wysiwyg.js', 'rocket', true);
 		
 		$headLinkHtml = '';
 		$bodyIdHtml = '';
@@ -146,7 +146,7 @@ class WysiwygHtmlBuilder {
 			$attrs[self::ATTRIBUTE_LINK_CONFIGURATIONS] = StringUtils::jsonEncode(
 					$this->prepareLinkConfigurations($linkConfigurations, $n2nLocale));
 		}
-		$this->html->meta()->addJs('js/impl/wysiwyg.js', 'rocket', true);
+		$this->html->meta()->addJs('impl/js/wysiwyg.js', 'rocket', true);
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyPath, $attrs);
 	}
 	

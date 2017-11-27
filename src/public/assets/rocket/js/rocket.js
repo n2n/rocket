@@ -519,6 +519,8 @@ var Rocket;
                 }
             }
             attachComp(comp, loadObserver) {
+                if (comp.isAttached)
+                    return true;
                 if (!comp.model.response) {
                     throw new Error("model response undefined");
                 }

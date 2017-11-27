@@ -202,6 +202,8 @@ namespace Rocket.Cmd {
 		}
 		
 		attachComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver): boolean {
+			if (comp.isAttached) return true;
+			
 			if (!comp.model.response) {
 				throw new Error("model response undefined");
 			}
