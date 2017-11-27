@@ -6,16 +6,16 @@ namespace Rocket {
 	
 	jQuery(document).ready(function ($) {
 		var jqContainer = $("#rocket-content-container");
-	
+
 		container = new Rocket.Cmd.Container(jqContainer);
 
 		blocker = new Rocket.Cmd.Blocker(container);
 		blocker.init($("body"));
-
+		
 		initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), 
 				jqContainer.data("display-error-label"));
 		initializer.scan();
-		
+
 		Jhtml.ready(() => {
 			initializer.scan();
 		});

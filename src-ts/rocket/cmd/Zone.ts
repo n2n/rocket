@@ -10,11 +10,13 @@ namespace Rocket.Cmd {
 		private _activeUrl: Jhtml.Url;
 		private urls: Array<Jhtml.Url> = [];
 		private _layer: Layer;
-		private callbackRegistery: util.CallbackRegistry<PageCallback> = new util.CallbackRegistry<PageCallback>();
+		private callbackRegistery: util.CallbackRegistry<ZoneCallback> = new util.CallbackRegistry<ZoneCallback>();
 		private additionalTabManager: AdditionalTabManager;
 		private _menu: Menu;
 		private _blocked: boolean = false;
-		
+	
+		public page: Jhtml.Page;
+	
 		constructor(jqZone: JQuery, url: Jhtml.Url, layer: Layer) {
 			this.jqZone = jqZone;
 			this.urls.push(this._activeUrl = url);
@@ -22,7 +24,7 @@ namespace Rocket.Cmd {
 			
 			jqZone.addClass("rocket-zone");
 			jqZone.data("rocketPage", this);
-			
+
 			this.reset();
 			this.hide();
 		}
@@ -87,7 +89,7 @@ namespace Rocket.Cmd {
 		
 		private fireEvent(eventType: Zone.EventType) {
 			var that = this;
-			this.callbackRegistery.filter(eventType.toString()).forEach(function (callback: PageCallback) {
+			this.callbackRegistery.filter(eventType.toString()).forEach(function (callback: ZoneCallback) {
 				callback(that);
 			});
 		}
@@ -169,16 +171,16 @@ namespace Rocket.Cmd {
 		private trigger(eventType: Zone.EventType) {
 			var context = this;
 			this.callbackRegistery.filter(eventType.toString())
-					.forEach(function (callback: PageCallback) {
+					.forEach(function (callback: ZoneCallback) {
 						callback(context);
 					});
 		}
 		
-		public on(eventType: Zone.EventType, callback: PageCallback) {
+		public on(eventType: Zone.EventType, callback: ZoneCallback) {
 			this.callbackRegistery.register(eventType.toString(), callback);
 		}
 		
-		public off(eventType: Zone.EventType, callback: PageCallback) {
+		public off(eventType: Zone.EventType, callback: ZoneCallback) {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
@@ -471,7 +473,7 @@ namespace Rocket.Cmd {
 		}
 	}
 	
-	export interface PageCallback {
+	export interface ZoneCallback {
 		(context: Zone): any
 	}
 	

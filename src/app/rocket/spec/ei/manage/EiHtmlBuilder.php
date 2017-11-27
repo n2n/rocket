@@ -124,7 +124,7 @@ class EiHtmlBuilder {
 				
 		$entryAttrs = array(
 				'class' => 'rocket-entry' . ($treeLevel !== null ? ' rocket-tree-level-' . $treeLevel : ''),
-				'data-rocket-general-id' => GeneralIdUtils::generalIdOf($eiEntryGui->getEiEntry()->getEiObject()),
+				'data-rocket-supreme-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
 				'data-rocket-id-rep' => $idRep,
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
 				'data-rocket-identity-string' => (new EiuEntry($eiEntryGui))->createIdentityString());

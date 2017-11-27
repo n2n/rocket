@@ -12,7 +12,7 @@ namespace Rocket.Cmd {
 			
 			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, 
 					Jhtml.getOrCreateMonitor());
-			this._layers.push(layer);
+			this.registerLayer(layer);
 		}
 
 		get layers(): Array<Layer> {
@@ -80,6 +80,39 @@ namespace Rocket.Cmd {
 			this.layerTrigger(Container.LayerEventType.REMOVED, layer);
 		}
 		
+		private registerLayer(layer: Layer) {
+			layer.monitor.onDirective((evt) => this.directiveExecuted(evt.directive));
+			this._layers.push(layer);
+		}
+		
+		private directiveExecuted(directive: Jhtml.Directive) {
+			let data = directive.getAdditionalData();
+		
+			if (!data.eiEvents || !data.eiEvents.eiMods) return;
+			
+			let zoneClearer = new ZoneClearer(this.getAllZones());
+			
+			let eiMods = data.eiEvents.eiMods;
+			for (let supremeEiTypeId in eiMods) {
+				if (!eiMods[supremeEiTypeId].idReps && eiMods[supremeEiTypeId].draftIds) {
+					zoneClearer.clearBySupremeEiType(supremeEiTypeId);
+					continue;
+				}
+				
+				if (eiMods[supremeEiTypeId].idReps) {
+					for (let idRep in eiMods[supremeEiTypeId].idReps) {
+						zoneClearer.clearByIdRep(supremeEiTypeId, idRep);
+					}
+				}
+				
+				if (eiMods[supremeEiTypeId].draftIds) {
+					for (let draftId in eiMods[supremeEiTypeId].draftIds) {
+						zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId));
+					}
+				}
+			}
+		}
+		
 		public createLayer(dependentPage: Zone = null): Layer {
 			var jqLayer = $("<div />", {
 				"class": "rocket-layer"
@@ -89,7 +122,7 @@ namespace Rocket.Cmd {
 			
 			var layer = new Layer(jqLayer, this._layers.length, this, 
 					Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History()));
-			this._layers.push(layer);
+			this.registerLayer(layer);
 			
 			var jqToolbar = $("<div />", {
 				"class": "rocket-layer-toolbar rocket-simple-commands"
@@ -129,7 +162,7 @@ namespace Rocket.Cmd {
 			return layer;
 		}
 			
-		public getAllPages(): Array<Zone> {
+		public getAllZones(): Array<Zone> {
 			var contexts = new Array<Zone>();
 			
 			for (var i in this._layers) {
@@ -159,6 +192,48 @@ namespace Rocket.Cmd {
 		}
 	}
 	
+	
+	class ZoneClearer {
+		constructor(private zones: Zone[]) {
+			
+		}
+		
+		clearBySupremeEiType(supremeEiTypeId: string) {
+			for (let zone of this.zones) {
+				if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+					continue;
+				}
+				
+				if (Display.Entry.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
+					zone.page.dispose();
+				}
+			}
+		}
+		
+		clearByIdRep(supremeEiTypeId: string, idRep: string) {
+			for (let zone of this.zones) {
+				if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+					continue;
+				}
+				
+				if (Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
+					zone.page.dispose();
+				}
+			}
+		}
+		
+		clearByDraftId(supremeEiTypeId: string, draftId: number) {
+			for (let zone of this.zones) {
+				if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+					continue;
+				}
+				
+				if (Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
+					zone.page.dispose();
+				}
+			}
+		}
+	}
 	
 	export namespace Container {
 		export enum LayerEventType {

@@ -22,7 +22,7 @@ namespace Rocket.Cmd {
 				this.observePage(context)
 			}
 			
-			layer.onNewPage((context: Zone) => {
+			layer.onNewZone((context: Zone) => {
 				this.observePage(context);
 				this.check();
 			});

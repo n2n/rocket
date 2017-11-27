@@ -136,7 +136,7 @@ var Rocket;
                     var context = _a[_i];
                     this.observePage(context);
                 }
-                layer.onNewPage(function (context) {
+                layer.onNewZone(function (context) {
                     _this.observePage(context);
                     _this.check();
                 });
@@ -199,7 +199,7 @@ var Rocket;
                 this.jqContainer = jqContainer;
                 this._layers = new Array();
                 var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
-                this._layers.push(layer);
+                this.registerLayer(layer);
             }
             Object.defineProperty(Container.prototype, "layers", {
                 get: function () {
@@ -243,6 +243,34 @@ var Rocket;
                 this._layers.splice(i, 1);
                 this.layerTrigger(Container.LayerEventType.REMOVED, layer);
             };
+            Container.prototype.registerLayer = function (layer) {
+                var _this = this;
+                layer.monitor.onDirective(function (evt) { return _this.directiveExecuted(evt.directive); });
+                this._layers.push(layer);
+            };
+            Container.prototype.directiveExecuted = function (directive) {
+                var data = directive.getAdditionalData();
+                if (!data.eiEvents || !data.eiEvents.eiMods)
+                    return;
+                var zoneClearer = new ZoneClearer(this.getAllZones());
+                var eiMods = data.eiEvents.eiMods;
+                for (var supremeEiTypeId in eiMods) {
+                    if (!eiMods[supremeEiTypeId].idReps && eiMods[supremeEiTypeId].draftIds) {
+                        zoneClearer.clearBySupremeEiType(supremeEiTypeId);
+                        continue;
+                    }
+                    if (eiMods[supremeEiTypeId].idReps) {
+                        for (var idRep in eiMods[supremeEiTypeId].idReps) {
+                            zoneClearer.clearByIdRep(supremeEiTypeId, idRep);
+                        }
+                    }
+                    if (eiMods[supremeEiTypeId].draftIds) {
+                        for (var draftId in eiMods[supremeEiTypeId].draftIds) {
+                            zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId));
+                        }
+                    }
+                }
+            };
             Container.prototype.createLayer = function (dependentPage) {
                 if (dependentPage === void 0) { dependentPage = null; }
                 var jqLayer = $("<div />", {
@@ -250,7 +278,7 @@ var Rocket;
                 });
                 this.jqContainer.append(jqLayer);
                 var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History()));
-                this._layers.push(layer);
+                this.registerLayer(layer);
                 var jqToolbar = $("<div />", {
                     "class": "rocket-layer-toolbar rocket-simple-commands"
                 });
@@ -283,7 +311,7 @@ var Rocket;
                 this.layerTrigger(Container.LayerEventType.ADDED, layer);
                 return layer;
             };
-            Container.prototype.getAllPages = function () {
+            Container.prototype.getAllZones = function () {
                 var contexts = new Array();
                 for (var i in this._layers) {
                     var layerPages = this._layers[i].contexts;
@@ -309,6 +337,45 @@ var Rocket;
             return Container;
         }());
         Cmd.Container = Container;
+        var ZoneClearer = (function () {
+            function ZoneClearer(zones) {
+                this.zones = zones;
+            }
+            ZoneClearer.prototype.clearBySupremeEiType = function (supremeEiTypeId) {
+                for (var _i = 0, _a = this.zones; _i < _a.length; _i++) {
+                    var zone = _a[_i];
+                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+                        continue;
+                    }
+                    if (Rocket.Display.Entry.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
+                        zone.page.dispose();
+                    }
+                }
+            };
+            ZoneClearer.prototype.clearByIdRep = function (supremeEiTypeId, idRep) {
+                for (var _i = 0, _a = this.zones; _i < _a.length; _i++) {
+                    var zone = _a[_i];
+                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+                        continue;
+                    }
+                    if (Rocket.Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
+                        zone.page.dispose();
+                    }
+                }
+            };
+            ZoneClearer.prototype.clearByDraftId = function (supremeEiTypeId, draftId) {
+                for (var _i = 0, _a = this.zones; _i < _a.length; _i++) {
+                    var zone = _a[_i];
+                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+                        continue;
+                    }
+                    if (Rocket.Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
+                        zone.page.dispose();
+                    }
+                }
+            };
+            return ZoneClearer;
+        }());
         (function (Container) {
             var LayerEventType;
             (function (LayerEventType) {
@@ -332,7 +399,7 @@ var Rocket;
                 this._zones = new Array();
                 this.callbackRegistery = new Rocket.util.CallbackRegistry();
                 this._visible = true;
-                this.onNewPageCallbacks = new Array();
+                this.onNewZoneCallbacks = new Array();
                 this.onNewHistoryEntryCallbacks = new Array();
                 var jqPage = jqLayer.children(".rocket-zone:first");
                 if (jqPage.length > 0) {
@@ -370,13 +437,13 @@ var Rocket;
                 var currentEntry = this.monitor.history.currentEntry;
                 if (!currentEntry)
                     return;
-                var page = this.getZoneByUrl(currentEntry.page.url);
-                if (!page) {
-                    page = this.createZone(currentEntry.page.url);
-                    page.clear(true);
-                    this.addZone(page);
+                var zone = this.getZoneByUrl(currentEntry.page.url);
+                if (!zone) {
+                    zone = this.createZone(currentEntry.page.url);
+                    zone.clear(true);
+                    this.addZone(zone);
                 }
-                this.switchToZone(page);
+                this.switchToZone(zone);
             };
             Layer.prototype.createZone = function (urlExpr) {
                 var url = Jhtml.Url.create(urlExpr);
@@ -463,10 +530,10 @@ var Rocket;
                 enumerable: true,
                 configurable: true
             });
-            Layer.prototype.addZone = function (page) {
-                this._zones.push(page);
+            Layer.prototype.addZone = function (zone) {
+                this._zones.push(zone);
                 var that = this;
-                page.on(Cmd.Zone.EventType.CLOSE, function (context) {
+                zone.on(Cmd.Zone.EventType.CLOSE, function (context) {
                     for (var i in that._zones) {
                         if (that._zones[i] !== context)
                             continue;
@@ -474,12 +541,12 @@ var Rocket;
                         break;
                     }
                 });
-                for (var i in this.onNewPageCallbacks) {
-                    this.onNewPageCallbacks[i](page);
+                for (var i in this.onNewZoneCallbacks) {
+                    this.onNewZoneCallbacks[i](zone);
                 }
             };
-            Layer.prototype.onNewPage = function (onNewPageCallback) {
-                this.onNewPageCallbacks.push(onNewPageCallback);
+            Layer.prototype.onNewZone = function (onNewPageCallback) {
+                this.onNewZoneCallbacks.push(onNewPageCallback);
             };
             Layer.prototype.clear = function () {
                 for (var i in this._zones) {
@@ -528,6 +595,8 @@ var Rocket;
                 }
                 var zone = this.getZoneByUrl(url);
                 if (zone) {
+                    zone.page = page;
+                    page.config.keep = true;
                     history.push(new Jhtml.Page(url, this.createPromise(zone)));
                     return;
                 }
@@ -1782,8 +1851,22 @@ var Rocket;
                 });
                 return entries;
             };
+            Entry.hasSupremeEiTypeId = function (jqContainer, supremeEiTypeId) {
+                return jqContainer.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]");
+            };
+            Entry.hasIdRep = function (jqElem, supremeEiTypeId, idRep) {
+                return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
+                    + " [" + Entry.ID_REP_ATTR + "=" + idRep + "]");
+            };
+            Entry.hasDraftId = function (jqElem, supremeEiTypeId, darftId) {
+                return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
+                    + " [" + Entry.DRAFT_ID_ATTR + "=" + darftId + "]");
+            };
             Entry.CSS_CLASS = "rocket-entry";
             Entry.TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
+            Entry.SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
+            Entry.ID_REP_ATTR = "data-rocket-id-rep-id";
+            Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";
             return Entry;
         }());
         Display.Entry = Entry;
@@ -2002,7 +2085,7 @@ var Rocket;
                 while (undefined !== (errorIndex = this.errorIndexes.pop())) {
                     errorIndex.getTab().dispose();
                 }
-                var contexts = this.container.getAllPages();
+                var contexts = this.container.getAllZones();
                 for (var i in contexts) {
                     this.scanPage(contexts[i]);
                 }
@@ -2425,7 +2508,7 @@ var Rocket;
                     });
                 };
                 var this_1 = this;
-                for (var _i = 0, _a = this.container.getAllPages(); _i < _a.length; _i++) {
+                for (var _i = 0, _a = this.container.getAllZones(); _i < _a.length; _i++) {
                     var context = _a[_i];
                     _loop_1(context);
                 }

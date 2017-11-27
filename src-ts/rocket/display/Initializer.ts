@@ -22,7 +22,7 @@ namespace Rocket.Display {
 				errorIndex.getTab().dispose();
 			}  
 			
-			var contexts = this.container.getAllPages();
+			var contexts = this.container.getAllZones();
 			for (var i in contexts) {
 				this.scanPage(contexts[i]);
 			}

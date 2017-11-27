@@ -3,14 +3,14 @@ namespace Rocket.Cmd {
 	
 	export class Layer implements Jhtml.CompHandler {
 		private _zones: Array<Zone> = new Array<Zone>();
-		private onNewPageCallbacks: Array<PageCallback>;
+		private onNewZoneCallbacks: Array<ZoneCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
 		private callbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
 		private _visible: boolean = true;
 		
 		constructor(private jqLayer: JQuery, private _level: number, private _container: Container, 
 				private _monitor: Jhtml.Monitor) {
-			this.onNewPageCallbacks = new Array<PageCallback>();
+			this.onNewZoneCallbacks = new Array<ZoneCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 
 			var jqPage = jqLayer.children(".rocket-zone:first");
@@ -50,17 +50,16 @@ namespace Rocket.Cmd {
 		
 		private historyChanged() {
 			let currentEntry: Jhtml.History.Entry = this.monitor.history.currentEntry;
-
 			if (!currentEntry) return;
 			
-			let page: Zone = this.getZoneByUrl(currentEntry.page.url);
-			if (!page) {
-				page = this.createZone(currentEntry.page.url)
-				page.clear(true);
-				this.addZone(page);
+			let zone: Zone = this.getZoneByUrl(currentEntry.page.url);
+			if (!zone) {
+				zone = this.createZone(currentEntry.page.url)
+				zone.clear(true);
+				this.addZone(zone);
 			}
 			
-			this.switchToZone(page);
+			this.switchToZone(zone);
 		}
 
 		public createZone(urlExpr: string|Jhtml.Url): Zone {
@@ -144,11 +143,11 @@ namespace Rocket.Cmd {
 			return this._zones.slice();
 		}
 				
-		private addZone(page: Zone) {
-			this._zones.push(page);
+		private addZone(zone: Zone) {
+			this._zones.push(zone);
 			var that = this;
 			
-			page.on(Zone.EventType.CLOSE, function (context: Zone) {
+			zone.on(Zone.EventType.CLOSE, function (context: Zone) {
 				for (var i in that._zones) {
 					if (that._zones[i] !== context) continue;
 					
@@ -157,13 +156,13 @@ namespace Rocket.Cmd {
 				}
 			});
 			
-			for (var i in this.onNewPageCallbacks) {
-				this.onNewPageCallbacks[i](page);
+			for (var i in this.onNewZoneCallbacks) {
+				this.onNewZoneCallbacks[i](zone);
 			}
 		}
 		
-		public onNewPage(onNewPageCallback: PageCallback) {
-			this.onNewPageCallbacks.push(onNewPageCallback);
+		public onNewZone(onNewPageCallback: ZoneCallback) {
+			this.onNewZoneCallbacks.push(onNewPageCallback);
 		}
 		
 		public clear() {
@@ -222,6 +221,8 @@ namespace Rocket.Cmd {
 
 			let zone: Zone = this.getZoneByUrl(url);
 			if (zone) {
+				zone.page = page;
+				page.config.keep = true;
 				history.push(new Jhtml.Page(url, this.createPromise(zone)))
 				return;
 			}

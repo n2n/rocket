@@ -7,6 +7,7 @@ use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\jhtml\JhtmlRedirect;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
+use rocket\spec\ei\manage\util\model\EiJhtmlEventInfo;
 
 class RocketJhtmlResponse extends BufferedPayload {
 	private $jsonResponse;
@@ -39,26 +40,23 @@ class RocketJhtmlResponse extends BufferedPayload {
 		return $this->jsonResponse->toKownPayloadString();
 	}
 
-	const ATTR_ROCKET_EVENT = 'rocketEvent';
+	const ATTR_EI_EVENT = 'eiEvents';
 	const ATTR_MODIFICATIONS = 'modifications';
-
-	const MOD_TYPE_CHANGED = 'changed';
-	const MOD_TYPE_REMOVED = 'removed';
 
 	const ATTR_EXEC_CONFIG = 'execConfig';
 
 	/**
 	 * @param string $fallbackUrl
-	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param EiJhtmlEventInfo $eventInfo
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectBack(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null, 
+	public static function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $eventInfo = null, 
 			JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 
-		if ($ajahEventInfo !== null) {
-			$attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
+		if ($eventInfo !== null) {
+			$attrs[self::ATTR_EI_EVENT] = $eventInfo->toAttrs();
 		}
 
 		return JhtmlRedirect::back($fallbackUrl, $jhtmlExec, $attrs);
@@ -66,16 +64,16 @@ class RocketJhtmlResponse extends BufferedPayload {
 
 	/**
 	 * @param string $fallbackUrl
-	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param EiJhtmlEventInfo $ajahEventInfo
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectToReferer(string $fallbackUrl, JhtmlEventInfo $ajahEventInfo = null,
+	public static function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null,
             JhtmlExec $jhtmlExec = null) {
         $attrs = array();
         
         if ($ajahEventInfo !== null) {
-            $attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
+            $attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
         }
         
         return JhtmlRedirect::referer($fallbackUrl, $jhtmlExec, $attrs);
@@ -83,31 +81,31 @@ class RocketJhtmlResponse extends BufferedPayload {
 	
 	/**
 	 * @param string $url
-	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param EiJhtmlEventInfo $ajahEventInfo
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirect(string $url, JhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
+	public static function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 		
 		if ($ajahEventInfo !== null) {
-			$attrs[self::ATTR_ROCKET_EVENT] = $ajahEventInfo->toAttrs();
+			$attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
 		}
 		
 		return JhtmlRedirect::redirect($url, $jhtmlExec, $attrs);
 	}
 	
 	/**
-	 * @param JhtmlEventInfo $ajahEventInfo
+	 * @param EiJhtmlEventInfo $ajahEventInfo
 	 * @return BufferedPayload
 	 */
-	public static function events(JhtmlEventInfo $ajahEventInfo) {
+	public static function events(EiJhtmlEventInfo $ajahEventInfo) {
 		return new RocketJhtmlResponse(array(
-				self::ATTR_ROCKET_EVENT => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
+				self::ATTR_EI_EVENT => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
 	}
 
-	public static function view(HtmlView $htmlView, JhtmlEventInfo $ajahEventInfo = null) {
+	public static function view(HtmlView $htmlView, EiJhtmlEventInfo $ajahEventInfo = null) {
 		return new JhtmlJsonResponse($htmlView,
-				($ajahEventInfo !== null ? array(self::ATTR_ROCKET_EVENT => $ajahEventInfo->toAttrs()) : null));
+				($ajahEventInfo !== null ? array(self::ATTR_EI_EVENT => $ajahEventInfo->toAttrs()) : null));
 	}
 }

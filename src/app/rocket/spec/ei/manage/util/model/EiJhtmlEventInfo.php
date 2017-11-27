@@ -1,15 +1,45 @@
 <?php
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\ajah\JhtmlEventInfo;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\control\Control;
 use n2n\web\ui\SimpleBuildContext;
 
-class EiJhtmlEventInfo extends JhtmlEventInfo {
+class EiJhtmlEventInfo {
+    const ATTR_CHANGES_KEY = 'eiMods';
 	const ATTR_SWAP_CONTROL_HTML_KEY = 'swapControlHtml';
+	
+	const MOD_TYPE_CHANGED = 'changed';
+	const MOD_TYPE_REMOVED = 'removed';
+	
+	private $eventMap = array();
 	private $swapControl;
+	
+	private function evMapEiType(string $eiTypeId) {
+	    $this->eventMap[$eiTypeId] = self::MOD_TYPE_CHANGED;
+	}
+	
+	/**
+	 * @param string $eiTypeId
+	 * @param string $entryId
+	 * @param string $modType
+	 */
+	private function evMapEiObject(string $eiTypeId, string $idRep = null, int $draftId = null, string $modType) {
+	    if (!isset($this->eventMap[$eiTypeId])) {
+	        $this->eventMap[$eiTypeId] = array('idReps' => [], 'draftIds' => []);
+	    } else if ($this->eventMap[$eiTypeId] == self::MOD_TYPE_CHANGED) {
+	        return;
+	    }
+	    
+	    if ($idRep !== null) {
+	       $this->eventMap[$eiTypeId]['idReps'][$idRep] = $modType;
+	    }
+	    
+	    if (draftId !== null) {
+	        $this->eventMap[$eiTypeId]['draftIds'][$draftId] = $modType;
+	    }
+	}
 	
 	/**
 	 * @param mixed ...$eiTypeArgs
@@ -46,11 +76,21 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	
 	private function eiObjectMod($eiObjectArg, bool $removed) {
 		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
-		if ($removed) {
-			$this->itemRemoved(self::buildTypeId($eiObject->getEiEntityObj()->getEiType()), self::buildItemId($eiObject));
-		} else {
-			$this->itemChanged(self::buildTypeId($eiObject->getEiEntityObj()->getEiType()), self::buildItemId($eiObject));
+		
+		$eiTypeId = self::buildTypeId($eiObject->getEiEntityObj()->getEiType());
+		$modType = $removed ? self::MOD_TYPE_REMOVED : self::MOD_TYPE_CHANGED;
+		
+		$idRep = null;
+		if ($eiObject->isNew()) {
+		    $idRep = $eiObject->getEiEntityObj()->getId();
 		}
+		
+		$draftId = null;
+		if ($eiObject->isDraft()) {
+		    $draftId = $eiObject->getDraft()->getId();
+		}
+		
+		$this->evMapEiObject($eiTypeId, $idRep, $draftId, $modType);
 	}
 	
 	/**

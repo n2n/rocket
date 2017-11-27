@@ -6,7 +6,7 @@ namespace Rocket.Impl {
 		}
 		
 		scan() {
-			for (let context of this.container.getAllPages()) {
+			for (let context of this.container.getAllZones()) {
 				let elems: Array<HTMLElement> = context.jQuery.find(".rocket-impl-translation-manager").toArray();
 				let elem;
 				while (elem = elems.pop()) {

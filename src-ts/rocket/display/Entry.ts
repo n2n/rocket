@@ -141,6 +141,9 @@ namespace Rocket.Display {
 		
 		static readonly CSS_CLASS = "rocket-entry";
 		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
+		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
+		static readonly ID_REP_ATTR = "data-rocket-id-rep-id";
+		static readonly DRAFT_ID_ATTR = "data-rocket-draft-id";
 		
 		private static from(elemJq: JQuery): Entry {
 			var entry = elemJq.data("rocketEntry");
@@ -183,6 +186,20 @@ namespace Rocket.Display {
 			});
 			
 			return entries;
+		}
+		
+		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string) {
+			return jqContainer.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]");
+		}
+		
+		static hasIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string) {
+			return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
+					+ " [" + Entry.ID_REP_ATTR + "=" + idRep + "]");
+		}
+		
+		static hasDraftId(jqElem: JQuery, supremeEiTypeId: string, darftId: number) {
+			return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
+					+ " [" + Entry.DRAFT_ID_ATTR + "=" + darftId + "]");
 		}
 	}
 	
