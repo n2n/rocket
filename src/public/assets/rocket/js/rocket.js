@@ -327,6 +327,7 @@ var Rocket;
                     }
                     if (Rocket.Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
                         zone.page.dispose();
+                        zone.clear(true);
                     }
                 }
             }
@@ -337,6 +338,7 @@ var Rocket;
                     }
                     if (Rocket.Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
                         zone.page.dispose();
+                        zone.clear(true);
                     }
                 }
             }
@@ -365,10 +367,12 @@ var Rocket;
                 this._visible = true;
                 this.onNewZoneCallbacks = new Array();
                 this.onNewHistoryEntryCallbacks = new Array();
-                var jqPage = jqLayer.children(".rocket-zone:first");
-                if (jqPage.length > 0) {
-                    var page = new Cmd.Zone(jqPage, Jhtml.Url.create(window.location.href), this);
-                    this.addZone(page);
+                var zoneJq = jqLayer.children(".rocket-zone:first");
+                if (zoneJq.length > 0) {
+                    let url = Jhtml.Url.create(window.location.href);
+                    var zone = new Cmd.Zone(zoneJq, url, this);
+                    zone.page = this.monitor.history.currentPage;
+                    this.addZone(zone);
                 }
                 this.monitor.history.onChanged(() => this.historyChanged());
                 this.monitor.registerCompHandler("rocket-page", this);
@@ -397,11 +401,15 @@ var Rocket;
                 let currentEntry = this.monitor.history.currentEntry;
                 if (!currentEntry)
                     return;
-                let zone = this.getZoneByUrl(currentEntry.page.url);
+                let page = currentEntry.page;
+                let zone = this.getZoneByUrl(page.url);
                 if (!zone) {
-                    zone = this.createZone(currentEntry.page.url);
+                    zone = this.createZone(page.url);
                     zone.clear(true);
                     this.addZone(zone);
+                }
+                if (!zone.page) {
+                    zone.page = page;
                 }
                 this.switchToZone(zone);
             }
@@ -541,6 +549,9 @@ var Rocket;
             createPromise(zone) {
                 return new Promise((resolve) => {
                     resolve({
+                        getAdditionalData() {
+                            return null;
+                        },
                         exec() {
                             zone.layer.switchToZone(zone);
                         }
@@ -800,7 +811,6 @@ var Rocket;
             }
             static of(jqElem) {
                 jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
-                console.log("huii " + jqElem);
                 if (jqElem.length == 0)
                     return null;
                 var structureElement = jqElem.data("rocketStructureElement");
@@ -896,6 +906,7 @@ var Rocket;
                 this.urls = [];
                 this.callbackRegistery = new util.CallbackRegistry();
                 this._blocked = false;
+                this._page = null;
                 this.locks = new Array();
                 this.jqZone = jqZone;
                 this.urls.push(this._activeUrl = url);
@@ -910,6 +921,19 @@ var Rocket;
             }
             get jQuery() {
                 return this.jqZone;
+            }
+            get page() {
+                return this._page;
+            }
+            set page(page) {
+                if (this._page) {
+                    throw new Error("page already assigned");
+                }
+                this._page = page;
+                page.config.keep = true;
+                page.on("disposed", () => {
+                    this.clear(true);
+                });
             }
             containsUrl(url) {
                 for (var i in this.urls) {
@@ -949,21 +973,29 @@ var Rocket;
                 this.additionalTabManager = new AdditionalTabManager(this);
                 this._menu = new Menu(this);
             }
+            get empty() {
+                return this.jqZone.is(":empty");
+            }
             clear(showLoader = false) {
-                this.jqZone.empty();
                 if (showLoader) {
                     this.jqZone.addClass("rocket-loading");
                 }
+                else {
+                    this.endLoading();
+                }
+                if (this.empty)
+                    return;
+                this.jqZone.empty();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             applyHtml(html) {
-                this.endLoading();
+                this.clear(false);
                 this.jqZone.html(html);
                 this.reset();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             applyComp(comp, loadObserver) {
-                this.endLoading();
+                this.clear(false);
                 comp.attachTo(this.jqZone.get(0), loadObserver);
                 this.reset();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
@@ -1936,6 +1968,8 @@ var Rocket;
                 this.tab.getJqContent().append(jqElem);
                 var clicked = false;
                 var visibleSe = null;
+                if (!structureElement)
+                    return;
                 jqElem.mouseenter(function () {
                     structureElement.highlight(true);
                 });

@@ -15,7 +15,7 @@ namespace Rocket.Cmd {
 		private _menu: Menu;
 		private _blocked: boolean = false;
 	
-		public page: Jhtml.Page;
+		private _page: Jhtml.Page = null;
 	
 		constructor(jqZone: JQuery, url: Jhtml.Url, layer: Layer) {
 			this.jqZone = jqZone;
@@ -35,6 +35,23 @@ namespace Rocket.Cmd {
 		
 		get jQuery(): JQuery {
 			return this.jqZone;
+		}
+		
+		get page(): Jhtml.Page|null {
+			return this._page;
+		}
+		
+		set page(page: Jhtml.Page) {
+			if (this._page) {
+				throw new Error("page already assigned");
+			}
+			
+			this._page = page;
+			page.config.keep = true;
+			
+			page.on("disposed", () => {
+				this.clear(true);
+			});
 		}
 		
 		containsUrl(url: Jhtml.Url): boolean {
@@ -125,17 +142,27 @@ namespace Rocket.Cmd {
 		}
 		
 		
+		get empty(): boolean {
+			return this.jqZone.is(":empty");
+		}
+		
 		public clear(showLoader: boolean = false) {
-			this.jqZone.empty();
+			
 			if (showLoader) {
 				this.jqZone.addClass("rocket-loading");
+			} else {
+				this.endLoading();
 			}
+			
+			if (this.empty) return;
+				
+			this.jqZone.empty();
 			
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 			
 		public applyHtml(html: string) {
-			this.endLoading();
+			this.clear(false);
 			this.jqZone.html(html);
 			
 			this.reset();
@@ -144,7 +171,7 @@ namespace Rocket.Cmd {
 		}
 		
 		public applyComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver) {
-			this.endLoading();
+			this.clear(false);
 			comp.attachTo(this.jqZone.get(0), loadObserver);
 			
 			this.reset();

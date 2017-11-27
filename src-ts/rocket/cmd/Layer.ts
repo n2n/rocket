@@ -13,10 +13,13 @@ namespace Rocket.Cmd {
 			this.onNewZoneCallbacks = new Array<ZoneCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
 
-			var jqPage = jqLayer.children(".rocket-zone:first");
-			if (jqPage.length > 0) {
-				var page = new Zone(jqPage, Jhtml.Url.create(window.location.href), this);
-				this.addZone(page);
+			var zoneJq = jqLayer.children(".rocket-zone:first");
+			if (zoneJq.length > 0) {
+				let url = Jhtml.Url.create(window.location.href);
+				var zone = new Zone(zoneJq, url, this);
+				zone.page = this.monitor.history.currentPage;
+//				zone.page.config.keep = true;
+				this.addZone(zone);
 			}
 
 			this.monitor.history.onChanged(() => this.historyChanged() );
@@ -52,13 +55,17 @@ namespace Rocket.Cmd {
 			let currentEntry: Jhtml.History.Entry = this.monitor.history.currentEntry;
 			if (!currentEntry) return;
 			
-			let zone: Zone = this.getZoneByUrl(currentEntry.page.url);
+			let page = currentEntry.page;
+			let zone: Zone = this.getZoneByUrl(page.url);
 			if (!zone) {
-				zone = this.createZone(currentEntry.page.url)
+				zone = this.createZone(page.url)
 				zone.clear(true);
 				this.addZone(zone);
 			}
 			
+			if (!zone.page) {
+				zone.page = page;
+			}
 			this.switchToZone(zone);
 		}
 
@@ -233,6 +240,9 @@ namespace Rocket.Cmd {
 		private createPromise(zone: Zone): Promise<Jhtml.Directive> {
 			return new Promise((resolve: any) => {
 				resolve({
+					getAdditionalData(): any {
+						return null;
+					},
 					exec() {
 						zone.layer.switchToZone(zone);
 					}

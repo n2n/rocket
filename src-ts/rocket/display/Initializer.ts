@@ -182,6 +182,8 @@ namespace Rocket.Display {
 			var clicked = false;
 			var visibleSe: StructureElement = null;
 			
+			if (!structureElement) return;
+			
 			jqElem.mouseenter(function () {
 				structureElement.highlight(true);
 			});

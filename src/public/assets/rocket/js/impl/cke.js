@@ -1,7 +1,63 @@
 (function() {
 	Jhtml.ready(function (elements) {
 		$(elements).find(".rocket-impl-cke-classic").each(function (i, elem) {
-			var editor = CKEDITOR.replace(elem);
+			
+			
+			
+//			var observer = new MutationObserver(function(mutations) {
+//				  mutations.forEach(function(mutation) {
+//				    console.log(mutation.type);
+//				  });    
+//			});
+//			
+//			var config = { attributes: true, childList: true, characterData: true };
+//			observer.observe(elem.parentElement, config);
+			
+			
+			
+//			editor.checkDirty();
+//			editor.resetDirty();
+//			editor.resize();
+			
+//			createFakeElement
+//			cke.js:10:5
+//			createFakeParserElement
+//			cke.js:10:5
+//			restoreRealElement
+			
+//			CKEDITOR.remove(elem);
+//			console.log("ee2");
+//			for (let i in editor) {
+//				console.log(i);
+//			}
+//			
+			
+			
+			let parentJq = $(elem.parentElement);
+			let visible = parentJq.is(":visible");
+			
+			var editor;
+			let destroyMethod;
+			if (visible) {
+				editor = CKEDITOR.instances[CKEDITOR.replace(elem).name];
+			}
+			
+			setInterval(function () {
+				if (visible == parentJq.is(":visible")) return;
+				
+				visible = $(parentJq).is(":visible");
+				if (editor) {
+					editor.updateElement();
+					CKEDITOR.instances[editor.name].destroy();
+					CKEDITOR.remove(editor);
+					editor = null;
+				}
+				
+				if (visible) {
+					editor = CKEDITOR.instances[CKEDITOR.replace(elem).name];
+				}
+			}, 1000);
+			
 			
 //			let formJq = $(elem).closest("form");
 //			formJq.submit(() => {

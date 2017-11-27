@@ -42,6 +42,8 @@
 <?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-form')) ?>
 	<?php $view->out($editModel->getEntryForm()->createView($view)) ?>
 					
+	<?php $formHtml->messageList() ?>
+					
 	<div class="rocket-zone-commands">
 		<div>
 			<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 
