@@ -1,7 +1,6 @@
 <?php
 	use rocket\spec\ei\component\field\impl\relation\model\mag\MappingForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use n2n\web\ui\view\View;
 	use rocket\spec\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);

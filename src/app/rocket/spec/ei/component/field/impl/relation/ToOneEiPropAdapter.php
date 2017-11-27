@@ -21,15 +21,12 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation;
 
-use rocket\spec\ei\manage\mapping\EiFieldSource;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\DraftableEiProp;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\field\impl\relation\model\filter\ToOneEiEntryFilterField;
-use rocket\spec\ei\manage\util\model\GlobalEiUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
@@ -84,9 +81,8 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	}
 	
 	/**
-	 * @param EiFieldSource $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$targetEiObject = $this->read($eiObject);
@@ -101,10 +97,10 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 	public function buildEiEntryFilterField(N2nContext $n2nContext) {		
 		return null;
-		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
+// 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 		
-		return new ToOneEiEntryFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-				new GlobalEiUtils($this->getEiPropRelation()->getTargetEiMask(), $n2nContext),
-				$this->createAdvTargetFilterDef($n2nContext));
+// 		return new ToOneEiEntryFilterField($this->getLabelLstr(), $this->getEntityProperty(),
+// 				new GlobalEiUtils($this->getEiPropRelation()->getTargetEiMask(), $n2nContext),
+// 				$this->createAdvTargetFilterDef($n2nContext));
 	}
 }

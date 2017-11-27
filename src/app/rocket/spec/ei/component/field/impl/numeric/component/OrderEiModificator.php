@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\numeric\component;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
 use rocket\spec\ei\component\field\impl\numeric\OrderEiProp;
 use rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
@@ -32,19 +31,29 @@ use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class OrderEiModificator extends EiModificatorAdapter {
-	
 	private $eiProp;
 	
+	/**
+	 * @param OrderEiProp $eiProp
+	 */
 	public function __construct(OrderEiProp $eiProp) {
 		$this->eiProp = $eiProp;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter::setupEiFrame()
+	 */
 	public function setupEiFrame(Eiu $eiu) {
 		$eiu->frame()->getEiFrame()->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter::setupEiEntry()
+	 */
 	public function setupEiEntry(Eiu $eiu) {
 		$ssm = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();

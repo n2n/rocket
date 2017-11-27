@@ -146,9 +146,6 @@ class WysiwygEiProp extends AlphanumericEiProp {
 		return $linkConfigurations;
 	}
 	
-	/**
-	* @return rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygCssConfig
-	*/
 	private function obtainCssConfiguration() {
 
 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen

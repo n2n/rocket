@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation;
 
-use rocket\spec\ei\manage\mapping\EiFieldSource;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\DraftableEiProp;
@@ -96,9 +95,8 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	}
 	
 	/**
-	 * @param EiFieldSource $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$targetEiObjects = $this->read($eiObject);

@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\manage\util\model\Eiu;

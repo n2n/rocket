@@ -28,7 +28,6 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use rocket\spec\ei\component\field\impl\string\wysiwyg\WysiwygHtmlBuilder;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\component\EiComponent;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\spec\ei\component\EiSetupProcess;

@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRelation;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\relation\conf\RelationEiPropConfigurator;
 use rocket\spec\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
@@ -37,7 +36,6 @@ use rocket\spec\ei\manage\draft\DraftValueSelection;
 use rocket\spec\ei\manage\draft\PersistDraftAction;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use rocket\spec\ei\manage\DraftEiObject;
 use rocket\spec\ei\manage\LiveEiObject;
 use n2n\reflection\CastUtils;
@@ -54,7 +52,6 @@ use n2n\persistence\meta\data\QueryTable;
 use n2n\persistence\meta\data\QueryColumn;
 use n2n\persistence\meta\data\QueryPlaceMarker;
 use rocket\spec\ei\manage\draft\DraftFetcher;
-use rocket\spec\ei\manage\draft\DraftActionQueue;
 use rocket\spec\ei\manage\draft\DraftActionAdapter;
 use n2n\persistence\Pdo;
 use n2n\util\ex\IllegalStateException;

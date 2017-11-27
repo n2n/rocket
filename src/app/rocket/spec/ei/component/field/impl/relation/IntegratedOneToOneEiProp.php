@@ -22,9 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\manage\util\model\EiuFrame;
-
 use rocket\spec\ei\manage\gui\GuiPropFork;
-use rocket\spec\ei\manage\mapping\EiFieldSource;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\AssembleResult;
@@ -174,8 +172,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	}
 	
 	/**
-	 * @param EiObject $eiObject
-	 * @return EiFieldSource or null if not available
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\GuiPropFork::determineForkedEiObject()
 	 */
 	public function determineForkedEiObject(EiObject $eiObject) {
 		$targetEiObject = $this->read($eiObject);

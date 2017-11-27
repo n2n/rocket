@@ -30,7 +30,6 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
 class ToOneForm implements Dispatchable {

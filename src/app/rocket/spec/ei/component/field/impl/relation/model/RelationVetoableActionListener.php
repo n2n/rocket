@@ -27,7 +27,6 @@ use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\l10n\MessageCode;
-use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\LiveEiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;

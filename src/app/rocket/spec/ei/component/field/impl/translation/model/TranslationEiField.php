@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\translation\model;
 
-use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 

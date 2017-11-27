@@ -43,7 +43,6 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use n2n\core\N2N;
 use rocket\spec\ei\component\field\GenericEiProp;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 use n2n\core\config\WebConfig;

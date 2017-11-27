@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\config;
 
-use rocket\spec\config\Spec;
-
 abstract class Spec {
 	protected $id;
 	protected $moduleNamespace;

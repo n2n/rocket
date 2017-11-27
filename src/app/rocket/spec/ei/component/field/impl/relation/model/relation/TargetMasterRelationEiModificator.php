@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\component\modificator\impl\adapter\EiModificatorAdapter;
-use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\manage\mapping\EiEntryListenerAdapter;
 use rocket\spec\ei\manage\util\model\Eiu;

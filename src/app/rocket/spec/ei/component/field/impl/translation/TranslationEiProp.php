@@ -42,7 +42,6 @@ use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
-use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
@@ -66,6 +65,7 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearchField;
+use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {

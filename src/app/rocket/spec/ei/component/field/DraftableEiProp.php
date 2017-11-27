@@ -21,9 +21,6 @@
  */
 namespace rocket\spec\ei\component\field;
 
-use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\draft\DraftProperty;
-
 interface DraftableEiProp extends EiProp {
 			
 	/**

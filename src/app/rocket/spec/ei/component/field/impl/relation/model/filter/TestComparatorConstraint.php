@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\criteria\compare\ComparatorCriteria;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;

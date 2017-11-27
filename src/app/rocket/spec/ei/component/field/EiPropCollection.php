@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\component\field;
 
-use rocket\spec\ei\component\field\EiPropCollection;
-use rocket\spec\ei\component\field\EiProp;
 use rocket\spec\ei\component\EiComponentCollection;
 use rocket\spec\ei\EiEngine;
 

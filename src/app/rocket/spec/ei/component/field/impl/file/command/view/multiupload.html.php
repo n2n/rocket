@@ -22,8 +22,7 @@
 
 	use rocket\spec\ei\manage\control\IconType;
 	use rocket\spec\ei\manage\util\model\EiuFrame;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\ui\view\View;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);

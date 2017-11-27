@@ -24,20 +24,20 @@ namespace rocket\spec\ei\component\field\impl\enum;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\TypeConstraint;
-use n2n\web\dispatch\mag\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\impl\web\dispatch\mag\model\MultiSelectChoice;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\property\ConstraintsConflictException;
-use rocket\spec\core\CompatibilityTest;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use n2n\impl\web\dispatch\mag\model\IntegerOption;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiPropAdapter;
 use rocket\spec\ei\manage\util\model\Eiu;
+use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
+use n2n\web\dispatch\mag\Mag;
+use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
+use rocket\spec\ei\EiPropPath;
 
 class MultiSelectEiProp extends DraftableEiPropAdapter {
 	const OPTION_OPTIONS = 'options';
@@ -66,23 +66,19 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 		}
 	}
 	
-	public function isCompatibleWith(EntityProperty $entityProperty) {
-		return $entityProperty instanceof ScalarEntityProperty;
-	}
+// 	public function checkCompatibility(CompatibilityTest $compatibilityTest) {
+// 		if (!$this->isCompatibleWith($compatibilityTest->getEntityProperty())) {
+// 			$compatibilityTest->entityPropertyTestFailed();
+// 			return;
+// 		}
 	
-	public function checkCompatibility(CompatibilityTest $compatibilityTest) {
-		if (!$this->isCompatibleWith($compatibilityTest->getEntityProperty())) {
-			$compatibilityTest->entityPropertyTestFailed();
-			return;
-		}
-	
-		$propertyConstraints = $compatibilityTest->getPropertyAccessProxy()->getConstraint();
-		$requiredConstraints = TypeConstraint::createSimple(null);
-		if ($propertyConstraints !== null && !$propertyConstraints->isPassableBy($requiredConstraints)) {
-			$compatibilityTest->propertyTestFailed('EiProp can not pass Type ' . $requiredConstraints->__toString()
-					. ' to property due to incompatible TypeConstraint ' . $propertyConstraints->__toString());
-		}
-	}
+// 		$propertyConstraints = $compatibilityTest->getPropertyAccessProxy()->getConstraint();
+// 		$requiredConstraints = TypeConstraint::createSimple(null);
+// 		if ($propertyConstraints !== null && !$propertyConstraints->isPassableBy($requiredConstraints)) {
+// 			$compatibilityTest->propertyTestFailed('EiProp can not pass Type ' . $requiredConstraints->__toString()
+// 					. ' to property due to incompatible TypeConstraint ' . $propertyConstraints->__toString());
+// 		}
+// 	}
 	
 	public function createMagCollection() {
 		$magCollection = parent::createMagCollection();
@@ -92,8 +88,8 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 			$magCollection->addMag(self::OPTION_OPTIONS_VALUE, new StringMag('Value'));
 			return $magCollection;
 		}));
-		$magCollection->addMag(self::OPTION_MIN_KEY, new IntegerOption('Min'));
-		$magCollection->addMag(self::OPTION_MAX_KEY, new IntegerOption('Max'));
+		$magCollection->addMag(self::OPTION_MIN_KEY, new NumericMag('Min'));
+		$magCollection->addMag(self::OPTION_MAX_KEY, new NumericMag('Max'));
 		return $magCollection;
 	}
 	
@@ -120,7 +116,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 	}
 	
 	public function createMag(Eiu $eiu): Mag {
-		return new MultiSelectChoice($this->getLabelCode(), $this->getOptions(), array(), 
+		return new MultiSelectMag($this->getLabelCode(), $this->getOptions(), array(), 
 				$this->getMin(), $this->getMax());
 	}
 	/* (non-PHPdoc)

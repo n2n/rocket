@@ -222,11 +222,22 @@ class ToManyForm implements Dispatchable {
 		return $sortedEiEntrys;
 	}
 	
+	private $sortable = true;
+	private $compact = true;
+	
 	public function isSortable() {
-		return true;
+		return $this->sortable;
+	}
+	
+	public function setSortable(boolean $sortable) {
+		$this->sortable = $sortable;
 	}
 	
 	public function isCompact() {
-		return true;
+		return $this->compact;
+	}
+	
+	public function setCompact(boolean $compact) {
+		$this->compact = $compact;
 	}
 }

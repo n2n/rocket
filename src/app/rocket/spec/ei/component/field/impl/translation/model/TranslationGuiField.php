@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\translation\model;
 
-use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
@@ -32,7 +31,6 @@ use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
-use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 

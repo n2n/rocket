@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\field\impl\string\cke;
 use n2n\core\N2N;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiProp;
-use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\EiPropPath;

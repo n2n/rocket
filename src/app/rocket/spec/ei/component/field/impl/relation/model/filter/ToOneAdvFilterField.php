@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\relation\model\filter;
 
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
-use rocket\spec\ei\manage\mapping\EiEntryConstraint;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
 use rocket\spec\ei\manage\mapping\EiFieldConstraint;

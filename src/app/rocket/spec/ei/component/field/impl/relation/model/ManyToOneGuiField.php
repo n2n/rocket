@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component\field\impl\relation\model;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\GuiField;
 use rocket\spec\ei\manage\util\model\EiuFrame;

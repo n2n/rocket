@@ -36,6 +36,7 @@ use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use rocket\spec\ei\component\field\impl\relation\model\mag\EntryLabeler;
+use n2n\web\dispatch\mag\UiOutfitter;
 
 class RelationSelectorMag extends MagAdapter  {
 	private $targetEiUtils;

@@ -41,7 +41,7 @@ interface CkeLinkProvider extends Lookupable {
 	public function getLinkOptions(N2nLocale $n2nLocale): array;
 	
 	/**
-	 * @return string|Url|null 
+	 * @return string|\n2n\util\uri\Url|null 
 	 * @throws \n2n\util\uri\UnavailableUrlException
 	 */
 	public function buildUrl(string $key, View $view, N2nLocale $n2nLocale);

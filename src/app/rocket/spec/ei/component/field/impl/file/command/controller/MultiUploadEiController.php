@@ -22,10 +22,7 @@
 namespace rocket\spec\ei\component\field\impl\file\command\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\core\model\RocketState;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiProp;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
 use rocket\spec\ei\component\field\impl\file\FileEiProp;

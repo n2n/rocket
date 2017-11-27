@@ -45,6 +45,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
+use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 
 class RelationFilterField implements FilterField {
 	protected $labelLstr;
@@ -65,18 +66,10 @@ class RelationFilterField implements FilterField {
 		$this->targetSelectUrlCallback = $targetSelectUrlCallback;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\impl\field\FilterField::getLabel()
-	 */
 	public function getLabel(N2nLocale $n2nLocale): string {
 		return $this->labelLstr->t($n2nLocale);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint($attributes)
-	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		$relationFilterConf = new RelationFilterConf($attributes);
 		
@@ -118,10 +111,6 @@ class RelationFilterField implements FilterField {
 		return $targetEntityObjs;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\impl\field\FilterField::createMagCollection()
-	 */
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
 		$form = new RelationFilterMagForm($this->entityProperty->isToMany(), $this->targetEiUtils, 
 				$this->targetFilterDef->getFilterDefinition(), $this->targetFilterDef->getFilterAjahHook(), 
@@ -162,7 +151,12 @@ class RelationFilterField implements FilterField {
 		return $relationFilterConf->getAttributes();
 	}
 	
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
+	/**
+	 * 
+	 * @param Attributes $attributes
+	 * @return EiFieldConstraint
+	 */
+	public function createEiFieldConstraint(Attributes $attributes) {
 		$relationFilterConf = new RelationFilterConf(new Attributes());
 		
 		$operator = $relationFilterConf->getOperator();

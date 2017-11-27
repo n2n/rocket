@@ -27,7 +27,6 @@ use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\component\field\impl\string\PathPartEiProp;
 use n2n\util\col\ArrayUtils;
 use n2n\io\IoUtils;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;

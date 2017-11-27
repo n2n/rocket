@@ -26,7 +26,6 @@ use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\spec\ei\component\field\impl\relation\SimpleRelationEiPropAdapter;

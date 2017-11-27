@@ -27,7 +27,6 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
-use rocket\spec\ei\component\field\impl\file\MultiUploadFileEiProp;
 use rocket\spec\ei\component\field\impl\file\command\controller\MultiUploadEiController;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;

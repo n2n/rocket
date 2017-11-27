@@ -31,10 +31,6 @@ abstract class WysiwygLinkConfigAdapter implements WysiwygLinkConfig {
 	 * @var \rocket\spec\ei\manage\mapping\EiEntry
 	 */
 	protected $eiEntry;
-	
-	/**
-	 * @var \rocket\spec\ei\manage\gui\Eiu
-	 */
 	protected $eiu;
 	
 	public function setup(EiEntry $eiEntry = null, 

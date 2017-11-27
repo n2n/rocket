@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field;
 
 use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\critmod\filter\FilterField;
 
 interface FilterableEiProp extends EiProp {
 	

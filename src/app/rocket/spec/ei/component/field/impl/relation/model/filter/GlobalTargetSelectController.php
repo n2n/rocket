@@ -33,10 +33,15 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 	private $specManager;
 	private $loginContext;
 	
+	/**
+	 * @param Rocket $rocket
+	 * @param LoginContext $loginContext
+	 */
 	private function _init(Rocket $rocket, LoginContext $loginContext) {
 		$this->specManager = $rocket->getSpecManager();
 		$this->loginContext = $loginContext;
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \n2n\web\http\controller\impl\ScrController::isValid()
@@ -46,7 +51,13 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 				&& $this->loginContext->getCurrentUser()->isAdmin();
 	}
 	
-	private function lookupEiThing(string $eiTypeId, string $eiMaskId): EiThing {
+	/**
+	 * @param string $eiTypeId
+	 * @param string $eiMaskId
+	 * @throws PageNotFoundException
+	 * @return \rocket\spec\ei\EiThing
+	 */
+	private function lookupEiThing(string $eiTypeId, string $eiMaskId) {
 		try {
 			return $this->specManager->getEiTypeById($eiTypeId)->getEiMaskCollection()->getById($eiMaskId);
 		} catch (UnknownSpecException $e) {
@@ -56,6 +67,10 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 		}
 	}
 	
+	/**
+	 * @param string $eiTypeId
+	 * @param string $eiMaskId
+	 */
 	public function index(string $eiTypeId, string $eiMaskId) {
 		test($eiTypeId . ' ' . $eiMaskId);
 	}

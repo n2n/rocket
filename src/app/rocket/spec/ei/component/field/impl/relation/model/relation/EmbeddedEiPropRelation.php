@@ -23,13 +23,7 @@ namespace rocket\spec\ei\component\field\impl\relation\model\relation;
 
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\EiFrame;
-use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\component\field\impl\adapter\DraftableEiPropAdapter;
-use rocket\spec\ei\component\field\impl\TranslatableEiPropAdapter;
-use rocket\spec\ei\component\field\impl\relation\command\EmbeddedEditPseudoCommand;
-use rocket\spec\ei\component\field\impl\relation\command\EmbeddedPseudoCommand;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
@@ -112,16 +106,16 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 				&& !$esConstraint->isEiCommandAvailable($this->embeddedEditPseudoCommand);		
 	}
 	
-	public function completeMagCollection(MagCollection $magCollection) {
-		$dtc = new DynamicTextCollection('rocket');
-		$magCollection->addMag(DraftableEiPropAdapter::ATTR_DRAFTABLE_KEY,
-				new BoolMag($dtc->translate('ei_impl_draftable_label'), self::OPTION_DRAFTABLE_DEFAULT));
-		$magCollection->addMag(TranslatableEiPropAdapter::OPTION_TRANSLATION_ENABLED_KEY,
-				new BoolMag($dtc->translate('ei_impl_translatable_label'), self::OPTION_TRANSLATION_ENABLED_DEFAULT));
+// 	public function completeMagCollection(MagCollection $magCollection) {
+// 		$dtc = new DynamicTextCollection('rocket');
+// 		$magCollection->addMag(DraftableEiPropAdapter::ATTR_DRAFTABLE_KEY,
+// 				new BoolMag($dtc->translate('ei_impl_draftable_label'), self::OPTION_DRAFTABLE_DEFAULT));
+// 		$magCollection->addMag(TranslatableEiPropAdapter::OPTION_TRANSLATION_ENABLED_KEY,
+// 				new BoolMag($dtc->translate('ei_impl_translatable_label'), self::OPTION_TRANSLATION_ENABLED_DEFAULT));
 		
-		parent::completeMagCollection($magCollection);
-		return $magCollection;
-	}
+// 		parent::completeMagCollection($magCollection);
+// 		return $magCollection;
+// 	}
 	
 	const OPTION_DRAFTABLE_DEFAULT = false;
 	const OPTION_TRANSLATION_ENABLED_DEFAULT = false;

@@ -25,7 +25,6 @@ use n2n\util\config\Attributes;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\AttributesException;
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\mask\model\DisplayScheme;
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;

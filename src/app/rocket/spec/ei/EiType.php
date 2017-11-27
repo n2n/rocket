@@ -24,7 +24,6 @@ namespace rocket\spec\ei;
 use n2n\core\container\PdoPool;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\core\module\Module;
-use n2n\reflection\ArgUtils;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use n2n\reflection\ReflectionUtils;

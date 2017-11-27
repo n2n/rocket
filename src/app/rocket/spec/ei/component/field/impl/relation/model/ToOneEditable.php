@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\component\field\impl\relation\model;
 
-use rocket\spec\ei\component\field\impl\relation\model\RelationEiField;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\field\impl\relation\model\mag\ToOneMag;
 use rocket\spec\ei\manage\EiFrame;

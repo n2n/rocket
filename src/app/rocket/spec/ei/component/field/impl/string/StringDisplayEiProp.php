@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\string;
 
 use rocket\spec\ei\component\field\impl\adapter\IndependentEiPropAdapter;
-use rocket\spec\ei\component\field\ObjectPropertyEiProp;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
@@ -38,7 +37,6 @@ use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
-use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\ObjectPropertyConfigurable;

@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field\indepenent;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
-use n2n\util\ex\IllegalStateException;
 
 class PropertyAssignation {
 	private $entityProperty;
