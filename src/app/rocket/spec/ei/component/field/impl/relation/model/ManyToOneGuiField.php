@@ -80,7 +80,7 @@ class ManyToOneGuiField implements GuiField {
 		
 		return $html->getLink($this->targetEiFrame->getDetailUrl($view->getHttpContext(), $targetRelationEntry
 						->getEiObject()->toEntryNavPoint()), 
-				$identityString);
+				$identityString, array('data-jhtml' => 'true'));
 	}
 	
 	/**

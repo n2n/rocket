@@ -40,7 +40,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 		return $this->jsonResponse->toKownPayloadString();
 	}
 
-	const ATTR_EI_EVENT = 'eiEvents';
+	const ATTR_EI_EVENT = 'rocketEvent';
 	const ATTR_MODIFICATIONS = 'modifications';
 
 	const ATTR_EXEC_CONFIG = 'execConfig';

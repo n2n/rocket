@@ -88,11 +88,11 @@ namespace Rocket.Cmd {
 		private directiveExecuted(directive: Jhtml.Directive) {
 			let data = directive.getAdditionalData();
 
-			if (!data || !data.eiEvents || !data.eiEvents.eiMods) return;
+			if (!data || !data.rocketEvent || !data.rocketEvent.eiMods) return;
 			
 			let zoneClearer = new ZoneClearer(this.getAllZones());
 			
-			let eiMods = data.eiEvents.eiMods;
+			let eiMods = data.rocketEvent.eiMods;
 			for (let supremeEiTypeId in eiMods) {
 				if (!eiMods[supremeEiTypeId].idReps && eiMods[supremeEiTypeId].draftIds) {
 					zoneClearer.clearBySupremeEiType(supremeEiTypeId);

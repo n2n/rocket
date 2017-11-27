@@ -66,9 +66,9 @@ class ToManySelectGuiField implements GuiField {
 	 * @return array
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
-		if ($this->eiu->entryGui()->isBulky()) {
-			return array('class' => 'rocket-block');
-		}
+// 		if ($this->eiu->entryGui()->isBulky()) {
+// 			return array('class' => 'rocket-block');
+// 		}
 		
 		return array();
 	}
@@ -102,7 +102,7 @@ class ToManySelectGuiField implements GuiField {
 
 		if (!$targetEiFrame->isOverviewUrlAvailable()) return $html->getEsc($label);
 
-		return $html->getLink($targetEiFrame->getOverviewUrl($view->getHttpContext()), $label);
+		return $html->getLink($targetEiFrame->getOverviewUrl($view->getHttpContext()), $label, array('data-jhtml' => 'true'));
 	}
 	
 	
