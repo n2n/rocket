@@ -82,14 +82,13 @@ class EiJhtmlEventInfo {
 		
 		$idRep = null;
 		if (!$eiObject->isNew()) {
-		    $idRep = $eiObject->getEiEntityObj()->getId();
+		    $idRep = $eiObject->getEiEntityObj()->getIdRep();
 		}
 		
 		$draftId = null;
 		if ($eiObject->isDraft()) {
 		    $draftId = $eiObject->getDraft()->getId();
 		}
-		
 		
 		$this->evMapEiObject($eiTypeId, $idRep, $draftId, $modType);
 	}
@@ -124,11 +123,17 @@ class EiJhtmlEventInfo {
 	}
 	
 	public function toAttrs(): array {
-		if ($this->swapControl === null) {
-			return array();
+		$attrs = array(); 
+		
+		if ($this->swapControl !== null) {
+			$attrs[self::ATTR_SWAP_CONTROL_HTML_KEY] = $this->swapControl->createUiComponent()
+					->build(new SimpleBuildContext());	
 		}
 		
-		return array(self::ATTR_SWAP_CONTROL_HTML_KEY => $this->swapControl->createUiComponent()
-				->build(new SimpleBuildContext()));	
+		if (!empty($this->eventMap)) {
+			$attrs[self::ATTR_CHANGES_KEY] = $this->eventMap;
+		}
+		
+		return $attrs;
 	}
 }
