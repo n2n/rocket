@@ -91,7 +91,7 @@ namespace Rocket.Impl.Relation {
 		private _newEntry: EmbeddedEntry;
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
-		private expandPage: cmd.Zone = null;
+		private expandZone: cmd.Zone = null;
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
@@ -253,20 +253,20 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandPage !== null;
+			return this.expandZone !== null;
 		}
 		
 		public expand() {
 			if (this.isExpanded()) return;
 			
-			this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
+			this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
 			this.jqEmbedded.detach();
 
 			let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
-			this.expandPage.applyContent(contentJq);
+			this.expandZone.applyContent(contentJq);
 			$("<header></header>").insertBefore(contentJq);
 			
-			this.expandPage.layer.pushHistoryEntry(window.location.href);
+			this.expandZone.layer.pushHistoryEntry(window.location.href);
 
 			if (this.newEntry) {
 				this.newEntry.expand(false);
@@ -276,13 +276,13 @@ namespace Rocket.Impl.Relation {
 				this.currentEntry.expand(false);
 			}
 			
-			var jqCommandButton = this.expandPage.menu.commandList
+			var jqCommandButton = this.expandZone.menu.commandList
 					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(() => {
-				this.expandPage.layer.close();
+				this.expandZone.layer.close();
 			});
 			
-			this.expandPage.on(cmd.Zone.EventType.CLOSE, () => {
+			this.expandZone.on(cmd.Zone.EventType.CLOSE, () => {
 				this.reduce();
 			});
 			
@@ -292,7 +292,7 @@ namespace Rocket.Impl.Relation {
 		public reduce() {
 			if (!this.isExpanded()) return;
 			
-			this.expandPage = null;
+			this.expandZone = null;
 			
 			this.jqEmbedded.detach();
 			this.jqToOne.append(this.jqEmbedded);

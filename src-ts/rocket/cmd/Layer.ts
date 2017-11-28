@@ -235,7 +235,6 @@ namespace Rocket.Cmd {
 			if (zone) {
 				page = new Jhtml.Page(url, this.createPromise(zone));
 				history.push(page);
-				zone.page = page;
 				return;
 			}
 			
