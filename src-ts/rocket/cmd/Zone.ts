@@ -53,6 +53,7 @@ namespace Rocket.Cmd {
 				this.clear(true);
 			});
 			page.on("promiseAssigned", () => {
+				console.log("pa " + page.url)
 				this.clear(true);
 			});
 		}
