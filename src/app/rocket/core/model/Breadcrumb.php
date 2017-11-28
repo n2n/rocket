@@ -27,11 +27,13 @@ class Breadcrumb {
 	
 	private $url;
 	private $label;
+	private $jhtml;
 	private $type;
 	
-	public function __construct($url, string $label) {
+	public function __construct($url, string $label, bool $jhtml = true) {
 		$this->url = $url;
 		$this->label = $label;
+		$this->jhtml = $jhtml;
 	}
 	
 	public function getUrl() {
@@ -48,6 +50,20 @@ class Breadcrumb {
 	
 	public function setLabel($label) {
 		$this->label = $label;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isJhtml() {
+		return $this->jhtml;
+	}
+	
+	/**
+	 * @param bool $jhtml
+	 */
+	public function setJhtml(bool $jhtml) {
+		$this->jhtml = $jhtml;
 	}
 	
 	public function getType() {

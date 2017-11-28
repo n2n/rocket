@@ -190,7 +190,7 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @return Entity
+	 * @return object
 	 */
 	public function getEntityObj() {
 		return $this->eiObject->getEiEntityObj()->getEntityObj();

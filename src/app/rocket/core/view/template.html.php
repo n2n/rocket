@@ -190,10 +190,12 @@
 	    					<?php if (null !== ($activeBreadcrumb = $templateModel->getActiveBreadcrumb())): ?>
 	    						<ol class="breadcrumb">
 	    							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
-	    								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel()) ?></li>
+	    								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel(),
+	    										($breadcrumb->isJhtml() ? array('data-jhtml' => 'true') : null)) ?></li>
 	    							<?php endforeach ?>
 	    							<li class="breadcrumb-item active">
-	    								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel()) ?>
+	    								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel(),
+	    										($activeBreadcrumb->isJhtml() ? array('data-jhtml' => 'true') : null)) ?>
 	    							</li>
 	    						</ol>
 	    					<?php endif ?>

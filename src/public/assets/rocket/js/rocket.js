@@ -546,7 +546,6 @@ var Rocket;
                 if (zone) {
                     page = new Jhtml.Page(url, this.createPromise(zone));
                     history.push(page);
-                    zone.page = page;
                     return;
                 }
                 history.push(new Jhtml.Page(url, null));
@@ -4858,7 +4857,7 @@ var Rocket;
             class ToOneEmbedded {
                 constructor(jqToOne, addButtonFactory = null) {
                     this.compact = true;
-                    this.expandPage = null;
+                    this.expandZone = null;
                     this.changedCallbacks = new Array();
                     this.jqToOne = jqToOne;
                     this.addControlFactory = addButtonFactory;
@@ -4983,29 +4982,29 @@ var Rocket;
                     });
                 }
                 isExpanded() {
-                    return this.expandPage !== null;
+                    return this.expandZone !== null;
                 }
                 expand() {
                     if (this.isExpanded())
                         return;
-                    this.expandPage = Rocket.getContainer().createLayer().createZone(window.location.href);
+                    this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
                     this.jqEmbedded.detach();
                     let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
-                    this.expandPage.applyContent(contentJq);
+                    this.expandZone.applyContent(contentJq);
                     $("<header></header>").insertBefore(contentJq);
-                    this.expandPage.layer.pushHistoryEntry(window.location.href);
+                    this.expandZone.layer.pushHistoryEntry(window.location.href);
                     if (this.newEntry) {
                         this.newEntry.expand(false);
                     }
                     if (this.currentEntry) {
                         this.currentEntry.expand(false);
                     }
-                    var jqCommandButton = this.expandPage.menu.commandList
+                    var jqCommandButton = this.expandZone.menu.commandList
                         .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(() => {
-                        this.expandPage.layer.close();
+                        this.expandZone.layer.close();
                     });
-                    this.expandPage.on(cmd.Zone.EventType.CLOSE, () => {
+                    this.expandZone.on(cmd.Zone.EventType.CLOSE, () => {
                         this.reduce();
                     });
                     this.changed();
@@ -5013,7 +5012,7 @@ var Rocket;
                 reduce() {
                     if (!this.isExpanded())
                         return;
-                    this.expandPage = null;
+                    this.expandZone = null;
                     this.jqEmbedded.detach();
                     this.jqToOne.append(this.jqEmbedded);
                     if (this.newEntry) {

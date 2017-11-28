@@ -36,25 +36,25 @@
 			let parentJq = $(elem.parentElement);
 			let visible = parentJq.is(":visible");
 			
-			var editor;
-			let destroyMethod;
+			let editorName;
 			if (visible) {
-				editor = CKEDITOR.instances[CKEDITOR.replace(elem).name];
+				editorName = CKEDITOR.replace(elem).name;
 			}
 			
 			setInterval(function () {
 				if (visible == parentJq.is(":visible")) return;
 				
 				visible = $(parentJq).is(":visible");
-				if (editor) {
+				if (editorName && CKEDITOR.instances[editorName]) {
+					let editor = CKEDITOR.instances[editorName];
 					editor.updateElement();
-					CKEDITOR.instances[editor.name].destroy();
+					editor.destroy();
 					CKEDITOR.remove(editor);
-					editor = null;
+					editorName = null;
 				}
 				
 				if (visible) {
-					editor = CKEDITOR.instances[CKEDITOR.replace(elem).name];
+					editorName = CKEDITOR.replace(elem).name;
 				}
 			}, 1000);
 			
