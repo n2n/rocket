@@ -100,7 +100,8 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 		}
 		
-		$hrefControl = HrefControl::create($eiuFrame->getEiFrame(), $this, $pathExt->toUrl($query), $controlButton);
+		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($controlButton, $pathExt->toUrl($query))
+		      ->setPushToHistory(false)->setForceReload(true);
 		
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 	}

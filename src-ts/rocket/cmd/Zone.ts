@@ -50,10 +50,10 @@ namespace Rocket.Cmd {
 			page.config.keep = true;
 			
 			page.on("disposed", () => {
+				if (this.layer.currentZone === this) return;
 				this.clear(true);
 			});
 			page.on("promiseAssigned", () => {
-				console.log("pa " + page.url)
 				this.clear(true);
 			});
 		}
@@ -151,7 +151,6 @@ namespace Rocket.Cmd {
 		}
 		
 		public clear(showLoader: boolean = false) {
-			
 			if (showLoader) {
 				this.jqZone.addClass("rocket-loading");
 			} else {

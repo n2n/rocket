@@ -218,7 +218,6 @@ namespace Rocket.Cmd {
 				
 				if (Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
 					zone.page.dispose();
-					zone.clear(true);
 				}
 			}
 		}
@@ -231,7 +230,6 @@ namespace Rocket.Cmd {
 				
 				if (Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
 					zone.page.dispose();
-					zone.clear(true);
 				}
 			}
 		}

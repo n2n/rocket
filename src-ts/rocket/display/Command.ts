@@ -3,9 +3,33 @@ namespace Rocket.Display {
 	export class Command {
 		private jLink: Jhtml.Ui.Link;
 		private _observing: boolean = false;
-		
+		private confirm: Confirm = null;
+	
         constructor(jLink: Jhtml.Ui.Link) {
             this.jLink = jLink;
+
+            jLink.onEvent((evt) => {
+            	this.onEvent(evt);
+            });
+        }
+        
+        get jQuery(): JQuery {
+        	return $(this.jLink.element);
+        }
+        
+        private onEvent(evt: Jhtml.Ui.Link.Event) {
+        	if (!this.confirm) {
+        		this.confirm = Confirm.test(this.jQuery)
+        	}
+        	
+        	if (!this.confirm) return;
+        	
+        	evt.preventExec();
+        	
+        	this.confirm.open();
+        	this.confirm.successCallback = () => {
+        		this.jLink.exec()
+        	}
         }
         
         observe() {

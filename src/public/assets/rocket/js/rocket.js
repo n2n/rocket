@@ -327,7 +327,6 @@ var Rocket;
                     }
                     if (Rocket.Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
                         zone.page.dispose();
-                        zone.clear(true);
                     }
                 }
             }
@@ -338,7 +337,6 @@ var Rocket;
                     }
                     if (Rocket.Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
                         zone.page.dispose();
-                        zone.clear(true);
                     }
                 }
             }
@@ -936,10 +934,11 @@ var Rocket;
                 this._page = page;
                 page.config.keep = true;
                 page.on("disposed", () => {
+                    if (this.layer.currentZone === this)
+                        return;
                     this.clear(true);
                 });
                 page.on("promiseAssigned", () => {
-                    console.log("pa " + page.url);
                     this.clear(true);
                 });
             }
@@ -1284,7 +1283,7 @@ var Rocket;
             }
             scan() {
                 let curEntries = this.entries;
-                for (let entry of Display.Entry.findAll(this.elemJq, false)) {
+                for (let entry of Display.Entry.children(this.elemJq)) {
                     if (this.entryMap[entry.id] && this.entryMap[entry.id] === entry) {
                         continue;
                     }
@@ -1346,7 +1345,7 @@ var Rocket;
                     return this.sortedEntries;
                 }
                 this.sortedEntries = new Array();
-                for (let entry of Display.Entry.findAll(this.elemJq, false)) {
+                for (let entry of Display.Entry.children(this.elemJq)) {
                     if (!this.entryMap[entry.id] || this.entryMap[entry.id] !== entry) {
                         continue;
                     }
@@ -1471,7 +1470,26 @@ var Rocket;
         class Command {
             constructor(jLink) {
                 this._observing = false;
+                this.confirm = null;
                 this.jLink = jLink;
+                jLink.onEvent((evt) => {
+                    this.onEvent(evt);
+                });
+            }
+            get jQuery() {
+                return $(this.jLink.element);
+            }
+            onEvent(evt) {
+                if (!this.confirm) {
+                    this.confirm = Display.Confirm.test(this.jQuery);
+                }
+                if (!this.confirm)
+                    return;
+                evt.preventExec();
+                this.confirm.open();
+                this.confirm.successCallback = () => {
+                    this.jLink.exec();
+                };
             }
             observe() {
                 if (this._observing)
@@ -1669,6 +1687,14 @@ var Rocket;
                 });
                 return entries;
             }
+            static children(jqElem) {
+                var entries = new Array();
+                var jqEntries = jqElem.children("." + Entry.CSS_CLASS);
+                jqEntries.each(function () {
+                    entries.push(Entry.from($(this)));
+                });
+                return entries;
+            }
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
                 return jqContainer.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]");
             }
@@ -1719,7 +1745,13 @@ var Rocket;
                 this.inited = true;
                 if (!this.jqElem.hasClass("rocket-multi-ei-type"))
                     return;
-                this.jqEiTypeSelect = this.jqElem.children(".rocket-ei-type-selector").find("select");
+                let jqSelector = this.jqElem.children(".rocket-ei-type-selector");
+                let se = Display.StructureElement.of(jqSelector);
+                if (se.isGroup()) {
+                    se.getToolbar().getJqControls().show();
+                    se.getToolbar().getJqControls().append(jqSelector);
+                }
+                this.jqEiTypeSelect = jqSelector.find("select");
                 this.updateDisplay();
                 this.jqEiTypeSelect.change(() => {
                     this.updateDisplay();
@@ -1745,6 +1777,7 @@ var Rocket;
             }
             set curEiTypeId(typeId) {
                 this.jqEiTypeSelect.val(typeId);
+                this.updateDisplay();
             }
             get curGenericLabel() {
                 if (!this.multiEiType) {
@@ -5154,5 +5187,163 @@ var Rocket;
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Dialog {
+            constructor(msg, severity = "warning") {
+                this.msg = msg;
+                this._buttons = [];
+                this.msg = msg;
+                this.severity = severity;
+            }
+            addButton(button) {
+                this.buttons.push(button);
+            }
+            get serverity() {
+                return this.severity;
+            }
+            get buttons() {
+                return this._buttons;
+            }
+        }
+        Display.Dialog = Dialog;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class StressWindow {
+            constructor() {
+                this.elemBackgroundJq = $("<div />", {
+                    "class": "rocket-dialog-background"
+                }).css({
+                    "position": "fixed",
+                    "height": "100%",
+                    "width": "100%",
+                    "top": 0,
+                    "left": 0,
+                    "z-index": 998,
+                    "opacity": 0
+                });
+                this.elemDialogJq = $("<div />").css({
+                    "position": "fixed",
+                    "z-index": 999
+                });
+                this.elemMessageJq = $("<p />", {
+                    "class": "rocket-dialog-message"
+                }).appendTo(this.elemDialogJq);
+                this.elemControlsJq = $("<ul/>", {
+                    "class": "rocket-controls rocket-dialog-controls"
+                }).appendTo(this.elemDialogJq);
+            }
+            open(dialog) {
+                var that = this, elemBody = $("body"), elemWindow = $(window);
+                this.elemDialogJq.removeClass()
+                    .addClass("rocket-dialog-" + dialog.serverity + " rocket-dialog");
+                this.elemMessageJq.empty().text(dialog.msg);
+                this.initButtons(dialog);
+                elemBody.append(this.elemBackgroundJq).append(this.elemDialogJq);
+                this.elemDialogJq.css({
+                    "left": (elemWindow.width() - this.elemDialogJq.outerWidth(true)) / 2,
+                    "top": (elemWindow.height() - this.elemDialogJq.outerHeight(true)) / 3
+                }).hide();
+                this.elemBackgroundJq.show().animate({
+                    opacity: 0.7
+                }, 151, function () {
+                    that.elemDialogJq.show();
+                });
+                elemWindow.on('keydown.dialog', function (event) {
+                    var keyCode = (window.event) ? event.keyCode : event.which;
+                    if (keyCode == 13) {
+                        that.elemConfirmJq.click();
+                        $(window).off('keydown.dialog');
+                    }
+                    else if (keyCode == 27) {
+                        that.close();
+                    }
+                });
+            }
+            initButtons(dialog) {
+                var that = this;
+                this.elemConfirmJq = null;
+                this.elemControlsJq.empty();
+                dialog.buttons.forEach((button) => {
+                    var elemA = $("<a>", {
+                        "href": "#"
+                    }).addClass("rocket-dialog-control rocket-control").click((e) => {
+                        e.preventDefault();
+                        button.callback(e);
+                        that.close();
+                    }).text(button.label);
+                    if (that.elemConfirmJq == null) {
+                        that.elemConfirmJq = elemA;
+                    }
+                    that.elemControlsJq.append($("<li/>").append(elemA));
+                });
+            }
+            removeCurrentFocus() {
+                $("<input/>", {
+                    "type": "text",
+                    "name": "remove-focus"
+                }).appendTo($("body")).focus().remove();
+            }
+            close() {
+                this.elemBackgroundJq.detach();
+                this.elemDialogJq.detach();
+                $(window).off('keydown.dialog');
+            }
+            ;
+        }
+        Display.StressWindow = StressWindow;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Confirm {
+            constructor(msg, okLabel, cancelLabel) {
+                this.stressWindow = null;
+                this.dialog = new Display.Dialog(msg);
+                this.dialog.addButton({ label: okLabel, callback: () => {
+                        this.close();
+                        if (this.successCallback) {
+                            this.successCallback();
+                        }
+                    } });
+                this.dialog.addButton({ label: cancelLabel, callback: () => {
+                        this.close();
+                        if (this.cancelCallback) {
+                            this.cancelCallback();
+                        }
+                    } });
+            }
+            open() {
+                this.stressWindow = new Display.StressWindow();
+                this.stressWindow.open(this.dialog);
+            }
+            close() {
+                if (!this.stressWindow)
+                    return;
+                this.stressWindow.close();
+                this.stressWindow = null;
+            }
+            static test(elemJq, successCallback) {
+                if (!elemJq.data("rocket-confirm-msg"))
+                    return null;
+                return Confirm.fromElem(elemJq, successCallback);
+            }
+            static fromElem(elemJq, successCallback) {
+                let confirm = new Confirm(elemJq.data("rocket-confirm-msg") || "Are you sure?", elemJq.data("rocket-confirm-ok-label") || "Yes", elemJq.data("rocket-confirm-cancel-label") || "No");
+                confirm.successCallback = successCallback;
+                return confirm;
+            }
+        }
+        Display.Confirm = Confirm;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map

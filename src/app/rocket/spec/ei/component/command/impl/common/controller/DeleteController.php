@@ -57,7 +57,7 @@ class DeleteController extends ControllerAdapter {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}
 		
-		$this->redirect($redirectUrl);
+		$this->eiCtrlUtils->redirectBack($redirectUrl);
 	}
 	
 // 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {
