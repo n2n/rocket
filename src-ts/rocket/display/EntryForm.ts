@@ -56,6 +56,7 @@ namespace Rocket.Display {
 		
 		set curEiTypeId(typeId: string) {
 			this.jqEiTypeSelect.val(typeId);
+			this.updateDisplay();
 		}
 		
 		get curGenericLabel(): string {
