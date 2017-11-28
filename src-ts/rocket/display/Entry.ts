@@ -188,6 +188,17 @@ namespace Rocket.Display {
 			return entries;
 		}
 		
+		static children(jqElem: JQuery): Array<Entry> {
+			var entries = new Array<Entry>();
+			
+			var jqEntries = jqElem.children("." + Entry.CSS_CLASS);
+			jqEntries.each(function () {
+				entries.push(Entry.from($(this)));
+			});
+			
+			return entries;
+		}
+		
 		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string) {
 			return jqContainer.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]");
 		}

@@ -16,7 +16,14 @@ namespace Rocket.Display {
 			
 			if (!this.jqElem.hasClass("rocket-multi-ei-type")) return;
 			
-			this.jqEiTypeSelect = this.jqElem.children(".rocket-ei-type-selector").find("select");
+			let jqSelector = this.jqElem.children(".rocket-ei-type-selector");
+			let se = StructureElement.of(jqSelector);
+			if (se.isGroup()) {
+				se.getToolbar().getJqControls().show();
+				se.getToolbar().getJqControls().append(jqSelector);
+			}
+			
+			this.jqEiTypeSelect = jqSelector.find("select");
 			this.updateDisplay();
 			
 			this.jqEiTypeSelect.change(() => {

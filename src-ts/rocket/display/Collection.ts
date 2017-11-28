@@ -12,7 +12,7 @@ namespace Rocket.Display {
 		
 		scan() {
 		    let curEntries = this.entries;
-			for (let entry of Entry.findAll(this.elemJq, false)) {
+			for (let entry of Entry.children(this.elemJq)) {
 				if (this.entryMap[entry.id] && this.entryMap[entry.id] === entry) {
 				    continue;
 				}
@@ -94,7 +94,7 @@ namespace Rocket.Display {
 			
 			this.sortedEntries = new Array<Entry>();
 			
-			for (let entry of Entry.findAll(this.elemJq, false)) {
+			for (let entry of Entry.children(this.elemJq)) {
 				if (!this.entryMap[entry.id] || this.entryMap[entry.id] !== entry) {
 					continue;
 				}
