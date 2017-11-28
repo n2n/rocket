@@ -81,7 +81,7 @@ class EiJhtmlEventInfo {
 		$modType = $removed ? self::MOD_TYPE_REMOVED : self::MOD_TYPE_CHANGED;
 		
 		$idRep = null;
-		if ($eiObject->isNew()) {
+		if (!$eiObject->isNew()) {
 		    $idRep = $eiObject->getEiEntityObj()->getId();
 		}
 		
@@ -89,6 +89,7 @@ class EiJhtmlEventInfo {
 		if ($eiObject->isDraft()) {
 		    $draftId = $eiObject->getDraft()->getId();
 		}
+		
 		
 		$this->evMapEiObject($eiTypeId, $idRep, $draftId, $modType);
 	}
