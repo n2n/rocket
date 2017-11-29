@@ -15,7 +15,7 @@ namespace Rocket.Impl.Overview {
 		private contentChangedCallbacks: Array<(overviewContent: OverviewContent) => any> = [];
 		
 		constructor(jqElem: JQuery, private loadUrl: Jhtml.Url) {
-			this.collection = Display.Collection.from(jqElem, true);
+			this.collection = Display.Collection.from(jqElem);
 			this.selectorState = new SelectorState(this.collection);
 		}	
 		

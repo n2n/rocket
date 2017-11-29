@@ -230,7 +230,6 @@ namespace Rocket.Cmd {
 		
 		private removeByIdRep(zone: Zone, supremeEiTypeId: string, idRep: string): boolean {
 			let entries = Display.Entry.findByIdRep(zone.jQuery, supremeEiTypeId, idRep);
-			alert(entries.length);
 			if (entries.length == 0) return true;
 			
 			let success = true;

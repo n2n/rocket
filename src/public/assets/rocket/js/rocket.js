@@ -338,7 +338,6 @@ var Rocket;
             }
             removeByIdRep(zone, supremeEiTypeId, idRep) {
                 let entries = Rocket.Display.Entry.findByIdRep(zone.jQuery, supremeEiTypeId, idRep);
-                alert(entries.length);
                 if (entries.length == 0)
                     return true;
                 let success = true;
@@ -3541,7 +3540,7 @@ var Rocket;
                     this.contentChangedCallbacks = [];
                     this.loadingPageNos = new Array();
                     this.jqLoader = null;
-                    this.collection = Rocket.Display.Collection.from(jqElem, true);
+                    this.collection = Rocket.Display.Collection.from(jqElem);
                     this.selectorState = new SelectorState(this.collection);
                 }
                 isInit() {
