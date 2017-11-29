@@ -615,7 +615,7 @@ namespace Rocket.Impl.Overview {
 		set jqContents(jqContents: JQuery) {
 			this._jqContents = jqContents;
 			
-			this._entries = Display.Entry.findAll(this.jqContents, true);
+			this._entries = Display.Entry.filter(this.jqContents);
 			
 			this.disp();
 			

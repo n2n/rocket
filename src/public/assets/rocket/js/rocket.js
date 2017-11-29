@@ -1740,6 +1740,9 @@ var Rocket;
             static children(jqElem) {
                 return Entry.fromArr(jqElem.children("." + Entry.CSS_CLASS));
             }
+            static filter(jqElem) {
+                return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
+            }
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
                 return 0 == jqContainer.has("." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]").length;
             }
@@ -4013,7 +4016,7 @@ var Rocket;
                 }
                 set jqContents(jqContents) {
                     this._jqContents = jqContents;
-                    this._entries = Rocket.Display.Entry.findAll(this.jqContents, true);
+                    this._entries = Rocket.Display.Entry.filter(this.jqContents);
                     this.disp();
                     var that = this;
                     for (var i in this._entries) {

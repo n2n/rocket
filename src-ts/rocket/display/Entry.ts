@@ -198,6 +198,10 @@ namespace Rocket.Display {
 			return Entry.fromArr(jqElem.children("." + Entry.CSS_CLASS));
 		}
 		
+		static filter(jqElem: JQuery): Array<Entry> {
+			return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
+		}
+		
 		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
 			return 0 == jqContainer.has("." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]").length;
 		}
