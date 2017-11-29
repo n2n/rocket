@@ -26,41 +26,41 @@
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 
-	$entryCommandViewModel = $view->params['entryCommandViewModel']; 
+	$entryCommandViewModel = $view->getParam('entryCommandViewModel'); 
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 	
-	$eiObjectUtils = $entryCommandViewModel->getEiuEntry();
+	$eiuEntry = $entryCommandViewModel->getEiuEntry();
 	$linkedPreviewType = $currentPreviewType = $view->getParam('currentPreviewType', false);
 	if ($linkedPreviewType === null) {
-		$linkedPreviewType = $eiObjectUtils->getPreviewType();
+		$linkedPreviewType = $eiuEntry->getPreviewType();
 	} 
 	
 	$detailPathParts = null;
 	$previewPathParts = null;
-	if ($eiObjectUtils->isDraft()) {
-		$draftId = $eiObjectUtils->getDraft(true)->getId();
+	if ($eiuEntry->isDraft()) {
+		$draftId = $eiuEntry->getDraft(true)->getId();
 		$detailPathParts = array('draft', $draftId);
 		$previewPathParts = array('draftpreview', $draftId, $linkedPreviewType);
 	} else {
-		$idRep = $eiObjectUtils->getLiveIdRep(true);
+		$idRep = $eiuEntry->getLiveIdRep(true);
 		$detailPathParts = array('live', $idRep);
 		$previewPathParts = array('livepreview', $idRep, $linkedPreviewType);
 	}
  ?>
 
-<ul class="rocket-preview-switch">
+<ul class="rocket-simple-commands">
 	<li>
 		<?php $html->linkToController($detailPathParts,
 				new n2n\web\ui\Raw('<i class="fa fa-list"></i>' 
 						. $html->getL10nText('ei_impl_entry_info_mode_label')), 
-				array('class' => 'rocket-control rocket-control-dataview' 
+				array('class' => 'btn btn-secondary rocket-jhtml' 
 						. ($currentPreviewType === null ? ' rocket-active' : null))) ?>
 	</li>
 	<li>
 		<?php $html->linkToController($previewPathParts, 
 				new n2n\web\ui\Raw('<i class="fa fa-eye"></i>' 
 						. $html->getL10nText('ei_impl_entry_preview_mode_label')), 
-				array('class' => 'rocket-control rocket-control-preview' 
+				array('class' => 'btn btn-secondary rocket-jhtml'
 						. ($currentPreviewType !== null ? ' rocket-active' : null))) ?>
 	</li>
 </ul>

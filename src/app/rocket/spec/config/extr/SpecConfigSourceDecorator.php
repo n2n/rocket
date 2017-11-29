@@ -21,12 +21,10 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\extr\EiTypeExtraction;
 use n2n\util\config\source\WritableConfigSource;
 use n2n\util\config\Attributes;
 use n2n\util\config\InvalidConfigurationException;
 use n2n\util\config\AttributesException;
-use rocket\spec\config\extr\SpecExtractor;
 use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use n2n\reflection\ArgUtils;

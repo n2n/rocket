@@ -264,9 +264,9 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function lookupPreviewController(string $previewType, EiObject $eiObject) {
+	public function lookupPreviewController(string $previewType, $eiObjectArg) {
 		try {
-			return $this->eiuFrame->lookupPreviewController($previewType, $eiObject);
+			return $this->eiuFrame->lookupPreviewController($previewType, $eiObjectArg);
 		} catch (UnavailablePreviewException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}

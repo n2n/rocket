@@ -24,7 +24,6 @@ namespace rocket\spec\ei\manage;
 use n2n\web\http\controller\ControllerContext;
 use n2n\context\RequestScoped;
 use rocket\spec\ei\EiType;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\user\model\LoginContext;
 use n2n\core\container\N2nContext;
 use rocket\user\bo\RocketUser;
@@ -32,7 +31,6 @@ use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\EiFrameFactory;
 use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\ei\security\EiPermissionManager;
 use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
@@ -151,7 +149,7 @@ class ManageState implements RequestScoped {
 	/**
 	 * 
 	 * @param EiType $eiType
-	 * @throws UnsuitableEiFrameException
+	 * @throws ManageException
 	 * @return \rocket\spec\ei\manage\EiFrame
 	 */
 	public function peakEiFrame(EiType $eiType = null): EiFrame {

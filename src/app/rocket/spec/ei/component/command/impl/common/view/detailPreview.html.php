@@ -22,8 +22,7 @@
 
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
-use n2n\util\uri\Path;
+	use n2n\util\uri\Path;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -32,19 +31,17 @@ use n2n\util\uri\Path;
 	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
-	
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));
 	
-	$eiObjectUtils = $entryCommandViewModel->getEiuEntry();
+	$eiuEntry = $entryCommandViewModel->getEiuEntry();
 	$currentPreviewType = $view->getParam('currentPreviewType');
 	
 	$previewPath = null;
-	if ($eiObjectUtils->isDraft()) {
-		$previewPath = new Path(array('draftpreview', $eiObjectUtils->getDraft()->getId()));
+	if ($eiuEntry->isDraft()) {
+		$previewPath = new Path(array('draftpreview', $eiuEntry->getDraft()->getId()));
 	} else {
-		$previewPath = new Path(array('livepreview', $eiObjectUtils->getLiveIdRep()));
+		$previewPath = new Path(array('livepreview', $eiuEntry->getLiveIdRep()));
 	}
 ?>
 
@@ -54,7 +51,7 @@ use n2n\util\uri\Path;
 	
 	<div class="rocket-zone-toolbar">
 		<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-			<?php foreach ($eiObjectUtils->getPreviewTypeOptions() as $previewType => $label): ?>
+			<?php foreach ($eiuEntry->getPreviewTypeOptions() as $previewType => $label): ?>
 				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))) ?>"
 						<?php $view->out($currentPreviewType == $previewType ? ' selected="selected"' : '') ?>>
 					<?php $html->out($label) ?>

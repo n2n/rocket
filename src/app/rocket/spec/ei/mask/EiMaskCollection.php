@@ -22,12 +22,9 @@
 namespace rocket\spec\ei\mask;
 
 use rocket\spec\config\mask\CommonEiMask;
-use rocket\spec\ei\mask\UnknownEiMaskException;
 use n2n\io\IoUtils;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\config\mask\model\DisplayScheme;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\mask\EiMaskCollection;
 use rocket\spec\ei\EiType;
 
 class EiMaskCollection implements \IteratorAggregate, \Countable {
@@ -109,10 +106,10 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @param unknown $idBase
+	 * @param string $idBase
 	 * @return string
 	 */
-	public function makeUniqueId($idBase) {
+	public function makeUniqueId(string $idBase) {
 		$idBase = IoUtils::stripSpecialChars($idBase, true);
 		if (mb_strlen($idBase) && !$this->containsId($idBase)) {
 			return $idBase;

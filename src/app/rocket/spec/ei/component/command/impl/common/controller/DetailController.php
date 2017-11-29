@@ -44,12 +44,12 @@ class DetailController extends ControllerAdapter {
 		
 		$eiuEntryGui = $eiuEntry->newEntryGui();
 		
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame());
+		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry);
 		$viewModel->initializeDrafts();
 		
 		$this->applyBreadcrumbs($eiuEntryGui->getEiuEntry()->getEiObject());
 			
-		$view = $this->createView('..\view\detail.html', array('viewModel' => $viewModel,
+		$view = $this->createView('..\view\detail.html', array('entryCommandViewModel' => $viewModel,
 				'eiuEntryGui' => $eiuEntryGui));
 		
 		$this->eiuCtrl->forwardView($view);
@@ -67,10 +67,9 @@ class DetailController extends ControllerAdapter {
 	}
 	
 	public function doLivePreview($idRep, $previewType = null) {
-		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
+		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		
-		$eiObjectUtils = $this->eiuCtrl->toEiuEntry($eiObject);
-		$previewTypeOptions = $eiObjectUtils->getPreviewTypeOptions();
+		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
 		if (empty($previewTypeOptions)) {
 			throw new PageNotFoundException();
 		}
@@ -80,16 +79,16 @@ class DetailController extends ControllerAdapter {
 			return;
 		}
 		
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiObject);
+		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
-		$this->applyBreadcrumbs($eiObject, $previewType);
+		$this->applyBreadcrumbs($eiuEntry->getEiObject(), $previewType);
 		
 		$this->forward('..\view\detailPreview.html', array( 
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 						->ext('livepreviewsrc', $idRep, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame())));
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry)));
 	}
 	
 	public function doLivePreviewSrc($idRep, $previewType, array $delegateCmds = array()) {

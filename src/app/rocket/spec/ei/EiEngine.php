@@ -47,7 +47,6 @@ use rocket\spec\ei\manage\generic\ScalarEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiDefinition;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
-use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class EiEngine {
@@ -213,7 +212,7 @@ class EiEngine {
 	}
 
 	/**
-	 * @return rocket\spec\ei\manage\generic\GenericEiDefinition
+	 * @return \rocket\spec\ei\manage\generic\GenericEiDefinition
 	 */
 	public function getGenericEiDefinition() {
 		if ($this->genericEiDefinition !== null) {

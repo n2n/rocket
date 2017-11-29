@@ -21,14 +21,12 @@
  */
 namespace rocket\spec\ei\mask;
 
-use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
-use n2n\web\ui\view\View;
 use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\gui\EiEntryGui;

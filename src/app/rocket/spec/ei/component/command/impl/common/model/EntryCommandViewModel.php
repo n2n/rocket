@@ -21,28 +21,27 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\model;
 
-use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
-use rocket\spec\ei\manage\model\EntryGuiModel;
 use n2n\web\http\HttpContext;
-use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class EntryCommandViewModel {
 	private $title;
 	private $eiuFrame;
 	private $cancelUrl;
+	private $eiuEntry;
 	
-	public function __construct(EiuFrame $eiuFrame, Url $cancelUrl = null) {
+	public function __construct(EiuFrame $eiuFrame, Url $cancelUrl = null, EiuEntry $eiuEntry = null) {
 		$this->eiuFrame = $eiuFrame;
 		$this->cancelUrl = $cancelUrl;
+		$this->eiuEntry = $eiuEntry;
 	}
 	
 	public function getTitle() {
 		if ($this->title !== null) return $this->title;
 			
-		return $this->title = $this->eiuEntryGui->getEiuEntry()->createIdentityString(true);
+		return $this->title = $this->eiuEntry->createIdentityString(true);
 	}
 	
 	public function setTitle($title) {
@@ -53,7 +52,11 @@ class EntryCommandViewModel {
 	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
 	public function getEiuFrame() {
-		return $this->eiuEntryGui->getEiuEntry()->getEiuFrame();
+		return $this->eiuFrame;
+	}
+	
+	public function getEiuEntry() {
+		return $this->eiuEntry;
 	}
 	
 	private $latestDraft = null;
@@ -100,7 +103,6 @@ class EntryCommandViewModel {
 	}
 	
 	public function isPreviewAvailable() {
-		return false;
 		return $this->getEiuEntry()->isPreviewAvailable();
 	}
 	

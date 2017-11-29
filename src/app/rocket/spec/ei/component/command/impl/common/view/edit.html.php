@@ -37,7 +37,7 @@
 	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 	
-	$view->useTemplate('~\core\view\template.html', array('title' => 'Edit'));
+	$view->useTemplate('~\core\view\template.html', array('title' => $entryCommandViewModel->getTitle()));
 ?>
 <?php $formHtml->open($editModel, Form::ENCTYPE_MULTIPART, null, array('class' => 'rocket-form')) ?>
 	<?php $view->out($editModel->getEntryForm()->createView($view)) ?>

@@ -28,7 +28,7 @@
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 		
-	$entryCommandViewModel = $view->getParam('viewModel');
+	$entryCommandViewModel = $view->getParam('entryCommandViewModel');
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 
 	$eiuEntryGui = $view->getParam('eiuEntryGui');
@@ -37,7 +37,7 @@
 	$eiHtml = new EiHtmlBuilder($view);
 	
 	$view->useTemplate('~\core\view\template.html', 
-			array('title' => $eiuEntryGui->getEiuEntry()->createIdentityString()));
+			array('title' => $entryCommandViewModel->getTitle()));
 ?>
  
 <?php $eiHtml->entryOpen('div', $eiuEntryGui)?>

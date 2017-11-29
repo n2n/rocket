@@ -26,7 +26,6 @@ use rocket\spec\config\UnknownSpecException;
 use rocket\spec\config\source\ModularConfigSource;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\core\model\MenuItem;
 use rocket\core\model\UnknownMenuItemException;
 use n2n\reflection\ArgUtils;
 

@@ -34,31 +34,31 @@ use rocket\ajah\JhtmlEvent;
 class DeleteController extends ControllerAdapter {
 	private $dtc;
 	private $utils;
-	private $eiCtrlUtils;
+	private $eiuCtrl;
 	
-	public function prepare(ManageState $manageState, DynamicTextCollection $dtc, EiuCtrl $eiCtrlUtils) {
+	public function prepare(ManageState $manageState, DynamicTextCollection $dtc, EiuCtrl $eiuCtrl) {
 		$this->dtc = $dtc;
 		$this->utils = new EiuFrame($manageState->peakEiFrame());
-		$this->eiCtrlUtils = $eiCtrlUtils;
+		$this->eiuCtrl = $eiuCtrl;
 	}
 	
 	public function doLive($idRep, ParamQuery $refPath = null, MessageContainer $mc) {
-		$redirectUrl = $this->eiCtrlUtils->buildRefRedirectUrl($this->eiCtrlUtils->parseRefUrl($refPath));
+		$redirectUrl = $this->eiuCtrl->buildRefRedirectUrl($this->eiuCtrl->parseRefUrl($refPath));
 		
 		$eiObject = null;
 		try {
-			$eiObject = $this->eiCtrlUtils->lookupEiObject($this->utils->idRepToId($idRep));
+			$eiObject = $this->eiuCtrl->lookupEiObject($this->utils->idRepToId($idRep));
 		} catch (StatusException $e) {
-			$this->eiCtrlUtils->redirectBack($redirectUrl);
+			$this->eiuCtrl->redirectBack($redirectUrl);
 			return;
 		}
 		
-		$vetoableAction = $this->eiCtrlUtils->frame()->remove($eiObject);
+		$vetoableAction = $this->eiuCtrl->frame()->remove($eiObject);
 // 		if ($vetoableAction->hasVetos()) {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}
 		
-		$this->eiCtrlUtils->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectRemoved($eiObject));
+		$this->eiuCtrl->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectRemoved($eiObject));
 	}
 	
 // 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {

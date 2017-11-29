@@ -44,7 +44,6 @@ use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
@@ -344,7 +343,9 @@ class EiuFrame extends EiUtilsAdapter {
 		$this->eiFrame->getManageState()->getVetoableRemoveActionQueue()->removeEiObject($eiObject);
 	}
 
-	public function lookupPreviewController(string $previewType, EiObject $eiObject) {
+	public function lookupPreviewController(string $previewType, $eiObjectArg) {
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg');
+		
 		$entityObj = null;
 		if (!$eiObject->isDraft()) {
 			$entityObj = $eiObject->getLiveObject();

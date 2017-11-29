@@ -21,9 +21,7 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\ei\EiType;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\EiDef;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\config\UnknownMaskException;
 

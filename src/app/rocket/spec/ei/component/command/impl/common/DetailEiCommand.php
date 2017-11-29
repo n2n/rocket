@@ -117,7 +117,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$controlButton = new ControlButton(
 				$dtc->t('ei_impl_detail_preview_label'), 
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				IconType::ICON_EYE);
+				false, null, IconType::ICON_EYE);
 		
 		$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl());
 		

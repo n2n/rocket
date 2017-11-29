@@ -88,11 +88,14 @@
 		var jqElemIFrameBody = $(document).find("body:first");
 
 		if (null !== contentsCss) {
-			contentsCss = JSON.parse(contentsCss.replace(/'/g, '"'))
-			var jqElemIFrameHead = jqElem.contents().find("head:first");
-			for (var i in contentsCss) {
-				jqElemIFrameHead.append($("<link />", { href: contentsCss[i], rel: "stylesheet", media: "screen"}));
-			}
+			try {
+				var contentsCss = JSON.parse(contentsCss.replace(/'/g, '"'))
+				var jqElemIFrameHead = jqElem.contents().find("head:first");
+				for (var i in contentsCss) {
+					jqElemIFrameHead.append($("<link />", { href: contentsCss[i], rel: "stylesheet", media: "screen"}));
+				}
+			} catch (e) { }
+			
 		}
 
 		if (bodyId != null) {
