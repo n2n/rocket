@@ -48,19 +48,16 @@
 	}
  ?>
 
-<ul class="rocket-simple-commands">
-	<li>
-		<?php $html->linkToController($detailPathParts,
-				new n2n\web\ui\Raw('<i class="fa fa-list"></i>' 
-						. $html->getL10nText('ei_impl_entry_info_mode_label')), 
-				array('class' => 'btn btn-secondary rocket-jhtml' 
-						. ($currentPreviewType === null ? ' rocket-active' : null))) ?>
-	</li>
-	<li>
-		<?php $html->linkToController($previewPathParts, 
-				new n2n\web\ui\Raw('<i class="fa fa-eye"></i>' 
-						. $html->getL10nText('ei_impl_entry_preview_mode_label')), 
-				array('class' => 'btn btn-secondary rocket-jhtml'
-						. ($currentPreviewType !== null ? ' rocket-active' : null))) ?>
-	</li>
-</ul>
+<div class="rocket-impl-preview-switch">
+	<?php $html->linkToController($detailPathParts,
+			new n2n\web\ui\Raw('<i class="fa fa-list"></i>' 
+					. $html->getL10nText('ei_impl_entry_info_mode_label')), 
+			array('class' => 'btn btn-secondary rocket-jhtml' 
+					. ($currentPreviewType === null ? ' rocket-active' : null))) ?>
+
+	<?php $html->linkToController($previewPathParts, 
+			new n2n\web\ui\Raw('<i class="fa fa-eye"></i>' 
+					. $html->getL10nText('ei_impl_entry_preview_mode_label')), 
+			array('class' => 'btn btn-secondary rocket-jhtml'
+					. ($currentPreviewType !== null ? ' rocket-active' : null))) ?>
+</div>

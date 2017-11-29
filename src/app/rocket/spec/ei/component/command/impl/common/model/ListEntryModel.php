@@ -19,55 +19,55 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\command\impl\common\model;
+// namespace rocket\spec\ei\component\command\impl\common\model;
 
-use rocket\spec\ei\manage\model\EntryModel;
-use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\mask\EiMask;
+// use rocket\spec\ei\manage\model\EntryModel;
+// use rocket\spec\ei\manage\gui\GuiDefinition;
+// use rocket\spec\ei\manage\mapping\EiEntry;
+// use rocket\spec\ei\manage\gui\EiEntryGui;
+// use rocket\spec\ei\mask\EiMask;
 
-class ListEntryModel implements EntryModel {
-	private $eiMask;
-	private $eiEntryGui;
+// class ListEntryModel implements EntryModel {
+// 	private $eiMask;
+// 	private $eiEntryGui;
 	
-	private $eiEntry;
+// 	private $eiEntry;
 	
-	/**
-	 * @param GuiDefinition $guiDefinition
-	 * @param EiEntry $eiEntry
-	 */
-	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,	EiEntry $eiEntry) {
-		$this->eiMask = $eiMask;
-		$this->eiEntryGui = $eiEntryGui;
-		$this->eiEntry = $eiEntry;
-	}
+// 	/**
+// 	 * @param GuiDefinition $guiDefinition
+// 	 * @param EiEntry $eiEntry
+// 	 */
+// 	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,	EiEntry $eiEntry) {
+// 		$this->eiMask = $eiMask;
+// 		$this->eiEntryGui = $eiEntryGui;
+// 		$this->eiEntry = $eiEntry;
+// 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\model\ManageModel::getEiMask()
-	 */
-	public function getEiMask() {
-		return $this->eiMask;
-	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\model\ManageModel::getEiMask()
+// 	 */
+// 	public function getEiMask() {
+// 		return $this->eiMask;
+// 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntry()
-	 */
-	public function getEiEntry() {
-		return $this->eiEntry;
-	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntry()
+// 	 */
+// 	public function getEiEntry() {
+// 		return $this->eiEntry;
+// 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\model\ManageModel::getGuiDefinition()
-	 */
-	public function getGuiDefinition() {
-		return $this->guiDefinition;	
-	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\model\ManageModel::getGuiDefinition()
+// 	 */
+// 	public function getGuiDefinition() {
+// 		return $this->guiDefinition;	
+// 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntryGui()
-	 */
-	public function getEiEntryGui() {
-		return $this->eiEntryGui;
-	}
-}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\model\EntryModel::getEiEntryGui()
+// 	 */
+// 	public function getEiEntryGui() {
+// 		return $this->eiEntryGui;
+// 	}
+// }

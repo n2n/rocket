@@ -19,53 +19,53 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\command\impl\common\model;
+// namespace rocket\spec\ei\component\command\impl\common\model;
 
-use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\CritmodFactory;
+// use n2n\web\dispatch\Dispatchable;
+// use rocket\spec\ei\manage\EiFrame;
+// use rocket\spec\ei\CritmodFactory;
 
-class ListQuickSearchModel implements Dispatchable {	
-	private $eiFrame;
-	private $tmpFilterStore;
-	private $quickSearchableModel;
+// class ListQuickSearchModel implements Dispatchable {	
+// 	private $eiFrame;
+// 	private $tmpFilterStore;
+// 	private $quickSearchableModel;
 	
-	protected $searchStr;
+// 	protected $searchStr;
 	
-	public function __construct(EiFrame $eiFrame, ListTmpFilterStore $tmpFilterStore) {
-		$this->eiFrame = $eiFrame;
-		$this->tmpFilterStore = $tmpFilterStore;
-		$this->quickSearchableModel = CritmodFactory::createQuickSearchableModel($eiFrame);
-		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId());
-	}
+// 	public function __construct(EiFrame $eiFrame, ListTmpFilterStore $tmpFilterStore) {
+// 		$this->eiFrame = $eiFrame;
+// 		$this->tmpFilterStore = $tmpFilterStore;
+// 		$this->quickSearchableModel = CritmodFactory::createQuickSearchableModel($eiFrame);
+// 		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId());
+// 	}
 	
-	public function isActive() {
-		return $this->searchStr !== null;
-	}
+// 	public function isActive() {
+// 		return $this->searchStr !== null;
+// 	}
 	
-	public function applyToEiFrame(EiFrame $eiFrame) {
-		$criteriaConstraint = $this->quickSearchableModel->createCriteriaConstraint($this->searchStr);
-		if ($criteriaConstraint !== null) {
-			$eiFrame->addCriteriaConstraint($criteriaConstraint);
-		}
-	}
+// 	public function applyToEiFrame(EiFrame $eiFrame) {
+// 		$criteriaConstraint = $this->quickSearchableModel->createCriteriaConstraint($this->searchStr);
+// 		if ($criteriaConstraint !== null) {
+// 			$eiFrame->addCriteriaConstraint($criteriaConstraint);
+// 		}
+// 	}
 	
-	public function getSearchStr() {
-		return $this->searchStr;
-	}
+// 	public function getSearchStr() {
+// 		return $this->searchStr;
+// 	}
 	
-	public function setSearchStr($searchStr) {
-		$this->searchStr = $searchStr;
-	}
+// 	public function setSearchStr($searchStr) {
+// 		$this->searchStr = $searchStr;
+// 	}
 	
-	private function _validation() { }
+// 	private function _validation() { }
 	
-	public function search() {
-		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), $this->searchStr);
-	}
+// 	public function search() {
+// 		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), $this->searchStr);
+// 	}
 	
-	public function clear() {
-		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), null);
-	}
+// 	public function clear() {
+// 		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), null);
+// 	}
 	
-}
+// }

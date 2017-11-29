@@ -19,64 +19,64 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\command\impl\common\model;
+// namespace rocket\spec\ei\component\command\impl\common\model;
 
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
-use n2n\context\SessionScoped;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterData;
+// use n2n\context\SessionScoped;
 
-class ListTmpFilterStore implements SessionScoped {
-	private $filterIds;
-	private $filterDatas = array();
-	private $sortDirections = array();
-	private $searchStrs;
+// class ListTmpFilterStore implements SessionScoped {
+// 	private $filterIds;
+// 	private $filterDatas = array();
+// 	private $sortDirections = array();
+// 	private $searchStrs;
 	
-	private function _onSerialize() {}
-	private function _onUnserialize() {}
+// 	private function _onSerialize() {}
+// 	private function _onUnserialize() {}
 	
-	public function setFilterId($eiTypeId, $filterId) {
-		$this->filterIds[$eiTypeId] = $filterId;
-	}
+// 	public function setFilterId($eiTypeId, $filterId) {
+// 		$this->filterIds[$eiTypeId] = $filterId;
+// 	}
 	
-	public function getFilterId($eiTypeId) {
-		if (isset($this->filterIds[$eiTypeId])) {
-			return $this->filterIds[$eiTypeId];
-		}
+// 	public function getFilterId($eiTypeId) {
+// 		if (isset($this->filterIds[$eiTypeId])) {
+// 			return $this->filterIds[$eiTypeId];
+// 		}
 		
-		return null;
-	}
+// 		return null;
+// 	}
 	
-	public function setTmpFilterData($eiTypeId, FilterData $filterData = null) {
-		$this->filterDatas[$eiTypeId] = $filterData;
-	}	
+// 	public function setTmpFilterData($eiTypeId, FilterData $filterData = null) {
+// 		$this->filterDatas[$eiTypeId] = $filterData;
+// 	}	
 	
-	public function getTmpFilterData($eiTypeId) {
-		if (isset($this->filterDatas[$eiTypeId])) {
-			return $this->filterDatas[$eiTypeId];
-		}
+// 	public function getTmpFilterData($eiTypeId) {
+// 		if (isset($this->filterDatas[$eiTypeId])) {
+// 			return $this->filterDatas[$eiTypeId];
+// 		}
 		
-		return null;
-	}
+// 		return null;
+// 	}
 	
-	public function setTmpSortDirections($eiTypeId, array $sortDirections = null) {
-		$this->sortDirections[$eiTypeId] = $sortDirections;
-	}	
+// 	public function setTmpSortDirections($eiTypeId, array $sortDirections = null) {
+// 		$this->sortDirections[$eiTypeId] = $sortDirections;
+// 	}	
 	
-	public function getTmpSortDirections($eiTypeId) {
-		if (isset($this->sortDirections[$eiTypeId])) {
-			return $this->sortDirections[$eiTypeId];
-		}
+// 	public function getTmpSortDirections($eiTypeId) {
+// 		if (isset($this->sortDirections[$eiTypeId])) {
+// 			return $this->sortDirections[$eiTypeId];
+// 		}
 		
-		return null;
-	}
+// 		return null;
+// 	}
 	
-	public function setTmpSearchStr($eiTypeId, $searchStr) {
-		$this->searchStrs[$eiTypeId] = $searchStr;
-	}
+// 	public function setTmpSearchStr($eiTypeId, $searchStr) {
+// 		$this->searchStrs[$eiTypeId] = $searchStr;
+// 	}
 	
-	public function getTmpSearchStr($eiTypeId) {
-		if (isset($this->searchStrs[$eiTypeId])) {
-			return $this->searchStrs[$eiTypeId];
-		}
-		return null;
-	}
-}
+// 	public function getTmpSearchStr($eiTypeId) {
+// 		if (isset($this->searchStrs[$eiTypeId])) {
+// 			return $this->searchStrs[$eiTypeId];
+// 		}
+// 		return null;
+// 	}
+// }
