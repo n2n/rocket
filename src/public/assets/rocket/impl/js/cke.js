@@ -38,7 +38,7 @@
 			
 			let editorName;
 			if (visible) {
-				editorName = CKEDITOR.replace(elem).name;
+				editorName = CKEDITOR.instances[CKEDITOR.replace(elem).name].name;
 			}
 			
 			setInterval(function () {
@@ -54,7 +54,7 @@
 				}
 				
 				if (visible) {
-					editorName = CKEDITOR.replace(elem).name;
+					editorName = CKEDITOR.instances[CKEDITOR.replace(elem).name].name;
 				}
 			}, 1000);
 			
