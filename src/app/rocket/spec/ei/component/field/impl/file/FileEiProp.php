@@ -182,7 +182,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 							->toUrl(array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
-							'class' => 'rocket-control rocket-simple-commands', 'data-jhtml' => 'true')));
+							'class' => 'rocket-control rocket-simple-commands btn btn-secondary', 'data-jhtml' => 'true')));
 		}
 		
 		return $uiComponent;
