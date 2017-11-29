@@ -21,12 +21,10 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\persistence\orm\EntityManager;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
 use n2n\web\http\controller\ControllerContext;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\ManageState;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\mapping\EiEntry;
@@ -65,9 +63,8 @@ class EiFrame {
 	private $detailUrlExt;
 
 	/**
-	 * @param  $contextEiMask
-	 * @param ControllerContext $controllerContext
-	 * @param HardFilter $hardFilter
+	 * @param EiMask $contextEiMask
+	 * @param ManageState $controllerContext
 	 */
 	public function __construct(EiMask $contextEiMask, ManageState $manageState) {
 		$this->contextEiMask = $contextEiMask;

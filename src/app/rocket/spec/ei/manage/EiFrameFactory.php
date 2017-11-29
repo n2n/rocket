@@ -23,7 +23,6 @@ namespace rocket\spec\ei\manage;
 
 use rocket\spec\ei\mask\EiMask;
 use n2n\web\http\controller\ControllerContext;
-use rocket\spec\ei\manage\ManageState;
 
 class EiFrameFactory {
 	private $contextEiMask;
