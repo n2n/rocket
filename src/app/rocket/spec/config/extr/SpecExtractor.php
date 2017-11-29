@@ -181,7 +181,7 @@ class SpecExtractor {
 	    }
 	    
 	    return str_replace(
-	           array('rocket\spec\ei\component\field\impl',
+                array('rocket\spec\ei\component\field\impl',
         	            'rocket\spec\ei\component\command\impl',
         	            'rocket\spec\ei\component\modificator\impl',
         	            'EiField'),
