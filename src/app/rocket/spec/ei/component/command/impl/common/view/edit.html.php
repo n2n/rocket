@@ -68,7 +68,7 @@
 			<?php $html->link($entryCommandViewModel->determineCancelUrl($view->getHttpContext()), 
 					new Raw('<i class="fa fa-times-circle"></i><span>' 
 							. $html->getL10nText('common_cancel_label') . '</span>'),
-					array('class' => 'btn btn-secondary')) ?>
+					array('class' => 'btn btn-secondary rocket-jhtml')) ?>
 		</div>
 	</div>
 <?php $formHtml->close() ?>
