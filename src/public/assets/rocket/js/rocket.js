@@ -271,13 +271,20 @@ var Rocket;
                     this.layerTrigger(Container.LayerEventType.ADDED, layer);
                     return layer;
                 }
+                let reopenable = false;
                 dependentPage.on(Cmd.Zone.EventType.CLOSE, function () {
                     layer.close();
                 });
+                dependentPage.on(Cmd.Zone.EventType.CONTENT_CHANGED, function () {
+                    layer.close();
+                });
                 dependentPage.on(Cmd.Zone.EventType.HIDE, function () {
+                    reopenable = layer.visible;
                     layer.hide();
                 });
                 dependentPage.on(Cmd.Zone.EventType.SHOW, function () {
+                    if (!reopenable)
+                        return;
                     layer.show();
                 });
                 this.layerTrigger(Container.LayerEventType.ADDED, layer);

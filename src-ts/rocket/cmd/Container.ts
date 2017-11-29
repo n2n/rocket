@@ -150,13 +150,20 @@ namespace Rocket.Cmd {
 				return layer;
 			}
 			
+			let reopenable = false;
 			dependentPage.on(Zone.EventType.CLOSE, function () {
 				layer.close();
 			});
+			dependentPage.on(Zone.EventType.CONTENT_CHANGED, function () {
+				layer.close();
+			});
 			dependentPage.on(Zone.EventType.HIDE, function () {
+				reopenable = layer.visible;
 				layer.hide();
 			});
 			dependentPage.on(Zone.EventType.SHOW, function () {
+				if (!reopenable) return;
+				
 				layer.show();
 			});
 			
