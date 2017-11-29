@@ -66,6 +66,7 @@ var Rocket;
         (function () {
             Jhtml.ready((elements) => {
                 $(elements).find("a.rocket-jhtml").each(function () {
+                    console.log(this.outerHTML);
                     new Rocket.Display.Command(Jhtml.Ui.Link.from(this)).observe();
                 });
             });
