@@ -19,17 +19,17 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\command\impl\common\model;
+// namespace rocket\spec\ei\component\command\impl\common\model;
 
-class DeleteModel extends CommandEntryModelAdapter {
+// class DeleteModel extends CommandEntryModelAdapter {
 			
-	public function delete() {
-		if ($this->eiObject->isDraft()) {
-			$this->draftModel->removeDraft($this->eiObject->getDraft());
-			return;
-		}
+// 	public function delete() {
+// 		if ($this->eiObject->isDraft()) {
+// 			$this->draftModel->removeDraft($this->eiObject->getDraft());
+// 			return;
+// 		}
 		
-		$this->eiFrame->triggerOnRemoveObject($this->em, $this->eiObject);
-		$this->em->remove($this->eiObject->getLiveEntityObj());
-	}
-}
+// 		$this->eiFrame->triggerOnRemoveObject($this->em, $this->eiObject);
+// 		$this->em->remove($this->eiObject->getLiveEntityObj());
+// 	}
+// }

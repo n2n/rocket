@@ -17,6 +17,10 @@ namespace Rocket.Display {
 			}
 		}
 		
+		get collection(): Collection|null {
+			return Collection.test(this.jqElem.parent());
+		}
+		
 		private initSelector(jqSelector: JQuery) {
 			this._selector = new EntrySelector(jqSelector, this);
 			
@@ -142,7 +146,7 @@ namespace Rocket.Display {
 		static readonly CSS_CLASS = "rocket-entry";
 		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
 		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
-		static readonly ID_REP_ATTR = "data-rocket-id-rep-id";
+		static readonly ID_REP_ATTR = "data-rocket-id-rep";
 		static readonly DRAFT_ID_ATTR = "data-rocket-draft-id";
 		
 		private static from(elemJq: JQuery): Entry {
@@ -175,42 +179,53 @@ namespace Rocket.Display {
 		}
 		
 		static findAll(jqElem: JQuery, includeSelf: boolean = false): Array<Entry> {
-			var entries = new Array<Entry>();
-			
-			var jqEntries = jqElem.find("." + Entry.CSS_CLASS);
+			let jqEntries = jqElem.find("." + Entry.CSS_CLASS);
 			
 			jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
 			
-			jqEntries.each(function () {
+			return Entry.fromArr(jqEntries);
+		}
+		
+		private static fromArr(entriesJq: JQuery): Array<Entry> {
+			let entries = new Array<Entry>();
+			entriesJq.each(function () {
 				entries.push(Entry.from($(this)));
 			});
-			
 			return entries;
 		}
 		
 		static children(jqElem: JQuery): Array<Entry> {
-			var entries = new Array<Entry>();
-			
-			var jqEntries = jqElem.children("." + Entry.CSS_CLASS);
-			jqEntries.each(function () {
-				entries.push(Entry.from($(this)));
-			});
-			
-			return entries;
+			return Entry.fromArr(jqElem.children("." + Entry.CSS_CLASS));
 		}
 		
-		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string) {
-			return jqContainer.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]");
+		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
+			return 0 == jqContainer.has("." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]").length;
 		}
 		
-		static hasIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string) {
-			return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
-					+ " [" + Entry.ID_REP_ATTR + "=" + idRep + "]");
+		private static buildIdRepSelector(supremeEiTypeId: string, idRep: string): string {
+			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "][" 
+					+ Entry.ID_REP_ATTR + "=" + idRep + "]";
 		}
 		
-		static hasDraftId(jqElem: JQuery, supremeEiTypeId: string, darftId: number) {
-			return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
-					+ " [" + Entry.DRAFT_ID_ATTR + "=" + darftId + "]");
+		static findByIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string): Entry[] {
+			return Entry.fromArr(jqElem.find(Entry.buildIdRepSelector(supremeEiTypeId, idRep)));
+		}
+		
+		static hasIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string): boolean {
+			return 0 < jqElem.has(Entry.buildIdRepSelector(supremeEiTypeId, idRep)).length;
+		}
+		
+		private static buildDraftIdSelector(supremeEiTypeId: string, draftId: number): string {
+			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "][" 
+					+ Entry.DRAFT_ID_ATTR + "=" + draftId + "]";
+		}
+		
+		static findByDraftId(jqElem: JQuery, supremeEiTypeId: string, draftId: number): Entry[] {
+			return Entry.fromArr(jqElem.find(Entry.buildDraftIdSelector(supremeEiTypeId, draftId)));
+		}
+		
+		static hasDraftId(jqElem: JQuery, supremeEiTypeId: string, draftId: number): boolean {
+			return 0 < jqElem.has(Entry.buildDraftIdSelector(supremeEiTypeId, draftId)).length;
 		}
 	}
 	

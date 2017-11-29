@@ -101,13 +101,15 @@ namespace Rocket.Cmd {
 				
 				if (eiMods[supremeEiTypeId].idReps) {
 					for (let idRep in eiMods[supremeEiTypeId].idReps) {
-						zoneClearer.clearByIdRep(supremeEiTypeId, idRep);
+						let mode = eiMods[supremeEiTypeId].idReps[idRep];
+						zoneClearer.clearByIdRep(supremeEiTypeId, idRep, mode == "removed");
 					}
 				}
 				
 				if (eiMods[supremeEiTypeId].draftIds) {
 					for (let draftId in eiMods[supremeEiTypeId].draftIds) {
-						zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId));
+						let mode = eiMods[supremeEiTypeId].draftIds[draftId];
+						zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId), mode == "removed");
 					}
 				}
 			}
@@ -210,11 +212,15 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		clearByIdRep(supremeEiTypeId: string, idRep: string) {
+		clearByIdRep(supremeEiTypeId: string, idRep: string, remove: boolean) {
 			for (let zone of this.zones) {
-				if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+				if (!zone.page || zone.page.disposed) continue;
+
+				if (remove && this.removeByIdRep(zone, supremeEiTypeId, idRep)) {
 					continue;
 				}
+				
+				if (zone.page.config.frozen) continue;
 				
 				if (Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
 					zone.page.dispose();
@@ -222,16 +228,51 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		clearByDraftId(supremeEiTypeId: string, draftId: number) {
+		private removeByIdRep(zone: Zone, supremeEiTypeId: string, idRep: string): boolean {
+			let entries = Display.Entry.findByIdRep(zone.jQuery, supremeEiTypeId, idRep);
+			alert(entries.length);
+			if (entries.length == 0) return true;
+			
+			let success = true;
+			for (let entry of entries) {
+				if (entry.collection) {
+					entry.dispose();
+				} else {
+					success = false;
+				}
+			}
+			return success;
+		}
+		
+		clearByDraftId(supremeEiTypeId: string, draftId: number, remove: boolean) {
 			for (let zone of this.zones) {
-				if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+				if (!zone.page || zone.page.disposed) continue;
+				
+				if (remove && this.removeByDraftId(zone, supremeEiTypeId, draftId)) {
 					continue;
 				}
+				
+				if (zone.page.config.frozen) continue;
 				
 				if (Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
 					zone.page.dispose();
 				}
 			}
+		}
+		
+		private removeByDraftId(zone: Zone, supremeEiTypeId: string, draftId: number): boolean {
+			let entries = Display.Entry.findByDraftId(zone.jQuery, supremeEiTypeId, draftId);
+			if (entries.length == 0) return true;
+			
+			let success = true;
+			for (let entry of entries) {
+				if (entry.collection) {
+					entry.dispose();
+				} else {
+					success = false;
+				}
+			}
+			return success;
 		}
 	}
 	

@@ -232,12 +232,14 @@ var Rocket;
                     }
                     if (eiMods[supremeEiTypeId].idReps) {
                         for (let idRep in eiMods[supremeEiTypeId].idReps) {
-                            zoneClearer.clearByIdRep(supremeEiTypeId, idRep);
+                            let mode = eiMods[supremeEiTypeId].idReps[idRep];
+                            zoneClearer.clearByIdRep(supremeEiTypeId, idRep, mode == "removed");
                         }
                     }
                     if (eiMods[supremeEiTypeId].draftIds) {
                         for (let draftId in eiMods[supremeEiTypeId].draftIds) {
-                            zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId));
+                            let mode = eiMods[supremeEiTypeId].draftIds[draftId];
+                            zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId), mode == "removed");
                         }
                     }
                 }
@@ -320,25 +322,64 @@ var Rocket;
                     }
                 }
             }
-            clearByIdRep(supremeEiTypeId, idRep) {
+            clearByIdRep(supremeEiTypeId, idRep, remove) {
                 for (let zone of this.zones) {
-                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+                    if (!zone.page || zone.page.disposed)
+                        continue;
+                    if (remove && this.removeByIdRep(zone, supremeEiTypeId, idRep)) {
                         continue;
                     }
+                    if (zone.page.config.frozen)
+                        continue;
                     if (Rocket.Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
                         zone.page.dispose();
                     }
                 }
             }
-            clearByDraftId(supremeEiTypeId, draftId) {
+            removeByIdRep(zone, supremeEiTypeId, idRep) {
+                let entries = Rocket.Display.Entry.findByIdRep(zone.jQuery, supremeEiTypeId, idRep);
+                alert(entries.length);
+                if (entries.length == 0)
+                    return true;
+                let success = true;
+                for (let entry of entries) {
+                    if (entry.collection) {
+                        entry.dispose();
+                    }
+                    else {
+                        success = false;
+                    }
+                }
+                return success;
+            }
+            clearByDraftId(supremeEiTypeId, draftId, remove) {
                 for (let zone of this.zones) {
-                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+                    if (!zone.page || zone.page.disposed)
+                        continue;
+                    if (remove && this.removeByDraftId(zone, supremeEiTypeId, draftId)) {
                         continue;
                     }
+                    if (zone.page.config.frozen)
+                        continue;
                     if (Rocket.Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
                         zone.page.dispose();
                     }
                 }
+            }
+            removeByDraftId(zone, supremeEiTypeId, draftId) {
+                let entries = Rocket.Display.Entry.findByDraftId(zone.jQuery, supremeEiTypeId, draftId);
+                if (entries.length == 0)
+                    return true;
+                let success = true;
+                for (let entry of entries) {
+                    if (entry.collection) {
+                        entry.dispose();
+                    }
+                    else {
+                        success = false;
+                    }
+                }
+                return success;
             }
         }
         (function (Container) {
@@ -1441,12 +1482,16 @@ var Rocket;
             offInserted(callback) {
                 this.insertedCbr.off(callback);
             }
-            static from(jqElem, create = true) {
+            static test(jqElem) {
+                if (jqElem.hasClass(Collection.CSS_CLASS)) {
+                    return Collection.from(jqElem);
+                }
+                return null;
+            }
+            static from(jqElem) {
                 var collection = jqElem.data("rocketCollection");
                 if (collection instanceof Collection)
                     return collection;
-                if (!create)
-                    return null;
                 collection = new Collection(jqElem);
                 jqElem.data("rocketCollection", collection);
                 jqElem.addClass(Collection.CSS_CLASS);
@@ -1456,7 +1501,7 @@ var Rocket;
                 jqElem = jqElem.closest("." + Collection.CSS_CLASS);
                 if (jqElem.length == 0)
                     return null;
-                return Collection.from(jqElem, true);
+                return Collection.from(jqElem);
             }
         }
         Collection.CSS_CLASS = "rocket-collection";
@@ -1558,6 +1603,9 @@ var Rocket;
                 if (jqSelector.length > 0) {
                     this.initSelector(jqSelector);
                 }
+            }
+            get collection() {
+                return Display.Collection.test(this.jqElem.parent());
             }
             initSelector(jqSelector) {
                 this._selector = new Display.EntrySelector(jqSelector, this);
@@ -1679,38 +1727,48 @@ var Rocket;
                 return null;
             }
             static findAll(jqElem, includeSelf = false) {
-                var entries = new Array();
-                var jqEntries = jqElem.find("." + Entry.CSS_CLASS);
+                let jqEntries = jqElem.find("." + Entry.CSS_CLASS);
                 jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
-                jqEntries.each(function () {
+                return Entry.fromArr(jqEntries);
+            }
+            static fromArr(entriesJq) {
+                let entries = new Array();
+                entriesJq.each(function () {
                     entries.push(Entry.from($(this)));
                 });
                 return entries;
             }
             static children(jqElem) {
-                var entries = new Array();
-                var jqEntries = jqElem.children("." + Entry.CSS_CLASS);
-                jqEntries.each(function () {
-                    entries.push(Entry.from($(this)));
-                });
-                return entries;
+                return Entry.fromArr(jqElem.children("." + Entry.CSS_CLASS));
             }
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
-                return jqContainer.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]");
+                return 0 == jqContainer.has("." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]").length;
+            }
+            static buildIdRepSelector(supremeEiTypeId, idRep) {
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
+                    + Entry.ID_REP_ATTR + "=" + idRep + "]";
+            }
+            static findByIdRep(jqElem, supremeEiTypeId, idRep) {
+                return Entry.fromArr(jqElem.find(Entry.buildIdRepSelector(supremeEiTypeId, idRep)));
             }
             static hasIdRep(jqElem, supremeEiTypeId, idRep) {
-                return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
-                    + " [" + Entry.ID_REP_ATTR + "=" + idRep + "]");
+                return 0 < jqElem.has(Entry.buildIdRepSelector(supremeEiTypeId, idRep)).length;
             }
-            static hasDraftId(jqElem, supremeEiTypeId, darftId) {
-                return jqElem.has("." + Entry.CSS_CLASS + " [" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]"
-                    + " [" + Entry.DRAFT_ID_ATTR + "=" + darftId + "]");
+            static buildDraftIdSelector(supremeEiTypeId, draftId) {
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
+                    + Entry.DRAFT_ID_ATTR + "=" + draftId + "]";
+            }
+            static findByDraftId(jqElem, supremeEiTypeId, draftId) {
+                return Entry.fromArr(jqElem.find(Entry.buildDraftIdSelector(supremeEiTypeId, draftId)));
+            }
+            static hasDraftId(jqElem, supremeEiTypeId, draftId) {
+                return 0 < jqElem.has(Entry.buildDraftIdSelector(supremeEiTypeId, draftId)).length;
             }
         }
         Entry.CSS_CLASS = "rocket-entry";
         Entry.TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
         Entry.SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
-        Entry.ID_REP_ATTR = "data-rocket-id-rep-id";
+        Entry.ID_REP_ATTR = "data-rocket-id-rep";
         Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";
         Display.Entry = Entry;
         (function (Entry) {

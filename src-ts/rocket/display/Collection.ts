@@ -215,12 +215,18 @@ namespace Rocket.Display {
 		
 		static readonly CSS_CLASS = "rocket-collection";
 		
-		static from(jqElem: JQuery, create: boolean = true): Collection {
+		static test(jqElem: JQuery) {
+			if (jqElem.hasClass(Collection.CSS_CLASS)) {
+				return Collection.from(jqElem);
+			}
+			
+			return null;
+		}
+		
+		static from(jqElem: JQuery): Collection {
 			var collection = jqElem.data("rocketCollection");
 			if (collection instanceof Collection) return collection;
 		
-			if (!create) return null;
-			
 			collection = new Collection(jqElem);
 			jqElem.data("rocketCollection", collection);
 			jqElem.addClass(Collection.CSS_CLASS);
@@ -231,7 +237,7 @@ namespace Rocket.Display {
 			jqElem = jqElem.closest("." + Collection.CSS_CLASS);
 			if (jqElem.length == 0) return null;
 			
-			return Collection.from(jqElem, true);
+			return Collection.from(jqElem);
 		}
 	}
 	

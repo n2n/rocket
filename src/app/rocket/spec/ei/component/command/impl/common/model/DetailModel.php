@@ -21,59 +21,59 @@
  */
 namespace rocket\spec\ei\component\command\impl\common\model;
 
-use rocket\spec\ei\manage\util\model\EntryInfo;
-use rocket\spec\ei\manage\util\model\EntryManager;
-use n2n\core\NotYetImplementedException;
+// use rocket\spec\ei\manage\util\model\EntryInfo;
+// use rocket\spec\ei\manage\util\model\EntryManager;
+// use n2n\core\NotYetImplementedException;
 
-class DetailModel {
-	private $entryManager;
-	private $entryInfo;
+// class DetailModel {
+// 	private $entryManager;
+// 	private $entryInfo;
 	
-	public function __construct(EntryManager $entryManager, EntryInfo $entryInfo) {
-		$this->entryManager = $entryManager;
-		$this->entryInfo = $entryInfo;
-	}
-// 	/**
-// 	 * @return EntryInfo
+// 	public function __construct(EntryManager $entryManager, EntryInfo $entryInfo) {
+// 		$this->entryManager = $entryManager;
+// 		$this->entryInfo = $entryInfo;
+// 	}
+// // 	/**
+// // 	 * @return EntryInfo
+// // 	 */
+// // 	public function getEntryInfo() {
+// // 		return $this->entryInfo;
+// // 	}
+	
+// // 	public function getEiFrame() {
+// // 		return $this->entryManager->getEiFrame();
+// // 	}
+	
+// 	public function publish() {
+// 		throw new NotYetImplementedException();
+// 		if (!$this->eiObject->isDraft()) return false;
+		
+// 		$id =  $this->eiObject->getId();
+// 		$originalEntry = $this->eiObject->getLiveEntityObj();
+// 		$draft = $this->eiObject->getDraft();
+// 		$draftedEntry = $draft->getDraftedEntity();
+		
+// 		$draft->setPublished(true);
+// 		$this->historyModel->saveDraft($draft);
+		
+// 		$entityModel = $this->getEiType()->getEntityModel();
+// 		$entityModel->copy($draftedEntry, $originalEntry);
+// 		$this->em->merge($originalEntry);
+		
+// 		if (is_null($this->translationModel)) return true;
+		
+// 		$entityTranslationModel = $this->eiType->getTranslationModel();
+// 		foreach ($this->translationModel->getTranslationsByElementId($draft->getId(), $draftedEntry) as $translation) {
+// 			$entityTranslationModel->saveTranslation($translation->copy($id));
+// 		}
+		
+// 		return true;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\component\command\impl\common\model\EntryCommandModel::getEntryModel()
 // 	 */
-// 	public function getEntryInfo() {
+// 	public function getCurrentEntryModel() {
 // 		return $this->entryInfo;
 // 	}
-	
-// 	public function getEiFrame() {
-// 		return $this->entryManager->getEiFrame();
-// 	}
-	
-	public function publish() {
-		throw new NotYetImplementedException();
-		if (!$this->eiObject->isDraft()) return false;
-		
-		$id =  $this->eiObject->getId();
-		$originalEntry = $this->eiObject->getLiveEntityObj();
-		$draft = $this->eiObject->getDraft();
-		$draftedEntry = $draft->getDraftedEntity();
-		
-		$draft->setPublished(true);
-		$this->historyModel->saveDraft($draft);
-		
-		$entityModel = $this->getEiType()->getEntityModel();
-		$entityModel->copy($draftedEntry, $originalEntry);
-		$this->em->merge($originalEntry);
-		
-		if (is_null($this->translationModel)) return true;
-		
-		$entityTranslationModel = $this->eiType->getTranslationModel();
-		foreach ($this->translationModel->getTranslationsByElementId($draft->getId(), $draftedEntry) as $translation) {
-			$entityTranslationModel->saveTranslation($translation->copy($id));
-		}
-		
-		return true;
-	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\command\impl\common\model\EntryCommandModel::getEntryModel()
-	 */
-	public function getCurrentEntryModel() {
-		return $this->entryInfo;
-	}
 
-}
+// }

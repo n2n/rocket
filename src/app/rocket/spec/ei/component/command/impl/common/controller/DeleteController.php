@@ -29,6 +29,7 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\MessageContainer;
 use n2n\web\http\StatusException;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ajah\JhtmlEvent;
 
 class DeleteController extends ControllerAdapter {
 	private $dtc;
@@ -48,7 +49,7 @@ class DeleteController extends ControllerAdapter {
 		try {
 			$eiObject = $this->eiCtrlUtils->lookupEiObject($this->utils->idRepToId($idRep));
 		} catch (StatusException $e) {
-			$this->redirect($redirectUrl);
+			$this->eiCtrlUtils->redirectBack($redirectUrl);
 			return;
 		}
 		
@@ -57,7 +58,7 @@ class DeleteController extends ControllerAdapter {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}
 		
-		$this->eiCtrlUtils->redirectBack($redirectUrl);
+		$this->eiCtrlUtils->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectRemoved($eiObject));
 	}
 	
 // 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {
