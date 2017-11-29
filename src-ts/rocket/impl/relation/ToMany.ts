@@ -49,10 +49,11 @@ namespace Rocket.Impl.Relation {
 			
 			var jqCurrents = jqToMany.children(".rocket-impl-currents");
 			var jqNews = jqToMany.children(".rocket-impl-news");
+			let jqEntries = jqToMany.children(".rocket-impl-entries");
 			var addControlFactory = null;
 			
 			let toManyEmbedded: ToManyEmbedded = null;
-			if (jqCurrents.length > 0 || jqNews.length > 0) {
+			if (jqCurrents.length > 0 || jqNews.length > 0 || jqEntries.length > 0) {
 				if (jqNews.length > 0) {
 					var propertyPath = jqNews.data("property-path");
 					
@@ -83,6 +84,9 @@ namespace Rocket.Impl.Relation {
 				});
 				jqNews.children(".rocket-impl-entry").each(function () {
 					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+				});
+				jqEntries.children(".rocket-impl-entry").each(function () {
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), true));
 				});
 			}
 			

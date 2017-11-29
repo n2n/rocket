@@ -53,10 +53,11 @@ namespace Rocket.Impl.Relation {
 			
 			let jqCurrent = jqToOne.children(".rocket-impl-current");
 			let jqNew = jqToOne.children(".rocket-impl-new");
+			let jqDetail = jqToOne.children(".rocket-impl-detail");
 			let addControlFactory = null;
 			
 			let toOneEmbedded: ToOneEmbedded = null;
-			if (jqCurrent.length > 0 || jqNew.length > 0) {
+			if (jqCurrent.length > 0 || jqNew.length > 0 || jqDetail.length > 0) {
 				if (jqNew.length > 0) {
 					var propertyPath = jqNew.data("property-path");
 				
@@ -73,6 +74,10 @@ namespace Rocket.Impl.Relation {
 				jqNew.children(".rocket-impl-entry").each(function () {
 					toOneEmbedded.newEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly());
 				});
+				jqDetail.children(".rocket-impl-entry").each(function () {
+					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true);
+				});
+				
 			}
 			
 			toOne = new ToOne(toOneSelector, toOneEmbedded);

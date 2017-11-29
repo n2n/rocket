@@ -183,7 +183,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			$toOneEditable->setDraftMode($mapping->getEiObject()->isDraft());
 		}
 				
-		return new EmbeddedOneToOneGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);
+		return new EmbeddedOneToOneGuiField($this->getLabelLstr(), $this->isCompact(), $relationEiField, $targetReadEiFrame, $toOneEditable);
 	}
 	
 	/**

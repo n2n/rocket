@@ -31,6 +31,7 @@ use rocket\spec\ei\manage\gui\ui\DisplayItem;
 
 class EmbeddedOneToOneGuiField implements GuiField {
 	private $label;
+	private $compact;
 	private $readOnly;
 	private $mandatory;
 	private $toOneEiField;
@@ -40,7 +41,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
+	public function __construct(string $label, bool $compact, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
 			Editable $editable = null) {
 		$this->label = $label;
 		$this->toOneEiField = $toOneEiField;
@@ -48,6 +49,13 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		$this->editable = $editable;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isCompact() {
+		return $this->compact;
+	}
+	
 	public function isReadOnly(): bool {
 		return $this->editable === null;
 	}
@@ -76,10 +84,11 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
-		return $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils))->newEntryGui(true)->createView();
+		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\embeddedOneToOne.html',
+				array('eiuEntry' => $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils)), 
+						'compact' => $this->compact));
 	}
 	
-
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()

@@ -7,8 +7,11 @@ namespace Rocket.Impl.Order {
 		
 		constructor(private elemJq: JQuery, private insertMode: InsertMode) {
 			this.entry = Display.Entry.of(elemJq);
-			this.collection = Display.Collection.of(this.elemJq);
-			if (!this.collection) return;
+			this.collection = this.entry.collection;
+			if (!this.collection || !this.entry.selector) {
+				this.elemJq.hide();
+				return;
+			}
 			
 			if (!this.collection.selectable) {
 				this.collection.setupSelector(new Display.MultiEntrySelectorObserver());

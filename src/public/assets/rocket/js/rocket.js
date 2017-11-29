@@ -3014,9 +3014,11 @@ var Rocket;
                     this.insertMode = insertMode;
                     this.executing = false;
                     this.entry = Rocket.Display.Entry.of(elemJq);
-                    this.collection = Rocket.Display.Collection.of(this.elemJq);
-                    if (!this.collection)
+                    this.collection = this.entry.collection;
+                    if (!this.collection || !this.entry.selector) {
+                        this.elemJq.hide();
                         return;
+                    }
                     if (!this.collection.selectable) {
                         this.collection.setupSelector(new Rocket.Display.MultiEntrySelectorObserver());
                     }
@@ -4511,9 +4513,11 @@ var Rocket;
                     this.jqSummary.show();
                     this.bodyGroup.hide();
                     let jqContentType = this.jqSummary.find(".rocket-impl-content-type:first");
-                    jqContentType.children("span").text(this.entryForm.curGenericLabel);
-                    jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
-                    this.entryGroup.jQuery.removeClass("rocket-group");
+                    if (this.entryForm) {
+                        jqContentType.children("span").text(this.entryForm.curGenericLabel);
+                        jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
+                    }
+                    this.entryGroup.setGroup(false);
                 }
                 hide() {
                     this.entryGroup.hide();
@@ -4583,9 +4587,10 @@ var Rocket;
                     }
                     var jqCurrents = jqToMany.children(".rocket-impl-currents");
                     var jqNews = jqToMany.children(".rocket-impl-news");
+                    let jqEntries = jqToMany.children(".rocket-impl-entries");
                     var addControlFactory = null;
                     let toManyEmbedded = null;
-                    if (jqCurrents.length > 0 || jqNews.length > 0) {
+                    if (jqCurrents.length > 0 || jqNews.length > 0 || jqEntries.length > 0) {
                         if (jqNews.length > 0) {
                             var propertyPath = jqNews.data("property-path");
                             var startKey = 0;
@@ -4611,6 +4616,9 @@ var Rocket;
                         });
                         jqNews.children(".rocket-impl-entry").each(function () {
                             toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+                        });
+                        jqEntries.children(".rocket-impl-entry").each(function () {
+                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), true));
                         });
                     }
                     var toMany = new ToMany(toManySelector, toManyEmbedded);
@@ -5084,9 +5092,10 @@ var Rocket;
                     }
                     let jqCurrent = jqToOne.children(".rocket-impl-current");
                     let jqNew = jqToOne.children(".rocket-impl-new");
+                    let jqDetail = jqToOne.children(".rocket-impl-detail");
                     let addControlFactory = null;
                     let toOneEmbedded = null;
-                    if (jqCurrent.length > 0 || jqNew.length > 0) {
+                    if (jqCurrent.length > 0 || jqNew.length > 0 || jqDetail.length > 0) {
                         if (jqNew.length > 0) {
                             var propertyPath = jqNew.data("property-path");
                             var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"));
@@ -5098,6 +5107,9 @@ var Rocket;
                         });
                         jqNew.children(".rocket-impl-entry").each(function () {
                             toOneEmbedded.newEntry = new Relation.EmbeddedEntry($(this), toOneEmbedded.isReadOnly());
+                        });
+                        jqDetail.children(".rocket-impl-entry").each(function () {
+                            toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), true);
                         });
                     }
                     toOne = new ToOne(toOneSelector, toOneEmbedded);

@@ -208,10 +208,12 @@ namespace Rocket.Impl.Relation {
 			this.bodyGroup.hide();
 			
 			let jqContentType = this.jqSummary.find(".rocket-impl-content-type:first");
-			jqContentType.children("span").text(this.entryForm.curGenericLabel);
-			jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
+			if (this.entryForm) {
+				jqContentType.children("span").text(this.entryForm.curGenericLabel);
+				jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
+			}
 			
-			this.entryGroup.jQuery.removeClass("rocket-group");
+			this.entryGroup.setGroup(false);
 		}
 		
 		public hide() {
