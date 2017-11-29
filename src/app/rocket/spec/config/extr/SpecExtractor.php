@@ -370,7 +370,11 @@ class SpecExtractor {
 			//Old specs (fieldOrder)
 			$title = $displayStructureAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY, false);
 			if (null !== $title) {
-				$childDisplayStructure = $this->createDisplayStructure($displayStructureAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY));
+			    $dsa = $displayStructureAttributes->getArray('guiFieldOrder', false, null);
+			    if ($dsa === null) {
+			        $dsa = $displayStructureAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY);
+			    }
+			    $childDisplayStructure = $this->createDisplayStructure($dsa);
 				$groupType = $displayStructureAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(), 
 						false, DisplayItem::TYPE_SIMPLE, true);
 				if ($groupType === null) {
