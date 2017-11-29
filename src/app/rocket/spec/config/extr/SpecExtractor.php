@@ -39,6 +39,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\config\InvalidAttributeException;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use n2n\util\StringUtils;
 
 class SpecExtractor {
 	private $attributes;
@@ -92,7 +93,7 @@ class SpecExtractor {
 	
 	private function createEiTypeExtraction($id, Attributes $eiTypeAttributes) {
 		$extraction = new EiTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setEntityClassName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY));
+		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY)));
 		$extraction->setEiDefExtraction($this->createEiDefExtraction($eiTypeAttributes));
 		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::SPEC_EI_DATA_SOURCE_NAME_KEY, false, null, true));
 		
@@ -174,11 +175,28 @@ class SpecExtractor {
 		return $eiDefExtraction;
 	}
 	
+	private function upgradeTypeName($typeName) {
+	    if (!StringUtils::startsWith('rocket\spec\ei\component', $typeName)) {
+	        return $typeName;
+	    }
+	    
+	    return str_replace(
+	           array('rocket\spec\ei\component\field\impl',
+        	            'rocket\spec\ei\component\command\impl',
+        	            'rocket\spec\ei\component\modificator\impl',
+        	            'EiField'),
+    	        array('rocket\impl\ei\component\field',
+        	            'rocket\impl\ei\component\command',
+        	            'rocket\impl\ei\component\modificator',
+        	            'EiProp'),
+    	        $typeName);
+	}
+	
 	private function createEiPropExtraction($id, Attributes $attributes)  {
 		$extraction = new EiPropExtraction();
 		$extraction->setId($id);
 		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY));
-		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
+		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		$extraction->setEntityPropertyName($attributes->getString(RawDef::EI_FIELD_ENTITY_PROPERTY_KEY, false, null, true));
 		$extraction->setObjectPropertyName($attributes->getString(RawDef::EI_FIELD_OBJECT_PROPERTY_KEY, false, null, true));
@@ -188,7 +206,7 @@ class SpecExtractor {
 	private function createEiComponentExtraction($eiCommandId, Attributes $attributes) {
 		$extraction = new EiComponentExtraction();
 		$extraction->setId($eiCommandId);
-		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
+		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
 	}	
@@ -197,7 +215,7 @@ class SpecExtractor {
 			string $eiTypeId, string $commonEiMaskId = null) {
 		$extraction = new EiModificatorExtraction($eiModificatorId, $this->moduleNamespace, 
 				$eiTypeId, $commonEiMaskId);
-		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
+		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
 	}	
