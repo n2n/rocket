@@ -82,10 +82,11 @@
 }
 
 /**
- * Relation
+ * Relation Selectors
  */
 
 .rocket-impl-selector {
+    // to many
     > ul {
         margin: 0;
         padding: 0;
@@ -104,6 +105,16 @@
             > div {
                 float: right;
             }
+        }
+    }
+    // to one
+    > div {
+        padding-bottom: 0.5rem;
+        > span {
+            padding-right: 1rem;
+        }
+        > .rocket-simple-commands {
+        display: inline-block;
         }
     }
 }

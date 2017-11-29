@@ -1,14 +1,18 @@
 .rocket-highlighted {
-    outline: 3px solid $red;
-    background: rgba($red, 0.1);				
-	transition: background 1s;
+	outline: 3px solid $red;
 	position: relative;
+	background: rgba($red, 0.1);
+}
+
+.rocket-highlight-remember {
+	outline: 3px solid transparent;	
+	transition: outline 1s;
 }
 
 .rocket-error-index-entry {
 	background: $white;
 	border-bottom: 1px solid $danger;
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 2rem 0.5rem 1rem;
 	position: relative;
 	&::after {
 		position: absolute;
@@ -32,4 +36,9 @@
 	> div:last-child {
 		font-size: $font-size-sm;
 	}
+}
+
+.rocket-message-error > div {
+	font-size: $font-size-sm;
+	color: $danger;
 }

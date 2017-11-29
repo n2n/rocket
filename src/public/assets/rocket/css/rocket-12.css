@@ -4080,7 +4080,7 @@ body {
 }
 
 /**
- * Relation
+ * Relation Selectors
  */
 .rocket-impl-selector > ul {
   margin: 0;
@@ -4106,17 +4106,33 @@ body {
   float: right;
 }
 
+.rocket-impl-selector > div {
+  padding-bottom: 0.5rem;
+}
+
+.rocket-impl-selector > div > span {
+  padding-right: 1rem;
+}
+
+.rocket-impl-selector > div > .rocket-simple-commands {
+  display: inline-block;
+}
+
 .rocket-highlighted {
   outline: 3px solid #dc3545;
-  background: rgba(220, 53, 69, 0.1);
-  transition: background 1s;
   position: relative;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.rocket-highlight-remember {
+  outline: 3px solid transparent;
+  transition: outline 1s;
 }
 
 .rocket-error-index-entry {
   background: #fff;
   border-bottom: 1px solid #b90f00;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 2rem 0.5rem 1rem;
   position: relative;
 }
 
@@ -4145,6 +4161,11 @@ body {
 
 .rocket-error-index-entry > div:last-child {
   font-size: 0.875rem;
+}
+
+.rocket-message-error > div {
+  font-size: 0.875rem;
+  color: #b90f00;
 }
 
 /**
@@ -4268,6 +4289,44 @@ body {
 
 .rocket-impl-multi-type-menu > li:last-child {
   border-bottom: none;
+}
+
+.rocket-dialog-background {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.rocket-dialog {
+  background: white;
+  padding: 2rem 2rem 2rem 8rem;
+}
+
+.rocket-dialog::after {
+  content: "\f059";
+  font-family: fontawesome;
+  position: absolute;
+  top: 1rem;
+  left: 2rem;
+  font-size: 5rem;
+}
+
+.rocket-dialog-warning::after {
+  color: #F6A723;
+  content: "\f06a";
+}
+
+.rocket-dialog-danger::after {
+  color: #b90f00;
+  content: "\f071";
+}
+
+.rocket-dialog-info::after {
+  color: #4c97cb;
+  content: "\f05a";
+}
+
+.rocket-dialog-success::after {
+  color: #5cb85c;
+  content: "\f058";
 }
 
 /**
