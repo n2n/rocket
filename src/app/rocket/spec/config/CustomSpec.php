@@ -24,7 +24,6 @@ namespace rocket\spec\config;
 use n2n\core\container\N2nContext;
 use rocket\spec\config\extr\CustomSpecExtraction;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\config\Spec;
 
 class CustomSpec extends Spec {
 	private $controllerClass;
