@@ -43,7 +43,7 @@
 		<tr>
 			<?php $eiHtml->generalEntrySelector('th') ?>
 			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-				<th><?php $html->out($displayItem->getLabel()) ?></th>
+				<th><?php $eiHtml->label($eiu, $displayItem) ?></th>
 			<?php endforeach ?>
 			<th><?php $html->l10nText('common_list_tools_label') ?></th>
 		</tr>

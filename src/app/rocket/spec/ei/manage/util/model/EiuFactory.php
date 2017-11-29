@@ -592,6 +592,10 @@ class EiuFactory {
 		if ($eiGuiArg instanceof EiuEntryGui) {
 			return $eiGuiArg->getEiGui();
 		}
+		
+		if ($eiGuiArg instanceof Eiu && null !== ($eiuGui = $eiGuiArg->gui(false))) {
+			return $eiuGui->getEiGui();
+		}
 	
 		throw new EiuPerimeterException('Can not determine EiGui of passed argument ' . $argName
 				. '. Following types are allowed: '

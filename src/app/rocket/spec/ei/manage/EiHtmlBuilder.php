@@ -31,7 +31,6 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\spec\ei\manage\util\model\GeneralIdUtils;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
@@ -69,6 +68,34 @@ class EiHtmlBuilder {
 	 */
 	public function meta() {
 		return $this->meta;
+	}
+	
+	/**
+	 * @see self::getLabel();
+	 */
+	public function label($eiGuiArg, $guiIdPath) {
+		$this->html->out($this->getLabel($eiGuiArg, $guiIdPath));
+	}
+	
+	/**
+	 * 
+	 * @param mixed $eiGuiArg See {@see EiuFactory::buildEiGuiFromEiArg()} for allowed argument types.
+	 * @param GuiIdPath|string|DisplayItem $guiIdPath
+	 * @return \n2n\web\ui\UiComponent|\n2n\web\ui\Raw|string
+	 */
+	public function getLabel($eiGuiArg, $guiIdPath) {
+		$eiGui = EiuFactory::buildEiGuiFromEiArg($eiGuiArg);
+		if ($guiIdPath instanceof DisplayItem) {
+			if (null !== ($label = $guiIdPath->getLabel()) || $guiIdPath->hasDisplayStructure()) {
+				return $this->html->getOut($label);
+			}
+			
+			$guiIdPath = $guiIdPath->getGuiIdPath();
+		} else {
+			$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		}
+		
+		return $this->html->getOut($eiGui->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel());
 	}
 	
 	private $collectionTagName = null;
