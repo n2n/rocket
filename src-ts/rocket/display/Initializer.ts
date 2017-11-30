@@ -174,11 +174,12 @@ namespace Rocket.Display {
 		
 		public addError(structureElement: StructureElement, errorMessage: string) {
 			var jqElem = $("<div />", {
-				"class": "rocket-error-index-entry",
-				"css": { "cursor": "pointer" }
+				"class": "rocket-error-index-entry"
 			}).append($("<div />", { 
+				"class": "rocket-error-index-message",
 				"text": errorMessage 
-			})).append($("<div />", {
+			})).append($("<a />", {
+				"href": "#",
 				"text": this.displayErrorLabel
 			}));
 			
@@ -198,7 +199,8 @@ namespace Rocket.Display {
 				clicked = false;
 			});
 			
-			jqElem.click(function () {
+			jqElem.click(function (e: any) {
+				e.preventDefault();
 				clicked = true;
 				structureElement.show(true);
 				structureElement.scrollTo();

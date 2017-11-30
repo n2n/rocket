@@ -2073,11 +2073,12 @@ var Rocket;
             }
             addError(structureElement, errorMessage) {
                 var jqElem = $("<div />", {
-                    "class": "rocket-error-index-entry",
-                    "css": { "cursor": "pointer" }
+                    "class": "rocket-error-index-entry"
                 }).append($("<div />", {
+                    "class": "rocket-error-index-message",
                     "text": errorMessage
-                })).append($("<div />", {
+                })).append($("<a />", {
+                    "href": "#",
                     "text": this.displayErrorLabel
                 }));
                 this.tab.getJqContent().append(jqElem);
@@ -2092,7 +2093,8 @@ var Rocket;
                     structureElement.unhighlight(clicked);
                     clicked = false;
                 });
-                jqElem.click(function () {
+                jqElem.click(function (e) {
+                    e.preventDefault();
                     clicked = true;
                     structureElement.show(true);
                     structureElement.scrollTo();
