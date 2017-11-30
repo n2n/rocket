@@ -6,15 +6,15 @@ namespace Rocket.Display {
 		cancelCallback: () => any;
 		private stressWindow: StressWindow = null;
 		
-		constructor(msg: string, okLabel: string, cancelLabel: string) {
-			this.dialog = new Dialog(msg);
-			this.dialog.addButton({ label: okLabel, callback: () => { 
+		constructor(msg: string, okLabel: string, cancelLabel: string, severity: Dialog.Severity) {
+			this.dialog = new Dialog(msg, severity);
+			this.dialog.addButton({ label: okLabel, type: "primary", callback: () => { 
 				this.close();
 				if (this.successCallback) {
 					this.successCallback();
 				}
 			}});
-			this.dialog.addButton({ label: cancelLabel, callback: () => { 
+			this.dialog.addButton({ label: cancelLabel, type: "secondary", callback: () => { 
 				this.close();
 				if (this.cancelCallback) {
 					this.cancelCallback();
@@ -44,7 +44,8 @@ namespace Rocket.Display {
 			let confirm = new Confirm(
 					elemJq.data("rocket-confirm-msg") || "Are you sure?",
 					elemJq.data("rocket-confirm-ok-label") || "Yes",
-					elemJq.data("rocket-confirm-cancel-label") || "No");
+					elemJq.data("rocket-confirm-cancel-label") || "No",
+					"danger");
 			confirm.successCallback = successCallback;
 			
 			return confirm;

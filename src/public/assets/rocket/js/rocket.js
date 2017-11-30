@@ -826,6 +826,7 @@ var Rocket;
             }
             highlight(findVisibleParent = false) {
                 this.jqElem.addClass("rocket-highlighted");
+                this.jqElem.removeClass("rocket-highlight-remember");
                 if (!findVisibleParent || this.isVisible())
                     return;
                 this.highlightedParent = this;
@@ -2019,10 +2020,13 @@ var Rocket;
                 if (this.groups.length == 2) {
                     this.jqGroupNav.show();
                 }
-                var jqLi = $("<li />", {
+                let jqA = $("<a />", {
                     "text": group.getTitle(),
-                    "class": { "class": "nav-item" }
+                    "class": "nav-link"
                 });
+                let jqLi = $("<li />", {
+                    "class": "nav-item"
+                }).append(jqA);
                 this.jqGroupNav.append(jqLi);
                 var that = this;
                 jqLi.click(function () {
@@ -2030,6 +2034,7 @@ var Rocket;
                 });
                 group.onShow(function () {
                     jqLi.addClass("rocket-active");
+                    jqA.addClass("active");
                     for (var i in that.groups) {
                         if (that.groups[i] !== group) {
                             that.groups[i].hide();
@@ -2038,6 +2043,7 @@ var Rocket;
                 });
                 group.onHide(function () {
                     jqLi.removeClass("rocket-active");
+                    jqA.removeClass("active");
                 });
                 if (this.groups.length == 1) {
                     group.show();
@@ -2268,16 +2274,16 @@ var Rocket;
     var Display;
     (function (Display) {
         class Confirm {
-            constructor(msg, okLabel, cancelLabel) {
+            constructor(msg, okLabel, cancelLabel, severity) {
                 this.stressWindow = null;
-                this.dialog = new Display.Dialog(msg);
-                this.dialog.addButton({ label: okLabel, callback: () => {
+                this.dialog = new Display.Dialog(msg, severity);
+                this.dialog.addButton({ label: okLabel, type: "primary", callback: () => {
                         this.close();
                         if (this.successCallback) {
                             this.successCallback();
                         }
                     } });
-                this.dialog.addButton({ label: cancelLabel, callback: () => {
+                this.dialog.addButton({ label: cancelLabel, type: "secondary", callback: () => {
                         this.close();
                         if (this.cancelCallback) {
                             this.cancelCallback();
@@ -2300,7 +2306,7 @@ var Rocket;
                 return Confirm.fromElem(elemJq, successCallback);
             }
             static fromElem(elemJq, successCallback) {
-                let confirm = new Confirm(elemJq.data("rocket-confirm-msg") || "Are you sure?", elemJq.data("rocket-confirm-ok-label") || "Yes", elemJq.data("rocket-confirm-cancel-label") || "No");
+                let confirm = new Confirm(elemJq.data("rocket-confirm-msg") || "Are you sure?", elemJq.data("rocket-confirm-ok-label") || "Yes", elemJq.data("rocket-confirm-cancel-label") || "No", "danger");
                 confirm.successCallback = successCallback;
                 return confirm;
             }
@@ -2356,8 +2362,8 @@ var Rocket;
                 this.elemMessageJq = $("<p />", {
                     "class": "rocket-dialog-message"
                 }).appendTo(this.elemDialogJq);
-                this.elemControlsJq = $("<ul/>", {
-                    "class": "rocket-controls rocket-dialog-controls"
+                this.elemControlsJq = $("<div/>", {
+                    "class": "rocket-dialog-controls"
                 }).appendTo(this.elemDialogJq);
             }
             open(dialog) {
@@ -2394,7 +2400,7 @@ var Rocket;
                 dialog.buttons.forEach((button) => {
                     var elemA = $("<a>", {
                         "href": "#"
-                    }).addClass("rocket-dialog-control rocket-control").click((e) => {
+                    }).addClass("btn btn-" + button.type).click((e) => {
                         e.preventDefault();
                         button.callback(e);
                         that.close();
@@ -2402,7 +2408,8 @@ var Rocket;
                     if (that.elemConfirmJq == null) {
                         that.elemConfirmJq = elemA;
                     }
-                    that.elemControlsJq.append($("<li/>").append(elemA));
+                    that.elemControlsJq.append(elemA);
+                    that.elemControlsJq.append(" ");
                 });
             }
             removeCurrentFocus() {

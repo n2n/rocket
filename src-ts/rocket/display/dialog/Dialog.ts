@@ -23,11 +23,12 @@ namespace Rocket.Display {
 	}
 	
 	export namespace Dialog {
-		export type Severity = "warning"|"error"|"info";
+		export type Severity = "warning"|"danger"|"info"|"success";
 	}
 	
 	export interface Button {
 		label: string;
 		callback: (e: JQueryEventObject) => void;
+		type: "primary"|"secondary";
 	}
 }

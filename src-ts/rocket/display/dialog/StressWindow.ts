@@ -28,8 +28,8 @@ namespace Rocket.Display {
 				"class": "rocket-dialog-message"	
 			}).appendTo(this.elemDialogJq);
 			
-			this.elemControlsJq = $("<ul/>", {
-				"class": "rocket-controls rocket-dialog-controls"
+			this.elemControlsJq = $("<div/>", {
+				"class": "rocket-dialog-controls"
 			}).appendTo(this.elemDialogJq);
 			
 		}
@@ -79,7 +79,7 @@ namespace Rocket.Display {
 			dialog.buttons.forEach((button: Button) => {
 				var elemA = $("<a>", {
 					"href": "#"
-				}).addClass("rocket-dialog-control rocket-control").click((e: any) => {
+				}).addClass("btn btn-" + button.type).click((e: any) => {
 					e.preventDefault();
 					button.callback(e);
 					that.close();
@@ -88,7 +88,8 @@ namespace Rocket.Display {
 				if (that.elemConfirmJq == null) {
 					that.elemConfirmJq = elemA;
 				} 
-				that.elemControlsJq.append($("<li/>").append(elemA));
+				that.elemControlsJq.append(elemA);
+				that.elemControlsJq.append(" ");
 			});
 			
 		}

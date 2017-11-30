@@ -143,6 +143,7 @@ namespace Rocket.Display {
 		
 		public highlight(findVisibleParent: boolean = false) {
 			this.jqElem.addClass("rocket-highlighted");
+			this.jqElem.removeClass("rocket-highlight-remember");
 			
 			if (!findVisibleParent || this.isVisible()) return;
 				

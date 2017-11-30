@@ -102,10 +102,13 @@ namespace Rocket.Display {
 				this.jqGroupNav.show();
 			}
 			
-			var jqLi = $("<li />", {
+			let jqA = $("<a />", { 
 				"text": group.getTitle(),
-				"class": { "class": "nav-item" }
+				"class": "nav-link"
 			});
+			let jqLi = $("<li />", {
+				"class": "nav-item"
+			}).append(jqA);
 			
 			this.jqGroupNav.append(jqLi);
 			
@@ -117,6 +120,7 @@ namespace Rocket.Display {
 			
 			group.onShow(function () {
 				jqLi.addClass("rocket-active");
+				jqA.addClass("active");
 				
 				for (var i in that.groups) {
 					if (that.groups[i] !== group) {
@@ -127,6 +131,7 @@ namespace Rocket.Display {
 			
 			group.onHide(function () {
 				jqLi.removeClass("rocket-active");
+				jqA.removeClass("active");
 			});
 			
 			if (this.groups.length == 1) {
