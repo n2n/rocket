@@ -38,7 +38,7 @@ class BackupController extends ControllerAdapter {
 	}
 	
 	public function doDownload($fileName) {
-		$this->getResponse()->send(BackupManager::requestBackupFile($fileName));
+		$this->sendFile(BackupManager::requestBackupFile($fileName));
 	}
 	
 	public function doDelete($pattern) {
