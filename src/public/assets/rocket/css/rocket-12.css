@@ -3538,7 +3538,7 @@ body {
 }
 
 #rocket-logo {
-  flex: 0 0 17rem;
+  flex: 0 0 18rem;
 }
 
 #rocket-branding {
@@ -3571,6 +3571,7 @@ body {
   background: url(../img/nav-body-bg.png) repeat #4F4A46 4px 11px;
   color: white;
   overflow-y: scroll;
+  z-index: 100;
 }
 
 .rocket-nav-group {
@@ -3591,7 +3592,7 @@ body {
  * Content
  */
 #rocket-content-container {
-  margin-left: 17rem;
+  margin-left: 18rem;
   margin-right: 1rem;
   margin-top: 2.75rem;
   padding-bottom: 5rem;
@@ -3689,9 +3690,9 @@ body {
 .rocket-layer {
   position: absolute;
   top: 0;
-  left: -3rem;
+  left: -4rem;
   right: -1rem;
-  padding: 0 1rem 0 3rem;
+  padding: 0 1rem 0 4rem;
   background-color: #ECEBE9;
   min-height: calc(100vh - 2.75rem);
 }
@@ -3700,7 +3701,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 3rem;
+  width: 4rem;
+  background: white;
 }
 
 .rocket-layer > .rocket-layer-toolbar > button {
@@ -3918,7 +3920,6 @@ body {
   position: -webkit-sticky;
   position: sticky;
   top: 44px;
-  background-color: #FBFAFA;
   padding-top: 1rem;
 }
 
@@ -3974,6 +3975,11 @@ body {
 
 .rocket-simple-commands > a > i {
   font-size: 1.25rem;
+}
+
+.rocket-handle {
+  display: inline-block;
+  padding-left: 1rem;
 }
 
 /*
@@ -4077,6 +4083,11 @@ body {
   text-align: left;
   font-weight: bold;
   font-size: 0.875rem;
+}
+
+.rocket-control > iframe {
+  width: 100%;
+  border: 1px solid #C2BDB6;
 }
 
 /**

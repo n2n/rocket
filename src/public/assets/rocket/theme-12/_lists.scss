@@ -6,7 +6,6 @@
     position: -webkit-sticky;
     position: sticky;
     top: 44px;
-    background-color: $gray-100;
     padding-top: 1rem;
 }
 
@@ -61,6 +60,11 @@
             font-size: $font-size-lg;
         }
     }
+}
+
+.rocket-handle {
+    display: inline-block;
+    padding-left: 1rem;
 }
 
 

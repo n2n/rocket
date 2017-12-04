@@ -1,6 +1,6 @@
 $rocket-header-height: 2.75rem;
 $rocket-global-nav-width: 14rem;
-$rocket-global-nav-spacer: 3rem;
+$rocket-global-nav-spacer: 4rem;
 $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-spacer;
 
 
@@ -66,6 +66,7 @@ body {
     background: url(../img/nav-body-bg.png) repeat $gray-800 4px 11px;
     color: white;
     overflow-y: scroll;
+    z-index: 100;
 }
 
 .rocket-nav-group {

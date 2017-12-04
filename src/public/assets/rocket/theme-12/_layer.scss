@@ -58,8 +58,9 @@
 		top: 0;
 		left: 0;
 		width: $rocket-global-nav-spacer;
+		background: white;
 		> button {
-			width: $rocket-global-nav-spacer;
+			width: ($rocket-global-nav-spacer - 1rem);
 			height: 5rem;
 		}
 	}

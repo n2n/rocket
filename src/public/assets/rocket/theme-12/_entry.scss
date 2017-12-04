@@ -81,6 +81,11 @@
     }
 }
 
+.rocket-control > iframe {
+    width: 100%;
+    border: 1px solid $input-border-color;
+}
+
 /**
  * Relation Selectors
  */
