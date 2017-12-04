@@ -34,6 +34,8 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
+use rocket\spec\ei\component\EiSetupProcess;
+use n2n\reflection\CastUtils;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {
 	const ID_BASE = 'overview';
@@ -85,5 +87,13 @@ class ListEiConfigurator extends EiConfiguratorAdapter {
 				'Num Entries', $this->getAttributes()->get(
 						self::OPTION_PAGE_SIZE_KEY, false, $eiComponent->getPageSize())));
 		return new MagForm($magCollection);
+	}
+	
+	public function setup(EiSetupProcess $eiSetupProcess) {
+		$eiComponent = $this->eiComponent;
+	    CastUtils::assertTrue($eiComponent instanceof OverviewEiCommand);
+
+	    $eiComponent->setPageSize($this->attributes->getInt(self::OPTION_PAGE_SIZE_KEY, false, 
+	           $eiComponent->getPageSize()));
 	}
 }

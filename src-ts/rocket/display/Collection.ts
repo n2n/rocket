@@ -11,7 +11,8 @@ namespace Rocket.Display {
 		}
 		
 		scan() {
-		    let curEntries = this.entries;
+		    this.sortedEntries = null;
+		    
 			for (let entry of Entry.children(this.elemJq)) {
 				if (this.entryMap[entry.id] && this.entryMap[entry.id] === entry) {
 				    continue;
@@ -98,10 +99,10 @@ namespace Rocket.Display {
 				if (!this.entryMap[entry.id] || this.entryMap[entry.id] !== entry) {
 					continue;
 				}
-				
+
 				this.sortedEntries.push(entry);
 			}
-
+			
 			return this.sortedEntries.slice();
 		}
 		

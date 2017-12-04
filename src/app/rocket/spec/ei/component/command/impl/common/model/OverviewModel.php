@@ -76,7 +76,7 @@ class OverviewModel implements Dispatchable {
 // 		$this->entryGuis = array();
 // 	}
 	
-	public function initialize($pageNo): bool {
+	public function initialize(int $pageNo, int $numPages = 1): bool {
 		if (!is_numeric($pageNo) || $pageNo < 1) return false;
 		
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
@@ -97,7 +97,7 @@ class OverviewModel implements Dispatchable {
 		if (!$this->numPages) $this->numPages = 1;
 		
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
-		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit, $this->listSize);
+		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit, ($this->listSize * $numPages));
 		
 		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()
 				->getNestedSetStrategy())) {
@@ -162,6 +162,10 @@ class OverviewModel implements Dispatchable {
 	
 	public function getNumEntries() {
 		return $this->numEntries;
+	}
+	
+	public function getPageSize() {
+	    return $this->listSize;
 	}
 		
 	/**

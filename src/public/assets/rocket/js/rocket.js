@@ -66,7 +66,6 @@ var Rocket;
         (function () {
             Jhtml.ready((elements) => {
                 $(elements).find("a.rocket-jhtml").each(function () {
-                    console.log(this.outerHTML);
                     new Rocket.Display.Command(Jhtml.Ui.Link.from(this)).observe();
                 });
             });
@@ -570,9 +569,10 @@ var Rocket;
                 if (!comp.model.response) {
                     throw new Error("model response undefined");
                 }
-                let zone = this.getZoneByUrl(comp.model.response.url);
+                let url = this.monitor.history.currentPage.url;
+                let zone = this.getZoneByUrl(url);
                 if (!zone) {
-                    throw new Error("Zone for url " + comp.model.response.url + " does not extist");
+                    throw new Error("Zone for url " + url + " does not extist");
                 }
                 zone.applyComp(comp, loadObserver);
                 return true;
@@ -1331,7 +1331,7 @@ var Rocket;
                 this._sortable = false;
             }
             scan() {
-                let curEntries = this.entries;
+                this.sortedEntries = null;
                 for (let entry of Display.Entry.children(this.elemJq)) {
                     if (this.entryMap[entry.id] && this.entryMap[entry.id] === entry) {
                         continue;
@@ -3555,7 +3555,7 @@ var Rocket;
             class OverviewContent {
                 constructor(jqElem, loadUrl) {
                     this.loadUrl = loadUrl;
-                    this.pages = new Array();
+                    this.pages = {};
                     this.fakePage = null;
                     this._currentPageNo = null;
                     this.allInfo = null;
@@ -3568,19 +3568,35 @@ var Rocket;
                 isInit() {
                     return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
                 }
-                initFromDom(currentPageNo, numPages, numEntries) {
+                initFromDom(currentPageNo, numPages, numEntries, pageSize) {
                     this.reset(false);
                     this._currentPageNo = currentPageNo;
                     this._numPages = numPages;
                     this._numEntries = numEntries;
-                    let page = this.createPage(this.currentPageNo);
-                    page.jqContents = this.collection.jQuery.children();
-                    this.selectorState.observePage(page);
+                    this._pageSize = pageSize;
+                    this.refitPages(currentPageNo);
                     if (this.allInfo) {
-                        this.allInfo = new AllInfo([page], 0);
+                        let O = Object;
+                        this.allInfo = new AllInfo(O.values(this.pages), 0);
                     }
                     this.buildFakePage();
                     this.triggerContentChange();
+                }
+                refitPages(startPageNo) {
+                    this.pages = {};
+                    this.collection.scan();
+                    let page = null;
+                    let i = 0;
+                    for (let entry of this.collection.entries) {
+                        if (this.fakePage && this.fakePage.containsEntry(entry)) {
+                            continue;
+                        }
+                        if (0 == i % this.pageSize) {
+                            page = this.createPage((i / this._pageSize) + 1);
+                        }
+                        i++;
+                    }
+                    this.pageVisibilityChanged();
                 }
                 init(currentPageNo) {
                     this.reset(false);
@@ -3595,7 +3611,7 @@ var Rocket;
                     this.reset(false);
                     var page = this.createPage(parseInt(info.pageNo));
                     this._currentPageNo = page.pageNo;
-                    this.initPageFromResponse(page, snippet, info);
+                    this.initPageFromResponse([page], snippet, info);
                     if (this.allInfo) {
                         this.allInfo = new AllInfo([page], 0);
                     }
@@ -3608,8 +3624,9 @@ var Rocket;
                 }
                 reset(showLoader) {
                     let page = null;
-                    while (undefined !== (page = this.pages.pop())) {
+                    for (let pageNo in this.pages) {
                         page.dispose();
+                        delete this.pages[pageNo];
                         this.unmarkPageAsLoading(page.pageNo);
                     }
                     this._currentPageNo = null;
@@ -3656,7 +3673,7 @@ var Rocket;
                 }
                 loadFakePage(unloadedIdReps) {
                     if (unloadedIdReps.length == 0) {
-                        this.fakePage.jqContents = $();
+                        this.fakePage.entries = [];
                         this.selectorState.observeFakePage(this.fakePage);
                         return;
                     }
@@ -3668,9 +3685,13 @@ var Rocket;
                         if (fakePage !== this.fakePage)
                             return;
                         this.unmarkPageAsLoading(0);
-                        var jqContents = $(model.snippet.elements).find(".rocket-collection:first").children();
-                        fakePage.jqContents = jqContents;
-                        this.collection.jQuery.append(jqContents);
+                        let collectionJq = $(model.snippet.elements).find(".rocket-collection:first");
+                        model.snippet.elements = collectionJq.children().toArray();
+                        fakePage.entries = Rocket.Display.Entry.children(collectionJq);
+                        for (let entry of fakePage.entries) {
+                            this.collection.jQuery.append(entry.jQuery);
+                        }
+                        this.collection.scan();
                         model.snippet.markAttached();
                         this.selectorState.observeFakePage(fakePage);
                         this.triggerContentChange();
@@ -3682,12 +3703,13 @@ var Rocket;
                 showSelected() {
                     var scrollTop = $("html, body").scrollTop();
                     var visiblePages = new Array();
-                    this.pages.forEach(function (page) {
+                    for (let pageNo in this.pages) {
+                        let page = this.pages[pageNo];
                         if (page.visible) {
                             visiblePages.push(page);
                         }
                         page.hide();
-                    });
+                    }
                     this.selectorState.showSelectedEntriesOnly();
                     this.selectorState.autoShowSelected = true;
                     if (this.allInfo === null) {
@@ -3704,6 +3726,7 @@ var Rocket;
                     this.allInfo.pages.forEach(function (page) {
                         page.show();
                     });
+                    this.pageVisibilityChanged();
                     $("html, body").scrollTop(this.allInfo.scrollTop);
                     this.allInfo = null;
                     this.updateLoader();
@@ -3717,6 +3740,9 @@ var Rocket;
                 }
                 get numEntries() {
                     return this._numEntries;
+                }
+                get pageSize() {
+                    return this._pageSize;
                 }
                 get numSelectedEntries() {
                     if (!this.collection.selectable)
@@ -3737,13 +3763,13 @@ var Rocket;
                     this.triggerContentChange();
                 }
                 triggerContentChange() {
-                    var that = this;
-                    this.contentChangedCallbacks.forEach(function (callback) {
-                        callback(that);
+                    this.contentChangedCallbacks.forEach((callback) => {
+                        callback(this);
                     });
                 }
-                changeBoundaries(numPages, numEntries) {
-                    if (this._numPages == numPages && this._numEntries == numEntries) {
+                changeBoundaries(numPages, numEntries, entriesPerPage) {
+                    if (this._numPages == numPages && this._numEntries == numEntries
+                        && this._pageSize == entriesPerPage) {
                         return;
                     }
                     this._numPages = numPages;
@@ -3766,20 +3792,35 @@ var Rocket;
                 containsPageNo(pageNo) {
                     return this.pages[pageNo] !== undefined;
                 }
-                applyContents(page, jqContents) {
-                    if (page.jqContents !== null) {
+                applyContents(page, entries) {
+                    if (page.entries !== null) {
                         throw new Error("Contents already applied.");
                     }
-                    page.jqContents = jqContents;
+                    page.entries = entries;
                     for (var pni = page.pageNo - 1; pni > 0; pni--) {
                         if (this.pages[pni] === undefined || !this.pages[pni].isContentLoaded())
                             continue;
-                        jqContents.insertAfter(this.pages[pni].jqContents.last());
-                        this.selectorState.observePage(page);
+                        let aboveJq = this.pages[pni].lastEntry.jQuery;
+                        for (let entry of entries) {
+                            entry.jQuery.insertAfter(aboveJq);
+                            aboveJq = entry.jQuery;
+                            this.selectorState.observeEntry(entry);
+                        }
+                        this.collection.scan();
                         return;
                     }
-                    this.collection.jQuery.prepend(jqContents);
-                    this.selectorState.observePage(page);
+                    let aboveJq;
+                    for (let entry of entries) {
+                        if (!aboveJq) {
+                            this.collection.jQuery.prepend(entry.jQuery);
+                        }
+                        else {
+                            entry.jQuery.insertAfter(aboveJq);
+                        }
+                        aboveJq = entry.jQuery;
+                        this.selectorState.observeEntry(entry);
+                    }
+                    this.collection.scan();
                 }
                 goTo(pageNo) {
                     if (!this.isPageNoValid(pageNo)) {
@@ -3792,8 +3833,8 @@ var Rocket;
                         return;
                     }
                     if (this.pages[pageNo] === undefined) {
-                        this.showSingle(pageNo);
                         this.load(pageNo);
+                        this.showSingle(pageNo);
                         this.setCurrentPageNo(pageNo);
                         return;
                     }
@@ -3803,6 +3844,7 @@ var Rocket;
                     }
                     this.showSingle(pageNo);
                     this.setCurrentPageNo(pageNo);
+                    this.pageVisibilityChanged();
                 }
                 showSingle(pageNo) {
                     for (var i in this.pages) {
@@ -3813,6 +3855,24 @@ var Rocket;
                             this.pages[i].hide();
                         }
                     }
+                    this.pageVisibilityChanged();
+                }
+                pageVisibilityChanged() {
+                    let startPageNo = null;
+                    let numPages = 0;
+                    for (let pageNo in this.pages) {
+                        if (!this.pages[pageNo].visible)
+                            continue;
+                        if (!startPageNo) {
+                            startPageNo = this.pages[pageNo].pageNo;
+                        }
+                        numPages++;
+                    }
+                    if (startPageNo === null)
+                        return;
+                    let jhtmlPage = Rocket.Cmd.Zone.of(this.collection.jQuery).page;
+                    jhtmlPage.loadUrl = jhtmlPage.url.extR((startPageNo != 1 ? startPageNo.toString() : null), { numPages: numPages, stateKey: this.stateKey });
+                    console.log(jhtmlPage.loadUrl.toString());
                 }
                 scrollToPage(pageNo, targetPageNo) {
                     var page = null;
@@ -3824,6 +3884,7 @@ var Rocket;
                             page = this.pages[i];
                             page.show();
                         }
+                        this.pageVisibilityChanged();
                     }
                     else {
                         for (var i = pageNo; i >= targetPageNo; i--) {
@@ -3834,7 +3895,7 @@ var Rocket;
                         }
                     }
                     $("html, body").stop().animate({
-                        scrollTop: page.jqContents.first().offset().top
+                        scrollTop: page.firstEntry.jQuery.offset().top
                     }, 500);
                     return true;
                 }
@@ -3896,7 +3957,7 @@ var Rocket;
                         if (page !== this.pages[pageNo])
                             return;
                         this.unmarkPageAsLoading(pageNo);
-                        this.initPageFromResponse(page, model.snippet, model.additionalData);
+                        this.initPageFromResponse([page], model.snippet, model.additionalData);
                         this.triggerContentChange();
                     })
                         .catch(e => {
@@ -3906,11 +3967,15 @@ var Rocket;
                         throw e;
                     });
                 }
-                initPageFromResponse(page, snippet, data) {
-                    this.changeBoundaries(data.numPages, data.numEntries);
-                    var jqContents = $(snippet.elements).find(".rocket-collection:first").children();
+                initPageFromResponse(pages, snippet, data) {
+                    this.changeBoundaries(data.numPages, data.numEntries, data.pageSize);
+                    let collectionJq = $(snippet.elements).find(".rocket-collection:first");
+                    var jqContents = collectionJq.children();
                     snippet.elements = jqContents.toArray();
-                    this.applyContents(page, jqContents);
+                    let entries = Rocket.Display.Entry.children(collectionJq);
+                    for (let page of pages) {
+                        this.applyContents(page, entries.splice(0, this._pageSize));
+                    }
                     snippet.markAttached();
                 }
             }
@@ -3939,14 +4004,11 @@ var Rocket;
                         }
                     });
                 }
-                observePage(page) {
-                    var that = this;
-                    page.entries.forEach(function (entry) {
-                        if (that.fakeEntryMap[entry.id]) {
-                            that.fakeEntryMap[entry.id].dispose();
-                        }
-                        that.registerEntry(entry);
-                    });
+                observeEntry(entry) {
+                    if (this.fakeEntryMap[entry.id]) {
+                        this.fakeEntryMap[entry.id].dispose();
+                    }
+                    this.registerEntry(entry);
                 }
                 registerEntry(entry, fake = false) {
                     this.collection.registerEntry(entry);
@@ -4001,13 +4063,16 @@ var Rocket;
                 }
             }
             class Page {
-                constructor(pageNo, _jqContents = null) {
+                constructor(pageNo, entries = null) {
                     this.pageNo = pageNo;
-                    this._jqContents = _jqContents;
+                    this.entries = entries;
                     this._visible = true;
                 }
                 get visible() {
                     return this._visible;
+                }
+                containsEntry(entry) {
+                    return 0 < this.entries.indexOf(entry);
                 }
                 show() {
                     this._visible = true;
@@ -4017,43 +4082,34 @@ var Rocket;
                     this._visible = false;
                     this.disp();
                 }
+                get firstEntry() {
+                    if (!this.entries || !this.entries[0]) {
+                        throw new Error("no first entry");
+                    }
+                    return this.entries[0];
+                }
+                get lastEntry() {
+                    if (!this.entries || this.entries.length == 0) {
+                        throw new Error("no last entry");
+                    }
+                    return this.entries[this.entries.length - 1];
+                }
                 dispose() {
                     if (!this.isContentLoaded())
                         return;
-                    this._jqContents.remove();
-                    this._jqContents = null;
-                    this._entries = null;
+                    for (let entry of this.entries) {
+                        entry.dispose();
+                    }
+                    this.entries = null;
                 }
                 isContentLoaded() {
-                    return this.jqContents !== null;
-                }
-                get entries() {
-                    return this._entries;
-                }
-                get jqContents() {
-                    return this._jqContents;
-                }
-                set jqContents(jqContents) {
-                    this._jqContents = jqContents;
-                    this._entries = Rocket.Display.Entry.filter(this.jqContents);
-                    this.disp();
-                    var that = this;
-                    for (var i in this._entries) {
-                        let entry = this._entries[i];
-                        entry.on(Rocket.Display.Entry.EventType.DISPOSED, function () {
-                            let j = that._entries.indexOf(entry);
-                            if (-1 == j)
-                                return;
-                            that._entries.splice(j, 1);
-                        });
-                    }
+                    return !!this.entries;
                 }
                 disp() {
-                    if (this._jqContents === null)
+                    if (this.entries === null)
                         return;
-                    var that = this;
-                    this._entries.forEach(function (entry) {
-                        if (that._visible) {
+                    this.entries.forEach((entry) => {
+                        if (this.visible) {
                             entry.show();
                         }
                         else {
@@ -4062,11 +4118,11 @@ var Rocket;
                     });
                 }
                 removeEntryById(id) {
-                    for (var i in this._entries) {
-                        if (this._entries[i].id != id)
+                    for (var i in this.entries) {
+                        if (this.entries[i].id != id)
                             continue;
-                        this._entries[i].jQuery.remove();
-                        this._entries.splice(parseInt(i), 1);
+                        this.entries[i].jQuery.remove();
+                        this.entries.splice(parseInt(i), 1);
                         return;
                     }
                 }
@@ -4103,7 +4159,7 @@ var Rocket;
                     }
                     var jqForm = jqElem.children("form");
                     var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-collection:first"), Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
-                    overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
+                    overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"), jqElem.data("page-size"));
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-zone-commands"));
                     var header = new Overview.Header(overviewContent);

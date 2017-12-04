@@ -43,6 +43,7 @@
 <div class="rocket-impl-overview" 
 		data-num-pages="<?php $html->out($overviewModel->getNumPages()) ?>"
 		data-num-entries="<?php $html->out($overviewModel->getNumEntries()) ?>"
+		data-page-size="<?php $html->out($overviewModel->getPageSize()) ?>"
 		data-current-page="<?php $html->out($overviewModel->getCurrentPageNo()) ?>"
 		data-overview-path="<?php $html->out($html->meta()->getControllerUrl(null)) ?>">
 		

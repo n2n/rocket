@@ -208,9 +208,10 @@ namespace Rocket.Cmd {
 				throw new Error("model response undefined");
 			}
 			
-			let zone: Zone = this.getZoneByUrl(comp.model.response.url);
+			let url = this.monitor.history.currentPage.url;
+			let zone: Zone = this.getZoneByUrl(url);
 			if (!zone) {
-				throw new Error("Zone for url " + comp.model.response.url + " does not extist");
+				throw new Error("Zone for url " + url + " does not extist");
 			}
 				
 			zone.applyComp(comp, loadObserver);

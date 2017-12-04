@@ -53,10 +53,14 @@ class OverviewController extends ControllerAdapter {
 		$this->eiuCtrl = $eiuCtrl;
 	}
 	
-	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null) {
+	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
 		$eiuFrame = $this->eiuCtrl->frame();
 		$eiFrame = $eiuFrame->getEiFrame();
-		$stateKey = OverviewJhtmlController::genStateKey();
+		if ($stateKey !== null) {
+            $stateKey = $stateKey->__toString();
+		} else {
+            $stateKey = OverviewJhtmlController::genStateKey();
+		}
 		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
@@ -67,7 +71,7 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		if (!$listModel->initialize($pageNo)) {
+		if (!$listModel->initialize((int) $pageNo, ($numPages === null ? 1 : $numPages->toIntOrReject()))) {
 			throw new PageNotFoundException();
 		}
 		
@@ -83,7 +87,7 @@ class OverviewController extends ControllerAdapter {
 						'critmodForm' => $critmodForm,
 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
 						'filterAjahHook' => $filterAjahHook)));
-		
+				
 // 		$this->forward('..\view\overview.html', 
 // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
 // 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 

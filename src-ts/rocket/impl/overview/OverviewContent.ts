@@ -5,12 +5,14 @@ namespace Rocket.Impl.Overview {
 	
 	export class OverviewContent {
 		private collection: Display.Collection;
-		private pages: Array<Page> = new Array<Page>();
+		private pages: { [pageNo: number]: Page } = {};
 		private fakePage: Page = null;
 		private selectorState: SelectorState;
 		private _currentPageNo: number = null; 
 		private _numPages: number;
 		private _numEntries: number;
+		private _pageSize: number;
+		private stateKey: string;
 		private allInfo: AllInfo = null;
 		private contentChangedCallbacks: Array<(overviewContent: OverviewContent) => any> = [];
 		
@@ -23,21 +25,44 @@ namespace Rocket.Impl.Overview {
 			return this._currentPageNo != null && this._numPages != null && this._numEntries != null;
 		}
 		
-		initFromDom(currentPageNo: number, numPages: number, numEntries: number) {
+		initFromDom(currentPageNo: number, numPages: number, numEntries: number, pageSize: number) {
 			this.reset(false);
 			this._currentPageNo = currentPageNo;
 			this._numPages = numPages;
 			this._numEntries = numEntries;
-			let page = this.createPage(this.currentPageNo);
-			page.jqContents = this.collection.jQuery.children();
-			this.selectorState.observePage(page);
+			this._pageSize = pageSize;
+			
+			
+			this.refitPages(currentPageNo);
 			
 			if (this.allInfo) {
-				this.allInfo = new AllInfo([page], 0);
+				let O: any = Object;
+				this.allInfo = new AllInfo(O.values(this.pages), 0);
 			}
 			
 			this.buildFakePage();
 			this.triggerContentChange();
+		}
+		
+		private refitPages(startPageNo: number) {
+			this.pages = {};
+			
+			this.collection.scan();
+
+			let page: Page = null;
+			let i = 0;
+			for (let entry of this.collection.entries) {
+				if (this.fakePage && this.fakePage.containsEntry(entry)) {
+					continue;
+				}
+				
+				if (0 == i % this.pageSize) {
+					page = this.createPage((i / this._pageSize) + 1);
+				}
+				
+				i++;
+			}
+			this.pageVisibilityChanged();
 		}
 		
 		init(currentPageNo: number) {
@@ -57,7 +82,7 @@ namespace Rocket.Impl.Overview {
 			
 			var page: Page = this.createPage(parseInt(info.pageNo));
 			this._currentPageNo = page.pageNo;
-			this.initPageFromResponse(page, snippet, info);
+			this.initPageFromResponse([page], snippet, info);
 			
 			if (this.allInfo) {
 				this.allInfo = new AllInfo([page], 0);
@@ -75,8 +100,9 @@ namespace Rocket.Impl.Overview {
 		
 		private reset(showLoader: boolean) { 
 			let page: Page = null;
-			while (undefined !== (page = this.pages.pop())) {
+			for (let pageNo in this.pages) {
 				page.dispose();
+				delete this.pages[pageNo];
 				this.unmarkPageAsLoading(page.pageNo);
 			}
 			
@@ -135,7 +161,7 @@ namespace Rocket.Impl.Overview {
 		
 		private loadFakePage(unloadedIdReps: Array<string>) {
 			if (unloadedIdReps.length == 0) {
-				this.fakePage.jqContents = $();
+				this.fakePage.entries = [];
 				this.selectorState.observeFakePage(this.fakePage);
 				return;
 			}
@@ -151,9 +177,14 @@ namespace Rocket.Impl.Overview {
 				
 				this.unmarkPageAsLoading(0);
 				
-				var jqContents = $(model.snippet.elements).find(".rocket-collection:first").children();
-				fakePage.jqContents = jqContents;
-				this.collection.jQuery.append(jqContents);
+				let collectionJq = $(model.snippet.elements).find(".rocket-collection:first");
+				model.snippet.elements = collectionJq.children().toArray();
+				fakePage.entries = Display.Entry.children(collectionJq);
+				for (let entry of fakePage.entries) {
+					this.collection.jQuery.append(entry.jQuery);
+				}
+				
+				this.collection.scan();
 				model.snippet.markAttached();
 				
 				this.selectorState.observeFakePage(fakePage);
@@ -168,12 +199,13 @@ namespace Rocket.Impl.Overview {
 		public showSelected() {
 			var scrollTop =  $("html, body").scrollTop();
 			var visiblePages = new Array<Page>();
-			this.pages.forEach(function (page: Page) {
+			for (let pageNo in this.pages) {
+				let page = this.pages[pageNo];
 				if (page.visible) {
 					visiblePages.push(page);
 				}
 				page.hide();
-			});
+			}
 			
 			this.selectorState.showSelectedEntriesOnly();
 			this.selectorState.autoShowSelected = true;	
@@ -199,6 +231,7 @@ namespace Rocket.Impl.Overview {
 			this.allInfo.pages.forEach(function (page: Page) {
 				page.show();
 			});
+			this.pageVisibilityChanged();
 			
 			$("html, body").scrollTop(this.allInfo.scrollTop);
 			this.allInfo = null;
@@ -227,6 +260,10 @@ namespace Rocket.Impl.Overview {
 			return this._numEntries;
 		}
 		
+		get pageSize(): number {
+			return this._pageSize;
+		}
+		
 		get numSelectedEntries(): number {
 			if (!this.collection.selectable) return null;
 			
@@ -252,14 +289,14 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		private triggerContentChange() {
-			var that = this;
-			this.contentChangedCallbacks.forEach(function (callback) {
-				callback(that);
+			this.contentChangedCallbacks.forEach((callback) => {
+				callback(this);
 			});
 		}
 		
-		private changeBoundaries(numPages: number, numEntries: number) {
-			if (this._numPages == numPages && this._numEntries == numEntries) {
+		private changeBoundaries(numPages: number, numEntries: number, entriesPerPage: number) {
+			if (this._numPages == numPages && this._numEntries == numEntries 
+					&& this._pageSize == entriesPerPage) {
 				return;
 			}
 			
@@ -290,23 +327,38 @@ namespace Rocket.Impl.Overview {
 			return this.pages[pageNo] !== undefined;
 		}
 		
-		private applyContents(page: Page, jqContents: JQuery) {
-			if (page.jqContents !== null) {
+		private applyContents(page: Page, entries: Display.Entry[]) {
+			if (page.entries !== null) {
 				throw new Error("Contents already applied.");
 			}
 			
-			page.jqContents = jqContents;
+			page.entries = entries;
 			
 			for (var pni = page.pageNo - 1; pni > 0; pni--) {
 				if (this.pages[pni] === undefined || !this.pages[pni].isContentLoaded()) continue;
 				
-				jqContents.insertAfter(this.pages[pni].jqContents.last());
-				this.selectorState.observePage(page);
+				let aboveJq = this.pages[pni].lastEntry.jQuery;
+				for (let entry of entries) {
+					entry.jQuery.insertAfter(aboveJq);
+					aboveJq = entry.jQuery;
+					this.selectorState.observeEntry(entry);
+				}
+				this.collection.scan()
 				return;
 			}
 			
-			this.collection.jQuery.prepend(jqContents);
-			this.selectorState.observePage(page);
+			let aboveJq: JQuery;
+			for (let entry of entries) {
+				if (!aboveJq) {
+					this.collection.jQuery.prepend(entry.jQuery);
+				} else {
+					entry.jQuery.insertAfter(aboveJq);
+				}
+				
+				aboveJq = entry.jQuery;
+				this.selectorState.observeEntry(entry);
+			}
+			this.collection.scan()
 		}
 		
 		goTo(pageNo: number) {
@@ -323,8 +375,8 @@ namespace Rocket.Impl.Overview {
 			}
 			
 			if (this.pages[pageNo] === undefined) {
-				this.showSingle(pageNo);
 				this.load(pageNo);
+				this.showSingle(pageNo);
 				this.setCurrentPageNo(pageNo);
 				return;
 			}
@@ -336,6 +388,7 @@ namespace Rocket.Impl.Overview {
 			
 			this.showSingle(pageNo);
 			this.setCurrentPageNo(pageNo);
+			this.pageVisibilityChanged();
 		}
 		
 		private showSingle(pageNo: number) {
@@ -346,6 +399,28 @@ namespace Rocket.Impl.Overview {
 					this.pages[i].hide();
 				}
 			}
+			this.pageVisibilityChanged();
+		}
+		
+		private pageVisibilityChanged() {
+			let startPageNo: number = null;
+
+			let numPages = 0;
+			for (let pageNo in this.pages) {
+				if (!this.pages[pageNo].visible) continue;
+
+				if (!startPageNo) {
+					startPageNo = this.pages[pageNo].pageNo; 
+				}
+				numPages++;
+			}
+			
+			if (startPageNo === null) return;
+			
+			let jhtmlPage = Cmd.Zone.of(this.collection.jQuery).page;
+			jhtmlPage.loadUrl = jhtmlPage.url.extR((startPageNo != 1 ? startPageNo.toString() : null), 
+					{ numPages: numPages, stateKey: this.stateKey});
+			console.log(jhtmlPage.loadUrl.toString());
 		}
 		
 		private scrollToPage(pageNo: number, targetPageNo: number): boolean {
@@ -359,6 +434,7 @@ namespace Rocket.Impl.Overview {
 					page = this.pages[i];
 					page.show();
 				}
+				this.pageVisibilityChanged();
 			} else {
 				for (var i = pageNo; i >= targetPageNo; i--) {
 					if (!this.containsPageNo(i) || !this.pages[i].isContentLoaded() || !this.pages[i].visible) {
@@ -370,7 +446,7 @@ namespace Rocket.Impl.Overview {
 			}
 			
 			$("html, body").stop().animate({
-				scrollTop: page.jqContents.first().offset().top 
+				scrollTop: page.firstEntry.jQuery.offset().top 
 			}, 500);
 			
 			return true;
@@ -452,7 +528,7 @@ namespace Rocket.Impl.Overview {
 						
 						this.unmarkPageAsLoading(pageNo);
 						
-						this.initPageFromResponse(page, model.snippet, model.additionalData);
+						this.initPageFromResponse([page], model.snippet, model.additionalData);
 						this.triggerContentChange();
 					})
 					.catch(e => {
@@ -463,13 +539,19 @@ namespace Rocket.Impl.Overview {
 					});
 		}
 		
-		private initPageFromResponse(page: Page, snippet: Jhtml.Snippet, data: any) {
-			this.changeBoundaries(data.numPages, data.numEntries);
+		private initPageFromResponse(pages: Page[], snippet: Jhtml.Snippet, data: any) {
+			this.changeBoundaries(data.numPages, data.numEntries, data.pageSize);
 			
-			var jqContents = $(snippet.elements).find(".rocket-collection:first").children();
 			
+			let collectionJq = $(snippet.elements).find(".rocket-collection:first");
+			var jqContents = collectionJq.children();
 			snippet.elements = jqContents.toArray();
-			this.applyContents(page, jqContents);
+			let entries = Display.Entry.children(collectionJq);
+			
+			for (let page of pages) {
+				this.applyContents(page, entries.splice(0, this._pageSize));
+			}
+			
 			snippet.markAttached();
 		}
 	}	
@@ -502,15 +584,12 @@ namespace Rocket.Impl.Overview {
 			});
 		}
 		
-		observePage(page: Page) {
-			var that = this;
-			page.entries.forEach(function (entry: Display.Entry) {
-				if (that.fakeEntryMap[entry.id]) {
-					that.fakeEntryMap[entry.id].dispose();
-				}
-				
-				that.registerEntry(entry);
-			});
+		observeEntry(entry: Display.Entry) {
+			if (this.fakeEntryMap[entry.id]) {
+				this.fakeEntryMap[entry.id].dispose();
+			}
+			
+			this.registerEntry(entry);
 		}
 		
 		private registerEntry(entry: Display.Entry, fake: boolean = false) {
@@ -573,13 +652,16 @@ namespace Rocket.Impl.Overview {
 	
 	class Page {
 		private _visible: boolean = true;
-		private _entries: Array<Display.Entry>;
 		
-		constructor(public pageNo: number, private _jqContents: JQuery = null) {
+		constructor(public pageNo: number, public entries: Display.Entry[] = null) {
 		}
 		
 		get visible(): boolean {
 			return this._visible;
+		}
+		
+		containsEntry(entry: Display.Entry): boolean {
+			return 0 < this.entries.indexOf(entry);
 		}
 		
 		show() {
@@ -592,51 +674,60 @@ namespace Rocket.Impl.Overview {
 			this.disp();
 		}
 		
+		get firstEntry(): Display.Entry {
+			if (!this.entries || !this.entries[0]) {
+				throw new Error("no first entry");
+			}
+			
+			return this.entries[0]
+		}
+		
+		get lastEntry(): Display.Entry {
+			if (!this.entries || this.entries.length == 0) {
+				throw new Error("no last entry");
+			}
+			
+			return this.entries[this.entries.length - 1];
+		}
+		
 		dispose() {
 			if (!this.isContentLoaded()) return;
+				
+			for (let entry of this.entries) {
+				entry.dispose();
+			}
 			
-			this._jqContents.remove();
-			this._jqContents = null;
-			this._entries = null;
+			this.entries = null;
 		}
 		
 		isContentLoaded(): boolean {
-			return this.jqContents !== null;
+			return !!this.entries;
 		}
 		
-		get entries(): Array<Display.Entry> {
-			return this._entries;
-		}
-		
-		get jqContents(): JQuery {
-			return this._jqContents;
-		}
-		
-		set jqContents(jqContents: JQuery) {
-			this._jqContents = jqContents;
-			
-			this._entries = Display.Entry.filter(this.jqContents);
-			
-			this.disp();
-			
-			var that = this;
-			for (var i in this._entries) {
-				let entry = this._entries[i];
-				entry.on(Display.Entry.EventType.DISPOSED, function () {
-					let j = that._entries.indexOf(entry);
-					if (-1 == j) return;
-					
-					that._entries.splice(j, 1);
-				});
-			}
-		}
+//		set jqContents(jqContents: JQuery) {
+//			this._jqContents = jqContents;
+//			
+//			this.entries = Display.Entry.filter(this.jqContents);
+//			
+//			this.disp();
+//			
+//			var that = this;
+//			for (var i in this.entries) {
+//				let entry = this.entries[i];
+//				entry.on(Display.Entry.EventType.DISPOSED, function () {
+//					let j = that.entries.indexOf(entry);
+//					if (-1 == j) return;
+//					
+//					that.entries.splice(j, 1);
+//				});
+//			}
+//		}
 		
 		private disp() {
-			if (this._jqContents === null) return;
+			if (this.entries === null) return;
 			
-			var that = this;
-			this._entries.forEach(function (entry: Display.Entry) {
-				if (that._visible) {
+			this.entries.forEach((entry: Display.Entry) => {
+				if (this.visible) {
 					entry.show();
 				} else {
 					entry.hide();
@@ -645,11 +736,11 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		removeEntryById(id: string) {
-			for (var i in this._entries) {
-				if (this._entries[i].id != id) continue;
+			for (var i in this.entries) {
+				if (this.entries[i].id != id) continue;
 				
-				this._entries[i].jQuery.remove();
-				this._entries.splice(parseInt(i), 1);
+				this.entries[i].jQuery.remove();
+				this.entries.splice(parseInt(i), 1);
 				return; 
 			}
 		}

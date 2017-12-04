@@ -58,7 +58,8 @@ namespace Rocket.Impl.Overview {
 //			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))
 //					.init(overviewContent);
 			
-			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"));
+			overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"), 
+					jqElem.data("page-size"));
 			
 			
 			var pagination = new Pagination(overviewContent);

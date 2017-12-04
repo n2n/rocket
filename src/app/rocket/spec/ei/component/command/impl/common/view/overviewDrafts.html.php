@@ -58,7 +58,7 @@
 	
 	<?php $formHtml->open($listModel, null, null, array('class' => 'rocket-overview-main-content',
 			'data-num-pages' => $listModel->getNumPages(), 'data-num-entries' => $listModel->getNumEntries(),
-			'data-current-page' => $listModel->getCurrentPageNo(),
+			'data-page-size' => $overviewModel->getPageSize(), 'data-current-page' => $listModel->getCurrentPageNo(),
 			'data-overview-path' => $html->meta()->getControllerUrl(null))) ?>
 		
 		<?php $view->out($listView)?>

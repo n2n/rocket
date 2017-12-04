@@ -170,7 +170,7 @@ class EiuCtrl implements Lookupable {
 	    $response = $this->httpContext->getResponse();
 	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
-	        $response->send(new Redirect($refererUrl));
+	    	$response->send(new Redirect($fallbackUrl));
 	        return;
 	    }
 	    
