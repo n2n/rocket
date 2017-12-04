@@ -426,13 +426,25 @@ class SpecExtractionManager {
 					$this->getSpecCsDescByModuleNamespace($commonEiMaskExtraction->getModuleNamespace())
 							->addCommonEiMaskExtraction($specId, $commonEiMaskExtraction);
 				}
+				
+				foreach ($specExtraction->getEiModificatorExtractions() as $eiModificatorExtraction) {
+					$this->getSpecCsDescByModuleNamespace($eiModificatorExtraction->getModuleNamespace())
+							->addEiModificatorExtraction($specId, $eiModificatorExtraction);
+				}
 			}
 		}
 		
 		foreach ($this->unboundCommonEiMaskExtractionGroups as $eiTypeId => $commonEiMaskExtractions) {
 			foreach ($commonEiMaskExtractions as $commonEiMaskExtraction) {
 				$this->getSpecCsDescByModuleNamespace($commonEiMaskExtraction->getModuleNamespace())
-						->addCommonEiMaskExtraction($specId, $commonEiMaskExtraction);
+						->addCommonEiMaskExtraction($eiTypeId, $commonEiMaskExtraction);
+			}
+		}
+		
+		foreach ($this->unboundEiModificatorExtractionGroups as $eiTypeId => $unboundEiModificatorExtractions) {
+			foreach ($unboundEiModificatorExtractions as $unboundEiModificatorExtractions) {
+				$this->getSpecCsDescByModuleNamespace($unboundEiModificatorExtractions->getModuleNamespace())
+						->addEiModificatorExtraction($eiTypeId, $unboundEiModificatorExtractions);
 			}
 		}
 		

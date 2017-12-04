@@ -24,15 +24,15 @@ namespace rocket\spec\config\extr;
 class EiModificatorExtraction {
 	private $id;
 	private $moduleNamespace;
-	private $specId;
+	private $eiTypeId;
 	private $commonEiMaskId;
 	private $className;
 	private $props = array();
 	
-	public function __construct(string $id, string $moduleNamespace, string $specId, string $commonEiMaskId = null) {
+	public function __construct(string $id, string $moduleNamespace, string $eiTypeId, string $commonEiMaskId = null) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
-		$this->specId = $specId;
+		$this->eiTypeId = $eiTypeId;
 		$this->commonEiMaskId = $commonEiMaskId;
 	}
 	
@@ -52,12 +52,12 @@ class EiModificatorExtraction {
 		$this->moduleNamespace = $moduleNamespace;
 	}
 
-	public function getSpecId() {
-		return $this->specId;
+	public function getEiTypeId() {
+		return $this->eiTypeId;
 	}
 
-	public function setSpecId($specId) {
-		$this->specId = $specId;
+	public function setEiTypeId($eiTypeId) {
+		$this->eiTypeId = $eiTypeId;
 	}
 
 	public function getCommonEiMaskId() {

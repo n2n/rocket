@@ -281,29 +281,27 @@ class SpecExtractor {
 				$eiModificatorsAttributes = new Attributes($attributes->getArray($eiTypeId, false));
 				$eiModificatorGroups[$eiTypeId] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $eiTypeId, $commonEiMaskId);
 			} catch (AttributesException $e) {
-				throw $this->createSpecCommonEiMaskException($eiTypeId, $e);
+				throw $this->createEiModificatorException($idCombination, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createSpecCommonEiMaskException($eiTypeId, $e);
+				throw $this->createEiModificatorException($idCombination, $e);
 			}
 		}
 		
 		return $eiModificatorGroups;
 	}
 	
-	public function createEiModificatorExtractions(Attributes $eiModificatorsAttributes, string $eiTypeId, string $eiMaskId = null): array {
+	public function createEiModificatorExtractions(Attributes $eiModificatorsAttributes, string $eiTypeId, string $commonEiMaskId = null): array {
 		$commonEiModificators = array();
 		
-		foreach ($eiModificatorsAttributes->getNames() as $idCombination) {
+		foreach ($eiModificatorsAttributes->getNames() as $modificatorId) {
 			try {
-				$eiTypeId = RawDef::extractEiTypeIdFromIdCombination($idCombination);
-				$commonEiMaskId = RawDef::extractCommonEiMaskIdFromIdCombination($idCombination);
 				
-				$commonEiModificators[$idCombination] = $this->createEiModficatorExtraction($idCombination,
-						new Attributes($eiModificatorsAttributes->getArray($idCombination)), $eiTypeId, $commonEiMaskId);
+				$commonEiModificators[$modificatorId] = $this->createEiModficatorExtraction($modificatorId,
+						new Attributes($eiModificatorsAttributes->getArray($modificatorId)), $eiTypeId, $commonEiMaskId);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiModificatorException($idCombination, $e);
+				throw $this->createEiModificatorException(RawDef::buildEiTypeMaskId($eiTypeId, $commonEiMaskId), $e);
 			} catch (AttributesException $e) {
-				throw $this->createEiModificatorException($idCombination, $e);
+				throw $this->createEiModificatorException(RawDef::buildEiTypeMaskId($eiTypeId, $commonEiMaskId), $e);
 			}
 		}
 		

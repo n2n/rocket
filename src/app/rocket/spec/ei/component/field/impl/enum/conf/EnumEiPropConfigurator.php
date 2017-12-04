@@ -132,7 +132,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$options = $this->attributes->getArray(self::OPTION_OPTIONS_KEY, false, array(), 
 					TypeConstraint::createSimple('scalar'));
 			
-			$this->eiComponent->setOptions($options);
+			$this->eiComponent->setOptions(array_filter($options));
 		}
 		
 		if ($this->attributes->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {

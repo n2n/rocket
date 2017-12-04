@@ -92,11 +92,14 @@ class SpecRawer {
 	}
 	
 	public function rawEiModificatorExtractionGroups(array $eiModificatorExtractionGroups) {
+		if (empty($eiModificatorExtractionGroups)) return;
+		
 		$rawData = array();
+		
 		foreach ($eiModificatorExtractionGroups as $eiTypeId => $eiModificatorExtractionGroup) {
 			if (empty($eiModificatorExtractionGroup)) continue;
 			
-			$eiModificatorsRawData = array();
+			
 			foreach ($eiModificatorExtractionGroup as $eiModificatorExtraction) {
 				$idCombination = RawDef::buildEiTypeMaskId($eiModificatorExtraction->getEiTypeId(), 
 						$eiModificatorExtraction->getCommonEiMaskId());
@@ -106,8 +109,6 @@ class SpecRawer {
 				
 				$rawData[$idCombination][$eiModificatorExtraction->getId()] = $this->buildEiModificatorExtractionRawData($eiModificatorExtraction);
 			}
-			
-			$rawData[$eiTypeId] = $eiModificatorsRawData;
 		}
 		
 		$this->attributes->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
