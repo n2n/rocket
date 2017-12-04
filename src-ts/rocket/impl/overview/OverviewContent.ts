@@ -32,7 +32,6 @@ namespace Rocket.Impl.Overview {
 			this._numEntries = numEntries;
 			this._pageSize = pageSize;
 			
-			
 			this.refitPages(currentPageNo);
 			
 			if (this.allInfo) {
@@ -58,7 +57,9 @@ namespace Rocket.Impl.Overview {
 				
 				if (0 == i % this.pageSize) {
 					page = this.createPage((i / this._pageSize) + 1);
+					page.entries = [];
 				}
+				page.entries.push(entry);
 				
 				i++;
 			}
@@ -333,7 +334,6 @@ namespace Rocket.Impl.Overview {
 			}
 			
 			page.entries = entries;
-			
 			for (var pni = page.pageNo - 1; pni > 0; pni--) {
 				if (this.pages[pni] === undefined || !this.pages[pni].isContentLoaded()) continue;
 				
