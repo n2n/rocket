@@ -85,7 +85,7 @@ class AddController extends ControllerAdapter {
 		}
 		
 		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
+			$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
 			return;
 		} else if ($this->dispatch($addModel, 'createAndRepeate')) {
 			$this->refresh();

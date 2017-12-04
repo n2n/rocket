@@ -32,6 +32,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
+use rocket\core\model\Rocket;
 
 class AddModel implements Dispatchable  {
 	private static function _annos(AnnoInit $ai) {
@@ -109,6 +110,7 @@ class AddModel implements Dispatchable  {
 		$eiuEntry = $this->entryForm->buildEiuEntry();
 		
 		if (!$eiuEntry->getEiEntry()->save()) {
+			$messageContainer->addErrorCode('common_form_err', null, null, Rocket::NS);
 			return false;
 		}
 		

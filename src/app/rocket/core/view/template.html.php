@@ -209,10 +209,10 @@
 	    					<?php endif ?>
 	    				</header>
 	    					
-    					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'rocket-message-error')) ?>
-    					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'rocket-message-info')) ?>
-    					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'rocket-message-warn')) ?>
-    					<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'rocket-message-success')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'alert alert-error list-unstyled')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'alert alert-info list-unstyled')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'alert alert-warn list-unstyled')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'alert alert-success list-unstyled')) ?>
     					
     					<div class="rocket-content <?php $html->esc($view->hasPanel('additional') ? ' rocket-contains-additional' : '') ?>"
     							data-error-list-label="<?php $html->text('ei_error_list_title') ?>">

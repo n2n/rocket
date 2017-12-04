@@ -3593,7 +3593,9 @@ var Rocket;
                         }
                         if (0 == i % this.pageSize) {
                             page = this.createPage((i / this._pageSize) + 1);
+                            page.entries = [];
                         }
+                        page.entries.push(entry);
                         i++;
                     }
                     this.pageVisibilityChanged();

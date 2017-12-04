@@ -39,18 +39,13 @@
 			let editor;
 			if (visible) {
 				editor = CKEDITOR.replace(elem);
-				if (tos[editor.name]) {
-					clearInterval(tos[editor.name]);
-				}
 			}
 			
 			let hackCheck = function () {
 				if (!document.contains(elem)) return;
 				
 				if (visible == parentJq.is(":visible")) {
-					setTimeout(() => {
-						requestAnimationFrame(hackCheck);
-					}, 500);
+					requestAnimationFrame(hackCheck);
 					return;
 				}
 				

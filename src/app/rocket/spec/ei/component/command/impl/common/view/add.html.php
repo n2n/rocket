@@ -42,6 +42,8 @@
 
 <?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-form')) ?>
 	<?php $view->import($addModel->getEntryForm()->createView($view)) ?>
+	
+	<?php $formHtml->messageList() ?>
 		
 	<div class="rocket-zone-commands">
 		<div>
