@@ -1,7 +1,7 @@
 (function() {
 	Jhtml.ready(function (elements) {
+		console.log(elements.length);
 		$(elements).find(".rocket-impl-cke-classic").each(function (i, elem) {
-			
 			
 			
 //			var observer = new MutationObserver(function(mutations) {
@@ -36,28 +36,38 @@
 			let parentJq = $(elem.parentElement);
 			let visible = parentJq.is(":visible");
 			
-			let editorName;
+			let editor;
 			if (visible) {
-				editorName = CKEDITOR.instances[CKEDITOR.replace(elem).name].name;
+				editor = CKEDITOR.replace(elem);
+				if (tos[editor.name]) {
+					clearInterval(tos[editor.name]);
+				}
 			}
 			
-			setInterval(function () {
-				if (visible == parentJq.is(":visible")) return;
+			let hackCheck = function () {
+				if (!document.contains(elem)) return;
 				
-				visible = $(parentJq).is(":visible");
-				if (editorName && CKEDITOR.instances[editorName]) {
-					let editor = CKEDITOR.instances[editorName];
+				if (visible == parentJq.is(":visible")) {
+					setTimeout(() => {
+						requestAnimationFrame(hackCheck);
+					}, 500);
+					return;
+				}
+				
+				visible = parentJq.is(":visible");
+				if (editor) {
 					editor.updateElement();
 					editor.destroy();
-					CKEDITOR.remove(editor);
-					editorName = null;
+					editor = null;
 				}
 				
 				if (visible) {
-					editorName = CKEDITOR.instances[CKEDITOR.replace(elem).name].name;
+					editor = CKEDITOR.replace(elem);
 				}
-			}, 1000);
-			
+				
+				requestAnimationFrame(hackCheck);
+			};
+			requestAnimationFrame(hackCheck);
 			
 //			let formJq = $(elem).closest("form");
 //			formJq.submit(() => {
