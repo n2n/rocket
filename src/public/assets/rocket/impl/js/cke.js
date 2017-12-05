@@ -1,6 +1,5 @@
 (function() {
 	Jhtml.ready(function (elements) {
-		console.log(elements.length);
 		$(elements).find(".rocket-impl-cke-classic").each(function (i, elem) {
 			
 			

@@ -1612,6 +1612,17 @@ var Rocket;
                     this.initSelector(jqSelector);
                 }
             }
+            get lastMod() {
+                return this.jqElem.hasClass(Entry.LAST_MOD_CSS_CLASS);
+            }
+            set lastMod(lastMod) {
+                if (lastMod) {
+                    this.jqElem.addClass(Entry.LAST_MOD_CSS_CLASS);
+                }
+                else {
+                    this.jqElem.removeClass(Entry.LAST_MOD_CSS_CLASS);
+                }
+            }
             get collection() {
                 return Display.Collection.test(this.jqElem.parent());
             }
@@ -1736,8 +1747,14 @@ var Rocket;
             }
             static findAll(jqElem, includeSelf = false) {
                 let jqEntries = jqElem.find("." + Entry.CSS_CLASS);
-                jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
+                if (includeSelf) {
+                    jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
+                }
                 return Entry.fromArr(jqEntries);
+            }
+            static findLastMod(jqElem) {
+                let entriesJq = jqElem.find("." + Entry.CSS_CLASS + " ." + Entry.LAST_MOD_CSS_CLASS);
+                return Entry.fromArr(entriesJq);
             }
             static fromArr(entriesJq) {
                 let entries = new Array();
@@ -1778,6 +1795,7 @@ var Rocket;
         }
         Entry.CSS_CLASS = "rocket-entry";
         Entry.TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
+        Entry.LAST_MOD_CSS_CLASS = "rocket-last-mod";
         Entry.SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
         Entry.ID_REP_ATTR = "data-rocket-id-rep";
         Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";

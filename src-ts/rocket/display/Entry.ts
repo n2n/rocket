@@ -17,6 +17,18 @@ namespace Rocket.Display {
 			}
 		}
 		
+		get lastMod(): boolean {
+			return this.jqElem.hasClass(Entry.LAST_MOD_CSS_CLASS);
+		}
+		
+		set lastMod(lastMod: boolean) {
+			if (lastMod) {
+				this.jqElem.addClass(Entry.LAST_MOD_CSS_CLASS)
+			} else {
+				this.jqElem.removeClass(Entry.LAST_MOD_CSS_CLASS)
+			}
+		}
+		
 		get collection(): Collection|null {
 			return Collection.test(this.jqElem.parent());
 		}
@@ -145,6 +157,7 @@ namespace Rocket.Display {
 		
 		static readonly CSS_CLASS = "rocket-entry";
 		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
+		static readonly LAST_MOD_CSS_CLASS = "rocket-last-mod";
 		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
 		static readonly ID_REP_ATTR = "data-rocket-id-rep";
 		static readonly DRAFT_ID_ATTR = "data-rocket-draft-id";
@@ -181,9 +194,17 @@ namespace Rocket.Display {
 		static findAll(jqElem: JQuery, includeSelf: boolean = false): Array<Entry> {
 			let jqEntries = jqElem.find("." + Entry.CSS_CLASS);
 			
-			jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
+			if (includeSelf) {
+				jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
+			}
 			
 			return Entry.fromArr(jqEntries);
+		}
+
+		static findLastMod(jqElem: JQuery): Array<Entry> {
+			let entriesJq = jqElem.find("." + Entry.CSS_CLASS + " ." + Entry.LAST_MOD_CSS_CLASS);
+			
+			return Entry.fromArr(entriesJq);
 		}
 		
 		private static fromArr(entriesJq: JQuery): Array<Entry> {

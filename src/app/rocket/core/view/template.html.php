@@ -191,11 +191,11 @@
 	    						<ol class="breadcrumb">
 	    							<?php foreach ($templateModel->getBreadcrumbs() as $breadcrumb): ?>
 	    								<li class="breadcrumb-item"><?php $html->link($breadcrumb->getUrl(), (string) $breadcrumb->getLabel(),
-	    										($breadcrumb->isJhtml() ? array('data-jhtml' => 'true') : null)) ?></li>
+	    										($breadcrumb->isJhtml() ? array('data-jhtml' => 'true', 'data-jhtml-use-page-scroll-pos' => 'true') : null)) ?></li>
 	    							<?php endforeach ?>
 	    							<li class="breadcrumb-item active">
 	    								<?php $html->link($activeBreadcrumb->getUrl(), (string) $activeBreadcrumb->getLabel(),
-	    										($activeBreadcrumb->isJhtml() ? array('data-jhtml' => 'true') : null)) ?>
+	    										($activeBreadcrumb->isJhtml() ? array('data-jhtml' => 'true', 'data-jhtml-use-page-scroll-pos' => 'true') : null)) ?>
 	    							</li>
 	    						</ol>
 	    					<?php endif ?>
