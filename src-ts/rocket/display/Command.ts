@@ -22,13 +22,24 @@ namespace Rocket.Display {
         		this.confirm = Confirm.test(this.jQuery)
         	}
         	
-        	if (!this.confirm) return;
+        	if (!this.confirm) {
+        		this.markAsLastMod();
+        		return;
+        	}
         	
         	evt.preventExec();
         	
         	this.confirm.open();
         	this.confirm.successCallback = () => {
+        		this.markAsLastMod();
         		this.jLink.exec()
+        	}
+        }
+        
+        private markAsLastMod() {
+        	let entry = Entry.of(this.jQuery);
+        	if (entry) {
+        		Cmd.Zone.of(this.jQuery).lastModDefs = [Cmd.LastModDef.fromEntry(entry)];
         	}
         }
         

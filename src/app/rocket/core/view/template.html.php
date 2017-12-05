@@ -104,6 +104,10 @@
 				bottom: 0px;
 				background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
 			}
+			
+			.rocket-collection .rocket-entry.rocket-last-mod {
+				background: #ead0b2;
+			}
 						
 		</style>
 	<?php $html->headEnd() ?>

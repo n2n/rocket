@@ -104,6 +104,10 @@ namespace Rocket.Display {
 			return this.idRep;
 		}
 		
+		get supremeEiTypeId(): string {
+			return this.jqElem.data("rocket-supreme-ei-type-id").toString();
+		}
+		
 		get idRep(): string {
 			return this.jqElem.data("rocket-id-rep").toString();
 		}
@@ -202,7 +206,7 @@ namespace Rocket.Display {
 		}
 
 		static findLastMod(jqElem: JQuery): Array<Entry> {
-			let entriesJq = jqElem.find("." + Entry.CSS_CLASS + " ." + Entry.LAST_MOD_CSS_CLASS);
+			let entriesJq = jqElem.find("." + Entry.CSS_CLASS + "." + Entry.LAST_MOD_CSS_CLASS);
 			
 			return Entry.fromArr(entriesJq);
 		}
@@ -222,9 +226,17 @@ namespace Rocket.Display {
 		static filter(jqElem: JQuery): Array<Entry> {
 			return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
 		}
+
+		private static buildSupremeEiTypeISelector(supremeEiTypeId: string): string {
+			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+		}
+		
+		static findBySupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): Entry[] {
+			return Entry.fromArr(jqContainer.find(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)));
+		}
 		
 		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
-			return 0 == jqContainer.has("." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]").length;
+			return 0 == jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 		
 		private static buildIdRepSelector(supremeEiTypeId: string, idRep: string): string {

@@ -14,8 +14,10 @@ namespace Rocket.Cmd {
 		private additionalTabManager: AdditionalTabManager;
 		private _menu: Menu;
 		private _blocked: boolean = false;
-	
+		
 		private _page: Jhtml.Page = null;
+	
+		private _lastModDefs: LastModDef[] = [];
 	
 		constructor(jqZone: JQuery, url: Jhtml.Url, layer: Layer) {
 			this.jqZone = jqZone;
@@ -170,6 +172,7 @@ namespace Rocket.Cmd {
 			
 			this.reset();
 			
+			this.applyLastModDefs();
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
@@ -179,6 +182,7 @@ namespace Rocket.Cmd {
 			
 			this.reset();
 			
+			this.applyLastModDefs(); 
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
@@ -196,6 +200,43 @@ namespace Rocket.Cmd {
 			
 			this.reset();
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
+		}
+		
+		set lastModDefs(lastModDefs: LastModDef[]) {
+			this._lastModDefs = lastModDefs;
+			this.applyLastModDefs();
+		}
+		
+		get lastModDefs(): LastModDef[] {
+			return this._lastModDefs;
+		}
+		
+		private applyLastModDefs() {
+			if (!this.jQuery) return;
+			
+			this.chLastMod(Display.Entry.findLastMod(this.jQuery), false);
+			
+			for (let lastModDef of this._lastModDefs) {
+				if (lastModDef.idRep) {
+					this.chLastMod(Display.Entry
+							.findByIdRep(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.idRep), true);
+					continue;
+				}
+				
+				if (lastModDef.draftId) {
+					this.chLastMod(Display.Entry
+							.findByDraftId(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.draftId), true);
+					continue;
+				}
+				
+				this.chLastMod(Display.Entry.findBySupremeEiTypeId(this.jQuery, lastModDef.supremeEiTypeId), true);
+			}
+		}
+		
+		private chLastMod(entries: Display.Entry[], lastMod: boolean) {
+			for (let entry of entries) {
+				entry.lastMod = lastMod;
+			}
 		}
 		
 		private trigger(eventType: Zone.EventType) {
@@ -255,6 +296,20 @@ namespace Rocket.Cmd {
 			if (context instanceof Zone) return context;
 			
 			return null;
+		}
+	}
+	
+	export class LastModDef {
+		supremeEiTypeId: string;
+		idRep?: string;
+		draftId?: number;
+		
+		static fromEntry(entry: Display.Entry): LastModDef {
+			let lastModDef = new LastModDef();
+			lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
+			lastModDef.idRep = entry.idRep;
+			lastModDef.draftId = entry.draftId;
+			return lastModDef;
 		}
 	}
 	
