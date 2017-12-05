@@ -958,6 +958,7 @@ var Rocket;
                 this.callbackRegistery = new util.CallbackRegistry();
                 this._blocked = false;
                 this._page = null;
+                this._lastModDefs = [];
                 this.locks = new Array();
                 this.jqZone = jqZone;
                 this.urls.push(this._activeUrl = url);
@@ -1048,12 +1049,14 @@ var Rocket;
                 this.clear(false);
                 this.jqZone.html(html);
                 this.reset();
+                this.applyLastModDefs();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             applyComp(comp, loadObserver) {
                 this.clear(false);
                 comp.attachTo(this.jqZone.get(0), loadObserver);
                 this.reset();
+                this.applyLastModDefs();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             isLoading() {
@@ -1067,6 +1070,36 @@ var Rocket;
                 this.jqZone.append(jqContent);
                 this.reset();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
+            }
+            set lastModDefs(lastModDefs) {
+                this._lastModDefs = lastModDefs;
+                this.applyLastModDefs();
+            }
+            get lastModDefs() {
+                return this._lastModDefs;
+            }
+            applyLastModDefs() {
+                if (!this.jQuery)
+                    return;
+                this.chLastMod(Rocket.Display.Entry.findLastMod(this.jQuery), false);
+                for (let lastModDef of this._lastModDefs) {
+                    if (lastModDef.idRep) {
+                        this.chLastMod(Rocket.Display.Entry
+                            .findByIdRep(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.idRep), true);
+                        continue;
+                    }
+                    if (lastModDef.draftId) {
+                        this.chLastMod(Rocket.Display.Entry
+                            .findByDraftId(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.draftId), true);
+                        continue;
+                    }
+                    this.chLastMod(Rocket.Display.Entry.findBySupremeEiTypeId(this.jQuery, lastModDef.supremeEiTypeId), true);
+                }
+            }
+            chLastMod(entries, lastMod) {
+                for (let entry of entries) {
+                    entry.lastMod = lastMod;
+                }
             }
             trigger(eventType) {
                 var context = this;
@@ -1117,6 +1150,16 @@ var Rocket;
             }
         }
         Cmd.Zone = Zone;
+        class LastModDef {
+            static fromEntry(entry) {
+                let lastModDef = new LastModDef();
+                lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
+                lastModDef.idRep = entry.idRep;
+                lastModDef.draftId = entry.draftId;
+                return lastModDef;
+            }
+        }
+        Cmd.LastModDef = LastModDef;
         class Lock {
             constructor(releaseCallback) {
                 this.releaseCallback = releaseCallback;
@@ -1536,13 +1579,22 @@ var Rocket;
                 if (!this.confirm) {
                     this.confirm = Display.Confirm.test(this.jQuery);
                 }
-                if (!this.confirm)
+                if (!this.confirm) {
+                    this.markAsLastMod();
                     return;
+                }
                 evt.preventExec();
                 this.confirm.open();
                 this.confirm.successCallback = () => {
+                    this.markAsLastMod();
                     this.jLink.exec();
                 };
+            }
+            markAsLastMod() {
+                let entry = Display.Entry.of(this.jQuery);
+                if (entry) {
+                    Rocket.Cmd.Zone.of(this.jQuery).lastModDefs = [Rocket.Cmd.LastModDef.fromEntry(entry)];
+                }
             }
             observe() {
                 if (this._observing)
@@ -1681,6 +1733,9 @@ var Rocket;
                 }
                 return this.idRep;
             }
+            get supremeEiTypeId() {
+                return this.jqElem.data("rocket-supreme-ei-type-id").toString();
+            }
             get idRep() {
                 return this.jqElem.data("rocket-id-rep").toString();
             }
@@ -1753,7 +1808,7 @@ var Rocket;
                 return Entry.fromArr(jqEntries);
             }
             static findLastMod(jqElem) {
-                let entriesJq = jqElem.find("." + Entry.CSS_CLASS + " ." + Entry.LAST_MOD_CSS_CLASS);
+                let entriesJq = jqElem.find("." + Entry.CSS_CLASS + "." + Entry.LAST_MOD_CSS_CLASS);
                 return Entry.fromArr(entriesJq);
             }
             static fromArr(entriesJq) {
@@ -1769,8 +1824,14 @@ var Rocket;
             static filter(jqElem) {
                 return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
             }
+            static buildSupremeEiTypeISelector(supremeEiTypeId) {
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+            }
+            static findBySupremeEiTypeId(jqContainer, supremeEiTypeId) {
+                return Entry.fromArr(jqContainer.find(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)));
+            }
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
-                return 0 == jqContainer.has("." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]").length;
+                return 0 == jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
             }
             static buildIdRepSelector(supremeEiTypeId, idRep) {
                 return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
