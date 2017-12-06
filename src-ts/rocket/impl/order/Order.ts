@@ -89,11 +89,16 @@ namespace Rocket.Impl.Order {
 				newTreeLevel = this.entry.treeLevel;
 			}
 			
+			Display.Entry.findLastMod(Cmd.Zone.of(this.elemJq).jQuery).forEach((entry: Display.Entry) => {
+				entry.lastMod = false;
+			})
+			
 			let idReps = [];
 			for (let entry of entries) {
 				entry.treeLevel = newTreeLevel;
 				idReps.push(entry.id);
 				entry.selector.selected = false;
+				entry.lastMod = true;
 			}
 			
 			let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
