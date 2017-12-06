@@ -63,7 +63,7 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {
 	private $targetOrderEiPropPath;
-	private $compact = true;
+	private $reduced = true;
 	private $orphansAllowed = false;
 	
 	public function __construct() {	
@@ -90,15 +90,15 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	/**
 	 * @return boolean
 	 */
-	public function isCompact() {
-		return $this->compact;
+	public function isReduced() {
+		return $this->reduced;
 	}
 	
 	/**
-	 * @param bool $compact
+	 * @param bool $reduced
 	 */
-	public function setCompact(bool $compact) {
-		$this->compact = $compact;
+	public function setCompact(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 		
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
@@ -196,7 +196,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
-			$toManyEditable->setCompact($this->compact);
+			$toManyEditable->setCompact($this->reduced);
 			$draftMode = $eiEntry->getEiObject()->isDraft();
 			$toManyEditable->setDraftMode($draftMode);
 			
@@ -207,7 +207,8 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			$toManyEditable->setTargetOrderEiPropPath($this->targetOrderEiPropPath);
 		}
 		
-		return new EmbeddedOneToManyGuiField($this->getLabelLstr(), $this->isCompact(), $relationEiField, $targetReadEiFrame, $toManyEditable);
+		return new EmbeddedOneToManyGuiField($this->getLabelLstr(), $this->isReduced(), $relationEiField, 
+				$targetReadEiFrame, $eiu->gui()->isCompact(), $toManyEditable);
 	}
 	
 // 	const T_ALIAS = 't';

@@ -28,32 +28,36 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class EmbeddedOneToOneGuiField implements GuiField {
 	private $label;
-	private $compact;
+	private $reduced;
 	private $readOnly;
 	private $mandatory;
 	private $toOneEiField;
 	private $targetEiFrame;
+	private $compact;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, bool $compact, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
-			Editable $editable = null) {
+	public function __construct(string $label, bool $reduced, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
+			bool $compact, Editable $editable = null) {
 		$this->label = $label;
+		$this->reduced = $reduced;
 		$this->toOneEiField = $toOneEiField;
 		$this->targetEiFrame = $targetEiFrame;
+		$this->compact = $compact;
 		$this->editable = $editable;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isCompact() {
-		return $this->compact;
+	public function isReduced() {
+		return $this->reduced;
 	}
 	
 	public function isReadOnly(): bool {
@@ -81,12 +85,20 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	public function createOutputUiComponent(HtmlView $view) {
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		if ($targetRelationEntry === null) return null;
-	
+		
 		$targetUtils = new EiuFrame($this->targetEiFrame);
+
+		if ($this->compact) {
+			$iconType = $targetUtils->getGenericIconType($targetRelationEntry->getEiObject());
+			$label  = $targetUtils->getGenericLabel($targetRelationEntry->getEiObject());
+			return new HtmlElement('span', null, array(
+					new HtmlElement('i', array('class' => 'fa fa-' . $iconType), ''),
+					new HtmlElement('span', null, $label)));
+		}
 		
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\embeddedOneToOne.html',
 				array('eiuEntry' => $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils)), 
-						'compact' => $this->compact));
+						'reduced' => $this->reduced));
 	}
 	
 	/**

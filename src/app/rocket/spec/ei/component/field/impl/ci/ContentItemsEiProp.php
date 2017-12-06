@@ -127,6 +127,6 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		}
 		
 		return new ContentItemGuiField($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
-				$relationEiField, $targetReadEiFrame, $contentItemEditable);
+				$relationEiField, $targetReadEiFrame, $eiu->gui()->isCompact(), $contentItemEditable);
 	}
 }

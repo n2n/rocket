@@ -28,25 +28,28 @@ use rocket\spec\ei\manage\gui\Editable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class EmbeddedOneToManyGuiField implements GuiField {
 	private $label;
-	private $compact;
+	private $reduced;
 	private $readOnly;
 	private $mandatory;
 	private $toManyEiField;
 	private $targetEiFrame;
+	private $compact;
 	private $editable;
 
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, bool $compact, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
-			Editable $editable = null) {
+	public function __construct(string $label, bool $reduced, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+			bool $compact, Editable $editable = null) {
 		$this->label = $label;
-		$this->compact = $compact;
+		$this->reduced = $reduced;
 		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
+		$this->compact = $compact;
 		$this->editable = $editable;
 	}
 
@@ -57,29 +60,43 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	/**
 	 * @return bool
 	 */
-	public function isCompact() {
-		return $this->compact;
+	public function isReduced() {
+		return $this->reduced;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
+	 */
 	public function getGroupType() {
 		return DisplayItem::TYPE_SIMPLE;
 	}
 	
 	/**
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(): string {
 		return $this->label;
 	}
 
 	/**
-	 * @return array
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
+	 */
 	public function createOutputUiComponent(HtmlView $view) {
+		if ($this->compact) {
+			return $this->createCompactOutputUiComponent($view);
+		}
+		
 		$targetRelationEntries = $this->toManyEiField->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
@@ -99,9 +116,31 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		}
 
 		return $view->getImport('\rocket\spec\ei\component\field\impl\relation\view\embeddedOneToMany.html',
-				array('eiuEntries' => $targetEiuEntries, 'compact' => $this->compact));
+				array('eiuEntries' => $targetEiuEntries, 'reduced' => $this->reduced));
 	}
 
+	/**
+	 * @param HtmlView $view
+	 * @return NULL|\n2n\impl\web\ui\view\html\HtmlElement
+	 */
+	private function createCompactOutputUiComponent(HtmlView $view) {
+		$targetRelationEntries = $this->toManyEiField->getValue();
+		if (empty($targetRelationEntries)) return null;
+		
+		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
+		$htmlElem = new HtmlElement('ul', array('class' => 'list-unstyled'), '');
+		
+		foreach ($targetRelationEntries as $targetRelationEntry) {
+			$iconType = $targetEiuFrame->getGenericIconType($targetRelationEntry->getEiObject());
+			$label = $targetEiuFrame->getGenericLabel($targetRelationEntry->getEiObject());
+			$htmlElem->appendLn(new HtmlElement('li', null, array(
+					new HtmlElement('i', array('class' => 'fa fa-' . $iconType), ''),
+					new HtmlElement('span', null, $label))));
+		}
+		
+		return $htmlElem;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()

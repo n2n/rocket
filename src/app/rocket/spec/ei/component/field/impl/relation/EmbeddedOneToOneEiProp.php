@@ -81,7 +81,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	/**
 	 * @return boolean
 	 */
-	public function isCompact() {
+	public function isReduced() {
 		return $this->compact;
 	}
 	
@@ -182,8 +182,9 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			
 			$toOneEditable->setDraftMode($mapping->getEiObject()->isDraft());
 		}
-				
-		return new EmbeddedOneToOneGuiField($this->getLabelLstr(), $this->isCompact(), $relationEiField, $targetReadEiFrame, $toOneEditable);
+		
+		return new EmbeddedOneToOneGuiField($this->getLabelLstr(), $this->isReduced(), $relationEiField,
+				$targetReadEiFrame, $eiu->gui()->isCompact(), $toOneEditable);
 	}
 	
 	/**
