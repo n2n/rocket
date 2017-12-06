@@ -45,7 +45,7 @@
 <div class="rocket-panel">
 	<h3><?php $html->out($imageFile->getFile()->getOriginalName()) ?></h3>
 	<div class="rocket-edit-content">
-		<?php $formHtml->open($thumbModel) ?>
+		<?php $formHtml->open($thumbModel, null, null, array('class' => 'rocket-form')) ?>
 			<?php $formHtml->select('imageDimensionStr', $thumbModel->getImageDimensionOptions(), 
 					array('id' => 'rocket-thumb-dimension-select')) ?>
 					
@@ -60,13 +60,15 @@
 			<?php $formHtml->input('height', array('id' => 'rocket-thumb-height')) ?>
 			
 			<div class="rocket-zone-commands">
-				<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
-								. $html->getL10nText('common_save_label') . '</span>'), 
-						array('class' => 'btn btn-primary')) ?>
-				<?php $html->link($view->getParam('cancelUrl'), 
-						new Raw('<i class="fa fa-times-circle"></i><span>' 
-								. $html->getL10nText('common_cancel_label') . '</span>'),
-						array('class' => 'btn btn-secondary')) ?>
+				<div>
+					<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
+									. $html->getL10nText('common_save_label') . '</span>'), 
+							array('class' => 'btn btn-primary')) ?>
+					<?php $html->link($view->getParam('cancelUrl'), 
+							new Raw('<i class="fa fa-times-circle"></i><span>' 
+									. $html->getL10nText('common_cancel_label') . '</span>'),
+							array('class' => 'btn btn-secondary rocket-jhtml', 'data-jhtml-use-page-scroll-pos' => 'true')) ?>
+				</div>
 			</div>
 		<?php $formHtml->close() ?>
 	</div>
