@@ -288,7 +288,7 @@
 			//Image
 			this.jqElemImg = $("<img/>").css("position", "relative");
 			
-			this.jqElemImg.load(function() {
+			this.jqElemImg.on("load", function() {
 				_obj.imageLoaded = true;
 				_obj.initializeUI();
 			}).attr("src", this.imageResizer.jqElemImg.attr("src"));			
@@ -546,7 +546,7 @@
 		
 		//now it s in tho Document DOM
 		var _obj = this;
-		this.jqElemImg.load(function() {
+		this.jqElemImg.on("load", function() {
 			_obj.originalImageWidth = $(this).width();
 			_obj.originalImageHeight = $(this).height();
 			
