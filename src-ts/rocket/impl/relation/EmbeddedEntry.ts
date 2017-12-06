@@ -45,6 +45,13 @@ namespace Rocket.Impl.Relation {
 						severity: Rocket.Display.Severity.WARNING });
 				this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER });
+				
+				let formElemsJq = this.bodyGroup.jQuery.find("input, textarea, select, button");
+				let changedCallback = () => { 
+					this.changed();
+					formElemsJq.off("change", changedCallback);
+				};
+				formElemsJq.on("change", changedCallback);
 			}
 			
 			if (!sortable) {
@@ -176,6 +183,12 @@ namespace Rocket.Impl.Relation {
 		
 		public dispose() {
 			this.jQuery.remove();
+		}
+		
+		private changed() {
+			let divJq = this.jqSummary.children(".rocket-impl-content").children("div:last");
+			divJq.empty();
+			divJq.append($("<div />", { "class": "rocket-impl-status", "text": this.jQuery.data("rocket-impl-changed-text") }));
 		}
 		
 //		public static from(jqElem: JQuery, create: boolean = false): EmbeddedEntry {
