@@ -63,19 +63,20 @@ namespace Rocket.Impl.Relation {
 				
 					var entryFormRetriever = new EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, 
 							jqNew.data("draftMode"));
+					entryFormRetriever.sortable = false;
 					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
 							jqNew.data("replace-item-label"));
 				}
 				
 				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory);
 				jqCurrent.children(".rocket-impl-entry").each(function () {
-					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly());
+					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false);
 				});
 				jqNew.children(".rocket-impl-entry").each(function () {
-					toOneEmbedded.newEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly());
+					toOneEmbedded.newEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false);
 				});
 				jqDetail.children(".rocket-impl-entry").each(function () {
-					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true);
+					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true, false);
 				});
 				
 			}

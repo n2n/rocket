@@ -2,7 +2,7 @@ namespace Rocket.Impl.Relation {
 	
 	export class AddControlFactory {
 		
-		constructor (private embeddedEntryRetriever: EmbeddedEntryRetriever, private addLabel: string,
+		constructor (public embeddedEntryRetriever: EmbeddedEntryRetriever, private addLabel: string,
 				private replaceLabel: string = null) {
 		}
 		

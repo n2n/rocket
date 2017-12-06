@@ -54,6 +54,7 @@ namespace Rocket.Impl.Relation {
 			
 			let toManyEmbedded: ToManyEmbedded = null;
 			if (jqCurrents.length > 0 || jqNews.length > 0 || jqEntries.length > 0) {
+				
 				if (jqNews.length > 0) {
 					var propertyPath = jqNews.data("property-path");
 					
@@ -79,14 +80,16 @@ namespace Rocket.Impl.Relation {
 				}
 				
 				toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
+				entryFormRetriever.sortable = toManyEmbedded.sortable;
+				
 				jqCurrents.children(".rocket-impl-entry").each(function () {
-					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
 				});
 				jqNews.children(".rocket-impl-entry").each(function () {
-					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly()));
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
 				});
 				jqEntries.children(".rocket-impl-entry").each(function () {
-					toManyEmbedded.addEntry(new EmbeddedEntry($(this), true));
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), true, false));
 				});
 			}
 			
@@ -315,7 +318,7 @@ namespace Rocket.Impl.Relation {
 		private jqToMany: JQuery;
 		private addControlFactory: AddControlFactory;
 		private compact: boolean = true;
-		private sortable: boolean = true;
+		sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;

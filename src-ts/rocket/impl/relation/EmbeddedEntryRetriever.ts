@@ -9,6 +9,7 @@ namespace Rocket.Impl.Relation {
 		private preloadEnabled: boolean = false;
 		private preloadedResponseObjects: Array<Jhtml.Snippet> = new Array<Jhtml.Snippet>();
 		private pendingLookups: Array<PendingLookup> = new Array<PendingLookup>();
+		public sortable: boolean = false;
 		
 		constructor (lookupUrlStr: string, propertyPath: string, draftMode: boolean, startKey: number = null, 
 				keyPrefix: string = null) {
@@ -39,7 +40,7 @@ namespace Rocket.Impl.Relation {
 			
 			var pendingLookup: PendingLookup = this.pendingLookups.shift();
 			let snippet: Jhtml.Snippet = this.preloadedResponseObjects.shift();
-			var embeddedEntry = new EmbeddedEntry($(snippet.elements), false);
+			var embeddedEntry = new EmbeddedEntry($(snippet.elements), false, this.sortable);
 			
 			pendingLookup.doneCallback(embeddedEntry);
 			snippet.markAttached();

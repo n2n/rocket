@@ -15,7 +15,7 @@ namespace Rocket.Impl.Relation {
 		private jqRedFocusButton: JQuery;
 		private jqRedRemoveButton: JQuery;
 		
-		constructor(jqEntry: JQuery, private readOnly: boolean) {
+		constructor(jqEntry: JQuery, private readOnly: boolean, sortable: boolean) {
 			this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
 			
 			this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
@@ -33,8 +33,10 @@ namespace Rocket.Impl.Relation {
 				this._entryForm = Rocket.Display.EntryForm.firstOf(jqEntry);
 				
 				var ecl = this.bodyGroup.getToolbar().getCommandList();
-				this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
-				this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down"});
+				if (sortable) {
+					this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
+					this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down"});
+				} 
 				this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER }); 
 				
@@ -43,6 +45,10 @@ namespace Rocket.Impl.Relation {
 						severity: Rocket.Display.Severity.WARNING });
 				this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER });
+			}
+			
+			if (!sortable) {
+				jqEntry.find(".rocket-impl-handle").css("visibility", "hidden");
 			}
 			
 			this.reduce();
@@ -55,7 +61,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public onMove(callback: (up: boolean) => any) {
-			if (this.readOnly) return;
+			if (this.readOnly || !this.jqExpMoveUpButton) return;
 			
 			this.jqExpMoveUpButton.click(function () {
 				callback(true);
@@ -110,13 +116,13 @@ namespace Rocket.Impl.Relation {
 			if (this.readOnly) return;
 			
 			if (asPartOfList) {
-				this.jqExpMoveUpButton.show();
-				this.jqExpMoveDownButton.show();
+				if (this.jqExpMoveUpButton) this.jqExpMoveUpButton.show();
+				if (this.jqExpMoveDownButton) this.jqExpMoveDownButton.show();
 				this.jqExpRemoveButton.show();
 				this.jqPageCommands.hide();
 			} else {
-				this.jqExpMoveUpButton.hide();
-				this.jqExpMoveDownButton.hide();
+				if (this.jqExpMoveUpButton) this.jqExpMoveUpButton.hide();
+				if (this.jqExpMoveDownButton) this.jqExpMoveDownButton.hide();
 				this.jqExpRemoveButton.hide();
 				this.jqPageCommands.show();
 			}
@@ -149,7 +155,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public setMoveUpEnabled(enabled: boolean) {
-			if (this.readOnly) return;
+			if (this.readOnly || !this.jqExpMoveUpButton) return;
 			
 			if (enabled) {
 				this.jqExpMoveUpButton.show();
@@ -159,7 +165,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public setMoveDownEnabled(enabled: boolean) {
-			if (this.readOnly) return;
+			if (this.readOnly || !this.jqExpMoveDownButton) return;
 			
 			if (enabled) {
 				this.jqExpMoveDownButton.show();
