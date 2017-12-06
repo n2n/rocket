@@ -63,7 +63,11 @@
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
 					</div>
-					<div><?php $html->text('ei_impl_new_entry_txt') ?></div>
+					<div>
+						<div class="rocket-impl-status">
+							<?php $html->text('ei_impl_new_entry_txt') ?>
+						</div>
+					</div>
 				</div>
 				<div class="rocket-simple-commands"></div>
 			</div>

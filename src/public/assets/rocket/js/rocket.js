@@ -4538,7 +4538,7 @@ var Rocket;
                         return;
                     var pendingLookup = this.pendingLookups.shift();
                     let snippet = this.preloadedResponseObjects.shift();
-                    var embeddedEntry = new EmbeddedEntry($(snippet.elements), false);
+                    var embeddedEntry = new Relation.EmbeddedEntry($(snippet.elements), false);
                     pendingLookup.doneCallback(embeddedEntry);
                     snippet.markAttached();
                 }
@@ -4570,143 +4570,6 @@ var Rocket;
                 }
             }
             Relation.EmbeddedEntryRetriever = EmbeddedEntryRetriever;
-            class EmbeddedEntry {
-                constructor(jqEntry, readOnly) {
-                    this.readOnly = readOnly;
-                    this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
-                    this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
-                    this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
-                    this.jqSummary = jqEntry.children(".rocket-impl-summary");
-                    this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
-                    if (readOnly) {
-                        var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-                        this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail",
-                            severity: Rocket.Display.Severity.SECONDARY });
-                    }
-                    else {
-                        this._entryForm = Rocket.Display.EntryForm.firstOf(jqEntry);
-                        var ecl = this.bodyGroup.getToolbar().getCommandList();
-                        this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
-                        this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down" });
-                        this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
-                            severity: Rocket.Display.Severity.DANGER });
-                        var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-                        this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit",
-                            severity: Rocket.Display.Severity.WARNING });
-                        this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
-                            severity: Rocket.Display.Severity.DANGER });
-                    }
-                    this.reduce();
-                    jqEntry.data("rocketImplEmbeddedEntry", this);
-                }
-                get entryForm() {
-                    return this._entryForm;
-                }
-                onMove(callback) {
-                    if (this.readOnly)
-                        return;
-                    this.jqExpMoveUpButton.click(function () {
-                        callback(true);
-                    });
-                    this.jqExpMoveDownButton.click(function () {
-                        callback(false);
-                    });
-                }
-                onRemove(callback) {
-                    if (this.readOnly)
-                        return;
-                    this.jqExpRemoveButton.click(function () {
-                        callback();
-                    });
-                    this.jqRedRemoveButton.click(function () {
-                        callback();
-                    });
-                }
-                onFocus(callback) {
-                    this.jqRedFocusButton.click(function () {
-                        callback();
-                    });
-                    this.bodyGroup.onShow(function () {
-                        callback();
-                    });
-                }
-                get jQuery() {
-                    return this.entryGroup.jQuery;
-                }
-                getExpandedCommandList() {
-                    return this.bodyGroup.getToolbar().getCommandList();
-                }
-                expand(asPartOfList = true) {
-                    this.entryGroup.show();
-                    this.jqSummary.hide();
-                    this.bodyGroup.show();
-                    this.entryGroup.setGroup(true);
-                    if (asPartOfList) {
-                        this.jqPageCommands.hide();
-                    }
-                    else {
-                        this.jqPageCommands.show();
-                    }
-                    if (this.readOnly)
-                        return;
-                    if (asPartOfList) {
-                        this.jqExpMoveUpButton.show();
-                        this.jqExpMoveDownButton.show();
-                        this.jqExpRemoveButton.show();
-                        this.jqPageCommands.hide();
-                    }
-                    else {
-                        this.jqExpMoveUpButton.hide();
-                        this.jqExpMoveDownButton.hide();
-                        this.jqExpRemoveButton.hide();
-                        this.jqPageCommands.show();
-                    }
-                }
-                reduce() {
-                    this.entryGroup.show();
-                    this.jqSummary.show();
-                    this.bodyGroup.hide();
-                    let jqContentType = this.jqSummary.find(".rocket-impl-content-type:first");
-                    if (this.entryForm) {
-                        jqContentType.children("span").text(this.entryForm.curGenericLabel);
-                        jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
-                    }
-                    this.entryGroup.setGroup(false);
-                }
-                hide() {
-                    this.entryGroup.hide();
-                }
-                setOrderIndex(orderIndex) {
-                    this.jqOrderIndex.val(orderIndex);
-                }
-                getOrderIndex() {
-                    return parseInt(this.jqOrderIndex.val());
-                }
-                setMoveUpEnabled(enabled) {
-                    if (this.readOnly)
-                        return;
-                    if (enabled) {
-                        this.jqExpMoveUpButton.show();
-                    }
-                    else {
-                        this.jqExpMoveUpButton.hide();
-                    }
-                }
-                setMoveDownEnabled(enabled) {
-                    if (this.readOnly)
-                        return;
-                    if (enabled) {
-                        this.jqExpMoveDownButton.show();
-                    }
-                    else {
-                        this.jqExpMoveDownButton.hide();
-                    }
-                }
-                dispose() {
-                    this.jQuery.remove();
-                }
-            }
-            Relation.EmbeddedEntry = EmbeddedEntry;
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
@@ -5569,6 +5432,152 @@ var Rocket;
                     });
                 }
             }
+        })(Relation = Impl.Relation || (Impl.Relation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Relation;
+        (function (Relation) {
+            class EmbeddedEntry {
+                constructor(jqEntry, readOnly) {
+                    this.readOnly = readOnly;
+                    this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
+                    this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
+                    this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
+                    this.jqSummary = jqEntry.children(".rocket-impl-summary");
+                    this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
+                    if (readOnly) {
+                        var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+                        this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail",
+                            severity: Rocket.Display.Severity.SECONDARY });
+                    }
+                    else {
+                        this._entryForm = Rocket.Display.EntryForm.firstOf(jqEntry);
+                        var ecl = this.bodyGroup.getToolbar().getCommandList();
+                        this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
+                        this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down" });
+                        this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
+                            severity: Rocket.Display.Severity.DANGER });
+                        var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+                        this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit",
+                            severity: Rocket.Display.Severity.WARNING });
+                        this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
+                            severity: Rocket.Display.Severity.DANGER });
+                    }
+                    this.reduce();
+                    jqEntry.data("rocketImplEmbeddedEntry", this);
+                }
+                get entryForm() {
+                    return this._entryForm;
+                }
+                onMove(callback) {
+                    if (this.readOnly)
+                        return;
+                    this.jqExpMoveUpButton.click(function () {
+                        callback(true);
+                    });
+                    this.jqExpMoveDownButton.click(function () {
+                        callback(false);
+                    });
+                }
+                onRemove(callback) {
+                    if (this.readOnly)
+                        return;
+                    this.jqExpRemoveButton.click(function () {
+                        callback();
+                    });
+                    this.jqRedRemoveButton.click(function () {
+                        callback();
+                    });
+                }
+                onFocus(callback) {
+                    this.jqRedFocusButton.click(function () {
+                        callback();
+                    });
+                    this.bodyGroup.onShow(function () {
+                        callback();
+                    });
+                }
+                get jQuery() {
+                    return this.entryGroup.jQuery;
+                }
+                getExpandedCommandList() {
+                    return this.bodyGroup.getToolbar().getCommandList();
+                }
+                expand(asPartOfList = true) {
+                    this.entryGroup.show();
+                    this.jqSummary.hide();
+                    this.bodyGroup.show();
+                    this.entryGroup.setGroup(true);
+                    if (asPartOfList) {
+                        this.jqPageCommands.hide();
+                    }
+                    else {
+                        this.jqPageCommands.show();
+                    }
+                    if (this.readOnly)
+                        return;
+                    if (asPartOfList) {
+                        this.jqExpMoveUpButton.show();
+                        this.jqExpMoveDownButton.show();
+                        this.jqExpRemoveButton.show();
+                        this.jqPageCommands.hide();
+                    }
+                    else {
+                        this.jqExpMoveUpButton.hide();
+                        this.jqExpMoveDownButton.hide();
+                        this.jqExpRemoveButton.hide();
+                        this.jqPageCommands.show();
+                    }
+                }
+                reduce() {
+                    this.entryGroup.show();
+                    this.jqSummary.show();
+                    this.bodyGroup.hide();
+                    let jqContentType = this.jqSummary.find(".rocket-impl-content-type:first");
+                    if (this.entryForm) {
+                        jqContentType.children("span").text(this.entryForm.curGenericLabel);
+                        jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
+                    }
+                    this.entryGroup.setGroup(false);
+                }
+                hide() {
+                    this.entryGroup.hide();
+                }
+                setOrderIndex(orderIndex) {
+                    this.jqOrderIndex.val(orderIndex);
+                }
+                getOrderIndex() {
+                    return parseInt(this.jqOrderIndex.val());
+                }
+                setMoveUpEnabled(enabled) {
+                    if (this.readOnly)
+                        return;
+                    if (enabled) {
+                        this.jqExpMoveUpButton.show();
+                    }
+                    else {
+                        this.jqExpMoveUpButton.hide();
+                    }
+                }
+                setMoveDownEnabled(enabled) {
+                    if (this.readOnly)
+                        return;
+                    if (enabled) {
+                        this.jqExpMoveDownButton.show();
+                    }
+                    else {
+                        this.jqExpMoveDownButton.hide();
+                    }
+                }
+                dispose() {
+                    this.jQuery.remove();
+                }
+            }
+            Relation.EmbeddedEntry = EmbeddedEntry;
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
