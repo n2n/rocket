@@ -213,7 +213,7 @@
 	    					<?php endif ?>
 	    				</header>
 	    					
-    					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'alert alert-error list-unstyled')) ?>
+    					<?php $html->messageList(null, Message::SEVERITY_ERROR, array('class' => 'alert alert-danger list-unstyled')) ?>
     					<?php $html->messageList(null, Message::SEVERITY_INFO, array('class' => 'alert alert-info list-unstyled')) ?>
     					<?php $html->messageList(null, Message::SEVERITY_WARN, array('class' => 'alert alert-warn list-unstyled')) ?>
     					<?php $html->messageList(null, Message::SEVERITY_SUCCESS, array('class' => 'alert alert-success list-unstyled')) ?>
