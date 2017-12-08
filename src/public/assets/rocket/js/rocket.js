@@ -3180,11 +3180,15 @@ var Rocket;
                     else {
                         newTreeLevel = this.entry.treeLevel;
                     }
+                    Rocket.Display.Entry.findLastMod(Rocket.Cmd.Zone.of(this.elemJq).jQuery).forEach((entry) => {
+                        entry.lastMod = false;
+                    });
                     let idReps = [];
                     for (let entry of entries) {
                         entry.treeLevel = newTreeLevel;
                         idReps.push(entry.id);
                         entry.selector.selected = false;
+                        entry.lastMod = true;
                     }
                     let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
                     Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
@@ -4538,6 +4542,12 @@ var Rocket;
                             severity: Rocket.Display.Severity.WARNING });
                         this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
                             severity: Rocket.Display.Severity.DANGER });
+                        let formElemsJq = this.bodyGroup.jQuery.find("input, textarea, select, button");
+                        let changedCallback = () => {
+                            this.changed();
+                            formElemsJq.off("change", changedCallback);
+                        };
+                        formElemsJq.on("change", changedCallback);
                     }
                     if (!sortable) {
                         jqEntry.find(".rocket-impl-handle").css("visibility", "hidden");
@@ -4654,6 +4664,11 @@ var Rocket;
                 }
                 dispose() {
                     this.jQuery.remove();
+                }
+                changed() {
+                    let divJq = this.jqSummary.children(".rocket-impl-content").children("div:last");
+                    divJq.empty();
+                    divJq.append($("<div />", { "class": "rocket-impl-status", "text": this.jQuery.data("rocket-impl-changed-text") }));
                 }
             }
             Relation.EmbeddedEntry = EmbeddedEntry;
