@@ -102,6 +102,7 @@ namespace Rocket.Impl.Overview {
 		private reset(showLoader: boolean) { 
 			let page: Page = null;
 			for (let pageNo in this.pages) {
+				page = this.pages[pageNo];
 				page.dispose();
 				delete this.pages[pageNo];
 				this.unmarkPageAsLoading(page.pageNo);

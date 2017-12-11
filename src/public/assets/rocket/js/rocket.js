@@ -3710,6 +3710,7 @@ var Rocket;
                 reset(showLoader) {
                     let page = null;
                     for (let pageNo in this.pages) {
+                        page = this.pages[pageNo];
                         page.dispose();
                         delete this.pages[pageNo];
                         this.unmarkPageAsLoading(page.pageNo);
