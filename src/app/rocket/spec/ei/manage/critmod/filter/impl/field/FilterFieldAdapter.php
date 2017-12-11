@@ -54,9 +54,9 @@ abstract class FilterFieldAdapter implements FilterField {
 	
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
 		$magCollection = new MagCollection();
-		$magCollection->addMag(new EnumMag(self::ATTR_OPERATOR_KEY, 'Operator', 
+		$magCollection->addMag(self::ATTR_OPERATOR_KEY, new EnumMag('Operator', 
 				$this->buildOperatorOptions($this->getOperators()), null, true));
-		$magCollection->addMag($this->createValueMag(self::ATTR_VALUE_KEY, $attributes->get(self::ATTR_VALUE_KEY, false)));
+		$magCollection->addMag(self::ATTR_VALUE_KEY, $this->createValueMag($attributes->get(self::ATTR_VALUE_KEY, false)));
 		return new MagForm($magCollection);
 	}
 	
@@ -86,7 +86,7 @@ abstract class FilterFieldAdapter implements FilterField {
 		return array_combine($operators, $operators);
 	}
 	
-	protected abstract function createValueMag(string $propertyName, $value): Mag;
+	protected abstract function createValueMag($value): Mag;
 	
 	protected function buildValue($operator, Mag $mag) {
 		return $mag->getValue();

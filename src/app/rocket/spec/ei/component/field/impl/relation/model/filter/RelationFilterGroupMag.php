@@ -42,9 +42,9 @@ class RelationFilterGroupMag extends MagAdapter {
 	private $targetFilterGroupData;
 	private $filterAjahHook;
 	
-	public function __construct($propertyName, FilterDefinition $targetFilterDefinition, 
+	public function __construct(FilterDefinition $targetFilterDefinition, 
 			FilterAjahHook $filterAjahHook) {
-		parent::__construct($propertyName, 'Target Filter');
+		parent::__construct('Target Filter');
 	
 		$this->targetFilterDefinition = $targetFilterDefinition;
 		$this->filterAjahHook = $filterAjahHook;

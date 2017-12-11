@@ -63,7 +63,7 @@ class BoolFilterField implements EiEntryFilterField {
 	
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
 		$magCollection = new MagCollection();
-		$magCollection->addMag(new BoolMag(self::ATTR_VALUE_KEY, $this->labelLstr, $this->readValue($attributes)));
+		$magCollection->addMag(self::ATTR_VALUE_KEY, new BoolMag($this->labelLstr, $this->readValue($attributes)));
 		return new MagForm($magCollection);
 	}
 	

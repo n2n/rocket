@@ -33,7 +33,7 @@ class EnumFilterField extends FilterFieldAdapter {
 		$this->options = $options;
 	}
 	
-	public function createValueMag(string $propertyName, $value): Mag {
+	public function createValueMag($value): Mag {
 		return new EnumMag('Value', $this->options, $value);
 	}
 }

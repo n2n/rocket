@@ -243,18 +243,17 @@ class RelationFilterMagForm extends MagForm {
 			$this->selectorMag = new RelationSelectorMag('selector', $targetEiUtils, 
 					$targetSelectUrlCallback);
 		}
-		$this->filterGroupMag = new RelationFilterGroupMag('filterGroup', $targetFilterDefinition, $filterAjahHook);
-		$this->operatorMag = new EnumMag('operator', 'Operator',
-				$this->buildOperatorOptions(), null, true);
+		$this->filterGroupMag = new RelationFilterGroupMag($targetFilterDefinition, $filterAjahHook);
+		$this->operatorMag = new EnumMag('Operator', $this->buildOperatorOptions(), null, true);
 		
 		$magCollection = new MagCollection();
-		$magCollection->addMag($this->operatorMag);
+		$magCollection->addMag('operator', $this->operatorMag);
 		
 		if (null !== $this->selectorMag) {
-			$magCollection->addMag($this->selectorMag);
+			$magCollection->addMag('selector', $this->selectorMag);
 		}
 		
-		$magCollection->addMag($this->filterGroupMag);
+		$magCollection->addMag('filterGroup', $this->filterGroupMag);
 		
 		parent::__construct($magCollection);
 	}
