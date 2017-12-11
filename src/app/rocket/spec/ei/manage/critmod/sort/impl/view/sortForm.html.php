@@ -24,6 +24,7 @@
 	use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\persistence\orm\criteria\Criteria;
+use rocket\spec\ei\manage\control\IconType;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -44,18 +45,22 @@
 	$directionsOptions = array(
 			Criteria::ORDER_DIRECTION_ASC => $view->getL10nText('ei_sort_asc_label'),
 			Criteria::ORDER_DIRECTION_DESC => $view->getL10nText('ei_sort_desc_label'));
+	
+	$html->meta()->addJs('js/sort.js', 'rocket');
 ?>
-
-<ul class="nav rocket-sort" data-add-sort-label="<?php $html->l10nText('ei_impl_add_sort_label') ?>"
-		data-sort-fields="<?php $html->out(json_encode($sortFieldIdOptions)) ?>">
-	<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
-		<li class="nav-item">
-			<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions, array('class' => 'form-control')) ?>
-			<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
+<div class="rocket-sort" 
+		data-text-add-sort="<?php $html->l10nText('ei_impl_add_sort_label') ?>" 
+		data-icon-class-name-add="<?php $html->out(IconType::ICON_PLUS_CIRCLE) ?>">
+	<ul class="nav">
+		<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
+			<li class="nav-item">
+				<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions, array('class' => 'form-control')) ?>
+				<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
+			</li>
+		<?php endforeach ?>
+		<li class="nav-item rocket-empty-sort-constraint">
+			<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control')) ?>
+			<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions, array('class' => 'form-control')) ?>
 		</li>
-	<?php endforeach ?>
-	<li class="nav-item rocket-empty-sort-constraint">
-		<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control')) ?>
-		<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions, array('class' => 'form-control')) ?>
-	</li>
-</ul>
+	</ul>
+</div>
