@@ -144,7 +144,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if ($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) {
 			$magCollection->addMag(self::ATTR_COMPACT_KEY, new BoolMag('Compact',
-					$lar->getBool(self::ATTR_COMPACT_KEY, $eiComponent->isCompact())));
+					$lar->getBool(self::ATTR_COMPACT_KEY, $eiComponent->isReduced())));
 			$magCollection->addMag(self::ATTR_ORPHANS_ALLOWED_KEY, new BoolMag('Allow orphans',
 					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $eiComponent->getOrphansAllowed())));
 		}
