@@ -388,8 +388,8 @@ jQuery(document).ready(function($) {
 		var initialize = function() {
 			$(".rocket-filter").each(function() {
 				var jqElem = $(this);
-				if (jqElem.data("initialized-rocket-filter")) return;
-				jqElem.data("initialized-rocket-filter", true);
+				if (jqElem.data("initialized-filter")) return;
+				jqElem.data("initialized-filter", true);
 				
 				new Filter(jqElem);
 			});
