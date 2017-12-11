@@ -53,7 +53,7 @@ use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
-	private $compact = true;
+	private $reduced = true;
 	private $orphansAllowed = false;
 	
 	public function __construct() {
@@ -82,14 +82,14 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	 * @return boolean
 	 */
 	public function isReduced() {
-		return $this->compact;
+		return $this->reduced;
 	}
 	
 	/**
-	 * @param bool $compact
+	 * @param bool $reduced
 	 */
-	public function setCompact(bool $compact) {
-		$this->compact = $compact;
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 	
 	/**

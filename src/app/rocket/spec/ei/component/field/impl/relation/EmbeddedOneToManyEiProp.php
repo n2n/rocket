@@ -97,7 +97,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	/**
 	 * @param bool $reduced
 	 */
-	public function setCompact(bool $reduced) {
+	public function setReduced(bool $reduced) {
 		$this->reduced = $reduced;
 	}
 		

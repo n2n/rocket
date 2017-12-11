@@ -53,7 +53,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
-	const ATTR_COMPACT_KEY = 'compact';
+	const ATTR_REDUCED_KEY = 'reduced';
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
 	const ATTR_ORPHANS_ALLOWED_KEY = 'orphansAllowed';
@@ -143,8 +143,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		if ($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) {
-			$magCollection->addMag(self::ATTR_COMPACT_KEY, new BoolMag('Compact',
-					$lar->getBool(self::ATTR_COMPACT_KEY, $eiComponent->isReduced())));
+			$magCollection->addMag(self::ATTR_REDUCED_KEY, new BoolMag('Reduced',
+					$lar->getBool(self::ATTR_REDUCED_KEY, $eiComponent->isReduced())));
 			$magCollection->addMag(self::ATTR_ORPHANS_ALLOWED_KEY, new BoolMag('Allow orphans',
 					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $eiComponent->getOrphansAllowed())));
 		}
@@ -235,8 +235,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		if (($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) 
-				&& $this->attributes->contains(self::ATTR_COMPACT_KEY)) {
-			$eiComponent->setCompact($this->attributes->getBool(self::ATTR_COMPACT_KEY));
+				&& $this->attributes->contains(self::ATTR_REDUCED_KEY)) {
+			$eiComponent->setReduced($this->attributes->getBool(self::ATTR_REDUCED_KEY));
 		}
 		
 		
