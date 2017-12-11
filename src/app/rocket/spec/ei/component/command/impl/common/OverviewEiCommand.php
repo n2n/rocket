@@ -83,8 +83,7 @@ class ListEiConfigurator extends EiConfiguratorAdapter {
 		IllegalStateException::assertTrue($eiComponent instanceof OverviewEiCommand);
 		
 		$magCollection = new MagCollection();
-		$magCollection->addMag(new NumericMag(self::OPTION_PAGE_SIZE_KEY, 
-				'Num Entries', $this->getAttributes()->get(
+		$magCollection->addMag(self::OPTION_PAGE_SIZE_KEY, new NumericMag('Num Entries', $this->getAttributes()->get(
 						self::OPTION_PAGE_SIZE_KEY, false, $eiComponent->getPageSize())));
 		return new MagForm($magCollection);
 	}
