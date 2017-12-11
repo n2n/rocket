@@ -104,23 +104,6 @@
 				bottom: 0px;
 				background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
 			}
-			
-			.rocket-collection .rocket-entry.rocket-last-mod {
-				animation: last-mod-transition 1s;
-				background: #e8d8c5;
-			}
-			
-			@keyframes last-mod-transition {
-				0% {
-					background: transparent;
-				}
-				30% {
-					background: #ead0b2;
-				}
-				100% {
-					background: #e8d8c5;
-				}
-			}
 		</style>
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')), 

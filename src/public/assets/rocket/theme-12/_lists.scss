@@ -62,11 +62,77 @@
     }
 }
 
+.rocket-collection .rocket-entry-selector {
+    width: 5rem;
+}
+    
+
+.rocket-collection .rocket-entry.rocket-last-mod {
+    animation: last-mod-transition 1s;
+    background: #e8d8c5;
+}
+
+@keyframes last-mod-transition {
+    0% {
+        background: transparent;
+    }
+    30% {
+        background: $primary;
+    }
+    100% {
+        background: #e8d8c5;
+    }
+}
+
 .rocket-handle {
     display: inline-block;
     padding-left: 1rem;
 }
 
+/*
+ * tree
+ */
+
+.rocket-tree-level-0 > td {
+    background: $gray-300;
+}
+
+.rocket-tree-level-1 > td:nth-child(2) {
+    padding-left: 2rem;
+    content: "1...";
+}
+
+.rocket-tree-level-2 > td:nth-child(2) {
+    padding-left: 3rem;
+}
+
+.rocket-tree-level-3 > td:nth-child(2) {
+    padding-left: 4rem;
+}
+
+.rocket-tree-level-4 > td:nth-child(2) {
+    padding-left: 5rem;
+}
+
+.rocket-tree-level-5 > td:nth-child(2) {
+    padding-left: 6rem;
+}
+
+.rocket-tree-level-6 > td:nth-child(2) {
+    padding-left: 7rem;
+}
+
+.rocket-tree-level-7 > td:nth-child(2) {
+    padding-left: 8rem;
+}
+
+.rocket-tree-level-8 > td:nth-child(2) {
+    padding-left: 9rem;
+}
+
+.rocket-tree-level-9 > td:nth-child(2) {
+    padding-left: 10rem;
+}
 
 /*
  * Footer
