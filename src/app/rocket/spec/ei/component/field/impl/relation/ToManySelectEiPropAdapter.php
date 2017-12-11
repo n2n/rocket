@@ -35,6 +35,8 @@ use rocket\spec\ei\manage\LiveEiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use n2n\reflection\CastUtils;
+use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiPropRelation;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	/**
@@ -96,6 +98,14 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		
+		$targetEiu = new Eiu($targetReadEiFrame);
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if ($eiPropRelation->isHiddenIfTargetEmpty() && 0 == $targetEiu->frame()->countEntries()) {
+			return null;
+		}
 	
 		$toManyEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
@@ -103,10 +113,10 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 			$toManyEditable = new ToManyEditable($this->getLabelLstr(), 
 					$mapping->getEiField(EiPropPath::from($this)), $targetReadEiFrame,
 					$targetEditEiFrame, $this->getRealMin(), $this->getMax());
-			$toManyEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(
+			$toManyEditable->setSelectOverviewToolsUrl($eiPropRelation->buildTargetOverviewToolsUrl(
 					$eiFrame, $eiu->frame()->getHttpContext()));
 				
-			if ($this->eiPropRelation->isEmbeddedAddActivated($eiFrame)
+			if ($eiPropRelation->isEmbeddedAddActivated($eiFrame)
 					&& $targetEditEiFrame->getEiExecution()->isGranted()) {
 				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
 						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));

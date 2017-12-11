@@ -32,6 +32,7 @@ use n2n\web\http\HttpContext;
 
 class SelectEiPropRelation extends EiPropRelation {
 	private $embeddedAddEnabled = false;
+	private $hiddenIfTargetEmpty = false;
 	
 	protected $embeddedPseudoEiCommand;
 	protected $embeddedEditPseudoEiCommand;
@@ -61,14 +62,38 @@ class SelectEiPropRelation extends EiPropRelation {
 
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isEmbeddedAddEnabled(): bool {
 		return $this->embeddedAddEnabled;
 	}
 	
+	/**
+	 * @param bool $embeddedAddEnabled
+	 */
 	public function setEmbeddedAddEnabled(bool $embeddedAddEnabled) {
 		$this->embeddedAddEnabled = $embeddedAddEnabled;
 	}
 	
+	/**
+	 * @return bool
+	 */
+	public function isHiddenIfTargetEmpty() {
+		return $this->hiddenIfTargetEmpty;
+	}
+	
+	/**
+	 * @param bool $hiddenIfTargetEmpty
+	 */
+	public function setHiddenIfTargetEmpty(bool $hiddenIfTargetEmpty) {
+		$this->hiddenIfTargetEmpty = $hiddenIfTargetEmpty;
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @return boolean
+	 */
 	public function isEmbeddedAddActivated(EiFrame $eiFrame) {
 		return $this->isEmbeddedAddEnabled() /*&& !$this->hasRecursiveConflict($eiFrame)
 				&& $eiFrame->isEiCommandAvailable($this->embeddedEditPseudoEiCommand)*/;

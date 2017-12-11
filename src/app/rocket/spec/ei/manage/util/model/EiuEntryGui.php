@@ -69,6 +69,14 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return bool
+	 */
+	public function containsGuiIdPath(GuiIdPath $guiIdPath) {
+		return $this->eiEntryGui->containsDisplayable($guiIdPath);
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isCompact() {
@@ -157,22 +165,22 @@ class EiuEntryGui {
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	protected function triggerWhenReady() {
-		if (empty($this->whenReadyClosures)) return;
+// 	/**
+// 	 * 
+// 	 */
+// 	protected function triggerWhenReady() {
+// 		if (empty($this->whenReadyClosures)) return;
 		
-		$n2nContext = null;
-		if ($this->eiuEntry !== null && null !== ($eiuFrame = $this->eiuEntry->getEiuFrame(false))) {
-			$n2nContext = $eiuFrame->getN2nContext();
-		}
-		$invoker = new MagicMethodInvoker($n2nContext);
-		$invoker->setClassParamObject(EiuEntryGui::class, $this);
-		while (null !== ($closure = array_shift($this->whenReadyClosures))) {
-			$invoker->invoke(null, $closure);
-		}
-	}
+// 		$n2nContext = null;
+// 		if ($this->eiuEntry !== null && null !== ($eiuFrame = $this->eiuEntry->getEiuFrame(false))) {
+// 			$n2nContext = $eiuFrame->getN2nContext();
+// 		}
+// 		$invoker = new MagicMethodInvoker($n2nContext);
+// 		$invoker->setClassParamObject(EiuEntryGui::class, $this);
+// 		while (null !== ($closure = array_shift($this->whenReadyClosures))) {
+// 			$invoker->invoke(null, $closure);
+// 		}
+// 	}
 
 	/**
 	 * @param PropertyPath|null $propertyPath

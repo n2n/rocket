@@ -139,8 +139,7 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @param string $independentOnly
-	 * @return \rocket\spec\ei\component\IndependentEiComponent[]
+	 * @return EiMask[]
 	 */
 	public function toArray(): array {
 		return $this->eiMasks;

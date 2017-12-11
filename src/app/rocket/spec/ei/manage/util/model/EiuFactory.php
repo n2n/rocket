@@ -509,7 +509,7 @@ class EiuFactory {
 		if ($eiTypeArg instanceof EiMask) {
 			return $eiTypeArg->getEiEngine()->getEiType();
 		}
-			
+		
 		if ($eiTypeArg instanceof EiFrame) {
 			return $eiTypeArg->getEiEngine()->getEiType();
 		}
@@ -609,7 +609,8 @@ class EiuFactory {
 			return null;
 		}
 		
-		if (null !== ($eiObject = self::determineEiObject($eiObjectObj, $eiEntry, $viewMode))) {
+		$eiEntryGui = null;
+		if (null !== ($eiObject = self::determineEiObject($eiObjectObj, $eiEntry, $eiEntryGui))) {
 			return $eiObject;
 		}
 		

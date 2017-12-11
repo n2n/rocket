@@ -39,6 +39,7 @@ use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\web\ui\UiComponent;
+use n2n\reflection\CastUtils;
 
 class EiHtmlBuilder {
 	private $view;
@@ -250,6 +251,7 @@ class EiHtmlBuilder {
 	
 	public function getFieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 		
 		$guiIdPath = null;
 		if ($displayItem instanceof DisplayItem) {
@@ -265,12 +267,19 @@ class EiHtmlBuilder {
 		}
 	
 		
-		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getEiGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+		
+		if (!$eiEntryGui->containsDisplayable($guiIdPath)) {
+			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null);
+			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
+					$this->buildAttrs($guiIdPath, (array) $attrs));
+		}
+		
+		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
 	
 		if ($readOnly || !$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
-			$this->state->pushField($tagName, $fieldErrorInfo, $displayable);
+			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable);
 			return $this->createOutputFieldOpen($tagName, $displayable, $fieldErrorInfo,
 					$this->buildAttrs($guiIdPath, (array) $attrs));
 		}
@@ -278,7 +287,7 @@ class EiHtmlBuilder {
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
 		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 	
-		$this->state->pushField($tagName, $fieldErrorInfo, $displayable, $propertyPath);
+		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
 				$this->buildAttrs($guiIdPath, $attrs), $editableInfo->isMandatory());
 	}
@@ -297,9 +306,9 @@ class EiHtmlBuilder {
 	}
 	
 	
-	private function createOutputFieldOpen($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
+	private function createOutputFieldOpen($tagName, Displayable $displayable = null, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
-				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');
+				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
 	private function applyGroupTypeAttr(string $groupType = null, array $attrs) {
@@ -346,7 +355,17 @@ class EiHtmlBuilder {
 			return $this->formHtml->getMagLabel($attrs, $label);
 		}
 		
-		return new HtmlElement('label', $attrs, ($label === null ? $fieldInfo['displayable']->getUiOutputLabel() : $label));
+		if ($label !== null) {
+			return new HtmlElement('label', $attrs, $label);
+		}
+		
+		if (isset($fieldInfo['displayable'])) {
+			return new HtmlElement('label', $attrs, $fieldInfo['displayable']->getUiOutputLabel());
+		}
+		
+		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		return new HtmlElement('label', $attrs, (string) $eiEntryGui->getEiGui()->getGuiDefinition()
+				->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabel());
 	}
 	
 	public function fieldContent() {
@@ -360,7 +379,11 @@ class EiHtmlBuilder {
 			return $this->formHtml->getMagField();
 		}
 		
-		return $this->html->getOut($fieldInfo['displayable']->createOutputUiComponent($this->view));
+		if (isset($fieldInfo['displayable'])) {
+			return $this->html->getOut($fieldInfo['displayable']->createOutputUiComponent($this->view));
+		}
+		
+		return null;
 	}
 	
 	public function fieldMessage() {
@@ -557,9 +580,9 @@ class EiHtmlBuilderState {
 	 * @param Displayable $displayable
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null,
+	public function pushField(string $tagName, GuiIdPath $guiIdPath, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null,
 			PropertyPath $propertyPath = null) {
-		$this->stack[] = array('type' => 'field', 'tagName' => $tagName, 'displayable' => $displayable,
+		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'displayable' => $displayable,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
 	}
 	

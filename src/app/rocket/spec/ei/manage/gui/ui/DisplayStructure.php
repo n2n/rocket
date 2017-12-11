@@ -112,7 +112,7 @@ class DisplayStructure {
 			$groupType = $displayItem->getGroupType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType === null && $eiEntryGui !== null) {
+				if ($groupType === null && $eiEntryGui !== null && $eiEntryGui->containsDisplayable($displayItem->getGuiIdPath())) {
 					$groupType = $eiEntryGui->getDisplayableByGuiIdPath($displayItem->getGuiIdPath())->getGroupType();
 				}
 

@@ -37,10 +37,6 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\NotYetImplementedException;
-use n2n\persistence\orm\model\EntityModelManager;
-use n2n\persistence\orm\store\operation\CascadeOperation;
-use rocket\spec\config\SpecManager;
-use n2n\persistence\orm\store\operation\OperationCascader;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
@@ -134,6 +130,16 @@ class EiuFrame extends EiUtilsAdapter {
 	 */
 	public function lookupEntry($id, int $ignoreConstraintTypes = 0) {
 		return $this->entry($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
+	}
+	
+	/**
+	 * @param int $ignoreConstraintTypes
+	 * @return int
+	 */
+	public function countEntries(int $ignoreConstraintTypes = 0) {
+		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
+		$criteria->select('COUNT(e)');
+		return $criteria->toQuery()->fetchSingle();
 	}
 	
 	/**
@@ -419,98 +425,32 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 }
 
-class EiCascadeOperation implements CascadeOperation {
-	private $cascader;
-	private $entityModelManager;
-	private $entityObjs = array();
-	private $eiTypes = array();
+// class EiCascadeOperation implements CascadeOperation {
+// 	private $cascader;
+// 	private $entityModelManager;
+// 	private $specManager;
+// 	private $entityObjs = array();
+// 	private $eiTypes = array();
+// 	private $liveEntries = array();
 
-	public function __construct(EntityModelManager $entityModelManager, SpecManager $specManager, int $cascadeType) { 
-		$this->entityModelManager = $entityModelManager;
-		$this->specManager = $specManager;
-		$this->cascader = new OperationCascader($cascadeType, $this);
-	}
-
-	public function cascade($entityObj) {
-		if (!$this->cascader->markAsCascaded($entityObj)) return;
-
-		$entityModel = $this->entityModelManager->getEntityModelByEntityObj($entityObj);
-		
-		$this->liveEntries[] = EiEntityObj::createFrom($this->specManager
-				->getEiTypeByClass($entityModel->getClass()), $entityObj);
-		
-		$this->cascader->cascadeProperties($entityModel, $entityObj);
-	}
-	
-	public function getLiveEntries(): array {
-		return $this->liveEntries;
-	}
-}
-
-// 	private function createEntryFormPart(EiType $eiType, EiEntry $eiEntry, $levelOnly) {
-// 		$eiMask = $this->eiFrame->getContextEiMask()->determineEiMask($eiType);
-// 		$eiObject = $eiEntry->getEiObject();
-// 		$guiDefinition = $eiMask->createGuiDefinition($this->eiFrame, $eiObject->isDraft(), $levelOnly);
-// 		return new EntryFormPart($guiDefinition, $this->eiFrame, $eiEntry);
+// 	public function __construct(EntityModelManager $entityModelManager, SpecManager $specManager, int $cascadeType) { 
+// 		$this->entityModelManager = $entityModelManager;
+// 		$this->specManager = $specManager;
+// 		$this->cascader = new OperationCascader($cascadeType, $this);
 // 	}
 
+// 	public function cascade($entityObj) {
+// 		if (!$this->cascader->markAsCascaded($entityObj)) return;
 
-// 	public function applyEntryFormLevel(EntryForm $entryForm,  $eiType,
-// 			EiObject $orgEiObject = null,  $org = null) {
-// 		$latestEiEntry = null;
-// 		foreach ($eiType->getSubEiTypes() as $sub) {
-// 			$latestEiEntry = $this->applyEntryFormLevel($entryForm, $sub,
-// 					$orgEiObject, $org);
-// 		}
-
-// 		$entryFormPart = null;
-// 		$eiEntry = null;
-// 		if ($entryForm->hasTypeOption($eiType->getId())) {
-// 			$eiEntry = $entryForm->getEiEntryById($eiType->getId());
-// 		}
-
-// 		if (null === $eiEntry) {
-// 			$entityClass = $eiType->getEntityModel()->getClass();
-// 			if ($entityClass->isAbstract()) {
-// 				if ($latestEiEntry === null) {
-// 					throw new IllegalStateException('Cannot instance an object of ' . $eiType->getId()
-// 							. ' because it is abstract and no sub  available.');
-// 				}
-
-// 				$eiEntry = $latestEiEntry;
-// 			} else {
-// 				$newEntity = ReflectionUtils::createObject($entityClass);
-
-// 				$newEiObject = null;
-// 				if ($orgEiObject === null) {
-// 					$newEiObject = new EiObject(null, $newEntity);
-// 				} else {
-// 					OrmUtils::findLowestCommonEntityModel($org->getEntityModel(), $eiType->getEntityModel())
-// 							->copy($orgEiObject->getEntityObj(), $newEntity);
-	
-// 					if (!$orgEiObject->isDraft()) {
-// 						$newEiObject = new EiObject($orgEiObject->getId(), $newEntity);
-// 					} else {
-// 						$draft = $orgEiObject->getDraft();
-// 						$newEiObject = new EiObject($orgEiObject->getId(), $orgEiObject->getLiveEntityObj());
-// 						$newEiObject->setDraft(new Draft($draft->getId(), $draft->getLastMod(), $draft->isPublished(),
-// 								$draft->getDraftedObjectId(), new \ArrayObject()));
-// 						$newEiObject->getDraft()->setDraftedObject($newEntity);
-// 					}
-// 				}
-
-// 				$eiEntry = $this->createEiEntry($newEiObject);
-// 				$entryForm->addTypeOption($eiEntry);
-// 			}
-// 		}
-
-// 		if ($eiType->equals($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType())) {
-// 			$entryForm->setMainEntryFormPart(
-// 					$this->createEntryFormPart($eiType, $eiEntry, false));
-// 		} else {
-// 			$entryForm->addLevelEntryFormPart(
-// 					$this->createEntryFormPart($eiType, $eiEntry, true));
-// 		}
-
-// 		return $eiEntry;
+// 		$entityModel = $this->entityModelManager->getEntityModelByEntityObj($entityObj);
+		
+// 		$this->liveEntries[] = EiEntityObj::createFrom($this->specManager
+// 				->getEiTypeByClass($entityModel->getClass()), $entityObj);
+		
+// 		$this->cascader->cascadeProperties($entityModel, $entityObj);
 // 	}
+	
+// 	public function getLiveEntries(): array {
+// 		return $this->liveEntries;
+// 	}
+// }

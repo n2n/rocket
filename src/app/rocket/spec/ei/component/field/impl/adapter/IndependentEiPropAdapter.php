@@ -40,7 +40,7 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new AdaptableEiPropConfigurator($this);
 	}
-
+	
 	public function getParentEiProp() {
 		return $this->parentEiProp;
 	}

@@ -46,6 +46,7 @@ use rocket\spec\ei\component\field\impl\relation\EmbeddedOneToManyEiProp;
 use n2n\reflection\CastUtils;
 use rocket\spec\config\SpecManager;
 use rocket\spec\ei\EiPropPath;
+use rocket\spec\ei\manage\generic\ScalarEiProperty;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
@@ -56,8 +57,9 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
 	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
 	const ATTR_ORPHANS_ALLOWED_KEY = 'orphansAllowed';
-	const OPTION_FILTERED_KEY = 'filtered';
-	const OPTION_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
+	const ATTR_FILTERED_KEY = 'filtered';
+	const ATTR_HIDDEN_IF_TARGET_EMPTY_KEY = 'hiddenIfTargetEmpty';
+	const ATTR_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
 	
 	private $eiPropRelation;
 	
@@ -85,7 +87,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY,
-				self::ATTR_ORPHANS_ALLOWED_KEY, self::OPTION_EMBEDDED_ADD_KEY, self::OPTION_FILTERED_KEY), true), true);
+				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -102,12 +104,14 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
 			CastUtils::assertTrue($specManager instanceof SpecManager);
 			$targetEiType = $specManager->getEiTypeByClass($targetEntityClass);
-			foreach ($targetEiType->getEiMaskCollection() as $eiMask) {
+			foreach ($targetEiType->getEiMaskCollection()->toArray() as $eiMask) {
 				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiType()->getLabelLstr();
 			}
 			
 			$scalarEiProperties = $targetEiType->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();
 			foreach ($scalarEiProperties as $ref => $scalarEiProperty) {
+				CastUtils::assertTrue($scalarEiProperty instanceof ScalarEiProperty);
+				
 				$targetOrderFieldPathOptions[(string) $scalarEiProperties->getKeyByHashCode($ref)]
 						= $scalarEiProperty->getLabelLstr();
 			}
@@ -118,40 +122,46 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection->addMag(self::ATTR_TARGET_MASK_KEY, new EnumMag('Target Mask', $targetEiMaskOptions,
 				$lar->getString(self::ATTR_TARGET_MASK_KEY)));
+		
+		$eiComponent = $this->eiComponent;
 				
-		if ($this->eiComponent instanceof ToManyEiPropAdapter) {
+		if ($eiComponent instanceof ToManyEiPropAdapter) {
 			$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min',
-					$lar->getInt(self::ATTR_MIN_KEY, $this->eiComponent->getMin())));
+					$lar->getInt(self::ATTR_MIN_KEY, $eiComponent->getMin())));
 			$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max',
-					$lar->getInt(self::ATTR_MAX_KEY, $this->eiComponent->getMax())));
+					$lar->getInt(self::ATTR_MAX_KEY, $eiComponent->getMax())));
 		}
 		
-		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp) {
+		if ($eiComponent instanceof EmbeddedOneToOneEiProp) {
 			$magCollection->addMag(self::ATTR_REPLACEABLE_KEY, new BoolMag('Replaceable',
-					$lar->getBool(self::ATTR_REPLACEABLE_KEY, $this->eiComponent->isReplaceable())));
+					$lar->getBool(self::ATTR_REPLACEABLE_KEY, $eiComponent->isReplaceable())));
 		}
 		
-		if ($this->eiComponent instanceof EmbeddedOneToManyEiProp) {
+		if ($eiComponent instanceof EmbeddedOneToManyEiProp) {
 			$magCollection->addMag(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY, new EnumMag('Target order field', 
 					$targetOrderFieldPathOptions, $lar->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)));
 		}
 		
-		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp) {
+		if ($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) {
 			$magCollection->addMag(self::ATTR_COMPACT_KEY, new BoolMag('Compact',
-					$lar->getBool(self::ATTR_COMPACT_KEY, $this->eiComponent->isCompact())));
+					$lar->getBool(self::ATTR_COMPACT_KEY, $eiComponent->isCompact())));
 			$magCollection->addMag(self::ATTR_ORPHANS_ALLOWED_KEY, new BoolMag('Allow orphans',
-					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $this->eiComponent->getOrphansAllowed())));
+					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $eiComponent->getOrphansAllowed())));
 		}
 		
-		if ($this->eiPropRelation instanceof SelectEiPropRelation) {
-			$magCollection->addMag(self::OPTION_FILTERED_KEY, new BoolMag('Filtered',
-					$lar->getBool(self::OPTION_FILTERED_KEY, $this->eiPropRelation->isFiltered())));
-			$magCollection->addMag(self::OPTION_EMBEDDED_ADD_KEY, new BoolMag(
-					'Embedded Add Enabled', $lar->getBool(self::OPTION_EMBEDDED_ADD_KEY,
-							$this->eiPropRelation->isEmbeddedAddEnabled())));
+		$eiPropRelation = $this->eiPropRelation;
+		
+		if ($eiPropRelation instanceof SelectEiPropRelation) {
+			$magCollection->addMag(self::ATTR_FILTERED_KEY, new BoolMag('Filtered',
+					$lar->getBool(self::ATTR_FILTERED_KEY, $this->eiPropRelation->isFiltered())));
+			$magCollection->addMag(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, new BoolMag('Hide if target empty',
+					$lar->getBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, $eiPropRelation->isHiddenIfTargetEmpty())));
+			$magCollection->addMag(self::ATTR_EMBEDDED_ADD_KEY, new BoolMag(
+					'Embedded Add Enabled', $lar->getBool(self::ATTR_EMBEDDED_ADD_KEY,
+							$eiPropRelation->isEmbeddedAddEnabled())));
 		}
 
-		if ($this->eiPropRelation->getRelationEntityProperty()->isMaster()) {
+		if ($eiPropRelation->getRelationEntityProperty()->isMaster()) {
 			$magCollection->addMag(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, new EnumMag('Target removal startegy', 
 					array(RelationVetoableActionListener::STRATEGY_UNSET => 'Unset target',
 							RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
@@ -167,12 +177,12 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
-		
-		if (($this->eiComponent instanceof EmbeddedOneToOneEiProp 
-						|| $this->eiComponent instanceof EmbeddedOneToManyEiProp)
+		$eiComponent = $this->eiComponent;
+		if (($eiComponent instanceof EmbeddedOneToOneEiProp 
+						|| $eiComponent instanceof EmbeddedOneToManyEiProp)
 				&& $this->attributes->contains(self::ATTR_ORPHANS_ALLOWED_KEY)) {
 					
-			$this->eiComponent->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));
+			$eiComponent->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));
 		}
 				
 		
@@ -201,57 +211,63 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			throw $eiSetupProcess->createException(null, $e);
 		}
 		
-		if ($this->eiComponent instanceof ToManyEiPropAdapter) {
+		if ($eiComponent instanceof ToManyEiPropAdapter) {
 			if ($this->attributes->contains(self::ATTR_MIN_KEY)) {
-				$this->eiComponent->setMin($this->attributes->getNumeric(self::ATTR_MIN_KEY, true, null, true));
+				$eiComponent->setMin($this->attributes->getNumeric(self::ATTR_MIN_KEY, true, null, true));
 			}
 			
 			if ($this->attributes->contains(self::ATTR_MAX_KEY)) {
-				$this->eiComponent->setMax($this->attributes->getNumeric(self::ATTR_MAX_KEY, true, null, true));
+				$eiComponent->setMax($this->attributes->getNumeric(self::ATTR_MAX_KEY, true, null, true));
 			}
 		}
 
-		if ($this->eiComponent instanceof EmbeddedOneToOneEiProp 
+		if ($eiComponent instanceof EmbeddedOneToOneEiProp 
 				&& $this->attributes->contains(self::ATTR_REPLACEABLE_KEY)) {
-			$this->eiComponent->setReplaceable($this->attributes->getBool(self::ATTR_REPLACEABLE_KEY));
+			$eiComponent->setReplaceable($this->attributes->getBool(self::ATTR_REPLACEABLE_KEY));
 		}
 		
-		if ($this->eiComponent instanceof EmbeddedOneToManyEiProp
+		if ($eiComponent instanceof EmbeddedOneToManyEiProp
 				&& $this->attributes->contains(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)) {
 			$targetEiPropPath = EiPropPath::create($this->attributes->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY));
 			$this->eiPropRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
 						->getScalarEiPropertyByFieldPath($targetEiPropPath);
-			$this->eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
+			$eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
 		}
 		
-		if (($this->eiComponent instanceof EmbeddedOneToOneEiProp || $this->eiComponent instanceof EmbeddedOneToManyEiProp) 
+		if (($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) 
 				&& $this->attributes->contains(self::ATTR_COMPACT_KEY)) {
-			$this->eiComponent->setCompact($this->attributes->getBool(self::ATTR_COMPACT_KEY));
+			$eiComponent->setCompact($this->attributes->getBool(self::ATTR_COMPACT_KEY));
 		}
 		
 		
-		if ($this->eiPropRelation instanceof SelectEiPropRelation) {
-			if ($this->attributes->contains(self::OPTION_FILTERED_KEY)) {
-				$this->eiPropRelation->setFiltered($this->attributes->getBool(self::OPTION_FILTERED_KEY));
+		$eiPropRelation = $this->eiPropRelation;
+		if ($eiPropRelation instanceof SelectEiPropRelation) {
+			if ($this->attributes->contains(self::ATTR_FILTERED_KEY)) {
+				$eiPropRelation->setFiltered($this->attributes->getBool(self::ATTR_FILTERED_KEY));
 			}
 			
-			if ($this->attributes->contains(self::OPTION_EMBEDDED_ADD_KEY)) {
-				$this->eiPropRelation->setEmbeddedAddEnabled($this->attributes->get(self::OPTION_EMBEDDED_ADD_KEY));
+			if ($this->attributes->contains(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY)) {
+				$eiPropRelation->setHiddenIfTargetEmpty(
+						$this->attributes->getBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY));
 			}
 			
-			if ($this->eiPropRelation->isEmbeddedAddEnabled() && !$this->eiPropRelation->isPersistCascaded()) {
-				throw $eiSetupProcess->createException('Option ' . self::OPTION_EMBEDDED_ADD_KEY
+			if ($this->attributes->contains(self::ATTR_EMBEDDED_ADD_KEY)) {
+				$eiPropRelation->setEmbeddedAddEnabled($this->attributes->get(self::ATTR_EMBEDDED_ADD_KEY));
+			}
+			
+			if ($eiPropRelation->isEmbeddedAddEnabled() && !$eiPropRelation->isPersistCascaded()) {
+				throw $eiSetupProcess->createException('Option ' . self::ATTR_EMBEDDED_ADD_KEY
 						. ' requires an EntityProperty which cascades persist.');
 			}
 		}
 		
-		if ($this->eiPropRelation->getRelationEntityProperty()->isMaster()) {
+		if ($eiPropRelation->getRelationEntityProperty()->isMaster()) {
 			$strategy = $this->attributes->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
 					RelationVetoableActionListener::getStrategies(), false, 
 					RelationVetoableActionListener::STRATEGY_PREVENT);
 			
-			$this->eiPropRelation->getTargetEiType()->registerVetoableActionListener(
-					new RelationVetoableActionListener($this->eiPropRelation->getRelationEiProp(), $strategy));		
+			$eiPropRelation->getTargetEiType()->registerVetoableActionListener(
+					new RelationVetoableActionListener($eiPropRelation->getRelationEiProp(), $strategy));		
 		}
 	}
 }
