@@ -78,6 +78,7 @@ $( document ).ready(function() {
 
 		if (configOptions["bbcode"]) {
 			config.extraPlugins = "bbcode";
+			config.extraPlugins = 'link';
 		}
 	};
 });
