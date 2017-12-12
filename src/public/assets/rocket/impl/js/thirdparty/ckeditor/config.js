@@ -56,8 +56,6 @@ $( document ).ready(function() {
 			}
 		}
 
-		config.extraPlugins = 'link';
-
 		if (modeNum >= 2) {
 			insertItems = insertItems.concat(["Iframe"]);
 			paragraphItems = paragraphItems.concat(["-", "CreateDiv", "PageBreak", "-"]);
