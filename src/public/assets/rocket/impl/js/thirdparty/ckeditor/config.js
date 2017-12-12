@@ -56,13 +56,13 @@ $( document ).ready(function() {
 			}
 		}
 
+		config.extraPlugins = 'link';
+
 		if (modeNum >= 2) {
 			insertItems = insertItems.concat(["Iframe"]);
 			paragraphItems = paragraphItems.concat(["-", "CreateDiv", "PageBreak", "-"]);
 			toolItems = toolItems.concat("-", "Source", "-");
 		}
-
-		console.log(clipboardItems);
 
 		config.toolbar.push({name: "clipboard", items: clipboardItems});
 		config.toolbar.push({name: "editing", items: editingItems});
@@ -73,6 +73,8 @@ $( document ).ready(function() {
 		config.toolbar.push({name: "styles", items: styleItems});
 		config.toolbar.push({name: "tools", items: toolItems});
 		config.toolbar.push({name: "about", items: aboutItems});
+
+		config.extraPlugins = "link";
 
 		if (configOptions["bbcode"]) {
 			config.extraPlugins = "bbcode";
