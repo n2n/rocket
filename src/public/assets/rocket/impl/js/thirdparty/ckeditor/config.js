@@ -29,8 +29,8 @@ $( document ).ready(function() {
 		var basicStyleItems = ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"];
 		var clipboardItems = [];
 		var editingItems = [];
-		var paragraphItems = [];
-		var linkItems = [];
+		var paragraphItems = ["NumberedList", "BulletedList"];
+		var linkItems = ["-", "Link", "Unlink"];
 		var insertItems = [];
 		var styleItems = [];
 		var toolItems = [];
@@ -39,9 +39,9 @@ $( document ).ready(function() {
 		if (modeNum >= 1) {
 			clipboardItems = clipboardItems.concat(["Cut", "Copy", "Paste", "PateText", "PasteFromWord", "-", "Undo", "Redo"]);
 			editingItems = editingItems.concat(["Find", "Replace"]);
-			basicStyleItems = basicStyleItems.concat([ "Subscript", "Superscript" ]);
-			paragraphItems = paragraphItems.concat(["NumberedList", "BulletedList", "Outdent", "Indent", "blocks", "Blockquote", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]);
-			linkItems = linkItems.concat(["-", "Link", "Unlink", "Anchor", "-"]);
+			basicStyleItems = basicStyleItems.concat(["Subscript", "Superscript"]);
+			paragraphItems = paragraphItems.concat(["Outdent", "Indent", "blocks", "Blockquote", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]);
+			linkItems = linkItems.concat(["Anchor", "-"]);
 			basicStyleItems = basicStyleItems.concat(["-", "CopyFormatting", "RemoveFormat", "-"]);
 			toolItems = toolItems.concat([ 'Maximize', 'ShowBlocks' ]);
 
@@ -78,7 +78,6 @@ $( document ).ready(function() {
 
 		if (configOptions["bbcode"]) {
 			config.extraPlugins = "bbcode";
-			config.extraPlugins = 'link';
 		}
 	};
 });
