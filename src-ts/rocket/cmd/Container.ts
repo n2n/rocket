@@ -115,15 +115,15 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		public createLayer(dependentPage: Zone = null): Layer {
+		public createLayer(dependentZone: Zone = null): Layer {
 			var jqLayer = $("<div />", {
 				"class": "rocket-layer"
 			});
 			
 			this.jqContainer.append(jqLayer);
-			
+
 			var layer = new Layer(jqLayer, this._layers.length, this, 
-					Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History()));
+					Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History(), true));
 			this.registerLayer(layer);
 			
 			var jqToolbar = $("<div />", {
@@ -145,23 +145,23 @@ namespace Rocket.Cmd {
 				that.unregisterLayer(layer);
 			})
 			
-			if (dependentPage === null) {
+			if (dependentZone === null) {
 				this.layerTrigger(Container.LayerEventType.ADDED, layer);
 				return layer;
 			}
 			
 			let reopenable = false;
-			dependentPage.on(Zone.EventType.CLOSE, function () {
+			dependentZone.on(Zone.EventType.CLOSE, function () {
 				layer.close();
 			});
-			dependentPage.on(Zone.EventType.CONTENT_CHANGED, function () {
+			dependentZone.on(Zone.EventType.CONTENT_CHANGED, function () {
 				layer.close();
 			});
-			dependentPage.on(Zone.EventType.HIDE, function () {
+			dependentZone.on(Zone.EventType.HIDE, function () {
 				reopenable = layer.visible;
 				layer.hide();
 			});
-			dependentPage.on(Zone.EventType.SHOW, function () {
+			dependentZone.on(Zone.EventType.SHOW, function () {
 				if (!reopenable) return;
 				
 				layer.show();
