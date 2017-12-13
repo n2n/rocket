@@ -179,6 +179,11 @@ namespace Rocket.Display {
 			}
 		}
 		
+		containsEntry(entry: Entry): boolean {
+			let id = entry.id;
+			return !!this.entryMap[id] && this.entryMap[id] === entry; 
+		}
+		
 		findEntryBefore(belowEntry: Entry): Entry|null {
 			this.valEntry(belowEntry);
 			
@@ -219,7 +224,6 @@ namespace Rocket.Display {
 				if (entry === beforeEntry) {
 					beforeEntry = null;
 				}
-				continue;
 			}
 			
 			return nextEntries;
@@ -287,13 +291,13 @@ namespace Rocket.Display {
 			this.insertedCbr.fire(entries, aboveEntry);
 		}
 		
-//		onInsert(callback: InsertCallback) {
-//			this.insertCbr.on(callback);
-//		}
-//		
-//		offInsert(callback: InsertCallback) {
-//			this.insertCbr.off(callback);
-//		}
+		onInsert(callback: InsertCallback) {
+			this.insertCbr.on(callback);
+		}
+		
+		offInsert(callback: InsertCallback) {
+			this.insertCbr.off(callback);
+		}
 		
 		onInserted(callback: InsertedCallback) {
 			this.insertedCbr.on(callback);

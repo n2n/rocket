@@ -88,15 +88,17 @@ namespace Rocket {
         })();
 		
         (function () {
+        	let moveState = new Impl.Order.MoveState();
+        	
             Jhtml.ready((elements) => {
                 $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Impl.Order.Control($(this), Impl.Order.InsertMode.BEFORE);
+                    new Impl.Order.Control($(this), Impl.Order.InsertMode.BEFORE, moveState);
                 });
                 $(elements).find(".rocket-impl-insert-after").each(function () {
-                    new Impl.Order.Control($(this), Impl.Order.InsertMode.AFTER);
+                    new Impl.Order.Control($(this), Impl.Order.InsertMode.AFTER, moveState);
                 });
                 $(elements).find(".rocket-impl-insert-as-child").each(function () {
-                    new Impl.Order.Control($(this), Impl.Order.InsertMode.CHILD);
+                    new Impl.Order.Control($(this), Impl.Order.InsertMode.CHILD, moveState);
                 });
             });
         })();

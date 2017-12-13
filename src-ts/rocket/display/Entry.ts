@@ -154,7 +154,7 @@ namespace Rocket.Display {
 				this.jqElem.removeClass(className);
 			} 
 			
-			if (treeLevel) {
+			if (treeLevel !== null) {
 				this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel)
 			}
 		}
