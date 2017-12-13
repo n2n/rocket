@@ -85,6 +85,9 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		$this->baseScalarEiProperty = $baseScalarEiProperty;
 	}
 
+	/**
+	 * @return \rocket\spec\ei\manage\generic\GenericEiProperty
+	 */
 	public function getUniquePerGenericEiProperty() {
 		return $this->uniquePerGenericEiProperty;
 	}

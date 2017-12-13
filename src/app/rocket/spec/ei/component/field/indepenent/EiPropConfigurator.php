@@ -28,7 +28,10 @@ interface EiPropConfigurator extends EiConfigurator {
 	
 	/**
 	 * This method assigns proper default attributes to the EiPropConfigurator. It gets call if the developer adds 
-	 * new EiProp of the particular type.  
+	 * new EiProp of the particular type.
+	 * 
+	 * EiThing is already assigned when this method gets called.
+	 *   
 	 * @param Column $column
 	 */
 	public function initAutoEiPropAttributes(Column $column = null);

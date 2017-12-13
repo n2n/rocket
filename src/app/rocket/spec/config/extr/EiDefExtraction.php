@@ -120,7 +120,7 @@ class EiDefExtraction {
 	/**
 	 * @return EiPropExtraction []
 	 */
-	public function getEiPropExtractions(): array {
+	public function getEiPropExtractions() {
 		return $this->eiPropExtractions;
 	}
 	
@@ -128,9 +128,9 @@ class EiDefExtraction {
 		$this->eiPropExtractions[] = $eiPropExtraction;
 	}
 	
-	public function setEiPropExtractions(array $fieldExtractions) {
-		ArgUtils::valArray($fieldExtractions, EiPropExtraction::class);
-		$this->eiPropExtractions = $fieldExtractions;	
+	public function setEiPropExtractions(array $eiPropExtractions) {
+		ArgUtils::valArray($eiPropExtractions, EiPropExtraction::class);
+		$this->eiPropExtractions = $eiPropExtractions;	
 	}
 	
 	public function getEiCommandExtractions() {

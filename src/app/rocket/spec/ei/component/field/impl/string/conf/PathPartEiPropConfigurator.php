@@ -38,6 +38,10 @@ use n2n\persistence\meta\structure\Column;
 use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\spec\ei\manage\generic\UnknownGenericEiPropertyException;
+use n2n\reflection\CastUtils;
+use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\generic\ScalarEiProperty;
+use rocket\spec\ei\manage\generic\GenericEiProperty;
 
 class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
@@ -133,10 +137,11 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$magCollection = $magDispatchable->getMagCollection();
 
 		$baseScalarEiPropertyId = null;
-		if (null !== ($baseScalarEiProperty = $this->eiComponent->getBaseScalarEiProperty())) {
+		if (null !== ($baseScalarEiProperty = $this->pathPartEiProp->getBaseScalarEiProperty())) {
 			$baseScalarEiPropertyId = $baseScalarEiProperty->getId();
 		}
-		$magCollection->addMag(new EnumMag(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, 'Base Field', 
+		
+		$magCollection->addMag(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, new EnumMag('Base Field', 
 				$this->getBaseEiPropIdOptions(), $this->attributes->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, 
 						false, $baseScalarEiPropertyId), false));
 		
@@ -144,20 +149,20 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		if (null !== ($genericEiProperty = $this->pathPartEiProp->getUniquePerGenericEiProperty())) {
 			$genericEiPropertyId = $genericEiProperty->getId();
 		}
-		$magCollection->addMag(new EnumMag(self::OPTION_UNIQUE_PER_FIELD_ID_KEY, 'Unique per', 
+		$magCollection->addMag(self::OPTION_UNIQUE_PER_FIELD_ID_KEY, new EnumMag('Unique per', 
 				$this->getUniquePerOptions(), $this->attributes->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY, 
 						false, $genericEiPropertyId)));
 		
-		$magCollection->addMag(new BoolMag(self::OPTION_NULL_ALLOWED_KEY, 'Null value allowed.', 
+		$magCollection->addMag(self::OPTION_NULL_ALLOWED_KEY, new BoolMag('Null value allowed.', 
 				$this->attributes->getBool(self::OPTION_NULL_ALLOWED_KEY, false, 
-						$this->eiComponent->isNullAllowed())));
+						$this->pathPartEiProp->isNullAllowed())));
 		
-		$magCollection->addMag(new BoolMag(self::OPTION_CRITICAL_KEY, 'Is critical', 
-				$this->attributes->getBool(self::OPTION_CRITICAL_KEY, false, $this->eiComponent->isCritical())));
+		$magCollection->addMag(self::OPTION_CRITICAL_KEY, new BoolMag('Is critical', 
+				$this->attributes->getBool(self::OPTION_CRITICAL_KEY, false, $this->pathPartEiProp->isCritical())));
 		
-		$magCollection->addMag(new StringMag(self::OPTION_CRITICAL_MESSAGE_KEY, 'Critical message (no message if empty)', 
+		$magCollection->addMag(self::OPTION_CRITICAL_MESSAGE_KEY, new StringMag('Critical message (no message if empty)', 
 				$this->attributes->getString(self::OPTION_CRITICAL_MESSAGE_KEY, false, 
-						$this->eiComponent->getCriticalMessage()), false));
+						$this->pathPartEiProp->getCriticalMessage()), false));
 		return $magDispatchable;
 	}
 	
@@ -166,6 +171,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		foreach ($this->eiComponent->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()
 				as $id => $genericScalarProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
+			CastUtils::assertTrue($genericScalarProperty instanceof ScalarEiProperty);
 			$baseEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();
 		}
 		return $baseEiPropIdOptions;
@@ -175,6 +181,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$options = array();
 		foreach ($this->eiComponent->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
+			CastUtils::assertTrue($genericEiProperty instanceof GenericEiProperty);
 			$options[$id] = (string) $genericEiProperty->getLabelLstr();
 		}
 		return $options;
