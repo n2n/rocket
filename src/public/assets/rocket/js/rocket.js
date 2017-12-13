@@ -1370,6 +1370,7 @@ var Rocket;
                 this.elemJq = elemJq;
                 this.entryMap = {};
                 this.selectionChangedCbr = new Jhtml.Util.CallbackRegistry();
+                this.insertCbr = new Jhtml.Util.CallbackRegistry();
                 this.insertedCbr = new Jhtml.Util.CallbackRegistry();
                 this._sortable = false;
             }
@@ -1462,7 +1463,9 @@ var Rocket;
                     "handle": ".rocket-handle",
                     "forcePlaceholderSize": true,
                     "placeholder": "rocket-entry-placeholder",
-                    "start": function (event, ui) {
+                    "start": (event, ui) => {
+                        let entry = Display.Entry.find(ui.item, true);
+                        this.insertCbr.fire([entry]);
                     },
                     "update": (event, ui) => {
                         this.sortedEntries = null;
@@ -1512,10 +1515,25 @@ var Rocket;
                 }
                 return null;
             }
+            findNextEntries(beforeEntry) {
+                this.valEntry(beforeEntry);
+                let nextEntries = [];
+                for (let entry of this.entries) {
+                    if (!beforeEntry) {
+                        nextEntries.push(entry);
+                    }
+                    if (entry === beforeEntry) {
+                        beforeEntry = null;
+                    }
+                    continue;
+                }
+                return null;
+            }
             insertAfter(aboveEntry, entries) {
                 if (aboveEntry !== null) {
                     this.valEntry(aboveEntry);
                 }
+                this.insertCbr.fire(entries);
                 for (let entry of entries.reverse()) {
                     if (aboveEntry) {
                         entry.jQuery.insertAfter(aboveEntry.jQuery);
@@ -1776,6 +1794,21 @@ var Rocket;
                 if (treeLevel) {
                     this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel);
                 }
+            }
+            get treeDescendants() {
+                if (!this.collection) {
+                    return [];
+                }
+                let treeLevel = this.treeLevel;
+                let treeDescendants = [];
+                for (let entry of this.collection.findNextEntries(this)) {
+                    if (entry.treeLevel > treeLevel) {
+                        treeDescendants.push(entry);
+                        continue;
+                    }
+                    return treeDescendants;
+                }
+                return treeDescendants;
             }
             static from(elemJq) {
                 var entry = elemJq.data("rocketEntry");

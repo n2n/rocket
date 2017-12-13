@@ -159,6 +159,25 @@ namespace Rocket.Display {
 			}
 		}
 		
+		get treeDescendants(): Entry[] {
+			if (!this.collection) {
+				return [];
+			}	
+			
+			let treeLevel = this.treeLevel;
+			let treeDescendants: Entry[] = [];
+			for (let entry of this.collection.findNextEntries(this)) {
+				if (entry.treeLevel > treeLevel) {
+					treeDescendants.push(entry);
+					continue;
+				}
+				
+				return treeDescendants;
+			}
+			
+			return treeDescendants;
+		}
+		
 		static readonly CSS_CLASS = "rocket-entry";
 		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
 		static readonly LAST_MOD_CSS_CLASS = "rocket-last-mod";

@@ -665,6 +665,20 @@ class RocketUiOutfitter implements UiOutfitter {
 		return $attrs;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \n2n\web\dispatch\mag\UiOutfitter::buildElement()
+	 */
+	public function buildElement(int $elemNature, array $attrs = null, $contents = null): HtmlElement {
+		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
+			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
+		}
+		
+		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
+			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
+		}
+	}
+	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
 		return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html', array('propertyPath' => $propertyPath, 'uiOutfitter' => $this));
 	}

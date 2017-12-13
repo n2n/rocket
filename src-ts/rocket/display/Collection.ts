@@ -5,6 +5,7 @@ namespace Rocket.Display {
 		private sortedEntries: Entry[];
 		private selectorObserver: SelectorObserver;
 		private selectionChangedCbr = new Jhtml.Util.CallbackRegistry<() => any>();
+		private insertCbr = new Jhtml.Util.CallbackRegistry<InsertCallback>();
 		private insertedCbr = new Jhtml.Util.CallbackRegistry<InsertedCallback>();
 		
 		constructor(private elemJq: JQuery) {
@@ -128,7 +129,9 @@ namespace Rocket.Display {
 				"handle": ".rocket-handle",
 				"forcePlaceholderSize": true,
 		      	"placeholder": "rocket-entry-placeholder",
-				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
+				"start": (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) => {
+					let entry = Entry.find(ui.item, true);
+					this.insertCbr.fire([entry]);
 				},
 				"update": (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) => {
 					this.sortedEntries = null;
@@ -189,10 +192,30 @@ namespace Rocket.Display {
 			return null;
 		}
 		
+		findNextEntries(beforeEntry: Entry): Entry[] {
+			this.valEntry(beforeEntry);
+			
+			let nextEntries: Entry[] = [];
+			for (let entry of this.entries) {
+				if (!beforeEntry) {
+					nextEntries.push(entry);
+				}
+				
+				if (entry === beforeEntry) {
+					beforeEntry = null;
+				}
+				continue;
+			}
+			
+			return null;
+		}
+		
 		insertAfter(aboveEntry: Entry|null, entries: Entry[]) {
 			if (aboveEntry !== null) {
 				this.valEntry(aboveEntry)
 			}
+			
+			this.insertCbr.fire(entries);
 			
 			for (let entry of entries.reverse()) {
 				if (aboveEntry) {
@@ -205,6 +228,14 @@ namespace Rocket.Display {
 			this.sortedEntries = null;
 			this.insertedCbr.fire(entries, aboveEntry);
 		}
+		
+//		onInsert(callback: InsertCallback) {
+//			this.insertCbr.on(callback);
+//		}
+//		
+//		offInsert(callback: InsertCallback) {
+//			this.insertCbr.off(callback);
+//		}
 		
 		onInserted(callback: InsertedCallback) {
 			this.insertedCbr.on(callback);
@@ -242,6 +273,10 @@ namespace Rocket.Display {
 		}
 	}
 	
+
+	export interface InsertCallback {
+		(entries: Entry[]): any
+	}
 	
 	export interface InsertedCallback {
 		(entries: Entry[], aboveEntry: Entry): any
