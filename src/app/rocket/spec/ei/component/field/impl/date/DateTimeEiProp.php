@@ -51,6 +51,7 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
@@ -95,9 +96,10 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 	}
 	
 	public function createMag(Eiu $eiu): Mag {
-		return new DateTimePickerMag($this->getLabelLstr(), $this->getDateStyle(), $this->getTimeStyle(), null, null, 
+		$iconElem = new HtmlElement('i', array('class' => IconType::ICON_CALENDAR), '');
+		
+		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
-						'data-icon-class-name-open' => IconType::ICON_CALENDAR,
 						'class' => 'form-control rocket-date-picker'));
 	}
 
