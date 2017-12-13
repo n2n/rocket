@@ -60,11 +60,21 @@ namespace Rocket.Impl.Order {
 		
 		private update() {
 			if ((this.entry.selector && this.entry.selector.selected)
-					|| this.collection.selectedIds.length == 0) {
+					|| this.collection.selectedIds.length == 0
+					|| this.checkIfParentSelected()) {
 				this.elemJq.hide();
 			} else {
 				this.elemJq.show();
 			}
+		}
+		
+		private checkIfParentSelected() {
+			if (this.entry.treeLevel === null) return false;
+			
+			return !!this.entry.collection.findTreeParents(this.entry)
+					.find((parentEntry: Display.Entry) => {
+						return parentEntry.selector && parentEntry.selector.selected;
+					});
 		}
 		
 		private exec() {

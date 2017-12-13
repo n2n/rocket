@@ -192,6 +192,21 @@ namespace Rocket.Display {
 			return null;
 		}
 		
+		findPreviousEntries(beforeEntry: Entry): Entry[] {
+				this.valEntry(beforeEntry);
+				
+				let previousEntries: Entry[] = [];
+				for (let entry of this.entries) {
+					if (entry === beforeEntry) {
+						return previousEntries;
+					}
+					
+					previousEntries.push(entry);
+				}
+				
+				return previousEntries;
+			}
+		
 		findNextEntries(beforeEntry: Entry): Entry[] {
 			this.valEntry(beforeEntry);
 			
@@ -207,7 +222,50 @@ namespace Rocket.Display {
 				continue;
 			}
 			
-			return null;
+			return nextEntries;
+		}
+		
+		findTreeParents(baseEntry: Entry) {
+			let parentEntries: Entry[] = [];
+			
+			if (baseEntry.treeLevel === null) {
+				return parentEntries;
+			}
+			
+			
+			let curTreeLevel = baseEntry.treeLevel;
+			for (let entry of this.findPreviousEntries(baseEntry).reverse()) {
+				let treeLevel = entry.treeLevel;
+				if (treeLevel === null) {
+					return parentEntries;
+				}
+				
+				if (treeLevel < curTreeLevel) {
+					parentEntries.push(entry);
+					curTreeLevel = entry.treeLevel;
+				}
+				
+				if (treeLevel == 0) {
+					return parentEntries;
+				}
+			}
+			
+			return parentEntries;
+		}
+		
+		findTreeDescendants(baseEntry: Entry): Entry[] {
+			let treeLevel = baseEntry.treeLevel;
+			let treeDescendants: Entry[] = [];
+			for (let entry of this.findNextEntries(baseEntry)) {
+				if (entry.treeLevel > treeLevel) {
+					treeDescendants.push(entry);
+					continue;
+				}
+				
+				return treeDescendants;
+			}
+			
+			return treeDescendants;
 		}
 		
 		insertAfter(aboveEntry: Entry|null, entries: Entry[]) {
