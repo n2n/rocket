@@ -244,12 +244,12 @@ var Rocket;
                     }
                 }
             }
-            createLayer(dependentPage = null) {
+            createLayer(dependentZone = null) {
                 var jqLayer = $("<div />", {
                     "class": "rocket-layer"
                 });
                 this.jqContainer.append(jqLayer);
-                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History()));
+                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History(), true));
                 this.registerLayer(layer);
                 var jqToolbar = $("<div />", {
                     "class": "rocket-layer-toolbar rocket-simple-commands"
@@ -267,22 +267,22 @@ var Rocket;
                 layer.on(Cmd.Layer.EventType.CLOSE, function () {
                     that.unregisterLayer(layer);
                 });
-                if (dependentPage === null) {
+                if (dependentZone === null) {
                     this.layerTrigger(Container.LayerEventType.ADDED, layer);
                     return layer;
                 }
                 let reopenable = false;
-                dependentPage.on(Cmd.Zone.EventType.CLOSE, function () {
+                dependentZone.on(Cmd.Zone.EventType.CLOSE, function () {
                     layer.close();
                 });
-                dependentPage.on(Cmd.Zone.EventType.CONTENT_CHANGED, function () {
+                dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, function () {
                     layer.close();
                 });
-                dependentPage.on(Cmd.Zone.EventType.HIDE, function () {
+                dependentZone.on(Cmd.Zone.EventType.HIDE, function () {
                     reopenable = layer.visible;
                     layer.hide();
                 });
-                dependentPage.on(Cmd.Zone.EventType.SHOW, function () {
+                dependentZone.on(Cmd.Zone.EventType.SHOW, function () {
                     if (!reopenable)
                         return;
                     layer.show();
