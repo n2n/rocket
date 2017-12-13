@@ -29,7 +29,6 @@ use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\component\command\impl\IndependentEiCommandAdapter;
 use rocket\spec\ei\manage\control\HrefControl;
-use rocket\core\model\Rocket;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
@@ -65,8 +64,6 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 			return array();
 		}
 	
-		$view->getHtmlBuilder()->meta()->addJs('js/script/impl/order.js', Rocket::NS);
-		
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiEntry = $eiu->entry()->getEiEntry();
 	
