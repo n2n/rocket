@@ -4812,6 +4812,7 @@ var Rocket;
                     let jqEntries = jqToMany.children(".rocket-impl-entries");
                     var addControlFactory = null;
                     let toManyEmbedded = null;
+                    let entryFormRetriever = null;
                     if (jqCurrents.length > 0 || jqNews.length > 0 || jqEntries.length > 0) {
                         if (jqNews.length > 0) {
                             var propertyPath = jqNews.data("property-path");
@@ -4829,11 +4830,13 @@ var Rocket;
                                     });
                                 }
                             });
-                            var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
+                            entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
                         }
                         toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
-                        entryFormRetriever.sortable = toManyEmbedded.sortable;
+                        if (entryFormRetriever) {
+                            entryFormRetriever.sortable = toManyEmbedded.sortable;
+                        }
                         jqCurrents.children(".rocket-impl-entry").each(function () {
                             toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
                         });
