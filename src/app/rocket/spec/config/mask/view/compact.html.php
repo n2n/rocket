@@ -38,7 +38,7 @@
 	$eiHtml = new EiHtmlBuilder($view);
 ?>
 
-<table class="table table-striped table-hover">
+<table class="table table-hover rocket-table">
 	<thead>
 		<tr>
 			<?php $eiHtml->generalEntrySelector('th') ?>
