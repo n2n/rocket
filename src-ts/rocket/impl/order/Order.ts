@@ -77,9 +77,7 @@ namespace Rocket.Impl.Order {
 		}
 		
 		private prepare(entries: Display.Entry[]) {
-			for (let entry of entries) {
-				this.moveState.memorizeTreeDecendants(entry);
-			}
+			this.moveState.memorizeTreeDecendants(entries);
 		}
 		
 		private update() {
@@ -108,7 +106,7 @@ namespace Rocket.Impl.Order {
 			
 			if (this.insertMode == InsertMode.BEFORE) {
 				this.collection.insertAfter(this.collection.findPreviousEntry(this.entry), entries);
-			} else if (this.entry.treeLevel === null){
+			} else if (this.entry.treeLevel === null) {
 				this.collection.insertAfter(this.entry, entries);
 			} else {
 				let aboveEntry = this.collection.findTreeDescendants(this.entry).pop();
@@ -189,19 +187,23 @@ namespace Rocket.Impl.Order {
 			return this._executing;
 		}
 		
-		memorizeTreeDecendants(entry: Display.Entry) {
-			if (entry.treeLevel === null) return;
+		memorizeTreeDecendants(entries: Display.Entry[]) {
+			this.treeMoveStates.splice(0);
 			
-			let decendants: Display.Entry[] = [];
-			
-			if (entry.collection) {
-				decendants = entry.collection.findTreeDescendants(entry);
+			for (let entry of entries) {
+				if (entry.treeLevel === null) continue;
+				
+				let decendants: Display.Entry[] = [];
+				
+				if (entry.collection) {
+					decendants = entry.collection.findTreeDescendants(entry);
+				}
+				
+				this.treeMoveStates.push({
+					entry: entry,
+					treeDecendantsEntries: decendants 
+				});
 			}
-			
-			this.treeMoveStates.push({
-				entry: entry,
-				treeDecendantsEntries: decendants 
-			});
 		}
 		
 		retrieveTreeDecendants(entry: Display.Entry): Display.Entry[] {
