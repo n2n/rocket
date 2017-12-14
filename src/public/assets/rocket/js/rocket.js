@@ -71,16 +71,24 @@ var Rocket;
             });
         })();
         (function () {
+            let moveState = new Rocket.Impl.Order.MoveState();
             Jhtml.ready((elements) => {
                 $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.BEFORE);
+                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.BEFORE, moveState);
                 });
                 $(elements).find(".rocket-impl-insert-after").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.AFTER);
+                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.AFTER, moveState);
                 });
                 $(elements).find(".rocket-impl-insert-as-child").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.CHILD);
+                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.CHILD, moveState);
                 });
+            });
+        })();
+        (function () {
+            Jhtml.ready((elements) => {
+                return;
+                let nav = Rocket.Display.Nav.setup($($(elements).find("#rocket-global-nav")));
+                nav.initNavigation();
             });
         })();
     });
@@ -1370,7 +1378,6 @@ var Rocket;
                 this.elemJq = elemJq;
                 this.entryMap = {};
                 this.selectionChangedCbr = new Jhtml.Util.CallbackRegistry();
-                this.insertCbr = new Jhtml.Util.CallbackRegistry();
                 this.insertedCbr = new Jhtml.Util.CallbackRegistry();
                 this._sortable = false;
             }
@@ -1463,9 +1470,7 @@ var Rocket;
                     "handle": ".rocket-handle",
                     "forcePlaceholderSize": true,
                     "placeholder": "rocket-entry-placeholder",
-                    "start": (event, ui) => {
-                        let entry = Display.Entry.find(ui.item, true);
-                        this.insertCbr.fire([entry]);
+                    "start": function (event, ui) {
                     },
                     "update": (event, ui) => {
                         this.sortedEntries = null;
@@ -1515,25 +1520,10 @@ var Rocket;
                 }
                 return null;
             }
-            findNextEntries(beforeEntry) {
-                this.valEntry(beforeEntry);
-                let nextEntries = [];
-                for (let entry of this.entries) {
-                    if (!beforeEntry) {
-                        nextEntries.push(entry);
-                    }
-                    if (entry === beforeEntry) {
-                        beforeEntry = null;
-                    }
-                    continue;
-                }
-                return null;
-            }
             insertAfter(aboveEntry, entries) {
                 if (aboveEntry !== null) {
                     this.valEntry(aboveEntry);
                 }
-                this.insertCbr.fire(entries);
                 for (let entry of entries.reverse()) {
                     if (aboveEntry) {
                         entry.jQuery.insertAfter(aboveEntry.jQuery);
@@ -1794,21 +1784,6 @@ var Rocket;
                 if (treeLevel) {
                     this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel);
                 }
-            }
-            get treeDescendants() {
-                if (!this.collection) {
-                    return [];
-                }
-                let treeLevel = this.treeLevel;
-                let treeDescendants = [];
-                for (let entry of this.collection.findNextEntries(this)) {
-                    if (entry.treeLevel > treeLevel) {
-                        treeDescendants.push(entry);
-                        continue;
-                    }
-                    return treeDescendants;
-                }
-                return treeDescendants;
             }
             static from(elemJq) {
                 var entry = elemJq.data("rocketEntry");
@@ -3138,10 +3113,10 @@ var Rocket;
         var Order;
         (function (Order) {
             class Control {
-                constructor(elemJq, insertMode) {
+                constructor(elemJq, insertMode, moveState) {
                     this.elemJq = elemJq;
                     this.insertMode = insertMode;
-                    this.executing = false;
+                    this.moveState = moveState;
                     this.entry = Rocket.Display.Entry.of(elemJq);
                     this.collection = this.entry.collection;
                     if (!this.collection || !this.entry.selector) {
@@ -3171,41 +3146,93 @@ var Rocket;
                         return;
                     }
                     this.collection.setupSortable();
-                    this.collection.onInserted((entries, aboveEntry) => {
-                        if (this.executing)
+                    this.collection.onInsert((entries) => {
+                        if (this.moveState.executing)
                             return;
-                        if ((this.insertMode == InsertMode.AFTER && this.entry === aboveEntry)
-                            || (this.insertMode == InsertMode.BEFORE && aboveEntry === null
-                                && this.entry === this.collection.entries[1])) {
+                        this.prepare(entries);
+                    });
+                    this.collection.onInserted((entries, aboveEntry, belowEntry) => {
+                        if (this.moveState.executing)
+                            return;
+                        if (this.insertMode == InsertMode.BEFORE) {
+                            if (aboveEntry === null && this.entry === this.collection.entries[1]) {
+                                this.dingsel(entries);
+                                return;
+                            }
+                            if (belowEntry === this.entry && this.entry.treeLevel !== null
+                                && aboveEntry.treeLevel < this.entry.treeLevel) {
+                                this.dingsel(entries);
+                                return;
+                            }
+                        }
+                        if (this.insertMode == InsertMode.AFTER && this.entry === aboveEntry
+                            && (belowEntry === null || this.entry.treeLevel === null || belowEntry.treeLevel <= this.entry.treeLevel)) {
                             this.dingsel(entries);
+                            return;
                         }
                     });
                 }
                 get jQuery() {
                     return this.elemJq;
                 }
+                prepare(entries) {
+                    this.moveState.memorizeTreeDecendants(entries);
+                }
                 update() {
                     if ((this.entry.selector && this.entry.selector.selected)
-                        || this.collection.selectedIds.length == 0) {
+                        || this.collection.selectedIds.length == 0
+                        || this.checkIfParentSelected()) {
                         this.elemJq.hide();
                     }
                     else {
                         this.elemJq.show();
                     }
                 }
+                checkIfParentSelected() {
+                    if (this.entry.treeLevel === null)
+                        return false;
+                    return !!this.entry.collection.findTreeParents(this.entry)
+                        .find((parentEntry) => {
+                        return parentEntry.selector && parentEntry.selector.selected;
+                    });
+                }
                 exec() {
-                    this.executing = true;
+                    this.moveState.executing = true;
                     let entries = this.collection.selectedEntries;
+                    this.prepare(entries);
                     if (this.insertMode == InsertMode.BEFORE) {
-                        this.collection.insertAfter(this.collection.findEntryBefore(this.entry), entries);
+                        this.collection.insertAfter(this.collection.findPreviousEntry(this.entry), entries);
                     }
-                    else {
+                    else if (this.entry.treeLevel === null) {
                         this.collection.insertAfter(this.entry, entries);
                     }
+                    else {
+                        let aboveEntry = this.collection.findTreeDescendants(this.entry).pop();
+                        if (!aboveEntry) {
+                            aboveEntry = this.entry;
+                        }
+                        this.collection.insertAfter(aboveEntry, entries);
+                    }
+                    this.moveState.executing = false;
                     this.dingsel(entries);
-                    this.executing = false;
                 }
                 dingsel(entries) {
+                    Rocket.Display.Entry.findLastMod(Rocket.Cmd.Zone.of(this.elemJq).jQuery).forEach((entry) => {
+                        entry.lastMod = false;
+                    });
+                    let idReps = [];
+                    for (let entry of entries) {
+                        idReps.push(entry.id);
+                        entry.selector.selected = false;
+                        this.dingselAndExecTree(entry);
+                        entry.lastMod = true;
+                    }
+                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
+                    Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
+                }
+                dingselAndExecTree(entry) {
+                    if (entry.treeLevel === null)
+                        return;
                     let newTreeLevel;
                     if (this.insertMode == InsertMode.CHILD) {
                         newTreeLevel = (this.entry.treeLevel || 0) + 1;
@@ -3213,18 +3240,18 @@ var Rocket;
                     else {
                         newTreeLevel = this.entry.treeLevel;
                     }
-                    Rocket.Display.Entry.findLastMod(Rocket.Cmd.Zone.of(this.elemJq).jQuery).forEach((entry) => {
-                        entry.lastMod = false;
-                    });
-                    let idReps = [];
-                    for (let entry of entries) {
-                        entry.treeLevel = newTreeLevel;
-                        idReps.push(entry.id);
-                        entry.selector.selected = false;
-                        entry.lastMod = true;
+                    let treeLevelDelta = newTreeLevel - entry.treeLevel;
+                    entry.treeLevel = newTreeLevel;
+                    if (newTreeLevel === null)
+                        return;
+                    this.moveState.executing = true;
+                    let decendants = this.moveState.retrieveTreeDecendants(entry);
+                    this.collection.insertAfter(entry, decendants);
+                    this.moveState.executing = false;
+                    for (let decendant of decendants) {
+                        decendant.lastMod = true;
+                        decendant.treeLevel += treeLevelDelta;
                     }
-                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
-                    Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
                 }
             }
             Order.Control = Control;
@@ -3234,6 +3261,47 @@ var Rocket;
                 InsertMode[InsertMode["AFTER"] = 1] = "AFTER";
                 InsertMode[InsertMode["CHILD"] = 2] = "CHILD";
             })(InsertMode = Order.InsertMode || (Order.InsertMode = {}));
+            class MoveState {
+                constructor() {
+                    this.treeMoveStates = [];
+                    this._executing = false;
+                }
+                set executing(executing) {
+                    if (this._executing == executing) {
+                        throw new Error("Illegal move state");
+                    }
+                    this._executing = executing;
+                }
+                get executing() {
+                    return this._executing;
+                }
+                memorizeTreeDecendants(entries) {
+                    this.treeMoveStates.splice(0);
+                    for (let entry of entries) {
+                        if (entry.treeLevel === null)
+                            continue;
+                        let decendants = [];
+                        if (entry.collection) {
+                            decendants = entry.collection.findTreeDescendants(entry);
+                        }
+                        this.treeMoveStates.push({
+                            entry: entry,
+                            treeDecendantsEntries: decendants
+                        });
+                    }
+                }
+                retrieveTreeDecendants(entry) {
+                    let moveState = this.treeMoveStates.find((moveState) => {
+                        return moveState.entry === entry;
+                    });
+                    if (moveState) {
+                        this.treeMoveStates.splice(this.treeMoveStates.indexOf(moveState), 1);
+                        return moveState.treeDecendantsEntries;
+                    }
+                    throw new Error("illegal move state");
+                }
+            }
+            Order.MoveState = MoveState;
         })(Order = Impl.Order || (Impl.Order = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
@@ -4812,7 +4880,6 @@ var Rocket;
                     let jqEntries = jqToMany.children(".rocket-impl-entries");
                     var addControlFactory = null;
                     let toManyEmbedded = null;
-                    let entryFormRetriever = null;
                     if (jqCurrents.length > 0 || jqNews.length > 0 || jqEntries.length > 0) {
                         if (jqNews.length > 0) {
                             var propertyPath = jqNews.data("property-path");
@@ -4830,13 +4897,11 @@ var Rocket;
                                     });
                                 }
                             });
-                            entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
+                            var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
                         }
                         toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
-                        if (entryFormRetriever) {
-                            entryFormRetriever.sortable = toManyEmbedded.sortable;
-                        }
+                        entryFormRetriever.sortable = toManyEmbedded.sortable;
                         jqCurrents.children(".rocket-impl-entry").each(function () {
                             toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
                         });
@@ -5644,5 +5709,186 @@ var Rocket;
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavState {
+            constructor(userId, navGroups) {
+                this.LOCALSTORE_ITEM_PATTERN = "rocket_navigation_user_states";
+                this._userId = null;
+                this._scrollPos = null;
+                this._activeNavItem = null;
+                this._openedNavGroups = null;
+                this._localStoreManager = null;
+                this._userId = userId;
+                this._navGroups = navGroups;
+                this._localStoreManager = new Rocket.util.LocalStoreManager();
+                this.init();
+                this.setupClickEvents();
+            }
+            init() {
+                let navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN));
+                let navStateItem = null;
+                if (navStateItems === null
+                    || null === (navStateItem = navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
+                    navStateItems = [this.buildNavStateItem()];
+                    this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(navStateItems));
+                    return;
+                }
+                this.scrollPos = navStateItem.scrollPos;
+            }
+            getActiveNavItem() {
+                return null;
+            }
+            setupClickEvents() {
+                for (let navGroup of this.navGroups) {
+                    $(navGroup.titleHtmlElement).click(function () {
+                        $(navGroup.navItemListHtmlElement).slideUp({ duration: 'fast' });
+                    });
+                }
+            }
+            buildNavStateItem() {
+                return { userId: this._userId,
+                    scrollPos: this._scrollPos,
+                    activeNavItemUrlStr: null,
+                    openedGroupNames: null };
+            }
+            get navGroups() {
+                return this._navGroups;
+            }
+            set navGroups(value) {
+                this._navGroups = value;
+            }
+            get userId() {
+                return this._userId;
+            }
+            set userId(value) {
+                this._userId = value;
+            }
+            get scrollPos() {
+                return this._scrollPos;
+            }
+            set scrollPos(value) {
+                this._scrollPos = value;
+            }
+            get activeNavItem() {
+                return this._activeNavItem;
+            }
+            set activeNavItem(value) {
+                this._activeNavItem = value;
+            }
+            get openedNavGroups() {
+                return this._openedNavGroups;
+            }
+            set openedNavGroups(value) {
+                this._openedNavGroups = value;
+            }
+        }
+        Display.NavState = NavState;
+        ;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavGroup {
+            constructor(navItemListHtmlElement, titleHtmlElement, navItems) {
+                this.navItemListHtmlElement = navItemListHtmlElement;
+                this.titleHtmlElement = titleHtmlElement;
+                this._navItems = navItems;
+            }
+            get navItemListHtmlElement() {
+                return this._navItemListHtmlElement;
+            }
+            set navItemListHtmlElement(value) {
+                this._navItemListHtmlElement = value;
+            }
+            get navItems() {
+                return this._navItems;
+            }
+            set navItems(value) {
+                this._navItems = value;
+            }
+            get titleHtmlElement() {
+                return this._titleHtmlElement;
+            }
+            set titleHtmlElement(value) {
+                this._titleHtmlElement = value;
+            }
+        }
+        Display.NavGroup = NavGroup;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Nav {
+            constructor(state) {
+                this.state = state;
+            }
+            static setup(navJquery) {
+                let navGroupJquery = navJquery.find(".rocket-nav-group");
+                let navGroups = [];
+                navGroupJquery.each((key, htmlElem) => {
+                    let jqueryElem = $(htmlElem);
+                    let navGroupTitleCollection = htmlElem.getElementsByClassName("rocket-global-nav-group-title");
+                    let titleElem = Array.prototype.slice.call(navGroupTitleCollection)[0];
+                    let navItems = [];
+                    jqueryElem.find(".nav-item").each((key, navItemHtmlElem) => {
+                        navItems.push(new Display.NavItem(navItemHtmlElem));
+                    });
+                    navGroups.push(new Rocket.Display.NavGroup(jqueryElem.find("ul").get(0), titleElem, navItems));
+                });
+                return new Nav(new Display.NavState(navJquery.find("*[data-rocket-user-id]").data("rocket-user-id"), navGroups));
+            }
+            initNavigation() {
+                this.state.getActiveNavItem();
+            }
+            get state() {
+                return this._state;
+            }
+            set state(value) {
+                this._state = value;
+            }
+        }
+        Display.Nav = Nav;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavItem {
+            constructor(htmlElement) {
+                this._htmlElement = htmlElement;
+            }
+            get htmlElement() {
+                return this._htmlElement;
+            }
+            set htmlElement(value) {
+                this._htmlElement = value;
+            }
+        }
+        Display.NavItem = NavItem;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var util;
+    (function (util) {
+        class LocalStoreManager {
+            getItem(name) {
+                return window.localStorage.getItem(name);
+            }
+            setItem(name, value) {
+                window.localStorage.setItem(name, value);
+            }
+        }
+        util.LocalStoreManager = LocalStoreManager;
+    })(util = Rocket.util || (Rocket.util = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map

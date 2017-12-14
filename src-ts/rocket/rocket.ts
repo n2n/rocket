@@ -3,7 +3,7 @@ namespace Rocket {
 	let blocker: Rocket.Cmd.Blocker;
 	let initializer: Rocket.Display.Initializer;
 	let $ = jQuery;
-	
+
 	jQuery(document).ready(function ($) {
 		var jqContainer = $("#rocket-content-container");
 
@@ -11,9 +11,9 @@ namespace Rocket {
 
 		blocker = new Rocket.Cmd.Blocker(container);
 		blocker.init($("body"));
-		
-		initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), 
-				jqContainer.data("display-error-label"));
+
+		initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"),
+			jqContainer.data("display-error-label"));
 		initializer.scan();
 
 		Jhtml.ready(() => {
@@ -26,100 +26,108 @@ namespace Rocket {
 					Rocket.Impl.Overview.OverviewPage.from($(this));
 				});
 			});
-			
+
 			Jhtml.ready(() => {
 				$(".rocket-impl-overview").each(function () {
 					Rocket.Impl.Overview.OverviewPage.from($(this));
 				});
 			});
 		}) ();
-		
+
 		(function () {
 			$("form.rocket-form").each(function () {
 				Rocket.Impl.Form.from($(this));
 			});
-			
+
 			Jhtml.ready(() => {
 				$("form.rocket-form").each(function () {
 					Rocket.Impl.Form.from($(this));
 				});
 			});
 		}) ();
-		
+
 		(function () {
 			$(".rocket-impl-to-many").each(function () {
 				Rocket.Impl.Relation.ToMany.from($(this));
 			});
-			
+
 			Jhtml.ready(() => {
 				$(".rocket-impl-to-many").each(function () {
 					Rocket.Impl.Relation.ToMany.from($(this));
 				});
 			});
 		}) ();
-		
+
 		(function () {
 			$(".rocket-impl-to-one").each(function () {
 				Rocket.Impl.Relation.ToOne.from($(this));
 			});
-			
+
 			Jhtml.ready(() => {
 				$(".rocket-impl-to-one").each(function () {
 					Rocket.Impl.Relation.ToOne.from($(this));
 				});
 			});
 		}) ();
-		
+
 		(function () {
 			let t = new Rocket.Impl.Translator(container);
 			t.scan();
-			
+
 			Jhtml.ready(() => {
-				t.scan();	
+				t.scan();
 			});
 		}) ();
-		
-        (function () {
-            Jhtml.ready((elements) => {
-                $(elements).find("a.rocket-jhtml").each(function () {
-                    new Rocket.Display.Command(Jhtml.Ui.Link.from(<HTMLAnchorElement> this)).observe();
-                });
-            });
-        })();
-		
-        (function () {
-        	let moveState = new Impl.Order.MoveState();
-        	
-            Jhtml.ready((elements) => {
-                $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Impl.Order.Control($(this), Impl.Order.InsertMode.BEFORE, moveState);
-                });
-                $(elements).find(".rocket-impl-insert-after").each(function () {
-                    new Impl.Order.Control($(this), Impl.Order.InsertMode.AFTER, moveState);
-                });
-                $(elements).find(".rocket-impl-insert-as-child").each(function () {
-                    new Impl.Order.Control($(this), Impl.Order.InsertMode.CHILD, moveState);
-                });
-            });
-        })();
+
+		(function () {
+			Jhtml.ready((elements) => {
+				$(elements).find("a.rocket-jhtml").each(function () {
+					new Rocket.Display.Command(Jhtml.Ui.Link.from(<HTMLAnchorElement> this)).observe();
+				});
+			});
+		})();
+
+		(function () {
+			let moveState = new Impl.Order.MoveState();
+
+			Jhtml.ready((elements) => {
+				$(elements).find(".rocket-impl-insert-before").each(function () {
+					new Impl.Order.Control($(this), Impl.Order.InsertMode.BEFORE, moveState);
+				});
+				$(elements).find(".rocket-impl-insert-after").each(function () {
+					new Impl.Order.Control($(this), Impl.Order.InsertMode.AFTER, moveState);
+				});
+				$(elements).find(".rocket-impl-insert-as-child").each(function () {
+					new Impl.Order.Control($(this), Impl.Order.InsertMode.CHILD, moveState);
+				});
+			});
+		})();
+
+		(function() {
+			Jhtml.ready((elements) => {
+				return;
+				let nav = Rocket.Display.Nav.setup($($(elements).find("#rocket-global-nav")));
+				nav.initNavigation();
+			});
+		})();
 	});
-	
+
 	export function scan(context: Rocket.Cmd.Zone = null) {
 		initializer.scan();
 	}
-	
+
 	export function getContainer(): Rocket.Cmd.Container {
 		return container;
 	}
-	
+
 	export function layerOf(elem: HTMLElement): Rocket.Cmd.Layer {
 		return Rocket.Cmd.Layer.of($(elem));
 	}
-	
+
 	export function contextOf(elem: HTMLElement): Rocket.Cmd.Zone {
 		return Rocket.Cmd.Zone.of($(elem));
 	}
-	
+
 //	export function exec(url: string, config: Rocket.Cmd.ExecConfig = null) {
 //		executor.exec(url, config);
 //	}
