@@ -108,7 +108,7 @@ namespace Rocket.Impl.Order {
 			
 			if (this.insertMode == InsertMode.BEFORE) {
 				this.collection.insertAfter(this.collection.findPreviousEntry(this.entry), entries);
-			} else if (this.insertMode == InsertMode.AFTER){
+			} else if (this.entry.treeLevel === null){
 				this.collection.insertAfter(this.entry, entries);
 			} else {
 				let aboveEntry = this.collection.findTreeDescendants(this.entry).pop();
