@@ -48,13 +48,26 @@ namespace Rocket.Impl.Order {
 				this.prepare(entries);
 			});
 			
-			this.collection.onInserted((entries: Display.Entry[], aboveEntry: Display.Entry) => {
+			this.collection.onInserted((entries: Display.Entry[], aboveEntry: Display.Entry, belowEntry: Display.Entry) => {
 				if (this.moveState.executing) return;
 				
-				if ((this.insertMode == InsertMode.AFTER && this.entry === aboveEntry)
-						|| (this.insertMode == InsertMode.BEFORE && aboveEntry === null
-								&& this.entry === this.collection.entries[1])) {
+				if (this.insertMode == InsertMode.BEFORE) {
+					if (aboveEntry === null && this.entry === this.collection.entries[1]) {
+						this.dingsel(entries);
+						return;
+					}
+					
+					if (belowEntry === this.entry && this.entry.treeLevel !== null 
+							&& aboveEntry.treeLevel < this.entry.treeLevel) {
+						this.dingsel(entries);
+						return;
+					}
+				}
+				
+				if (this.insertMode == InsertMode.AFTER && this.entry === aboveEntry
+						&& (belowEntry === null || this.entry.treeLevel === null || belowEntry.treeLevel <= this.entry.treeLevel)) {
 					this.dingsel(entries);
+					return;
 				}
 			});
 		}
@@ -64,10 +77,6 @@ namespace Rocket.Impl.Order {
 		}
 		
 		private prepare(entries: Display.Entry[]) {
-			if (this.insertMode != InsertMode.BEFORE) {
-				this.moveState.memorizeTreeDecendants(this.entry);
-			}
-			
 			for (let entry of entries) {
 				this.moveState.memorizeTreeDecendants(entry);
 			}
@@ -98,9 +107,15 @@ namespace Rocket.Impl.Order {
 			this.prepare(entries);
 			
 			if (this.insertMode == InsertMode.BEFORE) {
-				this.collection.insertAfter(this.collection.findEntryBefore(this.entry), entries);
-			} else {
+				this.collection.insertAfter(this.collection.findPreviousEntry(this.entry), entries);
+			} else if (this.insertMode == InsertMode.AFTER){
 				this.collection.insertAfter(this.entry, entries);
+			} else {
+				let aboveEntry = this.collection.findTreeDescendants(this.entry).pop();
+				if (!aboveEntry) {
+					aboveEntry = this.entry;
+				}
+				this.collection.insertAfter(aboveEntry, entries);
 			}
 			
 			this.moveState.executing = false;
@@ -140,13 +155,6 @@ namespace Rocket.Impl.Order {
 			if (newTreeLevel === null) return;
 			
 			this.moveState.executing = true;
-			
-			if (this.insertMode != InsertMode.BEFORE) {
-				let aboveDecendants = this.moveState.retrieveTreeDecendants(this.entry);
-				if (aboveDecendants.length > 0) {
-					this.collection.insertAfter(aboveDecendants.pop(), [entry]);
-				}
-			}
 			
 			let decendants = this.moveState.retrieveTreeDecendants(entry);
 

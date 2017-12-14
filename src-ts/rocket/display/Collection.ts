@@ -136,7 +136,7 @@ namespace Rocket.Display {
 				"update": (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) => {
 					this.sortedEntries = null;
 					let entry = Entry.find(ui.item, true);
-					this.insertedCbr.fire([entry], this.findEntryBefore(entry));
+					this.insertedCbr.fire([entry], this.findPreviousEntry(entry), this.findNextEntry(entry));
 				}
 		    })/*.disableSelection()*/;
 			
@@ -184,12 +184,12 @@ namespace Rocket.Display {
 			return !!this.entryMap[id] && this.entryMap[id] === entry; 
 		}
 		
-		findEntryBefore(belowEntry: Entry): Entry|null {
-			this.valEntry(belowEntry);
+		findPreviousEntry(nextEntry: Entry): Entry|null {
+			this.valEntry(nextEntry);
 			
 			let aboveEntry: Entry = null;
 			for (let entry of this.entries) {
-				if (entry === belowEntry) return aboveEntry;
+				if (entry === nextEntry) return aboveEntry;
 				
 				aboveEntry = entry;
 			}
@@ -197,20 +197,36 @@ namespace Rocket.Display {
 			return null;
 		}
 		
-		findPreviousEntries(beforeEntry: Entry): Entry[] {
-				this.valEntry(beforeEntry);
-				
-				let previousEntries: Entry[] = [];
-				for (let entry of this.entries) {
-					if (entry === beforeEntry) {
-						return previousEntries;
-					}
-					
-					previousEntries.push(entry);
+		findPreviousEntries(previousEntry: Entry): Entry[] {
+			this.valEntry(previousEntry);
+			
+			let previousEntries: Entry[] = [];
+			for (let entry of this.entries) {
+				if (entry === previousEntry) {
+					return previousEntries;
 				}
 				
-				return previousEntries;
+				previousEntries.push(entry);
 			}
+			
+			return previousEntries;
+		}
+		
+		findNextEntry(previousEntry: Entry): Entry|null {
+			this.valEntry(previousEntry);
+			
+			for (let entry of this.entries) {
+				if (!previousEntry) {
+					return entry;
+				}
+				
+				if (entry === previousEntry) {
+					previousEntry = null;
+				}
+			}
+			
+			return null;
+		}
 		
 		findNextEntries(beforeEntry: Entry): Entry[] {
 			this.valEntry(beforeEntry);
@@ -230,6 +246,8 @@ namespace Rocket.Display {
 		}
 		
 		findTreeParents(baseEntry: Entry) {
+			this.valTreeEntry(baseEntry);
+			
 			let parentEntries: Entry[] = [];
 			
 			if (baseEntry.treeLevel === null) {
@@ -257,7 +275,15 @@ namespace Rocket.Display {
 			return parentEntries;
 		}
 		
+		private valTreeEntry(entry: Entry) {
+			if (entry.treeLevel === null) {
+				throw new Error("Passed entry is not part of a tree.");
+			}
+		}
+		
 		findTreeDescendants(baseEntry: Entry): Entry[] {
+			this.valTreeEntry(baseEntry);
+				
 			let treeLevel = baseEntry.treeLevel;
 			let treeDescendants: Entry[] = [];
 			for (let entry of this.findNextEntries(baseEntry)) {
@@ -277,6 +303,8 @@ namespace Rocket.Display {
 				this.valEntry(aboveEntry)
 			}
 			
+			let belowEntry = this.findNextEntry(aboveEntry);
+			
 			this.insertCbr.fire(entries);
 			
 			for (let entry of entries.reverse()) {
@@ -288,7 +316,7 @@ namespace Rocket.Display {
 			}
 			
 			this.sortedEntries = null;
-			this.insertedCbr.fire(entries, aboveEntry);
+			this.insertedCbr.fire(entries, aboveEntry, belowEntry);
 		}
 		
 		onInsert(callback: InsertCallback) {
@@ -341,6 +369,6 @@ namespace Rocket.Display {
 	}
 	
 	export interface InsertedCallback {
-		(entries: Entry[], aboveEntry: Entry): any
+		(entries: Entry[], aboveEntry: Entry, belowEntry: Entry): any
 	}
 }
