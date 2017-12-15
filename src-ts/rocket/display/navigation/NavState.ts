@@ -6,48 +6,57 @@ namespace Rocket.Display {
 		private _userId: number = null;
 		private _scrollPos: number = null;
 		private _activeNavItem: NavItem = null;
-		private _openedNavGroups: NavGroup[] = null;
+		private _openedNavGroups: NavGroup[] = [];
 		private _localStoreManager: Rocket.util.LocalStoreManager = null;
+
+		private navStateItems: NavStateItem[] = [];
+		private navStateItem: NavStateItem = null;
 
 		constructor(userId: number, navGroups: NavGroup[]) {
 			this._userId = userId;
 			this._navGroups = navGroups;
 			this._localStoreManager = new Rocket.util.LocalStoreManager();
 			this.init();
-			this.setupClickEvents();
 		}
 
 		private init() {
-			let navStateItems: Array<NavStateItem> = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN));
-			let navStateItem = null;
-			if (navStateItems === null
-				|| null === (navStateItem = navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
-				navStateItems = [this.buildNavStateItem()];
-				this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(navStateItems));
+			this.navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN)) || [];
+			if (this.navStateItems === null
+				|| !(this.navStateItem = this.navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
+				this.navStateItem = this.buildNavStateItem();
+				this.save();
 				return;
 			}
 
-			this.scrollPos = navStateItem.scrollPos;
+			this.scrollPos = this.navStateItem.scrollPos;
 
-		}
-
-		public getActiveNavItem(): NavItem {
-			return null;
-		}
-
-		private setupClickEvents() {
-			for (let navGroup of this.navGroups) {
-				$(navGroup.titleHtmlElement).click(function () {
-					$(navGroup.navItemListHtmlElement).slideUp({duration: 'fast'});
-				});
+			for (let navGroupId of this.navStateItem.openedGroupIds) {
+				let navGroup = this.navGroups.find(navGroup => navGroup.id === navGroupId);
+				this.openedNavGroups.push(navGroup);
 			}
 		}
 
+		public isGroupOpen(navGroup: NavGroup): boolean {
+			return this.openedNavGroups.indexOf(navGroup) > -1;
+		}
+
+		public save(): void {
+			this.navStateItems.splice(this.navStateItems.indexOf(this.navStateItem), 1);
+			this.navStateItem = this.buildNavStateItem();
+			this.navStateItems.unshift(this.navStateItem);
+			this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(this.navStateItems));
+		}
+
 		private buildNavStateItem(): NavStateItem {
+			let openedGroupIds: string[] = [];
+			for (let navGroup of this.openedNavGroups) {
+				openedGroupIds.push(navGroup.id);
+			}
+
 			return {userId: this._userId,
 				scrollPos: this._scrollPos,
 				activeNavItemUrlStr: null,
-				openedGroupNames: null};
+				openedGroupIds: openedGroupIds};
 		}
 
 		get navGroups(): Rocket.Display.NavGroup[] {
@@ -95,6 +104,6 @@ namespace Rocket.Display {
 		userId: number,
 		scrollPos: number,
 		activeNavItemUrlStr: string,
-		openedGroupNames: string[]
+		openedGroupIds: string[]
 	};
 }

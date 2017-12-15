@@ -32,7 +32,7 @@ namespace Rocket {
 					Rocket.Impl.Overview.OverviewPage.from($(this));
 				});
 			});
-		}) ();
+		})();
 
 		(function () {
 			$("form.rocket-form").each(function () {
@@ -105,8 +105,7 @@ namespace Rocket {
 
 		(function() {
 			Jhtml.ready((elements) => {
-				return;
-				let nav = Rocket.Display.Nav.setup($($(elements).find("#rocket-global-nav")));
+				let nav = Rocket.Display.Nav.setup($(elements).find("#rocket-global-nav"));
 				nav.initNavigation();
 			});
 		})();
