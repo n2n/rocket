@@ -18,7 +18,7 @@ namespace Rocket.Cmd {
 		}
 		
 		private observeLayer(layer: Layer) {
-			for (let context of layer.contexts) {
+			for (let context of layer.zones) {
 				this.observePage(context)
 			}
 			

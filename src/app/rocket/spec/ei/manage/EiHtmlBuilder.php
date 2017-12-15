@@ -101,19 +101,24 @@ class EiHtmlBuilder {
 	
 	private $collectionTagName = null;
 	
-	public function collectionOpen(string $tagName, array $attrs = null) {
-		$this->view->out($this->getCollectionOpen($tagName, $attrs));
+	public function collectionOpen(string $tagName, $eiTypeArg, array $attrs = null) {
+		$this->view->out($this->getCollectionOpen($tagName, $eiTypeArg, $attrs));
 	}
 	
-	public function getCollectionOpen(string $tagName, array $attrs = null) {
+	public function getCollectionOpen(string $tagName, $eiTypeArg, array $attrs = null) {
 		if ($this->collectionTagName !== null) {
 			throw new IllegalStateException('Collection already open');
 		}
 		
 		$this->collectionTagName = $tagName;
+		$supremeEiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg)->getSupremeEiType();
+		
+		$colAttrs = array(
+				'class' => 'rocket-collection',
+				'data-rocket-supreme-ei-type-id' => $supremeEiType->getId());
 		
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
-				HtmlUtils::mergeAttrs(['class' => 'rocket-collection'], (array) $attrs)) . '>');
+				HtmlUtils::mergeAttrs($colAttrs, (array) $attrs)) . '>');
 	}
 	
 	public function collectionClose() {

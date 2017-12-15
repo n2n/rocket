@@ -236,7 +236,7 @@ namespace Rocket.Display {
 		}
 		
 		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
-			return 0 == jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
+			return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 		
 		private static buildIdRepSelector(supremeEiTypeId: string, idRep: string): string {

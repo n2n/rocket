@@ -126,7 +126,7 @@ var Rocket;
                 });
             }
             observeLayer(layer) {
-                for (let context of layer.contexts) {
+                for (let context of layer.zones) {
                     this.observePage(context);
                 }
                 layer.onNewZone((context) => {
@@ -223,33 +223,72 @@ var Rocket;
                 this.layerTrigger(Container.LayerEventType.REMOVED, layer);
             }
             registerLayer(layer) {
-                layer.monitor.onDirective((evt) => this.directiveExecuted(evt.directive));
+                let lastModDefs = [];
+                layer.monitor.onDirective((evt) => {
+                    lastModDefs = this.directiveExecuted(evt.directive);
+                });
+                layer.monitor.onDirectiveExecuted((evt) => {
+                    if (layer.currentZone && lastModDefs.length > 0) {
+                        layer.currentZone.lastModDefs = lastModDefs;
+                    }
+                });
                 this._layers.push(layer);
             }
             directiveExecuted(directive) {
                 let data = directive.getAdditionalData();
                 if (!data || !data.rocketEvent || !data.rocketEvent.eiMods)
                     return;
+                let lastModDefs = [];
                 let zoneClearer = new ZoneClearer(this.getAllZones());
                 let eiMods = data.rocketEvent.eiMods;
                 for (let supremeEiTypeId in eiMods) {
                     if (!eiMods[supremeEiTypeId].idReps && eiMods[supremeEiTypeId].draftIds) {
-                        zoneClearer.clearBySupremeEiType(supremeEiTypeId);
+                        zoneClearer.clearBySupremeEiType(supremeEiTypeId, false);
                         continue;
                     }
                     if (eiMods[supremeEiTypeId].idReps) {
                         for (let idRep in eiMods[supremeEiTypeId].idReps) {
-                            let mode = eiMods[supremeEiTypeId].idReps[idRep];
-                            zoneClearer.clearByIdRep(supremeEiTypeId, idRep, mode == "removed");
+                            let modType = eiMods[supremeEiTypeId].idReps[idRep];
+                            switch (modType) {
+                                case "changed":
+                                    zoneClearer.clearByIdRep(supremeEiTypeId, idRep, false);
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, idRep));
+                                    break;
+                                case "removed":
+                                    zoneClearer.clearByIdRep(supremeEiTypeId, idRep, true);
+                                    break;
+                                case "added":
+                                    zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, idRep));
+                                    break;
+                                default:
+                                    throw new Error("Invalid mod type " + modType);
+                            }
                         }
                     }
                     if (eiMods[supremeEiTypeId].draftIds) {
-                        for (let draftId in eiMods[supremeEiTypeId].draftIds) {
-                            let mode = eiMods[supremeEiTypeId].draftIds[draftId];
-                            zoneClearer.clearByDraftId(supremeEiTypeId, parseInt(draftId), mode == "removed");
+                        for (let draftIdStr in eiMods[supremeEiTypeId].draftIds) {
+                            let draftId = parseInt(draftIdStr);
+                            let modType = eiMods[supremeEiTypeId].draftIds[draftIdStr];
+                            switch (modType) {
+                                case "changed":
+                                    zoneClearer.clearByDraftId(supremeEiTypeId, draftId, false);
+                                    lastModDefs.push(Cmd.LastModDef.createDraft(supremeEiTypeId, draftId));
+                                    break;
+                                case "removed":
+                                    zoneClearer.clearByDraftId(supremeEiTypeId, draftId, true);
+                                    break;
+                                case "added":
+                                    zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
+                                    lastModDefs.push(Cmd.LastModDef.createDraft(supremeEiTypeId, draftId));
+                                    break;
+                                default:
+                                    throw new Error("Invalid mod type " + modType);
+                            }
                         }
                     }
                 }
+                return lastModDefs;
             }
             createLayer(dependentZone = null) {
                 var jqLayer = $("<div />", {
@@ -298,14 +337,14 @@ var Rocket;
                 return layer;
             }
             getAllZones() {
-                var contexts = new Array();
+                var zones = new Array();
                 for (var i in this._layers) {
-                    var layerPages = this._layers[i].contexts;
-                    for (var j in layerPages) {
-                        contexts.push(layerPages[j]);
+                    var layerZones = this._layers[i].zones;
+                    for (var j in layerZones) {
+                        zones.push(layerZones[j]);
                     }
                 }
-                return contexts;
+                return zones;
             }
             layerTrigger(eventType, layer) {
                 var container = this;
@@ -326,12 +365,18 @@ var Rocket;
             constructor(zones) {
                 this.zones = zones;
             }
-            clearBySupremeEiType(supremeEiTypeId) {
+            clearBySupremeEiType(supremeEiTypeId, restrictToCollections) {
                 for (let zone of this.zones) {
                     if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
                         continue;
                     }
-                    if (Rocket.Display.Entry.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
+                    if (!restrictToCollections) {
+                        if (Rocket.Display.Entry.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
+                            zone.page.dispose();
+                        }
+                        return;
+                    }
+                    if (Rocket.Display.Collection.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
                         zone.page.dispose();
                     }
                 }
@@ -460,7 +505,6 @@ var Rocket;
                 if (!zone) {
                     zone = this.createZone(page.url);
                     zone.clear(true);
-                    this.addZone(zone);
                 }
                 if (!zone.page) {
                     zone.page = page;
@@ -525,7 +569,7 @@ var Rocket;
             get empty() {
                 return this._zones.length == 0;
             }
-            get contexts() {
+            get zones() {
                 return this._zones.slice();
             }
             addZone(zone) {
@@ -1158,6 +1202,18 @@ var Rocket;
         }
         Cmd.Zone = Zone;
         class LastModDef {
+            static createLive(supremeEiTypeId, idRep) {
+                let lmd = new LastModDef();
+                lmd.supremeEiTypeId = supremeEiTypeId;
+                lmd.idRep = idRep;
+                return lmd;
+            }
+            static createDraft(supremeEiTypeId, draftId) {
+                let lmd = new LastModDef();
+                lmd.supremeEiTypeId = supremeEiTypeId;
+                lmd.draftId = draftId;
+                return lmd;
+            }
             static fromEntry(entry) {
                 let lastModDef = new LastModDef();
                 lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
@@ -1652,8 +1708,25 @@ var Rocket;
                     return null;
                 return Collection.from(jqElem);
             }
+            static fromArr(entriesJq) {
+                let collections = new Array();
+                entriesJq.each(function () {
+                    collections.push(Collection.from($(this)));
+                });
+                return collections;
+            }
+            static buildSupremeEiTypeISelector(supremeEiTypeId) {
+                return "." + Collection.CSS_CLASS + "[" + Collection.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+            }
+            static findBySupremeEiTypeId(jqContainer, supremeEiTypeId) {
+                return Collection.fromArr(jqContainer.find(Collection.buildSupremeEiTypeISelector(supremeEiTypeId)));
+            }
+            static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
+                return 0 < jqContainer.has(Collection.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
+            }
         }
         Collection.CSS_CLASS = "rocket-collection";
+        Collection.SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
         Display.Collection = Collection;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
@@ -1929,7 +2002,7 @@ var Rocket;
                 return Entry.fromArr(jqContainer.find(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)));
             }
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
-                return 0 == jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
+                return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
             }
             static buildIdRepSelector(supremeEiTypeId, idRep) {
                 return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
@@ -2605,264 +2678,6 @@ var Rocket;
             ;
         }
         Display.StressWindow = StressWindow;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class Nav {
-            constructor(htmlElement, state) {
-                this.htmlElement = htmlElement;
-                this.state = state;
-            }
-            static setup(navJquery) {
-                let navGroupJquery = $(".rocket-nav-group");
-                let navGroups = [];
-                navGroupJquery.each((key, htmlElem) => {
-                    let jqueryElem = $(htmlElem);
-                    let navGroupTitleCollection = htmlElem.getElementsByClassName("rocket-global-nav-group-title");
-                    let titleElem = Array.prototype.slice.call(navGroupTitleCollection)[0];
-                    let navItems = [];
-                    jqueryElem.find(".nav-item").each((key, navItemHtmlElem) => {
-                        navItems.push(new Display.NavItem(navItemHtmlElem));
-                    });
-                    navGroups.push(new Rocket.Display.NavGroup(jqueryElem.find("ul").get(0), titleElem, navItems));
-                });
-                return new Nav(navJquery.get(0), new Display.NavState(navJquery.find("*[data-rocket-user-id]").data("rocket-user-id"), navGroups));
-            }
-            initNavigation() {
-                this.initGroups();
-                this.setupEvents();
-                this.scrollToPos(this.state.scrollPos);
-            }
-            scrollToPos(scrollPos) {
-                $(this.htmlElement).animate({
-                    scrollTop: scrollPos
-                }, 0);
-            }
-            initGroups() {
-                for (let navGroup of this.state.navGroups) {
-                    if (!this.state.isGroupOpen(navGroup)) {
-                        navGroup.close(true);
-                    }
-                    else {
-                        navGroup.open(true);
-                    }
-                }
-            }
-            setupEvents() {
-                let that = this;
-                $(this.htmlElement).scroll(function (e) {
-                    let scrollPos = $(this).scrollTop();
-                    clearTimeout($.data(this, 'scrollTimer'));
-                    $.data(this, 'scrollTimer', setTimeout(function () {
-                        that.state.scrollPos = scrollPos;
-                        that.state.save();
-                    }, 150));
-                });
-                for (let navGroup of this.state.navGroups) {
-                    $(navGroup.titleHtmlElement).click(function () {
-                        let openedNavGroups = that.state.openedNavGroups;
-                        let openedNavGroupsArrPos = openedNavGroups.indexOf(navGroup);
-                        if (openedNavGroupsArrPos > -1) {
-                            navGroup.close();
-                            that.state.openedNavGroups.splice(openedNavGroupsArrPos, 1);
-                        }
-                        else {
-                            navGroup.open();
-                            that.state.openedNavGroups.push(navGroup);
-                        }
-                        that.state.scrollPos = $(that.htmlElement).scrollTop();
-                        that.state.save();
-                    });
-                }
-            }
-            get state() {
-                return this._state;
-            }
-            set state(value) {
-                this._state = value;
-            }
-            get htmlElement() {
-                return this._htmlElement;
-            }
-            set htmlElement(value) {
-                this._htmlElement = value;
-            }
-        }
-        Display.Nav = Nav;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavGroup {
-            constructor(navItemListHtmlElement, titleHtmlElement, navItems) {
-                this.navItemListHtmlElement = navItemListHtmlElement;
-                this.titleHtmlElement = titleHtmlElement;
-                this._navItems = navItems;
-                this._id = this.buildNavGroupId();
-            }
-            open(instant = false) {
-                let titleElemJquery = $(this.titleHtmlElement);
-                let iconJquery = titleElemJquery.find('i');
-                iconJquery.removeClass('fa-plus');
-                iconJquery.addClass('fa-minus');
-                let ulElemJquery = $(this.navItemListHtmlElement);
-                if (instant) {
-                    ulElemJquery.slideDown({ duration: 0 });
-                    return;
-                }
-                ulElemJquery.slideDown({ duration: "fast" });
-            }
-            close(instant = false) {
-                let titleElemJquery = $(this.titleHtmlElement);
-                let iconJquery = titleElemJquery.find('i');
-                iconJquery.removeClass('fa-minus');
-                iconJquery.addClass('fa-plus');
-                let ulElemJquery = $(this.navItemListHtmlElement);
-                if (instant) {
-                    ulElemJquery.slideUp({ duration: 0 });
-                    return;
-                }
-                ulElemJquery.slideUp({ duration: "fast" });
-            }
-            buildNavGroupId() {
-                return this._titleHtmlElement.innerText.toLowerCase().replace(" ", "-");
-            }
-            get navItemListHtmlElement() {
-                return this._navItemListHtmlElement;
-            }
-            set navItemListHtmlElement(value) {
-                this._navItemListHtmlElement = value;
-            }
-            get navItems() {
-                return this._navItems;
-            }
-            set navItems(value) {
-                this._navItems = value;
-            }
-            get titleHtmlElement() {
-                return this._titleHtmlElement;
-            }
-            set titleHtmlElement(value) {
-                this._titleHtmlElement = value;
-            }
-            get id() {
-                return this._id;
-            }
-            set id(value) {
-                this._id = value;
-            }
-        }
-        Display.NavGroup = NavGroup;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavItem {
-            constructor(htmlElement) {
-                this._htmlElement = htmlElement;
-            }
-            get htmlElement() {
-                return this._htmlElement;
-            }
-            set htmlElement(value) {
-                this._htmlElement = value;
-            }
-        }
-        Display.NavItem = NavItem;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavState {
-            constructor(userId, navGroups) {
-                this.LOCALSTORE_ITEM_PATTERN = "rocket_navigation_user_states";
-                this._userId = null;
-                this._scrollPos = null;
-                this._activeNavItem = null;
-                this._openedNavGroups = [];
-                this._localStoreManager = null;
-                this.navStateItems = [];
-                this.navStateItem = null;
-                this._userId = userId;
-                this._navGroups = navGroups;
-                this._localStoreManager = new Rocket.util.LocalStoreManager();
-                this.init();
-            }
-            init() {
-                this.navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN)) || [];
-                if (this.navStateItems === null
-                    || !(this.navStateItem = this.navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
-                    this.navStateItem = this.buildNavStateItem();
-                    this.save();
-                    return;
-                }
-                this.scrollPos = this.navStateItem.scrollPos;
-                for (let navGroupId of this.navStateItem.openedGroupIds) {
-                    let navGroup = this.navGroups.find(navGroup => navGroup.id === navGroupId);
-                    this.openedNavGroups.push(navGroup);
-                }
-            }
-            isGroupOpen(navGroup) {
-                return this.openedNavGroups.indexOf(navGroup) > -1;
-            }
-            save() {
-                this.navStateItems.splice(this.navStateItems.indexOf(this.navStateItem), 1);
-                this.navStateItem = this.buildNavStateItem();
-                this.navStateItems.unshift(this.navStateItem);
-                this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(this.navStateItems));
-            }
-            buildNavStateItem() {
-                let openedGroupIds = [];
-                for (let navGroup of this.openedNavGroups) {
-                    openedGroupIds.push(navGroup.id);
-                }
-                return { userId: this._userId,
-                    scrollPos: this._scrollPos,
-                    activeNavItemUrlStr: null,
-                    openedGroupIds: openedGroupIds };
-            }
-            get navGroups() {
-                return this._navGroups;
-            }
-            set navGroups(value) {
-                this._navGroups = value;
-            }
-            get userId() {
-                return this._userId;
-            }
-            set userId(value) {
-                this._userId = value;
-            }
-            get scrollPos() {
-                return this._scrollPos;
-            }
-            set scrollPos(value) {
-                this._scrollPos = value;
-            }
-            get activeNavItem() {
-                return this._activeNavItem;
-            }
-            set activeNavItem(value) {
-                this._activeNavItem = value;
-            }
-            get openedNavGroups() {
-                return this._openedNavGroups;
-            }
-            set openedNavGroups(value) {
-                this._openedNavGroups = value;
-            }
-        }
-        Display.NavState = NavState;
-        ;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -6060,6 +5875,264 @@ var Rocket;
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Nav {
+            constructor(htmlElement, state) {
+                this.htmlElement = htmlElement;
+                this.state = state;
+            }
+            static setup(navJquery) {
+                let navGroupJquery = $(".rocket-nav-group");
+                let navGroups = [];
+                navGroupJquery.each((key, htmlElem) => {
+                    let jqueryElem = $(htmlElem);
+                    let navGroupTitleCollection = htmlElem.getElementsByClassName("rocket-global-nav-group-title");
+                    let titleElem = Array.prototype.slice.call(navGroupTitleCollection)[0];
+                    let navItems = [];
+                    jqueryElem.find(".nav-item").each((key, navItemHtmlElem) => {
+                        navItems.push(new Display.NavItem(navItemHtmlElem));
+                    });
+                    navGroups.push(new Rocket.Display.NavGroup(jqueryElem.find("ul").get(0), titleElem, navItems));
+                });
+                return new Nav(navJquery.get(0), new Display.NavState(navJquery.find("*[data-rocket-user-id]").data("rocket-user-id"), navGroups));
+            }
+            initNavigation() {
+                this.initGroups();
+                this.setupEvents();
+                this.scrollToPos(this.state.scrollPos);
+            }
+            scrollToPos(scrollPos) {
+                $(this.htmlElement).animate({
+                    scrollTop: scrollPos
+                }, 0);
+            }
+            initGroups() {
+                for (let navGroup of this.state.navGroups) {
+                    if (!this.state.isGroupOpen(navGroup)) {
+                        navGroup.close(true);
+                    }
+                    else {
+                        navGroup.open(true);
+                    }
+                }
+            }
+            setupEvents() {
+                let that = this;
+                $(this.htmlElement).scroll(function (e) {
+                    let scrollPos = $(this).scrollTop();
+                    clearTimeout($.data(this, 'scrollTimer'));
+                    $.data(this, 'scrollTimer', setTimeout(function () {
+                        that.state.scrollPos = scrollPos;
+                        that.state.save();
+                    }, 150));
+                });
+                for (let navGroup of this.state.navGroups) {
+                    $(navGroup.titleHtmlElement).click(function () {
+                        let openedNavGroups = that.state.openedNavGroups;
+                        let openedNavGroupsArrPos = openedNavGroups.indexOf(navGroup);
+                        if (openedNavGroupsArrPos > -1) {
+                            navGroup.close();
+                            that.state.openedNavGroups.splice(openedNavGroupsArrPos, 1);
+                        }
+                        else {
+                            navGroup.open();
+                            that.state.openedNavGroups.push(navGroup);
+                        }
+                        that.state.scrollPos = $(that.htmlElement).scrollTop();
+                        that.state.save();
+                    });
+                }
+            }
+            get state() {
+                return this._state;
+            }
+            set state(value) {
+                this._state = value;
+            }
+            get htmlElement() {
+                return this._htmlElement;
+            }
+            set htmlElement(value) {
+                this._htmlElement = value;
+            }
+        }
+        Display.Nav = Nav;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavGroup {
+            constructor(navItemListHtmlElement, titleHtmlElement, navItems) {
+                this.navItemListHtmlElement = navItemListHtmlElement;
+                this.titleHtmlElement = titleHtmlElement;
+                this._navItems = navItems;
+                this._id = this.buildNavGroupId();
+            }
+            open(instant = false) {
+                let titleElemJquery = $(this.titleHtmlElement);
+                let iconJquery = titleElemJquery.find('i');
+                iconJquery.removeClass('fa-plus');
+                iconJquery.addClass('fa-minus');
+                let ulElemJquery = $(this.navItemListHtmlElement);
+                if (instant) {
+                    ulElemJquery.slideDown({ duration: 0 });
+                    return;
+                }
+                ulElemJquery.slideDown({ duration: "fast" });
+            }
+            close(instant = false) {
+                let titleElemJquery = $(this.titleHtmlElement);
+                let iconJquery = titleElemJquery.find('i');
+                iconJquery.removeClass('fa-minus');
+                iconJquery.addClass('fa-plus');
+                let ulElemJquery = $(this.navItemListHtmlElement);
+                if (instant) {
+                    ulElemJquery.slideUp({ duration: 0 });
+                    return;
+                }
+                ulElemJquery.slideUp({ duration: "fast" });
+            }
+            buildNavGroupId() {
+                return this._titleHtmlElement.innerText.toLowerCase().replace(" ", "-");
+            }
+            get navItemListHtmlElement() {
+                return this._navItemListHtmlElement;
+            }
+            set navItemListHtmlElement(value) {
+                this._navItemListHtmlElement = value;
+            }
+            get navItems() {
+                return this._navItems;
+            }
+            set navItems(value) {
+                this._navItems = value;
+            }
+            get titleHtmlElement() {
+                return this._titleHtmlElement;
+            }
+            set titleHtmlElement(value) {
+                this._titleHtmlElement = value;
+            }
+            get id() {
+                return this._id;
+            }
+            set id(value) {
+                this._id = value;
+            }
+        }
+        Display.NavGroup = NavGroup;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavItem {
+            constructor(htmlElement) {
+                this._htmlElement = htmlElement;
+            }
+            get htmlElement() {
+                return this._htmlElement;
+            }
+            set htmlElement(value) {
+                this._htmlElement = value;
+            }
+        }
+        Display.NavItem = NavItem;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavState {
+            constructor(userId, navGroups) {
+                this.LOCALSTORE_ITEM_PATTERN = "rocket_navigation_user_states";
+                this._userId = null;
+                this._scrollPos = null;
+                this._activeNavItem = null;
+                this._openedNavGroups = [];
+                this._localStoreManager = null;
+                this.navStateItems = [];
+                this.navStateItem = null;
+                this._userId = userId;
+                this._navGroups = navGroups;
+                this._localStoreManager = new Rocket.util.LocalStoreManager();
+                this.init();
+            }
+            init() {
+                this.navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN)) || [];
+                if (this.navStateItems === null
+                    || !(this.navStateItem = this.navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
+                    this.navStateItem = this.buildNavStateItem();
+                    this.save();
+                    return;
+                }
+                this.scrollPos = this.navStateItem.scrollPos;
+                for (let navGroupId of this.navStateItem.openedGroupIds) {
+                    let navGroup = this.navGroups.find(navGroup => navGroup.id === navGroupId);
+                    this.openedNavGroups.push(navGroup);
+                }
+            }
+            isGroupOpen(navGroup) {
+                return this.openedNavGroups.indexOf(navGroup) > -1;
+            }
+            save() {
+                this.navStateItems.splice(this.navStateItems.indexOf(this.navStateItem), 1);
+                this.navStateItem = this.buildNavStateItem();
+                this.navStateItems.unshift(this.navStateItem);
+                this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(this.navStateItems));
+            }
+            buildNavStateItem() {
+                let openedGroupIds = [];
+                for (let navGroup of this.openedNavGroups) {
+                    openedGroupIds.push(navGroup.id);
+                }
+                return { userId: this._userId,
+                    scrollPos: this._scrollPos,
+                    activeNavItemUrlStr: null,
+                    openedGroupIds: openedGroupIds };
+            }
+            get navGroups() {
+                return this._navGroups;
+            }
+            set navGroups(value) {
+                this._navGroups = value;
+            }
+            get userId() {
+                return this._userId;
+            }
+            set userId(value) {
+                this._userId = value;
+            }
+            get scrollPos() {
+                return this._scrollPos;
+            }
+            set scrollPos(value) {
+                this._scrollPos = value;
+            }
+            get activeNavItem() {
+                return this._activeNavItem;
+            }
+            set activeNavItem(value) {
+                this._activeNavItem = value;
+            }
+            get openedNavGroups() {
+                return this._openedNavGroups;
+            }
+            set openedNavGroups(value) {
+                this._openedNavGroups = value;
+            }
+        }
+        Display.NavState = NavState;
+        ;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {

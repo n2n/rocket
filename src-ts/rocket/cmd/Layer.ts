@@ -61,7 +61,6 @@ namespace Rocket.Cmd {
 			if (!zone) {
 				zone = this.createZone(page.url)
 				zone.clear(true);
-				this.addZone(zone);
 			}
 			
 			if (!zone.page) {
@@ -147,7 +146,7 @@ namespace Rocket.Cmd {
 			return this._zones.length == 0;
 		}
 		
-		get contexts(): Array<Zone> {
+		get zones(): Array<Zone> {
 			return this._zones.slice();
 		}
 				

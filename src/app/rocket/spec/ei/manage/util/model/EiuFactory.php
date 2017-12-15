@@ -454,7 +454,7 @@ class EiuFactory {
 	 * @param mixed $eiObjectObj
 	 * @return \rocket\spec\ei\manage\EiObject|null
 	 */
-	public static function determineEiObject($eiObjectArg, &$eiEntry, &$eiEntryGui) {
+	public static function determineEiObject($eiObjectArg, &$eiEntry = null, &$eiEntryGui = null) {
 		if ($eiObjectArg instanceof EiObject) {
 			return $eiObjectArg;
 		} 
@@ -479,6 +479,10 @@ class EiuFactory {
 		if ($eiObjectArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiObjectArg->getEiuEntry(false))) {
 			$eiEntry = $eiuEntry->getEiEntry(false);
 			$eiEntryGui = $eiObjectArg->getEiEntryGui();
+			return $eiuEntry->getEiObject();
+		}
+		
+		if ($eiObjectArg instanceof Eiu && null !== ($eiuEntry = $eiObjectArg->entry(false))) {
 			return $eiuEntry->getEiObject();
 		}
 		
@@ -514,6 +518,10 @@ class EiuFactory {
 			return $eiTypeArg->getEiEngine()->getEiType();
 		}
 		
+		if ($eiTypeArg instanceof Eiu && $eiuFrame = $eiTypeArg->frame(false)) {
+			return $eiuFrame->getEiType();
+		}
+		
 		if ($eiTypeArg instanceof EiuFrame) {
 			return $eiTypeArg->getEiType();
 		}
@@ -536,7 +544,7 @@ class EiuFactory {
 		
 		throw new EiuPerimeterException('Can not determine EiType of passed argument ' . $argName 
 				. '. Following types are allowed: '
-				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)) . '; '
+				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)) . '; '
 				. ReflectionUtils::getTypeInfo($eiTypeArg) . ' given.');
 	}
 	

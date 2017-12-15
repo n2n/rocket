@@ -8,7 +8,7 @@ namespace Rocket.Display {
 			this.state = state;
 		}
 
-		public static setup(navJquery: Jquery): Nav {
+		public static setup(navJquery: JQuery): Nav {
 			let navGroupJquery = $(".rocket-nav-group");
 
 			let navGroups: NavGroup[] = [];

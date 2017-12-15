@@ -12,6 +12,7 @@ class EiJhtmlEventInfo {
 	
 	const MOD_TYPE_CHANGED = 'changed';
 	const MOD_TYPE_REMOVED = 'removed';
+	const MOD_TYPE_ADDED = 'added';
 	
 	private $eventMap = array();
 	private $swapControl;
@@ -56,9 +57,20 @@ class EiJhtmlEventInfo {
 	 * @param mixed ...$eiObjectArgs
 	 * @return \rocket\spec\ei\manage\util\model\EiJhtmlEventInfo
 	 */
+	public function eiObjectAdded(...$eiObjectArgs) {
+		foreach ($eiObjectArgs as $eiObjectArg) {
+			$this->eiObjectMod($eiObjectArg, self::MOD_TYPE_ADDED);
+		}
+		return $this;
+	}
+	
+	/**
+	 * @param mixed ...$eiObjectArgs
+	 * @return \rocket\spec\ei\manage\util\model\EiJhtmlEventInfo
+	 */
 	public function eiObjectChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, false);
+			$this->eiObjectMod($eiObjectArg, self::MOD_TYPE_CHANGED);
 		}
 		return $this;
 	}
@@ -69,16 +81,15 @@ class EiJhtmlEventInfo {
 	 */
 	public function eiObjectRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, true);
+			$this->eiObjectMod($eiObjectArg, self::MOD_TYPE_REMOVED);
 		}
 		return $this;
 	}
 	
-	private function eiObjectMod($eiObjectArg, bool $removed) {
+	private function eiObjectMod($eiObjectArg, string $modType) {
 		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
 		
 		$eiTypeId = self::buildTypeId($eiObject->getEiEntityObj()->getEiType());
-		$modType = $removed ? self::MOD_TYPE_REMOVED : self::MOD_TYPE_CHANGED;
 		
 		$idRep = null;
 		if (!$eiObject->isNew()) {

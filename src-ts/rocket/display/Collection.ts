@@ -336,6 +336,7 @@ namespace Rocket.Display {
 		}
 		
 		static readonly CSS_CLASS = "rocket-collection";
+		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
 		
 		static test(jqElem: JQuery) {
 			if (jqElem.hasClass(Collection.CSS_CLASS)) {
@@ -360,6 +361,27 @@ namespace Rocket.Display {
 			if (jqElem.length == 0) return null;
 			
 			return Collection.from(jqElem);
+		}
+
+		
+		private static fromArr(entriesJq: JQuery): Array<Collection> {
+			let collections = new Array<Collection>();
+			entriesJq.each(function () {
+				collections.push(Collection.from($(this)));
+			});
+			return collections;
+		}
+
+		private static buildSupremeEiTypeISelector(supremeEiTypeId: string): string {
+			return "." + Collection.CSS_CLASS + "[" + Collection.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+		}
+		
+		static findBySupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): Collection[] {
+			return Collection.fromArr(jqContainer.find(Collection.buildSupremeEiTypeISelector(supremeEiTypeId)));
+		}
+
+		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
+			return 0 < jqContainer.has(Collection.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 	}
 	

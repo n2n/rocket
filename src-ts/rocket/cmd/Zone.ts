@@ -304,6 +304,20 @@ namespace Rocket.Cmd {
 		idRep?: string;
 		draftId?: number;
 		
+		static createLive(supremeEiTypeId: string, idRep: string): LastModDef {
+			let lmd = new LastModDef();
+			lmd.supremeEiTypeId = supremeEiTypeId;
+			lmd.idRep = idRep;
+			return lmd;
+		}
+		
+		static createDraft(supremeEiTypeId: string, draftId: number): LastModDef {
+			let lmd = new LastModDef();
+			lmd.supremeEiTypeId = supremeEiTypeId;
+			lmd.draftId = draftId;
+			return lmd;
+		}
+		
 		static fromEntry(entry: Display.Entry): LastModDef {
 			let lastModDef = new LastModDef();
 			lastModDef.supremeEiTypeId = entry.supremeEiTypeId;

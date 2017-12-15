@@ -48,7 +48,7 @@
 			<th><?php $html->l10nText('common_list_tools_label') ?></th>
 		</tr>
 	</thead>
-	<?php $eiHtml->collectionOpen('tbody', array('rocket-collection')) ?>
+	<?php $eiHtml->collectionOpen('tbody', $eiu, array('rocket-collection')) ?>
 		<?php foreach ($eiu->gui()->entryGuis() as $eiuEntryGui): ?>
 			<?php $eiHtml->entryOpen('tr', $eiuEntryGui) ?>
 				<?php $eiHtml->entrySelector('td') ?>

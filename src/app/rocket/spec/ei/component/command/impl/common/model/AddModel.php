@@ -123,7 +123,7 @@ class AddModel implements Dispatchable  {
 			$this->persist($entityObj);
 			
 			$eiEntityObj->refreshId();
-			$eiEntityObj->setPersistent(false);
+			$eiEntityObj->setPersistent(true);
 			
 			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
