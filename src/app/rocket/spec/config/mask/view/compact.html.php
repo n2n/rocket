@@ -58,7 +58,7 @@
 						<?php $eiHtml->fieldContent() ?>
 					<?php $eiHtml->fieldClose(); ?>
 				<?php endforeach ?>
-				<?php $view->out('<td>') ?>
+				<?php $view->out('<td class="rocket-table-commands">') ?>
 					<?php $eiHtml->entryCommands(true) ?>
 				<?php $view->out('</td>') ?>
 			<?php $eiHtml->entryClose() ?>

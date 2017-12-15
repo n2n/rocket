@@ -1409,7 +1409,7 @@ mark,
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.075);
+  background-color: #ECEBE9;
 }
 
 .table-primary,
@@ -1535,16 +1535,16 @@ mark,
 .table-active,
 .table-active > th,
 .table-active > td {
-  background-color: rgba(0, 0, 0, 0.075);
+  background-color: #ECEBE9;
 }
 
 .table-hover .table-active:hover {
-  background-color: rgba(0, 0, 0, 0.075);
+  background-color: #e0dfdb;
 }
 
 .table-hover .table-active:hover > td,
 .table-hover .table-active:hover > th {
-  background-color: rgba(0, 0, 0, 0.075);
+  background-color: #e0dfdb;
 }
 
 .table .thead-dark th {
@@ -3852,8 +3852,11 @@ body {
 }
 
 .rocket-nav-group {
-  padding-bottom: 0.5rem;
   border-top: 1px solid #66615C;
+}
+
+.rocket-nav-group > .nav {
+  padding-bottom: 0.5rem;
 }
 
 .rocket-nav-group .nav-link {
@@ -3877,6 +3880,7 @@ body {
 }
 
 .rocket-global-nav-group-title {
+  position: relative;
   font-size: 1rem;
   background-color: #373431;
   margin: 0;
@@ -3885,7 +3889,9 @@ body {
 }
 
 .rocket-global-nav-group-title > i.fa {
-  float: right;
+  position: absolute;
+  top: 0.875rem;
+  right: 1rem;
   color: #DAD7D3;
 }
 
@@ -3945,7 +3951,7 @@ body {
   background: transparent;
   border: none;
   box-shadow: none;
-  color: #837E78;
+  color: #66615C;
   padding: 0.25rem 0.5rem;
 }
 
@@ -3982,19 +3988,25 @@ body {
 }
 
 .rocket-collection .rocket-entry.rocket-last-mod {
-  animation: last-mod-transition 1s;
-  background: #e8d8c5;
+  animation: last-mod-transition 30s;
+  background: inherit;
 }
 
 @keyframes last-mod-transition {
   0% {
     background: transparent;
   }
-  30% {
+  1% {
     background: #ead0b2;
   }
+  6% {
+    background: #eadfd3;
+  }
+  99% {
+    background: #eadfd3;
+  }
   100% {
-    background: #e8d8c5;
+    background: inherit;
   }
 }
 
@@ -4004,10 +4016,26 @@ body {
 }
 
 /*
+ * Table
+ */
+.rocket-table > thead th {
+  color: #fff;
+  background-color: #4F4A46;
+}
+
+.rocket-table > tbody tr:hover {
+  border-left: 3px solid #fd7e14;
+}
+
+.rocket-table > tbody .rocket-table-commands {
+  border-left: 1px solid #ECEBE9;
+}
+
+/*
  * tree
  */
-.rocket-tree-level-0 > td {
-  background: #ECEBE9;
+.rocket-tree-level-0 {
+  border-top: 5px solid #ECEBE9;
 }
 
 .rocket-tree-level-1 > td:nth-child(2) {

@@ -1,6 +1,8 @@
 .rocket-nav-group {
-    padding-bottom: 0.5rem;
     border-top: 1px solid $gray-700;
+    > .nav {
+        padding-bottom: 0.5rem;
+    }
     .nav-link {
         color: $gray-500;
         font-size: $font-size-sm;
@@ -20,13 +22,16 @@
 }
 
 .rocket-global-nav-group-title {
+    position: relative;
     font-size: 1rem;
     background-color: $gray-900;
     margin: 0;
     padding: 0.75rem $spacer;
     font-weight: bold;
     > i.fa {
-        float: right;
+        position:absolute;
+        top: 0.875rem;
+        right: 1rem;
         color: $gray-400;
     }
 }
