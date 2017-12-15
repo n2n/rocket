@@ -96,7 +96,7 @@ namespace Rocket.Cmd {
 		private directiveExecuted(directive: Jhtml.Directive): Cmd.LastModDef[] {
 			let data = directive.getAdditionalData();
 
-			if (!data || !data.rocketEvent || !data.rocketEvent.eiMods) return;
+			if (!data || !data.rocketEvent || !data.rocketEvent.eiMods) return [];
 			
 			let lastModDefs: Array<Cmd.LastModDef> = [];
 			let zoneClearer = new ZoneClearer(this.getAllZones());

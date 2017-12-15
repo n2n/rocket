@@ -52,8 +52,9 @@ namespace Rocket.Impl.Overview {
 			
 			var jqForm = jqElem.children("form");
 			
+			let overviewToolsJq = jqElem.children(".rocket-impl-overview-tools");
 			var overviewContent = new OverviewContent(jqElem.find("tbody.rocket-collection:first"), 
-					Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
+					Jhtml.Url.create(overviewToolsJq.data("content-url")), overviewToolsJq.data("state-key"));
 			
 //			new PageUpdater(Rocket.Cmd.Page.of(jqElem), new Jhtml.Url(jqElem.data("overview-path")))
 //					.init(overviewContent);

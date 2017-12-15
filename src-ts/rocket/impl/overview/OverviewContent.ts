@@ -12,11 +12,10 @@ namespace Rocket.Impl.Overview {
 		private _numPages: number;
 		private _numEntries: number;
 		private _pageSize: number;
-		private stateKey: string;
 		private allInfo: AllInfo = null;
 		private contentChangedCallbacks: Array<(overviewContent: OverviewContent) => any> = [];
 		
-		constructor(jqElem: JQuery, private loadUrl: Jhtml.Url) {
+		constructor(jqElem: JQuery, private loadUrl: Jhtml.Url, private stateKey: string) {
 			this.collection = Display.Collection.from(jqElem);
 			this.selectorState = new SelectorState(this.collection);
 		}	

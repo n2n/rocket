@@ -44,7 +44,8 @@
 ?>
 
 <div class="rocket-impl-overview-tools" 
-		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>">
+		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>"
+		data-state-key="<?php $html->out($overviewAjahHook->getStateKey()) ?>">
 	<div class="row">
 		<div class="col rocket-impl-state"
 				data-selected-label="<?php $html->text('common_selected_label')?>"

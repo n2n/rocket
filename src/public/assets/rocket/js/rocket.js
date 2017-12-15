@@ -237,7 +237,7 @@ var Rocket;
             directiveExecuted(directive) {
                 let data = directive.getAdditionalData();
                 if (!data || !data.rocketEvent || !data.rocketEvent.eiMods)
-                    return;
+                    return [];
                 let lastModDefs = [];
                 let zoneClearer = new ZoneClearer(this.getAllZones());
                 let eiMods = data.rocketEvent.eiMods;
@@ -3900,8 +3900,9 @@ var Rocket;
         (function (Overview) {
             var $ = jQuery;
             class OverviewContent {
-                constructor(jqElem, loadUrl) {
+                constructor(jqElem, loadUrl, stateKey) {
                     this.loadUrl = loadUrl;
+                    this.stateKey = stateKey;
                     this.pages = {};
                     this.fakePage = null;
                     this._currentPageNo = null;
@@ -4508,7 +4509,8 @@ var Rocket;
                         return overviewPage;
                     }
                     var jqForm = jqElem.children("form");
-                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-collection:first"), Jhtml.Url.create(jqElem.children(".rocket-impl-overview-tools").data("content-url")));
+                    let overviewToolsJq = jqElem.children(".rocket-impl-overview-tools");
+                    var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-collection:first"), Jhtml.Url.create(overviewToolsJq.data("content-url")), overviewToolsJq.data("state-key"));
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"), jqElem.data("page-size"));
                     var pagination = new Pagination(overviewContent);
                     pagination.draw(jqForm.children(".rocket-zone-commands"));

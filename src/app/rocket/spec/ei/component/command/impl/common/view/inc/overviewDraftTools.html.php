@@ -32,6 +32,7 @@
 
 <div class="rocket-tool-panel rocket-overview-draft-tools" 
 		data-content-url="<?php $html->out($overviewDraftAjahHook->getSelectUrl()) ?>"
+		data-state-key="<?php $html->out($overviewDraftAjahHook->getStateKey()) ?>"
 		data-selected-label="<?php $html->text('common_selected_label')?>"
 		data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
 		data-entries-label="<?php $html->out($view->getParam('label')) ?>"
