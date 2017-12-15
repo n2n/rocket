@@ -4223,7 +4223,6 @@ var Rocket;
                         return;
                     let jhtmlPage = Rocket.Cmd.Zone.of(this.collection.jQuery).page;
                     jhtmlPage.loadUrl = jhtmlPage.url.extR((startPageNo != 1 ? startPageNo.toString() : null), { numPages: numPages, stateKey: this.stateKey });
-                    console.log(jhtmlPage.loadUrl.toString());
                 }
                 scrollToPage(pageNo, targetPageNo) {
                     var page = null;

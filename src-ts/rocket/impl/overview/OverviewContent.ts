@@ -420,7 +420,6 @@ namespace Rocket.Impl.Overview {
 			let jhtmlPage = Cmd.Zone.of(this.collection.jQuery).page;
 			jhtmlPage.loadUrl = jhtmlPage.url.extR((startPageNo != 1 ? startPageNo.toString() : null), 
 					{ numPages: numPages, stateKey: this.stateKey});
-			console.log(jhtmlPage.loadUrl.toString());
 		}
 		
 		private scrollToPage(pageNo: number, targetPageNo: number): boolean {
