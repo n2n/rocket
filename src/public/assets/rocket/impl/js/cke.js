@@ -61,7 +61,16 @@
 				
 				requestAnimationFrame(hackCheck);
 			};
-			requestAnimationFrame(hackCheck);
+			
+			
+			if (!editor) {
+				requestAnimationFrame(hackCheck);
+			} else {
+				editor.on("instanceReady", function () {
+					requestAnimationFrame(hackCheck);
+				});
+			}
+			
 			
 //			let formJq = $(elem).closest("form");
 //			formJq.submit(() => {
