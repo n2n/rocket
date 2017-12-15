@@ -86,8 +86,7 @@ var Rocket;
         })();
         (function () {
             Jhtml.ready((elements) => {
-                return;
-                let nav = Rocket.Display.Nav.setup($($(elements).find("#rocket-global-nav")));
+                let nav = Rocket.Display.Nav.setup($(elements).find("#rocket-global-nav"));
                 nav.initNavigation();
             });
         })();
@@ -2606,6 +2605,264 @@ var Rocket;
             ;
         }
         Display.StressWindow = StressWindow;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Nav {
+            constructor(htmlElement, state) {
+                this.htmlElement = htmlElement;
+                this.state = state;
+            }
+            static setup(navJquery) {
+                let navGroupJquery = $(".rocket-nav-group");
+                let navGroups = [];
+                navGroupJquery.each((key, htmlElem) => {
+                    let jqueryElem = $(htmlElem);
+                    let navGroupTitleCollection = htmlElem.getElementsByClassName("rocket-global-nav-group-title");
+                    let titleElem = Array.prototype.slice.call(navGroupTitleCollection)[0];
+                    let navItems = [];
+                    jqueryElem.find(".nav-item").each((key, navItemHtmlElem) => {
+                        navItems.push(new Display.NavItem(navItemHtmlElem));
+                    });
+                    navGroups.push(new Rocket.Display.NavGroup(jqueryElem.find("ul").get(0), titleElem, navItems));
+                });
+                return new Nav(navJquery.get(0), new Display.NavState(navJquery.find("*[data-rocket-user-id]").data("rocket-user-id"), navGroups));
+            }
+            initNavigation() {
+                this.initGroups();
+                this.setupEvents();
+                this.scrollToPos(this.state.scrollPos);
+            }
+            scrollToPos(scrollPos) {
+                $(this.htmlElement).animate({
+                    scrollTop: scrollPos
+                }, 0);
+            }
+            initGroups() {
+                for (let navGroup of this.state.navGroups) {
+                    if (!this.state.isGroupOpen(navGroup)) {
+                        navGroup.close(true);
+                    }
+                    else {
+                        navGroup.open(true);
+                    }
+                }
+            }
+            setupEvents() {
+                let that = this;
+                $(this.htmlElement).scroll(function (e) {
+                    let scrollPos = $(this).scrollTop();
+                    clearTimeout($.data(this, 'scrollTimer'));
+                    $.data(this, 'scrollTimer', setTimeout(function () {
+                        that.state.scrollPos = scrollPos;
+                        that.state.save();
+                    }, 150));
+                });
+                for (let navGroup of this.state.navGroups) {
+                    $(navGroup.titleHtmlElement).click(function () {
+                        let openedNavGroups = that.state.openedNavGroups;
+                        let openedNavGroupsArrPos = openedNavGroups.indexOf(navGroup);
+                        if (openedNavGroupsArrPos > -1) {
+                            navGroup.close();
+                            that.state.openedNavGroups.splice(openedNavGroupsArrPos, 1);
+                        }
+                        else {
+                            navGroup.open();
+                            that.state.openedNavGroups.push(navGroup);
+                        }
+                        that.state.scrollPos = $(that.htmlElement).scrollTop();
+                        that.state.save();
+                    });
+                }
+            }
+            get state() {
+                return this._state;
+            }
+            set state(value) {
+                this._state = value;
+            }
+            get htmlElement() {
+                return this._htmlElement;
+            }
+            set htmlElement(value) {
+                this._htmlElement = value;
+            }
+        }
+        Display.Nav = Nav;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavGroup {
+            constructor(navItemListHtmlElement, titleHtmlElement, navItems) {
+                this.navItemListHtmlElement = navItemListHtmlElement;
+                this.titleHtmlElement = titleHtmlElement;
+                this._navItems = navItems;
+                this._id = this.buildNavGroupId();
+            }
+            open(instant = false) {
+                let titleElemJquery = $(this.titleHtmlElement);
+                let iconJquery = titleElemJquery.find('i');
+                iconJquery.removeClass('fa-plus');
+                iconJquery.addClass('fa-minus');
+                let ulElemJquery = $(this.navItemListHtmlElement);
+                if (instant) {
+                    ulElemJquery.slideDown({ duration: 0 });
+                    return;
+                }
+                ulElemJquery.slideDown({ duration: "fast" });
+            }
+            close(instant = false) {
+                let titleElemJquery = $(this.titleHtmlElement);
+                let iconJquery = titleElemJquery.find('i');
+                iconJquery.removeClass('fa-minus');
+                iconJquery.addClass('fa-plus');
+                let ulElemJquery = $(this.navItemListHtmlElement);
+                if (instant) {
+                    ulElemJquery.slideUp({ duration: 0 });
+                    return;
+                }
+                ulElemJquery.slideUp({ duration: "fast" });
+            }
+            buildNavGroupId() {
+                return this._titleHtmlElement.innerText.toLowerCase().replace(" ", "-");
+            }
+            get navItemListHtmlElement() {
+                return this._navItemListHtmlElement;
+            }
+            set navItemListHtmlElement(value) {
+                this._navItemListHtmlElement = value;
+            }
+            get navItems() {
+                return this._navItems;
+            }
+            set navItems(value) {
+                this._navItems = value;
+            }
+            get titleHtmlElement() {
+                return this._titleHtmlElement;
+            }
+            set titleHtmlElement(value) {
+                this._titleHtmlElement = value;
+            }
+            get id() {
+                return this._id;
+            }
+            set id(value) {
+                this._id = value;
+            }
+        }
+        Display.NavGroup = NavGroup;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavItem {
+            constructor(htmlElement) {
+                this._htmlElement = htmlElement;
+            }
+            get htmlElement() {
+                return this._htmlElement;
+            }
+            set htmlElement(value) {
+                this._htmlElement = value;
+            }
+        }
+        Display.NavItem = NavItem;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavState {
+            constructor(userId, navGroups) {
+                this.LOCALSTORE_ITEM_PATTERN = "rocket_navigation_user_states";
+                this._userId = null;
+                this._scrollPos = null;
+                this._activeNavItem = null;
+                this._openedNavGroups = [];
+                this._localStoreManager = null;
+                this.navStateItems = [];
+                this.navStateItem = null;
+                this._userId = userId;
+                this._navGroups = navGroups;
+                this._localStoreManager = new Rocket.util.LocalStoreManager();
+                this.init();
+            }
+            init() {
+                this.navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN)) || [];
+                if (this.navStateItems === null
+                    || !(this.navStateItem = this.navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
+                    this.navStateItem = this.buildNavStateItem();
+                    this.save();
+                    return;
+                }
+                this.scrollPos = this.navStateItem.scrollPos;
+                for (let navGroupId of this.navStateItem.openedGroupIds) {
+                    let navGroup = this.navGroups.find(navGroup => navGroup.id === navGroupId);
+                    this.openedNavGroups.push(navGroup);
+                }
+            }
+            isGroupOpen(navGroup) {
+                return this.openedNavGroups.indexOf(navGroup) > -1;
+            }
+            save() {
+                this.navStateItems.splice(this.navStateItems.indexOf(this.navStateItem), 1);
+                this.navStateItem = this.buildNavStateItem();
+                this.navStateItems.unshift(this.navStateItem);
+                this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(this.navStateItems));
+            }
+            buildNavStateItem() {
+                let openedGroupIds = [];
+                for (let navGroup of this.openedNavGroups) {
+                    openedGroupIds.push(navGroup.id);
+                }
+                return { userId: this._userId,
+                    scrollPos: this._scrollPos,
+                    activeNavItemUrlStr: null,
+                    openedGroupIds: openedGroupIds };
+            }
+            get navGroups() {
+                return this._navGroups;
+            }
+            set navGroups(value) {
+                this._navGroups = value;
+            }
+            get userId() {
+                return this._userId;
+            }
+            set userId(value) {
+                this._userId = value;
+            }
+            get scrollPos() {
+                return this._scrollPos;
+            }
+            set scrollPos(value) {
+                this._scrollPos = value;
+            }
+            get activeNavItem() {
+                return this._activeNavItem;
+            }
+            set activeNavItem(value) {
+                this._activeNavItem = value;
+            }
+            get openedNavGroups() {
+                return this._openedNavGroups;
+            }
+            set openedNavGroups(value) {
+                this._openedNavGroups = value;
+            }
+        }
+        Display.NavState = NavState;
+        ;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -5803,172 +6060,6 @@ var Rocket;
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class Nav {
-            constructor(state) {
-                this.state = state;
-            }
-            static setup(navJquery) {
-                let navGroupJquery = navJquery.find(".rocket-nav-group");
-                let navGroups = [];
-                navGroupJquery.each((key, htmlElem) => {
-                    let jqueryElem = $(htmlElem);
-                    let navGroupTitleCollection = htmlElem.getElementsByClassName("rocket-global-nav-group-title");
-                    let titleElem = Array.prototype.slice.call(navGroupTitleCollection)[0];
-                    let navItems = [];
-                    jqueryElem.find(".nav-item").each((key, navItemHtmlElem) => {
-                        navItems.push(new Display.NavItem(navItemHtmlElem));
-                    });
-                    navGroups.push(new Rocket.Display.NavGroup(jqueryElem.find("ul").get(0), titleElem, navItems));
-                });
-                return new Nav(new Display.NavState(navJquery.find("*[data-rocket-user-id]").data("rocket-user-id"), navGroups));
-            }
-            initNavigation() {
-                this.state.getActiveNavItem();
-            }
-            get state() {
-                return this._state;
-            }
-            set state(value) {
-                this._state = value;
-            }
-        }
-        Display.Nav = Nav;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavGroup {
-            constructor(navItemListHtmlElement, titleHtmlElement, navItems) {
-                this.navItemListHtmlElement = navItemListHtmlElement;
-                this.titleHtmlElement = titleHtmlElement;
-                this._navItems = navItems;
-            }
-            get navItemListHtmlElement() {
-                return this._navItemListHtmlElement;
-            }
-            set navItemListHtmlElement(value) {
-                this._navItemListHtmlElement = value;
-            }
-            get navItems() {
-                return this._navItems;
-            }
-            set navItems(value) {
-                this._navItems = value;
-            }
-            get titleHtmlElement() {
-                return this._titleHtmlElement;
-            }
-            set titleHtmlElement(value) {
-                this._titleHtmlElement = value;
-            }
-        }
-        Display.NavGroup = NavGroup;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavItem {
-            constructor(htmlElement) {
-                this._htmlElement = htmlElement;
-            }
-            get htmlElement() {
-                return this._htmlElement;
-            }
-            set htmlElement(value) {
-                this._htmlElement = value;
-            }
-        }
-        Display.NavItem = NavItem;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavState {
-            constructor(userId, navGroups) {
-                this.LOCALSTORE_ITEM_PATTERN = "rocket_navigation_user_states";
-                this._userId = null;
-                this._scrollPos = null;
-                this._activeNavItem = null;
-                this._openedNavGroups = null;
-                this._localStoreManager = null;
-                this._userId = userId;
-                this._navGroups = navGroups;
-                this._localStoreManager = new Rocket.util.LocalStoreManager();
-                this.init();
-                this.setupClickEvents();
-            }
-            init() {
-                let navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN));
-                let navStateItem = null;
-                if (navStateItems === null
-                    || null === (navStateItem = navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
-                    navStateItems = [this.buildNavStateItem()];
-                    this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(navStateItems));
-                    return;
-                }
-                this.scrollPos = navStateItem.scrollPos;
-            }
-            getActiveNavItem() {
-                return null;
-            }
-            setupClickEvents() {
-                for (let navGroup of this.navGroups) {
-                    $(navGroup.titleHtmlElement).click(function () {
-                        $(navGroup.navItemListHtmlElement).slideUp({ duration: 'fast' });
-                    });
-                }
-            }
-            buildNavStateItem() {
-                return { userId: this._userId,
-                    scrollPos: this._scrollPos,
-                    activeNavItemUrlStr: null,
-                    openedGroupNames: null };
-            }
-            get navGroups() {
-                return this._navGroups;
-            }
-            set navGroups(value) {
-                this._navGroups = value;
-            }
-            get userId() {
-                return this._userId;
-            }
-            set userId(value) {
-                this._userId = value;
-            }
-            get scrollPos() {
-                return this._scrollPos;
-            }
-            set scrollPos(value) {
-                this._scrollPos = value;
-            }
-            get activeNavItem() {
-                return this._activeNavItem;
-            }
-            set activeNavItem(value) {
-                this._activeNavItem = value;
-            }
-            get openedNavGroups() {
-                return this._openedNavGroups;
-            }
-            set openedNavGroups(value) {
-                this._openedNavGroups = value;
-            }
-        }
-        Display.NavState = NavState;
-        ;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
