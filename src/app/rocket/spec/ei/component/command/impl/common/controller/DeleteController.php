@@ -49,7 +49,7 @@ class DeleteController extends ControllerAdapter {
 		try {
 			$eiObject = $this->eiuCtrl->lookupEiObject($this->utils->idRepToId($idRep));
 		} catch (StatusException $e) {
-			$this->eiuCtrl->redirectBack($redirectUrl);
+			$this->eiuCtrl->redirectToReferer($redirectUrl);
 			return;
 		}
 		
@@ -58,7 +58,7 @@ class DeleteController extends ControllerAdapter {
 // 			$mc->addAll($vetoableAction->getReasonMessages());
 // 		}
 		
-		$this->eiuCtrl->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectRemoved($eiObject));
+		$this->eiuCtrl->redirectToReferer($redirectUrl, JhtmlEvent::ei()->eiObjectRemoved($eiObject));
 	}
 	
 // 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {
