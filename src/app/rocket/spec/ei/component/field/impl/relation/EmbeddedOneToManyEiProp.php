@@ -107,7 +107,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		
 		$newValue = array();
 		foreach ($value as $key => $targetRelationEntry) {
-			$newValue[$key] = RelationEntry::fromM($targetEiuFrame->createEiEntryCopy(
+			$newValue[$key] = RelationEntry::fromM($targetEiuFrame->copyEntry(
 					$targetRelationEntry->toEiEntry($targetEiuFrame)));
 		}
 		return $newValue;
