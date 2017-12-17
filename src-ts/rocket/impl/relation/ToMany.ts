@@ -209,8 +209,13 @@ namespace Rocket.Impl.Relation {
 			
 			let url = this.jqElem.data("overview-tools-url");
 			this.browserLayer.monitor.exec(url).then(() => {
-				that.iniBrowserPage(this.browserLayer.getZoneByUrl(url));
+				let zone = this.browserLayer.getZoneByUrl(url);
+				this.iniBrowserPage(zone);
+				zone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
+					this.iniBrowserPage(zone);
+				});
 			});
+			
 			
 			
 //			
@@ -223,21 +228,21 @@ namespace Rocket.Impl.Relation {
 //			});
 		}
 		
-		private iniBrowserPage(context: cmd.Zone) {
+		private iniBrowserPage(zone: cmd.Zone) {
 			if (this.browserLayer === null) return;
 			
-			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
+			var ocs = Impl.Overview.OverviewPage.findAll(zone.jQuery);
 			if (ocs.length == 0) return;
 			
 			ocs[0].initSelector(this.browserSelectorObserver = new Display.MultiEntrySelectorObserver());
 			
 			var that = this;
-			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+			zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
 				that.updateSelection();
-				context.layer.hide();
+				zone.layer.hide();
 			});
-			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
-				context.layer.hide();
+			zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
+				zone.layer.hide();
 			});
 			
 			this.updateBrowser();

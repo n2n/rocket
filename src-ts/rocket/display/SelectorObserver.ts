@@ -25,16 +25,18 @@ namespace Rocket.Display {
 				selector.selected = jqCheck.is(":checked");
 			});
 			selector.whenChanged(() => {
-				if (selector.selected == this.containsSelectedId(selector.entry.id)) {
-					return;
-				}
+//				if (selector.selected == this.containsSelectedId(selector.entry.id)) {
+//					return;
+//				}
 				jqCheck.prop("checked", selector.selected);
 				this.chSelect(selector.selected, selector.entry.id);
 			}, true);
 			
-			var entry = selector.entry;
-			var id = entry.id;
+			let entry = selector.entry;
+			let id = entry.id;
 			selector.selected = this.containsSelectedId(id);
+			jqCheck.prop("checked", selector.selected);
+			
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
 			
