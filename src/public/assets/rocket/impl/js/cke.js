@@ -1,8 +1,6 @@
 (function() {
 	Jhtml.ready(function (elements) {
 		$(elements).find(".rocket-impl-cke-classic").each(function (i, elem) {
-			
-			
 //			var observer = new MutationObserver(function(mutations) {
 //				  mutations.forEach(function(mutation) {
 //				    console.log(mutation.type);

@@ -43,8 +43,8 @@ namespace Rocket.Impl.Relation {
 				
 				this.block(true);
 				this.embeddedEntryRetriever.lookupNew(
-						(embeddedEntry: EmbeddedEntry) => {
-							this.examine(embeddedEntry);
+						(embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => {
+							this.examine(embeddedEntry, snippet);
 						},
 						() => {
 							this.block(false);
@@ -67,11 +67,12 @@ namespace Rocket.Impl.Relation {
 			}
 		}	
 		
-		private examine(embeddedEntry: EmbeddedEntry) {
+		private examine(embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) {
 			this.block(false);
 			
 			if (!embeddedEntry.entryForm.multiEiType) {
 				this.fireCallbacks(embeddedEntry);
+				snippet.markAttached();
 				return;
 			}
 			
@@ -91,6 +92,7 @@ namespace Rocket.Impl.Relation {
 						this.jqMultiTypeUl = null;
 						this.multiTypeEmbeddedEntry = null;
 						this.fireCallbacks(embeddedEntry);
+						snippet.markAttached();
 					}
 				})));
 			}

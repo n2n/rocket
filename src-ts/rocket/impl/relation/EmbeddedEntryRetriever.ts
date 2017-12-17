@@ -28,7 +28,7 @@ namespace Rocket.Impl.Relation {
 			this.preloadEnabled = preloadEnabled;
 		}
 		
-		public lookupNew(doneCallback: (embeddedEntry: EmbeddedEntry) => any, failCallback: () => any = null) {
+		public lookupNew(doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any, failCallback: () => any = null) {
 			this.pendingLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
 			
 			this.check()
@@ -42,8 +42,7 @@ namespace Rocket.Impl.Relation {
 			let snippet: Jhtml.Snippet = this.preloadedResponseObjects.shift();
 			var embeddedEntry = new EmbeddedEntry($(snippet.elements), false, this.sortable);
 			
-			pendingLookup.doneCallback(embeddedEntry);
-			snippet.markAttached();
+			pendingLookup.doneCallback(embeddedEntry, snippet);
 		}
 		
 		private load() {
@@ -77,7 +76,7 @@ namespace Rocket.Impl.Relation {
 	}
 	
 	interface PendingLookup {
-		doneCallback: (embeddedEntry: EmbeddedEntry) => any;
+		doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any;
 		failCallback: () => any;
 	}
 }
