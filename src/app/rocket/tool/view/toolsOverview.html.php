@@ -32,7 +32,7 @@
 	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('tool_title')));
 ?>
 <div class="rocket-panel">
-	<table class="table table-striped table-hover">
+	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>
 				<th><?php $html->l10nText('tool_title') ?></th>

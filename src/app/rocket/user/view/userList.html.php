@@ -38,7 +38,7 @@
 
 <div class="rocket-panel">
 	<h3><?php $html->l10nText('user_title') ?></h3>
-	<table class="table table-striped table-hover">
+	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>
 				<th><?php $html->l10nText('common_id_label') ?></th>
