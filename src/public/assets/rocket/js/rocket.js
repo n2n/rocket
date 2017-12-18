@@ -4958,8 +4958,8 @@ var Rocket;
                             return;
                         }
                         this.block(true);
-                        this.embeddedEntryRetriever.lookupNew((embeddedEntry) => {
-                            this.examine(embeddedEntry);
+                        this.embeddedEntryRetriever.lookupNew((embeddedEntry, snippet) => {
+                            this.examine(embeddedEntry, snippet);
                         }, () => {
                             this.block(false);
                         });
@@ -4978,10 +4978,11 @@ var Rocket;
                         this.jqElem.removeClass("rocket-impl-loading");
                     }
                 }
-                examine(embeddedEntry) {
+                examine(embeddedEntry, snippet) {
                     this.block(false);
                     if (!embeddedEntry.entryForm.multiEiType) {
                         this.fireCallbacks(embeddedEntry);
+                        snippet.markAttached();
                         return;
                     }
                     this.multiTypeEmbeddedEntry = embeddedEntry;
@@ -4998,6 +4999,7 @@ var Rocket;
                                 this.jqMultiTypeUl = null;
                                 this.multiTypeEmbeddedEntry = null;
                                 this.fireCallbacks(embeddedEntry);
+                                snippet.markAttached();
                             }
                         })));
                     }
@@ -5233,8 +5235,7 @@ var Rocket;
                     var pendingLookup = this.pendingLookups.shift();
                     let snippet = this.preloadedResponseObjects.shift();
                     var embeddedEntry = new Relation.EmbeddedEntry($(snippet.elements), false, this.sortable);
-                    pendingLookup.doneCallback(embeddedEntry);
-                    snippet.markAttached();
+                    pendingLookup.doneCallback(embeddedEntry, snippet);
                 }
                 load() {
                     let url = Jhtml.Url.create(this.urlStr).extR(null, {

@@ -37,6 +37,7 @@ use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use rocket\spec\ei\component\field\impl\relation\model\mag\EntryLabeler;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\spec\ei\manage\util\model\UnknownEntryException;
 
 class RelationSelectorMag extends MagAdapter  {
 	private $targetEiUtils;
@@ -87,8 +88,11 @@ class RelationSelectorMag extends MagAdapter  {
 				continue;
 			}
 			
-			$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
-					$this->targetEiUtils->idRepToId($targetIdRep));
+			try {
+				$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
+						$this->targetEiUtils->idRepToId($targetIdRep));
+			} catch (UnknownEntryException $e) {
+			}
 		}
 	}
 	
