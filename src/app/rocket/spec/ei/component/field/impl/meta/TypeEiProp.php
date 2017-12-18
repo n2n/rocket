@@ -36,6 +36,7 @@ use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	private $displayDefinition;

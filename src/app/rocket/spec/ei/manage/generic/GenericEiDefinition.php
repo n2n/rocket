@@ -36,7 +36,7 @@ class GenericEiDefinition {
 	}
 	
 	/**
-	 * @param unknown $eiPropPath
+	 * @param mixed $eiPropPath Arg for {@see EiPropPath::create()}
 	 * @throws UnknownGenericEiPropertyException
 	 * @return GenericEiProperty
 	 */

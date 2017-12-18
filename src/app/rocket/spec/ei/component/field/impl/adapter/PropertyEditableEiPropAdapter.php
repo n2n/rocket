@@ -45,6 +45,8 @@ use rocket\spec\ei\manage\mapping\impl\Validatable;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
+use rocket\spec\ei\manage\gui\GuiProp;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {

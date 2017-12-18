@@ -9,7 +9,6 @@ use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\config\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
-use n2n\persistence\meta\structure\View;
 use n2n\web\ui\UiComponent;
 
 class EiGui {

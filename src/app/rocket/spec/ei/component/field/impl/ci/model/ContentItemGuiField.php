@@ -31,7 +31,6 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\spec\ei\component\field\impl\ci\ContentItemsEiProp;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
-use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class ContentItemGuiField implements GuiField {
 	private $label;

@@ -66,6 +66,7 @@ use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearchField;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
+use rocket\spec\ei\manage\gui\GuiProp;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {

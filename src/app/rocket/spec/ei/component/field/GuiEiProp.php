@@ -21,7 +21,10 @@
  */
 namespace rocket\spec\ei\component\field;
 
-interface GuiEiProp {
+use rocket\spec\ei\manage\gui\GuiProp;
+use rocket\spec\ei\manage\gui\GuiPropFork;
+
+interface GuiEiProp extends EiProp {
 	/**
 	 * @return \rocket\spec\ei\manage\gui\GuiProp|null null if not displayable
 	 */

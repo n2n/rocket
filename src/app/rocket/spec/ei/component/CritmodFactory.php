@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component;
 
 use rocket\spec\ei\component\field\SortableEiProp;
-use rocket\spec\ei\manage\critmod\SortModel;
 use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\EiFrame;

@@ -37,7 +37,7 @@ class GuiDefinition {
 	private $levelIds = array();
 	
 	/**
-	 * @param unknown $id
+	 * @param string $id
 	 * @param GuiProp $guiProp
 	 * @param EiPropPath $eiPropPath
 	 * @throws GuiException
@@ -53,7 +53,7 @@ class GuiDefinition {
 	}
 	
 	/**
-	 * @param unknown $id
+	 * @param string $id
 	 * @return bool
 	 */
 	public function containsLevelGuiPropId(string $id) {
@@ -76,9 +76,9 @@ class GuiDefinition {
 	/**
 	 * @param string $id
 	 * @throws GuiException
-	 * @return GuiProp
+	 * @return EiPropPath
 	 */
-	public function getLevelEiPropPathById(string $id): EiPropPath {
+	public function getLevelEiPropPathById(string $id) {
 		$this->getLevelGuiPropById($id);
 		return $this->levelEiPropPaths[$id];
 	}
@@ -202,6 +202,10 @@ class GuiDefinition {
 // 		return $guiIdPaths;
 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return \rocket\spec\ei\manage\gui\GuiProp|null
+	 */
 	public function getGuiPropByGuiIdPath(GuiIdPath $guiIdPath) {
 		$ids = $guiIdPath->toArray();
 		$guiDefinition = $this;
@@ -212,8 +216,14 @@ class GuiDefinition {
 			
 			$guiDefinition = $guiDefinition->getLevelGuiPropForkById($id)->getForkedGuiDefinition();
 		}	
+		
+		return null;
 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return \rocket\spec\ei\EiPropPath|NULL
+	 */
 	public function guiIdPathToEiPropPath(GuiIdPath $guiIdPath) {
 		$ids = $guiIdPath->toArray();
 		$guiDefinition = $this;
@@ -224,6 +234,8 @@ class GuiDefinition {
 				
 			$guiDefinition = $guiDefinition->getLevelGuiPropForkById($id)->getForkedGuiDefinition();
 		}
+		
+		return null;
 	}
 	
 	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath) {
@@ -254,11 +266,11 @@ class GuiDefinition {
 		return $builder->__toString();
 	}
 	
-	public function getSummarizableGuiProps() {
-		return $this->filterSummarizableGuiProps($this, array());
+	public function getStringRepresentableGuiProps() {
+		return $this->filterStringRepresentableGuiProps($this, array());
 	}
 	
-	private function filterSummarizableGuiProps(GuiDefinition $guiDefinition, array $baseIds) {
+	private function filterStringRepresentableGuiProps(GuiDefinition $guiDefinition, array $baseIds) {
 		$guiProps = array();
 		
 		foreach ($guiDefinition->getLevelGuiProps() as $id => $guiProp) {
@@ -272,7 +284,7 @@ class GuiDefinition {
 		foreach ($guiDefinition->getGuiPropForks() as $id => $guiPropFork) {
 			$ids = $baseIds;
 			$ids[] = $id;
-			$guiProps = array_merge($guiProps, $this->filterSummarizableGuiProps(
+			$guiProps = array_merge($guiProps, $this->filterStringRepresentableGuiProps(
 					$guiPropFork->getForkGuiDefinition(), $ids));
 		}
 		

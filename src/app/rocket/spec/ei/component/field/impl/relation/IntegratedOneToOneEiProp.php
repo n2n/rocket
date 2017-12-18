@@ -49,6 +49,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\spec\ei\manage\gui\GuiProp;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 	private $orphansAllowed = false;

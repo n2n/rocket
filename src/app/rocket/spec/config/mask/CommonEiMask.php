@@ -213,7 +213,7 @@ class CommonEiMask implements EiMask, Identifiable {
 		$id = null;
 		$name = null;
 		
-		foreach ($this->eiEngine->getGuiDefinition()->getSummarizableGuiProps() as $placeholder => $guiProp) {
+		foreach ($this->eiEngine->getGuiDefinition()->getStringRepresentableGuiProps() as $placeholder => $guiProp) {
 			if ($placeholder == $this->eiEngine->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
 				$id = $guiProp->buildIdentityString($eiObject, $n2nLocale);
 			} else {

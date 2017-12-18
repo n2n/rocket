@@ -41,6 +41,7 @@ use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\ObjectPropertyConfigurable;
 use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {

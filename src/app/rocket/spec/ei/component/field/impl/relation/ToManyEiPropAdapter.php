@@ -29,6 +29,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {

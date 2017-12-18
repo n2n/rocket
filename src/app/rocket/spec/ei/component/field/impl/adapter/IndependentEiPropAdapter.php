@@ -33,14 +33,26 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 	protected $parentEiProp;
 	protected $labelLstr;
 		
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\IndependentEiComponent::createEiConfigurator()
+	 */
 	public final function createEiConfigurator(): EiConfigurator {
 		return $this->createEiPropConfigurator();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\indepenent\IndependentEiProp::createEiPropConfigurator()
+	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new AdaptableEiPropConfigurator($this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\field\EiProp::getParentEiProp()
+	 */
 	public function getParentEiProp() {
 		return $this->parentEiProp;
 	}

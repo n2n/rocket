@@ -2,7 +2,6 @@
 namespace rocket\spec\ei\manage\gui\ui;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\IllegalStateException;
 
 class DisplayItem {
