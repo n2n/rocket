@@ -60,7 +60,7 @@
 		<section id="rocket-core-server-info">
 			<h2><?php $html->l10nText('core_server_info_title') ?></h2>
 			<h3><?php $html->l10nText('core_server_info_title')?></h3>
-			<table class="table table-striped">
+			<table class="table table-hover rocket-table">
 				<thead>
 					<tr>
 						<th><?php $html->text('core_property_label') ?></th>

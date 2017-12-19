@@ -32,7 +32,7 @@
 ?>
 
 <div class="rocket-panel">
-	<table class="table table-striped">
+	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>
 				<th><?php $html->l10nText('tool_backup_file_name_label') ?></th>

@@ -42,9 +42,9 @@
 		<?php else: ?>
 			<div>
 				<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
-					<div class="rocket-content-item">
+					<ul class="list list-inline rocket-content-item">
 						<?php $view->out($uiComponent) ?>
-					</div>
+					</ul>
 				<?php endforeach ?>
 			</div>
 		<?php endif ?>

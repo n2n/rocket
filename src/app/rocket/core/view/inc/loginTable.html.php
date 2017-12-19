@@ -35,7 +35,7 @@
 		$logins = $userDao->getFailedLogins();
 	}
 ?>
-<table class="table table-striped">
+<table class="table table-hover rocket-table">
 	<thead>
 		<tr>
 			<th><?php $html->l10nText('user_nick_label') ?></th>

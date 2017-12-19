@@ -122,6 +122,8 @@ body {
  * loader
  */
 
+
+.rocket-loading,
 .rocket-impl-overview-loading {
     margin: 40px auto 0;
     width: 50px;
@@ -130,6 +132,24 @@ body {
     border: solid 10px rgba(0, 0, 0, 0.1);
     border-top-color: $primary;
     animation: spin 1s infinite linear;  
+}
+
+.rocket-impl-overview-loading {
+
+}
+
+.rocket-zone.rocket-loading {
+    margin-top: 10rem;
+}
+
+.rocket-zone-block {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding-top: calc(50vh - 1rem);
 }
 
 @keyframes spin { 

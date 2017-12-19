@@ -85,21 +85,6 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 
 <style>
 
-	/* pizza loader */
-	.rocket-zone.rocket-loading {
-		background: url('https://media.giphy.com/media/3o7bu8sRnYpTOG1p8k/giphy-downsized.gif') center center no-repeat;
-		min-height: 80vh;
-	}
-
-	.rocket-zone-block {
-		position: fixed;
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
-		background: url('https://media.giphy.com/media/14fx8QIuKnp8Pu/giphy.gif') center center no-repeat rgba(0, 0, 0, 0.2);
-	}
-
 	form.rocket-impl-critmod .rocket-impl-critmod-blocker {
 		position: absolute;
 		top: 0px;
