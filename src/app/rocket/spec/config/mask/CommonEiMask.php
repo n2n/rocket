@@ -46,6 +46,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\gui\EiGui;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\control\IconType;
+use rocket\spec\ei\manage\gui\SummarizedStringBuilder;
 
 class CommonEiMask implements EiMask, Identifiable {
 	private $id;
@@ -210,29 +211,29 @@ class CommonEiMask implements EiMask, Identifiable {
 	
 	
 	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-		$id = null;
-		$name = null;
+		$idPatternPart = null;
+		$namePatternPart = null;
 		
-		foreach ($this->eiEngine->getGuiDefinition()->getStringRepresentableGuiProps() as $placeholder => $guiProp) {
-			if ($placeholder == $this->eiEngine->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
-				$id = $guiProp->buildIdentityString($eiObject, $n2nLocale);
+		foreach ($this->eiEngine->getGuiDefinition()->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
+			if ($guiIdPathStr == $this->eiEngine->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
+				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
 			} else {
-				$name = $guiProp->buildIdentityString($eiObject, $n2nLocale);
+				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
 			}
 			
-			if ($name !== null) break;
+			if ($namePatternPart !== null) break;
 		}
 		
-		if ($id === null) {
-			$id = $eiObject->getEiEntityObj()->hasId() ? 
+		if ($idPatternPart === null) {
+			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ? 
 					$this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId()) : 'new';
 		}
 		
-		if ($name === null) {
-			$name = $this->getLabelLstr()->t($n2nLocale);
+		if ($namePatternPart === null) {
+			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
 		}
 		
-		return $name . ' #' . $id;
+		return $this->eiEngine->getGuiDefinition()->createIdentityString($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
 	}
 	
 	/* (non-PHPdoc)
