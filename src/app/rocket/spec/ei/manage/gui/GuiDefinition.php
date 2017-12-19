@@ -285,7 +285,7 @@ class GuiDefinition {
 			$ids = $baseIds;
 			$ids[] = $id;
 			$guiProps = array_merge($guiProps, $this->filterStringRepresentableGuiProps(
-					$guiPropFork->getForkGuiDefinition(), $ids));
+					$guiPropFork->getForkedGuiDefinition(), $ids));
 		}
 		
 		return $guiProps;
