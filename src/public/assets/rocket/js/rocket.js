@@ -174,6 +174,7 @@ var Rocket;
                             "bottom": 0
                         }
                     })
+                        .append($("<div />", { "class": "rocket-loading" }))
                         .appendTo(this.jqContainer);
             }
         }

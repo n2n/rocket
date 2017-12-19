@@ -75,6 +75,7 @@ namespace Rocket.Cmd {
 							"bottom": 0
 						} 
 					})
+					.append($("<div />", { "class": "rocket-loading" }))
 					.appendTo(this.jqContainer);
 		}
 	}
