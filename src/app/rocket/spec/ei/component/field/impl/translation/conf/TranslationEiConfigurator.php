@@ -78,22 +78,22 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		$magCollection = $magDispatchable->getMagCollection();
-		$magCollection->addMag(new BoolMag(self::ATTR_USE_SYSTEM_LOCALES_KEY, 'Use system locales',
+		$magCollection->addMag(self::ATTR_USE_SYSTEM_LOCALES_KEY, new BoolMag('Use system locales',
 				$lar->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, true)));
 		
-		$systemN2nLocaleDefsMag = new MagCollectionArrayMag(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 'System locales',
+		$systemN2nLocaleDefsMag = new MagCollectionArrayMag('System locales',
 				$this->createN2nLocaleDefMagClosure());
 		$systemN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue($this->readModN2nLocaleDefs(
 				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(WebConfig::class)->getSupersystem()->getN2nLocales())));
-		$magCollection->addMag($systemN2nLocaleDefsMag);
+		$magCollection->addMag(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $systemN2nLocaleDefsMag);
 		
-		$customN2nLocaleDefsMag = new MagCollectionArrayMag(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, 'Custom locales',
+		$customN2nLocaleDefsMag = new MagCollectionArrayMag('Custom locales',
 				$this->createN2nLocaleDefMagClosure());
 		$customN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue(
 				$this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar)));
-		$magCollection->addMag($customN2nLocaleDefsMag);
+		$magCollection->addMag(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $customN2nLocaleDefsMag);
 		
-		$magCollection->addMag(new BoolMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 'Min translations number',
+		$magCollection->addMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, new BoolMag('Min translations number',
 				$lar->getNumeric(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0)));
 		
 		return $magDispatchable;
@@ -102,9 +102,9 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	private function createN2nLocaleDefMagClosure() {
 		return function () {
 			$magCollection = new MagCollection();
-			$magCollection->addMag(new StringMag(self::ATTR_LOCALE_ID_KEY, 'N2nLocale', null, true));
-			$magCollection->addMag(new BoolMag(self::ATTR_LOCALE_MANDATORY_KEY, 'Mandatory'));
-			$magCollection->addMag(new StringMag(self::ATTR_LOCALE_LABEL_KEY, 'Label', null, false));
+			$magCollection->addMag(self::ATTR_LOCALE_ID_KEY, new StringMag('N2nLocale', null, true));
+			$magCollection->addMag(self::ATTR_LOCALE_MANDATORY_KEY, new BoolMag('Mandatory'));
+			$magCollection->addMag(self::ATTR_LOCALE_LABEL_KEY, new StringMag('Label', null, false));
 			return new MagForm($magCollection);
 		};
 	}

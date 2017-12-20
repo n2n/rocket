@@ -58,12 +58,12 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 			return $magDispatchable;
 		}
 		
-		$panelConfigMag = new MagCollectionArrayMag(self::ATTR_PANELS_KEY, 'Panels',
+		$panelConfigMag = new MagCollectionArrayMag('Panels',
 				function() use ($ciConfigUtils) {
 					return new MagForm($ciConfigUtils->createPanelConfigMagCollection(true));
 				});
 		
-		$magCollection->addMag($panelConfigMag);
+		$magCollection->addMag(self::ATTR_PANELS_KEY, $panelConfigMag);
 		
 		$lar = new LenientAttributeReader($this->attributes);
 		if ($lar->contains(self::ATTR_PANELS_KEY)) {
