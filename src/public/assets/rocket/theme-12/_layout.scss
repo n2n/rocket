@@ -65,7 +65,7 @@ body {
     width: $rocket-global-nav-width;
     background: url(../img/nav-body-bg.png) repeat $gray-800 4px 11px;
     color: white;
-    overflow-y: scroll;
+    overflow-y: auto;
     z-index: 100;
 }
 
@@ -90,7 +90,7 @@ body {
 
  #rocket-content-container {
     margin-left: $rocket-content-margin-left;
-    margin-right: 1rem;
+    margin-right: 3rem;
     margin-top: $rocket-header-height;
     padding-bottom: 5rem;
     position: relative;
@@ -105,7 +105,7 @@ body {
     bottom: 0;
     right: 0;
     left: $rocket-global-nav-width;
-    padding: 1rem 1rem 1rem 3rem;
+    padding: 1rem 3rem 1rem 4rem;
     background-color: $gray-100;
     border-top: 1px solid $gray-400;
     display: grid;

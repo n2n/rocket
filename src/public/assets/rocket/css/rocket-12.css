@@ -3570,7 +3570,7 @@ body {
   width: 14rem;
   background: url(../img/nav-body-bg.png) repeat #4F4A46 4px 11px;
   color: white;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 100;
 }
 
@@ -3593,7 +3593,7 @@ body {
  */
 #rocket-content-container {
   margin-left: 18rem;
-  margin-right: 1rem;
+  margin-right: 3rem;
   margin-top: 2.75rem;
   padding-bottom: 5rem;
   position: relative;
@@ -3607,7 +3607,7 @@ body {
   bottom: 0;
   right: 0;
   left: 14rem;
-  padding: 1rem 1rem 1rem 3rem;
+  padding: 1rem 3rem 1rem 4rem;
   background-color: #FBFAFA;
   border-top: 1px solid #DAD7D3;
   display: grid;
@@ -3667,7 +3667,7 @@ body {
   position: relative;
   grid-template-columns: 1fr auto;
   grid-template-rows: 2rem 3rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   background: white;
 }
 
@@ -3882,7 +3882,7 @@ body {
 }
 
 .rocket-nav-group .nav-link:hover {
-  color: white;
+  color: #ed8207;
 }
 
 .rocket-nav-group .nav-link.active {
@@ -3899,8 +3899,12 @@ body {
   font-size: 1rem;
   background-color: #373431;
   margin: 0;
-  padding: 0.75rem 1rem;
-  font-weight: bold;
+  padding: 0.75rem 2rem 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.rocket-global-nav-group-title > a:hover {
+  color: #ed8207;
 }
 
 .rocket-global-nav-group-title > i.fa {
@@ -7095,6 +7099,4 @@ a.text-dark:focus, a.text-dark:hover {
 .invisible {
   visibility: hidden !important;
 }
- 
-
- /*# sourceMappingURL= rocket-12.css.map */
+/*# sourceMappingURL=rocket-12.css.map */

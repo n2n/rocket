@@ -8,7 +8,7 @@
 		position: relative;
 		grid-template-columns: 1fr auto;
 		grid-template-rows: 2rem 3rem;
-		margin-bottom: 0.5rem;
+		margin-bottom: 1rem;
 		background: white;
 		> .breadcrumb {
 			grid-column-start: 1;
@@ -20,7 +20,7 @@
 			grid-column-start: 1;
 			grid-column-end: 2;
 			grid-row-start: 2;
-			grid-row-end: 3;
+			grid-row-end: 3; 
 			margin-top: 0.5rem;
 		}
 	}
