@@ -187,7 +187,6 @@ module ui {
 	
 	rocketTs.ready(function() {
 		new GlobalNav($("#rocket-global-nav"), rocketTs.getLocalStorage());
-		
 		new ConfNav($("#rocket-conf-nav"), $("#rocket-conf-nav-toggle"));
 	});
 }
