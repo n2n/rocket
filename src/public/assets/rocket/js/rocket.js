@@ -85,9 +85,27 @@ var Rocket;
             });
         })();
         (function () {
+            var nav = new Rocket.Display.Nav();
+            var navStore;
+            var navState = new Rocket.Display.NavState();
             Jhtml.ready((elements) => {
-                let nav = Rocket.Display.Nav.setup($(elements).find("#rocket-global-nav"));
-                nav.initNavigation();
+                let rgn = $(elements).find("#rocket-global-nav");
+                if (rgn.length > 0) {
+                    nav.elemJq = rgn;
+                    elements = rgn.find(".rocket-nav-group");
+                    navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
+                }
+                for (let element of elements) {
+                    if (element.className.indexOf('rocket-nav-group') > -1
+                        && element.parentElement === nav.elemJq.get(0)) {
+                        let navGroupElem = $(element);
+                        let navGroup = Rocket.Display.NavGroup.build(navGroupElem, navState);
+                        navState.onChanged(navGroup);
+                        navGroupElem.find("h3").click(() => {
+                            navGroup.toggle();
+                        });
+                    }
+                }
             });
         })();
     });
@@ -2684,32 +2702,17 @@ var Rocket;
     var Display;
     (function (Display) {
         class Nav {
-            constructor(htmlElement, state) {
-                this.htmlElement = htmlElement;
-                this.state = state;
+            init(elemJq) {
+                this.elemJq = elemJq;
             }
-            static setup(navJquery) {
-                let navGroupJquery = $(".rocket-nav-group");
-                let navGroups = [];
-                navGroupJquery.each((key, htmlElem) => {
-                    let jqueryElem = $(htmlElem);
-                    let navGroupTitleCollection = htmlElem.getElementsByClassName("rocket-global-nav-group-title");
-                    let titleElem = Array.prototype.slice.call(navGroupTitleCollection)[0];
-                    let navItems = [];
-                    jqueryElem.find(".nav-item").each((key, navItemHtmlElem) => {
-                        navItems.push(new Display.NavItem(navItemHtmlElem));
-                    });
-                    navGroups.push(new Rocket.Display.NavGroup(jqueryElem.find("ul").get(0), titleElem, navItems));
-                });
-                return new Nav(navJquery.get(0), new Display.NavState(navJquery.find("*[data-rocket-user-id]").data("rocket-user-id"), navGroups));
-            }
-            initNavigation() {
+            initNavigation(navGroupsJQuery) {
+                this.state.initNavGroups(navGroupsJQuery);
                 this.initGroups();
-                this.setupEvents();
                 this.scrollToPos(this.state.scrollPos);
+                this.setupEvents();
             }
             scrollToPos(scrollPos) {
-                $(this.htmlElement).animate({
+                this.elemJq.animate({
                     scrollTop: scrollPos
                 }, 0);
             }
@@ -2724,31 +2727,6 @@ var Rocket;
                 }
             }
             setupEvents() {
-                let that = this;
-                $(this.htmlElement).scroll(function (e) {
-                    let scrollPos = $(this).scrollTop();
-                    clearTimeout($.data(this, 'scrollTimer'));
-                    $.data(this, 'scrollTimer', setTimeout(function () {
-                        that.state.scrollPos = scrollPos;
-                        that.state.save();
-                    }, 150));
-                });
-                for (let navGroup of this.state.navGroups) {
-                    $(navGroup.titleHtmlElement).click(function () {
-                        let openedNavGroups = that.state.openedNavGroups;
-                        let openedNavGroupsArrPos = openedNavGroups.indexOf(navGroup);
-                        if (openedNavGroupsArrPos > -1) {
-                            navGroup.close();
-                            that.state.openedNavGroups.splice(openedNavGroupsArrPos, 1);
-                        }
-                        else {
-                            navGroup.open();
-                            that.state.openedNavGroups.push(navGroup);
-                        }
-                        that.state.scrollPos = $(that.htmlElement).scrollTop();
-                        that.state.save();
-                    });
-                }
             }
             get state() {
                 return this._state;
@@ -2756,11 +2734,11 @@ var Rocket;
             set state(value) {
                 this._state = value;
             }
-            get htmlElement() {
-                return this._htmlElement;
+            get elemJq() {
+                return this._elemJq;
             }
-            set htmlElement(value) {
-                this._htmlElement = value;
+            set elemJq(value) {
+                this._elemJq = value;
             }
         }
         Display.Nav = Nav;
@@ -2771,62 +2749,72 @@ var Rocket;
     var Display;
     (function (Display) {
         class NavGroup {
-            constructor(navItemListHtmlElement, titleHtmlElement, navItems) {
-                this.navItemListHtmlElement = navItemListHtmlElement;
-                this.titleHtmlElement = titleHtmlElement;
-                this._navItems = navItems;
-                this._id = this.buildNavGroupId();
-            }
-            open(instant = false) {
-                let titleElemJquery = $(this.titleHtmlElement);
-                let iconJquery = titleElemJquery.find('i');
-                iconJquery.removeClass('fa-plus');
-                iconJquery.addClass('fa-minus');
-                let ulElemJquery = $(this.navItemListHtmlElement);
-                if (instant) {
-                    ulElemJquery.slideDown({ duration: 0 });
-                    return;
+            constructor(id, elemJq, navState) {
+                this.id = id;
+                this.elemJq = elemJq;
+                this.navState = navState;
+                this.opened = navState.isGroupOpen(id);
+                if (this.opened) {
+                    this.open(0);
                 }
-                ulElemJquery.slideDown({ duration: "fast" });
-            }
-            close(instant = false) {
-                let titleElemJquery = $(this.titleHtmlElement);
-                let iconJquery = titleElemJquery.find('i');
-                iconJquery.removeClass('fa-minus');
-                iconJquery.addClass('fa-plus');
-                let ulElemJquery = $(this.navItemListHtmlElement);
-                if (instant) {
-                    ulElemJquery.slideUp({ duration: 0 });
-                    return;
+                else {
+                    this.close(0);
                 }
-                ulElemJquery.slideUp({ duration: "fast" });
             }
-            buildNavGroupId() {
-                return this._titleHtmlElement.innerText.toLowerCase().replace(" ", "-");
+            static build(elemJq, navState) {
+                let id = elemJq.data("navGroupId");
+                return new NavGroup(id, elemJq, navState);
             }
-            get navItemListHtmlElement() {
-                return this._navItemListHtmlElement;
+            toggle() {
+                if (this.opened) {
+                    this.close(150);
+                }
+                else {
+                    this.open(150);
+                }
             }
-            set navItemListHtmlElement(value) {
-                this._navItemListHtmlElement = value;
+            changed() {
+                alert("changed");
             }
-            get navItems() {
-                return this._navItems;
+            open(ms = 150) {
+                this.opened = true;
+                let icon = this.elemJq.find("h3").find("i");
+                icon.addClass("fa-minus");
+                icon.removeClass("fa-plus");
+                this.elemJq.find('.nav').stop(true, true).slideDown({ duration: ms });
+                this.navState.change(this.id, this.opened);
             }
-            set navItems(value) {
-                this._navItems = value;
+            close(ms = 150) {
+                this.opened = false;
+                let icon = this.elemJq.find("h3").find("i");
+                icon.addClass("fa-plus");
+                icon.removeClass("fa-minus");
+                this.elemJq.find('.nav').stop(true, true).slideUp({ duration: ms });
+                this.navState.change(this.id, this.opened);
             }
-            get titleHtmlElement() {
-                return this._titleHtmlElement;
+            get navState() {
+                return this._navState;
             }
-            set titleHtmlElement(value) {
-                this._titleHtmlElement = value;
+            set navState(value) {
+                this._navState = value;
+            }
+            get elemJq() {
+                return this._elemJq;
+            }
+            set elemJq(value) {
+                this._elemJq = value;
             }
             get id() {
                 return this._id;
             }
             set id(value) {
                 this._id = value;
+            }
+            get opened() {
+                return this._opened;
+            }
+            set opened(value) {
+                this._opened = value;
             }
         }
         Display.NavGroup = NavGroup;
@@ -2855,58 +2843,39 @@ var Rocket;
     var Display;
     (function (Display) {
         class NavState {
-            constructor(userId, navGroups) {
-                this.LOCALSTORE_ITEM_PATTERN = "rocket_navigation_user_states";
-                this._userId = null;
-                this._scrollPos = null;
-                this._activeNavItem = null;
-                this._openedNavGroups = [];
-                this._localStoreManager = null;
-                this.navStateItems = [];
-                this.navStateItem = null;
+            constructor() {
+                this.navStateListeners = [];
+            }
+            onChanged(navStateListener) {
+                this.navStateListeners.push(navStateListener);
+            }
+            change(id, opened) {
+            }
+            isGroupOpen(navId) {
+                return false;
+            }
+        }
+        Display.NavState = NavState;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class NavStore {
+            constructor(userId, scrollPos, navGroupOpenedIds) {
                 this._userId = userId;
-                this._navGroups = navGroups;
-                this._localStoreManager = new Rocket.util.LocalStoreManager();
-                this.init();
+                this._scrollPos = scrollPos;
+                this.navGroupOpenedIds = navGroupOpenedIds;
             }
-            init() {
-                this.navStateItems = JSON.parse(this._localStoreManager.getItem(this.LOCALSTORE_ITEM_PATTERN)) || [];
-                if (this.navStateItems === null
-                    || !(this.navStateItem = this.navStateItems.find(navStateItem => navStateItem.userId === this._userId))) {
-                    this.navStateItem = this.buildNavStateItem();
-                    this.save();
-                    return;
-                }
-                this.scrollPos = this.navStateItem.scrollPos;
-                for (let navGroupId of this.navStateItem.openedGroupIds) {
-                    let navGroup = this.navGroups.find(navGroup => navGroup.id === navGroupId);
-                    this.openedNavGroups.push(navGroup);
-                }
-            }
-            isGroupOpen(navGroup) {
-                return this.openedNavGroups.indexOf(navGroup) > -1;
+            static read(userId) {
+                let storageItem = window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME);
+                let storageItemJson = JSON.parse(storageItem);
+                return new NavStore(userId, 0, []);
             }
             save() {
-                this.navStateItems.splice(this.navStateItems.indexOf(this.navStateItem), 1);
-                this.navStateItem = this.buildNavStateItem();
-                this.navStateItems.unshift(this.navStateItem);
-                this._localStoreManager.setItem(this.LOCALSTORE_ITEM_PATTERN, JSON.stringify(this.navStateItems));
-            }
-            buildNavStateItem() {
-                let openedGroupIds = [];
-                for (let navGroup of this.openedNavGroups) {
-                    openedGroupIds.push(navGroup.id);
-                }
-                return { userId: this._userId,
-                    scrollPos: this._scrollPos,
-                    activeNavItemUrlStr: null,
-                    openedGroupIds: openedGroupIds };
-            }
-            get navGroups() {
-                return this._navGroups;
-            }
-            set navGroups(value) {
-                this._navGroups = value;
+                let jsonObj = { "userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds };
+                window.localStorage.setItem(NavStore.STORAGE_ITEM_NAME, JSON.stringify(jsonObj));
             }
             get userId() {
                 return this._userId;
@@ -2920,21 +2889,15 @@ var Rocket;
             set scrollPos(value) {
                 this._scrollPos = value;
             }
-            get activeNavItem() {
-                return this._activeNavItem;
+            get navGroupOpenedIds() {
+                return this._navGroupOpenedIds;
             }
-            set activeNavItem(value) {
-                this._activeNavItem = value;
-            }
-            get openedNavGroups() {
-                return this._openedNavGroups;
-            }
-            set openedNavGroups(value) {
-                this._openedNavGroups = value;
+            set navGroupOpenedIds(value) {
+                this._navGroupOpenedIds = value;
             }
         }
-        Display.NavState = NavState;
-        ;
+        NavStore.STORAGE_ITEM_NAME = "rocket_navigation_states";
+        Display.NavStore = NavStore;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -6139,20 +6102,5 @@ var Rocket;
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var util;
-    (function (util) {
-        class LocalStoreManager {
-            getItem(name) {
-                return window.localStorage.getItem(name);
-            }
-            setItem(name, value) {
-                window.localStorage.setItem(name, value);
-            }
-        }
-        util.LocalStoreManager = LocalStoreManager;
-    })(util = Rocket.util || (Rocket.util = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
