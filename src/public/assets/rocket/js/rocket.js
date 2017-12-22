@@ -90,12 +90,16 @@ var Rocket;
             var navState;
             var navGroups = [];
             Jhtml.ready((elements) => {
-                let rgn = $(elements).find("#rocket-global-nav");
+                let elementsJq = $(elements);
+                let rgn = elementsJq.find("#rocket-global-nav");
                 if (rgn.length > 0) {
                     nav.elemJq = rgn;
-                    elements = rgn.find(".rocket-nav-group");
+                    let navGroupJq = rgn.find(".rocket-nav-group");
                     navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
                     navState = new Rocket.Display.NavState(navStore);
+                    navGroupJq.each((key, navGroupNode) => {
+                        navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), navState));
+                    });
                     rgn.scroll(() => {
                         navStore.scrollPos = rgn.scrollTop();
                         navStore.save();
@@ -110,26 +114,26 @@ var Rocket;
                             });
                             navGroups.forEach((navGroup) => {
                                 if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    navState.onChanged(navGroup);
+                                    if (navState.isGroupOpen(navGroup.id)) {
+                                        navGroup.open(0);
+                                    }
+                                    else {
+                                        navGroup.close(0);
+                                    }
+                                    nav.scrollToPos(navStore.scrollPos);
                                 }
                             });
                         });
                     });
                     observer.observe(rgn.get(0), { childList: true });
                 }
-                nav.scrollToPos(navStore.scrollPos);
-                for (let element of elements) {
-                    if (element.className.indexOf('rocket-nav-group') > -1
-                        && element.parentElement === nav.elemJq.get(0)) {
-                        let navGroupJq = $(element);
-                        let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
-                        navState.onChanged(navGroup);
-                        navGroupJq.find("h3").click(() => {
-                            navGroup.toggle();
-                        });
-                        navGroups.push(navGroup);
+                elementsJq.each((key, node) => {
+                    let nodeJq = $(node);
+                    if (nodeJq.hasClass("rocket-nav-group") && nodeJq.parent().get(0) === nav.elemJq.get(0)) {
+                        navGroups.push(Rocket.Display.NavGroup.build(nodeJq, navState));
                     }
-                }
+                });
+                nav.scrollToPos(navStore.scrollPos);
             });
         })();
     });
@@ -2769,7 +2773,12 @@ var Rocket;
             }
             static build(elemJq, navState) {
                 let id = elemJq.data("navGroupId");
-                return new NavGroup(id, elemJq, navState);
+                let navGroup = new NavGroup(id, elemJq, navState);
+                navState.onChanged(navGroup);
+                elemJq.find("h3").click(() => {
+                    navGroup.toggle();
+                });
+                return navGroup;
             }
             toggle() {
                 if (this.opened) {
@@ -2863,9 +2872,6 @@ var Rocket;
                 this._navStore = navStore;
             }
             onChanged(navStateListener) {
-                let index = this.navStateListeners.indexOf(navStateListener);
-                if (index > -1) {
-                }
                 this.navStateListeners.push(navStateListener);
             }
             offChanged(navStateListener) {
@@ -2909,7 +2915,7 @@ var Rocket;
                 this.navGroupOpenedIds = navGroupOpenedIds;
             }
             static read(userId) {
-                let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
+                let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME)) || [];
                 let navStoreItem = navStoreUserItems.find((navStoreUserItem) => {
                     return (navStoreUserItem.userId === userId);
                 });
