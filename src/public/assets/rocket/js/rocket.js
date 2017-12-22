@@ -105,13 +105,11 @@ var Rocket;
                         mutations.forEach((mutation) => {
                             navGroups.forEach((navGroup) => {
                                 if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    console.log("OFFCHANGED");
                                     navState.offChanged(navGroup);
                                 }
                             });
                             navGroups.forEach((navGroup) => {
                                 if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    console.log("ONCHANGED");
                                     navState.onChanged(navGroup);
                                 }
                             });
@@ -125,7 +123,6 @@ var Rocket;
                         && element.parentElement === nav.elemJq.get(0)) {
                         let navGroupJq = $(element);
                         let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
-                        navState.onChanged(navGroup);
                         navGroupJq.find("h3").click(() => {
                             navGroup.toggle();
                         });
@@ -2878,7 +2875,6 @@ var Rocket;
                     this.navStore.removeOpenNavGroupId(id);
                 }
                 this.navStore.save();
-                console.log(this.navStateListeners.length);
                 this.navStateListeners.forEach((navStateListener) => {
                     navStateListener.changed(opened);
                 });
