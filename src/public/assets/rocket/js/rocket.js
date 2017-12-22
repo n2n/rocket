@@ -100,35 +100,30 @@ var Rocket;
                         navStore.scrollPos = rgn.scrollTop();
                         navStore.save();
                     });
-                    var observer = new MutationObserver((mutations) => {
+                    var scrollObserver = new MutationObserver((mutations) => {
                         nav.scrollToPos(navStore.scrollPos);
-                        mutations.forEach((mutation) => {
-                            navGroups.forEach((navGroup) => {
-                                if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    navState.offChanged(navGroup);
-                                }
+                    });
+                    scrollObserver.observe(rgn.get(0), { childList: true });
+                    var removeObserver = new MutationObserver((mutations) => {
+                    });
+                    mutations.forEach((mutation) => {
+                        navGroups.forEach((navGroup) => {
+                            if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
+                                navState.offChanged(navGroup);
+                            }
+                        });
+                        $(Array.from(mutation.addedNodes)).each((elem) => {
+                            let navGroupJq = $(elem);
+                            let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
+                            navState.onChanged(navGroup);
+                            navGroupJq.find("h3").click(() => {
+                                navGroup.toggle();
                             });
-                            navGroups.forEach((navGroup) => {
-                                if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    navState.onChanged(navGroup);
-                                }
-                            });
+                            navGroups.push(navGroup);
                         });
                     });
-                    observer.observe(rgn.get(0), { childList: true });
                 }
                 nav.scrollToPos(navStore.scrollPos);
-                for (let element of elements) {
-                    if (element.className.indexOf('rocket-nav-group') > -1
-                        && element.parentElement === nav.elemJq.get(0)) {
-                        let navGroupJq = $(element);
-                        let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
-                        navGroupJq.find("h3").click(() => {
-                            navGroup.toggle();
-                        });
-                        navGroups.push(navGroup);
-                    }
-                }
             });
         })();
     });
@@ -2862,6 +2857,9 @@ var Rocket;
                 this._navStore = navStore;
             }
             onChanged(navStateListener) {
+                let index = this.navStateListeners.indexOf(navStateListener);
+                if (index > -1) {
+                }
                 this.navStateListeners.push(navStateListener);
             }
             offChanged(navStateListener) {
@@ -2905,7 +2903,7 @@ var Rocket;
                 this.navGroupOpenedIds = navGroupOpenedIds;
             }
             static read(userId) {
-                let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME)) || [];
+                let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
                 let navStoreItem = navStoreUserItems.find((navStoreUserItem) => {
                     return (navStoreUserItem.userId === userId);
                 });
