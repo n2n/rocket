@@ -150,7 +150,8 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 	<nav id="rocket-global-nav" data-jhtml-comp="rocket-global-nav">
 		<h2 class="sr-only" data-rocket-user-id="<?php $html->out($loginContext->getCurrentUser()->getId()) ?>"><?php $html->l10nText('manage_nav_title') ?></h2>
 		<?php foreach ($templateModel->getNavArray() as $navArray): ?>
-			<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>">
+			<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>"
+					data-nav-group-id="<?php $html->out(str_replace(' ', '-', strtolower($navArray['menuGroup']->getLabel()))) ?>">
 				<h3 class="rocket-global-nav-group-title">
 					<a><?php $html->esc($navArray['menuGroup']->getLabel()) ?></a>
 					<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
