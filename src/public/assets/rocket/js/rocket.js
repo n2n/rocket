@@ -87,14 +87,20 @@ var Rocket;
         (function () {
             var nav = new Rocket.Display.Nav();
             var navStore;
-            var navState = new Rocket.Display.NavState();
+            var navState;
             Jhtml.ready((elements) => {
                 let rgn = $(elements).find("#rocket-global-nav");
                 if (rgn.length > 0) {
                     nav.elemJq = rgn;
                     elements = rgn.find(".rocket-nav-group");
                     navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
+                    navState = new Rocket.Display.NavState(navStore);
+                    rgn.scroll(() => {
+                        navStore.scrollPos = rgn.scrollTop();
+                        navStore.save();
+                    });
                 }
+                nav.scrollToPos(navStore.scrollPos);
                 for (let element of elements) {
                     if (element.className.indexOf('rocket-nav-group') > -1
                         && element.parentElement === nav.elemJq.get(0)) {
@@ -2705,28 +2711,10 @@ var Rocket;
             init(elemJq) {
                 this.elemJq = elemJq;
             }
-            initNavigation(navGroupsJQuery) {
-                this.state.initNavGroups(navGroupsJQuery);
-                this.initGroups();
-                this.scrollToPos(this.state.scrollPos);
-                this.setupEvents();
-            }
             scrollToPos(scrollPos) {
                 this.elemJq.animate({
                     scrollTop: scrollPos
                 }, 0);
-            }
-            initGroups() {
-                for (let navGroup of this.state.navGroups) {
-                    if (!this.state.isGroupOpen(navGroup)) {
-                        navGroup.close(true);
-                    }
-                    else {
-                        navGroup.open(true);
-                    }
-                }
-            }
-            setupEvents() {
             }
             get state() {
                 return this._state;
@@ -2772,9 +2760,18 @@ var Rocket;
                 else {
                     this.open(150);
                 }
+                this.navState.navStore.save();
             }
             changed() {
-                alert("changed");
+                if (this.navState.isGroupOpen(this.id) === this.opened)
+                    return;
+                this.opened = this.navState.isGroupOpen(this.id);
+                if (this.opened === true) {
+                    this.open();
+                }
+                if (this.opened === false) {
+                    this.close();
+                }
             }
             open(ms = 150) {
                 this.opened = true;
@@ -2843,16 +2840,33 @@ var Rocket;
     var Display;
     (function (Display) {
         class NavState {
-            constructor() {
+            constructor(navStore) {
                 this.navStateListeners = [];
+                this._navStore = navStore;
             }
             onChanged(navStateListener) {
                 this.navStateListeners.push(navStateListener);
             }
             change(id, opened) {
+                if (opened) {
+                    this.navStore.addOpenNavGroupId(id);
+                }
+                else {
+                    this.navStore.removeOpenNavGroupId(id);
+                }
+                this.navStore.save();
+                this.navStateListeners.forEach((navStateListener) => {
+                    navStateListener.changed(opened);
+                });
             }
             isGroupOpen(navId) {
-                return false;
+                return !!this.navStore.navGroupOpenedIds.find((id) => { return id == navId; });
+            }
+            get navStore() {
+                return this._navStore;
+            }
+            set navStore(value) {
+                this._navStore = value;
             }
         }
         Display.NavState = NavState;
@@ -2869,9 +2883,18 @@ var Rocket;
                 this.navGroupOpenedIds = navGroupOpenedIds;
             }
             static read(userId) {
-                let storageItem = window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME);
-                let storageItemJson = JSON.parse(storageItem);
-                return new NavStore(userId, 0, []);
+                let navStoreItem = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
+                return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds);
+            }
+            addOpenNavGroupId(id) {
+                if (this.navGroupOpenedIds.indexOf(id) > -1)
+                    return;
+                this.navGroupOpenedIds.push(id);
+            }
+            removeOpenNavGroupId(id) {
+                if (this.navGroupOpenedIds.indexOf(id) === -1)
+                    return;
+                this.navGroupOpenedIds.splice(this.navGroupOpenedIds.indexOf(id), 1);
             }
             save() {
                 let jsonObj = { "userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds };
