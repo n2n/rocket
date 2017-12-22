@@ -8,10 +8,6 @@ namespace Rocket.Display {
 		}
 
 		public onChanged(navStateListener: NavStateListener) {
-			let index = this.navStateListeners.indexOf(navStateListener);
-			if (index > -1) {
-				//console.log("DUPLICATE" + index);
-			}
 			this.navStateListeners.push(navStateListener);
 		}
 
@@ -27,8 +23,6 @@ namespace Rocket.Display {
 			}
 
 			this.navStore.save();
-
-			//console.log("listeners: " + this.navStateListeners.length);
 
 			this.navStateListeners.forEach((navStateListener: NavStateListener) => {
 				navStateListener.changed(opened);

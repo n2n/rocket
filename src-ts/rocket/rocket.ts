@@ -110,20 +110,25 @@ namespace Rocket {
 			var nav: Rocket.Display.Nav = new Rocket.Display.Nav();
 			var navStore: Rocket.Display.NavStore;
 			var navState: Rocket.Display.NavState;
-			var navGroups: NavGroup[] = [];
+			var navGroups: Rocket.Display.NavGroup[] = [];
 
 			Jhtml.ready((elements) => {
-				let rgn = $(elements).find("#rocket-global-nav");
+				let elementsJq = $(elements);
+				let rgn = elementsJq.find("#rocket-global-nav");
 				if (rgn.length > 0) {
 					nav.elemJq = rgn;
-					elements = rgn.find(".rocket-nav-group");
+					let navGroupJq = rgn.find(".rocket-nav-group");
 					navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
 					navState = new Rocket.Display.NavState(navStore);
+
+					navGroupJq.each((key: number, navGroupNode: Node) => {
+						navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), navState));
+					})
 
 					rgn.scroll(() => {
 						navStore.scrollPos = rgn.scrollTop();
 						navStore.save();
-					})
+					});
 
 					var observer = new MutationObserver((mutations) => {
 						nav.scrollToPos(navStore.scrollPos)
@@ -131,13 +136,19 @@ namespace Rocket {
 						mutations.forEach((mutation) => {
 							navGroups.forEach((navGroup: NavGroup) => {
 								if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									navState.offChanged(navGroup)
+									navState.offChanged(navGroup);
 								}
 							});
 
 							navGroups.forEach((navGroup: NavGroup) => {
 								if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									navState.onChanged(navGroup);
+									if (navState.isGroupOpen(navGroup.id)) {
+										navGroup.open(0);
+									} else {
+										navGroup.close(0);
+									}
+
+									nav.scrollToPos(navStore.scrollPos);
 								}
 							});
 						})
@@ -146,21 +157,14 @@ namespace Rocket {
 					observer.observe(rgn.get(0), {childList: true});
 				}
 
-				nav.scrollToPos(navStore.scrollPos);
-				for (let element of elements) {
-					if (element.className.indexOf('rocket-nav-group') > -1
-						&& element.parentElement === nav.elemJq.get(0)) {
-
-						let navGroupJq = $(element);
-						let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
-						navState.onChanged(navGroup);
-						navGroupJq.find("h3").click(() => {
-							navGroup.toggle();
-						});
-
-						navGroups.push(navGroup);
+				elementsJq.each((key: number, node: Node) => {
+					let nodeJq = $(node);
+					if (nodeJq.hasClass("rocket-nav-group") && nodeJq.parent().get(0) === nav.elemJq.get(0)) {
+						navGroups.push(Rocket.Display.NavGroup.build(nodeJq, navState));
 					}
-				}
+				});
+
+				nav.scrollToPos(navStore.scrollPos);
 			});
 		})();
 	});

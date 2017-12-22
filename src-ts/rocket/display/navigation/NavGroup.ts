@@ -23,7 +23,13 @@ namespace Rocket.Display {
 
 		public static build(elemJq: JQuery, navState: NavState) {
 			let id = elemJq.data("navGroupId");
-			return new NavGroup(id, elemJq, navState);
+			let navGroup = new NavGroup(id, elemJq, navState);
+			navState.onChanged(navGroup);
+			elemJq.find("h3").click(() => {
+				navGroup.toggle();
+			});
+
+			return navGroup;
 		}
 
 		public toggle() {
