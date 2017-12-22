@@ -131,14 +131,12 @@ namespace Rocket {
 						mutations.forEach((mutation) => {
 							navGroups.forEach((navGroup: NavGroup) => {
 								if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									console.log("OFFCHANGED");
 									navState.offChanged(navGroup)
 								}
 							});
 
 							navGroups.forEach((navGroup: NavGroup) => {
 								if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									console.log("ONCHANGED");
 									navState.onChanged(navGroup);
 								}
 							});
@@ -156,7 +154,6 @@ namespace Rocket {
 
 						let navGroupJq = $(element);
 						let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
-						navState.onChanged(navGroup);
 						navGroupJq.find("h3").click(() => {
 							navGroup.toggle();
 						});
