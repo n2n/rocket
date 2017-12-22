@@ -15,10 +15,10 @@ namespace Rocket.Display {
 		}
 
 		public static read(userId: number): NavStore {
-			let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
+			let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME)) || [];
 
 			let navStoreItem = navStoreUserItems.find((navStoreUserItem: NavStoreUserItem) => {
-				return (navStoreUserItem.userId === userId)
+				return (navStoreUserItem.userId === userId);
 			});
 
 			if (!navStoreItem) {

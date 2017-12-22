@@ -24,6 +24,7 @@ namespace Rocket.Display {
 
 			this.navStore.save();
 
+			console.log(this.navStateListeners.length);
 
 			this.navStateListeners.forEach((navStateListener: NavStateListener) => {
 				navStateListener.changed(opened);
