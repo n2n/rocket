@@ -125,42 +125,35 @@ namespace Rocket {
 						navStore.save();
 					})
 
-					var observer = new MutationObserver((mutations) => {
+					var scrollObserver = new MutationObserver((mutations) => {
 						nav.scrollToPos(navStore.scrollPos)
-
-						mutations.forEach((mutation) => {
-							navGroups.forEach((navGroup: NavGroup) => {
-								if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									navState.offChanged(navGroup)
-								}
-							});
-
-							navGroups.forEach((navGroup: NavGroup) => {
-								if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									navState.onChanged(navGroup);
-								}
-							});
-						})
 					})
+					scrollObserver.observe(rgn.get(0), {childList: true});
 
-					observer.observe(rgn.get(0), {childList: true});
+					var removeObserver = new MutationObserver((mutations) => {
+
+					})
+					mutations.forEach((mutation) => {
+						navGroups.forEach((navGroup: NavGroup) => {
+							if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
+								navState.offChanged(navGroup)
+							}
+						});
+
+						$(Array.from(mutation.addedNodes)).each((elem: Node) => {
+							let navGroupJq = $(elem);
+							let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
+							navState.onChanged(navGroup);
+							navGroupJq.find("h3").click(() => {
+								navGroup.toggle();
+							});
+
+							navGroups.push(navGroup);
+						});
+					})
 				}
 
 				nav.scrollToPos(navStore.scrollPos);
-
-				for (let element of elements) {
-					if (element.className.indexOf('rocket-nav-group') > -1
-						&& element.parentElement === nav.elemJq.get(0)) {
-
-						let navGroupJq = $(element);
-						let navGroup = Rocket.Display.NavGroup.build(navGroupJq, navState);
-						navGroupJq.find("h3").click(() => {
-							navGroup.toggle();
-						});
-
-						navGroups.push(navGroup);
-					}
-				}
 			});
 		})();
 	});
