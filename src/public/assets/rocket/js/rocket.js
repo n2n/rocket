@@ -88,6 +88,7 @@ var Rocket;
             var nav = new Rocket.Display.Nav();
             var navStore;
             var navState;
+            var navGroups = [];
             Jhtml.ready((elements) => {
                 let rgn = $(elements).find("#rocket-global-nav");
                 if (rgn.length > 0) {
@@ -110,6 +111,7 @@ var Rocket;
                         navGroupElem.find("h3").click(() => {
                             navGroup.toggle();
                         });
+                        navGroups.push(navGroup);
                     }
                 }
             });
@@ -2847,6 +2849,9 @@ var Rocket;
             onChanged(navStateListener) {
                 this.navStateListeners.push(navStateListener);
             }
+            offChanged(navStateListener) {
+                this.navStateListeners.splice(this.navStateListeners.indexOf(navStateListener), 1);
+            }
             change(id, opened) {
                 if (opened) {
                     this.navStore.addOpenNavGroupId(id);
@@ -2877,14 +2882,22 @@ var Rocket;
     var Display;
     (function (Display) {
         class NavStore {
-            constructor(userId, scrollPos, navGroupOpenedIds) {
+            constructor(userId, scrollPos, navGroupOpenedIds, navStoreUserItems) {
+                this._navStoreUserItems = [];
                 this._userId = userId;
                 this._scrollPos = scrollPos;
+                this._navStoreUserItems = navStoreUserItems;
                 this.navGroupOpenedIds = navGroupOpenedIds;
             }
             static read(userId) {
-                let navStoreItem = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
-                return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds);
+                let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
+                let navStoreItem = navStoreUserItems.find((navStoreUserItem) => {
+                    return (navStoreUserItem.userId === userId);
+                });
+                if (!navStoreItem) {
+                    return new NavStore(userId, 0, [], navStoreUserItems);
+                }
+                return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds, navStoreUserItems);
             }
             addOpenNavGroupId(id) {
                 if (this.navGroupOpenedIds.indexOf(id) > -1)
@@ -2897,8 +2910,18 @@ var Rocket;
                 this.navGroupOpenedIds.splice(this.navGroupOpenedIds.indexOf(id), 1);
             }
             save() {
-                let jsonObj = { "userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds };
-                window.localStorage.setItem(NavStore.STORAGE_ITEM_NAME, JSON.stringify(jsonObj));
+                let userItem = this.navStoreUserItems.find((userItem) => {
+                    if (userItem.userId === this.userId) {
+                        return true;
+                    }
+                });
+                if (!userItem) {
+                    userItem = { "userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds };
+                    this.navStoreUserItems.push(userItem);
+                }
+                userItem.scrollPos = this.scrollPos;
+                userItem.navGroupOpenedIds = this.navGroupOpenedIds;
+                window.localStorage.setItem(NavStore.STORAGE_ITEM_NAME, JSON.stringify(this.navStoreUserItems));
             }
             get userId() {
                 return this._userId;
@@ -2917,6 +2940,12 @@ var Rocket;
             }
             set navGroupOpenedIds(value) {
                 this._navGroupOpenedIds = value;
+            }
+            get navStoreUserItems() {
+                return this._navStoreUserItems;
+            }
+            set navStoreUserItems(value) {
+                this._navStoreUserItems = value;
             }
         }
         NavStore.STORAGE_ITEM_NAME = "rocket_navigation_states";
