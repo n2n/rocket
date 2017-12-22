@@ -11,6 +11,10 @@ namespace Rocket.Display {
 			this.navStateListeners.push(navStateListener);
 		}
 
+		public offChanged(navStateListener: NavStateListener) {
+			this.navStateListeners.splice(this.navStateListeners.indexOf(navStateListener), 1);
+		}
+
 		public change(id: string, opened: boolean) {
 			if (opened) {
 				this.navStore.addOpenNavGroupId(id);
@@ -19,6 +23,7 @@ namespace Rocket.Display {
 			}
 
 			this.navStore.save();
+
 
 			this.navStateListeners.forEach((navStateListener: NavStateListener) => {
 				navStateListener.changed(opened);

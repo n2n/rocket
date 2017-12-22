@@ -5,16 +5,27 @@ namespace Rocket.Display {
 		private _userId: number;
 		private _scrollPos: number;
 		private _navGroupOpenedIds: string[];
+		private _navStoreUserItems: NavStoreUserItem[] = [];
 
-		constructor(userId: number, scrollPos: number, navGroupOpenedIds: string[]) {
+		constructor(userId: number, scrollPos: number, navGroupOpenedIds: string[], navStoreUserItems: NavStoreUserItem[]) {
 			this._userId = userId;
 			this._scrollPos = scrollPos;
+			this._navStoreUserItems = navStoreUserItems;
 			this.navGroupOpenedIds = navGroupOpenedIds;
 		}
 
 		public static read(userId: number): NavStore {
-			let navStoreItem = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
-			return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds);
+			let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
+
+			let navStoreItem = navStoreUserItems.find((navStoreUserItem: NavStoreUserItem) => {
+				return (navStoreUserItem.userId === userId)
+			});
+
+			if (!navStoreItem) {
+				return new NavStore(userId, 0, [], navStoreUserItems);
+			}
+
+			return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds, navStoreUserItems);
 		}
 
 		public addOpenNavGroupId(id: string) {
@@ -28,8 +39,21 @@ namespace Rocket.Display {
 		}
 
 		public save(): void {
-			let jsonObj: Object = {"userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds};
-			window.localStorage.setItem(NavStore.STORAGE_ITEM_NAME, JSON.stringify(jsonObj));
+			let userItem = this.navStoreUserItems.find((userItem: NavStoreUserItem) => {
+				if (userItem.userId === this.userId) {
+					return true;
+				}
+			});
+
+			if (!userItem) {
+				userItem = {"userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds};
+				this.navStoreUserItems.push(userItem);
+			}
+
+			userItem.scrollPos = this.scrollPos;
+			userItem.navGroupOpenedIds = this.navGroupOpenedIds;
+
+			window.localStorage.setItem(NavStore.STORAGE_ITEM_NAME, JSON.stringify(this.navStoreUserItems));
 		}
 
 		get userId() {
@@ -55,5 +79,19 @@ namespace Rocket.Display {
 		set navGroupOpenedIds(value) {
 			this._navGroupOpenedIds = value;
 		}
+
+		get navStoreUserItems(): Rocket.Display.NavStoreUserItem[] {
+			return this._navStoreUserItems;
+		}
+
+		set navStoreUserItems(value: Rocket.Display.NavStoreUserItem[]) {
+			this._navStoreUserItems = value;
+		}
+	}
+
+	export interface NavStoreUserItem {
+		userId: number,
+		scrollPos: number,
+		navGroupOpenedIds: string[]
 	}
 }

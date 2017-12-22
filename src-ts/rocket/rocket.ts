@@ -110,6 +110,7 @@ namespace Rocket {
 			var nav: Rocket.Display.Nav = new Rocket.Display.Nav();
 			var navStore: Rocket.Display.NavStore;
 			var navState: Rocket.Display.NavState;
+			var navGroups: NavGroup[] = [];
 
 			Jhtml.ready((elements) => {
 				let rgn = $(elements).find("#rocket-global-nav");
@@ -123,6 +124,32 @@ namespace Rocket {
 						navStore.scrollPos = rgn.scrollTop();
 						navStore.save();
 					})
+
+					/*
+					var observer = new MutationObserver((mutations) => {
+						nav.scrollToPos(navStore.scrollPos)
+
+						mutations.forEach((mutation) => {
+							let removedNavGroup = navGroups.find((navGroup: NavGroup) => {
+								if ($(mutation.removedNodes).get(0) === navGroup.elemJq.get(0)) {
+									return true;
+								}
+							});
+
+							navState.offChanged(removedNavGroup);
+
+							let addedNavGroup = navGroups.find((navGroup: NavGroup) => {
+								if ($(mutation.addedNodes).get(0) === navGroup.elemJq.get(0)) {
+									return true;
+								}
+							});
+
+							navState.onChanged(addedNavGroup);
+						})
+					})
+
+					observer.observe(rgn.get(0), {childList: true});
+					*/
 				}
 
 				nav.scrollToPos(navStore.scrollPos);
@@ -130,12 +157,15 @@ namespace Rocket {
 				for (let element of elements) {
 					if (element.className.indexOf('rocket-nav-group') > -1
 						&& element.parentElement === nav.elemJq.get(0)) {
+
 						let navGroupElem = $(element)
 						let navGroup = Rocket.Display.NavGroup.build(navGroupElem, navState);
 						navState.onChanged(navGroup);
 						navGroupElem.find("h3").click(() => {
 							navGroup.toggle();
 						});
+
+						navGroups.push(navGroup);
 					}
 				}
 			});
