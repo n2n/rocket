@@ -13,9 +13,18 @@ namespace Rocket.Display {
 		}
 
 		public static read(userId: number): NavStore {
-			let storageItem = window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME);
-			let storageItemJson = JSON.parse(storageItem);
-			return new NavStore(userId, 0, []);
+			let navStoreItem = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME));
+			return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds);
+		}
+
+		public addOpenNavGroupId(id: string) {
+			if (this.navGroupOpenedIds.indexOf(id) > -1) return;
+			this.navGroupOpenedIds.push(id);
+		}
+
+		public removeOpenNavGroupId(id: string) {
+			if (this.navGroupOpenedIds.indexOf(id) === -1) return;
+			this.navGroupOpenedIds.splice(this.navGroupOpenedIds.indexOf(id), 1);
 		}
 
 		public save(): void {

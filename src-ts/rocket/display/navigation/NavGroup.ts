@@ -11,6 +11,7 @@ namespace Rocket.Display {
 			this.id = id;
 			this.elemJq = elemJq;
 			this.navState = navState;
+
 			this.opened = navState.isGroupOpen(id);
 
 			if (this.opened) {
@@ -31,10 +32,21 @@ namespace Rocket.Display {
 			} else {
 				this.open(150);
 			}
+
+			this.navState.navStore.save();
 		}
 
 		public changed() {
-			alert("changed");
+			if (this.navState.isGroupOpen(this.id) === this.opened) return;
+			this.opened = this.navState.isGroupOpen(this.id);
+
+			if (this.opened === true) {
+				this.open();
+			}
+
+			if (this.opened === false) {
+				this.close();
+			}
 		}
 
 		public open(ms: number = 150) {

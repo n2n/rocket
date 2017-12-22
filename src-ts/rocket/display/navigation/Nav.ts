@@ -7,31 +7,10 @@ namespace Rocket.Display {
 			this.elemJq = elemJq;
 		}
 
-		public initNavigation(navGroupsJQuery: JQuery) {
-			this.state.initNavGroups(navGroupsJQuery);
-			this.initGroups();
-			this.scrollToPos(this.state.scrollPos);
-			this.setupEvents();
-		}
-
-		private scrollToPos(scrollPos: number) {
+		public scrollToPos(scrollPos: number) {
 			this.elemJq.animate({
 				scrollTop: scrollPos
 			}, 0);
-		}
-
-		private initGroups() {
-			for (let navGroup of this.state.navGroups) {
-				if (!this.state.isGroupOpen(navGroup)) {
-					navGroup.close(true);
-				} else {
-					navGroup.open(true);
-				}
-			}
-		}
-
-		private setupEvents() {
-
 		}
 
 		get state(): Rocket.Display.NavState {

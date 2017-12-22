@@ -109,7 +109,7 @@ namespace Rocket {
 		(function() {
 			var nav: Rocket.Display.Nav = new Rocket.Display.Nav();
 			var navStore: Rocket.Display.NavStore;
-			var navState: Rocket.Display.NavState = new Rocket.Display.NavState();
+			var navState: Rocket.Display.NavState;
 
 			Jhtml.ready((elements) => {
 				let rgn = $(elements).find("#rocket-global-nav");
@@ -117,7 +117,15 @@ namespace Rocket {
 					nav.elemJq = rgn;
 					elements = rgn.find(".rocket-nav-group");
 					navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
+					navState = new Rocket.Display.NavState(navStore);
+
+					rgn.scroll(() => {
+						navStore.scrollPos = rgn.scrollTop();
+						navStore.save();
+					})
 				}
+
+				nav.scrollToPos(navStore.scrollPos);
 
 				for (let element of elements) {
 					if (element.className.indexOf('rocket-nav-group') > -1
