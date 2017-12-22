@@ -67,6 +67,7 @@ use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearchField;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 use rocket\spec\ei\manage\gui\GuiProp;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -198,6 +199,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
+			$viewMode = null;
 			$targetRelationEntry = null;
 			if (isset($targetRelationEntries[$n2nLocaleId])) {
 				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
@@ -207,8 +209,10 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($eiObject));
 			}
 			
-			$targetEiuGui = $targetUtils->newGui($eiu->entryGui()->isBulky());
-			$targetEiuEntryGui = $targetEiuGui->appendNewEntryGui($targetRelationEntry->getEiEntry(), !$eiu->entryGui()->isReadOnly());
+			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(), 
+					$targetRelationEntry->getEiEntry()->isNew());
+			$targetEiuGui = $targetUtils->newGui($viewMode);
+			$targetEiuEntryGui = $targetEiuGui->appendNewEntryGui($targetRelationEntry->getEiEntry());
 			
 			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
 					new GuiFieldAssembler($targetGuiDefinition, $targetEiuEntryGui), 

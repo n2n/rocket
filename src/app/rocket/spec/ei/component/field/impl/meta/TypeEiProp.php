@@ -22,16 +22,10 @@
 namespace rocket\spec\ei\component\field\impl\meta;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
-use n2n\util\config\Attributes;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\field\impl\adapter\IndependentEiPropAdapter;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\manage\gui\GuiProp;
-
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayElement;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -42,7 +36,7 @@ use rocket\spec\ei\component\field\impl\adapter\DisplayableEiPropAdapter;
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->displaySettings->toDisplayDefinition($eiu->gui()->getViewMode());
+		return $this->displaySettings->toDisplayDefinition($this, $eiu->gui()->getViewMode());
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {

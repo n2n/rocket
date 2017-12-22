@@ -35,14 +35,18 @@ class EiuGui {
 	 * @return bool
 	 */
 	public function isBulky() {
-		return $this->getViewMode() & ViewMode::bulky();	
+		return (bool) $this->getViewMode() & ViewMode::bulky();	
 	}
 	
 	/**
 	 * @return bool
 	 */
 	public function isCompact() {
-		return $this->getViewMode() & ViewMode::compact();
+		return (bool) $this->getViewMode() & ViewMode::compact();
+	}
+	
+	public function isReadOnly() {
+		return (bool) $this->getViewMode() & ViewMode::read();
 	}
 	
 	/**
