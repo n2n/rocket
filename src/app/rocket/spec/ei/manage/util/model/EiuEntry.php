@@ -115,7 +115,7 @@ class EiuEntry {
 			$viewMode = $bulky ? ViewMode::BULKY_EDIT : ViewMode::COMPACT_EDIT;
 		}
 		
-		$eiGui = new EiGui($eiFrame, $viewMode);
+		$eiGui = new EiGui($this->getEiFrame(), $viewMode);
 		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel));
