@@ -273,7 +273,7 @@ class EiHtmlBuilder {
 	
 		
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
-				$eiEntryGui->getEiGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		if (!$eiEntryGui->containsDisplayable($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null);
@@ -317,7 +317,7 @@ class EiHtmlBuilder {
 	}
 
 	private function applyGroupTypeAttr(string $groupType = null, array $attrs) {
-		if (null !== $groupType) {
+		if (null !== $groupType && $groupType !== DisplayItem::TYPE_NONE) {
 			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group rocket-group-' . $groupType), $attrs);
 		}
 		

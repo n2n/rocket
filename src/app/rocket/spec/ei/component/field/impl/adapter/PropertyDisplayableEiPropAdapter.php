@@ -23,7 +23,6 @@ namespace rocket\spec\ei\component\field\impl\adapter;
 
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
@@ -34,28 +33,44 @@ use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
+use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
-	protected $displayDefinition;
+	protected $displaySettings;
 	
 	public function __construct() {
-		$this->displayDefinition = new DisplayDefinition();
+		$this->displaySettings = new DisplaySettings(ViewMode::all());
 	}
 	
-	public function getDisplayDefinition(): DisplayDefinition {
-		return $this->displayDefinition;
+	public function getDisplaySettings(): DisplaySettings {
+		return $this->displaySettings;
 	}
 	
-	public function getGroupType() {
-		return null;
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		$viewMode = $eiu->gui()->getViewMode();
+		if (!$this->displaySettings->isViewModeCompatible($viewMode)) {
+			return null;
+		}
+		
+		$groupType = $this->getGroupType($eiu);
+		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
+		
+		return new DisplayDefinition($this->getDisplayLabel(), $groupType,
+				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
+	}
+	
+	protected function getGroupType(Eiu $eiu) {
+		return DisplayItem::TYPE_NONE;
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplayDefinition($this->displayDefinition);
+		$eiPropConfigurator->registerDisplaySettings($this->displaySettings);
 		return $eiPropConfigurator;
 	}
 	
@@ -120,7 +135,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return array('class' => 'rocket-ei-spec-' . $this->eiEngine->getEiType()->getId()
 						. ($eiMask !== null ? ' rocket-ei-mask-' . $eiMask->getId() : '') 
 						. ' rocket-ei-field-' . $this->getId(), 
-				'title' => $this->displayDefinition->getHelpText());
+				'title' => $this->displaySettings->getHelpText());
 	}
 	
 	public function isStringRepresentable(): bool {

@@ -30,7 +30,7 @@ use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\magic\MagicObjectUnavailableException;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\component\field\impl\string\conf\WysiwygEiPropConfigurator;
 use rocket\spec\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
@@ -47,7 +47,7 @@ class WysiwygEiProp extends AlphanumericEiProp {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->displayDefinition->setDefaultDisplayedViewModes(DisplayDefinition::BULKY_VIEW_MODES);
+		$this->displaySettings->setDefaultDisplayedViewModes(DisplaySettings::BULKY_VIEW_MODES);
 		$this->standardEditDefinition->setMandatory(false);
 	}
 	

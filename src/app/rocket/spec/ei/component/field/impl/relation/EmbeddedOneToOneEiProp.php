@@ -24,7 +24,7 @@ namespace rocket\spec\ei\component\field\impl\relation;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneEditable;
 use rocket\spec\ei\component\field\impl\relation\model\EmbeddedOneToOneGuiField;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -50,6 +50,7 @@ use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
@@ -59,7 +60,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->displayDefinition = new DisplayDefinition(DisplayDefinition::BULKY_VIEW_MODES);
+		$this->displaySettings = new DisplaySettings(ViewMode::bulky());
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
 	

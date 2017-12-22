@@ -3,6 +3,7 @@ namespace rocket\spec\ei\manage\gui\ui;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\util\ex\IllegalStateException;
+use n2n\reflection\ArgUtils;
 
 class DisplayItem {
 	const TYPE_SIMPLE = 'simple';
@@ -25,6 +26,7 @@ class DisplayItem {
 	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
+		ArgUtils::valEnum($groupType, self::getTypes(), null, true);
 		$orderItem->groupType = $groupType;
 		$orderItem->guiIdPath = $guiIdPath;
 		return $orderItem;
@@ -38,6 +40,7 @@ class DisplayItem {
 			string $label = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
+		ArgUtils::valEnum($groupType, self::getGroupTypes());
 		$displayItem->groupType = $groupType;
 		$displayItem->label = $label;
 		return $displayItem;
@@ -48,15 +51,11 @@ class DisplayItem {
 	}
 
 	public function getGroupType() {
-		if ($this->groupType !== null || $this->displayStructure === null) {
-			return $this->groupType;
-		}
-
-		return self::TYPE_SIMPLE;
+		return $this->groupType;
 	}
 
 	public function isGroup() {
-		return $this->displayStructure !== null || $this->groupType !== null;
+		return $this->displayStructure !== null || ($this->groupType !== null && $this->groupType !== self::TYPE_NONE);
 	}
 
 	public function hasDisplayStructure() {
@@ -85,5 +84,9 @@ class DisplayItem {
 	
 	public static function getGroupTypes() {
 		return array(self::TYPE_SIMPLE, self::TYPE_MAIN, self::TYPE_AUTONOMIC);
+	}
+	
+	public static function getTypes() {
+		return array(self::TYPE_NONE, self::TYPE_SIMPLE, self::TYPE_MAIN, self::TYPE_AUTONOMIC);
 	}
 }

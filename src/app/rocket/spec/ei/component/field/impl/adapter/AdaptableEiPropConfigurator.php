@@ -31,7 +31,6 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\property\ConstraintsConflictException;
 use rocket\spec\ei\component\field\EiProp;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\component\field\indepenent\CompatibilityLevel;
 use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
 use n2n\persistence\orm\property\EntityProperty;
@@ -43,6 +42,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\config\InvalidAttributeException;
 use n2n\util\config\LenientAttributeReader;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';
@@ -57,7 +57,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	const ATTR_DRAFTABLE_KEY = 'draftable';	
 	
-	private $displayDefinition;
+	private $displaySettings;
 	
 	private $standardEditDefinition;
 	protected $addConstant = true; 
@@ -138,8 +138,8 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->confObjectPropertyEiProp = $confObjectPropertyEiProp;
 	}
 	
-	public function registerDisplayDefinition(DisplayDefinition $displayDefinition) {
-		$this->displayDefinition = $displayDefinition;
+	public function registerDisplaySettings(DisplaySettings $displaySettings) {
+		$this->displaySettings = $displaySettings;
 	}	
 	
 	public function registerStandardEditDefinition(StandardEditDefinition $standardEditDefinition) {
@@ -162,7 +162,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 		
 		if ($eiComponent instanceof PropertyDisplayableEiPropAdapter) {
-			$this->registerDisplayDefinition($eiComponent->getDisplayDefinition());
+			$this->registerDisplaySettings($eiComponent->getDisplaySettings());
 		}
 		
 		if ($eiComponent instanceof PropertyEditableEiPropAdapter) {
@@ -252,7 +252,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		try {
-			$this->setupDisplayDefinition();
+			$this->setupDisplaySettings();
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid display configuration', $e);
 		}
@@ -275,74 +275,74 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return new MagForm($magCollection);
 	}
 
-	private function setupDisplayDefinition() {
-		if ($this->displayDefinition === null) return;
+	private function setupDisplaySettings() {
+		if ($this->displaySettings === null) return;
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)) {
-			$this->displayDefinition->changeDefaultDisplayedViewModes(
-					DisplayDefinition::COMPACT_VIEW_MODES, 
+			$this->displaySettings->changeDefaultDisplayedViewModes(
+					ViewMode::compact(), 
 					$this->attributes->get(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY)) {
-			$this->displayDefinition->changeDefaultDisplayedViewModes(DisplayDefinition::VIEW_MODE_BULKY_READ,
+			$this->displaySettings->changeDefaultDisplayedViewModes(ViewMode::BULKY_READ,
 					$this->attributes->get(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY)) {
-			$this->displayDefinition->changeDefaultDisplayedViewModes(DisplayDefinition::VIEW_MODE_BULKY_EDIT,
+			$this->displaySettings->changeDefaultDisplayedViewModes(ViewMode::BULKY_EDIT,
 					$this->attributes->get(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY)) {
-			$this->displayDefinition->changeDefaultDisplayedViewModes(DisplayDefinition::VIEW_MODE_BULKY_ADD,
+			$this->displaySettings->changeDefaultDisplayedViewModes(ViewMode::BULKY_ADD,
 					$this->attributes->get(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_HELPTEXT_KEY)) {
-			$this->displayDefinition->setHelpText(
+			$this->displaySettings->setHelpText(
 					$this->attributes->get(self::ATTR_HELPTEXT_KEY));
 		}
 	}
 	
 	private function assignDisplayMags(MagCollection $magCollection, DynamicTextCollection $dtc) {
-		if ($this->displayDefinition === null) return;
+		if ($this->displaySettings === null) return;
 				
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		if ($this->displayDefinition->isCompactViewCompatible()) {
+		if ($this->displaySettings->isCompactViewCompatible()) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_overview_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
-							$this->displayDefinition->isViewModeDefaultDisplayed(DisplayDefinition::VIEW_MODE_BULKY_READ))));
+							$this->displaySettings->isViewModeDefaultDisplayed(DisplaySettings::VIEW_MODE_BULKY_READ))));
 		}
 	
-		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_READ)) {
+		if ($this->displaySettings->isViewModeCompatible(DisplaySettings::VIEW_MODE_BULKY_READ)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_detail_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
-							$this->displayDefinition->isViewModeDefaultDisplayed(
-									DisplayDefinition::VIEW_MODE_BULKY_READ))));
+							$this->displaySettings->isViewModeDefaultDisplayed(
+									DisplaySettings::VIEW_MODE_BULKY_READ))));
 		}
 	
-		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_EDIT)) {
+		if ($this->displaySettings->isViewModeCompatible(DisplaySettings::VIEW_MODE_BULKY_EDIT)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_edit_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
-							$this->displayDefinition->isViewModeDefaultDisplayed(
-									DisplayDefinition::VIEW_MODE_BULKY_EDIT))));
+							$this->displaySettings->isViewModeDefaultDisplayed(
+									DisplaySettings::VIEW_MODE_BULKY_EDIT))));
 		}
 	
-		if ($this->displayDefinition->isViewModeCompatible(DisplayDefinition::VIEW_MODE_BULKY_ADD)) {
+		if ($this->displaySettings->isViewModeCompatible(DisplaySettings::VIEW_MODE_BULKY_ADD)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_add_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
-							$this->displayDefinition->isViewModeDefaultDisplayed(
-									DisplayDefinition::VIEW_MODE_BULKY_ADD))));
+							$this->displaySettings->isViewModeDefaultDisplayed(
+									DisplaySettings::VIEW_MODE_BULKY_ADD))));
 		}
 		
 		$magCollection->addMag(self::ATTR_HELPTEXT_KEY, new StringMag($dtc->translate('ei_impl_help_text_label'), 
-				$lar->getString(self::ATTR_HELPTEXT_KEY, $this->displayDefinition->getHelpText())));
+				$lar->getString(self::ATTR_HELPTEXT_KEY, $this->displaySettings->getHelpText())));
 	}
 	
 
@@ -425,7 +425,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	private function saveDisplayMags(MagCollection $magCollection) {
-		if ($this->displayDefinition === null) return;
+		if ($this->displaySettings === null) return;
 		
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
 				self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 

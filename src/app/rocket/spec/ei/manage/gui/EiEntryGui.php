@@ -57,10 +57,9 @@ class EiEntryGui {
 	 * @param int $viewMode
 	 * @param int|null $level
 	 */
-	public function __construct(EiGui $eiGui, EiEntry $eiEntry, int $viewMode, int $level = null) {
+	public function __construct(EiGui $eiGui, EiEntry $eiEntry, int $level = null) {
 		$this->eiGui = $eiGui;
 		$this->eiEntry = $eiEntry;
-		$this->viewMode = $viewMode;
 		$this->treeLevel = $level;
 	}
 
@@ -76,10 +75,6 @@ class EiEntryGui {
 	 */
 	public function getEiEntry() {
 		return $this->eiEntry;
-	}
-	
-	public function getViewMode() {
-		return $this->viewMode;
 	}
 	
 	public function getTreeLevel() {

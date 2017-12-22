@@ -31,6 +31,7 @@ use rocket\spec\ei\EiThing;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\gui\EiGuiViewFactory;
 
 interface EiMask extends EiThing {
 		
@@ -87,7 +88,7 @@ interface EiMask extends EiThing {
 	 * @param int $allowedViewMods
 	 * @return EiGui
 	 */
-	public function createEiGui(EiFrame $eiFrame, int $allowedViewMods): EiGui;
+	public function createEiGuiViewFactory(EiGui $eiGui): EiGuiViewFactory;
 
 	/**
 	 * @return bool

@@ -1,140 +1,45 @@
 <?php
-/*
- * Copyright (c) 2012-2016, Hofmänner New Media.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This file is part of the n2n module ROCKET.
- *
- * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
- *
- * The following people participated in this project:
- *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
- */
 namespace rocket\spec\ei\manage\gui;
 
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use n2n\reflection\ArgUtils;
 
 class DisplayDefinition {
-	const VIEW_MODE_COMPACT_READ = 1;
-	const VIEW_MODE_COMPACT_EDIT = 2;
-	const VIEW_MODE_COMPACT_ADD = 4;
-	
-	const VIEW_MODE_BULKY_READ = 64;
-	const VIEW_MODE_BULKY_EDIT = 128;
-	const VIEW_MODE_BULKY_ADD = 256;
-	
-	const READ_VIEW_MODES = 73;
-	const EDIT_VIEW_MODES = 146;
-	const ADD_VIEW_MODES = 292;
-	
-	const COMPACT_VIEW_MODES = 7;
-	const BULKY_VIEW_MODES = 448;
-	
-	const ALL_VIEW_MODES = 511;
-	const NO_VIEW_MODES = 0;
-	
-	private $compatibleViewModes;
-	private $defaultDisplayedViewModes;
-	
-	private $helpText;
+	private $label;
+	private $groupType;
+	private $defaultDisplayed;
 	
 	/**
-	 * @param int $compatibleViewMode
+	 * @param string $label
+	 * @param string $groupType
+	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(int $compatibleViewMode = self::ALL_VIEW_MODES) {
-		$this->compatibleViewModes = $compatibleViewMode;
-		$this->defaultDisplayedViewModes = $this->compatibleViewModes;
-	}
-	
-	public function isViewModeCompatible($viewMode) {
-		return (boolean) ($viewMode & $this->compatibleViewModes);
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isCompactViewCompatible(): bool {
-		return (boolean) (self::COMPACT_VIEW_MODES & $this->compatibleViewModes);
-	}
-		
-	/**
-	 * @return boolean
-	 */
-	public function isBulkyViewCompatible(): bool {
-		return (boolean) (self::BULKY_VIEW_MODES & $this->compatibleViewModes);
-	}
-	
-	public function setDefaultDisplayedViewModes($viewModes) {
-		if ($viewModes & ~$this->compatibleViewModes) {
-			throw new \InvalidArgumentException('View mode not allowed.');
-		}
-		
-		$this->defaultDisplayedViewModes = $viewModes;
-	}
-	
-	public function changeDefaultDisplayedViewModes($viewModes, $defaultDisplayed) {
-	    ArgUtils::assertTrue((boolean) ($viewModes & self::ALL_VIEW_MODES), 'viewMode');
-		
-		if ($defaultDisplayed && ($viewModes & ~$this->compatibleViewModes)) {
-			throw new \InvalidArgumentException('View mode not allowed.');
-		}
-		
-		$this->changeDefaultDisplayed($viewModes, $defaultDisplayed);
-	}
-	
-	private function changeDefaultDisplayed($viewModes, $defaultDisplayed) {
-		if ($defaultDisplayed) {
-			$this->defaultDisplayedViewModes |= $viewModes;
-		} else {
-			$this->defaultDisplayedViewModes &= ~$viewModes;
-		}
-	}
-	
-	public function isViewModeDefaultDisplayed($viewMode) {
-		return (boolean) ($viewMode & $this->defaultDisplayedViewModes);
-	}
-	
-	public function setListReadModeDefaultDisplayed($defaultDisplayaed) {
-		$this->changeDefaultDisplayed(self::VIEW_MODE_COMPACT_READ, $defaultDisplayaed);
-	}
-	
-	public function setBulkyModeDefaultDisplayed($defaultDisplayaed) {
-		$this->changeDefaultDisplayed(self::VIEW_MODE_BULKY_READ, $defaultDisplayaed);
-	}
-	
-	public function setEditModeDefaultDisplayed($defaultDisplayaed) {
-		$this->changeDefaultDisplayed(self::EDIT_VIEW_MODES, $defaultDisplayaed);
-	}
-	
-	public function setAddModeDefaultDisplayed($defaultDisplayaed) {
-		$this->changeDefaultDisplayed(self::ADD_VIEW_MODES, $defaultDisplayaed);
+	public function __construct(string $label, string $groupType, bool $defaultDisplayed, string $helpText = null) {
+		$this->label = $label;
+		ArgUtils::valEnum($groupType, DisplayItem::getTypes());
+		$this->groupType = $groupType;
+		$this->defaultDisplayed = $defaultDisplayed;
 	}
 	
 	/**
 	 * @return string
 	 */
-	public function getHelpText() {
-		return $this->helpText;
-	}
-
-	/**
-	 * @param string $helpText
-	 */
-	public function setHelpText($helpText) {
-		$this->helpText = $helpText;
+	public function getLabel() {
+		return $this->label;
 	}
 	
-	public static function getViewModes(): array {
-		return array(self::VIEW_MODE_COMPACT_READ, self::VIEW_MODE_COMPACT_EDIT, self::VIEW_MODE_COMPACT_ADD,
-				self::VIEW_MODE_BULKY_READ, self::VIEW_MODE_BULKY_EDIT, self::VIEW_MODE_BULKY_ADD);
+	/**
+	 * @return string
+	 */
+	public function getGroupType() {
+		return $this->groupType;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isDefaultDisplayed() {
+		return $this->defaultDisplayed;
 	}
 }
+

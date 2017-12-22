@@ -27,7 +27,7 @@ use n2n\util\config\Attributes;
 use rocket\spec\ei\component\field\impl\adapter\AdaptableEiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\IndependentEiPropAdapter;
 use rocket\spec\ei\component\field\GuiEiProp;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\manage\gui\GuiProp;
 
 use n2n\l10n\N2nLocale;
@@ -36,41 +36,15 @@ use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplayableEiPropAdapter;
 
-class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
-	private $displayDefinition;
+class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	
-	public function __construct() {
-		parent::__construct();
-		
-		$this->displayDefinition = new DisplayDefinition(DisplayDefinition::READ_VIEW_MODES);
-	}
-	
-	public function getDisplayDefinition(): DisplayDefinition {
-		return $this->displayDefinition;
-	}
-	
-	public function createDisplayable(EiFrame $eiFrame, Attributes $maskAttributes) {
-		return $this;
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		return $this->displaySettings->toDisplayDefinition($eiu->gui()->getViewMode());
 	}
 
-	public function getDisplayLabel(): string {
-		return $this->getLabelLstr();
-	}
-	
-	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		return array();
-	}
-	
-	public function getUiOutputLabel(Eiu $eiu) {
-		return $this->getLabelLstr()->t($eiu->frame()->getN2nLocale());
-	}
-	
-	public function getGroupType() {
-		return null;
-	}
-	
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 		$eiMask = $eiu->frame()->getEiFrame()->getContextEiMask()->determineEiMask(
 				$eiu->entry()->getEiEntry()->getEiType());
@@ -79,37 +53,10 @@ class TypeEiProp extends IndependentEiPropAdapter implements StatelessDisplayabl
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$configurator = new AdaptableEiPropConfigurator($this);
-		$configurator->registerDisplayDefinition($this->displayDefinition);
+		$configurator->registerDisplaySettings($this->displaySettings);
 		return $configurator;
 	}
 	
-// 	/* (non-PHPdoc)
-// 	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs($eiFrame, $eiEntry, $maskAttributes)
-// 	 */
-// 	public function getOutputHtmlContainerAttrs(EntryModel $entryModel) {
-// 		return array('class' => 'rocket-script-' . $this->eiType->getId() . ' rocket-field-' . $this->getId());
-// 	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiProp()
-	 */
-	public function getGuiProp() {
-		return $this;
-	}
-
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\field\GuiEiProp::getGuiPropFork()
-	 */
-	public function getGuiPropFork() {
-		return null;
-	}
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
-	 */
-	public function buildGuiField(Eiu $eiu) {
-		return new StatelessDisplayElement($this, $eiu);
-	}
-
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::isStringRepresentable()
 	 */

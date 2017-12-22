@@ -29,6 +29,7 @@ use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class OverviewModel implements Dispatchable {	
 	private $eiuFrame;
@@ -135,10 +136,10 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function simpleLookup(Criteria $criteria) {
-		$this->eiuGui = $this->eiuFrame->newGui(false);
+		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ);
 		
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$this->eiuGui->appendNewEntryGui($entityObj, false);
+			$this->eiuGui->appendNewEntryGui($entityObj);
 		}
 	}
 	
@@ -148,7 +149,7 @@ class OverviewModel implements Dispatchable {
 		$this->eiuGui = $this->eiuFrame->newGui(false);
 		
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$this->eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), false, $nestedSetItem->getLevel());
+			$this->eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
 		}
 	}
 	

@@ -2,6 +2,7 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class EiuGui {
 	private $eiGui;
@@ -26,18 +27,22 @@ class EiuGui {
 		return $this->eiGui;
 	}
 	
+	public function getViewMode() {
+		return $this->eiGui->getViewMode();
+	}
+	
 	/**
 	 * @return bool
 	 */
 	public function isBulky() {
-		return $this->eiGui->isBulky();	
+		return $this->getViewMode() & ViewMode::bulky();	
 	}
 	
 	/**
 	 * @return bool
 	 */
 	public function isCompact() {
-		return !$this->eiGui->isBulky();
+		return $this->getViewMode() & ViewMode::compact();
 	}
 	
 	/**
@@ -92,7 +97,7 @@ class EiuGui {
 	 * @param int $treeLevel
 	 * @return EiuEntryGui
 	 */
-	public function appendNewEntryGui($eiEntryArg, bool $makeEditable = false, int $treeLevel = null) {
+	public function appendNewEntryGui($eiEntryArg, int $treeLevel = null) {
 		$eiEntry = null;
 		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getEiType(), true, 
 				$eiEntry);
@@ -101,7 +106,7 @@ class EiuGui {
 			$eiEntry = (new EiuEntry($eiObject, $this->eiuFrame))->getEiEntry();
 		}
 		
-		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $makeEditable, $treeLevel, true), $this);
+		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this);
 	}
 	
 	/**

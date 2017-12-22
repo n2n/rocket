@@ -46,8 +46,8 @@ class ControlOrder {
 	}
 	
 	/**
-	 * @param unknown $eiCommandId
-	 * @param unknown $controlId
+	 * @param string $eiCommandId
+	 * @param string $controlId
 	 * @return string
 	 */
 	public static function buildControlId($eiCommandId, $controlId) {

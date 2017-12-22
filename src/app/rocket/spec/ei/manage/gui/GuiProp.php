@@ -26,6 +26,9 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 interface GuiProp {
+	const TEST_INCOMPATIBLE = 0;
+	const TEST_COMPATIBLE = 10;
+	const TEST_RECOMMENDED = 20;
 	
 	/**
 	 * @return string 
@@ -33,16 +36,20 @@ interface GuiProp {
 	public function getDisplayLabel(): string;
 	
 	/**
+	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
+	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\spec\ei\manage\util\model\EiuGui} 
+	 * object.<p>
+	 * 
+	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
+	 */
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
+		
+	/**
 	 * @param Eiu $eiu
 	 * @return \rocket\spec\ei\manage\gui\GuiField|null
 	 */
 	public function buildGuiField(Eiu $eiu);
-	
-	/**
-	 * @return DisplayDefinition
-	 */
-	public function getDisplayDefinition(): DisplayDefinition;
-	
+		
 	/**
 	 * @return boolean
 	 */

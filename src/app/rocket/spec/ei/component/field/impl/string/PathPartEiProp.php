@@ -28,7 +28,7 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
 use rocket\spec\ei\component\field\impl\string\conf\PathPartEiPropConfigurator;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
@@ -52,8 +52,8 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	
 	public function __construct() {
 		parent::__construct();
-		$this->displayDefinition->setDefaultDisplayedViewModes(DisplayDefinition::VIEW_MODE_BULKY_ADD 
-				| DisplayDefinition::VIEW_MODE_COMPACT_READ);
+		$this->displaySettings->setDefaultDisplayedViewModes(DisplaySettings::VIEW_MODE_BULKY_ADD 
+				| DisplaySettings::VIEW_MODE_COMPACT_READ);
 		$this->entityPropertyRequired = true;
 		$this->getStandardEditDefinition()->setMandatory(false);
 	}

@@ -28,7 +28,8 @@ use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class GuiDefinition {	
 	private $levelGuiProps = array();
@@ -120,9 +121,7 @@ class GuiDefinition {
 		return $this->levelGuiPropForks[$id];
 	}
 	
-	public function filterGuiIdPaths($viewMode = null) {
-		return $this->buildGuiIdPaths(array(), $viewMode);
-	}
+	
 	
 	public function getGuiProps() {
 		return $this->buildGuiProps(array());
@@ -158,53 +157,90 @@ class GuiDefinition {
 		return $this->getGuiIdPaths();
 	}
 	
-	public function getGuiIdPaths() {
-		return $this->filterGuiIdPaths(DisplayDefinition::ALL_VIEW_MODES);
+// 	public function getGuiIdPaths() {
+// 		return $this->filterGuiIdPaths(DisplaySettings::ALL_VIEW_MODES);
+// 	}
+	
+	public function createDefaultDisplayStructure(EiGui $eiGui) {
+		$displayStructure = new DisplayStructure();
+		$this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
+		return $displayStructure;
 	}
 	
-	protected function buildGuiIdPaths(array $baseIds, $viewMode) {
-		$guiIdPaths = array();
-		
+	/**
+	 * @param array $baseIds
+	 * @param Eiu $eiu
+	 * @param int $minTestLevel
+	 */
+	protected function composeDisplayStructure(DisplayStructure $displayStructure, array $baseIds, Eiu $eiu) {
 		foreach ($this->levelIds as $id) {
-			if (isset($this->levelGuiProps[$id]) && $this->levelGuiProps[$id]->getDisplayDefinition()
-					->isViewModeDefaultDisplayed($viewMode)) {
+			$displayDefinition = null;
+			if (isset($this->levelGuiProps[$id]) && 
+					null !== ($displayDefinition = $this->levelGuiProps[$id]->buildDisplayDefinition($eiu))
+					&& $displayDefinition->isDefaultDisplayed()) {
+				
 				$currentIds = $baseIds;
 				$currentIds[] = $id;
-				$guiIdPaths[] = new GuiIdPath($currentIds);
+				$displayStructure->addGuiIdPath(new GuiIdPath($currentIds),
+						$displayDefinition->getGroupType(),
+						$displayDefinition->getLabel());
 			}
 			
 			if (isset($this->levelGuiPropForks[$id])) {
 				$currentIds = $baseIds;
 				$currentIds[] = $id;
-					
-				$guiIdPaths = array_merge($guiIdPaths, $this->levelGuiPropForks[$id]->getForkedGuiDefinition()
-						->buildGuiIdPaths($currentIds, $viewMode));
-			}			
+				
+				$this->levelGuiPropForks[$id]->getForkedGuiDefinition()
+						->composeDisplayStructure($displayStructure, $currentIds, $eiu);
+			}
+		}
+	}
+	
+	private function purifyDisplayStructure(DisplayStructure $displayStructure, EiGui $eiGui) {
+		return $this->rPurifyDisplayStructure($displayStructure, new Eiu($eiGui));
+	}
+	
+	private function rPurifyDisplayStructure(DisplayStructure $displayStructure, Eiu $eiu) {
+		$purifiedDisplayStructure = new DisplayStructure();
+		
+		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+			if ($displayItem->hasDisplayStructure()) {
+				$purifiedDisplayStructure->addDisplayStructure(
+						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiu), 
+						$displayItem->getGroupType(), $displayItem->getLabel());
+				continue;
+			}
+			
+			$guiProp = null;
+			try {
+				$guiProp = $this->getGuiPropByGuiIdPath($displayItem->getGuiIdPath());
+			} catch (GuiException $e) {
+				continue;
+			}
+			
+			$displayDefinition = $guiProp->buildDisplayDefinition($eiu);
+			if ($displayDefinition === null) {
+				continue;
+			}
+			
+			$purifiedDisplayStructure->addGuiIdPath($displayItem->getGuiIdPath(),
+					$displayItem->getGroupType() ?? $displayDefinition->getGroupType(),
+					$displayItem->getLabel() ?? $displayDefinition->getLabel());
 		}
 		
-		return $guiIdPaths;
-		
-// 		foreach ($this->guiProps as $id => $guiProp) {
-// 			if (!$guiProp->getDisplayDefinition()->isViewModeDefaultDisplayed($viewMode)) continue;
-
-// 			$currentIds = $baseIds;
-// 			$currentIds[] = $id;
-// 			$guiIdPaths[] = new GuiIdPath($currentIds);
-// 		}
-		
-// 		foreach ($this->guiPropForks as $id => $guiPropFork) {
-// 			$currentIds = $baseIds;
-// 			$currentIds[] = $id;
-			
-// 			$guiIdPaths = array_merge($guiIdPaths, $guiPropFork->getForkedGuiDefinition()->buildGuiIdPaths($currentIds, $viewMode));
-// 		}
-		
-// 		return $guiIdPaths;
+		return $purifiedDisplayStructure;
 	}
+	
+	public function completeDisplayStructure(EiGui $eiGui) {
+		$displayStructure = new DisplayStructure();
+		return $this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
+	}
+	
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
-	 * @return \rocket\spec\ei\manage\gui\GuiProp|null
+	 * @return \rocket\spec\ei\manage\gui\GuiProp
+	 * @throws GuiException
 	 */
 	public function getGuiPropByGuiIdPath(GuiIdPath $guiIdPath) {
 		$ids = $guiIdPath->toArray();
@@ -301,9 +337,9 @@ class GuiDefinition {
 		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
 	}
 	
-	public function createEiGui(EiFrame $eiFrame, int $viewMode) {
-		return new EiGui($eiFrame, $this, $viewMode);
-	}
+// 	public function createEiGui(EiFrame $eiFrame, int $viewMode) {
+// 		return new EiGui($eiFrame, $this, $viewMode);
+// 	}
 	
 // 	/**
 // 	 * @param EiMask $eiMask

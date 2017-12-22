@@ -10,24 +10,27 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\config\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
 use n2n\web\ui\UiComponent;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\gui\ui\DisplayStructure;
+use rocket\spec\ei\component\GuiFactory;
 
 class EiGui {
 	private $eiFrame;
 	private $guiDefinition;
-	private $bulky;
+	private $viewMode;
 	private $eiGuiViewFactory;
 	private $eiGuiListeners = array();
 	
 	private $eiEntryGuis = array();
 	
-	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, bool $bulky, 
-			EiGuiViewFactory $eiGuiViewFactory) {
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param int $viewMode Use constants from {@see ViewMode}
+	 */
+	public function __construct(EiFrame $eiFrame, int $viewMode) {
 		$this->eiFrame = $eiFrame;
-		$this->guiDefinition = $guiDefinition;
-		$this->bulky = $bulky;
-		$this->eiGuiViewFactory = $eiGuiViewFactory;
-		
-		$eiGuiViewFactory->setEiGui($this);
+		ArgUtils::valEnum($viewMode, ViewMode::getAll());
+		$this->viewMode = $viewMode;
 	}
 	
 	/**
@@ -38,49 +41,75 @@ class EiGui {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\gui\GuiDefinition
+	 * @param EiGuiViewFactory $eiGuiViewFactory
 	 */
-	public function getGuiDefinition() {
-		return $this->guiDefinition;
+	public function init(EiGuiViewFactory $eiGuiViewFactory) {
+		if ($this->eiGuiViewFactory !== null) {
+			throw new IllegalStateException('EiGui already initialized.');
+		}
+		
+		$this->eiGuiViewFactory = $eiGuiViewFactory;
 	}
 	
 	/**
+	 * @return \rocket\spec\ei\manage\gui\EiGuiViewFactory
+	 */
+	public function getEiGuiViewFactory() {
+		return $this->eiGuiViewFactory;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getViewMode() {
+		return $this->viewMode;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isInit() {
+		return $this->eiGuiViewFactory !== null;
+	}
+	
+	private function ensureInit() {
+		if ($this->eiGuiViewFactory !== null) return;
+		
+		throw new IllegalStateException('EiGui not yet initialized.');
+	}
+	
+	/**
+	 * @return boolean
 	 */
 	public function hasMultipleEiEntryGuis() {
 		return count($this->eiEntryGuis) > 1;
 	}
 	
 	/**
-	 * @return int
-	 */
-	public function isBulky() {
-		return $this->bulky;
-	}
-	
-	/**
+	 * @param EiEntry $eiEntry
+	 * @param bool $makeEditable
+	 * @param int $treeLevel
+	 * @param bool $append
 	 * @return EiEntryGui
 	 */
-	public function createEiEntryGui(EiEntry $eiEntry, bool $makeEditable, int $treeLevel = null, bool $append = true) {
-		$eiEntryGui = $this->eiGuiViewFactory->createEiEntryGui($eiEntry, $makeEditable, $treeLevel, $append);
-		ArgUtils::valTypeReturn($eiEntryGui, EiEntryGui::class, $this->eiGuiViewFactory, 'createEiEntryGui');
+	public function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
+		$this->ensureInit();
+		
+		$guiIdsPaths = $this->eiGuiViewFactory->getDisplayStructure()->getAllGuiIdPaths();
+		
+		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $guiIdsPaths, $treeLevel);
+		if ($append) {
+			$this->eiEntryGuis[] = $eiEntryGui;
+		}
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewEiEntryGui($eiEntryGui);
-		}
-		
-		if ($append) {
-			$this->eiEntryGuis[] = $eiEntryGui;
 		}
 		
 		$eiEntryGui->markInitialized();
 		
 		return $eiEntryGui;
 	}
-	
-// 	public function appendEiEntryGui(EiEntryGui $eiEntryGui) {
-// 		$this->eiGuiViewFactory->appendEiEntryGui($eiEntryGui);
-// 		$this->eiEntryGuis[] = $eiEntryGui;
-// 	}
 	
 	/**
 	 * @return EiEntryGui[]
@@ -90,7 +119,9 @@ class EiGui {
 	}
 	
 	public function createView(HtmlView $contextView = null) {
-		$view = $this->eiGuiViewFactory->createView($contextView);
+		$this->ensureInit();
+		
+		$view = $this->eiGuiViewFactory->createView($this->eiEntryGuis, $contextView);
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);
@@ -138,28 +169,12 @@ class EiGui {
 
 interface EiGuiViewFactory {
 
-	/**
-	 * @param \rocket\spec\ei\manage\gui\EiGui $eiGui
-	 */
-	public function setEiGui(\rocket\spec\ei\manage\gui\EiGui $eiGui);
+	public function getGuiDefinition(): GuiDefinition;
+	
+	public function getDisplayStructure(): DisplayStructure;
 	
 	/**
-	 * @param EiEntry $eiEntry
-	 * @param bool $makeEditable
-	 * @param int $treeLevel
-	 * @param bool $append
-	 * @return EiEntryGui
+	 * @return UiComponent
 	 */
-	public function createEiEntryGui(EiEntry $eiEntry, bool $makeEditable, int $treeLevel = null, 
-			bool $append = true): EiEntryGui;
-	
-	/**
-	 * @param \rocket\spec\ei\manage\gui\EiEntryGui $eiEntryGui
-	 */
-	public function appendEiEntryGui(\rocket\spec\ei\manage\gui\EiEntryGui $eiEntryGui);
-	
-	/**
-	 * @return HtmlView
-	 */
-	public function createView(HtmlView $contextView = null): UiComponent;
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent;
 }

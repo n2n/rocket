@@ -25,7 +25,6 @@ use rocket\spec\ei\component\field\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-
 use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\field\GuiEiProp;
@@ -37,7 +36,6 @@ use rocket\spec\ei\manage\util\model\EiuEntry;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\EiGuiListener;
@@ -78,12 +76,12 @@ class GuiFactory {
 		return $guiDefinition;
 	}
 	
-	public function createEiGui(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, 
-			EiGuiViewFactory $eiGuiViewFactory) {
-		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode, $eiGuiViewFactory);
-		$eiGui->registerListner(new ModEiGuiListener($this->eiModificatorCollection));
-		return $eiGui;
-	}
+// 	public function createEiGui(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, 
+// 			EiGuiViewFactory $eiGuiViewFactory) {
+// 		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode, $eiGuiViewFactory);
+// 		$eiGui->registerListner(new ModEiGuiListener($this->eiModificatorCollection));
+// 		return $eiGui;
+// 	}
 	
 	/**
 	 * @param EiMask $eiMask
@@ -92,13 +90,13 @@ class GuiFactory {
 	 * @param array $guiIdPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, int $viewMode, array $guiIdPaths, int $treeLevel = null) {
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiIdPaths, int $treeLevel = null) {
 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
-		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $viewMode, $treeLevel);
+		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		$eiuEntryGui = new EiuEntryGui($eiEntryGui);
 		
-		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getGuiDefinition(), $eiuEntryGui);
+		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getEiGuiViewFactory()->getGuiDefinition(), $eiuEntryGui);
 		
 		foreach ($guiIdPaths as $guiIdPath) {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);

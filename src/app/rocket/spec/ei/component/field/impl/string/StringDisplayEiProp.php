@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\manage\mapping\impl\Readable;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\component\field\impl\adapter\StatelessDisplayable;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -51,17 +51,17 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	public function __construct() {
 		parent::__construct();
 	
-		$this->displayDefinition = new DisplayDefinition(DisplayDefinition::READ_VIEW_MODES);
+		$this->displayDefinition = new DisplaySettings(DisplaySettings::READ_VIEW_MODES);
 	}
 	
-	public function getDisplayDefinition(): DisplayDefinition {
+	public function getDisplaySettings(): DisplaySettings {
 		return $this->displayDefinition;
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplayDefinition($this->displayDefinition);
+		$eiPropConfigurator->registerDisplaySettings($this->displayDefinition);
 		$eiPropConfigurator->registerObjectPropertyConfigurable($this);
 		return $eiPropConfigurator;
 	}

@@ -25,7 +25,7 @@
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 	use rocket\user\model\RocketUserDao;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
-	use rocket\spec\ei\manage\gui\DisplayDefinition;
+	use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -58,7 +58,7 @@
 					<?php if ($latestDraft->isNew()): ?>
 						<p>New draft</p>
 					<?php else: ?>
-						<?php $controlEiHtml->entryControlList($latestDraft, DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
+						<?php $controlEiHtml->entryControlList($latestDraft, DisplaySettings::VIEW_MODE_LIST_READ, true) ?>
 					<?php endif ?>
 				</div>
 			</li>
@@ -72,7 +72,7 @@
 					<p>activation date</p>
 				</div>
 				<?php $controlEiHtml->entryControlList($entryCommandViewModel->getEiObject()->getEiEntityObj(), 
-						DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
+						DisplaySettings::VIEW_MODE_LIST_READ, true) ?>
 		</li>
 	</ul>
 	
@@ -83,7 +83,7 @@
 				<div class="rocket-history-entry-content">
 					<p><?php $html->l10nDateTime($draft->getLastMod()) ?></p>
 				</div>
-				<?php $controlEiHtml->entryControlList($draft, DisplayDefinition::VIEW_MODE_LIST_READ, true) ?>
+				<?php $controlEiHtml->entryControlList($draft, DisplaySettings::VIEW_MODE_LIST_READ, true) ?>
 			</li>
 		<?php endforeach ?>
 	</ul>

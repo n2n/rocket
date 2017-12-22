@@ -25,7 +25,7 @@ use n2n\core\N2N;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\component\field\impl\string\AlphanumericEiProp;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -36,6 +36,7 @@ use rocket\spec\ei\component\field\impl\string\cke\conf\CkeEiPropConfigurator;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeMag;
 use rocket\spec\ei\component\field\impl\string\cke\model\CkeLinkProvider;
 use rocket\spec\ei\component\field\impl\string\cke\ui\CkeHtmlBuilder;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class CkeEiProp extends AlphanumericEiProp {
 	const MODE_SIMPLE = 'simple';
@@ -51,7 +52,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->displayDefinition->setDefaultDisplayedViewModes(DisplayDefinition::BULKY_VIEW_MODES);
+		$this->displaySettings->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->standardEditDefinition->setMandatory(false);
 		
 		$this->ckeLinkProviderLookupIds = new GenericArrayObject(null, CkeLinkProvider::class);

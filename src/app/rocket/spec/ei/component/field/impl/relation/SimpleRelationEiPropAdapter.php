@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\DraftableEiProp;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\component\field\impl\relation\model\relation\EiPropRelation;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\component\field\impl\adapter\StandardEditDefinition;
 use rocket\spec\ei\component\field\FilterableEiProp;
 use rocket\spec\ei\manage\EiFrame;
@@ -40,20 +40,24 @@ use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 use rocket\spec\ei\manage\util\model\EiuMask;
 use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
-	protected $displayDefinition;
+	protected $displaySettings;
 	protected $standardEditDefinition;
 
-	protected function initialize(EiPropRelation $eiPropRelation, DisplayDefinition $displayDefinition = null,
+	protected function initialize(EiPropRelation $eiPropRelation, DisplaySettings $displayDefinition = null,
 			StandardEditDefinition $standardEditDefinition = null) {
 		parent::initialize($eiPropRelation);
 
 		if ($displayDefinition !== null) {
-			$this->displayDefinition = $displayDefinition;
+			$this->displaySettings = $displayDefinition;
 		} else {
-			$this->displayDefinition = new DisplayDefinition();
+			$this->displaySettings = new DisplaySettings(ViewMode::all());
 		}
 
 		if ($standardEditDefinition !== null) {
@@ -73,10 +77,21 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayDefinition()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplaySettings()
 	 */
-	public function getDisplayDefinition(): DisplayDefinition {
-		return $this->displayDefinition;
+	public function getDisplaySettings(): DisplaySettings {
+		return $this->displaySettings;
+	}
+	
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		$viewMode = $eiu->gui()->getViewMode();
+		
+		if (!$this->displaySettings->isViewModeCompatible($viewMode)) {
+			return null;
+		}
+		
+		return new DisplayDefinition($this->getLabelLstr(), DisplayItem::TYPE_SIMPLE, 
+				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
 	}
 	
 	public function getStandardEditDefinition(): StandardEditDefinition {

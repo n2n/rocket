@@ -23,7 +23,6 @@ namespace rocket\spec\ei\manage\gui\ui;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\EiEntryGui;
 
 class DisplayStructure {
 	private $displayItems = array();
@@ -99,23 +98,19 @@ class DisplayStructure {
 		return $displayStructure;
 	}
 	
-	public function purified(EiEntryGui $eiEntryGui = null) {
+	public function whitoutAutonomics() {
 		$displayStructure = new DisplayStructure();
 		
-		$this->roAutonomics($this->displayItems, $displayStructure, $displayStructure, $eiEntryGui);
+		$this->roAutonomics($this->displayItems, $displayStructure, $displayStructure);
 				
 		return $displayStructure;
 	}
 	
-	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs, EiEntryGui $eiEntryGui = null) {
+	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs) {
 		foreach ($displayItems as $displayItem) {
 			$groupType = $displayItem->getGroupType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType === null && $eiEntryGui !== null && $eiEntryGui->containsDisplayable($displayItem->getGuiIdPath())) {
-					$groupType = $eiEntryGui->getDisplayableByGuiIdPath($displayItem->getGuiIdPath())->getGroupType();
-				}
-
 				if ($groupType == DisplayItem::TYPE_AUTONOMIC) {
 					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());
 				} else if ($displayItem->getGroupType() == $groupType) {
@@ -158,10 +153,8 @@ class DisplayStructure {
 				continue;
 			}
 			
-			
-			$displayItem = $displayItem->copy();
-			$displayItem->setGroupType(null);
-			$displayStructure->displayItems[] = $displayItem;
+			$displayStructure->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_NONE, 
+					$displayItem->getLabel());
 		}
 	}
 }

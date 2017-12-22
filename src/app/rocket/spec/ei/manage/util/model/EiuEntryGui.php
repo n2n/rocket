@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
-use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\spec\ei\manage\gui\EiEntryGuiListener;
@@ -31,6 +30,7 @@ use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class EiuEntryGui {
 	private $eiuGui;
@@ -57,7 +57,7 @@ class EiuEntryGui {
 	 * @return int
 	 */
 	public function getViewMode() {
-		return $this->eiEntryGui->getViewMode();
+		return $this->eiEntryGui->getEiGui()->getViewMode();
 	}
 	
 	/**
@@ -81,21 +81,21 @@ class EiuEntryGui {
 	 */
 	public function isCompact() {
 		$viewMode = $this->getViewMode();
-		return $viewMode & DisplayDefinition::COMPACT_VIEW_MODES;
+		return $viewMode & ViewMode::compact();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isBulky() {
-		return (bool) ($this->getViewMode() & DisplayDefinition::BULKY_VIEW_MODES);
+		return (bool) ($this->getViewMode() & ViewMode::bulky());
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isReadOnly() {
-		return (bool) ($this->getViewMode() & DisplayDefinition::READ_VIEW_MODES);
+		return (bool) ($this->getViewMode() & ViewMode::read());
 	}
 	
 	/**

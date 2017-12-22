@@ -26,7 +26,7 @@ use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\component\field\DraftableEiProp;
 use rocket\spec\ei\manage\draft\DraftProperty;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\manage\gui\GuiPropFork;
@@ -70,16 +70,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayDefinition()
-	 */
-	public function getDisplayDefinition(): DisplayDefinition {
-		return $this->displayDefinition;
-	}
-	
-	
+
 	public function getGuiProp() {
 		return $this;
 	}

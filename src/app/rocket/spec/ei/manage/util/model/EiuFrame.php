@@ -42,8 +42,9 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiCommandPath;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\PropertyPathPart;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\component\command\EiCommand;
+use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class EiuFrame extends EiUtilsAdapter {
 	private $eiFrame;
@@ -259,7 +260,8 @@ class EiuFrame extends EiUtilsAdapter {
 		$contextEiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$contextEiMask = $this->eiFrame->getContextEiMask();
 		
-		$eiGui = $contextEiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
+		$eiGui = new EiGui($this->eiFrame, ViewMode::BULKY_ADD);
+		$eiGui->init($contextEiMask->createEiGuiViewFactory($eiGui));
 		
 		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEiTypes());
 		if ($allowedEiTypeIds !== null) {
@@ -327,8 +329,9 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	private function createEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiType);
-		$eiGui = $eiMask->createEiGui($this->eiFrame, DisplayDefinition::BULKY_VIEW_MODES);
-		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry, true);
+		$eiGui = new EiGui($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT);
+		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
+		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry);
 		
 		if ($contextPropertyPath === null) {
 			$contextPropertyPath = new PropertyPath(array());
@@ -418,9 +421,11 @@ class EiuFrame extends EiUtilsAdapter {
 	/**
 	 * @return EiuGui
 	 */
-	public function newGui(bool $bulky) {
-		$eiGui = $this->eiFrame->getContextEiMask()->createEiGui($this->eiFrame, 
-				($bulky ? DisplayDefinition::BULKY_VIEW_MODES : DisplayDefinition::COMPACT_VIEW_MODES));
+	public function newGui(int $viewMode) {
+		$eiGui = new EiGui($this->eiFrame, $viewMode);
+		
+		$eiGui->init($this->eiFrame->getContextEiMask()->createEiGuiViewFactory($eiGui));
+		
 		return new EiuGui($eiGui, $this);
 	}
 }

@@ -70,7 +70,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister();
 		
 		if ($relationEiProp instanceof SimpleRelationEiPropAdapter) {	
-			$this->registerDisplayDefinition($relationEiProp->getDisplayDefinition());
+			$this->registerDisplaySettings($relationEiProp->getDisplaySettings());
 			$this->registerStandardEditDefinition($relationEiProp->getStandardEditDefinition());
 		}
 		

@@ -40,7 +40,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	
 	public function __construct() {
 		parent::__construct();
-		$this->displayDefinition->setListReadModeDefaultDisplayed(false);
+		$this->displaySettings->setListReadModeDefaultDisplayed(false);
 		$this->standardEditDefinition->setMandatory(false);
 		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0)); 
 	}

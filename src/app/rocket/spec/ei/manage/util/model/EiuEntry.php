@@ -33,7 +33,8 @@ use rocket\spec\ei\manage\mapping\ValidatedMappingListener;
 use rocket\spec\ei\manage\mapping\MappingOperationFailedException;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\EiGui;
 
 class EiuEntry {
 	private $eiObject;
@@ -60,6 +61,9 @@ class EiuEntry {
 		throw new IllegalStateException('No EiUtils provided to ' . (new \ReflectionClass($this))->getShortName());
 	}
 	
+	/**
+	 * @return \rocket\spec\ei\mask\EiMask
+	 */
 	public function determineEiMask() {
 		return $this->getEiuFrame()->determineEiMask($this->eiObject);
 	}
@@ -102,10 +106,19 @@ class EiuEntry {
 			$eiMask = $this->getEiFrame()->getContextEiMask();
 		}
 		
-		$eiGui = $eiMask->createEiGui($this->getEiFrame(), 
-				($bulky ? DisplayDefinition::BULKY_VIEW_MODES : DisplayDefinition::COMPACT_VIEW_MODES));
+		$viewMode = null;
+		if (!$editable) {
+			$viewMode = $bulky ? ViewMode::BULKY_READ : ViewMode::COMPACT_READ;
+		} else if ($this->isNew()) {
+			$viewMode = $bulky ? ViewMode::BULKY_ADD : ViewMode::COMPACT_ADD;
+		} else {
+			$viewMode = $bulky ? ViewMode::BULKY_EDIT : ViewMode::COMPACT_EDIT;
+		}
 		
-		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $editable, $treeLevel));
+		$eiGui = new EiGui($eiFrame, $viewMode);
+		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
+		
+		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel));
 	}
 	
 	public function field($eiPropObj) {

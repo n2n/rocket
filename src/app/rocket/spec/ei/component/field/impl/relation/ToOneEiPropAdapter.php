@@ -30,10 +30,9 @@ use n2n\core\container\N2nContext;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\relation\model\ToOneEiField;
-use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -60,10 +59,10 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayDefinition()
+	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplaySettings()
 	 */
-	public function getDisplayDefinition(): DisplayDefinition {
-		return $this->displayDefinition;
+	public function getDisplaySettings(): DisplaySettings {
+		return $this->displaySettings;
 	}
 	
 	public function getGuiProp() {
