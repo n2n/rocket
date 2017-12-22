@@ -1,4 +1,7 @@
 namespace Rocket {
+	import Nav = Rocket.Display.Nav;
+	import NavState = Rocket.Display.NavState;
+	import NavGroup = Rocket.Display.NavGroup;
 	let container: Rocket.Cmd.Container;
 	let blocker: Rocket.Cmd.Blocker;
 	let initializer: Rocket.Display.Initializer;
@@ -104,9 +107,29 @@ namespace Rocket {
 		})();
 
 		(function() {
+			var nav: Rocket.Display.Nav = new Rocket.Display.Nav();
+			var navStore: Rocket.Display.NavStore;
+			var navState: Rocket.Display.NavState = new Rocket.Display.NavState();
+
 			Jhtml.ready((elements) => {
-				let nav = Rocket.Display.Nav.setup($(elements).find("#rocket-global-nav"));
-				nav.initNavigation();
+				let rgn = $(elements).find("#rocket-global-nav");
+				if (rgn.length > 0) {
+					nav.elemJq = rgn;
+					elements = rgn.find(".rocket-nav-group");
+					navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
+				}
+
+				for (let element of elements) {
+					if (element.className.indexOf('rocket-nav-group') > -1
+						&& element.parentElement === nav.elemJq.get(0)) {
+						let navGroupElem = $(element)
+						let navGroup = Rocket.Display.NavGroup.build(navGroupElem, navState);
+						navState.onChanged(navGroup);
+						navGroupElem.find("h3").click(() => {
+							navGroup.toggle();
+						});
+					}
+				}
 			});
 		})();
 	});

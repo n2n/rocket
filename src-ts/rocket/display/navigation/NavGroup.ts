@@ -1,74 +1,77 @@
 namespace Rocket.Display {
-	export class NavGroup {
+	import NavState = Rocket.Display.NavState;
+
+	export class NavGroup implements NavStateListener {
 		private _id: string;
-		private _navItems: NavItem[];
-		private _navItemListHtmlElement: HTMLElement;
-		private _titleHtmlElement: HTMLElement;
+		private _elemJq: JQuery;
+		private _navState: NavState;
+		private _opened: boolean;
 
-		public constructor(navItemListHtmlElement: HTMLElement, titleHtmlElement: HTMLElement, navItems: NavItem[]) {
-			this.navItemListHtmlElement = navItemListHtmlElement;
-			this.titleHtmlElement = titleHtmlElement;
-			this._navItems = navItems;
-			this._id = this.buildNavGroupId();
-		}
+		public constructor(id: string, elemJq: JQuery, navState: NavState) {
+			this.id = id;
+			this.elemJq = elemJq;
+			this.navState = navState;
+			this.opened = navState.isGroupOpen(id);
 
-		public open(instant: boolean = false) {
-			let titleElemJquery = $(this.titleHtmlElement);
-			let iconJquery = titleElemJquery.find('i');
-			iconJquery.removeClass('fa-plus');
-			iconJquery.addClass('fa-minus');
-
-			let ulElemJquery = $(this.navItemListHtmlElement);
-			if (instant) {
-				ulElemJquery.slideDown({duration: 0});
-				return;
+			if (this.opened) {
+				this.open(0);
+			} else {
+				this.close(0);
 			}
-
-			ulElemJquery.slideDown({duration: "fast"});
 		}
 
-		public close(instant: boolean = false) {
-			let titleElemJquery = $(this.titleHtmlElement);
-			let iconJquery = titleElemJquery.find('i');
-			iconJquery.removeClass('fa-minus');
-			iconJquery.addClass('fa-plus');
+		public static build(elemJq: JQuery, navState: NavState) {
+			let id = elemJq.data("navGroupId");
+			return new NavGroup(id, elemJq, navState);
+		}
 
-
-			let ulElemJquery = $(this.navItemListHtmlElement);
-			if (instant) {
-				ulElemJquery.slideUp({duration: 0});
-				return;
+		public toggle() {
+			if (this.opened) {
+				this.close(150);
+			} else {
+				this.open(150);
 			}
-
-			ulElemJquery.slideUp({duration: "fast"});
 		}
 
-		private buildNavGroupId() {
-			return this._titleHtmlElement.innerText.toLowerCase().replace(" ", "-");
+		public changed() {
+			alert("changed");
 		}
 
-		get navItemListHtmlElement(): HTMLElement {
-			return this._navItemListHtmlElement;
+		public open(ms: number = 150) {
+			this.opened = true;
+			let icon = this.elemJq.find("h3").find("i");
+
+			icon.addClass("fa-minus");
+			icon.removeClass("fa-plus");
+			this.elemJq.find('.nav').stop(true, true).slideDown({duration: ms});
+			this.navState.change(this.id, this.opened);
 		}
 
-		set navItemListHtmlElement(value: HTMLElement) {
-			this._navItemListHtmlElement = value;
+		public close(ms: number = 150) {
+			this.opened = false;
+			let icon = this.elemJq.find("h3").find("i");
+
+			icon.addClass("fa-plus");
+			icon.removeClass("fa-minus");
+			this.elemJq.find('.nav').stop(true, true).slideUp({duration: ms});
+
+			this.navState.change(this.id, this.opened);
 		}
 
-		get navItems(): Rocket.Display.NavItem[] {
-			return this._navItems;
+		get navState(): Rocket.Display.NavState {
+			return this._navState;
 		}
 
-		set navItems(value: Rocket.Display.NavItem[]) {
-			this._navItems = value;
+		set navState(value: Rocket.Display.NavState) {
+			this._navState = value;
 		}
 
-		get titleHtmlElement(): HTMLElement {
-			return this._titleHtmlElement;
+		get elemJq(): JQuery {
+			return this._elemJq;
 		}
 
-		set titleHtmlElement(value: HTMLElement) {
-			this._titleHtmlElement = value;
+		set elemJq(value: JQuery) {
+			this._elemJq = value;
 		}
 
 		get id(): string {
@@ -77,6 +80,14 @@ namespace Rocket.Display {
 
 		set id(value: string) {
 			this._id = value;
+		}
+
+		get opened(): boolean {
+			return this._opened;
+		}
+
+		set opened(value: boolean) {
+			this._opened = value;
 		}
 	}
 }
