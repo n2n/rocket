@@ -55,8 +55,8 @@ class ToManyForm implements Dispatchable {
 	private $originalEntryIdReps;
 	
 	private $selectedEntryIdReps;
-	private $currentMappingForms;
-	private $newMappingForms;
+	private $currentMappingForms = array();
+	private $newMappingForms = array();
 
 	public function __construct(string $label, EiuFrame $readUtils, EiuFrame $editUtils, 
 			int $min, int $max = null) {

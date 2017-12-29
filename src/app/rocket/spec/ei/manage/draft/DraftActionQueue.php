@@ -118,7 +118,7 @@ class DraftActionQueue {
 		do {
 			$newInits = false;
 			
-			while (false !== (list($key, $removeAction) = each($this->removeActions))) {
+			foreach ($this->removeActions as $key => $removeAction) {
 				if ($removeAction->isInitialized()) continue;
 				
 				$newInits = true;
@@ -126,7 +126,7 @@ class DraftActionQueue {
 						->createRemoveDraftStmtBuilder($removeAction, $this));
 			}
 			
-			while (false !== (list($key, $persistAction) = each($this->persistActions))) {
+			foreach ($this->persistActions as $key => $persistAction) {
 				if ($persistAction->isInitialized()) continue;
 				
 				$newInits = true;
