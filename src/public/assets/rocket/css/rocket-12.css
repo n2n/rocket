@@ -3874,6 +3874,10 @@ body {
   padding-bottom: 0.5rem;
 }
 
+.rocket-nav-group .nav-item {
+  width: 100%;
+}
+
 .rocket-nav-group .nav-link {
   color: #C2BDB6;
   font-size: 0.875rem;
@@ -4043,7 +4047,7 @@ body {
 }
 
 .rocket-table > tbody tr:hover {
-  border-left: 3px solid #fd7e14;
+  box-shadow: -3px 0px 0px 0px #fd7e14;
 }
 
 .rocket-table > tbody .rocket-table-commands {

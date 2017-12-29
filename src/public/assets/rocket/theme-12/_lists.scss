@@ -108,7 +108,7 @@
     }
     > tbody {
         tr:hover {
-            border-left: 3px solid $orange;
+            box-shadow: -3px 0px 0px 0px $orange;
         }
         .rocket-table-commands {
             border-left: 1px solid $gray-300;

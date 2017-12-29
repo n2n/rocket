@@ -3,6 +3,9 @@
     > .nav {
         padding-bottom: 0.5rem;
     }
+    .nav-item {
+        width: 100%;
+    }
     .nav-link {
         color: $gray-500;
         font-size: $font-size-sm;
