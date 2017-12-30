@@ -196,7 +196,7 @@ class GuiDefinition {
 		}
 	}
 	
-	private function purifyDisplayStructure(DisplayStructure $displayStructure, EiGui $eiGui) {
+	public function purifyDisplayStructure(DisplayStructure $displayStructure, EiGui $eiGui) {
 		return $this->rPurifyDisplayStructure($displayStructure, new Eiu($eiGui));
 	}
 	
