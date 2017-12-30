@@ -4052,6 +4052,8 @@ body {
 
 .rocket-table > tbody .rocket-table-commands {
   border-left: 1px solid #ECEBE9;
+  white-space: nowrap;
+  width: 5%;
 }
 
 /*

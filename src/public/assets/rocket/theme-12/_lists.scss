@@ -112,6 +112,8 @@
         }
         .rocket-table-commands {
             border-left: 1px solid $gray-300;
+            white-space: nowrap;
+            width: 5%;
         }
     }
 }
