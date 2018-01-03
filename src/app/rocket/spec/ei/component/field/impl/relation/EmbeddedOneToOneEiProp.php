@@ -155,7 +155,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		
 		$targetEiuFrame = new EiuFrame($this->eiPropRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
-		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiObject->isDraft()));
+		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiObject->isDraft())->getEiEntry());
 	}
 	
 	/**

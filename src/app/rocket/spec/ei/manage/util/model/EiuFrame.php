@@ -197,7 +197,7 @@ class EiuFrame extends EiUtilsAdapter {
 			$eiType = $fromEiuEntry->getEiType();
 		}
 		
-		return $this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType));
+		return new EiuEntry($this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType), $this));
 	}
 	
 	/**
