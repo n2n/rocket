@@ -38,6 +38,7 @@ use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\draft\DraftValueMap;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 abstract class EiUtilsAdapter implements EiUtils {
 	/**
@@ -168,7 +169,35 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 		return $this->getEiMask()->determineEiMask($this->determineEiType($eiObjectObj));
 	}
-
+	
+	/**
+	 * @param mixed $eiObjectObj
+	 * @return \rocket\spec\ei\EiEngine
+	 */
+	public function determineEiEngine($eiObjectObj) {
+		return $this->determineEiMask($eiObjectObj)->getEiEngine();
+	}
+	
+	/**
+	 * @param mixed $guiIdPath
+	 * @param mixed $eiTypeObj
+	 * @throws \InvalidArgumentException
+	 * @return boolean
+	 */
+	public function containsGuiProp($guiIdPath, $eiTypeObj = null) {
+		return $this->determineEiEngine($eiTypeObj)->getGuiDefinition()->containsGuiProp(
+				GuiIdPath::createFromExpression($guiIdPath));
+	}
+	
+	public function guiIdPathToEiPropPath($guiIdPath, $eiTypeObj = null) {
+		try {
+			return $this->determineEiEngine($eiTypeObj)->getGuiDefinition()->guiIdPathToEiPropPath(
+					GuiIdPath::createFromExpression($guiIdPath));
+		} catch (\rocket\spec\ei\manage\gui\GuiException $e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\util\model\EiUtils::lookupEiObjectById()

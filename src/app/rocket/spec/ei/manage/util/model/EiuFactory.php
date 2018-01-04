@@ -538,6 +538,10 @@ class EiuFactory {
 	}
 	
 	public static function buildEiTypeFromEiArg($eiTypeArg, string $argName = null, bool $required = true) {
+		if ($eiTypeArg === null && !$required) {
+			return null;
+		}
+		
 		if (null !== ($eiType = self::determineEiType($eiTypeArg))) {
 			return $eiType;
 		}

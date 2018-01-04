@@ -313,6 +313,38 @@ class EiuEntry {
 	}
 	
 	/**
+	 * @param bool $draft
+	 * @param mixed $eiTypeArg
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
+	 */
+	public function copy(bool $draft = null, $eiTypeArg = null) {
+		return $this->eiuFrame->copyEntry($this, $draft, $eiTypeArg);
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\EiEngine
+	 */
+	public function getEiEngine() {
+		return $this->eiuFrame->determineEiEngine($this);
+	}
+	
+	/**
+	 * @param mixed $guiIdPath
+	 * @return boolean
+	 */
+	public function containsGuiProp($guiIdPath) {
+		return $this->eiuFrame->containsGuiProp($guiIdPath);
+	}
+	
+	/**
+	 * @param GuiIdPath|string $guiIdPath
+	 * @return \rocket\spec\ei\EiPropPath|null
+	 */
+	public function guiIdPathToEiPropPath($guiIdPath) {
+		return $this->eiuFrame->guiIdPathToEiPropPath($guiIdPath, $this);
+	}
+	
+	/**
 	 * @param bool $determineEiMask
 	 * @param N2nLocale $n2nLocale
 	 * @return string

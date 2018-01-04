@@ -111,8 +111,9 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @param EiType $eiType
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function newEntry(bool $draft = false, EiType $eiType = null) {
-		return new EiuEntry($this->createNewEiObject($draft, $eiType));
+	public function newEntry(bool $draft = false, EiType $eiTypeArg = null) {
+		return new EiuEntry($this->createNewEiObject($draft, 
+				EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)));
 	}
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
@@ -205,7 +206,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @param EiObject $to
 	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */
-	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null) {
+	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null, array $eiPropPaths = null) {
 		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');
 		
 		if ($to === null) {

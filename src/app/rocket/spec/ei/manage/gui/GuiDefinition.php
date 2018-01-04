@@ -253,7 +253,22 @@ class GuiDefinition {
 			$guiDefinition = $guiDefinition->getLevelGuiPropForkById($id)->getForkedGuiDefinition();
 		}	
 		
+		// @todo convert to exception
 		return null;
+	}
+	
+	public function containsGuiProp(GuiIdPath $guiIdPath) {
+		$ids = $guiIdPath->toArray();
+		$guiDefinition = $this;
+		while (null !== ($id = array_shift($ids))) {
+			if (empty($ids)) {
+				return $guiDefinition->containsGuiPropId($id);
+			}
+			
+			$guiDefinition = $guiDefinition->getLevelGuiPropForkById($id)->getForkedGuiDefinition();
+		}
+		
+		return true;
 	}
 	
 	/**

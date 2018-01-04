@@ -12,6 +12,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\gui\EiGui;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
@@ -28,8 +29,8 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		return $this->guiDefinition;
 	}
 	
-	public function getDisplayStructure(): DisplayStructure {
-		return $this->displayStructure;
+	public function getGuiIdPaths(): GuiIdPath {
+		return $this->displayStructure->getAllGuiIdPaths();
 	}
 	
 	private function determineDisplayStructure($viewMode): DisplayStructure {
