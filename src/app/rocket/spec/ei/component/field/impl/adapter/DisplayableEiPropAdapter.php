@@ -72,7 +72,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		}
 		
 		$groupType = $this->getGroupType($eiu);
-		ArgUtils::valEnumReturn($groupType, DisplayItem::getGroupTypes(), $this, 'getGroupType');
+		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($this->getDisplayLabel(), $groupType, 
 				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
