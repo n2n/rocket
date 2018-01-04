@@ -33,13 +33,13 @@ class TranslationCopyController extends ControllerAdapter {
 			throw new BadRequestException('Unknown guiIdPath: ' . $guiIdPath);
 		}
 		
-		$eiFieldPath = $fromEiuEntry->guiIdPathToFieldPath($guiIdPath);
+		$eiPropPath = $fromEiuEntry->guiIdPathToEiPropdPath($guiIdPath);
 		
-		$fromEiuEntry->copyPartialTo($toEi)
+// 		$fromEiuEntry->copyTo($toEi)
 		
 		
-		$eiuCtrl->frame()->containsGuiProp($guiIdPath);
-		$eiuEntry->newEntryGui()->createView();
+// 		$eiuCtrl->frame()->containsGuiProp($guiIdPath);
+// 		$eiuEntry->newEntryGui()->createView();
 		
 	}
 }

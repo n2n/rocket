@@ -66,7 +66,6 @@ use rocket\spec\ei\component\field\impl\translation\model\TranslationEiField;
 use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearchField;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
-use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\gui\ViewMode;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
@@ -93,7 +92,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	}
 	
 	public function setN2nLocaleDefs(array $n2nLocaleDefs) {
-		ArgUtils::valArrayLike($n2nLocaleDefs, N2nLocaleDef::class);
+		ArgUtils::valArray($n2nLocaleDefs, N2nLocaleDef::class);
 		$this->n2nLocaleDefs = $n2nLocaleDefs;
 	}
 	
