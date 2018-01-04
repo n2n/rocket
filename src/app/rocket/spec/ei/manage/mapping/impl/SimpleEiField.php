@@ -86,4 +86,10 @@ class SimpleEiField extends RwEiField {
 		$eiField->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $eiField;
 	}
+	
+	public function copyValue(Eiu $copyEiu) {
+		if ($this->copyable === null) return null;
+		
+		return $this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu);
+	}
 }

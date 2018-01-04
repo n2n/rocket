@@ -30,8 +30,8 @@ class TranslationEiField extends ToManyEiField {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\EiField::copyEiField($eiObject)
 	 */
-	public function copyEiField(Eiu $eiu) {
-		$copy = parent::copyEiField($eiu);
+	public function copyEiField(Eiu $copyEiu) {
+		$copy = parent::copyEiField($copyEiu);
 		
 		if ($copy === null) return null;
 		
@@ -45,5 +45,19 @@ class TranslationEiField extends ToManyEiField {
 		
 		return $copy;
 	}
-
+	
+	public function copyValue(Eiu $copyEiu) {
+		$valueCopy = parent::copyValue($copyEiu);
+		
+		if ($valueCopy === null) return null;
+		
+		$value = $this->getValue();
+		
+		foreach ($value as $key => $targetRelationEntry) {
+			$valueCopy[$key] = $valueCopy[$key]->getEiObject()->getEiEntityObj()->getEntityObj()->setN2nLocale(
+					$targetRelationEntry->getEiObject()->getEiEntityObj()->getEntityObj()->getN2nLocale());
+		}
+		
+		return $copy;
+	}
 }

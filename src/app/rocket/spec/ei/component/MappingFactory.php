@@ -30,7 +30,6 @@ use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\mapping\EiFieldFork;
 use rocket\spec\ei\component\field\FieldEiProp;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -88,8 +87,8 @@ class MappingFactory {
 		return $eiEntry;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiEntry $eiMappping, EiEntry $fromEiEntry = null) {
-		$eiObject = $eiMappping->getEiObject();
+	private function assembleMappingProfile(Eiu $eiu, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
+		$eiObject = $eiEntry->getEiObject();
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof FieldEiProp)) continue;
 						
@@ -108,44 +107,115 @@ class MappingFactory {
 			}
 
 			if ($eiField !== null) {
-				$eiMappping->putEiField($eiPropPath, $eiField);
+				$eiEntry->putEiField($eiPropPath, $eiField);
 			}
 				
-			$eiFieldFork = null;
-			if ($fromEiEntry !== null && $eiMappping->containsEiFieldFork($eiPropPath)) {
-				$eiFieldFork = $fromEiEntry->getEiFieldFork($eiPropPath)->copyEiFieldFork($eiObject);
-			}
+// 			$eiFieldFork = null;
+// 			if ($fromEiEntry !== null && $eiEntry->containsEiFieldFork($eiPropPath)) {
+// 				$eiFieldFork = $fromEiEntry->getEiFieldFork($eiPropPath)->copyEiFieldFork($eiObject);
+// 			}
 			
-			if ($eiFieldFork === null) {
-				$eiFieldFork = $eiProp->buildEiFieldFork($eiObject, $eiField);
-				ArgUtils::valTypeReturn($eiFieldFork, EiFieldFork::class, $eiProp, 'buildEiFieldFork', true);
-			}
+// 			if ($eiFieldFork === null) {
+// 				$eiFieldFork = $eiProp->buildEiFieldFork($eiObject, $eiField);
+// 				ArgUtils::valTypeReturn($eiFieldFork, EiFieldFork::class, $eiProp, 'buildEiFieldFork', true);
+// 			}
 			
-			if ($eiFieldFork !== null) {
-				$this->applyEiFieldFork($eiPropPath, $eiFieldFork, $mappingProfile);
-			}
-		}
-	}	
-	
-	private function applyEiFieldFork(EiPropPath $eiPropPath, EiFieldFork $eiFieldFork, MappingProfile $mappingProfile) {
-		$mappingProfile->putEiFieldFork($eiPropPath, $eiFieldFork);
-		
-		$eiFields = $eiFieldFork->getEiFields();
-		ArgUtils::valArrayReturnType($eiFields, 'rocket\spec\ei\manage\mapping\EiField',
-				$eiFieldFork, 'getEiFields');
-		
-		foreach ($eiFields as $id => $eiField) {
-			$mappingProfile->putEiField($eiPropPath->pushed($id), $eiField);
-		}
-		
-		$eiFieldForks = $eiFieldFork->getEiFieldForks();
-		ArgUtils::valArrayReturnType($eiFields, 'rocket\spec\ei\manage\mapping\EiFieldFork',
-				$eiFieldFork, 'getEiFieldForks');
-		
-		foreach ($eiFieldForks as $id => $eiFieldFork) {
-			$this->applyEiFieldFork($eiFieldFork, $eiPropPath->pushed($id), $mappingProfile);
+// 			if ($eiFieldFork !== null) {
+// 				$this->applyEiFieldFork($eiPropPath, $eiFieldFork, $mappingProfile);
+// 			}
 		}
 	}
+	
+	public function copyValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry,
+			array $eiFieldPaths = null) {
+		if ($eiFieldPaths === null) {
+			$this->copyAllValues($eiFrame, $fromEiEntry, $toEiEntry);
+		} else {
+			$this->copySpecificValues($eiFrame, $fromEiEntry, $toEiEntry, $eiPropPaths);
+		}
+	}
+	
+	/**
+	 *
+	 * @param Eiu $eiu
+	 * @param EiEntry $fromEiEntry
+	 * @param EiEntry $toEiEntry
+	 * @param EiPropPath[] $eiPropPaths
+	 */
+	private function copyAllValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry, array $eiPropPaths) {
+		$eiu = new Eiu($eiFrame, $toEiEntry);
+		
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			$eiPropPath = EiPropPath::from($eiProp);
+			
+			if (!$fromEiEntry->containsEiField($eiPropPath)|| !$toEiEntry->containsEiField($eiPropPath)) {
+				continue;
+			}
+			
+			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
+			$eiFieldCopy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
+			ArgUtils::valTypeReturn($eiFieldCopy, EiField::class, $fromEiField, 'copyEiField', true);
+			
+			if ($eiFieldCopy === null) {
+				continue;
+			}
+			
+			$toEiEntry->setValue($eiPropPath, $eiFieldCopy->getValue());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param Eiu $eiu
+	 * @param EiEntry $fromEiEntry
+	 * @param EiEntry $toEiEntry
+	 * @param EiPropPath[] $eiPropPaths
+	 */
+	private function copySpecificValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry, array $eiPropPaths) {
+		$eiu = new Eiu($eiFrame, $toEiEntry);
+		
+		foreach ($eiPropPaths as $id => $eiPropPath) {
+			if (!$this->eiPropCollection->containsId($eiPropPath->getFirstId())
+					|| !$fromEiEntry->containsEiField($eiPropPath)
+					|| !$toEiEntry->containsEiField($eiPropPath)) {
+				continue;
+			}
+			
+			$eiProp = $this->eiPropCollection->getById($eiPropPath->getFirstId());
+			if (!($eiProp instanceof FieldEiProp)) continue;
+			
+			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
+			$copy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
+			ArgUtils::valTypeReturn($copy, EiField::class, $fromEiField, 'copyEiField', true);
+			
+			if ($copy === null) {
+				continue;
+			}
+			
+			$toEiEntry->setValue($eiPropPath, $copy->getValue());
+		}
+		
+	}
+	
+// 	private function applyEiFieldFork(EiPropPath $eiPropPath, EiFieldFork $eiFieldFork, MappingProfile $mappingProfile) {
+// 		$mappingProfile->putEiFieldFork($eiPropPath, $eiFieldFork);
+		
+// 		$eiFields = $eiFieldFork->getEiFields();
+// 		ArgUtils::valArrayReturnType($eiFields, 'rocket\spec\ei\manage\mapping\EiField',
+// 				$eiFieldFork, 'getEiFields');
+		
+// 		foreach ($eiFields as $id => $eiField) {
+// 			$mappingProfile->putEiField($eiPropPath->pushed($id), $eiField);
+// 		}
+		
+// 		$eiFieldForks = $eiFieldFork->getEiFieldForks();
+// 		ArgUtils::valArrayReturnType($eiFields, 'rocket\spec\ei\manage\mapping\EiFieldFork',
+// 				$eiFieldFork, 'getEiFieldForks');
+		
+// 		foreach ($eiFieldForks as $id => $eiFieldFork) {
+// 			$this->applyEiFieldFork($eiFieldFork, $eiPropPath->pushed($id), $mappingProfile);
+// 		}
+// 	}
 	
 	
 }

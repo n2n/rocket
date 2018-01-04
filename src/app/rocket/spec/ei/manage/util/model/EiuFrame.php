@@ -201,6 +201,14 @@ class EiuFrame extends EiUtilsAdapter {
 		return new EiuEntry($this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType), $this));
 	}
 	
+	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
+		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiObjectArg, $this, 'fromEiEntryArg');
+		$toEiuEntry = EiuFactory::buildEiuEntryFromEiArg($toEiEntryArg, $this, '$toEiEntryArg');
+		
+		$this->determineEiMask($toEiEntryArg)->getEiEngine()
+				->copyValues($this->eiFrame, $fromEiuEntry->getEiEntry(), $toEiuEntry->getEiEntry(), $eiPropPaths);
+	}
+	
 	/**
 	 * @param mixed $fromEiObjectObj
 	 * @param EiObject $to

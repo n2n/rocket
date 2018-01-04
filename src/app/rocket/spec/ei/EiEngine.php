@@ -176,6 +176,11 @@ class EiEngine {
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
 	}
 	
+	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
+		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
+		$mappingFactory = new MappingFactory($this->eiPropCollection, $this->eiModificatorCollection);
+		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
+	}
 	
 	public function getGuiDefinition(): GuiDefinition {
 		if ($this->guiDefinition === null) {

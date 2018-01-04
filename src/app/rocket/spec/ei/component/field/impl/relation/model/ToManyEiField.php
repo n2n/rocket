@@ -80,6 +80,7 @@ class ToManyEiField extends RwEiField {
 			}
 		}
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\EiField::copyEiField($eiObject)
@@ -91,5 +92,11 @@ class ToManyEiField extends RwEiField {
 				$this->copyable);
 		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
 		return $copy;
+	}
+	
+	public function copyValue(Eiu $copyEiu) {
+		if ($this->copyable === null) return null;
+		
+		return $this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu);
 	}
 }

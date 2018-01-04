@@ -321,6 +321,10 @@ class EiuEntry {
 		return $this->eiuFrame->copyEntry($this, $draft, $eiTypeArg);
 	}
 	
+	public function copyValuesTo($toEiEntryArg, array $eiPropPaths = null) {
+		$this->eiuFrame->copyEntryValuesTo($this, $this, $toEiEntryArg, $eiPropPaths);
+	}
+	
 	/**
 	 * @return \rocket\spec\ei\EiEngine
 	 */
