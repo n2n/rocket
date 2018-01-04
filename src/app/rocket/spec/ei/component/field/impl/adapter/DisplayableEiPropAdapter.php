@@ -79,7 +79,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	}
 	
 	protected function getGroupType(Eiu $eiu) {
-		return null;
+		return DisplayItem::TYPE_NONE;
 	}
 	
 	public function buildGuiField(Eiu $eiu) {
