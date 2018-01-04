@@ -49,7 +49,7 @@ class DisplaySettings {
 	 * @return boolean
 	 */
 	public function isCompactViewCompatible(): bool {
-		return (boolean) (self::COMPACT_VIEW_MODES & $this->compatibleViewModes);
+		return (boolean) (ViewMode::compact() & $this->compatibleViewModes);
 	}
 		
 	/**

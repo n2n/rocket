@@ -11,7 +11,6 @@ use rocket\spec\config\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
 use n2n\web\ui\UiComponent;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use rocket\spec\ei\component\GuiFactory;
 
 class EiGui {
@@ -95,8 +94,8 @@ class EiGui {
 	public function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
 		$this->ensureInit();
 		
-		$guiIdsPaths = $this->eiGuiViewFactory->getAllGuiIdPaths();
-		ArgUtils::valArrayReturn($guiIdsPaths, GuiIdPath::class, $this->eiGuiViewFactory, 'getAllGuiIdPaths');
+		$guiIdsPaths = $this->eiGuiViewFactory->getGuiIdPaths();
+		ArgUtils::valArrayReturn($guiIdsPaths, $this->eiGuiViewFactory, 'getAllGuiIdPaths', GuiIdPath::class);
 		
 		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $guiIdsPaths, $treeLevel);
 		if ($append) {

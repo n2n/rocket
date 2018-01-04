@@ -33,6 +33,10 @@ class ViewMode {
 				| self::BULKY_READ | self::BULKY_EDIT | self::BULKY_ADD;
 	}
 	
+	public static function none() {
+		return 0;
+	}
+	
 	public static function determine(bool $bulky, bool $readOnly, bool $new) {
 		if ($readOnly) {
 			return $bulky ? self::BULKY_READ : self::COMPACT_READ;

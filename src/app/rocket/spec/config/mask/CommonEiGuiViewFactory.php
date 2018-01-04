@@ -7,7 +7,6 @@ use rocket\spec\ei\manage\gui\EiGuiViewFactory;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\ViewFactory;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
 use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\gui\EiGui;
@@ -29,44 +28,44 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		return $this->guiDefinition;
 	}
 	
-	public function getGuiIdPaths(): GuiIdPath {
+	public function getGuiIdPaths(): array {
 		return $this->displayStructure->getAllGuiIdPaths();
 	}
 	
-	private function determineDisplayStructure($viewMode): DisplayStructure {
-		$displayStructure = null;
+// 	private function determineDisplayStructure($viewMode): DisplayStructure {
+// 		$displayStructure = null;
 	
-		if ($viewMode & DisplaySettings::COMPACT_VIEW_MODES) {
-			if (null !== ($overviewDisplayStructure = $this->displayScheme->getOverviewDisplayStructure())) {
-				return $overviewDisplayStructure;
-			}
-			return $this->createDefaultDisplayStructure($viewMode);
-		} 
+// 		if ($viewMode & DisplaySettings::COMPACT_VIEW_MODES) {
+// 			if (null !== ($overviewDisplayStructure = $this->displayScheme->getOverviewDisplayStructure())) {
+// 				return $overviewDisplayStructure;
+// 			}
+// 			return $this->createDefaultDisplayStructure($viewMode);
+// 		} 
 		
-		switch ($viewMode) {
-			case DisplaySettings::VIEW_MODE_BULKY_READ:
-				if (null !== ($detailDisplayStructure = $this->displayScheme->getDetailDisplayStructure())) {
-					return $detailDisplayStructure;
-				}
-				break;
-			case DisplaySettings::VIEW_MODE_BULKY_EDIT:
-				if (null !== $editDisplayStructure = $this->displayScheme->getEditDisplayStructure()) {
-					return $editDisplayStructure;
-				}
-				break;
-			case DisplaySettings::VIEW_MODE_BULKY_ADD:
-				if (null !== ($addDisplayStructure = $this->displayScheme->getAddDisplayStructure())) {
-					return $addDisplayStructure;
-				}
-				break;
-		}
+// 		switch ($viewMode) {
+// 			case DisplaySettings::VIEW_MODE_BULKY_READ:
+// 				if (null !== ($detailDisplayStructure = $this->displayScheme->getDetailDisplayStructure())) {
+// 					return $detailDisplayStructure;
+// 				}
+// 				break;
+// 			case DisplaySettings::VIEW_MODE_BULKY_EDIT:
+// 				if (null !== $editDisplayStructure = $this->displayScheme->getEditDisplayStructure()) {
+// 					return $editDisplayStructure;
+// 				}
+// 				break;
+// 			case DisplaySettings::VIEW_MODE_BULKY_ADD:
+// 				if (null !== ($addDisplayStructure = $this->displayScheme->getAddDisplayStructure())) {
+// 					return $addDisplayStructure;
+// 				}
+// 				break;
+// 		}
 	
-		if (null !== ($bulkyDisplayStructure = $this->displayScheme->getBulkyDisplayStructure())) {
-			return $bulkyDisplayStructure;
-		}
+// 		if (null !== ($bulkyDisplayStructure = $this->displayScheme->getBulkyDisplayStructure())) {
+// 			return $bulkyDisplayStructure;
+// 		}
 	
-		return $this->createDefaultDisplayStructure($viewMode);
-	}
+// 		return $this->createDefaultDisplayStructure($viewMode);
+// 	}
 	
 	private function createDefaultDisplayStructure($viewMode) {
 		$displayStructure = new DisplayStructure();

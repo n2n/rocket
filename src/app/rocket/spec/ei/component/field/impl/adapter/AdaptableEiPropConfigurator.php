@@ -314,31 +314,31 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_overview_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
-							$this->displaySettings->isViewModeDefaultDisplayed(DisplaySettings::VIEW_MODE_BULKY_READ))));
+							$this->displaySettings->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
 		}
 	
-		if ($this->displaySettings->isViewModeCompatible(DisplaySettings::VIEW_MODE_BULKY_READ)) {
+		if ($this->displaySettings->isViewModeCompatible(ViewMode::BULKY_READ)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_detail_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
 							$this->displaySettings->isViewModeDefaultDisplayed(
-									DisplaySettings::VIEW_MODE_BULKY_READ))));
+									ViewMode::BULKY_READ))));
 		}
 	
-		if ($this->displaySettings->isViewModeCompatible(DisplaySettings::VIEW_MODE_BULKY_EDIT)) {
+		if ($this->displaySettings->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_edit_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
 							$this->displaySettings->isViewModeDefaultDisplayed(
-									DisplaySettings::VIEW_MODE_BULKY_EDIT))));
+									ViewMode::BULKY_EDIT))));
 		}
 	
-		if ($this->displaySettings->isViewModeCompatible(DisplaySettings::VIEW_MODE_BULKY_ADD)) {
+		if ($this->displaySettings->isViewModeCompatible(ViewMode::BULKY_ADD)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_add_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
 							$this->displaySettings->isViewModeDefaultDisplayed(
-									DisplaySettings::VIEW_MODE_BULKY_ADD))));
+									ViewMode::BULKY_ADD))));
 		}
 		
 		$magCollection->addMag(self::ATTR_HELPTEXT_KEY, new StringMag($dtc->translate('ei_impl_help_text_label'), 

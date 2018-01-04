@@ -41,27 +41,28 @@ use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\component\field\impl\adapter\ObjectPropertyConfigurable;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\spec\ei\manage\gui\ViewMode;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
 	private $accessProxy;
-	private $displayDefinition;
+	private $displaySettings;
 	
 	public function __construct() {
 		parent::__construct();
 	
-		$this->displayDefinition = new DisplaySettings(DisplaySettings::READ_VIEW_MODES);
+		$this->displaySettings = new DisplaySettings(ViewMode::read());
 	}
 	
-	public function getDisplaySettings(): DisplaySettings {
-		return $this->displayDefinition;
+	public function buildDisplayDefinition(Eiu $eiu): DisplayDefinition {
+		return $this->displaySettings->toDisplayDefinition($this, $eiu->gui()->getViewMode());
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplaySettings($this->displayDefinition);
+		$eiPropConfigurator->registerDisplaySettings($this->displaySettings);
 		$eiPropConfigurator->registerObjectPropertyConfigurable($this);
 		return $eiPropConfigurator;
 	}
