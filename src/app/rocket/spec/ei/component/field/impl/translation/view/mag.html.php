@@ -46,7 +46,7 @@
 		<?php $hasError = $formHtml->meta()->hasErrors($propertyPath) ?>
 	
 		<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId], array(
-				'class' => 'rocket-impl-translation', 
+				'class' => 'rocket-impl-translation',
 				'data-rocket-impl-locale-id' => $n2nLocaleId,
 				'data-rocket-impl-activate-label' => $html->getText('ei_impl_activate_translation', array(
 						'locale' => $n2nLocale->getName($request->getN2nLocale()),

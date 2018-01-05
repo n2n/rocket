@@ -71,7 +71,9 @@ class TranslationMag extends MagAdapter {
 						->ext($magPropertyPath);
 				
 				$tPropertyPath = $propertyPath->reduced(1);
-				if (!$bd->getBindingTree()->containsPropertyPath($tPropertyPath)) continue;
+				if (!$bd->getBindingTree()->containsPropertyPath($tPropertyPath)) {
+					continue;
+				}
 				
 				$transDispBd = $bd->getBindingTree()->lookup($tPropertyPath);
 				$be->addErrors($that->propertyName, $transDispBd->getMappingResult()
@@ -82,6 +84,7 @@ class TranslationMag extends MagAdapter {
 
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$basePropertyPath = $propertyPath->reduced(2);
+		
 
 		$propertyPaths = array();
 		foreach ($this->magPropertyPaths as $n2nLocaleId => $magPropertyPath) {

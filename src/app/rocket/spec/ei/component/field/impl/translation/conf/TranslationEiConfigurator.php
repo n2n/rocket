@@ -44,6 +44,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\config\WebConfig;
+use rocket\spec\ei\component\field\impl\translation\command\TranslationCopyCommand;
 
 class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -78,6 +79,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		$magCollection = $magDispatchable->getMagCollection();
+		
 		$magCollection->addMag(self::ATTR_USE_SYSTEM_LOCALES_KEY, new BoolMag('Use system locales',
 				$lar->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, true)));
 		
@@ -239,6 +241,9 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		} catch (InvalidEiComponentConfigurationException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		}
+		
+// 		$copyCommand = new TranslationCopyCommand();
+// 		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($copyCommand);
 	}
 }
 

@@ -9,6 +9,4 @@ class TranslationCopyCommand extends EiCommandAdapter {
 	public function lookupController(Eiu $eiu): Controller {
 		return $eiu->lookup(TranslationCopyController::class);
 	}
-
-	
 }
