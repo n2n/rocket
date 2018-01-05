@@ -55,4 +55,12 @@ class GuiIdPath extends IdPath {
 	
 		return new GuiIdPath(explode(self::ID_SEPARATOR, $expression));
 	}
+	
+	public static function createFromExpressionArray(array $expressions) {
+		$guiIdPaths = array();
+		foreach ($expressions as $key => $expression) {
+			$guiIdPaths[$key] = self::createFromExpression($expression);
+		}
+		return $guiIdPaths;
+	}
 }

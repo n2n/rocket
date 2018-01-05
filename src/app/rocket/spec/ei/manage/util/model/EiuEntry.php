@@ -121,6 +121,8 @@ class EiuEntry {
 		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel));
 	}
 	
+	
+	
 	public function field($eiPropObj) {
 		return new EiuField($eiPropObj, $this);
 	}

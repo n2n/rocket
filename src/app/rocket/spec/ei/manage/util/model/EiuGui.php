@@ -3,6 +3,12 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\manage\gui\EiGuiViewFactory;
+use rocket\spec\ei\manage\gui\GuiDefinition;
+use n2n\web\ui\UiComponent;
+use n2n\reflection\ArgUtils;
+use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class EiuGui {
 	private $eiGui;
@@ -83,6 +89,12 @@ class EiuGui {
 		return $eiuEntryGuis;
 	}
 	
+	public function initViewCallback(\Closure $viewFactory, array $guiIdPaths) {
+		$guiIdPaths = GuiIdPath::createArrayFromExpressions($guiIdPaths);
+		$guiDefinition = $this->eiGui->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
+		
+		$this->eiGui->init(new CustomGuiViewFactory($guiDefinition, $guiIdPaths, $viewFactory));
+	}
 // 	/**
 // 	 * @param bool $required
 // 	 * @throws EiuPerimeterException
@@ -122,3 +134,36 @@ class EiuGui {
 	}
 }
 
+
+
+
+class CustomGuiViewFactory implements EiGuiViewFactory {
+	private $guiDefinition;
+	private $guiIdPaths;
+	private $factory;
+	
+	public function __construct(GuiDefinition $guiDefinition, array $guiIdPaths, \Closure $factory) {
+		$this->guiIdPath = $guiIdPath;
+		$this->guiDefinition = $guiDefinition;
+		$this->factory = $factory;
+	}
+	
+	public function getGuiDefinition(): GuiDefinition {
+		return $this->guiDefinition;
+	}
+	
+	public function getGuiIdPaths(): array {
+		return $this->guiIdPaths;
+	}
+	
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent {
+		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
+		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
+		
+		if (is_scalar($uiComponent)) {
+			$uiComponent = new HtmlSnippet($uiComponent);
+		}
+		
+		return $uiComponent;
+	}
+}
