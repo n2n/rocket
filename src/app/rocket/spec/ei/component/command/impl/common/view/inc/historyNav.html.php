@@ -25,8 +25,7 @@
 	use rocket\spec\ei\component\command\impl\common\model\EntryCommandViewModel;
 	use rocket\user\model\RocketUserDao;
 	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
-	use rocket\spec\ei\component\field\impl\adapter\DisplaySettings;
-use rocket\spec\ei\manage\gui\ViewMode;
+	use rocket\spec\ei\manage\gui\ViewMode;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

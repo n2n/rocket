@@ -1,11 +1,13 @@
 <?php 
-namespace rocket\spec\ei\component\field\impl\translation;
+namespace rocket\spec\ei\component\field\impl\translation\command;
 
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use n2n\web\http\controller\ParamQuery;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\web\http\BadRequestException;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
+use n2n\util\ex\UnsupportedOperationException;
 
 class TranslationCopyController extends ControllerAdapter {
 	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiIdPath, ParamQuery $bulky,
@@ -32,14 +34,11 @@ class TranslationCopyController extends ControllerAdapter {
 		$eiPropPath = $fromEiuEntry->guiIdPathToEiPropPath($guiIdPath);
 		$fromEiuEntry->copyValuesTo($toEiuEntry, [$eiPropPath]);
 		
-		$toEiuEntry->newEntryGui($bulky->toBool(), true);
-		$toEiuEntry->newCustomEntryGui($bulky->toBool());
+		$eiuEntryGui = $toEiuEntry->newCustomEntryGui(function () {
+			throw new UnsupportedOperationException();
+		}, array($guiIdPath), $bulky->toBool());
 		
-// 		$fromEiuEntry->copyTo($toEi)
-		
-		
-// 		$eiuCtrl->frame()->containsGuiProp($guiIdPath);
-// 		$eiuEntry->newEntryGui()->createView();
-		
+		$this->send(new JhtmlResponse($this->createView('translationCopy.html', 
+				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath))));
 	}
 }

@@ -106,14 +106,7 @@ class EiuEntry {
 			$eiMask = $this->getEiFrame()->getContextEiMask();
 		}
 		
-		$viewMode = null;
-		if (!$editable) {
-			$viewMode = $bulky ? ViewMode::BULKY_READ : ViewMode::COMPACT_READ;
-		} else if ($this->isNew()) {
-			$viewMode = $bulky ? ViewMode::BULKY_ADD : ViewMode::COMPACT_ADD;
-		} else {
-			$viewMode = $bulky ? ViewMode::BULKY_EDIT : ViewMode::COMPACT_EDIT;
-		}
+		$viewMode = $this->deterViewMode($bulky, $editable);
 		
 		$eiGui = new EiGui($this->getEiFrame(), $viewMode);
 		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
@@ -121,6 +114,30 @@ class EiuEntry {
 		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel));
 	}
 	
+	public function newCustomEntryGui(\Closure $uiFactory, array $guiIdPaths, bool $bulky = true, 
+			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
+		$eiMask = null;
+		if ($determineEiMask) {
+			$eiMask = $this->determineEiMask();
+		} else {
+			$eiMask = $this->getEiFrame()->getContextEiMask();
+		}
+		
+		$viewMode = $this->deterViewMode($bulky, $editable);
+		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $guiIdPaths);
+		$eiuGui->appendNewEntryGui($this, $treeLevel);	
+		return $eiuGui;
+	}
+	
+	private function deterViewMode($bulky, $editable) {
+		if (!$editable) {
+			return $bulky ? ViewMode::BULKY_READ : ViewMode::COMPACT_READ;
+		} else if ($this->isNew()) {
+			return $bulky ? ViewMode::BULKY_ADD : ViewMode::COMPACT_ADD;
+		} else {
+			return $bulky ? ViewMode::BULKY_EDIT : ViewMode::COMPACT_EDIT;
+		}
+	}
 	
 	
 	public function field($eiPropObj) {

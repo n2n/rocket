@@ -41,18 +41,21 @@ class EiuGui {
 	 * @return bool
 	 */
 	public function isBulky() {
-		return (bool) $this->getViewMode() & ViewMode::bulky();	
+		return (bool) ($this->getViewMode() & ViewMode::bulky());	
 	}
 	
 	/**
 	 * @return bool
 	 */
 	public function isCompact() {
-		return (bool) $this->getViewMode() & ViewMode::compact();
+		return (bool) ($this->getViewMode() & ViewMode::compact());
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function isReadOnly() {
-		return (bool) $this->getViewMode() & ViewMode::read();
+		return (bool) ($this->getViewMode() & ViewMode::read());
 	}
 	
 	/**
@@ -89,7 +92,7 @@ class EiuGui {
 		return $eiuEntryGuis;
 	}
 	
-	public function initViewCallback(\Closure $viewFactory, array $guiIdPaths) {
+	public function initWithUiCallback(\Closure $viewFactory, array $guiIdPaths) {
 		$guiIdPaths = GuiIdPath::createArrayFromExpressions($guiIdPaths);
 		$guiDefinition = $this->eiGui->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
 		

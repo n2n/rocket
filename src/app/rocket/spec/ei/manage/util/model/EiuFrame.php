@@ -437,6 +437,19 @@ class EiuFrame extends EiUtilsAdapter {
 		
 		return new EiuGui($eiGui, $this);
 	}
+	
+	/**
+	 * @param int $viewMode
+	 * @param \Closure $uiFactory
+	 * @param array $guiIdPaths
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiIdPaths) {
+		$eiGui = new EiGui($this->eiFrame, $viewMode);
+		$eiuGui = new EiuGui($eiGui, $this);
+		$eiuGui->initWithUiCallback($uiFactory, $guiIdPaths);
+		return $eiuGui;
+	}
 }
 
 // class EiCascadeOperation implements CascadeOperation {

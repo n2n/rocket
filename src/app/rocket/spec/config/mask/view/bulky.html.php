@@ -51,7 +51,6 @@
 	} else if ($renderForkMags) {
 		$renderForkMags = $eiu->entryGui()->hasForkMags();
 	}
-	
 ?>
 
 <?php if (!$entryOpen): ?>
