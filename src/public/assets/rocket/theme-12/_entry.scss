@@ -1,3 +1,7 @@
+.rocket-field {
+    background: $white;
+}
+
 @include media-breakpoint-up(md) {
     .rocket-field {
         clear: both;
@@ -16,7 +20,6 @@
 .rocket-group,
 .rocket-group-simple {
     position: relative;
-    background-color: white;
     margin-bottom: 1rem;
     
     > label {
@@ -27,7 +30,6 @@
         font-weight: bold;
     }
     > .rocket-control {
-        background: white;
         margin: 0;
     }
     > .rocket-group-toolbar {

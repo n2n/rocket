@@ -26,15 +26,19 @@
 	&:hover {
 		background-color: $danger;
 		color: white;
+		> a {
+			color: $white;
+		}
 	}
 	&:hover::after {
 		color: white;
 	}
-	> div:first-child {
+	> .rocket-error-index-message {
 		font-weight: bold;
 	}
-	> div:last-child {
+	> a {
 		font-size: $font-size-sm;
+		color: $body-color
 	}
 }
 

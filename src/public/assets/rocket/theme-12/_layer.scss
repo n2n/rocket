@@ -37,10 +37,11 @@
 		width: calc(100% - 20rem);
 		> .rocket-additional {
 			position: fixed;
-			top: 8.325rem;
+			top: 7.825rem;
 			bottom: 4.5rem;
 			right: 1rem;
 			width: 19rem;
+			overflow-y: auto;
 		}
 	}
 }

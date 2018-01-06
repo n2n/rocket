@@ -3695,10 +3695,11 @@ body {
   }
   .rocket-zone.rocket-contains-additional > .rocket-additional {
     position: fixed;
-    top: 8.325rem;
+    top: 7.825rem;
     bottom: 4.5rem;
     right: 1rem;
     width: 19rem;
+    overflow-y: auto;
   }
 }
 
@@ -3881,7 +3882,7 @@ body {
 .rocket-nav-group .nav-link {
   color: #C2BDB6;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   padding: 0.375 1rem;
 }
 
@@ -4122,6 +4123,10 @@ ul.rocket-content-item > li > span {
   margin-left: 0.5rem;
 }
 
+.rocket-field {
+  background: #fff;
+}
+
 @media (min-width: 768px) {
   .rocket-field {
     clear: both;
@@ -4139,7 +4144,6 @@ ul.rocket-content-item > li > span {
 .rocket-group,
 .rocket-group-simple {
   position: relative;
-  background-color: white;
   margin-bottom: 1rem;
 }
 
@@ -4154,7 +4158,6 @@ ul.rocket-content-item > li > span {
 
 .rocket-group > .rocket-control,
 .rocket-group-simple > .rocket-control {
-  background: white;
   margin: 0;
 }
 
@@ -4287,16 +4290,21 @@ ul.rocket-content-item > li > span {
   color: white;
 }
 
+.rocket-error-index-entry:hover > a {
+  color: #fff;
+}
+
 .rocket-error-index-entry:hover::after {
   color: white;
 }
 
-.rocket-error-index-entry > div:first-child {
+.rocket-error-index-entry > .rocket-error-index-message {
   font-weight: bold;
 }
 
-.rocket-error-index-entry > div:last-child {
+.rocket-error-index-entry > a {
   font-size: 0.875rem;
+  color: #373431;
 }
 
 .rocket-message-error > div {
