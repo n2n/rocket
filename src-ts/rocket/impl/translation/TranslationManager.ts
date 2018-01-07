@@ -169,6 +169,7 @@ namespace Rocket.Impl.Translation {
 		private _mandatory: boolean;
 		private jqCheck: JQuery;
 		private jqI: JQuery;
+		private _disabled: boolean = false;
 		
 		constructor(private jqElem: JQuery) {
 			this._localeId = this.jqElem.data("rocket-impl-locale-id");
@@ -186,6 +187,7 @@ namespace Rocket.Impl.Translation {
 			if (this.mandatory) {
 				this.jqCheck.prop("checked", true);
 				this.jqCheck.prop("disabled", true);
+				this.disabled = true;
 			}
 			
 			this.jqCheck.change(() => { this.updateClasses() });
@@ -210,11 +212,11 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		get disabled(): boolean {
-			return this.jqCheck.is(":disabled");
+			return this.jqCheck.is(":disabled") || this._disabled;
 		}
 		
 		set disabled(disabled: boolean) {
-			this.jqCheck.prop("disabled", disabled);
+			this._disabled = true;
 			this.updateClasses();	
 		}
 		
