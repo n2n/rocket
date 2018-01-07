@@ -42,6 +42,10 @@ class RelationEntry {
 		return $this->eiObject->getEiEntityObj()->getId();
 	}
 	
+	public function getIdRep() {
+		return $this->eiObject->getEiEntityObj()->getIdRep();
+	}
+	
 	public function getEiObject(): EiObject {
 		return $this->eiObject;
 	}

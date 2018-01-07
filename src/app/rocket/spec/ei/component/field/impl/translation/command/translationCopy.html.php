@@ -3,10 +3,13 @@
 	use rocket\spec\ei\manage\util\model\EiuEntryGui;
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\spec\ei\manage\EiHtmlBuilder;
+use n2n\l10n\N2nLocale;
+use rocket\spec\ei\manage\gui\GuiIdPath;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
 	$formHtml = HtmlView::formHtml($view);
+	$request = HtmlView::request($view);
 	
 	$eiuEntryGui = $view->getParam('eiuEntryGui');
 	$view->assert($eiuEntryGui instanceof EiuEntryGui);
@@ -16,13 +19,24 @@
 	$propertyPath = $view->getParam('propertyPath');
 	$view->assert($propertyPath instanceof PropertyPath);
 	
+	$n2nLocale = $view->getParam('n2nLocale');
+	$view->assert($n2nLocale instanceof N2nLocale);
+	
+	$guiIdPath = $view->getParam('guiIdPath');
+	$view->assert($guiIdPath instanceof GuiIdPath);
+	
 	$eiHtml = new EiHtmlBuilder($view);
 ?>
 
 <?php $formHtml->openPseudo($dispatchable, $propertyPath) ?>
-	<?php $eiHtml->entryOpen('div', $eiuEntryGui) ?>
-		<?php $eiHtml->fieldOpen('div', $guiIdPath, array('class' => 'rocket-impl-translation-copy')) ?>
-			<?php $eiHtml->fieldContent() ?>
-		<?php $eiHtml->fieldClose()?>
+	<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-translation-copy')) ?>
+		<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+			<?php $eiHtml->fieldLabel(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
+						'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
+			<div class="rocket-control">
+				<?php $eiHtml->fieldContent() ?>
+				<?php $eiHtml->fieldMessage() ?>
+			</div>
+		<?php $eiHtml->fieldClose() ?>
 	<?php $eiHtml->entryClose() ?>
 <?php $formHtml->closePseudo() ?>

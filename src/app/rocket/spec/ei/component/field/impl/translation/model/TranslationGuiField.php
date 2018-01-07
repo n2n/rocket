@@ -33,6 +33,7 @@ use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 use rocket\spec\ei\component\field\impl\relation\model\RelationEntry;
 use rocket\spec\ei\component\field\impl\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
+use n2n\util\uri\Url;
 
 class TranslationGuiField implements GuiFieldFork {
 	private $toManyEiField;
@@ -40,6 +41,9 @@ class TranslationGuiField implements GuiFieldFork {
 	private $label;
 
 	private $n2nLocaleDefs = array();
+	/**
+	 * @var RelationEntry[]
+	 */
 	private $targetRelationEntries = array();
 	/**
 	 * @var GuiFieldAssembler[]
@@ -49,6 +53,7 @@ class TranslationGuiField implements GuiFieldFork {
 	private $activeN2nLocaleIds = array();
 	
 	private $translationForm;
+	private $copyUrl;
 		
 	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label, int $minNumTranslations) {
 		$this->toManyEiField = $toManyEiField;
@@ -69,6 +74,26 @@ class TranslationGuiField implements GuiFieldFork {
 		if ($active) {
 			$this->activeN2nLocaleIds[$n2nLocaleId] = $n2nLocaleId;
 		}
+	}
+	
+	private function buildCopyUrl(GuiIdPath $guiIdPath) {
+		$copyUrls = array();
+		
+		if ($this->copyUrl === null) {
+			return $copyUrls;
+		}
+		
+		// @todo draft copy url
+		
+		foreach ($this->targetRelationEntries as $n2nLocaleId => $targetRelationEntry) {
+			if ($targetRelationEntry->isNew()) continue;
+				
+			$copyUrls[$n2nLocaleId] = $this->copyUrl->extR('live', 
+					array('fromIdRep' => $targetRelationEntry->getIdRep(),
+							'guiIdPath' => (string) $guiIdPath));
+		}
+		
+		return $copyUrls;
 	}
 	
 	private function setupTranslationForm() {
@@ -139,6 +164,8 @@ class TranslationGuiField implements GuiFieldFork {
 			return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper);
 		}
 		
+		$translationMag->setCopyUrls($this->buildCopyUrl($guiIdPath));
+		
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
@@ -169,6 +196,10 @@ class TranslationGuiField implements GuiFieldFork {
 		}
 		
 		$this->toManyEiField->setValue($targetRelationEntries);
+	}
+	
+	public function setCopyUrl(Url $copyUrl) {
+		$this->copyUrl = $copyUrl;
 	}
 }
 

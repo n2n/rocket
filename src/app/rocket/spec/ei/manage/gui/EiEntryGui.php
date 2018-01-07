@@ -188,7 +188,15 @@ class EiEntryGui {
 	 * @return \n2n\web\dispatch\map\PropertyPath|null
 	 */
 	public function getContextPropertyPath() {
-		return $this->contextPropertyPath;
+		if ($this->contextPropertyPath !== null) {
+			return $this->contextPropertyPath;
+		}
+		
+		if ($this->dispatchable !== null) {
+			return new PropertyPath(array());
+		}
+		
+		return null;
 	}
 
 	/**

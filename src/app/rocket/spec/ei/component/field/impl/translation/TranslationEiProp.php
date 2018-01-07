@@ -67,12 +67,14 @@ use rocket\spec\ei\component\field\QuickSearchableEiProp;
 use rocket\spec\ei\component\field\impl\translation\model\TranslationQuickSearchField;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\component\field\impl\translation\command\TranslationCopyCommand;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
 	private $minNumTranslations = 0;
-
+	private $copyCommand;
+	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new TranslationEiConfigurator($this);
 	}
@@ -98,6 +100,10 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	
 	public function getN2nLocaleDefs() {
 		return $this->n2nLocaleDefs;
+	}
+	
+	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
+		$this->copyCommand = $translationCopyCommand;
 	}
 	
 	/**
@@ -194,6 +200,10 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		$targetGuiDefinition = $targetUtils->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
 		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nLocale()), $this->minNumTranslations);
+		if ($this->copyCommand !== null) {
+			$translationGuiField->setCopyUrl($targetUtils->getUrlToCommand($this->copyCommand)
+					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
+		}
 
 		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();

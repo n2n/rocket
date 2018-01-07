@@ -162,6 +162,7 @@ namespace Rocket.Cmd {
 			if (this.empty) return;
 				
 			this.jqZone.empty();
+			this.menu.clear();
 			
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
@@ -516,6 +517,10 @@ namespace Rocket.Cmd {
 			this.context = context;
 		}
 		
+		clear() {
+			this._toolbar = null;
+		}
+		
 		get toolbar(): display.Toolbar {
 			if (this._toolbar) {
 				return this._toolbar;
@@ -525,7 +530,6 @@ namespace Rocket.Cmd {
 			if (jqToolbar.length == 0) {
 				jqToolbar = $("<div />", { "class": "rocket-zone-toolbar"}).prependTo(this.context.jQuery);
 			}
-			
 			
 			return this._toolbar = new display.Toolbar(jqToolbar);
 		}

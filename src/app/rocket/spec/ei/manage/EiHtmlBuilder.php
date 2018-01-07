@@ -294,7 +294,7 @@ class EiHtmlBuilder {
 	
 		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
-				$this->buildAttrs($guiIdPath, $attrs), $editableInfo->isMandatory());
+				$this->buildAttrs($guiIdPath, (array) $attrs), $editableInfo->isMandatory());
 	}
 	
 	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,

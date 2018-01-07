@@ -127,8 +127,8 @@ class MappingFactory {
 	}
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry,
-			array $eiFieldPaths = null) {
-		if ($eiFieldPaths === null) {
+			array $eiPropPaths = null) {
+		if ($eiPropPaths === null) {
 			$this->copyAllValues($eiFrame, $fromEiEntry, $toEiEntry);
 		} else {
 			$this->copySpecificValues($eiFrame, $fromEiEntry, $toEiEntry, $eiPropPaths);
@@ -142,7 +142,7 @@ class MappingFactory {
 	 * @param EiEntry $toEiEntry
 	 * @param EiPropPath[] $eiPropPaths
 	 */
-	private function copyAllValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry, array $eiPropPaths) {
+	private function copyAllValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry) {
 		$eiu = new Eiu($eiFrame, $toEiEntry);
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {

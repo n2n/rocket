@@ -146,7 +146,7 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 	private $factory;
 	
 	public function __construct(GuiDefinition $guiDefinition, array $guiIdPaths, \Closure $factory) {
-		$this->guiIdPath = $guiIdPath;
+		$this->guiIdPaths = $guiIdPaths;
 		$this->guiDefinition = $guiDefinition;
 		$this->factory = $factory;
 	}

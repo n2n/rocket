@@ -125,8 +125,7 @@ class EiuEntry {
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $guiIdPaths);
-		$eiuGui->appendNewEntryGui($this, $treeLevel);	
-		return $eiuGui;
+		return $eiuGui->appendNewEntryGui($this, $treeLevel);
 	}
 	
 	private function deterViewMode($bulky, $editable) {
@@ -341,7 +340,7 @@ class EiuEntry {
 	}
 	
 	public function copyValuesTo($toEiEntryArg, array $eiPropPaths = null) {
-		$this->eiuFrame->copyEntryValuesTo($this, $this, $toEiEntryArg, $eiPropPaths);
+		$this->eiuFrame->copyEntryValuesTo($this, $toEiEntryArg, $eiPropPaths);
 	}
 	
 	/**

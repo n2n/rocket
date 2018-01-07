@@ -74,7 +74,7 @@ namespace Rocket {
 		}) ();
 
 		(function () {
-			let t = new Rocket.Impl.Translator(container);
+			let t = new Rocket.Impl.Translation.Translator(container);
 			t.scan();
 
 			Jhtml.ready(() => {

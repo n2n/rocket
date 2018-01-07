@@ -262,7 +262,7 @@ class GuiDefinition {
 		$guiDefinition = $this;
 		while (null !== ($id = array_shift($ids))) {
 			if (empty($ids)) {
-				return $guiDefinition->containsGuiPropId($id);
+				return $guiDefinition->containsLevelGuiPropId($id);
 			}
 			
 			$guiDefinition = $guiDefinition->getLevelGuiPropForkById($id)->getForkedGuiDefinition();

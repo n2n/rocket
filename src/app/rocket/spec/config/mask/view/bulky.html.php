@@ -44,6 +44,7 @@
 	if ($renderForkMags === null) {
 		$renderInnerForks = 1 == count($displayStructure->getDisplayItems()) 
 				&& $displayStructure->getDisplayItems()[0]->isGroup();
+		$renderForkMags = !$renderInnerForks;
 	}
 	
 	if ($renderInnerForks) {

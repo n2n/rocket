@@ -34,11 +34,18 @@ use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
+use n2n\reflection\ArgUtils;
+use n2n\util\uri\Url;
+use n2n\l10n\N2nLocale;
 
 class TranslationMag extends MagAdapter {
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	private $fieldErrorInfos = array();
+	/**
+	 * @var Url[]
+	 */
+	private $copyUrls = array();
 
 	public function __construct($label) {
 		parent::__construct($label);
@@ -56,6 +63,11 @@ class TranslationMag extends MagAdapter {
 	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, FieldErrorInfo $fieldErrorInfo) {
 		$this->magPropertyPaths[$n2nLocaleId] = $magPropertyPath;
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
+	}
+	
+	public function setCopyUrls(array $copyUrls) {
+		ArgUtils::valArray($copyUrls, Url::class);
+		$this->copyUrls = $copyUrls;
 	}
 
 	/* (non-PHPdoc)
@@ -85,15 +97,23 @@ class TranslationMag extends MagAdapter {
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$basePropertyPath = $propertyPath->reduced(2);
 		
-
 		$propertyPaths = array();
 		foreach ($this->magPropertyPaths as $n2nLocaleId => $magPropertyPath) {
 			$propertyPaths[$n2nLocaleId] = $basePropertyPath->ext(new PropertyPathPart('dispatchables', true, $n2nLocaleId))
 					->ext($magPropertyPath);
 		}
+		
+		$copyUrlDefs = array();
+		foreach ($this->copyUrls as $localeId =>  $copyUrl) {
+			$copyUrlDefs[$localeId] = array(
+					'label' => N2nLocale::create($localeId)->toPrettyId(),
+					'copyUrl' => (string) $copyUrl,
+					'n2nLocaleId' => $localeId);
+		}
 
 		return $view->getImport('\rocket\spec\ei\component\field\impl\translation\view\mag.html', 
 				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
-						'label' => $this->getLabel($view->getN2nLocale())));
+						'label' => $this->getLabel($view->getN2nLocale()),
+						'copyUrlDefs' => $copyUrlDefs));
 	}
 }

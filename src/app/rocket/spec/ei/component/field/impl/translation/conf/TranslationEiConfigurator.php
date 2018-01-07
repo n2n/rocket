@@ -242,8 +242,9 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			throw $eiSetupProcess->createException(null, $e);
 		}
 		
-// 		$copyCommand = new TranslationCopyCommand();
-// 		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($copyCommand);
+		$copyCommand = new TranslationCopyCommand();
+		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($copyCommand);
+		$this->translationEiProp->setCopyCommand($copyCommand);
 	}
 }
 

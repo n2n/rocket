@@ -473,6 +473,7 @@ class EiuFactory {
 		}
 		
 		if ($eiObjectArg instanceof EiuEntry) {
+			$eiEntry = $eiObjectArg->getEiEntry(false);
 			return $eiObjectArg->getEiObject();
 		}
 		

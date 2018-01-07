@@ -40,24 +40,27 @@
 
 <div class="rocket-impl-translatable"
 		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
-		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>">
+		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>"
+		data-rocket-impl-copy-urls="<?php $html->out(json_encode($view->getParam('copyUrlDefs'))) ?>">
 	<?php foreach ($propertyPaths as $n2nLocaleId => $propertyPath): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 		<?php $hasError = $formHtml->meta()->hasErrors($propertyPath) ?>
 	
-		<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId], array(
-				'class' => 'rocket-impl-translation',
-				'data-rocket-impl-locale-id' => $n2nLocaleId,
-				'data-rocket-impl-activate-label' => $html->getText('ei_impl_activate_translation', array(
+		<div class="rocket-impl-translation"
+				data-rocket-impl-locale-id="<?php $html->out($n2nLocaleId) ?>"
+				data-rocket-impl-activate-label="<?php $html->text('ei_impl_activate_translation', array(
 						'locale' => $n2nLocale->getName($request->getN2nLocale()),
-						'field' => $view->getParam('label'))))) ?>
-				
-			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-					'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
-			<div class="rocket-controls rocket-impl-translation">
-				<?php $fieldEiHtml->field() ?>
-				<?php $fieldEiHtml->message() ?>
-			</div>
-		<?php $fieldEiHtml->closeField() ?>
+						'field' => $view->getParam('label'))) ?>"
+				data-rocket-impl-property-path="<?php $html->out((string) $propertyPath->reduced(1)) ?>">
+		
+			<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId]) ?>
+				<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
+						'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
+				<div class="rocket-control">
+					<?php $fieldEiHtml->field() ?>
+					<?php $fieldEiHtml->message() ?>
+				</div>
+			<?php $fieldEiHtml->closeField() ?>
+		</div>
 	<?php endforeach ?>
 </div>

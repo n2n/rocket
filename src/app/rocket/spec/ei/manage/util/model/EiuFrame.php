@@ -108,12 +108,12 @@ class EiuFrame extends EiUtilsAdapter {
 	
 	/**
 	 * @param bool $draft
-	 * @param EiType $eiType
+	 * @param mixed $eiTypeArg
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function newEntry(bool $draft = false, EiType $eiTypeArg = null) {
+	public function newEntry(bool $draft = false, $eiTypeArg = null) {
 		return new EiuEntry($this->createNewEiObject($draft, 
-				EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)));
+				EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), $this);
 	}
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
@@ -198,12 +198,12 @@ class EiuFrame extends EiUtilsAdapter {
 			$eiType = $fromEiuEntry->getEiType();
 		}
 		
-		return new EiuEntry($this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType), $this));
+		return new EiuEntry($this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType)), $this);
 	}
 	
 	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
-		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiObjectArg, $this, 'fromEiEntryArg');
-		$toEiuEntry = EiuFactory::buildEiuEntryFromEiArg($toEiEntryArg, $this, '$toEiEntryArg');
+		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiEntryArg, $this, 'fromEiEntryArg');
+		$toEiuEntry = EiuFactory::buildEiuEntryFromEiArg($toEiEntryArg, $this, 'toEiEntryArg');
 		
 		$this->determineEiMask($toEiEntryArg)->getEiEngine()
 				->copyValues($this->eiFrame, $fromEiuEntry->getEiEntry(), $toEiuEntry->getEiEntry(), $eiPropPaths);
@@ -419,12 +419,34 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues();
 	}
 	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @return \rocket\spec\ei\manage\util\model\EiuControlFactory
+	 */
 	public function controlFactory(EiCommand $eiCommand) {
 		return new EiuControlFactory($this, $eiCommand);
 	}
 	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
 	public function getCurrentUrl() {
 		return $this->eiFrame->getCurrentUrl($this->getN2nContext()->getHttpContext());
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	public function getUrlToCommand(EiCommand $eiCommand) {
+		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())
+				->ext($eiCommand->getId())->toUrl();
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	public function getContextUrl() {
+		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())->toUrl();
 	}
 	
 	/**

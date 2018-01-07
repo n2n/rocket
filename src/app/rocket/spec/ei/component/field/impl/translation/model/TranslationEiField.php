@@ -25,7 +25,6 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\field\impl\relation\model\ToManyEiField;
 
 class TranslationEiField extends ToManyEiField {
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\EiField::copyEiField($eiObject)
