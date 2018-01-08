@@ -291,6 +291,7 @@ class EiuFrame extends EiUtilsAdapter {
 			throw new \InvalidArgumentException('Param allowedEiTypeIds caused an empty EntryForm.');
 		}
 		
+		$chosenId = null;
 		foreach ($eiTypes as $subEiTypeId => $subEiType) {
 			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
 				continue;
@@ -299,6 +300,7 @@ class EiuFrame extends EiUtilsAdapter {
 			$subEiEntry = null;
 			if (isset($eiEntries[$subEiType->getId()])) {
 				$subEiEntry = $eiEntries[$subEiType->getId()];
+				$chosenId = $subEiType->getId();
 			} else {
 				$eiObject = $this->createNewEiObject($draft, $subEiType);
 				
@@ -318,7 +320,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$entryForm = new EntryForm($this);
 		$entryForm->setEntryTypeForms($entryTypeForms);
 		$entryForm->setChoicesMap($labels);
-		$entryForm->setChosenId(key($entryTypeForms));
+		$entryForm->setChosenId($chosenId ?? key($entryTypeForms));
 		$entryForm->setContextPropertyPath($contextPropertyPath);
 		$entryForm->setChoosable(count($entryTypeForms) > 1);
 		

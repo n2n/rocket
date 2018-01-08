@@ -57,7 +57,7 @@ var Rocket;
             });
         })();
         (function () {
-            let t = new Rocket.Impl.Translator(container);
+            let t = new Rocket.Impl.Translation.Translator(container);
             t.scan();
             Jhtml.ready(() => {
                 t.scan();
@@ -1141,6 +1141,7 @@ var Rocket;
                 if (this.empty)
                     return;
                 this.jqZone.empty();
+                this.menu.clear();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             applyHtml(html) {
@@ -1413,6 +1414,9 @@ var Rocket;
                 this._commandList = null;
                 this._partialCommandList = null;
                 this.context = context;
+            }
+            clear() {
+                this._toolbar = null;
             }
             get toolbar() {
                 if (this._toolbar) {
@@ -3041,529 +3045,6 @@ var Rocket;
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED";
             })(EventType = Form.EventType || (Form.EventType = {}));
         })(Form = Impl.Form || (Impl.Form = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        class Translator {
-            constructor(container) {
-                this.container = container;
-            }
-            scan() {
-                for (let context of this.container.getAllZones()) {
-                    let elems = context.jQuery.find(".rocket-impl-translation-manager").toArray();
-                    let elem;
-                    while (elem = elems.pop()) {
-                        this.initTm($(elem), context);
-                    }
-                    let jqViewControl = context.menu.toolbar.getJqControls().find(".rocket-impl-translation-view-control");
-                    let jqTranslatables = context.jQuery.find(".rocket-impl-translatable");
-                    if (jqTranslatables.length == 0) {
-                        jqViewControl.hide();
-                        continue;
-                    }
-                    jqViewControl.show();
-                    if (jqViewControl.length == 0) {
-                        jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
-                        context.menu.toolbar.getJqControls().show().append(jqViewControl);
-                    }
-                    let viewMenu = ViewMenu.from(jqViewControl);
-                    jqTranslatables.each((i, elem) => {
-                        viewMenu.registerTranslatable(Translatable.from($(elem)));
-                    });
-                }
-            }
-            initTm(jqElem, context) {
-                let tm = TranslationManager.from(jqElem);
-                let se = Rocket.Display.StructureElement.of(jqElem);
-                let jqBase = null;
-                if (!se) {
-                    jqBase = context.jQuery;
-                }
-                else {
-                    jqBase = jqElem;
-                }
-                jqBase.find(".rocket-impl-translatable").each((i, elem) => {
-                    tm.registerTranslatable(Translatable.from($(elem)));
-                });
-            }
-        }
-        Impl.Translator = Translator;
-        class ViewMenu {
-            constructor(jqContainer) {
-                this.jqContainer = jqContainer;
-                this.translatables = [];
-                this.items = {};
-                this.changing = false;
-            }
-            draw(languagesLabel, visibleLabel) {
-                $("<div />", { "class": "rocket-impl-translation-status" })
-                    .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
-                    .append(this.jqStatus = $("<span></span>"))
-                    .prependTo(this.jqContainer);
-                new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
-                    iconType: "fa fa-cog",
-                    label: languagesLabel
-                }).click(() => this.jqMenu.toggle());
-                this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
-                this.jqContainer.append(this.jqMenu);
-            }
-            updateStatus() {
-                let prettyLocaleIds = [];
-                for (let localeId in this.items) {
-                    if (!this.items[localeId].on)
-                        continue;
-                    prettyLocaleIds.push(this.items[localeId].prettyLocaleId);
-                }
-                this.jqStatus.empty();
-                this.jqStatus.text(prettyLocaleIds.join(", "));
-                let onDisabled = prettyLocaleIds.length == 1;
-                for (let localeId in this.items) {
-                    this.items[localeId].disabled = onDisabled && this.items[localeId].on;
-                }
-            }
-            get visibleLocaleIds() {
-                let localeIds = [];
-                for (let localeId in this.items) {
-                    if (!this.items[localeId].on)
-                        continue;
-                    localeIds.push(localeId);
-                }
-                return localeIds;
-            }
-            registerTranslatable(translatable) {
-                if (-1 < this.translatables.indexOf(translatable))
-                    return;
-                if (!this.jqStatus) {
-                    this.draw(translatable.jQuery.data("rocket-impl-languages-label"), translatable.jQuery.data("rocket-impl-visible-label"));
-                }
-                this.translatables.push(translatable);
-                translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
-                for (let content of translatable.contents) {
-                    if (!this.items[content.localeId]) {
-                        let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
-                        item.draw($("<li />").appendTo(this.jqMenu));
-                        item.on = Object.keys(this.items).length == 1;
-                        item.whenChanged(() => this.menuChanged());
-                        this.updateStatus();
-                    }
-                    content.visible = this.items[content.localeId].on;
-                    content.whenChanged(() => {
-                        if (this.changing || !content.active)
-                            return;
-                        this.items[content.localeId].on = true;
-                    });
-                }
-            }
-            unregisterTranslatable(translatable) {
-                let i = this.translatables.indexOf(translatable);
-                if (-1 < i) {
-                    this.translatables.splice(i, 1);
-                }
-            }
-            menuChanged() {
-                if (this.changing) {
-                    throw new Error("already changing");
-                }
-                this.changing = true;
-                let visiableLocaleIds = [];
-                for (let i in this.items) {
-                    if (this.items[i].on) {
-                        visiableLocaleIds.push(this.items[i].localeId);
-                    }
-                }
-                for (let translatable of this.translatables) {
-                    translatable.visibleLocaleIds = visiableLocaleIds;
-                }
-                this.updateStatus();
-                this.changing = false;
-            }
-            static from(jqElem) {
-                let vm = jqElem.data("rocketImplViewMenu");
-                if (vm instanceof ViewMenu) {
-                    return vm;
-                }
-                vm = new ViewMenu(jqElem);
-                jqElem.data("rocketImplViewMenu", vm);
-                return vm;
-            }
-        }
-        class ViewMenuItem {
-            constructor(localeId, label, prettyLocaleId) {
-                this.localeId = localeId;
-                this.label = label;
-                this.prettyLocaleId = prettyLocaleId;
-                this._on = true;
-                this.changedCallbacks = [];
-            }
-            draw(jqElem) {
-                this.jqI = $("<i></i>");
-                this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
-                    .append(this.jqI)
-                    .appendTo(jqElem)
-                    .click((evt) => {
-                    if (this.disabled)
-                        return;
-                    this.on = !this.on;
-                    evt.preventDefault();
-                    return false;
-                });
-                this.checkI();
-            }
-            get disabled() {
-                return this.jqA.hasClass("disabled");
-            }
-            set disabled(disabled) {
-                if (disabled) {
-                    this.jqA.addClass("disabled");
-                }
-                else {
-                    this.jqA.removeClass("disabled");
-                }
-            }
-            get on() {
-                return this._on;
-            }
-            set on(on) {
-                if (this._on == on)
-                    return;
-                this._on = on;
-                this.checkI();
-                this.triggerChanged();
-            }
-            triggerChanged() {
-                for (let callback of this.changedCallbacks) {
-                    callback();
-                }
-            }
-            whenChanged(callback) {
-                this.changedCallbacks.push(callback);
-            }
-            checkI() {
-                if (this.on) {
-                    this.jqI.attr("class", "fa fa-toggle-on");
-                }
-                else {
-                    this.jqI.attr("class", "fa fa-toggle-off");
-                }
-            }
-        }
-        class TranslationManager {
-            constructor(jqElem) {
-                this.jqElem = jqElem;
-                this.min = 0;
-                this.translatables = [];
-                this.menuItems = [];
-                this.changing = false;
-                this.min = parseInt(jqElem.data("rocket-impl-min"));
-                this.initControl();
-                this.initMenu();
-                this.val();
-            }
-            val() {
-                let activeLocaleIds = [];
-                for (let menuItem of this.menuItems) {
-                    if (!menuItem.active)
-                        continue;
-                    activeLocaleIds.push(menuItem.localeId);
-                }
-                let activeDisabled = activeLocaleIds.length <= this.min;
-                for (let menuItem of this.menuItems) {
-                    if (menuItem.mandatory)
-                        continue;
-                    if (!menuItem.active && activeLocaleIds.length < this.min) {
-                        menuItem.active = true;
-                        activeLocaleIds.push(menuItem.localeId);
-                    }
-                    menuItem.disabled = activeDisabled && menuItem.active;
-                }
-                return activeLocaleIds;
-            }
-            registerTranslatable(translatable) {
-                if (-1 < this.translatables.indexOf(translatable))
-                    return;
-                this.translatables.push(translatable);
-                translatable.activeLocaleIds = this.activeLocaleIds;
-                translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
-                for (let tc of translatable.contents) {
-                    tc.whenChanged(() => {
-                        this.activeLocaleIds = translatable.activeLocaleIds;
-                    });
-                }
-            }
-            unregisterTranslatable(translatable) {
-                let i = this.translatables.indexOf(translatable);
-                if (i > -1) {
-                    this.translatables.splice(i, 1);
-                }
-            }
-            get activeLocaleIds() {
-                let localeIds = Array();
-                for (let menuItem of this.menuItems) {
-                    if (menuItem.active) {
-                        localeIds.push(menuItem.localeId);
-                    }
-                }
-                return localeIds;
-            }
-            set activeLocaleIds(localeIds) {
-                if (this.changing)
-                    return;
-                this.changing = true;
-                let changed = false;
-                for (let menuItem of this.menuItems) {
-                    if (menuItem.mandatory)
-                        continue;
-                    let active = -1 < localeIds.indexOf(menuItem.localeId);
-                    if (menuItem.active != active) {
-                        changed = true;
-                    }
-                    menuItem.active = active;
-                }
-                if (!changed) {
-                    this.changing = false;
-                    return;
-                }
-                localeIds = this.val();
-                for (let translatable of this.translatables) {
-                    translatable.activeLocaleIds = localeIds;
-                }
-                this.changing = false;
-            }
-            menuChanged() {
-                if (this.changing)
-                    return;
-                this.changing = true;
-                let localeIds = this.val();
-                for (let translatable of this.translatables) {
-                    translatable.activeLocaleIds = localeIds;
-                }
-                this.changing = false;
-            }
-            initControl() {
-                let jqLabel = this.jqElem.children("label:first");
-                let cmdList = Rocket.Display.CommandList.create(true);
-                cmdList.createJqCommandButton({
-                    iconType: "fa fa-language",
-                    label: jqLabel.text(),
-                    tooltip: this.jqElem.data("rocket-impl-tooltip")
-                }).click(() => this.toggle());
-                jqLabel.replaceWith(cmdList.jQuery);
-            }
-            initMenu() {
-                this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
-                this.jqMenu.hide();
-                this.jqMenu.children().each((i, elem) => {
-                    let mi = new MenuItem($(elem));
-                    this.menuItems.push(mi);
-                    mi.whenChanged(() => {
-                        this.menuChanged();
-                    });
-                });
-            }
-            toggle() {
-                this.jqMenu.toggle();
-            }
-            static from(jqElem) {
-                let tm = jqElem.data("rocketImplTranslationManager");
-                if (tm instanceof TranslationManager) {
-                    return tm;
-                }
-                tm = new TranslationManager(jqElem);
-                jqElem.data("rocketImplTranslationManager", tm);
-                return tm;
-            }
-        }
-        Impl.TranslationManager = TranslationManager;
-        class MenuItem {
-            constructor(jqElem) {
-                this.jqElem = jqElem;
-                this._localeId = this.jqElem.data("rocket-impl-locale-id");
-                this._mandatory = this.jqElem.data("rocket-impl-mandatory") ? true : false;
-                this.init();
-            }
-            init() {
-                if (this.jqCheck) {
-                    throw new Error("already initialized");
-                }
-                this.jqCheck = this.jqElem.find("input[type=checkbox]");
-                if (this.mandatory) {
-                    this.jqCheck.prop("checked", true);
-                    this.jqCheck.prop("disabled", true);
-                }
-                this.jqCheck.change(() => { this.updateClasses(); });
-            }
-            updateClasses() {
-                if (this.disabled) {
-                    this.jqElem.addClass("rocket-disabled");
-                }
-                else {
-                    this.jqElem.removeClass("rocket-disabled");
-                }
-                if (this.active) {
-                    this.jqElem.addClass("rocket-active");
-                }
-                else {
-                    this.jqElem.removeClass("rocket-active");
-                }
-            }
-            whenChanged(callback) {
-                this.jqCheck.change(callback);
-            }
-            get disabled() {
-                return this.jqCheck.is(":disabled");
-            }
-            set disabled(disabled) {
-                this.jqCheck.prop("disabled", disabled);
-                this.updateClasses();
-            }
-            get active() {
-                return this.jqCheck.is(":checked");
-            }
-            set active(active) {
-                this.jqCheck.prop("checked", active);
-                this.updateClasses();
-            }
-            get localeId() {
-                return this._localeId;
-            }
-            get mandatory() {
-                return this._mandatory;
-            }
-        }
-        class Translatable {
-            constructor(jqElem) {
-                this.jqElem = jqElem;
-                this._contents = {};
-            }
-            get jQuery() {
-                return this.jqElem;
-            }
-            get localeIds() {
-                return Object.keys(this._contents);
-            }
-            get contents() {
-                let O = Object;
-                return O.values(this._contents);
-            }
-            set visibleLocaleIds(localeIds) {
-                for (let content of this.contents) {
-                    content.visible = -1 < localeIds.indexOf(content.localeId);
-                }
-            }
-            get visibleLocaleIds() {
-                let localeIds = new Array();
-                for (let content of this.contents) {
-                    if (!content.visible)
-                        continue;
-                    localeIds.push(content.localeId);
-                }
-                return localeIds;
-            }
-            set activeLocaleIds(localeIds) {
-                for (let content of this.contents) {
-                    content.active = -1 < localeIds.indexOf(content.localeId);
-                }
-            }
-            get activeLocaleIds() {
-                let localeIds = new Array();
-                for (let content of this.contents) {
-                    if (!content.active)
-                        continue;
-                    localeIds.push(content.localeId);
-                }
-                return localeIds;
-            }
-            scan() {
-                this.jqElem.children().each((i, elem) => {
-                    let jqElem = $(elem);
-                    let localeId = jqElem.data("rocket-impl-locale-id");
-                    if (!localeId || this._contents[localeId])
-                        return;
-                    this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-                });
-            }
-            static from(jqElem) {
-                let translatable = jqElem.data("rocketImplTranslatable");
-                if (translatable instanceof Translatable) {
-                    return translatable;
-                }
-                translatable = new Translatable(jqElem);
-                jqElem.data("rocketImplTranslatable", translatable);
-                translatable.scan();
-                return translatable;
-            }
-        }
-        Impl.Translatable = Translatable;
-        class TranslatedContent {
-            constructor(_localeId, jqElem) {
-                this._localeId = _localeId;
-                this.jqElem = jqElem;
-                this.jqEnabler = null;
-                this.changedCallbacks = [];
-                this._visible = true;
-                this.jqTranslation = jqElem.children(".rocket-impl-translation");
-            }
-            get localeId() {
-                return this._localeId;
-            }
-            get prettyLocaleId() {
-                return this.jqElem.find("label:first").text();
-            }
-            get localeName() {
-                return this.jqElem.find("label:first").attr("title");
-            }
-            get visible() {
-                return this._visible;
-            }
-            set visible(visible) {
-                if (visible) {
-                    if (this._visible)
-                        return;
-                    this._visible = true;
-                    this.jqElem.show();
-                    this.triggerChanged();
-                    return;
-                }
-                if (!this._visible)
-                    return;
-                this._visible = false;
-                this.jqElem.hide();
-                this.triggerChanged();
-            }
-            get active() {
-                return this.jqEnabler ? false : true;
-            }
-            set active(active) {
-                if (active) {
-                    if (this.jqEnabler) {
-                        this.jqEnabler.remove();
-                        this.jqEnabler = null;
-                        this.triggerChanged();
-                    }
-                    return;
-                }
-                if (this.jqEnabler)
-                    return;
-                this.jqEnabler = $("<button />", {
-                    "class": "rocket-impl-enabler",
-                    "type": "button",
-                    "text": " " + this.jqElem.data("rocket-impl-activate-label"),
-                    "click": () => { this.active = true; }
-                }).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.jqElem);
-                this.triggerChanged();
-            }
-            triggerChanged() {
-                for (let callback of this.changedCallbacks) {
-                    callback();
-                }
-            }
-            whenChanged(callback) {
-                this.changedCallbacks.push(callback);
-            }
-        }
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -6178,6 +5659,622 @@ var Rocket;
                 }
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
+            class Translator {
+                constructor(container) {
+                    this.container = container;
+                }
+                scan() {
+                    for (let context of this.container.getAllZones()) {
+                        let elems = context.jQuery.find(".rocket-impl-translation-manager").toArray();
+                        let elem;
+                        while (elem = elems.pop()) {
+                            this.initTm($(elem), context);
+                        }
+                        let jqViewControl = context.menu.toolbar.getJqControls().find(".rocket-impl-translation-view-control");
+                        let jqTranslatables = context.jQuery.find(".rocket-impl-translatable");
+                        if (jqTranslatables.length == 0) {
+                            jqViewControl.hide();
+                            continue;
+                        }
+                        jqViewControl.show();
+                        if (jqViewControl.length == 0) {
+                            jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
+                            context.menu.toolbar.getJqControls().show().append(jqViewControl);
+                        }
+                        let viewMenu = Translation.ViewMenu.from(jqViewControl);
+                        jqTranslatables.each((i, elem) => {
+                            viewMenu.registerTranslatable(Translatable.from($(elem)));
+                        });
+                    }
+                }
+                initTm(jqElem, context) {
+                    let tm = Translation.TranslationManager.from(jqElem);
+                    let se = Rocket.Display.StructureElement.of(jqElem);
+                    let jqBase = null;
+                    if (!se) {
+                        jqBase = context.jQuery;
+                    }
+                    else {
+                        jqBase = jqElem;
+                    }
+                    jqBase.find(".rocket-impl-translatable").each((i, elem) => {
+                        tm.registerTranslatable(Translatable.from($(elem)));
+                    });
+                }
+            }
+            Translation.Translator = Translator;
+            class Translatable {
+                constructor(jqElem) {
+                    this.jqElem = jqElem;
+                    this.copyUrls = {};
+                    this._contents = {};
+                    let copyUrlDefs = jqElem.data("rocket-impl-copy-urls");
+                    for (let localeId in copyUrlDefs) {
+                        this.copyUrls[localeId] = {
+                            label: copyUrlDefs[localeId].label,
+                            copyUrl: Jhtml.Url.create(copyUrlDefs[localeId].copyUrl)
+                        };
+                    }
+                }
+                get jQuery() {
+                    return this.jqElem;
+                }
+                get localeIds() {
+                    return Object.keys(this._contents);
+                }
+                get contents() {
+                    let O = Object;
+                    return O.values(this._contents);
+                }
+                set visibleLocaleIds(localeIds) {
+                    for (let content of this.contents) {
+                        content.visible = -1 < localeIds.indexOf(content.localeId);
+                    }
+                }
+                get visibleLocaleIds() {
+                    let localeIds = new Array();
+                    for (let content of this.contents) {
+                        if (!content.visible)
+                            continue;
+                        localeIds.push(content.localeId);
+                    }
+                    return localeIds;
+                }
+                set activeLocaleIds(localeIds) {
+                    for (let content of this.contents) {
+                        content.active = -1 < localeIds.indexOf(content.localeId);
+                    }
+                }
+                get activeLocaleIds() {
+                    let localeIds = new Array();
+                    for (let content of this.contents) {
+                        if (!content.active)
+                            continue;
+                        localeIds.push(content.localeId);
+                    }
+                    return localeIds;
+                }
+                scan() {
+                    this.jqElem.children().each((i, elem) => {
+                        let jqElem = $(elem);
+                        let localeId = jqElem.data("rocket-impl-locale-id");
+                        if (!localeId || this._contents[localeId])
+                            return;
+                        let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
+                        tc.drawCopyControl(this.copyUrls);
+                    });
+                }
+                static from(jqElem) {
+                    let translatable = jqElem.data("rocketImplTranslatable");
+                    if (translatable instanceof Translatable) {
+                        return translatable;
+                    }
+                    translatable = new Translatable(jqElem);
+                    jqElem.data("rocketImplTranslatable", translatable);
+                    translatable.scan();
+                    return translatable;
+                }
+            }
+            Translation.Translatable = Translatable;
+            class TranslatedContent {
+                constructor(_localeId, jqElem) {
+                    this._localeId = _localeId;
+                    this.jqElem = jqElem;
+                    this.jqEnabler = null;
+                    this.copyControlJq = null;
+                    this.changedCallbacks = [];
+                    this._visible = true;
+                    Rocket.Display.StructureElement.from(jqElem, true);
+                    this.propertyPath = jqElem.data("rocket-impl-property-path");
+                    this.fieldJq = jqElem.children("div");
+                }
+                get localeId() {
+                    return this._localeId;
+                }
+                get prettyLocaleId() {
+                    return this.jqElem.find("label:first").text();
+                }
+                get localeName() {
+                    return this.jqElem.find("label:first").attr("title");
+                }
+                get visible() {
+                    return this._visible;
+                }
+                set visible(visible) {
+                    if (visible) {
+                        if (this._visible)
+                            return;
+                        this._visible = true;
+                        this.jqElem.show();
+                        this.triggerChanged();
+                        return;
+                    }
+                    if (!this._visible)
+                        return;
+                    this._visible = false;
+                    this.jqElem.hide();
+                    this.triggerChanged();
+                }
+                get active() {
+                    return this.jqEnabler ? false : true;
+                }
+                set active(active) {
+                    if (active) {
+                        if (this.jqEnabler) {
+                            this.jqEnabler.remove();
+                            this.jqEnabler = null;
+                            this.triggerChanged();
+                        }
+                        if (this.copyControlJq) {
+                            this.copyControlJq.show();
+                        }
+                        return;
+                    }
+                    if (!this.jqEnabler) {
+                        this.jqEnabler = $("<button />", {
+                            "class": "rocket-impl-enabler",
+                            "type": "button",
+                            "text": " " + this.jqElem.data("rocket-impl-activate-label"),
+                            "click": () => { this.active = true; }
+                        }).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.jqElem);
+                        this.triggerChanged();
+                    }
+                    if (this.copyControlJq) {
+                        this.copyControlJq.show();
+                    }
+                }
+                drawCopyControl(urlDefs) {
+                    let copyUlJq;
+                    for (let localeId in urlDefs) {
+                        if (localeId == this.localeId)
+                            continue;
+                        if (!copyUlJq) {
+                            copyUlJq = this.drawCopyUlJq();
+                        }
+                        let urlDef = urlDefs[localeId];
+                        let url = this.completeCopyUrl(urlDef.copyUrl);
+                        copyUlJq.append($("<li/>").append($("<a />", {
+                            "text": urlDef.label
+                        }).click((e) => {
+                            e.stopPropagation();
+                            this.copy(url);
+                            copyUlJq.hide();
+                        })));
+                    }
+                }
+                completeCopyUrl(url) {
+                    return url.extR(null, {
+                        propertyPath: this.propertyPath,
+                        toN2nLocale: this.localeId
+                    });
+                }
+                copy(url) {
+                    Jhtml.lookupModel(url).then((model) => {
+                        this.replace(model.snippet);
+                    });
+                }
+                replace(snippet) {
+                    let newFieldJq = $(snippet.elements).children();
+                    this.fieldJq.replaceWith(newFieldJq);
+                    snippet.elements = newFieldJq.toArray();
+                    this.fieldJq = newFieldJq;
+                    snippet.markAttached();
+                }
+                drawCopyUlJq() {
+                    this.copyControlJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
+                    this.jqElem.prepend(this.copyControlJq);
+                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-1" })
+                        .append($("<i></i>", { class: "fa fa-copy" }));
+                    let copyUlJq = $("<ul></ul>").hide();
+                    buttonJq.click(() => { copyUlJq.toggle(); });
+                    this.copyControlJq.append(buttonJq);
+                    this.copyControlJq.append(copyUlJq);
+                    if (!this.active) {
+                        this.copyControlJq.hide();
+                    }
+                    return copyUlJq;
+                }
+                triggerChanged() {
+                    for (let callback of this.changedCallbacks) {
+                        callback();
+                    }
+                }
+                whenChanged(callback) {
+                    this.changedCallbacks.push(callback);
+                }
+            }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
+            class ViewMenu {
+                constructor(jqContainer) {
+                    this.jqContainer = jqContainer;
+                    this.translatables = [];
+                    this.items = {};
+                    this.changing = false;
+                }
+                draw(languagesLabel, visibleLabel) {
+                    $("<div />", { "class": "rocket-impl-translation-status" })
+                        .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
+                        .append(this.jqStatus = $("<span></span>"))
+                        .prependTo(this.jqContainer);
+                    new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
+                        iconType: "fa fa-cog",
+                        label: languagesLabel
+                    }).click(() => this.jqMenu.toggle());
+                    this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
+                    this.jqContainer.append(this.jqMenu);
+                }
+                updateStatus() {
+                    let prettyLocaleIds = [];
+                    for (let localeId in this.items) {
+                        if (!this.items[localeId].on)
+                            continue;
+                        prettyLocaleIds.push(this.items[localeId].prettyLocaleId);
+                    }
+                    this.jqStatus.empty();
+                    this.jqStatus.text(prettyLocaleIds.join(", "));
+                    let onDisabled = prettyLocaleIds.length == 1;
+                    for (let localeId in this.items) {
+                        this.items[localeId].disabled = onDisabled && this.items[localeId].on;
+                    }
+                }
+                get visibleLocaleIds() {
+                    let localeIds = [];
+                    for (let localeId in this.items) {
+                        if (!this.items[localeId].on)
+                            continue;
+                        localeIds.push(localeId);
+                    }
+                    return localeIds;
+                }
+                registerTranslatable(translatable) {
+                    if (-1 < this.translatables.indexOf(translatable))
+                        return;
+                    if (!this.jqStatus) {
+                        this.draw(translatable.jQuery.data("rocket-impl-languages-label"), translatable.jQuery.data("rocket-impl-visible-label"));
+                    }
+                    this.translatables.push(translatable);
+                    translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
+                    for (let content of translatable.contents) {
+                        if (!this.items[content.localeId]) {
+                            let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
+                            item.draw($("<li />").appendTo(this.jqMenu));
+                            item.on = Object.keys(this.items).length == 1;
+                            item.whenChanged(() => this.menuChanged());
+                            this.updateStatus();
+                        }
+                        content.visible = this.items[content.localeId].on;
+                        content.whenChanged(() => {
+                            if (this.changing || !content.active)
+                                return;
+                            this.items[content.localeId].on = true;
+                        });
+                    }
+                }
+                unregisterTranslatable(translatable) {
+                    let i = this.translatables.indexOf(translatable);
+                    if (-1 < i) {
+                        this.translatables.splice(i, 1);
+                    }
+                }
+                menuChanged() {
+                    if (this.changing) {
+                        throw new Error("already changing");
+                    }
+                    this.changing = true;
+                    let visiableLocaleIds = [];
+                    for (let i in this.items) {
+                        if (this.items[i].on) {
+                            visiableLocaleIds.push(this.items[i].localeId);
+                        }
+                    }
+                    for (let translatable of this.translatables) {
+                        translatable.visibleLocaleIds = visiableLocaleIds;
+                    }
+                    this.updateStatus();
+                    this.changing = false;
+                }
+                static from(jqElem) {
+                    let vm = jqElem.data("rocketImplViewMenu");
+                    if (vm instanceof ViewMenu) {
+                        return vm;
+                    }
+                    vm = new ViewMenu(jqElem);
+                    jqElem.data("rocketImplViewMenu", vm);
+                    return vm;
+                }
+            }
+            Translation.ViewMenu = ViewMenu;
+            class ViewMenuItem {
+                constructor(localeId, label, prettyLocaleId) {
+                    this.localeId = localeId;
+                    this.label = label;
+                    this.prettyLocaleId = prettyLocaleId;
+                    this._on = true;
+                    this.changedCallbacks = [];
+                }
+                draw(jqElem) {
+                    this.jqI = $("<i></i>");
+                    this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
+                        .append(this.jqI)
+                        .appendTo(jqElem)
+                        .click((evt) => {
+                        if (this.disabled)
+                            return;
+                        this.on = !this.on;
+                        evt.preventDefault();
+                        return false;
+                    });
+                    this.checkI();
+                }
+                get disabled() {
+                    return this.jqA.hasClass("disabled");
+                }
+                set disabled(disabled) {
+                    if (disabled) {
+                        this.jqA.addClass("disabled");
+                    }
+                    else {
+                        this.jqA.removeClass("disabled");
+                    }
+                }
+                get on() {
+                    return this._on;
+                }
+                set on(on) {
+                    if (this._on == on)
+                        return;
+                    this._on = on;
+                    this.checkI();
+                    this.triggerChanged();
+                }
+                triggerChanged() {
+                    for (let callback of this.changedCallbacks) {
+                        callback();
+                    }
+                }
+                whenChanged(callback) {
+                    this.changedCallbacks.push(callback);
+                }
+                checkI() {
+                    if (this.on) {
+                        this.jqI.attr("class", "fa fa-toggle-on");
+                    }
+                    else {
+                        this.jqI.attr("class", "fa fa-toggle-off");
+                    }
+                }
+            }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
+            class TranslationManager {
+                constructor(jqElem) {
+                    this.jqElem = jqElem;
+                    this.min = 0;
+                    this.translatables = [];
+                    this.menuItems = [];
+                    this.changing = false;
+                    this.min = parseInt(jqElem.data("rocket-impl-min"));
+                    this.initControl();
+                    this.initMenu();
+                    this.val();
+                }
+                val() {
+                    let activeLocaleIds = [];
+                    for (let menuItem of this.menuItems) {
+                        if (!menuItem.active)
+                            continue;
+                        activeLocaleIds.push(menuItem.localeId);
+                    }
+                    let activeDisabled = activeLocaleIds.length <= this.min;
+                    for (let menuItem of this.menuItems) {
+                        if (menuItem.mandatory)
+                            continue;
+                        if (!menuItem.active && activeLocaleIds.length < this.min) {
+                            menuItem.active = true;
+                            activeLocaleIds.push(menuItem.localeId);
+                        }
+                        menuItem.disabled = activeDisabled && menuItem.active;
+                    }
+                    return activeLocaleIds;
+                }
+                registerTranslatable(translatable) {
+                    if (-1 < this.translatables.indexOf(translatable))
+                        return;
+                    this.translatables.push(translatable);
+                    translatable.activeLocaleIds = this.activeLocaleIds;
+                    translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
+                    for (let tc of translatable.contents) {
+                        tc.whenChanged(() => {
+                            this.activeLocaleIds = translatable.activeLocaleIds;
+                        });
+                    }
+                }
+                unregisterTranslatable(translatable) {
+                    let i = this.translatables.indexOf(translatable);
+                    if (i > -1) {
+                        this.translatables.splice(i, 1);
+                    }
+                }
+                get activeLocaleIds() {
+                    let localeIds = Array();
+                    for (let menuItem of this.menuItems) {
+                        if (menuItem.active) {
+                            localeIds.push(menuItem.localeId);
+                        }
+                    }
+                    return localeIds;
+                }
+                set activeLocaleIds(localeIds) {
+                    if (this.changing)
+                        return;
+                    this.changing = true;
+                    let changed = false;
+                    for (let menuItem of this.menuItems) {
+                        if (menuItem.mandatory)
+                            continue;
+                        let active = -1 < localeIds.indexOf(menuItem.localeId);
+                        if (menuItem.active != active) {
+                            changed = true;
+                        }
+                        menuItem.active = active;
+                    }
+                    if (!changed) {
+                        this.changing = false;
+                        return;
+                    }
+                    localeIds = this.val();
+                    for (let translatable of this.translatables) {
+                        translatable.activeLocaleIds = localeIds;
+                    }
+                    this.changing = false;
+                }
+                menuChanged() {
+                    if (this.changing)
+                        return;
+                    this.changing = true;
+                    let localeIds = this.val();
+                    for (let translatable of this.translatables) {
+                        translatable.activeLocaleIds = localeIds;
+                    }
+                    this.changing = false;
+                }
+                initControl() {
+                    let jqLabel = this.jqElem.children("label:first");
+                    let cmdList = Rocket.Display.CommandList.create(true);
+                    cmdList.createJqCommandButton({
+                        iconType: "fa fa-language",
+                        label: jqLabel.text(),
+                        tooltip: this.jqElem.data("rocket-impl-tooltip")
+                    }).click(() => this.toggle());
+                    jqLabel.replaceWith(cmdList.jQuery);
+                }
+                initMenu() {
+                    this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
+                    this.jqMenu.hide();
+                    this.jqMenu.children().each((i, elem) => {
+                        let mi = new MenuItem($(elem));
+                        this.menuItems.push(mi);
+                        mi.whenChanged(() => {
+                            this.menuChanged();
+                        });
+                    });
+                }
+                toggle() {
+                    this.jqMenu.toggle();
+                }
+                static from(jqElem) {
+                    let tm = jqElem.data("rocketImplTranslationManager");
+                    if (tm instanceof TranslationManager) {
+                        return tm;
+                    }
+                    tm = new TranslationManager(jqElem);
+                    jqElem.data("rocketImplTranslationManager", tm);
+                    return tm;
+                }
+            }
+            Translation.TranslationManager = TranslationManager;
+            class MenuItem {
+                constructor(jqElem) {
+                    this.jqElem = jqElem;
+                    this._disabled = false;
+                    this._localeId = this.jqElem.data("rocket-impl-locale-id");
+                    this._mandatory = this.jqElem.data("rocket-impl-mandatory") ? true : false;
+                    this.init();
+                }
+                init() {
+                    if (this.jqCheck) {
+                        throw new Error("already initialized");
+                    }
+                    this.jqCheck = this.jqElem.find("input[type=checkbox]");
+                    if (this.mandatory) {
+                        this.jqCheck.prop("checked", true);
+                        this.jqCheck.prop("disabled", true);
+                        this.disabled = true;
+                    }
+                    this.jqCheck.change(() => { this.updateClasses(); });
+                }
+                updateClasses() {
+                    if (this.disabled) {
+                        this.jqElem.addClass("rocket-disabled");
+                    }
+                    else {
+                        this.jqElem.removeClass("rocket-disabled");
+                    }
+                    if (this.active) {
+                        this.jqElem.addClass("rocket-active");
+                    }
+                    else {
+                        this.jqElem.removeClass("rocket-active");
+                    }
+                }
+                whenChanged(callback) {
+                    this.jqCheck.change(callback);
+                }
+                get disabled() {
+                    return this.jqCheck.is(":disabled") || this._disabled;
+                }
+                set disabled(disabled) {
+                    this._disabled = true;
+                    this.updateClasses();
+                }
+                get active() {
+                    return this.jqCheck.is(":checked");
+                }
+                set active(active) {
+                    this.jqCheck.prop("checked", active);
+                    this.updateClasses();
+                }
+                get localeId() {
+                    return this._localeId;
+                }
+                get mandatory() {
+                    return this._mandatory;
+                }
+            }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
