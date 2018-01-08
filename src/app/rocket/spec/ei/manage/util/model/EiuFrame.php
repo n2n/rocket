@@ -262,7 +262,8 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return EntryForm
 	 */
 	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
-			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null): EntryForm {
+			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null,
+			array $eiEntries = array()): EntryForm {
 		$entryTypeForms = array();
 		$labels = array();
 		
@@ -271,6 +272,11 @@ class EiuFrame extends EiUtilsAdapter {
 		
 		$eiGui = new EiGui($this->eiFrame, ViewMode::BULKY_ADD);
 		$eiGui->init($contextEiMask->createEiGuiViewFactory($eiGui));
+		
+		ArgUtils::valArray($eiEntries, EiEntry::class);
+		foreach ($eiEntries as $eiEntry) {
+			$eiEntries[$eiEntry->getEiType()->getId()] = $eiEntry;
+		}
 		
 		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEiTypes());
 		if ($allowedEiTypeIds !== null) {
@@ -290,12 +296,18 @@ class EiuFrame extends EiUtilsAdapter {
 				continue;
 			}
 				
-			$eiObject = $this->createNewEiObject($draft, $subEiType);
 			$subEiEntry = null;
-			if ($copyFromEiObjectObj !== null) {
-				$subEiEntry = $this->createEiEntryCopy($copyFromEiObjectObj, $eiObject);
+			if (isset($eiEntries[$subEiType->getId()])) {
+				$subEiEntry = $eiEntries[$subEiType->getId()];
 			} else {
-				$subEiEntry = $this->createEiEntry($eiObject);
+				$eiObject = $this->createNewEiObject($draft, $subEiType);
+				
+				if ($copyFromEiObjectObj !== null) {
+					$subEiEntry = $this->createEiEntryCopy($copyFromEiObjectObj, $eiObject);
+				} else {
+					$subEiEntry = $this->createEiEntry($eiObject);
+				}
+				
 			}
 						
 			$entryTypeForms[$subEiTypeId] = $this->createEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
