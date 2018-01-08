@@ -25,7 +25,7 @@ namespace Rocket.Impl.Relation {
 	import display = Rocket.Display;
 	
 	var $ = jQuery;
-	
+
 	export class ToMany {
 		constructor(private selector: ToManySelector = null, private embedded: ToManyEmbedded = null) {
 		}
@@ -341,7 +341,7 @@ namespace Rocket.Impl.Relation {
 			this.jqToMany = jqToMany;
 			this.addControlFactory = addButtonFactory;
 			this.compact = (true == jqToMany.data("compact"));
-			this.sortable = (true == jqToMany.data("sortable"))
+			this.sortable = (true == jqToMany.data("sortable"));
 			this.closeLabel = jqToMany.data("close-label");
 			
 			this.jqEmbedded = $("<div />", {
@@ -363,7 +363,7 @@ namespace Rocket.Impl.Relation {
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
-					var jqButton = null;
+					var jqButton: JQuery = null;
 					if (this.isReadOnly()) { 
 						jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
 					} else {
@@ -375,7 +375,7 @@ namespace Rocket.Impl.Relation {
 					});
 				}
 			}
-			
+
 			if (this.sortable) {
 				this.initSortable();
 			}
@@ -508,9 +508,10 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		private switchIndex(oldIndex: number, newIndex: number) {
-			var entry = this.entries[oldIndex];
-			this.entries[oldIndex] = this.entries[newIndex];
-			this.entries[newIndex] = entry;
+			let entry = this.entries[oldIndex];
+			
+			this.entries.splice(oldIndex, 1);
+			this.entries.splice(newIndex, 0, entry);
 			
 			this.changed();
 		}
@@ -559,7 +560,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEntries.sortable({
 				"handle": ".rocket-impl-handle",
 				"forcePlaceholderSize": true,
-		      	"placeholder": "rocket-impl-entry-placeholder",
+		      	"placeholder": "rocket-impl-entry rocket-impl-entry-placeholder",
 				"start": function (event: JQueryEventObject, ui: JQueryUI.SortableUIParams) {
 					oldIndex = ui.item.index();
 				},

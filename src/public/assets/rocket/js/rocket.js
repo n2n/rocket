@@ -4567,7 +4567,7 @@ var Rocket;
                     this.readOnly = readOnly;
                     this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
                     this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
-                    this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
+                    this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index");
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");
                     this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
                     if (readOnly) {
@@ -5182,6 +5182,7 @@ var Rocket;
                     var entry = this.entries[oldIndex];
                     this.entries[oldIndex] = this.entries[newIndex];
                     this.entries[newIndex] = entry;
+                    console.log(oldIndex + " " + newIndex);
                     this.changed();
                 }
                 initEntry(entry) {
@@ -5221,7 +5222,7 @@ var Rocket;
                     this.jqEntries.sortable({
                         "handle": ".rocket-impl-handle",
                         "forcePlaceholderSize": true,
-                        "placeholder": "rocket-impl-entry-placeholder",
+                        "placeholder": "rocket-impl-entry rocket-impl-entry-placeholder",
                         "start": function (event, ui) {
                             oldIndex = ui.item.index();
                         },
