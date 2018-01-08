@@ -4567,7 +4567,7 @@ var Rocket;
                     this.readOnly = readOnly;
                     this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
                     this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
-                    this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index");
+                    this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");
                     this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
                     if (readOnly) {
