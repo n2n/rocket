@@ -276,7 +276,7 @@ namespace Rocket.Impl.Translation {
 			this.copyControlJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
 			this.jqElem.prepend(this.copyControlJq);
 			
-			let buttonJq = $("<button />", { "type": "button", "class": "btn btn-1" })
+			let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
 					.append($("<i></i>", { class: "fa fa-copy" }));
 			let copyUlJq = $("<ul></ul>").hide();
 			

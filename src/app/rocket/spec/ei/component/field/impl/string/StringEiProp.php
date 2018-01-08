@@ -72,7 +72,7 @@ class StringEiProp extends AlphanumericEiProp {
 		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength(), $this->isMultiline(),
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
-		$mag->setAttrs(array('class' => 'rocket-block'));
+// 		$mag->setAttrs(array('class' => 'rocket-block'));
 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
 		return $mag;
 	}

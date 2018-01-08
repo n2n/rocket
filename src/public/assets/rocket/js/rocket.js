@@ -2561,12 +2561,12 @@ var Rocket;
     (function (Display) {
         let Severity;
         (function (Severity) {
-            Severity[Severity["PRIMARY"] = 0] = "PRIMARY";
-            Severity[Severity["SECONDARY"] = 1] = "SECONDARY";
-            Severity[Severity["SUCCESS"] = 2] = "SUCCESS";
-            Severity[Severity["DANGER"] = 3] = "DANGER";
-            Severity[Severity["INFO"] = 4] = "INFO";
-            Severity[Severity["WARNING"] = 5] = "WARNING";
+            Severity["PRIMARY"] = "primary";
+            Severity["SECONDARY"] = "secondary";
+            Severity["SUCCESS"] = "success";
+            Severity["DANGER"] = "danger";
+            Severity["INFO"] = "info";
+            Severity["WARNING"] = "warning";
         })(Severity = Display.Severity || (Display.Severity = {}));
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
@@ -4337,7 +4337,7 @@ var Rocket;
                         "class": "fa fa-chevron-left"
                     })));
                     this.jqInput = $("<input />", {
-                        "class": "rocket-impl-pagination-no",
+                        "class": "rocket-impl-pagination-no form-control",
                         "type": "text",
                         "value": this.getCurrentPageNo()
                     }).on("change", function () {
@@ -5667,6 +5667,200 @@ var Rocket;
     (function (Impl) {
         var Translation;
         (function (Translation) {
+            class TranslationManager {
+                constructor(jqElem) {
+                    this.jqElem = jqElem;
+                    this.min = 0;
+                    this.translatables = [];
+                    this.menuItems = [];
+                    this.changing = false;
+                    this.min = parseInt(jqElem.data("rocket-impl-min"));
+                    this.initControl();
+                    this.initMenu();
+                    this.val();
+                }
+                val() {
+                    let activeLocaleIds = [];
+                    for (let menuItem of this.menuItems) {
+                        if (!menuItem.active)
+                            continue;
+                        activeLocaleIds.push(menuItem.localeId);
+                    }
+                    let activeDisabled = activeLocaleIds.length <= this.min;
+                    for (let menuItem of this.menuItems) {
+                        if (menuItem.mandatory)
+                            continue;
+                        if (!menuItem.active && activeLocaleIds.length < this.min) {
+                            menuItem.active = true;
+                            activeLocaleIds.push(menuItem.localeId);
+                        }
+                        menuItem.disabled = activeDisabled && menuItem.active;
+                    }
+                    return activeLocaleIds;
+                }
+                registerTranslatable(translatable) {
+                    if (-1 < this.translatables.indexOf(translatable))
+                        return;
+                    this.translatables.push(translatable);
+                    translatable.activeLocaleIds = this.activeLocaleIds;
+                    translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
+                    for (let tc of translatable.contents) {
+                        tc.whenChanged(() => {
+                            this.activeLocaleIds = translatable.activeLocaleIds;
+                        });
+                    }
+                }
+                unregisterTranslatable(translatable) {
+                    let i = this.translatables.indexOf(translatable);
+                    if (i > -1) {
+                        this.translatables.splice(i, 1);
+                    }
+                }
+                get activeLocaleIds() {
+                    let localeIds = Array();
+                    for (let menuItem of this.menuItems) {
+                        if (menuItem.active) {
+                            localeIds.push(menuItem.localeId);
+                        }
+                    }
+                    return localeIds;
+                }
+                set activeLocaleIds(localeIds) {
+                    if (this.changing)
+                        return;
+                    this.changing = true;
+                    let changed = false;
+                    for (let menuItem of this.menuItems) {
+                        if (menuItem.mandatory)
+                            continue;
+                        let active = -1 < localeIds.indexOf(menuItem.localeId);
+                        if (menuItem.active != active) {
+                            changed = true;
+                        }
+                        menuItem.active = active;
+                    }
+                    if (!changed) {
+                        this.changing = false;
+                        return;
+                    }
+                    localeIds = this.val();
+                    for (let translatable of this.translatables) {
+                        translatable.activeLocaleIds = localeIds;
+                    }
+                    this.changing = false;
+                }
+                menuChanged() {
+                    if (this.changing)
+                        return;
+                    this.changing = true;
+                    let localeIds = this.val();
+                    for (let translatable of this.translatables) {
+                        translatable.activeLocaleIds = localeIds;
+                    }
+                    this.changing = false;
+                }
+                initControl() {
+                    let jqLabel = this.jqElem.children("label:first");
+                    let cmdList = Rocket.Display.CommandList.create(true);
+                    cmdList.createJqCommandButton({
+                        iconType: "fa fa-language",
+                        label: jqLabel.text(),
+                        tooltip: this.jqElem.data("rocket-impl-tooltip")
+                    }).click(() => this.toggle());
+                    jqLabel.replaceWith(cmdList.jQuery);
+                }
+                initMenu() {
+                    this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
+                    this.jqMenu.hide();
+                    this.jqMenu.children().each((i, elem) => {
+                        let mi = new MenuItem($(elem));
+                        this.menuItems.push(mi);
+                        mi.whenChanged(() => {
+                            this.menuChanged();
+                        });
+                    });
+                }
+                toggle() {
+                    this.jqMenu.toggle();
+                }
+                static from(jqElem) {
+                    let tm = jqElem.data("rocketImplTranslationManager");
+                    if (tm instanceof TranslationManager) {
+                        return tm;
+                    }
+                    tm = new TranslationManager(jqElem);
+                    jqElem.data("rocketImplTranslationManager", tm);
+                    return tm;
+                }
+            }
+            Translation.TranslationManager = TranslationManager;
+            class MenuItem {
+                constructor(jqElem) {
+                    this.jqElem = jqElem;
+                    this._disabled = false;
+                    this._localeId = this.jqElem.data("rocket-impl-locale-id");
+                    this._mandatory = this.jqElem.data("rocket-impl-mandatory") ? true : false;
+                    this.init();
+                }
+                init() {
+                    if (this.jqCheck) {
+                        throw new Error("already initialized");
+                    }
+                    this.jqCheck = this.jqElem.find("input[type=checkbox]");
+                    if (this.mandatory) {
+                        this.jqCheck.prop("checked", true);
+                        this.jqCheck.prop("disabled", true);
+                        this.disabled = true;
+                    }
+                    this.jqCheck.change(() => { this.updateClasses(); });
+                }
+                updateClasses() {
+                    if (this.disabled) {
+                        this.jqElem.addClass("rocket-disabled");
+                    }
+                    else {
+                        this.jqElem.removeClass("rocket-disabled");
+                    }
+                    if (this.active) {
+                        this.jqElem.addClass("rocket-active");
+                    }
+                    else {
+                        this.jqElem.removeClass("rocket-active");
+                    }
+                }
+                whenChanged(callback) {
+                    this.jqCheck.change(callback);
+                }
+                get disabled() {
+                    return this.jqCheck.is(":disabled") || this._disabled;
+                }
+                set disabled(disabled) {
+                    this._disabled = true;
+                    this.updateClasses();
+                }
+                get active() {
+                    return this.jqCheck.is(":checked");
+                }
+                set active(active) {
+                    this.jqCheck.prop("checked", active);
+                    this.updateClasses();
+                }
+                get localeId() {
+                    return this._localeId;
+                }
+                get mandatory() {
+                    return this._mandatory;
+                }
+            }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
             class Translator {
                 constructor(container) {
                     this.container = container;
@@ -5891,7 +6085,7 @@ var Rocket;
                 drawCopyUlJq() {
                     this.copyControlJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
                     this.jqElem.prepend(this.copyControlJq);
-                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-1" })
+                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
                         .append($("<i></i>", { class: "fa fa-copy" }));
                     let copyUlJq = $("<ul></ul>").hide();
                     buttonJq.click(() => { copyUlJq.toggle(); });
@@ -6078,200 +6272,6 @@ var Rocket;
                     else {
                         this.jqI.attr("class", "fa fa-toggle-off");
                     }
-                }
-            }
-        })(Translation = Impl.Translation || (Impl.Translation = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        var Translation;
-        (function (Translation) {
-            class TranslationManager {
-                constructor(jqElem) {
-                    this.jqElem = jqElem;
-                    this.min = 0;
-                    this.translatables = [];
-                    this.menuItems = [];
-                    this.changing = false;
-                    this.min = parseInt(jqElem.data("rocket-impl-min"));
-                    this.initControl();
-                    this.initMenu();
-                    this.val();
-                }
-                val() {
-                    let activeLocaleIds = [];
-                    for (let menuItem of this.menuItems) {
-                        if (!menuItem.active)
-                            continue;
-                        activeLocaleIds.push(menuItem.localeId);
-                    }
-                    let activeDisabled = activeLocaleIds.length <= this.min;
-                    for (let menuItem of this.menuItems) {
-                        if (menuItem.mandatory)
-                            continue;
-                        if (!menuItem.active && activeLocaleIds.length < this.min) {
-                            menuItem.active = true;
-                            activeLocaleIds.push(menuItem.localeId);
-                        }
-                        menuItem.disabled = activeDisabled && menuItem.active;
-                    }
-                    return activeLocaleIds;
-                }
-                registerTranslatable(translatable) {
-                    if (-1 < this.translatables.indexOf(translatable))
-                        return;
-                    this.translatables.push(translatable);
-                    translatable.activeLocaleIds = this.activeLocaleIds;
-                    translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
-                    for (let tc of translatable.contents) {
-                        tc.whenChanged(() => {
-                            this.activeLocaleIds = translatable.activeLocaleIds;
-                        });
-                    }
-                }
-                unregisterTranslatable(translatable) {
-                    let i = this.translatables.indexOf(translatable);
-                    if (i > -1) {
-                        this.translatables.splice(i, 1);
-                    }
-                }
-                get activeLocaleIds() {
-                    let localeIds = Array();
-                    for (let menuItem of this.menuItems) {
-                        if (menuItem.active) {
-                            localeIds.push(menuItem.localeId);
-                        }
-                    }
-                    return localeIds;
-                }
-                set activeLocaleIds(localeIds) {
-                    if (this.changing)
-                        return;
-                    this.changing = true;
-                    let changed = false;
-                    for (let menuItem of this.menuItems) {
-                        if (menuItem.mandatory)
-                            continue;
-                        let active = -1 < localeIds.indexOf(menuItem.localeId);
-                        if (menuItem.active != active) {
-                            changed = true;
-                        }
-                        menuItem.active = active;
-                    }
-                    if (!changed) {
-                        this.changing = false;
-                        return;
-                    }
-                    localeIds = this.val();
-                    for (let translatable of this.translatables) {
-                        translatable.activeLocaleIds = localeIds;
-                    }
-                    this.changing = false;
-                }
-                menuChanged() {
-                    if (this.changing)
-                        return;
-                    this.changing = true;
-                    let localeIds = this.val();
-                    for (let translatable of this.translatables) {
-                        translatable.activeLocaleIds = localeIds;
-                    }
-                    this.changing = false;
-                }
-                initControl() {
-                    let jqLabel = this.jqElem.children("label:first");
-                    let cmdList = Rocket.Display.CommandList.create(true);
-                    cmdList.createJqCommandButton({
-                        iconType: "fa fa-language",
-                        label: jqLabel.text(),
-                        tooltip: this.jqElem.data("rocket-impl-tooltip")
-                    }).click(() => this.toggle());
-                    jqLabel.replaceWith(cmdList.jQuery);
-                }
-                initMenu() {
-                    this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
-                    this.jqMenu.hide();
-                    this.jqMenu.children().each((i, elem) => {
-                        let mi = new MenuItem($(elem));
-                        this.menuItems.push(mi);
-                        mi.whenChanged(() => {
-                            this.menuChanged();
-                        });
-                    });
-                }
-                toggle() {
-                    this.jqMenu.toggle();
-                }
-                static from(jqElem) {
-                    let tm = jqElem.data("rocketImplTranslationManager");
-                    if (tm instanceof TranslationManager) {
-                        return tm;
-                    }
-                    tm = new TranslationManager(jqElem);
-                    jqElem.data("rocketImplTranslationManager", tm);
-                    return tm;
-                }
-            }
-            Translation.TranslationManager = TranslationManager;
-            class MenuItem {
-                constructor(jqElem) {
-                    this.jqElem = jqElem;
-                    this._disabled = false;
-                    this._localeId = this.jqElem.data("rocket-impl-locale-id");
-                    this._mandatory = this.jqElem.data("rocket-impl-mandatory") ? true : false;
-                    this.init();
-                }
-                init() {
-                    if (this.jqCheck) {
-                        throw new Error("already initialized");
-                    }
-                    this.jqCheck = this.jqElem.find("input[type=checkbox]");
-                    if (this.mandatory) {
-                        this.jqCheck.prop("checked", true);
-                        this.jqCheck.prop("disabled", true);
-                        this.disabled = true;
-                    }
-                    this.jqCheck.change(() => { this.updateClasses(); });
-                }
-                updateClasses() {
-                    if (this.disabled) {
-                        this.jqElem.addClass("rocket-disabled");
-                    }
-                    else {
-                        this.jqElem.removeClass("rocket-disabled");
-                    }
-                    if (this.active) {
-                        this.jqElem.addClass("rocket-active");
-                    }
-                    else {
-                        this.jqElem.removeClass("rocket-active");
-                    }
-                }
-                whenChanged(callback) {
-                    this.jqCheck.change(callback);
-                }
-                get disabled() {
-                    return this.jqCheck.is(":disabled") || this._disabled;
-                }
-                set disabled(disabled) {
-                    this._disabled = true;
-                    this.updateClasses();
-                }
-                get active() {
-                    return this.jqCheck.is(":checked");
-                }
-                set active(active) {
-                    this.jqCheck.prop("checked", active);
-                    this.updateClasses();
-                }
-                get localeId() {
-                    return this._localeId;
-                }
-                get mandatory() {
-                    return this._mandatory;
                 }
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));

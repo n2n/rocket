@@ -36,12 +36,14 @@ class FieldEiHtmlBuilder {
 	private $view;
 	private $html;
 	private $formHtml;
+	private $uiOutfitter;
 	private $eiPropInfoStrack = array();
 	
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 		$this->formHtml = $view->getFormHtmlBuilder();
+		$this->uiOutfitter = new RocketUiOutfitter();
 	}
 	
 	private function buildContainerAttrs(array $attrs, bool $readOnly = true, bool $mandatory = false) {
@@ -92,8 +94,8 @@ class FieldEiHtmlBuilder {
 		}
 	
 		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, null, $magPropertyPath);
-		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $this->buildContainerAttrs(
-				(array) $attrs, false, $mandatory));
+		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, 
+				$this->buildContainerAttrs((array) $attrs, false, $mandatory), $this->uiOutfitter);
 	}
 	
 	public function openOutputField($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {

@@ -193,7 +193,7 @@ class EiHtmlBuilder {
 		foreach ($eiEntryGui->getForkMagPropertyPaths() as $forkMagPropertyPath) {
 			$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($forkMagPropertyPath);
 			
-			$div->appendLn($this->formHtml->getMagOpen('div', $propertyPath));
+			$div->appendLn($this->formHtml->getMagOpen('div', $propertyPath, null, $this->uiOutfitter));
 			$div->appendLn($this->formHtml->getMagLabel());
 			$div->appendLn(new HtmlElement('div', array('class' => 'rocket-control'), $this->formHtml->getMagField()));
 			$div->appendLn($this->formHtml->getMagClose()); 

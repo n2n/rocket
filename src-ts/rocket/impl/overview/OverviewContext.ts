@@ -201,7 +201,7 @@ namespace Rocket.Impl.Overview {
 					})));
 			
 			this.jqInput = $("<input />", {
-				"class": "rocket-impl-pagination-no",
+				"class": "rocket-impl-pagination-no form-control",
 				"type": "text",
 				"value": this.getCurrentPageNo()
 			}).on("change", function () {
