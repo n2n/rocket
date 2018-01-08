@@ -273,7 +273,7 @@ jQuery(document).ready(function($) {
 				"class": this.filter.iconClassNameAdd
 			})).append($("<span />", {
 				"text": this.filter.textAddField
-			})).appendTo($("<li />").appendTo(this.jqElemDivCommands));
+			})).appendTo(this.jqElemDivCommands);
 			
 			this.jqElemDivFieldListContainer = $("<div />", {
 				"class": "rocket-multi-add-content-container"
