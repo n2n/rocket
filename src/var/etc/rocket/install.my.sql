@@ -44,10 +44,10 @@ CREATE TABLE `rocket_ei_grant` (
 CREATE TABLE `rocket_login` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nick` varchar(255) DEFAULT NULL,
-  `wrong_password` varchar(32) DEFAULT NULL,
+  `wrong_password` varchar(255) DEFAULT NULL,
   `power` enum('superadmin','admin','none') NULL DEFAULT NULL,
   `successfull` tinyint(1) unsigned NOT NULL,
-  `ip` varchar(15) NOT NULL DEFAULT '',
+  `ip` varchar(255) NOT NULL DEFAULT '',
   `date_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;

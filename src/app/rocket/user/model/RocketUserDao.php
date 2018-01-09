@@ -27,7 +27,7 @@ use n2n\context\RequestScoped;
 use rocket\user\bo\Login;
 use n2n\core\N2N;
 use rocket\user\bo\RocketUserGroup;
-use rocket\user\bo\UserSpecGrant;
+use n2n\util\StringUtils;
 
 class RocketUserDao implements RequestScoped {
 	/**
@@ -82,7 +82,7 @@ class RocketUserDao implements RequestScoped {
 		$this->em->persist($user);
 	}
 	/**
-	 * @param \rocket\user\bo\User $user
+	 * @param RocketUser $user
 	 */
 	public function deleteUser(RocketUser $user) {
 		$this->em->remove($user);
@@ -93,7 +93,7 @@ class RocketUserDao implements RequestScoped {
 	}
 	
 	/**
-	 * @param unknown $id
+	 * @param int $id
 	 * @return RocketUserGroup
 	 */
 	public function getRocketUserGroupById($id) {
@@ -115,18 +115,18 @@ class RocketUserDao implements RequestScoped {
 		return $this->em->remove($userGroup);
 	}
 	
-	public function removeUserSpecGrant(UserSpecGrant $userScriptGrant) {
-		return $this->em->remove($userScriptGrant);
-	}
+// 	public function removeUserSpecGrant(UserSpecGrant $userScriptGrant) {
+// 		return $this->em->remove($userScriptGrant);
+// 	}
 	/**
 	 * @param string $nick
 	 * @param string $rawPassword
-	 * @param \rocket\user\bo\User $user
+	 * @param RocketUser $user
 	 */
 	public function createLogin($nick, $rawPassword, RocketUser $user = null) {
 		$login = new Login();
-		$login->setNick($nick);
-		$login->setWrongPassword($user !== null ? null : $rawPassword);
+		$login->setNick(StringUtils::reduce($nick, 255));
+		$login->setWrongPassword($user !== null ? null : StringUtils::reduce($rawPassword, 255));
 		$login->setPower($user !== null ? $user->getPower() : null);
 		$login->setSuccessfull($user !== null);
 		$login->setIp($_SERVER['REMOTE_ADDR']);
