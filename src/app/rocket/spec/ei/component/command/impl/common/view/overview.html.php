@@ -74,7 +74,6 @@
 				<li><?php / * partial control components * / ?></li>
 			</ul>
 			<?php */ ?>
-			
 			<?php $eiHtml->frameCommands($overviewModel->getEiuGui()) ?>
 			
 		</div>

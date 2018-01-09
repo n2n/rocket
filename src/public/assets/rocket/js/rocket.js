@@ -1411,8 +1411,9 @@ var Rocket;
         class Menu {
             constructor(context) {
                 this._toolbar = null;
-                this._commandList = null;
+                this._mainCommandList = null;
                 this._partialCommandList = null;
+                this._asideCommandList = null;
                 this.context = context;
             }
             clear() {
@@ -1428,37 +1429,55 @@ var Rocket;
                 }
                 return this._toolbar = new display.Toolbar(jqToolbar);
             }
-            getJqPageCommands() {
-                var jqCommandList = this.context.jQuery.find(".rocket-zone-commands:first");
-                if (jqCommandList.length == 0) {
-                    jqCommandList = $("<div />", {
+            getCommandsJq() {
+                var commandsJq = this.context.jQuery.find(".rocket-zone-commands:first");
+                if (commandsJq.length == 0) {
+                    commandsJq = $("<div />", {
                         "class": "rocket-zone-commands"
                     });
-                    this.context.jQuery.append(jqCommandList);
+                    this.context.jQuery.append(commandsJq);
                 }
-                return jqCommandList;
+                return commandsJq;
             }
             get partialCommandList() {
                 if (this._partialCommandList !== null) {
                     return this._partialCommandList;
                 }
-                var jqPageCommands = this.getJqPageCommands();
-                var jqPartialCommands = jqPageCommands.children(".rocket-partial-commands:first");
-                if (jqPartialCommands.length == 0) {
-                    jqPartialCommands = $("<div />", { "class": "rocket-partial-commands" }).prependTo(jqPageCommands);
+                let mainCommandJq = this.mainCommandList.jQuery;
+                var partialCommandsJq = mainCommandJq.children(".rocket-partial-commands:first");
+                if (partialCommandsJq.length == 0) {
+                    partialCommandsJq = $("<div />", { "class": "rocket-partial-commands" }).prependTo(mainCommandJq);
                 }
-                return this._partialCommandList = new display.CommandList(jqPartialCommands);
+                return this._partialCommandList = new display.CommandList(partialCommandsJq);
             }
-            get commandList() {
-                if (this._commandList !== null) {
-                    return this._commandList;
+            get mainCommandList() {
+                if (this._mainCommandList !== null) {
+                    return this._mainCommandList;
                 }
-                var jqPageCommands = this.getJqPageCommands();
-                var jqCommands = jqPageCommands.children(":not(.rocket-partial-commands):first");
-                if (jqCommands.length == 0) {
-                    jqCommands = $("<div />").appendTo(jqPageCommands);
+                let commandsJq = this.getCommandsJq();
+                let mainCommandsJq = commandsJq.children(".rocket-main-commands:first");
+                if (mainCommandsJq.length == 0) {
+                    mainCommandsJq = commandsJq.children("div:first");
+                    mainCommandsJq.addClass("rocket-main-commands");
                 }
-                return this._commandList = new display.CommandList(jqCommands);
+                if (mainCommandsJq.length == 0) {
+                    let contentsJq = commandsJq.children(":not(.rocket-aside-commands)");
+                    mainCommandsJq = $("<div></div>", { class: "rocket-main-commands" }).appendTo(commandsJq);
+                    mainCommandsJq.append(contentsJq);
+                }
+                return this._mainCommandList = new display.CommandList(mainCommandsJq);
+            }
+            get asideCommandList() {
+                if (this._asideCommandList !== null) {
+                    return this._asideCommandList;
+                }
+                this.mainCommandList;
+                let commandsJq = this.getCommandsJq();
+                let asideCommandsJq = commandsJq.children(".rocket-aside-commands:first");
+                if (asideCommandsJq.length == 0) {
+                    asideCommandsJq = $("<div />", { "class": "rocket-aside-commands" }).appendTo(commandsJq);
+                }
+                return this._asideCommandList = new display.CommandList(asideCommandsJq);
             }
         }
         Cmd.Menu = Menu;
@@ -4291,7 +4310,7 @@ var Rocket;
                     var overviewContent = new Overview.OverviewContent(jqElem.find("tbody.rocket-collection:first"), Jhtml.Url.create(overviewToolsJq.data("content-url")), overviewToolsJq.data("state-key"));
                     overviewContent.initFromDom(jqElem.data("current-page"), jqElem.data("num-pages"), jqElem.data("num-entries"), jqElem.data("page-size"));
                     var pagination = new Pagination(overviewContent);
-                    pagination.draw(jqForm.children(".rocket-zone-commands"));
+                    pagination.draw(Rocket.Cmd.Zone.of(jqForm).menu.asideCommandList.jQuery);
                     var header = new Overview.Header(overviewContent);
                     header.init(jqElem.children(".rocket-impl-overview-tools"));
                     overviewPage = new OverviewPage(jqElem, overviewContent);
@@ -5179,10 +5198,9 @@ var Rocket;
                     this.changed();
                 }
                 switchIndex(oldIndex, newIndex) {
-                    var entry = this.entries[oldIndex];
-                    this.entries[oldIndex] = this.entries[newIndex];
-                    this.entries[newIndex] = entry;
-                    console.log(oldIndex + " " + newIndex);
+                    let entry = this.entries[oldIndex];
+                    this.entries.splice(oldIndex, 1);
+                    this.entries.splice(newIndex, 0, entry);
                     this.changed();
                 }
                 initEntry(entry) {
