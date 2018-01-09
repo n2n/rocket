@@ -54,7 +54,7 @@ Dropdown button
 
 
 <div class="dropdown">
-<button type="button" class="dropdown-toggle btn btn-secondary" id="rocket-control-group-dpz42qc4lrt0l1s49" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true" title="ei_impl_add_branch_tooltip"><i class="fa fa-plus"></i> <span>ei_impl_add_branch_label</span></button>
+<button type="button" class="dropdown-toggle btn btn-secondary" id="rocket-control-group-dpz42qc4lrt0l1s49" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true" title="ei_impl_add_branch_tooltip"><i class="fa fa-plus"></i> <span>ei_impl_insert_branch_label</span></button>
 <div class="dropdown-menu" aria-labelledby="rocket-control-group-dpz42qc4lrt0l1s49">
 <a href="/php-oxygen/n2n-rocket-playground/src/public/admin/manage/releg-htusch/add/before/4" class="rocket-jhtml btn btn-success rocket-important" data-jhtml="true" data-jhtml-push-to-history="true" data-jhtml-force-reload="false" dropdown-item="" aria-hidden="true" title="Zweig vor diesem Zweig hinzufügen."><i class="fa fa-angle-up"></i> <span>Davor einfügen</span></a>
 <a href="/php-oxygen/n2n-rocket-playground/src/public/admin/manage/releg-htusch/add/after/4" class="rocket-jhtml btn btn-success rocket-important" data-jhtml="true" data-jhtml-push-to-history="true" data-jhtml-force-reload="false" dropdown-item="" aria-hidden="true" title="Zweig nach diesem Zweig hinzufügen."><i class="fa fa-angle-down"></i> <span>Danach hinzufügen</span></a>

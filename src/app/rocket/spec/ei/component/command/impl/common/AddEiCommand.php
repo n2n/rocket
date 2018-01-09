@@ -47,7 +47,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	const CONTROL_ADD_DRAFT_KEY = 'addDraft';
 	const CONTROL_DUPLICATE_DRAFT_KEY = 'duplicateDraft';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
-	const CONTROL_ADD_BRANCH_KEY = 'addBranch';
+	const CONTROL_INSERT_BRANCH_KEY = 'insertBranch';
 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
@@ -125,7 +125,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		
-		return array(self::CONTROL_ADD_BRANCH_KEY => $dtc->t('ei_impl_add_branch_label'));
+		return array(self::CONTROL_INSERT_BRANCH_KEY => $dtc->t('ei_impl_insert_branch_label'));
 	}
 
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
@@ -149,7 +149,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		}
 
 
-		$groupControl = $eiuControlFactory->createGroup(new ControlButton($dtc->t('ei_impl_add_branch_label'),
+		$groupControl = $eiuControlFactory->createGroup(new ControlButton($dtc->t('ei_impl_insert_branch_label'),
 						$dtc->t('ei_impl_add_branch_tooltip'), false, ControlButton::TYPE_SECONDARY, 
 						IconType::ICON_PLUS));
 		
@@ -170,6 +170,6 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT),
 						['child', $eiuEntry->getLiveIdRep()]));
 		
-		return array(self::CONTROL_ADD_BRANCH_KEY => $groupControl);
+		return array(self::CONTROL_INSERT_BRANCH_KEY => $groupControl);
 	}
 }
