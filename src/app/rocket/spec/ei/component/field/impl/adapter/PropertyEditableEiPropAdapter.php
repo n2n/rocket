@@ -27,7 +27,6 @@ use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\mapping\impl\Writable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
-
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
 use rocket\spec\ei\manage\EiObject;
@@ -45,8 +44,6 @@ use rocket\spec\ei\manage\mapping\impl\Validatable;
 use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
-use rocket\spec\ei\manage\gui\GuiProp;
-use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
