@@ -289,7 +289,7 @@ module l10n {
 			this.elem = elem;
 			this.localeId = elem.data("locale-id");
 			this.error = elem.hasClass("rocket-has-error")
-			this.translationEnablers = elem.parents(".rocket-translation-container:first").data("translation-enablers") || null;
+			this.translationEnablers = elem.parents(".rocket-translation-container:first").data("translation-enablers") || [];
 			
 			(function(that: TranslationEntry) {
 				
@@ -303,7 +303,7 @@ module l10n {
 					that.hide();
 				});
 				
-				if (null !== this.translationEnabler) {
+				if (this.translationEnablers.length > 0) {
 					that.elemLocaleControls = elem.find(".rocket-locale-controls:first");
 					var entryFormCommand = new ui.EntryFormCommand("Activate " + localeSelector.getLocaleLabel(that.localeId), function() {
 						that.translationEnablers.forEach(function(translationEnabler) {
