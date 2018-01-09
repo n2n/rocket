@@ -216,7 +216,7 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		set disabled(disabled: boolean) {
-			this._disabled = true;
+			this._disabled = disabled;
 			this.updateClasses();	
 		}
 		

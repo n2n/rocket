@@ -256,8 +256,8 @@ namespace Rocket.Cmd {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
-		public createAdditionalTab(title: string, prepend: boolean = false) {
-			return this.additionalTabManager.createTab(title, prepend);
+		public createAdditionalTab(title: string, prepend: boolean = false, severity: Display.Severity = null) {
+			return this.additionalTabManager.createTab(title, prepend, severity);
 		} 
 		
 		get menu(): Menu {
@@ -348,12 +348,16 @@ namespace Rocket.Cmd {
 			this.tabs = new Array<AdditionalTab>();
 		}
 		
-		public createTab(title: string, prepend: boolean = false): AdditionalTab {
+		public createTab(title: string, prepend: boolean = false, severity: Display.Severity = null): AdditionalTab {
 			this.setupAdditional();
 			
 			var jqNavItem = $("<li />", {
 				"text": title
 			});
+			
+			if (severity) {
+				jqNavItem.addClass("rocket-severity-" + severity);
+			}
 			
 			var jqContent = $("<div />", {
 				"class": "rocket-additional-content"

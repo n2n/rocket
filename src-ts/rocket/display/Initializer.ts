@@ -52,7 +52,7 @@ namespace Rocket.Display {
 				var structureElement = StructureElement.of($(this));
 				
 				if (errorIndex === null) {
-					errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
+					errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle, false, Display.Severity.DANGER), that.displayErrorLabel);
 					that.errorIndexes.push(errorIndex);
 				}
 				

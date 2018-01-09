@@ -1213,8 +1213,8 @@ var Rocket;
             off(eventType, callback) {
                 this.callbackRegistery.unregister(eventType.toString(), callback);
             }
-            createAdditionalTab(title, prepend = false) {
-                return this.additionalTabManager.createTab(title, prepend);
+            createAdditionalTab(title, prepend = false, severity = null) {
+                return this.additionalTabManager.createTab(title, prepend, severity);
             }
             get menu() {
                 return this._menu;
@@ -1286,11 +1286,14 @@ var Rocket;
                 this.context = context;
                 this.tabs = new Array();
             }
-            createTab(title, prepend = false) {
+            createTab(title, prepend = false, severity = null) {
                 this.setupAdditional();
                 var jqNavItem = $("<li />", {
                     "text": title
                 });
+                if (severity) {
+                    jqNavItem.addClass("rocket-severity-" + severity);
+                }
                 var jqContent = $("<div />", {
                     "class": "rocket-additional-content"
                 });
@@ -2302,7 +2305,7 @@ var Rocket;
                 jqPage.find(".rocket-message-error").each(function () {
                     var structureElement = Display.StructureElement.of($(this));
                     if (errorIndex === null) {
-                        errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle), that.displayErrorLabel);
+                        errorIndex = new ErrorIndex(context.createAdditionalTab(that.errorTabTitle, false, Display.Severity.DANGER), that.displayErrorLabel);
                         that.errorIndexes.push(errorIndex);
                     }
                     errorIndex.addError(structureElement, $(this).text());
@@ -5854,7 +5857,7 @@ var Rocket;
                     return this.jqCheck.is(":disabled") || this._disabled;
                 }
                 set disabled(disabled) {
-                    this._disabled = true;
+                    this._disabled = disabled;
                     this.updateClasses();
                 }
                 get active() {
