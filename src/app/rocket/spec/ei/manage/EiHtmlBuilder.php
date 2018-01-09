@@ -369,8 +369,8 @@ class EiHtmlBuilder {
 		}
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		return new HtmlElement('label', $attrs, (string) $eiEntryGui->getEiGui()->getGuiDefinition()
-				->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabel());
+		return new HtmlElement('label', $attrs, (string) $eiEntryGui->getEiGui()->getEiGuiViewFactory()
+				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabel());
 	}
 	
 	public function fieldContent() {

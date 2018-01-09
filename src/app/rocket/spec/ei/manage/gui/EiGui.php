@@ -15,7 +15,6 @@ use rocket\spec\ei\component\GuiFactory;
 
 class EiGui {
 	private $eiFrame;
-	private $guiDefinition;
 	private $viewMode;
 	private $eiGuiViewFactory;
 	private $eiGuiListeners = array();
