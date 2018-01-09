@@ -34,12 +34,10 @@ use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\manage\control\HrefControl;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
-use n2n\util\uri\Path;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent,
 		PrivilegedEiCommand {
@@ -134,42 +132,44 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	}
 
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
-		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
-		$eiFrame = $eiu->frame()->getEiFrame();
+		if ($eiu->frame()->isExecutedBy($this)) {
+			return array();
+		}
 		
-		$nestedSetStrategy = $this->eiEngine->getEiType()->getNestedSetStrategy();
-		if ($nestedSetStrategy === null) {
+		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$eiuEntry = $eiu->entry();
+		$eiuFrame = $eiu->frame();
+		$dtc = $eiu->dtc('rocket');
+		
+		if ($eiuFrame->getNestedSetStrategy() === null) {
 			if (!$this->dublicatingAllowed) return array();
-				
-			$path = new Path(array($eiu->entry()->getLiveId()));
-			$name = $dtc->translate('ei_impl_duplicate_label');
-			$tooltip = $dtc->translate('ei_impl_duplicate_tooltip', array('entry' => $eiu->entry()->createIdentityString()));
+			
+			$name = $dtc->t('ei_impl_duplicate_label');
+			$tooltip = $dtc->t('ei_impl_duplicate_tooltip', array('entry' => $eiuEntry->createIdentityString()));
 			$controlButton = new ControlButton($name, $tooltip, true, ControlButton::TYPE_SUCCESS, IconType::ICON_COPY);
-			return array(self::CONTROL_DUPLICATE_KEY => HrefControl::create($eiFrame, $this, $path->toUrl(), 
-					$controlButton));
+			
+			return array(self::CONTROL_DUPLICATE_KEY => $eiuControlFactory
+					->createJhtml($controlButton, [$eiuEntry->getLiveIdRep()]));
 		}
 
 		$httpContext = $view->getHttpContext();
 		$eiuEntry = $eiu->entry();
 
 		return array(
-				self::CONTROL_ADD_BEFORE_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-						->ext($this->getId(), 'before', $eiuEntry->getLiveIdRep()),
-						new ControlButton($dtc->translate('ei_impl_add_before_branch_label'),
-								$dtc->translate('ei_impl_add_before_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP)),
-				self::CONTROL_ADD_AFTER_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-						->ext($this->getId(), 'after', $eiuEntry->getLiveIdRep()),
-						new ControlButton($dtc->translate('ei_impl_add_after_branch_label'),
-								$dtc->translate('ei_impl_add_after_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN)),
-				self::CONTROL_ADD_CHILD_BRANCH_KEY => new HrefControl(
-						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-						->ext($this->getId(), 'child', $eiuEntry->getLiveIdRep()),
+				self::CONTROL_ADD_BEFORE_BRANCH_KEY => $eiuControlFactory->createJhtml(
+						new ControlButton($dtc->t('ei_impl_add_before_branch_label'),
+								$dtc->t('ei_impl_add_before_branch_tooltip'),
+								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP),
+						['before', $eiuEntry->getLiveIdRep()]),
+				self::CONTROL_ADD_AFTER_BRANCH_KEY => $eiuControlFactory->createJhtml(
+						new ControlButton($dtc->t('ei_impl_add_after_branch_label'),
+								$dtc->t('ei_impl_add_after_branch_tooltip'),
+								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN),
+						['after', $eiuEntry->getLiveIdRep()]),
+				self::CONTROL_ADD_CHILD_BRANCH_KEY => $eiuControlFactory->createJhtml(
 						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
 								$dtc->translate('ei_impl_add_child_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT)));
+								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT),
+						['child', $eiuEntry->getLiveIdRep()]));
 	}
 }
