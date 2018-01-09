@@ -5292,7 +5292,7 @@ var Rocket;
                         }
                     }
                     var that = this;
-                    var jqCommandButton = this.expandZone.menu.commandList
+                    var jqCommandButton = this.expandZone.menu.mainCommandList
                         .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(function () {
                         that.expandZone.layer.close();
@@ -5528,7 +5528,7 @@ var Rocket;
                     if (this.currentEntry) {
                         this.currentEntry.expand(false);
                     }
-                    var jqCommandButton = this.expandZone.menu.commandList
+                    var jqCommandButton = this.expandZone.menu.mainCommandList
                         .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(() => {
                         this.expandZone.layer.close();

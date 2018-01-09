@@ -39,7 +39,6 @@ use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 use rocket\spec\ei\manage\util\model\EiuMask;
-use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
@@ -90,8 +89,12 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			return null;
 		}
 		
-		return new DisplayDefinition($this->getLabelLstr(), DisplayItem::TYPE_SIMPLE, 
+		return new DisplayDefinition($this->getLabelLstr(), $this->getGroupType(), 
 				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
+	}
+	
+	protected function getGroupType() {
+		return DisplayItem::TYPE_SIMPLE;
 	}
 	
 	public function getStandardEditDefinition(): StandardEditDefinition {

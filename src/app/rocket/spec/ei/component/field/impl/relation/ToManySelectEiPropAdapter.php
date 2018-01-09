@@ -37,8 +37,14 @@ use rocket\spec\ei\manage\draft\RemoveDraftAction;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiPropRelation;
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
+	
+	protected function getGroupType() {
+		return DisplayItem::TYPE_NONE;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()

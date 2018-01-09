@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\field\impl\relation;
 
 use rocket\spec\ei\component\field\impl\relation\model\relation\SelectEiPropRelation;
-
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\field\impl\relation\model\ManyToOneGuiField;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -52,6 +51,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\spec\ei\manage\gui\ui\DisplayItem;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -59,6 +59,10 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		parent::__construct();
 		
 		$this->initialize(new SelectEiPropRelation($this, true, false));
+	}
+	
+	public function getGroupType() {
+		return DisplayItem::TYPE_NONE;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {

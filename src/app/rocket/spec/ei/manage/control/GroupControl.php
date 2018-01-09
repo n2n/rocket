@@ -22,6 +22,7 @@ class GroupControl implements Control {
 		$id = HtmlUtils::buildUniqueId('rocket-control-group-');
 		
 		$dropdownElem = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'dropdown'), $attrs));
+		$dropdownElem->appendLn();
 		$dropdownElem->appendLn($this->controlButton->toButton(
 				array('type' => 'button', 'class' => 'dropdown-toggle', 'id' => $id, 
 						'data-toggle' => 'dropdown', 'aria-haspopup' => 'true',
