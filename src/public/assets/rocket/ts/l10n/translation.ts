@@ -141,8 +141,13 @@ module l10n {
 					}
 				})
 				
-				that.elemProperties.addClass("rocket-translation-container")
-				.data("translation-enabler", this);
+				that.elemProperties.addClass("rocket-translation-container");
+				
+				if (that.elemProperties.data("translation-enablers")) {
+					that.elemProperties.data("translation-enablers").push(this);
+				} else {
+					that.elemProperties.data("translation-enablers", [this]);
+				};
 			}).call(this, this);
 		}
 		
@@ -276,7 +281,7 @@ module l10n {
 		private elemActivate: JQuery;
 		private elemLocaleControls: JQuery;
 		private localeId;
-		private translationEnabler: TranslationEnabler;
+		private translationEnablers: Array<TranslationEnabler>;
 		private active: boolean = true;
 		private error: boolean;
 		
@@ -284,7 +289,7 @@ module l10n {
 			this.elem = elem;
 			this.localeId = elem.data("locale-id");
 			this.error = elem.hasClass("rocket-has-error")
-			this.translationEnabler = <TranslationEnabler> elem.parents(".rocket-translation-container:first").data("translation-enabler") || null;
+			this.translationEnablers = elem.parents(".rocket-translation-container:first").data("translation-enablers") || null;
 			
 			(function(that: TranslationEntry) {
 				
@@ -300,27 +305,34 @@ module l10n {
 				
 				if (null !== this.translationEnabler) {
 					that.elemLocaleControls = elem.find(".rocket-locale-controls:first");
-					var entryFormCommand = new ui.EntryFormCommand("Text: Activate " + localeSelector.getLocaleLabel(that.localeId), function() {
-						that.translationEnabler.activate(that.localeId);
+					var entryFormCommand = new ui.EntryFormCommand("Activate " + localeSelector.getLocaleLabel(that.localeId), function() {
+						that.translationEnablers.forEach(function(translationEnabler) {
+							translationEnabler.activate(that.localeId);
+						});
 					}, "fa fa-language");
 					
 					that.elemActivate = entryFormCommand.getElemContainer().addClass("rocket-translation-activator");
-					if (!that.translationEnabler.isActive(that.localeId)) {
+					var active = false;
+					that.translationEnablers.forEach(function(translationEnabler) {
+						active = active || translationEnabler.isActive(that.localeId);
+					});
+					if (!active) {
 						that.deactivate();
 					}
 					
-					that.translationEnabler.registerActivationCallback(function(localeId: string) {
-						if (localeId !== that.localeId) return;
-						that.activate();
+					that.translationEnablers.forEach(function(translationEnabler) {
+						translationEnabler.registerActivationCallback(function(localeId: string) {
+							if (localeId !== that.localeId) return;
+							that.activate();
+						});
+						
+						translationEnabler.registerDeactivationCallback(function(localeId: string) {
+							if (localeId !== that.localeId) return;
+							that.deactivate();	
+						});
+						
 					});
-					
-					that.translationEnabler.registerDeactivationCallback(function(localeId: string) {
-						if (localeId !== that.localeId) return;
-						that.deactivate();	
-					});
-					
 				}
-				
 			}).call(this, this);
 		}
 		
