@@ -3668,6 +3668,7 @@ body {
   grid-template-columns: 1fr auto;
   grid-template-rows: 2rem 3rem;
   margin-bottom: 1rem;
+  margin-right: -1rem;
   background: white;
 }
 
@@ -3705,9 +3706,10 @@ body {
 
 .rocket-layer {
   position: absolute;
+  z-index: 50;
   top: 0;
   left: -4rem;
-  right: -1rem;
+  right: -3rem;
   padding: 0 1rem 0 4rem;
   background-color: #ECEBE9;
   min-height: calc(100vh - 2.75rem);
@@ -3724,6 +3726,10 @@ body {
 .rocket-layer > .rocket-layer-toolbar > button {
   width: 3rem;
   height: 5rem;
+}
+
+.rocket-layer .rocket-impl-overview-tools {
+  background-color: #ECEBE9;
 }
 
 .rocket-impl-translation-status {
@@ -3951,6 +3957,7 @@ body {
   position: sticky;
   top: 44px;
   padding-top: 1rem;
+  background-color: #FBFAFA;
 }
 
 .rocket-impl-state {
@@ -4007,10 +4014,6 @@ body {
   font-size: 1.25rem;
 }
 
-.rocket-collection .rocket-entry-selector {
-  width: 5rem;
-}
-
 .rocket-collection .rocket-entry.rocket-last-mod {
   animation: last-mod-transition 30s;
   background: inherit;
@@ -4047,6 +4050,10 @@ body {
   background-color: #4F4A46;
 }
 
+.rocket-table > thead .rocket-general-entry-selector {
+  padding: 0 0.5rem;
+}
+
 .rocket-table > tbody tr:hover {
   box-shadow: -3px 0px 0px 0px #fd7e14;
 }
@@ -4055,6 +4062,15 @@ body {
   border-left: 1px solid #ECEBE9;
   white-space: nowrap;
   width: 5%;
+}
+
+.rocket-table > tbody .rocket-entry-selector {
+  width: 0rem;
+  white-space: nowrap;
+}
+
+.rocket-table > tbody .rocket-entry-selector:empty {
+  padding: 0;
 }
 
 /*
@@ -4123,10 +4139,6 @@ ul.rocket-content-item > li > span {
   margin-left: 0.5rem;
 }
 
-.rocket-field {
-  background: #fff;
-}
-
 @media (min-width: 768px) {
   .rocket-field {
     clear: both;
@@ -4143,6 +4155,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-group,
 .rocket-group-simple {
+  background: #fff;
   position: relative;
   margin-bottom: 1rem;
 }
@@ -4273,6 +4286,7 @@ ul.rocket-content-item > li > span {
   border-bottom: 1px solid #b90f00;
   padding: 0.5rem 2rem 0.5rem 1rem;
   position: relative;
+  cursor: pointer;
 }
 
 .rocket-error-index-entry::after {
@@ -4310,6 +4324,41 @@ ul.rocket-content-item > li > span {
 .rocket-message-error > div {
   font-size: 0.875rem;
   color: #b90f00;
+}
+
+body.rocket-preview .rocket-preview-iframe-title,
+body.rocket-preview #rocket-global-nav {
+  display: none;
+}
+
+body.rocket-preview .rocket-zone > header {
+  margin-bottom: 0;
+}
+
+body.rocket-preview .rocket-zone .rocket-content {
+  position: relative;
+}
+
+body.rocket-preview .rocket-zone #rocket-preview-content {
+  position: fixed;
+  top: 7.75rem;
+  bottom: 3.75rem;
+  left: 0;
+  right: 0;
+  border: 0;
+  width: 100%;
+  height: calc(100vh - 11.825rem);
+}
+
+body.rocket-preview .rocket-zone .rocket-zone-toolbar {
+  position: absolute;
+  right: -2rem;
+  top: -2.75rem;
+}
+
+body.rocket-preview .rocket-zone-commands {
+  left: 0;
+  padding-left: 1.5rem;
 }
 
 /**

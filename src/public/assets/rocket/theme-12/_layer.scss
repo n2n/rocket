@@ -9,6 +9,7 @@
 		grid-template-columns: 1fr auto;
 		grid-template-rows: 2rem 3rem;
 		margin-bottom: 1rem;
+		margin-right: -1rem;
 		background: white;
 		> .breadcrumb {
 			grid-column-start: 1;
@@ -24,7 +25,6 @@
 			margin-top: 0.5rem;
 		}
 	}
-
 
 }
 
@@ -47,10 +47,11 @@
 }
 
 .rocket-layer {
-    position: absolute;
+	position: absolute;
+	z-index: 50;
     top: 0;
     left: -$rocket-global-nav-spacer;
-	right: -1rem;
+	right: -3rem;
 	padding: 0 1rem 0 $rocket-global-nav-spacer;
     background-color: $gray-300;
 	min-height: calc(100vh - #{$rocket-header-height});
@@ -64,5 +65,9 @@
 			width: ($rocket-global-nav-spacer - 1rem);
 			height: 5rem;
 		}
+	}
+
+	.rocket-impl-overview-tools {
+		background-color: $gray-300;
 	}
 }

@@ -14,6 +14,7 @@
 	border-bottom: 1px solid $danger;
 	padding: 0.5rem 2rem 0.5rem 1rem;
 	position: relative;
+	cursor: pointer;
 	&::after {
 		position: absolute;
 		top: 0.75rem;

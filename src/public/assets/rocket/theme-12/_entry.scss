@@ -1,7 +1,3 @@
-.rocket-field {
-    background: $white;
-}
-
 @include media-breakpoint-up(md) {
     .rocket-field {
         clear: both;
@@ -19,6 +15,7 @@
 
 .rocket-group,
 .rocket-group-simple {
+    background: $white;
     position: relative;
     margin-bottom: 1rem;
     
