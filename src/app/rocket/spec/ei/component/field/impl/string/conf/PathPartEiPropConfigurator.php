@@ -39,7 +39,6 @@ use rocket\spec\ei\component\field\indepenent\PropertyAssignation;
 use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\spec\ei\manage\generic\UnknownGenericEiPropertyException;
 use n2n\reflection\CastUtils;
-use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
 
