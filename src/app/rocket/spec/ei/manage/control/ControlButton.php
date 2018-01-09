@@ -128,7 +128,7 @@ class ControlButton {
 	}
 	
 	private function applyAttrs(array $attrs) {
-		$attrs['aria-hidden'] = 'true';
+// 		$attrs['aria-hidden'] = 'true';
 		
 		if ($this->tooltip !== null) {
 			$attrs['title'] = $this->tooltip;
@@ -163,7 +163,7 @@ class ControlButton {
 		return HtmlUtils::mergeAttrs($attrs, $this->attrs);
 	}
 	
-	public function toButton(array $attrs): UiComponent {
+	public function toButton(array $attrs, bool $useA = true): UiComponent {
 		$iconType = $this->iconType;
 		if ($iconType === null) {
 			$iconType = IconType::ICON_ROCKET;
@@ -171,7 +171,7 @@ class ControlButton {
 		
 		$label = new Raw(new HtmlElement('i', array('class' => $iconType), '') . ' '
 				. new HtmlElement('span', null, $this->name));
-		return new HtmlElement('a', $this->applyAttrs($attrs), $label);
+		return new HtmlElement(($useA ? 'a' : 'button'), $this->applyAttrs($attrs), $label);
 	}
 	
 // 	public function toSubmitButton(PropertyPath $propertyPath): UiComponent {

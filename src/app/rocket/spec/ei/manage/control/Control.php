@@ -10,6 +10,6 @@ interface Control {
 	 * @param bool $reducted
 	 * @return UiComponent
 	 */
-	public function createUiComponent(): UiComponent;
+	public function createUiComponent(array $attrs = array()): UiComponent;
 }
 

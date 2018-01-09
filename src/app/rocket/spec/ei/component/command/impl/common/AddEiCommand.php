@@ -46,10 +46,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	const CONTROL_DUPLICATE_KEY = 'duplicate';
 	const CONTROL_ADD_DRAFT_KEY = 'addDraft';
 	const CONTROL_DUPLICATE_DRAFT_KEY = 'duplicateDraft';
-	const CONTROL_ADD_CHILD_BRANCH_KEY = 'addChildBranch';
-	const CONTROL_ADD_BEFORE_BRANCH_KEY = 'addBeforeBranch';
-	const CONTROL_ADD_AFTER_BRANCH_KEY = 'addAfterBranch';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
+	const CONTROL_ADD_BRANCH_KEY = 'addBranch';
 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
@@ -127,8 +125,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		
-		return array(self::CONTROL_ADD_CHILD_BRANCH_KEY => $dtc->t('ei_impl_add_child_branch_label'),
-				self::CONTROL_ADD_SIBLING_BRANCH_KEY => $dtc->t('ei_impl_add_sibling_branch_label'));
+		return array(self::CONTROL_ADD_BRANCH_KEY => $dtc->t('ei_impl_add_branch_label'));
 	}
 
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
@@ -138,10 +135,9 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$eiuEntry = $eiu->entry();
-		$eiuFrame = $eiu->frame();
 		$dtc = $eiu->dtc('rocket');
 		
-		if ($eiuFrame->getNestedSetStrategy() === null) {
+		if ($eiu->frame()->getNestedSetStrategy() === null) {
 			if (!$this->dublicatingAllowed) return array();
 			
 			$name = $dtc->t('ei_impl_duplicate_label');
@@ -152,24 +148,28 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 					->createJhtml($controlButton, [$eiuEntry->getLiveIdRep()]));
 		}
 
-		$httpContext = $view->getHttpContext();
-		$eiuEntry = $eiu->entry();
 
-		return array(
-				self::CONTROL_ADD_BEFORE_BRANCH_KEY => $eiuControlFactory->createJhtml(
+		$groupControl = $eiuControlFactory->createGroup(new ControlButton($dtc->t('ei_impl_add_branch_label'),
+						$dtc->t('ei_impl_add_branch_tooltip'), false, ControlButton::TYPE_SECONDARY, 
+						IconType::ICON_PLUS));
+		
+		$groupControl->add(
+				 $eiuControlFactory->createJhtml(
 						new ControlButton($dtc->t('ei_impl_add_before_branch_label'),
 								$dtc->t('ei_impl_add_before_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP),
 						['before', $eiuEntry->getLiveIdRep()]),
-				self::CONTROL_ADD_AFTER_BRANCH_KEY => $eiuControlFactory->createJhtml(
+				$eiuControlFactory->createJhtml(
 						new ControlButton($dtc->t('ei_impl_add_after_branch_label'),
 								$dtc->t('ei_impl_add_after_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN),
 						['after', $eiuEntry->getLiveIdRep()]),
-				self::CONTROL_ADD_CHILD_BRANCH_KEY => $eiuControlFactory->createJhtml(
+				$eiuControlFactory->createJhtml(
 						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
 								$dtc->translate('ei_impl_add_child_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT),
 						['child', $eiuEntry->getLiveIdRep()]));
+		
+		return array(self::CONTROL_ADD_BRANCH_KEY => $groupControl);
 	}
 }

@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\manage\control;
 
 use n2n\web\ui\UiComponent;
+use n2n\impl\web\ui\view\html\HtmlUtils;
 
 class JhtmlControl implements Control {
 	private $url;
@@ -74,11 +75,11 @@ class JhtmlControl implements Control {
 		return $this->pushToHistory;
 	}
 	
-	public function createUiComponent(): UiComponent {
-		return $this->controlButton->toButton(array('href' => $this->url,
+	public function createUiComponent(array $attrs = array()): UiComponent {
+		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('href' => $this->url,
 				'class' => 'rocket-jhtml',
 				'data-jhtml' => 'true',
 				'data-jhtml-push-to-history' => $this->pushToHistory ? 'true' : 'false',
-				'data-jhtml-forece-reload' => $this->forceReload ? 'true' : 'false'));
+				'data-jhtml-force-reload' => $this->forceReload ? 'true' : 'false'), $attrs));
 	}
 }

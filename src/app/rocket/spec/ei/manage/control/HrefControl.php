@@ -25,6 +25,7 @@ use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\util\uri\Url;
 use rocket\spec\ei\component\command\EiCommand;
+use n2n\impl\web\ui\view\html\HtmlUtils;
 
 class HrefControl implements Control {
 	private $href;
@@ -43,8 +44,8 @@ class HrefControl implements Control {
 		return $this->controlButton;
 	}
 	
-	public function createUiComponent(): UiComponent {
-		return $this->controlButton->toButton(array('href' => $this->href));
+	public function createUiComponent(array $attrs = array()): UiComponent {
+		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('href' => $this->href), $attrs));
 	}
 	
 	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, Url $urlExt = null, 

@@ -5,6 +5,7 @@ use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\manage\control\ControlButton;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\control\JhtmlControl;
+use rocket\spec\ei\manage\control\GroupControl;
 
 class EiuControlFactory {
 	private $eiuFrame;
@@ -26,5 +27,9 @@ class EiuControlFactory {
 				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
 				->ext($this->eiCommand->getId())->toUrl()->ext($urlExt);
 		return new JhtmlControl($url, $controlButton);
+	}
+	
+	public function createGroup(ControlButton $controlButton): GroupControl {
+		return new GroupControl($controlButton);
 	}
 }

@@ -86,6 +86,10 @@ class Eiu implements Lookupable {
 		return $this->frame()->getN2nContext()->lookup($lookupId, $required);
 	}
 	
+	/**
+	 * @param string ...$moduleNamespaces
+	 * @return \n2n\l10n\DynamicTextCollection
+	 */
 	public function dtc(string ...$moduleNamespaces) {
 		return new DynamicTextCollection($moduleNamespaces, $this->frame()->getN2nLocale());
 	}

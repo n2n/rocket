@@ -212,7 +212,7 @@ class EiHtmlBuilder {
 		$divHtmlElement = new HtmlElement('div', array('class' => ($iconOnly ? 'rocket-simple-commands' : null)));
 		
 		foreach ($eiEntryGui->createControls($this->view) as $control) {
-			$divHtmlElement->appendContent($control->createUiComponent($iconOnly));
+			$divHtmlElement->appendContent($control->createUiComponent());
 		}
 		
 		return $divHtmlElement;
@@ -488,7 +488,7 @@ class EiHtmlBuilder {
 		$divHtmlElement = new HtmlElement('div', array('class' => ($iconOnly ? 'rocket-simple-commands' : null)));
 	
 		foreach ($eiGui->createOverallControls($this->view) as $control) {
-			$divHtmlElement->appendContent($control->createUiComponent($iconOnly));
+			$divHtmlElement->appendContent($control->createUiComponent());
 		}
 	
 		return $divHtmlElement;
