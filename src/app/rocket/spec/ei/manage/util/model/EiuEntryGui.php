@@ -77,6 +77,22 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @param GuiIdPath|string $guiIdPath
+	 * @throws GuiException
+	 * @return string|null
+	 */
+	public function getFieldLabel($guiIdPath) {
+		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		
+		try {
+			return $this->eiEntryGui->getDisplayableByGuiIdPath($guiIdPath)->getUiOutputLabel();
+		} catch (GuiException $e) {
+			if (!$required) return null;
+			throw $e;
+		}
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isCompact() {

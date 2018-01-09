@@ -147,6 +147,11 @@ class EiEntryGui {
 		return isset($this->eiFieldWrappers[(string) $guiIdPath]);
 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @throws GuiException
+	 * @return Displayable
+	 */
 	public function getDisplayableByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
 		if (!isset($this->displayables[$guiIdPathStr])) {

@@ -9,7 +9,6 @@ use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\config\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
-use n2n\web\ui\UiComponent;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\GuiFactory;
 
@@ -162,21 +161,4 @@ class EiGui {
 		
 		return $controls;
 	}
-}
-
-
-
-interface EiGuiViewFactory {
-
-	public function getGuiDefinition(): GuiDefinition;
-	
-	/**
-	 * @return GuiIdPath[];
-	 */
-	public function getGuiIdPaths(): array;
-	
-	/**
-	 * @return UiComponent
-	 */
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent;
 }
