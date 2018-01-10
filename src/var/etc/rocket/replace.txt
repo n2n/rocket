@@ -1,2 +1,15 @@
+rocket\spec\ei\component\prop\impl
+rocket\impl\ei\component\prop
+
 rocket\spec\ei\component\field\impl
-rocket\impl\ei\component\field
+rocket\impl\ei\component\prop
+
+rocket\spec\ei\component\impl
+rocket\impl\ei\component
+
+rocket\spec\ei\component\command\impl
+rocket\impl\ei\component\command
+
+rocket\spec\ei\component\modificator\impl
+rocket\impl\ei\component\modificator
+ 
