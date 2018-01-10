@@ -24,7 +24,7 @@
 // use rocket\spec\config\SpecManager;
 // use n2n\persistence\orm\EntityManager;
 // use n2n\persistence\orm\model\EntityModelManager;
-// use rocket\spec\ei\component\field\DraftableEiProp;
+// use rocket\spec\ei\component\prop\DraftableEiProp;
 
 // use n2n\persistence\orm\store\PersistenceActionQueueImpl;
 // use n2n\persistence\orm\store\RemoveActionQueueImpl;

@@ -29,15 +29,15 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\spec\config\mask\CommonEiMask;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\field\indepenent\EiPropConfigurator;
-use rocket\spec\ei\component\field\indepenent\IncompatiblePropertyException;
+use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\spec\ei\component\prop\indepenent\IncompatiblePropertyException;
 use rocket\spec\ei\component\EiConfigurator;
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\mask\EiMask;
 use n2n\persistence\orm\OrmConfigurationException;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\prop\EiProp;
 use rocket\spec\ei\component\command\IndependentEiCommand;
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
 use rocket\spec\config\extr\EiTypeExtraction;
@@ -166,9 +166,9 @@ class EiTypeFactory {
 		$id = $eiPropExtraction->getId();
 		$eiPropClass = ReflectionUtils::createReflectionClass($eiPropExtraction->getClassName());
 		
-		if (!$eiPropClass->implementsInterface('rocket\spec\ei\component\field\indepenent\IndependentEiProp')) {
+		if (!$eiPropClass->implementsInterface('rocket\spec\ei\component\prop\indepenent\IndependentEiProp')) {
 			throw new InvalidEiComponentConfigurationException('\'' . $eiPropClass->getName() 
-					. '\' must implement \'rocket\spec\ei\component\field\indepenent\IndependentEiProp\'.');
+					. '\' must implement \'rocket\spec\ei\component\prop\indepenent\IndependentEiProp\'.');
 		}
 		
 		$eiProp = $eiPropClass->newInstance();

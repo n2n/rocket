@@ -23,7 +23,7 @@
 namespace rocket\spec\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\prop\EiProp;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
 

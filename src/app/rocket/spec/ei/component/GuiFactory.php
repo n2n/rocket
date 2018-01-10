@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\component\field\GuiEiProp;
+use rocket\spec\ei\component\prop\GuiEiProp;
 use rocket\spec\ei\manage\gui\EditableWrapper;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\gui\GuiPropFork;

@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\draft\DraftManager;
 use rocket\spec\config\extr\SpecExtractionManager;
 
 class Rocket implements RequestScoped {
-	const VERSION = '1.1.5';
+	const VERSION = '2.0.0-alpha';
 	const NS = 'rocket';
 	
 	private $dbhPool;

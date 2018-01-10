@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\field;
+namespace rocket\spec\ei\component\prop;
 
 use rocket\spec\security\EiPropPrivilege;
 use n2n\core\container\N2nContext;

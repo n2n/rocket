@@ -67,7 +67,7 @@ class EiComponentStore {
 				as $key => $eiPropClassName) {
 			try {
 				$fieldClass = ReflectionUtils::createReflectionClass($eiPropClassName);
-				if (!$fieldClass->implementsInterface('rocket\spec\ei\component\field\EiProp')
+				if (!$fieldClass->implementsInterface('rocket\spec\ei\component\prop\EiProp')
 						|| !$fieldClass->implementsInterface('rocket\spec\ei\component\IndependentEiComponent')) continue;
 				
 				$this->eiPropClasses[$eiPropClassName] = $fieldClass;

@@ -21,23 +21,23 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\SortableEiProp;
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\prop\SortableEiProp;
+use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use rocket\spec\ei\component\field\FilterableEiProp;
+use rocket\spec\ei\component\prop\FilterableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\critmod\sort\SortField;
-use rocket\spec\ei\component\field\SortableEiPropFork;
+use rocket\spec\ei\component\prop\SortableEiPropFork;
 use rocket\spec\ei\manage\critmod\sort\SortFieldFork;
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
-use rocket\spec\ei\component\field\QuickSearchableEiProp;
+use rocket\spec\ei\component\prop\QuickSearchableEiProp;
 use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 
 class CritmodFactory {

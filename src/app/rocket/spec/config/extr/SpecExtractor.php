@@ -93,7 +93,7 @@ class SpecExtractor {
 	
 	private function createEiTypeExtraction($id, Attributes $eiTypeAttributes) {
 		$extraction = new EiTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setEntityClassName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY));
+		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY)));
 		$extraction->setEiDefExtraction($this->createEiDefExtraction($eiTypeAttributes));
 		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::SPEC_EI_DATA_SOURCE_NAME_KEY, false, null, true));
 		
@@ -180,7 +180,12 @@ class SpecExtractor {
 	        return $typeName;
 	    }
 	    
-	    return str_replace('EiField', 'EiProp', $typeName);
+	    return str_replace(
+	    		array('rocket\\spec\\ei\\component\\field\\impl', 'rocket\\spec\\ei\\component\\prop\\impl', 'EiField',
+	    				'rocket\spec\ei\component\command\impl'), 
+	    		array('rocket\\impl\\ei\\component\\prop', 'rocket\\impl\\ei\\component\\prop', 'EiProp',
+	    				'rocket\\impl\\ei\\component\\command'), 
+	    		$typeName);
 	}
 	
 	private function createEiPropExtraction($id, Attributes $attributes)  {
@@ -197,7 +202,7 @@ class SpecExtractor {
 	private function createEiComponentExtraction($eiCommandId, Attributes $attributes) {
 		$extraction = new EiComponentExtraction();
 		$extraction->setId($eiCommandId);
-		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
+		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
 	}	
@@ -206,7 +211,7 @@ class SpecExtractor {
 			string $eiTypeId, string $commonEiMaskId = null) {
 		$extraction = new EiModificatorExtraction($eiModificatorId, $this->moduleNamespace, 
 				$eiTypeId, $commonEiMaskId);
-		$extraction->setClassName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY));
+		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
 	}	

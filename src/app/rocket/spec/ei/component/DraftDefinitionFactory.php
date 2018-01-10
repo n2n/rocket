@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\component\field\DraftableEiProp;
+use rocket\spec\ei\component\prop\DraftableEiProp;
 use rocket\spec\ei\manage\draft\DraftDefinition;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\spec\ei\manage\draft\DraftProperty;

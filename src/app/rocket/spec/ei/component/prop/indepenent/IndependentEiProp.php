@@ -19,10 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\field\indepenent;
+namespace rocket\spec\ei\component\prop\indepenent;
 
 use rocket\spec\ei\component\IndependentEiComponent;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\prop\EiProp;
 use n2n\l10n\Lstr;
 
 interface IndependentEiProp extends EiProp, IndependentEiComponent {

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component\field\indepenent;
+namespace rocket\spec\ei\component\prop\indepenent;
 
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\persistence\meta\structure\Column;

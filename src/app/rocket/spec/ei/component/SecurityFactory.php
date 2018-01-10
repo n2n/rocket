@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\SortableEiProp;
+use rocket\spec\ei\component\prop\SortableEiProp;
 use rocket\spec\ei\manage\critmod\SortModel;
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\ei\component\field\PrivilegedEiProp;
+use rocket\spec\ei\component\prop\PrivilegedEiProp;
 use rocket\spec\security\PrivilegeDefinition;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\ei\EiCommandPath;

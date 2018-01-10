@@ -26,7 +26,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\prop\EiProp;
 use rocket\spec\ei\EiPropPath;
 
 class CommonGenericEiProperty implements GenericEiProperty {

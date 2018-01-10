@@ -356,7 +356,7 @@ class EiType extends Spec implements EiThing {
 	}
 // 	/**
 // 	 * @param unknown $propertyName
-// 	 * @return \rocket\spec\ei\component\field\ObjectPropertyEiProp
+// 	 * @return \rocket\spec\ei\component\prop\ObjectPropertyEiProp
 // 	 */
 // 	public function containsEiPropPropertyName($propertyName) {
 // 		foreach ($this->eiPropCollection as $eiProp) {

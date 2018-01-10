@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei;
 
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\prop\EiProp;
 
 class EiPropPath extends IdPath {
 

@@ -33,7 +33,7 @@ use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\DraftEiObject;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\component\field\EiProp;
+use rocket\spec\ei\component\prop\EiProp;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;

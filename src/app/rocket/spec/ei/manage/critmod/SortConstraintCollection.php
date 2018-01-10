@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei;
 
-use rocket\spec\ei\component\field\SortableEiProp;
+use rocket\spec\ei\component\prop\SortableEiProp;
 use n2n\reflection\ArgUtils;
 use n2n\util\HashMap;
 

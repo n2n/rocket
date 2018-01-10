@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\field\EiPropCollection;
+use rocket\spec\ei\component\prop\EiPropCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\security\PrivilegeConstraint;
@@ -30,7 +30,7 @@ use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\component\field\FieldEiProp;
+use rocket\spec\ei\component\prop\FieldEiProp;
 use rocket\spec\ei\manage\mapping\EiField;
 use rocket\spec\ei\manage\util\model\Eiu;
 
