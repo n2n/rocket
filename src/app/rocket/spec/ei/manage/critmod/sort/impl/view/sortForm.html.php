@@ -46,20 +46,23 @@ use rocket\spec\ei\manage\control\IconType;
 			Criteria::ORDER_DIRECTION_ASC => $view->getL10nText('ei_sort_asc_label'),
 			Criteria::ORDER_DIRECTION_DESC => $view->getL10nText('ei_sort_desc_label'));
 	
-	$html->meta()->addJs('js/sort.js', 'rocket');
+	$html->meta()->addJs('js/filters.js', 'rocket');
 ?>
 <div class="rocket-sort" 
 		data-text-add-sort="<?php $html->l10nText('ei_impl_add_sort_label') ?>" 
-		data-icon-class-name-add="<?php $html->out(IconType::ICON_PLUS_CIRCLE) ?>">
+		data-icon-class-name-add="<?php $html->out(IconType::ICON_PLUS_CIRCLE) ?>"
+		data-text-remove-sort="<?php $html->l10nText('ei_impl_remove_sort_label') ?>" 
+		data-icon-class-name-remove="<?php $html->out(IconType::ICON_TIMES) ?>"
+		>
 	<ul class="nav">
 		<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
-			<li class="nav-item">
+			<li class="nav-item rocket-sort-constraint">
 				<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions, array('class' => 'form-control')) ?>
 				<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
 			</li>
 		<?php endforeach ?>
-		<li class="nav-item rocket-empty-sort-constraint">
-			<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control')) ?>
+		<li class="nav-item rocket-sort-constraint rocket-empty-sort-constraint">
+			<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control rocket-sort-prop')) ?>
 			<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions, array('class' => 'form-control')) ?>
 		</li>
 	</ul>

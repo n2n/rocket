@@ -19,6 +19,110 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 jQuery(document).ready(function($) {
+	var MultiAdd = function(jqElemA, jqElemContent) {
+		this.jqElemA = jqElemA;
+		
+		this.jqElemContentContainer = $("<div />", {
+			"class": "rocket-multi-add-content-container"
+		}).css({
+			"position": "fixed",
+			"zIndex": 1000
+		}).hide().insertAfter(jqElemA);
+		
+		this.jqElemArrow = $("<span />").insertAfter(this.jqElemContentContainer).css({
+			"position": "fixed",
+			"background": "#818a91",
+			"transform": "rotate(45deg)",
+			"width": "15px",
+			"height": "15px",
+			"zIndex": 999
+		}).addClass("rocket-multi-add-arrow-left").hide();
+		
+		this.jqElemContent = jqElemContent.addClass("rocket-multi-add-entries").appendTo(this.jqElemContentContainer);
+		
+		(function(that) {
+			this.jqElemA.click(function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				if (that.jqElemContentContainer.is(":hidden")) {
+					that.showList();
+				} else {
+					that.hideList();
+				}
+			});
+			
+			this.jqElemContentContainer.click(function() {
+				that.hideList();
+			});
+		}).call(this, this);
+	};
+
+	MultiAdd.prototype.showList = function() {
+		this.jqElemContentContainer.show();
+		var left = this.jqElemA.offset().left + this.jqElemA.outerWidth();
+		
+		this.jqElemArrow.show().css({
+			"top": this.jqElemA.offset().top + (this.jqElemA.outerHeight() / 2) 
+					- (this.jqElemArrow.outerHeight() / 2),
+			"left": left + 2
+		});
+		  
+		left += this.jqElemArrow.outerWidth() / 2;
+		
+		this.jqElemContentContainer.css({
+			"top": this.determineContentTopPos(),
+			"left": left
+		});
+		
+		this.applyFieldListMouseLeave();
+	};
+	
+	MultiAdd.prototype.determineContentTopPos = function() {
+		return this.jqElemA.offset().top +  this.jqElemA.outerHeight() / 2 -
+					$(window).scrollTop() - (this.jqElemContentContainer.outerHeight() / 2);
+	};
+	
+	MultiAdd.prototype.applyFieldListMouseLeave = function() {
+		var that = this;
+		
+		this.resetFieldListMouseLeave();
+
+		this.jqElemContentContainer.on("mouseenter.multi-add", function() {
+			that.applyFieldListMouseLeave();
+		}).on("mouseleave.multi-add", function() {
+			that.mouseLeaveTimeout = setTimeout(function() {
+				that.hideList();
+			}, 1000);
+		}).on("click.multi-add", function(e) {
+			e.stopPropagation();
+		});
+		
+		$(window).on("keyup.multi-add", function(e) {
+			if (e.which === 27) {
+				//escape	
+				that.hideList();	
+			};
+		}).on("click.multi-add", function() {
+			that.hideList();
+		});
+	};
+	
+	MultiAdd.prototype.hideList = function() {
+		this.jqElemContentContainer.hide();
+		this.jqElemArrow.hide();
+		this.resetFieldListMouseLeave();
+	};
+	
+	MultiAdd.prototype.resetFieldListMouseLeave = function() {
+		if (null !== this.mouseLeaveTimeout) {
+			clearTimeout(this.mouseLeaveTimeout);
+			this.mouseLeaveTimeout = null;
+		}
+		
+		this.jqElemContentContainer.off("mouseenter.multi-add mouseleave.multi-add click.multi-add");
+		$(window).off("keyup.multi-add click.multi-add");
+	};
+	
 	(function() {
 		var Filter = function(jqElem) {
 			this.jqElem = jqElem;
@@ -89,8 +193,6 @@ jQuery(document).ready(function($) {
 			this.jqElemAAddFieldItem = null;
 			this.jqElemAAddGroup = null;
 			this.jqElemARemove = null;
-			this.jqElemDivFieldListContainer = null;
-			this.jqElemArrowFieldList = null;
 			this.jqElemUlFieldsList = null;
 			this.mouseLeaveTimeout = null;
 			
@@ -131,16 +233,6 @@ jQuery(document).ready(function($) {
 					});
 				});
 				
-				this.jqElemAAddFieldItem.click(function(e) {
-					e.preventDefault();
-					e.stopPropagation();
-					if (that.jqElemUlFieldsList.is(":hidden")) {
-						that.showFieldList();
-					} else {
-						that.hideFieldList();
-					}
-				});
-				
 				this.jqElemFieldItems.children("li").each(function() {
 					new FilterFieldItem($(this), that);
 				});
@@ -152,73 +244,6 @@ jQuery(document).ready(function($) {
 				this.applyAndOrSwitchTexts();
 				this.applyAndOrSwitchIcons();
 			}).call(this, this);
-		};
-		
-		FilterGroup.prototype.showFieldList = function() {
-			this.jqElemDivFieldListContainer.show();
-			var jqElemOpener = this.jqElemAAddFieldItem,
-				left = jqElemOpener.offset().left + jqElemOpener.outerWidth();
-			this.jqElemArrow.show().css({
-				"top": jqElemOpener.offset().top + (jqElemOpener.outerHeight() / 2) 
-						- (this.jqElemArrow.outerHeight() / 2),
-				"left": left + 2
-			});
-			  
-			left += this.jqElemArrow.outerWidth() / 2;
-			  
-			this.jqElemDivFieldListContainer.css({
-				"top": this.determineContentTopPos(),
-				"left": left
-			});
-			this.applyFieldListMouseLeave();
-		};
-		
-		FilterGroup.prototype.determineContentTopPos = function() {
-			var jqElemOpener = this.jqElemAAddFieldItem;
-			return jqElemOpener.offset().top +  jqElemOpener.outerHeight() / 2 -
-						$(window).scrollTop() - (this.jqElemDivFieldListContainer.outerHeight() / 2);
-		};
-		
-		FilterGroup.prototype.applyFieldListMouseLeave = function() {
-			var that = this,
-				jqElemContentContainer = this.jqElemDivFieldListContainer,
-				jqElemOpener = this.jqElemAAddFieldItem;
-			this.resetFieldListMouseLeave();
-
-			jqElemContentContainer.on("mouseenter.multi-add", function() {
-				that.applyFieldListMouseLeave();
-			}).on("mouseleave.multi-add", function() {
-				that.mouseLeaveTimeout = setTimeout(function() {
-					that.hideFieldList();
-				}, 1000);
-			}).on("click.multi-add", function(e) {
-				e.stopPropagation();
-			});
-			
-			$(window).on("keyup.multi-add", function(e) {
-				if (e.which === 27) {
-					//escape	
-					that.hideFieldList();	
-				};
-			}).on("click.multi-add", function() {
-				that.hideFieldList();
-			});
-		};
-		
-		FilterGroup.prototype.hideFieldList = function() {
-			this.jqElemDivFieldListContainer.hide();
-			this.jqElemArrow.hide();
-			this.resetFieldListMouseLeave();
-		};
-		
-		FilterGroup.prototype.resetFieldListMouseLeave = function() {
-			if (null !== this.mouseLeaveTimeout) {
-				clearTimeout(this.mouseLeaveTimeout);
-				this.mouseLeaveTimeout = null;
-			}
-			
-			this.jqElemDivFieldListContainer.off("mouseenter.multi-add mouseleave.multi-add click.multi-add");
-			$(window).off("keyup.multi-add click.multi-add");
 		};
 		
 		FilterGroup.prototype.initializeCommands = function() {
@@ -275,30 +300,9 @@ jQuery(document).ready(function($) {
 				"text": this.filter.textAddField
 			})).appendTo(this.jqElemDivCommands);
 			
-			this.jqElemDivFieldListContainer = $("<div />", {
-				"class": "rocket-multi-add-content-container"
-			}).css({
-				"position": "fixed",
-				"zIndex": 1000
-			}).insertAfter(this.jqElemDivCommands).hide().click(function() {
-				that.jqElemArrow.hide();
-			});
-			
-			this.jqElemArrow = $("<span />").insertAfter(this.jqElemDivFieldListContainer).css({
-				"position": "fixed",
-				"background": "#818a91",
-				"transform": "rotate(45deg)",
-				"width": "15px",
-				"height": "15px",
-				"zIndex": 999
-			}).addClass("rocke-multi-add-arrow-left").hide();
-			
-			this.jqElemUlFieldsList = $("<ul />", {
-				"class": "rocket-multi-add-entries"
-			}).appendTo(this.jqElemDivFieldListContainer);
+			this.jqElemUlFieldsList = $("<ul />");
 			
 			var that = this;
-			
 			for (var fieldId in this.filter.fields) {
 				$("<a />", {
 					href: "#",
@@ -320,6 +324,8 @@ jQuery(document).ready(function($) {
 					});
 				}).appendTo($("<li />").appendTo(this.jqElemUlFieldsList));
 			}
+			
+			new MultiAdd(this.jqElemAAddFieldItem, this.jqElemUlFieldsList);
 		};
 		
 		FilterGroup.prototype.applyAndOrSwitchTexts = function() {
@@ -392,6 +398,97 @@ jQuery(document).ready(function($) {
 				jqElem.data("initialized-filter", true);
 				
 				new Filter(jqElem);
+			});
+		};
+		
+		if (Jhtml) {
+			Jhtml.ready(initialize);
+		}
+		
+		initialize();
+		n2n.dispatch.registerCallback(initialize);
+	})();
+	
+	(function() {
+		var Sort = function(jqElem) {
+			this.jqElem = jqElem;
+			this.jqElemUl = jqElem.find("ul.nav:first");
+			this.textAddSort = jqElem.data("text-add-sort");
+			this.iconClassNameAdd = jqElem.data("icon-class-name-add");
+			this.textRemoveSort = jqElem.data("text-remove-sort");
+			this.iconClassNameRemove = jqElem.data("icon-class-name-remove");
+			this.jqElemEmpty = jqElem.find(".rocket-empty-sort-constraint").removeClass("rocket-empty-sort-constraint").detach();
+			this.jqElemAdd = null;
+			
+			(function(that) {
+				this.jqElemAdd = $("<a />", {
+					"href": "#",
+					"class": "btn btn-primary"
+				}).append($("<i />", {
+					"class": this.iconClassNameAdd
+				})).append($("<span />", {
+					"text": this.textAddSort
+				})).appendTo(jqElem);
+				
+				this.jqElemUlFieldList = $("<ul />");
+				this.jqElemEmpty.find(".rocket-sort-prop:first").children().each(function() {
+					var jqElemOption = $(this);
+					$("<li />").append($("<a />", {
+						"href": "#",
+						"text": jqElemOption.text()
+					}).click(function(e) {
+						e.preventDefault();
+						that.jqElemUl.append(that.requestSortConstraint(jqElemOption.val()));
+					})).appendTo(that.jqElemUlFieldList);
+				});
+				
+				new MultiAdd(this.jqElemAdd, this.jqElemUlFieldList);
+				
+				jqElem.find(".rocket-sort-constraint").each(function() {
+					that.initializeSortItem($(this));
+				});
+			}).call(this, this);
+		};
+		
+		Sort.prototype.requestSortConstraint = function(propName) {
+			var jqElem = this.jqElemEmpty.clone();
+			
+			this.initializeSortItem(jqElem, propName);
+			return jqElem;
+		};
+		
+		Sort.prototype.initializeSortItem = function(jqElem, propName) {
+			var jqElemSortProp = jqElem.find(".rocket-sort-prop:first");
+			if (propName) {
+				jqElemSortProp.val(propName);
+			}
+			
+			jqElemSortProp.hide();
+			
+			$("<span>", {
+				"text": jqElemSortProp.children(":selected").text()
+			}).prependTo(jqElem);
+			
+			jqElem.append($("<a />", {
+				"class": "rocket-control rocket-sort-constraint-remove",
+				"href": "#"
+			}).append($("<i />", {
+				"class": "fa fa-times"
+			}).append($("<span />", {
+				"class": this.textRemoveSort
+			}))).click(function(e) {
+				e.preventDefault();
+				jqElem.remove();
+			}));
+		};
+		
+		var initialize = function() {
+			$(".rocket-sort").each(function() {
+				var jqElem = $(this);
+				if (jqElem.data("initialized-sort")) return;
+				jqElem.data("initialized-sort", true);
+				
+				new Sort(jqElem);
 			});
 		};
 		
