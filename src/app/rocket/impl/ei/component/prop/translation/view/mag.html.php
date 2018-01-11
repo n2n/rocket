@@ -50,9 +50,11 @@
 		<div class="rocket-impl-translation"
 				data-rocket-impl-locale-id="<?php $html->out($n2nLocaleId) ?>"
 				data-rocket-impl-activate-label="<?php $html->text('ei_impl_activate_translation', array(
-						'locale' => $n2nLocale->getName($request->getN2nLocale()),
+						'locale' => $n2nLocale->getName($view->getN2nLocale()),
 						'field' => $view->getParam('label'))) ?>"
-				data-rocket-impl-property-path="<?php $html->out((string) $propertyPath->reduced(1)) ?>">
+				data-rocket-impl-property-path="<?php $html->out((string) $propertyPath->reduced(1)) ?>"
+				data-rocket-impl-copy-tooltip="<?php $html->text('ei_impl_translation_copy_tooltip',
+						array('field' => $view->getParam('label'), 'locale' => $n2nLocale->getName($view->getN2nLocale()))) ?>">
 		
 			<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId]) ?>
 				<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 

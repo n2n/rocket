@@ -254,7 +254,7 @@ namespace Rocket.Impl.Translation {
 				
 				if (!this.copyControl) {
 					this.copyControl = new CopyControl(this);
-					this.copyControl.draw();
+					this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
 				}
 				
 				this.copyControl.addUrlDef(urlDefs[localeId]);
@@ -282,14 +282,15 @@ namespace Rocket.Impl.Translation {
 			
 		}
 		
-		draw() {
+		draw(tooltip: string) {
 			this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
 			this.translatedContent.jQuery.prepend(this.elemJq);
 			
 			let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
-					.append($("<i></i>", { class: "fa fa-copy" }));
+					.append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
 			let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
-					.append(this.menuUlJq = $("<ul></ul>"));
+					.append(this.menuUlJq = $("<ul></ul>"))
+					.append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
 			
 			this.toggler = Toggler.simple(buttonJq, menuJq);
 			
@@ -301,12 +302,11 @@ namespace Rocket.Impl.Translation {
 //			}
 		}
 		
-		
 		addUrlDef(urlDef: UrlDef) {
 			let url = this.completeCopyUrl(urlDef.copyUrl);
 			this.menuUlJq.append($("<li/>").append($("<a />", {
 				"text": urlDef.label
-			}).click((e) => {
+			}).append($("<i></i>", { class: "fa fa-mail-forward"})).click((e) => {
 				e.stopPropagation();
 				this.copy(url);
 				this.toggler.close();
