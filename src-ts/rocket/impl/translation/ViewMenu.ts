@@ -4,6 +4,7 @@ namespace Rocket.Impl.Translation {
 	export class ViewMenu {
 		private translatables: Array<Translatable> = [];
 		private jqStatus: JQuery;
+		private buttonJq: JQuery;
 		private jqMenu: JQuery;
 		private items: { [localeId: string]: ViewMenuItem } = {};
 		private changing: boolean = false;
@@ -18,7 +19,7 @@ namespace Rocket.Impl.Translation {
 					.append(this.jqStatus = $("<span></span>"))
 					.prependTo(this.jqContainer);
 			
-			new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
+			this.buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
 				iconType: "fa fa-cog",
 				label: languagesLabel
 			}).click((e) => {
@@ -30,7 +31,7 @@ namespace Rocket.Impl.Translation {
 			this.jqContainer.append(this.jqMenu);
 		}	
 		
-		private closeCallback: () => any = null;
+		private closeCallback: (e?: any) => any = null;
 		
 		private toggle() {
 			if (this.closeCallback) {
@@ -39,14 +40,18 @@ namespace Rocket.Impl.Translation {
 			}
 			
 			this.jqMenu.show();
+			this.buttonJq.addClass("rocket-active");
 			let bodyJq = $("body");
 			
-			this.closeCallback = () => {
+			this.closeCallback = (e?) => {
+				if (e && this.jqMenu.has(e.target).length > 0) return;
+				
 				bodyJq.off("click", this.closeCallback);
 				this.jqMenu.off("mouseleave", this.closeCallback);
 				this.closeCallback = null;
 				
 				this.jqMenu.hide();
+				this.buttonJq.removeClass("rocket-active");
 			};
 			
 			bodyJq.on("click", this.closeCallback);
@@ -223,8 +228,10 @@ namespace Rocket.Impl.Translation {
 		
 		private checkI() {
 			if (this.on) {
+				this.jqA.addClass("rocket-active");
 				this.jqI.attr("class", "fa fa-toggle-on");
 			} else {
+				this.jqA.removeClass("rocket-active");
 				this.jqI.attr("class", "fa fa-toggle-off");
 			}
 		}

@@ -5695,6 +5695,7 @@ var Rocket;
                     this.min = 0;
                     this.translatables = [];
                     this.menuItems = [];
+                    this.buttonJq = null;
                     this.changing = false;
                     this.closeCallback = null;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
@@ -5785,7 +5786,7 @@ var Rocket;
                 initControl() {
                     let jqLabel = this.jqElem.children("label:first");
                     let cmdList = Rocket.Display.CommandList.create(true);
-                    cmdList.createJqCommandButton({
+                    this.buttonJq = cmdList.createJqCommandButton({
                         iconType: "fa fa-language",
                         label: jqLabel.text(),
                         tooltip: this.jqElem.data("rocket-impl-tooltip")
@@ -6168,7 +6169,7 @@ var Rocket;
                         .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
                         .append(this.jqStatus = $("<span></span>"))
                         .prependTo(this.jqContainer);
-                    new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
+                    this.buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
                         iconType: "fa fa-cog",
                         label: languagesLabel
                     }).click((e) => {
@@ -6184,12 +6185,16 @@ var Rocket;
                         return;
                     }
                     this.jqMenu.show();
+                    this.buttonJq.addClass("rocket-active");
                     let bodyJq = $("body");
-                    this.closeCallback = () => {
+                    this.closeCallback = (e) => {
+                        if (e && this.jqMenu.has(e.target).length > 0)
+                            return;
                         bodyJq.off("click", this.closeCallback);
                         this.jqMenu.off("mouseleave", this.closeCallback);
                         this.closeCallback = null;
                         this.jqMenu.hide();
+                        this.buttonJq.removeClass("rocket-active");
                     };
                     bodyJq.on("click", this.closeCallback);
                     this.jqMenu.on("mouseleave", this.closeCallback);
@@ -6328,9 +6333,11 @@ var Rocket;
                 }
                 checkI() {
                     if (this.on) {
+                        this.jqA.addClass("rocket-active");
                         this.jqI.attr("class", "fa fa-toggle-on");
                     }
                     else {
+                        this.jqA.removeClass("rocket-active");
                         this.jqI.attr("class", "fa fa-toggle-off");
                     }
                 }

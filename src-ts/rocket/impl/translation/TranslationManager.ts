@@ -5,6 +5,7 @@ namespace Rocket.Impl.Translation {
 		private jqMenu: JQuery;
 		private translatables: Array<Translatable> = [];
 		private menuItems: Array<MenuItem> = [];
+		private buttonJq: JQuery = null;
 		
 		constructor(private jqElem: JQuery) {
 			this.min = parseInt(jqElem.data("rocket-impl-min"));
@@ -122,7 +123,7 @@ namespace Rocket.Impl.Translation {
 		private initControl() {
 			let jqLabel = this.jqElem.children("label:first");
 			let cmdList = Rocket.Display.CommandList.create(true);
-			cmdList.createJqCommandButton({
+			this.buttonJq = cmdList.createJqCommandButton({
 				iconType: "fa fa-language",
 				label: jqLabel.text(),
 				tooltip: this.jqElem.data("rocket-impl-tooltip")
