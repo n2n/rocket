@@ -51,7 +51,7 @@
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
 		data-compact="<?php $html->out($toOneForm->isCompact()) ?>"
-		data-close-label="<?php $html->text('common_close_label') ?>">
+		data-close-label="<?php $html->text('common_ok_label') ?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 
