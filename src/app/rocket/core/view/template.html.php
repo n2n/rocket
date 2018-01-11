@@ -93,6 +93,20 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 		bottom: 0px;
 		background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
 	}
+	
+	.rocket-load-blocker {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		background: white url('https://media.giphy.com/media/3ohzgD1wRxpvpkDCSI/giphy.gif') center center no-repeat;
+	}
+	
+	.rocket-load-blocker * {
+		display: none;
+	}
+	
 </style>
 <?php $html->headEnd() ?>
 <?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')),

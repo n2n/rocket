@@ -6132,6 +6132,11 @@ var Rocket;
                     });
                 }
                 copy(url) {
+                    if (this.loaderJq)
+                        return;
+                    this.loaderJq = $("<div />", {
+                        class: "rocket-load-blocker"
+                    }).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.translatedContent.jQuery);
                     Jhtml.lookupModel(url).then((model) => {
                         this.replace(model.snippet);
                     });
@@ -6141,6 +6146,8 @@ var Rocket;
                     this.translatedContent.replaceField(newFieldJq);
                     snippet.elements = newFieldJq.toArray();
                     snippet.markAttached();
+                    this.loaderJq.remove();
+                    this.loaderJq = null;
                 }
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));

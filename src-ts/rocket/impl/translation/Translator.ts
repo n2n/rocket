@@ -321,7 +321,15 @@ namespace Rocket.Impl.Translation {
 			});
 		}
 		
+		private loaderJq: JQuery;
+		
 		private copy(url: Jhtml.Url) {
+			if (this.loaderJq) return;
+			
+			this.loaderJq = $("<div />", {
+				class: "rocket-load-blocker"
+			}).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.translatedContent.jQuery);
+			
 			Jhtml.lookupModel(url).then((model: Jhtml.Model) => {
 				this.replace(model.snippet);
 			});
@@ -332,6 +340,9 @@ namespace Rocket.Impl.Translation {
 			this.translatedContent.replaceField(newFieldJq);
 			snippet.elements = newFieldJq.toArray();
 			snippet.markAttached();
+			
+			this.loaderJq.remove();
+			this.loaderJq = null;
 		}
 	}
 }
