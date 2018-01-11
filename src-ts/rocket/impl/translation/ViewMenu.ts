@@ -21,12 +21,37 @@ namespace Rocket.Impl.Translation {
 			new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
 				iconType: "fa fa-cog",
 				label: languagesLabel
-			}).click(() => this.jqMenu.toggle());
+			}).click((e) => {
+				e.stopPropagation();
+				this.toggle()
+			});
 			
 			this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
 			this.jqContainer.append(this.jqMenu);
 		}	
 		
+		private closeCallback: () => any = null;
+		
+		private toggle() {
+			if (this.closeCallback) {
+				this.closeCallback();
+				return;
+			}
+			
+			this.jqMenu.show();
+			let bodyJq = $("body");
+			
+			this.closeCallback = () => {
+				bodyJq.off("click", this.closeCallback);
+				this.jqMenu.off("mouseleave", this.closeCallback);
+				this.closeCallback = null;
+				
+				this.jqMenu.hide();
+			};
+			
+			bodyJq.on("click", this.closeCallback);
+			this.jqMenu.on("mouseleave", this.closeCallback);
+		}
 		
 		private updateStatus() {
 			let prettyLocaleIds: Array<string> = [];

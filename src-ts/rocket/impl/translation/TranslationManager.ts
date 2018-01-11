@@ -126,7 +126,10 @@ namespace Rocket.Impl.Translation {
 				iconType: "fa fa-language",
 				label: jqLabel.text(),
 				tooltip: this.jqElem.data("rocket-impl-tooltip")
-			}).click(() => this.toggle());
+			}).click((e) => {
+				e.stopPropagation();
+				this.toggle();
+			});
 			
 			jqLabel.replaceWith(cmdList.jQuery);
 		}
@@ -146,8 +149,29 @@ namespace Rocket.Impl.Translation {
 			
 		}
 		
+		private closeCallback: (e?: any) => any = null;
+		
 		private toggle() {
-			this.jqMenu.toggle();
+			if (this.closeCallback) {
+				this.closeCallback();
+				return;
+			}
+			
+			this.jqMenu.show();
+			let bodyJq = $("body");
+			
+			this.closeCallback = (e?: any) => {
+				if (e && this.jqMenu.has(e.target).length > 0) return;
+
+				bodyJq.off("click", this.closeCallback);
+				this.jqMenu.off("mouseleave", this.closeCallback);
+				this.closeCallback = null;
+				
+				this.jqMenu.hide();
+			};
+			
+			bodyJq.on("click", this.closeCallback);
+			this.jqMenu.on("mouseleave", this.closeCallback);
 		}
 			
 		static from(jqElem: JQuery): TranslationManager {

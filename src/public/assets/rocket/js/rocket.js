@@ -5696,6 +5696,7 @@ var Rocket;
                     this.translatables = [];
                     this.menuItems = [];
                     this.changing = false;
+                    this.closeCallback = null;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
                     this.initControl();
                     this.initMenu();
@@ -5788,7 +5789,10 @@ var Rocket;
                         iconType: "fa fa-language",
                         label: jqLabel.text(),
                         tooltip: this.jqElem.data("rocket-impl-tooltip")
-                    }).click(() => this.toggle());
+                    }).click((e) => {
+                        e.stopPropagation();
+                        this.toggle();
+                    });
                     jqLabel.replaceWith(cmdList.jQuery);
                 }
                 initMenu() {
@@ -5803,7 +5807,22 @@ var Rocket;
                     });
                 }
                 toggle() {
-                    this.jqMenu.toggle();
+                    if (this.closeCallback) {
+                        this.closeCallback();
+                        return;
+                    }
+                    this.jqMenu.show();
+                    let bodyJq = $("body");
+                    this.closeCallback = (e) => {
+                        if (e && this.jqMenu.has(e.target).length > 0)
+                            return;
+                        bodyJq.off("click", this.closeCallback);
+                        this.jqMenu.off("mouseleave", this.closeCallback);
+                        this.closeCallback = null;
+                        this.jqMenu.hide();
+                    };
+                    bodyJq.on("click", this.closeCallback);
+                    this.jqMenu.on("mouseleave", this.closeCallback);
                 }
                 static from(jqElem) {
                     let tm = jqElem.data("rocketImplTranslationManager");
@@ -6142,6 +6161,7 @@ var Rocket;
                     this.translatables = [];
                     this.items = {};
                     this.changing = false;
+                    this.closeCallback = null;
                 }
                 draw(languagesLabel, visibleLabel) {
                     $("<div />", { "class": "rocket-impl-translation-status" })
@@ -6151,9 +6171,28 @@ var Rocket;
                     new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
                         iconType: "fa fa-cog",
                         label: languagesLabel
-                    }).click(() => this.jqMenu.toggle());
+                    }).click((e) => {
+                        e.stopPropagation();
+                        this.toggle();
+                    });
                     this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
                     this.jqContainer.append(this.jqMenu);
+                }
+                toggle() {
+                    if (this.closeCallback) {
+                        this.closeCallback();
+                        return;
+                    }
+                    this.jqMenu.show();
+                    let bodyJq = $("body");
+                    this.closeCallback = () => {
+                        bodyJq.off("click", this.closeCallback);
+                        this.jqMenu.off("mouseleave", this.closeCallback);
+                        this.closeCallback = null;
+                        this.jqMenu.hide();
+                    };
+                    bodyJq.on("click", this.closeCallback);
+                    this.jqMenu.on("mouseleave", this.closeCallback);
                 }
                 updateStatus() {
                     let prettyLocaleIds = [];
