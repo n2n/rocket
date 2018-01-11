@@ -171,7 +171,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 		$meta->addJs('impl/js/image-preview.js');
 		
 		$uiComponent = new HtmlElement('div', null, new Link($file->getFileSource()->getUrl(),
-				$html->getImage($file, ThSt::crop(40, 28, true),
+				$html->getImage($file, ThSt::crop(40, 35, true),
 						array('title' => $file->getOriginalName())), array('class' => 'rocket-image-previewable')));
 		
 		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
