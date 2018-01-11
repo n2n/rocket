@@ -4,8 +4,6 @@ namespace Rocket.Impl.Translation {
 	export class ViewMenu {
 		private translatables: Array<Translatable> = [];
 		private jqStatus: JQuery;
-		private buttonJq: JQuery;
-		private menuJq: JQuery;
 		private menuUlJq : JQuery;
 		private items: { [localeId: string]: ViewMenuItem } = {};
 		private changing: boolean = false;
@@ -20,49 +18,22 @@ namespace Rocket.Impl.Translation {
 					.append(this.jqStatus = $("<span></span>"))
 					.prependTo(this.jqContainer);
 			
-			this.buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
+			let buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
 				iconType: "fa fa-cog",
 				label: languagesLabel,
 				tooltip: tooltip
-			}).click((e) => {
-				e.stopPropagation();
-				this.toggle()
 			});
 			
-			this.menuJq = $("<div />", { "class": "rocket-impl-translation-status-menu" })
+			let menuJq = $("<div />", { "class": "rocket-impl-translation-status-menu" })
 					.append(this.menuUlJq = $("<ul></ul>"))
 					.append($("<div />", { "class": "rocket-impl-tooltip", "text": tooltip }))
 					.hide();
-			this.jqContainer.append(this.menuJq);
+			Toggler.simple(buttonJq, menuJq);
+			
+			this.jqContainer.append(menuJq);
 			
 		}	
 		
-		private closeCallback: (e?: any) => any = null;
-		
-		private toggle() {
-			if (this.closeCallback) {
-				this.closeCallback();
-				return;
-			}
-			
-			this.menuJq.show();
-			this.buttonJq.addClass("active");
-			let bodyJq = $("body");
-			
-			this.closeCallback = (e?) => {
-				if (e && this.menuJq.has(e.target).length > 0) return;
-				
-				bodyJq.off("click", this.closeCallback);
-				this.menuJq.off("mouseleave", this.closeCallback);
-				this.closeCallback = null;
-				
-				this.menuJq.hide();
-				this.buttonJq.removeClass("active");
-			};
-			
-			bodyJq.on("click", this.closeCallback);
-			this.menuJq.on("mouseleave", this.closeCallback);
-		}
 		
 		private updateStatus() {
 			let prettyLocaleIds: Array<string> = [];

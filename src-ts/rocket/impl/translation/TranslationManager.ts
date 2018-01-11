@@ -10,8 +10,7 @@ namespace Rocket.Impl.Translation {
 		constructor(private jqElem: JQuery) {
 			this.min = parseInt(jqElem.data("rocket-impl-min"));
 			
-			this.initControl();
-			this.initMenu();
+			Toggler.simple(this.initControl(), this.initMenu());
 			
 			this.val();
 		}
@@ -120,26 +119,25 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		
-		private initControl() {
+		private initControl(): JQuery {
 			let jqLabel = this.jqElem.children("label:first");
 			let cmdList = Rocket.Display.CommandList.create(true);
-			this.buttonJq = cmdList.createJqCommandButton({
+			let buttonJq = cmdList.createJqCommandButton({
 				iconType: "fa fa-language",
 				label: jqLabel.text(),
-				tooltip: this.jqElem.data("rocket-impl-tooltip")
-			}).click((e) => {
-				e.stopPropagation();
-				this.toggle();
+				tooltip: this.jqElem.find("rocket-impl-tooltip").text()
 			});
 			
 			jqLabel.replaceWith(cmdList.jQuery);
+			
+			return buttonJq;
 		}
 		
-		private initMenu() {
-			this.menuJq = this.jqElem.find(".rocket-impl-translation-menu");
-			this.menuJq.hide();
+		private initMenu(): JQuery {
+			let menuJq = this.jqElem.find(".rocket-impl-translation-menu");
+			menuJq.hide();
 
-			this.menuJq.find("li").each((i, elem) => {
+			menuJq.find("li").each((i, elem) => {
 				let mi = new MenuItem($(elem));
 				this.menuItems.push(mi);
 				
@@ -147,34 +145,10 @@ namespace Rocket.Impl.Translation {
 					this.menuChanged();
 				});
 			});
+			
+			return menuJq;
 		}
 		
-		private closeCallback: (e?: any) => any = null;
-		
-		private toggle() {
-			if (this.closeCallback) {
-				this.closeCallback();
-				return;
-			}
-			
-			this.menuJq.show();
-			this.buttonJq.addClass("active");
-			let bodyJq = $("body");
-			
-			this.closeCallback = (e?: any) => {
-				if (e && this.menuJq.has(e.target).length > 0) return;
-
-				bodyJq.off("click", this.closeCallback);
-				this.menuJq.off("mouseleave", this.closeCallback);
-				this.closeCallback = null;
-				
-				this.menuJq.hide();
-				this.buttonJq.removeClass("active");
-			};
-			
-			bodyJq.on("click", this.closeCallback);
-			this.menuJq.on("mouseleave", this.closeCallback);
-		}
 			
 		static from(jqElem: JQuery): TranslationManager {
 			let tm = jqElem.data("rocketImplTranslationManager");

@@ -147,30 +147,47 @@ namespace Rocket.Impl.Translation {
 	
 	class TranslatedContent {
 //		private jqTranslation: JQuery;
-		private propertyPath: string;
-		private fieldJq: JQuery;
+		private _propertyPath: string;
+		private _fieldJq: JQuery;
 		private jqEnabler: JQuery = null;
 		private copyControlJq: JQuery = null;
 		private changedCallbacks: Array<() => any> = [];
 		private _visible: boolean = true;
 		
-		constructor(private _localeId: string, private jqElem: JQuery) {
-			Display.StructureElement.from(jqElem, true);
+		constructor(private _localeId: string, private elemJq: JQuery) {
+			Display.StructureElement.from(elemJq, true);
 //			this.jqTranslation = jqElem.children(".rocket-impl-translation");
-			this.propertyPath = jqElem.data("rocket-impl-property-path");
-			this.fieldJq = jqElem.children("div");
+			this._propertyPath = elemJq.data("rocket-impl-property-path");
+			this._fieldJq = elemJq.children("div");
+		}
+		
+		get jQuery(): JQuery {
+			return this.elemJq;
+		}
+		
+		get fieldJq(): JQuery {
+			return this._fieldJq;
+		}
+		
+		replaceField(newFieldJq: JQuery) {
+			this._fieldJq.replaceWith(newFieldJq);
+			this._fieldJq = newFieldJq;
 		}
 		
 		get localeId(): string {
 			return this._localeId;
 		}
 		
+		get propertyPath(): string {
+			return this._propertyPath;
+		}
+		
 		get prettyLocaleId(): string {
-			return this.jqElem.find("label:first").text();
+			return this.elemJq.find("label:first").text();
 		}
 		
 		get localeName(): string {
-			return this.jqElem.find("label:first").attr("title");
+			return this.elemJq.find("label:first").attr("title");
 		}
 		
 		get visible(): boolean {
@@ -182,7 +199,7 @@ namespace Rocket.Impl.Translation {
 				if (this._visible) return;
 				this._visible = true;
 				
-				this.jqElem.show();
+				this.elemJq.show();
 				this.triggerChanged();
 				return;
 			}
@@ -190,7 +207,7 @@ namespace Rocket.Impl.Translation {
 			if (!this._visible) return;
 			
 			this._visible = false;
-			this.jqElem.hide();
+			this.elemJq.hide();
 			this.triggerChanged();
 		}
 		
@@ -217,9 +234,9 @@ namespace Rocket.Impl.Translation {
 				this.jqEnabler = $("<button />", {
 					"class": "rocket-impl-enabler",
 					"type": "button",
-					"text": " " + this.jqElem.data("rocket-impl-activate-label"),
+					"text": " " + this.elemJq.data("rocket-impl-activate-label"),
 					"click": () => { this.active = true} 
-				}).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.jqElem);
+				}).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.elemJq);
 				
 				this.triggerChanged();
 			}
@@ -229,32 +246,78 @@ namespace Rocket.Impl.Translation {
 			}
 		}
 		
+		private copyControl: CopyControl;
+		
 		drawCopyControl(urlDefs: { [localeId: string]: UrlDef }) {
-			let copyUlJq: JQuery;
 			for (let localeId in urlDefs) {
 				if (localeId == this.localeId) continue;
 				
-				if (!copyUlJq) {
-					copyUlJq = this.drawCopyUlJq();
+				if (!this.copyControl) {
+					this.copyControl = new CopyControl(this);
+					this.copyControl.draw();
 				}
 				
-				let urlDef = urlDefs[localeId];
-				
-				let url = this.completeCopyUrl(urlDef.copyUrl);
-				copyUlJq.append($("<li/>").append($("<a />", {
-					"text": urlDef.label
-				}).click((e) => {
-					e.stopPropagation();
-					this.copy(url);
-					copyUlJq.hide();
-				})));
+				this.copyControl.addUrlDef(urlDefs[localeId]);
 			}
 		}
 		
+		private triggerChanged() {
+			for (let callback of this.changedCallbacks) {
+				callback();
+			}
+		}
+		
+		public whenChanged(callback: () => any) {
+			this.changedCallbacks.push(callback);
+		}
+	}
+	
+	class CopyControl {
+		
+		private elemJq: JQuery;
+		private menuUlJq: JQuery;
+		private toggler: Toggler;
+	
+		constructor(private translatedContent: TranslatedContent) {
+			
+		}
+		
+		draw() {
+			this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
+			this.translatedContent.jQuery.prepend(this.elemJq);
+			
+			let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
+					.append($("<i></i>", { class: "fa fa-copy" }));
+			let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
+					.append(this.menuUlJq = $("<ul></ul>"));
+			
+			this.toggler = Toggler.simple(buttonJq, menuJq);
+			
+			this.elemJq.append(buttonJq);
+			this.elemJq.append(menuJq);
+			
+//			if (!this.translatedContent.active) {
+//				this.hide();
+//			}
+		}
+		
+		
+		addUrlDef(urlDef: UrlDef) {
+			let url = this.completeCopyUrl(urlDef.copyUrl);
+			this.menuUlJq.append($("<li/>").append($("<a />", {
+				"text": urlDef.label
+			}).click((e) => {
+				e.stopPropagation();
+				this.copy(url);
+				this.toggler.close();
+			})));
+		}
+		
+		
 		private completeCopyUrl(url: Jhtml.Url) {
 			return url.extR(null, {
-				propertyPath: this.propertyPath,
-				toN2nLocale: this.localeId
+				propertyPath: this.translatedContent.propertyPath,
+				toN2nLocale: this.translatedContent.localeId
 			});
 		}
 		
@@ -266,40 +329,9 @@ namespace Rocket.Impl.Translation {
 		
 		private replace(snippet: Jhtml.Snippet) {
 			let newFieldJq = $(snippet.elements).children();
-			this.fieldJq.replaceWith(newFieldJq);
+			this.translatedContent.replaceField(newFieldJq);
 			snippet.elements = newFieldJq.toArray();
-			this.fieldJq = newFieldJq;
 			snippet.markAttached();
-		}
-		
-		private drawCopyUlJq(): JQuery {
-			this.copyControlJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
-			this.jqElem.prepend(this.copyControlJq);
-			
-			let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
-					.append($("<i></i>", { class: "fa fa-copy" }));
-			let copyUlJq = $("<ul></ul>").hide();
-			
-			buttonJq.click(() => { copyUlJq.toggle() });
-			
-			this.copyControlJq.append(buttonJq);
-			this.copyControlJq.append(copyUlJq);
-			
-			if (!this.active) {
-				this.copyControlJq.hide();
-			}
-			
-			return copyUlJq;
-		}
-		
-		private triggerChanged() {
-			for (let callback of this.changedCallbacks) {
-				callback();
-			}
-		}
-		
-		public whenChanged(callback: () => any) {
-			this.changedCallbacks.push(callback);
 		}
 	}
 }

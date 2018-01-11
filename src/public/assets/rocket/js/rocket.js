@@ -5697,10 +5697,8 @@ var Rocket;
                     this.menuItems = [];
                     this.buttonJq = null;
                     this.changing = false;
-                    this.closeCallback = null;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
-                    this.initControl();
-                    this.initMenu();
+                    Translation.Toggler.simple(this.initControl(), this.initMenu());
                     this.val();
                 }
                 val() {
@@ -5786,46 +5784,25 @@ var Rocket;
                 initControl() {
                     let jqLabel = this.jqElem.children("label:first");
                     let cmdList = Rocket.Display.CommandList.create(true);
-                    this.buttonJq = cmdList.createJqCommandButton({
+                    let buttonJq = cmdList.createJqCommandButton({
                         iconType: "fa fa-language",
                         label: jqLabel.text(),
-                        tooltip: this.jqElem.data("rocket-impl-tooltip")
-                    }).click((e) => {
-                        e.stopPropagation();
-                        this.toggle();
+                        tooltip: this.jqElem.find("rocket-impl-tooltip").text()
                     });
                     jqLabel.replaceWith(cmdList.jQuery);
+                    return buttonJq;
                 }
                 initMenu() {
-                    this.menuJq = this.jqElem.find(".rocket-impl-translation-menu");
-                    this.menuJq.hide();
-                    this.menuJq.find("li").each((i, elem) => {
+                    let menuJq = this.jqElem.find(".rocket-impl-translation-menu");
+                    menuJq.hide();
+                    menuJq.find("li").each((i, elem) => {
                         let mi = new MenuItem($(elem));
                         this.menuItems.push(mi);
                         mi.whenChanged(() => {
                             this.menuChanged();
                         });
                     });
-                }
-                toggle() {
-                    if (this.closeCallback) {
-                        this.closeCallback();
-                        return;
-                    }
-                    this.menuJq.show();
-                    this.buttonJq.addClass("active");
-                    let bodyJq = $("body");
-                    this.closeCallback = (e) => {
-                        if (e && this.menuJq.has(e.target).length > 0)
-                            return;
-                        bodyJq.off("click", this.closeCallback);
-                        this.menuJq.off("mouseleave", this.closeCallback);
-                        this.closeCallback = null;
-                        this.menuJq.hide();
-                        this.buttonJq.removeClass("active");
-                    };
-                    bodyJq.on("click", this.closeCallback);
-                    this.menuJq.on("mouseleave", this.closeCallback);
+                    return menuJq;
                 }
                 static from(jqElem) {
                     let tm = jqElem.data("rocketImplTranslationManager");
@@ -6023,25 +6000,38 @@ var Rocket;
             }
             Translation.Translatable = Translatable;
             class TranslatedContent {
-                constructor(_localeId, jqElem) {
+                constructor(_localeId, elemJq) {
                     this._localeId = _localeId;
-                    this.jqElem = jqElem;
+                    this.elemJq = elemJq;
                     this.jqEnabler = null;
                     this.copyControlJq = null;
                     this.changedCallbacks = [];
                     this._visible = true;
-                    Rocket.Display.StructureElement.from(jqElem, true);
-                    this.propertyPath = jqElem.data("rocket-impl-property-path");
-                    this.fieldJq = jqElem.children("div");
+                    Rocket.Display.StructureElement.from(elemJq, true);
+                    this._propertyPath = elemJq.data("rocket-impl-property-path");
+                    this._fieldJq = elemJq.children("div");
+                }
+                get jQuery() {
+                    return this.elemJq;
+                }
+                get fieldJq() {
+                    return this._fieldJq;
+                }
+                replaceField(newFieldJq) {
+                    this._fieldJq.replaceWith(newFieldJq);
+                    this._fieldJq = newFieldJq;
                 }
                 get localeId() {
                     return this._localeId;
                 }
+                get propertyPath() {
+                    return this._propertyPath;
+                }
                 get prettyLocaleId() {
-                    return this.jqElem.find("label:first").text();
+                    return this.elemJq.find("label:first").text();
                 }
                 get localeName() {
-                    return this.jqElem.find("label:first").attr("title");
+                    return this.elemJq.find("label:first").attr("title");
                 }
                 get visible() {
                     return this._visible;
@@ -6051,14 +6041,14 @@ var Rocket;
                         if (this._visible)
                             return;
                         this._visible = true;
-                        this.jqElem.show();
+                        this.elemJq.show();
                         this.triggerChanged();
                         return;
                     }
                     if (!this._visible)
                         return;
                     this._visible = false;
-                    this.jqElem.hide();
+                    this.elemJq.hide();
                     this.triggerChanged();
                 }
                 get active() {
@@ -6080,9 +6070,9 @@ var Rocket;
                         this.jqEnabler = $("<button />", {
                             "class": "rocket-impl-enabler",
                             "type": "button",
-                            "text": " " + this.jqElem.data("rocket-impl-activate-label"),
+                            "text": " " + this.elemJq.data("rocket-impl-activate-label"),
                             "click": () => { this.active = true; }
-                        }).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.jqElem);
+                        }).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.elemJq);
                         this.triggerChanged();
                     }
                     if (this.copyControlJq) {
@@ -6090,28 +6080,54 @@ var Rocket;
                     }
                 }
                 drawCopyControl(urlDefs) {
-                    let copyUlJq;
                     for (let localeId in urlDefs) {
                         if (localeId == this.localeId)
                             continue;
-                        if (!copyUlJq) {
-                            copyUlJq = this.drawCopyUlJq();
+                        if (!this.copyControl) {
+                            this.copyControl = new CopyControl(this);
+                            this.copyControl.draw();
                         }
-                        let urlDef = urlDefs[localeId];
-                        let url = this.completeCopyUrl(urlDef.copyUrl);
-                        copyUlJq.append($("<li/>").append($("<a />", {
-                            "text": urlDef.label
-                        }).click((e) => {
-                            e.stopPropagation();
-                            this.copy(url);
-                            copyUlJq.hide();
-                        })));
+                        this.copyControl.addUrlDef(urlDefs[localeId]);
                     }
+                }
+                triggerChanged() {
+                    for (let callback of this.changedCallbacks) {
+                        callback();
+                    }
+                }
+                whenChanged(callback) {
+                    this.changedCallbacks.push(callback);
+                }
+            }
+            class CopyControl {
+                constructor(translatedContent) {
+                    this.translatedContent = translatedContent;
+                }
+                draw() {
+                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
+                    this.translatedContent.jQuery.prepend(this.elemJq);
+                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
+                        .append($("<i></i>", { class: "fa fa-copy" }));
+                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
+                        .append(this.menuUlJq = $("<ul></ul>"));
+                    this.toggler = Translation.Toggler.simple(buttonJq, menuJq);
+                    this.elemJq.append(buttonJq);
+                    this.elemJq.append(menuJq);
+                }
+                addUrlDef(urlDef) {
+                    let url = this.completeCopyUrl(urlDef.copyUrl);
+                    this.menuUlJq.append($("<li/>").append($("<a />", {
+                        "text": urlDef.label
+                    }).click((e) => {
+                        e.stopPropagation();
+                        this.copy(url);
+                        this.toggler.close();
+                    })));
                 }
                 completeCopyUrl(url) {
                     return url.extR(null, {
-                        propertyPath: this.propertyPath,
-                        toN2nLocale: this.localeId
+                        propertyPath: this.translatedContent.propertyPath,
+                        toN2nLocale: this.translatedContent.localeId
                     });
                 }
                 copy(url) {
@@ -6121,32 +6137,9 @@ var Rocket;
                 }
                 replace(snippet) {
                     let newFieldJq = $(snippet.elements).children();
-                    this.fieldJq.replaceWith(newFieldJq);
+                    this.translatedContent.replaceField(newFieldJq);
                     snippet.elements = newFieldJq.toArray();
-                    this.fieldJq = newFieldJq;
                     snippet.markAttached();
-                }
-                drawCopyUlJq() {
-                    this.copyControlJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
-                    this.jqElem.prepend(this.copyControlJq);
-                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
-                        .append($("<i></i>", { class: "fa fa-copy" }));
-                    let copyUlJq = $("<ul></ul>").hide();
-                    buttonJq.click(() => { copyUlJq.toggle(); });
-                    this.copyControlJq.append(buttonJq);
-                    this.copyControlJq.append(copyUlJq);
-                    if (!this.active) {
-                        this.copyControlJq.hide();
-                    }
-                    return copyUlJq;
-                }
-                triggerChanged() {
-                    for (let callback of this.changedCallbacks) {
-                        callback();
-                    }
-                }
-                whenChanged(callback) {
-                    this.changedCallbacks.push(callback);
                 }
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));
@@ -6164,46 +6157,23 @@ var Rocket;
                     this.translatables = [];
                     this.items = {};
                     this.changing = false;
-                    this.closeCallback = null;
                 }
                 draw(languagesLabel, visibleLabel, tooltip) {
                     $("<div />", { "class": "rocket-impl-translation-status" })
                         .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
                         .append(this.jqStatus = $("<span></span>"))
                         .prependTo(this.jqContainer);
-                    this.buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
+                    let buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
                         iconType: "fa fa-cog",
                         label: languagesLabel,
                         tooltip: tooltip
-                    }).click((e) => {
-                        e.stopPropagation();
-                        this.toggle();
                     });
-                    this.menuJq = $("<div />", { "class": "rocket-impl-translation-status-menu" })
+                    let menuJq = $("<div />", { "class": "rocket-impl-translation-status-menu" })
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { "class": "rocket-impl-tooltip", "text": tooltip }))
                         .hide();
-                    this.jqContainer.append(this.menuJq);
-                }
-                toggle() {
-                    if (this.closeCallback) {
-                        this.closeCallback();
-                        return;
-                    }
-                    this.menuJq.show();
-                    this.buttonJq.addClass("active");
-                    let bodyJq = $("body");
-                    this.closeCallback = (e) => {
-                        if (e && this.menuJq.has(e.target).length > 0)
-                            return;
-                        bodyJq.off("click", this.closeCallback);
-                        this.menuJq.off("mouseleave", this.closeCallback);
-                        this.closeCallback = null;
-                        this.menuJq.hide();
-                        this.buttonJq.removeClass("active");
-                    };
-                    bodyJq.on("click", this.closeCallback);
-                    this.menuJq.on("mouseleave", this.closeCallback);
+                    Translation.Toggler.simple(buttonJq, menuJq);
+                    this.jqContainer.append(menuJq);
                 }
                 updateStatus() {
                     let prettyLocaleIds = [];
@@ -6348,6 +6318,63 @@ var Rocket;
                     }
                 }
             }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
+            class Toggler {
+                constructor(buttonJq, menuJq) {
+                    this.buttonJq = buttonJq;
+                    this.menuJq = menuJq;
+                    menuJq.hide();
+                }
+                toggle(e) {
+                    if (this.closeCallback) {
+                        this.closeCallback(e);
+                        return;
+                    }
+                    this.open();
+                }
+                close() {
+                    if (!this.closeCallback)
+                        return;
+                    this.closeCallback();
+                }
+                open() {
+                    if (this.closeCallback)
+                        return;
+                    console.log("show");
+                    this.menuJq.show();
+                    this.buttonJq.addClass("active");
+                    let bodyJq = $("body");
+                    this.closeCallback = (e) => {
+                        if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
+                            return;
+                        }
+                        bodyJq.off("click", this.closeCallback);
+                        this.menuJq.off("mouseleave", this.closeCallback);
+                        this.closeCallback = null;
+                        this.menuJq.hide();
+                        this.buttonJq.removeClass("active");
+                    };
+                    bodyJq.on("click", this.closeCallback);
+                    this.menuJq.on("mouseleave", this.closeCallback);
+                }
+                static simple(buttonJq, menuJq) {
+                    let toggler = new Toggler(buttonJq, menuJq);
+                    buttonJq.on("click", (e) => {
+                        e.stopImmediatePropagation();
+                        toggler.toggle(e);
+                    });
+                    return toggler;
+                }
+            }
+            Translation.Toggler = Toggler;
         })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
