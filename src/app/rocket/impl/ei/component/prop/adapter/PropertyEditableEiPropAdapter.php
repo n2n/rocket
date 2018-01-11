@@ -48,24 +48,22 @@ use rocket\spec\ei\manage\mapping\impl\Copyable;
 abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
 	protected $standardEditDefinition;
-	
-	public function __construct() {
-		parent::__construct();
-		
-		$this->standardEditDefinition = new StandardEditDefinition();
-	}
-	
+
 	/**
 	 * @return \rocket\impl\ei\component\prop\adapter\StandardEditDefinition
 	 */
 	public function getStandardEditDefinition() {
+		if ($this->standardEditDefinition === null) {
+			$this->standardEditDefinition = new StandardEditDefinition();
+		}
+
 		return $this->standardEditDefinition;
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerStandardEditDefinition($this->standardEditDefinition);
+		$eiPropConfigurator->registerStandardEditDefinition($this->getStandardEditDefinition());
 		return $eiPropConfigurator;
 	}
 		

@@ -36,12 +36,12 @@ use rocket\spec\ei\manage\gui\ViewMode;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;
-	
-	public function __construct() {
-		$this->displaySettings = new DisplaySettings(ViewMode::all());
-	}
-	
+
 	public function getDisplaySettings(): DisplaySettings {
+		if ($this->displaySettings === null) {
+			$this->displaySettings = new DisplaySettings(ViewMode::all());
+		}
+
 		return $this->displaySettings;
 	}
 
@@ -67,7 +67,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		$viewMode = $eiu->gui()->getViewMode();
-		if (!$this->displaySettings->isViewModeCompatible($viewMode)) {
+		if (!$this->getDisplaySettings()->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
@@ -75,7 +75,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($this->getDisplayLabel(), $groupType, 
-				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
+				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
 	protected function getGroupType(Eiu $eiu) {
@@ -95,7 +95,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return array('class' => 'rocket-ei-spec-' . $this->eiEngine->getEiType()->getId()
 						. ($eiMask !== null ? ' rocket-ei-mask-' . $eiMask->getId() : '') 
 						. ' rocket-ei-field-' . $this->getId(), 
-				'title' => $this->displaySettings->getHelpText());
+				'title' => $this->getDisplaySettings()->getHelpText());
 	}
 	
 	public function isStringRepresentable(): bool {

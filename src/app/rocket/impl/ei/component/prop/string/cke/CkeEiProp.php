@@ -50,10 +50,8 @@ class CkeEiProp extends AlphanumericEiProp {
 	private $bbcodeEnabled = false;
 	
 	public function __construct() {
-		parent::__construct();
-		
-		$this->displaySettings->setDefaultDisplayedViewModes(ViewMode::bulky());
-		$this->standardEditDefinition->setMandatory(false);
+		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::bulky());
+		$this->getStandardEditDefinition()->setMandatory(false);
 		
 		$this->ckeLinkProviderLookupIds = new GenericArrayObject(null, CkeLinkProvider::class);
 	}

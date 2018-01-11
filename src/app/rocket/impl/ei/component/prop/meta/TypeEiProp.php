@@ -36,7 +36,7 @@ use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->displaySettings->toDisplayDefinition($this, $eiu->gui()->getViewMode());
+		return $this->getDisplaySettings()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
@@ -47,7 +47,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$configurator = new AdaptableEiPropConfigurator($this);
-		$configurator->registerDisplaySettings($this->displaySettings);
+		$configurator->registerDisplaySettings($this->getDisplaySettings());
 		return $configurator;
 	}
 	

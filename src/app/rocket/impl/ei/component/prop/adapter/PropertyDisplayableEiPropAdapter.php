@@ -40,19 +40,19 @@ use rocket\spec\ei\manage\gui\ViewMode;
 
 abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
-	protected $displaySettings;
-	
-	public function __construct() {
-		$this->displaySettings = new DisplaySettings(ViewMode::all());
-	}
-	
+	private $displaySettings;
+
 	public function getDisplaySettings(): DisplaySettings {
+		if ($this->displaySettings === null) {
+			$this->displaySettings = new DisplaySettings(ViewMode::all());
+		}
+
 		return $this->displaySettings;
 	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		$viewMode = $eiu->gui()->getViewMode();
-		if (!$this->displaySettings->isViewModeCompatible($viewMode)) {
+		if (!$this->getDisplaySettings()->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
@@ -60,7 +60,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($this->getDisplayLabel(), $groupType,
-				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
+				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
 	protected function getGroupType(Eiu $eiu) {
@@ -70,7 +70,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplaySettings($this->displaySettings);
+		$eiPropConfigurator->registerDisplaySettings($this->getDisplaySettings());
 		return $eiPropConfigurator;
 	}
 	
