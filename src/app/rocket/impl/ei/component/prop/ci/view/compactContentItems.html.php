@@ -41,11 +41,11 @@
 			</div>
 		<?php else: ?>
 			<div>
-				<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
-					<ul class="list list-inline rocket-content-item">
+				<ul class="list list-inline rocket-content-item">
+					<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
 						<?php $view->out($uiComponent) ?>
-					</ul>
-				<?php endforeach ?>
+					<?php endforeach ?>
+				</ul>
 			</div>
 		<?php endif ?>
 	<?php endforeach ?>
