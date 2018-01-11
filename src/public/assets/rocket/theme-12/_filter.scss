@@ -7,13 +7,11 @@
 }
 
 .rocket-impl-critmod-select-container {
-    border: 3px solid $gray-500;
-    border-bottom-color: $gray-300;
     background-color: $gray-300;
-    padding: 0.5rem 1rem;
-    position: absolute;
-    height: calc(100% + 1rem);
-    top: -.825rem;
+    padding: 1rem 1rem;
+    position: relative;
+    top: -1rem;
+    margin-bottom: -1rem;
     z-index: 1;
 }
 
@@ -25,11 +23,13 @@
     }
 }
 
+.rocket-impl-critmod-form-container {
+    margin: 0 -4rem;
+}
 .rocket-impl-critmod {
     background-color: $gray-300;
-    padding: 1rem;
-    border-bottom: 3px solid $gray-500;
-    border-top: 3px solid $gray-500;
+    padding: 1rem 4rem;
+    border-bottom: 1px solid $gray-500;
 }
 
 

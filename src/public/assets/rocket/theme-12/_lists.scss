@@ -6,12 +6,13 @@
     position: -webkit-sticky;
     position: sticky;
     top: 44px;
-    padding-top: 1rem;
-    background-color: $gray-100;
+    background-color: $gray-200;
 }
 
-.rocket-impl-state {
-    margin-bottom: 0.5rem;
+.rocket-impl-container {
+    display: grid;
+    grid-template-columns:  1fr auto auto;
+    grid-column-gap: 20px;
 }
 
 .rocket-impl-quicksearch {

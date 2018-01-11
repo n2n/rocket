@@ -10,8 +10,8 @@ html {
 
 body {
     overflow-y: scroll;
-    background: $gray-100; /* Old browsers */
-    background: $gray-100 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-100 124px,$gray-100 100%) repeat-x; 
+    background: $gray-200; /* Old browsers */
+    background: $gray-200 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-200 124px,$gray-200 100%) repeat-x; 
     min-height: calc(100% - #{$rocket-header-height});
 }
 

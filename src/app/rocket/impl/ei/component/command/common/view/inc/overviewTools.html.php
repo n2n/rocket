@@ -46,18 +46,18 @@
 <div class="rocket-impl-overview-tools" 
 		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>"
 		data-state-key="<?php $html->out($overviewAjahHook->getStateKey()) ?>">
-	<div class="row">
+	<div class="rocket-impl-container">
 		<div class="col rocket-impl-state"
 				data-selected-label="<?php $html->text('common_selected_label')?>"
 				data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
 				data-entries-label="<?php $html->out($view->getParam('label')) ?>"
 				data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
 		</div>
-		<div class="col-md-auto text-right">
+		<div class="rocket-impl-search">
 			<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
 					array('quickSearchForm' => $quickSearchForm, 'postUrl' => $overviewAjahHook->getSelectUrl())) ?>
 		</div>
-		<div class="col">
+		<div class="rocket-impl-filter">
 			<div class="rocket-impl-critmod-select-container"
 					data-rocket-impl-open-filter-label="<?php $html->text('ei_impl_open_filter_label') ?>"
 					data-rocket-impl-edit-filter-label="<?php $html->text('ei_impl_edit_filter_label') ?>"
@@ -67,10 +67,10 @@
 			</div>
 		</div>
 		
-		<div class="col-12">
-			<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
-					array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
-							'filterAjahHook' => $filterAjahHook)) ?>
-		</div>
+	</div>
+	<div class="rocket-impl-critmod-form-container">
+		<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
+				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
+						'filterAjahHook' => $filterAjahHook)) ?>
 	</div>
 </div>
