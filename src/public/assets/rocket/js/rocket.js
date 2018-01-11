@@ -5797,9 +5797,9 @@ var Rocket;
                     jqLabel.replaceWith(cmdList.jQuery);
                 }
                 initMenu() {
-                    this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
-                    this.jqMenu.hide();
-                    this.jqMenu.children().each((i, elem) => {
+                    this.menuJq = this.jqElem.find(".rocket-impl-translation-menu");
+                    this.menuJq.hide();
+                    this.menuJq.find("li").each((i, elem) => {
                         let mi = new MenuItem($(elem));
                         this.menuItems.push(mi);
                         mi.whenChanged(() => {
@@ -5812,18 +5812,20 @@ var Rocket;
                         this.closeCallback();
                         return;
                     }
-                    this.jqMenu.show();
+                    this.menuJq.show();
+                    this.buttonJq.addClass("active");
                     let bodyJq = $("body");
                     this.closeCallback = (e) => {
-                        if (e && this.jqMenu.has(e.target).length > 0)
+                        if (e && this.menuJq.has(e.target).length > 0)
                             return;
                         bodyJq.off("click", this.closeCallback);
-                        this.jqMenu.off("mouseleave", this.closeCallback);
+                        this.menuJq.off("mouseleave", this.closeCallback);
                         this.closeCallback = null;
-                        this.jqMenu.hide();
+                        this.menuJq.hide();
+                        this.buttonJq.removeClass("active");
                     };
                     bodyJq.on("click", this.closeCallback);
-                    this.jqMenu.on("mouseleave", this.closeCallback);
+                    this.menuJq.on("mouseleave", this.closeCallback);
                 }
                 static from(jqElem) {
                     let tm = jqElem.data("rocketImplTranslationManager");
@@ -6164,40 +6166,44 @@ var Rocket;
                     this.changing = false;
                     this.closeCallback = null;
                 }
-                draw(languagesLabel, visibleLabel) {
+                draw(languagesLabel, visibleLabel, tooltip) {
                     $("<div />", { "class": "rocket-impl-translation-status" })
                         .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
                         .append(this.jqStatus = $("<span></span>"))
                         .prependTo(this.jqContainer);
                     this.buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
                         iconType: "fa fa-cog",
-                        label: languagesLabel
+                        label: languagesLabel,
+                        tooltip: tooltip
                     }).click((e) => {
                         e.stopPropagation();
                         this.toggle();
                     });
-                    this.jqMenu = $("<ul></ul>", { "class": "rocket-impl-translation-status-menu" }).hide();
-                    this.jqContainer.append(this.jqMenu);
+                    this.menuJq = $("<div />", { "class": "rocket-impl-translation-status-menu" })
+                        .append(this.menuUlJq = $("<ul></ul>"))
+                        .append($("<div />", { "class": "rocket-impl-tooltip", "text": tooltip }))
+                        .hide();
+                    this.jqContainer.append(this.menuJq);
                 }
                 toggle() {
                     if (this.closeCallback) {
                         this.closeCallback();
                         return;
                     }
-                    this.jqMenu.show();
-                    this.buttonJq.addClass("rocket-active");
+                    this.menuJq.show();
+                    this.buttonJq.addClass("active");
                     let bodyJq = $("body");
                     this.closeCallback = (e) => {
-                        if (e && this.jqMenu.has(e.target).length > 0)
+                        if (e && this.menuJq.has(e.target).length > 0)
                             return;
                         bodyJq.off("click", this.closeCallback);
-                        this.jqMenu.off("mouseleave", this.closeCallback);
+                        this.menuJq.off("mouseleave", this.closeCallback);
                         this.closeCallback = null;
-                        this.jqMenu.hide();
-                        this.buttonJq.removeClass("rocket-active");
+                        this.menuJq.hide();
+                        this.buttonJq.removeClass("active");
                     };
                     bodyJq.on("click", this.closeCallback);
-                    this.jqMenu.on("mouseleave", this.closeCallback);
+                    this.menuJq.on("mouseleave", this.closeCallback);
                 }
                 updateStatus() {
                     let prettyLocaleIds = [];
@@ -6226,14 +6232,14 @@ var Rocket;
                     if (-1 < this.translatables.indexOf(translatable))
                         return;
                     if (!this.jqStatus) {
-                        this.draw(translatable.jQuery.data("rocket-impl-languages-label"), translatable.jQuery.data("rocket-impl-visible-label"));
+                        this.draw(translatable.jQuery.data("rocket-impl-languages-label"), translatable.jQuery.data("rocket-impl-visible-label"), translatable.jQuery.data("rocket-impl-languages-view-tooltip"));
                     }
                     this.translatables.push(translatable);
                     translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
                     for (let content of translatable.contents) {
                         if (!this.items[content.localeId]) {
                             let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
-                            item.draw($("<li />").appendTo(this.jqMenu));
+                            item.draw($("<li />").appendTo(this.menuUlJq));
                             item.on = Object.keys(this.items).length == 1;
                             item.whenChanged(() => this.menuChanged());
                             this.updateStatus();

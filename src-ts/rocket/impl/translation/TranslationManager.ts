@@ -2,7 +2,7 @@ namespace Rocket.Impl.Translation {
 	
 	export class TranslationManager {
 		private min: number = 0;
-		private jqMenu: JQuery;
+		private menuJq: JQuery;
 		private translatables: Array<Translatable> = [];
 		private menuItems: Array<MenuItem> = [];
 		private buttonJq: JQuery = null;
@@ -136,10 +136,10 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		private initMenu() {
-			this.jqMenu = this.jqElem.find(".rocket-impl-translation-menu");
-			this.jqMenu.hide();
-			
-			this.jqMenu.children().each((i, elem) => {
+			this.menuJq = this.jqElem.find(".rocket-impl-translation-menu");
+			this.menuJq.hide();
+
+			this.menuJq.find("li").each((i, elem) => {
 				let mi = new MenuItem($(elem));
 				this.menuItems.push(mi);
 				
@@ -147,7 +147,6 @@ namespace Rocket.Impl.Translation {
 					this.menuChanged();
 				});
 			});
-			
 		}
 		
 		private closeCallback: (e?: any) => any = null;
@@ -158,21 +157,23 @@ namespace Rocket.Impl.Translation {
 				return;
 			}
 			
-			this.jqMenu.show();
+			this.menuJq.show();
+			this.buttonJq.addClass("active");
 			let bodyJq = $("body");
 			
 			this.closeCallback = (e?: any) => {
-				if (e && this.jqMenu.has(e.target).length > 0) return;
+				if (e && this.menuJq.has(e.target).length > 0) return;
 
 				bodyJq.off("click", this.closeCallback);
-				this.jqMenu.off("mouseleave", this.closeCallback);
+				this.menuJq.off("mouseleave", this.closeCallback);
 				this.closeCallback = null;
 				
-				this.jqMenu.hide();
+				this.menuJq.hide();
+				this.buttonJq.removeClass("active");
 			};
 			
 			bodyJq.on("click", this.closeCallback);
-			this.jqMenu.on("mouseleave", this.closeCallback);
+			this.menuJq.on("mouseleave", this.closeCallback);
 		}
 			
 		static from(jqElem: JQuery): TranslationManager {
@@ -186,7 +187,6 @@ namespace Rocket.Impl.Translation {
 			
 			return tm;
 		}
-		
 	}
 	
 	class MenuItem {

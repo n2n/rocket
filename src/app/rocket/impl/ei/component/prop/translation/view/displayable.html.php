@@ -38,6 +38,7 @@
 
 <div class="rocket-impl-translatable" 
 		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+		data-rocket-impl-languages-view-tooltip="<?php $html->text('ei_impl_languages_view_tooltip') ?>"
 		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>">
 	<?php foreach ($displayables as $n2nLocaleId => $displayable): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>

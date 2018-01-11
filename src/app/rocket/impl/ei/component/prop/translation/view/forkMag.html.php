@@ -35,18 +35,21 @@
 	$view->assert(is_array($n2nLocaleDefs));
 ?>
 
-<ul class="rocket-impl-translation-menu"
+<div class="rocket-impl-translation-menu"
 		data-rocket-impl-locale-labels="<?php $html->text('ei_impl_languages_label') ?>"
 		data-active-locales-label="<?php $html->text('ei_impl_active_locales_label') ?>"
 		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"
 		data-translations-only-label="<?php $html->text('ei_impl_translations_only_label') ?>">
-	<?php foreach ($n2nLocaleDefs as $n2nLocaleDef): ?>
-		<li data-rocket-impl-locale-id="<?php $html->out($n2nLocaleDef->getN2nLocaleId()) ?>" 
-				data-rocket-impl-mandatory="<?php $html->out($n2nLocaleDef->isMandatory()) ?>">
-			<label>
-				<?php $formHtml->optionalObjectCheckbox($propertyPath->fieldExt($n2nLocaleDef->getN2nLocaleId())) ?>
-				<?php $html->out($n2nLocaleDef->buildLabel($request->getN2nLocale())) ?>
-			</label>
-		</li>
-	<?php endforeach ?>
-</ul>
+	<ul>
+		<?php foreach ($n2nLocaleDefs as $n2nLocaleDef): ?>
+			<li data-rocket-impl-locale-id="<?php $html->out($n2nLocaleDef->getN2nLocaleId()) ?>" 
+					data-rocket-impl-mandatory="<?php $html->out($n2nLocaleDef->isMandatory()) ?>">
+				<label>
+					<?php $formHtml->optionalObjectCheckbox($propertyPath->fieldExt($n2nLocaleDef->getN2nLocaleId())) ?>
+					<?php $html->out($n2nLocaleDef->buildLabel($request->getN2nLocale())) ?>
+				</label>
+			</li>
+		<?php endforeach ?>
+	</ul>
+	<div class="rocket-impl-tooltip"><?php $html->text('ei_impl_translation_manager_tooltip') ?></div>
+</div>
