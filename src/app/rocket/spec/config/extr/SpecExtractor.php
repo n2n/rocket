@@ -182,7 +182,7 @@ class SpecExtractor {
 	    
 	    return str_replace(
 	    		array('rocket\\spec\\ei\\component\\field\\impl', 'rocket\\spec\\ei\\component\\prop\\impl', 'EiField',
-	    				'rocket\spec\ei\component\command\impl'), 
+	    				'rocket\\spec\\ei\\component\\command\\impl'), 
 	    		array('rocket\\impl\\ei\\component\\prop', 'rocket\\impl\\ei\\component\\prop', 'EiProp',
 	    				'rocket\\impl\\ei\\component\\command'), 
 	    		$typeName);
