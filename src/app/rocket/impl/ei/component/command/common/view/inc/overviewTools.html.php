@@ -47,7 +47,7 @@
 		data-content-url="<?php $html->out($overviewAjahHook->getSelectUrl()) ?>"
 		data-state-key="<?php $html->out($overviewAjahHook->getStateKey()) ?>">
 	<div class="rocket-impl-container">
-		<div class="col rocket-impl-state"
+		<div class="rocket-impl-state"
 				data-selected-label="<?php $html->text('common_selected_label')?>"
 				data-selected-plural-label="<?php $html->text('common_selected_plural_label')?>"
 				data-entries-label="<?php $html->out($view->getParam('label')) ?>"

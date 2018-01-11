@@ -27,7 +27,7 @@
     background: white;
     
     padding: 1rem;
-    box-shadow: $btn-box-shadow;
+    box-shadow: $box-box-shadow;
 	> li {
 		border-bottom: 1px solid $input-border-color;
 	}
@@ -118,6 +118,24 @@
 
 .rocket-impl-translation {
 	position: relative;
+	display: grid;
+	grid-template-columns:  1fr auto;
+
+	> .rocket-impl-translation-copy-control {
+		grid-column-start: 2;
+		grid-column-end: 3;
+	}
+	> .rocket-field {
+		padding-top: 0;
+		padding-left: 0;
+		grid-column-start: 1;
+		grid-column-end: 2;
+		grid-row-start: 1;
+		grid-row-end: 1;
+		> .rocket-control {
+			margin: 0;
+		}
+	}
 	
 	> .rocket-impl-enabler {
 		position: absolute;
@@ -131,4 +149,23 @@
 	}
 }
 
+
+/**
+ * translations in tables
+ */
+
+td {
+	.rocket-impl-translation {
+		padding: 0;
+		label {
+			display: inline-block;
+			padding-top: 0.25rem;
+			font-size: $font-size-xs;
+			width: 3rem;
+			color: $gray-600;
+		}
+
+	}
+
+}
 

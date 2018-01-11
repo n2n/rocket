@@ -3761,7 +3761,7 @@ body {
   list-style: none;
   background: white;
   padding: 1rem;
-  box-shadow: none;
+  box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .rocket-impl-translation-status-menu > li,
@@ -3860,6 +3860,26 @@ body {
 
 .rocket-impl-translation {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.rocket-impl-translation > .rocket-impl-translation-copy-control {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.rocket-impl-translation > .rocket-field {
+  padding-top: 0;
+  padding-left: 0;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
+}
+
+.rocket-impl-translation > .rocket-field > .rocket-control {
+  margin: 0;
 }
 
 .rocket-impl-translation > .rocket-impl-enabler {
@@ -3871,6 +3891,21 @@ body {
   bottom: 0;
   border: 1px solid #C2BDB6;
   text-align: left;
+}
+
+/**
+ * translations in tables
+ */
+td .rocket-impl-translation {
+  padding: 0;
+}
+
+td .rocket-impl-translation label {
+  display: inline-block;
+  padding-top: 0.25rem;
+  font-size: 0.75rem;
+  width: 3rem;
+  color: #837E78;
 }
 
 .rocket-nav-group {
