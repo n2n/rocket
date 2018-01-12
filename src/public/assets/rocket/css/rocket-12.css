@@ -3612,6 +3612,7 @@ body {
   border-top: 1px solid #DAD7D3;
   display: grid;
   grid-template-columns: auto auto;
+  z-index: 50;
 }
 
 .rocket-partial-commands {
@@ -4229,6 +4230,20 @@ ul.rocket-content-item > li > span {
   position: relative;
 }
 
+.rocket-required > label {
+  position: relative;
+}
+
+.rocket-required > label::after {
+  content: " \f069";
+  font-family: fontawesome;
+  font-size: 0.75rem;
+  position: relative;
+  top: -0.25rem;
+  left: 0.125rem;
+  color: #C2BDB6;
+}
+
 @media (min-width: 768px) {
   .rocket-field {
     clear: both;
@@ -4362,12 +4377,10 @@ ul.rocket-content-item > li > span {
   float: right;
 }
 
-.rocket-impl-selector > div {
-  padding-bottom: 0.5rem;
-}
-
 .rocket-impl-selector > div > span {
-  padding-right: 1rem;
+  display: inline-block;
+  padding: calc(0.375rem + 1px) 0;
+  padding-right: 0.5rem;
 }
 
 .rocket-impl-selector > div > .rocket-simple-commands {
@@ -4434,7 +4447,7 @@ td .rocket-simple-commands > .btn > i {
   font-size: 1.25rem;
 }
 
-.rocket-zone-commands .btn > i.fa {
+.rocket-main-commands .btn > i.fa {
   display: none;
 }
 

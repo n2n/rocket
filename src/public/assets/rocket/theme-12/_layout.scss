@@ -110,6 +110,7 @@ body {
     border-top: 1px solid $gray-400;
     display: grid;
     grid-template-columns: auto auto;
+    z-index: 50;
 
 }
 
