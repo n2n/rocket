@@ -3755,22 +3755,27 @@ body {
 .rocket-impl-translation-menu {
   position: absolute;
   right: 0;
-  width: auto;
-  min-width: 20rem;
-  margin: 0;
-  list-style: none;
+  width: 300px;
   background: white;
   padding: 1rem;
   box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
-.rocket-impl-translation-status-menu > li,
-.rocket-impl-translation-menu > li {
+.rocket-impl-translation-status-menu > ul,
+.rocket-impl-translation-menu > ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  width: 100%;
+}
+
+.rocket-impl-translation-status-menu > ul > li,
+.rocket-impl-translation-menu > ul > li {
   border-bottom: 1px solid #C2BDB6;
 }
 
-.rocket-impl-translation-status-menu > li:last-child,
-.rocket-impl-translation-menu > li:last-child {
+.rocket-impl-translation-status-menu > ul > li:last-child,
+.rocket-impl-translation-menu > ul > li:last-child {
   border-bottom: none;
 }
 
@@ -3779,7 +3784,7 @@ body {
   z-index: 20;
 }
 
-.rocket-impl-translation-status-menu > li > a.btn {
+.rocket-impl-translation-status-menu > ul > li > a.btn {
   display: block;
   color: #373431;
   text-align: left;
@@ -3788,11 +3793,11 @@ body {
   font-weight: bold;
 }
 
-.rocket-impl-translation-status-menu > li > a.btn i {
+.rocket-impl-translation-status-menu > ul > li > a.btn i {
   font-size: 1.25rem;
 }
 
-.rocket-impl-translation-status-menu > li:last-child {
+.rocket-impl-translation-status-menu > ul > li:last-child {
   border-bottom: none;
 }
 
@@ -3805,16 +3810,16 @@ body {
   z-index: 10;
 }
 
-.rocket-impl-translation-menu > li {
+.rocket-impl-translation-menu > ul > li {
   text-align: left;
 }
 
-.rocket-impl-translation-menu > li > label {
+.rocket-impl-translation-menu > ul > li > label {
   display: block;
   margin: 0.75rem 0;
 }
 
-.rocket-impl-translation-menu > li > label:after {
+.rocket-impl-translation-menu > ul > li > label:after {
   font-family: fontawesome;
   padding-left: 5rem;
   float: right;
@@ -3822,20 +3827,26 @@ body {
   content: "\f068";
 }
 
-.rocket-impl-translation-menu > li > label input {
+.rocket-impl-translation-menu > ul > li > label input {
   display: none;
 }
 
-.rocket-impl-translation-menu > li.rocket-active {
+.rocket-impl-translation-menu > ul > li.rocket-active {
   font-weight: bold;
 }
 
-.rocket-impl-translation-menu > li.rocket-active > label:after {
+.rocket-impl-translation-menu > ul > li.rocket-active > label:after {
   content: "\f067";
 }
 
-.rocket-impl-translation-menu > li.rocket-active.rocket-disabled > label:after {
+.rocket-impl-translation-menu > ul > li.rocket-active.rocket-disabled > label:after {
   content: "\f023";
+}
+
+.rocket-impl-tooltip {
+  text-align: left;
+  padding-top: 1rem;
+  font-size: 0.875rem;
 }
 
 /**
@@ -3858,31 +3869,27 @@ body {
   color: #837E78;
 }
 
-.rocket-impl-translation {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto;
 }
 
-.rocket-impl-translation > .rocket-impl-translation-copy-control {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-impl-translation-copy-control {
   grid-column-start: 2;
   grid-column-end: 3;
 }
 
-.rocket-impl-translation > .rocket-field {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-field {
   padding-top: 0;
   padding-left: 0;
-  grid-column-start: 1;
-  grid-column-end: 2;
-  grid-row-start: 1;
-  grid-row-end: 1;
 }
 
-.rocket-impl-translation > .rocket-field > .rocket-control {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-field > .rocket-control {
   margin: 0;
 }
 
-.rocket-impl-translation > .rocket-impl-enabler {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-impl-enabler {
   position: absolute;
   width: 100%;
   top: 0;
@@ -3891,6 +3898,26 @@ body {
   bottom: 0;
   border: 1px solid #C2BDB6;
   text-align: left;
+}
+
+.rocket-impl-translation-copy-control > .rocket-impl-translation-copy-control {
+  position: absolute;
+  right: 0;
+  width: 300px;
+  background: white;
+  padding: 1rem;
+  box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.rocket-impl-translation-copy-control > .rocket-impl-translation-copy-control > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rocket-impl-translation-copy-control > .rocket-impl-translation-copy-control > ul > li > a {
+  display: block;
 }
 
 /**

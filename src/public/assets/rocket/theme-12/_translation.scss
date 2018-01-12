@@ -20,26 +20,29 @@
 .rocket-impl-translation-menu {
     position: absolute;
     right: 0;
-	width: auto;
-	min-width: 20rem;
-    margin: 0;
-    list-style: none;
+	width: 300px;
     background: white;
     
     padding: 1rem;
     box-shadow: $box-box-shadow;
-	> li {
-		border-bottom: 1px solid $input-border-color;
+	> ul {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		width: 100%;
+		> li {
+			border-bottom: 1px solid $input-border-color;
+		}
+		> li:last-child {
+			border-bottom: none;
+		}
 	}
-	> li:last-child {
-        border-bottom: none;
-    }
 }
 
 .rocket-impl-translation-status-menu {
 	border-bottom: 3px solid $primary;
 	z-index: 20;
-    > li {
+    > ul > li {
         > a.btn {
             display: block;
             color: $body-color;
@@ -52,7 +55,7 @@
             }
         }
     }
-    > li:last-child {
+    > ul > li:last-child {
         border-bottom: none;
     }
 }
@@ -65,7 +68,7 @@
 
 .rocket-impl-translation-menu {
 	z-index: 10;
-	> li {
+	> ul > li {
 		text-align: left;
 		> label {
 			display:block;
@@ -82,19 +85,25 @@
 			}
 		}
 	}
-	> li.rocket-active {
+	> ul > li.rocket-active {
 		font-weight: bold;
 		> label:after {
 			content: "\f067";
 		}
 	}
-	> li.rocket-active.rocket-disabled {
+	> ul > li.rocket-active.rocket-disabled {
 		> label:after {
 			content: "\f023";
 		}
 	}
 }
 
+
+.rocket-impl-tooltip {
+	text-align: left;
+	padding-top:1rem;
+	font-size: $font-size-sm;
+}
 
 /**
  * labels
@@ -116,7 +125,8 @@
 	}
 }
 
-.rocket-impl-translation {
+// translation in entry
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element {
 	position: relative;
 	display: grid;
 	grid-template-columns:  1fr auto;
@@ -128,10 +138,6 @@
 	> .rocket-field {
 		padding-top: 0;
 		padding-left: 0;
-		grid-column-start: 1;
-		grid-column-end: 2;
-		grid-row-start: 1;
-		grid-row-end: 1;
 		> .rocket-control {
 			margin: 0;
 		}
@@ -149,6 +155,23 @@
 	}
 }
 
+.rocket-impl-translation-copy-control > .rocket-impl-translation-copy-control {
+	position: absolute;
+	right: 0;
+	width: 300px;
+	background: white;
+	padding: 1rem;
+	box-shadow: $box-box-shadow;
+	z-index: 5;
+	> ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		> li > a {
+			display: block;
+		}
+	}
+}
 
 /**
  * translations in tables
