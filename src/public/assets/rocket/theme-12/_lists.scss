@@ -7,6 +7,8 @@
     position: sticky;
     top: 44px;
     background-color: $gray-200;
+    z-index: 50;
+    padding-top: 1rem;
 }
 
 .rocket-impl-container {
@@ -30,39 +32,6 @@
 /*
  * Content
  */
-
-.rocket-simple-commands {
-    > a { 
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        color: $gray-700;
-        padding: 0.25rem 0.5rem;
-        &:hover {
-            background: transparent;
-        }
-        &:focus,
-        &:visited,
-        &:active {
-            box-shadow: none;
-        }
-        &.btn-danger:hover {
-            color: $danger;
-        }
-        &.btn-warning:hover {
-            color: $warning;
-        }
-        &.btn-success:hover {
-            color: $success;
-        }
-        > span {
-            display: none;
-        }
-        > i {
-            font-size: $font-size-lg;
-        }
-    }
-}
     
 
 .rocket-collection .rocket-entry.rocket-last-mod {

@@ -125,35 +125,69 @@
 	}
 }
 
+.rocket-impl-translation {
+	position: relative;
+	margin-bottom: 1rem;
+}
+
 // translation in entry
 :not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element {
 	position: relative;
 	display: grid;
 	grid-template-columns:  1fr auto;
+	grid-gap: 1rem 1rem;
 
 	> .rocket-impl-translation-copy-control {
 		grid-column-start: 2;
 		grid-column-end: 3;
 	}
 	> .rocket-field {
-		padding-top: 0;
-		padding-left: 0;
+		padding: 0;
+		
 		> .rocket-control {
 			margin: 0;
 		}
 	}
 	
-	> .rocket-impl-enabler {
+}
+
+// translation in entry: group
+
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation  {
+	> .rocket-field {
+		padding: 0;
+		> .rocket-locale-label  {
+			display: block;
+			position: static;
+			width: 100%;
+			float: none;
+			text-align: left;
+			background: $gray-200;
+			padding: 0.5rem 1rem;
+		}
+		> .rocket-control {
+			margin: 0;
+		}
+	}
+	> .rocket-impl-translation-copy-control {
 		position: absolute;
-		width: 100%;
 		top: 0;
-		left: 0;
 		right: 0;
-		bottom: 0;
-		border: 1px solid $input-border-color;
-		text-align: left;
 	}
 }
+
+.rocket-impl-enabler {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px solid $input-border-color;
+	text-align: left;
+	vertical-align: top;
+}
+
 
 .rocket-impl-translation-copy-control > .rocket-impl-translation-copy-control {
 	position: absolute;

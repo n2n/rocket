@@ -1,0 +1,47 @@
+.rocket-simple-commands {
+    > .btn { 
+        width: 2.25rem;
+        text-align: center;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: $gray-700;
+        padding: 0.25rem 0.5rem;
+        &:hover {
+            background: transparent;
+        }
+        &:focus,
+        &:visited,
+        &:active {
+            box-shadow: none;
+        }
+        &.btn-danger:hover {
+            color: $danger;
+        }
+        &.btn-warning:hover {
+            color: $warning;
+        }
+        &.btn-success:hover {
+            color: $success;
+        }
+        > span {
+            display: none;
+        }
+    }
+}
+
+td .rocket-simple-commands {
+    > .btn {
+        > i {
+            font-size: $font-size-lg;
+        }
+    }
+}
+
+.rocket-zone-commands .btn > i.fa {
+    display: none;
+}
+
+.rocket-zone-commands .btn:not(.rocket-important) {
+    @include button-variant($secondary, darken($secondary, 15));
+}

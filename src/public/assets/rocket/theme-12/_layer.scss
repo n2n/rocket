@@ -8,8 +8,8 @@
 		position: relative;
 		grid-template-columns: 1fr auto;
 		grid-template-rows: 2rem 3rem;
-		margin-bottom: 1rem;
-		margin-right: -1rem;
+		margin: 0 -1rem;
+		padding-left: 1rem;
 		background: white;
 		> .breadcrumb {
 			grid-column-start: 1;
@@ -28,39 +28,22 @@
 
 }
 
-/**
- * rocket addtional
- */
-
-@include media-breakpoint-up(md) {
-	.rocket-zone.rocket-contains-additional {
-		width: calc(100% - 20rem);
-		> .rocket-additional {
-			position: fixed;
-			top: 7.825rem;
-			bottom: 4.5rem;
-			right: 1rem;
-			width: 19rem;
-			overflow-y: auto;
-		}
-	}
-}
-
 .rocket-layer {
 	position: absolute;
 	z-index: 50;
     top: 0;
     left: -$rocket-global-nav-spacer;
 	right: -3rem;
-	padding: 0 1rem 0 $rocket-global-nav-spacer;
-    background-color: $gray-300;
+	padding: 0 1rem 5rem $rocket-global-nav-spacer;
+	background-color: $gray-300;
+	background: linear-gradient(to right, $gray-500 0, $gray-500 3rem, $gray-300 3rem, $gray-300 100%);
+
 	min-height: calc(100vh - #{$rocket-header-height});
 	> .rocket-layer-toolbar {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: fixed;
+		top: $rocket-header-height;
+		left: $rocket-global-nav-width;
 		width: $rocket-global-nav-spacer;
-		background: white;
 		> button {
 			width: ($rocket-global-nav-spacer - 1rem);
 			height: 5rem;

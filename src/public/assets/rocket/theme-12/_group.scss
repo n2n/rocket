@@ -1,0 +1,11 @@
+.rocket-group.rocket-field {
+    padding: 0;
+    border-bottom: 1px solid $input-border-color;
+    > label {
+        float: none;
+    }
+    > .rocket-control {
+        padding: 1rem 1.5rem;
+    }
+
+}

@@ -113,6 +113,10 @@ body {
 
 }
 
+.rocket-partial-commands {
+    display: inline-block;
+}
+
 .rocket-impl-overview-pagination {
     text-align: right;
 }
@@ -159,6 +163,37 @@ body {
 }
 
 /**
+ * rocket addtional
+ */
+
+ @include media-breakpoint-up(md) {
+	.rocket-zone.rocket-contains-additional {
+		width: calc(100% - 20rem);
+		> .rocket-additional {
+			position: fixed;
+			top: 7.825rem;
+			bottom: 4.5rem;
+			right: 1rem;
+			width: 19rem;
+			overflow-y: auto;
+		}
+	}
+}
+
+.rocket-additional-nav {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: $gray-900;
+    color: $white;
+    > li {
+        display: inline-block;
+        padding: .5rem 1rem;
+        cursor: pointer;
+    }
+}
+
+/**
  * General Styles
  */
 
@@ -166,3 +201,7 @@ body {
     display: none;
 } 
 
+.rocket-severity-danger {
+    color: $white;
+    background-color: $danger;
+}
