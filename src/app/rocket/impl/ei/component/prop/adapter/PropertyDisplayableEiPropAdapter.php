@@ -106,8 +106,13 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		if ($eiObject->isDraft()) {
 			return $eiObject->getDraft()->getDraftValueMap()->getValue($this);
 		}
-		
-		return $this->getObjectPropertyAccessProxy()->getValue($eiObject->getEiEntityObj()->getEntityObj());
+
+		$objectPropertyAccessProxy = $this->getObjectPropertyAccessProxy();
+		if ($objectPropertyAccessProxy === null) {
+			return null;
+		}
+
+		return $objectPropertyAccessProxy->getValue($eiObject->getEiEntityObj()->getEntityObj());
 	}
 	
 	public function getGuiProp() {

@@ -22,6 +22,8 @@
 namespace rocket\spec\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2nutil\bootstrap\mag\OutfitComposer;
+use n2nutil\bootstrap\mag\OutfitConfig;
 use rocket\spec\ei\manage\util\model\EiuFactory;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
@@ -598,7 +600,7 @@ class EiHtmlBuilderState {
 	 * @return array
 	 */
 	public function peakField(bool $pop) {
-		$info = ArrayUtils::end($this->stack);
+		$info = ArrayUtils::end($this->stack) ;
 	
 		if ($info === null || $info['type'] != 'field') {
 			throw new IllegalStateException('No field open.');
@@ -666,7 +668,11 @@ class RocketUiOutfitter implements UiOutfitter {
 		if ($nature & self::NATURE_BTN_SECONDARY) {
 			return array('class' => 'btn btn-secondary');
 		}
-		
+
+		if ($nature & self::NATURE_MASSIVE_ARRAY_ITEM) {
+			return array('class' => 'col-md-12', 'style' => 'background: green');
+		}
+
 		return $attrs;
 	}
 
@@ -684,9 +690,19 @@ class RocketUiOutfitter implements UiOutfitter {
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
 			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
 		}
+
+		if ($elemNature & self::NATURE_MASSIVE_ARRAY_ITEM && $elemNature & self::NATURE_MASSIVE_ARRAY_ITEM_CONTROL) {
+			$container = new HtmlElement('div', array('class' => 'row'), null);
+
+			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
+			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto mag-collection-control-wrapper'), ''));
+
+			return $container;
+		}
 	}
 	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
-		return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html', array('propertyPath' => $propertyPath, 'uiOutfitter' => $this));
+		$outfitComposer = new OutfitComposer();
+		return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html', array('propertyPath' => $propertyPath));
 	}
 }

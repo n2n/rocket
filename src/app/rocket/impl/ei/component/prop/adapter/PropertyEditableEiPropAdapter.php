@@ -21,6 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
+use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\core\container\N2nContext;
@@ -85,8 +86,11 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 			return parent::buildEiField($eiu);
 		}
 
-		return new SimpleEiField($eiu->entry()->getEiObject(), 
-				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
+		$objectPropertyAccessProxy = $this->getObjectPropertyAccessProxy();
+		$constraints = $objectPropertyAccessProxy === null ? TypeConstraint::createSimple('mixed') :
+				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy();
+
+		return new SimpleEiField($eiu->entry()->getEiObject(), $constraints,
 				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
 	
