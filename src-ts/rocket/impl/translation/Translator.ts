@@ -290,7 +290,7 @@ namespace Rocket.Impl.Translation {
 		
 		draw(tooltip: string) {
 			this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
-			this.translatedContent.jQuery.prepend(this.elemJq);
+			this.translatedContent.jQuery.append(this.elemJq);
 			
 			let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
 					.append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
