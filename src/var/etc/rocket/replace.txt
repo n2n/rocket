@@ -13,3 +13,5 @@ rocket\impl\ei\component\command
 rocket\spec\ei\component\modificator\impl
 rocket\impl\ei\component\modificator
  
+rocket\spec\ei\component\field
+rocket\spec\ei\component\prop
