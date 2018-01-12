@@ -148,6 +148,7 @@ namespace Rocket.Impl.Translation {
 	class TranslatedContent {
 //		private jqTranslation: JQuery;
 		private _propertyPath: string;
+		private _idRep: string;
 		private _fieldJq: JQuery;
 		private jqEnabler: JQuery = null;
 		private copyControlJq: JQuery = null;
@@ -158,6 +159,7 @@ namespace Rocket.Impl.Translation {
 			Display.StructureElement.from(elemJq, true);
 //			this.jqTranslation = jqElem.children(".rocket-impl-translation");
 			this._propertyPath = elemJq.data("rocket-impl-property-path");
+			this._idRep = elemJq.data("rocket-impl-id-rep") || null;
 			this._fieldJq = elemJq.children("div");
 		}
 		
@@ -180,6 +182,10 @@ namespace Rocket.Impl.Translation {
 		
 		get propertyPath(): string {
 			return this._propertyPath;
+		}
+		
+		get idRep(): string|null {
+			return this._idRep;
 		}
 		
 		get prettyLocaleId(): string {
@@ -317,7 +323,8 @@ namespace Rocket.Impl.Translation {
 		private completeCopyUrl(url: Jhtml.Url) {
 			return url.extR(null, {
 				propertyPath: this.translatedContent.propertyPath,
-				toN2nLocale: this.translatedContent.localeId
+				toN2nLocale: this.translatedContent.localeId,
+				toIdRep: this.translatedContent.idRep
 			});
 		}
 		

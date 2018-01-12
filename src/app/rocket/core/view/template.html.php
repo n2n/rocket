@@ -100,7 +100,7 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 		left: 0px;
 		right: 0px;
 		bottom: 0px;
-		background: white url('https://media.giphy.com/media/3ohzgD1wRxpvpkDCSI/giphy.gif') center center no-repeat;
+		background: #FEC800 url('https://media.giphy.com/media/3ohzgD1wRxpvpkDCSI/giphy.gif') center center no-repeat;
 	}
 	
 	.rocket-load-blocker * {

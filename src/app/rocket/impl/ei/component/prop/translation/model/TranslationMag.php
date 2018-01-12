@@ -37,11 +37,13 @@ use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\reflection\ArgUtils;
 use n2n\util\uri\Url;
 use n2n\l10n\N2nLocale;
+use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class TranslationMag extends MagAdapter {
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	private $fieldErrorInfos = array();
+	private $eiuEntries = array();
 	/**
 	 * @var Url[]
 	 */
@@ -60,9 +62,11 @@ class TranslationMag extends MagAdapter {
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
 	}
 
-	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, FieldErrorInfo $fieldErrorInfo) {
+	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, FieldErrorInfo $fieldErrorInfo, 
+			EiuEntry $eiuEntry) {
 		$this->magPropertyPaths[$n2nLocaleId] = $magPropertyPath;
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
+		$this->eiuEntries[$n2nLocaleId] = $eiuEntry;
 	}
 	
 	public function setCopyUrls(array $copyUrls) {
@@ -114,6 +118,6 @@ class TranslationMag extends MagAdapter {
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
 				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
 						'label' => $this->getLabel($view->getN2nLocale()),
-						'copyUrlDefs' => $copyUrlDefs));
+						'copyUrlDefs' => $copyUrlDefs, 'eiuEntries' => $this->eiuEntries));
 	}
 }

@@ -130,7 +130,8 @@ class TranslationGuiField implements GuiFieldFork {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;
 			
-			$fieldErrorInfo = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry()->getEiEntry()->getMappingErrorInfo()
+			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
+			$fieldErrorInfo = $eiuEntry->getEiEntry()->getMappingErrorInfo()
 					->getFieldErrorInfo($eiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
@@ -151,7 +152,7 @@ class TranslationGuiField implements GuiFieldFork {
 			}
 			
 			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
-				$translationMag->putMagPropertyPath($n2nLocaleId, $magPropertyPath, $fieldErrorInfo);
+				$translationMag->putMagPropertyPath($n2nLocaleId, $magPropertyPath, $fieldErrorInfo, $eiuEntry);
 				if (!$mandatory) $mandatory = $result->isMandatory();
 			} else {
 				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $fieldErrorInfo);
