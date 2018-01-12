@@ -15,22 +15,25 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 class TranslationCopyController extends ControllerAdapter {
 	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiIdPath, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $toN2nLocale, ParamQuery $fromIdRep, ParamQuery $toIdRep = null) {
-				$fromEiuEntry = $eiuCtrl->lookupEntry((string) $fromIdRep)->copy();
+				
+		try {
+			$guiIdPath = GuiIdPath::createFromExpression((string) $guiIdPath);
+			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
+			$toN2nLocale = N2nLocale::create((string) $toN2nLocale);
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		} catch (IllegalN2nLocaleFormatException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
+		$fromEiuEntry = $eiuCtrl->lookupEntry((string) $fromIdRep);
+		
 		$toEiuEntry = null;
 		if ($toIdRep !== null) {
 			$toEiuEntry = $eiuCtrl->lookupEntry((string) $toIdRep);
 		} else {
 			$toEiuEntry = $eiuCtrl->frame()->newEntry(false, $fromEiuEntry);
-		}
-		
-		try {
-			$guiIdPath = GuiIdPath::createFromExpression((string) $guiIdPath);
-			$propertyPath = PropertyPath::createFromPropertyExpression($propertyPath);
-			$toN2nLocale = N2nLocale::create($toN2nLocale);
-		} catch (\InvalidArgumentException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (IllegalN2nLocaleFormatException $e) {
-			throw new BadRequestException(null, null, $e);
+			$toEiuEntry->getEntityObj()->setN2nLocale($toN2nLocale);
 		}
 		
 		if (!$fromEiuEntry->containsGuiProp($guiIdPath)) {

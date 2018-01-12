@@ -5689,6 +5689,63 @@ var Rocket;
     (function (Impl) {
         var Translation;
         (function (Translation) {
+            class Toggler {
+                constructor(buttonJq, menuJq) {
+                    this.buttonJq = buttonJq;
+                    this.menuJq = menuJq;
+                    menuJq.hide();
+                }
+                toggle(e) {
+                    if (this.closeCallback) {
+                        this.closeCallback(e);
+                        return;
+                    }
+                    this.open();
+                }
+                close() {
+                    if (!this.closeCallback)
+                        return;
+                    this.closeCallback();
+                }
+                open() {
+                    if (this.closeCallback)
+                        return;
+                    console.log("show");
+                    this.menuJq.show();
+                    this.buttonJq.addClass("active");
+                    let bodyJq = $("body");
+                    this.closeCallback = (e) => {
+                        if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
+                            return;
+                        }
+                        bodyJq.off("click", this.closeCallback);
+                        this.menuJq.off("mouseleave", this.closeCallback);
+                        this.closeCallback = null;
+                        this.menuJq.hide();
+                        this.buttonJq.removeClass("active");
+                    };
+                    bodyJq.on("click", this.closeCallback);
+                    this.menuJq.on("mouseleave", this.closeCallback);
+                }
+                static simple(buttonJq, menuJq) {
+                    let toggler = new Toggler(buttonJq, menuJq);
+                    buttonJq.on("click", (e) => {
+                        e.stopImmediatePropagation();
+                        toggler.toggle(e);
+                    });
+                    return toggler;
+                }
+            }
+            Translation.Toggler = Toggler;
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
             class TranslationManager {
                 constructor(jqElem) {
                     this.jqElem = jqElem;
@@ -6009,6 +6066,7 @@ var Rocket;
                     this._visible = true;
                     Rocket.Display.StructureElement.from(elemJq, true);
                     this._propertyPath = elemJq.data("rocket-impl-property-path");
+                    this._idRep = elemJq.data("rocket-impl-id-rep") || null;
                     this._fieldJq = elemJq.children("div");
                 }
                 get jQuery() {
@@ -6026,6 +6084,9 @@ var Rocket;
                 }
                 get propertyPath() {
                     return this._propertyPath;
+                }
+                get idRep() {
+                    return this._idRep;
                 }
                 get prettyLocaleId() {
                     return this.elemJq.find("label:first").text();
@@ -6128,7 +6189,8 @@ var Rocket;
                 completeCopyUrl(url) {
                     return url.extR(null, {
                         propertyPath: this.translatedContent.propertyPath,
-                        toN2nLocale: this.translatedContent.localeId
+                        toN2nLocale: this.translatedContent.localeId,
+                        toIdRep: this.translatedContent.idRep
                     });
                 }
                 copy(url) {
@@ -6326,63 +6388,6 @@ var Rocket;
                     }
                 }
             }
-        })(Translation = Impl.Translation || (Impl.Translation = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        var Translation;
-        (function (Translation) {
-            class Toggler {
-                constructor(buttonJq, menuJq) {
-                    this.buttonJq = buttonJq;
-                    this.menuJq = menuJq;
-                    menuJq.hide();
-                }
-                toggle(e) {
-                    if (this.closeCallback) {
-                        this.closeCallback(e);
-                        return;
-                    }
-                    this.open();
-                }
-                close() {
-                    if (!this.closeCallback)
-                        return;
-                    this.closeCallback();
-                }
-                open() {
-                    if (this.closeCallback)
-                        return;
-                    console.log("show");
-                    this.menuJq.show();
-                    this.buttonJq.addClass("active");
-                    let bodyJq = $("body");
-                    this.closeCallback = (e) => {
-                        if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
-                            return;
-                        }
-                        bodyJq.off("click", this.closeCallback);
-                        this.menuJq.off("mouseleave", this.closeCallback);
-                        this.closeCallback = null;
-                        this.menuJq.hide();
-                        this.buttonJq.removeClass("active");
-                    };
-                    bodyJq.on("click", this.closeCallback);
-                    this.menuJq.on("mouseleave", this.closeCallback);
-                }
-                static simple(buttonJq, menuJq) {
-                    let toggler = new Toggler(buttonJq, menuJq);
-                    buttonJq.on("click", (e) => {
-                        e.stopImmediatePropagation();
-                        toggler.toggle(e);
-                    });
-                    return toggler;
-                }
-            }
-            Translation.Toggler = Toggler;
         })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
