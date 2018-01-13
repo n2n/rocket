@@ -238,6 +238,16 @@ var Rocket;
                 this._layers = new Array();
                 var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
                 this.registerLayer(layer);
+                jQuery(document).keyup((e) => {
+                    if (e.keyCode == 27) {
+                        this.closePopup();
+                    }
+                });
+            }
+            closePopup() {
+                if (this.currentLayer.level == 0)
+                    return;
+                this.currentLayer.close();
             }
             get layers() {
                 return this._layers.slice();
@@ -345,7 +355,7 @@ var Rocket;
                 var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History(), true));
                 this.registerLayer(layer);
                 var jqToolbar = $("<div />", {
-                    "class": "rocket-layer-toolbar rocket-simple-commands"
+                    "class": "rocket-layer-toolbar"
                 });
                 jqLayer.append(jqToolbar);
                 var jqButton = $("<button />", {
@@ -3861,6 +3871,7 @@ var Rocket;
                         throw new Error("Selector state already activated");
                     }
                     this.selectorObserver = selectorObserver;
+                    console.log(this.selectorObserver);
                     this.selectorState.activate(selectorObserver);
                     this.triggerContentChange();
                     this.buildFakePage();
@@ -3960,9 +3971,9 @@ var Rocket;
                     return this._pageSize;
                 }
                 get numSelectedEntries() {
-                    if (!this.selectorObserver)
+                    if (!this.collection.selectable)
                         return null;
-                    if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
+                    if (!this.selectorObserver || (this.fakePage !== null && this.fakePage.isContentLoaded())) {
                         return this.collection.selectedEntries.length;
                     }
                     return this.selectorObserver.getSelectedIds().length;
