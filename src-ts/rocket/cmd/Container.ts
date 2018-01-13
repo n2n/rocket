@@ -13,6 +13,18 @@ namespace Rocket.Cmd {
 			var layer = new Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, 
 					Jhtml.getOrCreateMonitor());
 			this.registerLayer(layer);
+			
+			jQuery(document).keyup((e) => {
+			     if (e.keyCode == 27) { 
+			    	 this.closePopup();
+			    }
+			});
+		}
+		
+		closePopup() {
+			if (this.currentLayer.level == 0) return;
+			
+			this.currentLayer.close();
 		}
 
 		get layers(): Array<Layer> {
