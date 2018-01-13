@@ -180,7 +180,7 @@ namespace Rocket.Cmd {
 			this.registerLayer(layer);
 			
 			var jqToolbar = $("<div />", {
-				"class": "rocket-layer-toolbar rocket-simple-commands"
+				"class": "rocket-layer-toolbar"
 			});
 			jqLayer.append(jqToolbar);
 			
