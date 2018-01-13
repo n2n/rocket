@@ -45,3 +45,35 @@
         }
     }
 }
+
+@include media-breakpoint-up(md) {
+    .rocket-group .rocket-group {
+        > .rocket-control {
+            > .rocket-entry {
+                .rocket-field {
+                    > label {
+                        width: calc(14rem - 1px);
+                    }
+                    > .rocket-control {
+                        margin-left: calc(14rem - 1px);
+                    }
+                }
+            }
+        }
+    }
+
+    .rocket-control .rocket-group .rocket-group {
+        > .rocket-control {
+            > .rocket-entry {
+                .rocket-field {
+                    > label {
+                        width: calc(13rem - 2px);
+                    }
+                    > .rocket-control {
+                        margin-left: calc(13rem - 2px);
+                    }
+                }
+            }
+        }
+    }
+}
