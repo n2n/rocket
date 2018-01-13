@@ -5,39 +5,39 @@ namespace Rocket.Display {
 		private _state: Entry.State = Entry.State.PERSISTENT;
 		private callbackRegistery: util.CallbackRegistry<EntryCallback> = new util.CallbackRegistry<EntryCallback>();
 		
-		constructor(private jqElem: JQuery) {
-			var that = this;
-			jqElem.on("remove", function () {
-				that.trigger(Entry.EventType.DISPOSED);
+		constructor(private elemJq: JQuery) {
+			elemJq.on("remove", () => {
+				this.trigger(Entry.EventType.DISPOSED);
+				this.callbackRegistery.clear();
 			});
 			
-			let jqSelector = jqElem.find(".rocket-entry-selector:first");
-			if (jqSelector.length > 0) {
-				this.initSelector(jqSelector);
+			let selectorJq = elemJq.find(".rocket-entry-selector:first");
+			if (selectorJq.length > 0) {
+				this.initSelector(selectorJq);
 			}
 		}
 		
 		get lastMod(): boolean {
-			return this.jqElem.hasClass(Entry.LAST_MOD_CSS_CLASS);
+			return this.elemJq.hasClass(Entry.LAST_MOD_CSS_CLASS);
 		}
 		
 		set lastMod(lastMod: boolean) {
 			if (lastMod) {
-				this.jqElem.addClass(Entry.LAST_MOD_CSS_CLASS)
+				this.elemJq.addClass(Entry.LAST_MOD_CSS_CLASS)
 			} else {
-				this.jqElem.removeClass(Entry.LAST_MOD_CSS_CLASS)
+				this.elemJq.removeClass(Entry.LAST_MOD_CSS_CLASS)
 			}
 		}
 		
 		get collection(): Collection|null {
-			return Collection.test(this.jqElem.parent());
+			return Collection.test(this.elemJq.parent());
 		}
 		
 		private initSelector(jqSelector: JQuery) {
 			this._selector = new EntrySelector(jqSelector, this);
 			
 			var that = this;
-			this.jqElem.click(function (e) {
+			this.elemJq.click(function (e) {
 				if (getSelection().toString() || util.ElementUtils.isControl(e.target)) {
 					return;
 				}
@@ -63,19 +63,19 @@ namespace Rocket.Display {
 		}
 		
 		get jQuery(): JQuery {
-			return this.jqElem;
+			return this.elemJq;
 		}
 		
 		show() {
-			this.jqElem.show();
+			this.elemJq.show();
 		}
 		
 		hide() {
-			this.jqElem.hide();
+			this.elemJq.hide();
 		}
 		
 		dispose() {
-			this.jqElem.remove();
+			this.elemJq.remove();
 		}
 		
 		get state(): Entry.State {
@@ -93,7 +93,7 @@ namespace Rocket.Display {
 		}
 		
 		get generalId(): string {
-			return this.jqElem.data("rocket-general-id").toString();		
+			return this.elemJq.data("rocket-general-id").toString();		
 		}
 		
 		get id(): string {
@@ -105,15 +105,15 @@ namespace Rocket.Display {
 		}
 		
 		get supremeEiTypeId(): string {
-			return this.jqElem.data("rocket-supreme-ei-type-id").toString();
+			return this.elemJq.data("rocket-supreme-ei-type-id").toString();
 		}
 		
 		get idRep(): string {
-			return this.jqElem.data("rocket-id-rep").toString();
+			return this.elemJq.data("rocket-id-rep").toString();
 		}
 		
 		get draftId(): number {
-			var draftId = parseInt(this.jqElem.data("rocket-draft-id"));
+			var draftId = parseInt(this.elemJq.data("rocket-draft-id"));
 			if (!isNaN(draftId)) {
 				return draftId;
 			}
@@ -121,7 +121,7 @@ namespace Rocket.Display {
 		}
 		
 		get identityString(): string {
-			return this.jqElem.data("rocket-identity-string");
+			return this.elemJq.data("rocket-identity-string");
 		}
 		
 		get selector(): EntrySelector {
@@ -129,7 +129,7 @@ namespace Rocket.Display {
 		}
 		
 		private findTreeLevelClass(): string|null {
-			let cl = this.jqElem.get(0).classList;
+			let cl = this.elemJq.get(0).classList;
 			
 			for (let i = 0; i < cl.length; i++) {
 				let className = cl.item(i);
@@ -151,11 +151,11 @@ namespace Rocket.Display {
 		set treeLevel(treeLevel: number|null) {
 			let className = this.findTreeLevelClass();
 			if (className) {
-				this.jqElem.removeClass(className);
+				this.elemJq.removeClass(className);
 			} 
 			
 			if (treeLevel !== null) {
-				this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel)
+				this.elemJq.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel)
 			}
 		}
 		

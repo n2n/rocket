@@ -31,6 +31,15 @@ namespace Rocket.util {
 			
 			return this.callbackMap[nature];
 		}
+		
+		clear(nature?: string) {
+			if (nature) {
+				this.callbackMap[nature] = [];
+				return;
+			}
+			
+			this.callbackMap = {};
+		}
 	}
 	
 	export class ArgUtils {

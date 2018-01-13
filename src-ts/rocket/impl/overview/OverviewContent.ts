@@ -126,8 +126,14 @@ namespace Rocket.Impl.Overview {
 			}
 		}
 		
+		private selectorObserver: Display.SelectorObserver = null;
+		
 		initSelector(selectorObserver: Display.SelectorObserver) {
-			console.log("init");
+			if (this.selectorObserver) {
+				throw new Error("Selector state already activated");
+			}
+			
+			this.selectorObserver = selectorObserver;
 			this.selectorState.activate(selectorObserver);
 			this.triggerContentChange();
 			
@@ -135,7 +141,7 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		private buildFakePage() {
-			if (!this.collection.selectable) return;
+			if (!this.selectorObserver) return;
 			
 			if (this.fakePage) {
 				throw new Error("Fake page already existing.");
@@ -144,7 +150,7 @@ namespace Rocket.Impl.Overview {
 			this.fakePage = new Page(0);
 			this.fakePage.hide();
 			
-			var idReps = this.collection.selectedIds;
+			var idReps = this.selectorObserver.getSelectedIds();
 			var unloadedIds = idReps.slice();
 			var that = this;
 		
@@ -267,13 +273,13 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		get numSelectedEntries(): number {
-			if (!this.collection.selectable) return null;
+			if (!this.selectorObserver) return null;
 			
 			if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
 				return this.collection.selectedEntries.length;
 			}
 			
-			return this.collection.selectedIds.length;
+			return this.selectorObserver.getSelectedIds().length;
 		}
 		
 		get selectable(): boolean {
@@ -565,12 +571,9 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		activate(selectorObserver: Display.SelectorObserver) {
-			if (this.collection.selectable) {
-				throw new Error("Selector state already activated");
-			}
-			
 			if (!selectorObserver) return;
 
+			this.collection.destroySelectors();
 			this.collection.setupSelector(selectorObserver);
 		}
 		
@@ -604,7 +607,7 @@ namespace Rocket.Impl.Overview {
 				entry.show();
 			}
 			
-			entry.selector.whenChanged(() => {
+			entry.selector.onChanged(() => {
 				if (this.autoShowSelected && entry.selector.selected) {
 					entry.show();
 				}

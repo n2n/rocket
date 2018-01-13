@@ -1,7 +1,8 @@
 namespace Rocket.Display {
 	
 	export class EntrySelector {
-		private changedCallbacks: Array<() => any> = new Array<() => any>();
+		private changedCallbacks: Array<EntrySelectorCallback> = [];
+		
 		private _selected: boolean = false;
 		
 		constructor(private jqElem: JQuery, private _entry: Entry) {
@@ -26,7 +27,7 @@ namespace Rocket.Display {
 			this.triggerChanged();
 		}
 				
-		whenChanged(callback: () => any, prepend: boolean = false) {
+		onChanged(callback: EntrySelectorCallback, prepend: boolean = false) {
 			if (prepend) {
 				this.changedCallbacks.unshift(callback);
 			} else {
@@ -34,9 +35,13 @@ namespace Rocket.Display {
 			}
 		}
 		
+		offChanged(callback: EntrySelectorCallback) {
+			this.changedCallbacks.splice(this.changedCallbacks.indexOf(callback));
+		}
+		
 		protected triggerChanged() {
-			this.changedCallbacks.forEach(function (callback) {
-				callback();
+			this.changedCallbacks.forEach((callback) => {
+				callback(this);
 			});
 		}
 		
@@ -69,5 +74,9 @@ namespace Rocket.Display {
 //			
 //			return entrySelector;
 //		}
+	}
+	
+	interface EntrySelectorCallback {
+		(entrySelector?: EntrySelector): any
 	}
 }

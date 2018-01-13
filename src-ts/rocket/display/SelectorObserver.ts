@@ -5,18 +5,43 @@ namespace Rocket.Display {
 		observeEntrySelector(entrySelector: EntrySelector): void;
 		
 		getSelectedIds(): Array<string>;
+		
+		destroy(): void;
 	}
 	
 	export class MultiEntrySelectorObserver implements SelectorObserver {
 		private selectedIds: Array<string>;
 		private identityStrings: { [key: string]: string } = {};
 		private selectors: { [key: string]: EntrySelector } = {};
+		private checkJqs: { [key: string]: JQuery } = {};
 		
 		constructor(private originalIdReps: Array<string> = new Array<string>()) {
 			this.selectedIds = originalIdReps;
 		}
 		
+		destroy(): void {
+			for (let key in this.selectors) {
+				this.checkJqs[key].remove();
+				
+				let selector = this.selectors[key];
+				selector.offChanged(this.onChanged);
+				
+				let entry = selector.entry;
+				entry.off(Entry.EventType.DISPOSED, this.onDisposed);
+				entry.off(Entry.EventType.REMOVED, this.onRemoved);
+			}
+			
+			this.identityStrings = {};
+			this.selectors = {};
+			this.checkJqs = {};
+		}
+		
 		observeEntrySelector(selector: EntrySelector) {
+			let entry = selector.entry;
+			let id = entry.id;
+			
+			if (this.selectors[id]) return;
+			
 			let jqCheck = $("<input />", { "type": "checkbox" });
 			selector.jQuery.empty();
 			selector.jQuery.append(jqCheck);
@@ -24,28 +49,33 @@ namespace Rocket.Display {
 			jqCheck.change(() => {
 				selector.selected = jqCheck.is(":checked");
 			});
-			selector.whenChanged(() => {
-//				if (selector.selected == this.containsSelectedId(selector.entry.id)) {
-//					return;
-//				}
-				jqCheck.prop("checked", selector.selected);
-				this.chSelect(selector.selected, selector.entry.id);
-			}, true);
+			selector.onChanged(this.onChanged, true);
 			
-			let entry = selector.entry;
-			let id = entry.id;
 			selector.selected = this.containsSelectedId(id);
 			jqCheck.prop("checked", selector.selected);
 			
+			console.log("init " + id);
+			this.checkJqs[id] = jqCheck;
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
 			
-			entry.on(Entry.EventType.DISPOSED, () => {
-				delete this.selectors[id];
-			});
-			entry.on(Entry.EventType.REMOVED, () => {
-				this.chSelect(false, id);
-			});
+			entry.on(Entry.EventType.DISPOSED, this.onDisposed);
+			entry.on(Entry.EventType.REMOVED, this.onRemoved);
+		}
+		
+		private onChanged = (selector: EntrySelector) => {
+			let id = selector.entry.id
+			console.log("changed " + id);
+			this.checkJqs[id].prop("checked", selector.selected);
+			this.chSelect(selector.selected, id);
+		}
+		
+		private onDisposed = (entry: Entry) => {
+			delete this.selectors[entry.id];
+		}
+		
+		private onRemoved = (entry: Entry) => {
+			this.chSelect(false, entry.id);
 		}
 		
 		public containsSelectedId(id: string): boolean {
@@ -100,40 +130,64 @@ namespace Rocket.Display {
 	
 	export class SingleEntrySelectorObserver implements SelectorObserver {
 		private selectedId: string = null;
-		private identityStrings: { [key: string]: string } = {};
-		private selectors: { [key: string]: EntrySelector } = {};
+		private identityStrings: { [id: string]: string } = {};
+		private selectors: { [id: string]: EntrySelector } = {};
+		private checkJqs: { [id: string]: JQuery } = {};
 		
 		constructor(private originalId: string = null) {
 			this.selectedId = originalId;
 		}
 		
+		destroy(): void {
+			for (let id in this.selectors) {
+				this.checkJqs[id].remove();
+				
+				let entry = this.selectors[id].entry;
+				entry.off(Entry.EventType.DISPOSED, this.onDisposed);
+				entry.off(Entry.EventType.REMOVED, this.onRemoved);
+			}
+			
+			this.identityStrings = {};
+			this.selectors = {};
+		}
+		
 		observeEntrySelector(selector: EntrySelector) {
-			var that = this;
+			let entry = selector.entry;
+			let id = entry.id;
+			if (this.selectors[id]) return;
 			
-			var jqCheck = $("<input />", { "type": "radio" });
+			let checkJq = $("<input />", { "type": "radio" });
 			selector.jQuery.empty();
-			selector.jQuery.append(jqCheck);
+			selector.jQuery.append(checkJq);
 			
-			jqCheck.change(() => {
-				selector.selected = jqCheck.is(":checked");
+			checkJq.change(() => {
+				selector.selected = checkJq.is(":checked");
 			});
-			selector.whenChanged(() => {
-				jqCheck.prop("checked", selector.selected);
-				this.chSelect(selector.selected, selector.entry.id);
-			});
+			selector.onChanged(this.onChanged);
 			
-			var entry = selector.entry;
-			var id = entry.id;
+			
 			selector.selected = this.selectedId === id;
+			
+			this.checkJqs[id] = checkJq;
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
 			
-			entry.on(Entry.EventType.DISPOSED, () => {
-				delete this.selectors[id];
-			});
-			entry.on(Entry.EventType.REMOVED, function () {
-				this.chSelect(false, id);
-			});
+			entry.on(Entry.EventType.DISPOSED, this.onDisposed);
+			entry.on(Entry.EventType.REMOVED, this.onRemoved);
+		}
+		
+		private onChanged = (selector: EntrySelector) => {
+			let id = selector.entry.id
+			this.checkJqs[id].prop("checked", selector.selected);
+			this.chSelect(selector.selected, id);
+		}
+		
+		private onDisposed = (entry: Entry) => {
+			delete this.selectors[entry.id];
+		}
+		
+		private onRemoved = (entry: Entry) => {
+			this.chSelect(false, entry.id);
 		}
 		
 		getSelectedIds(): Array<string> {

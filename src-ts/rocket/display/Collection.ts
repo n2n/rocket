@@ -3,7 +3,7 @@ namespace Rocket.Display {
 	export class Collection {
 		private entryMap: { [id: string]: Entry } = {};
 		private sortedEntries: Entry[];
-		private selectorObserver: SelectorObserver;
+		private selectorObservers: Array<SelectorObserver> = [];
 		private selectionChangedCbr = new Jhtml.Util.CallbackRegistry<() => any>();
 		private insertCbr = new Jhtml.Util.CallbackRegistry<InsertCallback>();
 		private insertedCbr = new Jhtml.Util.CallbackRegistry<InsertedCallback>();
@@ -26,14 +26,16 @@ namespace Rocket.Display {
 		public registerEntry(entry: Entry) {
 		    this.entryMap[entry.id] = entry;
 		    
-		    if (this.selectorObserver && entry.selector) {
-		        this.selectorObserver.observeEntrySelector(entry.selector);
+		    if (entry.selector) {
+		    	for (let selectorObserver of this.selectorObservers) {
+		    		selectorObserver.observeEntrySelector(entry.selector);
+		    	}
 		    }
 		    if (this.sortable && entry.selector) {
 		    	this.applyHandle(entry.selector);
 		    }
 		    
-			entry.selector.whenChanged(() => {
+			entry.selector.onChanged(() => {
 				this.triggerChanged();
 			});
 		    
@@ -63,7 +65,7 @@ namespace Rocket.Display {
 		}
 		
 		setupSelector(selectorObserver: SelectorObserver) {
-			this.selectorObserver = selectorObserver;
+			this.selectorObservers.push(selectorObserver);
 			for (let entry of this.entries) {
 				if (!entry.selector) continue;
 				
@@ -71,14 +73,23 @@ namespace Rocket.Display {
 			}
 		}
 		
+		destroySelectors() {
+			let selectorObserver;
+			while (selectorObserver = this.selectorObservers.pop()) {
+				selectorObserver.destroy();
+			}
+		}
+		
 		get selectedIds(): string[] {
-			if (!this.selectorObserver) return [];
-			
-			return this.selectorObserver.getSelectedIds();
+			let ids: Array<string> = [];
+			for (let entry of this.entries) {
+				ids.push(entry.id);
+			}
+			return ids;
 		}
 		
 		get selectable(): boolean {
-			return !!this.selectorObserver;
+			return this.selectorObservers.length > 0;
 		}
 		
 		get jQuery(): JQuery {
