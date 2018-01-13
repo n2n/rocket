@@ -56,7 +56,7 @@ use n2n\web\dispatch\map\PropertyPath;
 			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
 			<div>
 				<?php $formHtml->select($selectedTypeIdPropertyPath, $entryFormViewModel->getTypeChoicesMap(),
-						array('data-rocket-generic-icon-types' => json_encode($iconTypesMap))) ?>
+						array('class' => 'form-control', 'data-rocket-generic-icon-types' => json_encode($iconTypesMap))) ?>
 			</div>
 		</div>
 	
