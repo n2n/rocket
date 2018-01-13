@@ -5697,7 +5697,11 @@ var Rocket;
                     });
                     let url = this.jqElem.data("overview-tools-url");
                     this.browserLayer.monitor.exec(url).then(() => {
-                        that.iniBrowserPage(this.browserLayer.getZoneByUrl(url));
+                        let zone = this.browserLayer.getZoneByUrl(url);
+                        that.iniBrowserPage(zone);
+                        zone.on(Rocket.Cmd.Zone.EventType.CONTENT_CHANGED, () => {
+                            this.iniBrowserPage(zone);
+                        });
                     });
                 }
                 iniBrowserPage(context) {

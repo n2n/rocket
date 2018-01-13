@@ -283,7 +283,7 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			var jqCommandButton = this.expandZone.menu.mainCommandList
-					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
+					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING } , true);
 			jqCommandButton.click(() => {
 				this.expandZone.layer.close();
 			});
@@ -425,7 +425,11 @@ namespace Rocket.Impl.Relation {
 			
 			let url = this.jqElem.data("overview-tools-url");
 			this.browserLayer.monitor.exec(url).then(() => {
-				that.iniBrowserPage(this.browserLayer.getZoneByUrl(url));
+				let zone = this.browserLayer.getZoneByUrl(url);
+				that.iniBrowserPage(zone);
+				zone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
+					this.iniBrowserPage(zone);
+				});
 			});
 		}
 		

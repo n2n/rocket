@@ -215,17 +215,6 @@ namespace Rocket.Impl.Relation {
 					this.iniBrowserPage(zone);
 				});
 			});
-			
-			
-			
-//			
-//			Rocket.exec(, {
-//				showLoadingPage: true,
-//				currentLayer: this.browserLayer,
-//				done: function (result: cmd.ExecResult) {
-//					
-//				}
-//			});
 		}
 		
 		private iniBrowserPage(zone: cmd.Zone) {
