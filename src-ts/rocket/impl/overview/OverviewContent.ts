@@ -134,6 +134,7 @@ namespace Rocket.Impl.Overview {
 			}
 			
 			this.selectorObserver = selectorObserver;
+			console.log(this.selectorObserver);
 			this.selectorState.activate(selectorObserver);
 			this.triggerContentChange();
 			
@@ -273,9 +274,9 @@ namespace Rocket.Impl.Overview {
 		}
 		
 		get numSelectedEntries(): number {
-			if (!this.selectorObserver) return null;
+			if (!this.collection.selectable) return null;
 			
-			if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
+			if (!this.selectorObserver || (this.fakePage !== null && this.fakePage.isContentLoaded())) {
 				return this.collection.selectedEntries.length;
 			}
 			
