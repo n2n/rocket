@@ -3737,6 +3737,7 @@ body {
   padding: 0 1rem 5rem 4rem;
   background-color: #ECEBE9;
   background: linear-gradient(to right, #C2BDB6 0, #C2BDB6 3rem, #ECEBE9 3rem, #ECEBE9 100%);
+  height: 100%;
   min-height: calc(100vh - 2.75rem);
 }
 
@@ -4222,8 +4223,9 @@ ul.rocket-content-item > li > span {
   margin-left: 0.5rem;
 }
 
-:not(.rocket-impl-entry) > .rocket-entry {
-  margin: 1rem 0;
+.rocket-content > .rocket-entry,
+.rocket-content > .rocket-form {
+  margin-top: 1rem;
 }
 
 .rocket-field {
@@ -4247,7 +4249,7 @@ ul.rocket-content-item > li > span {
 @media (min-width: 768px) {
   .rocket-field {
     clear: both;
-    padding: 1rem 1.5rem;
+    padding: 1rem;
   }
   .rocket-field > label {
     width: 15rem;
@@ -4257,42 +4259,6 @@ ul.rocket-content-item > li > span {
   .rocket-field > .rocket-control {
     margin-left: 15rem;
   }
-}
-
-.rocket-group,
-.rocket-group-simple {
-  background: #fff;
-  position: relative;
-  margin-bottom: 1rem;
-}
-
-.rocket-group > label,
-.rocket-group-simple > label {
-  width: 100%;
-  padding: 0.5rem 2rem;
-  border-left: 3px solid #ed8207;
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
-.rocket-group > .rocket-control,
-.rocket-group-simple > .rocket-control {
-  margin: 0;
-}
-
-.rocket-group > .rocket-group-toolbar,
-.rocket-group-simple > .rocket-group-toolbar {
-  position: absolute;
-  top: 0.5rem;
-  right: 1.5rem;
-}
-
-.rocket-group > .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group > .rocket-group-toolbar > .rocket-simple-commands,
-.rocket-group-simple > .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group-simple > .rocket-group-toolbar > .rocket-simple-commands {
-  display: inline-block;
-  margin-left: 1rem;
 }
 
 /*
@@ -4396,17 +4362,58 @@ ul.rocket-content-item > li > span {
   display: inline-block;
 }
 
-.rocket-group.rocket-field {
+.rocket-group {
+  background: #fff;
+  position: relative;
+  margin-bottom: 1rem;
   padding: 0;
   border-bottom: 1px solid #C2BDB6;
 }
 
-.rocket-group.rocket-field > label {
+.rocket-group > label {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  border-left: 3px solid #ed8207;
+  font-size: 1.25rem;
+  font-weight: bold;
   float: none;
 }
 
-.rocket-group.rocket-field > .rocket-control {
-  padding: 1rem 1.5rem;
+.rocket-group > .rocket-control {
+  margin: 0;
+  padding: 0;
+}
+
+.rocket-group > .rocket-group-toolbar {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+}
+
+.rocket-group > .rocket-group-toolbar > .rocket-group-controls,
+.rocket-group > .rocket-group-toolbar > .rocket-simple-commands {
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.rocket-group .rocket-group {
+  border: none;
+  background-color: transparent;
+}
+
+.rocket-group .rocket-group > label {
+  border: none;
+  margin: 0;
+}
+
+.rocket-group .rocket-group > .rocket-control {
+  padding: 0 1rem;
+}
+
+.rocket-group .rocket-group > .rocket-control > .rocket-entry {
+  border: 1px solid #C2BDB6;
+  background: rgba(55, 52, 49, 0.035);
 }
 
 .rocket-simple-commands > .btn {

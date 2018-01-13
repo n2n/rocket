@@ -1,11 +1,47 @@
-.rocket-group.rocket-field {
+.rocket-group {
+    background: $white;
+    position: relative;
+    margin-bottom: 1rem;
     padding: 0;
     border-bottom: 1px solid $input-border-color;
+
     > label {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        margin: 0;
+        border-left: 3px solid $primary;
+        font-size: $h2-font-size;
+        font-weight: bold;
         float: none;
     }
     > .rocket-control {
-        padding: 1rem 1.5rem;
+        margin: 0;
+        padding: 0;
     }
+    > .rocket-group-toolbar {
+        position: absolute;
+        top: 0.5rem;
+        right: 1rem;
+        > .rocket-group-controls,
+        > .rocket-simple-commands {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+    }
+}
 
+.rocket-group .rocket-group {
+    border: none;
+    background-color: transparent;
+    > label {
+        border: none;
+        margin: 0;
+    }
+    > .rocket-control {
+        padding: 0 1rem;
+        > .rocket-entry {
+            border: 1px solid $input-border-color;
+            background: rgba($gray-900, 0.035);
+        }
+    }
 }

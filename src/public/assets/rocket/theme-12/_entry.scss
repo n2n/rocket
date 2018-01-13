@@ -1,5 +1,10 @@
-:not(.rocket-impl-entry) > .rocket-entry {
-    margin: 1rem 0;
+// :not(.rocket-impl-entry) > .rocket-entry {
+//    margin: 1rem 0;
+//}
+
+.rocket-content > .rocket-entry,
+.rocket-content > .rocket-form {
+    margin-top: 1rem;
 }
 
 .rocket-field {
@@ -22,7 +27,7 @@
 @include media-breakpoint-up(md) {
     .rocket-field {
         clear: both;
-        padding: 1rem 1.5rem;
+        padding: 1rem;
 
         > label {
             width: 15rem;
@@ -35,33 +40,6 @@
     }
 }
 
-.rocket-group,
-.rocket-group-simple {
-    background: $white;
-    position: relative;
-    margin-bottom: 1rem;
-    
-    > label {
-        width: 100%;
-        padding: 0.5rem 2rem;
-        border-left: 3px solid $primary;
-        font-size: $h2-font-size;
-        font-weight: bold;
-    }
-    > .rocket-control {
-        margin: 0;
-    }
-    > .rocket-group-toolbar {
-        position: absolute;
-        top: 0.5rem;
-        right: 1.5rem;
-        > .rocket-group-controls,
-        > .rocket-simple-commands {
-            display: inline-block;
-            margin-left: 1rem;
-        }
-    }
-}
 
 /*
  * embeded
