@@ -54,7 +54,6 @@ namespace Rocket.Display {
 			selector.selected = this.containsSelectedId(id);
 			jqCheck.prop("checked", selector.selected);
 			
-			console.log("init " + id);
 			this.checkJqs[id] = jqCheck;
 			this.selectors[id] = selector;
 			this.identityStrings[id] = entry.identityString;
@@ -65,7 +64,6 @@ namespace Rocket.Display {
 		
 		private onChanged = (selector: EntrySelector) => {
 			let id = selector.entry.id
-			console.log("changed " + id);
 			this.checkJqs[id].prop("checked", selector.selected);
 			this.chSelect(selector.selected, id);
 		}

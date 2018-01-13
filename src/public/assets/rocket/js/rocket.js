@@ -773,6 +773,13 @@ var Rocket;
                 }
                 return this.callbackMap[nature];
             }
+            clear(nature) {
+                if (nature) {
+                    this.callbackMap[nature] = [];
+                    return;
+                }
+                this.callbackMap = {};
+            }
         }
         util.CallbackRegistry = CallbackRegistry;
         class ArgUtils {
@@ -1505,6 +1512,7 @@ var Rocket;
             constructor(elemJq) {
                 this.elemJq = elemJq;
                 this.entryMap = {};
+                this.selectorObservers = [];
                 this.selectionChangedCbr = new Jhtml.Util.CallbackRegistry();
                 this.insertCbr = new Jhtml.Util.CallbackRegistry();
                 this.insertedCbr = new Jhtml.Util.CallbackRegistry();
@@ -1521,13 +1529,15 @@ var Rocket;
             }
             registerEntry(entry) {
                 this.entryMap[entry.id] = entry;
-                if (this.selectorObserver && entry.selector) {
-                    this.selectorObserver.observeEntrySelector(entry.selector);
+                if (entry.selector) {
+                    for (let selectorObserver of this.selectorObservers) {
+                        selectorObserver.observeEntrySelector(entry.selector);
+                    }
                 }
                 if (this.sortable && entry.selector) {
                     this.applyHandle(entry.selector);
                 }
-                entry.selector.whenChanged(() => {
+                entry.selector.onChanged(() => {
                     this.triggerChanged();
                 });
                 var onFunc = () => {
@@ -1548,20 +1558,28 @@ var Rocket;
                 this.selectionChangedCbr.off(callback);
             }
             setupSelector(selectorObserver) {
-                this.selectorObserver = selectorObserver;
+                this.selectorObservers.push(selectorObserver);
                 for (let entry of this.entries) {
                     if (!entry.selector)
                         continue;
                     selectorObserver.observeEntrySelector(entry.selector);
                 }
             }
+            destroySelectors() {
+                let selectorObserver;
+                while (selectorObserver = this.selectorObservers.pop()) {
+                    selectorObserver.destroy();
+                }
+            }
             get selectedIds() {
-                if (!this.selectorObserver)
-                    return [];
-                return this.selectorObserver.getSelectedIds();
+                let ids = [];
+                for (let entry of this.entries) {
+                    ids.push(entry.id);
+                }
+                return ids;
             }
             get selectable() {
-                return !!this.selectorObserver;
+                return this.selectorObservers.length > 0;
             }
             get jQuery() {
                 return this.elemJq;
@@ -1894,38 +1912,38 @@ var Rocket;
     var Display;
     (function (Display) {
         class Entry {
-            constructor(jqElem) {
-                this.jqElem = jqElem;
+            constructor(elemJq) {
+                this.elemJq = elemJq;
                 this._selector = null;
                 this._state = Entry.State.PERSISTENT;
                 this.callbackRegistery = new Rocket.util.CallbackRegistry();
-                var that = this;
-                jqElem.on("remove", function () {
-                    that.trigger(Entry.EventType.DISPOSED);
+                elemJq.on("remove", () => {
+                    this.trigger(Entry.EventType.DISPOSED);
+                    this.callbackRegistery.clear();
                 });
-                let jqSelector = jqElem.find(".rocket-entry-selector:first");
-                if (jqSelector.length > 0) {
-                    this.initSelector(jqSelector);
+                let selectorJq = elemJq.find(".rocket-entry-selector:first");
+                if (selectorJq.length > 0) {
+                    this.initSelector(selectorJq);
                 }
             }
             get lastMod() {
-                return this.jqElem.hasClass(Entry.LAST_MOD_CSS_CLASS);
+                return this.elemJq.hasClass(Entry.LAST_MOD_CSS_CLASS);
             }
             set lastMod(lastMod) {
                 if (lastMod) {
-                    this.jqElem.addClass(Entry.LAST_MOD_CSS_CLASS);
+                    this.elemJq.addClass(Entry.LAST_MOD_CSS_CLASS);
                 }
                 else {
-                    this.jqElem.removeClass(Entry.LAST_MOD_CSS_CLASS);
+                    this.elemJq.removeClass(Entry.LAST_MOD_CSS_CLASS);
                 }
             }
             get collection() {
-                return Display.Collection.test(this.jqElem.parent());
+                return Display.Collection.test(this.elemJq.parent());
             }
             initSelector(jqSelector) {
                 this._selector = new Display.EntrySelector(jqSelector, this);
                 var that = this;
-                this.jqElem.click(function (e) {
+                this.elemJq.click(function (e) {
                     if (getSelection().toString() || Rocket.util.ElementUtils.isControl(e.target)) {
                         return;
                     }
@@ -1946,16 +1964,16 @@ var Rocket;
                 this.callbackRegistery.unregister(eventType.toString(), callback);
             }
             get jQuery() {
-                return this.jqElem;
+                return this.elemJq;
             }
             show() {
-                this.jqElem.show();
+                this.elemJq.show();
             }
             hide() {
-                this.jqElem.hide();
+                this.elemJq.hide();
             }
             dispose() {
-                this.jqElem.remove();
+                this.elemJq.remove();
             }
             get state() {
                 return this._state;
@@ -1969,7 +1987,7 @@ var Rocket;
                 }
             }
             get generalId() {
-                return this.jqElem.data("rocket-general-id").toString();
+                return this.elemJq.data("rocket-general-id").toString();
             }
             get id() {
                 if (this.draftId !== null) {
@@ -1978,26 +1996,26 @@ var Rocket;
                 return this.idRep;
             }
             get supremeEiTypeId() {
-                return this.jqElem.data("rocket-supreme-ei-type-id").toString();
+                return this.elemJq.data("rocket-supreme-ei-type-id").toString();
             }
             get idRep() {
-                return this.jqElem.data("rocket-id-rep").toString();
+                return this.elemJq.data("rocket-id-rep").toString();
             }
             get draftId() {
-                var draftId = parseInt(this.jqElem.data("rocket-draft-id"));
+                var draftId = parseInt(this.elemJq.data("rocket-draft-id"));
                 if (!isNaN(draftId)) {
                     return draftId;
                 }
                 return null;
             }
             get identityString() {
-                return this.jqElem.data("rocket-identity-string");
+                return this.elemJq.data("rocket-identity-string");
             }
             get selector() {
                 return this._selector;
             }
             findTreeLevelClass() {
-                let cl = this.jqElem.get(0).classList;
+                let cl = this.elemJq.get(0).classList;
                 for (let i = 0; i < cl.length; i++) {
                     let className = cl.item(i);
                     if (className.startsWith(Entry.TREE_LEVEL_CSS_CLASS_PREFIX)) {
@@ -2015,10 +2033,10 @@ var Rocket;
             set treeLevel(treeLevel) {
                 let className = this.findTreeLevelClass();
                 if (className) {
-                    this.jqElem.removeClass(className);
+                    this.elemJq.removeClass(className);
                 }
                 if (treeLevel !== null) {
-                    this.jqElem.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel);
+                    this.elemJq.addClass(Entry.TREE_LEVEL_CSS_CLASS_PREFIX + treeLevel);
                 }
             }
             static from(elemJq) {
@@ -2234,7 +2252,7 @@ var Rocket;
             constructor(jqElem, _entry) {
                 this.jqElem = jqElem;
                 this._entry = _entry;
-                this.changedCallbacks = new Array();
+                this.changedCallbacks = [];
                 this._selected = false;
             }
             get jQuery() {
@@ -2252,7 +2270,7 @@ var Rocket;
                 this._selected = selected;
                 this.triggerChanged();
             }
-            whenChanged(callback, prepend = false) {
+            onChanged(callback, prepend = false) {
                 if (prepend) {
                     this.changedCallbacks.unshift(callback);
                 }
@@ -2260,9 +2278,12 @@ var Rocket;
                     this.changedCallbacks.push(callback);
                 }
             }
+            offChanged(callback) {
+                this.changedCallbacks.splice(this.changedCallbacks.indexOf(callback));
+            }
             triggerChanged() {
-                this.changedCallbacks.forEach(function (callback) {
-                    callback();
+                this.changedCallbacks.forEach((callback) => {
+                    callback(this);
                 });
             }
         }
@@ -2435,31 +2456,52 @@ var Rocket;
                 this.originalIdReps = originalIdReps;
                 this.identityStrings = {};
                 this.selectors = {};
+                this.checkJqs = {};
+                this.onChanged = (selector) => {
+                    let id = selector.entry.id;
+                    this.checkJqs[id].prop("checked", selector.selected);
+                    this.chSelect(selector.selected, id);
+                };
+                this.onDisposed = (entry) => {
+                    delete this.selectors[entry.id];
+                };
+                this.onRemoved = (entry) => {
+                    this.chSelect(false, entry.id);
+                };
                 this.selectedIds = originalIdReps;
             }
+            destroy() {
+                for (let key in this.selectors) {
+                    this.checkJqs[key].remove();
+                    let selector = this.selectors[key];
+                    selector.offChanged(this.onChanged);
+                    let entry = selector.entry;
+                    entry.off(Display.Entry.EventType.DISPOSED, this.onDisposed);
+                    entry.off(Display.Entry.EventType.REMOVED, this.onRemoved);
+                }
+                this.identityStrings = {};
+                this.selectors = {};
+                this.checkJqs = {};
+            }
             observeEntrySelector(selector) {
+                let entry = selector.entry;
+                let id = entry.id;
+                if (this.selectors[id])
+                    return;
                 let jqCheck = $("<input />", { "type": "checkbox" });
                 selector.jQuery.empty();
                 selector.jQuery.append(jqCheck);
                 jqCheck.change(() => {
                     selector.selected = jqCheck.is(":checked");
                 });
-                selector.whenChanged(() => {
-                    jqCheck.prop("checked", selector.selected);
-                    this.chSelect(selector.selected, selector.entry.id);
-                }, true);
-                let entry = selector.entry;
-                let id = entry.id;
+                selector.onChanged(this.onChanged, true);
                 selector.selected = this.containsSelectedId(id);
                 jqCheck.prop("checked", selector.selected);
+                this.checkJqs[id] = jqCheck;
                 this.selectors[id] = selector;
                 this.identityStrings[id] = entry.identityString;
-                entry.on(Display.Entry.EventType.DISPOSED, () => {
-                    delete this.selectors[id];
-                });
-                entry.on(Display.Entry.EventType.REMOVED, () => {
-                    this.chSelect(false, id);
-                });
+                entry.on(Display.Entry.EventType.DISPOSED, this.onDisposed);
+                entry.on(Display.Entry.EventType.REMOVED, this.onRemoved);
             }
             containsSelectedId(id) {
                 return -1 < this.selectedIds.indexOf(id);
@@ -2506,31 +2548,48 @@ var Rocket;
                 this.selectedId = null;
                 this.identityStrings = {};
                 this.selectors = {};
+                this.checkJqs = {};
+                this.onChanged = (selector) => {
+                    let id = selector.entry.id;
+                    this.checkJqs[id].prop("checked", selector.selected);
+                    this.chSelect(selector.selected, id);
+                };
+                this.onDisposed = (entry) => {
+                    delete this.selectors[entry.id];
+                };
+                this.onRemoved = (entry) => {
+                    this.chSelect(false, entry.id);
+                };
                 this.selectedId = originalId;
             }
+            destroy() {
+                for (let id in this.selectors) {
+                    this.checkJqs[id].remove();
+                    let entry = this.selectors[id].entry;
+                    entry.off(Display.Entry.EventType.DISPOSED, this.onDisposed);
+                    entry.off(Display.Entry.EventType.REMOVED, this.onRemoved);
+                }
+                this.identityStrings = {};
+                this.selectors = {};
+            }
             observeEntrySelector(selector) {
-                var that = this;
-                var jqCheck = $("<input />", { "type": "radio" });
+                let entry = selector.entry;
+                let id = entry.id;
+                if (this.selectors[id])
+                    return;
+                let checkJq = $("<input />", { "type": "radio" });
                 selector.jQuery.empty();
-                selector.jQuery.append(jqCheck);
-                jqCheck.change(() => {
-                    selector.selected = jqCheck.is(":checked");
+                selector.jQuery.append(checkJq);
+                checkJq.change(() => {
+                    selector.selected = checkJq.is(":checked");
                 });
-                selector.whenChanged(() => {
-                    jqCheck.prop("checked", selector.selected);
-                    this.chSelect(selector.selected, selector.entry.id);
-                });
-                var entry = selector.entry;
-                var id = entry.id;
+                selector.onChanged(this.onChanged);
                 selector.selected = this.selectedId === id;
+                this.checkJqs[id] = checkJq;
                 this.selectors[id] = selector;
                 this.identityStrings[id] = entry.identityString;
-                entry.on(Display.Entry.EventType.DISPOSED, () => {
-                    delete this.selectors[id];
-                });
-                entry.on(Display.Entry.EventType.REMOVED, function () {
-                    this.chSelect(false, id);
-                });
+                entry.on(Display.Entry.EventType.DISPOSED, this.onDisposed);
+                entry.on(Display.Entry.EventType.REMOVED, this.onRemoved);
             }
             getSelectedIds() {
                 return [this.selectedId];
@@ -3708,6 +3767,7 @@ var Rocket;
                     this._currentPageNo = null;
                     this.allInfo = null;
                     this.contentChangedCallbacks = [];
+                    this.selectorObserver = null;
                     this.loadingPageNos = new Array();
                     this.jqLoader = null;
                     this.collection = Rocket.Display.Collection.from(jqElem);
@@ -3797,20 +3857,23 @@ var Rocket;
                     }
                 }
                 initSelector(selectorObserver) {
-                    console.log("init");
+                    if (this.selectorObserver) {
+                        throw new Error("Selector state already activated");
+                    }
+                    this.selectorObserver = selectorObserver;
                     this.selectorState.activate(selectorObserver);
                     this.triggerContentChange();
                     this.buildFakePage();
                 }
                 buildFakePage() {
-                    if (!this.collection.selectable)
+                    if (!this.selectorObserver)
                         return;
                     if (this.fakePage) {
                         throw new Error("Fake page already existing.");
                     }
                     this.fakePage = new Page(0);
                     this.fakePage.hide();
-                    var idReps = this.collection.selectedIds;
+                    var idReps = this.selectorObserver.getSelectedIds();
                     var unloadedIds = idReps.slice();
                     var that = this;
                     this.collection.entries.forEach(function (entry) {
@@ -3897,12 +3960,12 @@ var Rocket;
                     return this._pageSize;
                 }
                 get numSelectedEntries() {
-                    if (!this.collection.selectable)
+                    if (!this.selectorObserver)
                         return null;
                     if (this.fakePage !== null && this.fakePage.isContentLoaded()) {
                         return this.collection.selectedEntries.length;
                     }
-                    return this.collection.selectedIds.length;
+                    return this.selectorObserver.getSelectedIds().length;
                 }
                 get selectable() {
                     return this.collection.selectable;
@@ -4138,11 +4201,9 @@ var Rocket;
                     this._autoShowSelected = false;
                 }
                 activate(selectorObserver) {
-                    if (this.collection.selectable) {
-                        throw new Error("Selector state already activated");
-                    }
                     if (!selectorObserver)
                         return;
+                    this.collection.destroySelectors();
                     this.collection.setupSelector(selectorObserver);
                 }
                 observeFakePage(fakePage) {
@@ -4171,7 +4232,7 @@ var Rocket;
                     if (this.autoShowSelected && entry.selector.selected) {
                         entry.show();
                     }
-                    entry.selector.whenChanged(() => {
+                    entry.selector.onChanged(() => {
                         if (this.autoShowSelected && entry.selector.selected) {
                             entry.show();
                         }
