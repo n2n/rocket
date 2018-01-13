@@ -4416,6 +4416,21 @@ ul.rocket-content-item > li > span {
   background: rgba(55, 52, 49, 0.035);
 }
 
+@media (min-width: 768px) {
+  .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > label {
+    width: calc(14rem - 1px);
+  }
+  .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > .rocket-control {
+    margin-left: calc(14rem - 1px);
+  }
+  .rocket-control .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > label {
+    width: calc(13rem - 2px);
+  }
+  .rocket-control .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > .rocket-control {
+    margin-left: calc(13rem - 2px);
+  }
+}
+
 .rocket-simple-commands > .btn {
   width: 2.25rem;
   text-align: center;
