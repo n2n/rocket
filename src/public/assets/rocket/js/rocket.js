@@ -4955,6 +4955,7 @@ var Rocket;
                     this.entries = new Array();
                     this.browserLayer = null;
                     this.browserSelectorObserver = null;
+                    this.resetButtonJq = null;
                     this.jqElem = jqElem;
                     this.jqUl = jqElem.children("ul");
                     this.originalIdReps = jqElem.data("original-id-reps");
@@ -4976,9 +4977,11 @@ var Rocket;
                         .click(function () {
                         that.openBrowser();
                     });
-                    commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
+                    this.resetButtonJq = commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
+                        .click(function () {
                         that.reset();
-                    });
+                    })
+                        .hide();
                     commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
                         that.clear();
                     });
@@ -5015,12 +5018,27 @@ var Rocket;
                     for (let idRep of this.originalIdReps) {
                         this.createSelectedEntry(idRep);
                     }
+                    this.manageReset();
                 }
                 clear() {
                     for (var i in this.entries) {
                         this.entries[i].jQuery.remove();
                     }
                     this.entries.splice(0, this.entries.length);
+                    this.manageReset();
+                }
+                manageReset() {
+                    this.resetButtonJq.hide();
+                    if (this.originalIdReps.length != this.entries.length) {
+                        this.resetButtonJq.show();
+                        return;
+                    }
+                    for (let entry of this.entries) {
+                        if (-1 < this.originalIdReps.indexOf(entry.idRep))
+                            continue;
+                        this.resetButtonJq.show();
+                        return;
+                    }
                 }
                 loadBrowser() {
                     if (this.browserLayer !== null)
@@ -5085,6 +5103,7 @@ var Rocket;
                         }
                         that.createSelectedEntry(id);
                     });
+                    this.manageReset();
                 }
             }
             class SelectedEntry {
@@ -5662,10 +5681,10 @@ var Rocket;
                         .click(() => {
                         this.openBrowser();
                     });
-                    commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
+                    this.resetButtonJq = commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
                         .click(() => {
                         this.reset();
-                    });
+                    }).hide();
                 }
                 selectEntry(idRep, identityString = null) {
                     this.jqInput.val(idRep);
@@ -5678,6 +5697,12 @@ var Rocket;
                         identityString = this.identityStrings[idRep];
                     }
                     this.jqEntryLabel.text(identityString);
+                    if (this.originalIdRep != this.selectedIdRep) {
+                        this.resetButtonJq.show();
+                    }
+                    else {
+                        this.resetButtonJq.hide();
+                    }
                 }
                 reset() {
                     this.selectEntry(this.originalIdRep);

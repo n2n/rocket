@@ -110,6 +110,7 @@ namespace Rocket.Impl.Relation {
 		private identityStrings: { [key: string]: string};
 		private browserLayer: cmd.Layer = null;
 		private browserSelectorObserver: Display.MultiEntrySelectorObserver = null;
+		private resetButtonJq: JQuery = null;
 		
 		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
@@ -139,10 +140,12 @@ namespace Rocket.Impl.Relation {
 					.click(function () {
 						that.openBrowser();
 					});
-			
-			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") }).click(function () {
-				that.reset();
-			});
+
+			this.resetButtonJq = commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
+					.click(function () {
+						that.reset();
+					})
+					.hide();
 			
 			commandList.createJqCommandButton({ label: this.jqElem.data("clear-label") }).click(function () {
 				that.clear();
@@ -185,6 +188,8 @@ namespace Rocket.Impl.Relation {
 			for (let idRep of this.originalIdReps) {
 				this.createSelectedEntry(idRep);
 			}
+			
+			this.manageReset();
 		}
 		
 		public clear() {
@@ -193,6 +198,23 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.entries.splice(0, this.entries.length);
+			this.manageReset();
+		}
+		
+		private manageReset() {
+			this.resetButtonJq.hide();
+
+			if (this.originalIdReps.length != this.entries.length) {
+				this.resetButtonJq.show();
+				return;
+			}
+			
+			for (let entry of this.entries) {
+				if (-1 < this.originalIdReps.indexOf(entry.idRep)) continue;
+					
+				this.resetButtonJq.show();
+				return;
+			}
 		}
 		
 		public loadBrowser() {
@@ -271,6 +293,8 @@ namespace Rocket.Impl.Relation {
 				
 				that.createSelectedEntry(id);
 			});
+
+			this.manageReset();
 		}
 	}
 	

@@ -335,6 +335,7 @@ namespace Rocket.Impl.Relation {
 		private jqEntryLabel: JQuery;
 		private browserLayer: cmd.Layer = null;
 		private browserSelectorObserver: Display.SingleEntrySelectorObserver = null;
+		private resetButtonJq: JQuery;
 		
 		constructor(private jqElem: JQuery) {
 			this.jqElem = jqElem;
@@ -381,10 +382,10 @@ namespace Rocket.Impl.Relation {
 						this.openBrowser();
 					});
 			
-			commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
+			this.resetButtonJq = commandList.createJqCommandButton({ label: this.jqElem.data("reset-label") })
 					.click(() => {
 						this.reset();
-					});
+					}).hide();
 		}
 		
 		private selectEntry(idRep: string, identityString: string = null) {
@@ -401,6 +402,12 @@ namespace Rocket.Impl.Relation {
 				identityString = this.identityStrings[idRep];
 			}
 			this.jqEntryLabel.text(identityString);
+			
+			if (this.originalIdRep != this.selectedIdRep) {
+				this.resetButtonJq.show();
+			} else {
+				this.resetButtonJq.hide();
+			}
 		}
 		
 		public reset() {
