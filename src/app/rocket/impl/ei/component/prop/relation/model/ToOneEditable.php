@@ -37,6 +37,7 @@ class ToOneEditable implements Editable {
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode = false;
+	private $reduced = true;
 	
 	public function __construct(string $label, bool $mandatory, ToOneEiField $relationEiField,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
@@ -63,6 +64,10 @@ class ToOneEditable implements Editable {
 		$this->draftMode = $draftMode;
 	}
 	
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
+	}
+	
 	public function createMag(): Mag {
 		$this->toOneMag = new ToOneMag($this->label, $this->mandatory, $this->targetReadEiFrame,
 				$this->targetEditEiFrame);
@@ -71,6 +76,7 @@ class ToOneEditable implements Editable {
 		$this->toOneMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toOneMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->toOneMag->setDraftMode($this->draftMode);
+		$this->toOneMag->setReduced($this->reduced);
 		return $this->toOneMag;
 	}
 	

@@ -48,6 +48,7 @@ class ToOneMag extends MagAdapter {
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
 	private $draftMode;
+	private $reduced = true;
 	
 	private $targetRelationEntry;
 	
@@ -92,6 +93,10 @@ class ToOneMag extends MagAdapter {
 		$this->draftMode = $draftMode;
 	}
 	
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
+	}
+	
 	public function setValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
 			
@@ -133,6 +138,7 @@ class ToOneMag extends MagAdapter {
 		$toOneForm->setSelectionModeEnabled($this->selectOverviewToolsUrl !== null);
 		$toOneForm->setNewMappingFormAvailable($this->newMappingFormUrl !== null);
 		$toOneForm->setDraftMode($this->draftMode);
+		$toOneForm->setReduced($this->reduced);
 		
 		if ($this->targetRelationEntry === null) return $toOneForm;
 		

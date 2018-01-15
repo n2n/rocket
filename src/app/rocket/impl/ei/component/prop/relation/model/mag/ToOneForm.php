@@ -179,8 +179,12 @@ class ToOneForm implements Dispatchable {
 		return null;
 	}
 	
-	public function isCompact() {
-		return true;
+	public function isReduced() {
+		return $this->reduced;
+	}
+	
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 	
 	

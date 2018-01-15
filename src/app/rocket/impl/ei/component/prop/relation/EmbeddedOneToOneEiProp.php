@@ -174,6 +174,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
 			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(), 
 					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
+			$toOneEditable->setReduced($this->reduced);
 			
 			if ($targetEditEiFrame->getEiExecution()->isGranted() 
 					&& ($this->isReplaceable() || $relationEiField->getValue() === null)) {
