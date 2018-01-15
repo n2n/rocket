@@ -2,14 +2,14 @@
     "specs": {
         "rocket-content-item": {
             "type": "entity",
-            "entity": "rocket\\spec\\ei\\component\\field\\impl\\ci\\model\\ContentItem",
+            "entity": "rocket\\impl\\ei\\component\\prop\\ci\\model\\ContentItem",
             "dataSourceName": "default",
             "label": "Content Item",
             "pluralLabel": "Content Item",
             "defaultSort": [],
             "fields": {
                 "panel": {
-                    "class": "rocket\\spec\\ei\\component\\field\\impl\\string\\StringEiProp",
+                    "class": "rocket\\impl\\ei\\component\\prop\\string\\StringEiProp",
                     "props": {
                         "displayInOverview": false,
                         "displayInDetailView": false,
@@ -28,7 +28,7 @@
                     "entityProperty": "panel"
                 },
                 "orderIndex": {
-                    "class": "rocket\\spec\\ei\\component\\field\\impl\\numeric\\IntegerEiProp",
+                    "class": "rocket\\impl\\ei\\component\\prop\\numeric\\IntegerEiProp",
                     "props": {
                         "displayInOverview": false,
                         "displayInDetailView": false,
@@ -47,7 +47,7 @@
                     "entityProperty": "orderIndex"
                 },
                 "type": {
-                    "class": "rocket\\spec\\ei\\component\\field\\impl\\meta\\TypeEiProp",
+                    "class": "rocket\\impl\\ei\\component\\prop\\meta\\TypeEiProp",
                     "props": {
                         "displayInOverview": false,
                         "displayInDetailView": true
