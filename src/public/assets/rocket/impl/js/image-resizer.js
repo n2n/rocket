@@ -581,7 +581,7 @@
 		var zoomFactorHeight = 1;
 		//Don't Look for the Height
 		if (this.maxHeightCheckClosure !== null) {
-			var zoomFactorHeight = (Math.ceil(this.maxHeightCheckClosure() / this.originalImageHeight * accuracy) - 1) / accuracy;
+			zoomFactorHeight = (Math.ceil(this.maxHeightCheckClosure() / this.originalImageHeight * accuracy) - 1) / accuracy;
 		}
 		
 		var zoomFactorWidth = (Math.ceil(_obj.jqElem.width() / this.originalImageWidth * accuracy) - 1) / accuracy;
@@ -662,7 +662,6 @@
 			imageResizerPositions = JSON.parse(localStorage.imageResizer);
 			if (null != imageResizerPositions[location.href + '/' + imageDimension.dimensionString]) {
 				 var positions = imageResizerPositions[location.href + '/' + imageDimension.dimensionString];
-				 console.log(positions);
 				 for (var i in positions) {
 					 positions[i] = positions[i] * this.zoomFactor;
 				 }

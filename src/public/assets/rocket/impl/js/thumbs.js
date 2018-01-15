@@ -26,12 +26,21 @@ Jhtml.ready((elements) => {
 	var jqElemResizer = $(elements).find("#rocket-image-resizer");
 	if (jqElemResizer.length == 0) return;
 	
-	var jqElemPageControls = $(elements).find("#rocket-page-controls");
+	var jqElemPageControls = $(elements).find(".rocket-zone-commands:first");
 	var jqElemRocketHeader = $(elements).find("#rocket-header");
 	var jqElemWindow = $(window);
 	
 	new HnmImageResizer(jqElemResizer, $("#rocket-thumb-dimension-select"), null, function() {
-		return jqElemWindow.height() - jqElemRocketHeader.outerHeight() - jqElemPageControls.outerHeight() - 50;
+		var height = jqElemWindow.height() - 50;
+		if (jqElemRocketHeader.length > 0) {
+			height -= jqElemRocketHeader.outerHeight();
+		}
+		
+		if (jqElemPageControls.length > 0) {
+			height -= jqElemPageControls.outerHeight();
+		}
+		
+		return height;
 	});
 	
 	var jqElemInpPositionX = $(elements).find("#rocket-thumb-pos-x").hide();
