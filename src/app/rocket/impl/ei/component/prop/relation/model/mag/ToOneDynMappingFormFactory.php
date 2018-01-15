@@ -54,7 +54,7 @@ class ToOneDynMappingFormFactory {
 		
 		if ($eiEntry->getEiObject()->isNew()) {
 			$this->newMappingForm = new MappingForm(
-					$this->eiFrameUtils->getGenericLabel(), null,
+					$this->eiFrameUtils->getGenericLabel(), $this->eiFrameUtils->getGenericIconType(), null,
 					$this->eiFrameUtils->newEntryForm($eiEntry->getEiObject()->isDraft(), null, null, null, [$eiEntry]));
 			return;
 		}

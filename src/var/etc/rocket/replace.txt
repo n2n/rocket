@@ -15,3 +15,6 @@ rocket\impl\ei\component\modificator
  
 rocket\spec\ei\component\field
 rocket\spec\ei\component\prop
+
+associatedGuiFields
+associatedGuiProps

@@ -154,6 +154,10 @@ class ToOneMag extends MagAdapter {
 			$toOneForm->setEiEntry($this->targetEditUtils->createEiEntry(
 					$this->targetRelationEntry->getEiObject()));
 		}
+		
+		if (null !== $toOneForm->getNewMappingForm()) {
+			$toOneForm->setNewMappingFormAvailable(true);
+		}
 				
 		return $toOneForm;
 	}

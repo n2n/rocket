@@ -5453,9 +5453,10 @@ var Rocket;
                     let addControlFactory = null;
                     let toOneEmbedded = null;
                     if (jqCurrent.length > 0 || jqNew.length > 0 || jqDetail.length > 0) {
-                        if (jqNew.length > 0) {
-                            var propertyPath = jqNew.data("property-path");
-                            var entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"));
+                        let newEntryFormUrl = jqNew.data("new-entry-form-url");
+                        if (jqNew.length > 0 && newEntryFormUrl) {
+                            let propertyPath = jqNew.data("property-path");
+                            let entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"));
                             entryFormRetriever.sortable = false;
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("replace-item-label"));
                         }
@@ -5478,12 +5479,12 @@ var Rocket;
             Relation.ToOne = ToOne;
             class ToOneEmbedded {
                 constructor(jqToOne, addButtonFactory = null) {
-                    this.compact = true;
+                    this.reduceEnabled = true;
                     this.expandZone = null;
                     this.changedCallbacks = new Array();
                     this.jqToOne = jqToOne;
                     this.addControlFactory = addButtonFactory;
-                    this.compact = (true == jqToOne.data("compact"));
+                    this.reduceEnabled = (true == jqToOne.data("compact"));
                     this.closeLabel = jqToOne.data("close-label");
                     this.jqEmbedded = $("<div />", {
                         "class": "rocket-impl-embedded"
@@ -5604,7 +5605,7 @@ var Rocket;
                     });
                 }
                 isExpanded() {
-                    return this.expandZone !== null;
+                    return this.expandZone !== null || !this.reduceEnabled;
                 }
                 expand() {
                     if (this.isExpanded())

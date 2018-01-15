@@ -58,10 +58,11 @@ namespace Rocket.Impl.Relation {
 			
 			let toOneEmbedded: ToOneEmbedded = null;
 			if (jqCurrent.length > 0 || jqNew.length > 0 || jqDetail.length > 0) {
-				if (jqNew.length > 0) {
-					var propertyPath = jqNew.data("property-path");
-				
-					var entryFormRetriever = new EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, 
+
+				let newEntryFormUrl = jqNew.data("new-entry-form-url");
+				if (jqNew.length > 0 && newEntryFormUrl) {
+					let propertyPath = jqNew.data("property-path");
+					let entryFormRetriever = new EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, 
 							jqNew.data("draftMode"));
 					entryFormRetriever.sortable = false;
 					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
@@ -92,7 +93,7 @@ namespace Rocket.Impl.Relation {
 	class ToOneEmbedded {
 		private jqToOne: JQuery;
 		private addControlFactory: AddControlFactory;
-		private compact: boolean = true;
+		private reduceEnabled: boolean = true;
 		private _currentEntry: EmbeddedEntry;
 		private _newEntry: EmbeddedEntry;
 		private jqEmbedded: JQuery;
@@ -104,7 +105,7 @@ namespace Rocket.Impl.Relation {
 		constructor(jqToOne: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToOne = jqToOne;
 			this.addControlFactory = addButtonFactory;
-			this.compact = (true == jqToOne.data("compact"));
+			this.reduceEnabled = (true == jqToOne.data("compact"));
 			this.closeLabel = jqToOne.data("close-label");
 			
 			this.jqEmbedded = $("<div />", {
@@ -259,7 +260,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandZone !== null;
+			return this.expandZone !== null || !this.reduceEnabled;
 		}
 		
 		public expand() {
