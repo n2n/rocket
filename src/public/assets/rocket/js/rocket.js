@@ -1584,7 +1584,9 @@ var Rocket;
             get selectedIds() {
                 let ids = [];
                 for (let entry of this.entries) {
-                    ids.push(entry.id);
+                    if (entry.selector && entry.selector.selected) {
+                        ids.push(entry.id);
+                    }
                 }
                 return ids;
             }
