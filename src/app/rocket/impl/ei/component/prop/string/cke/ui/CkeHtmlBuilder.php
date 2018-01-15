@@ -156,10 +156,10 @@ class CkeHtmlBuilder {
 		return $tmpCssPaths;
 	}
 
-	private function buildLinkConfigData(array $ckeLinkProviers, N2nLocale $linkN2nLocale = null) {
+	private function buildLinkConfigData(array $ckeLinkProviders, N2nLocale $linkN2nLocale = null) {
 		$linkN2nLocale = (null !== $linkN2nLocale) ? $linkN2nLocale : $this->view->getN2nLocale();
 		$linkConfigData = array();
-		foreach ($ckeLinkProviers as $providerName => $ckeLinkProvider) {
+		foreach ($ckeLinkProviders as $providerName => $ckeLinkProvider) {
 			$title = $ckeLinkProvider->getTitle();
 			$linkConfigData[$title] = array();
 			$linkConfigData[$title]['items'] = array();
