@@ -157,9 +157,31 @@ class GuiDefinition {
 		return $this->getGuiIdPaths();
 	}
 	
-// 	public function getGuiIdPaths() {
-// 		return $this->filterGuiIdPaths(DisplaySettings::ALL_VIEW_MODES);
-// 	}
+	public function getGuiIdPaths() {
+		return $this->buildGuiIdPaths(array());
+	}
+	
+	protected function buildGuiIdPaths(array $baseIds) {
+		$guiIdPaths = array();
+		
+		foreach ($this->levelIds as $id) {
+			if (isset($this->levelGuiProps[$id])) {
+				$currentIds = $baseIds;
+				$currentIds[] = $id;
+				$guiIdPaths[] = new GuiIdPath($currentIds);
+			}
+			
+			if (isset($this->levelGuiPropForks[$id])) {
+				$currentIds = $baseIds;
+				$currentIds[] = $id;
+				
+				$guiIdPaths = array_merge($guiIdPaths, $this->levelGuiPropForks[$id]->getForkedGuiDefinition()
+						->buildGuiIdPaths($currentIds));
+			}
+		}
+		
+		return $guiIdPaths;
+	}
 	
 	public function createDefaultDisplayStructure(EiGui $eiGui) {
 		$displayStructure = new DisplayStructure();
