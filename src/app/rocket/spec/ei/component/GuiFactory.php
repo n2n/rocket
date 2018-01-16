@@ -65,7 +65,7 @@ class GuiFactory {
 			if (null !== ($guiPropFork = $eiProp->getGuiPropFork())){
 				ArgUtils::valTypeReturn($guiPropFork, GuiPropFork::class, $eiProp, 'getGuiPropFork');
 				
-				$guiDefinition->putLevelGuiPropFork($id, $guiPropFork);
+				$guiDefinition->putLevelGuiPropFork($id, $guiPropFork, EiPropPath::from($eiProp));
 			}
 		}
 		

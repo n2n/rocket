@@ -35,6 +35,7 @@ use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
+use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
 
 abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
 		FieldEiProp, Readable, Writable, Copyable {
@@ -43,9 +44,16 @@ abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter impleme
 	 */
 	protected $eiPropRelation;
 	protected $draftable = false;
+	protected $standardEditDefinition;
 	
-	protected function initialize(EiPropRelation $eiPropRelation) {
+	protected function initialize(EiPropRelation $eiPropRelation, StandardEditDefinition $standardEditDefinition = null) {
 		$this->eiPropRelation = $eiPropRelation;
+		
+		if ($standardEditDefinition !== null) {
+			$this->standardEditDefinition = $standardEditDefinition;
+		} else {
+			$this->standardEditDefinition = new StandardEditDefinition();
+		}
 	}
 	
 	public function getEiPropRelation(): EiPropRelation {
@@ -58,6 +66,10 @@ abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter impleme
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new RelationEiPropConfigurator($this);
+	}
+	
+	public function getStandardEditDefinition(): StandardEditDefinition {
+		return $this->standardEditDefinition;
 	}
 	
 	public function isEiField(): bool {

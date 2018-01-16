@@ -49,31 +49,13 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\spec\ei\manage\gui\GuiProp;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
-	private $orphansAllowed = false;
 	
 	public function __construct() {
 		parent::__construct();
 	
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
-	}
-	
-	public function getOrphansAllowed() {
-		return $this->orphansAllowed;
-	}
-	
-	public function setOrphansAllowed(bool $orphansAllowed) {
-		$this->orphansAllowed = $orphansAllowed;
-	}
-	
-	
-	public function buildEiField(Eiu $eiu) {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
-	
-		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
-				($readOnly ? null : $this));
 	}
 	
 	/**
@@ -112,7 +94,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		$targetEntityObj = null;
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 	
-		$this->getPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
+		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
@@ -138,6 +120,12 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	
+	public function buildEiField(Eiu $eiu) {
+		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
+		
+		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this, ($readOnly ? null : $this));
+	}
+	
 	/**
 	 * @param Eiu $eiu
 	 * @return GuiFieldFork
@@ -153,23 +141,23 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
 		
-		$targetUtils = new EiuFrame($targetEiFrame);
+		$targetEiuFrame = new EiuFrame($targetEiFrame);
 		
-		$toOneEiField = $eiEntry->getEiField(EiPropPath::from($this));
-		$targetRelationEntry = $toOneEiField->getValue();
+		$eiuField = $eiu->field();
+		$targetRelationEntry = $eiuField->getValue();
+		CastUtils::assertTrue($targetRelationEntry instanceof RelationEntry || $targetRelationEntry === null);
 		
 		if ($targetRelationEntry === null) {
-			$targetEiObject = $targetUtils->createNewEiObject();
-			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($targetEiObject));
+			$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->newEntry()->getEiEntry());
 		} else if (!$targetRelationEntry->hasEiEntry()) {
-			$targetEiObject = $targetRelationEntry->getEiObject();
-			$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($targetEiObject));
+			$targetRelationEntry = RelationEntry::fromM(
+					$targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry());
 		}
 				
 		$targetGuiFieldAssembler = new GuiFieldAssembler($this->getForkedGuiDefinition(), 
-				new Eiu($targetRelationEntry->getEiEntry(), $targetUtils->getEiFrame(), $eiu->getViewMode()));
+				$targetEiuFrame->newGui($eiu->gui()->getViewMode())->appendNewEntryGui($targetRelationEntry->getEiEntry()));
 		
-		return new OneToOneGuiFieldFork($toOneEiField, $targetRelationEntry, $targetGuiFieldAssembler);
+		return new OneToOneGuiFieldFork($eiuField->getEiField(), $targetRelationEntry, $targetGuiFieldAssembler);
 	}
 	
 	/**
@@ -211,7 +199,6 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	 */
 	public function getDraftProperty() {
 		throw new NotYetImplementedException();
-		
 	}
 
 }

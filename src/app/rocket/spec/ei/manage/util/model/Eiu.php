@@ -72,6 +72,11 @@ class Eiu implements Lookupable {
 		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
 	}
 	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return NULL|\rocket\spec\ei\manage\util\model\EiuField
+	 */
 	public function field(bool $required = true) {
 		if ($this->eiuField !== null || !$required) return $this->eiuField;
 		

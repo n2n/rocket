@@ -55,21 +55,12 @@ use rocket\spec\ei\manage\gui\ViewMode;
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
 	private $reduced = true;
-	private $orphansAllowed = false;
 	
 	public function __construct() {
 		parent::__construct();
 		
 		$this->displaySettings = new DisplaySettings(ViewMode::bulky());
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
-	}
-	
-	public function getOrphansAllowed() {
-		return $this->orphansAllowed;
-	}
-	
-	public function setOrphansAllowed(bool $orphansAllowed) {
-		$this->orphansAllowed = $orphansAllowed;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {

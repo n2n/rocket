@@ -34,6 +34,15 @@ use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 class EmbeddedEiPropRelation extends EiPropRelation {
 	private $embeddedPseudoCommand;
 	private $embeddedEditPseudoCommand;
+	private $orphansAllowed = false;
+	
+	public function getOrphansAllowed() {
+		return $this->orphansAllowed;
+	}
+	
+	public function setOrphansAllowed(bool $orphansAllowed) {
+		$this->orphansAllowed = $orphansAllowed;
+	}
 
 	public function init(EiType $targetEiType, EiMask $targetEiMask) {
 		parent::init($targetEiType, $targetEiMask);
@@ -56,7 +65,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		// reason to remove: orphans should never remain in db on embeddedeiprops
 		$entityProperty = $this->getRelationEntityProperty();
 		if (!$entityProperty->getRelation()->isOrphanRemoval()) {
-			if (!$this->getRelationEiProp()->getOrphansAllowed()) {
+			if (!$this->getOrphansAllowed()) {
 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or an EiProp configuration with ' 

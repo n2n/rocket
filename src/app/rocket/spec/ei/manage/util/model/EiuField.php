@@ -37,6 +37,13 @@ class EiuField {
 		return $this->eiPropPath;
 	}
 	
+	/**
+	 * @return \rocket\spec\ei\manage\mapping\EiField
+	 */
+	public function getEiField() {
+		return $this->eiuEntry->getEiEntry()->getEiField($this->eiPropPath);
+	}
+	
 	public function getEiuEntry(bool $required = true) {
 		if (!$required || $this->eiuEntry !== null) {
 			return $this->eiuEntry;

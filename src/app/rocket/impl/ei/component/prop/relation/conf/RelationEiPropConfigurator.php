@@ -47,6 +47,7 @@ use n2n\reflection\CastUtils;
 use rocket\spec\config\SpecManager;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
+use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
@@ -145,11 +146,14 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) {
 			$magCollection->addMag(self::ATTR_REDUCED_KEY, new BoolMag('Reduced',
 					$lar->getBool(self::ATTR_REDUCED_KEY, $eiComponent->isReduced())));
-			$magCollection->addMag(self::ATTR_ORPHANS_ALLOWED_KEY, new BoolMag('Allow orphans',
-					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $eiComponent->getOrphansAllowed())));
 		}
 		
 		$eiPropRelation = $this->eiPropRelation;
+		
+		if ($eiPropRelation instanceof EmbeddedEiPropRelation) {
+			$magCollection->addMag(self::ATTR_ORPHANS_ALLOWED_KEY, new BoolMag('Allow orphans',
+					$lar->getBool(self::ATTR_ORPHANS_ALLOWED_KEY, $eiPropRelation->getOrphansAllowed())));
+		}
 		
 		if ($eiPropRelation instanceof SelectEiPropRelation) {
 			$magCollection->addMag(self::ATTR_FILTERED_KEY, new BoolMag('Filtered',
@@ -178,13 +182,11 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::setup($eiSetupProcess);
 		
 		$eiComponent = $this->eiComponent;
-		if (($eiComponent instanceof EmbeddedOneToOneEiProp 
-						|| $eiComponent instanceof EmbeddedOneToManyEiProp)
+		
+		if ($this->eiPropRelation instanceof EmbeddedEiPropRelation
 				&& $this->attributes->contains(self::ATTR_ORPHANS_ALLOWED_KEY)) {
-					
-			$eiComponent->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));
+			$this->eiPropRelation->setOrphansAllowed($this->attributes->getBool(self::ATTR_ORPHANS_ALLOWED_KEY));
 		}
-				
 		
 		$relationEntityProperty = $this->eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();

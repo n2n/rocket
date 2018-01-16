@@ -80,7 +80,10 @@ class GuiDefinition {
 	 * @return EiPropPath
 	 */
 	public function getLevelEiPropPathById(string $id) {
-		$this->getLevelGuiPropById($id);
+		if (!isset($this->levelEiPropPaths[$id])) {
+			throw new GuiException('No EiPropPath with id \'' . $id . '\' registered');
+		}
+		
 		return $this->levelEiPropPaths[$id];
 	}
 	
@@ -95,9 +98,10 @@ class GuiDefinition {
 	 * @param string $id
 	 * @param GuiPropFork $guiPropFork
 	 */
-	public function putLevelGuiPropFork(string $id, GuiPropFork $guiPropFork) {
+	public function putLevelGuiPropFork(string $id, GuiPropFork $guiPropFork, EiPropPath $eiPropPath) {
 		$this->levelGuiPropForks[$id] = $guiPropFork;
 		$this->levelIds[$id] = $id;
+		$this->levelEiPropPaths[$id] = $eiPropPath;
 	}
 	
 	/**

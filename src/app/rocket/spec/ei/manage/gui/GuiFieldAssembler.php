@@ -30,6 +30,7 @@ use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
+use rocket\spec\ei\EiPropPath;
 
 class GuiFieldAssembler implements Savable {
 	private $guiDefinition;
@@ -93,7 +94,7 @@ class GuiFieldAssembler implements Savable {
 		return new AssembleResult($guiField, $eiFieldWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
 	}
 	
-	private function assembleGuiPropFork(GuiIdPath $guiIdPath, GuiPropFork $guiPropFork) {
+	private function assembleGuiPropFork(GuiIdPath $guiIdPath, GuiPropFork $guiPropFork, EiPropPath $eiPropPath) {
 		$id = $guiIdPath->getFirstId();
 		
 		$relativeGuiIdPath = $guiIdPath->getShifted();
@@ -101,7 +102,8 @@ class GuiFieldAssembler implements Savable {
 		if (isset($this->forkedGuiFields[$id])) {
 			$forkedGuiField = $this->forkedGuiFields[$id];
 		} else {
-			$forkedGuiField = $this->forkedGuiFields[$id] = $guiPropFork->createGuiFieldFork($this->eiu);
+			$forkedGuiField = $this->forkedGuiFields[$id] = $guiPropFork->createGuiFieldFork(
+					new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
 		} 
 		
 		$result = $forkedGuiField->assembleGuiField($relativeGuiIdPath);
@@ -128,8 +130,9 @@ class GuiFieldAssembler implements Savable {
 	
 	public function assembleGuiField(GuiIdPath $guiIdPath) {
 		if ($guiIdPath->hasMultipleIds()) {
-			return $this->assembleGuiPropFork($guiIdPath, $this->guiDefinition
-					->getLevelGuiPropForkById($guiIdPath->getFirstId()));
+			return $this->assembleGuiPropFork($guiIdPath,
+					$this->guiDefinition->getLevelGuiPropForkById($guiIdPath->getFirstId()),
+					$this->guiDefinition->getLevelEiPropPathById($guiIdPath->getFirstId()));
 		}
 		
 		return $this->assembleGuiProp($guiIdPath->getFirstId(), $this->guiDefinition

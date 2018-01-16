@@ -47,22 +47,15 @@ use rocket\spec\ei\manage\gui\ViewMode;
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
 	protected $displaySettings;
-	protected $standardEditDefinition;
 
-	protected function initialize(EiPropRelation $eiPropRelation, DisplaySettings $displayDefinition = null,
-			StandardEditDefinition $standardEditDefinition = null) {
-		parent::initialize($eiPropRelation);
+	protected function initialize(EiPropRelation $eiPropRelation, StandardEditDefinition $standardEditDefinition = null, 
+			DisplaySettings $displayDefinition = null) {
+		parent::initialize($eiPropRelation, $standardEditDefinition, $standardEditDefinition);
 
 		if ($displayDefinition !== null) {
 			$this->displaySettings = $displayDefinition;
 		} else {
 			$this->displaySettings = new DisplaySettings(ViewMode::all());
-		}
-
-		if ($standardEditDefinition !== null) {
-			$this->standardEditDefinition = $standardEditDefinition;
-		} else {
-			$this->standardEditDefinition = new StandardEditDefinition();
 		}
 	}
 	
@@ -95,10 +88,6 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	protected function getGroupType() {
 		return DisplayItem::TYPE_SIMPLE;
-	}
-	
-	public function getStandardEditDefinition(): StandardEditDefinition {
-		return $this->standardEditDefinition;
 	}
 	
 	public function getGuiProp() {
