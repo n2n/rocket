@@ -89,6 +89,14 @@ namespace Rocket {
 				});
 			});
 		})();
+		
+		(function() {
+			Jhtml.ready((elements) => {
+				$(elements).find(".rocket-image-resizer-container").each(function () {
+					new Rocket.Impl.File.RocketResizer($(this));
+				});
+			});
+		})();
 
 		(function () {
 			let moveState = new Impl.Order.MoveState();

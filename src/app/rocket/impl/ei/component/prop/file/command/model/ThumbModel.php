@@ -27,62 +27,111 @@ use n2n\io\managed\img\ImageFile;
 use n2n\web\dispatch\Dispatchable;
 use n2n\util\StringUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\io\managed\img\ImageDimension;
+use n2n\reflection\ArgUtils;
+use n2n\impl\web\dispatch\map\val\ValNotEmpty;
 
 class ThumbModel implements Dispatchable{
 	private $imageFile;
 	private $imageDimensions;
+	private $groupedImageDimensionOptions;	
+	private $ratiosOptions;
 	
-	public $imageDimensionStr;
+	public $selectedStr;
 	public $x;
 	public $y;
 	public $width;
 	public $height;
 	public $keepAspectRatio = true;
 	
+	/**
+	 * @param ImageFile $imageFile
+	 * @param ImageDimension[] $imageDimensions
+	 */
 	public function __construct(ImageFile $imageFile, array $imageDimensions) {
+		ArgUtils::valArray($imageDimensions, ImageDimension::class, false, 'imageDimensions');
+		
 		$this->imageFile = $imageFile;
+		
+		for ($i = 1; $i < 5; $i++) {
+			$factor = $i * 10;
+			$imageDimension = new ImageDimension(16 * $factor, 9 * $factor);
+			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
+			$imageDimension = new ImageDimension(4 * $factor, 3 * $factor);
+			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
+			$imageDimension = new ImageDimension(3 * $factor, 4 * $factor);
+			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
+		}
 		$this->imageDimensions = $imageDimensions;
+		
+		$this->groupedImageDimensionOptions = [];
+		$this->ratiosOptions = [];
+		foreach ($imageDimensions as $imageDimensionString => $imageDimension) {
+			$ratio = ThumbRatio::create($imageDimension);
+			$ratioStr = $ratio->__toString();
+			if (!isset($this->groupedImageDimensionOptions[$ratioStr])) {
+				$this->groupedImageDimensionOptions[$ratioStr] = [];
+				$this->ratiosOptions[$ratioStr] = $ratio->buildLabel();
+			}
+			
+			$idExt = $imageDimension->getIdExt();
+			$this->groupedImageDimensionOptions[$ratioStr][$imageDimensionString] = $imageDimension->getWidth() . ' x ' . $imageDimension->getHeight()
+					. ($idExt !== null ? ' (' . StringUtils::pretty($idExt) . ')' : '');
+		}
+		
+		$this->selectedStr = key($this->imageDimensions);
+	}
+	
+	public function getImageDimensionOptions($ratioStr) {
+		if (!isset($this->groupedImageDimensionOptions[$ratioStr])) return [];
+		
+		return $this->groupedImageDimensionOptions[$ratioStr];
+	}
+	
+	public function getRatioOptions() {
+		return $this->ratiosOptions;
 	}
 	
 	public function getImageFile(): ImageFile {
 		return $this->imageFile;
 	}
 	
-	public function getImageDimensions(): array {
-		return $this->imageDimensions;
-	}
-	
-	public function getImageDimensionOptions(): array {
-		$options = array();
-		foreach ($this->imageDimensions as $imageDimension) {
-			$idExt = $imageDimension->getIdExt();
-			$options[$imageDimension->__toString()] = $imageDimension->getWidth() . ' x ' . $imageDimension->getHeight() 
-					. ($idExt !== null ? ' (' . StringUtils::pretty($idExt) . ')' : '');
-		}
-		return $options;
+	public function getImageDimension($imageDimensionStr) {
+		if (!isset($this->imageDimensions[$imageDimensionStr])) return null;
+		
+		return $this->imageDimensions[$imageDimensionStr];
 	}
 	
 	private function _validation(BindingDefinition $bd) {
-		$bd->val(array('x', 'y', 'width', 'height'), new ValNumeric(true, null, 0));
-		$bd->val('imageDimensionStr', new ValEnum(array_keys($this->imageDimensions)));
+		$bd->val(array('x', 'y', 'width', 'height'), new ValNumeric(null, 0), new ValNotEmpty());
+		$bd->val('selectedStr', new ValEnum(array_merge(array_keys($this->imageDimensions), array_keys($this->ratiosOptions))));
 	}
 	
 	public function save() {
-		$imageDimension = $this->imageDimensions[$this->imageDimensionStr];
+		$imageDimensions = [];
+		if (isset($this->groupedImageDimensionOptions[$this->selectedStr])) {
+			foreach (array_keys($this->groupedImageDimensionOptions[$this->selectedStr]) as $imageDimensionStr) {
+				$imageDimensions[] = $this->imageDimensions[$imageDimensionStr];
+			}
+		} else if (isset($this->imageDimensions[$this->selectedStr])) {
+			$imageDimensions[] = $this->imageDimensions[$this->selectedStr];
+		}
 		
-		$imageResource = $this->imageFile->getImageSource()->createImageResource();
-		$imageResource->crop($this->x, $this->y, $this->width, $this->height);
-		$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight()/*, 
-				ImageResource::AUTO_CROP_MODE_CENTER*/);
-		$thumbImageFile = new ImageFile($this->imageFile->createThumbFile($imageDimension, $imageResource));
-		$imageResource->destroy();
-		
-		foreach ($thumbImageFile->getVariationImageDimension() as $imageDimension) {
-			$imageResource = $thumbImageFile->getImageSource()->createImageResource();
+		foreach ($imageDimensions as $imageDimension) {
+			$imageResource = $this->imageFile->getImageSource()->createImageResource();
+			$imageResource->crop($this->x, $this->y, $this->width, $this->height);
 			$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight()/*, 
 					ImageResource::AUTO_CROP_MODE_CENTER*/);
-			$thumbImageFile->createVariationFile($imageDimension, $imageResource);
+			$thumbImageFile = new ImageFile($this->imageFile->createThumbFile($imageDimension, $imageResource));
 			$imageResource->destroy();
+			
+			foreach ($thumbImageFile->getVariationImageDimension() as $imageDimension) {
+				$imageResource = $thumbImageFile->getImageSource()->createImageResource();
+				$imageResource->proportionalResize($imageDimension->getWidth(), $imageDimension->getHeight()/*, 
+						ImageResource::AUTO_CROP_MODE_CENTER*/);
+				$thumbImageFile->createVariationFile($imageDimension, $imageResource);
+				$imageResource->destroy();
+			}
 		}
 	}
 }

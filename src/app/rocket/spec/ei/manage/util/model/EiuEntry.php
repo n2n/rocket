@@ -430,6 +430,16 @@ class EiuEntry {
 		return null;
 	}
 	
+	/**
+	 * @param mixed $eiTypeArg
+	 * @return boolean
+	 */
+	public function isTypeOf($eiTypeArg) {
+		$eiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg');
+		
+		return $this->getEiType()->equals($eiType);
+	}
+	
 	public function isPreviewAvailable() {
 		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiObject));
 	}
