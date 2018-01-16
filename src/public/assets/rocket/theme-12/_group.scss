@@ -1,4 +1,4 @@
-.rocket-group {
+.rocket-group-simple {
     background: $white;
     position: relative;
     margin-bottom: 1rem;
@@ -16,7 +16,6 @@
     }
     > .rocket-control {
         margin: 0;
-        padding: 0;
     }
     > .rocket-group-toolbar {
         position: absolute;
@@ -30,7 +29,7 @@
     }
 }
 
-.rocket-group .rocket-group {
+.rocket-group-simple .rocket-group-simple {
     border: none;
     background-color: transparent;
     > label {
@@ -39,7 +38,7 @@
     }
     > .rocket-control {
         padding: 0 1rem;
-        > .rocket-entry {
+        > div {
             border: 1px solid $input-border-color;
             background: rgba($gray-900, 0.035);
         }
@@ -47,32 +46,28 @@
 }
 
 @include media-breakpoint-up(md) {
-    .rocket-group .rocket-group {
+    .rocket-group-simple .rocket-group-simple {
         > .rocket-control {
-            > .rocket-entry {
-                .rocket-field {
-                    > label {
-                        width: calc(14rem - 1px);
-                    }
-                    > .rocket-control {
-                        margin-left: calc(14rem - 1px);
-                    }
+            .rocket-editable,
+            .rocket-read-only {
+                > label {
+                    width: calc(14rem - 1px);
                 }
+                > .rocket-control {
+                    margin-left: calc(14rem - 1px);
+                }
+    
             }
         }
     }
 
-    .rocket-control .rocket-group .rocket-group {
+    .rocket-control .rocket-group-simple .rocket-group-simple {
         > .rocket-control {
-            > .rocket-entry {
-                .rocket-field {
-                    > label {
-                        width: calc(13rem - 2px);
-                    }
-                    > .rocket-control {
-                        margin-left: calc(13rem - 2px);
-                    }
-                }
+            label {
+                width: calc(13rem - 2px);
+            }
+            .rocket-control {
+                margin-left: calc(13rem - 2px);
             }
         }
     }

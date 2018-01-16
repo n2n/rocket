@@ -3806,7 +3806,7 @@ body {
 
 .rocket-impl-translation-status-menu {
   border-bottom: 3px solid #ed8207;
-  z-index: 20;
+  z-index: 60;
 }
 
 .rocket-impl-translation-status-menu > ul > li > a.btn {
@@ -3980,14 +3980,23 @@ body {
  */
 td .rocket-impl-translation {
   padding: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
 
-td .rocket-impl-translation label {
-  display: inline-block;
+td .rocket-impl-translation > label {
+  grid-column-start: 2;
+  grid-column-end: 3;
   padding-top: 0.25rem;
   font-size: 0.75rem;
-  width: 3rem;
   color: #837E78;
+  width: auto;
+}
+
+td .rocket-impl-translation > .rocket-controls {
+  grid-row-start: 1;
+  grid-column-start: 1;
+  grid-column-end: 2;
 }
 
 .rocket-nav-group {
@@ -4247,16 +4256,19 @@ ul.rocket-content-item > li > span {
 }
 
 @media (min-width: 768px) {
-  .rocket-field {
+  .rocket-read-only,
+  .rocket-editable {
     clear: both;
     padding: 1rem;
   }
-  .rocket-field > label {
+  .rocket-read-only > label,
+  .rocket-editable > label {
     width: 15rem;
     float: left;
     padding: calc(0.375rem + 1px) 0;
   }
-  .rocket-field > .rocket-control {
+  .rocket-read-only > .rocket-control,
+  .rocket-editable > .rocket-control {
     margin-left: 15rem;
   }
 }
@@ -4355,14 +4367,14 @@ ul.rocket-content-item > li > span {
 
 .rocket-impl-entry-placeholder {
   background: #F7F5F5 !important;
-  border: 3px dashed #C2BDB6 !important;
+  border: 1px dashed #C2BDB6 !important;
 }
 
 .rocket-ei-type-selector > div {
   display: inline-block;
 }
 
-.rocket-group {
+.rocket-group-simple {
   background: #fff;
   position: relative;
   margin-bottom: 1rem;
@@ -4370,7 +4382,7 @@ ul.rocket-content-item > li > span {
   border-bottom: 1px solid #C2BDB6;
 }
 
-.rocket-group > label {
+.rocket-group-simple > label {
   width: 100%;
   padding: 0.5rem 1rem;
   margin: 0;
@@ -4380,53 +4392,54 @@ ul.rocket-content-item > li > span {
   float: none;
 }
 
-.rocket-group > .rocket-control {
+.rocket-group-simple > .rocket-control {
   margin: 0;
-  padding: 0;
 }
 
-.rocket-group > .rocket-group-toolbar {
+.rocket-group-simple > .rocket-group-toolbar {
   position: absolute;
   top: 0.5rem;
   right: 1rem;
 }
 
-.rocket-group > .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group > .rocket-group-toolbar > .rocket-simple-commands {
+.rocket-group-simple > .rocket-group-toolbar > .rocket-group-controls,
+.rocket-group-simple > .rocket-group-toolbar > .rocket-simple-commands {
   display: inline-block;
   margin-left: 1rem;
 }
 
-.rocket-group .rocket-group {
+.rocket-group-simple .rocket-group-simple {
   border: none;
   background-color: transparent;
 }
 
-.rocket-group .rocket-group > label {
+.rocket-group-simple .rocket-group-simple > label {
   border: none;
   margin: 0;
 }
 
-.rocket-group .rocket-group > .rocket-control {
+.rocket-group-simple .rocket-group-simple > .rocket-control {
   padding: 0 1rem;
 }
 
-.rocket-group .rocket-group > .rocket-control > .rocket-entry {
+.rocket-group-simple .rocket-group-simple > .rocket-control > div {
   border: 1px solid #C2BDB6;
   background: rgba(55, 52, 49, 0.035);
 }
 
 @media (min-width: 768px) {
-  .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > label {
+  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-editable > label,
+  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-read-only > label {
     width: calc(14rem - 1px);
   }
-  .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > .rocket-control {
+  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-editable > .rocket-control,
+  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-read-only > .rocket-control {
     margin-left: calc(14rem - 1px);
   }
-  .rocket-control .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > label {
+  .rocket-control .rocket-group-simple .rocket-group-simple > .rocket-control label {
     width: calc(13rem - 2px);
   }
-  .rocket-control .rocket-group .rocket-group > .rocket-control > .rocket-entry .rocket-field > .rocket-control {
+  .rocket-control .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-control {
     margin-left: calc(13rem - 2px);
   }
 }

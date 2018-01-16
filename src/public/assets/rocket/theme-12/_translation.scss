@@ -41,7 +41,7 @@
 
 .rocket-impl-translation-status-menu {
 	border-bottom: 3px solid $primary;
-	z-index: 20;
+	z-index: 60;
     > ul > li {
         > a.btn {
             display: block;
@@ -214,12 +214,20 @@
 td {
 	.rocket-impl-translation {
 		padding: 0;
-		label {
-			display: inline-block;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		> label {
+			grid-column-start: 2;
+			grid-column-end: 3;
 			padding-top: 0.25rem;
 			font-size: $font-size-xs;
-			width: 3rem;
 			color: $gray-600;
+			width: auto;
+		}
+		> .rocket-controls {
+			grid-row-start: 1;
+			grid-column-start: 1;
+			grid-column-end: 2;
 		}
 
 	}

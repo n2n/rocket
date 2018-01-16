@@ -25,7 +25,8 @@
 }
 
 @include media-breakpoint-up(md) {
-    .rocket-field {
+    .rocket-read-only, 
+    .rocket-editable {
         clear: both;
         padding: 1rem;
 
@@ -136,7 +137,7 @@
 
 .rocket-impl-entry-placeholder {
     background: $gray-200 !important;
-    border: 3px dashed $gray-500 !important;
+    border: 1px dashed $gray-500 !important;
 }
 
 .rocket-ei-type-selector {
