@@ -32,7 +32,7 @@
 	$view->assert($entryCommandViewModel instanceof EntryCommandViewModel);
 	
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $entryCommandViewModel->getTitle(), 'tmplMode' => 'rocket-preview'));
+			array('title' => $entryCommandViewModel->getTitle()));
 	
 	$eiuEntry = $entryCommandViewModel->getEiuEntry();
 	$currentPreviewType = $view->getParam('currentPreviewType');
@@ -45,11 +45,8 @@
 	}
 ?>
 
-	
-<div class="rocket-panel">
-	<h3 class="rocket-preview-iframe-title">Detail</h3>
-	
-	<div class="rocket-zone-toolbar">
+<div class="rocket-zone-toolbar">
+	<div class="rocket-group-control">
 		<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
 			<?php foreach ($eiuEntry->getPreviewTypeOptions() as $previewType => $label): ?>
 				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))) ?>"
@@ -59,16 +56,18 @@
 			<?php endforeach ?>
 		</select>
 	</div>
+</div>
 
-	<div class="rocket-detail-content rocket-preview-wrapper">
-		<iframe src="<?php $html->esc($view->getParam('iframeSrc')) ?>" id="rocket-preview-content"></iframe>
-	</div>
+<div class="rocket-plain">
+	<iframe src="<?php $html->esc($view->getParam('iframeSrc')) ?>" class="rocket-impl-preview"></iframe>
 </div>
 
 <div class="rocket-zone-commands">
 	<?php //$controlEiHtml->entryGuiControlList($entryCommandViewModel->getEntryGuiModel()) ?>
 	
-	<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
-		<?php $view->import('inc\previewSwitch.html', array('entryCommandViewModel' => $entryCommandViewModel)) ?>
-	<?php endif ?>
+	<div class="rocket-aside-commands">
+		<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
+			<?php $view->import('inc\previewSwitch.html', array('entryCommandViewModel' => $entryCommandViewModel)) ?>
+		<?php endif ?>
+	</div>
 </div>

@@ -49,7 +49,7 @@
 		<div>
 			<?php $formHtml->buttonSubmit('create', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_label') . '</span>'),
-					array('class' => 'btn btn-primary')) ?>
+					array('class' => 'btn btn-primary rocket-important')) ?>
 			<?php $formHtml->buttonSubmit('createAndRepeate', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('ei_impl_save_and_repeat_label') . '</span>'),
 					array('class' => 'btn btn-secondary')) ?>

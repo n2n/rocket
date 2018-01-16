@@ -51,7 +51,7 @@
 					array('class' => 'btn btn-primary')) ?>
 			<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_and_back_label') . '</span>'), 
-					array('class' => 'btn btn-primary')) ?>
+					array('class' => 'btn btn-primary rocket-important')) ?>
 			
 			<?php if ($editModel->isDraftable()): ?>
 					<?php $formHtml->buttonSubmit('saveAsNewDraft', new Raw('<i class="fa fa-save"></i><span>' 
