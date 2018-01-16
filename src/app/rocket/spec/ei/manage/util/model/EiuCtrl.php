@@ -254,7 +254,7 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function applyBreandcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
+	public function applyBreadcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);

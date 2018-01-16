@@ -158,7 +158,7 @@ class DetailController extends ControllerAdapter {
 				$pathParts = array('livepreview', $eiObject->getEiEntityObj()->getId(), $previewType);
 			}
 			
-			$this->eiuCtrl->applyBreandcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
+			$this->eiuCtrl->applyBreadcrumbs(new Breadcrumb($this->getUrlToController($pathParts), 
 					$eiFrame->getDetailBreadcrumbLabel($eiObject)));
 		}
 		
@@ -184,7 +184,7 @@ class DetailController extends ControllerAdapter {
 										->createIdentityString($eiObject))));
 			}
 			
-			$this->eiuCtrl->applyBreandcrumbs($breadcrumb);
+			$this->eiuCtrl->applyBreadcrumbs($breadcrumb);
 		}
 	}
 }
