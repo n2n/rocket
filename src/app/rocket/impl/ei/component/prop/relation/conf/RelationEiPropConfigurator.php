@@ -88,7 +88,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY,
-				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY), true), true);
+				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, 
+				self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, self::ATTR_REDUCED_KEY), true), true);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
