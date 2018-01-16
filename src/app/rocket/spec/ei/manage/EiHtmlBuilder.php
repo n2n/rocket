@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use n2nutil\bootstrap\mag\OutfitComposer;
 use rocket\spec\ei\manage\util\model\EiuFactory;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
@@ -701,7 +700,6 @@ class RocketUiOutfitter implements UiOutfitter {
 	}
 	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
-		$outfitComposer = new OutfitComposer();
 		return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html', array('propertyPath' => $propertyPath));
 	}
 }
