@@ -6942,7 +6942,7 @@ var Rocket;
                     this.translatedContent.jQuery.append(this.elemJq);
                     let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
                         .append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
-                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
+                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control-menu" })
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
                     this.toggler = Translation.Toggler.simple(buttonJq, menuJq);

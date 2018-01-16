@@ -71,6 +71,7 @@ $htmlMeta->addCss('css/font-awesome.css');
 $htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
 $htmlMeta->addJs('js/rocket.js', null);
 
+
 // 	$specManager = $rocket->getSpecManager();
 // 	$menuGroups = $specManager->getMenuGroups();
 // 	$selectedMenuItem = $manageState->getSelectedMenuItem();
