@@ -28,6 +28,10 @@ namespace Rocket.Cmd {
 			this.historyChanged();
 		}
 		
+		get jQuery(): JQuery {
+			return this.jqLayer;
+		}
+		
 		get monitor(): Jhtml.Monitor {
 			return this._monitor;
 		}
