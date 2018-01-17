@@ -1,20 +1,96 @@
 namespace Rocket.Impl.File {
+	class SelectableDimension implements SizeSelectorListener {
+		private elemLowRes: JQuery;
+		private elemRadio: JQuery;
+		private dimensionStr: string;
+		private ratioStr: string;
+		private ratio: boolean;
+		private resizingDimension: ResizingDimension;
+	
+		public constructor(private resizer: Resizer, private elemLi: JQuery) {
+			this.resizer.getSizeSelector().registerChangeListener(this);
+			this.elemLowRes = elemLi.find(".rocket-image-low-res").hide();
+			this.elemRadio = elemLi.find("input[type=radio]:first");
+			this.dimensionStr = this.elemRadio.data('dimension-str').toString();
+			this.ratioStr = this.elemRadio.data('ratio-str').toString();
+			this.ratio = this.ratioStr === this.elemRadio.val();
+			
+			(function(that: SelectableDimension) {
+				if (that.elemRadio.is(":checked")) {
+					that.resizer.setSelectedDimension(that, false);
+				}
+				
+				that.elemRadio.change(function() {
+					if (that.elemRadio.is(":checked")) {
+						that.resizer.setSelectedDimension(that, true);
+					}
+				});
+			}).call(this, this);
+		}
+		
+		public getDimensionStr() {
+			return this.dimensionStr;
+		}
+		
+		public getRatioStr() {
+			return this.ratioStr;
+		}
+		
+		public isRatio() {
+			return this.ratio;
+		}
+		
+		public select() {
+			this.elemRadio.prop("checked", true);
+		}
+		
+		public buildStorageKey() {
+			return location.href + '/' + this.ratioStr;
+		}
+		
+		public hasSameRatio(selectableDimension: SelectableDimension) {
+			return selectableDimension.getRatioStr() === this.ratioStr;
+		}
+		
+		public equals(selectableDimension: SelectableDimension) {
+			return this.hasSameRatio(selectableDimension) && selectableDimension.getDimensionStr() === this.dimensionStr 
+					&& this.isRatio() === selectableDimension.isRatio();
+		}
+		
+		public onDimensionChange(sizeSelector: SizeSelector) {
+			let currentResizingDimension = sizeSelector.getCurrentResizingDimension(),
+				currentSelectableDimension = currentResizingDimension.getSelectableDimension();
+			
+			if (((currentSelectableDimension.isRatio() && currentSelectableDimension.hasSameRatio(this)) 
+					|| currentSelectableDimension.equals(this)) && sizeSelector.isLowRes(this.createResizingDimension())) {
+				this.elemLowRes.show();
+			} else {
+				this.elemLowRes.hide();
+			}
+			
+		}
+		
+		public createResizingDimension() {
+			return new ResizingDimension(this, this.resizer.getZoomFactor());
+		}
+	}
+	
 	class ResizingDimension {
-		private dimensionMatchPattern: any; 
+		static dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?"); 
 		private width: number; 
 		private height: number; 
 		private crop: boolean; 
 		private ratio: number = 1;
 	
-		public constructor(private dimensionString: string, private zoomFactor: number) {
-			this.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
+		public constructor(private selectableDimension: SelectableDimension, private zoomFactor: number) {
 			this.initialize();
 		}
 
 		public initialize() {
-			if (this.dimensionString.match(this.dimensionMatchPattern) === null) return;
+			var dimensionStr = this.selectableDimension.getDimensionStr();
+			if (dimensionStr.match(ResizingDimension.dimensionMatchPattern) === null) return;
 			
-			let dimension: Array<string> = this.dimensionString.split("x");
+			let dimension: Array<string> = dimensionStr.split("x");
 			this.width = parseInt(dimension[0]) * this.zoomFactor;
 			this.height = parseInt(dimension[1]) * this.zoomFactor;
 			if (dimension.length <= 2) {
@@ -23,6 +99,10 @@ namespace Rocket.Impl.File {
 				this.crop = dimension[2].startsWith("c");
 			}
 			this.ratio = this.width / this.height;
+		}
+		
+		public getSelectableDimension() {
+			return this.selectableDimension;
 		}
 
 		public isCrop(): boolean {
@@ -41,12 +121,8 @@ namespace Rocket.Impl.File {
 			return this.height;
 		}
 		
-		public getDimensionString(): string {
-			return this.dimensionString;
-		}
-		
-		public buildStorageKey(): string {
-			return location.href + '/' + this.dimensionString;
+		public buildStorageKey() {
+			return this.getSelectableDimension().buildStorageKey();
 		}
 	}
 
@@ -59,7 +135,6 @@ namespace Rocket.Impl.File {
 		private elemSpanZoom: JQuery = null;
 
 		public constructor(private imageResizer: Resizer, private elemDimensionContainer: JQuery) {
-			console.log(this.elemDimensionContainer);
 			this.elemSpanZoom = $("<span />");
 		}
 		
@@ -72,10 +147,6 @@ namespace Rocket.Impl.File {
 
 			this.elemUl = $("<ul/>").css({
 				margin: "0px"
-			});
-			
-			this.elemDimensionContainer.find("input[type=radio]").change(function() {
-				_obj.redraw();
 			});
 			
 			var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
@@ -99,29 +170,15 @@ namespace Rocket.Impl.File {
 			this.imageResizer.getElemToolbar().append(this.elemUl);
 		}
 
-		public updateDimension() {
-			let imageResizingDimension: ResizingDimension = new ResizingDimension(this.elemDimensionContainer.val().toString(), this.imageResizer.getZoomFactor());
-			if (imageResizingDimension) {
-				this.imageResizer.redraw(imageResizingDimension);
+		public redraw(resizingDimension: ResizingDimension) {
+			if (resizingDimension.isCrop()) {
+				this.elemCbxFixedRatio.prop("checked", true);
+				this.elemLiFixedRatio.hide();
+			} else {
+				this.elemCbxFixedRatio.prop("checked", true);
+				this.elemLiFixedRatio.show();
 			}
-		}
-
-		public redraw() {
-			var imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.find(":checked:first")
-					.data('dimension-str').toString(), this.imageResizer.getZoomFactor());
-			
-			if (imageResizingDimension) {
-				if (imageResizingDimension.isCrop()) {
-					this.elemCbxFixedRatio.prop("checked", true);
-					this.elemLiFixedRatio.hide();
-					this.elemCbxFixedRatio.trigger("change");
-				} else {
-					this.elemCbxFixedRatio.prop("checked", true);
-					this.elemCbxFixedRatio.trigger("change");
-					this.elemLiFixedRatio.show();
-				}
-				this.imageResizer.redraw(imageResizingDimension);
-			};
+			this.elemCbxFixedRatio.trigger("change");
 		}
 		
 		public showWarning() {
@@ -292,6 +349,17 @@ namespace Rocket.Impl.File {
 			return this.checkPositionTop(newTop) && this.checkPositionRight(newRight)
 				&& this.checkPositionBottom(newBottom) && this.checkPositionLeft(newLeft);
 		}
+		
+		public isLowRes(resizingDimension: ResizingDimension = null) {
+			if (!resizingDimension) {
+				resizingDimension = this.currentResizingDimension;
+			}
+			
+			if (!resizingDimension) return false;
+			
+			return resizingDimension.getWidth() > (this.getWidth() + 1)
+					|| resizingDimension.getHeight() > (this.getHeight() + 1);
+		}
 
 		public initializeUI() {
 			var _obj = this;
@@ -305,9 +373,11 @@ namespace Rocket.Impl.File {
 				//Image
 				this.elemImg = $("<img/>").css("position", "relative");
 
-				this.elemImg.on("load", function() {
-					_obj.imageLoaded = true;
-					_obj.initializeUI();
+				this.elemImg.on("load", () => {
+					this.imageLoaded = true;
+					this.initializeUI();
+					
+					window.scroll(0, Jhtml.Monitor.of(this.elemImg.get(0)).history.currentPage.config.scrollPos);
 				}).attr("src", this.imageResizer.getElemImg().attr("src"));
 
 				this.elemDiv.append(this.elemImg);
@@ -369,15 +439,11 @@ namespace Rocket.Impl.File {
 						left: (-1 * $(this).position().left) + "px"
 					});
 				}).on('sizeChange', function() {
-					if (_obj.currentResizingDimension) {
-						if (_obj.currentResizingDimension.getWidth() > (_obj.getWidth() + 1)
-							|| _obj.currentResizingDimension.getHeight() > (_obj.getHeight() + 1)) {
-							_obj.showWarning();
-							return;
-						}
+					if (_obj.isLowRes()) {
+						_obj.showWarning();
+					} else {
+						_obj.hideWarning();
 					}
-					_obj.hideWarning();
-
 				});
 
 				//Resizing span
@@ -408,27 +474,17 @@ namespace Rocket.Impl.File {
 
 						//check Borders
 						if ((!_obj.checkPositionRight(newRight)) || (!_obj.checkPositionBottom(newBottom))) {
-							if (!(_obj.checkPositionRight(newRight))) {
+							if (!_obj.checkPositionRight(newRight)) {
 								newWidth = _obj.elemImg.width() - _obj.getPositionLeft();
 								if (_obj.fixedRatio && _obj.checkPositionBottom(newBottom)) {
 									newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
 								}
 							}
 
-							if (!(_obj.checkPositionBottom(newBottom))) {
+							if (!_obj.checkPositionBottom(newBottom)) {
 								newHeight = _obj.elemImg.height() - _obj.getPositionTop();
 								if (_obj.fixedRatio && _obj.checkPositionRight(newRight)) {
 									newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
-								}
-							}
-
-							if (!(_obj.checkPositionRight(newRight)) && !(_obj.checkPositionBottom(newBottom))) {
-								if (_obj.fixedRatio) {
-									if (widthProportion >= heightProportion) {
-										newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
-									} else {
-										newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
-									}
 								}
 							}
 						}
@@ -449,8 +505,7 @@ namespace Rocket.Impl.File {
 				this.initializeMin();
 				this.setSelectorDimensions(this.elemDiv.width(), this.elemDiv.height())
 				//first time call, first positionChange & triggering the changeListeners
-				this.elemDiv.trigger('positionChange');
-				_obj.triggerChangeListeners();
+				this.redraw(this.imageResizer.getSelectedDimension().createResizingDimension());
 			}
 		}
 
@@ -530,6 +585,7 @@ namespace Rocket.Impl.File {
 		private lastWidth: number = null;
 		private originalImageWidth: number = null;
 		private originalImageHeight: number = null;
+		private selectedDimension: SelectableDimension;
 	
 		public constructor(private elem: JQuery, private elemDimensionContainer: JQuery, 
 				private elemImg: JQuery = null, private maxHeightCheckClosure: () => number = null) {
@@ -540,11 +596,39 @@ namespace Rocket.Impl.File {
 			this.textFixedRatio = elem.data("text-fixed-ratio") || "Fixed Ratio";
 	        this.textLowResolution = elem.data("text-low-resolution") || "Low Resolution";
 	        this.textZoom = elem.data("text-zoom") || "Zoom";
+			
 	        this.sizeSelector = new SizeSelector(this, this.elemImg);
+	        let firstSelectableDimension: SelectableDimension = null, _obj = this;
+			this.elemDimensionContainer.find(".rocket-image-version").each(function() {
+				var selectableDimension = new SelectableDimension(_obj, $(this));
+				if (null === firstSelectableDimension) {
+					firstSelectableDimension = selectableDimension;
+				}
+			});
+			
+			if (!this.selectedDimension && firstSelectableDimension) {
+				firstSelectableDimension.select();
+				this.setSelectedDimension(firstSelectableDimension, false);
+			}
+			
 	        this.sizeSelector.registerChangeListener(this);
+	  
 	        this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
 	        
 	        this.initializeUi();
+		}
+		
+		public getSelectedDimension() {
+			return this.selectedDimension;
+		}
+		
+		public setSelectedDimension(selectedDimension: SelectableDimension, redraw: boolean) {
+			this.selectedDimension = selectedDimension;
+			if (redraw) {
+				let resizingDimension = selectedDimension.createResizingDimension();
+	    		this.toolbar.redraw(resizingDimension);
+	    		this.sizeSelector.redraw(resizingDimension);
+			}
 		}
 		
 		public getToolbar() {
@@ -584,7 +668,6 @@ namespace Rocket.Impl.File {
 	            .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
 
 	        this.elemContent.append(this.elemImg);
-
 	        this.elem.append(this.elemContent);
 
 	        //now it s in tho Document DOM
@@ -612,9 +695,9 @@ namespace Rocket.Impl.File {
 	                _obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
 
 	                _obj.sizeSelector.updateImage();
-	                _obj.toolbar.updateDimension();
+	                _obj.sizeSelector.redraw(_obj.selectedDimension.createResizingDimension());
 	            });
-	        })
+	        });
 		}
 		
 		private applyZoomFactor() {
@@ -649,7 +732,7 @@ namespace Rocket.Impl.File {
 	        this.sizeSelector.initializeUI();
 
 	        //redraw with the current dimension
-	        this.toolbar.redraw();
+	        this.toolbar.redraw(this.selectedDimension.createResizingDimension());
 	        this.lastWidth = this.elem.width();
 
 	        //for the responsive functionality
@@ -659,10 +742,6 @@ namespace Rocket.Impl.File {
 	                _obj.elem.trigger('containerWidthChange');
 	            }
 	        });
-		}
-		
-		public redraw(resizingDimension: ResizingDimension) {
-    		this.sizeSelector.redraw(resizingDimension);
 		}
 		
 		public onDimensionChange(sizeSelector: SizeSelector) {

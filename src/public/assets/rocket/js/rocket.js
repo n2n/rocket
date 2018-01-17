@@ -3152,18 +3152,75 @@ var Rocket;
     (function (Impl) {
         var File;
         (function (File) {
+            class SelectableDimension {
+                constructor(resizer, elemLi) {
+                    this.resizer = resizer;
+                    this.elemLi = elemLi;
+                    this.resizer.getSizeSelector().registerChangeListener(this);
+                    this.elemLowRes = elemLi.find(".rocket-image-low-res").hide();
+                    this.elemRadio = elemLi.find("input[type=radio]:first");
+                    this.dimensionStr = this.elemRadio.data('dimension-str').toString();
+                    this.ratioStr = this.elemRadio.data('ratio-str').toString();
+                    this.ratio = this.ratioStr === this.elemRadio.val();
+                    (function (that) {
+                        if (that.elemRadio.is(":checked")) {
+                            that.resizer.setSelectedDimension(that, false);
+                        }
+                        that.elemRadio.change(function () {
+                            if (that.elemRadio.is(":checked")) {
+                                that.resizer.setSelectedDimension(that, true);
+                            }
+                        });
+                    }).call(this, this);
+                }
+                getDimensionStr() {
+                    return this.dimensionStr;
+                }
+                getRatioStr() {
+                    return this.ratioStr;
+                }
+                isRatio() {
+                    return this.ratio;
+                }
+                select() {
+                    this.elemRadio.prop("checked", true);
+                }
+                buildStorageKey() {
+                    return location.href + '/' + this.ratioStr;
+                }
+                hasSameRatio(selectableDimension) {
+                    return selectableDimension.getRatioStr() === this.ratioStr;
+                }
+                equals(selectableDimension) {
+                    return this.hasSameRatio(selectableDimension) && selectableDimension.getDimensionStr() === this.dimensionStr
+                        && this.isRatio() === selectableDimension.isRatio();
+                }
+                onDimensionChange(sizeSelector) {
+                    let currentResizingDimension = sizeSelector.getCurrentResizingDimension(), currentSelectableDimension = currentResizingDimension.getSelectableDimension();
+                    if (((currentSelectableDimension.isRatio() && currentSelectableDimension.hasSameRatio(this))
+                        || currentSelectableDimension.equals(this)) && sizeSelector.isLowRes(this.createResizingDimension())) {
+                        this.elemLowRes.show();
+                    }
+                    else {
+                        this.elemLowRes.hide();
+                    }
+                }
+                createResizingDimension() {
+                    return new ResizingDimension(this, this.resizer.getZoomFactor());
+                }
+            }
             class ResizingDimension {
-                constructor(dimensionString, zoomFactor) {
-                    this.dimensionString = dimensionString;
+                constructor(selectableDimension, zoomFactor) {
+                    this.selectableDimension = selectableDimension;
                     this.zoomFactor = zoomFactor;
                     this.ratio = 1;
-                    this.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
                     this.initialize();
                 }
                 initialize() {
-                    if (this.dimensionString.match(this.dimensionMatchPattern) === null)
+                    var dimensionStr = this.selectableDimension.getDimensionStr();
+                    if (dimensionStr.match(ResizingDimension.dimensionMatchPattern) === null)
                         return;
-                    let dimension = this.dimensionString.split("x");
+                    let dimension = dimensionStr.split("x");
                     this.width = parseInt(dimension[0]) * this.zoomFactor;
                     this.height = parseInt(dimension[1]) * this.zoomFactor;
                     if (dimension.length <= 2) {
@@ -3173,6 +3230,9 @@ var Rocket;
                         this.crop = dimension[2].startsWith("c");
                     }
                     this.ratio = this.width / this.height;
+                }
+                getSelectableDimension() {
+                    return this.selectableDimension;
                 }
                 isCrop() {
                     return this.crop;
@@ -3186,13 +3246,11 @@ var Rocket;
                 getHeight() {
                     return this.height;
                 }
-                getDimensionString() {
-                    return this.dimensionString;
-                }
                 buildStorageKey() {
-                    return location.href + '/' + this.dimensionString;
+                    return this.getSelectableDimension().buildStorageKey();
                 }
             }
+            ResizingDimension.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
             class ResizerToolbar {
                 constructor(imageResizer, elemDimensionContainer) {
                     this.imageResizer = imageResizer;
@@ -3203,7 +3261,6 @@ var Rocket;
                     this.elemLiFixedRatio = null;
                     this.elemSpanWarning = null;
                     this.elemSpanZoom = null;
-                    console.log(this.elemDimensionContainer);
                     this.elemSpanZoom = $("<span />");
                 }
                 getElemSpanZoom() {
@@ -3213,9 +3270,6 @@ var Rocket;
                     var _obj = this;
                     this.elemUl = $("<ul/>").css({
                         margin: "0px"
-                    });
-                    this.elemDimensionContainer.find("input[type=radio]").change(function () {
-                        _obj.redraw();
                     });
                     var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
                     this.elemLiFixedRatio = $("<li/>").addClass("rocket-fixed-ratio").append($("<label/>").attr("for", randomId).css("display", "inline-block").text(_obj.imageResizer.textFixedRatio));
@@ -3233,29 +3287,16 @@ var Rocket;
                     this.elemUl.append($("<li/>").append(this.elemSpanZoom));
                     this.imageResizer.getElemToolbar().append(this.elemUl);
                 }
-                updateDimension() {
-                    let imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.val().toString(), this.imageResizer.getZoomFactor());
-                    if (imageResizingDimension) {
-                        this.imageResizer.redraw(imageResizingDimension);
+                redraw(resizingDimension) {
+                    if (resizingDimension.isCrop()) {
+                        this.elemCbxFixedRatio.prop("checked", true);
+                        this.elemLiFixedRatio.hide();
                     }
-                }
-                redraw() {
-                    var imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.find(":checked:first")
-                        .data('dimension-str').toString(), this.imageResizer.getZoomFactor());
-                    if (imageResizingDimension) {
-                        if (imageResizingDimension.isCrop()) {
-                            this.elemCbxFixedRatio.prop("checked", true);
-                            this.elemLiFixedRatio.hide();
-                            this.elemCbxFixedRatio.trigger("change");
-                        }
-                        else {
-                            this.elemCbxFixedRatio.prop("checked", true);
-                            this.elemCbxFixedRatio.trigger("change");
-                            this.elemLiFixedRatio.show();
-                        }
-                        this.imageResizer.redraw(imageResizingDimension);
+                    else {
+                        this.elemCbxFixedRatio.prop("checked", true);
+                        this.elemLiFixedRatio.show();
                     }
-                    ;
+                    this.elemCbxFixedRatio.trigger("change");
                 }
                 showWarning() {
                     this.elemSpanWarning.show();
@@ -3398,6 +3439,15 @@ var Rocket;
                     return this.checkPositionTop(newTop) && this.checkPositionRight(newRight)
                         && this.checkPositionBottom(newBottom) && this.checkPositionLeft(newLeft);
                 }
+                isLowRes(resizingDimension = null) {
+                    if (!resizingDimension) {
+                        resizingDimension = this.currentResizingDimension;
+                    }
+                    if (!resizingDimension)
+                        return false;
+                    return resizingDimension.getWidth() > (this.getWidth() + 1)
+                        || resizingDimension.getHeight() > (this.getHeight() + 1);
+                }
                 initializeUI() {
                     var _obj = this;
                     if (!this.imageLoaded) {
@@ -3407,9 +3457,10 @@ var Rocket;
                             overflow: "hidden"
                         }).addClass("rocket-image-resizer-size-selector");
                         this.elemImg = $("<img/>").css("position", "relative");
-                        this.elemImg.on("load", function () {
-                            _obj.imageLoaded = true;
-                            _obj.initializeUI();
+                        this.elemImg.on("load", () => {
+                            this.imageLoaded = true;
+                            this.initializeUI();
+                            window.scroll(0, Jhtml.Monitor.of(this.elemImg.get(0)).history.currentPage.config.scrollPos);
                         }).attr("src", this.imageResizer.getElemImg().attr("src"));
                         this.elemDiv.append(this.elemImg);
                         this.imageResizer.getElemContent().append(this.elemDiv);
@@ -3461,14 +3512,12 @@ var Rocket;
                                 left: (-1 * $(this).position().left) + "px"
                             });
                         }).on('sizeChange', function () {
-                            if (_obj.currentResizingDimension) {
-                                if (_obj.currentResizingDimension.getWidth() > (_obj.getWidth() + 1)
-                                    || _obj.currentResizingDimension.getHeight() > (_obj.getHeight() + 1)) {
-                                    _obj.showWarning();
-                                    return;
-                                }
+                            if (_obj.isLowRes()) {
+                                _obj.showWarning();
                             }
-                            _obj.hideWarning();
+                            else {
+                                _obj.hideWarning();
+                            }
                         });
                         this.elemSpan.mousedown(function (event) {
                             _obj.resizeStart.width = _obj.elemDiv.width();
@@ -3491,26 +3540,16 @@ var Rocket;
                                 var newRight = _obj.getPositionLeft() + newWidth;
                                 var newBottom = _obj.getPositionTop() + newHeight;
                                 if ((!_obj.checkPositionRight(newRight)) || (!_obj.checkPositionBottom(newBottom))) {
-                                    if (!(_obj.checkPositionRight(newRight))) {
+                                    if (!_obj.checkPositionRight(newRight)) {
                                         newWidth = _obj.elemImg.width() - _obj.getPositionLeft();
                                         if (_obj.fixedRatio && _obj.checkPositionBottom(newBottom)) {
                                             newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
                                         }
                                     }
-                                    if (!(_obj.checkPositionBottom(newBottom))) {
+                                    if (!_obj.checkPositionBottom(newBottom)) {
                                         newHeight = _obj.elemImg.height() - _obj.getPositionTop();
                                         if (_obj.fixedRatio && _obj.checkPositionRight(newRight)) {
                                             newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
-                                        }
-                                    }
-                                    if (!(_obj.checkPositionRight(newRight)) && !(_obj.checkPositionBottom(newBottom))) {
-                                        if (_obj.fixedRatio) {
-                                            if (widthProportion >= heightProportion) {
-                                                newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
-                                            }
-                                            else {
-                                                newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
-                                            }
                                         }
                                     }
                                 }
@@ -3529,8 +3568,7 @@ var Rocket;
                         this.initializeMax();
                         this.initializeMin();
                         this.setSelectorDimensions(this.elemDiv.width(), this.elemDiv.height());
-                        this.elemDiv.trigger('positionChange');
-                        _obj.triggerChangeListeners();
+                        this.redraw(this.imageResizer.getSelectedDimension().createResizingDimension());
                     }
                 }
                 setSelectorDimensions(newWidth, newHeight) {
@@ -3603,9 +3641,31 @@ var Rocket;
                     this.textLowResolution = elem.data("text-low-resolution") || "Low Resolution";
                     this.textZoom = elem.data("text-zoom") || "Zoom";
                     this.sizeSelector = new SizeSelector(this, this.elemImg);
+                    let firstSelectableDimension = null, _obj = this;
+                    this.elemDimensionContainer.find(".rocket-image-version").each(function () {
+                        var selectableDimension = new SelectableDimension(_obj, $(this));
+                        if (null === firstSelectableDimension) {
+                            firstSelectableDimension = selectableDimension;
+                        }
+                    });
+                    if (!this.selectedDimension && firstSelectableDimension) {
+                        firstSelectableDimension.select();
+                        this.setSelectedDimension(firstSelectableDimension, false);
+                    }
                     this.sizeSelector.registerChangeListener(this);
                     this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
                     this.initializeUi();
+                }
+                getSelectedDimension() {
+                    return this.selectedDimension;
+                }
+                setSelectedDimension(selectedDimension, redraw) {
+                    this.selectedDimension = selectedDimension;
+                    if (redraw) {
+                        let resizingDimension = selectedDimension.createResizingDimension();
+                        this.toolbar.redraw(resizingDimension);
+                        this.sizeSelector.redraw(resizingDimension);
+                    }
                 }
                 getToolbar() {
                     return this.toolbar;
@@ -3647,7 +3707,7 @@ var Rocket;
                             _obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
                             _obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
                             _obj.sizeSelector.updateImage();
-                            _obj.toolbar.updateDimension();
+                            _obj.sizeSelector.redraw(_obj.selectedDimension.createResizingDimension());
                         });
                     });
                 }
@@ -3674,7 +3734,7 @@ var Rocket;
                     let _obj = this;
                     this.toolbar.initializeUi();
                     this.sizeSelector.initializeUI();
-                    this.toolbar.redraw();
+                    this.toolbar.redraw(this.selectedDimension.createResizingDimension());
                     this.lastWidth = this.elem.width();
                     $(window).resize(function () {
                         if (_obj.lastWidth != _obj.elem.width()) {
@@ -3682,9 +3742,6 @@ var Rocket;
                             _obj.elem.trigger('containerWidthChange');
                         }
                     });
-                }
-                redraw(resizingDimension) {
-                    this.sizeSelector.redraw(resizingDimension);
                 }
                 onDimensionChange(sizeSelector) {
                     var _obj = this;

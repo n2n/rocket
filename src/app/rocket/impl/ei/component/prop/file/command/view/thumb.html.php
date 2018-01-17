@@ -24,7 +24,6 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\impl\web\ui\view\html\img\UiComponentFactory;
 	use n2n\web\ui\Raw;
-use n2n\impl\web\ui\view\html\HtmlElement;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -61,11 +60,13 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 				<ul class="rocket-image-dimensions">
 					<?php foreach ($thumbModel->getRatioOptions() as $ratioStr => $label): ?>
 						<?php $imageDimensionOptions = $thumbModel->getImageDimensionOptions($ratioStr) ?>
-						<?php $imageDimensionStr = key($imageDimensionOptions) ?>
 						<?php if (count($imageDimensionOptions) > 1 ): ?>
 							<li class="rocket-image-version">
 								<?php $formHtml->inputRadio('selectedStr', $ratioStr, 
-										array('class' => 'rocket-thumb-dimension-radio rocket-thumb-ratio', 'data-dimension-str' => $imageDimensionStr), $label) ?>
+										array('class' => 'rocket-thumb-dimension-radio rocket-thumb-ratio',
+												'data-ratio-str' => $ratioStr,
+												'data-dimension-str' => (string) $thumbModel->getLargestDimension($ratioStr)), $label) ?>
+								<span class="rocket-image-low-res">low res</span>
 							</li>
 						<?php endif ?>
 						<?php foreach ($imageDimensionOptions as $imageDimensionStr => $label): ?>
@@ -74,8 +75,9 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 									<?php $html->image($thumbFile, null, array('class' => '', 'style' => 'max-width: 30px;max-height:30px'), false, false) ?>
 								<?php endif ?>
 								<?php $formHtml->inputRadio('selectedStr', $imageDimensionStr, 
-										array('class' => 'rocket-thumb-dimension-radio rocket-thumb-ratio-' . $ratioStr, 
+										array('class' => 'rocket-thumb-dimension-radio', 'data-ratio-str' => $ratioStr,
 												'data-dimension-str' => $imageDimensionStr), $label) ?>
+								<span class="rocket-image-low-res">low res</span>
 							</li>
 						<?php endforeach ?>
 					<?php endforeach ?>

@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\file\command\controller;
 use rocket\core\model\Breadcrumb;
 use n2n\l10n\DynamicTextCollection;
 use n2n\io\managed\img\ImageFile;
-use rocket\core\model\RocketState;
 use n2n\web\http\PageNotFoundException;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use n2n\web\http\controller\ControllerAdapter;
@@ -37,6 +36,7 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use n2n\reflection\ArgUtils;
 use n2n\io\managed\ThumbManager;
+use n2n\web\http\controller\ParamGet;
 
 class ThumbController extends ControllerAdapter {	
 	private $fileEiProp;
@@ -52,7 +52,7 @@ class ThumbController extends ControllerAdapter {
 		$this->fileEiProp = $fileEiProp;
 	}
 	
-	public function index($idRep, ParamQuery $refPath) {
+	public function index($idRep, ParamQuery $refPath, ParamQuery $selected = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		
@@ -81,8 +81,13 @@ class ThumbController extends ControllerAdapter {
 		$thumbModel = new ThumbModel(new ImageFile($file), $imageDimensions);
 		
 		if ($this->dispatch($thumbModel, 'save')) {
-			$this->refresh();
-			return;
+// 			$this->redirectToController(array($idRep), array('refPath' => (string) $refPath, 
+// 					'selected' => $thumbModel->selectedStr));
+// 			return;
+		}
+		
+		if (null !== $selected) {
+			$thumbModel->selectedStr = (string) $selected;
 		}
 		
 		$this->applyBreadcrumbs($eiuEntry->getEiObject());
@@ -122,11 +127,11 @@ class ThumbController extends ControllerAdapter {
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		
 		if (!$eiFrame->isOverviewDisabled()) {
-			$this->eiuCtrl->applyBreandcrumbs($eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
+			$this->eiuCtrl->applyBreadcrumbs($eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		}
 		
 		if (!$eiFrame->isDetailDisabled()) {
-			$this->eiuCtrl->applyBreandcrumbs($eiFrame->createDetailBreadcrumb($this->getHttpContext(), $eiObject));
+			$this->eiuCtrl->applyBreadcrumbs($eiFrame->createDetailBreadcrumb($this->getHttpContext(), $eiObject));
 		}
 		
 // 		if ($eiObject->isDraft()) {			
@@ -148,6 +153,6 @@ class ThumbController extends ControllerAdapter {
 		$breadcrumbPath = $this->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())
 				->ext(PathUtils::createPathExtFromEntryNavPoint($this->fileEiProp->getThumbEiCommand(), 
 						$eiObject->toEntryNavPoint()));
-			$this->eiuCtrl->applyBreandcrumbs(new Breadcrumb($breadcrumbPath, $this->fileEiProp->getLabelLstr()));
+			$this->eiuCtrl->applyBreadcrumbs(new Breadcrumb($breadcrumbPath, $this->fileEiProp->getLabelLstr()));
 	}
 }

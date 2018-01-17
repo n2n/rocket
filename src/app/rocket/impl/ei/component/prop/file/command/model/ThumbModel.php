@@ -36,6 +36,10 @@ class ThumbModel implements Dispatchable{
 	private $imageDimensions;
 	private $groupedImageDimensionOptions;	
 	private $ratiosOptions;
+	/**
+	 * @var ImageDimension []
+	 */
+	private $largestDimensions;
 	
 	public $selectedStr;
 	public $x;
@@ -66,26 +70,37 @@ class ThumbModel implements Dispatchable{
 		
 		$this->groupedImageDimensionOptions = [];
 		$this->ratiosOptions = [];
+		$this->largestDimensions = [];
+		
 		foreach ($imageDimensions as $imageDimensionString => $imageDimension) {
 			$ratio = ThumbRatio::create($imageDimension);
 			$ratioStr = $ratio->__toString();
-			if (!isset($this->groupedImageDimensionOptions[$ratioStr])) {
-				$this->groupedImageDimensionOptions[$ratioStr] = [];
+			if (!isset($this->ratiosOptions[$ratioStr])) {
 				$this->ratiosOptions[$ratioStr] = $ratio->buildLabel();
+				$this->groupedImageDimensionOptions[$ratioStr] = [];
+				$this->largestDimensions[$ratioStr] = $imageDimension;
+			} else {
+				if ($this->largestDimensions[$ratioStr]->getHeight() < $imageDimension->getHeight()) {
+					$this->largestDimensions[$ratioStr] = $imageDimension;
+				}
 			}
 			
 			$idExt = $imageDimension->getIdExt();
 			$this->groupedImageDimensionOptions[$ratioStr][$imageDimensionString] = $imageDimension->getWidth() . ' x ' . $imageDimension->getHeight()
 					. ($idExt !== null ? ' (' . StringUtils::pretty($idExt) . ')' : '');
 		}
-		
-		$this->selectedStr = key($this->imageDimensions);
 	}
 	
 	public function getImageDimensionOptions($ratioStr) {
 		if (!isset($this->groupedImageDimensionOptions[$ratioStr])) return [];
 		
 		return $this->groupedImageDimensionOptions[$ratioStr];
+	}
+	
+	public function getLargestDimension($ratioStr) {
+		if (!isset($this->largestDimensions[$ratioStr])) return null;
+		
+		return $this->largestDimensions[$ratioStr];
 	}
 	
 	public function getRatioOptions() {

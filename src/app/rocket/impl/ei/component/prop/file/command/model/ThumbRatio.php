@@ -5,12 +5,15 @@ use n2n\io\managed\img\ImageDimension;
 use n2n\reflection\ArgUtils;
 
 class ThumbRatio {
+	const STR_ATTR_SEPERATOR = '-';
 	private $width;
 	private $height;
+	private $crop;
 	
-	public function __construct(int $width, int $height) {
+	public function __construct(int $width, int $height, bool $crop = false) {
 		$this->width = $width;
 		$this->height = $height;
+		$this->crop = $crop;
 	}
 	
 	public function buildLabel() {
@@ -18,7 +21,7 @@ class ThumbRatio {
 	}
 	
 	public function __toString() {
-		return $this->width . ImageDimension::STR_ATTR_SEPARATOR . $this->height;
+		return $this->width . self::STR_ATTR_SEPERATOR . $this->height . ($this->crop ? self::STR_ATTR_SEPERATOR . 'crop' : '');
 	}
 	
 	/**
@@ -33,9 +36,9 @@ class ThumbRatio {
 		$expr = ArgUtils::toString($expr);
 		
 		$parts = explode(ImageDimension::STR_ATTR_SEPARATOR, (string) $expr);
-		ArgUtils::assertTrue(count($parts) === 2);
+		ArgUtils::assertTrue(count($parts) === 2 || count($parts) === 3);
 		
-		return new ThumbRatio($parts[0], $parts[1]);
+		return new ThumbRatio($parts[0], $parts[1], (count($parts) === 3 ? true : false));
 	}
 	
 	private static function fromImageDimension(ImageDimension $imageDimension) {
@@ -43,7 +46,7 @@ class ThumbRatio {
 		$height = $imageDimension->getHeight();
 		$ggt = self::gcd($width, $height);
 		
-		return new ThumbRatio($width / $ggt, $height / $ggt);
+		return new ThumbRatio($width / $ggt, $height / $ggt, null !== $imageDimension->getIdExt());
 	}
 	
 	private static function gcd($num1, $num2) {
