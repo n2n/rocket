@@ -840,236 +840,6 @@ var Rocket;
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
-    var Display;
-    (function (Display) {
-        class StructureElement {
-            constructor(jqElem) {
-                this.onShowCallbacks = [];
-                this.onHideCallbacks = [];
-                this.toolbar = null;
-                this.highlightedParent = null;
-                this.jqElem = jqElem;
-                jqElem.addClass("rocket-structure-element");
-                jqElem.data("rocketStructureElement", this);
-                this.valClasses();
-            }
-            valClasses() {
-                if (this.isField() || this.isGroup()) {
-                    this.jqElem.removeClass("rocket-structure-element");
-                }
-                else {
-                    this.jqElem.addClass("rocket-structure-element");
-                }
-            }
-            get jQuery() {
-                return this.jqElem;
-            }
-            setGroup(group) {
-                if (!group) {
-                    this.jqElem.removeClass("rocket-group");
-                }
-                else {
-                    this.jqElem.addClass("rocket-group");
-                }
-                this.valClasses();
-            }
-            isGroup() {
-                return this.jqElem.hasClass("rocket-group");
-            }
-            setField(field) {
-                if (!field) {
-                    this.jqElem.removeClass("rocket-field");
-                }
-                else {
-                    this.jqElem.addClass("rocket-field");
-                }
-                this.valClasses();
-            }
-            isField() {
-                return this.jqElem.hasClass("rocket-field");
-            }
-            getToolbar() {
-                if (this.toolbar !== null) {
-                    return this.toolbar;
-                }
-                if (!this.isGroup()) {
-                    return null;
-                }
-                var jqToolbar = this.jqElem.children(".rocket-group-toolbar:first");
-                if (jqToolbar.length == 0) {
-                    jqToolbar = $("<div />", { "class": "rocket-group-toolbar" });
-                    this.jqElem.prepend(jqToolbar);
-                }
-                return this.toolbar = new Toolbar(jqToolbar);
-            }
-            getTitle() {
-                return this.jqElem.children("label:first").text();
-            }
-            getParent() {
-                return StructureElement.of(this.jqElem.parent());
-            }
-            isVisible() {
-                return this.jqElem.is(":visible");
-            }
-            show(includeParents = false) {
-                for (var i in this.onShowCallbacks) {
-                    this.onShowCallbacks[i](this);
-                }
-                this.jqElem.show();
-                var parent;
-                if (includeParents && null !== (parent = this.getParent())) {
-                    parent.show(true);
-                }
-            }
-            hide() {
-                for (var i in this.onHideCallbacks) {
-                    this.onHideCallbacks[i](this);
-                }
-                this.jqElem.hide();
-            }
-            onShow(callback) {
-                this.onShowCallbacks.push(callback);
-            }
-            onHide(callback) {
-                this.onHideCallbacks.push(callback);
-            }
-            scrollTo() {
-                var top = this.jqElem.offset().top;
-                var maxOffset = top - 50;
-                var height = this.jqElem.outerHeight();
-                var margin = $(window).height() - height;
-                var offset = top - (margin / 2);
-                if (maxOffset < offset) {
-                    offset = maxOffset;
-                }
-                $("html, body").animate({
-                    "scrollTop": offset
-                }, 250);
-            }
-            highlight(findVisibleParent = false) {
-                this.jqElem.addClass("rocket-highlighted");
-                this.jqElem.removeClass("rocket-highlight-remember");
-                if (!findVisibleParent || this.isVisible())
-                    return;
-                this.highlightedParent = this;
-                while (null !== (this.highlightedParent = this.highlightedParent.getParent())) {
-                    if (!this.highlightedParent.isVisible())
-                        continue;
-                    this.highlightedParent.highlight();
-                    return;
-                }
-            }
-            unhighlight(slow = false) {
-                this.jqElem.removeClass("rocket-highlighted");
-                if (slow) {
-                    this.jqElem.addClass("rocket-highlight-remember");
-                }
-                else {
-                    this.jqElem.removeClass("rocket-highlight-remember");
-                }
-                if (this.highlightedParent !== null) {
-                    this.highlightedParent.unhighlight();
-                    this.highlightedParent = null;
-                }
-            }
-            static from(jqElem, create = false) {
-                var structureElement = jqElem.data("rocketStructureElement");
-                if (structureElement instanceof StructureElement)
-                    return structureElement;
-                if (!create)
-                    return null;
-                structureElement = new StructureElement(jqElem);
-                jqElem.data("rocketStructureElement", structureElement);
-                return structureElement;
-            }
-            static of(jqElem) {
-                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
-                if (jqElem.length == 0)
-                    return null;
-                var structureElement = jqElem.data("rocketStructureElement");
-                if (structureElement instanceof StructureElement) {
-                    return structureElement;
-                }
-                structureElement = StructureElement.from(jqElem, true);
-                jqElem.data("rocketStructureElement", structureElement);
-                return structureElement;
-            }
-        }
-        Display.StructureElement = StructureElement;
-        class Toolbar {
-            constructor(jqToolbar) {
-                this.jqToolbar = jqToolbar;
-                this.jqControls = jqToolbar.children(".rocket-group-controls");
-                if (this.jqControls.length == 0) {
-                    this.jqControls = $("<div />", { "class": "rocket-group-controls" });
-                    this.jqToolbar.append(this.jqControls);
-                    this.jqControls.hide();
-                }
-                else if (this.jqControls.is(':empty')) {
-                    this.jqControls.hide();
-                }
-                var jqCommands = jqToolbar.children(".rocket-simple-commands");
-                if (jqCommands.length == 0) {
-                    jqCommands = $("<div />", { "class": "rocket-simple-commands" });
-                    jqToolbar.append(jqCommands);
-                }
-                this.commandList = new CommandList(jqCommands, true);
-            }
-            get jQuery() {
-                return this.jqToolbar;
-            }
-            getJqControls() {
-                return this.jqControls;
-            }
-            getCommandList() {
-                return this.commandList;
-            }
-        }
-        Display.Toolbar = Toolbar;
-        class CommandList {
-            constructor(jqCommandList, simple = false) {
-                this.jqCommandList = jqCommandList;
-                if (simple) {
-                    jqCommandList.addClass("rocket-simple-commands");
-                }
-            }
-            get jQuery() {
-                return this.jqCommandList;
-            }
-            createJqCommandButton(buttonConfig, prepend = false) {
-                this.jqCommandList.show();
-                if (buttonConfig.iconType === undefined) {
-                    buttonConfig.iconType = "fa fa-circle-o";
-                }
-                if (buttonConfig.severity === undefined) {
-                    buttonConfig.severity = Display.Severity.SECONDARY;
-                }
-                var jqButton = $("<button />", {
-                    "class": "btn btn-" + buttonConfig.severity,
-                    "title": buttonConfig.tooltip,
-                    "type": "button"
-                }).append($("<i />", {
-                    "class": buttonConfig.iconType
-                })).append($("<span />", {
-                    "text": buttonConfig.label
-                }));
-                if (prepend) {
-                    this.jqCommandList.prepend(jqButton);
-                }
-                else {
-                    this.jqCommandList.append(jqButton);
-                }
-                return jqButton;
-            }
-            static create(simple = false) {
-                return new CommandList($("<div />"), simple);
-            }
-        }
-        Display.CommandList = CommandList;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
     var Cmd;
     (function (Cmd) {
         var display = Rocket.Display;
@@ -2674,6 +2444,235 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
+        class StructureElement {
+            constructor(jqElem) {
+                this.onShowCallbacks = [];
+                this.onHideCallbacks = [];
+                this.toolbar = null;
+                this.highlightedParent = null;
+                this.jqElem = jqElem;
+                jqElem.data("rocketStructureElement", this);
+                this.valClasses();
+            }
+            valClasses() {
+                if (this.isField() || this.isGroup()) {
+                    this.jqElem.removeClass("rocket-structure-element");
+                }
+                else {
+                    this.jqElem.addClass("rocket-structure-element");
+                }
+            }
+            get jQuery() {
+                return this.jqElem;
+            }
+            setGroup(group) {
+                if (!group) {
+                    this.jqElem.removeClass("rocket-group");
+                }
+                else {
+                    this.jqElem.addClass("rocket-group");
+                }
+                this.valClasses();
+            }
+            isGroup() {
+                return this.jqElem.hasClass("rocket-group");
+            }
+            setField(field) {
+                if (!field) {
+                    this.jqElem.removeClass("rocket-field");
+                }
+                else {
+                    this.jqElem.addClass("rocket-field");
+                }
+                this.valClasses();
+            }
+            isField() {
+                return this.jqElem.hasClass("rocket-field");
+            }
+            getToolbar() {
+                if (this.toolbar !== null) {
+                    return this.toolbar;
+                }
+                if (!this.isGroup()) {
+                    return null;
+                }
+                let toolbarJq = this.jqElem.children(".rocket-group-toolbar:first");
+                if (toolbarJq.length == 0) {
+                    toolbarJq = $("<div />", { "class": "rocket-group-toolbar" });
+                    this.jqElem.prepend(toolbarJq);
+                }
+                return this.toolbar = new Toolbar(toolbarJq);
+            }
+            getTitle() {
+                return this.jqElem.children("label:first").text();
+            }
+            getParent() {
+                return StructureElement.of(this.jqElem.parent());
+            }
+            isVisible() {
+                return this.jqElem.is(":visible");
+            }
+            show(includeParents = false) {
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+                this.jqElem.show();
+                var parent;
+                if (includeParents && null !== (parent = this.getParent())) {
+                    parent.show(true);
+                }
+            }
+            hide() {
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+                this.jqElem.hide();
+            }
+            onShow(callback) {
+                this.onShowCallbacks.push(callback);
+            }
+            onHide(callback) {
+                this.onHideCallbacks.push(callback);
+            }
+            scrollTo() {
+                var top = this.jqElem.offset().top;
+                var maxOffset = top - 50;
+                var height = this.jqElem.outerHeight();
+                var margin = $(window).height() - height;
+                var offset = top - (margin / 2);
+                if (maxOffset < offset) {
+                    offset = maxOffset;
+                }
+                $("html, body").animate({
+                    "scrollTop": offset
+                }, 250);
+            }
+            highlight(findVisibleParent = false) {
+                this.jqElem.addClass("rocket-highlighted");
+                this.jqElem.removeClass("rocket-highlight-remember");
+                if (!findVisibleParent || this.isVisible())
+                    return;
+                this.highlightedParent = this;
+                while (null !== (this.highlightedParent = this.highlightedParent.getParent())) {
+                    if (!this.highlightedParent.isVisible())
+                        continue;
+                    this.highlightedParent.highlight();
+                    return;
+                }
+            }
+            unhighlight(slow = false) {
+                this.jqElem.removeClass("rocket-highlighted");
+                if (slow) {
+                    this.jqElem.addClass("rocket-highlight-remember");
+                }
+                else {
+                    this.jqElem.removeClass("rocket-highlight-remember");
+                }
+                if (this.highlightedParent !== null) {
+                    this.highlightedParent.unhighlight();
+                    this.highlightedParent = null;
+                }
+            }
+            static from(jqElem, create = false) {
+                var structureElement = jqElem.data("rocketStructureElement");
+                if (structureElement instanceof StructureElement)
+                    return structureElement;
+                if (!create)
+                    return null;
+                structureElement = new StructureElement(jqElem);
+                jqElem.data("rocketStructureElement", structureElement);
+                return structureElement;
+            }
+            static of(jqElem) {
+                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+                if (jqElem.length == 0)
+                    return null;
+                var structureElement = jqElem.data("rocketStructureElement");
+                if (structureElement instanceof StructureElement) {
+                    return structureElement;
+                }
+                structureElement = StructureElement.from(jqElem, true);
+                jqElem.data("rocketStructureElement", structureElement);
+                return structureElement;
+            }
+        }
+        Display.StructureElement = StructureElement;
+        class Toolbar {
+            constructor(jqToolbar) {
+                this.jqToolbar = jqToolbar;
+                this.jqControls = jqToolbar.children(".rocket-group-controls");
+                if (this.jqControls.length == 0) {
+                    this.jqControls = $("<div />", { "class": "rocket-group-controls" });
+                    this.jqToolbar.append(this.jqControls);
+                    this.jqControls.hide();
+                }
+                else if (this.jqControls.is(':empty')) {
+                    this.jqControls.hide();
+                }
+                var jqCommands = jqToolbar.children(".rocket-simple-commands");
+                if (jqCommands.length == 0) {
+                    jqCommands = $("<div />", { "class": "rocket-simple-commands" });
+                    jqToolbar.append(jqCommands);
+                }
+                this.commandList = new CommandList(jqCommands, true);
+            }
+            get jQuery() {
+                return this.jqToolbar;
+            }
+            getJqControls() {
+                return this.jqControls;
+            }
+            getCommandList() {
+                return this.commandList;
+            }
+        }
+        Display.Toolbar = Toolbar;
+        class CommandList {
+            constructor(jqCommandList, simple = false) {
+                this.jqCommandList = jqCommandList;
+                if (simple) {
+                    jqCommandList.addClass("rocket-simple-commands");
+                }
+            }
+            get jQuery() {
+                return this.jqCommandList;
+            }
+            createJqCommandButton(buttonConfig, prepend = false) {
+                this.jqCommandList.show();
+                if (buttonConfig.iconType === undefined) {
+                    buttonConfig.iconType = "fa fa-circle-o";
+                }
+                if (buttonConfig.severity === undefined) {
+                    buttonConfig.severity = Display.Severity.SECONDARY;
+                }
+                var jqButton = $("<button />", {
+                    "class": "btn btn-" + buttonConfig.severity,
+                    "title": buttonConfig.tooltip,
+                    "type": "button"
+                }).append($("<i />", {
+                    "class": buttonConfig.iconType
+                })).append($("<span />", {
+                    "text": buttonConfig.label
+                }));
+                if (prepend) {
+                    this.jqCommandList.prepend(jqButton);
+                }
+                else {
+                    this.jqCommandList.append(jqButton);
+                }
+                return jqButton;
+            }
+            static create(simple = false) {
+                return new CommandList($("<div />"), simple);
+            }
+        }
+        Display.CommandList = CommandList;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         class Confirm {
             constructor(msg, okLabel, cancelLabel, severity) {
                 this.stressWindow = null;
@@ -3145,6 +3144,668 @@ var Rocket;
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED";
             })(EventType = Form.EventType || (Form.EventType = {}));
         })(Form = Impl.Form || (Impl.Form = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var File;
+        (function (File) {
+            class ResizingDimension {
+                constructor(dimensionString, zoomFactor) {
+                    this.dimensionString = dimensionString;
+                    this.zoomFactor = zoomFactor;
+                    this.ratio = 1;
+                    this.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
+                    this.initialize();
+                }
+                initialize() {
+                    if (this.dimensionString.match(this.dimensionMatchPattern) === null)
+                        return;
+                    let dimension = this.dimensionString.split("x");
+                    this.width = parseInt(dimension[0]) * this.zoomFactor;
+                    this.height = parseInt(dimension[1]) * this.zoomFactor;
+                    if (dimension.length <= 2) {
+                        this.crop = false;
+                    }
+                    else {
+                        this.crop = dimension[2].startsWith("c");
+                    }
+                    this.ratio = this.width / this.height;
+                }
+                isCrop() {
+                    return this.crop;
+                }
+                getRatio() {
+                    return this.ratio;
+                }
+                getWidth() {
+                    return this.width;
+                }
+                getHeight() {
+                    return this.height;
+                }
+                getDimensionString() {
+                    return this.dimensionString;
+                }
+                buildStorageKey() {
+                    return location.href + '/' + this.dimensionString;
+                }
+            }
+            class ResizerToolbar {
+                constructor(imageResizer, elemDimensionContainer) {
+                    this.imageResizer = imageResizer;
+                    this.elemDimensionContainer = elemDimensionContainer;
+                    this.elemUl = null;
+                    this.elemUlImageVersions = null;
+                    this.elemCbxFixedRatio = null;
+                    this.elemLiFixedRatio = null;
+                    this.elemSpanWarning = null;
+                    this.elemSpanZoom = null;
+                    console.log(this.elemDimensionContainer);
+                    this.elemSpanZoom = $("<span />");
+                }
+                getElemSpanZoom() {
+                    return this.elemSpanZoom;
+                }
+                initializeUi() {
+                    var _obj = this;
+                    this.elemUl = $("<ul/>").css({
+                        margin: "0px"
+                    });
+                    this.elemDimensionContainer.find("input[type=radio]").change(function () {
+                        _obj.redraw();
+                    });
+                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
+                    this.elemLiFixedRatio = $("<li/>").addClass("rocket-fixed-ratio").append($("<label/>").attr("for", randomId).css("display", "inline-block").text(_obj.imageResizer.textFixedRatio));
+                    this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
+                        .change(function () {
+                        let sizeSelector = _obj.imageResizer.getSizeSelector();
+                        sizeSelector.setFixedRatio($(this).prop("checked"));
+                        sizeSelector.initializeMin();
+                        sizeSelector.initializeMax();
+                    });
+                    this.elemLiFixedRatio.append(this.elemCbxFixedRatio);
+                    this.elemUl.append(this.elemLiFixedRatio);
+                    this.elemSpanWarning = $("<span/>").addClass("rocket-image-resizer-warning").text(this.imageResizer.textLowResolution).hide();
+                    this.elemUl.append($("<li/>").addClass("rocket-low-resolution").append(this.elemSpanWarning));
+                    this.elemUl.append($("<li/>").append(this.elemSpanZoom));
+                    this.imageResizer.getElemToolbar().append(this.elemUl);
+                }
+                updateDimension() {
+                    let imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.val().toString(), this.imageResizer.getZoomFactor());
+                    if (imageResizingDimension) {
+                        this.imageResizer.redraw(imageResizingDimension);
+                    }
+                }
+                redraw() {
+                    var imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.find(":checked:first")
+                        .data('dimension-str').toString(), this.imageResizer.getZoomFactor());
+                    if (imageResizingDimension) {
+                        if (imageResizingDimension.isCrop()) {
+                            this.elemCbxFixedRatio.prop("checked", true);
+                            this.elemLiFixedRatio.hide();
+                            this.elemCbxFixedRatio.trigger("change");
+                        }
+                        else {
+                            this.elemCbxFixedRatio.prop("checked", true);
+                            this.elemCbxFixedRatio.trigger("change");
+                            this.elemLiFixedRatio.show();
+                        }
+                        this.imageResizer.redraw(imageResizingDimension);
+                    }
+                    ;
+                }
+                showWarning() {
+                    this.elemSpanWarning.show();
+                }
+                hideWarning() {
+                    this.elemSpanWarning.hide();
+                }
+            }
+            class Dimension {
+                constructor(width, height) {
+                    this.width = width;
+                    this.height = height;
+                }
+            }
+            class DragStart {
+                constructor() {
+                    this.positionTop = null;
+                    this.positionLeft = null;
+                    this.mouseOffsetTop = null;
+                    this.mouseOffsetLeft = null;
+                }
+            }
+            class ResizeStart {
+                constructor() {
+                    this.width = null;
+                    this.height = null;
+                    this.mouseOffsetTop = null;
+                    this.mouseOffsetLeft = null;
+                }
+            }
+            class SizeSelector {
+                constructor(imageResizer, elemImg) {
+                    this.imageResizer = imageResizer;
+                    this.elemImg = elemImg;
+                    this.fixedRatio = false;
+                    this.currentResizingDimension = null;
+                    this.elemDiv = null;
+                    this.elemSpan = null;
+                    this.imageLoaded = false;
+                    this.dragStart = null;
+                    this.resizeStart = null;
+                    this.max = null;
+                    this.min = null;
+                    this.changeListeners = [];
+                    this.initialize();
+                }
+                getCurrentResizingDimension() {
+                    return this.currentResizingDimension;
+                }
+                getPositionTop() {
+                    return this.elemDiv.position().top;
+                }
+                getPositionLeft() {
+                    return this.elemDiv.position().left;
+                }
+                getWidth() {
+                    return this.elemDiv.width();
+                }
+                getHeight() {
+                    return this.elemDiv.height();
+                }
+                setFixedRatio(fixedRatio) {
+                    this.fixedRatio = fixedRatio;
+                    this.checkRatio();
+                }
+                initialize() {
+                    this.initializeResizeStart();
+                    this.initializeDragStart();
+                }
+                checkRatio() {
+                    if (!this.fixedRatio || !this.currentResizingDimension)
+                        return;
+                    var width = this.elemDiv.width();
+                    var height = this.elemDiv.height();
+                    if (width < height) {
+                        this.elemDiv.height(width / this.currentResizingDimension.getRatio());
+                    }
+                    else {
+                        this.elemDiv.width(height * this.currentResizingDimension.getRatio());
+                    }
+                    this.elemDiv.trigger('sizeChange');
+                }
+                initializeMin() {
+                    let spanHeight = this.elemSpan.height();
+                    if (this.fixedRatio && null !== this.currentResizingDimension) {
+                        var ratio = this.currentResizingDimension.getRatio();
+                        if (this.currentResizingDimension.getWidth() > this.currentResizingDimension.getHeight()) {
+                            this.min = new Dimension(spanHeight * ratio, spanHeight);
+                        }
+                        else {
+                            this.min = new Dimension(spanHeight, spanHeight / ratio);
+                        }
+                    }
+                    else {
+                        this.min = new Dimension(this.elemSpan.width(), this.elemSpan.height());
+                    }
+                }
+                initializeMax() {
+                    let imageWidth = this.elemImg.width(), imageHeight = this.elemImg.height(), dimensionWidth, dimensionHeight;
+                    if (this.fixedRatio && null !== this.currentResizingDimension) {
+                        var ratio = this.currentResizingDimension.getRatio();
+                        dimensionWidth = imageHeight * ratio;
+                        if (dimensionWidth > imageWidth) {
+                            dimensionWidth = imageWidth;
+                        }
+                        dimensionHeight = imageWidth / ratio;
+                        if (dimensionHeight > imageHeight) {
+                            dimensionHeight = imageHeight;
+                        }
+                    }
+                    else {
+                        dimensionWidth = imageWidth;
+                        dimensionHeight = imageHeight;
+                    }
+                    this.max = new Dimension(dimensionWidth, dimensionHeight);
+                    this.max.top = 0;
+                    this.max.left = 0;
+                    this.max.right = imageWidth;
+                    this.max.bottom = imageHeight;
+                }
+                initializeDragStart() {
+                    this.dragStart = new DragStart();
+                }
+                initializeResizeStart() {
+                    this.resizeStart = new ResizeStart();
+                }
+                checkPositionRight(newRight) {
+                    return this.max.right > newRight;
+                }
+                checkPositionLeft(newLeft) {
+                    return this.max.left < newLeft;
+                }
+                checkPositionBottom(newBottom) {
+                    return this.max.bottom > newBottom;
+                }
+                checkPositionTop(newTop) {
+                    return this.max.top < newTop;
+                }
+                checkPositions(newTop, newRight, newBottom, newLeft) {
+                    return this.checkPositionTop(newTop) && this.checkPositionRight(newRight)
+                        && this.checkPositionBottom(newBottom) && this.checkPositionLeft(newLeft);
+                }
+                initializeUI() {
+                    var _obj = this;
+                    if (!this.imageLoaded) {
+                        this.elemDiv = $("<div/>").css({
+                            zIndex: 100,
+                            position: "absolute",
+                            overflow: "hidden"
+                        }).addClass("rocket-image-resizer-size-selector");
+                        this.elemImg = $("<img/>").css("position", "relative");
+                        this.elemImg.on("load", function () {
+                            _obj.imageLoaded = true;
+                            _obj.initializeUI();
+                        }).attr("src", this.imageResizer.getElemImg().attr("src"));
+                        this.elemDiv.append(this.elemImg);
+                        this.imageResizer.getElemContent().append(this.elemDiv);
+                        this.elemSpan = $("<span/>").css({
+                            zIndex: 101,
+                            position: "absolute",
+                            right: "-1px",
+                            bottom: "-1px"
+                        });
+                    }
+                    else {
+                        this.imageResizer.getElemContent().css({
+                            position: "relative"
+                        });
+                        this.elemImg.width(this.imageResizer.getElemImg().width()).height(this.imageResizer.getElemImg().height());
+                        this.elemDiv.mousedown(function (event) {
+                            _obj.dragStart.positionTop = _obj.elemDiv.position().top;
+                            _obj.dragStart.positionLeft = _obj.elemDiv.position().left;
+                            _obj.dragStart.mouseOffsetTop = event.pageY;
+                            _obj.dragStart.mouseOffsetLeft = event.pageX;
+                            $(document).on('mousemove.drag', function (event) {
+                                var newTop = _obj.dragStart.positionTop - (_obj.dragStart.mouseOffsetTop - event.pageY);
+                                var newLeft = _obj.dragStart.positionLeft - (_obj.dragStart.mouseOffsetLeft - event.pageX);
+                                var newRight = newLeft + _obj.elemDiv.width();
+                                var newBottom = newTop + _obj.elemDiv.height();
+                                if (!_obj.checkPositions(newTop, newRight, newBottom, newLeft)) {
+                                    !_obj.checkPositionTop(newTop) && (newTop = _obj.max.top);
+                                    !_obj.checkPositionLeft(newLeft) && (newLeft = _obj.max.left);
+                                    !_obj.checkPositionRight(newRight) && (newLeft = _obj.max.right - _obj.elemDiv.width());
+                                    !_obj.checkPositionBottom(newBottom) && (newTop = _obj.max.bottom - _obj.elemDiv.height());
+                                }
+                                _obj.elemDiv.css({
+                                    top: newTop + "px",
+                                    left: newLeft + "px"
+                                }).trigger('positionChange');
+                                $.Event(event).preventDefault();
+                            }).on('mouseup.drag', function (event) {
+                                $(document).off("mousemove.drag");
+                                $(document).off("mouseup.drag");
+                                _obj.initializeDragStart();
+                                _obj.triggerChangeListeners();
+                                $.Event(event).preventDefault();
+                            });
+                            $.Event(event).preventDefault();
+                            $.Event(event).stopPropagation();
+                        }).on('positionChange', function () {
+                            _obj.elemImg.css({
+                                top: (-1 * $(this).position().top) + "px",
+                                left: (-1 * $(this).position().left) + "px"
+                            });
+                        }).on('sizeChange', function () {
+                            if (_obj.currentResizingDimension) {
+                                if (_obj.currentResizingDimension.getWidth() > (_obj.getWidth() + 1)
+                                    || _obj.currentResizingDimension.getHeight() > (_obj.getHeight() + 1)) {
+                                    _obj.showWarning();
+                                    return;
+                                }
+                            }
+                            _obj.hideWarning();
+                        });
+                        this.elemSpan.mousedown(function (event) {
+                            _obj.resizeStart.width = _obj.elemDiv.width();
+                            _obj.resizeStart.height = _obj.elemDiv.height();
+                            _obj.resizeStart.mouseOffsetTop = event.pageY;
+                            _obj.resizeStart.mouseOffsetLeft = event.pageX;
+                            $(document).on('mousemove.resize', function (event) {
+                                var newWidth = _obj.resizeStart.width - (_obj.resizeStart.mouseOffsetLeft - event.pageX);
+                                var newHeight = _obj.resizeStart.height - (_obj.resizeStart.mouseOffsetTop - event.pageY);
+                                if (_obj.fixedRatio) {
+                                    var heightProportion = newHeight / _obj.resizeStart.height;
+                                    var widthProportion = newWidth / _obj.resizeStart.width;
+                                    if (widthProportion >= heightProportion) {
+                                        newHeight = _obj.resizeStart.height * widthProportion;
+                                    }
+                                    else {
+                                        newWidth = _obj.resizeStart.width * heightProportion;
+                                    }
+                                }
+                                var newRight = _obj.getPositionLeft() + newWidth;
+                                var newBottom = _obj.getPositionTop() + newHeight;
+                                if ((!_obj.checkPositionRight(newRight)) || (!_obj.checkPositionBottom(newBottom))) {
+                                    if (!(_obj.checkPositionRight(newRight))) {
+                                        newWidth = _obj.elemImg.width() - _obj.getPositionLeft();
+                                        if (_obj.fixedRatio && _obj.checkPositionBottom(newBottom)) {
+                                            newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
+                                        }
+                                    }
+                                    if (!(_obj.checkPositionBottom(newBottom))) {
+                                        newHeight = _obj.elemImg.height() - _obj.getPositionTop();
+                                        if (_obj.fixedRatio && _obj.checkPositionRight(newRight)) {
+                                            newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
+                                        }
+                                    }
+                                    if (!(_obj.checkPositionRight(newRight)) && !(_obj.checkPositionBottom(newBottom))) {
+                                        if (_obj.fixedRatio) {
+                                            if (widthProportion >= heightProportion) {
+                                                newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
+                                            }
+                                            else {
+                                                newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
+                                            }
+                                        }
+                                    }
+                                }
+                                _obj.setSelectorDimensions(newWidth, newHeight);
+                                event.preventDefault();
+                            }).on('mouseup.resize', function (event) {
+                                $(document).off("mousemove.resize");
+                                $(document).off("mouseup.resize");
+                                _obj.initializeResizeStart();
+                                _obj.triggerChangeListeners();
+                            });
+                            event.preventDefault();
+                            event.stopPropagation();
+                        });
+                        this.elemDiv.append(this.elemSpan);
+                        this.initializeMax();
+                        this.initializeMin();
+                        this.setSelectorDimensions(this.elemDiv.width(), this.elemDiv.height());
+                        this.elemDiv.trigger('positionChange');
+                        _obj.triggerChangeListeners();
+                    }
+                }
+                setSelectorDimensions(newWidth, newHeight) {
+                    if (this.min.width > newWidth) {
+                        newWidth = this.min.width;
+                    }
+                    if (this.min.height > newHeight) {
+                        newHeight = this.min.height;
+                    }
+                    if (this.max.width < newWidth) {
+                        newWidth = this.max.width;
+                    }
+                    if (this.max.height < newHeight) {
+                        newHeight = this.max.height;
+                    }
+                    this.elemDiv.width(newWidth).height(newHeight);
+                    this.elemDiv.trigger('sizeChange');
+                }
+                updateImage() {
+                    this.elemImg.width(this.imageResizer.getElemImg().width());
+                    this.elemImg.height(this.imageResizer.getElemImg().height());
+                    this.initializeMax();
+                    this.initializeMin();
+                }
+                registerChangeListener(changeListener) {
+                    this.changeListeners.push(changeListener);
+                }
+                triggerChangeListeners() {
+                    this.changeListeners.forEach(function (chnageListener) {
+                        chnageListener.onDimensionChange(this);
+                    }, this);
+                }
+                redraw(resizingDimension) {
+                    var dimensions = this.imageResizer.determineCurrentDimensions(resizingDimension);
+                    this.elemDiv.css({
+                        top: dimensions.top + "px",
+                        left: dimensions.left + "px"
+                    }).width(dimensions.width).height(dimensions.height);
+                    this.currentResizingDimension = resizingDimension;
+                    this.elemDiv.trigger('positionChange');
+                    this.elemDiv.trigger('sizeChange');
+                    this.triggerChangeListeners();
+                    this.initializeMin();
+                    this.initializeMax();
+                }
+                showWarning() {
+                    this.imageResizer.getToolbar().showWarning();
+                }
+                hideWarning() {
+                    this.imageResizer.getToolbar().hideWarning();
+                }
+            }
+            class Resizer {
+                constructor(elem, elemDimensionContainer, elemImg = null, maxHeightCheckClosure = null) {
+                    this.elem = elem;
+                    this.elemDimensionContainer = elemDimensionContainer;
+                    this.elemImg = elemImg;
+                    this.maxHeightCheckClosure = maxHeightCheckClosure;
+                    this.elemToolbar = null;
+                    this.elemContent = null;
+                    this.dimensions = [];
+                    this.zoomFactor = 1;
+                    this.lastWidth = null;
+                    this.originalImageWidth = null;
+                    this.originalImageHeight = null;
+                    if (null === this.elemImg) {
+                        this.elemImg = $("<img/>").attr("src", elem.attr("data-img-src"));
+                    }
+                    this.textFixedRatio = elem.data("text-fixed-ratio") || "Fixed Ratio";
+                    this.textLowResolution = elem.data("text-low-resolution") || "Low Resolution";
+                    this.textZoom = elem.data("text-zoom") || "Zoom";
+                    this.sizeSelector = new SizeSelector(this, this.elemImg);
+                    this.sizeSelector.registerChangeListener(this);
+                    this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
+                    this.initializeUi();
+                }
+                getToolbar() {
+                    return this.toolbar;
+                }
+                getElemContent() {
+                    return this.elemContent;
+                }
+                getElemImg() {
+                    return this.elemImg;
+                }
+                getElemToolbar() {
+                    return this.elemToolbar;
+                }
+                getSizeSelector() {
+                    return this.sizeSelector;
+                }
+                getZoomFactor() {
+                    return this.zoomFactor;
+                }
+                initializeUi() {
+                    this.elemToolbar = $("<div/>")
+                        .addClass("rocket-image-resizer-toolbar");
+                    this.elem.append(this.elemToolbar);
+                    this.elemContent = $("<div/>")
+                        .addClass("rocket-image-resizer-content")
+                        .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
+                    this.elemContent.append(this.elemImg);
+                    this.elem.append(this.elemContent);
+                    var _obj = this;
+                    this.elemImg.on("load", function () {
+                        _obj.originalImageWidth = $(this).width();
+                        _obj.originalImageHeight = $(this).height();
+                        _obj.applyZoomFactor();
+                        _obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
+                        _obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
+                        _obj.initializeUIChildContainers();
+                        _obj.elem.on('containerWidthChange', function () {
+                            _obj.applyZoomFactor();
+                            _obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
+                            _obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
+                            _obj.sizeSelector.updateImage();
+                            _obj.toolbar.updateDimension();
+                        });
+                    });
+                }
+                applyZoomFactor() {
+                    let _obj = this, accuracy = 100000, zoomFactorHeight = 1, zoomFactorWidth;
+                    if (this.maxHeightCheckClosure !== null) {
+                        zoomFactorHeight = (Math.ceil(this.maxHeightCheckClosure() / this.originalImageHeight * accuracy) - 1) / accuracy;
+                    }
+                    zoomFactorWidth = (Math.ceil(_obj.elem.width() / this.originalImageWidth * accuracy) - 1) / accuracy;
+                    if (zoomFactorHeight > zoomFactorWidth) {
+                        this.zoomFactor = zoomFactorWidth;
+                    }
+                    else {
+                        this.zoomFactor = zoomFactorHeight;
+                    }
+                    if (this.zoomFactor !== 1) {
+                        this.toolbar.getElemSpanZoom().show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
+                    }
+                    else {
+                        this.toolbar.getElemSpanZoom().hide();
+                    }
+                }
+                initializeUIChildContainers() {
+                    let _obj = this;
+                    this.toolbar.initializeUi();
+                    this.sizeSelector.initializeUI();
+                    this.toolbar.redraw();
+                    this.lastWidth = this.elem.width();
+                    $(window).resize(function () {
+                        if (_obj.lastWidth != _obj.elem.width()) {
+                            _obj.lastWidth = _obj.elem.width();
+                            _obj.elem.trigger('containerWidthChange');
+                        }
+                    });
+                }
+                redraw(resizingDimension) {
+                    this.sizeSelector.redraw(resizingDimension);
+                }
+                onDimensionChange(sizeSelector) {
+                    var _obj = this;
+                    var width = sizeSelector.getWidth() / _obj.zoomFactor;
+                    if (width > this.originalImageWidth) {
+                        width = this.originalImageWidth;
+                    }
+                    var height = sizeSelector.getHeight() / _obj.zoomFactor;
+                    if (height > this.originalImageHeight) {
+                        height = this.originalImageHeight;
+                    }
+                    this.elem.trigger('dimensionChanged', [{
+                            left: sizeSelector.getPositionLeft() / _obj.zoomFactor,
+                            top: sizeSelector.getPositionTop() / _obj.zoomFactor,
+                            width: width,
+                            height: height
+                        }]);
+                    SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
+                }
+                determineCurrentDimensions(resizingDimension) {
+                    var sizeSelectorPosition = SizeSelectorPositions.getPositions(resizingDimension, this.zoomFactor);
+                    if (null !== sizeSelectorPosition)
+                        return sizeSelectorPosition;
+                    var top = 0, left = 0, width = resizingDimension.getWidth(), imageWidth = this.elemImg.width(), height = resizingDimension.getHeight(), imageHeight = this.elemImg.height(), widthExceeded = false, heightExceeded = false, ratio = resizingDimension.getRatio();
+                    if (width > imageWidth) {
+                        widthExceeded = true;
+                        width = imageWidth;
+                    }
+                    else {
+                        left = (imageWidth - width) / 2;
+                    }
+                    if (height > imageHeight) {
+                        height = imageHeight;
+                        heightExceeded = true;
+                    }
+                    else {
+                        top = (imageHeight - height) / 2;
+                    }
+                    if (widthExceeded && heightExceeded) {
+                        if ((width / height) > ratio) {
+                            widthExceeded = false;
+                        }
+                        else {
+                            heightExceeded = false;
+                        }
+                    }
+                    if (widthExceeded) {
+                        height = width / ratio;
+                    }
+                    else if (heightExceeded) {
+                        width = height * ratio;
+                    }
+                    return new SizeSelectorPosition(left, top, width + 1, height + 1);
+                }
+            }
+            class SizeSelectorPositions {
+                static addPositions(sizeSelector, zoomFactor) {
+                    var currentResizingDimension = sizeSelector.getCurrentResizingDimension();
+                    if (typeof (Storage) === "undefined" || currentResizingDimension === null)
+                        return;
+                    let imageResizerPositions;
+                    if (null == localStorage.imageResizer) {
+                        imageResizerPositions = new Object();
+                    }
+                    else {
+                        imageResizerPositions = JSON.parse(localStorage.imageResizer);
+                    }
+                    imageResizerPositions[currentResizingDimension.buildStorageKey()] = {
+                        left: sizeSelector.getPositionLeft() / zoomFactor,
+                        top: sizeSelector.getPositionTop() / zoomFactor,
+                        width: sizeSelector.getWidth() / zoomFactor,
+                        height: sizeSelector.getHeight() / zoomFactor
+                    };
+                    localStorage.imageResizer = JSON.stringify(imageResizerPositions);
+                }
+                static getPositions(resizingDimension, zoomFactor) {
+                    if (typeof (Storage) === "undefined" || null == localStorage.imageResizer)
+                        return null;
+                    let imageResizerPositions = JSON.parse(localStorage.imageResizer);
+                    if (!imageResizerPositions[resizingDimension.buildStorageKey()])
+                        return null;
+                    let jsonObj = imageResizerPositions[resizingDimension.buildStorageKey()];
+                    return new SizeSelectorPosition(jsonObj['left'] * zoomFactor, jsonObj['top'] * zoomFactor, jsonObj['width'] * zoomFactor, jsonObj['height'] * zoomFactor);
+                }
+            }
+            class SizeSelectorPosition {
+                constructor(left, top, width, height) {
+                    this.left = left;
+                    this.top = top;
+                    this.width = width;
+                    this.height = height;
+                }
+            }
+            class RocketResizer {
+                constructor(elem) {
+                    this.elem = elem;
+                    let elemResizer = elem.find("#rocket-image-resizer"), elemPageControls = elem.find(".rocket-zone-commands:first"), elemRocketheader = $("#rocket-header"), elemWindow = $(window), elemDimensionContainer = elem.find(".rocket-image-dimensions:first");
+                    this.resizer = new Resizer(elemResizer, elemDimensionContainer, null, function () {
+                        var height = elemWindow.height() - 50;
+                        if (elemRocketheader.length > 0) {
+                            height -= elemRocketheader.outerHeight();
+                        }
+                        if (elemPageControls.length > 0) {
+                            height -= elemPageControls.outerHeight();
+                        }
+                        return height;
+                    });
+                    let elemInpPositionX = elem.find("#rocket-thumb-pos-x").hide(), elemInpPositionY = elem.find("#rocket-thumb-pos-y").hide(), elemInpWidth = elem.find("#rocket-thumb-width").hide(), elemInpHeight = elem.find("#rocket-thumb-height").hide();
+                    elem.find(".rocket-image-version > img").each(function () {
+                        $(this).attr('src', $(this).attr("src") + "?timestamp=" + new Date().getTime());
+                    });
+                    elemResizer.on('dimensionChanged', function (event, dimension) {
+                        elemInpPositionX.val(Math.floor(dimension.left));
+                        elemInpPositionY.val(Math.floor(dimension.top));
+                        elemInpWidth.val(Math.floor(dimension.width));
+                        elemInpHeight.val(Math.floor(dimension.height));
+                    });
+                }
+            }
+            File.RocketResizer = RocketResizer;
+        })(File = Impl.File || (Impl.File = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -6500,668 +7161,6 @@ var Rocket;
                 }
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        var File;
-        (function (File) {
-            class ResizingDimension {
-                constructor(dimensionString, zoomFactor) {
-                    this.dimensionString = dimensionString;
-                    this.zoomFactor = zoomFactor;
-                    this.ratio = 1;
-                    this.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
-                    this.initialize();
-                }
-                initialize() {
-                    if (this.dimensionString.match(this.dimensionMatchPattern) === null)
-                        return;
-                    let dimension = this.dimensionString.split("x");
-                    this.width = parseInt(dimension[0]) * this.zoomFactor;
-                    this.height = parseInt(dimension[1]) * this.zoomFactor;
-                    if (dimension.length <= 2) {
-                        this.crop = false;
-                    }
-                    else {
-                        this.crop = dimension[2].startsWith("c");
-                    }
-                    this.ratio = this.width / this.height;
-                }
-                isCrop() {
-                    return this.crop;
-                }
-                getRatio() {
-                    return this.ratio;
-                }
-                getWidth() {
-                    return this.width;
-                }
-                getHeight() {
-                    return this.height;
-                }
-                getDimensionString() {
-                    return this.dimensionString;
-                }
-                buildStorageKey() {
-                    return location.href + '/' + this.dimensionString;
-                }
-            }
-            class ResizerToolbar {
-                constructor(imageResizer, elemDimensionContainer) {
-                    this.imageResizer = imageResizer;
-                    this.elemDimensionContainer = elemDimensionContainer;
-                    this.elemUl = null;
-                    this.elemUlImageVersions = null;
-                    this.elemCbxFixedRatio = null;
-                    this.elemLiFixedRatio = null;
-                    this.elemSpanWarning = null;
-                    this.elemSpanZoom = null;
-                    console.log(this.elemDimensionContainer);
-                    this.elemSpanZoom = $("<span />");
-                }
-                getElemSpanZoom() {
-                    return this.elemSpanZoom;
-                }
-                initializeUi() {
-                    var _obj = this;
-                    this.elemUl = $("<ul/>").css({
-                        margin: "0px"
-                    });
-                    this.elemDimensionContainer.find("input[type=radio]").change(function () {
-                        _obj.redraw();
-                    });
-                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
-                    this.elemLiFixedRatio = $("<li/>").addClass("rocket-fixed-ratio").append($("<label/>").attr("for", randomId).css("display", "inline-block").text(_obj.imageResizer.textFixedRatio));
-                    this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
-                        .change(function () {
-                        let sizeSelector = _obj.imageResizer.getSizeSelector();
-                        sizeSelector.setFixedRatio($(this).prop("checked"));
-                        sizeSelector.initializeMin();
-                        sizeSelector.initializeMax();
-                    });
-                    this.elemLiFixedRatio.append(this.elemCbxFixedRatio);
-                    this.elemUl.append(this.elemLiFixedRatio);
-                    this.elemSpanWarning = $("<span/>").addClass("rocket-image-resizer-warning").text(this.imageResizer.textLowResolution).hide();
-                    this.elemUl.append($("<li/>").addClass("rocket-low-resolution").append(this.elemSpanWarning));
-                    this.elemUl.append($("<li/>").append(this.elemSpanZoom));
-                    this.imageResizer.getElemToolbar().append(this.elemUl);
-                }
-                updateDimension() {
-                    let imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.val().toString(), this.imageResizer.getZoomFactor());
-                    if (imageResizingDimension) {
-                        this.imageResizer.redraw(imageResizingDimension);
-                    }
-                }
-                redraw() {
-                    var imageResizingDimension = new ResizingDimension(this.elemDimensionContainer.find(":checked:first")
-                        .data('dimension-str').toString(), this.imageResizer.getZoomFactor());
-                    if (imageResizingDimension) {
-                        if (imageResizingDimension.isCrop()) {
-                            this.elemCbxFixedRatio.prop("checked", true);
-                            this.elemLiFixedRatio.hide();
-                            this.elemCbxFixedRatio.trigger("change");
-                        }
-                        else {
-                            this.elemCbxFixedRatio.prop("checked", true);
-                            this.elemCbxFixedRatio.trigger("change");
-                            this.elemLiFixedRatio.show();
-                        }
-                        this.imageResizer.redraw(imageResizingDimension);
-                    }
-                    ;
-                }
-                showWarning() {
-                    this.elemSpanWarning.show();
-                }
-                hideWarning() {
-                    this.elemSpanWarning.hide();
-                }
-            }
-            class Dimension {
-                constructor(width, height) {
-                    this.width = width;
-                    this.height = height;
-                }
-            }
-            class DragStart {
-                constructor() {
-                    this.positionTop = null;
-                    this.positionLeft = null;
-                    this.mouseOffsetTop = null;
-                    this.mouseOffsetLeft = null;
-                }
-            }
-            class ResizeStart {
-                constructor() {
-                    this.width = null;
-                    this.height = null;
-                    this.mouseOffsetTop = null;
-                    this.mouseOffsetLeft = null;
-                }
-            }
-            class SizeSelector {
-                constructor(imageResizer, elemImg) {
-                    this.imageResizer = imageResizer;
-                    this.elemImg = elemImg;
-                    this.fixedRatio = false;
-                    this.currentResizingDimension = null;
-                    this.elemDiv = null;
-                    this.elemSpan = null;
-                    this.imageLoaded = false;
-                    this.dragStart = null;
-                    this.resizeStart = null;
-                    this.max = null;
-                    this.min = null;
-                    this.changeListeners = [];
-                    this.initialize();
-                }
-                getCurrentResizingDimension() {
-                    return this.currentResizingDimension;
-                }
-                getPositionTop() {
-                    return this.elemDiv.position().top;
-                }
-                getPositionLeft() {
-                    return this.elemDiv.position().left;
-                }
-                getWidth() {
-                    return this.elemDiv.width();
-                }
-                getHeight() {
-                    return this.elemDiv.height();
-                }
-                setFixedRatio(fixedRatio) {
-                    this.fixedRatio = fixedRatio;
-                    this.checkRatio();
-                }
-                initialize() {
-                    this.initializeResizeStart();
-                    this.initializeDragStart();
-                }
-                checkRatio() {
-                    if (!this.fixedRatio || !this.currentResizingDimension)
-                        return;
-                    var width = this.elemDiv.width();
-                    var height = this.elemDiv.height();
-                    if (width < height) {
-                        this.elemDiv.height(width / this.currentResizingDimension.getRatio());
-                    }
-                    else {
-                        this.elemDiv.width(height * this.currentResizingDimension.getRatio());
-                    }
-                    this.elemDiv.trigger('sizeChange');
-                }
-                initializeMin() {
-                    let spanHeight = this.elemSpan.height();
-                    if (this.fixedRatio && null !== this.currentResizingDimension) {
-                        var ratio = this.currentResizingDimension.getRatio();
-                        if (this.currentResizingDimension.getWidth() > this.currentResizingDimension.getHeight()) {
-                            this.min = new Dimension(spanHeight * ratio, spanHeight);
-                        }
-                        else {
-                            this.min = new Dimension(spanHeight, spanHeight / ratio);
-                        }
-                    }
-                    else {
-                        this.min = new Dimension(this.elemSpan.width(), this.elemSpan.height());
-                    }
-                }
-                initializeMax() {
-                    let imageWidth = this.elemImg.width(), imageHeight = this.elemImg.height(), dimensionWidth, dimensionHeight;
-                    if (this.fixedRatio && null !== this.currentResizingDimension) {
-                        var ratio = this.currentResizingDimension.getRatio();
-                        dimensionWidth = imageHeight * ratio;
-                        if (dimensionWidth > imageWidth) {
-                            dimensionWidth = imageWidth;
-                        }
-                        dimensionHeight = imageWidth / ratio;
-                        if (dimensionHeight > imageHeight) {
-                            dimensionHeight = imageHeight;
-                        }
-                    }
-                    else {
-                        dimensionWidth = imageWidth;
-                        dimensionHeight = imageHeight;
-                    }
-                    this.max = new Dimension(dimensionWidth, dimensionHeight);
-                    this.max.top = 0;
-                    this.max.left = 0;
-                    this.max.right = imageWidth;
-                    this.max.bottom = imageHeight;
-                }
-                initializeDragStart() {
-                    this.dragStart = new DragStart();
-                }
-                initializeResizeStart() {
-                    this.resizeStart = new ResizeStart();
-                }
-                checkPositionRight(newRight) {
-                    return this.max.right > newRight;
-                }
-                checkPositionLeft(newLeft) {
-                    return this.max.left < newLeft;
-                }
-                checkPositionBottom(newBottom) {
-                    return this.max.bottom > newBottom;
-                }
-                checkPositionTop(newTop) {
-                    return this.max.top < newTop;
-                }
-                checkPositions(newTop, newRight, newBottom, newLeft) {
-                    return this.checkPositionTop(newTop) && this.checkPositionRight(newRight)
-                        && this.checkPositionBottom(newBottom) && this.checkPositionLeft(newLeft);
-                }
-                initializeUI() {
-                    var _obj = this;
-                    if (!this.imageLoaded) {
-                        this.elemDiv = $("<div/>").css({
-                            zIndex: 100,
-                            position: "absolute",
-                            overflow: "hidden"
-                        }).addClass("rocket-image-resizer-size-selector");
-                        this.elemImg = $("<img/>").css("position", "relative");
-                        this.elemImg.on("load", function () {
-                            _obj.imageLoaded = true;
-                            _obj.initializeUI();
-                        }).attr("src", this.imageResizer.getElemImg().attr("src"));
-                        this.elemDiv.append(this.elemImg);
-                        this.imageResizer.getElemContent().append(this.elemDiv);
-                        this.elemSpan = $("<span/>").css({
-                            zIndex: 101,
-                            position: "absolute",
-                            right: "-1px",
-                            bottom: "-1px"
-                        });
-                    }
-                    else {
-                        this.imageResizer.getElemContent().css({
-                            position: "relative"
-                        });
-                        this.elemImg.width(this.imageResizer.getElemImg().width()).height(this.imageResizer.getElemImg().height());
-                        this.elemDiv.mousedown(function (event) {
-                            _obj.dragStart.positionTop = _obj.elemDiv.position().top;
-                            _obj.dragStart.positionLeft = _obj.elemDiv.position().left;
-                            _obj.dragStart.mouseOffsetTop = event.pageY;
-                            _obj.dragStart.mouseOffsetLeft = event.pageX;
-                            $(document).on('mousemove.drag', function (event) {
-                                var newTop = _obj.dragStart.positionTop - (_obj.dragStart.mouseOffsetTop - event.pageY);
-                                var newLeft = _obj.dragStart.positionLeft - (_obj.dragStart.mouseOffsetLeft - event.pageX);
-                                var newRight = newLeft + _obj.elemDiv.width();
-                                var newBottom = newTop + _obj.elemDiv.height();
-                                if (!_obj.checkPositions(newTop, newRight, newBottom, newLeft)) {
-                                    !_obj.checkPositionTop(newTop) && (newTop = _obj.max.top);
-                                    !_obj.checkPositionLeft(newLeft) && (newLeft = _obj.max.left);
-                                    !_obj.checkPositionRight(newRight) && (newLeft = _obj.max.right - _obj.elemDiv.width());
-                                    !_obj.checkPositionBottom(newBottom) && (newTop = _obj.max.bottom - _obj.elemDiv.height());
-                                }
-                                _obj.elemDiv.css({
-                                    top: newTop + "px",
-                                    left: newLeft + "px"
-                                }).trigger('positionChange');
-                                $.Event(event).preventDefault();
-                            }).on('mouseup.drag', function (event) {
-                                $(document).off("mousemove.drag");
-                                $(document).off("mouseup.drag");
-                                _obj.initializeDragStart();
-                                _obj.triggerChangeListeners();
-                                $.Event(event).preventDefault();
-                            });
-                            $.Event(event).preventDefault();
-                            $.Event(event).stopPropagation();
-                        }).on('positionChange', function () {
-                            _obj.elemImg.css({
-                                top: (-1 * $(this).position().top) + "px",
-                                left: (-1 * $(this).position().left) + "px"
-                            });
-                        }).on('sizeChange', function () {
-                            if (_obj.currentResizingDimension) {
-                                if (_obj.currentResizingDimension.getWidth() > (_obj.getWidth() + 1)
-                                    || _obj.currentResizingDimension.getHeight() > (_obj.getHeight() + 1)) {
-                                    _obj.showWarning();
-                                    return;
-                                }
-                            }
-                            _obj.hideWarning();
-                        });
-                        this.elemSpan.mousedown(function (event) {
-                            _obj.resizeStart.width = _obj.elemDiv.width();
-                            _obj.resizeStart.height = _obj.elemDiv.height();
-                            _obj.resizeStart.mouseOffsetTop = event.pageY;
-                            _obj.resizeStart.mouseOffsetLeft = event.pageX;
-                            $(document).on('mousemove.resize', function (event) {
-                                var newWidth = _obj.resizeStart.width - (_obj.resizeStart.mouseOffsetLeft - event.pageX);
-                                var newHeight = _obj.resizeStart.height - (_obj.resizeStart.mouseOffsetTop - event.pageY);
-                                if (_obj.fixedRatio) {
-                                    var heightProportion = newHeight / _obj.resizeStart.height;
-                                    var widthProportion = newWidth / _obj.resizeStart.width;
-                                    if (widthProportion >= heightProportion) {
-                                        newHeight = _obj.resizeStart.height * widthProportion;
-                                    }
-                                    else {
-                                        newWidth = _obj.resizeStart.width * heightProportion;
-                                    }
-                                }
-                                var newRight = _obj.getPositionLeft() + newWidth;
-                                var newBottom = _obj.getPositionTop() + newHeight;
-                                if ((!_obj.checkPositionRight(newRight)) || (!_obj.checkPositionBottom(newBottom))) {
-                                    if (!(_obj.checkPositionRight(newRight))) {
-                                        newWidth = _obj.elemImg.width() - _obj.getPositionLeft();
-                                        if (_obj.fixedRatio && _obj.checkPositionBottom(newBottom)) {
-                                            newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
-                                        }
-                                    }
-                                    if (!(_obj.checkPositionBottom(newBottom))) {
-                                        newHeight = _obj.elemImg.height() - _obj.getPositionTop();
-                                        if (_obj.fixedRatio && _obj.checkPositionRight(newRight)) {
-                                            newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
-                                        }
-                                    }
-                                    if (!(_obj.checkPositionRight(newRight)) && !(_obj.checkPositionBottom(newBottom))) {
-                                        if (_obj.fixedRatio) {
-                                            if (widthProportion >= heightProportion) {
-                                                newHeight = _obj.resizeStart.height * newWidth / _obj.resizeStart.width;
-                                            }
-                                            else {
-                                                newWidth = _obj.resizeStart.width * newHeight / _obj.resizeStart.height;
-                                            }
-                                        }
-                                    }
-                                }
-                                _obj.setSelectorDimensions(newWidth, newHeight);
-                                event.preventDefault();
-                            }).on('mouseup.resize', function (event) {
-                                $(document).off("mousemove.resize");
-                                $(document).off("mouseup.resize");
-                                _obj.initializeResizeStart();
-                                _obj.triggerChangeListeners();
-                            });
-                            event.preventDefault();
-                            event.stopPropagation();
-                        });
-                        this.elemDiv.append(this.elemSpan);
-                        this.initializeMax();
-                        this.initializeMin();
-                        this.setSelectorDimensions(this.elemDiv.width(), this.elemDiv.height());
-                        this.elemDiv.trigger('positionChange');
-                        _obj.triggerChangeListeners();
-                    }
-                }
-                setSelectorDimensions(newWidth, newHeight) {
-                    if (this.min.width > newWidth) {
-                        newWidth = this.min.width;
-                    }
-                    if (this.min.height > newHeight) {
-                        newHeight = this.min.height;
-                    }
-                    if (this.max.width < newWidth) {
-                        newWidth = this.max.width;
-                    }
-                    if (this.max.height < newHeight) {
-                        newHeight = this.max.height;
-                    }
-                    this.elemDiv.width(newWidth).height(newHeight);
-                    this.elemDiv.trigger('sizeChange');
-                }
-                updateImage() {
-                    this.elemImg.width(this.imageResizer.getElemImg().width());
-                    this.elemImg.height(this.imageResizer.getElemImg().height());
-                    this.initializeMax();
-                    this.initializeMin();
-                }
-                registerChangeListener(changeListener) {
-                    this.changeListeners.push(changeListener);
-                }
-                triggerChangeListeners() {
-                    this.changeListeners.forEach(function (chnageListener) {
-                        chnageListener.onDimensionChange(this);
-                    }, this);
-                }
-                redraw(resizingDimension) {
-                    var dimensions = this.imageResizer.determineCurrentDimensions(resizingDimension);
-                    this.elemDiv.css({
-                        top: dimensions.top + "px",
-                        left: dimensions.left + "px"
-                    }).width(dimensions.width).height(dimensions.height);
-                    this.currentResizingDimension = resizingDimension;
-                    this.elemDiv.trigger('positionChange');
-                    this.elemDiv.trigger('sizeChange');
-                    this.triggerChangeListeners();
-                    this.initializeMin();
-                    this.initializeMax();
-                }
-                showWarning() {
-                    this.imageResizer.getToolbar().showWarning();
-                }
-                hideWarning() {
-                    this.imageResizer.getToolbar().hideWarning();
-                }
-            }
-            class Resizer {
-                constructor(elem, elemDimensionContainer, elemImg = null, maxHeightCheckClosure = null) {
-                    this.elem = elem;
-                    this.elemDimensionContainer = elemDimensionContainer;
-                    this.elemImg = elemImg;
-                    this.maxHeightCheckClosure = maxHeightCheckClosure;
-                    this.elemToolbar = null;
-                    this.elemContent = null;
-                    this.dimensions = [];
-                    this.zoomFactor = 1;
-                    this.lastWidth = null;
-                    this.originalImageWidth = null;
-                    this.originalImageHeight = null;
-                    if (null === this.elemImg) {
-                        this.elemImg = $("<img/>").attr("src", elem.attr("data-img-src"));
-                    }
-                    this.textFixedRatio = elem.data("text-fixed-ratio") || "Fixed Ratio";
-                    this.textLowResolution = elem.data("text-low-resolution") || "Low Resolution";
-                    this.textZoom = elem.data("text-zoom") || "Zoom";
-                    this.sizeSelector = new SizeSelector(this, this.elemImg);
-                    this.sizeSelector.registerChangeListener(this);
-                    this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
-                    this.initializeUi();
-                }
-                getToolbar() {
-                    return this.toolbar;
-                }
-                getElemContent() {
-                    return this.elemContent;
-                }
-                getElemImg() {
-                    return this.elemImg;
-                }
-                getElemToolbar() {
-                    return this.elemToolbar;
-                }
-                getSizeSelector() {
-                    return this.sizeSelector;
-                }
-                getZoomFactor() {
-                    return this.zoomFactor;
-                }
-                initializeUi() {
-                    this.elemToolbar = $("<div/>")
-                        .addClass("rocket-image-resizer-toolbar");
-                    this.elem.append(this.elemToolbar);
-                    this.elemContent = $("<div/>")
-                        .addClass("rocket-image-resizer-content")
-                        .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
-                    this.elemContent.append(this.elemImg);
-                    this.elem.append(this.elemContent);
-                    var _obj = this;
-                    this.elemImg.on("load", function () {
-                        _obj.originalImageWidth = $(this).width();
-                        _obj.originalImageHeight = $(this).height();
-                        _obj.applyZoomFactor();
-                        _obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
-                        _obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
-                        _obj.initializeUIChildContainers();
-                        _obj.elem.on('containerWidthChange', function () {
-                            _obj.applyZoomFactor();
-                            _obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
-                            _obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
-                            _obj.sizeSelector.updateImage();
-                            _obj.toolbar.updateDimension();
-                        });
-                    });
-                }
-                applyZoomFactor() {
-                    let _obj = this, accuracy = 100000, zoomFactorHeight = 1, zoomFactorWidth;
-                    if (this.maxHeightCheckClosure !== null) {
-                        zoomFactorHeight = (Math.ceil(this.maxHeightCheckClosure() / this.originalImageHeight * accuracy) - 1) / accuracy;
-                    }
-                    zoomFactorWidth = (Math.ceil(_obj.elem.width() / this.originalImageWidth * accuracy) - 1) / accuracy;
-                    if (zoomFactorHeight > zoomFactorWidth) {
-                        this.zoomFactor = zoomFactorWidth;
-                    }
-                    else {
-                        this.zoomFactor = zoomFactorHeight;
-                    }
-                    if (this.zoomFactor !== 1) {
-                        this.toolbar.getElemSpanZoom().show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
-                    }
-                    else {
-                        this.toolbar.getElemSpanZoom().hide();
-                    }
-                }
-                initializeUIChildContainers() {
-                    let _obj = this;
-                    this.toolbar.initializeUi();
-                    this.sizeSelector.initializeUI();
-                    this.toolbar.redraw();
-                    this.lastWidth = this.elem.width();
-                    $(window).resize(function () {
-                        if (_obj.lastWidth != _obj.elem.width()) {
-                            _obj.lastWidth = _obj.elem.width();
-                            _obj.elem.trigger('containerWidthChange');
-                        }
-                    });
-                }
-                redraw(resizingDimension) {
-                    this.sizeSelector.redraw(resizingDimension);
-                }
-                onDimensionChange(sizeSelector) {
-                    var _obj = this;
-                    var width = sizeSelector.getWidth() / _obj.zoomFactor;
-                    if (width > this.originalImageWidth) {
-                        width = this.originalImageWidth;
-                    }
-                    var height = sizeSelector.getHeight() / _obj.zoomFactor;
-                    if (height > this.originalImageHeight) {
-                        height = this.originalImageHeight;
-                    }
-                    this.elem.trigger('dimensionChanged', [{
-                            left: sizeSelector.getPositionLeft() / _obj.zoomFactor,
-                            top: sizeSelector.getPositionTop() / _obj.zoomFactor,
-                            width: width,
-                            height: height
-                        }]);
-                    SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
-                }
-                determineCurrentDimensions(resizingDimension) {
-                    var sizeSelectorPosition = SizeSelectorPositions.getPositions(resizingDimension, this.zoomFactor);
-                    if (null !== sizeSelectorPosition)
-                        return sizeSelectorPosition;
-                    var top = 0, left = 0, width = resizingDimension.getWidth(), imageWidth = this.elemImg.width(), height = resizingDimension.getHeight(), imageHeight = this.elemImg.height(), widthExceeded = false, heightExceeded = false, ratio = resizingDimension.getRatio();
-                    if (width > imageWidth) {
-                        widthExceeded = true;
-                        width = imageWidth;
-                    }
-                    else {
-                        left = (imageWidth - width) / 2;
-                    }
-                    if (height > imageHeight) {
-                        height = imageHeight;
-                        heightExceeded = true;
-                    }
-                    else {
-                        top = (imageHeight - height) / 2;
-                    }
-                    if (widthExceeded && heightExceeded) {
-                        if ((width / height) > ratio) {
-                            widthExceeded = false;
-                        }
-                        else {
-                            heightExceeded = false;
-                        }
-                    }
-                    if (widthExceeded) {
-                        height = width / ratio;
-                    }
-                    else if (heightExceeded) {
-                        width = height * ratio;
-                    }
-                    return new SizeSelectorPosition(left, top, width + 1, height + 1);
-                }
-            }
-            class SizeSelectorPositions {
-                static addPositions(sizeSelector, zoomFactor) {
-                    var currentResizingDimension = sizeSelector.getCurrentResizingDimension();
-                    if (typeof (Storage) === "undefined" || currentResizingDimension === null)
-                        return;
-                    let imageResizerPositions;
-                    if (null == localStorage.imageResizer) {
-                        imageResizerPositions = new Object();
-                    }
-                    else {
-                        imageResizerPositions = JSON.parse(localStorage.imageResizer);
-                    }
-                    imageResizerPositions[currentResizingDimension.buildStorageKey()] = {
-                        left: sizeSelector.getPositionLeft() / zoomFactor,
-                        top: sizeSelector.getPositionTop() / zoomFactor,
-                        width: sizeSelector.getWidth() / zoomFactor,
-                        height: sizeSelector.getHeight() / zoomFactor
-                    };
-                    localStorage.imageResizer = JSON.stringify(imageResizerPositions);
-                }
-                static getPositions(resizingDimension, zoomFactor) {
-                    if (typeof (Storage) === "undefined" || null == localStorage.imageResizer)
-                        return null;
-                    let imageResizerPositions = JSON.parse(localStorage.imageResizer);
-                    if (!imageResizerPositions[resizingDimension.buildStorageKey()])
-                        return null;
-                    let jsonObj = imageResizerPositions[resizingDimension.buildStorageKey()];
-                    return new SizeSelectorPosition(jsonObj['left'] * zoomFactor, jsonObj['top'] * zoomFactor, jsonObj['width'] * zoomFactor, jsonObj['height'] * zoomFactor);
-                }
-            }
-            class SizeSelectorPosition {
-                constructor(left, top, width, height) {
-                    this.left = left;
-                    this.top = top;
-                    this.width = width;
-                    this.height = height;
-                }
-            }
-            class RocketResizer {
-                constructor(elem) {
-                    this.elem = elem;
-                    let elemResizer = elem.find("#rocket-image-resizer"), elemPageControls = elem.find(".rocket-zone-commands:first"), elemRocketheader = $("#rocket-header"), elemWindow = $(window), elemDimensionContainer = elem.find(".rocket-image-dimensions:first");
-                    this.resizer = new Resizer(elemResizer, elemDimensionContainer, null, function () {
-                        var height = elemWindow.height() - 50;
-                        if (elemRocketheader.length > 0) {
-                            height -= elemRocketheader.outerHeight();
-                        }
-                        if (elemPageControls.length > 0) {
-                            height -= elemPageControls.outerHeight();
-                        }
-                        return height;
-                    });
-                    let elemInpPositionX = elem.find("#rocket-thumb-pos-x").hide(), elemInpPositionY = elem.find("#rocket-thumb-pos-y").hide(), elemInpWidth = elem.find("#rocket-thumb-width").hide(), elemInpHeight = elem.find("#rocket-thumb-height").hide();
-                    elem.find(".rocket-image-version > img").each(function () {
-                        $(this).attr('src', $(this).attr("src") + "?timestamp=" + new Date().getTime());
-                    });
-                    elemResizer.on('dimensionChanged', function (event, dimension) {
-                        elemInpPositionX.val(Math.floor(dimension.left));
-                        elemInpPositionY.val(Math.floor(dimension.top));
-                        elemInpWidth.val(Math.floor(dimension.width));
-                        elemInpHeight.val(Math.floor(dimension.height));
-                    });
-                }
-            }
-            File.RocketResizer = RocketResizer;
-        })(File = Impl.File || (Impl.File = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
