@@ -28,10 +28,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 class EntryFormViewModel {
 	private $entryForm;
 	private $entryFormPropertyPath;
+	private $groupContextProvided = false;
 	
-	public function __construct(EntryForm $entryForm) {
+	public function __construct(EntryForm $entryForm, bool $groupContextProvided = false) {
 		$this->entryForm = $entryForm;
-		
+		$this->groupContextProvided = $groupContextProvided;
 	}
 	
 // 	public function initFromView(HtmlView $view) {
@@ -86,7 +87,7 @@ class EntryFormViewModel {
 					->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 		}
 				
-		return $entryTypeForm->getEiuEntryGui()->createView($contextView);
+		return $entryTypeForm->getEiuEntryGui()->createView($contextView, $this->groupContextProvided);
 	}
 	
 	public function createEditViews(HtmlView $contextView) {
@@ -104,7 +105,7 @@ class EntryFormViewModel {
 			
 			$entryGuiModel = $entryTypeForm->getEiuEntryGui();
 			
-			$editViews[$eiTypeId] = $entryGuiModel->createView($contextView);
+			$editViews[$eiTypeId] = $entryGuiModel->createView($contextView, false);
 		}
 		return $editViews;
 	}

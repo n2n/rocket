@@ -92,10 +92,10 @@
 				</div>
 			<?php endif ?>	
 			
-			<?php $view->out('<div class="rocket-control">') ?>
+			<div class="rocket-control">
 				<?php $eiHtml->fieldContent() ?>
 				<?php $eiHtml->fieldMessage() ?>
-			<?php $view->out('</div>') ?>
+			</div>
 		<?php $eiHtml->fieldClose() ?>
 	<?php endif ?>
 <?php endforeach; ?>

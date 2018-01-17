@@ -191,17 +191,17 @@ class EntryForm implements Dispatchable {
 		return $this->entryTypeForms[$this->chosenId];
 	}
 	
-	public function createView(HtmlView $contextView = null) {
+	public function createView(HtmlView $contextView = null, bool $groupContextProvided = false) {
 		if ($contextView !== null) {
 			return $contextView->getImport('\rocket\spec\ei\manage\util\view\entryForm.html',
-					array('entryFormViewModel' => new EntryFormViewModel($this)));
+					array('entryFormViewModel' => new EntryFormViewModel($this, $groupContextProvided)));
 		}
 		
 		$viewFactory = $this->eiuFrame->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
 		return $viewFactory->create('rocket\spec\ei\manage\util\view\entryForm.html',
-				array('entryFormViewModel' => new EntryFormViewModel($this)));
+				array('entryFormViewModel' => new EntryFormViewModel($this, $groupContextProvided)));
 	}
 }
 

@@ -217,8 +217,8 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		return null;
 	}
 	
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent {
-		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null, bool $groupContextProvided = false): UiComponent {
+		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView, $groupContextProvided);
 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
 		
 		if (is_scalar($uiComponent)) {

@@ -355,11 +355,11 @@ class CommonEiMask implements EiMask, Identifiable {
 			$displayStructure = $this->eiEngine->getGuiDefinition()->purifyDisplayStructure($displayStructure, $eiGui);
 		}
 		
-		if (ViewMode::bulky() & $eiGui->getViewMode()){
-			$displayStructure = $displayStructure->whitoutAutonomics()->grouped();
-		} else {
-			$displayStructure = $displayStructure->withoutGroups();
-		}
+// 		if (ViewMode::bulky() & $eiGui->getViewMode()){
+// 			$displayStructure = $displayStructure->whitoutAutonomics()->grouped();
+// 		} else {
+// 			$displayStructure = $displayStructure->withoutGroups();
+// 		}
 		
 		return new CommonEiGuiViewFactory($eiGui, $this->eiEngine->getGuiDefinition(), $displayStructure);
 	}

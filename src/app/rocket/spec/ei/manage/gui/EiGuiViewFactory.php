@@ -25,5 +25,6 @@ interface EiGuiViewFactory {
 	/**
 	 * @return UiComponent
 	 */
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent;
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null, 
+			bool $groupContextProvided = false): UiComponent;
 }

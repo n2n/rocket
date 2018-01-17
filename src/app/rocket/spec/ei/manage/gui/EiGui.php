@@ -116,10 +116,10 @@ class EiGui {
 		return $this->eiEntryGuis;
 	}
 	
-	public function createView(HtmlView $contextView = null) {
+	public function createView(HtmlView $contextView = null, bool $groupContextProvided = false) {
 		$this->ensureInit();
 		
-		$view = $this->eiGuiViewFactory->createView($this->eiEntryGuis, $contextView);
+		$view = $this->eiGuiViewFactory->createView($this->eiEntryGuis, $contextView, $groupContextProvided);
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);

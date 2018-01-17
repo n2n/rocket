@@ -245,9 +245,11 @@ class EiHtmlBuilder {
 				new HtmlElement('input', array('type' => 'checkbox'))*/);
 	}
 	
-	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs) {
+	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs, DisplayItem $displayItem = null) {
 		return HtmlUtils::mergeAttrs($attrs, array(
-				'class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray())));
+				'class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray()) 
+						. ($displayItem !== null && !$displayItem->isGroup() ? ' rocket-field-simple' : '')
+		));
 	}
 	
 	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
@@ -271,14 +273,13 @@ class EiHtmlBuilder {
 			$displayItem = null;
 		}
 	
-		
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		if (!$eiEntryGui->containsDisplayable($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null);
 			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
-					$this->buildAttrs($guiIdPath, (array) $attrs));
+					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
 		
 		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
@@ -286,7 +287,7 @@ class EiHtmlBuilder {
 		if ($readOnly || !$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable);
 			return $this->createOutputFieldOpen($tagName, $displayable, $fieldErrorInfo,
-					$this->buildAttrs($guiIdPath, (array) $attrs));
+					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
 	
 		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
@@ -294,7 +295,7 @@ class EiHtmlBuilder {
 	
 		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
-				$this->buildAttrs($guiIdPath, (array) $attrs), $editableInfo->isMandatory());
+				$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem), $editableInfo->isMandatory());
 	}
 	
 	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,

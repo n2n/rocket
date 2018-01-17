@@ -17,7 +17,7 @@
 <div class="rocket-impl-entry"
 		data-item-label="<?php $html->out($mappingForm->getEntryLabel()) ?>"
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
-								array('item' => $mappingForm->getEntryLabel())) ?>"
+				array('item' => $mappingForm->getEntryLabel())) ?>"
 		data-rocket-impl-changed-text="<?php $html->text('ei_impl_entry_changed_txt') ?>">
 	<?php $formHtml->optionalObjectEnabledHidden() ?>
 	<?php if (!$mappingForm->isAccessible()): ?>
@@ -78,7 +78,7 @@
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-controls">
 				<?php $view->out($mappingForm->getEntryForm()
-						->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view)) ?>
+						->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, true)) ?>
 			</div>
 		</div>
 	<?php endif ?>

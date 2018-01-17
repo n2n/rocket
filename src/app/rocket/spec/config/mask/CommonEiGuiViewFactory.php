@@ -91,7 +91,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	}
 	
 	
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent {
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null, bool $groupContextProvided = false): UiComponent {
 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
@@ -100,13 +100,16 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		
 		if ($this->eiGui->getViewMode() & ViewMode::bulky()) {
 			$viewName = 'rocket\spec\config\mask\view\bulky.html';
-			$displayStructure = $displayStructure->grouped();
+			if (!$groupContextProvided) {
+				$displayStructure = $displayStructure->grouped();
+			}
 		} else {
 			$viewName = 'rocket\spec\config\mask\view\compact.html';
 			$displayStructure = $displayStructure->withoutGroups();
 		}
 		
-		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
+		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui),
+				'renderForkMags' => ($groupContextProvided ? true : null));
 		
 		if ($contextView !== null) {
 			return $contextView->getImport('\\' .$viewName, $params);
