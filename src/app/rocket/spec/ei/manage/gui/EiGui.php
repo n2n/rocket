@@ -47,11 +47,13 @@ class EiGui {
 		
 		$this->eiGuiViewFactory = $eiGuiViewFactory;
 	}
-	
+
 	/**
 	 * @return \rocket\spec\ei\manage\gui\EiGuiViewFactory
 	 */
 	public function getEiGuiViewFactory() {
+		$this->ensureInit();
+		
 		return $this->eiGuiViewFactory;
 	}
 	
@@ -116,10 +118,10 @@ class EiGui {
 		return $this->eiEntryGuis;
 	}
 	
-	public function createView(HtmlView $contextView = null, bool $groupContextProvided = false) {
+	public function createView(HtmlView $contextView = null) {
 		$this->ensureInit();
 		
-		$view = $this->eiGuiViewFactory->createView($this->eiEntryGuis, $contextView, $groupContextProvided);
+		$view = $this->eiGuiViewFactory->createView($this->eiEntryGuis, $contextView);
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);

@@ -28,11 +28,18 @@ use n2n\impl\web\ui\view\html\HtmlView;
 class EntryFormViewModel {
 	private $entryForm;
 	private $entryFormPropertyPath;
-	private $groupContextProvided = false;
+	private $groupRequired = false;
 	
-	public function __construct(EntryForm $entryForm, bool $groupContextProvided = false) {
+	public function __construct(EntryForm $entryForm, bool $groupRequired = false) {
 		$this->entryForm = $entryForm;
-		$this->groupContextProvided = $groupContextProvided;
+		$this->groupRequired = $groupRequired;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isGroupRequired() {
+		return $this->groupRequired;
 	}
 	
 // 	public function initFromView(HtmlView $view) {
@@ -86,8 +93,12 @@ class EntryFormViewModel {
 			$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath
 					->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 		}
+		
+		if ($this->groupRequired) {
+			$entryTypeForm->getEiuEntryGui()->getEiuGui()->forceRootGroups();
+		}
 				
-		return $entryTypeForm->getEiuEntryGui()->createView($contextView, $this->groupContextProvided);
+		return $entryTypeForm->getEiuEntryGui()->createView($contextView);
 	}
 	
 	public function createEditViews(HtmlView $contextView) {
@@ -103,9 +114,12 @@ class EntryFormViewModel {
 						new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 			}
 			
-			$entryGuiModel = $entryTypeForm->getEiuEntryGui();
+			$eiuEntryGui = $entryTypeForm->getEiuEntryGui();
+			if ($eiuEntryGui->hasForkMags()) {
+				$eiuEntryGui->getEiuGui()->forceRootGroups();
+			}
 			
-			$editViews[$eiTypeId] = $entryGuiModel->createView($contextView, false);
+			$editViews[$eiTypeId] = $eiuEntryGui->createView($contextView, false);
 		}
 		return $editViews;
 	}

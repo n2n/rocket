@@ -204,7 +204,7 @@ namespace Rocket.Cmd {
 			jqToolbar.append(jqButton);
 			
 			var that = this;
-			layer.on(Layer.EventType.CLOSE, function () {
+			layer.on(Layer.EventType.CLOSE, () => {
 				that.unregisterLayer(layer);
 			})
 			
@@ -214,19 +214,19 @@ namespace Rocket.Cmd {
 			}
 			
 			let reopenable = false;
-			dependentZone.on(Zone.EventType.CLOSE, function () {
+			dependentZone.on(Zone.EventType.CLOSE, () => {
 				layer.close();
 				this.markCurrent();
 			});
-			dependentZone.on(Zone.EventType.CONTENT_CHANGED, function () {
+			dependentZone.on(Zone.EventType.CONTENT_CHANGED, () => {
 				layer.close();
 			});
-			dependentZone.on(Zone.EventType.HIDE, function () {
+			dependentZone.on(Zone.EventType.HIDE, () => {
 				reopenable = layer.visible;
 				layer.hide();
 				this.markCurrent();
 			});
-			dependentZone.on(Zone.EventType.SHOW, function () {
+			dependentZone.on(Zone.EventType.SHOW, () => {
 				if (!reopenable) return;
 				
 				layer.show();

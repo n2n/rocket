@@ -381,7 +381,7 @@ var Rocket;
                 });
                 jqToolbar.append(jqButton);
                 var that = this;
-                layer.on(Cmd.Layer.EventType.CLOSE, function () {
+                layer.on(Cmd.Layer.EventType.CLOSE, () => {
                     that.unregisterLayer(layer);
                 });
                 if (dependentZone === null) {
@@ -389,19 +389,19 @@ var Rocket;
                     return layer;
                 }
                 let reopenable = false;
-                dependentZone.on(Cmd.Zone.EventType.CLOSE, function () {
+                dependentZone.on(Cmd.Zone.EventType.CLOSE, () => {
                     layer.close();
                     this.markCurrent();
                 });
-                dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, function () {
+                dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
                     layer.close();
                 });
-                dependentZone.on(Cmd.Zone.EventType.HIDE, function () {
+                dependentZone.on(Cmd.Zone.EventType.HIDE, () => {
                     reopenable = layer.visible;
                     layer.hide();
                     this.markCurrent();
                 });
-                dependentZone.on(Cmd.Zone.EventType.SHOW, function () {
+                dependentZone.on(Cmd.Zone.EventType.SHOW, () => {
                     if (!reopenable)
                         return;
                     layer.show();

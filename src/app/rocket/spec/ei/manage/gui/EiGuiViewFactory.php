@@ -6,6 +6,10 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlView;
 
 interface EiGuiViewFactory {
+	const MODE_NO_GROUPS = 1;
+	const MODE_ROOT_GROUPED = 2;
+	
+	public function applyMode(int $rule);
 	
 	/**
 	 * @return GuiDefinition
@@ -25,6 +29,5 @@ interface EiGuiViewFactory {
 	/**
 	 * @return UiComponent
 	 */
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null, 
-			bool $groupContextProvided = false): UiComponent;
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent;
 }

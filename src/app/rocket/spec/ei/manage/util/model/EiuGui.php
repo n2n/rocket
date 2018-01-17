@@ -185,6 +185,22 @@ class EiuGui {
 	}
 	
 	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function removeGroups() {
+		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_NO_GROUPS);
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function forceRootGroups() {
+		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_ROOT_GROUPED);
+		return $this;
+	}
+	
+	/**
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
@@ -205,6 +221,9 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		$this->factory = $factory;
 	}
 	
+	public function applyMode(int $rule) {
+	}
+	
 	public function getGuiDefinition(): GuiDefinition {
 		return $this->guiDefinition;
 	}
@@ -217,8 +236,8 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		return null;
 	}
 	
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null, bool $groupContextProvided = false): UiComponent {
-		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView, $groupContextProvided);
+	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent {
+		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
 		
 		if (is_scalar($uiComponent)) {
@@ -227,4 +246,5 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		
 		return $uiComponent;
 	}
+
 }

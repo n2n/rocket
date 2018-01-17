@@ -75,7 +75,7 @@ class DisplayStructure {
 		}
 		return $guiIdPaths;
 	}
-	
+		
 	public function grouped() {
 		$displayStructure = new DisplayStructure();
 		

@@ -78,7 +78,7 @@
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-controls">
 				<?php $view->out($mappingForm->getEntryForm()
-						->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, true)) ?>
+						->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
 			</div>
 		</div>
 	<?php endif ?>

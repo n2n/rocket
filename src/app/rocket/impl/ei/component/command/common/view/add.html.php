@@ -41,7 +41,7 @@
 ?>
 
 <?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-form')) ?>
-	<?php $view->import($addModel->getEntryForm()->createView($view)) ?>
+	<?php $view->import($addModel->getEntryForm()->createView($view, true)) ?>
 	
 	<?php $formHtml->messageList() ?>
 		

@@ -43,6 +43,7 @@ class DetailController extends ControllerAdapter {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		
 		$eiuEntryGui = $eiuEntry->newEntryGui();
+		$eiuEntryGui->getEiuGui()->forceRootGroups();
 		
 		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry);
 		$viewModel->initializeDrafts();
