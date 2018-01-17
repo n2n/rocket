@@ -1,5 +1,14 @@
 @CHARSET "UTF-8";
 
+
+.rocket-image-resizer-container > form {
+	display: grid;
+	grid-template-columns: calc(100vw - 36rem) 14rem;
+	grid-gap: 2rem 2rem;
+}
+
+
+
 #image-resizer {
 	width: 80%;
 }

@@ -365,7 +365,7 @@ namespace Rocket.Impl.File {
 			var _obj = this;
 			if (!this.imageLoaded) {
 				this.elemDiv = $("<div/>").css({
-					zIndex: 100,
+					zIndex: 40,
 					position: "absolute",
 					overflow: "hidden"
 				}).addClass("rocket-image-resizer-size-selector");
@@ -385,7 +385,7 @@ namespace Rocket.Impl.File {
 				this.imageResizer.getElemContent().append(this.elemDiv);
 
 				this.elemSpan = $("<span/>").css({
-					zIndex: 101,
+					zIndex: 41,
 					position: "absolute",
 					right: "-1px",
 					bottom: "-1px"

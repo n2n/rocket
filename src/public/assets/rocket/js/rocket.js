@@ -3452,7 +3452,7 @@ var Rocket;
                     var _obj = this;
                     if (!this.imageLoaded) {
                         this.elemDiv = $("<div/>").css({
-                            zIndex: 100,
+                            zIndex: 40,
                             position: "absolute",
                             overflow: "hidden"
                         }).addClass("rocket-image-resizer-size-selector");
@@ -3465,7 +3465,7 @@ var Rocket;
                         this.elemDiv.append(this.elemImg);
                         this.imageResizer.getElemContent().append(this.elemDiv);
                         this.elemSpan = $("<span/>").css({
-                            zIndex: 101,
+                            zIndex: 41,
                             position: "absolute",
                             right: "-1px",
                             bottom: "-1px"
