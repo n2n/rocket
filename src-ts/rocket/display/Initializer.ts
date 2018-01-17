@@ -112,6 +112,8 @@ namespace Rocket.Display {
 			
 			this.jqGroupNav.append(jqLi);
 			
+			group.jQuery.children("label:first").hide();
+			
 			var that = this;
 			
 			jqLi.click(function () {

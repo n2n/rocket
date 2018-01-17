@@ -66,7 +66,7 @@ namespace Rocket.Cmd {
 			throw new Error("Container empty.");
 		}
 		
-		markCurrent() {
+		private markCurrent() {
 			for (let layer of this._layers) {
 				layer.jQuery.removeClass("rocket-active");
 			}
