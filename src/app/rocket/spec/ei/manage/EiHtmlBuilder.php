@@ -700,6 +700,7 @@ class RocketUiOutfitter implements UiOutfitter {
 	}
 	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
-		return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html', array('propertyPath' => $propertyPath));
+		return $contextView->getImport('\rocket\spec\ei\manage\gui\view\magForm.html', 
+				array('propertyPath' => $propertyPath, 'uo' => $this));
 	}
 }
