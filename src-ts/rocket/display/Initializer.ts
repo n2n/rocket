@@ -138,6 +138,8 @@ namespace Rocket.Display {
 			
 			if (this.groups.length == 1) {
 				group.show();
+			} else {
+				group.hide();
 			}
 		}
 		

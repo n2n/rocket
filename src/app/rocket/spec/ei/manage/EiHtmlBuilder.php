@@ -670,7 +670,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		if ($nature & self::NATURE_MASSIVE_ARRAY_ITEM) {
 			return array('class' => 'col-md-12', 'style' => 'background: green');
 		}
-
+		
 		return $attrs;
 	}
 

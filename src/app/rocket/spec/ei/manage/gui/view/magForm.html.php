@@ -10,7 +10,7 @@
 ?>
 
 <?php $formHtml->meta()->objectProps(null, function () use ($formHtml, $uo) { ?>
-	<?php $formHtml->magOpen('div', null, null, $uo) ?>
+	<?php $formHtml->magOpen('div', null, array('class' => 'rocket-field-simple'), $uo) ?>
 		<?php $formHtml->magLabel() ?>
 		
 		<div class="rocket-control">

@@ -265,6 +265,12 @@ var Rocket;
                 }
                 throw new Error("Container empty.");
             }
+            markCurrent() {
+                for (let layer of this._layers) {
+                    layer.jQuery.removeClass("rocket-active");
+                }
+                this.currentLayer.jQuery.addClass("rocket-active");
+            }
             get currentLayer() {
                 if (this._layers.length == 0) {
                     throw new Error("Container empty.");
@@ -297,6 +303,7 @@ var Rocket;
                     }
                 });
                 this._layers.push(layer);
+                this.markCurrent();
             }
             directiveExecuted(directive) {
                 let data = directive.getAdditionalData();
@@ -384,6 +391,7 @@ var Rocket;
                 let reopenable = false;
                 dependentZone.on(Cmd.Zone.EventType.CLOSE, function () {
                     layer.close();
+                    this.markCurrent();
                 });
                 dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, function () {
                     layer.close();
@@ -391,11 +399,13 @@ var Rocket;
                 dependentZone.on(Cmd.Zone.EventType.HIDE, function () {
                     reopenable = layer.visible;
                     layer.hide();
+                    this.markCurrent();
                 });
                 dependentZone.on(Cmd.Zone.EventType.SHOW, function () {
                     if (!reopenable)
                         return;
                     layer.show();
+                    this.markCurrent();
                 });
                 this.layerTrigger(Container.LayerEventType.ADDED, layer);
                 return layer;
@@ -540,6 +550,9 @@ var Rocket;
                 this.monitor.history.onChanged(() => this.historyChanged());
                 this.monitor.registerCompHandler("rocket-page", this);
                 this.historyChanged();
+            }
+            get jQuery() {
+                return this.jqLayer;
             }
             get monitor() {
                 return this._monitor;
@@ -2390,6 +2403,7 @@ var Rocket;
                     "class": "nav-item"
                 }).append(jqA);
                 this.jqGroupNav.append(jqLi);
+                group.jQuery.children("label:first").hide();
                 var that = this;
                 jqLi.click(function () {
                     group.show();
@@ -2409,6 +2423,9 @@ var Rocket;
                 });
                 if (this.groups.length == 1) {
                     group.show();
+                }
+                else {
+                    group.hide();
                 }
             }
             static fromMain(jqElem, create = true) {
