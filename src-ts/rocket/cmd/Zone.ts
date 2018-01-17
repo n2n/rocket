@@ -1,5 +1,5 @@
 /// <reference path="../util/Util.ts" />
-/// <reference path="../display/Group.ts" />
+/// <reference path="../display/StructureElement.ts" />
 
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
