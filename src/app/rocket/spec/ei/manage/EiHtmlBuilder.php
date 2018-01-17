@@ -248,8 +248,7 @@ class EiHtmlBuilder {
 	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs, DisplayItem $displayItem = null) {
 		return HtmlUtils::mergeAttrs($attrs, array(
 				'class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray()) 
-						. ($displayItem !== null && !$displayItem->isGroup() ? ' rocket-field-simple' : '')
-		));
+						. ($displayItem !== null && !$displayItem->isGroup() ? ' rocket-field-simple' : '')));
 	}
 	
 	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
