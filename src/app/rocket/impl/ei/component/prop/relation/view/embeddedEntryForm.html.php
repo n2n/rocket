@@ -74,7 +74,7 @@
 			</div>
 		<?php endif ?>
 	
-		<div class="rocket-impl-body rocket-group">
+		<div class="rocket-impl-body rocket-group rocket-group-simple">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-controls">
 				<?php $view->out($mappingForm->getEntryForm()

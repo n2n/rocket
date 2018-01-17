@@ -54,7 +54,7 @@
 		<?php $eiHtml->entryClose() ?>
 	
 		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true) ?>
-		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group')) ?>
+		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group rocket-group-simple')) ?>
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
 			<div class="rocket-controls">
 				<?php $view->import($eiuEntryGui->createView($view)) ?>

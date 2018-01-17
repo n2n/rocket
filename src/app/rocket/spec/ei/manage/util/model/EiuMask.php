@@ -71,6 +71,7 @@ class EiuMask extends EiUtilsAdapter {
 	public function containsId($id, int $ignoreConstraints = 0): bool {
 		return null !== $this->em()->find($this->getEntityModel()->getClass(), $id);
 	}
+	
 	/**
 	 * @param mixed $id
 	 * @throws UnknownEntryException

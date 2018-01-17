@@ -43,7 +43,8 @@
 	
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
 ?>
-<div class="rocket-impl-to-one" data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
+<div class="rocket-impl-to-one" 
+		data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 				array('item' => $entryLabeler->getGenericLabel())) ?>"
 		data-replace-item-label="<?php $html->text('ei_impl_to_one_replace_item_label', 

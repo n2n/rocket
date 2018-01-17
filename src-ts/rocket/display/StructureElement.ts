@@ -9,7 +9,7 @@ namespace Rocket.Display {
 		constructor(jqElem: JQuery) {
 			this.jqElem = jqElem;
 			
-			jqElem.addClass("rocket-structure-element");
+//			jqElem.addClass("rocket-structure-element");
 			jqElem.data("rocketStructureElement", this);
 			
 			this.valClasses();
@@ -64,13 +64,13 @@ namespace Rocket.Display {
 				return null;
 			}
 			
-			var jqToolbar = this.jqElem.children(".rocket-group-toolbar:first");
-			if (jqToolbar.length == 0) {
-				jqToolbar = $("<div />", { "class": "rocket-group-toolbar" });
-				this.jqElem.prepend(jqToolbar);
+			let toolbarJq = this.jqElem.children(".rocket-group-toolbar:first");
+			if (toolbarJq.length == 0) {
+				toolbarJq = $("<div />", { "class": "rocket-group-toolbar" });
+				this.jqElem.prepend(toolbarJq);
 			}
 			
-			return this.toolbar =  new Toolbar(jqToolbar);
+			return this.toolbar =  new Toolbar(toolbarJq);
 		}
 		
 		public getTitle() {
