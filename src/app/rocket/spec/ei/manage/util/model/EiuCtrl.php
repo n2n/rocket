@@ -188,15 +188,21 @@ class EiuCtrl implements Lookupable {
 		$response->send(RocketJhtmlResponse::redirect($url, $ajahEventInfo, $ajahExec));
 	}
 	
-	public function forwardView(HtmlView $view) {
+	public function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+		
+		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+			$response->send($view);
+			return;
+		}
+		
 // 		if ('application/json' == $acceptRange->bestMatch(['text/html', 'application/json'])) {
 // 			$response->send(new AjahResponse($view));
 // 			return;
 // 		}
-		
-		$response->send($view);
+
+		$response->send(RocketJhtmlResponse::view($view, $ajahEventInfo));
 	}
 
 	public function buildRedirectUrl($eiEntryArg = null) { 

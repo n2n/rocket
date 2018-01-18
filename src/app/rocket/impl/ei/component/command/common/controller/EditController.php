@@ -71,9 +71,11 @@ class EditController extends ControllerAdapter {
 			return;
 		}
 		
+		$jhtmlEvent = null;
 		if ($this->dispatch($editModel, 'quicksave')) {
-			$this->refresh();
-			return;
+			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
+// 			$this->refresh();
+// 			return;
 		}
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(), 
@@ -82,7 +84,7 @@ class EditController extends ControllerAdapter {
 		$view = $this->createView('..\view\edit.html', array('editModel' => $editModel,
 				'entryCommandViewModel' => $this->createEntryCommandViewModel(
 						$editModel->getEntryModel()->getEiuEntryGui(), $redirectUrl)));
-		$this->eiuCtrl->forwardView($view);
+		$this->eiuCtrl->forwardView($view, $jhtmlEvent);
 	}
 	
 	public function doLatestDraft($idRep, ParamQuery $refPath) {

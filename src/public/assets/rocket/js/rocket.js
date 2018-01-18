@@ -2703,6 +2703,59 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
+        class Toggler {
+            constructor(buttonJq, menuJq) {
+                this.buttonJq = buttonJq;
+                this.menuJq = menuJq;
+                menuJq.hide();
+            }
+            toggle(e) {
+                if (this.closeCallback) {
+                    this.closeCallback(e);
+                    return;
+                }
+                this.open();
+            }
+            close() {
+                if (!this.closeCallback)
+                    return;
+                this.closeCallback();
+            }
+            open() {
+                if (this.closeCallback)
+                    return;
+                this.menuJq.show();
+                this.buttonJq.addClass("active");
+                let bodyJq = $("body");
+                this.closeCallback = (e) => {
+                    if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
+                        return;
+                    }
+                    bodyJq.off("click", this.closeCallback);
+                    this.menuJq.off("mouseleave", this.closeCallback);
+                    this.closeCallback = null;
+                    this.menuJq.hide();
+                    this.buttonJq.removeClass("active");
+                };
+                bodyJq.on("click", this.closeCallback);
+                this.menuJq.on("mouseleave", this.closeCallback);
+            }
+            static simple(buttonJq, menuJq) {
+                let toggler = new Toggler(buttonJq, menuJq);
+                buttonJq.on("click", (e) => {
+                    e.stopImmediatePropagation();
+                    toggler.toggle(e);
+                });
+                return toggler;
+            }
+        }
+        Display.Toggler = Toggler;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
         class Confirm {
             constructor(msg, okLabel, cancelLabel, severity) {
                 this.stressWindow = null;
@@ -4628,7 +4681,6 @@ var Rocket;
                         throw new Error("Selector state already activated");
                     }
                     this.selectorObserver = selectorObserver;
-                    console.log(this.selectorObserver);
                     this.selectorState.activate(selectorObserver);
                     this.triggerContentChange();
                     this.buildFakePage();
@@ -7191,58 +7243,5 @@ var Rocket;
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class Toggler {
-            constructor(buttonJq, menuJq) {
-                this.buttonJq = buttonJq;
-                this.menuJq = menuJq;
-                menuJq.hide();
-            }
-            toggle(e) {
-                if (this.closeCallback) {
-                    this.closeCallback(e);
-                    return;
-                }
-                this.open();
-            }
-            close() {
-                if (!this.closeCallback)
-                    return;
-                this.closeCallback();
-            }
-            open() {
-                if (this.closeCallback)
-                    return;
-                this.menuJq.show();
-                this.buttonJq.addClass("active");
-                let bodyJq = $("body");
-                this.closeCallback = (e) => {
-                    if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
-                        return;
-                    }
-                    bodyJq.off("click", this.closeCallback);
-                    this.menuJq.off("mouseleave", this.closeCallback);
-                    this.closeCallback = null;
-                    this.menuJq.hide();
-                    this.buttonJq.removeClass("active");
-                };
-                bodyJq.on("click", this.closeCallback);
-                this.menuJq.on("mouseleave", this.closeCallback);
-            }
-            static simple(buttonJq, menuJq) {
-                let toggler = new Toggler(buttonJq, menuJq);
-                buttonJq.on("click", (e) => {
-                    e.stopImmediatePropagation();
-                    toggler.toggle(e);
-                });
-                return toggler;
-            }
-        }
-        Display.Toggler = Toggler;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map

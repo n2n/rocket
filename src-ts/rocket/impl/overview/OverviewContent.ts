@@ -134,7 +134,6 @@ namespace Rocket.Impl.Overview {
 			}
 			
 			this.selectorObserver = selectorObserver;
-			console.log(this.selectorObserver);
 			this.selectorState.activate(selectorObserver);
 			this.triggerContentChange();
 			
