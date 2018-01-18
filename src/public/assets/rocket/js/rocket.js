@@ -5490,7 +5490,6 @@ var Rocket;
                     this.entryGroup.show();
                     this.jqSummary.hide();
                     this.bodyGroup.show();
-                    this.entryGroup.setGroup(true);
                     if (asPartOfList) {
                         this.jqPageCommands.hide();
                     }
@@ -6553,7 +6552,7 @@ var Rocket;
                     this.buttonJq = null;
                     this.changing = false;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
-                    Toggler.simple(this.initControl(), this.initMenu());
+                    Rocket.Display.Toggler.simple(this.initControl(), this.initMenu());
                     this.val();
                 }
                 val() {
@@ -6970,7 +6969,7 @@ var Rocket;
                     let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
-                    this.toggler = Toggler.simple(buttonJq, menuJq);
+                    this.toggler = Rocket.Display.Toggler.simple(buttonJq, menuJq);
                     this.elemJq.append(buttonJq);
                     this.elemJq.append(menuJq);
                 }
@@ -7040,7 +7039,7 @@ var Rocket;
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { "class": "rocket-impl-tooltip", "text": tooltip }))
                         .hide();
-                    Toggler.simple(buttonJq, menuJq);
+                    Rocket.Display.Toggler.simple(buttonJq, menuJq);
                     this.jqContainer.append(menuJq);
                 }
                 updateStatus() {
@@ -7217,18 +7216,28 @@ var Rocket;
                 this.menuJq.show();
                 this.buttonJq.addClass("active");
                 let bodyJq = $("body");
+                let timeout = setTimeout(() => {
+                    this.closeCallback();
+                    clearTimeout(timeout);
+                }, 3000);
+                let timeoutCallback = (() => {
+                });
                 this.closeCallback = (e) => {
                     if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
                         return;
                     }
                     bodyJq.off("click", this.closeCallback);
                     this.menuJq.off("mouseleave", this.closeCallback);
+                    this.menuJq.off("mouseover");
                     this.closeCallback = null;
                     this.menuJq.hide();
                     this.buttonJq.removeClass("active");
                 };
                 bodyJq.on("click", this.closeCallback);
-                this.menuJq.on("mouseleave", this.closeCallback);
+                this.menuJq.on("mouseleave", timeoutCallback);
+                this.menuJq.on("mouseover", () => {
+                    clearTimeout(timeout);
+                });
             }
             static simple(buttonJq, menuJq) {
                 let toggler = new Toggler(buttonJq, menuJq);
