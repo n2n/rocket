@@ -143,7 +143,11 @@ namespace Rocket.Impl.Relation {
 			
 			if (this.currentEntry || this.newEntry) {
 				this.addControl.jQuery.hide();
-				this.firstReplaceControl.jQuery.show();
+				if (this.isExpanded()) {
+					this.firstReplaceControl.jQuery.show();
+				} else {
+					this.firstReplaceControl.jQuery.hide();
+				}
 				this.secondReplaceControl.jQuery.show();
 			} else {
 				this.addControl.jQuery.show();
