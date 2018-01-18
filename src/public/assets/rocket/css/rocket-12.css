@@ -3693,16 +3693,6 @@ body {
 }
 
 /**
- * View Control
- */
-.rocket-impl-translation-view-control {
-  position: absolute;
-  top: 1rem;
-  right: 0;
-  z-index: 10;
-}
-
-/**
  * Content
  */
 #rocket-content-container {
@@ -3894,9 +3884,20 @@ body {
 
 .rocket-main-layer.rocket-active,
 .rocket-layer.rocket-active {
-  min-height: calc(100vh - 2.75rem);
+  min-height: calc(100vh - 7.75rem);
   max-height: none;
   overflow-y: visible;
+}
+
+.rocket-zone {
+  position: relative;
+}
+
+.rocket-zone-toolbar {
+  position: absolute;
+  right: 0rem;
+  top: 1.5rem;
+  z-index: 60;
 }
 
 .rocket-impl-translation-status {
@@ -4604,6 +4605,26 @@ ul.rocket-content-item > li > span {
   }
 }
 
+:not(.rocket-group) .rocket-main-group-nav {
+  background: #ECEBE9;
+  border: 0;
+}
+
+:not(.rocket-group) .rocket-main-group-nav > .nav-item > .nav-link {
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border: none;
+  font-size: 1.25rem;
+  color: #837E78;
+  border-left: 3px solid #ECEBE9;
+}
+
+:not(.rocket-group) .rocket-main-group-nav > .nav-item > .nav-link.active {
+  border-left: 3px solid #ed8207;
+  background: #fff;
+  color: #373431;
+}
+
 .rocket-simple-commands > .dropdown > button,
 .rocket-simple-commands > .btn {
   width: 2.25rem;
@@ -4749,39 +4770,20 @@ td .rocket-simple-commands > .btn > i {
   color: #b90f00;
 }
 
-body.rocket-preview .rocket-preview-iframe-title,
-body.rocket-preview #rocket-global-nav {
-  display: none;
-}
-
-body.rocket-preview .rocket-zone > header {
-  margin-bottom: 0;
-}
-
-body.rocket-preview .rocket-zone .rocket-content {
+.rocket-plain {
   position: relative;
+  margin: 0 -3rem 0 -4rem;
 }
 
-body.rocket-preview .rocket-zone #rocket-preview-content {
+.rocket-impl-preview {
   position: fixed;
   top: 7.75rem;
   bottom: 3.75rem;
-  left: 0;
-  right: 0;
+  left: 14rem;
   border: 0;
+  right: 0;
   width: 100%;
   height: calc(100vh - 11.825rem);
-}
-
-body.rocket-preview .rocket-zone .rocket-zone-toolbar {
-  position: absolute;
-  right: -2rem;
-  top: -2.75rem;
-}
-
-body.rocket-preview .rocket-zone-commands {
-  left: 0;
-  padding-left: 1.5rem;
 }
 
 /**
@@ -4810,7 +4812,7 @@ body.rocket-preview .rocket-zone-commands {
 }
 
 .rocket-impl-critmod-form-container {
-  margin: 0 -4rem;
+  margin: 0 -3rem 0 -4rem;
 }
 
 .rocket-impl-critmod {
@@ -5012,6 +5014,11 @@ h1, .h1 {
 
 .btn-dark {
   border-color: #262422;
+}
+
+.rocket-simple-commands .dropdown-menu {
+  right: 0;
+  left: auto;
 }
 
 .align-baseline {

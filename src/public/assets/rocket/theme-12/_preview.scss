@@ -1,36 +1,15 @@
-body.rocket-preview {
-	.rocket-preview-iframe-title,
-	#rocket-global-nav {
-		display: none;
-	}
+.rocket-plain {
+	position: relative;
+	margin: 0 -3rem 0 -4rem;
+}
 
-	.rocket-zone {
-		> header {
-			margin-bottom: 0;
-		}
-		.rocket-content {
-			position: relative;
-		}
-		#rocket-preview-content {
-			position: fixed;
-			top: 7.75rem;
-			bottom: 3.75rem;
-			left: 0;
-			right: 0;
-			border: 0;
-			width: 100%;
-			height: calc(100vh - 11.825rem);
-		}
-
-		.rocket-zone-toolbar {
-			position: absolute;
-			right: -2rem;
-			top: -2.75rem;
-		}
-	}
-
-	.rocket-zone-commands {
-		left: 0;
-		padding-left: 1.5rem;
-	}
+.rocket-impl-preview {
+	position: fixed;
+	top: 7.75rem;
+	bottom: 3.75rem;
+	left: 14rem;
+	border: 0;
+	right: 0;
+	width: 100%;
+	height: calc(100vh - 11.825rem);
 }

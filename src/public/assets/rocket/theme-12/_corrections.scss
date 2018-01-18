@@ -39,3 +39,8 @@ h1, .h1 {
         border-color: darken($value, 15);
     }
 }
+
+.rocket-simple-commands .dropdown-menu { 
+    right: 0;
+    left: auto;
+}

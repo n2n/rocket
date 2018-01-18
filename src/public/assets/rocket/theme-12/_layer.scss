@@ -67,7 +67,18 @@
 
 .rocket-main-layer.rocket-active, 
 .rocket-layer.rocket-active {
-	min-height: calc(100vh - #{$rocket-header-height});
+	min-height: calc(100vh - 7.75rem);
 	max-height: none;
 	overflow-y: visible;
+}
+
+.rocket-zone {
+	position: relative;
+}
+
+.rocket-zone-toolbar {
+	position: absolute;
+	right: 0rem;
+	top: 1.5rem;
+	z-index: 60;
 }
