@@ -63,7 +63,7 @@ class ToOneForm implements Dispatchable {
 		$this->entryFormFactory = new ToOneDynMappingFormFactory($utils);
 		$this->entryLabeler = new EntryLabeler($utils);
 	}
-
+	
 	public function isMandatory(): bool {
 		return $this->mandatory;
 	}

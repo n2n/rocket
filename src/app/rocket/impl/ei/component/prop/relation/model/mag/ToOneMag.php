@@ -140,7 +140,15 @@ class ToOneMag extends MagAdapter {
 		$toOneForm->setDraftMode($this->draftMode);
 		$toOneForm->setReduced($this->reduced);
 		
-		if ($this->targetRelationEntry === null) return $toOneForm;
+		if ($this->targetRelationEntry === null) {
+			if (!$toOneForm->isSelectionModeEnabled() && $this->mandatory
+					&& !$this->targetEditUtils->getEiType()->hasSubEiTypes()) {
+				$toOneForm->setEiEntry($this->targetEditUtils->newEntry($this->draftMode)->getEiEntry());
+				$toOneForm->setNewMappingFormAvailable(true);
+			}
+			
+			return $toOneForm;
+		}
 		
 		if ($toOneForm->isSelectionModeEnabled() && !$this->targetRelationEntry->isNew()) {
 			$idRep = $this->targetReadUtils->idToIdRep($this->targetRelationEntry->getId());
@@ -189,8 +197,14 @@ class ToOneMag extends MagAdapter {
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($view->lookup(ScrRegistry::class), 
 				$eiFrame->getContextEiMask());
 		
+		$newMappingFormUrl = null;
+		if ($this->targetEditUtils->getEiType()->hasSubEiTypes() 
+				|| ($this->targetRelationEntry === null || !$this->mandatory)) {
+			$newMappingFormUrl = $this->newMappingFormUrl;
+		}
+		
 		return $view->getImport('\rocket\impl\ei\component\prop\relation\view\toOneForm.html',
 				array('selectOverviewToolsUrl' => $this->selectOverviewToolsUrl, 
-						'newMappingFormUrl' => $this->newMappingFormUrl, 'propertyPath' => $propertyPath));
+						'newMappingFormUrl' => $newMappingFormUrl, 'propertyPath' => $propertyPath));
 	}
 }
