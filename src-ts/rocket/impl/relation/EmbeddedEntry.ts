@@ -112,7 +112,7 @@ namespace Rocket.Impl.Relation {
 			this.jqSummary.hide();
 			this.bodyGroup.show();
 			
-			this.entryGroup.setGroup(true);
+//			this.entryGroup.setGroup(true);
 			
 			if (asPartOfList) {
 				this.jqPageCommands.hide();
