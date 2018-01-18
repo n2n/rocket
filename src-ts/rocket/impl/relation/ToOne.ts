@@ -50,7 +50,6 @@ namespace Rocket.Impl.Relation {
 				toOneSelector = new ToOneSelector(jqSelector);
 			}
 			
-			
 			let jqCurrent = jqToOne.children(".rocket-impl-current");
 			let jqNew = jqToOne.children(".rocket-impl-new");
 			let jqDetail = jqToOne.children(".rocket-impl-detail");
