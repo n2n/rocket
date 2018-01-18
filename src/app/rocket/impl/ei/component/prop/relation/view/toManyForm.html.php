@@ -109,10 +109,12 @@
 			<?php }) ?>
 		</div>
 	<?php endif ?>
-	
 	<?php if ($toManyForm->isSelectionModeEnabled() && $toManyForm->isNewMappingFormAvailable()): ?>
-		<div class="rocket-group">
+		<div class="rocket-group rocket-group-simple">
 			<label><?php $html->text('ei_impl_embedded_add_title') ?></label>
+			<div class="rocket-control">
+			
+			</div>
 		</div>
 	<?php endif ?>
 </div>

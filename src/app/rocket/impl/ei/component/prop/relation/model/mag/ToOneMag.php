@@ -198,7 +198,8 @@ class ToOneMag extends MagAdapter {
 				$eiFrame->getContextEiMask());
 		
 		$newMappingFormUrl = null;
-		if ($this->targetEditUtils->getEiType()->hasSubEiTypes() 
+		if ($this->targetEditUtils->getEiType()->hasSubEiTypes()
+				|| $this->selectOverviewToolsUrl !== null
 				|| ($this->targetRelationEntry === null && !$this->mandatory)) {
 			$newMappingFormUrl = $this->newMappingFormUrl;
 		}

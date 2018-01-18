@@ -361,7 +361,7 @@ namespace Rocket.Impl.Relation {
 				"class": "rocket-impl-embedded"
 			});
 			
-			let jqGroup = this.jqToMany.children(".rocket-group");
+			let jqGroup = this.jqToMany.children(".rocket-group").children(".rocket-control");
 			if (jqGroup.length > 0) {
 				jqGroup.append(this.jqEmbedded);
 			} else {
