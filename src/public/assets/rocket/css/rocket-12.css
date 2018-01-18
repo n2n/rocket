@@ -3831,9 +3831,17 @@ body {
   position: relative;
   grid-template-columns: 1fr auto;
   grid-template-rows: 2rem 3rem;
-  margin: 0 -1rem;
-  padding-left: 1rem;
   background: white;
+}
+
+.rocket-zone > header::before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  left: -1rem;
+  background: #fff;
+  width: 1rem;
+  bottom: 0;
 }
 
 .rocket-zone > header > .breadcrumb {
@@ -3851,6 +3859,12 @@ body {
   margin-top: 0.5rem;
 }
 
+.rocket-main-layer,
+.rocket-layer {
+  max-height: calc(100vh - 2.75rem);
+  overflow-y: hidden;
+}
+
 .rocket-layer {
   position: absolute;
   z-index: 50;
@@ -3860,8 +3874,6 @@ body {
   padding: 0 1rem 5rem 4rem;
   background-color: #ECEBE9;
   background: linear-gradient(to right, #C2BDB6 0, #C2BDB6 3rem, #ECEBE9 3rem, #ECEBE9 100%);
-  height: 100%;
-  min-height: calc(100vh - 2.75rem);
 }
 
 .rocket-layer > .rocket-layer-toolbar {
@@ -3878,6 +3890,13 @@ body {
 
 .rocket-layer .rocket-impl-overview-tools {
   background-color: #ECEBE9;
+}
+
+.rocket-main-layer.rocket-active,
+.rocket-layer.rocket-active {
+  min-height: calc(100vh - 2.75rem);
+  max-height: none;
+  overflow-y: visible;
 }
 
 .rocket-impl-translation-status {
