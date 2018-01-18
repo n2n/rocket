@@ -680,7 +680,7 @@ class RocketUiOutfitter implements UiOutfitter {
 	 * @param null $contents
 	 * @return HtmlElement
 	 */
-	public function buildElement(int $elemNature, array $attrs = null, $contents = null): HtmlElement {
+	public function buildElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
 			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
 		}
@@ -697,6 +697,8 @@ class RocketUiOutfitter implements UiOutfitter {
 
 			return $container;
 		}
+
+		return new HtmlElement('div', null, '');
 	}
 	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
