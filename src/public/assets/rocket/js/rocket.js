@@ -5971,11 +5971,12 @@ var Rocket;
                     });
                     let jqGroup = this.jqToMany.children(".rocket-group").children(".rocket-control");
                     if (jqGroup.length > 0) {
-                        jqGroup.append(this.jqEmbedded);
+                        this.embeddedContainerJq = jqGroup;
                     }
                     else {
-                        this.jqToMany.append(this.jqEmbedded);
+                        this.embeddedContainerJq = this.jqToMany;
                     }
+                    this.embeddedContainerJq.append(this.jqEmbedded);
                     this.jqEntries = $("<div />");
                     this.jqEmbedded.append(this.jqEntries);
                     if (this.compact) {
@@ -6213,7 +6214,7 @@ var Rocket;
                     this.dominantEntry = null;
                     this.expandZone = null;
                     this.jqEmbedded.detach();
-                    this.jqToMany.append(this.jqEmbedded);
+                    this.embeddedContainerJq.append(this.jqEmbedded);
                     for (let i in this.entries) {
                         this.entries[i].reduce();
                     }

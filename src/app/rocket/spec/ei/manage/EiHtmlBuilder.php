@@ -21,9 +21,7 @@
  */
 namespace rocket\spec\ei\manage;
 
-use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\manage\util\model\EiuFactory;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
@@ -39,9 +37,8 @@ use rocket\spec\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
-use n2n\web\dispatch\mag\UiOutfitter;
-use n2n\web\ui\UiComponent;
 use n2n\reflection\CastUtils;
+use rocket\spec\ei\manage\control\Control;
 
 class EiHtmlBuilder {
 	private $view;
@@ -62,7 +59,7 @@ class EiHtmlBuilder {
 			$view->setStateObj(self::class, $this->state = new EiHtmlBuilderState());
 		}
 		
-		$this->meta = new EiHtmlBuilderMeta($this->state);
+		$this->meta = new EiHtmlBuilderMeta($this->state, $this->view);
 		$this->uiOutfitter = new RocketUiOutfitter();
 	}
 	
@@ -209,16 +206,27 @@ class EiHtmlBuilder {
 	}
 	
 	public function getEntryCommands(bool $iconOnly = false) {
-		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		return $this->getCommands($this->meta->createEntryControls($this->view), $iconOnly);
+	}
+	
+	public function commands(array $controls, bool $iconOnly = false) {
+		$this->view->out($this->getCommands($controls, $iconOnly));
+	}
+	
+	public function getCommands(array $controls, bool $iconOnly = false) {
+		if (empty($controls)) return null;
+		
+		ArgUtils::valArray($controls, Control::class);
 		
 		$divHtmlElement = new HtmlElement('div', array('class' => ($iconOnly ? 'rocket-simple-commands' : null)));
 		
-		foreach ($eiEntryGui->createControls($this->view) as $control) {
+		foreach ($controls as $control) {
 			$divHtmlElement->appendContent($control->createUiComponent());
 		}
 		
 		return $divHtmlElement;
 	}
+	
 	
 	/**
 	 * 
@@ -499,12 +507,14 @@ class EiHtmlBuilder {
 
 class EiHtmlBuilderMeta {
 	private $state;
+	private $view;
 	
 	/**
 	 * @param EiHtmlBuilderState $state
 	 */
-	public function __construct(EiHtmlBuilderState $state) {
+	public function __construct(EiHtmlBuilderState $state, HtmlView $view) {
 		$this->state = $state;
+		$this->view = $view;
 	}
 	
 	/**
@@ -516,6 +526,16 @@ class EiHtmlBuilderMeta {
 		}
 		
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
+	}
+	
+	/**
+	 * @param mixed $eiEntryGui
+	 * @return Control[]
+	 */
+	public function createEntryControls($eiEntryGui = null) {
+		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		
+		return $eiEntryGui->createControls($this->view);
 	}
 }
 

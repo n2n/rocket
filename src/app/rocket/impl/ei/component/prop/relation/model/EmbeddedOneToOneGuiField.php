@@ -87,6 +87,11 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		if ($targetRelationEntry === null) return null;
 		
 		$targetUtils = new EiuFrame($this->targetEiFrame);
+		
+		if (!$this->reduced) {
+			return $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils))->newEntryGui()
+					->createView($view);
+		}
 
 		if ($this->compact) {
 			$iconType = $targetUtils->getGenericIconType($targetRelationEntry->getEiObject());
