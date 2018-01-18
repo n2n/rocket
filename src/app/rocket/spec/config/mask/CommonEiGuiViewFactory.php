@@ -16,6 +16,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
 	private $guiDefinition;
 	private $displayStructure;
+	private $controlsAllowed = false;
 	
 	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure) {
 		$this->eiGui = $eiGui;
@@ -46,6 +47,9 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 				break;
 			case self::MODE_ROOT_GROUPED:
 				$this->displayStructure = $this->displayStructure->grouped();
+				break;
+			case self::MODE_CONTROLS_ALLOWED: 
+				$this->controlsAllowed = true;
 				break;
 		}
 	}
@@ -116,7 +120,8 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 			$displayStructure = $displayStructure->withoutGroups();
 		}
 		
-		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
+		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui),
+				'controlsAllowed' => $this->controlsAllowed);
 		
 		if ($contextView !== null) {
 			return $contextView->getImport('\\' .$viewName, $params);

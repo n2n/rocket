@@ -8,6 +8,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 interface EiGuiViewFactory {
 	const MODE_NO_GROUPS = 1;
 	const MODE_ROOT_GROUPED = 2;
+	const MODE_CONTROLS_ALLOWED = 4;
 	
 	public function applyMode(int $rule);
 	

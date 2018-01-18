@@ -41,16 +41,21 @@
 	
 	$renderForkMags = $view->getParam('renderForkMags', false, null);
 	$renderInnerForks = false;
+	$controlsAllowed = $view->getParam('controlsAllowed');
 	if ($renderForkMags === null) {
 		$renderInnerForks = 1 == count($displayStructure->getDisplayItems()) 
 				&& $displayStructure->getDisplayItems()[0]->isGroup();
 		$renderForkMags = !$renderInnerForks;
 	}
 	
+	$controls = array();
 	if ($renderInnerForks) {
 		$renderForkMags = false;
 	} else if ($renderForkMags) {
-		$renderForkMags = $eiu->entryGui()->hasForkMags();
+		if ($controlsAllowed) {
+			$controls = $eiHtml->meta()->createEntryControls();
+		}
+		$renderForkMags = $eiu->entryGui()->hasForkMags() || !empty($controls);
 	}
 ?>
 
@@ -61,6 +66,7 @@
 <?php if ($renderForkMags): ?>
 	<div class="rocket-group-toolbar">
 		<?php $eiHtml->entryForkControls() ?>
+		<?php $eiHtml->commands($controls, true) ?>
 	</div>
 <?php endif ?>
 
@@ -74,6 +80,7 @@
 			<?php if ($renderInnerForks): ?>
 				<div class="rocket-group-toolbar">
 					<?php $eiHtml->entryForkControls() ?>
+					<?php $eiHtml->commands($controls, true) ?>
 				</div>
 			<?php endif ?>		
 			
@@ -89,6 +96,7 @@
 			<?php if ($renderInnerForks): ?>
 				<div class="rocket-group-toolbar">
 					<?php $eiHtml->entryForkControls() ?>
+					<?php $eiHtml->commands($controls, true) ?>
 				</div>
 			<?php endif ?>	
 			

@@ -136,7 +136,7 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function simpleLookup(Criteria $criteria) {
-		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ);
+		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->allowControls();
 		
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$this->eiuGui->appendNewEntryGui($entityObj);
@@ -146,7 +146,7 @@ class OverviewModel implements Dispatchable {
 	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
 		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getClass(), $nestedSetStrategy);
 		
-		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ);
+		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->allowControls();
 		
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$this->eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());

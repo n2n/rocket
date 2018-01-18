@@ -35,6 +35,8 @@
 	$displayStructure = $view->getParam('displayStructure');
 	$view->assert($displayStructure instanceof DisplayStructure);
 	
+	$controlsAllowed = $view->getParam('controlsAllowed');
+	
 	$eiHtml = new EiHtmlBuilder($view);
 ?>
 
@@ -45,7 +47,9 @@
 			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 				<th><?php $eiHtml->label($eiu, $displayItem) ?></th>
 			<?php endforeach ?>
-			<th><?php $html->l10nText('common_list_tools_label') ?></th>
+			<?php if ($controlsAllowed): ?>
+				<th><?php $html->l10nText('common_list_tools_label') ?></th>
+			<?php endif ?>
 		</tr>
 	</thead>
 	<?php $eiHtml->collectionOpen('tbody', $eiu, array('rocket-collection')) ?>
@@ -58,9 +62,11 @@
 						<?php $eiHtml->fieldContent() ?>
 					<?php $eiHtml->fieldClose(); ?>
 				<?php endforeach ?>
-				<?php $view->out('<td class="rocket-table-commands">') ?>
-					<?php $eiHtml->entryCommands(true) ?>
-				<?php $view->out('</td>') ?>
+				<?php if ($controlsAllowed): ?>
+					<?php $view->out('<td class="rocket-table-commands">') ?>
+						<?php $eiHtml->entryCommands(true) ?>
+					<?php $view->out('</td>') ?>
+				<?php endif ?>
 			<?php $eiHtml->entryClose() ?>
 		<?php endforeach ?>
 	<?php $eiHtml->collectionClose() ?>

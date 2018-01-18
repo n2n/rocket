@@ -230,6 +230,29 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
+	 */
+	public function removeGroups() {
+		$this->eiuGui->removeGroups();
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
+	 */
+	public function forceRootGroups() {
+		$this->eiuGui->forceRootGroups();
+		return $this;
+	}
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGui
+	 */
+	public function allowControls() {
+		$this->eiuGui->allowControls();
+		return $this;
+	}
+	
+	/**
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */

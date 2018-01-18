@@ -199,6 +199,13 @@ class EiuGui {
 		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_ROOT_GROUPED);
 		return $this;
 	}
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 */
+	public function allowControls() {
+		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_CONTROLS_ALLOWED);
+		return $this;
+	}
 	
 	/**
 	 * 

@@ -53,7 +53,7 @@
 			<div class="rocket-simple-commands"></div>
 		<?php $eiHtml->entryClose() ?>
 	
-		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true) ?>
+		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true)->allowControls() ?>
 		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group rocket-group-simple')) ?>
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
 			<div class="rocket-control">
