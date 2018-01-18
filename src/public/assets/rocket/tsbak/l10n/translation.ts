@@ -76,7 +76,7 @@ module l10n {
 		
 		public constructor (elem) {
 			this.elem = elem;
-			elem.parent(".rocket-controls").prev("label").hide();
+			elem.parent(".rocket-control").prev("label").hide();
 			this.elemToolPanel = elem.parents(".rocket-tool-panel:first");
 			this.elemProperties = this.elemToolPanel.next(".rocket-properties:first");
 			
@@ -490,7 +490,7 @@ module l10n {
 //				$(".rocket-properties [data-locale-id]").each(function() {
 //					var elem = $(this).show();	
 //					//elem.show().children("label:first").remove();
-//					//elem.parent().replaceWith(elem.children("div.rocket-controls").contents());
+//					//elem.parent().replaceWith(elem.children("div.rocket-control").contents());
 //				});
 				
 //				//that.elemContainer.remove();

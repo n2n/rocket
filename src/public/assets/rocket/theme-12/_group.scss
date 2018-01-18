@@ -1,4 +1,4 @@
-.rocket-group-simple {
+.rocket-group {
     background: $white;
     position: relative;
     margin-bottom: 1rem;
@@ -15,6 +15,7 @@
         float: none;
     }
     > .rocket-control {
+        padding: 0 1rem;
         margin: 0;
     }
     > .rocket-group-toolbar {
@@ -29,24 +30,25 @@
     }
 }
 
-.rocket-group-simple .rocket-group-simple {
+.rocket-group .rocket-group-simple,
+.rocket-group .rocket-group-main {
     border: none;
     background-color: transparent;
     > label {
         border: none;
         margin: 0;
+        padding: 0.5rem 0;
     }
     > .rocket-control {
         padding: 0 1rem;
-        > div {
-            border: 1px solid $input-border-color;
-            background: rgba($gray-900, 0.035);
-        }
+        border: 1px solid $input-border-color;
+        background: rgba($gray-900, 0.035);
     }
 }
 
 @include media-breakpoint-up(md) {
-    .rocket-group-simple .rocket-group-simple {
+    .rocket-group .rocket-group-simple,
+    .rocket-group .rocket-group-main {
         > .rocket-control {
             .rocket-editable,
             .rocket-read-only {
@@ -61,7 +63,8 @@
         }
     }
 
-    .rocket-control .rocket-group-simple .rocket-group-simple {
+    .rocket-control .rocket-group .rocket-group-simple,
+    .rocket-control .rocket-group .rocket-group-main, {
         > .rocket-control {
             label {
                 width: calc(13rem - 2px);
@@ -72,3 +75,4 @@
         }
     }
 }
+

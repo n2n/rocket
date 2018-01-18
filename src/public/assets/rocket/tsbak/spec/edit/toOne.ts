@@ -754,7 +754,7 @@ module spec.edit {
 			this.replaceItemLabel = elem.data("replace-item-label");
 			this.removeItemLabel = elem.data("remove-item-label");
 			this.eiSpecLabels = elem.data("ei-spec-labels");
-			this.elemLabel = elem.parent(".rocket-controls:first").prev("label");
+			this.elemLabel = elem.parent(".rocket-control:first").prev("label");
 			this.defaultLabel = this.elemLabel.text();
 			
 			this.typeSelectable = false;

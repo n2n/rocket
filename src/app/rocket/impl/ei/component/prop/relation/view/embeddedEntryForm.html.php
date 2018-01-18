@@ -34,7 +34,7 @@
 		
 		<div class="rocket-impl-body rocket-group">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
-			<div class="rocket-controls">
+			<div class="rocket-control">
 				<?php $html->text('ei_impl_not_accessible') ?>
 			</div>
 		</div>
@@ -82,7 +82,7 @@
 		<?php else: ?>
 			<div class="rocket-impl-body rocket-group rocket-group-simple">
 				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $view->out($mappingForm->getEntryForm()
 							->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
 				</div>

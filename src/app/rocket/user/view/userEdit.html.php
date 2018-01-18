@@ -48,37 +48,37 @@
 		<div class="rocket-properties">
 			<div>
 				<?php $formHtml->label('rocketUser.nick') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $formHtml->input('rocketUser.nick', array('maxlength' => 128)) ?>
 				</div>
 			</div>
 			<div>
 				<?php $formHtml->label('rawPassword') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $formHtml->input('rawPassword', null, 'password', true) ?>
 				</div>
 			</div>
 			<div>
 				<?php $formHtml->label('rawPassword2') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $formHtml->input('rawPassword2', null, 'password', true) ?>
 				</div>
 			</div>
 			<div>
 				<?php $formHtml->label('rocketUser.firstname') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $formHtml->input('rocketUser.firstname', array('maxlength' => 32)) ?>
 				</div>
 			</div>
 			<div>
 				<?php $formHtml->label('rocketUser.lastname') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $formHtml->input('rocketUser.lastname', array('maxlength' => 32)) ?>
 				</div>
 			</div>
 			<div>
 				<?php $formHtml->label('rocketUser.email') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $formHtml->input('rocketUser.email', array('maxlength' => 128), 'email') ?>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 			<?php if (null !== ($powerOptions = $userGroupForm->getPowerOptions())): ?>
 				<div>
 					<?php $formHtml->label('power') ?>
-					<div class="rocket-controls">
+					<div class="rocket-control">
 						<?php $formHtml->select('power', $powerOptions) ?>
 					</div>
 				</div>
@@ -94,7 +94,7 @@
 			
 			<div>
 				<?php $formHtml->label('rocketUserGroupIds') ?>
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<?php $availableRocketUserGroups = $userGroupForm->getAvailableRocketUserGroups() ?>
 					<ul>
 						<?php if ($availableRocketUserGroups === null): ?>

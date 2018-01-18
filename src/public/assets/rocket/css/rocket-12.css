@@ -3805,6 +3805,15 @@ body {
 /**
  * General Styles
  */
+.rocket-content h2 {
+  padding: 0.5rem 1rem;
+  margin: 1rem 0 0;
+  border-left: 3px solid #ed8207;
+  font-size: 1.25rem;
+  font-weight: bold;
+  background: white;
+}
+
 .rocket-simple-commands > button > span {
   display: none;
 }
@@ -4107,7 +4116,7 @@ td .rocket-impl-translation > label {
   width: auto;
 }
 
-td .rocket-impl-translation > .rocket-controls {
+td .rocket-impl-translation > .rocket-control {
   grid-row-start: 1;
   grid-column-start: 1;
   grid-column-end: 2;
@@ -4355,6 +4364,10 @@ ul.rocket-content-item > li > span {
   position: relative;
 }
 
+.rocket-control > div {
+  padding-top: 1px;
+}
+
 .rocket-required > label {
   position: relative;
 }
@@ -4370,21 +4383,23 @@ ul.rocket-content-item > li > span {
 }
 
 @media (min-width: 768px) {
-  .rocket-read-only,
-  .rocket-editable {
+  .rocket-field-simple {
     clear: both;
-    padding: 1rem;
+    margin: 1rem 0;
   }
-  .rocket-read-only > label,
-  .rocket-editable > label {
+  .rocket-field-simple > label {
     width: 15rem;
     float: left;
     padding: calc(0.375rem + 1px) 0;
   }
-  .rocket-read-only > .rocket-control,
-  .rocket-editable > .rocket-control {
+  .rocket-field-simple > .rocket-control {
     margin-left: 15rem;
   }
+}
+
+.rocket-read-only > .rocket-control {
+  padding: calc(0.375rem + 1px) 0;
+  min-height: 2rem;
 }
 
 /*
@@ -4395,7 +4410,6 @@ ul.rocket-content-item > li > span {
 }
 
 .rocket-control .rocket-impl-entry {
-  border: 1px solid #C2BDB6;
   background-color: white;
   margin: 1rem 0;
 }
@@ -4403,10 +4417,15 @@ ul.rocket-content-item > li > span {
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
   display: grid;
   grid-template-columns: 3rem auto 100px;
+  border: 1px solid #C2BDB6;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
   padding: 1rem;
+}
+
+.rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
+  padding: 1rem 0;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
@@ -4415,7 +4434,6 @@ ul.rocket-content-item > li > span {
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-status {
-  padding: 1rem 1.5rem;
   color: #b90f00;
 }
 
@@ -4425,10 +4443,11 @@ ul.rocket-content-item > li > span {
 
 .rocket-impl-content-type {
   min-width: 10rem;
+  padding-right: 1rem;
 }
 
 .rocket-impl-add-entry {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 }
 
 .rocket-impl-add-entry > button {
@@ -4488,7 +4507,7 @@ ul.rocket-content-item > li > span {
   display: inline-block;
 }
 
-.rocket-group-simple {
+.rocket-group {
   background: #fff;
   position: relative;
   margin-bottom: 1rem;
@@ -4496,7 +4515,7 @@ ul.rocket-content-item > li > span {
   border-bottom: 1px solid #C2BDB6;
 }
 
-.rocket-group-simple > label {
+.rocket-group > label {
   width: 100%;
   padding: 0.5rem 1rem;
   margin: 0;
@@ -4506,54 +4525,62 @@ ul.rocket-content-item > li > span {
   float: none;
 }
 
-.rocket-group-simple > .rocket-control {
+.rocket-group > .rocket-control {
+  padding: 0 1rem;
   margin: 0;
 }
 
-.rocket-group-simple > .rocket-group-toolbar {
+.rocket-group > .rocket-group-toolbar {
   position: absolute;
   top: 0.5rem;
   right: 1rem;
 }
 
-.rocket-group-simple > .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group-simple > .rocket-group-toolbar > .rocket-simple-commands {
+.rocket-group > .rocket-group-toolbar > .rocket-group-controls,
+.rocket-group > .rocket-group-toolbar > .rocket-simple-commands {
   display: inline-block;
   margin-left: 1rem;
 }
 
-.rocket-group-simple .rocket-group-simple {
+.rocket-group .rocket-group-simple,
+.rocket-group .rocket-group-main {
   border: none;
   background-color: transparent;
 }
 
-.rocket-group-simple .rocket-group-simple > label {
+.rocket-group .rocket-group-simple > label,
+.rocket-group .rocket-group-main > label {
   border: none;
   margin: 0;
+  padding: 0.5rem 0;
 }
 
-.rocket-group-simple .rocket-group-simple > .rocket-control {
+.rocket-group .rocket-group-simple > .rocket-control,
+.rocket-group .rocket-group-main > .rocket-control {
   padding: 0 1rem;
-}
-
-.rocket-group-simple .rocket-group-simple > .rocket-control > div {
   border: 1px solid #C2BDB6;
   background: rgba(55, 52, 49, 0.035);
 }
 
 @media (min-width: 768px) {
-  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-editable > label,
-  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-read-only > label {
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > label,
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > label,
+  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > label,
+  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > label {
     width: calc(14rem - 1px);
   }
-  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-editable > .rocket-control,
-  .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-read-only > .rocket-control {
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > .rocket-control,
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > .rocket-control,
+  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > .rocket-control,
+  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > .rocket-control {
     margin-left: calc(14rem - 1px);
   }
-  .rocket-control .rocket-group-simple .rocket-group-simple > .rocket-control label {
+  .rocket-control .rocket-group .rocket-group-simple > .rocket-control label,
+  .rocket-control .rocket-group .rocket-group-main > .rocket-control label {
     width: calc(13rem - 2px);
   }
-  .rocket-control .rocket-group-simple .rocket-group-simple > .rocket-control .rocket-control {
+  .rocket-control .rocket-group .rocket-group-simple > .rocket-control .rocket-control,
+  .rocket-control .rocket-group .rocket-group-main > .rocket-control .rocket-control {
     margin-left: calc(13rem - 2px);
   }
 }
@@ -4601,10 +4628,6 @@ ul.rocket-content-item > li > span {
   display: none;
 }
 
-.rocket-simple-commands > .dropdown {
-  display: inline-block;
-}
-
 td .rocket-simple-commands > .btn > i {
   font-size: 1.25rem;
 }
@@ -4641,6 +4664,10 @@ td .rocket-simple-commands > .btn > i {
   background-color: #e0d9d9;
   border-color: #b9a7a7;
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.2rem rgba(213, 203, 203, 0.5);
+}
+
+.dropdown {
+  display: inline-block;
 }
 
 .rocket-highlighted {

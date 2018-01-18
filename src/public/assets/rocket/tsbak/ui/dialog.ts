@@ -79,7 +79,7 @@ module ui {
 			}).appendTo(this.elemDialog);
 			
 			this.elemControls = $("<ul/>", {
-				"class": "rocket-controls rocket-dialog-controls"
+				"class": "rocket-control rocket-dialog-controls"
 			}).appendTo(this.elemDialog);
 			
 		}

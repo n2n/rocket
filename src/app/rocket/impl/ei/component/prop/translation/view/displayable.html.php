@@ -51,7 +51,7 @@
 						'field' => $label)))) ?>
 			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale())), 
 					$n2nLocale->toPrettyId()) ?>
-			<div class="rocket-controls">
+			<div class="rocket-control">
 				<?php $fieldEiHtml->field() ?>
 				<?php $fieldEiHtml->message() ?>
 			</div>

@@ -29,7 +29,7 @@
 		
 		<div class="rocket-impl-body rocket-group">
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
-			<div class="rocket-controls">
+			<div class="rocket-control">
 				<?php $html->text('ei_impl_not_accessible', array('entry' => $eiuEntry->createIdentityString())) ?>
 			</div>
 		</div>
@@ -56,7 +56,7 @@
 		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true) ?>
 		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group rocket-group-simple')) ?>
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
-			<div class="rocket-controls">
+			<div class="rocket-control">
 				<?php $view->import($eiuEntryGui->createView($view)) ?>
 			</div>
 			

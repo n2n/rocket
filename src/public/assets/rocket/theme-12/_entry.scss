@@ -11,6 +11,10 @@
     position: relative;
 }
 
+.rocket-control > div {
+    padding-top: 1px;
+}
+
 .rocket-required > label {
     position: relative;
     &::after {
@@ -25,10 +29,9 @@
 }
 
 @include media-breakpoint-up(md) {
-    .rocket-read-only, 
-    .rocket-editable {
+    .rocket-field-simple {
         clear: both;
-        padding: 1rem;
+        margin: 1rem 0;
 
         > label {
             width: 15rem;
@@ -42,6 +45,13 @@
 }
 
 
+.rocket-read-only {
+    > .rocket-control {
+        padding: calc(0.375rem + 1px) 0;
+        min-height: 2rem;
+    }
+}
+
 /*
  * embeded
  */
@@ -53,21 +63,23 @@
 }
 
 .rocket-control .rocket-impl-entry {
-    border: 1px solid $gray-500;
     background-color: white;
     margin: 1rem 0;
     > .rocket-impl-summary {
         display: grid;
         grid-template-columns: 3rem auto 100px;
+        border: 1px solid $gray-500;
         > .rocket-impl-handle {
             padding: 1rem;
+        }
+        .rocket-impl-content {
+            padding: 1rem 0;
         }
         > .rocket-simple-commands {
             padding: 0.75rem 0.75rem 0.75rem 0;
             text-align: right;
         }
         .rocket-impl-status {
-            padding: 1rem 1.5rem;
             color: $danger;
         }
     }
@@ -79,10 +91,11 @@
 
 .rocket-impl-content-type {
     min-width: 10rem;
+    padding-right: 1rem;
 }
 
 .rocket-impl-add-entry {
-    margin-bottom: 1rem;
+    margin: 1rem 0;
     > button {
         text-align: left;
         font-weight: bold;

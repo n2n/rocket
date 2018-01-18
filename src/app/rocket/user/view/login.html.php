@@ -58,7 +58,7 @@ use n2n\web\ui\view\View;
 								<i class="fa fa-user"></i>
 								<span><?php $html->l10nText('user_password_label') ?></span>
 							</label>
-							<div class="rocket-controls">
+							<div class="rocket-control">
 								<?php $formHtml->input('nick', array('placeholder' => $view->getL10nText('user_nick_label'), 'class' => 'rocket-login-input input-lg')) ?>
 							</div>
 						</li>
@@ -67,7 +67,7 @@ use n2n\web\ui\view\View;
 								<i class="fa fa-lock"></i>
 								<span><?php $html->l10nText('user_nick_label') ?></span>
 							</label>
-							<div class="rocket-controls rocket-control-danger">
+							<div class="rocket-control rocket-control-danger">
 								<?php $formHtml->input('rawPassword', array('placeholder' => $view->getL10nText('user_password_label'), 'class' => 'rocket-login-input input-lg'), 'password', true) ?>
 							</div>
 						</li>

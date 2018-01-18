@@ -53,21 +53,21 @@
 			<div class="rocket-control-group">
 				<label>Privileges Grants</label>
 				
-				<div class="rocket-controls">
+				<div class="rocket-control">
 					<div class="rocket-option-array">
 						<?php $formHtml->meta()->arrayProps('eiPrivilegeGrantForms', function () 
 								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterAjahHook) { ?>
 							<div>
 								<div class="rocket-properties">	
 									<div class="rocket-editable">
-										<div class="rocket-controls">
+										<div class="rocket-control">
 											<?php $formHtml->optionalObjectCheckbox()  ?>
 										</div>
 									</div>
 									
 									<div class="rocket-editable">
 										<label><?php $html->l10nText('user_group_privileges_label')?></label>
-										<ul class="rocket-controls">
+										<ul class="rocket-control">
 											<?php $eiGrantHtml->privilegeCheckboxes('eiCommandPathStrs[]', $eiGrantForm->getPrivilegeDefinition()) ?>
 										</ul>
 									</div>
@@ -75,11 +75,11 @@
 									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiPropPrivilegeMagFormAvailable()): ?>
 										<div>
 											<label><?php $html->l10nText('user_group_access_config_label')?></label>
-											<?php $view->out('<ul class="rocket-controls">') ?>
+											<?php $view->out('<ul class="rocket-control">') ?>
 												<?php $formHtml->meta()->objectProps('eiPropPrivilegeMagForm', function() use ($formHtml) { ?>
 													<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
 														<?php $formHtml->magLabel() ?>
-														<div class="rocket-controls">
+														<div class="rocket-control">
 															<?php $formHtml->magField() ?>
 														</div>
 													<?php $formHtml->magClose() ?>
@@ -90,7 +90,7 @@
 									
 									<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
 										<div class="rocket-editable">
-											<div class="rocket-controls">
+											<div class="rocket-control">
 												<?php $formHtml->optionalObjectCheckbox('restrictionFilterGroupForm', null, 
 														$html->getL10nText('user_access_restricted_label')) ?>
 											</div>
@@ -98,7 +98,7 @@
 									
 										<div>	
 											<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
-											<div class="rocket-controls">
+											<div class="rocket-control">
 												<?php $view->import('~\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
 														array('propertyPath' => $formHtml->meta()->createPropertyPath('restrictionFilterGroupForm'),
 																'filterAjahHook' => $filterAjahHook)) ?>

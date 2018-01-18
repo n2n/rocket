@@ -31,11 +31,6 @@
     }
 }
 
-.rocket-simple-commands {
-    > .dropdown {
-        display: inline-block;
-    }
-}
 
 td .rocket-simple-commands {
     > .btn {
@@ -51,4 +46,9 @@ td .rocket-simple-commands {
 
 .rocket-zone-commands .btn:not(.rocket-important) {
     @include button-variant($secondary, darken($secondary, 15));
+}
+
+
+.dropdown {
+    display: inline-block;
 }

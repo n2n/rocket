@@ -30,7 +30,7 @@ module spec.display {
 		public constructor(elem) {
 			this.elem = elem;
 			this.elemType = elem.find(".rocket-gui-field-type").hide();
-			this.typeLabel = this.elemType.children(".rocket-controls").text();
+			this.typeLabel = this.elemType.children(".rocket-control").text();
 			elem.find(".rocket-field-orderIndex").hide();
 			new spec.EntryHeader(this.typeLabel, elem);
 		}

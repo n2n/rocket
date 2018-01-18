@@ -198,6 +198,15 @@ body {
  * General Styles
  */
 
+.rocket-content h2 {
+    padding: 0.5rem 1rem;
+    margin: 1rem 0 0;
+    border-left: 3px solid $primary;
+    font-size: $h2-font-size;
+    font-weight: bold;
+    background: white;
+}
+
 .rocket-simple-commands > button > span {
     display: none;
 } 
