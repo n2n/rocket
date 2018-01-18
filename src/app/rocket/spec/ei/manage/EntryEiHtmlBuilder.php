@@ -31,10 +31,8 @@ use rocket\spec\ei\manage\gui\Displayable;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\mapping\FieldErrorInfo;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\web\ui\Raw;
 use n2n\web\ui\CouldNotRenderUiComponentException;
-use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\EiuFactory;
 

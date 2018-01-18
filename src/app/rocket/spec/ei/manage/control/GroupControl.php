@@ -19,16 +19,16 @@ class GroupControl implements Control {
 	}
 	
 	public function createUiComponent(array $attrs = array()): UiComponent {
-		$id = HtmlUtils::buildUniqueId('rocket-control-group-');
+// 		$id = HtmlUtils::buildUniqueId('rocket-control-group-');
 		
 		$dropdownElem = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'dropdown'), $attrs));
 		$dropdownElem->appendLn();
 		$dropdownElem->appendLn($this->controlButton->toButton(
-				array('type' => 'button', 'class' => 'dropdown-toggle', 'id' => $id, 
+				array('type' => 'button', 'class' => 'dropdown-toggle', /*'id' => $id,*/ 
 						'data-toggle' => 'dropdown', 'aria-haspopup' => 'true',
 						'aria-expanded' => 'false'), false));
 		
-		$menuElem = new HtmlElement('div', array('class' => 'dropdown-menu', 'aria-labelledby' => $id), '');
+		$menuElem = new HtmlElement('div', array('class' => 'dropdown-menu'/*, 'aria-labelledby' => $id*/), '');
 		foreach ($this->controls as $control) {
 			$menuElem->appendLn($control->createUiComponent(array('class' => 'dropdown-item')));
 		}
