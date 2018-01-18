@@ -21,6 +21,7 @@
  */
 namespace rocket\spec\ei\manage;
 
+use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\manage\util\model\EiuFactory;
@@ -650,7 +651,7 @@ class RocketUiOutfitter implements UiOutfitter {
 	 * @param string $nature
 	 * @return array
 	 */
-	public function buildAttrs(int $nature): array {
+	public function createAttrs(int $nature): array {
 		$attrs = array();
 		if ($nature & self::NATURE_MAIN_CONTROL) {
 			return ($nature & self::NATURE_CHECK) ? array('class' => 'form-check-input') : array('class' => 'form-control');
@@ -681,7 +682,7 @@ class RocketUiOutfitter implements UiOutfitter {
 	 * @param null $contents
 	 * @return HtmlElement
 	 */
-	public function buildElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
+	public function createElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
 			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
 		}
@@ -701,13 +702,13 @@ class RocketUiOutfitter implements UiOutfitter {
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
 			return new HtmlElement('button', HtmlUtils::mergeAttrs(
-				$this->buildAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
+				$this->createAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
 				new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_ADD), $contents));
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_REMOVE) {
 			return new HtmlElement('button', HtmlUtils::mergeAttrs(
-				$this->buildAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
+				$this->createAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
 				new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_REMOVE), $contents));
 		}
 
@@ -718,14 +719,21 @@ class RocketUiOutfitter implements UiOutfitter {
 			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
 			$container->appendLn(new HtmlElement('div',
 				array('class' => 'col-auto ' . MagCollection::CONTROL_WRAPPER_CLASS),
-				$this->buildElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
+				$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
 
 			return $container;
 		}
+
+		return new HtmlSnippet($contents);
 	}
 	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
-		return $contextView->getImport('\rocket\spec\ei\manage\gui\view\magForm.html', 
-				array('propertyPath' => $propertyPath, 'uo' => $this));
+		$showLabel = true;
+		if ($propertyPath === null) {
+			//$showLabel = false;
+		}
+
+		return $contextView->getImport('\rocket\spec\ei\manage\gui\view\magForm.html',
+				array('propertyPath' => $propertyPath, 'uo' => $this, 'showLabel' => $showLabel));
 	}
 }
