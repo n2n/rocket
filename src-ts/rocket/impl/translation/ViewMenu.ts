@@ -28,7 +28,7 @@ namespace Rocket.Impl.Translation {
 					.append(this.menuUlJq = $("<ul></ul>"))
 					.append($("<div />", { "class": "rocket-impl-tooltip", "text": tooltip }))
 					.hide();
-			Rocket.Display.Toggler.simple(buttonJq, menuJq);
+			Display.Toggler.simple(buttonJq, menuJq);
 			
 			this.jqContainer.append(menuJq);
 			

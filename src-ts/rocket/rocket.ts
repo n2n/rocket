@@ -181,7 +181,7 @@ namespace Rocket {
 				var elementsJq = $(elements);
 				elementsJq.find(".dropdown").each((i: number, elem: Element) => {
 					var elemJq = $(elem);
-					Rocket.Display.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
+					Display.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
 				})
 			});
 		})();

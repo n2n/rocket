@@ -282,7 +282,7 @@ namespace Rocket.Impl.Translation {
 		
 		private elemJq: JQuery;
 		private menuUlJq: JQuery;
-		private toggler: Rocket.Display.Toggler;
+		private toggler: Display.Toggler;
 	
 		constructor(private translatedContent: TranslatedContent) {
 			
@@ -298,7 +298,7 @@ namespace Rocket.Impl.Translation {
 					.append(this.menuUlJq = $("<ul></ul>"))
 					.append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
 			
-			this.toggler = Rocket.Display.Toggler.simple(buttonJq, menuJq);
+			this.toggler = Display.Toggler.simple(buttonJq, menuJq);
 			
 			this.elemJq.append(buttonJq);
 			this.elemJq.append(menuJq);
