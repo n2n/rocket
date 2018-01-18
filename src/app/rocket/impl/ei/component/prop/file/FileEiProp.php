@@ -170,9 +170,11 @@ class FileEiProp extends DraftableEiPropAdapter {
 		$meta->addJs('impl/js/thirdparty/colorbox/jquery.colorbox-min.js');
 		$meta->addJs('impl/js/image-preview.js');
 		
-		$uiComponent = new HtmlElement('div', null, new Link($file->getFileSource()->getUrl(),
-				$html->getImage($file, ThSt::crop(40, 35, true),
-						array('title' => $file->getOriginalName())), array('class' => 'rocket-image-previewable')));
+		$uiComponent = new HtmlElement('div', 
+				array('class' => 'rocket-simple-commands'), 
+				new Link($file->getFileSource()->getUrl(), 
+						$html->getImage($file, ThSt::crop(40, 30, true), array('title' => $file->getOriginalName())), 
+						array('class' => 'rocket-image-previewable')));
 		
 		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
 			$httpContext = $view->getHttpContext();
@@ -182,7 +184,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 							->toUrl(array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
-							'class' => 'rocket-control rocket-simple-commands btn btn-secondary', 'data-jhtml' => 'true')));
+							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));
 		}
 		
 		return $uiComponent;
