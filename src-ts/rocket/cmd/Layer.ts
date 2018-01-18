@@ -129,17 +129,17 @@ namespace Rocket.Cmd {
 		}		
 		
 		show() {
-			this.trigger(Layer.EventType.SHOW);
-			
 			this._visible = true;
 			this.jqLayer.show();
+			
+			this.trigger(Layer.EventType.SHOWED);
 		}
 		
 		hide() {
-			this.trigger(Layer.EventType.SHOW);
-			
 			this._visible = false;
 			this.jqLayer.hide();
+			
+			this.trigger(Layer.EventType.HIDDEN);
 		}
 		
 		get level(): number {
@@ -362,8 +362,8 @@ namespace Rocket.Cmd {
 	
 	export namespace Layer {
 		export enum EventType {
-			SHOW /*= "show"*/,
-			HIDE /*= "hide"*/,
+			SHOWED /*= "show"*/,
+			HIDDEN /*= "hide"*/,
 			CLOSE /*= "close"*/
 		}
 	}

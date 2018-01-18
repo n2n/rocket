@@ -206,7 +206,14 @@ namespace Rocket.Cmd {
 			var that = this;
 			layer.on(Layer.EventType.CLOSE, () => {
 				that.unregisterLayer(layer);
-			})
+				this.markCurrent();
+			});
+			layer.on(Layer.EventType.SHOWED, () => {
+				this.markCurrent();
+			});
+			layer.on(Layer.EventType.HIDDEN, () => {
+				this.markCurrent();
+			});
 			
 			if (dependentZone === null) {
 				this.layerTrigger(Container.LayerEventType.ADDED, layer);
@@ -216,7 +223,6 @@ namespace Rocket.Cmd {
 			let reopenable = false;
 			dependentZone.on(Zone.EventType.CLOSE, () => {
 				layer.close();
-				this.markCurrent();
 			});
 			dependentZone.on(Zone.EventType.CONTENT_CHANGED, () => {
 				layer.close();
@@ -224,13 +230,11 @@ namespace Rocket.Cmd {
 			dependentZone.on(Zone.EventType.HIDE, () => {
 				reopenable = layer.visible;
 				layer.hide();
-				this.markCurrent();
 			});
 			dependentZone.on(Zone.EventType.SHOW, () => {
 				if (!reopenable) return;
 				
 				layer.show();
-				this.markCurrent();
 			});
 			
 			this.layerTrigger(Container.LayerEventType.ADDED, layer);

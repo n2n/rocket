@@ -392,6 +392,13 @@ var Rocket;
                 var that = this;
                 layer.on(Cmd.Layer.EventType.CLOSE, () => {
                     that.unregisterLayer(layer);
+                    this.markCurrent();
+                });
+                layer.on(Cmd.Layer.EventType.SHOWED, () => {
+                    this.markCurrent();
+                });
+                layer.on(Cmd.Layer.EventType.HIDDEN, () => {
+                    this.markCurrent();
                 });
                 if (dependentZone === null) {
                     this.layerTrigger(Container.LayerEventType.ADDED, layer);
@@ -400,7 +407,6 @@ var Rocket;
                 let reopenable = false;
                 dependentZone.on(Cmd.Zone.EventType.CLOSE, () => {
                     layer.close();
-                    this.markCurrent();
                 });
                 dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
                     layer.close();
@@ -408,13 +414,11 @@ var Rocket;
                 dependentZone.on(Cmd.Zone.EventType.HIDE, () => {
                     reopenable = layer.visible;
                     layer.hide();
-                    this.markCurrent();
                 });
                 dependentZone.on(Cmd.Zone.EventType.SHOW, () => {
                     if (!reopenable)
                         return;
                     layer.show();
-                    this.markCurrent();
                 });
                 this.layerTrigger(Container.LayerEventType.ADDED, layer);
                 return layer;
@@ -640,14 +644,14 @@ var Rocket;
                 this.callbackRegistery.unregister(eventType.toString(), callback);
             }
             show() {
-                this.trigger(Layer.EventType.SHOW);
                 this._visible = true;
                 this.jqLayer.show();
+                this.trigger(Layer.EventType.SHOWED);
             }
             hide() {
-                this.trigger(Layer.EventType.SHOW);
                 this._visible = false;
                 this.jqLayer.hide();
+                this.trigger(Layer.EventType.HIDDEN);
             }
             get level() {
                 return this._level;
@@ -774,8 +778,8 @@ var Rocket;
         (function (Layer) {
             let EventType;
             (function (EventType) {
-                EventType[EventType["SHOW"] = 0] = "SHOW";
-                EventType[EventType["HIDE"] = 1] = "HIDE";
+                EventType[EventType["SHOWED"] = 0] = "SHOWED";
+                EventType[EventType["HIDDEN"] = 1] = "HIDDEN";
                 EventType[EventType["CLOSE"] = 2] = "CLOSE";
             })(EventType = Layer.EventType || (Layer.EventType = {}));
         })(Layer = Cmd.Layer || (Cmd.Layer = {}));
