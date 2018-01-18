@@ -7216,28 +7216,18 @@ var Rocket;
                 this.menuJq.show();
                 this.buttonJq.addClass("active");
                 let bodyJq = $("body");
-                let timeout = setTimeout(() => {
-                    this.closeCallback();
-                    clearTimeout(timeout);
-                }, 3000);
-                let timeoutCallback = (() => {
-                });
                 this.closeCallback = (e) => {
                     if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
                         return;
                     }
                     bodyJq.off("click", this.closeCallback);
                     this.menuJq.off("mouseleave", this.closeCallback);
-                    this.menuJq.off("mouseover");
                     this.closeCallback = null;
                     this.menuJq.hide();
                     this.buttonJq.removeClass("active");
                 };
                 bodyJq.on("click", this.closeCallback);
-                this.menuJq.on("mouseleave", timeoutCallback);
-                this.menuJq.on("mouseover", () => {
-                    clearTimeout(timeout);
-                });
+                this.menuJq.on("mouseleave", this.closeCallback);
             }
             static simple(buttonJq, menuJq) {
                 let toggler = new Toggler(buttonJq, menuJq);

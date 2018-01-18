@@ -19,7 +19,7 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  * 
  */
-/// <reference path="../../display/Group.ts" />
+/// <reference path="../../display/StructureElement.ts" />
 namespace Rocket.Impl.Relation {
 	import cmd = Rocket.Cmd;
 	import display = Rocket.Display;
