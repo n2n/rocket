@@ -12,6 +12,8 @@
 	$view->assert($mappingForm instanceof MappingForm);
 	
 	$eiuEntry = $mappingForm->getEntryForm()->getChosenEntryTypeForm()->getEiuEntryGui()->getEiuEntry();
+	
+	$grouped = $view->getParam('grouped', false, true);
 ?>
 
 <div class="rocket-impl-entry"
@@ -74,13 +76,18 @@
 			</div>
 		<?php endif ?>
 	
-		<div class="rocket-impl-body rocket-group rocket-group-simple">
-			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
-			<div class="rocket-controls">
-				<?php $view->out($mappingForm->getEntryForm()
-						->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
+		<?php if (!$grouped): ?>
+			<?php $view->out($mappingForm->getEntryForm()
+					->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
+		<?php else: ?>
+			<div class="rocket-impl-body rocket-group rocket-group-simple">
+				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
+				<div class="rocket-controls">
+					<?php $view->out($mappingForm->getEntryForm()
+							->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
+				</div>
 			</div>
-		</div>
+		<?php endif ?>
 	<?php endif ?>
 	
 	<?php $formHtml->input('orderIndex', array('class' => 'rocket-impl-order-index')) ?>
