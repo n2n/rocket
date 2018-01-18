@@ -143,6 +143,15 @@ var Rocket;
                 nav.scrollToPos(navStore.scrollPos);
             });
         })();
+        (function () {
+            Jhtml.ready((elements) => {
+                var elementsJq = $(elements);
+                elementsJq.find(".dropdown").each((i, elem) => {
+                    var elemJq = $(elem);
+                    Rocket.Impl.Translation.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
+                });
+            });
+        })();
     });
     function scan(context = null) {
         initializer.scan();
@@ -6556,7 +6565,6 @@ var Rocket;
                 open() {
                     if (this.closeCallback)
                         return;
-                    console.log("show");
                     this.menuJq.show();
                     this.buttonJq.addClass("active");
                     let bodyJq = $("body");
