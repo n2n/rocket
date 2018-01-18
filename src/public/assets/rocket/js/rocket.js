@@ -6042,6 +6042,12 @@ var Rocket;
                         }
                         this.lastAddControl.jQuery.hide();
                     }
+                    else if (!this.isExpanded()) {
+                        if (this.firstAddControl !== null) {
+                            this.firstAddControl.jQuery.hide();
+                        }
+                        this.lastAddControl.jQuery.show();
+                    }
                     else {
                         if (this.firstAddControl !== null) {
                             this.firstAddControl.jQuery.show();
@@ -6317,7 +6323,12 @@ var Rocket;
                     }
                     if (this.currentEntry || this.newEntry) {
                         this.addControl.jQuery.hide();
-                        this.firstReplaceControl.jQuery.show();
+                        if (this.isExpanded()) {
+                            this.firstReplaceControl.jQuery.show();
+                        }
+                        else {
+                            this.firstReplaceControl.jQuery.hide();
+                        }
                         this.secondReplaceControl.jQuery.show();
                     }
                     else {
