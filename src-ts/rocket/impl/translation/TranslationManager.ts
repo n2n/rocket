@@ -9,8 +9,8 @@ namespace Rocket.Impl.Translation {
 		
 		constructor(private jqElem: JQuery) {
 			this.min = parseInt(jqElem.data("rocket-impl-min"));
-			
-			Toggler.simple(this.initControl(), this.initMenu());
+
+			Rocket.Display.Toggler.simple(this.initControl(), this.initMenu());
 			
 			this.val();
 		}
