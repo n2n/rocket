@@ -2,6 +2,7 @@ namespace Rocket {
 	import Nav = Rocket.Display.Nav;
 	import NavState = Rocket.Display.NavState;
 	import NavGroup = Rocket.Display.NavGroup;
+	import Toggler = Rocket.Impl.Translation.Toggler;
 	let container: Rocket.Cmd.Container;
 	let blocker: Rocket.Cmd.Blocker;
 	let initializer: Rocket.Display.Initializer;
@@ -173,6 +174,16 @@ namespace Rocket {
 				});
 
 				nav.scrollToPos(navStore.scrollPos);
+			});
+		})();
+
+		(function() {
+			Jhtml.ready((elements) => {
+				var elementsJq = $(elements);
+				elementsJq.find(".dropdown").each((i, elem: Element) => {
+					var elemJq = $(elem);
+					Rocket.Impl.Translation.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
+				})
 			});
 		})();
 	});
