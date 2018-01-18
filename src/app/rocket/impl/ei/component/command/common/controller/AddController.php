@@ -73,8 +73,7 @@ class AddController extends ControllerAdapter {
 			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyIdRep);
 		}
 		
-		$entryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('entryForm')))
-				->forceRootGroup();
+		$entryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('entryForm')));
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $entryForm, $eiuFrame->getNestedSetStrategy());
