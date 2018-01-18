@@ -1,4 +1,4 @@
-namespace Rocket.Impl.Translation {
+namespace Rocket.Display {
 	
 	export class Toggler {
 		private closeCallback: (e?: any) => any;
@@ -36,8 +36,7 @@ namespace Rocket.Impl.Translation {
 		
 		open() {
 			if (this.closeCallback) return;
-			
-			console.log("show");
+
 			this.menuJq.show();
 			this.buttonJq.addClass("active");
 			let bodyJq = $("body");
