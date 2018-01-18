@@ -1,4 +1,5 @@
 .rocket-simple-commands {
+    > .dropdown > button, 
     > .btn { 
         width: 2.25rem;
         text-align: center;
@@ -27,6 +28,12 @@
         > span {
             display: none;
         }
+    }
+}
+
+.rocket-simple-commands {
+    > .dropdown {
+        display: inline-block;
     }
 }
 
