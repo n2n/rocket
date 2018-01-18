@@ -22,6 +22,7 @@
 namespace rocket\spec\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\dispatch\mag\MagCollection;
 use rocket\spec\ei\manage\util\model\EiuFactory;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
@@ -698,7 +699,29 @@ class RocketUiOutfitter implements UiOutfitter {
 			return $container;
 		}
 
-		return new HtmlElement('div', null, '');
+		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
+			return new HtmlElement('button', HtmlUtils::mergeAttrs(
+				$this->buildAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
+				new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_ADD), $contents));
+		}
+
+		if ($elemNature & self::EL_NATURE_CONTROL_REMOVE) {
+			return new HtmlElement('button', HtmlUtils::mergeAttrs(
+				$this->buildAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
+				new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_REMOVE), $contents));
+		}
+
+
+		if ($elemNature & self::EL_NATURE_ARRAY_ITEM_CONTROL) {
+			$container = new HtmlElement('div', array('class' => 'row'), '');
+
+			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
+			$container->appendLn(new HtmlElement('div',
+				array('class' => 'col-auto ' . MagCollection::CONTROL_WRAPPER_CLASS),
+				$this->buildElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
+
+			return $container;
+		}
 	}
 	
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
