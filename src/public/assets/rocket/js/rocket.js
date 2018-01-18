@@ -5969,7 +5969,7 @@ var Rocket;
                     this.jqEmbedded = $("<div />", {
                         "class": "rocket-impl-embedded"
                     });
-                    let jqGroup = this.jqToMany.children(".rocket-group");
+                    let jqGroup = this.jqToMany.children(".rocket-group").children(".rocket-control");
                     if (jqGroup.length > 0) {
                         jqGroup.append(this.jqEmbedded);
                     }
