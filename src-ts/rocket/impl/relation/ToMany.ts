@@ -349,6 +349,7 @@ namespace Rocket.Impl.Relation {
 		private firstAddControl: AddControl = null;
 		private lastAddControl: AddControl = null
 		private entryAddControls: Array<AddControl> = new Array<AddControl>();
+		private embeddedContainerJq: JQuery;
 		
 		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToMany = jqToMany;
@@ -363,10 +364,12 @@ namespace Rocket.Impl.Relation {
 			
 			let jqGroup = this.jqToMany.children(".rocket-group").children(".rocket-control");
 			if (jqGroup.length > 0) {
-				jqGroup.append(this.jqEmbedded);
+				this.embeddedContainerJq = jqGroup;
 			} else {
-				this.jqToMany.append(this.jqEmbedded);
+				this.embeddedContainerJq = this.jqToMany;
 			}
+			
+			this.embeddedContainerJq.append(this.jqEmbedded);
 			
 			this.jqEntries = $("<div />");
 			this.jqEmbedded.append(this.jqEntries);
@@ -658,7 +661,7 @@ namespace Rocket.Impl.Relation {
 			this.expandZone = null;
 			
 			this.jqEmbedded.detach();
-			this.jqToMany.append(this.jqEmbedded);
+			this.embeddedContainerJq.append(this.jqEmbedded);
 			
 			for (let i in this.entries) {
 				this.entries[i].reduce();
