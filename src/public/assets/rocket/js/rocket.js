@@ -148,7 +148,7 @@ var Rocket;
                 var elementsJq = $(elements);
                 elementsJq.find(".dropdown").each((i, elem) => {
                     var elemJq = $(elem);
-                    Rocket.Impl.Translation.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
+                    Rocket.Display.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
                 });
             });
         })();
@@ -6544,62 +6544,6 @@ var Rocket;
     (function (Impl) {
         var Translation;
         (function (Translation) {
-            class Toggler {
-                constructor(buttonJq, menuJq) {
-                    this.buttonJq = buttonJq;
-                    this.menuJq = menuJq;
-                    menuJq.hide();
-                }
-                toggle(e) {
-                    if (this.closeCallback) {
-                        this.closeCallback(e);
-                        return;
-                    }
-                    this.open();
-                }
-                close() {
-                    if (!this.closeCallback)
-                        return;
-                    this.closeCallback();
-                }
-                open() {
-                    if (this.closeCallback)
-                        return;
-                    this.menuJq.show();
-                    this.buttonJq.addClass("active");
-                    let bodyJq = $("body");
-                    this.closeCallback = (e) => {
-                        if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
-                            return;
-                        }
-                        bodyJq.off("click", this.closeCallback);
-                        this.menuJq.off("mouseleave", this.closeCallback);
-                        this.closeCallback = null;
-                        this.menuJq.hide();
-                        this.buttonJq.removeClass("active");
-                    };
-                    bodyJq.on("click", this.closeCallback);
-                    this.menuJq.on("mouseleave", this.closeCallback);
-                }
-                static simple(buttonJq, menuJq) {
-                    let toggler = new Toggler(buttonJq, menuJq);
-                    buttonJq.on("click", (e) => {
-                        e.stopImmediatePropagation();
-                        toggler.toggle(e);
-                    });
-                    return toggler;
-                }
-            }
-            Translation.Toggler = Toggler;
-        })(Translation = Impl.Translation || (Impl.Translation = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        var Translation;
-        (function (Translation) {
             class TranslationManager {
                 constructor(jqElem) {
                     this.jqElem = jqElem;
@@ -6609,7 +6553,7 @@ var Rocket;
                     this.buttonJq = null;
                     this.changing = false;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
-                    Translation.Toggler.simple(this.initControl(), this.initMenu());
+                    Toggler.simple(this.initControl(), this.initMenu());
                     this.val();
                 }
                 val() {
@@ -7026,7 +6970,7 @@ var Rocket;
                     let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
-                    this.toggler = Translation.Toggler.simple(buttonJq, menuJq);
+                    this.toggler = Toggler.simple(buttonJq, menuJq);
                     this.elemJq.append(buttonJq);
                     this.elemJq.append(menuJq);
                 }
@@ -7096,7 +7040,7 @@ var Rocket;
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { "class": "rocket-impl-tooltip", "text": tooltip }))
                         .hide();
-                    Translation.Toggler.simple(buttonJq, menuJq);
+                    Toggler.simple(buttonJq, menuJq);
                     this.jqContainer.append(menuJq);
                 }
                 updateStatus() {
@@ -7244,5 +7188,58 @@ var Rocket;
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Display;
+    (function (Display) {
+        class Toggler {
+            constructor(buttonJq, menuJq) {
+                this.buttonJq = buttonJq;
+                this.menuJq = menuJq;
+                menuJq.hide();
+            }
+            toggle(e) {
+                if (this.closeCallback) {
+                    this.closeCallback(e);
+                    return;
+                }
+                this.open();
+            }
+            close() {
+                if (!this.closeCallback)
+                    return;
+                this.closeCallback();
+            }
+            open() {
+                if (this.closeCallback)
+                    return;
+                this.menuJq.show();
+                this.buttonJq.addClass("active");
+                let bodyJq = $("body");
+                this.closeCallback = (e) => {
+                    if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
+                        return;
+                    }
+                    bodyJq.off("click", this.closeCallback);
+                    this.menuJq.off("mouseleave", this.closeCallback);
+                    this.closeCallback = null;
+                    this.menuJq.hide();
+                    this.buttonJq.removeClass("active");
+                };
+                bodyJq.on("click", this.closeCallback);
+                this.menuJq.on("mouseleave", this.closeCallback);
+            }
+            static simple(buttonJq, menuJq) {
+                let toggler = new Toggler(buttonJq, menuJq);
+                buttonJq.on("click", (e) => {
+                    e.stopImmediatePropagation();
+                    toggler.toggle(e);
+                });
+                return toggler;
+            }
+        }
+        Display.Toggler = Toggler;
+    })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map
