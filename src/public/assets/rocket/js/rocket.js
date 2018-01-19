@@ -2704,9 +2704,10 @@ var Rocket;
     var Display;
     (function (Display) {
         class Toggler {
-            constructor(buttonJq, menuJq) {
+            constructor(buttonJq, menuJq, mouseLeaveMs) {
                 this.buttonJq = buttonJq;
                 this.menuJq = menuJq;
+                this.mouseLeaveMs = mouseLeaveMs;
                 menuJq.hide();
             }
             toggle(e) {
@@ -2727,21 +2728,38 @@ var Rocket;
                 this.menuJq.show();
                 this.buttonJq.addClass("active");
                 let bodyJq = $("body");
+                let events = [];
                 this.closeCallback = (e) => {
                     if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
                         return;
                     }
-                    bodyJq.off("click", this.closeCallback);
-                    this.menuJq.off("mouseleave", this.closeCallback);
+                    for (let event of events) {
+                        event.off();
+                    }
                     this.closeCallback = null;
                     this.menuJq.hide();
                     this.buttonJq.removeClass("active");
                 };
-                bodyJq.on("click", this.closeCallback);
-                this.menuJq.on("mouseleave", this.closeCallback);
+                events.push(new TogglerEvent(bodyJq, "click", this.closeCallback));
+                if (this.mouseLeaveMs !== null) {
+                    let delayTimer = new Timer(this.closeCallback, this.mouseLeaveMs);
+                    delayTimer.start();
+                    events.push(new TogglerEvent(bodyJq, "click", () => {
+                        delayTimer.reset();
+                    }));
+                    events.push(new TogglerEvent(this.menuJq, "mouseleave", () => {
+                        delayTimer.start();
+                    }));
+                    events.push(new TogglerEvent(this.menuJq, "mouseenter", () => {
+                        delayTimer.reset();
+                    }));
+                }
+                for (let event of events) {
+                    event.on();
+                }
             }
-            static simple(buttonJq, menuJq) {
-                let toggler = new Toggler(buttonJq, menuJq);
+            static simple(buttonJq, menuJq, mouseLeaveMs = 3000) {
+                let toggler = new Toggler(buttonJq, menuJq, mouseLeaveMs);
                 buttonJq.on("click", (e) => {
                     e.stopImmediatePropagation();
                     toggler.toggle(e);
@@ -2750,6 +2768,43 @@ var Rocket;
             }
         }
         Display.Toggler = Toggler;
+        class Timer {
+            constructor(callback, delay) {
+                this.callback = callback;
+                this.delay = delay;
+                this.timerId = null;
+            }
+            start() {
+                if (this.started) {
+                    this.reset();
+                }
+                this.timerId = window.setTimeout(this.callback, this.delay);
+            }
+            get started() {
+                return this.timerId != null;
+            }
+            reset() {
+                if (!this.started)
+                    return;
+                window.clearTimeout(this.timerId);
+                this.timerId = null;
+            }
+        }
+        Display.Timer = Timer;
+        class TogglerEvent {
+            constructor(elemJq, eventName, callback) {
+                this.elemJq = elemJq;
+                this.eventName = eventName;
+                this.callback = callback;
+            }
+            on() {
+                this.elemJq.on(this.eventName, this.callback);
+            }
+            off() {
+                this.elemJq.off(this.eventName, this.callback);
+            }
+        }
+        Display.TogglerEvent = TogglerEvent;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
