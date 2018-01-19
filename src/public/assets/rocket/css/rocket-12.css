@@ -4550,14 +4550,14 @@ ul.rocket-content-item > li > span {
   margin: 0;
 }
 
-.rocket-group > .rocket-group-toolbar {
+.rocket-group .rocket-group-toolbar {
   position: absolute;
   top: 0.5rem;
   right: 1rem;
 }
 
-.rocket-group > .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group > .rocket-group-toolbar > .rocket-simple-commands {
+.rocket-group .rocket-group-toolbar > .rocket-group-controls,
+.rocket-group .rocket-group-toolbar > .rocket-simple-commands {
   display: inline-block;
   margin-left: 1rem;
 }
