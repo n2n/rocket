@@ -26,15 +26,15 @@
 	],
 	"require" : {
 		"php" : ">=7.0",
-		"n2n/n2n-composer-module-installer" : "master-dev",
-		"n2n/n2n" : "master-dev",
-		"n2n/n2n-batch" : "master-dev",
-		"n2n/n2n-context" : "master-dev",
-		"n2n/n2n-impl-persistence-meta" : "master-dev",
-		"n2n/n2n-impl-persistence-orm" : "master-dev",
-		"n2n/n2n-impl-web-dispatch" : "master-dev",
-		"n2n/n2n-impl-web-ui" : "master-dev",
-		"n2n/n2nutil-jquery" : "master-dev"
+		"n2n/n2n-composer-module-installer" : "7.1.x-dev",
+		"n2n/n2n" : "7.2.x-dev",
+		"n2n/n2n-batch" : "7.2.x-dev",
+		"n2n/n2n-context" : "7.2.x-dev",
+		"n2n/n2n-impl-persistence-meta" : "7.2.x-dev",
+		"n2n/n2n-impl-persistence-orm" : "7.2.x-dev",
+		"n2n/n2n-impl-web-dispatch" : "7.2.x-dev",
+		"n2n/n2n-impl-web-ui" : "7.2.x-dev",
+		"n2n/n2nutil-jquery" : "1.2.x-dev"
 	},
 	"autoload" : {
 		"psr-4" : {
