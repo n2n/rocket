@@ -68,11 +68,11 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 
 	public function getPrivilegeLabel(N2nLocale $n2nLocale) {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
-		return $dtc->translate('common_add_label');
+		return $dtc->translate('common_new_entry_label');
 	}
 
 	public function createEiCommandPrivilege(N2nContext $n2nContext): EiCommandPrivilege {
-		$pi = new CommonEiCommandPrivilege(new Lstr('common_add_label', Rocket::NS));
+		$pi = new CommonEiCommandPrivilege(new Lstr('common_new_entry_label', Rocket::NS));
 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
 				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_live_entry_label', Rocket::NS)));
 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
@@ -90,7 +90,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$options = array();
 		
 		if (null === $this->eiEngine->getEiType()->getNestedSetStrategy()) {
-			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_add_label');
+			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_new_entry_label');
 		} else {
 			$options[self::CONTROL_ADD_ROOT_BRANCH_KEY] = $dtc->t('ei_impl_add_root_branch_label');
 		}
@@ -110,7 +110,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
 		$controls[$key] = $eiuControlFactory->createJhtml(new ControlButton(
-				$dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_add_label'),
+				$dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
 				null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
 		
 		if ($eiu->frame()->isDraftingEnabled()) {
