@@ -95,11 +95,13 @@ body {
     right: 0;
     left: $rocket-global-nav-width;
     padding: 1rem 3rem 1rem 4rem;
-    background-color: $gray-100;
-    border-top: 1px solid $gray-400;
+    background-color: $gray-200;
     display: grid;
     grid-template-columns: auto auto;
     z-index: 50;
+    .btn {
+        margin-right: 0.5rem;
+    }
 
 }
 

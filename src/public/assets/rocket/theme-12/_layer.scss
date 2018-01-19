@@ -36,7 +36,7 @@
 
 .rocket-main-layer, 
 .rocket-layer {
-	max-height: calc(100vh - #{$rocket-header-height});
+	max-height: calc(100vh - 7.75rem);
 	overflow-y: hidden;
 }
 
@@ -67,7 +67,7 @@
 
 .rocket-main-layer.rocket-active, 
 .rocket-layer.rocket-active {
-	min-height: calc(100vh - 7.75rem);
+	min-height: calc(100vh - 6.75rem);
 	max-height: none;
 	overflow-y: visible;
 }

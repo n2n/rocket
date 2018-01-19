@@ -44,3 +44,7 @@ h1, .h1 {
     right: 0;
     left: auto;
 }
+
+.rocket-simple-commands .dropdown-toggle::after {
+    display: none;
+}

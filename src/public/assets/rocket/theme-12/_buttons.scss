@@ -44,11 +44,21 @@ td .rocket-simple-commands {
     display: none;
 }
 
-.rocket-zone-commands .btn:not(.rocket-important) {
-    @include button-variant($secondary, darken($secondary, 15));
+.rocket-zone-commands {
+    
+    .btn:not(.rocket-important) {
+        @include button-variant($secondary, darken($secondary, 15));
+    }
 }
 
 
 .dropdown {
     display: inline-block;
+}
+
+
+.btn {
+    .fa + span {
+        margin-left: 0.5rem;
+    }
 }

@@ -1,7 +1,7 @@
 .rocket-group {
     background: $white;
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     padding: 0;
     border-bottom: 1px solid $input-border-color;
 
@@ -42,7 +42,7 @@
     > .rocket-control {
         padding: 0 1rem;
         border: 1px solid $input-border-color;
-        background: rgba($gray-900, 0.035);
+        background: rgba($gray-500, 0.08);
     }
 }
 

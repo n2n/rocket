@@ -216,6 +216,7 @@ td {
 		padding: 0;
 		display: grid;
 		grid-template-columns: 1fr auto;
+		margin: 0;
 		> label {
 			grid-column-start: 2;
 			grid-column-end: 3;
@@ -228,6 +229,7 @@ td {
 			grid-row-start: 1;
 			grid-column-start: 1;
 			grid-column-end: 2;
+			padding: 0;
 		}
 
 	}

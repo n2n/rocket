@@ -1656,7 +1656,7 @@ mark,
   background-color: #fff;
   background-image: none;
   background-clip: padding-box;
-  border: 1px solid #C2BDB6;
+  border: 1px solid #DAD7D3;
   border-radius: 0;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
@@ -2674,7 +2674,7 @@ input[type="button"].btn-block {
 .dropdown-item {
   display: block;
   width: 100%;
-  padding: 0.25rem 1.5rem;
+  padding: 0.375rem 1rem;
   clear: both;
   font-weight: 400;
   color: #373431;
@@ -2707,7 +2707,7 @@ input[type="button"].btn-block {
 
 .dropdown-header {
   display: block;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
   margin-bottom: 0;
   font-size: 0.875rem;
   color: #837E78;
@@ -2879,7 +2879,7 @@ input[type="button"].btn-block {
   color: #4F4A46;
   text-align: center;
   background-color: #F7F5F5;
-  border: 1px solid #C2BDB6;
+  border: 1px solid #DAD7D3;
 }
 
 .input-group-addon.form-control-sm,
@@ -3712,11 +3712,14 @@ body {
   right: 0;
   left: 14rem;
   padding: 1rem 3rem 1rem 4rem;
-  background-color: #FBFAFA;
-  border-top: 1px solid #DAD7D3;
+  background-color: #F7F5F5;
   display: grid;
   grid-template-columns: auto auto;
   z-index: 50;
+}
+
+.rocket-zone-commands .btn {
+  margin-right: 0.5rem;
 }
 
 .rocket-partial-commands {
@@ -3851,7 +3854,7 @@ body {
 
 .rocket-main-layer,
 .rocket-layer {
-  max-height: calc(100vh - 2.75rem);
+  max-height: calc(100vh - 7.75rem);
   overflow-y: hidden;
 }
 
@@ -3884,7 +3887,7 @@ body {
 
 .rocket-main-layer.rocket-active,
 .rocket-layer.rocket-active {
-  min-height: calc(100vh - 7.75rem);
+  min-height: calc(100vh - 6.75rem);
   max-height: none;
   overflow-y: visible;
 }
@@ -3939,7 +3942,7 @@ body {
 
 .rocket-impl-translation-status-menu > ul > li,
 .rocket-impl-translation-menu > ul > li {
-  border-bottom: 1px solid #C2BDB6;
+  border-bottom: 1px solid #DAD7D3;
 }
 
 .rocket-impl-translation-status-menu > ul > li:last-child,
@@ -4093,7 +4096,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  border: 1px solid #C2BDB6;
+  border: 1px solid #DAD7D3;
   text-align: left;
   vertical-align: top;
 }
@@ -4125,6 +4128,7 @@ td .rocket-impl-translation {
   padding: 0;
   display: grid;
   grid-template-columns: 1fr auto;
+  margin: 0;
 }
 
 td .rocket-impl-translation > label {
@@ -4140,6 +4144,7 @@ td .rocket-impl-translation > .rocket-control {
   grid-row-start: 1;
   grid-column-start: 1;
   grid-column-end: 2;
+  padding: 0;
 }
 
 .rocket-nav-group {
@@ -4323,40 +4328,43 @@ ul.rocket-content-item > li > span {
   border-top: 5px solid #ECEBE9;
 }
 
-.rocket-tree-level-1 > td:nth-child(2) {
-  padding-left: 2rem;
-  content: "1...";
+.rocket-tree-level-0 > td {
+  font-weight: bold;
 }
 
-.rocket-tree-level-2 > td:nth-child(2) {
-  padding-left: 3rem;
+.rocket-tree-level-1 > td:nth-child(2)::before {
+  content: '― ';
 }
 
-.rocket-tree-level-3 > td:nth-child(2) {
-  padding-left: 4rem;
+.rocket-tree-level-2 > td:nth-child(2)::before {
+  content: '― ― ';
 }
 
-.rocket-tree-level-4 > td:nth-child(2) {
-  padding-left: 5rem;
+.rocket-tree-level-3 > td:nth-child(2)::before {
+  content: '― ― ― ';
 }
 
-.rocket-tree-level-5 > td:nth-child(2) {
-  padding-left: 6rem;
+.rocket-tree-level-4 > td:nth-child(2)::before {
+  content: '― ― ― ― ';
 }
 
-.rocket-tree-level-6 > td:nth-child(2) {
-  padding-left: 7rem;
+.rocket-tree-level-5 > td:nth-child(2)::before {
+  content: '― ― ― ― ― ';
 }
 
-.rocket-tree-level-7 > td:nth-child(2) {
-  padding-left: 8rem;
+.rocket-tree-level-6 > td:nth-child(2)::before {
+  content: '― ― ― ― ― ― ';
 }
 
-.rocket-tree-level-8 > td:nth-child(2) {
-  padding-left: 9rem;
+.rocket-tree-level-7 > td:nth-child(2)::before {
+  content: '― ― ― ― ― ― ― ';
 }
 
-.rocket-tree-level-9 > td:nth-child(2) {
+.rocket-tree-level-8 > td:nth-child(2)::before {
+  content: '― ― ― ― ― ― ― ― ';
+}
+
+.rocket-tree-level-9 > td:nth-child(2)::before {
   padding-left: 10rem;
 }
 
@@ -4377,7 +4385,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-content > .rocket-entry,
 .rocket-content > .rocket-form {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
 }
 
 .rocket-field {
@@ -4478,7 +4486,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-control > iframe {
   width: 100%;
-  border: 1px solid #C2BDB6;
+  border: 1px solid #DAD7D3;
 }
 
 /**
@@ -4488,14 +4496,14 @@ ul.rocket-content-item > li > span {
   margin: 0;
   padding: 0;
   list-style: none;
-  border: 1px solid #C2BDB6;
+  border: 1px solid #DAD7D3;
   max-height: 20rem;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .rocket-impl-selector > ul > li {
-  border-bottom: 1px solid #C2BDB6;
+  border-bottom: 1px solid #DAD7D3;
   clear: both;
 }
 
@@ -4530,9 +4538,9 @@ ul.rocket-content-item > li > span {
 .rocket-group {
   background: #fff;
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   padding: 0;
-  border-bottom: 1px solid #C2BDB6;
+  border-bottom: 1px solid #DAD7D3;
 }
 
 .rocket-group > label {
@@ -4578,8 +4586,8 @@ ul.rocket-content-item > li > span {
 .rocket-group .rocket-group-simple > .rocket-control,
 .rocket-group .rocket-group-main > .rocket-control {
   padding: 0 1rem;
-  border: 1px solid #C2BDB6;
-  background: rgba(55, 52, 49, 0.035);
+  border: 1px solid #DAD7D3;
+  background: rgba(194, 189, 182, 0.08);
 }
 
 @media (min-width: 768px) {
@@ -4708,6 +4716,10 @@ td .rocket-simple-commands > .btn > i {
 
 .dropdown {
   display: inline-block;
+}
+
+.btn .fa + span {
+  margin-left: 0.5rem;
 }
 
 .rocket-highlighted {
@@ -4859,19 +4871,8 @@ td .rocket-simple-commands > .btn > i {
   left: 0px;
 }
 
-/**
- * Filter
- */
-.rocket-impl-critmod {
-  position: relative;
-}
-
 .rocket-impl-critmod-select-container {
-  background-color: #ECEBE9;
-  padding: 1rem 1rem;
   position: relative;
-  top: -1rem;
-  margin-bottom: -1rem;
   z-index: 1;
 }
 
@@ -4885,13 +4886,15 @@ td .rocket-simple-commands > .btn > i {
 }
 
 .rocket-impl-critmod-form-container {
-  margin: 0 -3rem 0 -4rem;
+  margin: 1rem -3rem 1rem -4rem;
 }
 
 .rocket-impl-critmod {
+  position: relative;
   background-color: #ECEBE9;
   padding: 1rem 4rem;
   border-bottom: 1px solid #C2BDB6;
+  border-top: 1px solid #C2BDB6;
 }
 
 .rocket-filter-items {
@@ -4959,11 +4962,11 @@ td .rocket-simple-commands > .btn > i {
   padding: 0;
   margin: 0;
   list-style: none;
-  border: 1px solid #C2BDB6;
+  border: 1px solid #DAD7D3;
 }
 
 .rocket-impl-multi-type-menu > li {
-  border-bottom: 1px solid #C2BDB6;
+  border-bottom: 1px solid #DAD7D3;
 }
 
 .rocket-impl-multi-type-menu > li > button {
@@ -5092,6 +5095,10 @@ h1, .h1 {
 .rocket-simple-commands .dropdown-menu {
   right: 0;
   left: auto;
+}
+
+.rocket-simple-commands .dropdown-toggle::after {
+  display: none;
 }
 
 .align-baseline {
