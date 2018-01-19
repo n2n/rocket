@@ -4,12 +4,12 @@
     "description": "rocket cmf",
     "keywords": ["cms","cmf","n2n"],
     "homepage": "https://n2n.rocks/",
-    "license": "GNU LGPL",
+    "license": "LGPL-3.0-or-later",
     "authors": [
         {
             "name": "Andreas von Burg",
             "email": "a@von-burg.net",
-            "homepage": "http://www.von-burg.net",
+            "homepage": "https://www.von-burg.net",
             "role": "Architect, Lead Developer, Concept"
         },
         {
