@@ -4555,7 +4555,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-group > .rocket-control {
   padding: 0 1rem;
-  margin: 0;
+  margin: 0 !important;
 }
 
 .rocket-group .rocket-group-toolbar {
