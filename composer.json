@@ -8,7 +8,7 @@
 		"n2n"
 	],
 	"homepage" : "https://n2n.rocks/",
-	"license" : "LGPL-3.0",
+	"license" : "LGPL-3.0-or-later",
 	"authors" : [{
 			"name" : "Andreas von Burg",
 			"email" : "a@von-burg.net",
