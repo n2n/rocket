@@ -4573,7 +4573,7 @@ ul.rocket-content-item > li > span {
 .rocket-group .rocket-group-simple,
 .rocket-group .rocket-group-main {
   border: none;
-  background-color: transparent;
+  background-color: inherit;
 }
 
 .rocket-group .rocket-group-simple > label,
