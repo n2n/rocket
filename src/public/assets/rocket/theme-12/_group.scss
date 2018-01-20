@@ -52,7 +52,7 @@
         > .rocket-control {
             .rocket-editable,
             .rocket-read-only {
-                > label {
+                > label:not(.rocket-locale-label) {
                     width: calc(14rem - 1px);
                 }
                 > .rocket-control {

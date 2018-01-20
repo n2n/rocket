@@ -4591,10 +4591,10 @@ ul.rocket-content-item > li > span {
 }
 
 @media (min-width: 768px) {
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > label,
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > label,
-  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > label,
-  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > label {
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > label:not(.rocket-locale-label),
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > label:not(.rocket-locale-label),
+  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > label:not(.rocket-locale-label),
+  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > label:not(.rocket-locale-label) {
     width: calc(14rem - 1px);
   }
   .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > .rocket-control,
