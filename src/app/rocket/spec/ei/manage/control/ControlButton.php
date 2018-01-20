@@ -121,7 +121,7 @@ class ControlButton {
 	}
 	
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isStatic() {
 		return $this->static;
