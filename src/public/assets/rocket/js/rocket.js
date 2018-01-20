@@ -1070,7 +1070,7 @@ var Rocket;
                     buttonConfig.severity = Display.Severity.SECONDARY;
                 }
                 var jqButton = $("<button />", {
-                    "class": "btn btn-" + buttonConfig.severity,
+                    "class": "btn btn-" + buttonConfig.severity + (buttonConfig.important ? " rocket-important" : ""),
                     "title": buttonConfig.tooltip,
                     "type": "button"
                 }).append($("<i />", {
@@ -1490,6 +1490,9 @@ var Rocket;
                     this.context.jQuery.append(commandsJq);
                 }
                 return commandsJq;
+            }
+            get zoneCommandsJq() {
+                return this.getCommandsJq();
             }
             get partialCommandList() {
                 if (this._partialCommandList !== null) {
@@ -5940,8 +5943,9 @@ var Rocket;
                     if (ocs.length == 0)
                         return;
                     ocs[0].initSelector(this.browserSelectorObserver = new Rocket.Display.MultiEntrySelectorObserver());
+                    zone.menu.zoneCommandsJq.find(".rocket-important").removeClass("rocket-important");
                     var that = this;
-                    zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+                    zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label"), severity: Rocket.Display.Severity.PRIMARY, important: true }).click(function () {
                         that.updateSelection();
                         zone.layer.hide();
                     });
@@ -6616,20 +6620,24 @@ var Rocket;
                         });
                     });
                 }
-                iniBrowserPage(context) {
+                iniBrowserPage(zone) {
                     if (this.browserLayer === null)
                         return;
-                    var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
+                    var ocs = Impl.Overview.OverviewPage.findAll(zone.jQuery);
                     if (ocs.length == 0)
                         return;
                     ocs[0].initSelector(this.browserSelectorObserver = new Rocket.Display.SingleEntrySelectorObserver());
-                    var that = this;
-                    context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
-                        that.updateSelection();
-                        context.layer.hide();
+                    zone.menu.zoneCommandsJq.find(".rocket-important").removeClass("rocket-important");
+                    zone.menu.partialCommandList.createJqCommandButton({
+                        label: this.jqElem.data("select-label"),
+                        severity: Rocket.Display.Severity.PRIMARY,
+                        important: true
+                    }).click(() => {
+                        this.updateSelection();
+                        zone.layer.hide();
                     });
-                    context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
-                        context.layer.hide();
+                    zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(() => {
+                        zone.layer.hide();
                     });
                     this.updateBrowser();
                 }

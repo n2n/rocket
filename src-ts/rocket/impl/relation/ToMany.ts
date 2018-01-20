@@ -247,8 +247,10 @@ namespace Rocket.Impl.Relation {
 			
 			ocs[0].initSelector(this.browserSelectorObserver = new Display.MultiEntrySelectorObserver());
 			
+			zone.menu.zoneCommandsJq.find(".rocket-important").removeClass("rocket-important");
+			
 			var that = this;
-			zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+			zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label"), severity: Display.Severity.PRIMARY, important: true }).click(function () {
 				that.updateSelection();
 				zone.layer.hide();
 			});

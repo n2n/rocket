@@ -550,6 +550,10 @@ namespace Rocket.Cmd {
 			return commandsJq;
 		}
 		
+		get zoneCommandsJq(): JQuery {
+			return this.getCommandsJq();
+		}
+		
 		get partialCommandList(): display.CommandList {
 			if (this._partialCommandList !== null) {
 				return this._partialCommandList;
