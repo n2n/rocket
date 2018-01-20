@@ -81,13 +81,16 @@ var Rocket;
             let moveState = new Rocket.Impl.Order.MoveState();
             Jhtml.ready((elements) => {
                 $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.BEFORE, moveState);
+                    let elemJq = $(this);
+                    new Rocket.Impl.Order.Control(elemJq, Rocket.Impl.Order.InsertMode.BEFORE, moveState, elemJq.siblings(".rocket-static"));
                 });
                 $(elements).find(".rocket-impl-insert-after").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.AFTER, moveState);
+                    let elemJq = $(this);
+                    new Rocket.Impl.Order.Control(elemJq, Rocket.Impl.Order.InsertMode.AFTER, moveState, elemJq.siblings(".rocket-static"));
                 });
                 $(elements).find(".rocket-impl-insert-as-child").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.CHILD, moveState);
+                    let elemJq = $(this);
+                    new Rocket.Impl.Order.Control(elemJq, Rocket.Impl.Order.InsertMode.CHILD, moveState, elemJq.siblings(".rocket-static"));
                 });
             });
         })();
@@ -4013,10 +4016,11 @@ var Rocket;
         var Order;
         (function (Order) {
             class Control {
-                constructor(elemJq, insertMode, moveState) {
+                constructor(elemJq, insertMode, moveState, otherElemJq) {
                     this.elemJq = elemJq;
                     this.insertMode = insertMode;
                     this.moveState = moveState;
+                    this.otherElemJq = otherElemJq;
                     this.entry = Rocket.Display.Entry.of(elemJq);
                     this.collection = this.entry.collection;
                     if (!this.collection || !this.entry.selector) {
@@ -4083,9 +4087,11 @@ var Rocket;
                         || this.collection.selectedIds.length == 0
                         || this.checkIfParentSelected()) {
                         this.elemJq.hide();
+                        this.otherElemJq.show();
                     }
                     else {
                         this.elemJq.show();
+                        this.otherElemJq.hide();
                     }
                 }
                 checkIfParentSelected() {

@@ -40,19 +40,23 @@ class ControlButton {
 	private $important;
 	private $type;
 	private $attrs = array();
+	private $iconImportant = false;
+	private $static = true;
 	
 	private $confirmMessage;
 	private $confirmOkButtonLabel;
 	private $confirmCancelButtonLabel;
 	
 	public function __construct(string $name, string $tooltip = null, bool $important = false, string $type = null, 
-			string $iconType = null, array $attrs = null) {
+			string $iconType = null, array $attrs = null, bool $iconImportant = false, bool $static = true) {
 		$this->name = $name;
 		$this->tooltip = $tooltip;
 		$this->important = $important;
 		$this->type = $type;
 		$this->iconType = $iconType;
 		$this->attrs = (array) $attrs;
+		$this->iconImportant = $iconImportant;
+		$this->static = $static;
 	}
 	
 	public function isImportant(): bool {
@@ -61,6 +65,7 @@ class ControlButton {
 	
 	public function setImportant(bool $important) {
 		$this->important = $important;
+		return $this;
 	}
 	
 	public function getName() {
@@ -69,6 +74,7 @@ class ControlButton {
 	
 	public function setName(string $name = null) {
 		$this->name = $name;
+		return $this;
 	}
 
 	public function getType() {
@@ -77,6 +83,7 @@ class ControlButton {
 	
 	public function setType(string $type = null) {
 		$this->type = $type;
+		return $this;
 	}
 	
 	public function getIconType() {
@@ -85,6 +92,7 @@ class ControlButton {
 	
 	public function setIconType(string $iconType = null) {
 		$this->iconType = $iconType;
+		return $this;
 	}
 	
 	public function getTooltip() {
@@ -93,14 +101,55 @@ class ControlButton {
 	
 	public function setTooltip(string $tooltip = null) {
 		$this->tooltip = $tooltip;
+		return $this;
 	}
 	
+	/**
+	 * @return array
+	 */
 	public function getAttrs(): array {
 		return $this->attrs;
 	}
 	
+	/**
+	 * @param array $attrs
+	 * @return \rocket\spec\ei\manage\control\ControlButton
+	 */
 	public function setAttrs(array $attrs) {
 		$this->attrs = $attrs;
+		return $this;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isStatic() {
+		return $this->static;
+	}
+	
+	/**
+	 * @param bool $static
+	 * @return \rocket\spec\ei\manage\control\ControlButton
+	 */
+	public function setStatic(bool $static) {
+		$this->static = $static;
+		return $this;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isIconImportant() {
+		return $this->iconImportant;
+	}
+	
+	/**
+	 * @param bool $iconImportant
+	 * @return \rocket\spec\ei\manage\control\ControlButton
+	 */
+	public function setIconImportant(bool $iconImportant) {
+		$this->iconImportant = $iconImportant;
+		return $this;
 	}
 	
 	public function setConfirmMessage($confirmMessage) {
@@ -145,7 +194,15 @@ class ControlButton {
 		}
 		
 		if ($this->important) {
-			$attrs['class'] .= ' rocket-important';	
+			$attrs['class'] .= ' rocket-important';
+		}
+		
+		if ($this->static) {
+			$attrs['class'] .= ' rocket-static';
+		}
+		
+		if ($this->iconImportant) {
+			$attrs['class'] .= ' rocket-icon-important';
 		}
 		
 		if ($this->confirmMessage !== null) {

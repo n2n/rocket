@@ -457,7 +457,7 @@ namespace Rocket.Impl.Relation {
 			zone.menu.partialCommandList.createJqCommandButton({ 
 				label: this.jqElem.data("select-label"), 
 				severity: Display.Severity.PRIMARY, 
-				important: true 
+				important: true
 			}).click(() => {
 				this.updateSelection();
 				zone.layer.hide();
