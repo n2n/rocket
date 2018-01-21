@@ -3722,6 +3722,10 @@ body {
   margin-right: 0.5rem;
 }
 
+.rocket-zone-commands > div:nth-child(2) {
+  text-align: right;
+}
+
 .rocket-partial-commands {
   display: inline-block;
 }
@@ -3742,6 +3746,7 @@ body {
   border: solid 10px rgba(0, 0, 0, 0.1);
   border-top-color: #ed8207;
   animation: spin 1s infinite linear;
+  cursor: wait;
 }
 
 .rocket-zone.rocket-loading {
@@ -3957,14 +3962,18 @@ body {
 
 .rocket-impl-translation-status-menu > ul > li > a.btn {
   display: block;
+  position: relative;
   color: #373431;
   text-align: left;
   padding-left: 0;
-  padding-right: 0;
+  padding-right: 2rem;
   font-weight: bold;
 }
 
 .rocket-impl-translation-status-menu > ul > li > a.btn i {
+  position: absolute;
+  top: 0.25rem;
+  right: 0;
   font-size: 1.25rem;
 }
 
@@ -3987,13 +3996,17 @@ body {
 
 .rocket-impl-translation-menu > ul > li > label {
   display: block;
+  position: relative;
   margin: 0.75rem 0;
+  padding-right: 2rem;
 }
 
 .rocket-impl-translation-menu > ul > li > label:after {
+  position: absolute;
+  top: 0;
+  right: 0;
   font-family: fontawesome;
   padding-left: 5rem;
-  float: right;
   font-weight: normal;
   content: "\f068";
 }
@@ -4430,6 +4443,11 @@ ul.rocket-content-item > li > span {
   min-height: 2rem;
 }
 
+.form-check-label {
+  padding-top: calc(0.375rem + 1px);
+  padding-bottom: calc(0.375rem + 1px);
+}
+
 /*
  * embeded
  */
@@ -4676,12 +4694,44 @@ ul.rocket-content-item > li > span {
   display: none;
 }
 
+.rocket-simple-commands > .btn.rocket-icon-important.btn-success {
+  color: #5cb85c;
+}
+
+.rocket-simple-commands > .btn.rocket-icon-important.btn-danger {
+  color: #b90f00;
+}
+
+.rocket-simple-commands > .btn.rocket-icon-important.btn-info {
+  color: #4c97cb;
+}
+
+.rocket-simple-commands > .btn.rocket-icon-important.btn-warning {
+  color: #F6A723;
+}
+
 td .rocket-simple-commands > .btn > i {
   font-size: 1.25rem;
 }
 
-.rocket-main-commands .btn > i.fa {
+.rocket-zone-commands .btn:not(.rocket-icon-important) > i.fa {
   display: none;
+}
+
+.rocket-zone-commands .btn.rocket-icon-important .fa {
+  width: 1.25rem;
+}
+
+.rocket-zone-commands .btn.rocket-icon-important .fa + span {
+  margin-left: 0.375rem;
+}
+
+.rocket-zone-commands .btn.rocket-icon-important.btn-success .fa {
+  color: #5cb85c;
+}
+
+.rocket-zone-commands .btn.rocket-icon-important.btn-danger .fa {
+  color: #b90f00;
 }
 
 .rocket-zone-commands .btn:not(.rocket-important) {
@@ -4716,10 +4766,6 @@ td .rocket-simple-commands > .btn > i {
 
 .dropdown {
   display: inline-block;
-}
-
-.btn .fa + span {
-  margin-left: 0.5rem;
 }
 
 .rocket-highlighted {
