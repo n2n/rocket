@@ -53,7 +53,8 @@
             .rocket-editable,
             .rocket-read-only {
                 > label:not(.rocket-locale-label) {
-                    width: calc(14rem - 1px);
+                    width: auto;
+                    max-width: calc(14rem - 1px);
                 }
                 > .rocket-control {
                     margin-left: calc(14rem - 1px);
@@ -67,7 +68,7 @@
     .rocket-control .rocket-group .rocket-group-main, {
         > .rocket-control {
             label {
-                width: calc(13rem - 2px);
+                max-width: calc(13rem - 2px);
             }
             .rocket-control {
                 margin-left: calc(13rem - 2px);

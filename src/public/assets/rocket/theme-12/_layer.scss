@@ -9,14 +9,21 @@
 		grid-template-columns: 1fr auto;
 		grid-template-rows: 2rem 3rem;
 		background: white;
-		&::before {
+		
+		&::before,
+		&::after {
 			position: absolute;
 			content: ' ';
 			top: 0;
-			left: -1rem;
 			background: $white;
 			width: 1rem;
 			bottom: 0;
+		}
+		&::before {
+			left: -1rem;
+		}
+		&::after {
+			right: -1rem;
 		}
 		> .breadcrumb {
 			grid-column-start: 1;

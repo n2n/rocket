@@ -10,17 +10,21 @@
     z-index: 50;
     padding-top: 1rem;
 }
-
-.rocket-impl-container {
-    display: grid;
-    grid-template-columns:  1fr auto auto;
-    grid-column-gap: 20px;
+@include media-breakpoint-up(md) {
+    .rocket-impl-container {
+        display: grid;
+        grid-template-columns:  1fr auto auto;
+        grid-column-gap: 20px;
+    }
 }
 
 .rocket-impl-quicksearch {
     > label {
         font-weight: bold;
         margin-right: 1rem;
+    }
+    > .input-group > .form-control {
+        width: 10rem;
     }
     &.rocket-active > .input-group > .input-group-btn > .btn {
         color: white;

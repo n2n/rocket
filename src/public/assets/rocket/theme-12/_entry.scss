@@ -120,7 +120,7 @@
 .rocket-impl-selector {
     // to many
     > ul {
-        margin: 0;
+        margin: 0 0 0.5rem 0;
         padding: 0;
         list-style: none;
         border: 1px solid $input-border-color;
@@ -148,7 +148,13 @@
             padding-right: 0.5rem;
         }
         > .rocket-simple-commands {
-        display: inline-block;
+            display: inline-block;
+        }
+    }
+    .btn {
+        margin-right: 0.5rem;
+        i + span {
+            margin-left: 0.375rem;
         }
     }
 }
