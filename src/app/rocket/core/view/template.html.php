@@ -126,27 +126,27 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 				<i class="fa fa-navicon"></i>
 			</button>
 			<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
-			<ul class="nav justify-content-end">
+			<ul class="nav rocket-meta-nav justify-content-end">
 				<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
 					<li class="nav-item">
 						<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools'), array('class' => 'nav-link')) ?>
-						<i class="fa fa-wrench mr-2"></i><?php $html->text('tool_title') ?>
+						<i class="fa fa-wrench mr-2"></i><span><?php $html->text('tool_title') ?></span>
 						<?php $html->linkEnd() ?>
 					</li>
 					<li class="nav-item">
 						<?php $html->linkStart(Murl::controller('rocket')->pathExt('users'), array('class' => 'nav-link')) ?>
-						<i class="fa fa-user mr-2"></i><?php $html->text('user_title') ?>
+						<i class="fa fa-user mr-2"></i><span><?php $html->text('user_title') ?></span>
 						<?php $html->linkEnd() ?>
 					</li>
 					<li class="nav-item">
 						<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'nav-link')) ?>
-						<i class="fa fa-group mr-2"></i><?php $html->text('user_groups_title') ?>
+						<i class="fa fa-group mr-2"></i><span><?php $html->text('user_groups_title') ?></span>
 						<?php $html->linkEnd() ?>
 					</li>
 				<?php endif ?>
 				<li class="nav-item">
 					<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'nav-link rocket-conf-user')) ?>
-					<i class="fa fa-user mr-2"></i><?php $html->out((string) $templateModel->getCurrentUser()) ?>
+					<i class="fa fa-user mr-2"></i><span><?php $html->out((string) $templateModel->getCurrentUser()) ?></span>
 					<?php $html->linkEnd() ?>
 				</li>
 				<li class="nav-item">
