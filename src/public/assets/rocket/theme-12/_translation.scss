@@ -44,13 +44,17 @@
 	z-index: 60;
     > ul > li {
         > a.btn {
-            display: block;
+			display: block;
+			position: relative;
             color: $body-color;
             text-align: left;
             padding-left: 0;
-            padding-right: 0;
+            padding-right: 2rem;
             font-weight: bold;
             i {
+				position: absolute;
+				top: 0.25rem;
+				right: 0;
                 font-size: $font-size-lg;
             }
         }
@@ -72,11 +76,15 @@
 		text-align: left;
 		> label {
 			display:block;
+			position: relative;
 			margin: 0.75rem 0;
+			padding-right: 2rem;
 			&:after {
+				position: absolute;
+				top: 0;
+				right: 0;
 				font-family: fontawesome;
 				padding-left: 5rem;
-				float: right;
 				font-weight: normal;
 				content: "\f068";
 			}

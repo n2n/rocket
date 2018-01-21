@@ -102,6 +102,9 @@ body {
     .btn {
         margin-right: 0.5rem;
     }
+    > div:nth-child(2) {
+        text-align: right;
+    }
 
 }
 
@@ -128,6 +131,7 @@ body {
     border: solid 10px rgba(0, 0, 0, 0.1);
     border-top-color: $primary;
     animation: spin 1s infinite linear;  
+    cursor: wait;
 }
 
 .rocket-impl-overview-loading {
