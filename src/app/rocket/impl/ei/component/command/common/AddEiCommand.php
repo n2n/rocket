@@ -142,7 +142,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 			
 			$name = $dtc->t('ei_impl_duplicate_label');
 			$tooltip = $dtc->t('ei_impl_duplicate_tooltip', array('entry' => $eiuEntry->createIdentityString()));
-			$controlButton = new ControlButton($name, $tooltip, true, ControlButton::TYPE_SUCCESS, IconType::ICON_COPY);
+			$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_SUCCESS, IconType::ICON_COPY);
 			
 			return array(self::CONTROL_DUPLICATE_KEY => $eiuControlFactory
 					->createJhtml($controlButton, [$eiuEntry->getLiveIdRep()]));
