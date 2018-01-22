@@ -247,6 +247,7 @@ namespace Rocket.Impl.Translation {
 					this.copyControlJq.show();
 				}
 				
+				this.elemJq.removeClass("rocket-inactive");
 				return;
 			}
 			
@@ -264,6 +265,8 @@ namespace Rocket.Impl.Translation {
 			if (this.copyControlJq) {
 				this.copyControlJq.show();
 			}
+			
+			this.elemJq.addClass("rocket-inactive");
 		}
 		
 		private copyControl: CopyControl;
