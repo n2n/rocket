@@ -93,7 +93,7 @@ class DetailController extends ControllerAdapter {
 	}
 	
 	public function doLivePreviewSrc($idRep, $previewType, array $delegateCmds = array()) {
-		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
+		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiObject);
 		
 		$this->delegate($previewController);

@@ -45,18 +45,19 @@
 	<?php $formHtml->messageList() ?>
 					
 	<div class="rocket-zone-commands">
-		<div>
+		<div class="rocket-main-commands">
 			<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_quicksave_label') . '</span>'), 
 					array('class' => 'btn btn-primary')) ?>
+					
 			<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_and_back_label') . '</span>'), 
 					array('class' => 'btn btn-primary rocket-important')) ?>
 			
 			<?php if ($editModel->isDraftable()): ?>
-					<?php $formHtml->buttonSubmit('saveAsNewDraft', new Raw('<i class="fa fa-save"></i><span>' 
-									. $html->getL10nText('common_save_as_new_draft_label') . '</span>'), 
-							array('class' => 'btn btn-secondary')) ?>
+				<?php $formHtml->buttonSubmit('saveAsNewDraft', new Raw('<i class="fa fa-save"></i><span>' 
+								. $html->getL10nText('common_save_as_new_draft_label') . '</span>'), 
+						array('class' => 'btn btn-secondary')) ?>
 			<?php endif ?>
 			
 			<?php if ($editModel->isPublishable()): ?>
@@ -70,6 +71,14 @@
 							. $html->getL10nText('common_cancel_label') . '</span>'),
 					array('class' => 'btn btn-secondary rocket-jhtml', 'data-jhtml-use-page-scroll-pos' => 'true')) ?>
 		</div>
+		
+		<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
+			<div class="rocket-aside-commands">
+				<?php $formHtml->buttonSubmit('saveAndPreview', new Raw('<i class="fa fa-eye"></i><span>' 
+								. $html->getL10nText('common_save_and_preview_label') . '</span>'), 
+						array('class' => 'btn btn-secondary')) ?>
+			</div>
+		<?php endif ?>
 	</div>
 <?php $formHtml->close() ?>
 
