@@ -45,6 +45,7 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\config\WebConfig;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
 
 class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -95,7 +96,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				$this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar)));
 		$magCollection->addMag(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $customN2nLocaleDefsMag);
 		
-		$magCollection->addMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, new BoolMag('Min translations number',
+		$magCollection->addMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, new NumericMag('Min translations number',
 				$lar->getNumeric(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0)));
 		
 		return $magDispatchable;

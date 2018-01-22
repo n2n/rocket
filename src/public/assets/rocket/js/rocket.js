@@ -6954,10 +6954,14 @@ var Rocket;
                         jqBase = context.jQuery;
                     }
                     else {
-                        jqBase = jqElem;
+                        jqBase = se.jQuery;
                     }
                     jqBase.find(".rocket-impl-translatable").each((i, elem) => {
-                        tm.registerTranslatable(Translatable.from($(elem)));
+                        let elemJq = $(elem);
+                        if (Translatable.test(elemJq)) {
+                            return;
+                        }
+                        tm.registerTranslatable(Translatable.from(elemJq));
                     });
                 }
             }
@@ -7023,8 +7027,15 @@ var Rocket;
                         tc.drawCopyControl(this.copyUrls);
                     });
                 }
+                static test(elemJq) {
+                    let translatable = elemJq.data("rocketImplTranslatable");
+                    if (translatable instanceof Translatable) {
+                        return translatable;
+                    }
+                    return null;
+                }
                 static from(jqElem) {
-                    let translatable = jqElem.data("rocketImplTranslatable");
+                    let translatable = Translatable.test(jqElem);
                     if (translatable instanceof Translatable) {
                         return translatable;
                     }

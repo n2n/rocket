@@ -3,7 +3,7 @@ namespace Rocket.Impl.Translation {
 	export class TranslationManager {
 		private min: number = 0;
 		private menuJq: JQuery;
-		private translatables: Array<Translatable> = [];
+		translatables: Array<Translatable> = [];
 		private menuItems: Array<MenuItem> = [];
 		private buttonJq: JQuery = null;
 		

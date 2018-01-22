@@ -9,6 +9,7 @@ namespace Rocket.Impl.Translation {
 			for (let context of this.container.getAllZones()) {
 				let elems: Array<HTMLElement> = context.jQuery.find(".rocket-impl-translation-manager").toArray();
 				let elem;
+				
 				while (elem = elems.pop()) {
 					this.initTm($(elem), context);
 				}
@@ -37,18 +38,22 @@ namespace Rocket.Impl.Translation {
 		
 		private initTm(jqElem: JQuery, context: Rocket.Cmd.Zone) {
 			let tm = TranslationManager.from(jqElem);
-			
 			let se = Rocket.Display.StructureElement.of(jqElem);
 			
 			let jqBase = null;
 			if (!se) {
 				jqBase = context.jQuery;
 			} else {
-				jqBase = jqElem;
+				jqBase = se.jQuery;
 			}
 			
 			jqBase.find(".rocket-impl-translatable").each((i, elem) => {
-				tm.registerTranslatable(Translatable.from($(elem)));
+				let elemJq = $(elem);
+				if (Translatable.test(elemJq)) {
+					return;
+				}
+				
+				tm.registerTranslatable(Translatable.from(elemJq));
 			});
 		}
 	}
@@ -127,8 +132,17 @@ namespace Rocket.Impl.Translation {
 			});
 		}
 		
+		static test(elemJq: JQuery): Translatable {
+			let translatable = elemJq.data("rocketImplTranslatable");
+			if (translatable instanceof Translatable) {
+				return translatable;
+			}
+			
+			return null;
+		}
+		
 		static from(jqElem: JQuery): Translatable {
-			let translatable = jqElem.data("rocketImplTranslatable");
+			let translatable = Translatable.test(jqElem);
 			if (translatable instanceof Translatable) {
 				return translatable;
 			}
