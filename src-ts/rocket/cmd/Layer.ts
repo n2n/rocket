@@ -172,6 +172,26 @@ namespace Rocket.Cmd {
 			}
 		}
 		
+		private scrollPos: number = 0;
+		
+		set active(focus: boolean) {
+			if (focus == this.active) return;
+			
+			if (focus) {
+				this.jqLayer.addClass("rocket-active");
+				$(window).scrollTop(this.scrollPos);
+				return;
+			}
+			
+			this.scrollPos = $(window).scrollTop();
+			this.jqLayer.removeClass("rocket-active");
+			
+		}
+		
+		get active() {
+			return this.jqLayer.hasClass("rocket-active");
+		}
+		
 		public onNewZone(onNewPageCallback: ZoneCallback) {
 			this.onNewZoneCallbacks.push(onNewPageCallback);
 		}
