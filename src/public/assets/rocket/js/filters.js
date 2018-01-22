@@ -412,7 +412,7 @@ jQuery(document).ready(function($) {
 	(function() {
 		var Sort = function(jqElem) {
 			this.jqElem = jqElem;
-			this.jqElemUl = jqElem.find("ul.nav:first");
+			this.jqElemSortConstraints = jqElem.find(".rocket-sort-contraints:first");
 			this.textAddSort = jqElem.data("text-add-sort");
 			this.iconClassNameAdd = jqElem.data("icon-class-name-add");
 			this.textRemoveSort = jqElem.data("text-remove-sort");
@@ -438,7 +438,7 @@ jQuery(document).ready(function($) {
 						"text": jqElemOption.text()
 					}).click(function(e) {
 						e.preventDefault();
-						that.jqElemUl.append(that.requestSortConstraint(jqElemOption.val()));
+						that.jqElemSortConstraints.append(that.requestSortConstraint(jqElemOption.val()));
 					})).appendTo(that.jqElemUlFieldList);
 				});
 				

@@ -54,16 +54,16 @@ use rocket\spec\ei\manage\control\IconType;
 		data-text-remove-sort="<?php $html->l10nText('ei_impl_remove_sort_label') ?>" 
 		data-icon-class-name-remove="<?php $html->out(IconType::ICON_TIMES) ?>"
 		>
-	<ul class="nav">
+	<div class="rocket-sort-contraints">
 		<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
-			<li class="nav-item rocket-sort-constraint">
+			<div class="nav-item rocket-sort-constraint">
 				<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions, array('class' => 'form-control')) ?>
 				<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
-			</li>
+			</div>
 		<?php endforeach ?>
-		<li class="nav-item rocket-sort-constraint rocket-empty-sort-constraint">
+		<div class="nav-item rocket-sort-constraint rocket-empty-sort-constraint">
 			<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control rocket-sort-prop')) ?>
 			<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions, array('class' => 'form-control')) ?>
-		</li>
-	</ul>
+		</div>
+	</div>
 </div>
