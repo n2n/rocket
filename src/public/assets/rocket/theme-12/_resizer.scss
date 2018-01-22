@@ -62,14 +62,26 @@
 
 // mask
 .rocket-image-resizer-content-overlay {
-	background-color:white;
-	-ms-filter: "alpha(opacity=60)";
-	opacity: 0.6;
+	background-color:black;
+	-ms-filter: "alpha(opacity=50)";
+	opacity: 0.5;
 	width: 100%;
 	height: 100%;
 	position:absolute;
 	top: 0px;
 	left: 0px;
+}
+
+
+// image dimensions
+.rocket-image-dimensions {
+	> .rocket-image-version {
+		height: 2.5rem;
+		> label,
+		> input {
+			margin-right: 0.75rem;
+		}
+	}
 }
 
 

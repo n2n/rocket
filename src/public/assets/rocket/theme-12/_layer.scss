@@ -9,14 +9,21 @@
 		grid-template-columns: 1fr auto;
 		grid-template-rows: 2rem 3rem;
 		background: white;
-		&::before {
+		
+		&::before,
+		&::after {
 			position: absolute;
 			content: ' ';
 			top: 0;
-			left: -1rem;
 			background: $white;
 			width: 1rem;
 			bottom: 0;
+		}
+		&::before {
+			left: -1rem;
+		}
+		&::after {
+			right: -1rem;
 		}
 		> .breadcrumb {
 			grid-column-start: 1;
@@ -36,7 +43,7 @@
 
 .rocket-main-layer, 
 .rocket-layer {
-	max-height: calc(100vh - #{$rocket-header-height});
+	max-height: calc(100vh - 7.75rem);
 	overflow-y: hidden;
 }
 
@@ -67,7 +74,7 @@
 
 .rocket-main-layer.rocket-active, 
 .rocket-layer.rocket-active {
-	min-height: calc(100vh - 7.75rem);
+	min-height: calc(100vh - 6.75rem);
 	max-height: none;
 	overflow-y: visible;
 }

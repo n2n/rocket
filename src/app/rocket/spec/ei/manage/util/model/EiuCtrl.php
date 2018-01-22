@@ -192,7 +192,7 @@ class EiuCtrl implements Lookupable {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		
-		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+		if ($ajahEventInfo === null || 'application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
 			$response->send($view);
 			return;
 		}

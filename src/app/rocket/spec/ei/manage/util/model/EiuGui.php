@@ -11,7 +11,6 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use rocket\spec\ei\manage\gui\GuiException;
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 class EiuGui {
 	private $eiGui;

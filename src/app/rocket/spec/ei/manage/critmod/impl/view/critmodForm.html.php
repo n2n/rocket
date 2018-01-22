@@ -45,28 +45,28 @@
 
 	<div class="row">
 		<div class="col-sm-8">
-			<h4><?php $html->l10nText('ei_impl_filter_title') ?></h4>
+			<h3><?php $html->l10nText('ei_impl_filter_title') ?></h3>
 			<?php $view->import('~\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
 					array('propertyPath' => $formHtml->meta()->createPropertyPath('filterGroupForm'),
 							'filterAjahHook' => $filterAjahHook)) ?>
 		</div>
 		<div class="col-sm-4">
-			<h4><?php $html->l10nText('ei_impl_sort_title') ?></h4>
+			<h3><?php $html->l10nText('ei_impl_sort_title') ?></h3>
 			<?php $view->import('~\spec\ei\manage\critmod\sort\impl\view\sortForm.html', 
 					array('propertyPath' => $formHtml->meta()->createPropertyPath('sortForm'))) ?>
 		</div>
-		<div class="col-sm-12">
-			<div>
+		<div class="col-sm-12 rocket-critmod-command-container">
+			<div class="rocket-impl-critmod-commands">
 				<?php $formHtml->buttonSubmit('apply', $view->getL10nText('common_apply_label'),
 						array('class' => 'btn btn-primary rocket-impl-critmod-apply')) ?>
 				
 				<?php $formHtml->buttonSubmit('clear', $view->getL10nText('common_clear_label'),
 						array('class' => 'btn btn-secondary rocket-impl-critmod-clear')) ?>
 			</div>
-			<div>
-				<?php $html->text('ei_impl_filter_label') ?>
-			
-				<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'rocket-impl-critmod-name')) ?>
+			<div class="rocket-impl-critmod-manage">
+				<label><?php $html->text('ei_impl_filter_save_label') ?>
+					<?php $formHtml->input('name', array('maxlength' => '32', 'class' => 'form-control rocket-impl-critmod-name')) ?>
+				</label>
 				
 				<?php $formHtml->buttonSubmit('save', $view->getL10nText('common_save_label'),
 						array('class' => 'btn btn-secondary rocket-impl-critmod-save')) ?>

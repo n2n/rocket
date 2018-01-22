@@ -45,10 +45,12 @@
 
 	<div class="rocket-zone-commands">
 		<?php $eiHtml->entryCommands() ?>
-		
-		<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
-			<?php $view->import('inc\previewSwitch.html') ?>
-		<?php endif ?>
+	
+		<div class="rocket-aside-commands">
+			<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
+				<?php $view->import('inc\previewSwitch.html') ?>
+			<?php endif ?>
+		</div>
 	</div>
 <?php $eiHtml->entryClose() ?>
  

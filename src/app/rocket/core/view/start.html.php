@@ -43,49 +43,48 @@
 			array('title' => $view->getL10nText('core_start_title', array('user' => $loginContext->getCurrentUser()))));
 ?>
 <?php if ($loginContext->getCurrentUser()->isAdmin()): ?>
-	<div class="rocket-grouped-panels">
-		<section id="rocket-core-latest-logins">
-			<h2><?php $html->l10nText('core_latest_logins_title') ?></h2>
-			<div class="row">
-				<div class="col-sm-6">
-					<h3><?php $html->l10nText('core_latest_logins_title') ?></h3>
-					<?php $view->import('inc\loginTable.html', array('useSuccessfull' => true)) ?>
-				</div>
-				<div class="col-sm-6">
-					<h3><?php $html->l10nText('core_failed_logins_title') ?></h3>
-					<?php $view->import('inc\loginTable.html', array('useSuccessfull' => false)) ?>
-				</div>
+	<div id="rocket-core-latest-logins" class="rocket-group-main">
+		<label><?php $html->l10nText('core_latest_logins_title') ?></label>
+		<div class="rocket-control row">
+			<div class="col-sm-6 mt-3">
+				<h3><?php $html->l10nText('core_latest_logins_title') ?></h3>
+				<?php $view->import('inc\loginTable.html', array('useSuccessfull' => true)) ?>
 			</div>
-		</section>
-		<section id="rocket-core-server-info">
-			<h2><?php $html->l10nText('core_server_info_title') ?></h2>
-			<h3><?php $html->l10nText('core_server_info_title')?></h3>
-			<table class="table table-hover rocket-table">
-				<thead>
-					<tr>
-						<th><?php $html->text('core_property_label') ?></th>
-						<th><?php $html->text('core_value_label') ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($serverInfoExtractor->getServerProperties() as $props): ?>
-						<tr>
-							<td><?php $html->out($props['name']) ?></td>
-							<td class="<?php echo ($props['status'] == 1 ? 'rocket-server-info-value-ok' : 'rocket-server-info-value-nok') ?>">
-								<?php $html->esc($props['value']) ?>
-							</td>
-						</tr> 
-					<?php endforeach ?>
-				</tbody>
-			</table>
-		</section>
+			<div class="col-sm-6 mt-3">
+				<h3><?php $html->l10nText('core_failed_logins_title') ?></h3>
+				<?php $view->import('inc\loginTable.html', array('useSuccessfull' => false)) ?>
+			</div>
+		</div>
 	</div>
-	
-	<div class="rocket-zone-commands">
-		<?php $formHtml->open($deleteLoginModel) ?>
-			<?php $formHtml->buttonSubmit('delete', new Raw('<i class="fa fa-times-circle"></i> <span>' 
-							. $html->getL10nText('core_delete_failed_logins_label') . '</span>'), 
-					array('class' => 'btn btn-secondary')); ?>
-		<?php $formHtml->close() ?>
+	<div id="rocket-core-server-info" class="rocket-group-main">
+		<label><?php $html->l10nText('core_server_info_title') ?></label>
+		<div class="rocket-control">
+    		<table class="table table-hover rocket-table mt-3">
+    			<thead>
+    				<tr>
+    					<th><?php $html->text('core_property_label') ?></th>
+    					<th><?php $html->text('core_value_label') ?></th>
+    				</tr>
+    			</thead>
+    			<tbody>
+    				<?php foreach ($serverInfoExtractor->getServerProperties() as $props): ?>
+    					<tr>
+    						<td><?php $html->out($props['name']) ?></td>
+    						<td class="<?php echo ($props['status'] == 1 ? 'rocket-server-info-value-ok' : 'rocket-server-info-value-nok') ?>">
+    							<?php $html->esc($props['value']) ?>
+    						</td>
+    					</tr> 
+    				<?php endforeach ?>
+    			</tbody>
+    		</table>
+		</div>
 	</div>
+
+    <div class="rocket-zone-commands">
+    	<?php $formHtml->open($deleteLoginModel) ?>
+    		<?php $formHtml->buttonSubmit('delete', new Raw('<i class="fa fa-times-circle"></i> <span>' 
+    						. $html->getL10nText('core_delete_failed_logins_label') . '</span>'), 
+    				array('class' => 'btn btn-secondary')); ?>
+    	<?php $formHtml->close() ?>
+    </div>
 <?php endif ?>

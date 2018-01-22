@@ -72,6 +72,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		
 		$controlButton = new ControlButton($dtc->t('ei_impl_online_offline_label'),
 				$dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
+		$controlButton->setIconImportant(true);
 		
 		$urlExt = null;
 		if ($eiuEntry->getValue($this->onlineEiProp)) {

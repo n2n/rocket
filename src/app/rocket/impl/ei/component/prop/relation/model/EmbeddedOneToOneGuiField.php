@@ -89,7 +89,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
 		if (!$this->reduced) {
-			return $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils))->newEntryGui()
+			return $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils))->newEntryGui()->allowControls()
 					->createView($view);
 		}
 

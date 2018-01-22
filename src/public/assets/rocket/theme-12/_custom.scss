@@ -42,7 +42,7 @@ $breadcrumb-item-padding:		1rem;
 $breadcrumb-padding-y:          0.6rem;
 $breadcrumb-padding-x:          0;
 
-$input-btn-padding-x: 0.625rem;
+
 
 $enable-rounded: false;
 $enable-shadows: true;
@@ -55,8 +55,13 @@ $btn-box-shadow:   none;
 
 $box-box-shadow:                 2px 1px 4px 0 rgba(0,0,0,0.20);
 
+$input-btn-padding-x: 0.625rem;
 $input-color: $gray-800;
-$input-border-color: $gray-500;
+$input-border-color: $gray-400;
 $input-placeholder-color: $gray-500;
 
 $table-hover-bg: $gray-300;
+
+
+$dropdown-item-padding-x: 1rem;
+$dropdown-item-padding-y: 0.375rem;

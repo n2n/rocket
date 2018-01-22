@@ -29,6 +29,18 @@
             display: none;
         }
     }
+    > .btn.rocket-icon-important.btn-success {
+        color: $success;
+    }
+    > .btn.rocket-icon-important.btn-danger {
+        color: $danger;
+    }
+    > .btn.rocket-icon-important.btn-info {
+        color: $info;
+    }
+    > .btn.rocket-icon-important.btn-warning {
+        color: $warning;
+    }
 }
 
 
@@ -40,15 +52,40 @@ td .rocket-simple-commands {
     }
 }
 
-.rocket-main-commands .btn > i.fa {
-    display: none;
-}
 
-.rocket-zone-commands .btn:not(.rocket-important) {
-    @include button-variant($secondary, darken($secondary, 15));
+
+.rocket-zone-commands {
+    .btn:not(.rocket-icon-important) > i.fa {
+        display: none;
+    }
+
+    // pagination icons must be displayed
+    .rocket-impl-overview-pagination i.fa {
+        display: inline-block !important;
+    }
+
+    .btn.rocket-icon-important {
+        .fa {
+            width: 1.25rem
+        }
+        .fa + span {
+            margin-left: 0.375rem;
+        }
+        &.btn-success .fa {
+            color: $success;
+        }
+        &.btn-danger .fa {
+            color: $danger;
+        }
+    }
+    .btn:not(.rocket-important) {
+        @include button-variant($secondary, darken($secondary, 15));
+    }
 }
 
 
 .dropdown {
     display: inline-block;
 }
+
+

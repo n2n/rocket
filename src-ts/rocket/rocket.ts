@@ -103,13 +103,19 @@ namespace Rocket {
 
 			Jhtml.ready((elements) => {
 				$(elements).find(".rocket-impl-insert-before").each(function () {
-					new Impl.Order.Control($(this), Impl.Order.InsertMode.BEFORE, moveState);
+					let elemJq = $(this);
+					new Impl.Order.Control(elemJq, Impl.Order.InsertMode.BEFORE, moveState,
+							elemJq.siblings(".rocket-static"));
 				});
 				$(elements).find(".rocket-impl-insert-after").each(function () {
-					new Impl.Order.Control($(this), Impl.Order.InsertMode.AFTER, moveState);
+					let elemJq = $(this);
+					new Impl.Order.Control(elemJq, Impl.Order.InsertMode.AFTER, moveState,
+							elemJq.siblings(".rocket-static"));
 				});
 				$(elements).find(".rocket-impl-insert-as-child").each(function () {
-					new Impl.Order.Control($(this), Impl.Order.InsertMode.CHILD, moveState);
+					let elemJq = $(this);
+					new Impl.Order.Control(elemJq, Impl.Order.InsertMode.CHILD, moveState,
+							elemJq.siblings(".rocket-static"));
 				});
 			});
 		})();

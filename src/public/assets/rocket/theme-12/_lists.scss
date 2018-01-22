@@ -10,17 +10,21 @@
     z-index: 50;
     padding-top: 1rem;
 }
-
-.rocket-impl-container {
-    display: grid;
-    grid-template-columns:  1fr auto auto;
-    grid-column-gap: 20px;
+@include media-breakpoint-up(md) {
+    .rocket-impl-container {
+        display: grid;
+        grid-template-columns:  1fr auto auto;
+        grid-column-gap: 20px;
+    }
 }
 
 .rocket-impl-quicksearch {
     > label {
         font-weight: bold;
         margin-right: 1rem;
+    }
+    > .input-group > .form-control {
+        width: 10rem;
     }
     &.rocket-active > .input-group > .input-group-btn > .btn {
         color: white;
@@ -115,42 +119,44 @@ ul.rocket-content-item > li {
 
 .rocket-tree-level-0 {
     border-top: 5px solid $gray-300;
+    > td {
+        font-weight: bold;
+    }
 }
 
-.rocket-tree-level-1 > td:nth-child(2) {
-    padding-left: 2rem;
-    content: "1...";
+.rocket-tree-level-1 > td:nth-child(2)::before {
+    content: '― ';
 }
 
-.rocket-tree-level-2 > td:nth-child(2) {
-    padding-left: 3rem;
+.rocket-tree-level-2 > td:nth-child(2)::before  {
+    content: '― ― ';
 }
 
-.rocket-tree-level-3 > td:nth-child(2) {
-    padding-left: 4rem;
+.rocket-tree-level-3 > td:nth-child(2)::before  {
+    content: '― ― ― ';
 }
 
-.rocket-tree-level-4 > td:nth-child(2) {
-    padding-left: 5rem;
+.rocket-tree-level-4 > td:nth-child(2)::before  {
+    content: '― ― ― ― ';
 }
 
-.rocket-tree-level-5 > td:nth-child(2) {
-    padding-left: 6rem;
+.rocket-tree-level-5 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ';
 }
 
-.rocket-tree-level-6 > td:nth-child(2) {
-    padding-left: 7rem;
+.rocket-tree-level-6 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ';
 }
 
-.rocket-tree-level-7 > td:nth-child(2) {
-    padding-left: 8rem;
+.rocket-tree-level-7 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ― ';
 }
 
-.rocket-tree-level-8 > td:nth-child(2) {
-    padding-left: 9rem;
+.rocket-tree-level-8 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ― ― ';
 }
 
-.rocket-tree-level-9 > td:nth-child(2) {
+.rocket-tree-level-9 > td:nth-child(2)::before  {
     padding-left: 10rem;
 }
 

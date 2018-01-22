@@ -63,3 +63,9 @@
         background: $gray-800;
     }
 }
+
+@include media-breakpoint-down(md) {
+    ul.rocket-meta-nav > li > a > span {
+        display: none;
+    }
+}

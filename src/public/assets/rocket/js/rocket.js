@@ -81,13 +81,16 @@ var Rocket;
             let moveState = new Rocket.Impl.Order.MoveState();
             Jhtml.ready((elements) => {
                 $(elements).find(".rocket-impl-insert-before").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.BEFORE, moveState);
+                    let elemJq = $(this);
+                    new Rocket.Impl.Order.Control(elemJq, Rocket.Impl.Order.InsertMode.BEFORE, moveState, elemJq.siblings(".rocket-static"));
                 });
                 $(elements).find(".rocket-impl-insert-after").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.AFTER, moveState);
+                    let elemJq = $(this);
+                    new Rocket.Impl.Order.Control(elemJq, Rocket.Impl.Order.InsertMode.AFTER, moveState, elemJq.siblings(".rocket-static"));
                 });
                 $(elements).find(".rocket-impl-insert-as-child").each(function () {
-                    new Rocket.Impl.Order.Control($(this), Rocket.Impl.Order.InsertMode.CHILD, moveState);
+                    let elemJq = $(this);
+                    new Rocket.Impl.Order.Control(elemJq, Rocket.Impl.Order.InsertMode.CHILD, moveState, elemJq.siblings(".rocket-static"));
                 });
             });
         })();
@@ -1070,7 +1073,7 @@ var Rocket;
                     buttonConfig.severity = Display.Severity.SECONDARY;
                 }
                 var jqButton = $("<button />", {
-                    "class": "btn btn-" + buttonConfig.severity,
+                    "class": "btn btn-" + buttonConfig.severity + (buttonConfig.important ? " rocket-important" : ""),
                     "title": buttonConfig.tooltip,
                     "type": "button"
                 }).append($("<i />", {
@@ -1490,6 +1493,9 @@ var Rocket;
                     this.context.jQuery.append(commandsJq);
                 }
                 return commandsJq;
+            }
+            get zoneCommandsJq() {
+                return this.getCommandsJq();
             }
             get partialCommandList() {
                 if (this._partialCommandList !== null) {
@@ -2704,9 +2710,10 @@ var Rocket;
     var Display;
     (function (Display) {
         class Toggler {
-            constructor(buttonJq, menuJq) {
+            constructor(buttonJq, menuJq, mouseLeaveMs) {
                 this.buttonJq = buttonJq;
                 this.menuJq = menuJq;
+                this.mouseLeaveMs = mouseLeaveMs;
                 menuJq.hide();
             }
             toggle(e) {
@@ -2727,21 +2734,38 @@ var Rocket;
                 this.menuJq.show();
                 this.buttonJq.addClass("active");
                 let bodyJq = $("body");
+                let events = [];
                 this.closeCallback = (e) => {
                     if (e && e.type == "click" && this.menuJq.has(e.target).length > 0) {
                         return;
                     }
-                    bodyJq.off("click", this.closeCallback);
-                    this.menuJq.off("mouseleave", this.closeCallback);
+                    for (let event of events) {
+                        event.off();
+                    }
                     this.closeCallback = null;
                     this.menuJq.hide();
                     this.buttonJq.removeClass("active");
                 };
-                bodyJq.on("click", this.closeCallback);
-                this.menuJq.on("mouseleave", this.closeCallback);
+                events.push(new TogglerEvent(bodyJq, "click", this.closeCallback));
+                if (this.mouseLeaveMs !== null) {
+                    let delayTimer = new Timer(this.closeCallback, this.mouseLeaveMs);
+                    delayTimer.start();
+                    events.push(new TogglerEvent(bodyJq, "click", () => {
+                        delayTimer.reset();
+                    }));
+                    events.push(new TogglerEvent(this.menuJq, "mouseleave", () => {
+                        delayTimer.start();
+                    }));
+                    events.push(new TogglerEvent(this.menuJq, "mouseenter", () => {
+                        delayTimer.reset();
+                    }));
+                }
+                for (let event of events) {
+                    event.on();
+                }
             }
-            static simple(buttonJq, menuJq) {
-                let toggler = new Toggler(buttonJq, menuJq);
+            static simple(buttonJq, menuJq, mouseLeaveMs = 3000) {
+                let toggler = new Toggler(buttonJq, menuJq, mouseLeaveMs);
                 buttonJq.on("click", (e) => {
                     e.stopImmediatePropagation();
                     toggler.toggle(e);
@@ -2750,6 +2774,43 @@ var Rocket;
             }
         }
         Display.Toggler = Toggler;
+        class Timer {
+            constructor(callback, delay) {
+                this.callback = callback;
+                this.delay = delay;
+                this.timerId = null;
+            }
+            start() {
+                if (this.started) {
+                    this.reset();
+                }
+                this.timerId = window.setTimeout(this.callback, this.delay);
+            }
+            get started() {
+                return this.timerId != null;
+            }
+            reset() {
+                if (!this.started)
+                    return;
+                window.clearTimeout(this.timerId);
+                this.timerId = null;
+            }
+        }
+        Display.Timer = Timer;
+        class TogglerEvent {
+            constructor(elemJq, eventName, callback) {
+                this.elemJq = elemJq;
+                this.eventName = eventName;
+                this.callback = callback;
+            }
+            on() {
+                this.elemJq.on(this.eventName, this.callback);
+            }
+            off() {
+                this.elemJq.off(this.eventName, this.callback);
+            }
+        }
+        Display.TogglerEvent = TogglerEvent;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -3955,10 +4016,11 @@ var Rocket;
         var Order;
         (function (Order) {
             class Control {
-                constructor(elemJq, insertMode, moveState) {
+                constructor(elemJq, insertMode, moveState, otherElemJq) {
                     this.elemJq = elemJq;
                     this.insertMode = insertMode;
                     this.moveState = moveState;
+                    this.otherElemJq = otherElemJq;
                     this.entry = Rocket.Display.Entry.of(elemJq);
                     this.collection = this.entry.collection;
                     if (!this.collection || !this.entry.selector) {
@@ -4025,9 +4087,11 @@ var Rocket;
                         || this.collection.selectedIds.length == 0
                         || this.checkIfParentSelected()) {
                         this.elemJq.hide();
+                        this.otherElemJq.show();
                     }
                     else {
                         this.elemJq.show();
+                        this.otherElemJq.hide();
                     }
                 }
                 checkIfParentSelected() {
@@ -5885,8 +5949,9 @@ var Rocket;
                     if (ocs.length == 0)
                         return;
                     ocs[0].initSelector(this.browserSelectorObserver = new Rocket.Display.MultiEntrySelectorObserver());
+                    zone.menu.zoneCommandsJq.find(".rocket-important").removeClass("rocket-important");
                     var that = this;
-                    zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
+                    zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label"), severity: Rocket.Display.Severity.PRIMARY, important: true }).click(function () {
                         that.updateSelection();
                         zone.layer.hide();
                     });
@@ -6561,20 +6626,24 @@ var Rocket;
                         });
                     });
                 }
-                iniBrowserPage(context) {
+                iniBrowserPage(zone) {
                     if (this.browserLayer === null)
                         return;
-                    var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
+                    var ocs = Impl.Overview.OverviewPage.findAll(zone.jQuery);
                     if (ocs.length == 0)
                         return;
                     ocs[0].initSelector(this.browserSelectorObserver = new Rocket.Display.SingleEntrySelectorObserver());
-                    var that = this;
-                    context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
-                        that.updateSelection();
-                        context.layer.hide();
+                    zone.menu.zoneCommandsJq.find(".rocket-important").removeClass("rocket-important");
+                    zone.menu.partialCommandList.createJqCommandButton({
+                        label: this.jqElem.data("select-label"),
+                        severity: Rocket.Display.Severity.PRIMARY,
+                        important: true
+                    }).click(() => {
+                        this.updateSelection();
+                        zone.layer.hide();
                     });
-                    context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
-                        context.layer.hide();
+                    zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(() => {
+                        zone.layer.hide();
                     });
                     this.updateBrowser();
                 }

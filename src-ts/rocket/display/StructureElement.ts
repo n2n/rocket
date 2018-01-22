@@ -264,7 +264,7 @@ namespace Rocket.Display {
 			}
 			
 			var jqButton = $("<button />", { 
-				"class": "btn btn-" + buttonConfig.severity,
+				"class": "btn btn-" + buttonConfig.severity + (buttonConfig.important ? " rocket-important" : ""),
 				"title": buttonConfig.tooltip,
 				"type": "button"
 			}).append($("<i />", {
@@ -292,5 +292,6 @@ namespace Rocket.Display {
 		label: string;
 		severity?: Severity;
 		tooltip?: string;
+		important?: true;
 	}
 }

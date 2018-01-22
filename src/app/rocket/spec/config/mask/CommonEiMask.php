@@ -190,13 +190,14 @@ class CommonEiMask implements EiMask, Identifiable {
 	 * @see \rocket\spec\ei\mask\EiMask::isDraftDisabled()
 	 */
 	public function isDraftingEnabled(): bool {
-		if (null !== ($draftingAllowed = $this->eiDef->isDraftingAllowed())) {
-			if (!$draftingAllowed) return false;
-		} else if (null !== ($draftingAllowed = $this->eiType->getDefaultEiDef()->isDraftingAllowed())) {
-			if (!$draftingAllowed) return false;
-		}
+		return false;
+// 		if (null !== ($draftingAllowed = $this->eiDef->isDraftingAllowed())) {
+// 			if (!$draftingAllowed) return false;
+// 		} else if (null !== ($draftingAllowed = $this->eiType->getDefaultEiDef()->isDraftingAllowed())) {
+// 			if (!$draftingAllowed) return false;
+// 		}
 		
-		return !$this->eiEngine->getDraftDefinition()->isEmpty();
+// 		return !$this->eiEngine->getDraftDefinition()->isEmpty();
 	}
 	
 	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {

@@ -206,7 +206,7 @@ class EiEngine {
 			return $this->draftDefinition;
 		}
 		
-		$eiThing = $this->eiMask;
+		$eiThing = $this->eiMask ?? $this->eiType;
 		do {
 			$id = $eiThing->getId();
 		} while (($id === null || $eiThing->getEiEngine()->getEiPropCollection()->isEmpty(true))

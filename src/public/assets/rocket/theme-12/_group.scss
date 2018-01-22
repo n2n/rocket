@@ -1,7 +1,7 @@
 .rocket-group {
     background: $white;
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     padding: 0;
     border-bottom: 1px solid $input-border-color;
 
@@ -16,9 +16,9 @@
     }
     > .rocket-control {
         padding: 0 1rem;
-        margin: 0;
+        margin: 0 !important;
     }
-    > .rocket-group-toolbar {
+    .rocket-group-toolbar {
         position: absolute;
         top: 0.5rem;
         right: 1rem;
@@ -33,7 +33,7 @@
 .rocket-group .rocket-group-simple,
 .rocket-group .rocket-group-main {
     border: none;
-    background-color: transparent;
+    background-color: inherit;
     > label {
         border: none;
         margin: 0;
@@ -42,7 +42,7 @@
     > .rocket-control {
         padding: 0 1rem;
         border: 1px solid $input-border-color;
-        background: rgba($gray-900, 0.035);
+        background: rgba($gray-500, 0.08);
     }
 }
 
@@ -52,8 +52,9 @@
         > .rocket-control {
             .rocket-editable,
             .rocket-read-only {
-                > label {
-                    width: calc(14rem - 1px);
+                > label:not(.rocket-locale-label) {
+                    width: auto;
+                    max-width: calc(14rem - 1px);
                 }
                 > .rocket-control {
                     margin-left: calc(14rem - 1px);
@@ -67,7 +68,7 @@
     .rocket-control .rocket-group .rocket-group-main, {
         > .rocket-control {
             label {
-                width: calc(13rem - 2px);
+                max-width: calc(13rem - 2px);
             }
             .rocket-control {
                 margin-left: calc(13rem - 2px);

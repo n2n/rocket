@@ -444,21 +444,26 @@ namespace Rocket.Impl.Relation {
 			});
 		}
 		
-		private iniBrowserPage(context: cmd.Zone) {
+		private iniBrowserPage(zone: cmd.Zone) {
 			if (this.browserLayer === null) return;
 			
-			var ocs = Impl.Overview.OverviewPage.findAll(context.jQuery);
+			var ocs = Impl.Overview.OverviewPage.findAll(zone.jQuery);
 			if (ocs.length == 0) return;
 			
 			ocs[0].initSelector(this.browserSelectorObserver = new Display.SingleEntrySelectorObserver());
 			
-			var that = this;
-			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("select-label") }).click(function () {
-				that.updateSelection();
-				context.layer.hide();
+			zone.menu.zoneCommandsJq.find(".rocket-important").removeClass("rocket-important");
+			
+			zone.menu.partialCommandList.createJqCommandButton({ 
+				label: this.jqElem.data("select-label"), 
+				severity: Display.Severity.PRIMARY, 
+				important: true
+			}).click(() => {
+				this.updateSelection();
+				zone.layer.hide();
 			});
-			context.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(function () {
-				context.layer.hide();
+			zone.menu.partialCommandList.createJqCommandButton({ label: this.jqElem.data("cancel-label") }).click(() => {
+				zone.layer.hide();
 			});
 			
 			this.updateBrowser();
