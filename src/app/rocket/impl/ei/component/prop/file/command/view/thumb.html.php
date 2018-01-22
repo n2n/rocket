@@ -65,16 +65,15 @@
 				<?php foreach ($thumbModel->getRatioOptions() as $ratioStr => $label): ?>
 					<?php $imageDimensionOptions = $thumbModel->getImageDimensionOptions($ratioStr) ?>
 					<?php if (count($imageDimensionOptions) > 1 ): ?>
-						<li class="rocket-image-version">
+						<li class="rocket-image-version rocket-image-ratio" data-ratio-str="<?php $html->out($ratioStr) ?>">
 							<?php $formHtml->inputRadio('selectedStr', $ratioStr, 
-									array('class' => 'rocket-thumb-dimension-radio rocket-thumb-ratio',
-											'data-ratio-str' => $ratioStr,
+									array('class' => 'rocket-thumb-dimension-radio',
 											'data-dimension-str' => (string) $thumbModel->getLargestDimension($ratioStr)), $label) ?>
 							<span class="rocket-image-low-res">low res</span>
 						</li>
 					<?php endif ?>
 					<?php foreach ($imageDimensionOptions as $imageDimensionStr => $label): ?>
-						<li class="rocket-image-version">
+						<li class="rocket-image-version" data-ratio-str="<?php $html->out($ratioStr) ?>">
 							<?php if (null !== ($thumbFile = $imageFile->getThumbFile($thumbModel->getImageDimension($imageDimensionStr)))): ?>
 								<?php $label = new Raw($html->getLink($thumbFile->getFileSource()->getUrl(), 
 										$html->getImage($thumbFile, null, array('class' => '', 'style' => 'max-width: 30px;max-height:30px'), false, false),
@@ -82,7 +81,7 @@
 								<?php  ?>
 							<?php endif ?>
 							<?php $formHtml->inputRadio('selectedStr', $imageDimensionStr, 
-									array('class' => 'rocket-thumb-dimension-radio', 'data-ratio-str' => $ratioStr,
+									array('class' => 'rocket-thumb-dimension-radio',
 											'data-dimension-str' => $imageDimensionStr), $label) ?>
 							<span class="rocket-image-low-res">low res</span>
 						</li>
