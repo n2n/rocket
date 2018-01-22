@@ -124,7 +124,8 @@ class GuiFieldAssembler implements Savable {
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		
-		return new AssembleResult($displayable, $eiFieldWrapper, $this->forkMagWrappers[$id], 
+		/* $this->forkMagWrappers[$id] */
+		return new AssembleResult($displayable, $eiFieldWrapper, $result->getMagWrapper(), 
 				$this->forkedPropertyPaths[$id]->ext($magPropertyPath), $result->isMandatory());
 	}
 	

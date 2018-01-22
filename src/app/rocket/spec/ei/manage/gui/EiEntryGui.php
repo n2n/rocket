@@ -101,6 +101,10 @@ class EiEntryGui {
 // 		$this->eiPropPaths[(string) $guiIdPath] = $eiPropPath;
 // 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return bool
+	 */
 	public function containsDisplayable(GuiIdPath $guiIdPath) {
 		return isset($this->displayables[(string) $guiIdPath]);
 	}
@@ -211,10 +215,18 @@ class EiEntryGui {
 		$this->contextPropertyPath = $contextPropertyPath;
 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param EditableWrapper $editableInfo
+	 */
 	public function putEditableWrapper(GuiIdPath $guiIdPath, EditableWrapper $editableInfo) {
 		$this->editableInfos[(string) $guiIdPath] = $editableInfo;
 	}
-	
+
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return bool
+	 */
 	public function containsEditableWrapperGuiIdPath(GuiIdPath $guiIdPath): bool {
 		return isset($this->editableInfos[(string) $guiIdPath]);
 	}

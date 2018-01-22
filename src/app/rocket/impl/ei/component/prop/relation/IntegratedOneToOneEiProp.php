@@ -177,7 +177,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
 		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) return null;
 	
-		if (null !== ($eiFieldWrapper = $this->guiDefinition
+		if (null !== ($eiFieldWrapper = $this->getForkedGuiDefinition()
 				->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiIdPath))) {
 			return $eiFieldWrapper;
 		}
@@ -233,7 +233,6 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->toOneEiField->setValue($this->targetRelationEntry);
 	}
 }
-
 
 class OneToOneForkMag extends ObjectMagAdapter {
 	private $dispatchable;
