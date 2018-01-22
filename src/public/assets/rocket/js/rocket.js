@@ -6290,7 +6290,8 @@ var Rocket;
                         this.disableSortable();
                     }
                     this.dominantEntry = dominantEntry;
-                    this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
+                    this.expandZone = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqToMany))
+                        .createZone(window.location.href);
                     this.jqEmbedded.detach();
                     let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
                     this.expandZone.applyContent(contentJq);
@@ -6538,7 +6539,8 @@ var Rocket;
                 expand() {
                     if (this.isExpanded())
                         return;
-                    this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
+                    this.expandZone = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqToOne))
+                        .createZone(window.location.href);
                     this.jqEmbedded.detach();
                     let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
                     this.expandZone.applyContent(contentJq);
@@ -7115,6 +7117,7 @@ var Rocket;
                         if (this.copyControlJq) {
                             this.copyControlJq.show();
                         }
+                        this.elemJq.removeClass("rocket-inactive");
                         return;
                     }
                     if (!this.jqEnabler) {
@@ -7129,6 +7132,7 @@ var Rocket;
                     if (this.copyControlJq) {
                         this.copyControlJq.show();
                     }
+                    this.elemJq.addClass("rocket-inactive");
                 }
                 drawCopyControl(urlDefs) {
                     for (let localeId in urlDefs) {
