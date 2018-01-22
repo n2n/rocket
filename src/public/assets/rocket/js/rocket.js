@@ -5334,7 +5334,7 @@ var Rocket;
                         "type": "button",
                         "class": "rocket-impl-pagination-first btn btn-secondary",
                         "click": function () { that.goTo(1); }
-                    }).append($("<i />", {
+                    }).append($("<span />", { text: 1 })).append(" ").append($("<i />", {
                         "class": "fa fa-step-backward"
                     })));
                     this.jqPagination.append($("<button />", {
@@ -5379,8 +5379,8 @@ var Rocket;
                         "click": function () { that.goTo(that.getNumPages()); }
                     }).append($("<i />", {
                         "class": "fa fa-step-forward"
-                    })));
-                    this.overviewContent.whenContentChanged(function () {
+                    })).append(" ").append($("<span />", { text: that.getNumPages() })));
+                    let contentChangedCallback = function () {
                         if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages <= 1) {
                             that.jqPagination.hide();
                         }
@@ -5388,7 +5388,9 @@ var Rocket;
                             that.jqPagination.show();
                         }
                         that.jqInput.val(that.overviewContent.currentPageNo);
-                    });
+                    };
+                    this.overviewContent.whenContentChanged(contentChangedCallback);
+                    contentChangedCallback();
                 }
             }
             class FixedHeader {
@@ -7159,7 +7161,7 @@ var Rocket;
                     this.translatedContent = translatedContent;
                 }
                 draw(tooltip) {
-                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
+                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
                     this.translatedContent.jQuery.append(this.elemJq);
                     let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
                         .append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
