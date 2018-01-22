@@ -4,7 +4,7 @@
 
 .rocket-content > .rocket-entry,
 .rocket-content > .rocket-form {
-    margin-top: 1.25rem;
+    margin-top: 0.5rem;
 }
 
 .rocket-field {
@@ -18,13 +18,12 @@
 .rocket-required > label {
     position: relative;
     &::after {
-        content: " \f069";
-        font-family: fontawesome;
-        font-size: $font-size-xs;
+        content: "*";
         position: relative;
-        top: -0.25rem;
+        top: -0.125rem;
         left: 0.125rem;
-        color: $gray-500;
+        color: $primary;
+        font-weight: bold;
     }
 }
 
@@ -104,7 +103,10 @@
     > button {
         text-align: left;
         font-weight: bold;
-        font-size: $font-size-sm;
+        font-size: $font-size-base;
+        background: $gray-100;
+        border: $gray-500 1px solid;
+        color: $gray-700;
     }
 }
 

@@ -91,6 +91,11 @@ body {
 /**
  * Content
  */
+
+.rocket-content {
+    padding-top: 1rem;
+}
+
  #rocket-content-container {
      padding: 1rem;
  }
@@ -171,6 +176,7 @@ body {
 
 .rocket-zone-block {
     position: fixed;
+    cursor: wait;
     top: 0px;
     left: 0px;
     right: 0px;
