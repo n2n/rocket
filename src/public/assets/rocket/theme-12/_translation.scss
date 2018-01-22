@@ -220,6 +220,9 @@
  */
 
 td {
+	.rocket-impl-translatable {
+		width: auto;
+	}
 	.rocket-impl-translation {
 		padding: 0;
 		display: grid;
@@ -232,6 +235,8 @@ td {
 			font-size: $font-size-xs;
 			color: $gray-600;
 			width: auto;
+			white-space: nowrap;
+			padding: 0.325rem 0 0 0.5rem;
 		}
 		> .rocket-control {
 			grid-row-start: 1;

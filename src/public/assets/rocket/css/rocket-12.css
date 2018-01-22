@@ -4171,6 +4171,10 @@ body {
 /**
  * translations in tables
  */
+td .rocket-impl-translatable {
+  width: auto;
+}
+
 td .rocket-impl-translation {
   padding: 0;
   display: grid;
@@ -4185,6 +4189,8 @@ td .rocket-impl-translation > label {
   font-size: 0.75rem;
   color: #837E78;
   width: auto;
+  white-space: nowrap;
+  padding: 0.325rem 0 0 0.5rem;
 }
 
 td .rocket-impl-translation > .rocket-control {
