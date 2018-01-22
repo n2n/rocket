@@ -923,7 +923,10 @@ var Rocket;
                 if (!this.isGroup()) {
                     return null;
                 }
-                let toolbarJq = this.jqElem.children(".rocket-group-toolbar:first");
+                let toolbarJq = this.jqElem.find(".rocket-group-toolbar:first")
+                    .filter((index, elem) => {
+                    return this === StructureElement.of($(elem));
+                });
                 if (toolbarJq.length == 0) {
                     toolbarJq = $("<div />", { "class": "rocket-group-toolbar" });
                     this.jqElem.prepend(toolbarJq);
