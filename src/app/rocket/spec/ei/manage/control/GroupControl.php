@@ -13,6 +13,14 @@ class GroupControl implements Control {
 		$this->controlButton = $controlButton;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\control\Control::isStatic()
+	 */
+	public function isStatic(): bool {
+		return $this->controlButton->isStatic();
+	}
+	
 	public function add(Control ...$controls) {
 		array_push($this->controls, ...$controls);
 		return $this;
@@ -21,7 +29,7 @@ class GroupControl implements Control {
 	public function createUiComponent(array $attrs = array()): UiComponent {
 // 		$id = HtmlUtils::buildUniqueId('rocket-control-group-');
 		
-		$dropdownElem = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'dropdown'), $attrs));
+		$dropdownElem = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'dropdown' . ($this->controlButton->isStatic() ? ' rocket-static' : '')), $attrs));
 		$dropdownElem->appendLn();
 		$dropdownElem->appendLn($this->controlButton->toButton(
 				array('type' => 'button', 'class' => 'dropdown-toggle', /*'id' => $id,*/ 

@@ -75,6 +75,14 @@ class JhtmlControl implements Control {
 		return $this->pushToHistory;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\control\Control::isStatic()
+	 */
+	public function isStatic(): bool {
+		return $this->controlButton->isStatic();
+	}
+	
 	public function createUiComponent(array $attrs = array()): UiComponent {
 		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('href' => $this->url,
 				'class' => 'rocket-jhtml',

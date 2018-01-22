@@ -543,6 +543,17 @@ class EiHtmlBuilderMeta {
 		
 		$controls = array_values($controls);
 		$groupedControls = array_splice($controls, $max);
+		foreach ($groupedControls as $key => $groupedControl) {
+			if ($groupedControl->isStatic()) continue;
+			
+			$controls[] = $groupedControls[$key];
+			unset($groupedControls[$key]);
+		}
+		
+		if (empty($groupedControls)) {
+			return $controls;
+		}
+		
 		$controls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_BEER));
 		$groupControl->add(...$groupedControls);
 		
