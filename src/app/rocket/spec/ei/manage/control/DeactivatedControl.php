@@ -31,6 +31,14 @@ class DeactivatedControl implements Control {
 		$this->controlButton = $controlButton;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\control\Control::isStatic()
+	 */
+	public function isStatic(): bool {
+		return $this->controlButton->isStatic();
+	}
+	
 	public function getControlButton(): ControlButton {
 		return $this->controlButton;
 	}

@@ -36,6 +36,14 @@ class HrefControl implements Control {
 		$this->controlButton = $controlButton;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\control\Control::isStatic()
+	 */
+	public function isStatic(): bool {
+		return $this->controlButton->isStatic();
+	}
+	
 	public function getHref() {
 		return $this->href;
 	}

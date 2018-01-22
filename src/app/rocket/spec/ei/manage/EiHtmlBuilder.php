@@ -39,6 +39,9 @@ use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;
 use rocket\spec\ei\manage\control\Control;
+use rocket\spec\ei\manage\control\GroupControl;
+use rocket\spec\ei\manage\control\ControlButton;
+use rocket\spec\ei\manage\control\IconType;
 
 class EiHtmlBuilder {
 	private $view;
@@ -201,12 +204,12 @@ class EiHtmlBuilder {
 		return $div;
 	}
 	
-	public function entryCommands(bool $iconOnly = false) {
-		$this->view->out($this->getEntryCommands($iconOnly));
+	public function entryCommands(bool $iconOnly = false, int $max = null) {
+		$this->view->out($this->getEntryCommands($iconOnly, $max));
 	}
 	
-	public function getEntryCommands(bool $iconOnly = false) {
-		return $this->getCommands($this->meta->createEntryControls($this->view), $iconOnly);
+	public function getEntryCommands(bool $iconOnly = false, int $max = null) {
+		return $this->getCommands($this->meta->createEntryControls($this->view, $max), $iconOnly);
 	}
 	
 	public function commands(array $controls, bool $iconOnly = false) {
@@ -532,10 +535,29 @@ class EiHtmlBuilderMeta {
 	 * @param mixed $eiEntryGui
 	 * @return Control[]
 	 */
-	public function createEntryControls($eiEntryGui = null) {
+	public function createEntryControls($eiEntryGui = null, int $max = null) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		
-		return $eiEntryGui->createControls($this->view);
+		$controls = $eiEntryGui->createControls($this->view);
+		if ($max === null || count($controls) <= $max) return $controls;
+		
+		$controls = array_values($controls);
+		$groupedControls = array_splice($controls, $max);
+		foreach ($groupedControls as $key => $groupedControl) {
+			if ($groupedControl->isStatic()) continue;
+			
+			$controls[] = $groupedControls[$key];
+			unset($groupedControls[$key]);
+		}
+		
+		if (empty($groupedControls)) {
+			return $controls;
+		}
+		
+		$controls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_BEER));
+		$groupControl->add(...$groupedControls);
+		
+		return $controls;
 	}
 }
 

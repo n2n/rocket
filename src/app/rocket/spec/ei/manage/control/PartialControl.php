@@ -50,6 +50,14 @@ class PartialControl {
 		$this->executeClosure->__invoke($eiObjects);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\control\Control::isStatic()
+	 */
+	public function isStatic(): bool {
+		return $this->controlButton->isStatic();
+	}
+	
 	public function createUiComponent(PropertyPath $propertyPath, HtmlView $view): UiComponent {
 		
 	}

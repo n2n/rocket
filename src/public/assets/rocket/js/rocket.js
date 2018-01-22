@@ -5334,7 +5334,7 @@ var Rocket;
                         "type": "button",
                         "class": "rocket-impl-pagination-first btn btn-secondary",
                         "click": function () { that.goTo(1); }
-                    }).append($("<i />", {
+                    }).append($("<span />", { text: 1 })).append(" ").append($("<i />", {
                         "class": "fa fa-step-backward"
                     })));
                     this.jqPagination.append($("<button />", {
@@ -5379,8 +5379,8 @@ var Rocket;
                         "click": function () { that.goTo(that.getNumPages()); }
                     }).append($("<i />", {
                         "class": "fa fa-step-forward"
-                    })));
-                    this.overviewContent.whenContentChanged(function () {
+                    })).append(" ").append($("<span />", { text: that.getNumPages() })));
+                    let contentChangedCallback = function () {
                         if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages <= 1) {
                             that.jqPagination.hide();
                         }
@@ -5388,7 +5388,9 @@ var Rocket;
                             that.jqPagination.show();
                         }
                         that.jqInput.val(that.overviewContent.currentPageNo);
-                    });
+                    };
+                    this.overviewContent.whenContentChanged(contentChangedCallback);
+                    contentChangedCallback();
                 }
             }
             class FixedHeader {
@@ -6290,7 +6292,8 @@ var Rocket;
                         this.disableSortable();
                     }
                     this.dominantEntry = dominantEntry;
-                    this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
+                    this.expandZone = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqToMany))
+                        .createZone(window.location.href);
                     this.jqEmbedded.detach();
                     let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
                     this.expandZone.applyContent(contentJq);
@@ -6538,7 +6541,8 @@ var Rocket;
                 expand() {
                     if (this.isExpanded())
                         return;
-                    this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
+                    this.expandZone = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqToOne))
+                        .createZone(window.location.href);
                     this.jqEmbedded.detach();
                     let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
                     this.expandZone.applyContent(contentJq);
@@ -6954,10 +6958,14 @@ var Rocket;
                         jqBase = context.jQuery;
                     }
                     else {
-                        jqBase = jqElem;
+                        jqBase = se.jQuery;
                     }
                     jqBase.find(".rocket-impl-translatable").each((i, elem) => {
-                        tm.registerTranslatable(Translatable.from($(elem)));
+                        let elemJq = $(elem);
+                        if (Translatable.test(elemJq)) {
+                            return;
+                        }
+                        tm.registerTranslatable(Translatable.from(elemJq));
                     });
                 }
             }
@@ -7023,8 +7031,15 @@ var Rocket;
                         tc.drawCopyControl(this.copyUrls);
                     });
                 }
+                static test(elemJq) {
+                    let translatable = elemJq.data("rocketImplTranslatable");
+                    if (translatable instanceof Translatable) {
+                        return translatable;
+                    }
+                    return null;
+                }
                 static from(jqElem) {
-                    let translatable = jqElem.data("rocketImplTranslatable");
+                    let translatable = Translatable.test(jqElem);
                     if (translatable instanceof Translatable) {
                         return translatable;
                     }
@@ -7104,6 +7119,7 @@ var Rocket;
                         if (this.copyControlJq) {
                             this.copyControlJq.show();
                         }
+                        this.elemJq.removeClass("rocket-inactive");
                         return;
                     }
                     if (!this.jqEnabler) {
@@ -7118,6 +7134,7 @@ var Rocket;
                     if (this.copyControlJq) {
                         this.copyControlJq.show();
                     }
+                    this.elemJq.addClass("rocket-inactive");
                 }
                 drawCopyControl(urlDefs) {
                     for (let localeId in urlDefs) {
@@ -7144,7 +7161,7 @@ var Rocket;
                     this.translatedContent = translatedContent;
                 }
                 draw(tooltip) {
-                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control" });
+                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
                     this.translatedContent.jQuery.append(this.elemJq);
                     let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
                         .append($("<i></i>", { class: "fa fa-copy", title: tooltip }));

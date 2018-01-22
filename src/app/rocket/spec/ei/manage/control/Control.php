@@ -6,6 +6,8 @@ use n2n\web\ui\UiComponent;
 
 interface Control {
 	
+	public function isStatic(): bool;
+	
 	/**
 	 * @param bool $reducted
 	 * @return UiComponent

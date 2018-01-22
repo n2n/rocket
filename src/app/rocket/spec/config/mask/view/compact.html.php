@@ -64,7 +64,7 @@
 				<?php endforeach ?>
 				<?php if ($controlsAllowed): ?>
 					<?php $view->out('<td class="rocket-table-commands">') ?>
-						<?php $eiHtml->entryCommands(true) ?>
+						<?php $eiHtml->entryCommands(true, 5) ?>
 					<?php $view->out('</td>') ?>
 				<?php endif ?>
 			<?php $eiHtml->entryClose() ?>

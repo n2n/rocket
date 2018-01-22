@@ -183,7 +183,7 @@ namespace Rocket.Impl.Overview {
 						"type": "button",
 						"class": "rocket-impl-pagination-first btn btn-secondary",
 						"click": function () { that.goTo(1) }
-					}).append($("<i />", {
+					}).append($("<span />", { text: 1 })).append(" ").append($("<i />", {
 						"class": "fa fa-step-backward"	
 					})));
 			
@@ -236,16 +236,19 @@ namespace Rocket.Impl.Overview {
 						"click": function () { that.goTo(that.getNumPages()); }
 					}).append($("<i />", {
 						"class": "fa fa-step-forward"
-					})));
+					})).append(" ").append($("<span />", { text: that.getNumPages() })));
 			
-			this.overviewContent.whenContentChanged(function () {
+			
+			let contentChangedCallback = function () {
 				if (!that.overviewContent.isInit() || that.overviewContent.selectedOnly || that.overviewContent.numPages <= 1) {
 					that.jqPagination.hide();
 				} else {
 					that.jqPagination.show();
 				}
 				that.jqInput.val(that.overviewContent.currentPageNo);
-			});		
+			};
+			this.overviewContent.whenContentChanged(contentChangedCallback);		
+			contentChangedCallback();
 		}
 	}
 	

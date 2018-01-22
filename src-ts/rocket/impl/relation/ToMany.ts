@@ -622,7 +622,8 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.dominantEntry = dominantEntry;
-			this.expandZone = Rocket.getContainer().createLayer().createZone(window.location.href);
+			this.expandZone = Rocket.getContainer().createLayer(cmd.Zone.of(this.jqToMany))
+					.createZone(window.location.href);
 			this.jqEmbedded.detach();
 			
 			let contentJq = $("<div />", { "class": "rocket-content" }).append(this.jqEmbedded);
