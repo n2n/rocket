@@ -68,9 +68,10 @@ use n2n\web\ui\Raw;
 
 <div class="rocket-zone-commands">
 	<div class="rocket-main-commands">
-		<?php $html->link($entryCommandViewModel->determineCancelUrl($view->getHttpContext()), 
+		<?php $html->linkToController(['live', $eiuEntry->getLiveIdRep()], 
 				new Raw('<i class="fa fa-pencil"></i><span>' 
 						. $html->getL10nText('common_edit_label') . '</span>'),
-				array('class' => 'btn btn-primary rocket-jhtml rocket-important', 'data-jhtml-use-page-scroll-pos' => 'true')) ?>
+				array('class' => 'btn btn-primary rocket-jhtml rocket-important', 'data-jhtml-use-page-scroll-pos' => 'true'),
+				array('refPath' => $entryCommandViewModel->determineCancelUrl($view->getHttpContext()))) ?>
 	</div>
 </div>
