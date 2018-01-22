@@ -6,6 +6,7 @@ use rocket\spec\ei\manage\control\ControlButton;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\control\JhtmlControl;
 use rocket\spec\ei\manage\control\GroupControl;
+use rocket\spec\ei\manage\control\DeactivatedControl;
 
 class EiuControlFactory {
 	private $eiuFrame;
@@ -31,5 +32,9 @@ class EiuControlFactory {
 	
 	public function createGroup(ControlButton $controlButton): GroupControl {
 		return new GroupControl($controlButton);
+	}
+	
+	public function createDeactivated(ControlButton $controlButton) {
+		return new DeactivatedControl($controlButton);
 	}
 }

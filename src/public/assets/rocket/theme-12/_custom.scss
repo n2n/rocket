@@ -16,7 +16,7 @@ $gray-100: #FBFAFA;
 
 $primary: #ed8207;
 $secondary: $gray-200;
-$success: #5cb85c;
+$success: #2D7F00;
 $info:    #4c97cb;
 $warning: #F6A723;
 $danger:  #b90f00;
@@ -24,6 +24,8 @@ $inverse: $gray-900;
 
 $link-decoration:       none;
 $link-hover-decoration: none;
+
+$text-muted: $gray-500;
 
 $font-size-xs: .75rem;
 
@@ -61,7 +63,9 @@ $input-border-color: $gray-400;
 $input-placeholder-color: $gray-500;
 
 $table-hover-bg: $gray-300;
+$table-border-color:          $gray-400;
 
 
 $dropdown-item-padding-x: 1rem;
 $dropdown-item-padding-y: 0.375rem;
+$dropdown-box-shadow: $box-box-shadow;

@@ -1,3 +1,4 @@
+<?php
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -18,45 +19,23 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-module storage {
-	export class WebStorage {
-		private baseStorageKey;
-		private storage: Storage; 
-		private data: Object = {};
-		
-		public constructor(storageKey, storage: Storage = null) {
-			this.baseStorageKey = storageKey;
-			this.storage = storage;
-			
-			if (null !== storage) {
-				var dataString = this.storage.getItem(storageKey);
-				if (null !== dataString) {
-					this.data = $.parseJSON(dataString);
-				}	
-			}
-		}
-		
-		public isAvailable() {
-			return null !== this.storage;
-		}
-		
-		public getData(key: string) {
-			if (!this.isAvailable() || !this.data.hasOwnProperty(key)) return null;
-			
-			return this.data[key];
-		}
-		
-		public hasData(key: string): boolean {
-			if (!this.isAvailable()) return false;
-			
-			return this.data.hasOwnProperty(key);
-		}
-		
-		public setData(key: string, data) {
-			if (!this.isAvailable()) return
-			
-			this.data[key] = data;
-			this.storage.setItem(this.baseStorageKey, JSON.stringify(this.data));
-		}
+namespace rocket\spec\ei\manage\control;
+
+use n2n\web\ui\UiComponent;
+use n2n\impl\web\ui\view\html\HtmlUtils;
+
+class DeactivatedControl implements Control {
+	private $controlButton;
+	
+	public function __construct(ControlButton $controlButton) {
+		$this->controlButton = $controlButton;
+	}
+	
+	public function getControlButton(): ControlButton {
+		return $this->controlButton;
+	}
+	
+	public function createUiComponent(array $attrs = array()): UiComponent {
+		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('disabled'), $attrs), false);
 	}
 }

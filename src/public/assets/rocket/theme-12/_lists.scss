@@ -8,7 +8,6 @@
     top: 44px;
     background-color: $gray-200;
     z-index: 50;
-    padding-top: 1rem;
 }
 @include media-breakpoint-up(md) {
     .rocket-impl-container {
@@ -126,38 +125,47 @@ ul.rocket-content-item > li {
 
 .rocket-tree-level-1 > td:nth-child(2)::before {
     content: '― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-2 > td:nth-child(2)::before  {
     content: '― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-3 > td:nth-child(2)::before  {
     content: '― ― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-4 > td:nth-child(2)::before  {
     content: '― ― ― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-5 > td:nth-child(2)::before  {
     content: '― ― ― ― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-6 > td:nth-child(2)::before  {
     content: '― ― ― ― ― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-7 > td:nth-child(2)::before  {
     content: '― ― ― ― ― ― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-8 > td:nth-child(2)::before  {
     content: '― ― ― ― ― ― ― ― ';
+    padding-right: 0.5rem;
 }
 
 .rocket-tree-level-9 > td:nth-child(2)::before  {
-    padding-left: 10rem;
+    content: '― ― ― ― ― ― ― ― ― ';
+    padding-right: 0.5rem;
 }
 
 /*

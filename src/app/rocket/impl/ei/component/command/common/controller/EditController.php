@@ -57,7 +57,6 @@ class EditController extends ControllerAdapter {
 		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
-
 	
 	public function doLive($idRep, ParamQuery $refPath) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
@@ -76,6 +75,12 @@ class EditController extends ControllerAdapter {
 			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
 // 			$this->refresh();
 // 			return;
+		} else if ($this->dispatch($editModel, 'saveAndPreview')) {
+			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
+			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->getEiuEntry()->getEiObject()));
+			$this->eiuCtrl->redirect($this->getUrlToController(['livepreview', $idRep, $defaultPreviewType],
+					array('refPath' => (string) $redirectUrl)), $jhtmlEvent);
+			return;
 		}
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(), 
@@ -85,6 +90,32 @@ class EditController extends ControllerAdapter {
 				'entryCommandViewModel' => $this->createEntryCommandViewModel(
 						$editModel->getEntryModel()->getEiuEntryGui(), $redirectUrl)));
 		$this->eiuCtrl->forwardView($view, $jhtmlEvent);
+	}
+	
+	public function doLivePreview($idRep, $previewType, ParamQuery $refPath) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
+		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+		
+		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
+		
+		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
+		
+		$this->eiuCtrl->applyCommonBreadcrumbs($eiuEntry);
+		
+		$view = $this->createView('..\view\editPreview.html', array(
+				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
+						->ext('livepreviewsrc', $idRep, $previewType),
+				'currentPreviewType' => $previewType,
+				'previewTypeOptions' => $previewTypeOptions,
+				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl, $eiuEntry)));
+		$this->eiuCtrl->forwardView($view);
+	}
+	
+	public function doLivePreviewSrc($idRep, $previewType, array $delegateCmds = array()) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
+		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
+		
+		$this->delegate($previewController);
 	}
 	
 	public function doLatestDraft($idRep, ParamQuery $refPath) {

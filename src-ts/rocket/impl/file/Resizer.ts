@@ -2,6 +2,7 @@ namespace Rocket.Impl.File {
 	class SelectableDimension implements SizeSelectorListener {
 		private elemLowRes: JQuery;
 		private elemRadio: JQuery;
+		private elemThumb: JQuery;
 		private dimensionStr: string;
 		private ratioStr: string;
 		private ratio: boolean;
@@ -11,8 +12,9 @@ namespace Rocket.Impl.File {
 			this.resizer.getSizeSelector().registerChangeListener(this);
 			this.elemLowRes = elemLi.find(".rocket-image-low-res").hide();
 			this.elemRadio = elemLi.find("input[type=radio]:first");
+			this.elemThumb = elemLi.find(".rocket-image-previewable:first");
 			this.dimensionStr = this.elemRadio.data('dimension-str').toString();
-			this.ratioStr = this.elemRadio.data('ratio-str').toString();
+			this.ratioStr = elemLi.data('ratio-str').toString();
 			this.ratio = this.ratioStr === this.elemRadio.val();
 			
 			(function(that: SelectableDimension) {
@@ -25,6 +27,46 @@ namespace Rocket.Impl.File {
 						that.resizer.setSelectedDimension(that, true);
 					}
 				});
+				
+				if (!this.ratio) {
+					if (that.elemThumb.length > 0) {
+					    this.elemLi.append($("<a />", {
+					        "href": "#"
+					    }).click(function(e) {
+					        e.preventDefault();
+					        that.elemThumb.click();
+					        that.elemLi.nextUntil(".rocket-image-ratio")
+					    }).append($("<i />", {
+					        "class": "fa fa-search"
+					    })));
+					}
+				} else {
+					var elemToggleOpen = $("<i />", {
+						"class": "fa fa-angle-down"
+					});
+					var elemToggleClose = $("<i />", {
+						"class": "fa fa-angle-up"
+					});
+					var elemsToToggle = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]");
+					this.elemLi.append($("<a />", {
+				        "href": "#",
+				        "class": "open"
+				    }).click(function(e) {
+				        e.preventDefault();
+				        var elem = $(this);
+				        if (elem.hasClass("open")) {
+				        	elemsToToggle.hide();
+				        	elem.removeClass("open");
+				        	elemToggleOpen.show();
+				        	elemToggleClose.hide();
+				        } else {
+				        	elemsToToggle.show();
+				        	elem.addClass("open");
+				        	elemToggleOpen.hide();
+				        	elemToggleClose.show();
+				        }
+				    }).append(elemToggleOpen).append(elemToggleClose).click());
+				}
 			}).call(this, this);
 		}
 		
