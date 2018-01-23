@@ -52,16 +52,18 @@ namespace Rocket.util {
 	
 	export class ElementUtils {
 		static isControl(elem: Element) {
-			switch (elem.tagName) {
-				case 'A':
-				case 'BUTTON':
-				case 'INPUT':
-				case 'TEXTAREA':
-				case 'SELECT':
-					return true;
-				default:
-					return false;
-			}
+			return !!Jhtml.Util.closest(elem, "a, button, input, textarea, select", true);
+//			
+//			switch (elem.tagName) {
+//				case 'A':
+//				case 'BUTTON':
+//				case 'INPUT':
+//				case 'TEXTAREA':
+//				case 'SELECT':
+//					return true;
+//				default:
+//					return false;
+//			}
 		}
 	}
 		
