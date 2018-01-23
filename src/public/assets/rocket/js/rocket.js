@@ -385,7 +385,7 @@ var Rocket;
                 });
                 jqLayer.append(jqToolbar);
                 var jqButton = $("<button />", {
-                    "class": "btn btn-danger"
+                    "class": "btn btn-warning"
                 }).append($("<i />", {
                     "class": "fa fa-times"
                 })).click(function () {
@@ -853,16 +853,7 @@ var Rocket;
         util.ArgUtils = ArgUtils;
         class ElementUtils {
             static isControl(elem) {
-                switch (elem.tagName) {
-                    case 'A':
-                    case 'BUTTON':
-                    case 'INPUT':
-                    case 'TEXTAREA':
-                    case 'SELECT':
-                        return true;
-                    default:
-                        return false;
-                }
+                return !!Jhtml.Util.closest(elem, "a, button, input, textarea, select", true);
             }
         }
         util.ElementUtils = ElementUtils;
