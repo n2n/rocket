@@ -109,7 +109,7 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 	}
 	
 	.rocket-layer {
-		animation: layertransform 0.1s;
+		animation: layertransform 0.2s;
 	}
 	
 	.rocket-layer,

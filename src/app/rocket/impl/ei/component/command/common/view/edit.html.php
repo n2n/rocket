@@ -46,13 +46,13 @@
 					
 	<div class="rocket-zone-commands">
 		<div class="rocket-main-commands">
-			<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 
-							. $html->getL10nText('common_quicksave_label') . '</span>'), 
-					array('class' => 'btn btn-primary')) ?>
-					
 			<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_and_back_label') . '</span>'), 
 					array('class' => 'btn btn-primary rocket-important')) ?>
+					
+			<?php $formHtml->buttonSubmit('quicksave', new Raw('<i class="fa fa-save"></i><span>' 
+							. $html->getL10nText('common_quicksave_label') . '</span>'), 
+					array('class' => 'btn btn-primary')) ?>
 			
 			<?php if ($editModel->isDraftable()): ?>
 				<?php $formHtml->buttonSubmit('saveAsNewDraft', new Raw('<i class="fa fa-save"></i><span>' 

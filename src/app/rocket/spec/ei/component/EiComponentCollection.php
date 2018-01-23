@@ -75,7 +75,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	/**
 	 * @param EiComponent $eiComponent
 	 */
-	protected function addEiComponent(EiComponent $eiComponent) {
+	protected function addEiComponent(EiComponent $eiComponent, bool $prepend = false) {
 		ArgUtils::valType($eiComponent, $this->genericType);
 		if (0 == mb_strlen($eiComponent->getId())) {
 			$eiComponent->setId($this->makeUniqueId($eiComponent->getIdBase()));
@@ -85,7 +85,11 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		}
 		
 		$eiComponent->setEiEngine($this->eiEngine);
-		$this->elements[$eiComponent->getId()] = $eiComponent;
+		if (!$prepend) {
+			$this->elements[$eiComponent->getId()] = $eiComponent;
+		} else {
+			$this->elements = array($eiComponent->getId() => $eiComponent) + $this->elements;
+		}
 		$this->eiEngine->clear();
 	}
 	

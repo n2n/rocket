@@ -541,23 +541,37 @@ class EiHtmlBuilderMeta {
 		$controls = $eiEntryGui->createControls($this->view);
 		if ($max === null || count($controls) <= $max) return $controls;
 		
-		$controls = array_values($controls);
-		$groupedControls = array_splice($controls, $max);
-		foreach ($groupedControls as $key => $groupedControl) {
-			if ($groupedControl->isStatic()) continue;
+		$numStatics = 0;
+		$vControls = array();
+		$groupedControls = array();
+		foreach ($controls as $control) {
+			if (!$control->isStatic()) {
+				$vControls[] = $control;
+				continue;
+			}
 			
-			$controls[] = $groupedControls[$key];
-			unset($groupedControls[$key]);
+			$numStatics++;
+			if ($numStatics < $max) {
+				$vControls[] = $control;
+				continue;
+			}
+			
+			$groupedControls[] = $control; 
 		}
 		
 		if (empty($groupedControls)) {
-			return $controls;
+			return $vControls;
 		}
 		
-		$controls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_ELLIPSIS_V));
+		if (count($groupedControls) == 1) {
+			$vControls[] = array_pop($groupedControls);
+			return $vControls;
+		}
+		
+		$vControls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_ELLIPSIS_V));
 		$groupControl->add(...$groupedControls);
 		
-		return $controls;
+		return $vControls;
 	}
 }
 

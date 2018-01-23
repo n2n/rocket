@@ -62,6 +62,6 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$onlineEiCommand = new OnlineEiCommand();
 		$onlineEiCommand->setOnlineEiProp($onlineEiProp);
 		
-		$setupProcess->getEiCommandCollection()->add($onlineEiCommand);
+		$setupProcess->getEiCommandCollection()->add($onlineEiCommand, true);
 	}
 }

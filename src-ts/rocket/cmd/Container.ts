@@ -195,7 +195,7 @@ namespace Rocket.Cmd {
 			jqLayer.append(jqToolbar);
 			
 			var jqButton = $("<button />", { 
-				"class": "btn btn-danger"
+				"class": "btn btn-warning"
 			}).append($("<i />", {
 				"class": "fa fa-times"
 			})).click(function () {

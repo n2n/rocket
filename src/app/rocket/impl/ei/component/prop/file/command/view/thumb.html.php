@@ -45,61 +45,63 @@
 	$html->meta()->addJs('impl/js/image-preview.js');
 ?>
 
-<h2><?php $html->out($imageFile->getFile()->getOriginalName()) ?></h2>
-<div class="rocket-image-resizer-container">
-	<?php $formHtml->open($thumbModel, null, null, array('class' => 'rocket-form')) ?>
-		
-		<?php $formHtml->input('x', array('id' => 'rocket-thumb-pos-x')) ?>
-		<?php $formHtml->input('y', array('id' => 'rocket-thumb-pos-y')) ?>
-		<?php $formHtml->input('width', array('id' => 'rocket-thumb-width')) ?>
-		<?php $formHtml->input('height', array('id' => 'rocket-thumb-height')) ?>
-				
-		<div id="rocket-image-resizer"
-				data-img-src="<?php $html->esc(UiComponentFactory::createImgSrc($imageFile)) ?>"
-				data-text-fixed-ratio="<?php $html->l10nText('ei_impl_thumb_keep_aspect_ratio_label') ?>"
-				data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" data-text-zoom="Zoom"></div>
-		
-		<div>
-			<h3>Bild-Versionen</h3>
-			<ul class="rocket-image-dimensions list-unstyled">
-				<?php foreach ($thumbModel->getRatioOptions() as $ratioStr => $label): ?>
-					<?php $imageDimensionOptions = $thumbModel->getImageDimensionOptions($ratioStr) ?>
-					<?php if (count($imageDimensionOptions) > 1 ): ?>
-						<li class="rocket-image-version rocket-image-ratio" data-ratio-str="<?php $html->out($ratioStr) ?>">
-							<?php $formHtml->inputRadio('selectedStr', $ratioStr, 
-									array('class' => 'rocket-thumb-dimension-radio',
-											'data-dimension-str' => (string) $thumbModel->getLargestDimension($ratioStr)), $label) ?>
-							<span class="rocket-image-low-res">low res</span>
-						</li>
-					<?php endif ?>
-					<?php foreach ($imageDimensionOptions as $imageDimensionStr => $label): ?>
-						<li class="rocket-image-version" data-ratio-str="<?php $html->out($ratioStr) ?>">
-							<?php if (null !== ($thumbFile = $imageFile->getThumbFile($thumbModel->getImageDimension($imageDimensionStr)))): ?>
-								<?php $label = new Raw($html->getLink($thumbFile->getFileSource()->getUrl(), 
-										$html->getImage($thumbFile, null, array('class' => '', 'style' => 'max-width: 30px;max-height:30px'), false, false),
-										array('class' => 'rocket-image-previewable')) . $label) ?>
-								<?php  ?>
-							<?php endif ?>
-							<?php $formHtml->inputRadio('selectedStr', $imageDimensionStr, 
-									array('class' => 'rocket-thumb-dimension-radio',
-											'data-dimension-str' => $imageDimensionStr), $label) ?>
-							<span class="rocket-image-low-res">low res</span>
-						</li>
-					<?php endforeach ?>
-				<?php endforeach ?>
-			</ul>
-		</div>
-		
-		<div class="rocket-zone-commands">
+<div class="rocket-group rocket-group-simple">
+	<label><?php $html->out($imageFile->getFile()->getOriginalName()) ?></label>
+	<div class="rocket-image-resizer-container rocket-control">
+		<?php $formHtml->open($thumbModel, null, null, array('class' => 'rocket-form')) ?>
+			
+			<?php $formHtml->input('x', array('id' => 'rocket-thumb-pos-x')) ?>
+			<?php $formHtml->input('y', array('id' => 'rocket-thumb-pos-y')) ?>
+			<?php $formHtml->input('width', array('id' => 'rocket-thumb-width')) ?>
+			<?php $formHtml->input('height', array('id' => 'rocket-thumb-height')) ?>
+					
+			<div id="rocket-image-resizer"
+					data-img-src="<?php $html->esc(UiComponentFactory::createImgSrc($imageFile)) ?>"
+					data-text-fixed-ratio="<?php $html->l10nText('ei_impl_thumb_keep_aspect_ratio_label') ?>"
+					data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" data-text-zoom="Zoom"></div>
+			
 			<div>
-				<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
-								. $html->getL10nText('common_save_label') . '</span>'), 
-						array('class' => 'btn btn-primary')) ?>
-				<?php $html->link($view->getParam('cancelUrl'), 
-						new Raw('<i class="fa fa-times-circle"></i><span>' 
-								. $html->getL10nText('common_cancel_label') . '</span>'),
-						array('class' => 'btn btn-secondary rocket-jhtml', 'data-jhtml-use-page-scroll-pos' => 'true')) ?>
+				<h3>Bild-Versionen</h3>
+				<ul class="rocket-image-dimensions list-unstyled">
+					<?php foreach ($thumbModel->getRatioOptions() as $ratioStr => $label): ?>
+						<?php $imageDimensionOptions = $thumbModel->getImageDimensionOptions($ratioStr) ?>
+						<?php if (count($imageDimensionOptions) > 1 ): ?>
+							<li class="rocket-image-version rocket-image-ratio" data-ratio-str="<?php $html->out($ratioStr) ?>">
+								<?php $formHtml->inputRadio('selectedStr', $ratioStr, 
+										array('class' => 'rocket-thumb-dimension-radio',
+												'data-dimension-str' => (string) $thumbModel->getLargestDimension($ratioStr)), $label) ?>
+								<span class="rocket-image-low-res">low res</span>
+							</li>
+						<?php endif ?>
+						<?php foreach ($imageDimensionOptions as $imageDimensionStr => $label): ?>
+							<li class="rocket-image-version" data-ratio-str="<?php $html->out($ratioStr) ?>">
+								<?php if (null !== ($thumbFile = $imageFile->getThumbFile($thumbModel->getImageDimension($imageDimensionStr)))): ?>
+									<?php $label = new Raw($html->getLink($thumbFile->getFileSource()->getUrl(), 
+											$html->getImage($thumbFile, null, array('class' => '', 'style' => 'max-width: 30px;max-height:30px'), false, false),
+											array('class' => 'rocket-image-previewable')) . $label) ?>
+									<?php  ?>
+								<?php endif ?>
+								<?php $formHtml->inputRadio('selectedStr', $imageDimensionStr, 
+										array('class' => 'rocket-thumb-dimension-radio',
+												'data-dimension-str' => $imageDimensionStr), $label) ?>
+								<span class="rocket-image-low-res">low res</span>
+							</li>
+						<?php endforeach ?>
+					<?php endforeach ?>
+				</ul>
 			</div>
-		</div>
-	<?php $formHtml->close() ?>
+			
+			<div class="rocket-zone-commands">
+				<div>
+					<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
+									. $html->getL10nText('common_save_label') . '</span>'), 
+							array('class' => 'btn btn-primary rocket-important')) ?>
+					<?php $html->link($view->getParam('cancelUrl'), 
+							new Raw('<i class="fa fa-times-circle"></i><span>' 
+									. $html->getL10nText('common_cancel_label') . '</span>'),
+							array('class' => 'btn btn-secondary rocket-jhtml', 'data-jhtml-use-page-scroll-pos' => 'true')) ?>
+				</div>
+			</div>
+		<?php $formHtml->close() ?>
+	</div>
 </div>
