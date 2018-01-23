@@ -47,27 +47,52 @@ namespace Rocket.Impl.File {
 					var elemToggleClose = $("<i />", {
 						"class": "fa fa-angle-up"
 					});
-					var elemsToToggle = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]");
-					this.elemLi.append($("<a />", {
-				        "href": "#",
-				        "class": "open"
-				    }).click(function(e) {
-				        e.preventDefault();
-				        var elem = $(this);
-				        if (elem.hasClass("open")) {
-				        	elemsToToggle.hide();
-				        	elem.removeClass("open");
-				        	elemToggleOpen.show();
-				        	elemToggleClose.hide();
-				        } else {
-				        	elemsToToggle.show();
-				        	elem.addClass("open");
-				        	elemToggleOpen.hide();
-				        	elemToggleClose.show();
-				        }
-				    }).append(elemToggleOpen).append(elemToggleClose).click());
+					let elemsToToggle: JQuery = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]"),
+						elemA = $("<a />", {
+					        "href": "#",
+					        "class": "open"
+					    }).click(function(e) {
+					        e.preventDefault();
+					        var elem = $(this);
+					        if (elem.hasClass("open")) {
+					        	elemsToToggle.hide();
+					        	elem.removeClass("open");
+					        	elemToggleOpen.show();
+					        	elemToggleClose.hide();
+					        	that.setOpen(false);
+					        } else {
+					        	elemsToToggle.show();
+					        	elem.addClass("open");
+					        	elemToggleOpen.hide();
+					        	elemToggleClose.show();
+					        	that.setOpen(true);
+					        }
+					    }).append(elemToggleOpen).append(elemToggleClose).appendTo(this.elemLi);
+			
+					if (!that.checkOpen() && elemsToToggle.find("input[type=radio]:checked").length === 0) {
+						elemA.click();
+					} else {
+						elemToggleOpen.hide();
+					}
 				}
 			}).call(this, this);
+		}
+		
+		private checkOpen(): boolean {
+			if (typeof (Storage) === "undefined") return false;
+			
+			let item: string;
+			if (null !== (item = sessionStorage.getItem(this.buildStorageKey() + "-open"))) {
+				console.log(item);
+				return JSON.parse(item);
+			}
+			
+			return false;
+		}
+		private setOpen(open: boolean): void {
+			if (typeof (Storage) === "undefined") return;
+			
+			sessionStorage.setItem(this.buildStorageKey() + "-open", JSON.stringify(open));
 		}
 		
 		public getDimensionStr() {
@@ -100,16 +125,26 @@ namespace Rocket.Impl.File {
 		}
 		
 		public onDimensionChange(sizeSelector: SizeSelector) {
-			let currentResizingDimension = sizeSelector.getCurrentResizingDimension(),
-				currentSelectableDimension = currentResizingDimension.getSelectableDimension();
+			this.checkLowRes(sizeSelector);
+		}
+		
+		public onDimensionChanged(sizeSelector: SizeSelector) {
+			this.checkLowRes(sizeSelector);
+		}
 			
+		private checkLowRes(sizeSelector: SizeSelector) {
+			let currentResizingDimension = sizeSelector.getCurrentResizingDimension();
+			if (null === currentResizingDimension) return;
+			
+			let	currentSelectableDimension = currentResizingDimension.getSelectableDimension();
+			if (null === currentSelectableDimension) return;
+		
 			if (((currentSelectableDimension.isRatio() && currentSelectableDimension.hasSameRatio(this)) 
 					|| currentSelectableDimension.equals(this)) && sizeSelector.isLowRes(this.createResizingDimension())) {
 				this.elemLowRes.show();
 			} else {
 				this.elemLowRes.hide();
 			}
-			
 		}
 		
 		public createResizingDimension() {
@@ -207,7 +242,7 @@ namespace Rocket.Impl.File {
 			this.elemUl.append(this.elemLiFixedRatio);
 			this.elemSpanWarning = $("<span/>").addClass("rocket-image-resizer-warning").text(this.imageResizer.textLowResolution).hide();
 			this.elemUl.append($("<li/>").addClass("rocket-low-resolution").append(this.elemSpanWarning));
-			this.elemUl.append($("<li/>").append(this.elemSpanZoom));
+			//this.elemUl.append($("<li/>").append(this.elemSpanZoom));
 
 			this.imageResizer.getElemToolbar().append(this.elemUl);
 		}
@@ -244,6 +279,7 @@ namespace Rocket.Impl.File {
 	}
 
 	interface SizeSelectorListener {
+		onDimensionChanged(sizeSelector: SizeSelector): void;
 		onDimensionChange(sizeSelector: SizeSelector): void;
 	}
 
@@ -470,7 +506,7 @@ namespace Rocket.Impl.File {
 						$(document).off("mousemove.drag");
 						$(document).off("mouseup.drag");
 						_obj.initializeDragStart();
-						_obj.triggerChangeListeners();
+						_obj.triggerDimensionChanged();
 						$.Event(event).preventDefault();
 					});
 					$.Event(event).preventDefault();
@@ -486,6 +522,7 @@ namespace Rocket.Impl.File {
 					} else {
 						_obj.hideWarning();
 					}
+					_obj.triggerDimensionChange();
 				});
 
 				//Resizing span
@@ -537,7 +574,7 @@ namespace Rocket.Impl.File {
 						$(document).off("mousemove.resize");
 						$(document).off("mouseup.resize");
 						_obj.initializeResizeStart();
-						_obj.triggerChangeListeners();
+						_obj.triggerDimensionChanged();
 					});
 					event.preventDefault();
 					event.stopPropagation();
@@ -585,9 +622,15 @@ namespace Rocket.Impl.File {
 			this.changeListeners.push(changeListener);
 		}
 		
-		private triggerChangeListeners() {
+		private triggerDimensionChange() {
 			this.changeListeners.forEach(function(chnageListener: SizeSelectorListener) {
 				chnageListener.onDimensionChange(this);
+			}, this);
+		}
+		
+		private triggerDimensionChanged() {
+			this.changeListeners.forEach(function(chnageListener: SizeSelectorListener) {
+				chnageListener.onDimensionChanged(this);
 			}, this);
 		}
 		
@@ -600,7 +643,7 @@ namespace Rocket.Impl.File {
 	        this.currentResizingDimension = resizingDimension;
 	        this.elemDiv.trigger('positionChange');
 	        this.elemDiv.trigger('sizeChange');
-	        this.triggerChangeListeners();
+	        this.triggerDimensionChanged();
 	        this.initializeMin();
 	        this.initializeMax();
 		}
@@ -786,7 +829,9 @@ namespace Rocket.Impl.File {
 	        });
 		}
 		
-		public onDimensionChange(sizeSelector: SizeSelector) {
+		public onDimensionChange(sizeSelector: SizeSelector) {}
+		
+		public onDimensionChanged(sizeSelector: SizeSelector) {
 			var _obj = this;
 
 	        var width = sizeSelector.getWidth() / _obj.zoomFactor;
