@@ -554,7 +554,7 @@ class EiHtmlBuilderMeta {
 			return $controls;
 		}
 		
-		$controls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_BEER));
+		$controls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_ELLIPSIS_V));
 		$groupControl->add(...$groupedControls);
 		
 		return $controls;
