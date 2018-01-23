@@ -42,6 +42,7 @@ use n2n\io\managed\img\impl\ThSt;
 use n2n\impl\web\dispatch\mag\model\FileMag;
 use rocket\spec\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
+use n2n\web\http\Session;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
@@ -238,6 +239,6 @@ class FileEiProp extends DraftableEiPropAdapter {
 		$tmpFileManager = $copyEiu->lookup(TmpFileManager::class);
 		CastUtils::assertTrue($tmpFileManager instanceof TmpFileManager);
 		
-		return $tmpFileManager->createCopyFromFile($value);
+		return $tmpFileManager->createCopyFromFile($value, $copyEiu->lookup(Session::class, false));
 	}
 }
