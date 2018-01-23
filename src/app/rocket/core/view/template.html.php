@@ -108,6 +108,25 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 		display: none;
 	}
 	
+	.rocket-layer {
+		animation: layertransform 0.1s;
+	}
+	
+	.rocket-layer,
+	.rocket-main-layer {
+		visibility: hidden;
+	}
+	
+	.rocket-layer.rocket-active,
+	.rocket-main-layer.rocket-active {
+		visibility: visible;
+	}
+	
+	@keyframes layertransform {
+	    from { transform: translateX(100vw); }
+	    to { transform: translateX(0); }
+	}
+	
 </style>
 <?php $html->headEnd() ?>
 <?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')),
