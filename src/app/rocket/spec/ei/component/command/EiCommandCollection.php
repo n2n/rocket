@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\component\EiComponentCollection;
-use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\manage\control\EntryNavPoint;
@@ -45,8 +44,8 @@ class EiCommandCollection extends EiComponentCollection {
 		return $this->getEiComponentById($id);
 	}
 	
-	public function add(EiCommand $eiCommand) {
-		$this->addEiComponent($eiCommand);
+	public function add(EiCommand $eiCommand, bool $prepend = false) {
+		$this->addEiComponent($eiCommand, $prepend);
 	}
 	
 	public function hasGenericOverview() {
@@ -117,7 +116,7 @@ class EiCommandCollection extends EiComponentCollection {
 	}
 	
 	/**
-	 * @param unknown $entryNavPoint
+	 * @param EntryNavPoint $entryNavPoint
 	 * @param bool $required
 	 * @return GenericEditEiCommand
 	 */
