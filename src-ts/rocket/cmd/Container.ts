@@ -68,10 +68,10 @@ namespace Rocket.Cmd {
 		
 		private markCurrent() {
 			for (let layer of this._layers) {
-				layer.jQuery.removeClass("rocket-active");
+				layer.active = false;
 			}
 			
-			this.currentLayer.jQuery.addClass("rocket-active");
+			this.currentLayer.active = true;
 		}
 		
 		get currentLayer(): Layer {

@@ -279,9 +279,9 @@ var Rocket;
             }
             markCurrent() {
                 for (let layer of this._layers) {
-                    layer.jQuery.removeClass("rocket-active");
+                    layer.active = false;
                 }
-                this.currentLayer.jQuery.addClass("rocket-active");
+                this.currentLayer.active = true;
             }
             get currentLayer() {
                 if (this._layers.length == 0) {
@@ -552,6 +552,7 @@ var Rocket;
                 this._zones = new Array();
                 this.callbackRegistery = new Rocket.util.CallbackRegistry();
                 this._visible = true;
+                this.scrollPos = 0;
                 this.onNewZoneCallbacks = new Array();
                 this.onNewHistoryEntryCallbacks = new Array();
                 var zoneJq = jqLayer.children(".rocket-zone:first");
@@ -679,6 +680,20 @@ var Rocket;
                 for (var i in this.onNewZoneCallbacks) {
                     this.onNewZoneCallbacks[i](zone);
                 }
+            }
+            set active(focus) {
+                if (focus == this.active)
+                    return;
+                if (focus) {
+                    this.jqLayer.addClass("rocket-active");
+                    $(window).scrollTop(this.scrollPos);
+                    return;
+                }
+                this.scrollPos = $(window).scrollTop();
+                this.jqLayer.removeClass("rocket-active");
+            }
+            get active() {
+                return this.jqLayer.hasClass("rocket-active");
             }
             onNewZone(onNewPageCallback) {
                 this.onNewZoneCallbacks.push(onNewPageCallback);
