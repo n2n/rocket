@@ -35,7 +35,7 @@ use n2n\util\uri\Url;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\critmod\filter\UnknownFilterFieldException;
-use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class FilterFieldController extends ControllerAdapter  {
 	private $eiFrame;
@@ -72,7 +72,7 @@ class FilterFieldController extends ControllerAdapter  {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	
-		$this->send(new JhtmlJsonResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
+		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
 				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
@@ -81,7 +81,7 @@ class FilterFieldController extends ControllerAdapter  {
 	
 		$filterGroupForm = new FilterGroupForm(new FilterGroupData(), new FilterDefinition());
 	
-		$this->send(new JhtmlJsonResponse($this->createView(
+		$this->send(JhtmlResponse::view($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}

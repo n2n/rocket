@@ -83,7 +83,7 @@ class RocketController extends ControllerAdapter {
 		if (!$this->verifyUser()) return;
 		$deleteLoginModel = new DeleteLoginModel(); 
 		$this->dispatch($deleteLoginModel, 'delete');
-		$this->send(new JhtmlResponse($this->createView('..\view\start.html', 
+		$this->send(JhtmlResponse::view($this->createView('..\view\start.html', 
 		    array('deleteLoginModel' => $deleteLoginModel))));
 	}
 	

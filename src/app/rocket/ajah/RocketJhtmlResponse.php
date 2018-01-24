@@ -2,18 +2,19 @@
 namespace rocket\ajah;
 
 use n2n\web\http\payload\BufferedPayload;
-use n2n\impl\web\ui\view\json\JsonResponse;
-use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
 use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\impl\web\ui\view\jhtml\JhtmlRedirect;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 use rocket\spec\ei\manage\util\model\EiJhtmlEventInfo;
+use n2n\impl\web\ui\view\jhtml\JhtmlRedirectPayload;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
+use n2n\impl\web\ui\view\jhtml\JhtmlJsonPayload;
+use n2n\web\http\payload\impl\JsonPayload;
 
 class RocketJhtmlResponse extends BufferedPayload {
 	private $jsonResponse;
 
 	private function __construct(array $attrs) {
-		$this->jsonResponse = new JsonResponse(array(JhtmlJsonResponse::ADDITIONAL_KEY => $attrs));
+		$this->jsonResponse = new JsonPayload(array(JhtmlJsonPayload::ADDITIONAL_KEY => $attrs));
 	}
 
 	/**
@@ -59,7 +60,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 			$attrs[self::ATTR_EI_EVENT] = $eventInfo->toAttrs();
 		}
 
-		return JhtmlRedirect::back($fallbackUrl, $jhtmlExec, $attrs);
+		return JhtmlRedirectPayload::back($fallbackUrl, $jhtmlExec, $attrs);
 	}
 
 	/**
@@ -76,7 +77,7 @@ class RocketJhtmlResponse extends BufferedPayload {
             $attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
         }
         
-        return JhtmlRedirect::referer($fallbackUrl, $jhtmlExec, $attrs);
+        return JhtmlRedirectPayload::referer($fallbackUrl, $jhtmlExec, $attrs);
 	}
 	
 	/**
@@ -92,7 +93,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 			$attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
 		}
 		
-		return JhtmlRedirect::redirect($url, $jhtmlExec, $attrs);
+		return JhtmlRedirectPayload::redirect($url, $jhtmlExec, $attrs);
 	}
 	
 	/**
@@ -105,7 +106,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 	}
 
 	public static function view(HtmlView $htmlView, EiJhtmlEventInfo $ajahEventInfo = null) {
-		return new JhtmlJsonResponse($htmlView,
+		return JhtmlResponse::view($htmlView, 
 				($ajahEventInfo !== null ? array(self::ATTR_EI_EVENT => $ajahEventInfo->toAttrs()) : array()));
 	}
 }

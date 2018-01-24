@@ -34,7 +34,7 @@ use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
-use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class OverviewJhtmlController extends ControllerAdapter {
 	private $manageState;
@@ -107,7 +107,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 			$unbelivableHack[' ' . $id . ' '] = $name;
 		}
 		
-		$this->send(new JhtmlJsonResponse($this->createView('~\spec\ei\manage\critmod\impl\view\critmodForm.html',
+		$this->send(JhtmlResponse::view($this->createView('~\spec\ei\manage\critmod\impl\view\critmodForm.html',
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
 						'filterAjahHook' => $filterAjahHook)),
 				array('critmodSaveIdOptions' => $unbelivableHack)));
@@ -169,7 +169,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$attrs = array('pageNo' => $pageNo, 'numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
 
-		$this->send(new JhtmlJsonResponse($listModel->getEiuGui()->createView(), $attrs));
+		$this->send(JhtmlResponse::view($listModel->getEiuGui()->createView(), $attrs));
 	}
 
 	public static function buildToolsAjahUrl(Url $contextUrl): Url {

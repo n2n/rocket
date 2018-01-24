@@ -33,19 +33,16 @@ use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\component\CritmodFactory;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use n2n\impl\web\ui\view\html\AjahResponse;
 use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\EiThing;
-use rocket\spec\ei\manage\EiFrame;
-use n2n\util\uri\Url;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\critmod\filter\UnknownFilterFieldException;
-use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class GlobalFilterFieldController extends ControllerAdapter implements ScrController {
 	private $specManager;
@@ -103,7 +100,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	
-		$this->send(new JhtmlJsonResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
+		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
 				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
@@ -121,7 +118,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
-		$this->send(new JhtmlJsonResponse($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
+		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
 				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
@@ -131,7 +128,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 		
 		$filterGroupForm = new FilterGroupForm(new FilterGroupData(), new FilterDefinition());
 		
-		$this->send(new JhtmlJsonResponse($this->createView(
+		$this->send(JhtmlResponse::view($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}
