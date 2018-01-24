@@ -88,6 +88,10 @@ class ListEiConfigurator extends EiConfiguratorAdapter {
 		return new MagForm($magCollection);
 	}
 	
+	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+		$this->attributes->set(self::OPTION_PAGE_SIZE_KEY, $magDispatchable->getPropertyValue(self::OPTION_PAGE_SIZE_KEY));
+	}
+	
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		$eiComponent = $this->eiComponent;
 	    CastUtils::assertTrue($eiComponent instanceof OverviewEiCommand);
