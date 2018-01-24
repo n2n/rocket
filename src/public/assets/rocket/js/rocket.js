@@ -3380,7 +3380,6 @@ var Rocket;
                         return false;
                     let item;
                     if (null !== (item = sessionStorage.getItem(this.buildStorageKey() + "-open"))) {
-                        console.log(item);
                         return JSON.parse(item);
                     }
                     return false;
@@ -3479,59 +3478,6 @@ var Rocket;
                 }
             }
             ResizingDimension.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
-            class ResizerToolbar {
-                constructor(imageResizer, elemDimensionContainer) {
-                    this.imageResizer = imageResizer;
-                    this.elemDimensionContainer = elemDimensionContainer;
-                    this.elemUl = null;
-                    this.elemUlImageVersions = null;
-                    this.elemCbxFixedRatio = null;
-                    this.elemLiFixedRatio = null;
-                    this.elemSpanWarning = null;
-                    this.elemSpanZoom = null;
-                    this.elemSpanZoom = $("<span />");
-                }
-                getElemSpanZoom() {
-                    return this.elemSpanZoom;
-                }
-                initializeUi() {
-                    var _obj = this;
-                    this.elemUl = $("<ul/>").css({
-                        margin: "0px"
-                    });
-                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
-                    this.elemLiFixedRatio = $("<li/>").addClass("rocket-fixed-ratio").append($("<label/>").attr("for", randomId).css("display", "inline-block").text(_obj.imageResizer.textFixedRatio));
-                    this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
-                        .change(function () {
-                        let sizeSelector = _obj.imageResizer.getSizeSelector();
-                        sizeSelector.setFixedRatio($(this).prop("checked"));
-                        sizeSelector.initializeMin();
-                        sizeSelector.initializeMax();
-                    });
-                    this.elemLiFixedRatio.append(this.elemCbxFixedRatio);
-                    this.elemUl.append(this.elemLiFixedRatio);
-                    this.elemSpanWarning = $("<span/>").addClass("rocket-image-resizer-warning").text(this.imageResizer.textLowResolution).hide();
-                    this.elemUl.append($("<li/>").addClass("rocket-low-resolution").append(this.elemSpanWarning));
-                    this.imageResizer.getElemToolbar().append(this.elemUl);
-                }
-                redraw(resizingDimension) {
-                    if (resizingDimension.isCrop()) {
-                        this.elemCbxFixedRatio.prop("checked", true);
-                        this.elemLiFixedRatio.hide();
-                    }
-                    else {
-                        this.elemCbxFixedRatio.prop("checked", true);
-                        this.elemLiFixedRatio.show();
-                    }
-                    this.elemCbxFixedRatio.trigger("change");
-                }
-                showWarning() {
-                    this.elemSpanWarning.show();
-                }
-                hideWarning() {
-                    this.elemSpanWarning.hide();
-                }
-            }
             class Dimension {
                 constructor(width, height) {
                     this.width = width;
@@ -3848,10 +3794,10 @@ var Rocket;
                     this.initializeMax();
                 }
                 showWarning() {
-                    this.imageResizer.getToolbar().showWarning();
+                    this.imageResizer.showLowResolutionWarning();
                 }
                 hideWarning() {
-                    this.imageResizer.getToolbar().hideWarning();
+                    this.imageResizer.hideResolutionWarning();
                 }
             }
             class Resizer {
@@ -3860,8 +3806,11 @@ var Rocket;
                     this.elemDimensionContainer = elemDimensionContainer;
                     this.elemImg = elemImg;
                     this.maxHeightCheckClosure = maxHeightCheckClosure;
-                    this.elemToolbar = null;
                     this.elemContent = null;
+                    this.elemLowResolutionContainer = null;
+                    this.elemFixedRatioContainer = null;
+                    this.elemCbxFixedRatio = null;
+                    this.elemSpanZoom = $("<span />");
                     this.dimensions = [];
                     this.zoomFactor = 1;
                     this.lastWidth = null;
@@ -3886,7 +3835,6 @@ var Rocket;
                         this.setSelectedDimension(firstSelectableDimension, false);
                     }
                     this.sizeSelector.registerChangeListener(this);
-                    this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
                     this.initializeUi();
                 }
                 getSelectedDimension() {
@@ -3896,21 +3844,15 @@ var Rocket;
                     this.selectedDimension = selectedDimension;
                     if (redraw) {
                         let resizingDimension = selectedDimension.createResizingDimension();
-                        this.toolbar.redraw(resizingDimension);
+                        this.checkFixedRatio(resizingDimension);
                         this.sizeSelector.redraw(resizingDimension);
                     }
-                }
-                getToolbar() {
-                    return this.toolbar;
                 }
                 getElemContent() {
                     return this.elemContent;
                 }
                 getElemImg() {
                     return this.elemImg;
-                }
-                getElemToolbar() {
-                    return this.elemToolbar;
                 }
                 getSizeSelector() {
                     return this.sizeSelector;
@@ -3919,14 +3861,12 @@ var Rocket;
                     return this.zoomFactor;
                 }
                 initializeUi() {
-                    this.elemToolbar = $("<div/>")
-                        .addClass("rocket-image-resizer-toolbar");
-                    this.elem.append(this.elemToolbar);
+                    this.initLowResolutionContainer();
                     this.elemContent = $("<div/>")
                         .addClass("rocket-image-resizer-content")
                         .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
-                    this.elemContent.append(this.elemImg);
-                    this.elem.append(this.elemContent);
+                    this.elemContent.append(this.elemImg).appendTo(this.elem);
+                    this.initFixedRatioContainer();
                     var _obj = this;
                     this.elemImg.on("load", function () {
                         _obj.originalImageWidth = $(this).width();
@@ -3957,17 +3897,16 @@ var Rocket;
                         this.zoomFactor = zoomFactorHeight;
                     }
                     if (this.zoomFactor !== 1) {
-                        this.toolbar.getElemSpanZoom().show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
+                        this.elemSpanZoom.show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
                     }
                     else {
-                        this.toolbar.getElemSpanZoom().hide();
+                        this.elemSpanZoom.hide();
                     }
                 }
                 initializeUIChildContainers() {
                     let _obj = this;
-                    this.toolbar.initializeUi();
                     this.sizeSelector.initializeUI();
-                    this.toolbar.redraw(this.selectedDimension.createResizingDimension());
+                    this.checkFixedRatio(this.selectedDimension.createResizingDimension());
                     this.lastWidth = this.elem.width();
                     $(window).resize(function () {
                         if (_obj.lastWidth != _obj.elem.width()) {
@@ -3994,6 +3933,45 @@ var Rocket;
                             height: height
                         }]);
                     SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
+                }
+                initFixedRatioContainer() {
+                    this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ration-container").appendTo(this.elem);
+                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
+                    this.elemFixedRatioContainer.append($("<label/>", {
+                        "for": randomId,
+                        "text": this.textFixedRatio
+                    }).css("display", "inline-block"));
+                    this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
+                        .change(() => {
+                        this.sizeSelector.setFixedRatio($(this).prop("checked"));
+                        this.sizeSelector.initializeMin();
+                        this.sizeSelector.initializeMax();
+                    }).appendTo(this.elemFixedRatioContainer);
+                }
+                checkFixedRatio(resizingDimension) {
+                    if (resizingDimension.isCrop()) {
+                        this.elemCbxFixedRatio.prop("checked", true);
+                        this.elemFixedRatioContainer.hide();
+                    }
+                    else {
+                        this.elemCbxFixedRatio.prop("checked", true);
+                        this.elemFixedRatioContainer.show();
+                    }
+                    this.elemCbxFixedRatio.trigger("change");
+                }
+                initLowResolutionContainer() {
+                    this.elemLowResolutionContainer = $("<div/>")
+                        .addClass("rocket-low-resolution-container").appendTo(this.elem).hide();
+                    $("<span />", {
+                        "class": "rocket-image-resizer-warning",
+                        "text": this.textLowResolution
+                    }).appendTo(this.elemLowResolutionContainer);
+                }
+                showLowResolutionWarning() {
+                    this.elemLowResolutionContainer.show();
+                }
+                hideResolutionWarning() {
+                    this.elemLowResolutionContainer.hide();
                 }
                 determineCurrentDimensions(resizingDimension) {
                     var sizeSelectorPosition = SizeSelectorPositions.getPositions(resizingDimension, this.zoomFactor);

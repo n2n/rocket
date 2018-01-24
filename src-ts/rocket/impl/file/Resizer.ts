@@ -83,7 +83,6 @@ namespace Rocket.Impl.File {
 			
 			let item: string;
 			if (null !== (item = sessionStorage.getItem(this.buildStorageKey() + "-open"))) {
-				console.log(item);
 				return JSON.parse(item);
 			}
 			
@@ -200,70 +199,6 @@ namespace Rocket.Impl.File {
 		
 		public buildStorageKey() {
 			return this.getSelectableDimension().buildStorageKey();
-		}
-	}
-
-	class ResizerToolbar {
-		private elemUl: JQuery = null;
-		private elemUlImageVersions: JQuery = null;
-		private elemCbxFixedRatio: JQuery = null;
-		private elemLiFixedRatio: JQuery = null;
-		private elemSpanWarning: JQuery = null;
-		private elemSpanZoom: JQuery = null;
-
-		public constructor(private imageResizer: Resizer, private elemDimensionContainer: JQuery) {
-			this.elemSpanZoom = $("<span />");
-		}
-		
-		public getElemSpanZoom() {
-			return this.elemSpanZoom;
-		}
-
-		public initializeUi() {
-			var _obj = this;
-
-			this.elemUl = $("<ul/>").css({
-				margin: "0px"
-			});
-			
-			var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
-
-			this.elemLiFixedRatio = $("<li/>").addClass("rocket-fixed-ratio").append(
-				$("<label/>").attr("for", randomId).css("display", "inline-block").text(_obj.imageResizer.textFixedRatio));
-			this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
-				.change(function() {
-					let sizeSelector = _obj.imageResizer.getSizeSelector();
-					sizeSelector.setFixedRatio($(this).prop("checked"));
-					sizeSelector.initializeMin();
-					sizeSelector.initializeMax();
-				});
-
-			this.elemLiFixedRatio.append(this.elemCbxFixedRatio);
-			this.elemUl.append(this.elemLiFixedRatio);
-			this.elemSpanWarning = $("<span/>").addClass("rocket-image-resizer-warning").text(this.imageResizer.textLowResolution).hide();
-			this.elemUl.append($("<li/>").addClass("rocket-low-resolution").append(this.elemSpanWarning));
-			//this.elemUl.append($("<li/>").append(this.elemSpanZoom));
-
-			this.imageResizer.getElemToolbar().append(this.elemUl);
-		}
-
-		public redraw(resizingDimension: ResizingDimension) {
-			if (resizingDimension.isCrop()) {
-				this.elemCbxFixedRatio.prop("checked", true);
-				this.elemLiFixedRatio.hide();
-			} else {
-				this.elemCbxFixedRatio.prop("checked", true);
-				this.elemLiFixedRatio.show();
-			}
-			this.elemCbxFixedRatio.trigger("change");
-		}
-		
-		public showWarning() {
-			this.elemSpanWarning.show();
-		}
-		
-		public hideWarning() {
-			this.elemSpanWarning.hide();
 		}
 	}
 
@@ -649,23 +584,25 @@ namespace Rocket.Impl.File {
 		}
 		
 		private showWarning() {
-    		this.imageResizer.getToolbar().showWarning();
+    		this.imageResizer.showLowResolutionWarning();
 		}
 		
 		private hideWarning() {
-    		this.imageResizer.getToolbar().hideWarning();
+    		this.imageResizer.hideResolutionWarning();
 		}
 	}
 	
 	class Resizer implements SizeSelectorListener {
-		private elemToolbar: JQuery = null;
 		private elemContent: JQuery = null;
-		public textFixedRatio: string;
-		public textLowResolution: string;
+		private elemLowResolutionContainer: JQuery = null;
+		private elemFixedRatioContainer: JQuery = null;
+		private textFixedRatio: string;
+		private elemCbxFixedRatio: JQuery = null;
+		private elemSpanZoom: JQuery = $("<span />");
+		private textLowResolution: string;
 		public textZoom: string;
 		private dimensions: Array<ResizingDimension> = [];
 		private sizeSelector: SizeSelector;
-		private toolbar: ResizerToolbar;
 		private zoomFactor: number = 1;
 		private lastWidth: number = null;
 		private originalImageWidth: number = null;
@@ -698,8 +635,6 @@ namespace Rocket.Impl.File {
 			
 	        this.sizeSelector.registerChangeListener(this);
 	  
-	        this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
-	        
 	        this.initializeUi();
 		}
 		
@@ -711,13 +646,9 @@ namespace Rocket.Impl.File {
 			this.selectedDimension = selectedDimension;
 			if (redraw) {
 				let resizingDimension = selectedDimension.createResizingDimension();
-	    		this.toolbar.redraw(resizingDimension);
+	    		this.checkFixedRatio(resizingDimension);
 	    		this.sizeSelector.redraw(resizingDimension);
 			}
-		}
-		
-		public getToolbar() {
-			return this.toolbar;
 		}
 		
 		public getElemContent() {
@@ -726,10 +657,6 @@ namespace Rocket.Impl.File {
 		
 		public getElemImg() {
 			return this.elemImg;
-		}
-		
-		public getElemToolbar() {
-			return this.elemToolbar;
 		}
 		
 		public getSizeSelector() {
@@ -741,20 +668,15 @@ namespace Rocket.Impl.File {
 		}
 		
 		private initializeUi() {
-			//Toolbar
-	        this.elemToolbar = $("<div/>")
-	            .addClass("rocket-image-resizer-toolbar");
-
-	        this.elem.append(this.elemToolbar);
+			this.initLowResolutionContainer();
 
 	        //Content
 	        this.elemContent = $("<div/>")
 	            .addClass("rocket-image-resizer-content")
 	            .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
 
-	        this.elemContent.append(this.elemImg);
-	        this.elem.append(this.elemContent);
-
+	        this.elemContent.append(this.elemImg).appendTo(this.elem);
+	        this.initFixedRatioContainer();
 	        //now it s in tho Document DOM
 	        var _obj = this;
 	        this.elemImg.on("load", function() {
@@ -805,19 +727,18 @@ namespace Rocket.Impl.File {
 	        }
 
 	        if (this.zoomFactor !== 1) {
-	            this.toolbar.getElemSpanZoom().show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
+	            this.elemSpanZoom.show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
 	        } else {
-	            this.toolbar.getElemSpanZoom().hide();
+	            this.elemSpanZoom.hide();
 	        }
 		}
 		
 		private initializeUIChildContainers() {
 			let _obj = this;
-	        this.toolbar.initializeUi();
 	        this.sizeSelector.initializeUI();
 
 	        //redraw with the current dimension
-	        this.toolbar.redraw(this.selectedDimension.createResizingDimension());
+	        this.checkFixedRatio(this.selectedDimension.createResizingDimension());
 	        this.lastWidth = this.elem.width();
 
 	        //for the responsive functionality
@@ -852,6 +773,52 @@ namespace Rocket.Impl.File {
 
 
 	        SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
+		}
+		
+		private initFixedRatioContainer() {
+			this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ration-container").appendTo(this.elem);
+			var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
+
+			this.elemFixedRatioContainer.append($("<label/>", {
+				"for": randomId,
+				"text": this.textFixedRatio
+			}).css("display", "inline-block"));
+			
+			this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
+				.change(() => {
+					this.sizeSelector.setFixedRatio($(this).prop("checked"));
+					this.sizeSelector.initializeMin();
+					this.sizeSelector.initializeMax();
+				}).appendTo(this.elemFixedRatioContainer);
+		}
+		
+		private checkFixedRatio(resizingDimension: ResizingDimension) {
+			if (resizingDimension.isCrop()) {
+				this.elemCbxFixedRatio.prop("checked", true);
+				this.elemFixedRatioContainer.hide();
+			} else {
+				this.elemCbxFixedRatio.prop("checked", true);
+				this.elemFixedRatioContainer.show();
+			}
+			this.elemCbxFixedRatio.trigger("change");
+		}
+		
+		private initLowResolutionContainer() {
+			this.elemLowResolutionContainer = $("<div/>")
+				.addClass("rocket-low-resolution-container").appendTo(this.elem).hide();
+			
+			$("<span />", {
+				"class": "rocket-image-resizer-warning",
+				"text": this.textLowResolution
+			}).appendTo(this.elemLowResolutionContainer);
+		}
+		
+		public showLowResolutionWarning() {
+			this.elemLowResolutionContainer.show();
+		}
+		
+		public hideResolutionWarning() {
+			this.elemLowResolutionContainer.hide();
 		}
 		
 		public determineCurrentDimensions(resizingDimension: ResizingDimension): SizeSelectorPosition {
