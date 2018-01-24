@@ -39,7 +39,7 @@ class CkeHtmlBuilder {
 	private $html;
 	private $view;
 
-	private $linkProviders;
+	private $linkProviders = array();
 
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
