@@ -3345,8 +3345,7 @@ var Rocket;
                             var elemToggleClose = $("<i />", {
                                 "class": "fa fa-angle-up"
                             });
-                            var elemsToToggle = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]");
-                            this.elemLi.append($("<a />", {
+                            let elemsToToggle = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]"), elemA = $("<a />", {
                                 "href": "#",
                                 "class": "open"
                             }).click(function (e) {
@@ -3357,16 +3356,38 @@ var Rocket;
                                     elem.removeClass("open");
                                     elemToggleOpen.show();
                                     elemToggleClose.hide();
+                                    that.setOpen(false);
                                 }
                                 else {
                                     elemsToToggle.show();
                                     elem.addClass("open");
                                     elemToggleOpen.hide();
                                     elemToggleClose.show();
+                                    that.setOpen(true);
                                 }
-                            }).append(elemToggleOpen).append(elemToggleClose).click());
+                            }).append(elemToggleOpen).append(elemToggleClose).appendTo(this.elemLi);
+                            if (!that.checkOpen() && elemsToToggle.find("input[type=radio]:checked").length === 0) {
+                                elemA.click();
+                            }
+                            else {
+                                elemToggleOpen.hide();
+                            }
                         }
                     }).call(this, this);
+                }
+                checkOpen() {
+                    if (typeof (Storage) === "undefined")
+                        return false;
+                    let item;
+                    if (null !== (item = sessionStorage.getItem(this.buildStorageKey() + "-open"))) {
+                        return JSON.parse(item);
+                    }
+                    return false;
+                }
+                setOpen(open) {
+                    if (typeof (Storage) === "undefined")
+                        return;
+                    sessionStorage.setItem(this.buildStorageKey() + "-open", JSON.stringify(open));
                 }
                 getDimensionStr() {
                     return this.dimensionStr;
@@ -3391,7 +3412,18 @@ var Rocket;
                         && this.isRatio() === selectableDimension.isRatio();
                 }
                 onDimensionChange(sizeSelector) {
-                    let currentResizingDimension = sizeSelector.getCurrentResizingDimension(), currentSelectableDimension = currentResizingDimension.getSelectableDimension();
+                    this.checkLowRes(sizeSelector);
+                }
+                onDimensionChanged(sizeSelector) {
+                    this.checkLowRes(sizeSelector);
+                }
+                checkLowRes(sizeSelector) {
+                    let currentResizingDimension = sizeSelector.getCurrentResizingDimension();
+                    if (null === currentResizingDimension)
+                        return;
+                    let currentSelectableDimension = currentResizingDimension.getSelectableDimension();
+                    if (null === currentSelectableDimension)
+                        return;
                     if (((currentSelectableDimension.isRatio() && currentSelectableDimension.hasSameRatio(this))
                         || currentSelectableDimension.equals(this)) && sizeSelector.isLowRes(this.createResizingDimension())) {
                         this.elemLowRes.show();
@@ -3446,60 +3478,6 @@ var Rocket;
                 }
             }
             ResizingDimension.dimensionMatchPattern = new RegExp("\\d+x\\d+[xcrop]?");
-            class ResizerToolbar {
-                constructor(imageResizer, elemDimensionContainer) {
-                    this.imageResizer = imageResizer;
-                    this.elemDimensionContainer = elemDimensionContainer;
-                    this.elemUl = null;
-                    this.elemUlImageVersions = null;
-                    this.elemCbxFixedRatio = null;
-                    this.elemLiFixedRatio = null;
-                    this.elemSpanWarning = null;
-                    this.elemSpanZoom = null;
-                    this.elemSpanZoom = $("<span />");
-                }
-                getElemSpanZoom() {
-                    return this.elemSpanZoom;
-                }
-                initializeUi() {
-                    var _obj = this;
-                    this.elemUl = $("<ul/>").css({
-                        margin: "0px"
-                    });
-                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
-                    this.elemLiFixedRatio = $("<li/>").addClass("rocket-fixed-ratio").append($("<label/>").attr("for", randomId).css("display", "inline-block").text(_obj.imageResizer.textFixedRatio));
-                    this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
-                        .change(function () {
-                        let sizeSelector = _obj.imageResizer.getSizeSelector();
-                        sizeSelector.setFixedRatio($(this).prop("checked"));
-                        sizeSelector.initializeMin();
-                        sizeSelector.initializeMax();
-                    });
-                    this.elemLiFixedRatio.append(this.elemCbxFixedRatio);
-                    this.elemUl.append(this.elemLiFixedRatio);
-                    this.elemSpanWarning = $("<span/>").addClass("rocket-image-resizer-warning").text(this.imageResizer.textLowResolution).hide();
-                    this.elemUl.append($("<li/>").addClass("rocket-low-resolution").append(this.elemSpanWarning));
-                    this.elemUl.append($("<li/>").append(this.elemSpanZoom));
-                    this.imageResizer.getElemToolbar().append(this.elemUl);
-                }
-                redraw(resizingDimension) {
-                    if (resizingDimension.isCrop()) {
-                        this.elemCbxFixedRatio.prop("checked", true);
-                        this.elemLiFixedRatio.hide();
-                    }
-                    else {
-                        this.elemCbxFixedRatio.prop("checked", true);
-                        this.elemLiFixedRatio.show();
-                    }
-                    this.elemCbxFixedRatio.trigger("change");
-                }
-                showWarning() {
-                    this.elemSpanWarning.show();
-                }
-                hideWarning() {
-                    this.elemSpanWarning.hide();
-                }
-            }
             class Dimension {
                 constructor(width, height) {
                     this.width = width;
@@ -3696,7 +3674,7 @@ var Rocket;
                                 $(document).off("mousemove.drag");
                                 $(document).off("mouseup.drag");
                                 _obj.initializeDragStart();
-                                _obj.triggerChangeListeners();
+                                _obj.triggerDimensionChanged();
                                 $.Event(event).preventDefault();
                             });
                             $.Event(event).preventDefault();
@@ -3713,6 +3691,7 @@ var Rocket;
                             else {
                                 _obj.hideWarning();
                             }
+                            _obj.triggerDimensionChange();
                         });
                         this.elemSpan.mousedown(function (event) {
                             _obj.resizeStart.width = _obj.elemDiv.width();
@@ -3754,7 +3733,7 @@ var Rocket;
                                 $(document).off("mousemove.resize");
                                 $(document).off("mouseup.resize");
                                 _obj.initializeResizeStart();
-                                _obj.triggerChangeListeners();
+                                _obj.triggerDimensionChanged();
                             });
                             event.preventDefault();
                             event.stopPropagation();
@@ -3791,9 +3770,14 @@ var Rocket;
                 registerChangeListener(changeListener) {
                     this.changeListeners.push(changeListener);
                 }
-                triggerChangeListeners() {
+                triggerDimensionChange() {
                     this.changeListeners.forEach(function (chnageListener) {
                         chnageListener.onDimensionChange(this);
+                    }, this);
+                }
+                triggerDimensionChanged() {
+                    this.changeListeners.forEach(function (chnageListener) {
+                        chnageListener.onDimensionChanged(this);
                     }, this);
                 }
                 redraw(resizingDimension) {
@@ -3805,15 +3789,15 @@ var Rocket;
                     this.currentResizingDimension = resizingDimension;
                     this.elemDiv.trigger('positionChange');
                     this.elemDiv.trigger('sizeChange');
-                    this.triggerChangeListeners();
+                    this.triggerDimensionChanged();
                     this.initializeMin();
                     this.initializeMax();
                 }
                 showWarning() {
-                    this.imageResizer.getToolbar().showWarning();
+                    this.imageResizer.showLowResolutionWarning();
                 }
                 hideWarning() {
-                    this.imageResizer.getToolbar().hideWarning();
+                    this.imageResizer.hideResolutionWarning();
                 }
             }
             class Resizer {
@@ -3822,8 +3806,11 @@ var Rocket;
                     this.elemDimensionContainer = elemDimensionContainer;
                     this.elemImg = elemImg;
                     this.maxHeightCheckClosure = maxHeightCheckClosure;
-                    this.elemToolbar = null;
                     this.elemContent = null;
+                    this.elemLowResolutionContainer = null;
+                    this.elemFixedRatioContainer = null;
+                    this.elemCbxFixedRatio = null;
+                    this.elemSpanZoom = $("<span />");
                     this.dimensions = [];
                     this.zoomFactor = 1;
                     this.lastWidth = null;
@@ -3848,7 +3835,6 @@ var Rocket;
                         this.setSelectedDimension(firstSelectableDimension, false);
                     }
                     this.sizeSelector.registerChangeListener(this);
-                    this.toolbar = new ResizerToolbar(this, this.elemDimensionContainer);
                     this.initializeUi();
                 }
                 getSelectedDimension() {
@@ -3858,21 +3844,15 @@ var Rocket;
                     this.selectedDimension = selectedDimension;
                     if (redraw) {
                         let resizingDimension = selectedDimension.createResizingDimension();
-                        this.toolbar.redraw(resizingDimension);
+                        this.checkFixedRatio(resizingDimension);
                         this.sizeSelector.redraw(resizingDimension);
                     }
-                }
-                getToolbar() {
-                    return this.toolbar;
                 }
                 getElemContent() {
                     return this.elemContent;
                 }
                 getElemImg() {
                     return this.elemImg;
-                }
-                getElemToolbar() {
-                    return this.elemToolbar;
                 }
                 getSizeSelector() {
                     return this.sizeSelector;
@@ -3881,14 +3861,12 @@ var Rocket;
                     return this.zoomFactor;
                 }
                 initializeUi() {
-                    this.elemToolbar = $("<div/>")
-                        .addClass("rocket-image-resizer-toolbar");
-                    this.elem.append(this.elemToolbar);
+                    this.initLowResolutionContainer();
                     this.elemContent = $("<div/>")
                         .addClass("rocket-image-resizer-content")
                         .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
-                    this.elemContent.append(this.elemImg);
-                    this.elem.append(this.elemContent);
+                    this.elemContent.append(this.elemImg).appendTo(this.elem);
+                    this.initFixedRatioContainer();
                     var _obj = this;
                     this.elemImg.on("load", function () {
                         _obj.originalImageWidth = $(this).width();
@@ -3919,17 +3897,16 @@ var Rocket;
                         this.zoomFactor = zoomFactorHeight;
                     }
                     if (this.zoomFactor !== 1) {
-                        this.toolbar.getElemSpanZoom().show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
+                        this.elemSpanZoom.show().text(this.textZoom + ": " + (this.zoomFactor * 100).toFixed(0) + "%");
                     }
                     else {
-                        this.toolbar.getElemSpanZoom().hide();
+                        this.elemSpanZoom.hide();
                     }
                 }
                 initializeUIChildContainers() {
                     let _obj = this;
-                    this.toolbar.initializeUi();
                     this.sizeSelector.initializeUI();
-                    this.toolbar.redraw(this.selectedDimension.createResizingDimension());
+                    this.checkFixedRatio(this.selectedDimension.createResizingDimension());
                     this.lastWidth = this.elem.width();
                     $(window).resize(function () {
                         if (_obj.lastWidth != _obj.elem.width()) {
@@ -3938,7 +3915,8 @@ var Rocket;
                         }
                     });
                 }
-                onDimensionChange(sizeSelector) {
+                onDimensionChange(sizeSelector) { }
+                onDimensionChanged(sizeSelector) {
                     var _obj = this;
                     var width = sizeSelector.getWidth() / _obj.zoomFactor;
                     if (width > this.originalImageWidth) {
@@ -3955,6 +3933,45 @@ var Rocket;
                             height: height
                         }]);
                     SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
+                }
+                initFixedRatioContainer() {
+                    this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ration-container").appendTo(this.elem);
+                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
+                    this.elemFixedRatioContainer.append($("<label/>", {
+                        "for": randomId,
+                        "text": this.textFixedRatio
+                    }).css("display", "inline-block"));
+                    this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
+                        .change(() => {
+                        this.sizeSelector.setFixedRatio($(this).prop("checked"));
+                        this.sizeSelector.initializeMin();
+                        this.sizeSelector.initializeMax();
+                    }).appendTo(this.elemFixedRatioContainer);
+                }
+                checkFixedRatio(resizingDimension) {
+                    if (resizingDimension.isCrop()) {
+                        this.elemCbxFixedRatio.prop("checked", true);
+                        this.elemFixedRatioContainer.hide();
+                    }
+                    else {
+                        this.elemCbxFixedRatio.prop("checked", true);
+                        this.elemFixedRatioContainer.show();
+                    }
+                    this.elemCbxFixedRatio.trigger("change");
+                }
+                initLowResolutionContainer() {
+                    this.elemLowResolutionContainer = $("<div/>")
+                        .addClass("rocket-low-resolution-container").appendTo(this.elem).hide();
+                    $("<span />", {
+                        "class": "rocket-image-resizer-warning",
+                        "text": this.textLowResolution
+                    }).appendTo(this.elemLowResolutionContainer);
+                }
+                showLowResolutionWarning() {
+                    this.elemLowResolutionContainer.show();
+                }
+                hideResolutionWarning() {
+                    this.elemLowResolutionContainer.hide();
                 }
                 determineCurrentDimensions(resizingDimension) {
                     var sizeSelectorPosition = SizeSelectorPositions.getPositions(resizingDimension, this.zoomFactor);

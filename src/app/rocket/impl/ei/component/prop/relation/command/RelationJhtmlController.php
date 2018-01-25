@@ -30,7 +30,7 @@ use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
-use n2n\impl\web\ui\view\jhtml\JhtmlJsonResponse;
+use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class RelationJhtmlController extends ControllerAdapter {
 	private $eiCtrlUtils;	
@@ -64,7 +64,7 @@ class RelationJhtmlController extends ControllerAdapter {
 		$view = $this->createView('\rocket\impl\ei\component\prop\relation\view\pseudoMappingForm.html',
 				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath));
 		
-		$this->send(new JhtmlJsonResponse($view));
+		$this->send(JhtmlResponse::view($view));
 	}
 	
 	public static function buildNewFormUrl(Url $contextUrl, bool $draft): Url {

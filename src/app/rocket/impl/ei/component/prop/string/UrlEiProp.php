@@ -96,7 +96,7 @@ class UrlEiProp extends AlphanumericEiProp {
 	public function saveMagValue(Mag $mag, Eiu $eiu) {
 		$value = $mag->getValue();
 		if ($value !== null) {
-			$value = (string) $value;
+			$value = /*(string)*/ $value;
 		}
 		$eiu->field()->setValue($value);
 	}

@@ -47,7 +47,7 @@ class TranslationCopyController extends ControllerAdapter {
 			throw new UnsupportedOperationException();
 		}, array($guiIdPath), $bulky->toBool(), true);
 		
-		$this->send(new JhtmlResponse($this->createView('translationCopy.html', 
+		$this->send(JhtmlResponse::view($this->createView('translationCopy.html', 
 				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath,
 						'n2nLocale' => $toN2nLocale, 'guiIdPath' => $guiIdPath))));
 	}

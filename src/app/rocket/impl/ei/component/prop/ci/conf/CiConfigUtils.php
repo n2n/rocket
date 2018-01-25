@@ -74,13 +74,13 @@ class CiConfigUtils {
 		
 		$magCollection = new MagCollection();
 		if ($includePanelName) {
-			$magCollection->addMag(new StringMag(self::ATTR_PANEL_NAME_KEY, 'Name', null, true));
+			$magCollection->addMag(self::ATTR_PANEL_NAME_KEY, new StringMag('Name', null, true));
 		}
-		$magCollection->addMag(new StringMag(self::ATTR_PANEL_LABEL_KEY, 'Label', null, false));
-		$magCollection->addMag(new MultiSelectMag(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY,
-				'Allowed ContentItems', $this->getAllowedContentItemOptions()));
-		$magCollection->addMag(new NumericMag(self::ATTR_MIN_KEY, 'Min', 0));
-		$magCollection->addMag(new NumericMag(self::ATTR_MAX_KEY, 'Max'));
+		$magCollection->addMag(self::ATTR_PANEL_LABEL_KEY, new StringMag('Label', null, false));
+		$magCollection->addMag(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, 
+				new MultiSelectMag('Allowed ContentItems', $this->getAllowedContentItemOptions()));
+		$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', 0));
+		$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max'));
 		return $magCollection;
 	}
 	
