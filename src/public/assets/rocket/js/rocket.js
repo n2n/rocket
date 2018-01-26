@@ -6088,7 +6088,7 @@ var Rocket;
             }
             class ToManyEmbedded {
                 constructor(jqToMany, addButtonFactory = null) {
-                    this.compact = true;
+                    this.reduceEnabled = true;
                     this.sortable = true;
                     this.entries = new Array();
                     this.expandZone = null;
@@ -6098,7 +6098,7 @@ var Rocket;
                     this.entryAddControls = new Array();
                     this.jqToMany = jqToMany;
                     this.addControlFactory = addButtonFactory;
-                    this.compact = (true == jqToMany.data("compact"));
+                    this.reduceEnabled = (true == jqToMany.data("compact"));
                     this.sortable = (true == jqToMany.data("sortable"));
                     this.closeLabel = jqToMany.data("close-label");
                     this.jqEmbedded = $("<div />", {
@@ -6114,7 +6114,7 @@ var Rocket;
                     this.embeddedContainerJq.append(this.jqEmbedded);
                     this.jqEntries = $("<div />");
                     this.jqEmbedded.append(this.jqEntries);
-                    if (this.compact) {
+                    if (this.reduceEnabled) {
                         var structureElement = Rocket.Display.StructureElement.of(this.jqEmbedded);
                         structureElement.setGroup(true);
                         var toolbar = structureElement.getToolbar();

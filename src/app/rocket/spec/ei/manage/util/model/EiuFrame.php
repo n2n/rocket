@@ -402,6 +402,13 @@ class EiuFrame extends EiUtilsAdapter {
 		return key($previewTypeOptions);
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	public function isPreviewSupported() {
+		return $this->getEiMask()->isPreviewSupported();
+	}
+	
 	public function getPreviewTypeOptions(EiObject $eiObject) {
 		$eiMask = $this->getEiMask();
 		if (!$eiMask->isPreviewSupported()) {
