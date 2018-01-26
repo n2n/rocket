@@ -209,7 +209,7 @@ class EiHtmlBuilder {
 	}
 	
 	public function getEntryCommands(bool $iconOnly = false, int $max = null) {
-		return $this->getCommands($this->meta->createEntryControls($this->view, $max), $iconOnly);
+		return $this->getCommands($this->meta->createEntryControls(null, $max), $iconOnly);
 	}
 	
 	public function commands(array $controls, bool $iconOnly = false) {
@@ -527,7 +527,7 @@ class EiHtmlBuilderMeta {
 		if (!$this->state->containsEntry()) {
 			return false;
 		}
-		
+		$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGui);
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}
 	
@@ -536,7 +536,11 @@ class EiHtmlBuilderMeta {
 	 * @return Control[]
 	 */
 	public function createEntryControls($eiEntryGui = null, int $max = null) {
-		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		if ($eiEntryGui === null) {
+			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		} else {
+			$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGui);
+		}
 		
 		$controls = $eiEntryGui->createControls($this->view);
 		if ($max === null || count($controls) <= $max) return $controls;
