@@ -104,7 +104,7 @@ namespace Rocket.Impl.Relation {
 		constructor(jqToOne: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToOne = jqToOne;
 			this.addControlFactory = addButtonFactory;
-			this.reduceEnabled = (true == jqToOne.data("compact"));
+			this.reduceEnabled = (true == jqToOne.data("reduced"));
 			this.closeLabel = jqToOne.data("close-label");
 			
 			this.jqEmbedded = $("<div />", {

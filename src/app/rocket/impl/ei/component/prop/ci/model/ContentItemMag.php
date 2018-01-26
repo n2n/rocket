@@ -122,7 +122,7 @@ class ContentItemMag extends MagAdapter {
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
 			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
-			$panelMag->setCompact($this->reduced);
+			$panelMag->setReduced($this->reduced);
 			
 			$allowedEiTypeIds = $panelConfig->isRestricted() ? $panelConfig->getAllowedContentItemIds() : null;
 			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl->queryExt(array('chooseableEiTypeIds' => $allowedEiTypeIds)));

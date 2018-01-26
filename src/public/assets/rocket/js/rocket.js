@@ -6098,7 +6098,7 @@ var Rocket;
                     this.entryAddControls = new Array();
                     this.jqToMany = jqToMany;
                     this.addControlFactory = addButtonFactory;
-                    this.reduceEnabled = (true == jqToMany.data("compact"));
+                    this.reduceEnabled = (true == jqToMany.data("reduced"));
                     this.sortable = (true == jqToMany.data("sortable"));
                     this.closeLabel = jqToMany.data("close-label");
                     this.jqEmbedded = $("<div />", {
@@ -6433,7 +6433,7 @@ var Rocket;
                     this.changedCallbacks = new Array();
                     this.jqToOne = jqToOne;
                     this.addControlFactory = addButtonFactory;
-                    this.reduceEnabled = (true == jqToOne.data("compact"));
+                    this.reduceEnabled = (true == jqToOne.data("reduced"));
                     this.closeLabel = jqToOne.data("close-label");
                     this.jqEmbedded = $("<div />", {
                         "class": "rocket-impl-embedded"

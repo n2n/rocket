@@ -356,7 +356,7 @@ namespace Rocket.Impl.Relation {
 		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToMany = jqToMany;
 			this.addControlFactory = addButtonFactory;
-			this.reduceEnabled = (true == jqToMany.data("compact"));
+			this.reduceEnabled = (true == jqToMany.data("reduced"));
 			this.sortable = (true == jqToMany.data("sortable"));
 			this.closeLabel = jqToMany.data("close-label");
 			

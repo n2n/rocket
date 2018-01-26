@@ -27,7 +27,7 @@
 	$eiuEntries = $view->getParam('eiuEntries');
 ?>
 <div class="rocket-impl-to-many"
-		data-compact="<?php $html->out($view->getParam('reduced')) ?>"
+		data-reduced="<?php $html->out($view->getParam('reduced')) ?>"
 		data-close-label="<?php $html->text('common_apply_label') ?>">
 	<div class="rocket-impl-entries">
 		<?php foreach ($eiuEntries as $eiuEntry): ?>

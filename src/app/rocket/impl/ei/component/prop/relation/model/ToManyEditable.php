@@ -33,7 +33,7 @@ class ToManyEditable implements Editable {
 	private $label;
 	private $min;
 	private $max;
-	private $compact = true;
+	private $reduced = true;
 	private $toManyEiField;
 	private $targetReadEiFrame;
 	private $targetEditEiFrame;
@@ -68,8 +68,8 @@ class ToManyEditable implements Editable {
 		return null;
 	}
 	
-	public function setCompact(bool $compact) {
-		$this->compact = $compact;
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 	
 	public function setSortable(bool $sortable) {
@@ -97,7 +97,7 @@ class ToManyEditable implements Editable {
 	public function createMag(): Mag {
 		$this->toManyMag = new ToManyMag($this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
 				$this->min, $this->max);
-		$this->toManyMag->setCompact($this->compact);
+		$this->toManyMag->setReduced($this->reduced);
 		$this->toManyMag->setValue($this->toManyEiField->getValue());
 		$this->toManyMag->setSelectOverviewToolsUrl($this->selectOverviewToolsUrl);
 		$this->toManyMag->setNewMappingFormUrl($this->newMappingFormUrl);

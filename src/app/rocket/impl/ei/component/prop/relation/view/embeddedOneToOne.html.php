@@ -28,7 +28,7 @@
 ?>
 
 <div class="rocket-impl-to-one"
-		data-compact="<?php $html->out($view->getParam('reduced')) ?>"
+		data-reduced="<?php $html->out($view->getParam('reduced')) ?>"
 		data-close-label="<?php $html->text('common_close_label') ?>">
 	<div class="rocket-impl-detail">
 		<?php $view->import('embeddedEntry.html', array('eiuEntry' => $eiuEntry)) ?>
