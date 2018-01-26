@@ -5634,7 +5634,7 @@ var Rocket;
                         formElemsJq.on("change", changedCallback);
                     }
                     if (!sortable) {
-                        jqEntry.find(".rocket-impl-handle").css("visibility", "hidden");
+                        jqEntry.find(".rocket-impl-handle:first").css("visibility", "hidden");
                     }
                     this.reduce();
                     jqEntry.data("rocketImplEmbeddedEntry", this);
@@ -6303,7 +6303,7 @@ var Rocket;
                     this.jqEntries.enableSelection();
                 }
                 isExpanded() {
-                    return this.expandZone !== null;
+                    return this.expandZone !== null || !this.reduceEnabled;
                 }
                 isPartialExpaned() {
                     return this.dominantEntry !== null;

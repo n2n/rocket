@@ -607,7 +607,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandZone !== null /*|| !this.reduceEnabled*/;
+			return this.expandZone !== null || !this.reduceEnabled;
 		}
 		
 		public isPartialExpaned() {
