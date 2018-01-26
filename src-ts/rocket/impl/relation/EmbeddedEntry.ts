@@ -55,7 +55,7 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			if (!sortable) {
-				jqEntry.find(".rocket-impl-handle").css("visibility", "hidden");
+				jqEntry.find(".rocket-impl-handle:first").css("visibility", "hidden");
 			}
 			
 			this.reduce();

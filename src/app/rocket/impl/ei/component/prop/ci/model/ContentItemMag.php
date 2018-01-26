@@ -46,6 +46,7 @@ class ContentItemMag extends MagAdapter {
 	private $targetEditEiFrame;
 	
 	private $draftMode = false;
+	private $reduced = true;
 	private $newMappingFormUrl;
 	
 	private $targetRelationEntries = array();
@@ -69,6 +70,10 @@ class ContentItemMag extends MagAdapter {
 	public function setDraftMode(bool $draftMode) {
 		$this->draftMode = $draftMode;
 	}	
+	
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
+	}
 
 	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
@@ -117,10 +122,12 @@ class ContentItemMag extends MagAdapter {
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
 			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
+			$panelMag->setCompact($this->reduced);
 			
 			$allowedEiTypeIds = $panelConfig->isRestricted() ? $panelConfig->getAllowedContentItemIds() : null;
 			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl->queryExt(array('chooseableEiTypeIds' => $allowedEiTypeIds)));
 			$panelMag->setAllowedNewEiTypeIds($allowedEiTypeIds);
+			
 			
 			if (isset($groupedTargetRelationEntries[$panelName])) {
 				$panelMag->setValue($groupedTargetRelationEntries[$panelName]);
