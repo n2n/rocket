@@ -383,7 +383,7 @@ class SpecExtractor {
 			$guiIdPath = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
 			if (null !== $guiIdPath) {
 				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($guiIdPath), 
-						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
+						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
 						false, null, true), $label);
 				continue;
 			}
