@@ -36,6 +36,7 @@ class ContentItemEditable implements Editable {
 	private $panelConfigs;
 	private $newMappingFormUrl;
 	private $draftMode = false;
+	private $reduced = true;
 
 	public function __construct(string $label, ToManyEiField $toManyEiField,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, array $panelConfigs) {
@@ -52,6 +53,10 @@ class ContentItemEditable implements Editable {
 	
 	public function setDraftMode(bool $draftMode) {
 		$this->draftMode = $draftMode;
+	}
+	
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 
 	/**
@@ -77,6 +82,7 @@ class ContentItemEditable implements Editable {
 				$this->targetReadEiFrame, $this->targetEditEiFrame);
 		$this->contentItemMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->contentItemMag->setValue($this->toManyEiField->getValue());
+		$this->contentItemMag->setReduced($this->reduced);
 		return $this->contentItemMag;
 	}
 

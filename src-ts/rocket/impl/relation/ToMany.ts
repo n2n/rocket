@@ -340,7 +340,7 @@ namespace Rocket.Impl.Relation {
 	class ToManyEmbedded {
 		private jqToMany: JQuery;
 		private addControlFactory: AddControlFactory;
-		private compact: boolean = true;
+		private reduceEnabled: boolean = true;
 		sortable: boolean = true;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
@@ -356,7 +356,7 @@ namespace Rocket.Impl.Relation {
 		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null) {
 			this.jqToMany = jqToMany;
 			this.addControlFactory = addButtonFactory;
-			this.compact = (true == jqToMany.data("compact"));
+			this.reduceEnabled = (true == jqToMany.data("compact"));
 			this.sortable = (true == jqToMany.data("sortable"));
 			this.closeLabel = jqToMany.data("close-label");
 			
@@ -376,7 +376,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEntries = $("<div />");
 			this.jqEmbedded.append(this.jqEntries);
 			
-			if (this.compact) {
+			if (this.reduceEnabled) {
 				var structureElement = Display.StructureElement.of(this.jqEmbedded);
 				structureElement.setGroup(true);
 				var toolbar = structureElement.getToolbar();
@@ -607,7 +607,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public isExpanded(): boolean {
-			return this.expandZone !== null;
+			return this.expandZone !== null|| !this.reduceEnabled;
 		}
 		
 		public isPartialExpaned() {
