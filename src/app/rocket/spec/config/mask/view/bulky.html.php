@@ -53,7 +53,7 @@
 		$renderForkMags = false;
 	} else if ($renderForkMags) {
 		if ($controlsAllowed) {
-			$controls = $eiHtml->meta()->createEntryControls();
+			$controls = $eiHtml->meta()->createEntryControls($eiu->entryGui(), 6);
 		}
 		$renderForkMags = $eiu->entryGui()->hasForkMags() || !empty($controls);
 	}
