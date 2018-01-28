@@ -39,7 +39,7 @@
 	<?php $formHtml->label('searchStr', $html->getL10nText('common_search_label')) ?>
 	<div class="input-group">
 		<?php $formHtml->input('searchStr', array('class' => 'form-control'), 'search') ?>
-		<span class="input-group-btn">
+		<span class="input-group-append">
 			<?php $formHtml->buttonSubmit('search', new Raw('<i class="fa fa-search"></i>'),
 					array('class' => 'btn btn-secondary',
 							'title' => $view->getL10nText('ei_impl_list_quicksearch_tooltip'))) ?>

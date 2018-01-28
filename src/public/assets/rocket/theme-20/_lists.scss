@@ -1,0 +1,186 @@
+/*
+ * Toolbar
+ */
+
+.rocket-impl-overview-tools {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 44px;
+    background-color: $gray-200;
+    z-index: 50;
+}
+@include media-breakpoint-up(md) {
+    .rocket-impl-container {
+        display: grid;
+        grid-template-columns:  1fr auto auto;
+        grid-column-gap: 20px;
+    }
+}
+
+.rocket-impl-quicksearch {
+    > label {
+        font-weight: bold;
+        margin-right: 1rem;
+    }
+    > .input-group > .form-control {
+        width: 10rem;
+    }
+    &.rocket-active > .input-group > .input-group-btn > .btn {
+        color: white;
+        background: $primary;
+        border-color: darken($primary, 15);
+    }
+}
+
+/*
+ * Content
+ */
+    
+
+.rocket-collection .rocket-entry.rocket-last-mod {
+    animation: last-mod-transition 30s;
+    background: inherit;
+}
+
+@keyframes last-mod-transition {
+    0% {
+        background: transparent;
+    }
+    1% {
+        background: #ead0b2;
+    }
+    6% {
+        background: #eadfd3;
+    }
+    99% {
+        background: #eadfd3;
+    }
+    100% {
+        background: inherit;
+    }
+}
+
+.rocket-handle {
+    display: inline-block;
+    padding-left: 1rem;
+}
+
+/*
+ * Table
+ */
+
+.rocket-table {
+    > thead {
+        th {
+            color: $white;
+            background-color: $gray-800;
+        }
+        .rocket-general-entry-selector {
+            padding: 0 0.5rem;
+        }
+    }
+    > tbody {
+        tr:hover {
+            box-shadow: -3px 0px 0px 0px $orange;
+        }
+        .rocket-table-commands {
+            border-left: 1px solid $gray-300;
+            white-space: nowrap;
+            width: 5%;
+        }
+
+        .rocket-entry-selector {
+            width: 0rem;
+            white-space: nowrap;
+            &:empty {
+                padding: 0;
+            }
+        }
+    }
+}
+
+
+/*
+ * Content items
+ */
+
+ul.rocket-content-item > li {
+    > i {
+    }
+    > span {
+        display: none;
+    }
+} 
+
+/*
+ * tree
+ */
+
+.rocket-tree-level-0 {
+    border-top: 5px solid $gray-300;
+    > td {
+        font-weight: bold;
+    }
+}
+
+.rocket-tree-level-1 > td:nth-child(2)::before {
+    content: '― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-2 > td:nth-child(2)::before  {
+    content: '― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-3 > td:nth-child(2)::before  {
+    content: '― ― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-4 > td:nth-child(2)::before  {
+    content: '― ― ― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-5 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-6 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-7 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-8 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ― ― ';
+    padding-right: 0.5rem;
+}
+
+.rocket-tree-level-9 > td:nth-child(2)::before  {
+    content: '― ― ― ― ― ― ― ― ― ';
+    padding-right: 0.5rem;
+}
+
+/*
+ * Footer
+ */
+
+.rocket-impl-overview-pagination {
+    .rocket-impl-pagination-no {
+        width: 5rem;
+        text-align: center;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+    > a,
+    > button {
+        margin-left: 0.5rem;
+    }
+}

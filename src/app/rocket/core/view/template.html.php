@@ -62,7 +62,7 @@ $htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
 $htmlMeta->addLibrary(new JQueryUiLibrary(3));
 $htmlMeta->addLibrary(new JhtmlLibrary(false));
 // new design (not ready yet):
-$htmlMeta->addCss('css/rocket-12.css');
+$htmlMeta->addCss('css/rocket-20.css');
 // old design:
 //	$htmlMeta->addCss('css/rocket.css');
 $htmlMeta->addCss('css/font-awesome.css');

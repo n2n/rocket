@@ -1,0 +1,101 @@
+.rocket-group {
+    background: $white;
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding: 0;
+    border-bottom: 1px solid $input-border-color;
+
+    > label {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        margin: 0;
+        border-left: 3px solid $primary;
+        font-size: $h2-font-size;
+        font-weight: bold;
+        float: none;
+    }
+    > .rocket-control {
+        padding: 0 1rem;
+        margin: 0 !important;
+    }
+    .rocket-group-toolbar {
+        position: absolute;
+        top: 0.5rem;
+        right: 1rem;
+        > .rocket-group-controls,
+        > .rocket-simple-commands {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+    }
+}
+
+.rocket-group .rocket-group-simple,
+.rocket-group .rocket-group-main {
+    border: none;
+    background-color: inherit;
+    > label {
+        border: none;
+        margin: 0;
+        padding: 0.5rem 0;
+    }
+    > .rocket-control {
+        padding: 0 1rem;
+        border: 1px solid $input-border-color;
+        background: rgba($gray-500, 0.08);
+    }
+}
+
+@include media-breakpoint-up(md) {
+    .rocket-group .rocket-group-simple,
+    .rocket-group .rocket-group-main {
+        > .rocket-control {
+            .rocket-editable,
+            .rocket-read-only {
+                > label:not(.rocket-locale-label) {
+                    width: auto;
+                    max-width: calc(14rem - 1px);
+                }
+                > .rocket-control {
+                    margin-left: calc(14rem - 1px);
+                }
+    
+            }
+        }
+    }
+
+    .rocket-control .rocket-group .rocket-group-simple,
+    .rocket-control .rocket-group .rocket-group-main, {
+        > .rocket-control {
+            label {
+                max-width: calc(13rem - 2px);
+            }
+            .rocket-control {
+                margin-left: calc(13rem - 2px);
+            }
+        }
+    }
+}
+
+
+:not(.rocket-group) .rocket-main-group-nav {
+    background: $gray-300;
+    border: 0;
+
+    > .nav-item {
+        > .nav-link {
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            border: none;
+            font-size: $h2-font-size;
+            color: $gray-600;
+            border-left: 3px solid $gray-300;
+            &.active {
+                border-left: 3px solid $primary;
+                background: $white;
+                color: $body-color;
+            }
+        }
+    }
+
+}
