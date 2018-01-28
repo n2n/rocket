@@ -4365,7 +4365,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-nav-group > .nav {
-  padding-bottom: 0.5rem;
+  padding-bottom: 1rem;
 }
 
 .rocket-nav-group .nav-item {
@@ -4880,6 +4880,10 @@ ul.rocket-content-item > li > span {
   border-left: 3px solid #ed8207;
   background: #fff;
   color: #373431;
+}
+
+.rocket-simple-commands {
+  white-space: nowrap;
 }
 
 .rocket-simple-commands > .dropdown > button,
