@@ -61,7 +61,7 @@ use n2n\web\ui\view\View;
     						    'class' => 'form-control', 'id' => 'nick')) ?>
 					</div>
 					<div class="input-group input-group-lg mb-3">
-    					<label for="rawPassword" class="input-group-prepend">
+    					<label for="rawPassword" class="input-group-prepend" title="<?php $html->l10nText('user_password_label') ?>">
     						<i class="fa fa-lock input-group-text"></i>
     						<span class="sr-only"><?php $html->l10nText('user_password_label') ?></span>
     					</label>
