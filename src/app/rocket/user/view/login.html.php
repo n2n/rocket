@@ -66,11 +66,11 @@ use n2n\web\ui\view\View;
     						<span class="sr-only"><?php $html->l10nText('user_password_label') ?></span>
     					</label>
 						<?php $formHtml->input('rawPassword', array('placeholder' => $view->getL10nText('user_password_label'), 
-						    'class' => 'form-control form-control-lg', 'id' => 'rawPassword'), 'password', true) ?>
+						      'class' => 'form-control form-control-lg', 'id' => 'rawPassword'), 'password', true) ?>
 					</div>
 					<div class="rocket-form-actions">
 						<?php $formHtml->inputSubmit('login', $view->getL10nText('user_login_label'), 
-						    array('class' => 'btn btn-secondary btn-lg btn-block')) ?>
+						      array('class' => 'btn btn-secondary btn-lg btn-block')) ?>
 					</div>
 				<?php $formHtml->close() ?>
 			</div>
