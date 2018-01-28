@@ -5345,6 +5345,53 @@ td .rocket-simple-commands > .btn > i {
   content: "\f058";
 }
 
+#rocket-login {
+  background: url(../img/rocket-login-bg-logo-small.png) no-repeat scroll 0 0, url(../img/rocket-login-bg-small.png) repeat scroll 0 0, none repeat scroll 0 0 #ECEBE9;
+}
+
+#rocket-login-container {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  height: 100vh;
+}
+
+#rocket-login-form-container {
+  background-color: #fff;
+  margin: 0 auto;
+  max-width: 320px;
+  overflow: auto;
+  padding: 1rem;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+}
+
+#rocket-logo-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+#rocket-logo-container > a {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.rocket-login-form label {
+  margin-bottom: 0;
+}
+
+.rocket-login-form label > .fa {
+  min-width: 3.125rem;
+}
+
+.rocket-login-form .btn-lg, .rocket-login-form .btn-group-lg > .btn {
+  font-size: 1.25rem;
+}
+
 /**
  * File to correct bootstrap styles
  */
