@@ -73,10 +73,6 @@ $( document ).ready(function() {
 		config.toolbar.push({name: "tools", items: toolItems});
 		config.toolbar.push({name: "about", items: aboutItems});
 
-		config.extraPlugins = "link";
-		config.linkShowTargetTab = true;
-		config.linkShowAdvancedTab = true;
-		
 		if (configOptions["bbcode"]) {
 			config.extraPlugins = "bbcode";
 		}
