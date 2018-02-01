@@ -73,8 +73,8 @@ class EditController extends ControllerAdapter {
 		$jhtmlEvent = null;
 		if ($this->dispatch($editModel, 'quicksave')) {
 			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
-// 			$this->refresh();
-// 			return;
+			$this->refresh();
+			return;
 		} else if ($this->dispatch($editModel, 'saveAndPreview')) {
 			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
 			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->getEiuEntry()->getEiObject()));
