@@ -131,7 +131,8 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 <?php $html->headEnd() ?>
 <?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')),
 	'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
-<div data-jhtml-container="rocket-template" data-jhtml-browsable="true">
+<div data-jhtml-container="rocket-template" data-jhtml-browsable="true" 
+		data-rocket-url="<?php $html->out($view->buildUrlStr(Murl::controller('rocket'))) ?>">
 	<header id="rocket-header">
 		<div id="rocket-logo">
 			<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),

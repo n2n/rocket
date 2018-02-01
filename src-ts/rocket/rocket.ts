@@ -187,6 +187,15 @@ namespace Rocket {
 				})
 			});
 		})();
+		
+		(function () {
+			let url = $("[data-jhtml-container][data-rocket-url]").data("rocket-url");
+			if (!url) return;
+			
+			setInterval(() => {
+				$.get(url);
+			}, 300000);
+		})();
 	});
 
 	export function scan(context: Rocket.Cmd.Zone = null) {
