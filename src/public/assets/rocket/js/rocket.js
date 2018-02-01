@@ -11,7 +11,6 @@ var Rocket;
         blocker = new Rocket.Cmd.Blocker(container);
         blocker.init($("body"));
         initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
-        initializer.scan();
         Jhtml.ready(() => {
             initializer.scan();
         });
@@ -2384,10 +2383,8 @@ var Rocket;
                 var jqPage = context.jQuery;
                 Display.EntryForm.find(jqPage, true);
                 jqPage.find(".rocket-group-main").each(function () {
-                    var jqElem = $(this);
-                    if (jqElem.hasClass("rocket-group-main")) {
-                        Initializer.scanGroupNav(jqElem.parent());
-                    }
+                    let elemJq = $(this);
+                    Initializer.scanGroupNav(elemJq.parent());
                 });
                 var errorIndex = null;
                 jqPage.find(".rocket-message-error").each(function () {
@@ -2423,7 +2420,6 @@ var Rocket;
             constructor(jqGroupNav) {
                 this.jqGroupNav = jqGroupNav;
                 this.groups = new Array();
-                jqGroupNav.addClass("rocket-main-group-nav nav nav-tabs");
                 jqGroupNav.hide();
             }
             registerGroup(group) {
@@ -2464,18 +2460,17 @@ var Rocket;
                     group.hide();
                 }
             }
-            static fromMain(jqElem, create = true) {
-                var groupNav = null;
+            static fromMain(jqElem) {
                 var jqPrev = jqElem.prev(".rocket-main-group-nav");
                 if (jqPrev.length > 0) {
-                    groupNav = jqPrev.data("rocketGroupNav");
+                    let groupNav = jqPrev.data("rocketGroupNav");
+                    if (groupNav instanceof GroupNav)
+                        return groupNav;
                 }
-                if (groupNav)
-                    return groupNav;
-                if (!create)
-                    return null;
-                var jqUl = $("<ul />").insertBefore(jqElem);
-                return new GroupNav(jqUl);
+                var ulJq = $("<ul />", { "class": "rocket-main-group-nav nav nav-tabs" }).insertBefore(jqElem);
+                let groupNav = new GroupNav(ulJq);
+                ulJq.data("rocketGroupNav", groupNav);
+                return groupNav;
             }
         }
         class ErrorIndex {
@@ -6643,6 +6638,162 @@ var Rocket;
 (function (Rocket) {
     var Impl;
     (function (Impl) {
+        class LangState {
+            constructor(activeLanguageIds) {
+                this.listeners = [];
+                this._activeLocaleIds = activeLanguageIds;
+            }
+            languageActive(localeId) {
+                return !!this.activeLocaleIds.find((id) => id === localeId);
+            }
+            toggleActiveLocaleId(localeId, state) {
+                if (!!state && !this.languageActive(localeId)) {
+                    this.activeLocaleIds.push(localeId);
+                }
+                if (!state && !!this.languageActive(localeId)) {
+                    this.activeLocaleIds.splice(this.activeLocaleIds.findIndex((id) => id === localeId), 1);
+                }
+                this.change(state);
+            }
+            onChanged(listener) {
+                this.listeners.push(listener);
+            }
+            offChanged(listener) {
+                this.listeners.splice(this.listeners.indexOf(listener), 1);
+            }
+            change(state) {
+                this.listeners.forEach((listener) => {
+                    listener.changed(state);
+                });
+            }
+            get activeLocaleIds() {
+                return this._activeLocaleIds;
+            }
+        }
+        Impl.LangState = LangState;
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        class NavState {
+            constructor(scrollPos, navGroupOpenedIds = []) {
+                this.navStateListeners = [];
+                this._scrollPos = scrollPos;
+                this._navGroupOpenedIds = navGroupOpenedIds;
+            }
+            onChanged(elemJq, listener) {
+                this.navStateListeners.push(listener);
+                elemJq.on("remove", () => { this.offChanged(listener); });
+            }
+            offChanged(navStateListener) {
+                this.navStateListeners.splice(this.navStateListeners.indexOf(navStateListener), 1);
+            }
+            change(id, opened) {
+                if (opened) {
+                    this.addOpenNavGroupId(id);
+                }
+                else {
+                    this.removeOpenNavGroupId(id);
+                }
+                this.navStateListeners.forEach((navStateListener) => {
+                    navStateListener.changed(opened);
+                });
+            }
+            addOpenNavGroupId(id) {
+                if (this._navGroupOpenedIds.indexOf(id) > -1)
+                    return;
+                this._navGroupOpenedIds.push(id);
+            }
+            removeOpenNavGroupId(id) {
+                if (this._navGroupOpenedIds.indexOf(id) === -1)
+                    return;
+                this._navGroupOpenedIds.splice(this._navGroupOpenedIds.indexOf(id), 1);
+            }
+            isGroupOpen(navId) {
+                return !!this._navGroupOpenedIds.find((id) => { return id == navId; });
+            }
+            get navGroupOpenedIds() {
+                return this._navGroupOpenedIds;
+            }
+            get scrollPos() {
+                return this._scrollPos;
+            }
+            set scrollPos(value) {
+                this._scrollPos = value;
+            }
+        }
+        Impl.NavState = NavState;
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        class UserStore {
+            constructor(userId, navState, langState, userStoreItems) {
+                this._userStoreItems = [];
+                this._userId = userId;
+                this._userStoreItems = userStoreItems;
+                this._langState = langState;
+                this._navState = navState;
+            }
+            static read(userId) {
+                let userStoreUserItems;
+                try {
+                    userStoreUserItems = JSON.parse(window.localStorage.getItem(UserStore.STORAGE_ITEM_NAME)) || [];
+                }
+                catch (e) {
+                    userStoreUserItems = [];
+                }
+                if (!(userStoreUserItems instanceof Array)) {
+                    userStoreUserItems = [];
+                }
+                let userStoreItem = userStoreUserItems.find((userStoreUserItem) => {
+                    return (userStoreUserItem.userId === userId);
+                });
+                if (!userStoreItem) {
+                    return new UserStore(userId, new Impl.NavState(0, []), new Impl.LangState([]), userStoreUserItems);
+                }
+                return new UserStore(userId, new Impl.NavState(userStoreItem.scrollPos, userStoreItem.navGroupOpenedIds), new Impl.LangState(userStoreItem.activeLanguageLocaleIds), userStoreUserItems);
+            }
+            save() {
+                var userItem = this._userStoreItems.find((userItem) => {
+                    if (userItem.userId === this.userId) {
+                        return true;
+                    }
+                });
+                if (!userItem) {
+                    userItem = { userId: this.userId,
+                        scrollPos: this.navState.scrollPos,
+                        navGroupOpenedIds: this.navState.navGroupOpenedIds,
+                        activeLanguageLocaleIds: this.langState.activeLocaleIds };
+                    this._userStoreItems.push(userItem);
+                }
+                userItem.scrollPos = this.navState.scrollPos;
+                userItem.navGroupOpenedIds = this.navState.navGroupOpenedIds;
+                userItem.activeLanguageLocaleIds = this.langState.activeLocaleIds;
+                window.localStorage.setItem(UserStore.STORAGE_ITEM_NAME, JSON.stringify(this._userStoreItems));
+            }
+            get userId() {
+                return this._userId;
+            }
+            get langState() {
+                return this._langState;
+            }
+            get navState() {
+                return this._navState;
+            }
+        }
+        UserStore.STORAGE_ITEM_NAME = "rocket_user_state";
+        Impl.UserStore = UserStore;
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
         var Translation;
         (function (Translation) {
             class TranslationManager {
@@ -7356,162 +7507,6 @@ var Rocket;
                 }
             }
         })(Translation = Impl.Translation || (Impl.Translation = {}));
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        class LangState {
-            constructor(activeLanguageIds) {
-                this.listeners = [];
-                this._activeLocaleIds = activeLanguageIds;
-            }
-            languageActive(localeId) {
-                return !!this.activeLocaleIds.find((id) => id === localeId);
-            }
-            toggleActiveLocaleId(localeId, state) {
-                if (!!state && !this.languageActive(localeId)) {
-                    this.activeLocaleIds.push(localeId);
-                }
-                if (!state && !!this.languageActive(localeId)) {
-                    this.activeLocaleIds.splice(this.activeLocaleIds.findIndex((id) => id === localeId), 1);
-                }
-                this.change(state);
-            }
-            onChanged(listener) {
-                this.listeners.push(listener);
-            }
-            offChanged(listener) {
-                this.listeners.splice(this.listeners.indexOf(listener), 1);
-            }
-            change(state) {
-                this.listeners.forEach((listener) => {
-                    listener.changed(state);
-                });
-            }
-            get activeLocaleIds() {
-                return this._activeLocaleIds;
-            }
-        }
-        Impl.LangState = LangState;
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        class NavState {
-            constructor(scrollPos, navGroupOpenedIds = []) {
-                this.navStateListeners = [];
-                this._scrollPos = scrollPos;
-                this._navGroupOpenedIds = navGroupOpenedIds;
-            }
-            onChanged(elemJq, listener) {
-                this.navStateListeners.push(listener);
-                elemJq.on("remove", () => { this.offChanged(listener); });
-            }
-            offChanged(navStateListener) {
-                this.navStateListeners.splice(this.navStateListeners.indexOf(navStateListener), 1);
-            }
-            change(id, opened) {
-                if (opened) {
-                    this.addOpenNavGroupId(id);
-                }
-                else {
-                    this.removeOpenNavGroupId(id);
-                }
-                this.navStateListeners.forEach((navStateListener) => {
-                    navStateListener.changed(opened);
-                });
-            }
-            addOpenNavGroupId(id) {
-                if (this._navGroupOpenedIds.indexOf(id) > -1)
-                    return;
-                this._navGroupOpenedIds.push(id);
-            }
-            removeOpenNavGroupId(id) {
-                if (this._navGroupOpenedIds.indexOf(id) === -1)
-                    return;
-                this._navGroupOpenedIds.splice(this._navGroupOpenedIds.indexOf(id), 1);
-            }
-            isGroupOpen(navId) {
-                return !!this._navGroupOpenedIds.find((id) => { return id == navId; });
-            }
-            get navGroupOpenedIds() {
-                return this._navGroupOpenedIds;
-            }
-            get scrollPos() {
-                return this._scrollPos;
-            }
-            set scrollPos(value) {
-                this._scrollPos = value;
-            }
-        }
-        Impl.NavState = NavState;
-    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Impl;
-    (function (Impl) {
-        class UserStore {
-            constructor(userId, navState, langState, userStoreItems) {
-                this._userStoreItems = [];
-                this._userId = userId;
-                this._userStoreItems = userStoreItems;
-                this._langState = langState;
-                this._navState = navState;
-            }
-            static read(userId) {
-                let userStoreUserItems;
-                try {
-                    userStoreUserItems = JSON.parse(window.localStorage.getItem(UserStore.STORAGE_ITEM_NAME)) || [];
-                }
-                catch (e) {
-                    userStoreUserItems = [];
-                }
-                if (!(userStoreUserItems instanceof Array)) {
-                    userStoreUserItems = [];
-                }
-                let userStoreItem = userStoreUserItems.find((userStoreUserItem) => {
-                    return (userStoreUserItem.userId === userId);
-                });
-                if (!userStoreItem) {
-                    return new UserStore(userId, new Impl.NavState(0, []), new Impl.LangState([]), userStoreUserItems);
-                }
-                return new UserStore(userId, new Impl.NavState(userStoreItem.scrollPos, userStoreItem.navGroupOpenedIds), new Impl.LangState(userStoreItem.activeLanguageLocaleIds), userStoreUserItems);
-            }
-            save() {
-                var userItem = this._userStoreItems.find((userItem) => {
-                    if (userItem.userId === this.userId) {
-                        return true;
-                    }
-                });
-                if (!userItem) {
-                    userItem = { userId: this.userId,
-                        scrollPos: this.navState.scrollPos,
-                        navGroupOpenedIds: this.navState.navGroupOpenedIds,
-                        activeLanguageLocaleIds: this.langState.activeLocaleIds };
-                    this._userStoreItems.push(userItem);
-                }
-                userItem.scrollPos = this.navState.scrollPos;
-                userItem.navGroupOpenedIds = this.navState.navGroupOpenedIds;
-                userItem.activeLanguageLocaleIds = this.langState.activeLocaleIds;
-                window.localStorage.setItem(UserStore.STORAGE_ITEM_NAME, JSON.stringify(this._userStoreItems));
-            }
-            get userId() {
-                return this._userId;
-            }
-            get langState() {
-                return this._langState;
-            }
-            get navState() {
-                return this._navState;
-            }
-        }
-        UserStore.STORAGE_ITEM_NAME = "rocket_user_state";
-        Impl.UserStore = UserStore;
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
 //# sourceMappingURL=rocket.js.map

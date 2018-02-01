@@ -17,8 +17,7 @@ namespace Rocket {
 
 		initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"),
 			jqContainer.data("display-error-label"));
-		initializer.scan();
-
+		
 		Jhtml.ready(() => {
 			initializer.scan();
 		});
