@@ -4217,7 +4217,7 @@ body {
   width: 100%;
 }
 
-.rocket-impl-translatable .rocket-locale-label {
+.rocket-impl-translatable .rocket-impl-locale-label {
   position: absolute;
   top: 0.5rem;
   left: -6rem;
@@ -4256,7 +4256,7 @@ body {
   padding: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-locale-label {
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-impl-locale-label {
   display: block;
   position: static;
   width: 100%;
@@ -4839,10 +4839,10 @@ ul.rocket-content-item > li > span {
 }
 
 @media (min-width: 768px) {
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > label:not(.rocket-locale-label),
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > label:not(.rocket-locale-label),
-  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > label:not(.rocket-locale-label),
-  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > label:not(.rocket-locale-label) {
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
+  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label),
+  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
+  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label) {
     width: auto;
     max-width: calc(14rem - 1px);
   }

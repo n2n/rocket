@@ -49,7 +49,8 @@
 				'data-rocket-impl-activate-label' => $view->getL10nText('ei_impl_activate_translation', array(
 						'locale' => $localeDefs[(string) $n2nLocale]->buildLabel($request->getN2nLocale()),
 						'field' => $label)))) ?>
-			<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale())), 
+			<?php $fieldEiHtml->label(
+					array('title' => $n2nLocale->getName($request->getN2nLocale()), 'class' => 'rocket-impl-locale-label'), 
 					$n2nLocale->toPrettyId()) ?>
 			<div class="rocket-control">
 				<?php $fieldEiHtml->field() ?>

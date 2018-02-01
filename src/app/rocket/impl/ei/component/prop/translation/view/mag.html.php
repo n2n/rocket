@@ -62,7 +62,7 @@
 		
 			<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId]) ?>
 				<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-						'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
+						'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
 				<div class="rocket-control">
 					<?php $fieldEiHtml->field() ?>
 					<?php $fieldEiHtml->message() ?>
