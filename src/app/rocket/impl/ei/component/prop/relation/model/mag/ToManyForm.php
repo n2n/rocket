@@ -223,7 +223,7 @@ class ToManyForm implements Dispatchable {
 	}
 	
 	private $sortable = true;
-	private $compact = true;
+	private $reduced = true;
 	
 	public function isSortable() {
 		return $this->sortable;
@@ -233,11 +233,11 @@ class ToManyForm implements Dispatchable {
 		$this->sortable = $sortable;
 	}
 	
-	public function isCompact() {
-		return $this->compact;
+	public function isReduced() {
+		return $this->reduced;
 	}
 	
-	public function setCompact(bool $compact) {
-		$this->compact = $compact;
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 }

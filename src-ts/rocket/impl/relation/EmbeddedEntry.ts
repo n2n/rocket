@@ -37,13 +37,13 @@ namespace Rocket.Impl.Relation {
 					this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
 					this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down"});
 				} 
-				this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", 
+				this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER }); 
 				
 				var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
 				this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", 
 						severity: Rocket.Display.Severity.WARNING });
-				this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove", 
+				this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER });
 				
 				let formElemsJq = this.bodyGroup.jQuery.find("input, textarea, select, button");

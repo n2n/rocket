@@ -57,7 +57,7 @@ class ThumbController extends ControllerAdapter {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
 		
 		
-		// because ThumbEiCommand gets added always on a supreme EiThing
+		// because ThumbEiCommand gets added always on a supreme EiEngine
 		if (!$eiuEntry->isTypeOf($this->fileEiProp->getEiEngine()->getEiType())) {
 			throw new PageNotFoundException('');
 		}

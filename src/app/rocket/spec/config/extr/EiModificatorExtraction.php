@@ -25,15 +25,15 @@ class EiModificatorExtraction {
 	private $id;
 	private $moduleNamespace;
 	private $eiTypeId;
-	private $commonEiMaskId;
+	private $eiMaskId;
 	private $className;
 	private $props = array();
 	
-	public function __construct(string $id, string $moduleNamespace, string $eiTypeId, string $commonEiMaskId = null) {
+	public function __construct(string $id, string $moduleNamespace, string $eiTypeId, string $eiMaskId = null) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
 		$this->eiTypeId = $eiTypeId;
-		$this->commonEiMaskId = $commonEiMaskId;
+		$this->eiMaskId = $eiMaskId;
 	}
 	
 	public function getId() {
@@ -60,12 +60,12 @@ class EiModificatorExtraction {
 		$this->eiTypeId = $eiTypeId;
 	}
 
-	public function getCommonEiMaskId() {
-		return $this->commonEiMaskId;
+	public function getEiMaskId() {
+		return $this->eiMaskId;
 	}
 
-	public function setCommonEiMaskId($commonEiMaskId) {
-		$this->commonEiMaskId = $commonEiMaskId;
+	public function setEiMaskId($eiMaskId) {
+		$this->eiMaskId = $eiMaskId;
 	}
 
 	public function getClassName() {

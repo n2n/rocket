@@ -1,18 +1,20 @@
 namespace Rocket.Display {
-	import NavState = Rocket.Display.NavState;
+	import UserState = Rocket.Impl.NavState;
+	import UserStore = Rocket.Impl.UserStore;
+	import StateListener = Rocket.Impl.StateListener;
 
-	export class NavGroup implements NavStateListener {
+	export class NavGroup implements StateListener {
 		private _id: string;
 		private _elemJq: JQuery;
-		private _navState: NavState;
+		private _userState: UserState;
 		private _opened: boolean;
 
-		public constructor(id: string, elemJq: JQuery, navState: NavState) {
+		public constructor(id: string, elemJq: JQuery, userState: UserState) {
 			this.id = id;
 			this.elemJq = elemJq;
-			this.navState = navState;
+			this.userState = userState;
 
-			this.opened = navState.isGroupOpen(id);
+			this.opened = userState.isGroupOpen(id);
 
 			if (this.opened) {
 				this.open(0);
@@ -21,12 +23,13 @@ namespace Rocket.Display {
 			}
 		}
 
-		public static build(elemJq: JQuery, navState: NavState) {
+		public static build(elemJq: JQuery, userStore: UserStore) {
 			let id = elemJq.data("navGroupId");
-			let navGroup = new NavGroup(id, elemJq, navState);
-			navState.onChanged(navGroup);
-			elemJq.find("h3").click(() => {
+			let navGroup = new NavGroup(id, elemJq, userStore.navState);
+			userStore.navState.onChanged(elemJq, navGroup);
+			elemJq.find("h3").on("click", () => {
 				navGroup.toggle();
+				userStore.save();
 			});
 
 			return navGroup;
@@ -38,13 +41,11 @@ namespace Rocket.Display {
 			} else {
 				this.open(150);
 			}
-
-			this.navState.navStore.save();
 		}
 
 		public changed() {
-			if (this.navState.isGroupOpen(this.id) === this.opened) return;
-			this.opened = this.navState.isGroupOpen(this.id);
+			if (this.userState.isGroupOpen(this.id) === this.opened) return;
+			this.opened = this.userState.isGroupOpen(this.id);
 
 			if (this.opened === true) {
 				this.open();
@@ -62,7 +63,7 @@ namespace Rocket.Display {
 			icon.addClass("fa-minus");
 			icon.removeClass("fa-plus");
 			this.elemJq.find('.nav').stop(true, true).slideDown({duration: ms});
-			this.navState.change(this.id, this.opened);
+			this.userState.change(this.id, this.opened);
 		}
 
 		public close(ms: number = 150) {
@@ -73,15 +74,15 @@ namespace Rocket.Display {
 			icon.removeClass("fa-minus");
 			this.elemJq.find('.nav').stop(true, true).slideUp({duration: ms});
 
-			this.navState.change(this.id, this.opened);
+			this.userState.change(this.id, this.opened);
 		}
 
-		get navState(): Rocket.Display.NavState {
-			return this._navState;
+		get userState(): Rocket.Impl.NavState {
+			return this._userState;
 		}
 
-		set navState(value: Rocket.Display.NavState) {
-			this._navState = value;
+		set userState(value: Rocket.Impl.NavState) {
+			this._userState = value;
 		}
 
 		get elemJq(): JQuery {

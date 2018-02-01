@@ -33,7 +33,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\EiCommandPath;
-use rocket\spec\config\mask\model\ControlOrder;
+use rocket\spec\ei\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
 
 class EiEntryGui {

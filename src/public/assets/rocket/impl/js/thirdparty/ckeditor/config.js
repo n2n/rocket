@@ -8,6 +8,7 @@ $( document ).ready(function() {
 	var configOptions = $(".rocket-impl-cke-classic").data("rocket-impl-toolbar")
 
 	CKEDITOR.editorConfig = function( config ) {
+		
 		var modes = ["simple", "normal", "advanced"];
 		var modeNum = modes.indexOf(configOptions["mode"]);
 
@@ -72,10 +73,9 @@ $( document ).ready(function() {
 		config.toolbar.push({name: "tools", items: toolItems});
 		config.toolbar.push({name: "about", items: aboutItems});
 
-		config.extraPlugins = "link";
-
 		if (configOptions["bbcode"]) {
 			config.extraPlugins = "bbcode";
 		}
+		
 	};
 });

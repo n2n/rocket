@@ -21,16 +21,14 @@
  */
 namespace rocket\spec\ei\mask;
 
-use rocket\spec\config\mask\CommonEiMask;
 use n2n\io\IoUtils;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\ei\mask\model\DisplayScheme;
 use rocket\spec\ei\EiType;
 
 class EiMaskCollection implements \IteratorAggregate, \Countable {
 	private $eiType;
 	private $eiMasks = array();
-	private $commonEiMasks = array();
 	private $defaultId;
 	private $createdDefault = null;
 	
@@ -47,18 +45,6 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 		}
 	
 		$this->eiMasks[$eiMask->getId()] = $eiMask;
-	}
-	
-	public function addCommon(CommonEiMask $commonEiMask) {
-		$this->add($commonEiMask);
-		$this->commonEiMasks[$commonEiMask->getId()] = $commonEiMask;
-	}
-	
-	/**
-	 * @return CommonEiMask[]
-	 */
-	public function getCommons() {
-		return $this->commonEiMasks;
 	}
 	
 	/**
@@ -93,7 +79,7 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 		}
 	
 		if ($this->createdDefault === null) {
-			$this->createdDefault = new CommonEiMask($this->eiType, $this->eiType->getModuleNamespace(), 
+			$this->createdDefault = new EiMask($this->eiType, $this->eiType->getModuleNamespace(), 
 					new DisplayScheme());
 		}
 	

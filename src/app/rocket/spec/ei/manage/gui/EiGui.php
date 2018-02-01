@@ -7,7 +7,7 @@ use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\config\mask\model\ControlOrder;
+use rocket\spec\ei\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\GuiFactory;

@@ -86,7 +86,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
 					array('entry' => $eiuFrame->getGenericLabel()));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
-			$iconType = IconType::ICON_TIMES;
+			$iconType = IconType::ICON_TRASH_O;
 		}
 		
 		$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_DANGER, $iconType);

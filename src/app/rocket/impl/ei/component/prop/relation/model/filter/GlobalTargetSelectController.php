@@ -51,21 +51,21 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 				&& $this->loginContext->getCurrentUser()->isAdmin();
 	}
 	
-	/**
-	 * @param string $eiTypeId
-	 * @param string $eiMaskId
-	 * @throws PageNotFoundException
-	 * @return \rocket\spec\ei\EiThing
-	 */
-	private function lookupEiThing(string $eiTypeId, string $eiMaskId) {
-		try {
-			return $this->specManager->getEiTypeById($eiTypeId)->getEiMaskCollection()->getById($eiMaskId);
-		} catch (UnknownSpecException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		} catch (UnknownEiMaskException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		}
-	}
+// 	/**
+// 	 * @param string $eiTypeId
+// 	 * @param string $eiMaskId
+// 	 * @throws PageNotFoundException
+// 	 * @return \rocket\spec\ei\EiThing
+// 	 */
+// 	private function lookupEiThing(string $eiTypeId, string $eiMaskId) {
+// 		try {
+// 			return $this->specManager->getEiTypeById($eiTypeId)->getEiMaskCollection()->getById($eiMaskId);
+// 		} catch (UnknownSpecException $e) {
+// 			throw new PageNotFoundException(null, 0, $e);
+// 		} catch (UnknownEiMaskException $e) {
+// 			throw new PageNotFoundException(null, 0, $e);
+// 		}
+// 	}
 	
 	/**
 	 * @param string $eiTypeId

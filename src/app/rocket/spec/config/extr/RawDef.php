@@ -34,7 +34,7 @@ class RawDef {
 	const SPEC_EI_CLASS_KEY = 'entity';
 	const SPEC_EI_DEFAULT_MASK_ID = 'defaultMaskId';
 	
-	const COMMON_EI_MASKS_KEY = 'commonEiMasks';
+	const EI_MASKS_KEY = 'eiMasks';
 	const COMMON_EI_MASK_DRAFTING_ALLOWED_KEY = 'draftingAllowed';
 	
 	const EI_MODIFICATORS_KEY = 'modificators';
@@ -97,7 +97,7 @@ class RawDef {
 		return self::extractIdParts($idCombination)[0];
 	}
 	
-	public static function extractCommonEiMaskIdFromIdCombination(string $idCombination) {
+	public static function extractEiMaskIdFromIdCombination(string $idCombination) {
 		$idParts = self::extractIdParts($idCombination);
 		if (count($idParts) === 2) return $idParts[1];
 		

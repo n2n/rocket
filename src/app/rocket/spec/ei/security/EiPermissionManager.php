@@ -25,7 +25,7 @@ use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiThing;
+use rocket\spec\ei\EiEngineModel;
 
 interface EiPermissionManager {
 
@@ -47,6 +47,6 @@ interface EiPermissionManager {
 	 * @param EiCommandPath $commandPath
 	 * @return \rocket\spec\ei\security\EiExecution
 	 */
-	public function createUnboundEiExceution(EiThing $eiThing, EiCommandPath $commandPath, 
+	public function createUnboundEiExceution(EiEngineModel $eiThing, EiCommandPath $commandPath, 
 			N2nContext $n2nContext): EiExecution;
 }

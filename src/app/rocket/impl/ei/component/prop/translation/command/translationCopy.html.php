@@ -32,7 +32,7 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 	<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-translation-copy')) ?>
 		<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
 			<?php $eiHtml->fieldLabel(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-						'class' => 'rocket-locale-label'), $n2nLocale->toPrettyId()) ?>
+						'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
 			<div class="rocket-control">
 				<?php $eiHtml->fieldContent() ?>
 				<?php $eiHtml->fieldMessage() ?>

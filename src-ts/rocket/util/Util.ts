@@ -1,4 +1,4 @@
-namespace Rocket.util {
+namespace Rocket.Util {
 	
 	export class CallbackRegistry<C extends Function> {
 		private callbackMap: { [nature: string]: Array<C>} = {};  
@@ -93,5 +93,9 @@ namespace Rocket.util {
 			
 			throw new Error(errMsg);
 		}
+	}
+	
+	export function escSelector(str: string): string {
+		return str.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|\/@])/g,"\\$1"); 
 	}
 }

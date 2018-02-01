@@ -39,7 +39,7 @@ use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\config\Spec;
 use n2n\l10n\Lstr;
 
-class EiType extends Spec implements EiThing {
+class EiType extends Spec implements EiEngineModel {
 	private $entityModel;
 	private $eiDef;
 	private $eiEngine;
@@ -68,9 +68,9 @@ class EiType extends Spec implements EiThing {
 		$this->eiMaskCollection = new EiMaskCollection($this);
 	}
 
-	public function getEiThingPath(): EiThingPath {
-		return new EiThingPath(array($this->getId()));
-	}
+// 	public function getEiThingPath(): EiThingPath {
+// 		return new EiThingPath(array($this->getId()));
+// 	}
 
 	public function setEntityModel(EntityModel $entityModel) {
 		IllegalStateException::assertTrue($this->entityModel === null);

@@ -23,7 +23,7 @@ namespace rocket\spec\config\extr;
 
 use n2n\util\config\Attributes;
 use n2n\reflection\ArgUtils;
-use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\ei\mask\model\DisplayScheme;
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class SpecRawer {
@@ -75,17 +75,17 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	public function rawCommonEiMasks(array $groupedCommonEiMaskExtractions) {
+	public function rawEiMasks(array $groupedEiMaskExtractions) {
 		$rawData = array();
-		foreach ($groupedCommonEiMaskExtractions as $eiTypeId => $commonEiMaskExtractions) {
-			if (empty($commonEiMaskExtractions)) continue;
+		foreach ($groupedEiMaskExtractions as $eiTypeId => $eiMaskExtractions) {
+			if (empty($eiMaskExtractions)) continue;
 			
-			$commonEiMasksRawData = array();
-			foreach ($commonEiMaskExtractions as $commonEiMaskExtraction) {
-				$commonEiMasksRawData[$commonEiMaskExtraction->getId()] = $this->buildCommonEiMaskExtractionRawData($commonEiMaskExtraction);
+			$eiMasksRawData = array();
+			foreach ($eiMaskExtractions as $eiMaskExtraction) {
+				$eiMasksRawData[$eiMaskExtraction->getId()] = $this->buildEiMaskExtractionRawData($eiMaskExtraction);
 			}
 			
-			$rawData[$eiTypeId] = $commonEiMasksRawData;
+			$rawData[$eiTypeId] = $eiMasksRawData;
 		}
 		
 		$this->attributes->set(RawDef::COMMON_EI_MASKS_KEY, $rawData);
@@ -102,7 +102,7 @@ class SpecRawer {
 			
 			foreach ($eiModificatorExtractionGroup as $eiModificatorExtraction) {
 				$idCombination = RawDef::buildEiTypeMaskId($eiModificatorExtraction->getEiTypeId(), 
-						$eiModificatorExtraction->getCommonEiMaskId());
+						$eiModificatorExtraction->getEiMaskId());
 				if (!isset($rawData[$idCombination])) {
 					$rawData[$idCombination] = array();
 				}
@@ -114,7 +114,7 @@ class SpecRawer {
 		$this->attributes->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
 	}
 	
-	private function buildCommonEiMaskExtractionRawData(CommonEiMaskExtraction $eiMaskExtraction) {
+	private function buildEiMaskExtractionRawData(EiMaskExtraction $eiMaskExtraction) {
 		$maskRawData = $this->buildEiDefExtractionRawData($eiMaskExtraction->getEiDefExtraction());
 		
 		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtraction->getDisplayScheme()));

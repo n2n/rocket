@@ -3,7 +3,7 @@
 
 namespace Rocket.Cmd {
 	import display = Rocket.Display;
-	import util = Rocket.util;
+	import util = Rocket.Util;
 	
 	export class Zone {
 		private jqZone: JQuery;

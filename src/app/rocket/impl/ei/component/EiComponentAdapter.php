@@ -38,7 +38,7 @@ abstract class EiComponentAdapter implements EiComponent {
 			return $this->eiEngine;
 		}
 		
-		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiThing.');
+		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiEngine.');
 	}
 	
 	public function setEiEngine(EiEngine $eiEngine) {

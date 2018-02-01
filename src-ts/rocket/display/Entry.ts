@@ -3,7 +3,7 @@ namespace Rocket.Display {
 	export class Entry {
 		private _selector: EntrySelector = null;
 		private _state: Entry.State = Entry.State.PERSISTENT;
-		private callbackRegistery: util.CallbackRegistry<EntryCallback> = new util.CallbackRegistry<EntryCallback>();
+		private callbackRegistery: Util.CallbackRegistry<EntryCallback> = new Util.CallbackRegistry<EntryCallback>();
 		
 		constructor(private elemJq: JQuery) {
 			elemJq.on("remove", () => {
@@ -38,7 +38,7 @@ namespace Rocket.Display {
 			
 			var that = this;
 			this.elemJq.click(function (e) {
-				if (getSelection().toString() || util.ElementUtils.isControl(e.target)) {
+				if (getSelection().toString() || Util.ElementUtils.isControl(e.target)) {
 					return;
 				}
 				
@@ -228,7 +228,7 @@ namespace Rocket.Display {
 		}
 
 		private static buildSupremeEiTypeISelector(supremeEiTypeId: string): string {
-			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]";
 		}
 		
 		static findBySupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): Entry[] {
@@ -240,8 +240,8 @@ namespace Rocket.Display {
 		}
 		
 		private static buildIdRepSelector(supremeEiTypeId: string, idRep: string): string {
-			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "][" 
-					+ Entry.ID_REP_ATTR + "=" + idRep + "]";
+			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "][" 
+					+ Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(idRep) + "]";
 		}
 		
 		static findByIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string): Entry[] {
@@ -253,7 +253,7 @@ namespace Rocket.Display {
 		}
 		
 		private static buildDraftIdSelector(supremeEiTypeId: string, draftId: number): string {
-			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "][" 
+			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "][" 
 					+ Entry.DRAFT_ID_ATTR + "=" + draftId + "]";
 		}
 		

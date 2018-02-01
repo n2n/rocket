@@ -22,9 +22,9 @@ namespace Rocket.Display {
 				errorIndex.getTab().dispose();
 			}  
 			
-			var contexts = this.container.getAllZones();
-			for (var i in contexts) {
-				this.scanPage(contexts[i]);
+			var zones = this.container.getAllZones();
+			for (var i in zones) {
+				this.scanPage(zones[i]);
 			}
 		}
 		
@@ -38,11 +38,8 @@ namespace Rocket.Display {
 			EntryForm.find(jqPage, true);
 			
 			jqPage.find(".rocket-group-main").each(function () {
-				var jqElem = $(this);
-				
-				if (jqElem.hasClass("rocket-group-main")) {
-					Initializer.scanGroupNav(jqElem.parent());
-				}
+				let elemJq = $(this);
+				Initializer.scanGroupNav(elemJq.parent());
 			});
 			
 			
@@ -92,7 +89,6 @@ namespace Rocket.Display {
     		this.jqGroupNav = jqGroupNav;
 			this.groups = new Array<StructureElement>();
 			
-			jqGroupNav.addClass("rocket-main-group-nav nav nav-tabs");
 			jqGroupNav.hide();
     	}
     	
@@ -143,21 +139,18 @@ namespace Rocket.Display {
 			}
 		}
 		
-		public static fromMain(jqElem: JQuery, create: boolean = true) {
-			var groupNav = null;
-
+		public static fromMain(jqElem: JQuery) {
 			var jqPrev = jqElem.prev(".rocket-main-group-nav");
 			if (jqPrev.length > 0) {
-				groupNav = jqPrev.data("rocketGroupNav");
+				let groupNav = jqPrev.data("rocketGroupNav");
+				
+				if (groupNav instanceof GroupNav) return groupNav;
 			}
 				
-			if (groupNav) return groupNav;
-			
-			if (!create) return null;
-			
-			var jqUl = $("<ul />").insertBefore(jqElem);
-			
-			return new GroupNav(jqUl);
+			var ulJq = $("<ul />", { "class" : "rocket-main-group-nav nav nav-tabs" }).insertBefore(jqElem);
+			let groupNav =  new GroupNav(ulJq);
+			ulJq.data("rocketGroupNav", groupNav);
+			return groupNav;
 		}
     }
     

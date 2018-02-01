@@ -46,7 +46,7 @@ class ToManyMag extends MagAdapter {
 	private $targetReadUtils;
 	private $targetEditUtils;
 	private $elementLabel;
-	private $compact = true;
+	private $reduced = true;
 	
 	private $selectOverviewToolsUrl;
 	private $newMappingFormUrl;
@@ -73,8 +73,8 @@ class ToManyMag extends MagAdapter {
 // 		$this->setAttrs(array('class' => 'rocket-block'));
 	}
 	
-	public function setCompact(bool $compact) {
-		$this->compact = $compact;
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
 	}
 	
 	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
@@ -132,7 +132,7 @@ class ToManyMag extends MagAdapter {
 		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditUtils, $this->min, 
 				$this->max);
 		$toManyForm->setSortable($this->targetOrderEiPropPath !== null);
-		$toManyForm->setCompact($this->compact);
+		$toManyForm->setReduced($this->reduced);
 	
 		if ($this->selectOverviewToolsUrl !== null) {
 			$toManyForm->setSelectionModeEnabled(true);

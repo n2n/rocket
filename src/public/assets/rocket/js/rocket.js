@@ -5,12 +5,12 @@ var Rocket;
     let initializer;
     let $ = jQuery;
     jQuery(document).ready(function ($) {
-        var jqContainer = $("#rocket-content-container");
+        let jqContainer = $("#rocket-content-container");
         container = new Rocket.Cmd.Container(jqContainer);
+        let userStore = Rocket.Impl.UserStore.read(jqContainer.find("#rocket-global-nav").find("h2").data("rocketUserId"));
         blocker = new Rocket.Cmd.Blocker(container);
         blocker.init($("body"));
         initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
-        initializer.scan();
         Jhtml.ready(() => {
             initializer.scan();
         });
@@ -57,8 +57,7 @@ var Rocket;
             });
         })();
         (function () {
-            let t = new Rocket.Impl.Translation.Translator(container);
-            t.scan();
+            let t = new Rocket.Impl.Translation.Translator(container, userStore);
             Jhtml.ready(() => {
                 t.scan();
             });
@@ -96,8 +95,6 @@ var Rocket;
         })();
         (function () {
             var nav = new Rocket.Display.Nav();
-            var navStore;
-            var navState;
             var navGroups = [];
             Jhtml.ready((elements) => {
                 let elementsJq = $(elements);
@@ -105,32 +102,30 @@ var Rocket;
                 if (rgn.length > 0) {
                     nav.elemJq = rgn;
                     let navGroupJq = rgn.find(".rocket-nav-group");
-                    navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
-                    navState = new Rocket.Display.NavState(navStore);
                     navGroupJq.each((key, navGroupNode) => {
-                        navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), navState));
+                        navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), userStore));
                     });
-                    rgn.scroll(() => {
-                        navStore.scrollPos = rgn.scrollTop();
-                        navStore.save();
+                    rgn.on("scroll", () => {
+                        userStore.navState.scrollPos = rgn.scrollTop();
+                        userStore.save();
                     });
                     var observer = new MutationObserver((mutations) => {
-                        nav.scrollToPos(navStore.scrollPos);
+                        nav.scrollToPos(userStore.navState.scrollPos);
                         mutations.forEach((mutation) => {
                             navGroups.forEach((navGroup) => {
                                 if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    navState.offChanged(navGroup);
+                                    userStore.navState.offChanged(navGroup);
                                 }
                             });
                             navGroups.forEach((navGroup) => {
                                 if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-                                    if (navState.isGroupOpen(navGroup.id)) {
+                                    if (userStore.navState.isGroupOpen(navGroup.id)) {
                                         navGroup.open(0);
                                     }
                                     else {
                                         navGroup.close(0);
                                     }
-                                    nav.scrollToPos(navStore.scrollPos);
+                                    nav.scrollToPos(userStore.navState.scrollPos);
                                 }
                             });
                         });
@@ -140,10 +135,10 @@ var Rocket;
                 elementsJq.each((key, node) => {
                     let nodeJq = $(node);
                     if (nodeJq.hasClass("rocket-nav-group") && nodeJq.parent().get(0) === nav.elemJq.get(0)) {
-                        navGroups.push(Rocket.Display.NavGroup.build(nodeJq, navState));
+                        navGroups.push(Rocket.Display.NavGroup.build(nodeJq, userStore));
                     }
                 });
-                nav.scrollToPos(navStore.scrollPos);
+                nav.scrollToPos(userStore.navState.scrollPos);
             });
         })();
         (function () {
@@ -154,6 +149,14 @@ var Rocket;
                     Rocket.Display.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
                 });
             });
+        })();
+        (function () {
+            let url = $("[data-jhtml-container][data-rocket-url]").data("rocket-url");
+            if (!url)
+                return;
+            setInterval(() => {
+                $.get(url);
+            }, 300000);
         })();
     });
     function scan(context = null) {
@@ -252,7 +255,7 @@ var Rocket;
     (function (Cmd) {
         class Container {
             constructor(jqContainer) {
-                this.layerCallbackRegistery = new Rocket.util.CallbackRegistry();
+                this.layerCallbackRegistery = new Rocket.Util.CallbackRegistry();
                 this.jqContainer = jqContainer;
                 this._layers = new Array();
                 var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
@@ -550,7 +553,7 @@ var Rocket;
                 this._container = _container;
                 this._monitor = _monitor;
                 this._zones = new Array();
-                this.callbackRegistery = new Rocket.util.CallbackRegistry();
+                this.callbackRegistery = new Rocket.Util.CallbackRegistry();
                 this._visible = true;
                 this.scrollPos = 0;
                 this.onNewZoneCallbacks = new Array();
@@ -805,8 +808,8 @@ var Rocket;
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
-    var util;
-    (function (util) {
+    var Util;
+    (function (Util) {
         class CallbackRegistry {
             constructor() {
                 this.callbackMap = {};
@@ -842,7 +845,7 @@ var Rocket;
                 this.callbackMap = {};
             }
         }
-        util.CallbackRegistry = CallbackRegistry;
+        Util.CallbackRegistry = CallbackRegistry;
         class ArgUtils {
             static valIsset(arg) {
                 if (arg !== null && arg !== undefined)
@@ -850,16 +853,16 @@ var Rocket;
                 throw new InvalidArgumentError("Invalid arg: " + arg);
             }
         }
-        util.ArgUtils = ArgUtils;
+        Util.ArgUtils = ArgUtils;
         class ElementUtils {
             static isControl(elem) {
                 return !!Jhtml.Util.closest(elem, "a, button, input, textarea, select", true);
             }
         }
-        util.ElementUtils = ElementUtils;
+        Util.ElementUtils = ElementUtils;
         class InvalidArgumentError extends Error {
         }
-        util.InvalidArgumentError = InvalidArgumentError;
+        Util.InvalidArgumentError = InvalidArgumentError;
         class IllegalStateError extends Error {
             static assertTrue(arg, errMsg = null) {
                 if (arg === true)
@@ -870,8 +873,12 @@ var Rocket;
                 throw new Error(errMsg);
             }
         }
-        util.IllegalStateError = IllegalStateError;
-    })(util = Rocket.util || (Rocket.util = {}));
+        Util.IllegalStateError = IllegalStateError;
+        function escSelector(str) {
+            return str.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|\/@])/g, "\\$1");
+        }
+        Util.escSelector = escSelector;
+    })(Util = Rocket.Util || (Rocket.Util = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
@@ -1110,7 +1117,7 @@ var Rocket;
     var Cmd;
     (function (Cmd) {
         var display = Rocket.Display;
-        var util = Rocket.util;
+        var util = Rocket.Util;
         class Zone {
             constructor(jqZone, url, layer) {
                 this.urls = [];
@@ -1975,7 +1982,7 @@ var Rocket;
                 this.elemJq = elemJq;
                 this._selector = null;
                 this._state = Entry.State.PERSISTENT;
-                this.callbackRegistery = new Rocket.util.CallbackRegistry();
+                this.callbackRegistery = new Rocket.Util.CallbackRegistry();
                 elemJq.on("remove", () => {
                     this.trigger(Entry.EventType.DISPOSED);
                     this.callbackRegistery.clear();
@@ -2003,7 +2010,7 @@ var Rocket;
                 this._selector = new Display.EntrySelector(jqSelector, this);
                 var that = this;
                 this.elemJq.click(function (e) {
-                    if (getSelection().toString() || Rocket.util.ElementUtils.isControl(e.target)) {
+                    if (getSelection().toString() || Rocket.Util.ElementUtils.isControl(e.target)) {
                         return;
                     }
                     that._selector.selected = !that._selector.selected;
@@ -2146,7 +2153,7 @@ var Rocket;
                 return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
             }
             static buildSupremeEiTypeISelector(supremeEiTypeId) {
-                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]";
             }
             static findBySupremeEiTypeId(jqContainer, supremeEiTypeId) {
                 return Entry.fromArr(jqContainer.find(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)));
@@ -2155,8 +2162,8 @@ var Rocket;
                 return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
             }
             static buildIdRepSelector(supremeEiTypeId, idRep) {
-                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
-                    + Entry.ID_REP_ATTR + "=" + idRep + "]";
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
+                    + Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(idRep) + "]";
             }
             static findByIdRep(jqElem, supremeEiTypeId, idRep) {
                 return Entry.fromArr(jqElem.find(Entry.buildIdRepSelector(supremeEiTypeId, idRep)));
@@ -2165,7 +2172,7 @@ var Rocket;
                 return 0 < jqElem.has(Entry.buildIdRepSelector(supremeEiTypeId, idRep)).length;
             }
             static buildDraftIdSelector(supremeEiTypeId, draftId) {
-                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
                     + Entry.DRAFT_ID_ATTR + "=" + draftId + "]";
             }
             static findByDraftId(jqElem, supremeEiTypeId, draftId) {
@@ -2376,10 +2383,8 @@ var Rocket;
                 var jqPage = context.jQuery;
                 Display.EntryForm.find(jqPage, true);
                 jqPage.find(".rocket-group-main").each(function () {
-                    var jqElem = $(this);
-                    if (jqElem.hasClass("rocket-group-main")) {
-                        Initializer.scanGroupNav(jqElem.parent());
-                    }
+                    let elemJq = $(this);
+                    Initializer.scanGroupNav(elemJq.parent());
                 });
                 var errorIndex = null;
                 jqPage.find(".rocket-message-error").each(function () {
@@ -2415,7 +2420,6 @@ var Rocket;
             constructor(jqGroupNav) {
                 this.jqGroupNav = jqGroupNav;
                 this.groups = new Array();
-                jqGroupNav.addClass("rocket-main-group-nav nav nav-tabs");
                 jqGroupNav.hide();
             }
             registerGroup(group) {
@@ -2456,18 +2460,17 @@ var Rocket;
                     group.hide();
                 }
             }
-            static fromMain(jqElem, create = true) {
-                var groupNav = null;
+            static fromMain(jqElem) {
                 var jqPrev = jqElem.prev(".rocket-main-group-nav");
                 if (jqPrev.length > 0) {
-                    groupNav = jqPrev.data("rocketGroupNav");
+                    let groupNav = jqPrev.data("rocketGroupNav");
+                    if (groupNav instanceof GroupNav)
+                        return groupNav;
                 }
-                if (groupNav)
-                    return groupNav;
-                if (!create)
-                    return null;
-                var jqUl = $("<ul />").insertBefore(jqElem);
-                return new GroupNav(jqUl);
+                var ulJq = $("<ul />", { "class": "rocket-main-group-nav nav nav-tabs" }).insertBefore(jqElem);
+                let groupNav = new GroupNav(ulJq);
+                ulJq.data("rocketGroupNav", groupNav);
+                return groupNav;
             }
         }
         class ErrorIndex {
@@ -3015,11 +3018,11 @@ var Rocket;
     var Display;
     (function (Display) {
         class NavGroup {
-            constructor(id, elemJq, navState) {
+            constructor(id, elemJq, userState) {
                 this.id = id;
                 this.elemJq = elemJq;
-                this.navState = navState;
-                this.opened = navState.isGroupOpen(id);
+                this.userState = userState;
+                this.opened = userState.isGroupOpen(id);
                 if (this.opened) {
                     this.open(0);
                 }
@@ -3027,12 +3030,13 @@ var Rocket;
                     this.close(0);
                 }
             }
-            static build(elemJq, navState) {
+            static build(elemJq, userStore) {
                 let id = elemJq.data("navGroupId");
-                let navGroup = new NavGroup(id, elemJq, navState);
-                navState.onChanged(navGroup);
-                elemJq.find("h3").click(() => {
+                let navGroup = new NavGroup(id, elemJq, userStore.navState);
+                userStore.navState.onChanged(elemJq, navGroup);
+                elemJq.find("h3").on("click", () => {
                     navGroup.toggle();
+                    userStore.save();
                 });
                 return navGroup;
             }
@@ -3043,12 +3047,11 @@ var Rocket;
                 else {
                     this.open(150);
                 }
-                this.navState.navStore.save();
             }
             changed() {
-                if (this.navState.isGroupOpen(this.id) === this.opened)
+                if (this.userState.isGroupOpen(this.id) === this.opened)
                     return;
-                this.opened = this.navState.isGroupOpen(this.id);
+                this.opened = this.userState.isGroupOpen(this.id);
                 if (this.opened === true) {
                     this.open();
                 }
@@ -3062,7 +3065,7 @@ var Rocket;
                 icon.addClass("fa-minus");
                 icon.removeClass("fa-plus");
                 this.elemJq.find('.nav').stop(true, true).slideDown({ duration: ms });
-                this.navState.change(this.id, this.opened);
+                this.userState.change(this.id, this.opened);
             }
             close(ms = 150) {
                 this.opened = false;
@@ -3070,13 +3073,13 @@ var Rocket;
                 icon.addClass("fa-plus");
                 icon.removeClass("fa-minus");
                 this.elemJq.find('.nav').stop(true, true).slideUp({ duration: ms });
-                this.navState.change(this.id, this.opened);
+                this.userState.change(this.id, this.opened);
             }
-            get navState() {
-                return this._navState;
+            get userState() {
+                return this._userState;
             }
-            set navState(value) {
-                this._navState = value;
+            set userState(value) {
+                this._userState = value;
             }
             get elemJq() {
                 return this._elemJq;
@@ -3116,121 +3119,6 @@ var Rocket;
             }
         }
         Display.NavItem = NavItem;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavState {
-            constructor(navStore) {
-                this.navStateListeners = [];
-                this._navStore = navStore;
-            }
-            onChanged(navStateListener) {
-                this.navStateListeners.push(navStateListener);
-            }
-            offChanged(navStateListener) {
-                this.navStateListeners.splice(this.navStateListeners.indexOf(navStateListener), 1);
-            }
-            change(id, opened) {
-                if (opened) {
-                    this.navStore.addOpenNavGroupId(id);
-                }
-                else {
-                    this.navStore.removeOpenNavGroupId(id);
-                }
-                this.navStore.save();
-                this.navStateListeners.forEach((navStateListener) => {
-                    navStateListener.changed(opened);
-                });
-            }
-            isGroupOpen(navId) {
-                return !!this.navStore.navGroupOpenedIds.find((id) => { return id == navId; });
-            }
-            get navStore() {
-                return this._navStore;
-            }
-            set navStore(value) {
-                this._navStore = value;
-            }
-        }
-        Display.NavState = NavState;
-    })(Display = Rocket.Display || (Rocket.Display = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Display;
-    (function (Display) {
-        class NavStore {
-            constructor(userId, scrollPos, navGroupOpenedIds, navStoreUserItems) {
-                this._navStoreUserItems = [];
-                this._userId = userId;
-                this._scrollPos = scrollPos;
-                this._navStoreUserItems = navStoreUserItems;
-                this.navGroupOpenedIds = navGroupOpenedIds;
-            }
-            static read(userId) {
-                let navStoreUserItems = JSON.parse(window.localStorage.getItem(NavStore.STORAGE_ITEM_NAME)) || [];
-                let navStoreItem = navStoreUserItems.find((navStoreUserItem) => {
-                    return (navStoreUserItem.userId === userId);
-                });
-                if (!navStoreItem) {
-                    return new NavStore(userId, 0, [], navStoreUserItems);
-                }
-                return new NavStore(userId, navStoreItem.scrollPos, navStoreItem.navGroupOpenedIds, navStoreUserItems);
-            }
-            addOpenNavGroupId(id) {
-                if (this.navGroupOpenedIds.indexOf(id) > -1)
-                    return;
-                this.navGroupOpenedIds.push(id);
-            }
-            removeOpenNavGroupId(id) {
-                if (this.navGroupOpenedIds.indexOf(id) === -1)
-                    return;
-                this.navGroupOpenedIds.splice(this.navGroupOpenedIds.indexOf(id), 1);
-            }
-            save() {
-                let userItem = this.navStoreUserItems.find((userItem) => {
-                    if (userItem.userId === this.userId) {
-                        return true;
-                    }
-                });
-                if (!userItem) {
-                    userItem = { "userId": this.userId, "scrollPos": this.scrollPos, "navGroupOpenedIds": this.navGroupOpenedIds };
-                    this.navStoreUserItems.push(userItem);
-                }
-                userItem.scrollPos = this.scrollPos;
-                userItem.navGroupOpenedIds = this.navGroupOpenedIds;
-                window.localStorage.setItem(NavStore.STORAGE_ITEM_NAME, JSON.stringify(this.navStoreUserItems));
-            }
-            get userId() {
-                return this._userId;
-            }
-            set userId(value) {
-                this._userId = value;
-            }
-            get scrollPos() {
-                return this._scrollPos;
-            }
-            set scrollPos(value) {
-                this._scrollPos = value;
-            }
-            get navGroupOpenedIds() {
-                return this._navGroupOpenedIds;
-            }
-            set navGroupOpenedIds(value) {
-                this._navGroupOpenedIds = value;
-            }
-            get navStoreUserItems() {
-                return this._navStoreUserItems;
-            }
-            set navStoreUserItems(value) {
-                this._navStoreUserItems = value;
-            }
-        }
-        NavStore.STORAGE_ITEM_NAME = "rocket_navigation_states";
-        Display.NavStore = NavStore;
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -4539,7 +4427,7 @@ var Rocket;
                         "class": "btn btn-secondary",
                         "text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
                     })
-                        .append($("<i />", { "class": "fa fa-times" }))
+                        .append($("<i />", { "class": "fa fa-trash-o" }))
                         .click(() => { this.open = false; })
                         .appendTo(jqControlContainer);
                     this.open = false;
@@ -5619,12 +5507,12 @@ var Rocket;
                             this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
                             this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down" });
                         }
-                        this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
+                        this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove",
                             severity: Rocket.Display.Severity.DANGER });
                         var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                         this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit",
                             severity: Rocket.Display.Severity.WARNING });
-                        this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
+                        this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove",
                             severity: Rocket.Display.Severity.DANGER });
                         let formElemsJq = this.bodyGroup.jQuery.find("input, textarea, select, button");
                         let changedCallback = () => {
@@ -5954,7 +5842,7 @@ var Rocket;
                 addSelectedEntry(entry) {
                     this.entries.push(entry);
                     var that = this;
-                    entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
+                    entry.commandList.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") }).click(function () {
                         that.removeSelectedEntry(entry);
                     });
                 }
@@ -6098,7 +5986,7 @@ var Rocket;
                     this.entryAddControls = new Array();
                     this.jqToMany = jqToMany;
                     this.addControlFactory = addButtonFactory;
-                    this.reduceEnabled = (true == jqToMany.data("compact"));
+                    this.reduceEnabled = (true == jqToMany.data("reduced"));
                     this.sortable = (true == jqToMany.data("sortable"));
                     this.closeLabel = jqToMany.data("close-label");
                     this.jqEmbedded = $("<div />", {
@@ -6335,7 +6223,7 @@ var Rocket;
                     }
                     var that = this;
                     var jqCommandButton = this.expandZone.menu.mainCommandList
-                        .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
+                        .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(function () {
                         that.expandZone.layer.close();
                     });
@@ -6433,7 +6321,7 @@ var Rocket;
                     this.changedCallbacks = new Array();
                     this.jqToOne = jqToOne;
                     this.addControlFactory = addButtonFactory;
-                    this.reduceEnabled = (true == jqToOne.data("compact"));
+                    this.reduceEnabled = (true == jqToOne.data("reduced"));
                     this.closeLabel = jqToOne.data("close-label");
                     this.jqEmbedded = $("<div />", {
                         "class": "rocket-impl-embedded"
@@ -6578,7 +6466,7 @@ var Rocket;
                         this.currentEntry.expand(false);
                     }
                     var jqCommandButton = this.expandZone.menu.mainCommandList
-                        .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
+                        .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(() => {
                         this.expandZone.layer.close();
                     });
@@ -6635,7 +6523,7 @@ var Rocket;
                     this.jqSelectedEntry = $("<div />");
                     this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
                     new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
-                        .createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
+                        .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
                         .click(() => {
                         this.clear();
                     });
@@ -6750,6 +6638,162 @@ var Rocket;
 (function (Rocket) {
     var Impl;
     (function (Impl) {
+        class LangState {
+            constructor(activeLanguageIds) {
+                this.listeners = [];
+                this._activeLocaleIds = activeLanguageIds;
+            }
+            languageActive(localeId) {
+                return !!this.activeLocaleIds.find((id) => id === localeId);
+            }
+            toggleActiveLocaleId(localeId, state) {
+                if (!!state && !this.languageActive(localeId)) {
+                    this.activeLocaleIds.push(localeId);
+                }
+                if (!state && !!this.languageActive(localeId)) {
+                    this.activeLocaleIds.splice(this.activeLocaleIds.findIndex((id) => id === localeId), 1);
+                }
+                this.change(state);
+            }
+            onChanged(listener) {
+                this.listeners.push(listener);
+            }
+            offChanged(listener) {
+                this.listeners.splice(this.listeners.indexOf(listener), 1);
+            }
+            change(state) {
+                this.listeners.forEach((listener) => {
+                    listener.changed(state);
+                });
+            }
+            get activeLocaleIds() {
+                return this._activeLocaleIds;
+            }
+        }
+        Impl.LangState = LangState;
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        class NavState {
+            constructor(scrollPos, navGroupOpenedIds = []) {
+                this.navStateListeners = [];
+                this._scrollPos = scrollPos;
+                this._navGroupOpenedIds = navGroupOpenedIds;
+            }
+            onChanged(elemJq, listener) {
+                this.navStateListeners.push(listener);
+                elemJq.on("remove", () => { this.offChanged(listener); });
+            }
+            offChanged(navStateListener) {
+                this.navStateListeners.splice(this.navStateListeners.indexOf(navStateListener), 1);
+            }
+            change(id, opened) {
+                if (opened) {
+                    this.addOpenNavGroupId(id);
+                }
+                else {
+                    this.removeOpenNavGroupId(id);
+                }
+                this.navStateListeners.forEach((navStateListener) => {
+                    navStateListener.changed(opened);
+                });
+            }
+            addOpenNavGroupId(id) {
+                if (this._navGroupOpenedIds.indexOf(id) > -1)
+                    return;
+                this._navGroupOpenedIds.push(id);
+            }
+            removeOpenNavGroupId(id) {
+                if (this._navGroupOpenedIds.indexOf(id) === -1)
+                    return;
+                this._navGroupOpenedIds.splice(this._navGroupOpenedIds.indexOf(id), 1);
+            }
+            isGroupOpen(navId) {
+                return !!this._navGroupOpenedIds.find((id) => { return id == navId; });
+            }
+            get navGroupOpenedIds() {
+                return this._navGroupOpenedIds;
+            }
+            get scrollPos() {
+                return this._scrollPos;
+            }
+            set scrollPos(value) {
+                this._scrollPos = value;
+            }
+        }
+        Impl.NavState = NavState;
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        class UserStore {
+            constructor(userId, navState, langState, userStoreItems) {
+                this._userStoreItems = [];
+                this._userId = userId;
+                this._userStoreItems = userStoreItems;
+                this._langState = langState;
+                this._navState = navState;
+            }
+            static read(userId) {
+                let userStoreUserItems;
+                try {
+                    userStoreUserItems = JSON.parse(window.localStorage.getItem(UserStore.STORAGE_ITEM_NAME)) || [];
+                }
+                catch (e) {
+                    userStoreUserItems = [];
+                }
+                if (!(userStoreUserItems instanceof Array)) {
+                    userStoreUserItems = [];
+                }
+                let userStoreItem = userStoreUserItems.find((userStoreUserItem) => {
+                    return (userStoreUserItem.userId === userId);
+                });
+                if (!userStoreItem) {
+                    return new UserStore(userId, new Impl.NavState(0, []), new Impl.LangState([]), userStoreUserItems);
+                }
+                return new UserStore(userId, new Impl.NavState(userStoreItem.scrollPos, userStoreItem.navGroupOpenedIds), new Impl.LangState(userStoreItem.activeLanguageLocaleIds), userStoreUserItems);
+            }
+            save() {
+                var userItem = this._userStoreItems.find((userItem) => {
+                    if (userItem.userId === this.userId) {
+                        return true;
+                    }
+                });
+                if (!userItem) {
+                    userItem = { userId: this.userId,
+                        scrollPos: this.navState.scrollPos,
+                        navGroupOpenedIds: this.navState.navGroupOpenedIds,
+                        activeLanguageLocaleIds: this.langState.activeLocaleIds };
+                    this._userStoreItems.push(userItem);
+                }
+                userItem.scrollPos = this.navState.scrollPos;
+                userItem.navGroupOpenedIds = this.navState.navGroupOpenedIds;
+                userItem.activeLanguageLocaleIds = this.langState.activeLocaleIds;
+                window.localStorage.setItem(UserStore.STORAGE_ITEM_NAME, JSON.stringify(this._userStoreItems));
+            }
+            get userId() {
+                return this._userId;
+            }
+            get langState() {
+                return this._langState;
+            }
+            get navState() {
+                return this._navState;
+            }
+        }
+        UserStore.STORAGE_ITEM_NAME = "rocket_user_state";
+        Impl.UserStore = UserStore;
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
         var Translation;
         (function (Translation) {
             class TranslationManager {
@@ -6761,10 +6805,10 @@ var Rocket;
                     this.buttonJq = null;
                     this.changing = false;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
+                    this.min = 3;
                     Rocket.Display.Toggler.simple(this.initControl(), this.initMenu());
-                    this.val();
                 }
-                val() {
+                val(visibleLocaleIds = []) {
                     let activeLocaleIds = [];
                     for (let menuItem of this.menuItems) {
                         if (!menuItem.active)
@@ -6772,6 +6816,16 @@ var Rocket;
                         activeLocaleIds.push(menuItem.localeId);
                     }
                     let activeDisabled = activeLocaleIds.length <= this.min;
+                    for (let menuItem of this.menuItems) {
+                        if (activeLocaleIds.length >= this.min)
+                            break;
+                        if (menuItem.mandatory || menuItem.active
+                            || visibleLocaleIds.indexOf(menuItem.localeId) == -1) {
+                            continue;
+                        }
+                        menuItem.active = true;
+                        activeLocaleIds.push(menuItem.localeId);
+                    }
                     for (let menuItem of this.menuItems) {
                         if (menuItem.mandatory)
                             continue;
@@ -6946,8 +7000,9 @@ var Rocket;
         var Translation;
         (function (Translation) {
             class Translator {
-                constructor(container) {
+                constructor(container, userStore) {
                     this.container = container;
+                    this.userStore = userStore;
                 }
                 scan() {
                     for (let context of this.container.getAllZones()) {
@@ -6963,18 +7018,24 @@ var Rocket;
                             continue;
                         }
                         jqViewControl.show();
+                        let isInitViewMenu = false;
                         if (jqViewControl.length == 0) {
                             jqViewControl = $("<div />", { "class": "rocket-impl-translation-view-control" });
                             context.menu.toolbar.getJqControls().show().append(jqViewControl);
+                            isInitViewMenu = true;
                         }
                         let viewMenu = Translation.ViewMenu.from(jqViewControl);
                         jqTranslatables.each((i, elem) => {
                             viewMenu.registerTranslatable(Translatable.from($(elem)));
                         });
+                        if (isInitViewMenu) {
+                            this.initViewMenu(viewMenu);
+                        }
                     }
                 }
                 initTm(jqElem, context) {
                     let tm = Translation.TranslationManager.from(jqElem);
+                    tm.val(this.userStore.langState.activeLocaleIds);
                     let se = Rocket.Display.StructureElement.of(jqElem);
                     let jqBase = null;
                     if (!se) {
@@ -6989,6 +7050,38 @@ var Rocket;
                             return;
                         }
                         tm.registerTranslatable(Translatable.from(elemJq));
+                    });
+                }
+                initViewMenu(viewMenu) {
+                    let langState = this.userStore.langState;
+                    let viewMenuItems = viewMenu.items;
+                    let listeners = [];
+                    if (this.userStore.langState.activeLocaleIds.length > 0) {
+                        for (let localeId in viewMenuItems) {
+                            viewMenuItems[localeId].on = this.userStore.langState.languageActive(localeId);
+                        }
+                    }
+                    for (let localeId in viewMenuItems) {
+                        let viewMenuItem = viewMenuItems[localeId];
+                        this.userStore.langState.toggleActiveLocaleId(localeId, viewMenuItem.on);
+                        viewMenuItem.whenChanged(() => {
+                            this.userStore.langState.toggleActiveLocaleId(localeId, viewMenuItem.on);
+                            this.userStore.save();
+                        });
+                        listeners.push({
+                            changed(state) {
+                                if (langState.languageActive(localeId) === viewMenuItem.on)
+                                    return;
+                                viewMenuItem.on = state;
+                            }
+                        });
+                        this.userStore.langState.onChanged(listeners[listeners.length - 1]);
+                    }
+                    viewMenu.jQuery.on("remove", () => {
+                        for (let i in listeners) {
+                            langState.offChanged(listeners[i]);
+                        }
+                        ;
                     });
                 }
             }
@@ -7188,7 +7281,7 @@ var Rocket;
                     this.translatedContent.jQuery.append(this.elemJq);
                     let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
                         .append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
-                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-control" })
+                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-menu" })
                         .append(this.menuUlJq = $("<ul></ul>"))
                         .append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
                     this.toggler = Rocket.Display.Toggler.simple(buttonJq, menuJq);
@@ -7244,8 +7337,14 @@ var Rocket;
                 constructor(jqContainer) {
                     this.jqContainer = jqContainer;
                     this.translatables = [];
-                    this.items = {};
+                    this._items = {};
                     this.changing = false;
+                }
+                get jQuery() {
+                    return this.jqContainer;
+                }
+                get items() {
+                    return this._items;
                 }
                 draw(languagesLabel, visibleLabel, tooltip) {
                     $("<div />", { "class": "rocket-impl-translation-status" })
@@ -7266,22 +7365,22 @@ var Rocket;
                 }
                 updateStatus() {
                     let prettyLocaleIds = [];
-                    for (let localeId in this.items) {
-                        if (!this.items[localeId].on)
+                    for (let localeId in this._items) {
+                        if (!this._items[localeId].on)
                             continue;
-                        prettyLocaleIds.push(this.items[localeId].prettyLocaleId);
+                        prettyLocaleIds.push(this._items[localeId].prettyLocaleId);
                     }
                     this.jqStatus.empty();
                     this.jqStatus.text(prettyLocaleIds.join(", "));
                     let onDisabled = prettyLocaleIds.length == 1;
-                    for (let localeId in this.items) {
-                        this.items[localeId].disabled = onDisabled && this.items[localeId].on;
+                    for (let localeId in this._items) {
+                        this._items[localeId].disabled = onDisabled && this._items[localeId].on;
                     }
                 }
                 get visibleLocaleIds() {
                     let localeIds = [];
-                    for (let localeId in this.items) {
-                        if (!this.items[localeId].on)
+                    for (let localeId in this._items) {
+                        if (!this._items[localeId].on)
                             continue;
                         localeIds.push(localeId);
                     }
@@ -7296,18 +7395,18 @@ var Rocket;
                     this.translatables.push(translatable);
                     translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
                     for (let content of translatable.contents) {
-                        if (!this.items[content.localeId]) {
-                            let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
+                        if (!this._items[content.localeId]) {
+                            let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
                             item.draw($("<li />").appendTo(this.menuUlJq));
-                            item.on = Object.keys(this.items).length == 1;
+                            item.on = Object.keys(this._items).length == 1;
                             item.whenChanged(() => this.menuChanged());
                             this.updateStatus();
                         }
-                        content.visible = this.items[content.localeId].on;
+                        content.visible = this._items[content.localeId].on;
                         content.whenChanged(() => {
                             if (this.changing || !content.active)
                                 return;
-                            this.items[content.localeId].on = true;
+                            this._items[content.localeId].on = true;
                         });
                     }
                 }
@@ -7323,9 +7422,9 @@ var Rocket;
                     }
                     this.changing = true;
                     let visiableLocaleIds = [];
-                    for (let i in this.items) {
-                        if (this.items[i].on) {
-                            visiableLocaleIds.push(this.items[i].localeId);
+                    for (let i in this._items) {
+                        if (this._items[i].on) {
+                            visiableLocaleIds.push(this._items[i].localeId);
                         }
                     }
                     for (let translatable of this.translatables) {
@@ -7358,7 +7457,7 @@ var Rocket;
                     this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
                         .append(this.jqI)
                         .appendTo(jqElem)
-                        .click((evt) => {
+                        .on("click", (evt) => {
                         if (this.disabled)
                             return;
                         this.on = !this.on;

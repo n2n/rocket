@@ -1,15 +1,22 @@
 namespace Rocket.Impl.Translation {
 
-	
 	export class ViewMenu {
 		private translatables: Array<Translatable> = [];
 		private jqStatus: JQuery;
 		private menuUlJq : JQuery;
-		private items: { [localeId: string]: ViewMenuItem } = {};
+		private _items: { [localeId: string]: ViewMenuItem } = {};
 		private changing: boolean = false;
 		
 		constructor(private jqContainer: JQuery) {
 			
+		}
+
+		get jQuery(): JQuery {
+			return this.jqContainer;
+		}
+
+		get items(): { [localeId: string]: ViewMenuItem }  {
+			return this._items;
 		}
 		
 		private draw(languagesLabel: string, visibleLabel: string, tooltip: string) {
@@ -37,10 +44,10 @@ namespace Rocket.Impl.Translation {
 		
 		private updateStatus() {
 			let prettyLocaleIds: Array<string> = [];
-			for (let localeId in this.items) {
-				if (!this.items[localeId].on) continue;
+			for (let localeId in this._items) {
+				if (!this._items[localeId].on) continue;
 				
-				prettyLocaleIds.push(this.items[localeId].prettyLocaleId);
+				prettyLocaleIds.push(this._items[localeId].prettyLocaleId);
 			}
 			
 			this.jqStatus.empty();
@@ -48,16 +55,16 @@ namespace Rocket.Impl.Translation {
 			
 			let onDisabled = prettyLocaleIds.length == 1;
 			
-			for (let localeId in this.items) {
-				this.items[localeId].disabled = onDisabled && this.items[localeId].on;
+			for (let localeId in this._items) {
+				this._items[localeId].disabled = onDisabled && this._items[localeId].on;
 			} 
 		}
 		
 		get visibleLocaleIds(): Array<string> {
 			let localeIds: Array<string> = [];
 			
-			for (let localeId in this.items) {
-				if (!this.items[localeId].on) continue;
+			for (let localeId in this._items) {
+				if (!this._items[localeId].on) continue;
 				
 				localeIds.push(localeId);
 			}
@@ -79,22 +86,22 @@ namespace Rocket.Impl.Translation {
 			translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
 			
 			for (let content of translatable.contents) {
-				if (!this.items[content.localeId]) {
-					let item = this.items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
+				if (!this._items[content.localeId]) {
+					let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
 					item.draw($("<li />").appendTo(this.menuUlJq));
 					
-					item.on = Object.keys(this.items).length == 1;
+					item.on = Object.keys(this._items).length == 1;
 					item.whenChanged(() => this.menuChanged());
 					
 					this.updateStatus();
 				}
 				
-				content.visible = this.items[content.localeId].on;
+				content.visible = this._items[content.localeId].on;
 				
 				content.whenChanged(() => {
 					if (this.changing || !content.active) return;
 					
-					this.items[content.localeId].on = true;
+					this._items[content.localeId].on = true;
 				});
 			}
 		}
@@ -116,9 +123,9 @@ namespace Rocket.Impl.Translation {
 			
 			let visiableLocaleIds: Array<string> = [];
 			
-			for (let i in this.items) {
-				if (this.items[i].on) {
-					visiableLocaleIds.push(this.items[i].localeId);
+			for (let i in this._items) {
+				if (this._items[i].on) {
+					visiableLocaleIds.push(this._items[i].localeId);
 				} 
 			}
 			
@@ -129,6 +136,7 @@ namespace Rocket.Impl.Translation {
 			this.updateStatus();
 			this.changing = false;
 		}
+
 		static from(jqElem: JQuery): ViewMenu {
 			let vm = jqElem.data("rocketImplViewMenu");
 			if (vm instanceof ViewMenu) {
@@ -157,7 +165,7 @@ namespace Rocket.Impl.Translation {
 			this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
 					.append(this.jqI)
 					.appendTo(jqElem)
-					.click((evt: any) => {
+					.on ("click",(evt: any) => {
 						if (this.disabled) return;
 						
 						this.on = !this.on;
@@ -199,7 +207,7 @@ namespace Rocket.Impl.Translation {
 				callback();
 			}
 		}
-		
+
 		whenChanged(callback: () => any) {
 			this.changedCallbacks.push(callback);
 		}

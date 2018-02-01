@@ -23,7 +23,7 @@ namespace rocket\spec\ei\manage\draft\stmt;
 
 use rocket\spec\ei\EiPropPath;
 use n2n\io\IoUtils;
-use rocket\spec\ei\EiThing;
+use rocket\spec\ei\EiEngineModel;
 
 class DraftMetaInfo {
 	const TABLE_PREFIX = 'rocket_draft_';
@@ -37,16 +37,16 @@ class DraftMetaInfo {
 	const DRAFT_COLUMN_PREFIX = 'd_';
 	const DRAFT_COLUMN_PART_SEPARATOR = '_';
 	
-	public static function buildTableName(EiThing $eiThing, EiPropPath $eiPropPathExt = null) {
+	public static function buildTableName(EiEngineModel $eiEngineModel, EiPropPath $eiPropPathExt = null) {
 		$ids = array();
 		do {
-			$id = $eiThing->getId();
+			$id = $eiEngineModel->getId();
 			if (null === $id) {
-				throw new \InvalidArgumentException('EiThing has no id: ' . $eiThing);
+				throw new \InvalidArgumentException('EiThing has no id: ' . $eiEngineModel);
 			}
 			
 			$ids[] = IoUtils::replaceStrictSpecialChars($id);
-		} while (null !== ($eiThing = $eiThing->getMaskedEiThing()));
+		} while (null !== ($eiEngineModel = $eiEngineModel->getMaskedEiEngineModel()));
 		
 		$ids = array_reverse($ids);
 		$tableName = self::TABLE_PREFIX . implode(self::DRAFT_COLUMN_PART_SEPARATOR, $ids);

@@ -5,7 +5,7 @@ namespace Rocket.Cmd {
 		private _zones: Array<Zone> = new Array<Zone>();
 		private onNewZoneCallbacks: Array<ZoneCallback>;
 		private onNewHistoryEntryCallbacks: Array<HistoryCallback>;
-		private callbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
+		private callbackRegistery: Rocket.Util.CallbackRegistry<LayerCallback> = new Rocket.Util.CallbackRegistry<LayerCallback>();
 		private _visible: boolean = true;
 		
 		constructor(private jqLayer: JQuery, private _level: number, private _container: Container, 

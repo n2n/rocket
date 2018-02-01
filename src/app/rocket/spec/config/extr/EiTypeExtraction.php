@@ -31,7 +31,7 @@ class EiTypeExtraction extends SpecExtraction {
 	private $dataSourceName;
 	private $nestedSetStrategy;
 	private $defaultEiMaskId;
-	private $commonEiMaskExtractions = array();
+	private $eiMaskExtractions = array();
 	private $eiModificatorExtractions = array();
 
 	public function getDataSourceName() {
@@ -88,34 +88,34 @@ class EiTypeExtraction extends SpecExtraction {
 		$this->defaultEiMaskId = $defaultEiMaskId;
 	}
 	
-	public function addCommonEiMaskExtraction(CommonEiMaskExtraction $commonEiMaskExtraction) {
-		$this->commonEiMaskExtractions[$commonEiMaskExtraction->getId()] = $commonEiMaskExtraction;
+	public function addEiMaskExtraction(EiMaskExtraction $eiMaskExtraction) {
+		$this->eiMaskExtractions[$eiMaskExtraction->getId()] = $eiMaskExtraction;
 	}
 	
-	public function setCommonEiMaskExtractions(array $commonEiMaskExtractions) {
-		ArgUtils::valArray($commonEiMaskExtractions, CommonEiMaskExtraction::class);
-		$this->commonEiMaskExtractions = $commonEiMaskExtractions;
+	public function setEiMaskExtractions(array $eiMaskExtractions) {
+		ArgUtils::valArray($eiMaskExtractions, EiMaskExtraction::class);
+		$this->eiMaskExtractions = $eiMaskExtractions;
 	}
 	
 
-	public function containsCommonEiMaskExtractionId($commonEiMaskExtractionId): bool {
-		return isset($this->commonEiMaskExtractions[$commonEiMaskExtractionId]);
+	public function containsEiMaskExtractionId($eiMaskExtractionId): bool {
+		return isset($this->eiMaskExtractions[$eiMaskExtractionId]);
 	}
 	
-	public function getCommonEiMaskExtractionById($commonEiMaskExtractionId): CommonEiMaskExtraction {
-		if (isset($this->commonEiMaskExtractions[$commonEiMaskExtractionId])) {
-			return $this->commonEiMaskExtractions[$commonEiMaskExtractionId];
+	public function getEiMaskExtractionById($eiMaskExtractionId): EiMaskExtraction {
+		if (isset($this->eiMaskExtractions[$eiMaskExtractionId])) {
+			return $this->eiMaskExtractions[$eiMaskExtractionId];
 		}
 		
-		throw new UnknownMaskException('No EiMask with id \'' . $commonEiMaskExtractionId . '\' defined in: ' 
+		throw new UnknownMaskException('No EiMask with id \'' . $eiMaskExtractionId . '\' defined in: ' 
 				. $this->toSpecString());
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\CommonEiMaskExtraction[]
+	 * @return \rocket\spec\config\extr\EiMaskExtraction[]
 	 */
-	public function getCommonEiMaskExtractions() {
-		return $this->commonEiMaskExtractions;
+	public function getEiMaskExtractions() {
+		return $this->eiMaskExtractions;
 	}
 	
 	public function addEiModificatorExtraction(EiComponentExtraction $eiModificatorExtraction) {
@@ -132,7 +132,7 @@ class EiTypeExtraction extends SpecExtraction {
 		return isset($this->eiModificatorExtractions[$eiModificatorExtractionId]);
 	}
 	
-	public function getEiModificatorExtractionById($eiModificatorExtractionId): CommonEiMaskExtraction {
+	public function getEiModificatorExtractionById($eiModificatorExtractionId): EiMaskExtraction {
 		if (isset($this->eiModificatorExtractions[$eiModificatorExtractionId])) {
 			return $this->eiModificatorExtractions[$eiModificatorExtractionId];
 		}
@@ -166,7 +166,7 @@ class EiTypeExtraction extends SpecExtraction {
 // 		}
 		
 // 		foreach ($eiType->getEiMaskCollection() as $eiMask) {
-// 			$extraction->addCommonEiMaskExtraction($eiMask->getExtraction());
+// 			$extraction->addEiMaskExtraction($eiMask->getExtraction());
 // 		}
 		
 // 		foreach ($eiType->getEiEngine()->getEiModificatorCollection() as $eiModificator) {

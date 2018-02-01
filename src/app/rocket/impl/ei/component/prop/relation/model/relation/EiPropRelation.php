@@ -33,7 +33,6 @@ use rocket\spec\ei\manage\ManageState;
 use rocket\spec\ei\manage\EiRelation;
 use n2n\web\http\controller\ControllerContext;
 use n2n\persistence\orm\CascadeType;
-use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\EiType;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\EiFrameFactory;
@@ -50,6 +49,7 @@ use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
+use rocket\spec\ei\mask\EiMask;
 
 abstract class EiPropRelation {
 	protected $targetEiType;
@@ -195,7 +195,7 @@ abstract class EiPropRelation {
 	
 	protected function setupEmbeddedEditEiCommand() {
 		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand('Edit embedded in ' 
-						. $this->getRelationEiProp()->getEiEngine()->getEiThing()->getLabelLstr() 
+						. $this->getRelationEiProp()->getEiEngine()->getLabelLstr() 
 						. ' - ' . $this->getTargetEiMask()->getLabelLstr(), 
 				$this->getRelationEiProp()->getId(), $this->getTargetEiType()->getId());
 		
