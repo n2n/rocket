@@ -1,16 +1,16 @@
 namespace Rocket {
-	import Nav = Rocket.Display.Nav;
-	import NavState = Rocket.Display.NavState;
 	import NavGroup = Rocket.Display.NavGroup;
+
 	let container: Rocket.Cmd.Container;
 	let blocker: Rocket.Cmd.Blocker;
 	let initializer: Rocket.Display.Initializer;
 	let $ = jQuery;
 
 	jQuery(document).ready(function ($) {
-		var jqContainer = $("#rocket-content-container");
+		let jqContainer = $("#rocket-content-container");
 
 		container = new Rocket.Cmd.Container(jqContainer);
+		let userStore = Rocket.Impl.UserStore.read(jqContainer.find("#rocket-global-nav").find("h2").data("rocketUserId"));
 
 		blocker = new Rocket.Cmd.Blocker(container);
 		blocker.init($("body"));
@@ -71,11 +71,10 @@ namespace Rocket {
 					Rocket.Impl.Relation.ToOne.from($(this));
 				});
 			});
-		}) ();
+		})();
 
 		(function () {
-			let t = new Rocket.Impl.Translation.Translator(container);
-			t.scan();
+			let t = new Rocket.Impl.Translation.Translator(container, userStore);
 
 			Jhtml.ready(() => {
 				t.scan();
@@ -122,8 +121,6 @@ namespace Rocket {
 
 		(function() {
 			var nav: Rocket.Display.Nav = new Rocket.Display.Nav();
-			var navStore: Rocket.Display.NavStore;
-			var navState: Rocket.Display.NavState;
 			var navGroups: Rocket.Display.NavGroup[] = [];
 
 			Jhtml.ready((elements) => {
@@ -132,37 +129,36 @@ namespace Rocket {
 				if (rgn.length > 0) {
 					nav.elemJq = rgn;
 					let navGroupJq = rgn.find(".rocket-nav-group");
-					navStore = Rocket.Display.NavStore.read(rgn.find("h2").data("rocketUserId"));
-					navState = new Rocket.Display.NavState(navStore);
 
 					navGroupJq.each((key: number, navGroupNode: Node) => {
-						navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), navState));
+						navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), userStore));
+
 					})
 
-					rgn.scroll(() => {
-						navStore.scrollPos = rgn.scrollTop();
-						navStore.save();
+					rgn.on("scroll",() => {
+						userStore.navState.scrollPos = rgn.scrollTop();
+						userStore.save();
 					});
 
 					var observer = new MutationObserver((mutations) => {
-						nav.scrollToPos(navStore.scrollPos)
+						nav.scrollToPos(userStore.navState.scrollPos)
 
 						mutations.forEach((mutation) => {
 							navGroups.forEach((navGroup: NavGroup) => {
 								if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									navState.offChanged(navGroup);
+									userStore.navState.offChanged(navGroup);
 								}
 							});
 
 							navGroups.forEach((navGroup: NavGroup) => {
 								if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
-									if (navState.isGroupOpen(navGroup.id)) {
+									if (userStore.navState.isGroupOpen(navGroup.id)) {
 										navGroup.open(0);
 									} else {
 										navGroup.close(0);
 									}
 
-									nav.scrollToPos(navStore.scrollPos);
+									nav.scrollToPos(userStore.navState.scrollPos);
 								}
 							});
 						})
@@ -174,11 +170,11 @@ namespace Rocket {
 				elementsJq.each((key: number, node: Node) => {
 					let nodeJq = $(node);
 					if (nodeJq.hasClass("rocket-nav-group") && nodeJq.parent().get(0) === nav.elemJq.get(0)) {
-						navGroups.push(Rocket.Display.NavGroup.build(nodeJq, navState));
+						navGroups.push(Rocket.Display.NavGroup.build(nodeJq, userStore));
 					}
 				});
 
-				nav.scrollToPos(navStore.scrollPos);
+				nav.scrollToPos(userStore.navState.scrollPos);
 			});
 		})();
 
