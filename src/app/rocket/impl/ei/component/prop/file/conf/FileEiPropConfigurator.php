@@ -84,7 +84,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
-		$this->fileEiProp->getEiEngine()->getSupremeEiThing()->getEiEngine()->getEiCommandCollection()->add($thumbEiCommand);
+		$this->fileEiProp->getEiEngine()->getSupremeEiEngine()->getEiCommandCollection()->add($thumbEiCommand);
 		$this->fileEiProp->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
@@ -101,7 +101,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 			}
 			
 			$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp, $namingEiPropPath);
-			$this->fileEiProp->getEiEngine()->getSupremeEiThing()->getEiEngine()->getEiCommandCollection()
+			$this->fileEiProp->getEiEngine()->getSupremeEiEngine()->getEiCommandCollection()
 					->add($multiUploadEiCommand);
 			$this->fileEiProp->setMultiUploadEiCommand($multiUploadEiCommand);
 		}

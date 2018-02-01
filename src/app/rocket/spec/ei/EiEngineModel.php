@@ -23,14 +23,7 @@ namespace rocket\spec\ei;
 
 use n2n\l10n\Lstr;
 
-interface EiThing {
-	
-	/**
-	 * @return string 
-	 */
-	public function getId();
-
-	public function getEiThingPath(): EiThingPath;
+interface EiEngineModel {
 	
 	/**
 	 * @return \n2n\l10n\Lstr
@@ -51,11 +44,6 @@ interface EiThing {
 	 * @return \rocket\spec\ei\EiEngine
 	 */
 	public function getEiEngine(): EiEngine;
-	
-	/**
-	 * @return \rocket\spec\ei\EiThing
-	 */
-	public function getMaskedEiThing();
 	
 	/**
 	 * @return string

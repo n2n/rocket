@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\mask\model\DisplayScheme;
+use rocket\spec\ei\mask\model\DisplayScheme;
 use n2n\util\ex\IllegalStateException;
 
-class CommonEiMaskExtraction {
+class EiMaskExtraction {
 	private $id;
 	private $moduleNamespace;
 	private $eiDefExtraction;

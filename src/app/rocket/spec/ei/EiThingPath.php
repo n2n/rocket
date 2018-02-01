@@ -19,14 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei;
+// namespace rocket\spec\ei;
 
-class EiThingPath extends IdPath {
-	/**
-	 * @param array ...$args
-	 * @return EiThingPath
-	 */
-	public function ext(...$args) {
-		return new EiThingPath(array_merge($this->argsToIds($args), $args));
-	}
-}
+// class EiThingPath extends IdPath {
+// 	/**
+// 	 * @param array ...$args
+// 	 * @return EiThingPath
+// 	 */
+// 	public function ext(...$args) {
+// 		return new EiThingPath(array_merge($this->argsToIds($args), $args));
+// 	}
+// }

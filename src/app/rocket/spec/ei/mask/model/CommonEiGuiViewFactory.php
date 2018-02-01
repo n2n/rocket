@@ -1,5 +1,5 @@
 <?php
-namespace rocket\spec\config\mask;
+namespace rocket\spec\ei\mask\model;
 
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 use rocket\spec\ei\manage\gui\GuiDefinition;
@@ -114,9 +114,9 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		$viewName = null;
 		
 		if ($this->eiGui->getViewMode() & ViewMode::bulky()) {
-			$viewName = 'rocket\spec\config\mask\view\bulky.html';
+			$viewName = 'rocket\spec\ei\mask\view\bulky.html';
 		} else {
-			$viewName = 'rocket\spec\config\mask\view\compact.html';
+			$viewName = 'rocket\spec\ei\mask\view\compact.html';
 			$displayStructure = $displayStructure->withoutGroups();
 		}
 		

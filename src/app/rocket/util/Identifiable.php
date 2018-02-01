@@ -22,5 +22,5 @@
 namespace rocket\util;
 
 interface Identifiable {
-	public function getId();
+	public function getId(): string;
 }

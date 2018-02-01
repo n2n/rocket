@@ -59,6 +59,6 @@
             "defaultMaskId": null
         }
     },
-    "commonEiMasks": [],
+    "eiMasks": [],
     "menuItems": []
 }

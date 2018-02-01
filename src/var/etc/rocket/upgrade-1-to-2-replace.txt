@@ -18,3 +18,6 @@ rocket\spec\ei\component\prop
 
 associatedGuiFields
 associatedGuiProps
+
+commonEiMasks
+eiMasks

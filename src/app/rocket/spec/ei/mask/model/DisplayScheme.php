@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\mask\model;
+namespace rocket\spec\ei\mask\model;
 
 use rocket\spec\ei\EiDef;
 use rocket\spec\ei\component\command\control\PartialControlComponent;

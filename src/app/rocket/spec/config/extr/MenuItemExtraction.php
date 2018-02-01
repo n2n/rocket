@@ -67,6 +67,6 @@ class MenuItemExtraction {
 	public static function createFromId(string $menuItemId, string $moduleNamespace): MenuItemExtraction {
 		return new MenuItemExtraction($menuItemId, $moduleNamespace, 
 				RawDef::extractEiTypeIdFromIdCombination($menuItemId),
-				RawDef::extractCommonEiMaskIdFromIdCombination($menuItemId));
+				RawDef::extractEiMaskIdFromIdCombination($menuItemId));
 	}
 }

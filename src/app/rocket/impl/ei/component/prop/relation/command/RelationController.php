@@ -52,7 +52,7 @@ class RelationController extends ControllerAdapter {
 	public function doRelEntry($idRep, array $delegateCmds, EiTypeController $eiTypeController) {
 		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
 		
-		// because RelationCommand gets added always on a supreme EiThing
+		// because RelationCommand gets added always on a supreme EiEngine
 		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiType()
 				->isObjectValid($eiObject->getLiveObject())) {
 			throw new PageNotFoundException();

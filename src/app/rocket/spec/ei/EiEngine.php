@@ -77,6 +77,27 @@ class EiEngine {
 	}
 	
 	/**
+	 * @return \n2n\l10n\Lstr
+	 */
+	public function getLabelLstr() {
+		return $this->getEiEngineModel()->getLabelLstr();
+	}
+		
+	/**
+	* @return \n2n\l10n\Lstr
+	*/
+	public function getPluralLabelLstr() {
+		return $this->getEiEngineModel()->getLabelLstr();
+	}
+		
+	/**
+	* @return string
+	*/
+	public function getIconType() {
+		return $this->getEiEngineModel()->getIconType();
+	}
+	
+	/**
 	 * @return \rocket\spec\ei\EiType
 	 */
 	public function getEiType() {
@@ -89,25 +110,32 @@ class EiEngine {
 	public function getEiMask() {
 		return $this->eiMask;
 	}
-		
-	public function getEiThing() {
+	
+	/**
+	 * @return EiEngineModel
+	 */
+	private function getEiEngineModel() {
 		if ($this->eiMask !== null) {
 			return $this->eiMask;
 		}
 		return $this->eiType;
 	}
 	
-	public function getSupremeEiEngine() {
-		return $this->getSupremeEiThing()->getEiEngine();
-	}
-	
-	public function getSupremeEiThing() {
+	/**
+	 * @return EiEngineModel
+	 */
+	private function getSupremeEiEngineModel() {
 		$supremeEiType = $this->eiType->getSupremeEiType();
 		if (null !== $this->eiMask) {
 			return $this->eiMask->determineEiMask($supremeEiType);
 		}
 		return $supremeEiType;
 	}
+	
+	public function getSupremeEiEngine() {
+		return $this->getSupremeEiEngineModel()->getEiEngine();
+	}
+	
 	
 	public function getEiPropCollection(): EiPropCollection {
 		return $this->eiPropCollection;
@@ -210,7 +238,7 @@ class EiEngine {
 		do {
 			$id = $eiThing->getId();
 		} while (($id === null || $eiThing->getEiEngine()->getEiPropCollection()->isEmpty(true))
-				&& null !== ($eiThing = $eiThing->getMaskedEiThing()));
+				&& null !== ($eiThing = $eiThing->getMaskedEiEngineModel()));
 		return $this->draftDefinition = (new DraftDefinitionFactory($this->eiMask->getEntityModel(), 
 						$this->eiPropCollection, $this->eiModificatorCollection))
 				->create(DraftMetaInfo::buildTableName($eiThing));

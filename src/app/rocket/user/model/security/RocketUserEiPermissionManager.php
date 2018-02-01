@@ -30,7 +30,7 @@ use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\EiCommandPath;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiThing;
+use rocket\spec\ei\EiEngineModel;
 use rocket\spec\ei\EiEngine;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
@@ -69,7 +69,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\security\EiPermissionManager::createUnboundEiExceution($eiMask, $commandPath)
 	 */
-	public function createUnboundEiExceution(EiThing $eiThing, EiCommandPath $commandPath, N2nContext $n2nContext): EiExecution {
+	public function createUnboundEiExceution(EiEngineModel $eiThing, EiCommandPath $commandPath, N2nContext $n2nContext): EiExecution {
 		return $this->buildEiExecution($n2nContext, $eiThing->getEiEngine(), $commandPath);
 	}
 

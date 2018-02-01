@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component;
 
 use rocket\spec\ei\EiType;
-use rocket\spec\ei\EiThing;
 use rocket\spec\ei\EiEngine;
 
 interface EiComponent {

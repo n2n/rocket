@@ -39,7 +39,7 @@ class SpecExtractionManager {
 	private $specCsDecs = array();
 	private $specExtractions = array();
 	private $eiTypeExtractions = array();
-	private $unboundCommonEiMaskExtractionGroups = array();
+	private $unboundEiMaskExtractionGroups = array();
 	private $unboundEiModificatorExtractionGroups = array();
 	private $menuItemExtractions = array();
 	
@@ -91,7 +91,7 @@ class SpecExtractionManager {
 		}
 		
 		$this->initSpecExtractions();
-		$this->initCommonEiMaskExtractions();
+		$this->initEiMaskExtractions();
 		$this->initEiModificatorExtractions();
 		$this->initMenuItemExtractions();
 	}
@@ -126,18 +126,18 @@ class SpecExtractionManager {
 		}
 	}
 	
-	private function initCommonEiMaskExtractions() {
-		$this->unboundCommonEiMaskExtractionGroups = array();
+	private function initEiMaskExtractions() {
+		$this->unboundEiMaskExtractionGroups = array();
 		
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
-			foreach ($specCsDec->getCommonEiMaskEiTypeIds() as $eiTypeId) {
-				if (!isset($this->unboundCommonEiMaskExtractionGroups[$eiTypeId])) {
-					$this->unboundCommonEiMaskExtractionGroups[$eiTypeId] = array();
+			foreach ($specCsDec->getEiMaskEiTypeIds() as $eiTypeId) {
+				if (!isset($this->unboundEiMaskExtractionGroups[$eiTypeId])) {
+					$this->unboundEiMaskExtractionGroups[$eiTypeId] = array();
 				}
 				
-				foreach ($specCsDec->getCommonEiMaskExtractionsByEiTypeId($eiTypeId) as $eiMaskId => $eiMaskExtraction) {
-					if (isset($this->unboundCommonEiMaskExtractionGroups[$eiTypeId][$eiMaskId])) {
+				foreach ($specCsDec->getEiMaskExtractionsByEiTypeId($eiTypeId) as $eiMaskId => $eiMaskExtraction) {
+					if (isset($this->unboundEiMaskExtractionGroups[$eiTypeId][$eiMaskId])) {
 						throw new $this->createDuplicatedEiMaskIdException($eiTypeId, $eiMaskId);
 					}
 					
@@ -147,16 +147,16 @@ class SpecExtractionManager {
 										. '\' was configured not for CustomSpec \'' . $eiTypeId . '\.'));
 					}
 						
-					$this->unboundCommonEiMaskExtractionGroups[$eiTypeId][$eiMaskId] = $eiMaskExtraction;
+					$this->unboundEiMaskExtractionGroups[$eiTypeId][$eiMaskId] = $eiMaskExtraction;
 				}
 			}
 		}
 		
-		foreach ($this->unboundCommonEiMaskExtractionGroups as $eiTypeId => $commonEiMaskExtractions) {
+		foreach ($this->unboundEiMaskExtractionGroups as $eiTypeId => $eiMaskExtractions) {
 			if (!isset($this->specExtractions[$eiTypeId])) continue;
 			
-			$this->specExtractions[$eiTypeId]->setCommonEiMaskExtractions($commonEiMaskExtractions);
-			unset($this->unboundCommonEiMaskExtractionGroups[$eiTypeId]);
+			$this->specExtractions[$eiTypeId]->setEiMaskExtractions($eiMaskExtractions);
+			unset($this->unboundEiMaskExtractionGroups[$eiTypeId]);
 		}
 	}
 	
@@ -187,10 +187,10 @@ class SpecExtractionManager {
 			}
 		}
 		
-		foreach ($this->unboundEiModificatorExtractionGroups as $eiTypeId => $commonEiMaskExtractions) {
+		foreach ($this->unboundEiModificatorExtractionGroups as $eiTypeId => $eiMaskExtractions) {
 			if (!isset($this->specExtractions[$eiTypeId])) continue;
 			
-			$this->specExtractions[$eiTypeId]->setEiModificatorExtractions($commonEiMaskExtractions);
+			$this->specExtractions[$eiTypeId]->setEiModificatorExtractions($eiMaskExtractions);
 			unset($this->unboundEiModificatorExtractionGroups[$eiTypeId]);
 		}
 	}
@@ -326,8 +326,8 @@ class SpecExtractionManager {
 		return $this->eiTypeExtractions;
 	}
 	
-	public function getUnboundCommonEiMaskExtractionGroups(): array {
-		return $this->unboundCommonEiMaskExtractionGroups;
+	public function getUnboundEiMaskExtractionGroups(): array {
+		return $this->unboundEiMaskExtractionGroups;
 	}
 	
 	private function buildConfigSourceString(): string {
@@ -361,7 +361,7 @@ class SpecExtractionManager {
 			ArgUtils::assertTrue($specExtraction instanceof CustomSpecExtraction);
 		}
 		
-		unset($this->unboundCommonEiMaskExtractionGroups[$specExtraction->getId()]);
+		unset($this->unboundEiMaskExtractionGroups[$specExtraction->getId()]);
 	}
 	
 	public function removeSpecById(string $specId) {
@@ -370,7 +370,7 @@ class SpecExtractionManager {
 		}
 		
 		unset($this->specExtractions[$specId]);
-		unset($this->unboundCommonEiMaskExtractionGroups[$specId]);
+		unset($this->unboundEiMaskExtractionGroups[$specId]);
 	}
 	
 	public function getMenuItemExtractions() {
@@ -422,9 +422,9 @@ class SpecExtractionManager {
 					->addSpecExtraction($specExtraction);
 						
 			if ($specExtraction instanceof EiTypeExtraction) {
-				foreach ($specExtraction->getCommonEiMaskExtractions() as $commonEiMaskExtraction) {
-					$this->getSpecCsDescByModuleNamespace($commonEiMaskExtraction->getModuleNamespace())
-							->addCommonEiMaskExtraction($specId, $commonEiMaskExtraction);
+				foreach ($specExtraction->getEiMaskExtractions() as $eiMaskExtraction) {
+					$this->getSpecCsDescByModuleNamespace($eiMaskExtraction->getModuleNamespace())
+							->addEiMaskExtraction($specId, $eiMaskExtraction);
 				}
 				
 				foreach ($specExtraction->getEiModificatorExtractions() as $eiModificatorExtraction) {
@@ -434,10 +434,10 @@ class SpecExtractionManager {
 			}
 		}
 		
-		foreach ($this->unboundCommonEiMaskExtractionGroups as $eiTypeId => $commonEiMaskExtractions) {
-			foreach ($commonEiMaskExtractions as $commonEiMaskExtraction) {
-				$this->getSpecCsDescByModuleNamespace($commonEiMaskExtraction->getModuleNamespace())
-						->addCommonEiMaskExtraction($eiTypeId, $commonEiMaskExtraction);
+		foreach ($this->unboundEiMaskExtractionGroups as $eiTypeId => $eiMaskExtractions) {
+			foreach ($eiMaskExtractions as $eiMaskExtraction) {
+				$this->getSpecCsDescByModuleNamespace($eiMaskExtraction->getModuleNamespace())
+						->addEiMaskExtraction($eiTypeId, $eiMaskExtraction);
 			}
 		}
 		

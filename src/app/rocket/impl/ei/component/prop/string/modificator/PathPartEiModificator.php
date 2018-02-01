@@ -59,7 +59,7 @@ class PathPartPurifier {
 	}
 	
 	private function getIdEntityProperty(): BasicEntityProperty {
-		return $this->pathPartEiProp->getEiEngine()->getEiThing()->getEntityModel()->getIdDef()->getEntityProperty();
+		return $this->pathPartEiProp->getEiEngine()->getEiType()->getEntityModel()->getIdDef()->getEntityProperty();
 	}
 	
 	public function purify() {
