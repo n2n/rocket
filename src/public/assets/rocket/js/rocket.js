@@ -2372,9 +2372,9 @@ var Rocket;
                 while (undefined !== (errorIndex = this.errorIndexes.pop())) {
                     errorIndex.getTab().dispose();
                 }
-                var contexts = this.container.getAllZones();
-                for (var i in contexts) {
-                    this.scanPage(contexts[i]);
+                var zones = this.container.getAllZones();
+                for (var i in zones) {
+                    this.scanPage(zones[i]);
                 }
             }
             scanPage(context) {
@@ -6805,7 +6805,6 @@ var Rocket;
                     this.buttonJq = null;
                     this.changing = false;
                     this.min = parseInt(jqElem.data("rocket-impl-min"));
-                    this.min = 3;
                     Rocket.Display.Toggler.simple(this.initControl(), this.initMenu());
                 }
                 val(visibleLocaleIds = []) {
