@@ -256,7 +256,7 @@ var Rocket;
     (function (Cmd) {
         class Container {
             constructor(jqContainer) {
-                this.layerCallbackRegistery = new Rocket.util.CallbackRegistry();
+                this.layerCallbackRegistery = new Rocket.Util.CallbackRegistry();
                 this.jqContainer = jqContainer;
                 this._layers = new Array();
                 var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
@@ -554,7 +554,7 @@ var Rocket;
                 this._container = _container;
                 this._monitor = _monitor;
                 this._zones = new Array();
-                this.callbackRegistery = new Rocket.util.CallbackRegistry();
+                this.callbackRegistery = new Rocket.Util.CallbackRegistry();
                 this._visible = true;
                 this.scrollPos = 0;
                 this.onNewZoneCallbacks = new Array();
@@ -809,8 +809,8 @@ var Rocket;
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
-    var util;
-    (function (util) {
+    var Util;
+    (function (Util) {
         class CallbackRegistry {
             constructor() {
                 this.callbackMap = {};
@@ -846,7 +846,7 @@ var Rocket;
                 this.callbackMap = {};
             }
         }
-        util.CallbackRegistry = CallbackRegistry;
+        Util.CallbackRegistry = CallbackRegistry;
         class ArgUtils {
             static valIsset(arg) {
                 if (arg !== null && arg !== undefined)
@@ -854,16 +854,16 @@ var Rocket;
                 throw new InvalidArgumentError("Invalid arg: " + arg);
             }
         }
-        util.ArgUtils = ArgUtils;
+        Util.ArgUtils = ArgUtils;
         class ElementUtils {
             static isControl(elem) {
                 return !!Jhtml.Util.closest(elem, "a, button, input, textarea, select", true);
             }
         }
-        util.ElementUtils = ElementUtils;
+        Util.ElementUtils = ElementUtils;
         class InvalidArgumentError extends Error {
         }
-        util.InvalidArgumentError = InvalidArgumentError;
+        Util.InvalidArgumentError = InvalidArgumentError;
         class IllegalStateError extends Error {
             static assertTrue(arg, errMsg = null) {
                 if (arg === true)
@@ -874,8 +874,12 @@ var Rocket;
                 throw new Error(errMsg);
             }
         }
-        util.IllegalStateError = IllegalStateError;
-    })(util = Rocket.util || (Rocket.util = {}));
+        Util.IllegalStateError = IllegalStateError;
+        function escSelector(str) {
+            return str.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|\/@])/g, "\\$1");
+        }
+        Util.escSelector = escSelector;
+    })(Util = Rocket.Util || (Rocket.Util = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
@@ -1114,7 +1118,7 @@ var Rocket;
     var Cmd;
     (function (Cmd) {
         var display = Rocket.Display;
-        var util = Rocket.util;
+        var util = Rocket.Util;
         class Zone {
             constructor(jqZone, url, layer) {
                 this.urls = [];
@@ -1979,7 +1983,7 @@ var Rocket;
                 this.elemJq = elemJq;
                 this._selector = null;
                 this._state = Entry.State.PERSISTENT;
-                this.callbackRegistery = new Rocket.util.CallbackRegistry();
+                this.callbackRegistery = new Rocket.Util.CallbackRegistry();
                 elemJq.on("remove", () => {
                     this.trigger(Entry.EventType.DISPOSED);
                     this.callbackRegistery.clear();
@@ -2007,7 +2011,7 @@ var Rocket;
                 this._selector = new Display.EntrySelector(jqSelector, this);
                 var that = this;
                 this.elemJq.click(function (e) {
-                    if (getSelection().toString() || Rocket.util.ElementUtils.isControl(e.target)) {
+                    if (getSelection().toString() || Rocket.Util.ElementUtils.isControl(e.target)) {
                         return;
                     }
                     that._selector.selected = !that._selector.selected;
@@ -2150,7 +2154,7 @@ var Rocket;
                 return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
             }
             static buildSupremeEiTypeISelector(supremeEiTypeId) {
-                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]";
             }
             static findBySupremeEiTypeId(jqContainer, supremeEiTypeId) {
                 return Entry.fromArr(jqContainer.find(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)));
@@ -2159,8 +2163,8 @@ var Rocket;
                 return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
             }
             static buildIdRepSelector(supremeEiTypeId, idRep) {
-                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
-                    + Entry.ID_REP_ATTR + "=" + idRep + "]";
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
+                    + Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(idRep) + "]";
             }
             static findByIdRep(jqElem, supremeEiTypeId, idRep) {
                 return Entry.fromArr(jqElem.find(Entry.buildIdRepSelector(supremeEiTypeId, idRep)));
@@ -2169,7 +2173,7 @@ var Rocket;
                 return 0 < jqElem.has(Entry.buildIdRepSelector(supremeEiTypeId, idRep)).length;
             }
             static buildDraftIdSelector(supremeEiTypeId, draftId) {
-                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]["
+                return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
                     + Entry.DRAFT_ID_ATTR + "=" + draftId + "]";
             }
             static findByDraftId(jqElem, supremeEiTypeId, draftId) {
@@ -4428,7 +4432,7 @@ var Rocket;
                         "class": "btn btn-secondary",
                         "text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
                     })
-                        .append($("<i />", { "class": "fa fa-times" }))
+                        .append($("<i />", { "class": "fa fa-trash-o" }))
                         .click(() => { this.open = false; })
                         .appendTo(jqControlContainer);
                     this.open = false;
@@ -5508,12 +5512,12 @@ var Rocket;
                             this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
                             this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down" });
                         }
-                        this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
+                        this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove",
                             severity: Rocket.Display.Severity.DANGER });
                         var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                         this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit",
                             severity: Rocket.Display.Severity.WARNING });
-                        this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-times", label: "Remove",
+                        this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove",
                             severity: Rocket.Display.Severity.DANGER });
                         let formElemsJq = this.bodyGroup.jQuery.find("input, textarea, select, button");
                         let changedCallback = () => {
@@ -5843,7 +5847,7 @@ var Rocket;
                 addSelectedEntry(entry) {
                     this.entries.push(entry);
                     var that = this;
-                    entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
+                    entry.commandList.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") }).click(function () {
                         that.removeSelectedEntry(entry);
                     });
                 }
@@ -6224,7 +6228,7 @@ var Rocket;
                     }
                     var that = this;
                     var jqCommandButton = this.expandZone.menu.mainCommandList
-                        .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
+                        .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(function () {
                         that.expandZone.layer.close();
                     });
@@ -6467,7 +6471,7 @@ var Rocket;
                         this.currentEntry.expand(false);
                     }
                     var jqCommandButton = this.expandZone.menu.mainCommandList
-                        .createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING }, true);
+                        .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING }, true);
                     jqCommandButton.click(() => {
                         this.expandZone.layer.close();
                     });
@@ -6524,7 +6528,7 @@ var Rocket;
                     this.jqSelectedEntry = $("<div />");
                     this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
                     new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
-                        .createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
+                        .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
                         .click(() => {
                         this.clear();
                     });

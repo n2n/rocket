@@ -4,7 +4,7 @@ namespace Rocket.Cmd {
 	export class Container {
 		private jqContainer: JQuery;
 		private _layers: Array<Layer>;
-		private layerCallbackRegistery: Rocket.util.CallbackRegistry<LayerCallback> = new Rocket.util.CallbackRegistry<LayerCallback>();
+		private layerCallbackRegistery: Rocket.Util.CallbackRegistry<LayerCallback> = new Rocket.Util.CallbackRegistry<LayerCallback>();
 		
 		constructor(jqContainer: JQuery) {
 			this.jqContainer = jqContainer;

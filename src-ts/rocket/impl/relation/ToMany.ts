@@ -168,7 +168,7 @@ namespace Rocket.Impl.Relation {
 			this.entries.push(entry);	
 			
 			var that = this;
-			entry.commandList.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") }).click(function () {
+			entry.commandList.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") }).click(function () {
 				that.removeSelectedEntry(entry);				
 			});
 		}
@@ -645,7 +645,7 @@ namespace Rocket.Impl.Relation {
 			var that = this;
 			
 			var jqCommandButton = this.expandZone.menu.mainCommandList
-					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING} , true);
+					.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING} , true);
 			jqCommandButton.click(function () {
 				that.expandZone.layer.close();
 			});

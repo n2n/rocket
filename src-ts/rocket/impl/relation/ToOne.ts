@@ -288,7 +288,7 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			var jqCommandButton = this.expandZone.menu.mainCommandList
-					.createJqCommandButton({ iconType: "fa fa-times", label: this.closeLabel, severity: display.Severity.WARNING } , true);
+					.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING } , true);
 			jqCommandButton.click(() => {
 				this.expandZone.layer.close();
 			});
@@ -368,7 +368,7 @@ namespace Rocket.Impl.Relation {
 			this.jqSelectedEntry = $("<div />")
 			this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
 			new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
-					.createJqCommandButton({ iconType: "fa fa-times", label: this.jqElem.data("remove-entry-label") })
+					.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
 					.click(() => {
 						this.clear();				
 					});

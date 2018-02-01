@@ -356,7 +356,7 @@ namespace Rocket.Impl.Overview {
 						"class": "btn btn-secondary", 
 						"text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
 					})
-					.append($("<i />", { "class": "fa fa-times"}))
+					.append($("<i />", { "class": "fa fa-trash-o"}))
 					.click(() => { this.open = false })
 					.appendTo(jqControlContainer);
 			
