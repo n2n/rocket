@@ -24,14 +24,13 @@ namespace rocket\spec\ei\manage\security;
 use rocket\spec\ei\component\command\EiCommand;
 use n2n\util\StringUtils;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
-use rocket\spec\ei\component\command\PrivilegeExtendableEiCommand;
 
 class PrivilegeBuilder {
 	const PART_SEPARATOR = '?';
 	
 	public static function isPrivilegeCommand(EiCommand $eiCommand) {
 		return $eiCommand instanceof PrivilegedEiCommand 
-				|| $eiCommand instanceof PrivilegeExtendableEiCommand;
+				/*|| $eiCommand instanceof PrivilegeExtendableEiCommand*/;
 	}
 	
 	public static function buildPrivilege(EiCommand $eiCommand, $privilegeExt = null) {

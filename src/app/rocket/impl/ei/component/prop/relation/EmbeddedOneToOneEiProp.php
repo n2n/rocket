@@ -51,6 +51,7 @@ use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiField;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
@@ -153,7 +154,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 		
 		$eiFrame = $eiu->frame()->getEiFrame();

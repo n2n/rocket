@@ -26,10 +26,6 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 interface GuiProp {
-	const TEST_INCOMPATIBLE = 0;
-	const TEST_COMPATIBLE = 10;
-	const TEST_RECOMMENDED = 20;
-	
 	/**
 	 * @return string 
 	 */
@@ -48,7 +44,7 @@ interface GuiProp {
 	 * @param Eiu $eiu
 	 * @return \rocket\spec\ei\manage\gui\GuiField|null
 	 */
-	public function buildGuiField(Eiu $eiu);
+	public function buildGuiField(Eiu $eiu): ?GuiField;
 		
 	/**
 	 * @return boolean
@@ -57,7 +53,7 @@ interface GuiProp {
 	
 	/**
 	 * @param object $entity
-	 * @return string
+	 * @return string|null
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale);
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string;
 }

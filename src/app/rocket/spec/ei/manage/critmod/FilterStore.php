@@ -19,71 +19,71 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\critmod;
+// namespace rocket\spec\ei\manage\critmod;
 
-use rocket\spec\ei\manage\critmod\Filter;
-use n2n\context\RequestScoped;
-use n2n\persistence\orm\EntityManager;
-use n2n\persistence\orm\OrmUtils;
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
+// use rocket\spec\ei\manage\critmod\Filter;
+// use n2n\context\RequestScoped;
+// use n2n\persistence\orm\EntityManager;
+// use n2n\persistence\orm\OrmUtils;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterData;
 
-class FilterStore implements RequestScoped {
-	private $em;
+// class FilterStore implements RequestScoped {
+// 	private $em;
 	
-	private function _init(EntityManager $em) {
-		$this->em = $em;
-	}
-	
-	public function containsFilterName($eiTypeId, $filterName) {
-		return OrmUtils::createCountCriteria($this->em, Filter::getClass(), array('name' => $filterName))
-				->fetchSingle();
-	}
-	
-	public function getFiltersById($eiTypeId) {
-		return $this->em
-				->createSimpleCriteria(Filter::getClass(), array('eiTypeId' => $eiTypeId))
-				->toQuery()->fetchArray();
-	}
-		
-// 	public function getFilterNames(EiFrame $eiFrame) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
-// 		if (isset($this->filterDatas[$scriptId])) {
-// 			return array_keys($this->filterDatas[$scriptId]);
-// 		}	
-		
-// 		return array();
-// 	}
-
-	public function createFilter($eiTypeId, $name, FilterData $filterData, array $orderDirections) {
-		$filter = new Filter();
-		$filter->setId($eiTypeId);
-		$filter->setName($name);
-		$filter->writeFilterData($filterData);
-		$filter->setSortDirections($orderDirections);
-		$this->em->persist($filter);
-		$this->em->flush();
-		return $filter;
-	}
-
-	public function mergeFilter(Filter $filter) {
-		return $this->em->merge($filter);
-	}
-	
-	public function removeFilter(Filter $filter) {
-		$this->em->remove($filter);
-	}
-	
-// 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
-		
-// 		if (isset($this->filterDatas[$scriptId])) {
-// 			unset($this->filterDatas[$scriptId][$filterName]);
-// 			$this->persist();
-// 		}
+// 	private function _init(EntityManager $em) {
+// 		$this->em = $em;
 // 	}
 	
-// 	private function persist() {
-// 		IoUtils::putContentsSafe($this->filtersFilePath,
-// 				serialize($this->filterDatas));
+// 	public function containsFilterName($eiTypeId, $filterName) {
+// 		return OrmUtils::createCountCriteria($this->em, Filter::getClass(), array('name' => $filterName))
+// 				->fetchSingle();
 // 	}
-}
+	
+// 	public function getFiltersById($eiTypeId) {
+// 		return $this->em
+// 				->createSimpleCriteria(Filter::getClass(), array('eiTypeId' => $eiTypeId))
+// 				->toQuery()->fetchArray();
+// 	}
+		
+// // 	public function getFilterNames(EiFrame $eiFrame) {
+// // 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// // 		if (isset($this->filterDatas[$scriptId])) {
+// // 			return array_keys($this->filterDatas[$scriptId]);
+// // 		}	
+		
+// // 		return array();
+// // 	}
+
+// 	public function createFilter($eiTypeId, $name, FilterData $filterData, array $orderDirections) {
+// 		$filter = new Filter();
+// 		$filter->setId($eiTypeId);
+// 		$filter->setName($name);
+// 		$filter->writeFilterData($filterData);
+// 		$filter->setSortDirections($orderDirections);
+// 		$this->em->persist($filter);
+// 		$this->em->flush();
+// 		return $filter;
+// 	}
+
+// 	public function mergeFilter(Filter $filter) {
+// 		return $this->em->merge($filter);
+// 	}
+	
+// 	public function removeFilter(Filter $filter) {
+// 		$this->em->remove($filter);
+// 	}
+	
+// // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
+// // 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+		
+// // 		if (isset($this->filterDatas[$scriptId])) {
+// // 			unset($this->filterDatas[$scriptId][$filterName]);
+// // 			$this->persist();
+// // 		}
+// // 	}
+	
+// // 	private function persist() {
+// // 		IoUtils::putContentsSafe($this->filtersFilePath,
+// // 				serialize($this->filterDatas));
+// // 	}
+// }

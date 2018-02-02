@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\component;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\component\command\EiCommandCollection;

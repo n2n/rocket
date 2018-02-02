@@ -61,7 +61,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 				&& $this->loginContext->getCurrentUser()->isAdmin();
 	}
 	
-	private function lookupEiThing(string $eiTypeId, string $eiMaskId = null): EiThing {
+	private function lookupEiThing(string $eiTypeId, string $eiMaskId = null): EiEngineModel {
 		try {
 			$eiType = $this->specManager->getEiTypeById($eiTypeId);
 			if ($eiMaskId !== null) {

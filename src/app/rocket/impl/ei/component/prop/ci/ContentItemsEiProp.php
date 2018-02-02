@@ -33,6 +33,7 @@ use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\spec\ei\manage\gui\GuiField;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();
@@ -102,7 +103,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();

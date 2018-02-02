@@ -23,20 +23,21 @@ namespace rocket\spec\ei\component\prop;
 
 use rocket\spec\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
 
 interface FilterableEiProp extends EiProp {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @return \rocket\spec\ei\manage\critmod\FilterField|null
+	 * @return \rocket\spec\ei\manage\critmod\filter\FilterField|null
 	 */
-	public function buildManagedFilterField(EiFrame $eiFrame);
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField;
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\spec\ei\manage\critmod\FilterField|null
+	 * @return \rocket\spec\ei\manage\critmod\filter\FilterField|null
 	 */
-	public function buildFilterField(N2nContext $n2nContext);
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField;
 	
 	/**
 	 * @param N2nContext $n2nContext

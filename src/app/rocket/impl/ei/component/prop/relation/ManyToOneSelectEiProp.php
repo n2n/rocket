@@ -52,6 +52,8 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
 use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -116,7 +118,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
@@ -194,7 +196,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$this->getObjectPropertyAccessProxy()->setValue($object, $value);
 	}
 	
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		$filterField = parent::buildManagedFilterField($eiFrame);
 		CastUtils::assertTrue($filterField instanceof RelationFilterField);
 		
@@ -206,7 +208,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		return $filterField;
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		$filterField = parent::buildFilterField($n2nContext);
 		CastUtils::assertTrue($filterField instanceof RelationFilterField);
 		

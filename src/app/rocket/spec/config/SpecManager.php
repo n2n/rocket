@@ -22,16 +22,12 @@
 namespace rocket\spec\config;
 
 use rocket\spec\ei\EiType;
-use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\ReflectionUtils;
 use n2n\persistence\orm\model\EntityModelManager;
-use rocket\spec\ei\component\prop\EiProp;
 use rocket\spec\config\extr\SpecExtraction;
-use rocket\spec\config\source\RocketConfigSource;
 use rocket\spec\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\config\Spec;
 use rocket\spec\config\extr\SpecExtractionManager;
 use rocket\core\model\MenuItem;
 use rocket\core\model\UnknownMenuItemException;
@@ -104,7 +100,7 @@ class SpecManager {
 	}
 
 	/**
-	 * @param unknown $id
+	 * @param string $id
 	 * @return MenuItem
 	 * @throws UnknownMenuItemException
 	 */

@@ -26,17 +26,11 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\component\prop\PrivilegedEiProp;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\gui\GuiProp;
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\spec\ei\component\prop\GuiEiProp;
-use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
-use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
-use rocket\spec\ei\manage\gui\ViewMode;
 use rocket\spec\security\EiPropPrivilege;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessEditable, PrivilegedEiProp {
 	protected $standardEditDefinition;
@@ -59,15 +53,15 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $eiPropConfigurator;
 	}
 
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
 	}
 
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new StatelessEditElement($this, $eiu);
 	}
 

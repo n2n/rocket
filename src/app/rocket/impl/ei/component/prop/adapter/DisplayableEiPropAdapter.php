@@ -33,6 +33,8 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;
@@ -53,11 +55,11 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	}
 	
 	
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
 	}
 
@@ -82,7 +84,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return DisplayItem::TYPE_NONE;
 	}
 	
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 	
@@ -102,7 +104,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return false;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not string representable.');
 	}
 }

@@ -31,6 +31,7 @@ use rocket\spec\ei\component\command\EiCommandCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\manage\generic\ScalarEiProperty;
+use rocket\spec\ei\EiDef;
 
 class SpecEiSetupProcess implements EiSetupProcess {
 	private $specManager;

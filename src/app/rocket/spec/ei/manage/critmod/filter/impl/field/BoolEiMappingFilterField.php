@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
 use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
-use rocket\spec\ei\manage\mapping\EiFieldConstraint;
 
 class BoolEiEntryFilterField extends BoolFilterField implements EiEntryFilterField {
 	/**

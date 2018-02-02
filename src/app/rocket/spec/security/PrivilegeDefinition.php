@@ -65,14 +65,14 @@ class PrivilegeDefinition {
 		$this->eiPropPrivileges[(string) $eiPropPath] = $eiPropPrivilege;
 	}
 	
-	public function getEiPropPrivilegeByEiPropPath(EiPropPath $eiPropPath): EiPropPrivilege {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (isset($this->eiPropPrivileges[$eiPropPath])) {
-			return $this->eiPropPrivileges[$eiPropPath];
-		}
+// 	public function getEiPropPrivilegeByEiPropPath(EiPropPath $eiPropPath): EiPropPrivilege {
+// 		$eiPropPathStr = (string) $eiPropPath;
+// 		if (isset($this->eiPropPrivileges[$eiPropPath])) {
+// 			return $this->eiPropPrivileges[$eiPropPath];
+// 		}
 	
-		throw new UnknownEiPropPrivilegeException();
-	}
+// 		throw new UnknownEiPropPrivilegeException();
+// 	}
 	
 	public function createEiPropPrivilegeMagCollection(Attributes $attributes): MagCollection {
 		$magCollection = new MagCollection();

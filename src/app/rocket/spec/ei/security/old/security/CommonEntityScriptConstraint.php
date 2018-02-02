@@ -19,129 +19,129 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\security;
+// namespace rocket\spec\ei\security;
 
-use rocket\spec\ei\manage\critmod\SelectorModel;
-use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\component\command\PrivilegedEiCommand;
-use rocket\spec\ei\component\command\PrivilegeExtendableEiCommand;
-use rocket\spec\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
-use rocket\spec\ei\manage\security\PrivilegeBuilder;
-use rocket\spec\security\ScriptGrant;
-use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
+// use rocket\spec\ei\manage\critmod\SelectorModel;
+// use n2n\core\container\N2nContext;
+// use rocket\spec\ei\EiType;
+// use rocket\spec\ei\component\command\EiCommand;
+// use rocket\spec\ei\component\command\PrivilegedEiCommand;
+// use rocket\spec\ei\component\command\PrivilegeExtendableEiCommand;
+// use rocket\spec\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
+// use rocket\spec\ei\manage\security\PrivilegeBuilder;
+// use rocket\spec\security\ScriptGrant;
+// use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 
-class CommonConstraint implements Constraint {
-	private $eiType;
-	private $n2nContext;
-	private $accessAttributes = array();
-	private $privilegeGrants = array();
-	private $privilegesGrantItems = array();
-	private $selectorItems;
-	private $filterModel;
-	private $selectorModel;
+// class CommonConstraint implements Constraint {
+// 	private $eiType;
+// 	private $n2nContext;
+// 	private $accessAttributes = array();
+// 	private $privilegeGrants = array();
+// 	private $privilegesGrantItems = array();
+// 	private $selectorItems;
+// 	private $filterModel;
+// 	private $selectorModel;
 	
-	public function __construct(EiType $eiType, N2nContext $n2nContext) {
-		$this->eiType = $eiType;
-		$this->n2nContext = $n2nContext;
-	}
+// 	public function __construct(EiType $eiType, N2nContext $n2nContext) {
+// 		$this->eiType = $eiType;
+// 		$this->n2nContext = $n2nContext;
+// 	}
 	
-	public function getAccessAttributes() {
-		return $this->accessAttributes;
-	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\security\ScriptConstraint::getPrivilegesGrants()
-	*/
-	public function getPrivilegesGrants() {
-		return $this->privilegesGrants;
-	}
+// 	public function getAccessAttributes() {
+// 		return $this->accessAttributes;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\security\ScriptConstraint::getPrivilegesGrants()
+// 	*/
+// 	public function getPrivilegesGrants() {
+// 		return $this->privilegesGrants;
+// 	}
 	
-	public function addScriptGrant(ScriptGrant $scriptGrant) {
-		$this->accessAttributes[] = $scriptGrant->getAccessAttributes();
-		foreach ($scriptGrant->getPrivilegesGrants() as $privilegeGrant) {
-			$this->privilegesGrantItems[] = new PrivilegesGrantItem($privilegeGrant->getPrivileges(),
-					$privilegeGrant->getRestrictionFilterData(), $this);
-		}
-	}
+// 	public function addScriptGrant(ScriptGrant $scriptGrant) {
+// 		$this->accessAttributes[] = $scriptGrant->getAccessAttributes();
+// 		foreach ($scriptGrant->getPrivilegesGrants() as $privilegeGrant) {
+// 			$this->privilegesGrantItems[] = new PrivilegesGrantItem($privilegeGrant->getPrivileges(),
+// 					$privilegeGrant->getRestrictionFilterData(), $this);
+// 		}
+// 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\security\SecurityConstraint::isEiCommandAvailable()
-	 */
-	public function isEiCommandAvailable(EiCommand $eiCommand, $privilegeExt = null) {
-		if ($privilegeExt === null && !($eiCommand instanceof PrivilegedEiCommand
-				|| $eiCommand instanceof PrivilegeExtendableEiCommand)) {
-			return true;
-		}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\security\SecurityConstraint::isEiCommandAvailable()
+// 	 */
+// 	public function isEiCommandAvailable(EiCommand $eiCommand, $privilegeExt = null) {
+// 		if ($privilegeExt === null && !($eiCommand instanceof PrivilegedEiCommand
+// 				|| $eiCommand instanceof PrivilegeExtendableEiCommand)) {
+// 			return true;
+// 		}
 		
-		$privilege = PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt);
-		foreach ($this->privilegesGrantItems as $item) {
-			if ($item->isPrivilegeaccessible($privilege)) {
-				return true;
-			}
-		}
+// 		$privilege = PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt);
+// 		foreach ($this->privilegesGrantItems as $item) {
+// 			if ($item->isPrivilegeaccessible($privilege)) {
+// 				return true;
+// 			}
+// 		}
 		
-		return false;
-	}
+// 		return false;
+// 	}
 	
-	private function getSelectorItems() {
-		if ($this->selectorItems === null) {
-			$this->selectorItems = $this->eiType->createRestrictionSelectorItems($this->n2nContext);
-		}
+// 	private function getSelectorItems() {
+// 		if ($this->selectorItems === null) {
+// 			$this->selectorItems = $this->eiType->createRestrictionSelectorItems($this->n2nContext);
+// 		}
 		
-		return $this->selectorItems;
-	}
+// 		return $this->selectorItems;
+// 	}
 	
-	public function getOrCreateFilterModel() {
-		if ($this->filterModel === null) {
-			$this->filterModel = FilterDefinition::createFromFilterFields($this->getSelectorItems());
-		}
+// 	public function getOrCreateFilterModel() {
+// 		if ($this->filterModel === null) {
+// 			$this->filterModel = FilterDefinition::createFromFilterFields($this->getSelectorItems());
+// 		}
 		
-		return $this->filterModel;
-	}
+// 		return $this->filterModel;
+// 	}
 	
-	public function getOrCreateSelectorModel() {
-		if ($this->selectorModel === null) {
-			$this->selectorModel = SelectorModel::createFromSelectorItems($this->getSelectorItems());
-		}
+// 	public function getOrCreateSelectorModel() {
+// 		if ($this->selectorModel === null) {
+// 			$this->selectorModel = SelectorModel::createFromSelectorItems($this->getSelectorItems());
+// 		}
 		
-		return $this->selectorModel;
-	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\security\SecurityConstraint::createEiCommandAccessRestrictor()
-	 */
-	public function createEiCommandAccessRestrictor(\ArrayAccess $values) {
-		$accessRestirctor = new WhitelistEiCommandAccessRestrictor();
-		foreach ($this->privilegesGrantItems as $privilegeGrantItem) {
-			if (!$privilegeGrantItem->acceptsValues($values)) continue;
+// 		return $this->selectorModel;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\security\SecurityConstraint::createEiCommandAccessRestrictor()
+// 	 */
+// 	public function createEiCommandAccessRestrictor(\ArrayAccess $values) {
+// 		$accessRestirctor = new WhitelistEiCommandAccessRestrictor();
+// 		foreach ($this->privilegesGrantItems as $privilegeGrantItem) {
+// 			if (!$privilegeGrantItem->acceptsValues($values)) continue;
 			
-			foreach ($privilegeGrantItem->getPrivileges() as $privilege) {
-				$accessRestirctor->addPrivilege($privilege);
-			}
-		}
-		return $accessRestirctor;
-	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\security\SecurityConstraint::createCommandExecutionConstraint()
-	 */
-	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null) {
-		$privilege = null;
-		if ($command instanceof PrivilegedEiCommand
-				|| $command instanceof PrivilegeExtendableEiCommand) {
-			$privilege = PrivilegeBuilder::buildPrivilege($command, $privilegeExt);
-		}
+// 			foreach ($privilegeGrantItem->getPrivileges() as $privilege) {
+// 				$accessRestirctor->addPrivilege($privilege);
+// 			}
+// 		}
+// 		return $accessRestirctor;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\security\SecurityConstraint::createCommandExecutionConstraint()
+// 	 */
+// 	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null) {
+// 		$privilege = null;
+// 		if ($command instanceof PrivilegedEiCommand
+// 				|| $command instanceof PrivilegeExtendableEiCommand) {
+// 			$privilege = PrivilegeBuilder::buildPrivilege($command, $privilegeExt);
+// 		}
 		
-		$items = array();
-		foreach ($this->privilegesGrantItems as $item) {
-			if ($privilege !== null && !$item->isPrivilegeaccessible($privilege)) continue;
+// 		$items = array();
+// 		foreach ($this->privilegesGrantItems as $item) {
+// 			if ($privilege !== null && !$item->isPrivilegeaccessible($privilege)) continue;
 			
-			if (!$item->isRestricted()) {
-				return new EmptyCommandExecutionConstraint();
-			}
+// 			if (!$item->isRestricted()) {
+// 				return new EmptyCommandExecutionConstraint();
+// 			}
 		
-			$items[] = $item;
-		}
+// 			$items[] = $item;
+// 		}
 		
-		return new EiCommandExecutionConstraint($items);
-	}	
-}
+// 		return new EiCommandExecutionConstraint($items);
+// 	}	
+// }

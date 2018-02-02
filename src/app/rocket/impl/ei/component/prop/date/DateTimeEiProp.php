@@ -52,6 +52,7 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\spec\ei\manage\critmod\sort\SortField;
 
 class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
@@ -108,7 +109,7 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 		return true;
 	}
 	
-    public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+    public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
         if (null !== ($dateTime = $this->read($eiObject))) {
             return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
         }
@@ -135,11 +136,11 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\prop\SortableEiProp::createSortCriteriaConstraint()
 	 */
-	public function buildManagedSortField(EiFrame $eiFrame) {
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 
-	public function buildSortField(N2nContext $n2nContext) {
+	public function buildSortField(N2nContext $n2nContext): ?SortField {
 		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 }

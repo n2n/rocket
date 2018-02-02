@@ -21,10 +21,7 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\SpecManager;
-use n2n\reflection\ReflectionUtils;
-use n2n\core\TypeNotFoundException;
-use rocket\spec\custom\CustomSpec;
+use rocket\spec\config\CustomSpec;
 
 class CustomSpecExtraction extends SpecExtraction {
 	private $controllerClassName;

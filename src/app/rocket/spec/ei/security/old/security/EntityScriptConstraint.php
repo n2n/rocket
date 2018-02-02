@@ -19,28 +19,28 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\security;
+// namespace rocket\spec\ei\security;
 
-use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\security\ScriptConstraint;
+// use rocket\spec\ei\component\command\EiCommand;
+// use rocket\spec\security\ScriptConstraint;
 
-interface Constraint extends ScriptConstraint {
-	/**
-	 * Checks if this SecurityManager allowes the use of passed command.
-	 * 
-	 * @param EiCommand $command
-	 * @return boolean Returns true if there could be entities which are accessible by passed command.
-	 */
-	public function isEiCommandAvailable(EiCommand $command);
-	/**
-	 * @param \ArrayAccess $values
-	 * @return \rocket\spec\ei\manage\mapping\EiCommandAccessRestrictor
-	 */
-	public function createEiCommandAccessRestrictor(\ArrayAccess $values);
-	/**
-	 * @param EiCommand $command
-	 * @param string $privilegeExt
-	 * @return \rocket\spec\ei\manage\security\CommandExecutionConstraint
-	 */
-	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null);
-}
+// interface Constraint extends ScriptConstraint {
+// 	/**
+// 	 * Checks if this SecurityManager allowes the use of passed command.
+// 	 * 
+// 	 * @param EiCommand $command
+// 	 * @return boolean Returns true if there could be entities which are accessible by passed command.
+// 	 */
+// 	public function isEiCommandAvailable(EiCommand $command);
+// 	/**
+// 	 * @param \ArrayAccess $values
+// 	 * @return \rocket\spec\ei\manage\mapping\EiCommandAccessRestrictor
+// 	 */
+// 	public function createEiCommandAccessRestrictor(\ArrayAccess $values);
+// 	/**
+// 	 * @param EiCommand $command
+// 	 * @param string $privilegeExt
+// 	 * @return \rocket\spec\ei\manage\security\CommandExecutionConstraint
+// 	 */
+// 	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null);
+// }

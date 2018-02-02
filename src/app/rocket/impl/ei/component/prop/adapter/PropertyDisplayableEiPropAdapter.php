@@ -37,6 +37,8 @@ use rocket\spec\ei\manage\gui\DisplayDefinition;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
@@ -115,11 +117,11 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return $objectPropertyAccessProxy->getValue($eiObject->getEiEntityObj()->getEntityObj());
 	}
 	
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
 	}
 
@@ -127,7 +129,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return $this->getLabelLstr();
 	}
 	
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 	
@@ -147,7 +149,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return false;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not summarizable.');
 	}
 }

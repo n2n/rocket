@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\critmod\sort\impl;
 
-use rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraint;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\l10n\Lstr;

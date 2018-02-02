@@ -2,7 +2,6 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\impl\web\dispatch\mag\model\MagArrayMag;
-use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\reflection\property\AccessProxy;

@@ -49,6 +49,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\spec\ei\manage\gui\GuiProp;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 	
@@ -112,7 +113,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return $this;
 	}
 	
@@ -189,7 +190,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\prop\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return null;	
 	}
 

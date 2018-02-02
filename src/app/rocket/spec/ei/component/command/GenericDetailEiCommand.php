@@ -22,13 +22,16 @@
 namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
+use n2n\util\ex\UnsupportedOperationException;
 
 interface GenericDetailEiCommand {
 	
 	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool;
+	
 	/**
-	 * @return \rocket\spec\ei\manage\control\DetailControlInfo
-	 * @throws UnsupportedOperationException if EiCommand can not be used as ..
+	 * @param EntryNavPoint $entryNavPoint
+	 * @return \n2n\util\uri\Url
+	 * @throws UnsupportedOperationException:: if EiCommand can not be used as ..
 	 */
 	public function getDetailUrlExt(EntryNavPoint $entryNavPoint);
 }

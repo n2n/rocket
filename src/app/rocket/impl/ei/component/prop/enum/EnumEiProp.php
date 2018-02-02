@@ -48,6 +48,8 @@ use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumEnablerMag;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\spec\ei\manage\critmod\sort\SortField;
 
 class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -158,11 +160,11 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return $html->getEsc($value);
 	}
 	
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new EnumFilterField(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
 		}
@@ -174,11 +176,11 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame) {
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
-	public function buildSortField(N2nContext $n2nContext) {
+	public function buildSortField(N2nContext $n2nContext): ?SortField {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
@@ -198,7 +200,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		return $this->read($eiObject);
 	}
 	

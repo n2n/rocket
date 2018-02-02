@@ -23,8 +23,6 @@ namespace rocket\spec\ei\component\modificator;
 
 use rocket\spec\ei\component\EiComponentCollection;
 
-use rocket\spec\ei\component\modificator\EiModificator;
-use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\EiType;
 use rocket\spec\ei\EiEngine;
 

@@ -183,7 +183,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 * @return GuiField
 	 */
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$eiEntry = $eiu->entry()->getEiEntry();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();

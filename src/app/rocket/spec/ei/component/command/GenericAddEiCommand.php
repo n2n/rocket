@@ -24,6 +24,7 @@ namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use n2n\util\uri\Url;
+use n2n\util\ex\UnsupportedOperationException;
 
 interface GenericAddEiCommand {
 	

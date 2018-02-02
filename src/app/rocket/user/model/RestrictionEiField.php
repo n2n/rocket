@@ -19,13 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\user\model;
+// namespace rocket\user\model;
 
-use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\component\prop\ObjectPropertyEiProp;
+// use n2n\core\container\N2nContext;
+// use rocket\spec\ei\manage\EiFrame;
 
-interface RestrictionEiProp extends ObjectPropertyEiProp {
+// interface RestrictionEiProp extends ObjectPropertyEiProp {
 	
-	public function createRestrictionSelectorItem(N2nContext $n2nContext, EiFrame $eiFrame = null);	
-}
+// 	public function createRestrictionSelectorItem(N2nContext $n2nContext, EiFrame $eiFrame = null);	
+// }

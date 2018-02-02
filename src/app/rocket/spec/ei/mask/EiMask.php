@@ -373,14 +373,6 @@ class EiMask implements EiEngineModel, Identifiable {
 		return new CommonEiGuiViewFactory($eiGui, $this->eiEngine->getGuiDefinition(), $displayStructure);
 	}
 	
-	private function createDefaultDisplayStructure($eiGui) {
-		$displayStructure = new DisplayStructure();
-		foreach ($this->eiEngine->getGuiDefinition()->findGuiIdPaths($eiGui, GuiProp::TEST_RECOMMENDED) as $guiIdPath) {
-			$displayStructure->addGuiIdPath($guiIdPath);
-		}
-		return $displayStructure;
-	}
-	
 	public function getSubEiMaskIds() {
 		return $this->subEiMaskIds;
 	}

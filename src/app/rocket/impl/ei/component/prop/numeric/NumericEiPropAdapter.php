@@ -45,6 +45,7 @@ use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
 
 abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -97,11 +98,11 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\prop\FilterableEiProp::buildManagedFilterField($eiFrame)
 	 */
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
@@ -109,7 +110,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame) {
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
@@ -118,7 +119,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 	 * @see \rocket\spec\ei\component\prop\SortableEiProp::createGlobalSortField()
 	 * @return SortField
 	 */
-	public function buildSortField(N2nContext $n2nContext) {
+	public function buildSortField(N2nContext $n2nContext): ?SortField {
 		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
@@ -136,7 +137,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		return $this->read($eiObject);
 	}
 }
