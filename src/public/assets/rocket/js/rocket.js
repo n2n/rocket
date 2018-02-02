@@ -4427,7 +4427,7 @@ var Rocket;
                         "class": "btn btn-secondary",
                         "text": jqControlContainer.data("rocket-impl-close-filter-label") + " "
                     })
-                        .append($("<i />", { "class": "fa fa-trash-o" }))
+                        .append($("<i />", { "class": "fa fa-times" }))
                         .click(() => { this.open = false; })
                         .appendTo(jqControlContainer);
                     this.open = false;
