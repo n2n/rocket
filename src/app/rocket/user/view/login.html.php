@@ -22,9 +22,7 @@
 
 	use n2n\web\ui\Raw;
 	use rocket\user\model\LoginContext;
-	use n2nutil\jquery\JQueryLibrary;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\ui\view\View;
+	use n2n\impl\web\ui\view\html\HtmlView;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\security;
 
-use n2n\util\config\Attributes;
-
 interface EiPropAccess {
 	
 	/**

@@ -46,15 +46,15 @@ interface DraftAction {
 // 	public function executeOnDisable(\Closure $closure);
 	
 	/**
-	 * @param Action $draftAction
+	 * @param DraftAction $draftAction
 	 */
 	public function addDependent(DraftAction $draftAction);
 	/**
-	 * @return n2n\persistence\orm\store\Action[]
+	 * @return DraftAction[]
 	 */
 	public function getDependents();
 	/**
-	 * @param Action[] $dependents
+	 * @param DraftAction[] $dependents
 	 */
 	public function setDependents(array $dependents);
 }

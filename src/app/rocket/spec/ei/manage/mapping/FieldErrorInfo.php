@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\mapping;
 
 use n2n\l10n\Message;
-use n2n\reflection\CastUtils;
 
 class FieldErrorInfo {
 	private $errorMessages = array();

@@ -63,7 +63,7 @@ abstract class DraftActionAdapter implements DraftAction {
 		$this->atEndClosures[] = $closure;
 	}
 	/**
-	 * @param Action $draftAction
+	 * @param DraftAction $draftAction
 	 */
 	public function addDependent(DraftAction $draftAction) {
 		$this->dependents[] = $draftAction;
@@ -72,9 +72,11 @@ abstract class DraftActionAdapter implements DraftAction {
 	public function getDependents() {
 		return $this->dependents;
 	}
-	/* (non-PHPdoc)
-	 * @see \n2n\persistence\orm\store\Action::setDependents()
-	*/
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\manage\draft\DraftAction::setDependents()
+	 */
 	public function setDependents(array $actionJobs) {
 		$this->dependents = $actionJobs;
 	}

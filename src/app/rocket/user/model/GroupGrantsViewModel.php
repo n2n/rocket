@@ -98,14 +98,18 @@ class GroupGrantsViewModel {
 	public function getRocketUserGroup() {
 		return $this->userGroup;
 	}
+	
 	/**
-	 * @return \rocket\user\model\GroupGrantItem[]
+	 * @return EiTypeItem[]
 	 */
 	public function getEiTypeItems() {
 		return $this->eiTypeItems;
 	}
 	
-	public function getCustomItems(): array {
+	/**
+	 * @return CustomSpecItem[]
+	 */
+	public function getCustomItems() {
 		return $this->customItems;
 	}
 }

@@ -44,8 +44,6 @@ use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\manage\gui\SummarizedStringBuilder;
 use rocket\spec\ei\manage\gui\EiGuiViewFactory;
 use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\manage\gui\ui\DisplayStructure;
-use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\EiEngineModel;
 use rocket\spec\ei\mask\model\CommonEiGuiViewFactory;
 use n2n\util\ex\IllegalStateException;

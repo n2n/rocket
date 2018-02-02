@@ -24,8 +24,6 @@ namespace rocket\spec\ei\manage\preview\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 abstract class PreviewControllerAdapter extends ControllerAdapter implements PreviewController {
@@ -38,7 +36,8 @@ abstract class PreviewControllerAdapter extends ControllerAdapter implements Pre
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\preview\PreviewModel
+	 * @throws IllegalStateException
+	 * @return \rocket\spec\ei\manage\preview\model\PreviewModel
 	 */
 	public function getPreviewModel() {
 		if ($this->previewModel !== null) {

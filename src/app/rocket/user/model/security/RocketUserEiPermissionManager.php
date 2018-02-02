@@ -75,7 +75,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\SecurityManager::createEiExec($eiCommand)
+	 * @see \rocket\spec\ei\security\EiPermissionManager::createEiExecution()
 	 */
 	public function createEiExecution(EiCommand $eiCommand, N2nContext $n2nContext): EiExecution {
 		return $this->buildEiExecution($n2nContext, $eiCommand->getEiEngine(), 

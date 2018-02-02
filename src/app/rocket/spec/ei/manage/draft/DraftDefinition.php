@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\draft;
 
-use n2n\persistence\Pdo;
 use rocket\spec\ei\EiPropPath;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\draft\stmt\impl\SimplePersistDraftStmtBuilder;

@@ -21,7 +21,6 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\core\model\Rocket;
 use rocket\spec\config\CustomSpec;
 use rocket\spec\security\SecurityManager;
 use rocket\spec\ei\security\EiPermissionManager;

@@ -19,26 +19,26 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\security;
+// namespace rocket\spec\ei\manage\security;
 
-use rocket\spec\ei\component\command\EiCommand;
+// use rocket\spec\ei\component\command\EiCommand;
 
-interface SecurityConstraint {
+// interface SecurityConstraint {
 	
-	public function isEiCommandAvailable(EiCommand $eiCommand, $privilegeExt = null);
-	/**
-	 * @return \n2n\util\config\Attributes[] 
-	 */
-	public function getAccessAttributes();
-	/**
-	 * @param \ArrayAccess $values
-	 * @return \rocket\spec\ei\manage\mapping\EiCommandAccessRestrictor
-	 */
-	public function createEiCommandAccessRestrictor(\ArrayAccess $values);
-	/**
-	 * @param EiCommand $command
-	 * @param string $privilegeExt
-	 * @return \rocket\spec\ei\manage\security\CommandExecutionConstraint
-	 */
-	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null);
-}
+// 	public function isEiCommandAvailable(EiCommand $eiCommand, $privilegeExt = null);
+// 	/**
+// 	 * @return \n2n\util\config\Attributes[] 
+// 	 */
+// 	public function getAccessAttributes();
+// 	/**
+// 	 * @param \ArrayAccess $values
+// 	 * @return \rocket\spec\ei\manage\mapping\EiCommandAccessRestrictor
+// 	 */
+// 	public function createEiCommandAccessRestrictor(\ArrayAccess $values);
+// 	/**
+// 	 * @param EiCommand $command
+// 	 * @param string $privilegeExt
+// 	 * @return \rocket\spec\ei\manage\security\CommandExecutionConstraint
+// 	 */
+// 	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null);
+// }

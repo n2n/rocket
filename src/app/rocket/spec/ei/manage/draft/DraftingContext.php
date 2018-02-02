@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\manage\draft;
 
-use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\ei\manage\draft\Draft;
 use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
 use n2n\util\ex\IllegalStateException;
 

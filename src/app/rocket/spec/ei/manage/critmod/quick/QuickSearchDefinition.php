@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\critmod\quick;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\critmod\quick\QuickSearchField;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
 

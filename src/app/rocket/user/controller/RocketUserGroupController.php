@@ -38,7 +38,6 @@ use rocket\spec\config\UnknownSpecException;
 use rocket\spec\ei\mask\UnknownEiMaskException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
-use rocket\spec\ei\EiEngineModel;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use rocket\spec\ei\EiEngine;
@@ -227,7 +226,7 @@ class RocketUserGroupController extends ControllerAdapter {
 	}
 	
 	/**
-	 * @param unknown $rocketUserGroupId
+	 * @param int $rocketUserGroupId
 	 * @param string $eiTypeId
 	 * @param string $eiMaskId
 	 * @param ScrRegistry $scrRegistry

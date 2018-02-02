@@ -86,7 +86,6 @@
 						<?php endif ?>
 						<td>
 							<div class="rocket-simple-commands">
-								<li>
 								<?php $html->linkToController(array('fullyeigrant', $groupId, $eiTypeId, $eiMaskItem->getEiMaskId()), 
 										new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' 
 												. $html->getL10nText('user_grant_full_access_label') . '</span>'),

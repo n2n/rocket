@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\manage\draft\stmt;
 
-use rocket\spec\ei\manage\draft\stmt\DraftValuesResult;
-
 interface CountDraftStmtBuilder extends SelectDraftStmtBuilder {
 
 	/**

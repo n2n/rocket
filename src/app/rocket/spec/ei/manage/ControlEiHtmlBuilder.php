@@ -25,7 +25,6 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\util\model\EiuFactory;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 

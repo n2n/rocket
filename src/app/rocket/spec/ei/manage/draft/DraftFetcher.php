@@ -22,8 +22,6 @@
 namespace rocket\spec\ei\manage\draft;
 
 use n2n\persistence\Pdo;
-use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\draft\DraftDefinition;
 use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\persistence\PdoStatement;
 use rocket\spec\ei\manage\EiEntityObj;

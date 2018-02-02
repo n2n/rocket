@@ -28,7 +28,7 @@ interface PersistDraftStmtBuilder extends DraftStmtBuilder {
 	public function hasValues(): bool;
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param scalar $value
+	 * @param string $rawValue
 	 * @return string
 	 */
 	public function registerColumnRawValue(EiPropPath $eiPropPath, string $rawValue = null);

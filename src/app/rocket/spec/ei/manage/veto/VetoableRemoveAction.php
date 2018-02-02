@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\veto;
 
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Message;
 
