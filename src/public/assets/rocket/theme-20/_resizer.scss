@@ -1,8 +1,9 @@
 .rocket-image-resizer-container {
 	background-color: $white;
+	padding: 1rem !important;
 	> form {
 		display: grid;
-		grid-template-columns: calc(100vw - 43rem) 19rem;
+		grid-template-columns: calc(100vw - 43rem) 16rem;
 		grid-gap: 2rem 2rem;
 	}
 }
@@ -76,11 +77,30 @@
 // image dimensions
 .rocket-image-dimensions {
 	> .rocket-image-version {
-		height: 2.5rem;
+		position: relative;
+		padding: 0.5rem 0;
+		&.rocket-image-ratio:not(:first-child) {
+			border-top: 1px solid $input-border-color;
+		}
 		> label,
 		> input {
 			margin-right: 0.75rem;
+			margin-bottom: 0;
 		}
+		> a {
+			position: absolute;
+			top: 0.5rem;
+			right: 1rem;
+		}
+	}
+}
+
+.rocket-fixed-ration-container {
+	text-align: center;
+	padding: 0.5rem 0;
+	> label {
+		font-weight: bold;
+		margin-right: 0.5rem;
 	}
 }
 
