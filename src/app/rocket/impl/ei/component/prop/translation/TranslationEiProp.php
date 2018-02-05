@@ -232,7 +232,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return $translationGuiField;
 	}
 	
-	public function determineForkedEiObject(EiObject $eiObject) {
+	public function determineForkedEiObject(EiObject $eiObject): ?EiObject {
 		// @todo access locale and use EiObject with admin locale.
 		return ArrayUtils::first($this->read($eiObject));
 	}

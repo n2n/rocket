@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 use rocket\spec\ei\manage\gui\GuiField;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
@@ -44,7 +44,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	private $newMappingFormPathExt;
 
 	public function __construct(string $label, bool $reduced, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
-			bool $compact, Editable $editable = null) {
+			bool $compact, GuiFieldEditable $editable = null) {
 		$this->label = $label;
 		$this->reduced = $reduced;
 		$this->toManyEiField = $toManyEiField;
@@ -145,7 +145,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
-	public function getEditable(): Editable {
+	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}

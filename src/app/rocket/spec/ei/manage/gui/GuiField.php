@@ -29,9 +29,9 @@ interface GuiField extends Displayable {
 	public function isReadOnly(): bool;
 	
 	/**
-	 * @return Editable 
+	 * @return GuiFieldEditable 
 	 * @throws \n2n\util\ex\IllegalStateException if {@link Displayable::isReadOnly()} belonging to this 
 	 * {@link GuiField} returns true
 	 */
-	public function getEditable(): Editable;
+	public function getEditable(): GuiFieldEditable;
 }

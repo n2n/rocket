@@ -28,7 +28,6 @@ use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\prop\GuiEiProp;
-use rocket\spec\ei\manage\gui\EditableWrapper;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\manage\gui\GuiProp;
@@ -103,13 +102,13 @@ class GuiFactory {
 			if ($result === null) continue;
 			
 			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());
+			
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiEntryGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
 			}
 			
-			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
-				$eiEntryGui->putEditableWrapper($guiIdPath, new EditableWrapper($result->isMandatory(), 
-						$magPropertyPath, $result->getMagWrapper()));
+			if (null !== ($editableWrapper = $result->getEditableWrapper())) {
+				$eiEntryGui->putEditableWrapper($guiIdPath, $editableWrapper);
 			}
 		}
 		

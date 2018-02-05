@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\util\model\EiuFrame;
@@ -44,7 +44,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	private $newMappingFormPathExt;
 
 	public function __construct(string $label, bool $reduced, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
-			bool $compact, Editable $editable = null) {
+			bool $compact, GuiFieldEditable $editable = null) {
 		$this->label = $label;
 		$this->reduced = $reduced;
 		$this->toOneEiField = $toOneEiField;
@@ -110,7 +110,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
-	public function getEditable(): Editable {
+	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}

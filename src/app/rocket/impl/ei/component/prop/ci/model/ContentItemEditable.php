@@ -21,14 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
 
-class ContentItemEditable implements Editable {
+class ContentItemEditable implements GuiFieldEditable {
 	private $label;
 	private $toManyEiField;
 	private $targetReadEiFrame;

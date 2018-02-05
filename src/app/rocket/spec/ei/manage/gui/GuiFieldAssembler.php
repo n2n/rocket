@@ -26,7 +26,6 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\web\dispatch\mag\MagWrapper;
 use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\mapping\EiFieldWrapper;
@@ -70,6 +69,12 @@ class GuiFieldAssembler implements Savable {
 		foreach ($this->savables as $savable) {
 			$savable->save();
 		}
+		
+		foreach ($this->forkedGuiFields as $id => $forkedGuiField) {
+			if ($forkedGuiField->isReadOnly()) continue;
+			
+			$forkedGuiField->getEditable()->save();
+		}
 	}
 	
 	private function assembleGuiProp($id, GuiProp $guiProp) {
@@ -86,12 +91,12 @@ class GuiFieldAssembler implements Savable {
 		}
 		
 		$editable = $guiField->getEditable();
-		ArgUtils::valTypeReturn($editable, 'rocket\spec\ei\manage\gui\Editable', $guiField, 'createEditable');
+		ArgUtils::valTypeReturn($editable, GuiFieldEditable::class, $guiField, 'getEditable');
 		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($id, $editable->createMag($id));
 		$this->savables[$id] = $editable;
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));
-		return new AssembleResult($guiField, $eiFieldWrapper, $magWrapper, $magPropertyPath, $editable->isMandatory());
+		return new AssembleResult($guiField, $eiFieldWrapper, new EditableWrapper($editable->isMandatory(), $magPropertyPath, $magWrapper));
 	}
 	
 	private function assembleGuiPropFork(GuiIdPath $guiIdPath, GuiPropFork $guiPropFork, EiPropPath $eiPropPath) {
@@ -109,24 +114,25 @@ class GuiFieldAssembler implements Savable {
 		$result = $forkedGuiField->assembleGuiField($relativeGuiIdPath);
 		$displayable = $result->getDisplayable();
 		$eiFieldWrapper = $result->getEiFieldWrapper();
-		$magPropertyPath = $result->getMagPropertyPath();
+		$editableWrapper = $result->getEditableWrapper();
 		
 		
-		if ($this->eiuEntryGui->isReadOnly() || $displayable->isReadOnly() || $magPropertyPath === null) {
+		if ($this->eiuEntryGui->isReadOnly() || $displayable->isReadOnly() || $editableWrapper === null) {
 			return new AssembleResult($displayable, $eiFieldWrapper);
 		}
 		
 		$magWrapper = null;
 		if (!isset($this->forkedPropertyPaths[$id])) {
-			$this->savables[$id] = $forkedGuiField;
 			$this->forkMagWrappers[$id] = $this->getOrCreateDispatchable()->getMagCollection()
-					->addMag($id, $forkedGuiField->buildForkMag());
+					->addMag($id, $forkedGuiField->getEditable()->getForkMag());
 			$this->forkedPropertyPaths[$id] = new PropertyPath(array(new PropertyPathPart($id)));
 		}
 		
 		/* $this->forkMagWrappers[$id] */
-		return new AssembleResult($displayable, $eiFieldWrapper, $result->getMagWrapper(), 
-				$this->forkedPropertyPaths[$id]->ext($magPropertyPath), $result->isMandatory());
+		return new AssembleResult($displayable, $eiFieldWrapper, 
+				new EditableWrapper($editableWrapper->isMandatory(), 
+						$this->forkedPropertyPaths[$id]->ext($editableWrapper->getMagPropertyPath()), 
+						$editableWrapper->getMagWrapper()));
 	}
 	
 	public function assembleGuiField(GuiIdPath $guiIdPath) {
@@ -145,33 +151,41 @@ class GuiFieldAssembler implements Savable {
 	}
 	
 	public function getForkedMagPropertyPaths() {
-		return $this->forkedPropertyPaths;
+		$propertyPaths = array();
+		foreach ($this->forkedGuiFields as $id => $forkedGuiField) {
+			if ($forkedGuiField->isReadOnly()) continue;
+			
+			$propertyPaths[] = $this->forkedPropertyPaths[$id];
+			foreach ($forkedGuiField->getEditable()->getAdditionalForkMagPropertyPaths() as $propertyPath) {
+				$propertyPaths[] = $this->forkedPropertyPaths[$id]->ext($propertyPath);
+			}
+		}
+		return $propertyPaths;
 	}
 	
 	public function getSavables() {
-		return $this->savables;
+		$savables = $this->savables;
+		
+		foreach ($this->forkedGuiFields as $id => $forkedGuiField) {
+			if ($forkedGuiField->isReadOnly()) continue;
+			
+			$savables[] = $forkedGuiField->getEditable();
+		}
+
+		return $savables;
 	}
 }
 
 class AssembleResult {
 	private $displayable;
 	private $eiFieldWrapper;
-	private $magWrapper;
-	private $magPropertyPath;
-	private $mandatory;
-// 	private $eiPropPath;
+	private $editableWrapper;
 	
 	public function __construct(Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null, 
-			MagWrapper $magWrapper = null, PropertyPath $magPropertyPath = null, bool $mandatory = null) {
+			EditableWrapper $editableWrapper = null) {
 		$this->displayable = $displayable;
 		$this->eiFieldWrapper = $eiFieldWrapper;
-		$this->magWrapper = $magWrapper;
-		$this->magPropertyPath = $magPropertyPath;
-		$this->mandatory = $mandatory;
-		
-		if ($magWrapper !== null && $magPropertyPath === null && $mandatory === null) {
-			throw new \InvalidArgumentException();
-		}
+		$this->editableWrapper = $editableWrapper;
 	}
 	
 	/**
@@ -186,50 +200,9 @@ class AssembleResult {
 	}
 	
 	/**
-	 * @return \n2n\web\dispatch\mag\MagWrapper|null
+	 * @return EditableWrapper|null
 	 */
-	public function getMagWrapper() {
-		return $this->magWrapper;
-	}
-	
-	/**
-	 * @return \n2n\web\dispatch\map\PropertyPath|null
-	 */
-	public function getMagPropertyPath() {
-		return $this->magPropertyPath;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isMandatory() {
-		return $this->mandatory;
+	public function getEditableWrapper() {
+		return $this->editableWrapper;
 	}
 }
-
-// class EiObjectForm implements Dispatchable {
-// 	private static function _annos(AnnoInit $ai) {
-// 		$ai->p('magForm', new AnnoDispObject());
-// 		$ai->p('forkedDispatchables', new AnnoDispObjectArray());
-// 	}
-	
-// 	private $MagForm;
-// 	private $forkedDispatchables = array();
-	
-// 	public function getMagForm() {
-// 		return $this->MagForm;
-// 	}
-	
-// 	public function setMagForm(MagForm $MagForm) {
-// 		$this->MagForm = $MagForm;
-// 	}
-	
-	
-// 	public function getForkedDispatchables() {
-// 		return $this->forkedDispatchables;
-// 	}
-	
-// 	public function setForkedDispatchables(array $forkedDispatchables) {
-// 		$this->forkedDispatchables = $forkedDispatchables;
-// 	}
-// }

@@ -26,7 +26,6 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\mapping\EiEntry;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -35,15 +34,14 @@ use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\mask\model\ControlOrder;
 use rocket\spec\ei\manage\control\Control;
+use rocket\spec\ei\manage\mapping\EiFieldWrapper;
 
 class EiEntryGui {
 	private $eiGui;
 	private $eiEntry;
-	private $viewMode;
 	private $treeLevel;
 	private $displayables = array();
-	private $eiFieldWrappers = array();
-// 	private $eiPropPaths = array();
+	private $editableWrappers = array();
 	private $eiEntryGuiListeners = array();
 	private $initialized = false;
 	
@@ -55,12 +53,12 @@ class EiEntryGui {
 	/**
 	 * @param EiMask $eiMask
 	 * @param int $viewMode
-	 * @param int|null $level
+	 * @param int|null $treeLevel
 	 */
-	public function __construct(EiGui $eiGui, EiEntry $eiEntry, int $level = null) {
+	public function __construct(EiGui $eiGui, EiEntry $eiEntry, int $treeLevel = null) {
 		$this->eiGui = $eiGui;
 		$this->eiEntry = $eiEntry;
-		$this->treeLevel = $level;
+		$this->treeLevel = $treeLevel;
 	}
 
 	/**
@@ -77,14 +75,24 @@ class EiEntryGui {
 		return $this->eiEntry;
 	}
 	
+	/**
+	 * @return int|null
+	 */
 	public function getTreeLevel() {
 		return $this->treeLevel;
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function isInitialized() {
 		return $this->initialized;
 	}
 		
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return \n2n\web\dispatch\map\PropertyPath
+	 */
 	public function createPropertyPath(GuiIdPath $guiIdPath) {
 		if ($this->contextPropertyPath !== null) {
 			return $this->contextPropertyPath->ext((string) $guiIdPath);
@@ -93,6 +101,10 @@ class EiEntryGui {
 		return new PropertyPath(array((string) $guiIdPath));
 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param Displayable $displayable
+	 */
 	public function putDisplayable(GuiIdPath $guiIdPath, Displayable $displayable) {
 		$this->displayables[(string) $guiIdPath] = $displayable;
 	}
@@ -220,7 +232,7 @@ class EiEntryGui {
 	 * @param EditableWrapper $editableInfo
 	 */
 	public function putEditableWrapper(GuiIdPath $guiIdPath, EditableWrapper $editableInfo) {
-		$this->editableInfos[(string) $guiIdPath] = $editableInfo;
+		$this->editableWrapper[(string) $guiIdPath] = $editableInfo;
 	}
 
 	/**
@@ -228,7 +240,7 @@ class EiEntryGui {
 	 * @return bool
 	 */
 	public function containsEditableWrapperGuiIdPath(GuiIdPath $guiIdPath): bool {
-		return isset($this->editableInfos[(string) $guiIdPath]);
+		return isset($this->editableWrapper[(string) $guiIdPath]);
 	}
 	
 	/**
@@ -239,11 +251,11 @@ class EiEntryGui {
 	public function getEditableWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
 		
-		if (!isset($this->editableInfos[$guiIdPathStr])) {
+		if (!isset($this->editableWrapper[$guiIdPathStr])) {
 			throw new GuiException('No Mag with GuiIdPath ' . $guiIdPathStr . ' registered');
 		}
 		
-		return $this->editableInfos[$guiIdPathStr];
+		return $this->editableWrapper[$guiIdPathStr];
 	}
 	
 	public function getForkMagPropertyPaths(): array {

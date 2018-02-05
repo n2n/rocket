@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\GuiField;
@@ -36,7 +36,7 @@ class ManyToOneGuiField implements GuiField {
 	private $toOneMag;
 	
 	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame, 
-			Editable $editable = null) {
+			GuiFieldEditable $editable = null) {
 		$this->label = $label;
 		$this->toOneEiField = $toOneEiField;
 		$this->targetEiFrame = $targetEiFrame;
@@ -86,7 +86,7 @@ class ManyToOneGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
 	 */
-	public function getEditable(): Editable {
+	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {
 			return $this->editable;
 		}
