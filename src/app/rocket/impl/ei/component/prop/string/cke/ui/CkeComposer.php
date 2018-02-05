@@ -18,12 +18,6 @@ class CkeComposer {
 		$this->mode = $mode;
 		return $this;
 	}
-	
-	public function bbcode(bool $bbcode) {
-		$this->bbcodeEnabled = $bbcode;
-		return $this;
-	}
-	
 	/**
 	 * @param bool $table
 	 * @return \rocket\impl\ei\component\prop\string\cke\ui\CkeComposer

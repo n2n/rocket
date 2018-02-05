@@ -45,7 +45,6 @@ class CkeEiProp extends AlphanumericEiProp {
 	private $ckeLinkProviderLookupIds;
 	private $ckeCssConfigLookupId = null;
 	private $tableSupported = false;
-	private $bbcodeEnabled = false;
 	
 	public function __construct() {
 		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::bulky());
@@ -104,17 +103,6 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function setTableSupported(bool $tableSupported) {
 		$this->tableSupported = $tableSupported;
 	}
-		
-	/**
-	 * @return bool 
-	 */
-	public function isBbcodeEnabled() {
-		return $this->bbcodeEnabled;
-	}
-	
-	public function setBbcodeEnabled(bool $bbcodeEnabled) {
-		$this->bbcodeEnabled = $bbcodeEnabled;
-	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
@@ -129,10 +117,6 @@ class CkeEiProp extends AlphanumericEiProp {
 			$linkProviders[] = $view->lookup($linkProviderLookupId);
 		}
 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
-		
-		if ($this->bbcodeEnabled) {
-			return $ckeHtmlBuidler->getIframe($value, $this->obtainCssConfiguration());
-		}
 
 		return $ckeHtmlBuidler->getIframe((string) $value, $ckeCss, $linkProviders);
 	}
@@ -140,7 +124,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function createMag(Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
+				null, $this->getMaxlength(), $this->getMode(),
 				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
 	}
 	
