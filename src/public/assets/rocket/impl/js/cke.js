@@ -321,9 +321,9 @@
 			this.bodyClass = jqElem.data("body-class") || null;
 			
 			(function(that) {
-				this.document.open();
-				this.document.write(jqElem.data("content-html-json"));
-				this.document.close();
+//				this.document.open();
+//				this.document.write(jqElem.data("content-html-json"));
+//				this.document.close();
 				this.configureIframe();
 			}).call(this, this);
 		};
@@ -332,6 +332,7 @@
 			var jqElemDocument = $(this.document),
 				jqElemBody = jqElemDocument.find("body:first"),
 				jqElemHead = jqElemDocument.find("head:first");
+			
 			
 			if (null !== this.contentsCss) {
 				for (var i in this.contentsCss) {
@@ -346,6 +347,12 @@
 			if (null !== this.bodyClass) {
 				jqElemBody.addClass(this.bodyClass);
 			}
+			
+			jqElemBody.append(this.jqElem.data("content-html-json"));
+			
+			var containerHeight = jqElemBody.outerHeight(true, true);
+			containerHeight = (containerHeight > 400) ? 400 : containerHeight;
+			jqElemBody.height(containerHeight);
 		};
 		
 		$(elements).find(".rocket-cke-detail").each(function () {
