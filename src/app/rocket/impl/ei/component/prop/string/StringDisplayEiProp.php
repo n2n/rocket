@@ -181,7 +181,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString($eiObject, $n2nLocale)
 	 */
-	public function buildIdentityString(\rocket\spec\ei\manage\EiObject $eiObject, \n2n\l10n\N2nLocale $n2nLocale) {
+	public function buildIdentityString(\rocket\spec\ei\manage\EiObject $eiObject, \n2n\l10n\N2nLocale $n2nLocale): ?string {
 		return $this->read($eiObject);
 	}
 
