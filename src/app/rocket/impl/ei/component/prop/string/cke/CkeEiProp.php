@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke;
 
-use n2n\core\N2N;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\reflection\ArgUtils;
@@ -119,19 +118,20 @@ class CkeEiProp extends AlphanumericEiProp {
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
-		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
-		if ($this->bbcodeEnabled) {
-			return $ckeHtmlBuidler->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
-		}
 
 		$ckeCss = null;
 		if ($this->ckeCssConfigLookupId !== null) {
-			$ckeCss = N2N::getLookupManager()->lookup($this->ckeCssConfigLookupId);
+			$ckeCss = $view->lookup($this->ckeCssConfigLookupId);
 		}
 
 		$linkProviders = array();
 		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
-			$linkProviders[] = N2N::getLookupManager()->lookup($linkProviderLookupId);
+			$linkProviders[] = $view->lookup($linkProviderLookupId);
+		}
+		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
+		
+		if ($this->bbcodeEnabled) {
+			return $ckeHtmlBuidler->getIframe($value, $this->obtainCssConfiguration());
 		}
 
 		return $ckeHtmlBuidler->getIframe((string) $value, $ckeCss, $linkProviders);

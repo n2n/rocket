@@ -115,6 +115,7 @@
 							break;
 						}
 					}
+					
 					if (retval.type) break;
 				}
 				
@@ -295,6 +296,8 @@
 					if (null != linkConfigurations[data.type]) {
 						if (linkConfigurations[data.type]['open-in-new-window']) {
 							set[ 'target' ] = '_blank';
+						} else {
+							data.target.type = 'notSet';
 						}
 						set[ 'data-cke-saved-href' ] = data[data.type + "Url"];
 						url = data[data.type + "Url"];

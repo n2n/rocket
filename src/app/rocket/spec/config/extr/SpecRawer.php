@@ -88,7 +88,7 @@ class SpecRawer {
 			$rawData[$eiTypeId] = $eiMasksRawData;
 		}
 		
-		$this->attributes->set(RawDef::COMMON_EI_MASKS_KEY, $rawData);
+		$this->attributes->set(RawDef::EI_MASKS_KEY, $rawData);
 	}
 	
 	public function rawEiModificatorExtractionGroups(array $eiModificatorExtractionGroups) {

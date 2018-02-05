@@ -26,13 +26,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
 use n2n\l10n\N2nLocale;
 use n2n\util\uri\Url;
-use n2n\reflection\ArgUtils;
-use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\util\uri\UnavailableUrlException;
-use rocket\impl\ei\component\prop\string\wysiwyg\WysiwygStyle;
 use n2n\reflection\CastUtils;
+use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
 
 class CkeHtmlBuilder {
 
@@ -113,9 +111,12 @@ class CkeHtmlBuilder {
 		if ($ckeCssConfig !== null) {
 			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
 			$attrs['bodyClass'] = $ckeCssConfig->getBodyClass();
-			$attrs['contentsCss'] = $ckeCssConfig->getContentCssPaths($this->view);
+			$attrs['contentsCss'] = $this->getCssPaths($ckeCssConfig);
+			
 			$attrs['additionalStyles'] = StringUtils::jsonEncode(
 					$this->prepareAdditionalStyles($ckeCssConfig->getAdditionalStyles()));
+			
+			$attrs['formatTags'] = implode(';', (array) $ckeCssConfig->getFormatTags());
 		}
 
 		$attrs = array('class' => 'rocket-impl-cke-classic', 'data-rocket-impl-toolbar' => json_encode($attrs),
@@ -145,7 +146,7 @@ class CkeHtmlBuilder {
 	}
 
 	private function getCssPaths(CkeCssConfig $cssConfig) {
-		if (empty($cssPaths = $cssConfig->getContentCssPaths($this->view))) {
+		if (empty($cssPaths = $cssConfig->getContentCssUrls($this->view))) {
 			return array();
 		}
 
@@ -187,86 +188,9 @@ class CkeHtmlBuilder {
 	private function prepareAdditionalStyles($additionalStyles) {
 		$encodable = array();
 		foreach ((array) $additionalStyles as $style) {
-			CastUtils::assertTrue($style instanceof WysiwygStyle);
+			CastUtils::assertTrue($style instanceof CkeStyle);
 			$encodable[] = $style->getValueForJsonEncode();
 		}
 		return $encodable;
-	}
-}
-
-class Cke {
-	/**
-	 * @return CkeComposer
-	 */
-	public static function classic() {
-		return new CkeComposer();
-	}
-}
-
-class CkeComposer {
-	private $mode = CkeEiProp::MODE_NORMAL;
-	private $bbcodeEnabled = false;
-	private $tableEnabled = false;
-
-	public function __construct() {
-	}
-
-	/**
-	 * @param string $mode
-	 * @return \rocket\impl\ei\component\prop\string\cke\ui\CkeComposer
-	 */
-	public function mode(string $mode) {
-		ArgUtils::valEnum($mode, CkeEiProp::getModes());
-		$this->mode = $mode;
-		return $this;
-	}
-
-	public function bbcode(bool $bbcode) {
-		$this->bbcodeEnabled = $bbcode;
-		return $this;
-	}
-
-	/**
-	 * @param bool $table
-	 * @return \rocket\impl\ei\component\prop\string\cke\ui\CkeComposer
-	 */
-	public function table(bool $table) {
-		$this->tableEnabled = $table;
-		return $this;
-	}
-
-	/**
-	 * @return \rocket\impl\ei\component\prop\string\cke\ui\CkeConfig
-	 */
-	public function toCkeConfig() {
-		return new CkeConfig($this->mode, $this->tableEnabled, $this->bbcodeEnabled);
-	}
-}
-
-class CkeConfig {
-	private $mode;
-	private $tableEnabled;
-	private $bbcodeEnabled;
-
-	public function __construct(string $mode, bool $tablesEnabled, bool $bbcodeEnabled) {
-		$this->mode = $mode;
-		$this->tableEnabled = $tablesEnabled;
-		$this->bbcodeEnabled = $bbcodeEnabled;
-	}
-	
-	public function getMode() {
-		return $this->mode;
-	}
-	
-	public function isTablesEnabled() {
-		return $this->tableEnabled;
-	}
-
-	public function isBbcodeEnabled() {
-		return $this->bbcodeEnabled;
-	}
-
-	public static function createDefault() {
-		return new CkeConfig(CkeEiProp::MODE_NORMAL, false, false);
 	}
 }
