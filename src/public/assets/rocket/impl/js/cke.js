@@ -352,7 +352,7 @@
 			
 			var containerHeight = jqElemBody.outerHeight(true, true);
 			containerHeight = (containerHeight > 400) ? 400 : containerHeight;
-			jqElemBody.height(containerHeight);
+			this.jqElem.outerHeight(containerHeight);
 		};
 		
 		$(elements).find(".rocket-cke-detail").each(function () {
