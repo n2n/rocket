@@ -140,11 +140,14 @@
 			
 			//bbcodify options
 			var newToolbar = new Array();
+			
 			for (var i in toolbar) {
 				var toolbarItem = toolbar[i],
 					newToolbarItems = new Array();
+				console.log(toolbarItem.name)
 				for (var j in toolbarItem.items) {
-					if (Wysiwyg.bbCodePossibleToolbarItems[toolbarItem.name].hasOwnProperty(j)) {
+					if (Cke.bbCodePossibleToolbarItems.hasOwnProperty(toolbarItem.name) && 
+							Cke.bbCodePossibleToolbarItems[toolbarItem.name].hasOwnProperty(j)) {
 						newToolbarItems.push(toolbarItem.items[j]);
 					}
 				}
@@ -166,15 +169,12 @@
 				additionalStyles = configOptions["additionalStyles"] || [],
 				bodyId = configOptions["bodyId"] || null,
 				bodyClass = configOptions["bodyClass"] || null,
-				formatTags = this.jqElem.data("format-tags"),
+				formatTags = configOptions["formatTags"],
 				options = new Object();
 			
+			console.log(configOptions);
 			
-//			if (contentsCssUnFormatted) {
-//				contentsCss = $.parseJSON(contentsCssUnFormatted.replace(/'/g, '"'));
-//			}
-			
-			options.toolbar = this.getToolbar(configOptions['mode'], configOptions['tablesEnabled'] || false, bbcode, 
+			options.toolbar = this.getToolbar(configOptions['mode'], configOptions['tableEditing'] || false, bbcode, 
 					additionalStyles.length > 0);
 			options.extraPlugins = '';
 			if (bbcode) {
@@ -211,8 +211,9 @@
 			
 			var stylesSet = this.defaultStylesSet;
 			if (additionalStyles.length > 0) {
-				stylesSet = $.extend([], stylesSet, additionalStyles);
+				stylesSet = stylesSet.concat(additionalStyles);
 			}
+			
 			options.stylesSet = stylesSet;
 			return options;
 		}
@@ -312,13 +313,16 @@
 			this.jqElem = jqElem;
 			this.document = jqElem.get(0).contentWindow.document;
 			
-			this.contentsCss = JSON.parse(jqElem.data("contentsCss").replace(/'/g, '"')) || null;
-			this.bodyId = jqElem.data("bodyId") || null;
-			this.bodyClass = jqElem.data("bodyClass") || null;
+			this.contentsCss =  jqElem.data("contents-css") || null;
+			if (this.contentsCss !== null) {
+				this.contentsCss = JSON.parse(this.contentsCss.replace(/'/g, '"'))
+			}
+			this.bodyId = jqElem.data("body-id") || null;
+			this.bodyClass = jqElem.data("body-class") || null;
 			
 			(function(that) {
 				this.document.open();
-				this.document.write(elemJq.data("content-html-json"));
+				this.document.write(jqElem.data("content-html-json"));
 				this.document.close();
 				this.configureIframe();
 			}).call(this, this);
@@ -336,11 +340,11 @@
 			}
 			
 			if (null !== this.bodyId) {
-				jqElemBody.attr("id", bodyId);
+				jqElemBody.attr("id", this.bodyId);
 			}
 			
 			if (null !== this.bodyClass) {
-				jqElemBody.addClass(bodyClass);
+				jqElemBody.addClass(this.bodyClass);
 			}
 		};
 		
@@ -348,26 +352,4 @@
 			new WysiwygIframe($(this));
 		});
 	});
-
-	function configureIframe(document, contentsCss, bodyId, bodyClass) {
-		var jqElem = $(document)
-		var jqElemIFrameBody = $(document).find("body:first");
-
-		if (null !== contentsCss) {
-			var contentsCss = JSON.parse(contentsCss.replace(/'/g, '"'))
-			var jqElemIFrameHead = jqElem.contents().find("head:first");
-			for (var i in contentsCss) {
-				jqElemIFrameHead.append($("<link />", { href: contentsCss[i], rel: "stylesheet", media: "screen"}));
-			}
-			
-		}
-
-		if (bodyId != null) {
-			jqElemIFrameBody.attr("id", bodyId);
-		}
-
-		if (bodyClass != null) {
-			jqElemIFrameBody.addClass(bodyClass);
-		}
-	};
 })();
