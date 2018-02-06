@@ -106,6 +106,10 @@ class RocketUiOutfitter implements UiOutfitter {
 			return $container;
 		}
 
+		if ($elemNature & self::EL_NATURE_CHECK_WRAPPER) {
+			return new HtmlElement('div', array('class' => 'form-check'), $contents);
+		}
+
 		return new HtmlSnippet($contents);
 	}
 
