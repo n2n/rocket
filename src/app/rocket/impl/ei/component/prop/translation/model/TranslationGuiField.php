@@ -38,6 +38,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\GuiFieldForkEditable;
 use rocket\spec\ei\manage\gui\EditableWrapper;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
+use n2n\impl\web\ui\view\html\HtmlUtils;
 
 class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;
@@ -57,6 +58,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 	private $activeN2nLocaleIds = array();
 	
 	private $translationForm;
+	private $markClassKey;
 	private $copyUrl;
 		
 	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label, int $minNumTranslations) {
@@ -118,6 +120,14 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 		}
 	}
 	
+	private function getMarkClassKey() {
+		if ($this->markClassKey !== null) {
+			return $this->markClassKey;
+		}
+		
+		return $this->markClassKey = HtmlUtils::buildUniqueId();
+	}
+	
 	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult {
 		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
@@ -152,7 +162,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
 			
 			if ($translationMag === null) {
-				$translationMag = new TranslationMag($label);
+				$translationMag = new TranslationMag($label, $this->getMarkClassKey());
 			}
 			
 			if (null !== ($editableWrapper = $result->getEditableWrapper())) {
@@ -195,7 +205,8 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 			throw new IllegalStateException();
 		}
 		
-		return new ForkMag($this->label, $this->translationForm, $this->n2nLocaleDefs, $this->min);
+		return new ForkMag($this->label, $this->translationForm, $this->n2nLocaleDefs, $this->min,
+				$this->getMarkClassKey());
 	}
 	
 	public function getAdditionalForkMagPropertyPaths(): array {

@@ -7045,7 +7045,7 @@ var Rocket;
                     else {
                         jqBase = se.jQuery;
                     }
-                    jqBase.find(".rocket-impl-translatable").each((i, elem) => {
+                    jqBase.find(".rocket-impl-translatable-" + jqElem.data("rocket-impl-mark-class-key")).each((i, elem) => {
                         let elemJq = $(elem);
                         if (Translatable.test(elemJq)) {
                             return;

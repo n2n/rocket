@@ -40,6 +40,8 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\manage\util\model\EiuEntry;
 
 class TranslationMag extends MagAdapter {
+	private $markClassKey;
+	
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	private $fieldErrorInfos = array();
@@ -49,8 +51,9 @@ class TranslationMag extends MagAdapter {
 	 */
 	private $copyUrls = array();
 
-	public function __construct($label) {
+	public function __construct($label, string $markClassKey) {
 		parent::__construct($label);
+		$this->markClassKey = $markClassKey;
 	}
 
 	public function createManagedProperty(AccessProxy $accessProxy): ManagedProperty {
@@ -118,6 +121,7 @@ class TranslationMag extends MagAdapter {
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
 				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
 						'label' => $this->getLabel($view->getN2nLocale()),
-						'copyUrlDefs' => $copyUrlDefs, 'eiuEntries' => $this->eiuEntries));
+						'copyUrlDefs' => $copyUrlDefs, 'eiuEntries' => $this->eiuEntries,
+						'markClassKey' => $this->markClassKey));
 	}
 }

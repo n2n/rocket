@@ -124,8 +124,6 @@ class GuiDefinition {
 		return $this->levelGuiPropForks[$id];
 	}
 	
-	
-	
 	public function getGuiProps() {
 		return $this->buildGuiProps(array());
 	}

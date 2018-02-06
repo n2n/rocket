@@ -48,6 +48,7 @@ class TranslationForm implements Dispatchable {
 	
 	private $mandatoryN2nLocaleIds = array();
 	private $label;
+	private $markClassKey;
 	private $availableDispatchables = array();
 	
 	protected $translationMagForm;
@@ -59,6 +60,10 @@ class TranslationForm implements Dispatchable {
 		
 		$this->translationMagForm = new MagForm(new MagCollection());		
 		$this->dispatchables = array();
+	}
+	
+	public function getMarkClassKey() {
+		return $this->markClassKey;
 	}
 	
 	public function getDispatchables() {
