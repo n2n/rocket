@@ -25,8 +25,8 @@ use rocket\spec\ei\EiPropPath;
 
 interface EiEntryConstraint {
 	/**
-	 * @param unknown $id
-	 * @param unknown $value
+	 * @param EiPropPath $eiPropPath
+	 * @param mixed $value
 	 * @return boolean
 	 */
 	public function acceptsValue(EiPropPath $eiPropPath, $value): bool;

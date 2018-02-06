@@ -219,9 +219,9 @@ class FileEiProp extends DraftableEiPropAdapter {
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		$file = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
-		if ($file === null) return;
+		if ($file === null) return null;
 		
 		CastUtils::assertTrue($file instanceof File);
 		

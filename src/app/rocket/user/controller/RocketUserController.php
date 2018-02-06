@@ -21,7 +21,6 @@
  */
 namespace rocket\user\controller;
 
-use rocket\core\model\Rocket;
 use rocket\core\model\RocketState;
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Breadcrumb;
@@ -32,7 +31,6 @@ use n2n\web\http\PageNotFoundException;
 use rocket\user\model\LoginContext;
 use rocket\user\model\RocketUserDao;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\user\bo\User;
 use rocket\user\bo\RocketUser;
 
 class RocketUserController extends ControllerAdapter {

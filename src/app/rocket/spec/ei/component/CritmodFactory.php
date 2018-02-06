@@ -158,21 +158,21 @@ class CritmodFactory {
 // 		return self::createSortModelInstance($eiFrame->getContextEiMask()->getEiEngine()->getEiType(), $eiFrame->getN2nContext());
 // 	}
 	
-	public static function createSortModel() {
-		$sortModel = new SortModel();
-		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof SortableEiProp)) continue;
+// 	public static function createSortModel() {
+// 		$sortModel = new SortModel();
+// 		foreach ($this->eiPropCollection as $id => $eiProp) {
+// 			if (!($eiProp instanceof SortableEiProp)) continue;
 			
-			if (null !== ($sortItem = $eiProp->getSortItem())) {
-				$sortModel->putSortItem($id, $eiProp->getSortItem());
-			}
+// 			if (null !== ($sortItem = $eiProp->getSortItem())) {
+// 				$sortModel->putSortItem($id, $eiProp->getSortItem());
+// 			}
 			
-			if (null !== ($sortItemFork = $eiProp->getSortItemFork())) {
-				$sortModel->putSortItemFork($id, $eiProp->getSortItemFork());
-			}
-		}
-		return $sortModel;
-	}
+// 			if (null !== ($sortItemFork = $eiProp->getSortItemFork())) {
+// 				$sortModel->putSortItemFork($id, $eiProp->getSortItemFork());
+// 			}
+// 		}
+// 		return $sortModel;
+// 	}
 		
 // 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();

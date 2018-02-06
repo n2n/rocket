@@ -21,14 +21,6 @@
  */
 namespace rocket\spec\ei\manage\critmod\filter;
 
-use rocket\spec\ei\manage\critmod\filter\FilterField;
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
-use rocket\spec\ei\manage\critmod\filter\data\FilterDataElement;
-use rocket\spec\ei\manage\critmod\filter\data\FilterDataUsage;
-use rocket\spec\ei\manage\critmod\filter\data\FilterDataGroup;
-use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\util\config\AttributesException;
 

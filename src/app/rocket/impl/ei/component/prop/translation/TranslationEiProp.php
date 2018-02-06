@@ -68,6 +68,7 @@ use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchField;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 use rocket\spec\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
+use rocket\spec\ei\manage\gui\GuiProp;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -153,14 +154,14 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\prop\EiProp::getGuiProp()
 	 */
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return null;
 	}
 
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\component\prop\EiProp::getGuiPropFork()
 	 */
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return $this;
 	}
 	
@@ -231,7 +232,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return $translationGuiField;
 	}
 	
-	public function determineForkedEiObject(EiObject $eiObject) {
+	public function determineForkedEiObject(EiObject $eiObject): ?EiObject {
 		// @todo access locale and use EiObject with admin locale.
 		return ArrayUtils::first($this->read($eiObject));
 	}

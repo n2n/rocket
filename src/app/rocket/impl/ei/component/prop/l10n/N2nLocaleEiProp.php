@@ -46,6 +46,9 @@ use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\spec\ei\component\prop\GenericEiProp;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 use n2n\core\config\WebConfig;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\spec\ei\manage\critmod\sort\SortField;
+use rocket\spec\ei\manage\generic\GenericEiProperty;
 
 class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp {
@@ -107,7 +110,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 // 		$attributes->set($this->id, $attributeValue);
 // 	}
 
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		$value = $this->read($eiObject);
 		if (null === ($parsedN2nLocale = N2nLocale::create($value))) return $value;
 		return $this->generateDisplayNameForN2nLocale($parsedN2nLocale, $n2nLocale);
@@ -144,11 +147,11 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 // 		return count($this->n2nLocales) > 1;
 // 	}
 
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		return new N2nLocaleFilterField(CrIt::p($this->entityProperty), $this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($n2nContext->lookup(WebConfig::class), $n2nContext->getN2nLocale()));
 	}
@@ -157,15 +160,15 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame) {
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
-	public function buildSortField(N2nContext $n2nContext) {
+	public function buildSortField(N2nContext $n2nContext): ?SortField {
 		return new SimpleSortField(CrIt::p($this->entityProperty), $this->getLabelLstr());
 	}
 	
-	public function getGenericEiProperty() {
+	public function getGenericEiProperty(): ?GenericEiProperty {
 		if ($this->entityProperty === null) return null;
 		
 		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty));

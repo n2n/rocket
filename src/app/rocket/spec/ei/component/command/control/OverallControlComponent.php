@@ -29,9 +29,9 @@ interface OverallControlComponent {
 	public function getOverallControlOptions(N2nLocale $n2nLocale);
 	
 	/**
-	 * @param EntryModel $entryModel
+	 * @param Eiu $eiu
 	 * @param HtmlView $view
 	 * @return \rocket\spec\ei\manage\control\ControlButton[]
 	 */
-	public function createOverallControls(Eiu $eiu, HtmlView $htmlView): array;
+	public function createOverallControls(Eiu $eiu, HtmlView $view): array;
 }

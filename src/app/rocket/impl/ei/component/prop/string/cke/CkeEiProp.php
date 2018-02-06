@@ -21,11 +21,9 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke;
 
-use n2n\core\N2N;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\reflection\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\spec\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
@@ -47,7 +45,6 @@ class CkeEiProp extends AlphanumericEiProp {
 	private $ckeLinkProviderLookupIds;
 	private $ckeCssConfigLookupId = null;
 	private $tableSupported = false;
-	private $bbcodeEnabled = false;
 	
 	public function __construct() {
 		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::bulky());
@@ -106,34 +103,20 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function setTableSupported(bool $tableSupported) {
 		$this->tableSupported = $tableSupported;
 	}
-		
-	/**
-	 * @return bool 
-	 */
-	public function isBbcodeEnabled() {
-		return $this->bbcodeEnabled;
-	}
-	
-	public function setBbcodeEnabled(bool $bbcodeEnabled) {
-		$this->bbcodeEnabled = $bbcodeEnabled;
-	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
-		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
-		if ($this->bbcodeEnabled) {
-			return $ckeHtmlBuidler->getWysiwygIframeBbcode($value, $this->obtainCssConfiguration());
-		}
 
 		$ckeCss = null;
 		if ($this->ckeCssConfigLookupId !== null) {
-			$ckeCss = N2N::getLookupManager()->lookup($this->ckeCssConfigLookupId);
+			$ckeCss = $view->lookup($this->ckeCssConfigLookupId);
 		}
 
 		$linkProviders = array();
 		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
-			$linkProviders[] = N2N::getLookupManager()->lookup($linkProviderLookupId);
+			$linkProviders[] = $view->lookup($linkProviderLookupId);
 		}
+		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
 		return $ckeHtmlBuidler->getIframe((string) $value, $ckeCss, $linkProviders);
 	}
@@ -141,7 +124,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function createMag(Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-				null, $this->getMaxlength(), $this->getMode(), $this->isBbcodeEnabled(),
+				null, $this->getMaxlength(), $this->getMode(),
 				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
 	}
 	

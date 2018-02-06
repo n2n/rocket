@@ -22,13 +22,8 @@
 namespace rocket\spec\ei\component;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\component\EiComponent;
-use rocket\spec\ei\component\UnknownEiComponentException;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\IdPath;
-use rocket\spec\ei\component\EiComponentCollection;
-use rocket\spec\ei\component\IndependentEiComponent;
 use rocket\spec\ei\EiEngine;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
@@ -99,7 +94,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @param unknown $id
+	 * @param string $id
 	 * @return EiComponent
 	 * @throws UnknownEiComponentException
 	 */
@@ -130,7 +125,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @param unknown $idBase
+	 * @param string $idBase
 	 * @return string
 	 */
 	private function makeUniqueId($idBase) {
@@ -302,7 +297,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @param unknown $id
+	 * @param string $id
 	 */
 	public function removeById($id) {
 		if (isset($this->elements[$id])) {
@@ -343,9 +338,9 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @param unknown $id
+	 * @param string $id
 	 */
-	public function disableInheritById($id) {
+	public function disableInheritById(string $id) {
 		$this->disabledInheritIds[$id] = $id;
 	}
 	

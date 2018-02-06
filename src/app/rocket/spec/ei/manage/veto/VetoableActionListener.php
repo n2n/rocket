@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\veto;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 
 interface VetoableActionListener {
 	

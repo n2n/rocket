@@ -24,7 +24,6 @@ namespace rocket\spec\ei\security;
 use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\EiCommandPath;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\security\EiPropAccess;
 use rocket\spec\ei\manage\mapping\EiEntry;
 
 interface EiExecution {

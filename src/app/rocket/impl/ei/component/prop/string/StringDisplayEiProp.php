@@ -43,6 +43,8 @@ use rocket\impl\ei\component\prop\adapter\ObjectPropertyConfigurable;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
@@ -89,7 +91,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\prop\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 
@@ -97,9 +99,8 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\component\prop\GuiEiProp::getGuiPropFork()
 	 */
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
-		
 	}
 	/**
 	 * {@inheritDoc}
@@ -164,7 +165,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField($eiu)
 	 */
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new StatelessDisplayElement($this, $eiu);
 	}
 
@@ -180,7 +181,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString($eiObject, $n2nLocale)
 	 */
-	public function buildIdentityString(\rocket\spec\ei\manage\EiObject $eiObject, \n2n\l10n\N2nLocale $n2nLocale) {
+	public function buildIdentityString(\rocket\spec\ei\manage\EiObject $eiObject, \n2n\l10n\N2nLocale $n2nLocale): ?string {
 		return $this->read($eiObject);
 	}
 

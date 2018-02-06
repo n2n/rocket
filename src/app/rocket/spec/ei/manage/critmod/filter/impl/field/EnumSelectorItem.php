@@ -22,10 +22,10 @@
 namespace rocket\spec\ei\manage\critmod\filter\impl\field;
 
 // use n2n\util\ex\IllegalStateException;
-use n2n\l10n\Message;
-use rocket\spec\ei\manage\critmod\SelectorConstraint;
-use n2n\util\config\Attributes;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
+// use n2n\l10n\Message;
+// use rocket\spec\ei\manage\critmod\SelectorConstraint;
+// use n2n\util\config\Attributes;
+// use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 
 // class EnumSelectorItem extends EnumFilterField implements SelectorItem {
 	

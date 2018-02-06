@@ -28,6 +28,9 @@ use n2n\web\ui\view\View;
 abstract class CkeLinkProviderAdapter implements CkeLinkProvider {
 	
 	public function buildUrl(string $key, View $view, N2nLocale $n2nLocale) {
+		$linkOptions = $this->getLinkOptions($n2nLocale);
+		if (isset($linkOptions[$key])) return $linkOptions[$key];
+		
 		return null;
 	}
 	

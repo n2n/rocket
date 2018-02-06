@@ -45,6 +45,9 @@ use rocket\spec\ei\manage\mapping\impl\Validatable;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\mapping\impl\Copyable;
+use rocket\spec\ei\manage\gui\GuiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\gui\GuiProp;
 
 abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
@@ -121,15 +124,27 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		}
 	}
 	
-	public function getGuiProp() {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiProp()
+	 */
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork() {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiPropFork()
+	 */
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
 	}
 	
-	public function buildGuiField(Eiu $eiu) {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::buildGuiField()
+	 */
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new StatelessEditElement($this, $eiu);
 	}
 	

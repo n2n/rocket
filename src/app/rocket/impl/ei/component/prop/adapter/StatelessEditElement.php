@@ -23,11 +23,11 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use n2n\web\dispatch\mag\Mag;
 use rocket\spec\ei\manage\util\model\Eiu;
 
-class StatelessEditElement extends StatelessDisplayElement implements Editable {
+class StatelessEditElement extends StatelessDisplayElement implements GuiFieldEditable {
 	private $statelessEditable;
 	private $eiu;
 	private $mag;
@@ -47,7 +47,7 @@ class StatelessEditElement extends StatelessDisplayElement implements Editable {
 		return $this->statelessEditable->isReadOnly($this->eiu);
 	}
 	
-	public function getEditable(): Editable {
+	public function getEditable(): GuiFieldEditable {
 		return $this;
 	}
 	

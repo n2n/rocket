@@ -43,6 +43,8 @@ use rocket\spec\ei\manage\critmod\filter\impl\field\BoolFilterField;
 use rocket\spec\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\spec\ei\manage\critmod\sort\SortField;
 
 class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp {
 
@@ -96,11 +98,11 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		return new BoolMag($this->getLabelLstr(), true);
 	}
 
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		return $this->buildEiEntryFilterField($n2nContext);
 	}
 	
@@ -108,11 +110,11 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		return new BoolFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame) {
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
-	public function buildSortField(N2nContext $n2nContext) {
+	public function buildSortField(N2nContext $n2nContext): ?SortField {
 		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 }

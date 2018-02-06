@@ -25,11 +25,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\context\Lookupable;
 
 interface CkeCssConfig extends Lookupable {
-	public function getContentCssPaths(HtmlView $view);
+	public function getContentCssUrls(HtmlView $view);
 	public function getBodyId();
 	public function getBodyClass();
 	/**
-	 * @return \rocket\impl\ei\component\prop\string\wysiwyg\WysiwygStyle[]
+	 * @return rocket\impl\ei\component\prop\string\cke\model\CkeStyleCkeStyle[]
 	 */
 	public function getAdditionalStyles();
 	/**

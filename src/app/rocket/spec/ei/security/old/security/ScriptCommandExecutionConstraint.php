@@ -19,83 +19,84 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\security;
+// namespace rocket\spec\ei\security;
 
-use rocket\spec\ei\manage\security\CommandExecutionConstraint;
-use rocket\spec\ei\manage\mapping\MappingValidationResult;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use n2n\persistence\orm\criteria\Criteria;
-use rocket\spec\ei\manage\critmod\SelectorValidationResult;
-use n2n\l10n\MessageCode;
-use rocket\spec\ei\manage\security\MappingArrayAccess;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use n2n\persistence\orm\criteria\item\CriteriaConstant;
+// use rocket\spec\ei\manage\security\CommandExecutionConstraint;
+// use rocket\spec\ei\manage\mapping\MappingValidationResult;
+// use n2n\persistence\orm\criteria\compare\CriteriaComparator;
+// use n2n\persistence\orm\criteria\Criteria;
+// use rocket\spec\ei\manage\critmod\SelectorValidationResult;
+// use n2n\l10n\MessageCode;
+// use rocket\spec\ei\manage\security\MappingArrayAccess;
+// use rocket\spec\ei\manage\mapping\EiEntry;
+// use n2n\persistence\orm\criteria\item\CriteriaConstant;
+// use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
-class EiCommandExecutionConstraint implements CommandExecutionConstraint {
-	private $privilegesGrantItems = array();
+// class EiCommandExecutionConstraint implements CommandExecutionConstraint {
+// 	private $privilegesGrantItems = array();
 	
-	public function __construct(array $privilegesGrantItems) {
-		$this->privilegesGrantItems = $privilegesGrantItems;
-	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValues()
-	 */
-	public function acceptValues(\ArrayAccess $values) {
-		foreach ($this->privilegesGrantItems as $item) {
-			if ($item->acceptValues($values)) return true;
-		}
+// 	public function __construct(array $privilegesGrantItems) {
+// 		$this->privilegesGrantItems = $privilegesGrantItems;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValues()
+// 	 */
+// 	public function acceptValues(\ArrayAccess $values) {
+// 		foreach ($this->privilegesGrantItems as $item) {
+// 			if ($item->acceptValues($values)) return true;
+// 		}
 		
-		return false;
-	}
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValue()
-	 */
-	public function acceptValue($id, $value) {
-		foreach ($this->privilegesGrantItems as $item) {
-			if ($item->acceptValue($id, $value)) return true;
-		}
+// 		return false;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\mapping\EiEntryConstraint::acceptValue()
+// 	 */
+// 	public function acceptValue($id, $value) {
+// 		foreach ($this->privilegesGrantItems as $item) {
+// 			if ($item->acceptValue($id, $value)) return true;
+// 		}
 		
-		return false;
-	}
+// 		return false;
+// 	}
 
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\mapping\MappingValidator::validate()
-	 */
-	public function validate(EiEntry $eiEntry) {
-		$values = new MappingArrayAccess($eiEntry, false);
-		$validationResults = array();
-		foreach ($this->privilegesGrantItems as $accessGrants) {
-			$validationResult = new SelectorValidationResult();
-			if ($accessGrants->validateValues($values, $validationResult)) {
-				return true;
-			}
-			$validationResults[] = $validationResult;
-		}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\mapping\MappingValidator::validate()
+// 	 */
+// 	public function validate(EiEntry $eiEntry) {
+// 		$values = new MappingArrayAccess($eiEntry, false);
+// 		$validationResults = array();
+// 		foreach ($this->privilegesGrantItems as $accessGrants) {
+// 			$validationResult = new SelectorValidationResult();
+// 			if ($accessGrants->validateValues($values, $validationResult)) {
+// 				return true;
+// 			}
+// 			$validationResults[] = $validationResult;
+// 		}
 		
-		$mappingValidationResult->addError(null, new MessageCode('no_access_to_values'));
+// 		$mappingValidationResult->addError(null, new MessageCode('no_access_to_values'));
 		
-		return false;
-	}
+// 		return false;
+// 	}
 
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\critmod\CriteriaConstraint::applyToCriteria()
-	 */
-	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias) {
-		$comparatorConstraints = array();
-		foreach ($this->privilegesGrantItems as $privilegesGrantItem) {
-			$comparatorConstraint = $privilegesGrantItem->getComparatorConstraint();
-			if ($comparatorConstraint === null) return;
-			$comparatorConstraints[] = $comparatorConstraint;
-		}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\spec\ei\manage\critmod\CriteriaConstraint::applyToCriteria()
+// 	 */
+// 	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias) {
+// 		$comparatorConstraints = array();
+// 		foreach ($this->privilegesGrantItems as $privilegesGrantItem) {
+// 			$comparatorConstraint = $privilegesGrantItem->getComparatorConstraint();
+// 			if ($comparatorConstraint === null) return;
+// 			$comparatorConstraints[] = $comparatorConstraint;
+// 		}
 		
-		if (0 == count($comparatorConstraints)) {
-			$group = $criteria->where()->andMatch(new CriteriaConstant(1), '=', new CriteriaConstant(2));
-		}
+// 		if (0 == count($comparatorConstraints)) {
+// 			$group = $criteria->where()->andMatch(new CriteriaConstant(1), '=', new CriteriaConstant(2));
+// 		}
 		
-		$group = $criteria->where()->andGroup();
-		foreach ($comparatorConstraints as $comparatorConstraint) {
-			$comparatorConstraint->applyToCriteriaComparator($group, $alias, false);
-		}	
-	}
+// 		$group = $criteria->where()->andGroup();
+// 		foreach ($comparatorConstraints as $comparatorConstraint) {
+// 			$comparatorConstraint->applyToCriteriaComparator($group, $alias, false);
+// 		}	
+// 	}
 
-}
+// }

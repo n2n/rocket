@@ -39,6 +39,7 @@ use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\spec\ei\manage\gui\GuiField;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
@@ -101,7 +102,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu) {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);

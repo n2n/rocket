@@ -83,7 +83,7 @@ abstract class EiFieldAdapter implements EiField {
 	}
 
 	/**
-	 * @param unknown $value
+	 * @param mixed $value
 	 * @throws \InvalidArgumentException
 	 */
 	protected abstract function validateValue($value);

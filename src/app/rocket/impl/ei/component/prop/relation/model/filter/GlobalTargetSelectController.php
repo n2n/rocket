@@ -21,9 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
-use n2n\web\http\PageNotFoundException;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use n2n\web\http\controller\impl\ScrController;

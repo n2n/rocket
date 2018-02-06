@@ -23,13 +23,13 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
 use rocket\spec\ei\EiPropPath;
 
-class ToManyEditable implements Editable {
+class ToManyEditable implements GuiFieldEditable {
 	private $label;
 	private $min;
 	private $max;

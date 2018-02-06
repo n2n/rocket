@@ -21,10 +21,12 @@
  */
 namespace rocket\spec\ei\component\prop;
 
+use rocket\spec\ei\manage\generic\GenericEiProperty;
+
 interface GenericEiProp extends FieldEiProp {
 	
 	/**
 	 * @return GenericEiProperty|null
 	 */
-	public function getGenericEiProperty();
+	public function getGenericEiProperty(): ?GenericEiProperty;
 }

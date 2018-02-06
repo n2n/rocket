@@ -27,17 +27,8 @@ use n2n\core\container\N2nContext;
 interface PrivilegedEiProp extends EiProp {
 	
 	/**
-	 * @return MagCollection 
+	 * @param N2nContext $n2nContext
+	 * @return EiPropPrivilege
 	 */
 	public function createEiPropPrivilege(N2nContext $n2nContext): EiPropPrivilege;
-	
-	
-// 	/**
-// 	 * @param EiFrame $eiFrame
-// 	 * @param EiObject $eiObject
-// 	 * @param Attributes $accessAttributes
-// 	 * @return boolean
-// 	 */
-// 	public function isWritingAllowed(Attributes $accessAttributes, EiFrame $eiFrame, 
-// 			EiObject $eiObject = null);
 }

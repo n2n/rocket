@@ -25,8 +25,7 @@
 	use rocket\tool\mail\controller\MailArchiveBatchController;
 	use n2n\log4php\appender\nn6\AdminMailCenter;
 	use rocket\tool\mail\controller\MailCenterController;
-	use n2n\mail\MailUtils;
-use rocket\tool\mail\ui\MailHtmlBuilder;
+	use rocket\tool\mail\ui\MailHtmlBuilder;
 
 	$mailCenter = $view->getParam('mailCenter');
 	

@@ -80,7 +80,7 @@ class VetoableRemoveQueue implements LifecycleListener {
 	}
 	
 	/**
-	 * @param unknown $entityObj
+	 * @param object $entityObj
 	 * @return boolean
 	 */
 	public function containsEntityObj($entityObj) {

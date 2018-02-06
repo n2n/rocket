@@ -30,12 +30,12 @@ interface SaxHandler {
 	public function startElement($tagName, array $attributes);
 	/**
 	 *
-	 * @param unknown_type $cdata
+	 * @param string $cdata
 	*/
 	public function cdata($cdata);
 	/**
 	 *
-	 * @param unknown_type $tag
+	 * @param string $tag
 	*/
 	public function endElement($tagName);
 }

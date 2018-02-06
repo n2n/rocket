@@ -19,41 +19,41 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\critmod;
+// namespace rocket\spec\ei\manage\critmod;
 
-use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\critmod\quick\QuickSearchable;
+// use n2n\reflection\ArgUtils;
+// use rocket\spec\ei\manage\critmod\quick\QuickSearchable;
 
-class QuickSearchModel {
-	private $quickSearchables = array();
+// class QuickSearchModel {
+// 	private $quickSearchables = array();
 	
-	public function addQuickSearchable(QuickSearchable $quickSearchable) {
-		$this->qickSearchables[] = $quickSearchable;
-	}
+// 	public function addQuickSearchable(QuickSearchable $quickSearchable) {
+// 		$this->qickSearchables[] = $quickSearchable;
+// 	}
 	
-	public function createCriteriaConstraint($searchStr) {
-		if (!mb_strlen($searchStr)) return null;
+// 	public function createCriteriaConstraint($searchStr) {
+// 		if (!mb_strlen($searchStr)) return null;
 		
-		$filterConstraint = new FilterCriteriaConstraint();
+// 		$filterConstraint = new FilterCriteriaConstraint();
 		
-		$searchStrParts = preg_split('/[\s]+/', $searchStr);
-		foreach ($searchStrParts as $key => $searchStrPart) {
-			if (!mb_strlen($searchStrPart)) continue;
+// 		$searchStrParts = preg_split('/[\s]+/', $searchStr);
+// 		foreach ($searchStrParts as $key => $searchStrPart) {
+// 			if (!mb_strlen($searchStrPart)) continue;
 				
-			$group = new CriteriaComparatorConstraintGroup(false);
+// 			$group = new CriteriaComparatorConstraintGroup(false);
 				
-			foreach ($this->qickSearchables as $quickSearchable) {
-				$comparatorConstraint = $quickSearchable->createQuickSearchComparatorConstraint($searchStrPart);
-				ArgUtils::valTypeReturn($comparatorConstraint, 'rocket\spec\ei\manage\critmod\ComparatorConstraint', 
-						$quickSearchable, 'createQuickSearchComparatorConstraint');
-				$group->addComparatorConstraint($comparatorConstraint);
-			}
+// 			foreach ($this->qickSearchables as $quickSearchable) {
+// 				$comparatorConstraint = $quickSearchable->createQuickSearchComparatorConstraint($searchStrPart);
+// 				ArgUtils::valTypeReturn($comparatorConstraint, 'rocket\spec\ei\manage\critmod\ComparatorConstraint', 
+// 						$quickSearchable, 'createQuickSearchComparatorConstraint');
+// 				$group->addComparatorConstraint($comparatorConstraint);
+// 			}
 			
-			$filterConstraint->addComparatorConstraint($group);
-		}
+// 			$filterConstraint->addComparatorConstraint($group);
+// 		}
 		
-		if ($filterConstraint->isEmpty()) return null;
+// 		if ($filterConstraint->isEmpty()) return null;
 		
-		return $filterConstraint;
-	}
-}
+// 		return $filterConstraint;
+// 	}
+// }

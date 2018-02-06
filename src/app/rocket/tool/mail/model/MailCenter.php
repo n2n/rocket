@@ -30,7 +30,6 @@ use n2n\core\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use rocket\tool\mail\controller\MailArchiveBatchController;
-use n2n\io\managed\File;
 use n2n\io\managed\impl\CommonFile;
 use n2n\io\managed\impl\FsFileSource;
 

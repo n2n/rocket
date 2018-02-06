@@ -73,9 +73,10 @@ class MailItemSaxHandler implements SaxHandler {
 			}
 		}
 	}
+	
 	/**
-	 * (non-PHPdoc)
-	 * @see NN6XmlSaxHandler::cdata()
+	 * {@inheritDoc}
+	 * @see \rocket\tool\xml\SaxHandler::cdata()
 	 */
 	public function cdata($cdata) {
 		if (null === $this->currentTagName) return;
@@ -111,9 +112,10 @@ class MailItemSaxHandler implements SaxHandler {
 				break;
 		}
 	}
+	
 	/**
-	 * (non-PHPdoc)
-	 * @see NN6XmlSaxHandler::endElement()
+	 * {@inheritDoc}
+	 * @see \rocket\tool\xml\SaxHandler::endElement()
 	 */
 	public function endElement($tag) {
 		$this->level--;
@@ -121,8 +123,8 @@ class MailItemSaxHandler implements SaxHandler {
 		$this->items[] = $this->currentItem;
 		$this->currentItem = null;
 	}
+	
 	/**
-	 *
 	 * @return \rocket\tool\xml\MailItem[]
 	 */
 	public function getItems() {

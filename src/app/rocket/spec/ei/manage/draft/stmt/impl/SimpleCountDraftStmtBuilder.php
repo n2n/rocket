@@ -24,7 +24,6 @@ namespace rocket\spec\ei\manage\draft\stmt\impl;
 use n2n\persistence\meta\data\QueryTable;
 use n2n\persistence\Pdo;
 use n2n\persistence\meta\data\QueryColumn;
-use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use n2n\persistence\PdoStatement;

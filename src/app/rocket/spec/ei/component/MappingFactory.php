@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component;
 use rocket\spec\ei\component\prop\EiPropCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\security\PrivilegeConstraint;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use rocket\spec\ei\security\InaccessibleEntryException;
@@ -69,7 +68,6 @@ class MappingFactory {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiObject $eiObject
-	 * @param PrivilegeConstraint $privilegeConstraint
 	 * @throws InaccessibleEntryException
 	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 */

@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke\model;
 
-use n2n\core\N2N;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
@@ -29,6 +28,7 @@ use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\impl\ei\component\prop\string\cke\ui\Cke;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
 
 class CkeMag extends StringMag {
 	private $mode;
@@ -38,12 +38,11 @@ class CkeMag extends StringMag {
 	private $ckeCssConfigLookupId;
 
 	public function __construct($label, $value = null, bool $mandatory = false, 
-			int $maxlength = null, array $inputAttrs = null, string $mode = self::MODE_NORMAL, bool $bbcode = false, 
+			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiProp::MODE_NORMAL, 
 			bool $tableEditing = false, array $ckeLinkProviderLookupIds, string $ckeCssConfigLookupId = null) {
 		parent::__construct($label, $value, $mandatory, $maxlength, true, $inputAttrs);
 		
 		$this->mode = $mode;
-		$this->bbcode = $bbcode;
 		$this->tableEditing = $tableEditing;
 		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
 		$this->ckeCssConfigLookupId = $ckeCssConfigLookupId;
@@ -62,16 +61,16 @@ class CkeMag extends StringMag {
 
 		$ckeCss = null;
 		if ($this->ckeCssConfigLookupId !== null) {
-			$ckeCss = N2N::getLookupManager()->lookup($this->ckeCssConfigLookupId);
+			$ckeCss = $htmlView->lookup($this->ckeCssConfigLookupId);
 		}
 
 		$linkProviders = array();
 		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
-			$linkProviders[$linkProviderLookupId] = N2N::getLookupManager()->lookup($linkProviderLookupId);
+			$linkProviders[$linkProviderLookupId] = $htmlView->lookup($linkProviderLookupId);
 		}
 
 		return $ckeHtml->getEditor($propertyPath,
-				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
+				Cke::classic()->mode($this->mode)->table($this->tableEditing),
 				$ckeCss, $linkProviders);
 	}
 }

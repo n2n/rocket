@@ -21,10 +21,7 @@
  */
 namespace rocket\core\model;
 
-use rocket\core\model\UnknownMenuItemException;
 use rocket\spec\config\SpecManager;
-use rocket\core\model\MenuGroup;
-use rocket\core\model\MenuItem;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\config\InvalidMenuConfigurationException;
 

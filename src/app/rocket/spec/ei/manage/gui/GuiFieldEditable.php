@@ -24,7 +24,7 @@ namespace rocket\spec\ei\manage\gui;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 
-interface Editable extends Savable {
+interface GuiFieldEditable extends Savable {
 	
 	/**
 	 * @return boolean

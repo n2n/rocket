@@ -21,11 +21,12 @@
  */
 namespace rocket\spec\ei\security;
 
+use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\security\CommandExecutionConstraint;
-use rocket\spec\ei\manage\mapping\MappingValidationResult;
 use rocket\spec\ei\manage\mapping\EiEntry;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\Criteria;
+use n2n\util\ex\NotYetImplementedException;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
 class EmptyCommandExecutionConstraint implements CommandExecutionConstraint {
 	/* (non-PHPdoc)
@@ -51,5 +52,13 @@ class EmptyCommandExecutionConstraint implements CommandExecutionConstraint {
 	 */
 	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias) {	
 	}
+	
+	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
+	}
+
+	public function check(EiEntry $eiEntry): bool {
+		throw new NotYetImplementedException();
+	}
+
 
 }

@@ -43,6 +43,8 @@ use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\gui\DisplayDefinition;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -90,11 +92,11 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return DisplayItem::TYPE_SIMPLE;
 	}
 	
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
 	}
 	
@@ -105,7 +107,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return true;
 	}
 	
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
 		
 		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),
@@ -132,7 +134,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 				});
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 
 		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),

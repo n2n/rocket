@@ -32,17 +32,16 @@ class MailItem {
 	private $attachments = array();
 	private $message = '';
 	private $subject = '';
+	
 	/**
-	 *
-	 * @param string $severity
-	 * @param NN6DateTime $dateTime
+	 * @param \DateTime $dateTime
 	 */
 	public function __construct(\DateTime $dateTime) {
 		$this->dateTime = $dateTime;
 	}
+	
 	/**
-	 *
-	 * @return NN6DateTime
+	 * @return \\DateTime
 	 */
 	public function getDateTime() {
 		return $this->dateTime;

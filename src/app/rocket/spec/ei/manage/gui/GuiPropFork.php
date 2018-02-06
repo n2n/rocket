@@ -42,7 +42,7 @@ interface GuiPropFork {
 	 * @param EiObject $eiObject
 	 * @return EiObject|null null if not available
 	 */
-	public function determineForkedEiObject(EiObject $eiObject);
+	public function determineForkedEiObject(EiObject $eiObject): ?EiObject;
 	
 	/**
 	 *

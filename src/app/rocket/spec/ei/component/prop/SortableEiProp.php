@@ -21,19 +21,19 @@
  */
 namespace rocket\spec\ei\component\prop;
 
-use rocket\spec\ei\component\prop\EiProp;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\manage\EiFrame;
+use rocket\spec\ei\manage\critmod\sort\SortField;
 
 interface SortableEiProp extends EiProp {
 	
 	/**
 	 * @return \rocket\spec\ei\manage\critmod\sort\SortField
 	 */
-	public function buildManagedSortField(EiFrame $eiFrame);
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField;
 	
 	/**
 	 * @return \rocket\spec\ei\manage\critmod\sort\SortField
 	 */
-	public function buildSortField(N2nContext $n2nContext);
+	public function buildSortField(N2nContext $n2nContext): ?SortField;
 }

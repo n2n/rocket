@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\ei\adaptive;
 
-use n2n\persistence\orm\criteria\querypoint\MetaGenerator;
 use n2n\persistence\orm\model\EntityModel;
+use n2n\persistence\orm\query\from\meta\MetaGenerator;
 
 class PrefixMetaGenerator implements MetaGenerator {
 	private $tablePrefix;

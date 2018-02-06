@@ -24,7 +24,6 @@ namespace rocket\spec\ei\manage\mapping;
 use n2n\l10n\Message;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\EiType;
 use rocket\spec\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
@@ -264,7 +263,7 @@ class EiEntry {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param unknown $value
+	 * @param mixed $value
 	 * @return boolean
 	 */
 	public function acceptsValue(EiPropPath $eiPropPath, $value) {

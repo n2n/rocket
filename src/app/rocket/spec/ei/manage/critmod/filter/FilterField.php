@@ -22,7 +22,6 @@
 namespace rocket\spec\ei\manage\critmod\filter;
 
 use n2n\util\config\Attributes;
-use n2n\web\dispatch\mag\MagCollection;
 use n2n\l10n\N2nLocale;
 use n2n\web\dispatch\mag\MagDispatchable;
 
@@ -40,7 +39,8 @@ interface FilterField {
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable;
 
 	/**
-	 * @return \n2n\util\config\Attributes
+	 * @param MagDispatchable $magDispatchable
+	 * @return Attributes
 	 */
 	public function buildAttributes(MagDispatchable $magDispatchable): Attributes;
 	
@@ -49,7 +49,7 @@ interface FilterField {
 	 * recommended.
 	 * @param Attributes $attributes
 	 * @return ComparatorConstraint
-	 * @throws AttributesException
+	 * @throws \n2n\util\config\InvalidAttributeException
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint;
 }

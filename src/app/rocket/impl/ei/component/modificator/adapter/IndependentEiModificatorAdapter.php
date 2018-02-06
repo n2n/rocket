@@ -23,7 +23,6 @@
 namespace rocket\impl\ei\component\modificator\adapter;
 
 use rocket\spec\ei\component\modificator\IndependentEiModificator;
-use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
 use rocket\spec\ei\component\EiConfigurator;
 
 abstract class IndependentEiPropAdapter extends EiModificatorAdapter implements IndependentEiModificator {

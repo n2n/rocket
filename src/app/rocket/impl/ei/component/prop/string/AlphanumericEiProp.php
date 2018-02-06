@@ -40,6 +40,9 @@ use rocket\spec\ei\component\prop\GenericEiProp;
 use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
 use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\spec\ei\manage\critmod\sort\SortField;
+use rocket\spec\ei\manage\generic\GenericEiProperty;
 
 abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -73,11 +76,11 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 				EiPropPath::from($this)));
 	}
 
-	public function buildManagedFilterField(EiFrame $eiFrame) {
+	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 
-	public function buildFilterField(N2nContext $n2nContext) {
+	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
 			return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 		}
@@ -89,11 +92,11 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame) {
+	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
-	public function buildSortField(N2nContext $n2nContext) {
+	public function buildSortField(N2nContext $n2nContext): ?SortField {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
 			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
@@ -113,7 +116,7 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function getGenericEiProperty() {
+	public function getGenericEiProperty(): ?GenericEiProperty {
 		if ($this->entityProperty === null) return null;
 		
 		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty));

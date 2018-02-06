@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-interface GuiFieldFork extends Savable {
+interface GuiFieldFork {
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
@@ -31,8 +31,13 @@ interface GuiFieldFork extends Savable {
 	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult; 
 	
 	/**
-	 * Mag for group toolbar
-	 * @return \n2n\web\dispatch\mag\Mag|null
+	 * @return boolean
 	 */
-	public function buildForkMag(); 
+	public function isReadOnly(): bool;
+	
+	/**
+	 * @return GuiFieldEditable
+	 * @throws \n2n\util\ex\IllegalStateException if {@link GuiFieldFork::isReadOnly()} returns true
+	 */
+	public function getEditable(): GuiFieldForkEditable;
 }

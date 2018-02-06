@@ -61,7 +61,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		return $this->getEiMask()->determineEiMask($this->getEiType()->determineAdequateEiType(
 				new \ReflectionClass($eiObject->getLiveObject())));
 		

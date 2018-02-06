@@ -36,7 +36,6 @@ use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\manage\util\model\EiuCtrl;
 use n2n\reflection\ArgUtils;
 use n2n\io\managed\ThumbManager;
-use n2n\web\http\controller\ParamGet;
 
 class ThumbController extends ControllerAdapter {	
 	private $fileEiProp;

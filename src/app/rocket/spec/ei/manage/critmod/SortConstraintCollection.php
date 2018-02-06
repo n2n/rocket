@@ -23,7 +23,7 @@ namespace rocket\spec\ei;
 
 use rocket\spec\ei\component\prop\SortableEiProp;
 use n2n\reflection\ArgUtils;
-use n2n\util\HashMap;
+use n2n\util\col\HashMap;
 
 class SortModificatorCollection {
 	private $fields = array();

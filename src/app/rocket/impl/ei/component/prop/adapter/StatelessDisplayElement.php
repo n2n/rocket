@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\adapter;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\Editable;
+use rocket\spec\ei\manage\gui\GuiFieldEditable;
 use rocket\spec\ei\manage\util\model\Eiu;
 
 class StatelessDisplayElement implements GuiField {
@@ -87,7 +87,7 @@ class StatelessDisplayElement implements GuiField {
 		return false;
 	}
 
-	public function getEditable(): Editable {
+	public function getEditable(): GuiFieldEditable {
 		throw new IllegalStateException();
 	}
 }

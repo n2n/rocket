@@ -24,7 +24,6 @@ namespace rocket\tool\controller;
 use rocket\tool\backup\controller\BackupController;
 
 use n2n\web\http\controller\ControllerAdapter;
-use n2n\web\ui\ViewFactory;
 use n2n\l10n\MessageContainer;
 use rocket\tool\mail\controller\MailCenterController;
 use n2n\reflection\annotation\AnnoInit;

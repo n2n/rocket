@@ -23,15 +23,10 @@ namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
 use rocket\spec\ei\manage\EiFrame;
-use n2n\persistence\orm\criteria\Criteria;
-use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\EntryGui;
-use rocket\spec\config\mask\model\EntryGuiTree;
-use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\manage\DraftEiObject;
+use rocket\spec\ei\manage\gui\EiEntryGui;
 
 class DraftListModel implements Dispatchable {	
 	private $utils;
@@ -106,7 +101,7 @@ class DraftListModel implements Dispatchable {
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {
 			$eiEntry = $this->utils->createEiEntry(new DraftEiObject($draft));
-			$this->entryGuis[$draft->getId()] = new EntryGui($eiMask->createListEntryGuiModel($eiFrame, 
+			$this->entryGuis[$draft->getId()] = new EiEntryGui($eiMask->createListEntryGuiModel($eiFrame, 
 					$eiEntry, false)); 
 		}
 	}

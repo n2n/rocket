@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\translation\model;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\Displayable;
 use rocket\spec\ei\manage\gui\AssembleResult;
@@ -34,8 +33,13 @@ use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use rocket\spec\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 use n2n\util\uri\Url;
+use n2n\web\dispatch\mag\Mag;
+use n2n\util\ex\IllegalStateException;
+use rocket\spec\ei\manage\gui\GuiFieldForkEditable;
+use rocket\spec\ei\manage\gui\EditableWrapper;
+use rocket\spec\ei\manage\gui\GuiFieldFork;
 
-class TranslationGuiField implements GuiFieldFork {
+class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;
 	private $guiDefinition;
 	private $label;
@@ -151,9 +155,9 @@ class TranslationGuiField implements GuiFieldFork {
 				$translationMag = new TranslationMag($label);
 			}
 			
-			if (null !== ($magPropertyPath = $result->getMagPropertyPath())) {
-				$translationMag->putMagPropertyPath($n2nLocaleId, $magPropertyPath, $fieldErrorInfo, $eiuEntry);
-				if (!$mandatory) $mandatory = $result->isMandatory();
+			if (null !== ($editableWrapper = $result->getEditableWrapper())) {
+				$translationMag->putMagPropertyPath($n2nLocaleId, $editableWrapper->getMagPropertyPath(), $fieldErrorInfo, $eiuEntry);
+				if (!$mandatory) $mandatory = $editableWrapper->isMandatory();
 			} else {
 				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $fieldErrorInfo);
 			}
@@ -170,19 +174,39 @@ class TranslationGuiField implements GuiFieldFork {
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
-		return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper, $magInfo['magWrapper'], $magInfo['propertyPath'], $mandatory);
+		return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper, 
+				new EditableWrapper($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
 	}
 		
+	public function isReadOnly(): bool {
+		return $this->translationForm === null;
+	}
+	
+	public function getEditable(): GuiFieldForkEditable {
+		return $this;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiFieldFork::buildForkMag()
 	 */
-	public function buildForkMag() {
+	public function getForkMag(): Mag {
 		if ($this->translationForm === null) {
-			return null;
+			throw new IllegalStateException();
 		}
 		
 		return new ForkMag($this->label, $this->translationForm, $this->n2nLocaleDefs, $this->min);
+	}
+	
+	public function getAdditionalForkMagPropertyPaths(): array {
+		$propertyPaths = array();
+		foreach ($this->guiFieldAssemblers as $guiFieldAssembler) {
+			$forkedMagPropertyPaths = $guiFieldAssembler->getForkedMagPropertyPaths();
+			if (!empty($forkedMagPropertyPaths)) {
+				array_push($propertyPaths, ...$forkedMagPropertyPaths);
+			}
+		}
+		return $propertyPaths;
 	}
 	
 	public function save() {

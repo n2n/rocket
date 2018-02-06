@@ -21,8 +21,6 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\component\EiComponent;
-
 interface IndependentEiComponent extends EiComponent {
 	
 	public function __construct();

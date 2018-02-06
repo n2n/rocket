@@ -28,10 +28,10 @@ interface GuiEiProp extends EiProp {
 	/**
 	 * @return \rocket\spec\ei\manage\gui\GuiProp|null null if not displayable
 	 */
-	public function getGuiProp();
+	public function getGuiProp(): ?GuiProp;
 	
 	/**
 	 * @return \rocket\spec\ei\manage\gui\GuiPropFork|null null if not displayable
 	 */
-	public function getGuiPropFork();
+	public function getGuiPropFork(): ?GuiPropFork;
 }

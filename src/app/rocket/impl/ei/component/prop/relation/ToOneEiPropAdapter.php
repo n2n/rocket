@@ -33,6 +33,7 @@ use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
+use rocket\spec\ei\manage\gui\GuiPropFork;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -65,11 +66,11 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		return $this->displaySettings;
 	}
 	
-	public function getGuiProp() {
+	public function getGuiProp(): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork() {
+	public function getGuiPropFork(): ?GuiPropFork {
 		return null;
 	}
 	

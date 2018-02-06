@@ -25,8 +25,8 @@ use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
 
 interface QuickSearchField {
 	/**
-	 * @param string $searchStr
-	 * @return \rocket\spec\ei\manage\critmod\ComparatorConstraint
+	 * @param string $queryStr
+	 * @return ComparatorConstraint
 	 */
 	public function createComparatorConstraint(string $queryStr): ComparatorConstraint;
 }

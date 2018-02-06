@@ -19,252 +19,252 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\critmod;
+// namespace rocket\spec\ei\manage\critmod;
 
-use rocket\spec\ei\manage\critmod\filter\impl\field\SelectorItem;
-use rocket\spec\ei\manage\critmod\filter\data\FilterData;
-use rocket\spec\ei\manage\critmod\filter\data\FilterDataElement;
-use rocket\spec\ei\manage\critmod\filter\data\FilterDataUsage;
-use rocket\spec\ei\manage\critmod\filter\data\FilterDataGroup;
-use n2n\reflection\ArgUtils;
-use n2n\reflection\IllegalArgumentException;
-use n2n\l10n\Message;
+// use rocket\spec\ei\manage\critmod\filter\impl\field\SelectorItem;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterData;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterDataElement;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterDataUsage;
+// use rocket\spec\ei\manage\critmod\filter\data\FilterDataGroup;
+// use n2n\reflection\ArgUtils;
+// use n2n\reflection\IllegalArgumentException;
+// use n2n\l10n\Message;
 
-class SelectorModel {
-	private $selectorItems = array();
+// class SelectorModel {
+// 	private $selectorItems = array();
 	
-	public function putSelectorItem($id, SelectorItem $filterItem) {
-		$this->selectorItems[$id] = $filterItem;
-	}
+// 	public function putSelectorItem($id, SelectorItem $filterItem) {
+// 		$this->selectorItems[$id] = $filterItem;
+// 	}
 	
-	public function getSelectorItems() {
-		return $this->selectorItems;
-	}
+// 	public function getSelectorItems() {
+// 		return $this->selectorItems;
+// 	}
 	
-	public static function createFromSelectorItems(array $selectorItems) {
-		$selectorModel = new SelectorModel();
-		$selectorModel->setSelectorItems($selectorItems);
-		return $selectorModel;
-	}
+// 	public static function createFromSelectorItems(array $selectorItems) {
+// 		$selectorModel = new SelectorModel();
+// 		$selectorModel->setSelectorItems($selectorItems);
+// 		return $selectorModel;
+// 	}
 	
-	public function setSelectorItems(array $selectorItems) {
-		ArgUtils::valArray($selectorItems, 'rocket\spec\ei\manage\critmod\filter\impl\field\SelectorItem');
-		$this->selectorItems = $selectorItems;
-	}
+// 	public function setSelectorItems(array $selectorItems) {
+// 		ArgUtils::valArray($selectorItems, 'rocket\spec\ei\manage\critmod\filter\impl\field\SelectorItem');
+// 		$this->selectorItems = $selectorItems;
+// 	}
 	
-	public function createSelector(FilterData $filterData) {
-		$selector = new Selector();
-		foreach ($filterData->getElements() as $element) {
-			$this->applySelectorConstraint($selector, $element);
-		}
+// 	public function createSelector(FilterData $filterData) {
+// 		$selector = new Selector();
+// 		foreach ($filterData->getElements() as $element) {
+// 			$this->applySelectorConstraint($selector, $element);
+// 		}
 		
-		if ($selector->isEmpty()) return null;
-		return $selector;
-	}
+// 		if ($selector->isEmpty()) return null;
+// 		return $selector;
+// 	}
 
-	private function applySelectorConstraint(Selector $selector, FilterDataElement $element) {
-		if ($element instanceof FilterDataUsage) {
-			$itemId = $element->getItemId();
-			if (isset($this->selectorItems[$itemId])) {
-				$selectorConstraint = $this->selectorItems[$itemId]->createSelectorConstraint($element->getAttributes());
-				ArgUtils::valTypeReturn($selectorConstraint,
-						'rocket\spec\ei\manage\critmod\SelectorConstraint',
-						$this->selectorItems[$itemId], 'createSelectorConstraint');
-				$selector->addSelectorConstraint($itemId, $selectorConstraint);
-				return $selectorConstraint;
-			}
-		} else if ($element instanceof FilterDataGroup) {
-			$groupSelector = new Selector();
-			$groupSelector->setUseAnd($element->isAndUsed());
-			foreach ($element->getAll() as $childElement) {
-				$this->applySelectorConstraint($groupSelector, $childElement);
-			}
+// 	private function applySelectorConstraint(Selector $selector, FilterDataElement $element) {
+// 		if ($element instanceof FilterDataUsage) {
+// 			$itemId = $element->getItemId();
+// 			if (isset($this->selectorItems[$itemId])) {
+// 				$selectorConstraint = $this->selectorItems[$itemId]->createSelectorConstraint($element->getAttributes());
+// 				ArgUtils::valTypeReturn($selectorConstraint,
+// 						'rocket\spec\ei\manage\critmod\SelectorConstraint',
+// 						$this->selectorItems[$itemId], 'createSelectorConstraint');
+// 				$selector->addSelectorConstraint($itemId, $selectorConstraint);
+// 				return $selectorConstraint;
+// 			}
+// 		} else if ($element instanceof FilterDataGroup) {
+// 			$groupSelector = new Selector();
+// 			$groupSelector->setUseAnd($element->isAndUsed());
+// 			foreach ($element->getAll() as $childElement) {
+// 				$this->applySelectorConstraint($groupSelector, $childElement);
+// 			}
 			
-			$selector->addGroupSelector($groupSelector);
-		}
+// 			$selector->addGroupSelector($groupSelector);
+// 		}
 		
-		return null;
-	}
-}
+// 		return null;
+// 	}
+// }
 
-class Selector {
-	private $useAnd = true;
-	private $selectorConstraintGroups = array();
-	private $groupSelectors = array();
+// class Selector {
+// 	private $useAnd = true;
+// 	private $selectorConstraintGroups = array();
+// 	private $groupSelectors = array();
 	
-	public function setUseAnd($useAnd) {
-		$this->useAnd = $useAnd;
-	}
+// 	public function setUseAnd($useAnd) {
+// 		$this->useAnd = $useAnd;
+// 	}
 	
-	public function addSelectorConstraint($id, SelectorConstraint $selectorConstraint) {
-		if (!isset($this->selectorConstraintGroups[$id])) {
-			$this->selectorConstraintGroups[$id] = array();
-		}
-		$this->selectorConstraintGroups[$id][] = $selectorConstraint;
-	}
+// 	public function addSelectorConstraint($id, SelectorConstraint $selectorConstraint) {
+// 		if (!isset($this->selectorConstraintGroups[$id])) {
+// 			$this->selectorConstraintGroups[$id] = array();
+// 		}
+// 		$this->selectorConstraintGroups[$id][] = $selectorConstraint;
+// 	}
 	
-	public function addGroupSelector(Selector $groupSelector) {
-		$this->groupSelectors[] = $groupSelector;
-	}
+// 	public function addGroupSelector(Selector $groupSelector) {
+// 		$this->groupSelectors[] = $groupSelector;
+// 	}
 	
-	public function isEmpty() {
-		return empty($this->selectorConstraintGroups) && empty($this->groupSelectors);
-	}
+// 	public function isEmpty() {
+// 		return empty($this->selectorConstraintGroups) && empty($this->groupSelectors);
+// 	}
 	
-	public function validateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
-		if ($this->useAnd) {
-			return $this->andValidateValues($values, $validationResult);
-		} else {
-			return $this->orValidateValues($values, $validationResult);
-		}
-	}
+// 	public function validateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
+// 		if ($this->useAnd) {
+// 			return $this->andValidateValues($values, $validationResult);
+// 		} else {
+// 			return $this->orValidateValues($values, $validationResult);
+// 		}
+// 	}
 	
-	private function andValidateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
-		$matches = true;
-		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-			foreach ($selectorConstraintGroup as $selectorContraint) {
-				if (!$values->offsetExists($id)) {
-					throw new IllegalArgumentException('No value for id ' . $id);
-				}
+// 	private function andValidateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
+// 		$matches = true;
+// 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
+// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 				if (!$values->offsetExists($id)) {
+// 					throw new IllegalArgumentException('No value for id ' . $id);
+// 				}
 		
-				$errorMessage = $selectorContraint->validate($values[$id]);
-				if (null !== $errorMessage) {
-					$validationResult->addError($id, $errorMessage);
-					$matches = false;
-				}
-			}
-		}
+// 				$errorMessage = $selectorContraint->validate($values[$id]);
+// 				if (null !== $errorMessage) {
+// 					$validationResult->addError($id, $errorMessage);
+// 					$matches = false;
+// 				}
+// 			}
+// 		}
 		
-		foreach ($this->groupSelectors as $groupSelector) {
-			if (!$groupSelector->validateValues($values, $validationResult)) {
-				$matches = false;
-			}
-		}
+// 		foreach ($this->groupSelectors as $groupSelector) {
+// 			if (!$groupSelector->validateValues($values, $validationResult)) {
+// 				$matches = false;
+// 			}
+// 		}
 		
-		return $matches;
-	}
+// 		return $matches;
+// 	}
 	
-	private function orValidateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
-		$matches = true;
-		$selectorValidationResult = new SelectorValidationResult();
-		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-			foreach ($selectorConstraintGroup as $selectorContraint) {
-				if (!$values->offsetExists($id)) {
-					throw new IllegalArgumentException('No value for id ' . $id);
-				}
+// 	private function orValidateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
+// 		$matches = true;
+// 		$selectorValidationResult = new SelectorValidationResult();
+// 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
+// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 				if (!$values->offsetExists($id)) {
+// 					throw new IllegalArgumentException('No value for id ' . $id);
+// 				}
 		
-				$errorMessage = $selectorContraint->validate($values[$id]);
-				if (null === $errorMessage) return true;
+// 				$errorMessage = $selectorContraint->validate($values[$id]);
+// 				if (null === $errorMessage) return true;
 				
-				$selectorValidationResult->addError($id, $errorMessage);
-				$matches = false;
-			}
-		}
+// 				$selectorValidationResult->addError($id, $errorMessage);
+// 				$matches = false;
+// 			}
+// 		}
 		
-		foreach ($this->groupSelectors as $groupSelector) {
-			if ($groupSelector->validateValues($values, $validationResult)) {
-				return true;
-			}
-			$matches = false;
-		}
+// 		foreach ($this->groupSelectors as $groupSelector) {
+// 			if ($groupSelector->validateValues($values, $validationResult)) {
+// 				return true;
+// 			}
+// 			$matches = false;
+// 		}
 		
-		$validationResult->addError(null, new OrSelectorMessage($selectorValidationResult->getMessages()));
+// 		$validationResult->addError(null, new OrSelectorMessage($selectorValidationResult->getMessages()));
 		
-		return $matches;
-	}
+// 		return $matches;
+// 	}
 	
-	public function acceptsValues(\ArrayAccess $values) {
-		if ($this->useAnd) {
-			return $this->andAcceptsValues($values);
-		} else {
-			return $this->orAcceptValues($values);
-		}
-	}
+// 	public function acceptsValues(\ArrayAccess $values) {
+// 		if ($this->useAnd) {
+// 			return $this->andAcceptsValues($values);
+// 		} else {
+// 			return $this->orAcceptValues($values);
+// 		}
+// 	}
 	
-	private function andAcceptsValues(\ArrayAccess $values) {
-		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-			foreach ($selectorConstraintGroup as $selectorContraint) {
-				if (!$values->offsetExists($id)) {
-					throw new IllegalArgumentException('No value for id ' . $id);
-				}
+// 	private function andAcceptsValues(\ArrayAccess $values) {
+// 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
+// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 				if (!$values->offsetExists($id)) {
+// 					throw new IllegalArgumentException('No value for id ' . $id);
+// 				}
 				
-				if (!$selectorContraint->matches($values[$id])) return false;
-			}
-		}
+// 				if (!$selectorContraint->matches($values[$id])) return false;
+// 			}
+// 		}
 
-		foreach ($this->groupSelectors as $groupSelector) {
-			if (!$groupSelector->acceptsValues($values)) return false;
-		}
+// 		foreach ($this->groupSelectors as $groupSelector) {
+// 			if (!$groupSelector->acceptsValues($values)) return false;
+// 		}
 		
-		return true;
+// 		return true;
 		
-	}
+// 	}
 	
-	private function orAcceptValues(\ArrayAccess $values) {
-		if ($this->isEmpty()) return true;
+// 	private function orAcceptValues(\ArrayAccess $values) {
+// 		if ($this->isEmpty()) return true;
 		
-		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-			foreach ($selectorConstraintGroup as $selectorContraint) {
-				if (!$values->offsetExists($id)) {
-					throw new IllegalArgumentException('No value for id: ' . $id);
-				}
+// 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
+// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 				if (!$values->offsetExists($id)) {
+// 					throw new IllegalArgumentException('No value for id: ' . $id);
+// 				}
 		
-				if ($selectorContraint->matches($values[$id])) return true;
-			}
-		}
+// 				if ($selectorContraint->matches($values[$id])) return true;
+// 			}
+// 		}
 		
-		foreach ($this->groupSelectors as $groupSelector) {
-			if ($groupSelector->acceptsValues($values)) return true;
-		}
+// 		foreach ($this->groupSelectors as $groupSelector) {
+// 			if ($groupSelector->acceptsValues($values)) return true;
+// 		}
 		
-		return false;
-	}
+// 		return false;
+// 	}
 	
-	public function acceptsValue($id, $value) {
-		if ($this->useAnd) {
-			return $this->andAcceptsValue($id, $value);
-		} else {
-			return $this->orAcceptsValue($id, $value);
-		}
-	}
+// 	public function acceptsValue($id, $value) {
+// 		if ($this->useAnd) {
+// 			return $this->andAcceptsValue($id, $value);
+// 		} else {
+// 			return $this->orAcceptsValue($id, $value);
+// 		}
+// 	}
 	
-	private function andAcceptsValue($id, $value) {
-		if (isset($this->selectorConstraintGroups[$id])) {
-			foreach ($this->selectorConstraintGroups[$id] as $selectorContraint) {
-				if (!$selectorContraint->matches($value)) return false;
-			}
-		}
+// 	private function andAcceptsValue($id, $value) {
+// 		if (isset($this->selectorConstraintGroups[$id])) {
+// 			foreach ($this->selectorConstraintGroups[$id] as $selectorContraint) {
+// 				if (!$selectorContraint->matches($value)) return false;
+// 			}
+// 		}
 		
-		foreach ($this->groupSelectors as $groupSelector) {
-			if (!$groupSelector->acceptsValue($id, $value)) return false;
-		}
+// 		foreach ($this->groupSelectors as $groupSelector) {
+// 			if (!$groupSelector->acceptsValue($id, $value)) return false;
+// 		}
 		
-		return true;
-	}
+// 		return true;
+// 	}
 	
-	private function orAcceptsValue($id, $value) {
-		if ($this->isEmpty()) return true;
+// 	private function orAcceptsValue($id, $value) {
+// 		if ($this->isEmpty()) return true;
 		
-		foreach ($this->groupSelectors as $groupSelector) {
-			if ($groupSelector->acceptsValue($id, $value)) return true;
-		}
+// 		foreach ($this->groupSelectors as $groupSelector) {
+// 			if ($groupSelector->acceptsValue($id, $value)) return true;
+// 		}
 		
-		if (isset($this->selectorConstraintGroups[$id])) {
-			foreach ($this->selectorConstraintGroups[$id] as $selectorContraint) {
-				if ($selectorContraint->matches($value)) return true;
-			}
+// 		if (isset($this->selectorConstraintGroups[$id])) {
+// 			foreach ($this->selectorConstraintGroups[$id] as $selectorContraint) {
+// 				if ($selectorContraint->matches($value)) return true;
+// 			}
 			
-			if (1 == sizeof($this->selectorConstraintGroups)) {
-				return false;
-			}
-		}
+// 			if (1 == sizeof($this->selectorConstraintGroups)) {
+// 				return false;
+// 			}
+// 		}
 		
-		return true;
-	}
-}
+// 		return true;
+// 	}
+// }
 
-class OrSelectorMessage extends Message {
-	public function __construct() {
-		parent::__construct('No access to values');
-	}
-}
+// class OrSelectorMessage extends Message {
+// 	public function __construct() {
+// 		parent::__construct('No access to values');
+// 	}
+// }

@@ -19,39 +19,39 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\security;
+// namespace rocket\spec\ei\manage\security;
 
-class PrivilegeConstraint {
-	private $accessGrants;
-	private $privilegeGrants;
+// class PrivilegeConstraint {
+// 	private $accessGrants;
+// 	private $privilegeGrants;
 	
-	public function __construct(array $accessGrants, array $privilegeGrants) {
-		$this->accessGrants = $accessGrants;
-		$this->privilegeGrants = $privilegeGrants;
-	}
-	
-	public function createSelectionPrivilegeConstraint(\ArrayAccess $values = null) {
-		$accessGrants = array();
-		foreach ($this->accessGrants as $accessGrant) {
-			if ($values === null || $accessGrant->acceptsValues($values)) {
-				$accessGrants[] = $accessGrant;
-			}
-		}
-		
-		$grantedPrivileges = array();
-		foreach ($this->privilegeGrants as $privilegeGrants) {
-			if ($values === null || $privilegeGrants->acceptsValues($values)) {
-				$grantedPrivileges = array_merge($grantedPrivileges, $privilegeGrants->getGrantedPrivileges());
-			}
-		}
-		
-		return new SelectionPrivilegeConstraint($accessGrants, $grantedPrivileges);
-	}
-	
-	
-// 	public function applyToEiEntry(EiEntry $eiEntry) {
-// 		$values = $eiEntry->getValues();
-		
-		
+// 	public function __construct(array $accessGrants, array $privilegeGrants) {
+// 		$this->accessGrants = $accessGrants;
+// 		$this->privilegeGrants = $privilegeGrants;
 // 	}
-}
+	
+// 	public function createSelectionPrivilegeConstraint(\ArrayAccess $values = null) {
+// 		$accessGrants = array();
+// 		foreach ($this->accessGrants as $accessGrant) {
+// 			if ($values === null || $accessGrant->acceptsValues($values)) {
+// 				$accessGrants[] = $accessGrant;
+// 			}
+// 		}
+		
+// 		$grantedPrivileges = array();
+// 		foreach ($this->privilegeGrants as $privilegeGrants) {
+// 			if ($values === null || $privilegeGrants->acceptsValues($values)) {
+// 				$grantedPrivileges = array_merge($grantedPrivileges, $privilegeGrants->getGrantedPrivileges());
+// 			}
+// 		}
+		
+// 		return new SelectionPrivilegeConstraint($accessGrants, $grantedPrivileges);
+// 	}
+	
+	
+// // 	public function applyToEiEntry(EiEntry $eiEntry) {
+// // 		$values = $eiEntry->getValues();
+		
+		
+// // 	}
+// }

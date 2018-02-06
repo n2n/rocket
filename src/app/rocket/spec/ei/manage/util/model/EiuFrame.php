@@ -82,12 +82,12 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->eiFrame->getContextEiMask();
 	}
 
-	/**
-	 * @return \rocket\spec\ei\EiThingPath
-	 */
-	public function getEiThingPath() {
-		return $this->eiFrame->getContextEiMask()->getEiThingPath();
-	}
+// 	/**
+// 	 * @return \rocket\spec\ei\EiThingPath
+// 	 */
+// 	public function getEiThingPath() {
+// 		return $this->eiFrame->getContextEiMask()->getEiThingPath();
+// 	}
 	
 	public function getN2nContext(): N2nContext {
 		return $this->eiFrame->getN2nContext();
