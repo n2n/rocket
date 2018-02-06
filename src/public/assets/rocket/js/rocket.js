@@ -3228,14 +3228,14 @@ var Rocket;
                         }
                         else {
                             var elemToggleOpen = $("<i />", {
-                                "class": "fa fa-angle-down"
+                                "class": "fa fa-chevron-down"
                             });
                             var elemToggleClose = $("<i />", {
-                                "class": "fa fa-angle-up"
+                                "class": "fa fa-chevron-up"
                             });
                             let elemsToToggle = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]"), elemA = $("<a />", {
                                 "href": "#",
-                                "class": "open"
+                                "class": "open btn btn-secondary"
                             }).click(function (e) {
                                 e.preventDefault();
                                 var elem = $(this);
@@ -3253,7 +3253,9 @@ var Rocket;
                                     elemToggleClose.show();
                                     that.setOpen(true);
                                 }
-                            }).append(elemToggleOpen).append(elemToggleClose).appendTo(this.elemLi);
+                            }).append(elemToggleOpen).append(elemToggleClose).appendTo($("<div />", {
+                                "class": "rocket-simple-commands"
+                            }).appendTo(this.elemLi));
                             if (!that.checkOpen() && elemsToToggle.find("input[type=radio]:checked").length === 0) {
                                 elemA.click();
                             }
@@ -3589,6 +3591,7 @@ var Rocket;
                             $(document).on('mousemove.resize', function (event) {
                                 var newWidth = _obj.resizeStart.width - (_obj.resizeStart.mouseOffsetLeft - event.pageX);
                                 var newHeight = _obj.resizeStart.height - (_obj.resizeStart.mouseOffsetTop - event.pageY);
+                                console.log(_obj.fixedRatio);
                                 if (_obj.fixedRatio) {
                                     var heightProportion = newHeight / _obj.resizeStart.height;
                                     var widthProportion = newWidth / _obj.resizeStart.width;
@@ -3823,26 +3826,25 @@ var Rocket;
                     SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
                 }
                 initFixedRatioContainer() {
-                    this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ration-container").appendTo(this.elem);
-                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000));
+                    this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ratio-container").appendTo(this.elem);
+                    var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000)), that = this;
                     this.elemFixedRatioContainer.append($("<label/>", {
                         "for": randomId,
                         "text": this.textFixedRatio
                     }).css("display", "inline-block"));
                     this.elemCbxFixedRatio = $("<input type='checkbox'/>").addClass("rocket-image-resizer-fixed-ratio").attr("id", randomId)
-                        .change(() => {
-                        this.sizeSelector.setFixedRatio($(this).prop("checked"));
-                        this.sizeSelector.initializeMin();
-                        this.sizeSelector.initializeMax();
+                        .change(function () {
+                        that.sizeSelector.setFixedRatio($(this).prop("checked"));
+                        that.sizeSelector.initializeMin();
+                        that.sizeSelector.initializeMax();
                     }).appendTo(this.elemFixedRatioContainer);
                 }
                 checkFixedRatio(resizingDimension) {
+                    this.elemCbxFixedRatio.prop("checked", true);
                     if (resizingDimension.isCrop()) {
-                        this.elemCbxFixedRatio.prop("checked", true);
                         this.elemFixedRatioContainer.hide();
                     }
                     else {
-                        this.elemCbxFixedRatio.prop("checked", true);
                         this.elemFixedRatioContainer.show();
                     }
                     this.elemCbxFixedRatio.trigger("change");
