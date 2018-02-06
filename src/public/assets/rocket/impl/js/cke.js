@@ -74,7 +74,7 @@
 				return;
 			}
 			
-			this.visible = jqElemParent.is(":visible");
+			this.visible = this.jqElemParent.is(":visible");
 			if (this.editor) {
 				this.editor.updateElement();
 				this.editor.destroy();
@@ -144,7 +144,6 @@
 			for (var i in toolbar) {
 				var toolbarItem = toolbar[i],
 					newToolbarItems = new Array();
-				console.log(toolbarItem.name)
 				for (var j in toolbarItem.items) {
 					if (Cke.bbCodePossibleToolbarItems.hasOwnProperty(toolbarItem.name) && 
 							Cke.bbCodePossibleToolbarItems[toolbarItem.name].hasOwnProperty(j)) {
@@ -171,8 +170,6 @@
 				bodyClass = configOptions["bodyClass"] || null,
 				formatTags = configOptions["formatTags"],
 				options = new Object();
-			
-			console.log(configOptions);
 			
 			options.toolbar = this.getToolbar(configOptions['mode'], configOptions['tableEditing'] || false, bbcode, 
 					additionalStyles.length > 0);
