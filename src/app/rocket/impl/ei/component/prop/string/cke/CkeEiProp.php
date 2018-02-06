@@ -124,8 +124,8 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function createMag(Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-				null, $this->getMaxlength(), $this->getMode(),
-				$this->isTableSupported(), $this->ckeLinkProviderLookupIds, $this->ckeCssConfigLookupId);
+				null, $this->getMaxlength(), $this->getMode(), false,
+				$this->isTableSupported(), $this->getCkeLinkProviderLookupIds(), $this->getCkeCssConfigLookupId());
 	}
 	
 // 	/**

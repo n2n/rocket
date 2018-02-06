@@ -8,9 +8,10 @@ class CkeConfig {
 	private $tableEnabled;
 	private $bbcodeEnabled;
 	
-	public function __construct(string $mode, bool $tablesEnabled) {
+	public function __construct(string $mode, bool $tablesEnabled, bool $bbcodeEnabled) {
 		$this->mode = $mode;
 		$this->tableEnabled = $tablesEnabled;
+		$this->bbcodeEnabled = $bbcodeEnabled;
 	}
 	
 	public function getMode() {

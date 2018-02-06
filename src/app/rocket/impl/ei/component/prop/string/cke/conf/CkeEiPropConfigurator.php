@@ -40,10 +40,10 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 
 class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
-	const OPTION_MODE_KEY = 'mode';
-	const OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY = 'linkProviders';
-	const OPTION_CSS_CONFIG_LOOKUP_ID_KEY = 'cssConfig';
-	const OPTION_TABLES_SUPPORTED_KEY = 'tablesSupported';
+	const PROP_MODE_KEY = 'mode';
+	const PROP_LINK_PROVIDER_LOOKUP_IDS_KEY = 'linkProviders';
+	const PROP_CSS_CONFIG_LOOKUP_ID_KEY = 'cssConfig';
+	const PROP_TABLES_SUPPORTED_KEY = 'tablesSupported';
 	
 	private $ckeEiProp;
 	
@@ -61,19 +61,19 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		$magCollection->addMag(self::OPTION_MODE_KEY, new EnumMag('Mode',
+		$magCollection->addMag(self::PROP_MODE_KEY, new EnumMag('Mode',
 				array_combine(CkeEiProp::getModes(), CkeEiProp::getModes()), 
-				$lar->getEnum(self::OPTION_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode())));
+				$lar->getEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode())));
 		
-		$magCollection->addMag(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, 
+		$magCollection->addMag(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, 
 				new StringArrayMag('Link Provider Lookup Ids',
-						$lar->getScalarArray(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY)));
+						$lar->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY)));
 		
-		$magCollection->addMag(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, new StringMag('Css Config Lookup Id',
-				$lar->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY)));
+		$magCollection->addMag(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, new StringMag('Css Config Lookup Id',
+				$lar->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY)));
 		
-		$magCollection->addMag(self::OPTION_TABLES_SUPPORTED_KEY, new BoolMag('Table Editing',
-				$lar->getBool(self::OPTION_TABLES_SUPPORTED_KEY, $this->ckeEiProp->isTableSupported())));
+		$magCollection->addMag(self::PROP_TABLES_SUPPORTED_KEY, new BoolMag('Table Editing',
+				$lar->getBool(self::PROP_TABLES_SUPPORTED_KEY, $this->ckeEiProp->isTableSupported())));
 				
 		return $magDispatchable;
 	}
@@ -82,9 +82,9 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->appendAll($magCollection->readValues(array(self::OPTION_MODE_KEY, 
-				self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, 
-				self::OPTION_TABLES_SUPPORTED_KEY), true), true);
+		$this->attributes->appendAll($magCollection->readValues(array(self::PROP_MODE_KEY, 
+				self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, 
+				self::PROP_TABLES_SUPPORTED_KEY), true), true);
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
@@ -103,11 +103,11 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function setup(EiSetupProcess $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
-		$this->ckeEiProp->setMode($this->attributes->getEnum(self::OPTION_MODE_KEY, CkeEiProp::getModes(),
+		$this->ckeEiProp->setMode($this->attributes->getEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(),
 				false, $this->ckeEiProp->getMode()));
 		
 		
-		$ckeLinkProviderLookupIds = $this->attributes->getScalarArray(self::OPTION_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
+		$ckeLinkProviderLookupIds = $this->attributes->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
 		try {
 			CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiSetupProcess->getN2nContext());
 		} catch (\InvalidArgumentException $e) {
@@ -116,7 +116,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->ckeEiProp->setCkeLinkProviderLookupIds($ckeLinkProviderLookupIds);
 		
 		
-		$ckeCssConfigLookupId = $this->attributes->getString(self::OPTION_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
+		$ckeCssConfigLookupId = $this->attributes->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
 		try {
 			CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
 		} catch (\InvalidArgumentException $e) {
@@ -125,7 +125,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->ckeEiProp->setCkeCssConfigLookupId($ckeCssConfigLookupId);
 		
 		
-		$this->ckeEiProp->setTableSupported($this->attributes->getBool(self::OPTION_TABLES_SUPPORTED_KEY, false,
+		$this->ckeEiProp->setTableSupported($this->attributes->getBool(self::PROP_TABLES_SUPPORTED_KEY, false,
 				$this->ckeEiProp->isTableSupported()));
 	}
 	
