@@ -80,7 +80,7 @@
 			<?php $view->out($mappingForm->getEntryForm()
 					->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
 		<?php else: ?>
-			<div class="rocket-impl-body rocket-group rocket-simple-group">
+			<div class="rocket-impl-body rocket-group rocket-light-group">
 				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 				<div class="rocket-control">
 					<?php $view->out($mappingForm->getEntryForm()
