@@ -246,8 +246,8 @@ class EmptyDisplayable implements Displayable {
 		$this->displayable = $displayable;
 	}
 	
-	public function getGroupType() {
-		return $this->displayable->getGroupType();
+	public function getDisplayItemType() {
+		return $this->displayable->getDisplayItemType();
 	}
 	
 	public function isMandatory(): bool {

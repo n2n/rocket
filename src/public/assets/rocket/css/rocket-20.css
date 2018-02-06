@@ -4644,16 +4644,16 @@ ul.rocket-content-item > li > span {
 }
 
 @media (min-width: 768px) {
-  .rocket-field-simple {
+  .rocket-item {
     clear: both;
     margin: 1rem 0;
   }
-  .rocket-field-simple > label {
+  .rocket-item > label {
     width: 15rem;
     float: left;
     padding: calc(0.375rem + 1px) 0;
   }
-  .rocket-field-simple > .rocket-control {
+  .rocket-item > .rocket-control {
     margin-left: 15rem;
   }
 }
@@ -4819,46 +4819,46 @@ ul.rocket-content-item > li > span {
   margin-left: 1rem;
 }
 
-.rocket-group .rocket-group-simple,
-.rocket-group .rocket-group-main {
+.rocket-group .rocket-simple-group,
+.rocket-group .rocket-main-group {
   border: none;
   background-color: inherit;
 }
 
-.rocket-group .rocket-group-simple > label,
-.rocket-group .rocket-group-main > label {
+.rocket-group .rocket-simple-group > label,
+.rocket-group .rocket-main-group > label {
   border: none;
   margin: 0;
   padding: 0.5rem 0;
 }
 
-.rocket-group .rocket-group-simple > .rocket-control,
-.rocket-group .rocket-group-main > .rocket-control {
+.rocket-group .rocket-simple-group > .rocket-control,
+.rocket-group .rocket-main-group > .rocket-control {
   padding: 0 1rem;
   border: 1px solid #DAD7D3;
   background: rgba(194, 189, 182, 0.08);
 }
 
 @media (min-width: 768px) {
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label),
-  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
-  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label) {
+  .rocket-group .rocket-simple-group > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
+  .rocket-group .rocket-simple-group > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label),
+  .rocket-group .rocket-main-group > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
+  .rocket-group .rocket-main-group > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label) {
     width: auto;
     max-width: calc(14rem - 1px);
   }
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-editable > .rocket-control,
-  .rocket-group .rocket-group-simple > .rocket-control .rocket-read-only > .rocket-control,
-  .rocket-group .rocket-group-main > .rocket-control .rocket-editable > .rocket-control,
-  .rocket-group .rocket-group-main > .rocket-control .rocket-read-only > .rocket-control {
+  .rocket-group .rocket-simple-group > .rocket-control .rocket-editable > .rocket-control,
+  .rocket-group .rocket-simple-group > .rocket-control .rocket-read-only > .rocket-control,
+  .rocket-group .rocket-main-group > .rocket-control .rocket-editable > .rocket-control,
+  .rocket-group .rocket-main-group > .rocket-control .rocket-read-only > .rocket-control {
     margin-left: calc(14rem - 1px);
   }
-  .rocket-control .rocket-group .rocket-group-simple > .rocket-control label,
-  .rocket-control .rocket-group .rocket-group-main > .rocket-control label {
+  .rocket-control .rocket-group .rocket-simple-group > .rocket-control label,
+  .rocket-control .rocket-group .rocket-main-group > .rocket-control label {
     max-width: calc(13rem - 2px);
   }
-  .rocket-control .rocket-group .rocket-group-simple > .rocket-control .rocket-control,
-  .rocket-control .rocket-group .rocket-group-main > .rocket-control .rocket-control {
+  .rocket-control .rocket-group .rocket-simple-group > .rocket-control .rocket-control,
+  .rocket-control .rocket-group .rocket-main-group > .rocket-control .rocket-control {
     margin-left: calc(13rem - 2px);
   }
 }

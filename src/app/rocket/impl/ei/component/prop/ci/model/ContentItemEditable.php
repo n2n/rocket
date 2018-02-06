@@ -61,7 +61,7 @@ class ContentItemEditable implements GuiFieldEditable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Editable::isMandatory()
+	 * @see \rocket\spec\ei\manage\gui\GuiFieldEditable::isMandatory()
 	 */
 	public function isMandatory(): bool {
 		foreach ($this->panelConfigs as $panelConfig) {
@@ -75,7 +75,7 @@ class ContentItemEditable implements GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Editable::createMag($propertyName)
+	 * @see \rocket\spec\ei\manage\gui\GuiFieldEditable::createMag($propertyName)
 	 */
 	public function createMag(): Mag {
 		$this->contentItemMag = new ContentItemMag($this->label, $this->panelConfigs,

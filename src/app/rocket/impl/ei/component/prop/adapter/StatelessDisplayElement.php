@@ -58,10 +58,10 @@ class StatelessDisplayElement implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
-	public function getGroupType() {
-		return $this->statelessDisplayable->getGroupType();
+	public function getDisplayItemType() {
+		return $this->statelessDisplayable->getDisplayItemType();
 	}
 	
 	/**

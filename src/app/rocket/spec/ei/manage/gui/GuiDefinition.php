@@ -205,7 +205,7 @@ class GuiDefinition {
 				$currentIds = $baseIds;
 				$currentIds[] = $id;
 				$displayStructure->addGuiIdPath(new GuiIdPath($currentIds),
-						$displayDefinition->getGroupType(),
+						$displayDefinition->getDisplayItemType(),
 						$displayDefinition->getLabel());
 			}
 			
@@ -230,7 +230,7 @@ class GuiDefinition {
 			if ($displayItem->hasDisplayStructure()) {
 				$purifiedDisplayStructure->addDisplayStructure(
 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiu), 
-						$displayItem->getGroupType(), $displayItem->getLabel());
+						$displayItem->getType(), $displayItem->getLabel());
 				continue;
 			}
 			
@@ -247,7 +247,7 @@ class GuiDefinition {
 			}
 			
 			$purifiedDisplayStructure->addGuiIdPath($displayItem->getGuiIdPath(),
-					$displayItem->getGroupType() ?? $displayDefinition->getGroupType(),
+					$displayItem->getType() ?? $displayDefinition->getDisplayItemType(),
 					$displayItem->getLabel() ?? $displayDefinition->getLabel());
 		}
 		

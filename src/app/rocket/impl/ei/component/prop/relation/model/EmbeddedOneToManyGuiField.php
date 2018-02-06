@@ -66,10 +66,10 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getGroupType()
+	 * @see \rocket\spec\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
-	public function getGroupType() {
-		return DisplayItem::TYPE_SIMPLE;
+	public function getDisplayItemType() {
+		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
 	/**

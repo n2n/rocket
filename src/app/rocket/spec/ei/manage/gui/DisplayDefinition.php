@@ -6,18 +6,18 @@ use n2n\reflection\ArgUtils;
 
 class DisplayDefinition {
 	private $label;
-	private $groupType;
+	private $displayItemType;
 	private $defaultDisplayed;
 	
 	/**
 	 * @param string $label
-	 * @param string $groupType
+	 * @param string $displayItemType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $label, string $groupType, bool $defaultDisplayed, string $helpText = null) {
+	public function __construct(string $label, string $displayItemType, bool $defaultDisplayed, string $helpText = null) {
 		$this->label = $label;
-		ArgUtils::valEnum($groupType, DisplayItem::getTypes());
-		$this->groupType = $groupType;
+		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
+		$this->displayItemType = $displayItemType;
 		$this->defaultDisplayed = $defaultDisplayed;
 	}
 	
@@ -31,8 +31,8 @@ class DisplayDefinition {
 	/**
 	 * @return string
 	 */
-	public function getGroupType() {
-		return $this->groupType;
+	public function getDisplayItemType() {
+		return $this->displayItemType;
 	}
 	
 	/**

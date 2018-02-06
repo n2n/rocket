@@ -43,5 +43,5 @@ interface Displayable {
 	/**
 	 * @return string|null {@see DisplayItem::TYPE_SIMPLE} 
 	 */
-	public function getGroupType();
+	public function getDisplayItemType();
 }

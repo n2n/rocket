@@ -37,7 +37,7 @@ namespace Rocket.Display {
 			
 			EntryForm.find(jqPage, true);
 			
-			jqPage.find(".rocket-group-main").each(function () {
+			jqPage.find(".rocket-main-group").each(function () {
 				let elemJq = $(this);
 				Initializer.scanGroupNav(elemJq.parent());
 			});
@@ -62,7 +62,7 @@ namespace Rocket.Display {
 			
 			jqContainer.children().each(function () {
 				var jqElem = $(this);
-				if (!jqElem.hasClass("rocket-group-main")) {
+				if (!jqElem.hasClass("rocket-main-group")) {
 					curGroupNav = null;
 					return;
 				}

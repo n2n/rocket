@@ -61,7 +61,7 @@ class ManyToOneGuiField implements GuiField {
 		return array();
 	}
 	
-	public function getGroupType() {
+	public function getDisplayItemType() {
 		return null;
 	}
 	

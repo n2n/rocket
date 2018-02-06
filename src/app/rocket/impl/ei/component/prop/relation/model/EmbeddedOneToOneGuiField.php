@@ -64,8 +64,8 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		return $this->editable === null;
 	}
 
-	public function getGroupType() {
-		return DisplayItem::TYPE_SIMPLE;
+	public function getDisplayItemType() {
+		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
 	/**

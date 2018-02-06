@@ -45,7 +45,7 @@
 	$html->meta()->addJs('impl/js/image-preview.js');
 ?>
 
-<div class="rocket-group rocket-group-simple">
+<div class="rocket-group rocket-simple-group">
 	<label><?php $html->out($imageFile->getFile()->getOriginalName()) ?></label>
 	<div class="rocket-image-resizer-container rocket-control">
 		<?php $formHtml->open($thumbModel, null, null, array('class' => 'rocket-form')) ?>

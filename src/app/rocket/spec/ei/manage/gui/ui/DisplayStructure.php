@@ -89,7 +89,7 @@ class DisplayStructure {
 			
 			if ($curDisplayStructure === null) {
 				$curDisplayStructure = new DisplayStructure();
-				$displayStructure->addDisplayStructure($curDisplayStructure, DisplayItem::TYPE_SIMPLE);
+				$displayStructure->addDisplayStructure($curDisplayStructure, DisplayItem::TYPE_SIMPLE_GROUP);
 			}
 			
 			$curDisplayStructure->addDisplayItem($displayItem);
@@ -108,12 +108,12 @@ class DisplayStructure {
 	
 	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs) {
 		foreach ($displayItems as $displayItem) {
-			$groupType = $displayItem->getGroupType();
+			$groupType = $displayItem->getType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType == DisplayItem::TYPE_AUTONOMIC) {
-					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());
-				} else if ($displayItem->getGroupType() == $groupType) {
+				if ($groupType == DisplayItem::TYPE_AUTONOMIC_GROUP) {
+					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel());
+				} else if ($displayItem->getType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
 				} else {
 					$ds->addGuiIdPath($displayItem->getGuiIdPath(), $groupType, $displayItem->getLabel());	
@@ -123,12 +123,12 @@ class DisplayStructure {
 			
 			$newDisplayStructure = new DisplayStructure();
 			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
-					($displayItem->getGroupType() == DisplayItem::TYPE_MAIN ? $newDisplayStructure : $autonomicDs));
+					($displayItem->getType() == DisplayItem::TYPE_MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
 			
-			if ($displayItem->getGroupType() == DisplayItem::TYPE_AUTONOMIC) {
-				$autonomicDs->addDisplayStructure($newDisplayStructure, DisplayItem::TYPE_SIMPLE, $displayItem->getLabel());	
+			if ($displayItem->getType() == DisplayItem::TYPE_AUTONOMIC_GROUP) {
+				$autonomicDs->addDisplayStructure($newDisplayStructure, DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel());	
 			} else {
-				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getGroupType(), $displayItem->getLabel());
+				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getType(), $displayItem->getLabel());
 			}
 		}
 	}
@@ -153,7 +153,7 @@ class DisplayStructure {
 				continue;
 			}
 			
-			$displayStructure->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_NONE, 
+			$displayStructure->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_ITEM, 
 					$displayItem->getLabel());
 		}
 	}

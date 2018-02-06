@@ -63,8 +63,8 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$this->initialize(new SelectEiPropRelation($this, true, false));
 	}
 	
-	public function getGroupType() {
-		return DisplayItem::TYPE_NONE;
+	public function getDisplayItemType() {
+		return DisplayItem::TYPE_ITEM;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {

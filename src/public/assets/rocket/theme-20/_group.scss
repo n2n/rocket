@@ -30,8 +30,8 @@
     }
 }
 
-.rocket-group .rocket-group-simple,
-.rocket-group .rocket-group-main {
+.rocket-group .rocket-simple-group,
+.rocket-group .rocket-main-group {
     border: none;
     background-color: inherit;
     > label {
@@ -47,8 +47,8 @@
 }
 
 @include media-breakpoint-up(md) {
-    .rocket-group .rocket-group-simple,
-    .rocket-group .rocket-group-main {
+    .rocket-group .rocket-simple-group,
+    .rocket-group .rocket-main-group {
         > .rocket-control {
             .rocket-editable,
             .rocket-read-only {
@@ -64,8 +64,8 @@
         }
     }
 
-    .rocket-control .rocket-group .rocket-group-simple,
-    .rocket-control .rocket-group .rocket-group-main, {
+    .rocket-control .rocket-group .rocket-simple-group,
+    .rocket-control .rocket-group .rocket-main-group, {
         > .rocket-control {
             label {
                 max-width: calc(13rem - 2px);

@@ -6,13 +6,15 @@ use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
 
 class DisplayItem {
-	const TYPE_SIMPLE = 'simple';
-	const TYPE_MAIN = 'main';
-	const TYPE_AUTONOMIC = 'autonomic';
-	const TYPE_NONE = 'none';
+	const TYPE_SIMPLE_GROUP = 'simple-group';
+	const TYPE_MAIN_GROUP = 'main-group';
+	const TYPE_AUTONOMIC_GROUP = 'autonomic-group';
+	const TYPE_LIGHT_GROUP = 'light-group';
+	const TYPE_PANEL = 'panel';
+	const TYPE_ITEM = 'item';
 
 	protected $label;
-	protected $groupType;
+	protected $type;
 	protected $guiIdPath;
 	protected $displayStructure;
 
@@ -23,11 +25,11 @@ class DisplayItem {
 	 * @param GuiIdPath $guiIdPath
 	 * @return DisplayItem
 	 */
-	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
+	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
-		ArgUtils::valEnum($groupType, self::getTypes(), null, true);
-		$orderItem->groupType = $groupType;
+		ArgUtils::valEnum($type, self::getTypes(), null, true);
+		$orderItem->type = $type;
 		$orderItem->guiIdPath = $guiIdPath;
 		return $orderItem;
 	}
@@ -36,26 +38,35 @@ class DisplayItem {
 	 * @param DisplayStructure $displayStructure
 	 * @return DisplayItem
 	 */
-	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $groupType, 
+	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $type, 
 			string $label = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
-		ArgUtils::valEnum($groupType, self::getGroupTypes());
-		$displayItem->groupType = $groupType;
+		ArgUtils::valEnum($type, self::getTypes());
+		$displayItem->type = $type;
 		$displayItem->label = $label;
 		return $displayItem;
 	}
 	
+	/**
+	 * @return string|null
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
 
-	public function getGroupType() {
-		return $this->groupType;
+	/**
+	 * @return string|null
+	 */
+	public function getType() {
+		return $this->type;
 	}
 
+	/**
+	 * @return boolean
+	 */
 	public function isGroup() {
-		return $this->displayStructure !== null || ($this->groupType !== null && $this->groupType !== self::TYPE_NONE);
+		return in_array($this->type, DisplayItem::getGroupTypes());
 	}
 
 	public function hasDisplayStructure() {
@@ -83,10 +94,12 @@ class DisplayItem {
 	}
 	
 	public static function getGroupTypes() {
-		return array(self::TYPE_SIMPLE, self::TYPE_MAIN, self::TYPE_AUTONOMIC);
+		return array(self::TYPE_SIMPLE_GROUP, self::TYPE_MAIN_GROUP, self::TYPE_AUTONOMIC_GROUP,
+				self::TYPE_LIGHT_GROUP);
 	}
 	
 	public static function getTypes() {
-		return array(self::TYPE_NONE, self::TYPE_SIMPLE, self::TYPE_MAIN, self::TYPE_AUTONOMIC);
+		return array(self::TYPE_ITEM, self::TYPE_SIMPLE_GROUP, self::TYPE_MAIN_GROUP, self::TYPE_AUTONOMIC_GROUP,
+				self::TYPE_LIGHT_GROUP, self::TYPE_PANEL);
 	}
 }

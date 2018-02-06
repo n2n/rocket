@@ -72,7 +72,7 @@
 
 <?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 	<?php if ($displayItem->hasDisplayStructure()): ?>
-		<?php $eiHtml->groupOpen('div', $displayItem) ?>
+		<?php $eiHtml->displayItemOpen('div', $displayItem) ?>
 			<?php if (null !== ($label = $displayItem->getLabel())): ?>
 				<label><?php $html->out($displayItem->getLabel()) ?></label>
 			<?php endif ?>
@@ -88,7 +88,7 @@
 				<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 
 						'eiu' => $eiu, 'renderForkMags' => false)) ?>
 			</div>
-		<?php $eiHtml->groupClose() ?>
+		<?php $eiHtml->displayItemClose() ?>
 	<?php else: ?>
 		<?php $eiHtml->fieldOpen('div', $displayItem) ?>
 			<?php $eiHtml->fieldLabel() ?>
