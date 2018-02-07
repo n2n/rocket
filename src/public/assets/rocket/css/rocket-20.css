@@ -4883,6 +4883,20 @@ ul.rocket-content-item > li > span {
   color: #373431;
 }
 
+.rocket-light-group > label {
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.rocket-light-group > .rocket-control {
+  padding: 0;
+}
+
+.rocket-panel > label {
+  display: none;
+}
+
 .rocket-simple-commands > .dropdown > button,
 .rocket-simple-commands > .btn {
   width: 2.25rem;
