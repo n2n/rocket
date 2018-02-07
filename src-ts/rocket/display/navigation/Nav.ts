@@ -1,7 +1,7 @@
 namespace Rocket.Display {
 	export class Nav {
 		private _elemJq: JQuery;
-		private _state: UserState;
+		private _state: Rocket.Impl.NavState;
 
 		public init(elemJq: JQuery) {
 			this.elemJq = elemJq;
@@ -13,11 +13,11 @@ namespace Rocket.Display {
 			}, 0);
 		}
 
-		get state(): Rocket.Display.UserState {
+		get state(): Rocket.Impl.NavState {
 			return this._state;
 		}
 
-		set state(value: Rocket.Display.UserState) {
+		set state(value: Rocket.Impl.NavState) {
 			this._state = value;
 		}
 

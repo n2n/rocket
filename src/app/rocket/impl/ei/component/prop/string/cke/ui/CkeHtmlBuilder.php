@@ -90,7 +90,8 @@ class CkeHtmlBuilder {
 		$this->view->out($this->getEditor($propertyPath, $ckeComposer));
 	}
 
-	public function getEditor($propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders) {
+	public function getEditor($propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null, 
+			array $linkProviders = array()) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
 		$ckeConfig = null;
@@ -112,9 +113,7 @@ class CkeHtmlBuilder {
 			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
 			$attrs['bodyClass'] = $ckeCssConfig->getBodyClass();
 			$attrs['contentsCss'] = $this->getCssPaths($ckeCssConfig);
-			
 			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeCssConfig->getAdditionalStyles());
-			
 			$attrs['formatTags'] = implode(';', (array) $ckeCssConfig->getFormatTags());
 		}
 
@@ -128,6 +127,7 @@ class CkeHtmlBuilder {
 		$headLinkHtml = '';
 		$bodyIdHtml = '';
 		$bodyClassHtml = '';
+		
 		if ($ckeCssConfig) {
 			$headLinkHtml = str_replace('"', '\'',
 					StringUtils::jsonEncode((array) $this->getCssPaths($ckeCssConfig)));

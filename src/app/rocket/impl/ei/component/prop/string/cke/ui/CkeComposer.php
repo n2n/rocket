@@ -26,6 +26,11 @@ class CkeComposer {
 		$this->tableEnabled = $table;
 		return $this;
 	}
+
+	public function bbcode(bool $bbcode) {
+		$this->bbcodeEnabled = $bbcode;
+		return $this;
+	}
 	
 	/**
 	 * @return \rocket\impl\ei\component\prop\string\cke\ui\CkeConfig

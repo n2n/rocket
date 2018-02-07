@@ -259,9 +259,9 @@ class EiHtmlBuilder {
 	}
 	
 	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs, DisplayItem $displayItem = null) {
-		return HtmlUtils::mergeAttrs($attrs, array(
-				'class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray()) 
-						. ($displayItem !== null && !$displayItem->isGroup() ? ' rocket-field-simple' : '')));
+		$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray())));
+		$attrs = $this->applyDisplayItemAttr($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
+		return $attrs;
 	}
 	
 	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
@@ -279,7 +279,7 @@ class EiHtmlBuilder {
 			}
 			
 			$guiIdPath = $displayItem->getGuiIdPath();
-			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
+			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
 		} else {
 			$guiIdPath = GuiIdPath::createFromExpression($displayItem);
 			$displayItem = null;
@@ -329,12 +329,16 @@ class EiHtmlBuilder {
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
-	private function applyGroupTypeAttr(string $groupType = null, array $attrs) {
-		if (null !== $groupType && $groupType !== DisplayItem::TYPE_NONE) {
-			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group rocket-group-' . $groupType), $attrs);
+	private function applyDisplayItemAttr(string $displayItemType = null, array $attrs) {
+		if ($displayItemType === null) {
+			return $attrs;
 		}
 		
-		return $attrs;
+		if (in_array($displayItemType, DisplayItem::getGroupTypes())) {
+			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group rocket-' . $displayItemType), $attrs);
+		}
+		
+		return HtmlUtils::mergeAttrs(array('class' => 'rocket-' . $displayItemType), $attrs);
 	}
 	
 	private function buildContainerAttrs(array $attrs, bool $readOnly = true, bool $mandatory = false) {
@@ -433,8 +437,8 @@ class EiHtmlBuilder {
 	 * @param DisplayItem|string $displayItem
 	 * @param array $attrs
 	 */
-	public function groupOpen(string $tagName, $displayItem, array $attrs = null) {
-		$this->view->out($this->getGroupOpen($tagName, $displayItem, $attrs));
+	public function displayItemOpen(string $tagName, $displayItem, array $attrs = null) {
+		$this->view->out($this->getDisplayItemOpen($tagName, $displayItem, $attrs));
 	}
 	
 	/**
@@ -444,12 +448,12 @@ class EiHtmlBuilder {
 	 * @param array $attrs
 	 * @return \n2n\web\ui\UiComponent
 	 */
-	public function getGroupOpen(string $tagName, $displayItem, array $attrs = null) {
+	public function getDisplayItemOpen(string $tagName, $displayItem, array $attrs = null) {
 		if ($displayItem instanceof DisplayItem) {
-			$attrs = $this->applyGroupTypeAttr($displayItem->getGroupType(), (array) $attrs);
+			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
 		} else {
 			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], 'displayItem');
-			$attrs = $this->applyGroupTypeAttr($displayItem, (array) $attrs);
+			$attrs = $this->applyDisplayItemAttr($displayItem, (array) $attrs);
 		}
 		$this->state->pushGroup($tagName);
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
@@ -458,14 +462,14 @@ class EiHtmlBuilder {
 	/**
 	 * 
 	 */
-	public function groupClose() {
-		$this->view->out($this->getGroupClose());
+	public function displayItemClose() {
+		$this->view->out($this->getDisplayItemClose());
 	}
 	
 	/**
 	 * @return \n2n\web\ui\UiComponent
 	 */
-	public function getGroupClose() {
+	public function getDisplayItemClose() {
 		$info = $this->state->peakGroup(true);
 		return new Raw('</' . $info['tagName'] . '>');
 	}

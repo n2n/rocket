@@ -41,7 +41,8 @@
 <div class="rocket-impl-content-items">
 	<?php foreach ($panelConfigs as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
-				array('class' => 'rocket-impl-content-item-panel rocket-group rocket-group-simple')) ?>
+				array('class' => 'rocket-impl-content-item-panel rocket-group rocket-light-group',
+						'data-name' => $panelConfig->getName())) ?>
 			<?php $formHtml->magLabel() ?>
 			<div class="rocket-control">
 				<?php $formHtml->magField() ?>

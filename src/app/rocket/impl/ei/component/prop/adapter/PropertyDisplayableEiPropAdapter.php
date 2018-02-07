@@ -58,15 +58,15 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 			return null;
 		}
 		
-		$groupType = $this->getGroupType($eiu);
+		$groupType = $this->getDisplayItemType($eiu);
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($this->getDisplayLabel(), $groupType,
 				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	protected function getGroupType(Eiu $eiu) {
-		return DisplayItem::TYPE_NONE;
+	protected function getDisplayItemType(Eiu $eiu) {
+		return DisplayItem::TYPE_ITEM;
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {

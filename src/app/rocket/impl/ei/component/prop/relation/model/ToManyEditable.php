@@ -54,7 +54,7 @@ class ToManyEditable implements GuiFieldEditable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Editable::isMandatory()
+	 * @see \rocket\spec\ei\manage\gui\GuiFieldEditable::isMandatory()
 	 */
 	public function isMandatory(): bool {
 		return $this->min > 0;

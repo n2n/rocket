@@ -43,7 +43,7 @@
 			array('title' => $view->getL10nText('core_start_title', array('user' => $loginContext->getCurrentUser()))));
 ?>
 <?php if ($loginContext->getCurrentUser()->isAdmin()): ?>
-	<div id="rocket-core-latest-logins" class="rocket-group-main">
+	<div id="rocket-core-latest-logins" class="rocket-main-group">
 		<label><?php $html->l10nText('core_latest_logins_title') ?></label>
 		<div class="rocket-control row">
 			<div class="col-sm-6 mt-3">
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="rocket-core-server-info" class="rocket-group-main">
+	<div id="rocket-core-server-info" class="rocket-main-group">
 		<label><?php $html->l10nText('core_server_info_title') ?></label>
 		<div class="rocket-control">
     		<table class="table table-hover rocket-table mt-3">

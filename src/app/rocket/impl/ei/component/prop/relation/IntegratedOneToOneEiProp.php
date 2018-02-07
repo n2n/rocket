@@ -229,7 +229,7 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 	public function getEditable(): GuiFieldForkEditable {
 		IllegalStateException::assertTrue(!$this->isReadOnly(), 'OneToOneGuiFieldFork is read only.');
 		
-		return new OneToOneGuiFieldForkEditable($this->targetGuiFieldAssembler);
+		return new OneToOneGuiFieldForkEditable($this->toOneEiField, $this->targetGuiFieldAssembler);
 	}
 }
 

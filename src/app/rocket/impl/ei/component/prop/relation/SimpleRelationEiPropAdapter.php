@@ -84,12 +84,12 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			return null;
 		}
 		
-		return new DisplayDefinition($this->getLabelLstr(), $this->getGroupType(), 
+		return new DisplayDefinition($this->getLabelLstr(), $this->getDisplayItemType(), 
 				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	protected function getGroupType() {
-		return DisplayItem::TYPE_SIMPLE;
+	protected function getDisplayItemType() {
+		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
 	public function getGuiProp(): ?GuiProp {

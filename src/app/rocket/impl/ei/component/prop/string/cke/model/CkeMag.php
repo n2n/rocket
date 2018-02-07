@@ -38,10 +38,10 @@ class CkeMag extends StringMag {
 	private $ckeCssConfigLookupId;
 
 	public function __construct($label, $value = null, bool $mandatory = false, 
-			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiProp::MODE_NORMAL, 
+			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiProp::MODE_NORMAL, bool $bbcode = false, 
 			bool $tableEditing = false, array $ckeLinkProviderLookupIds, string $ckeCssConfigLookupId = null) {
 		parent::__construct($label, $value, $mandatory, $maxlength, true, $inputAttrs);
-		
+		$this->bbcode = $bbcode;
 		$this->mode = $mode;
 		$this->tableEditing = $tableEditing;
 		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
@@ -70,7 +70,7 @@ class CkeMag extends StringMag {
 		}
 
 		return $ckeHtml->getEditor($propertyPath,
-				Cke::classic()->mode($this->mode)->table($this->tableEditing),
+				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
 				$ckeCss, $linkProviders);
 	}
 }

@@ -261,8 +261,9 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->setupDraftableAdapter();
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\EiConfigurator::createMagCollection()
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\EiConfiguratorAdapter::createMagDispatchable()
 	 */
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magCollection = new MagCollection();

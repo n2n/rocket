@@ -123,7 +123,7 @@ class DisplaySettings {
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null
 	 */
-	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = DisplayItem::TYPE_NONE) {
+	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = DisplayItem::TYPE_ITEM) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
 		return new DisplayDefinition($eiProp->getLabelLstr(), $groupType,

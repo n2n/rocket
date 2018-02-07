@@ -41,7 +41,7 @@
 	$fieldEiHtml = new FieldEiHtmlBuilder($view);
 ?>
 
-<div class="rocket-impl-translatable"
+<div class="rocket-impl-translatable rocket-impl-translatable-<?php $html->out($view->getParam('markClassKey')) ?>"
 		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
 		data-rocket-impl-languages-view-tooltip="<?php $html->text('ei_impl_languages_view_tooltip') ?>"
 		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>"

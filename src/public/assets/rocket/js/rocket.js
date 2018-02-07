@@ -2382,7 +2382,7 @@ var Rocket;
                 var i = 0;
                 var jqPage = context.jQuery;
                 Display.EntryForm.find(jqPage, true);
-                jqPage.find(".rocket-group-main").each(function () {
+                jqPage.find(".rocket-main-group").each(function () {
                     let elemJq = $(this);
                     Initializer.scanGroupNav(elemJq.parent());
                 });
@@ -2400,7 +2400,7 @@ var Rocket;
                 let curGroupNav = null;
                 jqContainer.children().each(function () {
                     var jqElem = $(this);
-                    if (!jqElem.hasClass("rocket-group-main")) {
+                    if (!jqElem.hasClass("rocket-main-group")) {
                         curGroupNav = null;
                         return;
                     }
@@ -7045,7 +7045,7 @@ var Rocket;
                     else {
                         jqBase = se.jQuery;
                     }
-                    jqBase.find(".rocket-impl-translatable").each((i, elem) => {
+                    jqBase.find(".rocket-impl-translatable-" + jqElem.data("rocket-impl-mark-class-key")).each((i, elem) => {
                         let elemJq = $(elem);
                         if (Translatable.test(elemJq)) {
                             return;

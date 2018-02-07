@@ -44,7 +44,7 @@ namespace Rocket.Impl.Translation {
 			let tm = TranslationManager.from(jqElem);
 			tm.val(this.userStore.langState.activeLocaleIds);
 			let se = Rocket.Display.StructureElement.of(jqElem);
-
+			
 			let jqBase = null;
 			if (!se) {
 				jqBase = context.jQuery;
@@ -52,7 +52,7 @@ namespace Rocket.Impl.Translation {
 				jqBase = se.jQuery;
 			}
 
-			jqBase.find(".rocket-impl-translatable").each((i, elem) => {
+			jqBase.find(".rocket-impl-translatable-" + jqElem.data("rocket-impl-mark-class-key")).each((i, elem) => {
 				let elemJq = $(elem);
 				if (Translatable.test(elemJq)) {
 					return;

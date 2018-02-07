@@ -370,9 +370,9 @@ class SpecExtractor {
 			    }
 			    $childDisplayStructure = $this->createDisplayStructure($dsa);
 				$groupType = $displayStructureAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(), 
-						false, DisplayItem::TYPE_SIMPLE, true);
+						false, DisplayItem::TYPE_SIMPLE_GROUP, true);
 				if ($groupType === null) {
-					$groupType = DisplayItem::TYPE_SIMPLE;
+					$groupType = DisplayItem::TYPE_SIMPLE_GROUP;
 				}
 				
 				$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
