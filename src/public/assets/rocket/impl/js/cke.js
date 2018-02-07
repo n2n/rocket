@@ -201,6 +201,7 @@
 				options.extraPlugins += 'autogrow';
 				options.removePlugins = 'resize';
 				options.autoGrow_maxHeight = $(window).outerHeight() - 250;
+				options.autoGrow_minHeight = 300;
 				if (options.autoGrow_maxHeight > 700) {
 					options.autoGrow_maxHeight = 700;
 				}

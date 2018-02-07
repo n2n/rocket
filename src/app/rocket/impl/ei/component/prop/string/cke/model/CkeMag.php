@@ -70,7 +70,7 @@ class CkeMag extends StringMag {
 		}
 
 		return $ckeHtml->getEditor($propertyPath,
-				Cke::classic()->mode($this->mode)->table($this->tableEditing),
+				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
 				$ckeCss, $linkProviders);
 	}
 }
