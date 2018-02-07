@@ -31,7 +31,6 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\util\uri\UnavailableUrlException;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
-use lib\rocket\impl\ei\component\prop\string\cke\model\CkeBbcodeParser;
 
 class CkeHtmlBuilder {
 
