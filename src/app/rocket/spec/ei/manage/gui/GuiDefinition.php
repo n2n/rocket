@@ -231,7 +231,7 @@ class GuiDefinition {
 			return $eiMapping->getMappableWrapper(new EiFieldPath(array($id)));
 		}
 		
-		$guiFieldFork = $guiDefinition->getLevelGuiFieldForkById($id);
+		$guiFieldFork = $this->getLevelGuiFieldForkById($id);
 		$mappableWrapper = $guiFieldFork->determineMappableWrapper($eiMapping, $guiIdPath);
 		ArgUtils::valTypeReturn($mappableWrapper, MappableWrapper::class, $guiFieldFork, 'determineMappableWrapper', true);
 		return $mappableWrapper;
