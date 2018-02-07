@@ -93,9 +93,9 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @see \rocket\spec\ei\component\prop\indepenent\EiPropConfigurator::assignProperty()
 	 */
 	public function assignProperty(PropertyAssignation $propertyAssignation) {
-		if (!$this->isPropertyAssignable()) {
-			throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');
-		}
+// 		if (!$this->isPropertyAssignable()) {
+// 			throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');
+// 		}
 	
 		if ($this->confEntityPropertyEiProp !== null) {
 			try {

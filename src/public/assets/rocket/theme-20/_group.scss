@@ -99,3 +99,19 @@
     }
 
 }
+
+
+.rocket-light-group {
+    > label {
+        border: none;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    > .rocket-control {
+        padding: 0;
+    }
+}
+
+.rocket-panel > label {
+    display: none;
+}
