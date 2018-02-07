@@ -114,10 +114,11 @@ class CkeHtmlBuilder {
 			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
 			$attrs['bodyClass'] = $ckeCssConfig->getBodyClass();
 			$attrs['contentsCss'] = $this->getCssPaths($ckeCssConfig);
+			
 			$ckeStyles = $ckeCssConfig->getAdditionalStyles();
 			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getAdditionalStyles', CkeStyle::class);
+			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeStyles);
 			
-			$attrs['additionalStyles'] = $this->prepareAdditionalStyles();
 			$attrs['formatTags'] = implode(';', (array) $ckeCssConfig->getFormatTags());
 		}
 
