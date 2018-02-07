@@ -18,7 +18,7 @@
 
 		Cke.bbCodePossibleToolbarItems =  {
 				document: ['Source'],
-				clipboard: [ "Cut", "Copy", "Paste", "PateText", "PasteFromWord", "Undo", "Redo" ],
+				clipboard: [ "Cut", "Copy", "Paste", "Undo", "Redo" ],
 				editing: [ "Find", "Replace", "SelectAll" ],
 				basicstyles: [ "Bold", "Italic", "Underline", "RemoveFormat" ],
 				paragraph: ["NumberedList", "BulletedList", "Blockquote"],
@@ -100,7 +100,7 @@
 				toolbar = [];
 			
 			if (modeNum >= 1) {
-				clipboardItems = clipboardItems.concat(["Cut", "Copy", "Paste", "PateText", "PasteFromWord", "-", "Undo", "Redo"]);
+				clipboardItems = clipboardItems.concat(["Cut", "Copy", "Paste", "-", "Undo", "Redo"]);
 				editingItems = editingItems.concat(["Find", "Replace"]);
 				basicStyleItems = basicStyleItems.concat(["Subscript", "Superscript"]);
 				paragraphItems = paragraphItems.concat(["Outdent", "Indent", "blocks", "Blockquote", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]);
