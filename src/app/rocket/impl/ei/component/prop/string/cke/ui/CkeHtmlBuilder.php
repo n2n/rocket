@@ -31,6 +31,7 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\util\uri\UnavailableUrlException;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
+use n2n\reflection\ArgUtils;
 
 class CkeHtmlBuilder {
 
@@ -113,7 +114,11 @@ class CkeHtmlBuilder {
 			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
 			$attrs['bodyClass'] = $ckeCssConfig->getBodyClass();
 			$attrs['contentsCss'] = $this->getCssPaths($ckeCssConfig);
-			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeCssConfig->getAdditionalStyles());
+			
+			$ckeStyles = $ckeCssConfig->getAdditionalStyles();
+			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getAdditionalStyles', CkeStyle::class);
+			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeStyles);
+			
 			$attrs['formatTags'] = implode(';', (array) $ckeCssConfig->getFormatTags());
 		}
 
