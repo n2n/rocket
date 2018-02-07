@@ -27,6 +27,7 @@ class RocketUiOutfitter implements UiOutfitter {
 			$newAttrs = ($nature & self::NATURE_CHECK) ? array('class' => 'form-check-input') : array('class' => 'form-control');
 			$attrs = HtmlUtils::mergeAttrs($newAttrs, $attrs);
 		}
+		
 
 		if ($nature & self::NATURE_CHECK_LABEL) {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'form-check-label'), $attrs);
@@ -48,6 +49,18 @@ class RocketUiOutfitter implements UiOutfitter {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-impl-entry rocket-structure-element'), $attrs);
 		}
 
+		if ($nature & self::NATURE_CONTROL_WRAPPER) {
+			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-control'), $attrs);
+		}
+		
+		if ($nature & self::NATURE_CONTROL_GROUP) {
+			$attrs = HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs);
+		}
+		
+		if ($nature & self::NATURE_CONTROL_GROUP_ADDON) {
+			$attrs = HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs);
+		}
+		
 		return $attrs;
 	}
 
@@ -57,7 +70,7 @@ class RocketUiOutfitter implements UiOutfitter {
 	 * @param null $contents
 	 * @return HtmlElement
 	 */
-	public function createElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
+	public function createElement(int $elemNature, array $attrs = null, $contents = ''): UiComponent {
 		if ($attrs === null) {
 			$attrs = array();
 		}
