@@ -108,7 +108,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		}
 		
 		throw new UnknownEiComponentException('No ' . $this->elementName . ' with id \'' . (string) $id 
-				. '\' found in ' . $this->eiEngine->getEiThing() . '.');
+				. '\' found in ' . $this->eiEngine->getEiEngineModel() . '.');
 	}
 	
 	/**

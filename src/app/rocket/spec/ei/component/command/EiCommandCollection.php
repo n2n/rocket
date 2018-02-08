@@ -65,7 +65,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiThing() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
 				. GenericOverviewEiCommand::class . '.');
 	}
 	
@@ -99,7 +99,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiThing() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
 				. GenericDetailEiCommand::class . ' for ' . $entryNavPoint);
 	}
 	
@@ -129,7 +129,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiThing() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
 				. GenericEditEiCommand::class . ' for ' . $entryNavPoint);
 	}
 	
@@ -158,7 +158,7 @@ class EiCommandCollection extends EiComponentCollection {
 		}
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiThing() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
 				. GenericEditEiCommand::class . ' for ' . ($draft ? 'draft entry' : 'live entry'));
 	}
 	
