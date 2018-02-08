@@ -103,12 +103,12 @@ class CkeHtmlBuilder {
 		}
 
 		$attrs = array('mode' => $ckeConfig->getMode(),
-			'tableEditing' => $ckeConfig->isTablesEnabled(),
-			'bbcode' => $ckeConfig->isBbcodeEnabled(),
-			'additionalStyles' => null,
-			'bodyClass' => null,
-			'bodyId' => null,
-			'contentsCss' => null);
+				'tableEditing' => $ckeConfig->isTablesEnabled(),
+				'bbcode' => $ckeConfig->isBbcodeEnabled(),
+				'additionalStyles' => null,
+				'bodyClass' => null,
+				'bodyId' => null,
+				'contentsCss' => null);
 
 		if ($ckeCssConfig !== null) {
 			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
