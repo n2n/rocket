@@ -114,7 +114,7 @@ class EiEngine {
 	/**
 	 * @return EiEngineModel
 	 */
-	private function getEiEngineModel() {
+	public function getEiEngineModel() {
 		if ($this->eiMask !== null) {
 			return $this->eiMask;
 		}
