@@ -23,6 +23,7 @@
 	use n2n\web\ui\Raw;
 	use rocket\user\model\LoginContext;
 	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\core\N2N;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
