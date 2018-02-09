@@ -82,7 +82,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$pathExt = null;
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
-			$pathExt = new Path(array('live', $eiuEntry->getLiveIdRep()));
+			$pathExt = new Path(array('live', $eiuEntry->getLiveEiId()));
 			$iconType = IconType::ICON_FILE_O;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
@@ -118,7 +118,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		}
 		
 		if (!$eiuEntry->isDraft()) {
-			$pathExt = new Path(array('livepreview', $eiuEntry->getLiveIdRep(), $previewType));
+			$pathExt = new Path(array('livepreview', $eiuEntry->getLiveEiId(), $previewType));
 		} else {
 			$pathExt = new Path(array('draftpreview', $eiuEntry->getDraftId(), $previewType));
 		}

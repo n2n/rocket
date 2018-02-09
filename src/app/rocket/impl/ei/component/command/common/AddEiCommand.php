@@ -145,7 +145,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 			$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_SUCCESS, IconType::ICON_COPY);
 			
 			return array(self::CONTROL_DUPLICATE_KEY => $eiuControlFactory
-					->createJhtml($controlButton, [$eiuEntry->getLiveIdRep()]));
+					->createJhtml($controlButton, [$eiuEntry->getLiveEiId()]));
 		}
 
 
@@ -158,17 +158,17 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 						new ControlButton($dtc->t('ei_impl_add_before_branch_label'),
 								$dtc->t('ei_impl_add_before_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP),
-						['before', $eiuEntry->getLiveIdRep()]),
+						['before', $eiuEntry->getLiveEiId()]),
 				$eiuControlFactory->createJhtml(
 						new ControlButton($dtc->t('ei_impl_add_after_branch_label'),
 								$dtc->t('ei_impl_add_after_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN),
-						['after', $eiuEntry->getLiveIdRep()]),
+						['after', $eiuEntry->getLiveEiId()]),
 				$eiuControlFactory->createJhtml(
 						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
 								$dtc->translate('ei_impl_add_child_branch_tooltip'),
 								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT),
-						['child', $eiuEntry->getLiveIdRep()]));
+						['child', $eiuEntry->getLiveEiId()]));
 		
 		return array(self::CONTROL_INSERT_BRANCH_KEY => $groupControl);
 	}

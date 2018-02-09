@@ -56,14 +56,14 @@
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 
-				data-original-id-rep="<?php $html->out($toOneForm->getOriginalEntryIdRep()) ?>"
+				data-original-ei-id="<?php $html->out($toOneForm->getOriginalEntryEiId()) ?>"
 				data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 				data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"
 				data-select-label="<?php $html->text('common_select_label') ?>"
 				data-reset-label="<?php $html->text('common_reset_label') ?>"
 				data-clear-label="<?php $html->text('common_clear_label') ?>"
 				data-cancel-label="<?php $html->text('common_cancel_label') ?>">
-			<?php $formHtml->input($propertyPath->ext('selectedEntryIdRep')) ?>
+			<?php $formHtml->input($propertyPath->ext('selectedEntryEiId')) ?>
 		</div>
 	<?php endif ?>
 

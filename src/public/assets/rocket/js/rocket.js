@@ -328,24 +328,24 @@ var Rocket;
                 let zoneClearer = new ZoneClearer(this.getAllZones());
                 let eiMods = data.rocketEvent.eiMods;
                 for (let supremeEiTypeId in eiMods) {
-                    if (!eiMods[supremeEiTypeId].idReps && eiMods[supremeEiTypeId].draftIds) {
+                    if (!eiMods[supremeEiTypeId].eiIds && eiMods[supremeEiTypeId].draftIds) {
                         zoneClearer.clearBySupremeEiType(supremeEiTypeId, false);
                         continue;
                     }
-                    if (eiMods[supremeEiTypeId].idReps) {
-                        for (let idRep in eiMods[supremeEiTypeId].idReps) {
-                            let modType = eiMods[supremeEiTypeId].idReps[idRep];
+                    if (eiMods[supremeEiTypeId].eiIds) {
+                        for (let eiId in eiMods[supremeEiTypeId].eiIds) {
+                            let modType = eiMods[supremeEiTypeId].eiIds[eiId];
                             switch (modType) {
                                 case "changed":
-                                    zoneClearer.clearByIdRep(supremeEiTypeId, idRep, false);
-                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, idRep));
+                                    zoneClearer.clearByEiId(supremeEiTypeId, eiId, false);
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, eiId));
                                     break;
                                 case "removed":
-                                    zoneClearer.clearByIdRep(supremeEiTypeId, idRep, true);
+                                    zoneClearer.clearByEiId(supremeEiTypeId, eiId, true);
                                     break;
                                 case "added":
                                     zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
-                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, idRep));
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, eiId));
                                     break;
                                 default:
                                     throw new Error("Invalid mod type " + modType);
@@ -474,22 +474,22 @@ var Rocket;
                     }
                 }
             }
-            clearByIdRep(supremeEiTypeId, idRep, remove) {
+            clearByEiId(supremeEiTypeId, eiId, remove) {
                 for (let zone of this.zones) {
                     if (!zone.page || zone.page.disposed)
                         continue;
-                    if (remove && this.removeByIdRep(zone, supremeEiTypeId, idRep)) {
+                    if (remove && this.removeByEiId(zone, supremeEiTypeId, eiId)) {
                         continue;
                     }
                     if (zone.page.config.frozen)
                         continue;
-                    if (Rocket.Display.Entry.hasIdRep(zone.jQuery, supremeEiTypeId, idRep)) {
+                    if (Rocket.Display.Entry.hasEiId(zone.jQuery, supremeEiTypeId, eiId)) {
                         zone.page.dispose();
                     }
                 }
             }
-            removeByIdRep(zone, supremeEiTypeId, idRep) {
-                let entries = Rocket.Display.Entry.findByIdRep(zone.jQuery, supremeEiTypeId, idRep);
+            removeByEiId(zone, supremeEiTypeId, eiId) {
+                let entries = Rocket.Display.Entry.findByEiId(zone.jQuery, supremeEiTypeId, eiId);
                 if (entries.length == 0)
                     return true;
                 let success = true;
@@ -1250,9 +1250,9 @@ var Rocket;
                     return;
                 this.chLastMod(Rocket.Display.Entry.findLastMod(this.jQuery), false);
                 for (let lastModDef of this._lastModDefs) {
-                    if (lastModDef.idRep) {
+                    if (lastModDef.eiId) {
                         this.chLastMod(Rocket.Display.Entry
-                            .findByIdRep(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.idRep), true);
+                            .findByEiId(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.eiId), true);
                         continue;
                     }
                     if (lastModDef.draftId) {
@@ -1318,10 +1318,10 @@ var Rocket;
         }
         Cmd.Zone = Zone;
         class LastModDef {
-            static createLive(supremeEiTypeId, idRep) {
+            static createLive(supremeEiTypeId, eiId) {
                 let lmd = new LastModDef();
                 lmd.supremeEiTypeId = supremeEiTypeId;
-                lmd.idRep = idRep;
+                lmd.eiId = eiId;
                 return lmd;
             }
             static createDraft(supremeEiTypeId, draftId) {
@@ -1333,7 +1333,7 @@ var Rocket;
             static fromEntry(entry) {
                 let lastModDef = new LastModDef();
                 lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
-                lastModDef.idRep = entry.idRep;
+                lastModDef.eiId = entry.eiId;
                 lastModDef.draftId = entry.draftId;
                 return lastModDef;
             }
@@ -2059,13 +2059,13 @@ var Rocket;
                 if (this.draftId !== null) {
                     return this.draftId.toString();
                 }
-                return this.idRep;
+                return this.eiId;
             }
             get supremeEiTypeId() {
                 return this.elemJq.data("rocket-supreme-ei-type-id").toString();
             }
-            get idRep() {
-                return this.elemJq.data("rocket-id-rep").toString();
+            get eiId() {
+                return this.elemJq.data("rocket-ei-id").toString();
             }
             get draftId() {
                 var draftId = parseInt(this.elemJq.data("rocket-draft-id"));
@@ -2161,15 +2161,15 @@ var Rocket;
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
                 return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
             }
-            static buildIdRepSelector(supremeEiTypeId, idRep) {
+            static buildEiIdSelector(supremeEiTypeId, eiId) {
                 return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
-                    + Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(idRep) + "]";
+                    + Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(eiId) + "]";
             }
-            static findByIdRep(jqElem, supremeEiTypeId, idRep) {
-                return Entry.fromArr(jqElem.find(Entry.buildIdRepSelector(supremeEiTypeId, idRep)));
+            static findByEiId(jqElem, supremeEiTypeId, eiId) {
+                return Entry.fromArr(jqElem.find(Entry.buildEiIdSelector(supremeEiTypeId, eiId)));
             }
-            static hasIdRep(jqElem, supremeEiTypeId, idRep) {
-                return 0 < jqElem.has(Entry.buildIdRepSelector(supremeEiTypeId, idRep)).length;
+            static hasEiId(jqElem, supremeEiTypeId, eiId) {
+                return 0 < jqElem.has(Entry.buildEiIdSelector(supremeEiTypeId, eiId)).length;
             }
             static buildDraftIdSelector(supremeEiTypeId, draftId) {
                 return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
@@ -2186,7 +2186,7 @@ var Rocket;
         Entry.TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
         Entry.LAST_MOD_CSS_CLASS = "rocket-last-mod";
         Entry.SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
-        Entry.ID_REP_ATTR = "data-rocket-id-rep";
+        Entry.ID_REP_ATTR = "data-rocket-ei-id";
         Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";
         Display.Entry = Entry;
         (function (Entry) {
@@ -2518,8 +2518,8 @@ var Rocket;
     var Display;
     (function (Display) {
         class MultiEntrySelectorObserver {
-            constructor(originalIdReps = new Array()) {
-                this.originalIdReps = originalIdReps;
+            constructor(originalEiIds = new Array()) {
+                this.originalEiIds = originalEiIds;
                 this.identityStrings = {};
                 this.selectors = {};
                 this.checkJqs = {};
@@ -2534,7 +2534,7 @@ var Rocket;
                 this.onRemoved = (entry) => {
                     this.chSelect(false, entry.id);
                 };
-                this.selectedIds = originalIdReps;
+                this.selectedIds = originalEiIds;
             }
             destroy() {
                 for (let key in this.selectors) {
@@ -4084,14 +4084,14 @@ var Rocket;
                     Rocket.Display.Entry.findLastMod(Rocket.Cmd.Zone.of(this.elemJq).jQuery).forEach((entry) => {
                         entry.lastMod = false;
                     });
-                    let idReps = [];
+                    let eiIds = [];
                     for (let entry of entries) {
-                        idReps.push(entry.id);
+                        eiIds.push(entry.id);
                         entry.selector.selected = false;
                         this.dingselAndExecTree(entry);
                         entry.lastMod = true;
                     }
-                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "idReps": idReps });
+                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "eiIds": eiIds });
                     Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
                 }
                 dingselAndExecTree(entry) {
@@ -4715,8 +4715,8 @@ var Rocket;
                     }
                     this.fakePage = new Page(0);
                     this.fakePage.hide();
-                    var idReps = this.selectorObserver.getSelectedIds();
-                    var unloadedIds = idReps.slice();
+                    var eiIds = this.selectorObserver.getSelectedIds();
+                    var unloadedIds = eiIds.slice();
                     var that = this;
                     this.collection.entries.forEach(function (entry) {
                         let id = entry.id;
@@ -4728,8 +4728,8 @@ var Rocket;
                     this.loadFakePage(unloadedIds);
                     return this.fakePage;
                 }
-                loadFakePage(unloadedIdReps) {
-                    if (unloadedIdReps.length == 0) {
+                loadFakePage(unloadedEiIds) {
+                    if (unloadedEiIds.length == 0) {
                         this.fakePage.entries = [];
                         this.selectorState.observeFakePage(this.fakePage);
                         return;
@@ -4737,7 +4737,7 @@ var Rocket;
                     this.markPageAsLoading(0);
                     let fakePage = this.fakePage;
                     Jhtml.Monitor.of(this.collection.jQuery.get(0))
-                        .lookupModel(this.loadUrl.extR(null, { "idReps": unloadedIdReps }))
+                        .lookupModel(this.loadUrl.extR(null, { "eiIds": unloadedEiIds }))
                         .then((model) => {
                         if (fakePage !== this.fakePage)
                             return;
@@ -5741,7 +5741,7 @@ var Rocket;
                         toManySelector = new ToManySelector(jqSelector, jqSelector.find("li.rocket-new-entry").detach());
                         jqSelector.find("ul li").each(function () {
                             var entry = new SelectedEntry($(this));
-                            entry.label = toManySelector.determineIdentityString(entry.idRep);
+                            entry.label = toManySelector.determineIdentityString(entry.eiId);
                             toManySelector.addSelectedEntry(entry);
                         });
                     }
@@ -5801,12 +5801,12 @@ var Rocket;
                     this.resetButtonJq = null;
                     this.jqElem = jqElem;
                     this.jqUl = jqElem.children("ul");
-                    this.originalIdReps = jqElem.data("original-id-reps");
+                    this.originalEiIds = jqElem.data("original-ei-ids");
                     this.identityStrings = jqElem.data("identity-strings");
                     this.init();
                 }
-                determineIdentityString(idRep) {
-                    return this.identityStrings[idRep];
+                determineIdentityString(eiId) {
+                    return this.identityStrings[eiId];
                 }
                 init() {
                     var jqCommandList = $("<div />");
@@ -5829,14 +5829,14 @@ var Rocket;
                         that.clear();
                     });
                 }
-                createSelectedEntry(idRep, identityString = null) {
+                createSelectedEntry(eiId, identityString = null) {
                     var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
-                    entry.idRep = idRep;
+                    entry.eiId = eiId;
                     if (identityString !== null) {
                         entry.label = identityString;
                     }
                     else {
-                        entry.label = this.determineIdentityString(idRep);
+                        entry.label = this.determineIdentityString(eiId);
                     }
                     this.addSelectedEntry(entry);
                     return entry;
@@ -5858,8 +5858,8 @@ var Rocket;
                 }
                 reset() {
                     this.clear();
-                    for (let idRep of this.originalIdReps) {
-                        this.createSelectedEntry(idRep);
+                    for (let eiId of this.originalEiIds) {
+                        this.createSelectedEntry(eiId);
                     }
                     this.manageReset();
                 }
@@ -5872,12 +5872,12 @@ var Rocket;
                 }
                 manageReset() {
                     this.resetButtonJq.hide();
-                    if (this.originalIdReps.length != this.entries.length) {
+                    if (this.originalEiIds.length != this.entries.length) {
                         this.resetButtonJq.show();
                         return;
                     }
                     for (let entry of this.entries) {
-                        if (-1 < this.originalIdReps.indexOf(entry.idRep))
+                        if (-1 < this.originalEiIds.indexOf(entry.eiId))
                             continue;
                         this.resetButtonJq.show();
                         return;
@@ -5930,7 +5930,7 @@ var Rocket;
                         return;
                     var selectedIds = new Array();
                     this.entries.forEach(function (entry) {
-                        selectedIds.push(entry.idRep);
+                        selectedIds.push(entry.eiId);
                     });
                     this.browserSelectorObserver.setSelectedIds(selectedIds);
                 }
@@ -5969,11 +5969,11 @@ var Rocket;
                 set label(label) {
                     this.jqLabel.text(label);
                 }
-                get idRep() {
+                get eiId() {
                     return this.jqInput.val().toString();
                 }
-                set idRep(idRep) {
-                    this.jqInput.val(idRep);
+                set eiId(eiId) {
+                    this.jqInput.val(eiId);
                 }
             }
             class ToManyEmbedded {
@@ -6507,23 +6507,23 @@ var Rocket;
                     this.browserSelectorObserver = null;
                     this.jqElem = jqElem;
                     this.jqInput = jqElem.children("input").hide();
-                    this.originalIdRep = jqElem.data("original-id-rep");
+                    this.originalEiId = jqElem.data("original-ei-id");
                     this.identityStrings = jqElem.data("identity-strings");
                     this.init();
-                    this.selectEntry(this.selectedIdRep);
+                    this.selectEntry(this.selectedEiId);
                 }
                 get jQuery() {
                     return this.jqElem;
                 }
-                get selectedIdRep() {
-                    let idRep = this.jqInput.val().toString();
-                    if (idRep.length == 0)
+                get selectedEiId() {
+                    let eiId = this.jqInput.val().toString();
+                    if (eiId.length == 0)
                         return null;
-                    return idRep;
+                    return eiId;
                 }
                 init() {
                     this.jqSelectedEntry = $("<div />");
-                    this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
+                    this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalEiId] }));
                     new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
                         .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
                         .click(() => {
@@ -6545,18 +6545,18 @@ var Rocket;
                         this.reset();
                     }).hide();
                 }
-                selectEntry(idRep, identityString = null) {
-                    this.jqInput.val(idRep);
-                    if (idRep === null) {
+                selectEntry(eiId, identityString = null) {
+                    this.jqInput.val(eiId);
+                    if (eiId === null) {
                         this.jqSelectedEntry.hide();
                         return;
                     }
                     this.jqSelectedEntry.show();
                     if (identityString === null) {
-                        identityString = this.identityStrings[idRep];
+                        identityString = this.identityStrings[eiId];
                     }
                     this.jqEntryLabel.text(identityString);
-                    if (this.originalIdRep != this.selectedIdRep) {
+                    if (this.originalEiId != this.selectedEiId) {
                         this.resetButtonJq.show();
                     }
                     else {
@@ -6564,7 +6564,7 @@ var Rocket;
                     }
                 }
                 reset() {
-                    this.selectEntry(this.originalIdRep);
+                    this.selectEntry(this.originalEiId);
                 }
                 clear() {
                     this.selectEntry(null);
@@ -6617,7 +6617,7 @@ var Rocket;
                 updateBrowser() {
                     if (this.browserSelectorObserver === null)
                         return;
-                    this.browserSelectorObserver.setSelectedId(this.selectedIdRep);
+                    this.browserSelectorObserver.setSelectedId(this.selectedEiId);
                 }
                 updateSelection() {
                     if (this.browserSelectorObserver === null)
@@ -7177,7 +7177,7 @@ var Rocket;
                     this._visible = true;
                     Rocket.Display.StructureElement.from(elemJq, true);
                     this._propertyPath = elemJq.data("rocket-impl-property-path");
-                    this._idRep = elemJq.data("rocket-impl-id-rep") || null;
+                    this._eiId = elemJq.data("rocket-impl-ei-id") || null;
                     this._fieldJq = elemJq.children("div");
                 }
                 get jQuery() {
@@ -7196,8 +7196,8 @@ var Rocket;
                 get propertyPath() {
                     return this._propertyPath;
                 }
-                get idRep() {
-                    return this._idRep;
+                get eiId() {
+                    return this._eiId;
                 }
                 get prettyLocaleId() {
                     return this.elemJq.find("label:first").text();
@@ -7303,7 +7303,7 @@ var Rocket;
                     return url.extR(null, {
                         propertyPath: this.translatedContent.propertyPath,
                         toN2nLocale: this.translatedContent.localeId,
-                        toIdRep: this.translatedContent.idRep
+                        toEiId: this.translatedContent.eiId
                     });
                 }
                 copy(url) {

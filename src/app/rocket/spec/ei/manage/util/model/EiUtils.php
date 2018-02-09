@@ -75,14 +75,14 @@ interface EiUtils {
 	 * @return string
 	 * @throws \InvalidArgumentException if null is passed as id.
 	 */
-	public function idToIdRep($id): string;
+	public function idToEiId($id): string;
 	
 	/**
-	 * @param string $idRep
+	 * @param string $eiId
 	 * @return mixed
 	 * @throws \InvalidArgumentException
 	 */
-	public function idRepToId(string $idRep);
+	public function eiIdToId(string $eiId);
 	
 	/**
 	 * @param object $eiObjectObj

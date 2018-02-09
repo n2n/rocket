@@ -42,7 +42,7 @@ namespace Rocket.Impl.Relation {
 				toManySelector = new ToManySelector(jqSelector, jqSelector.find("li.rocket-new-entry").detach());
 				jqSelector.find("ul li").each(function () {
 					var entry = new SelectedEntry($(this));
-					entry.label = toManySelector.determineIdentityString(entry.idRep);
+					entry.label = toManySelector.determineIdentityString(entry.eiId);
 					toManySelector.addSelectedEntry(entry);
 				});
 			}
@@ -106,7 +106,7 @@ namespace Rocket.Impl.Relation {
 	class ToManySelector {
 		private jqUl: JQuery
 		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
-		private originalIdReps: Array<string>;
+		private originalEiIds: Array<string>;
 		private identityStrings: { [key: string]: string};
 		private browserLayer: cmd.Layer = null;
 		private browserSelectorObserver: Display.MultiEntrySelectorObserver = null;
@@ -116,14 +116,14 @@ namespace Rocket.Impl.Relation {
 			this.jqElem = jqElem;
 			this.jqUl = jqElem.children("ul");
 			
-			this.originalIdReps = jqElem.data("original-id-reps");
+			this.originalEiIds = jqElem.data("original-ei-ids");
 			this.identityStrings = jqElem.data("identity-strings");
 			
 			this.init();
 		}
 		
-		public determineIdentityString(idRep: string): string {
-			return this.identityStrings[idRep];
+		public determineIdentityString(eiId: string): string {
+			return this.identityStrings[eiId];
 		}
 		
 		private init() {
@@ -152,13 +152,13 @@ namespace Rocket.Impl.Relation {
 			});
 		}
 		
-		public createSelectedEntry(idRep: string, identityString: string = null): SelectedEntry {
+		public createSelectedEntry(eiId: string, identityString: string = null): SelectedEntry {
 			var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
-			entry.idRep = idRep;
+			entry.eiId = eiId;
 			if (identityString !== null) {
 				entry.label = identityString;
 			} else {
-				entry.label = this.determineIdentityString(idRep);
+				entry.label = this.determineIdentityString(eiId);
 			} 
 			this.addSelectedEntry(entry);
 			return entry;
@@ -185,8 +185,8 @@ namespace Rocket.Impl.Relation {
 		public reset() {
 			this.clear();
 			
-			for (let idRep of this.originalIdReps) {
-				this.createSelectedEntry(idRep);
+			for (let eiId of this.originalEiIds) {
+				this.createSelectedEntry(eiId);
 			}
 			
 			this.manageReset();
@@ -204,13 +204,13 @@ namespace Rocket.Impl.Relation {
 		private manageReset() {
 			this.resetButtonJq.hide();
 
-			if (this.originalIdReps.length != this.entries.length) {
+			if (this.originalEiIds.length != this.entries.length) {
 				this.resetButtonJq.show();
 				return;
 			}
 			
 			for (let entry of this.entries) {
-				if (-1 < this.originalIdReps.indexOf(entry.idRep)) continue;
+				if (-1 < this.originalEiIds.indexOf(entry.eiId)) continue;
 					
 				this.resetButtonJq.show();
 				return;
@@ -274,7 +274,7 @@ namespace Rocket.Impl.Relation {
 			
 			var selectedIds: Array<string> = new Array();
 			this.entries.forEach(function (entry: SelectedEntry) {
-				selectedIds.push(entry.idRep);
+				selectedIds.push(entry.eiId);
 			});
 			
 			this.browserSelectorObserver.setSelectedIds(selectedIds);
@@ -328,12 +328,12 @@ namespace Rocket.Impl.Relation {
 			this.jqLabel.text(label);
 		}
 		
-		get idRep(): string {
+		get eiId(): string {
 			return this.jqInput.val().toString();
 		}
 		
-		set idRep(idRep: string) {
-			this.jqInput.val(idRep);
+		set eiId(eiId: string) {
+			this.jqInput.val(eiId);
 		}
 	}
 	

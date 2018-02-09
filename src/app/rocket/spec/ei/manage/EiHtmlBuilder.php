@@ -144,9 +144,9 @@ class EiHtmlBuilder {
 	public function getEntryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
 		$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
 		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
-		$idRep = null;
+		$eiId = null;
 		if ($eiObject->getEiEntityObj()->isPersistent()) {
-			$idRep = $eiObject->getEiEntityObj()->getIdRep();
+			$eiId = $eiObject->getEiEntityObj()->getEiId();
 		}
 		$draftId = null;
 		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
@@ -160,7 +160,7 @@ class EiHtmlBuilder {
 		$entryAttrs = array(
 				'class' => 'rocket-entry' . ($treeLevel !== null ? ' rocket-tree-level-' . $treeLevel : ''),
 				'data-rocket-supreme-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
-				'data-rocket-id-rep' => $idRep,
+				'data-rocket-ei-id' => $eiId,
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
 				'data-rocket-identity-string' => (new EiuEntry($eiEntryGui))->createIdentityString());
 		

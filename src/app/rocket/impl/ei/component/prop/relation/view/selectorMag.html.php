@@ -38,7 +38,7 @@
 	$html->meta()->addJs('impl/js/selectorMag.js', 'rocket');
 ?>
 <div class="rocket-selector-mag"
-		data-original-id-reps="<?php $html->out(json_encode($relationSelectorForm->getEntryIdReps())) ?>"
+		data-original-ei-ids="<?php $html->out(json_encode($relationSelectorForm->getEntryEiIds())) ?>"
 		data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 		data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"
 		data-add-label="<?php $html->text('common_add_label') ?>"
@@ -46,11 +46,11 @@
 		data-clear-label="<?php $html->text('common_clear_label') ?>"
 		data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-base-property-name="<?php $html->out($formHtml->meta()->getForm()->getDispatchTargetEncoder()
-				->buildValueParamName($propertyPath->ext('entryIdReps'), false))?>">
+				->buildValueParamName($propertyPath->ext('entryEiIds'), false))?>">
 	<ul>
-		<?php $formHtml->meta()->arrayProps($propertyPath->ext('entryIdReps'), function () use ($formHtml, $propertyPath) { ?> 
+		<?php $formHtml->meta()->arrayProps($propertyPath->ext('entryEiIds'), function () use ($formHtml, $propertyPath) { ?> 
 			<li><?php $formHtml->input() ?></li>
 		<?php }, null, null, true) ?>
-		<li class="rocket-new-entry"><?php $formHtml->input($propertyPath->ext('entryIdReps[]')) ?></li>
+		<li class="rocket-new-entry"><?php $formHtml->input($propertyPath->ext('entryEiIds[]')) ?></li>
 	</ul>
 </div>

@@ -80,13 +80,13 @@ class RelationFilterField implements FilterField {
 				if ($this->entityProperty->isToMany()) break;
 				
 				return new SimpleComparatorConstraint(CrIt::p($this->entityProperty), $operator, 
-						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetIdReps())));
+						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetEiIds())));
 			case CriteriaComparator::OPERATOR_CONTAINS:
 			case CriteriaComparator::OPERATOR_CONTAINS_NOT:
 				if (!$this->entityProperty->isToMany()) break;
 				
 				$group = new ComparatorConstraintGroup(true);
-				foreach ($this->lookupTargetEntityObjs($relationFilterConf->getTargetIdReps()) as $targetEntityObj) {
+				foreach ($this->lookupTargetEntityObjs($relationFilterConf->getTargetEiIds()) as $targetEntityObj) {
 					$group->addComparatorConstraint(new SimpleComparatorConstraint(CrIt::p($this->entityProperty), 
 							$operator, CrIt::c($targetEntityObj)));
 				}
@@ -100,11 +100,11 @@ class RelationFilterField implements FilterField {
 		}
 	}
 	
-	private function lookupTargetEntityObjs(array $targetIdReps) {
+	private function lookupTargetEntityObjs(array $targetEiIds) {
 		$targetEntityObjs = array();
-		foreach ($targetIdReps as $targetIdRep) {
+		foreach ($targetEiIds as $targetEiId) {
 			try {
-				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObj($targetIdRep, 
+				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObj($targetEiId, 
 						CriteriaConstraint::ALL_TYPES);
 			} catch (UnknownEntryException $e) { }
 		}
@@ -121,10 +121,10 @@ class RelationFilterField implements FilterField {
 		
 		if ($this->targetSelectUrlCallback !== null) {
 			$targetLiveEntries = array();
-			foreach ($relationFilterConf->getTargetIdReps() as $targetIdRep) {
+			foreach ($relationFilterConf->getTargetEiIds() as $targetEiId) {
 				try {
-					$targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
-							$this->targetEiUtils->idRepToId($targetIdRep), CriteriaConstraint::ALL_TYPES);
+					$targetLiveEntries[$targetEiId] = $this->targetEiUtils->lookupEiEntityObj(
+							$this->targetEiUtils->eiIdToId($targetEiId), CriteriaConstraint::ALL_TYPES);
 				} catch (UnknownEntryException $e) {}
 			}
 			$form->getSelectorMag()->setTargetLiveEntries($targetLiveEntries);
@@ -142,11 +142,11 @@ class RelationFilterField implements FilterField {
 		
 		$relationFilterConf->setOperator($form->getOperatorMag()->getValue());
 		
-		$targetIdReps = array();
+		$targetEiIds = array();
 		foreach ($form->getTargetLiveEntries() as $targetEiEntityObj) {
-			$targetIdReps[] = $this->targetEiUtils->idToIdRep($targetEiEntityObj->getId());
+			$targetEiIds[] = $this->targetEiUtils->idToEiId($targetEiEntityObj->getId());
 		}
-		$relationFilterConf->setTargetIdReps($targetIdReps);	
+		$relationFilterConf->setTargetEiIds($targetEiIds);	
 		
 		return $relationFilterConf->getAttributes();
 	}
@@ -166,13 +166,13 @@ class RelationFilterField implements FilterField {
 				if ($this->entityProperty->isToMany()) break;
 		
 				return new SimpleComparatorConstraint(CrIt::p($this->entityProperty), $operator,
-						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetIdReps())));
+						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetEiIds())));
 			case CriteriaComparator::OPERATOR_CONTAINS:
 			case CriteriaComparator::OPERATOR_CONTAINS_NOT:
 				if (!$this->entityProperty->isToMany()) break;
 		
 				$group = new ComparatorConstraintGroup(true);
-				foreach ($this->lookupTargetEntityObjs($relationFilterConf->getTargetIdReps()) as $targetEntityObj) {
+				foreach ($this->lookupTargetEntityObjs($relationFilterConf->getTargetEiIds()) as $targetEntityObj) {
 					$group->addComparatorConstraint(new SimpleComparatorConstraint(CrIt::p($this->entityProperty),
 							$operator, CrIt::c($targetEntityObj)));
 				}
@@ -189,7 +189,7 @@ class RelationFilterField implements FilterField {
 
 class RelationFilterConf {
 	const OPERATOR_KEY = 'operator';
-	const TARGET_ID_REPS = 'targetIdReps';
+	const TARGET_ID_REPS = 'targetEiIds';
 	const TARGET_FILTER_GROUP_ATTRS = 'targetFilterGroupAttrs';
 	
 	private $attributes;
@@ -206,12 +206,12 @@ class RelationFilterConf {
 		$this->attributes->set(self::OPERATOR_KEY, $operator);
 	}
 	
-	public function getTargetIdReps(): array {
+	public function getTargetEiIds(): array {
 		return $this->attributes->getArray(self::TARGET_ID_REPS, false, array(), TypeConstraint::createSimple('string'));
 	}
 	
-	public function setTragetIdReps(array $targetIdReps) {
-		$this->attributes->set(self::TARGET_ID_REPS, $targetIdReps);
+	public function setTragetEiIds(array $targetEiIds) {
+		$this->attributes->set(self::TARGET_ID_REPS, $targetEiIds);
 	}
 	
 	public function getTargetFilterGroupData(): FilterGroupData {

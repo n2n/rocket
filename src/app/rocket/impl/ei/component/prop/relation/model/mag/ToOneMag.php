@@ -119,14 +119,14 @@ class ToOneMag extends MagAdapter {
 		} 
 				
 		if ($formValue->isSelectionModeEnabled() 
-				&& null !== ($entryIdRep = $formValue->getSelectedEntryIdRep())) {
+				&& null !== ($entryEiId = $formValue->getSelectedEntryEiId())) {
 			if ($this->targetRelationEntry !== null && !$this->targetRelationEntry->isNew()
-					&& $this->targetReadUtils->idToIdRep($this->targetRelationEntry->getId()) === $entryIdRep) {
+					&& $this->targetReadUtils->idToEiId($this->targetRelationEntry->getId()) === $entryEiId) {
 				return;
 			}
 				
 			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
-					$this->targetReadUtils->idRepToId($entryIdRep), CriteriaConstraint::NON_SECURITY_TYPES));
+					$this->targetReadUtils->eiIdToId($entryEiId), CriteriaConstraint::NON_SECURITY_TYPES));
 			return;
 		}
 		
@@ -151,10 +151,10 @@ class ToOneMag extends MagAdapter {
 		}
 		
 		if ($toOneForm->isSelectionModeEnabled() && !$this->targetRelationEntry->isNew()) {
-			$idRep = $this->targetReadUtils->idToIdRep($this->targetRelationEntry->getId());
-			$toOneForm->setOriginalEntryIdRep($idRep);
-			$toOneForm->setSelectedEntryIdRep($idRep);
-			$toOneForm->getEntryLabeler()->setSelectedIdentityString($idRep,
+			$eiId = $this->targetReadUtils->idToEiId($this->targetRelationEntry->getId());
+			$toOneForm->setOriginalEntryEiId($eiId);
+			$toOneForm->setSelectedEntryEiId($eiId);
+			$toOneForm->getEntryLabeler()->setSelectedIdentityString($eiId,
 					$this->targetReadUtils->createIdentityString($this->targetRelationEntry->getEiObject()));
 		} else if ($this->targetRelationEntry->hasEiEntry()) {
 			$toOneForm->setEiEntry($this->targetRelationEntry->getEiEntry());

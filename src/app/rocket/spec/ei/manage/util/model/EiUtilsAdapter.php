@@ -74,18 +74,18 @@ abstract class EiUtilsAdapter implements EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idToIdRep()
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idToEiId()
 	 */
-	public function idToIdRep($id): string {
-		return $this->getEiType()->idToIdRep($id);
+	public function idToEiId($id): string {
+		return $this->getEiType()->idToEiId($id);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\util\model\EiUtils::idRepToId()
+	 * @see \rocket\spec\ei\manage\util\model\EiUtils::eiIdToId()
 	 */
-	public function idRepToId(string $idRep) {
-		return $this->getEiType()->idRepToId($idRep);
+	public function eiIdToId(string $eiId) {
+		return $this->getEiType()->eiIdToId($eiId);
 	}
 	
 	/**

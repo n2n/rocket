@@ -29,29 +29,29 @@ use rocket\spec\ei\component\command\EiCommand;
 class PathUtils {
 
 	public static function createPathExtFromEntryNavPoint(EiCommand $eiCommand, EntryNavPoint $entryNavPoint): Path {
-		$idRep = null;
+		$eiId = null;
 		if (null !== ($id = $entryNavPoint->getLiveId())) {
-			$idRep = $eiCommand->getEiEngine()->getEiType()->idRepToId($id);
+			$eiId = $eiCommand->getEiEngine()->getEiType()->idToEiId($id);
 		}
 		$draftId = $entryNavPoint->getDraftId();
 		$previewType = $entryNavPoint->getPreviewType();
 	
 		if (isset($draftId)) {
-			return self::createDraftPathExt($idRep, $draftId, $previewType);
+			return self::createDraftPathExt($eiId, $draftId, $previewType);
 		}
 	
-		return self::createPathExt($idRep, $previewType);
+		return self::createPathExt($eiId, $previewType);
 	}
 	
 	
-	public static function createPathExt($idRep, N2nLocale $translationN2nLocale = null, $previewType = null) {
+	public static function createPathExt($eiId, N2nLocale $translationN2nLocale = null, $previewType = null) {
 		$pathParts = array('live');
 		if (isset($previewType)) {
 			$pathParts[] = 'preview';
 			$pathParts[] = (string) $previewType;
 		}
 		
-		$pathParts[] = $idRep;
+		$pathParts[] = $eiId;
 		
 		if (isset($translationN2nLocale)) {
 			$pathParts[] = $translationN2nLocale->toHttpId();
@@ -60,7 +60,7 @@ class PathUtils {
 		return new Path($pathParts);
 	}
 	
-	public static function createDraftPathExt($idRep, $draftId = null, $previewType = null) {
+	public static function createDraftPathExt($eiId, $draftId = null, $previewType = null) {
 		$pathParts = array();
 		if (isset($previewType)) {
 			$pathParts[] = 'draftpreview';
@@ -69,7 +69,7 @@ class PathUtils {
 			$pathParts[] = 'draft';
 		}
 		
-		$pathParts[] = $idRep;
+		$pathParts[] = $eiId;
 		$pathParts[] = $draftId;
 		
 		if (isset($translationN2nLocale)) {

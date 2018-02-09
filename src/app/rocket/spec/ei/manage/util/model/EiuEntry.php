@@ -256,9 +256,9 @@ class EiuEntry {
 	 * @param bool $required
 	 * @return string
 	 */
-	public function getLiveIdRep(bool $required = true) {
+	public function getLiveEiId(bool $required = true) {
 		if (null !== ($id = $this->getLiveId($required))) {
-			return $this->getEiType()->idToIdRep($id);
+			return $this->getEiType()->idToEiId($id);
 		}
 		
 		return null;

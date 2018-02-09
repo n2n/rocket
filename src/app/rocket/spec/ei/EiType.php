@@ -473,17 +473,17 @@ class EiType extends Spec implements EiEngineModel {
 	 * @return string
 	 * @throws \InvalidArgumentException if null is passed as id.
 	 */
-	public function idToIdRep($id): string {
-		return $this->entityModel->getIdDef()->getEntityProperty()->valueToRep($id);
+	public function idToEiId($id): string {
+		return urlencode($this->entityModel->getIdDef()->getEntityProperty()->valueToRep($id));
 	}
 	
 	/**
-	 * @param string $idRep
+	 * @param string $eiId
 	 * @return mixed
 	 * @throws \InvalidArgumentException
 	 */
-	public function idRepToId(string $idRep) {
-		return $this->entityModel->getIdDef()->getEntityProperty()->repToValue($idRep);
+	public function eiIdToId(string $eiId) {
+		return $this->entityModel->getIdDef()->getEntityProperty()->repToValue(urldecode($eiId));
 	}
 	
 	/**

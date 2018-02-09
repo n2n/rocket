@@ -226,7 +226,7 @@ class EiMask implements EiEngineModel, Identifiable {
 		
 		if ($idPatternPart === null) {
 			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ? 
-					$this->eiType->idToIdRep($eiObject->getEiEntityObj()->getId()) : 'new';
+					$this->eiType->idToEiId($eiObject->getEiEntityObj()->getId()) : 'new';
 		}
 		
 		if ($namePatternPart === null) {
