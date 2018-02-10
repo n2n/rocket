@@ -181,7 +181,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		}
 		
 		$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this), 
-				$target->idToEiId($targetId));
+				$target->idToPid($targetId));
 	}
 	
 	/**

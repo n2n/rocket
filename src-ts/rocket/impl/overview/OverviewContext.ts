@@ -86,11 +86,11 @@ namespace Rocket.Impl.Overview {
 	
 //	class Entry {
 //		
-//		constructor (private _eiId: string, public identityString: string) {
+//		constructor (private _pid: string, public identityString: string) {
 //		}
 //		
-//		get eiId(): string {
-//			return this._eiId;
+//		get pid(): string {
+//			return this._pid;
 //		}
 //	}
 	

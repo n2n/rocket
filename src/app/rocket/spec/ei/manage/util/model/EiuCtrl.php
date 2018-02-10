@@ -75,33 +75,33 @@ class EiuCtrl implements Lookupable {
 	}
 	
 	/**
-	 * @param string $liveEiId
+	 * @param string $livePid
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
-	public function lookupEntry(string $liveEiId) {
-		return $this->eiuFrame->entry($this->lookupEiObject($liveEiId));
+	public function lookupEntry(string $livePid) {
+		return $this->eiuFrame->entry($this->lookupEiObject($livePid));
 	}
 	
 	/**
-	 * @param string $liveEiId
+	 * @param string $livePid
 	 * @return \rocket\spec\ei\manage\mapping\EiEntry
 	 * @deprecated use {@see self::lookupEntry()}
 	 */
-	public function lookupEiEntry(string $liveEiId) {
-		return $this->eiuFrame->createEiEntry($this->lookupEiObject($liveEiId));
+	public function lookupEiEntry(string $livePid) {
+		return $this->eiuFrame->createEiEntry($this->lookupEiObject($livePid));
 	}
 	
 	/**
-	 * @param string $liveEiId
+	 * @param string $livePid
 	 * @throws PageNotFoundException
 	 * @throws ForbiddenException
 	 * @return \rocket\spec\ei\manage\EiObject
 	 * @deprecated use {@see self::lookupEntry()}
 	 */
-	public function lookupEiObject(string $liveEiId) {
+	public function lookupEiObject(string $livePid) {
 		$eiObject = null;
 		try {
-			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->eiIdToId($liveEiId));
+			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->pidToId($livePid));
 		} catch (UnknownEntryException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -114,7 +114,7 @@ class EiuCtrl implements Lookupable {
 	}
 	
 	/**
-	 * @param string $liveEiId
+	 * @param string $livePid
 	 * @return \rocket\spec\ei\manage\util\model\EiuEntry
 	 */
 	public function lookupEntryByDraftId(int $draftId) {

@@ -51,11 +51,11 @@ class EiEntry {
 	/**
 	 * @return string|null
 	 */
-	public function getEiId() {
+	public function getPid() {
 		$eiEntityObj = $this->eiObject->getEiEntityObj();
 		if (!$eiEntityObj->isPersistent()) return null;
 		
-		return $this->getEiType()->idToEiId($eiEntityObj->getId());
+		return $this->getEiType()->idToPid($eiEntityObj->getId());
 	}
 	
 	/**
@@ -373,7 +373,7 @@ class EiEntry {
 		}
 		
 		return  'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName() 
-				. '#' . $this->eiObject->getEiEntityObj()->getEiId() . ')';
+				. '#' . $this->eiObject->getEiEntityObj()->getPid() . ')';
 	}
 }
 

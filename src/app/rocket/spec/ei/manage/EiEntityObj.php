@@ -65,12 +65,12 @@ class EiEntityObj {
 		throw new IllegalStateException('Id not yet defined.');
 	}
 	
-	public function getEiId() {
-		return $this->eiType->idToEiId($this->getId());
+	public function getPid() {
+		return $this->eiType->idToPid($this->getId());
 	}
 	
-// 	public function getEiId() {
-// 		return $this->eiType->idToEiId($this->getId());
+// 	public function getPid() {
+// 		return $this->eiType->idToPid($this->getId());
 // 	}
 	
 	public function refreshId() {

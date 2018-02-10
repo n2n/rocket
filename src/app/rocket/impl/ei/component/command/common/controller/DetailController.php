@@ -39,8 +39,8 @@ class DetailController extends ControllerAdapter {
 		$this->eiuCtrl = $eiCtrl;
 	}
 		
-	public function doLive($eiId) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($eiId);
+	public function doLive($pid) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
 		$eiuEntryGui = $eiuEntry->newEntryGui();
 		$eiuEntryGui->getEiuGui()->forceRootGroups();
@@ -67,8 +67,8 @@ class DetailController extends ControllerAdapter {
 				=> new EntryCommandViewModel($this->eiuCtrl->frame(), $entryGuiModel)));
 	}
 	
-	public function doLivePreview($eiId, $previewType = null) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($eiId);
+	public function doLivePreview($pid, $previewType = null) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
 		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
 		if (empty($previewTypeOptions)) {
@@ -76,7 +76,7 @@ class DetailController extends ControllerAdapter {
 		}
 		
 		if ($previewType === null) {
-			$this->redirectToController(array('preview', $eiId, key($previewTypeOptions)));
+			$this->redirectToController(array('preview', $pid, key($previewTypeOptions)));
 			return;
 		}
 		
@@ -86,14 +86,14 @@ class DetailController extends ControllerAdapter {
 		
 		$this->forward('..\view\detailPreview.html', array( 
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
-						->ext('livepreviewsrc', $eiId, $previewType),
+						->ext('livepreviewsrc', $pid, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions, 
 				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry)));
 	}
 	
-	public function doLivePreviewSrc($eiId, $previewType, array $delegateCmds = array()) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($eiId);
+	public function doLivePreviewSrc($pid, $previewType, array $delegateCmds = array()) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
 		$this->delegate($previewController);

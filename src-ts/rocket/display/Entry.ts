@@ -101,14 +101,14 @@ namespace Rocket.Display {
 				return this.draftId.toString();
 			}
 			
-			return this.eiId;
+			return this.pid;
 		}
 		
 		get supremeEiTypeId(): string {
 			return this.elemJq.data("rocket-supreme-ei-type-id").toString();
 		}
 		
-		get eiId(): string {
+		get pid(): string {
 			return this.elemJq.data("rocket-ei-id").toString();
 		}
 		
@@ -239,17 +239,17 @@ namespace Rocket.Display {
 			return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 		
-		private static buildEiIdSelector(supremeEiTypeId: string, eiId: string): string {
+		private static buildPidSelector(supremeEiTypeId: string, pid: string): string {
 			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "][" 
-					+ Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(eiId) + "]";
+					+ Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(pid) + "]";
 		}
 		
-		static findByEiId(jqElem: JQuery, supremeEiTypeId: string, eiId: string): Entry[] {
-			return Entry.fromArr(jqElem.find(Entry.buildEiIdSelector(supremeEiTypeId, eiId)));
+		static findByPid(jqElem: JQuery, supremeEiTypeId: string, pid: string): Entry[] {
+			return Entry.fromArr(jqElem.find(Entry.buildPidSelector(supremeEiTypeId, pid)));
 		}
 		
-		static hasEiId(jqElem: JQuery, supremeEiTypeId: string, eiId: string): boolean {
-			return 0 < jqElem.has(Entry.buildEiIdSelector(supremeEiTypeId, eiId)).length;
+		static hasPid(jqElem: JQuery, supremeEiTypeId: string, pid: string): boolean {
+			return 0 < jqElem.has(Entry.buildPidSelector(supremeEiTypeId, pid)).length;
 		}
 		
 		private static buildDraftIdSelector(supremeEiTypeId: string, draftId: number): string {

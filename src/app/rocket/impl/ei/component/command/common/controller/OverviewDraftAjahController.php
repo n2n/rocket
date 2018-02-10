@@ -46,13 +46,13 @@ class OverviewDraftJhtmlController extends ControllerAdapter {
 		$this->manageState = $manageState;
 	}
 	
-	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $eiIds = null) {
+	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $pids = null) {
 		$eiFrame = $this->manageState->peakEiFrame();
 
 		$draftListModel = new DraftListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
 
-		if ($eiIds != null) {
-			$draftListModel->initByEiIds($eiIds->toStringArrayOrReject());
+		if ($pids != null) {
+			$draftListModel->initByPids($pids->toStringArrayOrReject());
 		} else {
 			if ($pageNo === null) {
 				throw new PageNotFoundException();

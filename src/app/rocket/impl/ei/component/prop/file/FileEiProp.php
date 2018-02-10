@@ -181,7 +181,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 			$httpContext = $view->getHttpContext();
 			$uiComponent->appendContent($html->getLink(
 					$httpContext->getControllerContextPath($eiu->frame()->getEiFrame()->getControllerContext())
-							->ext($this->thumbEiCommand->getId(), $eiu->entry()->getLiveEiId())
+							->ext($this->thumbEiCommand->getId(), $eiu->entry()->getLivePid())
 							->toUrl(array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),

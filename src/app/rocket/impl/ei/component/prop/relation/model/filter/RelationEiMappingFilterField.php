@@ -54,11 +54,11 @@ class RelationEiEntryFilterField extends RelationFilterField implements EiEntryF
 				if ($this->entityProperty->isToMany()) break;
 		
 				return new RelationEiFieldConstraint($operator,
-						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetEiIds())));
+						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetPids())));
 			case CriteriaComparator::OPERATOR_CONTAINS:
 			case CriteriaComparator::OPERATOR_CONTAINS_NOT:
 				return new RelationEiFieldConstraint($operator,
-						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetEiIds())));
+						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetPids())));
 				
 			case CriteriaComparator::OPERATOR_EXISTS:
 				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterGroupData);

@@ -143,7 +143,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 						'sortForm' => $sortForm))));
 // 	}
 
-	public function doSelect(string $stateKey, ParamQuery $pageNo = null, ParamQuery $eiIds = null) {
+	public function doSelect(string $stateKey, ParamQuery $pageNo = null, ParamQuery $pids = null) {
 		$eiFrame = $this->manageState->peakEiFrame();
 
 		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
@@ -153,8 +153,8 @@ class OverviewJhtmlController extends ControllerAdapter {
 		$this->dispatch($critmodForm, 'select') || $this->dispatch($quickSearchForm, 'search') 
 				|| $this->dispatch($quickSearchForm, 'clear');
 		
-		if ($eiIds != null) {
-			$listModel->initByEiIds($eiIds->toStringArrayOrReject());
+		if ($pids != null) {
+			$listModel->initByPids($pids->toStringArrayOrReject());
 		} else {
 			if ($pageNo === null) {
 				$pageNo = 1;

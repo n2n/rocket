@@ -51,9 +51,9 @@ class ThumbController extends ControllerAdapter {
 		$this->fileEiProp = $fileEiProp;
 	}
 	
-	public function index($eiId, ParamQuery $refPath, ParamQuery $selected = null) {
+	public function index($pid, ParamQuery $refPath, ParamQuery $selected = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
-		$eiuEntry = $this->eiuCtrl->lookupEntry($eiId);
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
 		
 		// because ThumbEiCommand gets added always on a supreme EiEngine
@@ -80,7 +80,7 @@ class ThumbController extends ControllerAdapter {
 		$thumbModel = new ThumbModel(new ImageFile($file), $imageDimensions);
 		
 		if ($this->dispatch($thumbModel, 'save')) {
-// 			$this->redirectToController(array($eiId), array('refPath' => (string) $refPath, 
+// 			$this->redirectToController(array($pid), array('refPath' => (string) $refPath, 
 // 					'selected' => $thumbModel->selectedStr));
 // 			return;
 		}

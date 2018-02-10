@@ -95,7 +95,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 			if ($targetRelationEntry->isNew()) continue;
 				
 			$copyUrls[$n2nLocaleId] = $this->copyUrl->extR('live', 
-					array('fromEiId' => $targetRelationEntry->getEiId(),
+					array('fromPid' => $targetRelationEntry->getPid(),
 							'guiIdPath' => (string) $guiIdPath));
 		}
 		

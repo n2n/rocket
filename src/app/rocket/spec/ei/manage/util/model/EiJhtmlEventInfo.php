@@ -26,15 +26,15 @@ class EiJhtmlEventInfo {
 	 * @param string $entryId
 	 * @param string $modType
 	 */
-	private function evMapEiObject(string $eiTypeId, string $eiId = null, int $draftId = null, string $modType) {
+	private function evMapEiObject(string $eiTypeId, string $pid = null, int $draftId = null, string $modType) {
 	    if (!isset($this->eventMap[$eiTypeId])) {
-	        $this->eventMap[$eiTypeId] = array('eiIds' => [], 'draftIds' => []);
+	        $this->eventMap[$eiTypeId] = array('pids' => [], 'draftIds' => []);
 	    } else if ($this->eventMap[$eiTypeId] == self::MOD_TYPE_CHANGED) {
 	        return;
 	    }
 	    
-	    if ($eiId !== null) {
-	       $this->eventMap[$eiTypeId]['eiIds'][$eiId] = $modType;
+	    if ($pid !== null) {
+	       $this->eventMap[$eiTypeId]['pids'][$pid] = $modType;
 	    }
 	    
 	    if ($draftId !== null) {
@@ -91,9 +91,9 @@ class EiJhtmlEventInfo {
 		
 		$eiTypeId = self::buildTypeId($eiObject->getEiEntityObj()->getEiType());
 		
-		$eiId = null;
+		$pid = null;
 		if (!$eiObject->isNew()) {
-		    $eiId = $eiObject->getEiEntityObj()->getEiId();
+		    $pid = $eiObject->getEiEntityObj()->getPid();
 		}
 		
 		$draftId = null;
@@ -101,7 +101,7 @@ class EiJhtmlEventInfo {
 		    $draftId = $eiObject->getDraft()->getId();
 		}
 		
-		$this->evMapEiObject($eiTypeId, $eiId, $draftId, $modType);
+		$this->evMapEiObject($eiTypeId, $pid, $draftId, $modType);
 	}
 	
 	/**

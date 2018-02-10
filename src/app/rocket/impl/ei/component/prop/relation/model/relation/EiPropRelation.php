@@ -307,7 +307,7 @@ abstract class EiPropRelation {
 		    $targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'rel');
 		} else {
 			$targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'relentry', 
-					$eiEntry->getEiId());
+					$eiEntry->getPid());
 		}
 		
 		$targetControllerContext = new ControllerContext(new Path(array()), $targetCmdContextPath);
@@ -401,7 +401,7 @@ abstract class EiPropRelation {
 			$pathParts[] = 'relunknownentry';
 		} else {
 			$pathParts[] = 'relentry';
-			$pathParts[] = $eiEntry->getEiId();
+			$pathParts[] = $eiEntry->getPid();
 		}
 		$pathParts[] = $this->relationAjahEiCommand->getId();
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())->ext(...$pathParts)

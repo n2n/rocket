@@ -72,18 +72,18 @@ class DraftListModel implements Dispatchable {
 		return true;
 	}
 	
-// 	public function initByEiIds(array $eiIds) {
+// 	public function initByPids(array $pids) {
 // 		$eiFrame = $this->getEiFrame();
 				
 // 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 // 		$ids = array();
-// 		foreach ($eiIds as $eiId) {
-// 			$ids[] = $eiType->eiIdToId($eiId);
+// 		foreach ($pids as $pid) {
+// 			$ids[] = $eiType->pidToId($pid);
 // 		}
 	
 // 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 // 		$criteria->select(NestedSetUtils::NODE_ALIAS)
-// 			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiType->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $eiIds);
+// 			->where()->match(CrIt::p(NestedSetUtils::NODE_ALIAS, $eiType->getEntityModel()->getIdDef()->getEntityProperty()), 'IN', $pids);
 		
 // 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 // 			$this->treeLookup($criteria, $nestedSetStrategy);

@@ -125,25 +125,25 @@ namespace Rocket.Cmd {
 			
 			let eiMods = data.rocketEvent.eiMods;
 			for (let supremeEiTypeId in eiMods) {
-				if (!eiMods[supremeEiTypeId].eiIds && eiMods[supremeEiTypeId].draftIds) {
+				if (!eiMods[supremeEiTypeId].pids && eiMods[supremeEiTypeId].draftIds) {
 					zoneClearer.clearBySupremeEiType(supremeEiTypeId, false);
 					continue;
 				}
 				
-				if (eiMods[supremeEiTypeId].eiIds) {
-					for (let eiId in eiMods[supremeEiTypeId].eiIds) {
-						let modType = eiMods[supremeEiTypeId].eiIds[eiId];
+				if (eiMods[supremeEiTypeId].pids) {
+					for (let pid in eiMods[supremeEiTypeId].pids) {
+						let modType = eiMods[supremeEiTypeId].pids[pid];
 						switch (modType) {
 							case "changed":
-								zoneClearer.clearByEiId(supremeEiTypeId, eiId, false);
-								lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, eiId));
+								zoneClearer.clearByPid(supremeEiTypeId, pid, false);
+								lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
 								break;
 							case "removed":
-								zoneClearer.clearByEiId(supremeEiTypeId, eiId, true);
+								zoneClearer.clearByPid(supremeEiTypeId, pid, true);
 								break;
 							case "added":
 								zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
-								lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, eiId));
+								lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
 								break;
 							default: 
 								throw new Error("Invalid mod type " + modType);
@@ -297,24 +297,24 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		clearByEiId(supremeEiTypeId: string, eiId: string, remove: boolean) {
+		clearByPid(supremeEiTypeId: string, pid: string, remove: boolean) {
 			for (let zone of this.zones) {
 				if (!zone.page || zone.page.disposed) continue;
 
-				if (remove && this.removeByEiId(zone, supremeEiTypeId, eiId)) {
+				if (remove && this.removeByPid(zone, supremeEiTypeId, pid)) {
 					continue;
 				}
 				
 				if (zone.page.config.frozen) continue;
 				
-				if (Display.Entry.hasEiId(zone.jQuery, supremeEiTypeId, eiId)) {
+				if (Display.Entry.hasPid(zone.jQuery, supremeEiTypeId, pid)) {
 					zone.page.dispose();
 				}
 			}
 		}
 		
-		private removeByEiId(zone: Zone, supremeEiTypeId: string, eiId: string): boolean {
-			let entries = Display.Entry.findByEiId(zone.jQuery, supremeEiTypeId, eiId);
+		private removeByPid(zone: Zone, supremeEiTypeId: string, pid: string): boolean {
+			let entries = Display.Entry.findByPid(zone.jQuery, supremeEiTypeId, pid);
 			if (entries.length == 0) return true;
 			
 			let success = true;

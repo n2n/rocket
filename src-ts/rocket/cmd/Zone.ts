@@ -218,9 +218,9 @@ namespace Rocket.Cmd {
 			this.chLastMod(Display.Entry.findLastMod(this.jQuery), false);
 			
 			for (let lastModDef of this._lastModDefs) {
-				if (lastModDef.eiId) {
+				if (lastModDef.pid) {
 					this.chLastMod(Display.Entry
-							.findByEiId(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.eiId), true);
+							.findByPid(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.pid), true);
 					continue;
 				}
 				
@@ -302,13 +302,13 @@ namespace Rocket.Cmd {
 	
 	export class LastModDef {
 		supremeEiTypeId: string;
-		eiId?: string;
+		pid?: string;
 		draftId?: number;
 		
-		static createLive(supremeEiTypeId: string, eiId: string): LastModDef {
+		static createLive(supremeEiTypeId: string, pid: string): LastModDef {
 			let lmd = new LastModDef();
 			lmd.supremeEiTypeId = supremeEiTypeId;
-			lmd.eiId = eiId;
+			lmd.pid = pid;
 			return lmd;
 		}
 		
@@ -322,7 +322,7 @@ namespace Rocket.Cmd {
 		static fromEntry(entry: Display.Entry): LastModDef {
 			let lastModDef = new LastModDef();
 			lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
-			lastModDef.eiId = entry.eiId;
+			lastModDef.pid = entry.pid;
 			lastModDef.draftId = entry.draftId;
 			return lastModDef;
 		}

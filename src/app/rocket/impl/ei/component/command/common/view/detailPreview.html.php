@@ -41,7 +41,7 @@
 	if ($eiuEntry->isDraft()) {
 		$previewPath = new Path(array('draftpreview', $eiuEntry->getDraft()->getId()));
 	} else {
-		$previewPath = new Path(array('livepreview', $eiuEntry->getLiveEiId()));
+		$previewPath = new Path(array('livepreview', $eiuEntry->getLivePid()));
 	}
 ?>
 

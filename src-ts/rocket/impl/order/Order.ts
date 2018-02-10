@@ -128,15 +128,15 @@ namespace Rocket.Impl.Order {
 				entry.lastMod = false;
 			})
 			
-			let eiIds = [];
+			let pids = [];
 			for (let entry of entries) {
-				eiIds.push(entry.id);
+				pids.push(entry.id);
 				entry.selector.selected = false;
 				this.dingselAndExecTree(entry);
 				entry.lastMod = true;
 			}
 			
-			let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "eiIds": eiIds });
+			let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "pids": pids });
 			Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
 		}
 		

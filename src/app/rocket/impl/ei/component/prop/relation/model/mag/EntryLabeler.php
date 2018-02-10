@@ -37,17 +37,17 @@ class EntryLabeler {
 		return $this->genericLabel;
 	}
 	
-	public function getIdentityStringByEiId(string $eiId): string {
-		if (isset($this->selectedIdentityStrings[$eiId])) {
-			return $this->selectedIdentityStrings[$eiId];
+	public function getIdentityStringByPid(string $pid): string {
+		if (isset($this->selectedIdentityStrings[$pid])) {
+			return $this->selectedIdentityStrings[$pid];
 		}
 		
 		return $this->eiUtils->createIdentityString(
-				$this->eiUtils->lookupEiObjectById($this->eiUtils->eiIdToId($eiId)));
+				$this->eiUtils->lookupEiObjectById($this->eiUtils->pidToId($pid)));
 	}
 	
-	public function setSelectedIdentityString(string $eiId, string $identityString) {
-		$this->selectedIdentityStrings[$eiId] = $identityString;
+	public function setSelectedIdentityString(string $pid, string $identityString) {
+		$this->selectedIdentityStrings[$pid] = $identityString;
 	}
 	
 	public function getSelectedIdentityStrings(): array {

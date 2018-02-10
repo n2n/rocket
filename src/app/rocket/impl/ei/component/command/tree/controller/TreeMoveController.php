@@ -35,38 +35,38 @@ class TreeMoveController extends ControllerAdapter {
 		$this->eiCtrl = $eiuCtrl;
 	}
 
-	public function doChild($targetEiId, ParamGet $eiIds, ParamGet $refPath) {
+	public function doChild($targetPid, ParamGet $pids, ParamGet $refPath) {
 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
-		foreach ($eiIds->toStringArrayOrReject() as $eiId) {
-			$this->move($eiId, $targetEiId);
+		foreach ($pids->toStringArrayOrReject() as $pid) {
+			$this->move($pid, $targetPid);
 		}
 		
 		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 	
-	public function doBefore($targetEiId, ParamGet $eiIds, ParamGet $refPath) {
+	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {
 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 
-		foreach ($eiIds->toStringArrayOrReject() as $eiId) {
-			$this->move($eiId, $targetEiId, true);
+		foreach ($pids->toStringArrayOrReject() as $pid) {
+			$this->move($pid, $targetPid, true);
 		}
 		
 		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 
-	public function doAfter($targetEiId, ParamGet $eiIds, ParamGet $refPath) {
+	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 
-		foreach (array_reverse($eiIds->toStringArrayOrReject()) as $eiId) {
-			$this->move($eiId, $targetEiId, false);
+		foreach (array_reverse($pids->toStringArrayOrReject()) as $pid) {
+			$this->move($pid, $targetPid, false);
 		}
 
 		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 
-	private function move(string $eiId, string $targetEiId, bool $before = null) {
-		if ($eiId === $targetEiId) return;
+	private function move(string $pid, string $targetPid, bool $before = null) {
+		if ($pid === $targetPid) return;
 
 		$eiUtils = $this->eiCtrl->frame();
 		
@@ -77,8 +77,8 @@ class TreeMoveController extends ControllerAdapter {
 		$targetEiEntityObj = null;
 
 		try {
-			$eiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->eiIdToId($eiId));
-			$targetEiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->eiIdToId($targetEiId));
+			$eiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->pidToId($pid));
+			$targetEiEntityObj = $eiUtils->lookupEiEntityObj($eiUtils->pidToId($targetPid));
 		} catch (UnknownEntryException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {

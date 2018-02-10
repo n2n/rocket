@@ -42,9 +42,9 @@
 		$detailPathParts = array('draft', $draftId);
 		$previewPathParts = array('draftpreview', $draftId, $linkedPreviewType);
 	} else {
-		$eiId = $eiuEntry->getLiveEiId(true);
-		$detailPathParts = array('live', $eiId);
-		$previewPathParts = array('livepreview', $eiId, $linkedPreviewType);
+		$pid = $eiuEntry->getLivePid(true);
+		$detailPathParts = array('live', $pid);
+		$previewPathParts = array('livepreview', $pid, $linkedPreviewType);
 	}
  ?>
 

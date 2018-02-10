@@ -133,7 +133,7 @@ class EntryEiHtmlBuilder {
 		
 		return new HtmlElement($containerTagName,
 				HtmlUtils::mergeAttrs(array('class' => 'rocket-entry-selector', 
-						'data-entry-ei-id' => $this->meta()->getCurrentEiId(),
+						'data-entry-ei-id' => $this->meta()->getCurrentPid(),
 						'data-draft-id' => ($draftId !== null ? $draftId : ''),
 						'data-identity-string' => $this->eiuFrame->createIdentityString($this->meta()
 								->getCurrentEiuEntryGui()->getEiuEntry()->getEiObject())), (array) $containerAttrs),
@@ -242,8 +242,8 @@ class EntryEiHtmlBuilderMeta {
 // 		$this->currentEntryModel = array_shift($this->entryModels);
 	}
 	
-	public function getCurrentEiId() {
-		return $this->getCurrentEiuEntryGui()->getEiuEntry()->getLiveEiId();
+	public function getCurrentPid() {
+		return $this->getCurrentEiuEntryGui()->getEiuEntry()->getLivePid();
 	}
 	
 	public function getForkMagPropertyPaths() {

@@ -8,7 +8,7 @@ class GeneralIdUtils {
 	const LIVE_ID_REP_PREFIX = 'live-ei-id-';
 	const DRAFT_ID_PREFIX = 'draft-id-';
 	
-	public static function gernealIdToLiveEiId(string $generalId) {
+	public static function gernealIdToLivePid(string $generalId) {
 		if (!StringUtils::startsWith(self::LIVE_ID_REP_PREFIX, $generalId)) return null;
 			
 		return mb_substr($generalId, mb_strlen(self::LIVE_ID_REP_PREFIX));
@@ -20,8 +20,8 @@ class GeneralIdUtils {
 		return mb_substr($generalId, mb_strlen(self::DRAFT_ID_PREFIX));
 	}
 	
-	public static function liveEiIdToGeneralId(string $liveEiId) {
-		return self::LIVE_ID_REP_PREFIX . $liveEiId;
+	public static function livePidToGeneralId(string $livePid) {
+		return self::LIVE_ID_REP_PREFIX . $livePid;
 	}
 	
 	public static function draftIdToGeneralId(int $draftId) {
@@ -34,14 +34,14 @@ class GeneralIdUtils {
 			
 			if ($draft->isNew()) return null;
 			
-			return self::draftEiIdToGeneralId($draft->getId());	
+			return self::draftPidToGeneralId($draft->getId());	
 		}
 		
 		$eiEntityObj = $eiObject->getEiEntityObj();
 		
 		if (!$eiObject->getEiEntityObj()->isPersistent()) return null;
 			
-		return self::liveEiIdToGeneralId($eiEntityObj->getEiType()->idToEiId($eiEntityObj->getId()));
+		return self::livePidToGeneralId($eiEntityObj->getEiType()->idToPid($eiEntityObj->getId()));
 	}
 	
 	

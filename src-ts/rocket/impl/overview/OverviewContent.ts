@@ -150,8 +150,8 @@ namespace Rocket.Impl.Overview {
 			this.fakePage = new Page(0);
 			this.fakePage.hide();
 			
-			var eiIds = this.selectorObserver.getSelectedIds();
-			var unloadedIds = eiIds.slice();
+			var pids = this.selectorObserver.getSelectedIds();
+			var unloadedIds = pids.slice();
 			var that = this;
 		
 			this.collection.entries.forEach(function (entry: Display.Entry) {
@@ -167,8 +167,8 @@ namespace Rocket.Impl.Overview {
 			return this.fakePage;
 		}
 		
-		private loadFakePage(unloadedEiIds: Array<string>) {
-			if (unloadedEiIds.length == 0) {
+		private loadFakePage(unloadedPids: Array<string>) {
+			if (unloadedPids.length == 0) {
 				this.fakePage.entries = [];
 				this.selectorState.observeFakePage(this.fakePage);
 				return;
@@ -179,7 +179,7 @@ namespace Rocket.Impl.Overview {
 			let fakePage = this.fakePage;
 			
 			Jhtml.Monitor.of(this.collection.jQuery.get(0))
-					.lookupModel(this.loadUrl.extR(null, { "eiIds": unloadedEiIds }))
+					.lookupModel(this.loadUrl.extR(null, { "pids": unloadedPids }))
 					.then((model: Jhtml.Model) => {
 				if (fakePage !== this.fakePage) return; 
 				
@@ -248,9 +248,9 @@ namespace Rocket.Impl.Overview {
 			this.triggerContentChange();
 		}
 		
-//		containsEiId(eiId: string): boolean {
+//		containsPid(pid: string): boolean {
 //			for (let i in this.pages) {
-//				if (this.pages[i].containsEiId(eiId)) return true;
+//				if (this.pages[i].containsPid(pid)) return true;
 //			}
 //			
 //			return false;

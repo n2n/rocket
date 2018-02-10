@@ -15,8 +15,8 @@ namespace Rocket.Display {
 		private selectors: { [key: string]: EntrySelector } = {};
 		private checkJqs: { [key: string]: JQuery } = {};
 		
-		constructor(private originalEiIds: Array<string> = new Array<string>()) {
-			this.selectedIds = originalEiIds;
+		constructor(private originalPids: Array<string> = new Array<string>()) {
+			this.selectedIds = originalPids;
 		}
 		
 		destroy(): void {

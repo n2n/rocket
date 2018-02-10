@@ -80,7 +80,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 			$iconType = IconType::ICON_TIMES_CIRCLE;
 		} else {
-			$pathExt = new Path(array('live', $eiuEntry->getLiveEiId()));
+			$pathExt = new Path(array('live', $eiuEntry->getLivePid()));
 			$identityString = $eiuEntry->createIdentityString();
 			$name = $view->getL10nText('common_delete_label');
 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
