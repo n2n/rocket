@@ -72,9 +72,9 @@ class ToManyDynMappingFormFactory {
 				$this->eiuFrame->entryForm($currentEiEntry), $this->nextOrderIndex++);
 	}
 
-	public function getCurrentMappingForm(string $idRep) {
-		if (isset($this->currentMappingForms[$idRep])) {
-			return $this->currentMappingForms[$idRep];
+	public function getCurrentMappingForm(string $pid) {
+		if (isset($this->currentMappingForms[$pid])) {
+			return $this->currentMappingForms[$pid];
 		}
 		
 		return null;

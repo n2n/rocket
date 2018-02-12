@@ -334,7 +334,7 @@ namespace Rocket.Impl.Relation {
 	
 	class ToOneSelector {
 		private jqInput: JQuery;
-		private originalIdRep: string;
+		private originalPid: string;
 		private identityStrings: { [key: string]: string};
 		private jqSelectedEntry: JQuery;
 		private jqEntryLabel: JQuery;
@@ -346,27 +346,27 @@ namespace Rocket.Impl.Relation {
 			this.jqElem = jqElem;
 			this.jqInput = jqElem.children("input").hide();
 			
-			this.originalIdRep = jqElem.data("original-id-rep");
+			this.originalPid = jqElem.data("original-ei-id");
 			this.identityStrings = jqElem.data("identity-strings");
 			
 			this.init();
-			this.selectEntry(this.selectedIdRep);
+			this.selectEntry(this.selectedPid);
 		}
 		
 		get jQuery(): JQuery {
 			return this.jqElem;
 		}
 		
-		get selectedIdRep(): string {
-			let idRep: string = this.jqInput.val().toString();
-			if (idRep.length == 0) return null;
+		get selectedPid(): string {
+			let pid: string = this.jqInput.val().toString();
+			if (pid.length == 0) return null;
 			
-			return idRep;
+			return pid;
 		}	
 		
 		private init() {
 			this.jqSelectedEntry = $("<div />")
-			this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalIdRep] }));
+			this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalPid] }));
 			new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
 					.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
 					.click(() => {
@@ -393,10 +393,10 @@ namespace Rocket.Impl.Relation {
 					}).hide();
 		}
 		
-		private selectEntry(idRep: string, identityString: string = null) {
-			this.jqInput.val(idRep);
+		private selectEntry(pid: string, identityString: string = null) {
+			this.jqInput.val(pid);
 			
-			if (idRep === null) {
+			if (pid === null) {
 				this.jqSelectedEntry.hide();
 				return;
 			}
@@ -404,11 +404,11 @@ namespace Rocket.Impl.Relation {
 			this.jqSelectedEntry.show();
 			
 			if (identityString === null) {
-				identityString = this.identityStrings[idRep];
+				identityString = this.identityStrings[pid];
 			}
 			this.jqEntryLabel.text(identityString);
 			
-			if (this.originalIdRep != this.selectedIdRep) {
+			if (this.originalPid != this.selectedPid) {
 				this.resetButtonJq.show();
 			} else {
 				this.resetButtonJq.hide();
@@ -416,7 +416,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public reset() {
-			this.selectEntry(this.originalIdRep);
+			this.selectEntry(this.originalPid);
 		}
 		
 		public clear() {
@@ -481,7 +481,7 @@ namespace Rocket.Impl.Relation {
 		private updateBrowser() {
 			if (this.browserSelectorObserver === null) return;
 			
-			this.browserSelectorObserver.setSelectedId(this.selectedIdRep);
+			this.browserSelectorObserver.setSelectedId(this.selectedPid);
 		}
 		
 		private updateSelection() {

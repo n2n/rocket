@@ -35,7 +35,7 @@ use rocket\spec\ei\manage\util\model\UnknownEntryException;
 
 class ToManyForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoDispProperties('selectedEntryIdReps'));
+		$ai->c(new AnnoDispProperties('selectedEntryPids'));
 		$ai->p('currentMappingForms', new AnnoDispObjectArray(function (ToManyForm $toManyForm, $key) {
 			return $toManyForm->entryFormFactory->getCurrentMappingForm($key);
 		}));
@@ -52,9 +52,9 @@ class ToManyForm implements Dispatchable {
 	private $entryLabeler;
 
 	private $selectionModeEnabled = false;
-	private $originalEntryIdReps;
+	private $originalEntryPids;
 	
-	private $selectedEntryIdReps;
+	private $selectedEntryPids;
 	private $currentMappingForms = array();
 	private $newMappingForms = array();
 
@@ -96,20 +96,20 @@ class ToManyForm implements Dispatchable {
 		return $this->selectionModeEnabled;
 	}
 	
-	public function setOriginalEntryIdReps(array $originalEntryIdReps = null) {
-		$this->originalEntryIdReps = $originalEntryIdReps;
+	public function setOriginalEntryPids(array $originalEntryPids = null) {
+		$this->originalEntryPids = $originalEntryPids;
 	}
 	
-	public function getOriginalEntryIdReps() {
-		return $this->originalEntryIdReps;
+	public function getOriginalEntryPids() {
+		return $this->originalEntryPids;
 	}
 
-	public function setSelectedEntryIdReps(array $selectedEntryIdRep = null) {
-		$this->selectedEntryIdReps = $selectedEntryIdRep;
+	public function setSelectedEntryPids(array $selectedEntryPid = null) {
+		$this->selectedEntryPids = $selectedEntryPid;
 	}
 
-	public function getSelectedEntryIdReps() {
-		return $this->selectedEntryIdReps;
+	public function getSelectedEntryPids() {
+		return $this->selectedEntryPids;
 	}
 	
 	public function addEiEntry(EiEntry $currentEiEntry) {
@@ -160,30 +160,30 @@ class ToManyForm implements Dispatchable {
 		$that = $this;
 		
 		if ($this->selectionModeEnabled) {
-			$bd->closure(function (array $selectedEntryIdReps, BindingErrors $be) use ($that) {
-				foreach ($selectedEntryIdReps as $selectedEntryIdRep) {
-					if (in_array($selectedEntryIdRep, $that->originalEntryIdReps, true)) continue;
+			$bd->closure(function (array $selectedEntryPids, BindingErrors $be) use ($that) {
+				foreach ($selectedEntryPids as $selectedEntryPid) {
+					if (in_array($selectedEntryPid, $that->originalEntryPids, true)) continue;
 					
 					$eiObject = null;
 					try {
-						$eiObject = $that->readUtils->lookupEiObjectById($that->readUtils->idRepToId($selectedEntryIdRep),
+						$eiObject = $that->readUtils->lookupEiObjectById($that->readUtils->pidToId($selectedEntryPid),
 								CriteriaConstraint::NON_SECURITY_TYPES);
-						$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep,
+						$that->entryLabeler->setSelectedIdentityString($selectedEntryPid,
 								$that->readUtils->createIdentityString($eiObject));
 					} catch (UnknownEntryException $e) {
-						$be->addErrorCode('entryIdRep', 'ei_impl_relation_unkown_entry_err',
-								array('id_rep' => $selectedEntryIdRep), Rocket::NS);
+						$be->addErrorCode('entryPid', 'ei_impl_relation_unkown_entry_err',
+								array('id_rep' => $selectedEntryPid), Rocket::NS);
 					}
 				}
 			});
 		}
 		
-		$bd->closure(function (array $selectedEntryIdReps, array $currentMappingForms, $newMappingForms,
+		$bd->closure(function (array $selectedEntryPids, array $currentMappingForms, $newMappingForms,
 				BindingErrors $be) use ($that) {
-			$num = count($selectedEntryIdReps) + count($currentMappingForms) + count($newMappingForms);
+			$num = count($selectedEntryPids) + count($currentMappingForms) + count($newMappingForms);
 				
 			if ($num < $that->min) {
-				$be->addErrorCode('entryIdRep', 'ei_impl_relation_min_err', 
+				$be->addErrorCode('entryPid', 'ei_impl_relation_min_err', 
 						array('field' => $that->label, 'min' => $that->min, 'num' => $num, 
 								'elements' => ($that->min < 2 ? $that->readUtils->getGenericLabel() 
 										: $that->readUtils->getGenericPluralLabel())), 
@@ -191,7 +191,7 @@ class ToManyForm implements Dispatchable {
 			}
 			
 			if ($that->max !== null && $num > $that->max) {
-				$be->addErrorCode('entryIdRep', 'ei_impl_relation_max_err', array('field' => $that->label,
+				$be->addErrorCode('entryPid', 'ei_impl_relation_max_err', array('field' => $that->label,
 						'max' => $that->max, 'num' => $num, 
 								'elements' => ($that->min < 2 ? $that->readUtils->getGenericLabel() 
 										: $that->readUtils->getGenericPluralLabel())), Rocket::NS);

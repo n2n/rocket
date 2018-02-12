@@ -34,7 +34,7 @@ use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 
 class ToOneForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoDispProperties('selectedEntryIdRep'));
+		$ai->c(new AnnoDispProperties('selectedEntryPid'));
 		$ai->p('currentMappingForm', new AnnoDispObject(function (ToOneForm $toOneForm) {
 			return $toOneForm->entryFormFactory->getCurrentMappingForm();
 		}));
@@ -50,9 +50,9 @@ class ToOneForm implements Dispatchable {
 	private $entryLabeler;
 	
 	private $selectionModeEnabled = false;
-	private $originalEntryIdRep; 
+	private $originalEntryPid; 
 	
-	private $selectedEntryIdRep;
+	private $selectedEntryPid;
 	private $currentMappingForm;
 	private $newMappingForm;
 
@@ -80,20 +80,20 @@ class ToOneForm implements Dispatchable {
 		return $this->selectionModeEnabled;
 	}
 	
-	public function setOriginalEntryIdRep(string $originalEntryIdRep = null) {
-		$this->originalEntryIdRep = $originalEntryIdRep;
+	public function setOriginalEntryPid(string $originalEntryPid = null) {
+		$this->originalEntryPid = $originalEntryPid;
 	}
 	
-	public function getOriginalEntryIdRep() {
-		return $this->originalEntryIdRep;
+	public function getOriginalEntryPid() {
+		return $this->originalEntryPid;
 	}
 
-	public function setSelectedEntryIdRep(string $selectedEntryIdRep = null) {
-		$this->selectedEntryIdRep = $selectedEntryIdRep;
+	public function setSelectedEntryPid(string $selectedEntryPid = null) {
+		$this->selectedEntryPid = $selectedEntryPid;
 	}
 
-	public function getSelectedEntryIdRep() {
-		return $this->selectedEntryIdRep;
+	public function getSelectedEntryPid() {
+		return $this->selectedEntryPid;
 	}
 	
 	public function isMappingFormAvailable(): bool {
@@ -137,31 +137,31 @@ class ToOneForm implements Dispatchable {
 	private function _validation(BindingDefinition $bd) {
 		if ($this->selectionModeEnabled) {
 			$that = $this;
-			$bd->closure(function ($selectedEntryIdRep, BindingErrors $be) use ($that) {
-				if ($that->originalEntryIdRep === $selectedEntryIdRep || $selectedEntryIdRep === null) {
+			$bd->closure(function ($selectedEntryPid, BindingErrors $be) use ($that) {
+				if ($that->originalEntryPid === $selectedEntryPid || $selectedEntryPid === null) {
 					return;
 				}
 						
 				if (null !== ($eiObject = $that->utils->lookupEiObjectById(
-						$that->utils->idRepToId($selectedEntryIdRep), CriteriaConstraint::NON_SECURITY_TYPES))) {
-					$that->entryLabeler->setSelectedIdentityString($selectedEntryIdRep, 
+						$that->utils->pidToId($selectedEntryPid), CriteriaConstraint::NON_SECURITY_TYPES))) {
+					$that->entryLabeler->setSelectedIdentityString($selectedEntryPid, 
 							$that->utils->createIdentityString($eiObject));				
 					return;
 				}
 					
-				$be->addErrorCode('entryIdRep', 'ei_impl_relation_unkown_entry_err', array('id_rep' => $selectedEntryIdRep),
+				$be->addErrorCode('entryPid', 'ei_impl_relation_unkown_entry_err', array('id_rep' => $selectedEntryPid),
 						Rocket::NS);
 			});
 		}
 		
 		if ($this->mandatory) {
 			$that = $this;
-			$bd->closure(function ($selectedEntryIdRep, $currentMappingForm, $newMappingForm,
+			$bd->closure(function ($selectedEntryPid, $currentMappingForm, $newMappingForm,
 					BindingErrors $be) use ($that) {
-				if ($selectedEntryIdRep !== null || $currentMappingForm !== null || $newMappingForm !== null) return;
+				if ($selectedEntryPid !== null || $currentMappingForm !== null || $newMappingForm !== null) return;
 
 				// @todo find out how to register error on parent property / dispatchable
-				$be->addErrorCode('entryIdRep', 'common_field_required_err', array('field' => $that->label), 
+				$be->addErrorCode('entryPid', 'common_field_required_err', array('field' => $that->label), 
 							Rocket::NS);
 			});
 		}

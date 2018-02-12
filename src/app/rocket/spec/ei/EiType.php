@@ -469,21 +469,33 @@ class EiType extends Spec implements EiEngineModel {
 	}
 	
 	/**
+	 * <p>Converts the id of an entity object of this {@see EiType} into a pid. In rocket pid stands for 
+	 * <strong>Practical Identifier</strong>. Ids of entities can have diffrent types which isn&apos;t practical.</p>
+	 * 
+	 * <p>Pids are always strings which can&apos;t contain slashes or backslashes. This allowes a pid to be used 
+	 * in a url path (most servers can&apos;t handle urlencoded slashes in paths).</p>
+	 * 
+	 * <p><strong>Note:</strong> This method currently uses <code>urlencode()</code> to mask slashes and backslahes 
+	 * which could change in further versions. If you want to embed a pid in a url you stil have to encode it even if 
+	 * this means that a pid gets urlencoded a second time.</p>
+	 * 
 	 * @param mixed $id
 	 * @return string
 	 * @throws \InvalidArgumentException if null is passed as id.
 	 */
-	public function idToIdRep($id): string {
-		return $this->entityModel->getIdDef()->getEntityProperty()->valueToRep($id);
+	public function idToPid($id): string {
+		return urlencode($this->entityModel->getIdDef()->getEntityProperty()->valueToRep($id));
 	}
 	
 	/**
-	 * @param string $idRep
+	 * <p>Converts a pid back to an id. {@see self::idToPid()} for further informations.</p>
+	 * 
+	 * @param string $pid
 	 * @return mixed
 	 * @throws \InvalidArgumentException
 	 */
-	public function idRepToId(string $idRep) {
-		return $this->entityModel->getIdDef()->getEntityProperty()->repToValue($idRep);
+	public function pidToId(string $pid) {
+		return $this->entityModel->getIdDef()->getEntityProperty()->repToValue(urldecode($pid));
 	}
 	
 	/**

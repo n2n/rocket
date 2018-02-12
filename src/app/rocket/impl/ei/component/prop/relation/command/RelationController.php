@@ -49,8 +49,8 @@ class RelationController extends ControllerAdapter {
 		$this->rocketState = $rocketState;
 	}
 		
-	public function doRelEntry($idRep, array $delegateCmds, EiTypeController $eiTypeController) {
-		$eiObject = $this->eiuCtrl->lookupEiObject($idRep);
+	public function doRelEntry($pid, array $delegateCmds, EiTypeController $eiTypeController) {
+		$eiObject = $this->eiuCtrl->lookupEiObject($pid);
 		
 		// because RelationCommand gets added always on a supreme EiEngine
 		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiType()

@@ -136,11 +136,11 @@ class ToManyMag extends MagAdapter {
 	
 		if ($this->selectOverviewToolsUrl !== null) {
 			$toManyForm->setSelectionModeEnabled(true);
-			$idReps = array();
+			$pids = array();
 			foreach ($this->targetRelationEntries as $targetRelationEntry) {
 				if (!$targetRelationEntry->isNew()) {
-					$idReps[] = $idRep = $this->targetReadUtils->idToIdRep($targetRelationEntry->getId());
-					$toManyForm->getEntryLabeler()->setSelectedIdentityString($idRep,
+					$pids[] = $pid = $this->targetReadUtils->idToPid($targetRelationEntry->getId());
+					$toManyForm->getEntryLabeler()->setSelectedIdentityString($pid,
 							$this->targetReadUtils->createIdentityString($targetRelationEntry->getEiObject()));
 				} else if ($targetRelationEntry->hasEiEntry()) {
 					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
@@ -149,8 +149,8 @@ class ToManyMag extends MagAdapter {
 							$targetRelationEntry->getEiObject()));
 				}
 			}
-			$toManyForm->setSelectedEntryIdReps($idReps);
-			$toManyForm->setOriginalEntryIdReps($idReps);
+			$toManyForm->setSelectedEntryPids($pids);
+			$toManyForm->setOriginalEntryPids($pids);
 		} else {
 			foreach ($this->targetRelationEntries as $targetRelationEntry) {
 				if ($targetRelationEntry->hasEiEntry()) {
@@ -169,10 +169,10 @@ class ToManyMag extends MagAdapter {
 		return $toManyForm;
 	}
 	
-	private function buildLiveIdRepRelationEntryMap(): array {
+	private function buildLivePidRelationEntryMap(): array {
 		$targetRelationEntries = array();
 		foreach ($this->targetRelationEntries as $targetRelationEntry) {
-			$targetRelationEntries[$this->targetReadUtils->idToIdRep($targetRelationEntry->getId())] 
+			$targetRelationEntries[$this->targetReadUtils->idToPid($targetRelationEntry->getId())] 
 					= $targetRelationEntry;
 		}
 		return $targetRelationEntries;
@@ -184,15 +184,15 @@ class ToManyMag extends MagAdapter {
 		$this->targetRelationEntries = array();
 
 		if ($formValue->isSelectionModeEnabled()) {
-			$oldTargetRelationEntries = $this->buildLiveIdRepRelationEntryMap();
-			foreach ($formValue->getSelectedEntryIdReps() as $idRep) {
-				if (isset($oldTargetRelationEntries[$idRep])) {
-					$this->targetRelationEntries[$idRep] = $oldTargetRelationEntries[$idRep];
+			$oldTargetRelationEntries = $this->buildLivePidRelationEntryMap();
+			foreach ($formValue->getSelectedEntryPids() as $pid) {
+				if (isset($oldTargetRelationEntries[$pid])) {
+					$this->targetRelationEntries[$pid] = $oldTargetRelationEntries[$pid];
 					continue;
 				}
 		
-				$this->targetRelationEntries[$idRep] = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
-						$this->targetReadUtils->idRepToId($idRep), CriteriaConstraint::NON_SECURITY_TYPES));
+				$this->targetRelationEntries[$pid] = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
+						$this->targetReadUtils->pidToId($pid), CriteriaConstraint::NON_SECURITY_TYPES));
 			}
 		}
 		
@@ -209,9 +209,9 @@ class ToManyMag extends MagAdapter {
 					$targetEiEntry->getEiObject()->getDraft()->setType(Draft::TYPE_UNLISTED);
 				}
 			} else if ($targetEiEntry->getEiObject()->isDraft()) {
-				$this->targetRelationEntries['d' . $targetEiEntry->getEiObject()->getIdRep()] = RelationEntry::fromM($targetEiEntry);
+				$this->targetRelationEntries['d' . $targetEiEntry->getEiObject()->getPid()] = RelationEntry::fromM($targetEiEntry);
 			} else {
-				$this->targetRelationEntries['c' . $targetEiEntry->getIdRep()] = RelationEntry::fromM($targetEiEntry);
+				$this->targetRelationEntries['c' . $targetEiEntry->getPid()] = RelationEntry::fromM($targetEiEntry);
 			}
 		}
 	}

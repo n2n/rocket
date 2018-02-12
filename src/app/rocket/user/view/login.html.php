@@ -23,6 +23,7 @@
 	use n2n\web\ui\Raw;
 	use rocket\user\model\LoginContext;
 	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\core\N2N;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -31,7 +32,6 @@
 	$loginContext = $view->getParam('loginContext'); 
 	$view->assert($loginContext instanceof LoginContext);
 	
-	$html->meta()->addMeta(array('charset' => n2n\core\N2N::CHARSET));
 	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
 	$html->meta()->addCss('css/rocket-20.css');
@@ -40,6 +40,7 @@
 <!DOCTYPE html>
 <html> 
 	<?php $html->headStart() ?>
+		<meta charset="<?php $html->out(N2N::CHARSET) ?>" />
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart(array('id' => 'rocket-login')) ?>
 		<div id="rocket-login-container">

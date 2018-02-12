@@ -68,9 +68,9 @@ class RelationSelectorMag extends MagAdapter  {
 
 	public function getFormValue() {
 		$relationSelectorForm = new RelationSelectorForm($this->targetEiUtils);
-		$relationSelectorForm->setEntryIdReps(array_keys($this->targetLiveEntries));
-		foreach ($this->targetLiveEntries as $targetIdRep => $targetEiEntityObj) {
-			$relationSelectorForm->getEntryLabeler()->setSelectedIdentityString($targetIdRep,
+		$relationSelectorForm->setEntryPids(array_keys($this->targetLiveEntries));
+		foreach ($this->targetLiveEntries as $targetPid => $targetEiEntityObj) {
+			$relationSelectorForm->getEntryLabeler()->setSelectedIdentityString($targetPid,
 					$this->targetEiUtils->createIdentityString(new LiveEiObject($targetEiEntityObj)));
 		}
 		return $relationSelectorForm;	
@@ -82,15 +82,15 @@ class RelationSelectorMag extends MagAdapter  {
 		$targetLiveEntries = $this->targetLiveEntries;
 		$this->targetLiveEntries = array();
 		
-		foreach ($formValue->getEntryIdReps() as $targetIdRep) {
-			if (isset($targetLiveEntries[$targetIdRep])) {
-				$this->targetLiveEntries[$targetIdRep] = $targetLiveEntries[$targetIdRep];
+		foreach ($formValue->getEntryPids() as $targetPid) {
+			if (isset($targetLiveEntries[$targetPid])) {
+				$this->targetLiveEntries[$targetPid] = $targetLiveEntries[$targetPid];
 				continue;
 			}
 			
 			try {
-				$this->targetLiveEntries[$targetIdRep] = $this->targetEiUtils->lookupEiEntityObj(
-						$this->targetEiUtils->idRepToId($targetIdRep));
+				$this->targetLiveEntries[$targetPid] = $this->targetEiUtils->lookupEiEntityObj(
+						$this->targetEiUtils->pidToId($targetPid));
 			} catch (UnknownEntryException $e) {
 			}
 		}
@@ -119,19 +119,19 @@ class RelationSelectorMag extends MagAdapter  {
 class RelationSelectorForm implements Dispatchable {
 	private $entryUtils;
 	private $entryLabeler;
-	protected $entryIdReps = array();
+	protected $entryPids = array();
 	
 	public function __construct(EiUtils $entryUtils) {
 		$this->entryUtils = $entryUtils;
 		$this->entryLabeler = new EntryLabeler($entryUtils);
 	}
 	
-	public function getEntryIdReps(): array {
-		return $this->entryIdReps;
+	public function getEntryPids(): array {
+		return $this->entryPids;
 	}
 	
-	public function setEntryIdReps(array $entryIdReps) {
-		$this->entryIdReps = $entryIdReps;
+	public function setEntryPids(array $entryPids) {
+		$this->entryPids = $entryPids;
 	}
 	
 	public function getEntryLabeler(): EntryLabeler {
@@ -140,12 +140,12 @@ class RelationSelectorForm implements Dispatchable {
 	
 	private function _validation(BindingDefinition $bd) {
 		$that = $this;
-		$bd->closure(function (array $entryIdReps, BindingErrors $be) use ($that) {
-			foreach ($entryIdReps as $entryIdRep) { 
-				if (!$that->entryUtils->containsId($that->entryUtils->idRepToId($entryIdRep))) continue;
+		$bd->closure(function (array $entryPids, BindingErrors $be) use ($that) {
+			foreach ($entryPids as $entryPid) { 
+				if (!$that->entryUtils->containsId($that->entryUtils->pidToId($entryPid))) continue;
 				
-				$be->addErrorCode('entryIdRep', 'ei_impl_relation_unkown_entry_err', 
-						array('id_rep' => $entryIdRep), Rocket::NS);
+				$be->addErrorCode('entryPid', 'ei_impl_relation_unkown_entry_err', 
+						array('id_rep' => $entryPid), Rocket::NS);
 			}
 		});
 	}

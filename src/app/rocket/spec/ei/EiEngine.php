@@ -61,6 +61,10 @@ class EiEngine {
 	private $genericEiDefinition;
 	private $scalarEiDefinition;
 		
+	/**
+	 * @param EiType $eiType
+	 * @param EiMask $eiMask
+	 */
 	public function __construct(EiType $eiType, EiMask $eiMask = null) {
 		$this->eiType = $eiType;
 		$this->eiMask = $eiMask;
@@ -69,6 +73,9 @@ class EiEngine {
 		$this->eiModificatorCollection = new EiModificatorCollection($this);
 	}
 	
+	/**
+	 * 
+	 */
 	public function clear() {
 		$this->guiDefinition = null;
 		$this->draftDefinition = null;

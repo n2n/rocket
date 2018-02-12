@@ -45,16 +45,16 @@ class OnlineController extends ControllerAdapter {
 		$this->onlineEiCommand = $onlineEiCommand;
 	}
 	
-	public function doOnline($idRep) {
-		$this->setStatus(true, $idRep);
+	public function doOnline($pid) {
+		$this->setStatus(true, $pid);
 	}
 	
-	public function doOffline($idRep) {
-		$this->setStatus(false, $idRep);
+	public function doOffline($pid) {
+		$this->setStatus(false, $pid);
 	}
 	
-	private function setStatus($status, $idRep) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($idRep);
+	private function setStatus($status, $pid) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		$eiuEntry->setValue($this->onlineEiProp, $status);		
 		if (!$eiuEntry->getEiEntry()->save()) {
 			throw new ForbiddenException();

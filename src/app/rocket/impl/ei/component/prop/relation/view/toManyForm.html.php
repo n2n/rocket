@@ -63,7 +63,7 @@
 		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector"
-				data-original-id-reps="<?php $html->out(json_encode($toManyForm->getOriginalEntryIdReps())) ?>"
+				data-original-ei-ids="<?php $html->out(json_encode($toManyForm->getOriginalEntryPids())) ?>"
 				data-identity-strings="<?php $html->out(json_encode($entryLabeler->getSelectedIdentityStrings())) ?>"
 				data-overview-tools-url="<?php $html->out($view->getParam('selectOverviewToolsUrl')) ?>"
 				data-select-label="<?php $html->text('common_select_label') ?>"
@@ -72,12 +72,12 @@
 				data-cancel-label="<?php $html->text('common_cancel_label') ?>"
 				data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 				data-base-property-name="<?php $html->out($formHtml->meta()->getForm()->getDispatchTargetEncoder()
-						->buildValueParamName($propertyPath->ext('selectedEntryIdReps'), false)) ?>">
+						->buildValueParamName($propertyPath->ext('selectedEntryPids'), false)) ?>">
 			<ul>
-				<?php $formHtml->meta()->arrayProps($propertyPath->ext('selectedEntryIdReps'), function () use ($formHtml, $propertyPath) { ?> 
-					<li><?php $formHtml->input($propertyPath->ext('selectedEntryIdReps[]')) ?></li>
+				<?php $formHtml->meta()->arrayProps($propertyPath->ext('selectedEntryPids'), function () use ($formHtml, $propertyPath) { ?> 
+					<li><?php $formHtml->input($propertyPath->ext('selectedEntryPids[]')) ?></li>
 				<?php }, null, null, true) ?>
-				<li class="rocket-new-entry"><?php $formHtml->input($propertyPath->ext('selectedEntryIdReps[]')) ?></li>
+				<li class="rocket-new-entry"><?php $formHtml->input($propertyPath->ext('selectedEntryPids[]')) ?></li>
 			</ul>
 		</div>
 	<?php endif ?>

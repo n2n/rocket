@@ -45,32 +45,32 @@ class AddController extends ControllerAdapter {
 		$this->eiuCtrl = $eiCtrl;
 	}
 		
-	public function index($copyIdRep = null, ParamGet $refPath = null) {	
-		$this->live($refPath, $copyIdRep);
+	public function index($copyPid = null, ParamGet $refPath = null) {	
+		$this->live($refPath, $copyPid);
 	}
 	
-	public function doChild($parentIdRep, $copyIdRep = null, ParamGet $refPath = null) {
-		$this->parentEiObject = $this->eiuCtrl->lookupEiObject($parentIdRep);	
-		$this->live($refPath, $copyIdRep);	
+	public function doChild($parentPid, $copyPid = null, ParamGet $refPath = null) {
+		$this->parentEiObject = $this->eiuCtrl->lookupEiObject($parentPid);	
+		$this->live($refPath, $copyPid);	
 	}
 	
-	public function doBefore($beforeIdRep, $copyIdRep = null, ParamGet $refPath = null) {
-		$this->beforeEiObject = $this->eiuCtrl->lookupEiObject($beforeIdRep);	
-		$this->live($refPath, $copyIdRep);
+	public function doBefore($beforePid, $copyPid = null, ParamGet $refPath = null) {
+		$this->beforeEiObject = $this->eiuCtrl->lookupEiObject($beforePid);	
+		$this->live($refPath, $copyPid);
 	}
 	
-	public function doAfter($afterIdRep, $copyIdRep = null, ParamGet $refPath = null) {
-		$this->afterEiObject = $this->eiuCtrl->lookupEiObject($afterIdRep);	
-		$this->live($refPath, $copyIdRep);
+	public function doAfter($afterPid, $copyPid = null, ParamGet $refPath = null) {
+		$this->afterEiObject = $this->eiuCtrl->lookupEiObject($afterPid);	
+		$this->live($refPath, $copyPid);
 	}
 	
-	private function live(ParamGet $refPath = null, $copyIdRep = null) {
+	private function live(ParamGet $refPath = null, $copyPid = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		$eiuFrame = $this->eiuCtrl->frame();
 		
 		$copyFrom = null;
-		if ($copyIdRep !== null) {
-			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyIdRep);
+		if ($copyPid !== null) {
+			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyPid);
 		}
 		
 		$entryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('entryForm')));

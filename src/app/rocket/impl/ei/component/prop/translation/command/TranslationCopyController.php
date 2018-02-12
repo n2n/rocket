@@ -14,7 +14,7 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 
 class TranslationCopyController extends ControllerAdapter {
 	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiIdPath, ParamQuery $propertyPath, ParamQuery $bulky,
-			ParamQuery $toN2nLocale, ParamQuery $fromIdRep, ParamQuery $toIdRep = null) {
+			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
 		try {
 			$guiIdPath = GuiIdPath::createFromExpression((string) $guiIdPath);
@@ -26,11 +26,11 @@ class TranslationCopyController extends ControllerAdapter {
 			throw new BadRequestException(null, null, $e);
 		}
 		
-		$fromEiuEntry = $eiuCtrl->lookupEntry((string) $fromIdRep);
+		$fromEiuEntry = $eiuCtrl->lookupEntry((string) $fromPid);
 		
 		$toEiuEntry = null;
-		if ($toIdRep !== null) {
-			$toEiuEntry = $eiuCtrl->lookupEntry((string) $toIdRep);
+		if ($toPid !== null) {
+			$toEiuEntry = $eiuCtrl->lookupEntry((string) $toPid);
 		} else {
 			$toEiuEntry = $eiuCtrl->frame()->newEntry(false, $fromEiuEntry);
 			$toEiuEntry->getEntityObj()->setN2nLocale($toN2nLocale);

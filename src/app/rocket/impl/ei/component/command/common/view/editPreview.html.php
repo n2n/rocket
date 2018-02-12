@@ -43,7 +43,7 @@ use n2n\web\ui\Raw;
 	if ($eiuEntry->isDraft()) {
 		$previewPath = new Path(array('draftpreview', $eiuEntry->getDraft()->getId()));
 	} else {
-		$previewPath = new Path(array('livepreview', $eiuEntry->getLiveIdRep()));
+		$previewPath = new Path(array('livepreview', $eiuEntry->getLivePid()));
 	}
 	
 	$eiHtml = new EiHtmlBuilder($view);
@@ -53,7 +53,8 @@ use n2n\web\ui\Raw;
 	<div class="rocket-group-control">
 		<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
 			<?php foreach ($eiuEntry->getPreviewTypeOptions() as $previewType => $label): ?>
-				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))) ?>"
+				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))
+							->queryExt(array('refPath' => $request->getUrl()->getQuery()->get('refPath')))) ?>"
 						<?php $view->out($currentPreviewType == $previewType ? ' selected="selected"' : '') ?>>
 					<?php $html->out($label) ?>
 				</option>	
@@ -68,7 +69,7 @@ use n2n\web\ui\Raw;
 
 <div class="rocket-zone-commands">
 	<div class="rocket-main-commands">
-		<?php $html->linkToController(['live', $eiuEntry->getLiveIdRep()], 
+		<?php $html->linkToController(['live', $eiuEntry->getLivePid()], 
 				new Raw('<i class="fa fa-pencil"></i><span>' 
 						. $html->getL10nText('common_edit_label') . '</span>'),
 				array('class' => 'btn btn-primary rocket-jhtml rocket-important', 'data-jhtml-use-page-scroll-pos' => 'true'),

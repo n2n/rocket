@@ -101,15 +101,15 @@ namespace Rocket.Display {
 				return this.draftId.toString();
 			}
 			
-			return this.idRep;
+			return this.pid;
 		}
 		
 		get supremeEiTypeId(): string {
 			return this.elemJq.data("rocket-supreme-ei-type-id").toString();
 		}
 		
-		get idRep(): string {
-			return this.elemJq.data("rocket-id-rep").toString();
+		get pid(): string {
+			return this.elemJq.data("rocket-ei-id").toString();
 		}
 		
 		get draftId(): number {
@@ -163,7 +163,7 @@ namespace Rocket.Display {
 		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
 		static readonly LAST_MOD_CSS_CLASS = "rocket-last-mod";
 		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
-		static readonly ID_REP_ATTR = "data-rocket-id-rep";
+		static readonly ID_REP_ATTR = "data-rocket-ei-id";
 		static readonly DRAFT_ID_ATTR = "data-rocket-draft-id";
 		
 		private static from(elemJq: JQuery): Entry {
@@ -239,17 +239,17 @@ namespace Rocket.Display {
 			return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 		
-		private static buildIdRepSelector(supremeEiTypeId: string, idRep: string): string {
+		private static buildPidSelector(supremeEiTypeId: string, pid: string): string {
 			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "][" 
-					+ Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(idRep) + "]";
+					+ Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(pid) + "]";
 		}
 		
-		static findByIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string): Entry[] {
-			return Entry.fromArr(jqElem.find(Entry.buildIdRepSelector(supremeEiTypeId, idRep)));
+		static findByPid(jqElem: JQuery, supremeEiTypeId: string, pid: string): Entry[] {
+			return Entry.fromArr(jqElem.find(Entry.buildPidSelector(supremeEiTypeId, pid)));
 		}
 		
-		static hasIdRep(jqElem: JQuery, supremeEiTypeId: string, idRep: string): boolean {
-			return 0 < jqElem.has(Entry.buildIdRepSelector(supremeEiTypeId, idRep)).length;
+		static hasPid(jqElem: JQuery, supremeEiTypeId: string, pid: string): boolean {
+			return 0 < jqElem.has(Entry.buildPidSelector(supremeEiTypeId, pid)).length;
 		}
 		
 		private static buildDraftIdSelector(supremeEiTypeId: string, draftId: number): string {

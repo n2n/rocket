@@ -70,21 +70,21 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'before', $eiEntry->getIdRep())
+								->ext($this->getId(), 'before', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_before_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'after', $eiEntry->getIdRep())
+								->ext($this->getId(), 'after', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_after_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)),
 				self::CONTROL_INSERT_CHILD_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'child', $eiEntry->getIdRep())
+								->ext($this->getId(), 'child', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_tree_insert_child_label'),
 								$dtc->translate('ei_impl_tree_insert_child_tooltip'),

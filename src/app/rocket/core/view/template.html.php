@@ -55,7 +55,6 @@ $view->assert($loginContext instanceof LoginContext);
 
 $htmlMeta = $html->meta();
 
-$htmlMeta->addMeta(array('charset' => N2N::CHARSET));
 $htmlMeta->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 $htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
 $htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
@@ -83,51 +82,51 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 <!DOCTYPE html>
 <html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>">
 <?php $html->headStart() ?>
-
-<style>
-
-	form.rocket-impl-critmod .rocket-impl-critmod-blocker {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
-		background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
-	}
+	<meta charset="<?php $html->out(N2n::CHARSET) ?>" />
+	<style>
 	
-	.rocket-load-blocker {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
-		background: #FEC800 url('https://media.giphy.com/media/3ohzgD1wRxpvpkDCSI/giphy.gif') center center no-repeat;
-	}
-	
-	.rocket-load-blocker * {
-		display: none;
-	}
-	
-	.rocket-layer {
-		animation: layertransform 0.2s;
-	}
-	
-	.rocket-layer,
-	.rocket-main-layer {
-		visibility: hidden;
-	}
-	
-	.rocket-layer.rocket-active,
-	.rocket-main-layer.rocket-active {
-		visibility: visible;
-	}
-	
-	@keyframes layertransform {
-	    from { transform: translateX(100vw); }
-	    to { transform: translateX(0); }
-	}
-	
-</style>
+		form.rocket-impl-critmod .rocket-impl-critmod-blocker {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
+		}
+		
+		.rocket-load-blocker {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			background: #FEC800 url('https://media.giphy.com/media/3ohzgD1wRxpvpkDCSI/giphy.gif') center center no-repeat;
+		}
+		
+		.rocket-load-blocker * {
+			display: none;
+		}
+		
+		.rocket-layer {
+			animation: layertransform 0.2s;
+		}
+		
+		.rocket-layer,
+		.rocket-main-layer {
+			visibility: hidden;
+		}
+		
+		.rocket-layer.rocket-active,
+		.rocket-main-layer.rocket-active {
+			visibility: visible;
+		}
+		
+		@keyframes layertransform {
+		    from { transform: translateX(100vw); }
+		    to { transform: translateX(0); }
+		}
+		
+	</style>
 <?php $html->headEnd() ?>
 <?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')),
 	'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>

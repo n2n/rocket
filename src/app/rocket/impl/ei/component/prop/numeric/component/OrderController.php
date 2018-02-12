@@ -45,35 +45,35 @@ class OrderController extends ControllerAdapter {
 		$this->eiType = $orderEiProp->getEiEngine()->getEiType();
 	}
 	
-	public function doBefore($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
+	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {
 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
-		foreach ($idReps->toStringArrayOrReject() as $idRep) {
-			$this->move($idRep, $targetIdRep, true);
+		foreach ($pids->toStringArrayOrReject() as $pid) {
+			$this->move($pid, $targetPid, true);
 		}
 		
 		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 	
-	public function doAfter($targetIdRep, ParamGet $idReps, ParamGet $refPath) {
+	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
-		foreach (array_reverse($idReps->toStringArrayOrReject()) as $idRep) {
-			$this->move($idRep, $targetIdRep, false);
+		foreach (array_reverse($pids->toStringArrayOrReject()) as $pid) {
+			$this->move($pid, $targetPid, false);
 		}
 		
 		$this->eiCtrl->redirectToReferer($refUrl);
 	}
 	
-	private function move(string $idRep, string $targetIdRep, bool $before) {
-		if ($idRep === $targetIdRep) return;
+	private function move(string $pid, string $targetPid, bool $before) {
+		if ($pid === $targetPid) return;
 		
 		$eiEntityObj = null;
 		$targetEiEntityObj = null;
 		
 		try {
-			$eiEntityObj = $this->utils->lookupEiEntityObj($this->utils->idRepToId($idRep));
-			$targetEiEntityObj = $this->utils->lookupEiEntityObj($this->utils->idRepToId($targetIdRep));
+			$eiEntityObj = $this->utils->lookupEiEntityObj($this->utils->pidToId($pid));
+			$targetEiEntityObj = $this->utils->lookupEiEntityObj($this->utils->pidToId($targetPid));
 		} catch (UnknownEntryException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {

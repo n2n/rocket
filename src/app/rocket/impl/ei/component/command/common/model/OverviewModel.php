@@ -110,7 +110,7 @@ class OverviewModel implements Dispatchable {
 		return true;
 	}
 	
-	public function initByIdReps(array $idReps) {
+	public function initByPids(array $pids) {
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
 		$this->critmodForm->applyToEiFrame($eiFrame, true);
@@ -118,8 +118,8 @@ class OverviewModel implements Dispatchable {
 				
 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
 		$ids = array();
-		foreach ($idReps as $idRep) {
-			$ids[] = $eiType->idRepToId($idRep);
+		foreach ($pids as $pid) {
+			$ids[] = $eiType->pidToId($pid);
 		}
 	
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);

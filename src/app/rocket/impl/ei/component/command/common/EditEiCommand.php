@@ -78,7 +78,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 			$controlButton = new ControlButton($dtc->t('common_edit_label'), 
 					$dtc->t('ei_impl_edit_entry_tooltip', array('entry' => $eiuFrame->getGenericLabel())), 
 					true, ControlButton::TYPE_WARNING, IconType::ICON_PENCIL);
-			$urlExt = (new Path(array('live', $eiuEntry->getLiveIdRep())))
+			$urlExt = (new Path(array('live', $eiuEntry->getLivePid())))
 					->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl()));
 			
 			$controls[] = $eiuControlFactory->createJhtml($controlButton, $urlExt);
@@ -87,7 +87,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 				$controlButton = new ControlButton($dtc->t('common_edit_latest_draft_label'),
 						$dtc->t('ei_impl_edit_latest_draft_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 						true, ControlButton::TYPE_PRIMARY, IconType::ICON_PENCIL_SQUARE);
-				$urlExt = (new Path(array('latestdraft', $eiuEntry->getLiveIdRep())))
+				$urlExt = (new Path(array('latestdraft', $eiuEntry->getLivePid())))
 						->toUrl(array('refPath' => (string) $eiuFrame->getCurrentUrl()));
 				
 				$controls[] = $eiuControlFactory->createJhtml($controlButton, $urlExt);
