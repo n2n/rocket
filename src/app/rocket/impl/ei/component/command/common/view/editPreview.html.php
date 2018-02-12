@@ -53,7 +53,8 @@ use n2n\web\ui\Raw;
 	<div class="rocket-group-control">
 		<select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
 			<?php foreach ($eiuEntry->getPreviewTypeOptions() as $previewType => $label): ?>
-				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))) ?>"
+				<option value="<?php $html->out($html->meta()->getControllerUrl($previewPath->ext($previewType))
+							->queryExt(array('refPath' => $request->getUrl()->getQuery()->get('refPath')))) ?>"
 						<?php $view->out($currentPreviewType == $previewType ? ' selected="selected"' : '') ?>>
 					<?php $html->out($label) ?>
 				</option>	
