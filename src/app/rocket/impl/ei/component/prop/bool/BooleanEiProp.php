@@ -152,7 +152,6 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 			return new BoolMag($this->getLabelLstr(), true);
 		}
 		
-		
 		test('create ' . $eiu->entryGui()->isReady());
 		if ($eiu->entryGui()->isReady()) {
 			throw new \Exception();

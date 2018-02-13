@@ -41,7 +41,7 @@ class EiEntryGui {
 	private $eiEntry;
 	private $treeLevel;
 	private $displayables = array();
-	private $editableWrappers = array();
+	private $magAssemblys = array();
 	private $eiEntryGuiListeners = array();
 	private $initialized = false;
 	
@@ -105,13 +105,32 @@ class EiEntryGui {
 	 * @param GuiIdPath $guiIdPath
 	 * @param Displayable $displayable
 	 */
-	public function putDisplayable(GuiIdPath $guiIdPath, Displayable $displayable) {
-		$this->displayables[(string) $guiIdPath] = $displayable;
+	public function putDisplayable(GuiIdPath $guiIdPath, Displayable $displayable, 
+			EiFieldWrapper $eiFieldWrapper = null, MagAssembly $magAssembly = null) {
+		$key = (string) $guiIdPath;
+		
+		if (isset($this->displayables[$key])) {
+			throw new IllegalStateException('GuiIdPath already initialized: ' . $guiIdPath);
+		}
+		
+		$this->displayables[$key] = $displayable;
+		
+		if ($eiFieldWrapper !== null) {
+			$this->eiFieldWrappers[$key] = $eiFieldWrapper;
+		}
+		
+		if ($magAssembly !== null) {
+			$this->magAssembly[$key] = $magAssembly;
+		}
 	}
 	
-// 	public function putEiPropPath(GuiIdPath $guiIdPath, EiPropPath $eiPropPath) {
-// 		$this->eiPropPaths[(string) $guiIdPath] = $eiPropPath;
-// 	}
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return bool
+	 */
+	public function containsGuiIdPath(GuiIdPath $guiIdPath) {
+		return isset($this->displayables[(string) $guiIdPath]);
+	}
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
@@ -147,13 +166,6 @@ class EiEntryGui {
 		return $this->eiFieldWrappers[$guiIdPathStr];
 	}
 	
-	/**
-	 * @param GuiIdPath $guiIdPath
-	 * @param EiFieldWrapper $eiFieldWrapper
-	 */
-	public function putEiFieldWrapper(GuiIdPath $guiIdPath, EiFieldWrapper $eiFieldWrapper) {
-		$this->eiFieldWrappers[(string) $guiIdPath] = $eiFieldWrapper;
-	}
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
@@ -192,7 +204,7 @@ class EiEntryGui {
 // 	}
 
 	/**
-	 * @return \n2n\web\dispatch\Dispatchable
+	 * @return \n2n\web\dispatch\Dispatchable|null
 	 */
 	public function getDispatchable() {
 		return $this->dispatchable;
@@ -202,6 +214,7 @@ class EiEntryGui {
 	 * @param Dispatchable $dispatchable
 	 */
 	public function setDispatchable(Dispatchable $dispatchable = null) {
+		$this->ensureNotInitialized();
 		$this->dispatchable = $dispatchable;
 	}
 		
@@ -221,41 +234,34 @@ class EiEntryGui {
 	}
 
 	/**
-	 * @param PropertyPath $contextPropertyPath
+	 * @param PropertyPath|null $contextPropertyPath
 	 */
-	public function setContextPropertyPath(PropertyPath $contextPropertyPath = null) {
+	public function setContextPropertyPath(?PropertyPath $contextPropertyPath) {
 		$this->contextPropertyPath = $contextPropertyPath;
 	}
 	
-	/**
-	 * @param GuiIdPath $guiIdPath
-	 * @param EditableWrapper $editableInfo
-	 */
-	public function putEditableWrapper(GuiIdPath $guiIdPath, EditableWrapper $editableInfo) {
-		$this->editableWrapper[(string) $guiIdPath] = $editableInfo;
-	}
 
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @return bool
 	 */
-	public function containsEditableWrapperGuiIdPath(GuiIdPath $guiIdPath): bool {
-		return isset($this->editableWrapper[(string) $guiIdPath]);
+	public function containsMagAssemblyGuiIdPath(GuiIdPath $guiIdPath): bool {
+		return isset($this->magAssembly[(string) $guiIdPath]);
 	}
 	
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @throws GuiException
-	 * @return EditableWrapper
+	 * @return MagAssembly
 	 */
-	public function getEditableWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
+	public function getMagAssemblyByGuiIdPath(GuiIdPath $guiIdPath) {
 		$guiIdPathStr = (string) $guiIdPath;
 		
-		if (!isset($this->editableWrapper[$guiIdPathStr])) {
+		if (!isset($this->magAssembly[$guiIdPathStr])) {
 			throw new GuiException('No Mag with GuiIdPath ' . $guiIdPathStr . ' registered');
 		}
 		
-		return $this->editableWrapper[$guiIdPathStr];
+		return $this->magAssembly[$guiIdPathStr];
 	}
 	
 	public function getForkMagPropertyPaths(): array {
@@ -355,7 +361,7 @@ class EiEntryGui {
 }
 
 
-class EditableWrapper {
+class MagAssembly {
 	private $mandatory;
 	private $magPropertyPath;
 	private $magWrapper;

@@ -157,12 +157,12 @@ class EntryEiHtmlBuilder {
 		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
-		if (!$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
+		if (!$eiEntryGui->containsMagAssemblyGuiIdPath($guiIdPath)) {
 			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
 					$this->buildAttrs($guiIdPath));
 		}
 		
-		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
+		$editableInfo = $eiEntryGui->getMagAssemblyByGuiIdPath($guiIdPath);
 		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
 		$this->pushGuiPropInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);

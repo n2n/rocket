@@ -68,7 +68,7 @@ class ToOneEditable implements GuiFieldEditable {
 		$this->reduced = $reduced;
 	}
 	
-	public function createMag(): Mag {
+	public function getMag(): Mag {
 		$this->toOneMag = new ToOneMag($this->label, $this->mandatory, $this->targetReadEiFrame,
 				$this->targetEditEiFrame);
 	

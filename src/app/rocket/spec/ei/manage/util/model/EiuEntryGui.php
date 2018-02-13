@@ -170,7 +170,7 @@ class EiuEntryGui {
 	 */
 	public function getMagWrapper($guiIdPath, bool $required = false) {
 		try {
-			return $this->eiEntryGui->getEditableWrapperByGuiIdPath(
+			return $this->eiEntryGui->getMagAssemblyByGuiIdPath(
 					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
 		} catch (GuiException $e) {
 			if ($required) throw $e;

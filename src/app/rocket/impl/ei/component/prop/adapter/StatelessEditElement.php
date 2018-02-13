@@ -51,7 +51,7 @@ class StatelessEditElement extends StatelessDisplayElement implements GuiFieldEd
 		return $this;
 	}
 	
-	public function createMag(): Mag {
+	public function getMag(): Mag {
 		if ($this->mag !== null) {
 			throw new IllegalStateException('Option already created.');
 		}

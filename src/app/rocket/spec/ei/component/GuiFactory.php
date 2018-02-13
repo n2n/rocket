@@ -106,15 +106,8 @@ class GuiFactory {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;
 			
-			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable());
-			
-			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
-				$eiEntryGui->putEiFieldWrapper($guiIdPath, $eiFieldWrapper);
-			}
-			
-			if (null !== ($editableWrapper = $result->getEditableWrapper())) {
-				$eiEntryGui->putEditableWrapper($guiIdPath, $editableWrapper);
-			}
+			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable(),
+					$result->getEiFieldWrapper(), $result->getMagAssembly());
 		}
 		
 		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {

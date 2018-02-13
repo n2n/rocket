@@ -36,7 +36,7 @@ use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\manage\gui\GuiFieldForkEditable;
-use rocket\spec\ei\manage\gui\EditableWrapper;
+use rocket\spec\ei\manage\gui\MagAssembly;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 
@@ -165,9 +165,9 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 				$translationMag = new TranslationMag($label, $this->getMarkClassKey());
 			}
 			
-			if (null !== ($editableWrapper = $result->getEditableWrapper())) {
-				$translationMag->putMagPropertyPath($n2nLocaleId, $editableWrapper->getMagPropertyPath(), $fieldErrorInfo, $eiuEntry);
-				if (!$mandatory) $mandatory = $editableWrapper->isMandatory();
+			if (null !== ($magAssembly = $result->getMagAssembly())) {
+				$translationMag->putMagPropertyPath($n2nLocaleId, $magAssembly->getMagPropertyPath(), $fieldErrorInfo, $eiuEntry);
+				if (!$mandatory) $mandatory = $magAssembly->isMandatory();
 			} else {
 				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $fieldErrorInfo);
 			}
@@ -185,7 +185,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 				
 		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
 		return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper, 
-				new EditableWrapper($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
+				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
 	}
 		
 	public function isReadOnly(): bool {

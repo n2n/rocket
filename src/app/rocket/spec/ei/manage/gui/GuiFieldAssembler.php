@@ -92,11 +92,11 @@ class GuiFieldAssembler implements Savable {
 		
 		$editable = $guiField->getEditable();
 		ArgUtils::valTypeReturn($editable, GuiFieldEditable::class, $guiField, 'getEditable');
-		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($id, $editable->createMag($id));
+		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($id, $editable->getMag($id));
 		$this->savables[$id] = $editable;
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));
-		return new AssembleResult($guiField, $eiFieldWrapper, new EditableWrapper($editable->isMandatory(), $magPropertyPath, $magWrapper));
+		return new AssembleResult($guiField, $eiFieldWrapper, new MagAssembly($editable->isMandatory(), $magPropertyPath, $magWrapper));
 	}
 	
 	private function assembleGuiPropFork(GuiIdPath $guiIdPath, GuiPropFork $guiPropFork, EiPropPath $eiPropPath) {
@@ -114,10 +114,10 @@ class GuiFieldAssembler implements Savable {
 		$result = $forkedGuiField->assembleGuiField($relativeGuiIdPath);
 		$displayable = $result->getDisplayable();
 		$eiFieldWrapper = $result->getEiFieldWrapper();
-		$editableWrapper = $result->getEditableWrapper();
+		$magAssembly = $result->getMagAssembly();
 		
 		
-		if ($this->eiuEntryGui->isReadOnly() || $displayable->isReadOnly() || $editableWrapper === null) {
+		if ($this->eiuEntryGui->isReadOnly() || $displayable->isReadOnly() || $magAssembly === null) {
 			return new AssembleResult($displayable, $eiFieldWrapper);
 		}
 		
@@ -130,9 +130,9 @@ class GuiFieldAssembler implements Savable {
 		
 		/* $this->forkMagWrappers[$id] */
 		return new AssembleResult($displayable, $eiFieldWrapper, 
-				new EditableWrapper($editableWrapper->isMandatory(), 
-						$this->forkedPropertyPaths[$id]->ext($editableWrapper->getMagPropertyPath()), 
-						$editableWrapper->getMagWrapper()));
+				new MagAssembly($magAssembly->isMandatory(), 
+						$this->forkedPropertyPaths[$id]->ext($magAssembly->getMagPropertyPath()), 
+						$magAssembly->getMagWrapper()));
 	}
 	
 	public function assembleGuiField(GuiIdPath $guiIdPath) {
@@ -179,13 +179,13 @@ class GuiFieldAssembler implements Savable {
 class AssembleResult {
 	private $displayable;
 	private $eiFieldWrapper;
-	private $editableWrapper;
+	private $magAssembly;
 	
 	public function __construct(Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null, 
-			EditableWrapper $editableWrapper = null) {
+			MagAssembly $magAssembly = null) {
 		$this->displayable = $displayable;
 		$this->eiFieldWrapper = $eiFieldWrapper;
-		$this->editableWrapper = $editableWrapper;
+		$this->magAssembly = $magAssembly;
 	}
 	
 	/**
@@ -200,9 +200,9 @@ class AssembleResult {
 	}
 	
 	/**
-	 * @return EditableWrapper|null
+	 * @return MagAssembly|null
 	 */
-	public function getEditableWrapper() {
-		return $this->editableWrapper;
+	public function getMagAssembly() {
+		return $this->magAssembly;
 	}
 }
