@@ -97,6 +97,11 @@ class GuiFactory {
 		
 		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getEiGuiViewFactory()->getGuiDefinition(), $eiuEntryGui);
 		
+// 		test($eiEntry->getEiType()->getId());
+// 		if ($eiEntry->getEiType()->getId() == 'page-page-t') {
+// 			throw new \Exception();
+// 		}
+		
 		foreach ($guiIdPaths as $guiIdPath) {
 			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
 			if ($result === null) continue;

@@ -122,10 +122,23 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function isReady() {
+		return $this->eiEntryGui->isInitialized();
+	}
+	
+	/**
 	 * @param \Closure $closure
 	 */
 	public function whenReady(\Closure $closure) {
-		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), $closure));
+		$listener = new ClosureGuiListener(new Eiu($this), $closure);
+		
+		if ($this->isReady()) {
+			$listener->finalized($this->eiEntryGui);
+		} else {
+			$this->eiEntryGui->registerEiEntryGuiListener($listener);
+		}
 	}
 	
 	/**

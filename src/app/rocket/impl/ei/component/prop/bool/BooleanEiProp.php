@@ -45,18 +45,32 @@ use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\manage\critmod\sort\SortField;
+use rocket\spec\ei\manage\gui\GuiIdPath;
+use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
 
 class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp {
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter::createEiPropConfigurator()
+	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new BooleanEiPropConfigurator($this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyEiPropAdapter::setEntityProperty()
+	 */
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
 		$this->entityProperty = $entityProperty;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter::setObjectPropertyAccessProxy()
+	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		if ($propertyAccessProxy === null) {
 			return;
@@ -67,24 +81,59 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEditableEiPropAdapter::isMandatory()
+	 */
 	public function isMandatory(Eiu $eiu): bool {
 		return false;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter::read()
+	 */
 	public function read(EiObject $eiObject) {
 		return (bool) parent::read($eiObject);
 	}
 	
-// 	public function createMagCollection() {
-// 		$magCollection = new MagCollection();
-// 		$this->applyDisplayOptions($magCollection);
-// 		$this->applyDraftOptions($magCollection);
-// 		$this->applyEditOptions($magCollection, true, true, false);
-// 		$this->applyTranslationMags($magCollection);
-		
-// 		return $magCollection;
-// 	}
+	private $onAssociatedGuiIdPaths = array();
+	private $offAssociatedGuiIdPaths = array();
 	
+	/**
+	 * @param GuiIdPath[] $onAssociatedGuiIdPaths
+	 */
+	public function setOnAssociatedGuiIdPaths(array $onAssociatedGuiIdPaths) {
+		ArgUtils::valArray($onAssociatedGuiIdPaths, GuiIdPath::class);
+		$this->onAssociatedGuiIdPaths = $onAssociatedGuiIdPaths;
+	}
+	
+	/**
+	 * @return GuiIdPath[]
+	 */
+	public function getOnAssociatedGuiIdPaths() {
+		return $this->onAssociatedGuiIdPaths;
+	}
+	
+	/**
+	 * @param GuiIdPath[] $offAssociatedGuiIdPaths
+	 */
+	public function setOffAssociatedGuiIdPaths(array $offAssociatedGuiIdPaths) {
+		ArgUtils::valArray($offAssociatedGuiIdPaths, GuiIdPath::class);
+		$this->offAssociatedGuiIdPaths = $offAssociatedGuiIdPaths;
+	}
+	
+	/**
+	 * @return GuiIdPath[]
+	 */
+	public function getOffAssociatedGuiIdPaths() {
+		return $this->offAssociatedGuiIdPaths;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
+	 */
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
@@ -94,27 +143,117 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		return new HtmlElement('i', array('class' => 'fa fa-check-empty'), '');
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\StatelessEditable::createMag()
+	 */
 	public function createMag(Eiu $eiu): Mag {
-		return new BoolMag($this->getLabelLstr(), true);
+		if (empty($this->onAssociatedGuiIdPaths) && empty($this->offAssociatedGuiIdPaths)) {
+			return new BoolMag($this->getLabelLstr(), true);
+		}
+		
+		
+		test('create ' . $eiu->entryGui()->isReady());
+		if ($eiu->entryGui()->isReady()) {
+			throw new \Exception();
+		}
+		
+		$enablerMag = new EnablerMag($this->getLabelLstr(), true);
+		$that = $this;
+		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
+			$onMagWrappers = array();
+			foreach ($that->getOnAssociatedGuiIdPaths() as $guiIdPath) {
+				$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
+				if ($magWrapper === null) continue;
+				
+				$onMagWrappers[] = $magWrapper;
+			}
+			$enablerMag->setAssociatedMagWrappers($onMagWrappers);
+
+// 			$offMagWrappers = array();
+// 			foreach ($that->getOffAssociatedGuiIdPaths() as $guiIdPath) {
+// 				$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
+// 				if ($magWrapper === null) continue;
+				
+// 				$offMagWrappers[] = $magWrapper;
+// 			}
+// 			$enablerMag->setOffAssociatedMagWrappers($offMagWrappers);
+		});
+			
+		return $enablerMag;
+	}
+	
+	public function buildEiField(Eiu $eiu) {
+		$that = $this;
+		$eiu->entry()->onValidate(function () use ($eiu, $that) {
+			$activeGuiIdPaths = array();
+			$notactiveGuiIdPaths = array();
+			
+			if ($eiu->field()->getValue()) {
+				$activeGuiIdPaths = $this->getOnAssociatedGuiIdPaths();
+				$notactiveGuiIdPaths = $this->getOffAssociatedGuiIdPaths();
+			} else {
+				$activeGuiIdPaths = $this->getOffAssociatedGuiIdPaths();
+				$notactiveGuiIdPaths = $this->getOnAssociatedGuiIdPaths();
+			}
+			
+			foreach ($notactiveGuiIdPaths as $key => $guiIdPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+					$eiFieldWrapper->setIgnored(true);
+				}
+			}
+			
+			foreach ($activeGuiIdPaths as $guiIdPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+					$eiFieldWrapper->setIgnored(false);
+				}
+			}
+		});
+			
+		return parent::buildEiField($eiu);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\prop\FilterableEiProp::buildManagedFilterField()
+	 */
 	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\prop\FilterableEiProp::buildFilterField()
+	 */
 	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
 		return $this->buildEiEntryFilterField($n2nContext);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\prop\FilterableEiProp::buildEiEntryFilterField()
+	 */
 	public function buildEiEntryFilterField(N2nContext $n2nContext) {
 		return new BoolFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\prop\SortableEiProp::buildManagedSortField()
+	 */
 	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\prop\SortableEiProp::buildSortField()
+	 */
 	public function buildSortField(N2nContext $n2nContext): ?SortField {
-		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty())) {
+			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+		}
+		
+		return null;
 	}
 }

@@ -93,6 +93,14 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 		return new MagForm(new MagCollection());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>Overwrite this method if you have custom attributes to save. If you call this method it will overwrite 
+	 * the current attributes Properties with a new empty {@see Attributes} object</p
+	 * 
+	 * @see \rocket\spec\ei\component\EiConfigurator::saveMagDispatchable()
+	 */
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		$this->attributes = new Attributes();
 	}
