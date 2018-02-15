@@ -53,7 +53,7 @@ class SummarizedStringBuilder {
 	}
 	
 	public static function createPlaceholder($guiIdPath) {
-		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiIdPath::createFromExpression($guiIdPath)
+		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiIdPath::create($guiIdPath)
 				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
 	}
 	

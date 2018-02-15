@@ -105,7 +105,7 @@
 				basicStyleItems = basicStyleItems.concat(["Subscript", "Superscript"]);
 				paragraphItems = paragraphItems.concat(["Outdent", "Indent", "blocks", "Blockquote", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]);
 				linkItems = linkItems.concat(["Anchor", "-"]);
-				basicStyleItems = basicStyleItems.concat(["-", "CopyFormatting", "RemoveFormat", "-"]);
+				basicStyleItems = basicStyleItems.concat(["-", "CopyFormatting", "-"]);
 				toolItems = toolItems.concat(['Maximize', 'ShowBlocks']);
 
 				if (tableEditing) {

@@ -355,7 +355,7 @@ class SpecExtractor {
 		foreach ($data as $key => $fieldId) {
 			//Old specs (guiId)
 			if (!is_array($fieldId)) {
-				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($fieldId));
+				$displayStructure->addGuiIdPath(GuiIdPath::create($fieldId));
 				continue;
 			}
 	
@@ -382,7 +382,7 @@ class SpecExtractor {
 			$label = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
 			$guiIdPath = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
 			if (null !== $guiIdPath) {
-				$displayStructure->addGuiIdPath(GuiIdPath::createFromExpression($guiIdPath), 
+				$displayStructure->addGuiIdPath(GuiIdPath::create($guiIdPath), 
 						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
 						false, null, true), $label);
 				continue;

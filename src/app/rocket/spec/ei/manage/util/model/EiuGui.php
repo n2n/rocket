@@ -45,7 +45,7 @@ class EiuGui {
 	 * @return string|null
 	 */
 	public function getPropLabel($guiIdPath, bool $required = false) {
-		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		$guiIdPath = GuiIdPath::create($guiIdPath);
 		
 		if (null !== ($displayItem = $this->getDisplayItemByGuiIdPath($guiIdPath))) {
 			return $displayItem->getDisplayLabel();
@@ -66,7 +66,7 @@ class EiuGui {
 	 * @return \rocket\spec\ei\manage\gui\GuiProp|null
 	 */
 	public function getGuiPropByGuiIdPath($guiIdPath, bool $required = false) {
-		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		$guiIdPath = GuiIdPath::create($guiIdPath);
 		
 		try {
 			return $this->eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath);
@@ -83,7 +83,7 @@ class EiuGui {
 	 * @return \rocket\spec\ei\manage\gui\ui\DisplayItem
 	 */
 	public function getDisplayItemByGuiIdPath($guiIdPath) {
-		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		$guiIdPath = GuiIdPath::create($guiIdPath);
 		
 		$displayStructure = $this->eiGui->getEiGuiViewFactory()->getDisplayStructure();
 		if ($displayStructure !== null) {

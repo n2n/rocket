@@ -186,13 +186,13 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 */
 	public function containsGuiProp($guiIdPath, $eiTypeObj = null) {
 		return $this->determineEiEngine($eiTypeObj)->getGuiDefinition()->containsGuiProp(
-				GuiIdPath::createFromExpression($guiIdPath));
+				GuiIdPath::create($guiIdPath));
 	}
 	
 	public function guiIdPathToEiPropPath($guiIdPath, $eiTypeObj = null) {
 		try {
 			return $this->determineEiEngine($eiTypeObj)->getGuiDefinition()->guiIdPathToEiPropPath(
-					GuiIdPath::createFromExpression($guiIdPath));
+					GuiIdPath::create($guiIdPath));
 		} catch (\rocket\spec\ei\manage\gui\GuiException $e) {
 			return null;
 		}

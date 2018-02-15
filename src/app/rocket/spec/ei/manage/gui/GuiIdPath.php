@@ -44,7 +44,7 @@ class GuiIdPath extends IdPath {
 		return new GuiIdPath($ids);
 	}
 	
-	public static function createFromExpression($expression) {
+	public static function create($expression) {
 		if ($expression instanceof GuiIdPath) {
 			return $expression;
 		}
@@ -56,10 +56,10 @@ class GuiIdPath extends IdPath {
 		return new GuiIdPath(explode(self::ID_SEPARATOR, $expression));
 	}
 	
-	public static function createArrayFromExpressions(array $expressions) {
+	public static function createArray(array $expressions) {
 		$guiIdPaths = array();
 		foreach ($expressions as $key => $expression) {
-			$guiIdPaths[$key] = self::createFromExpression($expression);
+			$guiIdPaths[$key] = self::create($expression);
 		}
 		return $guiIdPaths;
 	}

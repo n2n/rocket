@@ -42,6 +42,7 @@ use rocket\spec\ei\manage\control\Control;
 use rocket\spec\ei\manage\control\GroupControl;
 use rocket\spec\ei\manage\control\ControlButton;
 use rocket\spec\ei\manage\control\IconType;
+use rocket\spec\ei\manage\gui\GuiFieldAssembly;
 
 class EiHtmlBuilder {
 	private $view;
@@ -95,7 +96,7 @@ class EiHtmlBuilder {
 			
 			$guiIdPath = $guiIdPath->getGuiIdPath();
 		} else {
-			$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+			$guiIdPath = GuiIdPath::create($guiIdPath);
 		}
 		
 		return $this->html->getOut($eiGui->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel());
@@ -185,15 +186,18 @@ class EiHtmlBuilder {
 	public function getEntryForkControls(array $attrs = null) {
 		$info = $this->state->peakEntry();
 		$eiEntryGui = $info['eiEntryGui'];
+		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 		
-		if (empty($eiEntryGui->getForkMagPropertyPaths())) {
+		$forkMagAssemblies = $eiEntryGui->getForkMagAssemblies();
+		
+		if (empty($forkMagAssemblies)) {
 			return null;
 		}
 		
 		$div = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'rocket-group-controls'), $attrs));
 		
-		foreach ($eiEntryGui->getForkMagPropertyPaths() as $forkMagPropertyPath) {
-			$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($forkMagPropertyPath);
+		foreach ($forkMagAssemblies as $forkMagAssembly) {
+			$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($forkMagAssembly->getMagPropertyPath());
 			
 			$div->appendLn($this->formHtml->getMagOpen('div', $propertyPath, null, $this->uiOutfitter));
 			$div->appendLn($this->formHtml->getMagLabel());
@@ -281,33 +285,34 @@ class EiHtmlBuilder {
 			$guiIdPath = $displayItem->getGuiIdPath();
 			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
 		} else {
-			$guiIdPath = GuiIdPath::createFromExpression($displayItem);
+			$guiIdPath = GuiIdPath::create($displayItem);
 			$displayItem = null;
 		}
 	
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
-		if (!$eiEntryGui->containsDisplayable($guiIdPath)) {
+		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null);
 			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
 					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
 		
-		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
+		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiIdPath);
+		$magAssembly = $guiFieldAssembly->getMagAssembly();
 	
-		if ($readOnly || !$eiEntryGui->containsEditableWrapperGuiIdPath($guiIdPath)) {
-			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable);
-			return $this->createOutputFieldOpen($tagName, $displayable, $fieldErrorInfo,
+		if ($readOnly || $magAssembly === null) {
+			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly);
+			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getDisplayable(), $fieldErrorInfo,
 					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
 	
-		$editableInfo = $eiEntryGui->getEditableWrapperByGuiIdPath($guiIdPath);
-		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
+		
+		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
 	
-		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $displayable, $propertyPath);
+		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
-				$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem), $editableInfo->isMandatory());
+				$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
 	}
 	
 	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,
@@ -401,8 +406,8 @@ class EiHtmlBuilder {
 			return $this->formHtml->getMagField();
 		}
 		
-		if (isset($fieldInfo['displayable'])) {
-			return $this->html->getOut($fieldInfo['displayable']->createOutputUiComponent($this->view));
+		if (isset($fieldInfo['guiFieldAssembly'])) {
+			return $this->html->getOut($fieldInfo['guiFieldAssembly']->getDisplayable()->createOutputUiComponent($this->view));
 		}
 		
 		return null;
@@ -648,12 +653,12 @@ class EiHtmlBuilderState {
 	/**
 	 * @param string $tagName
 	 * @param FieldErrorInfo $fieldErrorInfo
-	 * @param Displayable $displayable
+	 * @param Displayable $guiFieldAssembly
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, GuiIdPath $guiIdPath, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null,
+	public function pushField(string $tagName, GuiIdPath $guiIdPath, FieldErrorInfo $fieldErrorInfo, GuiFieldAssembly $guiFieldAssembly = null,
 			PropertyPath $propertyPath = null) {
-		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'displayable' => $displayable,
+		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
 	}
 	

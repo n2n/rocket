@@ -17,7 +17,7 @@ class TranslationCopyController extends ControllerAdapter {
 			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
 		try {
-			$guiIdPath = GuiIdPath::createFromExpression((string) $guiIdPath);
+			$guiIdPath = GuiIdPath::create((string) $guiIdPath);
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$toN2nLocale = N2nLocale::create((string) $toN2nLocale);
 		} catch (\InvalidArgumentException $e) {

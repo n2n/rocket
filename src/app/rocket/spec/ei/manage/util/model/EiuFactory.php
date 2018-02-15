@@ -39,6 +39,7 @@ use rocket\spec\ei\EiType;
 use rocket\spec\ei\mask\EiMask;
 use n2n\reflection\ReflectionUtils;
 use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\gui\EiEntryGuiAssembler;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -57,6 +58,7 @@ class EiuFactory {
 	private $eiEntry;
 	private $eiGui;
 	private $eiEntryGui;
+	private $eiEntryGuiAssembler;
 	private $eiPropPath;
 	
 	private $eiuFrame;
@@ -98,12 +100,20 @@ class EiuFactory {
 				}
 				continue;
 			}
-
+			
 			if ($eiArg instanceof EiEntryGui) {
 				$this->eiEntryGui = $eiArg;
 				$this->eiGui = $eiArg->getEiGui();
 				$this->assignEiFrameArg($this->eiGui->getEiFrame(), $key, $eiArg);
 				$eiArg = $eiArg->getEiEntry();
+			}
+			
+			if ($eiArg instanceof EiEntryGuiAssembler) {
+				$this->eiEntryGuiAssembler = $eiArg;
+				$this->eiEntryGui = $eiArg->getEiEntryGui();
+				$this->eiGui = $this->eiEntryGui->getEiGui();
+				$this->assignEiFrameArg($this->eiGui->getEiFrame(), $key, $eiArg);
+				$eiArg = $this->eiEntryGui->getEiEntry();
 			}
 			
 			if ($eiArg instanceof EiuField) {
@@ -240,6 +250,7 @@ class EiuFactory {
 	}
 	
 	
+	
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
@@ -251,8 +262,21 @@ class EiuFactory {
 		}
 		
 		throw new EiuPerimeterException(
-				'Could not determine EiEntryGui because non of the following types were provided as eiArgs: ' 
-						. implode(', ', self::EI_ENTRY_GUI_TYPES));
+				'Could not determine EiEntryGui because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_ENTRY_GUI_TYPES));
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\gui\EiEntryGuiAssembler
+	 */
+	public function getEiEntryGuiAssembler(bool $required) {
+		if (!$required || $this->eiEntryGuiAssembler !== null) {
+			return $this->eiEntryGuiAssembler;
+		}
+		
+		throw new EiuPerimeterException('Could not determine EiEntryGuiAssembler.');
 	}
 		
 	public function getEiPropPath(bool $required) {

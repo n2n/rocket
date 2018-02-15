@@ -77,7 +77,7 @@ class ContentItemEditable implements GuiFieldEditable {
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\manage\gui\GuiFieldEditable::createMag($propertyName)
 	 */
-	public function createMag(): Mag {
+	public function getMag(): Mag {
 		$this->contentItemMag = new ContentItemMag($this->label, $this->panelConfigs,
 				$this->targetReadEiFrame, $this->targetEditEiFrame);
 		$this->contentItemMag->setNewMappingFormUrl($this->newMappingFormUrl);

@@ -106,8 +106,6 @@ class EiGui {
 			$eiGuiListener->onNewEiEntryGui($eiEntryGui);
 		}
 		
-		$eiEntryGui->markInitialized();
-		
 		return $eiEntryGui;
 	}
 	

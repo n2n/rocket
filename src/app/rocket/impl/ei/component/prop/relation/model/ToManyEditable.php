@@ -94,7 +94,7 @@ class ToManyEditable implements GuiFieldEditable {
 	
 	private $toManyMag;
 	
-	public function createMag(): Mag {
+	public function getMag(): Mag {
 		$this->toManyMag = new ToManyMag($this->label, $this->targetReadEiFrame, $this->targetEditEiFrame, 
 				$this->min, $this->max);
 		$this->toManyMag->setReduced($this->reduced);

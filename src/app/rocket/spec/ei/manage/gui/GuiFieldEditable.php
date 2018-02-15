@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\manage\gui;
 
-use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 
 interface GuiFieldEditable extends Savable {
@@ -34,7 +33,6 @@ interface GuiFieldEditable extends Savable {
 	/**
 	 * @param string $propertyName
 	 * @return \n2n\web\dispatch\mag\Mag
-	 * @throws IllegalStateException if Method has already been called.
 	 */
-	public function createMag(): Mag;
+	public function getMag(): Mag;
 }
