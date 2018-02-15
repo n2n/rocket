@@ -228,7 +228,11 @@ class EiEntryGui {
 	public function getForkMagAssemblies() {
 		$forkMagAssemblies = array();
 		foreach ($this->guiFieldForkAssemblies as $guiFieldForkAssembly) {
-			array_push($forkMagAssemblies, ...$guiFieldForkAssembly->getMagAssemblies());
+			$magAssemblies = $guiFieldForkAssembly->getMagAssemblies();
+			
+			if (empty($magAssemblies)) continue;
+			
+			array_push($forkMagAssemblies, ...$magAssemblies);
 		}
 		return $forkMagAssemblies;
 	}
