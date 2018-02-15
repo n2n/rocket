@@ -31,13 +31,10 @@ interface GuiFieldFork {
 	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly; 
 	
 	/**
-	 * @return boolean
+	 * Gets called to finalize this GuiFieldFork. Which means that there will be no future calls of 
+	 * {@see self::assembleGuiField()} after that.
+	 * 
+	 * @return GuiFieldEditable|null
 	 */
-	public function isReadOnly(): bool;
-	
-	/**
-	 * @return GuiFieldEditable
-	 * @throws \n2n\util\ex\IllegalStateException if {@link GuiFieldFork::isReadOnly()} returns true
-	 */
-	public function getEditable(): GuiFieldForkEditable;
+	public function assembleGuiFieldFork(): ?GuiFieldForkEditable;
 }

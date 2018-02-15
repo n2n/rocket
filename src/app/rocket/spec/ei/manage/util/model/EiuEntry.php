@@ -118,38 +118,50 @@ class EiuEntry {
 	
 	public function newCustomEntryGui(\Closure $uiFactory, array $guiIdPaths, bool $bulky = true, 
 			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
-		$eiMask = null;
-		if ($determineEiMask) {
-			$eiMask = $this->determineEiMask();
-		} else {
-			$eiMask = $this->getEiFrame()->getContextEiMask();
-		}
+// 		$eiMask = null;
+// 		if ($determineEiMask) {
+// 			$eiMask = $this->determineEiMask();
+// 		} else {
+// 			$eiMask = $this->getEiFrame()->getContextEiMask();
+// 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $guiIdPaths);
 		return $eiuGui->appendNewEntryGui($this, $treeLevel);
 	}
 	
-	public function newEntryGuiAssembler($parentEiEntryGuiArg, bool $determineEiMask = true) {
-		$parentEiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($parentEiEntryGuiArg, 'parentEiEntryGuiArg');
-		
+	/**
+	 * @param int $viewMode
+	 * @param bool $determineEiMask
+	 * @return \rocket\spec\ei\manage\util\model\EiuEntryGuiAssembler
+	 */
+	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
 		$eiMask = null;
 		if ($determineEiMask) {
 			$eiMask = $this->determineEiMask();
 		} else {
 			$eiMask = $this->getEiFrame()->getContextEiMask();
 		}
-		$viewMode = $parentEiEntryGui->getEiGui()->getViewMode();
 		
 		$eiGui = new EiGui($this->getEiFrame(), $viewMode);
-		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry);
+		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
+		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
 		
+// 		if ($parentEiEntryGui->isInitialized()) {
+// 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// 		}
 		
+// 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
 		
-		return new EiuEntryGuiAssembler(new EiEntryGuiAssembler());
+		return new EiuEntryGuiAssembler($eiEntryGuiAssembler);
 	}
 	
-	private function deterViewMode($bulky, $editable) {
+	/**
+	 * @param bool $bulky
+	 * @param bool $editable
+	 * @return int
+	 */
+	public function deterViewMode(bool $bulky, bool $editable) {
 		if (!$editable) {
 			return $bulky ? ViewMode::BULKY_READ : ViewMode::COMPACT_READ;
 		} else if ($this->isNew()) {
@@ -500,3 +512,23 @@ class EiuEntry {
 		return GeneralIdUtils::generalIdOf($this->getEiObject());
 	}
 }  
+
+// class InitListener implements EiEntryGuiListener {
+// 	private $eiEntryGuiAssembler;
+	
+// 	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler) {
+// 		$this->eiEntryGuiAssembler = $eiEntryGuiAssembler;
+// 	}
+	
+// 	public function finalized(EiEntryGui $eiEntryGui) {
+// 		$eiEntryGui->unregisterEiEntryGuiListener($this);
+		
+// 		$this->eiEntryGuiAssembler->finalize();
+// 	}
+
+// 	public function onSave(EiEntryGui $eiEntryGui) {
+// 	}
+
+// 	public function saved(EiEntryGui $eiEntryGui) {
+// 	}
+// }

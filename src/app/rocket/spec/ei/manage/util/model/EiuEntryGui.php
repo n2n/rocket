@@ -65,7 +65,7 @@ class EiuEntryGui {
 	 * @return \rocket\spec\ei\manage\gui\GuiIdPath[]
 	 */
 	public function getGuiIdPaths() {
-		return $this->eiEntryGui->getGuiIdPaths();	
+		return $this->eiEntryGui->getGuiFieldGuiIdPaths();	
 	}
 	
 	/**
@@ -122,6 +122,13 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @return \n2n\web\dispatch\Dispatchable|null
+	 */
+	public function getDispatchable() {
+		return $this->eiEntryGui->getDispatchable();
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isReady() {
@@ -159,7 +166,12 @@ class EiuEntryGui {
 	 * @return boolean
 	 */
 	public function hasForkMags() {
-		return !empty($this->eiEntryGui->getForkMagPropertyPaths());
+		foreach ($this->eiEntryGui->getGuiFieldForkAssemblies() as $guiFieldForkAssembly) {
+			if (!empty($guiFieldForkAssembly->getMagAssemblies())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -169,9 +181,15 @@ class EiuEntryGui {
 	 * @return MagWrapper
 	 */
 	public function getMagWrapper($guiIdPath, bool $required = false) {
+		$magWrapper = null;
+		
 		try {
-			return $this->eiEntryGui->getMagAssemblyByGuiIdPath(
-					GuiIdPath::create($guiIdPath))->getMagWrapper();
+			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiIdPath::create($guiIdPath))->getMagAssembly();
+			if ($magAssembly !== null) {
+				return $magAssembly->getMagWrapper();
+			}
+			
+			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPathStr . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;
@@ -265,12 +283,23 @@ class EiuEntryGui {
 		return $this;
 	}
 	
+	public function getForkMagAssemblies() {
+		return $this->eiEntryGui->getForkMagAssemblies();
+	}
+	
 	/**
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
 	public function createView(HtmlView $contextView = null) {
 		return $this->eiEntryGui->getEiGui()->createView($contextView);
+	}
+	
+	/**
+	 * 
+	 */
+	public function save() {
+		$this->eiEntryGui->save();
 	}
 	
 // 	public function getEiMask() {
@@ -320,8 +349,12 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * @see \rocket\spec\ei\manage\gui\EiEntryGuiListener::finalized()
 	 */
 	public function finalized(EiEntryGui $eiEntryGui) {
-		if ($this->whenReadyClosure !== null) {
-			$this->call($this->whenReadyClosure);
+		if ($this->whenReadyClosure === null) return;
+		
+		$this->call($this->whenReadyClosure);
+		
+		if ($this->onSaveClosure === null || $this->savedClosure === null) {
+			$eiEntryGui->unregisterEiEntryGuiListener($this);
 		}
 	}
 

@@ -1,38 +1,27 @@
 <?php
 namespace rocket\spec\ei\manage\gui;
 
-use rocket\spec\ei\manage\mapping\EiFieldWrapper;
+use n2n\reflection\ArgUtils;
 
-class GuiFieldAssembly {
-	private $displayable;
-	private $eiFieldWrapper;
-	private $magAssembly;
+class GuiFieldForkAssembly {
+	private $magAssemblies;
 	private $savable;
 	
-	public function __construct(Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null,
-			MagAssembly $magAssembly = null, Savable $savable = null) {
-		$this->displayable = $displayable;
-		$this->eiFieldWrapper = $eiFieldWrapper;
-		$this->magAssembly = $magAssembly;
+	/**
+	 * @param MagAssembly[] $magAssemblies
+	 * @param Savable $savable
+	 */
+	public function __construct(array $magAssemblies, Savable $savable = null) {
+		ArgUtils::valArray($magAssemblies, MagAssembly::class);
+		$this->magAssemblies = $magAssemblies;
 		$this->savable = $savable;
 	}
 	
 	/**
-	 * @return Displayable
+	 * @return MagAssembly[]
 	 */
-	public function getDisplayable(): Displayable {
-		return $this->displayable;
-	}
-	
-	public function getEiFieldWrapper() {
-		return $this->eiFieldWrapper;
-	}
-	
-	/**
-	 * @return MagAssembly|null
-	 */
-	public function getMagAssembly() {
-		return $this->magAssembly;
+	public function getMagAssemblies() {
+		return $this->magAssemblies;
 	}
 	
 	/**

@@ -22,9 +22,10 @@
 namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\spec\ei\manage\gui\EiEntryGuiAssembler;
 
 class EiuEntryGuiAssembler {
-	private $eiuGui;
+	private $eiEntryGuiAssembler;
 	private $eiuEntryGui;
 	
 	public function __construct(...$eiArgs) {
@@ -55,5 +56,12 @@ class EiuEntryGuiAssembler {
 	 */
 	public function assembleGuiField($guiIdPath) {
 		return $this->eiEntryGuiAssembler->assembleGuiField(GuiIdPath::create($guiIdPath));
+	}
+	
+	/**
+	 * @see EiEntryGuiAssembler::finlize()
+	 */
+	public function finalize() {
+		$this->eiEntryGuiAssembler->finalize();
 	}
 }

@@ -26,9 +26,8 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationGuiField;
+use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
 use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
 use rocket\spec\ei\manage\mapping\impl\Readable;
@@ -182,7 +181,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		} else {
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
-		$targetUtils = new EiuFrame($targetEiFrame);
+		$targetEiuFrame = new EiuFrame($targetEiFrame);
 		
 		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		
@@ -193,16 +192,16 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
 			if (!$targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry = RelationEntry::fromM(
-						$targetUtils->createEiEntry($targetRelationEntry->getEiObject()));
+						$targetEiuFrame->createEiEntry($targetRelationEntry->getEiObject()));
 			}
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
 		
-		$targetGuiDefinition = $targetUtils->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
-		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition, 
+		$targetGuiDefinition = $targetEiuFrame->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
+		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nLocale()), $this->minNumTranslations);
 		if ($this->copyCommand !== null) {
-			$translationGuiField->setCopyUrl($targetUtils->getUrlToCommand($this->copyCommand)
+			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
 		}
 
@@ -214,19 +213,19 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			if (isset($targetRelationEntries[$n2nLocaleId])) {
 				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
 			} else {
-				$eiObject = $targetUtils->createNewEiObject();
+				$eiObject = $targetEiuFrame->createNewEiObject();
 				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetUtils->createEiEntry($eiObject));
+				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->createEiEntry($eiObject));
 			}
 			
 			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(), 
 					$targetRelationEntry->getEiEntry()->isNew());
-			$targetEiuGui = $targetUtils->newGui($viewMode);
-			$targetEiuEntryGui = $targetEiuGui->appendNewEntryGui($targetRelationEntry->getEiEntry());
+			$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
+					->newEntryGuiAssembler($eiu->gui()->getViewMode());
 			
 			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					new GuiFieldAssembler($targetGuiDefinition, $targetEiuEntryGui), 
-					$n2nLocaleDef->isMandatory(), isset($targetRelationEntries[$n2nLocaleId]));
+					$targetEiuEntryGuiAssembler, $n2nLocaleDef->isMandatory(), 
+					isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		
 		return $translationGuiField;

@@ -25,14 +25,13 @@ use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\gui\GuiFieldAssembler;
+use rocket\spec\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\spec\ei\manage\gui\EiEntryGui;
 use rocket\spec\ei\component\prop\GuiEiProp;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\manage\gui\GuiProp;
 use rocket\spec\ei\manage\util\model\EiuEntry;
-use rocket\spec\ei\manage\util\model\EiuEntryGui;
 use rocket\spec\ei\mask\EiMask;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\EiGui;
@@ -93,9 +92,8 @@ class GuiFactory {
 		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
-		$eiuEntryGui = new EiuEntryGui($eiEntryGui);
 		
-		$guiFieldAssembler = new GuiFieldAssembler($eiGui->getEiGuiViewFactory()->getGuiDefinition(), $eiuEntryGui);
+		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 		
 // 		test($eiEntry->getEiType()->getId());
 // 		if ($eiEntry->getEiType()->getId() == 'page-page-t') {
@@ -103,18 +101,16 @@ class GuiFactory {
 // 		}
 		
 		foreach ($guiIdPaths as $guiIdPath) {
-			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
-			if ($result === null) continue;
-			
-			$eiEntryGui->putDisplayable($guiIdPath, $result->getDisplayable(),
-					$result->getEiFieldWrapper(), $result->getMagAssembly());
+			$guiFieldAssembler->assembleGuiField($guiIdPath);
 		}
 		
-		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
-			$eiEntryGui->setDispatchable($guiFieldAssembler->getDispatchable());
-			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
-			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
-		}
+// 		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
+// 			$eiEntryGui->setDispatchable($guiFieldAssembler->getDispatchable());
+// 			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
+// 			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
+// 		}
+		
+		$guiFieldAssembler->finalize();
 				
 		return $eiEntryGui;
 	}

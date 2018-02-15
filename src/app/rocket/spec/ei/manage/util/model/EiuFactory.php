@@ -111,7 +111,7 @@ class EiuFactory {
 			if ($eiArg instanceof EiEntryGuiAssembler) {
 				$this->eiEntryGuiAssembler = $eiArg;
 				$this->eiEntryGui = $eiArg->getEiEntryGui();
-				$this->eiGui = $eiArg->getEiGui();
+				$this->eiGui = $this->eiEntryGui->getEiGui();
 				$this->assignEiFrameArg($this->eiGui->getEiFrame(), $key, $eiArg);
 				$eiArg = $this->eiEntryGui->getEiEntry();
 			}
