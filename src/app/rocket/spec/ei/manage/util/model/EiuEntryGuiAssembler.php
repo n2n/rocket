@@ -19,25 +19,41 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\manage\gui;
+namespace rocket\spec\ei\manage\util\model;
 
-interface GuiFieldFork {
+use rocket\spec\ei\manage\gui\GuiIdPath;
+
+class EiuEntryGuiAssembler {
+	private $eiuGui;
+	private $eiuEntryGui;
+	
+	public function __construct(...$eiArgs) {
+		$eiuFactory = new EiuFactory();
+		$eiuFactory->applyEiArgs(...$eiArgs);
+		
+		$this->eiEntryGuiAssembler = $eiuFactory->getEiEntryGuiAssembler(true);
+		$this->eiuEntryGui = $eiuFactory->getEiuEntryGui(true);
+	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
-	 * @param bool $makeEditable
-	 * @return GuiFieldAssembly
+	 * @return EiuEntryGui 
 	 */
-	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly; 
+	public function getEiuEntryGui() {
+		return $this->eiuEntryGui;
+	}
 	
 	/**
-	 * @return boolean
+	 * @return \rocket\spec\ei\manage\gui\EiEntryGuiAssembler
 	 */
-	public function isReadOnly(): bool;
+	public function getEiEntryGuiAssembler() {
+		return $this->eiEntryGuiAssembler;
+	}
 	
 	/**
-	 * @return GuiFieldEditable
-	 * @throws \n2n\util\ex\IllegalStateException if {@link GuiFieldFork::isReadOnly()} returns true
+	 * @param GuiIdPath|string $guiIdPath
+	 * @return \rocket\spec\ei\manage\gui\GuiFieldAssembly
 	 */
-	public function getEditable(): GuiFieldForkEditable;
+	public function assembleGuiField($guiIdPath) {
+		return $this->eiEntryGuiAssembler->assembleGuiField(GuiIdPath::create($guiIdPath));
+	}
 }

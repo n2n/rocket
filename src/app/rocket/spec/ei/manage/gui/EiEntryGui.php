@@ -146,7 +146,7 @@ class EiEntryGui {
 	public function getGuiIdPaths() {
 		$guiIdPaths = array();
 		foreach (array_keys($this->displayables) as $guiIdPathStr) {
-			$guiIdPaths[] = GuiIdPath::createFromExpression($guiIdPathStr);
+			$guiIdPaths[] = GuiIdPath::create($guiIdPathStr);
 		}
 		return $guiIdPaths;
 	}

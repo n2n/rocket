@@ -82,7 +82,7 @@ class EiuEntryGui {
 	 * @return string|null
 	 */
 	public function getFieldLabel($guiIdPath) {
-		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		$guiIdPath = GuiIdPath::create($guiIdPath);
 		
 		try {
 			return $this->eiEntryGui->getDisplayableByGuiIdPath($guiIdPath)->getUiOutputLabel();
@@ -171,7 +171,7 @@ class EiuEntryGui {
 	public function getMagWrapper($guiIdPath, bool $required = false) {
 		try {
 			return $this->eiEntryGui->getMagAssemblyByGuiIdPath(
-					GuiIdPath::createFromExpression($guiIdPath))->getMagWrapper();
+					GuiIdPath::create($guiIdPath))->getMagWrapper();
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;
@@ -187,7 +187,7 @@ class EiuEntryGui {
 	public function getEiFieldWrapper($guiIdPath, bool $required = false) {
 		try {
 			return $this->eiEntryGui->getEiFieldWrapperByGuiIdPath(
-					GuiIdPath::createFromExpression($guiIdPath));
+					GuiIdPath::create($guiIdPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

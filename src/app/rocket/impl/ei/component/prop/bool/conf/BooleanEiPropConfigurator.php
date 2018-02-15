@@ -86,7 +86,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 					TypeConstraint::createSimple('scalar'));
 			$onGuiIdPaths = array();
 			foreach ($onGuiIdPathStrs as $guiIdPathStr) {
-				$onGuiIdPaths[] = GuiIdPath::createFromExpression($guiIdPathStr);
+				$onGuiIdPaths[] = GuiIdPath::create($guiIdPathStr);
 			}
 			
 			$eiComponent->setOnAssociatedGuiIdPaths($onGuiIdPaths);
@@ -97,7 +97,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 					TypeConstraint::createSimple('scalar'));
 			$offGuiIdPaths = array();
 			foreach ($offGuiIdPathStrs as $guiIdPathStr) {
-				$offGuiIdPaths[] = GuiIdPath::createFromExpression($guiIdPathStr);
+				$offGuiIdPaths[] = GuiIdPath::create($guiIdPathStr);
 			}
 			
 			$eiComponent->setOffAssociatedGuiIdPaths($offGuiIdPaths);

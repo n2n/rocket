@@ -141,7 +141,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 			foreach ($guiIdPathMap as $value => $guiIdPathStrs) {
 				$guiIdPaths = array();
 				foreach ($guiIdPathStrs as $guiIdPathStr) {
-					$guiIdPaths[] = GuiIdPath::createFromExpression($guiIdPathStr);
+					$guiIdPaths[] = GuiIdPath::create($guiIdPathStr);
 				}
 				$guiIdPathMap[$value] = $guiIdPaths;
 			}

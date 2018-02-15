@@ -43,7 +43,7 @@
 	
 // 	public function getSimpleLabel($guiIdPath): UiComponent {
 // 		return $this->view->getHtmlBuilder()->getEsc($this->guiDefinition->getGuiPropByGuiIdPath(
-// 				GuiIdPath::createFromExpression($guiIdPath))->getDisplayLabel());
+// 				GuiIdPath::create($guiIdPath))->getDisplayLabel());
 // 	}
 	
 // 	public function generalEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {

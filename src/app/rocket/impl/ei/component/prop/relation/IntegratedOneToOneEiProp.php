@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\util\model\EiuFrame;
 use rocket\spec\ei\manage\gui\GuiPropFork;
 use rocket\spec\ei\manage\gui\GuiFieldFork;
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use rocket\spec\ei\manage\gui\AssembleResult;
+use rocket\spec\ei\manage\gui\GuiFieldAssembly;
 use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use rocket\spec\ei\EiPropPath;
 use rocket\spec\ei\manage\EiObject;
@@ -218,7 +218,7 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->targetGuiFieldAssembler = $targetGuiFieldAssembler;
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult {
+	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly {
 		return $this->targetGuiFieldAssembler->assembleGuiField($guiIdPath);
 	}
 	

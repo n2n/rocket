@@ -35,6 +35,8 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use rocket\spec\ei\manage\gui\GuiException;
 use rocket\spec\ei\manage\gui\ViewMode;
 use rocket\spec\ei\manage\gui\EiGui;
+use rocket\spec\ei\manage\gui\EiEntryGui;
+use rocket\spec\ei\manage\gui\EiEntryGuiAssembler;
 
 class EiuEntry {
 	private $eiObject;
@@ -126,6 +128,25 @@ class EiuEntry {
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $guiIdPaths);
 		return $eiuGui->appendNewEntryGui($this, $treeLevel);
+	}
+	
+	public function newEntryGuiAssembler($parentEiEntryGuiArg, bool $determineEiMask = true) {
+		$parentEiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($parentEiEntryGuiArg, 'parentEiEntryGuiArg');
+		
+		$eiMask = null;
+		if ($determineEiMask) {
+			$eiMask = $this->determineEiMask();
+		} else {
+			$eiMask = $this->getEiFrame()->getContextEiMask();
+		}
+		$viewMode = $parentEiEntryGui->getEiGui()->getViewMode();
+		
+		$eiGui = new EiGui($this->getEiFrame(), $viewMode);
+		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry);
+		
+		
+		
+		return new EiuEntryGuiAssembler(new EiEntryGuiAssembler());
 	}
 	
 	private function deterViewMode($bulky, $editable) {
@@ -420,7 +441,7 @@ class EiuEntry {
 	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getEiMask()->getEiEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::createFromExpression($guiIdPath));
+			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::create($guiIdPath));
 		} catch (MappingOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {

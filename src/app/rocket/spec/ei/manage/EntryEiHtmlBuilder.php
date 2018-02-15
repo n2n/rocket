@@ -150,7 +150,7 @@ class EntryEiHtmlBuilder {
 	
 	public function getOpenInputField($tagName, $guiIdPath, array $attrs = null) {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
-		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		$guiIdPath = GuiIdPath::create($guiIdPath);
 		
 		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
@@ -176,7 +176,7 @@ class EntryEiHtmlBuilder {
 	
 	public function getOpenOutputField($tagName, $guiIdPath, array $attrs = null) {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
-		$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+		$guiIdPath = GuiIdPath::create($guiIdPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiIdPath($guiIdPath);
 		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));

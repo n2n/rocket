@@ -95,7 +95,7 @@ class EiHtmlBuilder {
 			
 			$guiIdPath = $guiIdPath->getGuiIdPath();
 		} else {
-			$guiIdPath = GuiIdPath::createFromExpression($guiIdPath);
+			$guiIdPath = GuiIdPath::create($guiIdPath);
 		}
 		
 		return $this->html->getOut($eiGui->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel());
@@ -281,7 +281,7 @@ class EiHtmlBuilder {
 			$guiIdPath = $displayItem->getGuiIdPath();
 			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
 		} else {
-			$guiIdPath = GuiIdPath::createFromExpression($displayItem);
+			$guiIdPath = GuiIdPath::create($displayItem);
 			$displayItem = null;
 		}
 	

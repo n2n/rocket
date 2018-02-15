@@ -25,7 +25,7 @@ use rocket\spec\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\manage\gui\GuiDefinition;
 use rocket\spec\ei\manage\gui\Displayable;
-use rocket\spec\ei\manage\gui\AssembleResult;
+use rocket\spec\ei\manage\gui\GuiFieldAssembly;
 use rocket\spec\ei\manage\gui\GuiFieldAssembler;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
@@ -128,7 +128,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 		return $this->markClassKey = HtmlUtils::buildUniqueId();
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath): AssembleResult {
+	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly {
 		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
@@ -176,7 +176,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 		$eiFieldWrapperWrapper = new EiFieldWrapperWrapper($eiFieldWrappers);
 		
 		if ($translationMag === null) {
-			return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper);
+			return new GuiFieldAssembly($translationDisplayable, $eiFieldWrapperWrapper);
 		}
 		
 		$translationMag->setCopyUrls($this->buildCopyUrl($guiIdPath));
@@ -184,7 +184,7 @@ class TranslationGuiField implements GuiFieldFork, GuiFieldForkEditable {
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
-		return new AssembleResult($translationDisplayable, $eiFieldWrapperWrapper, 
+		return new GuiFieldAssembly($translationDisplayable, $eiFieldWrapperWrapper, 
 				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
 	}
 		
