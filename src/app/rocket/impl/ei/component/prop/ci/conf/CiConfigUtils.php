@@ -37,6 +37,7 @@ use n2n\util\config\AttributesException;
 use n2n\util\StringUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use rocket\impl\ei\component\prop\ci\model\GridPos;
 
 class CiConfigUtils {
 	const ATTR_PANEL_NAME_KEY = 'panelName';
@@ -165,9 +166,22 @@ class CiConfigUtils {
 		$allowedCiIds = $panelAttributes->getArray(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, false, null,
 				TypeConstraint::createSimple('string'), true);
 		
+		$gridPos = null;
+		$gridAttrs = $panelAttributes->getArray(self::ATTR_GRID_KEY, false, null);
+		if ($gridAttrs !== null) {
+			$gridAttributes = new Attributes($gridAttrs);
+			$gridPos = new GridPos(
+					$gridAttributes->getInt(self::ATTR_GRID_COL_START_KEY),
+					$gridAttributes->getInt(self::ATTR_GRID_COL_END_KEY, false, null, true),
+					$gridAttributes->getInt(self::ATTR_GRID_ROW_START_KEY),
+					$gridAttributes->getInt(self::ATTR_GRID_ROW_END_KEY, false, null, true));
+		}
+		
+		
 		return new PanelConfig($panelName, $panelLabel,
 				empty($allowedCiIds) ? null : $allowedCiIds,
 				$panelAttributes->getInt(self::ATTR_MIN_KEY, false, 0, true),
-				$panelAttributes->getInt(self::ATTR_MAX_KEY, false, null, true));
+				$panelAttributes->getInt(self::ATTR_MAX_KEY, false, null, true),
+				$gridPos);
 	}
 }

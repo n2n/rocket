@@ -137,7 +137,7 @@ class ContentItemGuiField implements GuiField {
 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\contentItems.html',
-				array('panelConfigs' => $this->panelConfigs, 'groupedUiComponents' => $groupedUiComponents));
+				array('panelLayout' => new PanelLayout($this->panelConfigs), 'groupedUiComponents' => $groupedUiComponents));
 	}
 	
 	public function createCompactOutputUiComponent(HtmlView $view) {

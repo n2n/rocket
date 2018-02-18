@@ -185,7 +185,7 @@ class ContentItemMag extends MagAdapter {
 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\contentItemsForm.html',
-				array('panelConfigs' => $this->panelConfigs, 'propertyPath' => $propertyPath,
+				array('panelLayout' => new PanelLayout($this->panelConfigs), 'propertyPath' => $propertyPath,
 						'ciEiTypeLabels' => $ciEiTypeLabels));
 	}
 }
