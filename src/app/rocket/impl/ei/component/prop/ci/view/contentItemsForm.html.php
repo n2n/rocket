@@ -23,13 +23,14 @@
 	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\impl\ei\component\prop\ci\model\PanelConfig;
+	use rocket\impl\ei\component\prop\ci\model\PanelLayout;
 
 	$view = HtmlView::view($view);
 	$html = HtmlView::html($view);
 	$formHtml = HtmlView::formHtml($view);
 	
-	$panelConfigs = $view->getParam('panelConfigs');
-	$view->assert(is_array($panelConfigs));
+	$panelLayout = $view->getParam('panelLayout');
+	$view->assert($panelLayout instanceof PanelLayout);
 
 	$propertyPath = $view->getParam('propertyPath');
 	$view->assert($propertyPath instanceof PropertyPath);
@@ -38,11 +39,15 @@
 	$view->assert(is_array($ciEiTypeLabels));
 ?>
 
-<div class="rocket-impl-content-items">
-	<?php foreach ($panelConfigs as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
+<div class="rocket-impl-content-items"<?php $view->out($panelLayout->hasGrid() ? ' style="display:grid" class="rocket-impl-grid"' : null) ?>>
+	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
+		<?php $gridPos = $panelConfig->getGridPos() ?>
+	
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
 				array('class' => 'rocket-impl-content-item-panel rocket-group rocket-light-group',
-						'data-name' => $panelConfig->getName())) ?>
+						'data-name' => $panelConfig->getName(),
+						'style' => ($gridPos === null ? null : 'grid-column-start: ' . $gridPos->getColStart() . '; grid-column-end: ' . $gridPos->getColEnd() 
+								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd()))) ?>
 			<?php $formHtml->magLabel() ?>
 			<div class="rocket-control">
 				<?php $formHtml->magField() ?>

@@ -82,7 +82,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 // 		throw new IllegalStateException('Undefined ContentItem EiType.');
 // 	}
 	
-	public function hasPanelConfigs(): bool {
+	public function hasPanelConfigs() {
 		return !empty($this->getPanelConfigs());
 	}
 	
@@ -90,6 +90,9 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		return $this->panelConfigs;
 	}
 	
+	/**
+	 * @param PanelConfig[] $panelConfigs
+	 */
 	public function setPanelConfigs(array $panelConfigs) {
 		ArgUtils::valArray($panelConfigs, PanelConfig::class);
 		$this->panelConfigs = $panelConfigs;

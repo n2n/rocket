@@ -21,30 +21,32 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
+	use rocket\impl\ei\component\prop\ci\model\PanelLayout;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$panelConfigs = $view->getParam('panelConfigs');
-	$view->assert(is_array($panelConfigs));
+	$panelLayout = $view->getParam('panelLayout');
+	$view->assert($panelLayout instanceof PanelLayout);
 
 	$groupedUiComponents = $view->getParam('groupedUiComponents');
 	$view->assert(is_array($groupedUiComponents));
 ?>
-<div>
-	<?php foreach ($panelConfigs as $panelConfig): ?>
+<div<?php $view->out($panelLayout->hasGrid() ? ' style="display:grid" class="rocket-impl-grid"' : null) ?>>
+	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): ?>
+		<?php $gridPos = $panelConfig->getGridPos() ?>
+		
 		<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
-		<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
-			<div>
+		<div<?php $view->out($gridPos === null ? null : ' style="grid-column-start: ' . $gridPos->getColStart() . '; grid-column-end: ' . $gridPos->getColEnd() 
+								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd()) . '"' ?>>
+			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
 				<?php $html->text('common_empty_label') ?>
-			</div>
-		<?php else: ?>
-			<ul>
+			<?php else: ?>
 				<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
 					<?php $view->out($uiComponent) ?>
 				<?php endforeach ?>
-			</ul>
-		<?php endif ?>
+			<?php endif ?>
+		</div>
 	<?php endforeach ?>
 </div>

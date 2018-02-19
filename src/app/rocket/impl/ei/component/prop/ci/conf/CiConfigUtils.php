@@ -35,6 +35,9 @@ use n2n\reflection\property\TypeConstraint;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
 use n2n\util\config\AttributesException;
 use n2n\util\StringUtils;
+use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
+use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use rocket\impl\ei\component\prop\ci\model\GridPos;
 
 class CiConfigUtils {
 	const ATTR_PANEL_NAME_KEY = 'panelName';
@@ -42,6 +45,12 @@ class CiConfigUtils {
 	const ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY = 'allowedContentItemIds';
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
+	const ATTR_GRID_ENABLED_KEY = 'gridEnabled';
+	const ATTR_GRID_KEY = 'grid';
+	const ATTR_GRID_COL_START_KEY = 'colStart';
+	const ATTR_GRID_COL_END_KEY = 'colEnd';
+	const ATTR_GRID_ROW_START_KEY = 'rowStart';
+	const ATTR_GRID_ROW_END_KEY = 'rowEnd';
 	
 	private $ciEiType;
 	private $allowedContentItemOptions;
@@ -79,21 +88,45 @@ class CiConfigUtils {
 		$magCollection->addMag(self::ATTR_PANEL_LABEL_KEY, new StringMag('Label', null, false));
 		$magCollection->addMag(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, 
 				new MultiSelectMag('Allowed ContentItems', $this->getAllowedContentItemOptions()));
-		$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', 0));
+		$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', 0, true));
 		$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max'));
+		
+		$magCollection->addMag(self::ATTR_GRID_ENABLED_KEY, $gridEnabledMag = new EnablerMag('Use grid'));
+		
+		$gridMagCollection = new MagCollection();
+		$gridEnabledMag->setAssociatedMagWrappers(array(
+				$gridMagCollection->addMag(self::ATTR_GRID_COL_START_KEY, new NumericMag('Col start', 1, true, 1)),
+				$gridMagCollection->addMag(self::ATTR_GRID_COL_END_KEY, (new NumericMag('Col end'))->setMin(1)),
+				$gridMagCollection->addMag(self::ATTR_GRID_ROW_START_KEY, new NumericMag('Row start', 1, true)),
+				$gridMagCollection->addMag(self::ATTR_GRID_ROW_END_KEY, (new NumericMag('Row end'))->setMin(1))));
+		$magCollection->addMag(self::ATTR_GRID_KEY, new MagCollectionMag('Grid position', $gridMagCollection));
+		
 		return $magCollection;
 	}
 	
 	public function buildPanelConfigMagCollectionValues(array $panelConfigAttrs) {
 		$lar = new LenientAttributeReader(new Attributes($panelConfigAttrs));
-		return array(
+		$values = array(
 				self::ATTR_PANEL_NAME_KEY => $lar->getString(self::ATTR_PANEL_NAME_KEY),
 				self::ATTR_PANEL_LABEL_KEY => $lar->getString(self::ATTR_PANEL_LABEL_KEY),
 				self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY => $lar->getArray(
 						self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, null,
 						TypeConstraint::createSimple('string'), true),
-				self::ATTR_MIN_KEY => $lar->getInt(self::ATTR_MIN_KEY, false, 0),
-				self::ATTR_MAX_KEY => $lar->getInt(self::ATTR_MAX_KEY, false));
+				self::ATTR_MIN_KEY => $lar->getInt(self::ATTR_MIN_KEY, 0),
+				self::ATTR_MAX_KEY => $lar->getInt(self::ATTR_MAX_KEY));
+		
+		$gridAttrs = $lar->getArray(self::ATTR_GRID_KEY);
+		$values[self::ATTR_GRID_ENABLED_KEY] = !empty($gridAttrs);
+		
+		$gridLar = new LenientAttributeReader(new Attributes($gridAttrs));
+		
+		$values[self::ATTR_GRID_KEY] = array(
+				self::ATTR_GRID_COL_START_KEY => $gridLar->getInt(self::ATTR_GRID_COL_START_KEY),
+				self::ATTR_GRID_COL_END_KEY => $gridLar->getInt(self::ATTR_GRID_COL_END_KEY),
+				self::ATTR_GRID_ROW_START_KEY => $gridLar->getInt(self::ATTR_GRID_ROW_START_KEY),
+				self::ATTR_GRID_ROW_END_KEY => $gridLar->getInt(self::ATTR_GRID_ROW_END_KEY));
+		
+		return $values;
 	}
 	
 	public static function buildPanelConfigAttrs(array $panelConfigMagCollectionValues) {
@@ -104,6 +137,11 @@ class CiConfigUtils {
 		if (!isset($panelConfigMagCollectionValues[self::ATTR_MAX_KEY])) {
 			unset($panelConfigMagCollectionValues[self::ATTR_MAX_KEY]);
 		}
+		
+		if (!$panelConfigMagCollectionValues[self::ATTR_GRID_ENABLED_KEY]) {
+			unset($panelConfigMagCollectionValues[self::ATTR_GRID_KEY]);
+		}
+		unset($panelConfigMagCollectionValues[self::ATTR_GRID_ENABLED_KEY]);
 		
 		return $panelConfigMagCollectionValues;
 	}
@@ -128,9 +166,22 @@ class CiConfigUtils {
 		$allowedCiIds = $panelAttributes->getArray(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, false, null,
 				TypeConstraint::createSimple('string'), true);
 		
+		$gridPos = null;
+		$gridAttrs = $panelAttributes->getArray(self::ATTR_GRID_KEY, false, null);
+		if ($gridAttrs !== null) {
+			$gridAttributes = new Attributes($gridAttrs);
+			$gridPos = new GridPos(
+					$gridAttributes->getInt(self::ATTR_GRID_COL_START_KEY),
+					$gridAttributes->getInt(self::ATTR_GRID_COL_END_KEY, false, null, true),
+					$gridAttributes->getInt(self::ATTR_GRID_ROW_START_KEY),
+					$gridAttributes->getInt(self::ATTR_GRID_ROW_END_KEY, false, null, true));
+		}
+		
+		
 		return new PanelConfig($panelName, $panelLabel,
 				empty($allowedCiIds) ? null : $allowedCiIds,
-				$panelAttributes->getInt(self::ATTR_MIN_KEY, false, 0),
-				$panelAttributes->getInt(self::ATTR_MAX_KEY, false, null, true));
+				$panelAttributes->getInt(self::ATTR_MIN_KEY, false, 0, true),
+				$panelAttributes->getInt(self::ATTR_MAX_KEY, false, null, true),
+				$gridPos);
 	}
 }

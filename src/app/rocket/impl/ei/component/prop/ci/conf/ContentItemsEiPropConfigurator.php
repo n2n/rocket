@@ -28,7 +28,6 @@ use n2n\core\container\N2nContext;
 use n2n\reflection\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\config\UnknownSpecException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
@@ -66,15 +65,19 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		$magCollection->addMag(self::ATTR_PANELS_KEY, $panelConfigMag);
 		
 		$lar = new LenientAttributeReader($this->attributes);
-		if ($lar->contains(self::ATTR_PANELS_KEY)) {
-			$magValue = $lar->getArray(self::ATTR_PANELS_KEY, array(), TypeConstraint::createArrayLike('array', 
-					false, TypeConstraint::createSimple('scalar')));
+// 		if ($lar->contains(self::ATTR_PANELS_KEY)) {
+// 			$magValue = $lar->getArray(self::ATTR_PANELS_KEY, array(), TypeConstraint::createArrayLike('array',
+// 					false, TypeConstraint::createSimple('scalar')));
 			
-			if (!empty($magValue)) {
-				$panelConfigMag->setValue($magValue);
-				return $magDispatchable;
-			}
-		}
+// 			foreach ($magValue as $magValueField) {
+// 				$magValueField[CiConfigUtils::ATTR_GRID_ENABLED_KEY] = isset($magValueField[CiConfigUtils::ATTR_GRID_KEY]);
+// 			}
+			
+// 			if (!empty($magValue)) {
+// 				$panelConfigMag->setValue($magValue);
+// 				return $magDispatchable;
+// 			}
+// 		}
 		
 		$magValue = array();
 		foreach ($lar->getArray(self::ATTR_PANELS_KEY) as $panelAttrs) {
