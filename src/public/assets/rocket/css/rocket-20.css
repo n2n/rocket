@@ -4252,26 +4252,30 @@ body {
   margin: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field,
+.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
   padding: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-impl-locale-label {
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-impl-locale-label,
+.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-impl-locale-label {
   display: block;
   position: static;
   width: 100%;
   float: none;
   text-align: left;
   padding: 0.5rem 0;
-  color: #373431;
+  color: #ed8207;
   border-bottom: 1px solid #DAD7D3;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control,
+.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
   margin: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control,
+.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   position: absolute;
   top: 0;
   right: 0;
@@ -4784,7 +4788,8 @@ ul.rocket-content-item > li > span {
   display: inline-block;
 }
 
-.rocket-group {
+.rocket-group,
+.rocket-panel {
   background: #fff;
   position: relative;
   margin-bottom: 1.5rem;
@@ -4792,7 +4797,8 @@ ul.rocket-content-item > li > span {
   border-bottom: 1px solid #DAD7D3;
 }
 
-.rocket-group > label {
+.rocket-group > label,
+.rocket-panel > label {
   width: 100%;
   padding: 0.5rem 1rem;
   margin: 0;
@@ -4802,21 +4808,28 @@ ul.rocket-content-item > li > span {
   float: none;
 }
 
-.rocket-group > .rocket-control {
-  padding: 0 1rem;
+.rocket-group > .rocket-control,
+.rocket-panel > .rocket-control {
   margin: 0 !important;
 }
 
-.rocket-group .rocket-group-toolbar {
+.rocket-group .rocket-group-toolbar,
+.rocket-panel .rocket-group-toolbar {
   position: absolute;
   top: 0.5rem;
   right: 1rem;
 }
 
 .rocket-group .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group .rocket-group-toolbar > .rocket-simple-commands {
+.rocket-group .rocket-group-toolbar > .rocket-simple-commands,
+.rocket-panel .rocket-group-toolbar > .rocket-group-controls,
+.rocket-panel .rocket-group-toolbar > .rocket-simple-commands {
   display: inline-block;
   margin-left: 1rem;
+}
+
+.rocket-group > .rocket-control {
+  padding: 0 1rem;
 }
 
 .rocket-group .rocket-simple-group,

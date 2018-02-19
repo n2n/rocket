@@ -1,4 +1,5 @@
-.rocket-group {
+.rocket-group,
+.rocket-panel {
     background: $white;
     position: relative;
     margin-bottom: 1.5rem;
@@ -15,7 +16,6 @@
         float: none;
     }
     > .rocket-control {
-        padding: 0 1rem;
         margin: 0 !important;
     }
     .rocket-group-toolbar {
@@ -27,6 +27,12 @@
             display: inline-block;
             margin-left: 1rem;
         }
+    }
+}
+
+.rocket-group {
+    > .rocket-control {
+        padding: 0 1rem;
     }
 }
 
