@@ -160,9 +160,9 @@ class GridPos {
 	 */
 	public function __construct(int $colStart, ?int $colEnd, int $rowStart, ?int $rowEnd) {
 		$this->colStart = $colStart;
-		$this->colEnd = $colEnd ?? $colStart;
+		$this->colEnd = $colEnd ?? $colStart + 1;
 		$this->rowStart = $rowStart;
-		$this->rowEnd = $rowEnd ?? $rowStart;
+		$this->rowEnd = $rowEnd ?? $rowStart + 1;
 		
 		if ($this->colStart < 1) {
 			$this->colStart = 1;
@@ -172,12 +172,12 @@ class GridPos {
 			$this->rowStart = 1;
 		}
 		
-		if ($this->colStart > $this->colEnd) {
-			$this->colEnd = $this->colStart;
+		if ($this->colStart >= $this->colEnd) {
+			$this->colEnd = $this->colStart + 1;
 		}
 		
 		if ($this->rowStart > $this->rowEnd) {
-			$this->rowEnd = $this->rowStart;
+			$this->rowEnd = $this->rowStart + 1;
 		}
 	}
 	
