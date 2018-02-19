@@ -12,11 +12,6 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class RocketUiOutfitter implements UiOutfitter {
-
-	public function __construct() {
-
-	}
-
 	/**
 	 * @param string $nature
 	 * @return array
