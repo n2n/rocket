@@ -21,6 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke\model;
 
+use n2n\reflection\ArgUtils;
+
 class CkeStyle {
 	private $name;
 	private $element;
@@ -30,8 +32,8 @@ class CkeStyle {
 	public function __construct($name, $element, array $attrs = null, array $styles = null) {
 		$this->name = $name;
 		$this->element = strval($element);
-		$this->attrs = $attrs;
-		$this->styles = $styles;
+		$this->attrs = ArgUtils::toArray($attrs);
+		$this->styles = ArgUtils::toArray($styles);
 	}
 	
 	public function getName() {
@@ -51,7 +53,7 @@ class CkeStyle {
 	}
 
 	public function getAttrs() {
-		return (array) $this->attrs;
+		return $this->attrs;
 	}
 
 	public function setAttrs(array $attrs) {
@@ -59,7 +61,7 @@ class CkeStyle {
 	}
 
 	public function getStyles() {
-		return (array) $this->styles;
+		return $this->styles;
 	}
 
 	public function setStyles(array $styles) {
@@ -68,12 +70,15 @@ class CkeStyle {
 	
 	public function getValueForJsonEncode() {
 		$ret = array('name' => $this->name, 'element' => $this->element);
-		if (null != $this->attrs) {
+		
+		if (!empty($this->attrs)) {
 			$ret['attributes'] = $this->attrs;
 		}
-		if (null != $this->styles) {
+		
+		if (!empty($this->styles)) {
 			$ret['styles'] = $this->styles;
 		}
+		
 		return $ret;
 	}
 }
