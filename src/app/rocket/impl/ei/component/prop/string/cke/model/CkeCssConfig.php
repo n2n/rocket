@@ -23,20 +23,39 @@ namespace rocket\impl\ei\component\prop\string\cke\model;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\context\Lookupable;
+use n2n\util\uri\Url;
 
 interface CkeCssConfig extends Lookupable {
-	public function getContentCssUrls(HtmlView $view);
-	public function getBodyId();
-	public function getBodyClass();
+	
+	/**
+	 * Urls to css files which get added in the head section of the wysiwyg iframe
+	 * @param HtmlView $view
+	 * @return Url []
+	 */
+	public function getContentCssUrls(HtmlView $view): ?array;
+	
+	/**
+	 * Id for the wysiwig iframe body
+	 * @return string|NULL
+	 */
+	public function getBodyId(): ?string;
+	
+	/**
+	 * Additional class name for the wysiwig iframe body
+	 * @return string|NULL
+	 */
+	public function getBodyClass(): ?string;
+	
 	/**
 	 * @return rocket\impl\ei\component\prop\string\cke\model\CkeStyleCkeStyle[]
 	 */
-	public function getAdditionalStyles();
+	public function getAdditionalStyles(): ?array;
+	
 	/**
 	 * returns an array of the format tags possible tags are 
 	 * ("p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "address")
 	 * 
-	 * @return array
+	 * @return array<string>
 	 */
-	public function getFormatTags();
+	public function getFormatTags(): ?array;
 }

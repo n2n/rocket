@@ -45,13 +45,15 @@ class CkeHtmlBuilder {
 		$this->html = $view->getHtmlBuilder();
 	}
 
-	public function out(string $contentsHtml, N2nLocale $n2nLocale = null) {
+	public function out(string $contentsHtml = null, N2nLocale $n2nLocale = null) {
 		return $this->view->out($this->getOut($contentsHtml, $n2nLocale));
 	}
 
-	public function getOut(string $contentsHtml, N2nLocale $n2nLocale = null) {
-		$that = $this;
+	public function getOut(string $contentsHtml = null, N2nLocale $n2nLocale = null) {
+		if (empty($contentsHtml)) return (string) $contentsHtml;
+		
 		$n2nLocale = $n2nLocale ?? $this->view->getN2nLocale();
+		$that = $this;
 
 		return new Raw(preg_replace_callback('/(href\s*=\s*")?\s*(ckelink:\?provider=[^"<]+&amp;key=[^"<]+)(")?/',
 				function($matches) use ($that, $n2nLocale) {
@@ -95,70 +97,88 @@ class CkeHtmlBuilder {
 			array $linkProviders = array()) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
-		$ckeConfig = null;
-		if ($ckeComposer !== null) {
-			$ckeConfig = $ckeComposer->toCkeConfig();
-		} else {
-			$ckeConfig = CkeConfig::createDefault();
-		}
-
-		$attrs = array('mode' => $ckeConfig->getMode(),
-				'tableEditing' => $ckeConfig->isTablesEnabled(),
-				'bbcode' => $ckeConfig->isBbcodeEnabled(),
-				'additionalStyles' => null,
-				'bodyClass' => null,
-				'bodyId' => null,
-				'contentsCss' => null);
-
-		if ($ckeCssConfig !== null) {
-			$attrs['bodyId'] = $ckeCssConfig->getBodyId();
-			$attrs['bodyClass'] = $ckeCssConfig->getBodyClass();
-			$attrs['contentsCss'] = $this->getCssPaths($ckeCssConfig);
-			
-			$ckeStyles = $ckeCssConfig->getAdditionalStyles();
-			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getAdditionalStyles', CkeStyle::class);
-			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeStyles);
-			
-			$attrs['formatTags'] = implode(';', (array) $ckeCssConfig->getFormatTags());
-		}
 
 		$attrs = array('class' => 'rocket-impl-cke-classic', 'data-rocket-impl-toolbar' => json_encode($attrs),
 				'data-link-configurations' => json_encode($this->buildLinkConfigData($linkProviders)));
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyPath, $attrs);
 	}
+	
+	private function buildAttrs(CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null) {
+		$ckeConfig = ($ckeComposer !== null) ? $ckeComposer->toCkeConfig() : $ckeConfig = CkeConfig::createDefault();
+		
+		$attrs = array('mode' => $ckeConfig->getMode(),
+				'tableEditing' => $ckeConfig->isTablesEnabled(),
+				'bbcode' => $ckeConfig->isBbcodeEnabled());
+		if ($ckeCssConfig == null) return $attrs;
 
-	public function getIframe(string $contentsHtml, CkeCssConfig $ckeCssConfig = null, array $linkProviders = null) {
+		if (!empty($bodyId = $ckeCssConfig->getBodyId())) {
+			$attrs['bodyId'] = $bodyId;
+		}
+
+		if (!empty($bodyClass = $ckeCssConfig->getBodyClass())) {
+			$attrs['bodyClass'] = $bodyClass;
+		}
+		
+		$contentCssUrls = $this->getContentCssUrls($ckeCssConfig);
+		if (!empty($contentCssUrls)) {
+			$attrs['contentsCss'] = $contentCssUrls;
+		}
+			
+		$ckeStyles = $ckeCssConfig->getAdditionalStyles();
+		if (!empty($ckeStyles)) {
+			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getAdditionalStyles', CkeStyle::class);
+			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeStyles);
+		}
+			
+		$formatTags = $ckeCssConfig->getFormatTags();
+		if (!empty($formatTags)) {
+			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getFormatTags', 'string');
+			$attrs['formatTags'] = implode(';', $formatTags);
+		}
+		
+		return $attrs;
+	}
+
+	public function getIframe(string $contentsHtml = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders = null) {
 		$this->linkProviders = $linkProviders;
+		
 		$headLinkHtml = '';
 		$bodyIdHtml = '';
 		$bodyClassHtml = '';
 		
-		if ($ckeCssConfig) {
-			$headLinkHtml = str_replace('"', '\'',
-					StringUtils::jsonEncode((array) $this->getCssPaths($ckeCssConfig)));
-			$bodyIdHtml = ($bodyId = $ckeCssConfig->getBodyId()) ?  'data-body-id="' . $bodyId . '"' : '';
-			$bodyClassHtml = ($bodyClass = $ckeCssConfig->getBodyClass()) ? ' ' . 'data-body-class="'
-					. $bodyClass . '"' : '';
+		if (null !== $ckeCssConfig) {
+			$contentCssUrls = $this->getContentCssUrls($ckeCssConfig);
+			if (!empty($contentCssUrls)) {
+				$headLinkHtml = str_replace('"', '\'', StringUtils::jsonEncode($this->getContentCssUrls($ckeCssConfig)));
+			}
+			
+			$bodyId = $ckeCssConfig->getBodyId();
+			if (!empty($bodyId)) {
+				$bodyIdHtml = 'data-body-id="' . $bodyId . '"';
+			}
+			
+			$bodyClass = $ckeCssConfig->getBodyClass();
+			if (!empty($bodyClass)) {
+				$bodyClassHtml = 'data-body-class="' . $bodyClass . '"';
+			}
 		}
 
 		$contentsHtml = htmlspecialchars(str_replace('"', "'", $this->getOut($contentsHtml, $this->view->getN2nLocale())));
 		$this->html->meta()->addJs('impl/js/cke.js', 'rocket', true);
-		return new Raw('<iframe scrolling="auto" ' . $bodyIdHtml
-			. ' class="rocket-cke-detail" ' . $bodyClassHtml
-			. 'data-contents-css="' . $headLinkHtml . '" data-content-html-json="'
-			. $contentsHtml . '"></iframe>');
+		
+		return new Raw('<iframe scrolling="auto" ' . $bodyIdHtml . ' class="rocket-cke-detail" ' . $bodyClassHtml
+				. 'data-contents-css="' . $headLinkHtml . '" data-content-html-json="' . $contentsHtml . '"></iframe>');
 	}
+	
+	private function getContentCssUrls(CkeCssConfig $ckeCssConfig) {
+		$contentCssUrls = $ckeCssConfig->getContentCssUrls($this->view);
+		if (empty($contentCssUrls)) return [];
+		
+		ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
 
-	private function getCssPaths(CkeCssConfig $cssConfig) {
-		if (empty($cssPaths = $cssConfig->getContentCssUrls($this->view))) {
-			return array();
-		}
-
-		$tmpCssPaths = array();
-		foreach ($cssPaths as $cssPath) {
-			$tmpCssPaths[] = (string) $cssPath;
-		}
-		return $tmpCssPaths;
+		return array_map(function(Url $contentCssUrl) {
+			return (string) $contentCssUrl;
+		}, $contentCssUrls);
 	}
 
 	private function buildLinkConfigData(array $ckeLinkProviders, N2nLocale $linkN2nLocale = null) {
@@ -189,9 +209,11 @@ class CkeHtmlBuilder {
 		}
 	}
 
-	private function prepareAdditionalStyles($additionalStyles) {
+	private function prepareAdditionalStyles(array $additionalStyles = null) {
+		if (empty($additionalStyles)) return [];
+		
 		$encodable = array();
-		foreach ((array) $additionalStyles as $style) {
+		foreach ($additionalStyles as $style) {
 			CastUtils::assertTrue($style instanceof CkeStyle);
 			$encodable[] = $style->getValueForJsonEncode();
 		}
