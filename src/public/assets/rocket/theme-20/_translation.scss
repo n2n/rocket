@@ -160,27 +160,33 @@
 
 // translation in entry: group
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation  {
-	> .rocket-field {
-		padding: 0;
-		> .rocket-impl-locale-label  {
-			display: block;
-			position: static;
-			width: 100%;
-			float: none;
-			text-align: left;
-			padding: 0.5rem 0;
-			color: $body-color;
-			border-bottom: 1px solid $table-border-color;
+.rocket-group,
+.rocket-panel {
+	> .rocket-control > .rocket-impl-translatable > .rocket-impl-translation   {
+		> .rocket-field {
+			padding: 0;
+			> .rocket-impl-locale-label  {
+				display: block;
+				position: static;
+				width: 100%;
+				float: none;
+				text-align: left;
+				padding: 0.5rem 0;
+				color: $primary;
+				border-bottom: 1px solid $table-border-color;
+				&::after {
+					
+				}
+			}
+			> .rocket-control {
+				margin: 0;
+			}
 		}
-		> .rocket-control {
-			margin: 0;
+		> .rocket-impl-translation-copy-control {
+			position: absolute;
+			top: 0;
+			right: 0;
 		}
-	}
-	> .rocket-impl-translation-copy-control {
-		position: absolute;
-		top: 0;
-		right: 0;
 	}
 }
 
