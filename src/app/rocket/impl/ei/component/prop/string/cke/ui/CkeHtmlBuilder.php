@@ -207,7 +207,7 @@ class CkeHtmlBuilder {
 		
 		$formatTags = $ckeCssConfig->getFormatTags();
 		if (!empty($formatTags)) {
-			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getFormatTags', 'string');
+			ArgUtils::valArrayReturn($formatTags, $ckeCssConfig, 'getFormatTags', 'string');
 			$attrs['formatTags'] = implode(';', $formatTags);
 		}
 		
