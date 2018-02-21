@@ -29,6 +29,8 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
+use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
 
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';
@@ -52,6 +54,17 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 			$this->attributes->set(self::OPTION_MULTILINE_KEY, true);
 		}
 	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator::testCompatibility()
+	 */
+	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+		$this->setMaxCompatibilityLevel(CompatibilityLevel::SUITABLE);
+		return parent::testCompatibility($propertyAssignation);
+	}
+	
 	
 	/**
 	 * {@inheritDoc}
