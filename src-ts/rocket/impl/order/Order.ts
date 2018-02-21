@@ -2,7 +2,7 @@ namespace Rocket.Impl.Order {
 
 	export class Control {
 		private entry: Display.Entry;
-		private collection: Display.Collection;
+		private collection: Display.Collection|null;
 		
 		constructor(private elemJq: JQuery, private insertMode: InsertMode, private moveState: MoveState,
 				private otherElemJq: JQuery) {
@@ -174,8 +174,13 @@ namespace Rocket.Impl.Order {
 		BEFORE, AFTER, CHILD
 	}
 	
+	interface MaveStateItem {
+		entry: Display.Entry; 
+		treeDecendantsEntries: Display.Entry[];
+	}
+	
 	export class MoveState {
-		private treeMoveStates: Array<{ entry: Display.Entry, treeDecendantsEntries: Display.Entry[] }> = [];
+		private treeMoveStates: Array<MaveStateItem> = [];
 		private _executing = false;
 		
 		set executing(executing: boolean) {
@@ -210,7 +215,7 @@ namespace Rocket.Impl.Order {
 		}
 		
 		retrieveTreeDecendants(entry: Display.Entry): Display.Entry[] {
-			let moveState = this.treeMoveStates.find((moveState) => {
+			let moveState = this.treeMoveStates.find((moveState: MaveStateItem) => {
 				return moveState.entry === entry;
 			});
 			
