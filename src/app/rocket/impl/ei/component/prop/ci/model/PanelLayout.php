@@ -52,6 +52,14 @@ class PanelLayout {
 		return $this->numGridCols > 0 || $this->numGridRows > 0;
 	}
 	
+	public function getNumGridCols() {
+		return $this->numGridCols;
+	}
+	
+	public function getNumGridRows() {
+		return $this->numGridCols;
+	}
+	
 	/**
 	 * @return PanelConfig[]
 	 */

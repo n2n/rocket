@@ -39,7 +39,7 @@
 	$view->assert(is_array($ciEiTypeLabels));
 ?>
 
-<div class="rocket-impl-content-items"<?php $view->out($panelLayout->hasGrid() ? ' style="display:grid" class="rocket-impl-grid"' : null) ?>>
+<div class="rocket-impl-content-items"<?php $view->out($panelLayout->hasGrid() ? ' style="display:grid; grid-template-columns: repeat(' . ($panelLayout->getNumGridCols() - 1). ', 1fr)" class="rocket-impl-grid"' : null) ?>>
 	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
 		<?php $gridPos = $panelConfig->getGridPos() ?>
 	
