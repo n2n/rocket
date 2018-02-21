@@ -33,7 +33,7 @@
 	$groupedUiComponents = $view->getParam('groupedUiComponents');
 	$view->assert(is_array($groupedUiComponents));
 ?>
-<div<?php $view->out($panelLayout->hasGrid() ? ' style="display:grid" class="rocket-impl-grid"' : null) ?>>
+<div<?php $view->out($panelLayout->hasGrid() ? ' style="display:grid, display: repeat(' . ($panelLayout->getNumGridCols() - 1). ', 1fr)" class="rocket-impl-grid"' : null) ?>>
 	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): ?>
 		<?php $gridPos = $panelConfig->getGridPos() ?>
 		
