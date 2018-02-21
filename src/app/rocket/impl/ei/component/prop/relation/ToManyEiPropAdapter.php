@@ -94,7 +94,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		
 		$numTargetEiObjects = count($targetEiObjects);
 		if ($numTargetEiObjects == 1) {
-			return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getLabel();
+			return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getLabelLstr();
 		}
 		
 		return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getPluralLabelLstr();
