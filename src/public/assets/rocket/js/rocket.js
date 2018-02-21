@@ -328,24 +328,24 @@ var Rocket;
                 let zoneClearer = new ZoneClearer(this.getAllZones());
                 let eiMods = data.rocketEvent.eiMods;
                 for (let supremeEiTypeId in eiMods) {
-                    if (!eiMods[supremeEiTypeId].eiIds && eiMods[supremeEiTypeId].draftIds) {
+                    if (!eiMods[supremeEiTypeId].pids && eiMods[supremeEiTypeId].draftIds) {
                         zoneClearer.clearBySupremeEiType(supremeEiTypeId, false);
                         continue;
                     }
-                    if (eiMods[supremeEiTypeId].eiIds) {
-                        for (let eiId in eiMods[supremeEiTypeId].eiIds) {
-                            let modType = eiMods[supremeEiTypeId].eiIds[eiId];
+                    if (eiMods[supremeEiTypeId].pids) {
+                        for (let pid in eiMods[supremeEiTypeId].pids) {
+                            let modType = eiMods[supremeEiTypeId].pids[pid];
                             switch (modType) {
                                 case "changed":
-                                    zoneClearer.clearByEiId(supremeEiTypeId, eiId, false);
-                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, eiId));
+                                    zoneClearer.clearByPid(supremeEiTypeId, pid, false);
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
                                     break;
                                 case "removed":
-                                    zoneClearer.clearByEiId(supremeEiTypeId, eiId, true);
+                                    zoneClearer.clearByPid(supremeEiTypeId, pid, true);
                                     break;
                                 case "added":
                                     zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
-                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, eiId));
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
                                     break;
                                 default:
                                     throw new Error("Invalid mod type " + modType);
@@ -474,22 +474,22 @@ var Rocket;
                     }
                 }
             }
-            clearByEiId(supremeEiTypeId, eiId, remove) {
+            clearByPid(supremeEiTypeId, pid, remove) {
                 for (let zone of this.zones) {
                     if (!zone.page || zone.page.disposed)
                         continue;
-                    if (remove && this.removeByEiId(zone, supremeEiTypeId, eiId)) {
+                    if (remove && this.removeByPid(zone, supremeEiTypeId, pid)) {
                         continue;
                     }
                     if (zone.page.config.frozen)
                         continue;
-                    if (Rocket.Display.Entry.hasEiId(zone.jQuery, supremeEiTypeId, eiId)) {
+                    if (Rocket.Display.Entry.hasPid(zone.jQuery, supremeEiTypeId, pid)) {
                         zone.page.dispose();
                     }
                 }
             }
-            removeByEiId(zone, supremeEiTypeId, eiId) {
-                let entries = Rocket.Display.Entry.findByEiId(zone.jQuery, supremeEiTypeId, eiId);
+            removeByPid(zone, supremeEiTypeId, pid) {
+                let entries = Rocket.Display.Entry.findByPid(zone.jQuery, supremeEiTypeId, pid);
                 if (entries.length == 0)
                     return true;
                 let success = true;
@@ -1250,9 +1250,9 @@ var Rocket;
                     return;
                 this.chLastMod(Rocket.Display.Entry.findLastMod(this.jQuery), false);
                 for (let lastModDef of this._lastModDefs) {
-                    if (lastModDef.eiId) {
+                    if (lastModDef.pid) {
                         this.chLastMod(Rocket.Display.Entry
-                            .findByEiId(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.eiId), true);
+                            .findByPid(this.jQuery, lastModDef.supremeEiTypeId, lastModDef.pid), true);
                         continue;
                     }
                     if (lastModDef.draftId) {
@@ -1318,10 +1318,10 @@ var Rocket;
         }
         Cmd.Zone = Zone;
         class LastModDef {
-            static createLive(supremeEiTypeId, eiId) {
+            static createLive(supremeEiTypeId, pid) {
                 let lmd = new LastModDef();
                 lmd.supremeEiTypeId = supremeEiTypeId;
-                lmd.eiId = eiId;
+                lmd.pid = pid;
                 return lmd;
             }
             static createDraft(supremeEiTypeId, draftId) {
@@ -1333,7 +1333,7 @@ var Rocket;
             static fromEntry(entry) {
                 let lastModDef = new LastModDef();
                 lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
-                lastModDef.eiId = entry.eiId;
+                lastModDef.pid = entry.pid;
                 lastModDef.draftId = entry.draftId;
                 return lastModDef;
             }
@@ -2059,12 +2059,12 @@ var Rocket;
                 if (this.draftId !== null) {
                     return this.draftId.toString();
                 }
-                return this.eiId;
+                return this.pid;
             }
             get supremeEiTypeId() {
                 return this.elemJq.data("rocket-supreme-ei-type-id").toString();
             }
-            get eiId() {
+            get pid() {
                 return this.elemJq.data("rocket-ei-id").toString();
             }
             get draftId() {
@@ -2161,15 +2161,15 @@ var Rocket;
             static hasSupremeEiTypeId(jqContainer, supremeEiTypeId) {
                 return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
             }
-            static buildEiIdSelector(supremeEiTypeId, eiId) {
+            static buildPidSelector(supremeEiTypeId, pid) {
                 return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
-                    + Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(eiId) + "]";
+                    + Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(pid) + "]";
             }
-            static findByEiId(jqElem, supremeEiTypeId, eiId) {
-                return Entry.fromArr(jqElem.find(Entry.buildEiIdSelector(supremeEiTypeId, eiId)));
+            static findByPid(jqElem, supremeEiTypeId, pid) {
+                return Entry.fromArr(jqElem.find(Entry.buildPidSelector(supremeEiTypeId, pid)));
             }
-            static hasEiId(jqElem, supremeEiTypeId, eiId) {
-                return 0 < jqElem.has(Entry.buildEiIdSelector(supremeEiTypeId, eiId)).length;
+            static hasPid(jqElem, supremeEiTypeId, pid) {
+                return 0 < jqElem.has(Entry.buildPidSelector(supremeEiTypeId, pid)).length;
             }
             static buildDraftIdSelector(supremeEiTypeId, draftId) {
                 return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]["
@@ -2518,8 +2518,8 @@ var Rocket;
     var Display;
     (function (Display) {
         class MultiEntrySelectorObserver {
-            constructor(originalEiIds = new Array()) {
-                this.originalEiIds = originalEiIds;
+            constructor(originalPids = new Array()) {
+                this.originalPids = originalPids;
                 this.identityStrings = {};
                 this.selectors = {};
                 this.checkJqs = {};
@@ -2534,7 +2534,7 @@ var Rocket;
                 this.onRemoved = (entry) => {
                     this.chSelect(false, entry.id);
                 };
-                this.selectedIds = originalEiIds;
+                this.selectedIds = originalPids;
             }
             destroy() {
                 for (let key in this.selectors) {
@@ -4084,14 +4084,14 @@ var Rocket;
                     Rocket.Display.Entry.findLastMod(Rocket.Cmd.Zone.of(this.elemJq).jQuery).forEach((entry) => {
                         entry.lastMod = false;
                     });
-                    let eiIds = [];
+                    let pids = [];
                     for (let entry of entries) {
-                        eiIds.push(entry.id);
+                        pids.push(entry.id);
                         entry.selector.selected = false;
                         this.dingselAndExecTree(entry);
                         entry.lastMod = true;
                     }
-                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "eiIds": eiIds });
+                    let url = new Jhtml.Url(this.elemJq.attr("href")).extR(null, { "pids": pids });
                     Jhtml.Monitor.of(this.elemJq.get(0)).lookupModel(url);
                 }
                 dingselAndExecTree(entry) {
@@ -4715,8 +4715,8 @@ var Rocket;
                     }
                     this.fakePage = new Page(0);
                     this.fakePage.hide();
-                    var eiIds = this.selectorObserver.getSelectedIds();
-                    var unloadedIds = eiIds.slice();
+                    var pids = this.selectorObserver.getSelectedIds();
+                    var unloadedIds = pids.slice();
                     var that = this;
                     this.collection.entries.forEach(function (entry) {
                         let id = entry.id;
@@ -4728,8 +4728,8 @@ var Rocket;
                     this.loadFakePage(unloadedIds);
                     return this.fakePage;
                 }
-                loadFakePage(unloadedEiIds) {
-                    if (unloadedEiIds.length == 0) {
+                loadFakePage(unloadedPids) {
+                    if (unloadedPids.length == 0) {
                         this.fakePage.entries = [];
                         this.selectorState.observeFakePage(this.fakePage);
                         return;
@@ -4737,7 +4737,7 @@ var Rocket;
                     this.markPageAsLoading(0);
                     let fakePage = this.fakePage;
                     Jhtml.Monitor.of(this.collection.jQuery.get(0))
-                        .lookupModel(this.loadUrl.extR(null, { "eiIds": unloadedEiIds }))
+                        .lookupModel(this.loadUrl.extR(null, { "pids": unloadedPids }))
                         .then((model) => {
                         if (fakePage !== this.fakePage)
                             return;
@@ -5741,7 +5741,7 @@ var Rocket;
                         toManySelector = new ToManySelector(jqSelector, jqSelector.find("li.rocket-new-entry").detach());
                         jqSelector.find("ul li").each(function () {
                             var entry = new SelectedEntry($(this));
-                            entry.label = toManySelector.determineIdentityString(entry.eiId);
+                            entry.label = toManySelector.determineIdentityString(entry.pid);
                             toManySelector.addSelectedEntry(entry);
                         });
                     }
@@ -5801,12 +5801,12 @@ var Rocket;
                     this.resetButtonJq = null;
                     this.jqElem = jqElem;
                     this.jqUl = jqElem.children("ul");
-                    this.originalEiIds = jqElem.data("original-ei-ids");
+                    this.originalPids = jqElem.data("original-ei-ids");
                     this.identityStrings = jqElem.data("identity-strings");
                     this.init();
                 }
-                determineIdentityString(eiId) {
-                    return this.identityStrings[eiId];
+                determineIdentityString(pid) {
+                    return this.identityStrings[pid];
                 }
                 init() {
                     var jqCommandList = $("<div />");
@@ -5829,14 +5829,14 @@ var Rocket;
                         that.clear();
                     });
                 }
-                createSelectedEntry(eiId, identityString = null) {
+                createSelectedEntry(pid, identityString = null) {
                     var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
-                    entry.eiId = eiId;
+                    entry.pid = pid;
                     if (identityString !== null) {
                         entry.label = identityString;
                     }
                     else {
-                        entry.label = this.determineIdentityString(eiId);
+                        entry.label = this.determineIdentityString(pid);
                     }
                     this.addSelectedEntry(entry);
                     return entry;
@@ -5858,8 +5858,8 @@ var Rocket;
                 }
                 reset() {
                     this.clear();
-                    for (let eiId of this.originalEiIds) {
-                        this.createSelectedEntry(eiId);
+                    for (let pid of this.originalPids) {
+                        this.createSelectedEntry(pid);
                     }
                     this.manageReset();
                 }
@@ -5872,12 +5872,12 @@ var Rocket;
                 }
                 manageReset() {
                     this.resetButtonJq.hide();
-                    if (this.originalEiIds.length != this.entries.length) {
+                    if (this.originalPids.length != this.entries.length) {
                         this.resetButtonJq.show();
                         return;
                     }
                     for (let entry of this.entries) {
-                        if (-1 < this.originalEiIds.indexOf(entry.eiId))
+                        if (-1 < this.originalPids.indexOf(entry.pid))
                             continue;
                         this.resetButtonJq.show();
                         return;
@@ -5930,7 +5930,7 @@ var Rocket;
                         return;
                     var selectedIds = new Array();
                     this.entries.forEach(function (entry) {
-                        selectedIds.push(entry.eiId);
+                        selectedIds.push(entry.pid);
                     });
                     this.browserSelectorObserver.setSelectedIds(selectedIds);
                 }
@@ -5969,11 +5969,11 @@ var Rocket;
                 set label(label) {
                     this.jqLabel.text(label);
                 }
-                get eiId() {
+                get pid() {
                     return this.jqInput.val().toString();
                 }
-                set eiId(eiId) {
-                    this.jqInput.val(eiId);
+                set pid(pid) {
+                    this.jqInput.val(pid);
                 }
             }
             class ToManyEmbedded {
@@ -6507,23 +6507,23 @@ var Rocket;
                     this.browserSelectorObserver = null;
                     this.jqElem = jqElem;
                     this.jqInput = jqElem.children("input").hide();
-                    this.originalEiId = jqElem.data("original-ei-id");
+                    this.originalPid = jqElem.data("original-ei-id");
                     this.identityStrings = jqElem.data("identity-strings");
                     this.init();
-                    this.selectEntry(this.selectedEiId);
+                    this.selectEntry(this.selectedPid);
                 }
                 get jQuery() {
                     return this.jqElem;
                 }
-                get selectedEiId() {
-                    let eiId = this.jqInput.val().toString();
-                    if (eiId.length == 0)
+                get selectedPid() {
+                    let pid = this.jqInput.val().toString();
+                    if (pid.length == 0)
                         return null;
-                    return eiId;
+                    return pid;
                 }
                 init() {
                     this.jqSelectedEntry = $("<div />");
-                    this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalEiId] }));
+                    this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalPid] }));
                     new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
                         .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
                         .click(() => {
@@ -6545,18 +6545,18 @@ var Rocket;
                         this.reset();
                     }).hide();
                 }
-                selectEntry(eiId, identityString = null) {
-                    this.jqInput.val(eiId);
-                    if (eiId === null) {
+                selectEntry(pid, identityString = null) {
+                    this.jqInput.val(pid);
+                    if (pid === null) {
                         this.jqSelectedEntry.hide();
                         return;
                     }
                     this.jqSelectedEntry.show();
                     if (identityString === null) {
-                        identityString = this.identityStrings[eiId];
+                        identityString = this.identityStrings[pid];
                     }
                     this.jqEntryLabel.text(identityString);
-                    if (this.originalEiId != this.selectedEiId) {
+                    if (this.originalPid != this.selectedPid) {
                         this.resetButtonJq.show();
                     }
                     else {
@@ -6564,7 +6564,7 @@ var Rocket;
                     }
                 }
                 reset() {
-                    this.selectEntry(this.originalEiId);
+                    this.selectEntry(this.originalPid);
                 }
                 clear() {
                     this.selectEntry(null);
@@ -6617,7 +6617,7 @@ var Rocket;
                 updateBrowser() {
                     if (this.browserSelectorObserver === null)
                         return;
-                    this.browserSelectorObserver.setSelectedId(this.selectedEiId);
+                    this.browserSelectorObserver.setSelectedId(this.selectedPid);
                 }
                 updateSelection() {
                     if (this.browserSelectorObserver === null)
@@ -7177,7 +7177,7 @@ var Rocket;
                     this._visible = true;
                     Rocket.Display.StructureElement.from(elemJq, true);
                     this._propertyPath = elemJq.data("rocket-impl-property-path");
-                    this._eiId = elemJq.data("rocket-impl-ei-id") || null;
+                    this._pid = elemJq.data("rocket-impl-ei-id") || null;
                     this._fieldJq = elemJq.children("div");
                 }
                 get jQuery() {
@@ -7196,8 +7196,8 @@ var Rocket;
                 get propertyPath() {
                     return this._propertyPath;
                 }
-                get eiId() {
-                    return this._eiId;
+                get pid() {
+                    return this._pid;
                 }
                 get prettyLocaleId() {
                     return this.elemJq.find("label:first").text();
@@ -7303,7 +7303,7 @@ var Rocket;
                     return url.extR(null, {
                         propertyPath: this.translatedContent.propertyPath,
                         toN2nLocale: this.translatedContent.localeId,
-                        toEiId: this.translatedContent.eiId
+                        toPid: this.translatedContent.pid
                     });
                 }
                 copy(url) {
