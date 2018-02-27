@@ -47,7 +47,7 @@ use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
 use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use n2n\impl\web\dispatch\mag\model\group\EnumEnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 
@@ -125,7 +125,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 					$this->isMandatory($eiu));
 		}
 		
-		$enablerMag = new EnumEnablerMag($this->getLabelLstr(), $choicesMap, null, 
+		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
 					$this->isMandatory($eiu));
 		
 		$that = $this;

@@ -180,11 +180,12 @@ namespace Rocket.Impl.Overview {
 			
 			Jhtml.Monitor.of(this.collection.jQuery.get(0))
 					.lookupModel(this.loadUrl.extR(null, { "pids": unloadedPids }))
-					.then((model: Jhtml.Model) => {
+					.then((modelResult) => {
 				if (fakePage !== this.fakePage) return; 
 				
 				this.unmarkPageAsLoading(0);
 				
+				let model = modelResult.model;
 				let collectionJq = $(model.snippet.elements).find(".rocket-collection:first");
 				model.snippet.elements = collectionJq.children().toArray();
 				fakePage.entries = Display.Entry.children(collectionJq);
@@ -529,12 +530,12 @@ namespace Rocket.Impl.Overview {
 			
 			Jhtml.Monitor.of(this.collection.jQuery.get(0))
 					.lookupModel(this.loadUrl.extR(null, { "pageNo": pageNo }))
-					.then((model: Jhtml.Model) => {
+					.then((modelResult) => {
 						if (page !== this.pages[pageNo]) return;
 						
 						this.unmarkPageAsLoading(pageNo);
 						
-						this.initPageFromResponse([page], model.snippet, model.additionalData);
+						this.initPageFromResponse([page], modelResult.model.snippet, modelResult.response.additionalData);
 						this.triggerContentChange();
 					})
 					.catch(e => {

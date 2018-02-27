@@ -33,7 +33,7 @@ use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
-use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\spec\ei\manage\gui\GuiIdPath;
 
@@ -78,7 +78,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 					$magCollection->addMag('value', new StringMag('Value'));
 					$magCollection->addMag('label', new StringMag('Label'));
 					
-					$eMag = new EnablerMag('Bind GuiProps to value', false);
+					$eMag = new TogglerMag('Bind GuiProps to value', false);
 					$magCollection->addMag('bindGuiPropsToValue', $eMag);
 					$eMag->setAssociatedMags(array(
 							$magCollection->addMag('assoicatedGuiIdPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));

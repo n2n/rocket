@@ -7,7 +7,7 @@ use n2n\util\config\LenientAttributeReader;
 use n2n\reflection\CastUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\core\container\N2nContext;
-use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\reflection\property\TypeConstraint;
@@ -51,7 +51,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$onGuiIdPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
 		$offGuiIdPathStrs = $lar->getScalarArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$eMag = new EnablerMag('Bind GuiProps to value', !empty($onGuiIdPathStrs) || !empty($offGuiIdPathStrs));
+		$eMag = new TogglerMag('Bind GuiProps to value', !empty($onGuiIdPathStrs) || !empty($offGuiIdPathStrs));
 		
 		$magCollection->addMag(self::ATTR_BIND_GUI_PROPS_KEY, $eMag);
 		$eMag->setAssociatedMags(array(

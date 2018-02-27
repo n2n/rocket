@@ -46,7 +46,7 @@ use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\ei\manage\critmod\filter\FilterField;
 use rocket\spec\ei\manage\critmod\sort\SortField;
 use rocket\spec\ei\manage\gui\GuiIdPath;
-use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 
 class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp {
 
@@ -156,7 +156,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 			throw new \Exception();
 		}
 		
-		$enablerMag = new EnablerMag($this->getLabelLstr(), true);
+		$enablerMag = new TogglerMag($this->getLabelLstr(), true);
 		$that = $this;
 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$onMagWrappers = array();
@@ -166,16 +166,17 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 				
 				$onMagWrappers[] = $magWrapper;
 			}
-			$enablerMag->setAssociatedMagWrappers($onMagWrappers);
+			$enablerMag->setOnAssociatedMagWrappers($onMagWrappers);
 
-// 			$offMagWrappers = array();
-// 			foreach ($that->getOffAssociatedGuiIdPaths() as $guiIdPath) {
-// 				$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
-// 				if ($magWrapper === null) continue;
+			$offMagWrappers = array();
+			foreach ($that->getOffAssociatedGuiIdPaths() as $guiIdPath) {
+				$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
+				if ($magWrapper === null) continue;
 				
-// 				$offMagWrappers[] = $magWrapper;
-// 			}
-// 			$enablerMag->setOffAssociatedMagWrappers($offMagWrappers);
+				$offMagWrappers[] = $magWrapper;
+			}
+			
+			$enablerMag->setOffAssociatedMagWrappers($offMagWrappers);
 		});
 			
 		return $enablerMag;

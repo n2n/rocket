@@ -51,8 +51,8 @@ namespace Rocket.Impl.Relation {
 				"draft": this.draftMode ? 1 : 0
 			});
 			Jhtml.lookupModel(url)
-				.then((model: Jhtml.Model) => {
-					this.doneResponse(model.snippet);
+				.then((result) => {
+					this.doneResponse(result.model.snippet);
 				})
 				.catch(e => {
 					this.failResponse();

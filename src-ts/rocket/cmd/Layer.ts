@@ -227,9 +227,9 @@ namespace Rocket.Cmd {
 		attachComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver): boolean {
 			if (comp.isAttached) return true;
 			
-			if (!comp.model.response) {
-				throw new Error("model response undefined");
-			}
+//			if (!comp.model.response) {
+//				throw new Error("model response undefined");
+//			}
 			
 			let url = this.monitor.history.currentPage.url;
 			let zone: Zone = this.getZoneByUrl(url);

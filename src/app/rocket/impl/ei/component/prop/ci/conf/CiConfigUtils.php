@@ -36,7 +36,7 @@ use rocket\impl\ei\component\prop\ci\model\PanelConfig;
 use n2n\util\config\AttributesException;
 use n2n\util\StringUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
-use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\impl\ei\component\prop\ci\model\GridPos;
 
 class CiConfigUtils {
@@ -91,10 +91,10 @@ class CiConfigUtils {
 		$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', 0, true));
 		$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max'));
 		
-		$magCollection->addMag(self::ATTR_GRID_ENABLED_KEY, $gridEnabledMag = new EnablerMag('Use grid'));
+		$magCollection->addMag(self::ATTR_GRID_ENABLED_KEY, $gridEnabledMag = new TogglerMag('Use grid'));
 		
 		$gridMagCollection = new MagCollection();
-		$gridEnabledMag->setAssociatedMagWrappers(array(
+		$gridEnabledMag->setOnAssociatedMagWrappers(array(
 				$gridMagCollection->addMag(self::ATTR_GRID_COL_START_KEY, new NumericMag('Col start', 1, true, 1)),
 				$gridMagCollection->addMag(self::ATTR_GRID_COL_END_KEY, (new NumericMag('Col end'))->setMin(1)),
 				$gridMagCollection->addMag(self::ATTR_GRID_ROW_START_KEY, new NumericMag('Row start', 1, true)),

@@ -728,9 +728,6 @@ var Rocket;
             attachComp(comp, loadObserver) {
                 if (comp.isAttached)
                     return true;
-                if (!comp.model.response) {
-                    throw new Error("model response undefined");
-                }
                 let url = this.monitor.history.currentPage.url;
                 let zone = this.getZoneByUrl(url);
                 if (!zone) {
@@ -4270,7 +4267,7 @@ var Rocket;
                     this.form.config.successResponseHandler = (response) => {
                         if (!response.model || !response.model.snippet)
                             return false;
-                        this.whenSubmitted(response.model.snippet, response.model.additionalData);
+                        this.whenSubmitted(response.model.snippet, response.additionalData);
                         return true;
                     };
                     this.initListeners();
@@ -4349,7 +4346,7 @@ var Rocket;
                     this.form.config.autoSubmitAllowed = false;
                     this.form.config.successResponseHandler = (response) => {
                         if (response.model && response.model.snippet) {
-                            this.whenSubmitted(response.model.snippet, response.model.additionalData);
+                            this.whenSubmitted(response.model.snippet, response.additionalData);
                             return true;
                         }
                         return false;
@@ -4478,7 +4475,7 @@ var Rocket;
                     this.form.config.actionUrl = jqForm.data("rocket-impl-post-url");
                     this.form.config.successResponseHandler = (response) => {
                         if (response.model && response.model.snippet) {
-                            this.whenSubmitted(response.model.snippet, response.model.additionalData);
+                            this.whenSubmitted(response.model.snippet, response.additionalData);
                             return true;
                         }
                         return false;
@@ -4551,8 +4548,8 @@ var Rocket;
                 }
                 reload() {
                     var url = this.form.config.actionUrl;
-                    Jhtml.Monitor.of(this.jqForm.get(0)).lookupModel(Jhtml.Url.create(url)).then((model) => {
-                        this.replaceForm(model.snippet, model.additionalData);
+                    Jhtml.Monitor.of(this.jqForm.get(0)).lookupModel(Jhtml.Url.create(url)).then((result) => {
+                        this.replaceForm(result.model.snippet, result.response.additionalData);
                     });
                 }
                 onSubmit() {
@@ -4738,10 +4735,11 @@ var Rocket;
                     let fakePage = this.fakePage;
                     Jhtml.Monitor.of(this.collection.jQuery.get(0))
                         .lookupModel(this.loadUrl.extR(null, { "pids": unloadedPids }))
-                        .then((model) => {
+                        .then((modelResult) => {
                         if (fakePage !== this.fakePage)
                             return;
                         this.unmarkPageAsLoading(0);
+                        let model = modelResult.model;
                         let collectionJq = $(model.snippet.elements).find(".rocket-collection:first");
                         model.snippet.elements = collectionJq.children().toArray();
                         fakePage.entries = Rocket.Display.Entry.children(collectionJq);
@@ -5009,11 +5007,11 @@ var Rocket;
                     this.markPageAsLoading(pageNo);
                     Jhtml.Monitor.of(this.collection.jQuery.get(0))
                         .lookupModel(this.loadUrl.extR(null, { "pageNo": pageNo }))
-                        .then((model) => {
+                        .then((modelResult) => {
                         if (page !== this.pages[pageNo])
                             return;
                         this.unmarkPageAsLoading(pageNo);
-                        this.initPageFromResponse([page], model.snippet, model.additionalData);
+                        this.initPageFromResponse([page], modelResult.model.snippet, modelResult.response.additionalData);
                         this.triggerContentChange();
                     })
                         .catch(e => {
@@ -5691,8 +5689,8 @@ var Rocket;
                         "draft": this.draftMode ? 1 : 0
                     });
                     Jhtml.lookupModel(url)
-                        .then((model) => {
-                        this.doneResponse(model.snippet);
+                        .then((result) => {
+                        this.doneResponse(result.model.snippet);
                     })
                         .catch(e => {
                         this.failResponse();
@@ -7312,8 +7310,8 @@ var Rocket;
                     this.loaderJq = $("<div />", {
                         class: "rocket-load-blocker"
                     }).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.translatedContent.jQuery);
-                    Jhtml.lookupModel(url).then((model) => {
-                        this.replace(model.snippet);
+                    Jhtml.lookupModel(url).then((result) => {
+                        this.replace(result.model.snippet);
                     });
                 }
                 replace(snippet) {
