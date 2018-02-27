@@ -34,7 +34,7 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
-use n2n\impl\web\dispatch\mag\model\group\EnablerMag;
+use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
@@ -146,13 +146,13 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magCollection->addMag(self::ATTR_CHECK_IMAGE_MEMORY_KEY, new BoolMag('Check Image Resource Memory',
 				$lar->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, $this->fileEiProp->isCheckImageMemoryEnabled())));
 		
-		$enablerMag = new EnablerMag('Multi upload',
+		$enablerMag = new TogglerMag('Multi upload',
 				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false));
 		$magCollection->addMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, $enablerMag);
 		
 		$enumMag = new EnumMag('Naming Field', 
 				$this->getNamingEiPropIdOptions(), $lar->getString(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY));
-		$enablerMag->setAssociatedMagWrappers(array($magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY, $enumMag)));
+		$enablerMag->setOnAssociatedMagWrappers(array($magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY, $enumMag)));
 		
 		return $magDispatchable;
 	}
