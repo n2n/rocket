@@ -372,8 +372,10 @@ class EiEntry {
 			return 'EiEntry (' . $this->eiObject->getDraft() . ')';
 		}
 		
-		return  'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName() 
-				. '#' . $this->eiObject->getEiEntityObj()->getPid() . ')';
+		$eiEntityObj = $this->eiObject->getEiEntityObj();
+		
+		return  'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName()
+				. '#' . ($eiEntityObj->hasId() ? $eiEntityObj->getPid() : 'new') . ')';
 	}
 }
 
