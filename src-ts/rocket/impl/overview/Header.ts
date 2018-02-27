@@ -128,7 +128,7 @@ namespace Rocket.Impl.Overview {
 			this.form.config.successResponseHandler = (response: Jhtml.Response) => {
 				if (!response.model || !response.model.snippet) return false;
 				
-				this.whenSubmitted(response.model.snippet, response.model.additionalData);
+				this.whenSubmitted(response.model.snippet, response.additionalData);
 				return true;
 			}
 			
@@ -238,7 +238,7 @@ namespace Rocket.Impl.Overview {
 			
 			this.form.config.successResponseHandler = (response: Jhtml.Response) => {
 				if (response.model && response.model.snippet) {
-					this.whenSubmitted(response.model.snippet, response.model.additionalData);
+					this.whenSubmitted(response.model.snippet, response.additionalData);
 					return true;
 				}
 				
@@ -416,7 +416,7 @@ namespace Rocket.Impl.Overview {
 
 			this.form.config.successResponseHandler = (response: Jhtml.Response) => {
 				if (response.model && response.model.snippet) {
-					this.whenSubmitted(response.model.snippet, response.model.additionalData);
+					this.whenSubmitted(response.model.snippet, response.additionalData);
 					return true;
 				}
 				
@@ -507,8 +507,8 @@ namespace Rocket.Impl.Overview {
 		public reload() {
 			var url = this.form.config.actionUrl;
 
-			Jhtml.Monitor.of(this.jqForm.get(0)).lookupModel(Jhtml.Url.create(url)).then((model: Jhtml.Model) => {
-				this.replaceForm(model.snippet, model.additionalData);
+			Jhtml.Monitor.of(this.jqForm.get(0)).lookupModel(Jhtml.Url.create(url)).then((result) => {
+				this.replaceForm(result.model.snippet, result.response.additionalData);
 			});
 			
 //			var that = this;

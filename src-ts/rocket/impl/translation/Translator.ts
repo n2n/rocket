@@ -398,8 +398,8 @@ namespace Rocket.Impl.Translation {
 				class: "rocket-load-blocker"
 			}).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.translatedContent.jQuery);
 
-			Jhtml.lookupModel(url).then((model: Jhtml.Model) => {
-				this.replace(model.snippet);
+			Jhtml.lookupModel(url).then((result) => {
+				this.replace(result.model.snippet);
 			});
 		}
 
