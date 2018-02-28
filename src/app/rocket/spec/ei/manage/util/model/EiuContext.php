@@ -3,7 +3,6 @@ namespace rocket\spec\ei\manage\util\model;
 
 use rocket\spec\config\SpecManager;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiEngine;
 use rocket\spec\config\UnknownSpecException;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\EiType;

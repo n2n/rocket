@@ -65,7 +65,6 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 			return;
 		}
 		
-		
 		$eiu->entry()->onValidate(function () use ($eiu) {
 			$this->validate($eiu);
 		});
@@ -77,8 +76,8 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 		
 		$criteria = $eiu->frame()->createCountCriteria('e', CriteriaConstraint::ALL_TYPES);
 		
-		$this->restrictCriteria($criteria, $eiuEngine, $this->uniqueEiPropPaths);
-		$this->restrictCriteria($criteria, $eiuEngine, $this->uniquePerEiPropPaths);
+		$this->restrictCriteria($criteria, $eiuEngine, $this->uniqueEiPropPaths, $eiuEntry);
+		$this->restrictCriteria($criteria, $eiuEngine, $this->uniquePerEiPropPaths, $eiuEntry);
 		
 		if (!$eiuEntry->isNew()) {
 			$criteria->where()->match('e', '!=', $eiuEntry->getEntityObj());
@@ -97,11 +96,11 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	 * @param Criteria $criteria
 	 * @param EiuEngine $eiuEngine
 	 * @param EiPropPath[] $eiPropPaths
+	 * @param \rocket\spec\ei\manage\util\model\EiuEntry $eiuEntry
 	 */
-	private function restrictCriteria($criteria, $eiuEngine, $eiPropPaths) {
+	private function restrictCriteria($criteria, $eiuEngine, $eiPropPaths, $eiuEntry) {
 		foreach ($eiPropPaths as $eiPropPath) {
 			$eiuProp = $eiuEngine->prop($eiPropPath, false);
-			if ($eiuProp === null || $eiuProp->isGeneric()) continue;
 			
 			$ci = $eiuProp->createGenericCriteriaItem('e');
 			$cv = $eiuProp->createGenericEntityValue($eiuEntry);
@@ -143,15 +142,25 @@ class UniqueEiConfigurator extends EiConfiguratorAdapter {
 		$uniqueEiModificator = $this->eiComponent;
 		CastUtils::assertTrue($uniqueEiModificator instanceof UniqueEiModificator);
 		
+		$eiuEngine = $eiSetupProcess->eiu()->engine();
+		
 		$uniqueEiPropPaths = array();
 		foreach ($this->attributes->getScalarArray(self::ATTR_UNIQUE_PROPS_KEY, false) as $eiPropPathStr) {
-			$uniqueEiPropPaths[] = EiPropPath::create($eiPropPathStr);
+			$eiPropPath = EiPropPath::create($eiPropPathStr);
+			
+			if ($eiuEngine->containsGenericEiProperty($eiPropPath)) {
+				$uniqueEiPropPaths[] = $eiPropPath;
+			}
 		}
 		$uniqueEiModificator->setUniqueEiPropPaths($uniqueEiPropPaths);
 		
 		$uniquePerEiPropPaths = array();
 		foreach ($this->attributes->getScalarArray(self::ATTR_UNIQUE_PER_PROPS_KEY, false) as $eiPropPathStr) {
-			$uniquePerEiPropPaths[] = EiPropPath::create($eiPropPathStr);
+			$eiPropPath = EiPropPath::create($eiPropPathStr);
+			
+			if ($eiuEngine->containsGenericEiProperty($eiPropPath)) {
+				$uniquePerEiPropPaths[] = $eiPropPath;
+			}
 		}
 		$uniqueEiModificator->setUniquePerEiPropPaths($uniquePerEiPropPaths);
 	}
