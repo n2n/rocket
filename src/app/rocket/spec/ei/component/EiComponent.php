@@ -48,7 +48,7 @@ interface EiComponent {
 	public function getEiEngine(): EiEngine;
 	
 	/**
-	 * @param EiType $eiThing
+	 * @param EiEngine $eiEngine
 	 */
 	public function setEiEngine(EiEngine $eiEngine);
 		

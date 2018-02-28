@@ -42,7 +42,7 @@ interface GenericEiProperty {
 	 * @param CriteriaProperty $alias
 	 * @return CriteriaItem
 	 */
-	public function buildCriteriaItem(CriteriaProperty $alias): CriteriaItem;
+	public function createCriteriaItem(CriteriaProperty $alias): CriteriaItem;
 	
 // 	/**
 // 	 * @param EiEntry $eiEntry

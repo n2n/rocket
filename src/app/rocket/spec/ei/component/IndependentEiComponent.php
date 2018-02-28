@@ -25,5 +25,9 @@ interface IndependentEiComponent extends EiComponent {
 	
 	public function __construct();
 	
+	/**
+	 * EiEngine must already be assigned when this method is called. 
+	 * @return EiConfigurator
+	 */
 	public function createEiConfigurator(): EiConfigurator;
 }

@@ -21,45 +21,28 @@
  */
 namespace rocket\spec\ei\component;
 
+use rocket\spec\ei\manage\util\model\Eiu;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\component\prop\EiPropCollection;
-use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\ei\component\modificator\EiModificatorCollection;
-use rocket\spec\ei\manage\generic\GenericEiProperty;
-use rocket\spec\ei\manage\generic\ScalarEiProperty;
 
 interface EiSetupProcess {
 	
-	public function containsClass(\ReflectionClass $class):  bool;
+	/**
+	 * Eiu::engine() and Eiu::context() are available.
+	 * 
+	 * @return Eiu
+	 */
+	public function eiu(): Eiu;
 	
 	/**
-	 * @param \ReflectionClass $class
-	 * @return EiType
-	 * @throws UnknownException
+	 * @return N2nContext
 	 */
-	public function getEiTypeByClass(\ReflectionClass $class): EiType;
-	
 	public function getN2nContext(): N2nContext;
 	
-	public function createException($reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException;
-	
-	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty;
-	
-	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty;
-	
 	/**
-	 * @return \rocket\spec\ei\component\prop\EiPropCollection
+	 * @param string|null $reason
+	 * @param \Exception|null $previous
+	 * @return InvalidEiComponentConfigurationException
 	 */
-	public function getEiPropCollection(): EiPropCollection;
-	
-	/**
-	 * @return \rocket\spec\ei\component\command\EiCommandCollection
-	 */
-	public function getEiCommandCollection(): EiCommandCollection;
-	
-	/**
-	 * @return \rocket\spec\ei\component\modificator\EiModificatorCollection
-	 */
-	public function getEiModificatorCollection(): EiModificatorCollection;
+	public function createException(string $reason = null, \Exception $previous = null): 
+			InvalidEiComponentConfigurationException;	
 }

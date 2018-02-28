@@ -60,8 +60,8 @@ class EiEngine {
 	private $draftDefinition;
 	private $genericEiDefinition;
 	private $scalarEiDefinition;
-		
 	/**
+		
 	 * @param EiType $eiType
 	 * @param EiMask $eiMask
 	 */
@@ -126,6 +126,13 @@ class EiEngine {
 			return $this->eiMask;
 		}
 		return $this->eiType;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasSuperEiEngine() {
+		return $this->eiType->hasSuperEiType();
 	}
 	
 	/**
@@ -260,13 +267,13 @@ class EiEngine {
 		}
 		
 		$this->genericEiDefinition = new GenericEiDefinition();
-		$genericEiProperties = $this->genericEiDefinition->getGenericEiProperties();
+		$genericEiPropertyMap = $this->genericEiDefinition->getMap();
 		foreach ($this->eiPropCollection as $eiProp) {
 			if ($eiProp instanceof GenericEiProp 
 					&& $genericEiProperty = $eiProp->getGenericEiProperty()) {
 				ArgUtils::valTypeReturn($genericEiProperty, GenericEiProperty::class, $eiProp, 
 						'getGenericEiProperty', true);
-				$genericEiProperties->offsetSet(EiPropPath::from($eiProp), $genericEiProperty);		
+				$genericEiPropertyMap->offsetSet(EiPropPath::from($eiProp), $genericEiProperty);		
 			}
 		}
 		return $this->genericEiDefinition;
@@ -278,7 +285,7 @@ class EiEngine {
 		}
 		
 		$this->scalarEiDefinition = new ScalarEiDefinition();
-		$scalarEiProperties = $this->scalarEiDefinition->getScalarEiProperties();
+		$scalarEiProperties = $this->scalarEiDefinition->getMap();
 		foreach ($this->eiPropCollection as $eiProp) {
 			if ($eiProp instanceof ScalarEiProp
 					&& null !== ($scalarEiProperty = $eiProp->getScalarEiProperty())) {

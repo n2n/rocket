@@ -171,9 +171,12 @@ class EiuEntry {
 		}
 	}
 	
-	
-	public function field($eiPropObj) {
-		return new EiuField($eiPropObj, $this);
+	/**
+	 * @param mixed $eiPropArg
+	 * @return \rocket\spec\ei\manage\util\model\EiuField
+	 */
+	public function field($eiPropArg) {
+		return new EiuField($eiPropArg, $this);
 	}
 		
 	/**

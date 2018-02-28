@@ -51,7 +51,7 @@ class CommonGenericEiProperty implements GenericEiProperty {
 		return EiPropPath::from($this->eiProp);
 	}
 	
-	public function buildCriteriaItem(CriteriaProperty $alias): CriteriaItem {
+	public function createCriteriaItem(CriteriaProperty $alias): CriteriaItem {
 		return CrIt::p($alias, $this->criteriaProperty);
 	}
 	

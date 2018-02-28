@@ -192,7 +192,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$relationEntityProperty = $this->eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$target = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
+			$target = $eiSetupProcess->eiu()->context()->engine($targetEntityClass)->getEiEngine()->getEiType();
 			
 			$targetEiMask = null; 
 			if (null !== ($eiMaskId = $this->attributes->getString(self::ATTR_TARGET_MASK_KEY, false, null, true))) {

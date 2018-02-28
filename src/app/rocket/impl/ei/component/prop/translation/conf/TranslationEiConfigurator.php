@@ -188,14 +188,14 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	public function setup(EiSetupProcess $eiSetupProcess) {
-		$n2nContext = $eiSetupProcess->getN2nContext();
+		$eiu = $eiSetupProcess->eiu();
 		
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		$n2nLocaleDefs = array();
 		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
 			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
-					$n2nContext->lookup(WebConfig::class)->getAllN2nLocales());
+					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
 		} 
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
@@ -210,7 +210,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$relationProperty = $eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$targetEiType = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
+			$targetEiType = $eiSetupProcess->eiu()->context()->engine($targetEntityClass)->getEiEngine()->getEiType();
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {

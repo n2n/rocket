@@ -21,9 +21,12 @@
  */
 namespace rocket\spec\ei\manage\util\model;
 
+use n2n\l10n\Message;
+
 class EiuField {
 	private $eiPropPath;
 	private $eiuEntry;
+	private $eiuProp;
 	
 	public function __construct(...$eiArgs) {
 		$eiuFactory = new EiuFactory();
@@ -33,6 +36,20 @@ class EiuField {
 		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
 	}
 	
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuProp
+	 */
+	public function getEiuProp() {
+		if ($this->eiuProp === null) {
+			$this->eiuProp = $this->getEiuEntry()->getEiuFrame()->getEiuEngine()->prop($this->eiPropPath);
+		}
+		
+		return $this->eiuProp;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\EiPropPath
+	 */
 	public function getEiPropPath() {
 		return $this->eiPropPath;
 	}
@@ -62,5 +79,15 @@ class EiuField {
 	
 	public function setScalarValue($scalarValue) {
 		return $this->getEiuEntry()->setScalarValue($this->eiPropPath, $scalarValue);
+	}
+	
+	/**
+	 * @param Message $message
+	 * @return \rocket\spec\ei\manage\util\model\EiuField
+	 */
+	public function addError(Message $message) {
+		$this->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo($this->eiPropPath)
+				->addError($message);
+		return $this;
 	}
 }

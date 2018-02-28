@@ -24,19 +24,14 @@ namespace rocket\spec\config;
 use rocket\spec\ei\component\IndependentEiComponent;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\EiType;
 use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\component\prop\EiPropCollection;
-use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\ei\component\modificator\EiModificatorCollection;
-use rocket\spec\ei\manage\generic\GenericEiProperty;
-use rocket\spec\ei\manage\generic\ScalarEiProperty;
-use rocket\spec\ei\EiDef;
+use rocket\spec\ei\manage\util\model\Eiu;
 
 class SpecEiSetupProcess implements EiSetupProcess {
 	private $specManager;
 	private $n2nContext;
 	private $eiComponent;
+	private $eiu;
 	
 	public function __construct(SpecManager $specManager, N2nContext $n2nContext, IndependentEiComponent $eiComponent) {
 		$this->specManager = $specManager;
@@ -55,66 +50,76 @@ class SpecEiSetupProcess implements EiSetupProcess {
 		return $this->n2nContext;
 	}
 	
-	/**
-	 * @return EiDef
-	 */
-	public function getEiDef() {
-		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
-			return $eiMask->getEiDef();
-		}
-		return $this->eiComponent->getEiEngine()->getEiType()->getDefaultEiDef();
-	}
+// 	/**
+// 	 * @return EiDef
+// 	 */
+// 	public function getEiDef() {
+// 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
+// 			return $eiMask->getEiDef();
+// 		}
+// 		return $this->eiComponent->getEiEngine()->getEiType()->getDefaultEiDef();
+// 	}
 	
-	public function getSupremeEiDef() {
-		$supremeEiType = $this->eiComponent->getEiEngine()->getEiType()->getSupremeEiType();
+// 	public function getSupremeEiDef() {
+// 		$supremeEiType = $this->eiComponent->getEiEngine()->getEiType()->getSupremeEiType();
 		
-		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
-			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
-		}
-		return $supremeEiType->getDefaultEiDef();
-	}
+// 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
+// 			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
+// 		}
+// 		return $supremeEiType->getDefaultEiDef();
+// 	}
 	
-	public function createException($reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException {
+	public function createException(string $reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException {
 		$message = $this->eiComponent . ' invalid configured.';
 							
 		return new InvalidEiComponentConfigurationException($message 
 				. ($reason !== null ? ' Reason: ' . $reason : ''), 0, $previous);
 	}
+	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiSetupProcess::containsClass($class)
+	 * @see \rocket\spec\ei\component\EiSetupProcess::eiu()
 	 */
-	public function containsClass(\ReflectionClass $class): bool {
-		return $this->specManager->containsEiTypeClass($class);
+	public function eiu(): Eiu {
+		return $this->eiu 
+				?? $this->eiu = new Eiu($this->specManager, $this->eiComponent->getEiEngine(), $this->n2nContext);
 	}
+	
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\spec\ei\component\EiSetupProcess::containsClass($class)
+// 	 */
+// 	public function containsClass(\ReflectionClass $class): bool {
+// 		return $this->specManager->containsEiTypeClass($class);
+// 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiTypeByClass($class)
-	 */
-	public function getEiTypeByClass(\ReflectionClass $class): EiType {
-		return $this->specManager->getEiTypeByClass($class);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiTypeByClass($class)
+// 	 */
+// 	public function getEiTypeByClass(\ReflectionClass $class): EiType {
+// 		return $this->specManager->getEiTypeByClass($class);
+// 	}
 
-	public function getEiPropCollection(): EiPropCollection {
-		return $this->eiComponent->getEiEngine()->getEiPropCollection();
-	}
+// 	public function getEiPropCollection(): EiPropCollection {
+// 		return $this->eiComponent->getEiEngine()->getEiPropCollection();
+// 	}
 	
-	public function getEiCommandCollection(): EiCommandCollection {
-		return $this->eiComponent->getEiEngine()->getEiCommandCollection();
-	}
+// 	public function getEiCommandCollection(): EiCommandCollection {
+// 		return $this->eiComponent->getEiEngine()->getEiCommandCollection();
+// 	}
 	
-	public function getEiModificatorCollection(): EiModificatorCollection {
-		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
-	}
+// 	public function getEiModificatorCollection(): EiModificatorCollection {
+// 		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
+// 	}
 	
-	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty {
-		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
-				->getGenericEiPropertyByEiPropPath($eiPropPath);
-	}
+// 	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty {
+// 		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
+// 				->getGenericEiPropertyByEiPropPath($eiPropPath);
+// 	}
 	
-	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
-		return $this->eiComponent->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiPropPath);
-	}
+// 	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
+// 		return $this->eiComponent->getEiEngine()->getScalarEiDefinition()
+// 				->getScalarEiPropertyByFieldPath($eiPropPath);
+// 	}
 }

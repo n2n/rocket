@@ -3,9 +3,13 @@ namespace rocket\spec\ei\manage\util\model;
 
 use n2n\context\Lookupable;
 use n2n\l10n\DynamicTextCollection;
+use rocket\core\model\Rocket;
+use n2n\reflection\CastUtils;
 
 class Eiu implements Lookupable {
 	private $eiuFactory;
+	private $eiuContext;
+	private $eiuEngine;
 	private $eiuFrame;
 	private $eiuEntry;
 	private $eiuGui;
@@ -15,13 +19,41 @@ class Eiu implements Lookupable {
 	public function __construct(...$eiArgs) {
 		$this->eiuFactory = new EiuFactory();
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
+		$this->eiuEngine = $this->eiuFactory->getEiuEngine(false);
 		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
 		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
 		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
 		$this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui(false);
 		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
-
+	
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuContext|null
+	 */
+	public function context(bool $required = true) {
+		if ($this->eiuContext !== null) {
+			return $this->eiuContext;
+		}
+		
+		$n2nContext = $this->eiuFactory->getN2nContext($required);
+		if ($n2nContext === null) return null;
+		
+		$rocket = $n2nContext->lookup(Rocket::class);
+		CastUtils::assertTrue($rocket instanceof Rocket);
+		
+		return $this->eiuContext = new EiuContext($rocket->getSpecManager(), $n2nContext);
+	}
+	
+	/**
+	 * @throws EiuPerimeterException
+	 * @return \rocket\spec\ei\manage\util\model\EiuEngine
+	 */
+	public function engine(bool $required = true) {
+		if ($this->eiuEngine !== null || !$required) return $this->eiuEngine;
+		
+		throw new EiuPerimeterException('EiuEngine is unavailable.');
+	}
+	
 	/**
 	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
 	 */
@@ -88,7 +120,11 @@ class Eiu implements Lookupable {
 	 * @return mixed
 	 */
 	public function lookup($lookupId, bool $required = true) {
-		return $this->frame()->getN2nContext()->lookup($lookupId, $required);
+		if ($this->eiuFrame !== null) {
+			return $this->eiuFrame->getN2nContext()->lookup($lookupId, $required);
+		}
+		
+		return $this->eiuFactory->getN2nContext(true)->lookup($lookupId, $required);
 	}
 	
 	/**

@@ -97,6 +97,21 @@ class EiuFrame extends EiUtilsAdapter {
 		return $this->eiFrame->getN2nLocale();
 	}
 	
+	private $eiuEngine;
+	
+	/**
+	 * @return \rocket\spec\ei\manage\util\model\EiuEngine
+	 */
+	public function getEiuEngine() {
+		if (null === $this->eiuEngine) {
+			$this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiMask()->getEiEngine(), $this->eiFrame->getN2nContext());
+		}
+		
+		return $this->eiuEngine;
+	}
+	
+	
+	
 	/**
 	 * @param mixed $eiObjectObj
 	 * @throws EiuPerimeterException
@@ -139,9 +154,17 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return int
 	 */
 	public function countEntries(int $ignoreConstraintTypes = 0) {
-		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
-		$criteria->select('COUNT(e)');
-		return $criteria->toQuery()->fetchSingle();
+		return (int) $this->createCountCriteria('e', $ignoreConstraintTypes)->toQuery()->fetchSingle();
+	}
+	
+	/**
+	 * @param string $entityAlias
+	 * @param int $ignoreConstraintTypes
+	 * @return \n2n\persistence\orm\criteria\Criteria
+	 */
+	public function createCountCriteria(string $entityAlias, int $ignoreConstraintTypes = 0) {
+		return $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes)
+				->select('COUNT(e)');
 	}
 	
 	/**
@@ -437,7 +460,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return \rocket\spec\ei\manage\generic\ScalarEiProperty[]
 	 */
 	public function getScalarEiProperties() {
-		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues();
+		return $this->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()->getValues();
 	}
 	
 	/**

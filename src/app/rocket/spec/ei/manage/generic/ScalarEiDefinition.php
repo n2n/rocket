@@ -35,7 +35,7 @@ class ScalarEiDefinition {
 	/**
 	 * @return Map
 	 */
-	public function getScalarEiProperties() {
+	public function getMap() {
 		return $this->scalarEiProperties;
 	}
 	

@@ -31,8 +31,18 @@ class GenericEiDefinition {
 		$this->genericEiProperties = new HashMap(EiPropPath::class, GenericEiProperty::class);
 	}
 	
-	public function getGenericEiProperties() {
+	/**
+	 * @return \n2n\util\col\HashMap
+	 */
+	public function getMap() {
 		return $this->genericEiProperties;
+	}
+	
+	/**
+	 * @return GenericEiProperty[]
+	 */
+	public function getGenericEiProperties() {
+		return $this->genericEiProperties->getValues();
 	}
 	
 	/**
@@ -40,9 +50,9 @@ class GenericEiDefinition {
 	 * @throws UnknownGenericEiPropertyException
 	 * @return GenericEiProperty
 	 */
-	public function getGenericEiPropertyByEiPropPath($eiPropPath) {
+	public function getGenericEiPropertyByEiPropPath(EiPropPath $eiPropPath) {
 		if (null !== ($genericEiProperty = $this->genericEiProperties
-				->offsetGet(EiPropPath::create($eiPropPath)))) {
+				->offsetGet($eiPropPath))) {
 			return $genericEiProperty;
 		}
 	

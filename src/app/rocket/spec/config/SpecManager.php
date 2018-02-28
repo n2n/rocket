@@ -271,7 +271,14 @@ class SpecManager {
 	 * @return \rocket\spec\ei\EiType
 	 */
 	public function getEiTypeByClass(\ReflectionClass $class) {
-		$className = $class->getName();
+		return $this->getEiTypeByClassName($class->getName());
+	}
+	
+	/**
+	 * @param \ReflectionClass $class
+	 * @return \rocket\spec\ei\EiType
+	 */
+	public function getEiTypeByClassName(string $className) {
 		if (isset($this->eiTypes[$className])) {
 			if ($this->exclusiveMode) {
 				$this->eiTypeSetupQueue->exclusivePropInForEiType($this->eiTypes[$className]->getId());
@@ -308,6 +315,10 @@ class SpecManager {
 		return isset($this->eiTypes[$class->getName()]);
 	}
 	
+	public function containsEiTypeClassName(string $className) {
+		return isset($this->eiTypes[$className]);
+	}
+	
 	public function getEiTypes(): array {
 		if ($this->exclusiveMode) {
 			$this->eiTypeSetupQueue->propIns();
@@ -331,7 +342,7 @@ class SpecManager {
 	 * @throws InvalidSpecConfigurationException
 	 * @return EiType
 	 */
-	public function getEiTypeById($id) {
+	public function getEiTypeById(string $id) {
 		$script = $this->getSpecById($id);
 		if ($script instanceof EiType) {
 			if ($this->exclusiveMode) {
