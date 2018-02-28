@@ -60,6 +60,7 @@ class RawDef {
 		
 	const EI_DEF_LABEL_KEY = 'label';
 	const EI_DEF_PLURAL_LABEL_KEY = 'pluralLabel';
+	const EI_DEF_ICON_TYPE_KEY = 'iconType';
 	const EI_DEF_DRAFTING_ALLOWED_KEY = 'draftingAllowed';
 	const EI_DEF_REPRESENTATION_STRING_PATTERN_KEY = 'identityStringPattern';
 	const EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY = 'previewControllerLookupId';

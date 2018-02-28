@@ -123,6 +123,8 @@ class SpecExtractor {
 		$pluralLabel = $eiDefAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false);
 		if ($pluralLabel === null) $pluralLabel = $label;
 		$eiDefExtraction->setPluralLabel($pluralLabel);
+		
+		$eiDefExtraction->setIconType($eiDefAttributes->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
 	
 		$eiDefExtraction->setIdentityStringPattern(
 				$eiDefAttributes->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));

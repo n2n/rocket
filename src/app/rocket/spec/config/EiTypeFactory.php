@@ -118,6 +118,7 @@ class EiTypeFactory {
 			EiMask $eiMask = null) {
 		$eiDef->setLabel($eiDefExtraction->getLabel());
 		$eiDef->setPluralLabel($eiDefExtraction->getPluralLabel());
+		$eiDef->setIconType($eiDefExtraction->getIconType());
 		$eiDef->setIdentityStringPattern($eiDefExtraction->getIdentityStringPattern());
 
 		if (null !== ($draftingAllowed = $eiDefExtraction->isDraftingAllowed())) {

@@ -42,6 +42,8 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	public function initAutoEiPropAttributes(Column $column = null) {
+		parent::initAutoEiPropAttributes($column);
+		
 		if ($column instanceof StringColumn) {
 			$this->attributes->set(self::OPTION_MAXLENGTH_KEY, $column->getLength());
 		}

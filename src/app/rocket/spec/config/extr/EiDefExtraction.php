@@ -28,6 +28,7 @@ use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 class EiDefExtraction {
 	private $label;
 	private $pluralLabel;
+	private $iconType;
 	private $identityStringPattern;
 	private $draftingAllowed;
 	private $previewControllerLookupId;
@@ -71,6 +72,17 @@ class EiDefExtraction {
 		$this->pluralLabel = $pluralLabel;
 	}
 	
+	/**
+	 * @return string
+	 */
+	public function getIconType() {
+		return $this->iconType;
+	}
+
+	public function setIconType(string $iconType = null) {
+		$this->iconType = $iconType;
+	}
+
 	/**
 	 * @return string
 	 */

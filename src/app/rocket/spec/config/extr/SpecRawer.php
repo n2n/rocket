@@ -123,6 +123,7 @@ class SpecRawer {
 	private function buildEiDefExtractionRawData(EiDefExtraction $extraction) {
 		$rawData[RawDef::EI_DEF_LABEL_KEY] = $extraction->getLabel();
 		$rawData[RawDef::EI_DEF_PLURAL_LABEL_KEY] = $extraction->getPluralLabel();
+		$rawData[RawDef::EI_DEF_ICON_TYPE_KEY] = $extraction->getIconType();
 		
 		if (null !== ($identityStringPattern = $extraction->getIdentityStringPattern())) {
 			$rawData[RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY] = $identityStringPattern;
