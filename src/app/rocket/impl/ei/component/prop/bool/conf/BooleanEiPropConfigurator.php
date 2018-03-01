@@ -54,7 +54,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$eMag = new TogglerMag('Bind GuiProps to value', !empty($onGuiIdPathStrs) || !empty($offGuiIdPathStrs));
 		
 		$magCollection->addMag(self::ATTR_BIND_GUI_PROPS_KEY, $eMag);
-		$eMag->setAssociatedMags(array(
+		$eMag->setOnAssociatedMagWrappers(array(
 				$magCollection->addMag(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, 
 						new MultiSelectMag('Associated Gui Fields when on', $assoicatedGuiPropOptions, $onGuiIdPathStrs)),
 				$magCollection->addMag(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, 
