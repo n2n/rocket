@@ -177,7 +177,7 @@ class ContentItemMag extends MagAdapter {
 		$ciEiTypeLabels = array();
 		
 		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();
-		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiType()->getAllSubEiTypes() as $subEiType) {
+		foreach ($this->targetEditEiFrame->getContextEiEngine()->getEiType()->getAllSubEiTypes() as $subEiType) {
 			if ($subEiType->isAbstract()) continue;
 			
 			$ciEiTypeLabels[$subEiType->getId()] = $targetContextEiMask->determineEiMask($subEiType)->getLabelLstr()

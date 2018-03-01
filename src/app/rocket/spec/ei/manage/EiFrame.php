@@ -34,9 +34,10 @@ use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
+use rocket\spec\ei\EiEngine;
 
 class EiFrame {
-	private $contextEiMask;
+	private $contextEiEngine;
 	private $manageState;
 	private $criteriaConstraintCollection;
 	private $parent;
@@ -63,11 +64,11 @@ class EiFrame {
 	private $detailUrlExt;
 
 	/**
-	 * @param EiMask $contextEiMask
+	 * @param EiMask $contextEiEngine
 	 * @param ManageState $controllerContext
 	 */
-	public function __construct(EiMask $contextEiMask, ManageState $manageState) {
-		$this->contextEiMask = $contextEiMask;
+	public function __construct(EiEngine $contextEiEngine, ManageState $manageState) {
+		$this->contextEiEngine = $contextEiEngine;
 		$this->manageState = $manageState;
 		$this->criteriaConstraintCollection = new CriteriaConstraintCollection();
 
@@ -82,10 +83,10 @@ class EiFrame {
 // 	}
 	
 	/**
-	 * @return EiMask
+	 * @return EiEngine
 	 */
-	public function getContextEiMask(): EiMask {	
-		return $this->contextEiMask;
+	public function getContextEiEngine() {	
+		return $this->contextEiEngine;
 	}
 	
 	/**
@@ -202,7 +203,7 @@ class EiFrame {
 		if ($this->criteriaFactory !== null && !($ignoreConstraintTypes & CriteriaConstraint::TYPE_MANAGE)) {
 			$criteria = $this->criteriaFactory->create($em, $entityAlias);
 		} else {
-			$criteria = $em->createCriteria()->from($this->getContextEiMask()->getEiEngine()->getEiType()->getEntityModel()->getClass(), $entityAlias);
+			$criteria = $em->createCriteria()->from($this->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(), $entityAlias);
 		}
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
@@ -298,7 +299,7 @@ class EiFrame {
 		
 		$this->ensureOverviewEnabled();
 		
-		return $this->getContextEiMask()->getPluralLabelLstr();
+		return $this->getContextEiEngine()->getEiMask()->getPluralLabelLstr();
 	}
 	
 	public function setOverviewUrlExt(Url $overviewUrlExt = null) {
@@ -312,7 +313,7 @@ class EiFrame {
 
 	public function isOverviewUrlAvailable() {
 		return $this->overviewUrlExt !== null || (!$this->overviewDisabled
-				&& $this->getContextEiMask()->getEiEngine()->getEiCommandCollection()->hasGenericOverview());
+				&& $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview());
 	}
 	
 	public function getOverviewUrl(HttpContext $httpContext, bool $required = true) {
@@ -320,7 +321,7 @@ class EiFrame {
 			return $httpContext->getRequest()->getContextPath()->toUrl()->ext($this->overviewUrlExt);
 		} 
 		
-		$overviewUrlExt = $this->getContextEiMask()->getEiEngine()->getEiCommandCollection()
+		$overviewUrlExt = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
 				->getGenericOverviewUrlExt($required);
 		
 		if ($overviewUrlExt === null) return null;
@@ -342,7 +343,7 @@ class EiFrame {
 	
 	public function createDetailBreadcrumb(HttpContext $httpContext, EiObject $eiObject) {
 		return new Breadcrumb(
-				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiMask()->getEiEngine()->getEiType())),
+				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiEngine()->getEiType())),
 				$this->getDetailBreadcrumbLabel($eiObject));
 	}
 	
@@ -376,7 +377,7 @@ class EiFrame {
 	
 		$this->ensureDetailEnabled();
 		
-		return $this->getContextEiMask()->createIdentityString($eiObject, $this->getN2nLocale());
+		return $this->getContextEiEngine()->createIdentityString($eiObject, $this->getN2nLocale());
 	}
 	
 	public function setDetailUrlExt(Url $detailUrlExt) {
@@ -390,7 +391,7 @@ class EiFrame {
 
 	public function isDetailUrlAvailable(EntryNavPoint $entryNavPoint) {
 		return $this->detailUrlExt !== null || 
-				(!$this->detailDisabled && $this->getContextEiMask()->getEiEngine()
+				(!$this->detailDisabled && $this->getContextEiEngine()
 						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
 	}
 	
@@ -399,7 +400,7 @@ class EiFrame {
 			return $httpContext->getRequest()->getContextPath()->ext($this->detailUrlExt);
 		}
 		
-		$detailUrlExt = $this->getContextEiMask()->getEiEngine()->getEiCommandCollection()
+		$detailUrlExt = $this->getContextEiEngine()->getEiCommandCollection()
 				->getGenericDetailUrlExt($entryNavPoint, $required);
 		
 		if ($detailUrlExt === null) return null;

@@ -120,7 +120,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 					}
 					
 					public function getFilterDefinition(): FilterDefinition {
-						return $this->targetEiFrame->getContextEiMask()->getEiEngine()
+						return $this->targetEiFrame->getContextEiEngine()
 								->createManagedFilterDefinition($this->targetEiFrame);
 					}
 	

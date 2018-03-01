@@ -32,20 +32,17 @@ use rocket\core\model\Rocket;
 use rocket\spec\ei\EiTypeController;
 use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;
-use rocket\spec\ei\EiType;
 use n2n\util\uri\Path;
 use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
 use rocket\core\model\TransactionApproveAttempt;
 
 class EiMenuItem implements MenuItem {
 	private $id;
-	private $eiType;
 	private $eiMask;
 	private $label;
 	
-	public function __construct(string $id, EiType $eiType, EiMask $eiMask, string $label = null) {
+	public function __construct(string $id, EiMask $eiMask, string $label = null) {
 		$this->id = $id;
-		$this->eiType = $eiType;
 		$this->eiMask = $eiMask;
 	}
 	/**
@@ -113,7 +110,7 @@ class EiMenuItem implements MenuItem {
 		CastUtils::assertTrue($rocket instanceof Rocket);
 				
 		$manageState->createEiFrame($this->eiMask, $delegateControllerContext);
-		$em = $this->eiType->lookupEntityManager($n2nContext->lookup(PdoPool::class));
+		$em = $this->eiMask->getEiType()->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->getEiPermissionManager());

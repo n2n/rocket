@@ -70,19 +70,19 @@ class SpecRawer {
 							=> (string) $nestedSetStrategy->getRightCriteriaProperty());
 		}
 		
-		$rawData = array_merge($rawData, $this->buildEiDefExtractionRawData($extraction->getEiDefExtraction()));
+		$rawData = array_merge($rawData, $this->buildEiMaskExtractionRawData($extraction->getEiMaskExtraction()));
 		$rawData[RawDef::SPEC_EI_DEFAULT_MASK_ID] = $extraction->getDefaultEiMaskId();
 		return $rawData;
 	}
 	
-	public function rawEiMasks(array $groupedEiMaskExtractions) {
+	public function rawEiMasks(array $groupedEiMaskExtensionExtractions) {
 		$rawData = array();
-		foreach ($groupedEiMaskExtractions as $eiTypeId => $eiMaskExtractions) {
-			if (empty($eiMaskExtractions)) continue;
+		foreach ($groupedEiMaskExtensionExtractions as $eiTypeId => $eiMaskExtensionExtractions) {
+			if (empty($eiMaskExtensionExtractions)) continue;
 			
 			$eiMasksRawData = array();
-			foreach ($eiMaskExtractions as $eiMaskExtraction) {
-				$eiMasksRawData[$eiMaskExtraction->getId()] = $this->buildEiMaskExtractionRawData($eiMaskExtraction);
+			foreach ($eiMaskExtensionExtractions as $eiMaskExtensionExtraction) {
+				$eiMasksRawData[$eiMaskExtensionExtraction->getId()] = $this->buildEiMaskExtensionExtractionRawData($eiMaskExtensionExtraction);
 			}
 			
 			$rawData[$eiTypeId] = $eiMasksRawData;
@@ -114,13 +114,13 @@ class SpecRawer {
 		$this->attributes->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
 	}
 	
-	private function buildEiMaskExtractionRawData(EiMaskExtraction $eiMaskExtraction) {
-		$maskRawData = $this->buildEiDefExtractionRawData($eiMaskExtraction->getEiDefExtraction());
+	private function buildEiMaskExtensionExtractionRawData(EiMaskExtensionExtraction $eiMaskExtensionExtraction) {
+		$maskRawData = $this->buildEiMaskExtractionRawData($eiMaskExtensionExtraction->getEiMaskExtraction());
 		
-		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtraction->getDisplayScheme()));
+		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtensionExtraction->getDisplayScheme()));
 	}
 
-	private function buildEiDefExtractionRawData(EiDefExtraction $extraction) {
+	private function buildEiMaskExtractionRawData(EiMaskExtraction $extraction) {
 		$rawData[RawDef::EI_DEF_LABEL_KEY] = $extraction->getLabel();
 		$rawData[RawDef::EI_DEF_PLURAL_LABEL_KEY] = $extraction->getPluralLabel();
 		$rawData[RawDef::EI_DEF_ICON_TYPE_KEY] = $extraction->getIconType();

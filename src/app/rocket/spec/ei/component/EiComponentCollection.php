@@ -25,12 +25,13 @@ use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\IdPath;
 use rocket\spec\ei\EiEngine;
+use rocket\spec\ei\mask\EiMask;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
 	private $genericType;
 	
-	protected $eiEngine;
+	protected $eiMask;
 	private $elements = array();
 	private $independentElements = array();
 	private $inheritedCollection;
@@ -41,16 +42,16 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		$this->genericType = $genericType;
 	}
 	
-	protected function setEiEngine(EiEngine $eiEngine) {
-		$this->eiEngine = $eiEngine;
+	protected function setEiMask(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
 	}
 	
-	public function getEiEngine() {
-		if ($this->eiEngine !== null) {
-			return $this->eiEngine;
+	public function getEiMask() {
+		if ($this->eiMask !== null) {
+			return $this->eiMask;
 		}
 		
-		throw new IllegalStateException('No EiEngine assigend to EiComponentCollection: ' . $this->elementName);
+		throw new IllegalStateException('No EiMask assigend to EiComponentCollection: ' . $this->elementName);
 	}
 	
 	/**
@@ -58,12 +59,13 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 */
 	public function setInheritedCollection(EiComponentCollection $inheritedCollection = null) {
 		$this->inheritedCollection = $inheritedCollection;
+		$this->eiMask->getEiEngine()->clear();
 	}
 	
 	/**
 	 * @return EiComponentCollection
 	 */
-	public function getSuperCollection() {
+	public function getInheritedCollection() {
 		return $this->inheritedCollection;
 	}
 	
@@ -79,13 +81,13 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 					. $eiComponent->getId());
 		}
 		
-		$eiComponent->setEiEngine($this->eiEngine);
+		$eiComponent->setEiMask($this->eiMask);
 		if (!$prepend) {
 			$this->elements[$eiComponent->getId()] = $eiComponent;
 		} else {
 			$this->elements = array($eiComponent->getId() => $eiComponent) + $this->elements;
 		}
-		$this->eiEngine->clear();
+		$this->eiMask->getEiEngine()->clear();
 	}
 	
 	public function addIndependent(IndependentEiComponent $independentEiComponent) {
@@ -108,7 +110,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		}
 		
 		throw new UnknownEiComponentException('No ' . $this->elementName . ' with id \'' . (string) $id 
-				. '\' found in ' . $this->eiEngine->getEiEngineModel() . '.');
+				. '\' found in ' . $this->eiMask . '.');
 	}
 	
 	/**

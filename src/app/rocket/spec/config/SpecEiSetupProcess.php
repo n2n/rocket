@@ -59,16 +59,15 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 		}
 // 		return $this->eiComponent->getEiEngine()->getEiType()->getDefaultEiDef();
 // 	}
-	
+
 // 	public function getSupremeEiDef() {
 // 		$supremeEiType = $this->eiComponent->getEiEngine()->getEiType()->getSupremeEiType();
-		
 // 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
 // 			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
 // 		}
 // 		return $supremeEiType->getDefaultEiDef();
 // 	}
-	
+
 	public function createException(string $reason = null, \Exception $previous = null): InvalidEiComponentConfigurationException {
 		$message = $this->eiComponent . ' invalid configured.';
 							
@@ -82,7 +81,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	 */
 	public function eiu(): Eiu {
 		return $this->eiu 
-				?? $this->eiu = new Eiu($this->specManager, $this->eiComponent->getEiEngine(), $this->n2nContext);
+				?? $this->eiu = new Eiu($this->specManager, $this->eiComponent->getEiMask()->getEiEngine(), $this->n2nContext);
 	}
 	
 // 	/**
@@ -104,22 +103,25 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 	public function getEiPropCollection(): EiPropCollection {
 // 		return $this->eiComponent->getEiEngine()->getEiPropCollection();
 // 	}
-	
+
+
 // 	public function getEiCommandCollection(): EiCommandCollection {
 // 		return $this->eiComponent->getEiEngine()->getEiCommandCollection();
 // 	}
-	
+
+
 // 	public function getEiModificatorCollection(): EiModificatorCollection {
 // 		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
 // 	}
-	
+
 // 	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty {
 // 		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
 // 				->getGenericEiPropertyByEiPropPath($eiPropPath);
 // 	}
-	
+
 // 	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
 // 		return $this->eiComponent->getEiEngine()->getScalarEiDefinition()
 // 				->getScalarEiPropertyByFieldPath($eiPropPath);
 // 	}
+
 }

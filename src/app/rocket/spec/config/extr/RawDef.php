@@ -32,7 +32,7 @@ class RawDef {
 	const SPEC_EI_NESTED_SET_STRATEGY_RIGHT_KEY = 'right';
 	
 	const SPEC_EI_CLASS_KEY = 'entity';
-	const SPEC_EI_DEFAULT_MASK_ID = 'defaultMaskId';
+// 	const SPEC_EI_DEFAULT_MASK_ID = 'defaultMaskId';
 	
 	const EI_MASKS_KEY = 'eiMasks';
 	const COMMON_EI_MASK_DRAFTING_ALLOWED_KEY = 'draftingAllowed';

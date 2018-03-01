@@ -19,14 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei;
+namespace rocket\spec\ei\mask;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\critmod\sort\SortData;
 
-class EiDef {
+class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_DISABLED = 'disabled';
 // 	const TYPE_CHANGE_MODE_REPLACE = 'replace';
 // 	const TYPE_CHANGE_MODE_CHANGE = 'change';

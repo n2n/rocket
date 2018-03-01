@@ -35,7 +35,7 @@ use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
+use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
@@ -217,7 +217,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		if ($eiMaskId !== null) {
 			try {
 				return $eiType->getEiMaskCollection()->getById($eiMaskId)->getEiEngine();
-			} catch (UnknownEiMaskException $e) {
+			} catch (UnknownEiMaskExtensionException $e) {
 				throw new PageNotFoundException(null, 0, $e);
 			}
 		}

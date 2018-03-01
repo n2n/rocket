@@ -94,7 +94,7 @@ class SpecExtractor {
 	private function createEiTypeExtraction($id, Attributes $eiTypeAttributes) {
 		$extraction = new EiTypeExtraction($id, $this->moduleNamespace);
 		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY)));
-		$extraction->setEiDefExtraction($this->createEiDefExtraction($eiTypeAttributes));
+		$extraction->setEiMaskExtraction($this->createEiMaskExtraction($eiTypeAttributes));
 		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::SPEC_EI_DATA_SOURCE_NAME_KEY, false, null, true));
 		
 		if (null !== ($nssAttrs = $eiTypeAttributes->getArray(RawDef::SPEC_EI_NESTED_SET_STRATEGY_KEY, false, null))) {
@@ -109,37 +109,37 @@ class SpecExtractor {
 			}
 		}
 		
-		$extraction->setDefaultEiMaskId($eiTypeAttributes->getString(RawDef::SPEC_EI_DEFAULT_MASK_ID, false, null, true));
+// 		$extraction->setDefaultEiMaskId($eiTypeAttributes->getString(RawDef::SPEC_EI_DEFAULT_MASK_ID, false, null, true));
 	
 		return $extraction;
 	}
 	
-	public function createEiDefExtraction(Attributes $eiDefAttributes) {
-		$eiDefExtraction = new EiDefExtraction();
+	public function createEiMaskExtraction(Attributes $eiDefAttributes) {
+		$eiMaskExtraction = new EiMaskExtraction();
 	
 		$label = $eiDefAttributes->getScalar(RawDef::EI_DEF_LABEL_KEY);
-		$eiDefExtraction->setLabel($label);
+		$eiMaskExtraction->setLabel($label);
 	
 		$pluralLabel = $eiDefAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false);
 		if ($pluralLabel === null) $pluralLabel = $label;
-		$eiDefExtraction->setPluralLabel($pluralLabel);
+		$eiMaskExtraction->setPluralLabel($pluralLabel);
 		
-		$eiDefExtraction->setIconType($eiDefAttributes->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
+		$eiMaskExtraction->setIconType($eiDefAttributes->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
 	
-		$eiDefExtraction->setIdentityStringPattern(
+		$eiMaskExtraction->setIdentityStringPattern(
 				$eiDefAttributes->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));
 	
-		$eiDefExtraction->setDraftingAllowed($eiDefAttributes->getBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY,
-				false, $eiDefExtraction->isDraftingAllowed()));
+		$eiMaskExtraction->setDraftingAllowed($eiDefAttributes->getBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY,
+				false, $eiMaskExtraction->isDraftingAllowed()));
 	
-		$eiDefExtraction->setPreviewControllerLookupId(
+		$eiMaskExtraction->setPreviewControllerLookupId(
 				$eiDefAttributes->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
 	
 	
 		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_FIELDS_KEY, false, array(), 
 				TypeConstraint::createSimple('array')) as $eiPropId => $fieldRawData) {
 			try {
-				$eiDefExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
+				$eiMaskExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
 			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiProp ' . $eiPropId, $e);
 			}
@@ -148,33 +148,33 @@ class SpecExtractor {
 		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_COMMANDS_KEY, false, array(), 
 				TypeConstraint::createSimple('array')) as $eiCommandId => $eiCommandRawData) {
 			try {
-				$eiDefExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCommandId, 
+				$eiMaskExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCommandId, 
 						new Attributes($eiCommandRawData)));
 			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiCommand ' . $eiCommandId, $e);
 			}
 		}
 
-		$eiDefExtraction->setOverviewEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setOverviewEiCommandId($eiDefAttributes->getString(
 				RawDef::EI_DEF_OVERVIEW_COMMAND_ID_KEY, false));	
-		$eiDefExtraction->setGenericDetailEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setGenericDetailEiCommandId($eiDefAttributes->getString(
 				RawDef::EI_DEF_ENTRY_DETAIL_COMMAND_ID_KEY, false));	
-		$eiDefExtraction->setGenericEditEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setGenericEditEiCommandId($eiDefAttributes->getString(
 				RawDef::EI_DEF_ENTRY_EDIT_COMMAND_ID_KEY, false));	
-		$eiDefExtraction->setGenericEditEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setGenericEditEiCommandId($eiDefAttributes->getString(
 				RawDef::EI_DEF_ENTRY_ADD_COMMAND_ID_KEY, false));	
 		
 		
 		if (null !== ($filterData = $eiDefAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null, 
 				TypeConstraint::createSimple('array')))) {
-			$eiDefExtraction->setFilterGroupData(FilterGroupData::create(new Attributes($filterData)));
+			$eiMaskExtraction->setFilterGroupData(FilterGroupData::create(new Attributes($filterData)));
 		}
 		
 		if (null !== ($defaultSortData = $eiDefAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
-			$eiDefExtraction->setDefaultSortData(SortData::create(new Attributes($defaultSortData)));
+			$eiMaskExtraction->setDefaultSortData(SortData::create(new Attributes($defaultSortData)));
 		}
 
-		return $eiDefExtraction;
+		return $eiMaskExtraction;
 	}
 	
 	private function upgradeTypeName($typeName) {
@@ -240,7 +240,7 @@ class SpecExtractor {
 		foreach ($attributes->getNames() as $eiTypeId) {
 			try {
 				$eiMasksAttributes = new Attributes($attributes->getArray($eiTypeId, false));
-				$eiMaskGroups[$eiTypeId] = $this->createEiMaskExtractions($eiMasksAttributes);
+				$eiMaskGroups[$eiTypeId] = $this->createEiMaskExtensionExtractions($eiMasksAttributes);
 			} catch (AttributesException $e) {
 				throw $this->createSpecEiMaskException($eiTypeId, $e);
 			} catch (InvalidConfigurationException $e) {
@@ -251,12 +251,12 @@ class SpecExtractor {
 		return $eiMaskGroups;
 	}
 	
-	public function createEiMaskExtractions(Attributes $eiMasksAttributes): array {
+	public function createEiMaskExtensionExtractions(Attributes $eiMasksAttributes): array {
 		$eiMasks = array();
 		
 		foreach ($eiMasksAttributes->getNames() as $eiMaskId) {
 			try {
-				$eiMasks[$eiMaskId] = $this->createEiMaskExtraction($eiMaskId,
+				$eiMasks[$eiMaskId] = $this->createEiMaskExtensionExtraction($eiMaskId,
 						new Attributes($eiMasksAttributes->getArray($eiMaskId)));
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiMaskException($eiMaskId, $e);
@@ -268,10 +268,10 @@ class SpecExtractor {
 		return $eiMasks;
 	}
 	
-	private function createEiMaskExtraction($id, Attributes $attributes): EiMaskExtraction {
-		$maskExtraction = new EiMaskExtraction($id, $this->moduleNamespace);
+	private function createEiMaskExtensionExtraction($id, Attributes $attributes): EiMaskExtensionExtraction {
+		$maskExtraction = new EiMaskExtensionExtraction($id, $this->moduleNamespace);
 		
-		$maskExtraction->setEiDefExtraction($this->createEiDefExtraction($attributes));
+		$maskExtraction->setEiMaskExtraction($this->createEiMaskExtraction($attributes));
 		$maskExtraction->setDisplayScheme($this->createDisplayScheme($attributes));	
 		return $maskExtraction;
 	}

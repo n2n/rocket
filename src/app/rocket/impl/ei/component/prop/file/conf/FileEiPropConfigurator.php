@@ -84,7 +84,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
-		$this->fileEiProp->getEiEngine()->getSupremeEiEngine()->getEiCommandCollection()->add($thumbEiCommand);
+		$this->fileEiProp->getEiMask()->getSupremeEiEngine()->getEiCommandCollection()->add($thumbEiCommand);
 		$this->fileEiProp->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
@@ -101,7 +101,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 			}
 			
 			$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp, $namingEiPropPath);
-			$this->fileEiProp->getEiEngine()->getSupremeEiEngine()->getEiCommandCollection()
+			$this->fileEiProp->getEiMask()->getSupremeEiEngine()->getEiCommandCollection()
 					->add($multiUploadEiCommand);
 			$this->fileEiProp->setMultiUploadEiCommand($multiUploadEiCommand);
 		}
@@ -159,7 +159,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	private function getNamingEiPropIdOptions() {
 		$namingEiPropIdOptions = array();
-		foreach ($this->eiComponent->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()
+		foreach ($this->eiComponent->getEiMask()->getScalarEiDefinition()->getScalarEiProperties()
 				as $id => $genericScalarProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
 			$namingEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();

@@ -51,7 +51,7 @@ class SelectEiPropRelation extends EiPropRelation {
 		
 // 		if ($this->isEmbeddedAddEnabled()) {
 // 			$this->embeddedEditPseudoEiCommand = new EmbeddedEditPseudoCommand(
-// 					$this->getRelationEiProp()->getEiEngine()->getEiType()->getDefaultEiDef()->getLabel() . ' > ' 
+// 					$this->getRelationEiProp()->getEiEngine()->getEiType()->getEiMask()->getLabel() . ' > ' 
 // 							. $this->relationEiProp->getLabel() . ' Embedded Add', 
 // 					$this->getRelationEiProp()->getId(), $this->getTarget()->getId());
 // 			$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedEditPseudoEiCommand);

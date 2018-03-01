@@ -27,28 +27,25 @@ use n2n\core\module\Module;
 use n2n\core\container\N2nContext;
 use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\manage\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\security\PrivilegeBuilder;
-use rocket\spec\ei\mask\EiMaskCollection;
+use rocket\spec\ei\mask\EiMaskExtensionCollection;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\spec\ei\manage\veto\VetoableActionListener;
 use rocket\spec\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\config\Spec;
-use n2n\l10n\Lstr;
+use rocket\spec\ei\mask\EiMask;
+use rocket\spec\ei\mask\model\DisplayScheme;
 
-class EiType extends Spec implements EiEngineModel {
+class EiType extends Spec {
 	private $entityModel;
-	private $eiDef;
-	private $eiEngine;
-	
 	private $superEiType;
 	protected $subEiTypes = array();
 	
-	private $defaultEiMask;
-	private $eiMaskCollection;
+	private $eiMask;
+	private $eiMaskExtensionCollection;
 	
 	private $dataSourceName = null;
 	private $nestedSetStrategy;
@@ -63,9 +60,8 @@ class EiType extends Spec implements EiEngineModel {
 	public function __construct($id, $moduleNamespace) {
 		parent::__construct($id, $moduleNamespace);
 		
-		$this->eiDef = new EiDef();
-		$this->eiEngine = new EiEngine($this);
-		$this->eiMaskCollection = new EiMaskCollection($this);
+		$this->eiMask = new EiMask($this, new DisplayScheme());
+		$this->eiMaskExtensionCollection = new EiMaskExtensionCollection($this);
 	}
 
 // 	public function getEiThingPath(): EiThingPath {
@@ -92,38 +88,11 @@ class EiType extends Spec implements EiEngineModel {
 		$this->superEiType = $superEiType;
 		$superEiType->subEiTypes[$this->getId()] = $this;
 		
-		$superEiEngine = $superEiType->getEiEngine();
-		$this->eiEngine->getEiPropCollection()->setInheritedCollection($superEiEngine->getEiPropCollection());
-		$this->eiEngine->getEiCommandCollection()->setInheritedCollection($superEiEngine->getEiCommandCollection());
-		$this->eiEngine->getEiModificatorCollection()->setInheritedCollection(
-				$superEiEngine->getEiModificatorCollection());
-	}
-	
-	public function getLabelLstr(): Lstr {
-		return new Lstr($this->eiDef->getLabel(), $this->moduleNamespace);
-	}
-		
-	public function getPluralLabelLstr(): Lstr {
-		return new Lstr($this->eiDef->getPluralLabel(), $this->moduleNamespace);
-	}
-	
-	public function getIconType(): string {
-		return $this->eiDef->getIconType();
-	}
-	
-	/**
-	 * @return \rocket\spec\ei\EiDef
-	 */
-	public function getDefaultEiDef(): EiDef {
-		return $this->eiDef;
-	}
-	
-	public function getEiEngine(): EiEngine {
-		return $this->eiEngine;
-	}
-	
-	public function getMaskedEiThing() {
-		return null;
+		$superEiMask = $superEiType->getEiMask();
+		$this->eiMask->getEiPropCollection()->setInheritedCollection($superEiMask->getEiPropCollection());
+		$this->eiMask->getEiCommandCollection()->setInheritedCollection($superEiMask->getEiCommandCollection());
+		$this->eiMask->getEiModificatorCollection()->setInheritedCollection(
+				$superEiMask->getEiModificatorCollection());
 	}
 	
 	/**
@@ -273,19 +242,11 @@ class EiType extends Spec implements EiEngineModel {
 		return $eiType;
 	}
 	
-// 	public function createDraftModel(DraftManager $draftManager) {
-// 		$draftModel = new DraftModel($draftManager, $this->entityModel, $this->getDraftables(false),
-// 				$this->getDraftables(true));
-		
-// 		return $draftModel;
+// 	public function setupEiFrame(EiFrame $eiFrame) {
+// 		foreach ($this->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
+// 			$eiModificator->setupEiFrame($eiFrame);
+// 		}
 // 	}
-
-	
-	public function setupEiFrame(EiFrame $eiFrame) {
-		foreach ($this->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
-			$eiModificator->setupEiFrame($eiFrame);
-		}
-	}
 	
 	public function hasSecurityOptions() {
 		return $this->superEiType === null;
@@ -351,23 +312,22 @@ class EiType extends Spec implements EiEngineModel {
 // 		return $restrictionSelectorItems;
 // 	}
 	
+	/**
+	 * @param object $object
+	 * @return boolean
+	 */
 	public function isObjectValid($object) {
 		return is_object($object) && ReflectionUtils::isObjectA($object, $this->getEntityModel()->getClass());
 	}
-// 	/**
-// 	 * @param unknown $propertyName
-// 	 * @return \rocket\spec\ei\component\prop\ObjectPropertyEiProp
-// 	 */
-// 	public function containsEiPropPropertyName($propertyName) {
-// 		foreach ($this->eiPropCollection as $eiProp) {
-// 			if ($eiProp instanceof ObjectPropertyEiProp
-// 					&& $eiProp->getPropertyName() == $propertyName) {
-// 				return true;
-// 			}
-// 		}
-		
-// 		return false;
-// 	}
+
+	/**
+	 * 
+	 * @return EiMask
+	 */
+	public function getEiMask() {
+		return $this->eiMask;
+	}
+	
 	/**
 	 * @param string $dataSourceName
 	 */
@@ -389,57 +349,11 @@ class EiType extends Spec implements EiEngineModel {
 	}
 	
 	/**
-	 * @param NestedSetStrategy $nestedSetStrategy
+	 * @param NestedSetStrategy|null $nestedSetStrategy
 	 */
-	public function setNestedSetStrategy(NestedSetStrategy $nestedSetStrategy = null) {
+	public function setNestedSetStrategy(?NestedSetStrategy $nestedSetStrategy) {
 		$this->nestedSetStrategy = $nestedSetStrategy;
 	}
-	
-
-// 	private $mainTranslationN2nLocale;
-// 	private $translationN2nLocales;
-	
-// 	public function getMainTranslationN2nLocale() {
-// 		if ($this->superEiType !== null) {
-// 			return $this->superEiType->getMainTranslationN2nLocale();	
-// 		} 
-		
-// 		if ($this->mainTranslationN2nLocale === null) {
-// 			return N2nLocale::getDefault();
-// 		}
-		
-// 		return $this->mainTranslationN2nLocale;
-// 	}
-	
-// 	public function setMainTranslationN2nLocale(N2nLocale $mainTranslationN2nLocale = null) {
-// 		if ($this->superEiType !== null) {
-// 			return $this->superEiType->setMainTranslationN2nLocale($mainTranslationN2nLocale);	
-// 		}
-		
-// 		$this->mainTranslationN2nLocale = $mainTranslationN2nLocale;
-// 	}
-	
-// 	public function getTranslationN2nLocales() {
-// 		if ($this->superEiType !== null) {
-// 			return $this->superEiType->getTranslationN2nLocales();	
-// 		}
-		
-// 		if ($this->translationN2nLocales === null) {
-// 			$n2nLocales = N2N::getN2nLocales();
-// 			unset($n2nLocales[$this->getMainTranslationN2nLocale()->getId()]);
-// 			return $n2nLocales;
-// 		}
-		
-// 		return $this->translationN2nLocales;
-// 	}
-	
-// 	public function setTranslationN2nLocales(array $translationN2nLocales = null) {
-// 		if ($this->superEiType === null) {
-// 			$this->translationN2nLocales = $translationN2nLocales;
-// 		}
-		
-// 		$this->superEiType->setTranslationN2nLocales($translationN2nLocales);
-// 	}
 	
 	/**
 	 * @param \n2n\core\container\PdoPool $dbhPool
@@ -461,11 +375,11 @@ class EiType extends Spec implements EiEngineModel {
 		return $dbhPool->getEntityManagerFactory($this->dataSourceName);
 	}
 	/**
-	 * @param $entity
+	 * @param object $entityObj
 	 * @return mixed
 	 */
-	public function extractId($entity) {
-		return $this->entityModel->getIdDef()->getEntityProperty()->readValue($entity);
+	public function extractId($entityObj) {
+		return $this->entityModel->getIdDef()->getEntityProperty()->readValue($entityObj);
 	}
 	
 	/**
@@ -499,10 +413,10 @@ class EiType extends Spec implements EiEngineModel {
 	}
 	
 	/**
-	 * @return EiMaskCollection
+	 * @return EiMaskExtensionCollection
 	 */
-	public function getEiMaskCollection(): EiMaskCollection {
-		return $this->eiMaskCollection;
+	public function getEiMaskExtensionCollection(): EiMaskExtensionCollection {
+		return $this->eiMaskExtensionCollection;
 	}
 	
 	public function __toString(): string {

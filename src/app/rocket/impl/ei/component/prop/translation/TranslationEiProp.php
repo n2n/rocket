@@ -197,7 +197,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
 		
-		$targetGuiDefinition = $targetEiuFrame->getEiFrame()->getContextEiMask()->getEiEngine()->getGuiDefinition();
+		$targetGuiDefinition = $targetEiuFrame->getEiFrame()->getContextEiEngine()->getGuiDefinition();
 		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nLocale()), $this->minNumTranslations);
 		if ($this->copyCommand !== null) {
@@ -286,8 +286,8 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		
 		return new TranslationQuickSearchField(
 				$this->eiPropRelation->getRelationEntityProperty(),
-				$this->eiPropRelation->getTargetEiType()->getEiEngine()->getEiType()->getEntityModel()->getClass(), 
-				$targetEiFrame->getContextEiMask()->getEiEngine()->createQuickSearchDefinition($targetEiFrame));
+				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
+				$targetEiFrame->getContextEiEngine()->createQuickSearchDefinition($targetEiFrame));
 	}
 
 }

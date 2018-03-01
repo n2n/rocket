@@ -39,10 +39,14 @@ class ScalarEiDefinition {
 		return $this->scalarEiProperties;
 	}
 	
-	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
-		if (null !== ($genericEiProperty = $this->scalarEiProperties
-				->offsetGet(EiPropPath::create($eiPropPath)))) {
-			return $genericEiProperty;
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @throws UnknownScalarEiPropertyException
+	 * @return ScalarEiProperty
+	 */
+	public function getScalarEiPropertyByEiPropPath(EiPropPath $eiPropPath) {
+		if (null !== ($scalarEiProperty = $this->scalarEiProperties->offsetGet($eiPropPath))) {
+			return $scalarEiProperty;
 		}
 	
 		throw new UnknownScalarEiPropertyException('Unknown ScalarEiProperty: ' . $eiPropPath);

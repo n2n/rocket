@@ -9,6 +9,8 @@ use rocket\spec\ei\manage\generic\GenericEiProperty;
 use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\component\prop\EiProp;
 use rocket\spec\ei\component\modificator\EiModificator;
+use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\spec\ei\manage\generic\ScalarEiProperty;
 
 class EiuEngine {
 	private $eiEngine;
@@ -30,6 +32,13 @@ class EiuEngine {
 	 */
 	public function getEiEngine() {
 		return $this->eiEngine;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\EiType
+	 */
+	public function getEiType() {
+		return $this->eiEngine->getEiMask()->getEiType();
 	}
 	
 	/**
@@ -79,6 +88,23 @@ class EiuEngine {
 		return $options;
 	}
 	
+	/**
+	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
+	 * @return ScalarEiProperty
+	 * @throws UnknownScalarEiPropertyException
+	 */
+	public function getScalarEiProperty($eiPropArg, bool $required = true) {
+		try {
+			return $this->eiEngine->getScalarEiDefinition()->getScalarEiPropertyByEiPropPath(
+					EiPropPath::create($eiPropArg));
+		} catch (UnknownScalarEiPropertyException $e) {
+			if (!$required) return null;
+			
+			throw $e;
+		}
+	}
+	
+	
 	public function containsEiProp($eiPropPath) {
 		return $this->eiEngine->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
 	}
@@ -108,7 +134,7 @@ class EiuEngine {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEngine
 	 */
 	public function addEiProp(EiProp $eiProp, bool $prepend = false) {
-		$this->eiEngine->getEiPropCollection()->add($eiProp, $prepend);
+		$this->eiEngine->getEiMask()->getEiPropCollection()->add($eiProp, $prepend);
 		return $this;
 	}
 	
@@ -118,7 +144,7 @@ class EiuEngine {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEngine
 	 */
 	public function addEiCommand(EiCommand $eiCommand, bool $prepend = false) {
-		$this->eiEngine->getEiCommandCollection()->add($eiCommand, $prepend);
+		$this->eiEngine->getEiMask()->getEiCommandCollection()->add($eiCommand, $prepend);
 		return $this;
 	}
 	
@@ -128,7 +154,7 @@ class EiuEngine {
 	 * @return \rocket\spec\ei\manage\util\model\EiuEngine
 	 */
 	public function addEiModificator(EiModificator $eiModificator, bool $prepend = false) {
-		$this->eiEngine->getEiModificatorCollection()->add($eiModificator, $prepend);
+		$this->eiEngine->getEiMask()->getEiModificatorCollection()->add($eiModificator, $prepend);
 		return $this;
 	}
 }

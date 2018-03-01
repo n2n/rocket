@@ -22,16 +22,16 @@
 namespace rocket\spec\ei\component\prop;
 
 use rocket\spec\ei\component\EiComponentCollection;
-use rocket\spec\ei\EiEngine;
+use rocket\spec\ei\mask\EiMask;
 
 class EiPropCollection extends EiComponentCollection {
 	
 	/**
 	 * 
 	 */
-	public function __construct(EiEngine $eiEngine) {
+	public function __construct(EiMask $eiMask) {
 		parent::__construct('EiProp', EiProp::class);
-		$this->setEiEngine($eiEngine);
+		$this->setEiMask($eiMask);
 	}
 
 	/**

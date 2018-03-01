@@ -98,7 +98,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 // 		$this->embeddedPseudoCommand = new EmbeddedPseudoCommand($this->getTarget());
 // 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedPseudoCommand);
 		
-// 		$this->embeddedEditPseudoCommand = new EmbeddedEditPseudoCommand($this->getRelationEiProp()->getEiEngine()->getEiType()->getDefaultEiDef()->getLabel() 
+// 		$this->embeddedEditPseudoCommand = new EmbeddedEditPseudoCommand($this->getRelationEiProp()->getEiEngine()->getEiType()->getEiMask()->getLabel() 
 // 						. ' > ' . $this->relationEiProp->getLabel() . ' Embedded Edit', 
 // 				$this->getRelationEiProp()->getId(), $this->getTarget()->getId());
 		
@@ -158,7 +158,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		if ($eiObject !== null && null !== $targetEiFrame->getOverviewUrlExt() 
 				&& null !== $targetEiFrame->getDetailPathExt()) {
 			$pathExt = $eiFrame->getControllerContext()->toPathExt()->ext(
-					$eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEntryDetailPathExt($eiObject->toEntryNavPoint()));
+					$eiFrame->getContextEiEngine()->getEiType()->getEntryDetailPathExt($eiObject->toEntryNavPoint()));
 			$targetEiFrame->setOverviewPathExt($pathExt);
 			$targetEiFrame->setDetailPathExt($pathExt);
 		}

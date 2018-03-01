@@ -32,10 +32,9 @@
 	$view->assert($overviewModel instanceof OverviewModel);
 	
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
-					->t($view->getN2nLocale())));
+			array('title' => $overviewModel->getEiuFrame()->getGenericLabel()));
 	
-	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask();
+	$eiMask = $overviewModel->getEiuFrame()->getEiMask();
 	
 	$eiHtml = new EiHtmlBuilder($view);
 ?>	

@@ -26,7 +26,7 @@ use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\ei\mask\model\DisplayScheme;
 use rocket\spec\ei\EiType;
 
-class EiMaskCollection implements \IteratorAggregate, \Countable {
+class EiMaskExtensionCollection implements \IteratorAggregate, \Countable {
 	private $eiType;
 	private $eiMasks = array();
 	private $defaultId;
@@ -36,28 +36,28 @@ class EiMaskCollection implements \IteratorAggregate, \Countable {
 		$this->eiType = $eiType;
 	}
 	
-	public function add(EiMask $eiMask) {
-		$id = $eiMask->getId();
+	public function add(EiMaskExtension $eiMaskExtension) {
+		$id = $eiMaskExtension->getId();
 		if (0 == mb_strlen($id)) {
-			$eiMask->setId($this->makeUniqueId(''));
+			$eiMaskExtension->setId($this->makeUniqueId(''));
 		} else if (IoUtils::hasSpecialChars($id)) {
 			throw new InvalidEiMaskConfigurationException('Id of passed EiMask contains invalid characters: ' . $id);
 		}
 	
-		$this->eiMasks[$eiMask->getId()] = $eiMask;
+		$this->eiMasks[$eiMaskExtension->getId()] = $eiMaskExtension;
 	}
 	
 	/**
 	 * @param string $id
-	 * @return EiMask
-	 * @throws UnknownEiMaskException
+	 * @return EiMaskExtension
+	 * @throws UnknownEiMaskExtensionException
 	 */
-	public function getById($id): EiMask {
+	public function getById($id) {
 		if (isset($this->eiMasks[$id])) {
 			return $this->eiMasks[$id];
 		}
 	
-		throw new UnknownEiMaskException('No EiMask with id \'' . (string) $id
+		throw new UnknownEiMaskExtensionException('No EiMask with id \'' . (string) $id
 				. '\' found in  \'' . $this->eiType->getId() . '\'.');
 	}
 	

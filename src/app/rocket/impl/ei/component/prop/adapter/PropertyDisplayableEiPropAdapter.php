@@ -138,9 +138,9 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		$eiMask = $this->eiEngine->getEiMask();
-		return array('class' => 'rocket-ei-spec-' . $this->eiEngine->getEiType()->getId()
-						. ($eiMask !== null ? ' rocket-ei-mask-' . $eiMask->getId() : '') 
+		$eiMaskExtension = $this->eiMask->isExtension() ? $this->eiMask->getExtension() : null;
+		return array('class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
+						. ($eiMaskExtension !== null ? ' rocket-ei-mask-' . $eiMaskExtension->getId() : '') 
 						. ' rocket-ei-field-' . $this->getId(), 
 				'title' => $this->displaySettings->getHelpText());
 	}

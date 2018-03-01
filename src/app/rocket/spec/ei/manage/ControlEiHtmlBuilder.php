@@ -43,7 +43,7 @@ class ControlEiHtmlBuilder {
 	
 	public function getOverallControlList(): UiComponent {
 		$snippet = new HtmlSnippet();
-		foreach ($this->eiuFrame->getEiFrame()->getContextEiMask()->createOverallControls($this->eiuFrame, $this->view) as $control) {
+		foreach ($this->eiuFrame->getEiFrame()->getContextEiEngine()->createOverallControls($this->eiuFrame, $this->view) as $control) {
 			$snippet->appendLn($control->createUiComponent(false));
 		}
 	
@@ -55,7 +55,7 @@ class ControlEiHtmlBuilder {
 	}
 	
 	public function getEntryGuiControlList(EiuEntryGui $eiuEntryGui, bool $useIcons = false) {
-		$entryControls = $this->eiuFrame->getEiFrame()->getContextEiMask()
+		$entryControls = $this->eiuFrame->getEiFrame()->getContextEiEngine()
 				->createEntryControls($eiuEntryGui, $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);

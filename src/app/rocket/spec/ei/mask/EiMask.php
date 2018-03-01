@@ -24,15 +24,12 @@ namespace rocket\spec\ei\mask;
 use rocket\spec\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\spec\ei\EiType;
-use rocket\util\Identifiable;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\EiDef;
 use rocket\spec\ei\manage\preview\model\PreviewModel;
 use rocket\spec\ei\manage\EiObject;
 use rocket\spec\ei\mask\model\DisplayScheme;
 use rocket\spec\ei\manage\critmod\CriteriaConstraint;
 use rocket\spec\ei\EiEngine;
-use n2n\l10n\Lstr;
 use rocket\spec\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\ei\manage\preview\model\UnavailablePreviewException;
@@ -40,25 +37,30 @@ use rocket\spec\ei\manage\control\UnavailableControlException;
 use rocket\spec\ei\manage\util\model\Eiu;
 use rocket\spec\ei\manage\gui\EiGui;
 use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\manage\control\IconType;
 use rocket\spec\ei\manage\gui\SummarizedStringBuilder;
 use rocket\spec\ei\manage\gui\EiGuiViewFactory;
 use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\EiEngineModel;
 use rocket\spec\ei\mask\model\CommonEiGuiViewFactory;
+use rocket\spec\ei\component\prop\EiPropCollection;
+use rocket\spec\ei\component\command\EiCommandCollection;
+use rocket\spec\ei\component\modificator\EiModificatorCollection;
 use n2n\util\ex\IllegalStateException;
+use n2n\l10n\Lstr;
+use rocket\spec\ei\manage\control\IconType;
 
-class EiMask implements EiEngineModel, Identifiable {
-	private $id;
+class EiMask {
+	private $eiMaskDef;
 	private $eiType;
-	private $moduleNamespace;
 	private $subEiMaskIds;
-	private $decoratedEiMasks;
 	
-	private $eiDef;
-	private $eiEngine;
+	private $eiPropCollection;
+	private $eiCommandCollection;
+	private $eiModificatorCollection;
+	
 	private $displayScheme;
+	private $eiMaskExtension;
 	
+	private $eiEngine;
 	private $mappingFactory;
 	private $guiFactory;
 	private $draftDefinitionFactory;
@@ -67,42 +69,47 @@ class EiMask implements EiEngineModel, Identifiable {
 	private $guiDefinition;
 	private $draftDefinition;
 	
-	public function __construct(EiType $eiType, string $moduleNamespace, DisplayScheme $guiOrder) {
+	public function __construct(EiType $eiType) {
 		$this->eiType = $eiType;
-		$this->moduleNamespace = $moduleNamespace;
 		
-		$this->eiDef = new EiDef();
-		$this->eiEngine = new EiEngine($this->eiType, $this);
-		$this->displayScheme = $guiOrder;
-		
-		$eiPropCollection = $this->eiEngine->getEiPropCollection();
-		$eiPropCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiPropCollection());
-		
-		$eiCommandCollection = $this->eiEngine->getEiCommandCollection();
-		$eiCommandCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiCommandCollection());
-		
-		$eiModificatorCollection = $this->eiEngine->getEiModificatorCollection();
-		$eiModificatorCollection->setInheritedCollection($this->eiType->getEiEngine()->getEiModificatorCollection());
-	}
+		$this->eiMaskDef = new EiMaskDef();
 
-	public function hasId() {
-		return $this->id !== null;
+		$this->eiEngine = new EiEngine($this);
+		$this->eiPropCollection = new EiPropCollection($this);
+		$this->eiCommandCollection = new EiCommandCollection($this);
+		$this->eiModificatorCollection = new EiModificatorCollection($this);
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\util\Identifiable::getId()
-	 */
-	public function getId(): string {
-		IllegalStateException::assertTrue($this->id !== null, 'Id not defined.');
-		return $this->id;
+	public function extends(EiMaskExtension $eiMaskExtension) {
+		IllegalStateException::assertTrue($this->eiMaskExtension === null);
+		$this->eiMaskExtension = $eiMaskExtension;
+		
+		$inheritEiMask = $eiMaskExtension->getExtendedEiMask();
+		
+		$this->eiPropCollection->setInheritedCollection($inheritEiMask->getEiPropCollection());
+		$this->eiCommandCollection->setInheritedCollection($inheritEiMask->getEiCommandCollection());
+		$this->eiModificatorCollection->setInheritedCollection($inheritEiMask->getEiModificatorCollection());
 	}
 	
 	/**
-	 * @param string $id
+	 * @return boolean
 	 */
-	public function setId(string $id = null) {
-		$this->id = $id;
+	public function isExtension() {
+		return $this->eiMaskExtension !== null;
 	}
+	
+	/**
+	 * @return \rocket\spec\ei\mask\EiMaskExtension
+	 * @throws IllegalStateException if {@see self::isExtension()} returns false.
+	 */
+	public function getExtension() {
+		if ($this->eiMaskExtension === null) {
+			throw new IllegalStateException('EiMask is no extension.');
+		}
+		
+		return $this->eiMaskExtension;
+	}
+
 
 // 	public function getEiThingPath(): EiThingPath {
 // 		$ids = array();
@@ -116,34 +123,82 @@ class EiMask implements EiEngineModel, Identifiable {
 // 		return new EiThingPath($ids);
 // 	}
 	
-	public function getModuleNamespace(): string {
-		return $this->moduleNamespace;
-	}
-	
-	public function setModuleNamespace(string $moduleNamespace) {
-		$this->moduleNamespace = $moduleNamespace;
-	}
-	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\mask\EiMask::get()
+	 * @return \rocket\spec\ei\EiType
 	 */
-	public function getEiType(): EiType {
+	public function getEiType() {
 		return $this->eiType;
 	}
 	
-// 	public function getMaskedEiThing(): EiThing {
-// 		return $this->eiType;
-// 	}
-	
-	public function getEiDef() {
-		return $this->eiDef;
+	/**
+	 * @return \rocket\spec\ei\mask\EiMaskDef
+	 */
+	public function getDef() {
+		return $this->eiMaskDef;
 	}
 	
-	public function getEiEngine(): EiEngine {
+	public function getModuleNamespace() {
+		return $this->eiMaskExtension !== null
+				? $this->eiMaskExtension->getModuleNamespace()
+				: $this->eiType->getModuleNamespace();
+	}
+	
+	/**
+	 * @return \n2n\l10n\Lstr
+	 */
+	public function getLabelLstr() {
+		return new Lstr((string) $this->eiMaskDef->getLabel(), $this->getModuleNamespace());
+	}
+	
+	/**
+	 * @return \n2n\l10n\Lstr
+	 */
+	public function getPluralLabelLstr() {
+		return new Lstr((string) $this->eiMaskDef->getPluralLabel(), $this->getModuleNamespace());
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getIconType() {
+		if (null !== ($iconType = $this->eiMaskDef->getIconType())) {
+			return $iconType;
+		}
+		
+		return IconType::ICON_FILE_TEXT;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\component\prop\EiPropCollection
+	 */
+	public function getEiPropCollection() {
+		return $this->eiPropCollection;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\component\command\EiCommandCollection
+	 */
+	public function getEiCommandCollection() {
+		return $this->eiCommandCollection;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\component\modificator\EiModificatorCollection
+	 */
+	public function getEiModificatorCollection() {
+		return $this->eiModificatorCollection;
+	}
+	
+	/**
+	 * @return EiEngine
+	 */
+	public function getEiEngine() {
 		return $this->eiEngine;
 	}
 	
+	/**
+	 * @param DisplayScheme $displayScheme
+	 */
 	public function setDisplayScheme(DisplayScheme $displayScheme) {
 		$this->displayScheme = $displayScheme;
 	}
@@ -152,64 +207,30 @@ class EiMask implements EiEngineModel, Identifiable {
 	 * @return DisplayScheme
 	 */
 	public function getDisplayScheme() {
-		return $this->displayScheme;
+		return $this->displayScheme ?? $this->displayScheme = new DisplayScheme();
 	}
+	
+
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\EiEngineModel::getLabelLstr()
+	 * @return boolean
 	 */
-	public function getLabelLstr(): Lstr {
-		if (null !== ($label = $this->eiDef->getLabel())) {
-			return new Lstr($label, $this->moduleNamespace);
-		}
-		
-		return new Lstr((string) $this->eiType->getDefaultEiDef()->getLabel(), $this->moduleNamespace);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\EiEngineModel::getPluralLabelLstr()
-	 */
-	public function getPluralLabelLstr(): Lstr {
-		if (null !== ($pluralLabel = $this->eiDef->getPluralLabel())) {
-			return new Lstr($pluralLabel, $this->moduleNamespace);
-		}
-		
-		return new Lstr((string) $this->eiType->getDefaultEiDef()->getPluralLabel(), $this->moduleNamespace);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\EiEngineModel::getIconType()
-	 */
-	public function getIconType(): string {
-		if (null !== ($iconType = $this->eiDef->getIconType())) {
-			return $iconType;
-		}
-		
-		if (null !== ($iconType = $this->eiType->getDefaultEiDef()->getIconType())) {
-			return $iconType;
-		}
-		
-		return IconType::ICON_FILE_TEXT;
-	}
-	
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\mask\EiMask::isDraftDisabled()
-	 */
-	public function isDraftingEnabled(): bool {
+	public function isDraftingEnabled() {
 		return false;
 // 		if (null !== ($draftingAllowed = $this->eiDef->isDraftingAllowed())) {
 // 			if (!$draftingAllowed) return false;
-// 		} else if (null !== ($draftingAllowed = $this->eiType->getDefaultEiDef()->isDraftingAllowed())) {
+// 		} else if (null !== ($draftingAllowed = $this->eiType->getEiMask()->isDraftingAllowed())) {
 // 			if (!$draftingAllowed) return false;
 // 		}
 		
 // 		return !$this->eiEngine->getDraftDefinition()->isEmpty();
 	}
 	
+	/**
+	 * @param EiObject $eiObject
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
 	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
 		$idPatternPart = null;
 		$namePatternPart = null;
@@ -236,14 +257,16 @@ class EiMask implements EiEngineModel, Identifiable {
 		return $this->eiEngine->getGuiDefinition()->createIdentityString($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\mask\EiMask::createIdentityString()
+	/**
+	 * @param EiObject $eiObject
+	 * @param N2nLocale $n2nLocale
+	 * @return string
 	 */
 	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$identityStringPattern = $this->eiDef->getIdentityStringPattern();
+		$identityStringPattern = $this->eiMaskDef->getIdentityStringPattern();
 		
 		if ($identityStringPattern === null) {
-			$identityStringPattern = $this->eiType->getDefaultEiDef()->getIdentityStringPattern();
+			$identityStringPattern = $this->eiType->getEiMask()->getIdentityStringPattern();
 		}
 		
 		if ($identityStringPattern === null) {
@@ -342,21 +365,21 @@ class EiMask implements EiEngineModel, Identifiable {
 		$displayStructure = null;
 		switch ($eiGui->getViewMode()) {
 			case ViewMode::BULKY_READ:
-				$displayStructure = $this->displayScheme->getDetailDisplayStructure()
+				$displayStructure = $this->getDisplayScheme()->getDetailDisplayStructure()
 						?? $this->displayScheme->getBulkyDisplayStructure();
 				break;
 			case ViewMode::BULKY_EDIT:
-				$displayStructure = $this->displayScheme->getEditDisplayStructure()
+				$displayStructure = $this->getDisplayScheme()->getEditDisplayStructure()
 						?? $this->displayScheme->getBulkyDisplayStructure();
 				break;
 			case ViewMode::BULKY_ADD:
-				$displayStructure = $this->displayScheme->getAddDisplayStructure()
+				$displayStructure = $this->getDisplayScheme()->getAddDisplayStructure()
 						?? $this->displayScheme->getBulkyDisplayStructure();
 				break;
 			case ViewMode::COMPACT_READ:
 			case ViewMode::COMPACT_EDIT:
 			case ViewMode::COMPACT_ADD:
-				$displayStructure = $this->displayScheme->getOverviewDisplayStructure();
+				$displayStructure = $this->getDisplayScheme()->getOverviewDisplayStructure();
 				break;
 		}
 		
@@ -391,11 +414,19 @@ class EiMask implements EiEngineModel, Identifiable {
 				
 		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
 			if (!$subEiType->containsSubEiTypeId($eiTypeId, true)) continue;
+			
 			return $this->getSubEiMaskByEiTypeId($subEiType->getId())
 					->determineEiMask($eiType);
 		}
 		
-		throw new \InvalidArgumentException();
+		// @todo
+// 		if ($this->eiType->containsSuperEiType($eiTypeId, true)) {
+			
+// 		}
+
+		return $eiType->getEiMask();
+		
+// 		throw new \InvalidArgumentException();
 	}
 	
 	public function getSubEiMaskByEiTypeId($eiTypeId): EiMask {
@@ -416,14 +447,14 @@ class EiMask implements EiEngineModel, Identifiable {
 	}
 	
 	public function isPreviewSupported(): bool {
-		return null !== $this->eiDef->getPreviewControllerLookupId() 
-				|| null !== $this->eiType->getDefaultEiDef()->getPreviewControllerLookupId();
+		return null !== $this->eiMaskDef->getPreviewControllerLookupId() 
+				|| null !== $this->eiType->getEiMask()->getPreviewControllerLookupId();
 	}
 	
 	public function lookupPreviewController(EiFrame $eiFrame, PreviewModel $previewModel = null): PreviewController {
-		$lookupId = $this->eiDef->getPreviewControllerLookupId();
+		$lookupId = $this->eiMaskDef->getPreviewControllerLookupId();
 		if (null === $lookupId) {
-			$lookupId = $this->eiType->getDefaultEiDef()->getPreviewControllerLookupId();	
+			$lookupId = $this->eiType->getEiMask()->getPreviewControllerLookupId();	
 		}
 		
 		if ($lookupId === null) {
@@ -462,8 +493,7 @@ class EiMask implements EiEngineModel, Identifiable {
 	 * @param EiFrame $eiFrame
 	 */
 	public function setupEiFrame(EiFrame $eiFrame) {
-		if (null !== ($filterGroupData = $this->eiDef->getFilterGroupData())
-				|| null !== ($filterGroupData = $this->eiType->getDefaultEiDef()->getFilterGroupData())) {
+		if (null !== ($filterGroupData = $this->eiMaskDef->getFilterGroupData())) {
 			$criteriaConstraint = $this->createManagedFilterDefinition($eiFrame)
 					->buildCriteriaConstraint($filterGroupData, false);
 			if ($criteriaConstraint !== null) {
@@ -471,8 +501,7 @@ class EiMask implements EiEngineModel, Identifiable {
 			}
 		}
 
-		if (null !== ($defaultSortData = $this->eiDef->getDefaultSortData())
-				|| null !== ($defaultSortData = $this->eiType->getDefaultEiDef()->getDefaultSortData())) {
+		if (null !== ($defaultSortData = $this->eiMaskDef->getDefaultSortData())) {
 			$criteriaConstraint = $this->eiEngine->createManagedSortDefinition($eiFrame)
 					->builCriteriaConstraint($defaultSortData, false);
 			if ($criteriaConstraint !== null) {
@@ -481,7 +510,7 @@ class EiMask implements EiEngineModel, Identifiable {
 		}
 
 		$eiu = new Eiu($eiFrame);
-		foreach ($this->eiEngine->getEiModificatorCollection()->toArray() as $modificator) {
+		foreach ($this->eiModificatorCollection->toArray() as $modificator) {
 			$modificator->setupEiFrame($eiu);
 		}
 	}

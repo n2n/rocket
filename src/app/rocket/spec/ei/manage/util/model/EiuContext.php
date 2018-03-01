@@ -41,7 +41,7 @@ class EiuContext {
 		$eiEngine = null;
 		try {
 			if ($eiTypeArg instanceof \ReflectionClass) {
-				return new EiuEngine($this->specManager->getEiTypeByClass($eiTypeArg)->getEiEngine(),
+				return new EiuEngine($this->specManager->getEiTypeByClass($eiTypeArg)->getEiMask()->getEiEngine(),
 						$this->n2nContext);
 			}
 			

@@ -33,7 +33,7 @@ class EiFrameFactory {
 	
 	public function create(ControllerContext $controllerContext, ManageState $manageState, $pseudo, 
 			EiFrame $parentEiFrame = null) {
-		$eiFrame = new EiFrame($this->contextEiMask, $manageState, $pseudo);
+		$eiFrame = new EiFrame($this->contextEiMask->getEiEngine(), $manageState, $pseudo);
 		$eiFrame->setControllerContext($controllerContext);
 		$eiFrame->setParent($parentEiFrame);
 		

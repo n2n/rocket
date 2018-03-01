@@ -100,7 +100,7 @@ class OverviewModel implements Dispatchable {
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit, ($this->listSize * $numPages));
 		
-		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()
+		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiEngine()->getEiMask()->getEiType()
 				->getNestedSetStrategy())) {
 			$this->treeLookup($criteria, $nestedSetStrategy);
 		} else {
@@ -116,7 +116,7 @@ class OverviewModel implements Dispatchable {
 		$this->critmodForm->applyToEiFrame($eiFrame, true);
 		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
 				
-		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+		$eiType = $eiFrame->getContextEiEngine()->getEiType();
 		$ids = array();
 		foreach ($pids as $pid) {
 			$ids[] = $eiType->pidToId($pid);

@@ -29,9 +29,6 @@ use rocket\spec\ei\component\GuiFactory;
 use rocket\spec\ei\component\MappingFactory;
 use rocket\spec\ei\manage\EiFrame;
 use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\component\modificator\EiModificatorCollection;
-use rocket\spec\ei\component\command\EiCommandCollection;
-use rocket\spec\ei\component\prop\EiPropCollection;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\manage\critmod\sort\SortDefinition;
 use rocket\spec\ei\manage\mapping\EiEntry;
@@ -50,11 +47,7 @@ use rocket\spec\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;
 
 class EiEngine {
-	private $eiType;
 	private $eiMask;
-	private $eiPropCollection;
-	private $eiCommandCollection;
-	private $eiModificatorCollection;
 	
 	private $guiDefinition;
 	private $draftDefinition;
@@ -65,12 +58,8 @@ class EiEngine {
 	 * @param EiType $eiType
 	 * @param EiMask $eiMask
 	 */
-	public function __construct(EiType $eiType, EiMask $eiMask = null) {
-		$this->eiType = $eiType;
+	public function __construct(EiMask $eiMask) {
 		$this->eiMask = $eiMask;
-		$this->eiPropCollection = new EiPropCollection($this);
-		$this->eiCommandCollection = new EiCommandCollection($this);
-		$this->eiModificatorCollection = new EiModificatorCollection($this);
 	}
 	
 	/**
@@ -84,34 +73,6 @@ class EiEngine {
 	}
 	
 	/**
-	 * @return \n2n\l10n\Lstr
-	 */
-	public function getLabelLstr() {
-		return $this->getEiEngineModel()->getLabelLstr();
-	}
-		
-	/**
-	* @return \n2n\l10n\Lstr
-	*/
-	public function getPluralLabelLstr() {
-		return $this->getEiEngineModel()->getLabelLstr();
-	}
-		
-	/**
-	* @return string
-	*/
-	public function getIconType() {
-		return $this->getEiEngineModel()->getIconType();
-	}
-	
-	/**
-	 * @return \rocket\spec\ei\EiType
-	 */
-	public function getEiType() {
-		return $this->eiType;
-	}
-	
-	/**
 	 * @return \rocket\spec\ei\mask\EiMask
 	 */
 	public function getEiMask() {
@@ -119,56 +80,25 @@ class EiEngine {
 	}
 	
 	/**
-	 * @return EiEngineModel
+	 * @return EiMask
 	 */
-	public function getEiEngineModel() {
-		if ($this->eiMask !== null) {
-			return $this->eiMask;
-		}
-		return $this->eiType;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function hasSuperEiEngine() {
-		return $this->eiType->hasSuperEiType();
-	}
-	
-	/**
-	 * @return EiEngineModel
-	 */
-	private function getSupremeEiEngineModel() {
-		$supremeEiType = $this->eiType->getSupremeEiType();
-		if (null !== $this->eiMask) {
-			return $this->eiMask->determineEiMask($supremeEiType);
-		}
-		return $supremeEiType;
+	private function getSupremeEiMask() {
+		$eiType = $this->eiMask->getEiType();
+		if (!$eiType->hasSuperEiType()) return $this->eiMask;
+		
+		return $this->eiMask->determineEiMask($eiType->getSupremeEiType());
 	}
 	
 	public function getSupremeEiEngine() {
-		return $this->getSupremeEiEngineModel()->getEiEngine();
-	}
-	
-	
-	public function getEiPropCollection(): EiPropCollection {
-		return $this->eiPropCollection;
-	}
-	
-	public function getEiCommandCollection(): EiCommandCollection {
-		return $this->eiCommandCollection;
-	}
-	
-	public function getEiModificatorCollection(): EiModificatorCollection {
-		return $this->eiModificatorCollection;
+		return $this->getSupremeEiMask()->getEiEngine();
 	}
 
 	private $critmodFactory;
 	
 	private function getCritmodFactory() {
 		if ($this->critmodFactory === null) {
-			$this->critmodFactory = new CritmodFactory($this->eiPropCollection, 
-					$this->eiModificatorCollection);
+			$this->critmodFactory = new CritmodFactory($this->eiMask->getEiPropCollection(), 
+					$this->eiMask->getEiModificatorCollection());
 		}
 		
 		return $this->critmodFactory;
@@ -203,30 +133,34 @@ class EiEngine {
 	}
 	
 	public function createPrivilegeDefinition(N2nContext $n2nContext) {
-		$securityFactory = new SecurityFactory($this->eiPropCollection, 
-				$this->getEiCommandCollection(), $this->eiModificatorCollection);
+		$securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(), 
+				$this->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
 	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject): EiEntry {
-		$mappingFactory = new MappingFactory($this->eiPropCollection, $this->eiModificatorCollection);
+		$mappingFactory = new MappingFactory($this->eiMask->getEiPropCollection(), 
+				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject);
 	}
 	
 	public function createEiEntryCopy(EiFrame $eiFrame, EiObject $eiObject, EiEntry $from) {
-		$mappingFactory = new MappingFactory($this->eiPropCollection, $this->eiModificatorCollection);
+		$mappingFactory = new MappingFactory($this->eiMask->eiPropCollection, 
+				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
 	}
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
-		$mappingFactory = new MappingFactory($this->eiPropCollection, $this->eiModificatorCollection);
+		$mappingFactory = new MappingFactory($this->eiMask->eiPropCollection, 
+				$this->eiMask->getEiModificatorCollection());
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
 	public function getGuiDefinition(): GuiDefinition {
 		if ($this->guiDefinition === null) {
-			$guiFactory = new GuiFactory($this->eiPropCollection, $this->eiModificatorCollection);
+			$guiFactory = new GuiFactory($this->eiMask->getEiPropCollection(), 
+					$this->eiMask->getEiModificatorCollection());
 			$this->guiDefinition = $guiFactory->createGuiDefinition();
 		}
 	
@@ -268,7 +202,7 @@ class EiEngine {
 		
 		$this->genericEiDefinition = new GenericEiDefinition();
 		$genericEiPropertyMap = $this->genericEiDefinition->getMap();
-		foreach ($this->eiPropCollection as $eiProp) {
+		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
 			if ($eiProp instanceof GenericEiProp 
 					&& $genericEiProperty = $eiProp->getGenericEiProperty()) {
 				ArgUtils::valTypeReturn($genericEiProperty, GenericEiProperty::class, $eiProp, 
@@ -286,7 +220,7 @@ class EiEngine {
 		
 		$this->scalarEiDefinition = new ScalarEiDefinition();
 		$scalarEiProperties = $this->scalarEiDefinition->getMap();
-		foreach ($this->eiPropCollection as $eiProp) {
+		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
 			if ($eiProp instanceof ScalarEiProp
 					&& null !== ($scalarEiProperty = $eiProp->getScalarEiProperty())) {
 				ArgUtils::valTypeReturn($scalarEiProperty, ScalarEiProperty::class, $eiProp, 'getScalarEiProperty', true);

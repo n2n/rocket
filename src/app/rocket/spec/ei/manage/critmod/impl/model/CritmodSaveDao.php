@@ -132,7 +132,7 @@ class CritmodSaveDao implements RequestScoped {
 	}
 		
 // 	public function getFilterNames(EiFrame $eiFrame) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// 		$scriptId = $eiFrame->getContextEiEngine()->getEiType()->getId();
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			return array_keys($this->filterDatas[$scriptId]);
 // 		}	
@@ -172,7 +172,7 @@ class CritmodSaveDao implements RequestScoped {
 	}
 	
 // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
-// 		$scriptId = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId();
+// 		$scriptId = $eiFrame->getContextEiEngine()->getEiType()->getId();
 		
 // 		if (isset($this->filterDatas[$scriptId])) {
 // 			unset($this->filterDatas[$scriptId][$filterName]);

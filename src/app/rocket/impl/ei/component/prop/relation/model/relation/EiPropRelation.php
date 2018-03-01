@@ -129,7 +129,7 @@ abstract class EiPropRelation {
 		
 		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
 
-		foreach ($this->getTargetEiMask()->getEiEngine()->getEiPropCollection() as $targetEiProp) {
+		foreach ($this->getTargetEiMask()->getEiPropCollection() as $targetEiProp) {
 			if ($targetEiProp instanceof RelationEiProp 
 					&& $targetEntityProperty->equals($targetEiProp->getEntityProperty())) {
 				$this->targetMasterEiProp = $targetEiProp;
@@ -163,18 +163,18 @@ abstract class EiPropRelation {
 		$this->initTargetMasterEiProp();		
 		
 		// supreme EiEngine to make command available in EiFrames with super context EiTypes.
-		$superemeEiEngine = $this->relationEiProp->getEiEngine()->getSupremeEiEngine();
+		$superemeEiEngine = $this->relationEiProp->getEiMask()->getEiEngine()->getSupremeEiEngine();
 		$this->relationEiCommand = new RelationEiCommand($this);
-		$superemeEiEngine->getEiCommandCollection()->add($this->relationEiCommand);
+		$superemeEiEngine->getEiMask()->getEiCommandCollection()->add($this->relationEiCommand);
 				
 		$this->relationAjahEiCommand = new RelationAjahEiCommand($this);
-		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($this->relationAjahEiCommand);
+		$targetEiMask->getEiCommandCollection()->add($this->relationAjahEiCommand);
 		
 
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$entityProperty = $this->getRelationEntityProperty();
 						
-			$this->relationEiProp->getEiEngine()->getEiModificatorCollection()
+			$this->relationEiProp->getEiMask()->getEiModificatorCollection()
 					->add(new TargetMasterRelationEiModificator($this));
 		}
 	}
@@ -195,18 +195,18 @@ abstract class EiPropRelation {
 	
 	protected function setupEmbeddedEditEiCommand() {
 		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand('Edit embedded in ' 
-						. $this->getRelationEiProp()->getEiEngine()->getLabelLstr() 
+						. $this->getRelationEiProp()->getEiMask()->getLabelLstr() 
 						. ' - ' . $this->getTargetEiMask()->getLabelLstr(), 
 				$this->getRelationEiProp()->getId(), $this->getTargetEiType()->getId());
 		
-		$this->relationEiProp->getEiEngine()->getEiCommandCollection()
+		$this->relationEiProp->getEiMask()->getEiCommandCollection()
 				->add($this->embeddedEditEiCommand);
 	}
 	
 // 	public function hasRecursiveConflict(EiFrame $eiFrame) {
 // 		$target = $this->getTarget();
 // 		while (null !== ($eiFrame = $eiFrame->getParent())) {
-// 			if ($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->equals($target)) {
+// 			if ($eiFrame->getContextEiEngine()->getEiType()->equals($target)) {
 // 				return true;
 // 			}
 // 		}

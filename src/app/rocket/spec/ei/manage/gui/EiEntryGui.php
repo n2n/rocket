@@ -340,13 +340,13 @@ class EiEntryGui {
 	
 	public function createControls(HtmlView $view) {
 		$eiFrame = $this->eiGui->getEiFrame();
-		$eiMask = $eiFrame->getContextEiMask()->determineEiMask($this->eiEntry->getEiType());
+		$eiMask = $eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($this->eiEntry->getEiType());
 	
 		$eiu = new Eiu($this);
 	
 		$controls = array();
 	
-		foreach ($eiMask->getEiEngine()->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+		foreach ($eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryControlComponent)
 					|| !$this->eiEntry->isExecutableBy(EiCommandPath::from($eiCommand))) {
 				continue;

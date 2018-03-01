@@ -46,7 +46,7 @@ abstract class EiUtilsAdapter implements EiUtils {
 	 * @see \rocket\spec\ei\manage\util\model\EiUtils::getEiType()
 	 */
 	public function getEiType(): EiType {
-		return $this->getEiMask()->getEiEngine()->getEiType();
+		return $this->getEiMask()->getEiType();
 	}
 	
 	/**

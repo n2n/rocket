@@ -93,8 +93,8 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		$eiMask = $this->eiEngine->getEiMask();
-		return array('class' => 'rocket-ei-spec-' . $this->eiEngine->getEiType()->getId()
+		$eiMask = $this->eiMask->getEiMask();
+		return array('class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
 						. ($eiMask !== null ? ' rocket-ei-mask-' . $eiMask->getId() : '') 
 						. ' rocket-ei-field-' . $this->getId(), 
 				'title' => $this->getDisplaySettings()->getHelpText());

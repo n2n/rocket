@@ -33,7 +33,7 @@ use rocket\core\model\MenuItem;
 use rocket\core\model\UnknownMenuItemException;
 use rocket\spec\config\extr\MenuItemExtraction;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
+use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
 use rocket\spec\config\extr\CustomSpecExtraction;
 use n2n\util\config\AttributesException;
 use rocket\core\model\Rocket;
@@ -117,7 +117,7 @@ class SpecManager {
 // 					->getMenuItemExtractionById($id));
 // 		} catch (UnknownSpecException $e) {
 // 			throw $this->createInvalidMenuItemConfigurationException($id, $e);
-// 		} catch (UnknownEiMaskException $e)  {
+// 		} catch (UnknownEiMaskExtensionException $e)  {
 // 			throw $this->createInvalidMenuItemConfigurationException($id, $e);
 // 		}
 		
@@ -150,10 +150,10 @@ class SpecManager {
 		if ($eiMaskId !== null) {
 			$eiMask = $spec->getEiMaskCollection()->getById($eiMaskId);
 		} else {
-			$eiMask = $spec->getEiMaskCollection()->getOrCreateDefault();
+			$eiMask = $spec->getEiMask();
 		}
 		
-		return new EiMenuItem($menuItemExtraction->getId(), $spec, $eiMask, $menuItemExtraction->getLabel());
+		return new EiMenuItem($menuItemExtraction->getId(), $eiMask, $menuItemExtraction->getLabel());
 	}
 	
 // 	public function containsSpecId($id) {
@@ -206,7 +206,7 @@ class SpecManager {
 					$this->menuItems[$id] = $this->createMenuItem($menuItemExtraction);
 				} catch (UnknownSpecException $e) {
 					throw $this->createInvalidMenuItemConfigurationException($id, $e);
-				} catch (UnknownEiMaskException $e)  {
+				} catch (UnknownEiMaskExtensionException $e)  {
 					throw $this->createInvalidMenuItemConfigurationException($id, $e);
 				}
 			}

@@ -21,80 +21,174 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\ei\mask\model\DisplayScheme;
-use n2n\util\ex\IllegalStateException;
+use n2n\reflection\ArgUtils;
+use rocket\spec\ei\manage\critmod\sort\SortData;
+use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 
 class EiMaskExtraction {
-	private $id;
-	private $moduleNamespace;
-	private $eiDefExtraction;
-	private $guiOrder;
-	private $subMaskIds = array();
+	private $label;
+	private $pluralLabel;
+	private $identityStringPattern;
+	private $draftingAllowed;
+	private $previewControllerLookupId;
 	
-	public function __construct($id, $moduleNamespace) {
-		$this->id = $id;
-		$this->moduleNamespace = $moduleNamespace;
+	private $filterData;
+	private $defaultSortData;
+	
+	private $eiPropExtractions = array();
+	private $eiCommandExtractions = array();
+	
+	private $overviewEiCommandId;
+	private $entryDetailEiCommandId;
+	private $entryEditEiCommandId;
+	private $entryAddEiCommandId;
+	
+	/**
+	 * @return string
+	 */
+	public function getLabel(): string {
+		return $this->label;
+	}
+	
+	/**
+	 * @param string $label
+	 */
+	public function setLabel($label) {
+		$this->label = $label;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getPluralLabel() {
+		return $this->pluralLabel;
+	}
+	
+	/**
+	 * @param string $pluralLabel
+	 */
+	public function setPluralLabel($pluralLabel) {
+		$this->pluralLabel = $pluralLabel;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getIconType() {
+		return $this->iconType;
+	}
+	
+	/**
+	 * @param string $iconType
+	 */
+	public function setIconType($iconType) {
+		$this->iconType = $iconType;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getIdentityStringPattern() {
+		return $this->identityStringPattern;
 	}
 
 	/**
-	 * @return string 
+	 * @param string $identityStringPattern
 	 */
-	public function getId() {
-		return $this->id;
+	public function setIdentityStringPattern($identityStringPattern) {
+		$this->identityStringPattern = $identityStringPattern;
 	}
 
-	public function setId($id) {
-		$this->id = $id;
+	public function isDraftingAllowed() {
+		$this->draftingAllowed;
 	}
 	
-	public function getModuleNamespace() {
-		return $this->moduleNamespace;
+	public function setDraftingAllowed(bool $draftingAllowed = null) {
+		$this->draftingAllowed = $draftingAllowed;
+	}
+
+	public function getPreviewControllerLookupId() {
+		return $this->previewControllerLookupId;
+	}
+
+	public function setPreviewControllerLookupId($previewControllerLookupId) {
+		$this->previewControllerLookupId = $previewControllerLookupId;
+	}
+
+	public function getFilterGroupData() {
+		return $this->filterData;
 	}
 	
-	public function setModuleNamespace($moduleNamespace) {
-		$this->moduleNamespace = $moduleNamespace;
+	public function setFilterGroupData(FilterGroupData $filterData = null) {
+		$this->filterData = $filterData;
 	}
 	
-	/**
-	 * @return EiDefExtraction
-	 */
-	public function getEiDefExtraction() {
-		return $this->eiDefExtraction;
+	public function getDefaultSortData() {
+		return $this->defaultSortData;
 	}
-	
-	/**
-	 * @param EiDefExtraction $eiDefExtraction
-	 */
-	public function setEiDefExtraction(EiDefExtraction $eiDefExtraction) {
-		$this->eiDefExtraction = $eiDefExtraction;
-	}
-	
-	/**
-	 * @return DisplayScheme
-	 */
-	public function getDisplayScheme(): DisplayScheme {
-		IllegalStateException::assertTrue($this->guiOrder !== null);
-		return $this->guiOrder;
-	}
-	
-	/**
-	 * @param DisplayScheme $guiOrder
-	 */
-	public function setDisplayScheme(DisplayScheme $guiOrder) {
-		$this->guiOrder = $guiOrder;
-	}
-	
-	/**
-	 * @return string[]
-	 */
-	public function getSubEiMaskIds() {
-		return $this->subMaskIds;
+
+	public function setDefaultSortData(SortData $defaultSortData = null) {
+		$this->defaultSortData = $defaultSortData;
 	}
 
 	/**
-	 * @param string[] $subMaskIds
+	 * @return EiPropExtraction []
 	 */
-	public function setSubMaskIds(array $subMaskIds) {
-		$this->subMaskIds = $subMaskIds;
+	public function getEiPropExtractions() {
+		return $this->eiPropExtractions;
+	}
+	
+	public function addEiPropExtraction(EiPropExtraction $eiPropExtraction) {
+		$this->eiPropExtractions[] = $eiPropExtraction;
+	}
+	
+	public function setEiPropExtractions(array $eiPropExtractions) {
+		ArgUtils::valArray($eiPropExtractions, EiPropExtraction::class);
+		$this->eiPropExtractions = $eiPropExtractions;	
+	}
+	
+	public function getEiCommandExtractions() {
+		return $this->eiCommandExtractions;
+	}
+	
+	public function addEiCommandExtraction(EiComponentExtraction $configurableExtraction) {
+		$this->eiCommandExtractions[] = $configurableExtraction;
+	}
+	
+	public function setEiCommandExtraction(array $eiCommandExtractions) {
+		ArgUtils::valArray($eiCommandExtractions, EiComponentExtraction::class);
+		$this->eiCommandExtractions = $eiCommandExtractions;
+	}
+	
+	public function getOverviewEiCommandId() {
+		return $this->overviewEiCommandId;
+	}
+
+	public function setOverviewEiCommandId($overviewEiCommandId) {
+		$this->overviewEiCommandId = $overviewEiCommandId;
+	}
+
+	public function getGenericDetailEiCommandId() {
+		return $this->entryDetailEiCommandId;
+	}
+
+	public function setGenericDetailEiCommandId($entryDetailEiCommandId) {
+		$this->entryDetailEiCommandId = $entryDetailEiCommandId;
+	}
+
+	public function getGenericEditEiCommandId() {
+		return $this->entryEditEiCommandId;
+	}
+
+	public function setGenericEditEiCommandId($entryEditEiCommandId) {
+		$this->entryEditEiCommandId = $entryEditEiCommandId;
+	}
+
+	public function getGenericAddEiCommandId() {
+		return $this->entryAddEiCommandId;
+	}
+
+	public function setGenericAddEiCommandId($entryAddEiCommandId) {
+		$this->entryAddEiCommandId = $entryAddEiCommandId;
 	}
 }

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\ei\component;
+namespace rocket\spec\ei;
 
-class UnknownException extends \RuntimeException {
+class EiException extends \RuntimeException {
 }

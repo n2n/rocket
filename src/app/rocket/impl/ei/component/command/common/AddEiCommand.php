@@ -89,7 +89,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 
 		$options = array();
 		
-		if (null === $this->eiEngine->getEiType()->getNestedSetStrategy()) {
+		if (null === $this->eiMask->getEiType()->getNestedSetStrategy()) {
 			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_new_entry_label');
 		} else {
 			$options[self::CONTROL_ADD_ROOT_BRANCH_KEY] = $dtc->t('ei_impl_add_root_branch_label');
@@ -104,7 +104,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$dtc = $eiu->dtc('rocket');
 		
-		$nestedSet = null !== $this->eiEngine->getEiType()->getNestedSetStrategy();
+		$nestedSet = null !== $this->eiMask->getEiType()->getNestedSetStrategy();
 		
 		$controls = array();
 		

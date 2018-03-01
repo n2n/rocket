@@ -22,32 +22,42 @@
 namespace rocket\spec\ei\component\command;
 
 use rocket\spec\ei\component\EiComponentCollection;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\manage\control\EntryNavPoint;
 use rocket\spec\ei\component\UnknownEiComponentException;
 use n2n\util\uri\Path;
 use n2n\reflection\ArgUtils;
 use n2n\util\uri\Url;
+use rocket\spec\ei\mask\EiMask;
 
 class EiCommandCollection extends EiComponentCollection {
 	
 	/**
-	 * @param EiType $eiType
+	 * @param EiMask $eiMask
 	 */
-	public function __construct(EiEngine $eiEngine) {
-		parent::__construct('EiCommand', 'rocket\spec\ei\component\command\EiCommand');
-		$this->setEiEngine($eiEngine);
+	public function __construct(EiMask $eiMask) {
+		parent::__construct('EiCommand', EiCommand::class);
+		$this->setEiMask($eiMask);
 	}
 
-	public function getById(string $id): EiCommand {
+	/**
+	 * @param string $id
+	 * @return EiCommand
+	 */
+	public function getById(string $id) {
 		return $this->getEiComponentById($id);
 	}
 	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @param bool $prepend
+	 */
 	public function add(EiCommand $eiCommand, bool $prepend = false) {
 		$this->addEiComponent($eiCommand, $prepend);
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function hasGenericOverview() {
 		return null !== $this->getGenericOverviewEiCommand(false);
 	}
@@ -57,7 +67,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return \rocket\spec\ei\component\command\GenericOverviewEiCommand
 	 */
 	public function getGenericOverviewEiCommand(bool $required = false) {
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommand) {
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
 			if ($eiCommand instanceof GenericOverviewEiCommand  && $eiCommand->isOverviewAvaialble()) {
 				return $eiCommand;
 			}
@@ -65,7 +75,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no ' 
 				. GenericOverviewEiCommand::class . '.');
 	}
 	
@@ -91,7 +101,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return GenericDetailEiCommand
 	 */
 	public function getGenericDetailEiCommand(EntryNavPoint $entryNavPoint, bool $required = false) {
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommand) {
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
 			if ($eiCommand instanceof GenericDetailEiCommand && $eiCommand->isDetailAvailable($entryNavPoint)) {
 				return $eiCommand;
 			}
@@ -99,7 +109,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no ' 
 				. GenericDetailEiCommand::class . ' for ' . $entryNavPoint);
 	}
 	
@@ -121,7 +131,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return GenericEditEiCommand
 	 */
 	public function getGenericEditEiCommand(EntryNavPoint $entryNavPoint, bool $required = false) {
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommand) {
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
 			if ($eiCommand instanceof GenericEditEiCommand && $eiCommand->isEditAvailable($entryNavPoint)) {
 				return $eiCommand;
 			}
@@ -129,7 +139,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no ' 
 				. GenericEditEiCommand::class . ' for ' . $entryNavPoint);
 	}
 	
@@ -151,14 +161,14 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return GenericAddEiCommand
 	 */
 	private function getGenericAddEiCommand(bool $draft, bool $required = false) {
-		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommand) {
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
 			if ($eiCommand instanceof GenericAddEiCommand && $eiCommand->isAddAvailable($draft)) {
 				return $eiCommand;
 			}
 		}
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiEngine->getEiEngineModel() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no ' 
 				. GenericEditEiCommand::class . ' for ' . ($draft ? 'draft entry' : 'live entry'));
 	}
 	

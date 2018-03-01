@@ -30,8 +30,6 @@ use rocket\spec\ei\component\command\EiCommand;
 use rocket\spec\ei\security\EiExecution;
 use rocket\spec\ei\EiCommandPath;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiEngineModel;
-use rocket\spec\ei\EiEngine;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
 	private $rocketUser;
@@ -62,15 +60,15 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	public function isEiCommandAccessible(EiCommand $eiCommand): bool {
 		if ($this->rocketUser->isAdmin()) return true;
 
-		return null !== $this->findEiGrant($eiCommand->getEiEngine()->getEiType(), $eiCommand->getEiEngine()->getEiMask());
+		return null !== $this->findEiGrant($eiCommand->getEiMask()->getEiType(), $eiCommand->getEiMask()->getEiMask());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\spec\ei\security\EiPermissionManager::createUnboundEiExceution($eiMask, $commandPath)
 	 */
-	public function createUnboundEiExceution(EiEngineModel $eiThing, EiCommandPath $commandPath, N2nContext $n2nContext): EiExecution {
-		return $this->buildEiExecution($n2nContext, $eiThing->getEiEngine(), $commandPath);
+	public function createUnboundEiExceution(EiMask $eiMask, EiCommandPath $commandPath, N2nContext $n2nContext): EiExecution {
+		return $this->buildEiExecution($n2nContext, $eiMask, $commandPath);
 	}
 
 	/**
@@ -78,17 +76,17 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	 * @see \rocket\spec\ei\security\EiPermissionManager::createEiExecution()
 	 */
 	public function createEiExecution(EiCommand $eiCommand, N2nContext $n2nContext): EiExecution {
-		return $this->buildEiExecution($n2nContext, $eiCommand->getEiEngine(), 
+		return $this->buildEiExecution($n2nContext, $eiCommand->getEiMask(), 
 				EiCommandPath::from($eiCommand), $eiCommand);
 	}
 
-	private function buildEiExecution(N2nContext $n2nContext, EiEngine $eiEngine, 
+	private function buildEiExecution(N2nContext $n2nContext, EiMask $eiMask, 
 			EiCommandPath $eiCommandPath, EiCommand $eiCommand = null): EiExecution {
 		if ($this->rocketUser->isAdmin()) {
 			return new FullyGrantedEiExecution($eiCommandPath, $eiCommand);
 		}
 		
-		$eiGrant = $this->findEiGrant($eiEngine->getEiType(), $eiEngine->getEiMask());
+		$eiGrant = $this->findEiGrant($eiMask->getEiType(), $eiMask);
 
 		if ($eiGrant === null) {
 			throw new InaccessibleControlException();
@@ -100,7 +98,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		
 		return new RestrictedEiExecution($eiCommand, $eiCommandPath, 
 				$eiGrant->getEiPrivilegeGrants()->getArrayCopy(),
-				$eiEngine->createPrivilegeDefinition($n2nContext),
-				$eiEngine->createEiEntryFilterDefinition($n2nContext));
+				$eiMask->createPrivilegeDefinition($n2nContext),
+				$eiMask->createEiEntryFilterDefinition($n2nContext));
 	}
 }

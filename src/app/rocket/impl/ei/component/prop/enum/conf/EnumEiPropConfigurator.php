@@ -62,9 +62,9 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$guiProps = null;
 		try {
-			$guiProps = $this->eiComponent->getEiEngine()->getGuiDefinition()->getGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getGuiDefinition()->getGuiProps();
 		} catch (\Throwable $e) {
-			$guiProps = $this->eiComponent->getEiEngine()->getGuiDefinition()->getLevelGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getGuiDefinition()->getLevelGuiProps();
 		}
 		
 		$assoicatedGuiPropOptions = array();

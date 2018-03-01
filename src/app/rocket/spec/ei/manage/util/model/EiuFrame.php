@@ -79,7 +79,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return EiMask
 	 */
 	public function getEiMask(): EiMask {
-		return $this->eiFrame->getContextEiMask();
+		return $this->eiFrame->getContextEiEngine()->getEiMask();
 	}
 
 // 	/**
@@ -104,7 +104,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 */
 	public function getEiuEngine() {
 		if (null === $this->eiuEngine) {
-			$this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiMask()->getEiEngine(), $this->eiFrame->getN2nContext());
+			$this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), $this->eiFrame->getN2nContext());
 		}
 		
 		return $this->eiuEngine;
@@ -177,7 +177,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$this->applyIdComparison($criteria->where(), $id);
 		
 		if (null !== ($entityObj = $criteria->toQuery()->fetchSingle())) {
-			return EiEntityObj::createFrom($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType(), $entityObj);
+			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiType(), $entityObj);
 		}
 		
 		throw new UnknownEntryException('Entity not found: ' . EntityInfo::buildEntityString(
@@ -186,7 +186,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
-		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiMask()->getEiEngine()->getEiType()
+		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiEngine()->getEiType()
 				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);
 	}
 	
@@ -290,7 +290,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$entryTypeForms = array();
 		$labels = array();
 		
-		$contextEiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiType();
 		$contextEiMask = $this->eiFrame->getContextEiMask();
 		
 		$eiGui = new EiGui($this->eiFrame, ViewMode::BULKY_ADD);
@@ -499,7 +499,7 @@ class EiuFrame extends EiUtilsAdapter {
 	public function newGui(int $viewMode) {
 		$eiGui = new EiGui($this->eiFrame, $viewMode);
 		
-		$eiGui->init($this->eiFrame->getContextEiMask()->createEiGuiViewFactory($eiGui));
+		$eiGui->init($this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiViewFactory($eiGui));
 		
 		return new EiuGui($eiGui, $this);
 	}

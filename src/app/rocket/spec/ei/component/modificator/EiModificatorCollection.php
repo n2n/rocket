@@ -22,17 +22,16 @@
 namespace rocket\spec\ei\component\modificator;
 
 use rocket\spec\ei\component\EiComponentCollection;
-
 use rocket\spec\ei\EiType;
-use rocket\spec\ei\EiEngine;
+use rocket\spec\ei\mask\EiMask;
 
 class EiModificatorCollection extends EiComponentCollection {
 	/**
 	 * @param EiType $eiType
 	 */
-	public function __construct(EiEngine $eiEngine) {
+	public function __construct(EiMask $eiMask) {
 		parent::__construct('EiModificator', EiModificator::class);
-		$this->setEiEngine($eiEngine);
+		$this->setEiMask($eiMask);
 	}
 
 	public function getById(string $id): EiModificator {

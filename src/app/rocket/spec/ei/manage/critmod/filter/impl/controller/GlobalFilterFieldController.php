@@ -28,7 +28,7 @@ use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use rocket\spec\config\UnknownSpecException;
 use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
+use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\spec\ei\component\CritmodFactory;
@@ -71,7 +71,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 			return $eiType;
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, 0, $e);
-		} catch (UnknownEiMaskException $e) {
+		} catch (UnknownEiMaskExtensionException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	}

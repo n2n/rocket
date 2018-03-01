@@ -173,7 +173,7 @@ class EntryCommandViewModel {
 // 		$this->entryModel = $entryModel;
 // 		$this->eiObject = $this->entryModel->getEiObject();
 		
-// 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+// 		$this->context = $this->eiFrame->getContextEiEngine()->getEiType();
 // 		$this->exact = $this->entryModel->getEiType();
 		
 // 		$this->previewController = $previewController;

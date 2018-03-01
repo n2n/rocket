@@ -21,20 +21,19 @@
  */
 namespace rocket\spec\ei\component;
 
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\EiEngine;
+use rocket\spec\ei\mask\EiMask;
 
 interface EiComponent {
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getId();
+	public function getId(): ?string;
 	
 	/**
 	 * @param string $id
 	 */
-	public function setId($id);
+	public function setId(string $id);
 	
 	/**
 	 * @return string
@@ -42,15 +41,16 @@ interface EiComponent {
 	public function getIdBase();
 	
 	/**
-	 * @return \rocket\spec\ei\EiEngine
+	 * @return \rocket\spec\ei\mask\EiMask
 	 * @throws \n2n\util\ex\IllegalStateException
 	 */
-	public function getEiEngine(): EiEngine;
+	public function getEiMask(): EiMask;
 	
 	/**
+	 * @param EiMask $eiMask
 	 * @param EiEngine $eiEngine
 	 */
-	public function setEiEngine(EiEngine $eiEngine);
+	public function setEiMask(EiMask $eiMask);
 		
 	/**
 	 * @param mixed $obj

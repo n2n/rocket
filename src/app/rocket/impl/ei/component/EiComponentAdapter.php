@@ -25,37 +25,45 @@ use n2n\reflection\ReflectionUtils;
 use rocket\spec\ei\component\EiComponent;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\EiEngine;
+use rocket\spec\ei\mask\EiMask;
 
 abstract class EiComponentAdapter implements EiComponent {
-	protected $eiEngine;
+	protected $eiMask;
 	protected $id;
 	
 	/**
-	 * @return 
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\EiComponent::getEiMask()
 	 */
-	public function getEiEngine(): EiEngine {
-		if ($this->eiEngine !== null) {
-			return $this->eiEngine;
+	public function getEiMask(): EiMask {
+		if ($this->eiMask !== null) {
+			return $this->eiMask;
 		}
 		
-		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiEngine.');
-	}
-	
-	public function setEiEngine(EiEngine $eiEngine) {
-		$this->eiEngine = $eiEngine;
+		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiMask.');
 	}
 	
 	/**
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\EiComponent::setEiMask()
 	 */
-	public function getId() {
+	public function setEiMask(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\EiComponent::getId()
+	 */
+	public function getId(): ?string {
 		return $this->id;
 	}
 	
 	/**
-	 * @param string $id
+	 * {@inheritDoc}
+	 * @see \rocket\spec\ei\component\EiComponent::setId()
 	 */
-	public function setId($id) {
+	public function setId(string $id) {
 		$this->id = $id;
 	}
 	
@@ -70,11 +78,11 @@ abstract class EiComponentAdapter implements EiComponent {
 	public function __toString(): string {
 		$detailStrs = array();
 		$detailStrs[] = 'id: ' . ($this->id ?? 'null');
-		if ($this->eiEngine === null) {
+		if ($this->eiMask === null) {
 			$detailStrs[] = 'unassigned';
 		} else {
-			$detailStrs[] = $this->eiEngine->getEiType() ?? 'no EiType';
-			if (null !== ($eiMask = $this->eiEngine->getEiMask())) {
+			$detailStrs[] = $this->eiMask->getEiType() ?? 'no EiType';
+			if (null !== ($eiMask = $this->eiMask->getEiMask())) {
 				$detailStrs[] = (string) $eiMask;
 			}
 		}

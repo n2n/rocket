@@ -78,7 +78,7 @@ class EiuFactory {
 		foreach ($eiArgs as $key => $eiArg) {
 			if ($eiArg instanceof EiFrame) {
 				$this->assignEiFrameArg($eiArg, $key, $eiArg);
-				$this->eiEngine = $eiArg->getContextEiMask()->getEiEngine();
+				$this->eiEngine = $eiArg->getContextEiEngine();
 				continue;
 			}
 	
@@ -199,7 +199,7 @@ class EiuFactory {
 		$eiType = null;
 		$eiObjectTypes = self::EI_TYPES;
 		if ($this->eiFrame !== null) {
-			$eiType = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+			$eiType = $this->eiFrame->getContextEiEngine()->getEiType();
 			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
 		}
 		

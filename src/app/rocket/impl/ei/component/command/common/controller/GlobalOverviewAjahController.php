@@ -36,7 +36,7 @@ use n2n\core\N2N;
 use n2n\util\uri\Url;
 use rocket\spec\ei\security\InaccessibleControlException;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
+use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
 
 class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrController {
 	private $manageState;
@@ -78,7 +78,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 			$eiMask = $eiType->getEiMaskCollection()->getById($eiMaskId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, 0, $e);
-		} catch (UnknownEiMaskException $e) {
+		} catch (UnknownEiMaskExtensionException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 

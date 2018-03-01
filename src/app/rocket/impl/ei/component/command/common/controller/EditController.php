@@ -293,7 +293,7 @@ class EditController extends ControllerAdapter {
 		$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($httpContext, $eiObject));
 		
 		if ($eiObject->isDraft()) {	
-			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiType())
+			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($eiFrame->getContextEiEngine()->getEiType())
 							->copy(false, true));
 			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale(),
 					DateTimeFormat::STYLE_MEDIUM, DateTimeFormat::STYLE_SHORT);
@@ -311,9 +311,9 @@ class EditController extends ControllerAdapter {
 // 		$dispReturn = $this->dispatch($editModel, 'save');
 // 		$eiObject = $editModel->getEntryModel()->getEiEntry()->getEiObject();
 // 		if ($dispReturn instanceof Draft) {
-// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiType());
+// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiEngine()->getEiType());
 // 		} else if ($dispReturn) {
-// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiMask()->getEiEngine()->getEiType())->copy(true);
+// 			$entryNavPoint = $eiObject->toEntryNavPoint($eiFrame->getContextEiEngine()->getEiType())->copy(true);
 // 		} else {
 // 			return null;
 // 		}

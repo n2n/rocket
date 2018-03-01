@@ -59,7 +59,7 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 // 			return $this->specManager->getEiTypeById($eiTypeId)->getEiMaskCollection()->getById($eiMaskId);
 // 		} catch (UnknownSpecException $e) {
 // 			throw new PageNotFoundException(null, 0, $e);
-// 		} catch (UnknownEiMaskException $e) {
+// 		} catch (UnknownEiMaskExtensionException $e) {
 // 			throw new PageNotFoundException(null, 0, $e);
 // 		}
 // 	}

@@ -268,11 +268,12 @@ class CritmodForm implements Dispatchable {
 	}
 	
 	public static function create(EiFrame $eiFrame, CritmodSaveDao $critmodSaveDao, string $stateKey): CritmodForm {
-		$eiMask = $eiFrame->getContextEiMask();
+		$eiEngine = $eiFrame->getContextEiEngine();
+		$eiMask = $eiEngine->getEiMask();
 		
-		return new CritmodForm($eiMask->getEiEngine()->createManagedFilterDefinition($eiFrame), 
-				$eiMask->getEiEngine()->createManagedSortDefinition($eiFrame), 
-				$critmodSaveDao, $stateKey, $eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), 
-				($eiMask->hasId() ? $eiMask->getId() : null));
+		return new CritmodForm($eiEngine->createManagedFilterDefinition($eiFrame), 
+				$eiEngine->createManagedSortDefinition($eiFrame), 
+				$critmodSaveDao, $stateKey, $eiEngine->getEiMask()->getEiType()->getId(), 
+				($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null));
 	}
 }

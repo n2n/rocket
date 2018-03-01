@@ -36,7 +36,7 @@ class EiTypeController extends ControllerAdapter {
 		
 		$eiCommand = null;
 		try {
-			$eiCommand = $eiFrame->getContextEiMask()->getEiEngine()->getEiCommandCollection()->getById($eiCommandId);
+			$eiCommand = $eiFrame->getContextEiEngine()->getEiMask()->getEiCommandCollection()->getById($eiCommandId);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}

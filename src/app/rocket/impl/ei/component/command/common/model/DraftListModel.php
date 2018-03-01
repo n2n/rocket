@@ -45,7 +45,7 @@ class DraftListModel implements Dispatchable {
 		$this->utils = new EiuFrame($eiFrame);
 		$this->listSize = $listSize;
 		$this->draftManager = $eiFrame->getManageState()->getDraftManager();
-		$this->draftDefinition = $eiFrame->getContextEiMask()->getEiEngine()->getDraftDefinition();
+		$this->draftDefinition = $eiFrame->getContextEiEngine()->getDraftDefinition();
 	}
 	
 	public function getEiFrame(): EiFrame {
@@ -75,7 +75,7 @@ class DraftListModel implements Dispatchable {
 // 	public function initByPids(array $pids) {
 // 		$eiFrame = $this->getEiFrame();
 				
-// 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+// 		$eiType = $eiFrame->getContextEiEngine()->getEiType();
 // 		$ids = array();
 // 		foreach ($pids as $pid) {
 // 			$ids[] = $eiType->pidToId($pid);

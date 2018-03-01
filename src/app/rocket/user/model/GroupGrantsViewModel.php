@@ -150,7 +150,7 @@ class EiTypeItem extends Item {
 	}
 	
 	public function getLabel(): string {
-		if (null !== ($label = $this->eiType->getDefaultEiDef()->getLabel())) {
+		if (null !== ($label = $this->eiType->getEiMask()->getLabel())) {
 			return $label;
 		}
 		
