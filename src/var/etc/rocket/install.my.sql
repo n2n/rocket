@@ -1,9 +1,9 @@
 CREATE TABLE `rocket_content_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `panel` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `panel` varchar(32) COLLATE utf8_unicode_ci NULL,
   `order_index` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE `rocket_critmod_save` (
@@ -16,7 +16,7 @@ CREATE TABLE `rocket_critmod_save` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `ei_spec_id` (`ei_spec_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `rocket_custom_grant` (
@@ -38,7 +38,7 @@ CREATE TABLE `rocket_ei_grant` (
   `full` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `script_id_user_group_id` (`rocket_user_group_id`,`ei_spec_id`,`ei_mask_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 
 CREATE TABLE `rocket_login` (
@@ -50,7 +50,7 @@ CREATE TABLE `rocket_login` (
   `ip` varchar(255) NOT NULL DEFAULT '',
   `date_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `rocket_user` (
@@ -63,7 +63,7 @@ CREATE TABLE `rocket_user` (
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nick` (`nick`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO `rocket_user` (`id`, `nick`, `firstname`, `lastname`, `email`, `power`, `password`) VALUES
@@ -88,7 +88,7 @@ CREATE TABLE `rocket_user_group` (
   `name` varchar(64) NOT NULL,
   `nav_json` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `rocket_user_privileges_grant` (
@@ -99,7 +99,7 @@ CREATE TABLE `rocket_user_privileges_grant` (
   `restricted` tinyint(1) NOT NULL DEFAULT '0',
   `restriction_group_json` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `rocket_user_rocket_user_groups` (
