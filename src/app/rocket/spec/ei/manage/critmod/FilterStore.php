@@ -46,7 +46,7 @@
 // 	}
 		
 // // 	public function getFilterNames(EiFrame $eiFrame) {
-// // 		$scriptId = $eiFrame->getContextEiEngine()->getEiType()->getId();
+// // 		$scriptId = $eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
 // // 		if (isset($this->filterDatas[$scriptId])) {
 // // 			return array_keys($this->filterDatas[$scriptId]);
 // // 		}	
@@ -74,7 +74,7 @@
 // 	}
 	
 // // 	public function removeFilterDataByFilterName(EiFrame $eiFrame, $filterName) {
-// // 		$scriptId = $eiFrame->getContextEiEngine()->getEiType()->getId();
+// // 		$scriptId = $eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
 		
 // // 		if (isset($this->filterDatas[$scriptId])) {
 // // 			unset($this->filterDatas[$scriptId][$filterName]);

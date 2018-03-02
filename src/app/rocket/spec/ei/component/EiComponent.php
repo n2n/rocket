@@ -48,7 +48,6 @@ interface EiComponent {
 	
 	/**
 	 * @param EiMask $eiMask
-	 * @param EiEngine $eiEngine
 	 */
 	public function setEiMask(EiMask $eiMask);
 		

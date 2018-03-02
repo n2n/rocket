@@ -162,7 +162,7 @@ class EiTypeExtraction extends SpecExtraction {
 // 		$extraction->setEiMaskExtraction(self::createEiMaskExtraction($eiType->getEiMask()));
 			
 // 		if (null !== ($defaultEiMask = $eiType->getEiMaskCollection()->getDefault())) {
-// 			$extraction->setDefaultEiMaskId($defaultEiMask->getId());
+// 			$extraction->setDefaultEiMaskId($defaultEiMask->getExtension()->getId());
 // 		}
 		
 // 		foreach ($eiType->getEiMaskCollection() as $eiMask) {

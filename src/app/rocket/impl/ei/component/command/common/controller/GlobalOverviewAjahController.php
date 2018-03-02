@@ -87,7 +87,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 
 	private function del(EiMask $eiMask, OverviewJhtmlController $overviewJhtmlController) {
 		$n2nContext = $this->getN2nContext();
-		$em = $eiMask->getEiEngine()->getEiType()->lookupEntityManager($this->getN2nContext()->getPdoPool());
+		$em = $eiMask->getEiEngine()->getEiMask()->getEiType()->lookupEntityManager($this->getN2nContext()->getPdoPool());
 		$this->manageState->setEntityManager($em);
 		$this->manageState->setDraftManager($n2nContext->lookup(Rocket::class)->getOrCreateDraftManager($em));
 		$this->manageState->setEiPermissionManager($this->loginContext->getSecurityManager()->getEiPermissionManager());
@@ -108,7 +108,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 	public static function buildToolsAjahUrl(ScrRegistry $scrRegistry, EiType $eiType, EiMask $eiMask = null): Url {
 		$contextUrl = $scrRegistry->registerSessionScrController(GlobalOverviewJhtmlController::class);
 		if ($eiMask !== null) {
-			$contextUrl = $contextUrl->extR(array('eim', $eiType->getId(), $eiMask->getId()));
+			$contextUrl = $contextUrl->extR(array('eim', $eiType->getId(), $eiMask->getExtension()->getId()));
 		} else {
 			$contextUrl = $contextUrl->extR(array('eis', $eiType->getId()));
 		}

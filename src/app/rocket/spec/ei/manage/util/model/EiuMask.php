@@ -43,7 +43,7 @@ class EiuMask extends EiUtilsAdapter {
 	
 	public function em(): EntityManager {
 		if ($this->em === null) {
-			$this->em = $this->eiMask->getEiEngine()->getEiType()->lookupEntityManager($this->n2nContext->getPdoPool());
+			$this->em = $this->eiMask->getEiEngine()->getEiMask()->getEiType()->lookupEntityManager($this->n2nContext->getPdoPool());
 		}
 		
 		return $this->em;

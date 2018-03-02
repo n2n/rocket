@@ -59,7 +59,7 @@ class PathPartPurifier {
 	}
 	
 	private function getIdEntityProperty(): BasicEntityProperty {
-		return $this->pathPartEiProp->getEiEngine()->getEiType()->getEntityModel()->getIdDef()->getEntityProperty();
+		return $this->pathPartEiProp->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getEntityProperty();
 	}
 	
 	public function purify() {
@@ -105,7 +105,7 @@ class PathPartPurifier {
 	}
 	
 	private function containsPathPart(string $pathPart): bool {
-		$entityClass = $this->pathPartEiProp->getEiEngine()->getEiType()->getEntityModel()->getClass();
+		$entityClass = $this->pathPartEiProp->getEiMask()->getEiType()->getEntityModel()->getClass();
 		$criteria = $this->eiFrame->getManageState()->getEntityManager()->createCriteria();
 		$criteria->select('COUNT(1)')
 				->from($entityClass, 'e')

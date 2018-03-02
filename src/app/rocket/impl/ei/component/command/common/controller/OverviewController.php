@@ -123,7 +123,7 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$listView = $eiFrame->getContextEiMask()->createListView($eiFrame, $draftListModel->getEntryGuis());
+		$listView = $eiFrame->getContextEiEngine()->getEiMask()->createListView($eiFrame, $draftListModel->getEntryGuis());
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
 		

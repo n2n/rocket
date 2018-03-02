@@ -57,11 +57,11 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
 // 			return $eiMask->getEiDef();
 // 		}
-// 		return $this->eiComponent->getEiEngine()->getEiType()->getDefaultEiDef();
+// 		return $this->eiComponent->getEiEngine()->getEiMask()->getEiType()->getDefaultEiDef();
 // 	}
 
 // 	public function getSupremeEiDef() {
-// 		$supremeEiType = $this->eiComponent->getEiEngine()->getEiType()->getSupremeEiType();
+// 		$supremeEiType = $this->eiComponent->getEiEngine()->getEiMask()->getEiType()->getSupremeEiType();
 // 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
 // 			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
 // 		}

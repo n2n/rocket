@@ -86,7 +86,7 @@ class EiuFrame extends EiUtilsAdapter {
 // 	 * @return \rocket\spec\ei\EiThingPath
 // 	 */
 // 	public function getEiThingPath() {
-// 		return $this->eiFrame->getContextEiMask()->getEiThingPath();
+// 		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiThingPath();
 // 	}
 	
 	public function getN2nContext(): N2nContext {
@@ -177,7 +177,7 @@ class EiuFrame extends EiUtilsAdapter {
 		$this->applyIdComparison($criteria->where(), $id);
 		
 		if (null !== ($entityObj = $criteria->toQuery()->fetchSingle())) {
-			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiType(), $entityObj);
+			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $entityObj);
 		}
 		
 		throw new UnknownEntryException('Entity not found: ' . EntityInfo::buildEntityString(
@@ -186,7 +186,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
-		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiEngine()->getEiType()
+		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType()
 				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);
 	}
 	
@@ -290,8 +290,8 @@ class EiuFrame extends EiUtilsAdapter {
 		$entryTypeForms = array();
 		$labels = array();
 		
-		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiType();
-		$contextEiMask = $this->eiFrame->getContextEiMask();
+		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
 		$eiGui = new EiGui($this->eiFrame, ViewMode::BULKY_ADD);
 		$eiGui->init($contextEiMask->createEiGuiViewFactory($eiGui));
@@ -361,7 +361,7 @@ class EiuFrame extends EiUtilsAdapter {
 	 * @return \rocket\spec\ei\manage\util\model\EntryForm
 	 */
 	public function entryForm(EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
-		$contextEiMask = $this->eiFrame->getContextEiMask();
+		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$entryForm = new EntryForm($this);
 		$eiType = $eiEntry->getEiType();
 
@@ -374,7 +374,7 @@ class EiuFrame extends EiUtilsAdapter {
 	}
 	
 	private function createEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
-		$eiMask = $this->getEiFrame()->getContextEiMask()->determineEiMask($eiType);
+		$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask()->determineEiMask($eiType);
 		$eiGui = new EiGui($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT);
 		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
 		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry);

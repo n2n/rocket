@@ -64,7 +64,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
-		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiMask());
+		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiEngine()->getEiMask());
 		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if (!$listModel->initialize(1)) {
@@ -96,7 +96,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 			return;
 		}
 		
-		$eiMask = $eiFrame->getContextEiMask();
+		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
 		
 // 		$this->forward('spec\ei\manage\critmod\impl\view\critmodForm.html',
@@ -132,7 +132,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 			$sortData = $critmodSave->readSortData();
 // 		}
 
-// 		$eiMask = $eiFrame->getContextEiMask();
+// 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		$filterGroupForm = new FilterGroupForm($filterGroupData, $eiMask->createManagedFilterDefinition($eiFrame));
 // 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
 // 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));

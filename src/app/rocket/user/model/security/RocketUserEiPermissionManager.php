@@ -42,7 +42,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		$eiTypeId = $eiType->getId();
 		$eiMaskId = null;
 		if (null !== $eiMask) {
-			$eiMaskId = $eiMask->getId();
+			$eiMaskId = $eiMask->getExtension()->getId();
 		}
 
 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {

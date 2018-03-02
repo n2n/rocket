@@ -107,7 +107,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			CastUtils::assertTrue($specManager instanceof SpecManager);
 			$targetEiType = $specManager->getEiTypeByClass($targetEntityClass);
 			foreach ($targetEiType->getEiMaskCollection()->toArray() as $eiMask) {
-				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiType()->getLabelLstr();
+				$targetEiMaskOptions[$eiMask->getExtension()->getId()] = $eiMask->getEiEngine()->getEiMask()->getEiType()->getLabelLstr();
 			}
 			
 			$scalarEiProperties = $targetEiType->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();

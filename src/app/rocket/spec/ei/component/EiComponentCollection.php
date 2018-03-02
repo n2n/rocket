@@ -24,7 +24,6 @@ namespace rocket\spec\ei\component;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\ei\IdPath;
-use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\mask\EiMask;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {

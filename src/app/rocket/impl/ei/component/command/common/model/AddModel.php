@@ -94,7 +94,7 @@ class AddModel implements Dispatchable  {
 			return;
 		}
 			
-		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiEngine()->getEiType()->getEntityModel()->getClass(),
+		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
 				$this->nestedSetStrategy);
 		
 		if ($this->beforeEntityObj !== null) {

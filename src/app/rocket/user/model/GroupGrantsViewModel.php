@@ -54,7 +54,7 @@ class GroupGrantsViewModel {
 		$eiMaskId = null;
 		
 		if ($eiMask !== null) {
-			$eiMaskId = $eiMask->getId();
+			$eiMaskId = $eiMask->getExtension()->getId();
 		}
 		
 		foreach ($this->userGroup->getEiGrants() as $eiGrant) {
@@ -175,7 +175,7 @@ class EiMaskItem extends Item {
 	}
 	
 	public function getEiMaskId(): string {
-		return $this->eiMask->getId();
+		return $this->eiMask->getExtension()->getId();
 	}
 	
 	public function getLabel(): string {

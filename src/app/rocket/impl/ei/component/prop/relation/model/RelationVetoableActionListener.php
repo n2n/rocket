@@ -132,7 +132,7 @@ class VetoCheck {
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
 				$queue->removeEiObject(LiveEiObject::create(
-						$that->relationEiProp->getEiEngine()->getEiType(), $entityObj));
+						$that->relationEiProp->getEiMask()->getEiType(), $entityObj));
 			});
 		}
 	}
@@ -194,12 +194,12 @@ class VetoCheck {
 	}
 	
 	private function getGenericLabel(): string {
-		return $this->relationEiProp->getEiEngine()->getEiType()->getEiMaskCollection()->getOrCreateDefault()
+		return $this->relationEiProp->getEiMask()->getEiType()->getEiMaskCollection()->getOrCreateDefault()
 				->getLabelLstr()->t($this->n2nContext->getN2nLocale());
 	}
 	
 	private function createIdentityString($entityObj): string {
-		$eiType = $this->relationEiProp->getEiEngine()->getEiType();
+		$eiType = $this->relationEiProp->getEiMask()->getEiType();
 		return $eiType->getEiMaskCollection()->getOrCreateDefault()->createIdentityString(
 				LiveEiObject::create($eiType, $entityObj), $this->n2nContext->getN2nLocale());
 	}

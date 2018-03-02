@@ -159,7 +159,7 @@ class ManageState implements RequestScoped {
 		
 		end($this->eiFrames);
 		$eiFrame = current($this->eiFrames);
-// 		if (isset($eiType) && !$eiFrame->getContextEiEngine()->getEiType()->equals($eiType)) {
+// 		if (isset($eiType) && !$eiFrame->getContextEiEngine()->getEiMask()->getEiType()->equals($eiType)) {
 // 			throw new UnsuitableEiFrameException(
 // 					'Latest EiFrame is not assigned to passed  (id: ' . $eiType->getId() . ').');
 // 		}

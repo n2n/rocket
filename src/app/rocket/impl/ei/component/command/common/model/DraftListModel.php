@@ -75,7 +75,7 @@ class DraftListModel implements Dispatchable {
 // 	public function initByPids(array $pids) {
 // 		$eiFrame = $this->getEiFrame();
 				
-// 		$eiType = $eiFrame->getContextEiEngine()->getEiType();
+// 		$eiType = $eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 // 		$ids = array();
 // 		foreach ($pids as $pid) {
 // 			$ids[] = $eiType->pidToId($pid);
@@ -96,7 +96,7 @@ class DraftListModel implements Dispatchable {
 	
 	private function simpleLookup(array $drafts) {
 		$eiFrame = $this->utils->getEiFrame();
-		$eiMask = $eiFrame->getContextEiMask();
+		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {

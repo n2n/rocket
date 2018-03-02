@@ -64,7 +64,7 @@ class EiMenuItem implements MenuItem {
 	public function isAccessible(N2nContext $n2nContext): bool {
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
-		$overviewEiCommand = $this->eiMask->getEiEngine()->getEiCommandCollection()
+		$overviewEiCommand = $this->eiMask->getEiCommandCollection()
 				->getGenericOverviewEiCommand(true);
 		
 		return $loginContext->getSecurityManager()->getEiPermissionManager()
@@ -76,7 +76,7 @@ class EiMenuItem implements MenuItem {
 	 * @see \rocket\core\model\MenuItem::determinePathExt($n2nContext)
 	 */
 	public function determinePathExt(N2nContext $n2nContext) {
-		$overviewEiCommand = $this->eiMask->getEiEngine()->getEiCommandCollection()
+		$overviewEiCommand = $this->eiMask->getEiCommandCollection()
 				->getGenericOverviewEiCommand(true);
 		
 		$loginContext = $n2nContext->lookup(LoginContext::class);

@@ -105,7 +105,7 @@ class EiuEntry {
 		if ($determineEiMask) {
 			$eiMask = $this->determineEiMask();
 		} else {
-			$eiMask = $this->getEiFrame()->getContextEiMask();
+			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
@@ -122,7 +122,7 @@ class EiuEntry {
 // 		if ($determineEiMask) {
 // 			$eiMask = $this->determineEiMask();
 // 		} else {
-// 			$eiMask = $this->getEiFrame()->getContextEiMask();
+// 			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
 // 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
@@ -140,7 +140,7 @@ class EiuEntry {
 		if ($determineEiMask) {
 			$eiMask = $this->determineEiMask();
 		} else {
-			$eiMask = $this->getEiFrame()->getContextEiMask();
+			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
 		}
 		
 		$eiGui = new EiGui($this->getEiFrame(), $viewMode);
@@ -223,14 +223,14 @@ class EiuEntry {
 	public function setScalarValue($eiPropPath, $scalarValue) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiPropPath);
+				->getScalarEiPropertyByEiPropPath($eiPropPath);
 		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToEiFieldValue($scalarValue));
 	}
 	
 	public function getScalarValue($eiPropPath) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByFieldPath($eiPropPath);
+				->getScalarEiPropertyByEiPropPath($eiPropPath);
 		return $scalarEiProperty->eiFieldValueToScalarValue($this->getValue($eiPropPath));
 	}
 	

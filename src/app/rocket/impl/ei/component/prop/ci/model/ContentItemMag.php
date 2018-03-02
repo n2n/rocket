@@ -176,8 +176,8 @@ class ContentItemMag extends MagAdapter {
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$ciEiTypeLabels = array();
 		
-		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();
-		foreach ($this->targetEditEiFrame->getContextEiEngine()->getEiType()->getAllSubEiTypes() as $subEiType) {
+		$targetContextEiMask = $this->targetEditEiFrame->getContextEiEngine()->getEiMask();
+		foreach ($this->targetEditEiFrame->getContextEiEngine()->getEiMask()->getEiType()->getAllSubEiTypes() as $subEiType) {
 			if ($subEiType->isAbstract()) continue;
 			
 			$ciEiTypeLabels[$subEiType->getId()] = $targetContextEiMask->determineEiMask($subEiType)->getLabelLstr()

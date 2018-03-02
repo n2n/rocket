@@ -42,7 +42,7 @@ class OrderController extends ControllerAdapter {
 	
 	public function setOrderEiProp(OrderEiProp $orderEiProp) {
 		$this->orderEiProp = $orderEiProp;
-		$this->eiType = $orderEiProp->getEiEngine()->getEiType();
+		$this->eiType = $orderEiProp->getEiMask()->getEiType();
 	}
 	
 	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {

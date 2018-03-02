@@ -56,8 +56,8 @@ class EntryLabeler {
 	
 	public function getEiTypeLabels() {
 		$eiFrame = $this->eiUtils->getEiFrame();
-		$contextEiMask = $eiFrame->getContextEiMask();
-		$contextEiType = $eiFrame->getContextEiEngine()->getEiType();
+		$contextEiMask = $eiFrame->getContextEiEngine()->getEiMask();
+		$contextEiType = $eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		
 		$eiTypeLabels = array();
 		

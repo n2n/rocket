@@ -199,7 +199,7 @@ class EiuFactory {
 		$eiType = null;
 		$eiObjectTypes = self::EI_TYPES;
 		if ($this->eiFrame !== null) {
-			$eiType = $this->eiFrame->getContextEiEngine()->getEiType();
+			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
 		}
 		
@@ -625,11 +625,11 @@ class EiuFactory {
 		}
 		
 		if ($eiTypeArg instanceof EiMask) {
-			return $eiTypeArg->getEiEngine()->getEiType();
+			return $eiTypeArg->getEiEngine()->getEiMask()->getEiType();
 		}
 		
 		if ($eiTypeArg instanceof EiFrame) {
-			return $eiTypeArg->getEiEngine()->getEiType();
+			return $eiTypeArg->getEiEngine()->getEiMask()->getEiType();
 		}
 		
 		if ($eiTypeArg instanceof Eiu && $eiuFrame = $eiTypeArg->frame(false)) {

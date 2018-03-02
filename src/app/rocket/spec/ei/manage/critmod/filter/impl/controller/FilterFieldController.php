@@ -61,7 +61,7 @@ class FilterFieldController extends ControllerAdapter  {
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterFieldId = (string) $filterFieldId;
 		
-		$eiMask = $this->eiFrame->getContextEiMask();
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$filterDefinition = $eiMask->getEiEngine()->createManagedFilterDefinition($this->eiFrame);
 	
 		$filterFieldItemForm = null;

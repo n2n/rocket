@@ -116,7 +116,7 @@ class OverviewModel implements Dispatchable {
 		$this->critmodForm->applyToEiFrame($eiFrame, true);
 		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
 				
-		$eiType = $eiFrame->getContextEiEngine()->getEiType();
+		$eiType = $eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		$ids = array();
 		foreach ($pids as $pid) {
 			$ids[] = $eiType->pidToId($pid);

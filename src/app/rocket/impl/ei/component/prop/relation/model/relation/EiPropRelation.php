@@ -206,7 +206,7 @@ abstract class EiPropRelation {
 // 	public function hasRecursiveConflict(EiFrame $eiFrame) {
 // 		$target = $this->getTarget();
 // 		while (null !== ($eiFrame = $eiFrame->getParent())) {
-// 			if ($eiFrame->getContextEiEngine()->getEiType()->equals($target)) {
+// 			if ($eiFrame->getContextEiEngine()->getEiMask()->getEiType()->equals($target)) {
 // 				return true;
 // 			}
 // 		}
@@ -249,7 +249,7 @@ abstract class EiPropRelation {
 		
 		$targetEiMask = $this->getTargetEiMask();
 		$relationEntityProperty = $this->getRelationEntityProperty();
-		foreach ($targetEiMask->getEiEngine()->getEiPropCollection() as $targetEiProp) {
+		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
 			if (!($targetEiProp instanceof RelationEiProp)) continue;
 			
 			$targetRelationEntityProperty = $targetEiProp->getEntityProperty();
@@ -361,7 +361,7 @@ abstract class EiPropRelation {
 		$targetEiProp = $this->findTargetEiProp();
 		
 		if (null !== $targetEiProp) {
-			$targetEiModificatorCollection = $targetEiProp->getEiEngine()->getEiModificatorCollection();
+			$targetEiModificatorCollection = $targetEiProp->getEiMask()->getEiModificatorCollection();
 			
 			$targetEiFrame->setEiRelation($targetEiProp->getId(), new EiRelation($eiFrame, $eiObject, 
 					$this->relationEiProp));
@@ -377,7 +377,7 @@ abstract class EiPropRelation {
 		}
 		
 		if ($this->getRelationEntityProperty()->isMaster() && !$eiObject->isDraft()) {
-			$targetEiModificatorCollection = $this->targetEiMask->getEiEngine()->getEiModificatorCollection();
+			$targetEiModificatorCollection = $this->targetEiMask->getEiModificatorCollection();
 			$targetEiModificatorCollection->add(new MasterRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(),
 					$this->relationEiProp->getObjectPropertyAccessProxy(), $this->isTargetMany()));
 		}

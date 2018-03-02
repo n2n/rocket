@@ -50,7 +50,7 @@ class SecurityFactory {
 // 	}
 	
 // 	public static function createFilterModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createFilterModelInstance($eiFrame->getContextEiEngine()->getEiType(), 
+// 		return self::createFilterModelInstance($eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
 // 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 		
@@ -81,7 +81,7 @@ class SecurityFactory {
 // 	}
 	
 // 	public static function createSortModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createSortModelInstance($eiFrame->getContextEiEngine()->getEiType(), $eiFrame->getN2nContext());
+// 		return self::createSortModelInstance($eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $eiFrame->getN2nContext());
 // 	}
 	
 // 	public static function createSortModel() {
@@ -102,7 +102,7 @@ class SecurityFactory {
 		
 // 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
 // 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiFrame->getContextEiEngine()->getEiType()->getEiPropCollection() as $field) {
+// 		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEiPropCollection() as $field) {
 // 			if ($field instanceof QuickSearchableEiProp) {
 // 				$quickSerachModel->addQuickSearchable($field);
 // 			}

@@ -37,7 +37,6 @@ use rocket\spec\ei\manage\critmod\filter\data\FilterItemData;
 use n2n\util\config\Attributes;
 use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
-use rocket\spec\ei\EiEngineModel;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
 use rocket\spec\ei\mask\EiMask;
@@ -61,7 +60,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 				&& $this->loginContext->getCurrentUser()->isAdmin();
 	}
 	
-	private function lookupEiThing(string $eiTypeId, string $eiMaskId = null): EiEngineModel {
+	private function lookupEiThing(string $eiTypeId, string $eiMaskId = null) {
 		try {
 			$eiType = $this->specManager->getEiTypeById($eiTypeId);
 			if ($eiMaskId !== null) {
@@ -135,8 +134,8 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 	
 	public static function buildFilterAjahHook(ScrRegistry $scrRegistry, EiMask $eiMask): FilterAjahHook {
 		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterFieldController::class);
-		$eiTypeId = $eiMask->getEiEngine()->getEiType()->getId();
-		$eiMaskId = ($eiMask->hasId() ? $eiMask->getId() : null);
+		$eiTypeId = $eiMask->getEiEngine()->getEiMask()->getEiType()->getId();
+		$eiMaskId = ($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null);
 		
 		return new FilterAjahHook(
 				$baseUrl->extR(array('simple', $eiTypeId, $eiMaskId)),

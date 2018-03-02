@@ -98,7 +98,7 @@ class AddController extends ControllerAdapter {
 		
 		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
-				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
 		
 		$view = $this->createView('..\view\add.html',

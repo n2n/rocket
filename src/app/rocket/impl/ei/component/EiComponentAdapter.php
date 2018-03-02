@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component;
 use n2n\reflection\ReflectionUtils;
 use rocket\spec\ei\component\EiComponent;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\EiEngine;
 use rocket\spec\ei\mask\EiMask;
 
 abstract class EiComponentAdapter implements EiComponent {
@@ -82,7 +81,7 @@ abstract class EiComponentAdapter implements EiComponent {
 			$detailStrs[] = 'unassigned';
 		} else {
 			$detailStrs[] = $this->eiMask->getEiType() ?? 'no EiType';
-			if (null !== ($eiMask = $this->eiMask->getEiMask())) {
+			if (null !== ($eiMask = $this->eiMask)) {
 				$detailStrs[] = (string) $eiMask;
 			}
 		}

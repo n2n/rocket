@@ -236,7 +236,7 @@ class EiMask {
 		$namePatternPart = null;
 		
 		foreach ($this->eiEngine->getGuiDefinition()->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
-			if ($guiIdPathStr == $this->eiEngine->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
+			if ($guiIdPathStr == $this->eiEngine->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
 				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
 			} else {
 				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
@@ -264,10 +264,6 @@ class EiMask {
 	 */
 	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$identityStringPattern = $this->eiMaskDef->getIdentityStringPattern();
-		
-		if ($identityStringPattern === null) {
-			$identityStringPattern = $this->eiType->getEiMask()->getIdentityStringPattern();
-		}
 		
 		if ($identityStringPattern === null) {
 			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
@@ -438,7 +434,7 @@ class EiMask {
 			if (isset($subMaskIds[$eiTypeId])) {
 				return $subEiType->getEiMaskCollection()->getById($subMaskIds[$eiTypeId]);
 			} else {
-				return $subEiType->getEiMaskCollection()->getOrCreateDefault();
+				return $subEiType->getEiMask();
 			}
 		}
 		
@@ -447,8 +443,7 @@ class EiMask {
 	}
 	
 	public function isPreviewSupported(): bool {
-		return null !== $this->eiMaskDef->getPreviewControllerLookupId() 
-				|| null !== $this->eiType->getEiMask()->getPreviewControllerLookupId();
+		return null !== $this->eiMaskDef->getPreviewControllerLookupId();
 	}
 	
 	public function lookupPreviewController(EiFrame $eiFrame, PreviewModel $previewModel = null): PreviewController {

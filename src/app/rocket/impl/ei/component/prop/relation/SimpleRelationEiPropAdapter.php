@@ -125,7 +125,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 					}
 	
 					public function getFilterAjahHook(): FilterAjahHook {
-						$targetEiMask = $this->targetEiFrame->getContextEiMask();
+						$targetEiMask = $this->targetEiFrame->getContextEiEngine()->getEiMask();
 						
 						return GlobalFilterFieldController::buildFilterAjahHook(
 								$this->targetEiFrame->getN2nContext()->lookup(ScrRegistry::class),
@@ -186,7 +186,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 
 				return GlobalFilterFieldController::buildEiEntryFilterAjahHook(
 						$this->n2nContext->lookup(ScrRegistry::class),
-						$this->targetEiMask->getEiEngine()->getEiType()->getId(), $this->targetEiMask->getId());
+						$this->targetEiMask->getEiEngine()->getEiMask()->getEiType()->getId(), $this->targetEiMask->getExtension()->getId());
 			}
 		};
 	}

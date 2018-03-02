@@ -195,7 +195,7 @@ class ToOneMag extends MagAdapter {
 		$request = $view->getRequest();
 		
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($view->lookup(ScrRegistry::class), 
-				$eiFrame->getContextEiMask());
+				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$newMappingFormUrl = null;
 		if ($this->targetEditUtils->getEiType()->hasSubEiTypes()

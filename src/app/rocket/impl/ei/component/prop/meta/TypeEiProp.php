@@ -40,7 +40,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
-		$eiMask = $eiu->frame()->getEiFrame()->getContextEiMask()->determineEiMask(
+		$eiMask = $eiu->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->determineEiMask(
 				$eiu->entry()->getEiEntry()->getEiType());
 		return $view->getHtmlBuilder()->getEsc($eiMask->getLabelLstr()->t($view->getN2nLocale()));
 	}

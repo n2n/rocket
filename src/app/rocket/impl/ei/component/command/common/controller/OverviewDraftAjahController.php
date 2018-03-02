@@ -65,7 +65,7 @@ class OverviewDraftJhtmlController extends ControllerAdapter {
 		
 		$attrs = array('numEntries' => $draftListModel->getNumEntries(), 'numPages' => $draftListModel->getNumPages());
 
-		$this->send(JhtmlResponse::view($eiFrame->getContextEiMask()->createListView($eiFrame,
+		$this->send(JhtmlResponse::view($eiFrame->getContextEiEngine()->getEiMask()->createListView($eiFrame,
 				$draftListModel->getEntryGuis()), $attrs));
 	}
 

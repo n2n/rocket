@@ -137,13 +137,13 @@ class EiGui {
 	}
 	
 	public function createOverallControls(HtmlView $view) {
-		$eiMask = $this->eiFrame->getContextEiMask();
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
 		$eiu = new Eiu($this);
 		
 		$controls = array();
 		
-		foreach ($eiMask->getEiEngine()->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+		foreach ($eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof OverallControlComponent)
 					|| !$this->eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) {
 				continue;

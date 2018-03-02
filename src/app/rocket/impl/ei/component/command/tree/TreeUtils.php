@@ -47,7 +47,7 @@
 // 		$treeLeftEiProp = null;
 // 		$treeRightEiProp = null;
 // 		$treeRootIdEiProp = null;
-// 		foreach ($eiFrame->getContextEiMask()->getEiDef()->getEiPropCollection() as  $eiProp) {
+// 		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiDef()->getEiPropCollection() as  $eiProp) {
 // 			if ($eiProp instanceof TreeLeftEiProp) {
 // 				$treeLeftEiProp = $eiProp;
 // 			} else if ($eiProp instanceof TreeRightEiProp) {
