@@ -4229,27 +4229,25 @@ body {
 
 .rocket-impl-translation {
   position: relative;
-  margin-bottom: 1rem;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-gap: 1rem 1rem;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-impl-translation-copy-control {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   grid-column-start: 2;
   grid-column-end: 3;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-field {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
   padding: 0;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element > .rocket-field > .rocket-control {
-  margin: 0;
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
+  margin: 0 0 1rem;
 }
 
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field,
@@ -4262,6 +4260,7 @@ body {
   display: block;
   position: static;
   width: 100%;
+  max-width: none;
   float: none;
   text-align: left;
   padding: 0.5rem 0;
@@ -4630,10 +4629,6 @@ ul.rocket-content-item > li > span {
   position: relative;
 }
 
-.rocket-control > div {
-  padding-top: 1px;
-}
-
 .rocket-required > label {
   position: relative;
 }
@@ -4650,7 +4645,7 @@ ul.rocket-content-item > li > span {
 @media (min-width: 768px) {
   .rocket-item {
     clear: both;
-    margin: 1rem 0;
+    padding: 0.5rem 0;
   }
   .rocket-item > label {
     width: 15rem;
@@ -4679,15 +4674,11 @@ ul.rocket-content-item > li > span {
   display: grid;
 }
 
-.rocket-control .rocket-impl-entry {
-  background-color: white;
-  margin: 1rem 0;
-}
-
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
   display: grid;
   grid-template-columns: 3rem auto 100px;
   border: 1px solid #C2BDB6;
+  margin: 0.5rem 0;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
@@ -4829,7 +4820,7 @@ ul.rocket-content-item > li > span {
 }
 
 .rocket-group > .rocket-control {
-  padding: 0 1rem;
+  padding: 1rem;
 }
 
 .rocket-group .rocket-simple-group,

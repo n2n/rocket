@@ -12,7 +12,6 @@
 }
 
 .rocket-control > div {
-    padding-top: 1px;
 }
 
 .rocket-required > label {
@@ -30,7 +29,7 @@
 @include media-breakpoint-up(md) {
     .rocket-item {
         clear: both;
-        margin: 1rem 0;
+        padding: 0.5rem 0;
 
         > label {
             width: 15rem;
@@ -67,12 +66,11 @@
 }
 
 .rocket-control .rocket-impl-entry {
-    background-color: white;
-    margin: 1rem 0;
     > .rocket-impl-summary {
         display: grid;
         grid-template-columns: 3rem auto 100px;
         border: 1px solid $gray-500;
+        margin: 0.5rem 0;
         > .rocket-impl-handle {
             padding: 1rem;
         }
