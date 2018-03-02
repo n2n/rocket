@@ -144,7 +144,7 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException(null, null, $e);
 		}
 		
-		if ($eiMaskId !== null && !$eiType->getEiMaskCollection()->containsId($eiMaskId)) {
+		if ($eiMaskId !== null && !$eiType->getEiMaskExtensionCollection()->containsId($eiMaskId)) {
 			throw new PageNotFoundException();
 		}
 		
@@ -216,13 +216,13 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		if ($eiMaskId !== null) {
 			try {
-				return $eiType->getEiMaskCollection()->getById($eiMaskId)->getEiEngine();
+				return $eiType->getEiMaskExtensionCollection()->getById($eiMaskId)->getEiEngine();
 			} catch (UnknownEiMaskExtensionException $e) {
 				throw new PageNotFoundException(null, 0, $e);
 			}
 		}
 		
-		return $eiType->getEiEngine();
+		return $eiType->getEiMask()->getEiEngine();
 	}
 	
 	/**

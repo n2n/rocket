@@ -80,13 +80,12 @@ class EiTypeExtraction extends SpecExtraction {
 // 		$this->draftDisabled = $draftDisabled;
 // 	}
 	
-// 	public function getDefaultEiMaskId() {
-// 		return $this->defaultEiMaskId;
-// 	}
+	public function getDefaultEiMaskId() {
+		return null;
+	}
 	
-// 	public function setDefaultEiMaskId(string $defaultEiMaskId = null) {
-// 		$this->defaultEiMaskId = $defaultEiMaskId;
-// 	}
+	public function setDefaultEiMaskId(string $defaultEiMaskId = null) {
+	}
 	
 	public function addEiMaskExtensionExtraction(EiMaskExtensionExtraction $eiMaskExtensionExtraction) {
 		$this->eiMaskExtensionExtractions[$eiMaskExtensionExtraction->getId()] = $eiMaskExtensionExtraction;
@@ -161,15 +160,15 @@ class EiTypeExtraction extends SpecExtraction {
 		
 // 		$extraction->setEiMaskExtraction(self::createEiMaskExtraction($eiType->getEiMask()));
 			
-// 		if (null !== ($defaultEiMask = $eiType->getEiMaskCollection()->getDefault())) {
+// 		if (null !== ($defaultEiMask = $eiType->getEiMaskExtensionCollection()->getDefault())) {
 // 			$extraction->setDefaultEiMaskId($defaultEiMask->getExtension()->getId());
 // 		}
 		
-// 		foreach ($eiType->getEiMaskCollection() as $eiMask) {
+// 		foreach ($eiType->getEiMaskExtensionCollection() as $eiMask) {
 // 			$extraction->addEiMaskExtensionExtraction($eiMask->getExtraction());
 // 		}
 		
-// 		foreach ($eiType->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
+// 		foreach ($eiType->getEiMask()->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
 // 			$extraction->addEiModificatorExtraction($eiModificator->getExtraction());
 // 		}
 		

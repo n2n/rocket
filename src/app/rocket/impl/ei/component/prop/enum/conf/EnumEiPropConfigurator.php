@@ -62,9 +62,9 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$guiProps = null;
 		try {
-			$guiProps = $this->eiComponent->getEiMask()->getGuiDefinition()->getGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->getGuiDefinition()->getGuiProps();
 		} catch (\Throwable $e) {
-			$guiProps = $this->eiComponent->getEiMask()->getGuiDefinition()->getLevelGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->getGuiDefinition()->getLevelGuiProps();
 		}
 		
 		$assoicatedGuiPropOptions = array();
@@ -80,7 +80,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 					
 					$eMag = new TogglerMag('Bind GuiProps to value', false);
 					$magCollection->addMag('bindGuiPropsToValue', $eMag);
-					$eMag->setAssociatedMags(array(
+					$eMag->setOnAssociatedMagWrappers(array(
 							$magCollection->addMag('assoicatedGuiIdPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
 					return new MagForm($magCollection);
 				});

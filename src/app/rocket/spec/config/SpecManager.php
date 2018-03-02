@@ -148,7 +148,7 @@ class SpecManager {
 		
 		$eiMask = null;
 		if ($eiMaskId !== null) {
-			$eiMask = $spec->getEiMaskCollection()->getById($eiMaskId);
+			$eiMask = $spec->getEiMaskExtensionCollection()->getById($eiMaskId);
 		} else {
 			$eiMask = $spec->getEiMask();
 		}

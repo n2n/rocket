@@ -170,7 +170,7 @@ class EiEngine {
 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
 		$eiMask = $this->eiMask;
 		if ($this->eiType === null) {
-			$eiMask = $this->eiType->getEiMaskCollection()->getOrCreateDefault();
+			$eiMask = $this->eiType->getEiMaskExtensionCollection()->getOrCreateDefault();
 		}
 		
 		$guiFactory = new GuiFactory($this->getEiPropCollection(), $this->getEiModificatorCollection());
@@ -185,7 +185,7 @@ class EiEngine {
 		$eiThing = $this->eiMask ?? $this->eiType;
 		do {
 			$id = $eiThing->getId();
-		} while (($id === null || $eiThing->getEiEngine()->getEiPropCollection()->isEmpty(true))
+		} while (($id === null || $eiThing->getEiEngine()->getEiMask()->getEiPropCollection()->isEmpty(true))
 				&& null !== ($eiThing = $eiThing->getMaskedEiEngineModel()));
 		return $this->draftDefinition = (new DraftDefinitionFactory($this->eiMask->getEntityModel(), 
 						$this->eiPropCollection, $this->eiModificatorCollection))

@@ -176,7 +176,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			}
 				
 			public function getFilterDefinition(): FilterDefinition {
-				return (new CritmodFactory($this->targetEiMask->getEiEngine()->getEiPropCollection(),
+				return (new CritmodFactory($this->targetEiMask->getEiEngine()->getEiMask()->getEiPropCollection(),
 								$this->targetEiMask->getEiEngine()->getEiModificatorCollection()))
 						->createEiEntryFilterDefinition($this->n2nContext);
 			}

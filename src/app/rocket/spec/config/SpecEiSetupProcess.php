@@ -54,15 +54,15 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 	 * @return EiDef
 // 	 */
 // 	public function getEiDef() {
-// 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
+// 		if (null !== ($eiMask = $this->eiComponent->getEiMask()->getEiEngine()->getEiMask())) {
 // 			return $eiMask->getEiDef();
 // 		}
-// 		return $this->eiComponent->getEiEngine()->getEiMask()->getEiType()->getDefaultEiDef();
+// 		return $this->eiComponent->getEiMask()->getEiEngine()->getEiMask()->getEiType()->getDefaultEiDef();
 // 	}
 
 // 	public function getSupremeEiDef() {
-// 		$supremeEiType = $this->eiComponent->getEiEngine()->getEiMask()->getEiType()->getSupremeEiType();
-// 		if (null !== ($eiMask = $this->eiComponent->getEiEngine()->getEiMask())) {
+// 		$supremeEiType = $this->eiComponent->getEiMask()->getEiEngine()->getEiMask()->getEiType()->getSupremeEiType();
+// 		if (null !== ($eiMask = $this->eiComponent->getEiMask()->getEiEngine()->getEiMask())) {
 // 			return $eiMask->determineEiMask($supremeEiType)->getEiDef();
 // 		}
 // 		return $supremeEiType->getDefaultEiDef();
@@ -101,26 +101,26 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 	}
 
 // 	public function getEiPropCollection(): EiPropCollection {
-// 		return $this->eiComponent->getEiEngine()->getEiPropCollection();
+// 		return $this->eiComponent->getEiMask()->getEiEngine()->getEiMask()->getEiPropCollection();
 // 	}
 
 
 // 	public function getEiCommandCollection(): EiCommandCollection {
-// 		return $this->eiComponent->getEiEngine()->getEiCommandCollection();
+// 		return $this->eiComponent->getEiMask()->getEiEngine()->getEiCommandCollection();
 // 	}
 
 
 // 	public function getEiModificatorCollection(): EiModificatorCollection {
-// 		return $this->eiComponent->getEiEngine()->getEiModificatorCollection();
+// 		return $this->eiComponent->getEiMask()->getEiEngine()->getEiModificatorCollection();
 // 	}
 
 // 	public function getGenericEiPropertyByEiPropPath($eiPropPath): GenericEiProperty {
-// 		return $this->eiComponent->getEiEngine()->getGenericEiDefinition()
+// 		return $this->eiComponent->getEiMask()->getEiEngine()->getGenericEiDefinition()
 // 				->getGenericEiPropertyByEiPropPath($eiPropPath);
 // 	}
 
 // 	public function getScalarEiPropertyByFieldPath($eiPropPath): ScalarEiProperty {
-// 		return $this->eiComponent->getEiEngine()->getScalarEiDefinition()
+// 		return $this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()
 // 				->getScalarEiPropertyByFieldPath($eiPropPath);
 // 	}
 

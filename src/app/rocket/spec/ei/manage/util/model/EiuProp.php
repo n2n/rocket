@@ -23,7 +23,7 @@ class EiuProp {
 	 * @return string
 	 */
 	public function getLabel(N2nLocale $n2nLocale) {
-		return $this->eiuEngine->getEiEngine()->getEiPropCollection()->getById((string) $this->eiPropPath);
+		return $this->eiuEngine->getEiEngine()->getEiMask()->getEiPropCollection()->getById((string) $this->eiPropPath);
 	}
 	
 	/**

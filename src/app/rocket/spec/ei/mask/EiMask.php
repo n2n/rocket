@@ -432,7 +432,7 @@ class EiMask {
 			if ($subEiType->getId() != $eiTypeId) continue;
 			
 			if (isset($subMaskIds[$eiTypeId])) {
-				return $subEiType->getEiMaskCollection()->getById($subMaskIds[$eiTypeId]);
+				return $subEiType->getEiMaskExtensionCollection()->getById($subMaskIds[$eiTypeId]);
 			} else {
 				return $subEiType->getEiMask();
 			}

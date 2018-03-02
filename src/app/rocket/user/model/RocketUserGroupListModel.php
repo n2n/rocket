@@ -40,9 +40,9 @@ class RocketUserGroupListModel {
 	public function prettyEiGrantName(EiGrant $eiGrant) {
 		$eiType = $this->specManager->getEiTypeById($eiGrant->getEiTypeId());
 		if (null !== ($eiMaskId = $eiGrant->getEiMaskId())) {
-			return $eiType->getEiMaskCollection()->getById($eiMaskId)->getLabel();
+			return $eiType->getEiMaskExtensionCollection()->getById($eiMaskId)->getLabel();
 		}
 		
-		return $eiType->getEiMaskCollection()->getOrCreateDefault()->getLabelLstr();
+		return $eiType->getEiMaskExtensionCollection()->getOrCreateDefault()->getLabelLstr();
 	}
 }

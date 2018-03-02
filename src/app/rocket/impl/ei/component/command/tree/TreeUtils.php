@@ -33,7 +33,7 @@
 // 	public static function findTreeField(EiType $eiType, &$treeLeftEiProp = null, 
 // 				&$treeRightEiProp = null, &$treeRootIdEiProp = null) {
 
-// 		foreach ($eiType->getEiEngine()->getEiPropCollection()->toArray() as  $eiProp) {
+// 		foreach ($eiType->getEiMask()->getEiPropCollection()->toArray() as  $eiProp) {
 // 			if ($eiProp instanceof TreeLeftEiProp) {
 // 				$treeLeftEiProp = $eiProp;
 // 			} else if ($eiProp instanceof TreeRightEiProp) {

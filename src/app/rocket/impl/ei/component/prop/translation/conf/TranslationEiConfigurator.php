@@ -214,7 +214,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
-// 				$targetEiMask = $target->getEiMaskCollection()->getById($eiMaskId);
+// 				$targetEiMask = $target->getEiMaskExtensionCollection()->getById($eiMaskId);
 // 			} else {
 				$targetEiMask = $targetEiType->getEiMask();
 // 			}

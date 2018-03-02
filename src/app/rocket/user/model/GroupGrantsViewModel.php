@@ -81,7 +81,7 @@ class GroupGrantsViewModel {
 	private function applyEiTypeItems(EiType $eiType, int $level) {
 		$this->eiTypeItems[$eiType->getId()] = $eiTypeItem = new EiTypeItem($level, $eiType, $this->findEiGrant($eiType));
 		
-		foreach ($eiType->getEiMaskCollection() as $eiMask) {
+		foreach ($eiType->getEiMaskExtensionCollection() as $eiMask) {
 			$eiTypeItem->addEiMaskItem(new EiMaskItem($eiMask, $this->findEiGrant($eiType, $eiMask)));
 		}
 		
@@ -154,7 +154,7 @@ class EiTypeItem extends Item {
 			return $label;
 		}
 		
-		return $this->eiType->getEiMaskCollection()->getOrCreateDefault()->getLabel();
+		return $this->eiType->getEiMaskExtensionCollection()->getOrCreateDefault()->getLabel();
 	}
 	
 	public function getEiMaskItems(): array {

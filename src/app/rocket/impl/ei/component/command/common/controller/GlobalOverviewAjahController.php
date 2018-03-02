@@ -66,7 +66,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 			throw new PageNotFoundException();
 		}
 
-		$this->del($eiType->getEiMaskCollection()->getOrCreateDefault(), $overviewJhtmlController);
+		$this->del($eiType->getEiMaskExtensionCollection()->getOrCreateDefault(), $overviewJhtmlController);
 	}
 
 	public function doEim($eiTypeId, $eiMaskId, array $delegateCmds = array(),
@@ -75,7 +75,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 		$eiMask = null;
 		try {
 			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
-			$eiMask = $eiType->getEiMaskCollection()->getById($eiMaskId);
+			$eiMask = $eiType->getEiMaskExtensionCollection()->getById($eiMaskId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (UnknownEiMaskExtensionException $e) {
