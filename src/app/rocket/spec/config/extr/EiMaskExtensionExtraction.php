@@ -21,14 +21,10 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\ei\mask\model\DisplayScheme;
-use n2n\util\ex\IllegalStateException;
-
 class EiMaskExtensionExtraction {
 	private $id;
 	private $moduleNamespace;
 	private $eiMaskExtraction;
-	private $guiOrder;
 	private $subMaskIds = array();
 	
 	public function __construct($id, $moduleNamespace) {
@@ -67,21 +63,6 @@ class EiMaskExtensionExtraction {
 	 */
 	public function setEiMaskExtraction(EiMaskExtraction $eiMaskExtraction) {
 		$this->eiMaskExtraction = $eiMaskExtraction;
-	}
-	
-	/**
-	 * @return DisplayScheme
-	 */
-	public function getDisplayScheme(): DisplayScheme {
-		IllegalStateException::assertTrue($this->guiOrder !== null);
-		return $this->guiOrder;
-	}
-	
-	/**
-	 * @param DisplayScheme $guiOrder
-	 */
-	public function setDisplayScheme(DisplayScheme $guiOrder) {
-		$this->guiOrder = $guiOrder;
 	}
 	
 	/**

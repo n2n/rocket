@@ -29,6 +29,10 @@ use rocket\spec\config\InvalidSpecConfigurationException;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
 use n2n\reflection\ArgUtils;
 
+/**
+ * Decorates the ConfigSource of a spec configuration from a single module and provides simplified interface to read
+ * from and write to this ConfigSource. This class is used by {@see SpecExtractionManager}.
+ */
 class SpecConfigSourceDecorator {
 	private $specRawer;
 	private $configSource;
@@ -40,21 +44,38 @@ class SpecConfigSourceDecorator {
 	private $eiModificatorExtractionGroups = array();
 	private $menuItemExtractions = array();
 	
-	public function __construct(WritableConfigSource $configSource, $module) {
+	/**
+	 * @param WritableConfigSource $configSource
+	 * @param string $moduleNamespace
+	 */
+	public function __construct(WritableConfigSource $configSource, string $moduleNamespace) {
 		$this->attributes = new Attributes();
 		$this->configSource = $configSource;
-		$this->moduleNamespace = (string) $module;
+		$this->moduleNamespace = $moduleNamespace;
 	} 
 	
+	/**
+	 * @return string
+	 */
 	public function getModuleNamespace() {
 		return $this->moduleNamespace;
 	}
 	
+	/**
+	 * @return \n2n\util\config\source\WritableConfigSource
+	 */
 	public function getConfigSource() {
 		return $this->configSource;
 	}
 	
-	public function load() {
+	/**
+	 * Reads the decorated ConfigSource and uses {@see SpecExtractor} to extract all
+	 * {@see SpecExtraction}s, {@see EiMaskExtensionExtraction}s, {@see MenuItemExtraction}s
+	 * and overwrites the matching properties on this class. You can access these properties 
+	 * through the getter methods.  
+	 * @throws InvalidConfigurationException
+	 */
+	public function extract() {
 		$this->attributes = new Attributes($this->configSource->readArray());
 		
 		$specExtractor = new SpecExtractor($this->attributes, $this->moduleNamespace);
@@ -73,6 +94,9 @@ class SpecConfigSourceDecorator {
 		}
 	}
 	
+	/**
+	 * Uses {@see SpecRawer} to do the opposite of {@see self::extract()}.
+	 */
 	public function flush() {
 		$this->specRawer = new SpecRawer($this->attributes);
 		$this->specRawer->rawSpecs($this->specExtractions);
@@ -83,6 +107,9 @@ class SpecConfigSourceDecorator {
 		$this->configSource->writeArray($this->attributes->toArray());
 	}
 	
+	/**
+	 * 
+	 */
 	public function clear() {
 		if ($this->specRawer !== null) {
 			$this->specRawer->clear();
@@ -96,19 +123,32 @@ class SpecConfigSourceDecorator {
 		$this->menuItemExtractions = array();
 	}
 		
+	/**
+	 * @return \rocket\spec\config\extr\SpecExtraction[]
+	 */
 	public function getSpecExtractions() {		
 		return $this->specExtractions;	
 	}
 	
+	/**
+	 * @param SpecExtraction[] $specExtractions
+	 */
 	public function setSpecExtractions(array $specExtractions) {
 		ArgUtils::valArray($specExtractions, SpecExtraction::class);
 		$this->specExtractions = $specExtractions;
 	}
 	
+	/**
+	 * @param SpecExtraction $specExtraction
+	 */
 	public function addSpecExtraction(SpecExtraction $specExtraction) {
 		$this->specExtractions[$specExtraction->getId()] = $specExtraction;
 	}
 	
+	/**
+	 * @param \Exception $previous
+	 * @throws InvalidConfigurationException
+	 */
 	private function createDataSourceException(\Exception $previous) {
 		throw new InvalidConfigurationException('Configruation error in data source: ' . $this->configSource, 0, $previous);
 	}

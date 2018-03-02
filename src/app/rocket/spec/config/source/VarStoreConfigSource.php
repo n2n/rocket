@@ -63,7 +63,7 @@ class VarStoreConfigSource implements ModularConfigSource {
 						$this->folderName, $this->fileName, false, false, false)->exists();
 	}
 	
-	public function hashCode() {
+	public function hashCode(): string {
 		$hashCode = '';
 		foreach ($this->configSources as $ns => $configSource) {
 			$csHashCode = $configSource->hashCode();

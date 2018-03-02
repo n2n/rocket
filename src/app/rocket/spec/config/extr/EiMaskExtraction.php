@@ -24,6 +24,7 @@ namespace rocket\spec\config\extr;
 use n2n\reflection\ArgUtils;
 use rocket\spec\ei\manage\critmod\sort\SortData;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\spec\ei\mask\model\DisplayScheme;
 
 class EiMaskExtraction {
 	private $label;
@@ -37,6 +38,8 @@ class EiMaskExtraction {
 	
 	private $eiPropExtractions = array();
 	private $eiCommandExtractions = array();
+	
+	private $displayScheme;
 	
 	private $overviewEiCommandId;
 	private $entryDetailEiCommandId;
@@ -158,6 +161,20 @@ class EiMaskExtraction {
 	public function setEiCommandExtraction(array $eiCommandExtractions) {
 		ArgUtils::valArray($eiCommandExtractions, EiComponentExtraction::class);
 		$this->eiCommandExtractions = $eiCommandExtractions;
+	}
+		
+	/**
+	 * @return DisplayScheme
+	 */
+	public function getDisplayScheme() {
+		return $this->displayScheme;
+	}
+	
+	/**
+	 * @param DisplayScheme $displayScheme
+	 */
+	public function setDisplayScheme(DisplayScheme $displayScheme) {
+		$this->displayScheme = $displayScheme;
 	}
 	
 	public function getOverviewEiCommandId() {

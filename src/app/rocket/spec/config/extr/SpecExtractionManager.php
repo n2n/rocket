@@ -29,29 +29,49 @@ use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\core\model\UnknownMenuItemException;
 use n2n\reflection\ArgUtils;
 
+/**
+ * <p>This manager allows you to read und write spec configurations usually located in 
+ * 	<code>[n2n-root]/var/etc/[module]/rocket/specs.json</code>. It is used by 
+ * 	the {@see \rocket\spec\config\SpecManager} to load the current configuration.</p>
+ * 
+ * <p>It is also used by the dev tool Hangar {@link https://dev.n2n.rocks/en/hangar/docs} 
+ * 	to manipulate spec configurations.</p>
+ */
 class SpecExtractionManager {
 	private $init = false;
 	private $modularConfigSource;
 	private $moduleNamespaces;
+	
 	/**
-	 * @var SpecConfigSourceDecorator []
+	 * @var SpecConfigSourceDecorator[]
 	 */
 	private $specCsDecs = array();
+	
 	private $specExtractions = array();
 	private $eiTypeExtractions = array();
 	private $unboundEiMaskExtensionExtractionGroups = array();
 	private $unboundEiModificatorExtractionGroups = array();
 	private $menuItemExtractions = array();
 	
+	/**
+	 * @param ModularConfigSource $moduleConfigSource
+	 * @param string[] $moduleNamespaces Namespaces of all modules which spec configurations shall be loaded. 
+	 */
 	public function __construct(ModularConfigSource $moduleConfigSource, array $moduleNamespaces) {
 		$this->modularConfigSource = $moduleConfigSource;
 		$this->moduleNamespaces = $moduleNamespaces;
 	}
 	
+	/**
+	 * @return \rocket\spec\config\source\ModularConfigSource
+	 */
 	public function getModularConfigSource() {
 		return $this->modularConfigSource;
 	}
 	
+	/**
+	 * Searches all available module configurations 
+	 */
 	public function load() {
 		foreach ($this->moduleNamespaces as $moduleNamespace) {
 			$moduleNamespace = (string) $moduleNamespace;
@@ -87,7 +107,7 @@ class SpecExtractionManager {
 			$this->specCsDecs[$moduleNamespace] = $specCsDec = new SpecConfigSourceDecorator(
 					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
 			
-			$specCsDec->load();
+			$specCsDec->extract();
 		}
 		
 		$this->initSpecExtractions();

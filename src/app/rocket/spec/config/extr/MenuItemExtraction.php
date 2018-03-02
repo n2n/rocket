@@ -22,7 +22,6 @@
 namespace rocket\spec\config\extr;
 
 class MenuItemExtraction {
-	
 	private $id;
 	private $moduleNamespace;
 	private $specId;
