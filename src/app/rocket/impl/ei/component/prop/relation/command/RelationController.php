@@ -53,7 +53,7 @@ class RelationController extends ControllerAdapter {
 		$eiObject = $this->eiuCtrl->lookupEiObject($pid);
 		
 		// because RelationCommand gets added always on a supreme EiEngine
-		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiMask()->getEiType()
+		if (!$this->eiPropRelation->getRelationEiProp()->getEiMask()->getEiType()
 				->isObjectValid($eiObject->getLiveObject())) {
 			throw new PageNotFoundException();
 		}
