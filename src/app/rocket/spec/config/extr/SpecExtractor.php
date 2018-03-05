@@ -130,29 +130,29 @@ class SpecExtractor {
 		return $extraction;
 	}
 	
-	public function createEiMaskExtraction(Attributes $eiDefAttributes) {
+	public function createEiMaskExtraction(Attributes $eiMaskAttributes) {
 		$eiMaskExtraction = new EiMaskExtraction();
 	
-		$label = $eiDefAttributes->getScalar(RawDef::EI_DEF_LABEL_KEY);
+		$label = $eiMaskAttributes->getScalar(RawDef::EI_DEF_LABEL_KEY);
 		$eiMaskExtraction->setLabel($label);
 	
-		$pluralLabel = $eiDefAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false);
+		$pluralLabel = $eiMaskAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false);
 		if ($pluralLabel === null) $pluralLabel = $label;
 		$eiMaskExtraction->setPluralLabel($pluralLabel);
 		
-		$eiMaskExtraction->setIconType($eiDefAttributes->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
+		$eiMaskExtraction->setIconType($eiMaskAttributes->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
 	
 		$eiMaskExtraction->setIdentityStringPattern(
-				$eiDefAttributes->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));
+				$eiMaskAttributes->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));
 	
-		$eiMaskExtraction->setDraftingAllowed($eiDefAttributes->getBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY,
+		$eiMaskExtraction->setDraftingAllowed($eiMaskAttributes->getBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY,
 				false, $eiMaskExtraction->isDraftingAllowed()));
 	
 		$eiMaskExtraction->setPreviewControllerLookupId(
-				$eiDefAttributes->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
+				$eiMaskAttributes->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
 	
 	
-		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_FIELDS_KEY, false, array(), 
+		foreach ($eiMaskAttributes->getArray(RawDef::EI_DEF_FIELDS_KEY, false, array(), 
 				TypeConstraint::createSimple('array')) as $eiPropId => $fieldRawData) {
 			try {
 				$eiMaskExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
@@ -161,7 +161,7 @@ class SpecExtractor {
 			}
 		}
 	
-		foreach ($eiDefAttributes->getArray(RawDef::EI_DEF_COMMANDS_KEY, false, array(), 
+		foreach ($eiMaskAttributes->getArray(RawDef::EI_DEF_COMMANDS_KEY, false, array(), 
 				TypeConstraint::createSimple('array')) as $eiCommandId => $eiCommandRawData) {
 			try {
 				$eiMaskExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCommandId, 
@@ -171,26 +171,25 @@ class SpecExtractor {
 			}
 		}
 
-		$eiMaskExtraction->setOverviewEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setOverviewEiCommandId($eiMaskAttributes->getString(
 				RawDef::EI_DEF_OVERVIEW_COMMAND_ID_KEY, false));	
-		$eiMaskExtraction->setGenericDetailEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setGenericDetailEiCommandId($eiMaskAttributes->getString(
 				RawDef::EI_DEF_ENTRY_DETAIL_COMMAND_ID_KEY, false));	
-		$eiMaskExtraction->setGenericEditEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskAttributes->getString(
 				RawDef::EI_DEF_ENTRY_EDIT_COMMAND_ID_KEY, false));	
-		$eiMaskExtraction->setGenericEditEiCommandId($eiDefAttributes->getString(
+		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskAttributes->getString(
 				RawDef::EI_DEF_ENTRY_ADD_COMMAND_ID_KEY, false));	
 		
-		
-		if (null !== ($filterData = $eiDefAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null, 
+		if (null !== ($filterData = $eiMaskAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null, 
 				TypeConstraint::createSimple('array')))) {
 			$eiMaskExtraction->setFilterGroupData(FilterGroupData::create(new Attributes($filterData)));
 		}
 		
-		if (null !== ($defaultSortData = $eiDefAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
+		if (null !== ($defaultSortData = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
 			$eiMaskExtraction->setDefaultSortData(SortData::create(new Attributes($defaultSortData)));
 		}
 		
-		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiDefAttributes));	
+		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiMaskAttributes));	
 
 		return $eiMaskExtraction;
 	}

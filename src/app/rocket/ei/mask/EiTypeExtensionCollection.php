@@ -28,7 +28,7 @@ use rocket\ei\EiType;
 
 class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	private $eiType;
-	private $eiMasks = array();
+	private $eiTypeExtensions = array();
 	private $defaultId;
 	private $createdDefault = null;
 	
@@ -41,10 +41,10 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 		if (0 == mb_strlen($id)) {
 			$eiMaskExtension->setId($this->makeUniqueId(''));
 		} else if (IoUtils::hasSpecialChars($id)) {
-			throw new InvalidEiMaskConfigurationException('Id of passed EiMask contains invalid characters: ' . $id);
+			throw new InvalidEiMaskConfigurationException('Id of passed EiTypeExtension contains invalid characters: ' . $id);
 		}
 	
-		$this->eiMasks[$eiMaskExtension->getId()] = $eiMaskExtension;
+		$this->eiTypeExtensions[$eiMaskExtension->getId()] = $eiMaskExtension;
 	}
 	
 	/**
@@ -53,42 +53,17 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	 * @throws UnknownEiTypeExtensionException
 	 */
 	public function getById($id) {
-		if (isset($this->eiMasks[$id])) {
-			return $this->eiMasks[$id];
+		if (isset($this->eiTypeExtensions[$id])) {
+			return $this->eiTypeExtensions[$id];
 		}
 	
-		throw new UnknownEiTypeExtensionException('No EiMask with id \'' . (string) $id
+		throw new UnknownEiTypeExtensionException('No EiTypeExtension with id \'' . (string) $id
 				. '\' found in  \'' . $this->eiType->getId() . '\'.');
 	}
 	
-	public function setDefaultId($defaultId) {
-		$this->defaultId = $defaultId;
-	}
-	
-	public function getDefault() {
-		if (isset($this->eiMasks[$this->defaultId])) {
-			return $this->eiMasks[$this->defaultId];
-		}
-	
-		return null;
-	}
-	
-	public function getOrCreateDefault(): EiMask {
-		if (isset($this->eiMasks[$this->defaultId])) {
-			return $this->eiMasks[$this->defaultId];
-		}
-	
-		if ($this->createdDefault === null) {
-			$this->createdDefault = new EiMask($this->eiType, $this->eiType->getModuleNamespace(), 
-					new DisplayScheme());
-		}
-	
-		return $this->createdDefault;
-	
-	}
 	
 	public function isEmpty(): bool {
-		return empty($this->eiMasks);
+		return empty($this->eiTypeExtensions);
 	}
 	
 	/**
@@ -114,7 +89,7 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	 * @return boolean
 	 */
 	public function containsId(string $id): bool {
-		return isset($this->eiMasks[$id]);
+		return isset($this->eiTypeExtensions[$id]);
 	}
 	
 	/* (non-PHPdoc)
@@ -125,15 +100,15 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	/**
-	 * @return EiMask[]
+	 * @return EiTypeExtension[]
 	 */
 	public function toArray(): array {
-		return $this->eiMasks;
+		return $this->eiTypeExtensions;
 	}
 	/* (non-PHPdoc)
 	 * @see Countable::count()
 	 */
 	public function count() {
-		return count($this->eiMasks);
+		return count($this->eiTypeExtensions);
 	}
 }
