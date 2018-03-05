@@ -476,11 +476,7 @@ class EiMask {
 	}
 	
 	public function __toString(): string {
-		if ($this->id !== null) {
-			return 'EiMask (id: ' . $this->id . ') of ' . $this->eiType;
-		}
-		
-		return 'Default EiMask of ' . $this->eiType;
+		return 'EiMask of ' . ($this->isExtension() ? $this->eiMaskExtension : $this->eiType);
 	}
 	
 	/**

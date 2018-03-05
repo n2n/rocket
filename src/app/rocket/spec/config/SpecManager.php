@@ -294,8 +294,7 @@ class SpecManager {
 			
 			if (null !== ($menuItemExtraction = $this->specExtractionManager
 					->getMenuItemExtractionByTypePath($typePath))) {
-						$this->menuItems[(string) $typePath] = $this->createEiMenuItem($typePath, 
-								$eiTypeExtension->getEiMask(), $menuItemExtraction->getLabel());
+				$this->createEiMenuItem($typePath, $eiTypeExtension->getEiMask(), $menuItemExtraction->getLabel());
 			}
 		}
 		
@@ -303,7 +302,13 @@ class SpecManager {
 	}
 	
 	private function createCustomTypeFromExtr(CustomTypeExtraction $customTypeExtraction) {
-		return $this->customTypes[$customTypeExtraction->getId()] = CustomTypeFactory::create($customTypeExtraction);
+		$customType = $this->customTypes[$customTypeExtraction->getId()] = CustomTypeFactory::create($customTypeExtraction);
+		$typePath = new TypePath($customTypeExtraction->getId());
+		
+		if (null !== ($menuItemExtraction = $this->specExtractionManager
+				->getMenuItemExtractionByTypePath($typePath))) {
+			$this->createCustomMenuItem($typePath, $customType, $menuItemExtraction->getLabel());
+		}
 	}
 	
 	/**

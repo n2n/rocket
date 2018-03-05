@@ -71,7 +71,6 @@ class SpecRawer {
 		}
 		
 		$rawData = array_merge($rawData, $this->buildEiMaskExtractionRawData($extraction->getEiMaskExtraction()));
-		$rawData[RawDef::EI_DEFAULT_MASK_ID] = $extraction->getDefaultEiMaskId();
 		return $rawData;
 	}
 	
