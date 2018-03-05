@@ -1,5 +1,5 @@
 <?php
-namespace rocket\spec\ei\mask;
+namespace rocket\spec\config;
 
 use n2n\reflection\ArgUtils;
 use n2n\io\IoUtils;
@@ -14,8 +14,8 @@ class TypePath {
 	 * @param string $eiTypeId
 	 * @param string|null $eiTypeExtensionId
 	 */
-	function __construt(string $typeId, string $typeExtensionId = null) {
-		ArgUtils::assertTrue(!IoUtils::hasStrictSpecialChars($typeId));
+	function __construct(string $typeId, string $typeExtensionId = null) {
+		ArgUtils::assertTrue(!IoUtils::hasSpecialChars($typeId));
 		ArgUtils::assertTrue($typeExtensionId === null || !IoUtils::hasStrictSpecialChars($typeExtensionId));
 		
 		$this->typeId = $typeId;
@@ -50,7 +50,7 @@ class TypePath {
 			return $expression;
 		}
 		
-		if (!is_scalar($expression)) {
+		if (is_scalar($expression)) {
 			$parts = explode(self::SEPARATOR, $expression);
 			try {
 				return new TypePath($parts[0], $parts[1] ?? null);

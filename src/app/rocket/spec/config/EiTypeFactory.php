@@ -57,13 +57,15 @@ class EiTypeFactory {
 	}
 	/**
 	 * @param EiTypeExtraction $eiTypeExtraction
+	 * @param EiModificatorExtraction[] $eiModificatorExtractions
+	 * @param EiTypeExtensionExtraction[] $eiTypeExtensionExtractions
 	 * @return \rocket\spec\ei\EiType
 	 */
-	public function create(EiTypeExtraction $eiTypeExtraction) {
+	public function create(EiTypeExtraction $eiTypeExtraction, array $eiModificatorExtractions) {
 		$eiType = null;
 		try {
 			$eiType = new EiType($eiTypeExtraction->getId(), $eiTypeExtraction->getModuleNamespace());
-			$this->asdf($eiTypeExtraction->getEiMaskExtraction(), $eiType->getEiMask());
+			$this->asdf($eiTypeExtraction->getEiMaskExtraction(), $eiType->getEiMask(), $eiModificatorExtractions);
 		} catch (InvalidConfigurationException $e) {
 			throw $this->createEiTypeException($eiTypeExtraction->getId(), $e);
 		}
@@ -71,33 +73,21 @@ class EiTypeFactory {
 		$eiType->setDataSourceName($eiTypeExtraction->getDataSourceName());
 		$eiType->setNestedSetStrategy($eiTypeExtraction->getNestedSetStrategy());
 		
-		$eiMaskExtensionCollection = $eiType->getEiTypeExtensionCollection();
-		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiMaskExtensionExtraction) {
-			try {
-				$eiMaskExtensionCollection->add($this->createEiTypeExtension($eiType, $eiMaskExtensionExtraction));
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiTypeException($eiTypeExtraction->getId(),
-						$this->createEiMaskException($eiMaskExtensionExtraction->getId(), $e));
-			}
-		}
+// 		$eiMaskExtensionCollection = $eiType->getEiTypeExtensionCollection();
+// 		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiMaskExtensionExtraction) {
+// 			try {
+// 				$eiMaskExtensionCollection->add($this->createEiTypeExtension($eiType, $eiMaskExtensionExtraction));
+// 			} catch (InvalidConfigurationException $e) {
+// 				throw $this->createEiTypeException($eiTypeExtraction->getId(),
+// 						$this->createEiMaskException($eiMaskExtensionExtraction->getId(), $e));
+// 			}
+// 		}
 		
-		$eiModificatorCollection = $eiType->getEiMask()->getEiModificatorCollection();
-		foreach ($eiTypeExtraction->getEiModificatorExtractions() as $eiModificatorExtraction) {
-			try {
-				$eiMask = null;
-				if (null !== $eiModificatorExtraction->getEiMaskId()) {
-					$eiMask = $eiMaskExtensionCollection->getById($eiModificatorExtraction->getEiMaskId());
-				}
-				
-				$eiModificatorCollection->add($this->createEiModificator($eiModificatorExtraction, $eiType, $eiMask));
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiTypeException($eiTypeExtraction->getId(),
-						$this->createEiModificatorException($eiModificatorExtraction->getId(), $e));
-			}
-		}
+		
 		
 		return $eiType;
 	}
+	
 	
 	
 	private function getEntityModel($entityClassName) {
@@ -111,20 +101,25 @@ class EiTypeFactory {
 		}
 	}
 	
-	private function asdf(EiMaskExtraction $eiMaskExtensionExtraction, EiMask $eiMask) {
+	/**
+	 * @param EiMaskExtraction $eiMaskExtraction
+	 * @param EiMask $eiMask
+	 * @param EiModificatorExtraction[] $eiModificatorExtractions
+	 */
+	private function asdf(EiMaskExtraction $eiMaskExtraction, EiMask $eiMask, array $eiModificatorExtractions) {
 		$eiDef = $eiMask->getDef();
 		
-		$eiDef->setLabel($eiMaskExtensionExtraction->getLabel());
-		$eiDef->setPluralLabel($eiMaskExtensionExtraction->getPluralLabel());
-		$eiDef->setIdentityStringPattern($eiMaskExtensionExtraction->getIdentityStringPattern());
+		$eiDef->setLabel($eiMaskExtraction->getLabel());
+		$eiDef->setPluralLabel($eiMaskExtraction->getPluralLabel());
+		$eiDef->setIdentityStringPattern($eiMaskExtraction->getIdentityStringPattern());
 		
-		if (null !== ($draftingAllowed = $eiMaskExtensionExtraction->isDraftingAllowed())) {
+		if (null !== ($draftingAllowed = $eiMaskExtraction->isDraftingAllowed())) {
 			$eiDef->setDraftingAllowed($draftingAllowed);
 		}
-		$eiDef->setPreviewControllerLookupId($eiMaskExtensionExtraction->getPreviewControllerLookupId());
+		$eiDef->setPreviewControllerLookupId($eiMaskExtraction->getPreviewControllerLookupId());
 		
 		$eiPropCollection = $eiMask->getEiPropCollection();
-		foreach ($eiMaskExtensionExtraction->getEiPropExtractions() as $eiPropExtraction) {
+		foreach ($eiMaskExtraction->getEiPropExtractions() as $eiPropExtraction) {
 			try {
 				$eiPropCollection->addIndependent($this->createEiProp($eiPropExtraction, $eiMask));
 			} catch (TypeNotFoundException $e) {
@@ -135,7 +130,7 @@ class EiTypeFactory {
 		}
 		
 		$eiCommandCollection = $eiMask->getEiCommandCollection();
-		foreach ($eiMaskExtensionExtraction->getEiCommandExtractions() as $eiComponentExtraction) {
+		foreach ($eiMaskExtraction->getEiCommandExtractions() as $eiComponentExtraction) {
 			try {
 				$eiCommandCollection->addIndependent(
 						$this->createEiCommand($eiComponentExtraction, $eiMask));
@@ -146,8 +141,17 @@ class EiTypeFactory {
 			}
 		}
 		
-		$eiDef->setFilterGroupData($eiMaskExtensionExtraction->getFilterGroupData());
-		$eiDef->setDefaultSortData($eiMaskExtensionExtraction->getDefaultSortData());
+		$eiDef->setFilterGroupData($eiMaskExtraction->getFilterGroupData());
+		$eiDef->setDefaultSortData($eiMaskExtraction->getDefaultSortData());
+		
+		foreach ($eiModificatorExtractions as $eiModificatorExtraction) {
+			try {
+				$eiModificatorCollection->add($this->createEiModificator($eiModificatorExtraction, $eiMask));
+			} catch (InvalidConfigurationException $e) {
+				throw $this->createEiTypeException($eiTypeExtraction->getId(),
+						$this->createEiModificatorException($eiModificatorExtraction->getId(), $e));
+			}
+		}
 	}
 	
 	/**
@@ -278,13 +282,20 @@ class EiTypeFactory {
 		return $eiModificator;
 	}
 	
-	public function createEiTypeExtension(EiType $eiType, EiTypeExtensionExtraction $eiMaskExtensionExtraction) {
+	
+	/**
+	 * @param EiTypeExtensionExtraction $eiTypeExtensionExtraction
+	 * @param EiModificatorExtraction[] $eiModificatorExtractions
+	 */
+	public function createEiTypeExtension(EiTypeExtensionExtraction $eiTypeExtensionExtraction,
+			array $eiModificatorExtractions) {
+				
 		$eiMask = new EiMask($eiType);
 		$eiMaskExtension = new EiTypeExtension($eiMaskExtensionExtraction->getId(),
 				$eiMaskExtensionExtraction->getModuleNamespace(),
 				$eiMask, $eiType->getEiMask());
 		
-		$this->asdf($eiMaskExtensionExtraction->getEiMaskExtraction(), $eiMask);
+		$this->asdf($eiMaskExtensionExtraction->getEiMaskExtraction(), $eiMask, $eiModificatorExtractions);
 		
 		return $eiMaskExtension;
 	}

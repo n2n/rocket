@@ -22,18 +22,19 @@
 namespace rocket\spec\config\extr;
 
 use rocket\spec\ei\mask\EiTypePath;
+use rocket\spec\config\TypePath;
 
 class EiTypeExtensionExtraction {
 	private $id;
 	private $moduleNamespace;
-	private $extendedEiTypePath;
+	private $extendedTypePath;
 	private $eiMaskExtraction;
 	private $subMaskIds = array();
 	
-	public function __construct(string $id, string $moduleNamespace, EiTypePath $extendedEiTypePath) {
+	public function __construct(string $id, string $moduleNamespace, TypePath $extendedTypePath) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
-		$this->extendedEiTypePath = $extendedEiTypePath;
+		$this->extendedTypePath = $extendedTypePath;
 	}
 
 	/**
@@ -65,17 +66,17 @@ class EiTypeExtensionExtraction {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\mask\EiTypePath
+	 * @return \rocket\spec\config\TypePath
 	 */
-	public function getExtendedEiTypePath() {
-		return $this->extendedEiTypePath;
+	public function getExtendedTypePath() {
+		return $this->extendedTypePath;
 	}
 	
 	/**
 	 * @param EiTypePath $extendedEiTypePath
 	 */
-	public function setExtendedEiTypePath(EiTypePath $extendedEiTypePath) {
-		$this->extendedEiTypePath = $extendedEiTypePath;
+	public function setExtendedEiTypePath(TypePath $extendedEiTypePath) {
+		$this->extendedTypePath = $extendedEiTypePath;
 	}
 	
 	/**

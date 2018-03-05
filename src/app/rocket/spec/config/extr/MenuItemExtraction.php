@@ -21,11 +21,33 @@
  */
 namespace rocket\spec\config\extr;
 
+use rocket\spec\config\TypePath;
+
 class MenuItemExtraction {
+	private $typePath;
+	private $moduleNamespace;
 	private $label;
 	
-	private function __construct(string $label = null) {
+	public function __construct(TypePath $typePath, string $moduleNamespace, string $label = null) {
+		$this->typePath = $typePath;
+		$this->moduleNamespace = $moduleNamespace;
 		$this->label = $label;
+	}
+	
+	public function getTypePath() {
+		return $this->typePath;
+	}
+	
+	public function setTypePath(TypePath $typePath) {
+		$this->typePath = $typePath;
+	}
+	
+	public function getModuleNamespace() {
+		return $this->moduleNamespace;
+	}
+	
+	public function setModuleNamespace(string $moduleNamespace) {
+		$this->moduleNamespace = $moduleNamespace;
 	}
 	
 	public function getLabel() {

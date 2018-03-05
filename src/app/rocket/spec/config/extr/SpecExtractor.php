@@ -40,6 +40,7 @@ use n2n\util\config\InvalidAttributeException;
 use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\spec\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
+use rocket\spec\config\TypePath;
 
 class SpecExtractor {
 	private $attributes;
@@ -66,23 +67,33 @@ class SpecExtractor {
 	public function extractTypes() {
 		$eiTypeExtractions = array();
 		$customTypeExtractions = array();
-		foreach ($this->attributes->getArray(RawDef::TYPES_KEY, false, array(), 
-				TypeConstraint::createArrayLike('array', true)) as $specId => $typeRawData) {
+		
+		$typesKey = RawDef::TYPES_KEY;
+		if (!$this->attributes->contains(RawDef::TYPES_KEY) && $this->attributes->contains('specs')) {
+			$typesKey = 'specs';
+		}
+		
+		foreach ($this->attributes->getArray($typesKey, false, array(), 
+				TypeConstraint::createArrayLike('array', true)) as $typeId => $typeRawData) {
 // 			$eiTypeExtractions[$specId] = $this->createTypeExtraction($specId, );
 			$typeAttributes = new Attributes($typeRawData);
 			
 			try {
-				$type = $specAttributes->getEnum(RawDef::TYPE_NATURE_KEY, RawDef::getSpecTypes());
+				$natureKey = RawDef::TYPE_NATURE_KEY;
+				if (!$typeAttributes->contains(RawDef::TYPE_NATURE_KEY) && $typeAttributes->contains('type')) {
+					$natureKey = 'type';
+				}
+				$nature = $typeAttributes->getEnum($natureKey, RawDef::getTypeNatures());
 				
-				if ($type == RawDef::NATURE_ENTITY) {
-					$eiTypeExtractions[$id] = $this->createEiTypeExtraction($id, $typeAttributes);
+				if ($nature == RawDef::NATURE_ENTITY) {
+					$eiTypeExtractions[$typeId] = $this->createEiTypeExtraction($typeId, $typeAttributes);
 				} else {
-					$customTypeExtractions[$id] = $this->createCustomTypeExtraction($id, $typeAttributes);
+					$customTypeExtractions[$typeId] = $this->createCustomTypeExtraction($typeId, $typeAttributes);
 				}
 			} catch (AttributesException $e) {
-				throw $this->createSpecException($id, $e);
+				throw $this->createSpecException($typeId, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createSpecException($id, $e);
+				throw $this->createSpecException($typeId, $e);
 			}
 		}
 		
@@ -178,6 +189,8 @@ class SpecExtractor {
 		if (null !== ($defaultSortData = $eiDefAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
 			$eiMaskExtraction->setDefaultSortData(SortData::create(new Attributes($defaultSortData)));
 		}
+		
+		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiDefAttributes));	
 
 		return $eiMaskExtraction;
 	}
@@ -228,7 +241,7 @@ class SpecExtractor {
 				. '\' contains invalid EiMask configurations.', 0, $previous);
 	}
 	
-	private function createEiMaskException($eiMaskId, \Exception $previous) {
+	private function createEiTypeExtensionException($eiMaskId, \Exception $previous) {
 		throw new InvalidEiMaskConfigurationException('EiMask with id \'' . $eiMaskId
 				. '\' contains invalid configurations.', 0, $previous);
 	}
@@ -238,47 +251,55 @@ class SpecExtractor {
 				. '\' contains invalid configurations.', 0, $previous);
 	}
 	
+	/**
+	 * @return \rocket\spec\config\extr\EiTypeExtensionExtraction[][]
+	 */
 	public function extractEiTypeExtensionGroups() {
 		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_TYPE_EXTENSIONS_KEY, false));
 		
 		$eiTypeExtensionExtractionGroups = array();
-		foreach ($attributes->getNames() as $eiTypePathStr) {
+		foreach ($attributes->getNames() as $extendedTypePathStr) {
 			try {
-				$eiTypeExtensionAttributes = new Attributes($attributes->getArray($eiTypePathStr, false));
-				$eiTypeExtensionExtractionGroups[$eiTypePathStr] = $this->createEiTypeExtensionExtractions($eiTypePathStr, $eiTypeExtensionAttributes);
+				$extendedTypePath = TypePath::create($extendedTypePathStr);
+				$eiTypeExtensionAttributes = new Attributes($attributes->getArray($extendedTypePathStr, false));
+				$eiTypeExtensionExtractionGroups[$extendedTypePathStr] 
+						= $this->createEiTypeExtensionExtractions($extendedTypePath, $eiTypeExtensionAttributes);
+			} catch (\InvalidArgumentException $e) {
+				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
 			} catch (AttributesException $e) {
-				throw $this->createSpecEiMaskException($eiTypePathStr, $e);
+				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createSpecEiMaskException($eiTypePathStr, $e);
+				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
 			}
 		}
 		
 		return $eiTypeExtensionExtractionGroups;
 	}
 	
-	public function createEiTypeExtensionExtractions(Attributes $eiMasksAttributes): array {
-		$eiTypeExtensions = array();
+	private function createEiTypeExtensionExtractions(TypePath $extendedTypePath, Attributes $eiMasksAttributes): array {
+		$eiTypeExtensionExtraction = array();
 		
-		foreach ($eiMasksAttributes->getNames() as $eiMaskId) {
+		foreach ($eiMasksAttributes->getNames() as $eiTypeExtensionId) {
 			try {
-				$eiTypeExtensions[$eiMaskId] = $this->createEiTypeExtensionExtraction($eiMaskId,
-						new Attributes($eiMasksAttributes->getArray($eiMaskId)));
+				$eiTypeExtensionExtraction[$eiTypeExtensionId] = $this->createEiTypeExtensionExtraction(
+						$extendedTypePath, $eiTypeExtensionId,
+						new Attributes($eiMasksAttributes->getArray($eiTypeExtensionId)));
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiMaskException($eiMaskId, $e);
+				throw $this->createEiTypeExtensionException($eiTypeExtensionId, $e);
 			} catch (AttributesException $e) {
-				throw $this->createEiMaskException($eiMaskId, $e);
+				throw $this->createEiTypeExtensionException($eiTypeExtensionId, $e);
 			}
 		}
 		
-		return $eiTypeExtensions;
+		return $eiTypeExtensionExtraction;
 	}
 	
-	private function createEiTypeExtensionExtraction($id, Attributes $attributes): EiTypeExtensionExtraction {
-		$maskExtraction = new EiTypeExtensionExtraction($id, $this->moduleNamespace);
+	private function createEiTypeExtensionExtraction(TypePath $extendedTypePath, $id, Attributes $attributes): EiTypeExtensionExtraction {
+		$eiTypeExtensionExtraction = new EiTypeExtensionExtraction($id, $this->moduleNamespace, $extendedTypePath);
 		
-		$maskExtraction->setEiMaskExtraction($this->createEiMaskExtraction($attributes));
-		$maskExtraction->setDisplayScheme($this->createDisplayScheme($attributes));	
-		return $maskExtraction;
+		$eiTypeExtensionExtraction->setEiMaskExtraction($this->createEiMaskExtraction($attributes));
+		
+		return $eiTypeExtensionExtraction;
 	}
 	
 	public function extractEiModificatorGroups() {
@@ -307,7 +328,6 @@ class SpecExtractor {
 		
 		foreach ($eiModificatorsAttributes->getNames() as $modificatorId) {
 			try {
-				
 				$commonEiModificators[$modificatorId] = $this->createEiModficatorExtraction($modificatorId,
 						new Attributes($eiModificatorsAttributes->getArray($modificatorId)), $eiTypeId, $eiMaskId);
 			} catch (InvalidConfigurationException $e) {
@@ -404,7 +424,10 @@ class SpecExtractor {
 		return $displayStructure;
 	}
 	
-	public function extractMenuItems(): array {
+	/**
+	 * @return \rocket\spec\config\extr\MenuItemExtraction[]
+	 */
+	public function extractMenuItems() {
 		$menuItemExtractions = array();
 		foreach ($this->attributes->getArray(RawDef::MENU_ITEMS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array', true)) as $menuItemId => $menuItemRawData) {
@@ -419,11 +442,18 @@ class SpecExtractor {
 		return $menuItemExtractions;
 	}
 
-	private function createMenuItemExtraction($menuItemId, Attributes $specAttributes): MenuItemExtraction {
+	/**
+	 * @param string $menuItemId
+	 * @param Attributes $specAttributes
+	 * @return MenuItemExtraction
+	 */
+	private function createMenuItemExtraction($menuItemId, Attributes $specAttributes) {
 		try {
-			$menuItemExtraction = MenuItemExtraction::createFromId($menuItemId, $this->moduleNamespace);
+			$menuItemExtraction = new MenuItemExtraction(TypePath::create($menuItemId), $this->moduleNamespace);
 			$menuItemExtraction->setLabel($specAttributes->getString(RawDef::MENU_ITEM_LABEL_KEY, false));
 			return $menuItemExtraction;
+		} catch (\InvalidArgumentException $e) {
+			throw $this->createMenuItemException($menuItemId, $e);
 		} catch (AttributesException $e) {
 			throw $this->createMenuItemException($menuItemId, $e);
 		} catch (\InvalidArgumentException $e) {

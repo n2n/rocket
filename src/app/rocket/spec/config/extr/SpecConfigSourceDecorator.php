@@ -81,11 +81,12 @@ class SpecConfigSourceDecorator {
 		$specExtractor = new SpecExtractor($this->attributes, $this->moduleNamespace);
 		
 		try {
-			$result = $specExtractor->extractSpecs();
-			$this->customTypeExtractions = $result['eiTypeExtractions'];
+			$result = $specExtractor->extractTypes();
+			$this->customTypeExtractions = $result['customTypeExtractions'];
 			$this->eiTypeExtractions = $result['eiTypeExtractions'];
-			$this->eiTypeExtensionExtractionGroups = $specExtractor->extractEiMaskGroups();
+			$this->eiTypeExtensionExtractionGroups = $specExtractor->extractEiTypeExtensionGroups();
 			$this->eiModificatorExtractionGroups = $specExtractor->extractEiModificatorGroups();
+			$this->menuItemExtractions = $specExtractor->extractMenuItems();
 		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		} catch (InvalidSpecConfigurationException $e) {
@@ -209,6 +210,14 @@ class SpecConfigSourceDecorator {
 		$this->eiTypeExtensionExtractionGroups[$eiTypeId][] = $eiMaskExtensionExtraction;
 	}
 	
+	public function getEiTypeExtensionExtractionGroups() {
+		return $this->eiTypeExtensionExtractionGroups;
+	}
+	
+	public function getEiModificatorExtractionGroups() {
+		return $this->eiTypeExtensionExtractionGroups;
+	}
+	
 	public function getEiModificatorsEiTypeIds() {
 		return array_keys($this->eiModificatorExtractionGroups);
 	}
@@ -248,12 +257,19 @@ class SpecConfigSourceDecorator {
 		return false;
 	}
 	
-	public function containsEiMaskId(string $eiTypeId, string $eiMaskId): bool {
-		return isset($this->eiTypeExtensionExtractionGroups[$eiTypeId][$eiMaskId]);
-	}
+// 	public function containsEiMaskId(string $eiTypeId, string $eiMaskId): bool {
+// 		return isset($this->eiTypeExtensionExtractionGroups[$eiTypeId][$eiMaskId]);
+// 	}
 	
-	public function containsEiModificatorId(string $eiTypeId, string $eiModificatorId): bool {
-		return isset($this->eiModificatorExtractionGroups[$eiTypeId][$eiModificatorId]);
+// 	public function containsEiModificatorId(string $eiTypeId, string $eiModificatorId): bool {
+// 		return isset($this->eiModificatorExtractionGroups[$eiTypeId][$eiModificatorId]);
+// 	}
+
+	/**
+	 * @return MenuItemExtraction[]
+	 */
+	public function getMenuItemExtractions() {
+		return $this->menuItemExtractions;
 	}
 
 }

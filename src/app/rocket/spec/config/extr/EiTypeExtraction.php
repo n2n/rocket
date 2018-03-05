@@ -154,7 +154,7 @@ class EiTypeExtraction extends TypeExtraction {
 // 		return $this->eiModificatorExtractions;
 // 	}
 	
-	public function toTypeString() {
+	public function toTypeString(): string {
 		return 'EiType (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';	
 	}
 }
