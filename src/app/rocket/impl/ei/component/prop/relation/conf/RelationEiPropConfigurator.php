@@ -233,7 +233,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 				&& $this->attributes->contains(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)) {
 			$targetEiPropPath = EiPropPath::create($this->attributes->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY));
 			$this->eiPropRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
-						->getScalarEiPropertyByFieldPath($targetEiPropPath);
+						->getScalarEiPropertyByEiPropPath($targetEiPropPath);
 			$eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
 		}
 		

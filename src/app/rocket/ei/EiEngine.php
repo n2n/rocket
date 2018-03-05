@@ -213,6 +213,9 @@ class EiEngine {
 		return $this->genericEiDefinition;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\generic\ScalarEiDefinition
+	 */
 	public function getScalarEiDefinition() {
 		if ($this->scalarEiDefinition !== null) {
 			return $this->scalarEiDefinition;
