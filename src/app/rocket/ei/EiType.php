@@ -34,11 +34,11 @@ use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\manage\veto\VetoableActionListener;
 use rocket\ei\manage\veto\VetoableRemoveAction;
-use rocket\spec\Spec;
+use rocket\spec\Type;
 use rocket\ei\mask\EiMask;
 use rocket\ei\mask\model\DisplayScheme;
 
-class EiType extends Spec {
+class EiType extends Type {
 	private $entityModel;
 	private $superEiType;
 	protected $subEiTypes = array();

@@ -19,33 +19,33 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec;
+namespace rocket\custom;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\extr\CustomTypeExtraction;
 use n2n\reflection\ReflectionUtils;
+use rocket\spec\Type;
 
-class CustomType extends Spec {
-	private $controllerClass;
+class CustomType extends Type {
+	private $controllerLookupId;
 	
 	public function __construct(string $id, string $moduleNamespace, string $controllerLookupId) {
 		parent::__construct($id, $moduleNamespace);
-		$this->controllerClass = $controllerLookupId;
+		$this->controllerLookupId = $controllerLookupId;
 	}
 	
 	public function getLabel() {
 		return 'Custom Spec: ' . $this->getId();
 	}
 	
-	public function getControllerClass() {
-		return $this->controllerClass;
+	public function getControllerLookupId() {
+		return $this->controllerLookupId;
 	}
 		
 	/* (non-PHPdoc)
 	 * @see \rocket\spec\Spec::createController()
 	 */
 	public function lookupController(N2nContext $n2nContext) {
-		$controller = ReflectionUtils::createObject($this->controllerClass);
+		$controller = ReflectionUtils::createObject($this->controllerLookupId);
 		$n2nContext->magicInit($controller);
 		return $controller;
 	}
@@ -66,10 +66,10 @@ class CustomType extends Spec {
 	
 	public function createRestrictionSelectorItems(N2nContext $n2nContext) {}
 	
-	public function toTypeExtraction() {
-		$extraction = new CustomTypeExtraction($this->getId(), $this->getModule());
-		$extraction->setControllerClassName($this->controllerClass->getName());
-		$extraction->setLabel($this->getLabel());
-		return $extraction;
-	}
+// 	public function toTypeExtraction() {
+// 		$extraction = new CustomTypeExtraction($this->getId(), $this->getModule());
+// 		$extraction->setControllerClassName($this->controllerClass->getName());
+// 		$extraction->setLabel($this->getLabel());
+// 		return $extraction;
+// 	}
 }

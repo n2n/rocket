@@ -46,6 +46,7 @@ use n2n\core\TypeNotFoundException;
 use n2n\persistence\orm\OrmConfigurationException;
 use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
+use rocket\custom\CustomType;
 
 class SpecManager {	
 	private $rocketConfigSource;	
@@ -339,7 +340,7 @@ class SpecManager {
 	/**
 	 *
 	 * @param string $id
-	 * @return Spec
+	 * @return Type
 	 * @throws UnknownSpecException
 	 * @throws InvalidSpecConfigurationException
 	 */

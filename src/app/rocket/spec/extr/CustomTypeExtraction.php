@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\extr;
 
-use rocket\spec\CustomType;
+use rocket\custom\CustomType;
 
 class CustomTypeExtraction extends TypeExtraction {
 	private $controllerClassName;

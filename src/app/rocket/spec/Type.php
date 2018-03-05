@@ -21,7 +21,7 @@
  */
 namespace rocket\spec;
 
-abstract class Spec {
+abstract class Type {
 	protected $id;
 	protected $moduleNamespace;
 	
@@ -47,6 +47,6 @@ abstract class Spec {
 	}
 	
 	public function equals($obj) {
-		return $obj instanceof Spec && $this->getId() === $obj->getId();
+		return $obj instanceof Type && $this->getId() === $obj->getId();
 	}
 }

@@ -26,6 +26,7 @@ use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerContext;
 use n2n\web\http\controller\Controller;
 use rocket\core\model\TransactionApproveAttempt;
+use rocket\custom\CustomType;
 
 class CustomMenuItem implements MenuItem {
 	private $id;
@@ -69,7 +70,7 @@ class CustomMenuItem implements MenuItem {
 	 * @see \rocket\core\model\MenuItem::lookupController($n2nContext, $delegateControllerContext)
 	 */
 	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
-		return $n2nContext->lookup($this->customSpec->getControllerClass());
+		return $n2nContext->lookup($this->customSpec->getControllerLookupId());
 	}
 	
 	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt {

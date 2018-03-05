@@ -25,6 +25,7 @@ use rocket\spec\extr\CustomTypeExtraction;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\http\controller\Controller;
+use rocket\custom\CustomType;
 
 class CustomTypeFactory {
 	/**
