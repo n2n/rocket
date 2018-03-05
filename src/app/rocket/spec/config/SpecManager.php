@@ -163,10 +163,14 @@ class SpecManager {
 	 * @throws InvalidConfigurationException
 	 */
 	public function initialize(N2nContext $n2nContext, bool $noSetupMode = false) {
+		$this->clear();
+		
 		$this->noSetupMode = $noSetupMode;
+		
 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(SpecManager::class);
 		
 		$this->specExtractionManager->load();
+		
 		$charcs = null;
 		if (!N2N::isDevelopmentModeOn() && null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
 			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);
