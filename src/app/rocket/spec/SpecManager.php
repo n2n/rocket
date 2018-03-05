@@ -344,7 +344,7 @@ class SpecManager {
 	 * @throws UnknownSpecException
 	 * @throws InvalidSpecConfigurationException
 	 */
-	public function getSpecById($id): Spec {
+	public function getSpecById($id) {
 		if (isset($this->customTypes[$id])) {
 			if ($this->noSetupMode) {
 				$this->eiTypeSetupQueue->exclusivePropInForEiType($this->customTypes[$id]->getId());
