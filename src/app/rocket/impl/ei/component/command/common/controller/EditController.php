@@ -234,7 +234,7 @@ class EditController extends ControllerAdapter {
 				
 // 		$this->applyBreadcrumbs($eiFrame);
 		
-// 		$this->forward('spec\ei\component\command\impl\common\view\editPreview.html', array('commandEditEntryModel' => $editModel,
+// 		$this->forward('ei\component\command\impl\common\view\editPreview.html', array('commandEditEntryModel' => $editModel,
 // 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext(),
 // 						array('previewsrc', $currentPreviewType, $id, $httpN2nLocaleId)),
 // 				'entryViewInfo' => new EntryViewInfo($editModel, $editModel->getEntryForm(), $previewController)));
@@ -263,7 +263,7 @@ class EditController extends ControllerAdapter {
 		
 // 		$this->applyBreadcrumbs($editModel);
 		
-// 		$this->forward('spec\ei\component\command\impl\common\view\editPreview.html', array('commandEditEntryModel' => $editModel, 
+// 		$this->forward('ei\component\command\impl\common\view\editPreview.html', array('commandEditEntryModel' => $editModel, 
 // 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext(), 
 // 						array('draftpreviewsrc', $currentPreviewType, $id, $draftId, $httpN2nLocaleId)),
 // 				'entryViewInfo' => new EntryViewInfo($editModel, $editModel->getEntryForm(), $previewController)));

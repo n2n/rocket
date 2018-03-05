@@ -99,7 +99,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
 		
-// 		$this->forward('spec\ei\manage\critmod\impl\view\critmodForm.html',
+// 		$this->forward('ei\manage\critmod\impl\view\critmodForm.html',
 // 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
 // 						'filterAjahHook' => $filterAjahHook));
 		$unbelivableHack = array();
@@ -138,7 +138,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));
 
 // 		$this->send(new AjahResponse($this->createView(
-// 				'spec\ei\component\command\impl\common\view\pseudoCritmodForm.html',
+// 				'ei\component\command\impl\common\view\pseudoCritmodForm.html',
 // 				array('filterGroupForm' => $filterGroupForm, 'filterAjahHook' => $filterAjahHook,
 // 						'sortForm' => $sortForm))));
 // 	}

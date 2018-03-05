@@ -303,7 +303,7 @@ class SpecManager {
 	}
 	
 	private function createCustomTypeFromExtr(CustomTypeExtraction $customTypeExtraction) {
-		return $this->customTypes[$specExtraction->getId()] = CustomTypeFactory::create($specExtraction);
+		return $this->customTypes[$customTypeExtraction->getId()] = CustomTypeFactory::create($customTypeExtraction);
 	}
 	
 	/**
