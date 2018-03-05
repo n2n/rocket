@@ -23,7 +23,6 @@ namespace rocket\ei\mask;
 
 use n2n\io\IoUtils;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\EiType;
 
 class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
@@ -36,15 +35,15 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 		$this->eiType = $eiType;
 	}
 	
-	public function add(EiTypeExtension $eiMaskExtension) {
-		$id = $eiMaskExtension->getId();
+	public function add(EiTypeExtension $eiTypeExtension) {
+		$id = $eiTypeExtension->getId();
 		if (0 == mb_strlen($id)) {
-			$eiMaskExtension->setId($this->makeUniqueId(''));
+			$eiTypeExtension->setId($this->makeUniqueId(''));
 		} else if (IoUtils::hasSpecialChars($id)) {
 			throw new InvalidEiMaskConfigurationException('Id of passed EiTypeExtension contains invalid characters: ' . $id);
 		}
 	
-		$this->eiTypeExtensions[$eiMaskExtension->getId()] = $eiMaskExtension;
+		$this->eiTypeExtensions[$eiTypeExtension->getId()] = $eiTypeExtension;
 	}
 	
 	/**

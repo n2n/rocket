@@ -254,7 +254,12 @@ class SpecExtractor {
 	 * @return \rocket\spec\config\extr\EiTypeExtensionExtraction[][]
 	 */
 	public function extractEiTypeExtensionGroups() {
-		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_TYPE_EXTENSIONS_KEY, false));
+		$eiTypeExtensionsKey = RawDef::EI_TYPE_EXTENSIONS_KEY;
+		if (!$this->attributes->contains(RawDef::EI_TYPE_EXTENSIONS_KEY) 
+				&& $this->attributes->contains('eiMasks')) {
+			$eiTypeExtensionsKey = 'eiMasks';			
+		}
+		$attributes = new Attributes($this->attributes->getArray($eiTypeExtensionsKey, false));
 		
 		$eiTypeExtensionExtractionGroups = array();
 		foreach ($attributes->getNames() as $extendedTypePathStr) {

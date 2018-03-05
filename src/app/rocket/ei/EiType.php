@@ -45,7 +45,7 @@ class EiType extends Spec {
 	protected $subEiTypes = array();
 	
 	private $eiMask;
-	private $eiMaskExtensionCollection;
+	private $eiTypeExtensionCollection;
 	
 	private $dataSourceName = null;
 	private $nestedSetStrategy;
@@ -61,7 +61,7 @@ class EiType extends Spec {
 		parent::__construct($id, $moduleNamespace);
 		
 		$this->eiMask = new EiMask($this, new DisplayScheme());
-		$this->eiMaskExtensionCollection = new EiTypeExtensionCollection($this);
+		$this->eiTypeExtensionCollection = new EiTypeExtensionCollection($this);
 	}
 
 // 	public function getEiThingPath(): EiThingPath {
@@ -416,7 +416,7 @@ class EiType extends Spec {
 	 * @return EiTypeExtensionCollection
 	 */
 	public function getEiTypeExtensionCollection(): EiTypeExtensionCollection {
-		return $this->eiMaskExtensionCollection;
+		return $this->eiTypeExtensionCollection;
 	}
 	
 	public function __toString(): string {

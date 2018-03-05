@@ -5,7 +5,7 @@ use n2n\reflection\ArgUtils;
 use n2n\io\IoUtils;
 
 class TypePath {
-	const SEPARATOR = '.';
+	const SEPARATOR = '&';
 	
 	private $typeId;
 	private $typeExtensionId;
@@ -16,7 +16,7 @@ class TypePath {
 	 */
 	function __construct(string $typeId, string $typeExtensionId = null) {
 		ArgUtils::assertTrue(!IoUtils::hasSpecialChars($typeId));
-		ArgUtils::assertTrue($typeExtensionId === null || !IoUtils::hasStrictSpecialChars($typeExtensionId));
+		ArgUtils::assertTrue($typeExtensionId === null || !IoUtils::hasSpecialChars($typeExtensionId));
 		
 		$this->typeId = $typeId;
 		$this->typeExtensionId = $typeExtensionId;

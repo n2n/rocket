@@ -198,16 +198,16 @@ class SpecConfigSourceDecorator {
 		return array();
 	}
 	
-	public function setEiTypeExtensionExtractions($eiTypeId, array $eiMaskExtensionExtractions) {
-		$this->eiTypeExtensionExtractionGroups[$eiTypeId] = $eiMaskExtensionExtractions;
+	public function setEiTypeExtensionExtractions($eiTypeId, array $eiTypeExtensionExtractions) {
+		$this->eiTypeExtensionExtractionGroups[$eiTypeId] = $eiTypeExtensionExtractions;
 	}
 	
-	public function addEiTypeExtensionExtraction($eiTypeId, EiTypeExtensionExtraction $eiMaskExtensionExtraction) {
+	public function addEiTypeExtensionExtraction($eiTypeId, EiTypeExtensionExtraction $eiTypeExtensionExtraction) {
 		if (!isset($this->eiTypeExtensionExtractionGroups[$eiTypeId])) {
 			$this->eiTypeExtensionExtractionGroups[$eiTypeId] = array();
 		}
 		
-		$this->eiTypeExtensionExtractionGroups[$eiTypeId][] = $eiMaskExtensionExtraction;
+		$this->eiTypeExtensionExtractionGroups[$eiTypeId][] = $eiTypeExtensionExtraction;
 	}
 	
 	public function getEiTypeExtensionExtractionGroups() {
@@ -215,7 +215,7 @@ class SpecConfigSourceDecorator {
 	}
 	
 	public function getEiModificatorExtractionGroups() {
-		return $this->eiTypeExtensionExtractionGroups;
+		return $this->eiModificatorExtractionGroups;
 	}
 	
 	public function getEiModificatorsEiTypeIds() {

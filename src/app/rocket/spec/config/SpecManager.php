@@ -289,7 +289,7 @@ class SpecManager {
 				as $eiTypeExtensionExtraction) {
 			$typePath = new TypePath($eiType->getId(), $eiTypeExtensionExtraction->getId());
 			$eiModificatorExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypeId($typePath);
-			$eiTypeExtension = $factory->createEiTypeExtension($eiTypeExtensionExtraction, $eiModificatorExtractions);
+			$eiTypeExtension = $factory->createEiTypeExtension($eiType, $eiTypeExtensionExtraction, $eiModificatorExtractions);
 			$eiType->getEiTypeExtensionCollection()->add($eiTypeExtension);
 			
 			if (null !== ($menuItemExtraction = $this->specExtractionManager

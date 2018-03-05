@@ -76,12 +76,12 @@ class SpecRawer {
 	
 	public function rawEiMasks(array $groupedEiTypeExtensionExtractions) {
 		$rawData = array();
-		foreach ($groupedEiTypeExtensionExtractions as $eiTypeId => $eiMaskExtensionExtractions) {
-			if (empty($eiMaskExtensionExtractions)) continue;
+		foreach ($groupedEiTypeExtensionExtractions as $eiTypeId => $eiTypeExtensionExtractions) {
+			if (empty($eiTypeExtensionExtractions)) continue;
 			
 			$eiMasksRawData = array();
-			foreach ($eiMaskExtensionExtractions as $eiMaskExtensionExtraction) {
-				$eiMasksRawData[$eiMaskExtensionExtraction->getId()] = $this->buildEiTypeExtensionExtractionRawData($eiMaskExtensionExtraction);
+			foreach ($eiTypeExtensionExtractions as $eiTypeExtensionExtraction) {
+				$eiMasksRawData[$eiTypeExtensionExtraction->getId()] = $this->buildEiTypeExtensionExtractionRawData($eiTypeExtensionExtraction);
 			}
 			
 			$rawData[$eiTypeId] = $eiMasksRawData;
@@ -113,10 +113,10 @@ class SpecRawer {
 		$this->attributes->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
 	}
 	
-	private function buildEiTypeExtensionExtractionRawData(EiTypeExtensionExtraction $eiMaskExtensionExtraction) {
-		$maskRawData = $this->buildEiMaskExtractionRawData($eiMaskExtensionExtraction->getEiMaskExtraction());
+	private function buildEiTypeExtensionExtractionRawData(EiTypeExtensionExtraction $eiTypeExtensionExtraction) {
+		$maskRawData = $this->buildEiMaskExtractionRawData($eiTypeExtensionExtraction->getEiMaskExtraction());
 		
-		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiMaskExtensionExtraction->getDisplayScheme()));
+		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiTypeExtensionExtraction->getDisplayScheme()));
 	}
 
 	private function buildEiMaskExtractionRawData(EiMaskExtraction $extraction) {

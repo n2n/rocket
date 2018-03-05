@@ -58,7 +58,7 @@ class EiMask {
 	private $eiModificatorCollection;
 	
 	private $displayScheme;
-	private $eiMaskExtension;
+	private $eiTypeExtension;
 	
 	private $eiEngine;
 	private $mappingFactory;
@@ -80,11 +80,11 @@ class EiMask {
 		$this->eiModificatorCollection = new EiModificatorCollection($this);
 	}
 	
-	public function extends(EiTypeExtension $eiMaskExtension) {
-		IllegalStateException::assertTrue($this->eiMaskExtension === null);
-		$this->eiMaskExtension = $eiMaskExtension;
+	public function extends(EiTypeExtension $eiTypeExtension) {
+		IllegalStateException::assertTrue($this->eiTypeExtension === null);
+		$this->eiTypeExtension = $eiTypeExtension;
 		
-		$inheritEiMask = $eiMaskExtension->getExtendedEiMask();
+		$inheritEiMask = $eiTypeExtension->getExtendedEiMask();
 		
 		$this->eiPropCollection->setInheritedCollection($inheritEiMask->getEiPropCollection());
 		$this->eiCommandCollection->setInheritedCollection($inheritEiMask->getEiCommandCollection());
@@ -95,7 +95,7 @@ class EiMask {
 	 * @return boolean
 	 */
 	public function isExtension() {
-		return $this->eiMaskExtension !== null;
+		return $this->eiTypeExtension !== null;
 	}
 	
 	/**
@@ -103,11 +103,11 @@ class EiMask {
 	 * @throws IllegalStateException if {@see self::isExtension()} returns false.
 	 */
 	public function getExtension() {
-		if ($this->eiMaskExtension === null) {
+		if ($this->eiTypeExtension === null) {
 			throw new IllegalStateException('EiMask is no extension.');
 		}
 		
-		return $this->eiMaskExtension;
+		return $this->eiTypeExtension;
 	}
 
 
@@ -138,8 +138,8 @@ class EiMask {
 	}
 	
 	public function getModuleNamespace() {
-		return $this->eiMaskExtension !== null
-				? $this->eiMaskExtension->getModuleNamespace()
+		return $this->eiTypeExtension !== null
+				? $this->eiTypeExtension->getModuleNamespace()
 				: $this->eiType->getModuleNamespace();
 	}
 	
@@ -476,7 +476,7 @@ class EiMask {
 	}
 	
 	public function __toString(): string {
-		return 'EiMask of ' . ($this->isExtension() ? $this->eiMaskExtension : $this->eiType);
+		return 'EiMask of ' . ($this->isExtension() ? $this->eiTypeExtension : $this->eiType);
 	}
 	
 	/**

@@ -162,7 +162,7 @@ class SpecExtractionManager {
 						throw new $this->createDuplicatedEiMaskIdException($extendedTypePath, $id);
 					}
 						
-					if (isset($this->customTypeExtractions[$eiTypeExtensionExtraction->getExtendedTypePath()->getEiTypeId()])) {
+					if (isset($this->customTypeExtractions[$eiTypeExtensionExtraction->getExtendedTypePath()->getTypeId()])) {
 						throw new InvalidConfigurationException('Invalid configuration in: ' . $specCsDec->getDataSource(), 0, 
 								new InvalidEiMaskConfigurationException('EiMask with id \'' . $eiMaskId 
 										. '\' was configured not for CustomType \'' . $eiTypeId . '\.'));
@@ -187,20 +187,22 @@ class SpecExtractionManager {
 				
 				foreach ($eiModificatorExtractions as $eiModificatorExtraction) {
 					$id = $eiModificatorExtraction->getId();
+					$typePath = $eiModificatorExtraction->getTypePath();
+					$typePathStr = (string) $typePath;
 					
-					if (isset($this->eiModificatorExtractions[$eiTypePathStr][$id])) {
-						throw new $this->createDuplicatedEiModificatorIdException($eiTypePathStr, $id);
+					if (isset($this->eiModificatorExtractions[$typePathStr][$id])) {
+						throw new $this->createDuplicatedEiModificatorIdException($typePathStr, $id);
 					}
 					
-					$eiTypePath = $eiModificatorExtraction->getTypePath();
 					
-					if (isset($this->customTypeExtractions[$eiTypePath->getTypeId()])) {
+					
+					if (isset($this->customTypeExtractions[$typePath->getTypeId()])) {
 						throw new InvalidConfigurationException('Invalid configuration in: ' . $specCsDec->getDataSource(), 0, 
 								new InvalidEiMaskConfigurationException('EiModificator with id \'' . $eiModificatorId 
-										. '\' was configured not for CustomType \'' . $eiTypeId . '\.'));
+										. '\' was configured not for CustomType \'' . $typePath->getTypeId() . '\.'));
 					}
 						
-					$this->eiModificatorExtractions[$eiTypePathStr][$id] = $eiModificatorExtraction;
+					$this->eiModificatorExtractions[$typePathStr][$id] = $eiModificatorExtraction;
 				}
 			}
 		}
@@ -481,9 +483,9 @@ class SpecExtractionManager {
 					->addTypeExtraction($specExtraction);
 						
 			if ($specExtraction instanceof EiTypeExtraction) {
-				foreach ($specExtraction->getEiTypeExtensionExtractions() as $eiMaskExtensionExtraction) {
-					$this->getSpecCsDescByModuleNamespace($eiMaskExtensionExtraction->getModuleNamespace())
-							->addEiTypeExtensionExtraction($specId, $eiMaskExtensionExtraction);
+				foreach ($specExtraction->getEiTypeExtensionExtractions() as $eiTypeExtensionExtraction) {
+					$this->getSpecCsDescByModuleNamespace($eiTypeExtensionExtraction->getModuleNamespace())
+							->addEiTypeExtensionExtraction($specId, $eiTypeExtensionExtraction);
 				}
 				
 				foreach ($specExtraction->getEiModificatorExtractions() as $eiModificatorExtraction) {
@@ -493,10 +495,10 @@ class SpecExtractionManager {
 			}
 		}
 		
-		foreach ($this->eiTypeExtensionExtractionGroups as $eiTypeId => $eiMaskExtensionExtractions) {
-			foreach ($eiMaskExtensionExtractions as $eiMaskExtensionExtraction) {
-				$this->getSpecCsDescByModuleNamespace($eiMaskExtensionExtraction->getModuleNamespace())
-						->addEiTypeExtensionExtraction($eiTypeId, $eiMaskExtensionExtraction);
+		foreach ($this->eiTypeExtensionExtractionGroups as $eiTypeId => $eiTypeExtensionExtractions) {
+			foreach ($eiTypeExtensionExtractions as $eiTypeExtensionExtraction) {
+				$this->getSpecCsDescByModuleNamespace($eiTypeExtensionExtraction->getModuleNamespace())
+						->addEiTypeExtensionExtraction($eiTypeId, $eiTypeExtensionExtraction);
 			}
 		}
 		

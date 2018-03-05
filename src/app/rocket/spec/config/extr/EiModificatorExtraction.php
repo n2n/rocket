@@ -26,19 +26,19 @@ use rocket\spec\config\TypePath;
 class EiModificatorExtraction {
 	private $id;
 	private $moduleNamespace;
-	private $eiTypePath;
+	private $typePath;
 	private $className;
 	private $props = array();
 	
 	/**
 	 * @param string $id
 	 * @param string $moduleNamespace
-	 * @param TypePath $eiTypePath
+	 * @param TypePath $typePath
 	 */
-	public function __construct(string $id, string $moduleNamespace, TypePath $eiTypePath) {
+	public function __construct(string $id, string $moduleNamespace, TypePath $typePath) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
-		$this->eiTypePath = $eiTypePath;
+		$this->typePath = $typePath;
 	}
 	
 	/**
@@ -73,14 +73,14 @@ class EiModificatorExtraction {
 	 * @return \rocket\spec\config\TypePath
 	 */
 	public function getTypePath() {
-		return $this->eiTypePath;
+		return $this->typePath;
 	}
 	
 	/**
-	 * @param TypePath $eiTypePath
+	 * @param TypePath $typePath
 	 */
-	public function setTypePath(TypePath $eiTypePath) {
-		$this->eiTypePath = $eiTypePath;
+	public function setTypePath(TypePath $typePath) {
+		$this->typePath = $typePath;
 	}
 
 	/**

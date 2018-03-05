@@ -73,13 +73,13 @@ class EiTypeFactory {
 		$eiType->setDataSourceName($eiTypeExtraction->getDataSourceName());
 		$eiType->setNestedSetStrategy($eiTypeExtraction->getNestedSetStrategy());
 		
-// 		$eiMaskExtensionCollection = $eiType->getEiTypeExtensionCollection();
-// 		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiMaskExtensionExtraction) {
+// 		$eiTypeExtensionCollection = $eiType->getEiTypeExtensionCollection();
+// 		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiTypeExtensionExtraction) {
 // 			try {
-// 				$eiMaskExtensionCollection->add($this->createEiTypeExtension($eiType, $eiMaskExtensionExtraction));
+// 				$eiTypeExtensionCollection->add($this->createEiTypeExtension($eiType, $eiTypeExtensionExtraction));
 // 			} catch (InvalidConfigurationException $e) {
 // 				throw $this->createEiTypeException($eiTypeExtraction->getId(),
-// 						$this->createEiMaskException($eiMaskExtensionExtraction->getId(), $e));
+// 						$this->createEiMaskException($eiTypeExtensionExtraction->getId(), $e));
 // 			}
 // 		}
 		
@@ -287,17 +287,17 @@ class EiTypeFactory {
 	 * @param EiTypeExtensionExtraction $eiTypeExtensionExtraction
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 */
-	public function createEiTypeExtension(EiTypeExtensionExtraction $eiTypeExtensionExtraction,
+	public function createEiTypeExtension(EiType $eiType, EiTypeExtensionExtraction $eiTypeExtensionExtraction,
 			array $eiModificatorExtractions) {
 				
 		$eiMask = new EiMask($eiType);
-		$eiMaskExtension = new EiTypeExtension($eiMaskExtensionExtraction->getId(),
-				$eiMaskExtensionExtraction->getModuleNamespace(),
+		$eiTypeExtension = new EiTypeExtension($eiTypeExtensionExtraction->getId(),
+				$eiTypeExtensionExtraction->getModuleNamespace(),
 				$eiMask, $eiType->getEiMask());
 		
-		$this->asdf($eiMaskExtensionExtraction->getEiMaskExtraction(), $eiMask, $eiModificatorExtractions);
+		$this->asdf($eiTypeExtensionExtraction->getEiMaskExtraction(), $eiMask, $eiModificatorExtractions);
 		
-		return $eiMaskExtension;
+		return $eiTypeExtension;
 	}
 	
 	private function createEiTypeException($eiTypeId, \Exception $previous) {
