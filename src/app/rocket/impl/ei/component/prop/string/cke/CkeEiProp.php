@@ -24,17 +24,17 @@ namespace rocket\impl\ei\component\prop\string\cke;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\GenericArrayObject;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeEiPropConfigurator;
 use rocket\impl\ei\component\prop\string\cke\model\CkeMag;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
-use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\ViewMode;
 
 class CkeEiProp extends AlphanumericEiProp {
 	const MODE_SIMPLE = 'simple';
@@ -129,7 +129,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	}
 	
 // 	/**
-// 	 * @return \rocket\spec\ei\component\prop\WysiwygLinkConfig
+// 	 * @return \rocket\ei\component\prop\WysiwygLinkConfig
 // 	 */
 // 	private function obtainLinkConfigurations(EiEntry $eiEntry, Eiu $eiu) {
 // 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();

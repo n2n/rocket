@@ -26,11 +26,11 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 
 use rocket\impl\ei\component\prop\string\conf\StringEiPropConfigurator;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\manage\EiObject;
+use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 class StringEiProp extends AlphanumericEiProp {
 	private $multiline = false;

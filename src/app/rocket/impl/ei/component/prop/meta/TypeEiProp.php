@@ -23,14 +23,14 @@ namespace rocket\impl\ei\component\prop\meta;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\prop\GuiEiProp;
-use rocket\spec\ei\manage\gui\GuiProp;
+use rocket\ei\component\prop\GuiEiProp;
+use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
@@ -52,14 +52,14 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::isStringRepresentable()
+	 * @see \rocket\ei\manage\gui\GuiProp::isStringRepresentable()
 	 */
 	public function isStringRepresentable(): bool {
 		return true;
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
 		return $this->getEiMask()->determineEiMask($this->getEiType()->determineAdequateEiType(

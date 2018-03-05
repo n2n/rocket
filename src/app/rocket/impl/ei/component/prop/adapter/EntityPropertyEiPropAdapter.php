@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 abstract class EntityPropertyEiPropAdapter extends IndependentEiPropAdapter implements EntityPropertyConfigurable {
 	protected $entityProperty;

@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component;
 
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\component\EiComponent;
+use rocket\ei\component\EiComponent;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 
 abstract class EiComponentAdapter implements EiComponent {
 	protected $eiMask;
@@ -32,7 +32,7 @@ abstract class EiComponentAdapter implements EiComponent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiComponent::getEiMask()
+	 * @see \rocket\ei\component\EiComponent::getEiMask()
 	 */
 	public function getEiMask(): EiMask {
 		if ($this->eiMask !== null) {
@@ -44,7 +44,7 @@ abstract class EiComponentAdapter implements EiComponent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiComponent::setEiMask()
+	 * @see \rocket\ei\component\EiComponent::setEiMask()
 	 */
 	public function setEiMask(EiMask $eiMask) {
 		$this->eiMask = $eiMask;
@@ -52,7 +52,7 @@ abstract class EiComponentAdapter implements EiComponent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiComponent::getId()
+	 * @see \rocket\ei\component\EiComponent::getId()
 	 */
 	public function getId(): ?string {
 		return $this->id;
@@ -60,7 +60,7 @@ abstract class EiComponentAdapter implements EiComponent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiComponent::setId()
+	 * @see \rocket\ei\component\EiComponent::setId()
 	 */
 	public function setId(string $id) {
 		$this->id = $id;

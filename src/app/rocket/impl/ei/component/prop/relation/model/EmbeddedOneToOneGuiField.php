@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
 
 class EmbeddedOneToOneGuiField implements GuiField {
@@ -108,7 +108,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {

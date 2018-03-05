@@ -22,13 +22,13 @@
 namespace rocket\user\model\security;
 
 use rocket\user\bo\RocketUser;
-use rocket\spec\ei\security\EiPermissionManager;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\security\InaccessibleControlException;
-use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\security\EiExecution;
-use rocket\spec\ei\EiCommandPath;
+use rocket\ei\security\EiPermissionManager;
+use rocket\ei\EiType;
+use rocket\ei\mask\EiMask;
+use rocket\ei\security\InaccessibleControlException;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\security\EiExecution;
+use rocket\ei\EiCommandPath;
 use n2n\core\container\N2nContext;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
@@ -65,7 +65,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiPermissionManager::createUnboundEiExceution($eiMask, $commandPath)
+	 * @see \rocket\ei\security\EiPermissionManager::createUnboundEiExceution($eiMask, $commandPath)
 	 */
 	public function createUnboundEiExceution(EiMask $eiMask, EiCommandPath $commandPath, N2nContext $n2nContext): EiExecution {
 		return $this->buildEiExecution($n2nContext, $eiMask, $commandPath);
@@ -73,7 +73,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiPermissionManager::createEiExecution()
+	 * @see \rocket\ei\security\EiPermissionManager::createEiExecution()
 	 */
 	public function createEiExecution(EiCommand $eiCommand, N2nContext $n2nContext): EiExecution {
 		return $this->buildEiExecution($n2nContext, $eiCommand->getEiMask(), 

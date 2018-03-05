@@ -29,7 +29,7 @@ use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\manage\util\model\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class RelationJhtmlController extends ControllerAdapter {

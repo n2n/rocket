@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\config;
 
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use n2n\reflection\ReflectionUtils;
 use n2n\persistence\orm\model\EntityModelManager;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\config\extr\SpecExtractionManager;
@@ -36,16 +36,16 @@ use n2n\util\config\AttributesException;
 use rocket\core\model\Rocket;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\orm\model\UnknownEntityPropertyException;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\util\config\InvalidConfigurationException;
 use n2n\core\N2N;
 use n2n\core\TypeNotFoundException;
 use n2n\persistence\orm\OrmConfigurationException;
 use rocket\spec\config\extr\EiTypeExtraction;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 
 class SpecManager {	
 	private $rocketConfigSource;	
@@ -304,7 +304,7 @@ class SpecManager {
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\spec\ei\EiType
+	 * @return \rocket\ei\EiType
 	 */
 	public function getEiTypeByClass(\ReflectionClass $class) {
 		return $this->getEiTypeByClassName($class->getName());
@@ -312,7 +312,7 @@ class SpecManager {
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\spec\ei\EiType
+	 * @return \rocket\ei\EiType
 	 */
 	public function getEiTypeByClassName(string $className) {
 		if (isset($this->eiTypeCis[$className])) {

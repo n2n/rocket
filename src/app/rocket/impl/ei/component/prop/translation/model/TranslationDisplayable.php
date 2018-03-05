@@ -21,10 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\spec\ei\manage\gui\Displayable;
+use rocket\ei\manage\gui\Displayable;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 
 class TranslationDisplayable implements GuiField {
@@ -77,7 +77,7 @@ class TranslationDisplayable implements GuiField {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::getEditable()
+	 * @see \rocket\ei\manage\gui\GuiField::getEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		throw new IllegalStateException();
@@ -85,7 +85,7 @@ class TranslationDisplayable implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
 	public function getDisplayItemType() {
 		return null;

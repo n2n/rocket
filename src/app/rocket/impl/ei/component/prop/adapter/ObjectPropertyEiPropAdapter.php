@@ -23,14 +23,14 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 abstract class ObjectPropertyEiPropAdapter extends EntityPropertyEiPropAdapter implements ObjectPropertyConfigurable {
 	protected $objectPropertyAccessProxy;
 	protected $objectPropertyRequired = true;
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\prop\ObjectPropertyEiProp::getPropertyAccessProxy()
+	 * @see \rocket\ei\component\prop\ObjectPropertyEiProp::getPropertyAccessProxy()
 	 */
 	public function getObjectPropertyAccessProxy(bool $required = false) {
 		if ($this->entityProperty === null && $required) {

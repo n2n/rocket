@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\l10n;
 
-use rocket\spec\ei\manage\critmod\filter\impl\field\EnumFilterField;
-use rocket\spec\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
+use rocket\ei\manage\critmod\filter\impl\field\EnumFilterField;
+use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\l10n\N2nLocale;
 use n2n\util\config\Attributes;
-use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 
 class N2nLocaleFilterField extends EnumFilterField {
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
+	 * @see \rocket\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new SimpleComparatorConstraint($this->criteriaProperty,

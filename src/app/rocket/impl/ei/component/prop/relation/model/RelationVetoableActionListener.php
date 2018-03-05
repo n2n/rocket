@@ -22,17 +22,17 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\spec\ei\manage\veto\VetoableActionListener;
+use rocket\ei\manage\veto\VetoableActionListener;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\l10n\MessageCode;
-use rocket\spec\ei\manage\LiveEiObject;
+use rocket\ei\manage\LiveEiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\manage\veto\VetoableRemoveAction;
-use rocket\spec\ei\manage\EiEntityObj;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\veto\VetoableRemoveAction;
+use rocket\ei\manage\EiEntityObj;
+use rocket\ei\manage\ManageState;
 use n2n\core\container\N2nContext;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;

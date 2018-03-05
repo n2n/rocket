@@ -21,19 +21,19 @@
  */
 namespace rocket\impl\ei\component\modificator\adapter;
 
-use rocket\spec\ei\component\modificator\EiModificator;
+use rocket\ei\component\modificator\EiModificator;
 use rocket\impl\ei\component\IndependentEiComponentAdapter;
-use rocket\spec\ei\component\modificator\IndependentEiModificator;
-use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\modificator\IndependentEiModificator;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiConfigurator;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 
 abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAdapter implements IndependentEiModificator {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\IndependentEiComponent::createEiConfigurator()
+	 * @see \rocket\ei\component\IndependentEiComponent::createEiConfigurator()
 	 */
 	public function createEiConfigurator(): EiConfigurator {
 		return new DefaultEiConfigurator($this);
@@ -51,13 +51,13 @@ abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAda
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\modificator\EiModificator::setupEiEntryGui()
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiEntryGui()
 	 */
-	public function setupEiEntryGui(\rocket\spec\ei\manage\gui\EiEntryGui $eiEntryGui) { }
+	public function setupEiEntryGui(\rocket\ei\manage\gui\EiEntryGui $eiEntryGui) { }
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\modificator\EiModificator::setupDraftDefinition()
+	 * @see \rocket\ei\component\modificator\EiModificator::setupDraftDefinition()
 	 */
-	public function setupDraftDefinition(\rocket\spec\ei\manage\draft\DraftDefinition $draftDefinition) { }
+	public function setupDraftDefinition(\rocket\ei\manage\draft\DraftDefinition $draftDefinition) { }
 }

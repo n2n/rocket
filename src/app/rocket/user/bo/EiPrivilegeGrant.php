@@ -26,11 +26,11 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\util\StringUtils;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
-use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\util\config\Attributes;
 use n2n\util\config\AttributesException;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\EiCommandPath;
+use rocket\ei\EiCommandPath;
 
 class EiPrivilegeGrant extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {

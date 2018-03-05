@@ -25,12 +25,12 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\critmod\CriteriaConstraint;
 
 class ToOneForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

@@ -22,14 +22,14 @@
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\impl\ei\component\prop\numeric\IntegerEiProp;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\IntegerColumn;
 use n2n\util\config\LenientAttributeReader;

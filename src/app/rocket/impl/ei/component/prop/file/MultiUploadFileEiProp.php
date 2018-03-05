@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\file;
 
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\StringEiProp;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\property\EntityProperty;

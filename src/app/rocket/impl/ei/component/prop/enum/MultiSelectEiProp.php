@@ -27,17 +27,17 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\reflection\property\ConstraintsConflictException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 
 class MultiSelectEiProp extends DraftableEiPropAdapter {
 	const OPTION_OPTIONS = 'options';
@@ -120,7 +120,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 				$this->getMin(), $this->getMax());
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\prop\EiProp::getTypeName()
+	 * @see \rocket\ei\component\prop\EiProp::getTypeName()
 	 */
 	public function getTypeName(): string {
 		return 'MultiSelect';
@@ -128,7 +128,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view,
 			Eiu $eiu) {

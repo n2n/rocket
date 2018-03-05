@@ -22,14 +22,14 @@
 namespace rocket\impl\ei\component\prop\string\modificator;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\mapping\EiEntry;
 use rocket\impl\ei\component\prop\string\PathPartEiProp;
 use n2n\util\col\ArrayUtils;
 use n2n\io\IoUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 
 class PathPartEiModificator extends EiModificatorAdapter {
 	private $pathPartEiProp;

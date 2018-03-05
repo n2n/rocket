@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file\conf;
 
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
@@ -35,7 +35,7 @@ use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
-use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';

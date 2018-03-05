@@ -22,7 +22,7 @@
 
 	use rocket\impl\ei\component\command\common\model\OverviewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\ei\manage\EiHtmlBuilder;
 		
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

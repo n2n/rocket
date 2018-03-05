@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\translation\conf;
 
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\l10n\N2nLocale;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiTypeExtensionException;
-use rocket\spec\ei\component\UnknownEiComponentException;
+use rocket\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\translation\TranslationEiProp;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\orm\CascadeType;
 use n2n\reflection\ReflectionUtils;
 use n2n\core\container\N2nContext;

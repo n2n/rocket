@@ -22,10 +22,10 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\component\prop\EiProp;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 class DisplaySettings {
 	private $compatibleViewModes;

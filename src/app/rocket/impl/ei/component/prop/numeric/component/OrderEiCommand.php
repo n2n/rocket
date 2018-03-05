@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\prop\numeric\component;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\manage\control\ControlButton;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\EiCommandAdapter;
-use rocket\spec\ei\manage\control\HrefControl;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\control\HrefControl;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
 use n2n\l10n\N2nLocale;
@@ -58,7 +58,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\command\EiCommand::lookupController()
+	 * @see \rocket\ei\component\command\EiCommand::lookupController()
 	 */
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = $eiu->lookup(OrderController::class);
@@ -68,7 +68,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryControls()
+	 * @see \rocket\ei\manage\control\EntryControlComponent::createEntryControls()
 	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$httpContext = $view->getHttpContext();
@@ -98,7 +98,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);

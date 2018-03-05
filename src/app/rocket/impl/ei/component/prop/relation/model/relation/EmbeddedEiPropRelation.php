@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\EiFrame;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\EiType;
+use rocket\ei\mask\EiMask;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 

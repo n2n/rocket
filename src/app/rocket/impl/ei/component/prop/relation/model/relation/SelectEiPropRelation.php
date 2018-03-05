@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\EiObject;
+use rocket\ei\EiType;
+use rocket\ei\mask\EiMask;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;

@@ -22,10 +22,10 @@
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 
 class MappedRelationEiModificator extends EiModificatorAdapter {
 	private $targetEiFrame;

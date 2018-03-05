@@ -21,28 +21,28 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\impl\ei\component\EiConfiguratorAdapter;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\l10n\DynamicTextCollection;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\reflection\property\ConstraintsConflictException;
-use rocket\spec\ei\component\prop\EiProp;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\spec\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\config\InvalidAttributeException;
 use n2n\util\config\LenientAttributeReader;
-use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\ViewMode;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';
@@ -90,7 +90,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\prop\indepenent\EiPropConfigurator::assignProperty()
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::assignProperty()
 	 */
 	public function assignProperty(PropertyAssignation $propertyAssignation) {
 // 		if (!$this->isPropertyAssignable()) {

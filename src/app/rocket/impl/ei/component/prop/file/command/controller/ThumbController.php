@@ -32,8 +32,8 @@ use rocket\impl\ei\component\prop\file\command\model\ThumbModel;
 use n2n\web\http\controller\ParamQuery;
 use n2n\reflection\CastUtils;
 use n2n\io\managed\File;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\util\model\EiuCtrl;
 use n2n\reflection\ArgUtils;
 use n2n\io\managed\ThumbManager;
 

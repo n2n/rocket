@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\mag;
 
-use rocket\spec\ei\manage\util\model\EiUtils;
+use rocket\ei\manage\util\model\EiUtils;
 
 class EntryLabeler {
 	private $eiUtils;

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\ci\conf;
 
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;

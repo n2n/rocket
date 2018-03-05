@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\command\common\model;
 use n2n\web\dispatch\Dispatchable;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
-use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\critmod\impl\model\CritmodForm;
+use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\ViewMode;
 
 class OverviewModel implements Dispatchable {	
 	private $eiuFrame;
@@ -171,7 +171,7 @@ class OverviewModel implements Dispatchable {
 		
 	/**
 	 * 
-	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\manage\util\model\EiuGui
 	 */
 	public function getEiuGui() {
 		return $this->eiuGui;

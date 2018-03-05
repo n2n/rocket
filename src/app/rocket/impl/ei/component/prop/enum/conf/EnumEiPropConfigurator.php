@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\enum\conf;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\enum\EnumEiProp;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\LenientAttributeReader;
@@ -35,7 +35,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiIdPath;
 
 // @todo validate if attributes are arrays
 

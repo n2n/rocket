@@ -22,9 +22,9 @@
 namespace rocket\spec\config\extr;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\critmod\sort\SortData;
-use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
-use rocket\spec\ei\mask\model\DisplayScheme;
+use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\mask\model\DisplayScheme;
 
 class EiMaskExtraction {
 	private $label;
@@ -131,7 +131,7 @@ class EiMaskExtraction {
 	}
 
 	/**
-	 * @return \rocket\spec\ei\manage\critmod\filter\data\FilterGroupData|null
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterGroupData|null
 	 */
 	public function getFilterGroupData() {
 		return $this->filterData;
@@ -145,7 +145,7 @@ class EiMaskExtraction {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\critmod\sort\SortData|null
+	 * @return \rocket\ei\manage\critmod\sort\SortData|null
 	 */
 	public function getDefaultSortData() {
 		return $this->defaultSortData;

@@ -27,16 +27,16 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\critmod\CriteriaConstraint;
 use n2n\web\dispatch\mag\UiOutfitter;
 
 class ToOneMag extends MagAdapter {

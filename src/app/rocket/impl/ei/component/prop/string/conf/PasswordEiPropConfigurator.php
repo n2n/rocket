@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\PasswordEiProp;

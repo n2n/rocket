@@ -22,19 +22,19 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\spec\ei\component\prop\GuiEiProp;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\ei\component\prop\GuiEiProp;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\gui\DisplayDefinition;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
-use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiPropFork;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;

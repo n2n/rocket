@@ -22,9 +22,9 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
-	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
-	use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
+	use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\manage\critmod\sort\impl\form\SortForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

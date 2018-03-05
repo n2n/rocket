@@ -35,12 +35,12 @@ use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\mask\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
-use rocket\spec\ei\EiEngine;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\EiEngine;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;

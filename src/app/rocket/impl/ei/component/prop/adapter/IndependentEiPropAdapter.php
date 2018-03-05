@@ -22,12 +22,12 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\impl\ei\component\IndependentEiComponentAdapter;
-use rocket\spec\ei\component\prop\indepenent\IndependentEiProp;
-use rocket\spec\ei\component\prop\EiProp;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\IndependentEiProp;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\EiConfigurator;
 
 abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter implements IndependentEiProp {
 	protected $parentEiProp;
@@ -35,7 +35,7 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 		
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\IndependentEiComponent::createEiConfigurator()
+	 * @see \rocket\ei\component\IndependentEiComponent::createEiConfigurator()
 	 */
 	public final function createEiConfigurator(): EiConfigurator {
 		return $this->createEiPropConfigurator();
@@ -43,7 +43,7 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\indepenent\IndependentEiProp::createEiPropConfigurator()
+	 * @see \rocket\ei\component\prop\indepenent\IndependentEiProp::createEiPropConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new AdaptableEiPropConfigurator($this);
@@ -51,7 +51,7 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\EiProp::getParentEiProp()
+	 * @see \rocket\ei\component\prop\EiProp::getParentEiProp()
 	 */
 	public function getParentEiProp() {
 		return $this->parentEiProp;

@@ -28,7 +28,7 @@ use rocket\spec\config\EiComponentStore;
 use n2n\core\container\PdoPool;
 use n2n\core\container\N2nContext;
 use rocket\spec\config\source\N2nContextRocketConfigSource;
-use rocket\spec\ei\manage\draft\DraftManager;
+use rocket\ei\manage\draft\DraftManager;
 use rocket\spec\config\extr\SpecExtractionManager;
 
 class Rocket implements RequestScoped {

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\bool;
 
 use rocket\impl\ei\component\prop\bool\conf\OnlineEiPropConfigurator;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 class OnlineEiProp extends BooleanEiProp {
 	private $onlineEiCommand;

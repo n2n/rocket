@@ -24,15 +24,15 @@ namespace rocket\impl\ei\component\command\common\controller;
 use n2n\web\http\PageNotFoundException;
 use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\critmod\impl\model\CritmodSaveDao;
-use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
-use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
+use rocket\ei\manage\critmod\impl\model\CritmodForm;
+use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterFieldController;
+use rocket\ei\manage\critmod\filter\impl\controller\FilterFieldController;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\common\model\DraftListModel;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\manage\util\model\EiuCtrl;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;

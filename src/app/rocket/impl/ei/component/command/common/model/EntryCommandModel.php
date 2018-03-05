@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\command\common\model;
 
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\mask\EiMask;
+use rocket\ei\manage\mapping\EiEntry;
 
 interface EntryCommandModel {
 	

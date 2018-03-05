@@ -23,21 +23,21 @@ namespace rocket\spec\config;
 
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\component\prop\indepenent\IncompatiblePropertyException;
-use rocket\spec\ei\component\EiConfigurator;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\ei\component\EiConfigurator;
+use rocket\ei\mask\EiMask;
 use n2n\persistence\orm\OrmConfigurationException;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\ei\component\prop\EiProp;
-use rocket\spec\ei\component\command\IndependentEiCommand;
-use rocket\spec\ei\component\modificator\IndependentEiModificator;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\command\IndependentEiCommand;
+use rocket\ei\component\modificator\IndependentEiModificator;
 use rocket\spec\config\extr\EiTypeExtraction;
 use rocket\spec\config\extr\EiMaskExtraction;
 use rocket\spec\config\extr\EiPropExtraction;
@@ -45,7 +45,7 @@ use rocket\spec\config\extr\EiComponentExtraction;
 use rocket\spec\config\extr\EiTypeExtensionExtraction;
 use n2n\l10n\Lstr;
 use rocket\spec\config\extr\EiModificatorExtraction;
-use rocket\spec\ei\mask\EiTypeExtension;
+use rocket\ei\mask\EiTypeExtension;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -59,7 +59,7 @@ class EiTypeFactory {
 	 * @param EiTypeExtraction $eiTypeExtraction
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 * @param EiTypeExtensionExtraction[] $eiTypeExtensionExtractions
-	 * @return \rocket\spec\ei\EiType
+	 * @return \rocket\ei\EiType
 	 */
 	public function create(EiTypeExtraction $eiTypeExtraction, array $eiModificatorExtractions) {
 		$eiType = null;
@@ -167,9 +167,9 @@ class EiTypeFactory {
 		$id = $eiPropExtraction->getId();
 		$eiPropClass = ReflectionUtils::createReflectionClass($eiPropExtraction->getClassName());
 		
-		if (!$eiPropClass->implementsInterface('rocket\spec\ei\component\prop\indepenent\IndependentEiProp')) {
+		if (!$eiPropClass->implementsInterface('rocket\ei\component\prop\indepenent\IndependentEiProp')) {
 			throw new InvalidEiComponentConfigurationException('\'' . $eiPropClass->getName()
-					. '\' must implement \'rocket\spec\ei\component\prop\indepenent\IndependentEiProp\'.');
+					. '\' must implement \'rocket\ei\component\prop\indepenent\IndependentEiProp\'.');
 		}
 		
 		$eiProp = $eiPropClass->newInstance();
@@ -238,15 +238,15 @@ class EiTypeFactory {
 	public function createEiCommand(EiComponentExtraction $configurableExtraction, EiMask $eiMask) {
 		$eiCommandClass = ReflectionUtils::createReflectionClass($configurableExtraction->getClassName());
 		
-		if (!$eiCommandClass->implementsInterface('rocket\spec\ei\component\command\IndependentEiCommand')) {
+		if (!$eiCommandClass->implementsInterface('rocket\ei\component\command\IndependentEiCommand')) {
 			throw new InvalidEiComponentConfigurationException('\'' . $eiCommandClass->getName()
-					. '\' must implement \'rocket\spec\ei\component\command\IndependentEiCommand\'.');
+					. '\' must implement \'rocket\ei\component\command\IndependentEiCommand\'.');
 		}
 		
 		$eiCommand = $eiCommandClass->newInstance();
 		
 		$eiConfigurator = $eiCommand->createEiConfigurator();
-		ArgUtils::valTypeReturn($eiConfigurator, 'rocket\spec\ei\component\EiConfigurator',
+		ArgUtils::valTypeReturn($eiConfigurator, 'rocket\ei\component\EiConfigurator',
 				$eiCommand, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
 		$eiConfigurator->setAttributes(new Attributes($configurableExtraction->getProps()));
@@ -266,9 +266,9 @@ class EiTypeFactory {
 	public function createEiModificator(EiModificatorExtraction $eiModificatorExtraction, EiType $eiType, EiMask $eiMask = null) {
 		$eiModificatorClass = ReflectionUtils::createReflectionClass($eiModificatorExtraction->getClassName());
 		
-		if (!$eiModificatorClass->implementsInterface('rocket\spec\ei\component\modificator\IndependentEiModificator')) {
+		if (!$eiModificatorClass->implementsInterface('rocket\ei\component\modificator\IndependentEiModificator')) {
 			throw new InvalidEiComponentConfigurationException('\'' . $eiModificatorClass->getName()
-					. '\' must implement \'rocket\spec\ei\component\modificator\IndependentEiModificator\'.');
+					. '\' must implement \'rocket\ei\component\modificator\IndependentEiModificator\'.');
 		}
 		
 		$eiModificator =  $eiModificatorClass->newInstance();

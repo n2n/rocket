@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\command;
 
-use rocket\spec\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCommand;
 use rocket\impl\ei\component\EiComponentAdapter;
 
 abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand {

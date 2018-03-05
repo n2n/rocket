@@ -21,13 +21,13 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\spec\ei\security\EiExecution;
-use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\component\command\EiCommand;
+use rocket\ei\security\EiExecution;
+use rocket\ei\EiCommandPath;
+use rocket\ei\component\command\EiCommand;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\security\EiPropAccess;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\EiPropPath;
+use rocket\ei\security\EiPropAccess;
+use rocket\ei\manage\mapping\EiEntry;
 
 class FullyGrantedEiExecution implements EiExecution {
 	private $commandPath;
@@ -43,7 +43,7 @@ class FullyGrantedEiExecution implements EiExecution {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiCommandPath()
+	 * @see \rocket\ei\security\EiExecution::getEiCommandPath()
 	 */
 	public function getEiCommandPath(): EiCommandPath {
 		return $this->commandPath;
@@ -56,7 +56,7 @@ class FullyGrantedEiExecution implements EiExecution {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiCommand()
+	 * @see \rocket\ei\security\EiExecution::getEiCommand()
 	 */
 	public function getEiCommand(): EiCommand {
 		if ($this->eiCommand !== null) {
@@ -67,7 +67,7 @@ class FullyGrantedEiExecution implements EiExecution {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiEntryConstraint()
+	 * @see \rocket\ei\security\EiExecution::getEiEntryConstraint()
 	 */
 	public function getEiEntryConstraint() {
 		return null;
@@ -75,7 +75,7 @@ class FullyGrantedEiExecution implements EiExecution {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getCriteriaConstraint()
+	 * @see \rocket\ei\security\EiExecution::getCriteriaConstraint()
 	 */
 	public function getCriteriaConstraint() {
 		return null;
@@ -83,14 +83,14 @@ class FullyGrantedEiExecution implements EiExecution {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::extEiCommandPath($ext)
+	 * @see \rocket\ei\security\EiExecution::extEiCommandPath($ext)
 	 */
 	public function extEiCommandPath(string $ext) {
 		$this->commandPath = $this->commandPath->ext($ext);
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::createEiPropAccess($eiPropPath)
+	 * @see \rocket\ei\security\EiExecution::createEiPropAccess($eiPropPath)
 	 */
 	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess {
 		return new FullEiPropAccess();

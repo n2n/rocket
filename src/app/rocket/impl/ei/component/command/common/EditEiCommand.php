@@ -24,19 +24,19 @@ namespace rocket\impl\ei\component\command\common;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\manage\control\ControlButton;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\common\controller\EditController;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\spec\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\EiCommandPrivilege;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {

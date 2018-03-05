@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
 
 class ContentItemGuiField implements GuiField {
@@ -63,7 +63,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::isReadOnly()
+	 * @see \rocket\ei\manage\gui\GuiField::isReadOnly()
 	 */
 	public function isReadOnly(): bool {
 		return $this->editable === null;
@@ -71,7 +71,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
 	public function getDisplayItemType() {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
@@ -86,7 +86,7 @@ class ContentItemGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getUiOutputLabel()
+	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(): string {
 		return $this->label;
@@ -94,7 +94,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
@@ -102,7 +102,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view) {
 		if ($this->compact) {
@@ -178,7 +178,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {

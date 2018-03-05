@@ -22,8 +22,8 @@
 namespace rocket\impl\ei\component\command;
 
 use rocket\impl\ei\component\IndependentEiComponentAdapter;
-use rocket\spec\ei\component\command\IndependentEiCommand;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\command\IndependentEiCommand;
+use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiPropConfigurator;
 
 abstract class IndependentEiCommandAdapter extends IndependentEiComponentAdapter implements IndependentEiCommand {

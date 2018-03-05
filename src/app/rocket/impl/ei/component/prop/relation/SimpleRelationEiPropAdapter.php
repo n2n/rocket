@@ -21,30 +21,30 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\spec\ei\manage\gui\GuiProp;
-use rocket\spec\ei\component\prop\DraftableEiProp;
-use rocket\spec\ei\manage\draft\DraftProperty;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\component\prop\DraftableEiProp;
+use rocket\ei\manage\draft\DraftProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
-use rocket\spec\ei\component\prop\FilterableEiProp;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\component\prop\FilterableEiProp;
+use rocket\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
-use rocket\spec\ei\component\CritmodFactory;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\component\CritmodFactory;
 use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterField;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
-use rocket\spec\ei\manage\util\model\EiuMask;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
-use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\manage\gui\GuiPropFork;
-use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\mask\EiMask;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
+use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+use rocket\ei\manage\util\model\EiuMask;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\GuiPropFork;
+use rocket\ei\manage\critmod\filter\FilterField;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -63,7 +63,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
 	 */
 	public function getDisplayLabel(): string {
 		return $this->getLabelCode();
@@ -71,7 +71,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplaySettings()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplaySettings()
 	 */
 	public function getDisplaySettings(): DisplaySettings {
 		return $this->displaySettings;

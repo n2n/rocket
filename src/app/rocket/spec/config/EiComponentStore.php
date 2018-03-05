@@ -67,8 +67,8 @@ class EiComponentStore {
 				as $key => $eiPropClassName) {
 			try {
 				$fieldClass = ReflectionUtils::createReflectionClass($eiPropClassName);
-				if (!$fieldClass->implementsInterface('rocket\spec\ei\component\prop\EiProp')
-						|| !$fieldClass->implementsInterface('rocket\spec\ei\component\IndependentEiComponent')) continue;
+				if (!$fieldClass->implementsInterface('rocket\ei\component\prop\EiProp')
+						|| !$fieldClass->implementsInterface('rocket\ei\component\IndependentEiComponent')) continue;
 				
 				$this->eiPropClasses[$eiPropClassName] = $fieldClass;
 				$this->eiPropClassesByModule[$moduleNamespace][$eiPropClassName] = $fieldClass;
@@ -81,8 +81,8 @@ class EiComponentStore {
 				as $key => $eiCommandClassName) {
 			try {
 				$eiCommandClass =  ReflectionUtils::createReflectionClass($eiCommandClassName);
-				if (!$eiCommandClass->implementsInterface('rocket\spec\ei\component\command\EiCommand')
-						|| !$eiCommandClass->implementsInterface('rocket\spec\ei\component\IndependentEiComponent')) continue;
+				if (!$eiCommandClass->implementsInterface('rocket\ei\component\command\EiCommand')
+						|| !$eiCommandClass->implementsInterface('rocket\ei\component\IndependentEiComponent')) continue;
 				
 				$this->eiCommandClasses[$eiCommandClassName] = $eiCommandClass;
 				$this->eiCommandClassesByModule[$moduleNamespace][$eiCommandClassName] = $eiCommandClass;
@@ -113,8 +113,8 @@ class EiComponentStore {
 				as $key => $eiModificatorClassName) {
 			try {
 				$constraintClass =  ReflectionUtils::createReflectionClass($eiModificatorClassName);
-				if (!$constraintClass->implementsInterface('rocket\spec\ei\component\modificator\EiModificator')
-						|| !$constraintClass->implementsInterface('rocket\spec\ei\component\IndependentEiComponent')) continue;
+				if (!$constraintClass->implementsInterface('rocket\ei\component\modificator\EiModificator')
+						|| !$constraintClass->implementsInterface('rocket\ei\component\IndependentEiComponent')) continue;
 		
 				$this->eiModificatorClasses[$eiModificatorClassName] = $constraintClass;
 				$this->eiModificatorClassesByModule[$moduleNamespace][$eiModificatorClassName] = $constraintClass;

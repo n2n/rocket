@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;

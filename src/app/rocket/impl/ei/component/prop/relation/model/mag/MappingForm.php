@@ -24,10 +24,10 @@ namespace rocket\impl\ei\component\prop\relation\model\mag;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\spec\ei\manage\util\model\EntryForm;
+use rocket\ei\manage\util\model\EntryForm;
 use n2n\web\dispatch\annotation\AnnoDispScalar;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\mapping\EiEntry;
 
 class MappingForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

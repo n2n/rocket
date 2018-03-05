@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\command\tree\controller;
 
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamGet;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
+use rocket\ei\manage\util\model\UnknownEntryException;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\manage\util\model\EiuCtrl;
 
 class TreeMoveController extends ControllerAdapter {
 	private $eiCtrl;

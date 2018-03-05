@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\component\prop\EiProp;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\EiuFrame;
 
 class ToManySelectGuiField implements GuiField {
 	private $eiProp;
@@ -107,7 +107,7 @@ class ToManySelectGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {

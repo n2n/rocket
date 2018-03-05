@@ -21,11 +21,11 @@
  */
 namespace rocket\spec\config;
 
-use rocket\spec\ei\component\IndependentEiComponent;
+use rocket\ei\component\IndependentEiComponent;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\EiSetupProcess;
+use rocket\ei\manage\util\model\Eiu;
 
 class SpecEiSetupProcess implements EiSetupProcess {
 	private $specManager;
@@ -77,7 +77,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiSetupProcess::eiu()
+	 * @see \rocket\ei\component\EiSetupProcess::eiu()
 	 */
 	public function eiu(): Eiu {
 		return $this->eiu 
@@ -86,7 +86,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\spec\ei\component\EiSetupProcess::containsClass($class)
+// 	 * @see \rocket\ei\component\EiSetupProcess::containsClass($class)
 // 	 */
 // 	public function containsClass(\ReflectionClass $class): bool {
 // 		return $this->specManager->containsEiTypeClass($class);
@@ -94,7 +94,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\spec\ei\component\EiSetupProcess::getEiTypeByClass($class)
+// 	 * @see \rocket\ei\component\EiSetupProcess::getEiTypeByClass($class)
 // 	 */
 // 	public function getEiTypeByClass(\ReflectionClass $class): EiType {
 // 		return $this->specManager->getEiTypeByClass($class);

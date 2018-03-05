@@ -22,18 +22,18 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\gui\GuiProp;
-use rocket\spec\ei\component\prop\DraftableEiProp;
-use rocket\spec\ei\manage\draft\DraftProperty;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\component\prop\DraftableEiProp;
+use rocket\ei\manage\draft\DraftProperty;
+use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\ei\manage\gui\GuiPropFork;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -52,7 +52,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
 	 */
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
@@ -60,7 +60,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplaySettings()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplaySettings()
 	 */
 	public function getDisplaySettings(): DisplaySettings {
 		return $this->displaySettings;
@@ -83,7 +83,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$targetEiObject = $this->read($eiObject);

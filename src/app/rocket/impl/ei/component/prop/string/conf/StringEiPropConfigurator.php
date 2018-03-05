@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\StringEiProp;
@@ -29,8 +29,8 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';

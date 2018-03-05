@@ -22,14 +22,14 @@
 namespace rocket\impl\ei\component\prop\relation\command;
 
 use rocket\impl\ei\component\command\EiCommandAdapter;
-use rocket\spec\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use n2n\l10n\Lstr;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 
 class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEiCommand {
 	private $idBase;
@@ -49,7 +49,7 @@ class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEi
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\command\EiCommand::createController()
+	 * @see \rocket\ei\component\command\EiCommand::createController()
 	 */
 	public function lookupController(Eiu $eiu): Controller {
 		return new EmbeddedEditPseudoController();

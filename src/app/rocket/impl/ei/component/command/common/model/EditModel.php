@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\reflection\annotation\AnnoInit;
-use rocket\spec\ei\manage\util\model\EntryForm;
+use rocket\ei\manage\util\model\EntryForm;
 use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\mapping\EiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
 use n2n\web\dispatch\map\PropertyPath;

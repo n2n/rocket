@@ -24,10 +24,10 @@
 // use rocket\impl\ei\component\command\tree\field\TreeRightEiProp;
 // use rocket\impl\ei\component\command\tree\field\TreeLeftEiProp;
 // use rocket\impl\ei\component\command\tree\controller\TreeController;
-// use rocket\spec\ei\component\command\EiCommand;
+// use rocket\ei\component\command\EiCommand;
 // use rocket\spec\core\IncompatibleSpecException;
-// use rocket\spec\ei\EiType;
-// use rocket\spec\ei\manage\EiFrame;
+// use rocket\ei\EiType;
+// use rocket\ei\manage\EiFrame;
 
 // class TreeUtils {
 // 	public static function findTreeField(EiType $eiType, &$treeLeftEiProp = null, 

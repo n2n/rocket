@@ -23,42 +23,42 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\impl\ei\component\prop\relation\model\ToManyEditable;
-use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\DraftManager;
+use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
+use rocket\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\relation\model\EmbeddedOneToManyGuiField;
-use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\RemoveDraftAction;
-use rocket\spec\ei\manage\draft\DraftValueSelection;
-use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\DraftEiObject;
-use rocket\spec\ei\manage\LiveEiObject;
+use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
+use rocket\ei\manage\draft\RemoveDraftAction;
+use rocket\ei\manage\draft\DraftValueSelection;
+use rocket\ei\manage\draft\PersistDraftAction;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\DraftEiObject;
+use rocket\ei\manage\LiveEiObject;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\persistence\PdoStatement;
-use rocket\spec\ei\manage\draft\stmt\DraftMetaInfo;
+use rocket\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\meta\data\JoinType;
 use n2n\persistence\meta\data\QueryTable;
 use n2n\persistence\meta\data\QueryColumn;
 use n2n\persistence\meta\data\QueryPlaceMarker;
-use rocket\spec\ei\manage\draft\DraftFetcher;
-use rocket\spec\ei\manage\draft\DraftActionAdapter;
+use rocket\ei\manage\draft\DraftFetcher;
+use rocket\ei\manage\draft\DraftActionAdapter;
 use n2n\persistence\Pdo;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\draft\stmt\DraftStmtBuilder;
-use rocket\spec\ei\manage\draft\ModDraftAction;
-use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\draft\stmt\DraftStmtBuilder;
+use rocket\ei\manage\draft\ModDraftAction;
+use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\ei\manage\util\model\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {
@@ -129,7 +129,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		$targetEiObjects = array();
@@ -155,7 +155,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		CastUtils::assertTrue(is_array($value));
@@ -180,7 +180,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 * @return GuiField
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField {
@@ -223,7 +223,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::createDraftValueSelection()
+	 * @see \rocket\ei\manage\draft\DraftProperty::createDraftValueSelection()
 	 */
 	public function createDraftValueSelection(FetchDraftStmtBuilder $fetchDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
@@ -271,7 +271,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
+	 * @see \rocket\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
 	 */
 	public function supplyPersistDraftStmtBuilder($targetDrafts, $oldTargetDrafts,
 			PersistDraftStmtBuilder $persistDraftStmtBuilder, PersistDraftAction $persistDraftAction) {
@@ -306,7 +306,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
+	 * @see \rocket\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
 	 */
 	public function supplyRemoveDraftStmtBuilder($targetDrafts, $oldTargetDrafts, 
 			RemoveDraftStmtBuilder $removeDraftStmtBuilder, RemoveDraftAction $removeDraftAction) {
@@ -337,14 +337,14 @@ class EmbeddedToManyDraftValueSelection implements DraftValueSelection {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftValueSelection::bind()
+	 * @see \rocket\ei\manage\draft\DraftValueSelection::bind()
 	 */
 	public function bind(PdoStatement $stmt) {
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftValueSelection::buildDraftValue()
+	 * @see \rocket\ei\manage\draft\DraftValueSelection::buildDraftValue()
 	 */
 	public function buildDraftValue() {
 		$this->targetDraftFetcher->getFetchDraftStmtBuilder()->bindValue(

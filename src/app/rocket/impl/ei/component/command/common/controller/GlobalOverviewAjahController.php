@@ -24,19 +24,19 @@ namespace rocket\impl\ei\component\command\common\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\impl\ScrController;
 use rocket\user\model\LoginContext;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 use n2n\web\http\ForbiddenException;
-use rocket\spec\ei\EiCommandPath;
+use rocket\ei\EiCommandPath;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
-use rocket\spec\ei\security\InaccessibleControlException;
+use rocket\ei\security\InaccessibleControlException;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\mask\UnknownEiTypeExtensionException;
 
 class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrController {
 	private $manageState;

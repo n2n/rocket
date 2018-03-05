@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;

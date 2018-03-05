@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\manage\critmod\filter\EiEntryFilterField;
 use n2n\util\config\Attributes;
-use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
-use rocket\spec\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\ei\manage\mapping\EiFieldConstraint;
 
 class ToOneEiEntryFilterField extends RelationFilterField implements EiEntryFilterField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\EiEntryFilterField::createEiFieldConstraint()
+	 * @see \rocket\ei\manage\critmod\filter\EiEntryFilterField::createEiFieldConstraint()
 	 */
 	public function createEiFieldConstraint(): EiFieldConstraint {
 		
@@ -38,7 +38,7 @@ class ToOneEiEntryFilterField extends RelationFilterField implements EiEntryFilt
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\FilterField::createComparatorConstraint($attributes)
+	 * @see \rocket\ei\manage\critmod\filter\FilterField::createComparatorConstraint($attributes)
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		

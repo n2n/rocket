@@ -22,23 +22,23 @@
 namespace rocket\spec\config\extr;
 
 use n2n\util\config\Attributes;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\AttributesException;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\config\InvalidSpecConfigurationException;
-use rocket\spec\ei\mask\model\DisplayScheme;
-use rocket\spec\ei\manage\gui\ui\DisplayStructure;
-use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\ei\mask\model\DisplayScheme;
+use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\manage\gui\GuiIdPath;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\spec\ei\mask\model\ControlOrder;
+use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
 use rocket\spec\config\InvalidMenuItemConfigurationException;
-use rocket\spec\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortData;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\config\InvalidAttributeException;
-use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\config\TypePath;
 
@@ -196,7 +196,7 @@ class SpecExtractor {
 	}
 	
 	private function upgradeTypeName($typeName) {
-	    if (!StringUtils::startsWith('rocket\spec\ei\component', $typeName)) {
+	    if (!StringUtils::startsWith('rocket\ei\component', $typeName)) {
 	        return $typeName;
 	    }
 	    

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\spec\ei\component\IndependentEiComponent;
+use rocket\ei\component\IndependentEiComponent;
 
 abstract class IndependentEiComponentAdapter extends EiComponentAdapter implements IndependentEiComponent {
 	

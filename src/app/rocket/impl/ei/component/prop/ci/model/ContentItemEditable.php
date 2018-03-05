@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\EiFrame;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
@@ -61,7 +61,7 @@ class ContentItemEditable implements GuiFieldEditable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiFieldEditable::isMandatory()
+	 * @see \rocket\ei\manage\gui\GuiFieldEditable::isMandatory()
 	 */
 	public function isMandatory(): bool {
 		foreach ($this->panelConfigs as $panelConfig) {
@@ -75,7 +75,7 @@ class ContentItemEditable implements GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiFieldEditable::createMag($propertyName)
+	 * @see \rocket\ei\manage\gui\GuiFieldEditable::createMag($propertyName)
 	 */
 	public function getMag(): Mag {
 		$this->contentItemMag = new ContentItemMag($this->label, $this->panelConfigs,
@@ -88,7 +88,7 @@ class ContentItemEditable implements GuiFieldEditable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Savable::save()
+	 * @see \rocket\ei\manage\gui\Savable::save()
 	 */
 	public function save() {
 		IllegalStateException::assertTrue($this->contentItemMag !== null);

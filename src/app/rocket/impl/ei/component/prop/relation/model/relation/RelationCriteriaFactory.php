@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\spec\ei\manage\CriteriaFactory;
+use rocket\ei\manage\CriteriaFactory;
 use n2n\persistence\orm\EntityManager;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;

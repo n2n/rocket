@@ -9,9 +9,9 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\config\Attributes;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 
 class UniqueEiConfigurator extends EiConfiguratorAdapter {
 	const ATTR_UNIQUE_PROPS_KEY = 'uniqueProps';

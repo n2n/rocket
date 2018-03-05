@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiField;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
 
 class EmbeddedOneToManyGuiField implements GuiField {
@@ -66,7 +66,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
 	public function getDisplayItemType() {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
@@ -74,7 +74,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getUiOutputLabel()
+	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(): string {
 		return $this->label;
@@ -82,7 +82,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
@@ -90,7 +90,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view) {
 		if ($this->compact) {
@@ -143,7 +143,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {

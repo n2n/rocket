@@ -24,32 +24,32 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\command\RelationEiCommand;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\mapping\EiEntry;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
-use rocket\spec\ei\manage\ManageState;
-use rocket\spec\ei\manage\EiRelation;
+use rocket\ei\manage\ManageState;
+use rocket\ei\manage\EiRelation;
 use n2n\web\http\controller\ControllerContext;
 use n2n\persistence\orm\CascadeType;
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\EiFrameFactory;
+use rocket\ei\manage\EiFrameFactory;
 use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
-use rocket\spec\ei\EiCommandPath;
-use rocket\spec\ei\security\InaccessibleControlException;
+use rocket\ei\EiCommandPath;
+use rocket\ei\security\InaccessibleControlException;
 use rocket\impl\ei\component\prop\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 
 abstract class EiPropRelation {
 	protected $targetEiType;
@@ -96,7 +96,7 @@ abstract class EiPropRelation {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\spec\ei\EiType
+	 * @return \rocket\ei\EiType
 	 */
 	public function getTargetEiType(): EiType {
 		if ($this->targetEiType === null) {
@@ -107,7 +107,7 @@ abstract class EiPropRelation {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\spec\ei\mask\EiMask
+	 * @return \rocket\ei\mask\EiMask
 	 */
 	public function getTargetEiMask(): EiMask {
 		if ($this->targetEiMask === null) {

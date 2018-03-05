@@ -25,7 +25,7 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToManyForm;
-	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\ei\manage\EiHtmlBuilder;
 
 	/**
 	 * @var \n2n\web\ui\view\View $view

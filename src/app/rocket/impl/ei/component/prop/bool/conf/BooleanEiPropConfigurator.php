@@ -9,9 +9,9 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\reflection\property\TypeConstraint;
-use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiIdPath;
 
 class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';

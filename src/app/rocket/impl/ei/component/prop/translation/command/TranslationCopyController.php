@@ -2,9 +2,9 @@
 namespace rocket\impl\ei\component\prop\translation\command;
 
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\manage\util\model\EiuCtrl;
 use n2n\web\http\controller\ParamQuery;
-use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiIdPath;
 use n2n\web\http\BadRequestException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\util\ex\UnsupportedOperationException;

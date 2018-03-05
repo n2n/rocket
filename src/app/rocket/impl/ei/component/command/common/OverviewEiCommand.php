@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\command\common;
 
-use rocket\spec\ei\component\command\GenericOverviewEiCommand;
+use rocket\ei\component\command\GenericOverviewEiCommand;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\impl\ei\component\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
@@ -29,12 +29,12 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\command\common\controller\OverviewController;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\EiConfigurator;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\reflection\CastUtils;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {

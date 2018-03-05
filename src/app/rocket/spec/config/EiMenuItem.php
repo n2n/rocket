@@ -22,18 +22,18 @@
 namespace rocket\spec\config;
 
 use rocket\core\model\MenuItem;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerContext;
 use n2n\web\http\controller\Controller;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\reflection\CastUtils;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\EiTypeController;
+use rocket\ei\EiTypeController;
 use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\veto\VetoableRemoveQueue;
+use rocket\ei\manage\veto\VetoableRemoveQueue;
 use rocket\core\model\TransactionApproveAttempt;
 
 class EiMenuItem implements MenuItem {

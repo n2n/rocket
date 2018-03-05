@@ -22,9 +22,9 @@
 namespace rocket\user\model;
 
 use rocket\user\bo\RocketUserGroup;
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use rocket\user\bo\EiGrant;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 use rocket\spec\config\CustomType;
 use rocket\user\bo\CustomGrant;
 use rocket\user\bo\Grant;

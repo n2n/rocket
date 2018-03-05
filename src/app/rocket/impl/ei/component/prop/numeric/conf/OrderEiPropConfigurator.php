@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use n2n\web\dispatch\mag\MagDispatchable;

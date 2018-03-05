@@ -21,20 +21,20 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\spec\ei\security\EiExecution;
-use rocket\spec\ei\component\command\EiCommand;
-use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
-use rocket\spec\ei\EiCommandPath;
+use rocket\ei\security\EiExecution;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
+use rocket\ei\EiCommandPath;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\critmod\filter\EiEntryConstraintGroup;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\manage\critmod\filter\EiEntryConstraintGroup;
+use rocket\ei\EiPropPath;
 use rocket\spec\security\PrivilegeDefinition;
-use rocket\spec\ei\security\EiPropAccess;
-use rocket\spec\ei\security\InaccessibleControlException;
-use rocket\spec\ei\manage\critmod\filter\ComparatorConstraintGroup;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\security\EiPropAccess;
+use rocket\ei\security\InaccessibleControlException;
+use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\ei\manage\mapping\EiEntry;
 use rocket\user\bo\EiPrivilegeGrant;
-use rocket\spec\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
+use rocket\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
 
 class RestrictedEiExecution implements EiExecution {
 	private $eiCommand;
@@ -73,7 +73,7 @@ class RestrictedEiExecution implements EiExecution {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiCommandPath()
+	 * @see \rocket\ei\security\EiExecution::getEiCommandPath()
 	 */
 	public function getEiCommandPath(): EiCommandPath {
 		return $this->eiCommandPath;
@@ -81,7 +81,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getEiEntryConstraint()
+	 * @see \rocket\ei\security\EiExecution::getEiEntryConstraint()
 	 */
 	public function getEiEntryConstraint() {
 		return $this->eiEntryConstraintGroup;
@@ -89,7 +89,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::getCriteriaConstraint()
+	 * @see \rocket\ei\security\EiExecution::getCriteriaConstraint()
 	 */
 	public function getCriteriaConstraint() {
 		return $this->comparatorConstraintGroup;
@@ -171,7 +171,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * @param EiPrivilegeGrant $eiPrivilegeGrant
-	 * @return \rocket\spec\ei\manage\mapping\EiEntryConstraint
+	 * @return \rocket\ei\manage\mapping\EiEntryConstraint
 	 */
 	private function getOrBuildEiEntryConstraint(EiPrivilegeGrant $eiPrivilegeGrant) {
 		if (!$eiPrivilegeGrant->isRestricted()) return null;
@@ -188,7 +188,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\security\EiExecution::extEiCommandPath($ext)
+	 * @see \rocket\ei\security\EiExecution::extEiCommandPath($ext)
 	 */
 	public function extEiCommandPath(string $ext) {
 		$this->init($this->eiCommandPath->ext($ext));

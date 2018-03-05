@@ -23,7 +23,7 @@ namespace rocket\user\model\security;
 
 use rocket\spec\config\CustomType;
 use rocket\spec\security\SecurityManager;
-use rocket\spec\ei\security\EiPermissionManager;
+use rocket\ei\security\EiPermissionManager;
 use rocket\user\bo\RocketUser;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\core\model\MenuItem;

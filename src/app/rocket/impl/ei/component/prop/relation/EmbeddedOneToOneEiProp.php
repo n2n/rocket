@@ -23,35 +23,35 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\impl\ei\component\prop\relation\model\ToOneEditable;
 use rocket\impl\ei\component\prop\relation\model\EmbeddedOneToOneGuiField;
-use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\DraftManager;
+use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
+use rocket\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\draft\SimpleDraftValueSelection;
-use rocket\spec\ei\manage\LiveEiObject;
-use rocket\spec\ei\manage\DraftEiObject;
+use rocket\ei\manage\draft\SimpleDraftValueSelection;
+use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\DraftEiObject;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\draft\RemoveDraftAction;
+use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
+use rocket\ei\manage\draft\DraftDefinition;
+use rocket\ei\manage\draft\Draft;
+use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use rocket\spec\ei\manage\draft\DraftValueSelection;
-use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\draft\DraftValueSelection;
+use rocket\ei\manage\draft\PersistDraftAction;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\ei\manage\util\model\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\GuiField;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
@@ -105,7 +105,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($this->isDraftable() && $eiObject->isDraft()) {
@@ -123,7 +123,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
@@ -152,7 +152,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
@@ -183,7 +183,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::createDraftValueSelection()
+	 * @see \rocket\ei\manage\draft\DraftProperty::createDraftValueSelection()
 	 */
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
@@ -193,7 +193,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
+	 * @see \rocket\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
 	 */
 	public function supplyPersistDraftStmtBuilder($targetDraft, $oldTargetDraft, 
 			PersistDraftStmtBuilder $persistDraftStmtBuilder, PersistDraftAction $persistDraftAction) {
@@ -225,7 +225,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
+	 * @see \rocket\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
 	 */
 	public function supplyRemoveDraftStmtBuilder($targetDraft, $oldTargetDraft, 
 			RemoveDraftStmtBuilder $removeDraftStmtBuilder, RemoveDraftAction $removeDraftAction) {
@@ -260,7 +260,7 @@ class EmbeddedToOneDraftValueSelection  extends SimpleDraftValueSelection {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\draft\DraftValueSelection::buildDraftValue()
+	 * @see \rocket\ei\manage\draft\DraftValueSelection::buildDraftValue()
 	 */
 	public function buildDraftValue() {
 		if ($this->rawValue === null) return null;

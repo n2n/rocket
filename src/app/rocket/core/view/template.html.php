@@ -50,7 +50,7 @@ $view->assert($loginContext instanceof LoginContext);
 // 	$rocketState = $view->lookup('rocket\core\model\RocketState');
 // 	$view->assert($rocketState instanceof RocketState);
 
-// 	$manageState = $view->lookup('rocket\spec\ei\manage\ManageState');
+// 	$manageState = $view->lookup('rocket\ei\manage\ManageState');
 // 	$view->assert($manageState instanceof ManageState);
 
 $htmlMeta = $html->meta();

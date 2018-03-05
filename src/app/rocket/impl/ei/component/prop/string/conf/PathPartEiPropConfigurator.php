@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
@@ -33,14 +33,14 @@ use rocket\spec\config\SpecEiSetupProcess;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\InvalidAttributeException;
 use n2n\util\StringUtils;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
-use rocket\spec\ei\manage\generic\UnknownGenericEiPropertyException;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\manage\generic\ScalarEiProperty;
-use rocket\spec\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\ei\manage\generic\GenericEiProperty;
 
 class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';

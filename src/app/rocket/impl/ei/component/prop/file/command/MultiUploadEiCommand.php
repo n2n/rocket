@@ -25,15 +25,15 @@ use rocket\impl\ei\component\command\EiCommandAdapter;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\control\ControlButton;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
-use rocket\spec\ei\component\command\control\OverallControlComponent;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\component\command\control\OverallControlComponent;
+use rocket\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\spec\ei\manage\control\HrefControl;
+use rocket\ei\manage\control\HrefControl;
 use rocket\impl\ei\component\prop\file\FileEiProp;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 
 class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
 	const MULTI_UPLOAD_KEY = 'multi-upload';

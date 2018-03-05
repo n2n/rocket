@@ -1,10 +1,10 @@
 <?php 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\util\model\EiuEntryGui;
+	use rocket\ei\manage\util\model\EiuEntryGui;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\ei\manage\EiHtmlBuilder;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiIdPath;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);

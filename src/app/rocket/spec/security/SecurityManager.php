@@ -21,13 +21,13 @@
  */
 namespace rocket\spec\security;
 
-use rocket\spec\ei\security\EiPermissionManager;
+use rocket\ei\security\EiPermissionManager;
 use rocket\core\model\MenuItem;
 
 interface SecurityManager {
 	
 	/**
-	 * @return \rocket\spec\ei\security\EiPermissionManager
+	 * @return \rocket\ei\security\EiPermissionManager
 	 */
 	public function getEiPermissionManager(): EiPermissionManager;
 	

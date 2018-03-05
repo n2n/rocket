@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\http\controller\ParamQuery;
 use n2n\util\uri\Url;

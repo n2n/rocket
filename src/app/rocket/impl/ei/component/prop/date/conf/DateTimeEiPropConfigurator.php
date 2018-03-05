@@ -27,11 +27,11 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\date\DateTimeEiProp;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\config\LenientAttributeReader;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
  
 class DateTimeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const MAG_DATE_STYLE_KEY = 'dateStyle';

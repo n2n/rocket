@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetupProcess;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use rocket\impl\ei\component\prop\bool\command\OnlineEiCommand;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 
 class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const COMMON_ONLINE_PROP_NAME = 'online';

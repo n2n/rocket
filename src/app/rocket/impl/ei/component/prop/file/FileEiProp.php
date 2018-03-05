@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file;
 
 use n2n\impl\web\ui\view\html\Link;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\control\IconType;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -40,11 +40,11 @@ use n2n\io\managed\File;
 use rocket\impl\ei\component\prop\file\conf\FileEiPropConfigurator;
 use n2n\io\managed\img\impl\ThSt;
 use n2n\impl\web\dispatch\mag\model\FileMag;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\http\Session;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 

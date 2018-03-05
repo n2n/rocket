@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\spec\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\reflection\ArgUtils;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
-use rocket\spec\ei\manage\critmod\filter\FilterDefinition;
-use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
+use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use n2n\impl\web\dispatch\property\ObjectProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\dispatch\map\bind\BindingDefinition;
@@ -33,7 +33,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 use n2n\web\dispatch\mag\UiOutfitter;
 
 class RelationFilterGroupMag extends MagAdapter {
@@ -89,7 +89,7 @@ class RelationFilterGroupMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField($propertyPath, $view)
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
-		return $view->getImport('\rocket\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
+		return $view->getImport('\rocket\ei\manage\critmod\filter\impl\view\filterForm.html', 
 				array('propertyPath' => $propertyPath,
 						'filterAjahHook' => $this->filterAjahHook));
 	}	

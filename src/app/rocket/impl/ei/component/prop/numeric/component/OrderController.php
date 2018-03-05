@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\util\model\EiuFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
+use rocket\ei\manage\util\model\UnknownEntryException;
 use n2n\web\http\controller\ParamGet;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\manage\util\model\EiuCtrl;
 
 class OrderController extends ControllerAdapter {	
 	private $orderEiProp;
