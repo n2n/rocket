@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use rocket\ei\component\IndependentEiComponent;
 use n2n\core\container\N2nContext;
@@ -40,7 +40,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	}
 	
 // 	/**
-// 	 * @return \rocket\spec\config\SpecManager
+// 	 * @return \rocket\spec\SpecManager
 // 	 */
 // 	public function getSpecManager() {
 // 		return $this->specManager;

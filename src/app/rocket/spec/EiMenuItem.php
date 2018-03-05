@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use rocket\core\model\MenuItem;
 use rocket\ei\mask\EiMask;

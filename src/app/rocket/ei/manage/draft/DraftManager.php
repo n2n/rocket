@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\draft;
 
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 use n2n\persistence\orm\EntityManager;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\ClosurePdoListener;

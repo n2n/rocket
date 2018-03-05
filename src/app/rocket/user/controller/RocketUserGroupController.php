@@ -34,7 +34,7 @@ use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownSpecException;
 use rocket\ei\mask\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;

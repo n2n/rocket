@@ -21,7 +21,7 @@
  */
 // namespace rocket\ei;
 
-// use rocket\spec\config\SpecManager;
+// use rocket\spec\SpecManager;
 // use n2n\persistence\orm\EntityManager;
 // use n2n\persistence\orm\model\EntityModelManager;
 // use rocket\ei\component\prop\DraftableEiProp;

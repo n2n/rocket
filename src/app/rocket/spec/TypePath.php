@@ -1,5 +1,5 @@
 <?php
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use n2n\reflection\ArgUtils;
 use n2n\io\IoUtils;

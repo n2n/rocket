@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
@@ -38,13 +38,13 @@ use n2n\util\config\InvalidConfigurationException;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\component\command\IndependentEiCommand;
 use rocket\ei\component\modificator\IndependentEiModificator;
-use rocket\spec\config\extr\EiTypeExtraction;
-use rocket\spec\config\extr\EiMaskExtraction;
-use rocket\spec\config\extr\EiPropExtraction;
-use rocket\spec\config\extr\EiComponentExtraction;
-use rocket\spec\config\extr\EiTypeExtensionExtraction;
+use rocket\spec\extr\EiTypeExtraction;
+use rocket\spec\extr\EiMaskExtraction;
+use rocket\spec\extr\EiPropExtraction;
+use rocket\spec\extr\EiComponentExtraction;
+use rocket\spec\extr\EiTypeExtensionExtraction;
 use n2n\l10n\Lstr;
-use rocket\spec\config\extr\EiModificatorExtraction;
+use rocket\spec\extr\EiModificatorExtraction;
 use rocket\ei\EiTypeExtension;
 
 class EiTypeFactory {

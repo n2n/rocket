@@ -19,9 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\extr;
+namespace rocket\spec\extr;
 
-use rocket\spec\config\TypePath;
+use rocket\spec\TypePath;
 
 class EiTypeExtensionExtraction {
 	private $id;
@@ -65,7 +65,7 @@ class EiTypeExtensionExtraction {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\TypePath
+	 * @return \rocket\spec\TypePath
 	 */
 	public function getExtendedTypePath() {
 		return $this->extendedTypePath;

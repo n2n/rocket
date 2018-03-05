@@ -19,10 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\config\extr\CustomTypeExtraction;
+use rocket\spec\extr\CustomTypeExtraction;
 use n2n\reflection\ReflectionUtils;
 
 class CustomType extends Spec {
@@ -42,7 +42,7 @@ class CustomType extends Spec {
 	}
 		
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\config\Spec::createController()
+	 * @see \rocket\spec\Spec::createController()
 	 */
 	public function lookupController(N2nContext $n2nContext) {
 		$controller = ReflectionUtils::createObject($this->controllerClass);
@@ -50,7 +50,7 @@ class CustomType extends Spec {
 		return $controller;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\config\Spec::getOverviewPathExt()
+	 * @see \rocket\spec\Spec::getOverviewPathExt()
 	 */
 	public function getOverviewPathExt() {
 		return null;

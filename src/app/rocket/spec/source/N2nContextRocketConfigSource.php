@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\source;
+namespace rocket\spec\source;
 
 use n2n\core\VarStore;
 use n2n\util\config\source\JsonFileConfigSource;
@@ -71,7 +71,7 @@ class N2nContextRocketConfigSource implements RocketConfigSource {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\config\RocketConfigSource::getConfiguratedModules()
+	 * @see \rocket\spec\RocketConfigSource::getConfiguratedModules()
 	 */
 	public function getModuleNamespaces() {
 		return $this->n2nContext->getModuleManager()->getModules();

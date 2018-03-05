@@ -34,7 +34,7 @@ use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\manage\veto\VetoableActionListener;
 use rocket\ei\manage\veto\VetoableRemoveAction;
-use rocket\spec\config\Spec;
+use rocket\spec\Spec;
 use rocket\ei\mask\EiMask;
 use rocket\ei\mask\model\DisplayScheme;
 

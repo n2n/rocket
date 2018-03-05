@@ -29,7 +29,7 @@ use rocket\impl\ei\component\prop\string\PathPartEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModificator;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\spec\config\SpecEiSetupProcess;
+use rocket\spec\SpecEiSetupProcess;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\InvalidAttributeException;
 use n2n\util\StringUtils;

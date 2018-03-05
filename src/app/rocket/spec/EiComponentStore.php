@@ -19,11 +19,11 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use n2n\reflection\ReflectionUtils;
 use n2n\core\TypeNotFoundException;
-use rocket\spec\config\source\ModularConfigSource;
+use rocket\spec\source\ModularConfigSource;
 
 class EiComponentStore {
 	const EI_FIELD_CLASSES_KEY = 'eiPropClasses';

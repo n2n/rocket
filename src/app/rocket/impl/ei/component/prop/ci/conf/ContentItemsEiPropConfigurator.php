@@ -30,7 +30,7 @@ use n2n\reflection\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownSpecException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\config\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;

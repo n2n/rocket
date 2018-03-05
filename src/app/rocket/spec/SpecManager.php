@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
 use rocket\ei\EiType;
 use n2n\reflection\ReflectionUtils;
@@ -27,11 +27,11 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\config\extr\SpecExtractionManager;
+use rocket\spec\extr\SpecExtractionManager;
 use rocket\core\model\MenuItem;
 use rocket\core\model\UnknownMenuItemException;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\config\extr\CustomTypeExtraction;
+use rocket\spec\extr\CustomTypeExtraction;
 use n2n\util\config\AttributesException;
 use rocket\core\model\Rocket;
 use n2n\reflection\property\PropertiesAnalyzer;
@@ -44,7 +44,7 @@ use n2n\util\config\InvalidConfigurationException;
 use n2n\core\N2N;
 use n2n\core\TypeNotFoundException;
 use n2n\persistence\orm\OrmConfigurationException;
-use rocket\spec\config\extr\EiTypeExtraction;
+use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 
 class SpecManager {	
@@ -88,7 +88,7 @@ class SpecManager {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\SpecExtractionManager
+	 * @return \rocket\spec\extr\SpecExtractionManager
 	 */
 	public function getSpecExtractionManager() {
 		if (!$this->specExtractionManager->isInitialized()) {

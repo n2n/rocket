@@ -22,14 +22,14 @@
 namespace rocket\core\model;
 
 use n2n\persistence\orm\EntityManager;
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 use n2n\context\RequestScoped;
-use rocket\spec\config\EiComponentStore;
+use rocket\spec\EiComponentStore;
 use n2n\core\container\PdoPool;
 use n2n\core\container\N2nContext;
-use rocket\spec\config\source\N2nContextRocketConfigSource;
+use rocket\spec\source\N2nContextRocketConfigSource;
 use rocket\ei\manage\draft\DraftManager;
-use rocket\spec\config\extr\SpecExtractionManager;
+use rocket\spec\extr\SpecExtractionManager;
 
 class Rocket implements RequestScoped {
 	const VERSION = '2.0.0-alpha';
@@ -72,7 +72,7 @@ class Rocket implements RequestScoped {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\SpecManager
+	 * @return \rocket\spec\SpecManager
 	 */
 	public function getSpecManager(): SpecManager {
 		if ($this->specManager === null) {
@@ -90,7 +90,7 @@ class Rocket implements RequestScoped {
 		return $this->specManager;
 	}
 	/**
-	 * @return \rocket\spec\config\EiComponentStore
+	 * @return \rocket\spec\EiComponentStore
 	 */
 	public function getEiComponentStore() {
 		if ($this->eiComponentStore === null) {

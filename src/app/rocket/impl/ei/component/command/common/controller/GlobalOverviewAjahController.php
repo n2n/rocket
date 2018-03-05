@@ -35,7 +35,7 @@ use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
 use rocket\ei\security\InaccessibleControlException;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownSpecException;
 use rocket\ei\mask\UnknownEiTypeExtensionException;
 
 class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrController {

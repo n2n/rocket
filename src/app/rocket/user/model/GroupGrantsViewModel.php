@@ -25,7 +25,7 @@ use rocket\user\bo\RocketUserGroup;
 use rocket\ei\EiType;
 use rocket\user\bo\EiGrant;
 use rocket\ei\mask\EiMask;
-use rocket\spec\config\CustomType;
+use rocket\spec\CustomType;
 use rocket\user\bo\CustomGrant;
 use rocket\user\bo\Grant;
 

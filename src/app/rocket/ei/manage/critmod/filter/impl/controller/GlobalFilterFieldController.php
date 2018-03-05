@@ -26,7 +26,7 @@ use n2n\web\http\controller\impl\ScrController;
 use n2n\web\http\controller\ParamQuery;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownSpecException;
 use n2n\web\http\PageNotFoundException;
 use rocket\ei\mask\UnknownEiTypeExtensionException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;

@@ -19,14 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\extr;
+namespace rocket\spec\extr;
 
 use n2n\util\config\source\WritableConfigSource;
 use n2n\util\config\Attributes;
 use n2n\util\config\InvalidConfigurationException;
 use n2n\util\config\AttributesException;
-use rocket\spec\config\InvalidSpecConfigurationException;
-use rocket\spec\config\InvalidEiMaskConfigurationException;
+use rocket\spec\InvalidSpecConfigurationException;
+use rocket\spec\InvalidEiMaskConfigurationException;
 use n2n\reflection\ArgUtils;
 
 /**
@@ -123,7 +123,7 @@ class SpecConfigSourceDecorator {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\CustomTypeExtraction[]
+	 * @return \rocket\spec\extr\CustomTypeExtraction[]
 	 */
 	public function getCustomTypeExtractions() {
 		return $this->customTypeExtractions;
@@ -151,7 +151,7 @@ class SpecConfigSourceDecorator {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\EiTypeExtraction[]
+	 * @return \rocket\spec\extr\EiTypeExtraction[]
 	 */
 	public function getEiTypeExtractions() {
 		return $this->eiTypeExtractions;

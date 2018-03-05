@@ -19,20 +19,20 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\extr;
+namespace rocket\spec\extr;
 
 use n2n\util\config\Attributes;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\config\AttributesException;
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\config\InvalidSpecConfigurationException;
+use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\gui\GuiIdPath;
-use rocket\spec\config\InvalidEiMaskConfigurationException;
+use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
-use rocket\spec\config\InvalidMenuItemConfigurationException;
+use rocket\spec\InvalidMenuItemConfigurationException;
 use rocket\ei\manage\critmod\sort\SortData;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -40,7 +40,7 @@ use n2n\util\config\InvalidAttributeException;
 use rocket\ei\manage\critmod\filter\data\FilterGroupData;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
-use rocket\spec\config\TypePath;
+use rocket\spec\TypePath;
 
 class SpecExtractor {
 	private $attributes;
@@ -251,7 +251,7 @@ class SpecExtractor {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\EiTypeExtensionExtraction[][]
+	 * @return \rocket\spec\extr\EiTypeExtensionExtraction[][]
 	 */
 	public function extractEiTypeExtensionGroups() {
 		$eiTypeExtensionsKey = RawDef::EI_TYPE_EXTENSIONS_KEY;
@@ -429,7 +429,7 @@ class SpecExtractor {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\MenuItemExtraction[]
+	 * @return \rocket\spec\extr\MenuItemExtraction[]
 	 */
 	public function extractMenuItems() {
 		$menuItemExtractions = array();

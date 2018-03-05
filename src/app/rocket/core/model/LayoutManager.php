@@ -21,9 +21,9 @@
  */
 namespace rocket\core\model;
 
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\spec\config\InvalidMenuConfigurationException;
+use rocket\spec\InvalidMenuConfigurationException;
 
 class LayoutManager {
 	private $scsd;

@@ -1,9 +1,9 @@
 <?php
 namespace rocket\ei\manage\util\model;
 
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 use n2n\core\container\N2nContext;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownSpecException;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiType;
 use rocket\ei\component\EiComponent;

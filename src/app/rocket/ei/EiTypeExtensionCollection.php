@@ -22,7 +22,7 @@
 namespace rocket\ei;
 
 use n2n\io\IoUtils;
-use rocket\spec\config\InvalidEiMaskConfigurationException;
+use rocket\spec\InvalidEiMaskConfigurationException;
 
 class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	private $eiType;

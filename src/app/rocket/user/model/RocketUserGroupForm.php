@@ -22,7 +22,7 @@
 namespace rocket\user\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\user\bo\RocketUserGroup;
 use n2n\impl\web\dispatch\map\val\ValNotEmpty;

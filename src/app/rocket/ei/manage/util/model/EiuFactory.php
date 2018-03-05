@@ -41,7 +41,7 @@ use n2n\reflection\ReflectionUtils;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiEngine;
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);

@@ -25,7 +25,7 @@ use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\LifecycleListener;
 use n2n\persistence\orm\LifecycleEvent;
 use n2n\persistence\orm\model\EntityModel;
-use rocket\spec\config\SpecManager;
+use rocket\spec\SpecManager;
 use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\manage\LiveEiObject;

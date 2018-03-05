@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\extr;
+namespace rocket\spec\extr;
 
 use n2n\persistence\orm\util\NestedSetStrategy;
 
@@ -73,7 +73,7 @@ class EiTypeExtraction extends TypeExtraction {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\extr\EiMaskExtraction
+	 * @return \rocket\spec\extr\EiMaskExtraction
 	 */
 	public function getEiMaskExtraction() {
 		return $this->eiMaskExtraction ?? $this->eiMaskExtraction = new EiMaskExtraction();
@@ -118,7 +118,7 @@ class EiTypeExtraction extends TypeExtraction {
 // 	}
 	
 // 	/**
-// 	 * @return \rocket\spec\config\extr\EiTypeExtensionExtraction[]
+// 	 * @return \rocket\spec\extr\EiTypeExtensionExtraction[]
 // 	 */
 // 	public function getEiTypeExtensionExtractions() {
 // 		return $this->eiTypeExtensionExtractions;
@@ -148,7 +148,7 @@ class EiTypeExtraction extends TypeExtraction {
 // 	}
 	
 // 	/**
-// 	 * @return \rocket\spec\config\extr\EiModificatorExtraction[]
+// 	 * @return \rocket\spec\extr\EiModificatorExtraction[]
 // 	 */
 // 	public function getEiModificatorExtractions() {
 // 		return $this->eiModificatorExtractions;

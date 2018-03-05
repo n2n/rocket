@@ -19,9 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config;
+namespace rocket\spec;
 
-use rocket\spec\config\extr\CustomTypeExtraction;
+use rocket\spec\extr\CustomTypeExtraction;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\http\controller\Controller;

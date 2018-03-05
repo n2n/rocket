@@ -19,21 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\config\extr;
+namespace rocket\spec\extr;
 
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\config\UnknownSpecException;
-use rocket\spec\config\source\ModularConfigSource;
+use rocket\spec\UnknownSpecException;
+use rocket\spec\source\ModularConfigSource;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\config\InvalidEiMaskConfigurationException;
+use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\core\model\UnknownMenuItemException;
 use n2n\reflection\ArgUtils;
-use rocket\spec\config\TypePath;
+use rocket\spec\TypePath;
 
 /**
  * <p>This manager allows you to read und write spec configurations usually located in 
  * 	<code>[n2n-root]/var/etc/[module]/rocket/specs.json</code>. It is used by 
- * 	the {@see \rocket\spec\config\SpecManager} to load the current configuration.</p>
+ * 	the {@see \rocket\spec\SpecManager} to load the current configuration.</p>
  * 
  * <p>It is also used by the dev tool Hangar {@link https://dev.n2n.rocks/en/hangar/docs} 
  * 	to manipulate spec configurations.</p>
@@ -65,7 +65,7 @@ class SpecExtractionManager {
 	}
 	
 	/**
-	 * @return \rocket\spec\config\source\ModularConfigSource
+	 * @return \rocket\spec\source\ModularConfigSource
 	 */
 	public function getModularConfigSource() {
 		return $this->modularConfigSource;
@@ -457,7 +457,7 @@ class SpecExtractionManager {
 	/**
 	 * @param string $moduleNamespace
 	 * @throws IllegalStateException
-	 * @return \rocket\spec\config\extr\SpecConfigSourceDecorator
+	 * @return \rocket\spec\extr\SpecConfigSourceDecorator
 	 */
 	private function getSpecCsDescByModuleNamespace(string $moduleNamespace): SpecConfigSourceDecorator {
 		if (isset($this->specCsDecs[$moduleNamespace])) {
