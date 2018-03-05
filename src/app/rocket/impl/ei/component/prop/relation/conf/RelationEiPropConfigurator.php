@@ -26,7 +26,7 @@ use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
+use rocket\spec\ei\mask\UnknownEiTypeExtensionException;
 use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
@@ -106,7 +106,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
 			CastUtils::assertTrue($specManager instanceof SpecManager);
 			$targetEiType = $specManager->getEiTypeByClass($targetEntityClass);
-			foreach ($targetEiType->getEiMaskExtensionCollection()->toArray() as $eiMask) {
+			foreach ($targetEiType->getEiTypeExtensionCollection()->toArray() as $eiMask) {
 				$targetEiMaskOptions[$eiMask->getExtension()->getId()] = $eiMask->getEiEngine()->getEiMask()->getEiType()->getLabelLstr();
 			}
 			
@@ -196,7 +196,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			
 			$targetEiMask = null; 
 			if (null !== ($eiMaskId = $this->attributes->getString(self::ATTR_TARGET_MASK_KEY, false, null, true))) {
-				$targetEiMask = $target->getEiMaskExtensionCollection()->getById($eiMaskId)->getEiMask();
+				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiMask();
 			} else {
 				$targetEiMask = $target->getEiMask();
 			}
@@ -206,7 +206,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$this->eiPropRelation->init($target, $targetEiMask);
 		} catch (EiException $e) {
 			throw $eiSetupProcess->createException(null, $e);
-		} catch (UnknownEiMaskExtensionException $e) {
+		} catch (UnknownEiTypeExtensionException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiComponentException $e) {
 			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);

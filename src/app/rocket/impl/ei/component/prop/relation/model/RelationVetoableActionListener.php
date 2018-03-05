@@ -194,13 +194,13 @@ class VetoCheck {
 	}
 	
 	private function getGenericLabel(): string {
-		return $this->relationEiProp->getEiMask()->getEiType()->getEiMaskExtensionCollection()->getOrCreateDefault()
+		return $this->relationEiProp->getEiMask()->getEiType()->getEiTypeExtensionCollection()->getOrCreateDefault()
 				->getLabelLstr()->t($this->n2nContext->getN2nLocale());
 	}
 	
 	private function createIdentityString($entityObj): string {
 		$eiType = $this->relationEiProp->getEiMask()->getEiType();
-		return $eiType->getEiMaskExtensionCollection()->getOrCreateDefault()->createIdentityString(
+		return $eiType->getEiTypeExtensionCollection()->getOrCreateDefault()->createIdentityString(
 				LiveEiObject::create($eiType, $entityObj), $this->n2nContext->getN2nLocale());
 	}
 	

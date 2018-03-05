@@ -35,7 +35,7 @@ use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
+use rocket\spec\ei\mask\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
@@ -129,7 +129,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$specManager = $rocket->getSpecManager();
 		$groupGrantViewModel = new GroupGrantsViewModel($userGroup, $specManager->getEiTypes(), 
-				$specManager->getCustomSpecs());
+				$specManager->getCustomTypes());
 		
 		$this->commit();
 		
@@ -144,7 +144,7 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException(null, null, $e);
 		}
 		
-		if ($eiMaskId !== null && !$eiType->getEiMaskExtensionCollection()->containsId($eiMaskId)) {
+		if ($eiMaskId !== null && !$eiType->getEiTypeExtensionCollection()->containsId($eiMaskId)) {
 			throw new PageNotFoundException();
 		}
 		
@@ -216,8 +216,8 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		if ($eiMaskId !== null) {
 			try {
-				return $eiType->getEiMaskExtensionCollection()->getById($eiMaskId)->getEiEngine();
-			} catch (UnknownEiMaskExtensionException $e) {
+				return $eiType->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiEngine();
+			} catch (UnknownEiTypeExtensionException $e) {
 				throw new PageNotFoundException(null, 0, $e);
 			}
 		}

@@ -3,7 +3,7 @@ namespace rocket\spec\ei\mask;
 
 use rocket\util\Identifiable;
 
-class EiMaskExtension implements Identifiable {
+class EiTypeExtension implements Identifiable {
 	private $id;
 	private $moduleNamespace;
 	private $eiMask;

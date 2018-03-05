@@ -21,15 +21,19 @@
  */
 namespace rocket\spec\config\extr;
 
-class EiMaskExtensionExtraction {
+use rocket\spec\ei\mask\EiTypePath;
+
+class EiTypeExtensionExtraction {
 	private $id;
 	private $moduleNamespace;
+	private $extendedEiTypePath;
 	private $eiMaskExtraction;
 	private $subMaskIds = array();
 	
-	public function __construct($id, $moduleNamespace) {
+	public function __construct(string $id, string $moduleNamespace, EiTypePath $extendedEiTypePath) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
+		$this->extendedEiTypePath = $extendedEiTypePath;
 	}
 
 	/**
@@ -39,23 +43,46 @@ class EiMaskExtensionExtraction {
 		return $this->id;
 	}
 
-	public function setId($id) {
+	/**
+	 * @param string $id
+	 */
+	public function setId(string $id) {
 		$this->id = $id;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getModuleNamespace() {
 		return $this->moduleNamespace;
 	}
 	
-	public function setModuleNamespace($moduleNamespace) {
+	/**
+	 * @param string $moduleNamespace
+	 */
+	public function setModuleNamespace(string $moduleNamespace) {
 		$this->moduleNamespace = $moduleNamespace;
+	}
+	
+	/**
+	 * @return \rocket\spec\ei\mask\EiTypePath
+	 */
+	public function getExtendedEiTypePath() {
+		return $this->extendedEiTypePath;
+	}
+	
+	/**
+	 * @param EiTypePath $extendedEiTypePath
+	 */
+	public function setExtendedEiTypePath(EiTypePath $extendedEiTypePath) {
+		$this->extendedEiTypePath = $extendedEiTypePath;
 	}
 	
 	/**
 	 * @return EiMaskExtraction
 	 */
 	public function getEiMaskExtraction() {
-		return $this->eiMaskExtraction;
+		return $this->eiMaskExtraction ?? $this->eiMaskExtraction = new EiMaskExtraction();
 	}
 	
 	/**
@@ -66,16 +93,16 @@ class EiMaskExtensionExtraction {
 	}
 	
 	/**
-	 * @return string[]
+	 * @return string|null
 	 */
-	public function getSubEiMaskIds() {
-		return $this->subMaskIds;
+	public function getSuperEiTypeExtensionId() {
+		return $this->superEiTypeExtensionId;
 	}
 
 	/**
-	 * @param string[] $subMaskIds
+	 * @param string|null $superEiTypeExtensionId
 	 */
-	public function setSubMaskIds(array $subMaskIds) {
-		$this->subMaskIds = $subMaskIds;
+	public function setSuperEiTypeExtensionId(?string $superEiTypeExtensionId) {
+		$this->$superEiTypeExtensionId = $superEiTypeExtensionId;
 	}
 }

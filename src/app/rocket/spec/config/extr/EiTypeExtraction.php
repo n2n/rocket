@@ -21,53 +21,67 @@
  */
 namespace rocket\spec\config\extr;
 
-use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\spec\config\UnknownMaskException;
 
-class EiTypeExtraction extends SpecExtraction {
+class EiTypeExtraction extends TypeExtraction {
 	private $entityClassName;
 	private $eiMaskExtraction;
 	private $dataSourceName;
 	private $nestedSetStrategy;
 	private $defaultEiMaskId;
-	private $eiMaskExtensionExtractions = array();
-	private $eiModificatorExtractions = array();
+	
+	/**
+	 * @return string|null
+	 */
+	public function getEntityClassName() {
+		return $this->entityClassName;
+	}
+	
+	/**
+	 * @param string|null $entityClassName
+	 */
+	public function setEntityClassName(?string $entityClassName) {
+		$this->entityClassName = $entityClassName;
+	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getDataSourceName() {
 		return $this->dataSourceName;
 	}
 
-	public function setDataSourceName($dataSourceName) {
+	/**
+	 * @param string|null $dataSourceName
+	 */
+	public function setDataSourceName(?string $dataSourceName) {
 		$this->dataSourceName = $dataSourceName;
 	}
 	
 	/**
-	 * @param NestedSetStrategy $nestedSetStrategy
+	 * @param NestedSetStrategy|null $nestedSetStrategy
 	 */
-	public function setNestedSetStrategy(NestedSetStrategy $nestedSetStrategy = null) {
+	public function setNestedSetStrategy(?NestedSetStrategy $nestedSetStrategy) {
 		$this->nestedSetStrategy = $nestedSetStrategy;
 	}
 	
 	/**
-	 * @return \n2n\persistence\orm\util\NestedSetStrategy
+	 * @return \n2n\persistence\orm\util\NestedSetStrategy|null
 	 */
 	public function getNestedSetStrategy() {
 		return $this->nestedSetStrategy;
 	}
-
-	public function getEntityClassName() {
-		return $this->entityClassName;
-	}
-
-	public function setEntityClassName($entityClassName) {
-		$this->entityClassName = $entityClassName;
-	}
 	
+	/**
+	 * @return \rocket\spec\config\extr\EiMaskExtraction
+	 */
 	public function getEiMaskExtraction() {
-		return $this->eiMaskExtraction;
+		return $this->eiMaskExtraction ?? $this->eiMaskExtraction = new EiMaskExtraction();
 	}
 	
+	/**
+	 * @param EiMaskExtraction $eiMaskExtraction
+	 */
 	public function setEiMaskExtraction(EiMaskExtraction $eiMaskExtraction) {
 		$this->eiMaskExtraction = $eiMaskExtraction;
 	}
@@ -80,143 +94,67 @@ class EiTypeExtraction extends SpecExtraction {
 // 		$this->draftDisabled = $draftDisabled;
 // 	}
 	
-	public function getDefaultEiMaskId() {
-		return null;
-	}
-	
-	public function setDefaultEiMaskId(string $defaultEiMaskId = null) {
-	}
-	
-	public function addEiMaskExtensionExtraction(EiMaskExtensionExtraction $eiMaskExtensionExtraction) {
-		$this->eiMaskExtensionExtractions[$eiMaskExtensionExtraction->getId()] = $eiMaskExtensionExtraction;
-	}
-	
-	public function setEiMaskExtensionExtractions(array $eiMaskExtensionExtractions) {
-		ArgUtils::valArray($eiMaskExtensionExtractions, EiMaskExtensionExtraction::class);
-		$this->eiMaskExtensionExtractions = $eiMaskExtensionExtractions;
-	}
-	
-
-	public function containsEiMaskExtensionExtractionId($eiMaskExtensionExtractionId): bool {
-		return isset($this->eiMaskExtensionExtractions[$eiMaskExtensionExtractionId]);
-	}
-	
-	public function getEiMaskExtensionExtractionById($eiMaskExtensionExtractionId): EiMaskExtensionExtraction {
-		if (isset($this->eiMaskExtensionExtractions[$eiMaskExtensionExtractionId])) {
-			return $this->eiMaskExtensionExtractions[$eiMaskExtensionExtractionId];
-		}
-		
-		throw new UnknownMaskException('No EiMask with id \'' . $eiMaskExtensionExtractionId . '\' defined in: ' 
-				. $this->toSpecString());
-	}
-	
-	/**
-	 * @return \rocket\spec\config\extr\EiMaskExtensionExtraction[]
-	 */
-	public function getEiMaskExtensionExtractions() {
-		return $this->eiMaskExtensionExtractions;
-	}
-	
-	public function addEiModificatorExtraction(EiComponentExtraction $eiModificatorExtraction) {
-		$this->eiModificatorExtractions[$eiModificatorExtraction->getId()] = $eiModificatorExtraction;
-	}
-	
-	public function setEiModificatorExtractions(array $eiModificatorExtractions) {
-		ArgUtils::valArray($eiModificatorExtractions, EiModificatorExtraction::class);
-		$this->eiModificatorExtractions = $eiModificatorExtractions;
-	}
-	
-
-	public function containsEiModificatorEExtractionId($eiModificatorExtractionId): bool {
-		return isset($this->eiModificatorExtractions[$eiModificatorExtractionId]);
-	}
-	
-	public function getEiModificatorExtractionById($eiModificatorExtractionId): EiMaskExtensionExtraction {
-		if (isset($this->eiModificatorExtractions[$eiModificatorExtractionId])) {
-			return $this->eiModificatorExtractions[$eiModificatorExtractionId];
-		}
-		
-		throw new UnknownMaskException('No EiModificator with id \'' . $eiModificatorExtractionId . '\' defined in: ' 
-				. $this->toSpecString());
-	}
-	
-	/**
-	 * @return \rocket\spec\config\extr\EiModificatorExtraction[]
-	 */
-	public function getEiModificatorExtractions() {
-		return $this->eiModificatorExtractions;
-	}
-	
-// 	public function createScript(SpecManager $specManager) {
-// 		$factory = new EiTypeFactory($specManager->getEntityModelManager(), $specManager->getEiTypeSetupQueue());
-// 		return $factory->create($this);
+// 	public function addEiTypeExtensionExtraction(EiTypeExtensionExtraction $eiMaskExtensionExtraction) {
+// 		$this->eiMaskExtensionExtractions[$eiMaskExtensionExtraction->getId()] = $eiMaskExtensionExtraction;
 // 	}
 	
-// 	public static function createFromEiType(EiType $eiType) {
-// 		$extraction = new EiTypeExtraction($eiType->getId(), $eiType->getModuleNamespace());
-// 		$extraction->setEntityClassName($eiType->getEntityModel()->getClass()->getName());
-// 		$extraction->setDataSourceName($eiType->getDataSourceName());
-// 		$extraction->setNestedSetStrategy($eiType->getNestedSetStrategy());
-		
-// 		$extraction->setEiMaskExtraction(self::createEiMaskExtraction($eiType->getEiMask()));
-			
-// 		if (null !== ($defaultEiMask = $eiType->getEiMaskExtensionCollection()->getDefault())) {
-// 			$extraction->setDefaultEiMaskId($defaultEiMask->getExtension()->getId());
-// 		}
-		
-// 		foreach ($eiType->getEiMaskExtensionCollection() as $eiMask) {
-// 			$extraction->addEiMaskExtensionExtraction($eiMask->getExtraction());
-// 		}
-		
-// 		foreach ($eiType->getEiMask()->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
-// 			$extraction->addEiModificatorExtraction($eiModificator->getExtraction());
-// 		}
-		
-// 		return $extraction;
+// 	public function setEiTypeExtensionExtractions(array $eiMaskExtensionExtractions) {
+// 		ArgUtils::valArray($eiMaskExtensionExtractions, EiTypeExtensionExtraction::class);
+// 		$this->eiMaskExtensionExtractions = $eiMaskExtensionExtractions;
 // 	}
 	
-// 	private static function createEiMaskExtraction(EiDef $eiDef) {
-// 		$extraction = new EiMaskExtraction();
-		
-// 		$extraction->setLabel($eiDef->getLabel());
-// 		$extraction->setPluralLabel($eiDef->getPluralLabel());
-// 		$extraction->setIdentityStringPattern($eiDef->getIdentityStringPattern());
 
-// 		$extraction->setFilterGroupData($eiDef->getFilterGroupData());
-// 		$extraction->setDefaultSortData($eiDef->getDefaultSortData());
-			
-// 		$extraction->setPreviewControllerLookupId($eiDef->getPreviewControllerLookupId());
-			
-// 		foreach ($eiDef->getEiPropCollection()->filterLevel(true) as $eiProp) {
-// 			$fieldExtraction = new EiPropExtraction();
-// 			$fieldExtraction->setId($eiProp->getId());
-// 			$fieldExtraction->setClassName(get_class($eiProp));
-// 			$fieldExtraction->setLabel($eiProp->getLabel());
-			
-// 			$eiFiedConfigurator = $eiProp->createEiConfigurator();
-// 			$fieldExtraction->setProps($eiFiedConfigurator->getAttributes()->toArray());
-// 			$fieldExtraction->setEntityPropertyName($eiFiedConfigurator->getEntityPropertyName());
-// 			$fieldExtraction->setObjectPropertyName($eiFiedConfigurator->getObjectPropertyName());
-		
-// 			$extraction->addEiPropExtraction($fieldExtraction);
-// 		}
-			
-// 		foreach ($eiDef->getEiCommandCollection()->filterLevel(true) as $command) {
-// 			$extraction->addEiCommandExtraction(self::createEiComponentExtraction($command));
-// 		}
-		
-// 		return $extraction;
+// 	public function containsEiTypeExtensionExtractionId($eiMaskExtensionExtractionId): bool {
+// 		return isset($this->eiMaskExtensionExtractions[$eiMaskExtensionExtractionId]);
 // 	}
 	
-	public function toSpecString(): string {
+// 	public function getEiTypeExtensionExtractionById($eiMaskExtensionExtractionId): EiTypeExtensionExtraction {
+// 		if (isset($this->eiMaskExtensionExtractions[$eiMaskExtensionExtractionId])) {
+// 			return $this->eiMaskExtensionExtractions[$eiMaskExtensionExtractionId];
+// 		}
+		
+// 		throw new UnknownMaskException('No EiMask with id \'' . $eiMaskExtensionExtractionId . '\' defined in: ' 
+// 				. $this->toTypeString());
+// 	}
+	
+// 	/**
+// 	 * @return \rocket\spec\config\extr\EiTypeExtensionExtraction[]
+// 	 */
+// 	public function getEiTypeExtensionExtractions() {
+// 		return $this->eiMaskExtensionExtractions;
+// 	}
+	
+// 	public function addEiModificatorExtraction(EiComponentExtraction $eiModificatorExtraction) {
+// 		$this->eiModificatorExtractions[$eiModificatorExtraction->getId()] = $eiModificatorExtraction;
+// 	}
+	
+// 	public function setEiModificatorExtractions(array $eiModificatorExtractions) {
+// 		ArgUtils::valArray($eiModificatorExtractions, EiModificatorExtraction::class);
+// 		$this->eiModificatorExtractions = $eiModificatorExtractions;
+// 	}
+	
+
+// 	public function containsEiModificatorEExtractionId($eiModificatorExtractionId): bool {
+// 		return isset($this->eiModificatorExtractions[$eiModificatorExtractionId]);
+// 	}
+	
+// 	public function getEiModificatorExtractionById($eiModificatorExtractionId): EiTypeExtensionExtraction {
+// 		if (isset($this->eiModificatorExtractions[$eiModificatorExtractionId])) {
+// 			return $this->eiModificatorExtractions[$eiModificatorExtractionId];
+// 		}
+		
+// 		throw new UnknownMaskException('No EiModificator with id \'' . $eiModificatorExtractionId . '\' defined in: ' 
+// 				. $this->toTypeString());
+// 	}
+	
+// 	/**
+// 	 * @return \rocket\spec\config\extr\EiModificatorExtraction[]
+// 	 */
+// 	public function getEiModificatorExtractions() {
+// 		return $this->eiModificatorExtractions;
+// 	}
+	
+	public function toTypeString() {
 		return 'EiType (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';	
 	}
-	
-// 	private static function createEiComponentExtraction(IndependentEiComponent $configurable) {
-// 		$ce = new EiComponentExtraction();
-// 		$ce->setId($configurable->getId());
-// 		$ce->setClassName(get_class($configurable));
-// 		$ce->setProps($configurable->getAttributes()->toArray());
-// 		return $ce;
-// 	}
 }

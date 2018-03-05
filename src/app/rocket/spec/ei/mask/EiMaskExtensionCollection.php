@@ -26,7 +26,7 @@ use rocket\spec\config\InvalidEiMaskConfigurationException;
 use rocket\spec\ei\mask\model\DisplayScheme;
 use rocket\spec\ei\EiType;
 
-class EiMaskExtensionCollection implements \IteratorAggregate, \Countable {
+class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	private $eiType;
 	private $eiMasks = array();
 	private $defaultId;
@@ -36,7 +36,7 @@ class EiMaskExtensionCollection implements \IteratorAggregate, \Countable {
 		$this->eiType = $eiType;
 	}
 	
-	public function add(EiMaskExtension $eiMaskExtension) {
+	public function add(EiTypeExtension $eiMaskExtension) {
 		$id = $eiMaskExtension->getId();
 		if (0 == mb_strlen($id)) {
 			$eiMaskExtension->setId($this->makeUniqueId(''));
@@ -49,15 +49,15 @@ class EiMaskExtensionCollection implements \IteratorAggregate, \Countable {
 	
 	/**
 	 * @param string $id
-	 * @return EiMaskExtension
-	 * @throws UnknownEiMaskExtensionException
+	 * @return EiTypeExtension
+	 * @throws UnknownEiTypeExtensionException
 	 */
 	public function getById($id) {
 		if (isset($this->eiMasks[$id])) {
 			return $this->eiMasks[$id];
 		}
 	
-		throw new UnknownEiMaskExtensionException('No EiMask with id \'' . (string) $id
+		throw new UnknownEiTypeExtensionException('No EiMask with id \'' . (string) $id
 				. '\' found in  \'' . $this->eiType->getId() . '\'.');
 	}
 	

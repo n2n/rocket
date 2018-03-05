@@ -25,7 +25,7 @@ use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use rocket\spec\ei\component\EiSetupProcess;
 use n2n\l10n\N2nLocale;
 use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskExtensionException;
+use rocket\spec\ei\mask\UnknownEiTypeExtensionException;
 use rocket\spec\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\translation\TranslationEiProp;
 use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
@@ -214,7 +214,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
-// 				$targetEiMask = $target->getEiMaskExtensionCollection()->getById($eiMaskId);
+// 				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId);
 // 			} else {
 				$targetEiMask = $targetEiType->getEiMask();
 // 			}
@@ -235,7 +235,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			$eiPropRelation->init($targetEiType, $targetEiMask);
 		} catch (UnknownSpecException $e) {
 			throw $eiSetupProcess->createException(null, $e);
-		} catch (UnknownEiMaskExtensionException $e) {
+		} catch (UnknownEiTypeExtensionException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiComponentException $e) {
 			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);

@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\config\CustomSpec;
+use rocket\spec\config\CustomType;
 
-class CustomSpecExtraction extends SpecExtraction {
+class CustomTypeExtraction extends TypeExtraction {
 	private $controllerClassName;
 	
 	public function getControllerClassName() {
@@ -47,15 +47,15 @@ class CustomSpecExtraction extends SpecExtraction {
 // 			throw SpecManager::createInvalidSpecConfigurationException($this->getId(), $e);
 // 		}
 	
-// 		return new CustomSpec($this->getId(), $this->getModuleNamespace(), $controllerClass);
+// 		return new CustomType($this->getId(), $this->getModuleNamespace(), $controllerClass);
 // 	}
 	
-	public function toSpecString(): string {
-		return 'CustomSpec (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';
+	public function toTypeString(): string {
+		return 'CustomType (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';
 	}
 	
-	public static function createFromCustomSpec(CustomSpec $script) {
-		$extraction = new CustomSpecExtraction($script->getId(), $script->getModuleNamespace());
+	public static function createFromCustomType(CustomType $script) {
+		$extraction = new CustomTypeExtraction($script->getId(), $script->getModuleNamespace());
 		$extraction->setLabel($script->getLabel());
 		$extraction->setControllerClassName($script->getControllerClass()->getName());
 		return $extraction;

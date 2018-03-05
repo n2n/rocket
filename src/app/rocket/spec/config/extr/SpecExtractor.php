@@ -60,56 +60,61 @@ class SpecExtractor {
 				0, $previous);
 	}
 	
-	public function extractSpecs() {
-		$specExtractions = array();
-		foreach ($this->attributes->getArray(RawDef::SPECS_KEY, false, array(), 
-				TypeConstraint::createArrayLike('array', true)) as $specId => $specRawData) {
-			$specExtractions[$specId] = $this->createSpecExtraction($specId, new Attributes($specRawData));
-		}
-		return $specExtractions;
-	}
-	
-	private function createSpecExtraction($id, Attributes $specAttributes): SpecExtraction {
-		try {
-			$type = $specAttributes->getEnum(RawDef::SPEC_TYPE_KEY, RawDef::getSpecTypes());
+	/**
+	 * @return array
+	 */
+	public function extractTypes() {
+		$eiTypeExtractions = array();
+		$customTypeExtractions = array();
+		foreach ($this->attributes->getArray(RawDef::TYPES_KEY, false, array(), 
+				TypeConstraint::createArrayLike('array', true)) as $specId => $typeRawData) {
+// 			$eiTypeExtractions[$specId] = $this->createTypeExtraction($specId, );
+			$typeAttributes = new Attributes($typeRawData);
 			
-			if ($type == RawDef::SPEC_TYPE_ENTITY) {
-				return $this->createEiTypeExtraction($id, $specAttributes);
-			} else {
-				return $this->createCustomSpecExtraction($id, $specAttributes);
+			try {
+				$type = $specAttributes->getEnum(RawDef::TYPE_NATURE_KEY, RawDef::getSpecTypes());
+				
+				if ($type == RawDef::NATURE_ENTITY) {
+					$eiTypeExtractions[$id] = $this->createEiTypeExtraction($id, $typeAttributes);
+				} else {
+					$customTypeExtractions[$id] = $this->createCustomTypeExtraction($id, $typeAttributes);
+				}
+			} catch (AttributesException $e) {
+				throw $this->createSpecException($id, $e);
+			} catch (InvalidConfigurationException $e) {
+				throw $this->createSpecException($id, $e);
 			}
-		} catch (AttributesException $e) {
-			throw $this->createSpecException($id, $e);
-		} catch (InvalidConfigurationException $e) {
-			throw $this->createSpecException($id, $e);
 		}
+		
+		return array('eiTypeExtractions' => $eiTypeExtractions, 'customTypeExtractions' => $customTypeExtractions);
 	}
 	
-	private function createCustomSpecExtraction($id, Attributes $customSpecAttributes) {
-		$extraction = new CustomSpecExtraction($id, $this->moduleNamespace);
-		$extraction->setControllerClassName($customSpecAttributes->getScalar(RawDef::SPEC_CUSTOM_CONTROLLER_CLASS_KEY));
+	
+	private function createCustomTypeExtraction($id, Attributes $customSpecAttributes) {
+		$extraction = new CustomTypeExtraction($id, $this->moduleNamespace);
+		$extraction->setControllerClassName($customSpecAttributes->getScalar(RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY));
 		return $extraction;
 	}
 	
 	private function createEiTypeExtraction($id, Attributes $eiTypeAttributes) {
 		$extraction = new EiTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeAttributes->getString(RawDef::SPEC_EI_CLASS_KEY)));
+		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeAttributes->getString(RawDef::EI_CLASS_KEY)));
 		$extraction->setEiMaskExtraction($this->createEiMaskExtraction($eiTypeAttributes));
-		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::SPEC_EI_DATA_SOURCE_NAME_KEY, false, null, true));
+		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::EI_DATA_SOURCE_NAME_KEY, false, null, true));
 		
-		if (null !== ($nssAttrs = $eiTypeAttributes->getArray(RawDef::SPEC_EI_NESTED_SET_STRATEGY_KEY, false, null))) {
+		if (null !== ($nssAttrs = $eiTypeAttributes->getArray(RawDef::EI_NESTED_SET_STRATEGY_KEY, false, null))) {
 			$nssAttributes = new Attributes($nssAttrs);
 			try {
 				$extraction->setNestedSetStrategy(new NestedSetStrategy(
-						CrIt::p($nssAttributes->getString(RawDef::SPEC_EI_NESTED_SET_STRATEGY_LEFT_KEY)),
-						CrIt::p($nssAttributes->getString(RawDef::SPEC_EI_NESTED_SET_STRATEGY_RIGHT_KEY))));
+						CrIt::p($nssAttributes->getString(RawDef::EI_NESTED_SET_STRATEGY_LEFT_KEY)),
+						CrIt::p($nssAttributes->getString(RawDef::EI_NESTED_SET_STRATEGY_RIGHT_KEY))));
 			} catch (\InvalidArgumentException $e) {
 				throw new InvalidAttributeException(
 						'NestedSetStrategy attribute could not be converted to CriteriaProperty', 0, $e);
 			}
 		}
 		
-// 		$extraction->setDefaultEiMaskId($eiTypeAttributes->getString(RawDef::SPEC_EI_DEFAULT_MASK_ID, false, null, true));
+// 		$extraction->setDefaultEiMaskId($eiTypeAttributes->getString(RawDef::EI_DEFAULT_MASK_ID, false, null, true));
 	
 		return $extraction;
 	}
@@ -233,30 +238,30 @@ class SpecExtractor {
 				. '\' contains invalid configurations.', 0, $previous);
 	}
 	
-	public function extractEiMaskGroups() {
-		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_MASKS_KEY, false));
+	public function extractEiTypeExtensionGroups() {
+		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_TYPE_EXTENSIONS_KEY, false));
 		
-		$eiMaskGroups = array();
-		foreach ($attributes->getNames() as $eiTypeId) {
+		$eiTypeExtensionExtractionGroups = array();
+		foreach ($attributes->getNames() as $eiTypePathStr) {
 			try {
-				$eiMasksAttributes = new Attributes($attributes->getArray($eiTypeId, false));
-				$eiMaskGroups[$eiTypeId] = $this->createEiMaskExtensionExtractions($eiMasksAttributes);
+				$eiTypeExtensionAttributes = new Attributes($attributes->getArray($eiTypePathStr, false));
+				$eiTypeExtensionExtractionGroups[$eiTypePathStr] = $this->createEiTypeExtensionExtractions($eiTypePathStr, $eiTypeExtensionAttributes);
 			} catch (AttributesException $e) {
-				throw $this->createSpecEiMaskException($eiTypeId, $e);
+				throw $this->createSpecEiMaskException($eiTypePathStr, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createSpecEiMaskException($eiTypeId, $e);
+				throw $this->createSpecEiMaskException($eiTypePathStr, $e);
 			}
 		}
 		
-		return $eiMaskGroups;
+		return $eiTypeExtensionExtractionGroups;
 	}
 	
-	public function createEiMaskExtensionExtractions(Attributes $eiMasksAttributes): array {
-		$eiMasks = array();
+	public function createEiTypeExtensionExtractions(Attributes $eiMasksAttributes): array {
+		$eiTypeExtensions = array();
 		
 		foreach ($eiMasksAttributes->getNames() as $eiMaskId) {
 			try {
-				$eiMasks[$eiMaskId] = $this->createEiMaskExtensionExtraction($eiMaskId,
+				$eiTypeExtensions[$eiMaskId] = $this->createEiTypeExtensionExtraction($eiMaskId,
 						new Attributes($eiMasksAttributes->getArray($eiMaskId)));
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiMaskException($eiMaskId, $e);
@@ -265,11 +270,11 @@ class SpecExtractor {
 			}
 		}
 		
-		return $eiMasks;
+		return $eiTypeExtensions;
 	}
 	
-	private function createEiMaskExtensionExtraction($id, Attributes $attributes): EiMaskExtensionExtraction {
-		$maskExtraction = new EiMaskExtensionExtraction($id, $this->moduleNamespace);
+	private function createEiTypeExtensionExtraction($id, Attributes $attributes): EiTypeExtensionExtraction {
+		$maskExtraction = new EiTypeExtensionExtraction($id, $this->moduleNamespace);
 		
 		$maskExtraction->setEiMaskExtraction($this->createEiMaskExtraction($attributes));
 		$maskExtraction->setDisplayScheme($this->createDisplayScheme($attributes));	

@@ -29,7 +29,7 @@ use rocket\spec\ei\component\command\PrivilegedEiCommand;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\spec\ei\manage\security\PrivilegeBuilder;
-use rocket\spec\ei\mask\EiMaskExtensionCollection;
+use rocket\spec\ei\mask\EiTypeExtensionCollection;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
@@ -61,7 +61,7 @@ class EiType extends Spec {
 		parent::__construct($id, $moduleNamespace);
 		
 		$this->eiMask = new EiMask($this, new DisplayScheme());
-		$this->eiMaskExtensionCollection = new EiMaskExtensionCollection($this);
+		$this->eiMaskExtensionCollection = new EiTypeExtensionCollection($this);
 	}
 
 // 	public function getEiThingPath(): EiThingPath {
@@ -413,9 +413,9 @@ class EiType extends Spec {
 	}
 	
 	/**
-	 * @return EiMaskExtensionCollection
+	 * @return EiTypeExtensionCollection
 	 */
-	public function getEiMaskExtensionCollection(): EiMaskExtensionCollection {
+	public function getEiTypeExtensionCollection(): EiTypeExtensionCollection {
 		return $this->eiMaskExtensionCollection;
 	}
 	

@@ -34,13 +34,13 @@ use n2n\reflection\ArgUtils;
  * from and write to this ConfigSource. This class is used by {@see SpecExtractionManager}.
  */
 class SpecConfigSourceDecorator {
-	private $specRawer;
 	private $configSource;
 	private $moduleNamespace;
 	
 	private $attributes;
-	private $specExtractions = array();
-	private $eiMaskExtensionExtractionGroups = array();
+	private $customTypeExtractions = array();
+	private $eiTypeExtractions = array();
+	private $eiTypeExtensionExtractionGroups = array();
 	private $eiModificatorExtractionGroups = array();
 	private $menuItemExtractions = array();
 	
@@ -70,7 +70,7 @@ class SpecConfigSourceDecorator {
 	
 	/**
 	 * Reads the decorated ConfigSource and uses {@see SpecExtractor} to extract all
-	 * {@see SpecExtraction}s, {@see EiMaskExtensionExtraction}s, {@see MenuItemExtraction}s
+	 * {@see TypeExtraction}s, {@see EiTypeExtensionExtraction}s, {@see MenuItemExtraction}s
 	 * and overwrites the matching properties on this class. You can access these properties 
 	 * through the getter methods.  
 	 * @throws InvalidConfigurationException
@@ -81,10 +81,11 @@ class SpecConfigSourceDecorator {
 		$specExtractor = new SpecExtractor($this->attributes, $this->moduleNamespace);
 		
 		try {
-			$this->specExtractions = $specExtractor->extractSpecs();
-			$this->eiMaskExtensionExtractionGroups = $specExtractor->extractEiMaskGroups();
+			$result = $specExtractor->extractSpecs();
+			$this->customTypeExtractions = $result['eiTypeExtractions'];
+			$this->eiTypeExtractions = $result['eiTypeExtractions'];
+			$this->eiTypeExtensionExtractionGroups = $specExtractor->extractEiMaskGroups();
 			$this->eiModificatorExtractionGroups = $specExtractor->extractEiModificatorGroups();
-			$this->menuItemExtractions = $specExtractor->extractMenuItems();
 		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		} catch (InvalidSpecConfigurationException $e) {
@@ -98,11 +99,11 @@ class SpecConfigSourceDecorator {
 	 * Uses {@see SpecRawer} to do the opposite of {@see self::extract()}.
 	 */
 	public function flush() {
-		$this->specRawer = new SpecRawer($this->attributes);
-		$this->specRawer->rawSpecs($this->specExtractions);
-		$this->specRawer->rawEiMasks($this->eiMaskExtensionExtractionGroups);
-		$this->specRawer->rawEiModificatorExtractionGroups($this->eiModificatorExtractionGroups);
-		$this->specRawer->rawMenuItems($this->menuItemExtractions);
+		$specRawer = new SpecRawer($this->attributes);
+		$specRawer->rawTypes($this->eiTypeExtractions, $this->customTypeExtractions);
+		$specRawer->rawEiMasks($this->eiTypeExtensionExtractionGroups);
+		$specRawer->rawEiModificatorExtractionGroups($this->eiModificatorExtractionGroups);
+		$specRawer->rawMenuItems($this->menuItemExtractions);
 		
 		$this->configSource->writeArray($this->attributes->toArray());
 	}
@@ -111,38 +112,69 @@ class SpecConfigSourceDecorator {
 	 * 
 	 */
 	public function clear() {
-		if ($this->specRawer !== null) {
-			$this->specRawer->clear();
-		}
-		
 		$this->attributes = new Attributes();
 		
-		$this->specExtractions = array();
-		$this->eiMaskExtensionExtractionGroups = array();
+		$this->customTypeExtractions = array();
+		$this->eiTypeExtractions = array();
+		$this->eiTypeExtensionExtractionGroups = array();
 		$this->eiModificatorExtractionGroups = array();
 		$this->menuItemExtractions = array();
 	}
+	
+	/**
+	 * @return \rocket\spec\config\extr\CustomTypeExtraction[]
+	 */
+	public function getCustomTypeExtractions() {
+		return $this->customTypeExtractions;
+	}
+	
+	/**
+	 * @param CustomTypeExtraction[] $customTypeExtractions
+	 */
+	public function setCustomTypeExtractions(array $customTypeExtractions) {
+		ArgUtils::valArray($customTypeExtractions, CustomTypeExtraction::class);
 		
-	/**
-	 * @return \rocket\spec\config\extr\SpecExtraction[]
-	 */
-	public function getSpecExtractions() {		
-		return $this->specExtractions;	
+		$this->customTypeExtractions = array();
+		foreach ($customTypeExtractions as $customTypeExtraction) {
+			$this->addCustomTypeExtraction($customTypeExtraction);
+		}
 	}
 	
 	/**
-	 * @param SpecExtraction[] $specExtractions
+	 * @param CustomTypeExtraction $customTypeExtraction
 	 */
-	public function setSpecExtractions(array $specExtractions) {
-		ArgUtils::valArray($specExtractions, SpecExtraction::class);
-		$this->specExtractions = $specExtractions;
+	public function addCustomTypeExtraction(CustomTypeExtraction $customTypeExtraction) {
+		$id = $customTypeExtraction->getId();
+		$this->customTypeExtractions[$id] = $customTypeExtraction;
+		unset($this->eiTypeExtractions[$id]);
 	}
 	
 	/**
-	 * @param SpecExtraction $specExtraction
+	 * @return \rocket\spec\config\extr\EiTypeExtraction[]
 	 */
-	public function addSpecExtraction(SpecExtraction $specExtraction) {
-		$this->specExtractions[$specExtraction->getId()] = $specExtraction;
+	public function getEiTypeExtractions() {
+		return $this->eiTypeExtractions;
+	}
+	
+	/**
+	 * @param EiTypeExtraction[] $specExtractions
+	 */
+	public function setEiTypeExtractions(array $eiTypeExtractions) {
+		ArgUtils::valArray($eiTypeExtractions, EiTypeExtraction::class);
+		
+		$this->eiTypeExtractions = array();
+		foreach ($eiTypeExtractions as $eiTypeExtraction) {
+			$this->addEiTypeExtraction($eiTypeExtraction);
+		}
+	}
+	
+	/**
+	 * @param EiTypeExtraction $eiTypeExtraction
+	 */
+	public function addEiTypeExtraction(EiTypeExtraction $eiTypeExtraction) {
+		$id = $eiTypeExtraction->getId();
+		$this->eiTypeExtractions[$id] = $eiTypeExtraction;
+		unset($this->customTypeExtractions[$id]);
 	}
 	
 	/**
@@ -154,27 +186,27 @@ class SpecConfigSourceDecorator {
 	}
 	
 	public function getEiMaskEiTypeIds() {
-		return array_keys($this->eiMaskExtensionExtractionGroups);
+		return array_keys($this->eiTypeExtensionExtractionGroups);
 	}
 	
-	public function getEiMaskExtensionExtractionsByEiTypeId($eiTypeId) {
-		if (isset($this->eiMaskExtensionExtractionGroups[$eiTypeId])) {
-			return $this->eiMaskExtensionExtractionGroups[$eiTypeId];
+	public function getEiTypeExtensionExtractionsByEiTypeId($eiTypeId) {
+		if (isset($this->eiTypeExtensionExtractionGroups[$eiTypeId])) {
+			return $this->eiTypeExtensionExtractionGroups[$eiTypeId];
 		}
 
 		return array();
 	}
 	
-	public function setEiMaskExtensionExtractions($eiTypeId, array $eiMaskExtensionExtractions) {
-		$this->eiMaskExtensionExtractionGroups[$eiTypeId] = $eiMaskExtensionExtractions;
+	public function setEiTypeExtensionExtractions($eiTypeId, array $eiMaskExtensionExtractions) {
+		$this->eiTypeExtensionExtractionGroups[$eiTypeId] = $eiMaskExtensionExtractions;
 	}
 	
-	public function addEiMaskExtensionExtraction($eiTypeId, EiMaskExtensionExtraction $eiMaskExtensionExtraction) {
-		if (!isset($this->eiMaskExtensionExtractionGroups[$eiTypeId])) {
-			$this->eiMaskExtensionExtractionGroups[$eiTypeId] = array();
+	public function addEiTypeExtensionExtraction($eiTypeId, EiTypeExtensionExtraction $eiMaskExtensionExtraction) {
+		if (!isset($this->eiTypeExtensionExtractionGroups[$eiTypeId])) {
+			$this->eiTypeExtensionExtractionGroups[$eiTypeId] = array();
 		}
 		
-		$this->eiMaskExtensionExtractionGroups[$eiTypeId][] = $eiMaskExtensionExtraction;
+		$this->eiTypeExtensionExtractionGroups[$eiTypeId][] = $eiMaskExtensionExtraction;
 	}
 	
 	public function getEiModificatorsEiTypeIds() {
@@ -217,27 +249,11 @@ class SpecConfigSourceDecorator {
 	}
 	
 	public function containsEiMaskId(string $eiTypeId, string $eiMaskId): bool {
-		return isset($this->eiMaskExtensionExtractionGroups[$eiTypeId][$eiMaskId]);
+		return isset($this->eiTypeExtensionExtractionGroups[$eiTypeId][$eiMaskId]);
 	}
 	
 	public function containsEiModificatorId(string $eiTypeId, string $eiModificatorId): bool {
 		return isset($this->eiModificatorExtractionGroups[$eiTypeId][$eiModificatorId]);
 	}
-	
-	public function containsMenuItemId(string $menuItemId): bool {
-		return isset($this->menuItemExtractions[$menuItemId]);
-	}
-	
-	public function getMenuItemExtractions(): array {
-		return $this->menuItemExtractions;
-	}
-	
-	public function setMenuItemExtractions(array $menuItemExtractions) {
-		ArgUtils::valArray($menuItemExtractions, MenuItemExtraction::class);
-		$this->menuItemExtractions = $menuItemExtractions;
-	}
-	
-	public function addMenuItemExtraction(MenuItemExtraction $menuItemExtraction) {
-		$this->menuItemExtractions[$menuItemExtraction->getId()] = $menuItemExtraction;
-	}
+
 }

@@ -22,50 +22,17 @@
 namespace rocket\spec\config\extr;
 
 class MenuItemExtraction {
-	private $id;
-	private $moduleNamespace;
-	private $specId;
-	private $eiMaskId;
 	private $label;
 	
-	private function __construct(string $id, string $moduleNamespace, string $specId, string $eiMaskId = null) {
-		$this->id = $id;
-		$this->moduleNamespace = $moduleNamespace;
-		$this->specId = $specId;
-		$this->eiMaskId = $eiMaskId;
-	}
-	
-	public function getId(): string {
-		return $this->id;
-	}
-	
-	public function getModuleNamespace(): string {
-		return $this->moduleNamespace;
-	}
-	
-	public function setModuleNamespace(string $moduleNamespace) {
-		$this->moduleNamespace = $moduleNamespace;
-	}
-	
-	public function getSpecId(): string  {
-		return $this->specId;
-	}
-	
-	public function getEiMaskId() {
-		return $this->eiMaskId;
+	private function __construct(string $label = null) {
+		$this->label = $label;
 	}
 	
 	public function getLabel() {
 		return $this->label;
 	}
 	
-	public function setLabel(string $label = null) {
+	public function setLabel(?string $label) {
 		$this->label = $label;
-	}
-	
-	public static function createFromId(string $menuItemId, string $moduleNamespace): MenuItemExtraction {
-		return new MenuItemExtraction($menuItemId, $moduleNamespace, 
-				RawDef::extractEiTypeIdFromIdCombination($menuItemId),
-				RawDef::extractEiMaskIdFromIdCombination($menuItemId));
 	}
 }

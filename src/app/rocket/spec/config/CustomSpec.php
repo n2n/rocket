@@ -22,10 +22,10 @@
 namespace rocket\spec\config;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\config\extr\CustomSpecExtraction;
+use rocket\spec\config\extr\CustomTypeExtraction;
 use n2n\reflection\ReflectionUtils;
 
-class CustomSpec extends Spec {
+class CustomType extends Spec {
 	private $controllerClass;
 	
 	public function __construct(string $id, string $moduleNamespace, string $controllerLookupId) {
@@ -66,8 +66,8 @@ class CustomSpec extends Spec {
 	
 	public function createRestrictionSelectorItems(N2nContext $n2nContext) {}
 	
-	public function toSpecExtraction() {
-		$extraction = new CustomSpecExtraction($this->getId(), $this->getModule());
+	public function toTypeExtraction() {
+		$extraction = new CustomTypeExtraction($this->getId(), $this->getModule());
 		$extraction->setControllerClassName($this->controllerClass->getName());
 		$extraction->setLabel($this->getLabel());
 		return $extraction;

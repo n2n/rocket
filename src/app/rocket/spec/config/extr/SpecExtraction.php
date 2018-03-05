@@ -21,31 +21,60 @@
  */
 namespace rocket\spec\config\extr;
 
-abstract class SpecExtraction {
+abstract class TypeExtraction {
 	private $id;
 	private $moduleNamespace;
-	private $label;
+	private $menuItemExtraction;
 		
-	public function __construct($id, $moduleNamespace) {
+	public function __construct(string $id, string $moduleNamespace) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getId() {
 		return $this->id;
 	}
 
-	public function setId($id) {
+	/**
+	 * @param string $id
+	 */
+	public function setId(string $id) {
 		$this->id = $id;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getModuleNamespace() {
 		return $this->moduleNamespace;
 	}
 
-	public function setModuleNamespace($moduleNamespace) {
+	/**
+	 * @param string $moduleNamespace
+	 */
+	public function setModuleNamespace(string $moduleNamespace) {
 		$this->moduleNamespace = $moduleNamespace;
 	}
 	
-	public abstract function toSpecString(): string;
+	/**
+	 * @return MenuItemExtraction|null 
+	 */
+	public function getMenuItemExtraction() {
+		return $this->menuItemExtraction;
+	}
+	
+	/**
+	 * @param MenuItemExtraction|null $menuItemExtraction
+	 */
+	public function setMenuItemExtraction(?MenuItemExtraction $menuItemExtraction) {
+		$this->menuItemExtraction = $menuItemExtraction;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public abstract function toTypeString(): string;
 }

@@ -80,7 +80,7 @@ class EiMask {
 		$this->eiModificatorCollection = new EiModificatorCollection($this);
 	}
 	
-	public function extends(EiMaskExtension $eiMaskExtension) {
+	public function extends(EiTypeExtension $eiMaskExtension) {
 		IllegalStateException::assertTrue($this->eiMaskExtension === null);
 		$this->eiMaskExtension = $eiMaskExtension;
 		
@@ -99,7 +99,7 @@ class EiMask {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\mask\EiMaskExtension
+	 * @return \rocket\spec\ei\mask\EiTypeExtension
 	 * @throws IllegalStateException if {@see self::isExtension()} returns false.
 	 */
 	public function getExtension() {
@@ -432,7 +432,7 @@ class EiMask {
 			if ($subEiType->getId() != $eiTypeId) continue;
 			
 			if (isset($subMaskIds[$eiTypeId])) {
-				return $subEiType->getEiMaskExtensionCollection()->getById($subMaskIds[$eiTypeId]);
+				return $subEiType->getEiTypeExtensionCollection()->getById($subMaskIds[$eiTypeId]);
 			} else {
 				return $subEiType->getEiMask();
 			}

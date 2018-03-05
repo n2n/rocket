@@ -22,22 +22,22 @@
 namespace rocket\spec\config\extr;
 
 class RawDef {
-	const SPECS_KEY = 'specs';
-	const SPEC_TYPE_KEY = 'type';
-	const SPEC_CUSTOM_CONTROLLER_CLASS_KEY = 'controller';
+	const TYPES_KEY = 'types';
+	const TYPE_NATURE_KEY = 'nature';
+	const CUSTOM_CONTROLLER_LOOKUP_ID_KEY = 'controller';
 	
-	const SPEC_EI_DATA_SOURCE_NAME_KEY = 'dataSourceName';
-	const SPEC_EI_NESTED_SET_STRATEGY_KEY = 'nestedSetStrategy';
-	const SPEC_EI_NESTED_SET_STRATEGY_LEFT_KEY = 'left';
-	const SPEC_EI_NESTED_SET_STRATEGY_RIGHT_KEY = 'right';
+	const EI_DATA_SOURCE_NAME_KEY = 'dataSourceName';
+	const EI_NESTED_SET_STRATEGY_KEY = 'nestedSetStrategy';
+	const EI_NESTED_SET_STRATEGY_LEFT_KEY = 'left';
+	const EI_NESTED_SET_STRATEGY_RIGHT_KEY = 'right';
 	
-	const SPEC_EI_CLASS_KEY = 'entity';
-// 	const SPEC_EI_DEFAULT_MASK_ID = 'defaultMaskId';
+	const EI_CLASS_KEY = 'entity';
+// 	const EI_DEFAULT_MASK_ID = 'defaultMaskId';
 	
-	const EI_MASKS_KEY = 'eiMasks';
-	const COMMON_EI_MASK_DRAFTING_ALLOWED_KEY = 'draftingAllowed';
+	const EI_TYPE_EXTENSIONS_KEY = 'eiTypeExtensions';
+	const EI_DRAFTING_ALLOWED_KEY = 'draftingAllowed';
 	
-	const EI_MODIFICATORS_KEY = 'modificators';
+	const EI_MODIFICATORS_KEY = 'eiModificators';
 	
 	const OVERVIEW_GUI_FIELD_ORDER_KEY = 'overviewOrder';
 	const BULKY_GUI_FIELD_ORDER_KEY = 'bulkyOrder';
@@ -84,40 +84,37 @@ class RawDef {
 	const MENU_ITEMS_KEY = 'menuItems';
 	const MENU_ITEM_LABEL_KEY = 'label';
 	
-	const SPEC_TYPE_ENTITY = 'entity';
-	const SPEC_TYPE_CUSTOM = 'custom';
+	const NATURE_ENTITY = 'entity';
+	const NATURE_CUSTOM = 'custom';
 	
-	
-	const ID_EI_TYPE_MASK_DELIMITER = '&';
-	
-	public static function getSpecTypes() {
-		return array(self::SPEC_TYPE_ENTITY, self::SPEC_TYPE_CUSTOM);
+	public static function getTypeNatures() {
+		return array(self::NATURE_ENTITY, self::NATURE_CUSTOM);
 	}
 	
-	public static function extractEiTypeIdFromIdCombination(string $idCombination) {
-		return self::extractIdParts($idCombination)[0];
-	}
+// 	public static function extractEiTypeIdFromIdCombination(string $idCombination) {
+// 		return self::extractIdParts($idCombination)[0];
+// 	}
 	
-	public static function extractEiMaskIdFromIdCombination(string $idCombination) {
-		$idParts = self::extractIdParts($idCombination);
-		if (count($idParts) === 2) return $idParts[1];
+// 	public static function extractEiMaskIdFromIdCombination(string $idCombination) {
+// 		$idParts = self::extractIdParts($idCombination);
+// 		if (count($idParts) === 2) return $idParts[1];
 		
-		return null;
-	}
+// 		return null;
+// 	}
 	
-	private static function extractIdParts(string $idCombination) {
-		$idParts = explode(self::ID_EI_TYPE_MASK_DELIMITER, $idCombination);
+// 	private static function extractIdParts(string $idCombination) {
+// 		$idParts = explode(self::ID_EI_TYPE_MASK_DELIMITER, $idCombination);
 		
-		if (count($idParts) < 1) {
-			throw new \InvalidArgumentException('Invalid id: ' . $idCombination);
-		}
+// 		if (count($idParts) < 1) {
+// 			throw new \InvalidArgumentException('Invalid id: ' . $idCombination);
+// 		}
 		
-		return $idParts;
-	}
+// 		return $idParts;
+// 	}
 	
-	public static function buildEiTypeMaskId(string $eiTypeId, string $maskId = null) {
-		if (null === $maskId) return $eiTypeId;
+// 	public static function buildEiTypeMaskId(string $eiTypeId, string $maskId = null) {
+// 		if (null === $maskId) return $eiTypeId;
 		
-		return $eiTypeId . self::ID_EI_TYPE_MASK_DELIMITER . $maskId;
-	}
+// 		return $eiTypeId . self::ID_EI_TYPE_MASK_DELIMITER . $maskId;
+// 	}
 }

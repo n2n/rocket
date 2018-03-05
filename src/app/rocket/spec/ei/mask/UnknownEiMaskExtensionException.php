@@ -23,5 +23,5 @@ namespace rocket\spec\ei\mask;
 
 use rocket\spec\ei\EiException;
 
-class UnknownEiMaskExtensionException extends EiException {
+class UnknownEiTypeExtensionException extends EiException {
 }

@@ -32,7 +32,7 @@ class CustomMenuItem implements MenuItem {
 	private $customSpec;
 	private $label;
 	
-	public function __construct(string $id, CustomSpec $customSpec, string $label = null) {
+	public function __construct(string $id, CustomType $customSpec, string $label = null) {
 		$this->id = $id;
 		$this->customSpec = $customSpec;
 		$this->label = $label;

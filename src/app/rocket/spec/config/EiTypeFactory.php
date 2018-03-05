@@ -42,10 +42,10 @@ use rocket\spec\config\extr\EiTypeExtraction;
 use rocket\spec\config\extr\EiMaskExtraction;
 use rocket\spec\config\extr\EiPropExtraction;
 use rocket\spec\config\extr\EiComponentExtraction;
-use rocket\spec\config\extr\EiMaskExtensionExtraction;
+use rocket\spec\config\extr\EiTypeExtensionExtraction;
 use n2n\l10n\Lstr;
 use rocket\spec\config\extr\EiModificatorExtraction;
-use rocket\spec\ei\mask\EiMaskExtension;
+use rocket\spec\ei\mask\EiTypeExtension;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -71,10 +71,10 @@ class EiTypeFactory {
 		$eiType->setDataSourceName($eiTypeExtraction->getDataSourceName());
 		$eiType->setNestedSetStrategy($eiTypeExtraction->getNestedSetStrategy());
 		
-		$eiMaskExtensionCollection = $eiType->getEiMaskExtensionCollection();
-		foreach ($eiTypeExtraction->getEiMaskExtensionExtractions() as $eiMaskExtensionExtraction) {
+		$eiMaskExtensionCollection = $eiType->getEiTypeExtensionCollection();
+		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiMaskExtensionExtraction) {
 			try {
-				$eiMaskExtensionCollection->add($this->createEiMaskExtension($eiType, $eiMaskExtensionExtraction));
+				$eiMaskExtensionCollection->add($this->createEiTypeExtension($eiType, $eiMaskExtensionExtraction));
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiTypeException($eiTypeExtraction->getId(),
 						$this->createEiMaskException($eiMaskExtensionExtraction->getId(), $e));
@@ -278,9 +278,9 @@ class EiTypeFactory {
 		return $eiModificator;
 	}
 	
-	public function createEiMaskExtension(EiType $eiType, EiMaskExtensionExtraction $eiMaskExtensionExtraction) {
+	public function createEiTypeExtension(EiType $eiType, EiTypeExtensionExtraction $eiMaskExtensionExtraction) {
 		$eiMask = new EiMask($eiType);
-		$eiMaskExtension = new EiMaskExtension($eiMaskExtensionExtraction->getId(),
+		$eiMaskExtension = new EiTypeExtension($eiMaskExtensionExtraction->getId(),
 				$eiMaskExtensionExtraction->getModuleNamespace(),
 				$eiMask, $eiType->getEiMask());
 		

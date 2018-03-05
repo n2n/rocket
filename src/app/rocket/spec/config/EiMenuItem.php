@@ -44,6 +44,7 @@ class EiMenuItem implements MenuItem {
 	public function __construct(string $id, EiMask $eiMask, string $label = null) {
 		$this->id = $id;
 		$this->eiMask = $eiMask;
+		$this->label = $label;
 	}
 	/**
 	 * {@inheritDoc}
@@ -54,18 +55,14 @@ class EiMenuItem implements MenuItem {
 	}
 
 	public function getLabel(): string {
-		if ($this->label !== null) {
-			return $this->label;
-		}
-	
-		return $this->eiMask->getPluralLabelLstr();
+		return $this->label ?? $this->eiMask->getPluralLabelLstr();
 	}
 	
 	public function isAccessible(N2nContext $n2nContext): bool {
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
-		$overviewEiCommand = $this->eiMask->getEiCommandCollection()
-				->getGenericOverviewEiCommand(true);
+		
+		$overviewEiCommand = $this->eiMask->getEiCommandCollection()->getGenericOverviewEiCommand(true);
 		
 		return $loginContext->getSecurityManager()->getEiPermissionManager()
 				->isEiCommandAccessible($overviewEiCommand);

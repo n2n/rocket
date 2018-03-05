@@ -21,7 +21,7 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\spec\config\CustomSpec;
+use rocket\spec\config\CustomType;
 use rocket\spec\security\SecurityManager;
 use rocket\spec\ei\security\EiPermissionManager;
 use rocket\user\bo\RocketUser;
@@ -37,7 +37,7 @@ class RocketUserSecurityManager implements SecurityManager {
 		$this->eiPermissionManager = new RocketUserEiPermissionManager($rocketUser);
 	}
 	
-	public function getCustomSpecAttributes(CustomSpec $customSpec) {
+	public function getCustomTypeAttributes(CustomType $customSpec) {
 		throw new NotYetImplementedException();
 // 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
 // 			foreach ($rocketUserGroup->getCustomGrants() as $customGrant) {

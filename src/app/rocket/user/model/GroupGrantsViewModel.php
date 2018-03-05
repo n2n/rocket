@@ -25,7 +25,7 @@ use rocket\user\bo\RocketUserGroup;
 use rocket\spec\ei\EiType;
 use rocket\user\bo\EiGrant;
 use rocket\spec\ei\mask\EiMask;
-use rocket\spec\config\CustomSpec;
+use rocket\spec\config\CustomType;
 use rocket\user\bo\CustomGrant;
 use rocket\user\bo\Grant;
 
@@ -44,7 +44,7 @@ class GroupGrantsViewModel {
 		}
 		
 		foreach ($customSpecs as $customSpec) {
-			$this->customItems[$customSpec->getId()] = new CustomSpecItem($customSpec, 
+			$this->customItems[$customSpec->getId()] = new CustomTypeItem($customSpec, 
 					$this->findCustomGrant($customSpec));
 		}
 	}
@@ -66,11 +66,11 @@ class GroupGrantsViewModel {
 		return null;
 	}
 	
-	private function findCustomGrant(CustomSpec $customSpec) {
+	private function findCustomGrant(CustomType $customSpec) {
 		$customSpecId = $customSpec->getId();
 	
 		foreach ($this->userGroup->getCustomGrants() as $customGrant) {
-			if ($customSpecId === $customGrant->getCustomSpecId()) {
+			if ($customSpecId === $customGrant->getCustomTypeId()) {
 				return $customGrant;
 			}
 		}
@@ -81,7 +81,7 @@ class GroupGrantsViewModel {
 	private function applyEiTypeItems(EiType $eiType, int $level) {
 		$this->eiTypeItems[$eiType->getId()] = $eiTypeItem = new EiTypeItem($level, $eiType, $this->findEiGrant($eiType));
 		
-		foreach ($eiType->getEiMaskExtensionCollection() as $eiMask) {
+		foreach ($eiType->getEiTypeExtensionCollection() as $eiMask) {
 			$eiTypeItem->addEiMaskItem(new EiMaskItem($eiMask, $this->findEiGrant($eiType, $eiMask)));
 		}
 		
@@ -107,7 +107,7 @@ class GroupGrantsViewModel {
 	}
 	
 	/**
-	 * @return CustomSpecItem[]
+	 * @return CustomTypeItem[]
 	 */
 	public function getCustomItems() {
 		return $this->customItems;
@@ -154,7 +154,7 @@ class EiTypeItem extends Item {
 			return $label;
 		}
 		
-		return $this->eiType->getEiMaskExtensionCollection()->getOrCreateDefault()->getLabel();
+		return $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault()->getLabel();
 	}
 	
 	public function getEiMaskItems(): array {
@@ -183,15 +183,15 @@ class EiMaskItem extends Item {
 	}
 }
 
-class CustomSpecItem extends Item {
+class CustomTypeItem extends Item {
 	private $customSpec;
 	
-	public function __construct(CustomSpec $customSpec, CustomGrant $customGrant = null) {
+	public function __construct(CustomType $customSpec, CustomGrant $customGrant = null) {
 		parent::__construct($customGrant);
 		$this->customSpec = $customSpec;
 	}
 	
-	public function getCustomSpecId() {
+	public function getCustomTypeId() {
 		return $this->customSpec->getId();
 	}
 	

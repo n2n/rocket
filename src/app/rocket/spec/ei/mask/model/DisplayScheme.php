@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\ei\mask\model;
 
-use rocket\spec\ei\EiDef;
 use rocket\spec\ei\component\command\control\PartialControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\control\OverallControlComponent;

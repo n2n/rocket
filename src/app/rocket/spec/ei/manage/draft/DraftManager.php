@@ -72,12 +72,12 @@ class DraftManager {
 	}
 	
 	private function getDraftDefinitionByEiType(EiType $eiType) {
-		return $eiType->getEiMaskExtensionCollection()->getOrCreateDefault()->getEiEngine()->getDraftDefinition();
+		return $eiType->getEiTypeExtensionCollection()->getOrCreateDefault()->getEiEngine()->getDraftDefinition();
 	}
 	
 	private function getDraftDefinitionByEntityObj($entityObj) {
 		$entityModel = $this->em->getEntityModelManager()->getEntityModelByEntityObj($entityObj);
-		return $this->specManager->getEiTypeByClass($entityModel->getClass())->getEiMaskExtensionCollection()
+		return $this->specManager->getEiTypeByClass($entityModel->getClass())->getEiTypeExtensionCollection()
 				->getOrCreateDefault()->getDraftDefinition();		
 	}
 	

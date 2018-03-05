@@ -21,36 +21,36 @@
  */
 namespace rocket\spec\config;
 
-use rocket\spec\config\extr\CustomSpecExtraction;
+use rocket\spec\config\extr\CustomTypeExtraction;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\http\controller\Controller;
 
-class CustomSpecFactory {
+class CustomTypeFactory {
 	/**
-	 * @param CustomSpecExtraction $customSpecExtraction
-	 * @return CustomSpec
+	 * @param CustomTypeExtraction $customTypeExtraction
+	 * @return CustomType
 	 * @throws InvalidSpecConfigurationException
 	 */
-	public static function create(CustomSpecExtraction $customSpecExtraction): CustomSpec {
+	public static function create(CustomTypeExtraction $customTypeExtraction): CustomType {
 		$constrollerClass = null;
 		try {
-			$controllerClass = ReflectionUtils::createReflectionClass($customSpecExtraction->getControllerClassName());
+			$controllerClass = ReflectionUtils::createReflectionClass($customTypeExtraction->getControllerClassName());
 		} catch (TypeNotFoundException $e) {
-			throw $this->createControllerException($customSpecExtraction, null, $e);
+			throw $this->createControllerException($customTypeExtraction, null, $e);
 		}
 		
 		if (!$controllerClass->implementsInterface(Controller::class)) {
-			throw self::createControllerException($customSpecExtraction, $constrollerClass->getName()
+			throw self::createControllerException($customTypeExtraction, $constrollerClass->getName()
 					. ' must implement ' . Controller::class);
 		}
 		
-		return new CustomSpec($customSpecExtraction->getId(), $customSpecExtraction->getModuleNamespace(), $controllerClass->getName());
+		return new CustomType($customTypeExtraction->getId(), $customTypeExtraction->getModuleNamespace(), $controllerClass->getName());
 	}
 	
-	private static function createControllerException(CustomSpecExtraction $customSpecExtraction, string $reason = null, 
+	private static function createControllerException(CustomTypeExtraction $customTypeExtraction, string $reason = null, 
 			\Exception $e = null): \Exception {
 		return new InvalidSpecConfigurationException('Invalid Controller defined for ' 
-				. $customSpecExtraction->toSpecString() . ($reason !== null ? ' Reason: ' . $reason : ''), 0, $e);
+				. $customTypeExtraction->toSpecString() . ($reason !== null ? ' Reason: ' . $reason : ''), 0, $e);
 	}
 }

@@ -21,58 +21,79 @@
  */
 namespace rocket\spec\config\extr;
 
+use rocket\spec\ei\mask\EiTypePath;
+
 class EiModificatorExtraction {
 	private $id;
 	private $moduleNamespace;
-	private $eiTypeId;
-	private $eiMaskId;
+	private $eiTypePath;
 	private $className;
 	private $props = array();
 	
-	public function __construct(string $id, string $moduleNamespace, string $eiTypeId, string $eiMaskId = null) {
+	/**
+	 * @param string $id
+	 * @param string $moduleNamespace
+	 * @param EiTypePath $eiTypePath
+	 */
+	public function __construct(string $id, string $moduleNamespace, EiTypePath $eiTypePath) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
-		$this->eiTypeId = $eiTypeId;
-		$this->eiMaskId = $eiMaskId;
+		$this->eiTypePath = $eiTypePath;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getId() {
 		return $this->id;
 	}
 
-	public function setId($id) {
+	/**
+	 * @param string $id
+	 */
+	public function setId(string $id) {
 		$this->id = $id;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getModuleNamespace() {
 		return $this->moduleNamespace;
 	}
 
-	public function setModuleNamespace($moduleNamespace) {
+	/**
+	 * @param string $moduleNamespace
+	 */
+	public function setModuleNamespace(string $moduleNamespace) {
 		$this->moduleNamespace = $moduleNamespace;
 	}
 
-	public function getEiTypeId() {
-		return $this->eiTypeId;
+	/**
+	 * @return \rocket\spec\ei\mask\EiTypePath
+	 */
+	public function getEiTypePath() {
+		return $this->eiTypePath;
+	}
+	
+	/**
+	 * @param EiTypePath $eiTypePath
+	 */
+	public function setEiTypePath(EiTypePath $eiTypePath) {
+		$this->eiTypePath = $eiTypePath;
 	}
 
-	public function setEiTypeId($eiTypeId) {
-		$this->eiTypeId = $eiTypeId;
-	}
-
-	public function getEiMaskId() {
-		return $this->eiMaskId;
-	}
-
-	public function setEiMaskId($eiMaskId) {
-		$this->eiMaskId = $eiMaskId;
-	}
-
+	/**
+	 * @return string
+	 */
 	public function getClassName() {
 		return $this->className;
 	}
 
-	public function setClassName($className) {
+	/**
+	 * @param string $className
+	 */
+	public function setClassName(string $className) {
 		$this->className = $className;
 	}
 	

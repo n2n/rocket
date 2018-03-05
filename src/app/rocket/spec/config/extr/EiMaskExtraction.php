@@ -43,99 +43,123 @@ class EiMaskExtraction {
 	
 	private $overviewEiCommandId;
 	private $entryDetailEiCommandId;
-	private $entryEditEiCommandId;
-	private $entryAddEiCommandId;
+	private $genericEditEiCommandId;
+	private $genericAddEiCommandId;
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getLabel(): string {
+	public function getLabel() {
 		return $this->label;
 	}
 	
 	/**
-	 * @param string $label
+	 * @param string|null $label
 	 */
-	public function setLabel($label) {
+	public function setLabel(?string $label) {
 		$this->label = $label;
 	}
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getPluralLabel() {
 		return $this->pluralLabel;
 	}
 	
 	/**
-	 * @param string $pluralLabel
+	 * @param string|null $pluralLabel
 	 */
 	public function setPluralLabel($pluralLabel) {
 		$this->pluralLabel = $pluralLabel;
 	}
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getIconType() {
 		return $this->iconType;
 	}
 	
 	/**
-	 * @param string $iconType
+	 * @param string|null $iconType
 	 */
 	public function setIconType($iconType) {
 		$this->iconType = $iconType;
 	}
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getIdentityStringPattern() {
 		return $this->identityStringPattern;
 	}
 
 	/**
-	 * @param string $identityStringPattern
+	 * @param string|null $identityStringPattern
 	 */
 	public function setIdentityStringPattern($identityStringPattern) {
 		$this->identityStringPattern = $identityStringPattern;
 	}
 
+	/**
+	 * @return bool|null
+	 */
 	public function isDraftingAllowed() {
-		$this->draftingAllowed;
+		return $this->draftingAllowed;
 	}
 	
-	public function setDraftingAllowed(bool $draftingAllowed = null) {
+	/**
+	 * @param bool $draftingAllowed
+	 */
+	public function setDraftingAllowed(?bool $draftingAllowed) {
 		$this->draftingAllowed = $draftingAllowed;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getPreviewControllerLookupId() {
 		return $this->previewControllerLookupId;
 	}
 
-	public function setPreviewControllerLookupId($previewControllerLookupId) {
+	/**
+	 * @param string|null $previewControllerLookupId
+	 */
+	public function setPreviewControllerLookupId(?string $previewControllerLookupId) {
 		$this->previewControllerLookupId = $previewControllerLookupId;
 	}
 
+	/**
+	 * @return \rocket\spec\ei\manage\critmod\filter\data\FilterGroupData|null
+	 */
 	public function getFilterGroupData() {
 		return $this->filterData;
 	}
 	
-	public function setFilterGroupData(FilterGroupData $filterData = null) {
+	/**
+	 * @param FilterGroupData|null $filterData
+	 */
+	public function setFilterGroupData(?FilterGroupData $filterData) {
 		$this->filterData = $filterData;
 	}
 	
+	/**
+	 * @return \rocket\spec\ei\manage\critmod\sort\SortData|null
+	 */
 	public function getDefaultSortData() {
 		return $this->defaultSortData;
 	}
 
-	public function setDefaultSortData(SortData $defaultSortData = null) {
+	/**
+	 * @param SortData|null $defaultSortData
+	 */
+	public function setDefaultSortData(?SortData $defaultSortData) {
 		$this->defaultSortData = $defaultSortData;
 	}
 
 	/**
-	 * @return EiPropExtraction []
+	 * @return EiPropExtraction[]
 	 */
 	public function getEiPropExtractions() {
 		return $this->eiPropExtractions;
@@ -145,19 +169,31 @@ class EiMaskExtraction {
 		$this->eiPropExtractions[] = $eiPropExtraction;
 	}
 	
+	/**
+	 * @param EiPropExtraction[] $eiPropExtractions
+	 */
 	public function setEiPropExtractions(array $eiPropExtractions) {
 		ArgUtils::valArray($eiPropExtractions, EiPropExtraction::class);
 		$this->eiPropExtractions = $eiPropExtractions;	
 	}
 	
+	/**
+	 * @return EiComponentExtraction[]
+	 */
 	public function getEiCommandExtractions() {
 		return $this->eiCommandExtractions;
 	}
 	
+	/**
+	 * @param EiComponentExtraction $configurableExtraction
+	 */
 	public function addEiCommandExtraction(EiComponentExtraction $configurableExtraction) {
 		$this->eiCommandExtractions[] = $configurableExtraction;
 	}
 	
+	/**
+	 * @param EiComponentExtraction[] $eiCommandExtractions
+	 */
 	public function setEiCommandExtraction(array $eiCommandExtractions) {
 		ArgUtils::valArray($eiCommandExtractions, EiComponentExtraction::class);
 		$this->eiCommandExtractions = $eiCommandExtractions;
@@ -167,7 +203,7 @@ class EiMaskExtraction {
 	 * @return DisplayScheme
 	 */
 	public function getDisplayScheme() {
-		return $this->displayScheme;
+		return $this->displayScheme ?? $this->displayScheme = new DisplayScheme();
 	}
 	
 	/**
@@ -177,35 +213,59 @@ class EiMaskExtraction {
 		$this->displayScheme = $displayScheme;
 	}
 	
+	/**
+	 * @return string|null
+	 */
 	public function getOverviewEiCommandId() {
 		return $this->overviewEiCommandId;
 	}
 
-	public function setOverviewEiCommandId($overviewEiCommandId) {
+	/**
+	 * @param string|null $overviewEiCommandId
+	 */
+	public function setOverviewEiCommandId(?string $overviewEiCommandId) {
 		$this->overviewEiCommandId = $overviewEiCommandId;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getGenericDetailEiCommandId() {
 		return $this->entryDetailEiCommandId;
 	}
 
-	public function setGenericDetailEiCommandId($entryDetailEiCommandId) {
+	/**
+	 * @param string|null $entryDetailEiCommandId
+	 */
+	public function setGenericDetailEiCommandId(?string $entryDetailEiCommandId) {
 		$this->entryDetailEiCommandId = $entryDetailEiCommandId;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getGenericEditEiCommandId() {
-		return $this->entryEditEiCommandId;
+		return $this->genericEditEiCommandId;
 	}
 
-	public function setGenericEditEiCommandId($entryEditEiCommandId) {
-		$this->entryEditEiCommandId = $entryEditEiCommandId;
+	/**
+	 * @param string|null $genericEditEiCommandId
+	 */
+	public function setGenericEditEiCommandId(?string $genericEditEiCommandId) {
+		$this->genericEditEiCommandId = $genericEditEiCommandId;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getGenericAddEiCommandId() {
-		return $this->entryAddEiCommandId;
+		return $this->genericAddEiCommandId;
 	}
 
-	public function setGenericAddEiCommandId($entryAddEiCommandId) {
-		$this->entryAddEiCommandId = $entryAddEiCommandId;
+	/**
+	 * @param string|null $genericAddEiCommandId
+	 */
+	public function setGenericAddEiCommandId(?string $genericAddEiCommandId) {
+		$this->genericAddEiCommandId = $genericAddEiCommandId;
 	}
 }
