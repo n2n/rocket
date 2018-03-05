@@ -19,11 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\mask;
+namespace rocket\ei;
 
 use n2n\io\IoUtils;
 use rocket\spec\config\InvalidEiMaskConfigurationException;
-use rocket\ei\EiType;
 
 class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	private $eiType;

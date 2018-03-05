@@ -1,7 +1,8 @@
 <?php
-namespace rocket\ei\mask;
+namespace rocket\ei;
 
 use rocket\util\Identifiable;
+use rocket\ei\mask\EiMask;
 
 class EiTypeExtension implements Identifiable {
 	private $id;

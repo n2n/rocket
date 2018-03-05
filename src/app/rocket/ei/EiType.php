@@ -29,7 +29,6 @@ use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\manage\security\PrivilegeBuilder;
-use rocket\ei\mask\EiTypeExtensionCollection;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;

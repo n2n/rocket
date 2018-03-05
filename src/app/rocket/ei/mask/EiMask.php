@@ -47,6 +47,7 @@ use rocket\ei\component\modificator\EiModificatorCollection;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\control\IconType;
+use rocket\ei\EiTypeExtension;
 
 class EiMask {
 	private $eiMaskDef;
@@ -99,7 +100,7 @@ class EiMask {
 	}
 	
 	/**
-	 * @return \rocket\ei\mask\EiTypeExtension
+	 * @return \rocket\ei\EiTypeExtension
 	 * @throws IllegalStateException if {@see self::isExtension()} returns false.
 	 */
 	public function getExtension() {

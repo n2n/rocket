@@ -45,7 +45,7 @@ use rocket\spec\config\extr\EiComponentExtraction;
 use rocket\spec\config\extr\EiTypeExtensionExtraction;
 use n2n\l10n\Lstr;
 use rocket\spec\config\extr\EiModificatorExtraction;
-use rocket\ei\mask\EiTypeExtension;
+use rocket\ei\EiTypeExtension;
 
 class EiTypeFactory {
 	private $entityModelManager;
