@@ -21,7 +21,6 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\ei\mask\EiTypePath;
 use rocket\spec\config\TypePath;
 
 class EiTypeExtensionExtraction {
@@ -73,10 +72,10 @@ class EiTypeExtensionExtraction {
 	}
 	
 	/**
-	 * @param EiTypePath $extendedEiTypePath
+	 * @param TypePath $extendedTypePath
 	 */
-	public function setExtendedEiTypePath(TypePath $extendedEiTypePath) {
-		$this->extendedTypePath = $extendedEiTypePath;
+	public function setExtendedTypePath(TypePath $extendedTypePath) {
+		$this->extendedTypePath = $extendedTypePath;
 	}
 	
 	/**

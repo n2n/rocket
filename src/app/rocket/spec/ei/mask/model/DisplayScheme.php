@@ -26,6 +26,7 @@ use n2n\l10n\N2nLocale;
 use rocket\spec\ei\component\command\control\OverallControlComponent;
 use rocket\spec\ei\manage\control\EntryControlComponent;
 use rocket\spec\ei\manage\gui\ui\DisplayStructure;
+use rocket\spec\ei\mask\EiMask;
 
 class DisplayScheme {
 	private $overviewDisplayStructure;
@@ -119,7 +120,7 @@ class DisplayScheme {
 	 * @param N2nLocale $n2nLocale
 	 * @return array
 	 */
-	public static function buildPartialControlMap(EiDef $eiDef, N2nLocale $n2nLocale) {
+	public static function buildPartialControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 		$labels = array();
 	
 		foreach ($eiDef->getEiCommandCollection() as $eiCommandId => $eiCommand) {
@@ -138,7 +139,7 @@ class DisplayScheme {
 	 * @param N2nLocale $n2nLocale
 	 * @return array
 	 */
-	public static function buildOverallControlMap(EiDef $eiDef, N2nLocale $n2nLocale) {
+	public static function buildOverallControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 		$labels = array();
 	
 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
@@ -157,7 +158,7 @@ class DisplayScheme {
 	 * @param N2nLocale $n2nLocale
 	 * @return array
 	 */
-	public static function buildEntryControlMap(EiDef $eiDef, N2nLocale $n2nLocale) {
+	public static function buildEntryControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 		$labels = array();
 	
 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {

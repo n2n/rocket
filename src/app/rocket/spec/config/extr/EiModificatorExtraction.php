@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\config\extr;
 
-use rocket\spec\ei\mask\EiTypePath;
+use rocket\spec\config\TypePath;
 
 class EiModificatorExtraction {
 	private $id;
@@ -33,9 +33,9 @@ class EiModificatorExtraction {
 	/**
 	 * @param string $id
 	 * @param string $moduleNamespace
-	 * @param EiTypePath $eiTypePath
+	 * @param TypePath $eiTypePath
 	 */
-	public function __construct(string $id, string $moduleNamespace, EiTypePath $eiTypePath) {
+	public function __construct(string $id, string $moduleNamespace, TypePath $eiTypePath) {
 		$this->id = $id;
 		$this->moduleNamespace = $moduleNamespace;
 		$this->eiTypePath = $eiTypePath;
@@ -70,16 +70,16 @@ class EiModificatorExtraction {
 	}
 
 	/**
-	 * @return \rocket\spec\ei\mask\EiTypePath
+	 * @return \rocket\spec\config\TypePath
 	 */
-	public function getEiTypePath() {
+	public function getTypePath() {
 		return $this->eiTypePath;
 	}
 	
 	/**
-	 * @param EiTypePath $eiTypePath
+	 * @param TypePath $eiTypePath
 	 */
-	public function setEiTypePath(EiTypePath $eiTypePath) {
+	public function setTypePath(TypePath $eiTypePath) {
 		$this->eiTypePath = $eiTypePath;
 	}
 

@@ -55,7 +55,7 @@ class TypePath {
 			try {
 				return new TypePath($parts[0], $parts[1] ?? null);
 			} catch (\InvalidArgumentException $e) {
-				throw new \InvalidArgumentException('Invalid EiTypePath expression: ' . $expression);
+				throw new \InvalidArgumentException('Invalid TypePath expression: ' . $expression);
 			}
 		}
 		

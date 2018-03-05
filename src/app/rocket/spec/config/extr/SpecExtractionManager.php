@@ -192,7 +192,7 @@ class SpecExtractionManager {
 						throw new $this->createDuplicatedEiModificatorIdException($eiTypePathStr, $id);
 					}
 					
-					$eiTypePath = $eiModificatorExtraction->getEiTypePath();
+					$eiTypePath = $eiModificatorExtraction->getTypePath();
 					
 					if (isset($this->customTypeExtractions[$eiTypePath->getTypeId()])) {
 						throw new InvalidConfigurationException('Invalid configuration in: ' . $specCsDec->getDataSource(), 0, 
