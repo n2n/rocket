@@ -100,6 +100,14 @@ class Spec {
 
 	/**
 	 * @param string $id
+	 * @return bool
+	 */
+	public function containsLaunchPad(string $id) {
+		return isset($this->launchPads[$id]);
+	}
+	
+	/**
+	 * @param string $id
 	 * @return LaunchPad
 	 * @throws UnknownLaunchPadException
 	 */
@@ -109,6 +117,13 @@ class Spec {
 		}
 		
 		throw new UnknownLaunchPadException('Unknown menu item id:  ' . $id);
+	}
+	
+	/**
+	 * @return LaunchPad[]
+	 */
+	public function getLaunchPads() {
+		return $this->launchPads;
 	}
 	
 	private function createInvalidLaunchPadConfigurationException($launchPadId, \Exception $previous) {

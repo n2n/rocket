@@ -22,7 +22,6 @@
 namespace rocket\core\model;
 
 use rocket\spec\Spec;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\InvalidMenuConfigurationException;
 
 class LayoutManager {
@@ -43,6 +42,10 @@ class LayoutManager {
 		$this->menuGroups = null;
 	}
 	
+	/**
+	 * @throws InvalidMenuConfigurationException
+	 * @return \rocket\core\model\LaunchPad|null
+	 */
 	public function getStartLaunchPad() {
 		if ($this->startLaunchPadLoaded) {
 			return $this->startLaunchPad;
@@ -60,7 +63,10 @@ class LayoutManager {
 		return $this->startLaunchPad;
 	}
 	
-	public function setStartLaunchPad(LaunchPad $startLaunchPad = null) {
+	/**
+	 * @param LaunchPad|null $startLaunchPad
+	 */
+	public function setStartLaunchPad(?LaunchPad $startLaunchPad) {
 		$this->startLaunchPad = $startLaunchPad;
 	}
 	
@@ -92,10 +98,22 @@ class LayoutManager {
 	}
 	
 	public function flush() {
-		throw new NotYetImplementedException();
+		if ($this->startLaunchPadLoaded) {
+			$this->scsd->rawStartLaunchPadId($this->startLaunchPad->getId());
+		}
 		
-// 		if ($this->startLaunchPadLoaded) {
-// 			$this->scsd->rawStartLaunchPadId($bla);
-// 		}
+		$menuGroupExtractions = array();
+		foreach ($this->menuGroups as $menuGroup) {
+			$menuGroupExtraction = new MenuGroupExtraction($menuGroup->getLabel());
+			foreach ($menuGroup->getLaunchPads() as $launchPad) {
+				$menuGroupExtraction->addLaunchPadId($launchPad->getId(), 
+						$launchPad->getLabelByLaunchPadId($launchPad->getId()));
+			}
+			
+			$menuGroupExtractions[] = $menuGroupExtraction;
+		}
+		
+		$this->scsd->rawMenuGroups($menuGroupExtractions);
+		$this->scsd->flush();
 	}
 }

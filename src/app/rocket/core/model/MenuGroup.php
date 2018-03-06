@@ -69,4 +69,12 @@ class MenuGroup {
 		
 		return $launchPad->getLabel();
 	}
+	
+	public function getLabelByLaunchPadId(string $id) {
+		if (isset($this->labels[$id])) {
+			return $this->labels[$id];
+		}
+		
+		return null;
+	}
 }
