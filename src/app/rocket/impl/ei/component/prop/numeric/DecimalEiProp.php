@@ -132,7 +132,7 @@ class EiDecimalMag extends NumericMag {
 	 * @see \n2n\impl\web\dispatch\mag\model\NumericMag::createUiField()
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
-		$input = parent::createUiField($propertyPath, $view);
+		$input = parent::createUiField($propertyPath, $view, $uiOutfitter);
 	
 		if ($this->inputPrefix === null) return $input;
 		
