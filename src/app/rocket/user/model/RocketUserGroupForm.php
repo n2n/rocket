@@ -22,7 +22,7 @@
 namespace rocket\user\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 use n2n\reflection\annotation\AnnoInit;
 use rocket\user\bo\RocketUserGroup;
 use n2n\impl\web\dispatch\map\val\ValNotEmpty;
@@ -39,15 +39,15 @@ class RocketUserGroupForm implements Dispatchable {
 		$ai->c(new AnnoDispProperties('name', 'menuItemRestrictionEnabled', 'accessibleMenuItemIds'));
 	}
 	
-	private $specManager;
+	private $spec;
 	private $layoutManager;
 	private $userGroup;
 
 	private $menuItemRestrictionEnabled = false;
 	private $accessibleMenuItemIds = array();
 	
-	public function __construct(RocketUserGroup $userGroup, LayoutManager $layoutManager, SpecManager $specManager, N2nContext $n2nContext) {
-		$this->specManager = $specManager;
+	public function __construct(RocketUserGroup $userGroup, LayoutManager $layoutManager, Spec $spec, N2nContext $n2nContext) {
+		$this->spec = $spec;
 		$this->layoutManager = $layoutManager;
 		$this->userGroup = $userGroup;
 		

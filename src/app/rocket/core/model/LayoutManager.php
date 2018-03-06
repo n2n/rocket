@@ -21,21 +21,21 @@
  */
 namespace rocket\core\model;
 
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\InvalidMenuConfigurationException;
 
 class LayoutManager {
 	private $scsd;
-	private $specManager;
+	private $spec;
 	
 	private $startMenuItemLoaded = false;
 	private $startMenuItem;
 	private $menuGroups;
 	
-	public function __construct(LayoutConfigSourceDecorator $scsd, SpecManager $specManager) {
+	public function __construct(LayoutConfigSourceDecorator $scsd, Spec $spec) {
 		$this->scsd = $scsd;
-		$this->specManager = $specManager;
+		$this->spec = $spec;
 	}
 	
 	public function reset() {
@@ -50,7 +50,7 @@ class LayoutManager {
 		
 		if (null !== ($startMenuItemId = $this->scsd->extractStartMenuItemId())) {
 			try {
-				$this->startMenuItem = $this->specManager->getMenuItemById($startMenuItemId);
+				$this->startMenuItem = $this->spec->getMenuItemById($startMenuItemId);
 			} catch (UnknownMenuItemException $e) {
 				throw new InvalidMenuConfigurationException('Failed to initialize start MenuItem.', 0, $e);
 			}
@@ -75,7 +75,7 @@ class LayoutManager {
 				
 			try {
 				foreach ($menuGroupExtraction->getMenuItemIds() as $menuItemId => $label) {
-					$menuGroup->addMenuItem($this->specManager->getMenuItemById($menuItemId), $label);
+					$menuGroup->addMenuItem($this->spec->getMenuItemById($menuItemId), $label);
 				}
 			} catch (UnknownMenuItemException $e) {
 				throw new InvalidMenuConfigurationException('Failed to initialize MenuGroup: '

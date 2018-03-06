@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\manage\util\model;
 
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 use n2n\core\container\N2nContext;
 use rocket\spec\UnknownSpecException;
 use n2n\reflection\ArgUtils;
@@ -9,15 +9,15 @@ use rocket\ei\EiType;
 use rocket\ei\component\EiComponent;
 
 class EiuContext {
-	private $specManager;
+	private $spec;
 	private $n2nContext;
 	
 	/**
-	 * @param SpecManager $specManager
+	 * @param Spec $spec
 	 * @param N2nContext $n2nContext
 	 */
-	function __construct(SpecManager $specManager, N2nContext $n2nContext) {
-		$this->specManager = $specManager;
+	function __construct(Spec $spec, N2nContext $n2nContext) {
+		$this->spec = $spec;
 		$this->n2nContext = $n2nContext;
 	}
 	
@@ -41,16 +41,16 @@ class EiuContext {
 		$eiEngine = null;
 		try {
 			if ($eiTypeArg instanceof \ReflectionClass) {
-				return new EiuEngine($this->specManager->getEiTypeByClass($eiTypeArg)->getEiMask()->getEiEngine(),
+				return new EiuEngine($this->spec->getEiTypeByClass($eiTypeArg)->getEiMask()->getEiEngine(),
 						$this->n2nContext);
 			}
 			
 			if (class_exists($eiTypeArg, false)) {
-				return new EiuEngine($this->specManager->getEiTypeByClassName($eiTypeArg)->getEiEngine(), 
+				return new EiuEngine($this->spec->getEiTypeByClassName($eiTypeArg)->getEiEngine(), 
 						$this->n2nContext);
 			}
 			
-			return $this->specManager->getEiTypeById($eiTypeArg)->getEiEngine();	
+			return $this->spec->getEiTypeById($eiTypeArg)->getEiEngine();	
 		} catch (UnknownSpecException $e) {
 			if (!$required) return null;
 			

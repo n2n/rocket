@@ -35,7 +35,7 @@ use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
 use rocket\spec\UnknownSpecException;
-use rocket\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
@@ -58,13 +58,13 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$this->forward('..\view\groupOverview.html', array(
 				'userGroupOverviewModel' => new RocketUserGroupListModel(
-						$this->userDao->getRocketUserGroups(), $rocket->getSpecManager())));
+						$this->userDao->getRocketUserGroups(), $rocket->getSpec())));
 	}
 	
 	public function doAdd(Rocket $rocket, MessageContainer $messageContainer) {
 		$this->beginTransaction();
 		
-		$userGroupForm = new RocketUserGroupForm(new RocketUserGroup(), $rocket->getLayoutManager(), $rocket->getSpecManager(), $this->getN2nContext());
+		$userGroupForm = new RocketUserGroupForm(new RocketUserGroup(), $rocket->getLayoutManager(), $rocket->getSpec(), $this->getN2nContext());
 		if ($this->dispatch($userGroupForm, 'save')) {
 			$this->userDao->saveRocketUserGroup($userGroupForm->getRocketUserGroup());
 			$this->commit();
@@ -88,7 +88,7 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$userGroupForm = new RocketUserGroupForm($userGroup, $rocket->getLayoutManager(), $rocket->getSpecManager(), 
+		$userGroupForm = new RocketUserGroupForm($userGroup, $rocket->getLayoutManager(), $rocket->getSpec(), 
 				$this->getN2nContext());
 		if ($this->dispatch($userGroupForm, 'save')) {
 			$this->commit();
@@ -127,9 +127,9 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$specManager = $rocket->getSpecManager();
-		$groupGrantViewModel = new GroupGrantsViewModel($userGroup, $specManager->getEiTypes(), 
-				$specManager->getCustomTypes());
+		$spec = $rocket->getSpec();
+		$groupGrantViewModel = new GroupGrantsViewModel($userGroup, $spec->getEiTypes(), 
+				$spec->getCustomTypes());
 		
 		$this->commit();
 		
@@ -139,7 +139,7 @@ class RocketUserGroupController extends ControllerAdapter {
 	public function doFullyEiGrant($userGroupId, $eiTypeId, $eiMaskId = null, Rocket $rocket) {
 		$eiType = null;
 		try {
-			$eiType = $rocket->getSpecManager()->getEiTypeById($eiTypeId);
+			$eiType = $rocket->getSpec()->getEiTypeById($eiTypeId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}
@@ -209,7 +209,7 @@ class RocketUserGroupController extends ControllerAdapter {
 	private function lookupEiEngine(string $eiTypeId, string $eiMaskId = null): EiEngine {
 		$eiType = null;
 		try {
-			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
+			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
 		} catch (UnknownSpecException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}

@@ -521,14 +521,14 @@ class EiuFrame extends EiUtilsAdapter {
 // class EiCascadeOperation implements CascadeOperation {
 // 	private $cascader;
 // 	private $entityModelManager;
-// 	private $specManager;
+// 	private $spec;
 // 	private $entityObjs = array();
 // 	private $eiTypes = array();
 // 	private $liveEntries = array();
 
-// 	public function __construct(EntityModelManager $entityModelManager, SpecManager $specManager, int $cascadeType) { 
+// 	public function __construct(EntityModelManager $entityModelManager, Spec $spec, int $cascadeType) { 
 // 		$this->entityModelManager = $entityModelManager;
-// 		$this->specManager = $specManager;
+// 		$this->spec = $spec;
 // 		$this->cascader = new OperationCascader($cascadeType, $this);
 // 	}
 
@@ -537,7 +537,7 @@ class EiuFrame extends EiUtilsAdapter {
 
 // 		$entityModel = $this->entityModelManager->getEntityModelByEntityObj($entityObj);
 		
-// 		$this->liveEntries[] = EiEntityObj::createFrom($this->specManager
+// 		$this->liveEntries[] = EiEntityObj::createFrom($this->spec
 // 				->getEiTypeByClass($entityModel->getClass()), $entityObj);
 		
 // 		$this->cascader->cascadeProperties($entityModel, $entityObj);

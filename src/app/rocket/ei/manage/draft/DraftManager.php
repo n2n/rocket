@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\draft;
 
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 use n2n\persistence\orm\EntityManager;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\ClosurePdoListener;
@@ -33,15 +33,15 @@ use rocket\ei\EiType;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 
 class DraftManager {
-	private $specManager;
+	private $spec;
 	private $em;
 	private $n2nContext;
 	private $draftingContext;
 	private $draftActionQueue;
 	private $pdoListener;
 
-	public function __construct(SpecManager $specManager, EntityManager $em, N2nContext $n2nContext) {
-		$this->specManager = $specManager;
+	public function __construct(Spec $spec, EntityManager $em, N2nContext $n2nContext) {
+		$this->spec = $spec;
 		$this->em = $em;
 		$this->n2nContext = $n2nContext;
 		$this->draftingContext = new DraftingContext();
@@ -77,14 +77,14 @@ class DraftManager {
 	
 	private function getDraftDefinitionByEntityObj($entityObj) {
 		$entityModel = $this->em->getEntityModelManager()->getEntityModelByEntityObj($entityObj);
-		return $this->specManager->getEiTypeByClass($entityModel->getClass())->getEiTypeExtensionCollection()
+		return $this->spec->getEiTypeByClass($entityModel->getClass())->getEiTypeExtensionCollection()
 				->getOrCreateDefault()->getDraftDefinition();		
 	}
 	
 	public function find(\ReflectionClass $class, $draftId, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
-		$eiType = $this->specManager->getEiTypeByClass($class);
+		$eiType = $this->spec->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
 			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
@@ -102,7 +102,7 @@ class DraftManager {
 			DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
-		$eiType = $this->specManager->getEiTypeByClass($class);
+		$eiType = $this->spec->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
 			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
@@ -122,7 +122,7 @@ class DraftManager {
 			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 
-		$eiType = $this->specManager->getEiTypeByClass($class);
+		$eiType = $this->spec->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
 			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
@@ -154,7 +154,7 @@ class DraftManager {
 		
 		if ($draftDefinition === null) {
 			$draftDefinition = $this->getDraftDefinitionByEiType(
-					$this->specManager->getEiTypeByClass($class));
+					$this->spec->getEiTypeByClass($class));
 		}
 		
 		$stmtBuilder = $draftDefinition->createCountDraftStmtBuilder($this, $this->n2nContext);
@@ -171,7 +171,7 @@ class DraftManager {
 	public function findUnbounds(\ReflectionClass $class, int $limit, int $num = null, DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
-		$eiType = $this->specManager->getEiTypeByClass($class);
+		$eiType = $this->spec->getEiTypeByClass($class);
 		if ($draftDefinition === null) {
 			$draftDefinition = $this->getDraftDefinitionByEiType($eiType);
 		}
@@ -242,15 +242,15 @@ class DraftManager {
 	}
 	
 	public function isOpen() {
-		return $this->specManager !== null;
+		return $this->spec !== null;
 	}
 	
 	public function close() {
-		if ($this->specManager === null) return;
+		if ($this->spec === null) return;
 	
 		$this->em->getPdo()->unregisterListener($this->pdoListener);
 		
-		$this->specManager = null;
+		$this->spec = null;
 		$this->em = null;
 		$this->draftingContext = null;
 		$this->draftingContext = null;

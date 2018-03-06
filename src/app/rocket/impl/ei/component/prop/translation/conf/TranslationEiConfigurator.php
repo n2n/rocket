@@ -25,7 +25,7 @@ use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use rocket\ei\component\EiSetupProcess;
 use n2n\l10n\N2nLocale;
 use rocket\spec\UnknownSpecException;
-use rocket\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\translation\TranslationEiProp;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;

@@ -33,7 +33,7 @@ use rocket\spec\TypePath;
 /**
  * <p>This manager allows you to read und write spec configurations usually located in 
  * 	<code>[n2n-root]/var/etc/[module]/rocket/specs.json</code>. It is used by 
- * 	the {@see \rocket\spec\SpecManager} to load the current configuration.</p>
+ * 	the {@see \rocket\spec\Spec} to load the current configuration.</p>
  * 
  * <p>It is also used by the dev tool Hangar {@link https://dev.n2n.rocks/en/hangar/docs} 
  * 	to manipulate spec configurations.</p>

@@ -111,7 +111,7 @@ class EiMenuItem implements MenuItem {
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->getEiPermissionManager());
-		$vetoableRemoveActionQueue = new VetoableRemoveQueue($rocket->getSpecManager());
+		$vetoableRemoveActionQueue = new VetoableRemoveQueue($rocket->getSpec());
 		$vetoableRemoveActionQueue->initialize($manageState->getEntityManager(), $manageState->getDraftManager());
 		$manageState->setVetoableRemoveActionQueue($vetoableRemoveActionQueue);
 		

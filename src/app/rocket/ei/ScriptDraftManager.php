@@ -21,7 +21,7 @@
  */
 // namespace rocket\ei;
 
-// use rocket\spec\SpecManager;
+// use rocket\spec\Spec;
 // use n2n\persistence\orm\EntityManager;
 // use n2n\persistence\orm\model\EntityModelManager;
 // use rocket\ei\component\prop\DraftableEiProp;
@@ -32,14 +32,14 @@
 // use rocket\ei\manage\draft\DraftManager;
 
 // class ScriptDraftManager implements DraftManager {
-// 	private $specManager;
+// 	private $spec;
 // 	private $draftModels = array();
 // 	private $entityModelManager;
 // 	private $translationManager;
 // 	private $drafts = array();
 	
-// 	public function __construct(SpecManager $specManager, EntityManager $em) {
-// 		$this->specManager = $specManager;
+// 	public function __construct(Spec $spec, EntityManager $em) {
+// 		$this->spec = $spec;
 // 		$this->em = $em;
 // 		// @todo fixen
 // 		$this->entityModelManager = EntityModelManager::getInstance();
@@ -52,7 +52,7 @@
 // 			return $this->draftModels[$class->getName()];
 // 		}
 		
-// 		$eiType = $this->specManager->getEiTypeByClass($class);
+// 		$eiType = $this->spec->getEiTypeByClass($class);
 		
 // 		$this->draftModels[$class->getName()] = $draftModel = new DraftModel($em);
 		

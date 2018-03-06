@@ -26,7 +26,7 @@ use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\EiSetupProcess;
-use rocket\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
@@ -44,7 +44,7 @@ use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use n2n\reflection\CastUtils;
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
@@ -103,9 +103,9 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		$targetOrderFieldPathOptions = array();
 		try {
-			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
-			CastUtils::assertTrue($specManager instanceof SpecManager);
-			$targetEiType = $specManager->getEiTypeByClass($targetEntityClass);
+			$spec = $n2nContext->lookup(Rocket::class)->getSpec();
+			CastUtils::assertTrue($spec instanceof Spec);
+			$targetEiType = $spec->getEiTypeByClass($targetEntityClass);
 			foreach ($targetEiType->getEiTypeExtensionCollection()->toArray() as $eiMask) {
 				$targetEiMaskOptions[$eiMask->getExtension()->getId()] = $eiMask->getEiEngine()->getEiMask()->getEiType()->getLabelLstr();
 			}

@@ -41,7 +41,7 @@ class Eiu implements Lookupable {
 		$rocket = $n2nContext->lookup(Rocket::class);
 		CastUtils::assertTrue($rocket instanceof Rocket);
 		
-		return $this->eiuContext = new EiuContext($rocket->getSpecManager(), $n2nContext);
+		return $this->eiuContext = new EiuContext($rocket->getSpec(), $n2nContext);
 	}
 	
 	/**

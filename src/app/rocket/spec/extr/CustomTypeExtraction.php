@@ -34,17 +34,17 @@ class CustomTypeExtraction extends TypeExtraction {
 		$this->controllerClassName = $customControllerClassName;
 	}
 	
-// 	public function createScript(SpecManager $specManager) {
+// 	public function createScript(Spec $spec) {
 // 		$constrollerClass = null;
 // 		try {
 // 			$controllerClass = ReflectionUtils::createReflectionClass(
 // 					$this->getControllerClassName());
 // 			if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
-// 				throw SpecManager::createInvalidSpecConfigurationException($this->getId(), null, 
+// 				throw Spec::createInvalidSpecConfigurationException($this->getId(), null, 
 // 						$constrollerClass->getName() . ' must implement n2n\web\http\controller\Controller');
 // 			}
 // 		} catch (TypeNotFoundException $e) {
-// 			throw SpecManager::createInvalidSpecConfigurationException($this->getId(), $e);
+// 			throw Spec::createInvalidSpecConfigurationException($this->getId(), $e);
 // 		}
 	
 // 		return new CustomType($this->getId(), $this->getModuleNamespace(), $controllerClass);

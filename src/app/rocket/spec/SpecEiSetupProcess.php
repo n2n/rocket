@@ -28,22 +28,22 @@ use rocket\ei\component\EiSetupProcess;
 use rocket\ei\manage\util\model\Eiu;
 
 class SpecEiSetupProcess implements EiSetupProcess {
-	private $specManager;
+	private $spec;
 	private $n2nContext;
 	private $eiComponent;
 	private $eiu;
 	
-	public function __construct(SpecManager $specManager, N2nContext $n2nContext, IndependentEiComponent $eiComponent) {
-		$this->specManager = $specManager;
+	public function __construct(Spec $spec, N2nContext $n2nContext, IndependentEiComponent $eiComponent) {
+		$this->spec = $spec;
 		$this->n2nContext = $n2nContext;
 		$this->eiComponent = $eiComponent;
 	}
 	
 // 	/**
-// 	 * @return \rocket\spec\SpecManager
+// 	 * @return \rocket\spec\Spec
 // 	 */
-// 	public function getSpecManager() {
-// 		return $this->specManager;
+// 	public function getSpec() {
+// 		return $this->spec;
 // 	}
 	
 	public function getN2nContext(): N2nContext {
@@ -81,7 +81,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 	 */
 	public function eiu(): Eiu {
 		return $this->eiu 
-				?? $this->eiu = new Eiu($this->specManager, $this->eiComponent->getEiMask()->getEiEngine(), $this->n2nContext);
+				?? $this->eiu = new Eiu($this->spec, $this->eiComponent->getEiMask()->getEiEngine(), $this->n2nContext);
 	}
 	
 // 	/**
@@ -89,7 +89,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 	 * @see \rocket\ei\component\EiSetupProcess::containsClass($class)
 // 	 */
 // 	public function containsClass(\ReflectionClass $class): bool {
-// 		return $this->specManager->containsEiTypeClass($class);
+// 		return $this->spec->containsEiTypeClass($class);
 // 	}
 
 // 	/**
@@ -97,7 +97,7 @@ class SpecEiSetupProcess implements EiSetupProcess {
 // 	 * @see \rocket\ei\component\EiSetupProcess::getEiTypeByClass($class)
 // 	 */
 // 	public function getEiTypeByClass(\ReflectionClass $class): EiType {
-// 		return $this->specManager->getEiTypeByClass($class);
+// 		return $this->spec->getEiTypeByClass($class);
 // 	}
 
 // 	public function getEiPropCollection(): EiPropCollection {

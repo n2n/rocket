@@ -27,7 +27,7 @@ use n2n\web\http\controller\impl\ScrController;
 use n2n\web\http\controller\ControllerAdapter;
 
 class GlobalRelationJhtmlController extends ControllerAdapter implements ScrController {
-	private $specManager;
+	private $spec;
 	private $loginContext;
 	
 	/**
@@ -35,7 +35,7 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 	 * @param LoginContext $loginContext
 	 */
 	private function _init(Rocket $rocket, LoginContext $loginContext) {
-		$this->specManager = $rocket->getSpecManager();
+		$this->spec = $rocket->getSpec();
 		$this->loginContext = $loginContext;
 	}
 	
@@ -56,7 +56,7 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 // 	 */
 // 	private function lookupEiThing(string $eiTypeId, string $eiMaskId) {
 // 		try {
-// 			return $this->specManager->getEiTypeById($eiTypeId)->getEiTypeExtensionCollection()->getById($eiMaskId);
+// 			return $this->spec->getEiTypeById($eiTypeId)->getEiTypeExtensionCollection()->getById($eiMaskId);
 // 		} catch (UnknownSpecException $e) {
 // 			throw new PageNotFoundException(null, 0, $e);
 // 		} catch (UnknownEiTypeExtensionException $e) {

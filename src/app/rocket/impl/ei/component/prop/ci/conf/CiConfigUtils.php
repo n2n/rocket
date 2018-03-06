@@ -60,7 +60,7 @@ class CiConfigUtils {
 	}
 
 	public static function createFromN2nContext(N2nContext $n2nContext) {
-		return new CiConfigUtils($n2nContext->lookup(Rocket::class)->getSpecManager()
+		return new CiConfigUtils($n2nContext->lookup(Rocket::class)->getSpec()
 				->getEiTypeByClass(ContentItem::getClass()));
 	}
 

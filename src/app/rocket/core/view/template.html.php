@@ -71,8 +71,8 @@ $htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
 $htmlMeta->addJs('js/rocket.js', null);
 
 
-// 	$specManager = $rocket->getSpecManager();
-// 	$menuGroups = $specManager->getMenuGroups();
+// 	$spec = $rocket->getSpec();
+// 	$menuGroups = $spec->getMenuGroups();
 // 	$selectedMenuItem = $manageState->getSelectedMenuItem();
 // 	$breadcrumbs = $rocketState->getBreadcrumbs();
 // 	$activeBreadcrumb = array_pop($breadcrumbs);

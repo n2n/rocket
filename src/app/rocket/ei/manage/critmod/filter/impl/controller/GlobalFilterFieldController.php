@@ -28,7 +28,7 @@ use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use rocket\spec\UnknownSpecException;
 use n2n\web\http\PageNotFoundException;
-use rocket\ei\mask\UnknownEiTypeExtensionException;
+use rocket\ei\UnknownEiTypeExtensionException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\component\CritmodFactory;
@@ -44,11 +44,11 @@ use rocket\ei\manage\critmod\filter\UnknownFilterFieldException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class GlobalFilterFieldController extends ControllerAdapter implements ScrController {
-	private $specManager;
+	private $spec;
 	private $loginContext;
 	
 	private function _init(Rocket $rocket, LoginContext $loginContext) {
-		$this->specManager = $rocket->getSpecManager();
+		$this->spec = $rocket->getSpec();
 		$this->loginContext = $loginContext;
 	}
 	/**
@@ -62,7 +62,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 	
 	private function lookupEiThing(string $eiTypeId, string $eiMaskId = null) {
 		try {
-			$eiType = $this->specManager->getEiTypeById($eiTypeId);
+			$eiType = $this->spec->getEiTypeById($eiTypeId);
 			if ($eiMaskId !== null) {
 				return $eiType->getEiTypeExtensionCollection()->getById($eiMaskId);
 			} 

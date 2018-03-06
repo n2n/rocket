@@ -48,7 +48,7 @@ use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
 
-class SpecManager {	
+class Spec {	
 	private $rocketConfigSource;	
 	private $entityModelManager;
 	
@@ -168,7 +168,7 @@ class SpecManager {
 		
 		$this->noSetupMode = $noSetupMode;
 		
-		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(SpecManager::class);
+		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(Spec::class);
 		
 		$this->specExtractionManager->load();
 		
@@ -177,7 +177,7 @@ class SpecManager {
 			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);
 		}
 		
-		if ($charcs !== null && null !== ($cacheItem = $cacheStore->get(SpecManager::class, $charcs))) {
+		if ($charcs !== null && null !== ($cacheItem = $cacheStore->get(Spec::class, $charcs))) {
 // 			$data = $cacheItem->getData();
 			$this->customTypes = $cacheItem->data['customTypes'];
 			$this->eiTypes = $cacheItem->data['eiTypes'];
@@ -221,7 +221,7 @@ class SpecManager {
 // 			}
 			
 			if ($charcs !== null) {
-				$cacheStore->store(SpecManager::class, $charcs, array(
+				$cacheStore->store(Spec::class, $charcs, array(
 						'specs' => $this->customTypes, 'eiTypes' => $this->eiTypes, 'menuItems' => $this->menuItems,
 						'propIns' => $this->eiTypeSetupQueue->getPropIns(),
 						'eiConfigurators' => $this->eiTypeSetupQueue->getEiConfigurators()));
@@ -334,7 +334,7 @@ class SpecManager {
 		}
 		
 		$this->specExtractionManager->getEiTypeExtractionByClassName($className);
-		throw new IllegalStateException('SpecManager not initialized.');
+		throw new IllegalStateException('Spec not initialized.');
 	}
 	
 	/**
@@ -354,7 +354,7 @@ class SpecManager {
 		}
 		
 		$this->specExtractionManager->getTypeExtractionById($id);
-		throw new IllegalStateException('SpecManager not initialized.');
+		throw new IllegalStateException('Spec not initialized.');
 	}
 	
 	public function containsEiTypeClass(\ReflectionClass $class) {
@@ -436,13 +436,13 @@ class SpecManager {
 }
 
 class EiTypeSetupQueue {
-	private $specManager;
+	private $spec;
 	private $propIns = array();
 	private $eiConfigurators = array();
 	private $es = array();
 	
-	public function __construct(SpecManager $specManager) {
-		$this->specManager = $specManager;
+	public function __construct(Spec $spec) {
+		$this->spec = $spec;
 	}
 	
 // 	public function isLenient() {
@@ -506,7 +506,7 @@ class EiTypeSetupQueue {
 	
 	private function setup($n2nContext, $eiConfigurator) {
 		$eiComponent = $eiConfigurator->getEiComponent();
-		$eiSetupProcess = new SpecEiSetupProcess($this->specManager, $n2nContext, $eiComponent);
+		$eiSetupProcess = new SpecEiSetupProcess($this->spec, $n2nContext, $eiComponent);
 		try {
 			$eiConfigurator->setup($eiSetupProcess);
 		} catch (AttributesException $e) {

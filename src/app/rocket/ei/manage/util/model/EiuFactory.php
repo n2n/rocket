@@ -41,7 +41,7 @@ use n2n\reflection\ReflectionUtils;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiEngine;
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -63,7 +63,7 @@ class EiuFactory {
 	private $eiEntryGuiAssembler;
 	private $eiPropPath;
 	private $eiEngine;
-	private $specManager;
+	private $spec;
 	
 	private $eiuEngine;
 	private $eiuFrame;
@@ -102,8 +102,8 @@ class EiuFactory {
 				continue;
 			}
 			
-			if ($eiArg instanceof SpecManager) {
-				$this->specManager = $eiArg;
+			if ($eiArg instanceof Spec) {
+				$this->spec = $eiArg;
 				continue;
 			}
 			
@@ -328,18 +328,18 @@ class EiuFactory {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return SpecManager
+	 * @return Spec
 	 */
-	public function getSpecManager(bool $required) {
-		if ($this->specManager !== null) {
-			return $this->specManager;
+	public function getSpec(bool $required) {
+		if ($this->spec !== null) {
+			return $this->spec;
 		}
 		
 		if ($this->n2nContext !== null) {
-			return $this->n2nContext->lookup(SpecManager::class);
+			return $this->n2nContext->lookup(Spec::class);
 		}
 		
-		throw new EiuPerimeterException('Could not determine SpecManager.');
+		throw new EiuPerimeterException('Could not determine Spec.');
 	}
 	
 	/**

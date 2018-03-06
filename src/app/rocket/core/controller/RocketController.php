@@ -109,7 +109,7 @@ class RocketController extends ControllerAdapter {
 		
 		$menuItem = null;
 		try {
-			$menuItem = $rocket->getSpecManager()->getMenuItemById($navItemId);
+			$menuItem = $rocket->getSpec()->getMenuItemById($navItemId);
 		} catch (UnknownMenuItemException $e) {
 			throw new PageNotFoundException('navitem not found', 0, $e);
 		}

@@ -25,7 +25,7 @@ use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\LifecycleListener;
 use n2n\persistence\orm\LifecycleEvent;
 use n2n\persistence\orm\model\EntityModel;
-use rocket\spec\SpecManager;
+use rocket\spec\Spec;
 use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\manage\LiveEiObject;
@@ -35,15 +35,15 @@ use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\core\container\N2nContext;
 
 class VetoableRemoveQueue implements LifecycleListener {
-	private $specManager;
+	private $spec;
 	private $em;
 	private $draftActions = array();
 	private $liveActions = array();
 	private $unmangedRemovedEntityObjs = array();
 	private $uninitializedActions = array();
 	
-	public function __construct(SpecManager $specManager) {
-		$this->specManager = $specManager;
+	public function __construct(Spec $spec) {
+		$this->spec = $spec;
 	}
 	
 	public function getEntityManager() {
@@ -137,12 +137,12 @@ class VetoableRemoveQueue implements LifecycleListener {
 	}
 	
 	private function prepare(EntityModel $entityModel, $entityObj) {
-		if (!$this->specManager->containsEiTypeClass($entityModel->getClass())) {
+		if (!$this->spec->containsEiTypeClass($entityModel->getClass())) {
 			$this->unmangedRemovedEntityObjs[spl_object_hash($entityObj)] = $entityObj;
 			return;
 		}
 		
-		$eiType = $this->specManager->getEiTypeByClass($entityModel->getClass());
+		$eiType = $this->spec->getEiTypeByClass($entityModel->getClass());
 		$this->createAction(LiveEiObject::create($eiType, $entityObj));
 	}
 	
