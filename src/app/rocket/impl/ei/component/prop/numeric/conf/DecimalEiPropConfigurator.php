@@ -43,9 +43,9 @@ class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
-		$magCollection->addMag(new NumericMag(self::OPTION_DECIMAL_PLACES_KEY, 
+		$magCollection->addMag(self::OPTION_DECIMAL_PLACES_KEY, new NumericMag(
 				'Positions after decimal point', $lar->getNumeric(self::OPTION_DECIMAL_PLACES_KEY, 0), true, 0));
-		$magCollection->addMag(new StringMag(self::OPTION_PREFIX_KEY, 'Prefix',
+		$magCollection->addMag(self::OPTION_PREFIX_KEY, new StringMag('Prefix',
 				$lar->getString(self::OPTION_PREFIX_KEY, false)));
 		return $magDispatchable;
 	}
