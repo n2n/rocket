@@ -21,7 +21,7 @@
  */
 namespace rocket\spec;
 
-use rocket\core\model\MenuItem;
+use rocket\core\model\LaunchPad;
 use rocket\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerContext;
@@ -36,7 +36,7 @@ use n2n\util\uri\Path;
 use rocket\ei\manage\veto\VetoableRemoveQueue;
 use rocket\core\model\TransactionApproveAttempt;
 
-class EiMenuItem implements MenuItem {
+class EiLaunchPad implements LaunchPad {
 	private $id;
 	private $eiMask;
 	private $label;
@@ -48,7 +48,7 @@ class EiMenuItem implements MenuItem {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\MenuItem::getId()
+	 * @see \rocket\core\model\LaunchPad::getId()
 	 */
 	public function getId(): string {
 		return $this->id;
@@ -70,7 +70,7 @@ class EiMenuItem implements MenuItem {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\MenuItem::determinePathExt($n2nContext)
+	 * @see \rocket\core\model\LaunchPad::determinePathExt($n2nContext)
 	 */
 	public function determinePathExt(N2nContext $n2nContext) {
 		$overviewEiCommand = $this->eiMask->getEiCommandCollection()
@@ -96,7 +96,7 @@ class EiMenuItem implements MenuItem {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\MenuItem::lookupController($n2nContext, $delegateControllerContext)
+	 * @see \rocket\core\model\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
 	 */
 	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
 		$manageState = $n2nContext->lookup(ManageState::class);

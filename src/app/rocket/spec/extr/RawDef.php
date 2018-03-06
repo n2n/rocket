@@ -81,8 +81,8 @@ class RawDef {
 	const EI_FIELD_ENTITY_PROPERTY_KEY = 'entityProperty';
 	const EI_FIELD_LABEL_KEY = 'label';
 	
-	const MENU_ITEMS_KEY = 'menuItems';
-	const MENU_ITEM_LABEL_KEY = 'label';
+	const LAUNCH_PADS_KEY = 'launchPads';
+	const LAUNCH_PAD_LABEL_KEY = 'label';
 	
 	const NATURE_ENTITY = 'entity';
 	const NATURE_CUSTOM = 'custom';

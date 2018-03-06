@@ -38,7 +38,7 @@ use rocket\ei\EiException;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\core\model\Rocket;
 use n2n\util\config\LenientAttributeReader;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\util\config\InvalidConfigurationException;
@@ -118,7 +118,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 						= $scalarEiProperty->getLabelLstr();
 			}
 		} catch (UnknownEiComponentException $e) {
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 		} catch (InvalidConfigurationException $e) {
 		}
 		

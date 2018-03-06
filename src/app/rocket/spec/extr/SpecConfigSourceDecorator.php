@@ -42,7 +42,7 @@ class SpecConfigSourceDecorator {
 	private $eiTypeExtractions = array();
 	private $eiTypeExtensionExtractionGroups = array();
 	private $eiModificatorExtractionGroups = array();
-	private $menuItemExtractions = array();
+	private $launchPadExtractions = array();
 	
 	/**
 	 * @param WritableConfigSource $configSource
@@ -70,7 +70,7 @@ class SpecConfigSourceDecorator {
 	
 	/**
 	 * Reads the decorated ConfigSource and uses {@see SpecExtractor} to extract all
-	 * {@see TypeExtraction}s, {@see EiTypeExtensionExtraction}s, {@see MenuItemExtraction}s
+	 * {@see TypeExtraction}s, {@see EiTypeExtensionExtraction}s, {@see LaunchPadExtraction}s
 	 * and overwrites the matching properties on this class. You can access these properties 
 	 * through the getter methods.  
 	 * @throws InvalidConfigurationException
@@ -86,7 +86,7 @@ class SpecConfigSourceDecorator {
 			$this->eiTypeExtractions = $result['eiTypeExtractions'];
 			$this->eiTypeExtensionExtractionGroups = $specExtractor->extractEiTypeExtensionGroups();
 			$this->eiModificatorExtractionGroups = $specExtractor->extractEiModificatorGroups();
-			$this->menuItemExtractions = $specExtractor->extractMenuItems();
+			$this->launchPadExtractions = $specExtractor->extractLaunchPads();
 		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		} catch (InvalidSpecConfigurationException $e) {
@@ -104,7 +104,7 @@ class SpecConfigSourceDecorator {
 		$specRawer->rawTypes($this->eiTypeExtractions, $this->customTypeExtractions);
 		$specRawer->rawEiMasks($this->eiTypeExtensionExtractionGroups);
 		$specRawer->rawEiModificatorExtractionGroups($this->eiModificatorExtractionGroups);
-		$specRawer->rawMenuItems($this->menuItemExtractions);
+		$specRawer->rawLaunchPads($this->launchPadExtractions);
 		
 		$this->configSource->writeArray($this->attributes->toArray());
 	}
@@ -119,7 +119,7 @@ class SpecConfigSourceDecorator {
 		$this->eiTypeExtractions = array();
 		$this->eiTypeExtensionExtractionGroups = array();
 		$this->eiModificatorExtractionGroups = array();
-		$this->menuItemExtractions = array();
+		$this->launchPadExtractions = array();
 	}
 	
 	/**
@@ -243,19 +243,7 @@ class SpecConfigSourceDecorator {
 		$this->eiModificatorExtractionGroups[$eiTypeId][] = $eiModificatorExtraction;
 	}
 	
-	public function containsSpecId($specId) {
-		return isset($this->specExtractions[$specId]);
-	}
 	
-	public function containsEntityClassName(string $entityClassName): bool {
-		foreach ($this->specExtractions as $id => $spec) {
-			if ($spec instanceof EiTypeExtraction && $spec->getEntityClassName() == $entityClassName) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 // 	public function containsEiMaskId(string $eiTypeId, string $eiMaskId): bool {
 // 		return isset($this->eiTypeExtensionExtractionGroups[$eiTypeId][$eiMaskId]);
@@ -266,10 +254,10 @@ class SpecConfigSourceDecorator {
 // 	}
 
 	/**
-	 * @return MenuItemExtraction[]
+	 * @return LaunchPadExtraction[]
 	 */
-	public function getMenuItemExtractions() {
-		return $this->menuItemExtractions;
+	public function getLaunchPadExtractions() {
+		return $this->launchPadExtractions;
 	}
 
 }

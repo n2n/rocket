@@ -164,7 +164,7 @@ class RocketUser extends ObjectAdapter implements Dispatchable {
 		
 // 		$securityManager = new ScriptSecurityManager($n2nContext);
 // 		foreach ($this->getRocketUserGroups() as $userGroup) {
-// 			$securityManager->addAccessibleMenuItemIds($userGroup->getAccessibleMenuItemIds());
+// 			$securityManager->addAccessibleLaunchPadIds($userGroup->getAccessibleLaunchPadIds());
 			
 // 			foreach ($userGroup->getUserSpecGrants() as $scriptGrant) {
 // 				if ($scriptGrant->isFull()) {

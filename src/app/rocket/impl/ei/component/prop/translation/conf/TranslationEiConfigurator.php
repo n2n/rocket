@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\translation\conf;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use rocket\ei\component\EiSetupProcess;
 use n2n\l10n\N2nLocale;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\translation\TranslationEiProp;
@@ -233,7 +233,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			}
 
 			$eiPropRelation->init($targetEiType, $targetEiMask);
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiTypeExtensionException $e) {
 			throw $eiSetupProcess->createException(null, $e);

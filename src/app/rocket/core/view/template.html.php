@@ -73,7 +73,7 @@ $htmlMeta->addJs('js/rocket.js', null);
 
 // 	$spec = $rocket->getSpec();
 // 	$menuGroups = $spec->getMenuGroups();
-// 	$selectedMenuItem = $manageState->getSelectedMenuItem();
+// 	$selectedLaunchPad = $manageState->getSelectedLaunchPad();
 // 	$breadcrumbs = $rocketState->getBreadcrumbs();
 // 	$activeBreadcrumb = array_pop($breadcrumbs);
 $htmlMeta->addLink(array('rel' => 'shortcut icon', 'href' => $httpContext->getAssetsUrl('rocket')->ext(array('img', 'favicon.ico'))));
@@ -191,14 +191,14 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 					<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
 				</h3>
 				<ul class="nav flex-column">
-					<?php foreach ($navArray['menuItems'] as $menuItem): ?>
+					<?php foreach ($navArray['launchPads'] as $launchPad): ?>
 						<li class="nav-item">
-							<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(),
-								$menuItem->determinePathExt($view->getN2nContext())),
-								new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem))
+							<?php $html->link(Murl::controller('rocket')->pathExt('manage', $launchPad->getId(),
+								$launchPad->determinePathExt($view->getN2nContext())),
+								new Raw($html->getEsc($navArray['menuGroup']->determineLabel($launchPad))
 									. '<span></span>'),
 								array('data-jhtml' => 'true', 'class' => 'nav-link'
-									. ($templateModel->isMenuItemActive($menuItem) ? ' active' : null))) ?></li>
+									. ($templateModel->isLaunchPadActive($launchPad) ? ' active' : null))) ?></li>
 					<?php endforeach ?>
 				</ul>
 			</div>

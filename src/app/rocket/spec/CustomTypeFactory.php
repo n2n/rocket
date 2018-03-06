@@ -36,7 +36,7 @@ class CustomTypeFactory {
 	public static function create(CustomTypeExtraction $customTypeExtraction): CustomType {
 		$constrollerClass = null;
 		try {
-			$controllerClass = ReflectionUtils::createReflectionClass($customTypeExtraction->getControllerClassName());
+			$controllerClass = ReflectionUtils::createReflectionClass($customTypeExtraction->getControllerLookupId());
 		} catch (TypeNotFoundException $e) {
 			throw $this->createControllerException($customTypeExtraction, null, $e);
 		}

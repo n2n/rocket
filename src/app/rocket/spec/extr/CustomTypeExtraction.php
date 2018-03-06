@@ -21,43 +21,31 @@
  */
 namespace rocket\spec\extr;
 
-use rocket\custom\CustomType;
-
 class CustomTypeExtraction extends TypeExtraction {
-	private $controllerClassName;
+	private $controllerLookupId;
 	
-	public function getControllerClassName() {
-		return $this->controllerClassName;
+	/**
+	 * @return string
+	 */
+	public function getControllerLookupId() {
+		return $this->controllerLookupId;
 	}
 
-	public function setControllerClassName($customControllerClassName) {
-		$this->controllerClassName = $customControllerClassName;
+	/**
+	 * @param string $controllerLookupId
+	 */
+	public function setControllerLookupId(string $controllerLookupId) {
+		$this->controllerLookupId = $controllerLookupId;
 	}
-	
-// 	public function createScript(Spec $spec) {
-// 		$constrollerClass = null;
-// 		try {
-// 			$controllerClass = ReflectionUtils::createReflectionClass(
-// 					$this->getControllerClassName());
-// 			if (!$controllerClass->implementsInterface('n2n\web\http\controller\Controller')) {
-// 				throw Spec::createInvalidSpecConfigurationException($this->getId(), null, 
-// 						$constrollerClass->getName() . ' must implement n2n\web\http\controller\Controller');
-// 			}
-// 		} catch (TypeNotFoundException $e) {
-// 			throw Spec::createInvalidSpecConfigurationException($this->getId(), $e);
-// 		}
-	
-// 		return new CustomType($this->getId(), $this->getModuleNamespace(), $controllerClass);
-// 	}
 	
 	public function toTypeString(): string {
 		return 'CustomType (id: ' . $this->getId() . ', module: ' . $this->getModuleNamespace() . ')';
 	}
 	
-	public static function createFromCustomType(CustomType $script) {
-		$extraction = new CustomTypeExtraction($script->getId(), $script->getModuleNamespace());
-		$extraction->setLabel($script->getLabel());
-		$extraction->setControllerClassName($script->getControllerClass()->getName());
-		return $extraction;
-	}
+// 	public static function createFromCustomType(CustomType $script) {
+// 		$extraction = new CustomTypeExtraction($script->getId(), $script->getModuleNamespace());
+// 		$extraction->setLabel($script->getLabel());
+// 		$extraction->setControllerLookupId($script->getControllerClass()->getName());
+// 		return $extraction;
+// 	}
 }

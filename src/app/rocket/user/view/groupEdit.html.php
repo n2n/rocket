@@ -56,10 +56,10 @@
 					data-unaccessible-items-title="<?php $html->text('user_unaccessible_menu_items_title') ?>"
 					data-assign-title="<?php $html->text('common_assign_label') ?>"
 					data-unassign-title="<?php $html->text('common_unassign_label') ?>">
-					<?php $formHtml->inputCheckbox('menuItemRestrictionEnabled', true, null, 'MenuItemRestrictionEnabled') ?>
+					<?php $formHtml->inputCheckbox('launchPadRestrictionEnabled', true, null, 'LaunchPadRestrictionEnabled') ?>
 					<ul>
-						<?php foreach ($userGroupForm->getaccessibleMenuItemIdOptions() as $id => $label): ?>
-							<li><?php $formHtml->inputCheckbox('accessibleMenuItemIds[' . $id . ']', $id, null, $label)?></li>
+						<?php foreach ($userGroupForm->getaccessibleLaunchPadIdOptions() as $id => $label): ?>
+							<li><?php $formHtml->inputCheckbox('accessibleLaunchPadIds[' . $id . ']', $id, null, $label)?></li>
 						<?php endforeach ?>
 					</ul>
 				</div>

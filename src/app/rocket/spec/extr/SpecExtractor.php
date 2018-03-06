@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
-use rocket\spec\InvalidMenuItemConfigurationException;
+use rocket\spec\InvalidLaunchPadConfigurationException;
 use rocket\ei\manage\critmod\sort\SortData;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -103,7 +103,7 @@ class SpecExtractor {
 	
 	private function createCustomTypeExtraction($id, Attributes $customSpecAttributes) {
 		$extraction = new CustomTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setControllerClassName($customSpecAttributes->getScalar(RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY));
+		$extraction->setControllerLookupId($customSpecAttributes->getScalar(RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY));
 		return $extraction;
 	}
 	
@@ -429,44 +429,50 @@ class SpecExtractor {
 	}
 	
 	/**
-	 * @return \rocket\spec\extr\MenuItemExtraction[]
+	 * @return \rocket\spec\extr\LaunchPadExtraction[]
 	 */
-	public function extractMenuItems() {
-		$menuItemExtractions = array();
-		foreach ($this->attributes->getArray(RawDef::MENU_ITEMS_KEY, false, array(), 
-				TypeConstraint::createArrayLike('array', true)) as $menuItemId => $menuItemRawData) {
+	public function extractLaunchPads() {
+		$launchPadsKey = RawDef::LAUNCH_PADS_KEY;
+		if (!$this->attributes->contains(RawDef::LAUNCH_PADS_KEY)
+				&& $this->attributes->contains('menuItems')) {
+			$launchPadsKey = 'menuItems';
+		}
+		
+		$launchPadExtractions = array();
+		foreach ($this->attributes->getArray($launchPadsKey, false, array(), 
+				TypeConstraint::createArrayLike('array', true)) as $typePathStr => $launchPadRawData) {
 					
-			$menuItemAttributes = null;
-			if ($menuItemRawData !== null) {
-				$menuItemAttributes = new Attributes($menuItemRawData);
+			$launchPadAttributes = null;
+			if ($launchPadRawData !== null) {
+				$launchPadAttributes = new Attributes($launchPadRawData);
 			}
 			
-			$menuItemExtractions[$menuItemId] = $this->createMenuItemExtraction($menuItemId, new Attributes($menuItemRawData));
+			$launchPadExtractions[$typePathStr] = $this->createLaunchPadExtraction($typePathStr, new Attributes($launchPadRawData));
 		}
-		return $menuItemExtractions;
+		return $launchPadExtractions;
 	}
 
 	/**
-	 * @param string $menuItemId
+	 * @param string $launchPadId
 	 * @param Attributes $specAttributes
-	 * @return MenuItemExtraction
+	 * @return LaunchPadExtraction
 	 */
-	private function createMenuItemExtraction($menuItemId, Attributes $specAttributes) {
+	private function createLaunchPadExtraction($launchPadId, Attributes $specAttributes) {
 		try {
-			$menuItemExtraction = new MenuItemExtraction(TypePath::create($menuItemId), $this->moduleNamespace);
-			$menuItemExtraction->setLabel($specAttributes->getString(RawDef::MENU_ITEM_LABEL_KEY, false));
-			return $menuItemExtraction;
+			$launchPadExtraction = new LaunchPadExtraction(TypePath::create($launchPadId), $this->moduleNamespace);
+			$launchPadExtraction->setLabel($specAttributes->getString(RawDef::LAUNCH_PAD_LABEL_KEY, false));
+			return $launchPadExtraction;
 		} catch (\InvalidArgumentException $e) {
-			throw $this->createMenuItemException($menuItemId, $e);
+			throw $this->createLaunchPadException($launchPadId, $e);
 		} catch (AttributesException $e) {
-			throw $this->createMenuItemException($menuItemId, $e);
+			throw $this->createLaunchPadException($launchPadId, $e);
 		} catch (\InvalidArgumentException $e) {
-			throw $this->createMenuItemException($menuItemId, $e);
+			throw $this->createLaunchPadException($launchPadId, $e);
 		}
 	}
 
-	private function createMenuItemException($id, \Exception $previous) {
-		throw new InvalidMenuItemConfigurationException('MenuItem with following id is invalid configruated: ' . $id,
+	private function createLaunchPadException($id, \Exception $previous) {
+		throw new InvalidLaunchPadConfigurationException('LaunchPad with following id is invalid configruated: ' . $id,
 				0, $previous);
 	}
 }

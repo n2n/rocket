@@ -21,14 +21,14 @@
  */
 namespace rocket\spec;
 
-use rocket\core\model\MenuItem;
+use rocket\core\model\LaunchPad;
 use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerContext;
 use n2n\web\http\controller\Controller;
 use rocket\core\model\TransactionApproveAttempt;
 use rocket\custom\CustomType;
 
-class CustomMenuItem implements MenuItem {
+class CustomLaunchPad implements LaunchPad {
 	private $id;
 	private $customSpec;
 	private $label;
@@ -40,7 +40,7 @@ class CustomMenuItem implements MenuItem {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\MenuItem::getId()
+	 * @see \rocket\core\model\LaunchPad::getId()
 	 */
 	public function getId(): string {
 		return $this->id;
@@ -59,7 +59,7 @@ class CustomMenuItem implements MenuItem {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\MenuItem::determinePathExt($n2nContext)
+	 * @see \rocket\core\model\LaunchPad::determinePathExt($n2nContext)
 	 */
 	public function determinePathExt(N2nContext $n2nContext) {
 		return null;
@@ -67,7 +67,7 @@ class CustomMenuItem implements MenuItem {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\MenuItem::lookupController($n2nContext, $delegateControllerContext)
+	 * @see \rocket\core\model\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
 	 */
 	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
 		return $n2nContext->lookup($this->customSpec->getControllerLookupId());

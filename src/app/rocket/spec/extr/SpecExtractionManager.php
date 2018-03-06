@@ -22,12 +22,11 @@
 namespace rocket\spec\extr;
 
 use n2n\util\config\InvalidConfigurationException;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use rocket\spec\source\ModularConfigSource;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\InvalidEiMaskConfigurationException;
-use rocket\core\model\UnknownMenuItemException;
-use n2n\reflection\ArgUtils;
+use rocket\core\model\UnknownLaunchPadException;
 use rocket\spec\TypePath;
 
 /**
@@ -52,8 +51,8 @@ class SpecExtractionManager {
 	private $eiTypeExtractions = array();
 	private $eiTypeExtractionCis = array();
 	private $eiTypeExtensionExtractionGroups = array();
-	private $eiModificatorExtractions = array();
-	private $menuItemExtractions = array();
+	private $eiModificatorExtractionGroups = array();
+	private $launchPadExtractions = array();
 	
 	/**
 	 * @param ModularConfigSource $moduleConfigSource
@@ -94,7 +93,7 @@ class SpecExtractionManager {
 	/**
 	 * 
 	 */
-	public function initialize() {
+	public function extract() {
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
 			
@@ -104,7 +103,7 @@ class SpecExtractionManager {
 		$this->dingselTypes();
 		$this->dingselEiTypeExtensions();
 		$this->dingselEiModificatorExtractions();
-		$this->dingselMenuItemExtractions();
+		$this->dingselLaunchPadExtractions();
 		
 		$this->init = true;
 	}
@@ -117,6 +116,10 @@ class SpecExtractionManager {
 	}
 	
 	private function dingselTypes() {
+		$this->customTypeExtractions = array();
+		$this->eiTypeExtractions = array();
+		$this->eiTypeExtractionCis = array();
+		
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
 				
@@ -150,39 +153,39 @@ class SpecExtractionManager {
 			if ($specCsDec === null) continue;
 			
 			foreach ($specCsDec->getEiTypeExtensionExtractionGroups() 
-					as $extendedTypePathStr => $eiTypeExtensionExtractions) {
-				if (!isset($this->eiTypeExtensionExtractionGroups[$extendedTypePathStr])) {
-					$this->eiTypeExtensionExtractionGroups[$extendedTypePathStr] = array();
+					as $extendedEiTypePathStr => $eiTypeExtensionExtractions) {
+				if (!isset($this->eiTypeExtensionExtractionGroups[$extendedEiTypePathStr])) {
+					$this->eiTypeExtensionExtractionGroups[$extendedEiTypePathStr] = array();
 				}
 				
 				foreach ($eiTypeExtensionExtractions as $eiTypeExtensionExtraction) {
 					$id = $eiTypeExtensionExtraction->getId();
 					
-					if (isset($this->eiTypeExtensionExtractionGroups[$extendedTypePathStr][$id])) {
+					if (isset($this->eiTypeExtensionExtractionGroups[$extendedEiTypePathStr][$id])) {
 						throw new $this->createDuplicatedEiMaskIdException($extendedTypePath, $id);
 					}
 						
-					if (isset($this->customTypeExtractions[$eiTypeExtensionExtraction->getExtendedTypePath()->getTypeId()])) {
+					if (isset($this->customTypeExtractions[$eiTypeExtensionExtraction->getExtendedEiTypePath()->getTypeId()])) {
 						throw new InvalidConfigurationException('Invalid configuration in: ' . $specCsDec->getDataSource(), 0, 
 								new InvalidEiMaskConfigurationException('EiMask with id \'' . $eiMaskId 
 										. '\' was configured not for CustomType \'' . $eiTypeId . '\.'));
 					}
 						
-					$this->eiTypeExtensionExtractionGroups[$extendedTypePathStr][$id] = $eiTypeExtensionExtraction;
+					$this->eiTypeExtensionExtractionGroups[$extendedEiTypePathStr][$id] = $eiTypeExtensionExtraction;
 				}
 			}
 		}
 	}
 	
 	private function dingselEiModificatorExtractions() {
-		$this->eiModificatorExtractions = array();
+		$this->eiModificatorExtractionGroups = array();
 		
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
 			
 			foreach ($specCsDec->getEiModificatorExtractionGroups() as $typePathStr => $eiModificatorExtractions) {
-				if (!isset($this->eiModificatorExtractions[$typePathStr])) {
-					$this->eiModificatorExtractions[$typePathStr] = array();
+				if (!isset($this->eiModificatorExtractionGroups[$typePathStr])) {
+					$this->eiModificatorExtractionGroups[$typePathStr] = array();
 				}
 				
 				foreach ($eiModificatorExtractions as $eiModificatorExtraction) {
@@ -190,7 +193,7 @@ class SpecExtractionManager {
 					$typePath = $eiModificatorExtraction->getTypePath();
 					$typePathStr = (string) $typePath;
 					
-					if (isset($this->eiModificatorExtractions[$typePathStr][$id])) {
+					if (isset($this->eiModificatorExtractionGroups[$typePathStr][$id])) {
 						throw new $this->createDuplicatedEiModificatorIdException($typePathStr, $id);
 					}
 					
@@ -202,7 +205,7 @@ class SpecExtractionManager {
 										. '\' was configured not for CustomType \'' . $typePath->getTypeId() . '\.'));
 					}
 						
-					$this->eiModificatorExtractions[$typePathStr][$id] = $eiModificatorExtraction;
+					$this->eiModificatorExtractionGroups[$typePathStr][$id] = $eiModificatorExtraction;
 				}
 			}
 		}
@@ -264,15 +267,15 @@ class SpecExtractionManager {
 				. '\' for EiType \'' . $eiTypeId . '\' is defined in multiple data sources: ' . implode(', ', $dataSources));
 	}
 	
-// 	private function createDuplicatedMenuItemIdException($menuItemId): InvalidConfigurationException {
+// 	private function createDuplicatedLaunchPadIdException($launchPadId): InvalidConfigurationException {
 // 		$dataSources = array();
 // 		foreach ($this->specCsDecs as $specConfig) {
-// 			if ($specConfig->containsMenuItemId($menuItemId)) {
+// 			if ($specConfig->containsLaunchPadId($launchPadId)) {
 // 				$dataSources[] = $specConfig->getDataSource();
 // 			}
 // 		}
 	
-// 		throw new InvalidConfigurationException('MenuItem with id \'' . $menuItemId
+// 		throw new InvalidConfigurationException('LaunchPad with id \'' . $launchPadId
 // 				. '\' is defined in multiple data sources: ' . implode(', ', $dataSources));
 // 	}
 	
@@ -291,38 +294,18 @@ class SpecExtractionManager {
 		return isset($this->customTypeExtractions[$id]) || isset($this->eiTypeExtractions[$id]);
 	}
 	
-// 	/**
-// 	 * @return TypeExtraction[] 
-// 	 */
-// 	public function getTypeExtractions(): array {
-// 		return $this->specExtractions;
-// 	}
-	
-// 	/**
-// 	 * @param string $id
-// 	 * @throws UnknownSpecException
-// 	 * @return TypeExtraction
-// 	 */
-// 	public function getTypeExtractionById($id) {
-// 		if (isset($this->specExtractions[$id])) {
-// 			return $this->specExtractions[$id];
-// 		}
+	private function valUnique($id) {
+		if (!$this->containsTypeId($id)) return;
 		
-// 		throw new UnknownSpecException('No Spec with id \'' . $id . '\' defined in: ' 
-// 				. $this->buildConfigSourceString());
-// 	}
-	
-	public function containsEiTypeEntityClassName(string $className): bool {
-		return isset($this->eiTypeExtractionCis[$className]);
+		throw new IllegalStateException('Duplicated type id: ' . $id);
 	}
 	
-	public function getEiTypeExtractionByClassName($className): EiTypeExtraction {
-		if (isset($this->eiTypeExtractionCis[$className])) {
-			return $this->eiTypeExtractionCis[$className];
-		}
-		
-		throw new UnknownSpecException('No EiType for Entity \'' . $className . '\' defined in: ' 
-				. $this->buildConfigSourceString());
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsCustomTypeExtractionId(string $id) {
+		return isset($this->customTypeExtractions[$id]);
 	}
 	
 	/**
@@ -333,57 +316,224 @@ class SpecExtractionManager {
 	}
 	
 	/**
+	 * @param string $id
+	 * @throws UnknownTypeException
+	 * @return CustomTypeExtraction
+	 */
+	public function getCustomTypeExtractionById(string $id) {
+		if (isset($this->customTypeExtractions[$id])) {
+			return $this->customTypeExtractions[$id];
+		}
+		
+		throw new UnknownTypeException('No CustomType with id \'' . $id . '\' defined in: '
+				. $this->buildConfigSourceString());
+	}
+	
+	/**
+	 * @param CustomTypeExtraction $customTypeExtraction
+	 */
+	public function addCustomTypeExtraction(CustomTypeExtraction $customTypeExtraction) {
+		$id = $customTypeExtraction->getId();
+		$this->valUnique($id);
+		
+		$this->customTypeExtractions[$id] = $customTypeExtraction;
+	}
+	
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsEiTypeId(string $id) {
+		return isset($this->eiTypeExtractions[$id]);
+	}
+	
+	/**
+	 * @param string $id
+	 * @throws UnknownTypeException
+	 * @return EiTypeExtraction
+	 */
+	public function getEiTypeExtractionById(string $id) {
+		if (isset($this->eiTypeExtractions[$id])) {
+			return $this->eiTypeExtractions[$id];
+		}
+		
+		throw new UnknownTypeException('No EiType with id \'' . $id . '\' defined in: '
+				. $this->buildConfigSourceString());
+	}
+	
+	/**
+	 * @param string $className
+	 * @return bool
+	 */
+	public function containsEiTypeEntityClassName(string $className) {
+		return isset($this->eiTypeExtractionCis[$className]);
+	}
+	
+	/**
+	 * @param string $className
+	 * @throws UnknownTypeException
+	 * @return EiTypeExtraction
+	 */
+	public function getEiTypeExtractionByClassName(string $className) {
+		if (isset($this->eiTypeExtractionCis[$className])) {
+			return $this->eiTypeExtractionCis[$className];
+		}
+		
+		throw new UnknownTypeException('No EiType for Entity \'' . $className . '\' defined in: ' 
+				. $this->buildConfigSourceString());
+	}
+	
+	/**
 	 * @return EiTypeExtraction[]
 	 */
 	public function getEiTypeExtractions() {
 		return $this->eiTypeExtractions;
 	}
 	
-	/**
-	 * @return array
-	 */
-	public function getEiTypeExtensionExtractionGroups() {
-		return $this->eiTypeExtensionExtractionGroups;
+	public function addEiTypeExtraction(EiTypeExtraction $eiTypeExtraction) {
+		$id = $eiTypeExtraction->getId();
+		$this->valUnique($id);
+		
+		$entityClassName = $eiTypeExtraction->getEntityClassName();
+		if (isset($this->eiTypeExtractionCis[$entityClassName])) {
+			throw new IllegalStateException('EiType for Entity already defined: ' . $entityClassName);
+		}
+		
+		$this->eiTypeExtractions[$id] = $eiTypeExtraction;
+		$this->eiTypeExtractionCis[$entityClassName] = $customTypeExtraction;
 	}
 	
 	/**
-	 * @return array
+	 * @param string $id
 	 */
-	public function getEiModificatorExtractionGroups() {
-		return $this->eiModificatorExtractions;
+	public function removeTypeById(string $id) {
+		unset($this->customTypeExtractions[$id]);
+		
+		if (isset($this->eiTypeExtractions[$id])) {
+			unset($this->eiTypeExtractionCis[$this->eiTypeExtractions[$id]->getEntityClassName()]);
+			unset($this->eiTypeExtractions[$id]);
+		}
 	}
 	
+// 	/**
+// 	 * @return array
+// 	 */
+// 	public function getEiTypeExtensionExtractionGroups() {
+// 		return $this->eiTypeExtensionExtractionGroups;
+// 	}
+	
+// 	/**
+// 	 * @return array
+// 	 */
+// 	public function getEiModificatorExtractionGroups() {
+// 		return $this->eiModificatorExtractions;
+// 	}
 	
 	/**
-	 * @param string $typeId
+	 * @param string $extendedEiTypePath
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsEiTypeExtensionExtractionId(TypePath $extendedEiTypePath, string $id) {
+		return isset($this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id]);
+	}
+	
+	/**
+	 * @param string $eiTypeId
 	 * @return EiTypeExtensionExtraction[]
 	 */
-	public function getEiTypeExtensionExtractionsByEiTypeId(string $typeId) {
-		if (isset($this->eiTypeExtensionExtractionGroups[$typeId])) {
-			return $this->eiTypeExtensionExtractionGroups[$typeId];
+	public function getEiTypeExtensionExtractionsByExtendedEiTypePath(TypePath $extendedEiTypePath) {
+		$extendedEiTypePathStr = (string) $extendedEiTypePath;
+		if (isset($this->eiTypeExtensionExtractionGroups[$extendedEiTypePathStr])) {
+			return $this->eiTypeExtensionExtractionGroups[$extendedEiTypePathStr];
 		}
 		return array();
+	}
+	
+	/**
+	 * @param EiTypeExtensionExtraction $eiTypeExtensionExtraction
+	 * @throws IllegalStateException
+	 */
+	public function addEiTypeExtensionExtraction(EiTypeExtensionExtraction $eiTypeExtensionExtraction) {
+		$extendedEiTypePath = $eiTypeExtensionExtraction->getExtendedEiTypePath();
+		$id = $eiTypeExtensionExtraction->getId();
+		
+		if ($this->containsEiTypeExtensionExtractionId($extendedEiTypePath, $id)) {
+			throw new IllegalStateException('EiTypeExtensionExtraction with id \'' . $id 
+					. '\' already defined for EiType \'' . $eiTypePath . '\'.');
+		}
+		
+		$this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id] = $eiTypeExtensionExtraction;
+	}
+	
+	/**
+	 * @param TypePath $extendedEiTypePath
+	 * @param string $id
+	 */
+	public function removeEiTypeExtensionExtractionById(TypePath $extendedEiTypePath, string $id) {
+		unset($this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id]);
 	}
 		
 	/**
-	 * @param string $typeId
+	 * @param TypePath $eiTypePath
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsEiModificatorExtractionId(TypePath $eiTypePath, string $id) {
+		return isset($this->eiModificatorExtractionGroups[(string) $eiTypePath][$id]);
+	}
+	
+	/**
+	 * @param TypePath $eiTypePath
 	 * @return EiModificatorExtraction[]
 	 */
-	public function getEiModificatorExtractionsByEiTypeId(string $typeId) {
-		if (isset($this->eiModificatorExtractions[$typeId])) {
-			return $this->eiModificatorExtractions[$typeId];
+	public function getEiModificatorExtractionsByEiTypePath(TypePath $eiTypePath) {
+		$typePathStr = (string) $eiTypePath;
+		if (isset($this->eiModificatorExtractionGroups[$typePathStr])) {
+			return $this->eiModificatorExtractionGroups[$typePathStr];
 		}
 		return array();
+	}
+	
+	/**
+	 * @param EiModificatorExtraction $eiModificatorExtraction
+	 * @throws IllegalStateException
+	 */
+	public function addEiModificatorExtraction(EiModificatorExtraction $eiModificatorExtraction) {
+		$eiTypePath = $eiModificatorExtraction->getTypePath();
+		$id = $eiModificatorExtraction->getId();
+		
+		if ($this->containsEiModificatorExtractionId($eiTypePath, $id)) {
+			throw new IllegalStateException('EiModificator with id \'' . $id . '\' already defined for EiType \''
+					. $eiTypePath . '\'.');
+		}
+		
+		$this->eiModificatorExtractionGroups[(string) $eiTypePath][$id] = $eiModificatorExtraction;
+	}
+	
+	/**
+	 * @param TypePath $eiTypePath
+	 * @param string $id
+	 */
+	public function removeEiModificatorExtractionById(TypePath $eiTypePath, string $id) {
+		unset($this->eiModificatorExtractionGroups[(string) $eiTypePath][$id]);
+	}
+	
+	/**
+	 * @param TypePath $eiTypePath
+	 */
+	public function removeEiModificatorExtractionsByEiTypePath(TypePath $eiTypePath) {
+		$this->eiModificatorExtractionGroups[(string) $eiTypePath] = array();
 	}
 	
 	/**
 	 * @param TypePath $typePath
-	 * @return MenuItemExtraction[]
+	 * @return LaunchPadExtraction[]
 	 */
-	public function getMenuItemExtractionByTypePath(TypePath $typePath) {
+	public function getLaunchPadExtractionByEiTypePath(TypePath $typePath) {
 		$typePathStr = (string) $typePath;
-		if (isset($this->menuItemExtractions[$typePathStr])) {
-			return $this->menuItemExtractions[$typePathStr];
+		if (isset($this->launchPadExtractions[$typePathStr])) {
+			return $this->launchPadExtractions[$typePathStr];
 		}
 		return null;
 	}
@@ -402,56 +552,53 @@ class SpecExtractionManager {
 		return 'config source bundle (' . implode(', ', $configSourceStrs) . ')';
 	}
 	
-	public function addSpec(TypeExtraction $specExtraction) {
-		$id = $specExtraction->getId();
-		if (isset($this->specExtractions[$id])) {
-			throw new IllegalStateException('Duplicated spec id: ' . $id);
-		}
-		
-		$this->specExtractions[$id] = $specExtraction;
-		
-		if ($specExtraction instanceof EiTypeExtraction) {
-			$entityClassName = $specExtraction->getEntityClassName();
-			
-			if (isset($this->eiTypeExtractions[$entityClassName])) {
-				throw new IllegalStateException('EiType for Entity already defined: ' . $entityClassName);
-			}
-			
-			$this->eiTypeExtractions[$entityClassName] = $specExtraction;
-		} else {
-			ArgUtils::assertTrue($specExtraction instanceof CustomTypeExtraction);
-		}
-		
-		unset($this->eiTypeExtensionExtractionGroups[$specExtraction->getId()]);
+	/**
+	 * @param TypePath $typePath
+	 * @return bool
+	 */
+	public function containsLaunchPadExtractionTypePath(TypePath $typePath) {
+		return isset($this->launchPadExtractions[(string) $typePath]);
 	}
 	
-	public function removeSpecById(string $specId) {
-		if (isset($this->specExtractions[$specId]) && $this->specExtractions[$specId] instanceof EiTypeExtraction) {
-			unset($this->eiTypeExtractions[$this->specExtractions[$specId]->getEntityClassName()]);
+	/**
+	 * @return LaunchPadExtraction[]
+	 */
+	public function getLaunchPadExtractions() {
+		return $this->launchPadExtractions;
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @throws UnknownLaunchPadException
+	 * @return LaunchPadExtraction
+	 */
+	public function getLaunchPadExtractionByTypePath(TypePath $typePath) {
+		$typePathStr = (string) $typePath;
+		if (isset($this->launchPadExtractions[$typePathStr])) {
+			return $this->launchPadExtractions[$typePathStr];
 		}
 		
-		unset($this->specExtractions[$specId]);
-		unset($this->eiTypeExtensionExtractionGroups[$specId]);
-	}
-	
-	public function getMenuItemExtractions() {
-		return $this->menuItemExtractions;
-	}
-	
-	public function getMenuItemExtractionById(string $id): MenuItemExtraction {
-		if (isset($this->menuItemExtractions[$id])) {
-			return $this->menuItemExtractions[$id];
-		}
-		throw new UnknownMenuItemException('No MenuItem with id \'' . $id . '\' defined in: '
+		throw new UnknownLaunchPadException('No LaunchPad with id \'' . $typePathStr . '\' defined in: '
 				. $this->buildConfigSourceString(), null, null, 2);
 	}
-
-	public function addMenuItem(MenuItemExtraction $menuItemExtraction) {
-		$this->menuItemExtractions[$menuItemExtraction->getId()] = $menuItemExtraction;
+	
+	/**
+	 * @param LaunchPadExtraction $launchPadExtraction
+	 * @throws IllegalStateException
+	 */
+	public function addLaunchPad(LaunchPadExtraction $launchPadExtraction) {
+		if ($this->containsLaunchPadExtractionTypePath($typePath)) {
+			throw new IllegalStateException('LaunchPadExtraction for Type \'' . $typePath . '\' already defined.');
+		}
+		
+		$this->launchPadExtractions[(string) $launchPadExtraction->getTypePath()] = $launchPadExtraction;
 	}
 	
-	public function removeMenuItemById(string $menuItemId) {
-		unset($this->menuItemExtractions[$menuItemId]);
+	/**
+	 * @param TypePath $typePath
+	 */
+	public function removeLaunchPadByTypePath(TypePath $typePath) {
+		unset($this->launchPadExtractions[(string) $typePath]);
 	}
 	
 	/**
@@ -502,16 +649,16 @@ class SpecExtractionManager {
 			}
 		}
 		
-		foreach ($this->eiModificatorExtractions as $eiTypeId => $unboundEiModificatorExtractions) {
+		foreach ($this->eiModificatorExtractionGroups as $eiTypeId => $unboundEiModificatorExtractions) {
 			foreach ($unboundEiModificatorExtractions as $unboundEiModificatorExtractions) {
 				$this->getSpecCsDescByModuleNamespace($unboundEiModificatorExtractions->getModuleNamespace())
 						->addEiModificatorExtraction($eiTypeId, $unboundEiModificatorExtractions);
 			}
 		}
 		
-		foreach ($this->menuItemExtractions as $menuItemId => $menuItemExtraction) {
-			$this->getSpecCsDescByModuleNamespace($menuItemExtraction->getModuleNamespace())
-					->addMenuItemExtraction($menuItemExtraction);
+		foreach ($this->launchPadExtractions as $launchPadId => $launchPadExtraction) {
+			$this->getSpecCsDescByModuleNamespace($launchPadExtraction->getModuleNamespace())
+					->addLaunchPadExtraction($launchPadExtraction);
 		}
 		
 		foreach ($this->specCsDecs as $specCsDec) {
@@ -520,20 +667,21 @@ class SpecExtractionManager {
 		}
 	}
 	
-	
-	
-	private function dingselMenuItemExtractions() {
+	/**
+	 * 
+	 */
+	private function dingselLaunchPadExtractions() {
 		foreach ($this->specCsDecs as $specCsDec) {
 			if ($specCsDec === null) continue;
 			
-			foreach ($specCsDec->getMenuItemExtractions() as $menuItemExtraction) {
-				$typePathStr = (string) $menuItemExtraction->getTypePath();
+			foreach ($specCsDec->getLaunchPadExtractions() as $launchPadExtraction) {
+				$typePathStr = (string) $launchPadExtraction->getTypePath();
 				
-				if (isset($this->menuItemExtractions[$typePathStr])) {
-					throw $this->createDuplicatedMenuItemIdException($typePathStr);
+				if (isset($this->launchPadExtractions[$typePathStr])) {
+					throw $this->createDuplicatedLaunchPadIdException($typePathStr);
 				}
 				
-				$this->menuItemExtractions[$typePathStr] = $menuItemExtraction;
+				$this->launchPadExtractions[$typePathStr] = $launchPadExtraction;
 			}
 		}
 	}

@@ -26,7 +26,7 @@ use n2n\web\http\controller\impl\ScrController;
 use n2n\web\http\controller\ParamQuery;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use n2n\web\http\PageNotFoundException;
 use rocket\ei\UnknownEiTypeExtensionException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
@@ -68,7 +68,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 			} 
 			
 			return $eiType;
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (UnknownEiTypeExtensionException $e) {
 			throw new PageNotFoundException(null, 0, $e);

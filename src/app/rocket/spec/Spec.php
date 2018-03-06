@@ -28,9 +28,8 @@ use rocket\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\extr\SpecExtractionManager;
-use rocket\core\model\MenuItem;
-use rocket\core\model\UnknownMenuItemException;
-use n2n\util\ex\NotYetImplementedException;
+use rocket\core\model\LaunchPad;
+use rocket\core\model\UnknownLaunchPadException;
 use rocket\spec\extr\CustomTypeExtraction;
 use n2n\util\config\AttributesException;
 use rocket\core\model\Rocket;
@@ -54,7 +53,7 @@ class Spec {
 	
 	private $specExtractionManager;
 	
-	private $menuItems = array();
+	private $launchPads = array();
 	private $customTypes = array();
 	private $eiTypes = array();
 	private $eiTypeCis = array();
@@ -93,7 +92,7 @@ class Spec {
 	 */
 	public function getSpecExtractionManager() {
 		if (!$this->specExtractionManager->isInitialized()) {
-			$this->specExtractionManager->initialize();
+			$this->specExtractionManager->extract();
 		}
 		
 		return $this->specExtractionManager;
@@ -101,39 +100,28 @@ class Spec {
 
 	/**
 	 * @param string $id
-	 * @return MenuItem
-	 * @throws UnknownMenuItemException
+	 * @return LaunchPad
+	 * @throws UnknownLaunchPadException
 	 */
-	public function getMenuItemById(string $id) {
-		if (isset($this->menuItems[$id])) {
-			return $this->menuItems[$id];
+	public function getLaunchPadById(string $id) {
+		if (isset($this->launchPads[$id])) {
+			return $this->launchPads[$id];
 		}
 		
-		throw new UnknownMenuItemException('Unknown menu item id:  ' . $id);
-		
-// 		try {
-// 			return $this->menuItems[$id] = $this->createMenuItem($this->specExtractionManager
-// 					->getMenuItemExtractionById($id));
-// 		} catch (UnknownSpecException $e) {
-// 			throw $this->createInvalidMenuItemConfigurationException($id, $e);
-// 		} catch (UnknownEiTypeExtensionException $e)  {
-// 			throw $this->createInvalidMenuItemConfigurationException($id, $e);
-// 		}
-		
+		throw new UnknownLaunchPadException('Unknown menu item id:  ' . $id);
 	}
 	
-	private function createInvalidMenuItemConfigurationException($menuItemId, \Exception $previous) {
-		throw new InvalidMenuItemConfigurationException('MenuItem with following id invalid configured: ' 
-				. $menuItemId, 0, $previous);
+	private function createInvalidLaunchPadConfigurationException($launchPadId, \Exception $previous) {
+		throw new InvalidLaunchPadConfigurationException('LaunchPad with following id invalid configured: ' 
+				. $launchPadId, 0, $previous);
 	}
 	
-	
-	private function createCustomMenuItem(TypePath $typePath, CustomType $customType, string $label = null) {
-		return $this->menuItems[(string) $typePath] = new CustomMenuItem($typePath, $customType, $label);
+	private function createCustomLaunchPad(TypePath $typePath, CustomType $customType, string $label = null) {
+		return $this->launchPads[(string) $typePath] = new CustomLaunchPad($typePath, $customType, $label);
 	}
 	
-	private function createEiMenuItem(TypePath $typePath, EiMask $eiMask, string $label = null) {
-		return $this->menuItems[(string) $typePath] = new EiMenuItem($typePath, $eiMask, $label);
+	private function createEiLaunchPad(TypePath $typePath, EiMask $eiMask, string $label = null) {
+		return $this->launchPads[(string) $typePath] = new EiLaunchPad($typePath, $eiMask, $label);
 	}
 	
 		
@@ -160,7 +148,7 @@ class Spec {
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @param bool $setup
+	 * @param bool $noSetupMode
 	 * @throws InvalidConfigurationException
 	 */
 	public function initialize(N2nContext $n2nContext, bool $noSetupMode = false) {
@@ -181,27 +169,27 @@ class Spec {
 // 			$data = $cacheItem->getData();
 			$this->customTypes = $cacheItem->data['customTypes'];
 			$this->eiTypes = $cacheItem->data['eiTypes'];
-			$this->menuItems = $cacheItem->data['menuItems'];
+			$this->launchPads = $cacheItem->data['launchPads'];
 			$this->eiTypeSetupQueue->setPropIns($cacheItem->data['propIns']);
 			$this->eiTypeSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators']);
 		} else {
 			if (!$this->specExtractionManager->isInitialized()) {
-				$this->specExtractionManager->initialize();
+				$this->specExtractionManager->extract();
 			}
 			
 			foreach ($this->specExtractionManager->getCustomTypeExtractions() as $customTypeExtraction) {
 				$customType = $this->createCustomTypeFromExtr($customTypeExtraction);
 				
-				if (null !== ($menuItemExtraction = $customTypeExtraction->getMenuItemExtraction())) {
-					$this->createCustomMenuItem($menuItemExtraction->getLabel() ?? $customType->getLabel());
+				if (null !== ($launchPadExtraction = $customTypeExtraction->getLaunchPadExtraction())) {
+					$this->createCustomLaunchPad($launchPadExtraction->getLabel() ?? $customType->getLabel());
 				}
 			}
 			
 			foreach ($this->specExtractionManager->getEiTypeExtractions() as $eiTypeExtraction) {
 				$eiType = $this->createEiTypeFromExtr($eiTypeExtraction);
 				
-				if (null !== ($menuItemExtraction = $eiTypeExtraction->getMenuItemExtraction())) {
-					$this->createEiMenuItem($eiMask, $menuItemExtraction->getLabel() ?? $eiType->getEiMask()->getLabel());
+				if (null !== ($launchPadExtraction = $eiTypeExtraction->getLaunchPadExtraction())) {
+					$this->createEiLaunchPad($eiMask, $launchPadExtraction->getLabel() ?? $eiType->getEiMask()->getLabel());
 				}
 			}
 			
@@ -214,15 +202,15 @@ class Spec {
 				
 // 				if ($eiTypeExtension === null) continue;
 				
-// 				if (null !== ($menuItemExtraction = $eiTypeExtension->getMenuItemExtraction())) {
+// 				if (null !== ($launchPadExtraction = $eiTypeExtension->getLaunchPadExtraction())) {
 // 					$eiMask = $eiType->getEiMask();
-// 					$this->createEiMenuItem($eiMask, $menuItemExtraction->getLabel() ?? $eiMask->getLabel());
+// 					$this->createEiLaunchPad($eiMask, $launchPadExtraction->getLabel() ?? $eiMask->getLabel());
 // 				}
 // 			}
 			
 			if ($charcs !== null) {
 				$cacheStore->store(Spec::class, $charcs, array(
-						'specs' => $this->customTypes, 'eiTypes' => $this->eiTypes, 'menuItems' => $this->menuItems,
+						'specs' => $this->customTypes, 'eiTypes' => $this->eiTypes, 'launchPads' => $this->launchPads,
 						'propIns' => $this->eiTypeSetupQueue->getPropIns(),
 						'eiConfigurators' => $this->eiTypeSetupQueue->getEiConfigurators()));
 			}
@@ -261,41 +249,44 @@ class Spec {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public function clear() {
 		$this->noSetupMode = null;
 		$this->customTypes = array();
 		$this->eiTypes = array();
-		$this->menuItems = array();
+		$this->launchPads = array();
 	}
 	
 	private function createEiTypeFromExtr(EiTypeExtraction $eiTypeExtraction) {
 		$factory = new EiTypeFactory($this->entityModelManager, $this->getEiTypeSetupQueue());
 		
 		$typePath = new TypePath($eiTypeExtraction->getId());
-		$eiModificationExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypeId($typePath);
+		$eiModificationExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypePath($typePath);
 		$eiType = $factory->create($eiTypeExtraction, $eiModificationExtractions);
 		
 		$this->eiTypes[$eiTypeExtraction->getId()] = $eiType;
 		$this->eiTypeCis[$eiTypeExtraction->getEntityClassName()] = $eiType;
 		
-		if (null !== ($menuItemExtraction = $this->specExtractionManager
-				->getMenuItemExtractionByTypePath($typePath))) {
-			$this->menuItems[(string) $menuItemExtraction->getTypePath()] 
-					= $this->createEiMenuItem($typePath, $eiType->getEiMask(),
-							$menuItemExtraction->getLabel());
+		if ($this->specExtractionManager->containsLaunchPadExtractionTypePath($typePath)) {
+			$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
+			$this->launchPads[(string) $launchPadExtraction->getTypePath()] 
+					= $this->createEiLaunchPad($typePath, $eiType->getEiMask(),
+							$launchPadExtraction->getLabel());
 			
 		}
 		
-		foreach ($this->specExtractionManager->getEiTypeExtensionExtractionsByEiTypeId($eiType->getId())
+		foreach ($this->specExtractionManager->getEiTypeExtensionExtractionsByExtendedEiTypePath($typePath)
 				as $eiTypeExtensionExtraction) {
 			$typePath = new TypePath($eiType->getId(), $eiTypeExtensionExtraction->getId());
-			$eiModificatorExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypeId($typePath);
+			$eiModificatorExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypePath($typePath);
 			$eiTypeExtension = $factory->createEiTypeExtension($eiType, $eiTypeExtensionExtraction, $eiModificatorExtractions);
 			$eiType->getEiTypeExtensionCollection()->add($eiTypeExtension);
 			
-			if (null !== ($menuItemExtraction = $this->specExtractionManager
-					->getMenuItemExtractionByTypePath($typePath))) {
-				$this->createEiMenuItem($typePath, $eiTypeExtension->getEiMask(), $menuItemExtraction->getLabel());
+			if ($this->specExtractionManager->containsLaunchPadExtractionTypePath($typePath)) {
+				$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
+				$this->createEiLaunchPad($typePath, $eiTypeExtension->getEiMask(), $launchPadExtraction->getLabel());
 			}
 		}
 		
@@ -306,10 +297,88 @@ class Spec {
 		$customType = $this->customTypes[$customTypeExtraction->getId()] = CustomTypeFactory::create($customTypeExtraction);
 		$typePath = new TypePath($customTypeExtraction->getId());
 		
-		if (null !== ($menuItemExtraction = $this->specExtractionManager
-				->getMenuItemExtractionByTypePath($typePath))) {
-			$this->createCustomMenuItem($typePath, $customType, $menuItemExtraction->getLabel());
+		if ($this->specExtractionManager->containsLaunchPadExtractionTypePath($typePath)) {
+			$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
+			$this->createCustomLaunchPad($typePath, $customType, $launchPadExtraction->getLabel());
 		}
+	}
+	
+	/**
+	 * @param string $id
+	 * @return boolean
+	 */
+	public function containsTypeId(string $id) {
+		return isset($this->eiTypes[$id]) || isset($this->customTypes[$id]);
+	}
+	
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsCustomTypeId(string $id) {
+		return isset($this->customTypes[$id]);
+	}
+	
+	/**
+	 *
+	 * @param string $id
+	 * @return Type
+	 * @throws UnknownTypeException
+	 * @throws IllegalStateException
+	 */
+	public function getCustomTypeById(string $id) {
+		if (isset($this->customTypes[$id])) {
+			return $this->customTypes[$id];
+		}
+		
+		$this->specExtractionManager->getCustomTypeExtractionById($id);
+		throw new IllegalStateException('Spec not initialized.');
+	}
+	
+	/**
+	 * @return CustomType[]
+	 */
+	public function getCustomTypes() {
+		return $this->customTypes;
+	}
+	
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsEiTypeId(string $id) {
+		return isset($this->eiTypes[$id]);
+	}
+	
+	/**
+	 * @param \ReflectionClass $class
+	 * @return bool
+	 */
+	public function containsEiTypeClass(\ReflectionClass $class) {
+		return isset($this->eiTypeCis[$class->getName()]);
+	}
+	
+	/**
+	 * @param string $className
+	 * @return bool
+	 */
+	public function containsEiTypeClassName(string $className) {
+		return isset($this->eiTypeCis[$className]);
+	}
+	
+	/**
+	 * @param \ReflectionClass $class
+	 * @return \rocket\ei\EiType
+	 * @throws UnknownTypeException
+	 * @throws IllegalStateException
+	 */
+	public function getEiTypeById(string $id) {
+		if (isset($this->eiTypes[$id])) {
+			return $this->eiTypes[$id];
+		}
+		
+		$this->specExtractionManager->getEiTypeExtractionById($id);
+		throw new IllegalStateException('Spec not initialized.');
 	}
 	
 	/**
@@ -326,10 +395,6 @@ class Spec {
 	 */
 	public function getEiTypeByClassName(string $className) {
 		if (isset($this->eiTypeCis[$className])) {
-// 			if ($this->noSetupMode) {
-// 				$this->eiTypeSetupQueue->exclusivePropInForEiType($this->eiTypes[$className]->getId());
-// 			}
-			
 			return $this->eiTypeCis[$className];
 		}
 		
@@ -338,96 +403,10 @@ class Spec {
 	}
 	
 	/**
-	 *
-	 * @param string $id
-	 * @return Type
-	 * @throws UnknownSpecException
-	 * @throws InvalidSpecConfigurationException
+	 * @return EiType[]
 	 */
-	public function getSpecById($id) {
-		if (isset($this->customTypes[$id])) {
-			if ($this->noSetupMode) {
-				$this->eiTypeSetupQueue->exclusivePropInForEiType($this->customTypes[$id]->getId());
-			}
-			
-			return $this->customTypes[$id];
-		}
-		
-		$this->specExtractionManager->getTypeExtractionById($id);
-		throw new IllegalStateException('Spec not initialized.');
-	}
-	
-	public function containsEiTypeClass(\ReflectionClass $class) {
-		return isset($this->eiTypes[$class->getName()]);
-	}
-	
-	public function containsEiTypeClassName(string $className) {
-		return isset($this->eiTypes[$className]);
-	}
-	
-	public function getEiTypes(): array {
-		if ($this->noSetupMode) {
-			$this->eiTypeSetupQueue->propIns();
-		}
+	public function getEiTypes() {
 		return $this->eiTypes;
-	}
-	
-	public function getCustomTypes(): array {
-		$customSpecs = array();
-		foreach ($this->customTypes as $spec) {
-			if ($spec instanceof CustomType) {
-				$customSpecs[$spec] = $spec;
-			}
-		}
-		return $customSpecs;
-	}
-	
-	/**
-	 * @param string $id
-	 * @throws UnknownSpecException
-	 * @throws InvalidSpecConfigurationException
-	 * @return EiType
-	 */
-	public function getEiTypeById(string $id) {
-		$script = $this->getSpecById($id);
-		if ($script instanceof EiType) {
-			if ($this->noSetupMode) {
-				$this->eiTypeSetupQueue->exclusivePropInForEiType($script->getId());
-			}
-			return $script;
-		}
-	
-		throw new UnknownSpecException('Script with id  \'' . $id . '\' is no EiType');
-	}
-
-	public function getSpecs(): array {
-		return $this->customTypes;
-	}
-	
-	public function removeSpecById($id) {
-		if (isset($this->customTypes[$id])) {
-			if ($this->customTypes[$id] instanceof EiType) {
-				unset($this->eiTypes[$this->customTypes[$id]->getEntityModel()->getClass()->getName()]);
-			}
-			
-			unset($this->customTypes[$id]);
-		}
-		
-		$this->specExtractionManager->removeSpecById($id);
-	}
-	
-	public function flush() {
-		throw new NotYetImplementedException();
-// 		$this->specExtractionManager->clear();
-		
-// 		foreach ($this->specs as $spec) {
-// 			$scriptConfig = $this->getOrCreateSpecConfig($script->getModule());
-// 			$scriptConfig->putTypeExtraction($script->toTypeExtraction());
-// 		}
-		
-// 		foreach ($this->specConfigs as $scriptConfig) {
-// 			$scriptConfig->flush();
-// 		}
 	}
 	
 	public function getEiTypeSetupQueue() {

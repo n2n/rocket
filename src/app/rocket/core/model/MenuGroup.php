@@ -23,7 +23,7 @@ namespace rocket\core\model;
 
 class MenuGroup {
 	private $label;
-	private $menuItems = array();
+	private $launchPads = array();
 	private $labels = array();
 	
 	public function __construct(string $label) {
@@ -35,38 +35,38 @@ class MenuGroup {
 	}
 	
 	/**
-	 * @return MenuItem[] 
+	 * @return LaunchPad[] 
 	 */
-	public function getMenuItems(): array {
-		return $this->menuItems;
+	public function getLaunchPads(): array {
+		return $this->launchPads;
 	}
 	
-	public function addMenuItem(MenuItem $menuItem, string $label = null) {
-		$this->menuItems[$menuItem->getId()] = $menuItem;
-		$this->labels[$menuItem->getId()] = $label;
+	public function addLaunchPad(LaunchPad $launchPad, string $label = null) {
+		$this->launchPads[$launchPad->getId()] = $launchPad;
+		$this->labels[$launchPad->getId()] = $label;
 	}
 	
-	public function containsMenuItemId($id): bool {
-		return isset($this->menuItems[$id]);
+	public function containsLaunchPadId($id): bool {
+		return isset($this->launchPads[$id]);
 	}
 	
-	public function removeMenuItemById($id) {
-		unset($this->menuItems[$id]);
+	public function removeLaunchPadById($id) {
+		unset($this->launchPads[$id]);
 	}
 	
-	public function getMenuItemById($id): MenuItem {
-		if (isset($this->menuItems[$id])) {
-			return $this->menuItems[$id];
+	public function getLaunchPadById($id): LaunchPad {
+		if (isset($this->launchPads[$id])) {
+			return $this->launchPads[$id];
 		}
 		
-		throw new UnknownMenuItemException($id);
+		throw new UnknownLaunchPadException($id);
 	}
 	
-	public function determineLabel(MenuItem $menuItem) {
-		if (isset($this->labels[$menuItem->getId()])) {
-			return $this->labels[$menuItem->getId()];
+	public function determineLabel(LaunchPad $launchPad) {
+		if (isset($this->labels[$launchPad->getId()])) {
+			return $this->labels[$launchPad->getId()];
 		}
 		
-		return $menuItem->getLabel();
+		return $launchPad->getLabel();
 	}
 }

@@ -29,7 +29,7 @@ use n2n\util\config\AttributesException;
 use n2n\util\config\InvalidConfigurationException;
 
 class LayoutConfigSourceDecorator {
-	const START_MENU_ITEM_ID_KEY = 'startMenuItemId';
+	const START_MENU_ITEM_ID_KEY = 'startLaunchPadId';
 	const MENU_GROUPS_KEY = 'menuGroups';
 	
 	private $writableConfigSource;
@@ -52,7 +52,7 @@ class LayoutConfigSourceDecorator {
 		$this->attributes->clear();
 	}
 	
-	public function extractStartMenuItemId() {
+	public function extractStartLaunchPadId() {
 		try {
 			return $this->attributes->getString(self::START_MENU_ITEM_ID_KEY);
 		} catch (AttributesException $e) {
@@ -65,8 +65,8 @@ class LayoutConfigSourceDecorator {
 				0, $previous);
 	}
 	
-	public function rawStartMenuItemId(string $startMenuItemId = null) {
-		$this->attributes->setString(self::START_MENU_ITEM_ID_KEY, $startMenuItemId);
+	public function rawStartLaunchPadId(string $startLaunchPadId = null) {
+		$this->attributes->setString(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
 	}
 	
 	public function extractMenuGroups(): array {
@@ -81,8 +81,8 @@ class LayoutConfigSourceDecorator {
 		$menuGroupExtractions = array();
 		foreach ($menuGroupsRawData as $label => $menuGroupRawData) {
 			$menuGroupExtraction = new MenuGroupExtraction($label);
-			foreach ($menuGroupRawData as $menuItemId => $label) {
-				$menuGroupExtraction->addMenuItemId($menuItemId, $label);
+			foreach ($menuGroupRawData as $launchPadId => $label) {
+				$menuGroupExtraction->addLaunchPadId($launchPadId, $label);
 			}
 			$menuGroupExtractions[] = $menuGroupExtraction;
 		}
@@ -97,8 +97,8 @@ class LayoutConfigSourceDecorator {
 		foreach ($menuGroupExtractions as $menuGroupExtraction) {
 			$label = $menuGroupExtraction->getLabel();
 			$menuGroupsRawData[$label] = array();
-			foreach ($menuGroupExtraction->getMenuItemIds() as $menuItemId => $menuItemLabel) {
-				$menuGroupsRawData[$label][$menuItemId] = $menuItemLabel;
+			foreach ($menuGroupExtraction->getLaunchPadIds() as $launchPadId => $launchPadLabel) {
+				$menuGroupsRawData[$label][$launchPadId] = $launchPadLabel;
 			}
 		}
 		
@@ -108,7 +108,7 @@ class LayoutConfigSourceDecorator {
 
 class MenuGroupExtraction {
 	private $label;
-	private $menuItemIds = array();
+	private $launchPadIds = array();
 	
 	public function __construct(string $label) {
 		$this->label = $label;
@@ -122,16 +122,16 @@ class MenuGroupExtraction {
 		return $this->label;
 	}
 	
-	public function addMenuItemId(string $menuItemId, string $label = null) {
-		$this->menuItemIds[$menuItemId] = $label;
+	public function addLaunchPadId(string $launchPadId, string $label = null) {
+		$this->launchPadIds[$launchPadId] = $label;
 	}
 	
-	public function setMenuItemIds(array $menuItemIds) {
-		ArgUtils::valArray($menuItemIds, 'string', true);
-		$this->menuItemIds = $menuItemIds;	
+	public function setLaunchPadIds(array $launchPadIds) {
+		ArgUtils::valArray($launchPadIds, 'string', true);
+		$this->launchPadIds = $launchPadIds;	
 	}
 	
-	public function getMenuItemIds(): array {
-		return $this->menuItemIds;
+	public function getLaunchPadIds(): array {
+		return $this->launchPadIds;
 	}
 }

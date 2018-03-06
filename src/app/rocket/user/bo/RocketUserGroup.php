@@ -38,7 +38,7 @@ class RocketUserGroup extends ObjectAdapter {
 		$ai->p('rocketUsers', new AnnoManyToMany(RocketUser::getClass(), 'rocketUserGroups'));
 		$ai->p('eiGrants', new AnnoOneToMany(EiGrant::getClass(), 'rocketUserGroup', CascadeType::ALL));
 		$ai->p('customGrants', new AnnoOneToMany(CustomGrant::getClass(), 'rocketUserGroup', CascadeType::ALL));
-		$ai->p('accessibleMenuItemIds', new AnnoTransient());
+		$ai->p('accessibleLaunchPadIds', new AnnoTransient());
 	}
 	
 	private $id;
@@ -74,40 +74,40 @@ class RocketUserGroup extends ObjectAdapter {
 		$this->rocketUsers = $users;
 	}
 	
-	public function isMenuItemAccessRestricted() {
+	public function isLaunchPadAccessRestricted() {
 		return $this->navJson !== null;
 	}
 	
-	private $accessibleMenuItemIds = null;
+	private $accessibleLaunchPadIds = null;
 	/**
-	 * @return array if null is returned all MenuItems are accessible.
+	 * @return array if null is returned all LaunchPads are accessible.
 	 */
-	public function getAccessibleMenuItemIds() {
+	public function getAccessibleLaunchPadIds() {
 		if ($this->navJson === null)  {
 			throw new IllegalStateException();
 		}
 		
-		if ($this->accessibleMenuItemIds !== null) {
-			return $this->accessibleMenuItemIds;
+		if ($this->accessibleLaunchPadIds !== null) {
+			return $this->accessibleLaunchPadIds;
 		}
 		
-		return $this->accessibleMenuItemIds = StringUtils::jsonDecode($this->navJson, true);
+		return $this->accessibleLaunchPadIds = StringUtils::jsonDecode($this->navJson, true);
 	}
 	
-	public function setAccessibleMenuItemIds(array $menuItemIds = null) {
-		if ($menuItemIds === null) {
+	public function setAccessibleLaunchPadIds(array $launchPadIds = null) {
+		if ($launchPadIds === null) {
 			$this->navJson = null;
-			$this->accessibleMenuItemIds = null;
+			$this->accessibleLaunchPadIds = null;
 			return;
 		}
 		
-		ArgUtils::valArray($menuItemIds, 'string');
-		$this->accessibleMenuItemIds = $menuItemIds;
-		$this->navJson = StringUtils::jsonEncode($menuItemIds);
+		ArgUtils::valArray($launchPadIds, 'string');
+		$this->accessibleLaunchPadIds = $launchPadIds;
+		$this->navJson = StringUtils::jsonEncode($launchPadIds);
 	}
 	
-	public function containsAccessibleMenuItemId(string $id): bool {
-		return in_array($id, $this->getAccessibleMenuItemIds(), true);
+	public function containsAccessibleLaunchPadId(string $id): bool {
+		return in_array($id, $this->getAccessibleLaunchPadIds(), true);
 	}
 	
 	/**

@@ -27,7 +27,7 @@ use n2n\core\container\N2nContext;
 
 class TemplateModel implements Lookupable {
 	private $currentUser;
-	private $activeMenuItemId;
+	private $activeLaunchPadId;
 	private $breadcrumbs;
 	private $activeBreadcrumb;
 	private $navArray = array();
@@ -36,9 +36,9 @@ class TemplateModel implements Lookupable {
 			N2nContext $n2nContext) {
 		$this->currentUser = $loginContext->getCurrentUser();
 				
-		$this->activeMenuItemId = null;
-		if (null !== ($activeMenuItem = $rocketState->getActiveMenuItem())) {
-			$this->activeMenuItemId = $activeMenuItem->getId();
+		$this->activeLaunchPadId = null;
+		if (null !== ($activeLaunchPad = $rocketState->getActiveLaunchPad())) {
+			$this->activeLaunchPadId = $activeLaunchPad->getId();
 		}
 		
 		$this->breadcrumbs = $rocketState->getBreadcrumbs()->getArrayCopy();
@@ -62,50 +62,50 @@ class TemplateModel implements Lookupable {
 	}
 	
 	private function initNavArray(Rocket $rocket, N2nContext $n2nContext) {
-		$accessibleMenuItemIds = $this->getAccesableMenuItemIds();
+		$accessibleLaunchPadIds = $this->getAccesableLaunchPadIds();
 		$this->navArray = array();
 		
 		foreach ($rocket->getLayoutManager()->getMenuGroups() as $menuGroup) {
-			$menuItems = $menuGroup->getMenuItems();
+			$launchPads = $menuGroup->getLaunchPads();
 			
-			foreach ($menuItems as $key => $menuItem) {
-				if (($accessibleMenuItemIds !== null && !in_array($menuItem->getId(), $accessibleMenuItemIds))
-						|| !$menuItem->isAccessible($n2nContext)) {
-					unset($menuItems[$key]);
+			foreach ($launchPads as $key => $launchPad) {
+				if (($accessibleLaunchPadIds !== null && !in_array($launchPad->getId(), $accessibleLaunchPadIds))
+						|| !$launchPad->isAccessible($n2nContext)) {
+					unset($launchPads[$key]);
 				}
 			}
 			
-			if (empty($menuItems)) continue;
+			if (empty($launchPads)) continue;
 			
 			$this->navArray[] = array('menuGroup' => $menuGroup,
-					'open' => $menuGroup->containsMenuItemId($this->activeMenuItemId),
-					'menuItems' => $menuItems);
+					'open' => $menuGroup->containsLaunchPadId($this->activeLaunchPadId),
+					'launchPads' => $launchPads);
 		}
 	}
 	
-	private function getAccesableMenuItemIds() {
+	private function getAccesableLaunchPadIds() {
 		if ($this->currentUser->isSuperAdmin()) return null;
 		
-		$accessibleMenuItemIds = null;
-		if (!$this->currentUser->isAdmin()) $accessibleMenuItemIds = array();
+		$accessibleLaunchPadIds = null;
+		if (!$this->currentUser->isAdmin()) $accessibleLaunchPadIds = array();
 		
 		foreach ($this->currentUser->getRocketUserGroups() as $userGroup) {
-			if (!$userGroup->isMenuItemAccessRestricted()) {
+			if (!$userGroup->isLaunchPadAccessRestricted()) {
 				return null;
 			}
 			
-			$accessibleMenuItemIds = array_merge((array) $accessibleMenuItemIds, 
-					$userGroup->getaccessibleMenuItemIds());
+			$accessibleLaunchPadIds = array_merge((array) $accessibleLaunchPadIds, 
+					$userGroup->getaccessibleLaunchPadIds());
 		}
 		
-		return $accessibleMenuItemIds;
+		return $accessibleLaunchPadIds;
 	}
 	
 	public function getNavArray() {
 		return $this->navArray;
 	}
 	
-	public function isMenuItemActive(MenuItem $menuItem) {
-		return $this->activeMenuItemId === $menuItem->getId();
+	public function isLaunchPadActive(LaunchPad $launchPad) {
+		return $this->activeLaunchPadId === $launchPad->getId();
 	}
 }

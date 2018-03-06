@@ -23,5 +23,5 @@ namespace rocket\spec;
 
 use n2n\util\config\InvalidConfigurationException;
 
-class InvalidMenuItemConfigurationException extends InvalidConfigurationException {
+class InvalidLaunchPadConfigurationException extends InvalidConfigurationException {
 }

@@ -24,7 +24,7 @@ namespace rocket\spec\extr;
 abstract class TypeExtraction {
 	private $id;
 	private $moduleNamespace;
-	private $menuItemExtraction;
+	private $launchPadExtraction;
 		
 	public function __construct(string $id, string $moduleNamespace) {
 		$this->id = $id;
@@ -60,17 +60,17 @@ abstract class TypeExtraction {
 	}
 	
 	/**
-	 * @return MenuItemExtraction|null 
+	 * @return LaunchPadExtraction|null 
 	 */
-	public function getMenuItemExtraction() {
-		return $this->menuItemExtraction;
+	public function getLaunchPadExtraction() {
+		return $this->launchPadExtraction;
 	}
 	
 	/**
-	 * @param MenuItemExtraction|null $menuItemExtraction
+	 * @param LaunchPadExtraction|null $launchPadExtraction
 	 */
-	public function setMenuItemExtraction(?MenuItemExtraction $menuItemExtraction) {
-		$this->menuItemExtraction = $menuItemExtraction;
+	public function setLaunchPadExtraction(?LaunchPadExtraction $launchPadExtraction) {
+		$this->launchPadExtraction = $launchPadExtraction;
 	}
 	
 	/**

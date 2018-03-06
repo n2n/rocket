@@ -35,7 +35,7 @@ use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
 use rocket\ei\security\InaccessibleControlException;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
 
 class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrController {
@@ -62,7 +62,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 		$eiType = null;
 		try {
 			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException();
 		}
 
@@ -76,7 +76,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 		try {
 			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
 			$eiMask = $eiType->getEiTypeExtensionCollection()->getById($eiMaskId);
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (UnknownEiTypeExtensionException $e) {
 			throw new PageNotFoundException(null, 0, $e);

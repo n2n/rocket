@@ -22,7 +22,7 @@
 namespace rocket\spec\security;
 
 use rocket\ei\security\EiPermissionManager;
-use rocket\core\model\MenuItem;
+use rocket\core\model\LaunchPad;
 
 interface SecurityManager {
 	
@@ -32,8 +32,8 @@ interface SecurityManager {
 	public function getEiPermissionManager(): EiPermissionManager;
 	
 	/**
-	 * @param MenuItem $menuItem
+	 * @param LaunchPad $launchPad
 	 * @return boolean
 	 */
-	public function isMenuItemAccessible(MenuItem $menuItem): bool;
+	public function isLaunchPadAccessible(LaunchPad $launchPad): bool;
 }

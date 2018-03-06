@@ -19,42 +19,41 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\extr;
+namespace rocket\core\model;
 
-use rocket\spec\TypePath;
+use n2n\core\container\N2nContext;
+use n2n\web\http\controller\Controller;
+use n2n\web\http\controller\ControllerContext;
 
-class MenuItemExtraction {
-	private $typePath;
-	private $moduleNamespace;
-	private $label;
+interface LaunchPad {
 	
-	public function __construct(TypePath $typePath, string $moduleNamespace, string $label = null) {
-		$this->typePath = $typePath;
-		$this->moduleNamespace = $moduleNamespace;
-		$this->label = $label;
+	public function getId(): string;
+	
+	public function getLabel(): string;
+	
+	public function isAccessible(N2nContext $n2nContext): bool;
+	
+	public function determinePathExt(N2nContext $n2nContext);
+	
+	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller;
+	
+	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt; 
+}
+
+class TransactionApproveAttempt {
+	private $reasonMessages;
+	
+	public function __construct(array $reasonMessages) {
+		$this->reasonMessages = $reasonMessages;
+	}
+	/**
+	 * @return boolean
+	 */
+	public function isSuccessful() {
+		return empty($this->reasonMessages);
 	}
 	
-	public function getTypePath() {
-		return $this->typePath;
-	}
-	
-	public function setTypePath(TypePath $typePath) {
-		$this->typePath = $typePath;
-	}
-	
-	public function getModuleNamespace() {
-		return $this->moduleNamespace;
-	}
-	
-	public function setModuleNamespace(string $moduleNamespace) {
-		$this->moduleNamespace = $moduleNamespace;
-	}
-	
-	public function getLabel() {
-		return $this->label;
-	}
-	
-	public function setLabel(?string $label) {
-		$this->label = $label;
+	public function getReasonMessages() {
+		return $this->reasonMessages;
 	}
 }

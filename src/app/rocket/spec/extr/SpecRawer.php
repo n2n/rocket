@@ -250,21 +250,21 @@ class SpecRawer {
 		return $displaStructureData;
 	}
 	
-	public function rawMenuItems(array $menuItemExtractions) {
-		ArgUtils::valArray($menuItemExtractions, MenuItemExtraction::class);
+	public function rawLaunchPads(array $launchPadExtractions) {
+		ArgUtils::valArray($launchPadExtractions, LaunchPadExtraction::class);
 	
-		$menuItemsRawData = array();
-		foreach ($menuItemExtractions as $menuItemExtraction) {
-			$menuItemsRawData[$menuItemExtraction->getId()] = $this->buildMenuItemExtractionRawData($menuItemExtraction);
+		$launchPadsRawData = array();
+		foreach ($launchPadExtractions as $launchPadExtraction) {
+			$launchPadsRawData[$launchPadExtraction->getId()] = $this->buildLaunchPadExtractionRawData($launchPadExtraction);
 		}
 	
-		$this->attributes->set(RawDef::MENU_ITEMS_KEY, $menuItemsRawData);
+		$this->attributes->set(RawDef::LAUNCH_PADS_KEY, $launchPadsRawData);
 	}
 	
 
-	private function buildMenuItemExtractionRawData(MenuItemExtraction $menuItemExtraction) {
-		if (null !== ($label = $menuItemExtraction->getLabel())) {
-			return array(RawDef::MENU_ITEM_LABEL_KEY => $menuItemExtraction->getLabel());
+	private function buildLaunchPadExtractionRawData(LaunchPadExtraction $launchPadExtraction) {
+		if (null !== ($label = $launchPadExtraction->getLabel())) {
+			return array(RawDef::LAUNCH_PAD_LABEL_KEY => $launchPadExtraction->getLabel());
 		}
 		
 		return array();

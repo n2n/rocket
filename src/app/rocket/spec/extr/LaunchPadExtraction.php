@@ -19,10 +19,42 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec;
+namespace rocket\spec\extr;
 
-use rocket\ei\EiException;
+use rocket\spec\TypePath;
 
-class UnknownSpecException extends EiException  {
+class LaunchPadExtraction {
+	private $typePath;
+	private $moduleNamespace;
+	private $label;
 	
+	public function __construct(TypePath $typePath, string $moduleNamespace, string $label = null) {
+		$this->typePath = $typePath;
+		$this->moduleNamespace = $moduleNamespace;
+		$this->label = $label;
+	}
+	
+	public function getTypePath() {
+		return $this->typePath;
+	}
+	
+	public function setTypePath(TypePath $typePath) {
+		$this->typePath = $typePath;
+	}
+	
+	public function getModuleNamespace() {
+		return $this->moduleNamespace;
+	}
+	
+	public function setModuleNamespace(string $moduleNamespace) {
+		$this->moduleNamespace = $moduleNamespace;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function setLabel(?string $label) {
+		$this->label = $label;
+	}
 }

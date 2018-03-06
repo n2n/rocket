@@ -29,8 +29,8 @@ class LayoutManager {
 	private $scsd;
 	private $spec;
 	
-	private $startMenuItemLoaded = false;
-	private $startMenuItem;
+	private $startLaunchPadLoaded = false;
+	private $startLaunchPad;
 	private $menuGroups;
 	
 	public function __construct(LayoutConfigSourceDecorator $scsd, Spec $spec) {
@@ -39,29 +39,29 @@ class LayoutManager {
 	}
 	
 	public function reset() {
-		$this->startMenuItem = null;
+		$this->startLaunchPad = null;
 		$this->menuGroups = null;
 	}
 	
-	public function getStartMenuItem() {
-		if ($this->startMenuItemLoaded) {
-			return $this->startMenuItem;
+	public function getStartLaunchPad() {
+		if ($this->startLaunchPadLoaded) {
+			return $this->startLaunchPad;
 		}
 		
-		if (null !== ($startMenuItemId = $this->scsd->extractStartMenuItemId())) {
+		if (null !== ($startLaunchPadId = $this->scsd->extractStartLaunchPadId())) {
 			try {
-				$this->startMenuItem = $this->spec->getMenuItemById($startMenuItemId);
-			} catch (UnknownMenuItemException $e) {
-				throw new InvalidMenuConfigurationException('Failed to initialize start MenuItem.', 0, $e);
+				$this->startLaunchPad = $this->spec->getLaunchPadById($startLaunchPadId);
+			} catch (UnknownLaunchPadException $e) {
+				throw new InvalidMenuConfigurationException('Failed to initialize start LaunchPad.', 0, $e);
 			}
 		}
 		
-		$this->startMenuItemLoaded = true;
-		return $this->startMenuItem;
+		$this->startLaunchPadLoaded = true;
+		return $this->startLaunchPad;
 	}
 	
-	public function setStartMenuItem(MenuItem $startMenuItem = null) {
-		$this->startMenuItem = $startMenuItem;
+	public function setStartLaunchPad(LaunchPad $startLaunchPad = null) {
+		$this->startLaunchPad = $startLaunchPad;
 	}
 	
 	public function getMenuGroups() {
@@ -74,10 +74,10 @@ class LayoutManager {
 			$menuGroup = new MenuGroup($menuGroupExtraction->getLabel());
 				
 			try {
-				foreach ($menuGroupExtraction->getMenuItemIds() as $menuItemId => $label) {
-					$menuGroup->addMenuItem($this->spec->getMenuItemById($menuItemId), $label);
+				foreach ($menuGroupExtraction->getLaunchPadIds() as $launchPadId => $label) {
+					$menuGroup->addLaunchPad($this->spec->getLaunchPadById($launchPadId), $label);
 				}
-			} catch (UnknownMenuItemException $e) {
+			} catch (UnknownLaunchPadException $e) {
 				throw new InvalidMenuConfigurationException('Failed to initialize MenuGroup: '
 						. $menuGroupExtraction->getLabel(), 0, $e);
 			}
@@ -94,8 +94,8 @@ class LayoutManager {
 	public function flush() {
 		throw new NotYetImplementedException();
 		
-// 		if ($this->startMenuItemLoaded) {
-// 			$this->scsd->rawStartMenuItemId($bla);
+// 		if ($this->startLaunchPadLoaded) {
+// 			$this->scsd->rawStartLaunchPadId($bla);
 // 		}
 	}
 }

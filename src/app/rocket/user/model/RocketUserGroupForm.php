@@ -36,25 +36,25 @@ use n2n\l10n\DynamicTextCollection;
 
 class RocketUserGroupForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoDispProperties('name', 'menuItemRestrictionEnabled', 'accessibleMenuItemIds'));
+		$ai->c(new AnnoDispProperties('name', 'launchPadRestrictionEnabled', 'accessibleLaunchPadIds'));
 	}
 	
 	private $spec;
 	private $layoutManager;
 	private $userGroup;
 
-	private $menuItemRestrictionEnabled = false;
-	private $accessibleMenuItemIds = array();
+	private $launchPadRestrictionEnabled = false;
+	private $accessibleLaunchPadIds = array();
 	
 	public function __construct(RocketUserGroup $userGroup, LayoutManager $layoutManager, Spec $spec, N2nContext $n2nContext) {
 		$this->spec = $spec;
 		$this->layoutManager = $layoutManager;
 		$this->userGroup = $userGroup;
 		
-		$this->menuItemRestrictionEnabled = $userGroup->isMenuItemAccessRestricted();
-		if ($this->menuItemRestrictionEnabled) {
-			$ids = $userGroup->getAccessibleMenuItemIds();
-			$this->accessibleMenuItemIds = array_combine($ids, $ids);
+		$this->launchPadRestrictionEnabled = $userGroup->isLaunchPadAccessRestricted();
+		if ($this->launchPadRestrictionEnabled) {
+			$ids = $userGroup->getAccessibleLaunchPadIds();
+			$this->accessibleLaunchPadIds = array_combine($ids, $ids);
 		}
 	}
 	
@@ -62,14 +62,14 @@ class RocketUserGroupForm implements Dispatchable {
 		return $this->userGroup;
 	}
 	
-	public function getAccessibleMenuItemIdOptions() {
-		$menuItemIdOptions = array();
+	public function getAccessibleLaunchPadIdOptions() {
+		$launchPadIdOptions = array();
 		foreach ($this->layoutManager->getMenuGroups() as $menuGroup) {
-			foreach ($menuGroup->getMenuItems() as $menuItem) {
-				$menuItemIdOptions[$menuItem->getId()] = $menuGroup->getLabel() . ' > ' . $menuItem->getLabel(); 
+			foreach ($menuGroup->getLaunchPads() as $launchPad) {
+				$launchPadIdOptions[$launchPad->getId()] = $menuGroup->getLabel() . ' > ' . $launchPad->getLabel(); 
 			}
 		}
-		return $menuItemIdOptions;
+		return $launchPadIdOptions;
 	}
 	
 	private function _mapping(MappingDefinition $md, DynamicTextCollection $dtc) {
@@ -78,7 +78,7 @@ class RocketUserGroupForm implements Dispatchable {
 	
 	private function _validation(BindingDefinition $bd) {
 		$bd->val('name', new ValNotEmpty());
-		$bd->val('accessibleMenuItemIds', new ValArrayKeys(array_keys($this->getAccessibleMenuItemIdOptions())));
+		$bd->val('accessibleLaunchPadIds', new ValArrayKeys(array_keys($this->getAccessibleLaunchPadIdOptions())));
 	}
 	
 	public function isNew() {
@@ -93,27 +93,27 @@ class RocketUserGroupForm implements Dispatchable {
 		$this->userGroup->setName($name);
 	}
 	
-	public function isMenuItemRestrictionEnabled() {
-		return $this->menuItemRestrictionEnabled;
+	public function isLaunchPadRestrictionEnabled() {
+		return $this->launchPadRestrictionEnabled;
 	}
 	
-	public function setMenuItemRestrictionEnabled($menuItemRestrictionEnabled) {
-		$this->menuItemRestrictionEnabled = $menuItemRestrictionEnabled;
+	public function setLaunchPadRestrictionEnabled($launchPadRestrictionEnabled) {
+		$this->launchPadRestrictionEnabled = $launchPadRestrictionEnabled;
 	}
 	
-	public function getaccessibleMenuItemIds() {
-		return $this->accessibleMenuItemIds;
+	public function getaccessibleLaunchPadIds() {
+		return $this->accessibleLaunchPadIds;
 	}
 	
-	public function setaccessibleMenuItemIds(array $accessibleMenuItemIds) {
-		$this->accessibleMenuItemIds = $accessibleMenuItemIds;
+	public function setaccessibleLaunchPadIds(array $accessibleLaunchPadIds) {
+		$this->accessibleLaunchPadIds = $accessibleLaunchPadIds;
 	}
 		
 	public function save() {
-		if (!$this->menuItemRestrictionEnabled) {
-			$this->userGroup->setAccessibleMenuItemIds(null);
+		if (!$this->launchPadRestrictionEnabled) {
+			$this->userGroup->setAccessibleLaunchPadIds(null);
 		} else {
-			$this->userGroup->setAccessibleMenuItemIds(array_keys($this->accessibleMenuItemIds));
+			$this->userGroup->setAccessibleLaunchPadIds(array_keys($this->accessibleLaunchPadIds));
 		}
 	}
 }

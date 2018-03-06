@@ -3,7 +3,7 @@ namespace rocket\ei\manage\util\model;
 
 use rocket\spec\Spec;
 use n2n\core\container\N2nContext;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiType;
 use rocket\ei\component\EiComponent;
@@ -25,7 +25,7 @@ class EiuContext {
 	 * @param string|\ReflectionClass|EiType|EiComponent $eiTypeArg id, entity class name of the affiliated EiType or the EiType itself.
 	 * @param bool $required
 	 * @return EiuEngine
-	 * @throws UnknownSpecException required is false and the EiEngine was not be found.
+	 * @throws UnknownTypeException required is false and the EiEngine was not be found.
 	 */
 	function engine($eiTypeArg, bool $required = true) {
 		ArgUtils::valType($eiTypeArg, ['string', \ReflectionClass::class, EiType::class, EiComponent::class]);
@@ -51,7 +51,7 @@ class EiuContext {
 			}
 			
 			return $this->spec->getEiTypeById($eiTypeArg)->getEiEngine();	
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			if (!$required) return null;
 			
 			throw $e;

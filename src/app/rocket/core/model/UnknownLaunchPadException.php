@@ -21,39 +21,8 @@
  */
 namespace rocket\core\model;
 
-use n2n\core\container\N2nContext;
-use n2n\web\http\controller\Controller;
-use n2n\web\http\controller\ControllerContext;
+use n2n\util\ex\DocumentableRuntimeException;
 
-interface MenuItem {
+class UnknownLaunchPadException extends DocumentableRuntimeException {
 	
-	public function getId(): string;
-	
-	public function getLabel(): string;
-	
-	public function isAccessible(N2nContext $n2nContext): bool;
-	
-	public function determinePathExt(N2nContext $n2nContext);
-	
-	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller;
-	
-	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt; 
-}
-
-class TransactionApproveAttempt {
-	private $reasonMessages;
-	
-	public function __construct(array $reasonMessages) {
-		$this->reasonMessages = $reasonMessages;
-	}
-	/**
-	 * @return boolean
-	 */
-	public function isSuccessful() {
-		return empty($this->reasonMessages);
-	}
-	
-	public function getReasonMessages() {
-		return $this->reasonMessages;
-	}
 }

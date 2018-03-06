@@ -37,7 +37,7 @@ use rocket\ei\manage\veto\VetoableRemoveQueue;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
-	private $selectedMenuItem;
+	private $selectedLaunchPad;
 	private $user;
 	private $eiPermissionManager;
 	private $eiFrames = array();

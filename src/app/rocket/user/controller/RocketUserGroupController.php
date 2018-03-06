@@ -34,7 +34,7 @@ use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
-use rocket\spec\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
@@ -140,7 +140,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$eiType = null;
 		try {
 			$eiType = $rocket->getSpec()->getEiTypeById($eiTypeId);
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}
 		
@@ -210,7 +210,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$eiType = null;
 		try {
 			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
