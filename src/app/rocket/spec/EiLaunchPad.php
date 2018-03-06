@@ -105,7 +105,7 @@ class EiLaunchPad implements LaunchPad {
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		$rocket = $n2nContext->lookup(Rocket::class);
 		CastUtils::assertTrue($rocket instanceof Rocket);
-				
+		
 		$manageState->createEiFrame($this->eiMask, $delegateControllerContext);
 		$em = $this->eiMask->getEiType()->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);

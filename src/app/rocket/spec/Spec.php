@@ -46,6 +46,7 @@ use n2n\persistence\orm\OrmConfigurationException;
 use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
+use n2n\util\cache\CorruptedCacheStoreException;
 
 class Spec {	
 	private $rocketConfigSource;	
@@ -182,11 +183,17 @@ class Spec {
 		
 		if ($charcs !== null && null !== ($cacheItem = $cacheStore->get(Spec::class, $charcs))) {
 // 			$data = $cacheItem->getData();
-			$this->customTypes = $cacheItem->data['customTypes'];
-			$this->eiTypes = $cacheItem->data['eiTypes'];
-			$this->launchPads = $cacheItem->data['launchPads'];
-			$this->eiTypeSetupQueue->setPropIns($cacheItem->data['propIns']);
-			$this->eiTypeSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators']);
+			try {
+				$this->customTypes = $cacheItem->data['customTypes'] ?? array();
+				$this->eiTypes = $cacheItem->data['eiTypes'] ?? array();
+				$this->eiTypeCis = $cacheItem->data['eiTypeCis'] ?? array();
+				$this->launchPads = $cacheItem->data['launchPads'] ?? array();
+				$this->eiTypeSetupQueue->setPropIns($cacheItem->data['propIns'] ?? array());
+				$this->eiTypeSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators'] ?? array());
+			} catch (\Throwable $e) {
+				$cacheStore->remove(Spec::class, $charcs);
+				throw new CorruptedCacheStoreException(null, null, $e);
+			}
 		} else {
 			if (!$this->specExtractionManager->isInitialized()) {
 				$this->specExtractionManager->extract();
@@ -225,7 +232,8 @@ class Spec {
 			
 			if ($charcs !== null) {
 				$cacheStore->store(Spec::class, $charcs, array(
-						'specs' => $this->customTypes, 'eiTypes' => $this->eiTypes, 'launchPads' => $this->launchPads,
+						'customTypes' => $this->customTypes, 'eiTypes' => $this->eiTypes, 
+						'eiTypeCis' => $this->eiTypeCis, 'launchPads' => $this->launchPads,
 						'propIns' => $this->eiTypeSetupQueue->getPropIns(),
 						'eiConfigurators' => $this->eiTypeSetupQueue->getEiConfigurators()));
 			}
@@ -262,6 +270,8 @@ class Spec {
 		if (!$this->noSetupMode) {
 			$this->eiTypeSetupQueue->trigger($n2nContext);
 		}
+		
+		die();
 	}
 	
 	/**
