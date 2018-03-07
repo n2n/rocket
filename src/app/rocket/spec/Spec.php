@@ -270,8 +270,6 @@ class Spec {
 		if (!$this->noSetupMode) {
 			$this->eiTypeSetupQueue->trigger($n2nContext);
 		}
-		
-		die();
 	}
 	
 	/**
