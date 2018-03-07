@@ -438,6 +438,21 @@ class SpecExtractionManager {
 		return isset($this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id]);
 	}
 	
+	
+	/**
+	 * @param string $extendedEiTypePath
+	 * @param string $id
+	 * @return bool
+	 */
+	public function getEiTypeExtensionExtractionById(TypePath $extendedEiTypePath, string $id) {
+		if ($this->containsEiTypeExtensionExtractionId($extendedEiTypePath, $id)) {
+			return $this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id];
+		}
+		
+		throw new UnknownTypeException('No EiTypeExtension with id \'' . $id . '\' for EiTypePath \'' 
+				. $extendedEiTypePath . '\'  in: ' . $this->buildConfigSourceString());
+	}
+	
 	/**
 	 * @param string $eiTypeId
 	 * @return EiTypeExtensionExtraction[]
@@ -460,7 +475,7 @@ class SpecExtractionManager {
 		
 		if ($this->containsEiTypeExtensionExtractionId($extendedEiTypePath, $id)) {
 			throw new IllegalStateException('EiTypeExtensionExtraction with id \'' . $id 
-					. '\' already defined for EiType \'' . $eiTypePath . '\'.');
+					. '\' already defined for EiType \'' . $extendedEiTypePath . '\'.');
 		}
 		
 		$this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id] = $eiTypeExtensionExtraction;
