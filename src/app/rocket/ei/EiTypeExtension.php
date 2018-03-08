@@ -52,4 +52,8 @@ class EiTypeExtension implements Identifiable {
 	function getExtendedEiMask() {
 		return $this->extendedEiMask;
 	}
+	
+	function __toString() {
+		return 'Extension ' . $this->id . ' of ' . $this->eiMask->getEiType();
+	}
 }
