@@ -195,7 +195,7 @@ class SpecExtractor {
 	}
 	
 	private function upgradeTypeName($typeName) {
-	    if (!StringUtils::startsWith('rocket\ei\component', $typeName)) {
+	    if (!StringUtils::startsWith('rocket\spec\ei\component', $typeName)) {
 	        return $typeName;
 	    }
 	    
