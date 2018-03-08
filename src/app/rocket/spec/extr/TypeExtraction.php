@@ -60,20 +60,6 @@ abstract class TypeExtraction {
 	}
 	
 	/**
-	 * @return LaunchPadExtraction|null 
-	 */
-	public function getLaunchPadExtraction() {
-		return $this->launchPadExtraction;
-	}
-	
-	/**
-	 * @param LaunchPadExtraction|null $launchPadExtraction
-	 */
-	public function setLaunchPadExtraction(?LaunchPadExtraction $launchPadExtraction) {
-		$this->launchPadExtraction = $launchPadExtraction;
-	}
-	
-	/**
 	 * @return string
 	 */
 	public abstract function toTypeString(): string;

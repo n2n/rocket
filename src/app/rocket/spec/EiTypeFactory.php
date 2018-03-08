@@ -51,7 +51,7 @@ class EiTypeFactory {
 	private $entityModelManager;
 	private $setupQueue;
 	
-	public function __construct(EntityModelManager $entityModelManager, EiTypeSetupQueue $setupQueue) {
+	public function __construct(EntityModelManager $entityModelManager, EiSetupQueue $setupQueue) {
 		$this->entityModelManager = $entityModelManager;
 		$this->setupQueue = $setupQueue;
 	}
