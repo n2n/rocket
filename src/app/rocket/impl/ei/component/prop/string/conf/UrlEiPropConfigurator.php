@@ -29,7 +29,7 @@ use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\util\config\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
@@ -62,7 +62,7 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$this->attributes->set(self::ATTR_AUTO_SCHEME_KEY, 'http');
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
 		if ($this->attributes->contains(self::MAG_RELATIVE_ALLOWED_KEY)) {

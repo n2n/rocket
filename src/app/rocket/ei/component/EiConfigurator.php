@@ -62,9 +62,10 @@ interface EiConfigurator {
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext);
 	
 	/**
-	 * @param EiSetupProcess $setupProcess
-	 * @throws InvalidEiComponentConfigurationException can be created with {@link EiSetupProcess::createExcpetion()}
+	 * @param EiSetup $eiSetup
+	 * @throws InvalidEiComponentConfigurationException can be created with {@link EiSetup::createExcpetion()}
 	 * @throws \n2n\util\config\AttributesException will be converted to InvalidEiComponentConfigurationException
+	 * @throws \InvalidArgumentException will be converted to InvalidEiComponentConfigurationException
 	 */
-	public function setup(EiSetupProcess $setupProcess);
+	public function setup(EiSetup $eiSetup);
 }

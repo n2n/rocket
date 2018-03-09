@@ -29,6 +29,7 @@ use rocket\ei\component\InvalidEiComponentConfigurationException;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;
+use rocket\ei\manage\util\model\Eiu;
 
 class SelectEiPropRelation extends EiPropRelation {
 	private $embeddedAddEnabled = false;
@@ -37,8 +38,8 @@ class SelectEiPropRelation extends EiPropRelation {
 	protected $embeddedPseudoEiCommand;
 	protected $embeddedEditPseudoEiCommand;
 	
-	public function init(EiType $targetEiType, EiMask $targetEiMask) {
-		parent::init($targetEiType, $targetEiMask);
+	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask) {
+		parent::init($eiu, $targetEiType, $targetEiMask);
 
 		if ($this->isEmbeddedAddEnabled() && !$this->isPersistCascaded()) {
 			throw new InvalidEiComponentConfigurationException(

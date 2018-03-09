@@ -4,12 +4,12 @@ namespace rocket\ei\manage\util\model;
 use n2n\context\Lookupable;
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Rocket;
-use n2n\reflection\CastUtils;
 
 class Eiu implements Lookupable {
 	private $eiuFactory;
 	private $eiuContext;
 	private $eiuEngine;
+	private $eiuMask;
 	private $eiuFrame;
 	private $eiuEntry;
 	private $eiuGui;
@@ -19,29 +19,18 @@ class Eiu implements Lookupable {
 	public function __construct(...$eiArgs) {
 		$this->eiuFactory = new EiuFactory();
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
-		$this->eiuEngine = $this->eiuFactory->getEiuEngine(false);
-		$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
-		$this->eiuEntry = $this->eiuFactory->getEiuEntry(false);
-		$this->eiuGui = $this->eiuFactory->getEiuGui(false);
-		$this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui(false);
-		$this->eiuField = $this->eiuFactory->getEiuField(false);
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuContext|null
+	 * @return EiuContext|null
 	 */
 	public function context(bool $required = true) {
 		if ($this->eiuContext !== null) {
 			return $this->eiuContext;
 		}
 		
-		$n2nContext = $this->eiuFactory->getN2nContext($required);
-		if ($n2nContext === null) return null;
+		return $this->eiuContext = $this->eiuFactory->getEiuContext($required);
 		
-		$rocket = $n2nContext->lookup(Rocket::class);
-		CastUtils::assertTrue($rocket instanceof Rocket);
-		
-		return $this->eiuContext = new EiuContext($rocket->getSpec(), $n2nContext);
 	}
 	
 	/**
@@ -49,18 +38,34 @@ class Eiu implements Lookupable {
 	 * @return \rocket\ei\manage\util\model\EiuEngine
 	 */
 	public function engine(bool $required = true) {
-		if ($this->eiuEngine !== null || !$required) return $this->eiuEngine;
+		if ($this->eiuEngine !== null) {
+			return $this->eiuEngine;
+		}
 		
-		throw new EiuPerimeterException('EiuEngine is unavailable.');
+		return $this->eiuEngine = $this->eiuFactory->getEiuEngine($required);
+	}
+	
+	/**
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\manage\util\model\EiuMask
+	 */
+	public function mask(bool $required = true) {
+		if ($this->eiuMask !== null) {
+			return $this->eiuMask;
+		}
+		
+		return $this->eiuMask = $this->eiuFactory->getEiuMask($required);
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\util\model\EiuFrame
 	 */
 	public function frame(bool $required = true)  {
-		if ($this->eiuFrame !== null || !$required) return $this->eiuFrame;
+		if ($this->eiuFrame !== null) {
+			return $this->eiuFrame;
+		}
 		
-		throw new EiuPerimeterException('EiuFrame is unavailable.');
+		return $this->eiuFrame = $this->eiuFactory->getEiuFrame($required);
 	}
 	
 	/**
@@ -69,9 +74,11 @@ class Eiu implements Lookupable {
 	 * @return \rocket\ei\manage\util\model\EiuEntry
 	 */
 	public function entry(bool $required = true) {
-		if ($this->eiuEntry !== null || !$required) return $this->eiuEntry;
-	
-		throw new EiuPerimeterException('EiuEntry is unavailable.');
+		if ($this->eiuEntry !== null) {
+			return $this->eiuEntry;
+		}
+		
+		return $this->eiuEntry = $this->eiuFactory->getEiuEntry($required);
 	}
 	
 	/**
@@ -81,9 +88,11 @@ class Eiu implements Lookupable {
 	 * @return \rocket\ei\manage\util\model\EiuGui
 	 */
 	public function gui(bool $required = true) {
-		if ($this->eiuGui !== null || !$required) return $this->eiuGui;
-	
-		throw new EiuPerimeterException('EiuGui is unavailable.');
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui;
+		}
+		
+		return $this->eiuGui = $this->eiuFactory->getEiuGui($required);
 	}
 	
 	
@@ -93,15 +102,11 @@ class Eiu implements Lookupable {
 	 * @return \rocket\ei\manage\util\model\EiuEntryGui
 	 */
 	public function entryGui(bool $required = true) {
-		if ($this->eiuEntryGui !== null) return $this->eiuEntryGui;
-	
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui->entryGui($required);
+		if ($this->eiuEntryGui !== null) {
+			return $this->eiuEntryGui;
 		}
 		
-		if (!$required) return null;
-		
-		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
+		return $this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui($required);
 	}
 	
 	/**
@@ -110,9 +115,11 @@ class Eiu implements Lookupable {
 	 * @return NULL|\rocket\ei\manage\util\model\EiuField
 	 */
 	public function field(bool $required = true) {
-		if ($this->eiuField !== null || !$required) return $this->eiuField;
+		if ($this->eiuField !== null) {
+			return $this->eiuField;
+		}
 		
-		throw new EiuPerimeterException('EiuField is unavailable.');
+		return $this->eiuField = $this->eiuFactory->getEiuField($required);
 	}
 	
 	/**
@@ -120,10 +127,6 @@ class Eiu implements Lookupable {
 	 * @return mixed
 	 */
 	public function lookup($lookupId, bool $required = true) {
-		if ($this->eiuFrame !== null) {
-			return $this->eiuFrame->getN2nContext()->lookup($lookupId, $required);
-		}
-		
 		return $this->eiuFactory->getN2nContext(true)->lookup($lookupId, $required);
 	}
 	
@@ -132,6 +135,13 @@ class Eiu implements Lookupable {
 	 * @return \n2n\l10n\DynamicTextCollection
 	 */
 	public function dtc(string ...$moduleNamespaces) {
-		return new DynamicTextCollection($moduleNamespaces, $this->frame()->getN2nLocale());
+		return new DynamicTextCollection($moduleNamespaces, $this->eiuFactory->getN2nContext(true)->getN2nLocale());
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\util\model\EiuFactory
+	 */
+	public function getEiuFactory() {
+		return $this->eiuFactory;
 	}
 }

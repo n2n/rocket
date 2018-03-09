@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
 use n2n\core\container\N2nContext;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter;
@@ -72,7 +72,7 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		return $comptibilityLevel;
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);

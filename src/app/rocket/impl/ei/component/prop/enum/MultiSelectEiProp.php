@@ -27,7 +27,7 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\reflection\property\ConstraintsConflictException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -58,7 +58,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		try {
 			$this->objectPropertyAccessProxy->setConstraints(TypeConstraint::createSimple(null, true));
 		} catch (ConstraintsConflictException $e) {

@@ -25,7 +25,7 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter;
@@ -179,7 +179,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		return $magDispatchable;
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
 		$eiComponent = $this->eiComponent;
@@ -192,7 +192,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$relationEntityProperty = $this->eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$target = $eiSetupProcess->eiu()->context()->engine($targetEntityClass)->getEiType();
+			$target = $eiSetupProcess->eiu()->context()->getSpec()->getEiTypeByClass($targetEntityClass);
 			
 			$targetEiMask = null; 
 			if (null !== ($eiMaskId = $this->attributes->getString(self::ATTR_TARGET_MASK_KEY, false, null, true))) {
@@ -203,7 +203,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 				
 			$targetMasterEiProp = null;
 
-			$this->eiPropRelation->init($target, $targetEiMask);
+			$this->eiPropRelation->init($eiSetupProcess->eiu(), $target, $targetEiMask);
 		} catch (EiException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiTypeExtensionException $e) {

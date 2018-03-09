@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\reflection\annotation\AnnoInit;
-use rocket\ei\manage\util\model\EntryForm;
+use rocket\ei\manage\util\model\EiuEntryForm;
 use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
@@ -35,14 +35,14 @@ use n2n\web\dispatch\map\PropertyPath;
 
 class EditModel implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoDispProperties('entryForm'));
+		$ai->c(new AnnoDispProperties('eiuEntryForm'));
 	}
 		
 	private $draftingAllowed;
 	private $publishingAllowed;
 		
 	private $eiuFrame;
-	private $entryForm;
+	private $eiuEntryForm;
 	private $entryModel;
 		
 	public function __construct(EiuFrame $eiuFrame, $draftingAllowed, $publishingAllowed) {
@@ -50,10 +50,10 @@ class EditModel implements Dispatchable {
 	}
 	
 	public function initialize(EiEntry $eiEntry) {
-		$this->entryForm = $this->eiuFrame->entryForm($eiEntry, new PropertyPath(array('entryForm')));
+		$this->eiuEntryForm = $this->eiuFrame->eiuEntryForm($eiEntry, new PropertyPath(array('eiuEntryForm')));
 		
-		IllegalStateException::assertTrue(!$this->entryForm->isChoosable());
-		$this->entryModel = $this->entryForm->getChosenEntryTypeForm();
+		IllegalStateException::assertTrue(!$this->eiuEntryForm->isChoosable());
+		$this->entryModel = $this->eiuEntryForm->getChosenEiuEntryTypeForm();
 	}
 	
 // 	public function getEiFrame() {
@@ -81,12 +81,12 @@ class EditModel implements Dispatchable {
 		return $this->entryModel;
 	}
 		
-	public function getEntryForm() {
-		return $this->entryForm;
+	public function getEiuEntryForm() {
+		return $this->eiuEntryForm;
 	}
 	
-	public function setEntryForm(EntryForm $entryForm) {
-		$this->entryForm = $entryForm;
+	public function setEiuEntryForm(EiuEntryForm $eiuEntryForm) {
+		$this->eiuEntryForm = $eiuEntryForm;
 	}
 	
 	private function _validation(BindingDefinition $bd) {
@@ -94,7 +94,7 @@ class EditModel implements Dispatchable {
 	}
 	
 	public function save(MessageContainer $messageContainer) {
-		$eiuEntry = $this->entryForm->buildEiuEntry();
+		$eiuEntry = $this->eiuEntryForm->buildEiuEntry();
 		
 		if ($eiuEntry->getEiEntry()->save()) {
 			$this->eiuFrame->persist($eiuEntry);
@@ -116,7 +116,7 @@ class EditModel implements Dispatchable {
 	public function saveAsNewDraft(MessageContainer $messageContainer) {
 		if (!$this->isDraftable()) return null;
 		
-		$eiEntry = $this->entryForm->buildEiEntry();
+		$eiEntry = $this->eiuEntryForm->buildEiEntry();
 		$draftedEiEntry = $eiEntry->createDraftedCopy();
 		
 		if ($draftedEiEntry->save()) {
@@ -134,7 +134,7 @@ class EditModel implements Dispatchable {
 			return false;
 		}
 		
-		$eiEntry = $this->entryForm->buildEiEntry();
+		$eiEntry = $this->eiuEntryForm->buildEiEntry();
 		IllegalStateException::assertTrue($eiEntry->getEiObject()->isDraft());
 		
 		return $eiEntry->save();

@@ -21,14 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\mag;
 
-use rocket\ei\manage\util\model\EiUtils;
+use rocket\ei\manage\util\model\EiuFrame;
 
 class EntryLabeler {
 	private $eiUtils;
 	private $genericLabel;
 	private $selectedIdentityStrings = array();
 	
-	public function __construct(EiUtils $eiUtils) {
+	public function __construct(EiuFrame $eiUtils) {
 		$this->eiUtils = $eiUtils;
 		$this->genericLabel = $eiUtils->getGenericLabel();
 	}

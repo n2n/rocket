@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
@@ -59,7 +59,7 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 	}
 	
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof OrderEiProp);

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\translation\conf;
 
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\l10n\N2nLocale;
 use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
@@ -187,7 +187,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->set($key, $n2nLocaleDefsAttrs);
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		$eiu = $eiSetupProcess->eiu();
 		
 		$lar = new LenientAttributeReader($this->attributes);
@@ -210,7 +210,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$relationProperty = $eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$targetEiType = $eiSetupProcess->eiu()->context()->engine($targetEntityClass)->getEiType();
+			$targetEiType = $eiSetupProcess->eiu()->context()->mask($targetEntityClass)->getEiType();
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
@@ -232,7 +232,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 								$entityProperty->getName()));
 			}
 
-			$eiPropRelation->init($targetEiType, $targetEiMask);
+			$eiPropRelation->init($eiSetupProcess->eiu(), $targetEiType, $targetEiMask);
 		} catch (UnknownTypeException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiTypeExtensionException $e) {

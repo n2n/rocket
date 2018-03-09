@@ -11,7 +11,7 @@
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
 	
-	$eiuEntry = $mappingForm->getEntryForm()->getChosenEntryTypeForm()->getEiuEntryGui()->getEiuEntry();
+	$eiuEntry = $mappingForm->getEiuEntryForm()->getChosenEiuEntryTypeForm()->getEiuEntryGui()->getEiuEntry();
 	
 	$grouped = $view->getParam('grouped', false, true);
 	$summaryRequired = $view->getParam('summaryRequired');
@@ -82,14 +82,14 @@
 		<?php endif ?>
 	
 		<?php if (!$grouped): ?>
-			<?php $view->out($mappingForm->getEntryForm()
-					->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
+			<?php $view->out($mappingForm->getEiuEntryForm()
+					->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))->createView($view, false)) ?>
 		<?php else: ?>
 			<div class="rocket-impl-body rocket-group rocket-light-group">
 				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 				<div class="rocket-control">
-					<?php $view->out($mappingForm->getEntryForm()
-							->setContextPropertyPath($formHtml->meta()->propPath('entryForm'))->createView($view, false)) ?>
+					<?php $view->out($mappingForm->getEiuEntryForm()
+							->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))->createView($view, false)) ?>
 				</div>
 			</div>
 		<?php endif ?>

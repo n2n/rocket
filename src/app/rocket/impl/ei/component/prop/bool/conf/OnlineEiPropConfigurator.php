@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
@@ -53,7 +53,7 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 		return $level;
 	}
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 		
 		$onlineEiProp = $this->eiComponent;
@@ -62,6 +62,6 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$onlineEiCommand = new OnlineEiCommand();
 		$onlineEiCommand->setOnlineEiProp($onlineEiProp);
 		
-		$setupProcess->eiu()->engine()->addEiCommand($onlineEiCommand, true);
+		$setupProcess->eiu()->mask()->addEiCommand($onlineEiCommand, true);
 	}
 }

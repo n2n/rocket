@@ -135,7 +135,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			
 			if ($this->eiPropRelation->isEmbeddedAddActivated($eiu->frame()->getEiFrame())
 					 && $targetEditEiFrame->getEiExecution()->isGranted()) {
-				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
+				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
 						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}

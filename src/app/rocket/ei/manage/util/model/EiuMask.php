@@ -22,67 +22,112 @@
 namespace rocket\ei\manage\util\model;
 
 use rocket\ei\mask\EiMask;
-use n2n\core\container\N2nContext;
-use n2n\persistence\orm\EntityManager;
-use rocket\ei\manage\EiEntityObj;
-use n2n\persistence\orm\store\EntityInfo;
-use n2n\l10n\N2nLocale;
-use rocket\ei\manage\draft\DraftManager;
 use rocket\core\model\Rocket;
-use n2n\reflection\CastUtils;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\modificator\EiModificator;
+use n2n\util\ex\IllegalStateException;
 
-class EiuMask extends EiUtilsAdapter {
+class EiuMask  {
 	private $eiMask;
-	private $n2nContext;
-	private $em;
+	private $eiuEngine;
+	private $eiuFactory;
 	
-	public function __construct(EiMask $eiMask, N2nContext $n2nContext) {
+	public function __construct(EiMask $eiMask, EiuEngine $eiuEngine = null, EiuFactory $eiuFactory = null) {
 		$this->eiMask = $eiMask;
-		$this->n2nContext = $n2nContext;
-	}
-	
-	public function em(): EntityManager {
-		if ($this->em === null) {
-			$this->em = $this->eiMask->getEiEngine()->getEiMask()->getEiType()->lookupEntityManager($this->n2nContext->getPdoPool());
-		}
-		
-		return $this->em;
-	}
-	
-	public function getEiMask(): EiMask {
-		return $this->eiMask;
-	}
-	
-	public function getN2nContext(): N2nContext {
-		return $this->n2nContext;
-	}
-	
-	public function getDraftManager(): DraftManager {
-		$rocket = $this->n2nContext->lookup(Rocket::class);
-		CastUtils::assertTrue($rocket instanceof Rocket);
-		
-		return $rocket->getOrCreateDraftManager($this->em());
-	}
-
-	public function getN2nLocale(): N2nLocale {
-		return $this->n2nContext->getN2nLocale();
-	}
-	
-	public function containsId($id, int $ignoreConstraints = 0): bool {
-		return null !== $this->em()->find($this->getEntityModel()->getClass(), $id);
+		$this->eiuEngine = $eiuEngine;
+		$this->eiuFactory = $eiuFactory;
 	}
 	
 	/**
-	 * @param mixed $id
-	 * @throws UnknownEntryException
-	 * @return \rocket\ei\manage\EiEntityObj
+	 * @return \rocket\ei\mask\EiMask
 	 */
-	public function lookupEiEntityObj($id, int $ignoreConstraints = 0): EiEntityObj {
-		if (null !== ($entity = $this->em()->find($this->getEntityModel()->getClass(), $id))) {
-			return new EiEntityObj($id, $entity);
-		}
+	public function getEiMask() {
+		return $this->eiMask;
+	}
 	
-		throw new UnknownEntryException('Entity not found: ' . EntityInfo::buildEntityString(
-				$this->getEntityModel(), $id));
+	/**
+	 * @return \rocket\ei\EiType
+	 */
+	public function getEiType() {
+		return $this->eiMask->getEiType();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\util\model\EiuMask
+	 */
+	public function supremeMask() {
+		if (!$this->eiMask->getEiType()->hasSuperEiType()) {
+			return $this;
+		}
+		
+		return new EiuMask($this->eiMask->determineEiMask($this->eiMask->getEiType()->getSupremeEiType()),
+				null, $this->eiuFactory);
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @param bool $prepend
+	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 */
+	public function addEiProp(EiProp $eiProp, bool $prepend = false) {
+		$this->eiMask->getEiPropCollection()->add($eiProp, $prepend);
+		return $this;
+	}
+	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @param bool $prepend
+	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 */
+	public function addEiCommand(EiCommand $eiCommand, bool $prepend = false) {
+		$this->eiMask->getEiCommandCollection()->add($eiCommand, $prepend);
+		return $this;
+	}
+	
+	/**
+	 * @param EiModificator $eiModificator
+	 * @param bool $prepend
+	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 */
+	public function addEiModificator(EiModificator $eiModificator, bool $prepend = false) {
+		$this->eiMask->getEiModificatorCollection()->add($eiModificator, $prepend);
+		return $this;
+	}
+	
+	/**
+	 * @param bool $required
+	 * @return \rocket\ei\manage\util\model\EiuEngine|NULL
+	 * @throws IllegalStateException
+	 */
+	public function getEiuEngine(bool $required = true) {
+		if ($this->eiuEngine !== null) {
+			return $this->eiuEngine;
+		}
+		
+		if (!$required && !$this->eiMask->hasEiEngine()) {
+			return null;
+		}
+		
+		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuFactory);
+	}
+	
+	public function engine($eiObjectObj) {
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg',
+				$this->eiMask->getEiType()->getEiType());
+		
+		$detrEiMask = $this->eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
+		return new EiuMask($detrEiMask, null, $this->eiuFactory);
+	}
+	
+	public function onEngineReady(\Closure $readyCallback) {
+		if ($this->eiMask->hasEiEngine()) {
+			$readyCallback(new Eiu($this->n2nContext, $this));
+		}
+		
+		$that = $this;
+		$this->eiMask->onEiEngineSetup(function () use ($readyCallback, $that) {
+			$readyCallback($that->getEiuEngine());
+		});
 	}
 }

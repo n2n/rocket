@@ -85,7 +85,7 @@ class ToOneMag extends MagAdapter {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	
-	public function getNewEntryFormUrl(): Url {
+	public function getNewEiuEntryFormUrl(): Url {
 		return $this->newMappingFormUrl;
 	}
 

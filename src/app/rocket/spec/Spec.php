@@ -47,6 +47,8 @@ use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
 use n2n\util\cache\CorruptedCacheStoreException;
+use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\component\EiSetup;
 
 class Spec {	
 	private $specExtractionManager;
@@ -57,22 +59,12 @@ class Spec {
 	private $eiTypes = array();
 	private $eiTypeCis = array();
 	
-	
-// 	private $scriptComponentsStorage;
-	
-// 	private $scriptsConfigSource;
-// 	private $entityModelManager;
 	private $noSetupMode = false;
-	private $eiSetupQueue;
 	
-// 	private $scripts = array();
-// 	private $eiTypes = array();
-// 	
-
-// 	private $manageConfig;
-// 	private $specConfigs = array();
-// 	
-
+	/**
+	 * @param SpecExtractionManager $specExtractionManager
+	 * @param EntityModelManager $entityModelManager
+	 */
 	public function __construct(SpecExtractionManager $specExtractionManager, EntityModelManager $entityModelManager) {
 		$this->specExtractionManager = $specExtractionManager;
 		$this->entityModelManager = $entityModelManager;
@@ -138,28 +130,6 @@ class Spec {
 		return $this->launchPads[(string) $typePath] = new EiLaunchPad($typePath, $eiMask, $label);
 	}
 	
-		
-	
-// 	public function containsSpecId($id) {
-// 		foreach ($this->specConfigs as $scriptConfig) {
-// 			if ($scriptConfig->containsScriptId($id)) {
-// 				return true;
-// 			}
-// 		}
-		
-// 		return false;
-// 	}
-					
-// 	public function containsEiTypeClass(\ReflectionClass $class) {
-// 		foreach ($this->specConfigs as $scriptConfig) {
-// 			if ($scriptConfig->containsEiTypeClass($class)) {
-// 				return true;
-// 			}
-// 		}
-		
-// 		return false;
-// 	}
-	
 	/**
 	 * @param N2nContext $n2nContext
 	 * @param bool $noSetupMode
@@ -167,8 +137,7 @@ class Spec {
 	 */
 	public function initialize(N2nContext $n2nContext, bool $noSetupMode = false) {
 		$this->clear();
-		
-		$this->noSetupMode = $noSetupMode;
+		$this->eiSetupQueue->clear();
 		
 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(Spec::class);
 		
@@ -198,35 +167,12 @@ class Spec {
 			}
 			
 			foreach ($this->specExtractionManager->getCustomTypeExtractions() as $customTypeExtraction) {
-				$customType = $this->createCustomTypeFromExtr($customTypeExtraction);
-				
-// 				if (null !== ($launchPadExtraction = $customTypeExtraction->getLaunchPadExtraction())) {
-// 					$this->createCustomLaunchPad($launchPadExtraction->getLabel() ?? $customType->getLabel());
-// 				}
+				$this->createCustomTypeFromExtr($customTypeExtraction);
 			}
 			
 			foreach ($this->specExtractionManager->getEiTypeExtractions() as $eiTypeExtraction) {
-				$eiType = $this->createEiTypeFromExtr($eiTypeExtraction);
-				
-// 				if (null !== ($launchPadExtraction = $eiTypeExtraction->getLaunchPadExtraction())) {
-// 					$this->createEiLaunchPad($eiMask, $launchPadExtraction->getLabel() ?? $eiType->getEiMask()->getLabel());
-// 				}
+				 $this->createEiTypeFromExtr($eiTypeExtraction);
 			}
-			
-// 			foreach ($this->specExtractionManager->getEiModificatorExtractions() as $eiModificatorExtraction) {
-// 				$this->buildEiModificatorFromExtr($eiModificatorExtraction);
-// 			}
-			
-// 			foreach ($this->specExtractionManager->getEiTypeExtensionExtractions() as $eiTypeExtensionExtraction) {
-// 				$eiTypeExtension = $this->buildEiTypeExtensionFromExtr($eiTypeExtensionExtraction);
-				
-// 				if ($eiTypeExtension === null) continue;
-				
-// 				if (null !== ($launchPadExtraction = $eiTypeExtension->getLaunchPadExtraction())) {
-// 					$eiMask = $eiType->getEiMask();
-// 					$this->createEiLaunchPad($eiMask, $launchPadExtraction->getLabel() ?? $eiMask->getLabel());
-// 				}
-// 			}
 			
 			if ($charcs !== null) {
 				$cacheStore->store(Spec::class, $charcs, array(
@@ -243,15 +189,10 @@ class Spec {
 				$class = ReflectionUtils::createReflectionClass($className);
 				$entityModel = $this->entityModelManager->getEntityModelByClass($class);
 			} catch (TypeNotFoundException $e) {
-// 				if ($this->noSetupMode) continue;
-				
 				throw new InvalidSpecConfigurationException('Invalid EiType: ' . $eiType, 0, $e);
 			} catch (OrmConfigurationException $e) {
-// 				if ($this->noSetupMode) continue;
-				
 				throw new InvalidSpecConfigurationException('Invalid EiType: ' . $eiType, 0, $e);
 			}
-			
 			
 			$eiType->setEntityModel($entityModel);
 			
@@ -267,6 +208,8 @@ class Spec {
 		
 		if (!$this->noSetupMode) {
 			$this->eiSetupQueue->trigger($n2nContext);
+		} else {
+			$this->eiSetupQueue->clear();
 		}
 	}
 	
@@ -430,6 +373,9 @@ class Spec {
 		return $this->eiTypes;
 	}
 	
+	/**
+	 * @return \rocket\spec\EiSetupQueue
+	 */
 	public function getEiSetupQueue() {
 		return $this->eiSetupQueue;
 	}
@@ -439,25 +385,16 @@ class EiSetupQueue {
 	private $spec;
 	private $propIns = array();
 	private $eiConfigurators = array();
-	private $es = array();
 	
 	public function __construct(Spec $spec) {
 		$this->spec = $spec;
 	}
-	
-// 	public function isLenient() {
-// 		return $this->lenient;
-// 	}
-	
-// 	public function setLenient($lenient) {
-// 		$this->lenient = (boolean) $lenient;
-// 	}
 		
-	public function addPropIn(PropIn $closure) {
-		$this->propIns[] = $closure;
+	public function addPropIn(PropIn $propIn) {
+		$this->propIns[] = $propIn;
 	}
 	
-	public function add(EiConfigurator $eiConfigurator) {
+	public function addEiConfigurator(EiConfigurator $eiConfigurator) {
 		$this->eiConfigurators[] = $eiConfigurator;
 	}
 	
@@ -476,6 +413,11 @@ class EiSetupQueue {
 	public function setEiConfigurators(array $eiConfigurators) {
 		$this->eiConfigurators = $eiConfigurators;
 	}
+	
+	public function clear()  {
+		$this->propIns = array();
+		$this->eiConfigurators = array();
+	}
 		
 	public function trigger(N2nContext $n2nContext) {
 		$this->propIns();
@@ -483,28 +425,68 @@ class EiSetupQueue {
 		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
 			$this->setup($n2nContext, $eiConfigurator);
 		}
-	}
-
-	public function exclusiveTriggerForEiType($eiTypeId, N2nContext $n2nContext) {
-		$this->exclusivePropInForEiType($eiTypeId, $n2nContext);
-	
-		foreach ($this->eiConfigurators as $key => $eiConfigurator) {
-			if ($eiConfigurator->getEiComponent()->getEiEngine()->getEiMask()->getEiType()->getId() !== $eiTypeId) {
-				continue;
+		
+		$cbrs = [];
+		foreach ($this->spec->getEiTypes() as $eiType) {
+			$callbacks = $eiType->getEiMask()->setupEiEngine();
+			if (!empty($callbacks)) {
+				$cbrs[] = array('em' => $eiType->getEiMask(), 'cb' => $callbacks);	
 			}
-				
-			$this->setup($n2nContext, $eiConfigurator);
-			unset($this->eiConfigurators[$key]);
+			
+			foreach ($eiType->getEiTypeExtensionCollection() as $eiTypeExtension) {
+				$callbacks = $eiTypeExtension->getEiMask()->setupEiEngine();
+				if (!empty($callbacks)) {
+					$cbrs[] = array('em' => $eiTypeExtension->getEiMask(), 'cb' => $callbacks);
+				}
+			}
+		}
+		
+		foreach ($cbrs as $cbr) {
+			try {
+				foreach ($cbr['cb'] as $c) {
+					$c($cbr['em']->getEiEngine());
+				}
+			} catch (InvalidConfigurationException $e) {
+				throw new InvalidEiMaskConfigurationException('Failed to setup EiMask '
+						. $cbr['cb'] . '.', 0, $e);
+			}
 		}
 	}
+
+// 	public function exclusiveTriggerForEiType($eiTypeId, N2nContext $n2nContext) {
+// 		$this->exclusivePropInForEiType($eiTypeId, $n2nContext);
 	
+// 		foreach ($this->eiConfigurators as $key => $eiConfigurator) {
+// 			if ($eiConfigurator->getEiComponent()->getEiEngine()->getEiMask()->getEiType()->getId() !== $eiTypeId) {
+// 				continue;
+// 			}
+				
+// 			$this->setup($n2nContext, $eiConfigurator);
+// 			unset($this->eiConfigurators[$key]);
+// 		}
+// 	}
+	
+	/**
+	 * 
+	 * @param N2nContext $n2nContext
+	 * @param EiConfigurator $eiConfigurator
+	 * @throws InvalidEiMaskConfigurationException
+	 */
 	private function setup($n2nContext, $eiConfigurator) {
-		$eiComponent = $eiConfigurator->getEiComponent();
-		$eiSetupProcess = new SpecEiSetupProcess($this->spec, $n2nContext, $eiComponent);
+		$eiSetup = new EiSetup($this->spec, $n2nContext, 
+				$eiConfigurator->getEiComponent());
+		
 		try {
-			$eiConfigurator->setup($eiSetupProcess);
-		} catch (AttributesException $e) {
-			throw $eiSetupProcess->createException(null, $e);
+			try {
+				$eiConfigurator->setup($eiSetup);
+			} catch (AttributesException $e) {
+				throw $eiSetupProcess->createException(null, $e);
+			} catch (\InvalidArgumentException $e) {
+				throw $eiSetupProcess->createException(null, $e);
+			}
+		} catch (InvalidConfigurationException $e) {
+			throw new InvalidEiMaskConfigurationException('Failed to setup EiMask ' 
+					. $eiComponent->getEiMask() . '.', 0, $e);
 		}
 	}
 	
@@ -524,20 +506,6 @@ class EiSetupQueue {
 			unset($this->propIns[$key]);
 		}
 	}
-	
-	
-// 	public function buildErrorMessages($eiTypeId) {
-// 		$errorMessages = array();
-// 		if (isset($this->es[$eiTypeId])) {
-// 			foreach ($this->es[$eiTypeId] as $e) {
-// 				$errorMessages[] = new Message($e->getMessage());
-// 			}
-// 		}
-// 		return $errorMessages;
-// 	}
-	
-	
-
 }
 
 class PropIn {

@@ -33,24 +33,25 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
 
 class EiuEntryGui {
+	private $eiEntryGui;
 	private $eiuGui;
 	private $eiuEntry;
-	protected $eiEntryGui;
 	
-	public function __construct(...$eiArgs) {
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs(...$eiArgs);
-		
-		$this->eiEntryGui = $eiuFactory->getEiEntryGui(true);
-		$this->eiuGui = $eiuFactory->getEiuGui(true);
-		$this->eiuEntry = $eiuFactory->getEiuEntry(true);
+	public function __construct(EiEntryGui $eiEntryGui, EiuGui $eiuGui = null, EiuFactory $eiuFactory = null) {
+		$this->eiEntryGui = $eiEntryGui;
+		$this->eiuGui = $eiuGui;
+		$this->eiuFactory = $eiuFactory;
 	}
 	
 	/**
-	 * @return \rocket\ei\mask\EiMask
+	 * @return EiuGui 
 	 */
-	public function getEiMask() {
-		return $this->eiEntryGui->getEiMask();
+	public function getEiuGui() {
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui;
+		}
+		
+		return new EiuGui($this->eiEntryGui->getEiGui(), null, $this->eiuFactory);
 	}
 	
 	/**
@@ -249,15 +250,11 @@ class EiuEntryGui {
 	 * @return \rocket\ei\manage\util\model\EiuEntry
 	 */
 	public function getEiuEntry() {
+		if ($this->eiuEntry === null) {
+			$this->eiuEntry = $this->getEiuGui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
+		}
+		
 		return $this->eiuEntry;
-	}
-
-	/**
-	 * 
-	 * @return \rocket\ei\manage\util\model\EiuGui
-	 */
-	public function getEiuGui() {
-		return $this->eiuGui;
 	}
 	
 	/**

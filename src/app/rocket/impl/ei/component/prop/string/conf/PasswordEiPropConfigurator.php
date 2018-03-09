@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\PasswordEiProp;
@@ -32,7 +32,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 class PasswordEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_ALGORITHM_KEY = 'algorithm';
 
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 
 		IllegalStateException::assertTrue($this->eiComponent instanceof StringEiProp);

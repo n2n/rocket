@@ -30,6 +30,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
+use rocket\ei\manage\util\model\Eiu;
 
 class EmbeddedEiPropRelation extends EiPropRelation {
 	private $embeddedPseudoCommand;
@@ -44,8 +45,8 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		$this->orphansAllowed = $orphansAllowed;
 	}
 
-	public function init(EiType $targetEiType, EiMask $targetEiMask) {
-		parent::init($targetEiType, $targetEiMask);
+	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask) {
+		parent::init($eiu, $targetEiType, $targetEiMask);
 
 		if (!$this->isPersistCascaded()) {
 			$entityProperty = $this->getRelationEiProp()->getEntityProperty();
@@ -164,7 +165,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		}
 		
 		$targetEiFrame->setDetailBreadcrumbLabelOverride($this->relationEiProp->getLabelLstr()
-				->t($targetEiFrame->getN2nLocale()));
+				->t($targetEiFrame->getN2nContext()->getN2nLocale()));
 		$targetEiFrame->setDetailDisabled(true);
 	}
 }

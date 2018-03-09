@@ -222,7 +222,7 @@ class EiTypeFactory {
 		// 			}
 		// 		});
 		
-		$this->setupQueue->add($eiPropConfigurator);
+		$this->setupQueue->addEiConfigurator($eiPropConfigurator);
 		
 		return $eiProp;
 	}
@@ -250,7 +250,7 @@ class EiTypeFactory {
 				$eiCommand, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
 		$eiConfigurator->setAttributes(new Attributes($configurableExtraction->getProps()));
-		$this->setupQueue->add($eiConfigurator);
+		$this->setupQueue->addEiConfigurator($eiConfigurator);
 		
 		return $eiCommand;
 	}
@@ -277,7 +277,7 @@ class EiTypeFactory {
 		ArgUtils::valTypeReturn($eiConfigurator, EiConfigurator::class, $eiModificator, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
 		$eiConfigurator->setAttributes(new Attributes($eiModificatorExtraction->getProps()));
-		$this->setupQueue->add($eiConfigurator);
+		$this->setupQueue->addEiConfigurator($eiConfigurator);
 		
 		return $eiModificator;
 	}

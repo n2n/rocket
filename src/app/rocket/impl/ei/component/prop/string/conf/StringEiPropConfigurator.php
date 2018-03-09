@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\StringEiProp;
@@ -35,7 +35,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof StringEiProp);

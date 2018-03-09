@@ -62,6 +62,7 @@ class EiMask {
 	private $eiTypeExtension;
 	
 	private $eiEngine;
+	private $eiEngineCallbacks = [];
 	private $mappingFactory;
 	private $guiFactory;
 	private $draftDefinitionFactory;
@@ -75,7 +76,6 @@ class EiMask {
 		
 		$this->eiMaskDef = new EiMaskDef();
 
-		$this->eiEngine = new EiEngine($this);
 		$this->eiPropCollection = new EiPropCollection($this);
 		$this->eiCommandCollection = new EiCommandCollection($this);
 		$this->eiModificatorCollection = new EiModificatorCollection($this);
@@ -191,10 +191,55 @@ class EiMask {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function hasEiEngine() {
+		return $this->eiEngine !== null;
+	}
+	
+	/**
 	 * @return EiEngine
 	 */
 	public function getEiEngine() {
-		return $this->eiEngine;
+		if ($this->eiEngine !== null) {
+			return $this->eiEngine;
+		}
+		
+		throw new IllegalStateException('EiEngine is not set up yet.');
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return \Closure[]
+	 */
+	public function setupEiEngine() {
+		if ($this->eiEngine !== null) {
+			throw new IllegalStateException('EiEngine already set up.');
+		}
+		
+		$this->eiEngine = new EiEngine($this);
+		
+		$callbacks = $this->eiEngineCallbacks;
+		$this->eiEngineCallbacks = array();
+		return $callbacks;
+	}
+	
+	/**
+	 * @param \Closure $callback
+	 */
+	public function onEiEngineSetup(\Closure $callback) {
+		if ($this->eiEngine !== null) {
+			$callback($this->eiEngine);
+		}
+		
+		$this->eiEngineCallbacks[spl_object_hash($callback)] = $callback;
+	}
+	
+	/**
+	 * @param \Closure $callback
+	 */
+	public function offEiEngineSetup(\Closure $callback) {
+		unset($this->eiEngineCallbacks[spl_object_hash($callback)]);
 	}
 	
 	/**

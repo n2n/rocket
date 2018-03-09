@@ -34,7 +34,7 @@
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $overviewModel->getEiuFrame()->getGenericLabel()));
 	
-	$eiMask = $overviewModel->getEiuFrame()->getEiMask();
+	$eiMask = $overviewModel->getEiuFrame()->getContextEiMask();
 	
 	$eiHtml = new EiHtmlBuilder($view);
 ?>	

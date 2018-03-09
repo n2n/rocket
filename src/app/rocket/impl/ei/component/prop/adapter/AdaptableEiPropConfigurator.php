@@ -28,7 +28,7 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\l10n\DynamicTextCollection;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\reflection\property\ConstraintsConflictException;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
@@ -250,7 +250,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return $this->confObjectPropertyEiProp->getObjectPropertyAccessProxy()->getPropertyName();
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		try {
 			$this->setupDisplaySettings();
 		} catch (\InvalidArgumentException $e) {

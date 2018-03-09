@@ -144,7 +144,7 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
-		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getClass(), $nestedSetStrategy);
+		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
 		
 		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->allowControls();
 		

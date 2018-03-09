@@ -35,10 +35,10 @@ use n2n\web\ui\ViewFactory;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 
-class EntryForm implements Dispatchable {
+class EiuEntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('chosenId'));
-		$ai->p('entryTypeForms', new AnnoDispObjectArray());
+		$ai->p('eiuEntryTypeForms', new AnnoDispObjectArray());
 	}
 		
 	private $eiuFrame;
@@ -47,12 +47,12 @@ class EntryForm implements Dispatchable {
 	private $chosenId;
 	private $eispecChoosable = false;
 	private $eiTypeChoicesMap;
-	private $entryTypeForms;
+	private $eiuEntryTypeForms;
 		
 	private $contextPropertyPath = null;
 // 	private $selectedTypeId;
-// 	private $mainEntryFormPart;
-// 	private $levelEntryFormParts = array();
+// 	private $mainEiuEntryFormPart;
+// 	private $levelEiuEntryFormParts = array();
 		
 	/**
 	 * 
@@ -65,7 +65,7 @@ class EntryForm implements Dispatchable {
 	/**
 	 * 
 	 * @param PropertyPath $propertyPath
-	 * @return \rocket\ei\manage\util\model\EntryForm
+	 * @return \rocket\ei\manage\util\model\EiuEntryForm
 	 */
 	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
 		$this->contextPropertyPath = $propertyPath;
@@ -86,19 +86,19 @@ class EntryForm implements Dispatchable {
 		return $this->eiuFrame;
 	}
 	/**
-	 * @return EntryTypeForm[]
+	 * @return EiuEntryTypeForm[]
 	 */
-	public function getEntryTypeForms() {
-		return $this->entryTypeForms;
+	public function getEiuEntryTypeForms() {
+		return $this->eiuEntryTypeForms;
 	}
 	
 	/**
-	 * @param EntryTypeForm[] $entryTypeForms
+	 * @param EiuEntryTypeForm[] $eiuEntryTypeForms
 	 */
-	public function setEntryTypeForms(array $entryTypeForms) {
-		$this->entryTypeForms = $entryTypeForms; 
+	public function setEiuEntryTypeForms(array $eiuEntryTypeForms) {
+		$this->eiuEntryTypeForms = $eiuEntryTypeForms; 
 		if ($this->chosenId === null) {
-			$this->chosenId = key($entryTypeForms);
+			$this->chosenId = key($eiuEntryTypeForms);
 		}
 	}
 	
@@ -137,22 +137,22 @@ class EntryForm implements Dispatchable {
 // 		if ($this->chosenId == $eiTypeId) return;
 		
 // 		if (isset($this->chooseables[$eiTypeId])) {
-// 			$this->initNewEntryFormModel($this->chooseables[$eiTypeId]);
+// 			$this->initNewEiuEntryFormModel($this->chooseables[$eiTypeId]);
 // 		}
 	}
 	
 	private function _validation(BindingDefinition $bd) {
-		$bd->val('chosenId', new ValEnum(array_keys($this->entryTypeForms)));
+		$bd->val('chosenId', new ValEnum(array_keys($this->eiuEntryTypeForms)));
 		
 		if (!$this->isChoosable()) return;
 		
 		$that = $this;
-		$bd->closure(function ($entryTypeForms) use ($bd, $that) {
-// 			foreach ($bd->getMappingResult()->entryTypeForms as $entryModelForm) {
+		$bd->closure(function ($eiuEntryTypeForms) use ($bd, $that) {
+// 			foreach ($bd->getMappingResult()->eiuEntryTypeForms as $entryModelForm) {
 // 				test('hii' . $entryModelForm->getBindingErrors()->isEmpty());
 // 			}
 			
-// 			foreach ($entryTypeForms as $entryModelForm) {
+// 			foreach ($eiuEntryTypeForms as $entryModelForm) {
 				
 				
 // 				test('hi ' . get_class($entryModelForm->getObject()) . ' ' . spl_object_hash($entryModelForm->getBindingErrors()));
@@ -160,12 +160,12 @@ class EntryForm implements Dispatchable {
 // 			}
 			
 			$chosenId = $bd->getMappingResult()->chosenId;
-			if (!isset($that->entryTypeForms[$chosenId])) return;
+			if (!isset($that->eiuEntryTypeForms[$chosenId])) return;
 			
-			foreach (array_keys($that->entryTypeForms) as $eiTypeId) {
+			foreach (array_keys($that->eiuEntryTypeForms) as $eiTypeId) {
 				if ($chosenId !== $eiTypeId) {
 					foreach ($bd->getBindingTree()->lookupAll($bd->getPropertyPath()
-							->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))) as $childBd) {
+							->ext(new PropertyPathPart('eiuEntryTypeForms', true, $eiTypeId))) as $childBd) {
 						$childBd->getMappingResult()->getBindingErrors()->removeAllErrors();
 					}
 				}
@@ -177,34 +177,34 @@ class EntryForm implements Dispatchable {
 	 * @throws IllegalStateException
 	 */
 	public function buildEiuEntry() {
-		IllegalStateException::assertTrue(isset($this->entryTypeForms[$this->chosenId]));
-		$this->entryTypeForms[$this->chosenId]->save();
-		return $this->entryTypeForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry();
+		IllegalStateException::assertTrue(isset($this->eiuEntryTypeForms[$this->chosenId]));
+		$this->eiuEntryTypeForms[$this->chosenId]->save();
+		return $this->eiuEntryTypeForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry();
 	}
 	
 	/**
-	 * @return EntryTypeForm
+	 * @return EiuEntryTypeForm
 	 */
-	public function getChosenEntryTypeForm() {	
-		IllegalStateException::assertTrue(isset($this->entryTypeForms[$this->chosenId]));
-		return $this->entryTypeForms[$this->chosenId];
+	public function getChosenEiuEntryTypeForm() {	
+		IllegalStateException::assertTrue(isset($this->eiuEntryTypeForms[$this->chosenId]));
+		return $this->eiuEntryTypeForms[$this->chosenId];
 	}
 	
 	public function createView(HtmlView $contextView = null, bool $groupRequired = false) {
 		if ($contextView !== null) {
-			return $contextView->getImport('\rocket\ei\manage\util\view\entryForm.html',
-					array('entryFormViewModel' => new EntryFormViewModel($this, $groupRequired)));
+			return $contextView->getImport('\rocket\ei\manage\util\view\eiuEntryForm.html',
+					array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired)));
 		}
 		
 		$viewFactory = $this->eiuFrame->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
-		return $viewFactory->create('rocket\ei\manage\util\view\entryForm.html',
-				array('entryFormViewModel' => new EntryFormViewModel($this, $groupRequired)));
+		return $viewFactory->create('rocket\ei\manage\util\view\eiuEntryForm.html',
+				array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired)));
 	}
 }
 
-// class EntryFormResult {
+// class EiuEntryFormResult {
 // 	private $validationResult;
 // 	private $eiEntry;
 	
@@ -223,7 +223,7 @@ class EntryForm implements Dispatchable {
 // }
 
 
-// class EntryForm implements EditEntryModel, Dispatchable {
+// class EiuEntryForm implements EditEntryModel, Dispatchable {
 // 	private static function _annos(AnnoInit $ai) {
 // 		$ai->p('magForm', DispatchAnnotations::MANAGED_DISPATCHABLE_PROPERTY);
 // 		$ai->p('subMagForms', DispatchAnnotations::MANAGED_DISPATCHABLE_ARRAY_PROPERTY);

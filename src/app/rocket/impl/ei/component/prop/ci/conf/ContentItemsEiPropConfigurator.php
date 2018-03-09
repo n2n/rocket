@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\ci\conf;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\reflection\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
@@ -109,7 +109,7 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		}
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof ContentItemsEiProp);

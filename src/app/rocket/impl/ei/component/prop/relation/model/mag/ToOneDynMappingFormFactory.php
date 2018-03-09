@@ -55,14 +55,14 @@ class ToOneDynMappingFormFactory {
 		if ($eiEntry->getEiObject()->isNew()) {
 			$this->newMappingForm = new MappingForm(
 					$this->eiFrameUtils->getGenericLabel(), $this->eiFrameUtils->getGenericIconType(), null,
-					$this->eiFrameUtils->newEntryForm($eiEntry->getEiObject()->isDraft(), null, null, null, [$eiEntry]));
+					$this->eiFrameUtils->newEiuEntryForm($eiEntry->getEiObject()->isDraft(), null, null, null, [$eiEntry]));
 			return;
 		}
 		
 		$this->currentMappingForm = new MappingForm(
 				$this->eiFrameUtils->getGenericLabel($eiEntry), 
 				$this->eiFrameUtils->getGenericIconType($eiEntry), null,
-				$this->eiFrameUtils->entryForm($eiEntry));
+				$this->eiFrameUtils->eiuEntryForm($eiEntry));
 	}
 
 	public function getCurrentMappingForm() {
@@ -95,7 +95,7 @@ class ToOneDynMappingFormFactory {
 		if ($this->newMappingForm === null) {
 			$this->newMappingForm = new MappingForm($this->eiFrameUtils->getGenericLabel(), 
 					$this->eiFrameUtils->getGenericIconType(), null,
-					$this->eiFrameUtils->newEntryForm($this->draftMode));
+					$this->eiFrameUtils->newEiuEntryForm($this->draftMode));
 		}
 		
 		return $this->newMappingForm;

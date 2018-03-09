@@ -36,17 +36,17 @@ class ToOneForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('selectedEntryPid'));
 		$ai->p('currentMappingForm', new AnnoDispObject(function (ToOneForm $toOneForm) {
-			return $toOneForm->entryFormFactory->getCurrentMappingForm();
+			return $toOneForm->eiuEntryFormFactory->getCurrentMappingForm();
 		}));
 		$ai->p('newMappingForm', new AnnoDispObject(function (ToOneForm $toOneForm) {
-			return $toOneForm->entryFormFactory->getOrBuildNewMappingForm();
+			return $toOneForm->eiuEntryFormFactory->getOrBuildNewMappingForm();
 		}));
 	}
 
 	private $label;
 	private $mandatory;
 	private $utils;
-	private $entryFormFactory;
+	private $eiuEntryFormFactory;
 	private $entryLabeler;
 	
 	private $selectionModeEnabled = false;
@@ -60,7 +60,7 @@ class ToOneForm implements Dispatchable {
 		$this->label = $label;
 		$this->mandatory = $mandatory;
 		$this->utils = $utils;
-		$this->entryFormFactory = new ToOneDynMappingFormFactory($utils);
+		$this->eiuEntryFormFactory = new ToOneDynMappingFormFactory($utils);
 		$this->entryLabeler = new EntryLabeler($utils);
 	}
 	
@@ -97,17 +97,17 @@ class ToOneForm implements Dispatchable {
 	}
 	
 	public function isMappingFormAvailable(): bool {
-		return null !== $this->entryFormFactory->getCurrentMappingForm();
+		return null !== $this->eiuEntryFormFactory->getCurrentMappingForm();
 	}
 	
 	public function setDraftMode(bool $draftMode) {
-		$this->entryFormFactory->setDraftMode($draftMode);
+		$this->eiuEntryFormFactory->setDraftMode($draftMode);
 	}
 
 	public function setEiEntry(EiEntry $eiEntry = null) {
-		$this->entryFormFactory->setEiEntry($eiEntry);
-		$this->currentMappingForm = $this->entryFormFactory->getCurrentMappingForm();
-		$this->newMappingForm = $this->entryFormFactory->getNewMappingForm();
+		$this->eiuEntryFormFactory->setEiEntry($eiEntry);
+		$this->currentMappingForm = $this->eiuEntryFormFactory->getCurrentMappingForm();
+		$this->newMappingForm = $this->eiuEntryFormFactory->getNewMappingForm();
 	}
 	
 	public function getCurrentMappingForm() {
@@ -119,11 +119,11 @@ class ToOneForm implements Dispatchable {
 	}
 
 	public function isNewMappingFormAvailable(): bool {
-		return $this->entryFormFactory->isNewMappingFormAvailable();
+		return $this->eiuEntryFormFactory->isNewMappingFormAvailable();
 	}
 
 	public function setNewMappingFormAvailable($newMappingFormAvailable) {
-		$this->entryFormFactory->setNewMappingFormAvailable($newMappingFormAvailable);
+		$this->eiuEntryFormFactory->setNewMappingFormAvailable($newMappingFormAvailable);
 	}
 
 	public function getNewMappingForm() {
@@ -190,6 +190,6 @@ class ToOneForm implements Dispatchable {
 	
 	
 	public function isDraftMode() {
-		return $this->entryFormFactory->isDraftMode();
+		return $this->eiuEntryFormFactory->isDraftMode();
 	}
 }

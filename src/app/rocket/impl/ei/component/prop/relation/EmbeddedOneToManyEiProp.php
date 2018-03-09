@@ -201,7 +201,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			$toManyEditable->setDraftMode($draftMode);
 			
 			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
-				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
+				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
 						$eiEntry, $draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 			$toManyEditable->setTargetOrderEiPropPath($this->targetOrderEiPropPath);

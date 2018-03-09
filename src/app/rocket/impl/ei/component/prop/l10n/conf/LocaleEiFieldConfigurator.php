@@ -23,7 +23,7 @@
 
 // use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 // use rocket\impl\ei\component\prop\l10n\N2nLocaleEiProp;
-// use rocket\ei\component\EiSetupProcess;
+// use rocket\ei\component\EiSetup;
 // use n2n\util\ex\IllegalStateException;
 // use rocket\impl\ei\component\modificator\l10n\N2nLocaleEiModificator;
 // use rocket\impl\ei\component\prop\adapter\DisplaySettings;
@@ -41,7 +41,7 @@
 // 		$this->autoRegister($n2nLocaleEiProp);
 // 	}
 	
-// 	public function setup(EiSetupProcess $setupProcess) {
+// 	public function setup(EiSetup $setupProcess) {
 // 		parent::setup($setupProcess);
 		
 // 		$n2nLocaleEiProp = $this->eiComponent;

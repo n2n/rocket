@@ -127,7 +127,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 				
 			if ($eiPropRelation->isEmbeddedAddActivated($eiFrame)
 					&& $targetEditEiFrame->getEiExecution()->isGranted()) {
-				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
+				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
 						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}

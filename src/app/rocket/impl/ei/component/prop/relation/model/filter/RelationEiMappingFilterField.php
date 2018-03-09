@@ -177,7 +177,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 			}
 
 			ArgUtils::assertTrue($value instanceof RelationEntry);
-			return $this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiUtils));
+			return $this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiuFrame));
 		} 
 		
 		ArgUtils::assertTrue(is_array($value));
@@ -188,7 +188,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 		if ($this->exists) {
 			foreach ($value as $relationEntry) {
 				ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-				if (!$this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiUtils))) {
+				if (!$this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiuFrame))) {
 					return false;
 				}
 			}
@@ -197,7 +197,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 		} else {
 			foreach ($value as $relationEntry) {
 				ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-				if ($this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiUtils))) {
+				if ($this->targetEiEntryContraint->check($value->toEiEntry($this->targetEiuFrame))) {
 					return false;
 				}
 			}
@@ -227,12 +227,12 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 					return;
 				}
 				ArgUtils::assertTrue($value instanceof RelationEntry);
-				$this->targetEiEntryContraint->validate($value->toEiEntry($this->targetEiUtils));
+				$this->targetEiEntryContraint->validate($value->toEiEntry($this->targetEiuFrame));
 			} else {
 				ArgUtils::assertTrue(is_array($value));
 				foreach ($value as $relationEntry) {
 					ArgUtils::assertTrue($relationEntry instanceof RelationEntry);
-					$this->targetEiEntryContraint->validate($relationEntry->toEiEntry($this->targetEiUtils));
+					$this->targetEiEntryContraint->validate($relationEntry->toEiEntry($this->targetEiuFrame));
 				}
 			}
 

@@ -75,16 +75,6 @@ abstract class EiComponentAdapter implements EiComponent {
 	}
 	
 	public function __toString(): string {
-		$detailStrs = array();
-		$detailStrs[] = 'id: ' . ($this->id ?? 'null');
-		if ($this->eiMask === null) {
-			$detailStrs[] = 'unassigned';
-		} else {
-			$detailStrs[] = $this->eiMask->getEiType() ?? 'no EiType';
-			if (null !== ($eiMask = $this->eiMask)) {
-				$detailStrs[] = (string) $eiMask;
-			}
-		}
-		return (new \ReflectionClass($this))->getShortName() . ' [' . implode(', ', $detailStrs) . ']';
+		return (new \ReflectionClass($this))->getShortName() . ' (id: ' . $this->id . ')';
 	}
 }

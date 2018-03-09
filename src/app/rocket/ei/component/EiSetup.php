@@ -21,28 +21,49 @@
  */
 namespace rocket\ei\component;
 
-use rocket\ei\manage\util\model\Eiu;
 use n2n\core\container\N2nContext;
+use rocket\spec\Spec;
+use rocket\ei\manage\util\model\Eiu;
 
-interface EiSetupProcess {
+class EiSetup {
+	private $n2nContext;
+	private $spec;
+	private $eiComponent;
+	private $eiu;
+	
+	public function __construct(Spec $spec, N2nContext $n2nContext, EiComponent $eiComponent) {
+		$this->n2nContext = $n2nContext;
+		$this->spec = $spec;
+		$this->eiComponent = $eiComponent;
+	}
 	
 	/**
-	 * Eiu::engine() and Eiu::context() are available.
-	 * 
-	 * @return Eiu
+	 * @return \rocket\ei\manage\util\model\Eiu
 	 */
-	public function eiu(): Eiu;
+	public function eiu() {
+		if ($this->eiu === null) {
+			$this->eiu = new Eiu($this->n2nContext, $this->spec, $this->eiComponent);
+		}
+		return $this->eiu;
+	}
 	
 	/**
-	 * @return N2nContext
+	 * @return \n2n\core\container\N2nContext
 	 */
-	public function getN2nContext(): N2nContext;
+	public function getN2nContext() {
+		return $this->n2nContext;
+	}
 	
 	/**
-	 * @param string|null $reason
-	 * @param \Exception|null $previous
-	 * @return InvalidEiComponentConfigurationException
+	 * @param string $reason
+	 * @param \Exception $previous
+	 * @return \rocket\ei\component\InvalidEiComponentConfigurationException
 	 */
-	public function createException(string $reason = null, \Exception $previous = null): 
-			InvalidEiComponentConfigurationException;	
+	public function createException(string $reason = null, \Exception $previous = null) {
+		$message = $this->eiComponent . ' invalid configured.';
+		
+		return new InvalidEiComponentConfigurationException($message
+				. ($reason !== null ? ' Reason: ' . $reason : ''), 0, $previous);
+	}
+	
 }

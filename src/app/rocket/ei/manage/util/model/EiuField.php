@@ -22,18 +22,18 @@
 namespace rocket\ei\manage\util\model;
 
 use n2n\l10n\Message;
+use rocket\ei\EiPropPath;
 
 class EiuField {
 	private $eiPropPath;
 	private $eiuEntry;
+	private $eiuFactory;
 	private $eiuProp;
 	
-	public function __construct(...$eiArgs) {
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs(...$eiArgs);
-		
-		$this->eiPropPath = $eiuFactory->getEiPropPath(true);
-		$this->eiuEntry = $eiuFactory->getEiuEntry(false);
+	public function __construct(EiPropPath $eiPropPath, EiuEntry $eiuEntry, EiuFactory $eiuFactory = null) {
+		$this->eiPropPath = $eiPropPath;
+		$this->eiuEntry = $eiuEntry;
+		$this->eiuFactory = $eiuFactory;
 	}
 	
 	/**
@@ -61,12 +61,8 @@ class EiuField {
 		return $this->eiuEntry->getEiEntry()->getEiField($this->eiPropPath);
 	}
 	
-	public function getEiuEntry(bool $required = true) {
-		if (!$required || $this->eiuEntry !== null) {
-			return $this->eiuEntry;
-		}
-		
-		throw new EiuPerimeterException('EiuEntry unavailable.');
+	public function getEiuEntry() {
+		return $this->eiuEntry;
 	}
 	
 	public function getValue() {

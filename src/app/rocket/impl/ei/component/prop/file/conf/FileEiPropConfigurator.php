@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file\conf;
 
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
@@ -59,7 +59,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister();
 	}
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 	
 		$this->fileEiProp->setAllowedExtensions($this->attributes->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY,

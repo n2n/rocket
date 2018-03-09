@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation\model\filter;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\ei\manage\util\model\EiUtils;
+use rocket\ei\manage\util\model\EiuFrame;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 use n2n\persistence\orm\property\EntityProperty;
@@ -50,15 +50,15 @@ use rocket\ei\manage\mapping\EiFieldConstraint;
 class RelationFilterField implements FilterField {
 	protected $labelLstr;
 	protected $entityProperty;
-	protected $targetEiUtils;
+	protected $targetEiuFrame;
 	protected $targetFilterDef;
 	protected $targetSelectUrlCallback;
 	
-	public function __construct($labelLstr, EntityProperty $entityProperty, EiUtils $targetEiUtils, 
+	public function __construct($labelLstr, EntityProperty $entityProperty, EiuFrame $targetEiuFrame, 
 			TargetFilterDef $targetFilterDef) {
 		$this->labelLstr = Lstr::create($labelLstr);
 		$this->entityProperty = $entityProperty;
-		$this->targetEiUtils = $targetEiUtils;
+		$this->targetEiuFrame = $targetEiuFrame;
 		$this->targetFilterDef = $targetFilterDef;
 	}
 	
@@ -104,7 +104,7 @@ class RelationFilterField implements FilterField {
 		$targetEntityObjs = array();
 		foreach ($targetPids as $targetPid) {
 			try {
-				$targetEntityObjs[] = $this->targetEiUtils->lookupEiEntityObj($targetPid, 
+				$targetEntityObjs[] = $this->targetEiuFrame->lookupEiEntityObj($targetPid, 
 						CriteriaConstraint::ALL_TYPES);
 			} catch (UnknownEntryException $e) { }
 		}
@@ -112,7 +112,7 @@ class RelationFilterField implements FilterField {
 	}
 
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
-		$form = new RelationFilterMagForm($this->entityProperty->isToMany(), $this->targetEiUtils, 
+		$form = new RelationFilterMagForm($this->entityProperty->isToMany(), $this->targetEiuFrame, 
 				$this->targetFilterDef->getFilterDefinition(), $this->targetFilterDef->getFilterAjahHook(), 
 				$this->targetSelectUrlCallback);
 		$relationFilterConf = new RelationFilterConf($attributes);
@@ -123,8 +123,8 @@ class RelationFilterField implements FilterField {
 			$targetLiveEntries = array();
 			foreach ($relationFilterConf->getTargetPids() as $targetPid) {
 				try {
-					$targetLiveEntries[$targetPid] = $this->targetEiUtils->lookupEiEntityObj(
-							$this->targetEiUtils->pidToId($targetPid), CriteriaConstraint::ALL_TYPES);
+					$targetLiveEntries[$targetPid] = $this->targetEiuFrame->lookupEiEntityObj(
+							$this->targetEiuFrame->pidToId($targetPid), CriteriaConstraint::ALL_TYPES);
 				} catch (UnknownEntryException $e) {}
 			}
 			$form->getSelectorMag()->setTargetLiveEntries($targetLiveEntries);
@@ -144,7 +144,7 @@ class RelationFilterField implements FilterField {
 		
 		$targetPids = array();
 		foreach ($form->getTargetLiveEntries() as $targetEiEntityObj) {
-			$targetPids[] = $this->targetEiUtils->idToPid($targetEiEntityObj->getId());
+			$targetPids[] = $this->targetEiuFrame->idToPid($targetEiEntityObj->getId());
 		}
 		$relationFilterConf->setTargetPids($targetPids);	
 		
@@ -235,12 +235,12 @@ class RelationFilterMagForm extends MagForm {
 	private $selectorMag;
 	private $filterGroupMag;
 	
-	public function __construct(bool $toMany, EiUtils $targetEiUtils, FilterDefinition $targetFilterDefinition, 
+	public function __construct(bool $toMany, EiuFrame $targetEiuFrame, FilterDefinition $targetFilterDefinition, 
 			FilterAjahHook $filterAjahHook, \Closure $targetSelectUrlCallback = null) {
 		$this->toMany = $toMany;
 				
 		if ($targetSelectUrlCallback !== null) {
-			$this->selectorMag = new RelationSelectorMag('selector', $targetEiUtils, 
+			$this->selectorMag = new RelationSelectorMag('selector', $targetEiuFrame, 
 					$targetSelectUrlCallback);
 		}
 		$this->filterGroupMag = new RelationFilterGroupMag($targetFilterDefinition, $filterAjahHook);

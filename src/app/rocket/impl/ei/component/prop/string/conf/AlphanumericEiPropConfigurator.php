@@ -25,7 +25,7 @@ use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
@@ -49,7 +49,7 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);

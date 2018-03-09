@@ -27,7 +27,7 @@ use n2n\reflection\ReflectionUtils;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\component\EiComponent;
@@ -83,7 +83,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 		return implode(' ', $nameParts);
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 	}
 	
 	/**

@@ -27,7 +27,7 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\StringUtils;
@@ -100,7 +100,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		return $level;
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
 		$this->ckeEiProp->setMode($this->attributes->getEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(),
@@ -129,7 +129,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$this->ckeEiProp->isTableSupported()));
 	}
 	
-	private function lookupCssConfig($lookupId, EiSetupProcess $eiSetupProcess) {
+	private function lookupCssConfig($lookupId, EiSetup $eiSetupProcess) {
 		if ($lookupId === null) return null;
 		
 		$cssConfig = null;
@@ -147,7 +147,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 				. ' does not implement ' . CkeCssConfig::class);
 	}
 	
-	private function lookupLinkProvider($lookupId, EiSetupProcess $eiSetupProcess) {
+	private function lookupLinkProvider($lookupId, EiSetup $eiSetupProcess) {
 		$linkProvider = null;
 		try {
 			$linkProvider = $eiSetupProcess->getN2nContext()->lookup($lookupId);

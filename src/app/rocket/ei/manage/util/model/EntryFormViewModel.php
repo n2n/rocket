@@ -25,13 +25,13 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\ui\view\html\HtmlView;
 
-class EntryFormViewModel {
-	private $entryForm;
-	private $entryFormPropertyPath;
+class EiuEntryFormViewModel {
+	private $eiuEntryForm;
+	private $eiuEntryFormPropertyPath;
 	private $groupRequired = false;
 	
-	public function __construct(EntryForm $entryForm, bool $groupRequired = false) {
-		$this->entryForm = $entryForm;
+	public function __construct(EiuEntryForm $eiuEntryForm, bool $groupRequired = false) {
+		$this->eiuEntryForm = $eiuEntryForm;
 		$this->groupRequired = $groupRequired;
 	}
 	
@@ -43,78 +43,78 @@ class EntryFormViewModel {
 	}
 	
 // 	public function initFromView(HtmlView $view) {
-// 		$mappingResult = $view->getFormHtmlBuilder()->meta()->getMapValue($this->entryFormPropertyPath);
+// 		$mappingResult = $view->getFormHtmlBuilder()->meta()->getMapValue($this->eiuEntryFormPropertyPath);
 // 		$view->assert($mappingResult instanceof MappingResult);
 		
-// 		$entryForm = $mappingResult->getObject();
-// 		$view->assert($entryForm instanceof EntryForm);
+// 		$eiuEntryForm = $mappingResult->getObject();
+// 		$view->assert($eiuEntryForm instanceof EiuEntryForm);
 		
-// 		$this->entryForm = $entryForm;
+// 		$this->eiuEntryForm = $eiuEntryForm;
 // 	}
 	
-	public function getEntryForm(): EntryForm {
-		if ($this->entryForm === null) {
-			throw new IllegalStateException('EntryFormViewModel not initialized.');	
+	public function getEiuEntryForm(): EiuEntryForm {
+		if ($this->eiuEntryForm === null) {
+			throw new IllegalStateException('EiuEntryFormViewModel not initialized.');	
 		}
 		
-		return $this->entryForm;
+		return $this->eiuEntryForm;
 	}
 	
-	public function getEntryFormPropertyPath() {
-		return $this->entryForm->getChosenEntryTypeForm()->getEiuEntryGui()->getContextPropertyPath();
+	public function getEiuEntryFormPropertyPath() {
+		return $this->eiuEntryForm->getChosenEiuEntryTypeForm()->getEiuEntryGui()->getContextPropertyPath();
 	}
 	
 	public function isTypeChangable() {
-		return $this->getEntryForm()->isChoosable();
+		return $this->getEiuEntryForm()->isChoosable();
 	}
 	
 	public function getTypeChoicesMap() {
-		return $this->getEntryForm()->getChoicesMap();
+		return $this->getEiuEntryForm()->getChoicesMap();
 	}
 	
 	public function getIconTypeMap() {
 		$iconTypeMap = array();
 		
-		foreach ($this->entryForm->getEntryTypeForms() as $eiTypeId => $entryTypeForm) {
-			$iconTypeMap[$eiTypeId] = $entryTypeForm->getEiuEntryGui()->getEiuEntry()->getGenericIconType();
+		foreach ($this->eiuEntryForm->getEiuEntryTypeForms() as $eiTypeId => $eiuEntryTypeForm) {
+			$iconTypeMap[$eiTypeId] = $eiuEntryTypeForm->getEiuEntryGui()->getEiuEntry()->getGenericIconType();
 		}
 		
 		return $iconTypeMap;
 	}
 	
 	public function createEditView(HtmlView $contextView) {
-		$entryForm = $this->getEntryForm();
-		IllegalStateException::assertTrue(!$entryForm->isChoosable());
+		$eiuEntryForm = $this->getEiuEntryForm();
+		IllegalStateException::assertTrue(!$eiuEntryForm->isChoosable());
 		
-		$entryTypeForm = $entryForm->getChosenEntryTypeForm();
+		$eiuEntryTypeForm = $eiuEntryForm->getChosenEiuEntryTypeForm();
 		
-		if (null !== ($contextPropertyPath = $this->entryForm->getContextPropertyPath())) {
-			$eiTypeId = $entryForm->getChosenId();
-			$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath
-					->ext(new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
+		if (null !== ($contextPropertyPath = $this->eiuEntryForm->getContextPropertyPath())) {
+			$eiTypeId = $eiuEntryForm->getChosenId();
+			$eiuEntryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath
+					->ext(new PropertyPathPart('eiuEntryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 		}
 		
 		if ($this->groupRequired) {
-			$entryTypeForm->getEiuEntryGui()->getEiuGui()->forceRootGroups();
+			$eiuEntryTypeForm->getEiuEntryGui()->getEiuGui()->forceRootGroups();
 		}
 				
-		return $entryTypeForm->getEiuEntryGui()->createView($contextView);
+		return $eiuEntryTypeForm->getEiuEntryGui()->createView($contextView);
 	}
 	
 	public function createEditViews(HtmlView $contextView) {
-		$entryForm = $this->getEntryForm();
-		IllegalStateException::assertTrue($entryForm->isChoosable());
+		$eiuEntryForm = $this->getEiuEntryForm();
+		IllegalStateException::assertTrue($eiuEntryForm->isChoosable());
 	
-		$contextPropertyPath = $this->entryForm->getContextPropertyPath();
+		$contextPropertyPath = $this->eiuEntryForm->getContextPropertyPath();
 		
 		$editViews = array();
-		foreach ($entryForm->getEntryTypeForms() as $eiTypeId => $entryTypeForm) {
+		foreach ($eiuEntryForm->getEiuEntryTypeForms() as $eiTypeId => $eiuEntryTypeForm) {
 			if ($contextPropertyPath !== null) {
-				$entryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath->ext(
-						new PropertyPathPart('entryTypeForms', true, $eiTypeId))->ext('dispatchable'));
+				$eiuEntryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath->ext(
+						new PropertyPathPart('eiuEntryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 			}
 			
-			$eiuEntryGui = $entryTypeForm->getEiuEntryGui();
+			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
 			if ($eiuEntryGui->hasForkMags()) {
 				$eiuEntryGui->getEiuGui()->forceRootGroups();
 			}
@@ -133,13 +133,13 @@ class EntryFormViewModel {
 // 	}
 	
 // 	public function createTypeLevelEditView($eiTypeId) {
-// 		$entryFormParts = $this->entryForm->getLevelEntryFormParts();
-// 		if (!isset($entryFormParts[$eiTypeId])) {
+// 		$eiuEntryFormParts = $this->eiuEntryForm->getLevelEiuEntryFormParts();
+// 		if (!isset($eiuEntryFormParts[$eiTypeId])) {
 // 			throw new \InvalidArgumentException();
 // 		}
 		
-// 		return $entryFormParts[$eiTypeId]->getGuiDefinition()->getEiMask()
-// 				->createEditEntryView($entryFormParts[$eiTypeId], 
-// 						$this->basePropertyPath->ext('levelEntryFormParts')->fieldExt($eiTypeId));
+// 		return $eiuEntryFormParts[$eiTypeId]->getGuiDefinition()->getEiMask()
+// 				->createEditEntryView($eiuEntryFormParts[$eiTypeId], 
+// 						$this->basePropertyPath->ext('levelEiuEntryFormParts')->fieldExt($eiTypeId));
 // 	}
 }

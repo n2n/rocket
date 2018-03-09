@@ -73,10 +73,10 @@ class AddController extends ControllerAdapter {
 			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyPid);
 		}
 		
-		$entryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('entryForm')));
+		$eiuEntryForm = $eiuFrame->newEiuEntryForm(false, $copyFrom, new PropertyPath(array('eiuEntryForm')));
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $entryForm, $eiuFrame->getNestedSetStrategy());
+		$addModel = new AddModel($eiFrame, $eiuEntryForm, $eiuFrame->getNestedSetStrategy());
 		if ($this->parentEiObject !== null) {
 			$addModel->setParentEntityObj($this->parentEiObject->getLiveObject());
 		} else if ($this->beforeEiObject !== null) {
@@ -109,10 +109,10 @@ class AddController extends ControllerAdapter {
 	public function doDraft(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 			
-		$entryForm = $this->eiuCtrl->frame()->newEntryForm(true);
+		$eiuEntryForm = $this->eiuCtrl->frame()->newEiuEntryForm(true);
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $entryForm);
+		$addModel = new AddModel($eiFrame, $eiuEntryForm);
 		
 		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
 			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));

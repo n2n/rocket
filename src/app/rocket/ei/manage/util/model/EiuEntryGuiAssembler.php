@@ -27,20 +27,13 @@ use rocket\ei\manage\gui\EiEntryGuiAssembler;
 class EiuEntryGuiAssembler {
 	private $eiEntryGuiAssembler;
 	private $eiuEntryGui;
+	private $eiuFactory;
 	
-	public function __construct(...$eiArgs) {
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs(...$eiArgs);
-		
-		$this->eiEntryGuiAssembler = $eiuFactory->getEiEntryGuiAssembler(true);
-		$this->eiuEntryGui = $eiuFactory->getEiuEntryGui(true);
-	}
-	
-	/**
-	 * @return EiuEntryGui 
-	 */
-	public function getEiuEntryGui() {
-		return $this->eiuEntryGui;
+	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler, EiuEntryGui $eiuEntryGui = null,
+			EiuFactory $eiuFactory = null) {
+		$this->eiEntryGuiAssembler = $eiEntryGuiAssembler;
+		$this->eiuEntryGui = $eiuEntryGui;
+		$this->eiuFactory = $eiuFactory;
 	}
 	
 	/**
@@ -48,6 +41,17 @@ class EiuEntryGuiAssembler {
 	 */
 	public function getEiEntryGuiAssembler() {
 		return $this->eiEntryGuiAssembler;
+	}
+	
+	/**
+	 * @return EiuEntryGui 
+	 */
+	public function getEiuEntryGui() {
+		if ($this->eiuEntryGui === null) {
+			$this->eiuEntryGui = new EiuEntryGui($this->eiEntryGuiAssembler->getEiEntryGui(), null, $this->eiuFactory);
+		}
+		
+		return $this->eiuEntryGui;
 	}
 	
 	/**

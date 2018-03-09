@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\ei\manage\util\model\EntryFormViewModel;
+	use rocket\ei\manage\util\model\EiuEntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 
@@ -28,39 +28,39 @@ use n2n\web\dispatch\map\PropertyPath;
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$entryFormViewModel = $view->getParam('entryFormViewModel');
-	$view->assert($entryFormViewModel instanceof EntryFormViewModel);
+	$eiuEntryFormViewModel = $view->getParam('eiuEntryFormViewModel');
+	$view->assert($eiuEntryFormViewModel instanceof EiuEntryFormViewModel);
 	
-// 	$entryFormViewModel->initFromView($view);
+// 	$eiuEntryFormViewModel->initFromView($view);
 	
-	$efPropertyPath = $entryFormViewModel->getEntryForm()->getContextPropertyPath();
+	$efPropertyPath = $eiuEntryFormViewModel->getEiuEntryForm()->getContextPropertyPath();
 	if ($efPropertyPath === null) {
 		$efPropertyPath = new PropertyPath(array());
 	}
 	$selectedTypeIdPropertyPath = $efPropertyPath->ext('chosenId');
 	
-	$typeChoicesMap = $entryFormViewModel->getTypeChoicesMap();
-	$iconTypesMap = $entryFormViewModel->getIconTypeMap();
+	$typeChoicesMap = $eiuEntryFormViewModel->getTypeChoicesMap();
+	$iconTypesMap = $eiuEntryFormViewModel->getIconTypeMap();
 ?>
 	
-<?php if (!$entryFormViewModel->isTypeChangable()): ?>
+<?php if (!$eiuEntryFormViewModel->isTypeChangable()): ?>
 	<div class="rocket-entry-form" 
 			data-rocket-ei-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
 			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>"
 			data-rocket-generic-icon-type="<?php $html->out(current($iconTypesMap)) ?>">
-		<?php $view->import($entryFormViewModel->createEditView($view))?>
+		<?php $view->import($eiuEntryFormViewModel->createEditView($view))?>
 	</div>
 <?php else: ?>
-	<div class="rocket-entry-form rocket-multi-ei-type<?php $html->out($entryFormViewModel->isGroupRequired() ? 'rocket-group rocket-simple-group' : '') ?>">
+	<div class="rocket-entry-form rocket-multi-ei-type<?php $html->out($eiuEntryFormViewModel->isGroupRequired() ? 'rocket-group rocket-simple-group' : '') ?>">
 		<div class="rocket-ei-type-selector">
 			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
 			<div>
-				<?php $formHtml->select($selectedTypeIdPropertyPath, $entryFormViewModel->getTypeChoicesMap(),
+				<?php $formHtml->select($selectedTypeIdPropertyPath, $eiuEntryFormViewModel->getTypeChoicesMap(),
 						array('class' => 'form-control', 'data-rocket-generic-icon-types' => json_encode($iconTypesMap))) ?>
 			</div>
 		</div>
 	
-		<?php foreach ($entryFormViewModel->createEditViews($view) as $id => $editView): ?>
+		<?php foreach ($eiuEntryFormViewModel->createEditViews($view) as $id => $editView): ?>
 			<div class="rocket-ei-type-entry-form rocket-ei-type-<?php $html->out($id) ?>">
 				<?php $view->import($editView) ?>
 			</div>

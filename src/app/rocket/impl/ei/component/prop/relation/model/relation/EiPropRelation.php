@@ -50,6 +50,8 @@ use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\mask\EiMask;
+use rocket\ei\component\EiSetup;
+use rocket\ei\manage\util\model\Eiu;
 
 abstract class EiPropRelation {
 	protected $targetEiType;
@@ -156,26 +158,24 @@ abstract class EiPropRelation {
 	 * @param EiType $targetEiType
 	 * @param EiMask $targetEiMask
 	 */
-	public function init(EiType $targetEiType, EiMask $targetEiMask) {
+	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask) {
 		$this->targetEiType = $targetEiType;
 		$this->targetEiMask = $targetEiMask;
 		
 		$this->initTargetMasterEiProp();		
 		
 		// supreme EiEngine to make command available in EiFrames with super context EiTypes.
-		$superemeEiEngine = $this->relationEiProp->getEiMask()->getEiEngine()->getSupremeEiEngine();
+		$superemeEiuMask = $eiu->mask()->supremeMask();
 		$this->relationEiCommand = new RelationEiCommand($this);
-		$superemeEiEngine->getEiMask()->getEiCommandCollection()->add($this->relationEiCommand);
-				
+		$superemeEiuMask->addEiCommand($this->relationEiCommand);
+		
 		$this->relationAjahEiCommand = new RelationAjahEiCommand($this);
 		$targetEiMask->getEiCommandCollection()->add($this->relationAjahEiCommand);
 		
-
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$entityProperty = $this->getRelationEntityProperty();
 						
-			$this->relationEiProp->getEiMask()->getEiModificatorCollection()
-					->add(new TargetMasterRelationEiModificator($this));
+			$eiu->mask()->addEiModificator(new TargetMasterRelationEiModificator($this));
 		}
 	}
 	
@@ -395,7 +395,7 @@ abstract class EiPropRelation {
 // 		return $this->getRelationEntityProperty()->getRelation() instanceof JoinTableRelation;
 // 	}
 
-	public function buildTargetNewEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
+	public function buildTargetNewEiuEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$pathParts = array($this->relationEiCommand->getId());
 		if ($eiEntry->isNew()) {
 			$pathParts[] = 'relunknownentry';

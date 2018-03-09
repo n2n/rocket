@@ -34,7 +34,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\ei\manage\util\model\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\reflection\CastUtils;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {
@@ -92,7 +92,7 @@ class ListEiConfigurator extends EiConfiguratorAdapter {
 		$this->attributes->set(self::OPTION_PAGE_SIZE_KEY, $magDispatchable->getPropertyValue(self::OPTION_PAGE_SIZE_KEY));
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		$eiComponent = $this->eiComponent;
 	    CastUtils::assertTrue($eiComponent instanceof OverviewEiCommand);
 

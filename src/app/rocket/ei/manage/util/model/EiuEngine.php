@@ -6,25 +6,19 @@ use rocket\ei\EiPropPath;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
 use rocket\ei\manage\generic\GenericEiProperty;
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\component\prop\EiProp;
-use rocket\ei\component\modificator\EiModificator;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\ei\EiEngine;
 
 class EiuEngine {
 	private $eiEngine;
-	private $n2nContext;
+	private $eiuMask;
+	private $eiuFactory;
 	
-	/**
-	 * @param mixed ...$eiArgs
-	 */
-	public function __construct(...$eiArgs) {
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs(...$eiArgs);
-		
-		$this->eiEngine = $eiuFactory->getEiEngine(true);
-		$this->n2nContext = $eiuFactory->getN2nContext(false);
+	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuFactory $eiuFactory = null) {
+		$this->eiEngine = $eiEngine;
+		$this->eiuMask = $eiuMask;
+		$this->eiuFactory = $eiuFactory;
 	}
 	
 	/**
@@ -32,6 +26,17 @@ class EiuEngine {
 	 */
 	public function getEiEngine() {
 		return $this->eiEngine;
+	}
+	
+	/**
+	 * @return EiuMask 
+	 */
+	public function getEiuMask() {
+		if ($this->eiuMask !== null) {
+			return $this->eiuMask;
+		}
+		
+		return $this->eiuMask = new EiuMask($this->eiEngine->getEiMask(), $this, $this->eiuFactory);
 	}
 	
 	/**
@@ -50,6 +55,18 @@ class EiuEngine {
 		}
 		
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), $this->n2nContext);
+	}
+	
+	/**
+	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
+	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 */
+	public function engine($eiObjectObj) {
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg',
+				$this->eiEngine->getEiMask()->getEiType());
+		
+		$detrEiMask = $this->eiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType());
+		return new EiuEngine($detrEiMask->getEiEngine(), null, $this->eiuFactory);
 	}
 	
 	/**
@@ -126,35 +143,5 @@ class EiuEngine {
 		}
 		
 		return new EiuProp($eiPropPath, $this);
-	}
-	
-	/**
-	 * @param EiProp $eiProp
-	 * @param bool $prepend
-	 * @return \rocket\ei\manage\util\model\EiuEngine
-	 */
-	public function addEiProp(EiProp $eiProp, bool $prepend = false) {
-		$this->eiEngine->getEiMask()->getEiPropCollection()->add($eiProp, $prepend);
-		return $this;
-	}
-	
-	/**
-	 * @param EiCommand $eiCommand
-	 * @param bool $prepend
-	 * @return \rocket\ei\manage\util\model\EiuEngine
-	 */
-	public function addEiCommand(EiCommand $eiCommand, bool $prepend = false) {
-		$this->eiEngine->getEiMask()->getEiCommandCollection()->add($eiCommand, $prepend);
-		return $this;
-	}
-	
-	/**
-	 * @param EiModificator $eiModificator
-	 * @param bool $prepend
-	 * @return \rocket\ei\manage\util\model\EiuEngine
-	 */
-	public function addEiModificator(EiModificator $eiModificator, bool $prepend = false) {
-		$this->eiEngine->getEiMask()->getEiModificatorCollection()->add($eiModificator, $prepend);
-		return $this;
 	}
 }

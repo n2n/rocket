@@ -233,10 +233,10 @@ class ToManyMag extends MagAdapter {
 			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName);
 			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
 				$chosenId = null;
-				if ($mfMappingResult->entryForm->containsPropertyName('chosenId')) {
-					$chosenId = $mfMappingResult->entryForm->chosenId;
+				if ($mfMappingResult->eiuEntryForm->containsPropertyName('chosenId')) {
+					$chosenId = $mfMappingResult->eiuEntryForm->chosenId;
 				} else {
-					$chosenId = $mfMappingResult->entryForm->getObject()->getChosenId();
+					$chosenId = $mfMappingResult->eiuEntryForm->getObject()->getChosenId();
 				}
 				
 				if (in_array($chosenId, $this->allowedNewEiTypeIds)) continue;

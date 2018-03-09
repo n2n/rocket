@@ -170,7 +170,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			
 			if ($targetEditEiFrame->getEiExecution()->isGranted() 
 					&& ($this->isReplaceable() || $relationEiField->getValue() === null)) {
-				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
+				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
 						$mapping, $mapping->getEiObject()->isDraft(), $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 			

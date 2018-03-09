@@ -111,10 +111,6 @@ class EiFrame {
 		return $this->manageState->getN2nContext();
 	}
 	
-	public function getN2nLocale() {
-		return $this->getN2nContext()->getN2nLocale();	
-	}
-	
 	/**
 	 * @param EiFrame $parent
 	 */

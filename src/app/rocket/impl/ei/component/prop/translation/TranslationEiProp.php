@@ -192,14 +192,14 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
 			if (!$targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry = RelationEntry::fromM(
-						$targetEiuFrame->createEiEntry($targetRelationEntry->getEiObject()));
+						$targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry());
 			}
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
 		
 		$targetGuiDefinition = $targetEiuFrame->getEiFrame()->getContextEiEngine()->getGuiDefinition();
 		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
-				$this->labelLstr->t($eiFrame->getN2nLocale()), $this->minNumTranslations);
+				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
 		if ($this->copyCommand !== null) {
 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
@@ -215,7 +215,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			} else {
 				$eiObject = $targetEiuFrame->createNewEiObject();
 				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->createEiEntry($eiObject));
+				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->entry($eiObject)->getEiEntry());
 			}
 			
 			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(), 

@@ -126,7 +126,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 			$contentItemEditable->setReduced($this->isReduced());
 				
 			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
-				$contentItemEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl($mapping,
+				$contentItemEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl($mapping,
 						$draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}

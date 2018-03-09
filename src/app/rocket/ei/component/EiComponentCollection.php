@@ -57,8 +57,9 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @param EiComponentCollection $inheritedCollection
 	 */
 	public function setInheritedCollection(EiComponentCollection $inheritedCollection = null) {
+		$this->ensureNoEiEngine();
+		
 		$this->inheritedCollection = $inheritedCollection;
-		$this->eiMask->getEiEngine()->clear();
 	}
 	
 	/**
@@ -68,10 +69,19 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		return $this->inheritedCollection;
 	}
 	
+	private function ensureNoEiEngine() {
+		if (!$this->eiMask->hasEiEngine()) return;
+		
+		throw new IllegalStateException('Can not add EiComponent because EiEngine for EiMask ' . $this->eiMask 
+				. ' is already initialized.');
+	}
+	
 	/**
 	 * @param EiComponent $eiComponent
 	 */
 	protected function addEiComponent(EiComponent $eiComponent, bool $prepend = false) {
+		$this->ensureNoEiEngine();
+		
 		ArgUtils::valType($eiComponent, $this->genericType);
 		if (0 == mb_strlen($eiComponent->getId())) {
 			$eiComponent->setId($this->makeUniqueId($eiComponent->getIdBase()));
@@ -86,7 +96,6 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		} else {
 			$this->elements = array($eiComponent->getId() => $eiComponent) + $this->elements;
 		}
-		$this->eiMask->getEiEngine()->clear();
 	}
 	
 	public function addIndependent(IndependentEiComponent $independentEiComponent) {

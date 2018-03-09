@@ -11,20 +11,35 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\gui\GuiException;
+use rocket\ei\manage\gui\EiGui;
 
 class EiuGui {
 	private $eiGui;
 	private $eiuFrame;
-	private $singleEiuEntryGui;
+	private $eiuFactory;
 	
-	public function __construct(...$eiArgs) {
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs(...$eiArgs);
-		$this->eiGui = $eiuFactory->getEiGui(true);
-		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
+	public function __construct(EiGui $eiGui, EiuFrame $eiuFrame = null, EiuFactory $eiuFactory = null) {
+		$this->eiGui = $eiGui;
+		$this->eiuFrame = $eiuFrame;
+		$this->eiuFactory = $eiuFactory;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 */
 	public function getEiuFrame() {
+		if ($this->eiuFrame !== null) {
+			return $this->eiuFrame;
+		}
+		
+		if ($this->eiuFactory !== null) {
+			$this->eiuFrame = $this->eiuFactory->getEiuFrame(false);
+		}
+		
+		if ($this->eiuFrame === null) {
+			$this->eiuFrame = new EiuFrame($this->eiGui->getEiFrame(), $this->eiuFactory);
+		}
+		
 		return $this->eiuFrame;
 	}
 	
@@ -129,7 +144,7 @@ class EiuGui {
 		$eiEntryGuis = $this->eiGui->getEiEntryGuis();
 		$eiEntryGui = null;
 		if (count($eiEntryGuis) == 1) {
-			return new EiuEntryGui(current($eiEntryGuis), $this);
+			return new EiuEntryGui(current($eiEntryGuis), $this, $this->eiuFactory);
 		}
 		
 		if (!$required) return null;
@@ -141,7 +156,7 @@ class EiuGui {
 		$eiuEntryGuis = array();
 		
 		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
-			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this);
+			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this, $this->eiuFactory);
 		}
 		
 		return $eiuEntryGuis;
@@ -173,14 +188,14 @@ class EiuGui {
 	 */
 	public function appendNewEntryGui($eiEntryArg, int $treeLevel = null) {
 		$eiEntry = null;
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getEiType(), true, 
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getContextEiType(), true, 
 				$eiEntry);
 		
 		if ($eiEntry === null) {
-			$eiEntry = (new EiuEntry($eiObject, $this->eiuFrame))->getEiEntry();
+			$eiEntry = (new EiuEntry($eiObject, null, $this->eiuFrame, $this->eiuFactory))->getEiEntry();
 		}
 		
-		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this);
+		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuFactory);
 	}
 	
 	/**

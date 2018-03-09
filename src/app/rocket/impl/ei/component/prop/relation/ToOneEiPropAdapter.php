@@ -101,7 +101,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 // 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 		
 // 		return new ToOneEiEntryFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-// 				new GlobalEiUtils($this->getEiPropRelation()->getTargetEiMask(), $n2nContext),
+// 				new GlobalEiuFrame($this->getEiPropRelation()->getTargetEiMask(), $n2nContext),
 // 				$this->createAdvTargetFilterDef($n2nContext));
 	}
 }

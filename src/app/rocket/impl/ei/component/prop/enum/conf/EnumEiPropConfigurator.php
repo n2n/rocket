@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\enum\conf;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\enum\EnumEiProp;
-use rocket\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\LenientAttributeReader;
@@ -123,7 +123,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->set(self::ASSOCIATED_GUI_FIELD_KEY, $guiIdPathMap);
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 	
 		CastUtils::assertTrue($this->eiComponent instanceof EnumEiProp);
