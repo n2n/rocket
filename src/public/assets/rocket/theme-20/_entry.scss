@@ -97,7 +97,8 @@
 }
 
 .rocket-impl-add-entry {
-    margin: 1rem 0;
+    // margin top must be 0.5rem in order to match mutli column grid patterns
+    margin: 0.5rem 0 1rem;
     > button {
         text-align: left;
         font-weight: bold;
