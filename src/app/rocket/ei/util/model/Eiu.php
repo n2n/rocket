@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\context\Lookupable;
 use n2n\l10n\DynamicTextCollection;
@@ -35,7 +35,7 @@ class Eiu implements Lookupable {
 	
 	/**
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function engine(bool $required = true) {
 		if ($this->eiuEngine !== null) {
@@ -47,7 +47,7 @@ class Eiu implements Lookupable {
 	
 	/**
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuMask
+	 * @return \rocket\ei\util\model\EiuMask
 	 */
 	public function mask(bool $required = true) {
 		if ($this->eiuMask !== null) {
@@ -58,7 +58,7 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function frame(bool $required = true)  {
 		if ($this->eiuFrame !== null) {
@@ -71,7 +71,7 @@ class Eiu implements Lookupable {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function entry(bool $required = true) {
 		if ($this->eiuEntry !== null) {
@@ -85,7 +85,7 @@ class Eiu implements Lookupable {
 	 * 
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function gui(bool $required = true) {
 		if ($this->eiuGui !== null) {
@@ -99,7 +99,7 @@ class Eiu implements Lookupable {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEntryGui
+	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function entryGui(bool $required = true) {
 		if ($this->eiuEntryGui !== null) {
@@ -112,7 +112,7 @@ class Eiu implements Lookupable {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return NULL|\rocket\ei\manage\util\model\EiuField
+	 * @return NULL|\rocket\ei\util\model\EiuField
 	 */
 	public function field(bool $required = true) {
 		if ($this->eiuField !== null) {
@@ -139,7 +139,7 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuFactory
+	 * @return \rocket\ei\util\model\EiuFactory
 	 */
 	public function getEiuFactory() {
 		return $this->eiuFactory;

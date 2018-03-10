@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\spec\Spec;
 use n2n\core\container\N2nContext;

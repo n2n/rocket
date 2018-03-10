@@ -23,12 +23,12 @@ namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\ei\manage\util\model\EiuEntryForm;
+use rocket\ei\util\model\EiuEntryForm;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\ei\manage\EiFrame;
-use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;

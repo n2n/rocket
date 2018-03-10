@@ -29,7 +29,7 @@ use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use n2n\l10n\Lstr;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEiCommand {
 	private $idBase;

@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\ei\manage\util\model\EiuEntryFormViewModel;
+	use rocket\ei\util\model\EiuEntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 

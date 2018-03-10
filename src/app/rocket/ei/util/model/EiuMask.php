@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\mask\EiMask;
 use rocket\core\model\Rocket;
@@ -54,7 +54,7 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuMask
+	 * @return \rocket\ei\util\model\EiuMask
 	 */
 	public function supremeMask() {
 		if (!$this->eiMask->getEiType()->hasSuperEiType()) {
@@ -68,7 +68,7 @@ class EiuMask  {
 	/**
 	 * @param EiProp $eiProp
 	 * @param bool $prepend
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function addEiProp(EiProp $eiProp, bool $prepend = false) {
 		$this->eiMask->getEiPropCollection()->add($eiProp, $prepend);
@@ -78,7 +78,7 @@ class EiuMask  {
 	/**
 	 * @param EiCommand $eiCommand
 	 * @param bool $prepend
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function addEiCommand(EiCommand $eiCommand, bool $prepend = false) {
 		$this->eiMask->getEiCommandCollection()->add($eiCommand, $prepend);
@@ -88,7 +88,7 @@ class EiuMask  {
 	/**
 	 * @param EiModificator $eiModificator
 	 * @param bool $prepend
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function addEiModificator(EiModificator $eiModificator, bool $prepend = false) {
 		$this->eiMask->getEiModificatorCollection()->add($eiModificator, $prepend);
@@ -97,7 +97,7 @@ class EiuMask  {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ei\manage\util\model\EiuEngine|NULL
+	 * @return \rocket\ei\util\model\EiuEngine|NULL
 	 * @throws IllegalStateException
 	 */
 	public function getEiuEngine(bool $required = true) {

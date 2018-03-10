@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\web\http\PageNotFoundException;
 use rocket\ei\security\InaccessibleEntryException;
@@ -68,7 +68,7 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * 
-	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function frame() {
 		return $this->eiuFrame;
@@ -76,7 +76,7 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * @param string $livePid
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function lookupEntry(string $livePid) {
 		return $this->eiuFrame->entry($this->lookupEiObject($livePid));
@@ -115,7 +115,7 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * @param string $livePid
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function lookupEntryByDraftId(int $draftId) {
 		return $this->eiuFrame->entry($this->lookupEiObjectByDraftId($draftId));
@@ -295,7 +295,7 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * @param object $eiObjectObj
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function toEiuEntry($eiObjectObj) {
 		return new EiuEntry($eiObjectObj, $this);

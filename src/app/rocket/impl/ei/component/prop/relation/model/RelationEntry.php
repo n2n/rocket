@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\util\model\EiuFrame;
 
 class RelationEntry {
 	private $eiObject;

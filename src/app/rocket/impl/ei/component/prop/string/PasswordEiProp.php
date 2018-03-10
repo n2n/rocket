@@ -31,7 +31,7 @@ use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\crypt\hash\HashUtils;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\string\conf\PasswordEiPropConfigurator;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\web\dispatch\mag\Mag;
 
 class PasswordEiProp extends AlphanumericEiProp {

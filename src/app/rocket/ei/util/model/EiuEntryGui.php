@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
@@ -247,7 +247,7 @@ class EiuEntryGui {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function getEiuEntry() {
 		if ($this->eiuEntry === null) {
@@ -258,7 +258,7 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuEntryGui
+	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function removeGroups() {
 		$this->eiuGui->removeGroups();
@@ -266,14 +266,14 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuEntryGui
+	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function forceRootGroups() {
 		$this->eiuGui->forceRootGroups();
 		return $this;
 	}
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuEntryGui
+	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function allowControls() {
 		$this->eiuGui->allowControls();

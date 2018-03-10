@@ -23,7 +23,7 @@ namespace rocket\ei\manage\control;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\core\container\N2nContext;
 
 interface EntryControlComponent {

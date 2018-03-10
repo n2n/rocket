@@ -34,7 +34,7 @@ use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ei\manage\control\UnavailableControlException;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\SummarizedStringBuilder;

@@ -51,7 +51,7 @@ use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\component\EiSetup;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 abstract class EiPropRelation {
 	protected $targetEiType;

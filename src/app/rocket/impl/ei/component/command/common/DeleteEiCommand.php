@@ -39,7 +39,7 @@ use rocket\core\model\Rocket;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
 use n2n\util\uri\Path;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 

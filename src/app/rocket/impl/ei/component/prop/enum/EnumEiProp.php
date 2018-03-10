@@ -41,7 +41,7 @@ use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\ei\manage\EiObject;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;

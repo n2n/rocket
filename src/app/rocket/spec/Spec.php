@@ -47,7 +47,7 @@ use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
 use n2n\util\cache\CorruptedCacheStoreException;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\component\EiSetup;
 
 class Spec {	

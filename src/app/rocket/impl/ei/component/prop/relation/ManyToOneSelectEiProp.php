@@ -45,7 +45,7 @@ use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\command\common\controller\GlobalOverviewJhtmlController;
 use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterField;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;

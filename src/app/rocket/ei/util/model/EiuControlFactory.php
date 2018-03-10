@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\control\ControlButton;

@@ -32,8 +32,8 @@ use rocket\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\util\uri\Url;
-use rocket\ei\manage\util\model\EiuFrame;
-use rocket\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\model\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class OverviewJhtmlController extends ControllerAdapter {

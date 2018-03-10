@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;

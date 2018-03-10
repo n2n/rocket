@@ -30,7 +30,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class EmbeddedEiPropRelation extends EiPropRelation {
 	private $embeddedPseudoCommand;

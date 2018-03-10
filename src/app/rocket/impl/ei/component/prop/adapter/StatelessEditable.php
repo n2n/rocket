@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 interface StatelessEditable extends StatelessDisplayable {
 

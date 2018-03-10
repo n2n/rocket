@@ -6,7 +6,7 @@ use rocket\ei\manage\EiFrame;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\mask\model\ControlOrder;
 use rocket\ei\manage\control\Control;
 use n2n\util\ex\IllegalStateException;

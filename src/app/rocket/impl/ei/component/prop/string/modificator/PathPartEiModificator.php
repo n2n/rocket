@@ -29,7 +29,7 @@ use n2n\util\col\ArrayUtils;
 use n2n\io\IoUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class PathPartEiModificator extends EiModificatorAdapter {
 	private $pathPartEiProp;

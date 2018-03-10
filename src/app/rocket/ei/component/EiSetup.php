@@ -23,7 +23,7 @@ namespace rocket\ei\component;
 
 use n2n\core\container\N2nContext;
 use rocket\spec\Spec;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class EiSetup {
 	private $n2nContext;
@@ -38,7 +38,7 @@ class EiSetup {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\Eiu
+	 * @return \rocket\ei\util\model\Eiu
 	 */
 	public function eiu() {
 		if ($this->eiu === null) {

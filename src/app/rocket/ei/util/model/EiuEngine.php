@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
@@ -47,7 +47,7 @@ class EiuEngine {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function supremeEngine() {
 		if (!$this->eiEngine->hasSuperEiEngine()) {
@@ -59,7 +59,7 @@ class EiuEngine {
 	
 	/**
 	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function engine($eiObjectObj) {
 		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg',
@@ -130,7 +130,7 @@ class EiuEngine {
 	 * @param string|EiPropPath|\rocket\ei\component\prop\EiProp $eiPropArg
 	 * @param bool $required
 	 * @throws UnknownEiComponentException
-	 * @return \rocket\ei\manage\util\model\EiuProp|null
+	 * @return \rocket\ei\util\model\EiuProp|null
 	 */
 	public function prop($eiPropArg, bool $required = true) {
 		$eiPropPath = EiPropPath::create($eiPropArg);

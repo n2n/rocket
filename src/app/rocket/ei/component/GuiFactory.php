@@ -31,7 +31,7 @@ use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\util\model\EiuEntry;
+use rocket\ei\util\model\EiuEntry;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\EiGui;

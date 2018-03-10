@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\Dispatchable;
@@ -65,7 +65,7 @@ class EiuEntryForm implements Dispatchable {
 	/**
 	 * 
 	 * @param PropertyPath $propertyPath
-	 * @return \rocket\ei\manage\util\model\EiuEntryForm
+	 * @return \rocket\ei\util\model\EiuEntryForm
 	 */
 	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
 		$this->contextPropertyPath = $propertyPath;
@@ -80,7 +80,7 @@ class EiuEntryForm implements Dispatchable {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function getEiuFrame() {
 		return $this->eiuFrame;
@@ -192,14 +192,14 @@ class EiuEntryForm implements Dispatchable {
 	
 	public function createView(HtmlView $contextView = null, bool $groupRequired = false) {
 		if ($contextView !== null) {
-			return $contextView->getImport('\rocket\ei\manage\util\view\eiuEntryForm.html',
+			return $contextView->getImport('\rocket\ei\util\view\eiuEntryForm.html',
 					array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired)));
 		}
 		
 		$viewFactory = $this->eiuFrame->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
-		return $viewFactory->create('rocket\ei\manage\util\view\eiuEntryForm.html',
+		return $viewFactory->create('rocket\ei\util\view\eiuEntryForm.html',
 				array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired)));
 	}
 }

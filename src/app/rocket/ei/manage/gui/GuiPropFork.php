@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\gui;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\mapping\EiEntry;
 
 interface GuiPropFork {

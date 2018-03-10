@@ -24,7 +24,7 @@ namespace rocket\ei\manage\preview\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 abstract class PreviewControllerAdapter extends ControllerAdapter implements PreviewController {
 	const PREVIEW_TYPE_DEFAULT = 'default';

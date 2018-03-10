@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\EiType;
 use rocket\ei\manage\EiObject;
@@ -44,7 +44,7 @@ class EiJhtmlEventInfo {
 	
 	/**
 	 * @param mixed ...$eiTypeArgs
-	 * @return \rocket\ei\manage\util\model\EiJhtmlEventInfo
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo
 	 */
 	public function eiTypeChanged(...$eiTypeArgs) {
 		foreach ($eiTypeArgs as $eiTypeArg) {
@@ -55,7 +55,7 @@ class EiJhtmlEventInfo {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return \rocket\ei\manage\util\model\EiJhtmlEventInfo
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo
 	 */
 	public function eiObjectAdded(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -66,7 +66,7 @@ class EiJhtmlEventInfo {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return \rocket\ei\manage\util\model\EiJhtmlEventInfo
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo
 	 */
 	public function eiObjectChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -77,7 +77,7 @@ class EiJhtmlEventInfo {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return \rocket\ei\manage\util\model\EiJhtmlEventInfo
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo
 	 */
 	public function eiObjectRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -106,7 +106,7 @@ class EiJhtmlEventInfo {
 	
 	/**
 	 * @param Control $control
-	 * @return \rocket\ei\manage\util\model\EiJhtmlEventInfo
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo
 	 */
 	public function controlSwaped(Control $control) {
 		$this->swapControl = $control;

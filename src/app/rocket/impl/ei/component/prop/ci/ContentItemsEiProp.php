@@ -31,7 +31,7 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\GuiField;
 

@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;

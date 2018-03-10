@@ -27,7 +27,7 @@ use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\security\InaccessibleControlException;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class EiTypeController extends ControllerAdapter {
 		

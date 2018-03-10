@@ -22,7 +22,7 @@
 namespace rocket\ei\component\command;
 
 use rocket\ei\component\EiComponent;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 interface EiCommand extends EiComponent {

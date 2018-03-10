@@ -20,7 +20,7 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiCommandPath;
@@ -57,7 +57,7 @@ class EiuEntry {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function getEiuFrame(bool $required = true) {
 		if ($this->eiuFrame !== null) {
@@ -242,7 +242,7 @@ class EiuEntry {
 	 * @param bool $eiObjectObj
 	 * @param bool $editable
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEntryGui
+	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
 			bool $determineEiMask = true) {
@@ -278,7 +278,7 @@ class EiuEntry {
 	/**
 	 * @param int $viewMode
 	 * @param bool $determineEiMask
-	 * @return \rocket\ei\manage\util\model\EiuEntryGuiAssembler
+	 * @return \rocket\ei\util\model\EiuEntryGuiAssembler
 	 */
 	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
 		$eiMask = null;
@@ -325,7 +325,7 @@ class EiuEntry {
 	
 	/**
 	 * @param mixed $eiPropArg
-	 * @return \rocket\ei\manage\util\model\EiuField
+	 * @return \rocket\ei\util\model\EiuField
 	 */
 	public function field($eiPropArg) {
 		return new EiuField($eiPropArg, $this);
@@ -394,7 +394,7 @@ class EiuEntry {
 	/**
 	 * @param bool $draft
 	 * @param mixed $eiTypeArg
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function copy(bool $draft = null, $eiTypeArg = null) {
 		return $this->eiuFrame->copyEntry($this, $draft, $eiTypeArg);

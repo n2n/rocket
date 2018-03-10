@@ -24,8 +24,8 @@ namespace rocket\ei\manage;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\util\model\EiuEntryGui;
-use rocket\ei\manage\util\model\EiuFactory;
+use rocket\ei\util\model\EiuEntryGui;
+use rocket\ei\util\model\EiuFactory;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class ControlEiHtmlBuilder {

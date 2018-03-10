@@ -28,8 +28,8 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\manage\util\model\Eiu;
-use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\util\model\EiuFrame;
 
 class ToManySelectGuiField implements GuiField {
 	private $eiProp;

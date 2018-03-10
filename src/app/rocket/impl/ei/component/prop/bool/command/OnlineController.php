@@ -24,9 +24,9 @@ namespace rocket\impl\ei\component\prop\bool\command;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
-use rocket\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class OnlineController extends ControllerAdapter {
 	private $onlineEiProp;

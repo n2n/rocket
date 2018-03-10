@@ -27,7 +27,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\command\common\model\AddModel;
 use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
-use rocket\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuCtrl;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ajah\JhtmlEvent;
 

@@ -37,7 +37,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\reflection\ArgUtils;
 use n2n\util\uri\Url;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\util\model\EiuEntry;
+use rocket\ei\util\model\EiuEntry;
 
 class TranslationMag extends MagAdapter {
 	private $markClassKey;

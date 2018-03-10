@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\command\common\model;
 
-// use rocket\ei\manage\util\model\EntryInfo;
-// use rocket\ei\manage\util\model\EntryManager;
+// use rocket\ei\util\model\EntryInfo;
+// use rocket\ei\util\model\EntryManager;
 // use n2n\core\NotYetImplementedException;
 
 // class DetailModel {

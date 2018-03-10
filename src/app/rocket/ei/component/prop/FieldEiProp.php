@@ -23,7 +23,7 @@ namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\mapping\EiField;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 interface FieldEiProp extends EiProp {
 			

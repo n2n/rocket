@@ -40,7 +40,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\ei\component\prop\GenericEiProp;

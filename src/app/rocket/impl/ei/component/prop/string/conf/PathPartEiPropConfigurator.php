@@ -40,7 +40,7 @@ use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
 use n2n\reflection\CastUtils;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
-use rocket\ei\manage\util\model\EiuEngine;
+use rocket\ei\util\model\EiuEngine;
 
 class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';

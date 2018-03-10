@@ -27,7 +27,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\mapping\EiFieldWrapper;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 
 class GuiDefinition {	

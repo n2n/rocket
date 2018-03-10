@@ -26,7 +26,7 @@ use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;

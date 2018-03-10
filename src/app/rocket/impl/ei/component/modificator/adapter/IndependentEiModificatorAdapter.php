@@ -27,7 +27,7 @@ use rocket\ei\component\modificator\IndependentEiModificator;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiConfigurator;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAdapter implements IndependentEiModificator {
 	

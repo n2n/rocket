@@ -23,7 +23,7 @@ namespace rocket\ei\manage\preview\controller;
 
 use n2n\web\http\controller\Controller;
 use rocket\ei\manage\preview\model\PreviewModel;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 interface PreviewController extends Controller {
 	

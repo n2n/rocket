@@ -28,7 +28,7 @@ use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;

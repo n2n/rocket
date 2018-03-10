@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
@@ -737,7 +737,7 @@ class EiuFactory {
 	}
 	/**
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function getEiuFrame(bool $required) {
 		if ($this->eiuFrame !== null) {
@@ -801,7 +801,7 @@ class EiuFactory {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEntryGui
+	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function getEiuEntryGui(bool $required) {
 		if ($this->eiuEntryGui !== null) {
@@ -822,7 +822,7 @@ class EiuFactory {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function getEiuGui(bool $required) {
 		if ($this->eiuGui !== null) {
@@ -904,7 +904,7 @@ class EiuFactory {
 	 * @param EiuFrame $eiuFrame
 	 * @param string $argName
 	 * @param bool $required
-	 * @return \rocket\ei\manage\util\model\EiuEntry|NULL
+	 * @return \rocket\ei\util\model\EiuEntry|NULL
 	 */
 	public static function buildEiuEntryFromEiArg($eiArg, EiuFrame $eiuFrame = null, string $argName = null, bool $required = false) {
 		if ($eiArg instanceof EiuEntry) {

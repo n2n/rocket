@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
@@ -104,7 +104,7 @@ class EiuFrame {
 	private $eiuEngine;
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuEngine
+	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function getContextEiuEngine() {
 		if (null !== $this->eiuEngine) {
@@ -117,7 +117,7 @@ class EiuFrame {
 	/**
 	 * @param mixed $eiObjectObj
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function entry($eiObjectObj) {
 		$eiEntry = null;
@@ -128,7 +128,7 @@ class EiuFrame {
 	/**
 	 * @param bool $draft
 	 * @param mixed $eiTypeArg
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function newEntry(bool $draft = false, $eiTypeArg = null) {
 		return new EiuEntry($this->createNewEiObject($draft, 
@@ -147,7 +147,7 @@ class EiuFrame {
 	 * 
 	 * @param mixed $id
 	 * @param int $ignoreConstraintTypes
-	 * @return \rocket\ei\manage\util\model\EiuEntry
+	 * @return \rocket\ei\util\model\EiuEntry
 	 */
 	public function lookupEntry($id, int $ignoreConstraintTypes = 0) {
 		return $this->entry($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
@@ -173,7 +173,7 @@ class EiuFrame {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiuFrame::lookupEiEntityObj($id, $ignoreConstraints)
+	 * @see \rocket\ei\util\model\EiuFrame::lookupEiEntityObj($id, $ignoreConstraints)
 	 */
 	private function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj {
 		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
@@ -335,7 +335,7 @@ class EiuFrame {
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param PropertyPath $contextPropertyPath
-	 * @return \rocket\ei\manage\util\model\EiuEntryForm
+	 * @return \rocket\ei\util\model\EiuEntryForm
 	 */
 	public function eiuEntryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
 		$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryArg);
@@ -443,7 +443,7 @@ class EiuFrame {
 	
 	/**
 	 * @param EiCommand $eiCommand
-	 * @return \rocket\ei\manage\util\model\EiuControlFactory
+	 * @return \rocket\ei\util\model\EiuControlFactory
 	 */
 	public function controlFactory(EiCommand $eiCommand) {
 		return new EiuControlFactory($this, $eiCommand);
@@ -486,7 +486,7 @@ class EiuFrame {
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
 	 * @param array $guiIdPaths
-	 * @return \rocket\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiIdPaths) {
 		$eiGui = new EiGui($this->eiFrame, $viewMode);
@@ -514,7 +514,7 @@ class EiuFrame {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::getEiType()
+	 * @see \rocket\ei\util\model\EiUtils::getEiType()
 	 */
 	public function getContextEiType(): EiType {
 		return $this->getContextEiMask()->getEiType();
@@ -522,7 +522,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::getNestedSetStrategy()
+	 * @see \rocket\ei\util\model\EiUtils::getNestedSetStrategy()
 	 */
 	public function getNestedSetStrategy() {
 		return $this->getContextEiType()->getNestedSetStrategy();
@@ -530,7 +530,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::idToPid()
+	 * @see \rocket\ei\util\model\EiUtils::idToPid()
 	 */
 	public function idToPid($id): string {
 		return $this->getContextEiType()->idToPid($id);
@@ -538,7 +538,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::pidToId()
+	 * @see \rocket\ei\util\model\EiUtils::pidToId()
 	 */
 	public function pidToId(string $pid) {
 		return $this->getContextEiType()->pidToId($pid);
@@ -546,7 +546,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::getGenericLabel()
+	 * @see \rocket\ei\util\model\EiUtils::getGenericLabel()
 	 */
 	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiObjectObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
@@ -554,7 +554,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::getGenericPluralLabel()
+	 * @see \rocket\ei\util\model\EiUtils::getGenericPluralLabel()
 	 */
 	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiObjectObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
@@ -566,7 +566,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::createIdentityString()
+	 * @see \rocket\ei\util\model\EiUtils::createIdentityString()
 	 */
 	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true,
 			N2nLocale $n2nLocale = null): string {
@@ -582,7 +582,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::determineEiType()
+	 * @see \rocket\ei\util\model\EiUtils::determineEiType()
 	 */
 	public function determineEiType($eiObjectObj): EiType {
 		if ($eiObjectObj === null) {
@@ -616,7 +616,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::determineEiMask()
+	 * @see \rocket\ei\util\model\EiUtils::determineEiMask()
 	 */
 	public function determineEiMask($eiObjectObj): EiMask {
 		if ($eiObjectObj === null) {
@@ -656,7 +656,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::lookupEiObjectById()
+	 * @see \rocket\ei\util\model\EiUtils::lookupEiObjectById()
 	 */
 	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject {
 		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
@@ -664,7 +664,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::isDraftingEnabled()
+	 * @see \rocket\ei\util\model\EiUtils::isDraftingEnabled()
 	 */
 	public function isDraftingEnabled(): bool {
 		return $this->getContextEiMask()->isDraftingEnabled();
@@ -672,7 +672,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::lookupDraftById()
+	 * @see \rocket\ei\util\model\EiUtils::lookupDraftById()
 	 */
 	public function lookupDraftById(int $id): Draft {
 		$draft = $this->getDraftManager()->find($this->getClass(), $id,
@@ -685,7 +685,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::lookupEiObjectByDraftId()
+	 * @see \rocket\ei\util\model\EiUtils::lookupEiObjectByDraftId()
 	 */
 	public function lookupEiObjectByDraftId(int $id): EiObject {
 		return new DraftEiObject($this->lookupDraftById($id));
@@ -693,7 +693,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::lookupDraftsByEntityObjId()
+	 * @see \rocket\ei\util\model\EiUtils::lookupDraftsByEntityObjId()
 	 */
 	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array {
 		return $this->getDraftManager()->findByEntityObjId($this->getClass(), $entityObjId, $limit, $num,
@@ -702,7 +702,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::createEntityObj()
+	 * @see \rocket\ei\util\model\EiUtils::createEntityObj()
 	 */
 	public function createEntityObj() {
 		return ReflectionUtils::createObject($this->getClass());
@@ -710,7 +710,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::createEiObjectFromEiEntityObj()
+	 * @see \rocket\ei\util\model\EiUtils::createEiObjectFromEiEntityObj()
 	 */
 	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject {
 		if ($eiEntityObj instanceof EiEntityObj) {
@@ -726,7 +726,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::createEiObjectFromDraft()
+	 * @see \rocket\ei\util\model\EiUtils::createEiObjectFromDraft()
 	 */
 	public function createEiObjectFromDraft(Draft $draft): EiObject {
 		return new DraftEiObject($draft);
@@ -734,7 +734,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::createNewEiObject()
+	 * @see \rocket\ei\util\model\EiUtils::createNewEiObject()
 	 */
 	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
 		if ($eiType === null) {
@@ -761,7 +761,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::toEiuEntry()
+	 * @see \rocket\ei\util\model\EiUtils::toEiuEntry()
 	 */
 	public function toEiuEntry($eiObjectObj): EiuEntry {
 		return new EiuEntry($eiObjectObj, $this);
@@ -769,7 +769,7 @@ class EiuFrame {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::persist()
+	 * @see \rocket\ei\util\model\EiUtils::persist()
 	 */
 	public function persist($eiObjectObj, bool $flush = true) {
 		if ($eiObjectObj instanceof Draft) {

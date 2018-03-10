@@ -22,7 +22,7 @@
 namespace rocket\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\util\model\EiuFactory;
+use rocket\ei\util\model\EiuFactory;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
@@ -31,7 +31,7 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\manage\util\model\EiuEntry;
+use rocket\ei\util\model\EiuEntry;
 use rocket\ei\manage\gui\Displayable;
 use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
@@ -43,7 +43,7 @@ use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\manage\gui\GuiFieldAssembly;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class EiHtmlBuilder {
 	private $view;

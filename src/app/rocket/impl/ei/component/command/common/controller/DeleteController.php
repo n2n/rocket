@@ -24,11 +24,11 @@ namespace rocket\impl\ei\component\command\common\controller;
 use rocket\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
-use rocket\ei\manage\util\model\EiuFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\MessageContainer;
 use n2n\web\http\StatusException;
-use rocket\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
 
 class DeleteController extends ControllerAdapter {

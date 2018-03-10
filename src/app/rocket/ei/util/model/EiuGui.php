@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
@@ -25,7 +25,7 @@ class EiuGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function getEiuFrame() {
 		if ($this->eiuFrame !== null) {
@@ -199,7 +199,7 @@ class EiuGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function removeGroups() {
 		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_NO_GROUPS);
@@ -207,14 +207,14 @@ class EiuGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function forceRootGroups() {
 		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_ROOT_GROUPED);
 		return $this;
 	}
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function allowControls() {
 		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_CONTROLS_ALLOWED);

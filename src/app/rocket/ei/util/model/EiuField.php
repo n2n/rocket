@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
@@ -37,7 +37,7 @@ class EiuField {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\util\model\EiuProp
+	 * @return \rocket\ei\util\model\EiuProp
 	 */
 	public function getEiuProp() {
 		if ($this->eiuProp === null) {
@@ -79,7 +79,7 @@ class EiuField {
 	
 	/**
 	 * @param Message $message
-	 * @return \rocket\ei\manage\util\model\EiuField
+	 * @return \rocket\ei\util\model\EiuField
 	 */
 	public function addError(Message $message) {
 		$this->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo($this->eiPropPath)

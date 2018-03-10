@@ -1,6 +1,6 @@
 <?php 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\util\model\EiuEntryGui;
+	use rocket\ei\util\model\EiuEntryGui;
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\ei\manage\EiHtmlBuilder;
 use n2n\l10n\N2nLocale;

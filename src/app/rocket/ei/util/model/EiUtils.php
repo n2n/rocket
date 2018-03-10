@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\util\model;
+namespace rocket\ei\util\model;
 
 use n2n\persistence\orm\model\EntityModel;
 use rocket\ei\manage\EiEntityObj;
@@ -133,7 +133,7 @@ interface EiUtils {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\util\model\EiUtils::lookupEiEntityObj($id, $ignoreConstraints)
+	 * @see \rocket\ei\util\model\EiUtils::lookupEiEntityObj($id, $ignoreConstraints)
 	 */
 	public function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj;
 	

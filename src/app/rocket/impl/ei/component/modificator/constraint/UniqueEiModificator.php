@@ -1,12 +1,12 @@
 <?php
 namespace rocket\impl\ei\component\modificator\constraint;
 
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\component\EiConfigurator;
 use rocket\ei\manage\critmod\CriteriaConstraint;
 use n2n\l10n\MessageCode;
 use n2n\persistence\orm\criteria\Criteria;
-use rocket\ei\manage\util\model\EiuEngine;
+use rocket\ei\util\model\EiuEngine;
 use rocket\ei\EiPropPath;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\modificator\adapter\IndependentEiModificatorAdapter;
@@ -97,7 +97,7 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	 * @param Criteria $criteria
 	 * @param EiuEngine $eiuEngine
 	 * @param EiPropPath[] $eiPropPaths
-	 * @param \rocket\ei\manage\util\model\EiuEntry $eiuEntry
+	 * @param \rocket\ei\util\model\EiuEntry $eiuEntry
 	 */
 	private function restrictCriteria($criteria, $eiuEngine, $eiPropPaths, $eiuEntry) {
 		foreach ($eiPropPaths as $eiPropPath) {

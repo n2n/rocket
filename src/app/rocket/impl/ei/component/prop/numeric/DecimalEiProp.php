@@ -28,7 +28,7 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\DecimalEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\web\dispatch\map\PropertyPath;

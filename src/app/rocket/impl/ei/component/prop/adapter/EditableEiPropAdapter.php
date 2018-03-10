@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\spec\security\EiPropPrivilege;
 use rocket\ei\manage\gui\GuiField;

@@ -32,7 +32,7 @@ use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\ToManySelectGuiField;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\reflection\CastUtils;

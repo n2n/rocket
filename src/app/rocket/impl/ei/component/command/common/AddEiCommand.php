@@ -35,7 +35,7 @@ use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\control\EntryControlComponent;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 

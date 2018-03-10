@@ -28,7 +28,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\numeric\conf\OrderEiPropConfigurator;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
