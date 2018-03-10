@@ -50,7 +50,6 @@ use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\mask\EiMask;
-use rocket\ei\component\EiSetup;
 use rocket\ei\util\model\Eiu;
 
 abstract class EiPropRelation {

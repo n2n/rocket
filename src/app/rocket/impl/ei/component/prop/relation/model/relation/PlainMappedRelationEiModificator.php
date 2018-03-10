@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 use rocket\ei\manage\EiFrame;
 use n2n\reflection\property\AccessProxy;
 use rocket\ei\manage\mapping\WrittenMappingListener;
-use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\EiFrameListener;
 use rocket\ei\manage\mapping\EiEntry;
 

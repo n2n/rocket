@@ -22,23 +22,23 @@
 // namespace rocket\ei\util\model;
 
 // use n2n\l10n\N2nLocale;
-use rocket\ei\manage\EiObject;
-use rocket\ei\EiType;
-use n2n\persistence\orm\model\EntityModel;
-use rocket\ei\mask\EiMask;
-use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\EiEntityObj;
-use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\LiveEiObject;
-use n2n\reflection\ReflectionUtils;
-use rocket\ei\manage\DraftEiObject;
-use rocket\user\model\LoginContext;
-use n2n\reflection\CastUtils;
-use rocket\ei\manage\draft\DraftValueMap;
-use n2n\persistence\orm\util\NestedSetUtils;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\GuiIdPath;
+// use rocket\ei\manage\EiObject;
+// use rocket\ei\EiType;
+// use n2n\persistence\orm\model\EntityModel;
+// use rocket\ei\mask\EiMask;
+// use n2n\reflection\ArgUtils;
+// use rocket\ei\manage\mapping\EiEntry;
+// use rocket\ei\manage\EiEntityObj;
+// use rocket\ei\manage\draft\Draft;
+// use rocket\ei\manage\LiveEiObject;
+// use n2n\reflection\ReflectionUtils;
+// use rocket\ei\manage\DraftEiObject;
+// use rocket\user\model\LoginContext;
+// use n2n\reflection\CastUtils;
+// use rocket\ei\manage\draft\DraftValueMap;
+// use n2n\persistence\orm\util\NestedSetUtils;
+// use n2n\util\ex\IllegalStateException;
+// use rocket\ei\manage\gui\GuiIdPath;
 
 // abstract class EiUtilsAdapter implements EiUtils {
 // 	/**

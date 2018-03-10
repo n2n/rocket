@@ -132,7 +132,7 @@ class EiuFrame {
 	 */
 	public function newEntry(bool $draft = false, $eiTypeArg = null) {
 		return new EiuEntry($this->createNewEiObject($draft, 
-				EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), $this);
+				EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), null, $this);
 	}
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
@@ -513,60 +513,66 @@ class EiuFrame {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::getEiType()
+	 * @return \rocket\ei\EiType
 	 */
-	public function getContextEiType(): EiType {
+	public function getContextEiType() {
 		return $this->getContextEiMask()->getEiType();
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::getNestedSetStrategy()
+	 * @return \n2n\persistence\orm\util\NestedSetStrategy
 	 */
 	public function getNestedSetStrategy() {
 		return $this->getContextEiType()->getNestedSetStrategy();
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::idToPid()
+	 * @param mixed $id
+	 * @return string
 	 */
 	public function idToPid($id): string {
 		return $this->getContextEiType()->idToPid($id);
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::pidToId()
+	 * @param string $pid
+	 * @return mixed
 	 */
 	public function pidToId(string $pid) {
 		return $this->getContextEiType()->pidToId($pid);
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::getGenericLabel()
+	 * @param mixed $eiObjectObj
+	 * @param N2nLocale $n2nLocale
+	 * @return string
 	 */
 	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiObjectObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::getGenericPluralLabel()
+	 * @param mixed $eiObjectObj
+	 * @param N2nLocale $n2nLocale
+	 * @return string
 	 */
 	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiObjectObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 
+	/**
+	 * @param mixed $eiObjectObj
+	 * @return string
+	 */
 	public function getGenericIconType($eiObjectObj = null) {
 		return $this->determineEiMask($eiObjectObj)->getIconType();
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::createIdentityString()
+	 * @param EiObject $eiObject
+	 * @param bool $determineEiMask
+	 * @param N2nLocale $n2nLocale
+	 * @return string
 	 */
 	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true,
 			N2nLocale $n2nLocale = null): string {
@@ -581,8 +587,8 @@ class EiuFrame {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::determineEiType()
+	 * @param mixed $eiObjectObj
+	 * @return EiType
 	 */
 	public function determineEiType($eiObjectObj): EiType {
 		if ($eiObjectObj === null) {
@@ -615,8 +621,8 @@ class EiuFrame {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::determineEiMask()
+	 * @param mixed $eiObjectObj
+	 * @return EiMask
 	 */
 	public function determineEiMask($eiObjectObj): EiMask {
 		if ($eiObjectObj === null) {
@@ -655,24 +661,27 @@ class EiuFrame {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::lookupEiObjectById()
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @return EiObject
 	 */
 	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject {
 		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::isDraftingEnabled()
+	 * @return bool
 	 */
 	public function isDraftingEnabled(): bool {
 		return $this->getContextEiMask()->isDraftingEnabled();
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::lookupDraftById()
+	 * @param int $id
+	 * @throws UnknownEntryException
+	 * @return Draft
 	 */
 	public function lookupDraftById(int $id): Draft {
 		$draft = $this->getDraftManager()->find($this->getClass(), $id,
@@ -683,34 +692,39 @@ class EiuFrame {
 		throw new UnknownEntryException('Unknown draft with id: ' . $id);
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::lookupEiObjectByDraftId()
+	 * @param int $id
+	 * @return EiObject
 	 */
 	public function lookupEiObjectByDraftId(int $id): EiObject {
 		return new DraftEiObject($this->lookupDraftById($id));
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::lookupDraftsByEntityObjId()
+	 * @param mixed $entityObjId
+	 * @param int $limit
+	 * @param int $num
+	 * @return array
 	 */
 	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array {
 		return $this->getDraftManager()->findByEntityObjId($this->getClass(), $entityObjId, $limit, $num,
 				$this->getContextEiMask()->getEiEngine()->getDraftDefinition());
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::createEntityObj()
+	 * @return object
 	 */
 	public function createEntityObj() {
 		return ReflectionUtils::createObject($this->getClass());
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::createEiObjectFromEiEntityObj()
+	 * @param mixed $eiEntityObj
+	 * @return EiObject
 	 */
 	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject {
 		if ($eiEntityObj instanceof EiEntityObj) {
@@ -725,16 +739,17 @@ class EiuFrame {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::createEiObjectFromDraft()
+	 * @param Draft $draft
+	 * @return EiObject
 	 */
 	public function createEiObjectFromDraft(Draft $draft): EiObject {
 		return new DraftEiObject($draft);
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::createNewEiObject()
+	 * @param bool $draft
+	 * @param EiType $eiType
+	 * @return EiObject
 	 */
 	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
 		if ($eiType === null) {
@@ -751,6 +766,10 @@ class EiuFrame {
 		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiType)));
 	}
 
+	/**
+	 * @param EiEntityObj $eiEntityObj
+	 * @return \rocket\ei\manage\draft\Draft
+	 */
 	public function createNewDraftFromEiEntityObj(EiEntityObj $eiEntityObj) {
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
@@ -760,16 +779,8 @@ class EiuFrame {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::toEiuEntry()
-	 */
-	public function toEiuEntry($eiObjectObj): EiuEntry {
-		return new EiuEntry($eiObjectObj, $this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::persist()
+	 * @param mixed $eiObjectObj
+	 * @param bool $flush
 	 */
 	public function persist($eiObjectObj, bool $flush = true) {
 		if ($eiObjectObj instanceof Draft) {

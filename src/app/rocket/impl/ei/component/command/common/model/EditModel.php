@@ -28,7 +28,6 @@ use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\ei\util\model\EiuFrame;
-use rocket\ei\manage\mapping\EiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
 use n2n\web\dispatch\map\PropertyPath;

@@ -19,190 +19,190 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\util\model;
+// namespace rocket\ei\util\model;
 
-use n2n\persistence\orm\model\EntityModel;
-use rocket\ei\manage\EiEntityObj;
-use n2n\persistence\orm\EntityManager;
-use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\ei\mask\EiMask;
-use rocket\ei\EiType;
-use n2n\l10n\N2nLocale;
-use rocket\ei\manage\EiObject;
-use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\draft\DraftManager;
-use n2n\core\container\N2nContext;
+// use n2n\persistence\orm\model\EntityModel;
+// use rocket\ei\manage\EiEntityObj;
+// use n2n\persistence\orm\EntityManager;
+// use n2n\persistence\orm\util\NestedSetStrategy;
+// use rocket\ei\mask\EiMask;
+// use rocket\ei\EiType;
+// use n2n\l10n\N2nLocale;
+// use rocket\ei\manage\EiObject;
+// use rocket\ei\manage\draft\Draft;
+// use rocket\ei\manage\draft\DraftManager;
+// use n2n\core\container\N2nContext;
 
-interface EiUtils {
+// interface EiUtils {
 	
-	/**
-	 * @return EntityManager
-	 */
-	public function em(): EntityManager;
+// 	/**
+// 	 * @return EntityManager
+// 	 */
+// 	public function em(): EntityManager;
 	
-	/**
-	 * @return N2nContext
-	 */
-	public function getN2nContext(): N2nContext;
+// 	/**
+// 	 * @return N2nContext
+// 	 */
+// 	public function getN2nContext(): N2nContext;
 	
-	/**
-	 * @return EiMask
-	 */
-	public function getEiMask(): EiMask;
+// 	/**
+// 	 * @return EiMask
+// 	 */
+// 	public function getEiMask(): EiMask;
 	
-	/**
-	 * @return EiType
-	 */
-	public function getEiType(): EiType;
+// 	/**
+// 	 * @return EiType
+// 	 */
+// 	public function getEiType(): EiType;
 	
-	/**
-	 * @return NestedSetStrategy|null 
-	 */
-	public function getNestedSetStrategy();
+// 	/**
+// 	 * @return NestedSetStrategy|null 
+// 	 */
+// 	public function getNestedSetStrategy();
 
-	/**
-	 * @return EntityModel
-	 */
-	public function getEntityModel(): EntityModel;
+// 	/**
+// 	 * @return EntityModel
+// 	 */
+// 	public function getEntityModel(): EntityModel;
 	
-	/**
-	 * @return \ReflectionClass
-	 */
-	public function getClass(): \ReflectionClass;
+// 	/**
+// 	 * @return \ReflectionClass
+// 	 */
+// 	public function getClass(): \ReflectionClass;
 	
-	/**
-	 * @param mixed $id
-	 * @return string
-	 * @throws \InvalidArgumentException if null is passed as id.
-	 */
-	public function idToPid($id): string;
+// 	/**
+// 	 * @param mixed $id
+// 	 * @return string
+// 	 * @throws \InvalidArgumentException if null is passed as id.
+// 	 */
+// 	public function idToPid($id): string;
 	
-	/**
-	 * @param string $pid
-	 * @return mixed
-	 * @throws \InvalidArgumentException
-	 */
-	public function pidToId(string $pid);
+// 	/**
+// 	 * @param string $pid
+// 	 * @return mixed
+// 	 * @throws \InvalidArgumentException
+// 	 */
+// 	public function pidToId(string $pid);
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string;
+// 	/**
+// 	 * @param object $eiObjectObj
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return string
+// 	 */
+// 	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string;
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string;
+// 	/**
+// 	 * @param object $eiObjectObj
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return string
+// 	 */
+// 	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string;
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param bool $determineEiMask
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, 
-			N2nLocale $n2nLocale = null): string;
+// 	/**
+// 	 * @param EiObject $eiObject
+// 	 * @param bool $determineEiMask
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return string
+// 	 */
+// 	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, 
+// 			N2nLocale $n2nLocale = null): string;
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @return EiType
-	 */
-	public function determineEiType($eiObjectObj): EiType;
+// 	/**
+// 	 * @param object $eiObjectObj
+// 	 * @return EiType
+// 	 */
+// 	public function determineEiType($eiObjectObj): EiType;
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @return EiMask
-	 */
-	public function determineEiMask($eiObjectObj): EiMask;
+// 	/**
+// 	 * @param object $eiObjectObj
+// 	 * @return EiMask
+// 	 */
+// 	public function determineEiMask($eiObjectObj): EiMask;
 	
-	/**
-	 * @return N2nLocale
-	 */
-	public function getN2nLocale(): N2nLocale;
+// 	/**
+// 	 * @return N2nLocale
+// 	 */
+// 	public function getN2nLocale(): N2nLocale;
 	
-	/**
-	 * @param mixed $id
-	 * @param int $ignoreConstraintTypes
-	 * @return bool
-	 */
-	public function containsId($id, int $ignoreConstraintTypes = 0): bool;
+// 	/**
+// 	 * @param mixed $id
+// 	 * @param int $ignoreConstraintTypes
+// 	 * @return bool
+// 	 */
+// 	public function containsId($id, int $ignoreConstraintTypes = 0): bool;
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\model\EiUtils::lookupEiEntityObj($id, $ignoreConstraints)
-	 */
-	public function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj;
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\util\model\EiUtils::lookupEiEntityObj($id, $ignoreConstraints)
+// 	 */
+// 	public function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj;
 	
-	/**
-	 * @param int $id
-	 * @throws UnknownEntryException
-	 * @return \rocket\ei\manage\EiObject
-	 */
-	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject;
+// 	/**
+// 	 * @param int $id
+// 	 * @throws UnknownEntryException
+// 	 * @return \rocket\ei\manage\EiObject
+// 	 */
+// 	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject;
 	
-	/**
-	 * @return bool
-	 */
-	public function isDraftingEnabled(): bool;
+// 	/**
+// 	 * @return bool
+// 	 */
+// 	public function isDraftingEnabled(): bool;
 	
-	/**
-	 * @return \rocket\ei\manage\draft\DraftManager
-	 */
-	public function getDraftManager(): DraftManager;
+// 	/**
+// 	 * @return \rocket\ei\manage\draft\DraftManager
+// 	 */
+// 	public function getDraftManager(): DraftManager;
 	
-	/**
-	 * @param int $id
-	 * @return Draft
-	 */
-	public function lookupDraftById(int $id): Draft;
+// 	/**
+// 	 * @param int $id
+// 	 * @return Draft
+// 	 */
+// 	public function lookupDraftById(int $id): Draft;
 	
-	/**
-	 * @param int $id
-	 * @return EiObject
-	 */
-	public function lookupEiObjectByDraftId(int $id): EiObject;
+// 	/**
+// 	 * @param int $id
+// 	 * @return EiObject
+// 	 */
+// 	public function lookupEiObjectByDraftId(int $id): EiObject;
 	
-	/**
-	 * @param mixed $entityObjId
-	 * @param int $limit
-	 * @param int $num
-	 * @return Draft[]
-	 */
-	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array;
+// 	/**
+// 	 * @param mixed $entityObjId
+// 	 * @param int $limit
+// 	 * @param int $num
+// 	 * @return Draft[]
+// 	 */
+// 	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array;
 	
-	/**
-	 * @return object 
-	 */
-	public function createEntityObj();
+// 	/**
+// 	 * @return object 
+// 	 */
+// 	public function createEntityObj();
 	
-	/**
-	 * @param object $entity
-	 * @return \rocket\ei\manage\EiObject
-	 */
-	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject;
+// 	/**
+// 	 * @param object $entity
+// 	 * @return \rocket\ei\manage\EiObject
+// 	 */
+// 	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject;
 	
-	/**
-	 * @param Draft $draft
-	 * @return EiObject
-	 */
-	public function createEiObjectFromDraft(Draft $draft): EiObject;
+// 	/**
+// 	 * @param Draft $draft
+// 	 * @return EiObject
+// 	 */
+// 	public function createEiObjectFromDraft(Draft $draft): EiObject;
 	
-	/**
-	 * @param bool $draft
-	 * @param EiType $eiType
-	 * @return EiObject
-	 */
-	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject;
+// 	/**
+// 	 * @param bool $draft
+// 	 * @param EiType $eiType
+// 	 * @return EiObject
+// 	 */
+// 	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject;
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @return EiuEntry
-	 */
-	public function toEiuEntry($eiObjectObj): EiuEntry;
+// 	/**
+// 	 * @param object $eiObjectObj
+// 	 * @return EiuEntry
+// 	 */
+// 	public function toEiuEntry($eiObjectObj): EiuEntry;
 	
-	public function persist($eiObjectObj, bool $flush = true);
-}
+// 	public function persist($eiObjectObj, bool $flush = true);
+// }
