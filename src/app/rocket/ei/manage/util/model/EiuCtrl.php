@@ -250,7 +250,7 @@ class EiuCtrl implements Lookupable {
 		}
 			
 		if ($eiObjectObj !== null && !$eiFrame->isDetailDisabled()) {
-			$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->eiuFrame->getEiType());
+			$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->eiuFrame->getContextEiType());
 			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiObject));
 		}
 		

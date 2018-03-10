@@ -79,7 +79,7 @@
 					data-item-label="<?php $html->out($currentMappingForm->getEntryLabel()) ?>">
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($currentPropertyPath) ?>
-				<?php $view->import('embeddedEiuEntryForm.html', array('mappingForm' => $currentMappingForm,
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
 						'grouped' => ($toOneForm->isReduced() || $newMappingFormUrl !== null),
 						'summaryRequired' => $toOneForm->isReduced())) ?>
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
@@ -101,7 +101,7 @@
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($newMappingFormPropertyPath) ?>
-				<?php $view->import('embeddedEiuEntryForm.html', array('mappingForm' => $currentMappingForm,
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
 						'grouped' => ($toOneForm->isReduced() || $newMappingFormUrl !== null),
 						'summaryRequired' => $toOneForm->isReduced())) ?>
 				<?php $formHtml->meta()->popBasePropertyPath() ?>

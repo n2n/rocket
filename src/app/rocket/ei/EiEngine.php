@@ -26,7 +26,7 @@ use rocket\ei\component\CritmodFactory;
 use rocket\ei\component\SecurityFactory;
 use rocket\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\ei\component\GuiFactory;
-use rocket\ei\component\MappingFactory;
+use rocket\ei\component\EiEntryFactory;
 use rocket\ei\manage\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
@@ -138,21 +138,26 @@ class EiEngine {
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiObject $eiObject
+	 * @return EiEntry
+	 */
 	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject): EiEntry {
-		$mappingFactory = new MappingFactory($this->eiMask->getEiPropCollection(), 
+		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject);
 	}
 	
 	public function createEiEntryCopy(EiFrame $eiFrame, EiObject $eiObject, EiEntry $from) {
-		$mappingFactory = new MappingFactory($this->eiMask->eiPropCollection, 
+		$mappingFactory = new EiEntryFactory($this->eiMask->eiPropCollection, 
 				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
 	}
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
-		$mappingFactory = new MappingFactory($this->eiMask->eiPropCollection, 
+		$mappingFactory = new EiEntryFactory($this->eiMask->eiPropCollection, 
 				$this->eiMask->getEiModificatorCollection());
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}

@@ -72,19 +72,18 @@ class EditController extends ControllerAdapter {
 		
 		$jhtmlEvent = null;
 		if ($this->dispatch($editModel, 'quicksave')) {
-			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
+			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiuEntry);
 			$this->refresh();
 			return;
 		} else if ($this->dispatch($editModel, 'saveAndPreview')) {
-			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiEntry);
+			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiuEntry);
 			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->getEiuEntry()->getEiObject()));
 			$this->eiuCtrl->redirect($this->getUrlToController(['livepreview', $pid, $defaultPreviewType],
 					array('refPath' => (string) $redirectUrl)), $jhtmlEvent);
 			return;
 		}
 		
-		$this->eiuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(), 
-				$this->dtc->translate('ei_impl_edit_entry_breadcrumb'));
+		$this->eiuCtrl->applyCommonBreadcrumbs($eiuEntry, $this->dtc->translate('ei_impl_edit_entry_breadcrumb'));
 		
 		$view = $this->createView('..\view\edit.html', array('editModel' => $editModel,
 				'entryCommandViewModel' => $this->createEntryCommandViewModel(

@@ -367,18 +367,17 @@ abstract class EiPropRelation {
 					$this->relationEiProp));
 			
 			if (!$eiObject->isDraft()) {
-				$targetEiModificatorCollection->add(new MappedRelationEiModificator($targetEiFrame, 
+				$targetEiFrame->registerListener(new MappedRelationEiModificator($targetEiFrame, 
 						RelationEntry::from($eiObject), EiPropPath::from($targetEiProp), $this->isSourceMany()));
 			}
 		} else if ($this->targetMasterAccessProxy !== null) {
-			$this->getTargetEiType()->getEiEngine()->getEiModificatorCollection()->add(
+			$targetEiFrame->registerListener(
 					new PlainMappedRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(), 
 							$this->targetMasterAccessProxy, $this->isSourceMany()));
 		}
 		
 		if ($this->getRelationEntityProperty()->isMaster() && !$eiObject->isDraft()) {
-			$targetEiModificatorCollection = $this->targetEiMask->getEiModificatorCollection();
-			$targetEiModificatorCollection->add(new MasterRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(),
+			$targetEiFrame->registerListener(new MasterRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(),
 					$this->relationEiProp->getObjectPropertyAccessProxy(), $this->isTargetMany()));
 		}
 	}

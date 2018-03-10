@@ -42,7 +42,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 class ToOneMag extends MagAdapter {
 	private $mandatory;
 	private $targetReadUtils;
-	private $targetEditUtils;
+	private $targetEiuFrame;
 	private $elementLabel;
 	
 	private $selectOverviewToolsUrl;
@@ -58,7 +58,7 @@ class ToOneMag extends MagAdapter {
 	
 		$this->mandatory = $mandatory;
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
+		$this->targetEiuFrame = new EiuFrame($targetEditEiFrame);
 	
 		$this->updateContainerAttrs(true);
 	}
@@ -134,7 +134,7 @@ class ToOneMag extends MagAdapter {
 	}
 	
 	public function getFormValue() {
-		$toOneForm = new ToOneForm($this->labelLstr, $this->mandatory, $this->targetReadUtils, $this->targetEditUtils);
+		$toOneForm = new ToOneForm($this->labelLstr, $this->mandatory, $this->targetReadUtils, $this->targetEiuFrame);
 		$toOneForm->setSelectionModeEnabled($this->selectOverviewToolsUrl !== null);
 		$toOneForm->setNewMappingFormAvailable($this->newMappingFormUrl !== null);
 		$toOneForm->setDraftMode($this->draftMode);
@@ -142,8 +142,8 @@ class ToOneMag extends MagAdapter {
 		
 		if ($this->targetRelationEntry === null) {
 			if (!$toOneForm->isSelectionModeEnabled() && $this->mandatory
-					&& !$this->targetEditUtils->getEiType()->hasSubEiTypes()) {
-				$toOneForm->setEiEntry($this->targetEditUtils->newEntry($this->draftMode)->getEiEntry());
+					&& !$this->targetEiuFrame->getEiType()->hasSubEiTypes()) {
+				$toOneForm->setEiEntry($this->targetEiuFrame->newEntry($this->draftMode)->getEiEntry());
 				$toOneForm->setNewMappingFormAvailable(true);
 			}
 			
@@ -159,8 +159,7 @@ class ToOneMag extends MagAdapter {
 		} else if ($this->targetRelationEntry->hasEiEntry()) {
 			$toOneForm->setEiEntry($this->targetRelationEntry->getEiEntry());
 		} else {
-			$toOneForm->setEiEntry($this->targetEditUtils->createEiEntry(
-					$this->targetRelationEntry->getEiObject()));
+			$toOneForm->setEiEntry($this->targetEiuFrame->entry($this->targetRelationEntry->getEiObject())->getEiEntry());
 		}
 		
 		if (null !== $toOneForm->getNewMappingForm()) {
@@ -198,7 +197,7 @@ class ToOneMag extends MagAdapter {
 				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$newMappingFormUrl = null;
-		if ($this->targetEditUtils->getEiType()->hasSubEiTypes()
+		if ($this->targetEiuFrame->getContextEiType()->hasSubEiTypes()
 				|| $this->selectOverviewToolsUrl !== null
 				|| ($this->targetRelationEntry === null && !$this->mandatory)) {
 			$newMappingFormUrl = $this->newMappingFormUrl;

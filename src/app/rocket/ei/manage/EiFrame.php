@@ -62,6 +62,8 @@ class EiFrame {
 	private $detailDisabled = false;
 	private $detailBreadcrumbLabelOverride;
 	private $detailUrlExt;
+	
+	private $listeners = array();
 
 	/**
 	 * @param EiMask $contextEiEngine
@@ -263,6 +265,10 @@ class EiFrame {
 			$eiEntry->getEiCommandAccessRestrictorSet()->add($restrictor);
 		}
 		
+		foreach ($this->listeners as $listener) {
+			$listener->onNewEiEntry($eiEntry);
+		}
+		
 		return $eiEntry;
 	}
 	
@@ -373,7 +379,7 @@ class EiFrame {
 	
 		$this->ensureDetailEnabled();
 		
-		return $this->getContextEiEngine()->getEiMask()->createIdentityString($eiObject, $this->getN2nLocale());
+		return $this->getContextEiEngine()->getEiMask()->createIdentityString($eiObject, $this->getN2nContext()->getN2nLocale());
 	}
 	
 	public function setDetailUrlExt(Url $detailUrlExt) {
@@ -425,6 +431,14 @@ class EiFrame {
 		
 		return $httpContext->getRequest()->getRelativeUrl();
 	}
+	
+	public function registerListener(EiFrameListener $listener) {
+		$this->listeners[spl_object_hash($listener)] = $listener;
+	}
+	
+	public function unregisterListener(EiFrameListener $listener) {
+		unset($this->listeners[spl_object_hash($listener)]);		
+	}
 }
 
 class CriteriaConstraintCollection implements \IteratorAggregate, \Countable {
@@ -462,4 +476,9 @@ class CriteriaConstraintCollection implements \IteratorAggregate, \Countable {
 	public function toArray() {
 		return $this->criteriaConstraints;
 	}
+}
+
+interface EiFrameListener {
+	
+	public function onNewEiEntry(EiEntry $eiEntry);
 }

@@ -255,7 +255,7 @@ class EiuEntry {
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		
-		$eiGui = new EiGui($this->getEiFrame(), $viewMode);
+		$eiGui = new EiGui($this->getEiuFrame()->getEiFrame(), $viewMode);
 		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel));
@@ -356,15 +356,13 @@ class EiuEntry {
 	 */
 	public function setScalarValue($eiPropPath, $scalarValue) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
-		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByEiPropPath($eiPropPath);
+		$scalarEiProperty = $this->getEiuFrame()->getContextEiuEngine()->getScalarEiProperty($eiPropPath);
 		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToEiFieldValue($scalarValue));
 	}
 	
 	public function getScalarValue($eiPropPath) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
-		$scalarEiProperty = $this->getEiuFrame()->getEiMask()->getEiEngine()->getScalarEiDefinition()
-				->getScalarEiPropertyByEiPropPath($eiPropPath);
+		$scalarEiProperty = $this->getEiuFrame()->getContextEiuEngine()->getScalarEiProperty($eiPropPath);
 		return $scalarEiProperty->eiFieldValueToScalarValue($this->getValue($eiPropPath));
 	}
 	
@@ -477,7 +475,7 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\mapping\EiFieldWrapper|null
 	 */
 	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
-		$guiDefinition = $this->getEiuFrame()->getEiMask()->getEiEngine()->getGuiDefinition();
+		$guiDefinition = $this->getEiuFrame()->getEiFrame()->getContextEiEngine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::create($guiIdPath));
 		} catch (MappingOperationFailedException $e) {

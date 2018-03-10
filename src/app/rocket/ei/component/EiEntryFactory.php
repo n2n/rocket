@@ -33,7 +33,7 @@ use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\mapping\EiField;
 use rocket\ei\manage\util\model\Eiu;
 
-class MappingFactory {
+class EiEntryFactory {
 	private $eiType;
 	private $eiPropCollection;
 	private $eiModificatorCollection;

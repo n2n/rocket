@@ -86,13 +86,13 @@ class ContentItemMag extends MagAdapter {
 	}
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
-		$targetEditUtils = new EiuFrame($this->targetEditEiFrame);
+		$targetEiuFrame = new EiuFrame($this->targetEditEiFrame);
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			if (!$targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry = RelationEntry::fromM($targetEditUtils
-						->createEiEntry($targetRelationEntry->getEiObject()));
+				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame
+						->entry($targetRelationEntry->getEiObject())->getEiEntry());
 			}
 			
 			$panelName = $targetRelationEntry->getEiEntry()->getValue($panelEiPropPath);

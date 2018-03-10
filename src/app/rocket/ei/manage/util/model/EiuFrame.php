@@ -111,9 +111,8 @@ class EiuFrame {
 			return $this->eiuEngine;		
 		}
 		
-		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), $this->eiFrame->getN2nContext());
+		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuFactory);
 	}
-	
 	
 	/**
 	 * @param mixed $eiObjectObj
@@ -315,7 +314,7 @@ class EiuFrame {
 						
 			$eiuEntryTypeForms[$subEiTypeId] = $this->createEiuEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
 			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
-					->t($this->eiFrame->getN2nLocale());
+					->t($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
 		$eiuEntryForm = new EiuEntryForm($this);
@@ -348,7 +347,7 @@ class EiuFrame {
 		$eiuEntryForm->setChosenId($eiType->getId());
 		// @todo remove hack when ContentItemEiProp gets updated.
 		$eiuEntryForm->setChoicesMap(array($eiType->getId() => $contextEiMask->determineEiMask($eiType)->getLabelLstr()
-				->t($this->eiFrame->getN2nLocale())));
+				->t($this->eiFrame->getN2nContext()->getN2nLocale())));
 		return $eiuEntryForm;
 	}
 	

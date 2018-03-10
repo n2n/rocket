@@ -430,11 +430,10 @@ class EiuFactory {
 		
 		$this->assignEiFrame($eiGui->getEiFrame());
 		
-		// @todo lets see if necessary
-// 		$eiEntryGuis = $eiGui->getEiEntryGuis();
-// 		if (count($eiEntryGuis) == 1) {
-// 			$this->assignEiEntryGui(current($eiEntryGuis));
-// 		}
+		$eiEntryGuis = $eiGui->getEiEntryGuis();
+		if (count($eiEntryGuis) == 1) {
+			$this->assignEiEntryGui(current($eiEntryGuis));
+		}
 	}
 	
 	/**
