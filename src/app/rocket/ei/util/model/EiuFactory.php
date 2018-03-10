@@ -745,8 +745,15 @@ class EiuFactory {
 		}
 		
 		if ($this->eiFrame !== null) {
-			return $this->eiuFrame = new EiuFrame($this->eiFrame);
+			return $this->eiuFrame = new EiuFrame($this->eiFrame, $this);
 		} 
+		
+		if ($this->eiuEntry !== null) {
+			$this->eiuFrame = $this->eiuEntry->getEiuFrame(false);
+			if ($this->eiuFrame !== null) {
+				return $this->eiuFrame;
+			}
+		}
 		
 		if ($this->n2nContext !== null) {
 			try {

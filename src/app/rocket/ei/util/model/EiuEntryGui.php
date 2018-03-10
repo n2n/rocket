@@ -261,7 +261,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function removeGroups() {
-		$this->eiuGui->removeGroups();
+		$this->getEiuGui()->removeGroups();
 		return $this;
 	}
 	
@@ -269,14 +269,14 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function forceRootGroups() {
-		$this->eiuGui->forceRootGroups();
+		$this->getEiuGui()->forceRootGroups();
 		return $this;
 	}
 	/**
 	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
 	public function allowControls() {
-		$this->eiuGui->allowControls();
+		$this->getEiuGui()->allowControls();
 		return $this;
 	}
 	

@@ -63,7 +63,7 @@ class RelationEntry {
 			return $this->eiEntry;
 		}
 		
-		return $utils->createEiEntry($this->eiObject);
+		return $utils->entry($this->eiObject)->getEiEntry();
 	}
 	
 	public static function from(EiObject $eiObject): RelationEntry {

@@ -118,8 +118,7 @@ class ContentItemGuiField implements GuiField {
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetEiEntry = $targetRelationEntry->getEiEntry();
 			} else {
-				$targetEiEntry = $targetUtils->createEiEntry(
-						$targetRelationEntry->getEiObject());
+				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry();
 			}
 			
 			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
