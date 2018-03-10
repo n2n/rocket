@@ -222,7 +222,7 @@ class EiuFactory {
 				if ($eiuFactory->eiFrame !== null) {
 					$this->eiFrame = $eiuFactory->eiFrame;
 				}
-				if ($eiuFactory->eiuEngine !== null) {
+				if ($eiuFactory->eiObject !== null) {
 					$this->eiObject = $eiuFactory->eiObject;
 				}
 				if ($eiuFactory->eiEntry !== null) {
@@ -534,7 +534,7 @@ class EiuFactory {
 		$this->eiuEntry = null;
 		$this->eiEntry = $eiEntry;
 		
-		$this->assignEiObject($eiEntry);
+		$this->assignEiObject($eiEntry->getEiObject());
 	}
 	
 	/**
@@ -783,7 +783,7 @@ class EiuFactory {
 			}
 		} else {
 			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = new EiuEntry($this->eiEntry);
+				return $this->eiuEntry = new EiuEntry($this->eiObject, $this->eiEntry, $this->eiuFrame, $this);
 			}
 				
 			if ($this->eiObject !== null) {

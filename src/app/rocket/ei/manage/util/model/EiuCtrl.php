@@ -82,14 +82,14 @@ class EiuCtrl implements Lookupable {
 		return $this->eiuFrame->entry($this->lookupEiObject($livePid));
 	}
 	
-	/**
-	 * @param string $livePid
-	 * @return \rocket\ei\manage\mapping\EiEntry
-	 * @deprecated use {@see self::lookupEntry()}
-	 */
-	public function lookupEiEntry(string $livePid) {
-		return $this->eiuFrame->createEiEntry($this->lookupEiObject($livePid));
-	}
+// 	/**
+// 	 * @param string $livePid
+// 	 * @return \rocket\ei\manage\mapping\EiEntry
+// 	 * @deprecated use {@see self::lookupEntry()}
+// 	 */
+// 	public function lookupEiEntry(string $livePid) {
+// 		return $this->eiuFrame->createEiEntry($this->lookupEiObject($livePid));
+// 	}
 	
 	/**
 	 * @param string $livePid

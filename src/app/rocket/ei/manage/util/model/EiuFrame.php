@@ -338,7 +338,8 @@ class EiuFrame {
 	 * @param PropertyPath $contextPropertyPath
 	 * @return \rocket\ei\manage\util\model\EiuEntryForm
 	 */
-	public function eiuEntryForm(EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
+	public function eiuEntryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
+		$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryArg);
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
 		$eiType = $eiEntry->getEiType();

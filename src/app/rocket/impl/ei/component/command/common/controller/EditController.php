@@ -61,12 +61,12 @@ class EditController extends ControllerAdapter {
 	public function doLive($pid, ParamQuery $refPath) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
-		$eiEntry = $this->eiuCtrl->lookupEiEntry($pid);
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
-		$editModel->initialize($eiEntry);
+		$editModel->initialize($eiuEntry);
 
 		if ($this->dispatch($editModel, 'save')) {
-			$this->eiuCtrl->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectChanged($eiEntry));
+			$this->eiuCtrl->redirectBack($redirectUrl, JhtmlEvent::ei()->eiObjectChanged($eiuEntry));
 			return;
 		}
 		

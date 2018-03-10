@@ -32,6 +32,7 @@ use rocket\ei\manage\mapping\EiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
 use n2n\web\dispatch\map\PropertyPath;
+use rocket\ei\manage\util\model\EiuEntry;
 
 class EditModel implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -49,8 +50,8 @@ class EditModel implements Dispatchable {
 		$this->eiuFrame = $eiuFrame;
 	}
 	
-	public function initialize(EiEntry $eiEntry) {
-		$this->eiuEntryForm = $this->eiuFrame->eiuEntryForm($eiEntry, new PropertyPath(array('eiuEntryForm')));
+	public function initialize(EiuEntry $eiuEntry) {
+		$this->eiuEntryForm = $this->eiuFrame->eiuEntryForm($eiuEntry, new PropertyPath(array('eiuEntryForm')));
 		
 		IllegalStateException::assertTrue(!$this->eiuEntryForm->isChoosable());
 		$this->entryModel = $this->eiuEntryForm->getChosenEiuEntryTypeForm();

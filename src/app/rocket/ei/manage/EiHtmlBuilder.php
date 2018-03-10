@@ -43,6 +43,7 @@ use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\manage\gui\GuiFieldAssembly;
+use rocket\ei\manage\util\model\Eiu;
 
 class EiHtmlBuilder {
 	private $view;
@@ -163,7 +164,7 @@ class EiHtmlBuilder {
 				'data-rocket-supreme-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
 				'data-rocket-ei-id' => $pid,
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
-				'data-rocket-identity-string' => (new EiuEntry($eiEntryGui))->createIdentityString());
+				'data-rocket-identity-string' => (new Eiu($eiEntryGui->getEiEntry(), $eiEntryGui->getEiGui()->getEiFrame()))->entry()->createIdentityString());
 		
 		return new Raw('<' . htmlspecialchars($tagName)
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, (array) $attrs)) . '>');

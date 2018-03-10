@@ -435,7 +435,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function createIdentityString(bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		return $this->eiuFrame->createIdentityString($this->eiObject, $determineEiMask, $n2nLocale);
+		return $this->getEiuFrame()->createIdentityString($this->eiObject, $determineEiMask, $n2nLocale);
 	}
 	
 	/**
