@@ -44,7 +44,7 @@ class ToManyMag extends MagAdapter {
 	private $min;
 	private $max;
 	private $targetReadUtils;
-	private $targetEditUtils;
+	private $targetEditEiuFrame;
 	private $elementLabel;
 	private $reduced = true;
 	
@@ -62,7 +62,7 @@ class ToManyMag extends MagAdapter {
 		parent::__construct($label);
 	
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
+		$this->targetEditEiuFrame = new EiuFrame($targetEditEiFrame);
 		$this->min = $min;
 		$this->max = $max;
 		
@@ -129,7 +129,7 @@ class ToManyMag extends MagAdapter {
 	}
 
 	public function getFormValue() {
-		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditUtils, $this->min, 
+		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditEiuFrame, $this->min, 
 				$this->max);
 		$toManyForm->setSortable($this->targetOrderEiPropPath !== null);
 		$toManyForm->setReduced($this->reduced);
@@ -145,8 +145,8 @@ class ToManyMag extends MagAdapter {
 				} else if ($targetRelationEntry->hasEiEntry()) {
 					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
 				} else {
-					$toManyForm->addEiEntry($this->targetEditUtils->createEiEntry(
-							$targetRelationEntry->getEiObject()));
+					$toManyForm->addEiEntry($this->targetEditEiuFrame->entry($targetRelationEntry->getEiObject())
+							->getEiEntry());
 				}
 			}
 			$toManyForm->setSelectedEntryPids($pids);
@@ -156,8 +156,8 @@ class ToManyMag extends MagAdapter {
 				if ($targetRelationEntry->hasEiEntry()) {
 					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
 				} else {
-					$toManyForm->addEiEntry($this->targetEditUtils->createEiEntry(
-							$targetRelationEntry->getEiObject()));
+					$toManyForm->addEiEntry($this->targetEditEiuFrame->entry($targetRelationEntry->getEiObject())
+							->getEiEntry());
 				}
 			}
 		}
@@ -199,7 +199,7 @@ class ToManyMag extends MagAdapter {
 		$orderIndex = 10;
 		foreach ($formValue->buildEiEntrys() as $targetEiEntry) {
 			if ($this->targetOrderEiPropPath !== null) {
-				$eiu = new Eiu($targetEiEntry, $this->targetEditUtils->getEiFrame());
+				$eiu = new Eiu($targetEiEntry, $this->targetEditEiuFrame->getEiFrame());
 				$eiu->entry()->setScalarValue($this->targetOrderEiPropPath, $orderIndex += 10, true);
 			}
 			

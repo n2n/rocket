@@ -48,6 +48,7 @@ use rocket\spec\Spec;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
+use rocket\ei\util\model\EiuEngine;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
@@ -232,9 +233,13 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($eiComponent instanceof EmbeddedOneToManyEiProp
 				&& $this->attributes->contains(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)) {
 			$targetEiPropPath = EiPropPath::create($this->attributes->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY));
-			$this->eiPropRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
+			
+			$that = $this;
+			$eiSetupProcess->eiu()->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($that, $targetEiPropPath, $eiComponent) {
+				$that->eiPropRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
 						->getScalarEiPropertyByEiPropPath($targetEiPropPath);
-			$eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
+				$eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
+			});
 		}
 		
 		if (($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) 

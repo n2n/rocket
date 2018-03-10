@@ -84,7 +84,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
-		$this->fileEiProp->getEiMask()->getEiEngine()->getSupremeEiEngine()->getEiMask()->getEiCommandCollection()->add($thumbEiCommand);
+		$setupProcess->eiu()->mask()->supremeMask()->addEiCommand($thumbEiCommand);
 		$this->fileEiProp->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {

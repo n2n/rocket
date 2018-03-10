@@ -108,8 +108,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetEiEntry = $targetRelationEntry->getEiEntry();
 			} else {
-				$targetEiEntry = $targetEiuFrame->createEiEntry(
-						$targetRelationEntry->getEiObject());
+				$targetEiEntry = $targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry();
 			}
 			
 			$targetEiuEntries[] = $targetEiuFrame->entry($targetEiEntry);
