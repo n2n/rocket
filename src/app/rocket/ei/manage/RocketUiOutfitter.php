@@ -53,7 +53,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		}
 		
 		if ($nature & self::NATURE_CONTROL_GROUP_ADDON) {
-			$attrs = HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs);
+			$attrs = HtmlUtils::mergeAttrs(array('class' => 'input-group-append'), $attrs);
 		}
 		
 		return $attrs;
@@ -75,7 +75,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
-			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
+			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-append'), $attrs), $contents);
 		}
 
 		if ($elemNature & self::NATURE_MASSIVE_ARRAY_ITEM && $elemNature & self::NATURE_MASSIVE_ARRAY_ITEM_CONTROL) {

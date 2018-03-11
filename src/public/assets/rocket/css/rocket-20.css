@@ -4265,7 +4265,8 @@ body {
   text-align: left;
   padding: 0.5rem 0;
   color: #ed8207;
-  border-bottom: 1px solid #DAD7D3;
+  border-top: 1px solid #ed8207;
+  font-weight: bold;
 }
 
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control,
@@ -4276,7 +4277,7 @@ body {
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control,
 .rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   position: absolute;
-  top: 0;
+  top: 0.5rem;
   right: 0;
 }
 
@@ -4719,8 +4720,18 @@ ul.rocket-content-item > li > span {
   font-weight: bold;
   font-size: 1rem;
   background: #FBFAFA;
-  border: #C2BDB6 1px solid;
+  border: #DAD7D3 1px solid;
   color: #66615C;
+  position: relative;
+}
+
+.rocket-impl-add-entry > button::after {
+  font-family: fontawesome;
+  content: '\f067';
+  position: absolute;
+  top: 0.375rem;
+  right: 1rem;
+  font-weight: normal;
 }
 
 .rocket-control > iframe {
@@ -4895,6 +4906,7 @@ ul.rocket-content-item > li > span {
   border: none;
   padding-left: 0;
   padding-right: 0;
+  background-color: transparent;
 }
 
 .rocket-light-group > .rocket-control {
@@ -4907,6 +4919,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-impl-body {
   padding: 1rem;
+  background: #fff;
 }
 
 .rocket-simple-commands > .dropdown > button,

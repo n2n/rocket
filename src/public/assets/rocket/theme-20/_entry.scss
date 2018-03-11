@@ -107,8 +107,17 @@
         font-weight: bold;
         font-size: $font-size-base;
         background: $gray-100;
-        border: $gray-500 1px solid;
+        border: $gray-400 1px solid;
         color: $gray-700;
+        position: relative;
+        &::after {
+            font-family: fontawesome;
+            content: '\f067';
+            position: absolute;
+            top: 0.375rem;
+            right: 1rem;
+            font-weight: normal;
+        }
     }
 }
 

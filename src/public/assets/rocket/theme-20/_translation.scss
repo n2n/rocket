@@ -172,10 +172,8 @@
 				text-align: left;
 				padding: 0.5rem 0;
 				color: $primary;
-				border-bottom: 1px solid $table-border-color;
-				&::after {
-					
-				}
+				border-top: 1px solid $primary;
+				font-weight: bold;
 			}
 			> .rocket-control {
 				margin: 0;
@@ -183,7 +181,7 @@
 		}
 		> .rocket-impl-translation-copy-control {
 			position: absolute;
-			top: 0;
+			top: 0.5rem;
 			right: 0;
 		}
 	}

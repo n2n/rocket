@@ -113,6 +113,7 @@
         border: none;
         padding-left: 0;
         padding-right: 0;
+        background-color: transparent;
     }
     > .rocket-control {
         padding: 0;
@@ -125,4 +126,5 @@
 
 .rocket-impl-body {
     padding: 1rem;
+    background: $white;
 }
