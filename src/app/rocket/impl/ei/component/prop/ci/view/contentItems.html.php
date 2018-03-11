@@ -39,7 +39,7 @@
 		
 		<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
 		<div<?php $view->out($gridPos === null ? null : ' style="grid-column-start: ' . $gridPos->getColStart() . '; grid-column-end: ' . $gridPos->getColEnd() 
-								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd()) . '"' ?>>
+								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd() . '"') ?>>
 			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
 				<?php $html->text('common_empty_label') ?>
 			<?php else: ?>
