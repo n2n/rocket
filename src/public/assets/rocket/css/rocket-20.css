@@ -4784,7 +4784,6 @@ ul.rocket-content-item > li > span {
 
 .rocket-group,
 .rocket-panel {
-  background: #fff;
   position: relative;
   margin-bottom: 1.5rem;
   padding: 0;
@@ -4793,6 +4792,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-group > label,
 .rocket-panel > label {
+  background: #fff;
   width: 100%;
   padding: 0.5rem 1rem;
   margin: 0;
@@ -4804,6 +4804,7 @@ ul.rocket-content-item > li > span {
 
 .rocket-group > .rocket-control,
 .rocket-panel > .rocket-control {
+  background: #fff;
   margin: 0 !important;
 }
 
