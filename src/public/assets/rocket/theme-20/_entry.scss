@@ -26,10 +26,13 @@
     }
 }
 
+.rocket-control > .rocket-item {
+    padding: 0.5rem 0;
+}
+
 @include media-breakpoint-up(md) {
     .rocket-item {
         clear: both;
-        padding: 0.5rem 0;
 
         > label {
             width: 15rem;

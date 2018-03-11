@@ -4642,10 +4642,13 @@ ul.rocket-content-item > li > span {
   font-weight: bold;
 }
 
+.rocket-control > .rocket-item {
+  padding: 0.5rem 0;
+}
+
 @media (min-width: 768px) {
   .rocket-item {
     clear: both;
-    padding: 0.5rem 0;
   }
   .rocket-item > label {
     width: 15rem;
@@ -4899,6 +4902,10 @@ ul.rocket-content-item > li > span {
 
 .rocket-panel > label {
   display: none;
+}
+
+.rocket-impl-body {
+  padding: 1rem;
 }
 
 .rocket-simple-commands > .dropdown > button,
