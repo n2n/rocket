@@ -1,7 +1,7 @@
 {
-    "specs": {
+    "types": {
         "rocket-content-item": {
-            "type": "entity",
+            "nature": "entity",
             "entity": "rocket\\impl\\ei\\component\\prop\\ci\\model\\ContentItem",
             "dataSourceName": "default",
             "label": "Content Item",
@@ -57,9 +57,11 @@
                 }
             },
             "commands": [],
-            "defaultMaskId": null
+            "partialControlOrder": [],
+            "overallControlOrder": [],
+            "entryControlOrder": []
         }
     },
-    "eiMasks": [],
-    "menuItems": []
+    "eiTypeExtensions": [],
+    "launchPads": []
 }
