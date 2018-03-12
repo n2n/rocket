@@ -36,6 +36,7 @@ namespace Rocket.Impl.Translation {
 
 				if (isInitViewMenu) {
 					this.initViewMenu(viewMenu);
+					viewMenu.checkLoadJobs();
 				}
 			}
 		}

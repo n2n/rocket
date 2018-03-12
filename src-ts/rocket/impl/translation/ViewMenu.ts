@@ -41,7 +41,6 @@ namespace Rocket.Impl.Translation {
 			
 		}	
 		
-		
 		private updateStatus() {
 			let prettyLocaleIds: Array<string> = [];
 			for (let localeId in this._items) {
@@ -84,7 +83,7 @@ namespace Rocket.Impl.Translation {
 			this.translatables.push(translatable);
 			
 			translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
-			
+
 			for (let content of translatable.contents) {
 				if (!this._items[content.localeId]) {
 					let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
@@ -102,6 +101,8 @@ namespace Rocket.Impl.Translation {
 					if (this.changing || !content.active) return;
 					
 					this._items[content.localeId].on = true;
+					
+					this.checkLoadJobs();
 				});
 			}
 		}
@@ -112,6 +113,16 @@ namespace Rocket.Impl.Translation {
 			if (-1 < i) {
 				this.translatables.splice(i, 1);
 			}
+		}
+		
+		private checkLoadJobs() {
+			let lje = new LoadJobExecuter();
+			for (let translatable of this.translatables) {
+				for (let lj of translatable.loadJobs) {
+					lje.add(lj);
+				}
+			}
+			lje.exec();
 		}
 		
 		private menuChanged() {

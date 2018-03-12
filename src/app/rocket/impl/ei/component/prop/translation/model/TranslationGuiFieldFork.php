@@ -60,7 +60,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	
 	private $translationForm;
 	private $markClassKey;
-	private $copyUrl;
+	private $srcUrl;
 		
 	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label, int $minNumTranslations) {
 		$this->toManyEiField = $toManyEiField;
@@ -83,24 +83,26 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		}
 	}
 	
-	private function buildCopyUrl(GuiIdPath $guiIdPath) {
+	private function buildSrcLoadConfig(GuiIdPath $guiIdPath) {
+		$loadUrls = array();
 		$copyUrls = array();
 		
-		if ($this->copyUrl === null) {
-			return $copyUrls;
+		if ($this->srcUrl === null) {
+			return new SrcLoadConfig($guiIdPath, $loadUrls, $copyUrls);
 		}
-		
-		// @todo draft copy url
 		
 		foreach ($this->targetRelationEntries as $n2nLocaleId => $targetRelationEntry) {
+			$loadUrls[$n2nLocaleId] = $this->srcUrl->extR('live', array(
+					'pid' => ($targetRelationEntry->isNew() ? null : $targetRelationEntry->getPid()), 
+					'n2nLocale' => $n2nLocaleId));
+			
 			if ($targetRelationEntry->isNew()) continue;
 				
-			$copyUrls[$n2nLocaleId] = $this->copyUrl->extR('live', 
-					array('fromPid' => $targetRelationEntry->getPid(),
-							'guiIdPath' => (string) $guiIdPath));
+			$copyUrls[$n2nLocaleId] = $this->srcUrl->extR('livecopy', 
+					array('pid' => ($targetRelationEntry->getPid())));
 		}
 		
-		return $copyUrls;
+		return new SrcLoadConfig($guiIdPath, $loadUrls, $copyUrls);
 	}
 	
 	private function setupTranslationForm() {
@@ -180,7 +182,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			return new GuiFieldAssembly($translationDisplayable, $eiFieldWrapperWrapper);
 		}
 		
-		$translationMag->setCopyUrls($this->buildCopyUrl($guiIdPath));
+		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($guiIdPath));
 		
 		$this->setupTranslationForm();
 				
@@ -246,7 +248,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	}
 	
 	public function setCopyUrl(Url $copyUrl) {
-		$this->copyUrl = $copyUrl;
+		$this->srcUrl = $copyUrl;
 	}
 }
 
@@ -279,5 +281,42 @@ class EmptyDisplayable implements Displayable {
 	
 	public function createOutputUiComponent(HtmlView $view) {
 		return $view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label');
+	}
+} 
+
+class SrcLoadConfig {
+	private $guiIdPath;
+	private $loadUrls;
+	private $copyUrls;
+	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param Url[] $url
+	 */
+	public function __construct(GuiIdPath $guiIdPath, array $loadUrls, array $copyUrls) {
+		$this->guiIdPath = $guiIdPath;
+		$this->loadUrls = $loadUrls;
+		$this->copyUrls = $copyUrls;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	public function toAttrs() {
+		$loadUrlDefs = [];
+		foreach ($this->loadUrls as $n2nLocaleId => $url) {
+			$loadUrlDefs[$n2nLocaleId] = array(
+					'label' => N2nLocale::create($n2nLocaleId)->toPrettyId(),
+					'url' => (string) $url,
+					'n2nLocaleId' => $n2nLocaleId);
+		}
+		$copyUrlDefs = [];
+		foreach ($this->copyUrls as $n2nLocaleId => $url) {
+			$copyUrlDefs[$n2nLocaleId] = array(
+					'label' => N2nLocale::create($n2nLocaleId)->toPrettyId(),
+					'url' => (string) $url,
+					'n2nLocaleId' => $n2nLocaleId);
+		}
+		return array('loadUrlDefs' => $loadUrlDefs, 'copyUrlDefs' => $copyUrlDefs, 'guiIdPath' => (string) $this->guiIdPath);
 	}
 }

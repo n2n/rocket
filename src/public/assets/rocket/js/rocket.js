@@ -7,7 +7,8 @@ var Rocket;
     jQuery(document).ready(function ($) {
         let jqContainer = $("#rocket-content-container");
         container = new Rocket.Cmd.Container(jqContainer);
-        let userStore = Rocket.Impl.UserStore.read(jqContainer.find("#rocket-global-nav").find("h2").data("rocketUserId"));
+        let userStore = Rocket.Impl.UserStore
+            .read(jqContainer.find("#rocket-global-nav").find("h2").data("rocketUserId"));
         blocker = new Rocket.Cmd.Blocker(container);
         blocker.init($("body"));
         initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
@@ -6796,6 +6797,360 @@ var Rocket;
     (function (Impl) {
         var Translation;
         (function (Translation) {
+            class LoadJobExecuter {
+                constructor() {
+                    this.groups = [];
+                }
+                add(loadJob) {
+                    for (let group of this.groups) {
+                        if (group.add(loadJob))
+                            return;
+                    }
+                    this.groups.push(LoadJobGroup.create(loadJob));
+                }
+                exec() {
+                    for (let group of this.groups) {
+                        group.exec();
+                    }
+                    this.groups = [];
+                }
+            }
+            Translation.LoadJobExecuter = LoadJobExecuter;
+            class LoadJobGroup {
+                constructor(url) {
+                    this.url = url;
+                    this.loadJobs = [];
+                }
+                add(loadJob) {
+                    if (!this.url.equals(loadJob.url)) {
+                        return false;
+                    }
+                    this.loadJobs.push(loadJob);
+                    return true;
+                }
+                exec() {
+                    let guiIdPaths = [];
+                    for (let loadJob of this.loadJobs) {
+                        guiIdPaths.push(loadJob.guiIdPath);
+                        loadJob.content.loading = true;
+                    }
+                    let url = this.url.extR(null, { guiIdPaths: guiIdPaths });
+                    Jhtml.lookupModel(url).then((result) => {
+                        this.splitResult(result.model.snippet);
+                    });
+                }
+                splitResult(snippet) {
+                    let usedElements = [];
+                    $(snippet.elements).children().each((i, elem) => {
+                        let elemJq = $(elem);
+                        let guiIdPath = elemJq.data("rocket-impl-gui-id-path");
+                        let loadJob = this.loadJobs.find(loadJob => loadJob.guiIdPath == guiIdPath);
+                        let newContentJq = elemJq.children().first();
+                        loadJob.content.replaceField(newContentJq);
+                        loadJob.content.loading = false;
+                        usedElements.push(newContentJq.get(0));
+                    });
+                    snippet.elements = usedElements;
+                    snippet.markAttached();
+                }
+                static create(loadJob) {
+                    let lj = new LoadJobGroup(loadJob.url);
+                    lj.add(loadJob);
+                    return lj;
+                }
+            }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
+            class Translatable {
+                constructor(jqElem) {
+                    this.jqElem = jqElem;
+                    this.srcGuiIdPath = null;
+                    this.loadUrlDefs = {};
+                    this.copyUrlDefs = {};
+                    this._contents = {};
+                    let srcLoadConfig = jqElem.data("rocket-impl-src-load-config");
+                    if (!srcLoadConfig)
+                        return;
+                    this.srcGuiIdPath = srcLoadConfig.guiIdPath;
+                    for (let localeId in srcLoadConfig.loadUrlDefs) {
+                        this.loadUrlDefs[localeId] = {
+                            label: srcLoadConfig.loadUrlDefs[localeId].label,
+                            url: Jhtml.Url.create(srcLoadConfig.loadUrlDefs[localeId].url)
+                        };
+                    }
+                    for (let localeId in srcLoadConfig.copyUrlDefs) {
+                        this.copyUrlDefs[localeId] = {
+                            label: srcLoadConfig.copyUrlDefs[localeId].label,
+                            url: Jhtml.Url.create(srcLoadConfig.copyUrlDefs[localeId].url)
+                        };
+                    }
+                }
+                get jQuery() {
+                    return this.jqElem;
+                }
+                get localeIds() {
+                    return Object.keys(this._contents);
+                }
+                get contents() {
+                    let O = Object;
+                    return O.values(this._contents);
+                }
+                set visibleLocaleIds(localeIds) {
+                    for (let content of this.contents) {
+                        content.visible = -1 < localeIds.indexOf(content.localeId);
+                    }
+                }
+                get visibleLocaleIds() {
+                    let localeIds = new Array();
+                    for (let content of this.contents) {
+                        if (!content.visible)
+                            continue;
+                        localeIds.push(content.localeId);
+                    }
+                    return localeIds;
+                }
+                set activeLocaleIds(localeIds) {
+                    for (let content of this.contents) {
+                        content.active = -1 < localeIds.indexOf(content.localeId);
+                    }
+                }
+                get activeLocaleIds() {
+                    let localeIds = new Array();
+                    for (let content of this.contents) {
+                        if (!content.active)
+                            continue;
+                        localeIds.push(content.localeId);
+                    }
+                    return localeIds;
+                }
+                get loadJobs() {
+                    if (!this.srcGuiIdPath)
+                        return [];
+                    let loadJobs = [];
+                    for (let content of this.contents) {
+                        if (content.loaded || !content.visible || !content.active
+                            || !this.loadUrlDefs[content.localeId]) {
+                            continue;
+                        }
+                        loadJobs.push({
+                            url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
+                            guiIdPath: this.srcGuiIdPath,
+                            content: content
+                        });
+                    }
+                    return loadJobs;
+                }
+                scan() {
+                    this.jqElem.children().each((i, elem) => {
+                        let jqElem = $(elem);
+                        let localeId = jqElem.data("rocket-impl-locale-id");
+                        if (!localeId || this._contents[localeId])
+                            return;
+                        let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
+                        tc.drawCopyControl(this.copyUrlDefs);
+                    });
+                }
+                static test(elemJq) {
+                    let translatable = elemJq.data("rocketImplTranslatable");
+                    if (translatable instanceof Translatable) {
+                        return translatable;
+                    }
+                    return null;
+                }
+                static from(jqElem) {
+                    let translatable = Translatable.test(jqElem);
+                    if (translatable instanceof Translatable) {
+                        return translatable;
+                    }
+                    translatable = new Translatable(jqElem);
+                    jqElem.data("rocketImplTranslatable", translatable);
+                    translatable.scan();
+                    return translatable;
+                }
+            }
+            Translation.Translatable = Translatable;
+            class TranslatedContent {
+                constructor(_localeId, elemJq) {
+                    this._localeId = _localeId;
+                    this.elemJq = elemJq;
+                    this.jqEnabler = null;
+                    this.copyControlJq = null;
+                    this.changedCallbacks = [];
+                    this._visible = true;
+                    Rocket.Display.StructureElement.from(elemJq, true);
+                    this._propertyPath = elemJq.data("rocket-impl-property-path");
+                    this._pid = elemJq.data("rocket-impl-ei-id") || null;
+                    this._fieldJq = elemJq.children();
+                    this.elemJq.hide();
+                    this._visible = false;
+                }
+                get loaded() {
+                    return this.elemJq.children("input[type=hidden].rocket-impl-unloaded").length == 0;
+                }
+                get jQuery() {
+                    return this.elemJq;
+                }
+                get fieldJq() {
+                    return this._fieldJq;
+                }
+                replaceField(newFieldJq) {
+                    this._fieldJq.replaceWith(newFieldJq);
+                    this._fieldJq = newFieldJq;
+                }
+                get localeId() {
+                    return this._localeId;
+                }
+                get propertyPath() {
+                    return this._propertyPath;
+                }
+                get pid() {
+                    return this._pid;
+                }
+                get prettyLocaleId() {
+                    return this.elemJq.data("rocket-impl-pretty-locale");
+                }
+                get localeName() {
+                    return this.elemJq.data("rocket-impl-locale-name");
+                }
+                get visible() {
+                    return this._visible;
+                }
+                set visible(visible) {
+                    if (visible) {
+                        if (this._visible)
+                            return;
+                        this._visible = true;
+                        this.elemJq.show();
+                        this.triggerChanged();
+                        return;
+                    }
+                    if (!this._visible)
+                        return;
+                    this._visible = false;
+                    this.elemJq.hide();
+                    this.triggerChanged();
+                }
+                get active() {
+                    return this.jqEnabler ? false : true;
+                }
+                set active(active) {
+                    if (active) {
+                        if (this.jqEnabler) {
+                            this.jqEnabler.remove();
+                            this.jqEnabler = null;
+                            this.triggerChanged();
+                        }
+                        if (this.copyControlJq) {
+                            this.copyControlJq.show();
+                        }
+                        this.elemJq.removeClass("rocket-inactive");
+                        return;
+                    }
+                    if (!this.jqEnabler) {
+                        this.jqEnabler = $("<button />", {
+                            "class": "rocket-impl-enabler",
+                            "type": "button",
+                            "text": " " + this.elemJq.data("rocket-impl-activate-label"),
+                            "click": () => { this.active = true; }
+                        }).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.elemJq);
+                        this.triggerChanged();
+                    }
+                    if (this.copyControlJq) {
+                        this.copyControlJq.show();
+                    }
+                    this.elemJq.addClass("rocket-inactive");
+                }
+                drawCopyControl(urlDefs) {
+                    for (let localeId in urlDefs) {
+                        if (localeId == this.localeId)
+                            continue;
+                        if (!this.copyControl) {
+                            this.copyControl = new CopyControl(this);
+                            this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
+                        }
+                        this.copyControl.addUrlDef(urlDefs[localeId]);
+                    }
+                }
+                get loading() {
+                    return !!this.loaderJq;
+                }
+                set loading(loading) {
+                    if (!loading) {
+                        if (!this.loaderJq)
+                            return;
+                        this.loaderJq.remove();
+                        return;
+                    }
+                    if (this.loaderJq)
+                        return;
+                    this.loaderJq = $("<div />", {
+                        class: "rocket-load-blocker"
+                    }).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.elemJq);
+                }
+                triggerChanged() {
+                    for (let callback of this.changedCallbacks) {
+                        callback();
+                    }
+                }
+                whenChanged(callback) {
+                    this.changedCallbacks.push(callback);
+                }
+            }
+            Translation.TranslatedContent = TranslatedContent;
+            class CopyControl {
+                constructor(translatedContent) {
+                    this.translatedContent = translatedContent;
+                }
+                draw(tooltip) {
+                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
+                    this.translatedContent.jQuery.append(this.elemJq);
+                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
+                        .append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
+                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-menu" })
+                        .append(this.menuUlJq = $("<ul></ul>"))
+                        .append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
+                    this.toggler = Rocket.Display.Toggler.simple(buttonJq, menuJq);
+                    this.elemJq.append(buttonJq);
+                    this.elemJq.append(menuJq);
+                }
+                addUrlDef(urlDef) {
+                    let url = this.completeCopyUrl(urlDef.url);
+                    this.menuUlJq.append($("<li/>").append($("<a />", {
+                        "text": urlDef.label
+                    }).append($("<i></i>", { class: "fa fa-mail-forward" })).click((e) => {
+                        e.stopPropagation();
+                        this.copy(url);
+                        this.toggler.close();
+                    })));
+                }
+                completeCopyUrl(url) {
+                    return url.extR(null, {
+                        propertyPath: this.translatedContent.propertyPath,
+                        toN2nLocale: this.translatedContent.localeId,
+                        toPid: this.translatedContent.pid
+                    });
+                }
+                copy(url) {
+                }
+                replace(snippet) {
+                }
+            }
+        })(Translation = Impl.Translation || (Impl.Translation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Translation;
+        (function (Translation) {
             class TranslationManager {
                 constructor(jqElem) {
                     this.jqElem = jqElem;
@@ -7025,10 +7380,11 @@ var Rocket;
                         }
                         let viewMenu = Translation.ViewMenu.from(jqViewControl);
                         jqTranslatables.each((i, elem) => {
-                            viewMenu.registerTranslatable(Translatable.from($(elem)));
+                            viewMenu.registerTranslatable(Translation.Translatable.from($(elem)));
                         });
                         if (isInitViewMenu) {
                             this.initViewMenu(viewMenu);
+                            viewMenu.checkLoadJobs();
                         }
                     }
                 }
@@ -7045,10 +7401,10 @@ var Rocket;
                     }
                     jqBase.find(".rocket-impl-translatable-" + jqElem.data("rocket-impl-mark-class-key")).each((i, elem) => {
                         let elemJq = $(elem);
-                        if (Translatable.test(elemJq)) {
+                        if (Translation.Translatable.test(elemJq)) {
                             return;
                         }
-                        tm.registerTranslatable(Translatable.from(elemJq));
+                        tm.registerTranslatable(Translation.Translatable.from(elemJq));
                     });
                 }
                 initViewMenu(viewMenu) {
@@ -7085,244 +7441,6 @@ var Rocket;
                 }
             }
             Translation.Translator = Translator;
-            class Translatable {
-                constructor(jqElem) {
-                    this.jqElem = jqElem;
-                    this.copyUrls = {};
-                    this._contents = {};
-                    let copyUrlDefs = jqElem.data("rocket-impl-copy-urls");
-                    for (let localeId in copyUrlDefs) {
-                        this.copyUrls[localeId] = {
-                            label: copyUrlDefs[localeId].label,
-                            copyUrl: Jhtml.Url.create(copyUrlDefs[localeId].copyUrl)
-                        };
-                    }
-                }
-                get jQuery() {
-                    return this.jqElem;
-                }
-                get localeIds() {
-                    return Object.keys(this._contents);
-                }
-                get contents() {
-                    let O = Object;
-                    return O.values(this._contents);
-                }
-                set visibleLocaleIds(localeIds) {
-                    for (let content of this.contents) {
-                        content.visible = -1 < localeIds.indexOf(content.localeId);
-                    }
-                }
-                get visibleLocaleIds() {
-                    let localeIds = new Array();
-                    for (let content of this.contents) {
-                        if (!content.visible)
-                            continue;
-                        localeIds.push(content.localeId);
-                    }
-                    return localeIds;
-                }
-                set activeLocaleIds(localeIds) {
-                    for (let content of this.contents) {
-                        content.active = -1 < localeIds.indexOf(content.localeId);
-                    }
-                }
-                get activeLocaleIds() {
-                    let localeIds = new Array();
-                    for (let content of this.contents) {
-                        if (!content.active)
-                            continue;
-                        localeIds.push(content.localeId);
-                    }
-                    return localeIds;
-                }
-                scan() {
-                    this.jqElem.children().each((i, elem) => {
-                        let jqElem = $(elem);
-                        let localeId = jqElem.data("rocket-impl-locale-id");
-                        if (!localeId || this._contents[localeId])
-                            return;
-                        let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-                        tc.drawCopyControl(this.copyUrls);
-                    });
-                }
-                static test(elemJq) {
-                    let translatable = elemJq.data("rocketImplTranslatable");
-                    if (translatable instanceof Translatable) {
-                        return translatable;
-                    }
-                    return null;
-                }
-                static from(jqElem) {
-                    let translatable = Translatable.test(jqElem);
-                    if (translatable instanceof Translatable) {
-                        return translatable;
-                    }
-                    translatable = new Translatable(jqElem);
-                    jqElem.data("rocketImplTranslatable", translatable);
-                    translatable.scan();
-                    return translatable;
-                }
-            }
-            Translation.Translatable = Translatable;
-            class TranslatedContent {
-                constructor(_localeId, elemJq) {
-                    this._localeId = _localeId;
-                    this.elemJq = elemJq;
-                    this.jqEnabler = null;
-                    this.copyControlJq = null;
-                    this.changedCallbacks = [];
-                    this._visible = true;
-                    Rocket.Display.StructureElement.from(elemJq, true);
-                    this._propertyPath = elemJq.data("rocket-impl-property-path");
-                    this._pid = elemJq.data("rocket-impl-ei-id") || null;
-                    this._fieldJq = elemJq.children("div");
-                }
-                get jQuery() {
-                    return this.elemJq;
-                }
-                get fieldJq() {
-                    return this._fieldJq;
-                }
-                replaceField(newFieldJq) {
-                    this._fieldJq.replaceWith(newFieldJq);
-                    this._fieldJq = newFieldJq;
-                }
-                get localeId() {
-                    return this._localeId;
-                }
-                get propertyPath() {
-                    return this._propertyPath;
-                }
-                get pid() {
-                    return this._pid;
-                }
-                get prettyLocaleId() {
-                    return this.elemJq.find("label:first").text();
-                }
-                get localeName() {
-                    return this.elemJq.find("label:first").attr("title");
-                }
-                get visible() {
-                    return this._visible;
-                }
-                set visible(visible) {
-                    if (visible) {
-                        if (this._visible)
-                            return;
-                        this._visible = true;
-                        this.elemJq.show();
-                        this.triggerChanged();
-                        return;
-                    }
-                    if (!this._visible)
-                        return;
-                    this._visible = false;
-                    this.elemJq.hide();
-                    this.triggerChanged();
-                }
-                get active() {
-                    return this.jqEnabler ? false : true;
-                }
-                set active(active) {
-                    if (active) {
-                        if (this.jqEnabler) {
-                            this.jqEnabler.remove();
-                            this.jqEnabler = null;
-                            this.triggerChanged();
-                        }
-                        if (this.copyControlJq) {
-                            this.copyControlJq.show();
-                        }
-                        this.elemJq.removeClass("rocket-inactive");
-                        return;
-                    }
-                    if (!this.jqEnabler) {
-                        this.jqEnabler = $("<button />", {
-                            "class": "rocket-impl-enabler",
-                            "type": "button",
-                            "text": " " + this.elemJq.data("rocket-impl-activate-label"),
-                            "click": () => { this.active = true; }
-                        }).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.elemJq);
-                        this.triggerChanged();
-                    }
-                    if (this.copyControlJq) {
-                        this.copyControlJq.show();
-                    }
-                    this.elemJq.addClass("rocket-inactive");
-                }
-                drawCopyControl(urlDefs) {
-                    for (let localeId in urlDefs) {
-                        if (localeId == this.localeId)
-                            continue;
-                        if (!this.copyControl) {
-                            this.copyControl = new CopyControl(this);
-                            this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
-                        }
-                        this.copyControl.addUrlDef(urlDefs[localeId]);
-                    }
-                }
-                triggerChanged() {
-                    for (let callback of this.changedCallbacks) {
-                        callback();
-                    }
-                }
-                whenChanged(callback) {
-                    this.changedCallbacks.push(callback);
-                }
-            }
-            class CopyControl {
-                constructor(translatedContent) {
-                    this.translatedContent = translatedContent;
-                }
-                draw(tooltip) {
-                    this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
-                    this.translatedContent.jQuery.append(this.elemJq);
-                    let buttonJq = $("<button />", { "type": "button", "class": "btn btn-secondary" })
-                        .append($("<i></i>", { class: "fa fa-copy", title: tooltip }));
-                    let menuJq = $("<div />", { class: "rocket-impl-translation-copy-menu" })
-                        .append(this.menuUlJq = $("<ul></ul>"))
-                        .append($("<div />", { class: "rocket-impl-tooltip", text: tooltip }));
-                    this.toggler = Rocket.Display.Toggler.simple(buttonJq, menuJq);
-                    this.elemJq.append(buttonJq);
-                    this.elemJq.append(menuJq);
-                }
-                addUrlDef(urlDef) {
-                    let url = this.completeCopyUrl(urlDef.copyUrl);
-                    this.menuUlJq.append($("<li/>").append($("<a />", {
-                        "text": urlDef.label
-                    }).append($("<i></i>", { class: "fa fa-mail-forward" })).click((e) => {
-                        e.stopPropagation();
-                        this.copy(url);
-                        this.toggler.close();
-                    })));
-                }
-                completeCopyUrl(url) {
-                    return url.extR(null, {
-                        propertyPath: this.translatedContent.propertyPath,
-                        toN2nLocale: this.translatedContent.localeId,
-                        toPid: this.translatedContent.pid
-                    });
-                }
-                copy(url) {
-                    if (this.loaderJq)
-                        return;
-                    this.loaderJq = $("<div />", {
-                        class: "rocket-load-blocker"
-                    }).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.translatedContent.jQuery);
-                    Jhtml.lookupModel(url).then((result) => {
-                        this.replace(result.model.snippet);
-                    });
-                }
-                replace(snippet) {
-                    let newFieldJq = $(snippet.elements).children();
-                    this.translatedContent.replaceField(newFieldJq);
-                    snippet.elements = newFieldJq.toArray();
-                    snippet.markAttached();
-                    this.loaderJq.remove();
-                    this.loaderJq = null;
-                }
-            }
         })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
@@ -7406,6 +7524,7 @@ var Rocket;
                             if (this.changing || !content.active)
                                 return;
                             this._items[content.localeId].on = true;
+                            this.checkLoadJobs();
                         });
                     }
                 }
@@ -7414,6 +7533,15 @@ var Rocket;
                     if (-1 < i) {
                         this.translatables.splice(i, 1);
                     }
+                }
+                checkLoadJobs() {
+                    let lje = new Translation.LoadJobExecuter();
+                    for (let translatable of this.translatables) {
+                        for (let lj of translatable.loadJobs) {
+                            lje.add(lj);
+                        }
+                    }
+                    lje.exec();
                 }
                 menuChanged() {
                     if (this.changing) {

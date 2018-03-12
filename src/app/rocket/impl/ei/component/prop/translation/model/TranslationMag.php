@@ -34,9 +34,6 @@ use n2n\web\ui\UiComponent;
 use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
-use n2n\reflection\ArgUtils;
-use n2n\util\uri\Url;
-use n2n\l10n\N2nLocale;
 use rocket\ei\util\model\EiuEntry;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 
@@ -48,9 +45,9 @@ class TranslationMag extends MagAdapter {
 	private $fieldErrorInfos = array();
 	private $eiuEntries = array();
 	/**
-	 * @var Url[]
+	 * @var SrcLoadConfig
 	 */
-	private $copyUrls = array();
+	private $srcLoadConfig;
 
 	public function __construct($label, string $markClassKey) {
 		parent::__construct($label, array());
@@ -74,9 +71,8 @@ class TranslationMag extends MagAdapter {
 		$this->value[$n2nLocaleId] = 1;
 	}
 	
-	public function setCopyUrls(array $copyUrls) {
-		ArgUtils::valArray($copyUrls, Url::class);
-		$this->copyUrls = $copyUrls;
+	public function setSrcLoadConfig(SrcLoadConfig $srcLoadConfig) {
+		$this->srcLoadConfig = $srcLoadConfig;
 	}
 	
 	public function setupMappingDefinition(MappingDefinition $md) {
@@ -106,7 +102,7 @@ class TranslationMag extends MagAdapter {
 				
 				$transDispBd = $bd->getBindingTree()->lookup($tPropertyPath);
 				
-				if (!isset($loadedN2nLocaleIds[$n2nLocaleId])) {
+				if (isset($loadedN2nLocaleIds[$n2nLocaleId])) {
 					$transDispBd->reset($propertyPath->getLast()->getPropertyName());
 					continue;
 				}
@@ -126,18 +122,15 @@ class TranslationMag extends MagAdapter {
 					->ext($magPropertyPath);
 		}
 		
-		$copyUrlDefs = array();
-		foreach ($this->copyUrls as $localeId =>  $copyUrl) {
-			$copyUrlDefs[$localeId] = array(
-					'label' => N2nLocale::create($localeId)->toPrettyId(),
-					'copyUrl' => (string) $copyUrl,
-					'n2nLocaleId' => $localeId);
+		$srcLoadConfig = array();
+		if ($this->srcLoadConfig !== null) {
+			$srcLoadConfig = $this->srcLoadConfig->toAttrs();
 		}
 
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
 				array('propertyPath' => $propertyPath, 'propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
 						'label' => $this->getLabel($view->getN2nLocale()),
-						'copyUrlDefs' => $copyUrlDefs, 'eiuEntries' => $this->eiuEntries,
+						'srcLoadConfig' => $srcLoadConfig, 'eiuEntries' => $this->eiuEntries,
 						'markClassKey' => $this->markClassKey));
 	}
 }

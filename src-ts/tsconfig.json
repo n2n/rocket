@@ -11,5 +11,5 @@
     },
     "include": ["rocket/**/*", "../src/public/assets/n2n-impl-web-ui/js/jhtml.d.ts"],
 	"exclude": ["node_modules"],
-	"compileOnSave": true
+	"compileOnSave": false
 }
