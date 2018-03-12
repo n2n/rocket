@@ -38,6 +38,7 @@ use n2n\reflection\ArgUtils;
 use n2n\util\uri\Url;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\model\EiuEntry;
+use n2n\web\dispatch\map\bind\MappingDefinition;
 
 class TranslationMag extends MagAdapter {
 	private $markClassKey;
@@ -52,12 +53,12 @@ class TranslationMag extends MagAdapter {
 	private $copyUrls = array();
 
 	public function __construct($label, string $markClassKey) {
-		parent::__construct($label);
+		parent::__construct($label, array());
 		$this->markClassKey = $markClassKey;
 	}
 
 	public function createManagedProperty(AccessProxy $accessProxy): ManagedProperty {
-		return new ScalarProperty($accessProxy, false);
+		return new ScalarProperty($accessProxy, true);
 	}
 
 	public function putDisplayable($n2nLocaleId, Displayable $displayable, FieldErrorInfo $fieldErrorInfo) {
@@ -70,21 +71,30 @@ class TranslationMag extends MagAdapter {
 		$this->magPropertyPaths[$n2nLocaleId] = $magPropertyPath;
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
 		$this->eiuEntries[$n2nLocaleId] = $eiuEntry;
+		$this->value[$n2nLocaleId] = 1;
 	}
 	
 	public function setCopyUrls(array $copyUrls) {
 		ArgUtils::valArray($copyUrls, Url::class);
 		$this->copyUrls = $copyUrls;
 	}
+	
+	public function setupMappingDefinition(MappingDefinition $md) {
+// 		if (!$md->isDispatched()) return;
+		
+// 		$loadedN2nLocaleIds = $md->getDispatchedValue($this->propertyName);
+// 		foreach ($this->magPropertyPaths as $n2nLocaleId => $magPropertyPath) {
+// 			$md->
+// 		}
+	}
 
-	/* (non-PHPdoc)
-	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition()
-	 */
 	public function setupBindingDefinition(BindingDefinition $bd) {
 		$basePropertyPath = $bd->getPropertyPath()->reduced(1);
 		
 		$that = $this;
 		$bd->closure(function (BindingErrors $be) use ($that, $basePropertyPath, $bd) {
+			$loadedN2nLocaleIds = $bd->getMappingResult()->__get($that->propertyName);
+			
 			foreach ($that->magPropertyPaths as $n2nLocaleId => $magPropertyPath) {
 				$propertyPath = $basePropertyPath->ext(new PropertyPathPart('dispatchables', true, $n2nLocaleId))
 						->ext($magPropertyPath);
@@ -95,6 +105,12 @@ class TranslationMag extends MagAdapter {
 				}
 				
 				$transDispBd = $bd->getBindingTree()->lookup($tPropertyPath);
+				
+				if (!isset($loadedN2nLocaleIds[$n2nLocaleId])) {
+					$transDispBd->reset($propertyPath->getLast()->getPropertyName());
+					continue;
+				}
+				
 				$be->addErrors($that->propertyName, $transDispBd->getMappingResult()
 						->filterErrorMessages($propertyPath->getLast(), true));
 			}
@@ -119,7 +135,7 @@ class TranslationMag extends MagAdapter {
 		}
 
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
-				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
+				array('propertyPath' => $propertyPath, 'propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
 						'label' => $this->getLabel($view->getN2nLocale()),
 						'copyUrlDefs' => $copyUrlDefs, 'eiuEntries' => $this->eiuEntries,
 						'markClassKey' => $this->markClassKey));

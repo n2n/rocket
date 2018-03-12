@@ -13,6 +13,7 @@ use n2n\l10n\N2nLocale;
 use n2n\l10n\IllegalN2nLocaleFormatException;
 
 class TranslationCopyController extends ControllerAdapter {
+	
 	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiIdPath, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
