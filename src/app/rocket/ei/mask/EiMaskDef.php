@@ -51,7 +51,7 @@ class EiMaskDef {
 	/**
 	 * @param string $label
 	 */
-	public function setLabel(string $label) {
+	public function setLabel(?string $label) {
 		$this->label = $label;
 	}
 	
@@ -65,7 +65,7 @@ class EiMaskDef {
 	/**
 	 * @param string $pluralLabel
 	 */
-	public function setPluralLabel(string $pluralLabel) {
+	public function setPluralLabel(?string $pluralLabel) {
 		$this->pluralLabel = $pluralLabel;
 	}
 	
@@ -76,7 +76,7 @@ class EiMaskDef {
 		return $this->iconType;
 	}
 	
-	public function setIconType(string $iconType = null) {
+	public function setIconType(?string $iconType) {
 		$this->iconType = $iconType;
 	}
 	

@@ -133,10 +133,10 @@ class SpecExtractor {
 	public function createEiMaskExtraction(Attributes $eiMaskAttributes) {
 		$eiMaskExtraction = new EiMaskExtraction();
 	
-		$label = $eiMaskAttributes->getScalar(RawDef::EI_DEF_LABEL_KEY);
+		$label = $eiMaskAttributes->getScalar(RawDef::EI_DEF_LABEL_KEY, false, null, true);
 		$eiMaskExtraction->setLabel($label);
 	
-		$pluralLabel = $eiMaskAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false);
+		$pluralLabel = $eiMaskAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false, null, true);
 		if ($pluralLabel === null) $pluralLabel = $label;
 		$eiMaskExtraction->setPluralLabel($pluralLabel);
 		

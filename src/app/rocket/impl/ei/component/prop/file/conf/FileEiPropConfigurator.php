@@ -159,7 +159,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	private function getNamingEiPropIdOptions() {
 		$namingEiPropIdOptions = array();
-		foreach ($this->eiComponent->getEiMask()->getScalarEiDefinition()->getScalarEiProperties()
+		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
 				as $id => $genericScalarProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
 			$namingEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();

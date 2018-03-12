@@ -29,6 +29,7 @@ use rocket\ei\mask\model\DisplayScheme;
 class EiMaskExtraction {
 	private $label;
 	private $pluralLabel;
+	private $iconType;
 	private $identityStringPattern;
 	private $draftingAllowed;
 	private $previewControllerLookupId;
@@ -70,7 +71,7 @@ class EiMaskExtraction {
 	/**
 	 * @param string|null $pluralLabel
 	 */
-	public function setPluralLabel($pluralLabel) {
+	public function setPluralLabel(?string $pluralLabel) {
 		$this->pluralLabel = $pluralLabel;
 	}
 	
@@ -84,7 +85,7 @@ class EiMaskExtraction {
 	/**
 	 * @param string|null $iconType
 	 */
-	public function setIconType($iconType) {
+	public function setIconType(?string $iconType) {
 		$this->iconType = $iconType;
 	}
 	

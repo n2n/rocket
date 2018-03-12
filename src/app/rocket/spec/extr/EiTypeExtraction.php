@@ -28,7 +28,6 @@ class EiTypeExtraction extends TypeExtraction {
 	private $eiMaskExtraction;
 	private $dataSourceName;
 	private $nestedSetStrategy;
-	private $defaultEiMaskId;
 	
 	/**
 	 * @return string|null

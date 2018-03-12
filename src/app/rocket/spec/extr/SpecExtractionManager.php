@@ -442,7 +442,7 @@ class SpecExtractionManager {
 	/**
 	 * @param string $extendedEiTypePath
 	 * @param string $id
-	 * @return bool
+	 * @return EiTypeExtensionExtraction
 	 */
 	public function getEiTypeExtensionExtractionById(TypePath $extendedEiTypePath, string $id) {
 		if ($this->containsEiTypeExtensionExtractionId($extendedEiTypePath, $id)) {
@@ -640,21 +640,14 @@ class SpecExtractionManager {
 			$specCsDec->clear();
 		}
 		
-		foreach ($this->specExtractions as $specId => $specExtraction) {
-			$this->getSpecCsDescByModuleNamespace($specExtraction->getModuleNamespace())
-					->addTypeExtraction($specExtraction);
-						
-			if ($specExtraction instanceof EiTypeExtraction) {
-				foreach ($specExtraction->getEiTypeExtensionExtractions() as $eiTypeExtensionExtraction) {
-					$this->getSpecCsDescByModuleNamespace($eiTypeExtensionExtraction->getModuleNamespace())
-							->addEiTypeExtensionExtraction($specId, $eiTypeExtensionExtraction);
-				}
-				
-				foreach ($specExtraction->getEiModificatorExtractions() as $eiModificatorExtraction) {
-					$this->getSpecCsDescByModuleNamespace($eiModificatorExtraction->getModuleNamespace())
-							->addEiModificatorExtraction($specId, $eiModificatorExtraction);
-				}
-			}
+		foreach ($this->customTypeExtractions as $typeId => $customExtraction) {
+			$this->getSpecCsDescByModuleNamespace($customExtraction->getModuleNamespace())
+					->addCustomTypeExtraction($customExtraction);
+		}
+		
+		foreach ($this->eiTypeExtractions as $typeId => $eiTypeExtraction) {
+			$this->getSpecCsDescByModuleNamespace($eiTypeExtraction->getModuleNamespace())
+					->addEiTypeExtraction($eiTypeExtraction);
 		}
 		
 		foreach ($this->eiTypeExtensionExtractionGroups as $eiTypeId => $eiTypeExtensionExtractions) {

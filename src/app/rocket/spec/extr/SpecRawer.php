@@ -25,6 +25,7 @@ use n2n\util\config\Attributes;
 use n2n\reflection\ArgUtils;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;
+use n2n\reflection\CastUtils;
 
 class SpecRawer {
 	private $attributes;
@@ -52,7 +53,7 @@ class SpecRawer {
 	private function buildCustomTypeExtractionRawData(CustomTypeExtraction $customTypeExtraction) {
 		$rawData = array();
 		$rawData[RawDef::TYPE_NATURE_KEY] = RawDef::NATURE_CUSTOM;
-		$rawData[RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY] = $customTypeExtraction->getControllerClassName();
+		$rawData[RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY] = $customTypeExtraction->getControllerLookupId();
 		return $rawData;
 	}
 	
@@ -100,13 +101,13 @@ class SpecRawer {
 			
 			
 			foreach ($eiModificatorExtractionGroup as $eiModificatorExtraction) {
-				$idCombination = RawDef::buildEiTypeMaskId($eiModificatorExtraction->getEiTypeId(), 
-						$eiModificatorExtraction->getEiMaskId());
-				if (!isset($rawData[$idCombination])) {
-					$rawData[$idCombination] = array();
+				CastUtils::assertTrue($eiModificatorExtraction instanceof EiModificatorExtraction);
+				$typePathStr = $eiModificatorExtraction->getTypePath();
+				if (!isset($rawData[$typePathStr])) {
+					$rawData[$typePathStr] = array();
 				}
 				
-				$rawData[$idCombination][$eiModificatorExtraction->getId()] = $this->buildEiModificatorExtractionRawData($eiModificatorExtraction);
+				$rawData[$typePathStr][$eiModificatorExtraction->getId()] = $this->buildEiModificatorExtractionRawData($eiModificatorExtraction);
 			}
 		}
 		
@@ -114,9 +115,7 @@ class SpecRawer {
 	}
 	
 	private function buildEiTypeExtensionExtractionRawData(EiTypeExtensionExtraction $eiTypeExtensionExtraction) {
-		$maskRawData = $this->buildEiMaskExtractionRawData($eiTypeExtensionExtraction->getEiMaskExtraction());
-		
-		return array_merge($maskRawData, $this->buildDisplaySchemeRawData($eiTypeExtensionExtraction->getDisplayScheme()));
+		return $this->buildEiMaskExtractionRawData($eiTypeExtensionExtraction->getEiMaskExtraction());
 	}
 
 	private function buildEiMaskExtractionRawData(EiMaskExtraction $extraction) {
@@ -156,7 +155,7 @@ class SpecRawer {
 					= $this->buildEiComponentExtractionRawData($eiComponentExtraction);
 		}
 		
-		return $rawData;
+		return array_merge($rawData, $this->buildDisplaySchemeRawData($extraction->getDisplayScheme()));
 	}
 	
 	private function buildEiPropExtractionRawData(EiPropExtraction $extraction) {
