@@ -176,9 +176,10 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private function getBaseEiPropIdOptions() {
 		$baseEiPropIdOptions = array();
-		foreach ($this->eiComponent->getEiMask()->getScalarEiDefinition()->getScalarEiProperties()
+		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
 				as $id => $genericScalarProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
+			
 			CastUtils::assertTrue($genericScalarProperty instanceof ScalarEiProperty);
 			$baseEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();
 		}
@@ -187,7 +188,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private function getUniquePerOptions() {
 		$options = array();
-		foreach ($this->eiComponent->getEiMask()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
+		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
 			CastUtils::assertTrue($genericEiProperty instanceof GenericEiProperty);
 			$options[$id] = (string) $genericEiProperty->getLabelLstr();

@@ -259,5 +259,10 @@ class SpecConfigSourceDecorator {
 	public function getLaunchPadExtractions() {
 		return $this->launchPadExtractions;
 	}
+	
+	
+	public function addLaunchPadExtraction(LaunchPadExtraction $launchPadExtraction) {
+		$this->launchPadExtractions[(string) $launchPadExtraction->getTypePath()] = $launchPadExtraction;
+	}
 
 }

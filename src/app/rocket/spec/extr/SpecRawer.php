@@ -254,7 +254,7 @@ class SpecRawer {
 	
 		$launchPadsRawData = array();
 		foreach ($launchPadExtractions as $launchPadExtraction) {
-			$launchPadsRawData[$launchPadExtraction->getId()] = $this->buildLaunchPadExtractionRawData($launchPadExtraction);
+			$launchPadsRawData[(string) $launchPadExtraction->getTypePath()] = $this->buildLaunchPadExtractionRawData($launchPadExtraction);
 		}
 	
 		$this->attributes->set(RawDef::LAUNCH_PADS_KEY, $launchPadsRawData);
