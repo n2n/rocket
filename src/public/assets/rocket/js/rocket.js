@@ -7015,10 +7015,10 @@ var Rocket;
                     return this._pid;
                 }
                 get prettyLocaleId() {
-                    return this.elemJq.data("rocket-impl-pretty-locale");
+                    return this.elemJq.find("label:first").text();
                 }
                 get localeName() {
-                    return this.elemJq.data("rocket-impl-locale-name");
+                    return this.elemJq.find("label:first").attr("title");
                 }
                 get visible() {
                     return this._visible;

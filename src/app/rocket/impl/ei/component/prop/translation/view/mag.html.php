@@ -57,8 +57,6 @@
 	
 		<div class="rocket-impl-translation"
 				data-rocket-impl-locale-id="<?php $html->out($n2nLocaleId) ?>"
-				data-rocket-impl-pretty-locale="<?php $html->out($n2nLocale->toPrettyId()) ?>"
-				data-rocket-impl-locale-name="<?php $html->out($n2nLocale->getName($request->getN2nLocale())) ?>"
 				data-rocket-impl-activate-label="<?php $html->text('ei_impl_activate_translation', array(
 						'locale' => $n2nLocale->getName($view->getN2nLocale()),
 						'field' => $view->getParam('label'))) ?>"

@@ -190,11 +190,13 @@ namespace Rocket.Impl.Translation {
 		}
 
 		get prettyLocaleId(): string {
-			return this.elemJq.data("rocket-impl-pretty-locale");
+//			return this.elemJq.data("rocket-impl-pretty-locale");
+			return this.elemJq.find("label:first").text();
 		}
 
 		get localeName(): string {
-			return this.elemJq.data("rocket-impl-locale-name");
+//			return this.elemJq.data("rocket-impl-locale-name");
+			return this.elemJq.find("label:first").attr("title");
 		}
 
 		get visible(): boolean {
