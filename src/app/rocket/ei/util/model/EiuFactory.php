@@ -919,7 +919,9 @@ class EiuFactory {
 		}
 		
 		if ($eiArg !== null) {
-			return new EiuEntry($eiArg, $eiuFrame);
+			$eiEntry = null;
+			$eiObject = self::determineEiObject($eiArg, $eiEntry);
+			return new EiuEntry($eiObject, $eiEntry, $eiuFrame);
 		}
 			
 		if (!$required) {

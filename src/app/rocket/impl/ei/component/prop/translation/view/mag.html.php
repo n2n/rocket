@@ -66,7 +66,7 @@
 						array('field' => $view->getParam('label'), 'locale' => $n2nLocale->getName($view->getN2nLocale()))) ?>">
 				
 			<?php if ($formHtml->meta()->getMapValue($propertyPath->fieldExt($n2nLocaleId))): ?>
-				<div>
+				<div class="rocket-field">
 					<label class="rocket-impl-locale-label"
 							title="<?php $html->out($n2nLocale->getName($request->getN2nLocale())) ?>">
 						<?php $html->out($n2nLocale->toPrettyId()) ?>
