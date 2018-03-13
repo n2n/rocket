@@ -99,7 +99,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($targetRelationEntry->isNew()) continue;
 				
 			$copyUrls[$n2nLocaleId] = $this->srcUrl->extR('livecopy', 
-					array('pid' => ($targetRelationEntry->getPid())));
+					array('fromPid' => ($targetRelationEntry->getPid())));
 		}
 		
 		return new SrcLoadConfig($guiIdPath, $loadUrls, $copyUrls);

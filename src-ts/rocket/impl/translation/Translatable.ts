@@ -281,6 +281,7 @@ namespace Rocket.Impl.Translation {
 				if (!this.loaderJq) return;
 				
 				this.loaderJq.remove();
+				this.loaderJq = null;
 				return;
 			}
 			

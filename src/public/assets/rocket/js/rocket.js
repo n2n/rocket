@@ -7086,6 +7086,7 @@ var Rocket;
                         if (!this.loaderJq)
                             return;
                         this.loaderJq.remove();
+                        this.loaderJq = null;
                         return;
                     }
                     if (this.loaderJq)

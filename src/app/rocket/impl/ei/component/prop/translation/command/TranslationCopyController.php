@@ -54,14 +54,17 @@ class TranslationCopyController extends ControllerAdapter {
 		foreach ($param->toStringArrayOrReject() as $guiIdPathStr) {
 			$guiIdPaths[] = GuiIdPath::create((string) $guiIdPathStr);
 		}
+		if (empty($guiIdPaths)) {
+			throw new \InvalidArgumentException('No HuiIdPaths given.');
+		}
 		return $guiIdPaths;
 	}
 	
-	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $guiIdPath, ParamQuery $propertyPath, ParamQuery $bulky,
+	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $guiIdPaths, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
 		try {
-			$guiIdPath = GuiIdPath::create((string) $guiIdPath);
+			$guiIdPath = current($this->parseGuiIdPaths($guiIdPaths));
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$toN2nLocale = N2nLocale::create((string) $toN2nLocale);
 		} catch (\InvalidArgumentException $e) {
@@ -91,8 +94,8 @@ class TranslationCopyController extends ControllerAdapter {
 			throw new UnsupportedOperationException();
 		}, array($guiIdPath), $bulky->toBool(), true);
 		
-		$this->send(JhtmlResponse::view($this->createView('translationCopy.html', 
+		$this->send(JhtmlResponse::view($this->createView('jhtmlTranslation.html', 
 				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath,
-						'n2nLocale' => $toN2nLocale, 'guiIdPath' => $guiIdPath))));
+						'n2nLocale' => $toN2nLocale, 'guiIdPaths' => [$guiIdPath]))));
 	}
 }
