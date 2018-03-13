@@ -6814,6 +6814,15 @@ var Rocket;
                     }
                     this.groups = [];
                 }
+                static create(translatables) {
+                    let lje = new LoadJobExecuter();
+                    for (let translatable of translatables) {
+                        for (let lj of translatable.loadJobs) {
+                            lje.add(lj);
+                        }
+                    }
+                    return lje;
+                }
             }
             Translation.LoadJobExecuter = LoadJobExecuter;
             class LoadJobGroup {
@@ -7252,6 +7261,7 @@ var Rocket;
                     for (let translatable of this.translatables) {
                         translatable.activeLocaleIds = localeIds;
                     }
+                    this.checkLoadJobs();
                     this.changing = false;
                 }
                 menuChanged() {
@@ -7263,6 +7273,9 @@ var Rocket;
                         translatable.activeLocaleIds = localeIds;
                     }
                     this.changing = false;
+                }
+                checkLoadJobs() {
+                    Translation.LoadJobExecuter.create(this.translatables).exec();
                 }
                 initControl() {
                     let jqLabel = this.jqElem.children("label:first");
@@ -7536,7 +7549,6 @@ var Rocket;
                             if (this.changing || !content.active)
                                 return;
                             this._items[content.localeId].on = true;
-                            this.checkLoadJobs();
                         });
                     }
                 }
@@ -7547,13 +7559,7 @@ var Rocket;
                     }
                 }
                 checkLoadJobs() {
-                    let lje = new Translation.LoadJobExecuter();
-                    for (let translatable of this.translatables) {
-                        for (let lj of translatable.loadJobs) {
-                            lje.add(lj);
-                        }
-                    }
-                    lje.exec();
+                    Translation.LoadJobExecuter.create(this.translatables).exec();
                 }
                 menuChanged() {
                     if (this.changing) {
@@ -7572,7 +7578,6 @@ var Rocket;
                     this.updateStatus();
                     this.checkLoadJobs();
                     this.changing = false;
-                    console.log("menu changed");
                 }
                 static from(jqElem) {
                     let vm = jqElem.data("rocketImplViewMenu");

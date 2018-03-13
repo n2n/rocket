@@ -20,6 +20,16 @@ namespace Rocket.Impl.Translation {
 			}
 			this.groups = [];
 		}
+		
+		static create(translatables: Translatable[]): LoadJobExecuter {
+			let lje = new LoadJobExecuter();
+			for (let translatable of translatables) {
+				for (let lj of translatable.loadJobs) {
+					lje.add(lj);
+				}
+			}
+			return lje;
+		}
 	}
 	
 	class LoadJobGroup {

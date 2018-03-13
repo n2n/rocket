@@ -111,6 +111,8 @@ namespace Rocket.Impl.Translation {
 				translatable.activeLocaleIds = localeIds;
 			}
 
+
+			this.checkLoadJobs();
 			this.changing = false;
 		}
 
@@ -125,6 +127,10 @@ namespace Rocket.Impl.Translation {
 			}
 
 			this.changing = false;
+		}
+		
+		private checkLoadJobs() {
+			LoadJobExecuter.create(this.translatables).exec();
 		}
 
 

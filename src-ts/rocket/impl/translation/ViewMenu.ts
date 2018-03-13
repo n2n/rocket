@@ -101,8 +101,6 @@ namespace Rocket.Impl.Translation {
 					if (this.changing || !content.active) return;
 					
 					this._items[content.localeId].on = true;
-					
-					this.checkLoadJobs();
 				});
 			}
 		}
@@ -116,13 +114,7 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		checkLoadJobs() {
-			let lje = new LoadJobExecuter();
-			for (let translatable of this.translatables) {
-				for (let lj of translatable.loadJobs) {
-					lje.add(lj);
-				}
-			}
-			lje.exec();
+			LoadJobExecuter.create(this.translatables).exec();
 		}
 		
 		private menuChanged() {
@@ -147,8 +139,6 @@ namespace Rocket.Impl.Translation {
 			this.updateStatus();
 			this.checkLoadJobs();
 			this.changing = false;
-			
-			console.log("menu changed");
 		}
 
 		static from(jqElem: JQuery): ViewMenu {
