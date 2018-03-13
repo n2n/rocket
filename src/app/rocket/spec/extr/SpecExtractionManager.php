@@ -400,7 +400,7 @@ class SpecExtractionManager {
 		}
 		
 		$this->eiTypeExtractions[$id] = $eiTypeExtraction;
-		$this->eiTypeExtractionCis[$entityClassName] = $customTypeExtraction;
+		$this->eiTypeExtractionCis[$entityClassName] = $eiTypeExtraction;
 	}
 	
 	/**
