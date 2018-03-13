@@ -19,12 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\core\model;
+namespace rocket\core\model\launch;
 
 use rocket\spec\Spec;
 use rocket\spec\InvalidMenuConfigurationException;
 
-class LayoutManager {
+class Layout {
 	private $scsd;
 	private $spec;
 	
@@ -32,7 +32,7 @@ class LayoutManager {
 	private $startLaunchPad;
 	private $menuGroups;
 	
-	public function __construct(LayoutConfigSourceDecorator $scsd, Spec $spec) {
+	public function __construct(LayoutExtractionManager $scsd, Spec $spec) {
 		$this->scsd = $scsd;
 		$this->spec = $spec;
 	}
@@ -44,7 +44,7 @@ class LayoutManager {
 	
 	/**
 	 * @throws InvalidMenuConfigurationException
-	 * @return \rocket\core\model\LaunchPad|null
+	 * @return \rocket\core\model\launch\LaunchPad|null
 	 */
 	public function getStartLaunchPad() {
 		if ($this->startLaunchPadLoaded) {
@@ -80,7 +80,7 @@ class LayoutManager {
 			$menuGroup = new MenuGroup($menuGroupExtraction->getLabel());
 				
 			try {
-				foreach ($menuGroupExtraction->getLaunchPadIds() as $launchPadId => $label) {
+				foreach ($menuGroupExtraction->getLaunchPadLabels() as $launchPadId => $label) {
 					$menuGroup->addLaunchPad($this->spec->getLaunchPadById($launchPadId), $label);
 				}
 			} catch (UnknownLaunchPadException $e) {
@@ -97,23 +97,23 @@ class LayoutManager {
 		$this->menuGroups = $menuGroups;
 	}
 	
-	public function flush() {
-		if ($this->startLaunchPadLoaded) {
-			$this->scsd->rawStartLaunchPadId($this->startLaunchPad->getId());
-		}
+// 	public function flush() {
+// 		if ($this->startLaunchPadLoaded) {
+// 			$this->scsd->rawStartLaunchPadId($this->startLaunchPad->getId());
+// 		}
 		
-		$menuGroupExtractions = array();
-		foreach ($this->menuGroups as $menuGroup) {
-			$menuGroupExtraction = new MenuGroupExtraction($menuGroup->getLabel());
-			foreach ($menuGroup->getLaunchPads() as $launchPad) {
-				$menuGroupExtraction->addLaunchPadId($launchPad->getId(), 
-						$launchPad->getLabelByLaunchPadId($launchPad->getId()));
-			}
+// 		$menuGroupExtractions = array();
+// 		foreach ($this->menuGroups as $menuGroup) {
+// 			$menuGroupExtraction = new MenuGroupExtraction($menuGroup->getLabel());
+// 			foreach ($menuGroup->getLaunchPads() as $launchPad) {
+// 				$menuGroupExtraction->addLaunchPadId($launchPad->getId(), 
+// 						$launchPad->getLabelByLaunchPadId($launchPad->getId()));
+// 			}
 			
-			$menuGroupExtractions[] = $menuGroupExtraction;
-		}
+// 			$menuGroupExtractions[] = $menuGroupExtraction;
+// 		}
 		
-		$this->scsd->rawMenuGroups($menuGroupExtractions);
-		$this->scsd->flush();
-	}
+// 		$this->scsd->rawMenuGroups($menuGroupExtractions);
+// 		$this->scsd->flush();
+// 	}
 }

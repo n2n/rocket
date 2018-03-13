@@ -28,8 +28,8 @@ use rocket\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\extr\SpecExtractionManager;
-use rocket\core\model\LaunchPad;
-use rocket\core\model\UnknownLaunchPadException;
+use rocket\core\model\launch\LaunchPad;
+use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\extr\CustomTypeExtraction;
 use n2n\util\config\AttributesException;
 use rocket\core\model\Rocket;
@@ -47,8 +47,9 @@ use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
 use n2n\util\cache\CorruptedCacheStoreException;
-use rocket\ei\util\model\Eiu;
 use rocket\ei\component\EiSetup;
+use rocket\custom\CustomLaunchPad;
+use rocket\ei\EiLaunchPad;
 
 class Spec {	
 	private $specExtractionManager;

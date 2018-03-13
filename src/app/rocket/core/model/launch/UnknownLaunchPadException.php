@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\core\model;
+namespace rocket\core\model\launch;
 
 use n2n\util\ex\DocumentableRuntimeException;
 

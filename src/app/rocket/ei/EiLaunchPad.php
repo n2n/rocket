@@ -19,9 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec;
+namespace rocket\ei;
 
-use rocket\core\model\LaunchPad;
+use rocket\core\model\launch\LaunchPad;
 use rocket\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerContext;
@@ -29,12 +29,11 @@ use n2n\web\http\controller\Controller;
 use rocket\ei\manage\ManageState;
 use n2n\reflection\CastUtils;
 use rocket\core\model\Rocket;
-use rocket\ei\EiTypeController;
 use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;
 use n2n\util\uri\Path;
 use rocket\ei\manage\veto\VetoableRemoveQueue;
-use rocket\core\model\TransactionApproveAttempt;
+use rocket\core\model\launch\TransactionApproveAttempt;
 
 class EiLaunchPad implements LaunchPad {
 	private $id;
@@ -48,7 +47,7 @@ class EiLaunchPad implements LaunchPad {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\LaunchPad::getId()
+	 * @see \rocket\core\model\launch\LaunchPad::getId()
 	 */
 	public function getId(): string {
 		return $this->id;
@@ -70,7 +69,7 @@ class EiLaunchPad implements LaunchPad {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\LaunchPad::determinePathExt($n2nContext)
+	 * @see \rocket\core\model\launch\LaunchPad::determinePathExt($n2nContext)
 	 */
 	public function determinePathExt(N2nContext $n2nContext) {
 		$overviewEiCommand = $this->eiMask->getEiCommandCollection()
@@ -96,7 +95,7 @@ class EiLaunchPad implements LaunchPad {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
+	 * @see \rocket\core\model\launch\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
 	 */
 	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
 		$manageState = $n2nContext->lookup(ManageState::class);

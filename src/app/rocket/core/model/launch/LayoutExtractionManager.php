@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\core\model;
+namespace rocket\core\model\launch;
 
 use n2n\util\config\Attributes;
 use n2n\util\config\source\WritableConfigSource;
@@ -28,7 +28,7 @@ use n2n\reflection\ArgUtils;
 use n2n\util\config\AttributesException;
 use n2n\util\config\InvalidConfigurationException;
 
-class LayoutConfigSourceDecorator {
+class LayoutExtractionManager {
 	const START_MENU_ITEM_ID_KEY = 'startLaunchPadId';
 	const MENU_GROUPS_KEY = 'menuGroups';
 	
@@ -82,7 +82,7 @@ class LayoutConfigSourceDecorator {
 		foreach ($menuGroupsRawData as $label => $menuGroupRawData) {
 			$menuGroupExtraction = new MenuGroupExtraction($label);
 			foreach ($menuGroupRawData as $launchPadId => $label) {
-				$menuGroupExtraction->addLaunchPadId($launchPadId, $label);
+				$menuGroupExtraction->addLaunchPad($launchPadId, $label);
 			}
 			$menuGroupExtractions[] = $menuGroupExtraction;
 		}
@@ -103,35 +103,5 @@ class LayoutConfigSourceDecorator {
 		}
 		
 		$this->attributes->set(self::MENU_GROUPS_KEY, $menuGroupsRawData);
-	}
-}
-
-class MenuGroupExtraction {
-	private $label;
-	private $launchPadIds = array();
-	
-	public function __construct(string $label) {
-		$this->label = $label;
-	}
-	
-	public function setLabel(string $label) {
-		$this->label = $label;
-	}
-	
-	public function getLabel(): string {
-		return $this->label;
-	}
-	
-	public function addLaunchPadId(string $launchPadId, string $label = null) {
-		$this->launchPadIds[$launchPadId] = $label;
-	}
-	
-	public function setLaunchPadIds(array $launchPadIds) {
-		ArgUtils::valArray($launchPadIds, 'string', true);
-		$this->launchPadIds = $launchPadIds;	
-	}
-	
-	public function getLaunchPadIds(): array {
-		return $this->launchPadIds;
 	}
 }

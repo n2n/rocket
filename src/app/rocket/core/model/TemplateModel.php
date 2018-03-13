@@ -24,6 +24,7 @@ namespace rocket\core\model;
 use rocket\user\model\LoginContext;
 use n2n\context\Lookupable;
 use n2n\core\container\N2nContext;
+use rocket\core\model\launch\LaunchPad;
 
 class TemplateModel implements Lookupable {
 	private $currentUser;
@@ -65,7 +66,7 @@ class TemplateModel implements Lookupable {
 		$accessibleLaunchPadIds = $this->getAccesableLaunchPadIds();
 		$this->navArray = array();
 		
-		foreach ($rocket->getLayoutManager()->getMenuGroups() as $menuGroup) {
+		foreach ($rocket->getLayout()->getMenuGroups() as $menuGroup) {
 			$launchPads = $menuGroup->getLaunchPads();
 			
 			foreach ($launchPads as $key => $launchPad) {

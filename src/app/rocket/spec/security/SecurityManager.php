@@ -22,7 +22,7 @@
 namespace rocket\spec\security;
 
 use rocket\ei\security\EiPermissionManager;
-use rocket\core\model\LaunchPad;
+use rocket\core\model\launch\LaunchPad;
 
 interface SecurityManager {
 	

@@ -35,7 +35,7 @@ use rocket\core\model\Rocket;
 use n2n\core\container\PdoPool;
 use rocket\user\controller\RocketUserGroupController;
 use n2n\web\http\Response;
-use rocket\core\model\UnknownLaunchPadException ;
+use rocket\core\model\launch\UnknownLaunchPadException ;
 use n2n\core\config\N2nLocaleConfig;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\impl\ScrBaseController;

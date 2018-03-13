@@ -23,6 +23,7 @@ namespace rocket\core\model;
 
 use n2n\context\RequestScoped;
 use n2n\util\col\GenericArrayObject;
+use rocket\core\model\launch\LaunchPad;
 
 class RocketState implements RequestScoped {
 	private $breadcrumbs = array();

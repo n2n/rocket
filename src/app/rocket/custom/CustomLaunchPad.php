@@ -19,14 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec;
+namespace rocket\custom;
 
-use rocket\core\model\LaunchPad;
 use n2n\core\container\N2nContext;
-use n2n\web\http\controller\ControllerContext;
 use n2n\web\http\controller\Controller;
-use rocket\core\model\TransactionApproveAttempt;
-use rocket\custom\CustomType;
+use n2n\web\http\controller\ControllerContext;
+use rocket\core\model\launch\LaunchPad;
+use rocket\core\model\launch\TransactionApproveAttempt;
 
 class CustomLaunchPad implements LaunchPad {
 	private $id;
@@ -40,7 +39,7 @@ class CustomLaunchPad implements LaunchPad {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\LaunchPad::getId()
+	 * @see \rocket\core\model\launch\LaunchPad::getId()
 	 */
 	public function getId(): string {
 		return $this->id;
@@ -59,7 +58,7 @@ class CustomLaunchPad implements LaunchPad {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\LaunchPad::determinePathExt($n2nContext)
+	 * @see \rocket\core\model\launch\LaunchPad::determinePathExt($n2nContext)
 	 */
 	public function determinePathExt(N2nContext $n2nContext) {
 		return null;
@@ -67,7 +66,7 @@ class CustomLaunchPad implements LaunchPad {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\core\model\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
+	 * @see \rocket\core\model\launch\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
 	 */
 	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
 		return $n2nContext->lookup($this->customSpec->getControllerLookupId());

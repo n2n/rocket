@@ -26,7 +26,7 @@ use rocket\spec\UnknownTypeException;
 use rocket\spec\source\ModularConfigSource;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\InvalidEiMaskConfigurationException;
-use rocket\core\model\UnknownLaunchPadException;
+use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\TypePath;
 
 /**

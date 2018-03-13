@@ -29,7 +29,7 @@ use n2n\impl\web\dispatch\map\val\ValNotEmpty;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\map\val\ValArrayKeys;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\core\model\LayoutManager;
+use rocket\core\model\Layout;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\l10n\DynamicTextCollection;
@@ -46,7 +46,7 @@ class RocketUserGroupForm implements Dispatchable {
 	private $launchPadRestrictionEnabled = false;
 	private $accessibleLaunchPadIds = array();
 	
-	public function __construct(RocketUserGroup $userGroup, LayoutManager $layoutManager, Spec $spec, N2nContext $n2nContext) {
+	public function __construct(RocketUserGroup $userGroup, Layout $layoutManager, Spec $spec, N2nContext $n2nContext) {
 		$this->spec = $spec;
 		$this->layoutManager = $layoutManager;
 		$this->userGroup = $userGroup;

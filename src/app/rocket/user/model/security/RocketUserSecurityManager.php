@@ -26,7 +26,7 @@ use rocket\spec\security\SecurityManager;
 use rocket\ei\security\EiPermissionManager;
 use rocket\user\bo\RocketUser;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\core\model\LaunchPad;
+use rocket\core\model\launch\LaunchPad;
 
 class RocketUserSecurityManager implements SecurityManager {
 	private $rocketUser;

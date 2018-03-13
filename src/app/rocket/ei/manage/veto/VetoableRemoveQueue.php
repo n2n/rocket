@@ -29,7 +29,7 @@ use rocket\spec\Spec;
 use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\manage\LiveEiObject;
-use rocket\core\model\TransactionApproveAttempt;
+use rocket\core\model\launch\TransactionApproveAttempt;
 use rocket\ei\manage\draft\DraftManager;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\core\container\N2nContext;

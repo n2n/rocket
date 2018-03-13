@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\core\model;
+namespace rocket\core\model\launch;
 
 class MenuGroup {
 	private $label;
@@ -30,31 +30,50 @@ class MenuGroup {
 		$this->label = $label;
 	}
 	
-	public function getLabel(): string {
+	/**
+	 * @return string
+	 */
+	public function getLabel() {
 		return $this->label;
 	}
 	
 	/**
 	 * @return LaunchPad[] 
 	 */
-	public function getLaunchPads(): array {
+	public function getLaunchPads() {
 		return $this->launchPads;
 	}
 	
+	/**
+	 * @param LaunchPad $launchPad
+	 * @param string $label
+	 */
 	public function addLaunchPad(LaunchPad $launchPad, string $label = null) {
 		$this->launchPads[$launchPad->getId()] = $launchPad;
 		$this->labels[$launchPad->getId()] = $label;
 	}
 	
-	public function containsLaunchPadId($id): bool {
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function containsLaunchPadId(string $id) {
 		return isset($this->launchPads[$id]);
 	}
 	
-	public function removeLaunchPadById($id) {
+	/**
+	 * @param string $id
+	 */
+	public function removeLaunchPadById(string $id) {
 		unset($this->launchPads[$id]);
 	}
 	
-	public function getLaunchPadById($id): LaunchPad {
+	/**
+	 * @param string $id
+	 * @throws UnknownLaunchPadException
+	 * @return LaunchPad
+	 */
+	public function getLaunchPadById(string $id) {
 		if (isset($this->launchPads[$id])) {
 			return $this->launchPads[$id];
 		}

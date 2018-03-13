@@ -30,6 +30,8 @@ use n2n\core\container\N2nContext;
 use rocket\spec\source\N2nContextRocketConfigSource;
 use rocket\ei\manage\draft\DraftManager;
 use rocket\spec\extr\SpecExtractionManager;
+use rocket\core\model\launch\LayoutExtractionManager;
+use rocket\core\model\launch\Layout;
 
 class Rocket implements RequestScoped {
 	const VERSION = '2.0.0-alpha';
@@ -60,12 +62,15 @@ class Rocket implements RequestScoped {
 		return $this->rocketConfigSource;
 	}
 	
-	public function getLayoutManager(): LayoutManager {
+	/**
+	 * @return Layout
+	 */
+	public function getLayout() {
 		if ($this->layoutManager === null) {
 			$rocketConfigSource = $this->getRocketConfigSource();
-			$lcsd = new LayoutConfigSourceDecorator($rocketConfigSource->getLayoutConfigSource());
+			$lcsd = new LayoutExtractionManager($rocketConfigSource->getLayoutConfigSource());
 			$lcsd->load();
-			$this->layoutManager = new LayoutManager($lcsd, $this->getSpec());
+			$this->layoutManager = new Layout($lcsd, $this->getSpec());
 		}
 		
 		return $this->layoutManager;

@@ -64,7 +64,7 @@ class RocketUserGroupController extends ControllerAdapter {
 	public function doAdd(Rocket $rocket, MessageContainer $messageContainer) {
 		$this->beginTransaction();
 		
-		$userGroupForm = new RocketUserGroupForm(new RocketUserGroup(), $rocket->getLayoutManager(), $rocket->getSpec(), $this->getN2nContext());
+		$userGroupForm = new RocketUserGroupForm(new RocketUserGroup(), $rocket->getLayout(), $rocket->getSpec(), $this->getN2nContext());
 		if ($this->dispatch($userGroupForm, 'save')) {
 			$this->userDao->saveRocketUserGroup($userGroupForm->getRocketUserGroup());
 			$this->commit();
@@ -88,7 +88,7 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$userGroupForm = new RocketUserGroupForm($userGroup, $rocket->getLayoutManager(), $rocket->getSpec(), 
+		$userGroupForm = new RocketUserGroupForm($userGroup, $rocket->getLayout(), $rocket->getSpec(), 
 				$this->getN2nContext());
 		if ($this->dispatch($userGroupForm, 'save')) {
 			$this->commit();
