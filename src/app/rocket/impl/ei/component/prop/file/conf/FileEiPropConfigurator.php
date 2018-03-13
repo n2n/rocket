@@ -101,7 +101,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 			}
 			
 			$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp, $namingEiPropPath);
-			$this->fileEiProp->getEiMask()->getSupremeEiEngine()->getEiCommandCollection()
+			$this->fileEiProp->getEiMask()->getEiCommandCollection()
 					->add($multiUploadEiCommand);
 			$this->fileEiProp->setMultiUploadEiCommand($multiUploadEiCommand);
 		}
