@@ -115,7 +115,7 @@ namespace Rocket.Impl.Translation {
 			}
 		}
 		
-		private checkLoadJobs() {
+		checkLoadJobs() {
 			let lje = new LoadJobExecuter();
 			for (let translatable of this.translatables) {
 				for (let lj of translatable.loadJobs) {
@@ -145,7 +145,10 @@ namespace Rocket.Impl.Translation {
 			}
 			
 			this.updateStatus();
+			this.checkLoadJobs();
 			this.changing = false;
+			
+			console.log("menu changed");
 		}
 
 		static from(jqElem: JQuery): ViewMenu {

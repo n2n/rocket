@@ -142,7 +142,7 @@ class ToOneMag extends MagAdapter {
 		
 		if ($this->targetRelationEntry === null) {
 			if (!$toOneForm->isSelectionModeEnabled() && $this->mandatory
-					&& !$this->targetEiuFrame->getEiType()->hasSubEiTypes()) {
+					&& !$this->targetEiuFrame->getContextEiType()->hasSubEiTypes()) {
 				$toOneForm->setEiEntry($this->targetEiuFrame->newEntry($this->draftMode)->getEiEntry());
 				$toOneForm->setNewMappingFormAvailable(true);
 			}

@@ -31,7 +31,7 @@ class TranslationCopyController extends ControllerAdapter {
 			$eiuEntry = $eiuCtrl->lookupEntry((string) $pid);
 		} else {
 			$eiuEntry = $eiuCtrl->frame()->newEntry(false);
-			$eiuEntry->getEntityObj()->setN2nLocale($toN2nLocale);
+			$eiuEntry->getEntityObj()->setN2nLocale($n2nLocale);
 		}
 		
 		foreach ($guiIdPaths as $guiIdPath) {

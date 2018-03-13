@@ -6935,7 +6935,7 @@ var Rocket;
                         return [];
                     let loadJobs = [];
                     for (let content of this.contents) {
-                        if (content.loaded || !content.visible || !content.active
+                        if (content.loaded || content.loading || !content.visible || !content.active
                             || !this.loadUrlDefs[content.localeId]) {
                             continue;
                         }
@@ -6954,7 +6954,7 @@ var Rocket;
                         if (!localeId || this._contents[localeId])
                             return;
                         let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-                        tc.drawCopyControl(this.copyUrlDefs);
+                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiIdPath);
                     });
                 }
                 static test(elemJq) {
@@ -7067,15 +7067,15 @@ var Rocket;
                     }
                     this.elemJq.addClass("rocket-inactive");
                 }
-                drawCopyControl(urlDefs) {
-                    for (let localeId in urlDefs) {
+                drawCopyControl(copyUrlDefs, guiIdPath) {
+                    for (let localeId in copyUrlDefs) {
                         if (localeId == this.localeId)
                             continue;
                         if (!this.copyControl) {
-                            this.copyControl = new CopyControl(this);
+                            this.copyControl = new CopyControl(this, guiIdPath);
                             this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
                         }
-                        this.copyControl.addUrlDef(urlDefs[localeId]);
+                        this.copyControl.addUrlDef(copyUrlDefs[localeId]);
                     }
                 }
                 get loading() {
@@ -7105,8 +7105,9 @@ var Rocket;
             }
             Translation.TranslatedContent = TranslatedContent;
             class CopyControl {
-                constructor(translatedContent) {
+                constructor(translatedContent, guiIdPath) {
                     this.translatedContent = translatedContent;
+                    this.guiIdPath = guiIdPath;
                 }
                 draw(tooltip) {
                     this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
@@ -7138,6 +7139,15 @@ var Rocket;
                     });
                 }
                 copy(url) {
+                    if (this.translatedContent.loading)
+                        return;
+                    let lje = new Translation.LoadJobExecuter();
+                    lje.add({
+                        content: this.translatedContent,
+                        guiIdPath: this.guiIdPath,
+                        url: url
+                    });
+                    lje.exec();
                 }
                 replace(snippet) {
                 }
@@ -7558,7 +7568,9 @@ var Rocket;
                         translatable.visibleLocaleIds = visiableLocaleIds;
                     }
                     this.updateStatus();
+                    this.checkLoadJobs();
                     this.changing = false;
+                    console.log("menu changed");
                 }
                 static from(jqElem) {
                     let vm = jqElem.data("rocketImplViewMenu");

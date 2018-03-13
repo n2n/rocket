@@ -80,7 +80,7 @@ namespace Rocket.Impl.Translation {
 			
 			let loadJobs: LoadJob[] = [];
 			for (let content of this.contents) {
-				if (content.loaded || !content.visible || !content.active
+				if (content.loaded || content.loading || !content.visible || !content.active
 						|| !this.loadUrlDefs[content.localeId]) {
 					continue;
 				}
@@ -101,7 +101,7 @@ namespace Rocket.Impl.Translation {
 				if (!localeId || this._contents[localeId]) return;
 
 				let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-				tc.drawCopyControl(this.copyUrlDefs);
+				tc.drawCopyControl(this.copyUrlDefs, this.srcGuiIdPath);
 			});
 		}
 
@@ -257,16 +257,16 @@ namespace Rocket.Impl.Translation {
 
 		private copyControl: CopyControl;
 
-		drawCopyControl(urlDefs: { [localeId: string]: UrlDef }) {
-			for (let localeId in urlDefs) {
+		drawCopyControl(copyUrlDefs: { [localeId: string]: UrlDef }, guiIdPath: string) {
+			for (let localeId in copyUrlDefs) {
 				if (localeId == this.localeId) continue;
 
 				if (!this.copyControl) {
-					this.copyControl = new CopyControl(this);
+					this.copyControl = new CopyControl(this, guiIdPath);
 					this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
 				}
 
-				this.copyControl.addUrlDef(urlDefs[localeId]);
+				this.copyControl.addUrlDef(copyUrlDefs[localeId]);
 			}
 		}
 		
@@ -308,7 +308,7 @@ namespace Rocket.Impl.Translation {
 		private menuUlJq: JQuery;
 		private toggler: Display.Toggler;
 
-		constructor(private translatedContent: TranslatedContent) {
+		constructor(private translatedContent: TranslatedContent, private guiIdPath: string) {
 
 		}
 
@@ -354,13 +354,17 @@ namespace Rocket.Impl.Translation {
 
 
 		private copy(url: Jhtml.Url) {
-//			if (this.loaderJq) return;
-//
-//			this.loading = true;
-//
-//			Jhtml.lookupModel(url).then((result) => {
-//				this.replace(result.model.snippet);
-//			});
+			if (this.translatedContent.loading) return;
+			
+			let lje = new LoadJobExecuter();
+
+			lje.add({
+				content: this.translatedContent,
+				guiIdPath: this.guiIdPath,
+				url: url
+			});
+			
+			lje.exec();
 		}
 
 		private replace(snippet: Jhtml.Snippet) {
