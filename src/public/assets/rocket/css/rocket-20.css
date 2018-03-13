@@ -3920,6 +3920,23 @@ body {
   margin-top: 10rem;
 }
 
+.rocket-load-blocker {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: #F7F5F5;
+}
+
+.rocket-load-blocker > .rocket-loading {
+  width: 25px;
+  height: 25px;
+  margin: 2px auto auto;
+  border: solid 5px #DAD7D3;
+  border-top-color: #ed8207;
+}
+
 .rocket-zone-block {
   position: fixed;
   cursor: wait;
@@ -4219,7 +4236,7 @@ body {
 
 .rocket-impl-translatable .rocket-impl-locale-label {
   position: absolute;
-  top: 0.5rem;
+  top: 0.125rem;
   left: -6rem;
   width: 5rem;
   text-align: right;
@@ -4229,6 +4246,7 @@ body {
 
 .rocket-impl-translation {
   position: relative;
+  min-height: 2rem;
 }
 
 :not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {

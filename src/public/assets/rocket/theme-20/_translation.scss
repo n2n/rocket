@@ -123,7 +123,7 @@
 	width: 100%;
 	.rocket-impl-locale-label {
 		position: absolute;
-		top: 0.5rem;
+		top: 0.125rem;
 		left: -6rem;
 		width: 5rem;
 		text-align: right;
@@ -134,6 +134,7 @@
 
 .rocket-impl-translation {
 	position: relative;
+	min-height: 2rem;
 }
 
 // translation in entry
