@@ -81,7 +81,7 @@ class PathPartPurifier {
 		$baseScalarEiProperty = $this->pathPartEiProp->getBaseScalarEiProperty();
 		if ($baseScalarEiProperty === null) {
 			$baseScalarEiProperty = ArrayUtils::first($this->pathPartEiProp
-					->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()->getValues());
+					->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()->getValues());
 		}
 	
 		if ($baseScalarEiProperty !== null) {
