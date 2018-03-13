@@ -78,8 +78,10 @@ class TemplateModel implements Lookupable {
 			
 			if (empty($launchPads)) continue;
 			
+			$open = (null !== $this->activeLaunchPadId) ? 
+					$menuGroup->containsLaunchPadId($this->activeLaunchPadId) : false;
 			$this->navArray[] = array('menuGroup' => $menuGroup,
-					'open' => $menuGroup->containsLaunchPadId($this->activeLaunchPadId),
+					'open' => $open,
 					'launchPads' => $launchPads);
 		}
 	}

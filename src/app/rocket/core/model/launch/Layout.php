@@ -70,6 +70,10 @@ class Layout {
 		$this->startLaunchPad = $startLaunchPad;
 	}
 	
+	/**
+	 * @throws InvalidMenuConfigurationException
+	 * @return MenuGroup[]
+	 */
 	public function getMenuGroups() {
 		if ($this->menuGroups !== null) {
 			return $this->menuGroups;
