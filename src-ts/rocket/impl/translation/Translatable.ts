@@ -160,7 +160,8 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		get loaded() {
-			return this.elemJq.children("input[type=hidden].rocket-impl-unloaded").length == 0;
+			return this.elemJq.children("div").children("div")
+					.children("input[type=hidden].rocket-impl-unloaded").length == 0;
 		}
 
 		get jQuery(): JQuery {
