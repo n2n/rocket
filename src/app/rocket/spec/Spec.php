@@ -481,13 +481,13 @@ class EiSetupQueue {
 			try {
 				$eiConfigurator->setup($eiSetup);
 			} catch (AttributesException $e) {
-				throw $eiSetupProcess->createException(null, $e);
+				throw $eiSetup->createException(null, $e);
 			} catch (\InvalidArgumentException $e) {
-				throw $eiSetupProcess->createException(null, $e);
+				throw $eiSetup->createException(null, $e);
 			}
 		} catch (InvalidConfigurationException $e) {
 			throw new InvalidEiMaskConfigurationException('Failed to setup EiMask ' 
-					. $eiComponent->getEiMask() . '.', 0, $e);
+					. $eiConfigurator->getEiComponent()->getEiMask() . '.', 0, $e);
 		}
 	}
 	
