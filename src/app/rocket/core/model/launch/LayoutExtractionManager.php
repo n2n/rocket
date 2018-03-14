@@ -69,6 +69,9 @@ class LayoutExtractionManager {
 		$this->attributes->setString(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
 	}
 	
+	/**
+	 * @return MenuGroupExtraction[]
+	 */
 	public function extractMenuGroups(): array {
 		$menuGroupsRawData = null;
 		try {
