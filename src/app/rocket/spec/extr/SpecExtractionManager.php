@@ -602,6 +602,7 @@ class SpecExtractionManager {
 	 * @throws IllegalStateException
 	 */
 	public function addLaunchPad(LaunchPadExtraction $launchPadExtraction) {
+		$typePath = $launchPadExtraction->getTypePath();
 		if ($this->containsLaunchPadExtractionTypePath($typePath)) {
 			throw new IllegalStateException('LaunchPadExtraction for Type \'' . $typePath . '\' already defined.');
 		}

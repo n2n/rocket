@@ -54,7 +54,7 @@ class LayoutExtractionManager {
 	
 	public function extractStartLaunchPadId() {
 		try {
-			return $this->attributes->getString(self::START_MENU_ITEM_ID_KEY);
+			return $this->attributes->getString(self::START_MENU_ITEM_ID_KEY, false, null, true);
 		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		}
@@ -66,11 +66,11 @@ class LayoutExtractionManager {
 	}
 	
 	public function rawStartLaunchPadId(string $startLaunchPadId = null) {
-		$this->attributes->setString(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
+		$this->attributes->set(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
 	}
 	
 	/**
-	 * @return MenuGroupExtraction[]
+	 * @return MenuGroupExtraction []
 	 */
 	public function extractMenuGroups(): array {
 		$menuGroupsRawData = null;
