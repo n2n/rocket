@@ -289,13 +289,13 @@ class EiTypeFactory {
 	 * @param EiTypeExtensionExtraction $eiTypeExtensionExtraction
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 */
-	public function createEiTypeExtension(EiType $eiType, EiTypeExtensionExtraction $eiTypeExtensionExtraction,
+	public function createEiTypeExtension(EiMask $extenedEiMask, EiTypeExtensionExtraction $eiTypeExtensionExtraction,
 			array $eiModificatorExtractions) {
 				
-		$eiMask = new EiMask($eiType);
+		$eiMask = new EiMask($extenedEiMask->getEiType());
 		$eiTypeExtension = new EiTypeExtension($eiTypeExtensionExtraction->getId(),
 				$eiTypeExtensionExtraction->getModuleNamespace(),
-				$eiMask, $eiType->getEiMask());
+				$eiMask, $extenedEiMask);
 		
 		$this->asdf($eiTypeExtensionExtraction->getEiMaskExtraction(), $eiMask, $eiModificatorExtractions);
 		

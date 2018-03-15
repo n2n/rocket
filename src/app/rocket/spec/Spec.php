@@ -239,23 +239,31 @@ class Spec {
 			$this->launchPads[(string) $launchPadExtraction->getTypePath()] 
 					= $this->createEiLaunchPad($typePath, $eiType->getEiMask(),
 							$launchPadExtraction->getLabel());
-			
 		}
 		
-		foreach ($this->specExtractionManager->getEiTypeExtensionExtractionsByExtendedEiTypePath($typePath)
+		$this->assembleEiTypeExtensions($eiType->getEiMask(), $typePath);
+		
+		return $eiType;
+	}
+	
+	private function assembleEiTypeExtensions(EiMask $extendedEiMask, TypePath $extenedTypePath) {
+		$factory = new EiTypeFactory($this->entityModelManager, $this->getEiSetupQueue());
+		$eiType = $extendedEiMask->getEiType();
+		
+		foreach ($this->specExtractionManager->getEiTypeExtensionExtractionsByExtendedEiTypePath($extenedTypePath)
 				as $eiTypeExtensionExtraction) {
 			$typePath = new TypePath($eiType->getId(), $eiTypeExtensionExtraction->getId());
 			$eiModificatorExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypePath($typePath);
-			$eiTypeExtension = $factory->createEiTypeExtension($eiType, $eiTypeExtensionExtraction, $eiModificatorExtractions);
+			$eiTypeExtension = $factory->createEiTypeExtension($extendedEiMask, $eiTypeExtensionExtraction, $eiModificatorExtractions);
 			$eiType->getEiTypeExtensionCollection()->add($eiTypeExtension);
 			
 			if ($this->specExtractionManager->containsLaunchPadExtractionTypePath($typePath)) {
 				$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
 				$this->createEiLaunchPad($typePath, $eiTypeExtension->getEiMask(), $launchPadExtraction->getLabel());
 			}
+			
+			$this->assembleEiTypeExtensions($eiTypeExtension->getEiMask(), $typePath);
 		}
-		
-		return $eiType;
 	}
 	
 	private function createCustomTypeFromExtr(CustomTypeExtraction $customTypeExtraction) {
