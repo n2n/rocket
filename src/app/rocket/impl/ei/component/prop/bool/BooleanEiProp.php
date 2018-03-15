@@ -157,6 +157,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		}
 		
 		$enablerMag = new TogglerMag($this->getLabelLstr(), true);
+		
 		$that = $this;
 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$onMagWrappers = array();

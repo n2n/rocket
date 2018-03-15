@@ -436,6 +436,15 @@ class EiMask {
 		return new CommonEiGuiViewFactory($eiGui, $this->eiEngine->getGuiDefinition(), $displayStructure);
 	}
 	
+	public function getSupremeEiMask() {
+		if (!$this->eiType->hasSuperEiType()) {
+			return $this;
+		}
+		
+		return $this->determineEiMask($this->eiType->getSupremeEiType());
+	}
+	
+	
 	public function getSubEiMaskIds() {
 		return $this->subEiMaskIds;
 	}
