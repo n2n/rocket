@@ -150,7 +150,7 @@ class EiEngine {
 	}
 	
 	public function createEiEntryCopy(EiFrame $eiFrame, EiObject $eiObject, EiEntry $from) {
-		$mappingFactory = new EiEntryFactory($this->eiMask->eiPropCollection, 
+		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
 	}
