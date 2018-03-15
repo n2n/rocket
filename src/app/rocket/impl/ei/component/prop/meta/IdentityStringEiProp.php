@@ -19,52 +19,30 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\extr;
+namespace rocket\impl\ei\component\prop\meta;
 
-class EiPropExtraction extends EiComponentExtraction {
-	private $label;
-	private $objectPropertyName;
-	private $entityPropertyName;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\ei\util\model\Eiu;
+use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
+class IdentityStringEiProp extends DisplayableEiPropAdapter {
+	
 	/**
-	 * @return string|null
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function getLabel() {
-		return $this->label;
+	public function createEiPropConfigurator(): EiPropConfigurator {
+		$this->getDisplaySettings()->setAddModeDefaultDisplayed(false);
+		$this->getDisplaySettings()->setEditModeDefaultDisplayed(false);
+		return parent::createEiPropConfigurator();
 	}
-
+	
 	/**
-	 * @param string|null $label
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
 	 */
-	public function setLabel(?string $label) {
-		$this->label = $label;
-	}
-
-	/**
-	 * @return string|null
-	 */
-	public function getObjectPropertyName() {
-		return $this->objectPropertyName;
-	}
-
-	/**
-	 * @param string $propertyName
-	 */
-	public function setObjectPropertyName(?string $propertyName) {
-		$this->objectPropertyName = $propertyName;
-	}
-
-	/**
-	 * @return string|null
-	 */
-	public function getEntityPropertyName() {
-		return $this->entityPropertyName;
-	}
-
-	/**
-	 * @param string|null $entityPropertyName
-	 */
-	public function setEntityPropertyName(?string $entityPropertyName) {
-		$this->entityPropertyName = $entityPropertyName;
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+		return $eiu->entry()->createIdentityString();
 	}
 }

@@ -210,7 +210,7 @@ class SpecExtractor {
 	private function createEiPropExtraction($id, Attributes $attributes)  {
 		$extraction = new EiPropExtraction();
 		$extraction->setId($id);
-		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY));
+		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY, false, null, true));
 		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		$extraction->setEntityPropertyName($attributes->getString(RawDef::EI_FIELD_ENTITY_PROPERTY_KEY, false, null, true));
