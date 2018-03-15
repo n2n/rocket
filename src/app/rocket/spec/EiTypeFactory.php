@@ -152,6 +152,8 @@ class EiTypeFactory {
 						$this->createEiModificatorException($eiModificatorExtraction->getId(), $e));
 			}
 		}
+		
+		$eiMask->setDisplayScheme($eiMaskExtraction->getDisplayScheme());
 	}
 	
 	/**

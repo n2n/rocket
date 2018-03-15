@@ -38,44 +38,73 @@ class DisplayScheme {
 	private $partialControlOrder;
 	private $overallControlOrder;
 	private $entryControlOrder;
-	
 
+	/**
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 */
 	public function getOverviewDisplayStructure() {
 		return $this->overviewDisplayStructure;
 	}
 	
+	/**
+	 * @param DisplayStructure|null $overviewDisplayStructure
+	 */
 	public function setOverviewDisplayStructure(DisplayStructure $overviewDisplayStructure = null) {
 		$this->overviewDisplayStructure = $overviewDisplayStructure;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 */
 	public function getBulkyDisplayStructure() {
 		return $this->bulkyDisplayStructure;
 	}
 	
+	/**
+	 * @param DisplayStructure|null $bulkyDisplayStructure
+	 */
 	public function setBulkyDisplayStructure(DisplayStructure $bulkyDisplayStructure = null) {
 		$this->bulkyDisplayStructure = $bulkyDisplayStructure;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 */
 	public function getDetailDisplayStructure() {
 		return $this->detailDisplayStructure;
 	}
 	
+	/**
+	 * @param DisplayStructure|null $detailDisplayStructure
+	 */
 	public function setDetailDisplayStructure(DisplayStructure $detailDisplayStructure = null) {
 		$this->detailDisplayStructure = $detailDisplayStructure;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 */
 	public function getEditDisplayStructure() {
 		return $this->editDisplayStructure;
 	}
 	
+	/**
+	 * @param DisplayStructure|null $editDisplayStructure
+	 */
 	public function setEditDisplayStructure(DisplayStructure $editDisplayStructure = null) {
 		$this->editDisplayStructure = $editDisplayStructure;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 */
 	public function getAddDisplayStructure() {
 		return $this->addDisplayStructure;
 	}
 	
+	/**
+	 * @param DisplayStructure|null $addDisplayStructure
+	 */
 	public function setAddDisplayStructure(DisplayStructure $addDisplayStructure = null) {
 		$this->addDisplayStructure = $addDisplayStructure;
 	}
@@ -84,37 +113,48 @@ class DisplayScheme {
 // 	const BUTTON_ID_OVERALL_SEPARATOR = '?OVERALL?';
 // 	const BUTTON_ID_ENTRY_SEPARATOR = '?ENTRY?';
 	
+	
 	/**
-	 * @param array $controls
-	 * @param array $order
-	 * @return array
+	 * @return \rocket\ei\mask\model\ControlOrder|null
 	 */
-	
-	
 	public function getPartialControlOrder() {
 		return $this->partialControlOrder;
 	}
 	
+	/**
+	 * @param ControlOrder|null $partialControlOrder
+	 */
 	public function setPartialControlOrder(ControlOrder $partialControlOrder = null) {
 		$this->partialControlOrder = $partialControlOrder;
 	}
 	
+	/**
+	 * @return \rocket\ei\mask\model\ControlOrder|null
+	 */
 	public function getOverallControlOrder() {
 		return $this->overallControlOrder;
 	}
 	
+	/**
+	 * @param ControlOrder|null $overallControlOrder
+	 */
 	public function setOverallControlOrder(ControlOrder $overallControlOrder = null) {
 		$this->overallControlOrder = $overallControlOrder;
 	}
 	
+	/**
+	 * @return \rocket\ei\mask\model\ControlOrder|null
+	 */
 	public function getEntryControlOrder() {
 		return $this->entryControlOrder;
 	}
 	
+	/**
+	 * @param ControlOrder|null $entryControlOrder
+	 */
 	public function setEntryControlOrder(ControlOrder $entryControlOrder = null) {
 		$this->entryControlOrder = $entryControlOrder;
 	}
-	
 	
 	/**
 	 * @param N2nLocale $n2nLocale
