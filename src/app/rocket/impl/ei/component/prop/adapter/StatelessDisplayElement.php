@@ -60,8 +60,8 @@ class StatelessDisplayElement implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
-	public function getDisplayItemType() {
-		return $this->statelessDisplayable->getDisplayItemType();
+	public function getDisplayItemType(): ?string {
+		return $this->statelessDisplayable->getDisplayItemType($this->eiu);
 	}
 	
 	/**

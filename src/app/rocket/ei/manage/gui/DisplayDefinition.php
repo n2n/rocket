@@ -31,7 +31,7 @@ class DisplayDefinition {
 	/**
 	 * @return string
 	 */
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		return $this->displayItemType;
 	}
 	

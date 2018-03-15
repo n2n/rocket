@@ -63,7 +63,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$this->initialize(new SelectEiPropRelation($this, true, false));
 	}
 	
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	

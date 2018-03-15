@@ -212,7 +212,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::getDisplayItemType()
 	 */
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		// TODO Auto-generated method stub
 		
 	}

@@ -28,7 +28,7 @@ class DisplayStructure {
 	private $displayItems = array();
 	
 	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
-		$this->displayItems[] = DisplayItem::createFromGuiIdPath($guiIdPath, $groupType, $label);
+		$this->displayItems[] = DisplayItem::create($guiIdPath, $groupType, $label);
 	}
 	
 	public function addDisplayStructure(DisplayStructure $displayStructure, string $groupType, string $label = null) {

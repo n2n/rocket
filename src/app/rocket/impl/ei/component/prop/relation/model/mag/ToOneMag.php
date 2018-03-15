@@ -60,21 +60,21 @@ class ToOneMag extends MagAdapter {
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
 		$this->targetEiuFrame = new EiuFrame($targetEditEiFrame);
 	
-		$this->updateContainerAttrs(true);
+// 		$this->updateContainerAttrs(true);
 	}
 	
-	private function updateContainerAttrs(bool $group) {
-		if ($group) {
-			$this->setAttrs(array('class' => 'rocket-group'));
-		} else {
-			$this->setAttrs(array());
-		}
-	}
+// 	private function updateContainerAttrs(bool $group) {
+// 		if ($group) {
+// 			$this->setAttrs(array('class' => 'rocket-group'));
+// 		} else {
+// 			$this->setAttrs(array());
+// 		}
+// 	}
 	
 	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
 		$this->selectOverviewToolsUrl = $selectOverviewToolsUrl;
 
-		$this->updateContainerAttrs($selectOverviewToolsUrl === null);
+// 		$this->updateContainerAttrs($selectOverviewToolsUrl === null);
 	}
 	
 	public function getSelectOverviewToolsUrl(): Url {

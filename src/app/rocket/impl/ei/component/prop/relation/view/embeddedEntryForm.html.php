@@ -2,6 +2,7 @@
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\EiHtmlBuilder;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -54,7 +55,7 @@
 						</div>
 						<div>
 							<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-								<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+								<?php $eiHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM)) ?>
 									<?php $eiHtml->fieldContent() ?>
 								<?php $eiHtml->fieldClose() ?>
 							<?php endforeach ?>

@@ -31,7 +31,6 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\util\model\EiuEntry;
 use rocket\ei\manage\gui\Displayable;
 use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\PropertyPath;
@@ -265,7 +264,7 @@ class EiHtmlBuilder {
 	
 	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs, DisplayItem $displayItem = null) {
 		$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray())));
-		$attrs = $this->applyDisplayItemAttr($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
+// 		$attrs = $this->applyDisplayItemAttr($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
 		return $attrs;
 	}
 	
@@ -276,7 +275,6 @@ class EiHtmlBuilder {
 	public function getFieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
-		
 		$guiIdPath = null;
 		if ($displayItem instanceof DisplayItem) {
 			if ($displayItem->hasDisplayStructure()) {
@@ -287,12 +285,12 @@ class EiHtmlBuilder {
 			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
 		} else {
 			$guiIdPath = GuiIdPath::create($displayItem);
+			$attrs = $this->applyDisplayItemAttr(DisplayItem::TYPE_ITEM, (array) $attrs);
 			$displayItem = null;
 		}
-	
+		
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
-		
 		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null);
 			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
@@ -301,16 +299,15 @@ class EiHtmlBuilder {
 		
 		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiIdPath);
 		$magAssembly = $guiFieldAssembly->getMagAssembly();
-	
+		
 		if ($readOnly || $magAssembly === null) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly);
 			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getDisplayable(), $fieldErrorInfo,
 					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
 	
-		
 		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
-	
+		
 		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly, $propertyPath);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
 				$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
@@ -359,7 +356,7 @@ class EiHtmlBuilder {
 		} else {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-editable'), $attrs);
 		}
-	
+		
 		return $attrs;
 	}
 		
@@ -461,6 +458,7 @@ class EiHtmlBuilder {
 			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], 'displayItem');
 			$attrs = $this->applyDisplayItemAttr($displayItem, (array) $attrs);
 		}
+		
 		$this->state->pushGroup($tagName);
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
 	}

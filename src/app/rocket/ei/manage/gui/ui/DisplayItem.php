@@ -25,7 +25,7 @@ class DisplayItem {
 	 * @param GuiIdPath $guiIdPath
 	 * @return DisplayItem
 	 */
-	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
+	public static function create(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);

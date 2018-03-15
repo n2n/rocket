@@ -16,7 +16,7 @@ namespace Rocket.Display {
 		}
 		
 		private valClasses() {
-			if (this.isField() || this.isGroup()) {
+			if (this.isItem() || this.isGroup()) {
 				this.jqElem.removeClass("rocket-structure-element");
 			} else {
 				this.jqElem.addClass("rocket-structure-element");
@@ -41,17 +41,31 @@ namespace Rocket.Display {
 			return this.jqElem.hasClass("rocket-group");
 		}
 		
-		public setField(field: boolean) {
-			if (!field) {
-				this.jqElem.removeClass("rocket-field");
+		public setPanel(panel: boolean) {
+			if (!panel) {
+				this.jqElem.removeClass("rocket-panel");
 			} else {
-				this.jqElem.addClass("rocket-field");
+				this.jqElem.addClass("rocket-panel");
 			}
 			
 			this.valClasses();
 		}
 		
-		public isField(): boolean {
+		public isPanel(): boolean {
+			return this.jqElem.hasClass("rocket-panel");
+		}
+		
+		public setItem(field: boolean) {
+			if (!field) {
+				this.jqElem.removeClass("rocket-item");
+			} else {
+				this.jqElem.addClass("rocket-item");
+			}
+			
+			this.valClasses();
+		}
+		
+		public isItem(): boolean {
 			return this.jqElem.hasClass("rocket-field");
 		}
 		

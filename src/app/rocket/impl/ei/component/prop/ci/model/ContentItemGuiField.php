@@ -73,7 +73,7 @@ class ContentItemGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	

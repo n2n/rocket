@@ -41,7 +41,6 @@ class ToOneEiField extends RwEiField {
 		$this->copyable = $copyable;
 	}
 	
-	
 	protected function validateValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
 	}
@@ -51,7 +50,7 @@ class ToOneEiField extends RwEiField {
 			return RelationEntry::from($targetEiObject);
 		}
 		
-		return null;	
+		return null;
 	}
 	
 	protected function writeValue($targetRelationEntry) {

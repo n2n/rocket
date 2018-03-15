@@ -87,7 +87,7 @@ class TranslationDisplayable implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
 	 */
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		return null;
 	}
 }

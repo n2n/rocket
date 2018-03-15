@@ -88,7 +88,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	protected function getDisplayItemType() {
+	protected function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	

@@ -43,7 +43,7 @@ use rocket\ei\manage\gui\GuiField;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
-	protected function getDisplayItemType() {
+	protected function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	

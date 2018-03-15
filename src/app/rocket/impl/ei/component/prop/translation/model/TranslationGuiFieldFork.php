@@ -259,7 +259,7 @@ class EmptyDisplayable implements Displayable {
 		$this->displayable = $displayable;
 	}
 	
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		return $this->displayable->getDisplayItemType();
 	}
 	

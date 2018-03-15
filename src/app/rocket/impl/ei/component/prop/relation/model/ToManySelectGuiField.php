@@ -50,7 +50,7 @@ class ToManySelectGuiField implements GuiField {
 		return $this->editable === null;
 	}
 	
-	public function getDisplayItemType() {
+	public function getDisplayItemType(): ?string {
 		return null;
 	}
 	
