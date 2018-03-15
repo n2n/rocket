@@ -31,6 +31,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\gui\ViewMode;
 
 class ContentItemGuiField implements GuiField {
 	private $label;
@@ -127,7 +128,7 @@ class ContentItemGuiField implements GuiField {
 			}
 			
 			if ($targetEiEntry->isAccessible()) {
-				$groupedUiComponents[$panelName][] = $targetUtils->newGui(true)
+				$groupedUiComponents[$panelName][] = $targetUtils->newGui(ViewMode::BULKY_READ)
 						->appendNewEntryGui($targetEiEntry)->createView();
 			} else {
 				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
