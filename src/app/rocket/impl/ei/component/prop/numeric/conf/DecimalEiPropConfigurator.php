@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -43,14 +43,14 @@ class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
-		$magCollection->addMag(new NumericMag(self::OPTION_DECIMAL_PLACES_KEY, 
+		$magCollection->addMag(self::OPTION_DECIMAL_PLACES_KEY, new NumericMag(
 				'Positions after decimal point', $lar->getNumeric(self::OPTION_DECIMAL_PLACES_KEY, 0), true, 0));
-		$magCollection->addMag(new StringMag(self::OPTION_PREFIX_KEY, 'Prefix',
+		$magCollection->addMag(self::OPTION_PREFIX_KEY, new StringMag('Prefix',
 				$lar->getString(self::OPTION_PREFIX_KEY, false)));
 		return $magDispatchable;
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 			
 		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiProp);

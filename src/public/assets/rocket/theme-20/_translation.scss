@@ -123,7 +123,7 @@
 	width: 100%;
 	.rocket-impl-locale-label {
 		position: absolute;
-		top: 0.5rem;
+		top: 0.125rem;
 		left: -6rem;
 		width: 5rem;
 		text-align: right;
@@ -134,15 +134,14 @@
 
 .rocket-impl-translation {
 	position: relative;
-	margin-bottom: 1rem;
+	min-height: 2rem;
 }
 
 // translation in entry
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation.rocket-structure-element {
+:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
 	position: relative;
 	display: grid;
 	grid-template-columns:  1fr auto;
-	grid-gap: 1rem 1rem;
 
 	> .rocket-impl-translation-copy-control {
 		grid-column-start: 2;
@@ -152,7 +151,7 @@
 		padding: 0;
 		
 		> .rocket-control {
-			margin: 0;
+			margin: 0 0 1rem;
 		}
 	}
 	
@@ -169,14 +168,13 @@
 				display: block;
 				position: static;
 				width: 100%;
+				max-width: none;
 				float: none;
 				text-align: left;
 				padding: 0.5rem 0;
 				color: $primary;
-				border-bottom: 1px solid $table-border-color;
-				&::after {
-					
-				}
+				border-top: 1px solid $primary;
+				font-weight: bold;
 			}
 			> .rocket-control {
 				margin: 0;
@@ -184,7 +182,7 @@
 		}
 		> .rocket-impl-translation-copy-control {
 			position: absolute;
-			top: 0;
+			top: 0.5rem;
 			right: 0;
 		}
 	}

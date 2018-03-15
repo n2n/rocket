@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\modificator\adapter;
 
-use rocket\spec\ei\component\modificator\EiModificator;
+use rocket\ei\component\modificator\EiModificator;
 use rocket\impl\ei\component\EiComponentAdapter;
-use rocket\spec\ei\manage\gui\GuiDefinition;
-use rocket\spec\ei\manage\gui\EiEntryGui;
-use rocket\spec\ei\manage\draft\DraftDefinition;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\EiEntryGui;
+use rocket\ei\manage\draft\DraftDefinition;
+use rocket\ei\util\model\Eiu;
 
 abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModificator {
 	

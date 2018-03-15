@@ -24,19 +24,19 @@ namespace rocket\impl\ei\component\command\common\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\impl\ScrController;
 use rocket\user\model\LoginContext;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\mask\EiMask;
+use rocket\ei\mask\EiMask;
 use n2n\web\http\ForbiddenException;
-use rocket\spec\ei\EiCommandPath;
+use rocket\ei\EiCommandPath;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
-use rocket\spec\ei\security\InaccessibleControlException;
-use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
+use rocket\ei\security\InaccessibleControlException;
+use rocket\spec\UnknownTypeException;
+use rocket\ei\UnknownEiTypeExtensionException;
 
 class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrController {
 	private $manageState;
@@ -61,12 +61,12 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 	public function doEis($eiTypeId, array $delegateCmds = array(), OverviewJhtmlController $overviewJhtmlController) {
 		$eiType = null;
 		try {
-			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
-		} catch (UnknownSpecException $e) {
+			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException();
 		}
 
-		$this->del($eiType->getEiMaskCollection()->getOrCreateDefault(), $overviewJhtmlController);
+		$this->del($eiType->getEiTypeExtensionCollection()->getOrCreateDefault(), $overviewJhtmlController);
 	}
 
 	public function doEim($eiTypeId, $eiMaskId, array $delegateCmds = array(),
@@ -74,11 +74,11 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 
 		$eiMask = null;
 		try {
-			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
-			$eiMask = $eiType->getEiMaskCollection()->getById($eiMaskId);
-		} catch (UnknownSpecException $e) {
+			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
+			$eiMask = $eiType->getEiTypeExtensionCollection()->getById($eiMaskId);
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
-		} catch (UnknownEiMaskException $e) {
+		} catch (UnknownEiTypeExtensionException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 
@@ -87,7 +87,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 
 	private function del(EiMask $eiMask, OverviewJhtmlController $overviewJhtmlController) {
 		$n2nContext = $this->getN2nContext();
-		$em = $eiMask->getEiEngine()->getEiType()->lookupEntityManager($this->getN2nContext()->getPdoPool());
+		$em = $eiMask->getEiEngine()->getEiMask()->getEiType()->lookupEntityManager($this->getN2nContext()->getPdoPool());
 		$this->manageState->setEntityManager($em);
 		$this->manageState->setDraftManager($n2nContext->lookup(Rocket::class)->getOrCreateDraftManager($em));
 		$this->manageState->setEiPermissionManager($this->loginContext->getSecurityManager()->getEiPermissionManager());
@@ -108,7 +108,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 	public static function buildToolsAjahUrl(ScrRegistry $scrRegistry, EiType $eiType, EiMask $eiMask = null): Url {
 		$contextUrl = $scrRegistry->registerSessionScrController(GlobalOverviewJhtmlController::class);
 		if ($eiMask !== null) {
-			$contextUrl = $contextUrl->extR(array('eim', $eiType->getId(), $eiMask->getId()));
+			$contextUrl = $contextUrl->extR(array('eim', $eiType->getId(), $eiMask->getExtension()->getId()));
 		} else {
 			$contextUrl = $contextUrl->extR(array('eis', $eiType->getId()));
 		}

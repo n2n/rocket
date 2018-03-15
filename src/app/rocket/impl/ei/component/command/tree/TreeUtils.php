@@ -24,16 +24,16 @@
 // use rocket\impl\ei\component\command\tree\field\TreeRightEiProp;
 // use rocket\impl\ei\component\command\tree\field\TreeLeftEiProp;
 // use rocket\impl\ei\component\command\tree\controller\TreeController;
-// use rocket\spec\ei\component\command\EiCommand;
+// use rocket\ei\component\command\EiCommand;
 // use rocket\spec\core\IncompatibleSpecException;
-// use rocket\spec\ei\EiType;
-// use rocket\spec\ei\manage\EiFrame;
+// use rocket\ei\EiType;
+// use rocket\ei\manage\EiFrame;
 
 // class TreeUtils {
 // 	public static function findTreeField(EiType $eiType, &$treeLeftEiProp = null, 
 // 				&$treeRightEiProp = null, &$treeRootIdEiProp = null) {
 
-// 		foreach ($eiType->getEiEngine()->getEiPropCollection()->toArray() as  $eiProp) {
+// 		foreach ($eiType->getEiMask()->getEiPropCollection()->toArray() as  $eiProp) {
 // 			if ($eiProp instanceof TreeLeftEiProp) {
 // 				$treeLeftEiProp = $eiProp;
 // 			} else if ($eiProp instanceof TreeRightEiProp) {
@@ -47,7 +47,7 @@
 // 		$treeLeftEiProp = null;
 // 		$treeRightEiProp = null;
 // 		$treeRootIdEiProp = null;
-// 		foreach ($eiFrame->getContextEiMask()->getEiDef()->getEiPropCollection() as  $eiProp) {
+// 		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiDef()->getEiPropCollection() as  $eiProp) {
 // 			if ($eiProp instanceof TreeLeftEiProp) {
 // 				$treeLeftEiProp = $eiProp;
 // 			} else if ($eiProp instanceof TreeRightEiProp) {

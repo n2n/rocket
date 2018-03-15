@@ -8,6 +8,10 @@
 	}
 }
 
+#rocket-image-resizer {
+	position: relative;
+}
+
 .rocket-image-resizer-size-selector {
 	border: 1px dotted $primary;
 }
@@ -57,8 +61,31 @@
 	margin-right: 0.5em;
 }
 
+.rocket-low-resolution-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 50;
+	text-align: center;
+	> span {
+		display: inline-block;
+		background-color: $danger;
+		color: $white;
+		margin: 0 auto;
+		padding: 0.5rem 2rem;
+	}
+}
+
 .rocket-image-resizer-fixed-ratio {
 	display: inline-block;
+}
+
+.rocket-fixed-ratio-container {
+	text-align: center;
+	padding: 0.5rem;
+	font-weight: bold;
+
 }
 
 // mask
@@ -79,6 +106,12 @@
 	> .rocket-image-version {
 		position: relative;
 		padding: 0.5rem 0;
+		.rocket-simple-commands {
+			position: absolute;
+			top: 0.25rem;
+			right: 0.5rem;
+			padding: 0;
+		}
 		&.rocket-image-ratio:not(:first-child) {
 			border-top: 1px solid $input-border-color;
 		}

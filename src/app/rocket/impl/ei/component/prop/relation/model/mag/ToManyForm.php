@@ -24,23 +24,23 @@ namespace rocket\impl\ei\component\prop\relation\model\mag;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
+use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\util\model\UnknownEntryException;
 
 class ToManyForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('selectedEntryPids'));
 		$ai->p('currentMappingForms', new AnnoDispObjectArray(function (ToManyForm $toManyForm, $key) {
-			return $toManyForm->entryFormFactory->getCurrentMappingForm($key);
+			return $toManyForm->eiuEntryFormFactory->getCurrentMappingForm($key);
 		}));
 		$ai->p('newMappingForms', new AnnoDispObjectArray(function (ToManyForm $toManyForm, $key) {
-			return $toManyForm->entryFormFactory->getOrBuildNewMappingForm($key);
+			return $toManyForm->eiuEntryFormFactory->getOrBuildNewMappingForm($key);
 		}));
 	}
 
@@ -48,7 +48,7 @@ class ToManyForm implements Dispatchable {
 	private $readUtils;
 	private $min;
 	private $max;
-	private $entryFormFactory;
+	private $eiuEntryFormFactory;
 	private $entryLabeler;
 
 	private $selectionModeEnabled = false;
@@ -64,7 +64,7 @@ class ToManyForm implements Dispatchable {
 		$this->readUtils = $readUtils;
 		$this->min = $min;
 		$this->max = $max;
-		$this->entryFormFactory = new ToManyDynMappingFormFactory($editUtils);
+		$this->eiuEntryFormFactory = new ToManyDynMappingFormFactory($editUtils);
 		$this->entryLabeler = new EntryLabeler($readUtils);
 	}
 
@@ -81,11 +81,11 @@ class ToManyForm implements Dispatchable {
 	}
 	
 	public function setDraftMode(bool $draftMode) {
-		$this->entryFormFactory->setDraftMode($draftMode);
+		$this->eiuEntryFormFactory->setDraftMode($draftMode);
 	}
 	
 	public function isDraftMode() {
-		return $this->entryFormFactory->isDraftMode();
+		return $this->eiuEntryFormFactory->isDraftMode();
 	}
 	
 	public function setSelectionModeEnabled(bool $selectionModeEnabled) {
@@ -113,9 +113,9 @@ class ToManyForm implements Dispatchable {
 	}
 	
 	public function addEiEntry(EiEntry $currentEiEntry) {
-		$this->entryFormFactory->addEiEntry($currentEiEntry);
-		$this->currentMappingForms = $this->entryFormFactory->getCurrentMappingForms();
-		$this->newMappingForms = $this->entryFormFactory->getNewMappingForms();
+		$this->eiuEntryFormFactory->addEiEntry($currentEiEntry);
+		$this->currentMappingForms = $this->eiuEntryFormFactory->getCurrentMappingForms();
+		$this->newMappingForms = $this->eiuEntryFormFactory->getNewMappingForms();
 	}
 	
 	public function getCurrentMappingForms() {
@@ -127,25 +127,25 @@ class ToManyForm implements Dispatchable {
 	}
 
 	public function isNewMappingFormAvailable(): bool {
-		return $this->entryFormFactory->isNewMappingFormAvailable();
+		return $this->eiuEntryFormFactory->isNewMappingFormAvailable();
 	}
 
 	public function setNewMappingFormAvailable($newMappingFormAvailable) {
-		$this->entryFormFactory->setNewMappingFormAvailable($newMappingFormAvailable);
+		$this->eiuEntryFormFactory->setNewMappingFormAvailable($newMappingFormAvailable);
 	}
 	
 	/**
 	 * @return array|null
 	 */
 	public function getAllowedNewEiTypeIds() {
-		return $this->entryFormFactory->getAllowedNewEiTypeIds();
+		return $this->eiuEntryFormFactory->getAllowedNewEiTypeIds();
 	}
 	
 	/**
 	 * @param array|null $allowedEiTypeIds
 	 */
 	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
-		$this->entryFormFactory->setAllowedNewEiTypeIds($allowedEiTypeIds);
+		$this->eiuEntryFormFactory->setAllowedNewEiTypeIds($allowedEiTypeIds);
 	}
 
 	public function getNewMappingForms() {

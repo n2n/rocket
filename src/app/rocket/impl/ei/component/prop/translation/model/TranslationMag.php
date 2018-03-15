@@ -24,20 +24,18 @@ namespace rocket\impl\ei\component\prop\translation\model;
 use n2n\reflection\property\AccessProxy;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use n2n\impl\web\dispatch\property\ScalarProperty;
-use rocket\spec\ei\manage\gui\Displayable;
+use rocket\ei\manage\gui\Displayable;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
-use rocket\spec\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
-use n2n\reflection\ArgUtils;
-use n2n\util\uri\Url;
-use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\util\model\EiuEntry;
+use rocket\ei\util\model\EiuEntry;
+use n2n\web\dispatch\map\bind\MappingDefinition;
 
 class TranslationMag extends MagAdapter {
 	private $markClassKey;
@@ -47,17 +45,17 @@ class TranslationMag extends MagAdapter {
 	private $fieldErrorInfos = array();
 	private $eiuEntries = array();
 	/**
-	 * @var Url[]
+	 * @var SrcLoadConfig
 	 */
-	private $copyUrls = array();
+	private $srcLoadConfig;
 
 	public function __construct($label, string $markClassKey) {
-		parent::__construct($label);
+		parent::__construct($label, array());
 		$this->markClassKey = $markClassKey;
 	}
 
 	public function createManagedProperty(AccessProxy $accessProxy): ManagedProperty {
-		return new ScalarProperty($accessProxy, false);
+		return new ScalarProperty($accessProxy, true);
 	}
 
 	public function putDisplayable($n2nLocaleId, Displayable $displayable, FieldErrorInfo $fieldErrorInfo) {
@@ -70,21 +68,29 @@ class TranslationMag extends MagAdapter {
 		$this->magPropertyPaths[$n2nLocaleId] = $magPropertyPath;
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
 		$this->eiuEntries[$n2nLocaleId] = $eiuEntry;
+		$this->value[$n2nLocaleId] = 1;
 	}
 	
-	public function setCopyUrls(array $copyUrls) {
-		ArgUtils::valArray($copyUrls, Url::class);
-		$this->copyUrls = $copyUrls;
+	public function setSrcLoadConfig(SrcLoadConfig $srcLoadConfig) {
+		$this->srcLoadConfig = $srcLoadConfig;
+	}
+	
+	public function setupMappingDefinition(MappingDefinition $md) {
+// 		if (!$md->isDispatched()) return;
+		
+// 		$loadedN2nLocaleIds = $md->getDispatchedValue($this->propertyName);
+// 		foreach ($this->magPropertyPaths as $n2nLocaleId => $magPropertyPath) {
+// 			$md->
+// 		}
 	}
 
-	/* (non-PHPdoc)
-	 * @see \n2n\web\dispatch\mag\Mag::setupBindingDefinition()
-	 */
 	public function setupBindingDefinition(BindingDefinition $bd) {
 		$basePropertyPath = $bd->getPropertyPath()->reduced(1);
 		
 		$that = $this;
 		$bd->closure(function (BindingErrors $be) use ($that, $basePropertyPath, $bd) {
+			$loadedN2nLocaleIds = $bd->getMappingResult()->__get($that->propertyName);
+			
 			foreach ($that->magPropertyPaths as $n2nLocaleId => $magPropertyPath) {
 				$propertyPath = $basePropertyPath->ext(new PropertyPathPart('dispatchables', true, $n2nLocaleId))
 						->ext($magPropertyPath);
@@ -95,6 +101,12 @@ class TranslationMag extends MagAdapter {
 				}
 				
 				$transDispBd = $bd->getBindingTree()->lookup($tPropertyPath);
+				
+				if (isset($loadedN2nLocaleIds[$n2nLocaleId])) {
+					$transDispBd->reset($propertyPath->getLast()->getPropertyName());
+					continue;
+				}
+				
 				$be->addErrors($that->propertyName, $transDispBd->getMappingResult()
 						->filterErrorMessages($propertyPath->getLast(), true));
 			}
@@ -110,18 +122,15 @@ class TranslationMag extends MagAdapter {
 					->ext($magPropertyPath);
 		}
 		
-		$copyUrlDefs = array();
-		foreach ($this->copyUrls as $localeId =>  $copyUrl) {
-			$copyUrlDefs[$localeId] = array(
-					'label' => N2nLocale::create($localeId)->toPrettyId(),
-					'copyUrl' => (string) $copyUrl,
-					'n2nLocaleId' => $localeId);
+		$srcLoadConfig = array();
+		if ($this->srcLoadConfig !== null) {
+			$srcLoadConfig = $this->srcLoadConfig->toAttrs();
 		}
 
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
-				array('propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
+				array('propertyPath' => $propertyPath, 'propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
 						'label' => $this->getLabel($view->getN2nLocale()),
-						'copyUrlDefs' => $copyUrlDefs, 'eiuEntries' => $this->eiuEntries,
+						'srcLoadConfig' => $srcLoadConfig, 'eiuEntries' => $this->eiuEntries,
 						'markClassKey' => $this->markClassKey));
 	}
 }

@@ -21,12 +21,12 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\spec\config\CustomSpec;
+use rocket\custom\CustomType;
 use rocket\spec\security\SecurityManager;
-use rocket\spec\ei\security\EiPermissionManager;
+use rocket\ei\security\EiPermissionManager;
 use rocket\user\bo\RocketUser;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\core\model\MenuItem;
+use rocket\core\model\launch\LaunchPad;
 
 class RocketUserSecurityManager implements SecurityManager {
 	private $rocketUser;
@@ -37,7 +37,7 @@ class RocketUserSecurityManager implements SecurityManager {
 		$this->eiPermissionManager = new RocketUserEiPermissionManager($rocketUser);
 	}
 	
-	public function getCustomSpecAttributes(CustomSpec $customSpec) {
+	public function getCustomTypeAttributes(CustomType $customSpec) {
 		throw new NotYetImplementedException();
 // 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
 // 			foreach ($rocketUserGroup->getCustomGrants() as $customGrant) {
@@ -46,10 +46,10 @@ class RocketUserSecurityManager implements SecurityManager {
 // 		}
 	}
 	
-	public function isMenuItemAccessible(MenuItem $menuItem): bool {
+	public function isLaunchPadAccessible(LaunchPad $launchPad): bool {
 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
-			if (!$rocketUserGroup->isMenuItemAccessRestricted() || 
-					$rocketUserGroup->containsAccessibleMenuItemId($menuItem->getId())) {
+			if (!$rocketUserGroup->isLaunchPadAccessRestricted() || 
+					$rocketUserGroup->containsAccessibleLaunchPadId($launchPad->getId())) {
 				return true;
 			}
 		}

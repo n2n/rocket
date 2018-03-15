@@ -21,35 +21,35 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\ToManyEditable;
-use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\DraftManager;
+use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
+use rocket\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\draft\DraftValueSelection;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\manage\draft\DraftValueSelection;
+use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\ToManySelectGuiField;
-use rocket\spec\ei\manage\LiveEiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\draft\RemoveDraftAction;
-use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\ei\manage\LiveEiObject;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\draft\RemoveDraftAction;
+use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\gui\GuiField;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
-	protected function getDisplayItemType() {
+	protected function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		$targetEntityObjs = null;
@@ -76,7 +76,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		ArgUtils::valArray($value, EiObject::class);
@@ -100,7 +100,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
@@ -127,7 +127,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 				
 			if ($eiPropRelation->isEmbeddedAddActivated($eiFrame)
 					&& $targetEditEiFrame->getEiExecution()->isGranted()) {
-				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl(
+				$toManyEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
 						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}
@@ -137,7 +137,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::createDraftValueSelection($selectDraftStmtBuilder, $dm, $n2nContext)
+	 * @see \rocket\ei\manage\draft\DraftProperty::createDraftValueSelection($selectDraftStmtBuilder, $dm, $n2nContext)
 	 */
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 
 			N2nContext $n2nContext): DraftValueSelection {
@@ -146,15 +146,15 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder($value, $oldValue, $persistDraftStmtBuilder, $persistDraftAction)
+	 * @see \rocket\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder($value, $oldValue, $persistDraftStmtBuilder, $persistDraftAction)
 	 */
-	public function supplyPersistDraftStmtBuilder($value, $oldValue, \rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder $persistDraftStmtBuilder, \rocket\spec\ei\manage\draft\PersistDraftAction $persistDraftAction) {
+	public function supplyPersistDraftStmtBuilder($value, $oldValue, \rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder $persistDraftStmtBuilder, \rocket\ei\manage\draft\PersistDraftAction $persistDraftAction) {
 		throw new NotYetImplementedException();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder($value, $oldValue, $removeDraftAction)
+	 * @see \rocket\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder($value, $oldValue, $removeDraftAction)
 	 */
 	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
 			RemoveDraftAction $removeDraftAction) {
@@ -163,7 +163,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\draft\DraftProperty::writeDraftValue($object, $value)
+	 * @see \rocket\ei\manage\draft\DraftProperty::writeDraftValue($object, $value)
 	 */
 	public function writeDraftValue($object, $value) {
 		throw new NotYetImplementedException();

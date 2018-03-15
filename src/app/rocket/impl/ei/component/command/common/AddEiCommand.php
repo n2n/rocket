@@ -25,17 +25,17 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\command\common\controller\AddController;
-use rocket\spec\ei\component\command\control\OverallControlComponent;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\component\command\control\OverallControlComponent;
+use rocket\ei\manage\control\ControlButton;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\spec\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\manage\control\EntryControlComponent;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\util\model\Eiu;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 
@@ -89,7 +89,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 
 		$options = array();
 		
-		if (null === $this->eiEngine->getEiType()->getNestedSetStrategy()) {
+		if (null === $this->eiMask->getEiType()->getNestedSetStrategy()) {
 			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_new_entry_label');
 		} else {
 			$options[self::CONTROL_ADD_ROOT_BRANCH_KEY] = $dtc->t('ei_impl_add_root_branch_label');
@@ -104,7 +104,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$dtc = $eiu->dtc('rocket');
 		
-		$nestedSet = null !== $this->eiEngine->getEiType()->getNestedSetStrategy();
+		$nestedSet = null !== $this->eiMask->getEiType()->getNestedSetStrategy();
 		
 		$controls = array();
 		

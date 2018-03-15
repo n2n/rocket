@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\mapping\OnWriteMappingListener;
+use rocket\ei\manage\mapping\OnWriteMappingListener;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\spec\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
-use rocket\spec\ei\manage\critmod\sort\SimpleSortConstraint;
+use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
+use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\util\model\Eiu;
 
 class OrderEiModificator extends EiModificatorAdapter {
 	private $eiProp;

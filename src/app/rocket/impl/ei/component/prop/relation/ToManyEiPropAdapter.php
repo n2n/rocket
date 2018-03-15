@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\gui\GuiProp;
-use rocket\spec\ei\component\prop\DraftableEiProp;
-use rocket\spec\ei\manage\draft\DraftProperty;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\component\prop\DraftableEiProp;
+use rocket\ei\manage\draft\DraftProperty;
+use rocket\ei\manage\EiObject;
+use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\ei\manage\gui\GuiPropFork;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -64,7 +64,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
 	 */
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
@@ -87,7 +87,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildIdentityString()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$targetEiObjects = $this->read($eiObject);

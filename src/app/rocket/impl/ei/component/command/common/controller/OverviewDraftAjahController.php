@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\http\controller\ParamQuery;
 use n2n\util\uri\Url;
@@ -65,7 +65,7 @@ class OverviewDraftJhtmlController extends ControllerAdapter {
 		
 		$attrs = array('numEntries' => $draftListModel->getNumEntries(), 'numPages' => $draftListModel->getNumPages());
 
-		$this->send(JhtmlResponse::view($eiFrame->getContextEiMask()->createListView($eiFrame,
+		$this->send(JhtmlResponse::view($eiFrame->getContextEiEngine()->getEiMask()->createListView($eiFrame,
 				$draftListModel->getEntryGuis()), $attrs));
 	}
 

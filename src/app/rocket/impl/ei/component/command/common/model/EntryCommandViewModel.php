@@ -23,8 +23,8 @@ namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\util\model\EiuEntry;
+use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\model\EiuEntry;
 
 class EntryCommandViewModel {
 	private $title;
@@ -49,7 +49,7 @@ class EntryCommandViewModel {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\manage\util\model\EiuFrame
+	 * @return \rocket\ei\util\model\EiuFrame
 	 */
 	public function getEiuFrame() {
 		return $this->eiuFrame;
@@ -173,7 +173,7 @@ class EntryCommandViewModel {
 // 		$this->entryModel = $entryModel;
 // 		$this->eiObject = $this->entryModel->getEiObject();
 		
-// 		$this->context = $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+// 		$this->context = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 // 		$this->exact = $this->entryModel->getEiType();
 		
 // 		$this->previewController = $previewController;
@@ -182,7 +182,7 @@ class EntryCommandViewModel {
 // 			$this->title = $title;
 // 		} else {
 // 			$this->title = $this->exact->createIdentityString($this->eiObject->getEntityObj(),
-// 					$this->eiFrame->getN2nLocale());
+// 					$this->eiFrame->getN2nContext()->getN2nLocale());
 // 		}
 // 	}
 	
@@ -219,14 +219,14 @@ class EntryCommandViewModel {
 // 		$navPoints[] = array(
 // 				'pathExt' => PathUtils::createPathExtFromEntryNavPoint(null, 
 // 						$this->eiFrame->toEntryNavPoint()->copy(false, true, false)),
-// 				'label' => $mainTranslationN2nLocale->getName($this->eiFrame->getN2nLocale()),
+// 				'label' => $mainTranslationN2nLocale->getName($this->eiFrame->getN2nContext()->getN2nLocale()),
 // 				'active' => null === $currentTranslationN2nLocale);
 
 // 		foreach ($this->commandEntryModel->getTranslationN2nLocales() as $translationN2nLocale) {
 // 			$navPoints[] = array(
 // 					'pathExt' => PathUtils::createPathExtFromEntryNavPoint(null, 
 // 							$this->eiFrame->toEntryNavPoint(null, $translationN2nLocale)),
-// 					'label' => $translationN2nLocale->getName($this->eiFrame->getN2nLocale()),
+// 					'label' => $translationN2nLocale->getName($this->eiFrame->getN2nContext()->getN2nLocale()),
 // 					'active'=> $translationN2nLocale->equals($currentTranslationN2nLocale));
 // 		}
 		

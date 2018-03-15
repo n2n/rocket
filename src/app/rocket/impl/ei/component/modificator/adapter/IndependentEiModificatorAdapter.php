@@ -19,24 +19,45 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-
 namespace rocket\impl\ei\component\modificator\adapter;
 
-use rocket\spec\ei\component\modificator\IndependentEiModificator;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\modificator\EiModificator;
+use rocket\impl\ei\component\IndependentEiComponentAdapter;
+use rocket\ei\component\modificator\IndependentEiModificator;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\component\EiConfigurator;
+use rocket\impl\ei\component\DefaultEiConfigurator;
+use rocket\ei\util\model\Eiu;
 
-abstract class IndependentEiPropAdapter extends EiModificatorAdapter implements IndependentEiModificator {
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\IndependentEiComponent::__construct()
-	 */
-	public function __construct() {
-	}
+abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAdapter implements IndependentEiModificator {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\modificator\IndependentEiModificator::createEiConfigurator()
+	 * @see \rocket\ei\component\IndependentEiComponent::createEiConfigurator()
 	 */
 	public function createEiConfigurator(): EiConfigurator {
+		return new DefaultEiConfigurator($this);
 	}
+	
+	public function equals($obj) {
+		return $obj instanceof EiModificator && parent::equals($obj);
+	}
+	
+	public function setupEiFrame(Eiu $eiu) { }
+	
+	public function setupEiEntry(Eiu $eiu) { }
+	
+	public function setupGuiDefinition(GuiDefinition $guiDefinition) { }
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiEntryGui()
+	 */
+	public function setupEiEntryGui(\rocket\ei\manage\gui\EiEntryGui $eiEntryGui) { }
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupDraftDefinition()
+	 */
+	public function setupDraftDefinition(\rocket\ei\manage\draft\DraftDefinition $draftDefinition) { }
 }

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file\conf;
 
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
@@ -35,7 +35,7 @@ use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
-use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
@@ -59,7 +59,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister();
 	}
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 	
 		$this->fileEiProp->setAllowedExtensions($this->attributes->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY,
@@ -84,7 +84,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
-		$this->fileEiProp->getEiEngine()->getSupremeEiEngine()->getEiCommandCollection()->add($thumbEiCommand);
+		$setupProcess->eiu()->mask()->supremeMask()->addEiCommand($thumbEiCommand);
 		$this->fileEiProp->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
@@ -101,7 +101,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 			}
 			
 			$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp, $namingEiPropPath);
-			$this->fileEiProp->getEiEngine()->getSupremeEiEngine()->getEiCommandCollection()
+			$this->fileEiProp->getEiMask()->getSupremeEiMask()->getEiCommandCollection()
 					->add($multiUploadEiCommand);
 			$this->fileEiProp->setMultiUploadEiCommand($multiUploadEiCommand);
 		}
@@ -159,7 +159,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	private function getNamingEiPropIdOptions() {
 		$namingEiPropIdOptions = array();
-		foreach ($this->eiComponent->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()
+		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
 				as $id => $genericScalarProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
 			$namingEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();

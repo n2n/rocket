@@ -22,14 +22,14 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\impl\RwEiField;
-use rocket\spec\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\mapping\impl\RwEiField;
+use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\impl\Readable;
-use rocket\spec\ei\manage\mapping\impl\Writable;
-use rocket\spec\ei\manage\mapping\impl\Copyable;
+use rocket\ei\manage\EiObject;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\mapping\impl\Readable;
+use rocket\ei\manage\mapping\impl\Writable;
+use rocket\ei\manage\mapping\impl\Copyable;
 
 class ToOneEiField extends RwEiField {
 	private $copyable;
@@ -41,7 +41,6 @@ class ToOneEiField extends RwEiField {
 		$this->copyable = $copyable;
 	}
 	
-	
 	protected function validateValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
 	}
@@ -51,7 +50,7 @@ class ToOneEiField extends RwEiField {
 			return RelationEntry::from($targetEiObject);
 		}
 		
-		return null;	
+		return null;
 	}
 	
 	protected function writeValue($targetRelationEntry) {

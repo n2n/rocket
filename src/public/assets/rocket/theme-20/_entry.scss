@@ -12,7 +12,6 @@
 }
 
 .rocket-control > div {
-    padding-top: 1px;
 }
 
 .rocket-required > label {
@@ -27,10 +26,13 @@
     }
 }
 
+.rocket-control > .rocket-item {
+    padding: 0.5rem 0;
+}
+
 @include media-breakpoint-up(md) {
     .rocket-item {
         clear: both;
-        margin: 1rem 0;
 
         > label {
             width: 15rem;
@@ -67,12 +69,11 @@
 }
 
 .rocket-control .rocket-impl-entry {
-    background-color: white;
-    margin: 1rem 0;
     > .rocket-impl-summary {
         display: grid;
         grid-template-columns: 3rem auto 100px;
         border: 1px solid $gray-500;
+        margin: 0.5rem 0;
         > .rocket-impl-handle {
             padding: 1rem;
         }
@@ -99,14 +100,24 @@
 }
 
 .rocket-impl-add-entry {
-    margin: 1rem 0;
+    // margin top must be 0.5rem in order to match mutli column grid patterns
+    margin: 0.5rem 0 1rem;
     > button {
         text-align: left;
         font-weight: bold;
         font-size: $font-size-base;
         background: $gray-100;
-        border: $gray-500 1px solid;
+        border: $gray-400 1px solid;
         color: $gray-700;
+        position: relative;
+        &::after {
+            font-family: fontawesome;
+            content: '\f067';
+            position: absolute;
+            top: 0.375rem;
+            right: 1rem;
+            font-weight: normal;
+        }
     }
 }
 

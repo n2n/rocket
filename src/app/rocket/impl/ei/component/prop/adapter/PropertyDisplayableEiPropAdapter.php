@@ -21,24 +21,24 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\spec\ei\manage\mapping\impl\Readable;
+use rocket\ei\manage\mapping\impl\Readable;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\mapping\EiField;
-use rocket\spec\ei\manage\gui\GuiProp;
-use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
+use rocket\ei\manage\mapping\EiField;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\mapping\impl\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\spec\ei\component\prop\GuiEiProp;
-use rocket\spec\ei\component\prop\FieldEiProp;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\DisplayDefinition;
+use rocket\ei\component\prop\GuiEiProp;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\ei\manage\EiObject;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\gui\DisplayDefinition;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\gui\ui\DisplayItem;
-use rocket\spec\ei\manage\gui\ViewMode;
-use rocket\spec\ei\manage\gui\GuiField;
-use rocket\spec\ei\manage\gui\GuiPropFork;
+use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiPropFork;
 
 abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
@@ -138,9 +138,9 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		$eiMask = $this->eiEngine->getEiMask();
-		return array('class' => 'rocket-ei-spec-' . $this->eiEngine->getEiType()->getId()
-						. ($eiMask !== null ? ' rocket-ei-mask-' . $eiMask->getId() : '') 
+		$eiTypeExtension = $this->eiMask->isExtension() ? $this->eiMask->getExtension() : null;
+		return array('class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
+						. ($eiTypeExtension !== null ? ' rocket-ei-mask-' . $eiTypeExtension->getId() : '') 
 						. ' rocket-ei-field-' . $this->getId(), 
 				'title' => $this->displaySettings->getHelpText());
 	}

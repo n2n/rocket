@@ -60,11 +60,11 @@ class CustomGrant extends ObjectAdapter implements Grant {
 		$this->rocketUserGroup = $userGroup;
 	}
 	
-	public function getCustomSpecId() {
+	public function getCustomTypeId() {
 		return $this->customSpecId;
 	}
 	
-	public function setCustomSpecId($customSpecId) {
+	public function setCustomTypeId($customSpecId) {
 		$this->customSpecId = $customSpecId;
 	}
 	

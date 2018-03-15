@@ -22,7 +22,7 @@
 
 	use rocket\impl\ei\component\command\common\model\OverviewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\ei\manage\EiHtmlBuilder;
 		
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -32,10 +32,9 @@
 	$view->assert($overviewModel instanceof OverviewModel);
 	
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask()->getLabelLstr()
-					->t($view->getN2nLocale())));
+			array('title' => $overviewModel->getEiuFrame()->getGenericLabel()));
 	
-	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiMask();
+	$eiMask = $overviewModel->getEiuFrame()->getContextEiMask();
 	
 	$eiHtml = new EiHtmlBuilder($view);
 ?>	

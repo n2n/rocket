@@ -24,13 +24,13 @@ namespace rocket\impl\ei\component\prop\numeric;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\numeric\conf\OrderEiPropConfigurator;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\EiPropPath;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 class OrderEiProp extends IntegerEiProp {
 	const ORDER_INCREMENT = 10;

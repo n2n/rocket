@@ -21,10 +21,10 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 	use rocket\impl\ei\component\command\common\controller\OverviewAjahHook;
-	use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
-	use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
+	use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+	use rocket\ei\manage\critmod\impl\model\CritmodForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -54,7 +54,7 @@
 				data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
 		</div>
 		<div class="rocket-impl-search">
-			<?php $view->import('~\spec\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
+			<?php $view->import('~\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
 					array('quickSearchForm' => $quickSearchForm, 'postUrl' => $overviewAjahHook->getSelectUrl())) ?>
 		</div>
 		<div class="rocket-impl-filter">
@@ -62,14 +62,14 @@
 					data-rocket-impl-open-filter-label="<?php $html->text('ei_impl_open_filter_label') ?>"
 					data-rocket-impl-edit-filter-label="<?php $html->text('ei_impl_edit_filter_label') ?>"
 					data-rocket-impl-close-filter-label="<?php $html->text('ei_impl_close_filter_label') ?>">
-				<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodSelectForm.html', 
+				<?php $view->import('~\ei\manage\critmod\impl\view\critmodSelectForm.html', 
 						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getSelectUrl())) ?>
 			</div>
 		</div>
 		
 	</div>
 	<div class="rocket-impl-critmod-form-container">
-		<?php $view->import('~\spec\ei\manage\critmod\impl\view\critmodForm.html', 
+		<?php $view->import('~\ei\manage\critmod\impl\view\critmodForm.html', 
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
 						'filterAjahHook' => $filterAjahHook)) ?>
 	</div>

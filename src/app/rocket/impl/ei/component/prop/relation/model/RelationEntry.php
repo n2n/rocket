@@ -21,9 +21,9 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\util\model\EiuFrame;
 
 class RelationEntry {
 	private $eiObject;
@@ -63,7 +63,7 @@ class RelationEntry {
 			return $this->eiEntry;
 		}
 		
-		return $utils->createEiEntry($this->eiObject);
+		return $utils->entry($this->eiObject)->getEiEntry();
 	}
 	
 	public static function from(EiObject $eiObject): RelationEntry {

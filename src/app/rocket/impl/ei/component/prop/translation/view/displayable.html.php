@@ -22,8 +22,8 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\l10n\N2nLocale;
-	use rocket\spec\ei\manage\FieldEiHtmlBuilder;
-	use rocket\spec\ei\manage\mapping\FieldErrorInfo;
+	use rocket\ei\manage\FieldEiHtmlBuilder;
+	use rocket\ei\manage\mapping\FieldErrorInfo;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

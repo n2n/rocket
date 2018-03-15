@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\command\common\model;
 use n2n\web\dispatch\Dispatchable;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\spec\ei\manage\util\model\EiuFrame;
-use rocket\spec\ei\manage\critmod\impl\model\CritmodForm;
-use rocket\spec\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+use rocket\ei\util\model\EiuFrame;
+use rocket\ei\manage\critmod\impl\model\CritmodForm;
+use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\ViewMode;
 
 class OverviewModel implements Dispatchable {	
 	private $eiuFrame;
@@ -100,7 +100,7 @@ class OverviewModel implements Dispatchable {
 		$criteria = $eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit, ($this->listSize * $numPages));
 		
-		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiMask()->getEiEngine()->getEiType()
+		if (null !== ($nestedSetStrategy = $eiFrame->getContextEiEngine()->getEiMask()->getEiType()
 				->getNestedSetStrategy())) {
 			$this->treeLookup($criteria, $nestedSetStrategy);
 		} else {
@@ -116,7 +116,7 @@ class OverviewModel implements Dispatchable {
 		$this->critmodForm->applyToEiFrame($eiFrame, true);
 		$this->quickSearchForm->applyToEiFrame($eiFrame, true);
 				
-		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+		$eiType = $eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		$ids = array();
 		foreach ($pids as $pid) {
 			$ids[] = $eiType->pidToId($pid);
@@ -144,7 +144,7 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
-		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getClass(), $nestedSetStrategy);
+		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
 		
 		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->allowControls();
 		
@@ -171,7 +171,7 @@ class OverviewModel implements Dispatchable {
 		
 	/**
 	 * 
-	 * @return \rocket\spec\ei\manage\util\model\EiuGui
+	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function getEiuGui() {
 		return $this->eiuGui;

@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\enum\conf;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\enum\EnumEiProp;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\LenientAttributeReader;
@@ -35,7 +35,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\spec\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiIdPath;
 
 // @todo validate if attributes are arrays
 
@@ -62,9 +62,9 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$guiProps = null;
 		try {
-			$guiProps = $this->eiComponent->getEiEngine()->getGuiDefinition()->getGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->getGuiDefinition()->getGuiProps();
 		} catch (\Throwable $e) {
-			$guiProps = $this->eiComponent->getEiEngine()->getGuiDefinition()->getLevelGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->getGuiDefinition()->getLevelGuiProps();
 		}
 		
 		$assoicatedGuiPropOptions = array();
@@ -80,7 +80,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 					
 					$eMag = new TogglerMag('Bind GuiProps to value', false);
 					$magCollection->addMag('bindGuiPropsToValue', $eMag);
-					$eMag->setAssociatedMags(array(
+					$eMag->setOnAssociatedMagWrappers(array(
 							$magCollection->addMag('assoicatedGuiIdPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
 					return new MagForm($magCollection);
 				});
@@ -123,7 +123,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->set(self::ASSOCIATED_GUI_FIELD_KEY, $guiIdPathMap);
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 	
 		CastUtils::assertTrue($this->eiComponent instanceof EnumEiProp);

@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\translation\conf;
 
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\l10n\N2nLocale;
-use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
-use rocket\spec\ei\component\UnknownEiComponentException;
+use rocket\spec\UnknownTypeException;
+use rocket\ei\UnknownEiTypeExtensionException;
+use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\translation\TranslationEiProp;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\orm\CascadeType;
 use n2n\reflection\ReflectionUtils;
 use n2n\core\container\N2nContext;
@@ -187,15 +187,15 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->set($key, $n2nLocaleDefsAttrs);
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
-		$n2nContext = $eiSetupProcess->getN2nContext();
+	public function setup(EiSetup $eiSetupProcess) {
+		$eiu = $eiSetupProcess->eiu();
 		
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		$n2nLocaleDefs = array();
 		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
 			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
-					$n2nContext->lookup(WebConfig::class)->getAllN2nLocales());
+					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
 		} 
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
@@ -210,13 +210,13 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$relationProperty = $eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$targetEiType = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
+			$targetEiType = $eiSetupProcess->eiu()->context()->mask($targetEntityClass)->getEiType();
 				
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
-// 				$targetEiMask = $target->getEiMaskCollection()->getById($eiMaskId);
+// 				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId);
 // 			} else {
-				$targetEiMask = $targetEiType->getEiMaskCollection()->getOrCreateDefault();
+				$targetEiMask = $targetEiType->getEiMask();
 // 			}
 
 			$entityProperty = $this->requireEntityProperty();
@@ -232,10 +232,10 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 								$entityProperty->getName()));
 			}
 
-			$eiPropRelation->init($targetEiType, $targetEiMask);
-		} catch (UnknownSpecException $e) {
+			$eiPropRelation->init($eiSetupProcess->eiu(), $targetEiType, $targetEiMask);
+		} catch (UnknownTypeException $e) {
 			throw $eiSetupProcess->createException(null, $e);
-		} catch (UnknownEiMaskException $e) {
+		} catch (UnknownEiTypeExtensionException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiComponentException $e) {
 			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);
@@ -244,7 +244,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$copyCommand = new TranslationCopyCommand();
-		$targetEiMask->getEiEngine()->getEiCommandCollection()->add($copyCommand);
+		$targetEiMask->getEiCommandCollection()->add($copyCommand);
 		$this->translationEiProp->setCopyCommand($copyCommand);
 	}
 }

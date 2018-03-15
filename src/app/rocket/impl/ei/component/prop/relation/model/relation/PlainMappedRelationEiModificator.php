@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiFrame;
 use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\mapping\WrittenMappingListener;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\mapping\WrittenMappingListener;
+use rocket\ei\manage\EiFrameListener;
+use rocket\ei\manage\mapping\EiEntry;
 
-class PlainMappedRelationEiModificator extends EiModificatorAdapter {
+class PlainMappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
 	private $entityObj;
 	private $targetAccessProxy;
@@ -40,12 +40,12 @@ class PlainMappedRelationEiModificator extends EiModificatorAdapter {
 		$this->sourceMany = $sourceMany;
 	}
 
-	public function setupEiEntry(Eiu $eiu) {
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiEntry = $eiu->entry()->getEiEntry();
+	public function onNewEiEntry(EiEntry $eiEntry) {
+// 		$eiFrame = $eiu->frame()->getEiFrame();
+// 		$eiEntry = $eiu->entry()->getEiEntry();
 		
-		if ($this->targetEiFrame !== $eiFrame
-				|| !$eiEntry->getEiObject()->isNew()) return;
+		if (/*$this->targetEiFrame !== $eiFrame
+				||*/ !$eiEntry->getEiObject()->isNew()) return;
 
 		$that = $this;
 		$targetEntityObj = $eiEntry->getEiObject()->getLiveObject();

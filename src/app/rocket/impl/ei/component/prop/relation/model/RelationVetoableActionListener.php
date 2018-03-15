@@ -22,17 +22,17 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\spec\ei\manage\veto\VetoableActionListener;
+use rocket\ei\manage\veto\VetoableActionListener;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\l10n\MessageCode;
-use rocket\spec\ei\manage\LiveEiObject;
+use rocket\ei\manage\LiveEiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\spec\ei\manage\veto\VetoableRemoveAction;
-use rocket\spec\ei\manage\EiEntityObj;
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\veto\VetoableRemoveAction;
+use rocket\ei\manage\EiEntityObj;
+use rocket\ei\manage\ManageState;
 use n2n\core\container\N2nContext;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
@@ -132,7 +132,7 @@ class VetoCheck {
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
 				$queue->removeEiObject(LiveEiObject::create(
-						$that->relationEiProp->getEiEngine()->getEiType(), $entityObj));
+						$that->relationEiProp->getEiMask()->getEiType(), $entityObj));
 			});
 		}
 	}
@@ -194,13 +194,13 @@ class VetoCheck {
 	}
 	
 	private function getGenericLabel(): string {
-		return $this->relationEiProp->getEiEngine()->getEiType()->getEiMaskCollection()->getOrCreateDefault()
+		return $this->relationEiProp->getEiMask()->getEiType()->getEiTypeExtensionCollection()->getOrCreateDefault()
 				->getLabelLstr()->t($this->n2nContext->getN2nLocale());
 	}
 	
 	private function createIdentityString($entityObj): string {
-		$eiType = $this->relationEiProp->getEiEngine()->getEiType();
-		return $eiType->getEiMaskCollection()->getOrCreateDefault()->createIdentityString(
+		$eiType = $this->relationEiProp->getEiMask()->getEiType();
+		return $eiType->getEiTypeExtensionCollection()->getOrCreateDefault()->createIdentityString(
 				LiveEiObject::create($eiType, $entityObj), $this->n2nContext->getN2nLocale());
 	}
 	

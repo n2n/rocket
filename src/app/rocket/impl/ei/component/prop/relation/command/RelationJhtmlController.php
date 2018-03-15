@@ -29,7 +29,7 @@ use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class RelationJhtmlController extends ControllerAdapter {
@@ -56,7 +56,7 @@ class RelationJhtmlController extends ControllerAdapter {
 		try {
 			$eiFrameUtils = $this->eiCtrlUtils->frame();
 			$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), $eiFrameUtils->getGenericIconType(), null,  
-					$eiFrameUtils->newEntryForm($draft->toBool(), null, null, $allowedEiTypeIds));
+					$eiFrameUtils->newEiuEntryForm($draft->toBool(), null, null, $allowedEiTypeIds));
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}

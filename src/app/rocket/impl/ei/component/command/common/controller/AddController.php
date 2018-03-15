@@ -27,7 +27,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\command\common\model\AddModel;
 use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuCtrl;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ajah\JhtmlEvent;
 
@@ -73,10 +73,10 @@ class AddController extends ControllerAdapter {
 			$copyFrom = $this->eiuCtrl->lookupEiEntry($copyPid);
 		}
 		
-		$entryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('entryForm')));
+		$eiuEntryForm = $eiuFrame->newEiuEntryForm(false, $copyFrom, new PropertyPath(array('eiuEntryForm')));
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $entryForm, $eiuFrame->getNestedSetStrategy());
+		$addModel = new AddModel($eiFrame, $eiuEntryForm, $eiuFrame->getNestedSetStrategy());
 		if ($this->parentEiObject !== null) {
 			$addModel->setParentEntityObj($this->parentEiObject->getLiveObject());
 		} else if ($this->beforeEiObject !== null) {
@@ -98,7 +98,7 @@ class AddController extends ControllerAdapter {
 		
 		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl);
 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
-				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiMask()->getLabelLstr()
+				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->getLabelLstr()
 						->t($this->getN2nContext()->getN2nLocale()))));
 		
 		$view = $this->createView('..\view\add.html',
@@ -109,10 +109,10 @@ class AddController extends ControllerAdapter {
 	public function doDraft(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 			
-		$entryForm = $this->eiuCtrl->frame()->newEntryForm(true);
+		$eiuEntryForm = $this->eiuCtrl->frame()->newEiuEntryForm(true);
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $entryForm);
+		$addModel = new AddModel($eiFrame, $eiuEntryForm);
 		
 		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
 			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));

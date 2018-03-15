@@ -22,71 +22,57 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\spec\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\spec\ei\manage\util\model\EiuFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
 use n2n\web\http\controller\ParamGet;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\util\model\EiuCtrl;
 
 class OrderController extends ControllerAdapter {	
 	private $orderEiProp;
-	private $utils;
-	private $eiCtrl;
+	private $eiuCtrl;
 	
-	private function _init(ManageState $manageState, EiuCtrl $eiCtrl) {
-		$this->utils = new EiuFrame($manageState->peakEiFrame());
-		$this->eiCtrl = $eiCtrl;
+	private function _init(EiuCtrl $eiCtrl) {
+		$this->eiuCtrl = $eiCtrl;
 	}
 	
 	public function setOrderEiProp(OrderEiProp $orderEiProp) {
 		$this->orderEiProp = $orderEiProp;
-		$this->eiType = $orderEiProp->getEiEngine()->getEiType();
+		$this->eiType = $orderEiProp->getEiMask()->getEiType();
 	}
 	
 	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {
-		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
+		$refUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
 		foreach ($pids->toStringArrayOrReject() as $pid) {
 			$this->move($pid, $targetPid, true);
 		}
 		
-		$this->eiCtrl->redirectToReferer($refUrl);
+		$this->eiuCtrl->redirectToReferer($refUrl);
 	}
 	
 	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
-		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
+		$refUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		
 		foreach (array_reverse($pids->toStringArrayOrReject()) as $pid) {
 			$this->move($pid, $targetPid, false);
 		}
 		
-		$this->eiCtrl->redirectToReferer($refUrl);
+		$this->eiuCtrl->redirectToReferer($refUrl);
 	}
 	
 	private function move(string $pid, string $targetPid, bool $before) {
 		if ($pid === $targetPid) return;
 		
-		$eiEntityObj = null;
-		$targetEiEntityObj = null;
-		
-		try {
-			$eiEntityObj = $this->utils->lookupEiEntityObj($this->utils->pidToId($pid));
-			$targetEiEntityObj = $this->utils->lookupEiEntityObj($this->utils->pidToId($targetPid));
-		} catch (UnknownEntryException $e) {
-			return;
-		} catch (\InvalidArgumentException $e) {
-			return;
-		}
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		$targetEiuEntity = $this->eiuCtrl->lookupEntry($targetPid);
 		
 		$entityProperty = $this->orderEiProp->getEntityProperty();
-		$targetOrderIndex = $entityProperty->readValue($targetEiEntityObj->getEntityObj());
+		$targetOrderIndex = $entityProperty->readValue($targetEiuEntity->getEntityObj());
 		if (!$before) {
 			$targetOrderIndex++;
 		}
 		
-		$em = $this->utils->getEiFrame()->getManageState()->getEntityManager();
+		$em = $this->eiuCtrl->frame()->em();
 		$criteria = $em->createCriteria();
 		$criteria->select('eo')
 				->from($entityProperty->getEntityModel()->getClass(), 'eo')
@@ -98,7 +84,7 @@ class OrderController extends ControllerAdapter {
 			$entityProperty->writeValue($entityObj, $newOrderIndex += OrderEiProp::ORDER_INCREMENT);
 		}
 		
-		$entityProperty->writeValue($eiEntityObj->getEntityObj(), $targetOrderIndex);
+		$entityProperty->writeValue($eiuEntry->getEntityObj(), $targetOrderIndex);
 		$em->flush();
 	}
 }

@@ -23,8 +23,8 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\relation\model\mag\ToOneMag;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
 

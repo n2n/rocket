@@ -21,14 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\mag;
 
-use rocket\spec\ei\manage\util\model\EiUtils;
+use rocket\ei\util\model\EiuFrame;
 
 class EntryLabeler {
 	private $eiUtils;
 	private $genericLabel;
 	private $selectedIdentityStrings = array();
 	
-	public function __construct(EiUtils $eiUtils) {
+	public function __construct(EiuFrame $eiUtils) {
 		$this->eiUtils = $eiUtils;
 		$this->genericLabel = $eiUtils->getGenericLabel();
 	}
@@ -56,20 +56,20 @@ class EntryLabeler {
 	
 	public function getEiTypeLabels() {
 		$eiFrame = $this->eiUtils->getEiFrame();
-		$contextEiMask = $eiFrame->getContextEiMask();
-		$contextEiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+		$contextEiMask = $eiFrame->getContextEiEngine()->getEiMask();
+		$contextEiType = $eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		
 		$eiTypeLabels = array();
 		
 		if (!$contextEiType->isAbstract()) {
-			$eiTypeLabels[$contextEiType->getId()] = $contextEiMask->getLabelLstr()->t($eiFrame->getN2nLocale());
+			$eiTypeLabels[$contextEiType->getId()] = $contextEiMask->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
 		foreach ($contextEiType->getAllSubEiTypes() as $subEiType) {
 			if ($subEiType->isAbstract()) continue;
 		
 			$eiTypeLabels[$subEiType->getId()] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
-					->t($eiFrame->getN2nLocale());
+					->t($eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
 		return $eiTypeLabels;

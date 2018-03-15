@@ -23,21 +23,21 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\util\ex\IllegalStateException;
 
-use rocket\spec\ei\manage\draft\DraftProperty;
-use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
+use rocket\ei\manage\draft\DraftProperty;
+use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\SimpleDraftValueSelection;
-use rocket\spec\ei\manage\draft\DraftManager;
-use rocket\spec\ei\manage\draft\DraftValueSelection;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\manage\draft\RemoveDraftAction;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\mapping\impl\SimpleEiField;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
+use rocket\ei\manage\draft\SimpleDraftValueSelection;
+use rocket\ei\manage\draft\DraftManager;
+use rocket\ei\manage\draft\DraftValueSelection;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\draft\PersistDraftAction;
+use rocket\ei\manage\draft\RemoveDraftAction;
+use rocket\ei\EiPropPath;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\mapping\impl\SimpleEiField;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 
 abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;

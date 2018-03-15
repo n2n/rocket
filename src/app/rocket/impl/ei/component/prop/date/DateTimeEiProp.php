@@ -27,32 +27,32 @@ use n2n\l10n\DateTimeFormat;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\spec\ei\component\prop\SortableEiProp;
+use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\impl\ei\component\prop\date\conf\DateTimeEiPropConfigurator;
-use rocket\spec\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\stmt\FetchDraftStmtBuilder;
-use rocket\spec\ei\manage\draft\SimpleDraftValueSelection;
+use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
+use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
+use rocket\ei\manage\draft\SimpleDraftValueSelection;
 use n2n\persistence\meta\OrmDialectConfig;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\draft\DraftManager;
-use rocket\spec\ei\manage\draft\DraftValueSelection;
-use rocket\spec\ei\manage\draft\PersistDraftAction;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\draft\DraftManager;
+use rocket\ei\manage\draft\DraftValueSelection;
+use rocket\ei\manage\draft\PersistDraftAction;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\EiFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\spec\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortField;
 
 class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
@@ -134,7 +134,7 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 	
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\prop\SortableEiProp::createSortCriteriaConstraint()
+	 * @see \rocket\ei\component\prop\SortableEiProp::createSortCriteriaConstraint()
 	 */
 	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
 		return $this->buildSortField($eiFrame->getN2nContext());
@@ -153,7 +153,7 @@ class DateTimeDraftValueSelection extends SimpleDraftValueSelection {
 		$this->ormDialectConfig = $ormDialectConfig;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\draft\DraftValueSelection::buildDraftValue()
+	 * @see \rocket\ei\manage\draft\DraftValueSelection::buildDraftValue()
 	 */
 	public function buildDraftValue() {
 		return $this->ormDialectConfig->parseDateTime($this->rawValue);

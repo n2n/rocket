@@ -22,40 +22,47 @@
 namespace rocket\impl\ei\component;
 
 use n2n\reflection\ReflectionUtils;
-use rocket\spec\ei\component\EiComponent;
+use rocket\ei\component\EiComponent;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\EiEngine;
+use rocket\ei\mask\EiMask;
 
 abstract class EiComponentAdapter implements EiComponent {
-	protected $eiEngine;
+	protected $eiMask;
 	protected $id;
 	
 	/**
-	 * @return 
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::getEiMask()
 	 */
-	public function getEiEngine(): EiEngine {
-		if ($this->eiEngine !== null) {
-			return $this->eiEngine;
+	public function getEiMask(): EiMask {
+		if ($this->eiMask !== null) {
+			return $this->eiMask;
 		}
 		
-		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiEngine.');
-	}
-	
-	public function setEiEngine(EiEngine $eiEngine) {
-		$this->eiEngine = $eiEngine;
+		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiMask.');
 	}
 	
 	/**
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::setEiMask()
 	 */
-	public function getId() {
+	public function setEiMask(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::getId()
+	 */
+	public function getId(): ?string {
 		return $this->id;
 	}
 	
 	/**
-	 * @param string $id
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::setId()
 	 */
-	public function setId($id) {
+	public function setId(string $id) {
 		$this->id = $id;
 	}
 	
@@ -68,16 +75,6 @@ abstract class EiComponentAdapter implements EiComponent {
 	}
 	
 	public function __toString(): string {
-		$detailStrs = array();
-		$detailStrs[] = 'id: ' . ($this->id ?? 'null');
-		if ($this->eiEngine === null) {
-			$detailStrs[] = 'unassigned';
-		} else {
-			$detailStrs[] = $this->eiEngine->getEiType() ?? 'no EiType';
-			if (null !== ($eiMask = $this->eiEngine->getEiMask())) {
-				$detailStrs[] = (string) $eiMask;
-			}
-		}
-		return (new \ReflectionClass($this))->getShortName() . ' [' . implode(', ', $detailStrs) . ']';
+		return (new \ReflectionClass($this))->getShortName() . ' (id: ' . $this->id . ')';
 	}
 }

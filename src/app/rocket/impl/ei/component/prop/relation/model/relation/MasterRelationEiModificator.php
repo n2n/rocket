@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiFrame;
 use n2n\reflection\property\AccessProxy;
-use rocket\spec\ei\manage\mapping\WrittenMappingListener;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\mapping\WrittenMappingListener;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\EiFrameListener;
 
-class MasterRelationEiModificator extends EiModificatorAdapter {
+class MasterRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
 	private $entityObj;
 	private $propertyAccessProxy;
@@ -40,12 +40,11 @@ class MasterRelationEiModificator extends EiModificatorAdapter {
 		$this->targetMany = (boolean) $targetMany;
 	}
 
-	public function setupEiEntry(Eiu $eiu) {
-		if ($this->targetEiFrame !== $eiu->frame()->getEiFrame()) return;
+	public function onNewEiEntry(EiEntry $eiEntry) {
+// 		if ($this->targetEiFrame !== $eiu->frame()->getEiFrame()) return;
 
-		if ($eiu->entry()->isDraft()) return;
+		if ($eiEntry->getEiObject()->isDraft()) return;
 		
-		$eiEntry = $eiu->entry()->getEiEntry();
 		$that = $this;
 		if (!$this->targetMany) {
 			$eiEntry->registerListener(new WrittenMappingListener(

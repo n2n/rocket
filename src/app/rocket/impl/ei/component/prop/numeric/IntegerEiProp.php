@@ -29,9 +29,9 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\ScalarEiProp;
-use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\prop\ScalarEiProp;
+use rocket\ei\manage\generic\CommonScalarEiProperty;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
@@ -46,7 +46,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\ScalarEiProp::buildScalarValue()
+	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
 	public function getScalarEiProperty() {
 		return new CommonScalarEiProperty($this, null, function ($value) {

@@ -28,15 +28,15 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfigurator;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\manage\generic\GenericEiProperty;
-use rocket\spec\ei\manage\generic\ScalarEiProperty;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\ViewMode;
+use rocket\ei\EiPropPath;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\gui\ViewMode;
 
 class PathPartEiProp extends AlphanumericEiProp  {
 	const URL_COUNT_SEPERATOR = '-';
@@ -84,7 +84,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	}
 
 	/**
-	 * @return \rocket\spec\ei\manage\generic\GenericEiProperty
+	 * @return \rocket\ei\manage\generic\GenericEiProperty
 	 */
 	public function getUniquePerGenericEiProperty() {
 		return $this->uniquePerGenericEiProperty;

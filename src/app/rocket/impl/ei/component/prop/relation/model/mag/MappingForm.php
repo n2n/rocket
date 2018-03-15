@@ -24,36 +24,36 @@ namespace rocket\impl\ei\component\prop\relation\model\mag;
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\spec\ei\manage\util\model\EntryForm;
+use rocket\ei\util\model\EiuEntryForm;
 use n2n\web\dispatch\annotation\AnnoDispScalar;
 use n2n\reflection\ArgUtils;
-use rocket\spec\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\mapping\EiEntry;
 
 class MappingForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
-		$ai->p('entryForm', new AnnoDispObject());
+		$ai->p('eiuEntryForm', new AnnoDispObject());
 		$ai->p('orderIndex', new AnnoDispScalar());
 	}
 
 	private $entryLabel;
 	private $iconType;
 	private $eiEntry;
-	private $entryForm;
+	private $eiuEntryForm;
 	private $orderIndex;
 	
 	public function __construct(string $entryLabel, string $iconType, EiEntry $eiEntry = null, 
-			EntryForm $entryForm = null, int $orderIndex = null) {
-		ArgUtils::assertTrue($eiEntry !== null || $entryForm !== null);
+			EiuEntryForm $eiuEntryForm = null, int $orderIndex = null) {
+		ArgUtils::assertTrue($eiEntry !== null || $eiuEntryForm !== null);
 		
 		$this->entryLabel = $entryLabel;
 		$this->iconType = $iconType;
 		$this->eiEntry = $eiEntry;
-		$this->entryForm = $entryForm;
+		$this->eiuEntryForm = $eiuEntryForm;
 		$this->orderIndex = $orderIndex;
 	}
 	
 	public function isAccessible(): bool {
-		return $this->entryForm !== null;
+		return $this->eiuEntryForm !== null;
 	}
 	
 	public function getEntryLabel(): string {
@@ -65,19 +65,19 @@ class MappingForm implements Dispatchable {
 	}
 	
 	public function buildEiEntry() {
-		if ($this->entryForm !== null) {
-			return $this->entryForm->buildEiuEntry()->getEiEntry();
+		if ($this->eiuEntryForm !== null) {
+			return $this->eiuEntryForm->buildEiuEntry()->getEiEntry();
 		}
 		
 		return $this->eiEntry;
 	}
 	
-	public function getEntryForm() {
-		return $this->entryForm;
+	public function getEiuEntryForm() {
+		return $this->eiuEntryForm;
 	}
 	
-	public function setEntryForm(EntryForm $entryForm) {
-		$this->entryForm = $entryForm;
+	public function setEiuEntryForm(EiuEntryForm $eiuEntryForm) {
+		$this->eiuEntryForm = $eiuEntryForm;
 	}
 
 	public function getOrderIndex() {

@@ -49,7 +49,7 @@
 					<?php $html->imageAsset('img/login-logo-06.png', '', array('id' => 'rocket-login-logo')) ?>
 					<?php $html->linkToContext('', new Raw('<i class="fa fa-home"></i> ' . $html->getL10nText('user_back_to_website_label')), array('class' => 'rocket-user-back-link' , 'target' => '_blank'))?>
 				</div>
-				<?php $html->messageList(null, null, array('class' => 'rocket-message-error')) ?>
+				<?php $html->messageList(null, null, array('class' => 'alert alert-danger list-unstyled')) ?>
 				<?php $formHtml->open($loginContext, null, null, array('class' => 'rocket-login-form')) ?>
 					<div class="input-group input-group-lg mb-3">
     					<label for="nick" class="input-group-prepend" title="<?php $html->l10nText('user_nick_label') ?>">

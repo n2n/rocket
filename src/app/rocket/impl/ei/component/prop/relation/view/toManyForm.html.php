@@ -25,7 +25,7 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToManyForm;
-	use rocket\spec\ei\manage\EiHtmlBuilder;
+	use rocket\ei\manage\EiHtmlBuilder;
 
 	/**
 	 * @var \n2n\web\ui\view\View $view
@@ -88,7 +88,8 @@
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 			
-				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm))?>
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm, 
+						'summaryRequired' => $toManyForm->isReduced()))?>
 			<?php }) ?>
 		</div>
 	<?php endif ?>
@@ -105,7 +106,8 @@
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 				
-				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm)) ?>
+				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
+						'summaryRequired' => $toManyForm->isReduced())) ?>
 			<?php }) ?>
 		</div>
 	<?php endif ?>

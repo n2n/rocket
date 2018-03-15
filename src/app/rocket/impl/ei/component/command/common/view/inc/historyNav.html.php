@@ -20,12 +20,12 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\spec\ei\manage\draft\Draft;
+	use rocket\ei\manage\draft\Draft;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 	use rocket\user\model\RocketUserDao;
-	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
-	use rocket\spec\ei\manage\gui\ViewMode;
+	use rocket\ei\manage\ControlEiHtmlBuilder;
+	use rocket\ei\manage\gui\ViewMode;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

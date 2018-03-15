@@ -22,7 +22,7 @@
 // namespace rocket\user\model;
 
 // use n2n\core\container\N2nContext;
-// use rocket\spec\ei\manage\EiFrame;
+// use rocket\ei\manage\EiFrame;
 
 // interface RestrictionEiProp extends ObjectPropertyEiProp {
 	

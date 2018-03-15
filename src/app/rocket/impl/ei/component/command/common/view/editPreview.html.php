@@ -23,7 +23,7 @@
 	use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\util\uri\Path;
-use rocket\spec\ei\manage\EiHtmlBuilder;
+use rocket\ei\manage\EiHtmlBuilder;
 use n2n\web\ui\Raw;
 
 	$view = HtmlView::view($this);

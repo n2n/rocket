@@ -22,11 +22,11 @@
 namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\DraftEiObject;
-use rocket\spec\ei\manage\gui\EiEntryGui;
+use rocket\ei\manage\DraftEiObject;
+use rocket\ei\manage\gui\EiEntryGui;
 
 class DraftListModel implements Dispatchable {	
 	private $utils;
@@ -45,7 +45,7 @@ class DraftListModel implements Dispatchable {
 		$this->utils = new EiuFrame($eiFrame);
 		$this->listSize = $listSize;
 		$this->draftManager = $eiFrame->getManageState()->getDraftManager();
-		$this->draftDefinition = $eiFrame->getContextEiMask()->getEiEngine()->getDraftDefinition();
+		$this->draftDefinition = $eiFrame->getContextEiEngine()->getDraftDefinition();
 	}
 	
 	public function getEiFrame(): EiFrame {
@@ -75,7 +75,7 @@ class DraftListModel implements Dispatchable {
 // 	public function initByPids(array $pids) {
 // 		$eiFrame = $this->getEiFrame();
 				
-// 		$eiType = $eiFrame->getContextEiMask()->getEiEngine()->getEiType();
+// 		$eiType = $eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 // 		$ids = array();
 // 		foreach ($pids as $pid) {
 // 			$ids[] = $eiType->pidToId($pid);
@@ -96,7 +96,7 @@ class DraftListModel implements Dispatchable {
 	
 	private function simpleLookup(array $drafts) {
 		$eiFrame = $this->utils->getEiFrame();
-		$eiMask = $eiFrame->getContextEiMask();
+		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		
 		$this->entryGuis = array();
 		foreach ($drafts as $draft) {

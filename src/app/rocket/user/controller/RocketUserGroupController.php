@@ -34,13 +34,13 @@ use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
 use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
-use rocket\spec\config\UnknownSpecException;
-use rocket\spec\ei\mask\UnknownEiMaskException;
+use rocket\spec\UnknownTypeException;
+use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
-use rocket\spec\ei\EiEngine;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\EiEngine;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;
@@ -58,13 +58,13 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$this->forward('..\view\groupOverview.html', array(
 				'userGroupOverviewModel' => new RocketUserGroupListModel(
-						$this->userDao->getRocketUserGroups(), $rocket->getSpecManager())));
+						$this->userDao->getRocketUserGroups(), $rocket->getSpec())));
 	}
 	
 	public function doAdd(Rocket $rocket, MessageContainer $messageContainer) {
 		$this->beginTransaction();
 		
-		$userGroupForm = new RocketUserGroupForm(new RocketUserGroup(), $rocket->getLayoutManager(), $rocket->getSpecManager(), $this->getN2nContext());
+		$userGroupForm = new RocketUserGroupForm(new RocketUserGroup(), $rocket->getLayout(), $rocket->getSpec(), $this->getN2nContext());
 		if ($this->dispatch($userGroupForm, 'save')) {
 			$this->userDao->saveRocketUserGroup($userGroupForm->getRocketUserGroup());
 			$this->commit();
@@ -88,7 +88,7 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$userGroupForm = new RocketUserGroupForm($userGroup, $rocket->getLayoutManager(), $rocket->getSpecManager(), 
+		$userGroupForm = new RocketUserGroupForm($userGroup, $rocket->getLayout(), $rocket->getSpec(), 
 				$this->getN2nContext());
 		if ($this->dispatch($userGroupForm, 'save')) {
 			$this->commit();
@@ -127,9 +127,9 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$specManager = $rocket->getSpecManager();
-		$groupGrantViewModel = new GroupGrantsViewModel($userGroup, $specManager->getEiTypes(), 
-				$specManager->getCustomSpecs());
+		$spec = $rocket->getSpec();
+		$groupGrantViewModel = new GroupGrantsViewModel($userGroup, $spec->getEiTypes(), 
+				$spec->getCustomTypes());
 		
 		$this->commit();
 		
@@ -139,12 +139,12 @@ class RocketUserGroupController extends ControllerAdapter {
 	public function doFullyEiGrant($userGroupId, $eiTypeId, $eiMaskId = null, Rocket $rocket) {
 		$eiType = null;
 		try {
-			$eiType = $rocket->getSpecManager()->getEiTypeById($eiTypeId);
-		} catch (UnknownSpecException $e) {
+			$eiType = $rocket->getSpec()->getEiTypeById($eiTypeId);
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}
 		
-		if ($eiMaskId !== null && !$eiType->getEiMaskCollection()->containsId($eiMaskId)) {
+		if ($eiMaskId !== null && !$eiType->getEiTypeExtensionCollection()->containsId($eiMaskId)) {
 			throw new PageNotFoundException();
 		}
 		
@@ -209,20 +209,20 @@ class RocketUserGroupController extends ControllerAdapter {
 	private function lookupEiEngine(string $eiTypeId, string $eiMaskId = null): EiEngine {
 		$eiType = null;
 		try {
-			$eiType = $this->rocket->getSpecManager()->getEiTypeById($eiTypeId);
-		} catch (UnknownSpecException $e) {
+			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
+		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
 		if ($eiMaskId !== null) {
 			try {
-				return $eiType->getEiMaskCollection()->getById($eiMaskId)->getEiEngine();
-			} catch (UnknownEiMaskException $e) {
+				return $eiType->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiEngine();
+			} catch (UnknownEiTypeExtensionException $e) {
 				throw new PageNotFoundException(null, 0, $e);
 			}
 		}
 		
-		return $eiType->getEiEngine();
+		return $eiType->getEiMask()->getEiEngine();
 	}
 	
 	/**

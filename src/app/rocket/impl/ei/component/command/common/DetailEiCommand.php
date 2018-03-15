@@ -21,25 +21,25 @@
  */
 namespace rocket\impl\ei\component\command\common;
 
-use rocket\spec\ei\manage\control\EntryNavPoint;
+use rocket\ei\manage\control\EntryNavPoint;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\manage\control\EntryControlComponent;
+use rocket\ei\manage\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DetailController;
-use rocket\spec\ei\manage\control\ControlButton;
+use rocket\ei\manage\control\ControlButton;
 use rocket\impl\ei\component\command\common\controller\PathUtils;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\spec\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
-use rocket\spec\ei\component\command\GenericDetailEiCommand;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\component\command\GenericDetailEiCommand;
+use rocket\ei\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
@@ -61,7 +61,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\manage\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
@@ -69,7 +69,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\manage\control\EntryControlComponent::createEntryControls()
+	 * @see \rocket\ei\manage\control\EntryControlComponent::createEntryControls()
 	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$eiuFrame = $eiu->frame();
@@ -130,7 +130,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	}
 	
 	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
-// 		if (!$this->getEiType()->getDefaultEiDef()->getisPreviewAvailable()) {
+// 		if (!$this->getEiType()->getEiMask()->getisPreviewAvailable()) {
 // 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
 // 		}
 		
@@ -143,7 +143,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\command\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
+	 * @see \rocket\ei\component\command\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
 	 */
 	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool {
 		return true;
@@ -151,7 +151,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\command\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
+	 * @see \rocket\ei\component\command\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
 	 */
 	public function getDetailPathExt(EntryNavPoint $entryNavPoint): Path {
 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint);

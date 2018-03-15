@@ -21,16 +21,16 @@
  */
 namespace rocket\user\model;
 
-use rocket\spec\config\SpecManager;
+use rocket\spec\Spec;
 use rocket\user\bo\EiGrant;
 
 class RocketUserGroupListModel {
 	private $userGroups;
-	private $specManager;
+	private $spec;
 	
-	public function __construct(array $userGroups, SpecManager $specManager) {
+	public function __construct(array $userGroups, Spec $spec) {
 		$this->userGroups = $userGroups;
-		$this->specManager = $specManager;
+		$this->spec = $spec;
 	}
 	
 	public function getRocketUserGroups() {
@@ -38,11 +38,11 @@ class RocketUserGroupListModel {
 	}
 	
 	public function prettyEiGrantName(EiGrant $eiGrant) {
-		$eiType = $this->specManager->getEiTypeById($eiGrant->getEiTypeId());
+		$eiType = $this->spec->getEiTypeById($eiGrant->getEiTypeId());
 		if (null !== ($eiMaskId = $eiGrant->getEiMaskId())) {
-			return $eiType->getEiMaskCollection()->getById($eiMaskId)->getLabel();
+			return $eiType->getEiTypeExtensionCollection()->getById($eiMaskId)->getLabel();
 		}
 		
-		return $eiType->getEiMaskCollection()->getOrCreateDefault()->getLabelLstr();
+		return $eiType->getEiTypeExtensionCollection()->getOrCreateDefault()->getLabelLstr();
 	}
 }

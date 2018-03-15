@@ -28,7 +28,7 @@ use rocket\user\bo\EiPrivilegeGrant;
 use rocket\user\bo\EiGrant;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\spec\ei\manage\critmod\filter\EiEntryFilterDefinition;
+use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 

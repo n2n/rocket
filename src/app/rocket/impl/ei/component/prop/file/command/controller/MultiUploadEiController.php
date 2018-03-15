@@ -26,8 +26,8 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
 use rocket\impl\ei\component\prop\file\FileEiProp;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\EiPropPath;
 use n2n\io\managed\impl\FileFactory;
 
 class MultiUploadEiController extends ControllerAdapter {

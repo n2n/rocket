@@ -23,18 +23,18 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\prop\GuiEiProp;
-use rocket\spec\ei\component\prop\FieldEiProp;
-use rocket\spec\ei\manage\mapping\EiField;
-use rocket\spec\ei\manage\mapping\impl\Readable;
-use rocket\spec\ei\manage\mapping\impl\Writable;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\component\prop\GuiEiProp;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\ei\manage\mapping\EiField;
+use rocket\ei\manage\mapping\impl\Readable;
+use rocket\ei\manage\mapping\impl\Writable;
+use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\manage\critmod\filter\EiEntryFilterField;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
-use rocket\spec\ei\manage\mapping\impl\Copyable;
+use rocket\ei\manage\mapping\impl\Copyable;
 use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
 
 abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 

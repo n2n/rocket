@@ -23,10 +23,11 @@ namespace rocket\core\model;
 
 use n2n\context\RequestScoped;
 use n2n\util\col\GenericArrayObject;
+use rocket\core\model\launch\LaunchPad;
 
 class RocketState implements RequestScoped {
 	private $breadcrumbs = array();
-	private $activeMenuItem;
+	private $activeLaunchPad;
 	
 	public function __construct() {
 		$this->breadcrumbs = new GenericArrayObject(null, 'rocket\core\model\Breadcrumb');
@@ -44,16 +45,16 @@ class RocketState implements RequestScoped {
 	}
 	
 	/**
-	 * @param MenuItem $activeMenuItem
+	 * @param LaunchPad $activeLaunchPad
 	 */
-	public function setActiveMenuItem(MenuItem $activeMenuItem = null) {
-		$this->activeMenuItem = $activeMenuItem;
+	public function setActiveLaunchPad(LaunchPad $activeLaunchPad = null) {
+		$this->activeLaunchPad = $activeLaunchPad;
 	}
 	
 	/**
-	 * @return MenuItem
+	 * @return LaunchPad
 	 */
-	public function getActiveMenuItem() {
-		return $this->activeMenuItem;
+	public function getActiveLaunchPad() {
+		return $this->activeLaunchPad;
 	}
 }

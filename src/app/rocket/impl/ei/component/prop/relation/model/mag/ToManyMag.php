@@ -27,24 +27,24 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
-use rocket\spec\ei\manage\draft\Draft;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\draft\Draft;
+use rocket\ei\util\model\Eiu;
 use n2n\web\dispatch\mag\UiOutfitter;
 
 class ToManyMag extends MagAdapter {
 	private $min;
 	private $max;
 	private $targetReadUtils;
-	private $targetEditUtils;
+	private $targetEditEiuFrame;
 	private $elementLabel;
 	private $reduced = true;
 	
@@ -62,7 +62,7 @@ class ToManyMag extends MagAdapter {
 		parent::__construct($label);
 	
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
+		$this->targetEditEiuFrame = new EiuFrame($targetEditEiFrame);
 		$this->min = $min;
 		$this->max = $max;
 		
@@ -129,7 +129,7 @@ class ToManyMag extends MagAdapter {
 	}
 
 	public function getFormValue() {
-		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditUtils, $this->min, 
+		$toManyForm = new ToManyForm($this->labelLstr, $this->targetReadUtils, $this->targetEditEiuFrame, $this->min, 
 				$this->max);
 		$toManyForm->setSortable($this->targetOrderEiPropPath !== null);
 		$toManyForm->setReduced($this->reduced);
@@ -145,8 +145,8 @@ class ToManyMag extends MagAdapter {
 				} else if ($targetRelationEntry->hasEiEntry()) {
 					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
 				} else {
-					$toManyForm->addEiEntry($this->targetEditUtils->createEiEntry(
-							$targetRelationEntry->getEiObject()));
+					$toManyForm->addEiEntry($this->targetEditEiuFrame->entry($targetRelationEntry->getEiObject())
+							->getEiEntry());
 				}
 			}
 			$toManyForm->setSelectedEntryPids($pids);
@@ -156,8 +156,8 @@ class ToManyMag extends MagAdapter {
 				if ($targetRelationEntry->hasEiEntry()) {
 					$toManyForm->addEiEntry($targetRelationEntry->getEiEntry());
 				} else {
-					$toManyForm->addEiEntry($this->targetEditUtils->createEiEntry(
-							$targetRelationEntry->getEiObject()));
+					$toManyForm->addEiEntry($this->targetEditEiuFrame->entry($targetRelationEntry->getEiObject())
+							->getEiEntry());
 				}
 			}
 		}
@@ -199,7 +199,7 @@ class ToManyMag extends MagAdapter {
 		$orderIndex = 10;
 		foreach ($formValue->buildEiEntrys() as $targetEiEntry) {
 			if ($this->targetOrderEiPropPath !== null) {
-				$eiu = new Eiu($targetEiEntry, $this->targetEditUtils->getEiFrame());
+				$eiu = new Eiu($targetEiEntry, $this->targetEditEiuFrame->getEiFrame());
 				$eiu->entry()->setScalarValue($this->targetOrderEiPropPath, $orderIndex += 10, true);
 			}
 			
@@ -233,10 +233,10 @@ class ToManyMag extends MagAdapter {
 			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName);
 			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
 				$chosenId = null;
-				if ($mfMappingResult->entryForm->containsPropertyName('chosenId')) {
-					$chosenId = $mfMappingResult->entryForm->chosenId;
+				if ($mfMappingResult->eiuEntryForm->containsPropertyName('chosenId')) {
+					$chosenId = $mfMappingResult->eiuEntryForm->chosenId;
 				} else {
-					$chosenId = $mfMappingResult->entryForm->getObject()->getChosenId();
+					$chosenId = $mfMappingResult->eiuEntryForm->getObject()->getChosenId();
 				}
 				
 				if (in_array($chosenId, $this->allowedNewEiTypeIds)) continue;

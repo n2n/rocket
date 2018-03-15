@@ -27,27 +27,27 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\dispatch\Dispatchable;
-use rocket\spec\ei\manage\util\model\EiUtils;
+use rocket\ei\util\model\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\property\ObjectProperty;
-use rocket\spec\ei\manage\LiveEiObject;
+use rocket\ei\manage\LiveEiObject;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use rocket\impl\ei\component\prop\relation\model\mag\EntryLabeler;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\spec\ei\manage\util\model\UnknownEntryException;
+use rocket\ei\util\model\UnknownEntryException;
 
 class RelationSelectorMag extends MagAdapter  {
-	private $targetEiUtils;
+	private $targetEiuFrame;
 	private $targetLiveEntries = array();
 	private $targetSelectUrlCallback;
 	
-	public function __construct($propertyName, EiUtils $targetEiUtils, \Closure $targetSelectUrlCallback) {
+	public function __construct($propertyName, EiuFrame $targetEiuFrame, \Closure $targetSelectUrlCallback) {
 		parent::__construct($propertyName, 'Entry');
 		
-		$this->targetEiUtils = $targetEiUtils;
+		$this->targetEiuFrame = $targetEiuFrame;
 		$this->targetSelectUrlCallback = $targetSelectUrlCallback;
 	}
 	/**
@@ -67,11 +67,11 @@ class RelationSelectorMag extends MagAdapter  {
 	}
 
 	public function getFormValue() {
-		$relationSelectorForm = new RelationSelectorForm($this->targetEiUtils);
+		$relationSelectorForm = new RelationSelectorForm($this->targetEiuFrame);
 		$relationSelectorForm->setEntryPids(array_keys($this->targetLiveEntries));
 		foreach ($this->targetLiveEntries as $targetPid => $targetEiEntityObj) {
 			$relationSelectorForm->getEntryLabeler()->setSelectedIdentityString($targetPid,
-					$this->targetEiUtils->createIdentityString(new LiveEiObject($targetEiEntityObj)));
+					$this->targetEiuFrame->createIdentityString(new LiveEiObject($targetEiEntityObj)));
 		}
 		return $relationSelectorForm;	
 	}
@@ -89,8 +89,8 @@ class RelationSelectorMag extends MagAdapter  {
 			}
 			
 			try {
-				$this->targetLiveEntries[$targetPid] = $this->targetEiUtils->lookupEiEntityObj(
-						$this->targetEiUtils->pidToId($targetPid));
+				$this->targetLiveEntries[$targetPid] = $this->targetEiuFrame->lookupEiEntityObj(
+						$this->targetEiuFrame->pidToId($targetPid));
 			} catch (UnknownEntryException $e) {
 			}
 		}
@@ -121,7 +121,7 @@ class RelationSelectorForm implements Dispatchable {
 	private $entryLabeler;
 	protected $entryPids = array();
 	
-	public function __construct(EiUtils $entryUtils) {
+	public function __construct(EiuFrame $entryUtils) {
 		$this->entryUtils = $entryUtils;
 		$this->entryLabeler = new EntryLabeler($entryUtils);
 	}

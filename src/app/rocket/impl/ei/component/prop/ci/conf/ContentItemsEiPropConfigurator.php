@@ -24,17 +24,17 @@ namespace rocket\impl\ei\component\prop\ci\conf;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\reflection\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\config\LenientAttributeReader;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 
 class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 	const ATTR_PANELS_KEY = 'panels';
@@ -56,7 +56,7 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		$ciConfigUtils = null;
 		try {
 			$ciConfigUtils = CiConfigUtils::createFromN2nContext($n2nContext);
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 			return $magDispatchable;
 		}
 		
@@ -109,7 +109,7 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		}
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof ContentItemsEiProp);

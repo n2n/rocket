@@ -23,12 +23,12 @@ namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\spec\ei\manage\util\model\EntryForm;
+use rocket\ei\util\model\EiuEntryForm;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
@@ -36,19 +36,19 @@ use rocket\core\model\Rocket;
 
 class AddModel implements Dispatchable  {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoDispProperties('entryForm'));
+		$ai->c(new AnnoDispProperties('eiuEntryForm'));
 	}
 	
 	private $eiFrame;
-	private $entryForm;
+	private $eiuEntryForm;
 	private $nestedSetStrategy;
 	private $parentEntityObj;
 	private $beforeEntityObj;
 	private $afterEntityObj;
 	
-	public function __construct(EiFrame $eiFrame, EntryForm $entryForm, NestedSetStrategy $nestedSetStrategy = null) {
+	public function __construct(EiFrame $eiFrame, EiuEntryForm $eiuEntryForm, NestedSetStrategy $nestedSetStrategy = null) {
 		$this->eiFrame = $eiFrame;
-		$this->entryForm = $entryForm;
+		$this->eiuEntryForm = $eiuEntryForm;
 		$this->nestedSetStrategy = $nestedSetStrategy;
 	}
 	
@@ -68,19 +68,19 @@ class AddModel implements Dispatchable  {
 	 * @see \rocket\impl\ei\component\command\common\model\EntryCommandModel::getEntryModel()
 	 */
 // 	public function getCurrentEntryModel() {
-// 		return $this->entryForm->getEntryTypeForm();
+// 		return $this->eiuEntryForm->getEiuEntryTypeForm();
 // 	}
 	
 // 	public function getEiFrame() {
 // 		return $this->entryManager->getEiFrame();
 // 	}
 	
-	public function getEntryForm() {
-		return $this->entryForm;
+	public function getEiuEntryForm() {
+		return $this->eiuEntryForm;
 	}
 	
-	public function setEntryForm(EntryForm $entryForm) {
-		$this->entryForm = $entryForm;
+	public function setEiuEntryForm(EiuEntryForm $eiuEntryForm) {
+		$this->eiuEntryForm = $eiuEntryForm;
 	}
 	
 	private function _validation(BindingDefinition $bd) {
@@ -94,7 +94,7 @@ class AddModel implements Dispatchable  {
 			return;
 		}
 			
-		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEntityModel()->getClass(),
+		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
 				$this->nestedSetStrategy);
 		
 		if ($this->beforeEntityObj !== null) {
@@ -107,7 +107,7 @@ class AddModel implements Dispatchable  {
 	}
 		
 	public function create(MessageContainer $messageContainer) {
-		$eiuEntry = $this->entryForm->buildEiuEntry();
+		$eiuEntry = $this->eiuEntryForm->buildEiuEntry();
 		
 		if (!$eiuEntry->getEiEntry()->save()) {
 			$messageContainer->addErrorCode('common_form_err', null, null, Rocket::NS);
@@ -134,7 +134,7 @@ class AddModel implements Dispatchable  {
 		IllegalStateException::assertTrue($this->nestedSetStrategy === null);
 		
 		$draft = $eiObject->getDraft();
-		$draftDefinition = $this->entryForm->getChosenEntryTypeForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
+		$draftDefinition = $this->eiuEntryForm->getChosenEiuEntryTypeForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 				->getDraftDefinition();
 		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
 		$draftManager->persist($draft, $draftDefinition);

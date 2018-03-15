@@ -35,7 +35,7 @@ use rocket\core\model\Rocket;
 use n2n\core\container\PdoPool;
 use rocket\user\controller\RocketUserGroupController;
 use n2n\web\http\Response;
-use rocket\core\model\UnknownMenuItemException ;
+use rocket\core\model\launch\UnknownLaunchPadException ;
 use n2n\core\config\N2nLocaleConfig;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\impl\ScrBaseController;
@@ -107,24 +107,24 @@ class RocketController extends ControllerAdapter {
 			N2nLocale $n2nLocale, PdoPool $dbhPool, MessageContainer $mc) {
 		if (!$this->verifyUser()) return;
 		
-		$menuItem = null;
+		$launchPad = null;
 		try {
-			$menuItem = $rocket->getSpecManager()->getMenuItemById($navItemId);
-		} catch (UnknownMenuItemException $e) {
+			$launchPad = $rocket->getSpec()->getLaunchPadById($navItemId);
+		} catch (UnknownLaunchPadException $e) {
 			throw new PageNotFoundException('navitem not found', 0, $e);
 		}
 		
-		$rocketState->setActiveMenuItem($menuItem);
+		$rocketState->setActiveLaunchPad($launchPad);
 		
 		$this->beginTransaction();
 		
 		$delegateControllerContext = $this->createDelegateContext();
-		$delegateControllerContext->setController($menuItem->lookupController($this->getN2nContext(), 
+		$delegateControllerContext->setController($launchPad->lookupController($this->getN2nContext(), 
 				$delegateControllerContext));
 		
 		$this->delegateToControllerContext($delegateControllerContext);
 		
-		$transactionApproveAttempt = $menuItem->approveTransaction($this->getN2nContext());
+		$transactionApproveAttempt = $launchPad->approveTransaction($this->getN2nContext());
 		if ($transactionApproveAttempt->isSuccessful()) {
 			$this->commit();
 		

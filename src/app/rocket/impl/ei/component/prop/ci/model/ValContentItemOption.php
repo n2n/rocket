@@ -43,20 +43,20 @@ class ValContentItemOption extends SimplePropertyValidator {
 			$panelName = $panelConfig->getName();
 			$allowedContentItemIds = $panelConfig->getAllowedContentItemIds();
 			$propertyPath = new PropertyPath(array($pathPart));
-			foreach ($mapValue->currentMappingForms as $key => $entryFormMappingResult) {
-				if (!$entryFormMappingResult->mainEntryFormPart->MagForm->has('panel')
-						|| $entryFormMappingResult->mainEntryFormPart->MagForm->panel != $panelName) continue;
+			foreach ($mapValue->currentMappingForms as $key => $eiuEntryFormMappingResult) {
+				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')
+						|| $eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->panel != $panelName) continue;
 				$this->checkTypeId(
 						$propertyPath->ext('currentMappingForms[' . $key . ']')->ext('selectedTypeId'), 
-						$entryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
+						$eiuEntryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
 			}
 
-			foreach ($mapValue->newMappingForms as $key => $entryFormMappingResult) {
-				if (!$entryFormMappingResult->mainEntryFormPart->MagForm->has('panel')
-						|| $entryFormMappingResult->mainEntryFormPart->MagForm->panel != $panelName) continue;
+			foreach ($mapValue->newMappingForms as $key => $eiuEntryFormMappingResult) {
+				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')
+						|| $eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->panel != $panelName) continue;
 				$this->checkTypeId(
 						$propertyPath->ext('newMappingForms[' . $key . ']')->ext('selectedTypeId'),
-						$entryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
+						$eiuEntryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
 			}
 			
 		}		

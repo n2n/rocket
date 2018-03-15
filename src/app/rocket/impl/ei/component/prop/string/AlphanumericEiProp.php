@@ -21,28 +21,28 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use rocket\spec\ei\component\prop\QuickSearchableEiProp;
-use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
-use rocket\spec\ei\component\prop\SortableEiProp;
-use rocket\spec\ei\component\prop\FilterableEiProp;
-use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\component\prop\QuickSearchableEiProp;
+use rocket\ei\manage\critmod\filter\impl\field\StringFilterField;
+use rocket\ei\component\prop\SortableEiProp;
+use rocket\ei\component\prop\FilterableEiProp;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\ScalarEiProp;
-use rocket\spec\ei\component\prop\GenericEiProp;
-use rocket\spec\ei\manage\generic\CommonGenericEiProperty;
-use rocket\spec\ei\manage\generic\CommonScalarEiProperty;
-use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
-use rocket\spec\ei\manage\critmod\filter\FilterField;
-use rocket\spec\ei\manage\critmod\sort\SortField;
-use rocket\spec\ei\manage\generic\GenericEiProperty;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\prop\ScalarEiProp;
+use rocket\ei\component\prop\GenericEiProp;
+use rocket\ei\manage\generic\CommonGenericEiProperty;
+use rocket\ei\manage\generic\CommonScalarEiProperty;
+use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\generic\GenericEiProperty;
 
 abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -123,7 +123,7 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\ScalarEiProp::buildScalarValue()
+	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
 	public function getScalarEiProperty() {
 		return new CommonScalarEiProperty($this);

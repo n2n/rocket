@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\enum;
 
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class EnumGuiGroupEiProp extends PropertyDisplayableEiPropAdapter {
 	/**

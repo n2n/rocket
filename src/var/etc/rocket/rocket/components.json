@@ -60,7 +60,7 @@
         ]
     },
     "eiModificatorClasses": [
-
+    	"rocket\\impl\\ei\\component\\modificator\\constraint\\UniqueEiModificator"
     ],
     "scriptListenerClasses": [
 

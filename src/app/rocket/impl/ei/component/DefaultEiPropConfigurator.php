@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\persistence\meta\structure\Column;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\spec\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 
 class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
 	 */
 	public function initAutoEiPropAttributes(Column $column = null) {
 	}
@@ -41,7 +41,7 @@ class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropC
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
 	 */
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		return CompatibilityLevel::NOT_COMPATIBLE;
@@ -49,7 +49,7 @@ class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropC
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\indepenent\EiPropConfigurator::assignProperty($propertyAssignation)
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::assignProperty($propertyAssignation)
 	 */
 	public function assignProperty(PropertyAssignation $propertyAssignation) {
 		throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');

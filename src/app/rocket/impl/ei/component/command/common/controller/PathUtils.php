@@ -21,17 +21,17 @@
  */
 namespace rocket\impl\ei\component\command\common\controller;
 
-use rocket\spec\ei\manage\control\EntryNavPoint;
+use rocket\ei\manage\control\EntryNavPoint;
 use n2n\l10n\N2nLocale;
 use n2n\util\uri\Path;
-use rocket\spec\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCommand;
 
 class PathUtils {
 
 	public static function createPathExtFromEntryNavPoint(EiCommand $eiCommand, EntryNavPoint $entryNavPoint): Path {
 		$pid = null;
 		if (null !== ($id = $entryNavPoint->getLiveId())) {
-			$pid = $eiCommand->getEiEngine()->getEiType()->idToPid($id);
+			$pid = $eiCommand->getEiMask()->getEiType()->idToPid($id);
 		}
 		$draftId = $entryNavPoint->getDraftId();
 		$previewType = $entryNavPoint->getPreviewType();

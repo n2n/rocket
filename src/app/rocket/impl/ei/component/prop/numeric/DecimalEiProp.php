@@ -28,9 +28,9 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\DecimalEiPropConfigurator;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
@@ -132,7 +132,7 @@ class EiDecimalMag extends NumericMag {
 	 * @see \n2n\impl\web\dispatch\mag\model\NumericMag::createUiField()
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
-		$input = parent::createUiField($propertyPath, $view);
+		$input = parent::createUiField($propertyPath, $view, $uiOutfitter);
 	
 		if ($this->inputPrefix === null) return $input;
 		

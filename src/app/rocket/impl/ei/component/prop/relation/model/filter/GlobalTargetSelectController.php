@@ -27,7 +27,7 @@ use n2n\web\http\controller\impl\ScrController;
 use n2n\web\http\controller\ControllerAdapter;
 
 class GlobalRelationJhtmlController extends ControllerAdapter implements ScrController {
-	private $specManager;
+	private $spec;
 	private $loginContext;
 	
 	/**
@@ -35,7 +35,7 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 	 * @param LoginContext $loginContext
 	 */
 	private function _init(Rocket $rocket, LoginContext $loginContext) {
-		$this->specManager = $rocket->getSpecManager();
+		$this->spec = $rocket->getSpec();
 		$this->loginContext = $loginContext;
 	}
 	
@@ -52,14 +52,14 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 // 	 * @param string $eiTypeId
 // 	 * @param string $eiMaskId
 // 	 * @throws PageNotFoundException
-// 	 * @return \rocket\spec\ei\EiThing
+// 	 * @return \rocket\ei\EiThing
 // 	 */
 // 	private function lookupEiThing(string $eiTypeId, string $eiMaskId) {
 // 		try {
-// 			return $this->specManager->getEiTypeById($eiTypeId)->getEiMaskCollection()->getById($eiMaskId);
-// 		} catch (UnknownSpecException $e) {
+// 			return $this->spec->getEiTypeById($eiTypeId)->getEiTypeExtensionCollection()->getById($eiMaskId);
+// 		} catch (UnknownTypeException $e) {
 // 			throw new PageNotFoundException(null, 0, $e);
-// 		} catch (UnknownEiMaskException $e) {
+// 		} catch (UnknownEiTypeExtensionException $e) {
 // 			throw new PageNotFoundException(null, 0, $e);
 // 		}
 // 	}

@@ -22,9 +22,9 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\spec\ei\manage\critmod\filter\impl\form\FilterGroupForm;
-	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
-	use rocket\spec\ei\manage\critmod\sort\impl\form\SortForm;
+	use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\manage\critmod\sort\impl\form\SortForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -43,7 +43,7 @@
 <fieldset>
 	<h4><?php $html->l10nText('ei_impl_filter_title') ?></h4>
 	<?php $formHtml->openPseudo($filterGroupForm, new PropertyPath(array('filterForm'))) ?>
-		<?php $view->import('spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
+		<?php $view->import('ei\manage\critmod\filter\impl\view\filterForm.html', 
 				array('propertyPath' => $formHtml->meta()->createPropertyPath(),
 						'filterAjahHook' => $filterAjahHook)) ?>
 	<?php $formHtml->closePseudo() ?>
@@ -51,7 +51,7 @@
 <fieldset>
 	<h4><?php $html->l10nText('ei_impl_sort_title') ?></h4>
 	<?php $formHtml->openPseudo($sortForm, new PropertyPath(array('sortForm'))) ?>
-		<?php $view->import('spec\ei\manage\critmod\sort\impl\view\sortForm.html', 
+		<?php $view->import('ei\manage\critmod\sort\impl\view\sortForm.html', 
 				array('propertyPath' => $formHtml->meta()->createPropertyPath())) ?>
 	<?php $formHtml->closePseudo() ?>
 </fieldset>

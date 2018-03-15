@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -59,21 +59,23 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 	}
 	
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof OrderEiProp);
-		$eiDef = $setupProcess->getEiDef();
+// 		$eiDef = $setupProcess->getEiDef();
 		
-		if ($this->attributes->contains(self::OPTION_REFERENCE_FIELD_KEY)) {
-			$this->eiComponent->setReferenceField($eiDef->getEiPropCollection()->getById(
-					$this->attributes->get(self::OPTION_REFERENCE_FIELD_KEY)));
-		}
+// 		if ($this->attributes->contains(self::OPTION_REFERENCE_FIELD_KEY)) {
+// 			$this->eiComponent->setReferenceField($eiDef->getEiPropCollection()->getById(
+// 					$this->attributes->get(self::OPTION_REFERENCE_FIELD_KEY)));
+// 		}
 		
 		$orderEiCommand = new OrderEiCommand();
 		$orderEiCommand->setOrderEiProp($this->eiComponent);
-		$setupProcess->getEiCommandCollection()->add($orderEiCommand);
-		$setupProcess->getEiModificatorCollection()->add(new OrderEiModificator($this->eiComponent));
+		
+		$eiuMask = $setupProcess->eiu()->mask();
+		$eiuMask->addEiCommand($orderEiCommand);
+		$eiuMask->addEiModificator(new OrderEiModificator($this->eiComponent));
 		
 // 		if (count($eiDef->getDefaultSortData()) === 0) {
 // 		    $eiDef->setDefaultSortData(array($this->eiComponent->getEntityProperty()->getName() => Criteria::ORDER_DIRECTION_ASC));

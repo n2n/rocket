@@ -22,7 +22,7 @@
 
 	use n2n\web\ui\Raw;
 	use rocket\tool\controller\ToolController;
-	use rocket\spec\ei\manage\control\IconType;
+	use rocket\ei\manage\control\IconType;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	
 	$view = HtmlView::view($this);

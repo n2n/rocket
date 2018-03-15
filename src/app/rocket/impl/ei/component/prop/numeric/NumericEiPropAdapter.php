@@ -21,31 +21,31 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use rocket\spec\ei\component\prop\QuickSearchableEiProp;
-use rocket\spec\ei\manage\critmod\filter\impl\field\StringFilterField;
-use rocket\spec\ei\component\prop\SortableEiProp;
-use rocket\spec\ei\component\prop\FilterableEiProp;
+use rocket\ei\component\prop\QuickSearchableEiProp;
+use rocket\ei\manage\critmod\filter\impl\field\StringFilterField;
+use rocket\ei\component\prop\SortableEiProp;
+use rocket\ei\component\prop\FilterableEiProp;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\spec\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\EiPropPath;
+use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\spec\ei\manage\critmod\sort\SortField;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
-use rocket\spec\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\ei\manage\critmod\filter\FilterField;
 
 abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -96,7 +96,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\FilterableEiProp::buildManagedFilterField($eiFrame)
+	 * @see \rocket\ei\component\prop\FilterableEiProp::buildManagedFilterField($eiFrame)
 	 */
 	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
 		return $this->buildFilterField($eiFrame->getN2nContext());
@@ -116,7 +116,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\prop\SortableEiProp::createGlobalSortField()
+	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortField()
 	 * @return SortField
 	 */
 	public function buildSortField(N2nContext $n2nContext): ?SortField {

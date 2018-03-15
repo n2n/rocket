@@ -27,8 +27,8 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -86,13 +86,13 @@ class ContentItemMag extends MagAdapter {
 	}
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
-		$targetEditUtils = new EiuFrame($this->targetEditEiFrame);
+		$targetEiuFrame = new EiuFrame($this->targetEditEiFrame);
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			if (!$targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry = RelationEntry::fromM($targetEditUtils
-						->createEiEntry($targetRelationEntry->getEiObject()));
+				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame
+						->entry($targetRelationEntry->getEiObject())->getEiEntry());
 			}
 			
 			$panelName = $targetRelationEntry->getEiEntry()->getValue($panelEiPropPath);
@@ -176,8 +176,8 @@ class ContentItemMag extends MagAdapter {
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
 		$ciEiTypeLabels = array();
 		
-		$targetContextEiMask = $this->targetEditEiFrame->getContextEiMask();
-		foreach ($this->targetEditEiFrame->getContextEiMask()->getEiEngine()->getEiType()->getAllSubEiTypes() as $subEiType) {
+		$targetContextEiMask = $this->targetEditEiFrame->getContextEiEngine()->getEiMask();
+		foreach ($this->targetEditEiFrame->getContextEiEngine()->getEiMask()->getEiType()->getAllSubEiTypes() as $subEiType) {
 			if ($subEiType->isAbstract()) continue;
 			
 			$ciEiTypeLabels[$subEiType->getId()] = $targetContextEiMask->determineEiMask($subEiType)->getLabelLstr()

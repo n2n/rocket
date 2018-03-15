@@ -24,22 +24,22 @@ namespace rocket\impl\ei\component\command\common;
 use n2n\core\N2N;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiFrame;
 use n2n\l10n\N2nLocale;
-use rocket\spec\ei\component\command\control\PartialControlComponent;
-use rocket\spec\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\PartialControlComponent;
+use rocket\ei\manage\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DeleteController;
-use rocket\spec\ei\manage\control\ControlButton;
-use rocket\spec\ei\manage\control\IconType;
+use rocket\ei\manage\control\ControlButton;
+use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\spec\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
 use rocket\spec\security\EiCommandPrivilege;
 use n2n\l10n\Lstr;
 use n2n\util\uri\Path;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 
@@ -131,14 +131,14 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	}
 	
 	public function processEntries(EiFrame $eiFrame, array $entries) {
-		$specManager = N2N::getModelContext()->lookup('rocket\spec\config\SpecManager');
+		$spec = N2N::getModelContext()->lookup('rocket\spec\Spec');
 		$eiType = $this->getEiType();
 		$em = $eiFrame->getEntityManager();
 		
 		foreach ($entries as $entry) {
-// 			$specManager->notifyOnDelete($entry);
+// 			$spec->notifyOnDelete($entry);
 			$em->remove($entry);
-// 			$specManager->notifyDelete($entry);
+// 			$spec->notifyDelete($entry);
 		}
 	}
 

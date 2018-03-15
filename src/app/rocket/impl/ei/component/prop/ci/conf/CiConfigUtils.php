@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\ci\conf;
 
-use rocket\spec\ei\EiType;
+use rocket\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
@@ -60,7 +60,7 @@ class CiConfigUtils {
 	}
 
 	public static function createFromN2nContext(N2nContext $n2nContext) {
-		return new CiConfigUtils($n2nContext->lookup(Rocket::class)->getSpecManager()
+		return new CiConfigUtils($n2nContext->lookup(Rocket::class)->getSpec()
 				->getEiTypeByClass(ContentItem::getClass()));
 	}
 
@@ -71,7 +71,7 @@ class CiConfigUtils {
 
 		$this->allowedContentItemOptions = array();
 		foreach ($this->ciEiType->getAllSubEiTypes() as $subEiType) {
-			$this->allowedContentItemOptions[$subEiType->getId()] = $subEiType->getEiMaskCollection()
+			$this->allowedContentItemOptions[$subEiType->getId()] = $subEiType->getEiTypeExtensionCollection()
 					->getOrCreateDefault()->getLabelLstr();
 		}
 

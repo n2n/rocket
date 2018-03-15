@@ -50,7 +50,7 @@ $view->assert($loginContext instanceof LoginContext);
 // 	$rocketState = $view->lookup('rocket\core\model\RocketState');
 // 	$view->assert($rocketState instanceof RocketState);
 
-// 	$manageState = $view->lookup('rocket\spec\ei\manage\ManageState');
+// 	$manageState = $view->lookup('rocket\ei\manage\ManageState');
 // 	$view->assert($manageState instanceof ManageState);
 
 $htmlMeta = $html->meta();
@@ -71,9 +71,9 @@ $htmlMeta->addJs('js/ajah.js', 'n2n\impl\web\ui');
 $htmlMeta->addJs('js/rocket.js', null);
 
 
-// 	$specManager = $rocket->getSpecManager();
-// 	$menuGroups = $specManager->getMenuGroups();
-// 	$selectedMenuItem = $manageState->getSelectedMenuItem();
+// 	$spec = $rocket->getSpec();
+// 	$menuGroups = $spec->getMenuGroups();
+// 	$selectedLaunchPad = $manageState->getSelectedLaunchPad();
 // 	$breadcrumbs = $rocketState->getBreadcrumbs();
 // 	$activeBreadcrumb = array_pop($breadcrumbs);
 $htmlMeta->addLink(array('rel' => 'shortcut icon', 'href' => $httpContext->getAssetsUrl('rocket')->ext(array('img', 'favicon.ico'))));
@@ -92,19 +92,6 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 			right: 0px;
 			bottom: 0px;
 			background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
-		}
-		
-		.rocket-load-blocker {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-			background: #FEC800 url('https://media.giphy.com/media/3ohzgD1wRxpvpkDCSI/giphy.gif') center center no-repeat;
-		}
-		
-		.rocket-load-blocker * {
-			display: none;
 		}
 		
 		.rocket-layer {
@@ -191,14 +178,14 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 					<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
 				</h3>
 				<ul class="nav flex-column">
-					<?php foreach ($navArray['menuItems'] as $menuItem): ?>
+					<?php foreach ($navArray['launchPads'] as $launchPad): ?>
 						<li class="nav-item">
-							<?php $html->link(Murl::controller('rocket')->pathExt('manage', $menuItem->getId(),
-								$menuItem->determinePathExt($view->getN2nContext())),
-								new Raw($html->getEsc($navArray['menuGroup']->determineLabel($menuItem))
+							<?php $html->link(Murl::controller('rocket')->pathExt('manage', $launchPad->getId(),
+								$launchPad->determinePathExt($view->getN2nContext())),
+								new Raw($html->getEsc($navArray['menuGroup']->determineLabel($launchPad))
 									. '<span></span>'),
 								array('data-jhtml' => 'true', 'class' => 'nav-link'
-									. ($templateModel->isMenuItemActive($menuItem) ? ' active' : null))) ?></li>
+									. ($templateModel->isLaunchPadActive($launchPad) ? ' active' : null))) ?></li>
 					<?php endforeach ?>
 				</ul>
 			</div>

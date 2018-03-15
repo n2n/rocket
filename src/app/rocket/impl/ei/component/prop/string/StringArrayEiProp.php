@@ -9,7 +9,7 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class StringArrayEiProp extends DraftableEiPropAdapter {
 

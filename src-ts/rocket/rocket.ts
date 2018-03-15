@@ -10,13 +10,14 @@ namespace Rocket {
 		let jqContainer = $("#rocket-content-container");
 
 		container = new Rocket.Cmd.Container(jqContainer);
-		let userStore = Rocket.Impl.UserStore.read(jqContainer.find("#rocket-global-nav").find("h2").data("rocketUserId"));
+		let userStore = Rocket.Impl.UserStore
+				.read(jqContainer.find("#rocket-global-nav").find("h2").data("rocketUserId"));
 
 		blocker = new Rocket.Cmd.Blocker(container);
 		blocker.init($("body"));
 
 		initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"),
-			jqContainer.data("display-error-label"));
+				jqContainer.data("display-error-label"));
 		
 		Jhtml.ready(() => {
 			initializer.scan();

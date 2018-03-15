@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
@@ -29,18 +29,18 @@ use rocket\impl\ei\component\prop\string\PathPartEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModificator;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\spec\config\SpecEiSetupProcess;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\InvalidAttributeException;
 use n2n\util\StringUtils;
-use rocket\spec\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
-use rocket\spec\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\spec\ei\manage\generic\UnknownScalarEiPropertyException;
-use rocket\spec\ei\manage\generic\UnknownGenericEiPropertyException;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
 use n2n\reflection\CastUtils;
-use rocket\spec\ei\manage\generic\ScalarEiProperty;
-use rocket\spec\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\util\model\EiuEngine;
 
 class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
@@ -81,35 +81,17 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$this->attributes->set(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, key($options));
 	}
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
-		$setupProcess instanceof SpecEiSetupProcess;
 		
 		$pathPartEiProp = $this->eiComponent;
 		IllegalStateException::assertTrue($pathPartEiProp instanceof PathPartEiProp);
 		
-		if ($this->attributes->contains(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)) {
-			try {
-				$pathPartEiProp->setBaseScalarEiProperty($setupProcess->getScalarEiPropertyByFieldPath(
-						$this->attributes->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)));
-			} catch (\InvalidArgumentException $e) {
-				throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
-			} catch (UnknownScalarEiPropertyException $e) {
-				throw $setupProcess->createException('Configured base ScalarEiProperty not found.', $e);
-			}
-		}
+		$that = $this;
+		$setupProcess->eiu()->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($setupProcess, $that) {
+			$that->setupRef($setupProcess, $eiuEngine);
+		});
 		
-		if ($this->attributes->contains(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)) {
-			try {
-				$pathPartEiProp->setUniquePerGenericEiProperty($setupProcess->getGenericEiPropertyByEiPropPath(
-						$this->attributes->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)));
-			} catch (\InvalidArgumentException $e) {
-				throw $setupProcess->createException('Invalid unique per GenericEiProperty configured.', $e);
-			} catch (UnknownGenericEiPropertyException $e) {
-				throw $setupProcess->createException('Configured unique per GenericEiProperty not found.', $e);
-			}
-		}
-
 		if ($this->attributes->contains(self::OPTION_NULL_ALLOWED_KEY)) {
 			$allowEmpty = $this->attributes->getBool(self::OPTION_NULL_ALLOWED_KEY, false);
 			if ($allowEmpty && $this->mandatoryRequired()) {
@@ -128,7 +110,34 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 			$pathPartEiProp->setCriticalMessage($this->attributes->getString(self::OPTION_CRITICAL_MESSAGE_KEY));
 		}
 
-		$setupProcess->getEiModificatorCollection()->add(new PathPartEiModificator($this->eiComponent));
+		$setupProcess->eiu()->mask()->addEiModificator(new PathPartEiModificator($this->eiComponent));
+	}
+	
+	private function setupRef(EiSetup $setupProcess, EiuEngine $eiuEngine) {
+		$pathPartEiProp = $this->eiComponent;
+		IllegalStateException::assertTrue($pathPartEiProp instanceof PathPartEiProp);
+		
+		if ($this->attributes->contains(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)) {
+			try {
+				$pathPartEiProp->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty(
+						$this->attributes->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)));
+			} catch (\InvalidArgumentException $e) {
+				throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
+			} catch (UnknownScalarEiPropertyException $e) {
+				throw $setupProcess->createException('Configured base ScalarEiProperty not found.', $e);
+			}
+		}
+		
+		if ($this->attributes->contains(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)) {
+			try {
+				$pathPartEiProp->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty(
+						$this->attributes->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)));
+			} catch (\InvalidArgumentException $e) {
+				throw $setupProcess->createException('Invalid unique per GenericEiProperty configured.', $e);
+			} catch (UnknownGenericEiPropertyException $e) {
+				throw $setupProcess->createException('Configured unique per GenericEiProperty not found.', $e);
+			}
+		}
 	}
 
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -167,9 +176,10 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private function getBaseEiPropIdOptions() {
 		$baseEiPropIdOptions = array();
-		foreach ($this->eiComponent->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties()
+		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
 				as $id => $genericScalarProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
+			
 			CastUtils::assertTrue($genericScalarProperty instanceof ScalarEiProperty);
 			$baseEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();
 		}
@@ -178,7 +188,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private function getUniquePerOptions() {
 		$options = array();
-		foreach ($this->eiComponent->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
+		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
 			if ($id === $this->eiComponent->getId()) continue;
 			CastUtils::assertTrue($genericEiProperty instanceof GenericEiProperty);
 			$options[$id] = (string) $genericEiProperty->getLabelLstr();

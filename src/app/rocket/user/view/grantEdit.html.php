@@ -24,7 +24,7 @@
 	use rocket\user\model\EiGrantForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\user\view\EiGrantHtmlBuilder;
-	use rocket\spec\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -98,7 +98,7 @@
 										<div>	
 											<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
 											<div class="rocket-control">
-												<?php $view->import('~\spec\ei\manage\critmod\filter\impl\view\filterForm.html', 
+												<?php $view->import('~\ei\manage\critmod\filter\impl\view\filterForm.html', 
 														array('propertyPath' => $formHtml->meta()->createPropertyPath('restrictionFilterGroupForm'),
 																'filterAjahHook' => $filterAjahHook)) ?>
 											</div>

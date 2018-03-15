@@ -22,8 +22,8 @@
 // namespace rocket\impl\ei\component\command\common\model;
 
 // use n2n\web\dispatch\Dispatchable;
-// use rocket\spec\ei\manage\EiFrame;
-// use rocket\spec\ei\CritmodFactory;
+// use rocket\ei\manage\EiFrame;
+// use rocket\ei\CritmodFactory;
 
 // class ListQuickSearchModel implements Dispatchable {	
 // 	private $eiFrame;
@@ -36,7 +36,7 @@
 // 		$this->eiFrame = $eiFrame;
 // 		$this->tmpFilterStore = $tmpFilterStore;
 // 		$this->quickSearchableModel = CritmodFactory::createQuickSearchableModel($eiFrame);
-// 		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId());
+// 		$this->searchStr = $tmpFilterStore->getTmpSearchStr($eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId());
 // 	}
 	
 // 	public function isActive() {
@@ -61,11 +61,11 @@
 // 	private function _validation() { }
 	
 // 	public function search() {
-// 		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), $this->searchStr);
+// 		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(), $this->searchStr);
 // 	}
 	
 // 	public function clear() {
-// 		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getId(), null);
+// 		$this->tmpFilterStore->setTmpSearchStr($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(), null);
 // 	}
 	
 // }

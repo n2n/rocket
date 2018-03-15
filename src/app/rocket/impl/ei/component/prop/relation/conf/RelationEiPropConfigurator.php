@@ -25,29 +25,30 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\spec\ei\component\EiSetupProcess;
-use rocket\spec\ei\mask\UnknownEiMaskException;
-use rocket\spec\ei\component\UnknownEiComponentException;
+use rocket\ei\component\EiSetup;
+use rocket\ei\UnknownEiTypeExtensionException;
+use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\relation\ToManyEiPropAdapter;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToOneEiProp;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
-use rocket\spec\ei\component\UnknownException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\EiException;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\core\model\Rocket;
 use n2n\util\config\LenientAttributeReader;
-use rocket\spec\config\UnknownSpecException;
+use rocket\spec\UnknownTypeException;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use n2n\reflection\CastUtils;
-use rocket\spec\config\SpecManager;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\generic\ScalarEiProperty;
+use rocket\spec\Spec;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
+use rocket\ei\util\model\EiuEngine;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
@@ -103,14 +104,14 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		$targetOrderFieldPathOptions = array();
 		try {
-			$specManager = $n2nContext->lookup(Rocket::class)->getSpecManager();
-			CastUtils::assertTrue($specManager instanceof SpecManager);
-			$targetEiType = $specManager->getEiTypeByClass($targetEntityClass);
-			foreach ($targetEiType->getEiMaskCollection()->toArray() as $eiMask) {
-				$targetEiMaskOptions[$eiMask->getId()] = $eiMask->getEiEngine()->getEiType()->getLabelLstr();
+			$spec = $n2nContext->lookup(Rocket::class)->getSpec();
+			CastUtils::assertTrue($spec instanceof Spec);
+			$targetEiType = $spec->getEiTypeByClass($targetEntityClass);
+			foreach ($targetEiType->getEiTypeExtensionCollection()->toArray() as $eiMask) {
+				$targetEiMaskOptions[$eiMask->getExtension()->getId()] = $eiMask->getEiEngine()->getEiMask()->getEiType()->getLabelLstr();
 			}
 			
-			$scalarEiProperties = $targetEiType->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();
+			$scalarEiProperties = $targetEiType->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap();
 			foreach ($scalarEiProperties as $ref => $scalarEiProperty) {
 				CastUtils::assertTrue($scalarEiProperty instanceof ScalarEiProperty);
 				
@@ -118,7 +119,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 						= $scalarEiProperty->getLabelLstr();
 			}
 		} catch (UnknownEiComponentException $e) {
-		} catch (UnknownSpecException $e) {
+		} catch (UnknownTypeException $e) {
 		} catch (InvalidConfigurationException $e) {
 		}
 		
@@ -179,7 +180,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		return $magDispatchable;
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
 		$eiComponent = $this->eiComponent;
@@ -192,21 +193,21 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$relationEntityProperty = $this->eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationEntityProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
-			$target = $eiSetupProcess->getEiTypeByClass($targetEntityClass);
+			$target = $eiSetupProcess->eiu()->context()->getSpec()->getEiTypeByClass($targetEntityClass);
 			
 			$targetEiMask = null; 
 			if (null !== ($eiMaskId = $this->attributes->getString(self::ATTR_TARGET_MASK_KEY, false, null, true))) {
-				$targetEiMask = $target->getEiMaskCollection()->getById($eiMaskId);
+				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiMask();
 			} else {
-				$targetEiMask = $target->getEiMaskCollection()->getOrCreateDefault();
+				$targetEiMask = $target->getEiMask();
 			}
 				
 			$targetMasterEiProp = null;
 
-			$this->eiPropRelation->init($target, $targetEiMask);
-		} catch (UnknownException $e) {
+			$this->eiPropRelation->init($eiSetupProcess->eiu(), $target, $targetEiMask);
+		} catch (EiException $e) {
 			throw $eiSetupProcess->createException(null, $e);
-		} catch (UnknownEiMaskException $e) {
+		} catch (UnknownEiTypeExtensionException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiComponentException $e) {
 			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);
@@ -232,9 +233,13 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($eiComponent instanceof EmbeddedOneToManyEiProp
 				&& $this->attributes->contains(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY)) {
 			$targetEiPropPath = EiPropPath::create($this->attributes->getScalar(self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY));
-			$this->eiPropRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
-						->getScalarEiPropertyByFieldPath($targetEiPropPath);
-			$eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
+			
+			$that = $this;
+			$eiSetupProcess->eiu()->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($that, $targetEiPropPath, $eiComponent) {
+				$that->eiPropRelation->getTargetEiMask()->getEiEngine()->getScalarEiDefinition()
+						->getScalarEiPropertyByEiPropPath($targetEiPropPath);
+				$eiComponent->setTargetOrderEiPropPath($targetEiPropPath);
+			});
 		}
 		
 		if (($eiComponent instanceof EmbeddedOneToOneEiProp || $eiComponent instanceof EmbeddedOneToManyEiProp) 

@@ -30,10 +30,10 @@ use rocket\impl\ei\component\prop\ci\model\PanelConfig;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
-use rocket\spec\ei\EiPropPath;
-use rocket\spec\ei\manage\util\model\Eiu;
-use rocket\spec\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\ei\manage\gui\GuiField;
+use rocket\ei\EiPropPath;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\gui\GuiField;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();
@@ -57,14 +57,14 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiPropPath
+	 * @return \rocket\ei\EiPropPath
 	 */
 	public static function getPanelEiPropPath(): EiPropPath {
 		return new EiPropPath(array('panel'));
 	}
 	
 	/**
-	 * @return \rocket\spec\ei\EiPropPath
+	 * @return \rocket\ei\EiPropPath
 	 */
 	public static function getOrderIndexEiPropPath(): EiPropPath {
 		return new EiPropPath(array('orderIndex'));
@@ -104,7 +104,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
@@ -126,7 +126,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 			$contentItemEditable->setReduced($this->isReduced());
 				
 			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
-				$contentItemEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEntryFormUrl($mapping,
+				$contentItemEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl($mapping,
 						$draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
 			}
 		}

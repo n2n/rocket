@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\spec\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -40,7 +40,7 @@ class TestComparatorConstraint implements ComparatorConstraint {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
+	 * @see \rocket\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
 	 */
 	public function applyToCriteriaComparator(CriteriaComparator $criteriaComparator, CriteriaProperty $alias) {
 		$operator = $this->entityProperty->isToMany() ? CriteriaComparator::OPERATOR_CONTAINS

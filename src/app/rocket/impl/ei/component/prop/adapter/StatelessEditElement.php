@@ -23,9 +23,9 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\web\dispatch\mag\Mag;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 
 class StatelessEditElement extends StatelessDisplayElement implements GuiFieldEditable {
 	private $statelessEditable;

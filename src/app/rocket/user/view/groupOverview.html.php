@@ -61,10 +61,10 @@
 						</ul>
 					</td>
 					<td>
-						<?php if (!$userGroup->isMenuItemAccessRestricted()): ?>
+						<?php if (!$userGroup->isLaunchPadAccessRestricted()): ?>
 							<?php $html->text('user_no_restrictions') ?>
 						<?php else: ?>
-							<?php $html->out(implode(', ', $userGroup->getAccessibleMenuItemIds())) ?>
+							<?php $html->out(implode(', ', $userGroup->getAccessibleLaunchPadIds())) ?>
 						<?php endif ?>
 					</td>
 					<td>

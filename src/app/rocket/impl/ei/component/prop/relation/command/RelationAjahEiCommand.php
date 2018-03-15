@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\command;
 
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\spec\ei\manage\util\model\Eiu;
+use rocket\ei\util\model\Eiu;
 use n2n\web\http\controller\Controller;
 
 class RelationAjahEiCommand extends EiCommandAdapter {
@@ -34,7 +34,7 @@ class RelationAjahEiCommand extends EiCommandAdapter {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\command\EiCommand::createController()
+	 * @see \rocket\ei\component\command\EiCommand::createController()
 	 */
 	public function lookupController(Eiu $eiu): Controller {
 		return $eiu->lookup(RelationJhtmlController::class);

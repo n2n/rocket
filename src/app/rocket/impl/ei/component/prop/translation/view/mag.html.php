@@ -22,15 +22,19 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\l10n\N2nLocale;
-	use rocket\spec\ei\manage\FieldEiHtmlBuilder;
+	use rocket\ei\manage\FieldEiHtmlBuilder;
+	use n2n\web\dispatch\map\PropertyPath;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	$request = HtmlView::request($this);
 
-	$propertyPaths = $view->getParam('propertyPaths');
-	$view->assert(is_array($propertyPaths));
+	$propertyPath = $view->getParam('propertyPath');
+	$view->assert($propertyPath instanceof PropertyPath);
+	
+	$tPropertyPaths = $view->getParam('propertyPaths');
+	$view->assert(is_array($tPropertyPaths));
 	
 	$fieldErrorInfos = $view->getParam('fieldErrorInfos');
 	$view->assert(is_array($fieldErrorInfos));
@@ -45,10 +49,11 @@
 		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
 		data-rocket-impl-languages-view-tooltip="<?php $html->text('ei_impl_languages_view_tooltip') ?>"
 		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>"
-		data-rocket-impl-copy-urls="<?php $html->out(json_encode($view->getParam('copyUrlDefs'))) ?>">
-	<?php foreach ($propertyPaths as $n2nLocaleId => $propertyPath): ?>
+		data-rocket-impl-src-load-config="<?php $html->out(json_encode($view->getParam('srcLoadConfig'))) ?>">
+	
+	<?php foreach ($tPropertyPaths as $n2nLocaleId => $tPropertyPath): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
-		<?php $hasError = $formHtml->meta()->hasErrors($propertyPath) ?>
+		<?php $hasError = $formHtml->meta()->hasErrors($tPropertyPath) ?>
 	
 		<div class="rocket-impl-translation"
 				data-rocket-impl-locale-id="<?php $html->out($n2nLocaleId) ?>"
@@ -56,18 +61,31 @@
 						'locale' => $n2nLocale->getName($view->getN2nLocale()),
 						'field' => $view->getParam('label'))) ?>"
 				data-rocket-impl-ei-id="<?php $html->out(isset($eiuEntries[$n2nLocaleId]) ? $eiuEntries[$n2nLocaleId]->getLivePid(false) : null) ?>"
-				data-rocket-impl-property-path="<?php $html->out((string) $propertyPath->reduced(1)) ?>"
+				data-rocket-impl-property-path="<?php $html->out((string) $tPropertyPath->reduced(1)) ?>"
 				data-rocket-impl-copy-tooltip="<?php $html->text('ei_impl_translation_copy_tooltip',
 						array('field' => $view->getParam('label'), 'locale' => $n2nLocale->getName($view->getN2nLocale()))) ?>">
-		
-			<?php $fieldEiHtml->openInputField('div', $propertyPath, $fieldErrorInfos[$n2nLocaleId]) ?>
-				<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-						'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
-				<div class="rocket-control">
-					<?php $fieldEiHtml->field() ?>
-					<?php $fieldEiHtml->message() ?>
+				
+			<?php if ($formHtml->meta()->getMapValue($propertyPath->fieldExt($n2nLocaleId))): ?>
+				<div class="rocket-item">
+					<label class="rocket-impl-locale-label"
+							title="<?php $html->out($n2nLocale->getName($request->getN2nLocale())) ?>">
+						<?php $html->out($n2nLocale->toPrettyId()) ?>
+					</label>
+					<div class="rocket-control">
+						<?php $formHtml->input($propertyPath->fieldExt($n2nLocaleId), array('class' => 'rocket-impl-unloaded'), 
+						'hidden', false, '1') ?>
+					</div>
 				</div>
-			<?php $fieldEiHtml->closeField() ?>
+			<?php else: ?>
+				<?php $fieldEiHtml->openInputField('div', $tPropertyPath, $fieldErrorInfos[$n2nLocaleId]) ?>
+					<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
+							'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
+					<div class="rocket-control">
+						<?php $fieldEiHtml->field() ?>
+						<?php $fieldEiHtml->message() ?>
+					</div>
+				<?php $fieldEiHtml->closeField() ?>
+			<?php endif ?>
 		</div>
 	<?php endforeach ?>
 </div>

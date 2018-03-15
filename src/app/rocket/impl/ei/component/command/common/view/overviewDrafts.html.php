@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\spec\ei\manage\ControlEiHtmlBuilder;
+	use rocket\ei\manage\ControlEiHtmlBuilder;
 	use rocket\impl\ei\component\command\common\model\DraftListModel;
 	
 	$view = HtmlView::view($this);
@@ -35,10 +35,10 @@
 	$view->assert($listView instanceof HtmlView);
 		
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $listModel->getEiFrame()->getContextEiMask()->getLabelLstr()
+			array('title' => $listModel->getEiFrame()->getContextEiEngine()->getEiMask()->getLabelLstr()
 					->t($view->getN2nLocale())));
 	
-	$eiMask = $listModel->getEiFrame()->getContextEiMask();
+	$eiMask = $listModel->getEiFrame()->getContextEiEngine()->getEiMask();
 	
 	$controlEiHtml = new ControlEiHtmlBuilder($view, $listModel->getEiFrame());
 ?>	

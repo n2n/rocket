@@ -27,22 +27,22 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\spec\ei\manage\EiFrame;
-use rocket\spec\ei\manage\util\model\EiuFrame;
+use rocket\ei\manage\EiFrame;
+use rocket\ei\util\model\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\spec\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\spec\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\critmod\CriteriaConstraint;
 use n2n\web\dispatch\mag\UiOutfitter;
 
 class ToOneMag extends MagAdapter {
 	private $mandatory;
 	private $targetReadUtils;
-	private $targetEditUtils;
+	private $targetEiuFrame;
 	private $elementLabel;
 	
 	private $selectOverviewToolsUrl;
@@ -58,23 +58,23 @@ class ToOneMag extends MagAdapter {
 	
 		$this->mandatory = $mandatory;
 		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEditUtils = new EiuFrame($targetEditEiFrame);
+		$this->targetEiuFrame = new EiuFrame($targetEditEiFrame);
 	
-		$this->updateContainerAttrs(true);
+// 		$this->updateContainerAttrs(true);
 	}
 	
-	private function updateContainerAttrs(bool $group) {
-		if ($group) {
-			$this->setAttrs(array('class' => 'rocket-group'));
-		} else {
-			$this->setAttrs(array());
-		}
-	}
+// 	private function updateContainerAttrs(bool $group) {
+// 		if ($group) {
+// 			$this->setAttrs(array('class' => 'rocket-group'));
+// 		} else {
+// 			$this->setAttrs(array());
+// 		}
+// 	}
 	
 	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
 		$this->selectOverviewToolsUrl = $selectOverviewToolsUrl;
 
-		$this->updateContainerAttrs($selectOverviewToolsUrl === null);
+// 		$this->updateContainerAttrs($selectOverviewToolsUrl === null);
 	}
 	
 	public function getSelectOverviewToolsUrl(): Url {
@@ -85,7 +85,7 @@ class ToOneMag extends MagAdapter {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	
-	public function getNewEntryFormUrl(): Url {
+	public function getNewEiuEntryFormUrl(): Url {
 		return $this->newMappingFormUrl;
 	}
 
@@ -134,7 +134,7 @@ class ToOneMag extends MagAdapter {
 	}
 	
 	public function getFormValue() {
-		$toOneForm = new ToOneForm($this->labelLstr, $this->mandatory, $this->targetReadUtils, $this->targetEditUtils);
+		$toOneForm = new ToOneForm($this->labelLstr, $this->mandatory, $this->targetReadUtils, $this->targetEiuFrame);
 		$toOneForm->setSelectionModeEnabled($this->selectOverviewToolsUrl !== null);
 		$toOneForm->setNewMappingFormAvailable($this->newMappingFormUrl !== null);
 		$toOneForm->setDraftMode($this->draftMode);
@@ -142,8 +142,8 @@ class ToOneMag extends MagAdapter {
 		
 		if ($this->targetRelationEntry === null) {
 			if (!$toOneForm->isSelectionModeEnabled() && $this->mandatory
-					&& !$this->targetEditUtils->getEiType()->hasSubEiTypes()) {
-				$toOneForm->setEiEntry($this->targetEditUtils->newEntry($this->draftMode)->getEiEntry());
+					&& !$this->targetEiuFrame->getContextEiType()->hasSubEiTypes()) {
+				$toOneForm->setEiEntry($this->targetEiuFrame->newEntry($this->draftMode)->getEiEntry());
 				$toOneForm->setNewMappingFormAvailable(true);
 			}
 			
@@ -159,8 +159,7 @@ class ToOneMag extends MagAdapter {
 		} else if ($this->targetRelationEntry->hasEiEntry()) {
 			$toOneForm->setEiEntry($this->targetRelationEntry->getEiEntry());
 		} else {
-			$toOneForm->setEiEntry($this->targetEditUtils->createEiEntry(
-					$this->targetRelationEntry->getEiObject()));
+			$toOneForm->setEiEntry($this->targetEiuFrame->entry($this->targetRelationEntry->getEiObject())->getEiEntry());
 		}
 		
 		if (null !== $toOneForm->getNewMappingForm()) {
@@ -195,10 +194,10 @@ class ToOneMag extends MagAdapter {
 		$request = $view->getRequest();
 		
 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($view->lookup(ScrRegistry::class), 
-				$eiFrame->getContextEiMask());
+				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$newMappingFormUrl = null;
-		if ($this->targetEditUtils->getEiType()->hasSubEiTypes()
+		if ($this->targetEiuFrame->getContextEiType()->hasSubEiTypes()
 				|| $this->selectOverviewToolsUrl !== null
 				|| ($this->targetRelationEntry === null && !$this->mandatory)) {
 			$newMappingFormUrl = $this->newMappingFormUrl;

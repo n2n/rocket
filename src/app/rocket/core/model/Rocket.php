@@ -22,14 +22,16 @@
 namespace rocket\core\model;
 
 use n2n\persistence\orm\EntityManager;
-use rocket\spec\config\SpecManager;
+use rocket\spec\Spec;
 use n2n\context\RequestScoped;
-use rocket\spec\config\EiComponentStore;
+use rocket\spec\EiComponentStore;
 use n2n\core\container\PdoPool;
 use n2n\core\container\N2nContext;
-use rocket\spec\config\source\N2nContextRocketConfigSource;
-use rocket\spec\ei\manage\draft\DraftManager;
-use rocket\spec\config\extr\SpecExtractionManager;
+use rocket\spec\source\N2nContextRocketConfigSource;
+use rocket\ei\manage\draft\DraftManager;
+use rocket\spec\extr\SpecExtractionManager;
+use rocket\core\model\launch\LayoutExtractionManager;
+use rocket\core\model\launch\Layout;
 
 class Rocket implements RequestScoped {
 	const VERSION = '2.0.0-alpha';
@@ -39,7 +41,7 @@ class Rocket implements RequestScoped {
 	private $n2nContext;
 	
 	private $rocketConfigSource;
-	private $specManager;
+	private $spec;
 	private $layoutManager;
 	private $eiComponentStore;
 	
@@ -60,37 +62,40 @@ class Rocket implements RequestScoped {
 		return $this->rocketConfigSource;
 	}
 	
-	public function getLayoutManager(): LayoutManager {
+	/**
+	 * @return Layout
+	 */
+	public function getLayout() {
 		if ($this->layoutManager === null) {
 			$rocketConfigSource = $this->getRocketConfigSource();
-			$lcsd = new LayoutConfigSourceDecorator($rocketConfigSource->getLayoutConfigSource());
+			$lcsd = new LayoutExtractionManager($rocketConfigSource->getLayoutConfigSource());
 			$lcsd->load();
-			$this->layoutManager = new LayoutManager($lcsd, $this->getSpecManager());
+			$this->layoutManager = new Layout($lcsd, $this->getSpec());
 		}
 		
 		return $this->layoutManager;
 	}
 	
 	/**
-	 * @return \rocket\spec\config\SpecManager
+	 * @return \rocket\spec\Spec
 	 */
-	public function getSpecManager(): SpecManager {
-		if ($this->specManager === null) {
+	public function getSpec(): Spec {
+		if ($this->spec === null) {
 			
 			$rocketConfigSource = $this->getRocketConfigSource();
 			
 			$sem = new SpecExtractionManager($rocketConfigSource->getSpecsConfigSource(), 
 					$rocketConfigSource->getModuleNamespaces());
 // 			$sem->initialize();
-			$this->specManager = new SpecManager($sem, $this->dbhPool->getEntityModelManager());
-			$this->specManager->initialize($this->n2nContext);
+			$this->spec = new Spec($sem, $this->dbhPool->getEntityModelManager());
+			$this->spec->initialize($this->n2nContext);
 // 			die('HUII');
 		}
 		
-		return $this->specManager;
+		return $this->spec;
 	}
 	/**
-	 * @return \rocket\spec\config\EiComponentStore
+	 * @return \rocket\spec\EiComponentStore
 	 */
 	public function getEiComponentStore() {
 		if ($this->eiComponentStore === null) {
@@ -108,7 +113,7 @@ class Rocket implements RequestScoped {
 // 	public function getOrCreateTranslationManager(EntityManager $em) {
 // 		$emObjHash = spl_object_hash($em);
 // 		if (!isset($this->translationManagers[$emObjHash])) {
-// 			$this->translationManagers[$emObjHash] = new ScriptTranslationManager($this->getSpecManager(), $em);
+// 			$this->translationManagers[$emObjHash] = new ScriptTranslationManager($this->getSpec(), $em);
 // 		}
 		
 // 		return $this->translationManagers[$emObjHash];
@@ -117,7 +122,7 @@ class Rocket implements RequestScoped {
 	public function getOrCreateDraftManager(EntityManager $em) {
 		$emObjHash = spl_object_hash($em);
 		if (!isset($this->draftManagers[$emObjHash])) {
-			$this->draftManagers[$emObjHash] = new DraftManager($this->getSpecManager(), $em, $this->n2nContext);
+			$this->draftManagers[$emObjHash] = new DraftManager($this->getSpec(), $em, $this->n2nContext);
 		}
 		
 		return $this->draftManagers[$emObjHash];
@@ -130,7 +135,7 @@ class Rocket implements RequestScoped {
 // 		}
 		
 // 		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
-// 		$eiType = $this->getSpecManager()->getEiTypeByClass($entityModel->getClass());
+// 		$eiType = $this->getSpec()->getEiTypeByClass($entityModel->getClass());
 // 		if ($em === null) {
 // 			$em = $eiType->lookupEntityManager(N2N::getPdoPool());
 // 		}
@@ -149,7 +154,7 @@ class Rocket implements RequestScoped {
 // 		}
 
 // 		$entityModel = $this->entityModelManager->getEntityModelByObject($entity);
-// 		$eiType = $this->getSpecManager()->getEiTypeByClass($entityModel->getClass());
+// 		$eiType = $this->getSpec()->getEiTypeByClass($entityModel->getClass());
 // 		if ($em === null) {
 // 			$em = $eiType->lookupEntityManager($this->dbhPool);
 // 		}

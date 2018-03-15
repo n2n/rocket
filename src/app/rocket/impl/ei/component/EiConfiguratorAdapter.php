@@ -21,16 +21,17 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\spec\ei\component\IndependentEiComponent;
-use rocket\spec\ei\component\EiConfigurator;
+use rocket\ei\component\IndependentEiComponent;
+use rocket\ei\component\EiConfigurator;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\spec\ei\component\EiComponent;
+use rocket\ei\component\EiComponent;
+use rocket\ei\util\model\Eiu;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $eiComponent;
@@ -43,7 +44,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\spec\ei\component\EiConfigurator::getComponentClass()
+// 	 * @see \rocket\ei\component\EiConfigurator::getComponentClass()
 // 	 */
 // 	public function getComponentClass() {
 // 		return new \ReflectionClass($this->eiComponent);
@@ -54,7 +55,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\EiConfigurator::getAttributes()
+	 * @see \rocket\ei\component\EiConfigurator::getAttributes()
 	 */
 	public function getAttributes(): Attributes {
 		return $this->attributes;
@@ -65,7 +66,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\spec\ei\component\EiConfigurator::getTypeName()
+	 * @see \rocket\ei\component\EiConfigurator::getTypeName()
 	 */
 	public function getTypeName(): string {
         return ReflectionUtils::prettyName((new \ReflectionClass($this->getEiComponent()))->getShortName());
@@ -82,12 +83,20 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 		return implode(' ', $nameParts);
 	}
 	
-	public function setup(EiSetupProcess $eiSetupProcess) {
+	public function setup(EiSetup $eiSetupProcess) {
+	}
+	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @return \rocket\ei\util\model\Eiu
+	 */
+	protected function eiu(N2nContext $n2nContext) {
+		return new Eiu($this->eiComponent->getEiMask()->getEiEngine(), $n2nContext);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\ei\component\EiConfigurator::createMagDispatchable($n2nContext)
+	 * @see \rocket\ei\component\EiConfigurator::createMagDispatchable($n2nContext)
 	 */
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		return new MagForm(new MagCollection());
@@ -99,7 +108,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 * <p>Overwrite this method if you have custom attributes to save. If you call this method it will overwrite 
 	 * the current attributes Properties with a new empty {@see Attributes} object</p
 	 * 
-	 * @see \rocket\spec\ei\component\EiConfigurator::saveMagDispatchable()
+	 * @see \rocket\ei\component\EiConfigurator::saveMagDispatchable()
 	 */
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		$this->attributes = new Attributes();

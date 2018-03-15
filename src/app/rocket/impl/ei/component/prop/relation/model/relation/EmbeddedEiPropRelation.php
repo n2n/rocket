@@ -21,15 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\spec\ei\manage\EiObject;
-use rocket\spec\ei\manage\EiFrame;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\EiFrame;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\spec\ei\manage\mapping\EiEntry;
-use rocket\spec\ei\EiType;
-use rocket\spec\ei\mask\EiMask;
-use rocket\spec\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\EiType;
+use rocket\ei\mask\EiMask;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
+use rocket\ei\util\model\Eiu;
 
 class EmbeddedEiPropRelation extends EiPropRelation {
 	private $embeddedPseudoCommand;
@@ -44,8 +45,8 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		$this->orphansAllowed = $orphansAllowed;
 	}
 
-	public function init(EiType $targetEiType, EiMask $targetEiMask) {
-		parent::init($targetEiType, $targetEiMask);
+	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask) {
+		parent::init($eiu, $targetEiType, $targetEiMask);
 
 		if (!$this->isPersistCascaded()) {
 			$entityProperty = $this->getRelationEiProp()->getEntityProperty();
@@ -98,7 +99,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 // 		$this->embeddedPseudoCommand = new EmbeddedPseudoCommand($this->getTarget());
 // 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedPseudoCommand);
 		
-// 		$this->embeddedEditPseudoCommand = new EmbeddedEditPseudoCommand($this->getRelationEiProp()->getEiEngine()->getEiType()->getDefaultEiDef()->getLabel() 
+// 		$this->embeddedEditPseudoCommand = new EmbeddedEditPseudoCommand($this->getRelationEiProp()->getEiEngine()->getEiMask()->getEiType()->getEiMask()->getLabel() 
 // 						. ' > ' . $this->relationEiProp->getLabel() . ' Embedded Edit', 
 // 				$this->getRelationEiProp()->getId(), $this->getTarget()->getId());
 		
@@ -158,13 +159,13 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		if ($eiObject !== null && null !== $targetEiFrame->getOverviewUrlExt() 
 				&& null !== $targetEiFrame->getDetailPathExt()) {
 			$pathExt = $eiFrame->getControllerContext()->toPathExt()->ext(
-					$eiFrame->getContextEiMask()->getEiEngine()->getEiType()->getEntryDetailPathExt($eiObject->toEntryNavPoint()));
+					$eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntryDetailPathExt($eiObject->toEntryNavPoint()));
 			$targetEiFrame->setOverviewPathExt($pathExt);
 			$targetEiFrame->setDetailPathExt($pathExt);
 		}
 		
 		$targetEiFrame->setDetailBreadcrumbLabelOverride($this->relationEiProp->getLabelLstr()
-				->t($targetEiFrame->getN2nLocale()));
+				->t($targetEiFrame->getN2nContext()->getN2nLocale()));
 		$targetEiFrame->setDetailDisabled(true);
 	}
 }

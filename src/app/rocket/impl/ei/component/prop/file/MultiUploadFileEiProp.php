@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\file;
 
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\StringEiProp;
-use rocket\spec\ei\component\EiSetupProcess;
+use rocket\ei\component\EiSetup;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\property\EntityProperty;
@@ -47,7 +47,7 @@ class MultiUploadFileEiProp extends FileEiProp {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function setup(EiSetupProcess $setupProcess) {
+	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 		$command = new MultiUploadEiCommand(new Attributes());
 		$command->setEiProp($this);

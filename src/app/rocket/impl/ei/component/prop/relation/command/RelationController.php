@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\command;
 
-use rocket\spec\ei\manage\ManageState;
+use rocket\ei\manage\ManageState;
 use rocket\core\model\RocketState;
 use n2n\web\http\PageNotFoundException;
-use rocket\spec\ei\manage\EiObject;
+use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\spec\ei\EiTypeController;
-use rocket\spec\ei\manage\EiRelation;
-use rocket\spec\ei\manage\util\model\EiuCtrl;
+use rocket\ei\EiTypeController;
+use rocket\ei\manage\EiRelation;
+use rocket\ei\util\model\EiuCtrl;
 
 class RelationController extends ControllerAdapter {
 	private $eiFrame;
@@ -53,7 +53,7 @@ class RelationController extends ControllerAdapter {
 		$eiObject = $this->eiuCtrl->lookupEiObject($pid);
 		
 		// because RelationCommand gets added always on a supreme EiEngine
-		if (!$this->eiPropRelation->getRelationEiProp()->getEiEngine()->getEiType()
+		if (!$this->eiPropRelation->getRelationEiProp()->getEiMask()->getEiType()
 				->isObjectValid($eiObject->getLiveObject())) {
 			throw new PageNotFoundException();
 		}
