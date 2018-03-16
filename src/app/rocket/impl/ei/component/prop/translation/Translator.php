@@ -47,6 +47,12 @@ class Translator {
 		if (null !== ($translatable = $finder->find())) {
 			return $translatable;
 		}
+		
+		$finder->setN2nLocales([N2nLocale::getFallback(), N2nLocale::getDefault()]);
+		
+		if (null !== ($translatable = $finder->find())) {
+			return $translatable;
+		}
 
 		if (0 < count($translatables)) {
 			return current($translatables);
@@ -62,7 +68,7 @@ class Translator {
 			return $translatable;
 		}
 		
-		throw new UnavailableTranslationException('No translation available for locales: ' . implode(', ', $n2nLocales));
+		throw new UnavailableTranslationException('No translations available.');
 	}
 }
 
@@ -72,9 +78,16 @@ class TranslatableFinder {
 
 	public function __construct($translatables, array $n2nLocales) {
 		ArgUtils::valArrayLike($translatables, Translatable::class);
-		ArgUtils::valArray($n2nLocales, N2nLocale::class);
 
 		$this->translatables = $translatables;
+		$this->setN2nLocales($n2nLocales);
+	}
+	
+	/**
+	 * @param array $n2nLocales
+	 */
+	public function setN2nLocales(array $n2nLocales) {
+		ArgUtils::valArray($n2nLocales, N2nLocale::class);
 		$this->n2nLocales = array_values($n2nLocales);
 	}
 

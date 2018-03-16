@@ -46,6 +46,7 @@ use rocket\spec\extr\EiTypeExtensionExtraction;
 use n2n\l10n\Lstr;
 use rocket\spec\extr\EiModificatorExtraction;
 use rocket\ei\EiTypeExtension;
+use n2n\util\StringUtils;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -183,7 +184,7 @@ class EiTypeFactory {
 		} else {
 			$moduleNamespace = $eiMask->getEiType()->getModuleNamespace();
 		}
-		$eiProp->setLabelLstr(new Lstr($eiPropExtraction->getLabel(), $moduleNamespace));
+		$eiProp->setLabelLstr(new Lstr($eiPropExtraction->getLabel() ?? StringUtils::pretty($id), $moduleNamespace));
 		
 		$eiPropConfigurator = $eiProp->createEiPropConfigurator();
 		ArgUtils::valTypeReturn($eiPropConfigurator, EiPropConfigurator::class, $eiProp,
@@ -289,13 +290,13 @@ class EiTypeFactory {
 	 * @param EiTypeExtensionExtraction $eiTypeExtensionExtraction
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 */
-	public function createEiTypeExtension(EiType $eiType, EiTypeExtensionExtraction $eiTypeExtensionExtraction,
+	public function createEiTypeExtension(EiMask $extenedEiMask, EiTypeExtensionExtraction $eiTypeExtensionExtraction,
 			array $eiModificatorExtractions) {
 				
-		$eiMask = new EiMask($eiType);
+		$eiMask = new EiMask($extenedEiMask->getEiType());
 		$eiTypeExtension = new EiTypeExtension($eiTypeExtensionExtraction->getId(),
 				$eiTypeExtensionExtraction->getModuleNamespace(),
-				$eiMask, $eiType->getEiMask());
+				$eiMask, $extenedEiMask);
 		
 		$this->asdf($eiTypeExtensionExtraction->getEiMaskExtraction(), $eiMask, $eiModificatorExtractions);
 		

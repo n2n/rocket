@@ -32,7 +32,8 @@
         "rocket\\impl\\ei\\component\\prop\\translation\\TranslationEiProp",
         "rocket\\impl\\ei\\component\\prop\\string\\StringDisplayEiProp",
         "rocket\\impl\\ei\\component\\prop\\string\\PasswordEiProp",
-        "rocket\\impl\\ei\\component\\prop\\string\\StringArrayEiProp"
+        "rocket\\impl\\ei\\component\\prop\\string\\StringArrayEiProp",
+        "rocket\\impl\\ei\\component\\prop\\meta\\IdentityStringEiProp"
     ],
     "eiCommandClasses": [
         "rocket\\impl\\ei\\component\\command\\common\\OverviewEiCommand",
