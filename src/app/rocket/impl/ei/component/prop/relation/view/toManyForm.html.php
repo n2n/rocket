@@ -102,7 +102,7 @@
 				data-draft-mode="<?php $html->out($toManyForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>">
-			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view) { ?>
+			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view, $toManyForm) { ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 				
