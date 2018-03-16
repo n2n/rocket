@@ -71,8 +71,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
-			$inputGroupAppend = new HtmlElement('span', array('class' => 'input-group-text'), $contents);
-			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $inputGroupAppend);
+			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
