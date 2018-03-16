@@ -33,6 +33,20 @@ class DisplayItem {
 		$orderItem->guiIdPath = $guiIdPath;
 		return $orderItem;
 	}
+	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @return DisplayItem
+	 * @deprecated
+	 */
+	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
+		$orderItem = new DisplayItem();
+		$orderItem->label = $label;
+		ArgUtils::valEnum($type, self::getTypes(), null, true);
+		$orderItem->type = $type;
+		$orderItem->guiIdPath = $guiIdPath;
+		return $orderItem;
+	}
 
 	/**
 	 * @param DisplayStructure $displayStructure
