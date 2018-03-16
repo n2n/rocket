@@ -71,8 +71,7 @@ class CiConfigUtils {
 
 		$this->allowedContentItemOptions = array();
 		foreach ($this->ciEiType->getAllSubEiTypes() as $subEiType) {
-			$this->allowedContentItemOptions[$subEiType->getId()] = $subEiType->getEiTypeExtensionCollection()
-					->getOrCreateDefault()->getLabelLstr();
+			$this->allowedContentItemOptions[$subEiType->getId()] = $subEiType->getEiMask()->getLabelLstr();
 		}
 
 		return $this->allowedContentItemOptions;
