@@ -28,6 +28,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\TypePath;
+use rocket\spec\UnknownMaskException;
+use rocket\ei\component\UnknownEiComponentException;
 
 /**
  * <p>This manager allows you to read und write spec configurations usually located in 
@@ -514,7 +516,13 @@ class SpecExtractionManager {
 	 * @param TypePath $extendedEiTypePath
 	 * @param string $id
 	 */
-	public function removeEiTypeExtensionExtractionById(TypePath $extendedEiTypePath, string $id) {
+	public function removeEiTypeExtensionExtractionByEiTypePath(TypePath $eiTypePath) {
+		$eiTypeExtensionExtraction = $this->findEiTypeExtensionExtractionByEiTypePath($eiTypePath);
+		if (null === $eiTypeExtensionExtraction) return;
+		
+		$extendedEiTypePath = $eiTypeExtensionExtraction->getExtendedEiTypePath();
+		$id = $eiTypeExtensionExtraction->getId();
+		
 		unset($this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id]);
 	}
 		
@@ -536,7 +544,22 @@ class SpecExtractionManager {
 		if (isset($this->eiModificatorExtractionGroups[$typePathStr])) {
 			return $this->eiModificatorExtractionGroups[$typePathStr];
 		}
+		
 		return array();
+	}
+	
+	/**
+	 * @param TypePath $eiTypePath
+	 * @return EiModificatorExtraction[]
+	 */
+	public function getEiModificatorExtractionById(TypePath $eiTypePath, string $id) {
+		$typePathStr = (string) $eiTypePath;
+		if (isset($this->eiModificatorExtractionGroups[$typePathStr][$id])) {
+			return $this->eiModificatorExtractionGroups[$typePathStr][$id];
+		}
+	
+		throw new UnknownEiComponentException('No EiTypeExtension with id \'' . $id . '\' defined for EiType \'' . $eiTypePath . '\' defined in: '
+				. $this->buildConfigSourceString());
 	}
 	
 	/**
