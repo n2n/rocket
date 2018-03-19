@@ -49,7 +49,7 @@ class LayoutExtractionManager {
 	}
 	
 	public function clear() {
-		$this->attributes->clear();
+		$this->attributes = new Attributes();
 	}
 	
 	public function extractStartLaunchPadId() {
@@ -100,7 +100,7 @@ class LayoutExtractionManager {
 		foreach ($menuGroupExtractions as $menuGroupExtraction) {
 			$label = $menuGroupExtraction->getLabel();
 			$menuGroupsRawData[$label] = array();
-			foreach ($menuGroupExtraction->getLaunchPadIds() as $launchPadId => $launchPadLabel) {
+			foreach ($menuGroupExtraction->getLaunchPadLabels() as $launchPadId => $launchPadLabel) {
 				$menuGroupsRawData[$label][$launchPadId] = $launchPadLabel;
 			}
 		}
