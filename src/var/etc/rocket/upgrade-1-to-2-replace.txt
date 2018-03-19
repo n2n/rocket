@@ -21,3 +21,6 @@ associatedGuiProps
 
 commonEiMasks
 eiMasks
+
+rocket\spec\ei\manage\preview\model\PreviewModel
+rocket\ei\manage\preview\model\PreviewModel
