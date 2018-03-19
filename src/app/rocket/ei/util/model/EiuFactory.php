@@ -444,8 +444,8 @@ class EiuFactory {
 			return;
 		}
 		
-		$this->assignEiEntryGui($eiuEntryGui->getEiEntryGui());
 		$this->assignEiuGui($eiuEntryGui->getEiuGui());
+		$this->assignEiEntryGui($eiuEntryGui->getEiEntryGui());
 		$this->eiuEntryGui = $eiuEntryGui;
 	}
 	
@@ -460,8 +460,8 @@ class EiuFactory {
 		$this->eiuEntryGui = null;
 		$this->eiEntryGui = $eiEntryGui;
 		
-		$this->assignEiEntry($eiEntryGui->getEiEntry());
 		$this->assignEiGui($eiEntryGui->getEiGui());
+		$this->assignEiEntry($eiEntryGui->getEiEntry());
 	}
 	
 	/**
