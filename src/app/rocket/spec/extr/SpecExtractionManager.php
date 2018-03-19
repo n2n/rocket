@@ -440,17 +440,46 @@ class SpecExtractionManager {
 	
 	
 	/**
+	 * @param TypePath $eiTypePath
+	 * @return EiTypeExtensionExtraction|null
+	 */
+	private function findEiTypeExtensionExtractionByEiTypePath(TypePath $eiTypePath) {
+		$eiTypeId = $eiTypePath->getTypeId();
+		$eiTypeExtensionId = $eiTypePath->getEiTypeExtensionId();
+		
+		foreach ($this->eiTypeExtensionExtractionGroups as $iTypePathStr => $eiTypeExtensionExtractions) {
+			$iTypePath = TypePath::create($iTypePathStr);
+			
+			if ($iTypePath->getTypeId() !== $eiTypeId) continue;
+			
+			if (isset($eiTypeExtensionExtractions[$eiTypeExtensionId])) {
+				return $eiTypeExtensionExtractions[$eiTypeExtensionId];
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * @param TypePath $eiTypePath
+	 * @return boolean
+	 */
+	public function containsEiTypeExentionsExtractionEiTypePath(TypePath $eiTypePath) {
+		return null !== $this->findEiTypeExtensionExtractionByEiTypePath($eiTypePath);
+	}
+	
+	/**
 	 * @param string $extendedEiTypePath
 	 * @param string $id
 	 * @return EiTypeExtensionExtraction
 	 */
-	public function getEiTypeExtensionExtractionById(TypePath $extendedEiTypePath, string $id) {
-		if ($this->containsEiTypeExtensionExtractionId($extendedEiTypePath, $id)) {
-			return $this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id];
+	public function getEiTypeExtensionExtractionByEiTypePath(TypePath $eiTypePath) {
+		if (null !== ($extr = $this->findEiTypeExtensionExtractionByEiTypePath($eiTypePath))) {
+			return $extr;
 		}
 		
-		throw new UnknownTypeException('No EiTypeExtension with id \'' . $id . '\' for EiTypePath \'' 
-				. $extendedEiTypePath . '\'  in: ' . $this->buildConfigSourceString());
+		throw new UnknownTypeException('No EiTypeExtension with TypePath \'' . $eiTypePath . '\' defined in: ' 
+				. $this->buildConfigSourceString());
 	}
 	
 	/**
