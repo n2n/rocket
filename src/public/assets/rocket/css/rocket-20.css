@@ -4246,7 +4246,12 @@ body {
 
 .rocket-impl-translation {
   position: relative;
-  min-height: 2rem;
+  min-height: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.rocket-impl-translation > .rocket-required > label::after {
+  content: "";
 }
 
 :not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
@@ -4265,7 +4270,7 @@ body {
 }
 
 :not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
-  margin: 0 0 1rem;
+  margin: 0;
 }
 
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field,
@@ -5584,6 +5589,10 @@ h1, .h1 {
 
 .rocket-simple-commands .dropdown-toggle::after {
   display: none;
+}
+
+.form-check-input {
+  top: 0.625rem;
 }
 
 .align-baseline {
