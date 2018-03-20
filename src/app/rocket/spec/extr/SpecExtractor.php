@@ -227,9 +227,8 @@ class SpecExtractor {
 	}	
 	
 	private function createEiModficatorExtraction(string $eiModificatorId, Attributes $attributes, 
-			string $eiTypeId, string $eiMaskId = null) {
-		$extraction = new EiModificatorExtraction($eiModificatorId, $this->moduleNamespace, 
-				$eiTypeId, $eiMaskId);
+			TypePath $eiTypePath) {
+		$extraction = new EiModificatorExtraction($eiModificatorId, $this->moduleNamespace, $eiTypePath);
 		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
@@ -245,9 +244,14 @@ class SpecExtractor {
 				. '\' contains invalid configurations.', 0, $previous);
 	}
 	
-	private function createEiModificatorException($eiModificatorIdCombination, \Exception $previous) {
-		throw new InvalidEiMaskConfigurationException('EiModificator with id \'' . $eiModificatorIdCombination
-				. '\' contains invalid configurations.', 0, $previous);
+	private function createEiModificatorsException(TypePath $typePath, \Exception $previous) {
+		throw new InvalidEiComponentConfigurationException('EiModificators for type path \'' 
+				. $typePath . '\' have invalid configurations.', 0, $previous);
+	}
+	
+	private function createEiModificatorException(string $id, TypePath $typePath, \Exception $previous) {
+		throw new InvalidEiComponentConfigurationException('EiModificator with id \'' . $id
+				. '\' for type path \'' . $typePath . '\' contains invalid configurations.', 0, $previous);
 	}
 	
 	/**
@@ -310,34 +314,33 @@ class SpecExtractor {
 		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_MODIFICATORS_KEY, false));
 		
 		$eiModificatorGroups = array();
-		foreach ($attributes->getNames() as $idCombination) {
+		foreach ($attributes->getNames() as $typePathStr) {
 			try {
-				$eiTypeId = RawDef::extractEiTypeIdFromIdCombination($idCombination);
-				$eiMaskId = RawDef::extractEiMaskIdFromIdCombination($idCombination);
+				$typePath = TypePath::create($typePathStr);
 				
-				$eiModificatorsAttributes = new Attributes($attributes->getArray($eiTypeId, false));
-				$eiModificatorGroups[$eiTypeId] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $eiTypeId, $eiMaskId);
+				$eiModificatorsAttributes = new Attributes($attributes->getArray($typePath->getTypeId(), false));
+				$eiModificatorGroups[$typePath->getTypeId()] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $typePath);
 			} catch (AttributesException $e) {
-				throw $this->createEiModificatorException($idCombination, $e);
+				throw $this->createEiModificatorsException($typePath, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiModificatorException($idCombination, $e);
+				throw $this->createEiModificatorException($typePath, $e);
 			}
 		}
 		
 		return $eiModificatorGroups;
 	}
 	
-	public function createEiModificatorExtractions(Attributes $eiModificatorsAttributes, string $eiTypeId, string $eiMaskId = null): array {
+	public function createEiModificatorExtractions(Attributes $eiModificatorsAttributes, TypePath $eiTypePath): array {
 		$commonEiModificators = array();
 		
 		foreach ($eiModificatorsAttributes->getNames() as $modificatorId) {
 			try {
 				$commonEiModificators[$modificatorId] = $this->createEiModficatorExtraction($modificatorId,
-						new Attributes($eiModificatorsAttributes->getArray($modificatorId)), $eiTypeId, $eiMaskId);
+						new Attributes($eiModificatorsAttributes->getArray($modificatorId)), $eiTypePath);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiModificatorException(RawDef::buildEiTypeMaskId($eiTypeId, $eiMaskId), $e);
+				throw $this->createEiModificatorException($modificatorId, $eiTypePath, $e);
 			} catch (AttributesException $e) {
-				throw $this->createEiModificatorException(RawDef::buildEiTypeMaskId($eiTypeId, $eiMaskId), $e);
+				throw $this->createEiModificatorException($modificatorId, $eiTypePath, $e);
 			}
 		}
 		

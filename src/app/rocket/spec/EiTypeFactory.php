@@ -145,12 +145,12 @@ class EiTypeFactory {
 		$eiDef->setFilterGroupData($eiMaskExtraction->getFilterGroupData());
 		$eiDef->setDefaultSortData($eiMaskExtraction->getDefaultSortData());
 		
+		$eiModificatorCollection = $eiMask->getEiModificatorCollection();
 		foreach ($eiModificatorExtractions as $eiModificatorExtraction) {
 			try {
 				$eiModificatorCollection->add($this->createEiModificator($eiModificatorExtraction, $eiMask));
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiTypeException($eiTypeExtraction->getId(),
-						$this->createEiModificatorException($eiModificatorExtraction->getId(), $e));
+				throw $this->createEiModificatorException($eiModificatorExtraction->getId(), $e);
 			}
 		}
 		
@@ -266,7 +266,7 @@ class EiTypeFactory {
 	 * @throws TypeNotFoundException
 	 * @return IndependentEiModificator
 	 */
-	public function createEiModificator(EiModificatorExtraction $eiModificatorExtraction, EiType $eiType, EiMask $eiMask = null) {
+	public function createEiModificator(EiModificatorExtraction $eiModificatorExtraction, EiMask $eiMask) {
 		$eiModificatorClass = ReflectionUtils::createReflectionClass($eiModificatorExtraction->getClassName());
 		
 		if (!$eiModificatorClass->implementsInterface('rocket\ei\component\modificator\IndependentEiModificator')) {

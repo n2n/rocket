@@ -134,7 +134,11 @@
 
 .rocket-impl-translation {
 	position: relative;
-	min-height: 2rem;
+	min-height: 2.5rem;
+	margin-bottom: 1rem;
+	> .rocket-required > label::after {
+		content: "";
+	}
 }
 
 // translation in entry
@@ -151,7 +155,7 @@
 		padding: 0;
 		
 		> .rocket-control {
-			margin: 0 0 1rem;
+			margin: 0;
 		}
 	}
 	
