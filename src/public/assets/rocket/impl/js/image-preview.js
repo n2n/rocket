@@ -20,8 +20,13 @@
  */
 Jhtml.ready(function(elements) {
 	(function() {
-		if (typeof $.fn.colorbox != 'function') return
-		$(elements).find(".rocket-image-previewable").colorbox({rel:"rocket-image-previewable", maxHeight:'98%', maxWidth:'98%', scalePhotos:true, transition:"fade"});
+		if (typeof $.fn.magnificPopup != 'function') return;
+		$(elements).find(".rocket-image-previewable").magnificPopup({
+			type: 'image', 
+			gallery: {
+				enabled:true
+			}
+		});
 	})();
 	
 	(function(){
