@@ -25,10 +25,10 @@ class UniqueEiConfigurator extends EiConfiguratorAdapter {
 		
 		$magCollection = new MagCollection();
 		$magCollection->addMag(self::ATTR_UNIQUE_PROPS_KEY,
-				new MultiSelectMag($label, $options, $lar->getScalarArray(self::ATTR_UNIQUE_PROPS_KEY)));
+				new MultiSelectMag('Unique Props', $options, $lar->getScalarArray(self::ATTR_UNIQUE_PROPS_KEY)));
 		
 		$magCollection->addMag(self::ATTR_UNIQUE_PER_PROPS_KEY,
-				new MultiSelectMag($label, $options, $lar->getScalarArray(self::ATTR_UNIQUE_PER_PROPS_KEY)));
+				new MultiSelectMag('Unique per', $options, $lar->getScalarArray(self::ATTR_UNIQUE_PER_PROPS_KEY)));
 		
 		return new MagForm($magCollection);
 	}
@@ -36,9 +36,9 @@ class UniqueEiConfigurator extends EiConfiguratorAdapter {
 	function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		$this->attributes = new Attributes();
 		$this->attributes->set(self::ATTR_UNIQUE_PROPS_KEY,
-				$magDispatchable->getPropertyValue(SELF::ATTR_UNIQUE_PROPS_KEY));
+				$magDispatchable->getPropertyValue(self::ATTR_UNIQUE_PROPS_KEY));
 		$this->attributes->set(self::ATTR_UNIQUE_PER_PROPS_KEY,
-				$magDispatchable->getPropertyValue(SELF::ATTR_UNIQUE_PROPS_KEY));
+				$magDispatchable->getPropertyValue(self::ATTR_UNIQUE_PROPS_KEY));
 	}
 	
 	function setup(EiSetup $eiSetupProcess) {

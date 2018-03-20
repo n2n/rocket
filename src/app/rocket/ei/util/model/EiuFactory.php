@@ -709,7 +709,7 @@ class EiuFactory {
 		}
 		
 		if ($this->eiEngine !== null) {
-			return $this->eiuEngine = new EiuEngine($this->eiEngine, $this->n2nContext);
+			return $this->eiuEngine = new EiuEngine($this->eiEngine, $this->eiuMask, $this);
 		}
 		
 		if (!$required) return null;
