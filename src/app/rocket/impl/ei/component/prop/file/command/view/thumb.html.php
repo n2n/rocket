@@ -40,8 +40,8 @@
 	//$html->meta()->addJs('impl/js/thumbs.js');
 	$html->meta()->addCss('impl/css/image-resizer.css');
 	
-	$html->meta()->addCss('impl/js/thirdparty/colorbox/colorbox.css', 'screen');
-	$html->meta()->addJs('impl/js/thirdparty/colorbox/jquery.colorbox-min.js');
+	$html->meta()->addCss('impl/js/thirdparty/magnific-popup/magnific-popup-min.css', 'screen');
+	$html->meta()->addJs('impl/js/thirdparty/magnific-popup/magnific-popup-min.js');
 	$html->meta()->addJs('impl/js/image-preview.js');
 ?>
 

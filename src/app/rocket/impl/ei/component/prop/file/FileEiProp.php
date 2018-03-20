@@ -167,8 +167,8 @@ class FileEiProp extends DraftableEiPropAdapter {
 		$html = $view->getHtmlBuilder();
 		
 		$meta = $html->meta();
-		$meta->addCss('impl/js/thirdparty/colorbox/colorbox.css', 'screen');
-		$meta->addJs('impl/js/thirdparty/colorbox/jquery.colorbox-min.js');
+		$html->meta()->addCss('impl/js/thirdparty/magnific-popup/magnific-popup-min.css', 'screen');
+		$html->meta()->addJs('impl/js/thirdparty/magnific-popup/magnific-popup-min.js');
 		$meta->addJs('impl/js/image-preview.js');
 		
 		$uiComponent = new HtmlElement('div', 
