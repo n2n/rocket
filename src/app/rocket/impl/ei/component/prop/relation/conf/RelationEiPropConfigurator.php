@@ -107,8 +107,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$spec = $n2nContext->lookup(Rocket::class)->getSpec();
 			CastUtils::assertTrue($spec instanceof Spec);
 			$targetEiType = $spec->getEiTypeByClass($targetEntityClass);
-			foreach ($targetEiType->getEiTypeExtensionCollection()->toArray() as $eiMask) {
-				$targetEiMaskOptions[$eiMask->getExtension()->getId()] = $eiMask->getEiEngine()->getEiMask()->getEiType()->getLabelLstr();
+			foreach ($targetEiType->getEiTypeExtensionCollection()->toArray() as $eiTypeExtension) {
+				$targetEiMaskOptions[$eiTypeExtension->getId()] = $eiTypeExtension->getEiMask()->getLabelLstr();
 			}
 			
 			$scalarEiProperties = $targetEiType->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap();
