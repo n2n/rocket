@@ -102,7 +102,7 @@ class SpecRawer {
 			
 			foreach ($eiModificatorExtractionGroup as $eiModificatorExtraction) {
 				CastUtils::assertTrue($eiModificatorExtraction instanceof EiModificatorExtraction);
-				$typePathStr = $eiModificatorExtraction->getTypePath();
+				$typePathStr = (string) $eiModificatorExtraction->getTypePath();
 				if (!isset($rawData[$typePathStr])) {
 					$rawData[$typePathStr] = array();
 				}
