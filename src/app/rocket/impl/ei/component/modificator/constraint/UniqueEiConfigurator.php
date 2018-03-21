@@ -12,6 +12,7 @@ use n2n\util\config\Attributes;
 use rocket\ei\component\EiSetup;
 use n2n\reflection\CastUtils;
 use rocket\ei\EiPropPath;
+use rocket\ei\util\model\EiuEngine;
 
 class UniqueEiConfigurator extends EiConfiguratorAdapter {
 	const ATTR_UNIQUE_PROPS_KEY = 'uniqueProps';
@@ -45,26 +46,27 @@ class UniqueEiConfigurator extends EiConfiguratorAdapter {
 		$uniqueEiModificator = $this->eiComponent;
 		CastUtils::assertTrue($uniqueEiModificator instanceof UniqueEiModificator);
 		
-		$eiuEngine = $eiSetupProcess->eiu()->engine();
-		
-		$uniqueEiPropPaths = array();
-		foreach ($this->attributes->getScalarArray(self::ATTR_UNIQUE_PROPS_KEY, false) as $eiPropPathStr) {
-			$eiPropPath = EiPropPath::create($eiPropPathStr);
-			
-			if ($eiuEngine->containsGenericEiProperty($eiPropPath)) {
-				$uniqueEiPropPaths[] = $eiPropPath;
+		$that = $this;
+		$eiuEngine = $eiSetupProcess->eiu()->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($uniqueEiModificator, $that) {
+			$uniqueEiPropPaths = array();
+			foreach ($that->attributes->getScalarArray(self::ATTR_UNIQUE_PROPS_KEY, false) as $eiPropPathStr) {
+				$eiPropPath = EiPropPath::create($eiPropPathStr);
+				
+				if ($eiuEngine->containsGenericEiProperty($eiPropPath)) {
+					$uniqueEiPropPaths[] = $eiPropPath;
+				}
 			}
-		}
-		$uniqueEiModificator->setUniqueEiPropPaths($uniqueEiPropPaths);
-		
-		$uniquePerEiPropPaths = array();
-		foreach ($this->attributes->getScalarArray(self::ATTR_UNIQUE_PER_PROPS_KEY, false) as $eiPropPathStr) {
-			$eiPropPath = EiPropPath::create($eiPropPathStr);
+			$uniqueEiModificator->setUniqueEiPropPaths($uniqueEiPropPaths);
 			
-			if ($eiuEngine->containsGenericEiProperty($eiPropPath)) {
-				$uniquePerEiPropPaths[] = $eiPropPath;
+			$uniquePerEiPropPaths = array();
+			foreach ($that->attributes->getScalarArray(self::ATTR_UNIQUE_PER_PROPS_KEY, false) as $eiPropPathStr) {
+				$eiPropPath = EiPropPath::create($eiPropPathStr);
+				
+				if ($eiuEngine->containsGenericEiProperty($eiPropPath)) {
+					$uniquePerEiPropPaths[] = $eiPropPath;
+				}
 			}
-		}
-		$uniqueEiModificator->setUniquePerEiPropPaths($uniquePerEiPropPaths);
+			$uniqueEiModificator->setUniquePerEiPropPaths($uniquePerEiPropPaths);
+		});
 	}
 }
