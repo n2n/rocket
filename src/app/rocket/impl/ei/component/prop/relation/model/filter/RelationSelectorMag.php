@@ -89,8 +89,9 @@ class RelationSelectorMag extends MagAdapter  {
 			}
 			
 			try {
-				$this->targetLiveEntries[$targetPid] = $this->targetEiuFrame->lookupEiEntityObj(
-						$this->targetEiuFrame->pidToId($targetPid));
+				$this->targetLiveEntries[$targetPid] = $this->targetEiuFrame
+						->lookupEntry($this->targetEiuFrame->pidToId($targetPid))
+						->getEiEntityObj();
 			} catch (UnknownEntryException $e) {
 			}
 		}
