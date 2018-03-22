@@ -26,26 +26,10 @@ use rocket\impl\ei\component\prop\string\StringEiProp;
 use rocket\ei\component\EiSetup;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\util\config\Attributes;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\ArgUtils;
-use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
-use n2n\io\orm\FileEntityProperty;
 
 class MultiUploadFileEiProp extends FileEiProp {
 	
 	const PROP_NAME_REFERENCED_NAME_PROPERTY_ID = 'referencedNamePropertyId';
-	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof FileEntityProperty);
-		$this->entityProperty = $entityProperty;
-	}
-	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('n2n\io\managed\File',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
-	}
 	
 	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);

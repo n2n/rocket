@@ -229,7 +229,8 @@ class EiuFrame {
 			$eiType = $fromEiuEntry->getEiType();
 		}
 		
-		return new EiuEntry($this->createEiEntryCopy($fromEiuEntry, $this->createNewEiObject($draft, $eiType)), $this);
+		$eiObject = $this->createNewEiObject($draft, $eiType);
+		return new EiuEntry($eiObject, $this->createEiEntryCopy($fromEiuEntry, $eiObject), $this, $this->eiuFactory);
 	}
 	
 	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
