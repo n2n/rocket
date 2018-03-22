@@ -29,7 +29,6 @@ use n2n\util\config\Attributes;
 
 class MultiUploadFileEiProp extends FileEiProp {
 	
-	const PROP_NAME_REFERENCED_NAME_PROPERTY_ID = 'referencedNamePropertyId';
 	
 	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
@@ -38,9 +37,7 @@ class MultiUploadFileEiProp extends FileEiProp {
 		$this->getEiType()->getEiCommandCollection()->add($command);
 	}
 	
-	public function getReferencedNamePropertyId() {
-		return $this->getAttributes()->get(self::PROP_NAME_REFERENCED_NAME_PROPERTY_ID);
-	}
+	
 	
 	public function createMagCollection() {
 		$magCollection = parent::createMagCollection();

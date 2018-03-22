@@ -25,6 +25,7 @@ class UniqueEiConfigurator extends EiConfiguratorAdapter {
 		$options = $eiu->engine()->getGenericEiPropertyOptions();
 		
 		$magCollection = new MagCollection();
+		
 		$magCollection->addMag(self::ATTR_UNIQUE_PROPS_KEY,
 				new MultiSelectMag('Unique Props', $options, $lar->getScalarArray(self::ATTR_UNIQUE_PROPS_KEY)));
 		
