@@ -104,8 +104,8 @@ class RelationFilterField implements FilterField {
 		$targetEntityObjs = array();
 		foreach ($targetPids as $targetPid) {
 			try {
-				$targetEntityObjs[] = $this->targetEiuFrame->lookupEiEntityObj($targetPid, 
-						CriteriaConstraint::ALL_TYPES);
+				$targetEntityObjs[] = $this->targetEiuFrame->lookupEntry($targetPid, CriteriaConstraint::ALL_TYPES)
+						->getEiEntityObj();
 			} catch (UnknownEntryException $e) { }
 		}
 		return $targetEntityObjs;
@@ -123,8 +123,9 @@ class RelationFilterField implements FilterField {
 			$targetLiveEntries = array();
 			foreach ($relationFilterConf->getTargetPids() as $targetPid) {
 				try {
-					$targetLiveEntries[$targetPid] = $this->targetEiuFrame->lookupEiEntityObj(
-							$this->targetEiuFrame->pidToId($targetPid), CriteriaConstraint::ALL_TYPES);
+					$targetLiveEntries[$targetPid] = $this->targetEiuFrame
+							->lookupEntry($this->targetEiuFrame->pidToId($targetPid), CriteriaConstraint::ALL_TYPES)
+							->getEiEntityObj();
 				} catch (UnknownEntryException $e) {}
 			}
 			$form->getSelectorMag()->setTargetLiveEntries($targetLiveEntries);

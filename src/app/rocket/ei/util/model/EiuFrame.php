@@ -114,6 +114,10 @@ class EiuFrame {
 		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuFactory);
 	}
 	
+	public function getContextClass() {
+		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass();
+	}
+	
 	/**
 	 * @param mixed $eiObjectObj
 	 * @throws EiuPerimeterException
