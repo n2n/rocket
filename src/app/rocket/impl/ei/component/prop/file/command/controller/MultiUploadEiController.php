@@ -23,16 +23,15 @@ namespace rocket\impl\ei\component\prop\file\command\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
-use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\ei\util\model\EiuCtrl;
 use rocket\ei\EiPropPath;
 use n2n\io\managed\impl\FileFactory;
+use n2n\web\http\BadRequestException;
 
 class MultiUploadEiController extends ControllerAdapter {
 	private $fileEiProp;
-	private $namingEiPropPath;
 	
 	/**
 	 * @var \rocket\impl\ei\component\prop\file\MultiUploadFileEiProp
@@ -41,9 +40,6 @@ class MultiUploadEiController extends ControllerAdapter {
 		$this->fileEiProp = $fileEiProp;
 	}
 	
-	public function setNamingEiPropPath(EiPropPath $namingEiPropPath = null) {
-		$this->namingEiPropPath = $namingEiPropPath;
-	}
 	
 	public function index(EiuCtrl $eiuCtrl, DynamicTextCollection $dtc) {
 		$eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_multi_upload_label'));
@@ -62,16 +58,18 @@ class MultiUploadEiController extends ControllerAdapter {
 		
 		$eiuFrame = $eiuCtrl->frame();
 		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiObject());
-		
+
 		$eiuEntry->setValue($this->fileEiProp, $file);
-		if (null !== $this->namingEiPropPath) {
+		
+		$namingEiPropPath = $this->fileEiProp->getNamingEiPropPath();
+		if (null !== $namingEiPropPath) {
 			$prettyNameParts = preg_split('/(\.|-|_)/', $file->getOriginalName());
 			array_pop($prettyNameParts);
-			$eiuEntry->setValue($this->namingEiPropPath, implode(' ', $prettyNameParts));
+			$eiuEntry->setScalarValue($namingEiPropPath, implode(' ', $prettyNameParts));
 		}
 		
 		if (!$eiuEntry->getEiEntry()->save()) {
-			throw new IllegalStateException();
+			throw new BadRequestException();
 		}
 		
 		$eiuFrame->em()->persist($eiuEntry->getEiEntityObj()->getEntityObj());

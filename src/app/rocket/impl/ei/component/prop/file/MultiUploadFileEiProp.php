@@ -21,37 +21,32 @@
  */
 namespace rocket\impl\ei\component\prop\file;
 
-use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\impl\ei\component\prop\string\StringEiProp;
-use rocket\ei\component\EiSetup;
-use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
-use n2n\util\config\Attributes;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\impl\ei\component\prop\file\conf\MultiUploadFileEiPropConfigurator;
+use rocket\ei\EiPropPath;
 
 class MultiUploadFileEiProp extends FileEiProp {
+	private $autoNameEiPropPath;
 	
-	
-	public function setup(EiSetup $setupProcess) {
-		parent::setup($setupProcess);
-		$command = new MultiUploadEiCommand(new Attributes());
-		$command->setEiProp($this);
-		$this->getEiType()->getEiCommandCollection()->add($command);
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\file\FileEiProp::createEiPropConfigurator()
+	 */
+	public function createEiPropConfigurator(): EiPropConfigurator {
+		return new MultiUploadFileEiPropConfigurator($this);
 	}
 	
-	
-	
-	public function createMagCollection() {
-		$magCollection = parent::createMagCollection();
-		$magCollection->addMag(self::PROP_NAME_REFERENCED_NAME_PROPERTY_ID, 
-				new EnumMag('Referenced Name Property', $this->determineNamePropertyOptions()));
-		return $magCollection;
+	/**
+	 * @return \rocket\ei\EiPropPath
+	 */
+	public function getAutoNameEiPropPath() {
+		return $this->autoNameEiPropPath;
 	}
 	
-	private function determineNamePropertyOptions() {
-		$options = array();
-		foreach ($this->getEiType()->getEiPropCollection() as $field) {
-			if (!($field instanceof StringEiProp)) continue;
-			$options[$field->getId()] = $field->getPropertyName();  
-		}
-		return $options;
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
+	public function setAutoNameEiPropPath(?EiPropPath $eiPropPath) {
+		$this->autoNameEiPropPath = $eiPropPath;
 	}
 }

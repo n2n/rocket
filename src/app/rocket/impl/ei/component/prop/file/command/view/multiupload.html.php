@@ -36,12 +36,12 @@
 			array('title' => $view->getL10nText('ei_impl_multi_upload_title', 
 					array('plural_label' => $eiuFrame->getGenericPluralLabel())))); 
 	
-	$html->meta()->addJs('js/script/impl/multiupload/jquery.knob.js');
-	$html->meta()->addJs('js/script/impl/multiupload/jquery.ui.widget.js');
-	$html->meta()->addJs('js/script/impl/multiupload/jquery.iframe-transport.js');
-	$html->meta()->addJs('js/script/impl/multiupload/jquery.fileupload.js');
-	$html->meta()->addJs('js/script/impl/multiupload/multiupload.js');
-	$html->meta()->addCss('css/script/impl/multiupload/multiupload.css');
+	$html->meta()->addJs('impl/js/multiupload/jquery.knob.js');
+	$html->meta()->addJs('impl/js/multiupload/jquery.ui.widget.js');
+	$html->meta()->addJs('impl/js/multiupload/jquery.iframe-transport.js');
+	$html->meta()->addJs('impl/js/multiupload/jquery.fileupload.js');
+	$html->meta()->addJs('impl/js/multiupload/multiupload.js');
+	$html->meta()->addCss('impl/css/multiupload/multiupload.css');
 ?>
 <div class="rocket-panel">
 	<h3><?php $html->text('ei_impl_multi_upload_label', array('plural_label' => 

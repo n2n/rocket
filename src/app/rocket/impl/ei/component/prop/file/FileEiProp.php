@@ -28,7 +28,6 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\file\command\ThumbEiCommand;
-
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
@@ -46,7 +45,7 @@ use n2n\web\http\Session;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
-use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
+use rocket\ei\EiPropPath;
 
 class FileEiProp extends DraftableEiPropAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
@@ -59,6 +58,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 	private $imageDimensionsImportMode = null;
 	private $extraImageDimensions = array();
 	private $maxSize;
+	private $namingEiPropPath;
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new FileEiPropConfigurator($this);
@@ -117,13 +117,27 @@ class FileEiProp extends DraftableEiPropAdapter {
 		return $this->thumbEiCommand;
 	}
 		
-	public function setMultiUploadEiCommand(MultiUploadEiCommand $multiUploadEiCommand) {
-		$this->multiUploadEiCommand = $multiUploadEiCommand;
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
+	public function setNamingEiPropPath(?EiPropPath $eiPropPath) {
+		$this->namingEiPropPath = $eiPropPath;
 	}
 	
-	public function getMultiUploadEiCommand() {
-		return $this->multiUploadEiCommand;
+	/**
+	 * @return \rocket\ei\EiPropPath|null
+	 */
+	public function getNamingEiPropPath() {
+		return $this->namingEiPropPath;
 	}
+	
+// 	public function setMultiUploadEiCommand(MultiUploadEiCommand $multiUploadEiCommand) {
+// 		$this->multiUploadEiCommand = $multiUploadEiCommand;
+// 	}
+	
+// 	public function getMultiUploadEiCommand() {
+// 		return $this->multiUploadEiCommand;
+// 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof FileEntityProperty 
