@@ -25,20 +25,29 @@
 	
 	$eiHtml = new EiHtmlBuilder($view);
 ?>
+<?php if ($dispatchable !== null): ?>
+	<?php $formHtml->openPseudo($dispatchable, $propertyPath) ?>
+<?php else: ?>
+	<div>
+<?php endif ?>
 
-<?php $formHtml->openPseudo($dispatchable, $propertyPath) ?>
-	<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-translation-src')) ?>
-		<?php foreach ($guiIdPaths as $guiIdPath): ?>
-			<div data-rocket-impl-gui-id-path="<?php $html->out($guiIdPath) ?>">
-				<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
-					<?php $eiHtml->fieldLabel(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
-								'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
-					<div class="rocket-control">
-						<?php $eiHtml->fieldContent() ?>
-						<?php $eiHtml->fieldMessage() ?>
-					</div>
-				<?php $eiHtml->fieldClose() ?>
-			</div>
-		<?php endforeach ?>
-	<?php $eiHtml->entryClose() ?>
-<?php $formHtml->closePseudo() ?>
+<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-translation-src')) ?>
+	<?php foreach ($guiIdPaths as $guiIdPath): ?>
+		<div data-rocket-impl-gui-id-path="<?php $html->out($guiIdPath) ?>">
+			<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+				<?php $eiHtml->fieldLabel(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
+							'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
+				<div class="rocket-control">
+					<?php $eiHtml->fieldContent() ?>
+					<?php $eiHtml->fieldMessage() ?>
+				</div>
+			<?php $eiHtml->fieldClose() ?>
+		</div>
+	<?php endforeach ?>
+<?php $eiHtml->entryClose() ?>
+
+<?php if ($dispatchable !== null): ?>
+	<?php $formHtml->closePseudo() ?>
+<?php else:  ?>
+	</div>
+<?php endif ?>
