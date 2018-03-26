@@ -30,6 +30,7 @@ use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use rocket\ei\EiTypeController;
 use rocket\ei\manage\EiRelation;
 use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\model\Eiu;
 
 class RelationController extends ControllerAdapter {
 	private $eiFrame;
@@ -68,21 +69,44 @@ class RelationController extends ControllerAdapter {
 		$this->delegate($eiTypeController);
 	}
 	
-	public function doRelUnknownEntry(array $delegateCmds, EiTypeController $eiTypeController) {
-		$targetControllerContext = $this->createDelegateContext($eiTypeController);
+// 	public function doRelUnknownEntry(array $delegateCmds, EiTypeController $eiTypeController) {
+// 		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 			
+// 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
+// 				null, $targetControllerContext);
+		
+// 		if (null !== ($targetEiProp = $this->eiPropRelation->findTargetEiProp())) {
+// 			$targetEiFrame->setEiRelation($targetEiProp->getId(), new EiRelation($this->eiFrame, null));
+// 		}
+	
+// 		$this->applyBreadcrumb();
+	
+// 		$this->delegate($eiTypeController);
+// 	}
+
+	public function doRelNewEntry(string $eiTypeId, array $delegateCmds, EiTypeController $eiTypeController) {
+		$targetControllerContext = $this->createDelegateContext($eiTypeController);
+		
+		$eiu = new Eiu($this->eiFrame);
+		$spec = $eiu->context()->getSpec();
+		
+		if (!$spec->containsEiTypeId($eiTypeId)) {
+			throw new PageNotFoundException();
+		}
+		
+		$eiObject = $eiu->frame()->createNewEiObject(false, $spec->getEiTypeById($eiTypeId));
+		
 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
-				null, $targetControllerContext);
+				$eiObject, $targetControllerContext);
 		
 		if (null !== ($targetEiProp = $this->eiPropRelation->findTargetEiProp())) {
 			$targetEiFrame->setEiRelation($targetEiProp->getId(), new EiRelation($this->eiFrame, null));
 		}
-	
+		
 		$this->applyBreadcrumb();
-	
+		
 		$this->delegate($eiTypeController);
 	}
-	
 	public function doRel(array $delegateCmds, EiTypeController $eiTypeController) {
 		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 	

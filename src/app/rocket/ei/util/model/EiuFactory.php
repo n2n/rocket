@@ -44,6 +44,7 @@ use rocket\ei\EiEngine;
 use rocket\spec\Spec;
 use rocket\ei\EiTypeExtension;
 use rocket\ei\component\EiComponent;
+use rocket\core\model\Rocket;
 
 class EiuFactory {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -658,7 +659,7 @@ class EiuFactory {
 		}
 		
 		if ($this->n2nContext !== null) {
-			return $this->n2nContext->lookup(Spec::class);
+			return $this->n2nContext->lookup(Rocket::class)->getSpec();
 		}
 		
 		throw new EiuPerimeterException('Could not determine Spec.');

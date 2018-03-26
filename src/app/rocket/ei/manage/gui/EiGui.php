@@ -95,7 +95,7 @@ class EiGui {
 		$this->ensureInit();
 		
 		$guiIdsPaths = $this->eiGuiViewFactory->getGuiIdPaths();
-		ArgUtils::valArrayReturn($guiIdsPaths, $this->eiGuiViewFactory, 'getAllGuiIdPaths', GuiIdPath::class);
+		ArgUtils::valArrayReturn($guiIdsPaths, $this->eiGuiViewFactory, 'getGuiIdPaths', GuiIdPath::class);
 		
 		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $guiIdsPaths, $treeLevel);
 		if ($append) {

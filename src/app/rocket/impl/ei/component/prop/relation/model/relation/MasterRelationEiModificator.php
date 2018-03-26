@@ -42,7 +42,7 @@ class MasterRelationEiModificator implements EiFrameListener {
 
 	public function onNewEiEntry(EiEntry $eiEntry) {
 // 		if ($this->targetEiFrame !== $eiu->frame()->getEiFrame()) return;
-
+		
 		if ($eiEntry->getEiObject()->isDraft()) return;
 		
 		$that = $this;
