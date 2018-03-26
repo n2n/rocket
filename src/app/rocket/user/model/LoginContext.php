@@ -90,7 +90,7 @@ class LoginContext implements RequestScoped, Dispatchable {
 		
 		$currentUser = $this->userDao->getUserByNick($this->getNick());
 		
-		if ($currentUser === null || !HashUtils::compareHash($this->rawPassword, $currentUser->getPassword())) {
+		if ($currentUser === null || !HashUtils::compareHash((string) $this->rawPassword, $currentUser->getPassword())) {
 			$this->userDao->createLogin($this->getNick(), $this->getRawPassword(), null);
 			$messageContainer->addErrorCode('user_invalid_login_err');
 			return false;

@@ -685,10 +685,13 @@ var Rocket;
                     this.onNewZoneCallbacks[i](zone);
                 }
             }
-            set active(focus) {
-                if (focus == this.active)
+            set active(active) {
+                if (active == this.active)
                     return;
-                if (focus) {
+                if (this.monitor) {
+                    this.monitor.active = active;
+                }
+                if (active) {
                     this.jqLayer.addClass("rocket-active");
                     $(window).scrollTop(this.scrollPos);
                     return;
@@ -893,7 +896,7 @@ var Rocket;
                 this.valClasses();
             }
             valClasses() {
-                if (this.isField() || this.isGroup()) {
+                if (this.isItem() || this.isGroup()) {
                     this.jqElem.removeClass("rocket-structure-element");
                 }
                 else {
@@ -915,16 +918,28 @@ var Rocket;
             isGroup() {
                 return this.jqElem.hasClass("rocket-group");
             }
-            setField(field) {
-                if (!field) {
-                    this.jqElem.removeClass("rocket-field");
+            setPanel(panel) {
+                if (!panel) {
+                    this.jqElem.removeClass("rocket-panel");
                 }
                 else {
-                    this.jqElem.addClass("rocket-field");
+                    this.jqElem.addClass("rocket-panel");
                 }
                 this.valClasses();
             }
-            isField() {
+            isPanel() {
+                return this.jqElem.hasClass("rocket-panel");
+            }
+            setItem(field) {
+                if (!field) {
+                    this.jqElem.removeClass("rocket-item");
+                }
+                else {
+                    this.jqElem.addClass("rocket-item");
+                }
+                this.valClasses();
+            }
+            isItem() {
                 return this.jqElem.hasClass("rocket-field");
             }
             getToolbar() {
@@ -5895,13 +5910,13 @@ var Rocket;
                     let url = this.jqElem.data("overview-tools-url");
                     this.browserLayer.monitor.exec(url).then(() => {
                         let zone = this.browserLayer.getZoneByUrl(url);
-                        this.iniBrowserPage(zone);
+                        this.iniBrowserZone(zone);
                         zone.on(Rocket.Cmd.Zone.EventType.CONTENT_CHANGED, () => {
-                            this.iniBrowserPage(zone);
+                            this.iniBrowserZone(zone);
                         });
                     });
                 }
-                iniBrowserPage(zone) {
+                iniBrowserZone(zone) {
                     if (this.browserLayer === null)
                         return;
                     var ocs = Impl.Overview.OverviewPage.findAll(zone.jQuery);
