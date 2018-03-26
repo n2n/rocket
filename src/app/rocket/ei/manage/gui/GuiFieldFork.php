@@ -28,7 +28,7 @@ interface GuiFieldFork {
 	 * @param bool $makeEditable
 	 * @return GuiFieldAssembly
 	 */
-	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly; 
+	public function assembleGuiField(GuiIdPath $guiIdPath): ?GuiFieldAssembly; 
 	
 	/**
 	 * Gets called to finalize this GuiFieldFork. Which means that there will be no future calls of 

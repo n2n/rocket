@@ -78,6 +78,11 @@ class EiEntryGuiAssembler {
 // 		}
 // 	}
 	
+	/**
+	 * @param string $id
+	 * @param GuiProp $guiProp
+	 * @return NULL|\rocket\ei\manage\gui\GuiFieldAssembly
+	 */
 	private function assembleGuiProp($id, GuiProp $guiProp) {
 		$eiPropPath = $this->guiDefinition->getLevelEiPropPathById($id);
 		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
@@ -100,6 +105,12 @@ class EiEntryGuiAssembler {
 				$editable);
 	}
 	
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param GuiPropFork $guiPropFork
+	 * @param EiPropPath $eiPropPath
+	 * @return NULL|\rocket\ei\manage\gui\GuiFieldAssembly
+	 */
 	private function assembleGuiPropFork(GuiIdPath $guiIdPath, GuiPropFork $guiPropFork, EiPropPath $eiPropPath) {
 		$id = $guiIdPath->getFirstId();
 		
@@ -113,6 +124,10 @@ class EiEntryGuiAssembler {
 		} 
 		
 		$result = $forkedGuiField->assembleGuiField($relativeGuiIdPath);
+		if ($result === null) {
+			return null;
+		}
+		
 		$displayable = $result->getDisplayable();
 		$eiFieldWrapper = $result->getEiFieldWrapper();
 		$magAssembly = $result->getMagAssembly();

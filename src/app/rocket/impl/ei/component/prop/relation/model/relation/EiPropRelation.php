@@ -302,8 +302,11 @@ abstract class EiPropRelation {
 	    }
 	    
 	    $targetCmdContextPath = $eiFrame->getControllerContext()->getCmdContextPath();
-		if ($eiObject === null || $eiObject->isNew()) {
+		if ($eiObject === null) {
 		    $targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'rel');
+		} else if ($eiObject->isNew()) {
+			$targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'relnewentry', 
+					$eiObject->getEiEntityObj()->getEiType()->getId());
 		} else {
 			$targetCmdContextPath = $targetCmdContextPath->ext($this->relationEiCommand->getId(), 'relentry', 
 					$eiEntry->getPid());
@@ -396,7 +399,8 @@ abstract class EiPropRelation {
 	public function buildTargetNewEiuEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$pathParts = array($this->relationEiCommand->getId());
 		if ($eiEntry->isNew()) {
-			$pathParts[] = 'relunknownentry';
+			$pathParts[] = 'relnewentry';
+			$pathParts[] = $eiEntry->getEiType()->getId();
 		} else {
 			$pathParts[] = 'relentry';
 			$pathParts[] = $eiEntry->getPid();

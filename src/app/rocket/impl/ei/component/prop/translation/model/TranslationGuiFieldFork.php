@@ -131,7 +131,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		return $this->markClassKey = HtmlUtils::buildUniqueId();
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly {
+	public function assembleGuiField(GuiIdPath $guiIdPath): ?GuiFieldAssembly {
 		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
@@ -174,6 +174,10 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			} else {
 				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $fieldErrorInfo);
 			}
+		}
+		
+		if ($translationDisplayable->isEmpty()) {
+			return null;
 		}
 		
 		$eiFieldWrapperWrapper = new EiFieldWrapperWrapper($eiFieldWrappers);
