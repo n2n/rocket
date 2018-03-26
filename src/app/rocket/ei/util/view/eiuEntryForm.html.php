@@ -51,7 +51,7 @@ use n2n\web\dispatch\map\PropertyPath;
 		<?php $view->import($eiuEntryFormViewModel->createEditView($view))?>
 	</div>
 <?php else: ?>
-	<div class="rocket-entry-form rocket-multi-ei-type<?php $html->out($eiuEntryFormViewModel->isGroupRequired() ? 'rocket-group rocket-simple-group' : '') ?>">
+	<div class="rocket-entry-form rocket-multi-ei-type<?php $html->out($eiuEntryFormViewModel->isGroupRequired() ? ' rocket-group rocket-simple-group' : '') ?>">
 		<div class="rocket-ei-type-selector">
 			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
 			<div>
