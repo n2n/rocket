@@ -174,10 +174,14 @@ namespace Rocket.Cmd {
 		
 		private scrollPos: number = 0;
 		
-		set active(focus: boolean) {
-			if (focus == this.active) return;
+		set active(active: boolean) {
+			if (active == this.active) return;
 			
-			if (focus) {
+			if (this.monitor) {
+				this.monitor.active = active;
+			}
+			
+			if (active) {
 				this.jqLayer.addClass("rocket-active");
 				$(window).scrollTop(this.scrollPos);
 				return;
@@ -185,7 +189,6 @@ namespace Rocket.Cmd {
 			
 			this.scrollPos = $(window).scrollTop();
 			this.jqLayer.removeClass("rocket-active");
-			
 		}
 		
 		get active() {

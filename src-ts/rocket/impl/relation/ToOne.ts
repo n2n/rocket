@@ -26,7 +26,6 @@ namespace Rocket.Impl.Relation {
 	
 	export class ToOne {
 		constructor(private toOneSelector: ToOneSelector = null, private embedded: ToOneEmbedded = null) {
-			
 			if (toOneSelector && embedded) {
 				embedded.whenChanged(function () {
 					if (embedded.currentEntry || embedded.newEntry) {
@@ -78,7 +77,6 @@ namespace Rocket.Impl.Relation {
 				jqDetail.children(".rocket-impl-entry").each(function () {
 					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true, false);
 				});
-				
 			}
 			
 			toOne = new ToOne(toOneSelector, toOneEmbedded);
@@ -438,6 +436,7 @@ namespace Rocket.Impl.Relation {
 			let url = this.jqElem.data("overview-tools-url");
 			this.browserLayer.monitor.exec(url).then(() => {
 				let zone = this.browserLayer.getZoneByUrl(url);
+				
 				that.iniBrowserPage(zone);
 				zone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
 					this.iniBrowserPage(zone);
