@@ -232,14 +232,14 @@ namespace Rocket.Impl.Relation {
 			let url = this.jqElem.data("overview-tools-url");
 			this.browserLayer.monitor.exec(url).then(() => {
 				let zone = this.browserLayer.getZoneByUrl(url);
-				this.iniBrowserPage(zone);
+				this.iniBrowserZone(zone);
 				zone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
-					this.iniBrowserPage(zone);
+					this.iniBrowserZone(zone);
 				});
 			});
 		}
 		
-		private iniBrowserPage(zone: cmd.Zone) {
+		private iniBrowserZone(zone: cmd.Zone) {
 			if (this.browserLayer === null) return;
 			
 			var ocs = Impl.Overview.OverviewPage.findAll(zone.jQuery);

@@ -121,6 +121,18 @@ class EiuEngine {
 		}
 	}
 	
+	/**
+	 * @return string[]
+	 */
+	public function getScalarEiPropertyOptions() {
+		$options = array();
+		foreach ($this->eiEngine->getScalarEiDefinition()->getScalarEiProperties() as $scalarEiProperty) {
+			$str = (string) $scalarEiProperty->getEiPropPath();
+			$options[$str] = $str . ' (' . $scalarEiProperty->getLabelLstr()->t(N2nLocale::getAdmin()) . ')';
+		}
+		return $options;
+	}
+	
 	
 	public function containsEiProp($eiPropPath) {
 		return $this->eiEngine->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));

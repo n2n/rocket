@@ -51,8 +51,7 @@ class GenericEiDefinition {
 	 * @return GenericEiProperty
 	 */
 	public function getGenericEiPropertyByEiPropPath(EiPropPath $eiPropPath) {
-		if (null !== ($genericEiProperty = $this->genericEiProperties
-				->offsetGet($eiPropPath))) {
+		if (null !== ($genericEiProperty = $this->genericEiProperties->offsetGet($eiPropPath))) {
 			return $genericEiProperty;
 		}
 	

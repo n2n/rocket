@@ -40,6 +40,13 @@ class ScalarEiDefinition {
 	}
 	
 	/**
+	 * @return ScalarEiProperty[]
+	 */
+	public function getScalarEiProperties() {
+		return $this->scalarEiProperties->getValues();
+	}
+	
+	/**
 	 * @param EiPropPath $eiPropPath
 	 * @throws UnknownScalarEiPropertyException
 	 * @return ScalarEiProperty

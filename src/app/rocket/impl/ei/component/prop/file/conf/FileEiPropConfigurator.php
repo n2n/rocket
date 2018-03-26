@@ -36,6 +36,9 @@ use n2n\util\config\LenientAttributeReader;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\ei\util\model\EiuEngine;
+use rocket\ei\EiPropPath;
+use n2n\util\config\AttributesException;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
@@ -48,7 +51,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	const ATTR_MULTI_UPLOAD_AVAILABLE_KEY = 'multiUploadAvailable';
 	
-	const ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY = 'multiUploadNamingFieldId'; 
+	const ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY = 'multiUploadNamingProp'; 
 	
 	private $fileEiProp;
 	
@@ -59,8 +62,8 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister();
 	}
 	
-	public function setup(EiSetup $setupProcess) {
-		parent::setup($setupProcess);
+	public function setup(EiSetup $eiSetup) {
+		parent::setup($eiSetup);
 	
 		$this->fileEiProp->setAllowedExtensions($this->attributes->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY,
 				false, $this->fileEiProp->getAllowedExtensions(), true));
@@ -77,34 +80,41 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 				try {
 					$extraImageDimensions[$imageDimensionStr] = ImageDimension::createFromString($imageDimensionStr);
 				} catch (\InvalidArgumentException $e) {
-					throw $setupProcess->createException('Invalid ImageDimension string: ' . $imageDimensionStr, $e);
+					throw $eiSetup->createException('Invalid ImageDimension string: ' . $imageDimensionStr, $e);
 				}
 			}
 			$this->fileEiProp->setExtraImageDimensions($extraImageDimensions);
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
-		$setupProcess->eiu()->mask()->supremeMask()->addEiCommand($thumbEiCommand);
+		$eiSetup->eiu()->mask()->supremeMask()->addEiCommand($thumbEiCommand);
 		$this->fileEiProp->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
-			$namingEiPropPath = null;
-			if ($this->attributes->contains(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY)) {
-				try {
-					$namingEiPropPath = $setupProcess->getScalarEiPropertyByFieldPath(
-							$this->attributes->getString(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY))->getEiPropPath();
-				} catch (\InvalidArgumentException $e) {
-					throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
-				} catch (UnknownScalarEiPropertyException $e) {
-					throw $setupProcess->createException('Configured base ScalarEiProperty not found.', $e);
-				}
-			}
-			
-			$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp, $namingEiPropPath);
-			$this->fileEiProp->getEiMask()->getSupremeEiMask()->getEiCommandCollection()
-					->add($multiUploadEiCommand);
-			$this->fileEiProp->setMultiUploadEiCommand($multiUploadEiCommand);
+			$this->setupMulti($eiSetup);
 		}
+	}
+	
+	private function setupMulti(EiSetup $eiSetup) {
+		if (!$this->attributes->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) return;
+		
+		$eiuMask = $eiSetup->eiu()->mask();
+		
+		$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp);
+		$eiuMask->addEiCommand($multiUploadEiCommand);
+		
+		$fileEiProp = $this->fileEiProp;
+		$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileEiProp) {
+			try {
+				$fileEiProp->setNamingEiPropPath($eiuEngine
+						->getScalarEiProperty($this->attributes->getString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY))
+						->getEiPropPath());
+			} catch (\InvalidArgumentException $e) {
+				throw $eiSetup->createException('Invalid base ScalarEiProperty configured.', $e);
+			} catch (UnknownScalarEiPropertyException $e) {
+				throw $eiSetup->createException('Configured base ScalarEiProperty not found.', $e);
+			}
+		});
 	}
 	
 	public function initAutoEiPropAttributes(Column $column = null) {
@@ -150,9 +160,13 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false));
 		$magCollection->addMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, $enablerMag);
 		
-		$enumMag = new EnumMag('Naming Field', 
-				$this->getNamingEiPropIdOptions(), $lar->getString(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY));
-		$enablerMag->setOnAssociatedMagWrappers(array($magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY, $enumMag)));
+		$eiu = $this->eiu($n2nContext);
+		if ($eiu->mask()->isEngineReady()) {
+			$enumMag = new EnumMag('Naming Field', $eiu->engine()->getScalarEiPropertyOptions(), 
+					$lar->getString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY));
+			$enablerMag->setOnAssociatedMagWrappers(array(
+					$magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY, $enumMag)));
+		}
 		
 		return $magDispatchable;
 	}
@@ -168,11 +182,31 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+		$curEiPropPath = null;
+		try {
+			if (null !== ($val = $this->attributes->getString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY, false))) {
+				$curEiPropPath = EiPropPath::create($val);
+			}
+		} catch (AttributesException $e) {
+		} catch (\InvalidArgumentException $e) {
+		}
+		
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
+		
+		$magCollection = $magDispatchable->getMagCollection();
 		
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(array(
 				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
 				self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, self::ATTR_CHECK_IMAGE_MEMORY_KEY,
-				self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, self::ATTR_MULTI_UPLOAD_NAMING_FIELD_PATH_KEY), true), true);
+				self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
+		
+		if ($magCollection->containsPropertyName(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
+			$this->attributes->appendAll($magDispatchable->getMagCollection()
+					->readValues(array(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY), true), true);
+		} else if ($curEiPropPath !== null) {
+			$this->attributes->set(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY, (string) $curEiPropPath);
+		}
 	}
+	
+	
 }

@@ -112,12 +112,19 @@ class EiuMask  {
 		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuFactory);
 	}
 	
-	public function engine($eiObjectObj) {
+	public function entryMask($eiObjectObj) {
 		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg',
 				$this->eiMask->getEiType()->getEiType());
 		
 		$detrEiMask = $this->eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
 		return new EiuMask($detrEiMask, null, $this->eiuFactory);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isEngineReady() {
+		return $this->eiMask->hasEiEngine();
 	}
 	
 	public function onEngineReady(\Closure $readyCallback) {

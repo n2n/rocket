@@ -37,7 +37,7 @@ class Translator {
 		if (null !== ($translatable = $finder->find())) {
 			return $translatable;
 		}
-		
+
 		throw new UnavailableTranslationException('No translation available for locales: ' . implode(', ', $n2nLocales));
 	}
 	
