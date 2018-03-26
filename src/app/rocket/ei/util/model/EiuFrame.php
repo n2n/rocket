@@ -189,7 +189,7 @@ class EiuFrame {
 		}
 		
 		throw new UnknownEntryException('Entity not found: ' . EntityInfo::buildEntityString(
-				$this->getEntityModel(), $id));
+				$this->getContextEiType()->getEntityModel(), $id));
 		
 	}
 	
