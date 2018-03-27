@@ -1,9 +1,33 @@
 <?php
-// namespace rocket\ajah;
+namespace rocket\ajah;
 
-// class JhtmlEventInfo {
-// 	private $resfreshMod;
-// 	private $eventMap = array();
+use n2n\l10n\Message;
+
+class JhtmlEventInfo {
+	const ATTR_MESSAGES_KEY = 'messages';
+	const ATTR_SEVERITY_KEY = 'severity';
+	const ATTR_TEXT_KEY = 'text';
+	
+	private $resfreshMod;
+	private $attrs = array();
+	
+	/**
+	 * @param Message $message
+	 * @return \rocket\ajah\JhtmlEventInfo
+	 */
+	function message(Message ...$messages) {
+		if (!isset($this->attrs[self::ATTR_MESSAGES_KEY])) {
+			$this->attrs[self::ATTR_MESSAGES_KEY] = array();
+		}
+		
+		foreach ($messages as $message) {
+			$this->attrs[self::ATTR_MESSAGES_KEY][] = array(
+					self::ATTR_TEXT_KEY => $message->__toString(),
+					self::ATTR_SEVERITY_KEY => $message->getSeverity());
+		}
+		
+		return $this;
+	}
 
 // 	public function groupChanged(string $groupId) {
 // 		$this->eventMap[$groupId] = RocketJhtmlResponse::MOD_TYPE_CHANGED;
@@ -45,7 +69,7 @@
 // 		return $this;
 // 	}
 
-// 	public function toAttrs(): array {
-// 		return $this->eventMap;
-// 	}
-// }
+	public function toAttrs(): array {
+		return $this->attrs;
+	}
+}

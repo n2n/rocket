@@ -377,8 +377,15 @@ class EiuFrame {
 			throw new NotYetImplementedException();
 		}
 		
-		
-		$this->eiFrame->getManageState()->getVetoableRemoveActionQueue()->removeEiObject($eiObject);
+		return $this->eiFrame->getManageState()->getVetoableRemoveActionQueue()->removeEiObject($eiObject);
+	}
+	
+	/**
+	 * @return \rocket\core\model\launch\TransactionApproveAttempt
+	 */
+	public function flush() {
+		return $this->eiFrame->getManageState()->getVetoableRemoveActionQueue()
+				->approve($this->eiFrame->getN2nContext());
 	}
 
 	public function lookupPreviewController(string $previewType, $eiObjectArg) {
