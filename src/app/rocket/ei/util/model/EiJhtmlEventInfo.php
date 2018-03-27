@@ -5,8 +5,9 @@ use rocket\ei\EiType;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\control\Control;
 use n2n\web\ui\SimpleBuildContext;
+use rocket\ajah\JhtmlEventInfo;
 
-class EiJhtmlEventInfo {
+class EiJhtmlEventInfo extends JhtmlEventInfo {
     const ATTR_CHANGES_KEY = 'eiMods';
 	const ATTR_SWAP_CONTROL_HTML_KEY = 'swapControlHtml';
 	
@@ -134,7 +135,7 @@ class EiJhtmlEventInfo {
 	}
 	
 	public function toAttrs(): array {
-		$attrs = array(); 
+		$attrs = parent::toAttrs(); 
 		
 		if ($this->swapControl !== null) {
 			$attrs[self::ATTR_SWAP_CONTROL_HTML_KEY] = $this->swapControl->createUiComponent()

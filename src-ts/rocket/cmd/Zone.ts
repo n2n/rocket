@@ -13,6 +13,7 @@ namespace Rocket.Cmd {
 		private callbackRegistery: util.CallbackRegistry<ZoneCallback> = new util.CallbackRegistry<ZoneCallback>();
 		private additionalTabManager: AdditionalTabManager;
 		private _menu: Menu;
+		private _messageList: MessageList;
 		private _blocked: boolean = false;
 		
 		private _page: Jhtml.Page = null;
@@ -145,6 +146,7 @@ namespace Rocket.Cmd {
 		private reset() {
 			this.additionalTabManager = new AdditionalTabManager(this);
 			this._menu = new Menu(this);
+			this._messageList = new MessageList(this);
 		}
 		
 		
@@ -262,6 +264,10 @@ namespace Rocket.Cmd {
 		
 		get menu(): Menu {
 			return this._menu;
+		}
+		
+		get messageList(): MessageList {
+			return this._messageList;
 		}
 		
 		get locked(): boolean {
@@ -510,6 +516,83 @@ namespace Rocket.Cmd {
 		}
 	}
 	
+	export class MessageList {
+		private zone: Zone;
+		
+		constructor(zone: Zone) {
+			this.zone = zone;
+		}
+		
+		clear() {
+			this.zone.jQuery.find("rocket-messages").remove();
+		}
+		
+		private severityToClassName(severity: Severity) {
+			switch (severity) {
+				case Severity.ERROR:
+					return "alert-danger";
+				case Severity.INFO:
+					return "alert-info";
+				case Severity.WARN:
+					return "alert-warn";
+				case Severity.SUCCESS:
+					return "alert-success";
+				default:
+					throw new Error("Unkown severity: " + severity);
+			}
+		}
+		
+		private getMessagesUlJqBySeverity(severity: Severity): JQuery {
+			let zoneJq = this.zone.jQuery;
+			let className = this.severityToClassName(severity);
+			
+			let messagesJq = zoneJq.find("ul.rocket-messages." + className);
+			if (messagesJq.length > 0) {
+				return messagesJq;
+			}
+			
+			messagesJq = $("<ul />", { "class": "rocket-messages alert " + className + " list-unstyled" });
+			
+			let contentJq = this.zone.jQuery.find(".rocket-content");
+			if (contentJq.length > 0) {
+				messagesJq.insertBefore(contentJq);
+			} else {
+				zoneJq.prepend(messagesJq);
+			}
+			
+			return messagesJq;
+		}
+		
+		add(message: Message) {
+			let liJq = $("<li></li>", { "text": message.text });
+			liJq.hide();
+			this.getMessagesUlJqBySeverity(message.severity).append(liJq);
+			liJq.fadeIn();
+		}
+		
+		addAll(messages: Message[]) {
+			for (let message of messages) {
+				this.add(message);
+			}
+		}
+		
+	}
+	
+	export interface ZoneCallback {
+		(context: Zone): any
+	}
+	
+	export namespace Zone {
+		export enum EventType {
+			SHOW /*= "show"*/,
+			HIDE /*= "hide"*/,
+			CLOSE /*= "close"*/,
+			CONTENT_CHANGED /*= "contentChanged"*/,
+			ACTIVE_URL_CHANGED /*= "activeUrlChanged"*/,
+			BLOCKED_CHANGED /*= "stateChanged"*/ 
+		}
+	}
+	
 	export class Menu {
 		private context: Zone;
 		private _toolbar: display.Toolbar = null;
@@ -606,18 +689,15 @@ namespace Rocket.Cmd {
 		}
 	}
 	
-	export interface ZoneCallback {
-		(context: Zone): any
+	export class Message {
+		constructor(public text: string, public severity: Severity) {
+		}
 	}
 	
-	export namespace Zone {
-		export enum EventType {
-			SHOW /*= "show"*/,
-			HIDE /*= "hide"*/,
-			CLOSE /*= "close"*/,
-			CONTENT_CHANGED /*= "contentChanged"*/,
-			ACTIVE_URL_CHANGED /*= "activeUrlChanged"*/,
-			BLOCKED_CHANGED /*= "stateChanged"*/ 
-		}
+	export enum Severity {
+		SUCCESS = 1,
+		INFO = 2,
+		WARN = 4,
+		ERROR = 8,
 	}
 }

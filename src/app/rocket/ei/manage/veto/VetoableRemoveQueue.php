@@ -104,6 +104,10 @@ class VetoableRemoveQueue implements LifecycleListener {
 		$this->em->getActionQueue()->registerLifecycleListener($this);
 	}
 	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @return \rocket\core\model\launch\TransactionApproveAttempt
+	 */
 	public function approve(N2nContext $n2nContext) {
 		$this->em->flush();
 		

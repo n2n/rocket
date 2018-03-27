@@ -310,18 +310,26 @@ var Rocket;
             }
             registerLayer(layer) {
                 let lastModDefs = [];
+                let messages = [];
                 layer.monitor.onDirective((evt) => {
-                    lastModDefs = this.directiveExecuted(evt.directive);
+                    lastModDefs = this.deterLastModDefs(evt.directive);
+                    messages = this.deterMessages(evt.directive);
                 });
                 layer.monitor.onDirectiveExecuted((evt) => {
-                    if (layer.currentZone && lastModDefs.length > 0) {
+                    if (!layer.currentZone)
+                        return;
+                    if (lastModDefs.length > 0) {
                         layer.currentZone.lastModDefs = lastModDefs;
+                    }
+                    if (messages.length > 0) {
+                        layer.currentZone.messageList.clear();
+                        layer.currentZone.messageList.addAll(messages);
                     }
                 });
                 this._layers.push(layer);
                 this.markCurrent();
             }
-            directiveExecuted(directive) {
+            deterLastModDefs(directive) {
                 let data = directive.getAdditionalData();
                 if (!data || !data.rocketEvent || !data.rocketEvent.eiMods)
                     return [];
@@ -376,6 +384,16 @@ var Rocket;
                     }
                 }
                 return lastModDefs;
+            }
+            deterMessages(directive) {
+                let data = directive.getAdditionalData();
+                if (!data || !data.rocketEvent || !data.rocketEvent.messages)
+                    return [];
+                let messages = [];
+                for (let message of data.rocketEvent.messages) {
+                    messages.push(new Cmd.Message(message.text, message.severity));
+                }
+                return messages;
             }
             createLayer(dependentZone = null) {
                 var jqLayer = $("<div />", {
@@ -1208,6 +1226,7 @@ var Rocket;
             reset() {
                 this.additionalTabManager = new AdditionalTabManager(this);
                 this._menu = new Menu(this);
+                this._messageList = new MessageList(this);
             }
             get empty() {
                 return this.jqZone.is(":empty");
@@ -1299,6 +1318,9 @@ var Rocket;
             }
             get menu() {
                 return this._menu;
+            }
+            get messageList() {
+                return this._messageList;
             }
             get locked() {
                 return this.locks.length > 0;
@@ -1492,6 +1514,68 @@ var Rocket;
             }
         }
         Cmd.AdditionalTab = AdditionalTab;
+        class MessageList {
+            constructor(zone) {
+                this.zone = zone;
+            }
+            clear() {
+                this.zone.jQuery.find("rocket-messages").remove();
+            }
+            severityToClassName(severity) {
+                switch (severity) {
+                    case Severity.ERROR:
+                        return "alert-danger";
+                    case Severity.INFO:
+                        return "alert-info";
+                    case Severity.WARN:
+                        return "alert-warn";
+                    case Severity.SUCCESS:
+                        return "alert-success";
+                    default:
+                        throw new Error("Unkown severity: " + severity);
+                }
+            }
+            getMessagesUlJqBySeverity(severity) {
+                let zoneJq = this.zone.jQuery;
+                let className = this.severityToClassName(severity);
+                let messagesJq = zoneJq.find("ul.rocket-messages." + className);
+                if (messagesJq.length > 0) {
+                    return messagesJq;
+                }
+                messagesJq = $("<ul />", { "class": "rocket-messages alert " + className + " list-unstyled" });
+                let contentJq = this.zone.jQuery.find(".rocket-content");
+                if (contentJq.length > 0) {
+                    messagesJq.insertBefore(contentJq);
+                }
+                else {
+                    zoneJq.prepend(messagesJq);
+                }
+                return messagesJq;
+            }
+            add(message) {
+                let liJq = $("<li></li>", { "text": message.text });
+                liJq.hide();
+                this.getMessagesUlJqBySeverity(message.severity).append(liJq);
+                liJq.fadeIn();
+            }
+            addAll(messages) {
+                for (let message of messages) {
+                    this.add(message);
+                }
+            }
+        }
+        Cmd.MessageList = MessageList;
+        (function (Zone) {
+            let EventType;
+            (function (EventType) {
+                EventType[EventType["SHOW"] = 0] = "SHOW";
+                EventType[EventType["HIDE"] = 1] = "HIDE";
+                EventType[EventType["CLOSE"] = 2] = "CLOSE";
+                EventType[EventType["CONTENT_CHANGED"] = 3] = "CONTENT_CHANGED";
+                EventType[EventType["ACTIVE_URL_CHANGED"] = 4] = "ACTIVE_URL_CHANGED";
+                EventType[EventType["BLOCKED_CHANGED"] = 5] = "BLOCKED_CHANGED";
+            })(EventType = Zone.EventType || (Zone.EventType = {}));
+        })(Zone = Cmd.Zone || (Cmd.Zone = {}));
         class Menu {
             constructor(context) {
                 this._toolbar = null;
@@ -1568,17 +1652,20 @@ var Rocket;
             }
         }
         Cmd.Menu = Menu;
-        (function (Zone) {
-            let EventType;
-            (function (EventType) {
-                EventType[EventType["SHOW"] = 0] = "SHOW";
-                EventType[EventType["HIDE"] = 1] = "HIDE";
-                EventType[EventType["CLOSE"] = 2] = "CLOSE";
-                EventType[EventType["CONTENT_CHANGED"] = 3] = "CONTENT_CHANGED";
-                EventType[EventType["ACTIVE_URL_CHANGED"] = 4] = "ACTIVE_URL_CHANGED";
-                EventType[EventType["BLOCKED_CHANGED"] = 5] = "BLOCKED_CHANGED";
-            })(EventType = Zone.EventType || (Zone.EventType = {}));
-        })(Zone = Cmd.Zone || (Cmd.Zone = {}));
+        class Message {
+            constructor(text, severity) {
+                this.text = text;
+                this.severity = severity;
+            }
+        }
+        Cmd.Message = Message;
+        let Severity;
+        (function (Severity) {
+            Severity[Severity["SUCCESS"] = 1] = "SUCCESS";
+            Severity[Severity["INFO"] = 2] = "INFO";
+            Severity[Severity["WARN"] = 4] = "WARN";
+            Severity[Severity["ERROR"] = 8] = "ERROR";
+        })(Severity = Cmd.Severity || (Cmd.Severity = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;

@@ -30,6 +30,7 @@ use n2n\l10n\MessageContainer;
 use n2n\web\http\StatusException;
 use rocket\ei\util\model\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
+use n2n\l10n\MessageTranslator;
 
 class DeleteController extends ControllerAdapter {
 	private $dtc;
@@ -53,12 +54,19 @@ class DeleteController extends ControllerAdapter {
 			return;
 		}
 		
-		$vetoableAction = $this->eiuCtrl->frame()->remove($eiObject);
-// 		if ($vetoableAction->hasVetos()) {
-// 			$mc->addAll($vetoableAction->getReasonMessages());
-// 		}
+		$eiuFrame = $this->eiuCtrl->frame();
+		$eiuFrame->remove($eiObject);
+		$taa = $eiuFrame->flush();
 		
-		$this->eiuCtrl->redirectToReferer($redirectUrl, JhtmlEvent::ei()->eiObjectRemoved($eiObject));
+		$evt = null;
+		if ($taa->isSuccessful()) {
+			$evt = JhtmlEvent::ei()->eiObjectRemoved($eiObject);
+		} else {
+			$mt = new MessageTranslator('rocket', $eiuFrame->getN2nLocale());
+			$evt = JhtmlEvent::ei()->message(...$mt->translateAll($taa->getReasonMessages()));
+		}
+		
+		$this->eiuCtrl->redirectToReferer($redirectUrl, $evt);
 	}
 	
 // 	public function doDraft($id, $draftId, ParamGet $previewtype = null) {

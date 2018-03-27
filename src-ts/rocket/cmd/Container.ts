@@ -102,12 +102,21 @@ namespace Rocket.Cmd {
 		
 		private registerLayer(layer: Layer) {
 			let lastModDefs: LastModDef[] = [];
+			let messages: Message[] = [];
 			layer.monitor.onDirective((evt) => { 
-				 lastModDefs = this.directiveExecuted(evt.directive);
+				 lastModDefs = this.deterLastModDefs(evt.directive);
+				 messages = this.deterMessages(evt.directive);
 			});
 			layer.monitor.onDirectiveExecuted((evt) => { 
-				if (layer.currentZone && lastModDefs.length > 0) {
+				if (!layer.currentZone) return;
+				
+				if (lastModDefs.length > 0) {
 					layer.currentZone.lastModDefs = lastModDefs; 
+				}
+				
+				if (messages.length > 0) {
+					layer.currentZone.messageList.clear()
+					layer.currentZone.messageList.addAll(messages);
 				}
 			});
 			this._layers.push(layer);
@@ -115,7 +124,7 @@ namespace Rocket.Cmd {
 			this.markCurrent();
 		}
 		
-		private directiveExecuted(directive: Jhtml.Directive): Cmd.LastModDef[] {
+		private deterLastModDefs(directive: Jhtml.Directive): Cmd.LastModDef[] {
 			let data = directive.getAdditionalData();
 
 			if (!data || !data.rocketEvent || !data.rocketEvent.eiMods) return [];
@@ -176,6 +185,18 @@ namespace Rocket.Cmd {
 			}
 			
 			return lastModDefs;
+		}
+		
+		private deterMessages(directive: Jhtml.Directive): Cmd.Message[] {
+			let data = directive.getAdditionalData();
+
+			if (!data || !data.rocketEvent || !data.rocketEvent.messages) return [];
+			
+			let messages = [];
+			for (let message of data.rocketEvent.messages) {
+				messages.push(new Message(message.text, message.severity));
+			}
+			return messages;
 		}
 		
 		public createLayer(dependentZone: Zone = null): Layer {
