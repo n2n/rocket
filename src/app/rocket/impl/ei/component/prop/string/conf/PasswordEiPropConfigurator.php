@@ -26,7 +26,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\PasswordEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\impl\ei\component\prop\string\StringEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;
 
 class PasswordEiPropConfigurator extends AlphanumericEiPropConfigurator {
@@ -35,26 +34,27 @@ class PasswordEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 
-		IllegalStateException::assertTrue($this->eiComponent instanceof StringEiProp);
+		$eiComponent = $this->eiComponent;
+		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
 		if ($this->attributes->contains(self::OPTION_ALGORITHM_KEY)) {
 			try {
-				$this->eiComponent->setAlgorithm($this->attributes->get(self::OPTION_ALGORITHM_KEY));
+				$eiComponent->setAlgorithm($this->attributes->get(self::OPTION_ALGORITHM_KEY));
 			} catch (\InvalidArgumentException $e) {
-				$setupProcess->failed($this->eiComponent, 
-						'Invalid algorithm defined for PassworEiProp.', $e);
+				$setupProcess->createException('Invalid algorithm defined for PassworEiProp.', $e);
 				return;
 			}
 		}
 	}
 
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magCollection = parent::createMagCollection($n2nContext);
+		$magDispatchable = parent::createMagDispatchable($n2nContext);
 
-		IllegalStateException::assertTrue($this->eiComponent instanceof PasswordEiProp);
+		$eiComponent = $this->eiComponent;
+		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
 
 		$algorithms = PasswordEiProp::getAlgorithms();
-		$magCollection->addMag(new EnumMag(self::OPTION_ALGORITHM_KEY, 'Algortithm', 
-				array_combine($algorithms, $algorithms), $this->eiComponent->getAlgorithm()));
-		return $magCollection;
+		$magDispatchable->getMagCollection()->addMag(self::OPTION_ALGORITHM_KEY, new EnumMag('Algortithm', 
+				array_combine($algorithms, $algorithms), $eiComponent->getAlgorithm()));
+		return $magDispatchable;
 	}
 }

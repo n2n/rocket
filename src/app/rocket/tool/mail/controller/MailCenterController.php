@@ -83,8 +83,9 @@ class MailCenterController extends ControllerAdapter {
 			N2N::getMessageContainer()->addInfo($dtc->translate('tool_mail_center_notification_attachment_deleted'));
 			$this->redirectToReferer();
 			return;
-		} 
-		$this->getResponse()->send($attachment);
+		}
+		
+		$this->sendFile($attachment);
 	}
 	
 }
