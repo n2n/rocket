@@ -231,6 +231,7 @@ class ToManyMag extends MagAdapter {
 	public function setupBindingDefinition(BindingDefinition $bindingDefinition) {
 		if ($this->allowedNewEiTypeIds !== null) {
 			$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName);
+			
 			foreach ($toManyMappingResult->__get('newMappingForms') as $key => $mfMappingResult) {
 				$chosenId = null;
 				if ($mfMappingResult->eiuEntryForm->containsPropertyName('chosenId')) {

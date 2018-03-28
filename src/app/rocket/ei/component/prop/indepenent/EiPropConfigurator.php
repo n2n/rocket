@@ -23,6 +23,7 @@ namespace rocket\ei\component\prop\indepenent;
 
 use rocket\ei\component\EiConfigurator;
 use n2n\persistence\meta\structure\Column;
+use n2n\core\container\N2nContext;
 
 interface EiPropConfigurator extends EiConfigurator {
 	
@@ -34,7 +35,7 @@ interface EiPropConfigurator extends EiConfigurator {
 	 *   
 	 * @param Column $column
 	 */
-	public function initAutoEiPropAttributes(Column $column = null);
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null);
 	
 // 	/**
 // 	 * If the particular EiProp is assigned to entity property this method returns its EntityProperty object 

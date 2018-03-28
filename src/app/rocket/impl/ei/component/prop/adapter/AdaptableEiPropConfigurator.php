@@ -69,7 +69,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	private $maxCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
 		
-	public function initAutoEiPropAttributes(Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
 		if ($this->addMandatory && $this->autoMandatoryCheck && $this->mandatoryRequired()) {
 			$this->attributes->set(self::ATTR_MANDATORY_KEY, true);
 		}

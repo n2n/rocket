@@ -45,8 +45,8 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($numericAdapter);
 	}
 	
-	public function initAutoEiPropAttributes(Column $column = null) {
-		parent::initAutoEiPropAttributes($column);
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		if ($this->isGeneratedId()) {
 			$this->attributes->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);

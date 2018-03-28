@@ -26,13 +26,14 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
+use n2n\core\container\N2nContext;
 
 class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
 	 */
-	public function initAutoEiPropAttributes(Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
 	}
 
 	public function getPropertyAssignation(): PropertyAssignation {
