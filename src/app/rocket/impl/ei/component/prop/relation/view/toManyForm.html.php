@@ -49,7 +49,8 @@
 	
 	$combined = $toManyForm->isSelectionModeEnabled() && count($toManyForm->getCurrentMappingForms()) > 0
 ?>
-<div class="rocket-impl-to-many" data-min="<?php $html->out($toManyForm->getMin()) ?>"
+<div class="rocket-impl-to-many" 
+		data-min="<?php $html->out($toManyForm->getMin()) ?>"
 		data-max="<?php $html->out($toManyForm->getMax()) ?>"
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
 				array('item' => $entryLabeler->getGenericLabel())) ?>"
