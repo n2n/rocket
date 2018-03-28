@@ -116,7 +116,7 @@ class ContentItemMag extends MagAdapter {
 		
 		$orderEiPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
 		foreach ($this->panelConfigs as $panelConfig) {
-			$panelName = $panelConfig->getName();
+			$panelName = $panelConfig->get<Name();
 			
 			$panelMag = new ToManyMag($panelConfig->getLabel(), $this->targetReadEiFrame,
 					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
