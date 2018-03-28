@@ -245,10 +245,6 @@ class ToManyMag extends MagAdapter {
 				$mfMappingResult->getBindingErrors()->addErrorCode('chosenId', 'ei_impl_ei_type_disallowed');
 			}
 		}
-		
-		test((string) $bindingDefinition->getPropertyPath());
-		$toManyMappingResult = $bindingDefinition->getMappingResult()->__get($this->propertyName);
-		test('HUII! ' . $this->propertyName . ' ' . count($toManyMappingResult->__get('newMappingForms')));
 	}
 
 	/**
