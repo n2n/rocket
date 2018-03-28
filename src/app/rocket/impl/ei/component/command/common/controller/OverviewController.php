@@ -102,6 +102,7 @@ class OverviewController extends ControllerAdapter {
 					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
 		}
 				
+		$ajahOverviewController->setListSize($this->listSize);
 		$this->delegate($ajahOverviewController);
 	}
 	
