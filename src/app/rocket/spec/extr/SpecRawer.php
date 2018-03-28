@@ -35,16 +35,18 @@ class SpecRawer {
 	}
 	// PUT
 	
-	public function rawTypes(array $specExtractions) {
+	public function rawTypes(array $eiTypeExtractions, array $customTypeExtractions) {
+		ArgUtils::valArray($eiTypeExtractions, EiTypeExtraction::class);
+		ArgUtils::valArray($customTypeExtractions, CustomTypeExtraction::class);
+		
 		$specsRawData = array();
-		foreach ($specExtractions as $specExtraction) {
-			if ($specExtraction instanceof CustomTypeExtraction) {
-				$specsRawData[$specExtraction->getId()] = $this->buildCustomTypeExtractionRawData($specExtraction);
-			} else if ($specExtraction instanceof EiTypeExtraction) {
-				$specsRawData[$specExtraction->getId()] = $this->buildEiTypeExtractionRawData($specExtraction);
-			} else {
-				throw new \InvalidArgumentException();
-			}
+		
+		foreach ($eiTypeExtractions as $eiTypeExtraction) {
+			$specsRawData[$eiTypeExtraction->getId()] = $this->buildEiTypeExtractionRawData($eiTypeExtraction);
+		}
+		
+		foreach ($customTypeExtractions as $customTypeExtraction) {
+			$specsRawData[$customTypeExtraction->getId()] = $this->buildCustomTypeExtractionRawData($customTypeExtraction);
 		}
 		
 		$this->attributes->set(RawDef::TYPES_KEY, $specsRawData);

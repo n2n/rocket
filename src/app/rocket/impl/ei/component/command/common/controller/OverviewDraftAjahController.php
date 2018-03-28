@@ -50,7 +50,7 @@ class OverviewDraftJhtmlController extends ControllerAdapter {
 		$eiFrame = $this->manageState->peakEiFrame();
 
 		$draftListModel = new DraftListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
-
+		
 		if ($pids != null) {
 			$draftListModel->initByPids($pids->toStringArrayOrReject());
 		} else {

@@ -6081,6 +6081,8 @@ var Rocket;
                 constructor(jqToMany, addButtonFactory = null) {
                     this.reduceEnabled = true;
                     this.sortable = true;
+                    this.min = null;
+                    this.max = null;
                     this.entries = new Array();
                     this.expandZone = null;
                     this.dominantEntry = null;
@@ -6092,6 +6094,8 @@ var Rocket;
                     this.reduceEnabled = (true == jqToMany.data("reduced"));
                     this.sortable = (true == jqToMany.data("sortable"));
                     this.closeLabel = jqToMany.data("close-label");
+                    this.min = jqToMany.data("min") || null;
+                    this.max = jqToMany.data("max") || null;
                     this.jqEmbedded = $("<div />", {
                         "class": "rocket-impl-embedded"
                     });
@@ -6143,15 +6147,27 @@ var Rocket;
                     Rocket.scan();
                     if (this.addControlFactory === null)
                         return;
+                    let entryAddControl = null;
+                    while (entryAddControl = this.entryAddControls.pop()) {
+                        entryAddControl.dispose();
+                    }
+                    if (this.max && this.max <= this.entries.length) {
+                        if (this.firstAddControl !== null) {
+                            this.firstAddControl.dispose();
+                            this.firstAddControl = null;
+                        }
+                        if (this.lastAddControl !== null) {
+                            this.lastAddControl.dispose();
+                            this.lastAddControl = null;
+                        }
+                        return;
+                    }
                     if (this.entries.length === 0 && this.firstAddControl !== null) {
                         this.firstAddControl.dispose();
                         this.firstAddControl = null;
                     }
                     if (this.entries.length > 0 && this.firstAddControl === null) {
                         this.firstAddControl = this.createFirstAddControl();
-                    }
-                    for (var i in this.entryAddControls) {
-                        this.entryAddControls[i].dispose();
                     }
                     if (this.isExpanded() && !this.isPartialExpaned()) {
                         for (var i in this.entries) {

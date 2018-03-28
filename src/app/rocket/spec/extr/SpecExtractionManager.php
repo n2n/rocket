@@ -28,7 +28,6 @@ use n2n\util\ex\IllegalStateException;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\TypePath;
-use rocket\spec\UnknownMaskException;
 use rocket\ei\component\UnknownEiComponentException;
 
 /**

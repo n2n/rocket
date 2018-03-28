@@ -342,6 +342,8 @@ namespace Rocket.Impl.Relation {
 		private addControlFactory: AddControlFactory;
 		private reduceEnabled: boolean = true;
 		sortable: boolean = true;
+		min: number = null;
+		max: number = null;
 		private entries: Array<EmbeddedEntry> = new Array<EmbeddedEntry>();
 		private jqEmbedded: JQuery;
 		private jqEntries: JQuery;
@@ -359,6 +361,8 @@ namespace Rocket.Impl.Relation {
 			this.reduceEnabled = (true == jqToMany.data("reduced"));
 			this.sortable = (true == jqToMany.data("sortable"));
 			this.closeLabel = jqToMany.data("close-label");
+			this.min = jqToMany.data("min") || null;
+			this.max = jqToMany.data("max") || null;
 			
 			this.jqEmbedded = $("<div />", {
 				"class": "rocket-impl-embedded"
@@ -419,6 +423,23 @@ namespace Rocket.Impl.Relation {
 			
 			if (this.addControlFactory === null) return;
 			
+			let entryAddControl = null;
+			while (entryAddControl = this.entryAddControls.pop()) {
+				entryAddControl.dispose();
+			}
+			
+			if (this.max && this.max <= this.entries.length) {
+				if (this.firstAddControl !== null) {
+					this.firstAddControl.dispose();
+					this.firstAddControl = null;
+				}
+				if (this.lastAddControl !== null) {
+					this.lastAddControl.dispose();
+					this.lastAddControl = null;
+				}
+				return;
+			}
+			
 			if (this.entries.length === 0 && this.firstAddControl !== null) {
 				this.firstAddControl.dispose();
 				this.firstAddControl = null;
@@ -426,10 +447,6 @@ namespace Rocket.Impl.Relation {
 			
 			if (this.entries.length > 0 && this.firstAddControl === null) {
 				this.firstAddControl = this.createFirstAddControl();
-			}
-				
-			for (var i in this.entryAddControls) {
-				this.entryAddControls[i].dispose();
 			}
 			
 			if (this.isExpanded() && !this.isPartialExpaned()) {

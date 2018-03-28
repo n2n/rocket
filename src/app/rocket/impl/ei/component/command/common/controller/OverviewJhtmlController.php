@@ -161,7 +161,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 			} else {
 				$pageNo = $pageNo->toNumericOrReject();
 			}
-							
+			
 			if (!$listModel->initialize($pageNo)) {
 				throw new PageNotFoundException();
 			}
