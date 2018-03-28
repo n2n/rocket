@@ -56,8 +56,8 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		return $level;
 	}
 	
-	public function initAutoEiPropAttributes(Column $column = null) {
-		parent::initAutoEiPropAttributes($column);
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		$this->attributes->set(self::ATTR_AUTO_SCHEME_KEY, 'http');
 	}

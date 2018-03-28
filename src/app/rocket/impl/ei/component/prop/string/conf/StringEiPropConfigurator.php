@@ -47,8 +47,8 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
-	public function initAutoEiPropAttributes(Column $column = null) {
-		parent::initAutoEiPropAttributes($column);
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
 			$this->attributes->set(self::OPTION_MULTILINE_KEY, true);

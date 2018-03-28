@@ -41,8 +41,8 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($alphanumericEiProp);
 	}
 	
-	public function initAutoEiPropAttributes(Column $column = null) {
-		parent::initAutoEiPropAttributes($column);
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		if ($column instanceof StringColumn) {
 			$this->attributes->set(self::OPTION_MAXLENGTH_KEY, $column->getLength());
