@@ -60,7 +60,8 @@
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
 		data-reduced="<?php $html->out($toManyForm->isReduced()) ?>"
 		data-sortable="<?php $html->out($toManyForm->isSortable()) ?>"
-		data-close-label="<?php $html->text('common_apply_label') ?>">
+		data-close-label="<?php $html->text('common_apply_label') ?>"
+		data-edit-all-label="<?php $html->text('common_edit_all_label') ?>">
 		
 	<?php if ($toManyForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector"

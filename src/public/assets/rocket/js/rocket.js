@@ -1103,6 +1103,7 @@ var Rocket;
         Display.Toolbar = Toolbar;
         class CommandList {
             constructor(jqCommandList, simple = false) {
+                this.simple = simple;
                 this.jqCommandList = jqCommandList;
                 if (simple) {
                     jqCommandList.addClass("rocket-simple-commands");
@@ -1120,14 +1121,27 @@ var Rocket;
                     buttonConfig.severity = Display.Severity.SECONDARY;
                 }
                 var jqButton = $("<button />", {
-                    "class": "btn btn-" + buttonConfig.severity + (buttonConfig.important ? " rocket-important" : ""),
+                    "class": "btn btn-" + buttonConfig.severity
+                        + (buttonConfig.important ? " rocket-important" : "")
+                        + (buttonConfig.iconImportant ? " rocket-icon-important" : "")
+                        + (buttonConfig.labelImportant ? " rocket-label-important" : ""),
                     "title": buttonConfig.tooltip,
                     "type": "button"
-                }).append($("<i />", {
-                    "class": buttonConfig.iconType
-                })).append($("<span />", {
-                    "text": buttonConfig.label
-                }));
+                });
+                if (this.simple) {
+                    jqButton.append($("<span />", {
+                        "text": buttonConfig.label
+                    })).append($("<i />", {
+                        "class": buttonConfig.iconType
+                    }));
+                }
+                else {
+                    jqButton.append($("<i />", {
+                        "class": buttonConfig.iconType
+                    })).append($("<span />", {
+                        "text": buttonConfig.label
+                    }));
+                }
                 if (prepend) {
                     this.jqCommandList.prepend(jqButton);
                 }
@@ -6119,7 +6133,13 @@ var Rocket;
                                 jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
                             }
                             else {
-                                jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", severity: display.Severity.WARNING });
+                                jqButton = toolbar.getCommandList().createJqCommandButton({
+                                    iconType: "fa fa-pencil",
+                                    label: jqToMany.data("edit-all-label"),
+                                    severity: display.Severity.WARNING,
+                                    important: true,
+                                    labelImportant: true
+                                });
                             }
                             let that = this;
                             jqButton.click(function () {
