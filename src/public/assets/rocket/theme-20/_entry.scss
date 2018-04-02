@@ -27,7 +27,7 @@
 }
 
 .rocket-control > .rocket-item {
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
 }
 
 @include media-breakpoint-up(md) {
@@ -66,6 +66,7 @@
 
 .rocket-impl-entry {
     display: grid;
+    padding: 0 1rem;
 }
 
 .rocket-control .rocket-impl-entry {

@@ -4547,6 +4547,10 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding: 0 0.5rem;
 }
 
+.rocket-table > thead .rocket-general-entry-selector:empty {
+  padding: 0;
+}
+
 .rocket-table > tbody tr:hover {
   box-shadow: -3px 0px 0px 0px #fd7e14;
 }
@@ -4668,7 +4672,7 @@ ul.rocket-content-item > li > span {
 }
 
 .rocket-control > .rocket-item {
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
 }
 
 @media (min-width: 768px) {
@@ -4700,6 +4704,7 @@ ul.rocket-content-item > li > span {
  */
 .rocket-impl-entry {
   display: grid;
+  padding: 0 1rem;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
@@ -4856,10 +4861,6 @@ ul.rocket-content-item > li > span {
 .rocket-panel .rocket-group-toolbar > .rocket-simple-commands {
   display: inline-block;
   margin-left: 1rem;
-}
-
-.rocket-group > .rocket-control {
-  padding: 1rem;
 }
 
 .rocket-group .rocket-simple-group,
