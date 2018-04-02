@@ -135,7 +135,7 @@
 .rocket-impl-translation {
 	position: relative;
 	min-height: 2.5rem;
-	margin-bottom: 1rem;
+	// margin-bottom: 0.5rem;
 	> .rocket-required > label::after {
 		content: "";
 	}
