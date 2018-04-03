@@ -87,7 +87,7 @@ namespace Rocket.Display {
 				this.jqElem.prepend(toolbarJq);
 			}
 			
-			return this.toolbar =  new Toolbar(toolbarJq);
+			return this.toolbar = new Toolbar(toolbarJq);
 		}
 		
 		public getTitle() {
@@ -255,9 +255,8 @@ namespace Rocket.Display {
 	
 	export class CommandList {
 		private jqCommandList: JQuery;
-		private simple: boolean;
 		
-		public constructor(jqCommandList: JQuery, simple: boolean = false) {
+		public constructor(jqCommandList: JQuery, private simple: boolean = false) {
 			this.jqCommandList = jqCommandList;
 			
 			if (simple) {
@@ -281,14 +280,27 @@ namespace Rocket.Display {
 			}
 			
 			var jqButton = $("<button />", { 
-				"class": "btn btn-" + buttonConfig.severity + (buttonConfig.important ? " rocket-important" : ""),
+				"class": "btn btn-" + buttonConfig.severity 
+						+ (buttonConfig.important ? " rocket-important" : "")
+						+ (buttonConfig.iconImportant ? " rocket-icon-important" : "")
+						+ (buttonConfig.labelImportant ? " rocket-label-important" : ""),
 				"title": buttonConfig.tooltip,
 				"type": "button"
-			}).append($("<i />", {
-				"class": buttonConfig.iconType
-			})).append($("<span />", {
-				"text": buttonConfig.label
-			}));
+			});
+		
+			if (this.simple) {
+				jqButton.append($("<span />", {
+					"text": buttonConfig.label
+				})).append($("<i />", {
+					"class": buttonConfig.iconType
+				}));
+			} else {
+				jqButton.append($("<i />", {
+					"class": buttonConfig.iconType
+				})).append($("<span />", {
+					"text": buttonConfig.label
+				}));
+			}
 			
 			if (prepend) {
 				this.jqCommandList.prepend(jqButton);
@@ -309,6 +321,8 @@ namespace Rocket.Display {
 		label: string;
 		severity?: Severity;
 		tooltip?: string;
-		important?: true;
+		important?: boolean;
+		iconImportant?: boolean;
+		labelImportant?: boolean;
 	}
 }

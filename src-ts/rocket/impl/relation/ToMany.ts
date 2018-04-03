@@ -389,7 +389,13 @@ namespace Rocket.Impl.Relation {
 					if (this.isReadOnly()) { 
 						jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
 					} else {
-						jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", severity: display.Severity.WARNING });
+						jqButton = toolbar.getCommandList().createJqCommandButton({ 
+							iconType: "fa fa-pencil", 
+							label:  jqToMany.data("edit-all-label"),
+							severity: display.Severity.WARNING,
+							important: true,
+							labelImportant: true
+						});
 					}
 					let that = this;
 					jqButton.click(function () {

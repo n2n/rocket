@@ -77,6 +77,9 @@
         }
         .rocket-general-entry-selector {
             padding: 0 0.5rem;
+            &:empty {
+                padding: 0;
+            }
         }
     }
     > tbody {
@@ -87,6 +90,7 @@
             border-left: 1px solid $gray-300;
             white-space: nowrap;
             width: 5%;
+            padding: 0.5rem 0.75rem;
         }
 
         .rocket-entry-selector {
