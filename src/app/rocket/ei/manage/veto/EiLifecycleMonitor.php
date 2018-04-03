@@ -220,7 +220,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 	private function update(EiType $eiType, $entityObj) {
 		$objHash = spl_object_hash($entityObj);
 		
-		if (isset($this->updateActions[$objHash]) || $this->persistActions[$objHash]) return;
+		if (isset($this->updateActions[$objHash]) || isset($this->persistActions[$objHash])) return;
 		
 		$vla = new VetoableLifecycleAction(LiveEiObject::create($eiType, $entityObj), $this,
 				VetoableLifecycleAction::TYPE_UPDATE);
