@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\ei\manage\veto\VetoableActionListener;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -30,14 +29,15 @@ use n2n\l10n\MessageCode;
 use rocket\ei\manage\LiveEiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\ei\manage\veto\VetoableRemoveAction;
 use rocket\ei\manage\EiEntityObj;
 use rocket\ei\manage\ManageState;
+use rocket\ei\manage\veto\VetoableLifecycleAction;
 use n2n\core\container\N2nContext;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
+use rocket\ei\EiLifecycleListener;
 
-class RelationVetoableActionListener implements VetoableActionListener {
+class RelationVetoableActionListener implements EiLifecycleListener {
 	const STRATEGY_PREVENT = 'prevent';
 	const STRATEGY_UNSET = 'unset';
 	const STRATEGY_SELF_REMOVE = 'selfRemove';
@@ -50,8 +50,7 @@ class RelationVetoableActionListener implements VetoableActionListener {
 		$this->strategy = $strategy;
 	}
 	
-	public function onRemove(VetoableRemoveAction $vetoableRemoveAction,
-			N2nContext $n2nContext) {
+	public function onRemove(VetoableLifecycleAction $vetoableRemoveAction, N2nContext $n2nContext) {
 		$eiObject = $vetoableRemoveAction->getEiObject();
 		if ($eiObject->isDraft()) return;
 				
@@ -70,9 +69,17 @@ class RelationVetoableActionListener implements VetoableActionListener {
 		}
 	}
 	
+	public function onPersist(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext) {
+	}
+	
+	public function onUpdate(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext) {
+	}
+	
+	
 	public static function getStrategies(): array {
 		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET, self::STRATEGY_SELF_REMOVE);
 	}
+
 }
 
 class VetoCheck {
@@ -81,7 +88,7 @@ class VetoCheck {
 	private $vetoableRemoveAction;
 	
 	public function __construct(RelationEiProp $relationEiProp, EiEntityObj $targetEiEntityObj, 
-			VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext) {
+			VetoableLifecycleAction $vetoableRemoveAction, N2nContext $n2nContext) {
 		$this->relationEiProp = $relationEiProp;
 		$this->targetEiEntityObj = $targetEiEntityObj;
 		$this->vetoableRemoveAction = $vetoableRemoveAction;
@@ -91,9 +98,9 @@ class VetoCheck {
 	public function prevent() {
 		$num = 0;
 		$entityObj = null;
-		$queue = $this->vetoableRemoveAction->getQueue();
+		$queue = $this->vetoableRemoveAction->getMonitor();
 		foreach ($this->findAll() as $entityObj) {
-			if (!$queue->containsEntityObj($entityObj)) $num++;
+			if (!$queue->isEntityObjRemoved($entityObj)) $num++;
 		}
 		
 		if ($num === 0) return;
@@ -115,7 +122,7 @@ class VetoCheck {
 	
 	public function release() {
 		foreach ($this->findAll() as $entityObj) {
-			if ($this->vetoableRemoveAction->containsEntityObj($entityObj)) continue;
+			if ($this->vetoableRemoveAction->isEntityObjRemoved($entityObj)) continue;
 			
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that) {
@@ -127,7 +134,7 @@ class VetoCheck {
 	public function remove() {
 		$queue = $this->vetoableRemoveAction->getQueue();
 		foreach ($this->findAll() as $entityObj) {
-			if ($queue->containsEntityObj($entityObj)) continue;
+			if ($queue->isEntityObjRemoved($entityObj)) continue;
 				
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {

@@ -376,15 +376,22 @@ class EiuFrame {
 		if ($eiObject->isDraft()) {
 			throw new NotYetImplementedException();
 		}
-		
-		return $this->eiFrame->getManageState()->getVetoableRemoveActionQueue()->removeEiObject($eiObject);
+			
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		$nss = $eiType->getNestedSetStrategy();
+		if (null === $nss) {
+			$this->em()->remove($eiObject->getEiEntityObj()->getEntityObj());
+		} else {
+			$nsu = new NestedSetUtils($this->em(), $eiType->getEntityModel()->getClass(), $nss);
+			$nsu->remove($eiObject->getLiveObject());
+		}
 	}
 	
 	/**
 	 * @return \rocket\core\model\launch\TransactionApproveAttempt
 	 */
 	public function flush() {
-		return $this->eiFrame->getManageState()->getVetoableRemoveActionQueue()
+		return $this->eiFrame->getManageState()->getEiLifecycleMonitor()
 				->approve($this->eiFrame->getN2nContext());
 	}
 

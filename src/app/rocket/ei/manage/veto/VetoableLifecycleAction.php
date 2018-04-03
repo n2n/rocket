@@ -25,36 +25,84 @@ use rocket\ei\manage\EiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Message;
 
-class VetoableRemoveAction {
+class VetoableLifecycleAction {
+	const TYPE_PERSIST = 'persist';
+	const TYPE_UPDATE = 'update';
+	const TYPE_REMOVE = 'remove';
+	
 	private $eiObject;
-	private $vetoableRemoveQueue;
+	private $eiLifecycleMonitor;
+	private $type;
 	private $approved = null;
 	private $vetoReasonMessage = null;
 	private $whenApprovedClosures = array();
 	
-	public function __construct(EiObject $eiObject, VetoableRemoveQueue $vetoableRemoveQueue) {
+	public function __construct(EiObject $eiObject, EiLifecycleMonitor $lifecycleMonitor, string $type) {
 		$this->eiObject = $eiObject;
-		$this->vetoableRemoveQueue = $vetoableRemoveQueue;
+		$this->eiLifecycleMonitor = $lifecycleMonitor;
+		$this->type = $type;
 	}
 	
-	public function getQueue() {
-		return $this->vetoableRemoveQueue;
+	/**
+	 * @return boolean
+	 */
+	public function isPersist() {
+		return $this->type == self::TYPE_PERSIST;
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	public function isUpdate() {
+		return $this->type == self::TYPE_UPDATE;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isRemove() {
+		return $this->type == self::TYPE_REMOVE;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\veto\EiLifecycleMonitor
+	 */
+	public function getMonitor() {
+		return $this->eiLifecycleMonitor;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\EiObject
+	 */
 	public function getEiObject() {
 		return $this->eiObject;
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function isInitialized() {
 		return $this->approved !== null;
 	}
 	
+	/**
+	 * @param Message $reasonMessage
+	 */
 	public function prevent(Message $reasonMessage) {
+		if ($this->approved) {
+			throw new IllegalStateException('LifecycleAction already approved.');
+		}
+		
 		$this->approved = false;
 		$this->vetoReasonMessage = $reasonMessage;
 	}
 	
+	/**
+	 * 
+	 */
 	public function approve() {
+		if ($this->approved) return;
+		
 		$this->approved = true;
 		$this->vetoReasonMessage = null;
 		

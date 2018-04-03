@@ -32,11 +32,10 @@ use rocket\ei\manage\security\PrivilegeBuilder;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\ei\manage\veto\VetoableActionListener;
-use rocket\ei\manage\veto\VetoableRemoveAction;
 use rocket\spec\Type;
 use rocket\ei\mask\EiMask;
 use rocket\ei\mask\model\DisplayScheme;
+use rocket\ei\manage\veto\VetoableLifecycleAction;
 
 class EiType extends Type {
 	private $entityModel;
@@ -49,7 +48,10 @@ class EiType extends Type {
 	private $dataSourceName = null;
 	private $nestedSetStrategy;
 	
-	private $vetoListeners = array();
+	/**
+	 * @var EiLifecycleListener[]
+	 */
+	private $eiLifecycleListeners = array();
 	
 	/**
 	 * @param string $id
@@ -151,7 +153,7 @@ class EiType extends Type {
 		return $this->subEiTypes;
 	}
 	
-	public function containsSubEiTypeId($eiTypeId, $deepCheck = false) {
+	public function containsSubEiTypeId(string $eiTypeId, bool $deepCheck = false) {
 		if (isset($this->subEiTypes[$eiTypeId])) return true;
 		
 		if ($deepCheck) {
@@ -426,17 +428,23 @@ class EiType extends Type {
 		return $this->entityModel->getClass()->isAbstract();
 	}
 	
-	public function registerVetoableActionListener(VetoableActionListener $vetoListener) {
-		$this->vetoListeners[spl_object_hash($vetoListener)] = $vetoListener;
+	public function registerVetoableActionListener(EiLifecycleListener $eiLifecycleListener) {
+		$this->eiLifecycleListeners[spl_object_hash($eiLifecycleListener)] = $eiLifecycleListener;
 	}
 	
-	public function unregisterVetoableActionListener(VetoableActionListener $vetoListener) {
-		unset($this->vetoListeners[spl_object_hash($vetoListener)]);
+	public function unregisterVetoableActionListener(EiLifecycleListener $eiLifecycleListener) {
+		unset($this->eiLifecycleListeners[spl_object_hash($eiLifecycleListener)]);
 	}
 	
-	public function onRemove(VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext) {
-		foreach ($this->vetoListeners as $vetoListener) {
-			$vetoListener->onRemove($vetoableRemoveAction, $n2nContext);
+	public function validateLifecycleAction(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext) {
+		foreach ($this->eiLifecycleListeners as $eiLifecycleListener) {
+			if ($vetoableLifecycleAction->isPersist()) {
+				$eiLifecycleListener->onPersist($vetoableLifecycleAction, $n2nContext);
+			} else if ($vetoableLifecycleAction->isUpdate()) {
+				$eiLifecycleListener->onUpdate($vetoableLifecycleAction, $n2nContext);
+			} else {
+				$eiLifecycleListener->onRemove($vetoableLifecycleAction, $n2nContext);
+			}
 		}
 	}
 }

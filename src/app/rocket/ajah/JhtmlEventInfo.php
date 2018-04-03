@@ -2,6 +2,7 @@
 namespace rocket\ajah;
 
 use n2n\l10n\Message;
+use n2n\l10n\MessageContainer;
 
 class JhtmlEventInfo {
 	const ATTR_MESSAGES_KEY = 'messages';
@@ -69,6 +70,14 @@ class JhtmlEventInfo {
 // 		return $this;
 // 	}
 
+	public function introduceMessageContainer(MessageContainer $mc) {
+		if (isset($this->attrs[self::ATTR_MESSAGES_KEY])) return;
+		
+		foreach ($mc->getAll() as $message) {
+			$this->message($message);
+		}
+	}
+	
 	public function toAttrs(): array {
 		return $this->attrs;
 	}
