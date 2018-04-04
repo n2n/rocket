@@ -136,7 +136,9 @@ class EiLifecycleMonitor implements LifecycleListener {
 			$eiEntityObj = $action->getEiObject()->getEiEntityObj();
 			if (!$eiEntityObj->hasId()) {
 				$eiEntityObj->refreshId();
-				$eiEntityObj->setPersistent(true);
+				if ($eiEntityObj->hasId()) {
+					$eiEntityObj->setPersistent(true);
+				}
 			}
 			$eiEntityObj->getEiType()->validateLifecycleAction($action, $this->n2nContext);
 				
