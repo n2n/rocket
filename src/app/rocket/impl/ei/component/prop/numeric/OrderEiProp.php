@@ -36,6 +36,8 @@ class OrderEiProp extends IntegerEiProp {
 	const ORDER_INCREMENT = 10;
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
+		$this->getDisplaySettings()->setListReadModeDefaultDisplayed(false);
+		
 		return new OrderEiPropConfigurator($this);
 	}
 
