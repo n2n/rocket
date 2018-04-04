@@ -33,7 +33,7 @@ use n2n\persistence\orm\EntityManager;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\security\EiPermissionManager;
-use rocket\ei\manage\veto\VetoableRemoveQueue;
+use rocket\ei\manage\veto\EiLifecycleMonitor;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -43,7 +43,7 @@ class ManageState implements RequestScoped {
 	private $eiFrames = array();
 	private $entityManager;
 	private $draftManager;
-	private $vetoableRemoveQueue;
+	private $eiLifecycleMonitor;
 	
 	private function _init(N2nContext $n2nContext, LoginContext $loginContext, Rocket $rocket) {
 		$this->n2nContext = $n2nContext;
@@ -117,18 +117,18 @@ class ManageState implements RequestScoped {
 	} 
 	
 	/**
-	 * @return \rocket\ei\manage\veto\VetoableRemoveQueue
+	 * @return \rocket\ei\manage\veto\EiLifecycleMonitor
 	 */
-	public function getVetoableRemoveActionQueue() {
-		if ($this->vetoableRemoveQueue === null) {
+	public function getEiLifecycleMonitor() {
+		if ($this->eiLifecycleMonitor === null) {
 			throw new IllegalStateException('No VetoableRemoveQueue assigned.');
 		}
 		
-		return $this->vetoableRemoveQueue;
+		return $this->eiLifecycleMonitor;
 	}
 	
-	public function setVetoableRemoveActionQueue(VetoableRemoveQueue $vetoableRemoveQueue) {
-		$this->vetoableRemoveQueue = $vetoableRemoveQueue;
+	public function setEiLifecycleMonitor(EiLifecycleMonitor $eiLifecycleMonitor) {
+		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
 	}
 	
 	public function createEiFrame(EiMask $contextEiMask, ControllerContext $controllerContext) {

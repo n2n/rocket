@@ -27,7 +27,7 @@ use n2n\log4php\appender\nn6\AdminMailCenter;
 class MailItemSaxHandler implements SaxHandler {
 	
 	private $itemCounter = 0;
-	private $items;
+	private $items = array();
 	
 	private $limit;
 	private $num;

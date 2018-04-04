@@ -40,6 +40,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ajah\RocketJhtmlResponse;
 use rocket\ei\manage\EiFrame;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
+use n2n\l10n\MessageContainer;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -150,6 +151,27 @@ class EiuCtrl implements Lookupable {
 		return $eiObject;
 	}
 	
+	/**
+	 * @param EiJhtmlEventInfo $ajahEventInfo
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo|\rocket\ajah\JhtmlEventInfo
+	 */
+	private function completeEventInfo(EiJhtmlEventInfo $ajahEventInfo = null) {
+		if ($ajahEventInfo === null) {
+			$ajahEventInfo = new EiJhtmlEventInfo();
+		}
+		
+		$n2nContext = $this->httpContext->getN2nContext();
+		
+		$ajahEventInfo->introduceMessageContainer($n2nContext->lookup(MessageContainer::class));
+		
+		$manageState = $n2nContext->lookup(ManageState::class);
+		CastUtils::assertTrue($manageState instanceof ManageState);
+		
+		$ajahEventInfo->introduceEiLifecycleMonitor($manageState->getEiLifecycleMonitor());
+		
+		return $ajahEventInfo;
+	}
+	
 	public function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
 	    if ($refererUrl === null) {
@@ -162,8 +184,9 @@ class EiuCtrl implements Lookupable {
 	        $response->send(new Redirect($refererUrl));
 	        return;
 	    }
-	    
-	    $response->send(RocketJhtmlResponse::redirectToReferer($refererUrl, $ajahEventInfo, $ajahExec));
+	    	    
+	    $response->send(RocketJhtmlResponse::redirectToReferer($refererUrl, 
+	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
 	}
 	
 	public function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
@@ -174,7 +197,8 @@ class EiuCtrl implements Lookupable {
 	        return;
 	    }
 	    
-	    $response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, $ajahEventInfo, $ajahExec));
+	    $response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, 
+	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
 	}
 	
 	public function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
@@ -185,7 +209,8 @@ class EiuCtrl implements Lookupable {
 			return;
 		}
 		
-		$response->send(RocketJhtmlResponse::redirect($url, $ajahEventInfo, $ajahExec));
+		$response->send(RocketJhtmlResponse::redirect($url, 
+				$this->completeEventInfo($ajahEventInfo), $ajahExec));
 	}
 	
 	public function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
@@ -202,7 +227,7 @@ class EiuCtrl implements Lookupable {
 // 			return;
 // 		}
 
-		$response->send(RocketJhtmlResponse::view($view, $ajahEventInfo));
+		$response->send(RocketJhtmlResponse::view($view, $this->completeEventInfo($ajahEventInfo)));
 	}
 
 	public function buildRedirectUrl($eiEntryArg = null) { 

@@ -6,6 +6,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\control\Control;
 use n2n\web\ui\SimpleBuildContext;
 use rocket\ajah\JhtmlEventInfo;
+use rocket\ei\manage\veto\EiLifecycleMonitor;
 
 class EiJhtmlEventInfo extends JhtmlEventInfo {
     const ATTR_CHANGES_KEY = 'eiMods';
@@ -30,8 +31,6 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	private function evMapEiObject(string $eiTypeId, string $pid = null, int $draftId = null, string $modType) {
 	    if (!isset($this->eventMap[$eiTypeId])) {
 	        $this->eventMap[$eiTypeId] = array('pids' => [], 'draftIds' => []);
-	    } else if ($this->eventMap[$eiTypeId] == self::MOD_TYPE_CHANGED) {
-	        return;
 	    }
 	    
 	    if ($pid !== null) {
@@ -93,7 +92,7 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 		$eiTypeId = self::buildTypeId($eiObject->getEiEntityObj()->getEiType());
 		
 		$pid = null;
-		if (!$eiObject->isNew()) {
+		if ($eiObject->getEiEntityObj()->hasId()) {
 		    $pid = $eiObject->getEiEntityObj()->getPid();
 		}
 		
@@ -132,6 +131,31 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 		}
 		
 		return 'live-ei-id-' . $eiObject->getEiEntityObj()->getId();
+	}
+	
+	public function introduceEiLifecycleMonitor(EiLifecycleMonitor $elm) {
+		if (!empty($this->eventMap)) {
+			return;
+		}
+		
+		$taa = $elm->approve();
+		
+		if (!$taa->isSuccessful()) {
+			$this->message(...$taa->getReasonMessages());
+			return;
+		}
+		
+		foreach ($elm->getUpdateActions() as $action) {
+			$this->eiObjectChanged($action->getEiObject());
+		}
+		
+		foreach ($elm->getPersistActions() as $action) {
+			$this->eiObjectAdded($action->getEiObject());
+		}
+	
+		foreach ($elm->getRemoveActions() as $action) {
+			$this->eiObjectRemoved($action->getEiObject());
+		}
 	}
 	
 	public function toAttrs(): array {

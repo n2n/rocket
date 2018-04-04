@@ -19,23 +19,23 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\veto;
+// namespace rocket\ei\manage\veto;
 
-class RemoveAttempt {
-	private $reasonMessages;
+// class RemoveAttempt {
+// 	private $reasonMessages;
 	
-	public function __construct(array $reasonMessages) {
-		$this->reasonMessages = $reasonMessages;
-	}
+// 	public function __construct(array $reasonMessages) {
+// 		$this->reasonMessages = $reasonMessages;
+// 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function isSuccessful() {
-		return !empty($this->reasonMessages);
-	}
+// 	/**
+// 	 * @return boolean
+// 	 */
+// 	public function isSuccessful() {
+// 		return !empty($this->reasonMessages);
+// 	}
 	
-	public function getReasonMessages() {
-		return $this->reasonMessages;
-	}
-}
+// 	public function getReasonMessages() {
+// 		return $this->reasonMessages;
+// 	}
+// }

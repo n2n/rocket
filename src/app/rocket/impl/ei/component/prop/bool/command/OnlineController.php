@@ -23,18 +23,20 @@ namespace rocket\impl\ei\component\prop\bool\command;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use n2n\web\http\controller\ControllerAdapter;
-use n2n\web\http\ForbiddenException;
 use rocket\ei\util\model\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
 use rocket\ei\util\model\Eiu;
+use n2n\l10n\MessageContainer;
 
 class OnlineController extends ControllerAdapter {
 	private $onlineEiProp;
 	private $onlineEiCommand;
 	private $eiuCtrl;
+	private $mc;
 	
-	public function prepare(EiuCtrl $eiCtrl) {
+	public function prepare(EiuCtrl $eiCtrl, MessageContainer $mc) {
 		$this->eiuCtrl = $eiCtrl;
+		$this->mc = $mc;
 	}
 	
 	public function setOnlineEiProp(OnlineEiProp $onlineEiProp) {
@@ -56,12 +58,14 @@ class OnlineController extends ControllerAdapter {
 	private function setStatus($status, $pid) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		$eiuEntry->setValue($this->onlineEiProp, $status);		
+		
+		$jhtmlEvent = null; 
 		if (!$eiuEntry->getEiEntry()->save()) {
-			throw new ForbiddenException();
+			$this->mc->addAll($eiuEntry->getEiEntry()->getMappingErrorInfo()->getMessages());
+		} else {
+			$jhtmlEvent = JhtmlEvent::ei()->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry)));
 		}
 		
-		$this->eiuCtrl->redirectToReferer($this->eiuCtrl->buildRedirectUrl($eiuEntry), 
-				JhtmlEvent::ei()->eiObjectChanged($eiuEntry)
-						->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry))));
+		$this->eiuCtrl->redirectToReferer($this->eiuCtrl->buildRedirectUrl($eiuEntry), $jhtmlEvent);
 	}
 }

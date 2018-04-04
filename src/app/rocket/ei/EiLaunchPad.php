@@ -32,8 +32,8 @@ use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;
 use n2n\util\uri\Path;
-use rocket\ei\manage\veto\VetoableRemoveQueue;
 use rocket\core\model\launch\TransactionApproveAttempt;
+use rocket\ei\manage\veto\EiLifecycleMonitor;
 
 class EiLaunchPad implements LaunchPad {
 	private $id;
@@ -110,9 +110,9 @@ class EiLaunchPad implements LaunchPad {
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->getEiPermissionManager());
-		$vetoableRemoveActionQueue = new VetoableRemoveQueue($rocket->getSpec());
-		$vetoableRemoveActionQueue->initialize($manageState->getEntityManager(), $manageState->getDraftManager());
-		$manageState->setVetoableRemoveActionQueue($vetoableRemoveActionQueue);
+		$eiLifecycleMonitor = new EiLifecycleMonitor($rocket->getSpec());
+		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);
+		$manageState->setEiLifecycleMonitor($eiLifecycleMonitor);
 		
 		return $n2nContext->lookup(EiTypeController::class);
 	}
@@ -121,6 +121,6 @@ class EiLaunchPad implements LaunchPad {
 		$manageState = $n2nContext->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		
-		return $manageState->getVetoableRemoveActionQueue()->approve($n2nContext);
+		return $manageState->getEiLifecycleMonitor()->approve($n2nContext);
 	}
 }

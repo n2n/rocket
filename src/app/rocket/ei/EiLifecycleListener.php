@@ -19,11 +19,28 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\veto;
+namespace rocket\ei;
 
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\veto\VetoableLifecycleAction;
 
-interface VetoableActionListener {
+interface EiLifecycleListener {
 	
-	public function onRemove(VetoableRemoveAction $vetoableRemoveAction, N2nContext $n2nContext);
+	/**
+	 * @param VetoableLifecycleAction $vetoableLifecycleAction
+	 * @param N2nContext $n2nContext
+	 */
+	public function onPersist(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext);
+	
+	/**
+	 * @param VetoableLifecycleAction $vetoableLifecycleAction
+	 * @param N2nContext $n2nContext
+	 */
+	public function onRemove(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext);
+	
+	/**
+	 * @param VetoableLifecycleAction $vetoableLifecycleAction
+	 * @param N2nContext $n2nContext
+	 */
+	public function onUpdate(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext);
 }

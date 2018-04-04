@@ -29,7 +29,6 @@ use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
 use rocket\ei\util\model\EiuCtrl;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ajah\JhtmlEvent;
 
 class AddController extends ControllerAdapter {
 	private $dtc;
@@ -86,8 +85,7 @@ class AddController extends ControllerAdapter {
 		}
 		
 		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
-			$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject), 
-					JhtmlEvent::ei()->eiObjectAdded($eiObject));
+			$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
 			return;
 		} else if ($this->dispatch($addModel, 'createAndRepeate')) {
 			$this->refresh();
