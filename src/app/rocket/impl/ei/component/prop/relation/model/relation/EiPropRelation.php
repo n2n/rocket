@@ -55,6 +55,7 @@ use rocket\ei\util\model\Eiu;
 abstract class EiPropRelation {
 	protected $targetEiType;
 	protected $targetEiMask;
+	protected $targetSubEiTypeExtensions;
 	protected $targetMasterEiProp;
 	protected $targetMasterAccessProxy;
 	
@@ -157,9 +158,10 @@ abstract class EiPropRelation {
 	 * @param EiType $targetEiType
 	 * @param EiMask $targetEiMask
 	 */
-	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask) {
+	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask, array $targetEiTypeExtensions) {
 		$this->targetEiType = $targetEiType;
 		$this->targetEiMask = $targetEiMask;
+		$this->targetSubEiTypeExtensions = $targetEiTypeExtensions;
 		
 		$this->initTargetMasterEiProp();		
 		
@@ -270,6 +272,7 @@ abstract class EiPropRelation {
 	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null, 
 			ControllerContext $targetControllerContext): EiFrame {
 		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask(), $targetControllerContext);
+		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
 		
 		return $targetEiFrame;
@@ -314,7 +317,8 @@ abstract class EiPropRelation {
 		
 		$targetControllerContext = new ControllerContext(new Path(array()), $targetCmdContextPath);
 		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask());
-		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), true, $eiFrame);
+		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), $eiFrame);
+		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		
 		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject/*, $editCommandRequired*/);
 		

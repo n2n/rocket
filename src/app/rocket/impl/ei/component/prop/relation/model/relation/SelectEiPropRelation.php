@@ -38,8 +38,8 @@ class SelectEiPropRelation extends EiPropRelation {
 	protected $embeddedPseudoEiCommand;
 	protected $embeddedEditPseudoEiCommand;
 	
-	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask) {
-		parent::init($eiu, $targetEiType, $targetEiMask);
+	public function init(Eiu $eiu, EiType $targetEiType, EiMask $targetEiMask, array $targetEiTypeExtensions) {
+		parent::init($eiu, $targetEiType, $targetEiMask, $targetEiTypeExtensions);
 
 		if ($this->isEmbeddedAddEnabled() && !$this->isPersistCascaded()) {
 			throw new InvalidEiComponentConfigurationException(

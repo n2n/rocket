@@ -232,7 +232,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 								$entityProperty->getName()));
 			}
 
-			$eiPropRelation->init($eiSetupProcess->eiu(), $targetEiType, $targetEiMask);
+			$eiPropRelation->init($eiSetupProcess->eiu(), $targetEiType, $targetEiMask, []);
 		} catch (UnknownTypeException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiTypeExtensionException $e) {

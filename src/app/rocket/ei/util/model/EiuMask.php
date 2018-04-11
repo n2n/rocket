@@ -65,6 +65,13 @@ class EiuMask  {
 				null, $this->eiuFactory);
 	}
 	
+// 	public function extensionMasks() {
+// 		$eiMasks = array();
+// 		if (!$this->eiMask->isExtension()) {
+// 			$eiMasks = $this->eiMask->getEiType()->getEiTypeExtensionCollection()->toArray();
+// 		}
+// 	}
+	
 	/**
 	 * @param EiProp $eiProp
 	 * @param bool $prepend
