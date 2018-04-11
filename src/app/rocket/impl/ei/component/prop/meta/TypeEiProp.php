@@ -40,7 +40,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
-		$eiMask = $eiu->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->determineEiMask(
+		$eiMask = $eiu->frame()->getEiFrame()->determineEiMask(
 				$eiu->entry()->getEiEntry()->getEiType());
 		return $view->getHtmlBuilder()->getEsc($eiMask->getLabelLstr()->t($view->getN2nLocale()));
 	}
@@ -62,8 +62,12 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		return $this->getEiMask()->determineEiMask($this->getEiType()->determineAdequateEiType(
-				new \ReflectionClass($eiObject->getLiveObject())));
+		$eiMask = $this->getEiMask();
+		if (!$eiMask->getEiType()->equals($eiObject->getEiEntityObj()->getEiType())) {
+			$eiMask = $eiObject->getEiEntityObj()->getEiType()->getEiMask();
+		}
+		
+		return $eiMask;
 		
 	}
 }

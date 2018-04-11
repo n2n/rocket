@@ -168,8 +168,9 @@ class EiFrame {
 			return $contextEiMask;
 		}
 		
-		if ($contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
-			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() . ' is not compatible with EiFrame.');
+		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
+			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() 
+					. ' is not compatible with EiFrame with context EiType ' . $contextEiType->getId() . '.');
 		}
 		
 		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {

@@ -80,7 +80,7 @@ class EiuEntry {
 	 */
 	public function getEiuEngine() {
 		if ($this->eiuEngine === null) {
-			$this->eiuEngine = $this->getEiuFrame()->getContextEiuEngine()->engine($this->eiObject);
+			$this->eiuEngine = $this->getEiuFrame()->engine($this->eiObject);
 		}
 		
 		return $this->eiuEngine;
@@ -91,7 +91,7 @@ class EiuEntry {
 	 */
 	public function getEiuMask() {
 		if ($this->eiuMask === null) {
-			$this->eiuMask = $this->getEiuFrame()->getContextEiuEngine()->getEiuMask()->mask($this->eiObject);
+			$this->eiuMask = $this->getEiuFrame()->mask($this->eiObject);
 		}
 		
 		return $this->eiuMask;
@@ -117,7 +117,7 @@ class EiuEntry {
 		
 		if ($createIfNotAvaialble) {
 			$eiFrame = $this->getEiuFrame(true)->getEiFrame();
-			$this->eiEntry =  $eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($this->eiObject->getEiEntityObj()->getEiType())
+			$this->eiEntry =  $eiFrame->determineEiMask($this->eiObject->getEiEntityObj()->getEiType())
 					->getEiEngine()->createEiEntry($eiFrame, $this->eiObject);
 			return $this->eiEntry; 
 		}
@@ -305,7 +305,7 @@ class EiuEntry {
 	 * @return \rocket\ei\mask\EiMask
 	 */
 	private function determineEiMask() {
-		return $this->eiuFrame->getContextEiMask()->determineEiMask($this->eiObject->getEiEntityObj()->getEiType());
+		return $this->eiuFrame->getEiFrame()->determineEiMask($this->eiObject->getEiEntityObj()->getEiType());
 	}
 	
 	/**

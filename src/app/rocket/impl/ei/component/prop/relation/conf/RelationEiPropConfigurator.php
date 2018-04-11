@@ -90,7 +90,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
+		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_EXTENSIONS_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY,
 				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, 
@@ -234,6 +234,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$targetSubEiTypeExtensions = array();
 			foreach ($this->attributes->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY, false, array()) 
 					as $targetEiTypeId => $targetEiTypeExtensionId) {
+				if ($targetEiTypeExtensionId === null) continue;
+						
 				if ($target->getId() == $targetEiTypeId) {
 					$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiMask();
 					continue;
