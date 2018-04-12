@@ -45,9 +45,9 @@ namespace Rocket.Cmd {
 		}
 		
 		public getZoneByUrl(urlExpr: string|Jhtml.Url): Zone {
-			var url = Jhtml.Url.create(urlExpr);
+			let url = Jhtml.Url.create(urlExpr);
 			
-			for (var i in this._zones) {
+			for (let i in this._zones) {
 				if (this._zones[i].containsUrl(url)) {
 					return this._zones[i];
 				}

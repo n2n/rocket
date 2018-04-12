@@ -604,8 +604,8 @@ var Rocket;
                 return false;
             }
             getZoneByUrl(urlExpr) {
-                var url = Jhtml.Url.create(urlExpr);
-                for (var i in this._zones) {
+                let url = Jhtml.Url.create(urlExpr);
+                for (let i in this._zones) {
                     if (this._zones[i].containsUrl(url)) {
                         return this._zones[i];
                     }
@@ -823,6 +823,340 @@ var Rocket;
                 EventType[EventType["CLOSE"] = 2] = "CLOSE";
             })(EventType = Layer.EventType || (Layer.EventType = {}));
         })(Layer = Cmd.Layer || (Cmd.Layer = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class AdditionalTabManager {
+            constructor(context) {
+                this.jqAdditional = null;
+                this.context = context;
+                this.tabs = new Array();
+            }
+            createTab(title, prepend = false, severity = null) {
+                this.setupAdditional();
+                var jqNavItem = $("<li />", {
+                    "text": title
+                });
+                if (severity) {
+                    jqNavItem.addClass("rocket-severity-" + severity);
+                }
+                var jqContent = $("<div />", {
+                    "class": "rocket-additional-content"
+                });
+                if (prepend) {
+                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
+                }
+                else {
+                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
+                }
+                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
+                var tab = new AdditionalTab(jqNavItem, jqContent);
+                this.tabs.push(tab);
+                var that = this;
+                tab.onShow(function () {
+                    for (var i in that.tabs) {
+                        if (that.tabs[i] === tab)
+                            continue;
+                        this.tabs[i].hide();
+                    }
+                });
+                tab.onDispose(function () {
+                    that.removeTab(tab);
+                });
+                if (this.tabs.length == 1) {
+                    tab.show();
+                }
+                return tab;
+            }
+            removeTab(tab) {
+                for (var i in this.tabs) {
+                    if (this.tabs[i] !== tab)
+                        continue;
+                    this.tabs.splice(parseInt(i), 1);
+                    if (this.tabs.length == 0) {
+                        this.setdownAdditional();
+                        return;
+                    }
+                    if (tab.isActive()) {
+                        this.tabs[0].show();
+                    }
+                    return;
+                }
+            }
+            setupAdditional() {
+                if (this.jqAdditional !== null)
+                    return;
+                var jqPage = this.context.jQuery;
+                jqPage.addClass("rocket-contains-additional");
+                this.jqAdditional = $("<div />", {
+                    "class": "rocket-additional"
+                });
+                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
+                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
+                jqPage.append(this.jqAdditional);
+            }
+            setdownAdditional() {
+                if (this.jqAdditional === null)
+                    return;
+                this.context.jQuery.removeClass("rocket-contains-additional");
+                this.jqAdditional.remove();
+                this.jqAdditional = null;
+            }
+        }
+        Cmd.AdditionalTabManager = AdditionalTabManager;
+        class AdditionalTab {
+            constructor(jqNavItem, jqContent) {
+                this.active = false;
+                this.onShowCallbacks = [];
+                this.onHideCallbacks = [];
+                this.onDisposeCallbacks = [];
+                this.jqNavItem = jqNavItem;
+                this.jqContent = jqContent;
+                this.jqNavItem.click(this.show);
+                this.jqContent.hide();
+            }
+            getJqNavItem() {
+                return this.jqNavItem;
+            }
+            getJqContent() {
+                return this.jqContent;
+            }
+            isActive() {
+                return this.active;
+            }
+            show() {
+                this.active = true;
+                this.jqNavItem.addClass("rocket-active");
+                this.jqContent.show();
+                for (var i in this.onShowCallbacks) {
+                    this.onShowCallbacks[i](this);
+                }
+            }
+            hide() {
+                this.active = false;
+                this.jqContent.hide();
+                this.jqNavItem.removeClass("rocket-active");
+                for (var i in this.onHideCallbacks) {
+                    this.onHideCallbacks[i](this);
+                }
+            }
+            dispose() {
+                this.jqNavItem.remove();
+                this.jqContent.remove();
+                for (var i in this.onDisposeCallbacks) {
+                    this.onDisposeCallbacks[i](this);
+                }
+            }
+            onShow(callback) {
+                this.onShowCallbacks.push(callback);
+            }
+            onHide(callback) {
+                this.onHideCallbacks.push(callback);
+            }
+            onDispose(callback) {
+                this.onDisposeCallbacks.push(callback);
+            }
+        }
+        Cmd.AdditionalTab = AdditionalTab;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class LastModDef {
+            static createLive(supremeEiTypeId, pid) {
+                let lmd = new LastModDef();
+                lmd.supremeEiTypeId = supremeEiTypeId;
+                lmd.pid = pid;
+                return lmd;
+            }
+            static createDraft(supremeEiTypeId, draftId) {
+                let lmd = new LastModDef();
+                lmd.supremeEiTypeId = supremeEiTypeId;
+                lmd.draftId = draftId;
+                return lmd;
+            }
+            static fromEntry(entry) {
+                let lastModDef = new LastModDef();
+                lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
+                lastModDef.pid = entry.pid;
+                lastModDef.draftId = entry.draftId;
+                return lastModDef;
+            }
+        }
+        Cmd.LastModDef = LastModDef;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class Lock {
+            constructor(releaseCallback) {
+                this.releaseCallback = releaseCallback;
+            }
+            release() {
+                this.releaseCallback(this);
+            }
+        }
+        Cmd.Lock = Lock;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class Menu {
+            constructor(context) {
+                this._toolbar = null;
+                this._mainCommandList = null;
+                this._partialCommandList = null;
+                this._asideCommandList = null;
+                this.context = context;
+            }
+            clear() {
+                this._toolbar = null;
+            }
+            get toolbar() {
+                if (this._toolbar) {
+                    return this._toolbar;
+                }
+                let jqToolbar = this.context.jQuery.find(".rocket-zone-toolbar:first");
+                if (jqToolbar.length == 0) {
+                    jqToolbar = $("<div />", { "class": "rocket-zone-toolbar" }).prependTo(this.context.jQuery);
+                }
+                return this._toolbar = new Rocket.Display.Toolbar(jqToolbar);
+            }
+            getCommandsJq() {
+                var commandsJq = this.context.jQuery.find(".rocket-zone-commands:first");
+                if (commandsJq.length == 0) {
+                    commandsJq = $("<div />", {
+                        "class": "rocket-zone-commands"
+                    });
+                    this.context.jQuery.append(commandsJq);
+                }
+                return commandsJq;
+            }
+            get zoneCommandsJq() {
+                return this.getCommandsJq();
+            }
+            get partialCommandList() {
+                if (this._partialCommandList !== null) {
+                    return this._partialCommandList;
+                }
+                let mainCommandJq = this.mainCommandList.jQuery;
+                var partialCommandsJq = mainCommandJq.children(".rocket-partial-commands:first");
+                if (partialCommandsJq.length == 0) {
+                    partialCommandsJq = $("<div />", { "class": "rocket-partial-commands" }).prependTo(mainCommandJq);
+                }
+                return this._partialCommandList = new Rocket.Display.CommandList(partialCommandsJq);
+            }
+            get mainCommandList() {
+                if (this._mainCommandList !== null) {
+                    return this._mainCommandList;
+                }
+                let commandsJq = this.getCommandsJq();
+                let mainCommandsJq = commandsJq.children(".rocket-main-commands:first");
+                if (mainCommandsJq.length == 0) {
+                    mainCommandsJq = commandsJq.children("div:first");
+                    mainCommandsJq.addClass("rocket-main-commands");
+                }
+                if (mainCommandsJq.length == 0) {
+                    let contentsJq = commandsJq.children(":not(.rocket-aside-commands)");
+                    mainCommandsJq = $("<div></div>", { class: "rocket-main-commands" }).appendTo(commandsJq);
+                    mainCommandsJq.append(contentsJq);
+                }
+                return this._mainCommandList = new Rocket.Display.CommandList(mainCommandsJq);
+            }
+            get asideCommandList() {
+                if (this._asideCommandList !== null) {
+                    return this._asideCommandList;
+                }
+                this.mainCommandList;
+                let commandsJq = this.getCommandsJq();
+                let asideCommandsJq = commandsJq.children(".rocket-aside-commands:first");
+                if (asideCommandsJq.length == 0) {
+                    asideCommandsJq = $("<div />", { "class": "rocket-aside-commands" }).appendTo(commandsJq);
+                }
+                return this._asideCommandList = new Rocket.Display.CommandList(asideCommandsJq);
+            }
+        }
+        Cmd.Menu = Menu;
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class MessageList {
+            constructor(zone) {
+                this.zone = zone;
+            }
+            clear() {
+                this.zone.jQuery.find("rocket-messages").remove();
+            }
+            severityToClassName(severity) {
+                switch (severity) {
+                    case Severity.ERROR:
+                        return "alert-danger";
+                    case Severity.INFO:
+                        return "alert-info";
+                    case Severity.WARN:
+                        return "alert-warn";
+                    case Severity.SUCCESS:
+                        return "alert-success";
+                    default:
+                        throw new Error("Unkown severity: " + severity);
+                }
+            }
+            getMessagesUlJqBySeverity(severity) {
+                let zoneJq = this.zone.jQuery;
+                let className = this.severityToClassName(severity);
+                let messagesJq = zoneJq.find("ul.rocket-messages." + className);
+                if (messagesJq.length > 0) {
+                    return messagesJq;
+                }
+                messagesJq = $("<ul />", { "class": "rocket-messages alert " + className + " list-unstyled" });
+                let contentJq = this.zone.jQuery.find(".rocket-content");
+                if (contentJq.length > 0) {
+                    messagesJq.insertBefore(contentJq);
+                }
+                else {
+                    zoneJq.prepend(messagesJq);
+                }
+                return messagesJq;
+            }
+            add(message) {
+                let liJq = $("<li></li>", { "text": message.text });
+                liJq.hide();
+                this.getMessagesUlJqBySeverity(message.severity).append(liJq);
+                liJq.fadeIn();
+            }
+            addAll(messages) {
+                for (let message of messages) {
+                    this.add(message);
+                }
+            }
+        }
+        Cmd.MessageList = MessageList;
+        class Message {
+            constructor(text, severity) {
+                this.text = text;
+                this.severity = severity;
+            }
+        }
+        Cmd.Message = Message;
+        let Severity;
+        (function (Severity) {
+            Severity[Severity["SUCCESS"] = 1] = "SUCCESS";
+            Severity[Severity["INFO"] = 2] = "INFO";
+            Severity[Severity["WARN"] = 4] = "WARN";
+            Severity[Severity["ERROR"] = 8] = "ERROR";
+        })(Severity = Cmd.Severity || (Cmd.Severity = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -1161,7 +1495,6 @@ var Rocket;
 (function (Rocket) {
     var Cmd;
     (function (Cmd) {
-        var display = Rocket.Display;
         var util = Rocket.Util;
         class Zone {
             constructor(jqZone, url, layer) {
@@ -1193,10 +1526,7 @@ var Rocket;
                     throw new Error("page already assigned");
                 }
                 this._page = page;
-                page.config.keep = true;
                 page.on("disposed", () => {
-                    if (this.layer.currentZone === this)
-                        return;
                     this.clear(true);
                 });
                 page.on("promiseAssigned", () => {
@@ -1238,9 +1568,9 @@ var Rocket;
                 this.jqZone.hide();
             }
             reset() {
-                this.additionalTabManager = new AdditionalTabManager(this);
-                this._menu = new Menu(this);
-                this._messageList = new MessageList(this);
+                this.additionalTabManager = new Cmd.AdditionalTabManager(this);
+                this._menu = new Cmd.Menu(this);
+                this._messageList = new Cmd.MessageList(this);
             }
             get empty() {
                 return this.jqZone.is(":empty");
@@ -1254,8 +1584,8 @@ var Rocket;
                 }
                 if (this.empty)
                     return;
+                this.reset();
                 this.jqZone.empty();
-                this.menu.clear();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             applyHtml(html) {
@@ -1348,7 +1678,7 @@ var Rocket;
             }
             createLock() {
                 var that = this;
-                var lock = new Lock(function (lock) {
+                var lock = new Cmd.Lock(function (lock) {
                     that.releaseLock(lock);
                 });
                 this.locks.push(lock);
@@ -1366,219 +1696,6 @@ var Rocket;
             }
         }
         Cmd.Zone = Zone;
-        class LastModDef {
-            static createLive(supremeEiTypeId, pid) {
-                let lmd = new LastModDef();
-                lmd.supremeEiTypeId = supremeEiTypeId;
-                lmd.pid = pid;
-                return lmd;
-            }
-            static createDraft(supremeEiTypeId, draftId) {
-                let lmd = new LastModDef();
-                lmd.supremeEiTypeId = supremeEiTypeId;
-                lmd.draftId = draftId;
-                return lmd;
-            }
-            static fromEntry(entry) {
-                let lastModDef = new LastModDef();
-                lastModDef.supremeEiTypeId = entry.supremeEiTypeId;
-                lastModDef.pid = entry.pid;
-                lastModDef.draftId = entry.draftId;
-                return lastModDef;
-            }
-        }
-        Cmd.LastModDef = LastModDef;
-        class Lock {
-            constructor(releaseCallback) {
-                this.releaseCallback = releaseCallback;
-            }
-            release() {
-                this.releaseCallback(this);
-            }
-        }
-        Cmd.Lock = Lock;
-        class AdditionalTabManager {
-            constructor(context) {
-                this.jqAdditional = null;
-                this.context = context;
-                this.tabs = new Array();
-            }
-            createTab(title, prepend = false, severity = null) {
-                this.setupAdditional();
-                var jqNavItem = $("<li />", {
-                    "text": title
-                });
-                if (severity) {
-                    jqNavItem.addClass("rocket-severity-" + severity);
-                }
-                var jqContent = $("<div />", {
-                    "class": "rocket-additional-content"
-                });
-                if (prepend) {
-                    this.jqAdditional.find(".rocket-additional-nav").prepend(jqNavItem);
-                }
-                else {
-                    this.jqAdditional.find(".rocket-additional-nav").append(jqNavItem);
-                }
-                this.jqAdditional.find(".rocket-additional-container").append(jqContent);
-                var tab = new AdditionalTab(jqNavItem, jqContent);
-                this.tabs.push(tab);
-                var that = this;
-                tab.onShow(function () {
-                    for (var i in that.tabs) {
-                        if (that.tabs[i] === tab)
-                            continue;
-                        this.tabs[i].hide();
-                    }
-                });
-                tab.onDispose(function () {
-                    that.removeTab(tab);
-                });
-                if (this.tabs.length == 1) {
-                    tab.show();
-                }
-                return tab;
-            }
-            removeTab(tab) {
-                for (var i in this.tabs) {
-                    if (this.tabs[i] !== tab)
-                        continue;
-                    this.tabs.splice(parseInt(i), 1);
-                    if (this.tabs.length == 0) {
-                        this.setdownAdditional();
-                        return;
-                    }
-                    if (tab.isActive()) {
-                        this.tabs[0].show();
-                    }
-                    return;
-                }
-            }
-            setupAdditional() {
-                if (this.jqAdditional !== null)
-                    return;
-                var jqPage = this.context.jQuery;
-                jqPage.addClass("rocket-contains-additional");
-                this.jqAdditional = $("<div />", {
-                    "class": "rocket-additional"
-                });
-                this.jqAdditional.append($("<ul />", { "class": "rocket-additional-nav" }));
-                this.jqAdditional.append($("<div />", { "class": "rocket-additional-container" }));
-                jqPage.append(this.jqAdditional);
-            }
-            setdownAdditional() {
-                if (this.jqAdditional === null)
-                    return;
-                this.context.jQuery.removeClass("rocket-contains-additional");
-                this.jqAdditional.remove();
-                this.jqAdditional = null;
-            }
-        }
-        class AdditionalTab {
-            constructor(jqNavItem, jqContent) {
-                this.active = false;
-                this.onShowCallbacks = [];
-                this.onHideCallbacks = [];
-                this.onDisposeCallbacks = [];
-                this.jqNavItem = jqNavItem;
-                this.jqContent = jqContent;
-                this.jqNavItem.click(this.show);
-                this.jqContent.hide();
-            }
-            getJqNavItem() {
-                return this.jqNavItem;
-            }
-            getJqContent() {
-                return this.jqContent;
-            }
-            isActive() {
-                return this.active;
-            }
-            show() {
-                this.active = true;
-                this.jqNavItem.addClass("rocket-active");
-                this.jqContent.show();
-                for (var i in this.onShowCallbacks) {
-                    this.onShowCallbacks[i](this);
-                }
-            }
-            hide() {
-                this.active = false;
-                this.jqContent.hide();
-                this.jqNavItem.removeClass("rocket-active");
-                for (var i in this.onHideCallbacks) {
-                    this.onHideCallbacks[i](this);
-                }
-            }
-            dispose() {
-                this.jqNavItem.remove();
-                this.jqContent.remove();
-                for (var i in this.onDisposeCallbacks) {
-                    this.onDisposeCallbacks[i](this);
-                }
-            }
-            onShow(callback) {
-                this.onShowCallbacks.push(callback);
-            }
-            onHide(callback) {
-                this.onHideCallbacks.push(callback);
-            }
-            onDispose(callback) {
-                this.onDisposeCallbacks.push(callback);
-            }
-        }
-        Cmd.AdditionalTab = AdditionalTab;
-        class MessageList {
-            constructor(zone) {
-                this.zone = zone;
-            }
-            clear() {
-                this.zone.jQuery.find("rocket-messages").remove();
-            }
-            severityToClassName(severity) {
-                switch (severity) {
-                    case Severity.ERROR:
-                        return "alert-danger";
-                    case Severity.INFO:
-                        return "alert-info";
-                    case Severity.WARN:
-                        return "alert-warn";
-                    case Severity.SUCCESS:
-                        return "alert-success";
-                    default:
-                        throw new Error("Unkown severity: " + severity);
-                }
-            }
-            getMessagesUlJqBySeverity(severity) {
-                let zoneJq = this.zone.jQuery;
-                let className = this.severityToClassName(severity);
-                let messagesJq = zoneJq.find("ul.rocket-messages." + className);
-                if (messagesJq.length > 0) {
-                    return messagesJq;
-                }
-                messagesJq = $("<ul />", { "class": "rocket-messages alert " + className + " list-unstyled" });
-                let contentJq = this.zone.jQuery.find(".rocket-content");
-                if (contentJq.length > 0) {
-                    messagesJq.insertBefore(contentJq);
-                }
-                else {
-                    zoneJq.prepend(messagesJq);
-                }
-                return messagesJq;
-            }
-            add(message) {
-                let liJq = $("<li></li>", { "text": message.text });
-                liJq.hide();
-                this.getMessagesUlJqBySeverity(message.severity).append(liJq);
-                liJq.fadeIn();
-            }
-            addAll(messages) {
-                for (let message of messages) {
-                    this.add(message);
-                }
-            }
-        }
-        Cmd.MessageList = MessageList;
         (function (Zone) {
             let EventType;
             (function (EventType) {
@@ -1590,96 +1707,6 @@ var Rocket;
                 EventType[EventType["BLOCKED_CHANGED"] = 5] = "BLOCKED_CHANGED";
             })(EventType = Zone.EventType || (Zone.EventType = {}));
         })(Zone = Cmd.Zone || (Cmd.Zone = {}));
-        class Menu {
-            constructor(context) {
-                this._toolbar = null;
-                this._mainCommandList = null;
-                this._partialCommandList = null;
-                this._asideCommandList = null;
-                this.context = context;
-            }
-            clear() {
-                this._toolbar = null;
-            }
-            get toolbar() {
-                if (this._toolbar) {
-                    return this._toolbar;
-                }
-                let jqToolbar = this.context.jQuery.find(".rocket-zone-toolbar:first");
-                if (jqToolbar.length == 0) {
-                    jqToolbar = $("<div />", { "class": "rocket-zone-toolbar" }).prependTo(this.context.jQuery);
-                }
-                return this._toolbar = new display.Toolbar(jqToolbar);
-            }
-            getCommandsJq() {
-                var commandsJq = this.context.jQuery.find(".rocket-zone-commands:first");
-                if (commandsJq.length == 0) {
-                    commandsJq = $("<div />", {
-                        "class": "rocket-zone-commands"
-                    });
-                    this.context.jQuery.append(commandsJq);
-                }
-                return commandsJq;
-            }
-            get zoneCommandsJq() {
-                return this.getCommandsJq();
-            }
-            get partialCommandList() {
-                if (this._partialCommandList !== null) {
-                    return this._partialCommandList;
-                }
-                let mainCommandJq = this.mainCommandList.jQuery;
-                var partialCommandsJq = mainCommandJq.children(".rocket-partial-commands:first");
-                if (partialCommandsJq.length == 0) {
-                    partialCommandsJq = $("<div />", { "class": "rocket-partial-commands" }).prependTo(mainCommandJq);
-                }
-                return this._partialCommandList = new display.CommandList(partialCommandsJq);
-            }
-            get mainCommandList() {
-                if (this._mainCommandList !== null) {
-                    return this._mainCommandList;
-                }
-                let commandsJq = this.getCommandsJq();
-                let mainCommandsJq = commandsJq.children(".rocket-main-commands:first");
-                if (mainCommandsJq.length == 0) {
-                    mainCommandsJq = commandsJq.children("div:first");
-                    mainCommandsJq.addClass("rocket-main-commands");
-                }
-                if (mainCommandsJq.length == 0) {
-                    let contentsJq = commandsJq.children(":not(.rocket-aside-commands)");
-                    mainCommandsJq = $("<div></div>", { class: "rocket-main-commands" }).appendTo(commandsJq);
-                    mainCommandsJq.append(contentsJq);
-                }
-                return this._mainCommandList = new display.CommandList(mainCommandsJq);
-            }
-            get asideCommandList() {
-                if (this._asideCommandList !== null) {
-                    return this._asideCommandList;
-                }
-                this.mainCommandList;
-                let commandsJq = this.getCommandsJq();
-                let asideCommandsJq = commandsJq.children(".rocket-aside-commands:first");
-                if (asideCommandsJq.length == 0) {
-                    asideCommandsJq = $("<div />", { "class": "rocket-aside-commands" }).appendTo(commandsJq);
-                }
-                return this._asideCommandList = new display.CommandList(asideCommandsJq);
-            }
-        }
-        Cmd.Menu = Menu;
-        class Message {
-            constructor(text, severity) {
-                this.text = text;
-                this.severity = severity;
-            }
-        }
-        Cmd.Message = Message;
-        let Severity;
-        (function (Severity) {
-            Severity[Severity["SUCCESS"] = 1] = "SUCCESS";
-            Severity[Severity["INFO"] = 2] = "INFO";
-            Severity[Severity["WARN"] = 4] = "WARN";
-            Severity[Severity["ERROR"] = 8] = "ERROR";
-        })(Severity = Cmd.Severity || (Cmd.Severity = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
