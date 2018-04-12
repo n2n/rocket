@@ -61,9 +61,16 @@ class EiuMask  {
 			return $this;
 		}
 		
-		return new EiuMask($this->eiMask->determineEiMask($this->eiMask->getEiType()->getSupremeEiType()),
+		return new EiuMask($this->eiMask->getEiType()->getSupremeEiType()->getEiMask(),
 				null, $this->eiuFactory);
 	}
+	
+// 	public function extensionMasks() {
+// 		$eiMasks = array();
+// 		if (!$this->eiMask->isExtension()) {
+// 			$eiMasks = $this->eiMask->getEiType()->getEiTypeExtensionCollection()->toArray();
+// 		}
+// 	}
 	
 	/**
 	 * @param EiProp $eiProp
@@ -110,14 +117,6 @@ class EiuMask  {
 		}
 		
 		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuFactory);
-	}
-	
-	public function entryMask($eiObjectObj) {
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg',
-				$this->eiMask->getEiType()->getEiType());
-		
-		$detrEiMask = $this->eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
-		return new EiuMask($detrEiMask, null, $this->eiuFactory);
 	}
 	
 	/**

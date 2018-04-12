@@ -340,7 +340,7 @@ class EiEntryGui {
 	
 	public function createControls(HtmlView $view) {
 		$eiFrame = $this->eiGui->getEiFrame();
-		$eiMask = $eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($this->eiEntry->getEiType());
+		$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiType());
 	
 		$eiu = new Eiu($this);
 	

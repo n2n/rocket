@@ -441,44 +441,44 @@ class EiMask {
 			return $this;
 		}
 		
-		return $this->determineEiMask($this->eiType->getSupremeEiType());
+		return $this->eiType->getSupremeEiType()->getEiMask();
 	}
 	
 	
-	public function getSubEiMaskIds() {
-		return $this->subEiMaskIds;
-	}
+// 	public function getSubEiMaskIds() {
+// 		return $this->subEiMaskIds;
+// 	}
 	
-	public function setSubEiMaskIds(array $subEiMaskIds) {
-		$this->subEiMaskIds = $subEiMaskIds;
-	}
+// 	public function setSubEiMaskIds(array $subEiMaskIds) {
+// 		$this->subEiMaskIds = $subEiMaskIds;
+// 	}
 	
-	public function determineEiMask(EiType $eiType): EiMask {
-		$eiTypeId = $eiType->getId();
-		if ($this->eiType->getId() == $eiTypeId) {
-			return $this;
-		}
-		
-		if ($this->eiType->containsSubEiTypeId($eiTypeId)) {
-			return $this->getSubEiMaskByEiTypeId($eiTypeId);
-		}
-				
-		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
-			if (!$subEiType->containsSubEiTypeId($eiTypeId, true)) continue;
-			
-			return $this->getSubEiMaskByEiTypeId($subEiType->getId())
-					->determineEiMask($eiType);
-		}
-		
-		// @todo
-// 		if ($this->eiType->containsSuperEiType($eiTypeId, true)) {
-			
+// 	public function determineEiMask(EiType $eiType): EiMask {
+// 		$eiTypeId = $eiType->getId();
+// 		if ($this->eiType->getId() == $eiTypeId) {
+// 			return $this;
 // 		}
-
-		return $eiType->getEiMask();
 		
-// 		throw new \InvalidArgumentException();
-	}
+// 		if ($this->eiType->containsSubEiTypeId($eiTypeId)) {
+// 			return $this->getSubEiMaskByEiTypeId($eiTypeId);
+// 		}
+				
+// 		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
+// 			if (!$subEiType->containsSubEiTypeId($eiTypeId, true)) continue;
+			
+// 			return $this->getSubEiMaskByEiTypeId($subEiType->getId())
+// 					->determineEiMask($eiType);
+// 		}
+		
+// 		// @todo
+// // 		if ($this->eiType->containsSuperEiType($eiTypeId, true)) {
+			
+// // 		}
+
+// 		return $eiType->getEiMask();
+		
+// // 		throw new \InvalidArgumentException();
+// 	}
 	
 	public function getSubEiMaskByEiTypeId($eiTypeId): EiMask {
 		$subMaskIds = $this->getSubEiMaskIds();

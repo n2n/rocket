@@ -180,7 +180,7 @@ class ContentItemMag extends MagAdapter {
 		foreach ($this->targetEditEiFrame->getContextEiEngine()->getEiMask()->getEiType()->getAllSubEiTypes() as $subEiType) {
 			if ($subEiType->isAbstract()) continue;
 			
-			$ciEiTypeLabels[$subEiType->getId()] = $targetContextEiMask->determineEiMask($subEiType)->getLabelLstr()
+			$ciEiTypeLabels[$subEiType->getId()] = $this->targetEditEiFrame->determineEiMask($subEiType)->getLabelLstr()
 					->t($view->getN2nLocale());
 		}
 		

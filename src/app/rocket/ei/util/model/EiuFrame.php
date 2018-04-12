@@ -114,6 +114,50 @@ class EiuFrame {
 		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuFactory);
 	}
 	
+	/**
+	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
+	 * @return \rocket\ei\util\model\EiuEngine
+	 */
+	public function mask($eiObjectObj = null) {
+		if ($eiObjectObj === null) {
+			return $this->getContextEiuEngine()->getEiuMask();
+		}
+		
+		$contextEiType = $this->getContextEiType();
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg', $contextEiType);
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		
+		if ($contextEiType->equals($eiType)) {
+			return $this->getContextEiuEngine()->getEiuMask();
+		}
+		
+		
+		return new EiuMask($this->eiFrame->determineEiMask($eiType), null, $this->eiuFactory);
+	}
+	
+	
+	/**
+	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
+	 * @return \rocket\ei\util\model\EiuEngine
+	 */
+	public function engine($eiObjectObj = null) {
+		if ($eiObjectObj === null) {
+			return $this->getContextEiuEngine();
+		}
+		
+		$contextEiType = $this->getContextEiType();
+		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg', $contextEiType);
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		
+		if ($contextEiType->equals($eiType)) {
+			return $this->getContextEiuEngine();
+		}
+		
+		
+		return new EiuEngine($this->eiFrame->determineEiMask($eiType)->getEiEngine(), null, $this->eiuFactory);
+	}
+	
+	
 	public function getContextClass() {
 		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass();
 	}
@@ -318,7 +362,7 @@ class EiuFrame {
 			}
 						
 			$eiuEntryTypeForms[$subEiTypeId] = $this->createEiuEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
-			$labels[$subEiTypeId] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
+			$labels[$subEiTypeId] = $this->eiFrame->determineEiMask($subEiType)->getLabelLstr()
 					->t($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
@@ -351,13 +395,13 @@ class EiuFrame {
 		$eiuEntryForm->setEiuEntryTypeForms(array($eiType->getId() => $this->createEiuEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
 		$eiuEntryForm->setChosenId($eiType->getId());
 		// @todo remove hack when ContentItemEiProp gets updated.
-		$eiuEntryForm->setChoicesMap(array($eiType->getId() => $contextEiMask->determineEiMask($eiType)->getLabelLstr()
+		$eiuEntryForm->setChoicesMap(array($eiType->getId() => $this->eiFrame->determineEiMask($eiType)->getLabelLstr()
 				->t($this->eiFrame->getN2nContext()->getN2nLocale())));
 		return $eiuEntryForm;
 	}
 	
 	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
-		$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask()->determineEiMask($eiType);
+		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
 		$eiGui = new EiGui($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT);
 		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
 		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry);
@@ -609,7 +653,7 @@ class EiuFrame {
 	 * @param mixed $eiObjectObj
 	 * @return EiType
 	 */
-	public function determineEiType($eiObjectObj): EiType {
+	private function determineEiType($eiObjectObj): EiType {
 		if ($eiObjectObj === null) {
 			return $this->getContextEiType();
 		}
@@ -643,19 +687,19 @@ class EiuFrame {
 	 * @param mixed $eiObjectObj
 	 * @return EiMask
 	 */
-	public function determineEiMask($eiObjectObj): EiMask {
+	private function determineEiMask($eiObjectObj): EiMask {
 		if ($eiObjectObj === null) {
 			return $this->getContextEiMask();
 		}
 
-		return $this->getContextEiMask()->determineEiMask($this->determineEiType($eiObjectObj));
+		return $this->determineEiType($eiObjectObj)->getEiMask();
 	}
 
 	/**
 	 * @param mixed $eiObjectObj
 	 * @return \rocket\ei\EiEngine
 	 */
-	public function determineEiEngine($eiObjectObj) {
+	private function determineEiEngine($eiObjectObj) {
 		return $this->determineEiMask($eiObjectObj)->getEiEngine();
 	}
 

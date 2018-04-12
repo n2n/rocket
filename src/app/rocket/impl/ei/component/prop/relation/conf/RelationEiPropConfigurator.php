@@ -49,9 +49,13 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\util\model\EiuEngine;
+use rocket\ei\EiType;
+use rocket\ei\EiTypeExtension;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
-	const ATTR_TARGET_MASK_KEY = 'targetEiMaskId';
+	const ATTR_TARGET_EXTENSIONS_KEY = 'targetExtensions';
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 	const ATTR_REPLACEABLE_KEY = 'replaceable';
@@ -86,7 +90,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_MASK_KEY,
+		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_EXTENSIONS_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REPLACEABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY,
 				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, 
@@ -123,8 +127,14 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		} catch (InvalidConfigurationException $e) {
 		}
 		
-		$magCollection->addMag(self::ATTR_TARGET_MASK_KEY, new EnumMag('Target Mask', $targetEiMaskOptions,
-				$lar->getString(self::ATTR_TARGET_MASK_KEY)));
+		
+		$targetEiTypeExtensionIds = $lar->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY);
+		if (null !== ($targetEiExtensionId = $lar->getString('targetEiMaskId'))) {
+			$targetEiTypeExtensionIds[$targetEiType->getId()] = $targetEiExtensionId;	
+		}
+		$magCollection->addMag(self::ATTR_TARGET_EXTENSIONS_KEY, 
+				$this->createTargetExtensionsMag($targetEiType, $targetEiTypeExtensionIds));
+		
 		
 		$eiComponent = $this->eiComponent;
 				
@@ -180,6 +190,30 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		return $magDispatchable;
 	}
 	
+	private function createTargetExtensionsMag(EiType $targetEiType, array $attrs) {
+		$targetEiTypes = array_merge([$targetEiType], $targetEiType->getAllSubEiTypes());
+		
+		$extMagCollection = new MagCollection();
+		
+		foreach ($targetEiTypes as $targetEiType) {
+			$targetEiTypeExtensionOptions = array();
+			foreach ($targetEiType->getEiTypeExtensionCollection() as $eiTypeExtension) {
+				CastUtils::assertTrue($eiTypeExtension instanceof EiTypeExtension);
+				
+				$targetEiTypeExtensionOptions[$eiTypeExtension->getId()] 
+						= (string) $eiTypeExtension->getEiMask()->getLabelLstr();
+			}
+			
+			if (empty($targetEiTypeExtensionOptions)) continue;
+			
+			$label = 'Used extension for ' . $targetEiType->getEiMask()->getLabelLstr();
+			$extMagCollection->addMag($targetEiType->getId(), new EnumMag($label, $targetEiTypeExtensionOptions,
+					$attrs[$targetEiType->getId()] ?? null));
+		}
+		
+		return new MagCollectionMag('Target', $extMagCollection);
+	}
+	
 	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
@@ -195,16 +229,28 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		try {
 			$target = $eiSetupProcess->eiu()->context()->getSpec()->getEiTypeByClass($targetEntityClass);
 			
-			$targetEiMask = null; 
-			if (null !== ($eiMaskId = $this->attributes->getString(self::ATTR_TARGET_MASK_KEY, false, null, true))) {
-				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiMask();
-			} else {
-				$targetEiMask = $target->getEiMask();
-			}
+			$targetEiMask = $target->getEiMask();
+			$targetSubEiTypes = $target->getAllSubEiTypes();
+			$targetSubEiTypeExtensions = array();
+			foreach ($this->attributes->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY, false, array()) 
+					as $targetEiTypeId => $targetEiTypeExtensionId) {
+				if ($targetEiTypeExtensionId === null) continue;
+						
+				if ($target->getId() == $targetEiTypeId) {
+					$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiMask();
+					continue;
+				} 
+				
+				if (isset($targetSubEiTypes[$targetEiTypeId]) 
+						&& $targetSubEiTypes[$targetEiTypeId]->getEiTypeExtensionCollection()->containsId($targetEiTypeExtensionId)) {
+					$targetSubEiTypeExtensions[$targetEiTypeId] = $targetSubEiTypes[$targetEiTypeId]->getEiTypeExtensionCollection()
+							->getById($targetEiTypeExtensionId);
+				}
+			} 
 				
 			$targetMasterEiProp = null;
 
-			$this->eiPropRelation->init($eiSetupProcess->eiu(), $target, $targetEiMask);
+			$this->eiPropRelation->init($eiSetupProcess->eiu(), $target, $targetEiMask, $targetSubEiTypeExtensions);
 		} catch (EiException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		} catch (UnknownEiTypeExtensionException $e) {

@@ -68,7 +68,7 @@ class EntryLabeler {
 		foreach ($contextEiType->getAllSubEiTypes() as $subEiType) {
 			if ($subEiType->isAbstract()) continue;
 		
-			$eiTypeLabels[$subEiType->getId()] = $contextEiMask->determineEiMask($subEiType)->getLabelLstr()
+			$eiTypeLabels[$subEiType->getId()] = $this->eiUtils->getEiFrame()->determineEiMask($subEiType)->getLabelLstr()
 					->t($eiFrame->getN2nContext()->getN2nLocale());
 		}
 		

@@ -35,6 +35,8 @@ use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiEngine;
+use rocket\ei\EiTypeExtension;
+use rocket\ei\EiType;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -42,6 +44,7 @@ class EiFrame {
 	private $criteriaConstraintCollection;
 	private $parent;
 	private $controllerContext;
+	private $subEiTypeExtensions = array();
 	
 	private $eiExecution;
 // 	private $eiObject;
@@ -143,6 +146,38 @@ class EiFrame {
 		}
 		
 		return $this->controllerContext;
+	}
+	
+	/**
+	 * @param EiTypeExtension[] $subEiTypeExtensions
+	 */
+	public function setSubEiTypeExtensions(array $subEiTypeExtensions) {
+		ArgUtils::valArray($subEiTypeExtensions, EiTypeExtension::class);
+		$this->subEiTypeExtensions = $subEiTypeExtensions;
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	public function determineEiMask(EiType $eiType) {
+		$contextEiMask = $this->contextEiEngine->getEiMask();
+		$contextEiType = $contextEiMask->getEiType();
+		if ($eiType->equals($contextEiType)) {
+			return $contextEiMask;
+		}
+		
+		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
+			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() 
+					. ' is not compatible with EiFrame with context EiType ' . $contextEiType->getId() . '.');
+		}
+		
+		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
+			return $this->subEiTypeExtensions[$eiType->getId()]->getEiMask();
+		}
+		
+		return $eiType->getEiMask();
 	}
 	
 	public function setEiRelation($scriptId, EiRelation $scriptRelation) {

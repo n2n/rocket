@@ -139,7 +139,7 @@ class ManageState implements RequestScoped {
 			$parentEiFrame = end($this->eiFrames);
 		}
 		
-		return $this->eiFrames[] = $eiFrameFactory->create($controllerContext, $this, false, $parentEiFrame);
+		return $this->eiFrames[] = $eiFrameFactory->create($controllerContext, $this, $parentEiFrame);
 	}
 	
 	public function isActive(): bool {

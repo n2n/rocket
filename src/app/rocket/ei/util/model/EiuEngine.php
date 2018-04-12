@@ -58,18 +58,6 @@ class EiuEngine {
 	}
 	
 	/**
-	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
-	 * @return \rocket\ei\util\model\EiuEngine
-	 */
-	public function engine($eiObjectObj) {
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg',
-				$this->eiEngine->getEiMask()->getEiType());
-		
-		$detrEiMask = $this->eiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType());
-		return new EiuEngine($detrEiMask->getEiEngine(), null, $this->eiuFactory);
-	}
-	
-	/**
 	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
 	 * @return bool
 	 */
