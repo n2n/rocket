@@ -747,7 +747,7 @@ var Rocket;
                     }
                 }
             }
-            attachComp(comp, loadObserver) {
+            attachComp(comp) {
                 if (comp.isAttached)
                     return true;
                 let url = this.monitor.history.currentPage.url;
@@ -755,7 +755,7 @@ var Rocket;
                 if (!zone) {
                     throw new Error("Zone for url " + url + " does not extist");
                 }
-                zone.applyComp(comp, loadObserver);
+                zone.applyComp(comp);
                 return true;
             }
             detachComp(comp) {
@@ -1595,9 +1595,9 @@ var Rocket;
                 this.applyLastModDefs();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
-            applyComp(comp, loadObserver) {
+            applyComp(comp) {
                 this.clear(false);
-                comp.attachTo(this.jqZone.get(0), loadObserver);
+                comp.attachTo(this.jqZone.get(0));
                 this.reset();
                 this.applyLastModDefs();
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
