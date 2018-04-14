@@ -254,317 +254,6 @@ var Rocket;
 (function (Rocket) {
     var Cmd;
     (function (Cmd) {
-        class Container {
-            constructor(jqContainer) {
-                this.layerCallbackRegistery = new Rocket.Util.CallbackRegistry();
-                this.jqContainer = jqContainer;
-                this._layers = new Array();
-                var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
-                this.registerLayer(layer);
-                jQuery(document).keyup((e) => {
-                    if (e.keyCode == 27) {
-                        this.closePopup();
-                    }
-                });
-            }
-            closePopup() {
-                if (this.currentLayer.level == 0)
-                    return;
-                this.currentLayer.close();
-            }
-            get layers() {
-                return this._layers.slice();
-            }
-            get mainLayer() {
-                if (this._layers.length > 0) {
-                    return this._layers[0];
-                }
-                throw new Error("Container empty.");
-            }
-            markCurrent() {
-                for (let layer of this._layers) {
-                    layer.active = false;
-                }
-                this.currentLayer.active = true;
-            }
-            get currentLayer() {
-                if (this._layers.length == 0) {
-                    throw new Error("Container empty.");
-                }
-                var layer = null;
-                for (let i in this._layers) {
-                    if (this._layers[i].visible) {
-                        layer = this._layers[i];
-                    }
-                }
-                if (layer !== null)
-                    return layer;
-                return this._layers[this._layers.length - 1];
-            }
-            unregisterLayer(layer) {
-                var i = this._layers.indexOf(layer);
-                if (i < 0)
-                    return;
-                this._layers.splice(i, 1);
-                this.layerTrigger(Container.LayerEventType.REMOVED, layer);
-            }
-            registerLayer(layer) {
-                let lastModDefs = [];
-                let messages = [];
-                layer.monitor.onDirective((evt) => {
-                    lastModDefs = this.deterLastModDefs(evt.directive);
-                    messages = this.deterMessages(evt.directive);
-                });
-                layer.monitor.onDirectiveExecuted((evt) => {
-                    if (!layer.currentZone)
-                        return;
-                    if (lastModDefs.length > 0) {
-                        layer.currentZone.lastModDefs = lastModDefs;
-                    }
-                    if (messages.length > 0) {
-                        layer.currentZone.messageList.clear();
-                        layer.currentZone.messageList.addAll(messages);
-                    }
-                });
-                this._layers.push(layer);
-                this.markCurrent();
-            }
-            deterLastModDefs(directive) {
-                let data = directive.getAdditionalData();
-                if (!data || !data.rocketEvent || !data.rocketEvent.eiMods)
-                    return [];
-                let lastModDefs = [];
-                let zoneClearer = new ZoneClearer(this.getAllZones());
-                let eiMods = data.rocketEvent.eiMods;
-                for (let supremeEiTypeId in eiMods) {
-                    if (!eiMods[supremeEiTypeId].pids && eiMods[supremeEiTypeId].draftIds) {
-                        zoneClearer.clearBySupremeEiType(supremeEiTypeId, false);
-                        continue;
-                    }
-                    if (eiMods[supremeEiTypeId].pids) {
-                        for (let pid in eiMods[supremeEiTypeId].pids) {
-                            let modType = eiMods[supremeEiTypeId].pids[pid];
-                            switch (modType) {
-                                case "changed":
-                                    zoneClearer.clearByPid(supremeEiTypeId, pid, false);
-                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
-                                    break;
-                                case "removed":
-                                    zoneClearer.clearByPid(supremeEiTypeId, pid, true);
-                                    break;
-                                case "added":
-                                    zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
-                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
-                                    break;
-                                default:
-                                    throw new Error("Invalid mod type " + modType);
-                            }
-                        }
-                    }
-                    if (eiMods[supremeEiTypeId].draftIds) {
-                        for (let draftIdStr in eiMods[supremeEiTypeId].draftIds) {
-                            let draftId = parseInt(draftIdStr);
-                            let modType = eiMods[supremeEiTypeId].draftIds[draftIdStr];
-                            switch (modType) {
-                                case "changed":
-                                    zoneClearer.clearByDraftId(supremeEiTypeId, draftId, false);
-                                    lastModDefs.push(Cmd.LastModDef.createDraft(supremeEiTypeId, draftId));
-                                    break;
-                                case "removed":
-                                    zoneClearer.clearByDraftId(supremeEiTypeId, draftId, true);
-                                    break;
-                                case "added":
-                                    zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
-                                    lastModDefs.push(Cmd.LastModDef.createDraft(supremeEiTypeId, draftId));
-                                    break;
-                                default:
-                                    throw new Error("Invalid mod type " + modType);
-                            }
-                        }
-                    }
-                }
-                return lastModDefs;
-            }
-            deterMessages(directive) {
-                let data = directive.getAdditionalData();
-                if (!data || !data.rocketEvent || !data.rocketEvent.messages)
-                    return [];
-                let messages = [];
-                for (let message of data.rocketEvent.messages) {
-                    messages.push(new Cmd.Message(message.text, message.severity));
-                }
-                return messages;
-            }
-            createLayer(dependentZone = null) {
-                var jqLayer = $("<div />", {
-                    "class": "rocket-layer"
-                });
-                this.jqContainer.append(jqLayer);
-                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History(), true));
-                this.registerLayer(layer);
-                var jqToolbar = $("<div />", {
-                    "class": "rocket-layer-toolbar"
-                });
-                jqLayer.append(jqToolbar);
-                var jqButton = $("<button />", {
-                    "class": "btn btn-warning"
-                }).append($("<i />", {
-                    "class": "fa fa-times"
-                })).click(function () {
-                    layer.close();
-                });
-                jqToolbar.append(jqButton);
-                var that = this;
-                layer.on(Cmd.Layer.EventType.CLOSE, () => {
-                    that.unregisterLayer(layer);
-                    this.markCurrent();
-                });
-                layer.on(Cmd.Layer.EventType.SHOWED, () => {
-                    this.markCurrent();
-                });
-                layer.on(Cmd.Layer.EventType.HIDDEN, () => {
-                    this.markCurrent();
-                });
-                if (dependentZone === null) {
-                    this.layerTrigger(Container.LayerEventType.ADDED, layer);
-                    return layer;
-                }
-                let reopenable = false;
-                dependentZone.on(Cmd.Zone.EventType.CLOSE, () => {
-                    layer.close();
-                });
-                dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
-                    layer.close();
-                });
-                dependentZone.on(Cmd.Zone.EventType.HIDE, () => {
-                    reopenable = layer.visible;
-                    layer.hide();
-                });
-                dependentZone.on(Cmd.Zone.EventType.SHOW, () => {
-                    if (!reopenable)
-                        return;
-                    layer.show();
-                });
-                this.layerTrigger(Container.LayerEventType.ADDED, layer);
-                return layer;
-            }
-            getAllZones() {
-                var zones = new Array();
-                for (var i in this._layers) {
-                    var layerZones = this._layers[i].zones;
-                    for (var j in layerZones) {
-                        zones.push(layerZones[j]);
-                    }
-                }
-                return zones;
-            }
-            layerTrigger(eventType, layer) {
-                var container = this;
-                this.layerCallbackRegistery.filter(eventType.toString())
-                    .forEach(function (callback) {
-                    callback(layer);
-                });
-            }
-            layerOn(eventType, callback) {
-                this.layerCallbackRegistery.register(eventType.toString(), callback);
-            }
-            layerOff(eventType, callback) {
-                this.layerCallbackRegistery.unregister(eventType.toString(), callback);
-            }
-        }
-        Cmd.Container = Container;
-        class ZoneClearer {
-            constructor(zones) {
-                this.zones = zones;
-            }
-            clearBySupremeEiType(supremeEiTypeId, restrictToCollections) {
-                for (let zone of this.zones) {
-                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
-                        continue;
-                    }
-                    if (!restrictToCollections) {
-                        if (Rocket.Display.Entry.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
-                            zone.page.dispose();
-                        }
-                        return;
-                    }
-                    if (Rocket.Display.Collection.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
-                        zone.page.dispose();
-                    }
-                }
-            }
-            clearByPid(supremeEiTypeId, pid, remove) {
-                for (let zone of this.zones) {
-                    if (!zone.page || zone.page.disposed)
-                        continue;
-                    if (remove && this.removeByPid(zone, supremeEiTypeId, pid)) {
-                        continue;
-                    }
-                    if (zone.page.config.frozen)
-                        continue;
-                    if (Rocket.Display.Entry.hasPid(zone.jQuery, supremeEiTypeId, pid)) {
-                        zone.page.dispose();
-                    }
-                }
-            }
-            removeByPid(zone, supremeEiTypeId, pid) {
-                let entries = Rocket.Display.Entry.findByPid(zone.jQuery, supremeEiTypeId, pid);
-                if (entries.length == 0)
-                    return true;
-                let success = true;
-                for (let entry of entries) {
-                    if (entry.collection) {
-                        entry.dispose();
-                    }
-                    else {
-                        success = false;
-                    }
-                }
-                return success;
-            }
-            clearByDraftId(supremeEiTypeId, draftId, remove) {
-                for (let zone of this.zones) {
-                    if (!zone.page || zone.page.disposed)
-                        continue;
-                    if (remove && this.removeByDraftId(zone, supremeEiTypeId, draftId)) {
-                        continue;
-                    }
-                    if (zone.page.config.frozen)
-                        continue;
-                    if (Rocket.Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
-                        zone.page.dispose();
-                    }
-                }
-            }
-            removeByDraftId(zone, supremeEiTypeId, draftId) {
-                let entries = Rocket.Display.Entry.findByDraftId(zone.jQuery, supremeEiTypeId, draftId);
-                if (entries.length == 0)
-                    return true;
-                let success = true;
-                for (let entry of entries) {
-                    if (entry.collection) {
-                        entry.dispose();
-                    }
-                    else {
-                        success = false;
-                    }
-                }
-                return success;
-            }
-        }
-        (function (Container) {
-            let LayerEventType;
-            (function (LayerEventType) {
-                LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED";
-                LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED";
-            })(LayerEventType = Container.LayerEventType || (Container.LayerEventType = {}));
-        })(Container = Cmd.Container || (Cmd.Container = {}));
-    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
-})(Rocket || (Rocket = {}));
-var Rocket;
-(function (Rocket) {
-    var Cmd;
-    (function (Cmd) {
         class Layer {
             constructor(jqLayer, _level, _container, _monitor) {
                 this.jqLayer = jqLayer;
@@ -823,6 +512,324 @@ var Rocket;
                 EventType[EventType["CLOSE"] = 2] = "CLOSE";
             })(EventType = Layer.EventType || (Layer.EventType = {}));
         })(Layer = Cmd.Layer || (Cmd.Layer = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class Container {
+            constructor(jqContainer) {
+                this.layerCallbackRegistery = new Rocket.Util.CallbackRegistry();
+                this.jqContainer = jqContainer;
+                this._layers = new Array();
+                var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
+                this.registerLayer(layer);
+                jQuery(document).keyup((e) => {
+                    if (e.keyCode == 27) {
+                        this.closePopup();
+                    }
+                });
+            }
+            closePopup() {
+                if (this.currentLayer.level == 0)
+                    return;
+                this.currentLayer.close();
+            }
+            get layers() {
+                return this._layers.slice();
+            }
+            get mainLayer() {
+                if (this._layers.length > 0) {
+                    return this._layers[0];
+                }
+                throw new Error("Container empty.");
+            }
+            markCurrent() {
+                for (let layer of this._layers) {
+                    layer.active = false;
+                }
+                this.currentLayer.active = true;
+            }
+            get currentLayer() {
+                if (this._layers.length == 0) {
+                    throw new Error("Container empty.");
+                }
+                var layer = null;
+                for (let i in this._layers) {
+                    if (this._layers[i].visible) {
+                        layer = this._layers[i];
+                    }
+                }
+                if (layer !== null)
+                    return layer;
+                return this._layers[this._layers.length - 1];
+            }
+            unregisterLayer(layer) {
+                var i = this._layers.indexOf(layer);
+                if (i < 0)
+                    return;
+                this._layers.splice(i, 1);
+                this.layerTrigger(Container.LayerEventType.REMOVED, layer);
+            }
+            registerLayer(layer) {
+                let lastModDefs = [];
+                let messages = [];
+                layer.monitor.onDirective((evt) => {
+                    lastModDefs = this.deterLastModDefs(evt.directive);
+                    messages = this.deterMessages(evt.directive);
+                });
+                layer.monitor.onDirectiveExecuted((evt) => {
+                    if (!layer.currentZone)
+                        return;
+                    if (lastModDefs.length > 0) {
+                        layer.currentZone.lastModDefs = lastModDefs;
+                    }
+                    if (messages.length > 0) {
+                        layer.currentZone.messageList.clear();
+                        layer.currentZone.messageList.addAll(messages);
+                    }
+                });
+                this._layers.push(layer);
+                this.markCurrent();
+            }
+            deterLastModDefs(directive) {
+                let data = directive.getAdditionalData();
+                if (!data || !data.rocketEvent || !data.rocketEvent.eiMods)
+                    return [];
+                let lastModDefs = [];
+                let zoneClearer = new Cmd.ZoneClearer(this.getAllZones());
+                let eiMods = data.rocketEvent.eiMods;
+                for (let supremeEiTypeId in eiMods) {
+                    if (!eiMods[supremeEiTypeId].pids && eiMods[supremeEiTypeId].draftIds) {
+                        zoneClearer.clearBySupremeEiType(supremeEiTypeId, false);
+                        continue;
+                    }
+                    if (eiMods[supremeEiTypeId].pids) {
+                        for (let pid in eiMods[supremeEiTypeId].pids) {
+                            let modType = eiMods[supremeEiTypeId].pids[pid];
+                            switch (modType) {
+                                case "changed":
+                                    zoneClearer.clearByPid(supremeEiTypeId, pid, false);
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
+                                    break;
+                                case "removed":
+                                    zoneClearer.clearByPid(supremeEiTypeId, pid, true);
+                                    break;
+                                case "added":
+                                    zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
+                                    lastModDefs.push(Cmd.LastModDef.createLive(supremeEiTypeId, pid));
+                                    break;
+                                default:
+                                    throw new Error("Invalid mod type " + modType);
+                            }
+                        }
+                    }
+                    if (eiMods[supremeEiTypeId].draftIds) {
+                        for (let draftIdStr in eiMods[supremeEiTypeId].draftIds) {
+                            let draftId = parseInt(draftIdStr);
+                            let modType = eiMods[supremeEiTypeId].draftIds[draftIdStr];
+                            switch (modType) {
+                                case "changed":
+                                    zoneClearer.clearByDraftId(supremeEiTypeId, draftId, false);
+                                    lastModDefs.push(Cmd.LastModDef.createDraft(supremeEiTypeId, draftId));
+                                    break;
+                                case "removed":
+                                    zoneClearer.clearByDraftId(supremeEiTypeId, draftId, true);
+                                    break;
+                                case "added":
+                                    zoneClearer.clearBySupremeEiType(supremeEiTypeId, true);
+                                    lastModDefs.push(Cmd.LastModDef.createDraft(supremeEiTypeId, draftId));
+                                    break;
+                                default:
+                                    throw new Error("Invalid mod type " + modType);
+                            }
+                        }
+                    }
+                }
+                return lastModDefs;
+            }
+            deterMessages(directive) {
+                let data = directive.getAdditionalData();
+                if (!data || !data.rocketEvent || !data.rocketEvent.messages)
+                    return [];
+                let messages = [];
+                for (let message of data.rocketEvent.messages) {
+                    messages.push(new Cmd.Message(message.text, message.severity));
+                }
+                return messages;
+            }
+            createLayer(dependentZone = null) {
+                var jqLayer = $("<div />", {
+                    "class": "rocket-layer"
+                });
+                this.jqContainer.append(jqLayer);
+                var layer = new Cmd.Layer(jqLayer, this._layers.length, this, Jhtml.Monitor.create(jqLayer.get(0), new Jhtml.History(), true));
+                this.registerLayer(layer);
+                var jqToolbar = $("<div />", {
+                    "class": "rocket-layer-toolbar"
+                });
+                jqLayer.append(jqToolbar);
+                var jqButton = $("<button />", {
+                    "class": "btn btn-warning"
+                }).append($("<i />", {
+                    "class": "fa fa-times"
+                })).click(function () {
+                    layer.close();
+                });
+                jqToolbar.append(jqButton);
+                var that = this;
+                layer.on(Cmd.Layer.EventType.CLOSE, () => {
+                    that.unregisterLayer(layer);
+                    this.markCurrent();
+                });
+                layer.on(Cmd.Layer.EventType.SHOWED, () => {
+                    this.markCurrent();
+                });
+                layer.on(Cmd.Layer.EventType.HIDDEN, () => {
+                    this.markCurrent();
+                });
+                if (dependentZone === null) {
+                    this.layerTrigger(Container.LayerEventType.ADDED, layer);
+                    return layer;
+                }
+                let reopenable = false;
+                dependentZone.on(Cmd.Zone.EventType.CLOSE, () => {
+                    layer.close();
+                });
+                dependentZone.on(Cmd.Zone.EventType.CONTENT_CHANGED, () => {
+                    layer.close();
+                });
+                dependentZone.on(Cmd.Zone.EventType.HIDE, () => {
+                    reopenable = layer.visible;
+                    layer.hide();
+                });
+                dependentZone.on(Cmd.Zone.EventType.SHOW, () => {
+                    if (!reopenable)
+                        return;
+                    layer.show();
+                });
+                this.layerTrigger(Container.LayerEventType.ADDED, layer);
+                return layer;
+            }
+            getAllZones() {
+                var zones = new Array();
+                for (var i in this._layers) {
+                    var layerZones = this._layers[i].zones;
+                    for (var j in layerZones) {
+                        zones.push(layerZones[j]);
+                    }
+                }
+                return zones;
+            }
+            layerTrigger(eventType, layer) {
+                var container = this;
+                this.layerCallbackRegistery.filter(eventType.toString())
+                    .forEach(function (callback) {
+                    callback(layer);
+                });
+            }
+            layerOn(eventType, callback) {
+                this.layerCallbackRegistery.register(eventType.toString(), callback);
+            }
+            layerOff(eventType, callback) {
+                this.layerCallbackRegistery.unregister(eventType.toString(), callback);
+            }
+        }
+        Cmd.Container = Container;
+        (function (Container) {
+            let LayerEventType;
+            (function (LayerEventType) {
+                LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED";
+                LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED";
+            })(LayerEventType = Container.LayerEventType || (Container.LayerEventType = {}));
+        })(Container = Cmd.Container || (Cmd.Container = {}));
+    })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Cmd;
+    (function (Cmd) {
+        class ZoneClearer {
+            constructor(zones) {
+                this.zones = zones;
+            }
+            clearBySupremeEiType(supremeEiTypeId, restrictToCollections) {
+                for (let zone of this.zones) {
+                    if (!zone.page || zone.page.config.frozen || zone.page.disposed) {
+                        continue;
+                    }
+                    if (!restrictToCollections) {
+                        if (Rocket.Display.Entry.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
+                            zone.page.dispose();
+                        }
+                        return;
+                    }
+                    if (Rocket.Display.Collection.hasSupremeEiTypeId(zone.jQuery, supremeEiTypeId)) {
+                        zone.page.dispose();
+                    }
+                }
+            }
+            clearByPid(supremeEiTypeId, pid, remove) {
+                for (let zone of this.zones) {
+                    if (!zone.page || zone.page.disposed)
+                        continue;
+                    if (remove && this.removeByPid(zone, supremeEiTypeId, pid)) {
+                        continue;
+                    }
+                    if (zone.page.config.frozen)
+                        continue;
+                    if (Rocket.Display.Entry.hasPid(zone.jQuery, supremeEiTypeId, pid)) {
+                        zone.page.dispose();
+                    }
+                }
+            }
+            removeByPid(zone, supremeEiTypeId, pid) {
+                let entries = Rocket.Display.Entry.findByPid(zone.jQuery, supremeEiTypeId, pid);
+                if (entries.length == 0)
+                    return true;
+                let success = true;
+                for (let entry of entries) {
+                    if (entry.collection) {
+                        entry.dispose();
+                    }
+                    else {
+                        success = false;
+                    }
+                }
+                return success;
+            }
+            clearByDraftId(supremeEiTypeId, draftId, remove) {
+                for (let zone of this.zones) {
+                    if (!zone.page || zone.page.disposed)
+                        continue;
+                    if (remove && this.removeByDraftId(zone, supremeEiTypeId, draftId)) {
+                        continue;
+                    }
+                    if (zone.page.config.frozen)
+                        continue;
+                    if (Rocket.Display.Entry.hasDraftId(zone.jQuery, supremeEiTypeId, draftId)) {
+                        zone.page.dispose();
+                    }
+                }
+            }
+            removeByDraftId(zone, supremeEiTypeId, draftId) {
+                let entries = Rocket.Display.Entry.findByDraftId(zone.jQuery, supremeEiTypeId, draftId);
+                if (entries.length == 0)
+                    return true;
+                let success = true;
+                for (let entry of entries) {
+                    if (entry.collection) {
+                        entry.dispose();
+                    }
+                    else {
+                        success = false;
+                    }
+                }
+                return success;
+            }
+        }
+        Cmd.ZoneClearer = ZoneClearer;
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
