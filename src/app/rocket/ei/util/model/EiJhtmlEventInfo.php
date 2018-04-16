@@ -16,6 +16,7 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	const MOD_TYPE_REMOVED = 'removed';
 	const MOD_TYPE_ADDED = 'added';
 	
+	private $noAutoEvents = false;
 	private $eventMap = array();
 	private $swapControl;
 	
@@ -40,6 +41,15 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	    if ($draftId !== null) {
 	        $this->eventMap[$eiTypeId]['draftIds'][$draftId] = $modType;
 	    }
+	}
+	
+	/**
+	 * @param bool $noAutoEvents
+	 * @return \rocket\ei\util\model\EiJhtmlEventInfo
+	 */
+	public function noAutoEvents(bool $noAutoEvents = true) {
+		$this->noAutoEvents = true;
+		return $this;
 	}
 	
 	/**
@@ -134,7 +144,7 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	}
 	
 	public function introduceEiLifecycleMonitor(EiLifecycleMonitor $elm) {
-		if (!empty($this->eventMap)) {
+		if ($this->noAutoEvents) {
 			return;
 		}
 		

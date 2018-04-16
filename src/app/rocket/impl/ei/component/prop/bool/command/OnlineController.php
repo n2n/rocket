@@ -63,7 +63,7 @@ class OnlineController extends ControllerAdapter {
 		if (!$eiuEntry->getEiEntry()->save()) {
 			$this->mc->addAll($eiuEntry->getEiEntry()->getMappingErrorInfo()->getMessages());
 		} else {
-			$jhtmlEvent = JhtmlEvent::ei()->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry)));
+			$jhtmlEvent = JhtmlEvent::ei()->noAutoEvents()->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry)));
 		}
 		
 		$this->eiuCtrl->redirectToReferer($this->eiuCtrl->buildRedirectUrl($eiuEntry), $jhtmlEvent);
