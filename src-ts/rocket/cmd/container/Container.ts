@@ -126,7 +126,7 @@ namespace Rocket.Cmd {
 		
 		private deterLastModDefs(directive: Jhtml.Directive): Cmd.LastModDef[] {
 			let data = directive.getAdditionalData();
-
+			
 			if (!data || !data.rocketEvent || !data.rocketEvent.eiMods) return [];
 			
 			let lastModDefs: Array<Cmd.LastModDef> = [];

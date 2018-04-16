@@ -27,6 +27,7 @@ use n2n\web\http\controller\ParamGet;
 use rocket\ei\util\model\UnknownEntryException;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\ei\util\model\EiuCtrl;
+use rocket\ajah\JhtmlEvent;
 
 class TreeMoveController extends ControllerAdapter {
 	private $eiCtrl;
@@ -42,7 +43,7 @@ class TreeMoveController extends ControllerAdapter {
 			$this->move($pid, $targetPid);
 		}
 		
-		$this->eiCtrl->redirectToReferer($refUrl);
+		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 	}
 	
 	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {
@@ -52,7 +53,7 @@ class TreeMoveController extends ControllerAdapter {
 			$this->move($pid, $targetPid, true);
 		}
 		
-		$this->eiCtrl->redirectToReferer($refUrl);
+		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 	}
 
 	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
@@ -62,7 +63,7 @@ class TreeMoveController extends ControllerAdapter {
 			$this->move($pid, $targetPid, false);
 		}
 
-		$this->eiCtrl->redirectToReferer($refUrl);
+		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 	}
 
 	private function move(string $pid, string $targetPid, bool $before = null) {

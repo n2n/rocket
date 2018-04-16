@@ -35,6 +35,8 @@ namespace Rocket.Cmd {
 				
 				if (zone.page.config.frozen) continue;
 				
+				let jqElem = zone.jQuery;
+				
 				if (Display.Entry.hasPid(zone.jQuery, supremeEiTypeId, pid)) {
 					zone.page.dispose();
 				}

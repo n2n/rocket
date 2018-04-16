@@ -158,9 +158,9 @@ namespace Rocket.Cmd {
 			this._zones.push(zone);
 			var that = this;
 			
-			zone.on(Zone.EventType.CLOSE, function (context: Zone) {
+			zone.on(Zone.EventType.CLOSE, function (zone: Zone) {
 				for (var i in that._zones) {
-					if (that._zones[i] !== context) continue;
+					if (that._zones[i] !== zone) continue;
 					
 					that._zones.splice(parseInt(i), 1);
 					break;
@@ -208,12 +208,10 @@ namespace Rocket.Cmd {
 		public close() {
 			this.trigger(Layer.EventType.CLOSE);
 			
-			let context = null;
-			while (context = this._zones.pop()) {
-				context.close();
+			let zone = null;
+			while (zone = this._zones.pop()) {
+				zone.close();
 			}
-				
-			this._zones = new Array<Zone>();
 			this.jqLayer.remove();
 		}
 		
