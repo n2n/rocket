@@ -58,7 +58,7 @@ class TranslationComparatorConstraint implements ComparatorConstraint {
 		$subCriteria = new ComparatorCriteria();
 		$subCriteria->select($subAlias)->from($this->targetEntityClass, $subAlias);
 		
-		$this->targetComparatorConstraint->applyToCriteriaComparator($subCriteria->where(), $critProp);
+		$this->targetComparatorConstraint->applyToCriteriaComparator($subCriteria->where(), CrIt::p($subAlias));
 		
 		$criteriaComparator->match($critProp, 'CONTAINS ANY', $subCriteria);
 	}
