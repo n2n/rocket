@@ -180,9 +180,9 @@ namespace Rocket.Cmd {
 			this.trigger(Zone.EventType.CONTENT_CHANGED);
 		}
 		
-		public applyComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver) {
+		public applyComp(comp: Jhtml.Comp) {
 			this.clear(false);
-			comp.attachTo(this.jqZone.get(0), loadObserver);
+			comp.attachTo(this.jqZone.get(0));
 			
 			this.reset();
 			

@@ -227,7 +227,7 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		attachComp(comp: Jhtml.Comp, loadObserver: Jhtml.LoadObserver): boolean {
+		attachComp(comp: Jhtml.Comp): boolean {
 			if (comp.isAttached) return true;
 			
 //			if (!comp.model.response) {
@@ -240,7 +240,7 @@ namespace Rocket.Cmd {
 				throw new Error("Zone for url " + url + " does not extist");
 			}
 				
-			zone.applyComp(comp, loadObserver);
+			zone.applyComp(comp);
 			return true;
 		}
 		
