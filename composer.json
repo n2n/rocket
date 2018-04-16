@@ -1,44 +1,47 @@
 {
-	"name" : "n2n/rocket",
-	"type" : "n2n-module",
-	"description" : "rocket cmf",
-	"keywords" : [
-		"cms",
-		"cmf",
-		"n2n"
-	],
-	"homepage" : "https://n2n.rocks/",
-	"license" : "LGPL-3.0-or-later",
-	"authors" : [{
-			"name" : "Andreas von Burg",
-			"email" : "a@von-burg.net",
-			"homepage" : "https://www.von-burg.net",
-			"role" : "Architect, Lead Developer, Concept"
-		}, {
-			"name" : "Bert Hofmänner",
-			"email" : "hofmaenner@hnm.ch",
-			"role" : "Idea, Frontend UI, Design, Marketing, Concept"
-		}, {
-			"name" : "Thomas Günther",
-			"email" : "guenther@hnm.ch",
-			"role" : "Developer, Frontend UI, Rocket Capability for Hangar"
-		}
-	],
-	"require" : {
-		"php" : ">=7.0",
-		"n2n/n2n-composer-module-installer" : "7.1.x-dev",
-		"n2n/n2n" : "7.2.x-dev",
-		"n2n/n2n-batch" : "7.2.x-dev",
-		"n2n/n2n-context" : "7.2.x-dev",
-		"n2n/n2n-impl-persistence-meta" : "7.2.x-dev",
-		"n2n/n2n-impl-persistence-orm" : "7.2.x-dev",
-		"n2n/n2n-impl-web-dispatch" : "7.2.x-dev",
-		"n2n/n2n-impl-web-ui" : "7.2.x-dev",
-		"n2n/n2nutil-jquery" : "1.2.x-dev"
-	},
-	"autoload" : {
-		"psr-4" : {
-			"rocket\\" : "src/app/rocket"
-		}
-	}
+    "authors": [
+        {
+            "email": "a@von-burg.net",
+            "homepage": "https://www.von-burg.net",
+            "name": "Andreas von Burg",
+            "role": "Architect, Lead Developer, Concept"
+        },
+        {
+            "email": "hofmaenner@hnm.ch",
+            "name": "Bert Hofm\u00e4nner",
+            "role": "Idea, Frontend UI, Design, Marketing, Concept"
+        },
+        {
+            "email": "guenther@hnm.ch",
+            "name": "Thomas G\u00fcnther",
+            "role": "Developer, Frontend UI, Rocket Capability for Hangar"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "rocket\\": "src/app/rocket"
+        }
+    },
+    "description": "rocket cmf",
+    "homepage": "https://n2n.rocks/",
+    "keywords": [
+        "cms",
+        "cmf",
+        "n2n"
+    ],
+    "license": "LGPL-3.0-or-later",
+    "name": "n2n/rocket",
+    "require": {
+        "n2n/n2n": "^7.2.0-beta.2",
+        "n2n/n2n-batch": "^7.2.0-beta.2",
+        "n2n/n2n-composer-module-installer": "~7.1.0",
+        "n2n/n2n-context": "^7.2.0-beta.2",
+        "n2n/n2n-impl-persistence-meta": "^7.2.0-beta.2",
+        "n2n/n2n-impl-persistence-orm": "^7.2.0-beta.2",
+        "n2n/n2n-impl-web-dispatch": "^7.2.0-beta.2",
+        "n2n/n2n-impl-web-ui": "^7.2.0-beta.2",
+        "n2n/n2nutil-jquery": "^1.2.0",
+        "php": ">=7.0"
+    },
+    "type": "n2n-module"
 }
