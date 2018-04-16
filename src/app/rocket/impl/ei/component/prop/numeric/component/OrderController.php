@@ -26,6 +26,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\http\controller\ParamGet;
 use rocket\ei\util\model\EiuCtrl;
+use rocket\ajah\JhtmlEvent;
 
 class OrderController extends ControllerAdapter {	
 	private $orderEiProp;
@@ -47,7 +48,7 @@ class OrderController extends ControllerAdapter {
 			$this->move($pid, $targetPid, true);
 		}
 		
-		$this->eiuCtrl->redirectToReferer($refUrl);
+		$this->eiuCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 	}
 	
 	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
@@ -57,7 +58,7 @@ class OrderController extends ControllerAdapter {
 			$this->move($pid, $targetPid, false);
 		}
 		
-		$this->eiuCtrl->redirectToReferer($refUrl);
+		$this->eiuCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 	}
 	
 	private function move(string $pid, string $targetPid, bool $before) {
