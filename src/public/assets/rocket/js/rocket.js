@@ -380,9 +380,9 @@ var Rocket;
             addZone(zone) {
                 this._zones.push(zone);
                 var that = this;
-                zone.on(Cmd.Zone.EventType.CLOSE, function (context) {
+                zone.on(Cmd.Zone.EventType.CLOSE, function (zone) {
                     for (var i in that._zones) {
-                        if (that._zones[i] !== context)
+                        if (that._zones[i] !== zone)
                             continue;
                         that._zones.splice(parseInt(i), 1);
                         break;
@@ -419,11 +419,10 @@ var Rocket;
             }
             close() {
                 this.trigger(Layer.EventType.CLOSE);
-                let context = null;
-                while (context = this._zones.pop()) {
-                    context.close();
+                let zone = null;
+                while (zone = this._zones.pop()) {
+                    zone.close();
                 }
-                this._zones = new Array();
                 this.jqLayer.remove();
             }
             switchToZone(zone) {
@@ -779,6 +778,7 @@ var Rocket;
                     }
                     if (zone.page.config.frozen)
                         continue;
+                    let jqElem = zone.jQuery;
                     if (Rocket.Display.Entry.hasPid(zone.jQuery, supremeEiTypeId, pid)) {
                         zone.page.dispose();
                     }
@@ -1533,12 +1533,25 @@ var Rocket;
                     throw new Error("page already assigned");
                 }
                 this._page = page;
-                page.on("disposed", () => {
+                if (page) {
+                    this.registerPageListeners();
+                }
+            }
+            registerPageListeners() {
+                this.page.on("disposed", this.onDisposed = () => {
                     this.clear(true);
                 });
-                page.on("promiseAssigned", () => {
+                this.page.on("promiseAssigned", this.onPromiseAssigned = () => {
                     this.clear(true);
                 });
+            }
+            unregisterPageListeners() {
+                if (this.onDisposed) {
+                    this.page.off("disposed", this.onDisposed);
+                }
+                if (this.onPromiseAssigned) {
+                    this.page.off("promiseAssigned", this.onPromiseAssigned);
+                }
             }
             containsUrl(url) {
                 for (var i in this.urls) {
@@ -1561,10 +1574,18 @@ var Rocket;
                     return;
                 throw new Error("Page already closed.");
             }
+            get closed() {
+                return !this.jqZone;
+            }
             close() {
                 this.trigger(Zone.EventType.CLOSE);
                 this.jqZone.remove();
                 this.jqZone = null;
+                if (this.page) {
+                    this.unregisterPageListeners();
+                    this.page.dispose();
+                    this._page = null;
+                }
             }
             show() {
                 this.trigger(Zone.EventType.SHOW);

@@ -52,13 +52,33 @@ namespace Rocket.Cmd {
 			this._page = page;
 //			page.config.keep = true;
 			
-			page.on("disposed", () => {
+			if (page) {
+				this.registerPageListeners();
+			}
+		}
+		
+		private onDisposed: () => any;
+		private onPromiseAssigned: () => any;
+		
+		private registerPageListeners() {
+			this.page.on("disposed", this.onDisposed = () => {
 //				if (this.layer.currentZone === this) return;
+				
 				this.clear(true);
 			});
-			page.on("promiseAssigned", () => {
+			this.page.on("promiseAssigned", this.onPromiseAssigned = () => {
 				this.clear(true);
-			});
+			});	
+		}
+		
+		private unregisterPageListeners() {
+			if (this.onDisposed) {
+				this.page.off("disposed", this.onDisposed);
+			}
+			
+			if (this.onPromiseAssigned) {
+				this.page.off("promiseAssigned", this.onPromiseAssigned);
+			}
 		}
 		
 		containsUrl(url: Jhtml.Url): boolean {
@@ -124,11 +144,21 @@ namespace Rocket.Cmd {
 			throw new Error("Page already closed.");
 		}
 		
+		get closed(): boolean {
+			return !this.jqZone;
+		}
+		
 		public close() {
 			this.trigger(Zone.EventType.CLOSE)
-			
 			this.jqZone.remove();
 			this.jqZone = null;
+			
+			
+			if (this.page) {
+				this.unregisterPageListeners();
+				this.page.dispose();
+				this._page = null;
+			}
 		}
 		
 		public show() {
@@ -160,6 +190,7 @@ namespace Rocket.Cmd {
 			} else {
 				this.endLoading();
 			}
+			
 			
 			if (this.empty) return;
 			
