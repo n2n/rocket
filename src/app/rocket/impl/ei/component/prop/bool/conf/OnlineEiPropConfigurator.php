@@ -28,6 +28,8 @@ use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use rocket\impl\ei\component\prop\bool\command\OnlineEiCommand;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use n2n\core\container\N2nContext;
+use n2n\persistence\meta\structure\Column;
 
 class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const COMMON_ONLINE_PROP_NAME = 'online';
@@ -51,6 +53,15 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		return $level;
+	}
+	
+	
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
+		
+		$this->attributes->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+		$this->attributes->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
 	public function setup(EiSetup $setupProcess) {

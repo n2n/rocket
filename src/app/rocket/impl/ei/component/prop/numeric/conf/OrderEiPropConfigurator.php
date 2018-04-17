@@ -32,6 +32,7 @@ use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\impl\ei\component\prop\adapter\EntityPropertyConfigurable;
+use n2n\persistence\meta\structure\Column;
 
 class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 
@@ -80,6 +81,14 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 // 		if (count($eiDef->getDefaultSortData()) === 0) {
 // 		    $eiDef->setDefaultSortData(array($this->eiComponent->getEntityProperty()->getName() => Criteria::ORDER_DIRECTION_ASC));
 // 		}
+	}
+	
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
+		
+		$this->attributes->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+		$this->attributes->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
