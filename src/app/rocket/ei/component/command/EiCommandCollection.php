@@ -75,7 +75,7 @@ class EiCommandCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no ' 
+		throw new UnknownEiComponentException($this->eiMask . ' provides no ' 
 				. GenericOverviewEiCommand::class . '.');
 	}
 	
