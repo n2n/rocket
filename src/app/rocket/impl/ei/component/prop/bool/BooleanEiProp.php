@@ -64,6 +64,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	 */
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
+		
 		$this->entityProperty = $entityProperty;
 	}
 	
@@ -72,12 +73,14 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	 * @see \rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter::setObjectPropertyAccessProxy()
 	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		if ($propertyAccessProxy === null) {
-			return;
-		}
+// 		if ($propertyAccessProxy === null) {
+// 			return;
+// 		}
+		ArgUtils::assertTrue(null !== $propertyAccessProxy);
+		
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
+				$propertyAccessProxy->getConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
