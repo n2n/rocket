@@ -36,6 +36,7 @@ class EiuEntryGui {
 	private $eiEntryGui;
 	private $eiuGui;
 	private $eiuEntry;
+	private $eiuFactory;
 	
 	public function __construct(EiEntryGui $eiEntryGui, EiuGui $eiuGui = null, EiuFactory $eiuFactory = null) {
 		$this->eiEntryGui = $eiEntryGui;
@@ -190,7 +191,7 @@ class EiuEntryGui {
 				return $magAssembly->getMagWrapper();
 			}
 			
-			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPathStr . '\' is not editable.');
+			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPath . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

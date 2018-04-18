@@ -47,8 +47,7 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if (!$level) return $level;
 		
-		if ($propertyAssignation->hasEntityProperty()
-				&& $propertyAssignation->getEntityProperty()->getName() == self::COMMON_ONLINE_PROP_NAME) {
+		if ($this->requirePropertyName() == self::COMMON_ONLINE_PROP_NAME) {
 			return CompatibilityLevel::COMMON;
 		}
 		
