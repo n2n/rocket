@@ -12,6 +12,9 @@ use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\component\EiSetup;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use n2n\util\StringUtils;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 
 class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';
@@ -24,6 +27,20 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->addMandatory = false;
 
 		$this->autoRegister();
+	}
+	
+	private static $booleanNeedles = ['Available', 'Enabled'];
+	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+		$level = parent::testCompatibility($propertyAssignation);
+		
+		if (!$level) return $level;
+		
+		$propertyName = $this->requirePropertyName();
+		foreach (self::$booleanNeedles as $booleanNeedle) {
+			if (StringUtils::endsWith($booleanNeedle, $propertyName)) return CompatibilityLevel::COMMON;
+		}
+		
+		return $level;
 	}
 	
 	
