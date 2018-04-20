@@ -6631,7 +6631,7 @@ var Rocket;
                 initEntry(entry) {
                     this.jqEntries.append(entry.jQuery);
                     if (this.isExpanded()) {
-                        entry.expand(false);
+                        entry.expand(true);
                     }
                     else {
                         entry.reduce();
@@ -6654,10 +6654,10 @@ var Rocket;
                     $("<header></header>").insertBefore(contentJq);
                     this.expandZone.layer.pushHistoryEntry(window.location.href);
                     if (this.newEntry) {
-                        this.newEntry.expand(false);
+                        this.newEntry.expand(true);
                     }
                     if (this.currentEntry) {
-                        this.currentEntry.expand(false);
+                        this.currentEntry.expand(true);
                     }
                     var jqCommandButton = this.expandZone.menu.mainCommandList
                         .createJqCommandButton({ iconType: "fa fa-trash-o", label: this.closeLabel, severity: display.Severity.WARNING }, true);

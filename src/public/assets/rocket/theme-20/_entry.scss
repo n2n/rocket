@@ -11,9 +11,6 @@
     position: relative;
 }
 
-.rocket-control > div {
-}
-
 .rocket-required > label {
     position: relative;
     &::after {
@@ -26,7 +23,7 @@
     }
 }
 
-.rocket-control > .rocket-item {
+.rocket-item {
     padding: 0.5rem 1rem;
 }
 
@@ -67,7 +64,6 @@
 
 .rocket-impl-entry {
     display: grid;
-    padding: 0 1rem;
 }
 
 .rocket-control .rocket-impl-entry {
@@ -80,16 +76,22 @@
             padding: 1rem;
         }
         .rocket-impl-content {
-            padding: 1rem 0;
+            padding: 0.5rem 0;
         }
         > .rocket-simple-commands {
-            padding: 0.75rem 0.75rem 0.75rem 0;
+            padding: 0.5rem 0.75rem 0.5rem 0;
             text-align: right;
         }
         .rocket-impl-status {
             color: $danger;
+            padding: 0.5rem 1rem;
         }
     }
+}
+
+// padding may only be added, when in .rocket-group context
+.rocket-group > .rocket-control > div > .rocket-impl-embedded {
+    padding: 1rem;
 }
 
 .rocket-impl-summary > .rocket-impl-content div {
@@ -103,7 +105,7 @@
 
 .rocket-impl-add-entry {
     // margin top must be 0.5rem in order to match mutli column grid patterns
-    margin: 0.5rem 0 1rem;
+    margin: 0.5rem 0;
     > button {
         text-align: left;
         font-weight: bold;

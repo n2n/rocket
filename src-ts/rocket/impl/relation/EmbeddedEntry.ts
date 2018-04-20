@@ -37,6 +37,7 @@ namespace Rocket.Impl.Relation {
 					this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
 					this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down"});
 				} 
+				
 				this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER }); 
 				
@@ -119,7 +120,7 @@ namespace Rocket.Impl.Relation {
 			} else {
 				this.jqPageCommands.show();
 			}
-			
+
 			if (this.readOnly) return;
 			
 			if (asPartOfList) {

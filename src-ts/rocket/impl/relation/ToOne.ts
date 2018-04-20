@@ -56,7 +56,7 @@ namespace Rocket.Impl.Relation {
 			
 			let toOneEmbedded: ToOneEmbedded = null;
 			if (jqCurrent.length > 0 || jqNew.length > 0 || jqDetail.length > 0) {
-
+				
 				let newEntryFormUrl = jqNew.data("new-entry-form-url");
 				if (jqNew.length > 0 && newEntryFormUrl) {
 					let propertyPath = jqNew.data("property-path");
@@ -250,7 +250,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEntries.append(entry.jQuery);
 			
 			if (this.isExpanded()) {
-				entry.expand(false);
+				entry.expand(true);
 			} else {
 				entry.reduce();
 			}
@@ -278,11 +278,11 @@ namespace Rocket.Impl.Relation {
 			this.expandZone.layer.pushHistoryEntry(window.location.href);
 
 			if (this.newEntry) {
-				this.newEntry.expand(false);
+				this.newEntry.expand(true);
 			}
 			
 			if (this.currentEntry) {
-				this.currentEntry.expand(false);
+				this.currentEntry.expand(true);
 			}
 			
 			var jqCommandButton = this.expandZone.menu.mainCommandList

@@ -135,7 +135,7 @@
 .rocket-impl-translation {
 	position: relative;
 	min-height: 2.5rem;
-	// margin-bottom: 0.5rem;
+	margin-bottom: 0.5rem;
 	> .rocket-required > label::after {
 		content: "";
 	}
@@ -166,7 +166,7 @@
 .rocket-group,
 .rocket-panel {
 	> .rocket-control > .rocket-impl-translatable > .rocket-impl-translation   {
-		> .rocket-field {
+		> .rocket-item {
 			padding: 0;
 			> .rocket-impl-locale-label  {
 				display: block;
@@ -175,7 +175,7 @@
 				max-width: none;
 				float: none;
 				text-align: left;
-				padding: 0.5rem 0;
+				padding: 0.5rem 1rem;
 				color: $primary;
 				border-top: 1px solid $primary;
 				font-weight: bold;
