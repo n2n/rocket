@@ -199,7 +199,7 @@ class ToOneMag extends MagAdapter {
 		$newMappingFormUrl = null;
 		if ($this->targetEiuFrame->getContextEiType()->hasSubEiTypes()
 				|| $this->selectOverviewToolsUrl !== null
-				|| ($this->targetRelationEntry === null || !$this->mandatory)) {
+				|| !$this->mandatory) {
 			$newMappingFormUrl = $this->newMappingFormUrl;
 		}
 		
