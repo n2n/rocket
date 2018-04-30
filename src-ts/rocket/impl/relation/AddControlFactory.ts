@@ -28,6 +28,7 @@ namespace Rocket.Impl.Relation {
 			this.embeddedEntryRetriever = embeddedEntryRetriever;
 			
 			this.jqElem = jqElem;
+			
 			this.jqButton = jqElem.children("button");
 			
 			this.jqButton.on("mouseenter", () => {

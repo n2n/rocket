@@ -94,21 +94,10 @@ class GuiFactory {
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
-		
-// 		test($eiEntry->getEiType()->getId());
-// 		if ($eiEntry->getEiType()->getId() == 'page-page-t') {
-// 			throw new \Exception();
-// 		}
-		
+				
 		foreach ($guiIdPaths as $guiIdPath) {
 			$guiFieldAssembler->assembleGuiField($guiIdPath);
 		}
-		
-// 		if (null !== ($dispatchable = $guiFieldAssembler->getDispatchable())) {
-// 			$eiEntryGui->setDispatchable($guiFieldAssembler->getDispatchable());
-// 			$eiEntryGui->setForkMagPropertyPaths($guiFieldAssembler->getForkedMagPropertyPaths());
-// 			$eiEntryGui->setSavables($guiFieldAssembler->getSavables());
-// 		}
 		
 		$guiFieldAssembler->finalize();
 				

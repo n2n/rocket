@@ -28,7 +28,8 @@ namespace Rocket.Impl.Relation {
 			this.preloadEnabled = preloadEnabled;
 		}
 		
-		public lookupNew(doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any, failCallback: () => any = null) {
+		public lookupNew(doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any, 
+				failCallback: () => any = null) {
 			this.pendingLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
 			
 			this.check()
@@ -51,13 +52,13 @@ namespace Rocket.Impl.Relation {
 				"draft": this.draftMode ? 1 : 0
 			});
 			Jhtml.lookupModel(url)
-				.then((result) => {
-					this.doneResponse(result.model.snippet);
-				})
-				.catch(e => {
-					this.failResponse();
-					throw e;
-				});
+					.then((result) => {
+						this.doneResponse(result.model.snippet);
+					})
+					.catch(e => {
+						this.failResponse();
+						throw e;
+					});
 		}
 		
 		private failResponse() {

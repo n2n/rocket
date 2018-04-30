@@ -33,10 +33,10 @@ use rocket\ei\util\model\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class RelationJhtmlController extends ControllerAdapter {
-	private $eiCtrlUtils;	
+	private $eiuCtrl;	
 	
 	public function prepare(EiuCtrl $eiCtrlUtil) {
-		$this->eiCtrlUtils = $eiCtrlUtil;
+		$this->eiuCtrl = $eiCtrlUtil;
 	}
 		
 	public function doSelect(OverviewJhtmlController $delegateController, array $delegateCmds = array()) {
@@ -54,9 +54,40 @@ class RelationJhtmlController extends ControllerAdapter {
 		
 		$mappingForm = null;
 		try {
-			$eiFrameUtils = $this->eiCtrlUtils->frame();
+			$eiFrameUtils = $this->eiuCtrl->frame();
 			$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), $eiFrameUtils->getGenericIconType(), null,  
 					$eiFrameUtils->newEiuEntryForm($draft->toBool(), null, null, $allowedEiTypeIds));
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
+		$view = $this->createView('\rocket\impl\ei\component\prop\relation\view\pseudoMappingForm.html',
+				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath));
+		
+		$this->send(JhtmlResponse::view($view));
+	}
+	
+	public function doCopyMappingForm(ParamQuery $propertyPath, ParamQuery $pid = null, ParamQuery $draftId = null,
+			array $chooseableEiTypeIds = null) {
+		try {
+			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
+		} catch (InvalidPropertyExpressionException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
+		if ($pid !== null) {
+			throw new BadRequestException();
+		}
+		
+		$eiuEntry = $this->eiuCtrl->lookupEntry((string) $pid);
+				
+		$mappingForm = null;
+		try {
+			$eiuFrame = $this->eiuCtrl->frame();
+			
+			$eiuEntryForm = $eiuFrame->newEiuEntryForm($draft->toBool(), $eiuEntry, null, $allowedEiTypeIds);
+			$mappingForm = new MappingForm($eiuFrame->getGenericLabel(), $eiuFrame->getGenericIconType(), null,
+					$eiuEntryForm);
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}

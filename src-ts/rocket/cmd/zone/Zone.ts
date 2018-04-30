@@ -26,7 +26,7 @@ namespace Rocket.Cmd {
 			this._layer = layer;
 			
 			jqZone.addClass("rocket-zone");
-			jqZone.data("rocketPage", this);
+			jqZone.data("rocketZone", this);
 
 			this.reset();
 			this.hide();
@@ -331,8 +331,8 @@ namespace Rocket.Cmd {
 				jqElem = jqElem.parents(".rocket-zone");
 			}
 			
-			var context = jqElem.data("rocketPage");
-			if (context instanceof Zone) return context;
+			let zone = jqElem.data("rocketZone");
+			if (zone instanceof Zone) return zone;
 			
 			return null;
 		}
