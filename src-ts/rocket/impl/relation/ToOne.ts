@@ -131,26 +131,26 @@ namespace Rocket.Impl.Relation {
 				this.addControl = this.createAddControl();
 			}
 			
-			if (!this.firstReplaceControl) {
-				this.firstReplaceControl = this.createReplaceControl(true);
-			}
-			
-			if (!this.secondReplaceControl) {
-				this.secondReplaceControl = this.createReplaceControl(false);
-			}
+//			if (!this.firstReplaceControl) {
+//				this.firstReplaceControl = this.createReplaceControl(true);
+//			}
+//			
+//			if (!this.secondReplaceControl) {
+//				this.secondReplaceControl = this.createReplaceControl(false);
+//			}
 			
 			if (this.currentEntry || this.newEntry) {
 				this.addControl.jQuery.hide();
-				if (this.isExpanded()) {
-					this.firstReplaceControl.jQuery.show();
-				} else {
-					this.firstReplaceControl.jQuery.hide();
-				}
-				this.secondReplaceControl.jQuery.show();
+//				if (this.isExpanded()) {
+//					this.firstReplaceControl.jQuery.show();
+//				} else {
+//					this.firstReplaceControl.jQuery.hide();
+//				}
+//				this.secondReplaceControl.jQuery.show();
 			} else {
 				this.addControl.jQuery.show();
-				this.firstReplaceControl.jQuery.hide();
-				this.secondReplaceControl.jQuery.hide();
+//				this.firstReplaceControl.jQuery.hide();
+//				this.secondReplaceControl.jQuery.hide();
 			}
 			
 			this.triggerChanged();
@@ -158,20 +158,20 @@ namespace Rocket.Impl.Relation {
 			Rocket.scan();
 		}
 		
-		private createReplaceControl(prepend: boolean): AddControl {
-			var addControl = this.addControlFactory.createReplace();
-				
-			if (prepend) {
-				this.jqEmbedded.prepend(addControl.jQuery);
-			} else {
-				this.jqEmbedded.append(addControl.jQuery);
-			}
-			
-			addControl.onNewEmbeddedEntry((newEntry: EmbeddedEntry) => {
-				this.newEntry = newEntry;
-			});
-			return addControl;
-		}
+//		private createReplaceControl(prepend: boolean): AddControl {
+//			var addControl = this.addControlFactory.createReplace();
+//				
+//			if (prepend) {
+//				this.jqEmbedded.prepend(addControl.jQuery);
+//			} else {
+//				this.jqEmbedded.append(addControl.jQuery);
+//			}
+//			
+//			addControl.onNewEmbeddedEntry((newEntry: EmbeddedEntry) => {
+//				this.newEntry = newEntry;
+//			});
+//			return addControl;
+//		}
 		
 		private createAddControl(): AddControl {
 			var addControl = this.addControlFactory.createAdd();

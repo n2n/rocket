@@ -10,9 +10,9 @@ namespace Rocket.Impl.Relation {
 			return AddControl.create(this.addLabel, this.embeddedEntryRetriever);
 		}
 		
-		public createReplace(): AddControl {
-			return AddControl.create(this.replaceLabel, this.embeddedEntryRetriever);
-		}
+//		public createReplace(): AddControl {
+//			return AddControl.create(this.replaceLabel, this.embeddedEntryRetriever);
+//		}
 	}
 	
 	export class AddControl {
