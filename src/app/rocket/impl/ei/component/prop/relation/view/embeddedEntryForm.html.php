@@ -84,7 +84,8 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 	
 		<?php if (!$grouped): ?>
 			<?php $view->out($mappingForm->getEiuEntryForm()
-					->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))->createView($view, false)) ?>
+					->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
+					->createView($view, false)) ?>
 		<?php else: ?>
 			<div class="rocket-impl-body rocket-group rocket-light-group">
 				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>

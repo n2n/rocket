@@ -46,7 +46,7 @@
 		<?php $gridPos = $panelConfig->getGridPos() ?>
 	
 		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
-				array('class' => 'rocket-impl-content-item-panel rocket-group rocket-light-group',
+				array('class' => 'rocket-impl-content-item-panel rocket-group rocket-simple-group',
 						'data-name' => $panelConfig->getName(),
 						'style' => ($gridPos === null ? null : 'grid-column-start: ' . $gridPos->getColStart() . '; grid-column-end: ' . $gridPos->getColEnd() 
 								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd()))) ?>

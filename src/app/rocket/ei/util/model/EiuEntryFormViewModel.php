@@ -115,11 +115,11 @@ class EiuEntryFormViewModel {
 			}
 			
 			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
-			if ($eiuEntryGui->hasForkMags()) {
-				$eiuEntryGui->getEiuGui()->forceRootGroups();
-			}
+// 			if ($eiuEntryGui->hasForkMags()) {
+// 				$eiuEntryGui->getEiuGui()->forceRootGroups();
+// 			}
 			
-			$editViews[$eiTypeId] = $eiuEntryGui->createView($contextView, false);
+			$editViews[$eiTypeId] = $eiuEntryGui->createView($contextView);
 		}
 		return $editViews;
 	}
