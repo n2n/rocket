@@ -1305,9 +1305,6 @@ var Rocket;
                 if (this.toolbar !== null) {
                     return this.toolbar;
                 }
-                if (!this.isGroup()) {
-                    return null;
-                }
                 let toolbarJq = this.jqElem.find(".rocket-group-toolbar:first")
                     .filter((index, elem) => {
                     return this === StructureElement.of($(elem));
@@ -5554,9 +5551,6 @@ var Rocket;
                 createAdd() {
                     return AddControl.create(this.addLabel, this.embeddedEntryRetriever);
                 }
-                createReplace() {
-                    return AddControl.create(this.replaceLabel, this.embeddedEntryRetriever);
-                }
             }
             Relation.AddControlFactory = AddControlFactory;
             class AddControl {
@@ -5663,7 +5657,11 @@ var Rocket;
                 constructor(jqEntry, readOnly, sortable) {
                     this.readOnly = readOnly;
                     this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
-                    this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
+                    let groupJq = jqEntry.children(".rocket-impl-body");
+                    if (groupJq.length == 0) {
+                        groupJq = jqEntry;
+                    }
+                    this.bodyGroup = Rocket.Display.StructureElement.from(groupJq, true);
                     this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");
                     this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
@@ -6534,42 +6532,14 @@ var Rocket;
                     if (!this.addControl) {
                         this.addControl = this.createAddControl();
                     }
-                    if (!this.firstReplaceControl) {
-                        this.firstReplaceControl = this.createReplaceControl(true);
-                    }
-                    if (!this.secondReplaceControl) {
-                        this.secondReplaceControl = this.createReplaceControl(false);
-                    }
                     if (this.currentEntry || this.newEntry) {
                         this.addControl.jQuery.hide();
-                        if (this.isExpanded()) {
-                            this.firstReplaceControl.jQuery.show();
-                        }
-                        else {
-                            this.firstReplaceControl.jQuery.hide();
-                        }
-                        this.secondReplaceControl.jQuery.show();
                     }
                     else {
                         this.addControl.jQuery.show();
-                        this.firstReplaceControl.jQuery.hide();
-                        this.secondReplaceControl.jQuery.hide();
                     }
                     this.triggerChanged();
                     Rocket.scan();
-                }
-                createReplaceControl(prepend) {
-                    var addControl = this.addControlFactory.createReplace();
-                    if (prepend) {
-                        this.jqEmbedded.prepend(addControl.jQuery);
-                    }
-                    else {
-                        this.jqEmbedded.append(addControl.jQuery);
-                    }
-                    addControl.onNewEmbeddedEntry((newEntry) => {
-                        this.newEntry = newEntry;
-                    });
-                    return addControl;
                 }
                 createAddControl() {
                     var addControl = this.addControlFactory.createAdd();

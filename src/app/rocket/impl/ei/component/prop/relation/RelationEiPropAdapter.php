@@ -101,4 +101,11 @@ abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter impleme
 		
 		return null;
 	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isReduced(): bool {
+		return false;
+	}
 }

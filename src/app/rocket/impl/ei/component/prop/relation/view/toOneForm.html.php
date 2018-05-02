@@ -25,6 +25,7 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToOneForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
+use rocket\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -42,6 +43,9 @@
 	$view->assert($newMappingFormUrl === null || $newMappingFormUrl instanceof Url);
 	
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
+	
+	$eiHtml = new EiHtmlBuilder($view);
+	$grouped = $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled();
 ?>
 <div class="rocket-impl-to-one" 
 		data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
@@ -80,7 +84,7 @@
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($currentPropertyPath) ?>
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
-						'grouped' => ($toOneForm->isReduced() || $newMappingFormUrl !== null),
+						'grouped' => $grouped,
 						'summaryRequired' => $toOneForm->isReduced())) ?>
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			</div>
@@ -102,7 +106,7 @@
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($newMappingFormPropertyPath) ?>
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
-						'grouped' => ($toOneForm->isReduced() || $newMappingFormUrl !== null),
+						'grouped' => $grouped,
 						'summaryRequired' => $toOneForm->isReduced())) ?>
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			<?php endif ?>

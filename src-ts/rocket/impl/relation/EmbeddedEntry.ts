@@ -18,7 +18,11 @@ namespace Rocket.Impl.Relation {
 		constructor(jqEntry: JQuery, private readOnly: boolean, sortable: boolean) {
 			this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
 			
-			this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
+			let groupJq = jqEntry.children(".rocket-impl-body");
+			if (groupJq.length == 0) {
+				groupJq = jqEntry;
+			}
+			this.bodyGroup = Rocket.Display.StructureElement.from(groupJq, true);
 			 
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");

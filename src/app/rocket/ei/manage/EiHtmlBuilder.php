@@ -539,6 +539,23 @@ class EiHtmlBuilderMeta {
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}
 	
+	public function isFieldGroup() {
+		$guiFieldAssembly = $this->getGuiFieldAssembly();
+		if ($guiFieldAssembly === null) return false;
+		
+		return in_array($guiFieldAssembly->getDisplayable()->getDisplayItemType(), DisplayItem::getGroupTypes());
+	}
+		
+	/**
+	 * @return GuiFieldAssembly|null
+	 */
+	public function getGuiFieldAssembly() {
+		$fieldInfo = $this->state->peakField(false);
+		if ($fieldInfo === null) return null;
+		
+		return $fieldInfo['guiFieldAssembly'] ?? null;
+	}
+	
 	/**
 	 * @param mixed $eiEntryGui
 	 * @return Control[]

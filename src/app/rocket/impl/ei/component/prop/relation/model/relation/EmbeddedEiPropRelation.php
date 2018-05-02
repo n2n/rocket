@@ -113,7 +113,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 				->getConstraintBy($this->getTarget());
 		
 		return $esConstraint !== null
-				&& !$esConstraint->isEiCommandAvailable($this->embeddedEditPseudoCommand);		
+				&& !$esConstraint->isEiCommandAvailable($this->embeddedEditPseudoCommand);	
 	}
 	
 // 	public function completeMagCollection(MagCollection $magCollection) {
