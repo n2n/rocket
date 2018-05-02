@@ -32,9 +32,4 @@ interface RelationEiProp extends EntityPropertyConfigurable, ObjectPropertyConfi
 	 * @return \rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation
 	 */
 	public function getEiPropRelation(): EiPropRelation;
-	
-	/**
-	 * @return bool 
-	 */
-	public function isReduced(): bool;
 }

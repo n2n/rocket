@@ -43,7 +43,8 @@ class RelationJhtmlController extends ControllerAdapter {
 		$this->delegate($delegateController);
 	}
 	
-	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ParamQuery $chooseableEiTypeIds = null) {
+	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ParamQuery $chooseableEiTypeIds = null,
+			ParamQuery $grouped = null) {
 		try {
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 		} catch (InvalidPropertyExpressionException $e) {
@@ -63,29 +64,13 @@ class RelationJhtmlController extends ControllerAdapter {
 		
 		$view = $this->createView('\rocket\impl\ei\component\prop\relation\view\pseudoMappingForm.html',
 				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath,
-						'grouped' => $this->isGrouped()));
+						'grouped' => ($grouped !== null ? $grouped->toBool() : true)));
 		
 		$this->send(JhtmlResponse::view($view));
 	}
 	
-	private $grouped = true;
-	
-	/**
-	 * @return boolean
-	 */
-	public function isGrouped() {
-		return $this->grouped;
-	}
-		
-	/**
-	 * @param bool $grouped
-	 */
-	public function setGrouped(bool $grouped) {
-		$this->grouped = $grouped;
-	}
-	
 	public function doCopyMappingForm(ParamQuery $propertyPath, ParamQuery $pid = null, ParamQuery $draftId = null,
-			array $chooseableEiTypeIds = null) {
+			array $chooseableEiTypeIds = null, ParamQuery $grouped = null) {
 		try {
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 		} catch (InvalidPropertyExpressionException $e) {
@@ -111,7 +96,7 @@ class RelationJhtmlController extends ControllerAdapter {
 		
 		$view = $this->createView('\rocket\impl\ei\component\prop\relation\view\pseudoMappingForm.html',
 				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath,
-						'grouped' => $this->isGrouped()));
+						'grouped' => ($grouped !== null ? $grouped->toBool() : true)));
 		
 		$this->send(JhtmlResponse::view($view));
 	}

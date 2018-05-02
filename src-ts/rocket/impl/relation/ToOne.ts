@@ -56,12 +56,12 @@ namespace Rocket.Impl.Relation {
 			
 			let toOneEmbedded: ToOneEmbedded = null;
 			if (jqCurrent.length > 0 || jqNew.length > 0 || jqDetail.length > 0) {
-				
 				let newEntryFormUrl = jqNew.data("new-entry-form-url");
 				if (jqNew.length > 0 && newEntryFormUrl) {
 					let propertyPath = jqNew.data("property-path");
 					let entryFormRetriever = new EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, 
 							jqNew.data("draftMode"));
+					entryFormRetriever.grouped = !!jqToOne.data("grouped");
 					entryFormRetriever.sortable = false;
 					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
 							jqNew.data("replace-item-label"));

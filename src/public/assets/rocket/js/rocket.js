@@ -5828,6 +5828,7 @@ var Rocket;
                     this.preloadedResponseObjects = new Array();
                     this.pendingLookups = new Array();
                     this.sortable = false;
+                    this.grouped = true;
                     this.urlStr = lookupUrlStr;
                     this.propertyPath = propertyPath;
                     this.draftMode = draftMode;
@@ -5856,7 +5857,8 @@ var Rocket;
                 load() {
                     let url = Jhtml.Url.create(this.urlStr).extR(null, {
                         "propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
-                        "draft": this.draftMode ? 1 : 0
+                        "draft": this.draftMode ? 1 : 0,
+                        "grouped": this.grouped ? 1 : 0
                     });
                     Jhtml.lookupModel(url)
                         .then((result) => {
@@ -6486,6 +6488,7 @@ var Rocket;
                         if (jqNew.length > 0 && newEntryFormUrl) {
                             let propertyPath = jqNew.data("property-path");
                             let entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"));
+                            entryFormRetriever.grouped = !!jqToOne.data("grouped");
                             entryFormRetriever.sortable = false;
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("replace-item-label"));
                         }

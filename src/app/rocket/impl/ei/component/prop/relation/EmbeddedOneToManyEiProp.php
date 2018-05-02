@@ -90,7 +90,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	/**
 	 * @return boolean
 	 */
-	public function isReduced(): bool {
+	public function isReduced() {
 		return $this->reduced;
 	}
 	

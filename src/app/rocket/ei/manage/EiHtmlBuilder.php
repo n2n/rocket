@@ -539,11 +539,24 @@ class EiHtmlBuilderMeta {
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function isFieldGroup() {
 		$guiFieldAssembly = $this->getGuiFieldAssembly();
 		if ($guiFieldAssembly === null) return false;
 		
 		return in_array($guiFieldAssembly->getDisplayable()->getDisplayItemType(), DisplayItem::getGroupTypes());
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isFieldPanel() {
+		$guiFieldAssembly = $this->getGuiFieldAssembly();
+		if ($guiFieldAssembly === null) return false;
+		
+		return $guiFieldAssembly->getDisplayable()->getDisplayItemType() == DisplayItem::TYPE_PANEL;
 	}
 		
 	/**

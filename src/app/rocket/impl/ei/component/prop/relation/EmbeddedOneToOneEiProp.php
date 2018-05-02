@@ -74,7 +74,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	/**
 	 * @return boolean
 	 */
-	public function isReduced(): bool {
+	public function isReduced() {
 		return $this->reduced;
 	}
 	

@@ -10,6 +10,7 @@ namespace Rocket.Impl.Relation {
 		private preloadedResponseObjects: Array<Jhtml.Snippet> = new Array<Jhtml.Snippet>();
 		private pendingLookups: Array<PendingLookup> = new Array<PendingLookup>();
 		public sortable: boolean = false;
+		public grouped: boolean = true;
 		
 		constructor (lookupUrlStr: string, propertyPath: string, draftMode: boolean, startKey: number = null, 
 				keyPrefix: string = null) {
@@ -49,7 +50,8 @@ namespace Rocket.Impl.Relation {
 		private load() {
 			let url = Jhtml.Url.create(this.urlStr).extR(null, {
 				"propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
-				"draft": this.draftMode ? 1 : 0
+				"draft": this.draftMode ? 1 : 0,
+				"grouped": this.grouped ? 1 : 0
 			});
 			Jhtml.lookupModel(url)
 					.then((result) => {
