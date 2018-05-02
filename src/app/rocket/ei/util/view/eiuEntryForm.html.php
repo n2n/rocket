@@ -61,7 +61,7 @@ use n2n\web\dispatch\map\PropertyPath;
 		</div>
 	
 		<?php foreach ($eiuEntryFormViewModel->createEditViews($view) as $id => $editView): ?>
-			<div class="rocket-ei-type-entry-form rocket-ei-type-<?php $html->out($id) ?>">
+			<div class="rocket-ei-type-entry-form rocket-ei-type-<?php $html->out($id) ?> rocket-structure-element">
 				<?php $view->import($editView) ?>
 			</div>
 		<?php endforeach ?>

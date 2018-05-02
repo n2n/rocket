@@ -7441,6 +7441,7 @@ var Rocket;
                     this.changing = false;
                 }
                 checkLoadJobs() {
+                    console.log("tm lj");
                     Translation.LoadJobExecuter.create(this.translatables).exec();
                 }
                 initControl() {
@@ -7575,8 +7576,8 @@ var Rocket;
                         });
                         if (isInitViewMenu) {
                             this.initViewMenu(viewMenu);
-                            viewMenu.checkLoadJobs();
                         }
+                        viewMenu.checkLoadJobs();
                     }
                 }
                 initTm(jqElem, context) {

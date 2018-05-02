@@ -130,6 +130,7 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		private checkLoadJobs() {
+			console.log("tm lj");
 			LoadJobExecuter.create(this.translatables).exec();
 		}
 

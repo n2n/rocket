@@ -36,8 +36,9 @@ namespace Rocket.Impl.Translation {
 
 				if (isInitViewMenu) {
 					this.initViewMenu(viewMenu);
-					viewMenu.checkLoadJobs();
 				}
+				
+				viewMenu.checkLoadJobs();
 			}
 		}
 
@@ -52,13 +53,12 @@ namespace Rocket.Impl.Translation {
 			} else {
 				jqBase = se.jQuery;
 			}
-
+			
 			jqBase.find(".rocket-impl-translatable-" + jqElem.data("rocket-impl-mark-class-key")).each((i, elem) => {
 				let elemJq = $(elem);
 				if (Translatable.test(elemJq)) {
 					return;
 				}
-
 				tm.registerTranslatable(Translatable.from(elemJq));
 			});
 		}
