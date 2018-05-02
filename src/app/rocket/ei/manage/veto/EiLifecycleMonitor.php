@@ -191,18 +191,25 @@ class EiLifecycleMonitor implements LifecycleListener {
 		}
 	}
 	
-	private function remove(EiType $eiType, $entityObj) {
-		$objHash = spl_object_hash($entityObj);
+	public function removeEiObject(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
+			throw new NotYetImplementedException();
+		}
 		
+		$objHash = spl_object_hash($eiObject->getEiEntityObj()->getEntityObj());
 		if (isset($this->removeActions[$objHash])) return;
 		
-		$vla = new VetoableLifecycleAction(LiveEiObject::create($eiType, $entityObj), $this,
+		$vla = new VetoableLifecycleAction($eiObject, $this,
 				VetoableLifecycleAction::TYPE_REMOVE);
 		$this->removeActions[$objHash] = $vla;
 		$this->uninitializedActions[$objHash] = $vla;
 		
 		unset($this->persistActions[$objHash]);
 		unset($this->updateActions[$objHash]);
+	}
+	
+	private function remove(EiType $eiType, $entityObj) {
+		$this->removeEiObject(LiveEiObject::create($eiType, $entityObj));
 	}
 	
 	private function persist(EiType $eiType, $entityObj) {
