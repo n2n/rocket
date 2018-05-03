@@ -24,4 +24,7 @@
 
 .rocket-impl-grid {
 	display: grid;
+	padding: 1rem;
+	grid-row-gap: 1rem;
+	grid-column-gap: 1rem;
 }

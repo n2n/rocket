@@ -66,6 +66,35 @@
     display: grid;
 }
 
+.rocket-control {
+    > .rocket-impl-content-items,
+    > .rocket-impl-embedded {
+        padding: 0 1rem;
+    }
+}
+
+.rocket-control {
+    > .rocket-impl-to-one,
+    > .rocket-impl-to-many {
+        > .rocket-impl-embedded {
+            .rocket-impl-summary {
+                margin-left: 1rem;
+                margin-right: 1rem;
+            }
+        }
+    }
+}
+
+.rocket-control {
+    > .rocket-impl-to-many {
+        > .rocket-impl-embedded {
+            > .rocket-impl-add-entry {
+                padding: 0.5rem 1rem;
+            }
+        }
+    }
+}
+
 .rocket-control .rocket-impl-entry {
     > .rocket-impl-summary {
         display: grid;

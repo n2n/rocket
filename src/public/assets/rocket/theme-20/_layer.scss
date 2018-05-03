@@ -3,6 +3,8 @@
  */
 
 .rocket-zone {
+	position: relative;
+
 	> header {
 		display: grid;
 		position: relative;
@@ -39,6 +41,7 @@
 			margin-top: 0.5rem;
 		}
 	}
+
 }
 
 .rocket-main-layer, 
@@ -77,10 +80,6 @@
 	min-height: calc(100vh - 6.75rem);
 	max-height: none;
 	overflow-y: visible;
-}
-
-.rocket-zone {
-	position: relative;
 }
 
 .rocket-zone-toolbar {
