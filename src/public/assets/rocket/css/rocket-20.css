@@ -4732,10 +4732,6 @@ ul.rocket-content-item > li > span {
   padding: 0.5rem 1rem;
 }
 
-.rocket-group > .rocket-control > div > .rocket-impl-embedded {
-  padding: 1rem;
-}
-
 .rocket-impl-summary > .rocket-impl-content div {
   display: inline-block;
 }
@@ -4943,11 +4939,6 @@ ul.rocket-content-item > li > span {
 
 .rocket-panel > label {
   display: none;
-}
-
-.rocket-impl-body {
-  padding: 1rem;
-  background: #fff;
 }
 
 .rocket-simple-commands > .dropdown > button,

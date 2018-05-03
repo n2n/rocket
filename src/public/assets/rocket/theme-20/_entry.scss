@@ -89,11 +89,6 @@
     }
 }
 
-// padding may only be added, when in .rocket-group context
-.rocket-group > .rocket-control > div > .rocket-impl-embedded {
-    padding: 1rem;
-}
-
 .rocket-impl-summary > .rocket-impl-content div {
     display: inline-block;
 }
