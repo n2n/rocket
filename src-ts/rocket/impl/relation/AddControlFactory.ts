@@ -1,13 +1,15 @@
 namespace Rocket.Impl.Relation {
 	
 	export class AddControlFactory {
-		
-		constructor (public embeddedEntryRetriever: EmbeddedEntryRetriever, private addLabel: string,
+		public clipboard: Clipboard;
+		public pasteStrategy: PasteStrategy|null;
+	
+		constructor (public embeddedEntryRetriever: EmbeddedEntryRetriever, private newLabel: string,
 				private replaceLabel: string = null) {
 		}
 		
 		public createAdd(): AddControl {
-			return AddControl.create(this.addLabel, this.embeddedEntryRetriever);
+			return AddControl.create(this.newLabel, this.embeddedEntryRetriever, this.pasteStrategy);
 		}
 		
 //		public createReplace(): AddControl {
@@ -17,41 +19,128 @@ namespace Rocket.Impl.Relation {
 	
 	export class AddControl {
 		private embeddedEntryRetriever: EmbeddedEntryRetriever;
-		private jqElem: JQuery;
-		private jqButton: JQuery;
+		private jqNew: JQuery;
+		private jqNewButton: JQuery;
 		private onNewEntryCallbacks: Array<(entry: EmbeddedEntry) => any> = [];
-		private jqMultiTypeUl: JQuery;
-		private multiTypeEmbeddedEntry: EmbeddedEntry; 
+		private jqNewMultiTypeUl: JQuery|null = null;
+		private newMultiTypeEmbeddedEntry: EmbeddedEntry; 
+		
+		private jqPaste: JQuery;
+		private jqPasteButton: JQuery;
+		private jqPasteUl: JQuery|null = null;
+		private pasteOnChanged: () => any;
+		
 		private disposed: boolean = false;
 		
-		constructor(jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever) {
+		constructor(private jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever,
+				private pasteStrategy: PasteStrategy = null) {
 			this.embeddedEntryRetriever = embeddedEntryRetriever;
 			
-			this.jqElem = jqElem;
+			this.initNew();
+			this.initPaste();
+		}
+		
+		private initNew() {
+			this.jqNew = this.jqElem.children(".rocket-impl-new");
+			this.jqNewButton = this.jqNew.children("button");
 			
-			this.jqButton = jqElem.children("button");
-			
-			this.jqButton.on("mouseenter", () => {
-				this.embeddedEntryRetriever.setPreloadEnabled(true);
+			this.jqNewButton.on("mouseenter", () => {
+				this.embeddedEntryRetriever.setPreloadNewsEnabled(true);
 			});
-			this.jqButton.on("click", () => {
+			this.jqNewButton.on("click", () => {
 				if (this.isLoading()) return;
 				
-				if (this.jqMultiTypeUl) {
-					this.jqMultiTypeUl.toggle();
+				if (this.jqNewMultiTypeUl) {
+					this.jqNewMultiTypeUl.toggle();
 					return;
 				}
 				
 				this.block(true);
 				this.embeddedEntryRetriever.lookupNew(
 						(embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => {
-							this.examine(embeddedEntry, snippet);
+							this.examineNew(embeddedEntry, snippet);
 						},
 						() => {
 							this.block(false);
 						});
 			});
+		}
+		
+		private initPaste() {
+			this.jqPaste = this.jqElem.children(".rocket-impl-paste");
+			this.jqPasteButton = this.jqPaste.children("button");
 			
+			if (!this.pasteStrategy) return;
+			
+			this.pasteOnChanged = () => {
+				this.syncPasteButton();
+			}
+			this.pasteStrategy.clipboard.onChanged(this.pasteOnChanged);
+			
+			this.jqPasteButton.on("click", () => {
+				if (this.isLoading()) return;
+				
+				if (this.jqPasteUl) {
+					this.jqPasteUl.toggle();
+				}
+			});
+			
+			this.syncPasteButton();
+		}
+		
+		private syncPasteButton() {
+			this.hidePaste();
+			
+			let found = false;
+			
+			for (let element of this.pasteStrategy.clipboard.toArray()) {
+				if (-1 == this.pasteStrategy.pastableEiTypeIds.indexOf(element.eiTypeId)) {
+					continue;
+				}
+				
+				this.addPasteOption(element);
+				found = true;
+			}
+		}
+		
+		private addPasteOption(element: ClipboardElement) {
+			if (!this.jqPasteUl) {
+				this.jqPasteUl = $("<ul />").appendTo(this.jqPaste).hide();
+				this.jqPaste.show();
+			}
+			
+			this.jqPasteUl.append($("<li />").append($("<button />", { 
+				"type": "button", 
+				"text": element.identityString,
+				"click": () => {
+					this.pasteElement(element);
+				}
+			})));
+		}
+		
+		private pasteElement(element: ClipboardElement) {
+			this.block(true);
+			
+			this.jqPasteUl.hide();
+			
+			this.embeddedEntryRetriever.lookupCopy(element.pid, 
+					(embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => {
+						this.fireCallbacks(embeddedEntry);
+						snippet.markAttached();
+						this.block(false);
+					}, 
+					() => {
+						this.pasteStrategy.clipboard.remove(element.eiTypeId, element.pid);
+						this.block(false);
+					});
+		}
+		
+		private hidePaste() {
+			this.jqPaste.hide();
+			if (this.jqPasteUl) {
+				this.jqPasteUl.remove();
+				this.jqPasteUl = null;
+			}
 		}
 		
 		get jQuery(): JQuery {
@@ -60,15 +149,17 @@ namespace Rocket.Impl.Relation {
 		
 		private block(blocked: boolean) {
 			if (blocked) {
-				this.jqButton.prop("disabled", true);
+				this.jqNewButton.prop("disabled", true);
+				this.jqPasteButton.prop("disabled", true);
 				this.jqElem.addClass("rocket-impl-loading");
 			} else {
-				this.jqButton.prop("disabled", false);
+				this.jqNewButton.prop("disabled", false);
+				this.jqPasteButton.prop("disabled", false);
 				this.jqElem.removeClass("rocket-impl-loading");
 			}
 		}	
 		
-		private examine(embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) {
+		private examineNew(embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) {
 			this.block(false);
 			
 			if (!embeddedEntry.entryForm.multiEiType) {
@@ -77,21 +168,21 @@ namespace Rocket.Impl.Relation {
 				return;
 			}
 			
-			this.multiTypeEmbeddedEntry = embeddedEntry;
+			this.newMultiTypeEmbeddedEntry = embeddedEntry;
 			
-			this.jqMultiTypeUl = $("<ul />", { "class": "rocket-impl-multi-type-menu" });
-			this.jqElem.append(this.jqMultiTypeUl);
+			this.jqNewMultiTypeUl = $("<ul />", { "class": "rocket-impl-multi-type-menu" });
+			this.jqNew.append(this.jqNewMultiTypeUl);
 			
 			let typeMap = embeddedEntry.entryForm.typeMap;
 			for (let typeId in typeMap) {
-				this.jqMultiTypeUl.append($("<li />").append($("<button />", { 
+				this.jqNewMultiTypeUl.append($("<li />").append($("<button />", { 
 					"type": "button", 
 					"text": typeMap[typeId],
 					"click": () => {
 						embeddedEntry.entryForm.curEiTypeId = typeId;
-						this.jqMultiTypeUl.remove();
-						this.jqMultiTypeUl = null;
-						this.multiTypeEmbeddedEntry = null;
+						this.jqNewMultiTypeUl.remove();
+						this.jqNewMultiTypeUl = null;
+						this.newMultiTypeEmbeddedEntry = null;
 						this.fireCallbacks(embeddedEntry);
 						snippet.markAttached();
 					}
@@ -103,9 +194,13 @@ namespace Rocket.Impl.Relation {
 			this.disposed = true;
 			this.jqElem.remove();
 			
-			if (this.multiTypeEmbeddedEntry !== null) {
-				this.fireCallbacks(this.multiTypeEmbeddedEntry);
-				this.multiTypeEmbeddedEntry = null;
+			if (this.newMultiTypeEmbeddedEntry !== null) {
+				this.fireCallbacks(this.newMultiTypeEmbeddedEntry);
+				this.newMultiTypeEmbeddedEntry = null;
+			}
+			
+			if (this.pasteOnChanged) {
+				this.pasteStrategy.clipboard.offChanged(this.pasteOnChanged);
 			}
 		}
 		
@@ -125,10 +220,22 @@ namespace Rocket.Impl.Relation {
 			this.onNewEntryCallbacks.push(callback);
 		}
 		
-		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever): AddControl {
-			return new AddControl($("<div />", { "class": "rocket-impl-add-entry"})
-							.append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })),
-					embeddedEntryRetriever);
+		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever, pasteStrategy: PasteStrategy = null): AddControl {
+			let elemJq = $("<div />", { "class": "rocket-impl-add-entry"})
+					.append($("<div />", { "class": "rocket-impl-new" })
+							.append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })));
+			
+			if (pasteStrategy) {
+				elemJq.append($("<div />", { "class": "rocket-impl-paste" })
+						.append($("<button />", { "text": "past_from_clipboard_txt", "type": "button", "class": "btn btn-block btn-secondary" })));
+			}
+			
+			return new AddControl(elemJq, embeddedEntryRetriever, pasteStrategy);
 		} 
+	}
+	
+	export interface PasteStrategy {
+		clipboard: Clipboard;
+		pastableEiTypeIds: string[];
 	}
 }

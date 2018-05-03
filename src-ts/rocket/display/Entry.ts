@@ -108,6 +108,10 @@ namespace Rocket.Display {
 			return this.elemJq.data("rocket-supreme-ei-type-id").toString();
 		}
 		
+		get eiTypeId(): string {
+			return this.elemJq.data("rocket-ei-type-id").toString();
+		}
+		
 		get pid(): string {
 			return this.elemJq.data("rocket-ei-id").toString();
 		}
@@ -163,6 +167,7 @@ namespace Rocket.Display {
 		static readonly TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
 		static readonly LAST_MOD_CSS_CLASS = "rocket-last-mod";
 		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
+		static readonly EI_TYPE_ID_ATTR = "data-rocket-ei-type-id";
 		static readonly ID_REP_ATTR = "data-rocket-ei-id";
 		static readonly DRAFT_ID_ATTR = "data-rocket-draft-id";
 		

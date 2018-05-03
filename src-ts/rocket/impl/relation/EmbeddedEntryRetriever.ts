@@ -6,9 +6,9 @@ namespace Rocket.Impl.Relation {
 		private draftMode: boolean;
 		private startKey: number;
 		private keyPrefix: string;
-		private preloadEnabled: boolean = false;
+		private preloadNewsEnabled: boolean = false;
 		private preloadedResponseObjects: Array<Jhtml.Snippet> = new Array<Jhtml.Snippet>();
-		private pendingLookups: Array<PendingLookup> = new Array<PendingLookup>();
+		private pendingNewLookups: Array<PendingLookup> = new Array<PendingLookup>();
 		public sortable: boolean = false;
 		public grouped: boolean = true;
 		
@@ -21,60 +21,84 @@ namespace Rocket.Impl.Relation {
 			this.keyPrefix = keyPrefix;
 		}
 		
-		public setPreloadEnabled(preloadEnabled: boolean) {
-			if (!this.preloadEnabled && preloadEnabled && this.preloadedResponseObjects.length == 0) {
-				this.load();
+		public setPreloadNewsEnabled(preloadNewsEnabled: boolean) {
+			if (!this.preloadNewsEnabled && preloadNewsEnabled && this.preloadedResponseObjects.length == 0) {
+				this.loadNew();
 			}
 			
-			this.preloadEnabled = preloadEnabled;
+			this.preloadNewsEnabled = preloadNewsEnabled;
 		}
 		
 		public lookupNew(doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any, 
 				failCallback: () => any = null) {
-			this.pendingLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
+			this.pendingNewLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
 			
-			this.check()
-			this.load();
+			this.checkNew()
+			this.loadNew();
 		}
 		
-		private check() {
-			if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0) return;
+//		public lookupCopy(pid: string, 
+//				doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any, 
+//				failCallback: () => any = null) {
+//			this.pendingLookups.push({ "doneCallback": })
+//		}
+		
+		private checkNew() {
+			if (this.pendingNewLookups.length == 0 || this.preloadedResponseObjects.length == 0) return;
 			
-			var pendingLookup: PendingLookup = this.pendingLookups.shift();
+			var pendingLookup: PendingLookup = this.pendingNewLookups.shift();
 			let snippet: Jhtml.Snippet = this.preloadedResponseObjects.shift();
 			var embeddedEntry = new EmbeddedEntry($(snippet.elements), false, this.sortable);
 			
 			pendingLookup.doneCallback(embeddedEntry, snippet);
 		}
 		
-		private load() {
-			let url = Jhtml.Url.create(this.urlStr).extR(null, {
+		private loadNew() {
+			let url = Jhtml.Url.create(this.urlStr).extR("newmappingform", {
 				"propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
 				"draft": this.draftMode ? 1 : 0,
 				"grouped": this.grouped ? 1 : 0
 			});
 			Jhtml.lookupModel(url)
 					.then((result) => {
-						this.doneResponse(result.model.snippet);
+						this.doneNewResponse(result.model.snippet);
 					})
 					.catch(e => {
-						this.failResponse();
+						this.failNewResponse();
 						throw e;
 					});
 		}
 		
-		private failResponse() {
-			if (this.pendingLookups.length == 0) return;
+		private failNewResponse() {
+			if (this.pendingNewLookups.length == 0) return;
 			
-			var pendingLookup = this.pendingLookups.shift();
+			var pendingLookup = this.pendingNewLookups.shift();
 			if (pendingLookup.failCallback !== null) {
 				pendingLookup.failCallback();
 			}
 		}
 		
-		private doneResponse(snippet: Jhtml.Snippet) {
+		private doneNewResponse(snippet: Jhtml.Snippet) {
 			this.preloadedResponseObjects.push(snippet);
-			this.check();
+			this.checkNew();
+		}
+		
+		lookupCopy(pid: string, doneCallback: (embeddedEntry: EmbeddedEntry, snippet: Jhtml.Snippet) => any, 
+				failCallback: () => any = null) {
+			let url = Jhtml.Url.create(this.urlStr).extR("copymappingform", {
+				"pid": pid,
+				"propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
+				"grouped": this.grouped ? 1 : 0
+			});
+			Jhtml.lookupModel(url)
+					.then((result) => {
+						let snippet = result.model.snippet;
+						doneCallback(new EmbeddedEntry($(snippet.elements), false, this.sortable), snippet);
+					})
+					.catch(e => {
+						failCallback();
+						throw e;
+					});
 		}
 	}
 	

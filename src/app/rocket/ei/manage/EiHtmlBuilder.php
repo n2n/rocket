@@ -114,10 +114,12 @@ class EiHtmlBuilder {
 		}
 		
 		$this->collectionTagName = $tagName;
-		$supremeEiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg)->getSupremeEiType();
+		$eiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg);
+		$supremeEiType = $eiType->getSupremeEiType();
 		
 		$colAttrs = array(
 				'class' => 'rocket-collection',
+				'data-rocket-ei-type-id' => $eiType->getId(),
 				'data-rocket-supreme-ei-type-id' => $supremeEiType->getId());
 		
 		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
@@ -160,6 +162,7 @@ class EiHtmlBuilder {
 				
 		$entryAttrs = array(
 				'class' => 'rocket-entry' . ($treeLevel !== null ? ' rocket-tree-level-' . $treeLevel : ''),
+				'data-rocket-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getId(),
 				'data-rocket-supreme-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
 				'data-rocket-ei-id' => $pid,
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),

@@ -100,7 +100,8 @@ use rocket\ei\manage\EiHtmlBuilder;
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>"
 				data-replace-item-label="<?php $html->text('ei_impl_relation_replace_item_label', 
-						array('item' => $entryLabeler->getGenericLabel())) ?>">
+						array('item' => $entryLabeler->getGenericLabel())) ?>"
+				data-ei-type-range="<?php $html->out(json_encode($toOneForm->getEiTypeIds())) ?>">
 			<?php if (null === $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getAttrs()): ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getObject() ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>

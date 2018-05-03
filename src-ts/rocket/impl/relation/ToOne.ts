@@ -25,6 +25,7 @@ namespace Rocket.Impl.Relation {
 	import display = Rocket.Display;
 	
 	export class ToOne {
+		
 		constructor(private toOneSelector: ToOneSelector = null, private embedded: ToOneEmbedded = null) {
 			if (toOneSelector && embedded) {
 				embedded.whenChanged(function () {
@@ -36,8 +37,8 @@ namespace Rocket.Impl.Relation {
 				});
 			}
 		}
-				
-		public static from(jqToOne: JQuery): ToOne {
+		
+		public static from(jqToOne: JQuery, clipboard: Clipboard = null): ToOne {
 			let toOne: ToOne = jqToOne.data("rocketImplToOne");
 			if (toOne instanceof ToOne) {
 				return toOne;
@@ -63,19 +64,28 @@ namespace Rocket.Impl.Relation {
 							jqNew.data("draftMode"));
 					entryFormRetriever.grouped = !!jqToOne.data("grouped");
 					entryFormRetriever.sortable = false;
+					
 					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
 							jqNew.data("replace-item-label"));
+					
+					let eiTypeIds: string[] = jqNew.data("ei-type-range");
+					if (clipboard && eiTypeIds) {
+						addControlFactory.pasteStrategy = {
+							clipboard: clipboard,
+							pastableEiTypeIds: eiTypeIds
+						};
+					}
 				}
 				
-				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory);
+				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard);
 				jqCurrent.children(".rocket-impl-entry").each(function () {
-					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false);
+					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false, !!clipboard);
 				});
 				jqNew.children(".rocket-impl-entry").each(function () {
 					toOneEmbedded.newEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false);
 				});
 				jqDetail.children(".rocket-impl-entry").each(function () {
-					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true, false);
+					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true, false, !!clipboard);
 				});
 			}
 			
@@ -86,10 +96,9 @@ namespace Rocket.Impl.Relation {
 		}
 	}
 	
-	
 	class ToOneEmbedded {
 		private jqToOne: JQuery;
-		private addControlFactory: AddControlFactory;
+		public addControlFactory: AddControlFactory|null;
 		private reduceEnabled: boolean = true;
 		private _currentEntry: EmbeddedEntry;
 		private _newEntry: EmbeddedEntry;
@@ -99,9 +108,9 @@ namespace Rocket.Impl.Relation {
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
-		constructor(jqToOne: JQuery, addButtonFactory: AddControlFactory = null) {
+		constructor(jqToOne: JQuery, addControlFactory: AddControlFactory = null, private clipboard: Clipboard = null) {
 			this.jqToOne = jqToOne;
-			this.addControlFactory = addButtonFactory;
+			this.addControlFactory = addControlFactory;
 			this.reduceEnabled = (true == jqToOne.data("reduced"));
 			this.closeLabel = jqToOne.data("close-label");
 			
@@ -112,6 +121,8 @@ namespace Rocket.Impl.Relation {
 			
 			this.jqEntries = $("<div />");
 			this.jqEmbedded.append(this.jqEntries);
+			
+			this.initClipboard();
 			
 			this.changed();
 		}
@@ -208,10 +219,13 @@ namespace Rocket.Impl.Relation {
 				this.changed();
 			});
 			
+			
+			this.initCopy(entry);
+			
 			this.initEntry(entry);
 			this.changed();
 		}
-	
+		
 		get newEntry(): EmbeddedEntry {
 			return this._newEntry;
 		}
@@ -325,6 +339,58 @@ namespace Rocket.Impl.Relation {
 		
 		public whenChanged(callback: () => any) {
 			this.changedCallbacks.push(callback);
+		}
+	
+		private initCopy(entry: EmbeddedEntry) {
+			if (!this.clipboard || !entry.copyable) return;
+			
+			let diEntry = entry.entry;
+			if (!diEntry) {
+				throw new Error("No display entry available.");
+			}
+			
+			entry.copied = this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)
+			
+			entry.onCopy(() => {
+				if (!entry.copied) {
+					this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
+				} else {
+					this.clipboard.clear();
+					this.clipboard.add(diEntry.eiTypeId, diEntry.pid, diEntry.identityString);
+				}
+			});
+		}
+		
+		private initClipboard() {
+			if (!this.clipboard) return;
+			
+			let onChanged = () => {
+				this.syncCopy();
+			};
+			
+			this.clipboard.onChanged(onChanged);
+			Cmd.Zone.of(this.jqToOne).page.on("disposed", () => {
+				if (this.addControl) {
+					this.addControl.dispose();
+				}
+				
+				this.clipboard.offChanged(onChanged);
+			});
+		}
+		
+		private syncCopy() {
+			if (!this.currentEntry || !this.currentEntry.copyable) return;
+			
+			let diEntry = this.currentEntry.entry;
+			if (!diEntry) {
+				throw new Error("No display entry available.");
+			}
+			
+			if (this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)) {
+				this.currentEntry.copied = true;
+			} else {
+				this.currentEntry.copied = false;
+			}
 		}
 	}
 	

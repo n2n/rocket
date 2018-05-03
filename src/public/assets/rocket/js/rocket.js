@@ -12,6 +12,7 @@ var Rocket;
         blocker = new Rocket.Cmd.Blocker(container);
         blocker.init($("body"));
         initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"), jqContainer.data("display-error-label"));
+        let clipboard = new Rocket.Impl.Relation.Clipboard();
         Jhtml.ready(() => {
             initializer.scan();
         });
@@ -39,21 +40,21 @@ var Rocket;
         })();
         (function () {
             $(".rocket-impl-to-many").each(function () {
-                Rocket.Impl.Relation.ToMany.from($(this));
+                Rocket.Impl.Relation.ToMany.from($(this), clipboard);
             });
             Jhtml.ready(() => {
                 $(".rocket-impl-to-many").each(function () {
-                    Rocket.Impl.Relation.ToMany.from($(this));
+                    Rocket.Impl.Relation.ToMany.from($(this), clipboard);
                 });
             });
         })();
         (function () {
             $(".rocket-impl-to-one").each(function () {
-                Rocket.Impl.Relation.ToOne.from($(this));
+                let toOne = Rocket.Impl.Relation.ToOne.from($(this), clipboard);
             });
             Jhtml.ready(() => {
                 $(".rocket-impl-to-one").each(function () {
-                    Rocket.Impl.Relation.ToOne.from($(this));
+                    let toOne = Rocket.Impl.Relation.ToOne.from($(this), clipboard);
                 });
             });
         })();
@@ -2230,6 +2231,9 @@ var Rocket;
             get supremeEiTypeId() {
                 return this.elemJq.data("rocket-supreme-ei-type-id").toString();
             }
+            get eiTypeId() {
+                return this.elemJq.data("rocket-ei-type-id").toString();
+            }
             get pid() {
                 return this.elemJq.data("rocket-ei-id").toString();
             }
@@ -2352,6 +2356,7 @@ var Rocket;
         Entry.TREE_LEVEL_CSS_CLASS_PREFIX = "rocket-tree-level-";
         Entry.LAST_MOD_CSS_CLASS = "rocket-last-mod";
         Entry.SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
+        Entry.EI_TYPE_ID_ATTR = "data-rocket-ei-type-id";
         Entry.ID_REP_ATTR = "data-rocket-ei-id";
         Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";
         Display.Entry = Entry;
@@ -5543,74 +5548,145 @@ var Rocket;
         var Relation;
         (function (Relation) {
             class AddControlFactory {
-                constructor(embeddedEntryRetriever, addLabel, replaceLabel = null) {
+                constructor(embeddedEntryRetriever, newLabel, replaceLabel = null) {
                     this.embeddedEntryRetriever = embeddedEntryRetriever;
-                    this.addLabel = addLabel;
+                    this.newLabel = newLabel;
                     this.replaceLabel = replaceLabel;
                 }
                 createAdd() {
-                    return AddControl.create(this.addLabel, this.embeddedEntryRetriever);
+                    return AddControl.create(this.newLabel, this.embeddedEntryRetriever, this.pasteStrategy);
                 }
             }
             Relation.AddControlFactory = AddControlFactory;
             class AddControl {
-                constructor(jqElem, embeddedEntryRetriever) {
+                constructor(jqElem, embeddedEntryRetriever, pasteStrategy = null) {
+                    this.jqElem = jqElem;
+                    this.pasteStrategy = pasteStrategy;
                     this.onNewEntryCallbacks = [];
+                    this.jqNewMultiTypeUl = null;
+                    this.jqPasteUl = null;
                     this.disposed = false;
                     this.embeddedEntryRetriever = embeddedEntryRetriever;
-                    this.jqElem = jqElem;
-                    this.jqButton = jqElem.children("button");
-                    this.jqButton.on("mouseenter", () => {
-                        this.embeddedEntryRetriever.setPreloadEnabled(true);
+                    this.initNew();
+                    this.initPaste();
+                }
+                initNew() {
+                    this.jqNew = this.jqElem.children(".rocket-impl-new");
+                    this.jqNewButton = this.jqNew.children("button");
+                    this.jqNewButton.on("mouseenter", () => {
+                        this.embeddedEntryRetriever.setPreloadNewsEnabled(true);
                     });
-                    this.jqButton.on("click", () => {
+                    this.jqNewButton.on("click", () => {
                         if (this.isLoading())
                             return;
-                        if (this.jqMultiTypeUl) {
-                            this.jqMultiTypeUl.toggle();
+                        if (this.jqNewMultiTypeUl) {
+                            this.jqNewMultiTypeUl.toggle();
                             return;
                         }
                         this.block(true);
                         this.embeddedEntryRetriever.lookupNew((embeddedEntry, snippet) => {
-                            this.examine(embeddedEntry, snippet);
+                            this.examineNew(embeddedEntry, snippet);
                         }, () => {
                             this.block(false);
                         });
                     });
+                }
+                initPaste() {
+                    this.jqPaste = this.jqElem.children(".rocket-impl-paste");
+                    this.jqPasteButton = this.jqPaste.children("button");
+                    if (!this.pasteStrategy)
+                        return;
+                    this.pasteOnChanged = () => {
+                        this.syncPasteButton();
+                    };
+                    this.pasteStrategy.clipboard.onChanged(this.pasteOnChanged);
+                    this.jqPasteButton.on("click", () => {
+                        if (this.isLoading())
+                            return;
+                        if (this.jqPasteUl) {
+                            this.jqPasteUl.toggle();
+                        }
+                    });
+                    this.syncPasteButton();
+                }
+                syncPasteButton() {
+                    this.hidePaste();
+                    let found = false;
+                    for (let element of this.pasteStrategy.clipboard.toArray()) {
+                        if (-1 == this.pasteStrategy.pastableEiTypeIds.indexOf(element.eiTypeId)) {
+                            continue;
+                        }
+                        this.addPasteOption(element);
+                        found = true;
+                    }
+                }
+                addPasteOption(element) {
+                    if (!this.jqPasteUl) {
+                        this.jqPasteUl = $("<ul />").appendTo(this.jqPaste).hide();
+                        this.jqPaste.show();
+                    }
+                    this.jqPasteUl.append($("<li />").append($("<button />", {
+                        "type": "button",
+                        "text": element.identityString,
+                        "click": () => {
+                            this.pasteElement(element);
+                        }
+                    })));
+                }
+                pasteElement(element) {
+                    this.block(true);
+                    this.jqPasteUl.hide();
+                    this.embeddedEntryRetriever.lookupCopy(element.pid, (embeddedEntry, snippet) => {
+                        this.fireCallbacks(embeddedEntry);
+                        snippet.markAttached();
+                        this.block(false);
+                    }, () => {
+                        this.pasteStrategy.clipboard.remove(element.eiTypeId, element.pid);
+                        this.block(false);
+                    });
+                }
+                hidePaste() {
+                    this.jqPaste.hide();
+                    if (this.jqPasteUl) {
+                        this.jqPasteUl.remove();
+                        this.jqPasteUl = null;
+                    }
                 }
                 get jQuery() {
                     return this.jqElem;
                 }
                 block(blocked) {
                     if (blocked) {
-                        this.jqButton.prop("disabled", true);
+                        this.jqNewButton.prop("disabled", true);
+                        this.jqPasteButton.prop("disabled", true);
                         this.jqElem.addClass("rocket-impl-loading");
                     }
                     else {
-                        this.jqButton.prop("disabled", false);
+                        this.jqNewButton.prop("disabled", false);
+                        this.jqPasteButton.prop("disabled", false);
                         this.jqElem.removeClass("rocket-impl-loading");
                     }
                 }
-                examine(embeddedEntry, snippet) {
+                examineNew(embeddedEntry, snippet) {
                     this.block(false);
                     if (!embeddedEntry.entryForm.multiEiType) {
                         this.fireCallbacks(embeddedEntry);
                         snippet.markAttached();
                         return;
                     }
-                    this.multiTypeEmbeddedEntry = embeddedEntry;
-                    this.jqMultiTypeUl = $("<ul />", { "class": "rocket-impl-multi-type-menu" });
-                    this.jqElem.append(this.jqMultiTypeUl);
+                    this.newMultiTypeEmbeddedEntry = embeddedEntry;
+                    this.jqNewMultiTypeUl = $("<ul />", { "class": "rocket-impl-multi-type-menu" });
+                    this.jqNew.append(this.jqNewMultiTypeUl);
                     let typeMap = embeddedEntry.entryForm.typeMap;
                     for (let typeId in typeMap) {
-                        this.jqMultiTypeUl.append($("<li />").append($("<button />", {
+                        this.jqNewMultiTypeUl.append($("<li />").append($("<button />", {
                             "type": "button",
                             "text": typeMap[typeId],
                             "click": () => {
                                 embeddedEntry.entryForm.curEiTypeId = typeId;
-                                this.jqMultiTypeUl.remove();
-                                this.jqMultiTypeUl = null;
-                                this.multiTypeEmbeddedEntry = null;
+                                this.jqNewMultiTypeUl.remove();
+                                this.jqNewMultiTypeUl = null;
+                                this.newMultiTypeEmbeddedEntry = null;
                                 this.fireCallbacks(embeddedEntry);
                                 snippet.markAttached();
                             }
@@ -5620,9 +5696,12 @@ var Rocket;
                 dispose() {
                     this.disposed = true;
                     this.jqElem.remove();
-                    if (this.multiTypeEmbeddedEntry !== null) {
-                        this.fireCallbacks(this.multiTypeEmbeddedEntry);
-                        this.multiTypeEmbeddedEntry = null;
+                    if (this.newMultiTypeEmbeddedEntry !== null) {
+                        this.fireCallbacks(this.newMultiTypeEmbeddedEntry);
+                        this.newMultiTypeEmbeddedEntry = null;
+                    }
+                    if (this.pasteOnChanged) {
+                        this.pasteStrategy.clipboard.offChanged(this.pasteOnChanged);
                     }
                 }
                 isLoading() {
@@ -5638,9 +5717,15 @@ var Rocket;
                 onNewEmbeddedEntry(callback) {
                     this.onNewEntryCallbacks.push(callback);
                 }
-                static create(label, embeddedEntryRetriever) {
-                    return new AddControl($("<div />", { "class": "rocket-impl-add-entry" })
-                        .append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })), embeddedEntryRetriever);
+                static create(label, embeddedEntryRetriever, pasteStrategy = null) {
+                    let elemJq = $("<div />", { "class": "rocket-impl-add-entry" })
+                        .append($("<div />", { "class": "rocket-impl-new" })
+                        .append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })));
+                    if (pasteStrategy) {
+                        elemJq.append($("<div />", { "class": "rocket-impl-paste" })
+                            .append($("<button />", { "text": "past_from_clipboard_txt", "type": "button", "class": "btn btn-block btn-secondary" })));
+                    }
+                    return new AddControl(elemJq, embeddedEntryRetriever, pasteStrategy);
                 }
             }
             Relation.AddControl = AddControl;
@@ -5653,9 +5738,74 @@ var Rocket;
     (function (Impl) {
         var Relation;
         (function (Relation) {
+            class Clipboard {
+                constructor() {
+                    this.elements = {};
+                    this.cbr = new Jhtml.Util.CallbackRegistry();
+                }
+                clear() {
+                    this.elements = {};
+                    this.cbr.fire();
+                }
+                add(eiTypeId, pid, identityString) {
+                    this.elements[this.createKey(eiTypeId, pid)] = new ClipboardElement(eiTypeId, pid, identityString);
+                    this.cbr.fire();
+                }
+                remove(eiTypeId, pid) {
+                    let key = this.createKey(eiTypeId, pid);
+                    if (!this.elements[key])
+                        return;
+                    delete this.elements[key];
+                    this.cbr.fire();
+                }
+                contains(eiTypeId, pid) {
+                    return !!this.elements[this.createKey(eiTypeId, pid)];
+                }
+                createKey(eiTypeId, pid) {
+                    return eiTypeId + ":" + pid;
+                }
+                onChanged(callback) {
+                    this.cbr.on(callback);
+                }
+                offChanged(callback) {
+                    this.cbr.off(callback);
+                }
+                toArray() {
+                    let elements = [];
+                    for (let key in this.elements) {
+                        elements.push(this.elements[key]);
+                    }
+                    return elements;
+                }
+                isEmpty() {
+                    for (let key in this.elements)
+                        return false;
+                    return true;
+                }
+            }
+            Relation.Clipboard = Clipboard;
+            class ClipboardElement {
+                constructor(eiTypeId, pid, identityString) {
+                    this.eiTypeId = eiTypeId;
+                    this.pid = pid;
+                    this.identityString = identityString;
+                }
+            }
+            Relation.ClipboardElement = ClipboardElement;
+        })(Relation = Impl.Relation || (Impl.Relation = {}));
+    })(Impl = Rocket.Impl || (Rocket.Impl = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Impl;
+    (function (Impl) {
+        var Relation;
+        (function (Relation) {
             class EmbeddedEntry {
-                constructor(jqEntry, readOnly, sortable) {
+                constructor(jqEntry, readOnly, sortable, copyable = false) {
                     this.readOnly = readOnly;
+                    this.copyCbr = new Jhtml.Util.CallbackRegistry();
+                    this._entry = null;
                     this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
                     let groupJq = jqEntry.children(".rocket-impl-body");
                     if (groupJq.length == 0) {
@@ -5665,21 +5815,31 @@ var Rocket;
                     this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");
                     this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
+                    let rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+                    let ecl = this.bodyGroup.getToolbar().getCommandList();
+                    if (copyable) {
+                        let config = {
+                            iconType: "fa fa-copy", label: "Copy",
+                            severity: Rocket.Display.Severity.WARNING
+                        };
+                        let onClick = () => {
+                            this.copied = !this.copied;
+                        };
+                        this.jqExpCopyButton = ecl.createJqCommandButton(config).click(onClick);
+                        this.jqRedCopyButton = rcl.createJqCommandButton(config).click(onClick);
+                    }
                     if (readOnly) {
-                        var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                         this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-file", label: "Detail",
                             severity: Rocket.Display.Severity.SECONDARY });
                     }
                     else {
                         this._entryForm = Rocket.Display.EntryForm.firstOf(jqEntry);
-                        var ecl = this.bodyGroup.getToolbar().getCommandList();
                         if (sortable) {
                             this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
                             this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down" });
                         }
                         this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove",
                             severity: Rocket.Display.Severity.DANGER });
-                        var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                         this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit",
                             severity: Rocket.Display.Severity.WARNING });
                         this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove",
@@ -5727,6 +5887,34 @@ var Rocket;
                     this.bodyGroup.onShow(function () {
                         callback();
                     });
+                }
+                get copyable() {
+                    return !!this.jqExpCopyButton;
+                }
+                get copied() {
+                    return this.jqExpCopyButton && this.jqExpCopyButton.hasClass("active");
+                }
+                set copied(copied) {
+                    if (!this.jqExpCopyButton) {
+                        throw new Error("Not copyable.");
+                    }
+                    if (this.copied == copied)
+                        return;
+                    if (copied) {
+                        this.jqExpCopyButton.addClass("active");
+                        this.jqRedCopyButton.addClass("active");
+                    }
+                    else {
+                        this.jqExpCopyButton.removeClass("active");
+                        this.jqRedCopyButton.removeClass("active");
+                    }
+                    this.copyCbr.fire();
+                }
+                onCopy(callback) {
+                    if (!this.jqRedCopyButton) {
+                        throw new Error("EmbeddedEntry not copyable.");
+                    }
+                    this.copyCbr.on(callback);
                 }
                 get jQuery() {
                     return this.entryGroup.jQuery;
@@ -5811,6 +5999,11 @@ var Rocket;
                     divJq.empty();
                     divJq.append($("<div />", { "class": "rocket-impl-status", "text": this.jQuery.data("rocket-impl-changed-text") }));
                 }
+                get entry() {
+                    if (this._entry)
+                        return this._entry;
+                    return this._entry = Rocket.Display.Entry.find(this.jQuery, true);
+                }
             }
             Relation.EmbeddedEntry = EmbeddedEntry;
         })(Relation = Impl.Relation || (Impl.Relation = {}));
@@ -5824,9 +6017,9 @@ var Rocket;
         (function (Relation) {
             class EmbeddedEntryRetriever {
                 constructor(lookupUrlStr, propertyPath, draftMode, startKey = null, keyPrefix = null) {
-                    this.preloadEnabled = false;
+                    this.preloadNewsEnabled = false;
                     this.preloadedResponseObjects = new Array();
-                    this.pendingLookups = new Array();
+                    this.pendingNewLookups = new Array();
                     this.sortable = false;
                     this.grouped = true;
                     this.urlStr = lookupUrlStr;
@@ -5835,51 +6028,67 @@ var Rocket;
                     this.startKey = startKey;
                     this.keyPrefix = keyPrefix;
                 }
-                setPreloadEnabled(preloadEnabled) {
-                    if (!this.preloadEnabled && preloadEnabled && this.preloadedResponseObjects.length == 0) {
-                        this.load();
+                setPreloadNewsEnabled(preloadNewsEnabled) {
+                    if (!this.preloadNewsEnabled && preloadNewsEnabled && this.preloadedResponseObjects.length == 0) {
+                        this.loadNew();
                     }
-                    this.preloadEnabled = preloadEnabled;
+                    this.preloadNewsEnabled = preloadNewsEnabled;
                 }
                 lookupNew(doneCallback, failCallback = null) {
-                    this.pendingLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
-                    this.check();
-                    this.load();
+                    this.pendingNewLookups.push({ "doneCallback": doneCallback, "failCallback": failCallback });
+                    this.checkNew();
+                    this.loadNew();
                 }
-                check() {
-                    if (this.pendingLookups.length == 0 || this.preloadedResponseObjects.length == 0)
+                checkNew() {
+                    if (this.pendingNewLookups.length == 0 || this.preloadedResponseObjects.length == 0)
                         return;
-                    var pendingLookup = this.pendingLookups.shift();
+                    var pendingLookup = this.pendingNewLookups.shift();
                     let snippet = this.preloadedResponseObjects.shift();
                     var embeddedEntry = new Relation.EmbeddedEntry($(snippet.elements), false, this.sortable);
                     pendingLookup.doneCallback(embeddedEntry, snippet);
                 }
-                load() {
-                    let url = Jhtml.Url.create(this.urlStr).extR(null, {
+                loadNew() {
+                    let url = Jhtml.Url.create(this.urlStr).extR("newmappingform", {
                         "propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
                         "draft": this.draftMode ? 1 : 0,
                         "grouped": this.grouped ? 1 : 0
                     });
                     Jhtml.lookupModel(url)
                         .then((result) => {
-                        this.doneResponse(result.model.snippet);
+                        this.doneNewResponse(result.model.snippet);
                     })
                         .catch(e => {
-                        this.failResponse();
+                        this.failNewResponse();
                         throw e;
                     });
                 }
-                failResponse() {
-                    if (this.pendingLookups.length == 0)
+                failNewResponse() {
+                    if (this.pendingNewLookups.length == 0)
                         return;
-                    var pendingLookup = this.pendingLookups.shift();
+                    var pendingLookup = this.pendingNewLookups.shift();
                     if (pendingLookup.failCallback !== null) {
                         pendingLookup.failCallback();
                     }
                 }
-                doneResponse(snippet) {
+                doneNewResponse(snippet) {
                     this.preloadedResponseObjects.push(snippet);
-                    this.check();
+                    this.checkNew();
+                }
+                lookupCopy(pid, doneCallback, failCallback = null) {
+                    let url = Jhtml.Url.create(this.urlStr).extR("copymappingform", {
+                        "pid": pid,
+                        "propertyPath": this.propertyPath + (this.startKey !== null ? "[" + this.keyPrefix + (this.startKey++) + "]" : ""),
+                        "grouped": this.grouped ? 1 : 0
+                    });
+                    Jhtml.lookupModel(url)
+                        .then((result) => {
+                        let snippet = result.model.snippet;
+                        doneCallback(new Relation.EmbeddedEntry($(snippet.elements), false, this.sortable), snippet);
+                    })
+                        .catch(e => {
+                        failCallback();
+                        throw e;
+                    });
                 }
             }
             Relation.EmbeddedEntryRetriever = EmbeddedEntryRetriever;
@@ -5900,7 +6109,7 @@ var Rocket;
                     this.selector = selector;
                     this.embedded = embedded;
                 }
-                static from(jqToMany) {
+                static from(jqToMany, clipboard = null) {
                     var toMany = jqToMany.data("rocketImplToMany");
                     if (toMany instanceof ToMany) {
                         return toMany;
@@ -5940,19 +6149,26 @@ var Rocket;
                             });
                             entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+                            let eiTypeIds = jqNews.data("ei-type-range");
+                            if (clipboard && eiTypeIds) {
+                                addControlFactory.pasteStrategy = {
+                                    clipboard: clipboard,
+                                    pastableEiTypeIds: eiTypeIds
+                                };
+                            }
                         }
-                        toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
+                        toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory, clipboard);
                         if (entryFormRetriever) {
                             entryFormRetriever.sortable = toManyEmbedded.sortable;
                         }
                         jqCurrents.children(".rocket-impl-entry").each(function () {
-                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
+                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable, !!clipboard));
                         });
                         jqNews.children(".rocket-impl-entry").each(function () {
-                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
+                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable, false));
                         });
                         jqEntries.children(".rocket-impl-entry").each(function () {
-                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), true, false));
+                            toManyEmbedded.addEntry(new Relation.EmbeddedEntry($(this), true, false, !!clipboard));
                         });
                     }
                     var toMany = new ToMany(toManySelector, toManyEmbedded);
@@ -6147,7 +6363,8 @@ var Rocket;
                 }
             }
             class ToManyEmbedded {
-                constructor(jqToMany, addButtonFactory = null) {
+                constructor(jqToMany, addButtonFactory = null, clipboard = null) {
+                    this.clipboard = clipboard;
                     this.reduceEnabled = true;
                     this.sortable = true;
                     this.min = null;
@@ -6158,6 +6375,8 @@ var Rocket;
                     this.firstAddControl = null;
                     this.lastAddControl = null;
                     this.entryAddControls = new Array();
+                    this.clearClipboard = true;
+                    this.syncing = false;
                     this.jqToMany = jqToMany;
                     this.addControlFactory = addButtonFactory;
                     this.reduceEnabled = (true == jqToMany.data("reduced"));
@@ -6205,6 +6424,7 @@ var Rocket;
                     if (this.sortable) {
                         this.initSortable();
                     }
+                    this.initClipboard();
                     this.changed();
                 }
                 isReadOnly() {
@@ -6359,6 +6579,7 @@ var Rocket;
                     entry.onFocus(function () {
                         that.expand(entry);
                     });
+                    this.initCopy(entry);
                 }
                 initSortable() {
                     var that = this;
@@ -6441,6 +6662,80 @@ var Rocket;
                     }
                     this.changed();
                 }
+                initCopy(entry) {
+                    if (!this.clipboard || !entry.copyable)
+                        return;
+                    let diEntry = entry.entry;
+                    if (!diEntry) {
+                        throw new Error("No display entry available.");
+                    }
+                    entry.copied = this.clipboard.contains(diEntry.eiTypeId, diEntry.pid);
+                    entry.onRemove(() => {
+                        this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
+                    });
+                    entry.onCopy(() => {
+                        if (this.syncing)
+                            return;
+                        this.syncing = true;
+                        if (!entry.copied) {
+                            this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
+                            this.syncing = false;
+                            return;
+                        }
+                        if (this.clearClipboard) {
+                            this.clipboard.clear();
+                            this.clearClipboard = false;
+                        }
+                        this.clipboard.add(diEntry.eiTypeId, diEntry.pid, diEntry.identityString);
+                        this.syncing = false;
+                    });
+                }
+                initClipboard() {
+                    if (!this.clipboard)
+                        return;
+                    let onChanged = () => {
+                        this.syncCopy();
+                    };
+                    this.clipboard.onChanged(onChanged);
+                    Rocket.Cmd.Zone.of(this.jqToMany).page.on("disposed", () => {
+                        this.clipboard.offChanged(onChanged);
+                        if (this.firstAddControl) {
+                            this.firstAddControl.dispose();
+                            this.firstAddControl = null;
+                        }
+                        if (this.lastAddControl) {
+                            this.lastAddControl.dispose();
+                            this.lastAddControl = null;
+                        }
+                        let entryAddControl;
+                        while (entryAddControl = this.entryAddControls.pop()) {
+                            entryAddControl.dispose();
+                        }
+                    });
+                }
+                syncCopy() {
+                    if (this.syncing || this.clipboard.isEmpty())
+                        return;
+                    this.syncing = true;
+                    let found = false;
+                    for (let entry of this.entries) {
+                        if (!entry.copyable)
+                            continue;
+                        let diEntry = entry.entry;
+                        if (!diEntry) {
+                            throw new Error("No display entry available.");
+                        }
+                        if (this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)) {
+                            entry.copied = true;
+                            found = true;
+                        }
+                        else {
+                            entry.copied = false;
+                        }
+                    }
+                    this.clearClipboard = !found;
+                    this.syncing = false;
+                }
             }
         })(Relation = Impl.Relation || (Impl.Relation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
@@ -6468,7 +6763,7 @@ var Rocket;
                         });
                     }
                 }
-                static from(jqToOne) {
+                static from(jqToOne, clipboard = null) {
                     let toOne = jqToOne.data("rocketImplToOne");
                     if (toOne instanceof ToOne) {
                         return toOne;
@@ -6491,16 +6786,23 @@ var Rocket;
                             entryFormRetriever.grouped = !!jqToOne.data("grouped");
                             entryFormRetriever.sortable = false;
                             addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("replace-item-label"));
+                            let eiTypeIds = jqNew.data("ei-type-range");
+                            if (clipboard && eiTypeIds) {
+                                addControlFactory.pasteStrategy = {
+                                    clipboard: clipboard,
+                                    pastableEiTypeIds: eiTypeIds
+                                };
+                            }
                         }
-                        toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory);
+                        toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard);
                         jqCurrent.children(".rocket-impl-entry").each(function () {
-                            toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false);
+                            toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false, !!clipboard);
                         });
                         jqNew.children(".rocket-impl-entry").each(function () {
                             toOneEmbedded.newEntry = new Relation.EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false);
                         });
                         jqDetail.children(".rocket-impl-entry").each(function () {
-                            toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), true, false);
+                            toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), true, false, !!clipboard);
                         });
                     }
                     toOne = new ToOne(toOneSelector, toOneEmbedded);
@@ -6510,12 +6812,13 @@ var Rocket;
             }
             Relation.ToOne = ToOne;
             class ToOneEmbedded {
-                constructor(jqToOne, addButtonFactory = null) {
+                constructor(jqToOne, addControlFactory = null, clipboard = null) {
+                    this.clipboard = clipboard;
                     this.reduceEnabled = true;
                     this.expandZone = null;
                     this.changedCallbacks = new Array();
                     this.jqToOne = jqToOne;
-                    this.addControlFactory = addButtonFactory;
+                    this.addControlFactory = addControlFactory;
                     this.reduceEnabled = (true == jqToOne.data("reduced"));
                     this.closeLabel = jqToOne.data("close-label");
                     this.jqEmbedded = $("<div />", {
@@ -6524,6 +6827,7 @@ var Rocket;
                     this.jqToOne.append(this.jqEmbedded);
                     this.jqEntries = $("<div />");
                     this.jqEmbedded.append(this.jqEntries);
+                    this.initClipboard();
                     this.changed();
                 }
                 isReadOnly() {
@@ -6572,6 +6876,7 @@ var Rocket;
                         this._currentEntry = null;
                         this.changed();
                     });
+                    this.initCopy(entry);
                     this.initEntry(entry);
                     this.changed();
                 }
@@ -6663,6 +6968,52 @@ var Rocket;
                 }
                 whenChanged(callback) {
                     this.changedCallbacks.push(callback);
+                }
+                initCopy(entry) {
+                    if (!this.clipboard || !entry.copyable)
+                        return;
+                    let diEntry = entry.entry;
+                    if (!diEntry) {
+                        throw new Error("No display entry available.");
+                    }
+                    entry.copied = this.clipboard.contains(diEntry.eiTypeId, diEntry.pid);
+                    entry.onCopy(() => {
+                        if (!entry.copied) {
+                            this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
+                        }
+                        else {
+                            this.clipboard.clear();
+                            this.clipboard.add(diEntry.eiTypeId, diEntry.pid, diEntry.identityString);
+                        }
+                    });
+                }
+                initClipboard() {
+                    if (!this.clipboard)
+                        return;
+                    let onChanged = () => {
+                        this.syncCopy();
+                    };
+                    this.clipboard.onChanged(onChanged);
+                    Rocket.Cmd.Zone.of(this.jqToOne).page.on("disposed", () => {
+                        if (this.addControl) {
+                            this.addControl.dispose();
+                        }
+                        this.clipboard.offChanged(onChanged);
+                    });
+                }
+                syncCopy() {
+                    if (!this.currentEntry || !this.currentEntry.copyable)
+                        return;
+                    let diEntry = this.currentEntry.entry;
+                    if (!diEntry) {
+                        throw new Error("No display entry available.");
+                    }
+                    if (this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)) {
+                        this.currentEntry.copied = true;
+                    }
+                    else {
+                        this.currentEntry.copied = false;
+                    }
                 }
             }
             class ToOneSelector {

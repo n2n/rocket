@@ -77,7 +77,9 @@ class RelationJhtmlController extends ControllerAdapter {
 			throw new BadRequestException(null, null, $e);
 		}
 		
-		if ($pid !== null) {
+		$allowedEiTypeIds = $chooseableEiTypeIds === null ? null : $chooseableEiTypeIds->toStringArrayOrReject();
+		
+		if ($pid === null) {
 			throw new BadRequestException();
 		}
 		
@@ -87,7 +89,7 @@ class RelationJhtmlController extends ControllerAdapter {
 		try {
 			$eiuFrame = $this->eiuCtrl->frame();
 			
-			$eiuEntryForm = $eiuFrame->newEiuEntryForm($draft->toBool(), $eiuEntry, null, $allowedEiTypeIds);
+			$eiuEntryForm = $eiuFrame->newEiuEntryForm(false, $eiuEntry, null, $allowedEiTypeIds);
 			$mappingForm = new MappingForm($eiuFrame->getGenericLabel(), $eiuFrame->getGenericIconType(), null,
 					$eiuEntryForm);
 		} catch (\InvalidArgumentException $e) {
@@ -102,7 +104,7 @@ class RelationJhtmlController extends ControllerAdapter {
 	}
 	
 	public static function buildNewFormUrl(Url $contextUrl, bool $draft): Url {
-		return $contextUrl->extR('newmappingform', array('draft' => (bool) $draft));
+		return $contextUrl->extR(null, array('draft' => (bool) $draft));
 	}
 	
 	public static function buildSelectToolsUrl(Url $contextUrl): Url {

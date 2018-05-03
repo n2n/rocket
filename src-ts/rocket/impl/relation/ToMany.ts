@@ -30,7 +30,7 @@ namespace Rocket.Impl.Relation {
 		constructor(private selector: ToManySelector = null, private embedded: ToManyEmbedded = null) {
 		}
 				
-		public static from(jqToMany: JQuery): ToMany {
+		public static from(jqToMany: JQuery, clipboard: Clipboard = null): ToMany {
 			var toMany: ToMany = jqToMany.data("rocketImplToMany");
 			if (toMany instanceof ToMany) {
 				return toMany;
@@ -78,21 +78,29 @@ namespace Rocket.Impl.Relation {
 					entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
 							jqNews.data("draftMode"), startKey, "n");
 					addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+					
+					let eiTypeIds: string[] = jqNews.data("ei-type-range");
+					if (clipboard && eiTypeIds) {
+						addControlFactory.pasteStrategy = {
+							clipboard: clipboard,
+							pastableEiTypeIds: eiTypeIds
+						};
+					}
 				}
 				
-				toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory);
+				toManyEmbedded = new ToManyEmbedded(jqToMany, addControlFactory, clipboard);
 				if (entryFormRetriever) {
 					entryFormRetriever.sortable = toManyEmbedded.sortable;
 				}
 				
 				jqCurrents.children(".rocket-impl-entry").each(function () {
-					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable, !!clipboard));
 				});
 				jqNews.children(".rocket-impl-entry").each(function () {
-					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable));
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), toManyEmbedded.isReadOnly(), toManyEmbedded.sortable, false));
 				});
 				jqEntries.children(".rocket-impl-entry").each(function () {
-					toManyEmbedded.addEntry(new EmbeddedEntry($(this), true, false));
+					toManyEmbedded.addEntry(new EmbeddedEntry($(this), true, false, !!clipboard));
 				});
 			}
 			
@@ -355,7 +363,7 @@ namespace Rocket.Impl.Relation {
 		private entryAddControls: Array<AddControl> = new Array<AddControl>();
 		private embeddedContainerJq: JQuery;
 		
-		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null) {
+		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null, private clipboard: Clipboard = null) {
 			this.jqToMany = jqToMany;
 			this.addControlFactory = addButtonFactory;
 			this.reduceEnabled = (true == jqToMany.data("reduced"));
@@ -407,6 +415,8 @@ namespace Rocket.Impl.Relation {
 			if (this.sortable) {
 				this.initSortable();
 			}
+			
+			this.initClipboard();
 			
 			this.changed();
 		}
@@ -598,6 +608,8 @@ namespace Rocket.Impl.Relation {
 			entry.onFocus(function () {
 				that.expand(entry);
 			});
+			
+			this.initCopy(entry);
 		}
 		
 		private initSortable() {
@@ -698,6 +710,99 @@ namespace Rocket.Impl.Relation {
 			}
 			
 			this.changed();
+		}
+		
+		private clearClipboard: boolean = true;
+		private syncing: boolean = false;
+		
+		private initCopy(entry: EmbeddedEntry) {
+			if (!this.clipboard || !entry.copyable) return;
+			
+			let diEntry = entry.entry;
+			if (!diEntry) {
+				throw new Error("No display entry available.");
+			}
+			
+			entry.copied = this.clipboard.contains(diEntry.eiTypeId, diEntry.pid);
+			
+			entry.onRemove(() => {
+				this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
+			});
+			
+			entry.onCopy(() => {
+				if (this.syncing) return;
+				
+				this.syncing = true;
+				
+				if (!entry.copied) {
+					this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
+					this.syncing = false;
+					return;
+				}
+					
+				if (this.clearClipboard) {
+					this.clipboard.clear();
+					this.clearClipboard = false;
+				}
+				
+				this.clipboard.add(diEntry.eiTypeId, diEntry.pid, diEntry.identityString);
+				this.syncing = false;
+			});
+		}
+		
+		private initClipboard() {
+			if (!this.clipboard) return;
+			
+			let onChanged = () => {
+				this.syncCopy();
+			};
+			
+			this.clipboard.onChanged(onChanged);
+			Cmd.Zone.of(this.jqToMany).page.on("disposed", () => {
+				this.clipboard.offChanged(onChanged);
+				
+				if (this.firstAddControl) {
+					this.firstAddControl.dispose();
+					this.firstAddControl = null;
+				}
+				
+				if (this.lastAddControl) {
+					this.lastAddControl.dispose();
+					this.lastAddControl = null;
+				}
+				
+				let entryAddControl;
+				while (entryAddControl = this.entryAddControls.pop()) {
+					entryAddControl.dispose();
+				}
+			});
+		}
+		
+		private syncCopy() {
+			if (this.syncing || this.clipboard.isEmpty()) return;
+			
+			this.syncing = true;
+			let found = false;
+			
+			for (let entry of this.entries) {
+				if (!entry.copyable) continue;
+			
+				let diEntry = entry.entry;
+				if (!diEntry) {
+					throw new Error("No display entry available.");
+				}
+				
+				if (this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)) {
+					entry.copied = true;
+					found = true;
+				} else {
+					entry.copied = false;
+				}
+			}
+			
+			this.clearClipboard = !found;
+			
+			this.syncing = false;
 		}
 	}
 }

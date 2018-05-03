@@ -240,4 +240,17 @@ class ToManyForm implements Dispatchable {
 	public function setReduced(bool $reduced) {
 		$this->reduced = $reduced;
 	}
+	
+	/**
+	 * @return string[]
+	 */
+	public function getEiTypeIds() {
+		$eiType = $this->readUtils->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
+		
+		$eiTypeIds = [$eiType->getId()];
+		foreach ($eiType->getSubEiTypes() as $subEiType) {
+			$eiTypeIds[] = $subEiType->getId();
+		}
+		return $eiTypeIds;
+	}
 }
