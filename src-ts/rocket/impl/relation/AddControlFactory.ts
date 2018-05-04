@@ -5,11 +5,11 @@ namespace Rocket.Impl.Relation {
 		public pasteStrategy: PasteStrategy|null;
 	
 		constructor (public embeddedEntryRetriever: EmbeddedEntryRetriever, private newLabel: string,
-				private replaceLabel: string = null) {
+				private pasteLabel: string) {
 		}
 		
 		public createAdd(): AddControl {
-			return AddControl.create(this.newLabel, this.embeddedEntryRetriever, this.pasteStrategy);
+			return AddControl.create(this.newLabel, this.pasteLabel, this.embeddedEntryRetriever, this.pasteStrategy);
 		}
 		
 //		public createReplace(): AddControl {
@@ -220,14 +220,15 @@ namespace Rocket.Impl.Relation {
 			this.onNewEntryCallbacks.push(callback);
 		}
 		
-		public static create(label: string, embeddedEntryRetriever: EmbeddedEntryRetriever, pasteStrategy: PasteStrategy = null): AddControl {
+		public static create(newLabel: string, pasteLabel: string, embeddedEntryRetriever: EmbeddedEntryRetriever, 
+				pasteStrategy: PasteStrategy = null): AddControl {
 			let elemJq = $("<div />", { "class": "rocket-impl-add-entry"})
 					.append($("<div />", { "class": "rocket-impl-new" })
-							.append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })));
+							.append($("<button />", { "text": newLabel, "type": "button", "class": "btn btn-block btn-secondary" })));
 			
 			if (pasteStrategy) {
 				elemJq.append($("<div />", { "class": "rocket-impl-paste" })
-						.append($("<button />", { "text": "past_from_clipboard_txt", "type": "button", "class": "btn btn-block btn-secondary" })));
+						.append($("<button />", { "text": pasteLabel, "type": "button", "class": "btn btn-block btn-secondary" })));
 			}
 			
 			return new AddControl(elemJq, embeddedEntryRetriever, pasteStrategy);

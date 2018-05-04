@@ -92,6 +92,12 @@ class RelationJhtmlController extends ControllerAdapter {
 			$eiuEntryForm = $eiuFrame->newEiuEntryForm(false, $eiuEntry, null, $allowedEiTypeIds);
 			$mappingForm = new MappingForm($eiuFrame->getGenericLabel(), $eiuFrame->getGenericIconType(), null,
 					$eiuEntryForm);
+			
+			$eiTypeId = $eiuEntry->getEiType()->getId();
+			if ($eiuEntryForm->containsEiTypeId($eiTypeId)) {
+				$eiuEntryForm->setChosenId($eiTypeId);
+			}
+			
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}

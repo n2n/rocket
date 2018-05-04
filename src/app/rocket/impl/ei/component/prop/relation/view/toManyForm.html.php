@@ -104,6 +104,7 @@
 				data-draft-mode="<?php $html->out($toManyForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>"
+				data-paste-item-label="<?php $html->text('ei_impl_relation_paste_item_label') ?>"
 				data-ei-type-range="<?php $html->out(json_encode($toManyForm->getEiTypeIds())) ?>">
 			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view, $toManyForm) { ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>

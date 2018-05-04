@@ -77,7 +77,8 @@ namespace Rocket.Impl.Relation {
 				
 					entryFormRetriever = new EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, 
 							jqNews.data("draftMode"), startKey, "n");
-					addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+					addControlFactory = new AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"),
+							jqNews.data("paste-item-label"));
 					
 					let eiTypeIds: string[] = jqNews.data("ei-type-range");
 					if (clipboard && eiTypeIds) {
@@ -503,9 +504,6 @@ namespace Rocket.Impl.Relation {
 			
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.insertEntry(newEntry);
-//				if (!that.isExpanded()) {
-//					that.expand(newEntry);
-//				}
 			});
 			return addControl;
 		}
@@ -529,9 +527,9 @@ namespace Rocket.Impl.Relation {
 			this.jqEmbedded.append(addControl.jQuery);
 			addControl.onNewEmbeddedEntry(function(newEntry: EmbeddedEntry) {
 				that.addEntry(newEntry);
-//				if (!that.isExpanded()) {
-//					that.expand(newEntry);
-//				}
+				if (!that.isExpanded()) {
+					that.expand(newEntry);
+				}
 			});
 			return addControl;
 		}

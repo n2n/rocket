@@ -65,8 +65,8 @@ namespace Rocket.Impl.Relation {
 					entryFormRetriever.grouped = !!jqToOne.data("grouped");
 					entryFormRetriever.sortable = false;
 					
-					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), 
-							jqNew.data("replace-item-label"));
+					addControlFactory = new AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"),
+							jqNew.data("paste-item-label"));
 					
 					let eiTypeIds: string[] = jqNew.data("ei-type-range");
 					if (clipboard && eiTypeIds) {
@@ -190,6 +190,9 @@ namespace Rocket.Impl.Relation {
 			this.jqEmbedded.append(addControl.jQuery);
 			addControl.onNewEmbeddedEntry((newEntry: EmbeddedEntry) => {
 				this.newEntry = newEntry;
+				if (!this.isExpanded()) {
+					this.expand();
+				}
 			});
 			return addControl;
 		}
