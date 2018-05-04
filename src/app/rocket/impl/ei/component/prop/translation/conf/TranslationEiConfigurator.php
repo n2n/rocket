@@ -199,6 +199,9 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		} 
 		
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
+		if (empty($n2nLocaleDefs)) {
+			$n2nLocaleDefs = array(N2nLocale::getDefault()->getId() => new N2nLocaleDef(N2nLocale::getDefault(), false));
+		}
 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
 		
 		$this->translationEiProp->setMinNumTranslations($this->attributes->getInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, false, 0));
