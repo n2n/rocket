@@ -5548,13 +5548,13 @@ var Rocket;
         var Relation;
         (function (Relation) {
             class AddControlFactory {
-                constructor(embeddedEntryRetriever, newLabel, replaceLabel = null) {
+                constructor(embeddedEntryRetriever, newLabel, pasteLabel) {
                     this.embeddedEntryRetriever = embeddedEntryRetriever;
                     this.newLabel = newLabel;
-                    this.replaceLabel = replaceLabel;
+                    this.pasteLabel = pasteLabel;
                 }
                 createAdd() {
-                    return AddControl.create(this.newLabel, this.embeddedEntryRetriever, this.pasteStrategy);
+                    return AddControl.create(this.newLabel, this.pasteLabel, this.embeddedEntryRetriever, this.pasteStrategy);
                 }
             }
             Relation.AddControlFactory = AddControlFactory;
@@ -5717,13 +5717,13 @@ var Rocket;
                 onNewEmbeddedEntry(callback) {
                     this.onNewEntryCallbacks.push(callback);
                 }
-                static create(label, embeddedEntryRetriever, pasteStrategy = null) {
+                static create(newLabel, pasteLabel, embeddedEntryRetriever, pasteStrategy = null) {
                     let elemJq = $("<div />", { "class": "rocket-impl-add-entry" })
                         .append($("<div />", { "class": "rocket-impl-new" })
-                        .append($("<button />", { "text": label, "type": "button", "class": "btn btn-block btn-secondary" })));
+                        .append($("<button />", { "text": newLabel, "type": "button", "class": "btn btn-block btn-secondary" })));
                     if (pasteStrategy) {
                         elemJq.append($("<div />", { "class": "rocket-impl-paste" })
-                            .append($("<button />", { "text": "past_from_clipboard_txt", "type": "button", "class": "btn btn-block btn-secondary" })));
+                            .append($("<button />", { "text": pasteLabel, "type": "button", "class": "btn btn-block btn-secondary" })));
                     }
                     return new AddControl(elemJq, embeddedEntryRetriever, pasteStrategy);
                 }
@@ -5744,6 +5744,8 @@ var Rocket;
                     this.cbr = new Jhtml.Util.CallbackRegistry();
                 }
                 clear() {
+                    if (this.isEmpty())
+                        return;
                     this.elements = {};
                     this.cbr.fire();
                 }
@@ -6148,7 +6150,7 @@ var Rocket;
                                 }
                             });
                             entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNews.data("new-entry-form-url"), propertyPath, jqNews.data("draftMode"), startKey, "n");
-                            addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"));
+                            addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNews.data("add-item-label"), jqNews.data("paste-item-label"));
                             let eiTypeIds = jqNews.data("ei-type-range");
                             if (clipboard && eiTypeIds) {
                                 addControlFactory.pasteStrategy = {
@@ -6518,6 +6520,9 @@ var Rocket;
                     this.jqEmbedded.append(addControl.jQuery);
                     addControl.onNewEmbeddedEntry(function (newEntry) {
                         that.addEntry(newEntry);
+                        if (!that.isExpanded()) {
+                            that.expand(newEntry);
+                        }
                     });
                     return addControl;
                 }
@@ -6785,7 +6790,7 @@ var Rocket;
                             let entryFormRetriever = new Relation.EmbeddedEntryRetriever(jqNew.data("new-entry-form-url"), propertyPath, jqNew.data("draftMode"));
                             entryFormRetriever.grouped = !!jqToOne.data("grouped");
                             entryFormRetriever.sortable = false;
-                            addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("replace-item-label"));
+                            addControlFactory = new Relation.AddControlFactory(entryFormRetriever, jqNew.data("add-item-label"), jqNew.data("paste-item-label"));
                             let eiTypeIds = jqNew.data("ei-type-range");
                             if (clipboard && eiTypeIds) {
                                 addControlFactory.pasteStrategy = {
@@ -6817,6 +6822,7 @@ var Rocket;
                     this.reduceEnabled = true;
                     this.expandZone = null;
                     this.changedCallbacks = new Array();
+                    this.syncing = false;
                     this.jqToOne = jqToOne;
                     this.addControlFactory = addControlFactory;
                     this.reduceEnabled = (true == jqToOne.data("reduced"));
@@ -6853,6 +6859,9 @@ var Rocket;
                     this.jqEmbedded.append(addControl.jQuery);
                     addControl.onNewEmbeddedEntry((newEntry) => {
                         this.newEntry = newEntry;
+                        if (!this.isExpanded()) {
+                            this.expand();
+                        }
                     });
                     return addControl;
                 }
@@ -6978,6 +6987,9 @@ var Rocket;
                     }
                     entry.copied = this.clipboard.contains(diEntry.eiTypeId, diEntry.pid);
                     entry.onCopy(() => {
+                        if (this.syncing)
+                            return;
+                        this.syncing = true;
                         if (!entry.copied) {
                             this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
                         }
@@ -6985,6 +6997,7 @@ var Rocket;
                             this.clipboard.clear();
                             this.clipboard.add(diEntry.eiTypeId, diEntry.pid, diEntry.identityString);
                         }
+                        this.syncing = false;
                     });
                 }
                 initClipboard() {
@@ -7004,16 +7017,20 @@ var Rocket;
                 syncCopy() {
                     if (!this.currentEntry || !this.currentEntry.copyable)
                         return;
+                    if (this.syncing)
+                        return;
                     let diEntry = this.currentEntry.entry;
                     if (!diEntry) {
                         throw new Error("No display entry available.");
                     }
+                    this.syncing = true;
                     if (this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)) {
                         this.currentEntry.copied = true;
                     }
                     else {
                         this.currentEntry.copied = false;
                     }
+                    this.syncing = false;
                 }
             }
             class ToOneSelector {

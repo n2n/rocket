@@ -343,6 +343,8 @@ namespace Rocket.Impl.Relation {
 		public whenChanged(callback: () => any) {
 			this.changedCallbacks.push(callback);
 		}
+		
+		private syncing: boolean = false;
 	
 		private initCopy(entry: EmbeddedEntry) {
 			if (!this.clipboard || !entry.copyable) return;
@@ -355,12 +357,18 @@ namespace Rocket.Impl.Relation {
 			entry.copied = this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)
 			
 			entry.onCopy(() => {
+				if (this.syncing) return;
+				
+				this.syncing = true;
+				
 				if (!entry.copied) {
 					this.clipboard.remove(diEntry.eiTypeId, diEntry.pid);
 				} else {
 					this.clipboard.clear();
 					this.clipboard.add(diEntry.eiTypeId, diEntry.pid, diEntry.identityString);
 				}
+				
+				this.syncing = false;
 			});
 		}
 		
@@ -384,16 +392,22 @@ namespace Rocket.Impl.Relation {
 		private syncCopy() {
 			if (!this.currentEntry || !this.currentEntry.copyable) return;
 			
+			if (this.syncing) return;
+			
 			let diEntry = this.currentEntry.entry;
 			if (!diEntry) {
 				throw new Error("No display entry available.");
 			}
+			
+			this.syncing = true;
 			
 			if (this.clipboard.contains(diEntry.eiTypeId, diEntry.pid)) {
 				this.currentEntry.copied = true;
 			} else {
 				this.currentEntry.copied = false;
 			}
+			
+			this.syncing = false;
 		}
 	}
 	

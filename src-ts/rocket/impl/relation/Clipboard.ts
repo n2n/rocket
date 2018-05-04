@@ -5,6 +5,8 @@ namespace Rocket.Impl.Relation {
 		private cbr: Jhtml.Util.CallbackRegistry<() => any> = new Jhtml.Util.CallbackRegistry();
 		
 		clear() {
+			if (this.isEmpty()) return;
+			
 			this.elements = {};
 			this.cbr.fire();
 		}
