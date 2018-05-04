@@ -72,6 +72,7 @@
 				data-reset-label="<?php $html->text('common_reset_label') ?>"
 				data-clear-label="<?php $html->text('common_clear_label') ?>"
 				data-cancel-label="<?php $html->text('common_cancel_label') ?>"
+				data-edit-all-label="<?php $html->text('ei_impl_relation_edit_all') ?>"
 				data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 				data-base-property-name="<?php $html->out($formHtml->meta()->getForm()->getDispatchTargetEncoder()
 						->buildValueParamName($propertyPath->ext('selectedEntryPids'), false)) ?>">
