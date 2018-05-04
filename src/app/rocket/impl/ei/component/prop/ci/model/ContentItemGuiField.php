@@ -31,7 +31,6 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\ViewMode;
 
 class ContentItemGuiField implements GuiField {
 	private $label;
@@ -113,31 +112,25 @@ class ContentItemGuiField implements GuiField {
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
-		$groupedUiComponents = array();
+		$groupedEiuEntries = array();
 		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEiEntry = null;
+			$targetEiuEntry = null;
 			if ($targetRelationEntry->hasEiEntry()) {
-				$targetEiEntry = $targetRelationEntry->getEiEntry();
+				$targetEiuEntry = $targetUtils->entry($targetRelationEntry->getEiEntry());
 			} else {
-				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry();
+				$targetEiuEntry = $targetUtils->entry($targetRelationEntry->getEiObject());
 			}
 			
-			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
-			if (!isset($groupedUiComponents[$panelName])) {
-				$groupedUiComponents[$panelName] = array();
+			$panelName = (string) $targetEiuEntry->getValue($panelEiPropPath, true);
+			if (!isset($groupedEiuEntries[$panelName])) {
+				$groupedEiuEntries[$panelName] = array();
 			}
 			
-			if ($targetEiEntry->isAccessible()) {
-				$groupedUiComponents[$panelName][] = $targetUtils->newGui(ViewMode::BULKY_READ)
-						->appendNewEntryGui($targetEiEntry)->createView();
-			} else {
-				$groupedUiComponents[$panelName][] = new HtmlElement('div', array('rocket-inaccessible'), 
-						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
-			}
+			$groupedEiuEntries[$panelName][] = $targetEiuEntry;
 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\contentItems.html',
-				array('panelLayout' => new PanelLayout($this->panelConfigs), 'groupedUiComponents' => $groupedUiComponents));
+				array('panelLayout' => new PanelLayout($this->panelConfigs), 'groupedEiuEntries' => $groupedEiuEntries));
 	}
 	
 	public function createCompactOutputUiComponent(HtmlView $view) {

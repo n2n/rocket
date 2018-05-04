@@ -28,7 +28,8 @@
 ?>
 <div class="rocket-impl-to-many"
 		data-reduced="<?php $html->out($view->getParam('reduced')) ?>"
-		data-close-label="<?php $html->text('common_apply_label') ?>">
+		data-close-label="<?php $html->text('common_apply_label') ?>"
+		data-show-all-label="<?php $html->text('common_show_all_label') ?>">
 	<div class="rocket-impl-entries">
 		<?php foreach ($eiuEntries as $eiuEntry): ?>
 			<?php $view->import('embeddedEntry.html', array('eiuEntry' => $eiuEntry, 'summaryRequired' => $view->getParam('reduced'))) ?>

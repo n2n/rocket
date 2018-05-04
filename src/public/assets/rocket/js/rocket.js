@@ -6365,7 +6365,7 @@ var Rocket;
                 }
             }
             class ToManyEmbedded {
-                constructor(jqToMany, addButtonFactory = null, clipboard = null) {
+                constructor(jqToMany, addControlFactory = null, clipboard = null) {
                     this.clipboard = clipboard;
                     this.reduceEnabled = true;
                     this.sortable = true;
@@ -6380,7 +6380,7 @@ var Rocket;
                     this.clearClipboard = true;
                     this.syncing = false;
                     this.jqToMany = jqToMany;
-                    this.addControlFactory = addButtonFactory;
+                    this.addControlFactory = addControlFactory;
                     this.reduceEnabled = (true == jqToMany.data("reduced"));
                     this.sortable = (true == jqToMany.data("sortable"));
                     this.closeLabel = jqToMany.data("close-label");
@@ -6406,7 +6406,12 @@ var Rocket;
                         if (toolbar !== null) {
                             var jqButton = null;
                             if (this.isReadOnly()) {
-                                jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
+                                jqButton = toolbar.getCommandList().createJqCommandButton({
+                                    iconType: "fa fa-file",
+                                    label: jqToMany.data("show-all-label"),
+                                    important: true,
+                                    labelImportant: true
+                                });
                             }
                             else {
                                 jqButton = toolbar.getCommandList().createJqCommandButton({

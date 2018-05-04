@@ -364,9 +364,9 @@ namespace Rocket.Impl.Relation {
 		private entryAddControls: Array<AddControl> = new Array<AddControl>();
 		private embeddedContainerJq: JQuery;
 		
-		constructor(jqToMany: JQuery, addButtonFactory: AddControlFactory = null, private clipboard: Clipboard = null) {
+		constructor(jqToMany: JQuery, addControlFactory: AddControlFactory = null, private clipboard: Clipboard = null) {
 			this.jqToMany = jqToMany;
-			this.addControlFactory = addButtonFactory;
+			this.addControlFactory = addControlFactory;
 			this.reduceEnabled = (true == jqToMany.data("reduced"));
 			this.sortable = (true == jqToMany.data("sortable"));
 			this.closeLabel = jqToMany.data("close-label");
@@ -396,7 +396,11 @@ namespace Rocket.Impl.Relation {
 				if (toolbar !== null) {
 					var jqButton: JQuery = null;
 					if (this.isReadOnly()) { 
-						jqButton = toolbar.getCommandList().createJqCommandButton({ iconType: "fa fa-file", label: "Detail" });
+						jqButton = toolbar.getCommandList().createJqCommandButton({ 
+							iconType: "fa fa-file", 
+							label: jqToMany.data("show-all-label"),
+							important: true,
+							labelImportant: true});
 					} else {
 						jqButton = toolbar.getCommandList().createJqCommandButton({ 
 							iconType: "fa fa-pencil", 
