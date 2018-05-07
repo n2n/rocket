@@ -525,6 +525,11 @@ var Rocket;
                 this._layers = new Array();
                 var layer = new Cmd.Layer(this.jqContainer.find(".rocket-main-layer"), this._layers.length, this, Jhtml.getOrCreateMonitor());
                 this.registerLayer(layer);
+                jQuery(document).keyup((e) => {
+                    if (e.keyCode == 27 && !$(e.target).is("input, textarea, button")) {
+                        this.closePopup();
+                    }
+                });
             }
             closePopup() {
                 if (this.currentLayer.level == 0)
@@ -585,18 +590,6 @@ var Rocket;
                         layer.currentZone.messageList.addAll(messages);
                     }
                 });
-                if (this._layers.length > 0) {
-                    layer.jQuery.attr("tabindex", this._layers.length);
-                    layer.jQuery.keyup((e) => {
-                        if (e.keyCode == 27) {
-                            layer.close();
-                        }
-                    });
-                    layer.on(Cmd.Layer.EventType.SHOWED, () => {
-                        layer.jQuery.focus();
-                    });
-                    layer.jQuery.focus();
-                }
                 this._layers.push(layer);
                 this.markCurrent();
             }
