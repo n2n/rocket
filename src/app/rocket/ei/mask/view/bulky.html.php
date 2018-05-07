@@ -85,8 +85,9 @@
 			<?php endif ?>		
 			
 			<div class="rocket-control">
-				<?php $view->import('bulky.html', array('displayStructure' => $displayItem->getDisplayStructure(), 
-						'eiu' => $eiu, 'renderForkMags' => false)) ?>
+				<?php $view->import('bulky.html', $view->mergeParams(array(
+						'displayStructure' => $displayItem->getDisplayStructure(), 
+						'eiu' => $eiu, 'renderForkMags' => false))) ?>
 			</div>
 		<?php $eiHtml->displayItemClose() ?>
 	<?php else: ?>

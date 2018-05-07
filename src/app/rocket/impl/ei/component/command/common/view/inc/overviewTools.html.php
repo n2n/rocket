@@ -63,7 +63,7 @@
 					data-rocket-impl-edit-filter-label="<?php $html->text('ei_impl_edit_filter_label') ?>"
 					data-rocket-impl-close-filter-label="<?php $html->text('ei_impl_close_filter_label') ?>">
 				<?php $view->import('~\ei\manage\critmod\impl\view\critmodSelectForm.html', 
-						array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getSelectUrl())) ?>
+						$view->mergeParams(array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getSelectUrl()))) ?>
 			</div>
 		</div>
 		
