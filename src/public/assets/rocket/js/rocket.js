@@ -5622,7 +5622,7 @@ var Rocket;
                 }
                 addPasteOption(element) {
                     if (!this.jqPasteUl) {
-                        this.jqPasteUl = $("<ul />").appendTo(this.jqPaste).hide();
+                        this.jqPasteUl = $("<ul />", { "class": "rocket-impl-multi-type-menu" }).appendTo(this.jqPaste).hide();
                         this.jqPaste.show();
                     }
                     this.jqPasteUl.append($("<li />").append($("<button />", {

@@ -105,7 +105,7 @@ namespace Rocket.Impl.Relation {
 		
 		private addPasteOption(element: ClipboardElement) {
 			if (!this.jqPasteUl) {
-				this.jqPasteUl = $("<ul />").appendTo(this.jqPaste).hide();
+				this.jqPasteUl = $("<ul />", { "class": "rocket-impl-multi-type-menu"}).appendTo(this.jqPaste).hide();
 				this.jqPaste.show();
 			}
 			
