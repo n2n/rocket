@@ -105,7 +105,7 @@ class FieldEiHtmlBuilder {
 	public function getOpenOutputField($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
 		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, $displayable);
 		
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');
 	}
 	
@@ -119,7 +119,7 @@ class FieldEiHtmlBuilder {
 			return $this->formHtml->getMagClose();
 		}
 	
-		return new Raw('</' . htmlspecialchars($eiPropInfo['tagName']) . '>');
+		return new Raw('</' . HtmlUtils::hsc($eiPropInfo['tagName']) . '>');
 	}
 	
 	public function label(array $attrs = null, $label = null) {

@@ -99,7 +99,7 @@ class EntryEiHtmlBuilder {
 				'class' => 'rocket-entry',
 				'data-rocket-entry-id' => $this->meta()->getCurrentEiuEntryGui()->getEiuEntry()->getGeneralId());
 		
-		return new Raw('<' . htmlspecialchars($tagName) 
+		return new Raw('<' . HtmlUtils::hsc($tagName) 
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, $attrs)) . '>');
 	}
 	
@@ -116,7 +116,7 @@ class EntryEiHtmlBuilder {
 	public function getEntryClose() {
 		$this->ensureEntryOpen();
 		
-		return new Raw('</' . htmlspecialchars($this->openEntryTagName) . '>');
+		return new Raw('</' . HtmlUtils::hsc($this->openEntryTagName) . '>');
 	}
 	
 	

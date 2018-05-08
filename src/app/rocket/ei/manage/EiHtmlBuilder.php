@@ -122,7 +122,7 @@ class EiHtmlBuilder {
 				'data-rocket-ei-type-id' => $eiType->getId(),
 				'data-rocket-supreme-ei-type-id' => $supremeEiType->getId());
 		
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				HtmlUtils::mergeAttrs($colAttrs, (array) $attrs)) . '>');
 	}
 	
@@ -135,7 +135,7 @@ class EiHtmlBuilder {
 			throw new IllegalStateException('No collection open');
 		}
 		
-		$raw = new Raw('</' . htmlspecialchars($this->collectionTagName) . '>');
+		$raw = new Raw('</' . HtmlUtils::hsc($this->collectionTagName) . '>');
 		$this->collectionTagName = null;
 		return $raw;
 	}
@@ -168,7 +168,7 @@ class EiHtmlBuilder {
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
 				'data-rocket-identity-string' => (new Eiu($eiEntryGui->getEiEntry(), $eiEntryGui->getEiGui()->getEiFrame()))->entry()->createIdentityString());
 		
-		return new Raw('<' . htmlspecialchars($tagName)
+		return new Raw('<' . HtmlUtils::hsc($tagName)
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, (array) $attrs)) . '>');
 	}
 	
@@ -179,7 +179,7 @@ class EiHtmlBuilder {
 	public function getEntryClose() {
 		$tagName = $this->state->popEntry()['tagName'];
 		
-		return new Raw('</' . htmlspecialchars($tagName) . '>');
+		return new Raw('</' . HtmlUtils::hsc($tagName) . '>');
 	}
 	
 	public function entryForkControls(array $attrs = null) {
@@ -331,7 +331,7 @@ class EiHtmlBuilder {
 	
 	
 	private function createOutputFieldOpen($tagName, Displayable $displayable = null, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
@@ -463,7 +463,7 @@ class EiHtmlBuilder {
 		}
 		
 		$this->state->pushGroup($tagName);
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
 	}
 	
 	/**

@@ -7814,7 +7814,6 @@ var Rocket;
                     this.changing = false;
                 }
                 checkLoadJobs() {
-                    console.log("tm lj");
                     Translation.LoadJobExecuter.create(this.translatables).exec();
                 }
                 initControl() {
