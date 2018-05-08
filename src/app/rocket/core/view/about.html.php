@@ -23,9 +23,10 @@
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $view->getL10nText('about')));
 ?>
-<div class="rocket-grouped-panels">
-	<section>
-		<h2><?php $html->l10nText('about_credits') ?></h2>
+<div class="rocket-group rocket-simple-group">
+
+	<label><?php $html->l10nText('about_credits') ?></label>
+	<div class="rocket-control">
 		<p>Rocket basiert auf dem PHP Framework n2n. n2n ist ein Produkt von Hofmänner New Media, Winterthur.</p>
 		<h3><?php $html->l10nText('about_credits_title')?></h3>
 		<dl class="rocket-about-creators">
@@ -35,14 +36,14 @@
 			<dd>Architektur, Lead Developer, Konzept</dd>
 			<dt>Thomas Günther</dt>
 			<dd>Developer, Frontend UI</dd>
-			<dt>Yves Lüthi</dt>
-			<dd>Frontend UI/UX</dd>
-			<dt>Silvan Bauser</dt>
-			<dd>Frontend UI</dd> 
+			<dt>Timo Schwertle</dt>
+			<dd>UI/UX Design</dd>
 		</dl>
-	</section>
-	<section>
-		<h2><?php $html->l10nText('about_license') ?></h2>
+	</div>
+</div>
+<div class="rocket-group rocket-simple-group">
+	<label><?php $html->l10nText('about_license') ?></label>
+	<div class="rocket-control">
 		<h3><?php $html->l10nText('about_license_title')?></h3>
-	</section>
+	</div>
 </div>
