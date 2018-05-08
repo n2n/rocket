@@ -102,6 +102,10 @@ class EiuEntryForm implements Dispatchable {
 		}
 	}
 	
+	public function containsEiTypeId(string $eiTypeId) {
+		return isset($this->eiuEntryTypeForms[$eiTypeId]);
+	}
+	
 	public function getChosenId() {
 		return $this->chosenId;
 	}

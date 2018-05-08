@@ -28,10 +28,10 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 		<?php if ($summaryRequired): ?>
 			<div class="rocket-impl-summary">
 				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+				<div class="rocket-impl-content-type">
+					<?php $html->out($mappingForm->getEntryLabel()) ?>
+				</div>
 				<div class="rocket-impl-content">
-					<div class="rocket-impl-content-type">
-						<?php $html->out($mappingForm->getEntryLabel()) ?>
-					</div>
 				</div>
 			</div>
 		<?php endif ?>
@@ -48,33 +48,29 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 				<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
 				<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+					<div class="rocket-impl-content-type">
+						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
+					</div>
 					<div class="rocket-impl-content">
-						<div class="rocket-impl-content-type">
-							<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-							<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
-						</div>
-						<div>
-							<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-								<?php $eiHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM)) ?>
-									<?php $eiHtml->fieldContent() ?>
-								<?php $eiHtml->fieldClose() ?>
-							<?php endforeach ?>
-						</div>
+						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
+							<?php $eiHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM)) ?>
+								<?php $eiHtml->fieldContent() ?>
+							<?php $eiHtml->fieldClose() ?>
+						<?php endforeach ?>
 					</div>
 					<div class="rocket-simple-commands"></div>
 				<?php $eiHtml->entryClose() ?>
 			<?php else: ?>
 				<div class="rocket-impl-summary">
 					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+					<div class="rocket-impl-content-type">
+						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
+					</div>
 					<div class="rocket-impl-content">
-						<div class="rocket-impl-content-type">
-							<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-							<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
-						</div>
-						<div>
-							<div class="rocket-impl-status">
-								<?php $html->text('ei_impl_new_entry_txt') ?>
-							</div>
+						<div class="rocket-impl-status">
+							<?php $html->text('ei_impl_new_entry_txt') ?>
 						</div>
 					</div>
 					<div class="rocket-simple-commands"></div>
@@ -84,7 +80,8 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 	
 		<?php if (!$grouped): ?>
 			<?php $view->out($mappingForm->getEiuEntryForm()
-					->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))->createView($view, false)) ?>
+					->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
+					->createView($view, false)) ?>
 		<?php else: ?>
 			<div class="rocket-impl-body rocket-group rocket-light-group">
 				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>

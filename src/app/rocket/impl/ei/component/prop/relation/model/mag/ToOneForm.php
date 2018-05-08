@@ -187,8 +187,22 @@ class ToOneForm implements Dispatchable {
 		$this->reduced = $reduced;
 	}
 	
+	/**
+	 * @return string[]
+	 */
+	public function getEiTypeIds() {
+		$eiType = $this->utils->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
+		
+		$eiTypeIds = [$eiType->getId()];
+		foreach ($eiType->getSubEiTypes() as $subEiType) {
+			$eiTypeIds[] = $subEiType->getId();	
+		}
+		return $eiTypeIds;
+	}
 	
-	
+	/**
+	 * @return boolean
+	 */
 	public function isDraftMode() {
 		return $this->eiuEntryFormFactory->isDraftMode();
 	}

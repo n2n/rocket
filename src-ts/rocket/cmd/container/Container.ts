@@ -14,8 +14,9 @@ namespace Rocket.Cmd {
 					Jhtml.getOrCreateMonitor());
 			this.registerLayer(layer);
 			
+			
 			jQuery(document).keyup((e) => {
-				if (e.keyCode == 27) { 
+				if (e.keyCode == 27 && !$(e.target).is("input, textarea, button")) { 
 					this.closePopup();
 			    }
 			});
@@ -119,8 +120,9 @@ namespace Rocket.Cmd {
 					layer.currentZone.messageList.addAll(messages);
 				}
 			});
-			this._layers.push(layer);
 			
+			this._layers.push(layer);
+						
 			this.markCurrent();
 		}
 		

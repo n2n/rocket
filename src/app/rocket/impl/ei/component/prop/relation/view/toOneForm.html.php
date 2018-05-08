@@ -25,6 +25,7 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToOneForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
+use rocket\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -42,6 +43,9 @@
 	$view->assert($newMappingFormUrl === null || $newMappingFormUrl instanceof Url);
 	
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
+	
+	$eiHtml = new EiHtmlBuilder($view);
+	$grouped = $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled() || $eiHtml->meta()->isFieldPanel();
 ?>
 <div class="rocket-impl-to-one" 
 		data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
@@ -52,7 +56,8 @@
 		data-item-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
 		data-reduced="<?php $html->out($toOneForm->isReduced()) ?>"
-		data-close-label="<?php $html->text('common_apply_label') ?>">
+		data-close-label="<?php $html->text('common_apply_label') ?>"
+		data-grouped = "<?php $html->out($grouped) ?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 
@@ -80,7 +85,7 @@
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($currentPropertyPath) ?>
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
-						'grouped' => ($toOneForm->isReduced() || $newMappingFormUrl !== null),
+						'grouped' => $grouped,
 						'summaryRequired' => $toOneForm->isReduced())) ?>
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			</div>
@@ -94,15 +99,17 @@
 				data-draft-mode="<?php $html->out($toOneForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
 						array('item' => $entryLabeler->getGenericLabel())) ?>"
+				data-paste-item-label="<?php $html->text('ei_impl_relation_paste_item_label') ?>"
 				data-replace-item-label="<?php $html->text('ei_impl_relation_replace_item_label', 
-						array('item' => $entryLabeler->getGenericLabel())) ?>">
+						array('item' => $entryLabeler->getGenericLabel())) ?>"
+				data-ei-type-range="<?php $html->out(json_encode($toOneForm->getEiTypeIds())) ?>">
 			<?php if (null === $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getAttrs()): ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue($newMappingFormPropertyPath)->getObject() ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($newMappingFormPropertyPath) ?>
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
-						'grouped' => ($toOneForm->isReduced() || $newMappingFormUrl !== null),
+						'grouped' => $grouped,
 						'summaryRequired' => $toOneForm->isReduced())) ?>
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			<?php endif ?>

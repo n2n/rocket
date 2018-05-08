@@ -4009,6 +4009,10 @@ body {
 /**
  * rocket-layer and rocket zone
  */
+.rocket-zone {
+  position: relative;
+}
+
 .rocket-zone > header {
   display: grid;
   position: relative;
@@ -4087,10 +4091,6 @@ body {
   min-height: calc(100vh - 6.75rem);
   max-height: none;
   overflow-y: visible;
-}
-
-.rocket-zone {
-  position: relative;
 }
 
 .rocket-zone-toolbar {
@@ -4582,7 +4582,7 @@ ul.rocket-content-item > li > span {
  * tree
  */
 .rocket-tree-level-0 {
-  border-top: 5px solid #ECEBE9;
+  border-top: 5px solid #DAD7D3;
 }
 
 .rocket-tree-level-0 > td {
@@ -4632,6 +4632,17 @@ ul.rocket-content-item > li > span {
 .rocket-tree-level-9 > td:nth-child(2)::before {
   content: '– – – – – – – – – ';
   padding-right: 0.5rem;
+}
+
+.rocket-impl-add-entry {
+  display: flex;
+  margin-right: -0.5rem !important;
+  margin-left: -0.5rem !important;
+}
+
+.rocket-impl-add-entry > div {
+  flex: 1;
+  margin: 0.5rem;
 }
 
 /*
@@ -4707,15 +4718,38 @@ ul.rocket-content-item > li > span {
   display: grid;
 }
 
+.rocket-control > .rocket-impl-content-items,
+.rocket-control > .rocket-impl-embedded {
+  padding: 0 1rem;
+}
+
+.rocket-control > .rocket-impl-to-one > .rocket-impl-embedded .rocket-impl-summary,
+.rocket-control > .rocket-impl-to-many > .rocket-impl-embedded .rocket-impl-summary {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.rocket-control > .rocket-impl-to-many > .rocket-impl-embedded > .rocket-impl-add-entry {
+  padding: 0.5rem 1rem;
+}
+
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
   display: grid;
-  grid-template-columns: 3rem auto 100px;
+  grid-template-columns: 3rem 10rem 1fr auto;
   border: 1px solid #C2BDB6;
   margin: 0.5rem 0;
+  background: #fff;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
   padding: 1rem;
+  background: #FBFAFA;
+  border-right: 1px solid #C2BDB6;
+}
+
+.rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
+  padding: 1rem 0 1rem 0.5rem;
+  border-right: 1px solid #C2BDB6;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
@@ -4730,10 +4764,6 @@ ul.rocket-content-item > li > span {
 .rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-status {
   color: #b90f00;
   padding: 0.5rem 1rem;
-}
-
-.rocket-group > .rocket-control > div > .rocket-impl-embedded {
-  padding: 1rem;
 }
 
 .rocket-impl-summary > .rocket-impl-content div {
@@ -4883,7 +4913,6 @@ ul.rocket-content-item > li > span {
 
 .rocket-group .rocket-simple-group > .rocket-control,
 .rocket-group .rocket-main-group > .rocket-control {
-  padding: 0 1rem;
   border: 1px solid #DAD7D3;
   background: rgba(194, 189, 182, 0.08);
 }
@@ -4943,11 +4972,6 @@ ul.rocket-content-item > li > span {
 
 .rocket-panel > label {
   display: none;
-}
-
-.rocket-impl-body {
-  padding: 1rem;
-  background: #fff;
 }
 
 .rocket-simple-commands > .dropdown > button,
@@ -5074,6 +5098,12 @@ td .rocket-simple-commands > .btn > i {
 
 .dropdown {
   display: inline-block;
+}
+
+.rocket-group-toolbar > .rocket-simple-commands > .rocket-important.btn-warning {
+  color: white;
+  background: #F6A723;
+  border-radius: 50%;
 }
 
 .rocket-highlighted {
@@ -5430,6 +5460,9 @@ td .rocket-simple-commands > .btn > i {
 
 .rocket-impl-grid {
   display: grid;
+  padding: 1rem;
+  grid-row-gap: 1rem;
+  grid-column-gap: 1rem;
 }
 
 .rocket-dialog-background {

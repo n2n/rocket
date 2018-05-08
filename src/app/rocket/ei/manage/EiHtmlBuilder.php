@@ -114,13 +114,15 @@ class EiHtmlBuilder {
 		}
 		
 		$this->collectionTagName = $tagName;
-		$supremeEiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg)->getSupremeEiType();
+		$eiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg);
+		$supremeEiType = $eiType->getSupremeEiType();
 		
 		$colAttrs = array(
 				'class' => 'rocket-collection',
+				'data-rocket-ei-type-id' => $eiType->getId(),
 				'data-rocket-supreme-ei-type-id' => $supremeEiType->getId());
 		
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				HtmlUtils::mergeAttrs($colAttrs, (array) $attrs)) . '>');
 	}
 	
@@ -133,7 +135,7 @@ class EiHtmlBuilder {
 			throw new IllegalStateException('No collection open');
 		}
 		
-		$raw = new Raw('</' . htmlspecialchars($this->collectionTagName) . '>');
+		$raw = new Raw('</' . HtmlUtils::hsc($this->collectionTagName) . '>');
 		$this->collectionTagName = null;
 		return $raw;
 	}
@@ -160,12 +162,13 @@ class EiHtmlBuilder {
 				
 		$entryAttrs = array(
 				'class' => 'rocket-entry' . ($treeLevel !== null ? ' rocket-tree-level-' . $treeLevel : ''),
+				'data-rocket-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getId(),
 				'data-rocket-supreme-ei-type-id' => $eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
 				'data-rocket-ei-id' => $pid,
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
 				'data-rocket-identity-string' => (new Eiu($eiEntryGui->getEiEntry(), $eiEntryGui->getEiGui()->getEiFrame()))->entry()->createIdentityString());
 		
-		return new Raw('<' . htmlspecialchars($tagName)
+		return new Raw('<' . HtmlUtils::hsc($tagName)
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, (array) $attrs)) . '>');
 	}
 	
@@ -176,7 +179,7 @@ class EiHtmlBuilder {
 	public function getEntryClose() {
 		$tagName = $this->state->popEntry()['tagName'];
 		
-		return new Raw('</' . htmlspecialchars($tagName) . '>');
+		return new Raw('</' . HtmlUtils::hsc($tagName) . '>');
 	}
 	
 	public function entryForkControls(array $attrs = null) {
@@ -292,7 +295,7 @@ class EiHtmlBuilder {
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
-			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null);
+			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null, $displayItem);
 			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
 					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
@@ -301,14 +304,14 @@ class EiHtmlBuilder {
 		$magAssembly = $guiFieldAssembly->getMagAssembly();
 		
 		if ($readOnly || $magAssembly === null) {
-			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly);
+			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly, null, $displayItem);
 			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getDisplayable(), $fieldErrorInfo,
 					$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem));
 		}
 	
 		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
 		
-		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly, $propertyPath);
+		$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, $guiFieldAssembly, $propertyPath, $displayItem);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
 				$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
 	}
@@ -328,7 +331,7 @@ class EiHtmlBuilder {
 	
 	
 	private function createOutputFieldOpen($tagName, Displayable $displayable = null, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml(
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
@@ -460,7 +463,7 @@ class EiHtmlBuilder {
 		}
 		
 		$this->state->pushGroup($tagName);
-		return new Raw('<' . htmlspecialchars($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
 	}
 	
 	/**
@@ -537,6 +540,51 @@ class EiHtmlBuilderMeta {
 		}
 		$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGui);
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isFieldGroup() {
+		$guiFieldAssembly = $this->getGuiFieldAssembly();
+		if ($guiFieldAssembly === null) return false;
+		
+		return in_array($this->getFieldDisplayType(), DisplayItem::getGroupTypes());
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isFieldPanel() {
+		$guiFieldAssembly = $this->getGuiFieldAssembly();
+		if ($guiFieldAssembly === null) return false;
+		
+		return $this->getFieldDisplayType() == DisplayItem::TYPE_PANEL;
+	}
+	
+	public function getFieldDisplayType() {
+		$fieldInfo = $this->state->peakField(false);
+		if ($fieldInfo === null) return null;
+		
+		if (isset($fieldInfo['displayItem'])) {
+			return $fieldInfo['displayItem']->getType();
+		}
+		
+		if (isset($fieldInfo['guiFieldAssembly'])) {
+			return $fieldInfo['guiFieldAssembly']->getDisplayable()->getDisplayItemType();
+		}
+		
+		return null;
+	}
+		
+	/**
+	 * @return GuiFieldAssembly|null
+	 */
+	public function getGuiFieldAssembly() {
+		$fieldInfo = $this->state->peakField(false);
+		if ($fieldInfo === null) return null;
+		
+		return $fieldInfo['guiFieldAssembly'] ?? null;
 	}
 	
 	/**
@@ -656,9 +704,9 @@ class EiHtmlBuilderState {
 	 * @param PropertyPath $propertyPath
 	 */
 	public function pushField(string $tagName, GuiIdPath $guiIdPath, FieldErrorInfo $fieldErrorInfo, GuiFieldAssembly $guiFieldAssembly = null,
-			PropertyPath $propertyPath = null) {
+			PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
 		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
-				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
+				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
 	}
 	
 	/**

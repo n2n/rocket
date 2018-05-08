@@ -57,15 +57,15 @@ class ThumbModel implements Dispatchable{
 		
 		$this->imageFile = $imageFile;
 		
-		for ($i = 1; $i < 5; $i++) {
-			$factor = $i * 10;
-			$imageDimension = new ImageDimension(16 * $factor, 9 * $factor);
-			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
-			$imageDimension = new ImageDimension(4 * $factor, 3 * $factor);
-			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
-			$imageDimension = new ImageDimension(3 * $factor, 4 * $factor);
-			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
-		}
+// 		for ($i = 1; $i < 5; $i++) {
+// 			$factor = $i * 10;
+// 			$imageDimension = new ImageDimension(16 * $factor, 9 * $factor);
+// 			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
+// 			$imageDimension = new ImageDimension(4 * $factor, 3 * $factor);
+// 			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
+// 			$imageDimension = new ImageDimension(3 * $factor, 4 * $factor);
+// 			$imageDimensions[$imageDimension->__toString()] = $imageDimension;
+// 		}
 		$this->imageDimensions = $imageDimensions;
 		
 		$this->groupedImageDimensionOptions = [];

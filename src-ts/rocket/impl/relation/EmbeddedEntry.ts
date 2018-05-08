@@ -14,25 +14,48 @@ namespace Rocket.Impl.Relation {
 		private jqExpRemoveButton: JQuery;
 		private jqRedFocusButton: JQuery;
 		private jqRedRemoveButton: JQuery;
+	
+		private jqRedCopyButton: JQuery;
+		private jqExpCopyButton: JQuery;
+		private copyCbr: Jhtml.Util.CallbackRegistry<() => any> = new Jhtml.Util.CallbackRegistry();
 		
-		constructor(jqEntry: JQuery, private readOnly: boolean, sortable: boolean) {
+		constructor(jqEntry: JQuery, private readOnly: boolean, sortable: boolean, copyable: boolean = false) {
 			this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
 			
-			this.bodyGroup = Rocket.Display.StructureElement.from(jqEntry.children(".rocket-impl-body"), true);
+			let groupJq = jqEntry.children(".rocket-impl-body");
+			if (groupJq.length == 0) {
+				groupJq = jqEntry;
+			}
+			this.bodyGroup = Rocket.Display.StructureElement.from(groupJq, true);
 			 
 			this.jqOrderIndex = jqEntry.children(".rocket-impl-order-index").hide();
 			this.jqSummary = jqEntry.children(".rocket-impl-summary");
 			
 			this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
+
+			let rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+			let ecl = this.bodyGroup.getToolbar().getCommandList();
+			
+			if (copyable) {
+				let config = { 
+					iconType: "fa fa-copy", label: "Copy", 
+					severity: Rocket.Display.Severity.WARNING 
+				};
+				let onClick = () => {
+					this.copied = !this.copied;
+				};
+
+				this.jqExpCopyButton = ecl.createJqCommandButton(config).click(onClick);
+				this.jqRedCopyButton = rcl.createJqCommandButton(config).click(onClick);
+			}
 			
 			if (readOnly) {
-				var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
+				
 				this.jqRedFocusButton = rcl.createJqCommandButton({iconType: "fa fa-file", label: "Detail", 
 						severity: Rocket.Display.Severity.SECONDARY});
 			} else {
 				this._entryForm = Rocket.Display.EntryForm.firstOf(jqEntry);
 				
-				var ecl = this.bodyGroup.getToolbar().getCommandList();
 				if (sortable) {
 					this.jqExpMoveUpButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-up", label: "Move up" });
 					this.jqExpMoveDownButton = ecl.createJqCommandButton({ iconType: "fa fa-arrow-down", label: "Move down"});
@@ -41,7 +64,6 @@ namespace Rocket.Impl.Relation {
 				this.jqExpRemoveButton = ecl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove", 
 						severity: Rocket.Display.Severity.DANGER }); 
 				
-				var rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
 				this.jqRedFocusButton = rcl.createJqCommandButton({ iconType: "fa fa-pencil", label: "Edit", 
 						severity: Rocket.Display.Severity.WARNING });
 				this.jqRedRemoveButton = rcl.createJqCommandButton({ iconType: "fa fa-trash-o", label: "Remove", 
@@ -64,7 +86,7 @@ namespace Rocket.Impl.Relation {
 			jqEntry.data("rocketImplEmbeddedEntry", this);
 		}
 		
-		get entryForm(): Rocket.Display.EntryForm {
+		get entryForm(): Rocket.Display.EntryForm|null {
 			return this._entryForm;
 		}
 		
@@ -98,6 +120,40 @@ namespace Rocket.Impl.Relation {
 			this.bodyGroup.onShow(function () {
 				callback();
 			});
+		}
+		
+		get copyable(): boolean {
+			return !!this.jqExpCopyButton;
+		}
+		
+		get copied() : boolean {
+			return this.jqExpCopyButton && this.jqExpCopyButton.hasClass("active");
+		}
+		
+		set copied(copied) {
+			if (!this.jqExpCopyButton) {
+				throw new Error("Not copyable.");
+			}
+			
+			if (this.copied == copied) return;
+			
+			if (copied) {
+				this.jqExpCopyButton.addClass("active");
+				this.jqRedCopyButton.addClass("active");
+			} else {
+				this.jqExpCopyButton.removeClass("active");
+				this.jqRedCopyButton.removeClass("active");
+			}
+			
+			this.copyCbr.fire();
+		}
+		
+		onCopy(callback: () => any) {
+			if (!this.jqRedCopyButton) {
+				throw new Error("EmbeddedEntry not copyable.");
+			}
+			
+			this.copyCbr.on(callback);
 		}
 		
 		get jQuery(): JQuery {
@@ -190,6 +246,14 @@ namespace Rocket.Impl.Relation {
 			let divJq = this.jqSummary.children(".rocket-impl-content").children("div:last");
 			divJq.empty();
 			divJq.append($("<div />", { "class": "rocket-impl-status", "text": this.jQuery.data("rocket-impl-changed-text") }));
+		}
+				
+		private _entry: Rocket.Display.Entry|null = null;
+		
+		get entry(): Rocket.Display.Entry|null {
+			if (this._entry) return this._entry;
+			
+			return this._entry = Display.Entry.find(this.jQuery, true)
 		}
 		
 //		public static from(jqElem: JQuery, create: boolean = false): EmbeddedEntry {

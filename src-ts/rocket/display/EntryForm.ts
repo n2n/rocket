@@ -22,7 +22,7 @@ namespace Rocket.Display {
 				se.getToolbar().getJqControls().show();
 				se.getToolbar().getJqControls().append(jqSelector);
 			}
-			
+
 			this.jqEiTypeSelect = jqSelector.find("select");
 			this.updateDisplay();
 			

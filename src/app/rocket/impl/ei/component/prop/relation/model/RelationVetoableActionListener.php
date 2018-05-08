@@ -132,7 +132,7 @@ class VetoCheck {
 	}
 	
 	public function remove() {
-		$queue = $this->vetoableRemoveAction->getQueue();
+		$queue = $this->vetoableRemoveAction->getMonitor();
 		foreach ($this->findAll() as $entityObj) {
 			if ($queue->isEntityObjRemoved($entityObj)) continue;
 				

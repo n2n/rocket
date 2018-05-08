@@ -19,6 +19,8 @@ namespace Rocket {
 		initializer = new Rocket.Display.Initializer(container, jqContainer.data("error-tab-title"),
 				jqContainer.data("display-error-label"));
 		
+		let clipboard = new Impl.Relation.Clipboard();
+		
 		Jhtml.ready(() => {
 			initializer.scan();
 		});
@@ -51,24 +53,24 @@ namespace Rocket {
 
 		(function () {
 			$(".rocket-impl-to-many").each(function () {
-				Rocket.Impl.Relation.ToMany.from($(this));
+				Rocket.Impl.Relation.ToMany.from($(this), clipboard);
 			});
 
 			Jhtml.ready(() => {
 				$(".rocket-impl-to-many").each(function () {
-					Rocket.Impl.Relation.ToMany.from($(this));
+					Rocket.Impl.Relation.ToMany.from($(this), clipboard);
 				});
 			});
 		}) ();
 
 		(function () {
 			$(".rocket-impl-to-one").each(function () {
-				Rocket.Impl.Relation.ToOne.from($(this));
+				let toOne = Rocket.Impl.Relation.ToOne.from($(this), clipboard);
 			});
 
 			Jhtml.ready(() => {
 				$(".rocket-impl-to-one").each(function () {
-					Rocket.Impl.Relation.ToOne.from($(this));
+					let toOne = Rocket.Impl.Relation.ToOne.from($(this), clipboard);
 				});
 			});
 		})();

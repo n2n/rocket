@@ -37,5 +37,5 @@
 
 <?php $formHtml->openPseudo($mappingForm, $propertyPath) ?>
 	<?php $view->import('embeddedEntryForm.html', array(
-			'mappingForm' => $mappingForm, 'summaryRequired' => true)) ?>
+			'mappingForm' => $mappingForm, 'summaryRequired' => true, 'grouped' => $view->getParam('grouped'))) ?>
 <?php $formHtml->closePseudo() ?>

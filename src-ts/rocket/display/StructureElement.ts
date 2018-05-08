@@ -74,9 +74,9 @@ namespace Rocket.Display {
 				return this.toolbar;
 			}
 			
-			if (!this.isGroup()) {
-				return null;
-			}
+//			if (!this.isGroup()) {
+//				return null;
+//			}
 			
 			let toolbarJq = this.jqElem.find(".rocket-group-toolbar:first")
 					.filter((index, elem) => {

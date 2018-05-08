@@ -47,7 +47,6 @@
         padding: 0.5rem 0;
     }
     > .rocket-control {
-        padding: 0 1rem;
         border: 1px solid $input-border-color;
         background: rgba($gray-500, 0.08);
     }
@@ -120,9 +119,4 @@
 
 .rocket-panel > label {
     display: none;
-}
-
-.rocket-impl-body {
-    padding: 1rem;
-    background: $white;
 }

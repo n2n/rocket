@@ -107,11 +107,17 @@ class DisplayItem {
 		throw new IllegalStateException();
 	}
 	
+	/**
+	 * @return string[]
+	 */
 	public static function getGroupTypes() {
 		return array(self::TYPE_SIMPLE_GROUP, self::TYPE_MAIN_GROUP, self::TYPE_AUTONOMIC_GROUP,
 				self::TYPE_LIGHT_GROUP);
 	}
 	
+	/**
+	 * @return string[]
+	 */
 	public static function getTypes() {
 		return array(self::TYPE_ITEM, self::TYPE_SIMPLE_GROUP, self::TYPE_MAIN_GROUP, self::TYPE_AUTONOMIC_GROUP,
 				self::TYPE_LIGHT_GROUP, self::TYPE_PANEL);

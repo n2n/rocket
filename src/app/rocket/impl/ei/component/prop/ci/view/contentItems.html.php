@@ -30,24 +30,26 @@
 	$panelLayout = $view->getParam('panelLayout');
 	$view->assert($panelLayout instanceof PanelLayout);
 
-	$groupedUiComponents = $view->getParam('groupedUiComponents');
-	$view->assert(is_array($groupedUiComponents));
+	$groupedEiuEntries = $view->getParam('groupedEiuEntries');
+	$view->assert(is_array($groupedEiuEntries));
 ?>
 <div<?php $view->out($panelLayout->hasGrid() ? ' style="display: grid; grid-template-columns: repeat(' . ($panelLayout->getNumGridCols() - 1). ', 1fr)" class="rocket-impl-grid"' : null) ?>>
 	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): ?>
 		<?php $gridPos = $panelConfig->getGridPos() ?>
 		
-		<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
-		<div<?php $view->out($gridPos === null ? null : ' style="grid-column-start: ' . $gridPos->getColStart() 
+		<div class="rocket-impl-content-items rocket-group rocket-simple-group" <?php $view->out($gridPos === null ? null : ' style="grid-column-start: ' . $gridPos->getColStart() 
 				. '; grid-column-end: ' . $gridPos->getColEnd() . '; grid-row-start: ' . $gridPos->getRowStart() 
 				. '; grid-row-end: ' . $gridPos->getRowEnd() . '"') ?>>
-			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
-				<?php $html->text('common_empty_label') ?>
-			<?php else: ?>
-				<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
-					<?php $view->out($uiComponent) ?>
-				<?php endforeach ?>
-			<?php endif ?>
+				
+			<label><?php $html->out($panelConfig->getLabel()) ?></label>
+			<div class="rocket-control">
+				<?php if (!isset($groupedEiuEntries[$panelConfig->getName()])): ?>
+					<?php $html->text('common_empty_label') ?>
+				<?php else: ?>
+					<?php $view->import('..\..\relation\view\embeddedOneToMany.html', 
+							array('eiuEntries' => $groupedEiuEntries[$panelConfig->getName()], 'reduced' => true)) ?>
+				<?php endif ?>
+			</div>
 		</div>
 	<?php endforeach ?>
 </div>

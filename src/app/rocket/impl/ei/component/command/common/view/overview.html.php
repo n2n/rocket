@@ -58,10 +58,10 @@
 	<?php endif ?>
 	
 	<?php $view->import('inc\overviewTools.html',
-			array('critmodForm' => $overviewModel->getCritmodForm(), 
+			$view->mergeParams(array('critmodForm' => $overviewModel->getCritmodForm(), 
 					'quickSearchForm' => $overviewModel->getQuickSearchForm(),
 					'label' => $eiMask->getLabelLstr()->t($view->getN2nLocale()), 
-					'pluralLabel' => $eiMask->getPluralLabelLstr()->t($view->getN2nLocale()))) ?>
+					'pluralLabel' => $eiMask->getPluralLabelLstr()->t($view->getN2nLocale())))) ?>
 	
 	<?php $formHtml->open($overviewModel) ?>
 		

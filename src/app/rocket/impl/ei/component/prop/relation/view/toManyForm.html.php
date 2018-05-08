@@ -72,6 +72,7 @@
 				data-reset-label="<?php $html->text('common_reset_label') ?>"
 				data-clear-label="<?php $html->text('common_clear_label') ?>"
 				data-cancel-label="<?php $html->text('common_cancel_label') ?>"
+				data-edit-all-label="<?php $html->text('ei_impl_relation_edit_all') ?>"
 				data-generic-entry-label="<?php $html->out($entryLabeler->getGenericLabel()) ?>"
 				data-base-property-name="<?php $html->out($formHtml->meta()->getForm()->getDispatchTargetEncoder()
 						->buildValueParamName($propertyPath->ext('selectedEntryPids'), false)) ?>">
@@ -103,7 +104,9 @@
 						->createRealPropertyPath($propertyPath->ext('newMappingForms'))) ?>"
 				data-draft-mode="<?php $html->out($toManyForm->isDraftMode())?>"
 				data-add-item-label="<?php $html->text('ei_impl_relation_add_item_label', 
-						array('item' => $entryLabeler->getGenericLabel())) ?>">
+						array('item' => $entryLabeler->getGenericLabel())) ?>"
+				data-paste-item-label="<?php $html->text('ei_impl_relation_paste_item_label') ?>"
+				data-ei-type-range="<?php $html->out(json_encode($toManyForm->getEiTypeIds())) ?>">
 			<?php $formHtml->meta()->arrayProps($propertyPath->ext('newMappingForms'), function () use ($html, $formHtml, $view, $toManyForm) { ?>
 				<?php $currentMappingForm = $formHtml->meta()->getMapValue()->getObject(); ?>
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>

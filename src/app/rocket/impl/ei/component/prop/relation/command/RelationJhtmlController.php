@@ -33,17 +33,18 @@ use rocket\ei\util\model\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
 class RelationJhtmlController extends ControllerAdapter {
-	private $eiCtrlUtils;	
+	private $eiuCtrl;	
 	
 	public function prepare(EiuCtrl $eiCtrlUtil) {
-		$this->eiCtrlUtils = $eiCtrlUtil;
+		$this->eiuCtrl = $eiCtrlUtil;
 	}
 		
 	public function doSelect(OverviewJhtmlController $delegateController, array $delegateCmds = array()) {
 		$this->delegate($delegateController);
 	}
 	
-	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ParamQuery $chooseableEiTypeIds = null) {
+	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ParamQuery $chooseableEiTypeIds = null,
+			ParamQuery $grouped = null) {
 		try {
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 		} catch (InvalidPropertyExpressionException $e) {
@@ -54,7 +55,7 @@ class RelationJhtmlController extends ControllerAdapter {
 		
 		$mappingForm = null;
 		try {
-			$eiFrameUtils = $this->eiCtrlUtils->frame();
+			$eiFrameUtils = $this->eiuCtrl->frame();
 			$mappingForm = new MappingForm($eiFrameUtils->getGenericLabel(), $eiFrameUtils->getGenericIconType(), null,  
 					$eiFrameUtils->newEiuEntryForm($draft->toBool(), null, null, $allowedEiTypeIds));
 		} catch (\InvalidArgumentException $e) {
@@ -62,13 +63,54 @@ class RelationJhtmlController extends ControllerAdapter {
 		}
 		
 		$view = $this->createView('\rocket\impl\ei\component\prop\relation\view\pseudoMappingForm.html',
-				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath));
+				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath,
+						'grouped' => ($grouped !== null ? $grouped->toBool() : true)));
+		
+		$this->send(JhtmlResponse::view($view));
+	}
+	
+	public function doCopyMappingForm(ParamQuery $propertyPath, ParamQuery $pid = null, ParamQuery $draftId = null,
+			array $chooseableEiTypeIds = null, ParamQuery $grouped = null) {
+		try {
+			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
+		} catch (InvalidPropertyExpressionException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
+		$allowedEiTypeIds = $chooseableEiTypeIds === null ? null : $chooseableEiTypeIds->toStringArrayOrReject();
+		
+		if ($pid === null) {
+			throw new BadRequestException();
+		}
+		
+		$eiuEntry = $this->eiuCtrl->lookupEntry((string) $pid);
+				
+		$mappingForm = null;
+		try {
+			$eiuFrame = $this->eiuCtrl->frame();
+			
+			$eiuEntryForm = $eiuFrame->newEiuEntryForm(false, $eiuEntry, null, $allowedEiTypeIds);
+			$mappingForm = new MappingForm($eiuFrame->getGenericLabel(), $eiuFrame->getGenericIconType(), null,
+					$eiuEntryForm);
+			
+			$eiTypeId = $eiuEntry->getEiType()->getId();
+			if ($eiuEntryForm->containsEiTypeId($eiTypeId)) {
+				$eiuEntryForm->setChosenId($eiTypeId);
+			}
+			
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
+		$view = $this->createView('\rocket\impl\ei\component\prop\relation\view\pseudoMappingForm.html',
+				array('mappingForm' => $mappingForm, 'propertyPath' => $propertyPath,
+						'grouped' => ($grouped !== null ? $grouped->toBool() : true)));
 		
 		$this->send(JhtmlResponse::view($view));
 	}
 	
 	public static function buildNewFormUrl(Url $contextUrl, bool $draft): Url {
-		return $contextUrl->extR('newmappingform', array('draft' => (bool) $draft));
+		return $contextUrl->extR(null, array('draft' => (bool) $draft));
 	}
 	
 	public static function buildSelectToolsUrl(Url $contextUrl): Url {
