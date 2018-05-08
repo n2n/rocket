@@ -4634,6 +4634,17 @@ ul.rocket-content-item > li > span {
   padding-right: 0.5rem;
 }
 
+.rocket-impl-add-entry {
+  display: flex;
+  margin-right: -0.5rem !important;
+  margin-left: -0.5rem !important;
+}
+
+.rocket-impl-add-entry > div {
+  flex: 1;
+  margin: 0.5rem;
+}
+
 /*
  * Footer
  */
@@ -4724,13 +4735,21 @@ ul.rocket-content-item > li > span {
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
   display: grid;
-  grid-template-columns: 3rem auto 100px;
+  grid-template-columns: 3rem 10rem 1fr auto;
   border: 1px solid #C2BDB6;
   margin: 0.5rem 0;
+  background: #fff;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
   padding: 1rem;
+  background: #FBFAFA;
+  border-right: 1px solid #C2BDB6;
+}
+
+.rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
+  padding: 1rem 0 1rem 0.5rem;
+  border-right: 1px solid #C2BDB6;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
@@ -5079,6 +5098,12 @@ td .rocket-simple-commands > .btn > i {
 
 .dropdown {
   display: inline-block;
+}
+
+.rocket-group-toolbar > .rocket-simple-commands > .rocket-important.btn-warning {
+  color: white;
+  background: #F6A723;
+  border-radius: 50%;
 }
 
 .rocket-highlighted {

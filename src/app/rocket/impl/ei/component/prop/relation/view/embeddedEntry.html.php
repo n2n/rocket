@@ -19,14 +19,12 @@
 		<?php if ($summaryRequired): ?>
 			<div class="rocket-impl-summary">
 				<div class="rocket-impl-handle"></div>
+				<div class="rocket-impl-content-type">
+					<i class="<?php $html->out($eiuEntry->getIconTyp()) ?>"></i>
+					<?php $html->out($eiuEntry->getGenericLabel()) ?>
+				</div>
 				<div class="rocket-impl-content">
-					<div class="rocket-impl-content-type">
-						<i class="<?php $html->out($eiuEntry->getIconTyp()) ?>"></i>
-						<?php $html->out($eiuEntry->getGenericLabel()) ?>
-					</div>
-					<div>
-						<?php $html->text('ei_impl_not_accessible', array('entry' => $eiuEntry->createIdentityString())) ?>
-					</div>
+					<?php $html->text('ei_impl_not_accessible', array('entry' => $eiuEntry->createIdentityString())) ?>
 				</div>
 			</div>
 		<?php endif ?>
@@ -42,18 +40,16 @@
 			<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
 			<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 				<div class="rocket-impl-handle"></div>
+				<div class="rocket-impl-content-type">
+					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
+					<?php $html->out($eiuEntry->getGenericLabel()) ?>
+				</div>
 				<div class="rocket-impl-content">
-					<div class="rocket-impl-content-type">
-						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
-						<?php $html->out($eiuEntry->getGenericLabel()) ?>
-					</div>
-					<div>
-						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-							<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
-								<?php $eiHtml->fieldContent() ?>
-							<?php $eiHtml->fieldClose() ?>
-						<?php endforeach ?>
-					</div>
+					<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
+						<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+							<?php $eiHtml->fieldContent() ?>
+						<?php $eiHtml->fieldClose() ?>
+					<?php endforeach ?>
 				</div>
 				<div class="rocket-simple-commands"></div>
 			<?php $eiHtml->entryClose() ?>
