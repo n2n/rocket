@@ -34,7 +34,7 @@ use rocket\core\model\launch\LayoutExtractionManager;
 use rocket\core\model\launch\Layout;
 
 class Rocket implements RequestScoped {
-	const VERSION = '2.0.0-alpha';
+	const VERSION = '2.0.0-alpha.2';
 	const NS = 'rocket';
 	
 	private $dbhPool;
