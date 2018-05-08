@@ -21,7 +21,7 @@
 	 */
 
 	$view->useTemplate('~\core\view\template.html',
-			array('title' => $view->getL10nText('about')));
+			array('title' => $view->getL10nText('about_title')));
 ?>
 <div class="rocket-group rocket-simple-group">
 
