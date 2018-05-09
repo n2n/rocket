@@ -48,7 +48,7 @@
 	
 		<div class="rocket-aside-commands">
 			<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
-				<?php $view->import('inc\previewSwitch.html') ?>
+				<?php $view->import('inc\previewSwitch.html', $view->getParams()) ?>
 			<?php endif ?>
 		</div>
 	</div>
