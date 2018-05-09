@@ -117,7 +117,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(
 				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 
-						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)));
+						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)), true);
 	}
 	
 	private function n2nLocaleDefsToMagValue(array $n2nLocaleDefs) {

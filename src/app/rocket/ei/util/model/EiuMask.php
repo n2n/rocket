@@ -54,6 +54,20 @@ class EiuMask  {
 	}
 	
 	/**
+	 * @return string
+	 */
+	public function getIconType() {
+		return $this->eiMask->getIconType();
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getLabel() {
+		return (string) $this->eiMask->getLabelLstr();
+	}
+	
+	/**
 	 * @return \rocket\ei\util\model\EiuMask
 	 */
 	public function supremeMask() {

@@ -59,7 +59,7 @@ class EiuContext {
 	 * @throws UnknownTypeException required is false and the EiEngine was not be found.
 	 */
 	function mask($eiTypeArg, bool $required = true) {
-		ArgUtils::valType($eiTypeArg, ['string', TypePath::class, \ReflectionClass::class, EiType::class, EiComponent::class]);
+		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponent::class]);
 		
 		if ($eiTypeArg instanceof EiType) {
 			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuFactory);
@@ -78,6 +78,11 @@ class EiuContext {
 			if ($eiTypeArg instanceof \ReflectionClass) {
 				return new EiuMask($this->spec->getEiTypeByClass($eiTypeArg)->getEiMask(), null,
 						$this->eiuFactory);
+			}
+			
+			if (is_object($eiTypeArg)) {
+				return new EiuMask($this->spec->getEiTypeOfObject($eiTypeArg)->getEiMask(), 
+						null, $this->eiuFactory);
 			}
 			
 			if (class_exists($eiTypeArg, false)) {
