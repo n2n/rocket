@@ -50,6 +50,7 @@ use n2n\util\cache\CorruptedCacheStoreException;
 use rocket\ei\component\EiSetup;
 use rocket\custom\CustomLaunchPad;
 use rocket\ei\EiLaunchPad;
+use n2n\reflection\ArgUtils;
 
 class Spec {	
 	private $specExtractionManager;
@@ -374,6 +375,30 @@ class Spec {
 		$this->specExtractionManager->getEiTypeExtractionByClassName($className);
 		throw new IllegalStateException('Spec not initialized.');
 	}
+	
+	/**
+	 * @param object $entityObj
+	 * @throws \InvalidArgumentException
+	 * @throws UnknownTypeException
+	 * @return \rocket\ei\EiType
+	 */
+	public function getEiTypeOfObject($entityObj) {
+		ArgUtils::valType($entityObj, 'object');
+		
+		$class = new \ReflectionClass($entityObj);
+		$orgClassName = $class->getName();
+		
+		do {
+			$className = $class->getName();
+			if (isset($this->eiTypeCis[$className])) {
+				return $this->eiTypeCis[$className];
+			}
+		} while ($class = $class->getParentClass());
+		
+		$this->specExtractionManager->getEiTypeExtractionByClassName($orgClassName);
+		throw new IllegalStateException('Spec not initialized.');
+	}
+	
 	
 	/**
 	 * @return EiType[]
