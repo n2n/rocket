@@ -96,12 +96,12 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	private function setupMulti(EiSetup $eiSetup) {
-		if (!$this->attributes->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) return;
-		
 		$eiuMask = $eiSetup->eiu()->mask();
 		
 		$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp);
 		$eiuMask->addEiCommand($multiUploadEiCommand);
+		
+		if (!$this->attributes->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) return;
 		
 		$fileEiProp = $this->fileEiProp;
 		$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileEiProp) {
