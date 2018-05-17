@@ -126,7 +126,7 @@ class RocketUserDao implements RequestScoped {
 	public function createLogin($nick, $rawPassword, RocketUser $user = null) {
 		$login = new Login();
 		$login->setNick(StringUtils::reduce($nick, 255));
-		$login->setWrongPassword($user !== null ? null : StringUtils::reduce($rawPassword, 255));
+		$login->setWrongPassword($user !== null ? null : StringUtils::reduce((string) $rawPassword, 255));
 		$login->setPower($user !== null ? $user->getPower() : null);
 		$login->setSuccessfull($user !== null);
 		$login->setIp($_SERVER['REMOTE_ADDR']);
