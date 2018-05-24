@@ -79,8 +79,8 @@ class EiuCtrl implements Lookupable {
 	 * @param string $livePid
 	 * @return \rocket\ei\util\model\EiuEntry
 	 */
-	public function lookupEntry(string $livePid) {
-		return $this->eiuFrame->entry($this->lookupEiObject($livePid));
+	public function lookupEntry(string $livePid, int $ignoreConstraintTypes = 0) {
+		return $this->eiuFrame->entry($this->lookupEiObject($livePid, $ignoreConstraintTypes));
 	}
 	
 // 	/**
@@ -99,10 +99,10 @@ class EiuCtrl implements Lookupable {
 	 * @return \rocket\ei\manage\EiObject
 	 * @deprecated use {@see self::lookupEntry()}
 	 */
-	public function lookupEiObject(string $livePid) {
+	public function lookupEiObject(string $livePid, int $ignoreConstraintTypes = 0) {
 		$eiObject = null;
 		try {
-			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->pidToId($livePid));
+			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->pidToId($livePid), $ignoreConstraintTypes);
 		} catch (UnknownEntryException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
