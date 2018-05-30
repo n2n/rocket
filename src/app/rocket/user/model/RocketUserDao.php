@@ -118,6 +118,7 @@ class RocketUserDao implements RequestScoped {
 // 	public function removeUserSpecGrant(UserSpecGrant $userScriptGrant) {
 // 		return $this->em->remove($userScriptGrant);
 // 	}
+	
 	/**
 	 * @param string $nick
 	 * @param string $rawPassword
@@ -126,7 +127,7 @@ class RocketUserDao implements RequestScoped {
 	public function createLogin($nick, $rawPassword, RocketUser $user = null) {
 		$login = new Login();
 		$login->setNick(StringUtils::reduce($nick, 255));
-		$login->setWrongPassword($user !== null ? null : StringUtils::reduce((string) $rawPassword, 255));
+// 		$login->setWrongPassword($user !== null ? null : StringUtils::reduce((string) $rawPassword, 255));
 		$login->setPower($user !== null ? $user->getPower() : null);
 		$login->setSuccessfull($user !== null);
 		$login->setIp($_SERVER['REMOTE_ADDR']);
@@ -134,6 +135,7 @@ class RocketUserDao implements RequestScoped {
 		$this->em->persist($login);
 		return $login;
 	}
+	
 	/**
 	 * @return \rocket\user\bo\Login[]
 	 */
@@ -141,6 +143,7 @@ class RocketUserDao implements RequestScoped {
 		return $this->em->createSimpleCriteria(Login::getClass(), array('successfull' => true), 
 				array('dateTime' => 'DESC'), $limit, $num)->toQuery()->fetchArray();
 	}
+	
 	/**
 	 * @return \rocket\user\bo\Login[]
 	 */
