@@ -7,9 +7,7 @@ namespace Rocket.Impl.Translation {
 		private _items: { [localeId: string]: ViewMenuItem } = {};
 		private changing: boolean = false;
 		
-		constructor(private jqContainer: JQuery) {
-			
-		}
+		constructor(private jqContainer: JQuery) {}
 
 		get jQuery(): JQuery {
 			return this.jqContainer;
@@ -38,7 +36,7 @@ namespace Rocket.Impl.Translation {
 			Display.Toggler.simple(buttonJq, menuJq);
 			
 			this.jqContainer.append(menuJq);
-			
+
 		}	
 		
 		private updateStatus() {

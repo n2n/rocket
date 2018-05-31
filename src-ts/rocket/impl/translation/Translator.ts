@@ -30,6 +30,7 @@ namespace Rocket.Impl.Translation {
 				}
 
 				let viewMenu = ViewMenu.from(jqViewControl);
+
 				jqTranslatables.each((i, elem) => {
 					viewMenu.registerTranslatable(Translatable.from($(elem)));
 				});
@@ -37,7 +38,7 @@ namespace Rocket.Impl.Translation {
 				if (isInitViewMenu) {
 					this.initViewMenu(viewMenu);
 				}
-				
+
 				viewMenu.checkLoadJobs();
 			}
 		}
@@ -95,11 +96,17 @@ namespace Rocket.Impl.Translation {
 				this.userStore.langState.onChanged(listeners[listeners.length - 1]);
 			}
 
-			viewMenu.jQuery.on("remove", () => {
-				for (let i in listeners) {
-					langState.offChanged(listeners[i]);
-				};
+			let observer: MutationObserver = new MutationObserver((mutations) => {
+				if (!viewMenu.jQuery.is(":visible")) {
+					listeners.forEach((listener: StateListener) => {
+						this.userStore.langState.offChanged(listener);
+					});
+					observer.disconnect();
+					return;
+				}
 			});
+
+			observer.observe($(".rocket-main-layer").get(0), {childList: true, attributes: true, characterData: true, subtree: true});
 		}
 	}
 }

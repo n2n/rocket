@@ -505,7 +505,7 @@ var Rocket;
         }
         Cmd.Layer = Layer;
         (function (Layer) {
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["SHOWED"] = 0] = "SHOWED";
                 EventType[EventType["HIDDEN"] = 1] = "HIDDEN";
@@ -738,7 +738,7 @@ var Rocket;
         }
         Cmd.Container = Container;
         (function (Container) {
-            let LayerEventType;
+            var LayerEventType;
             (function (LayerEventType) {
                 LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED";
                 LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED";
@@ -1158,7 +1158,7 @@ var Rocket;
             }
         }
         Cmd.Message = Message;
-        let Severity;
+        var Severity;
         (function (Severity) {
             Severity[Severity["SUCCESS"] = 1] = "SUCCESS";
             Severity[Severity["INFO"] = 2] = "INFO";
@@ -1723,7 +1723,7 @@ var Rocket;
         }
         Cmd.Zone = Zone;
         (function (Zone) {
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["SHOW"] = 0] = "SHOW";
                 EventType[EventType["HIDE"] = 1] = "HIDE";
@@ -2361,12 +2361,12 @@ var Rocket;
         Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";
         Display.Entry = Entry;
         (function (Entry) {
-            let State;
+            var State;
             (function (State) {
                 State[State["PERSISTENT"] = 0] = "PERSISTENT";
                 State[State["REMOVED"] = 1] = "REMOVED";
             })(State = Entry.State || (Entry.State = {}));
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["DISPOSED"] = 0] = "DISPOSED";
                 EventType[EventType["REFRESHED"] = 1] = "REFRESHED";
@@ -2877,14 +2877,14 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
-        let Severity;
+        var Severity;
         (function (Severity) {
-            Severity["PRIMARY"] = "primary";
-            Severity["SECONDARY"] = "secondary";
-            Severity["SUCCESS"] = "success";
-            Severity["DANGER"] = "danger";
-            Severity["INFO"] = "info";
-            Severity["WARNING"] = "warning";
+            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
+            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
+            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
+            Severity[Severity["DANGER"] = "danger"] = "DANGER";
+            Severity[Severity["INFO"] = "info"] = "INFO";
+            Severity[Severity["WARNING"] = "warning"] = "WARNING";
         })(Severity = Display.Severity || (Display.Severity = {}));
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
@@ -3350,7 +3350,7 @@ var Rocket;
                 }
             }
             Form.Config = Config;
-            let EventType;
+            var EventType;
             (function (EventType) {
                 EventType[EventType["SUBMIT"] = 0] = "SUBMIT";
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED";
@@ -4290,7 +4290,7 @@ var Rocket;
                 }
             }
             Order.Control = Control;
-            let InsertMode;
+            var InsertMode;
             (function (InsertMode) {
                 InsertMode[InsertMode["BEFORE"] = 0] = "BEFORE";
                 InsertMode[InsertMode["AFTER"] = 1] = "AFTER";
@@ -7996,12 +7996,16 @@ var Rocket;
                         });
                         this.userStore.langState.onChanged(listeners[listeners.length - 1]);
                     }
-                    viewMenu.jQuery.on("remove", () => {
-                        for (let i in listeners) {
-                            langState.offChanged(listeners[i]);
+                    let observer = new MutationObserver((mutations) => {
+                        if (!viewMenu.jQuery.is(":visible")) {
+                            listeners.forEach((listener) => {
+                                this.userStore.langState.offChanged(listener);
+                            });
+                            observer.disconnect();
+                            return;
                         }
-                        ;
                     });
+                    observer.observe($(".rocket-main-layer").get(0), { childList: true, attributes: true, characterData: true, subtree: true });
                 }
             }
             Translation.Translator = Translator;
