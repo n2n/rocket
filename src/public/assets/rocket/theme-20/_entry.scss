@@ -1,14 +1,51 @@
-// :not(.rocket-impl-entry) > .rocket-entry {
-//    margin: 1rem 0;
-//}
+/**
+ *
+ * Allowed classes to style:
+ * - .rocket-item
+ *
+ * Forbidden classes to style:
+ * - .rocket-entry
+ * - .rocket-field
+ */
 
-.rocket-content > .rocket-entry,
+.rocket-content > .rocket-item,
 .rocket-content > .rocket-form {
     margin-top: 0.5rem;
 }
 
-.rocket-field {
-    position: relative;
+.rocket-control > .rocket-item {
+    padding: 0.5rem 1rem;
+    margin: 0 -1rem;
+}
+
+@include media-breakpoint-up(md) {
+    // .rocket-item is used on TD also
+    .rocket-control > .rocket-item {
+        display: grid;
+        grid-template-columns: 15rem 1fr auto;
+
+        > label {
+            grid-column-start: 1;
+            grid-column-end: 2; 
+            padding: calc(0.375rem + 1px) 0;
+        }
+        > .rocket-control {
+            grid-row-start: 1;
+            grid-column-start: 2;
+            grid-column-end: 3; 
+        }
+        > .rocket-group-toolbar {
+            grid-column-start: 3;
+            grid-column-end: 4;        
+        }
+    }
+    .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
+        grid-template-columns: 14rem 1fr auto;
+    }
+
+    .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
+        grid-template-columns: 13rem 1fr auto;
+    }
 }
 
 .rocket-required > label {
@@ -22,27 +59,6 @@
         font-weight: bold;
     }
 }
-
-.rocket-item {
-    padding: 0.5rem 1rem;
-}
-
-@include media-breakpoint-up(md) {
-    .rocket-item {
-        clear: both;
-
-        > label {
-            width: 15rem;
-            float: left;
-            padding: calc(0.375rem + 1px) 0;
-            margin: 0;
-        }
-        > .rocket-control {
-            margin-left: 15rem;
-        }
-    }
-}
-
 
 .rocket-read-only {
     > .rocket-control {
@@ -64,35 +80,6 @@
 
 .rocket-impl-entry {
     display: grid;
-}
-
-.rocket-control {
-    > .rocket-impl-content-items,
-    > .rocket-impl-embedded {
-        padding: 0 1rem;
-    }
-}
-
-.rocket-control {
-    > .rocket-impl-to-one,
-    > .rocket-impl-to-many {
-        > .rocket-impl-embedded {
-            .rocket-impl-summary {
-                margin-left: 1rem;
-                margin-right: 1rem;
-            }
-        }
-    }
-}
-
-.rocket-control {
-    > .rocket-impl-to-many {
-        > .rocket-impl-embedded {
-            > .rocket-impl-add-entry {
-                padding: 0.5rem 1rem;
-            }
-        }
-    }
 }
 
 .rocket-control .rocket-impl-entry {

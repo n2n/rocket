@@ -4236,7 +4236,7 @@ body {
 
 .rocket-impl-translatable .rocket-impl-locale-label {
   position: absolute;
-  top: 0.125rem;
+  top: 0.75rem;
   left: -6rem;
   width: 5rem;
   text-align: right;
@@ -4273,28 +4273,17 @@ body {
   margin: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item,
-.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item {
-  padding: 0;
-}
-
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item > .rocket-impl-locale-label,
 .rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item > .rocket-impl-locale-label {
   display: block;
   position: static;
   width: 100%;
-  max-width: none;
-  float: none;
   text-align: left;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   color: #ed8207;
   border-top: 1px solid #ed8207;
   font-weight: bold;
-}
-
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item > .rocket-control,
-.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item > .rocket-control {
-  margin: 0;
+  margin-top: 1rem;
 }
 
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control,
@@ -4634,17 +4623,6 @@ ul.rocket-content-item > li > span {
   padding-right: 0.5rem;
 }
 
-.rocket-impl-add-entry {
-  display: flex;
-  margin-right: -0.5rem !important;
-  margin-left: -0.5rem !important;
-}
-
-.rocket-impl-add-entry > div {
-  flex: 1;
-  margin: 0.5rem;
-}
-
 /*
  * Footer
  */
@@ -4660,13 +4638,50 @@ ul.rocket-content-item > li > span {
   margin-left: 0.5rem;
 }
 
-.rocket-content > .rocket-entry,
+/**
+ *
+ * Allowed classes to style:
+ * - .rocket-item
+ *
+ * Forbidden classes to style:
+ * - .rocket-entry
+ * - .rocket-field
+ */
+.rocket-content > .rocket-item,
 .rocket-content > .rocket-form {
   margin-top: 0.5rem;
 }
 
-.rocket-field {
-  position: relative;
+.rocket-control > .rocket-item {
+  padding: 0.5rem 1rem;
+  margin: 0 -1rem;
+}
+
+@media (min-width: 768px) {
+  .rocket-control > .rocket-item {
+    display: grid;
+    grid-template-columns: 15rem 1fr auto;
+  }
+  .rocket-control > .rocket-item > label {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    padding: calc(0.375rem + 1px) 0;
+  }
+  .rocket-control > .rocket-item > .rocket-control {
+    grid-row-start: 1;
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+  .rocket-control > .rocket-item > .rocket-group-toolbar {
+    grid-column-start: 3;
+    grid-column-end: 4;
+  }
+  .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
+    grid-template-columns: 14rem 1fr auto;
+  }
+  .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
+    grid-template-columns: 13rem 1fr auto;
+  }
 }
 
 .rocket-required > label {
@@ -4680,25 +4695,6 @@ ul.rocket-content-item > li > span {
   left: 0.125rem;
   color: #ed8207;
   font-weight: bold;
-}
-
-.rocket-item {
-  padding: 0.5rem 1rem;
-}
-
-@media (min-width: 768px) {
-  .rocket-item {
-    clear: both;
-  }
-  .rocket-item > label {
-    width: 15rem;
-    float: left;
-    padding: calc(0.375rem + 1px) 0;
-    margin: 0;
-  }
-  .rocket-item > .rocket-control {
-    margin-left: 15rem;
-  }
 }
 
 .rocket-read-only > .rocket-control {
@@ -4716,21 +4712,6 @@ ul.rocket-content-item > li > span {
  */
 .rocket-impl-entry {
   display: grid;
-}
-
-.rocket-control > .rocket-impl-content-items,
-.rocket-control > .rocket-impl-embedded {
-  padding: 0 1rem;
-}
-
-.rocket-control > .rocket-impl-to-one > .rocket-impl-embedded .rocket-impl-summary,
-.rocket-control > .rocket-impl-to-many > .rocket-impl-embedded .rocket-impl-summary {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
-.rocket-control > .rocket-impl-to-many > .rocket-impl-embedded > .rocket-impl-add-entry {
-  padding: 0.5rem 1rem;
 }
 
 .rocket-control .rocket-impl-entry > .rocket-impl-summary {
@@ -4857,51 +4838,81 @@ ul.rocket-content-item > li > span {
   display: inline-block;
 }
 
-.rocket-group,
-.rocket-panel {
-  position: relative;
-  margin-bottom: 1.5rem;
-  padding: 0;
-  border-bottom: 1px solid #DAD7D3;
+:not(.rocket-group) .rocket-group {
+  background: #fff;
 }
 
-.rocket-group > label,
-.rocket-panel > label {
-  background: #fff;
-  width: 100%;
+:not(.rocket-group) .rocket-group > .rocket-group-toolbar {
+  padding-right: 1rem;
+}
+
+.rocket-panel,
+.rocket-group {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  margin-bottom: 1rem;
+}
+
+.rocket-panel > label,
+.rocket-group > label {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+}
+
+.rocket-panel > .rocket-control,
+.rocket-group > .rocket-control {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.rocket-panel > .rocket-group-toolbar,
+.rocket-group > .rocket-group-toolbar {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-top: 0.5rem;
+}
+
+.rocket-group > label {
   padding: 0.5rem 1rem;
-  margin: 0;
   border-left: 3px solid #ed8207;
   font-size: 1.25rem;
   font-weight: bold;
-  float: none;
 }
 
-.rocket-group > .rocket-control,
-.rocket-panel > .rocket-control {
-  background: #fff;
-  margin: 0 !important;
+.rocket-group > .rocket-control {
+  padding: 0 1rem;
 }
 
-.rocket-group .rocket-group-toolbar,
-.rocket-panel .rocket-group-toolbar {
-  position: absolute;
-  top: 0.5rem;
-  right: 0rem;
+.rocket-panel > label {
+  display: none;
 }
 
-.rocket-group .rocket-group-toolbar > .rocket-group-controls,
-.rocket-group .rocket-group-toolbar > .rocket-simple-commands,
-.rocket-panel .rocket-group-toolbar > .rocket-group-controls,
-.rocket-panel .rocket-group-toolbar > .rocket-simple-commands {
+.rocket-group-toolbar > .rocket-group-controls,
+.rocket-group-toolbar > .rocket-simple-commands {
   display: inline-block;
   margin-left: 1rem;
 }
 
+.rocket-light-group {
+  background: inherit;
+  border: 1px solid transparent;
+  margin: 0 -1rem;
+}
+
+.rocket-light-group > label {
+  border: none;
+  background-color: transparent;
+}
+
+.rocket-light-group > .rocket-group-toolbar {
+  padding-right: 1rem;
+}
+
 .rocket-group .rocket-simple-group,
 .rocket-group .rocket-main-group {
-  border: none;
-  background-color: inherit;
+  background-color: transparent;
 }
 
 .rocket-group .rocket-simple-group > label,
@@ -4913,32 +4924,8 @@ ul.rocket-content-item > li > span {
 
 .rocket-group .rocket-simple-group > .rocket-control,
 .rocket-group .rocket-main-group > .rocket-control {
-  border: 1px solid #DAD7D3;
   background: rgba(194, 189, 182, 0.08);
-}
-
-@media (min-width: 768px) {
-  .rocket-group .rocket-simple-group > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
-  .rocket-group .rocket-simple-group > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label),
-  .rocket-group .rocket-main-group > .rocket-control .rocket-editable > label:not(.rocket-impl-locale-label),
-  .rocket-group .rocket-main-group > .rocket-control .rocket-read-only > label:not(.rocket-impl-locale-label) {
-    width: auto;
-    max-width: calc(14rem - 1px);
-  }
-  .rocket-group .rocket-simple-group > .rocket-control .rocket-editable > .rocket-control,
-  .rocket-group .rocket-simple-group > .rocket-control .rocket-read-only > .rocket-control,
-  .rocket-group .rocket-main-group > .rocket-control .rocket-editable > .rocket-control,
-  .rocket-group .rocket-main-group > .rocket-control .rocket-read-only > .rocket-control {
-    margin-left: calc(14rem - 1px);
-  }
-  .rocket-control .rocket-group .rocket-simple-group > .rocket-control label,
-  .rocket-control .rocket-group .rocket-main-group > .rocket-control label {
-    max-width: calc(13rem - 2px);
-  }
-  .rocket-control .rocket-group .rocket-simple-group > .rocket-control .rocket-control,
-  .rocket-control .rocket-group .rocket-main-group > .rocket-control .rocket-control {
-    margin-left: calc(13rem - 2px);
-  }
+  border: 1px solid #C2BDB6;
 }
 
 :not(.rocket-group) .rocket-main-group-nav {
@@ -4959,19 +4946,6 @@ ul.rocket-content-item > li > span {
   border-left: 3px solid #ed8207;
   background: #fff;
   color: #373431;
-}
-
-.rocket-light-group > label {
-  border: none;
-  background-color: transparent;
-}
-
-.rocket-light-group > .rocket-control {
-  padding: 0;
-}
-
-.rocket-panel > label {
-  display: none;
 }
 
 .rocket-simple-commands > .dropdown > button,

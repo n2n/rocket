@@ -1,88 +1,87 @@
-.rocket-group,
-.rocket-panel {
-    position: relative;
-    margin-bottom: 1.5rem;
-    padding: 0;
-    border-bottom: 1px solid $input-border-color;
+:not(.rocket-group) .rocket-group {
+    background: $white;
+    > .rocket-group-toolbar {
+        padding-right: 1rem;
+    }
+}
+
+.rocket-panel,
+.rocket-group {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr;
+    margin-bottom: 1rem;
 
     > label {
-        background: $white;
-        width: 100%;
-        padding: 0.5rem 1rem;
-        margin: 0;
-        border-left: 3px solid $primary;
-        font-size: $h2-font-size;
-        font-weight: bold;
-        float: none;
+        grid-column-start: 1;
+        grid-column-end: 2; 
+        grid-row-start: 1;       
     }
     > .rocket-control {
-        background: $white;
-        margin: 0 !important;
+        grid-column-start: 1;
+        grid-column-end: 3;
     }
-    .rocket-group-toolbar {
-        position: absolute;
-        top: 0.5rem;
-        right: 0rem;
-        > .rocket-group-controls,
-        > .rocket-simple-commands {
-            display: inline-block;
-            margin-left: 1rem;
-        }
+    > .rocket-group-toolbar {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        padding-top: 0.5rem;
     }
 }
 
 .rocket-group {
+    > label {
+        padding: 0.5rem 1rem;
+        border-left: 3px solid $primary;
+        font-size: $h2-font-size;
+        font-weight: bold;
+    }
     > .rocket-control {
-        // padding: 1rem;
+        padding: 0 1rem;       
     }
 }
 
+.rocket-panel {
+    > label {
+        display: none;     
+    }
+}
+
+
+.rocket-group-toolbar {
+    > .rocket-group-controls,
+    > .rocket-simple-commands {
+        display: inline-block;
+        margin-left: 1rem;
+    }
+}
+
+.rocket-light-group {
+    background: inherit;
+    border: 1px solid transparent;
+    margin: 0 -1rem;
+    > label {
+        border: none;
+        background-color: transparent;
+    }
+    > .rocket-group-toolbar {
+        padding-right: 1rem;
+    }
+}
+
+
 .rocket-group .rocket-simple-group,
 .rocket-group .rocket-main-group {
-    border: none;
-    background-color: inherit;
+    background-color: transparent;
     > label {
         border: none;
         margin: 0;
         padding: 0.5rem 0;
     }
     > .rocket-control {
-        border: 1px solid $input-border-color;
         background: rgba($gray-500, 0.08);
+        border: 1px solid $gray-500;
     }
 }
-
-@include media-breakpoint-up(md) {
-    .rocket-group .rocket-simple-group,
-    .rocket-group .rocket-main-group {
-        > .rocket-control {
-            .rocket-editable,
-            .rocket-read-only {
-                > label:not(.rocket-impl-locale-label) {
-                    width: auto;
-                    max-width: calc(14rem - 1px);
-                }
-                > .rocket-control {
-                    margin-left: calc(14rem - 1px);
-                }
-    
-            }
-        }
-    }
-
-    .rocket-control .rocket-group .rocket-simple-group,
-    .rocket-control .rocket-group .rocket-main-group, {
-        > .rocket-control {
-            label {
-                max-width: calc(13rem - 2px);
-            }
-            .rocket-control {
-                margin-left: calc(13rem - 2px);
-            }
-        }
-    }
-}
-
 
 :not(.rocket-group) .rocket-main-group-nav {
     background: $gray-300;
@@ -107,16 +106,3 @@
 }
 
 
-.rocket-light-group {
-    > label {
-        border: none;
-        background-color: transparent;
-    }
-    > .rocket-control {
-        padding: 0;
-    }
-}
-
-.rocket-panel > label {
-    display: none;
-}
