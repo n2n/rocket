@@ -505,7 +505,7 @@ var Rocket;
         }
         Cmd.Layer = Layer;
         (function (Layer) {
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["SHOWED"] = 0] = "SHOWED";
                 EventType[EventType["HIDDEN"] = 1] = "HIDDEN";
@@ -738,7 +738,7 @@ var Rocket;
         }
         Cmd.Container = Container;
         (function (Container) {
-            var LayerEventType;
+            let LayerEventType;
             (function (LayerEventType) {
                 LayerEventType[LayerEventType["REMOVED"] = 0] = "REMOVED";
                 LayerEventType[LayerEventType["ADDED"] = 1] = "ADDED";
@@ -1158,7 +1158,7 @@ var Rocket;
             }
         }
         Cmd.Message = Message;
-        var Severity;
+        let Severity;
         (function (Severity) {
             Severity[Severity["SUCCESS"] = 1] = "SUCCESS";
             Severity[Severity["INFO"] = 2] = "INFO";
@@ -1266,38 +1266,46 @@ var Rocket;
             get jQuery() {
                 return this.jqElem;
             }
-            setGroup(group) {
-                if (!group) {
-                    this.jqElem.removeClass("rocket-group");
+            get contentJq() {
+                let contentJq = this.jqElem.children(".rocket-control");
+                if (contentJq.length > 0) {
+                    return contentJq;
                 }
-                else {
-                    this.jqElem.addClass("rocket-group");
+                return $("<div />", { "class": "rocket-control" }).appendTo(this.jqElem);
+            }
+            set type(type) {
+                this.jqElem.removeClass("rocket-item");
+                this.jqElem.removeClass("rocket-group");
+                this.jqElem.removeClass("rocket-light-group");
+                this.jqElem.removeClass("rocket-main-group");
+                this.jqElem.removeClass("rocket-panel");
+                switch (type) {
+                    case StructureElement.Type.ITEM:
+                        this.jqElem.addClass("rocket-item");
+                        break;
+                    case StructureElement.Type.SIMPLE_GROUP:
+                        this.jqElem.addClass("rocket-group");
+                        this.jqElem.addClass("rocket-simple-group");
+                        break;
+                    case StructureElement.Type.LIGHT_GROUP:
+                        this.jqElem.addClass("rocket-group");
+                        this.jqElem.addClass("rocket-light-group");
+                        break;
+                    case StructureElement.Type.MAIN_GROUP:
+                        this.jqElem.addClass("rocket-group");
+                        this.jqElem.addClass("rocket-main-group");
+                        break;
+                    case StructureElement.Type.PANEL:
+                        this.jqElem.addClass("rocket-panel");
+                        break;
                 }
                 this.valClasses();
             }
             isGroup() {
                 return this.jqElem.hasClass("rocket-group");
             }
-            setPanel(panel) {
-                if (!panel) {
-                    this.jqElem.removeClass("rocket-panel");
-                }
-                else {
-                    this.jqElem.addClass("rocket-panel");
-                }
-                this.valClasses();
-            }
             isPanel() {
                 return this.jqElem.hasClass("rocket-panel");
-            }
-            setItem(field) {
-                if (!field) {
-                    this.jqElem.removeClass("rocket-item");
-                }
-                else {
-                    this.jqElem.addClass("rocket-item");
-                }
-                this.valClasses();
             }
             isItem() {
                 return this.jqElem.hasClass("rocket-field");
@@ -1316,8 +1324,19 @@ var Rocket;
                 }
                 return this.toolbar = new Toolbar(toolbarJq);
             }
-            getTitle() {
+            get title() {
                 return this.jqElem.children("label:first").text();
+            }
+            set title(title) {
+                let labelJq = this.jqElem.children("label:first");
+                if (title === null) {
+                    labelJq.remove();
+                }
+                if (labelJq.length > 0) {
+                    labelJq.text(title);
+                    return;
+                }
+                this.jqElem.prepend($("<label />", { text: title }));
             }
             getParent() {
                 return StructureElement.of(this.jqElem.parent());
@@ -1410,6 +1429,17 @@ var Rocket;
             }
         }
         Display.StructureElement = StructureElement;
+        (function (StructureElement) {
+            let Type;
+            (function (Type) {
+                Type[Type["ITEM"] = 0] = "ITEM";
+                Type[Type["SIMPLE_GROUP"] = 1] = "SIMPLE_GROUP";
+                Type[Type["MAIN_GROUP"] = 2] = "MAIN_GROUP";
+                Type[Type["LIGHT_GROUP"] = 3] = "LIGHT_GROUP";
+                Type[Type["PANEL"] = 4] = "PANEL";
+                Type[Type["NONE"] = 5] = "NONE";
+            })(Type = StructureElement.Type || (StructureElement.Type = {}));
+        })(StructureElement = Display.StructureElement || (Display.StructureElement = {}));
         class Toolbar {
             constructor(jqToolbar) {
                 this.jqToolbar = jqToolbar;
@@ -1723,7 +1753,7 @@ var Rocket;
         }
         Cmd.Zone = Zone;
         (function (Zone) {
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["SHOW"] = 0] = "SHOW";
                 EventType[EventType["HIDE"] = 1] = "HIDE";
@@ -2361,12 +2391,12 @@ var Rocket;
         Entry.DRAFT_ID_ATTR = "data-rocket-draft-id";
         Display.Entry = Entry;
         (function (Entry) {
-            var State;
+            let State;
             (function (State) {
                 State[State["PERSISTENT"] = 0] = "PERSISTENT";
                 State[State["REMOVED"] = 1] = "REMOVED";
             })(State = Entry.State || (Entry.State = {}));
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["DISPOSED"] = 0] = "DISPOSED";
                 EventType[EventType["REFRESHED"] = 1] = "REFRESHED";
@@ -2599,7 +2629,7 @@ var Rocket;
                     this.jqGroupNav.show();
                 }
                 let jqA = $("<a />", {
-                    "text": group.getTitle(),
+                    "text": group.title(),
                     "class": "nav-link"
                 });
                 let jqLi = $("<li />", {
@@ -2877,14 +2907,14 @@ var Rocket;
 (function (Rocket) {
     var Display;
     (function (Display) {
-        var Severity;
+        let Severity;
         (function (Severity) {
-            Severity[Severity["PRIMARY"] = "primary"] = "PRIMARY";
-            Severity[Severity["SECONDARY"] = "secondary"] = "SECONDARY";
-            Severity[Severity["SUCCESS"] = "success"] = "SUCCESS";
-            Severity[Severity["DANGER"] = "danger"] = "DANGER";
-            Severity[Severity["INFO"] = "info"] = "INFO";
-            Severity[Severity["WARNING"] = "warning"] = "WARNING";
+            Severity["PRIMARY"] = "primary";
+            Severity["SECONDARY"] = "secondary";
+            Severity["SUCCESS"] = "success";
+            Severity["DANGER"] = "danger";
+            Severity["INFO"] = "info";
+            Severity["WARNING"] = "warning";
         })(Severity = Display.Severity || (Display.Severity = {}));
     })(Display = Rocket.Display || (Rocket.Display = {}));
 })(Rocket || (Rocket = {}));
@@ -3350,7 +3380,7 @@ var Rocket;
                 }
             }
             Form.Config = Config;
-            var EventType;
+            let EventType;
             (function (EventType) {
                 EventType[EventType["SUBMIT"] = 0] = "SUBMIT";
                 EventType[EventType["SUBMITTED"] = 1] = "SUBMITTED";
@@ -4290,7 +4320,7 @@ var Rocket;
                 }
             }
             Order.Control = Control;
-            var InsertMode;
+            let InsertMode;
             (function (InsertMode) {
                 InsertMode[InsertMode["BEFORE"] = 0] = "BEFORE";
                 InsertMode[InsertMode["AFTER"] = 1] = "AFTER";
@@ -5962,7 +5992,7 @@ var Rocket;
                         jqContentType.children("span").text(this.entryForm.curGenericLabel);
                         jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
                     }
-                    this.entryGroup.setGroup(false);
+                    this.entryGroup.type = Rocket.Display.StructureElement.Type.NONE;
                 }
                 hide() {
                     this.entryGroup.hide();
@@ -6804,7 +6834,7 @@ var Rocket;
                                 };
                             }
                         }
-                        toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard);
+                        toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard, !toOneSelector);
                         jqCurrent.children(".rocket-impl-entry").each(function () {
                             toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false, !!clipboard);
                         });
@@ -6822,8 +6852,9 @@ var Rocket;
             }
             Relation.ToOne = ToOne;
             class ToOneEmbedded {
-                constructor(jqToOne, addControlFactory = null, clipboard = null) {
+                constructor(jqToOne, addControlFactory = null, clipboard = null, panelMode = false) {
                     this.clipboard = clipboard;
+                    this.panelMode = panelMode;
                     this.reduceEnabled = true;
                     this.expandZone = null;
                     this.changedCallbacks = new Array();
@@ -6852,16 +6883,30 @@ var Rocket;
                     }
                     if (this.currentEntry || this.newEntry) {
                         this.addControl.jQuery.hide();
+                        if (this.addGroup) {
+                            this.addGroup.hide();
+                        }
                     }
                     else {
                         this.addControl.jQuery.show();
+                        if (this.addGroup) {
+                            this.addGroup.show();
+                        }
                     }
                     this.triggerChanged();
                     Rocket.scan();
                 }
                 createAddControl() {
                     var addControl = this.addControlFactory.createAdd();
-                    this.jqEmbedded.append(addControl.jQuery);
+                    let jqAdd = addControl.jQuery;
+                    if (this.panelMode) {
+                        this.addGroup = Rocket.Display.StructureElement.from($("<div />"), true);
+                        this.addGroup.title = this.jqToOne.data("display-item-label");
+                        this.addGroup.type = Rocket.Display.StructureElement.Type.LIGHT_GROUP;
+                        this.addGroup.contentJq.append(jqAdd);
+                        jqAdd = this.addGroup.jQuery;
+                    }
+                    this.jqEmbedded.append(jqAdd);
                     addControl.onNewEmbeddedEntry((newEntry) => {
                         this.newEntry = newEntry;
                         if (!this.isExpanded()) {
@@ -7015,6 +7060,9 @@ var Rocket;
                     Rocket.Cmd.Zone.of(this.jqToOne).page.on("disposed", () => {
                         if (this.addControl) {
                             this.addControl.dispose();
+                        }
+                        if (this.addGroup) {
+                            this.addGroup.jQuery.remove();
                         }
                         this.clipboard.offChanged(onChanged);
                     });

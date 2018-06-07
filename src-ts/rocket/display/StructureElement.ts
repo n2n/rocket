@@ -27,11 +27,42 @@ namespace Rocket.Display {
 			return this.jqElem;
 		}
 		
-		public setGroup(group: boolean) {
-			if (!group) {
-				this.jqElem.removeClass("rocket-group");
-			} else {
+		get contentJq() {
+			let contentJq = this.jqElem.children(".rocket-control");
+			
+			if (contentJq.length > 0) {
+				return contentJq;
+			}
+			
+			return $("<div />", { "class": "rocket-control" }).appendTo(this.jqElem);
+		}
+		
+		set type(type: StructureElement.Type) {
+			this.jqElem.removeClass("rocket-item");
+			this.jqElem.removeClass("rocket-group");
+			this.jqElem.removeClass("rocket-light-group");
+			this.jqElem.removeClass("rocket-main-group");
+			this.jqElem.removeClass("rocket-panel");
+			
+			switch(type) {
+			case StructureElement.Type.ITEM:
+				this.jqElem.addClass("rocket-item");
+				break;
+			case StructureElement.Type.SIMPLE_GROUP:
 				this.jqElem.addClass("rocket-group");
+				this.jqElem.addClass("rocket-simple-group");
+				break;
+			case StructureElement.Type.LIGHT_GROUP:
+				this.jqElem.addClass("rocket-group");
+				this.jqElem.addClass("rocket-light-group");
+				break;
+			case StructureElement.Type.MAIN_GROUP:
+				this.jqElem.addClass("rocket-group");
+				this.jqElem.addClass("rocket-main-group");
+				break;
+			case StructureElement.Type.PANEL:
+				this.jqElem.addClass("rocket-panel");
+				break;
 			}
 			
 			this.valClasses();
@@ -41,28 +72,8 @@ namespace Rocket.Display {
 			return this.jqElem.hasClass("rocket-group");
 		}
 		
-		public setPanel(panel: boolean) {
-			if (!panel) {
-				this.jqElem.removeClass("rocket-panel");
-			} else {
-				this.jqElem.addClass("rocket-panel");
-			}
-			
-			this.valClasses();
-		}
-		
 		public isPanel(): boolean {
 			return this.jqElem.hasClass("rocket-panel");
-		}
-		
-		public setItem(field: boolean) {
-			if (!field) {
-				this.jqElem.removeClass("rocket-item");
-			} else {
-				this.jqElem.addClass("rocket-item");
-			}
-			
-			this.valClasses();
 		}
 		
 		public isItem(): boolean {
@@ -90,8 +101,23 @@ namespace Rocket.Display {
 			return this.toolbar = new Toolbar(toolbarJq);
 		}
 		
-		public getTitle() {
+		get title() {
 			return this.jqElem.children("label:first").text();
+		}
+		
+		set title(title: string|null) {
+			let labelJq = this.jqElem.children("label:first");
+			
+			if (title === null) {
+				labelJq.remove();
+			}
+			
+			if (labelJq.length > 0) {
+				labelJq.text(title);
+				return;
+			}
+			
+			this.jqElem.prepend($("<label />", { text: title }));
 		}
 		
 		public getParent(): StructureElement {
@@ -212,6 +238,18 @@ namespace Rocket.Display {
 			structureElement = StructureElement.from(jqElem, true);
 			jqElem.data("rocketStructureElement", structureElement);
 			return structureElement;
+		}
+	}
+	
+	export namespace StructureElement {
+		
+		export enum Type {
+			ITEM,
+			SIMPLE_GROUP,
+			MAIN_GROUP,
+			LIGHT_GROUP,
+			PANEL,
+			NONE
 		}
 	}
 	

@@ -74,7 +74,7 @@
 	<?php if ($displayItem->hasDisplayStructure()): ?>
 		<?php $eiHtml->displayItemOpen('div', $displayItem) ?>
 			<?php if (null !== ($label = $displayItem->getLabel())): ?>
-				<label><?php $html->out($displayItem->getLabel()) ?></label>
+				<label><?php $html->out($label) ?></label>
 			<?php endif ?>
 	
 			<?php if ($renderInnerForks): ?>

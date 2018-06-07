@@ -99,7 +99,7 @@ namespace Rocket.Display {
 			}
 			
 			let jqA = $("<a />", { 
-				"text": group.getTitle(),
+				"text": group.title(),
 				"class": "nav-link"
 			});
 			let jqLi = $("<li />", {

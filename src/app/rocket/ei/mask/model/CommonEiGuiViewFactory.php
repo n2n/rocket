@@ -46,7 +46,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 				$this->displayStructure = $this->displayStructure->withoutGroups();
 				break;
 			case self::MODE_ROOT_GROUPED:
-				$this->displayStructure = $this->displayStructure->grouped();
+				$this->displayStructure = $this->displayStructure->groupedItems();
 				break;
 			case self::MODE_CONTROLS_ALLOWED: 
 				$this->controlsAllowed = true;

@@ -53,6 +53,7 @@ use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\util\model\EiuEntryGuiAssembler;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 	
@@ -120,7 +121,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		return $this;
 	}
 	
-	public function getForkedGuiDefinition() {
+	public function getForkedGuiDefinition(): GuiDefinition {
 		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	

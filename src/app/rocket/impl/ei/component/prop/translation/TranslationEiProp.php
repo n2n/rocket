@@ -68,6 +68,7 @@ use rocket\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -163,11 +164,8 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	public function getGuiPropFork(): ?GuiPropFork {
 		return $this;
 	}
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\GuiPropFork::getForkedGuiDefinition()
-	 */
-	public function getForkedGuiDefinition() {
+
+	public function getForkedGuiDefinition(): GuiDefinition {
 		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
 	}
 	
