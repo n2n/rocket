@@ -2629,7 +2629,7 @@ var Rocket;
                     this.jqGroupNav.show();
                 }
                 let jqA = $("<a />", {
-                    "text": group.title(),
+                    "text": group.title,
                     "class": "nav-link"
                 });
                 let jqLi = $("<li />", {
@@ -6431,7 +6431,7 @@ var Rocket;
                     this.jqEmbedded.append(this.jqEntries);
                     if (this.reduceEnabled) {
                         var structureElement = Rocket.Display.StructureElement.of(this.jqEmbedded);
-                        structureElement.setGroup(true);
+                        structureElement.type = Rocket.Display.StructureElement.Type.LIGHT_GROUP;
                         var toolbar = structureElement.getToolbar();
                         if (toolbar !== null) {
                             var jqButton = null;

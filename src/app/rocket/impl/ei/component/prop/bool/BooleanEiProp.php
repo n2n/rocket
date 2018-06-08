@@ -47,6 +47,7 @@ use rocket\ei\manage\critmod\filter\FilterField;
 use rocket\ei\manage\critmod\sort\SortField;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
+use n2n\impl\persistence\orm\property\BoolEntityProperty;
 
 class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp {
 
@@ -63,7 +64,8 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyEiPropAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
+		ArgUtils::assertTrue($entityProperty instanceof BoolEntityProperty 
+				|| $entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
 		
 		$this->entityProperty = $entityProperty;
 	}
