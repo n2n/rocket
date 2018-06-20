@@ -45,7 +45,7 @@ use rocket\ei\manage\EiHtmlBuilder;
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
 	
 	$eiHtml = new EiHtmlBuilder($view);
-	$grouped = $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled() || $eiHtml->meta()->isFieldPanel();
+	$grouped = true; // $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled() || $eiHtml->meta()->isFieldPanel();
 ?>
 <div class="rocket-impl-to-one" 
 		data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
@@ -57,7 +57,8 @@ use rocket\ei\manage\EiHtmlBuilder;
 		data-ei-spec-labels="<?php $html->out(json_encode($entryLabeler->getEiTypeLabels())) ?>"
 		data-reduced="<?php $html->out($toOneForm->isReduced()) ?>"
 		data-close-label="<?php $html->text('common_apply_label') ?>"
-		data-grouped = "<?php $html->out($grouped) ?>">
+		data-grouped="<?php $html->out($grouped) ?>"
+		data-display-item-label="<?php $html->out($eiHtml->meta()->getGuiFieldAssembly()->getDisplayable()->getUiOutputLabel())?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 

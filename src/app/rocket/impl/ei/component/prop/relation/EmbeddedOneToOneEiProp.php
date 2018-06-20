@@ -52,6 +52,7 @@ use rocket\ei\util\model\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
@@ -69,6 +70,10 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	protected function getDisplayItemType(): ?string {
+		return $this->reduced ? DisplayItem::TYPE_SIMPLE_GROUP : DisplayItem::TYPE_PANEL;
 	}
 	
 	/**

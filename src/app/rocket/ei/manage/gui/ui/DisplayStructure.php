@@ -76,12 +76,12 @@ class DisplayStructure {
 		return $guiIdPaths;
 	}
 		
-	public function grouped() {
+	public function groupedItems() {
 		$displayStructure = new DisplayStructure();
 		
 		$curDisplayStructure = null;
 		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->isGroup()) {
+			if ($displayItem->getType() != DisplayItem::TYPE_ITEM) {
 				$displayStructure->addDisplayItem($displayItem);
 				$curDisplayStructure = null;
 				continue;

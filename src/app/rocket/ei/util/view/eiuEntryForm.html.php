@@ -48,7 +48,7 @@ use n2n\web\dispatch\map\PropertyPath;
 			data-rocket-ei-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
 			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>"
 			data-rocket-generic-icon-type="<?php $html->out(current($iconTypesMap)) ?>">
-		<?php $view->import($eiuEntryFormViewModel->createEditView($view))?>
+		<?php $view->import($eiuEntryFormViewModel->createEditView($view)) ?>
 	</div>
 <?php else: ?>
 	<div class="rocket-entry-form rocket-multi-ei-type<?php $html->out($eiuEntryFormViewModel->isGroupRequired() ? ' rocket-group rocket-simple-group' : '') ?>">

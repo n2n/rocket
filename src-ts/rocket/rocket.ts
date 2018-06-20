@@ -81,7 +81,7 @@ namespace Rocket {
 			Jhtml.ready(() => {
 				t.scan();
 			});
-		}) ();
+		})();
 
 		(function () {
 			Jhtml.ready((elements) => {

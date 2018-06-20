@@ -271,11 +271,13 @@ class EiHtmlBuilder {
 		return $attrs;
 	}
 	
-	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
-		$this->view->out($this->getFieldOpen($tagName, $displayItem, $attrs, $readOnly));
+	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false,
+			bool $addDisplayCl = true) {
+		$this->view->out($this->getFieldOpen($tagName, $displayItem, $attrs, $readOnly, $addDisplayCl));
 	}
 	
-	public function getFieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false) {
+	public function getFieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false,
+			bool $addDisplayCl = false) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 		$guiIdPath = null;
@@ -285,10 +287,14 @@ class EiHtmlBuilder {
 			}
 			
 			$guiIdPath = $displayItem->getGuiIdPath();
-			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
+			if ($addDisplayCl) {
+				$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
+			}
 		} else {
 			$guiIdPath = GuiIdPath::create($displayItem);
-			$attrs = $this->applyDisplayItemAttr(DisplayItem::TYPE_ITEM, (array) $attrs);
+			if ($addDisplayCl) {
+				$attrs = $this->applyDisplayItemAttr(DisplayItem::TYPE_ITEM, (array) $attrs);
+			}
 			$displayItem = null;
 		}
 		

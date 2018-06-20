@@ -58,7 +58,7 @@
 				<?php $eiHtml->entrySelector('td') ?>
 				
 				<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-					<?php $eiHtml->fieldOpen('td', $displayItem) ?>
+					<?php $eiHtml->fieldOpen('td', $displayItem, null, false, false) ?>
 						<?php $eiHtml->fieldContent() ?>
 					<?php $eiHtml->fieldClose(); ?>
 				<?php endforeach ?>

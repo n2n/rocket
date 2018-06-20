@@ -77,7 +77,8 @@ namespace Rocket.Impl.Relation {
 					}
 				}
 				
-				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard);
+				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard, !toOneSelector);
+				
 				jqCurrent.children(".rocket-impl-entry").each(function () {
 					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false, !!clipboard);
 				});
@@ -108,7 +109,8 @@ namespace Rocket.Impl.Relation {
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
-		constructor(jqToOne: JQuery, addControlFactory: AddControlFactory = null, private clipboard: Clipboard = null) {
+		constructor(jqToOne: JQuery, addControlFactory: AddControlFactory = null, private clipboard: Clipboard = null, 
+				private panelMode: boolean = false) {
 			this.jqToOne = jqToOne;
 			this.addControlFactory = addControlFactory;
 			this.reduceEnabled = (true == jqToOne.data("reduced"));
@@ -132,6 +134,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		private addControl: AddControl;
+		private addGroup: Display.StructureElement;
 		private firstReplaceControl: AddControl;
 		private secondReplaceControl: AddControl;
 		
@@ -152,6 +155,9 @@ namespace Rocket.Impl.Relation {
 			
 			if (this.currentEntry || this.newEntry) {
 				this.addControl.jQuery.hide();
+				if (this.addGroup) {
+					this.addGroup.hide();
+				}
 //				if (this.isExpanded()) {
 //					this.firstReplaceControl.jQuery.show();
 //				} else {
@@ -160,6 +166,9 @@ namespace Rocket.Impl.Relation {
 //				this.secondReplaceControl.jQuery.show();
 			} else {
 				this.addControl.jQuery.show();
+				if (this.addGroup) {
+					this.addGroup.show();
+				}
 //				this.firstReplaceControl.jQuery.hide();
 //				this.secondReplaceControl.jQuery.hide();
 			}
@@ -186,14 +195,26 @@ namespace Rocket.Impl.Relation {
 		
 		private createAddControl(): AddControl {
 			var addControl = this.addControlFactory.createAdd();
+
+			let jqAdd = addControl.jQuery;
+
+			if (this.panelMode) {
+				this.addGroup = Display.StructureElement.from($("<div />"), true);
+				this.addGroup.title = this.jqToOne.data("display-item-label");
+				this.addGroup.type = Display.StructureElement.Type.LIGHT_GROUP;
+				this.addGroup.contentJq.append(jqAdd);
+				
+				jqAdd = this.addGroup.jQuery;
+			}
 			
-			this.jqEmbedded.append(addControl.jQuery);
+			this.jqEmbedded.append(jqAdd);
 			addControl.onNewEmbeddedEntry((newEntry: EmbeddedEntry) => {
 				this.newEntry = newEntry;
 				if (!this.isExpanded()) {
 					this.expand();
 				}
 			});
+			
 			return addControl;
 		}
 		
@@ -383,6 +404,9 @@ namespace Rocket.Impl.Relation {
 			Cmd.Zone.of(this.jqToOne).page.on("disposed", () => {
 				if (this.addControl) {
 					this.addControl.dispose();
+				}
+				if (this.addGroup) {
+					this.addGroup.jQuery.remove();
 				}
 				
 				this.clipboard.offChanged(onChanged);

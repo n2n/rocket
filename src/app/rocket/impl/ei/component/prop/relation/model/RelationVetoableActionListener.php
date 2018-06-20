@@ -122,13 +122,13 @@ class VetoCheck {
 	
 	public function release() {
 		foreach ($this->findAll() as $entityObj) {
-			if ($this->vetoableRemoveAction->isEntityObjRemoved($entityObj)) continue;
+			if ($this->vetoableRemoveAction->getMonitor()->isEntityObjRemoved($entityObj)) continue;
 			
 			$that = $this;
-			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that) {
+			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $entityObj) {
 				$that->releaseEntityObj($entityObj);
 			});
-		}	
+		}
 	}
 	
 	public function remove() {

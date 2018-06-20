@@ -391,7 +391,7 @@ namespace Rocket.Impl.Relation {
 			
 			if (this.reduceEnabled) {
 				var structureElement = Display.StructureElement.of(this.jqEmbedded);
-				structureElement.setGroup(true);
+				structureElement.type = Display.StructureElement.Type.LIGHT_GROUP;
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
 					var jqButton: JQuery = null;

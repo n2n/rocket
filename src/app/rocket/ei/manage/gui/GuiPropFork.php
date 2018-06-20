@@ -28,9 +28,9 @@ use rocket\ei\manage\mapping\EiEntry;
 interface GuiPropFork {
 
 	/**
-	 * @return GuiDefinition|null
+	 * @return GuiDefinition
 	 */
-	public function getForkedGuiDefinition();
+	public function getForkedGuiDefinition(): GuiDefinition;
 	
 	/**
 	 * @param Eiu $eiu

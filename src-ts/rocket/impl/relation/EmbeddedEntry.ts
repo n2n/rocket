@@ -203,7 +203,7 @@ namespace Rocket.Impl.Relation {
 				jqContentType.children("i").attr("class", this.entryForm.curGenericIconType);
 			}
 			
-			this.entryGroup.setGroup(false);
+			this.entryGroup.type = Display.StructureElement.Type.NONE;
 		}
 		
 		public hide() {
