@@ -21,6 +21,7 @@
  */
 namespace rocket\tool\mail\controller;
 
+use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\tool\mail\model\MailCenter;
 use n2n\log4php\appender\nn6\AdminMailCenter;
@@ -65,7 +66,7 @@ class MailCenterController extends ControllerAdapter {
 		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
 	}
 	
-	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName) {
+	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName, N2nContext $n2nContext) {
 		try {
 			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
 		} catch (InvalidPathException $e) {
@@ -79,13 +80,12 @@ class MailCenterController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		if (!$attachment->getFileSource()->getFsPath()->isFile()) {
-			$dtc = new DynamicTextCollection('rocket');
+			$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
 			N2N::getMessageContainer()->addInfo($dtc->translate('tool_mail_center_notification_attachment_deleted'));
 			$this->redirectToReferer();
 			return;
-		}
-		
-		$this->sendFile($attachment);
+		} 
+		$this->getResponse()->send($attachment);
 	}
 	
 }
