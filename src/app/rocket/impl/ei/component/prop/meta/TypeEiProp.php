@@ -32,6 +32,8 @@ use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
+use n2n\impl\web\ui\view\html\HtmlSnippet;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	
@@ -40,9 +42,16 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
-		$eiMask = $eiu->frame()->getEiFrame()->determineEiMask(
-				$eiu->entry()->getEiEntry()->getEiType());
-		return $view->getHtmlBuilder()->getEsc($eiMask->getLabelLstr()->t($view->getN2nLocale()));
+		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
+		$iconType = $eiuMask->getIconType();
+		$label = $eiuMask->getLabel();
+		
+		if (null === $iconType) return $label;
+		
+		return new HtmlSnippet(
+				new HtmlElement('i', array('class' => $iconType), ''),
+				' ',
+				new HtmlElement('span', null, $label));
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
