@@ -180,8 +180,7 @@ class SpecExtractor {
 		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskAttributes->getString(
 				RawDef::EI_DEF_ENTRY_ADD_COMMAND_ID_KEY, false));	
 		
-		if (null !== ($filterData = $eiMaskAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null, 
-				TypeConstraint::createSimple('array')))) {
+		if (null !== ($filterData = $eiMaskAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null))) {
 			$eiMaskExtraction->setFilterGroupData(FilterGroupData::create(new Attributes($filterData)));
 		}
 		
