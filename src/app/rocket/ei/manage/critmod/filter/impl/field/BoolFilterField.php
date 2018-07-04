@@ -40,6 +40,7 @@ use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
+use rocket\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
 
 class BoolFilterField implements EiEntryFilterField {
 	const ATTR_VALUE_KEY = 'value';
@@ -75,7 +76,7 @@ class BoolFilterField implements EiEntryFilterField {
 	 * @see \rocket\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
-		return new SimpleComparatorConstraint($this->criteriaProperty, CriteriaComparator::OPERATOR_EQUAL,
+		return new PropertyValueComparatorConstraint($this->criteriaProperty, CriteriaComparator::OPERATOR_EQUAL,
 				CrIt::c($this->readValue($attributes)));
 	}
 	

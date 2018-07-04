@@ -48,6 +48,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
+use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 
 class EiMask {
 	private $eiMaskDef;
@@ -540,18 +541,19 @@ class EiMask {
 	 */
 	public function setupEiFrame(EiFrame $eiFrame) {
 		if (null !== ($filterGroupData = $this->eiMaskDef->getFilterGroupData())) {
-			$criteriaConstraint = $this->createManagedFilterDefinition($eiFrame)
-					->buildCriteriaConstraint($filterGroupData, false);
-			if ($criteriaConstraint !== null) {
-				$eiFrame->addCriteriaConstraint($criteriaConstraint);
+			$comparatorConstraint = $this->getEiEngine()->createManagedFilterDefinition($eiFrame)
+					->createComparatorConstraint($filterGroupData);
+			if ($comparatorConstraint !== null) {
+				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_FILTER, 
+						new FilterCriteriaConstraint($comparatorConstraint));
 			}
 		}
 
 		if (null !== ($defaultSortData = $this->eiMaskDef->getDefaultSortData())) {
-			$criteriaConstraint = $this->eiEngine->createManagedSortDefinition($eiFrame)
+			$comparatorConstraint = $this->eiEngine->createManagedSortDefinition($eiFrame)
 					->builCriteriaConstraint($defaultSortData, false);
-			if ($criteriaConstraint !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT, $criteriaConstraint);
+			if ($comparatorConstraint !== null) {
+				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT, $comparatorConstraint);
 			}
 		}
 
