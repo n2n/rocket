@@ -53,6 +53,7 @@ use rocket\ei\EiType;
 use rocket\ei\EiTypeExtension;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
+use n2n\persistence\meta\structure\Column;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_EXTENSIONS_KEY = 'targetExtensions';
@@ -68,6 +69,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_EMBEDDED_ADD_KEY = 'embeddedAddEnabled';
 	
 	private $eiPropRelation;
+	private $displayInOverViewDefault = true;
 	
 	public function __construct(RelationEiProp $relationEiProp) {
 		parent::__construct($relationEiProp);
@@ -83,6 +85,15 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($this->eiComponent instanceof ToManyEiPropAdapter) {
 			$this->addMandatory = false;
 		}
+	}
+	
+	public function setDisplayInOverviewDefault(bool $displayInOverViewDefault) {
+		$this->displayInOverViewDefault = $displayInOverViewDefault;
+	}
+	
+	
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, $this->displayInOverViewDefault);
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {

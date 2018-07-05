@@ -38,6 +38,7 @@ use n2n\reflection\magic\MagicObjectUnavailableException;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
+use n2n\persistence\meta\structure\Column;
 
 class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const PROP_MODE_KEY = 'mode';
@@ -54,6 +55,9 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($ckeEiProp);
 	}
 
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
+	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
