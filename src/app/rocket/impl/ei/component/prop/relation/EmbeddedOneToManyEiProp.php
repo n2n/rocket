@@ -124,7 +124,9 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new RelationEiPropConfigurator($this);
+		$eiPropConfigurator = new RelationEiPropConfigurator($this);
+		$eiPropConfigurator->setDisplayInOverviewDefault(false);
+		return $eiPropConfigurator;
 	}
 
 	/**
