@@ -60,10 +60,10 @@ class DeleteController extends ControllerAdapter {
 		
 		$evt = null;
 		if ($taa->isSuccessful()) {
-			$evt = JhtmlEvent::ei()->eiObjectRemoved($eiObject);
+			$evt = JhtmlEvent::ei()->eiObjectRemoved($eiObject)->noAutoEvents();
 		} else {
 			$mt = new MessageTranslator('rocket', $eiuFrame->getN2nLocale());
-			$evt = JhtmlEvent::ei()->message(...$mt->translateAll($taa->getReasonMessages()));
+			$evt = JhtmlEvent::ei()->message(...$mt->translateAll($taa->getReasonMessages()))->noAutoEvents();
 		}
 		
 		$this->eiuCtrl->redirectToReferer($redirectUrl, $evt);
