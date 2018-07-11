@@ -64,4 +64,5 @@
 			<?php $entryEiHtml->closeField() ?>
 		<?php endif ?>
 	<?php endforeach ?>
+	<br>
 </div>
