@@ -45,6 +45,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	private $ckeLinkProviderLookupIds;
 	private $ckeCssConfigLookupId = null;
 	private $tableSupported = false;
+	private $bbcode = false;
 	
 	public function __construct() {
 		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::bulky());
@@ -103,6 +104,14 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function setTableSupported(bool $tableSupported) {
 		$this->tableSupported = $tableSupported;
 	}
+	
+	public function isBbcode() {
+		return $this->bbcode;
+	}
+	
+	public function setBbcode(bool $bbcode) {
+		$this->bbcode = $bbcode;
+	}
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
@@ -123,8 +132,9 @@ class CkeEiProp extends AlphanumericEiProp {
 	
 	public function createMag(Eiu $eiu): Mag {
 		$eiEntry = $eiu->entry()->getEiEntry();
+		
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-				null, $this->getMaxlength(), $this->getMode(), false,
+				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
 				$this->isTableSupported(), $this->getCkeLinkProviderLookupIds(), $this->getCkeCssConfigLookupId());
 	}
 	
