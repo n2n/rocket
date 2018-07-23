@@ -45,6 +45,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const PROP_LINK_PROVIDER_LOOKUP_IDS_KEY = 'linkProviders';
 	const PROP_CSS_CONFIG_LOOKUP_ID_KEY = 'cssConfig';
 	const PROP_TABLES_SUPPORTED_KEY = 'tablesSupported';
+	const PROP_BBCODE_KEY = 'bbcode';
 	
 	private $ckeEiProp;
 	
@@ -78,6 +79,8 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection->addMag(self::PROP_TABLES_SUPPORTED_KEY, new BoolMag('Table Editing',
 				$lar->getBool(self::PROP_TABLES_SUPPORTED_KEY, $this->ckeEiProp->isTableSupported())));
+		$magCollection->addMag(self::PROP_BBCODE_KEY, new BoolMag('BBcode',
+				$lar->getBool(self::PROP_BBCODE_KEY, $this->ckeEiProp->isBbcode())));
 				
 		return $magDispatchable;
 	}
@@ -88,7 +91,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$this->attributes->appendAll($magCollection->readValues(array(self::PROP_MODE_KEY, 
 				self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, 
-				self::PROP_TABLES_SUPPORTED_KEY), true), true);
+				self::PROP_TABLES_SUPPORTED_KEY, self::PROP_BBCODE_KEY), true), true);
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
@@ -128,9 +131,11 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		$this->ckeEiProp->setCkeCssConfigLookupId($ckeCssConfigLookupId);
 		
-		
 		$this->ckeEiProp->setTableSupported($this->attributes->getBool(self::PROP_TABLES_SUPPORTED_KEY, false,
 				$this->ckeEiProp->isTableSupported()));
+		
+		$this->ckeEiProp->setBbcode($this->attributes->getBool(self::PROP_BBCODE_KEY, false,
+				$this->ckeEiProp->isBbcode()));
 	}
 	
 	private function lookupCssConfig($lookupId, EiSetup $eiSetupProcess) {
