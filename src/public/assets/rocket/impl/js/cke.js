@@ -235,10 +235,10 @@
 	
 	WysiwygIframe.prototype.configureIframe = function() {
 		var that = this;
-		that.jqElem.ready(function() {
+		var doIt = function() {
 			var jqElemDocument = $(that.jqElem.get(0).contentWindow.document),
-				jqElemBody = jqElemDocument.find("body:first"),
-				jqElemHead = jqElemDocument.find("head:first");
+			jqElemBody = jqElemDocument.find("body:first"),
+			jqElemHead = jqElemDocument.find("head:first");
 			
 			if (null !== that.contentsCss) {
 				for (var i in that.contentsCss) {
@@ -259,6 +259,14 @@
 			var containerHeight = jqElemBody.outerHeight(true, true);
 			containerHeight = (containerHeight > 400) ? 400 : containerHeight;
 			that.jqElem.outerHeight(containerHeight);
+			
+			that.jqElem.on('load', function() {
+				doIt();
+			});
+		}
+		
+		that.jqElem.ready(function() {
+			doIt();
 		});
 	};
 	
