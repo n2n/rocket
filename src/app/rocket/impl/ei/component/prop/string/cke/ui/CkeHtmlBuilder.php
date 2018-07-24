@@ -107,8 +107,9 @@ class CkeHtmlBuilder {
 	 * @param CkeCssConfig $ckeCssConfig
 	 * @param CkeCssConfig[] $linkProviders
 	 */
-	public function editor($propertyPath = null, CkeComposer $ckeComposer = null) {
-		$this->view->out($this->getEditor($propertyPath, $ckeComposer));
+	public function editor($propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null,
+			array $linkProviders = array()) {
+		$this->view->out($this->getEditor($propertyPath, $ckeComposer, $ckeCssConfig, $linkProviders));
 	}
 
 	/**
