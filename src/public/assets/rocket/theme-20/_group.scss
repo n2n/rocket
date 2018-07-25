@@ -1,6 +1,6 @@
 :not(.rocket-group) .rocket-group {
     background: $white;
-    > .rocket-group-toolbar {
+    > .rocket-toolbar {
         padding-right: 1rem;
     }
 }
@@ -21,7 +21,7 @@
         grid-column-start: 1;
         grid-column-end: 3;
     }
-    > .rocket-group-toolbar {
+    > .rocket-toolbar {
         grid-column-start: 2;
         grid-column-end: 3;
         padding-top: 0.5rem;
@@ -47,7 +47,7 @@
 }
 
 
-.rocket-group-toolbar {
+.rocket-toolbar {
     > .rocket-group-controls,
     > .rocket-simple-commands {
         display: inline-block;
@@ -63,7 +63,7 @@
         border: none;
         background-color: transparent;
     }
-    > .rocket-group-toolbar {
+    > .rocket-toolbar {
         padding-right: 1rem;
     }
 }

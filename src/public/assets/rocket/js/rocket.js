@@ -1314,12 +1314,12 @@ var Rocket;
                 if (this.toolbar !== null) {
                     return this.toolbar;
                 }
-                let toolbarJq = this.jqElem.find(".rocket-group-toolbar:first")
+                let toolbarJq = this.jqElem.find(".rocket-toolbar:first")
                     .filter((index, elem) => {
                     return this === StructureElement.of($(elem));
                 });
                 if (toolbarJq.length == 0) {
-                    toolbarJq = $("<div />", { "class": "rocket-group-toolbar" });
+                    toolbarJq = $("<div />", { "class": "rocket-toolbar" });
                     this.jqElem.prepend(toolbarJq);
                 }
                 return this.toolbar = new Toolbar(toolbarJq);
