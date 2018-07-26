@@ -20,7 +20,7 @@
 
 @include media-breakpoint-up(md) {
     // .rocket-item is used on TD also
-    .rocket-control > .rocket-item {
+    .rocket-item {
         display: grid;
         grid-template-columns: 15rem 1fr auto;
 

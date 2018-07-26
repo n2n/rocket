@@ -1,8 +1,14 @@
-:not(.rocket-group) .rocket-group {
+.rocket-group {
     background: $white;
-    > .rocket-toolbar {
-        padding-right: 1rem;
+    
+    .rocket-group {
+        background: transparent;
     }
+}
+
+.rocket-toolbar {
+    padding: 0.5rem 0;
+    text-align: right;
 }
 
 .rocket-panel,
@@ -56,7 +62,7 @@
 }
 
 .rocket-light-group {
-    background: inherit;
+    background: transparent;
     border: 1px solid transparent;
     margin: 0 -1rem;
     > label {
