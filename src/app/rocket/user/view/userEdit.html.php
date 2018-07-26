@@ -39,7 +39,7 @@
 ?>
 
 <?php $formHtml->open($userGroupForm, null, 'post', array('class' => 'rocket-edit-form'))?>
-	<div class="rocket-panel">
+	<div class="rocket-content">
 		<h3><?php $html->l10nText('common_properties_title') ?></h3>
 	
 		<?php $formHtml->messageList() ?>
