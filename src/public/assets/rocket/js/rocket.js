@@ -1277,7 +1277,6 @@ var Rocket;
                 this.jqElem.removeClass("rocket-item");
                 this.jqElem.removeClass("rocket-group");
                 this.jqElem.removeClass("rocket-light-group");
-    			this.jqElem.removeClass("rocket-simple-group");
                 this.jqElem.removeClass("rocket-main-group");
                 this.jqElem.removeClass("rocket-panel");
                 switch (type) {
@@ -2425,9 +2424,12 @@ var Rocket;
                     return;
                 let jqSelector = this.jqElem.children(".rocket-ei-type-selector");
                 let se = Display.StructureElement.of(jqSelector);
-                if (se.isGroup()) {
+                if (se && se.isGroup()) {
                     se.getToolbar().getJqControls().show();
                     se.getToolbar().getJqControls().append(jqSelector);
+                }
+                else {
+                    jqSelector.addClass("rocket-toolbar");
                 }
                 this.jqEiTypeSelect = jqSelector.find("select");
                 this.updateDisplay();
