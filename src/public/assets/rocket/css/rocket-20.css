@@ -4815,7 +4815,7 @@ body {
 
 .rocket-impl-translatable .rocket-impl-locale-label {
   position: absolute;
-  top: 0.75rem;
+  top: 0.625rem;
   left: -6rem;
   width: 5rem;
   text-align: right;
@@ -4833,7 +4833,7 @@ body {
   content: "";
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
+.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
   position: relative;
   display: -ms-grid;
   display: grid;
@@ -4841,22 +4841,22 @@ body {
       grid-template-columns: 1fr auto;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
+.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   -ms-grid-column: 2;
       grid-column-start: 2;
   grid-column-end: 3;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
+.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
   padding: 0;
 }
 
-:not(.rocket-group) > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
+.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
   margin: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item > .rocket-impl-locale-label,
-.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-item > .rocket-impl-locale-label {
+.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > div > .rocket-impl-locale-label,
+.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > div > .rocket-impl-locale-label {
   display: block;
   position: static;
   width: 100%;
@@ -5459,14 +5459,6 @@ ul.rocket-content-item > li > span {
   display: inline-block;
 }
 
-.rocket-group {
-  background: #fff;
-}
-
-.rocket-group .rocket-group {
-  background: transparent;
-}
-
 .rocket-toolbar {
   padding: 0.5rem 0;
   text-align: right;
@@ -5508,6 +5500,10 @@ ul.rocket-content-item > li > span {
   padding-top: 0.5rem;
 }
 
+.rocket-group {
+  background: #fff;
+}
+
 .rocket-group > label {
   padding: 0.5rem 1rem;
   border-left: 3px solid #ed8207;
@@ -5517,6 +5513,10 @@ ul.rocket-content-item > li > span {
 
 .rocket-group > .rocket-control {
   padding: 0 1rem;
+}
+
+.rocket-group .rocket-group {
+  background: transparent;
 }
 
 .rocket-panel > label {
@@ -5529,18 +5529,18 @@ ul.rocket-content-item > li > span {
   margin-left: 1rem;
 }
 
-.rocket-light-group {
+.rocket-group .rocket-light-group {
   background: transparent;
   border: 1px solid transparent;
   margin: 0 -1rem;
 }
 
-.rocket-light-group > label {
+.rocket-group .rocket-light-group > label {
   border: none;
   background-color: transparent;
 }
 
-.rocket-light-group > .rocket-toolbar {
+.rocket-group .rocket-light-group > .rocket-toolbar {
   padding-right: 1rem;
 }
 

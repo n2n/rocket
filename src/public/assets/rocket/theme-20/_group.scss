@@ -1,10 +1,4 @@
-.rocket-group {
-    background: $white;
-    
-    .rocket-group {
-        background: transparent;
-    }
-}
+
 
 .rocket-toolbar {
     padding: 0.5rem 0;
@@ -36,6 +30,7 @@
 }
 
 .rocket-group {
+    background: $white;
     > label {
         padding: 0.5rem 1rem;
         border-left: 3px solid $primary;
@@ -44,6 +39,9 @@
     }
     > .rocket-control {
         padding: 0 1rem;       
+    }
+    .rocket-group {
+        background: transparent;
     }
 }
 
@@ -62,7 +60,7 @@
     }
 }
 
-.rocket-light-group {
+.rocket-group .rocket-light-group {
     background: transparent;
     border: 1px solid transparent;
     margin: 0 -1rem;
