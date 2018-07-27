@@ -64,7 +64,7 @@
 <?php endif ?>
 
 <?php if ($renderForkMags): ?>
-	<div class="rocket-group-toolbar">
+	<div class="rocket-toolbar">
 		<?php $eiHtml->entryForkControls() ?>
 		<?php $eiHtml->commands($controls, true) ?>
 	</div>
@@ -78,7 +78,7 @@
 			<?php endif ?>
 	
 			<?php if ($renderInnerForks): ?>
-				<div class="rocket-group-toolbar">
+				<div class="rocket-toolbar">
 					<?php $eiHtml->entryForkControls() ?>
 					<?php $eiHtml->commands($controls, true) ?>
 				</div>
@@ -95,7 +95,7 @@
 			<?php $eiHtml->fieldLabel() ?>
 			
 			<?php if ($renderInnerForks): ?>
-				<div class="rocket-group-toolbar">
+				<div class="rocket-toolbar">
 					<?php $eiHtml->entryForkControls() ?>
 					<?php $eiHtml->commands($controls, true) ?>
 				</div>

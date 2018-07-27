@@ -27,12 +27,12 @@ use n2n\reflection\ArgUtils;
 class DisplayStructure {
 	private $displayItems = array();
 	
-	public function addGuiIdPath(GuiIdPath $guiIdPath, string $groupType = null, string $label = null) {
-		$this->displayItems[] = DisplayItem::create($guiIdPath, $groupType, $label);
+	public function addGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
+		$this->displayItems[] = DisplayItem::create($guiIdPath, $type, $label);
 	}
 	
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $groupType, string $label = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $groupType, $label);
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null) {
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label);
 	}
 	
 	public function addDisplayItem(DisplayItem $displayItem) {
@@ -81,6 +81,12 @@ class DisplayStructure {
 		
 		$curDisplayStructure = null;
 		foreach ($this->displayItems as $displayItem) {
+			if ($displayItem->getType() == DisplayItem::TYPE_PANEL) {
+				$displayStructure->addDisplayItem($displayItem->copy(DisplayItem::TYPE_SIMPLE_GROUP));
+				$curDisplayStructure = null;
+				continue;
+			}
+			
 			if ($displayItem->getType() != DisplayItem::TYPE_ITEM) {
 				$displayStructure->addDisplayItem($displayItem);
 				$curDisplayStructure = null;
@@ -141,6 +147,10 @@ class DisplayStructure {
 		return $displayStructure;
 	}
 	
+	/**
+	 * @param DisplayStructure $displayStructure
+	 * @param DisplayItem[] $displayItems
+	 */
 	private function stripGroups(DisplayStructure $displayStructure, array $displayItems) {
 		foreach ($displayItems as $displayItem) {
 			if (!$displayItem->isGroup()) {

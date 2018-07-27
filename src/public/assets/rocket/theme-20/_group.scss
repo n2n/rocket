@@ -1,10 +1,4 @@
-:not(.rocket-group) .rocket-group {
-    background: $white;
-    > .rocket-group-toolbar {
-        padding-right: 1rem;
-    }
-}
-
+// similar styles of groups and panels
 .rocket-panel,
 .rocket-group {
     display: grid;
@@ -15,13 +9,14 @@
     > label {
         grid-column-start: 1;
         grid-column-end: 2; 
-        grid-row-start: 1;       
+        grid-row-start: 1;
+        margin-bottom: 0;    
     }
     > .rocket-control {
         grid-column-start: 1;
         grid-column-end: 3;
     }
-    > .rocket-group-toolbar {
+    > .rocket-toolbar {
         grid-column-start: 2;
         grid-column-end: 3;
         padding-top: 0.5rem;
@@ -29,6 +24,8 @@
 }
 
 .rocket-group {
+    // frist group has a white background
+    background: $white;
     > label {
         padding: 0.5rem 1rem;
         border-left: 3px solid $primary;
@@ -36,7 +33,11 @@
         font-weight: bold;
     }
     > .rocket-control {
-        padding: 0 1rem;       
+        padding: 0.5rem 1rem;       
+    }
+    .rocket-group {
+        // second and more group are transparent
+        background: transparent;
     }
 }
 
@@ -46,8 +47,44 @@
     }
 }
 
+/*
+ * specific group types
+ */ 
+.rocket-group {
+    .rocket-light-group {
+        background: transparent;
+        border: 1px solid transparent;
+        margin: 0 -1rem;
+        > label {
+            border: none;
+            background-color: transparent;
+        }
+        > .rocket-toolbar {
+            padding-right: 1rem;
+        }
+    }
+    .rocket-simple-group,
+    .rocket-main-group {
+        background-color: transparent;
+        > label {
+            border: none;
+            margin: 0;
+            padding: 0.5rem 0;
+        }
+        > .rocket-control {
+            background: rgba($gray-500, 0.08);
+            border: 1px solid $gray-500;
+        }
+    }
+}
 
-.rocket-group-toolbar {
+/*
+ * Toolbar
+ */
+ .rocket-toolbar {
+    padding: 0.5rem 0;
+    text-align: right;
+
     > .rocket-group-controls,
     > .rocket-simple-commands {
         display: inline-block;
@@ -55,35 +92,8 @@
     }
 }
 
-.rocket-light-group {
-    background: inherit;
-    border: 1px solid transparent;
-    margin: 0 -1rem;
-    > label {
-        border: none;
-        background-color: transparent;
-    }
-    > .rocket-group-toolbar {
-        padding-right: 1rem;
-    }
-}
 
-
-.rocket-group .rocket-simple-group,
-.rocket-group .rocket-main-group {
-    background-color: transparent;
-    > label {
-        border: none;
-        margin: 0;
-        padding: 0.5rem 0;
-    }
-    > .rocket-control {
-        background: rgba($gray-500, 0.08);
-        border: 1px solid $gray-500;
-    }
-}
-
-:not(.rocket-group) .rocket-main-group-nav {
+.rocket-main-group-nav {
     background: $gray-300;
     border: 0;
 
@@ -102,7 +112,4 @@
             }
         }
     }
-
 }
-
-

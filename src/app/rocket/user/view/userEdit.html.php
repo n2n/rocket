@@ -39,51 +39,48 @@
 ?>
 
 <?php $formHtml->open($userGroupForm, null, 'post', array('class' => 'rocket-edit-form'))?>
-	<div class="rocket-panel">
-		<h3><?php $html->l10nText('common_properties_title') ?></h3>
-	
-		<?php $formHtml->messageList() ?>
-			
-		<div class="rocket-properties">
-			<div>
+	<?php $formHtml->messageList(null, array('class' => 'alert alert-danger list-unstyled')) ?>
+	<div class="rocket-group">
+		<div class="rocket-control">
+			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.nick') ?>
 				<div class="rocket-control">
-					<?php $formHtml->input('rocketUser.nick', array('maxlength' => 128)) ?>
+					<?php $formHtml->input('rocketUser.nick', array('maxlength' => 128, 'class' => 'form-control')) ?>
 				</div>
 			</div>
-			<div>
+			<div class="rocket-item">
 				<?php $formHtml->label('rawPassword') ?>
 				<div class="rocket-control">
-					<?php $formHtml->input('rawPassword', null, 'password', true) ?>
+					<?php $formHtml->input('rawPassword', array('class' => 'form-control'), 'password', true) ?>
 				</div>
 			</div>
-			<div>
+			<div class="rocket-item">
 				<?php $formHtml->label('rawPassword2') ?>
 				<div class="rocket-control">
-					<?php $formHtml->input('rawPassword2', null, 'password', true) ?>
+					<?php $formHtml->input('rawPassword2', array('class' => 'form-control'), 'password', true) ?>
 				</div>
 			</div>
-			<div>
+			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.firstname') ?>
 				<div class="rocket-control">
-					<?php $formHtml->input('rocketUser.firstname', array('maxlength' => 32)) ?>
+					<?php $formHtml->input('rocketUser.firstname', array('maxlength' => 32, 'class' => 'form-control')) ?>
 				</div>
 			</div>
-			<div>
+			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.lastname') ?>
 				<div class="rocket-control">
-					<?php $formHtml->input('rocketUser.lastname', array('maxlength' => 32)) ?>
+					<?php $formHtml->input('rocketUser.lastname', array('maxlength' => 32, 'class' => 'form-control')) ?>
 				</div>
 			</div>
-			<div>
+			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.email') ?>
 				<div class="rocket-control">
-					<?php $formHtml->input('rocketUser.email', array('maxlength' => 128), 'email') ?>
+					<?php $formHtml->input('rocketUser.email', array('maxlength' => 128, 'class' => 'form-control'), 'email') ?>
 				</div>
 			</div>
 			
 			<?php if (null !== ($powerOptions = $userGroupForm->getPowerOptions())): ?>
-				<div>
+				<div class="rocket-item">
 					<?php $formHtml->label('power') ?>
 					<div class="rocket-control">
 						<?php $formHtml->select('power', $powerOptions) ?>
@@ -91,7 +88,7 @@
 				</div>
 			<?php endif ?>
 			
-			<div>
+			<div class="rocket-item">
 				<?php $formHtml->label('rocketUserGroupIds') ?>
 				<div class="rocket-control">
 					<?php $availableRocketUserGroups = $userGroupForm->getAvailableRocketUserGroups() ?>
@@ -115,7 +112,7 @@
 		<div>
 			<?php $formHtml->buttonSubmit('save', 
 					new Raw('<i class="fa fa-save"></i>' . $html->getL10nText('common_save_label')), 
-					array('class' => 'btn btn-primary')) ?>
+					array('class' => 'btn btn-primary rocket-important')) ?>
 		</div>
 	</div>
 <?php $formHtml->close() ?>

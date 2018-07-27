@@ -1277,6 +1277,7 @@ var Rocket;
                 this.jqElem.removeClass("rocket-item");
                 this.jqElem.removeClass("rocket-group");
                 this.jqElem.removeClass("rocket-light-group");
+    			this.jqElem.removeClass("rocket-simple-group");
                 this.jqElem.removeClass("rocket-main-group");
                 this.jqElem.removeClass("rocket-panel");
                 switch (type) {
@@ -1314,12 +1315,12 @@ var Rocket;
                 if (this.toolbar !== null) {
                     return this.toolbar;
                 }
-                let toolbarJq = this.jqElem.find(".rocket-group-toolbar:first")
+                let toolbarJq = this.jqElem.find(".rocket-toolbar:first")
                     .filter((index, elem) => {
                     return this === StructureElement.of($(elem));
                 });
                 if (toolbarJq.length == 0) {
-                    toolbarJq = $("<div />", { "class": "rocket-group-toolbar" });
+                    toolbarJq = $("<div />", { "class": "rocket-toolbar" });
                     this.jqElem.prepend(toolbarJq);
                 }
                 return this.toolbar = new Toolbar(toolbarJq);

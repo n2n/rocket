@@ -34,6 +34,7 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
+use n2n\impl\web\ui\view\html\HtmlUtils;
 
 class CkeHtmlBuilder {
 
@@ -101,14 +102,16 @@ class CkeHtmlBuilder {
 				}, $contentsHtml));
 	}
 	
+		
 	/**
 	 * @param mixed $propertyPath
 	 * @param CkeComposer $ckeComposer
 	 * @param CkeCssConfig $ckeCssConfig
 	 * @param CkeCssConfig[] $linkProviders
 	 */
-	public function editor($propertyPath = null, CkeComposer $ckeComposer = null) {
-		$this->view->out($this->getEditor($propertyPath, $ckeComposer));
+	public function editor($propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null,
+			array $linkProviders = array(), array $attrs = null) {
+		$this->view->out($this->getEditor($propertyPath, $ckeComposer, $ckeCssConfig, $linkProviders, $attrs));
 	}
 
 	/**
@@ -118,13 +121,16 @@ class CkeHtmlBuilder {
 	 * @param CkeCssConfig[] $linkProviders
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getEditor($propertyExpression = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null, 
-			array $linkProviders = array()) {
+	public function getEditor($propertyExpression = null, CkeComposer $ckeComposer = null, 
+			CkeCssConfig $ckeCssConfig = null, array $linkProviders = array(), array $attrs = null) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
-		$attrs = array('class' => 'rocket-impl-cke-classic', 
+		
+		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-impl-cke-classic', 
 				'data-rocket-impl-toolbar' => StringUtils::jsonEncode($this->buildEditorAttrs($ckeComposer, $ckeCssConfig)),
-				'data-link-configurations' => StringUtils::jsonEncode($this->buildLinkConfigData($linkProviders)));
+				'data-link-configurations' => StringUtils::jsonEncode($this->buildLinkConfigData($linkProviders))), (array) $attrs);
+		
+		
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyExpression, $attrs);
 	}
 

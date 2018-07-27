@@ -20,7 +20,7 @@
 
 @include media-breakpoint-up(md) {
     // .rocket-item is used on TD also
-    .rocket-control > .rocket-item {
+    .rocket-item {
         display: grid;
         grid-template-columns: 15rem 1fr auto;
 
@@ -34,7 +34,7 @@
             grid-column-start: 2;
             grid-column-end: 3; 
         }
-        > .rocket-group-toolbar {
+        > .rocket-toolbar {
             grid-column-start: 3;
             grid-column-end: 4;        
         }

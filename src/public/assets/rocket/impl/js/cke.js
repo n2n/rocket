@@ -217,7 +217,6 @@
 	
 	var WysiwygIframe = function(jqElem) {
 		this.jqElem = jqElem;
-		this.document = jqElem.get(0).contentWindow.document;
 		
 		this.contentsCss =  jqElem.data("contents-css") || null;
 		if (this.contentsCss !== null) {
@@ -235,30 +234,40 @@
 	};
 	
 	WysiwygIframe.prototype.configureIframe = function() {
-		var jqElemDocument = $(this.document),
+		var that = this;
+		var doIt = function() {
+			var jqElemDocument = $(that.jqElem.get(0).contentWindow.document),
 			jqElemBody = jqElemDocument.find("body:first"),
 			jqElemHead = jqElemDocument.find("head:first");
-		
-		
-		if (null !== this.contentsCss) {
-			for (var i in this.contentsCss) {
-				jqElemHead.append($("<link />", { href: this.contentsCss[i], rel: "stylesheet", media: "screen"}));
+			
+			if (null !== that.contentsCss) {
+				for (var i in that.contentsCss) {
+					jqElemHead.append($("<link />", { href: that.contentsCss[i], rel: "stylesheet", media: "screen"}));
+				}
 			}
+			
+			if (null !== that.bodyId) {
+				jqElemBody.attr("id", that.bodyId);
+			}
+			
+			if (null !== that.bodyClass) {
+				jqElemBody.addClass(that.bodyClass);
+			}
+			
+			jqElemBody.append(that.jqElem.data("content-html-json"));
+			
+			var containerHeight = jqElemBody.outerHeight(true, true);
+			containerHeight = (containerHeight > 400) ? 400 : containerHeight;
+			that.jqElem.outerHeight(containerHeight);
+			
+			that.jqElem.on('load', function() {
+				doIt();
+			});
 		}
 		
-		if (null !== this.bodyId) {
-			jqElemBody.attr("id", this.bodyId);
-		}
-		
-		if (null !== this.bodyClass) {
-			jqElemBody.addClass(this.bodyClass);
-		}
-		
-		jqElemBody.append(this.jqElem.data("content-html-json"));
-		
-		var containerHeight = jqElemBody.outerHeight(true, true);
-		containerHeight = (containerHeight > 400) ? 400 : containerHeight;
-		this.jqElem.outerHeight(containerHeight);
+		that.jqElem.ready(function() {
+			doIt();
+		});
 	};
 	
 	if (typeof Jhtml !== 'undefined') {

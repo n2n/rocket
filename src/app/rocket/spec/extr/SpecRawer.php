@@ -138,7 +138,7 @@ class SpecRawer {
 		}
 		
 		if (null !== ($filterData = $extraction->getFilterGroupData())) {
-			$rawData[RawDef::EI_DEF_FILTER_DATA_KEY] = $filterData->toArray();
+			$rawData[RawDef::EI_DEF_FILTER_DATA_KEY] = $filterData->toAttrs();
 		}
 		
 		if (null !== ($defaultSortDirection = $extraction->getDefaultSortData())) {
