@@ -164,7 +164,9 @@ class EiuEntryFormViewModel {
 			
 			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
 			if ($eiuEntryGui->hasForkMags()) {
-				$eiuEntryGui->getEiuGui()->forceRootGroups();
+				$eiuEntryGui->addDisplayContainer(DisplayItem::TYPE_SIMPLE_GROUP, $eiuEntryGui->getEiuEntry()->getGenericLabel());
+			} else if ($this->grouped && !$this->hasDisplayContainer()) {
+				$eiuEntryGui->forceRootGroups();
 			}
 			
 			$editViews[$eiTypeId] = $eiuEntryGui->createView($contextView);
