@@ -30,7 +30,7 @@
 	
 	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('tool_title')));
 ?>
-<div class="rocket-panel">
+<div class="rocket-content">
 	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>

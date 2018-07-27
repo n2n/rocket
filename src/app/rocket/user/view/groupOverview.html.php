@@ -35,8 +35,7 @@
 	$userGroupOverviewModel = $view->getParam('userGroupOverviewModel');
 	$view->assert($userGroupOverviewModel instanceof RocketUserGroupListModel);
 ?>
-<div class="rocket-panel">
-	<h3><?php $html->l10nText('user_groups_title') ?></h3>
+<div class="rocket-content">
 	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>
@@ -109,6 +108,6 @@
 	<div>
 		<?php $html->linkToController('add', new Raw('<i class="fa fa-plus-circle"></i> <span>' 
 						. $view->getL10nText('user_add_group_label') . '</span>'), 
-				array('class' => 'btn btn-primary')) ?>
+				array('class' => 'btn btn-success rocket-important')) ?>
 	</div>
 </div>

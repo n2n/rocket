@@ -31,7 +31,7 @@
 	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('tool_backup_title')));
 ?>
 
-<div class="rocket-panel">
+<div class="rocket-content">
 	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>
@@ -64,18 +64,18 @@
 		</tbody>
 	</table>
 	<div class="rocket-zone-commands">
-
+		<div>
 				<?php $html->linkToController(array('create'), 
 						new Raw('<i class="fa fa-plus-circle"></i> <span>' . $html->getL10nText('tool_backup_create_label') . '</span>'), 
-						array('class' => 'btn btn-primary rocket-control', 
+						array('class' => 'btn btn-primary rocket-important', 
 								'title' => $view->getL10nText('tool_backup_create_tooltip'))) ?>
 
 				<?php $html->linkToController(array('delete', '*'), 
 						new Raw('<i class="fa fa-times-circle"></i> <span>' . $html->getL10nText('tool_backup_delete_all_label') . '</span>'), 
-						array('class' => 'btn btn-secondary rocket-control', 'title' => $view->getL10nText('tool_backup_delete_all_tooltip'),
+						array('class' => 'btn btn-secondary', 'title' => $view->getL10nText('tool_backup_delete_all_tooltip'),
 								'data-rocket-confirm-cancel-label' => $view->getL10nText('common_no_label'),
 								'data-rocket-confirm-ok-label' => $view->getL10nText('common_yes_label'),
 								'data-rocket-confirm-msg' => $view->getL10nText('tool_backup_delete_all_confirm_msg'))) ?>
-
+		</div>
 	</div>
 </div>

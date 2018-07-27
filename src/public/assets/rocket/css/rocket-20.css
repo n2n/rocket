@@ -5490,6 +5490,7 @@ ul.rocket-content-item > li > span {
   grid-column-end: 2;
   -ms-grid-row: 1;
       grid-row-start: 1;
+  margin-bottom: 0;
 }
 
 .rocket-panel > .rocket-control,
