@@ -66,14 +66,14 @@
 						array('field' => $view->getParam('label'), 'locale' => $n2nLocale->getName($view->getN2nLocale()))) ?>">
 				
 			<?php if ($formHtml->meta()->getMapValue($propertyPath->fieldExt($n2nLocaleId))): ?>
-				<div class="rocket-item">
+				<div>
 					<label class="rocket-impl-locale-label"
 							title="<?php $html->out($n2nLocale->getName($request->getN2nLocale())) ?>">
 						<?php $html->out($n2nLocale->toPrettyId()) ?>
 					</label>
 					<div class="rocket-control">
 						<?php $formHtml->input($propertyPath->fieldExt($n2nLocaleId), array('class' => 'rocket-impl-unloaded'), 
-						'hidden', false, '1') ?>
+								'hidden', false, '1') ?>
 					</div>
 				</div>
 			<?php else: ?>

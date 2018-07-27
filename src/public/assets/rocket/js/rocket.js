@@ -1277,6 +1277,7 @@ var Rocket;
                 this.jqElem.removeClass("rocket-item");
                 this.jqElem.removeClass("rocket-group");
                 this.jqElem.removeClass("rocket-light-group");
+    			this.jqElem.removeClass("rocket-simple-group");
                 this.jqElem.removeClass("rocket-main-group");
                 this.jqElem.removeClass("rocket-panel");
                 switch (type) {
