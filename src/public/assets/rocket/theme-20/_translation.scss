@@ -121,15 +121,6 @@
 	position: relative;
 	display: inline-block;
 	width: 100%;
-	.rocket-impl-locale-label {
-		position: absolute;
-		top: 0.625rem;
-		left: -6rem;
-		width: 5rem;
-		text-align: right;
-		font-size: $font-size-sm;
-		color: $text-muted;
-	}
 }
 
 .rocket-impl-translation {
@@ -141,12 +132,34 @@
 	}
 }
 
+// general translation label style, as used in groups...
+.rocket-impl-locale-label  {
+	width: 100%;
+	padding: 0.5rem 0;
+	color: $primary;
+	border-top: 1px solid $primary;
+	font-weight: bold;
+	margin: 2rem 0 1rem;
+}
+
 // translation in entry
 .rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
 	position: relative;
 	display: grid;
 	grid-template-columns:  1fr auto;
-
+	.rocket-impl-locale-label {
+		position: absolute;
+		top: 0.625rem;
+		left: -6rem;
+		width: 5rem;
+		padding: 0;
+		border: none;
+		font-weight: normal;
+		margin: 0;
+		text-align: right;
+		font-size: $font-size-sm;
+		color: $text-muted;
+	}
 	> .rocket-impl-translation-copy-control {
 		grid-column-start: 2;
 		grid-column-end: 3;
@@ -166,22 +179,9 @@
 .rocket-group,
 .rocket-panel {
 	> .rocket-control > .rocket-impl-translatable > .rocket-impl-translation   {
-		> div {
-			> .rocket-impl-locale-label  {
-				display: block;
-				position: static;
-				width: 100%;
-				text-align: left;
-				padding: 0.5rem 0;
-				color: $primary;
-				border-top: 1px solid $primary;
-				font-weight: bold;
-				margin-top: 1rem;
-			}
-		}
 		> .rocket-impl-translation-copy-control {
 			position: absolute;
-			top: 0.5rem;
+			top: 2.5rem;
 			right: 0;
 		}
 	}
@@ -243,18 +243,19 @@ td {
 	.rocket-impl-translation {
 		padding: 0;
 		display: grid;
-		grid-template-columns: 1fr auto;
+		grid-template-columns: auto 1fr;
 		margin: 0;
 		> .rocket-impl-locale-label {
 			position: static;
 			grid-column-start: 2;
 			grid-column-end: 3;
-			padding-top: 0.25rem;
 			font-size: $font-size-xs;
 			color: $gray-600;
 			width: auto;
 			white-space: nowrap;
 			padding: 0.325rem 0 0 0;
+			border: none;
+			margin: 0;
 		}
 		> .rocket-control {
 			grid-row-start: 1;

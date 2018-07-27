@@ -4813,16 +4813,6 @@ body {
   width: 100%;
 }
 
-.rocket-impl-translatable .rocket-impl-locale-label {
-  position: absolute;
-  top: 0.625rem;
-  left: -6rem;
-  width: 5rem;
-  text-align: right;
-  font-size: 0.875rem;
-  color: #C2BDB6;
-}
-
 .rocket-impl-translation {
   position: relative;
   min-height: 2.5rem;
@@ -4833,12 +4823,35 @@ body {
   content: "";
 }
 
+.rocket-impl-locale-label {
+  width: 100%;
+  padding: 0.5rem 0;
+  color: #ed8207;
+  border-top: 1px solid #ed8207;
+  font-weight: bold;
+  margin: 2rem 0 1rem;
+}
+
 .rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
   position: relative;
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr auto;
       grid-template-columns: 1fr auto;
+}
+
+.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation .rocket-impl-locale-label {
+  position: absolute;
+  top: 0.625rem;
+  left: -6rem;
+  width: 5rem;
+  padding: 0;
+  border: none;
+  font-weight: normal;
+  margin: 0;
+  text-align: right;
+  font-size: 0.875rem;
+  color: #C2BDB6;
 }
 
 .rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
@@ -4855,23 +4868,10 @@ body {
   margin: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > div > .rocket-impl-locale-label,
-.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > div > .rocket-impl-locale-label {
-  display: block;
-  position: static;
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0;
-  color: #ed8207;
-  border-top: 1px solid #ed8207;
-  font-weight: bold;
-  margin-top: 1rem;
-}
-
 .rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control,
 .rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   position: absolute;
-  top: 0.5rem;
+  top: 2.5rem;
   right: 0;
 }
 
@@ -4934,8 +4934,8 @@ td .rocket-impl-translation {
   padding: 0;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 1fr auto;
-      grid-template-columns: 1fr auto;
+  -ms-grid-columns: auto 1fr;
+      grid-template-columns: auto 1fr;
   margin: 0;
 }
 
@@ -4944,12 +4944,13 @@ td .rocket-impl-translation > .rocket-impl-locale-label {
   -ms-grid-column: 2;
       grid-column-start: 2;
   grid-column-end: 3;
-  padding-top: 0.25rem;
   font-size: 0.75rem;
   color: #837E78;
   width: auto;
   white-space: nowrap;
   padding: 0.325rem 0 0 0;
+  border: none;
+  margin: 0;
 }
 
 td .rocket-impl-translation > .rocket-control {
@@ -5459,11 +5460,6 @@ ul.rocket-content-item > li > span {
   display: inline-block;
 }
 
-.rocket-toolbar {
-  padding: 0.5rem 0;
-  text-align: right;
-}
-
 .rocket-panel,
 .rocket-group {
   display: -ms-grid;
@@ -5523,12 +5519,9 @@ ul.rocket-content-item > li > span {
   display: none;
 }
 
-.rocket-toolbar > .rocket-group-controls,
-.rocket-toolbar > .rocket-simple-commands {
-  display: inline-block;
-  margin-left: 1rem;
-}
-
+/*
+ * specific group types
+ */
 .rocket-group .rocket-light-group {
   background: transparent;
   border: 1px solid transparent;
@@ -5562,12 +5555,26 @@ ul.rocket-content-item > li > span {
   border: 1px solid #C2BDB6;
 }
 
-:not(.rocket-group) .rocket-main-group-nav {
+/*
+ * Toolbar
+ */
+.rocket-toolbar {
+  padding: 0.5rem 0;
+  text-align: right;
+}
+
+.rocket-toolbar > .rocket-group-controls,
+.rocket-toolbar > .rocket-simple-commands {
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.rocket-main-group-nav {
   background: #ECEBE9;
   border: 0;
 }
 
-:not(.rocket-group) .rocket-main-group-nav > .nav-item > .nav-link {
+.rocket-main-group-nav > .nav-item > .nav-link {
   padding: 0.5rem 1rem;
   font-weight: bold;
   border: none;
@@ -5576,7 +5583,7 @@ ul.rocket-content-item > li > span {
   border-left: 3px solid #ECEBE9;
 }
 
-:not(.rocket-group) .rocket-main-group-nav > .nav-item > .nav-link.active {
+.rocket-main-group-nav > .nav-item > .nav-link.active {
   border-left: 3px solid #ed8207;
   background: #fff;
   color: #373431;
