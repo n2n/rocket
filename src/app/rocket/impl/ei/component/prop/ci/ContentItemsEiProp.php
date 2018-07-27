@@ -34,6 +34,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();
@@ -48,6 +49,10 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
+	}
+	
+	protected function getDisplayItemType(): ?string {
+		return DisplayItem::TYPE_LIGHT_GROUP;
 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
