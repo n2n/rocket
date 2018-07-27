@@ -63,6 +63,21 @@ class DisplayItem {
 	}
 	
 	/**
+	 * @param string|null $type
+	 * @param string|null $label
+	 * @return DisplayItem
+	 */
+	public function copy(string $type = null, string $label = null) {
+		$displayItem = new DisplayItem();
+		$displayItem->displayStructure = $this->displayStructure;
+		$displayItem->guiIdPath = $this->guiIdPath;
+		ArgUtils::valEnum($type, self::getTypes(), null, true);
+		$displayItem->type = $type ?? $this->type;
+		$displayItem->label = $label ?? $this->label;
+		return $displayItem;
+	}
+	
+	/**
 	 * @return string|null
 	 */
 	public function getLabel() {
